@@ -33,7 +33,7 @@
 </table> 
 <%= end_form_tag %> 
 
-<p>If you already have an account,<br />please <%= link_to_remote "login", :update => "sidebar", :url => {:controller=>"login", :action=>"login"} %>.</p>
+<p>If you already have an account,<br />please <%= link_to_remote "log in", :update => "sidebar", :url => {:controller=>"login", :action=>"login"} %>.</p>
 
 <p><%=link_to_remote "cancel &amp; return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
 </div>
