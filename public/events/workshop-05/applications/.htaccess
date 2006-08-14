@@ -1,0 +1,7 @@
+AuthUserFile /var/apache/htdocs/nines.org/events/workshop-05/applications/.htpasswd
+AuthName "NINES"
+AuthType Basic
+
+<Limit GET POST>
+require valid-user
+</Limit>

@@ -1,0 +1,105 @@
+	body {
+		background-image: url('../images/bodybg2.jpg');
+		background-color: #999;
+	}
+	#box {
+		line-height: 1.3;
+		border: 2px solid #A60000;
+		margin-top: 2%;
+		width: 80%;
+		max-width: 700px;
+		min-width: 580px;
+		width:expression(document.body.clientWidth < 580? "580px": "auto" );
+		margin-left: auto;
+		margin-right: auto;
+		background-color: #dcdcdc;
+		}
+	table {
+		padding: 2%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.title {
+		text-transform: uppercase;
+		font-size: .9em;
+	}
+	td {
+		max-width: 320px;
+		padding: 5px;
+	}
+	tr:hover {
+		background-color: #fff;
+		}
+	tr.nav {
+		margin-bottom: 10px;
+		}
+	tr.nav:hover {
+		background-color: #dcdcdc;	
+		}
+	input { 
+		margin: 2px;
+		font-family:  courier, american typewriter, verdana, fixed-width;   
+	}
+	textarea { 
+		margin: 2px; 
+		font-family:  courier, american typewriter, verdana, fixed-width;  
+	}
+	img {
+		max-width: 75px;
+		margin-right: 5px; 
+	}
+       .disabled img {
+          opacity: 0.3;
+          border: 2px solid #fff;
+       }
+       .disabled img.offsite {
+          opacity: 1.0;
+          border: 2px solid #dcdcdc;
+       }
+       .disabled td {
+          font-weight: lighter;
+          color: gray;
+       }
+       .disabled input {
+          background: #dcdcdc;
+          font-weight: lighter;
+          color: gray;
+       }
+       .disabled textarea {
+          background: #dcdcdc;
+          font-weight: lighter;	
+          color: gray;
+       }
+
+	.enabled {
+	  background-color: #F0F0F0;
+	}
+       .enabled img {
+          opacity: 1.0;
+          border: 2px solid #A60000;
+       }
+       .enabled img.offsite {
+          opacity: 1.0;
+          border: 2px solid #dcdcdc;
+       }
+       .enabled input {
+          background: #fff;
+          color: #000;
+       }
+       .enabled textarea {
+          background: #fff;
+          color: #000;
+       }
+       .enabled td {
+          font-weight: normal;
+          color: black;
+       }
+	tr:hover img.offsite {
+		border: 2px solid #fff;
+		}
+		
+		.listtype {
+			color: #000;
+			font-size: 1.4em;
+			padding-top: 3em;
+		}

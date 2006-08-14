@@ -1,0 +1,10 @@
+         <div id="section-<%=section.id%>" class="section">
+           <span class="section-titlebar">
+             section id <%= section.id %>
+           </span>
+                      <span class="section-controls">
+           <%= link_to_remote("x", :complete => "new Effect2.DropOut('section-#{section.id}')",  :url => { :action => "remove", :id => section.id, :controller => "section" }) %>
+                      </span>
+
+           <%= render_partial_collection "panel", section.panels %>           
+         </div>

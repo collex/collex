@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="../css/simple.css" />
+		<style type="text/css">
+			@import "../css/complex.css";
+			@import "../css/complex_vnav.css";
+			@import "../css/complex_hnav.css";
+		</style>
+		<link rel="stylesheet" type="text/css" href="../css/theme.css" />
+		<title>9s People &amp; Projects 9s</title>
+	</head>
+	<body>
+
+		<div id="oldbrowser">
+			<p>
+				This site will look much better in a browser that supports 
+				<a href="http://www.webstandards.org/upgrade/" 
+				title="Download a browser that complies with Web standards.">web 
+				standards</a>, but it is accessible to any browser or Internet 
+				device.
+			</p>
+		</div>
+
+		<div id="pageFrame">
+
+				<div id="masthead">
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="../index.html">N I N E S</a>
+				
+			</div>
+
+			<div id="hnav">
+				<ul><li><a href="../about/index.html">About 9s</a><span> | </span></li><li><a
+					class="on" href="index.html">People &amp; Projects</a><span> | </span></li><li><a
+					href="../tools/index.html">Tools &amp; Interfaces</a><span> | </span></li><li><a
+					href="../events/index.html">Events &amp; Activities</a><span> | </span></li><li><a
+					href="../join/index.html">Join 9s</a><span> | </span></li></ul>
+			</div>
+
+
+			<div id="leftColumn">
+				<div id="innerLeftColumn">
+					<p> </p>
+					<div id="vnav">
+						<ul><li><a 
+							href="boards.html">editorial boards</a></li><li><a 
+							href="projects.html">9s projects</a></li><li><a 
+							href="associations.html">associated groups</a></li><li><a 
+							href="staff.html">research &amp; development</a></li></ul>
+					</div>
+
+					<p> </p>
+
+				</div>
+			</div>
+
+			<div id="contentColumn">
+				<div id="innerContentColumn">
+					<p>Growing numbers of nineteenth-century scholars and humanities computing experts are joining NINES, bringing with them an exciting collection of <a href="projects.html">online projects</a> and helping to establish the <a href="boards.html">editorial boards</a> that will drive new models of scholarly publishing.  In addition, NINES actively pursues <a href="associations.html">affliation</a> with important research associations, software development groups, and print and electronic journals.  </p>
+<p>This work is supported by a highly-trained <a href="staff.html">R&D group</a>, currently engaged in building a suite of interpretive <a href="../tools/index.html">systems and tools</a>.</p> 					
+			</div> 		
+			</div>
+			<div id="footer">
+				<div id="innerFooter">
+					a networked interface for nineteenth-century electronic scholarship
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

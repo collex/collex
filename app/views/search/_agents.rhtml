@@ -1,0 +1,25 @@
+<ul class="cookies">
+<%
+@values.each do |value|
+    constraint_exists = false
+    session[:constraints].each do |constraint|
+      if "agent" == constraint[:field] and value[:name] == constraint[:value]
+        constraint_exists = true
+        break
+      end
+    end
+    
+    if not constraint_exists
+%>
+   <li class="cookie"><span class="informal">&nbsp;</span><%=value[:name]%><span class="informal"> (<%=value[:total]%>)<br/>
+       <% if value[:roles].size > 1
+        value[:roles].each do |role, frequency| -%>
+       <span class="frequency">  <%=COLLEX_MANAGER.relators[role]%> (<%=frequency%>)</span>
+       <% end 
+       end -%>
+     </span></li>
+<%
+   end # not constraint_exists
+end
+%>
+</ul>

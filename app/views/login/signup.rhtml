@@ -1,0 +1,39 @@
+<div class="sidelogin">
+<div class="pagination" style="margin-bottom:1em"><span class="emph2">sign up for Collex</span></div>
+
+<% if @flash[:error] -%> 
+<div id="error"><%= @flash[:error] %></div>
+<% end %>
+<%= form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "signup"} %> 
+<table> 
+  <tr> 
+    <td>User name:</td> 
+    <td><%= text_field_tag("username") %></td> 
+  </tr> 
+  <tr> 
+    <td>Full name:</td> 
+    <td><%= text_field_tag("fullname")%></td> 
+  </tr> 
+  <tr> 
+    <td>E-mail address:</td> 
+    <td><%= text_field_tag("email")%></td> 
+  </tr> 
+  <tr> 
+    <td>Password:</td> 
+    <td><%= password_field_tag %></td> 
+  </tr> 
+  <tr> 
+    <td>Re-type password:</td> 
+    <td><%= password_field_tag("password2")%></td> 
+  </tr> 
+  <tr> 
+    <td>&nbsp;</td> 
+    <td><input type="submit" value=" SIGN UP " /></td> 
+  </tr> 
+</table> 
+<%= end_form_tag %> 
+
+<p>If you already have an account,<br />please <%= link_to_remote "login", :update => "sidebar", :url => {:controller=>"login", :action=>"login"} %>.</p>
+
+<p><%=link_to_remote "cancel &amp; return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
+</div>

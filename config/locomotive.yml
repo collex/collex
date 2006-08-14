@@ -1,0 +1,6 @@
+---
+mode: development
+runs_at_launch: 0
+identifier: ninesweb
+port: 3000
+bundle: /Volumes/Locomotive2/Locomotive2/Bundles/rails112.locobundle

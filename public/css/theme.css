@@ -1,0 +1,78 @@
+/*
+	NS4 doesn't do well with added colors because of the extra padding added inside each
+	block element. So colors are imported. This theme file will, thus, contain mostly
+	font stuff.
+ */
+@import "colors.css";
+
+/*** Left Column ***/
+#innerLeftColumn p
+{
+	font-family: "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+	font-size: 70%;
+	line-height: 140%;
+}
+#innerLeftColumn h3
+{
+	color: #000;
+	margin: 2em 0 0 0;
+}
+
+/*** Content ***/
+#innerContentColumn
+{
+	font-family: "Lucida Grande",  arial, georgia, helvetica, sans-serif;
+	font-size: 13px;
+}
+#innerContentColumn h3
+{
+	color: #000;
+}
+.subhead {
+		font-family: "Trebuchet MS", "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+		font-weight: bold;
+		font-size: 15px;
+}
+
+/*** Masthead ***/
+#masthead
+{
+	font-family: "Trebuchet MS", "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+	font-size: 28px;
+	font-weight: bold
+	letter-spacing: .2em;
+}
+.subtitle {
+	font-size: 14px;
+}
+#masthead a:hover {
+	text-decoration: none;
+}
+
+/*** Footer ***/
+#innerFooter
+{
+	font-family:  "Trebuchet MS", "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+	letter-spacing: .2em;
+}
+
+
+/*** Horizontal Navigation Area ***/
+#hnav
+{
+	font-family: "Trebuchet MS", "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+	font-size: 85%;
+	letter-spacing: .1em;
+}
+
+/*** Vertical Navigation Area ***/
+#vnav
+{
+	font-family:  "Trebuchet MS", "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+	font-size: 85%;
+	letter-spacing: .1em;
+	line-height: 180%; /* Mozilla suffers from a rounding problem, 
+						  this value may have to be tweaked if you 
+						  change the font family or size 
+						*/
+}

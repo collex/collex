@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Collex</title>
+
+    <%= stylesheet_link_tag "new9s", :media => "all" %> 
+    <script type="text/javascript">
+      function popUp(URL) {
+        day = new Date();
+        id = day.getTime();
+        eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
+      }
+    </script>
+    <%= javascript_include_tag :defaults %>
+</head>
+<body style="background-color:#fff;background-image:none;line-height:1.4em;width:98%;padding-left:4px;" onload="window.focus();">
+
+<div id="content">
+<%= @content_for_layout %>
+</div>
+
+
+<p align="right"><a href="http://www.nines.org/" target="_blank">::&nbsp;learn&nbsp;more&nbsp;::</a></p>
+
+	<script type="text/javascript" src="/javascripts/boxover.js"></script>    
+</body>
+</html>

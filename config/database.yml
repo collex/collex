@@ -1,0 +1,26 @@
+development:
+    adapter: mysql
+    database: nines_development
+    username: root
+    password:
+    host: localhost
+    
+test:
+    adapter: mysql
+    database: nines_test
+    username: root
+    password:
+    host: localhost
+
+production:
+    adapter: mysql
+    database: nines_production
+    #database: nines_development
+    username: root
+    password:
+    host: localhost
+    
+# In-memory SQLite 3 database.  Useful for tests.
+sqlite3_in_memory_example:
+  adapter: sqlite3
+  dbfile: ":memory:"

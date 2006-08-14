@@ -1,0 +1,148 @@
+/*---- Layout ----*/
+div
+{
+	/* this is for netscape 4's sake */
+	margin: 0;
+	padding: 0;
+}
+body
+{
+	padding: 30px;
+	margin: 0;
+	background-color: #CF5900
+}
+#pageFrame
+{
+	padding: 5px;
+}
+#oldbrowser
+{
+	text-align: center;
+}
+#masthead h1
+{
+	display: inline;
+}
+#leftcolumn
+{
+	margin-right: -200px;	/* IE 4 fix */
+}
+#leftColumn
+{
+	float: left;
+	width: 200px;
+	/*/*/ /*/margin: 0 0 0 2px; /* Silly Netscape hack to get the borders to line up */
+}
+#contentColumn
+{
+	width: auto;
+	margin-left: 199px;
+}
+#masthead, #innerFooter
+{
+	padding: 5px;
+}
+#innerLeftColumn, #innerContentColumn
+{
+	padding: 15px;
+}
+#footer
+{
+	clear: left;
+}
+#innerFooter
+{
+	text-align: center;
+}
+#innerContentColumn
+{
+	overflow: visible;
+	height: 100%;	/* fix the Win32 IE float bug */
+	width: 80%;
+}
+#contentColumn>#innerContentColumn
+{
+	height: auto;	/* fix Opera which breaks with the above IE fix */
+}
+#innercontentcolumn
+{
+	height: 100%;	/* fix IE 5.0 which parse the Opera fix, note the selector is all lower case */
+}
+#masthead, #footer
+{
+	z-index: 10;
+}
+#masthead, #hnav
+{
+	position: relative;
+}
+
+/*---- Borders ----*/
+#pageFrame
+{
+	border: solid 1px #000;
+}
+#footer, #masthead, #innerLeftColumn, #contentColumn, #hnav
+{
+	border: solid 0px #000;
+}
+#footer
+{
+	border-top-width: 0px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+}
+#masthead, #hnav
+{
+	border: 1px;
+}
+#innerLeftColumn
+{
+	border-right-width: 0px;
+}
+#contentColumn
+{
+	border-left-width: 0px;
+}
+
+/*---- Visual Elements ----*/
+body
+{
+	background-color: #ddd;
+	color: #000;
+	padding: 20px;
+	margin: 0;
+}
+#pageFrame
+{
+	background-color: #fff;
+	color: #000;
+	min-width: 500px;
+}
+
+/*---- Simple Horizontal Navigation ----*/
+#hnav
+{
+	white-space: nowrap;
+	margin: 0;
+	padding: 3px 0 4px 0;
+	color: #000;
+}
+#hnav ul
+{
+	text-align: center;
+}
+#hnav ul, #nav ul li
+{
+	list-style-type: none;
+	line-height: normal;
+	margin: 0;
+	padding: 0;
+}
+#hnav ul li
+{
+	display: inline;
+	white-space: nowrap;
+	/*/*/ /*/display: none;/*  */
+}

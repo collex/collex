@@ -1,0 +1,28 @@
+<html>
+  <head></head>
+  <body>
+
+    <table>
+       <% @objects.each_key do |subject| %>
+          <tr>
+             <td><img src="<%= @images[subject]%>"/></td>
+             <td>
+                <%= @titles[subject] %><br/>
+                tags: <% @objects[subject].each do |tag| %>
+                  <%= tag %>
+                <% end %>
+             </td>
+          </tr>
+      <% end %>
+    </table>
+   
+   <ul>
+      
+  <div class="tags">
+     <% @tags.each do |tag,count| %>
+        <font size="<%=count%>"><%=tag %></font>
+     <% end %>
+  </div>
+</ul>
+</body>
+</html>

@@ -1,0 +1,106 @@
+    <h1><%= @page.title %></h1>
+    
+    <%= link_to 'add section', :action => 'add_section', :id => @page %>
+    
+<!--    <img src="/images/plus.gif" onclick="showMenu()"/> -->
+    <div id="section_menu" style="display: none;">
+       menu
+    </div>
+    	
+	<script>
+	  function showMenu() {
+	    Element.toggle('section_menu');
+	  }
+	</script>
+
+    <div id="sections">
+       <%= render_partial_collection "section", @page.sections %>
+    </div>
+
+    <script>       
+       function collectionBrowser(panel_id) {
+          // TODO: hook into Kowari-based collection browser
+         window.open("/collection/bank?panel_id=" + panel_id, "bank", "resizable,menubar=no,scrollbars=yes,status=no,toolbar=no");
+       }
+       
+       function selectImage(panel_id, url) {
+         var opts = {
+           parameters: "url=" + url,
+                        onComplete: function(data) {
+                           if( data.responseText == "SUCCEED" )
+                           {
+                              alert('Success!');
+                           }
+                           else
+                           {
+                              alert('An error occured:\n\n'+ data.responseText );
+                           }
+                        }
+         };
+
+
+         var req = new Ajax.Request('/panel/save_image?id=' + panel_id, opts);
+       }
+    
+       function edit(elem) {
+         var value = elem.innerHTML;
+         elem.parentNode.innerHTML = "<textarea onblur='editorSave();' id='editor' rows='20' cols='50'>" + value  + "</textarea>";
+         $('editor').focus();
+       }
+       
+       function editorSave() {
+         var editor = $('editor');
+         var value = editor.value;
+         
+         var panel_id = editor.parentNode.id.substr(6);  // remove "panel-"
+
+         editor.parentNode.innerHTML = "<span class='panel-text' ondblclick='edit(this);'>" + value + "</span>";
+
+         var opts = {
+           parameters: "text=" + value,
+                        onComplete: function(data) {
+                           if( data.responseText == "SUCCEED" )
+                           {
+           //                   alert('Success!');
+                           }
+                           else
+                           {
+                              alert('An error occured:\n\n'+ data.responseText );
+                           }
+                        }
+         };
+         
+         
+         var req = new Ajax.Request('/panel/save_text?id=' + panel_id, opts);
+       }
+       
+       function saveSectionOrder() {
+          var elems = $('sections').getElementsByTagName('DIV');
+          var s = '';
+          for( var i=0; i< elems.length; i++ )
+          {
+             var elem = elems[i];
+             s += elem.id.substr(8) + ',';  // remove "section-"
+          }
+
+          var ordered_list = s.slice(0, s.length-1);
+          
+          var opts = {
+             parameters: "section_ids="+ ordered_list,
+             onComplete: function(data) {
+                if( data.responseText == "SUCCEED" )
+                {
+//                   alert('Success!');
+                }
+                else
+                {
+                   alert('An error occured:\n\n'+ data.responseText );
+                }
+             }
+          }
+
+          // Send request to server...
+          var req = new Ajax.Request('/page/reorder?id=<%=@page.id%>', opts);
+       }
+    </script>
+    <script src="/javascripts/domdraglist.js" type="text/javascript"></script>

@@ -1,0 +1,94 @@
+
+        <table id="facettable" class="constraints" cellspacing="0" align="center" valign="top"> 
+        <caption>constrain further</caption>
+
+    	<tr>
+                 <th align="left">phrase:</th>
+                  <td><%= start_form_tag({:controller => "search", :action => :add_expression}, {:name => 'phraseform'}) -%><%= text_field_with_suggest :field, :content,  {:size=>20}, {:min_chars => 2}-%>&nbsp;<span class="help" title="header=[full text search] body=[is available for the Poetess, Swinburne, and Rossetti archives, but ALL objects are open for search on titles, sources, names, dates, and genres. Phrases in quotes, AND, OR, and NOT operators, and * wildcards are permitted.] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">?</span><%= end_form_tag -%></td>
+                  <td align="center"><%= link_to_function "add", "document.forms['phraseform'].submit();" -%></td>
+				  <td>&nbsp;</td>
+               </tr>
+
+    <%  max = @results["hits"] ? @results["total_hits"] : @results['total_documents']
+        facets = ["archive", "genre"]        
+        facets.each do |field| unsorted_values=@results["facets"][field]
+          if unsorted_values
+            name_shown = false 
+            label = facet_label(field)
+            values = field == "roles" ? unsorted_values : unsorted_values.sort {|a,b| b[1] <=> a[1]}
+    %>
+       <% values.each_with_index do |pair, i|  value=pair[0] 
+          
+          value_display = value
+          if field=="archive"
+            if ARCHIVES[value]
+              value_display = ARCHIVES[value]['description']
+            end
+          end
+          constraint_exists = false
+          session[:constraints].each do |constraint|
+            if field == constraint[:field] and value == constraint[:value]
+              constraint_exists = true
+              break
+            end
+          end
+       %>
+      <% if i == 2 %>
+      <tr class="more_<%=field%>">
+         <td>&nbsp;</td>
+         <td><a href="#" onclick="toggleIt(this); return false;">show more <%=h label%>s</a></td>
+      </tr>
+      <tr class="more_<%=field%>" style="display:none;">
+         <td>&nbsp;</td>
+         <td><a href="#" onclick="toggleIt(this); return false;">hide <%=h label%>s</a></td>
+      </tr>
+      <% end %>
+      <tr <% if i > 1 %>class="more_<%=field%>" style="display:none;"<% end %>>
+                 <th align="left"><% if !name_shown %><%=h label%>:<% else %>&nbsp;<% end %></th>
+        <td><%=h value_display%>
+            <br/>
+            <% if field == "roles" and pair[1].size > 1
+                individual_roles = pair[1]
+                individual_roles.each do |individual_role|
+                  role_code = individual_role[0]
+                  role_name = RELATORS[role_code]
+                  role_freq = individual_role[1]
+            %>
+                <%= link_to "#{role_name} (#{role_freq})", {:controller => "search", :action => 'add_facet', :field => role_code, :value => value}%>                                           
+             <%  end %>
+            <% end %>
+        </td>
+        <td align="center" nowrap="true">
+          <% freq= field=="roles" ? @results["facets"]["agent"][value] : pair[1] %>     
+            <%= link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_facet', :field => field == "roles" ? "agent" : field, :value => value}%>
+            <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => field == "roles" ? "agent" : field, :value => value, :invert => true}%><% end %>
+        </td>
+        <td><img src="/images/pie_<%=(100 * freq).quo(max.to_i).ceil%>.png"/>
+      </tr>
+      <% name_shown = true
+      end 
+      
+      end %>
+    <% end %>
+		<tr>
+	             <th align="left">year:</th>
+	              <td><%= start_form_tag({:controller => "search", :action => :add_year_facet}, {:name => 'yearform'}) -%>
+	    <%= text_field_with_suggest :field, :year, :size => 20 %>&nbsp;<span class="help" id="year-help" title="header=[year search] body=[type a four digit year, select a valid option from the drop-down menu, and click 'add'] cssheader=[boxheader] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
+	    <td align="center"><%= link_to_function "add", "document.forms['yearform'].submit();" -%></td>
+		  <td>&nbsp;</td>
+	   </tr>
+
+		<tr>
+	             <th align="left">name:</th>
+	              <td><%= start_form_tag({:controller => "search", :action => :add_agent_facet}, {:name => 'agentform'}) -%>
+	    <%= text_field_with_suggest :agent, :name, :size => 20 %>&nbsp;<span class="help" title="header=[name search] body=[type the name of a person or institution, select a valid option from the drop-down menu, and click 'add.'] cssheader=[boxheader] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
+	    <td align="center"><%= link_to_function "add", "document.forms['agentform'].submit();" -%></td>
+		  <td>&nbsp;</td>
+	   </tr>
+
+    </table>
+    
+
+
+			
+    

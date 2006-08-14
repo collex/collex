@@ -1,0 +1,14 @@
+<div class="popup">
+<div class="pagination" style="margin-bottom:1em"><span class="emph2">pilot contributors</span></div>
+<p><span class="emph2">scholarly projects</span> participating in the NINES/Collex pilot include:
+<ul>
+<% ARCHIVES.each do |code, data|%>
+<li><a href="<%= data['url']%>" target="_blank"><%= data['description']%></a></li>
+<% end %>
+</ul>
+</p>
+
+<p>Full text search through NINES is currently available for the Swinburne, Poetess, and Rossetti archives, but users may search for titles, names, genres, dates, and other basic information in <b>all</b> participating NINES sites.</p>
+
+<p>In the coming months, we expect to integrate major contributions from <a href="http://www.jstor.org" target="_blank">JSTOR</a>, the <a href="http://www.whitmanarchive.org" target="_blank">Walt Whitman Archive</a>, the <a href="http://www.whistler.arts.gla.ac.uk/correspondence/index.htm" target="_blank">Whistler Correspondence</a>, the <a href="http://www.blakearchive.org" target="_blank">Blake Archive</a>, the <a href="http://www.emilydickinson.org" target="_blank">Dickinson Project</a>, <a href="http://www.rc.umd.edu/" target="_blank">Romantic Circles</a>, and <a href="http://www.ron.umontreal.ca/" target="_blank">Romanticism on the Net</a>.</p>
+</div>

@@ -1,0 +1,42 @@
+<div class="sidelogin">
+<div class="pagination" style="margin-bottom:1em;padding:.6em"><span class="emph2">C O L L E X</span></div>
+<% if @flash[:notice] -%> 
+<div id="notice"><%= @flash[:notice] %></div>
+<% end %>
+<%= form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "login"} %> 
+<table> 
+<tr> 
+<td>user name:</td> 
+<td><%= text_field_tag("username", '', :size => 17) %></td> 
+</tr> 
+<tr> 
+<td>password:</td> 
+<td><%= password_field_tag ('password', '', :size => 17 ) %></td> 
+</tr> 
+<tr> 
+<td colspan="2"><input type="submit" value=" log in " /></td> 
+</tr> 
+</table> 
+<%= end_form_tag %> 
+
+<p><span class="emph3" style="color:#000">new here?</span><br />
+	please <span class="emph3"><%= link_to_remote "SIGN UP", :update => "sidebar", :url => {:action => 'signup'}%></span>.</p>
+
+<p><span class="emph3" style="color:#000">lost password?</span><br />enter your registered username below:
+	<%= form_remote_tag :update => "sidebar", :url => {:controller => "login", :action => 'reset_password'} %> 
+	<table> 
+	<tr> 
+	<td>user name:</td>
+	<td><%= text_field_tag("username", '', :size => 17 ) %></td>
+	</tr>
+	<tr>
+	<td colspan="2"><input type="submit" value="email new password" /></td>
+	</tr>
+	</table>
+	<%= end_form_tag %> 
+</p>
+
+<p>&nbsp;</p>
+<p><%=link_to_remote "cancel &amp; return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
+<p>a <span class="emph3"><%= link_to_popup "brief tutorial", {:controller=>'nines',:action=>'help'}, {:title => "register and contribute"} -%></span> on Collex and NINES<br />is available. <br />&nbsp;</p>
+</div>

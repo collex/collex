@@ -1,0 +1,93 @@
+        <div class="topnav">
+            <div class="search"><%= start_form_tag :controller=>'search', :action => :new_expression -%><%= text_field_tag "field[content]", "search", :onFocus=>"this.value=''" -%>&nbsp;<%= end_form_tag -%></div>
+          <div class="browsetags"><%= link_to_remote "BROWSE TAGS", :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'cloud', :type => 'tag'}%>
+          </div>
+        </div>
+
+        <div class="content">
+	
+        <div class="item">
+<!--        <span class="text" style="float:left;font-size:1.4em"> <a href=""> &lt;&lt; </a> </span>   -->
+
+         <span class="listtype" style="float:right"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :objid => params[:objid], :view => "detail"}, {:target => "_blank"}%></span><% if @object['url'] %><a target="_blank" href="<%=@object['url']%>" style="font-size:1.1em"><% end %><img src="<%= @object['thumbnail'] ? @object['thumbnail'] : image_path("harrington.gif")%>"/><% if @object['url'] %></a><% end %>
+
+<!--        <span class="text" style="float:right;font-size:1.4em"> <a href=""> &gt;&gt; </a> </span> <br> -->
+
+        <div class="rdf">
+        <% if @object['url'] %><a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><% end %><%= h @object['title'] ? @object['title'] : "<untitled>" %><% if @object['url'] %></a> &rarr;<% end %><br>
+        <% if @object['year']
+           @object['year'].each do |year|%>
+          <%= link_to_remote year, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => 'year', :value => year}  %>
+        <% end
+        end %><br/>
+        <% if @object['agent']
+             @object['agent'].each do |agent|%>
+          <%= link_to_remote agent, :update => "sidebar", :url => {:controller=> "sidebar", :action => 'list', :type => 'agent', :value => agent}  %><br/>
+        <% end
+        end  %>
+        <% if @object['genre']
+             @object['genre'].each do |genre|%>
+          <%= link_to_remote genre, :update => "sidebar", :url => {:controller => "sidebar", :action => 'list', :type => 'genre', :value => genre}  %>
+        <% end 
+          end %><br/>
+        <% if ARCHIVES[@object['archive']]%><a href="<%= ARCHIVES[@object['archive']]['url'] %>" target="_blank"> <%=ARCHIVES[@object['archive']]['description']%></a> &rarr; <% else %><%= @object[:archive]%><% end %>
+        </div>
+
+        <div class="notes">
+        <% if @collection_info['tags']
+            @collection_info['tags'].each do |tag| %>
+                   <%= link_to_list 'tag', tag %>
+                <% end
+                end %>           
+        <br/>
+        
+        <% if is_logged_in? %>
+        <%= form_remote_tag(:url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform'}) -%>
+          <%= hidden_field_tag :objid, params[:objid] -%>
+          <%= text_field_tag :tags, @collection_info['tags'] ? @collection_info['tags'].join(' ') : "" -%><br/>
+              
+          <%= text_area_tag(:annotation, @collection_info['annotation'], :size => '22x8') -%><br/>
+          <span class="emph2">
+              <% if  @collection_info['users'].include?(username) %>
+                <%=link_to_remote "remove", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
+              <% end %>
+              <%= link_to_function @collection_info['users'].include?(username) ? "save" : "collect", "document.forms['dataform'].onsubmit()" %>
+          </span>
+        <%= end_form_tag -%>
+        <% else %>
+          To tag or edit this object, <%=link_to_remote "log in and return", :update => "sidebar", :url => {:controller=>"sidebar", :action=>"detail", :objid => params[:objid],:user=>"<mine>"} %>.
+        <% end %>
+        </div>
+        
+        <div class="users">
+            collected by:
+                <% @collection_info['users'].each do |username| %>
+                <%= link_to_remote username, :update=>"sidebar", :url => {:controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username} %>
+            <% end %>
+        </div>
+
+        </div>
+
+        <div class="likethis">
+        <table cellspacing="0" class="more" width="100%">
+
+<% if @mlt.size > 0 %>
+        <caption>more like this</caption>
+<% end %>
+        <tr>
+          <% @mlt.each do |item| 
+              image_link = item['thumbnail'] ? item['thumbnail'] : image_path("harrington.gif")
+           %>
+            <td>
+                <%= link_to_remote %Q$<img src="#{image_link}" title="header=[Collex suggests...] body=[#{h  item['title'].to_s.gsub(/\[/,'[[').gsub(/\]/,']]')}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] windowlock=[off]" alt="#{h item['title']}"/>$, :update => "sidebar", :url => {:controller => 'sidebar', :action => 'detail', :objid=> item['uri']}%>
+            </td>
+          <% end %>
+
+        </tr>
+        </table>
+        </table>
+
+
+        </div>
+
+        </div>

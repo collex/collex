@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="../css/simple.css" />
+		<style type="text/css">
+			@import "../css/complex.css";
+			@import "../css/complex_vnav.css";
+			@import "../css/complex_hnav.css";
+		</style>
+		<link rel="stylesheet" type="text/css" href="../css/theme.css" />
+		<title>9s People &amp; Projects 9s</title>
+	</head>
+	<body>
+
+		<div id="oldbrowser">
+			<p>
+				This site will look much better in a browser that supports 
+				<a href="http://www.webstandards.org/upgrade/" 
+				title="Download a browser that complies with Web standards.">web 
+				standards</a>, but it is accessible to any browser or Internet 
+				device.
+			</p>
+		</div>
+
+		<div id="pageFrame">
+
+				<div id="masthead">
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="../index.html">N I N E S</a>
+				
+			</div>
+
+			<div id="hnav">
+				<ul><li><a href="../about/index.html">About 9s</a><span> | </span></li><li><a
+					class="on" href="index.html">People &amp; Projects</a><span> | </span></li><li><a
+					href="../tools/index.html">Tools &amp; Interfaces</a><span> | </span></li><li><a
+					href="../events/index.html">Events &amp; Activities</a><span> | </span></li><li><a
+					href="../join/index.html">Join 9s</a><span> | </span></li></ul>
+			</div>
+
+
+			<div id="leftColumn">
+				<div id="innerLeftColumn">
+					<p> </p>
+					<div id="vnav">
+						<ul><li><a class="on" 
+							href="boards.html">editorial boards</a></li><li><a 
+							href="projects.html">9s projects</a></li><li><a 
+							href="associations.html">associated groups</a></li><li><a 
+							href="staff.html">research &amp; development</a></li></ul>
+					</div>
+
+					<p> </p>
+
+				</div>
+			</div>
+
+			<div id="contentColumn">
+				<div id="innerContentColumn">
+					
+					<p>Dino Felluga of  <a href="http://www.sla.purdue.edu/academic/engl/navsa/" target="_blank">NAVSA</a> and Michael Eberle-Sinatra of <a href="http://www.ron.umontreal.ca/" target="_blank">Romanticism on the Net</a> organize <b>Victorianist</b> efforts in NINES.  The following scholars serve on the editoral board for this content area:
+<ul>
+<li>Amanda Anderson, Johns Hopkins University</li>
+<li>Nancy Armstrong, Brown University</li>
+<li>Susan Brown, University of Guelph, Canada</li>
+<li>Joseph Childers, University of California, Riverside</li>
+<li>Jay Clayton, Vanderbilt University</li>
+<li>Michael Eberle-Sinatra, Universit&#x00e9; de Montr&#x00e9;al </li>
+<li>Andrew Elfenbein, University of Minnesota </li>
+<li>Dino Felluga, Purdue University</li>
+<li>Catherine Gallagher, University of California, Berkeley</li>
+<li>Pamela Gilbert, University of Florida</li>
+<li>Elaine Hadley, University of Chicago</li>
+<li>Lorraine Janzen Kooistra, University of Nipissing</li>
+<li>George Landow, Brown University</li>
+<li>Michael Levenson, University of Virginia</li>
+<li>Jerome McGann, University of Virginia</li>
+<li>Andrew Miller, Indiana University</li>
+<li>Leah Price, Harvard University</li>
+<li>Linda Shires, Syracuse University</li>
+<li>Herbert Tucker, University of Virginia</li>
+<li>John Walsh, Indiana University</li>
+</ul>
+</p>
+<p>Contact: <a href="mailto:victorian@nines.org">victorian@nines.org</a>
+</p>
+<p>Lists of scholars on NINES boards for <a href="americanist.html">Americanist</a> and <a href="romantic.html">Romantic</a> studies are also available. 
+</p>  			
+			</div> 		
+			</div>
+			<div id="footer">
+				<div id="innerFooter">
+					a networked interface for nineteenth-century electronic scholarship
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

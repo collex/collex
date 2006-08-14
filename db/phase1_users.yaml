@@ -1,0 +1,181 @@
+--- 
+- :pwhash: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+  :email: esh6h@virginia.edu
+  :username: erikhatcher
+  :fullname: Erik Hatcher
+- :pwhash: 19ddb1621816bdf26c442877b9df5c497f4c6baf
+  :email: dmg2n@virginia.edu
+  :username: dgran
+  :fullname: Duane Gran
+- :pwhash: 1290aa5c27f8a1e4940ee912234814dc274887ba
+  :email: bethany@virginia.edu
+  :username: nowviskie
+  :fullname: Bethany Nowviskie
+- :pwhash: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+  :email: esh6h@virginia.edu
+  :username: test
+  :fullname: Test User
+- :pwhash: 19ddb1621816bdf26c442877b9df5c497f4c6baf
+  :email: dmg2n@virginia.edu
+  :username: duane
+  :fullname: Duane Gran
+- :pwhash: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+  :email: esh6h@virginia.edu
+  :username: test2
+  :fullname: Test User 2
+- :pwhash: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+  :email: esh6h@virginia.edu
+  :username: test3
+  :fullname: Test User 3
+- :pwhash: 027efaa67f94ee4387b29d874d84707e14ca456e
+  :email: wjh7v@virginia.edu
+  :username: williamhughes
+  :fullname: William Hughes
+- :pwhash: dc62a1aa8bd8849ba535a0cdd4f49ae10f3e41b1
+  :email: marthabrogan@sbcglobal.net
+  :username: mlb
+  :fullname: Martha Brogan
+- :pwhash: 8aa7d4829e86e45192486224e223efbe3ef5c0df
+  :email: linuxizer@softhome.net
+  :username: gsk3
+  :fullname: Ari F
+- :pwhash: b66f7d1ce61c6caed68ba93f1479416a969d39b5
+  :email: marco@nonsenselit.org
+  :username: margraz
+  :fullname: Marco Graziosi
+- :pwhash: cf310128457be133179e0ddd67fddf9aa31ba0d5
+  :email: furlough@virginia.edu
+  :username: mfurlough
+  :fullname: michael furlough
+- :pwhash: da39a3ee5e6b4b0d3255bfef95601890afd80709
+  :email: 
+  :username: johnowen
+  :fullname: John H
+- :pwhash: c1e467459e530cb482e5abf24eeae9e6490427af
+  :email: joh7z@virginia.edu
+  :username: johnhavard
+  :fullname: John Havard
+- :pwhash: f161352bf65f5538c0f15d5951d7f07b930d1094
+  :email: joplugiinet.net.au
+  :username: LEW
+  :fullname: Leichhardt Electrical
+- :pwhash: f161352bf65f5538c0f15d5951d7f07b930d1094
+  :email: joplug@iinet.net.au
+  :username: LEW01
+  :fullname: Leichhardt Electrical
+- :pwhash: c21e67cd891ae13740b8cc359478f619ed7576e0
+  :email: jawalsh@indiana.edu
+  :username: jawalsh
+  :fullname: John A. Walsh
+- :pwhash: cead961b985ab9a1403e1fe4aa6b559288bee3d0
+  :email: dgolumbia@gmail.com
+  :username: janArrah
+  :fullname: Jan Arrah
+- :pwhash: d8856d6f06df13df043dd9c65e4d38e0542872f5
+  :email: dbear@archimuse.com
+  :username: David
+  :fullname: Bearman
+- :pwhash: da39a3ee5e6b4b0d3255bfef95601890afd80709
+  :email: 
+  :username: elyman
+  :fullname: 
+- :pwhash: 6f9ae1103dda0355f1c2ab274ba50b8950c460f8
+  :email: jjm2f@virginia.edu
+  :username: JeromeMcGann
+  :fullname: JeromeMcGann
+- :pwhash: a641d4a04b4c11a41e4846c5cfde05e50e3577a7
+  :email: cstahmer@umd.edu
+  :username: cstahmer
+  :fullname: Carl Stahmer
+- :pwhash: cfb3596e677cc608727fb42f69340243b469adf6
+  :email: aearhart@tamu.edu
+  :username: amyearhart
+  :fullname: Amy Earhart
+- :pwhash: 930e75de8357002cb3f5cf9740c95e83115cc935
+  :email: dfelluga@cla.purdue.edu
+  :username: felluga
+  :fullname: Dino Franco Felluga
+- :pwhash: 99d19eaee48723bae80a2554e0e80b16535f7d71
+  :email: astauff@bu.edu
+  :username: ams4k
+  :fullname: Andrew Stauffer
+- :pwhash: 8492a51f98547b3bdcbc52201f3203fd48b149af
+  :email: dw6h@virginia.edu
+  :username: dw6h
+  :fullname: Dana Wheeles
+- :pwhash: b0e0a0dedf459b927ecdafc22010dc5adca0016f
+  :email: pboot@xs4all.nl
+  :username: peter
+  :fullname: Peter Boot
+- :pwhash: 783f43782edc77fb217aa8630eabc4b3eb38a320
+  :email: post@brendanking.demon.co.uk
+  :username: Brendan
+  :fullname: Brendan King
+- :pwhash: 44be75076a0261585aff65e9e3ea53c37bace6c2
+  :email: bair@wmich.edu
+  :username: jumpin
+  :fullname: shari bear
+- :pwhash: 81acc43fad51f2f81f039ede21debd2a4b70b156
+  :email: hcsin@virginia.edu
+  :username: holly
+  :fullname: hollyshulman
+- :pwhash: 3e2ef4f21c28f9a04fa93adb3f89e08ff8e31267
+  :email: jesse@futureofthebook.org
+  :username: jdwilbur
+  :fullname: Jesse Wilbur
+- :pwhash: e728908af5728ad9bf87a1fcd1adab1a313f5405
+  :email: aearhart@tamu.edu
+  :username: amyeetx
+  :fullname: Amy Earhart
+- :pwhash: 4f5257ab4f95e31540a3fed4bf0c135ff709532d
+  :email: jlecampbell@ucdavis.edu
+  :username: Jared
+  :fullname: Campbell
+- :pwhash: a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+  :email: larryleroy@hotmail.com
+  :username: jc
+  :fullname: jared campbell
+- :pwhash: 974bc7f3e2a5430206b8665c0c2451b7ae32036d
+  :email: Beatrice.Gordon@asu.edu
+  :username: atbsg
+  :fullname: Beatrice Gordon
+- :pwhash: 6420ed4d831b436d1e92d25605d18297296374e3
+  :email: joan.huntley@gmail.com
+  :username: jhuntley
+  :fullname: Joan Huntley
+- :pwhash: e94b21497b5640f64707b89d1d2292aed9154609
+  :email: ancourtn@indiana.edu
+  :username: ancourtn
+  :fullname: "angela "
+- :pwhash: 52a7c2bde123ec61f8fe4ec3e6f229962be8ab41
+  :email: bill-parod@northwestern.edu
+  :username: parod
+  :fullname: Bill Parod
+- :pwhash: 41a0e254a070bca73d697665f87f4acd328c9054
+  :email: lmshires@mymail.syr.edu
+  :username: lmshires
+  :fullname: Linda Shires
+- :pwhash: dc62a1aa8bd8849ba535a0cdd4f49ae10f3e41b1
+  :email: marthabrogan@sbcglobal.net
+  :username: mbrogan
+  :fullname: Martha Brogan
+- :pwhash: 5a7039fe6870abfc75d242c87d41208930ed38d2
+  :email: ttorres@umd.edu
+  :username: TTorres
+  :fullname: Tanya Torres
+- :pwhash: 3b8711c961f5825e79914fc2759a41a3984e4d09
+  :email: bill.sloan@comcast.net
+  :username: bsloan
+  :fullname: Bill Sloan
+- :pwhash: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
+  :email: ttorres@umd.edu
+  :username: LBSC708Y
+  :fullname: Tanya and Justin
+- :pwhash: 7c624fd907bc9c23302bf365e9aec176d2396211
+  :email: obuteux@up.univ-mrs.fr
+  :username: olivierbuteux
+  :fullname: Olivier BUTEUX
+- :pwhash: a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+  :email: esh6h@virginia.edu
+  :username: erik
+  :fullname: Erik

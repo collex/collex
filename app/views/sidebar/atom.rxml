@@ -1,0 +1,37 @@
+xml.instruct! :xml, :version=>"1.0", :encoding=>"UTF-8"
+xml.feed "xml:lang" => "en-US", "xmlns" => 'http://www.w3.org/2005/Atom' do
+  xml.title "Collex"
+  xml.subtitle "tags", "type"=>"html"
+  xml.id "tag:#{@controller.request.host},2006:Collex"
+  xml.generator "Collex", :uri => "http://www.patacriticism.org", :version => '4.0'
+  xml.link "rel" => "self", "type" => "application/xml+atom", "href" => url_for(:only_path => false)
+  xml.link "rel" => "alternate", "type" => "text/html", "href" => url_for(:only_path => false, :controller=>'sidebar', :action => 'list', :type=>params[:type], :value => params[:value])
+
+#  xml.updated @items.first.updated_at.xmlschema unless @items.empty?  # 2003-12-13T18:30:02Z
+
+  @items['hits'].each do |item|
+    xml.entry do
+      xml.author do
+        name = item['agent']
+        xml.name name
+      end
+      xml.id item['subject']
+
+      #    xml.issued item.created_at.xmlschema
+      #    xml.modified item.updated_at.xmlschema
+      xml.title item['title']
+
+      xml.link "rel" => "alternate", "type" => "text/html", "href" => url_for(:controller => 'sidebar', :action => 'permalink', :objid => item['uri'], :view => 'detail')
+
+      #    for category in item.categories
+      xml.dc :subject, "category.name"
+      #    end
+      #    for tag in item.tags
+      xml.dc :subject, "tag.name"
+      #    end
+
+      content = item['title']
+      xml.content content, "type"=>"text/html", "mode"=>"escaped"
+    end
+  end
+end

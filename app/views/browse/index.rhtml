@@ -1,0 +1,8 @@
+Page: <%= @params[:page] %>
+<ul>
+<% @results.each do |result| %>
+  <li><%= h result[:subject] %>: <%= h result[:title] %></li>
+<% end %>
+</ul>
+
+<%= link_to "Next", :page => @page_number + 1%>

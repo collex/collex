@@ -1,0 +1,47 @@
+#whitman:
+#   url: http://www.whitmanarchive.org
+#   description: The Whitman Archive
+   
+rossetti:
+   url: http://www.rossettiarchive.org
+   description: The Rossetti Archive
+
+swinburne:
+   url: http://www.letrs.indiana.edu/swinburne
+   description: The Swinburne Project
+
+poetess:
+   url: http://www.orgs.muohio.edu/womenpoets/poetess/
+   description: The Poetess Archive
+
+rc:
+   url: http://www.rc.umd.edu/
+   description: Romantic Circles Praxis
+
+whitbib:
+   url: http://www.whitmanarchive.org/bibliography/
+   description: Whitman Bibliography
+
+chesnutt:
+   url: http://www.chesnuttarchive.org
+   description: Chesnutt Archive
+   
+bwrp:
+    url: http://digital.lib.ucdavis.edu/projects/bwrp/
+    description: British Women Romantic Poets
+
+bierce:
+    url: http://www.ambrosebierce.org/main.html
+    description: The Ambrose Bierce Project
+
+victbib:
+    url: http://www.letrs.indiana.edu/web/v/victbib
+    description: Victorian Studies Bibliography
+
+#blake:
+#    url: http://www.blakearchive.org
+#    description: The William Blake Archive
+
+#cbw:
+#    url: http://etext.lib.virginia.edu/WomensBios/
+#    description: Collective Biographies of Women

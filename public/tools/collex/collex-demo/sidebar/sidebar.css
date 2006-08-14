@@ -1,0 +1,234 @@
+	body {
+		text-align: center;
+		background-color: #666;
+		}
+	#set {
+		line-height: 1.3;
+		margin-top: 10px;
+		min-width: 580px;
+		width:expression(document.body.clientWidth < 580? "580px": "auto" );
+		margin-left: 8px;
+		margin-right: 8px;
+		}	
+	#sidebar {
+		max-width: 320px;
+		min-width: 240px;
+		width:expression(document.body.clientWidth < 240? "240px": "auto" );
+		float: left;
+		margin-left: 0;
+		margin-right: 0;
+		background-color: #dcdcdc;
+		text-align: center;
+		clear: right;
+		}
+	#exhibit {
+		border: 1px solid #A60000;
+		margin-top: 1px;
+		float: right;
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+		background-color: #999;
+		color: #fff;
+		}
+	.search {
+		background-color: #730000;
+		border-top: 15px solid #A60000;
+		}
+	.browsetags {
+		background-color: #730000;
+		font-size: 1.2em;
+		padding-bottom: .1em;
+		letter-spacing: .2em;
+		}
+	.browsetags a:link { color: #fff; text-decoration: none; }
+	.browsetags a:visited { color: #fff; text-decoration: none; }
+	.browsetags a:hover { color: #fff; text-decoration: none; }
+	.browsetags:hover {
+		/*background-color: #666;*/
+		/* this is here to remind me that I want to do this complicated thing with changing the border color of the search class and the bgcolor of the browsetags div when users mouse over the a link inside browsetags.  Whew. */
+		}
+	.search input {
+		margin-top: -20px;
+		vertical-align: super;
+		text-align: center;
+		font-family:  courier, american typewriter, verdana, fixed-width;
+		font-weight: bold;
+		letter-spacing: 1px;
+		}
+	.content {
+		border-right: 1px solid #A60000;
+		}
+	.tagname {
+		font-family: courier, courier new, american typewriter, verdana, fixed-width;
+		font-size: 1.8em;
+		color: #000;
+		line-height: 1.8em;
+		}
+	.tagcloud {
+		text-align: center;
+		padding: 1em .4em 1em .4em;
+		max-width: 220px;
+		min-width: 220px;
+		width:expression(document.body.clientWidth < 220? "220px": "auto" );
+		margin-right: auto;
+		margin-left: auto;
+		}
+	.item {
+		padding: .6em;
+		color: #000;
+
+		}
+	.item img {
+		width: 125px;
+		height: 125px;
+		border: 1px dotted #730000;
+		margin: 0 1em 0 1em;
+		}
+	.item img:hover {
+		border: 1px solid #A60000;
+		/* this is to remind me to work on tying this image border to hovering on the title link */		
+		}
+	.likethis {
+		color: #F0EDE6;
+		/*padding-left: 7%;*/
+		/*padding-right: 6%;*/
+		background-color: #730000;
+		}
+	.likethis a:link { color: #fff; text-decoration: none; }
+	.likethis a:visited { color: #fff; text-decoration: none; }
+	.likethis a:hover { color: #fff; text-decoration: none; }
+	.notes {
+		padding: .6em .2em .2em .2em;
+		font-family:  courier, american typewriter, verdana, fixed-width;  
+		margin: 0;
+		}
+	.more {
+		margin: 0 auto;
+		font-size: .9em;		
+		}
+	.more td {
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+		}
+	.more td:hover {
+		background-color: #A60000;
+		}
+	.more tr:hover {
+		background-color: #730000;
+		}
+	.more img {
+		margin-right: 0px;
+		height: 50px;
+		width: 50px;
+		}
+	.offsite {
+		height: .8em;
+		width: .8em;
+		border: 0;
+		}
+	.rdf {
+		font-size: .9em;
+		/* need better way to prevent the sidebar from expanding when long lines of text appear here */
+		max-width: 220px;
+		min-width: 220px;
+		width:expression(document.body.clientWidth < 220? "220px": "auto" );
+		}
+.cloud1 {
+   font-size: 12px;
+}
+
+.cloud2 {
+   font-size: 15px;   
+}
+
+.cloud3 {
+   font-size: 16px;
+}
+
+.cloud4 {
+   font-size: 19px;
+}
+
+.cloud5 {
+   font-size: 21px;
+}
+
+.cloud6 {
+   font-size: 23px;
+}
+
+.cloud7 {
+   font-size: 25px;
+}
+
+.cloud8 {
+   font-size: 27px;   
+}
+
+.cloud9 {
+   font-size: 29px;
+}
+
+.cloud10 {
+   font-size: 36px;
+}
+	table {
+		padding: 5px;
+		padding-right: 0;
+		margin-left: auto;
+		margin-right: 0;
+		font-size: .8em;
+	}
+	.title {
+		text-transform: none;
+		font-size: 1em;
+	}
+	td {
+		max-width: 200px;
+		padding: 2px;
+		padding-right: 0;
+		padding-top: .2em;
+		padding-bottom: .6em;
+	}
+	td img {
+		border: 1px dotted #730000;
+	}
+
+	tr:hover {
+		background-color: #F0EDE6;
+		}
+	tr:hover img {
+		border: 1px solid #A60000;
+		}
+	td a.image:hover {
+		background-color:#F0EDE6;
+		}
+	tr:hover img.offsite {
+		border: 0;
+		}
+	.pagination {
+		font-size: .8em;
+		}
+	caption {
+		color: #dcdcdc;
+		padding: .2em;
+		text-transform: uppercase;
+		margin-bottom: -1em;
+		letter-spacing: .2em;
+		}
+	.inyourcoll caption {
+		color: #000;
+		padding: .2em;
+		text-transform: uppercase;
+		margin-bottom: 0;
+		letter-spacing: .2em;
+		}
+	.allofnines caption {
+		color: #000;
+		padding: .0em;
+		text-transform: none;
+		margin-bottom: 0;
+		letter-spacing: .2em;
+		}

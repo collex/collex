@@ -1,0 +1,21 @@
+<div class="sidelogin">
+<div class="pagination" style="margin-bottom:1em;padding:.6em"><span class="emph2">C O L L E X</span></div>
+<% if @flash[:notice] -%> 
+<div id="notice"><%= @flash[:notice] %></div>
+<% end %>
+<%= form_tag :controller => "login", :action => "login" %> 
+<table> 
+<tr> 
+<td>user name:</td> 
+<td><%= text_field_tag("username") %></td> 
+</tr> 
+<tr> 
+<td>password:</td> 
+<td><%= password_field_tag %></td> 
+</tr> 
+<tr> 
+<td colspan="2"><input type="submit" value=" log in " /></td> 
+</tr> 
+</table> 
+<%= end_form_tag %> 
+</div>

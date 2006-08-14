@@ -1,0 +1,12 @@
+<html>
+   <body>
+      <h1><%=@url%></h1>
+      <% if @error %><font color="red"><b>Error:</b></font> <pre><%=h @error%></pre><% end %>
+      <% if @result %>
+      <p><b>Parsed successfully!</b>  Below are the triples represented in your RDF.  A more humane view, along the lines of the 9s/collex
+      view is forthcoming.</p>
+      <hr/>
+         <%= h @result.inspect %>
+      <% end %>
+   </body>
+</html>

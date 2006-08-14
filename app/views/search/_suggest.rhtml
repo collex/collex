@@ -1,0 +1,19 @@
+<ul class="cookies">
+<%
+@values.each do |value|
+    constraint_exists = false
+    session[:constraints].each do |constraint|
+      if @field == constraint[:field] and value[0] == constraint[:value]
+        constraint_exists = true
+        break
+      end
+    end
+    
+    if not constraint_exists
+%>
+   <li class="cookie"><span class="informal">&nbsp;</span><%=value[0]%><span class="informal"> (<%=value[1]%>)<br/></span></li>
+<%
+   end 
+end
+%>
+</ul>

@@ -1,0 +1,14 @@
+<html>
+   <head>
+      <title>NINES Developer Tools</title>
+   </head>
+   <body>
+<p><i>Note:</i> You may wish to use the <a href="http://www.w3.org/RDF/Validator/">w3C RDF Validator</a> to see a graph of your RDF as well.</p>
+<p>Please paste your RDF below</p>
+      <%= start_form_tag :action => :parse -%>
+         <%= text_area_tag :rdf, params[:rdf], {:rows => '20', :cols => '150'} -%>
+         <p>-or enter a URL-</p> <%= text_field_tag :url, params[:url] -%>
+         <%= submit_tag "parse" -%>
+      <%= end_form_tag -%>
+   </body>   
+</html>

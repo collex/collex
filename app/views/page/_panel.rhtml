@@ -1,0 +1,9 @@
+<span id="panel-<%=panel.id%>" class="panel">
+  <span class="panel-text" ondblclick="edit(this);">
+    <% if panel.text %><%=panel.text%><% else %>Lorem Ipsum...<% end %>
+  </span>  
+</span>
+<% if panel.image_url %>
+  <img src="<%=panel.image_url%>" height="20%"/>
+<% end %>
+<!-- <a href="#" onclick="collectionBrowser(<%=panel.id%>)">+</a> -->

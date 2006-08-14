@@ -1,0 +1,290 @@
+	<div class="pagination">
+		<div id="navcontainer2">
+			<ul id="navlist2">
+				<li class="active"><a id="current" title="header=[you are here] body=[collect: locate and annotate digital resources] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">SEARCH &amp; BROWSE</a></li>
+				<li><a style="cursor:default" title="header=[coming soon] body=[contribute: create and publish your own online exhibits] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">BUILD EXHIBITS</a></li>
+			</ul>
+		</div>  <br class="clearboth" />
+	</div>
+	
+    <table class="constables" cellspacing="0">
+	<tr colspan="2">
+		<td width="49%" valign="top" align="center">
+    
+    <table id="myconstraints" class="constraints" cellspacing="0">  
+        <caption>your constraints</caption>
+        <% if session[:constraints] && session[:constraints].size > 0 %>
+        <% session[:constraints].each_with_index do |constraint,index|
+            value_display = constraint[:value]
+            if constraint[:field]=="archive"
+              if ARCHIVES[constraint[:value]]
+                value_display = ARCHIVES[constraint[:value]]['description']
+              end
+            end
+        %>
+              <% if constraint[:expression] %>
+              <tr>
+                <th align="left">phrase:</th>
+                 <td><%=h constraint[:expression]%></td>
+                <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
+              </tr>
+              <% else %>
+              <tr>
+                 <th align="left"><%=facet_label(constraint[:field])%>:</th>
+                 <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h value_display%></td>
+                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
+              </tr>
+              <% end %>
+
+           <% end %>
+           <tr>
+             <th align="left">&nbsp;</th>
+             <td>&nbsp;</td>
+             <td align="center"><%= link_to "clear all", {:controller=>'search', :action => 'clear_constraints'}%>                     
+           </tr>
+           <% else %>
+             <tr>
+                <th>&nbsp;</th>
+                <td align="center">none added yet</td>
+                <td>&nbsp;</td>
+             </tr>
+           <% end %>
+         </table> 
+         
+        <% if session[:constraints].size > 0  %>
+        <br /><p class="matchpoint"><span class="resultsbutton"><a href="#results"> <%=@results["total_hits"]%> matches</a></span>
+	
+            <%= image_tag "arrow2.gif" %></p>
+           <% else %>
+		<p class="logofade"><br /><img width="120px" src="/images/lg-harrington.gif" /></p> 
+        <% end %>
+       
+        <% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
+          <p class="matchpoint">No NINES objects fit your constraints.  Try removing constraints or toggling one from negative to positive.</p>
+        <% end %>
+
+</td>
+<td width="50%" valign="top">
+        
+        <%= render :partial => 'facets' %>
+</td>
+</tr>
+</table> <!-- closing constables -->
+
+<div id="under">
+         
+<% if session[:constraints].size > 0 %>
+
+<% if @num_pages > 0 %>
+<a name="results"></a>
+    <br class="clearboth" />    
+
+	
+     <div class="pagination">
+     <% if @page > 1 %>
+       <%= link_to "<< previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
+     <% end %>
+           <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
+    <% if @page < @num_pages %>
+      <%= link_to "next page >>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
+    <% end %>
+     </div>
+
+<script>
+function displayCollector(id, uri, event)
+{
+  // reset the display properties for the status
+  Effect.Fade('collect-status', { duration: 0.0 });
+  Effect.Fade('collected', { duration: 0.0 });
+
+  new Effect.Appear('collectformarea', { duration: 0.5 }); 
+  showCollector(uri, event); 
+
+  // give focus to the tag field
+  if (document.forms['collectform'] && document.forms['collectform'].collector_tag)
+  {
+    setTimeout("document.forms['collectform'].collector_tag.focus()",100);
+  }
+}
+</script>
+
+        <table class="results" border="0" cellspacing="0">
+           
+        <% @results["hits"].each_with_index do |hit,index| %>
+			<tr><td  valign="top" >
+				<table border="0">
+              <tr>
+               <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
+                <% if hit["uri"] %>
+                  <a class="thumb" href="#" onclick="<%= %Q/displayCollector('collectformarea', '#{hit["uri"]}', event); return false;/%>">
+                   <% if hit["thumbnail"] %>
+                     <img align="left" src="<%= hit["thumbnail"]%>"/>
+                   <% else %>
+                     <%= image_tag "/images/harrington.gif", :align => 'left', :alt => "no thumbnail available"%>
+                   <% end %>
+                </a>
+                <% else %>
+                    <% if hit["thumbnail"] %>
+                      <img align="left" src="<%= hit["thumbnail"]%>"/>
+                    <% else %>
+                      <%= image_tag "/images/harrington.gif", :align => 'left', :alt => "no thumbnail available"%>
+                    <% end %>
+                <% end %>
+				 </td></tr>
+					 <tr><td rowspan="1" class="collected" valign="top" align="left"  width="100">
+
+	                <span id="collectlink-<%=index%>" class="collectlink">
+                         <%= link_to_function "collect", "displayCollector('collectformarea', '#{hit["uri"]}', event);" -%> 
+	                </span> 
+	               </td>
+				</tr>
+				</table></td>
+
+
+               <td>
+                <table border="0">
+                 <tr>
+                  <td colspan="2">
+                <% if hit["url"] %>
+                  <a target="_blank" href="<%= hit["url"][0] %>">
+                     <% if hit["title"]%><%= h hit["title"][0] %><%end%>
+                  </a>&nbsp;&rarr;
+                <% else %>
+                  <% if hit["title"]%><%= h hit["title"][0] %><%end%>
+                <% end %>
+                
+                <div class="snippet">
+                    <%=@results["highlighting"][hit["uri"]]["text"]%>
+                </div>
+               </td>
+              </tr>
+				
+                <% if hit["source"]
+                   first_source = true
+                   hit["source"].each do |source|
+                %>
+            <tr>
+             <td class="grey" valign="top">
+                  <% if first_source == true then
+                  %>
+              source:
+                  <% first_source = false
+                     end
+                  %>
+             </td>
+             <td>
+                  <%=h source%> 
+                <% end
+                %>
+             </td>
+            </tr>
+                <% end
+                %>
+              <tr>
+               <td class="grey">
+                site:
+               </td>
+               <td width="100%">
+                <% if hit['archive']%>
+                <% if ARCHIVES[hit['archive']]%><a target="_blank" href="<%= ARCHIVES[hit['archive']]['url'] %>"> <%=ARCHIVES[hit['archive']]['description']%></a>&nbsp;&rarr; <% else %><%= hit['archive']%><% end %>
+                <% end %>
+               </td>
+              </tr>
+                  <% if hit["agent"]
+                     first_agent = true
+                     hit["agent"].each do |agent|
+                  %>
+              <tr>
+               <td class="grey">
+                    <% if first_agent == true then
+                    %>
+                name: 
+                    <% first_agent = false
+                       end
+                    %>
+               </td>
+               <td>
+                <%=h agent%>
+                  <% end %>
+               </td>
+              </tr>
+                  <% end %>
+                  <% if hit["date_label"]
+                     first_date = true
+                     hit["date_label"].uniq.each do |date|
+                  %>
+              <tr>
+               <td class="grey">
+                    <% if first_date == true then
+                    %>
+                date:
+                    <% first_date = false
+                       end
+                    %>
+               </td>
+               <td>
+                    <%=h date%>
+                  <% end
+                   %>
+               </td>
+              </tr>
+                  <% end
+                   %>
+                  <% if hit["genre"]
+                     first_genre = true
+                     hit["genre"].each do |genre|
+                  %>
+              <tr>
+               <td class="grey">
+                    <% if first_genre == true then
+                    %>
+                genre:
+                    <% first_genre = false
+                       end
+                    %>
+               </td>
+               <td>
+                    <%=h genre%> <%= link_to nbpluralize(@results['facets']['genre'][genre], 'item'), {:controller=>'search', :action => 'add_facet', :field => 'genre', :value => genre}%>
+                  <% end
+                  %>
+               </td>
+              </tr>
+                  <% end
+                  %>
+
+
+                </table>
+	</tr>
+           <% end %>
+       </table>
+    <br class="clearboth" />
+     <div class="pagination" style="background-color:#fff">
+     <% if @page > 1 %>
+       <%= link_to "<< previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
+     <% end %>
+           <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
+    <% if @page < @num_pages %>
+      <%= link_to "next page >>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
+    <% end %>
+     </div>
+
+<% end # if @num_pages > 0 %>
+<% end # if session[:constraints].size > 0 %>
+
+     <div id="footer" style="text-align:center">
+         <% if session[:constraints].size == 0 -%>
+           <a href="http://www.nines.org">NINES</a>: aggregating 
+         <% else -%>
+        <%= start_form_tag({:action => :new_expression}, :id=>'footer-search') -%>
+              start fresh! <%= text_field_tag "field[content]", "new search", :onFocus=>"this.value=''" -%>&nbsp;
+<span class="emph2"><span class="button"><%= link_to_function "Go!", "document.forms['footer-search'].submit();" -%></span></span>&nbsp;or&nbsp;&nbsp;
+<span class="emph2"><span class="button"><%=link_to "BROWSE", :controller=>'search', :action=>'clear_constraints' -%></span></span> &nbsp; 
+        <% end -%>
+<%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;on&nbsp;<%=ARCHIVES.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
+         <% if session[:constraints].size != 0 -%>
+            <%= end_form_tag -%>
+        <% end -%>
+     </div>
+	<!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
+	<div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
+	</div> <!-- closing id "under" -->

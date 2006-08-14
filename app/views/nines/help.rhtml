@@ -1,0 +1,48 @@
+<div class="popup">
+<div class="pagination" style="margin-bottom:1em"><span class="emph2">how to...?</span></div>
+
+<ul style="float:right"><li><a href="#browse">search &amp; browse</a> NINES</li>
+	<li><a href="#collex">get started</a> with Collex</li>
+	<li><a href="#collect">collect &amp; annotate</a></li>
+	<li><a href="#explore">explore</a> collections</li>
+	<li><a href="#help">ask questions</a></li>
+</ul>
+
+<p><a name="browse"></a><span class="emph2">search and browse</span><br />Narrow the field of NINES objects by adding constraints in our faceted browser.  Each object has one or more associated <span class="emph3">names</span> (authors, editors, artists, etc.), <span class="emph3">genres</span>, and <span class="emph3">dates</span>.  Dates in the NINES pilot are presently limited to four-digit years.  Objects in NINES are also browseable by contributing <span class="emph3">sites</span>, such as electronic journals or archives.</p>
+
+<p>Finally, you may constrain objects by adding <span class="emph3">phrases</span> or text strings to your search.  Full text searching is available for many objects in the system, but you may search for text strings in the metadata of all NINES objects.  For exact phrases, encase your query in quotation marks.  You may also use the Boolean operators AND, OR, and NOT.  An asterisk serves as a wildcard symbol.</p>
+
+<p>When you add a constraint, it appears in the "your constraints" table to the left, and can be removed or toggled from positive to negative there.  A positive constraint (the default) narrows your field of consideration to all objects with the given value.  A negative constraint also narrows the range of possibilities, but this time to all objects that <i>lack</i> the given value.  Once you've added a constraint, you may toggle it from positive to negative by clicking the plus or minus signs to the left of the value.  Adding a constraint triggers an update in the "constrain further" table to the left, in which all values are re-calculated in light of your current constraint set.  In other words, you only see valid choices listed under "constrain further."
+</p>
+
+<p>&nbsp;</p>
+
+<p><a name="collex"></a><span class="emph2">get started with Collex</span><br />  Collex is the social-software component of NINES, a semantic collections and exhibits builder that operates with NINES peer-reviewed resources. With Collex, you can <span class="emph3">collect</span> digital objects, and <span class="emph3">annotate</span> and <span class="emph3">tag</span> them.  By late 2006, you'll be able to remix your collections into custom online <span class="emph3">exhibits</span> and other print and digital output formats.</p>
+<p>Use the "collex" button on the NINES pilot page to create a new Collex account or access your existing collections.</p>
+
+<p>&nbsp;</p>
+
+<p><a name="collect"></a><span class="emph2">collect and annotate objects</span><br />  In order to collect objects, you need an account on the system (sign up at the "login" link at the top of the sidebar) and a Collex bookmarklet.  This is a javascript link which you click and drag up to the menu bar of your web browser: 
+<blockquote><span class="emph3">
+<a href="javascript:fs=window.frames;u='';for(var%20i=0;i<fs.length;i++){u+='&url'+i+'='+escape(fs[i].location);}u+='&url='+escape(window.location);void(open('http://www.nines.org<%=url_for({:controller=>'collection', :action=>'collect'})%>?title='+escape(document.title)+u,'collex',%20'toolbar=no,width=700,height=400,scrollbars=yes,resizable=yes'));" title="header=[drag this bookmarklet] body=[click and drag this 'Collex' link up to your web browser's menu bar to install a shortcut for collecting &amp; annotating objects] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">COLLEX</a>
+</span> &#8617; drag and drop!</blockquote>
+Drop it in your menu bar, and your browser is ready.  (On Internet Explorer, you may need to right-click this link and save it as a "favorite" or bookmark.)</p>
+<p>Now you can use the NINES faceted browser to locate and browse to digital objects that have been prepared for collection, annotation, and reuse in Collex.  (Or you can collect objects directly from the pages of participating NINES pilot contributors, without going through the faceted browser.  Chances are, you'll find some Collex-able objects on every page!)  
+
+<p>Simply <span class="emph3">browse</span> to the web page on which your desired objects are found, and <span class="emph3">activate</span> the Collex bookmarklet.</p>
+
+<p>Collex presents you with a list of all objects on the page which are available for collection, tagging, and annotation.  Start annotating objects and assigning one-word, free-form <span class="emph3">"tags"</span> to the objects you want to collect. (These tags are your opportunity to classify objects according to your own interpretive needs.  Think of them as "folders" in which you store objects &mdash; with the added advantage that an object can exist simultaneously in as many folders as you like!)  Later, you'll have the opportunity to see how other users have tagged shared objects.  When you're ready, press the <span class="emph3">"collect"</span> button to save your work.
+
+<p>&nbsp;</p>
+
+<p><a name="explore"></a><span class="emph2">explore collected objects</span><br />  All the objects that you and other users have collected from NINES federated sites are visible in your Collex <span class="emph3">sidebar</span>.  You can browse objects using a weighted list or "cloud" visualization, which shows the frequency of user-created tags or NINES facets in terms of font size.  (The larger the typeface, the more frequently the tag, date, agent, site, or genre appears in Collex.)  You can access clouds, list views, and full views of collected objects.</p>
+
+<p>For each full view of a collected object, Collex offers <span class="emph3">"more like this."</span>  This is a way of using object metadata to enhance research serendipity.  Currently, "more like this" can suggest resources that share a metadata facet with your collected object: a common date or genre, for instance. Soon, Collex will also factor in other users' tags, inherent textual similarities, and the appearance of objects in user-created online exhibits when making research suggestions.</p>
+
+<p>This feature and a planned Collex exhibits maker will be online by next Spring.</p>
+
+<p>&nbsp;</p>
+
+<p><a name="help"></a><span class="emph2">ask questions &amp; report problems</span><br />  NINES and Collex are work in progress, and we greatly appreciate bug reports and opportunities to discuss the tools.  Feel free to contact us at <a href="mailto:technologies@nines.org">technologies@nines.org</a>.
+</div>
+<p style="margin-bottom:20em">&nbsp;</p>

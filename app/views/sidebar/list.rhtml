@@ -1,0 +1,49 @@
+<%
+display = params[:value]
+if (params[:type]=="archive")
+  display = ARCHIVES[display] ? ARCHIVES[display]['description'] : display
+end
+%>
+<div class="topnav">
+  <div class="search"><%= start_form_tag :controller=>'search', :action => :new_expression -%><%= text_field_tag "field[content]", "search", :onFocus=>"this.value=''" -%>&nbsp;<%= end_form_tag -%></div>
+  <div class="browsetags"><%= link_to_remote "BROWSE #{params[:type].upcase}S", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'cloud', :type => params[:type]}%></div>
+</div>
+
+<div class="content">
+    <br/><span class="listtype"><%=display%><%=link_to image_tag('/images/feed.png', :class => 'feed', :title => "header=[syndicated feed] body=[use a newsreader to subscribe to updates to this tag] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), :controller => "sidebar", :action=>"atom", :type => params[:type], :value => params[:value], :user => params[:user]%><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :type => params[:type], :value => params[:value], :user => params[:user], :view => "list"}, {:target => "_blank"}%></span><br /><br/>
+
+<%=link_to_remote(params[:user] ? "MINE/all" : "mine/ALL", {:update => "sidebar", :url => {:controller=>"sidebar", :action=>"list", :user => params[:user] ? nil : (is_logged_in? ? session[:user][:username] : "<mine>"), :type => params[:type], :value => params[:value]}}, {:class => 'button'})%>
+
+<div class="tagcloud">
+<% if @data['hits'].size == 0 && params[:user] %>
+  <%= me? ? "You haven't" : "#{params[:user]} hasn't" %>  used this <%=params[:type]%>, but <%= link_to_remote "others", :update => "sidebar", :url => {:controller => 'sidebar', :action => 'list', :params => {:user => nil, :type => params[:type], :value => params[:value]}} %> may have.
+<% end %>
+
+<table cellspacing="0">
+<% @data['hits'].each do |result|
+    image_link = result['thumbnail'] ? result['thumbnail'] : image_path("harrington.gif")
+%>
+    <tr>
+      <td align="center">
+        <!-- image_tag(image_link, :class=>"image") -->
+     <%= link_to_remote "<img src='#{image_link}' class='image'>", {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"}%>   
+         
+      </td>
+      <td>
+        <span class="title">
+            <%= link_to_remote h(result['title'] ? result['title'] : "<untitled>"), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);" %></span><br/>
+            <%= h result['date_label'] %><br/><%= h comma_separate(result['agent'])%><br/>
+            <%= h comma_separate(result['genre'])%><br/>
+            <% if ARCHIVES[result[:archive]]%><a href="<%= ARCHIVES[result['archive']]['url'] %>"> <%=ARCHIVES[result['archive']]['description']%></a> &rarr; <% else %><%= result[:archive]%><% end %>
+      </td>
+
+    </tr>
+<% end %>  
+</table>
+</div>
+   
+<div class="cloudfooter">
+      <!-- <a href="/search?page=1">&lt;&lt;</a> &nbsp;&nbsp; --> <span class="emph2"> <%= pluralize(@data['total_hits'], "object", "objects") -%></span> <!-- &nbsp;&nbsp; <a href="/search?page=3">&gt;&gt;</a> -->
+</div>
+
+</div>
