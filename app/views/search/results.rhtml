@@ -193,6 +193,7 @@ function displayCollector(id, uri, event)
                   <% 
                      first_agent = true
                      hit.select {|key,value| key =~ /^role_/}.each do |agent|
+                         agent[1].each do |name|
                   %>
               <tr>
                <td class="grey">
@@ -204,9 +205,9 @@ function displayCollector(id, uri, event)
                     %>
                </td>
                <td>
-                   <%=h comma_separate(agent[1]) %>
+                   <%=h name %>
                    (<%=h COLLEX_MANAGER.relators[agent[0][-3,3]]%>)
-                  <% end %>
+                  <% end end %>
                </td>
               </tr>
                   <% if hit["date_label"]
