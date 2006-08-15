@@ -11,10 +11,10 @@
 
          <span class="listtype" style="float:right"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :objid => params[:objid], :view => "detail"}, {:target => "_blank"}%></span><% if @object['url'] %><a target="_blank" href="<%=@object['url']%>" style="font-size:1.1em"><% end %><img src="<%= @object['thumbnail'] ? @object['thumbnail'] : image_path("harrington.gif")%>"/><% if @object['url'] %></a><% end %>
 
-<!--        <span class="text" style="float:right;font-size:1.4em"> <a href=""> &gt;&gt; </a> </span> <br> -->
+<!--        <span class="text" style="float:right;font-size:1.4em"> <a href=""> &gt;&gt; </a> </span> <br/> -->
 
         <div class="rdf">
-        <% if @object['url'] %><a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><% end %><%= h @object['title'] ? @object['title'] : "<untitled>" %><% if @object['url'] %></a> &rarr;<% end %><br>
+        <% if @object['url'] %><a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><% end %><%= h @object['title'] ? @object['title'] : "<untitled>" %><% if @object['url'] %></a> &rarr;<% end %><br />
         <% if @object['year']
            @object['year'].each do |year|%>
           <%= link_to_remote year, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => 'year', :value => year}  %>

@@ -26,7 +26,7 @@ end
     <tr>
       <td align="center">
         <!-- image_tag(image_link, :class=>"image") -->
-     <%= link_to_remote "<img src='#{image_link}' class='image'>", {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"}%>   
+     <%= link_to_remote "<img src='#{image_link}' class='image'/>", {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"}%>   
          
       </td>
       <td>
