@@ -204,7 +204,8 @@ function displayCollector(id, uri, event)
                     %>
                </td>
                <td>
-                <%=h agent[1]%> (<%=h COLLEX_MANAGER.relators[agent[0][-3,3]]%>)
+                   <%=h comma_separate(agent[1]) %>
+                   (<%=h COLLEX_MANAGER.relators[agent[0][-3,3]]%>)
                   <% end %>
                </td>
               </tr>
