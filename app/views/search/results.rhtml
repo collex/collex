@@ -190,9 +190,9 @@ function displayCollector(id, uri, event)
                 <% end %>
                </td>
               </tr>
-                  <% if hit["agent"]
+                  <% 
                      first_agent = true
-                     hit["agent"].each do |agent|
+                     hit.select {|key,value| key =~ /^role_/}.each do |agent|
                   %>
               <tr>
                <td class="grey">
@@ -204,11 +204,10 @@ function displayCollector(id, uri, event)
                     %>
                </td>
                <td>
-                <%=h agent%>
+                <%=h agent[1]%> (<%=h COLLEX_MANAGER.relators[agent[0][-3,3]]%>)
                   <% end %>
                </td>
               </tr>
-                  <% end %>
                   <% if hit["date_label"]
                      first_date = true
                      hit["date_label"].uniq.each do |date|
