@@ -42,7 +42,7 @@ class Solr
   
   def search(constraints, start, max)
     # http://localhost:8983/solr/select?rows=20&ff=genre&ff=archive&start=0&constraint=type:A&constraint=?:"blessed%20damozel"&constraint=archive:rossetti&constraint=genre:Poetry&fl=title,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&qt=facet&highlight=on&highlightFields=text
-    post_data = "fl=title,genre,year,date_label,archive,uri,url,archive,thumbnail,source,role_*&start=#{start}&rows=#{max}&qt=facet&ff=genre&ff=archive&wt=ruby&highlight=on&highlightFields=text"
+    post_data = "fl=archive,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&qt=facet&ff=genre&ff=archive&wt=ruby&highlight=on&highlightFields=text"
     post_data << encode_constraints(constraints)
     
     results = {}
