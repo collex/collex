@@ -81,7 +81,7 @@ class NinesCollectionManager
   end
 
   def cloud(type, user = nil)
-    @solr.facet(type, user ? [{:field => "username", :value => user}]: [{:field => "collected", :value => "collected"}])
+    @solr.facet(type, [{:field => "collected", :value => "collected"}], nil, nil, user)
   end
   
   def objects_by_type(type, value, user = nil)

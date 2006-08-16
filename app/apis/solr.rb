@@ -20,13 +20,17 @@ class Solr
     @num_docs
   end
   
-  def facet(facet, constraints, field=nil, prefix=nil)
+  def facet(facet, constraints, field=nil, prefix=nil, username=nil)
     # TODO clean up arguments.... facet parameter not really used in Solr when prefix/field specified
     post_data = "qt=facet&facet=#{facet}&wt=ruby"
     post_data << encode_constraints(constraints)
 
     if prefix and field 
       post_data << "&field=#{field}&prefix=#{prefix.downcase}"
+    end
+    
+    if username
+      post_data << "&username=#{username}"
     end
     
     raw_response = post_to_solr(post_data)
@@ -41,8 +45,7 @@ class Solr
   end
   
   def search(constraints, start, max)
-    # http://localhost:8983/solr/select?rows=20&ff=genre&ff=archive&start=0&constraint=type:A&constraint=?:"blessed%20damozel"&constraint=archive:rossetti&constraint=genre:Poetry&fl=title,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&qt=facet&highlight=on&highlightFields=text
-    post_data = "fl=archive,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&qt=facet&ff=genre&ff=archive&wt=ruby&highlight=on&highlightFields=text"
+    post_data = "qt=search&fl=archive,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&highlight=on&highlightFields=text"
     post_data << encode_constraints(constraints)
     
     results = {}
