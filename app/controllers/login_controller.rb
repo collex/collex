@@ -25,7 +25,7 @@ class LoginController < ApplicationController
       end 
     end
     
-    if session[:jumpto] =~ /\/collection\/collect/
+    if session[:jumpto] =~ /\/collection\/collect/ and not request.xhr?
       render :action => "standalone_login"
     end 
   end 
