@@ -54,7 +54,6 @@ end
 #ActiveRecord::Base.colorize_logging = false
 require 'soap/wsdlDriver'
 require 'rexml/document'
-ARCHIVES = File.open("#{RAILS_ROOT}/config/archives.yml") { |f| YAML::load(f) }
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
 CACHE_DIR = "#{RAILS_ROOT}/cache"

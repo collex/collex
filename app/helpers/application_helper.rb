@@ -35,7 +35,7 @@ module ApplicationHelper
      end
      display = value
      if (type=="archive")
-       display = ARCHIVES[value] ? ARCHIVES[value]['description'] : value
+       display = site(value) ? site(value)['description'] : value
      end
      link_to_remote display, {:update => "sidebar", :url => {:controller => 'sidebar', :action => 'list', :params => {:type => type, :value => value, :user => params[:user]}}}, html_options
   end
@@ -70,5 +70,9 @@ module ApplicationHelper
     else
       ""
     end
+  end
+  
+  def site(code)
+    Site.for_code(code)
   end
 end

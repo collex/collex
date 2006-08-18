@@ -96,7 +96,7 @@
               <td>
                 <span class="title"><%= h result["title"] %></span><br/>
                 source:
-                <%= ARCHIVES[result['archive']] ? ARCHIVES[result['archive']]['description'] : result['archive'] %><br/>
+                <%= site(result['archive']) ? site(result['archive'])['description'] : result['archive'] %><br/>
                 genres: <%= comma_separate(result['genre'])%> <br/>
                 agents: <%= comma_separate(result['agent'])%> <br/>
                 dates: <%= comma_separate(result['date_label'])%> 

@@ -17,8 +17,8 @@
         <% session[:constraints].each_with_index do |constraint,index|
             value_display = constraint[:value]
             if constraint[:field]=="archive"
-              if ARCHIVES[constraint[:value]]
-                value_display = ARCHIVES[constraint[:value]]['description']
+              if site(constraint[:value])
+                value_display = site(constraint[:value])['description']
               end
             end
         %>
@@ -186,7 +186,7 @@ function displayCollector(id, uri, event)
                </td>
                <td width="100%">
                 <% if hit['archive']%>
-                <% if ARCHIVES[hit['archive']]%><a target="_blank" href="<%= ARCHIVES[hit['archive']]['url'] %>"> <%=ARCHIVES[hit['archive']]['description']%></a>&nbsp;&rarr; <% else %><%= hit['archive']%><% end %>
+                <% if site(hit['archive'])%><a target="_blank" href="<%= site(hit['archive'])['url'] %>"> <%=site(hit['archive'])['description']%></a>&nbsp;&rarr; <% else %><%= hit['archive']%><% end %>
                 <% end %>
                </td>
               </tr>
@@ -281,7 +281,7 @@ function displayCollector(id, uri, event)
 <span class="emph2"><span class="button"><%= link_to_function "Go!", "document.forms['footer-search'].submit();" -%></span></span>&nbsp;or&nbsp;&nbsp;
 <span class="emph2"><span class="button"><%=link_to "BROWSE", :controller=>'search', :action=>'clear_constraints' -%></span></span> &nbsp; 
         <% end -%>
-<%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;on&nbsp;<%=ARCHIVES.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
+<%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;on&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
          <% if session[:constraints].size != 0 -%>
             <%= end_form_tag -%>
         <% end -%>

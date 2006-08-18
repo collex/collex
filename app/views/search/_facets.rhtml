@@ -21,8 +21,8 @@
           
           value_display = value
           if field=="archive"
-            if ARCHIVES[value]
-              value_display = ARCHIVES[value]['description']
+            if site(value)
+              value_display = site(value)['description']
             end
           end
           constraint_exists = false
