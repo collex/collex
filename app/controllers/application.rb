@@ -2,6 +2,9 @@
 # Likewise will all the methods added be available for all controllers.
 class ApplicationController < ActionController::Base
    include ExceptionNotifiable
+   
+   filter_parameter_logging "password"
+   
 #   local_addresses.clear  #uncomment to test e-mails locally in development mode
    
    layout "common"
