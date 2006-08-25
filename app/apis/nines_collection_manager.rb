@@ -17,7 +17,7 @@ class NinesCollectionManager
     
     user = User.find_by_username_and_password_hash(username, hashed_password)
     
-    return user ? {:username => user.username, :fullname => user.fullname, :email => user.email} : nil
+    return user ? user : nil
   end
   
   def create_user(username, password, fullname, email)

@@ -45,24 +45,36 @@ class SidebarController < ApplicationController
   end
   
   def detail
-     @object, @mlt, @collection_info = COLLEX_MANAGER.object_detail(params[:objid], session[:user] ? session[:user][:username] : nil)
+     user = session[:user]
+     @object, @mlt, @collection_info = COLLEX_MANAGER.object_detail(params[:objid], user ? user[:username] : nil)
+     if user
+       @interpretation = user.interpretations.find_by_object_uri(params[:objid]) || Interpretation.new
+     else
+       @interpretation = Interpretation.new
+     end
   end
 
   def update
-    COLLEX_MANAGER.update(session[:user][:username], params[:objid], params[:tags].downcase.split, params[:annotation])
+    user = session[:user]
+    COLLEX_MANAGER.update(user[:username], params[:objid], params[:tags].downcase.split, params[:annotation])
+    
+    interpretation = user.interpretations.find_by_object_uri(params[:objid])
+    if not interpretation
+      interpretation = user.interpretations.create(:object_uri => params[:objid])
+    end
+    interpretation.annotation = params[:annotation]
+    interpretation.tag_list = params[:tags]
+    interpretation.save
+    
     redirect_to :action => 'detail', :objid => params[:objid]
-  end
-  
-  def collect
-    # is this method used anymore???
-    collectables = {params[:objid] => {:tags => params[:tags].downcase.split, :annotation => params[:annotation]}}
-
-    COLLEX_MANAGER.add(session[:user][:username], collectables)
-#    redirect_to :action => 'detail', :objid => params[:objid]
   end
   
   def remove
     COLLEX_MANAGER.remove(session[:user][:username], params[:objid])
+    user = session[:user]
+    interpretation = user.interpretations.find_by_object_uri(params[:objid])
+    Interpretation.destroy(interpretation.id)
+    
     redirect_to :action => 'detail', :objid => params[:objid]
   end
   

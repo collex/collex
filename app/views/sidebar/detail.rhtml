@@ -34,24 +34,24 @@
         </div>
 
         <div class="notes">
-        <% if @collection_info['tags']
-            @collection_info['tags'].each do |tag| %>
-                   <%= link_to_list 'tag', tag %>
+        <% if @interpretation.tags
+            @interpretation.tags.each do |tag| %>
+                   <%= link_to_list 'tag', tag.name %>
                 <% end
                 end %>           
         <br/>
         
         <% if is_logged_in? %>
-        <%= form_remote_tag(:url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform'}) -%>
+        <%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform'}) -%>
           <%= hidden_field_tag :objid, params[:objid] -%>
-          <%= text_field_tag :tags, @collection_info['tags'] ? @collection_info['tags'].join(' ') : "" -%><br/>
+          <%= text_field_tag :tags, @interpretation.tag_list -%><br/>
               
-          <%= text_area_tag(:annotation, @collection_info['annotation'], :size => '22x8') -%><br/>
+          <%= text_area_tag(:annotation, @interpretation.annotation, :size => '22x8') -%><br/>
           <span class="emph2">
-              <% if  @collection_info['users'].include?(username) %>
+              <% if  not @interpretation.new_record? %>
                 <%=link_to_remote "remove", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
               <% end %>
-              <%= link_to_function @collection_info['users'].include?(username) ? "save" : "collect", "document.forms['dataform'].onsubmit()" %>
+              <%= link_to_function @interpretation.new_record? ? "collect" : "save", "document.forms['dataform'].onsubmit()" %>
           </span>
         <%= end_form_tag -%>
         <% else %>

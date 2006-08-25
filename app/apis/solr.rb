@@ -169,6 +169,16 @@ class Solr
     post_to_solr('<commit waitFlush="false" waitSearcher="false"/>', :update)  # TODO - solve the issue with optimization required - shouldn't be necessary
   end
 
+  def post_to_solr(body, mode = :search)
+    post = Net::HTTP::Post.new(mode == :search ? "/solr/select" : "/solr/update")
+    post.body = body
+    post.content_type = 'application/x-www-form-urlencoded'
+    response = Net::HTTP.start(@url.host, @url.port) do |http|
+      http.request(post)
+    end
+    return response.body
+  end
+
   private
   def encode_constraints(constraints)
     output = "&constraint=#{url_encode('type:A')}"
@@ -195,13 +205,4 @@ class Solr
     field
   end
   
-  def post_to_solr(body, mode = :search)
-    post = Net::HTTP::Post.new(mode == :search ? "/solr/select" : "/solr/update")
-    post.body = body
-    post.content_type = 'application/x-www-form-urlencoded'
-    response = Net::HTTP.start(@url.host, @url.port) do |http|
-      http.request(post)
-    end
-    return response.body
-  end
 end
