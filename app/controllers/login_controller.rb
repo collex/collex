@@ -55,7 +55,7 @@ class LoginController < ApplicationController
   def reset_password
     if request.post? and params[:username] and params[:username].size > 0
       user = COLLEX_MANAGER.reset_password(params[:username])
-      LoginMailer.deliver_password_reset(:controller => self, :user => user)
+      LoginMailer.deliver_password_reset(:controller => self, :user => user) if user
     end
   end
 

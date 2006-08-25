@@ -51,10 +51,13 @@ class NinesCollectionManager
   def reset_password(username)
     new_password = generate_password
     user = User.find_by_username(username)
-    user.password_hash = password_hash(new_password)
-    user.save
-    
-    {:username => username, :fullname => user.fullname, :email => user.email, :new_password => new_password}
+    if user
+      user.password_hash = password_hash(new_password)
+      user.save
+      return {:username => username, :fullname => user.fullname, :email => user.email, :new_password => new_password}
+    else
+      return nil
+    end
   end
   
   # Through the nines model, return objects that match the given URL, along with their title and thumbnail URL.
