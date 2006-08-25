@@ -211,22 +211,13 @@ function displayCollector(id, uri, event)
                </td>
               </tr>
                   <% if hit["date_label"]
-                     first_date = true
-                     hit["date_label"].uniq.each do |date|
                   %>
               <tr>
                <td class="grey">
-                    <% if first_date == true then
-                    %>
                 date:
-                    <% first_date = false
-                       end
-                    %>
                </td>
                <td>
-                    <%=h date%>
-                  <% end
-                   %>
+                    <%=h hit["date_label"].join('; ') %> 
                </td>
               </tr>
                   <% end
