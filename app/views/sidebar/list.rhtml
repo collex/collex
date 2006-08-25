@@ -32,7 +32,8 @@ end
       <td>
         <span class="title">
             <%= link_to_remote h(result['title'] ? result['title'] : "<untitled>"), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);" %></span><br/>
-            <%= h result['date_label'] %><br/><%= h comma_separate(result['agent'])%><br/>
+            <%= h comma_separate(result['date_label'])%><br/>
+            <%= h comma_separate(result['agent'])%><br/>
             <%= h comma_separate(result['genre'])%><br/>
             <% if site(result[:archive])%><a href="<%= site(result['archive'])['url'] %>"> <%=site(result['archive'])['description']%></a> &rarr; <% else %><%= result[:archive]%><% end %>
       </td>
