@@ -27,7 +27,8 @@ class Tag < ActiveRecord::Base
     #   # => [Tag, Tag, Tag]
     def find_or_create(tag_names)
       transaction do
-        found_tags = find(:all, :conditions => ['name IN (?)', tag_names])
+        found_tags = []
+        found_tags = find(:all, :conditions => ['name IN (?)', tag_names]) if not tag_names.empty?
         found_tags + (tag_names - found_tags.collect(&:name)).collect { |s| create!(:name => s) }
       end
     end
