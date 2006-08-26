@@ -42,7 +42,7 @@
         <br/>
         
         <% if is_logged_in? %>
-        <%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform'}) -%>
+        <%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :complete => "new Effect.Highlight('dataform');") -%>
           <%= hidden_field_tag :objid, params[:objid] -%>
           <%= text_field_tag :tags, @interpretation.tag_list -%><br/>
               
