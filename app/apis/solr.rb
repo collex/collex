@@ -20,6 +20,14 @@ class Solr
     @num_docs
   end
   
+  def all_facets
+    post_data = "qt=facet&wt=ruby"
+
+    raw_response = post_to_solr(post_data)
+    response = eval(raw_response)
+    response['facets']
+  end
+  
   def facet(facet, constraints, field=nil, prefix=nil, username=nil)
     # TODO clean up arguments.... facet parameter not really used in Solr when prefix/field specified
     post_data = "qt=facet&facet=#{facet}&wt=ruby"
@@ -45,7 +53,7 @@ class Solr
   end
   
   def search(constraints, start, max)
-    post_data = "qt=search&fl=archive,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&highlight=on&highlightFields=text"
+    post_data = "qt=search&fl=archive,agent,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&highlight=on&highlightFields=text"
     post_data << encode_constraints(constraints)
     
     results = {}

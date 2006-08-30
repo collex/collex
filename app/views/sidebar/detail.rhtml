@@ -51,7 +51,7 @@
               <% if  not @interpretation.new_record? %>
                 <%=link_to_remote "remove", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
               <% end %>
-              <%= link_to_function @interpretation.new_record? ? "collect" : "save", "document.forms['dataform'].onsubmit()" %>
+              <%= link_to_function @interpretation.new_record? ? "collect" : "save", "if (document.forms['dataform'].tags.value == '') { alert('At least one tag is required to collect an object'); return false; };  document.forms['dataform'].onsubmit();" %>
           </span>
         <%= end_form_tag -%>
         <% else %>

@@ -3,6 +3,8 @@ display = params[:value]
 if (params[:type]=="archive")
   display = site(display) ? site(display)['description'] : display
 end
+
+display = "#{params[:user]}'s #{display}" if params[:user]
 %>
 <div class="topnav">
   <div class="search"><%= start_form_tag :controller=>'search', :action => :new_expression -%><%= text_field_tag "field[content]", "search", :onFocus=>"this.value=''" -%>&nbsp;<%= end_form_tag -%></div>

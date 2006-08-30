@@ -17,7 +17,7 @@ class NinesCollectionManager
     
     user = User.find_by_username_and_password_hash(username, hashed_password)
     
-    return user ? user : nil
+    return user ? {:username => user.username, :fullname => user.fullname, :email => user.email} : nil
   end
   
   def create_user(username, password, fullname, email)
@@ -28,11 +28,9 @@ class NinesCollectionManager
     
     hashed_password = password_hash(password)
 
-    # TODO - maybe also save a timestamp of when the user was created?
     user = User.create(:username => username, :password_hash => hashed_password, :fullname => fullname, :email => email)
     user.save
     
-    # TODO - return User object instead of Hash
     {:username => username, :fullname => fullname, :email => email}
   end
   

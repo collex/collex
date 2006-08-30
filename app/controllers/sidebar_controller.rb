@@ -48,6 +48,7 @@ class SidebarController < ApplicationController
      user = session[:user]
      @object, @mlt, @collection_info = COLLEX_MANAGER.object_detail(params[:objid], user ? user[:username] : nil)
      if user
+       user = User.find_by_username(user[:username])
        @interpretation = user.interpretations.find_by_object_uri(params[:objid]) || Interpretation.new
      else
        @interpretation = Interpretation.new
@@ -55,7 +56,7 @@ class SidebarController < ApplicationController
   end
 
   def update
-    user = session[:user]
+    user = User.find_by_username(session[:user][:username])
     COLLEX_MANAGER.update(user[:username], params[:objid], params[:tags].downcase.split, params[:annotation])
     
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
@@ -70,8 +71,7 @@ class SidebarController < ApplicationController
   end
   
   def remove
-    COLLEX_MANAGER.remove(session[:user][:username], params[:objid])
-    user = session[:user]
+    user = User.find_by_username(session[:user][:username])
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
     Interpretation.destroy(interpretation.id)
     

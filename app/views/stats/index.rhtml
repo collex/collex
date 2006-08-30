@@ -1,0 +1,35 @@
+<h1>DB Stats</h1>
+<table>
+    <tr>
+        <td>sites</td>
+        <td><%=@db_stats[:sites].size%></td>
+    </tr>
+    <tr>
+        <td>interpretations</td>
+        <td><%=@db_stats[:interpretations].size%></td>
+    </tr>
+    <tr>
+        <td>users</td>
+        <td><%=@db_stats[:users].collect{|user| "#{user.username} [#{user.fullname}]"}.join(', ')%> (Total: <%=@db_stats[:users].size%>)</td>
+    </tr>
+</table>
+
+<h1>Solr Stats</h1>
+<table>
+    <tr>
+        <td>users</td>
+        <td><%=debug @solr_stats[:username]%> (Total: <%=@solr_stats[:username].values.inject {|sum, value| sum + value }%> interpretations [should match the number above!])</td>
+    </tr>
+    <tr>
+        <td>archives</td>
+        <td><%=debug @solr_stats[:facets]['archive']%></td>
+    </tr>
+    <tr>
+        <td>genres</td>
+        <td><%=debug @solr_stats[:facets]['genre']%></td>
+    </tr>
+    <tr>
+        <td>tags</td>
+        <td><%=debug @solr_stats[:tag]%></td>
+    </tr>
+</table>
