@@ -8,12 +8,13 @@ class SidebarController < ApplicationController
   layout "sidebar"
 
   def permalink
-    session[:sidebar_state] = {:action => params[:view], :params => {:type => params[:type], :value => params[:value], :user => params[:user], :objid => params[:objid]} } 
+    session[:sidebar_state] = {:action => params[:view], :params => {:type => params[:type], :value => params[:value], :user => params[:user], :objid => params[:objid]} }     
     render_component :controller => "search", :action => "browse"
   end
 
   def atom
     @items = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user])
+    @headers['Content-Type'] = 'application/atom+xml'
     render_without_layout
   end
   
