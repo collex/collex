@@ -1,0 +1,35 @@
+.exhibits .thumbnail {
+	font-size:  1em;
+}
+.exhibits .thumbnail img {
+	margin-left:  3px;
+	margin-right:  0px;
+	width:  100px;
+	height:  100px;
+	border:  0px;
+}
+.exhibits .thumbnail a {
+	padding: .2em;
+}
+.exhibits .thumbnail:hover a {
+	color:  #fff;
+}
+.exhibits .blurb {
+	text-align: center;
+	padding-left: 6em;
+	padding-right: 6em;
+}
+.exhibits .blurbette {
+	padding-left: 6em;
+	padding-right: 6em;
+}
+.exhibits .bigbuttons {
+	padding-left: 2em;
+}
+.exhibits .featured .thumbnail img {
+	padding:  .2em;
+	margin-right: 6px;
+}
+.exhibits .featured .thumbnail a:hover {
+	background: none;
+}
