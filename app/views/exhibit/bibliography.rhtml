@@ -1,0 +1,22 @@
+<div class="pagination">
+	<div id="navcontainer2">
+		<ul id="navlist2">
+			<li><a href="/collex" title="header=[research] body=[locate, collect, and annotate digital resources] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">RESEARCH</a></li>
+			<li class="active"><a id="current" href="/exhibit" style="cursor:pointer" title="header=[contribute] body=[search &amp; browse user-created content, or create and publish your own online exhibits] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">CONTRIBUTE</a></li>
+		</ul>
+	</div>  <br class="clearboth" />
+</div>
+
+<div class="exhibits">
+	
+<p><%=link_to "contribute", :action => 'index'%> &rarr; <%=link_to "create &amp; edit exhibits", :action => 'create'%> &rarr; bibliographies &amp; syllabi</p>
+
+
+<p class="blurbette"><span class="emph2">This is a placeholder</span> for an exhibit creator mode which will allow users to produce annotated bibliographies and course syllabi.  See my storyboard #4.1.</p>
+
+
+<div id="footer" style="text-align:center">
+      <a href="http://www.nines.org">NINES</a>: aggregating #####&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
+</div>
+
+</div>

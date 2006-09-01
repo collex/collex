@@ -1,8 +1,8 @@
 	<div class="pagination">
 		<div id="navcontainer2">
 			<ul id="navlist2">
-				<li class="active"><a id="current" title="header=[you are here] body=[collect: locate and annotate digital resources] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">SEARCH &amp; BROWSE</a></li>
-				<li><a style="cursor:default" title="header=[coming soon] body=[contribute: create and publish your own online exhibits] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">BUILD EXHIBITS</a></li>
+				<li class="active"><a id="current" title="header=[you are here] body=[locate, collect, and annotate digital resources] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">RESEARCH</a></li>
+				<li><a href="/exhibit" title="header=[contribute] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader] cssbody=[boxbody] fade=[on]">CONTRIBUTE</a></li>
 			</ul>
 		</div>  <br class="clearboth" />
 	</div>
@@ -272,7 +272,7 @@ function displayCollector(id, uri, event)
 <span class="emph2"><span class="button"><%= link_to_function "Go!", "document.forms['footer-search'].submit();" -%></span></span>&nbsp;or&nbsp;&nbsp;
 <span class="emph2"><span class="button"><%=link_to "BROWSE", :controller=>'search', :action=>'clear_constraints' -%></span></span> &nbsp; 
         <% end -%>
-<%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;on&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
+<%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
          <% if session[:constraints].size != 0 -%>
             <%= end_form_tag -%>
         <% end -%>
