@@ -74,7 +74,7 @@ class LoginController < ApplicationController
         end
         if params[:password] == params[:password2]
           session[:user] = COLLEX_MANAGER.create_user(params[:username], params[:password].strip, params[:fullname], params[:email])
-          redirect_to :controller => 'search', :action => 'browse'
+          redirect_to({:controller => "sidebar", :action => "cloud", :type => "genre"})
         else
           flash.now[:error] = "Passwords do not match"
         end

@@ -58,23 +58,21 @@ class SidebarController < ApplicationController
 
   def update
     user = User.find_by_username(session[:user][:username])
-    COLLEX_MANAGER.update(user[:username], params[:objid], params[:tags].downcase.split, params[:annotation])
-    
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
     if not interpretation
-      interpretation = user.interpretations.create(:object_uri => params[:objid])
+      interpretation = Interpretation.new(:object_uri => params[:objid])
+      user.interpretations << interpretation
     end
-    interpretation.annotation = params[:annotation]
+    interpretation.annotation =  params[:annotation]
     interpretation.tag_list = params[:tags]
-    interpretation.save
-    
+    interpretation.save!
     redirect_to :action => 'detail', :objid => params[:objid]
   end
   
   def remove
     user = User.find_by_username(session[:user][:username])
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
-    Interpretation.destroy(interpretation.id)
+    Interpretation.destroy(interpretation.id)    
     
     redirect_to :action => 'detail', :objid => params[:objid]
   end

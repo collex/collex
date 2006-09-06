@@ -17,29 +17,32 @@ class CollectionController < ApplicationController
   end
 
   def add
-     username = @session[:user][:username]
+    user = User.find_by_username(session[:user][:username])
 
      # extract the individual tags from the tag string entered by the user
      # currently split by whitespace, but TODO in the future this should be enhanced to
      # allow tags to be quoted, so that the string /"this is a single tag" and-so-is-this/ is parsed
      # as two tags instead of six
-     collectables = {}
      @request.params.each do |key,value|
         match = /^tags-(.*)/.match(key.to_s)
         if match
           if value[0] != TAG_INSTRUCTIONS
             uri = match[1]
-            tags = value[0].downcase.split
+            tags = value[0]
             annotation = params["notes-#{uri}"]
             annotation = "" if annotation == ANNOTATION_INSTRUCTIONS
-            collectables[uri] = {:tags => tags, :annotation => annotation}
+            
+            interpretation = user.interpretations.find_by_object_uri(uri)
+            if not interpretation
+              interpretation = Interpretation.new(:object_uri => uri)
+              user.interpretations << interpretation
+            end
+            interpretation.annotation =  annotation
+            interpretation.tag_list = tags
+            interpretation.save!
           end
         end
      end     
-
-     logger.info "Before COLLECTION.ADD: #{username} : #{collectables.to_yaml}"
-     COLLEX_MANAGER.add(username, collectables)
-     logger.info "After COLLECTION.ADD: #{username} : #{collectables.to_yaml}"
 
      render_text <<-CLOSE
        <html>

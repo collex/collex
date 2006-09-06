@@ -84,9 +84,15 @@ class SearchController < ApplicationController
    end
    
    def collect
-     collectables = {params[:objid] => {:tags => params[:tags].downcase.split, :annotation => params[:annotation]}} 
-     
-     COLLEX_MANAGER.add(session[:user][:username], collectables)
+     user = User.find_by_username(session[:user][:username])
+     interpretation = user.interpretations.find_by_object_uri(params[:objid])
+     if not interpretation
+       interpretation = Interpretation.new(:object_uri => params[:objid])
+       user.interpretations << interpretation
+     end
+     interpretation.annotation =  params[:annotation]
+     interpretation.tag_list = params[:tags]
+     interpretation.save!
      
      if request.xhr?
        render_text "collected"

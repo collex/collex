@@ -17,10 +17,14 @@ class Interpretation < ActiveRecord::Base
   end
       
   def update_solr
-    COLLEX_MANAGER.update(user.username, object_uri, tags.collect { |tag| tag.name }, annotation)
+    solr = Solr.new
+    solr.update(user.username, object_uri, tags.collect { |tag| tag.name }, annotation)
+    solr.commit
   end
   
   def remove_from_solr
-    COLLEX_MANAGER.remove(user.username, object_uri)
+    solr = Solr.new
+    solr.remove(user.username, object_uri)
+    solr.commit
   end
 end

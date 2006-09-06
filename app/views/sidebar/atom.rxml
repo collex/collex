@@ -12,9 +12,11 @@ xml.feed "xml:lang" => "en-US", "xmlns" => 'http://www.w3.org/2005/Atom' do
 
   @items['hits'].each do |item|
     xml.entry do
-      xml.author do
-        name = item['agent'].join(", ")
-        xml.name name
+      if item['agent']
+        xml.author do
+          name = item['agent'].join(", ")
+          xml.name name
+        end
       end
       
       xml.updated Date.today.strftime("%Y-%m-%dT%H:%M:%SZ")  # TODO get this item's last collected time

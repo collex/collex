@@ -63,24 +63,6 @@ class NinesCollectionManager
     @solr.objects_behind_urls(urls,user)
   end
   
-  #TODO: eliminate the need for commit/optimize for the add/update/remove operations
-  
-  # Adds pointers 
-  def add(username, collectables)    
-    @solr.add(username, collectables)
-    @solr.commit
-  end
-  
-  def update(username, uri, tags, annotation)
-    @solr.update(username, uri, tags, annotation)
-    @solr.commit
-  end
-    
-  def remove(username, uri)
-    @solr.remove(username,uri)
-    @solr.commit
-  end
-
   def cloud(type, user = nil)
     @solr.facet(type, [{:field => "collected", :value => "collected"}], nil, nil, user)
   end
