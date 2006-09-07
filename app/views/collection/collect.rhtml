@@ -42,11 +42,11 @@
                tagged = true
                break;
              }
-             else
-             {
-               window.alert("Please enter a tag for at least one object.");
-               return false;
-             }
+           }
+           
+           if (!tagged) {
+             window.alert("Please enter a tag for at least one object.");
+             return false;
            }
 
            if (!submitted && tagged) {
