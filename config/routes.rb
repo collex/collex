@@ -25,6 +25,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'collex/:action', :controller => 'search'
   
+  # /solr/update is mapped here to allow RdfFileIndexer2 to post here without change
+  map.connect 'solr/update', :controller => 'resource', :action => 'post'
+  
 # Install the default route as the lowest priority.
   map.connect ':controller/:action'
 end

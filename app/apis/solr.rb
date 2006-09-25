@@ -187,6 +187,14 @@ class Solr
     return response.body
   end
 
+  def field(name, value)
+    field = REXML::Element.new("field")
+    field.add_attribute("name", name)
+    field.add_text(value)
+    
+    field
+  end
+
   private
   def encode_constraints(constraints)
     output = "&constraint=#{url_encode('type:A')}"
@@ -203,14 +211,6 @@ class Solr
     end
     
      output
-  end
-  
-  def field(name, value)
-    field = REXML::Element.new("field")
-    field.add_attribute("name", name)
-    field.add_text(value)
-    
-    field
   end
   
 end
