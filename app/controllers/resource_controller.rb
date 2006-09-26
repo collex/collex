@@ -1,4 +1,6 @@
 class ResourceController < ApplicationController
+  session :off
+  
   # post currently emulates the request sent to Solr, to allow the indexer to post here instead of to Solr
   def post
     solr = Solr.new
@@ -18,6 +20,9 @@ class ResourceController < ApplicationController
     
     dom = REXML::Document.new request.env['RAW_POST_DATA']
     xml = REXML::Element.new('add')
+    
+    Resource.transaction do
+    
     dom.elements.each("add/doc") do |doc|
       uri = nil
       properties = []
@@ -50,6 +55,7 @@ class ResourceController < ApplicationController
       end
       
       resource = Resource.find_or_create_by_uri(uri)
+#resource = Resource.new
       resource.properties.destroy_all
       resource.properties << properties
       
@@ -70,6 +76,8 @@ class ResourceController < ApplicationController
       end
       xml.add_element solr_doc        
     end
+    
+  end # Resource.transaction
     
     response = solr.post_to_solr(xml.to_s, :update)
     

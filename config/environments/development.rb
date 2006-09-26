@@ -23,3 +23,6 @@ ActionMailer::Base.server_settings = {
 } 
 
 SOLR_URL                                           = "http://localhost:8983"
+
+config.log_level = :info
+#ActiveRecord::Base.verification_timeout=100
