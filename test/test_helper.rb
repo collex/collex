@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-#require 'test_help'  # commented out based on chat with Chad Fowler on how to get tests to run without a DB
+require 'test_help'
 # below requires added to include the relevant stuff test_help brings in, without screwing up because of now test DB
 require 'test/unit'
 require 'action_controller/test_process'
