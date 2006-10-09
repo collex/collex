@@ -69,7 +69,7 @@ class ResourceController < ApplicationController
       solr_doc.add_element solr.field("text", text)
       resource.properties.each do |property|
         next if property.name == "text_url" # Solr doesn't use text_url, only text
-        solr_doc.add_element(solr.field(property.name, property.value)) unless property.name == "text_url" # Solr doesn't use text_url
+        solr_doc.add_element(solr.field(property.name, property.value))
         if property.name =~ /^role_[A-Z]{3}$/  # TODO take care of this with a <copyField> on the Solr side instead
           solr_doc.add_element solr.field("agent", property.value) 
         end
