@@ -53,7 +53,7 @@ class Solr
   end
   
   def search(constraints, start, max)
-    post_data = "qt=search&fl=archive,agent,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&hl=on&hl.fl=text&hl.fragsize=200"
+    post_data = "qt=search&fl=archive,agent,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&hl=on&hl.fl=text&hl.fragsize=600"
     post_data << encode_constraints(constraints)
     
     results = {}
