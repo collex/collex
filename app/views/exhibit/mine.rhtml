@@ -15,24 +15,14 @@
 
 <table align="center" width="60%" class="bigbuttons">
 	<tr>
+	    <% @exhibit_types.each do |exhibit_type| %>
 		<td>
 			<div class="thumbnail">
-<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[create!] body=[make and share a course syllabus or annotated bibliography] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"bibliography"} %>
-<br /><%=link_to "bibliographies &amp; syllabi", :action => 'bibliography'%>
+<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[create!] body=[#{exhibit_type.description}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"new", :type => exhibit_type.id} %>
+<br /><%=link_to exhibit_type.description, :action => 'new', :type => exhibit_type.id %>
 			</div>
 		</td>
-		<td>
-			<div class="thumbnail">
-<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[create!] body=[produce a traditional work of criticism or design a guided tour to NINES resources] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"essay"} %>
-<br /><%=link_to "illustrated essays", :action => 'essay'%>
-			</div>
-		</td>
-		<td>
-			<div class="thumbnail">
-<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[create!] body=[design annotated timelines and chronologies using NINES objects] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"timeline"} %>
-<br/><%=link_to "chronologies", :action => 'timeline'%>
-			</div>
-		</td>
+		<% end %>
 	</tr>
 </table>
 
