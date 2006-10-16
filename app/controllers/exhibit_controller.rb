@@ -1,4 +1,5 @@
 class ExhibitController < ApplicationController
+  before_filter :authorize
   layout "nines"
   
   def mine
@@ -19,6 +20,7 @@ class ExhibitController < ApplicationController
   
   def update
     @exhibit = Exhibit.new(params[:exhibit])
+    @exhibit.user = User.find_by_username(session[:user][:username])
     @exhibit.save
     redirect_to :action => 'edit', :id => @exhibit
   end
