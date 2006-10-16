@@ -9,11 +9,17 @@
 
 <div class="exhibits">
 	
-<p><%=link_to "contribute", :action => 'index'%> &rarr; <%=link_to "create &amp; edit exhibits", :action => 'create'%> &rarr; bibliographies &amp; syllabi</p>
+<p><%=link_to "contribute", :action => 'index'%> &rarr; <%=link_to "create &amp; edit exhibits", :action => 'mine'%> &rarr; bibliographies &amp; syllabi</p>
 
 
-<p class="blurbette"><span class="emph2">This is a placeholder</span> for an exhibit creator mode which will allow users to produce annotated bibliographies and course syllabi.  See my storyboard #4.1.</p>
+<p class="blurbette"><span class="emph2">This is a placeholder</span> for an exhibit creator mode which will allow users to produce <%=@exhibit.exhibit_type.description%>.  See my storyboard #4.1.</p>
 
+<%=start_form_tag :action => 'update'%>
+<%= hidden_field("exhibit", "exhibit_type_id")%>
+<%= text_field("exhibit", "title") %>
+<%= select("exhibit", "license_id", License.find_all.collect {|license| [ license.description, license.id ] }, { :include_blank => true })%>
+<%= submit_tag %>
+<%=end_form_tag%>
 
 <div id="footer" style="text-align:center">
       <a href="http://www.nines.org">NINES</a>: aggregating #####&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
