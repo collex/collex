@@ -4,7 +4,7 @@ class CreateExhibitTypes < ActiveRecord::Migration
       t.column :description, :string
     end
     
-    ExhibitType.create(:description=>"Course syllabus or annotated bibliography")
+    ExhibitType.create(:description=>"Text")
   end
 
   def self.down

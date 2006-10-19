@@ -9,10 +9,8 @@
 
 <div class="exhibits">
 	
-<p><%=link_to "contribute", :action => 'index'%> &rarr; <%=link_to "create &amp; edit exhibits", :action => 'mine'%> &rarr; bibliographies &amp; syllabi</p>
+<p><%=link_to "contribute", :action => 'index'%> &rarr; <%=link_to "create &amp; edit exhibits", :action => 'mine'%> &rarr; <%=@exhibit.exhibit_type.description%></p>
 
-
-<p class="blurbette"><span class="emph2">This is a placeholder</span> for an exhibit creator mode which will allow users to produce <%=@exhibit.exhibit_type.description%>.  See my storyboard #4.1.</p>
 
 <%=start_form_tag :action => 'update'%>
 <%= hidden_field("exhibit", "exhibit_type_id")%>
