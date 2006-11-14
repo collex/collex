@@ -2,14 +2,14 @@ development:
     adapter: mysql
     database: nines_development
     username: root
-    password:
+    password: ljppkggs
     host: localhost
     
 test:
     adapter: mysql
     database: nines_test
     username: root
-    password:
+    password: ljppkggs
     host: localhost
 
 production:
@@ -17,7 +17,7 @@ production:
     database: nines_production
     #database: nines_development
     username: root
-    password:
+    password: ljppkggs
     host: localhost
     
 # In-memory SQLite 3 database.  Useful for tests.
