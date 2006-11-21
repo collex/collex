@@ -11,7 +11,7 @@
 # form the root of the application path.
 
 set :application, "staging"
-set :repository, "https://svn.sourceforge.net/svnroot/patacriticism/collex/trunk"
+set :repository, "svn+ssh://erikhatcher@rubyforge.org/var/svn/subactive/collex"
 
 # =============================================================================
 # ROLES
