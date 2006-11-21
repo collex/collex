@@ -31,7 +31,7 @@ role :db,  "jarry.itc.virginia.edu", :primary => true
 set :deploy_to, "/p0/usr/local/patacriticism/#{application}" # defaults to "/u/apps/#{application}"
 set :user, "nines"            # defaults to the currently logged in user
 # set :scm, :darcs               # defaults to :subversion
-# set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
+set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
 # set :darcs, "/path/to/darcs"   # defaults to searching the PATH
 # set :cvs, "/path/to/cvs"       # defaults to searching the PATH
 # set :gateway, "gate.host.com"  # default to no gateway
