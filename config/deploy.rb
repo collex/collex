@@ -11,7 +11,9 @@
 # form the root of the application path.
 
 set :application, "staging"
-set :repository, "svn+ssh://erikhatcher@rubyforge.org/var/svn/subactive/collex"
+
+set :svn_password, Proc.new { Capistrano::CLI.password_prompt('SVN Password: ') }
+set :repository, Proc.new { '--username "erikhatcher" --password "#{svn_password}" svn+ssh://rubyforge.org/var/svn/subactive/collex'}
 
 # =============================================================================
 # ROLES
