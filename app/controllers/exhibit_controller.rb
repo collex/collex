@@ -18,6 +18,14 @@ class ExhibitController < ApplicationController
     @exhibit = Exhibit.find(params[:id])
   end
   
+  def add_section
+    exhibit =  Exhibit.find(params[:exhibit_id])
+    section = Section.new(:section_type => SectionType.find(params[:section_type_id]))
+    exhibit.sections << section
+    exhibit.save
+    redirect_to :action => 'edit', :id => exhibit.id
+  end
+  
   def update
     @exhibit = Exhibit.new(params[:exhibit])
     @exhibit.user = User.find_by_username(session[:user][:username])

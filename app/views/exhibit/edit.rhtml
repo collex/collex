@@ -14,10 +14,20 @@
 
 <%=start_form_tag :action => 'update'%>
 <%= hidden_field("exhibit", "exhibit_type_id")%>
-<%= text_field("exhibit", "title") %>
-<%= select("exhibit", "license_id", License.find_all.collect {|license| [ license.description, license.id ] }, { :include_blank => true })%>
+Title: <%= text_field("exhibit", "title") %>
+License:<%= select("exhibit", "license_id", License.find_all.collect {|license| [ license.description, license.id ] }, { :include_blank => true })%>
 <%= submit_tag %>
 <%=end_form_tag%>
+<% @exhibit.exhibit_type.section_types.each do |section_type| %>
+  <%= link_to "Add section: #{section_type.description}", :action => 'add_section',  :section_type_id => section_type.id, :exhibit_id => @exhibit.id %>
+<% end %>
+Sections:
+       <ol>
+           <% @exhibit.sections.each do |section| %>
+             <li>Section <%= section.id %>: <%= section.section_type.description %></li>
+           <% end %>
+       </ol>
+  </li>
 
 <div id="footer" style="text-align:center">
       <a href="http://www.nines.org">NINES</a>: aggregating #####&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
