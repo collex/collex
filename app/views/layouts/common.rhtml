@@ -20,16 +20,16 @@
     
         <div id="header">        
             <div id="user">
-              <% if @session[:user] -%>
-                <%= @session[:user][:username] %>
+              <% if session[:user] -%>
+                <%= session[:user][:username] %>
                 <%= link_to("Log out", {:controller => "login", :action => "logout"}) %> 
               <% end -%>
             </div>
         </div><!-- end header -->
         
         
-        <% if @flash[:notice] -%> 
-          <div id="notice"><%= @flash[:notice] %></div> 
+        <% if flash[:notice] -%> 
+          <div id="notice"><%= flash[:notice] %></div> 
         <% end -%> 
 
         <div id="content">
