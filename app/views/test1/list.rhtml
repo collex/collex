@@ -1,0 +1,27 @@
+<h1>Listing tasks</h1>
+
+<table>
+  <tr>
+  <% for column in Tasks.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for tasks in @tasks %>
+  <tr>
+  <% for column in Tasks.content_columns %>
+    <td><%=h tasks.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => tasks %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => tasks %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => tasks }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @tasks_pages.current.previous } if @tasks_pages.current.previous %>
+<%= link_to 'Next page', { :page => @tasks_pages.current.next } if @tasks_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New tasks', :action => 'new' %>

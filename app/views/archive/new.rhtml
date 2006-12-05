@@ -1,0 +1,66 @@
+	<div id="mainContent">
+		<div id="collectformarea" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;"> 
+		  <span style="clear:both;float:right;"><a href="#" onclick="Effect.Fade(&quot;collectformarea&quot;, { duration: 0.0 }); return false;">x</a> &nbsp;</span>
+
+		
+		  You must be logged in to collect objects.
+		
+		  <span id="collected" style="display:none;font-weight:bold;clear:both;float:right">COLLECTED</span>
+		  <span id="collect-status" style="display:none;font-weight:bold;clear:both;float:right">enter a tag to collect this object</span>
+		</div>
+	<div id="container">
+	    <div id="banner">
+	      <div id="navcontainer">
+	        <ul id="navlist">
+	          <!--<li><a href="#" onclick="popUp('http://nines.org/nines/about'); return false;" title="header=[NINES] body=[learn more about the NINES initiative here] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">about us</a></li>
+		      <li><a href="#" onclick="popUp('http://nines.org/nines/help'); return false;" title="header=[using Collex] body=[locate, collect, &amp;amp; annotate digital objects with Collex] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">how to...?</a></li>
+			  <li><a href="#" onclick="popUp('http://nines.org/nines/join'); return false;" title="header=[join us] body=[how to build exhibits &amp;amp; submit materials to NINES] cssheader=[boxheader] cssbody=[boxbody] fade=[on]">contribute</a></li>-->
+			  <!--<li><a href="#" onclick="popUp('http://nines.org/nines/about'); return false;">about us</a></li>
+		      <li><a href="#" onclick="popUp('http://nines.org/nines/help'); return false;">how to...?</a></li>
+			  <li><a href="#" onclick="popUp('http://nines.org/nines/join'); return false;">contribute</a></li>-->
+	        </ul>
+	      </div>
+		<span class="emph1"><a href="http://www.nines.org/collex/">NINES</a></span> is a federation of peer-reviewed resources and innovative research tools, made freely available to students and scholars of 19th-century culture. &nbsp; <a href="http://www.nines.org" target="_blank">::&nbsp;learn&nbsp;more&nbsp;::</a><br />
+
+	    </div>
+		<div id="content">
+          	<div class="pagination">
+		<div id="navcontainer2">
+			<ul id="navlist2">
+				<!--<li class="active"><a id="current">SEARCH &amp; BROWSE</a></li>
+				<li><a style="cursor:default">BUILD EXHIBITS</a></li>-->
+
+			</ul>
+		</div>  <br class="clearboth" />
+	</div>
+
+<!-- -------------------- -->
+<!--        START         -->
+<!-- -------------------- -->
+
+<h1>Add a New Archive</h1>
+<table id="list_box" class="constraints">
+  <tr>
+  	<td>
+<%= start_form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Create" %>
+<%= end_form_tag %>
+
+<a href="/test1/file_upload/">Back</a>
+	
+	</td>
+  </tr>
+</table>
+<!-- -------------------- -->
+<!--         END          -->
+<!-- -------------------- -->
+
+	
+<div id="under">
+	<div id="footer" style="text-align:center">
+		&nbsp;
+	</div>
+</div>
+
+<!-- ----------- -->

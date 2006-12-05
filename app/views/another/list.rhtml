@@ -1,0 +1,21 @@
+<h1>Listing task_emails</h1>
+
+<select>
+
+  
+<% for task_email in @task_emails %>
+  
+  
+ 
+    <option><%=h task_email.send(TaskEmail.content_columns[0].name) %></option>
+  
+      
+<% end %>
+</select>
+
+<%= link_to 'Previous page', { :page => @task_email_pages.current.previous } if @task_email_pages.current.previous %>
+<%= link_to 'Next page', { :page => @task_email_pages.current.next } if @task_email_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New task_email', :action => 'new' %>

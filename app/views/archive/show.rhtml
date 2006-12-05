@@ -1,0 +1,8 @@
+<% for column in TaskEmail.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @task_email.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @task_email %> |
+<%= link_to 'Back', :action => 'list' %>
