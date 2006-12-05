@@ -55,7 +55,7 @@ class Admin::SiteController < ApplicationController
   #TODO: move this to a general /admin area controller superclass
   def check_admin_privileges
     user = session[:user]
-    if user and (user[:username] == "erikhatcher" or user[:username] == "duanegran")
+    if user and ['erikhatcher', 'duanegran', 'jamieorc'].include? user[:username]
       return
     end
     
