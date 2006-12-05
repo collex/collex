@@ -1,4 +1,5 @@
 class Admin::SiteController < ApplicationController
+  layout 'admin'
   before_filter :check_admin_privileges
   
   def index
@@ -59,7 +60,7 @@ class Admin::SiteController < ApplicationController
       return
     end
     
-    redirect_to "http://www.nines.org"
+    redirect_to "/collex"
   end
 
 end
