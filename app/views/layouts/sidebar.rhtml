@@ -1,9 +1,9 @@
-<% if @flash[:notice] -%> 
-  <div id="notice"><%= @flash[:notice] %></div> 
+<% if flash[:notice] -%> 
+  <div id="notice"><%= flash[:notice] %></div> 
 <% end -%> 
 
-<% if @flash[:error] -%> 
-  <div id="error"><%= @flash[:error] %></div> 
+<% if flash[:error] -%> 
+  <div id="error"><%= flash[:error] %></div> 
 <% end -%> 
 
 <div class="account">
@@ -15,4 +15,4 @@
   <% end -%>
 </div>
 
-<%= @content_for_layout %>
+<%= yield %>
