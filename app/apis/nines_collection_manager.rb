@@ -17,7 +17,7 @@ class NinesCollectionManager
     
     user = User.find_by_username_and_password_hash(username, hashed_password)
     
-    return user ? {:username => user.username, :fullname => user.fullname, :email => user.email} : nil
+    return user ? {:username => user.username, :fullname => user.fullname, :email => user.email, :role_names => user.role_names} : nil
   end
   
   def create_user(username, password, fullname, email)
@@ -31,7 +31,7 @@ class NinesCollectionManager
     user = User.create(:username => username, :password_hash => hashed_password, :fullname => fullname, :email => email)
     user.save
     
-    {:username => username, :fullname => fullname, :email => email}
+    {:username => username, :fullname => fullname, :email => email, :role_names => user.role_names}
   end
   
   def update_user(username, password, fullname, email)
@@ -43,7 +43,7 @@ class NinesCollectionManager
     end
     user.save
     
-    {:username => username, :fullname => fullname, :email => email}
+    {:username => username, :fullname => fullname, :email => email, :role_names => user.role_names}
   end
   
   def reset_password(username)
@@ -52,7 +52,7 @@ class NinesCollectionManager
     if user
       user.password_hash = password_hash(new_password)
       user.save
-      return {:username => username, :fullname => user.fullname, :email => user.email, :new_password => new_password}
+      return {:username => username, :fullname => user.fullname, :email => user.email, :new_password => new_password, :role_names => user.role_names}
     else
       return nil
     end
