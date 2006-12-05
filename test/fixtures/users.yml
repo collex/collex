@@ -1,5 +1,12 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+<% require 'digest/sha1' %>
+
+<% ['admin', 'editor', 'basic'].each_with_index do |name, i| %>
+<%= name %>:
+  id: <%= i + 1 %>
+  username: <%= name %>
+  password_hash: <%= Digest::SHA1.hexdigest('password') %>
+  fullname: <%= name.capitalize %> User
+  email: <%= name %>@collex.org
+
+<% end %>
