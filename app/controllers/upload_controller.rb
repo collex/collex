@@ -17,7 +17,7 @@ class UploadController < ApplicationController
 	    else
 	    	if
 	    		# Change this location to reflect the desired file upload directory
-                            File.open("/testA/rdf_test/#{@fname}", "wb") do |f| 
+                            File.open(RAILS_ROOT+"/rdf_test/#{@fname}", "wb") do |f| 
 	    			f.write(@params['file'].read)
 	   			end
 			end
@@ -25,7 +25,7 @@ class UploadController < ApplicationController
 	    		# Change this location to the location specified above, where it will find the .zip
 	    		# 	(The decompres.rb file referenced below also specifies a path 
 	    		#	for unzipped files - this should be changed to the path above + "/unzip/")
-                        Decompress.new("/testA/rdf_test/#{@fname}", @contri_dir)
+                        Decompress.new(RAILS_ROOT+"/rdf_test/#{@fname}", @contri_dir)
 	     	end	     	
 	     	redirect_to :action => 'thankyou'
 		end

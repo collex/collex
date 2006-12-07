@@ -16,10 +16,13 @@ class Decompress
   ##unzip_dir="./out"
   Zip::ZipFile::open(file) {
   |zf| zf.each { |e|
-  
-  @fpath = "/testA/rdf_test/"+dir+"/"+ e.name;
-  puts @fpath
-  zf.extract(e,@fpath) 
+
+  @fpath = RAILS_ROOT+"/rdf_test/"+dir+"/"+ e.name
+   if (File.exist?(@fpath)) 
+        FileUtils::rm(@fpath)
+   end
+  	zf.extract(e,@fpath) 
+   	
 
   } }
 
