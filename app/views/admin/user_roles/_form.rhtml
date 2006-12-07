@@ -1,0 +1,14 @@
+<%= error_messages_for 'user' %>
+
+
+
+<!--[form:user]-->
+<p>
+  Roles<br/>
+  <% @roles.each do |role| %>
+    <%= content_tag "label", role.name %>
+    <%= check_box_tag "user_role_#{role.name}", role.id, (@user.roles.include? role) %>
+  <% end %>
+</p>
+<!--[eoform:user]-->
+

@@ -1,0 +1,27 @@
+<h1>Listing users</h1>
+
+<table>
+  <tr>
+    <th>Username</th>
+    <th>Fullname</th>
+    <th>Email</th>
+    <th>Roles</th>
+  </tr>
+  
+<% @users.each do |user| %>
+  <tr>
+    <td><%=h user.username %></td>
+    <td><%=h user.fullname %></td>
+    <td><%=h user.email %></td>
+    <td>
+      <%= user.role_names.join(", ") %>
+    </td>
+    
+    <td><%= link_to 'Show', :action => 'show', :id => user %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @user_pages.current.previous } if @user_pages.current.previous %>
+<%= link_to 'Next page', { :page => @user_pages.current.next } if @user_pages.current.next %> 
