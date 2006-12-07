@@ -2,7 +2,7 @@ development:
     adapter: mysql
     database: nines_development
     username: root
-    password: ljppkggs
+    password: 
     host: localhost
     
 test:
