@@ -1,0 +1,19 @@
+/* 	  	File Upload stylesheet 		*/
+/*		file_upload.rhtml 			*/
+
+#uploadbox {
+	font-size: 11px;
+	height: 80px;
+	padding: 40px 1em 0 1em;
+	width: 350px;
+}
+
+#uploadbox input {
+	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+
+#list_box th {
+	text-transform: uppercase;
+	font-size: 80%;
+	color: #A60000;
+}
