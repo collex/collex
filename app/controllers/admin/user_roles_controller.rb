@@ -4,10 +4,6 @@ class Admin::UserRolesController < Admin::BaseController
     render :action => 'list'
   end
 
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
-
   def list
     @user_pages, @users = paginate :users, :per_page => 10
   end

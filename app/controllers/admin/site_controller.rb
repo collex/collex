@@ -4,10 +4,6 @@ class Admin::SiteController < Admin::BaseController
     render :action => 'list'
   end
 
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
-
   def list
     @site_pages, @sites = paginate :sites, :per_page => 10
   end
