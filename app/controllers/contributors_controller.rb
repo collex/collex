@@ -26,7 +26,7 @@ class ContributorsController < ApplicationController
     @contributor = Contributor.new(params[:contributor])
     
     if @contributor.save
-	  FileUtils::mkdir( '/testA/rdf_test/'+params[:contributor]['archive_name'] )
+	  FileUtils::mkdir( RAILS_ROOT+"/rdf_test/"+params[:contributor]['archive_name'] )
       flash[:notice] = 'Contributor was successfully created.'
       redirect_to :action => 'list'
     else
