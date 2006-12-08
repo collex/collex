@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>File Upload Page</title>
+<%= stylesheet_link_tag 'http://nines.org/stylesheets/new9s.css' %>
+<%= stylesheet_link_tag 'http://nines.org/stylesheets/sidebar.css' %>
+<%= stylesheet_link_tag 'upload_style' %>
+</head>
+<body>
+
+	<div id="mainContent">
+		<div id="collectformarea"></div>
+	<div id="container">
+	    <div id="banner">
+	      <div id="navcontainer"></div>
+		<span class="emph1"><a href="http://www.nines.org/collex/">NINES</a></span> is a federation of peer-reviewed resources and innovative research tools, made freely available to students and scholars of 19th-century culture. &nbsp; <a href="http://www.nines.org" target="_blank">::&nbsp;learn&nbsp;more&nbsp;::</a><br />
+
+	    </div>
+		<div id="content">
+          	<div class="pagination">
+		<div id="navcontainer2">
+			<ul id="navlist2">
+				<!--<li class="active"><a id="current">SEARCH &amp; BROWSE</a></li>
+				<li><a style="cursor:default">BUILD EXHIBITS</a></li>-->
+
+			</ul>
+		</div>  <br class="clearboth" />
+	</div>
+	
+    <table class="constables" cellspacing="0">
+	<tr colspan="2">
+		<td width="49%" valign="top" align="center">
+			<p class="logofade">
+				<br />
+				<img style="width:120px" src="http://nines.org/images/lg-harrington.gif" />
+			</p>
+		</td>
+		<td width="50%" valign="top">
+
+<!--<div id="content">
+	<div id="uploadbox">
+		<%= form_tag ({ :action => "save_file" }, { :multipart => true }) %>
+    		<label for="file">File to Upload</label> <%= file_field_tag "file" %>
+    		
+    		<div align="right">
+	    		<%= submit_tag 'Submit File' %>
+	    	</div>
+  		<%= end_form_tag %>
+  	</div>
+</div>-->
+
+<%= form_tag ({ :action => "save_file" }, { :multipart => true }) %>
+
+<table class="constraints" cellspacing="0" align="center" valign="top">
+<caption>Select an Archive</caption>
+	<tr>
+		<td>
+<p style="font-size: 12px">
+	Choose the name of this file's archive from the dropdown below, or add a new archive name
+</p>
+<select id="archive_name" name="archive_name" style="width:400px">
+	<option value="">Select an Archive...</a>
+<% for contributor in @contributors -%> 
+	<option value="<%= contributor.archive_name %>"><%= contributor.archive_name %></option>
+<% end %>
+</select>
+<div align="right">
+	<p><a href="../../contributors/new">Add a New Archive</a></p>
+</div>
+
+		</td>
+	</tr>
+</table>
+
+<br />
+
+<table class="constraints" cellspacing="0" align="center" valign="top"> 
+	<caption>Contribute</caption>
+	<tr>
+		<td>
+		
+		<div id="uploadbox">
+		   		<label for="file">File to Upload</label> <%= file_field_tag "file" %>
+    	   		<div align="right">
+    	   			<br />
+		    		<%= submit_tag 'Submit this File' %>
+		    	</div>
+		</div>	
+			
+		</td>
+	</tr>
+</table> 
+
+<%= end_form_tag %>
+
+		</td>
+	</tr>
+</table>
+
+<div id="under">
+	<div id="footer" style="text-align:center">
+		&nbsp;
+	</div>
+</div>
+
+</body>
+</html>
