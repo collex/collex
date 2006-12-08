@@ -1,0 +1,9 @@
+<h2>Edit License</h2>
+
+<%= start_form_tag :action => 'update', :id => @license %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Save' %>
+<%= end_form_tag %>
+
+<%= link_to 'Show', :action => 'show', :id => @license %> |
+<%= link_to 'All Licenses', :action => 'index' %>
