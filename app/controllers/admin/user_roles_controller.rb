@@ -1,5 +1,7 @@
 class Admin::UserRolesController < ApplicationController
   layout 'admin'
+  before_filter :check_admin_privileges
+
   def index
     list
     render :action => 'list'
