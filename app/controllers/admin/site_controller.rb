@@ -1,7 +1,4 @@
-class Admin::SiteController < ApplicationController
-  layout 'admin'
-  before_filter :check_admin_privileges
-  
+class Admin::SiteController < Admin::BaseController
   def index
     list
     render :action => 'list'
@@ -50,17 +47,6 @@ class Admin::SiteController < ApplicationController
   def destroy
     Site.find(params[:id]).destroy
     redirect_to :action => 'list'
-  end
-
-  private
-  #TODO: move this to a general /admin area controller superclass
-  def check_admin_privileges
-    user = session[:user]
-    if user and user[:role_names].include? 'admin'
-      return
-    end
-    
-    redirect_to "/collex"
   end
 
 end
