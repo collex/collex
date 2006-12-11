@@ -2,6 +2,7 @@
 # Likewise will all the methods added be available for all controllers.
 class ApplicationController < ActionController::Base
    include ExceptionNotifiable
+   helper_method :render_to_string
    
    filter_parameter_logging "password"
    

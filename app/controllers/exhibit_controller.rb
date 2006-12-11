@@ -16,7 +16,6 @@ class ExhibitController < ApplicationController
   
   def edit
     @exhibit = Exhibit.find(params[:id])
-    @erb = ERB.new(@exhibit.exhibit_type.template).result(binding)
   end
   
   def add_section
