@@ -28,7 +28,7 @@ module ApplicationHelper
     when site_url
       [site_url, site(item['archive']).description]
     else
-      ["/images/harrington.gif", 'No Thumbnail Available']
+      [DEFAULT_THUMBNAIL_IMAGE_PATH, 'No Thumbnail Available']
     end
     image_tag path, options.merge({:alt => alt})
   end
