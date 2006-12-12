@@ -86,7 +86,7 @@ class Solr
   end
   
   def object_detail(objid, user)
-    post_data = "field=uri&qt=object&value=#{url_encode(objid)}&fl=title,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&wt=ruby"
+    post_data = "field=uri&qt=object&value=#{url_encode(objid)}&fl=title,genre,year,date_label,archive,agent,uri,url,thumbnail,source&wt=ruby"
     if user
       post_data << "&username=#{user}"
     end
