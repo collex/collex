@@ -117,18 +117,10 @@ function displayCollector(id, uri, event)
                <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
                 <% if hit["uri"] %>
                   <a class="thumb" href="#" onclick="<%= %Q/displayCollector('collectformarea', '#{hit["uri"]}', event); return false;/%>">
-                   <% if hit["thumbnail"] %>
-                     <img align="left" src="<%= hit["thumbnail"]%>"/>
-                   <% else %>
-                     <%= image_tag "/images/harrington.gif", :align => 'left', :alt => "no thumbnail available"%>
-                   <% end %>
-                </a>
+                    <%= thumbnail_image_tag(hit) %>
+                  </a>
                 <% else %>
-                    <% if hit["thumbnail"] %>
-                      <img align="left" src="<%= hit["thumbnail"]%>"/>
-                    <% else %>
-                      <%= image_tag "/images/harrington.gif", :align => 'left', :alt => "no thumbnail available"%>
-                    <% end %>
+                    <%= thumbnail_image_tag(hit) %>
                 <% end %>
 				 </td></tr>
 					 <tr><td rowspan="1" class="collected" valign="top" align="left"  width="100">
