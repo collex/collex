@@ -22,13 +22,11 @@ display = "#{params[:user]}'s #{display}" if params[:user]
 <% end %>
 
 <table cellspacing="0">
-<% @data['hits'].each do |result|
-    image_link = result['thumbnail'] ? result['thumbnail'] : image_path("harrington.gif")
-%>
+<% @data['hits'].each do |result| %>
     <tr>
       <td align="center">
         <!-- image_tag(image_link, :class=>"image") -->
-     <%= link_to_remote "<img src='#{image_link}' class='image'/>", {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"}%>   
+     <%= link_to_remote thumbnail_image_tag(result, :class => 'image'), {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => result['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"}%>   
          
       </td>
       <td>
