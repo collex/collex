@@ -15,6 +15,28 @@ module ApplicationHelper
   
     label
   end
+  
+  def thumbnail_image_tag(item, options = {})
+    options = {:align => 'left'}.merge(options)
+    site_url = site(item['archive']).thumbnail rescue false
+    item_thumbnail = item['thumbnail'].trim rescue ''
+    item_url = item_thumbnail.length > 0 ? item_thumbnail : false
+    path, alt = 
+    case
+    when item_url
+      [item_url, item['title']]
+    when site_url
+      [site_url, site(item['archive']).description]
+    else
+      ["/images/harrington.gif", 'No Thumbnail Available']
+    end
+    image_tag path, options.merge({:alt => alt})
+  end
+  
+#   def thumbnail_image_tag(item)
+#     path = thumbnail_image_path(item)
+#     image_tag path
+#   end
 
   def is_logged_in?
     session[:user] ? true : false
