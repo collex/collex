@@ -15,7 +15,10 @@
     </script>
     <%= stylesheet_link_tag "new9s", :media => "all" %>
     <%= stylesheet_link_tag "newcollex", :media => "all" %>
-    
+    <style>
+      #menu ul { list-style: none; display: inline;}
+      #menu li { display: inline; }
+    </style>
 </head>
 <body id="<%=controller.controller_name %>-<%= controller.action_name %>">
     
@@ -29,20 +32,22 @@
               <% end -%>
             </div>
         </div><!-- end header -->
-        
-        
-        <% if flash[:notice] -%> 
-          <div id="notice"><%= flash[:notice] %></div> 
-        <% end -%> 
 
         <div id="content">
+          <div id="menu">
+            <ul>
+              <li><%= link_to "Licenses", :controller => "licenses", :action => "index" %></li>
+              <li><%= link_to "Sites", :controller => "site", :action => "index" %></li>
+              <li><%= link_to "User Roles", :controller => "user_roles", :action => "index" %></li>
+            </ul>
+          </div>
         
-            <div id="main">
-
-               <%= yield %>
-
-            </div><!-- end main -->
-            
+          <div id="main">
+          <% if flash[:notice] -%> 
+            <p id="notice"><%= flash[:notice] %></p> 
+          <% end -%>
+            <%= yield %>
+          </div><!-- end main -->
         </div><!-- end content -->
         
         
