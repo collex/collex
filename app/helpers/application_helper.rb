@@ -19,7 +19,7 @@ module ApplicationHelper
   def thumbnail_image_tag(item, options = {})
     options = {:align => 'left'}.merge(options)
     site_url = site(item['archive']).thumbnail rescue false
-    item_thumbnail = item['thumbnail'].trim rescue ''
+    item_thumbnail = item['thumbnail'].strip rescue ''
     item_url = item_thumbnail.length > 0 ? item_thumbnail : false
     path, alt = 
     case
