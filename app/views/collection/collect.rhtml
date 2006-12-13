@@ -86,13 +86,9 @@
         <span class="button" style="float:right;margin-bottom:2px"><%= link_to_function "COLLECT", "check_submit(this);" -%></span> <span class="button" style="float:right;margin-right:5px;margin-bottom:2px"><%= link_to_popup "?", {:controller => 'nines', :action => 'help'}%></span> <br />
         </td>
         </tr> 
-
-
         <% @results.each do |result| %>
             <tr id="row-<%=result['uri']%>" class="<%= result['tag'] ? 'enabled' : 'disabled'%>">
-              <td>
-              <img src="<%= result['thumbnail'] ? result['thumbnail'] : image_path("harrington.gif")%>"/>
-              </td>
+              <%= td thumbnail_image_tag(result) %>
               <td>
                 <span class="title"><%= h result["title"] %></span><br/>
                 source:
@@ -110,8 +106,6 @@
               </td>
             </tr>
             <% end %>
-
-
         <tr class="nav">
         <td>&nbsp;</td>
         <td>&nbsp;</td>
