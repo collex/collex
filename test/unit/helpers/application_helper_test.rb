@@ -26,7 +26,7 @@ class ApplicationHelperTest < HelperTestCase
   
   def test_thumbnail_image_tag_should_get_generic_image_when_no_others
     item = {'archive' => 'generic', 'title' => 'The Generic'}
-    expected = %(<img src="#{DEFAULT_THUMBNAIL_IMAGE_PATH}?4500" alt="No Thumbnail Available" align="left"/>)
+    expected = %(<img src="#{DEFAULT_THUMBNAIL_IMAGE_PATH}?4500" alt="The Generic" align="left"/>)
     result = thumbnail_image_tag(item)
     puts result
     assert_dom_equal(expected, result)    
@@ -34,7 +34,7 @@ class ApplicationHelperTest < HelperTestCase
   
   def test_thumbnail_image_tag_should_get_site_image_when_no_specific_thumbnail
     item = {'archive' => 'site', 'title' => 'Specific Site Title'}
-    expected = %(<img src="http://some.site.url.com/image.gif" alt="Site Description" align="left"/>)
+    expected = %(<img src="http://some.site.url.com/image.gif" alt="Specific Site Title" align="left"/>)
     result = thumbnail_image_tag(item)
     puts result
     assert_dom_equal(expected, result)

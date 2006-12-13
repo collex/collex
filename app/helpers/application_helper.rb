@@ -21,16 +21,8 @@ module ApplicationHelper
     site_url = site(item['archive']).thumbnail rescue false
     item_thumbnail = item['thumbnail'].strip rescue ''
     item_url = item_thumbnail.length > 0 ? item_thumbnail : false
-    path, alt = 
-    case
-    when item_url
-      [item_url, item['title']]
-    when site_url
-      [site_url, site(item['archive']).description]
-    else
-      [DEFAULT_THUMBNAIL_IMAGE_PATH, 'No Thumbnail Available']
-    end
-    image_tag path, options.merge({:alt => alt})
+    path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
+    image_tag path, options.merge({:alt => item['title']})
   end
 
   def is_logged_in?
