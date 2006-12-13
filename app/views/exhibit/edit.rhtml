@@ -29,17 +29,13 @@ Sections:
                  <br/>Panels:
                  <ul>
                      <% section.section_type.panel_types.each do |pt|%>
-                     <li><%= render_panel(pt) %></li>
+                     <li><%= render_panel(pt, "edit") %></li>
                      <% end %>
                  </ul>
              </li>
            <% end %>
        </ol>
   </li>
-
-----
- <%= @erb %>
-----
 
 <div id="footer" style="text-align:center">
       <a href="http://www.nines.org">NINES</a>: aggregating #####&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.cache.size%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
