@@ -7,6 +7,7 @@ require 'action_controller/test_process'
 require 'action_web_service/test_invoke'
 require 'breakpoint'
 require 'application'
+require File.expand_path(File.dirname(__FILE__) + '/helper_testcase')
 
 #class Test::Unit::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
