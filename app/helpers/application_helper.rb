@@ -32,11 +32,6 @@ module ApplicationHelper
     end
     image_tag path, options.merge({:alt => alt})
   end
-  
-#   def thumbnail_image_tag(item)
-#     path = thumbnail_image_path(item)
-#     image_tag path
-#   end
 
   def is_logged_in?
     session[:user] ? true : false
