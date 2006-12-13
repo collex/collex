@@ -24,7 +24,7 @@ ActionController::Routing::Routes.draw do |map|
   map.permalink 'permalink/detail', :controller => 'sidebar', :action => 'permalink', :view => 'detail'
 
   map.connect 'collex/:action', :controller => 'search'
-  map.connect 'admin', :controller => 'admin/menu'
+  map.connect 'admin', :controller => 'admin/default'
   
   # /solr/update is mapped here to allow RdfFileIndexer2 to post here without change
   map.connect 'solr/update', :controller => 'resource', :action => 'post'
