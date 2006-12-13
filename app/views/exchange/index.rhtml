@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>Exchanges and Errors</title>
+<%= stylesheet_link_tag 'http://nines.org/stylesheets/new9s.css' %>
+<%= stylesheet_link_tag 'http://nines.org/stylesheets/sidebar.css' %>
+<%= stylesheet_link_tag 'upload_style' %>
+</head>
+<body>
+
+	<div id="mainContent">
+		<div id="collectformarea"></div>
+	<div id="container">
+	    <div id="banner">
+	      <div id="navcontainer"></div>
+	    </div>
+		<div id="content">
+          	<div class="pagination">
+		<div id="navcontainer2">
+			<ul id="navlist2">
+				<!--<li class="active"><a id="current">SEARCH &amp; BROWSE</a></li>
+				<li><a style="cursor:default">BUILD EXHIBITS</a></li>-->
+
+			</ul>
+		</div>  <br class="clearboth" />
+	</div>
+	
+    <table class="constables" cellspacing="0">
+	<tr colspan="2">
+		<td width="100%" valign="top">
+
+
+<table class="constraints" cellspacing="0" align="center" valign="top">
+<caption>Transaction Log</caption>
+	<tr>
+		<td>
+<p style="font-size: 12px; color: #666"></p>
+
+<table align="center" width="600" cellpadding="4" cellspacing="0">
+	<th width="33%" align="left">
+		<p style="font-size: 12px">Item</p>
+	</th>
+	<th width="33%" align="left">
+		<p style="font-size: 12px">URI</p>
+	</th>
+	<th width="34%" align="left">
+		<p style="font-size: 12px">Timestamp</p>
+	</th>
+	
+<% for exchange in @exchanges %>
+	<tr>
+		<td>	
+			<p style="font-size: 12px"><%= exchange.item %></p>
+		</td>
+		<td>
+			<p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= exchange.uri %></a></p>
+		</td>
+		<td>
+			<p style="font-size: 12px"><%= exchange.stamp %></p>
+		</td>
+	</tr>
+<% end %>
+
+</table>
+
+		</td>
+	</tr>
+</table>
+
+<!-- Begin Error Log -->
+<br />
+
+<table class="constraints" cellspacing="0" align="center" valign="top">
+<caption>Error Log</caption>
+	<tr>
+		<td>
+<% if !@errors[0] %>
+	<p style="font-size: 12px">No errors found</p>
+<% else %>
+
+<table align="center" width="600" cellpadding="4" cellspacing="0">
+	<th width="33%" align="left">
+		<p style="font-size: 12px">Item</p>
+	</th>
+	<th width="33%" align="left">
+		<p style="font-size: 12px">URI</p>
+	</th>
+	<th width="34%" align="left">
+		<p style="font-size: 12px">Timestamp</p>
+	</th>
+
+
+
+	<% for error in @errors %>
+		<tr>
+			<td>	
+				<p style="font-size: 12px"><%= error.item %></p>
+			</td>
+			<td>
+				<p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= error.uri %></a></p>
+			</td>
+			<td>
+				<p style="font-size: 12px"><%= error.stamp %></p>
+			</td>
+		</tr>
+	<% end %>
+
+<% end %>
+
+</table>
+
+		</td>
+	</tr>
+</table>
+
+
+		</td>
+	</tr>
+</table>
+
+<div id="under">
+	<div id="footer" style="text-align:center">
+		&nbsp;
+	</div>
+</div>
+
+</body>
+</html>
+ 

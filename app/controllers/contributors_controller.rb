@@ -26,7 +26,15 @@ class ContributorsController < ApplicationController
     @contributor = Contributor.new(params[:contributor])
     
     if @contributor.save
-	  FileUtils::mkdir( RAILS_ROOT+"/rdf_test/"+params[:contributor]['archive_name'] )
+      	archive_name = params[:contributor]['archive_name']
+		@contribs = Contributor.find_by_sql("SELECT id FROM contributors WHERE archive_name = '"+archive_name+"'")
+		for contrib in @contribs
+			@contri_dir = contrib.id.to_s
+		end		
+    
+    
+	  #FileUtils::mkdir( RAILS_ROOT+"/rdf_test/"+params[:contributor]['archive_name'] )
+      FileUtils::mkdir( RAILS_ROOT+"/rdf_test/"+@contri_dir )
       flash[:notice] = 'Contributor was successfully created.'
       redirect_to :action => 'list'
     else
