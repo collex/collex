@@ -24,3 +24,17 @@ production:
 sqlite3_in_memory_example:
   adapter: sqlite3
   dbfile: ":memory:"
+
+#Java constants
+sqlUser: root
+sqlPass: 
+sqlServer: 
+smtpServer: 
+smtpFromEmail: 
+smtpPassword: 
+smtpPort: 
+solrUrl: http://localhost:8983/solr/update
+rails_root: localhost:3000
+dir1: 
+dir2: 
+tempdir: 
