@@ -1,0 +1,35 @@
+<%= stylesheet_link_tag 'nines_style' %>
+
+<div align="center">
+	<div id="container">
+	    <div id="banner" align="left">
+			<span class="emph1"><a href="http://www.nines.org/collex/">NINES</a></span><br />
+	    </div>
+		<div id="content">
+          	<div class="pagination"></div>
+
+<h2>Files awaiting approval</h2>
+<p style="width: 500px">Click on a filename to view all of the titles associated with that task</p>
+
+<table width="60%" class="constraints">
+<caption>Uploaded Files</caption>
+	<tr>
+		<td width="40%" style="border-bottom: 1px solid #333"><strong>Filename</strong></td>
+		<td width="30%" style="border-bottom: 1px solid #333"><strong>Archive</strong></td>
+		<td width="30%" style="border-bottom: 1px solid #333"><strong>Contributor</strong></td>
+	</tr>
+	<% for task in @tasks %>
+	<tr>
+		<td><%= link_to task.file_name, :action => "titles", :id => task.id %></td>
+		<td><%= task.archive_name %></td>
+		<% archive_name = task.archive_name %>
+		<% @contribs = Contributor.find_by_archive_name(archive_name) %>
+		<td><a href="mailto:<%= @contribs.email %>"><%= @contribs.contact %></a></td>
+	</tr>
+	<% end %>
+</table>
+<br />
+
+<div>
+	<div id="footer" style="text-align:center">&nbsp;</div>
+</div>

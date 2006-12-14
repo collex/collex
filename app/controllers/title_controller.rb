@@ -54,12 +54,19 @@ class TitleController < ApplicationController
   	@task = Task.find(thistaskid)
   	
   	thistaskidstring = thistaskid.to_s
-  	@deltitles = Title.find_by_sql("SELECT * FROM titles WHERE task_id = '"+thistaskidstring +"'")
-  	for deltitle in @deltitles
-  		Title.find(deltitle.id).destroy
-  	end
+  	#@deltitles = Title.find_by_sql("SELECT * FROM titles WHERE task_id = '"+thistaskidstring +"'")
+  	@deltitles = Title.find_by_task_id(thistaskidstring)
+	@deltitles.destroy
+	  	
+  	archive_name = @task.archive_name
+	@contribs = Contributor.find_by_archive_name(archive_name)
+	@contri_dir = @contribs.id.to_s	
+	@fname = @task.file_name
+  	
+  	FileUtils::rm(RAILS_ROOT+"/rdf_test/#{@contri_dir}/#{@fname}")  	
   	
   	@task.destroy
+    
     redirect_to :action => 'list'
   end
   

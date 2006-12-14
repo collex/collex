@@ -1,0 +1,13 @@
+<% for column in Title.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b><br />
+  <%=h @title.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @title %> |
+<%= link_to 'Approve this Title', { :action => 'approve', :id => @title }, :confirm => 'Approve this Record?', :post => true %> | 
+<%= link_to 'Delete this Title', { :action => 'destroy', :id => @title }, :confirm => 'Warning: Deleting this record will delete the Task with which it is associated, as well as any other titles that may belong to that task.\n\nAre you sure you want to delete this title?', :post => true %>
+
+<br /><br />
+<%= link_to 'Back', :action => 'list' %>
