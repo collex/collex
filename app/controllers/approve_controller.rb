@@ -18,8 +18,6 @@ class ApproveController < ApplicationController
   	@task = Task.find(params[:id])
   	@contributor = Contributor.find_by_archive_name(@task.archive_name)
   end
-  
-   #####################################
    
   def destroy
   	@task = Task.find(params[:id])
@@ -38,21 +36,24 @@ class ApproveController < ApplicationController
   	
   	@task.destroy
     
+    flash[:notice] = "<h3>Titles deleted.</h3><p>Your titles were deleted successfully.</p>"
     redirect_to :action => 'index'
   end
   
   def approve
-  	#Title.find(params[:id]).destroy
-  	@titles = Title.find_all_by_task_id(params[:id])
-  	for title in @titles
-  		@uri = title.uri
-  		@solr_xml = "<drop><uri>#{@uri}</uri></drop>"
-		TestHTTP.new(@solr_xml)
-		
-		@xml = title.xml
-		TestHTTP.new(@xml)		
-  	end
-  	redirect_to :action => 'index'
+	@titles = Title.find_all_by_task_id(params[:id])
+	for title in @titles
+		approval = Approval.new(:id => title.id, :task_id => params[:id].to_i, :uri => title.uri, :xml => title.xml)
+		if approval.save
+			title.destroy
+		end
+	end
+	# Uncomment if you wish to destroy the task record from Ruby
+	#@task = Task.find(params[:id])
+	#@task.destroy
+	
+	flash[:notice] = "<h3>Titles approved.</h3><p>Your titles have been successfully approved.  They will be processed and added to NINES shortly.</p>"
+	redirect_to :action => 'index'
   end
    
 end
