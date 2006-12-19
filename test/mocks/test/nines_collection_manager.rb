@@ -8,6 +8,10 @@ class NinesCollectionManager
     @cache ||= {}
     @cache[username] = collectables
   end
+
+  def object_detail(objid, user)
+    [nil, nil, nil]
+  end
   
   def cache
     @cache
