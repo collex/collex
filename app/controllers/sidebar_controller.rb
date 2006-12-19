@@ -48,6 +48,12 @@ class SidebarController < ApplicationController
   def detail
      user = session[:user]
      @object, @mlt, @collection_info = COLLEX_MANAGER.object_detail(params[:objid], user ? user[:username] : nil)
+     if @object.nil?
+       flash.now[:error] = "No object with that object ID could be found."
+       session[:sidebar_state] = nil
+       logger.info("BAD PERMALINK objid: #{params[:objid]}")
+       redirect_to :controller => "sidebar", :action => "cloud" and return 
+     end
      if user
        user = User.find_by_username(user[:username])
        @interpretation = user.interpretations.find_by_object_uri(params[:objid]) || Interpretation.new
