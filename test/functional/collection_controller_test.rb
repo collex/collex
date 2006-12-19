@@ -5,7 +5,7 @@ require 'collection_controller'
 class CollectionController; def rescue_action(e) raise e end; end
 
 class CollectionControllerTest < Test::Unit::TestCase
-#  fixtures :items, :user_objects
+  fixtures :users
   
   def setup
     @controller = CollectionController.new
@@ -26,19 +26,7 @@ class CollectionControllerTest < Test::Unit::TestCase
      
      post :add, {"tags-#{uri}" => "some tags", "notes-#{uri}" => "test annotation"}
      
-     puts COLLEX_MANAGER.cache.to_s
-     assert_redirected_to :action => "list"
-     
-#     item = Item.find_by_url(url)
-     
-#     assert_equal url, item.url
-     
-#     assert_equal 1, item.user_objects.length # dave's object
-#     assert_equal "dave", item.user_objects[0].user.username
-     
-#     assert_equal 2, item.object_tags.length  # "blessed" and "damozel"
-#     assert_equal "blessed", item.object_tags[0].tag
-#     assert_equal "damozel", item.object_tags[1].tag
+     assert_response :success
   end
   
 end

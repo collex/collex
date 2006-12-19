@@ -23,12 +23,12 @@ class CollectionController < ApplicationController
      # currently split by whitespace, but TODO in the future this should be enhanced to
      # allow tags to be quoted, so that the string /"this is a single tag" and-so-is-this/ is parsed
      # as two tags instead of six
-     @request.params.each do |key,value|
+     params.each do |key,value|
         match = /^tags-(.*)/.match(key.to_s)
         if match
-          if value[0] != TAG_INSTRUCTIONS
+          if value != TAG_INSTRUCTIONS
             uri = match[1]
-            tags = value[0]
+            tags = value
             annotation = params["notes-#{uri}"]
             annotation = "" if annotation == ANNOTATION_INSTRUCTIONS
             

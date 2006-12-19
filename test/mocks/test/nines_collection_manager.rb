@@ -9,6 +9,10 @@ class NinesCollectionManager
     @cache[username] = collectables
   end
 
+  def objects_behind_urls(urls, user)
+    []
+  end
+
   def object_detail(objid, user)
     [nil, nil, nil]
   end

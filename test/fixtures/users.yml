@@ -10,3 +10,10 @@
   email: <%= name %>@collex.org
 
 <% end %>
+
+dave:
+  id: 99
+  username: dave
+  password_hash: foobar
+  fullname: Dave
+  email: dave@whatever.com
