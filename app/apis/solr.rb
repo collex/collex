@@ -40,6 +40,7 @@ class Solr
     if username
       post_data << "&username=#{username}"
     end
+    RAILS_DEFAULT_LOGGER.debug("----------post_data: #{post_data}")
     
     raw_response = post_to_solr(post_data)
     match = /ParseException: (.*)/.match(raw_response)
@@ -180,7 +181,9 @@ class Solr
   def post_to_solr(body, mode = :search)
     post = Net::HTTP::Post.new(mode == :search ? "/solr/select" : "/solr/update")
     post.body = body
-    post.content_type = 'application/x-www-form-urlencoded'
+    post.content_type = 'application/x-www-form-urlencoded; charset=utf-8'
+    RAILS_DEFAULT_LOGGER.debug("--------post: #{post.inspect}")
+    RAILS_DEFAULT_LOGGER.debug("--------body: #{body}")
     response = Net::HTTP.start(@url.host, @url.port) do |http|
       http.request(post)
     end
