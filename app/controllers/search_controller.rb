@@ -72,7 +72,9 @@ class SearchController < ApplicationController
      if params['field'] and params['field']['content']
        expression = params['field']['content']
        if expression and expression.strip.size > 0
+         logger.debug("------expression: #{expression}")
          session[:constraints] << {:expression => expression}
+         logger.debug("------constraints: #{session[:constraints].last[:expression]}")
        end
      end
      redirect_to :action => 'browse'
