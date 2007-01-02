@@ -25,16 +25,16 @@ class ApplicationController < ActionController::Base
        @headers['Content-Type'] = 'text/html; charset=utf-8'
        @headers['Pragma'] = 'no-cache'
        @headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-      end
+     end
        
-      def authorize
-        unless session[:user] 
-          flash[:notice] = "please log in" 
+     def authorize
+       unless session[:user] 
+         flash[:notice] = "please log in" 
        
-          # save the URL the user requested so we can hop back to it after login
-          session[:jumpto] = @request.request_uri if not request.xhr?
+         # save the URL the user requested so we can hop back to it after login
+         session[:jumpto] = @request.request_uri if not request.xhr?
        
-          redirect_to(:controller => "login", :action => "login") 
-         end 
-      end 
+         redirect_to(:controller => "login", :action => "login") 
+       end 
+     end 
 end
