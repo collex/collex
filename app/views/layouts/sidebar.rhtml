@@ -1,3 +1,6 @@
+<%= javascript_tag("window.body.onload = window.location.reload();") if flash[:refresh_page] %>
+
+
 <% if flash[:notice] -%> 
   <div id="notice"><%= flash[:notice] %></div> 
 <% end -%> 
