@@ -1,5 +1,9 @@
 class ExhibitController < ApplicationController
-  before_filter :authorize
+  if ENV['RAILS_ENV'] == 'production'
+    before_filter :coming_soon
+  else
+    before_filter :authorize, :except => ["index", "coming_soon"]
+  end
   layout "nines"
   
   def mine
@@ -31,5 +35,10 @@ class ExhibitController < ApplicationController
     @exhibit.user = User.find_by_username(session[:user][:username])
     @exhibit.save
     redirect_to :action => 'edit', :id => @exhibit
+  end
+  
+  private
+  def coming_soon
+    render :text => "<h2 style='color:red'>Exhibit Section Under Development</h2>", :layout => true and return
   end
 end
