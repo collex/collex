@@ -6,11 +6,6 @@ class ApplicationHelperTest < HelperTestCase
 
   #fixtures :users, :articles
 
-  def setup
-    super
-    ENV["RAILS_ASSET_ID"] = "4500"
-  end
-
   # mock of ApplicationHelper#site()
   def site(code)
     case code
@@ -26,7 +21,7 @@ class ApplicationHelperTest < HelperTestCase
   
   def test_thumbnail_image_tag_should_get_generic_image_when_no_others
     item = {'archive' => 'generic', 'title' => 'The Generic'}
-    expected = %(<img src="#{DEFAULT_THUMBNAIL_IMAGE_PATH}?4500" alt="The Generic" align="left"/>)
+    expected = %(<img src="#{DEFAULT_THUMBNAIL_IMAGE_PATH}" alt="The Generic" align="left"/>)
     result = thumbnail_image_tag(item)
     puts result
     assert_dom_equal(expected, result)    
@@ -48,5 +43,12 @@ class ApplicationHelperTest < HelperTestCase
     assert_dom_equal(expected, result)
   end
 
+  def test_thumbnail_image_tag_without_extension
+    item = {'archive' => 'site', 'title' => 'Specific Site Title', 'thumbnail' => 'http://www.purl.org/swinburnearchive/img/tsa9thmb00/'}
+    expected = %(<img src="http://www.purl.org/swinburnearchive/img/tsa9thmb00/" alt="Specific Site Title" align="left"/>)
+    result = thumbnail_image_tag(item)
+    puts result
+    assert_dom_equal(expected, result)
+  end
   
 end
