@@ -10,7 +10,9 @@ class ApplicationHelperTest < HelperTestCase
   def site(code)
     case code
     when 'generic'
-      Site.new
+      Site.new do |s|
+        s.thumbnail = ''
+      end
     when 'site'
       Site.new do |s|
         s.description = 'Site Description'
