@@ -39,6 +39,6 @@ class ExhibitController < ApplicationController
   
   private
   def coming_soon
-    render :text => "<h2 style='color:red'>Exhibit Section Under Development</h2>", :layout => true and return
+    render :template => "exhibit/coming_soon" and return
   end
 end
