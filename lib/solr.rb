@@ -1,7 +1,6 @@
 require 'net/http'
 require "erb"
 include ERB::Util
-include REXML
 
 class Solr
   def initialize

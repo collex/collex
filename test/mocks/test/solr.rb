@@ -1,4 +1,4 @@
-require 'apis/solr'
+require 'lib/solr'
 class Solr
   def update(username, object_uri, tags, annotation)
   end

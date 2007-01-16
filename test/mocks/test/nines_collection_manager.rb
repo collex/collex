@@ -1,4 +1,4 @@
-require 'apis/nines_collection_manager'
+require 'lib/nines_collection_manager'
 class NinesCollectionManager
   def login(username, password)
     {:username => username, :fullname => username}
