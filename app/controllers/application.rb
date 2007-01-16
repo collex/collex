@@ -22,9 +22,9 @@ class ApplicationController < ActionController::Base
      end
    
      def set_charset
-       @headers['Content-Type'] = 'text/html; charset=utf-8'
-       @headers['Pragma'] = 'no-cache'
-       @headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+       headers['Content-Type'] = 'text/html; charset=utf-8'
+       headers['Pragma'] = 'no-cache'
+       headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
      end
        
      def authorize
@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
          flash[:notice] = "please log in" 
        
          # save the URL the user requested so we can hop back to it after login
-         session[:jumpto] = @request.request_uri if not request.xhr?
+         session[:jumpto] = request.request_uri if not request.xhr?
        
          redirect_to(:controller => "login", :action => "login") 
        end 
