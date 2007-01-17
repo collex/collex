@@ -1,0 +1,12 @@
+<h1>Editing exhibit</h1>
+
+<%= error_messages_for :exhibit %>
+
+<% form_for(:exhibit, :url => exhibit_path(@exhibit), :html => { :method => :put }) do |f| %>
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', exhibit_path(@exhibit) %> |
+<%= link_to 'Back', exhibits_path %>

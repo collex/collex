@@ -1,0 +1,22 @@
+<style type="text/css" media="screen">
+/* <![CDATA[ */
+  .exhibit-section {
+    border: 1px solid #999;
+    padding: 10px 15px;
+  }
+/* ]]> */
+</style>
+
+
+<% div :class => "exhibit-section" do %>
+  <%= p @exhibit.title %>
+  <%= p @exhibit.user.fullname %>
+  <%= p @exhibit.license.description %>
+  
+  <% Resource.find(:first).properties.each do |prop| %>
+    <%= p "#{prop.name}: #{prop.value}"  %>
+  <% end %>
+<% end %>
+
+<%= link_to 'Edit', edit_exhibit_path(@exhibit) %> |
+<%= link_to 'Back', exhibits_path %>
