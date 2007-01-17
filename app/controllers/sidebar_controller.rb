@@ -1,5 +1,3 @@
-require_dependency 'nines_collection_manager'
-
 class SidebarController < ApplicationController
   before_filter :authorize, :only => [:update, :collect, :remove]
   before_filter :check_authorize, :only => [:list, :cloud, :cloud, :detail]
