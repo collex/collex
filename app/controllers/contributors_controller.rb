@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'yaml'
 
 class ContributorsController < ApplicationController
   def index
@@ -33,7 +34,10 @@ class ContributorsController < ApplicationController
     
     
 	  #FileUtils::mkdir( RAILS_ROOT+"/rdf_test/"+params[:contributor]['archive_name'] )
-      FileUtils::mkdir( RAILS_ROOT+"/rdf_test/"+@contri_dir )
+	  tree = YAML::parse(File.open(RAILS_ROOT+"/config/database.yml"))
+		obj_tree = tree.transform
+		dirA = obj_tree['java_constants']['dir1']
+		FileUtils::mkdir( dirA+"/"+@contri_dir )
       flash[:notice] = '<h3>Archive was successfully created.</h3><p>You can now select this Archive from the "Select an Archive" dropdown menu.</p>'
       redirect_to '/upload'
     else

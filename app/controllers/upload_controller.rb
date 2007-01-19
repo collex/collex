@@ -1,4 +1,5 @@
 require 'decompress'
+require 'yaml'
 
 class UploadController < ApplicationController  
 	def index
@@ -9,6 +10,10 @@ class UploadController < ApplicationController
 	end
 
 	def save_file
+	    tree = YAML::parse(File.open(RAILS_ROOT+"/config/database.yml"))
+		obj_tree = tree.transform
+		dirA = obj_tree['java_constants']['dir1']
+		dirB = obj_tree['java_constants']['dir2']
 		if params[:archive_name] == "" || (params[:file].length < 2)
 			flash[:notice] = "<h3>Please Complete all Form Fields.</h3><p>Please select an archive from the dropdown menu (or add one by clicking 'Add a new Archive'), and specify a file to upload.</p>"
 			redirect_to :action => 'index'
@@ -26,7 +31,7 @@ class UploadController < ApplicationController
 		    else
 		    	if
 		    		# Change this location to reflect the desired file upload directory
-		               File.open(RAILS_ROOT+"/rdf_test/#{@contri_dir}/#{@fname}", "wb") do |f| 
+		               File.open(dirA+"/#{@contri_dir}/#{@fname}", "wb") do |f| 
 		    			f.write(@params['file'].read)
 		   			end
 				end
@@ -34,11 +39,11 @@ class UploadController < ApplicationController
 		    		# Change this location to the location specified above, where it will find 	the .zip	
 		    		# 	(The decompres.rb file referenced below also specifies a path 
 		    		#	for unzipped files - this should be changed to the path above + "/unzip/")
-	 	              Decompress.new(RAILS_ROOT+"/rdf_test/#{@contri_dir}/#{@fname}", @contri_dir)
+	 	              Decompress.new(dirA+"/#{@contri_dir}/#{@fname}", @contri_dir)
 		     	end	     	
 		     	#redirect_to :action => 'thankyou'
 		     	flash[:notice] = "<h3>Thank You for your submission.</h3> <p>It is being processed. You will receive an email once the processing is complete.</p>"
-		     	redirect_to 'index'
+		     	redirect_to '/upload'
 			end
 		end
 	end
