@@ -24,6 +24,9 @@ class Resource < ActiveRecord::Base
     mla_names_for(self.role_AUTs)
   end
   
+  # This returns a list of names in the "Last, First." format.
+  # "First Last" and "Last, First" input are handled
+  # TODO handle "Jr", "II", "III", etc suffixes
   def mla_names_for(name_list)
     return "---." if name_list.size < 1
     unformatted_names = name_list.collect{ |auth| auth.value }
