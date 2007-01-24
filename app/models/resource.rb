@@ -17,7 +17,7 @@ class Resource < ActiveRecord::Base
   end
   
   def to_mla_citation
-  
+    "#{self.mla_authors} <em>#{self.title.value}.</em> MORE TO BE ADDED LATER"
   end
   
   def mla_authors
