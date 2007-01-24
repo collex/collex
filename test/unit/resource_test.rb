@@ -2,15 +2,20 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class ResourceTest < Test::Unit::TestCase
 #   fixtures :resources
-
+  
+  def setup
+    @res = Resource.create
+    @prop_1 = Property.create(:name => "role_AUT", :value => "First Last")
+    @prop_2 = Property.create(:name => "role_AUT", :value => "Last-Name, Second")
+    @prop_3 = Property.create(:name => "role_AUT", :value => "T.N. Surname")
+    
+  end
   # Replace this with your real tests.
   def test_truth
     assert true
   end
   
   def test_mla_authors_should_format_single_author
-    @prop_1 = Property.create(:name => "role_AUT", :value => "First Last")
-    @res = Resource.create
     @res.properties << @prop_1
     assert_equal(1, @res.properties.size)
     
@@ -23,9 +28,6 @@ class ResourceTest < Test::Unit::TestCase
   end
   
   def test_mla_authors_should_format_two_authors_with_and
-    @prop_1 = Property.create(:name => "role_AUT", :value => "First Last")
-    @prop_2 = Property.create(:name => "role_AUT", :value => "Last-Name, Second")
-    @res = Resource.create
     @res.properties << @prop_1
     @res.properties << @prop_2
     assert_equal(2, @res.properties.size)
@@ -39,10 +41,6 @@ class ResourceTest < Test::Unit::TestCase
   end
   
   def test_mla_authors_should_format_many_authors_with_commas_and_and
-    @prop_1 = Property.create(:name => "role_AUT", :value => "First Last")
-    @prop_2 = Property.create(:name => "role_AUT", :value => "Last-Name, Second")
-    @prop_3 = Property.create(:name => "role_AUT", :value => "T.N. Surname")
-    @res = Resource.create
     @res.properties << @prop_1
     @res.properties << @prop_2
     @res.properties << @prop_3
