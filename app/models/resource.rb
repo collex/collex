@@ -15,15 +15,18 @@ class Resource < ActiveRecord::Base
       return name == singular_name ? props[0] : props
     end
   end
-   
+  
   def to_mla_citation
-    
+  
   end
-   
+  
   def mla_authors
-    authors = self.role_AUTs
-    return "---." if authors.size < 1
-    unformatted_names = authors.collect{ |auth| auth.value }
+    mla_names_for(self.role_AUTs)
+  end
+  
+  def mla_names_for(name_list)
+    return "---." if name_list.size < 1
+    unformatted_names = name_list.collect{ |auth| auth.value }
     names = unformatted_names.collect do |name|
       if name.include?(", ") then name else n = name.split(" "); n.last + ", " + n[0..-2].join(" ") end
     end
