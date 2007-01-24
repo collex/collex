@@ -1,4 +1,4 @@
-require 'lib/nines_collection_manager'
+require File.expand_path(File.dirname(__FILE__) + '/../../../lib/nines_collection_manager')
 class NinesCollectionManager
   def login(username, password)
     {:username => username, :fullname => username}
