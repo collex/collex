@@ -1,0 +1,9 @@
+<%= p "YOU FOUND ME! (Citation Template)" %>
+
+<% section.resources.each do |r| %>
+  <%= r.to_mla_citation %>
+<% end %>
+<hr/>
+<% section.exhibited_resources.each do |r| %>
+  <%= r.resource.inspect %>
+<% end %>

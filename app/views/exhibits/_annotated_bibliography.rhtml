@@ -1,0 +1,4 @@
+<% @exhibit.sections.each do |section| %>
+  <%= render :partial => section.template, :locals => {:section => section} %>
+  
+<% end %>
