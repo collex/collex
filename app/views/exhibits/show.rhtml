@@ -12,10 +12,12 @@
   <%= p @exhibit.title %>
   <%= p @exhibit.user.fullname %>
   <%= p @exhibit.license.description %>
+
+  <%= render :partial => @exhibit.template %>
   
-  <% Resource.find(:first).properties.each do |prop| %>
-    <%= p "#{prop.name}: #{prop.value}"  %>
-  <% end %>
+  <%# Resource.find(:first).properties.each do |prop| %>
+    <%#= p "#{prop.name}: #{prop.value}"  %>
+  <%# end %>
 <% end %>
 
 <%= link_to 'Edit', edit_exhibit_path(@exhibit) %> |
