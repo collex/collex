@@ -14,7 +14,7 @@
 <!--        <span class="text" style="float:right;font-size:1.4em"> <a href=""> &gt;&gt; </a> </span> <br/> -->
 
         <div class="rdf">
-        <% if @object['url'] %><a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><% end %><%= h @object['title'] ? @object['title'] : "<untitled>" %><% if @object['url'] %></a> &rarr;<% end %><br />
+        <% if @object['url'] %><a target="_blank" style="float:left" href="<%=@object['url'][0]%>" style="font-size:1.1em"><% end %><%= h @object['title'] ? @object['title'] : "<untitled>" %><% if @object['url'] %></a> &rarr;<% end %><br />
         <% if @object['year']
            @object['year'].each do |year|%>
           <%= link_to_remote year, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => 'year', :value => year}  %>
