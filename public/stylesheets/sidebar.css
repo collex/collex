@@ -131,6 +131,14 @@
    font-size: 26px;
 	line-height: 1em;
 }
+	.cloudheader {
+		font-size: 10px;
+		background-color: #d3d3d3;
+		text-align: center;
+		border-top: 1px solid #666;
+		line-height: 130%;
+		padding: 5px !important;
+	}
 	.cloudfooter {
 		font-size: 10px;
 		background-color: #d3d3d3;
