@@ -7,7 +7,7 @@ end
 display = "#{params[:user]}'s #{display}" if params[:user]
 %>
 <div class="topnav">
-  <div class="search"><%= start_form_tag :controller=>'search', :action => :new_expression -%><%= text_field_tag "field[content]", "search", :onFocus=>"this.value=''" -%>&nbsp;<%= end_form_tag -%></div>
+  <%= search_form %>
   <div class="browsetags"><%= link_to_remote "BROWSE #{params[:type].upcase}S", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'cloud', :type => params[:type]}%></div>
 </div>
 
