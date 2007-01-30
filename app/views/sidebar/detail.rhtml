@@ -47,11 +47,11 @@
           <%= text_field_tag :tags, @interpretation.tag_list -%><br/>
               
           <%= text_area_tag(:annotation, @interpretation.annotation, :size => '22x8') -%><br/>
-          <span class="emph2">
-              <% if  not @interpretation.new_record? %>
-                <%=link_to_remote "remove", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
-              <% end %>
-              <%= link_to_function @interpretation.new_record? ? "collect" : "save", "if (document.forms['dataform'].tags.value == '') { alert('At least one tag is required to collect an object'); return false; };  document.forms['dataform'].onsubmit();" %>
+          <span class="emph4">
+              <% unless @interpretation.new_record? -%>
+                <%=link_to_remote "remove object", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
+              <% end -%>
+              <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "if (document.forms['dataform'].tags.value == '') { alert('At least one tag is required to collect an object'); return false; };  document.forms['dataform'].onsubmit();" %>
           </span>
         <%= end_form_tag -%>
         <% else %>

@@ -143,8 +143,15 @@
 	margin-right: .3em;
 }
 
-#sidebar .emph2 a {
-	margin-right: .5em;
+#sidebar .emph4 {
+	font: 1em  trebuchet ms, verdana, sans-serif;
+}
+
+#sidebar .emph4 a {
+	background-color: #A60000;
+	color: white;
+	padding-right: .25em;
+	padding-left: .25em;
 }
 	.cloudheader {
 		font-size: 10px;
