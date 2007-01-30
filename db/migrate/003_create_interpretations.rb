@@ -125,26 +125,26 @@ class CreateInterpretations < ActiveRecord::Migration
     add_index "tags", ["name"], :name => "tags_name", :unique => true
         
 # migrate the tags by querying Solr for type:C - http://localhost:8983/solr/select?wt=ruby&q=type:C
-    write "Importing interpretations from Solr..."
-    solr = Solr.new
-    post_data = "wt=ruby&q=type:C&rows=10000" # hard-coded to 10000, but our production server has < 300 interpretations now
-    data = eval(solr.post_to_solr(post_data))
-    docs = data['response']['docs']
-    write "#{docs.size} interpretations."
-    docs.each do |doc|
-      user = User.find_by_username(doc['username'])
-      if user
-        interpretation = Interpretation.new(:user_id => user.id)
-        interpretation.annotation = doc['annotation']
-        interpretation.object_uri = doc['object_uri']
-        tags = Tag.find_or_create(doc['tag']) if doc['tag']
-        Tagging.add_to interpretation, tags if tags
-        interpretation.save
-      else
-        write "  WARNING: User #{doc['username']} not found."
-      end
-    end
-    write "Done importing interpretations from Solr."
+    # write "Importing interpretations from Solr..."
+    # solr = Solr.new
+    # post_data = "wt=ruby&q=type:C&rows=10000" # hard-coded to 10000, but our production server has < 300 interpretations now
+    # data = eval(solr.post_to_solr(post_data))
+    # docs = data['response']['docs']
+    # write "#{docs.size} interpretations."
+    # docs.each do |doc|
+    #   user = User.find_by_username(doc['username'])
+    #   if user
+    #     interpretation = Interpretation.new(:user_id => user.id)
+    #     interpretation.annotation = doc['annotation']
+    #     interpretation.object_uri = doc['object_uri']
+    #     tags = Tag.find_or_create(doc['tag']) if doc['tag']
+    #     Tagging.add_to interpretation, tags if tags
+    #     interpretation.save
+    #   else
+    #     write "  WARNING: User #{doc['username']} not found."
+    #   end
+    # end
+    # write "Done importing interpretations from Solr."
   end
 
   def self.down
