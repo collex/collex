@@ -6,7 +6,6 @@
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-$KCODE = 'UTF8'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
@@ -66,3 +65,5 @@ DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
 ExceptionNotifier.exception_recipients = %w(esh6h@virginia.edu dmg2n@Virginia.EDU)
 ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
 ExceptionNotifier.email_prefix = "[Collex] "
+
+$KCODE = 'UTF8'
