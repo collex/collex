@@ -142,6 +142,10 @@
 	line-height: 1em;
 	margin-right: .3em;
 }
+
+#sidebar .emph2 a {
+	margin-right: .5em;
+}
 	.cloudheader {
 		font-size: 10px;
 		background-color: #d3d3d3;
