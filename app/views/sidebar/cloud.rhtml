@@ -10,8 +10,7 @@
    my_username = username || "<mine>"
 -%>
 <div class="topnav">
-
-    <%= search_form %>
+  <%= search_form %>
   <div class="browsetags">&nbsp;<span class="selected"><%=link_to_remote mine_label, {:update=>"sidebar", :url=> {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => my_username}}, {:class => 'unselected'}%><span class="bull"> &bull; </span><%= link_to_remote all_label, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil}}, {:class => 'unselected'} %></span>&nbsp;</div>
 </div>
 
