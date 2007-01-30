@@ -30,13 +30,13 @@
 
 
 <% @cloud_freq.each do |item| %>
-   <span class="cloud<%= item[1].quo(@bucket_size).ceil %>">
+   <% span :class => "cloud#{item[1].quo(@bucket_size).ceil}" do %>
      <% if params[:type] == "username"%>
        <%= link_to_remote item[0], {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => "tag", :user => item[0]}}, {:title => pluralize(item[1], 'object')} %>
      <% else %>
        <%= link_to_list(params[:type], item[0], item[1])%>
      <% end %>
-  </span>
+  <% end %>
 <% end %>
 
 </div>
