@@ -1,9 +1,9 @@
 <div class="sidelogin">
 <div class="pagination" style="margin-bottom:1em;padding:.6em"><span class="emph2">C O L L E X</span></div>
-<% if @flash[:notice] -%> 
-<div id="notice"><%= @flash[:notice] %></div>
-<% end %>
-<%= form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "login"} %> 
+
+<%= div flash[:notice], :id => "message" if flash[:notice] %>
+
+<% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "login"} do %> 
 <table> 
 <tr> 
 <td>user name:</td> 
@@ -33,10 +33,10 @@
 	<td colspan="2"><input type="submit" value="email new password" /></td>
 	</tr>
 	</table>
-	<%= end_form_tag %> 
+	<% end %> 
 </p>
 
 <p>&nbsp;</p>
-<p><%=link_to_remote "cancel &amp; return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
+<p><%=link_to_remote "return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
 <p>a <span class="emph3"><%= link_to_popup "brief tutorial", {:controller=>'nines',:action=>'help'}, {:title => "register and contribute"} -%></span> on Collex and NINES<br />is available. <br />&nbsp;</p>
 </div>

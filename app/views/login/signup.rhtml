@@ -1,10 +1,10 @@
 <div class="sidelogin">
 <div class="pagination" style="margin-bottom:1em"><span class="emph2">sign up for Collex</span></div>
 
-<% if @flash[:error] -%> 
-<div id="error"><%= @flash[:error] %></div>
-<% end %>
-<%= form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "signup"} %> 
+<%= div flash[:message], :id => "message" if flash[:message] %>
+<%= div flash[:error], :id => "error" if flash[:error] %>
+
+<% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "signup"} do %> 
 <table> 
   <tr> 
     <td>User name:</td> 
@@ -31,9 +31,9 @@
     <td><input type="submit" value=" SIGN UP " /></td> 
   </tr> 
 </table> 
-<%= end_form_tag %> 
+<% end %> 
 
 <p>If you already have an account,<br />please <%= link_to_remote "log in", :update => "sidebar", :url => {:controller=>"login", :action=>"login"} %>.</p>
 
-<p><%=link_to_remote "cancel &amp; return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
+<p><%=link_to_remote "return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
 </div>
