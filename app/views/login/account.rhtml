@@ -1,12 +1,9 @@
 <div class="pagination" style="margin-bottom:1em"><span class="emph2">manage your Collex account</span></div>
 
-<% if @flash[:message] -%> 
-<div id="message"><%= @flash[:message] %></div>
-<% end %>
-<% if @flash[:error] -%> 
-<div id="error"><%= @flash[:error] %></div>
-<% end %>
-<%= form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "account"} %> 
+<%= div flash[:message], :id => "message" if flash[:message] %>
+<%= div flash[:error], :id => "error" if flash[:error] %>
+
+<% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "account"} do %> 
 <table> 
   <tr> 
     <td>User name:</td> 
@@ -33,5 +30,5 @@
     <td><input type="submit" value=" UPDATE " /></td> 
   </tr> 
 </table> 
-<%= end_form_tag %> 
-<p><%=link_to "cancel &amp; return", :controller => "search", :action => "browse"%></p>
+<% end %> 
+<p><%=link_to "return", :controller => "search", :action => "browse"%></p>
