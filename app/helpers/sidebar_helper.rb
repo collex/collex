@@ -9,4 +9,11 @@ module SidebarHelper
     end
   end
   
+  def title_for(object)
+    object['title'].blank? ? "<untitled>" : object['title']
+  end
+  
+  def sb_link_to_remote(type, value)
+    link_to_remote value, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => type, :value => value}
+  end
 end
