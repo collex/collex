@@ -296,6 +296,14 @@ function showCollector(uri, event) {
   var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
   moveObject('collectformarea', newXCoordinate, newYCoordinate);
 }
+
+function showAlert(divID, event)
+{
+  new Effect.Appear(divID, { duration: 0.5 }); 
+  var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
+  var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
+  moveObject(divID, newXCoordinate, newYCoordinate+40);
+}
 </script>
 </head>
 <body>
