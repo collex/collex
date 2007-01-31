@@ -4,12 +4,14 @@ module ApplicationHelper
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
   def facet_label(field)
-    label = field
-    label = "site" if field == "archive"
-    label = "name" if field == "roles"
-    label = "name" if field == "agent"
-    label = "peer" if field == "username"
-    label = "date" if field == "year"
+    label = case field
+      when "archive"        then "site"
+      when "roles", "agent" then "name"
+      when "username"       then "peer"
+      when "year"           then "date"
+      when "", nil          then "tag"
+    else field
+    end
 
     label = RELATORS[field].downcase if field =~ /role_[A-Z]{3}/
   
