@@ -17,9 +17,5 @@ module SidebarHelper
     label ||= value
     link_to_remote label, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => type, :value => value}
   end
-  
-  def sb_browse_label(type, user=true)
-    my = user ? "MY " : ""
-    "BROWSE #{my}#{type.pluralize.upcase}"
-  end
+
 end
