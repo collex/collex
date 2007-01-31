@@ -8,6 +8,7 @@ class SidebarHelperTest < HelperTestCase
     super
   end
   
+  # title_for tests
   def test_title_for_returns_proper_title
     @object = {'title' => "The Title"}
     expected = "The Title"
@@ -22,6 +23,21 @@ class SidebarHelperTest < HelperTestCase
     @object['title'] = ""
     assert_equal(expected, title_for(@object))
   end
+
+  # sb_link_to_remote tests
+  def test_sb_link_to_remote_generates_label_from_value
+    @type = "agent"
+    @value = "David Ferris"
+    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list?type=agent&amp;value=David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">David Ferris</a>}
+    assert_dom_equal(expected, sb_link_to_remote(@type, @value))
+  end
   
+  def test_sb_link_to_remote_generates_label_from_label_argument
+    @type = "agent"
+    @value = "David Ferris"
+    @label = "LOUD LABEL"
+    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list?type=agent&amp;value=David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">LOUD LABEL</a>}
+    assert_dom_equal(expected, sb_link_to_remote(@type, @value, @label))
+  end
   
 end
