@@ -19,7 +19,8 @@ class SidebarController < ApplicationController
   def cloud
     @cloud_freq = []
     
-    return if not params[:type]
+#     return if not params[:type]
+    params[:type] ||= "tag"
     
     data = COLLEX_MANAGER.cloud(params[:type], params[:user])
     return if data == nil or data.size == 0

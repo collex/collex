@@ -13,7 +13,13 @@ module SidebarHelper
     object['title'].blank? ? "<untitled>" : object['title']
   end
   
-  def sb_link_to_remote(type, value)
-    link_to_remote value, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => type, :value => value}
+  def sb_link_to_remote(type, value, label=nil)
+    label ||= value
+    link_to_remote label, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => type, :value => value}
+  end
+  
+  def sb_browse_label(type, user=true)
+    my = user ? "MY " : ""
+    "BROWSE #{my}#{type.pluralize.upcase}"
   end
 end
