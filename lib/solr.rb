@@ -155,9 +155,6 @@ class Solr
     response = post_to_solr(xml.to_s, :update)
 #    puts "RESPONSE = \n#{response}\n---------"
     
-    # TODO remove these when the optimized index issue is resolved
-    #commit
-    #optimize
   end
 
   def update(username, uri, tags, annotation)
@@ -170,11 +167,11 @@ class Solr
   end
   
   def optimize
-    post_to_solr('<optimize waitFlush="false" waitSearcher="false"/>', :update)  # TODO - solve the issue with optimization required - shouldn't be necessary
+    post_to_solr('<optimize waitFlush="false" waitSearcher="false"/>', :update)
   end
   
   def commit
-    post_to_solr('<commit waitFlush="false" waitSearcher="false"/>', :update)  # TODO - solve the issue with optimization required - shouldn't be necessary
+    post_to_solr('<commit waitFlush="false" waitSearcher="false"/>', :update)
   end
 
   def post_to_solr(body, mode = :search)
