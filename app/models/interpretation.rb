@@ -1,4 +1,5 @@
 class Interpretation < ActiveRecord::Base
+  validates_uniqueness_of :object_uri, :scope => :user_id
   before_save :update_solr
   before_destroy :remove_from_solr
   
