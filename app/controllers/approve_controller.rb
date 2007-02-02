@@ -1,5 +1,6 @@
 require 'net/http'
 require 'post_to_solr'
+require 'yaml'
 
 class ApproveController < ApplicationController
   def index
@@ -20,6 +21,10 @@ class ApproveController < ApplicationController
   end
    
   def destroy
+  tree = YAML::parse(File.open(RAILS_ROOT+"/config/database.yml"))
+		obj_tree = tree.transform
+		dirA = obj_tree['java_constants']['dir1']
+		dirB = obj_tree['java_constants']['dir2']
   	@task = Task.find(params[:id])
   	thistaskidstring = params[:id].to_s
   	@deltitles = Title.find_all_by_task_id(thistaskidstring)
@@ -32,7 +37,7 @@ class ApproveController < ApplicationController
 	@contri_dir = @contribs.id.to_s	
 	@fname = @task.file_name
   	
-  	FileUtils::rm(RAILS_ROOT+"/rdf_test/#{@contri_dir}/#{@fname}")  	
+  	FileUtils::rm(RAILS_ROOT+"/"+dirB+"/#{@contri_dir}/#{@fname}")  	
   	
   	@task.destroy
     
