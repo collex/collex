@@ -11,11 +11,6 @@ class RoleTest < Test::Unit::TestCase
     @basic_user = users "basic"
   end
   
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
-  
   def test_admin_role_has_admin_user
     assert(role = Role.find(@admin_role.id), "Failed to find admin role.")
     assert(role.users.size == 1, "Admin Role should have one user.")

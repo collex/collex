@@ -10,10 +10,6 @@ class ResourceTest < Test::Unit::TestCase
     @prop_3 = Property.create(:name => "role_AUT", :value => "T.N. Surname")
     
   end
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
   
   def test_mla_authors_should_format_single_author
     @res.properties << @prop_1
