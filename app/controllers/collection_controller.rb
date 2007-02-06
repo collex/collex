@@ -13,7 +13,7 @@ class CollectionController < ApplicationController
       end
     end
 
-     @results = COLLEX_MANAGER.objects_behind_urls(urls, @session[:user][:username])
+     @results = COLLEX_MANAGER.objects_behind_urls(urls, session[:user][:username])
   end
 
   def add
