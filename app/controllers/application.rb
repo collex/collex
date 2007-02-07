@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
+  helper_method :me?, :is_logged_in?, :username
+  
   def boom
     raise "boom!"
   end
@@ -37,4 +39,17 @@ class ApplicationController < ActionController::Base
         redirect_to(:controller => "login", :action => "login") 
       end 
     end 
+
+    def is_logged_in?
+      session[:user] ? true : false
+    end
+
+    def me?
+      session[:user] ? (params[:user] == session[:user][:username]) : false
+    end
+
+    def username
+      session[:user] ? session[:user][:username] : nil
+    end
+
 end

@@ -3,6 +3,7 @@ module ApplicationHelper
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
+
   def facet_label(field)
     label = case field
       when "archive"        then "site"
@@ -26,18 +27,6 @@ module ApplicationHelper
     item_url = item_thumbnail.length > 0 ? item_thumbnail : false
     path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
     tag "img", options.merge({:alt => item['title'], :src => path})
-  end
-
-  def is_logged_in?
-    session[:user] ? true : false
-  end
-
-  def me?
-    session[:user] ? (params[:user] == session[:user][:username]) : false
-  end
-
-  def username
-    session[:user] ? session[:user][:username] : nil
   end
 
   def link_to_list(type, value, frequency=nil)
