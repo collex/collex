@@ -6,6 +6,10 @@ module ApplicationHelper
   def cloud_list
     ["archive", "agent", "year", "tag", "genre", "username"]
   end
+  
+  def cloud_list_links
+    cloud_list.collect { |name| link_to_cloud name }.join(" ")
+  end
 
   def facet_label(field)
     label = case field
