@@ -3,6 +3,7 @@ module SidebarHelper
     xm = Builder::XmlMarkup.new
     xm.div(:class => "search") do
       xm.form(:method => "post", :action => url_for(:controller => "search", :action => "new_expression")) do
+        xm << "&nbsp;"
         xm << text_field_tag("field[content]", "new search", :onFocus => "this.value=''")
         xm << "&nbsp;"
       end
@@ -21,9 +22,7 @@ module SidebarHelper
   def cloud_header_footer(count, value, css_class="cloudheader")
     xm = Builder::XmlMarkup.new
     xm.div(:class => css_class) do
-      xm.span(:class => "emph2") do 
-        xm << pluralize(count, "#{value} object", "#{value} objects") 
-      end
+      xm.span(pluralize(count, "#{value} object", "#{value} objects"), :class => "emph2")
     end
   end
 
