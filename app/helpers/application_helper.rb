@@ -3,15 +3,18 @@ module ApplicationHelper
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
+  def cloud_list
+    ["archive", "agent", "year", "tag", "genre", "username"]
+  end
 
   def facet_label(field)
     label = case field
-      when "archive"        then "site"
-      when "roles", "agent" then "name"
-      when "username"       then "peer"
-      when "year"           then "date"
-      when "", nil          then "tag"
-    else field
+      when "archive"        then "sites"
+      when "roles", "agent" then "names"
+      when "username"       then "peers"
+      when "year"           then "dates"
+      when "", nil          then "tags"
+    else field.pluralize
     end
 
     label = RELATORS[field].downcase if field =~ /role_[A-Z]{3}/
