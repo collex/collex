@@ -35,14 +35,20 @@
     @mine_label = "my #{facet_label(params[:type])}s"
     @all_label = "all #{facet_label(params[:type])}s"
     
-    @mine_label.upcase! if @mine
-    @all_label.upcase! if @all
+    unless controller.action_name == "list"
+      @mine_label.upcase! if @mine
+      @all_label.upcase! if @all
+    end
     
     @my_username = username || "<mine>"
 -%>
 <div class="topnav">
   <%= search_form %>
-  <div class="browsetags">&nbsp;<span class="selected"><%=link_to_remote @mine_label, {:update=>"sidebar", :url=> {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username}}, {:class => 'unselected'}%><span class="bull"> &bull; </span><%= link_to_remote @all_label, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil}}, {:class => 'unselected'} %></span>&nbsp;</div>
+  <div class="browsetags">
+    <%=link_to_remote @mine_label, {:update=>"sidebar", :url=> {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username}}, {:class => (@mine ? 'selected' : 'unselected') }%>
+    <span class="bull"> &bull; </span>
+    <%= link_to_remote @all_label, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil}}, {:class => (@all ? 'selected' : 'unselected')} %>
+  </div>
 </div>
 
 <%= yield %>
