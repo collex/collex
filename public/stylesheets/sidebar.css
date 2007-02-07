@@ -155,7 +155,7 @@
 	padding-right: .25em;
 	padding-left: .25em;
 }
-	.cloudheader {
+	.cloudheader, .cloud_object {
 		font-size: 10px;
 		background-color: #d3d3d3;
 		text-align: center;
@@ -163,11 +163,14 @@
 		line-height: 130%;
 		padding: 5px !important;
 	}
+	.cloud_object {
+		border: 0;
+	}
 	.cloudfooter {
 		font-size: 10px;
 		background-color: #d3d3d3;
 		text-align: center;
-		margin-top: 10px;
+/*		margin-top: 10px;*/
 		border-bottom: 1px solid #666;
 		line-height: 130%;
 		padding: 5px !important;
