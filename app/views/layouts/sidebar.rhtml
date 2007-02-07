@@ -29,16 +29,14 @@
     end
     @display = "#{params[:user]}'s #{@display}" if params[:user]
     
-    @mine = me?
-    @all = params[:user].blank?
+    @mine = me? && controller.action_name != "list"
+    @all = ! me? && controller.action_name != "list" # params[:user].blank?
     
     @mine_label = "my #{facet_label(params[:type])}s"
     @all_label = "all #{facet_label(params[:type])}s"
     
-    unless controller.action_name == "list"
-      @mine_label.upcase! if @mine
-      @all_label.upcase! if @all
-    end
+    @mine_label.upcase! if @mine
+    @all_label.upcase! if @all
     
     @my_username = username || "<mine>"
 -%>
