@@ -40,7 +40,7 @@ class SidebarController < ApplicationController
   
   def list
     @data = []
-    return if not params[:type] or not params[:value]
+    return unless params[:type] and params[:value]
     @data = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user])
   end
   
