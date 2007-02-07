@@ -285,6 +285,9 @@
 	.rdf a:first-child:hover { 
 		color: #fff; text-decoration: none; 
 	}
+	#sidebar .browsetags a {
+		padding: .1em .2em;
+	}
 	#sidebar .selected {
 		color: #fff;
 		background: #970000;
