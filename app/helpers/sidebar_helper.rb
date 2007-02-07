@@ -17,5 +17,14 @@ module SidebarHelper
     label ||= value
     link_to_remote label, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => type, :value => value}
   end
+  
+  def cloud_header_footer(count, value, css_class="cloudheader")
+    xm = Builder::XmlMarkup.new
+    xm.div(:class => css_class) do
+      xm.span(:class => "emph2") do 
+        xm << pluralize(count, "#{value} object", "#{value} objects") 
+      end
+    end
+  end
 
 end

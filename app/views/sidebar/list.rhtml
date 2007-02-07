@@ -1,6 +1,4 @@
-<div class="cloudheader">
-  <span class="emph2"> <%= pluralize(@data['total_hits'], "object", "objects") -%></span> 
-</div>
+<%= cloud_header_footer(@data['total_hits'], params[:value]) %>
 
 <div class="content">
     <br/><span class="listtype"><%= @display %><%= link_to image_tag('/images/feed.png', :class => 'feed', :title => "header=[syndicated feed] body=[use a newsreader to subscribe to updates to this tag] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), :controller => "sidebar", :action=>"atom", :type => params[:type], :value => params[:value], :user => params[:user]%><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :type => params[:type], :value => params[:value], :user => params[:user], :view => "list"}, {:target => "_blank"}%></span><br /><br/>
@@ -34,8 +32,6 @@
 </table>
 </div>
    
-<div class="cloudfooter">
-      <!-- <a href="/search?page=1">&lt;&lt;</a> &nbsp;&nbsp; --> <span class="emph2"> <%= pluralize(@data['total_hits'], "object", "objects") -%></span> <!-- &nbsp;&nbsp; <a href="/search?page=3">&gt;&gt;</a> -->
-</div>
+<%= cloud_header_footer(@data['total_hits'], params[:value], "cloudfooter") %>
 
 </div>
