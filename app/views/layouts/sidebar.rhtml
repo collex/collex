@@ -43,10 +43,18 @@
 <div class="topnav">
   <%= search_form %>
   <div class="browsetags">
-    <%=link_to_remote @mine_label, {:update=>"sidebar", :url=> {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username}}, {:class => (@mine ? 'selected' : 'unselected') }%>
+    <%= link_to_remote @mine_label, 
+                      {:update => "sidebar",
+                       :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username}}, 
+                      {:class => (@mine ? 'selected' : 'unselected')} %>
     <span class="bull"> &bull; </span>
-    <%= link_to_remote @all_label, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil}}, {:class => (@all ? 'selected' : 'unselected')} %>
+    <%= link_to_remote @all_label, 
+                       {:update => "sidebar",
+                        :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil}}, 
+                       {:class => (@all ? 'selected' : 'unselected')} %>
   </div>
 </div>
 
+<%= div cloud_list_links, :class => "cloudheader" %>
 <%= yield %>
+<%= div cloud_list_links, :class => "cloudfooter" %>
