@@ -288,6 +288,9 @@
 	#sidebar .browsetags a {
 		padding: .1em .2em;
 	}
+	#sidebar a.tags_list_link_to {
+		font-size: .9em;
+	}
 	#sidebar .selected {
 		color: #fff;
 		background: #970000;
