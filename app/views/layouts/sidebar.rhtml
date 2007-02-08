@@ -32,8 +32,8 @@
     @mine = me? && controller.action_name != "list"
     @all = ! me? && controller.action_name != "list" # params[:user].blank?
     
-    @mine_label = "my #{facet_label(params[:type])}s"
-    @all_label = "all #{facet_label(params[:type])}s"
+    @mine_label = "my #{facet_label(params[:type])}"
+    @all_label = "all #{facet_label(params[:type])}"
     
     @mine_label.upcase! if @mine
     @all_label.upcase! if @all
