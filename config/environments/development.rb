@@ -20,7 +20,7 @@ config.action_view.debug_rjs                         = true
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = true
 ActionMailer::Base.delivery_method = :smtp
-ActionMailer::Base.smtp_settings = { 
+ActionMailer::Base.server_settings = { 
    :address => "localhost", 
    :port => 25, 
    :domain => "ehatchersolutions.com"
