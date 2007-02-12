@@ -124,7 +124,7 @@ class Solr
     
     response = eval(post_to_solr(post_data))
 
-    response['response']['docs']
+    response['docs']['docs']
   end
   
   def add(username, collectables)
