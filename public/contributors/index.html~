@@ -36,23 +36,23 @@
 				<ul><li><a href="../about/index.html">About 9s</a><span> | </span></li><li><a
 					class="on" href="index.html">People &amp; Projects</a><span> | </span></li><li><a
 					href="../tools/index.html">Tools &amp; Interfaces</a><span> | </span></li><li><a
-					href="../events/index.html">Events &amp; Activities</a><span> | </span></li><li><a
+
 					href="../join/index.html">Join 9s</a><span> | </span></li></ul>
 			</div>
 
 
 			<div id="leftColumn">
 				<div id="innerLeftColumn">
-					<p> </p>
+					
 					<div id="vnav">
 						<ul><li><a 
 							href="boards.html">editorial boards</a></li><li><a 
 							href="projects.html">9s projects</a></li><li><a 
 							href="associations.html">associated groups</a></li><li><a 
-							href="staff.html">research &amp; development</a></li></ul>
+							href="staff.html">R &amp; D</a></li></ul>
 					</div>
 
-					<p> </p>
+					
 
 				</div>
 			</div>
@@ -65,7 +65,7 @@
 			</div>
 			<div id="footer">
 				<div id="innerFooter">
-					a networked interface for nineteenth-century electronic scholarship
+					a networked infrastructure for nineteenth-century electronic scholarship
 				</div>
 			</div>
 		</div>

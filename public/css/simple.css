@@ -146,3 +146,13 @@ body
 	white-space: nowrap;
 	/*/*/ /*/display: none;/*  */
 }
+.greyborder img{
+border: 3px solid #ccc;
+}
+.about_header{
+border-bottom: 1px solid #999;
+font-variant:small-caps;
+font-size: 1.2em;
+color:#999;
+padding-top:.4em;
+}
