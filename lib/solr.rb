@@ -92,7 +92,7 @@ class Solr
     end
     
     response = eval(post_to_solr(post_data))
-    # RAILS_DEFAULT_LOGGER.info("----------object_detail: #{response.inspect}")
+    RAILS_DEFAULT_LOGGER.info("----------object_detail: #{response.inspect}")
     docs = response['docs']['docs']
     
     document = nil
@@ -104,7 +104,7 @@ class Solr
       document = docs[0]
       key = document['uri']
       mlt = response['mlt'][1]['docs']
-      collection_info = {'users' => response['collectable'][1][5]}
+      collection_info = {'users' => response['collectable'][1][response['collectable'][1].index('users') + 1]}
     end
     
     [document, mlt, collection_info]
