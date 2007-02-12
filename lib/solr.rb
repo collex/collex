@@ -92,16 +92,19 @@ class Solr
     end
     
     response = eval(post_to_solr(post_data))
-    docs = response['response']['docs']
+    # RAILS_DEFAULT_LOGGER.info("----------object_detail: #{response.inspect}")
+    docs = response['docs']['docs']
     
     document = nil
     mlt = nil
     collection_info = nil
     if docs[0]
+      # TODO revisit and clean-up these likely brittle references.  Solr changed how it writes named lists, so the
+      #      upgrade to Solr changed result processing a bit.  This is where solrb will add insulation.
       document = docs[0]
       key = document['uri']
-      mlt = response['mlt'][key]['docs']
-      collection_info = response['collectable'][key]
+      mlt = response['mlt'][1]['docs']
+      collection_info = {'users' => response['collectable'][1][5]}
     end
     
     [document, mlt, collection_info]
