@@ -30,7 +30,7 @@
     @display = "#{params[:user]}'s #{@display}" if params[:user]
     
     @mine = me? && controller.action_name != "list"
-    @all = ! me? && controller.action_name != "list" # params[:user].blank?
+    @all = ! params[:user] && controller.action_name != "list" # params[:user].blank?
     
     @mine_label = "my #{facet_label(params[:type])}"
     @all_label = "all #{facet_label(params[:type])}"
