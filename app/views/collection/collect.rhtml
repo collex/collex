@@ -18,13 +18,13 @@
 
        function addInstructions(t) {
           if (t.value == "") {
-            t.value = defaultInstructions(t);
+            //t.value = defaultInstructions(t);
             toggleItem(t);
          }
        }
 
        function toggleItem(t) {
-          $('row-'+t.id.substring(5)).className = (t.value == defaultInstructions(t)) ? 'disabled' : 'enabled';
+          $('row-'+t.id.substring(5)).className = (t.value == defaultInstructions(t) || t.value == "") ? 'disabled' : 'enabled';
        }
        
        var submitted = false;
