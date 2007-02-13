@@ -83,7 +83,7 @@
 	.tagcloud {
 		font-family: "Lucida Grande", Helvetica, Arial, Verdana;
 		text-align: center;
-		margin: 15px 8px 20px 8px;
+		margin: .5em 8px 20px 8px;
 		}
 .cloud1 {
   font-size: 10px;
@@ -163,9 +163,7 @@
 		line-height: 130%;
 		padding: 5px !important;
 	}
-	.cloudtag-header {
-		margin-top: 1em;
-	}
+
 	.cloud_object {
 		border: 0;
 	}
@@ -345,6 +343,14 @@
 	.feed {
 		padding-left: .2em;
 		border: none;
+	}
+	
+	div#permalink {
+    position: relative;
+    right: .3em;
+    top: .2em;
+/*    margin-bottom:-.5em;*/
+		text-align: right;
 	}
 	.permalink {
 		padding-left: .2em;
