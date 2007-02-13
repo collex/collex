@@ -163,6 +163,9 @@
 		line-height: 130%;
 		padding: 5px !important;
 	}
+	.cloudtag-header {
+		margin-top: 1em;
+	}
 	.cloud_object {
 		border: 0;
 	}
