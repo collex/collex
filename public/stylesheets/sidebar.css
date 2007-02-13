@@ -159,7 +159,7 @@
 		font-size: 10px;
 		background-color: #d3d3d3;
 		text-align: center;
-		border-top: 1px solid #666;
+/*		border-top: 1px solid #666;*/
 		line-height: 130%;
 		padding: 5px !important;
 	}
@@ -290,14 +290,14 @@
 		color: #fff; text-decoration: none; 
 	}
 	#sidebar .browsetags a {
-		padding: .1em .2em;
+		padding: .1em .2em .3em .2em;
 	}
 	#sidebar a.tags_list_link_to {
 		font-size: .9em;
 	}
 	#sidebar .selected {
-		color: #fff;
-		background: #970000;
+		color: #000;
+		background: #D3D3D3;
 	}
 	.unselected {
 		color: #fff;
