@@ -1,3 +1,25 @@
+<script type="text/javascript">
+var instructions = new Array();
+instructions['tags'] = '<%= TAG_INSTRUCTIONS %>';
+instructions['annotation'] = '<%= ANNOTATION_INSTRUCTIONS %>';
+
+function defaultInstructions(t) {
+  var key = t.name.split('-',1)[0];
+  return instructions[key];
+}
+function clearInstructions(t) {
+  if (t.value == defaultInstructions(t)) {t.value = '';}
+}
+
+function check_submit() {
+    if (document.forms['dataform'].tags.value == '' || document.forms['dataform'].tags.value == "<%= TAG_INSTRUCTIONS %>") { 
+      alert('At least one tag is required to collect an object'); 
+      return false; 
+    }
+    return true;
+}
+</script>
+
 <div class="content">
 
 <div id="permalink">
@@ -50,16 +72,17 @@ browse facets: <br/>
 <br/>
 
 <% if is_logged_in? %>
-<%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :complete => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});") -%>
+<%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :complete => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});", :condition => "check_submit()") -%>
   <%= hidden_field_tag :objid, params[:objid] -%>
-  <%= text_field_tag :tags, @interpretation.tag_list -%><br/>
+  <%= text_field_tag :tags, @interpretation.tag_list.blank? ? TAG_INSTRUCTIONS : @interpretation.tag_list, :onfocus => "clearInstructions(this)" -%><br/>
       
-  <%= text_area_tag(:annotation, @interpretation.annotation, :size => '22x8') -%><br/>
+  <%= text_area_tag(:annotation, @interpretation.annotation.blank? ? ANNOTATION_INSTRUCTIONS : @interpretation.annotation, :size => '22x8',
+                    :onfocus => "clearInstructions(this)") -%><br/>
   <span class="emph4">
-      <% unless @interpretation.new_record? -%>
-        <%=link_to_remote "uncollect", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
-      <% end -%>
-      <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "if (document.forms['dataform'].tags.value == '') { alert('At least one tag is required to collect an object'); return false; };  document.forms['dataform'].onsubmit();" %>
+    <% unless @interpretation.new_record? -%>
+      <%=link_to_remote "uncollect", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
+    <% end -%>
+    <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "document.forms['dataform'].onsubmit();" %>
   </span>
 <%= end_form_tag -%>
 <% else %>
