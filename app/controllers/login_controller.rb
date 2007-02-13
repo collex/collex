@@ -33,7 +33,6 @@ class LoginController < ApplicationController
 
   def logout 
     session[:user] = nil 
-    flash[:notice] = "Logged out" 
     redirect_to(:controller => "search", :action => "browse") 
   end
 
