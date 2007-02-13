@@ -8,7 +8,7 @@
   <% end %>
     
   <div class="tagcloud" id="tagcloud">
-  <% @cloud_freq.first(50).each do |item| %>
+  <% @cloud_freq.each do |item| %>
      <% span :class => "cloud#{item[1].quo(@bucket_size).ceil}" do %>
        <% if params[:type] == "username"%>
          <%= link_to_peer item[0] %>
