@@ -1,95 +1,94 @@
+<div class="content">
 
-        <div class="content">
-	
-        <div class="item">
-          <span class="listtype"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :objid => params[:objid], :view => "detail"}, {:target => "_blank"}%></span>
-          <br />
-          <% if @object['url'] %>
-            <a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><%= h title_for(@object) %></a> &rarr;
-          <% else %>
-            <%= h title_for(@object) %>
-          <% end %>
-          <br />
-          
-          <% if @object['url'] %>
-            <a target="_blank" href="<%=@object['url']%>" style="font-size:1.1em"><%= thumbnail_image_tag(@object) %></a>
-          <% else %>
-            <%= thumbnail_image_tag(@object) %>
-          <% end %>
-          
-        <div class="rdf" style="clear:both;">        
-        <% if @object['year'] then @object['year'].each do |year|%>
-            <%= sb_link_to_remote('year', year) %>
-          <% end %>
-          <br/>
-        <% end %>
-        
-        <% if @object['agent'] then @object['agent'].each do |agent|%>
-          <%= sb_link_to_remote('agent', agent) %><br/>
-        <% end end %>
-        <% if @object['genre'] then @object['genre'].each do |genre|%>
-          <%= sb_link_to_remote('genre', genre) %>
-        <% end end %>
-        <br/>
-        
-        <% if site(@object['archive'])%>
-          <%= a site(@object['archive'])['description'], :href => site(@object['archive'])['url'], :target => "_blank" %> &rarr;
-        <% else %>
-          <%= @object[:archive]%>
-        <% end %>
-        </div>
+<div class="item">
+  <span class="listtype"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :objid => params[:objid], :view => "detail"}, {:target => "_blank"}%></span>
+  <br />
+  <% if @object['url'] %>
+    <a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><%= h title_for(@object) %></a> &rarr;
+  <% else %>
+    <%= h title_for(@object) %>
+  <% end %>
+  <br />
+  
+  <% if @object['url'] %>
+    <a target="_blank" href="<%=@object['url']%>" style="font-size:1.1em"><%= thumbnail_image_tag(@object) %></a>
+  <% else %>
+    <%= thumbnail_image_tag(@object) %>
+  <% end %>
+  
+<div class="rdf" style="clear:both;">        
+<% if @object['year'] then @object['year'].each do |year|%>
+    <%= sb_link_to_remote('year', year) %>
+  <% end %>
+  <br/>
+<% end %>
 
-        <div class="notes">
-        <% if @interpretation.tags
-            @interpretation.tags.each do |tag| %>
-                   <%= link_to_list 'tag', tag.name %>
-                <% end
-                end %>           
-        <br/>
-        
-        <% if is_logged_in? %>
-        <%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :complete => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});") -%>
-          <%= hidden_field_tag :objid, params[:objid] -%>
-          <%= text_field_tag :tags, @interpretation.tag_list -%><br/>
-              
-          <%= text_area_tag(:annotation, @interpretation.annotation, :size => '22x8') -%><br/>
-          <span class="emph4">
-              <% unless @interpretation.new_record? -%>
-                <%=link_to_remote "uncollect", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
-              <% end -%>
-              <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "if (document.forms['dataform'].tags.value == '') { alert('At least one tag is required to collect an object'); return false; };  document.forms['dataform'].onsubmit();" %>
-          </span>
-        <%= end_form_tag -%>
-        <% else %>
-          To tag or edit this object, <%=link_to_remote "log in and return", :update => "sidebar", :url => {:controller=>"sidebar", :action=>"detail", :objid => params[:objid],:user=>"<mine>"} %>.
-        <% end %>
-        </div>
-        
-        <div class="users">
-            collected by:
-                <% @collection_info['users'].each do |username| %>
-                <%= link_to_remote username, :update=>"sidebar", :url => {:controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username} %>
-            <% end %>
-        </div>
+<% if @object['agent'] then @object['agent'].each do |agent|%>
+  <%= sb_link_to_remote('agent', agent) %><br/>
+<% end end %>
+<% if @object['genre'] then @object['genre'].each do |genre|%>
+  <%= sb_link_to_remote('genre', genre) %>
+<% end end %>
+<br/>
 
-        </div>
+<% if site(@object['archive'])%>
+  <%= a site(@object['archive'])['description'], :href => site(@object['archive'])['url'], :target => "_blank" %> &rarr;
+<% else %>
+  <%= @object[:archive]%>
+<% end %>
+</div>
 
-        <div class="likethis">
-        <table cellspacing="0" class="more" width="100%">
+<div class="notes">
+<% if @interpretation.tags
+    @interpretation.tags.each do |tag| %>
+           <%= link_to_list 'tag', tag.name %>
+        <% end
+        end %>           
+<br/>
+
+<% if is_logged_in? %>
+<%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :complete => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});") -%>
+  <%= hidden_field_tag :objid, params[:objid] -%>
+  <%= text_field_tag :tags, @interpretation.tag_list -%><br/>
+      
+  <%= text_area_tag(:annotation, @interpretation.annotation, :size => '22x8') -%><br/>
+  <span class="emph4">
+      <% unless @interpretation.new_record? -%>
+        <%=link_to_remote "uncollect", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
+      <% end -%>
+      <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "if (document.forms['dataform'].tags.value == '') { alert('At least one tag is required to collect an object'); return false; };  document.forms['dataform'].onsubmit();" %>
+  </span>
+<%= end_form_tag -%>
+<% else %>
+  To tag or edit this object, <%=link_to_remote "log in and return", :update => "sidebar", :url => {:controller=>"sidebar", :action=>"detail", :objid => params[:objid],:user=>"<mine>"} %>.
+<% end %>
+</div>
+
+<div class="users">
+    collected by:
+        <% @collection_info['users'].each do |username| %>
+        <%= link_to_remote username, :update=>"sidebar", :url => {:controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username} %>
+    <% end %>
+</div>
+
+</div>
+
+<div class="likethis">
+<table cellspacing="0" class="more" width="100%">
 
 <% if @mlt.size > 0 %>
-        <caption>more like this</caption>
+<caption>more like this</caption>
 <% end %>
-        <tr>
-          <% @mlt.each do |item| %>
-            <%= td link_to_remote thumbnail_image_tag(item, :title => "header=[Collex suggests...] body=[#{h  item['title'].to_s.gsub(/\[/,'[[').gsub(/\]/,']]')}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] windowlock=[off]", :alt => "#{h item['title']}"), :update => "sidebar", :url => {:controller => 'sidebar', :action => 'detail', :objid=> item['uri']} %>
-          <% end %>
+<tr>
+  <% @mlt.each do |item| %>
+    <%= td link_to_remote thumbnail_image_tag(item, :title => "header=[Collex suggests...] body=[#{h  item['title'].to_s.gsub(/\[/,'[[').gsub(/\]/,']]')}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] windowlock=[off]", :alt => "#{h item['title']}"), :update => "sidebar", :url => {:controller => 'sidebar', :action => 'detail', :objid=> item['uri']} %>
+  <% end %>
 
-        </tr>
-        </table>
-        </table>
+</tr>
+</table>
+</table>
 
 
-        </div>
+</div>
 
-        </div>
+</div>
