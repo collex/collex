@@ -16,7 +16,8 @@
     <%= thumbnail_image_tag(@object) %>
   <% end %>
   
-<div class="rdf" style="clear:both;">        
+<div class="rdf" style="clear:both;">
+browse facets: <br/>
 <% if @object['year'] then @object['year'].each do |year|%>
     <%= sb_link_to_remote('year', year) %>
   <% end %>
@@ -39,11 +40,11 @@
 </div>
 
 <div class="notes">
-<% if @interpretation.tags
-    @interpretation.tags.each do |tag| %>
-           <%= link_to_list 'tag', tag.name %>
-        <% end
-        end %>           
+<% if @interpretation.tags %>
+  browse tags: <br />
+  <% @interpretation.tags.each do |tag| %>
+    <%= link_to_list 'tag', tag.name %>
+<% end end %>           
 <br/>
 
 <% if is_logged_in? %>
