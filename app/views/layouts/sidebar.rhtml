@@ -35,9 +35,6 @@
     @mine_label = "my #{facet_label(params[:type])}"
     @all_label = "all #{facet_label(params[:type])}"
     
-    @mine_label.upcase! if @mine
-    @all_label.upcase! if @all
-    
     @my_username = username || "<mine>"
 -%>
 <div class="topnav">
