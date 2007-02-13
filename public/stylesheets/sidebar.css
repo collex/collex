@@ -64,7 +64,7 @@
 	.notes {
 		padding: .6em .2em .2em .2em;
 		font-family:  courier, american typewriter, verdana, fixed-width;  
-		margin: 0;
+		margin: 1em 0 0 0;
 		}
 	.notes a:link { color: #333; text-decoration: none; }
 	.notes a:visited { color: #666; text-decoration: none; }
