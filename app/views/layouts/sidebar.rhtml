@@ -23,6 +23,7 @@
 
 <!-- cloud -->
 <% 
+    # These are NOT available in contained templates, as they are rendered first (inside-out)
     @display = params[:value]
     if (params[:type]=="archive")
       @display = site(@display) ? site(@display)['description'] : @display
