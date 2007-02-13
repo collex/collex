@@ -1,8 +1,11 @@
 <div class="content">
-  <div class="cloudtag-header">
-    <% if not me? and params[:user] %><%= "#{params[:user]}'s" %> <%=facet_label(params[:type])%><% end %>
-       <span class="listtype"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :type => params[:type], :value => params[:value], :user => params[:user], :view => "cloud"}, {:target => "_blank"}%></span>
+  <div id="permalink">
+     <span class="listtype"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:controller => "sidebar", :action =>"permalink", :type => params[:type], :value => params[:value], :user => params[:user], :view => "cloud"}, {:target => "_blank"}%></span>
   </div>
+  
+  <% if not me? and params[:user] %>
+    <div><%= "#{params[:user]}'s" %> <%=facet_label(params[:type])%></div>
+  <% end %>
     
   <div class="tagcloud" id="tagcloud">
   <% @cloud_freq.each do |item| %>
