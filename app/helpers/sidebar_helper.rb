@@ -26,6 +26,20 @@ module SidebarHelper
     end
   end
   
+  def tag_cloud(list, type, bucket_size)
+    xm = Builder::XmlMarkup.new
+    list.each do |item|
+      xm.span :class => "cloud#{item.last.quo(bucket_size).ceil}" do
+         if type == "username"
+           xm << link_to_peer(item.first, item.last)
+         else
+           xm << link_to_list(type, item.first, item.last)
+         end
+      end
+    end
+    xm
+  end
+  
   def tags_list_link_to(tag_type, tag_value, user)
     view_all_users_tags_label = "view all users' #{tag_value} objects"
     view_all_users_tags_link = link_to_remote_for_list_tags(view_all_users_tags_label, tag_type, tag_value, nil)
