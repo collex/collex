@@ -29,6 +29,8 @@ class SidebarController < ApplicationController
     data = COLLEX_MANAGER.cloud(params[:type], params[:user])
     return if data == nil or data.size == 0
      
+    # This groups by count, sorts each group's items alphabetically, sorts the group numerically descending, then 
+    # semi-flattens them into an array of arrays of pairs. We end up with the largest tags first, alphabetized.
     grouped_data = data.group_by(&:last)
     alphabetized_groups = grouped_data.each_value{ |group| group.sort!{ |x,y| x[0]<=>y[0] } }
     sorted_data = alphabetized_groups.sort.reverse
