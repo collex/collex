@@ -170,11 +170,15 @@
 	.cloud_object {
 		border: 0;
 	}
+	.cloud_object_footer {
+		margin-bottom: -1em; /*needs to be negative of cloudfooter margin-top*/
+	}
+	
 	.cloudfooter {
 		font-size: 10px;
 		background-color: #d3d3d3;
 		text-align: center;
-/*		margin-top: 10px;*/
+		margin-top: 1em;
 		border-bottom: 1px solid #666;
 		line-height: 130%;
 		padding: 5px !important;
