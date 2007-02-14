@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
-  helper_method :me?, :is_logged_in?, :username
+  helper_method :me?, :all_users?, :is_logged_in?, :username
   
   def boom
     raise "boom!"
