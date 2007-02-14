@@ -13,8 +13,8 @@
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
     <span class="emph4">
-    <%= link_to_function "show more #{params[:type].pluralize}", "Element.show('tagcloud-hidden'); Element.show('hide-more-tags'); Element.hide('show-more-tags');", :id => "show-more-tags" %>
-    <%= link_to_function "hide more #{params[:type].pluralize}", "Element.hide('tagcloud-hidden'); Element.show('show-more-tags'); Element.hide('hide-more-tags');", :style => "display:none", :id => "hide-more-tags" %>
+    <%= show_hide_link_to :show_label => "show more #{params[:type].pluralize}", :hide_label => "hide more #{params[:type].pluralize}",
+                          :hidden_element => "tagcloud-hidden", :id_suffix => "-more-tags" %>
     </span>
     <div class="tagcloud" id="tagcloud-hidden" style="display:none">
       <%= tag_cloud(@cloud_freq - @cloud_freq.first(NUM_VISIBLE_TAGS), params[:type], @bucket_size) %>
