@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
-  helper_method :me?, :all_users?, :is_logged_in?, :username
+  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username
   
   def boom
     raise "boom!"
@@ -51,9 +51,18 @@ class ApplicationController < ActionController::Base
     def all_users?
       !params[:user]
     end
+    
+    def other_user?
+      !me? and !all_users?
+    end
+    
+    def other_username
+      other_user? ? params[:user] : nil
+    end
 
     def username
       session[:user] ? session[:user][:username] : nil
     end
+    alias_method :my_username, :username
 
 end
