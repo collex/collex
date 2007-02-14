@@ -57,12 +57,9 @@ module ApplicationHelper
   end
   
   def link_to_cloud(type, label=type)
-    if params[:type] == type
-      facet_label(label)
-    else
-      link_to_remote facet_label(label), :update => "sidebar",
-          :url => { :controller => 'sidebar', :action => 'cloud', :params=> {:user => params[:user], :type => type} }
-    end
+    css_class = params[:type] == type ? "selected" : ""
+    link_to_remote facet_label(label), {:update => "sidebar",
+        :url => { :controller => 'sidebar', :action => 'cloud', :params=> {:user => params[:user], :type => type} }}, {:class => css_class}
   end
   
   def link_to_peer(user, count)
