@@ -39,22 +39,24 @@ function check_submit() {
   <% else %>
     <%= thumbnail_image_tag(@object) %>
   <% end %>
-  
-<div class="rdf" style="clear:both;">
-browse facets: <br/>
-<% if @object['year'] then @object['year'].each do |year|%>
-    <%= sb_link_to_remote('year', year) %>
-  <% end %>
-  <br/>
-<% end %>
 
-<% if @object['agent'] then @object['agent'].each do |agent|%>
-  <%= sb_link_to_remote('agent', agent) %><br/>
-<% end end %>
-<% if @object['genre'] then @object['genre'].each do |genre|%>
-  <%= sb_link_to_remote('genre', genre) %>
-<% end end %>
-<br/>
+<div class="rdf" style="clear:both;">
+<%- if @object['year'] or @object['agent'] or @object['genre'] -%>  
+  browse facets: <br/>
+  <% if @object['year'] then @object['year'].each do |year|%>
+      <%= sb_link_to_remote('year', year) %>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <% if @object['agent'] then @object['agent'].each do |agent|%>
+    <%= sb_link_to_remote('agent', agent) %><br/>
+  <% end end %>
+  <% if @object['genre'] then @object['genre'].each do |genre|%>
+    <%= sb_link_to_remote('genre', genre) %>
+  <% end end %>
+  <br/>
+<%- end -%>
 
 <% if site(@object['archive'])%>
   <%= a site(@object['archive'])['description'], :href => site(@object['archive'])['url'], :target => "_blank" %> &rarr;
@@ -64,7 +66,7 @@ browse facets: <br/>
 </div>
 
 <div class="notes">
-<% if @interpretation.tags %>
+<% unless @interpretation.tags.blank? %>
   browse tags: <br />
   <% @interpretation.tags.each do |tag| %>
     <%= link_to_list 'tag', tag.name %>
