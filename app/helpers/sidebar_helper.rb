@@ -41,6 +41,38 @@ module SidebarHelper
     xm
   end
   
+  # build a table of items for the sidebar list of items
+  def items_list(list)
+    xm = Builder::XmlMarkup.new(:indent => 2)
+    xm.table :cellspacing => "0" do
+      list.each do |item|
+        xm.tr do
+          xm.td :align => "center" do
+            xm << link_to_remote(thumbnail_image_tag(item, :class => 'image'), {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"})
+          end
+          xm.td do
+            xm.span do 
+              xm << link_to_remote( h(item['title'] ? item['title'] : "<untitled>"), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);", :class => "title")
+            end
+            xm.br
+            xm.text(comma_separate(item['date_label']))
+            xm.br
+            xm.text(comma_separate(item['agent']))
+            xm.br
+            xm.text(comma_separate(item['genre']))
+            xm.br
+            if site(item[:archive])
+              xm.a(site(item['archive'])['description'], :href => site(item['archive'])['url'])
+            else
+              xm.text(item[:archive])
+            end
+          end
+        end
+      end
+    end
+    xm
+  end
+  
   def tags_list_link_to(tag_type, tag_value, user)
     view_all_users_tags_label = "view all users' #{tag_value} objects"
     view_all_users_tags_link = link_to_remote_for_list_tags(view_all_users_tags_label, tag_type, tag_value, nil)
