@@ -163,6 +163,9 @@
 		line-height: 130%;
 		padding: 5px !important;
 	}
+	.cloudheader a.selected {
+		color: #aaa;
+	}
 
 	.cloud_object {
 		border: 0;
