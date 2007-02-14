@@ -3,6 +3,24 @@ module ApplicationHelper
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
+  def show_hide_link_to(options={})
+    options = options.symbolize_keys
+    options = {:show_label => "show", :hide_label => "hide", :hidden_element => "hidden", :id_suffix => ""}.update(options)
+    show_result = capture do
+      link_to_function(options[:show_label], nil, :id => "show" + options[:id_suffix]) do |page|
+        page.show options[:hidden_element], "hide#{options[:id_suffix]}"
+        page.hide "show#{options[:id_suffix]}"
+      end
+    end
+    hide_result = capture do
+      link_to_function(options[:hide_label], nil, :id => "hide" + options[:id_suffix], :style => "display:none") do |page|
+        page.hide options[:hidden_element], "hide#{options[:id_suffix]}"
+        page.show "show#{options[:id_suffix]}"
+      end
+    end
+    show_result + hide_result
+  end
+
   def cloud_list
     ["archive", "agent", "year", "tag", "genre", "username"]
   end
