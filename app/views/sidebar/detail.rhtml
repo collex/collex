@@ -92,12 +92,11 @@ function check_submit() {
 <% end %>
 </div>
 
-<div class="users">
+<% unless @collection_info['users'].blank? then div :class => "users" do %>
     collected by:
         <% @collection_info['users'].each do |username| %>
         <%= link_to_remote username, :update=>"sidebar", :url => {:controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username} %>
-    <% end %>
-</div>
+<% end end end %>
 
 </div>
 
