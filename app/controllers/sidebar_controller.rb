@@ -1,3 +1,8 @@
+TAG_INSTRUCTIONS = 'tag this item'
+ANNOTATION_INSTRUCTIONS = 'annotate this item'
+NUM_VISIBLE_TAGS = 5
+
+
 class SidebarController < ApplicationController
   before_filter :authorize, :only => [:update, :collect, :remove]
   before_filter :check_authorize, :only => [:list, :cloud, :cloud, :detail]
@@ -26,14 +31,18 @@ class SidebarController < ApplicationController
     return if data == nil or data.size == 0
      
     # TODO: revisit the double sorting here, once to get the maximum frequency, and then again to sort alphabetically
-    @cloud_freq = data.sort {|a,b| b[1] <=> a[1]}
+    grouped_data = data.group_by(&:last)
+    alphabetized_groups = grouped_data.each_value{ |group| group.sort!{ |x,y| x[0]<=>y[0] } }
+    sorted_data = alphabetized_groups.sort.reverse
+    @cloud_freq = sorted_data.inject([]){ |ar,val| ar.concat(val.last) }
+#     @cloud_freq = data.sort {|a,b| b[1] <=> a[1]}
     
     if params[:max]
       @cloud_freq = @cloud_freq.first(params[:max].to_i)
     end
      
     max_freq = @cloud_freq[0][1]
-    @cloud_freq.sort!{|a,b| a[0] <=> b[0]}
+#     @cloud_freq.sort!{|a,b| a[0] <=> b[0]}
      
     @bucket_size = max_freq.quo(10).ceil     
   end
