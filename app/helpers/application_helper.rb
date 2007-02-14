@@ -65,8 +65,8 @@ module ApplicationHelper
     end
   end
   
-  def link_to_peer(user)
-    link_to_remote user, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => "tag", :user => user}}, {:title => pluralize(user, 'object')}
+  def link_to_peer(user, count)
+    link_to_remote user, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => "tag", :user => user}}, {:title => pluralize(count, 'object')}
   end
   
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
