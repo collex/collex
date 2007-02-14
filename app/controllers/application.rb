@@ -47,6 +47,10 @@ class ApplicationController < ActionController::Base
     def me?
       session[:user] ? (params[:user] == username) : false
     end
+    
+    def all_users?
+      !params[:user]
+    end
 
     def username
       session[:user] ? session[:user][:username] : nil
