@@ -13,7 +13,7 @@
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
     <span class="emph4">
-    <%= show_hide_link_to :show_label => "show more #{params[:type].pluralize}", :hide_label => "hide more #{params[:type].pluralize}",
+    <%= show_hide_link_to :show_label => "show more #{facet_label(params[:type])}", :hide_label => "hide more #{facet_label(params[:type])}",
                           :hidden_element => "tagcloud-hidden", :id_suffix => "-more-tags" %>
     </span>
     <div class="tagcloud" id="tagcloud-hidden" style="display:none">
