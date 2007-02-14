@@ -19,15 +19,16 @@ module SidebarHelper
     link_to_remote label, :update=>"sidebar", :url => {:controller=>"sidebar", :action => 'list', :type => type, :value => value}
   end
   
-  def cloud_object(count, value, css_class="cloud_object")
+  def cloud_object(count, value, username=nil, css_class="cloud_object")
     xm = Builder::XmlMarkup.new
     xm.div(:class => css_class) do
+      xm.text! "#{username}'s " if username
       xm.span(pluralize(count, "#{value} object", "#{value} objects"), :class => "emph2")
     end
   end
   
   def tag_cloud(list, type, bucket_size)
-    xm = Builder::XmlMarkup.new
+    xm = Builder::XmlMarkup.new(:indent => 2)
     list.each do |item|
       xm.span :class => "cloud#{item.last.quo(bucket_size).ceil}" do
          if type == "username"
