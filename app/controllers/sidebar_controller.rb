@@ -1,6 +1,6 @@
 TAG_INSTRUCTIONS = 'tag this item'
 ANNOTATION_INSTRUCTIONS = 'annotate this item'
-NUM_VISIBLE_TAGS = 5
+NUM_VISIBLE_TAGS = 30
 
 
 class SidebarController < ApplicationController
