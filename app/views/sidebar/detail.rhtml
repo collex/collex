@@ -40,7 +40,7 @@ function check_submit() {
     <%= thumbnail_image_tag(@object) %>
   <% end %>
 
-<div class="rdf" style="clear:both;">
+<div class="rdf">
 <%- if @object['year'] or @object['agent'] or @object['genre'] -%>  
   browse facets: <br/>
   <% if @object['year'] then @object['year'].each do |year|%>
