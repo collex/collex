@@ -12,9 +12,9 @@
 <div class="account">
   <% if is_logged_in? -%>
     <%= link_to_remote "home", :update => "sidebar", :url => {:controller=>"sidebar", :action => "cloud", :type => "tag", :user => username} %>
-    <%= span "&bull", :class => "bull" %>
+    <%= span "&bull;", :class => "bull" %>
     <%= link_to_remote session[:user][:username], :update => "sidebar", :url => {:controller=>"login", :action => "account"} %>
-    <%= span "&bull", :class => "bull" %>
+    <%= span "&bull;", :class => "bull" %>
     <%=link_to "log out", :controller=>"login", :action=>"logout"%>
   <% else -%>
     <%= link_to_remote "log in", :update => "sidebar", :url => {:controller=>"login", :action=>"login"} %>
