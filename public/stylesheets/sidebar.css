@@ -275,7 +275,6 @@
 		}
 	#sidebar .topnav {
 		position: relative;
-		z-index: 99;
 		}
 	input { 
 		margin: 2px;
@@ -296,9 +295,6 @@
 	.rdf a:first-child:hover { 
 		color: #fff; text-decoration: none; 
 	}
-	#sidebar .browsetags a {
-		padding: .1em .2em .3em .2em;
-	}
 	#sidebar a.tags_list_link_to {
 		font-size: .9em;
 	}
@@ -306,7 +302,7 @@
 		color: #000;
 		background: #D3D3D3;
 	}
-	.unselected {
+	#sidebar .unselected {
 		color: #fff;
 		background: #730000;
 	}
@@ -328,10 +324,20 @@
 		background-color: #730000;
 		color:#fff;
 		font-size: 1em;
-		line-height: 180%;
-		padding-bottom: .2em;
+		line-height: 2em;
+		padding-bottom: 0;
+		margin-bottom: 0;
 		letter-spacing: .2em;
-		}
+		overflow: hidden;
+	}
+	#sidebar .browsetags a {
+		padding: .1em .2em .5em .2em;
+		margin-bottom: 0;
+		overflow: hidden;
+	}	
+	#sidebar .browsetags a.unselected {
+		padding-bottom: .1em;
+	}	
 	.browsetags a:link { color: #fff; text-decoration: none;}
 	.browsetags a:visited { color: #fff; text-decoration: none; }
 	.browsetags a:hover { color: #fff; text-decoration: none; }
