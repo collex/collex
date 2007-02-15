@@ -56,7 +56,8 @@
 		/*padding-left: 7%;*/
 		/*padding-right: 6%;*/
 		background-color: #730000;
-		}
+		margin-bottom: -1em; /*needs to be negative of cloudfooter margin-top*/
+	}
 	.likethis a:link { color: #fff; text-decoration: none; }
 	.likethis a:visited { color: #fff; text-decoration: none; }
 	.likethis a:hover { color: #fff; text-decoration: none; }
