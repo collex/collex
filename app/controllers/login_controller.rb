@@ -39,6 +39,10 @@ class LoginController < ApplicationController
   def account
     if params[:password]
       begin
+        if params[:email] !~ /\@/
+          flash.now[:error] = "An e-mail address is required"
+          return
+        end
         if params[:password] == params[:password2]
           session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:fullname], params[:email])
           flash.now[:message] = "Profile updated"
@@ -66,6 +70,11 @@ class LoginController < ApplicationController
     if params[:username]
       if params[:username] !~ /^\w*$/
         flash.now[:error] = "Invalid username, please use only alphanumeric characters and no spaces"
+        return
+      end
+      
+      if params[:email] !~ /\@/
+        flash.now[:error] = "An e-mail address is required"
         return
       end
       
