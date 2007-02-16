@@ -74,11 +74,9 @@ module SidebarHelper
   end
   
   def tags_list_link_to(tag_type, tag_value, user)
-    view_all_users_tags_label = "view all users' #{tag_value} objects"
-    view_all_users_tags_link = link_to_remote_for_list_tags(view_all_users_tags_label, tag_type, tag_value, nil)
+    view_all_users_tags_link = "view #{link_to_remote_for_list_tags('all users\'', tag_type, tag_value, nil)} #{tag_value} objects"
     
-    view_my_tags_label = "view only my #{tag_value} objects"
-    view_my_tags_link = link_to_remote_for_list_tags(view_my_tags_label, tag_type, tag_value, username || "<mine>")
+    view_my_tags_link = "view #{link_to_remote_for_list_tags('only my', tag_type, tag_value, username || '<mine>')} #{tag_value} objects"
 
     result = case 
       when me?
@@ -88,12 +86,12 @@ module SidebarHelper
       when !user.blank? && !me?
         view_my_tags_link + "<br/>" + view_all_users_tags_link
       end
-      result
+      span result, :class => 'tags_list_link_to'
   end
   
   private
     def link_to_remote_for_list_tags(label, tag_type, tag_value, user)
-      link_to_remote(label, {:update => "sidebar", :url => {:controller=>"sidebar", :action=>"list", :user => user, :type => tag_type, :value => tag_value}}, {:class => 'tags_list_link_to'})
+      link_to_remote(label, {:update => "sidebar", :url => {:controller=>"sidebar", :action=>"list", :user => user, :type => tag_type, :value => tag_value}})
     end
   
 
