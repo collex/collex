@@ -18,7 +18,7 @@ class UploadController < ApplicationController
 			flash[:notice] = "<h3>Please Complete all Form Fields.</h3><p>Please select an archive from the dropdown menu (or add one by clicking 'Add a new Archive'), and specify a file to upload.</p>"
 			redirect_to :action => 'index'
 		else
-			@fname = File.basename(@params['file'].original_filename)
+			@fname = File.basename(params['file'].original_filename)
 			
 			# Instantiates @contri_dir as the appropriate id column of the contributors table
 			archive_name = params['archive_name']
@@ -32,7 +32,7 @@ class UploadController < ApplicationController
 		    	if
 		    		# Change this location to reflect the desired file upload directory
 		               File.open(dirA+"/#{@contri_dir}/#{@fname}", "wb") do |f| 
-		    			f.write(@params['file'].read)
+		    			f.write(params['file'].read)
 		   			end
 				end
 		    	if @fname.match('.zip')

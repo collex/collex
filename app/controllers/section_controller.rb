@@ -31,7 +31,7 @@ class SectionController < ApplicationController
 
      def load_section
         # TODO: Secure such that a user cannot edit another users sections
-       @section = Section.find(@params[:id])
+       @section = Section.find(params[:id])
        @page = @section.page
      end
 end

@@ -23,7 +23,7 @@ class PageController < ApplicationController
   end
   
   def reorder
-     @page.reorder_sections @params[:section_ids].split(/,\s*/)
+     @page.reorder_sections params[:section_ids].split(/,\s*/)
      render_text "SUCCEED"
   end
     
@@ -39,6 +39,6 @@ class PageController < ApplicationController
 
     def load_page
        # TODO: Secure such that a user cannot edit another users pages
-      @page = Page.find(@params[:id])
+      @page = Page.find(params[:id])
     end
 end
