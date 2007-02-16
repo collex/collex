@@ -1,4 +1,4 @@
-paramsPage: <%= params[:page] %>
+Page: <%= params[:page] %>
 <ul>
 <% @results.each do |result| %>
   <li><%= h result[:subject] %>: <%= h result[:title] %></li>
