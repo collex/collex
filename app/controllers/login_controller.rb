@@ -41,7 +41,9 @@ class LoginController < ApplicationController
       begin
         if params[:password] == params[:password2]
           session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:fullname], params[:email])
-          flash.now[:message] = "Updated"
+          flash.now[:message] = "Profile updated"
+          render_component(session[:sidebar_state] ? {:controller => "sidebar", :action => session[:sidebar_state][:action], :params => session[:sidebar_state][:params]}: {:controller => 'sidebar', :action => 'cloud', :params => {:user => session[:user][:username], :type => "genre"}})
+          return
         else
           flash.now[:error] = "Passwords do not match"
         end
