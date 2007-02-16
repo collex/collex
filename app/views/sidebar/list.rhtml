@@ -16,7 +16,7 @@
 
 <%- if @data['hits'].size > NUM_VISIBLE_ITEMS -%>
   <span class="emph4">
-  <%= show_hide_link_to :show_label => "show other #{@data['hits'].size - NUM_VISIBLE_ITEMS} items", :hide_label => "hide other #{@data['hits'].size - NUM_VISIBLE_ITEMS} items",
+  <%= show_hide_link_to :show_label => "show #{@data['hits'].size - NUM_VISIBLE_ITEMS} more items", :hide_label => "hide other #{@data['hits'].size - NUM_VISIBLE_ITEMS} items",
                         :hidden_element => "items-hidden", :id_suffix => "-more-items" %>
   </span>
   <div id="items-hidden" style="display:none">

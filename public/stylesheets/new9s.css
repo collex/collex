@@ -155,12 +155,17 @@
 			color: #A60000;
 		}
 		.emph2 {
-			font: 1.2em  trebuchet ms, verdana, sans-serif;
+			font: 1.4em  trebuchet ms, verdana, sans-serif;
 			color: #A60000;
+			line-height: 1.4em;
 		}
 		.emph3 {
 			font: 1.2em  trebuchet ms, verdana, sans-serif;
 			color: #A60000;
+		}
+		.emph4 {
+			font: 1.3em  trebuchet ms, verdana, sans-serif;
+			color: #666;
 		}
 		.features {
 			width: 66%;
@@ -467,4 +472,8 @@
 		font-style: normal;
 		font-weight: bold;
 		background: #dcdcdc;
+	}
+	.top {
+		float:right;
+		padding: .8em 2em 0 0;
 	}
