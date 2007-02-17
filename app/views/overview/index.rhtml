@@ -1,0 +1,78 @@
+<%= stylesheet_link_tag 'nines_style' %>
+
+<div align="center">
+	<div id="container">
+	    <div id="banner" align="left">
+			<span class="emph1"><a href="http://www.nines.org/collex/">NINES</a></span><br />
+	    </div>
+		<div id="content">
+          	<div class="pagination"></div>
+
+<table class="constraints" cellspacing="0" align="center" valign="top">
+<caption>Transaction Log: <%= @exchanges.size %>	item(s) passed successfully.</caption>
+	<tr>
+		<td>
+<p style="font-size: 12px; color: #666"></p>
+
+<table align="center" width="600" cellpadding="4" cellspacing="0">
+
+	<th width="33%" align="left">
+		<p style="font-size: 12px">URI</p>
+	</th>
+
+
+<% for exchange in @exchanges %>
+	<tr>
+
+		<td>
+			<p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= exchange.uri %></a></p>
+		</td>
+
+	</tr>
+<% end %>
+
+</table>
+
+		</td>
+	</tr>
+</table>
+
+<!-- Begin Error Log -->
+<br />
+
+<table width="600" class="constraints" cellspacing="0" align="center" valign="top">
+<caption>Error Log:  The following <%= @errors.size %> item(s) contained errors</caption>
+	<tr>
+		<td>
+<% if !@errors[0] %>
+	<p style="font-size: 12px">No errors found</p>
+<% else %>
+
+<table align="center" width="600" cellpadding="4" cellspacing="0">
+
+	<th width="33%" align="left">
+		<p style="font-size: 12px">URI</p>
+	</th>
+
+
+
+
+	<% for error in @errors %>
+		<tr>
+			<td>	
+				<p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= error %></a></p>
+			</td>			
+		</tr>
+	<% end %>
+
+<% end %>
+
+</table>
+
+		</td>
+	</tr>
+</table>
+<a href="./exchange?id=<%= exchange.task_id %>">Click Here to See Processing Details</a>
+<div>
+	<div id="footer" style="text-align:center">&nbsp;</div>
+</div>

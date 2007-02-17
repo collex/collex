@@ -7,7 +7,16 @@
 	    </div>
 		<div id="content">
           	<div class="pagination"></div>
+<h2>Archives with files awaiting approval</h2>
+<form name="batch_process" action="approve/batch" method="post">
+<select name="live_archives">
+<% for archive in @archives %>
 
+				<option value="<%= archive %>"><%= archive %></option>
+	
+	<% end %>
+	
+</select> <input type="submit" name="approve" value="Approve all from archive" />&nbsp;<input type="submit" name="drop" value="Drop all from archive" /></form>
 <h2>Files awaiting approval</h2>
 <p style="width: 500px">Click on a filename to view all of the titles associated with that task</p>
 
