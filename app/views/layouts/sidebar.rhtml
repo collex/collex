@@ -1,5 +1,26 @@
 <%= javascript_tag("window.body.onload = window.location.reload();") if flash[:refresh_page] %>
 
+<script type="text/javascript">
+var instructions = new Array();
+instructions['tags'] = '<%= TAG_INSTRUCTIONS %>';
+instructions['annotation'] = '<%= ANNOTATION_INSTRUCTIONS %>';
+
+function defaultInstructions(t) {
+  var key = t.name.split('-',1)[0];
+  return instructions[key];
+}
+function clearInstructions(t) {
+  if (t.value == defaultInstructions(t)) {t.value = '';}
+}
+
+function check_submit() {
+    if (document.forms['dataform'].tags.value == '' || document.forms['dataform'].tags.value == "<%= TAG_INSTRUCTIONS %>") { 
+      alert('At least one tag is required to collect an object'); 
+      return false; 
+    }
+    return true;
+}
+</script>
 
 <% if flash[:notice] -%> 
   <div id="notice"><%= flash[:notice] %></div> 
