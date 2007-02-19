@@ -63,7 +63,7 @@ module ApplicationHelper
      if (type=="archive")
        display = site(value) ? site(value)['description'] : value
      end
-     link_to_remote display, {:update => "sidebar", :url => {:controller => 'sidebar', :action => 'list', :params => {:type => type, :value => value, :user => params[:user]}}}, html_options
+     link_to_remote display, {:update => "sidebar", :url => sidebar_list_path(:type => type, :value => value, :user => params[:user])}, html_options
   end
   
   def nbpluralize(count, singular, plural = nil)
