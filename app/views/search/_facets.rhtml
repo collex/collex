@@ -73,7 +73,7 @@
 		<tr>
 	             <th align="left">year:</th>
 	              <td><%= start_form_tag({:controller => "search", :action => :add_year_facet}, {:name => 'yearform'}) -%>
-	    <%= text_field_with_suggest :field, :year, :size => 20 %>&nbsp;<span class="help" id="year-help" title="header=[year search] body=[type a four digit year, select a valid option from the drop-down menu, and click 'add'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
+	    <%= text_field_with_suggest :field, :year, {:size => 20},{:min_chars => 2} %>&nbsp;<span class="help" id="year-help" title="header=[year search] body=[type a four digit year, select a valid option from the drop-down menu, and click 'add'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
 <script>
 function yearValidation(theForm, event)
 {
@@ -116,7 +116,7 @@ function yearValidation(theForm, event)
 		<tr>
 	             <th align="left">name:</th>
 	              <td><%= start_form_tag({:controller => "search", :action => :add_agent_facet}, {:name => 'agentform'}) -%>
-	    <%= text_field_with_suggest :agent, :name, :size => 20 %>&nbsp;<span class="help" title="header=[name search] body=[type the name of a person or institution, select a valid option from the drop-down menu, and click 'add.'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
+	    <%= text_field_with_suggest :agent, :name, {:size => 20},{:min_chars => 2} %>&nbsp;<span class="help" title="header=[name search] body=[type the name of a person or institution, select a valid option from the drop-down menu, and click 'add.'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
 	    <td align="center"><%= link_to_function "add", "document.forms['agentform'].submit();" -%></td>
 		  <td>&nbsp;</td>
 	   </tr>
