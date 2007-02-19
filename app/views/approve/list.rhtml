@@ -7,8 +7,11 @@
 	    </div>
 		<div id="content">
           	<div class="pagination"></div>
+<% if @archives %>
+<% if @archives.size>0 %>
 <h2>Archives with files awaiting approval</h2>
-<form name="batch_process" action="approve/batch" method="post">
+<form name="batch_process" action="batch" method="post">
+
 <select name="live_archives">
 <% for archive in @archives %>
 
@@ -16,7 +19,12 @@
 	
 	<% end %>
 	
-</select> <input type="submit" name="approve" value="Approve all from archive" />&nbsp;<input type="submit" name="drop" value="Drop all from archive" /></form>
+</select>
+<input type="text" name="approvedrop" style="display: none;" />
+
+ <span name="approve" onclick="if (confirm('Approve All in Archive?')) {document.batch_process.approvedrop.value='approve'; document.batch_process.submit()}"><strong>Approve all from archive</strong></span>&nbsp;<span name="approve" onclick="if (confirm('Drop All in Archive?')) {document.batch_process.approvedrop.value='drop'; document.batch_process.submit()}"><strong>Drop all from Archive</strong></span></form>
+ <% end %>
+<% end %>
 <h2>Files awaiting approval</h2>
 <p style="width: 500px">Click on a filename to view all of the titles associated with that task</p>
 
@@ -27,14 +35,21 @@
 		<td width="30%" style="border-bottom: 1px solid #333"><strong>Archive</strong></td>
 		<td width="30%" style="border-bottom: 1px solid #333"><strong>Contributor</strong></td>
 	</tr>
-	<% for task in @tasks %>
+	<% if @unapprovedTasks %>
+	<% for unapprovedTasks in @unapprovedTasks %>
+	
 	<tr>
-		<td><%= link_to task.file_name, :action => "titles", :id => task.id %></td>
-		<td><%= task.archive_name %></td>
-		<% archive_name = task.archive_name %>
-		<% @contribs = Contributor.find_by_archive_name(archive_name) %>
-		<td><a href="mailto:<%= @contribs.email %>"><%= @contribs.contact %></a></td>
+
+				<td><%= link_to unapprovedTasks.file_name, :action => "titles", :id => unapprovedTasks.id %></td>
+				<td><%= unapprovedTasks.archive_name %></td>
+				<% archive_name = unapprovedTasks.archive_name %>
+				<% @contribs = Contributor.find_by_archive_name(archive_name) %>
+				<td><a href="mailto:<%= @contribs.email %>"><%= @contribs.contact %></a></td>
+	
+		
 	</tr>
+
+	<% end %>
 	<% end %>
 </table>
 <br />

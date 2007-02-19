@@ -8,12 +8,15 @@ class ApproveController < ApplicationController
     @titles = Title.find_all
     @tasks = Task.find_all
     @archives = Title.find(:all).map{ |i| i.archive_name }.uniq
+	@approvals = Approval.find_all
+	@unapprovedTasks = Task.find_all_by_isApproved(false)
 	render :action => 'list'
 	
   end
   
   def batch
-    if params["approve"]
+
+    if params["approvedrop"] == "approve"
 	  @result = "approve"
 	  @titles = Title.find_all_by_archive_name(params["live_archives"])
 		for title in @titles
@@ -23,15 +26,16 @@ class ApproveController < ApplicationController
 			end
 		end
 	# Uncomment if you wish to destroy the task record from Ruby
-	 #@tasks = Task.find_all_by_archive_name(params["live_archives"])
-	#for tasks in @tasks
-	#		tasks.destroy
-	#	end
+	 @tasks = Task.find_all_by_archive_name(params["live_archives"])
+	for tasks in @tasks
+			tasks.isApproved=true
+			tasks.save
+		end
 	
-		#flash[:notice] = "<h3>Titles approved.</h3><p>Your titles have been successfully approved.  They will be processed and added to NINES shortly.</p>"
-		render :action => 'batch'
+		flash[:notice] = "<h3>Titles approved.</h3><p>Your titles have been successfully approved.  They will be processed and added to NINES shortly.</p>"
+		redirect_to :action => 'index'
 	end
-	if params["drop"]
+	if params["approvedrop"] == "drop"
 	  tree = YAML::parse(File.open(RAILS_ROOT+"/config/database.yml"))
 		obj_tree = tree.transform
 		dirA = obj_tree['java_constants']['dir1']
@@ -51,10 +55,13 @@ class ApproveController < ApplicationController
 		for tasks in @tasks
 			tasks.destroy
 		end
+		#@archive = Archive.find_by_archive_name(params["live_archives"]);
+		#@archive.drop
 		
-		@result = "dropped"
-		#  flash[:notice] = "<h3>Titles dropped.</h3>"
-	render :action => 'batch'
+		
+	flash[:notice] = "<h3>Titles dropped.</h3>"
+	#render :action => 'batch'
+	redirect_to :action => 'index'
 	end
   
   end
@@ -102,8 +109,9 @@ class ApproveController < ApplicationController
 		end
 	end
 	# Uncomment if you wish to destroy the task record from Ruby
-#	@task = Task.find(params[:id])
- #   @task.destroy
+	@task = Task.find(params[:id])
+    @task.isApproved = true
+	@task.save
 	
 	flash[:notice] = "<h3>Titles approved.</h3><p>Your titles have been successfully approved.  They will be processed and added to NINES shortly.</p>"
 	redirect_to :action => 'index'
