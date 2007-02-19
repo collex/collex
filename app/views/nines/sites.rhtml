@@ -1,12 +1,14 @@
 <div class="popup">
 <div class="pagination" style="margin-bottom:1em"><span class="emph2">NINES contributors</span></div>
-<p><span class="emph2">scholarly projects</span> participating in the NINES/Collex include:
+<p><span class="emph2">scholarly projects</span> participating in NINES/Collex include:
 <ul>
 <% @sites.each do |site|%>
 <li><a href="<%= site['url']%>" target="_blank"><%= site['description']%></a></li>
 <% end %>
 </ul>
 </p>
+
+<p>NINES resources are peer reviewed to ensure that they meet the highest standards for scholarly excellence.  Peer review is still in progress for the following sites, included in the February general release of NINES:  the Ambrose Bierce Project, the Charles Chesnutt Archive, the Dickinson Virtual Reference Shelf, and the Swinburne Project.</p>
 
 <p>Full text search through NINES is currently available for all projects except the Charles Chesnutt Archive and Romantic Circles Praxis. In addition, users may search for titles, names, genres, dates, and other basic information across <b>all</b> participating NINES sites.</p>
 
