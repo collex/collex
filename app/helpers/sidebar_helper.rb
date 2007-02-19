@@ -23,7 +23,9 @@ module SidebarHelper
     xm = Builder::XmlMarkup.new
     xm.div(:class => css_class) do
       xm.text! "#{username}'s " if username
-      xm.span(pluralize(count.to_i, "#{value} object", "#{value} objects"), :class => "emph2")
+      xm.text! "#{count.to_i} "
+      xm.span(value, :class => "emph2")
+      xm.text! count.to_i != 1 ? " objects" : " object"
     end
   end
   
