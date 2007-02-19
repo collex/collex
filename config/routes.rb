@@ -18,7 +18,14 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'atom/:type/:value', :controller => 'sidebar', :action => 'atom'
   
   map.resources :exhibits
-
+  
+  map.sidebar_list "sidebar/list/:type/:value/:user",
+                   :controller => "sidebar",
+                   :action => "list",
+                   :type => nil,
+                   :value => nil,
+                   :user => nil
+  
   map.permalink 'permalink/list/:type/:value/:user', :controller => 'sidebar', :action => 'permalink', :view => 'list'
   map.permalink 'permalink/list/:type/:value', :controller => 'sidebar', :action => 'permalink', :view => 'list'
   map.permalink 'permalink/cloud/:type/:user', :controller => 'sidebar', :action => 'permalink', :view => 'cloud'
