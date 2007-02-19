@@ -22,7 +22,7 @@
 </select>
 <input type="text" name="approvedrop" style="display: none;" />
 
- <span name="approve" onclick="if (confirm('Approve All in Archive?')) {document.batch_process.approvedrop.value='approve'; document.batch_process.submit()}"><strong>Approve all from archive</strong></span>&nbsp;<span name="approve" onclick="if (confirm('Drop All in Archive?')) {document.batch_process.approvedrop.value='drop'; document.batch_process.submit()}"><strong>Drop all from Archive</strong></span></form>
+ <input type="button" name="approve" onclick="if (confirm('Approve all in archive?')) {document.batch_process.approvedrop.value='approve'; document.batch_process.submit()}" value="Approve all from archive"></input>&nbsp;<input type="button" name="approve" onclick="if (confirm('Drop all in archive?')) {document.batch_process.approvedrop.value='drop'; document.batch_process.submit()}" value="Drop all from archive"></input></form>
  <% end %>
 <% end %>
 <h2>Files awaiting approval</h2>
