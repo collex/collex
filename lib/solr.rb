@@ -92,7 +92,7 @@ class Solr
     end
     
     response = eval(post_to_solr(post_data))
-    RAILS_DEFAULT_LOGGER.info("----------object_detail: #{response.inspect}")
+    RAILS_DEFAULT_LOGGER.debug("----------object_detail: #{response.inspect}")
     docs = response['docs']['docs']
     
     document = nil
