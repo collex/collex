@@ -24,7 +24,7 @@ ActionController::Routing::Routes.draw do |map|
                     :controller => "sidebar",
                     :action => "list",
                     :type => /\w+/,
-                    :value => /[^\n^\/]+/,
+                    :value => /[^\/]+/,
                     :user => nil  
                    
   map.sidebar_cloud "sidebar/cloud/:type/:user",
@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   map.permalink_list 'permalink/list/:type/:value/:user', 
                     :controller => 'sidebar', 
                     :action => 'permalink_list',
-                    :value => /[^\n^\/]+/,
+                    :value => /[^\/]+/,
                     :user => nil
   map.permalink_cloud 'permalink/cloud/:type/:user', 
                     :controller => 'sidebar', 
