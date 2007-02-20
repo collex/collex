@@ -19,25 +19,32 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :exhibits
   
-  map.sidebar_list "sidebar/list/:type/:value/:user",
-                   :controller => "sidebar",
-                   :action => "list",
-                   :type => nil,
-                   :value => nil,
-                   :user => nil  
+  # sidebar_list and permalink_list define :value to take any char but newline and / 
+  map.sidebar_list  "sidebar/list/:type/:value/:user",
+                    :controller => "sidebar",
+                    :action => "list",
+                    :type => /\w+/,
+                    :value => /[^\n^\/]+/,
+                    :user => nil  
                    
-  map.sidebar_cloud "sidebar/cloud/:type//:user",
-                   :controller => "sidebar",
-                   :action => "cloud",
-                   :type => nil,
-                   :value => nil,
-                   :user => nil
+  map.sidebar_cloud "sidebar/cloud/:type/:user",
+                    :controller => "sidebar",
+                    :action => "cloud",
+                    :type => /\w+/,
+                    :user => nil
   
-  map.permalink 'permalink/list/:type/:value/:user', :controller => 'sidebar', :action => 'permalink', :view => 'list'
-  map.permalink 'permalink/list/:type/:value', :controller => 'sidebar', :action => 'permalink', :view => 'list'
-  map.permalink 'permalink/cloud/:type/:user', :controller => 'sidebar', :action => 'permalink', :view => 'cloud'
-  map.permalink 'permalink/cloud/:type', :controller => 'sidebar', :action => 'permalink', :view => 'cloud'
-  map.permalink 'permalink/detail', :controller => 'sidebar', :action => 'permalink', :view => 'detail'
+  map.permalink_list 'permalink/list/:type/:value/:user', 
+                    :controller => 'sidebar', 
+                    :action => 'permalink_list',
+                    :value => /[^\n^\/]+/,
+                    :user => nil
+  map.permalink_cloud 'permalink/cloud/:type/:user', 
+                    :controller => 'sidebar', 
+                    :action => 'permalink_cloud',
+                    :user => nil
+  map.permalink_detail 'permalink/detail', 
+                    :controller => 'sidebar', 
+                    :action => 'permalink_detail'
 
   map.connect 'collex/:action', :controller => 'search'
   map.connect 'admin', :controller => 'admin/default'

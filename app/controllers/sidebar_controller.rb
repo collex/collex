@@ -11,8 +11,21 @@ class SidebarController < ApplicationController
   
   layout "sidebar"
 
+  def permalink_list
+    @view = 'list'
+    permalink
+  end
+  def permalink_cloud
+    @view = 'cloud'
+    permalink
+  end
+  def permalink_detail
+    @view = 'detail'
+    permalink
+  end
+
   def permalink
-    session[:sidebar_state] = {:action => params[:view], :params => {:type => params[:type], :value => params[:value], :user => params[:user], :objid => params[:objid]} }     
+    session[:sidebar_state] = {:action => @view, :params => {:type => params[:type], :value => params[:value], :user => params[:user], :objid => params[:objid]} }     
     render_component :controller => "search", :action => "browse"
   end
 
