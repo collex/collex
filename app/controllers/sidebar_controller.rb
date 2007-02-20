@@ -10,6 +10,11 @@ class SidebarController < ApplicationController
   before_filter :save_state, :except => [:remove, :update, :atom, :clear_user]
   
   layout "sidebar"
+  
+  def index
+    cloud
+    render :action => "cloud"
+  end
 
   def permalink_list
     @view = 'list'
