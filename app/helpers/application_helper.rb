@@ -35,7 +35,7 @@ module ApplicationHelper
       when "roles", "agent" then "names"
       when "username"       then "peers"
       when "year"           then "dates"
-      when "", nil          then "tags"
+      when "tag", "", nil          then "keywords"
     else field.pluralize
     end
 

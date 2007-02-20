@@ -345,7 +345,7 @@ function validateCollector()
 		<% if is_logged_in? %>
 		<%= form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :complete => visual_effect(:fade, "collectformarea", :duration => 0.5) ) %> 
 		  <%= hidden_field_tag :objid, "" -%>
-		  <label for="tags">&nbsp; tags: &nbsp;</label> 
+		  <label for="tags">&nbsp; keywords: &nbsp;</label> 
 		  <%= text_field_tag :tags, '', {:size => 23, :id => 'collector_tag'}  %> <br />
 		  <label for="annotation">&nbsp; notes:</label>
 		  <%= text_area_tag :annotation %>

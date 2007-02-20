@@ -45,7 +45,7 @@
 
 <div class="notes">
 <% unless @interpretation.tags.blank? %>
-  browse tags: <br />
+  browse keywords: <br />
   <% @interpretation.tags.each do |tag| %>
     <%= link_to_list 'tag', tag.name %>
 <% end end %>           
