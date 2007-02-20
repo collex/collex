@@ -14,9 +14,12 @@ ActionController::Routing::Routes.draw do |map|
   # instead of a file named 'wsdl'
 #  map.connect ':controller/service.wsdl', :action => 'wsdl'
 
-  map.connect 'atom/:type/:value/:user', :controller => 'sidebar', :action => 'atom'
-  map.connect 'atom/:type/:value', :controller => 'sidebar', :action => 'atom'
-  
+  map.atom_feed 'atom/:type/:value/:user', 
+                    :controller => 'sidebar',
+                    :action => 'atom',
+                    :value => /[^\/]+/,
+                    :user => nil
+
   map.resources :exhibits
   
   # sidebar_list and permalink_list define :value to take any char but newline and / 
