@@ -18,8 +18,8 @@
 	    <% @exhibit_types.each do |exhibit_type| %>
 		<td>
 			<div class="thumbnail">
-<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[create!] body=[#{exhibit_type.description}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"new", :type => exhibit_type.id} %>
-<br /><%=link_to exhibit_type.description, :action => 'new', :type => exhibit_type.id %>
+        <%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[create!] body=[#{exhibit_type.description}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"new", :type => exhibit_type.id} %>
+        <br /><%=link_to exhibit_type.description, :action => 'new', :type => exhibit_type.id %>
 			</div>
 		</td>
 		<% end %>
@@ -32,8 +32,8 @@
 	<tr>
 		<td>
 			<div class="thumbnail">
-<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[Title of Exhibit] body=[work in progress] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"bibliography"} %>
-<br /><%=link_to "bibliography X", :action => 'bibliography'%>
+        <%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[Title of Exhibit] body=[work in progress] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"bibliography"} %>
+        <br /><%=link_to "bibliography X", :action => 'bibliography'%>
 			</div>
 		</td>
 		<td><p>metadata about this bibliography-in-progress</p></td>
@@ -41,8 +41,8 @@
 		<tr>
 			<td>
 				<div class="thumbnail">
-	<%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[Title of Exhibit] body=[work in progress] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"essay"} %>
-	<br /><%=link_to "essay X", :action => 'essay'%>
+	        <%=link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :title => "header=[Title of Exhibit] body=[work in progress] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action =>"essay"} %>
+	        <br /><%=link_to "essay X", :action => 'essay'%>
 				</div>
 			</td>
 			<td><p>metadata about this essay-in-progress</p></td>

@@ -40,4 +40,9 @@ class SidebarHelperTest < HelperTestCase
     assert_dom_equal(expected, sb_link_to_remote(@type, @value, @label))
   end
   
+  def test_cloud_object_renders_properly
+    expected = %(<div class="cloud_object">some_user's <span class="emph2">foo objects</span></div>)
+    assert_equal(expected, cloud_object("2", "some_user"))
+  end
+  
 end

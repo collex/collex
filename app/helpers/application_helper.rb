@@ -77,11 +77,12 @@ module ApplicationHelper
   def link_to_cloud(type, label=type)
     css_class = params[:type] == type ? "selected" : ""
     link_to_remote facet_label(label), {:update => "sidebar",
-        :url => { :controller => 'sidebar', :action => 'cloud', :params=> {:user => params[:user], :type => type} }}, {:class => css_class}
+        :url => sidebar_cloud_path(:user => params[:user], :type => type)}, 
+        {:class => css_class}
   end
   
   def link_to_peer(user, count)
-    link_to_remote user, {:update=>"sidebar", :url => {:controller => "sidebar", :action => 'cloud', :type => "tag", :user => user}}, {:title => pluralize(count, 'object')}
+    link_to_remote user, {:update=>"sidebar", :url => sidebar_cloud_path(:type => "tag", :user => user)}, {:title => pluralize(count, 'object')}
   end
   
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})

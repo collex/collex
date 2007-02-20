@@ -28,9 +28,9 @@ Sections:
                  Section <%= section.id %>: <%= section.section_type.description %>
                  <br/>Panels:
                  <ul>
-                     <% section.section_type.panel_types.each do |pt|%>
-                     <li><%= render_panel(pt, "edit") %></li>
-                     <% end %>
+                   <% section.section_type.panel_types.each do |pt| -%>
+                   <li><%= render_panel(pt, "edit") %></li>
+                   <% end -%>
                  </ul>
              </li>
            <% end %>

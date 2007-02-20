@@ -14,4 +14,8 @@ module ExhibitHelper
       name
     end
   end
+  
+  def foo
+    span "This is my span"
+  end
 end

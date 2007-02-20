@@ -1,25 +1,34 @@
+socket: &socket
+  <% if File.exist? "/opt/local/var/run/mysql5/mysqld.sock" %>
+    socket: /opt/local/var/run/mysql5/mysqld.sock
+  <% elsif File.exist? "/tmp/mysql.sock" %>
+    socket: /tmp/mysql.sock
+  <% end %>
+
 development:
     adapter: mysql
     database: nines_development
     username: root
-    password: null
+    password: 
     host: localhost
     solrUrl: http://localhost:8983/solr/update
+    <<: *socket
     
 test:
     adapter: mysql
     database: nines_test
     username: root
-    password: null
+    password: 
     host: localhost
     solrUrl: http://localhost:8983/solr/update
+    <<: *socket
 
 production:
     adapter: mysql
     database: nines_production
     #database: nines_development
     username: root
-    password: null
+    password: 
     host: localhost
     solrUrl: http://localhost:8983/solr/update
     

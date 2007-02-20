@@ -24,6 +24,13 @@ ActionController::Routing::Routes.draw do |map|
                    :action => "list",
                    :type => nil,
                    :value => nil,
+                   :user => nil  
+                   
+  map.sidebar_cloud "sidebar/cloud/:type//:user",
+                   :controller => "sidebar",
+                   :action => "cloud",
+                   :type => nil,
+                   :value => nil,
                    :user => nil
   
   map.permalink 'permalink/list/:type/:value/:user', :controller => 'sidebar', :action => 'permalink', :view => 'list'
