@@ -1,4 +1,4 @@
-TAG_INSTRUCTIONS = 'tag this item'
+TAG_INSTRUCTIONS = 'keyword this item'
 ANNOTATION_INSTRUCTIONS = 'annotate this item'
 
 class CollectionController < ApplicationController
@@ -19,7 +19,7 @@ class CollectionController < ApplicationController
   def add
     user = User.find_by_username(session[:user][:username])
 
-     # extract the individual tags from the tag string entered by the user
+     # extract the individual tags/keywords from the tag string entered by the user
      # currently split by whitespace, but TODO in the future this should be enhanced to
      # allow tags to be quoted, so that the string /"this is a single tag" and-so-is-this/ is parsed
      # as two tags instead of six
