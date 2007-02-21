@@ -47,9 +47,12 @@
 	#sidebar .item img:hover {
 		border: 1px solid #A60000;
 		}
-	#sidebar .item > a:hover {
+	#sidebar .item > a.image:hover {
 		background: #dcdcdc;	
-		}
+	}
+	#sidebar .item a.title {
+		font-size: 1.1em;
+	}
 
 	.likethis {
 		color: #F0EDE6;
