@@ -1,4 +1,4 @@
-TAG_INSTRUCTIONS = 'keyword this item'
+TAG_INSTRUCTIONS = 'add keywords'
 ANNOTATION_INSTRUCTIONS = 'annotate this item'
 
 class CollectionController < ApplicationController
