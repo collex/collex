@@ -6,14 +6,14 @@
 
 <div class="item">
   <% if @object['url'] %>
-    <a target="_blank" href="<%=@object['url'][0]%>" style="font-size:1.1em"><%= h title_for(@object) %></a> &rarr;
+    <a target="_blank" href="<%=@object['url'][0]%>" class="title"><%= h title_for(@object) %></a> &rarr;
   <% else %>
     <%= h title_for(@object) %>
   <% end %>
   <br />
   
   <% if @object['url'] %>
-    <a target="_blank" href="<%=@object['url']%>" style="font-size:1.1em"><%= thumbnail_image_tag(@object) %></a>
+    <a target="_blank" href="<%=@object['url']%>" class="image"><%= thumbnail_image_tag(@object) %></a>
   <% else %>
     <%= thumbnail_image_tag(@object) %>
   <% end %>
