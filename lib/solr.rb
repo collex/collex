@@ -202,10 +202,10 @@ class Solr
     output = "&constraint=#{url_encode('type:A')}"
     constraints.each do |constraint|
       encoded_constraint = ""
+      encoded_constraint << "-" if constraint[:invert]
       if constraint.has_key?(:expression)
         encoded_constraint << "?:#{constraint[:expression]}"
       else
-        encoded_constraint << "-" if constraint[:invert]
         encoded_constraint << "#{constraint[:field]}:#{constraint[:value]}"
       end
       
