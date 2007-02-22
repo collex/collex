@@ -11,9 +11,9 @@ class Solr
   
   def num_docs
     if @num_docs == -1
-      response = eval(post_to_solr("qt=indexinfo&wt=ruby"))
+      response = eval(post_to_solr("qt=standard&q=type:A&wt=ruby&rows=0"))
       
-      @num_docs = response['index']['numDocs']
+      @num_docs = response['response']['numFound']
     end
     
     @num_docs
