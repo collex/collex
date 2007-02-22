@@ -53,7 +53,7 @@ class Solr
   end
   
   def search(constraints, start, max)
-    post_data = "qt=search&fl=archive,agent,date_label,genre,role_*,source,thumbnail,title,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&hl=on&hl.fl=text&hl.fragsize=600"
+    post_data = "qt=search&fl=archive,agent,date_label,genre,role_*,source,thumbnail,title,alternative,uri,url&start=#{start}&rows=#{max}&ff=genre&ff=archive&wt=ruby&hl=on&hl.fl=text&hl.fragsize=600"
     post_data << encode_constraints(constraints)
     
     results = {}
@@ -86,7 +86,7 @@ class Solr
   end
   
   def object_detail(objid, user)
-    post_data = "field=uri&qt=object&value=#{url_encode(objid)}&fl=title,genre,year,date_label,archive,agent,uri,url,thumbnail,source&wt=ruby"
+    post_data = "field=uri&qt=object&value=#{url_encode(objid)}&fl=title,alternative,genre,year,date_label,archive,agent,uri,url,thumbnail,source&wt=ruby"
     if user
       post_data << "&username=#{user}"
     end
@@ -113,7 +113,7 @@ class Solr
   def objects_behind_urls(urls, user)
     #TODO allow paging through rows
     #TODO add switch to avoid getting "more like this" in the solr response - it isn't needed in the case of the collector
-    post_data = "field=url&qt=object&wt=ruby&fl=title,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&rows=500"
+    post_data = "field=url&qt=object&wt=ruby&fl=title,alternative,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&rows=500"
     if user
       post_data << "&username=#{user}"
     end
