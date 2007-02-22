@@ -4,7 +4,7 @@
 
     	<tr>
                  <th align="left">phrase:</th>
-                  <td><%= start_form_tag({:controller => "search", :action => :add_expression}, {:name => 'phraseform'}) -%><%= text_field_with_suggest :field, :content,  {:size=>20}, {:min_chars => 2}-%>&nbsp;<span class="help" title="header=[full text search] body=[is available for the Poetess, Swinburne, and Rossetti archives, but ALL objects are open for search on titles, sources, names, dates, and genres. Phrases in quotes, AND, OR, and NOT operators, and * wildcards are permitted.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span><%= end_form_tag -%></td>
+                  <td><%= start_form_tag({:controller => "search", :action => :add_expression}, {:name => 'phraseform'}) -%><%= text_field_with_suggest :field, :content,  {:size=>20}, {:min_chars => 2}-%>&nbsp;<span class="help" title="header=[full text search] body=[is available for most resources. Individual words are AND'ed together by default. Place phrases in quotes. The OR operator, and * wildcards are permitted.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span><%= end_form_tag -%></td>
                   <td align="center"><%= link_to_function "add", "document.forms['phraseform'].submit();" -%></td>
 				  <td>&nbsp;</td>
                </tr>
