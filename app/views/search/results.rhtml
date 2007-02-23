@@ -152,19 +152,10 @@ function displayCollector(id, uri, event)
               </tr>
 
                 <% if hit["alternative"]
-                   first_alternative = true
                    hit["alternative"].each do |alternative|
                 %>
             <tr>
-             <td class="grey" valign="top">
-                  <% if first_alternative == true then
-                  %>
-              title:
-                  <% first_alternative = false
-                     end
-                  %>
-             </td>
-             <td>
+             <td colspan="2">
                   <%=h alternative %>
                 <% end
                 %>
