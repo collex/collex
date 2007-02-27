@@ -13,7 +13,7 @@ class SolrTest < Test::Unit::TestCase
   
   def test_numdocs
     s = Solr.new
-    s.return_value = "{'header'=>{'qtime'=>1},'index'=>{'maxDoc'=>106,'numDocs'=>50,'version'=>1170175424488}}"
+    s.return_value = "{'header'=>{'qtime'=>1},'response'=>{'maxDoc'=>106,'numFound'=>50,'version'=>1170175424488}}"
     assert_equal 50, s.num_docs
   end
   
