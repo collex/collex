@@ -28,7 +28,7 @@ class SidebarHelperTest < HelperTestCase
   def test_sb_link_to_remote_generates_label_from_value
     @type = "agent"
     @value = "David Ferris"
-    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list?type=agent&amp;value=David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">David Ferris</a>}
+    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list/agent/David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">David Ferris</a>}
     assert_dom_equal(expected, sb_link_to_remote(@type, @value))
   end
   
@@ -36,12 +36,12 @@ class SidebarHelperTest < HelperTestCase
     @type = "agent"
     @value = "David Ferris"
     @label = "LOUD LABEL"
-    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list?type=agent&amp;value=David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">LOUD LABEL</a>}
+    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list/agent/David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">LOUD LABEL</a>}
     assert_dom_equal(expected, sb_link_to_remote(@type, @value, @label))
   end
   
   def test_cloud_object_renders_properly
-    expected = %(<div class="cloud_object">some_user's <span class="emph2">foo objects</span></div>)
+    expected = %(<div class="cloud_object">2 <span class="emph2">some_user</span> objects</div>)
     assert_equal(expected, cloud_object("2", "some_user"))
   end
   
