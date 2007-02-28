@@ -1,13 +1,42 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SolrResourceTest < Test::Unit::TestCase
+  URI = "http://some/fake/uri"
+  URLS = [URI << ".html"]
+  THUMBNAIL = "http://some/fake/uri/img/thumbnail.png"
+  USERNAME = "some_user"
+  
+  MLTS = [{"uri"=>"http://rotunda.upress.virginia.edu/Arnold/V3P176D2", "title"=>["Algernon Charles Swinburne to Matthew Arnold"], "archive"=>"rotunda_arnold", "date_label"=>["9 October 1867"], "url"=>["http://rotunda.upress.virginia.edu/Arnold/display.xqy?letter=V3P176D2"], "genre"=>["Primary", "Letters"], "year"=>["1867"], "source"=>["The Letters of Matthew Arnold (ISBN: 0813916518)"], "agent"=>["Algernon Charles Swinburne", "Cecil Y. Lang", "University of Virginia Press"]}, 
+        {"uri"=>"http://rotunda.upress.virginia.edu/Arnold/V3P178D1", "title"=>["Matthew Arnold to Algernon Charles Swinburne"], "archive"=>"rotunda_arnold", "date_label"=>["10 October 1867"], "url"=>["http://rotunda.upress.virginia.edu/Arnold/display.xqy?letter=V3P178D1"], "genre"=>["Primary", "Letters"], "year"=>["1867"], "source"=>["The Letters of Matthew Arnold (ISBN: 0813916518)"], "agent"=>["Matthew Arnold", "Cecil Y. Lang", "University of Virginia Press"]}]
+  
+  COLLECTION_INFO = {'users' => ["user_one", "user_two"]}
+  
+  def COLLEX_MANAGER.object_detail(objid, user)
+    document = {"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}    
+    mlt = MLTS
+    collection_info = COLLECTION_INFO
+    [document, mlt, collection_info]
+  end
+  
+  class Solr
+    def objects_for_uris(uris, user=nil)
+      [{"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}]
+    end
+  end
+  
+  def SolrResource.solr
+    Solr.new
+  end
+  
   def setup
-    @r = SolrResource.new :uri => "http://some/fake/uri"
+    @r = SolrResource.new :uri => URI
     @jerry = SolrProperty.new(:name => "name", :value => "Jerry McGann")
   end
 
 
-  # Replace this with your real tests.
+  def test_uri_was_populated
+    assert_equal(URI, @r.uri)
+  end
   def test_properties_exist_and_are_blank_for_raw_instance
     assert(@r.properties, "There should be a properties array.")
     assert(@r.properties.blank?, "Properties should be blank.")
@@ -20,12 +49,47 @@ class SolrResourceTest < Test::Unit::TestCase
   
   def test_properties_accessable_directly_by_name
     @r.properties << @jerry
-    assert_equal(@jerry, @r.name)
+    assert_equal(@jerry.value, @r.name)
   end
   
   def test_properties_accessable_directly_by_plural_name
     @r.properties << @jerry
-    assert_equal(@jerry, @r.names[0])
+    assert_equal(@jerry.value, @r.names[0])
+  end
+  
+  def test_find_by_uri_raises_argument_error_when_none
+    assert_raise(ArgumentError) { SolrResource.find_by_uri() }
+  end
+  
+  def test_find_by_uri_raises_argument_error_for_missing_uri_or_uri_array
+    assert_raise(ArgumentError) { SolrResource.find_by_uri({:user => USERNAME}) }
+  end
+  
+  def test_find_by_uri_with_string_gets_one_resource_with_mlt_and_users
+    res = SolrResource.find_by_uri(URI)
+    assert_kind_of(SolrResource, res)
+    assert_equal(URI, res.uri)
+    assert_equal(URLS[0], res.url)
+    
+    assert_equal(MLTS.size, res.mlt.size)
+    res.mlt.each_with_index do |item, i|
+      assert_kind_of(SolrResource, item)
+      assert_equal(MLTS[i]['uri'], item.uri)
+      assert_equal(MLTS[i]['title'][0], item.titles[0])
+    end
+    
+    assert_equal(COLLECTION_INFO['users'].size, res.users.size)
+    assert_equal(COLLECTION_INFO['users'][0],res.users[0])
+    assert_equal(COLLECTION_INFO['users'][1],res.users[1])
+  end
+  
+  def test_find_by_uri_with_array_gets_resource_array_with_mlt_and_users
+    ra = SolrResource.find_by_uri([URI])
+    assert_equal(1, ra.size)
+    assert_kind_of(Array, ra)
+    assert_kind_of(SolrResource, ra[0])
+    assert_equal(URI, ra[0].uri)
+    assert_equal(URLS[0], ra[0].url)
   end
   
 end
