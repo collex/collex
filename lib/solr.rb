@@ -121,22 +121,22 @@ class Solr
     response['docs']['docs']
   end
 
-    def objects_behind_urls(urls, user=nil)
-      #TODO allow paging through rows
-      #TODO add switch to avoid getting "more like this" in the solr response - it isn't needed in the case of the collector
-      post_data = "field=url&qt=object&wt=ruby&fl=title,alternative,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&rows=500"
-      if user
-        post_data << "&username=#{user}"
-      end
-
-      post_data << urls.map {|url| "&value=#{url_encode(url)}"}.join
-
-      results = []
-
-      response = eval(post_to_solr(post_data))
-
-      response['docs']['docs']
+  def objects_behind_urls(urls, user=nil)
+    #TODO allow paging through rows
+    #TODO add switch to avoid getting "more like this" in the solr response - it isn't needed in the case of the collector
+    post_data = "field=url&qt=object&wt=ruby&fl=title,alternative,genre,year,date_label,archive,agent,uri,url,archive,thumbnail,source&rows=500"
+    if user
+      post_data << "&username=#{user}"
     end
+
+    post_data << urls.map {|url| "&value=#{url_encode(url)}"}.join
+
+    results = []
+
+    response = eval(post_to_solr(post_data))
+
+    response['docs']['docs']
+  end
   
   def add(username, collectables)
     xml = REXML::Element.new('add')
