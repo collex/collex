@@ -210,7 +210,7 @@ function displayCollector(id, uri, event)
                     %>
                </td>
                <td>
-                   <%=h name %>
+                   <%=h name %> <% # takes a role like role_EDT, grabs the last three letters and looks up the label %>
                    (<%=h COLLEX_MANAGER.relators[agent[0][-3,3]]%>)
                   <% end end %>
                </td>
