@@ -35,14 +35,17 @@
 		<td width="30%" style="border-bottom: 1px solid #333"><strong>Archive</strong></td>
 		<td width="30%" style="border-bottom: 1px solid #333"><strong>Contributor</strong></td>
 	</tr>
-	<% if @unapprovedTasks %>
-	<% for unapprovedTasks in @unapprovedTasks %>
-	
-	<tr>
+	<% if @unapproveds %>
 
-				<td><%= link_to unapprovedTasks.file_name, :action => "titles", :id => unapprovedTasks.id %></td>
-				<td><%= unapprovedTasks.archive_name %></td>
-				<% archive_name = unapprovedTasks.archive_name %>
+	<% for unapproved in @unapproveds %>
+
+	<tr>
+				<td><%= link_to Task.find_by_id(unapproved).file_name, :action => "titles", :id => unapproved %></td>
+				<% archive_name = Task.find_by_id(unapproved).archive_name %>
+				<td><%= archive_name %></td>
+				
+				
+				
 				<% @contribs = Contributor.find_by_archive_name(archive_name) %>
 				<td><a href="mailto:<%= @contribs.email %>"><%= @contribs.contact %></a></td>
 	

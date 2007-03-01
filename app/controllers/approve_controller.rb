@@ -9,7 +9,7 @@ class ApproveController < ApplicationController
     @tasks = Task.find_all
     @archives = Title.find(:all).map{ |i| i.archive_name }.uniq
 	@approvals = Approval.find_all
-	@unapprovedTasks = Task.find_all_by_isApproved(false)
+	@unapproveds = Title.find(:all, :conditions => { :isApproved => false}).map{ |i| i.task_id }.uniq
 	render :action => 'list'
 	
   end
@@ -27,9 +27,12 @@ class ApproveController < ApplicationController
 		end
 	# Uncomment if you wish to destroy the task record from Ruby
 	 @tasks = Task.find_all_by_archive_name(params["live_archives"])
-	for tasks in @tasks
-			tasks.isApproved=true
-			tasks.save
+	 @titles = Title.find_all_by_archive_name(params["live_archives"])
+	 for title in @titles
+		title.isApproved=true
+	end
+	for task in @tasks
+			task.save
 		end
 	
 		flash[:notice] = "<h3>Titles approved.</h3><p>Your titles have been successfully approved.  They will be processed and added to NINES shortly.</p>"

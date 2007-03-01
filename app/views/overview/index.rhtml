@@ -82,20 +82,17 @@
 	</th>
 
 
-
-
 	<% for error in @errors %>
 		<tr>
 			<% if error=="NA" %>
 			
 			<% else %>
 			<td>	
-				<p style="font-size: 12px"><a href="./errorlist?id=<%= Error.find_by_uri(error).id %>"><%= error %></a></p>
+				<p style="font-size: 12px"><a href="./errorlist?id=<%= Error.find_by_uri(error).task_id %>&uri=<%= Error.find_by_uri(error).uri %>"><%= error %></a></p>
 			</td>		
 			<% end %>	
 		</tr>
 	<% end %>
-
 
 
 </table>
