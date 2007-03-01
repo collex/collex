@@ -10,7 +10,7 @@
 <% if @archives %>
 <% if @archives.size>0 %>
 <h2>Archives with files awaiting approval</h2>
-<form name="batch_process" action="batch" method="post">
+<form name="batch_process" action="./approve/batch" method="post">
 
 <select name="live_archives">
 <% for archive in @archives %>

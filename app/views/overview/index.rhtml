@@ -88,7 +88,7 @@
 			
 			<% else %>
 			<td>	
-				<p style="font-size: 12px"><a href="./errorlist?id=<%= Error.find_by_uri(error).task_id %>&uri=<%= Error.find_by_uri(error).uri %>"><%= error %></a></p>
+				<p style="font-size: 12px"><a href="./errorlist?id=<%= params['id'] %>&uri=<%= Error.find_by_uri(error).uri %>"><%= error %></a></p>
 			</td>		
 			<% end %>	
 		</tr>

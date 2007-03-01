@@ -27,12 +27,10 @@ class ApproveController < ApplicationController
 		end
 	# Uncomment if you wish to destroy the task record from Ruby
 	 @tasks = Task.find_all_by_archive_name(params["live_archives"])
-	 @titles = Title.find_all_by_archive_name(params["live_archives"])
-	 for title in @titles
-		title.isApproved=true
-	end
+	 
+	
 	for task in @tasks
-			task.save
+			task.destroy
 		end
 	
 		flash[:notice] = "<h3>Titles approved.</h3><p>Your titles have been successfully approved.  They will be processed and added to NINES shortly.</p>"
