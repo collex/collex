@@ -25,7 +25,9 @@
 	<tr>
 
 		<td>
-			<p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= exchange.uri %></a></p>
+                        <% if exchange.uri %>
+                        <p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= exchange.uri %></a></p>
+                        <% end %>
 		</td>
 
 	</tr>
@@ -36,22 +38,47 @@
 		</td>
 	</tr>
 </table>
-
+<% if exchange %>
+<a href="./exchange?id=<%= exchange.task_id %>">Click Here to See Processing Details</a>
+<% end %>
 <!-- Begin Error Log -->
 <br />
 
 <table width="600" class="constraints" cellspacing="0" align="center" valign="top">
-<caption>Error Log:  The following <%= @errors.size %> item(s) contained errors</caption>
+
 	<tr>
 		<td>
 <% if !@errors[0] %>
 	<p style="font-size: 12px">No errors found</p>
 <% else %>
-
+<% if @generalerrors %>
 <table align="center" width="600" cellpadding="4" cellspacing="0">
 
 	<th width="33%" align="left">
-		<p style="font-size: 12px">URI</p>
+		<p style="font-size: 12px">General Errors</p>
+	</th>
+
+
+
+
+	<% for generalerror in @generalerrors %>
+		<tr>
+			
+			<td>	
+				<p style="font-size: 12px"><%= generalerror.item %></a></p>
+			</td>		
+			
+		</tr>
+	<% end %>
+
+
+
+</table>
+<% end %>
+<table align="center" width="600" cellpadding="4" cellspacing="0">
+
+	<th width="33%" align="left">
+		<p style="font-size: 12px">The following item(s) contained errors</p>
 	</th>
 
 
@@ -59,20 +86,25 @@
 
 	<% for error in @errors %>
 		<tr>
+			<% if error=="NA" %>
+			
+			<% else %>
 			<td>	
-				<p style="font-size: 12px"><a href="<%= exchange.uri %>"><%= error %></a></p>
-			</td>			
+				<p style="font-size: 12px"><a href="./errorlist?id=<%= Error.find_by_uri(error).id %>"><%= error %></a></p>
+			</td>		
+			<% end %>	
 		</tr>
 	<% end %>
 
-<% end %>
+
 
 </table>
+
 
 		</td>
 	</tr>
 </table>
-<a href="./exchange?id=<%= exchange.task_id %>">Click Here to See Processing Details</a>
+<% end %>
 <div>
 	<div id="footer" style="text-align:center">&nbsp;</div>
 </div>
