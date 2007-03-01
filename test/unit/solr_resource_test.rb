@@ -15,12 +15,20 @@ class SolrResourceTest < Test::Unit::TestCase
     document = {"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}    
     mlt = MLTS
     collection_info = COLLECTION_INFO
-    [document, mlt, collection_info]
+    if(objid == URI)
+      return [document, mlt, collection_info]
+    else
+      return [nil, nil, nil]
+    end
   end
   
   class Solr
     def objects_for_uris(uris, user=nil)
-      [{"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}]
+      if(uris == [URI])
+        [{"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}]
+      else
+        []
+      end
     end
   end
   
@@ -63,6 +71,14 @@ class SolrResourceTest < Test::Unit::TestCase
   
   def test_find_by_uri_raises_argument_error_for_missing_uri_or_uri_array
     assert_raise(ArgumentError) { SolrResource.find_by_uri({:user => USERNAME}) }
+  end
+  
+  def test_find_by_uri_with_string_returns_nil_if_none_found
+    assert_nil(SolrResource.find_by_uri("somebaduri"))
+  end
+  
+  def test_find_by_uri_with_array_returns_empty_array_if_none_found
+    assert_equal([], SolrResource.find_by_uri(["baduri", "anotherbaduri"]))
   end
   
   def test_find_by_uri_with_string_gets_one_resource_with_mlt_and_users

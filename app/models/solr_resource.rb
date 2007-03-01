@@ -47,6 +47,7 @@ class SolrResource < SolrBaseModel
   end
   
   def self.initialize_object_detail(object, mlt=[], collection_info=nil)
+    return nil if object.nil?
     resource = SolrResource.new(:uri => object["uri"])
     object.each do |name, value|
       next if name == "uri"
