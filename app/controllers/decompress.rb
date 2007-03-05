@@ -6,28 +6,37 @@ require 'yaml'
 class Decompress
   
   def initialize(file, dir)
-    
+   
       	
         
       self.extract(file,dir)
        
   end
   def extract(file,dir)
+  newfilename = file[0,file.length-4]+".rdf"
+  filenumber = 0
+   while File.exist?(newfilename) 
+        newfilename = newfilename[0,newfilename.length-4]+filenumber.to_s+".rdf"
+		filenumber=filenumber+1
+	end
+
+	
   
-  ##unzip_dir="./out"
+  
+  aFile = File.new(newfilename, "w")
   Zip::ZipFile::open(file) {
   |zf| zf.each { |e|
-  tree = YAML::parse(File.open(RAILS_ROOT+"/config/database.yml"))
-		obj_tree = tree.transform
-		dirA = obj_tree['java_constants']['dir1']
-  @fpath = dirA+"/"+dir+"/"+ e.name
-   if (File.exist?(@fpath)) 
-        FileUtils::rm(@fpath)
-   end
-  	zf.extract(e,@fpath) 
-   	
+ 
 
-  } }
+
+      aFile.print(zf.read(e.name))
+	  
+    
+  }
+  
+ 
+  }
+  aFile.close	
 
   FileUtils::rm(file)
   end
