@@ -86,7 +86,7 @@ triples.each do |triple|
   end
 end
 
-solr = Solr.new
+solr = CollexEngine.new
 collectables.each do |key, collectable|
   solr.update(collectable[:username], collectable[:uri], collectable[:tags], collectable[:annotation])
 end

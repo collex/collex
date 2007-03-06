@@ -54,6 +54,7 @@ end
 #ActiveRecord::Base.colorize_logging = false
 require 'soap/wsdlDriver'
 require 'rexml/document'
+require 'collex_engine'
 require 'nines_collection_manager' # require this or get load errors in dev mode
 
 COLLEX_MANAGER = NinesCollectionManager.new

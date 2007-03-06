@@ -126,7 +126,7 @@ class CreateInterpretations < ActiveRecord::Migration
         
 # migrate the tags by querying Solr for type:C - http://localhost:8983/solr/select?wt=ruby&q=type:C
     # write "Importing interpretations from Solr..."
-    # solr = Solr.new
+    # solr = CollexEngine.new
     # post_data = "wt=ruby&q=type:C&rows=10000" # hard-coded to 10000, but our production server has < 300 interpretations now
     # data = eval(solr.post_to_solr(post_data))
     # docs = data['response']['docs']

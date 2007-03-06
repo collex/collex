@@ -8,7 +8,7 @@ class StatsController < ApplicationController
       :users => User.find(:all, :order => "username ASC")
     }
     
-    solr = Solr.new
+    solr = CollexEngine.new
     @solr_stats = {
       :facets => solr.all_facets,
       :username => solr.facet('username', [{:field => "collected", :value => "collected"}]),

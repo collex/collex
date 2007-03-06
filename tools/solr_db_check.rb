@@ -1,4 +1,5 @@
-solr = Solr.new
+require 'solr'
+solr = Solr::Connection.new(SOLR_URL)
 response = eval(solr.post_to_solr("wt=ruby&q=type:C&rows=1000"))
 raw_solr_docs = response['response']['docs']
 raw_db_docs = Interpretation.find(:all)

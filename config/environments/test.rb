@@ -18,4 +18,4 @@ config.action_controller.perform_caching             = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
-SOLR_URL                                           = "http://localhost:8983"
+SOLR_URL                                           = "http://localhost:8983/solr"

@@ -3,7 +3,7 @@ class SearchController < ApplicationController
    before_filter :authorize, :only => [:collect]
    
    def initialize
-      @solr = Solr.new
+      @solr = CollexEngine.new
    end
    
    def browse

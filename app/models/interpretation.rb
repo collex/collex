@@ -1,7 +1,7 @@
 class Interpretation < ActiveRecord::Base
   validates_uniqueness_of :object_uri, :scope => :user_id
-  before_save :update_solr
-  before_destroy :remove_from_solr
+  after_save :update_solr
+  after_destroy :remove_from_solr
   
   belongs_to :user
   has_many :taggings, :dependent => :destroy
@@ -18,13 +18,13 @@ class Interpretation < ActiveRecord::Base
   end
       
   def update_solr
-    solr = Solr.new
+    solr = CollexEngine.new
     solr.update(user.username, object_uri, tags.collect { |tag| tag.name }, annotation)
     solr.commit
   end
   
   def remove_from_solr
-    solr = Solr.new
+    solr = CollexEngine.new
     solr.remove(user.username, object_uri)
     solr.commit
   end

@@ -5,7 +5,7 @@ end
 
 class NinesCollectionManager
   def initialize
-    @solr = Solr.new
+    @solr = CollexEngine.new
   end
   
   def logger=(logger)

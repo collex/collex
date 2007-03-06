@@ -7,7 +7,7 @@ class SolrBaseModel < ActiveRecord::Base
   end
   
   def self.solr
-    @solr ||= Solr.new
+    @solr ||= CollexEngine.new
   end
   
 end
