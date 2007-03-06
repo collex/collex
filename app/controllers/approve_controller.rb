@@ -1,5 +1,4 @@
 require 'net/http'
-require 'post_to_solr'
 require 'yaml'
 
 class ApproveController < ApplicationController
