@@ -22,7 +22,7 @@ class SolrResourceTest < Test::Unit::TestCase
     end
   end
   
-  class Solr
+  class CollexEngine
     def objects_for_uris(uris, user=nil)
       if(uris == [URI])
         [{"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}]
