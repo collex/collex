@@ -30,7 +30,8 @@ class SolrResource < SolrBaseModel
     valid_options = [:user, :start, :rows]
     raise ArgumentError, "Need at least one argument" if args.blank?
     options = args.last.respond_to?(:to_hash) ? args.pop.symbolize_keys : {}
-    options = {:start => 1, :rows => 20}.merge(options)
+    options = {:start => 0, :rows => 20}.merge(options)
+    options[:user] = nil if options[:user].blank?
     
     raise ArgumentError, "Need a uri (object id) for the search." if args.size < 1
     uri = args[0]
