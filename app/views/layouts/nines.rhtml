@@ -368,9 +368,11 @@ function validateCollector()
 	      </div>
 		<span class="emph1"><a href="/">NINES</a></span> is a federation of peer-reviewed resources and innovative research tools, made freely available to students and scholars of 19th-century culture. &nbsp; <a href="http://www.nines.org" target="_blank">::&nbsp;learn&nbsp;more&nbsp;::</a><br />
 	    </div>
-		<div id="content">
-          <%= yield %>
-        </div>
+  		<div id="content">
+  		  <%= div flash[:notice] if flash[:notice] %> 
+  		  <%= div flash[:error] if flash[:error] %> 
+        <%= yield %>
+      </div>
     </div>
 	</div>
 	<script type="text/javascript" src="/javascripts/boxover.js"></script>
