@@ -68,11 +68,11 @@ class NinesCollectionManager
   end
   
   def objects_by_type(type, value, user = nil)
-    constraints = [{:field => type, :value => value}]
+    constraints = [{:type => :facet, :field => type, :value => value}]
     if user
-      constraints << {:field => "username", :value => user}
+      constraints << {:type => :facet, :field => "username", :value => user}
     else
-      constraints << {:field => "collected", :value => "collected"}
+      constraints << {:type => :facet, :field => "collected", :value => "collected"}
     end
     @solr.search(constraints, 0, 200)
   end
