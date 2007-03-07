@@ -1,18 +1,12 @@
-<style type="text/css" media="screen">
-/* <![CDATA[ */
-  .exhibit-section {
-    border: 1px solid #999;
-    padding: 10px 15px;
-  }
-/* ]]> */
-</style>
+<% div :id => "exhibit-menu" do %>
+  <%= link_to 'Edit', edit_exhibit_path(@exhibit) %> 
+<% end %>
 
-
-<% div :class => "exhibit-section" do %>
-  <%= p @exhibit.title %>
-  <%= p @exhibit.user.fullname %>
+<% div :id => "exhibit-body" do %>
+  <%= h2 @exhibit.title %>
+  <%= h3 @exhibit.user.fullname %>
   <%= p @exhibit.license.description %>
-
+  
   <%= render :partial => @exhibit.template %>
   
   <%# Resource.find(:first).properties.each do |prop| %>

@@ -1,0 +1,12 @@
+<h1>Editing exhibited_resource</h1>
+
+<%= error_messages_for :exhibited_resource %>
+
+<% form_for(:exhibited_resource, :url => exhibited_resource_path(@exhibited_resource), :html => { :method => :put }) do |f| %>
+  <p>
+    <%= submit_tag "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', exhibited_resource_path(@exhibited_resource) %> |
+<%= link_to 'Back', exhibited_resources_path %>

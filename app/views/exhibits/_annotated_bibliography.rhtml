@@ -1,4 +1,4 @@
-<% @exhibit.sections.each do |section| %>
-  <%= render :partial => section.template, :locals => {:section => section} %>
+<% @exhibit.exhibited_sections.each do |section| %>
+  <%= div render( :partial => section.template, :locals => {:section => section}), :style => "clear:both;" %>
   
 <% end %>

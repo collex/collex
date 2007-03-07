@@ -26,11 +26,22 @@ class ExhibitsController < ApplicationController
   # GET /exhibits/new
   def new
     @exhibit = Exhibit.new
+    #TODO remove all this hard-coded data
+    @exhibit.user = User.find_by_username(my_username)
+    @exhibit.license_id = 1
+    @exhibit.exhibit_type_id = 2
+    @exhibit.save!
+    render :action => "edit"
   end
 
   # GET /exhibits/1;edit
   def edit
     @exhibit = Exhibit.find(params[:id])
+  end
+  
+  def add_resource
+    raise params.inspect
+    
   end
 
   # POST /exhibits
@@ -41,7 +52,7 @@ class ExhibitsController < ApplicationController
     respond_to do |format|
       if @exhibit.save
         flash[:notice] = 'Exhibit was successfully created.'
-        format.html { redirect_to exhibit_url(@exhibit) }
+        format.html { redirect_to edit_exhibit_url(@exhibit) }
         format.xml  { head :created, :location => exhibit_url(@exhibit) }
       else
         format.html { render :action => "new" }
@@ -54,11 +65,21 @@ class ExhibitsController < ApplicationController
   # PUT /exhibits/1.xml
   def update
     @exhibit = Exhibit.find(params[:id])
-
+    unless params[:new_resource].blank?
+      uri = params[:new_resource].match('thumbnail_').post_match
+      unless @exhibit.uris.include?(uri)
+        es = ExhibitedSection.new(:exhibit_section_type_id => 1)
+        @exhibit.exhibited_sections << es
+        @exhibit.save
+        es.exhibited_resources << ExhibitedResource.new(:uri => uri)
+      else
+        flash[:error] = "You already have that object in your collection."
+      end
+    end
     respond_to do |format|
       if @exhibit.update_attributes(params[:exhibit])
         flash[:notice] = 'Exhibit was successfully updated.'
-        format.html { redirect_to exhibit_url(@exhibit) }
+        format.html { redirect_to edit_exhibit_url(@exhibit) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

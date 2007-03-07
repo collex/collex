@@ -1,9 +1,20 @@
-<%= p "YOU FOUND ME! (Citation Template)" %>
+<%= p b "YOU FOUND ME! (Citation Template)" %>
 
-<% section.resources.each do |r| %>
-  <%= r.to_mla_citation %>
+<% section.exhibited_resources.each do |er| %>
+  <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a parameter. %>
+  <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
+  <% form_for er, :url => exhibited_resource_path(er.exhibited_section.exhibit, er.exhibited_section, er) do |f| %>
+    <%= thumbnail_image_tag er.resource %>
+    <%= p er.resource.to_mla_citation %>
+    <%= p er.annotation %>
+    <%= f.text_area :annotation, :size => "45x6" if controller.action_name == "edit" %>
+    <input type="submit" value="Save Annotation">
+
+    <%- er.resource.properties.each do |property| -%>
+      <%= div "#{span property.name + ":", :style => "color:grey;"} #{property.value}" %>
+      <%- next if property.name == "thumbnail" -%>
+    <%- end -%>
+  <% end %>
 <% end %>
+
 <hr/>
-<% section.exhibited_resources.each do |r| %>
-  <%= r.resource.inspect %>
-<% end %>
