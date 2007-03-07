@@ -20,7 +20,11 @@ ActionController::Routing::Routes.draw do |map|
                     :value => /[^\/]+/,
                     :user => nil
 
-  map.resources :exhibits
+  map.resources :exhibits, :singular => "exhibit", :member => { :add_resource => :post } do |exhibit|
+    exhibit.resources :sections do |section|
+      section.resources :exhibited_resources
+    end
+  end
   
   # sidebar_list and permalink_list define :value to take any char but newline and / 
   map.sidebar_list  "sidebar/list/:type/:value/:user",
