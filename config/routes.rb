@@ -50,10 +50,8 @@ ActionController::Routing::Routes.draw do |map|
                     :action => 'permalink_detail'
 
   map.connect 'collex/:action', :controller => 'search'
+  map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
   map.connect 'admin', :controller => 'admin/default'
-  
-  # /solr/update is mapped here to allow RdfFileIndexer2 to post here without change
-  map.connect 'solr/update', :controller => 'resource', :action => 'post'
   
 # Install the default route as the lowest priority.
   map.connect ':controller/:action'

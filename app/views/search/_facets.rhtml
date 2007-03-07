@@ -14,7 +14,11 @@
      	 <% User.find_by_username(username).searches.each do |saved_search| %>
         	<tr>
            <th align="left">saved:</th>
-           <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span><%=link_to 'remove', :action => :remove_saved_search, :id => saved_search.id %> <%=link_to 'edit', :action => :edit_saved_search, :id => saved_search.id %></td>
+           <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span>
+              <%=link_to 'remove', :action => :remove_saved_search, :id => saved_search.id %>
+              <%=link_to 'edit', :action => :edit_saved_search, :id => saved_search.id %>
+              <%=link_to '*', {:action => :saved_permalink, :username => username, :name => saved_search.name}, {:target=>"_blank"} %>
+          </td>
            <td align="center"><%= freq = "#"; constraint_exists = false; link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_saved_search', :username => username, :name => saved_search.name}%>
            <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_saved_search', :username => username, :name => saved_search.name,  :invert => true}%><% end %>
            </td>

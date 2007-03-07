@@ -218,6 +218,12 @@ class SearchController < ApplicationController
      redirect_to :action => 'browse'
    end
    
+   def saved_permalink
+     session[:constraints] = []
+     session[:constraints] << {:type => :saved, :field => params[:username], :value => params[:name], :invert => params[:invert] ? true : false}
+     browse
+   end
+   
    def remove_saved_search
      user = User.find_by_username(session[:user][:username])
      
