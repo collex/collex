@@ -45,13 +45,23 @@ module ApplicationHelper
   end
   
   def thumbnail_image_tag(item, options = {})
-    options = {:align => 'left'}.merge(options)
-    site_thumbnail = site(item['archive']).thumbnail.strip rescue ''
-    site_url = site_thumbnail.length > 0 ? site_thumbnail : false
-    item_thumbnail = item['thumbnail'].strip rescue ''
-    item_url = item_thumbnail.length > 0 ? item_thumbnail : false
-    path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
-    tag "img", options.merge({:alt => item['title'], :src => path})
+    if item.kind_of?(SolrResource)
+      options = {:align => 'left'}.merge(options)
+      site_thumbnail = site(item.archive).thumbnail.strip rescue ''
+      site_url = site_thumbnail.length > 0 ? site_thumbnail : false
+      item_thumbnail = item.thumbnail.strip rescue ''
+      item_url = item_thumbnail.length > 0 ? item_thumbnail : false
+      path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
+      tag "img", options.merge({:alt => item.title, :src => path, :id => "thumbnail_#{item.uri}"})
+    else
+      options = {:align => 'left'}.merge(options)
+      site_thumbnail = site(item['archive']).thumbnail.strip rescue ''
+      site_url = site_thumbnail.length > 0 ? site_thumbnail : false
+      item_thumbnail = item['thumbnail'].strip rescue ''
+      item_url = item_thumbnail.length > 0 ? item_thumbnail : false
+      path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
+      tag "img", options.merge({:alt => item['title'], :src => path, :id => "thumbnail_#{item['uri']}"})
+    end
   end
 
   def link_to_list(type, value, frequency=nil)

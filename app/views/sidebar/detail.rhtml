@@ -5,39 +5,40 @@
 </div>
 
 <div class="item">
-  <% if @object['url'] %>
-    <a target="_blank" href="<%=@object['url'][0]%>" class="title"><%= h title_for(@object) %></a> &rarr;
+  <% if @object.url %>
+    <a target="_blank" href="<%=@object.url%>" class="title"><%= h title_for(@object) %></a> &rarr;
   <% else %>
     <%= h title_for(@object) %>
   <% end %>
   <br />
   
-  <% if @object['url'] %>
-    <a target="_blank" href="<%=@object['url']%>" class="image"><%= thumbnail_image_tag(@object) %></a>
+  <% if @object.url %>
+    <a target="_blank" href="<%=@object.url%>" class="image"><%= thumbnail_image_tag(@object) %></a>
   <% else %>
     <%= thumbnail_image_tag(@object) %>
   <% end %>
+  <%= draggable_element("thumbnail_#{@object.uri}", :revert => true) %>
 
 <div class="rdf">
-<%- if @object['year'] or @object['agent'] or @object['genre'] -%>  
+<%- if @object.year or @object.agent or @object.genre -%>  
   browse facets: <br/>
-  <% if @object['year'] then @object['year'].each do |year|%>
+  <% if @object.years then @object.years.each do |year|%>
       <%= sb_link_to_remote('year', year) %>
     <% end %>
     <br/>
   <% end %>
 
-  <% if @object['agent'] then @object['agent'].each do |agent|%>
+  <% if @object.agents then @object.agents.each do |agent|%>
     <%= sb_link_to_remote('agent', agent) %><br/>
   <% end end %>
-  <% if @object['genre'] then @object['genre'].each do |genre|%>
+  <% if @object.genres then @object.genres.each do |genre|%>
     <%= sb_link_to_remote('genre', genre) %>
   <% end end %>
   <br/>
 <%- end -%>
 
-<% if site(@object['archive'])%>
-  <%= a site(@object['archive'])['description'], :href => site(@object['archive'])['url'], :target => "_blank" %> &rarr;
+<% if site(@object.archive)%>
+  <%= a site(@object.archive)['description'], :href => site(@object.archive)['url'], :target => "_blank" %> &rarr;
 <% else %>
   <%= @object[:archive]%>
 <% end %>
@@ -70,9 +71,9 @@
 <% end %>
 </div>
 
-<% unless @collection_info['users'].blank? then div :class => "users" do %>
+<% unless @object.users.blank? then div :class => "users" do %>
     collected by:
-        <% @collection_info['users'].each do |username| %>
+        <% @object.users.each do |username| %>
         <%= link_to_remote username, :update=>"sidebar", :url => {:controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username} %>
 <% end end end %>
 
@@ -81,11 +82,11 @@
 <div class="likethis">
 <table cellspacing="0" class="more" width="100%">
 
-<% if @mlt.size > 0 %>
+<% if @object.mlt.size > 0 %>
 <caption>more like this</caption>
 <% end %>
 <tr>
-  <% @mlt.each do |item| %>
+  <% @object.mlt.each do |item| %>
     <%= td link_to_remote thumbnail_image_tag(item, :title => "header=[Collex suggests...] body=[#{h  item['title'].to_s.gsub(/\[/,'[[').gsub(/\]/,']]')}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] windowlock=[off]", :alt => "#{h item['title']}"), :update => "sidebar", :url => {:controller => 'sidebar', :action => 'detail', :objid=> item['uri']} %>
   <% end %>
 

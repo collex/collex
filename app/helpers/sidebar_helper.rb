@@ -11,7 +11,11 @@ module SidebarHelper
   end
   
   def title_for(object)
-    object['title'].blank? ? "<untitled>" : object['title']
+    if(object.kind_of?(SolrResource))
+      object.title.blank? ? "<untitled>" : object.title
+    else
+      object['title'].blank? ? "<untitled>" : object['title']
+    end
   end
   
   def sb_link_to_remote(type, value, label=nil)
@@ -51,6 +55,7 @@ module SidebarHelper
         xm.tr do
           xm.td :align => "center" do
             xm << link_to_remote(thumbnail_image_tag(item, :class => 'image'), {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"})
+            xm << draggable_element("thumbnail_#{item['uri']}", :revert => true)
           end
           xm.td do
             xm.span do 
