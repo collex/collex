@@ -10,7 +10,16 @@ class CollexRequest < Solr::Request::Select
     ary = @params[:constraints].collect do |constraint|
       string_constraint = ""
       string_constraint << "-" if constraint[:invert]
-      string_constraint << (constraint.has_key?(:expression) ? "?:#{constraint[:expression]}" : "#{constraint[:field]}:#{constraint[:value]}")
+
+      case constraint[:type]
+        when :facet
+          string_constraint << "#{constraint[:field]}:#{constraint[:value]}"
+        when :expression
+          string_constraint << "?:#{constraint[:expression]}"
+        when :saved
+          string_constraint << "?:#{User.find_by_username(constraint[:field]).searches.find_by_name(constraint[:value]).to_solr_expression}"
+      end
+      
       string_constraint
     end
     

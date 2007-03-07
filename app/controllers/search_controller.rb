@@ -1,6 +1,6 @@
 class SearchController < ApplicationController
    layout 'nines', :except => ['years']
-   before_filter :authorize, :only => [:collect]
+   before_filter :authorize, :only => [:collect, :save, :remove_saved_search]
    
    def initialize
       @solr = CollexEngine.new
@@ -28,21 +28,21 @@ class SearchController < ApplicationController
    
    def add_facet
      if params[:field] and params[:value]
-       session[:constraints] << {:field => params[:field], :value => params[:value], :invert => params[:invert] ? true : false}
+       session[:constraints] << {:type => :facet, :field => params[:field], :value => params[:value], :invert => params[:invert] ? true : false}
      end
      redirect_to :action => 'browse'
    end
 
    def add_agent_facet
      if params['agent'] and params['agent']['name'] and not params['agent']['name'].strip.empty?
-       session[:constraints] << {:field => "agent", :value => params['agent']['name'], :invert => params[:invert] ? true : false}
+       session[:constraints] << {:type => :facet, :field => "agent", :value => params['agent']['name'], :invert => params[:invert] ? true : false}
      end
      redirect_to :action => 'browse'
    end
 
    def add_year_facet
      if params['field'] and params['field']['year'] and not params['field']['year'].strip.empty?
-       session[:constraints] << {:field => "year", :value => params['field']['year'], :invert => params[:invert] ? true : false}
+       session[:constraints] << {:type => :facet, :field => "year", :value => params['field']['year'], :invert => params[:invert] ? true : false}
      end
      redirect_to :action => 'browse'
    end
@@ -73,7 +73,7 @@ class SearchController < ApplicationController
        expression = params['field']['content']
        if expression and expression.strip.size > 0
          logger.debug("------expression: #{expression}")
-         session[:constraints] << {:expression => expression}
+         session[:constraints] << {:type => :expression, :expression => expression}
          logger.debug("------constraints: #{session[:constraints].last[:expression]}")
        end
      end
@@ -184,6 +184,54 @@ class SearchController < ApplicationController
    
    def suggest
      render :layout => 'bare'
+   end
+   
+   def save
+     user = User.find_by_username(session[:user][:username])
+     search = user.searches.find_or_create_by_name(params[:name])
+
+     # [{:value=>"rossetti", :invert=>false, :field=>"archive"}, {:invert=>true, :expression=>"damsel"}]
+     
+     search.constraints.clear
+     session[:constraints].each do |c|
+       case c[:type]
+       when :expression
+         # TODO: The ExpressionConstraint model should be enhanced to have a #expression property on it so the "hack" is transparent
+         search.constraints << ExpressionConstraint.create(:value => c[:expression], :inverted => c[:invert])
+       when :facet
+         search.constraints << FacetConstraint.create(:field => c[:field], :value => c[:value], :inverted => c[:invert])
+       when :saved
+         saved_search = User.find_by_username(c[:field]).searches.find_by_name(c[:value])
+         saved_search.constraints.each do |saved_constraint|
+           search.constraints << saved_constraint.clone
+         end
+       end
+     end
+     search.save!
+     
+     redirect_to :action => 'browse'
+   end
+   
+   def add_saved_search
+     # TODO: check for validity of saved search
+     session[:constraints] << {:type => :saved, :field => params[:username], :value => params[:name], :invert => params[:invert] ? true : false}
+     redirect_to :action => 'browse'
+   end
+   
+   def remove_saved_search
+     user = User.find_by_username(session[:user][:username])
+     
+     user.searches.find(params[:id]).destroy
+     redirect_to :action => 'browse'
+   end
+   
+   def edit_saved_search
+     session[:constraints] = []
+     saved_search = User.find_by_username(session[:user][:username]).searches.find(params[:id])
+     saved_search.constraints.each do |saved_constraint|
+       session[:constraints] << saved_constraint.to_hash
+     end
+     redirect_to :action => 'browse'      
    end
 
    private

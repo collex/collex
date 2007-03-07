@@ -9,7 +9,22 @@
 				  <td>&nbsp;</td>
                </tr>
 
-    <%  max = @results["hits"] ? @results["total_hits"] : @results['total_documents']
+      <% max = @results["hits"] ? @results["total_hits"] : @results['total_documents']
+         if is_logged_in? %>
+     	 <% User.find_by_username(username).searches.each do |saved_search| %>
+        	<tr>
+           <th align="left">saved:</th>
+           <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span><%=link_to 'remove', :action => :remove_saved_search, :id => saved_search.id %> <%=link_to 'edit', :action => :edit_saved_search, :id => saved_search.id %></td>
+           <td align="center"><%= freq = "#"; constraint_exists = false; link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_saved_search', :username => username, :name => saved_search.name}%>
+           <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_saved_search', :username => username, :name => saved_search.name,  :invert => true}%><% end %>
+           </td>
+           <td>pie</td>
+         </tr>
+       <% end %>
+     <% end %>
+
+
+    <%  
         facets = ["archive", "genre"]        
         facets.each do |field| unsorted_values=@results["facets"][field]
           if unsorted_values
@@ -63,7 +78,7 @@
             <%= link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_facet', :field => field == "roles" ? "agent" : field, :value => value}%>
             <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => field == "roles" ? "agent" : field, :value => value, :invert => true}%><% end %>
         </td>
-        <td><img src="/images/pie_<%=(100 * freq).quo(max.to_i).ceil rescue 0%>.png"/>
+        <td><img src="/images/pie_<%=(100 * freq).quo(max.to_i).ceil rescue 0%>.png"/></td>
       </tr>
       <% name_shown = true
       end 

@@ -22,16 +22,22 @@
               end
             end
         %>
-              <% if constraint[:expression] %>
+              <% if constraint[:type] == :expression %>
               <tr>
                 <th align="left">phrase:</th>
                  <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%><%=h constraint[:expression]%></td>
                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
               </tr>
-              <% else %>
+              <% elsif constraint[:type] == :facet %>
               <tr>
                  <th align="left"><%=facet_label(constraint[:field])%>:</th>
                  <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h value_display%></td>
+                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
+              </tr>
+              <% elsif constraint[:type] == :saved %>
+              <tr>
+                 <th align="left">saved:</th>
+                 <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h "#{constraint[:field]}:#{constraint[:value]}"%></td>
                  <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
               </tr>
               <% end %>
@@ -39,7 +45,13 @@
            <% end %>
            <tr>
              <th align="left">&nbsp;</th>
-             <td>&nbsp;</td>
+             <td><% if is_logged_in? %>
+               <% form_tag({:action=>'save'},{:name => 'savesearch'}) do %>
+                 <%= text_field_tag :name %>
+                 <%= link_to_function "save", "document.forms['savesearch'].submit();" -%>
+               <% end %>
+             <% end %>
+             </td>
              <td align="center"><%= link_to "clear all", {:controller=>'search', :action => 'clear_constraints'}%>                     
            </tr>
            <% else %>
@@ -49,7 +61,7 @@
                 <td>&nbsp;</td>
              </tr>
            <% end %>
-         </table> 
+         </table>
          
         <% if session[:constraints].size > 0  %>
         <br /><p class="matchpoint"><span class="resultsbutton"><a href="#results"> <%=@results["total_hits"]%> matches</a></span>
