@@ -33,3 +33,16 @@
 .exhibits .featured .thumbnail a:hover {
 	background: none;
 }
+
+#exhibit-body, #exhibit-menu {
+  border: 1px solid #999;
+  padding: 10px 15px;
+}
+#exhibit-menu {
+  float: right;
+}
+#exhibit-menu ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
