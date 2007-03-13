@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SolrResourceTest < Test::Unit::TestCase
+  fixtures :sites
+  
   URI = "http://some/fake/uri"
   URLS = [URI << ".html"]
   THUMBNAIL = "http://some/fake/uri/img/thumbnail.png"
@@ -106,6 +108,11 @@ class SolrResourceTest < Test::Unit::TestCase
     assert_kind_of(SolrResource, ra[0])
     assert_equal(URI, ra[0].uri)
     assert_equal(URLS[0], ra[0].url)
+  end
+  
+  def test_returns_proper_site_object_for_archive_code
+    res = SolrResource.find_by_uri(URI)
+    assert_equal(Site.for_code('swinburne'), res.site)
   end
   
   # from the now removed resource_test
