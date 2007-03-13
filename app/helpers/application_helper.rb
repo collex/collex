@@ -3,6 +3,20 @@ module ApplicationHelper
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
+  # Rewritten version of Rails pluralize() helper that allows no number to be rendered
+  def pluralize(count, singular, plural = nil, use_number = true)
+    prefix = use_number ? "#{count} " : ""
+      prefix + if count == 1 || count == '1'
+      singular
+    elsif plural
+      plural
+    elsif Object.const_defined?("Inflector")
+      Inflector.pluralize(singular)
+    else
+      singular + "s"
+    end
+  end
+
   def show_hide_link_to(options={})
     options = options.symbolize_keys
     options = {:show_label => "show", :hide_label => "hide", :hidden_element => "hidden", :id_suffix => ""}.update(options)
