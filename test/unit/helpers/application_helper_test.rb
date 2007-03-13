@@ -57,4 +57,16 @@ class ApplicationHelperTest < HelperTestCase
     assert_dom_equal(expected, result)
   end
   
+  def test_pluralize_works_like_rails_version
+    assert_equal("1 person", pluralize(1, "person"))
+    assert_equal("2 people", pluralize(2, "person"))
+    assert_equal("2 persons", pluralize(2, "person", "persons"))
+  end
+  
+  def test_pluralize_renders_no_number
+    assert_equal("person", pluralize(1, "person", nil, false))
+    assert_equal("people", pluralize(2, "person", nil, false))
+    assert_equal("persons", pluralize(2, "person", "persons", false))    
+  end
+  
 end
