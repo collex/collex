@@ -1,19 +1,29 @@
-<%= p b "YOU FOUND ME! (Citation Template)" %>
+<%= p b "(Citation Template)" %>
 
 <% section.exhibited_resources.each do |er| %>
+  <%= thumbnail_image_tag er.resource %>
   <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a parameter. %>
   <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
   <% form_for er, :url => exhibited_resource_path(er.exhibited_section.exhibit, er.exhibited_section, er) do |f| %>
-    <%= thumbnail_image_tag er.resource %>
+    <%= div er.title unless (er.title.blank? or !er.url.blank?) %>
+    <%= div "#{link_to(er.title, er.url, :target => "_blank")} &nbsp;&rarr;" unless (er.title.blank? and er.url.blank?) %>
+    
     <%= p er.resource.to_mla_citation %>
     <%= p er.annotation %>
     <%= f.text_area :annotation, :size => "45x6" if controller.action_name == "edit" %>
-    <input type="submit" value="Save Annotation">
+    <%= p submit_tag "Save Annotation" if controller.action_name == "edit"%>
 
-    <%- er.resource.properties.each do |property| -%>
-      <%= div "#{span property.name + ":", :style => "color:grey;"} #{property.value}" %>
-      <%- next if property.name == "thumbnail" -%>
-    <%- end -%>
+    <%#- er.resource.properties.each do |property| -%>
+      <%#= div "#{span property.name + ":", :style => "color:grey;"} #{property.value}" %>
+      <%#- next if property.name == "thumbnail" -%>
+    <%#- end -%>
+    
+    <%= div "#{span 'source' + ":", :style => "color:grey;"} #{er.source}" unless er.source.blank? %>
+    <%= div "#{span 'site' + ":", :style => "color:grey;"} #{link_to(er.site.description, er.site.url, :target => '_blank')}" unless er.site.blank? %>
+    <%= div "#{span pluralize(er.agents.size, 'name', nil, false) + ":", :style => "color:grey;"} #{er.agents.join("; ")}" unless er.agents.blank? %>
+    <%= div "#{span 'date' + ":", :style => "color:grey;"} #{er.date}" unless er.date.blank? %>
+    <%= div "#{span pluralize(er.genres.size, 'genre', nil, false) + ":", :style => "color:grey;"} #{er.genres.join(", ")}" unless er.genres.blank? %>
+    
   <% end %>
 <% end %>
 
