@@ -16,7 +16,11 @@ class SolrResource < SolrBaseModel
       name = method_id.to_s
       singular_name = name.singularize
       props = properties.select {|prop| prop.name == singular_name }
-      return name == singular_name ? props[0].value : props.collect { |prop| prop.value }
+      if name == singular_name
+        props.blank? ? "" : props[0].value
+      else
+        props.collect { |prop| prop.value }
+      end
     end
   end
   
