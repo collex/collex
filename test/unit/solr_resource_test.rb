@@ -67,6 +67,12 @@ class SolrResourceTest < Test::Unit::TestCase
     assert_equal(@jerry.value, @r.names[0])
   end
   
+  def test_non_property_returns_empty_string
+    assert_equal("", @r.bogus_property)
+    assert(@r.bogus_property.blank?, "Bogus Property should be blank.")
+    assert(@r.bogus_props.blank?, "Bogus Props should be blank.")
+  end
+  
   def test_find_by_uri_raises_argument_error_when_none
     assert_raise(ArgumentError) { SolrResource.find_by_uri() }
   end
