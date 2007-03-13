@@ -20,6 +20,10 @@ class SolrResource < SolrBaseModel
     end
   end
   
+  def site
+    self.archive.blank? ? nil : Site.for_code(self.archive)
+  end
+  
   def initialize(*args)
     @users = []
     super
