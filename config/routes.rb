@@ -21,7 +21,7 @@ ActionController::Routing::Routes.draw do |map|
                     :user => nil
 
   map.resources :exhibits, :singular => "exhibit", :member => { :add_resource => :post } do |exhibit|
-    exhibit.resources :sections do |section|
+    exhibit.resources :exhibited_sections do |section|
       section.resources :exhibited_resources
     end
   end
