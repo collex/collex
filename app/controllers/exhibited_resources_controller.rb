@@ -57,7 +57,7 @@ class ExhibitedResourcesController < ApplicationController
     respond_to do |format|
       if @exhibited_resource.update_attributes(params[:exhibited_resource])
         flash[:notice] = 'Exhibited Resource was successfully updated.'
-        format.html { redirect_to edit_exhibit_url(@exhibit) }
+        format.html { redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(@exhibited_resource)) }
         format.xml  { head :ok }
       else
         format.html { redirect_to edit_exhibit_url(@exhibit) }
