@@ -1,0 +1,10 @@
+#Java constants
+java_constants:
+  smtpServer: null
+  smtpFromEmail: null
+  smtpPassword: null
+  smtpPort: 465
+  rails_root: localhost:3000
+  dir1: /ninestestA
+  dir2: /ninestestB
+  tempdir: /tmp
