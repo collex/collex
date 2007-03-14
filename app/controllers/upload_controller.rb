@@ -10,7 +10,7 @@ class UploadController < ApplicationController
 	end
 
 	def save_file
-	    tree = YAML::parse(File.open(RAILS_ROOT+"/config/database.yml"))
+	    tree = YAML::parse(File.open(RAILS_ROOT+"/config/java_constants.yml"))
 		obj_tree = tree.transform
 		dirA = obj_tree['java_constants']['dir1']
 		dirB = obj_tree['java_constants']['dir2']
