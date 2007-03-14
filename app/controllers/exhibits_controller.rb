@@ -70,8 +70,10 @@ class ExhibitsController < ApplicationController
       unless @exhibit.uris.include?(uri)
         es = ExhibitedSection.new(:exhibit_section_type_id => 1)
         @exhibit.exhibited_sections << es
+        @exhibit.exhibited_sections.last.move_to_top
         @exhibit.save
         es.exhibited_resources << ExhibitedResource.new(:uri => uri)
+        es.exhibited_resources.last.move_to_top
       else
         flash[:error] = "You already have that object in your collection."
       end
