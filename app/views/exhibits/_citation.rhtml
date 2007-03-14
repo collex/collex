@@ -22,8 +22,10 @@
     <%= p er.resource.to_mla_citation %>
     <%= p er.annotation %>
     <%= f.text_area :annotation, :size => "45x6" if controller.action_name == "edit" %>
-    <%= p submit_tag "Save Annotation" if controller.action_name == "edit"%>
-    
+    <% p do %>
+      <%= submit_tag "Save Annotation" if controller.action_name == "edit" %>
+      <%= link_to "Remove Item", exhibited_resource_path(er.exhibited_section.exhibit, er.exhibited_section, er), :confirm => "Remove Item?", :method => :delete if controller.action_name == "edit" %>
+    <% end %>
   <% end %>
 <% end end %>
 
