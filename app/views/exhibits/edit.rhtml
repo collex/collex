@@ -6,6 +6,7 @@
 <% div :id => "exhibit-body" do %>
   <%- form_for(@exhibit, :html => {:id => "exhibitForm"}) do |f| -%>
     <%= hidden_field_tag "new_resource", "" %>
+    <%= hidden_field_tag "section_id", "" %>
     <%= h2 @exhibit.title %>
     <%= f.text_field :title %> <input type="submit" value="Save Title">
     <%= h3 @exhibit.user.fullname %>
@@ -15,7 +16,5 @@
   <%= render :partial => @exhibit.template %>
 
 <% end %>
-<%= drop_receiving_element("exhibit-body",
-                            :onDrop => "function(element){$('exhibitForm')['new_resource'].value=element.id; $('exhibitForm').submit(); return false;}") %>
 
 <%= link_to 'Cancel', exhibit_path(@exhibit) %>

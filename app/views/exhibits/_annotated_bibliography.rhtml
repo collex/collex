@@ -1,4 +1,6 @@
 <% @exhibit.exhibited_sections.each do |section| %>
-  <%= div render( :partial => section.template, :locals => {:section => section}), :style => "clear:both;" %>
+  <%= div render( :partial => section.template, :locals => {:section => section}), :style => "clear:both;", :id => dom_id(section) %>
   
+  <%= drop_receiving_element("#{dom_id(section)}",
+        :onDrop => "function(element){$('exhibitForm')['new_resource'].value=element.id; $('exhibitForm')['section_id'].value='#{section.id}'; $('exhibitForm').submit(); return false;}") %>
 <% end %>

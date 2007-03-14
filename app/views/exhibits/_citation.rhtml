@@ -1,6 +1,6 @@
 <%= p b "(Citation Template)" %>
 
-<% section.exhibited_resources.each do |er| %>
+<% section.exhibited_resources.each do |er| div :id => dom_id(er) do %>
   <%= thumbnail_image_tag er.resource %>
   <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a parameter. %>
   <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
@@ -25,6 +25,6 @@
     <%= p submit_tag "Save Annotation" if controller.action_name == "edit"%>
     
   <% end %>
-<% end %>
+<% end end %>
 
 <hr/>
