@@ -1,4 +1,4 @@
-
+<%= max = @results["hits"] ? @results["total_hits"] : @results['total_documents'] %>
         <table id="facettable" class="constraints" cellspacing="0" align="center" valign="top"> 
         <caption>constrain further</caption>
 
@@ -8,24 +8,6 @@
                   <td align="center"><%= link_to_function "add", "document.forms['phraseform'].submit();" -%></td>
 				  <td>&nbsp;</td>
                </tr>
-
-      <% max = @results["hits"] ? @results["total_hits"] : @results['total_documents']
-         if is_logged_in? %>
-     	 <% User.find_by_username(username).searches.each do |saved_search| %>
-        	<tr>
-           <th align="left">saved:</th>
-           <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span>
-              <%=link_to 'remove', :action => :remove_saved_search, :id => saved_search.id %>
-              <%=link_to 'edit', :action => :edit_saved_search, :id => saved_search.id %>
-              <%=link_to '*', {:action => :saved_permalink, :username => username, :name => saved_search.name}, {:target=>"_blank"} %>
-          </td>
-           <td align="center"><%= freq = "#"; constraint_exists = false; link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_saved_search', :username => username, :name => saved_search.name}%>
-           <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_saved_search', :username => username, :name => saved_search.name,  :invert => true}%><% end %>
-           </td>
-           <td>pie</td>
-         </tr>
-       <% end %>
-     <% end %>
 
 
     <%  
@@ -139,6 +121,22 @@ function yearValidation(theForm, event)
 	    <td align="center"><%= link_to_function "add", "document.forms['agentform'].submit();" -%></td>
 		  <td>&nbsp;</td>
 	   </tr>
+
+      <% if is_logged_in?
+        	 User.find_by_username(username).searches.each do |saved_search| %>
+        	<tr>
+           <th align="left">saved:</th>
+           <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span>
+              <%=link_to 'remove', :action => :remove_saved_search, :id => saved_search.id %>
+              <%=link_to 'edit', :action => :edit_saved_search, :id => saved_search.id %>
+              <%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), {:action => :saved_permalink, :username => username, :name => saved_search.name}, {:target=>"_blank"} %>
+          </td>
+    	    <td align="center"><%= link_to "add", {:controller=>"search", :action => 'add_saved_search', :username => username, :name => saved_search.name} -%></td>
+           <td>&nbsp;</td>
+         </tr>
+       <% end %>
+     <% end %>
+
 
     </table>
     
