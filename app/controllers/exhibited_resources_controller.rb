@@ -70,10 +70,12 @@ class ExhibitedResourcesController < ApplicationController
   # DELETE /exhibited_resources/1.xml
   def destroy
     @exhibited_resource = ExhibitedResource.find(params[:id])
+    @exhibit = Exhibit.find(params[:exhibit_id])
     @exhibited_resource.destroy
 
     respond_to do |format|
-      format.html { redirect_to exhibited_resources_url }
+      flash[:notice] = 'Exhibited Resource was successfully removed.'
+      format.html { redirect_to edit_exhibit_url(@exhibit) }
       format.xml  { head :ok }
     end
   end
