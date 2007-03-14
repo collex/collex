@@ -229,8 +229,12 @@ class SearchController < ApplicationController
    
    def remove_saved_search
      user = User.find_by_username(session[:user][:username])
+     search = user.searches.find(params[:id])
+
+     session[:constraints].delete_if {|item| item[:type] == :saved && item[:field] == session[:user][:username] && item[:value] == search.name }
      
-     user.searches.find(params[:id]).destroy
+     search.destroy
+     
      redirect_to :action => 'browse'
    end
    
