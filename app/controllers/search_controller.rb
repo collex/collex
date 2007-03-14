@@ -220,7 +220,10 @@ class SearchController < ApplicationController
    
    def saved_permalink
      session[:constraints] = []
-     session[:constraints] << {:type => :saved, :field => params[:username], :value => params[:name], :invert => params[:invert] ? true : false}
+     saved_search = User.find_by_username(params[:username]).searches.find_by_name(params[:name])
+     saved_search.constraints.each do |saved_constraint|
+       session[:constraints] << saved_constraint.to_hash
+     end
      browse
    end
    
