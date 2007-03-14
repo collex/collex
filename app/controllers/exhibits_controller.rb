@@ -1,5 +1,6 @@
 class ExhibitsController < ApplicationController
   layout "nines"
+  before_filter :authorize, :only => [:create, :edit, :update, :destroy, :new]
 
   # GET /exhibits
   # GET /exhibits.xml
@@ -38,11 +39,6 @@ class ExhibitsController < ApplicationController
   def edit
     @exhibit = Exhibit.find(params[:id])
   end
-  
-  def add_resource
-    raise params.inspect
-    
-  end
 
   # POST /exhibits
   # POST /exhibits.xml
@@ -68,9 +64,9 @@ class ExhibitsController < ApplicationController
     unless params[:new_resource].blank?
       uri = params[:new_resource].match('thumbnail_').post_match
       unless @exhibit.uris.include?(uri)
-        es = ExhibitedSection.new(:exhibit_section_type_id => 1)
-        @exhibit.exhibited_sections << es
-        @exhibit.exhibited_sections.last.move_to_top
+        # es = ExhibitedSection.new(:exhibit_section_type_id => 1)
+        es = @exhibit.exhibited_sections.find(params[:section_id])
+        # @exhibit.exhibited_sections.last.move_to_top
         @exhibit.save
         es.exhibited_resources << ExhibitedResource.new(:uri => uri)
         es.exhibited_resources.last.move_to_top
