@@ -46,3 +46,7 @@
   margin: 0;
   padding: 0;
 }
+
+#exhibit-body span.label {
+  color:grey;
+}
