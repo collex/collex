@@ -1,6 +1,6 @@
 class Search < ActiveRecord::Base
   belongs_to :user
-  has_many :constraints
+  has_many :constraints, :dependent => :destroy
   
   def to_solr_expression
     clauses = []
