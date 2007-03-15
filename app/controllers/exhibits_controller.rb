@@ -66,7 +66,7 @@ class ExhibitsController < ApplicationController
       unless @exhibit.uris.include?(uri)
         section_id = params[:section_id].to_i
         es = section_id > 0 ? @exhibit.exhibited_sections.find(section_id) : ExhibitedSection.new(:exhibit_section_type_id => 1)
-        @exhibit.exhibited_sections << es
+        @exhibit.exhibited_sections << es if section_id == 0
         @exhibit.exhibited_sections.last.move_to_top if section_id == 0
         @exhibit.save
         er = ExhibitedResource.new(:uri => uri)
@@ -81,7 +81,7 @@ class ExhibitsController < ApplicationController
       if @exhibit.update_attributes(params[:exhibit])
         flash[:notice] = 'Exhibit was successfully updated.'
         format.html do
-          unless params[:new_resource].blank?
+          unless er.blank?
             redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er))
           else
             redirect_to edit_exhibit_url(@exhibit)
