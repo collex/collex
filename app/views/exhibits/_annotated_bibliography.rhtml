@@ -1,6 +1,16 @@
 <% @exhibit.exhibited_sections.each do |section| %>
+  <% if controller.action_name == "edit" then form_for(section, :url => exhibited_section_path(section.exhibit, section)) do |f| %>
+    <%= div label "Section Title" %>
+    <%= div f.text_field :title %>
+    
+    <%= div label "Section Notes" %>
+    <%= div f.text_area :annotation, :size => "45x6" %>
+    <%= submit_tag "Save Section Title and Note" if controller.action_name == "edit" %>
+    <%= link_to "Remove Section and its Objects", exhibited_section_path(section.exhibit, section), :confirm => "Remove Section?", :method => :delete if controller.action_name == "edit" %>
+  <% end end %>
+
   <%= div render( :partial => section.template, :locals => {:section => section}), :style => "clear:both;", :id => dom_id(section) %>
   
-  <%= drop_receiving_element("#{dom_id(section)}",
+  <%#= drop_receiving_element("#{dom_id(section)}",
         :onDrop => "function(element){$('exhibitForm')['new_resource'].value=element.id; $('exhibitForm')['section_id'].value='#{section.id}'; $('exhibitForm').submit(); return false;}") %>
 <% end %>

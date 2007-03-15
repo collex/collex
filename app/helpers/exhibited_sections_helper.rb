@@ -1,0 +1,2 @@
+module ExhibitedSectionsHelper
+end

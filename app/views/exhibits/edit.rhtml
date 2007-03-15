@@ -1,3 +1,29 @@
+<style type="text/css" media="screen">
+  #add_object_form {
+    position: fixed;
+    background-color: grey;
+    height: 200px;
+    width: 300px;
+    margin: 150px;
+    padding: 1em;
+    overflow: auto;
+    z-index:100;
+/*    display: none;*/
+  }
+</style>
+
+<%- form_for(@exhibit, :html => {:id => "add_object_form", :style => "display:none"}) do |f| -%>
+  <%= p "Select which section to add this object and the submit the form." %>
+  <%= hidden_field_tag "new_resource", "" %>
+  <%= div "#{radio_button_tag('section_id', '0', true)} New Section" %>
+  <%- @exhibit.exhibited_sections.each_with_index do |section, i| -%>
+    <%= div "#{radio_button_tag('section_id', section.id)} #{section.title} (Section #{i+1})" %>    
+  <%- end -%>
+  <%= h2 @exhibit.title %>
+  <input type="submit" value="Add Object">
+  <%= link_to_function "Cancel", "Element.hide('add_object_form')" %>
+<%- end -%>
+
 <% div :id => "exhibit-menu" do ul do %>
   <%= li link_to 'Close', exhibit_path(@exhibit) %>
   <%#= li link_to_function 'Save', "$('exhibitForm').submit()" %>
@@ -16,5 +42,6 @@
   <%= render :partial => @exhibit.template %>
 
 <% end %>
-
+<%= drop_receiving_element("exhibit-body",
+      :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; Element.show('add_object_form');}") %>
 <%= link_to 'Cancel', exhibit_path(@exhibit) %>

@@ -64,12 +64,15 @@ class ExhibitsController < ApplicationController
     unless params[:new_resource].blank?
       uri = params[:new_resource].match('thumbnail_').post_match
       unless @exhibit.uris.include?(uri)
-        # es = ExhibitedSection.new(:exhibit_section_type_id => 1)
-        es = @exhibit.exhibited_sections.find(params[:section_id])
-        # @exhibit.exhibited_sections.last.move_to_top
+        section_id = params[:section_id].to_i
+        es = section_id > 0 ? @exhibit.exhibited_sections.find(section_id) : ExhibitedSection.new(:exhibit_section_type_id => 1)
+        @exhibit.exhibited_sections << es
+        @exhibit.exhibited_sections.last.move_to_top if section_id == 0
         @exhibit.save
-        es.exhibited_resources << ExhibitedResource.new(:uri => uri)
+        er = ExhibitedResource.new(:uri => uri)
+        es.exhibited_resources << er
         es.exhibited_resources.last.move_to_top
+        @exhibit.save
       else
         flash[:error] = "You already have that object in your collection."
       end
@@ -77,7 +80,13 @@ class ExhibitsController < ApplicationController
     respond_to do |format|
       if @exhibit.update_attributes(params[:exhibit])
         flash[:notice] = 'Exhibit was successfully updated.'
-        format.html { redirect_to edit_exhibit_url(@exhibit) }
+        format.html do
+          unless params[:new_resource].blank?
+            redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er))
+          else
+            redirect_to edit_exhibit_url(@exhibit)
+          end
+        end
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
