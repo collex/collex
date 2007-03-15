@@ -1,10 +1,3 @@
-socket: &socket
-  <% if File.exist? "/opt/local/var/run/mysql5/mysqld.sock" %>
-    socket: /opt/local/var/run/mysql5/mysqld.sock
-  <% elsif File.exist? "/tmp/mysql.sock" %>
-    socket: /tmp/mysql.sock
-  <% end %>
-
 development:
     adapter: mysql
     database: nines_development
@@ -12,7 +5,6 @@ development:
     password: 
     host: localhost
     solrUrl: http://localhost:8983/solr/update
-    <<: *socket
     
 test:
     adapter: mysql
@@ -21,7 +13,6 @@ test:
     password: 
     host: localhost
     solrUrl: http://localhost:8983/solr/update
-    <<: *socket
 
 production:
   adapter: mysql
@@ -30,9 +21,19 @@ production:
   password: 
   host: localhost
   solrUrl: http://localhost:8983/solr/update
-  <<: *socket
     
 # In-memory SQLite 3 database.  Useful for tests.
 sqlite3_in_memory_example:
   adapter: sqlite3
   dbfile: ":memory:"
+
+#Java constants
+java_constants:
+  smtpServer: null
+  smtpFromEmail: null
+  smtpPassword: null
+  smtpPort: 465
+  rails_root: localhost:3000
+  dir1: /ninestestA
+  dir2: /ninestestB
+  tempdir: /tmp
