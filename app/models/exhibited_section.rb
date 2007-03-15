@@ -1,5 +1,5 @@
 class ExhibitedSection < ActiveRecord::Base
-  has_many :exhibited_resources, :order => "position"
+  has_many :exhibited_resources, :order => "position", :dependent => :destroy
 #   has_many :resources, :class_name => "SolrResource", :through => :exhibited_resources
   belongs_to :exhibit_section_type
   belongs_to :exhibit
