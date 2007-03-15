@@ -3,9 +3,23 @@
         <caption>constrain further</caption>
 
          <% if is_logged_in?
-           	 User.find_by_username(username).searches.each do |saved_search| %>
-           	<tr>
-              <th align="left">saved:</th>
+             name_shown = false
+           	 User.find_by_username(username).searches.each_with_index do |saved_search,i| %>
+
+             <% if i == 2 %>
+             <tr class="more_saved">
+                <td>&nbsp;</td>
+                <td><a href="#" onclick="toggleIt(this); return false;">show more saved</a></td>
+             </tr>
+             <tr class="more_saved" style="display:none;">
+                <td>&nbsp;</td>
+                <td><a href="#" onclick="toggleIt(this); return false;">hide saved</a></td>
+             </tr>
+             <% end %>
+             <tr <% if i > 1 %>class="more_saved" style="display:none;"<% end %>>
+                        <th align="left"><% if !name_shown %>saved:<% else %>&nbsp;<% end %></th>
+
+
               <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span>
                  <%=link_to 'delete', :action => :remove_saved_search, :id => saved_search.id %>
                  <%=link_to 'edit', :action => :edit_saved_search, :id => saved_search.id %>
@@ -14,7 +28,7 @@
        	    <td align="center"><%= link_to "add", {:controller=>"search", :action => 'add_saved_search', :username => username, :name => saved_search.name} -%></td>
               <td>&nbsp;</td>
             </tr>
-          <% end %>
+          <% name_shown = true; end %>
         <% end %>
 
     	<tr>
