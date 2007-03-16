@@ -288,7 +288,8 @@ function showCollector(uri, event, header) {
   if (f) {
     f.reset();
     f.objid.value = uri;        
-    if (header) $('collector_header').innerHTML = header;
+    if (!header) header = '';
+    $('collector_header').innerHTML = header;
   }
   //alert(uri);
   //showPopup('collectformarea', event);
