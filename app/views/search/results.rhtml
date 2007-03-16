@@ -159,8 +159,10 @@ function setAllBulkCollectCheckboxes(checked) {
 			<tr><td  valign="top" >
 				<table border="0">
               <tr>
-               <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
+               <td rowspan="2" valign="middle" align="left" width="10" class="thumbview">
                 <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
+               </td>
+               <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
                 <% if hit["uri"] %>
                   <a class="thumb" href="#" onclick="<%= %Q/displayCollector('collectformarea', '#{hit["uri"]}', event); return false;/%>">
                     <%= thumbnail_image_tag(hit) %>
