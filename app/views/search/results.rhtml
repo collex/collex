@@ -120,8 +120,37 @@ function displayCollector(id, uri, event)
     setTimeout("document.forms['collectform'].collector_tag.focus()",100);
   }
 }
+
+function bulkCollect(event) {
+  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
+  checked = new Array();
+  for (i=0; i < checkboxes.length; i++) {
+    checkbox = checkboxes[i];
+    if (checkbox.checked)
+      checked.push(checkbox.value);
+  }
+  
+  if (checked.length > 0) {
+    displayCollector('collectformarea', checked.join(' ~~ '), event);
+  }
+  
+  // TODO: uncheck all previously checked items
+}
+
+function setAllBulkCollectCheckboxes(checked) {
+  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
+  for (i=0; i < checkboxes.length; i++) {
+    checkbox = checkboxes[i];
+    checkbox.checked = checked;
+  }
+}
 </script>
 
+<a class="thumb" href="#" onclick="<%= %Q/bulkCollect(event); return false;/%>">bulk collect</a>
+<a class="thumb" href="#" onclick="<%= %Q/setAllBulkCollectCheckboxes(true); return false;/%>">select all</a>
+<a class="thumb" href="#" onclick="<%= %Q/setAllBulkCollectCheckboxes(false); return false;/%>">unselect all</a>
+
+<form name="bulk_collect_form" id="bulk_collect_form">
         <table class="results" border="0" cellspacing="0">
            
         <% @results["hits"].each_with_index do |hit,index| %>
@@ -140,6 +169,7 @@ function displayCollector(id, uri, event)
 					 <tr><td rowspan="1" class="collected" valign="top" align="left"  width="100">
 
 	                <span id="collectlink-<%=index%>" class="collectlink">
+                         <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
                          <%= link_to_function "collect", "displayCollector('collectformarea', '#{hit["uri"]}', event);" -%> 
 	                </span> 
 	               </td>
@@ -268,6 +298,7 @@ function displayCollector(id, uri, event)
 	</tr>
            <% end %>
        </table>
+       </form>
     <br class="clearboth" />
      <div class="pagination" style="background-color:#fff">
      <% if @page > 1 %>

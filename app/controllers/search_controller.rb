@@ -87,14 +87,19 @@ class SearchController < ApplicationController
    
    def collect
      user = User.find_by_username(session[:user][:username])
-     interpretation = user.interpretations.find_by_object_uri(params[:objid])
-     if not interpretation
-       interpretation = Interpretation.new(:object_uri => params[:objid])
-       user.interpretations << interpretation
+     
+     uris = params[:objid].split(' ~~ ')  # TODO make this a constant shared by the results.rhtml code that joins uris together
+     
+     uris.each do |uri|
+       interpretation = user.interpretations.find_by_object_uri(uri)
+       if not interpretation
+         interpretation = Interpretation.new(:object_uri => uri)
+         user.interpretations << interpretation
+       end
+       interpretation.annotation =  params[:annotation]
+       interpretation.tag_list = params[:tags]
+       interpretation.save!
      end
-     interpretation.annotation =  params[:annotation]
-     interpretation.tag_list = params[:tags]
-     interpretation.save!
      
      if request.xhr?
        render_text "collected"
