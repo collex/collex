@@ -283,11 +283,12 @@ function explorerMacResizeFix () {
 }
 
 // -----
-function showCollector(uri, event) {
+function showCollector(uri, event, header) {
   f = $('collectform');
   if (f) {
     f.reset();
-    f.objid.value = uri;            
+    f.objid.value = uri;        
+    if (header) $('collector_header').innerHTML = header;
   }
   //alert(uri);
   //showPopup('collectformarea', event);
@@ -344,6 +345,7 @@ function validateCollector()
 		  <span style="clear:both;float:right;"><%= link_to_function 'x', 'Effect.Fade("collectformarea", { duration: 0.0 })'%> &nbsp;</span>
 		<% if is_logged_in? %>
 		<%= form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :complete => visual_effect(:fade, "collectformarea", :duration => 0.5) ) %> 
+		  <div id="collector_header"></div>
 		  <%= hidden_field_tag :objid, "" -%>
 		  <label for="tags">&nbsp; keywords: &nbsp;</label> 
 		  <%= text_field_tag :tags, '', {:size => 23, :id => 'collector_tag'}  %> <br />

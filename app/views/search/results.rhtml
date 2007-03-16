@@ -105,14 +105,14 @@
      </div>
 
 <script>
-function displayCollector(id, uri, event)
+function displayCollector(id, uri, event, header)
 {
   // reset the display properties for the status
   Effect.Fade('collect-status', { duration: 0.0 });
   Effect.Fade('collected', { duration: 0.0 });
 
   new Effect.Appear('collectformarea', { duration: 0.5 }); 
-  showCollector(uri, event); 
+  showCollector(uri, event, header); 
 
   // give focus to the tag field
   if (document.forms['collectform'] && document.forms['collectform'].collector_tag)
@@ -131,7 +131,9 @@ function bulkCollect(event) {
   }
   
   if (checked.length > 0) {
-    displayCollector('collectformarea', checked.join(' ~~ '), event);
+    displayCollector('collectformarea', checked.join(' ~~ '), event, "apply to all selected objects on this page");
+  } else {
+    alert("Select one or more objects to bulk collect")
   }
   
   // TODO: uncheck all previously checked items
@@ -146,9 +148,9 @@ function setAllBulkCollectCheckboxes(checked) {
 }
 </script>
 
-<a class="thumb" href="#" onclick="<%= %Q/bulkCollect(event); return false;/%>">bulk collect</a>
 <a class="thumb" href="#" onclick="<%= %Q/setAllBulkCollectCheckboxes(true); return false;/%>">select all</a>
 <a class="thumb" href="#" onclick="<%= %Q/setAllBulkCollectCheckboxes(false); return false;/%>">unselect all</a>
+<a class="thumb" href="#" onclick="<%= %Q/bulkCollect(event); return false;/%>">collect selected</a>
 
 <form name="bulk_collect_form" id="bulk_collect_form">
         <table class="results" border="0" cellspacing="0">
@@ -158,6 +160,7 @@ function setAllBulkCollectCheckboxes(checked) {
 				<table border="0">
               <tr>
                <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
+                <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
                 <% if hit["uri"] %>
                   <a class="thumb" href="#" onclick="<%= %Q/displayCollector('collectformarea', '#{hit["uri"]}', event); return false;/%>">
                     <%= thumbnail_image_tag(hit) %>
@@ -167,9 +170,7 @@ function setAllBulkCollectCheckboxes(checked) {
                 <% end %>
 				 </td></tr>
 					 <tr><td rowspan="1" class="collected" valign="top" align="left"  width="100">
-
 	                <span id="collectlink-<%=index%>" class="collectlink">
-                         <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
                          <%= link_to_function "collect", "displayCollector('collectformarea', '#{hit["uri"]}', event);" -%> 
 	                </span> 
 	               </td>
