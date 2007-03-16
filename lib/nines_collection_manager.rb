@@ -67,14 +67,14 @@ class NinesCollectionManager
     @solr.facet(type, [{:type => :facet, :field => "collected", :value => "collected"}], nil, nil, user)
   end
   
-  def objects_by_type(type, value, user = nil)
+  def objects_by_type(type, value, user = nil, start = 0, max = 5)
     constraints = [{:type => :facet, :field => type, :value => value}]
     if user
       constraints << {:type => :facet, :field => "username", :value => user}
     else
       constraints << {:type => :facet, :field => "collected", :value => "collected"}
     end
-    @solr.search(constraints, 0, 200)
+    @solr.search(constraints, start, max)
   end
   
   def object_detail(objid, user)

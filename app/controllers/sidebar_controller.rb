@@ -3,7 +3,6 @@ ANNOTATION_INSTRUCTIONS = 'annotate this item'
 NUM_VISIBLE_TAGS = 50
 NUM_VISIBLE_ITEMS = 5
 
-
 class SidebarController < ApplicationController
   before_filter :authorize, :only => [:update, :collect, :remove]
   before_filter :check_authorize, :only => [:list, :cloud, :cloud, :detail]
@@ -66,7 +65,11 @@ class SidebarController < ApplicationController
   def list
     @data = []
     return unless params[:type] and params[:value]
-    @data = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user])
+
+    items_per_page = 5
+    @page = params[:page] ? params[:page].to_i : 1
+    @data = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user], (@page - 1) * items_per_page, items_per_page)
+    @num_pages = @data["total_hits"].to_i.quo(items_per_page).ceil      
   end
   
   def detail
