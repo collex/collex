@@ -96,11 +96,11 @@
 	
      <div class="pagination">
      <% if @page > 1 %>
-       <%= link_to "&#x21A9; previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
+       <%= link_to "<span class='pagearrow'>&#x21E0;</span> last page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
      <% end %>
            <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
     <% if @page < @num_pages %>
-      <%= link_to "next page &#x21AA;", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
+      <%= link_to "next page <span class='pagearrow'>&#x21E2;</span>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
     <% end %>
      </div>
 
@@ -325,11 +325,11 @@ function toggleAllBulkCollectCheckboxes(link) {
     <br class="clearboth" />
      <div class="pagination" style="background-color:#fff">
      <% if @page > 1 %>
-       <%= link_to "&#x21A9; previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
+       <%= link_to "<span class='pagearrow'>&#x21E0;</span> last page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
      <% end %>
            <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
     <% if @page < @num_pages %>
-      <%= link_to "next page &#x21AA;", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
+      <%= link_to "next page <span class='pagearrow'>&#x21E2;</span>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
     <% end %>
      </div>
 

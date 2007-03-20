@@ -489,3 +489,7 @@
 	line-height: 2em;
 	padding-left: .4em;
 }
+.pagearrow {
+	font-size: 16px;
+	vertical-align: bottom;
+}
