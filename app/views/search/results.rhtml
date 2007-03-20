@@ -139,18 +139,23 @@ function bulkCollect(event) {
   // TODO: uncheck all previously checked items
 }
 
-function setAllBulkCollectCheckboxes(checked) {
+bulk_checked = false;
+
+function toggleAllBulkCollectCheckboxes(link) {
+  bulk_checked = !bulk_checked;
   checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
   for (i=0; i < checkboxes.length; i++) {
     checkbox = checkboxes[i];
-    checkbox.checked = checked;
+    checkbox.checked = bulk_checked;
   }
+  
+  $('bulk_selectall_top').innerText = bulk_checked ? "unselect all" : "select all";
+  $('bulk_selectall_bottom').innerText = bulk_checked ? "unselect all" : "select all";
 }
 </script>
 
-<a class="thumb" href="#" onclick="<%= %Q/setAllBulkCollectCheckboxes(true); return false;/%>">select all</a>
-<a class="thumb" href="#" onclick="<%= %Q/setAllBulkCollectCheckboxes(false); return false;/%>">unselect all</a>
-<a class="thumb" href="#" onclick="<%= %Q/bulkCollect(event); return false;/%>">collect selected</a>
+<a class="thumb" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;" id="bulk_selectall_top">select all</a>
+<a class="thumb" href="#" onclick="bulkCollect(event); return false;">collect selected</a>
 
 <form name="bulk_collect_form" id="bulk_collect_form">
         <table class="results" border="0" cellspacing="0">
@@ -302,6 +307,10 @@ function setAllBulkCollectCheckboxes(checked) {
            <% end %>
        </table>
        </form>
+
+       <a class="thumb" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;" id="bulk_selectall_bottom">select all</a>
+       <a class="thumb" href="#" onclick="bulkCollect(event); return false;">collect selected</a>
+
     <br class="clearboth" />
      <div class="pagination" style="background-color:#fff">
      <% if @page > 1 %>
