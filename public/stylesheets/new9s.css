@@ -265,6 +265,9 @@
 		#myconstraints {
 			width: 98%;
 		}
+		#facettable img {
+			border: 0;
+		}
 		
 		/* commenting out IE-specific hacks now that we've capitulated and are doing tables...
 		
