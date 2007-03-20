@@ -30,11 +30,10 @@
 <% end end %>
 
 <% div :id => "exhibit-body" do %>
+  <%= h2 in_place_editor_field :exhibit, "title", {}, { :save_text => "Save Exhibit Title", :saving_text => "Saving Title..." }%> 
   <%- form_for(@exhibit, :html => {:id => "exhibitForm"}) do |f| -%>
     <%= hidden_field_tag "new_resource", "" %>
     <%= hidden_field_tag "section_id", "" %>
-    <%= h2 @exhibit.title %>
-    <%= f.text_field :title %> <input type="submit" value="Save Title">
     <%= h3 @exhibit.user.fullname %>
     <%= p @exhibit.license.description %>
   <%- end -%>  
