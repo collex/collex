@@ -16,6 +16,20 @@ module ApplicationHelper
       singular + "s"
     end
   end
+  
+  # Adds abilitity to use restful routes custom methods directly without passing in the :url
+  # assumes an :update_(method) member of a mapped resource with a :post type, ie:
+  # map.resources :exhibits, :member => { :update_title => :post }
+  # which will generate a url like /exhibits/6;update_title
+  def in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {})
+    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
+    tag_options = {:tag => "span", :id => "#{object}_#{method}_#{tag.object.id}_in_place_editor", :class => "in_place_editor_field"}.merge!(tag_options)
+    in_place_editor_options[:url] = in_place_editor_options[:url] || 
+    eval("update_#{method}_#{object}_path(#{tag.object.id})") rescue url_for({ :action => "set_#{object}_#{method}", :id => tag.object.id })
+    tag.to_content_tag(tag_options.delete(:tag), tag_options) +
+    in_place_editor(tag_options[:id], in_place_editor_options)
+  end
+  
 
   def show_hide_link_to(options={})
     options = options.symbolize_keys
