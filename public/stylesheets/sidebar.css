@@ -374,6 +374,9 @@
 		padding-left: .2em;
 		border: none;
 	}
+	a.permalink:hover {
+		background: #d3d3d3;
+	}
 	.listtype > a:hover {
 		background: #dcdcdc;	
 	}

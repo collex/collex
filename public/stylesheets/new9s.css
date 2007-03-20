@@ -477,3 +477,12 @@
 		float:right;
 		padding: .8em 2em 0 0;
 	}
+.bulkcollect {
+	float:right;
+}
+.collectwarn {
+	color: #666;
+	font-style: italic;
+	line-height: 2em;
+	padding-left: .4em;
+}

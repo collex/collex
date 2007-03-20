@@ -96,11 +96,11 @@
 	
      <div class="pagination">
      <% if @page > 1 %>
-       <%= link_to "<< previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
+       <%= link_to "&#x21A9; previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
      <% end %>
            <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
     <% if @page < @num_pages %>
-      <%= link_to "next page >>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
+      <%= link_to "next page &#x21AA;", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
     <% end %>
      </div>
 
@@ -131,9 +131,9 @@ function bulkCollect(event) {
   }
   
   if (checked.length > 0) {
-    displayCollector('collectformarea', checked.join(' ~~ '), event, "apply to all selected objects on this page");
+    displayCollector('collectformarea', checked.join(' ~~ '), event, "<span class='collectwarn'>apply to all selected objects</span>");
   } else {
-    alert("Select one or more objects to bulk collect")
+    alert("You must select one or more objects before clicking this button.")
   }
   
   // TODO: uncheck all previously checked items
@@ -154,8 +154,10 @@ function toggleAllBulkCollectCheckboxes(link) {
 }
 </script>
 
-<a class="thumb" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;" id="bulk_selectall_top">select all</a>
+<span class="bulkcollect">
+<a class="thumb" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;" id="bulk_selectall_top">select all</a> |
 <a class="thumb" href="#" onclick="bulkCollect(event); return false;">collect selected</a>
+</span>
 
 <form name="bulk_collect_form" id="bulk_collect_form">
         <table class="results" border="0" cellspacing="0">
@@ -308,17 +310,19 @@ function toggleAllBulkCollectCheckboxes(link) {
        </table>
        </form>
 
-       <a class="thumb" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;" id="bulk_selectall_bottom">select all</a>
+<span class="bulkcollect">
+       <a class="thumb" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;" id="bulk_selectall_bottom">select all</a> |
        <a class="thumb" href="#" onclick="bulkCollect(event); return false;">collect selected</a>
+</span>
 
     <br class="clearboth" />
      <div class="pagination" style="background-color:#fff">
      <% if @page > 1 %>
-       <%= link_to "<< previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
+       <%= link_to "&#x21A9; previous page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
      <% end %>
            <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
     <% if @page < @num_pages %>
-      <%= link_to "next page >>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
+      <%= link_to "next page &#x21AA;", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
     <% end %>
      </div>
 
