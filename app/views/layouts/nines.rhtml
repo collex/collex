@@ -345,7 +345,7 @@ function validateCollector()
 		<div id="collectformarea" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;"> 
 		  <span style="clear:both;float:right;"><%= link_to_function 'x', 'Effect.Fade("collectformarea", { duration: 0.0 })'%> &nbsp;</span>
 		<% if is_logged_in? %>
-		<%= form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :complete => visual_effect(:fade, "collectformarea", :duration => 0.5) ) %> 
+		<%= form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) %> 
 		  <div id="collector_header"></div>
 		  <%= hidden_field_tag :objid, "" -%>
 		  <label for="tags">&nbsp; keywords: &nbsp;</label> 

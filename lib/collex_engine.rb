@@ -22,7 +22,7 @@ class CollexEngine
   end
   
   def all_facets
-    @solr.send(FacetRequest.new).facets
+    @solr.send(FacetRequest.new).all_facets
   end
   
   def facet(facet, constraints, field=nil, prefix=nil, username=nil)
@@ -120,6 +120,6 @@ class CollexEngine
   end
   
   def commit
-    @solr.commit
+    @solr.commit(:wait_searcher => false, :wait_flush => false)
   end
 end
