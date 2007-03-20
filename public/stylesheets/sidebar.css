@@ -367,6 +367,7 @@
     position: relative;
     right: .3em;
     top: .2em;
+	padding-bottom: .4em;
 /*    margin-bottom:-.5em;*/
 		text-align: right;
 	}

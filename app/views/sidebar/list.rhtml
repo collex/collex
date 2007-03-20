@@ -1,4 +1,13 @@
 <%= cloud_object(@data['total_hits'], params[:value], other_username) %>
+<div class="pagination">
+  <% if @page > 1 %>
+    <%= link_to_remote("<span class='pagearrow'>&#x21E0;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page - 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
+  <% end %>
+  page <%= @page %> of <%= @num_pages %>
+  <% if @page < @num_pages %>
+    <%= link_to_remote("<span class='pagearrow'>&#x21E2;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page + 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
+  <% end %>
+</div>
 
 <div class="content">
   <div id="permalink">
@@ -12,19 +21,10 @@
       <%= me? ? "You haven't" : "#{params[:user]} hasn't" %>  used this <%=params[:type]%>, but <%= link_to_remote "others", :update => "sidebar", :url => {:controller => 'sidebar', :action => 'list', :params => {:user => nil, :type => params[:type], :value => params[:value]}} %> may have.
     <% end %>
 
-    <div class="pagination">
-      <% if @page > 1 %>
-        <%= link_to_remote("<<", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page - 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
-      <% end %>
-      <span class="emph2"><%=nbpluralize(@data["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
-      <% if @page < @num_pages %>
-        <%= link_to_remote(">>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page + 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
-      <% end %>
-    </div>
-
     <%= items_list(@data['hits']) %>
 
   </div>
 </div>
 
-<%= cloud_object(@data['total_hits'], params[:value], other_username, "cloud_object cloud_object_footer") %>
+
+
