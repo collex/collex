@@ -64,5 +64,13 @@ class ApplicationController < ActionController::Base
       session[:user] ? session[:user][:username] : nil
     end
     alias_method :my_username, :username
+    
+    def self.in_place_edit_for_resource(object, attribute, options = {})
+      define_method("update_#{attribute}") do
+        @item = object.to_s.camelize.constantize.find(params[:id])
+        @item.update_attribute(attribute, params[:value])
+        render :text => @item.send(attribute)
+      end
+    end
 
 end
