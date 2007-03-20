@@ -56,7 +56,9 @@ class ExhibitsController < ApplicationController
       end
     end
   end
-
+  
+  in_place_edit_for_resource :exhibit, :title
+  
   # PUT /exhibits/1
   # PUT /exhibits/1.xml
   def update
