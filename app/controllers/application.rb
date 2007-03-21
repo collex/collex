@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
-  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username
+  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user
   
   def boom
     raise "boom!"
@@ -64,6 +64,10 @@ class ApplicationController < ActionController::Base
       session[:user] ? session[:user][:username] : nil
     end
     alias_method :my_username, :username
+    
+    def user
+      my_username ? User.find_by_username(my_username) : nil
+    end
     
     def self.in_place_edit_for_resource(object, attribute, options = {})
       define_method("update_#{attribute}") do
