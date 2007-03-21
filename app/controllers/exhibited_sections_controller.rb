@@ -1,4 +1,8 @@
 class ExhibitedSectionsController < ApplicationController
+  
+  in_place_edit_for_resource :exhibited_section, :title
+  in_place_edit_for_resource :exhibited_section, :annotation
+  
   # PUT /exhibited_sections/1
   # PUT /exhibited_sections/1.xml
   def update

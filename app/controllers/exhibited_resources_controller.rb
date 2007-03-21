@@ -1,4 +1,6 @@
 class ExhibitedResourcesController < ApplicationController
+  in_place_edit_for_resource :exhibited_resource, :annotation
+
   # GET /exhibited_resources
   # GET /exhibited_resources.xml
   def index
