@@ -1,6 +1,6 @@
 class ExhibitsController < ApplicationController
   layout "nines"
-  before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy]
+  prepend_before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy]
   before_filter :authorize_owner, :only => [:edit, :update, :destroy]
   
   in_place_edit_for_resource :exhibit, :title
@@ -41,7 +41,7 @@ class ExhibitsController < ApplicationController
 
   # GET /exhibits/1;edit
   def edit
-    @exhibit = Exhibit.find(params[:id])
+    # @exhibit retrieved in authorize_owner
   end
 
   # POST /exhibits
@@ -68,7 +68,7 @@ class ExhibitsController < ApplicationController
   # PUT /exhibits/1
   # PUT /exhibits/1.xml
   def update
-    @exhibit = Exhibit.find(params[:id])
+    # @exhibit retrieved in authorize_owner
     unless params[:new_resource].blank?
       uri = params[:new_resource].match('thumbnail_').post_match
       unless @exhibit.uris.include?(uri)
@@ -106,7 +106,7 @@ class ExhibitsController < ApplicationController
   # DELETE /exhibits/1
   # DELETE /exhibits/1.xml
   def destroy
-    @exhibit = Exhibit.find(params[:id])
+    # @exhibit retrieved in authorize_owner
     @exhibit.destroy
 
     respond_to do |format|
@@ -120,7 +120,7 @@ class ExhibitsController < ApplicationController
       @exhibit = Exhibit.find(params[:id])
       unless @exhibit.owner?(user)
         flash[:warning] = "You do not have permission to edit that Exhibit!"
-        redirect_to(exhibits_path) 
+        redirect_to(exhibits_path) and return false
       end
     end
   
