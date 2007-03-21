@@ -16,7 +16,11 @@ module ExhibitsHelper
     a(external_control_options.delete(:text), external_control_options) +
     in_place_editor(tag_options[:id], in_place_editor_options)
   end
-  
+  def exhibit_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+    in_place_editor_options[:rows] = 12
+    in_place_editor_options[:cols] = 60
+    exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+  end
   # Since Rails currently (1.2.1) does not generate proper URLs for nested resources without
   # the parent objects specified, this is a convenience
   def exhibited_section_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
@@ -26,7 +30,7 @@ module ExhibitsHelper
   end
   def exhibited_section_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
-    in_place_editor_options[:cols] = 35
+    in_place_editor_options[:cols] = 60
     exhibited_section_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   def exhibited_resource_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
@@ -36,7 +40,7 @@ module ExhibitsHelper
   end
   def exhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
-    in_place_editor_options[:cols] = 35
+    in_place_editor_options[:cols] = 60
     exhibited_resource_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
 end
