@@ -1,32 +1,30 @@
 <%= p b "(Citation Template)" %>
 
-<% section.exhibited_resources.each do |er| div :id => dom_id(er) do %>
-  <%= thumbnail_image_tag er.resource %>
-  <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a parameter. %>
+<% section.exhibited_resources.each do |@exhibited_resource| div :id => dom_id(@exhibited_resource) do %>
+  <%= thumbnail_image_tag @exhibited_resource.resource %>
+  <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_resource. %>
   <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
-  <% form_for er, :url => exhibited_resource_path(er.exhibited_section.exhibit, er.exhibited_section, er) do |f| %>
-    <%= div er.title unless (er.title.blank? or !er.url.blank?) %>
-    <%= div "#{link_to(er.title, er.url, :target => "_blank")} &nbsp;&rarr;" unless (er.title.blank? and er.url.blank?) %>
+  <%= div @exhibited_resource.title unless (@exhibited_resource.title.blank? or !@exhibited_resource.url.blank?) %>
+  <%= div "#{link_to(@exhibited_resource.title, @exhibited_resource.url, :target => "_blank")} &nbsp;&rarr;" unless (@exhibited_resource.title.blank? and @exhibited_resource.url.blank?) %>
 
-    <%#- er.resource.properties.each do |property| -%>
-      <%#= div "#{span property.name + ":", :class => "label"} #{property.value}" %>
-      <%#- next if property.name == "thumbnail" -%>
-    <%#- end -%>
-    
-    <%= div "#{span 'source' + ":", :class => "label"} #{er.source}" unless er.source.blank? %>
-    <%= div "#{span 'site' + ":", :class => "label"} #{link_to(er.site.description, er.site.url, :target => '_blank')}" unless er.site.blank? %>
-    <%= div "#{span pluralize(er.agents.size, 'name', nil, false) + ":", :class => "label"} #{er.agents.join("; ")}" unless er.agents.blank? %>
-    <%= div "#{span 'date' + ":", :class => "label"} #{er.date}" unless er.date.blank? %>
-    <%= div "#{span pluralize(er.genres.size, 'genre', nil, false) + ":", :class => "label"} #{er.genres.join(", ")}" unless er.genres.blank? %>
-    
-    <%= p er.resource.to_mla_citation %>
-    <%= p er.annotation %>
-    <%= f.text_area :annotation, :size => "45x6" if controller.action_name == "edit" %>
-    <% p do %>
-      <%= submit_tag "Save Annotation" if controller.action_name == "edit" %>
-      <%= link_to "Remove Item", exhibited_resource_path(er.exhibited_section.exhibit, er.exhibited_section, er), :confirm => "Remove Item?", :method => :delete if controller.action_name == "edit" %>
-    <% end %>
-  <% end %>
+  <%#- @exhibited_resource.resource.properties.each do |property| -%>
+    <%#= div "#{span property.name + ":", :class => "label"} #{property.value}" %>
+    <%#- next if property.name == "thumbnail" -%>
+  <%#- end -%>
+  
+  <%= div "#{span 'source' + ":", :class => "label"} #{@exhibited_resource.source}" unless @exhibited_resource.source.blank? %>
+  <%= div "#{span 'site' + ":", :class => "label"} #{link_to(@exhibited_resource.site.description, @exhibited_resource.site.url, :target => '_blank')}" unless @exhibited_resource.site.blank? %>
+  <%= div "#{span pluralize(@exhibited_resource.agents.size, 'name', nil, false) + ":", :class => "label"} #{@exhibited_resource.agents.join("; ")}" unless @exhibited_resource.agents.blank? %>
+  <%= div "#{span 'date' + ":", :class => "label"} #{@exhibited_resource.date}" unless @exhibited_resource.date.blank? %>
+  <%= div "#{span pluralize(@exhibited_resource.genres.size, 'genre', nil, false) + ":", :class => "label"} #{@exhibited_resource.genres.join(", ")}" unless @exhibited_resource.genres.blank? %>
+  
+  <%= p @exhibited_resource.resource.to_mla_citation %>
+  <%- if controller.action_name == "edit"  -%>
+    <%= exhibited_resource_in_place_editor_area :exhibited_resource, "annotation" %>
+    <%= link_to "Remove Item", exhibited_resource_path(@exhibited_resource.exhibited_section.exhibit, @exhibited_resource.exhibited_section, @exhibited_resource), :confirm => "Remove Item?", :method => :delete %>
+  <%- else -%>
+    <%= p @exhibited_resource.annotation %>
+  <%- end -%>
 <% end end %>
 
 <hr/>
