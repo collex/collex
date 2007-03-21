@@ -480,6 +480,7 @@
 		float:right;
 		padding: .8em 2em 0 0;
 	}
+
 .bulkcollect {
 	float:right;
 }
@@ -493,3 +494,14 @@
 	font-size: 16px;
 	vertical-align: bottom;
 }
+
+.flash_notice {
+  color: green;
+  font-weight: bold;
+}
+.flash_warning, div.flash_error {
+  color: red;
+  font-weight: bold;
+  border: 1px solid red;
+}
+
