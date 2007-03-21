@@ -4,6 +4,7 @@
 
 <% div :id => "exhibit-body" do %>
   <%= h2 @exhibit.title %>
+  <%= p @exhibit.annotation %>
   <%= h3 @exhibit.user.fullname %>
   <%= p @exhibit.license.description %>
   

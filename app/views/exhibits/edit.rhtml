@@ -31,6 +31,7 @@
 
 <% div :id => "exhibit-body" do %>
   <%= h2 exhibit_in_place_editor_field :exhibit, "title" %> 
+  <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
   <%- form_for(@exhibit, :html => {:id => "exhibitForm"}) do |f| -%>
     <%= hidden_field_tag "new_resource", "" %>
     <%= hidden_field_tag "section_id", "" %>
