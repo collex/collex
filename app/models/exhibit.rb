@@ -14,4 +14,9 @@ class Exhibit < ActiveRecord::Base
     self.exhibited_sections.collect { |es| es.uris }.flatten
   end
   
+  # Takes a User object or a user_id
+  def owner?(user)
+    user.is_a?(Integer) ? self.user_id == user : self.user_id == user.id rescue false
+  end
+  
 end
