@@ -1,7 +1,11 @@
 class ExhibitsController < ApplicationController
   layout "nines"
-  before_filter :authorize, :only => [:create, :edit, :update, :destroy, :new]
-
+  before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy]
+  before_filter :authorize_owner, :only => [:edit, :update, :destroy]
+  
+  in_place_edit_for_resource :exhibit, :title
+  in_place_edit_for_resource :exhibit, :annotation
+  
   # GET /exhibits
   # GET /exhibits.xml
   def index
@@ -61,8 +65,6 @@ class ExhibitsController < ApplicationController
     end
   end
   
-  in_place_edit_for_resource :exhibit, :title
-  
   # PUT /exhibits/1
   # PUT /exhibits/1.xml
   def update
@@ -112,4 +114,14 @@ class ExhibitsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  private
+    def authorize_owner
+      @exhibit = Exhibit.find(params[:id])
+      unless @exhibit.owner?(user)
+        flash[:warning] = "You do not have permission to edit that Exhibit!"
+        redirect_to(exhibits_path) 
+      end
+    end
+  
 end
