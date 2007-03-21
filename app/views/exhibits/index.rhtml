@@ -6,9 +6,9 @@
   
 <% for exhibit in @exhibits %>
   <tr>
-    <td><%= link_to 'Show', exhibit_path(exhibit) %></td>
-    <td><%= link_to 'Edit', edit_exhibit_path(exhibit) %></td>
-    <td><%= link_to 'Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete %></td>
+    <%= td link_to exhibit.title, exhibit_path(exhibit) %>
+    <%= td link_to 'Edit', edit_exhibit_path(exhibit) %>
+    <%= td link_to 'Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete %>
   </tr>
 <% end %>
 </table>
