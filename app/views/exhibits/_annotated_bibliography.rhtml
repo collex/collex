@@ -5,8 +5,8 @@
     <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %> 
     <%= p link_to "Remove Section and its Objects", exhibited_section_path(@exhibited_section.exhibit, @exhibited_section), :confirm => "Remove Section?", :method => :delete %>
   <%- else -%>
-    <%= h3 @exhibited_section.title %>
-    <%= p @exhibited_section.annotation %>
+    <%= h3 @exhibited_section.title unless @exhibited_section.title.blank? %>
+    <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
   <% end %>
 
   <%= div render( :partial => @exhibited_section.template, :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
