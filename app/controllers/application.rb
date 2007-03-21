@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
         # save the URL the user requested so we can hop back to it after login
         session[:jumpto] = request.request_uri if not request.xhr?
       
-        redirect_to(:controller => "login", :action => "login") 
+        redirect_to(:controller => "login", :action => "login") and return false
       end 
     end 
 
