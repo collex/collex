@@ -31,8 +31,8 @@ class ExhibitsController < ApplicationController
     @exhibit.user = User.find_by_username(my_username)
     @exhibit.license_id = 1
     @exhibit.exhibit_type_id = 2
-    @exhibit.save!
-    render :action => "edit"
+    @licenses = License.find(:all)
+    @exhibit_types = ExhibitType.find(:all)
   end
 
   # GET /exhibits/1;edit
@@ -51,7 +51,11 @@ class ExhibitsController < ApplicationController
         format.html { redirect_to edit_exhibit_url(@exhibit) }
         format.xml  { head :created, :location => exhibit_url(@exhibit) }
       else
-        format.html { render :action => "new" }
+        format.html do
+          @licenses = License.find(:all)
+          @exhibit_types = ExhibitType.find(:all)
+          render :action => "new"
+        end
         format.xml  { render :xml => @exhibit.errors.to_xml }
       end
     end
