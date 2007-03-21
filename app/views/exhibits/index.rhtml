@@ -1,4 +1,4 @@
-<h1>Listing exhibits</h1>
+<%= h2 "Exhibits" %>
 
 <table>
   <tr>
@@ -7,8 +7,8 @@
 <% for exhibit in @exhibits %>
   <tr>
     <%= td link_to exhibit.title, exhibit_path(exhibit) %>
-    <%= td link_to 'Edit', edit_exhibit_path(exhibit) %>
-    <%= td link_to 'Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete %>
+    <%= td link_to 'Edit', edit_exhibit_path(exhibit) if exhibit.owner?(user) %>
+    <%= td link_to 'Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete if exhibit.owner?(user) %>
   </tr>
 <% end %>
 </table>
