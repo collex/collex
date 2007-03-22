@@ -100,8 +100,13 @@
               <td>
                  <input type="text" id="tags-<%=result['uri']%>" name="tags-<%=result['uri']%>" onkeydown="toggleItem(this);" 
                         onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"  value="<%=result['tag'] ? result['tag'].join(' ') : TAG_INSTRUCTIONS %>"/><br/>
+                 popular tags:
+                 <% result['all_tags'].each do |t| %>
+                   <%=link_to_function t, "alert('#{h t}');" %>
+                 <% end %>
+                 <br/>
 
-        	<textarea cols="17" rows="4" id="notes-<%=result['uri']%>" name="notes-<%=result['uri']%>" onkeydown="toggleItem(this);" 
+                 <textarea cols="17" rows="4" id="notes-<%=result['uri']%>" name="notes-<%=result['uri']%>" onkeydown="toggleItem(this);" 
                         onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"><%=result['annotation'] ? result['annotation'] : ANNOTATION_INSTRUCTIONS -%></textarea><br/>
               </td>
             </tr>

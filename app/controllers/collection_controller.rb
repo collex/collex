@@ -13,7 +13,12 @@ class CollectionController < ApplicationController
       end
     end
 
-     @results = COLLEX_MANAGER.objects_behind_urls(urls, session[:user][:username])
+     data = COLLEX_MANAGER.objects_behind_urls(urls, session[:user][:username])
+     
+     @results = data.docs
+     
+     collectable_data = Solr::Util.paired_array_to_hash(data.data['collectable'])
+     @results.each {|r| r.merge!(Solr::Util.paired_array_to_hash(collectable_data[r['uri']]))}
   end
 
   def add

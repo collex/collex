@@ -80,7 +80,7 @@ class CollexEngine
     req = ObjectRequest.new(:field => 'url', :value => urls, :username => username, :rows => 500)
     response = @solr.send(req)
 
-    response.docs
+    response
   end
   
   def add(username, collectables)
