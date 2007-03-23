@@ -56,13 +56,20 @@
                button.style.background = "#A60000";
            }
        }
-     </script>
-     <script type="text/javascript">
+       
      function popUp(URL) {
        day = new Date();
        id = day.getTime();
        eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
      }
+     
+     function addToTags(uri, tag) {
+       tagField = $('tags-' + uri)
+       clearInstructions(tagField);
+       tagField.value = tagField.value + (tagField.value == '' ? '' : ' ') + tag;
+       toggleItem(tagField);
+     }
+     
      </script>
      <script src="/javascripts/prototype.js" type="text/javascript"></script>
 
@@ -102,7 +109,7 @@
                         onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"  value="<%=result['tag'] ? result['tag'].join(' ') : TAG_INSTRUCTIONS %>"/><br/>
                  popular tags:
                  <% result['all_tags'].each do |t| %>
-                   <%=link_to_function t, "alert('#{h t}');" %>
+                   <%=link_to_function t, "addToTags('#{result['uri']}', '#{h t}');" %>
                  <% end %>
                  <br/>
 
