@@ -4,6 +4,12 @@ require 'sidebar_controller'
 # Re-raise errors caught by the controller.
 class SidebarController; def rescue_action(e) raise e end; end
 
+class CollexEngine
+  def object_detail(objid, username)
+    [nil, nil, nil]
+  end
+end
+
 class SidebarControllerTest < Test::Unit::TestCase
   def setup
     @controller = SidebarController.new
