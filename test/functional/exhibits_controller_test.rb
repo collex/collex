@@ -4,12 +4,6 @@ require 'exhibits_controller'
 # Re-raise errors caught by the controller.
 class ExhibitsController; def rescue_action(e) raise e end; end
 
-class CollexEngine
-  def object_detail(objid, username)
-    [{"uri" => objid, "username" => username}, [], nil]
-  end
-end
-
 class ExhibitsControllerTest < Test::Unit::TestCase
   fixtures :exhibits, :exhibited_resources, :exhibited_sections, :users
   fixtures :licenses, :exhibit_section_types, :exhibit_types
