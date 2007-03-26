@@ -21,11 +21,13 @@ class ExhibitsController < ApplicationController
   # GET /exhibits/1.xml
   def show
     @exhibit = Exhibit.find(params[:id])
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @exhibit.to_xml }
     end
+  rescue ActiveRecord::RecordNotFound
+    flash[:warning] = "That Exhibit could not be found."
+    redirect_to :action => "index"
   end
 
   # GET /exhibits/new
@@ -122,6 +124,9 @@ class ExhibitsController < ApplicationController
         flash[:warning] = "You do not have permission to edit that Exhibit!"
         redirect_to(exhibits_path) and return false
       end
+    rescue ActiveRecord::RecordNotFound
+      flash[:warning] = "That Exhibit could not be found."
+      redirect_to :action => "index"
     end
   
 end
