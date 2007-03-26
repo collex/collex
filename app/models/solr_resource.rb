@@ -47,7 +47,7 @@ class SolrResource < SolrBaseModel
     
     result = case directive
     when :first
-      object, mlt, collection_info = COLLEX_MANAGER.object_detail(uri, options[:user])
+      object, mlt, collection_info = solr.object_detail(uri, options[:user])
       resource = initialize_object_detail(object, mlt, collection_info)
     when :all
       solr.objects_for_uris(uri, options[:user]).collect { |item| initialize_object_detail(item) }
