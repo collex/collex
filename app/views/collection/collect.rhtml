@@ -96,25 +96,25 @@
         <% @results.each do |result| %>
             <tr id="row-<%=result['uri']%>" class="<%= result['tag'] ? 'enabled' : 'disabled'%>">
               <%= td thumbnail_image_tag(result) %>
-              <td>
+              <td class="bentry">
                 <span class="title"><%= h result["title"] %></span><br/>
-                source:
+                <span class="bfacet">source:</span>
                 <%= site(result['archive']) ? site(result['archive'])['description'] : result['archive'] %><br/>
-                genres: <%= comma_separate(result['genre'])%> <br/>
-                agents: <%= comma_separate(result['agent'])%> <br/>
-                dates: <%= comma_separate(result['date_label'])%> 
+                <span class="bfacet">genres:</span> <%= comma_separate(result['genre'])%> <br/>
+                <span class="bfacet">agents:</span> <%= comma_separate(result['agent'])%> <br/>
+                <span class="bfacet">dates:</span> <%= comma_separate(result['date_label'])%> 
               </td>
               <td>
                  <input type="text" id="tags-<%=result['uri']%>" name="tags-<%=result['uri']%>" onkeydown="toggleItem(this);" 
                         onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"  value="<%=result['tag'] ? result['tag'].join(' ') : TAG_INSTRUCTIONS %>"/><br/>
-                 popular tags:
+                 <div class="popular">popular keywords:<br/>
                  <% result['all_tags'].each do |t| %>
                    <%=link_to_function t, "addToTags('#{result['uri']}', '#{h t}');" %>
                  <% end %>
-                 <br/>
+                 </div>
 
                  <textarea cols="17" rows="4" id="notes-<%=result['uri']%>" name="notes-<%=result['uri']%>" onkeydown="toggleItem(this);" 
-                        onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"><%=result['annotation'] ? result['annotation'] : ANNOTATION_INSTRUCTIONS -%></textarea><br/>
+                        onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"><%=result['annotation'] ? result['annotation'] : ANNOTATION_INSTRUCTIONS -%></textarea><br/><br/>
               </td>
             </tr>
             <% end %>

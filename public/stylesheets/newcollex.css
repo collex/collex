@@ -103,3 +103,15 @@
 			font-size: 1.4em;
 			padding-top: 3em;
 		}
+		.popular {
+			font-size: 11px;
+			width: 14em;
+			padding: 0 0 .4em .8em;
+		}
+		.bentry {
+			font-size: 12px;
+			padding-bottom: 1em;
+		}
+		.bfacet {
+			font-size: 11px;
+		}
