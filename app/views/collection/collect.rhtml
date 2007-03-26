@@ -107,11 +107,13 @@
               <td>
                  <input type="text" id="tags-<%=result['uri']%>" name="tags-<%=result['uri']%>" onkeydown="toggleItem(this);" 
                         onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"  value="<%=result['tag'] ? result['tag'].join(' ') : TAG_INSTRUCTIONS %>"/><br/>
-                 <div class="popular">popular keywords:<br/>
-                 <% result['all_tags'].each do |t| %>
-                   <%=link_to_function t, "addToTags('#{result['uri']}', '#{h t}');" %>
+                 <% if result['all_tags'].size > 0 %>
+                   <div class="popular">popular keywords:<br/>
+                   <% result['all_tags'].each do |t| %>
+                     <%=link_to_function t, "addToTags('#{result['uri']}', '#{h t}');" %>
+                   <% end %>
+                   </div>
                  <% end %>
-                 </div>
 
                  <textarea cols="17" rows="4" id="notes-<%=result['uri']%>" name="notes-<%=result['uri']%>" onkeydown="toggleItem(this);" 
                         onfocus="clearInstructions(this);" onkeyup="addInstructions(this);" onblur="addInstructions(this);"><%=result['annotation'] ? result['annotation'] : ANNOTATION_INSTRUCTIONS -%></textarea><br/><br/>
