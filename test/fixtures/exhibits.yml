@@ -1,5 +1,22 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
+--- 
+dang: 
+  title: Dang Exhibit Title
   id: 1
-another:
+  license_id: 1
+  user_id: 21
+  exhibit_type_id: 2
+  annotation: My new exhibit annotation
+martian: 
+  title: Martian Chronicles
   id: 2
+  license_id: 4
+  user_id: 21
+  exhibit_type_id: 2
+  annotation: The Exhibit notes for Martian Chronicles. What a cool exhibit this will be.
+foo: 
+  title: Foo Exhibit
+  id: 3
+  license_id: 1
+  user_id: 21
+  exhibit_type_id: 2
+  annotation: Some sort of note

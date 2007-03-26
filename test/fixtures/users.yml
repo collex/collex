@@ -10,7 +10,12 @@
   email: <%= name %>@collex.org
 
 <% end %>
-
+exhibit_owner:
+  id: 21
+  username: "owner"
+  fullname: "Exhibit Owner"
+  email: owner@exhibit.org
+  password_hash: 
 dave:
   id: 99
   username: dave

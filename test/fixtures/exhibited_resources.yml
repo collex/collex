@@ -1,11 +1,51 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
-  id: 1
-  resource_id: 
-  exhibited_section_id: 
+--- 
+dang_1_1: 
+  citation: 
+  uri: http://www.rc.umd.edu/praxis/aesthetic/pyle/intro.html
+  id: 11
+  annotation: 
   position: 1
-two:
-  id: 2
-  resource_id: 
-  exhibited_section_id: 
+  exhibited_section_id: 1
+dang_1_2: 
+  citation: 
+  uri: http://www.swinburnearchive.org/id/pb1faust00/
+  id: 12
+  annotation: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  position: 2
+  exhibited_section_id: 1
+dang_2_1: 
+  citation: 
+  uri: http://www.rossettiarchive.org/docs/1-1840.dukems.rad#1
+  id: 21
+  annotation: |-
+    It's all Greek to me. 
   position: 1
+  exhibited_section_id: 2
+dang_2_2: 
+  citation: 
+  uri: http://www.rossettiarchive.org/docs/1-1840.dukems.rad#1
+  id: 22
+  annotation: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  position: 2
+  exhibited_section_id: 2
+dang_3_1: 
+  citation: 
+  uri: http://www.rossettiarchive.org/docs/1-1840.dukems.rad#1.3
+  id: 31
+  annotation: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  position: 1
+  exhibited_section_id: 3
+dang_3_2: 
+  citation: 
+  uri: http://www.rossettiarchive.org/docs/1-1840.dukems.rad#1.2
+  id: 32
+  annotation: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  position: 2
+  exhibited_section_id: 3
+dang_3_3: 
+  citation: 
+  uri: http://www.rc.umd.edu/praxis/aesthetic/ferris/ferris.html
+  id: 33
+  annotation: 
+  position: 3
+  exhibited_section_id: 3

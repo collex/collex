@@ -1,11 +1,6 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+--- 
+citation: 
+  name: Citation
+  template: citation
   id: 1
-  description: 
-  template: 
-  type: MyString
-two:
-  id: 2
-  description: 
-  template: 
-  type: MyString
+  description: Citation

@@ -1,5 +1,10 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
+--- 
+cc_2_5: 
   id: 1
-another:
+  description: "Creative Commons: Attribution (version 2.5)"
+cc_nc: 
   id: 2
+  description: "Creative Commons: Attribution-NonCommercial (version 2.5)"
+all: 
+  id: 4
+  description: a license for all

@@ -1,5 +1,9 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
+--- 
+text: 
+  template: text
   id: 1
-another:
+  description: Text
+annotated_bibliography: 
+  template: annotated_bibliography
   id: 2
+  description: Annotated Bibliography
