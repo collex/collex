@@ -10,7 +10,16 @@ class NinesCollectionManager
   end
 
   def objects_behind_urls(urls, user)
-    []
+    a = "foo"
+    def a.docs
+      []
+    end
+    
+    def a.data
+      {'collectable' => {}}
+    end
+    
+    a
   end
 
   def object_detail(objid, user)
