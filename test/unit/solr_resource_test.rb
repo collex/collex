@@ -13,23 +13,22 @@ class SolrResourceTest < Test::Unit::TestCase
   
   COLLECTION_INFO = {'users' => ["user_one", "user_two"]}
   
-  def COLLEX_MANAGER.object_detail(objid, user)
-    document = {"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}    
-    mlt = MLTS
-    collection_info = COLLECTION_INFO
-    if(objid == URI)
-      return [document, mlt, collection_info]
-    else
-      return [nil, nil, nil]
-    end
-  end
-  
   class CollexEngine
     def objects_for_uris(uris, user=nil)
       if(uris == [URI])
         [{"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}]
       else
         []
+      end
+    end  
+    def object_detail(objid, user)
+      document = {"thumbnail" => THUMBNAIL, "uri" => URI, "title"=>["First Title"], "archive"=>"swinburne", "date_label" => ["1865"], "url" => URLS, "genre"=>["Poetry", "Primary"], "year"=>["1865"], "agent"=>["Swinburne, Algernon Charles, 1837-1909", "Chatto"]}    
+      mlt = MLTS
+      collection_info = COLLECTION_INFO
+      if(objid == URI)
+        return [document, mlt, collection_info]
+      else
+        return [nil, nil, nil]
       end
     end
   end

@@ -4,6 +4,12 @@ require 'exhibits_controller'
 # Re-raise errors caught by the controller.
 class ExhibitsController; def rescue_action(e) raise e end; end
 
+class CollexEngine
+  def object_detail(objid, username)
+    [{"uri" => objid, "username" => username}, [], nil]
+  end
+end
+
 class ExhibitsControllerTest < Test::Unit::TestCase
   fixtures :exhibits, :exhibited_resources, :exhibited_sections, :users
   fixtures :licenses, :exhibit_section_types, :exhibit_types
@@ -37,6 +43,18 @@ class ExhibitsControllerTest < Test::Unit::TestCase
     @request.session[:user] = nil
     get(:edit, :id => -1)
     assert_redirected_to(:action => "login", :controller => "login")
+  end
+  
+  def test_edit_exhibit_redirects_to_login_when_not_logged_in
+    @request.session[:user] = nil
+    get(:edit, :id => @exhibit.id)
+    assert_redirected_to(:action => "login", :controller => "login")
+  end
+  
+  def test_gets_edit_when_logged_in
+    get(:edit, :id => @exhibit.id)
+    assert_response(:success)
+    assert(assigns(:exhibit), "Should have assigned :exhibit")
   end
   
   def test_edit_bad_exhibit_id_redirects_to_index_with_warning_when_logged_in
