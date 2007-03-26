@@ -5,16 +5,44 @@ require 'exhibits_controller'
 class ExhibitsController; def rescue_action(e) raise e end; end
 
 class ExhibitsControllerTest < Test::Unit::TestCase
-  fixtures :exhibits
+  fixtures :exhibits, :exhibited_resources, :exhibited_sections, :users
+  fixtures :licenses, :exhibit_section_types, :exhibit_types
 
   def setup
     @controller = ExhibitsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    @exhibit = exhibits(:dang)
+    @owner = users(:exhibit_owner)
+    @request.session[:user] = {:username => @owner.username}
   end
 
   def test_sanity
     assert(true)
+  end
+  
+  def test_gets_index_as_sanity_check
+    get(:index)
+    assert_response(:success)
+    assert(assigns(:exhibits), "Should have assigned :exhibits")
+  end
+
+  def test_new_exhibit_redirects_to_login_when_not_logged_in
+    @request.session[:user] = nil
+    get(:new)
+    assert_redirected_to(:action => "login", :controller => "login")
+  end
+  
+  def test_edit_bad_exhibit_id_redirects_to_login_when_not_logged_in
+    @request.session[:user] = nil
+    get(:edit, :id => -1)
+    assert_redirected_to(:action => "login", :controller => "login")
+  end
+  
+  def test_edit_bad_exhibit_id_redirects_to_index_with_warning_when_logged_in
+    get(:edit, :id => -1)
+    assert_redirected_to(exhibits_path)
+    assert_not_nil(flash[:warning])
   end
 
 #   def test_should_get_index
