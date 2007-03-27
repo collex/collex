@@ -1,7 +1,7 @@
 <%= h2 "New Exhibit" %>
 <%= error_messages_for "exhibit" %>
 
-<% form_for(:exhibit, :url => exhibits_path) do |f| %>
+<% form_for(@exhibit, :url => exhibits_path) do |f| %>
   <%= f.hidden_field :user_id %>
   
   <%= div label "Title" %>
