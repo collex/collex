@@ -1,11 +1,8 @@
 class SolrResource < SolrBaseModel
-  has_many :properties, :class_name => "SolrProperty"
-  has_many :mlt,        :class_name => "SolrResource"
   column   :uri,        :string
   
-  attr_reader :users
-  
-    
+  attr_reader :users, :properties, :mlt
+      
   # Simplify access to properties by name.  Examples:
   # resource.title => returns value of first title property found
   # resource.titles => returns an array of property values with name "title"
@@ -30,6 +27,8 @@ class SolrResource < SolrBaseModel
   
   def initialize(*args)
     @users = []
+    @properties = []
+    @mlt = []
     super
   end
   
