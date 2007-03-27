@@ -15,7 +15,7 @@ class CollexEngine
   end
   
   def object_detail(objid, username)
-    objid == BAD_OBJID ? [nil, nil, nil] : [{"uri" => uri, "username" => username}, [], nil]
+    objid == BAD_OBJID ? [nil, nil, nil] : [{"uri" => objid, "username" => username}, [], nil]
     
   end
   
