@@ -16,7 +16,12 @@ module PaginatingFind
   module ClassMethods
     DEFAULT_PAGE_SIZE = 10
     VALID_COUNT_OPTIONS = [:select, :conditions, :joins, :distinct, :include, :having, :group]
-    
+    def set_page_size(value)
+      write_inheritable_attribute(:page_size, value)
+    end  
+    def page_size
+      read_inheritable_attribute(:page_size) || DEFAULT_PAGE_SIZE
+    end
     # Enhancements to Base find method to support record paging. The :page option
     # is used to specify additional paging options.  The supported :page options are:
     #
@@ -47,9 +52,18 @@ module PaginatingFind
     #                           :current => 1, 
     #                           :auto => true})
     #
+    # Enhancement:
+    # class Cog < ActiveRecord::Base
+    #   set_page_size 3
+    #   ...
+    # end
+    #
+    # Now this class will use 3 as the size automatically--no need to specify it on each call to find.
     def paginating_find(*args)
       options = extract_options_from_args!(args) 
       page_options = options.delete(:page) || (args.delete(:page) ? {} : nil)
+      # Enhancement: looks for page_size class method so it doesn't need to be passed in.
+      page_options[:size] ||= page_size if page_options
       if page_options
         # The :page option was specified, so page the query results
         raise ArgumentError, ":offset option is not supported when paging results" if options[:offset]
