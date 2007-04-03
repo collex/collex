@@ -6,8 +6,6 @@ class ExhibitsController < ApplicationController
   in_place_edit_for_resource :exhibit, :title
   in_place_edit_for_resource :exhibit, :annotation
   
-  # GET /exhibits
-  # GET /exhibits.xml
   def index
     @exhibits = Exhibit.find(:all)
 
@@ -17,8 +15,6 @@ class ExhibitsController < ApplicationController
     end
   end
 
-  # GET /exhibits/1
-  # GET /exhibits/1.xml
   def show
     @exhibit = Exhibit.find(params[:id])
     @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
@@ -31,7 +27,6 @@ class ExhibitsController < ApplicationController
     redirect_to :action => "index"
   end
 
-  # GET /exhibits/new
   def new
     @exhibit = Exhibit.new
     #TODO remove all this hard-coded data
@@ -42,14 +37,11 @@ class ExhibitsController < ApplicationController
     @exhibit_types = ExhibitType.find(:all)
   end
 
-  # GET /exhibits/1;edit
   def edit
     # @exhibit retrieved in authorize_owner
     @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
   end
 
-  # POST /exhibits
-  # POST /exhibits.xml
   def create
     @exhibit = Exhibit.new(params[:exhibit])
 
@@ -69,8 +61,6 @@ class ExhibitsController < ApplicationController
     end
   end
   
-  # PUT /exhibits/1
-  # PUT /exhibits/1.xml
   def update
     # @exhibit retrieved in authorize_owner
     unless params[:new_resource].blank?
@@ -107,8 +97,6 @@ class ExhibitsController < ApplicationController
     end
   end
 
-  # DELETE /exhibits/1
-  # DELETE /exhibits/1.xml
   def destroy
     # @exhibit retrieved in authorize_owner
     @exhibit.destroy
