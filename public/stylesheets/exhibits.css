@@ -45,7 +45,7 @@
   float: right;
   text-align: right;
 }
-#exhibit-menu .resource-drop-zone {
+#exhibit-menu #resource-drop-zone {
   float: left;
   border: 1px dashed grey;
   height: 10em;
