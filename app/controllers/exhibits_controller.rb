@@ -21,6 +21,7 @@ class ExhibitsController < ApplicationController
   # GET /exhibits/1.xml
   def show
     @exhibit = Exhibit.find(params[:id])
+    @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @exhibit.to_xml }
@@ -44,6 +45,7 @@ class ExhibitsController < ApplicationController
   # GET /exhibits/1;edit
   def edit
     # @exhibit retrieved in authorize_owner
+    @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
   end
 
   # POST /exhibits
