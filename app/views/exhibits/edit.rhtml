@@ -15,13 +15,7 @@
 <%- form_for(@exhibit, :html => {:id => "add_object_form", :style => "display:none"}) do |f| -%>
   <%= p "Select which section to add this object and the submit the form." %>
   <%= hidden_field_tag "new_resource", "" %>
-  <%= div "#{radio_button_tag('section_id', '0', true)} New Section" %>
-  <%- @exhibit.exhibited_sections.each_with_index do |section, i| -%>
-    <%= div "#{radio_button_tag('section_id', section.id)} #{section.title} (Section #{i+1})" %>    
-  <%- end -%>
-  <%= h2 @exhibit.title %>
-  <input type="submit" value="Add Object">
-  <%= link_to_function "Cancel", "Element.hide('add_object_form')" %>
+  <%= hidden_field_tag "exhibited_section_id", "" %>
 <%- end -%>
 
 
@@ -50,5 +44,7 @@
   <%= render :partial => @exhibit.template %>
 
 <% end %>
-<%= drop_receiving_element("resource-drop-zone",
+<%#= drop_receiving_element("resource-drop-zone",
       :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; Element.show('add_object_form');}") %>
+
+

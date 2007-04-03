@@ -66,11 +66,8 @@ class ExhibitsController < ApplicationController
     unless params[:new_resource].blank?
       uri = params[:new_resource].match('thumbnail_').post_match
       unless @exhibit.uris.include?(uri)
-        section_id = params[:section_id].to_i
-        es = section_id > 0 ? @exhibit.exhibited_sections.find(section_id) : ExhibitedSection.new(:exhibit_section_type_id => 1)
-        @exhibit.exhibited_sections << es if section_id == 0
-        @exhibit.exhibited_sections.last.move_to_top if section_id == 0
-        @exhibit.save
+        exhibited_section_id = params[:exhibited_section_id].to_i
+        es = @exhibit.exhibited_sections.find(exhibited_section_id)
         er = ExhibitedResource.new(:uri => uri)
         es.exhibited_resources << er
         es.exhibited_resources.last.move_to_top
