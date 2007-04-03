@@ -24,12 +24,13 @@
   <%= link_to_function "Cancel", "Element.hide('add_object_form')" %>
 <%- end -%>
 
-<% div :id => "exhibit-menu" do ul do %>
+<% div :id => "exhibit-menu", :class => "edit" do ul do %>
+  <%= li paginating_links(@exhibited_sections) %>
   <%= li link_to 'Close', exhibit_path(@exhibit) %>
   <%#= li link_to_function 'Save', "$('exhibitForm').submit()" %>
 <% end end %>
 
-<% div :id => "exhibit-body" do %>
+<% div :id => "exhibit-body", :class => "edit" do %>
   <%= h2 exhibit_in_place_editor_field :exhibit, "title" %> 
   <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
   <%- form_for(@exhibit, :html => {:id => "exhibitForm"}) do |f| -%>
@@ -42,6 +43,5 @@
   <%= render :partial => @exhibit.template %>
 
 <% end %>
-<%= drop_receiving_element("exhibit-body",
+<%#= drop_receiving_element("exhibit-body",
       :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; Element.show('add_object_form');}") %>
-<%= link_to 'Cancel', exhibit_path(@exhibit) %>
