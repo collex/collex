@@ -33,7 +33,9 @@
 .exhibits .featured .thumbnail a:hover {
 	background: none;
 }
-
+#exhibit-body {
+  position: relative;
+}
 #exhibit-body, #exhibit-menu {
   border: 1px solid #999;
   padding: 10px 15px;
@@ -42,8 +44,14 @@
   border-color: red;
 }
 #exhibit-menu {
-  float: right;
+/*  float: right;*/
+  position: absolute;
   text-align: right;
+  top: 0em;
+  width: 23em;
+  right: 0em;
+  border-top-style: none;
+  border-right-style: none;
 }
 #exhibit-menu #resource-drop-zone {
   float: left;
@@ -54,6 +62,8 @@
   margin: .4em;
 }
 #exhibit-menu ul{
+  display: block;
+/*  float: right;*/
   list-style: none;
   margin: 0;
   padding: 0;
