@@ -38,6 +38,9 @@
   border: 1px solid #999;
   padding: 10px 15px;
 }
+#exhibit-body.edit, #exhibit-menu.edit {
+  border-color: red;
+}
 #exhibit-menu {
   float: right;
 }
