@@ -27,6 +27,7 @@
 <% div :id => "exhibit-menu", :class => "edit" do ul do %>
   <%= li paginating_links(@exhibited_sections) %>
   <%= li link_to 'Close', exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %>
+  <%= li link_to "New Section", edit_exhibit_path(:id => @exhibit, :new_section => "true") %>
   <%#= li link_to_function 'Save', "$('exhibitForm').submit()" %>
 <% end end %>
 
