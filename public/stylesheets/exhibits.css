@@ -43,6 +43,15 @@
 }
 #exhibit-menu {
   float: right;
+  text-align: right;
+}
+#exhibit-menu .resource-drop-zone {
+  float: left;
+  border: 1px dashed grey;
+  height: 10em;
+  text-align: justify;
+  padding: .4em;
+  margin: .4em;
 }
 #exhibit-menu ul{
   list-style: none;
