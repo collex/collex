@@ -24,14 +24,19 @@
   <%= link_to_function "Cancel", "Element.hide('add_object_form')" %>
 <%- end -%>
 
-<% div :id => "exhibit-menu", :class => "edit" do ul do %>
-  <%= li paginating_links(@exhibited_sections) %>
-  <%= li link_to 'Close', exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %>
-  <%= li link_to "New Section", edit_exhibit_path(:id => @exhibit, :new_section => "true") %>
-  <%#= li link_to_function 'Save', "$('exhibitForm').submit()" %>
-<% end end %>
 
 <% div :id => "exhibit-body", :class => "edit" do %>
+
+  <% div :id => "exhibit-menu", :class => "edit" do %>
+    <%= div p("Drag your new resource here."), :id => "resource-drop-zone" %>
+    <% ul do  %>
+      <%= li paginating_links(@exhibited_sections) %>
+      <%= li link_to 'Close', exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %>
+      <%= li link_to "New Section", exhibited_sections_path(:exhibit_id => @exhibit, :exhibit_section_type_id => 1), :method => "post" %>
+      <%#= li link_to_function 'Save', "$('exhibitForm').submit()" %>
+  <% end end %>
+
+
   <%= h2 exhibit_in_place_editor_field :exhibit, "title" %> 
   <%= p "page #{@exhibited_sections.page}" %>
   <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
@@ -45,5 +50,5 @@
   <%= render :partial => @exhibit.template %>
 
 <% end %>
-<%#= drop_receiving_element("exhibit-body",
+<%= drop_receiving_element("resource-drop-zone",
       :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; Element.show('add_object_form');}") %>

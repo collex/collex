@@ -1,9 +1,9 @@
-<% div :id => "exhibit-menu" do ul do %>
-  <%= li paginating_links(@exhibited_sections) %>
-  <%= li link_to 'Edit', edit_exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %> 
-<% end end %>
-
 <% div :id => "exhibit-body" do %>
+  <% div :id => "exhibit-menu" do ul do %>
+    <%= li paginating_links(@exhibited_sections) %>
+    <%= li link_to 'Edit', edit_exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %> 
+  <% end end %>
+
   <%= h2 @exhibit.title %>
   <%= p "page #{@exhibited_sections.page}" %>
   <%= p @exhibit.annotation %>
