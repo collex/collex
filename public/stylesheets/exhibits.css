@@ -53,8 +53,8 @@
   border-top-style: none;
   border-right-style: none;
 }
-#exhibit-menu #resource-drop-zone {
-  float: left;
+.resource-drop-zone {
+/*  float: left;*/
   border: 1px dashed grey;
   height: 10em;
   text-align: justify;
