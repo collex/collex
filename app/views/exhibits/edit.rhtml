@@ -22,7 +22,6 @@
 <% div :id => "exhibit-body", :class => "edit" do %>
 
   <% div :id => "exhibit-menu", :class => "edit" do %>
-    <%= div p("Drag your new resource here."), :id => "resource-drop-zone" %>
     <% ul do  %>
       <%= li paginating_links(@exhibited_sections) %>
       <%= li link_to 'Close', exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %>

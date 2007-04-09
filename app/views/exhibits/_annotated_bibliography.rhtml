@@ -4,6 +4,7 @@
     <%= h3 exhibited_section_in_place_editor_field :exhibited_section, "title" %> 
     <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %> 
     <%= p link_to "Remove Section and its Objects", exhibited_section_path(@exhibited_section.exhibit, @exhibited_section), :confirm => "Remove Section?", :method => :delete %>
+    <%= div p("Drag your new resource here."), :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
   <%- else -%>
     <%= h3 @exhibited_section.title unless @exhibited_section.title.blank? %>
     <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
@@ -13,6 +14,6 @@
   
   <%#= drop_receiving_element("#{dom_id(section)}",
         :onDrop => "function(element){$('exhibitForm')['new_resource'].value=element.id; $('exhibitForm')['section_id'].value='#{section.id}'; $('exhibitForm').submit(); return false;}") %>
-  <%= drop_receiving_element("resource-drop-zone",
+  <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
         :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; $('add_object_form')['exhibited_section_id'].value='#{@exhibited_section.id}'; $('add_object_form').submit(); return false;}") %>
 <% end %>
