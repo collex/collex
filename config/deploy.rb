@@ -10,10 +10,15 @@
 # correspond to. The deploy_to path must be the path on each machine that will
 # form the root of the application path.
 
-set :application, "staging"
+set :application, "staging-web"
 
-set :svn_password, Proc.new { Capistrano::CLI.password_prompt('SVN Password: ') }
-set :repository, Proc.new { '--password "#{svn_password}" svn+ssh://erikhatcher@rubyforge.org/var/svn/subactive/collex'}
+# set :svn_password, Proc.new { Capistrano::CLI.password_prompt('SVN Password: ') }
+# set :repository, Proc.new { '--password "#{svn_password}" svn+ssh://erikhatcher@rubyforge.org/var/svn/subactive/collex'}
+set :repository, "https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web"
+set :deploy_to, "/p0/usr/local/patacriticism/#{application}" # defaults to "/u/apps/#{application}"
+set :user, "nines"            # defaults to the currently logged in user
+set :rails_release, "rel_1-2-1"
+set :rails_path, "#{shared_path}/vendor/#{rails_release}"
 
 # =============================================================================
 # ROLES
@@ -25,15 +30,16 @@ set :repository, Proc.new { '--password "#{svn_password}" svn+ssh://erikhatcher@
 # :primary => true.
 
 role :web, "jarry.itc.virginia.edu"
+role :app, "jarry.itc.virginia.edu"
 role :db,  "jarry.itc.virginia.edu", :primary => true
 
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
-set :deploy_to, "/p0/usr/local/patacriticism/#{application}" # defaults to "/u/apps/#{application}"
-set :user, "nines"            # defaults to the currently logged in user
+
 # set :scm, :darcs               # defaults to :subversion
 set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
+set :checkout, "export --ignore-externals"
 # set :darcs, "/path/to/darcs"   # defaults to searching the PATH
 # set :cvs, "/path/to/cvs"       # defaults to searching the PATH
 # set :gateway, "gate.host.com"  # default to no gateway
@@ -52,7 +58,7 @@ set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
 # narrow the set of servers to a subset of a role by specifying options, which
 # must match the options given for the servers to select (like :primary => true)
 
-desc <<DESC
+desc <<-DESC
 An imaginary backup task. (Execute the 'show_tasks' task to display all
 available tasks.)
 DESC
@@ -122,91 +128,66 @@ task :long_deploy do
 end
 ##### END of EXAMPLES
 
-desc "Rewrite for Collex: Set up the expected application directory structure on all boxes"
-task :setup, :roles => [:app, :db, :web] do
+desc "Set up the expected application directory structure on all boxes"
+task :after_setup, :roles => [:app, :db, :web] do
+  setup_rails
+  setup_shared
+end
+desc "Setup the rails distribution"
+task :setup_rails, :roles => [:app, :web] do
   run <<-CMD
-    mkdir -p -m 775 #{releases_path} #{shared_path}/system &&
-    mkdir -p -m 777 #{shared_path}/log &&
-    mkdir -p -m 775 #{shared_path}/data &&
-    mkdir -p -m 750 #{shared_path}/config &&
-    mkdir -p -m 750 #{shared_path}/config/environments &&
-    mkdir -p -m 750 #{shared_path}/solr/etc
+    mkdir -p #{shared_path}/vendor &&
+    #{svn} export http://dev.rubyonrails.org/svn/rails/tags/#{rails_release}/ #{rails_path}
   CMD
 end
 
-desc "override the default update_code b/c we want more than just rails"
-task :update_code, :roles => [:app, :db, :web] do
-  on_rollback { delete release_path, :recursive => true }
-
-  source.checkout(self)
-  
-#   cp -fp #{shared_path}/config/mongrel_cluster.yml #{release_path}/web/config/mongrel_cluster.yml &&
+desc "Extra shared directories"
+task :setup_shared, :roles => [:app, :web, :db] do
   run <<-CMD
-    rm -rf #{release_path}/web/log #{release_path}/web/public/system &&
-    ln -nfs #{shared_path}/log #{release_path}/web/log &&
-    cp -fp #{shared_path}/config/database.yml #{release_path}/web/config/database.yml &&
-    cp -fp #{shared_path}/config/environments/staging.rb #{release_path}/web/config/environments/staging.rb &&
-    ln -nfs #{shared_path}/system #{release_path}/web/public/system &&
-    rm -rf #{release_path}/data &&
-    ln -nfs #{shared_path}/data #{release_path}/data &&
-    rm -rf #{release_path}/solr/etc/jetty.xml &&
-    cp -fp #{shared_path}/solr/etc/jetty.xml #{release_path}/solr/etc/jetty.xml
+    mkdir -p -m 775 #{shared_path}/tmp && 
+    mkdir -p -m 750 #{shared_path}/config &&
+    mkdir -p -m 750 #{shared_path}/config/environments
   CMD
-  
-#   send(run_method, "chmod -R g+w #{release_path}/web/")
-#   send(run_method, "chmod -R g+w #{release_path}/solr/logs/")
-#   send(run_method, "chmod -R g+w #{release_path}/solr/solr/")
-#   send(run_method, "chown -R www:www #{release_path}/")
+end
+
+def rails_release_up_to_date?
+  /#{rails_release}/ =~ `svn propget svn:externals vendor/`
+end
+task :before_update_code do
+  unless rails_release_up_to_date?
+    puts "\nWARNING ############################################### WARNING"
+    puts "Update aborted."
+    puts "Your local Rails version is different than #{rails_release}." 
+    puts "Please update deploy.rb's rails_release property and run \"cap setup_rails\"."
+    puts "WARNING ############################################### WARNING"
+    abort
+  end
+end
+
+desc "Custom stuff for after update_code"
+task :after_update_code, :roles => [:app, :db] do
+  run <<-CMD
+    rm -rf #{release_path}/log #{release_path}/public/system &&
+    ln -nfs #{shared_path}/log #{release_path}/log &&
+    cp -fp #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
+    cp -fp #{shared_path}/config/environments/staging.rb #{release_path}/config/environments/staging.rb &&
+    ln -nfs #{shared_path}/system #{release_path}/public/system &&
+    ln -nfs #{rails_path} #{release_path}/vendor/rails &&
+    rm -rf #{release_path}/docs
+  CMD
+  #   send(run_method, "chmod -R g+w #{release_path}/web/")
+  #   send(run_method, "chmod -R g+w #{release_path}/solr/logs/")
+  #   send(run_method, "chmod -R g+w #{release_path}/solr/solr/")
+  #   send(run_method, "chown -R www:www #{release_path}/")
 end
 
 task :after_deploy, :roles => [:app] do
-  restart_solr
+#   restart_solr
 end
 task :after_cold_deploy, :roles => [:app] do
-  start_solr
-end
-
-desc "rewrite migrate task for our environment"
-task :migrate, :roles => :db, :only => { :primary => true } do
-  directory = case migrate_target.to_sym
-    when :current then current_path
-    when :latest  then current_release
-    else
-      raise ArgumentError,
-        "you must specify one of current or latest for migrate_target"
-  end
-
-  run "cd #{directory}/web && " +
-      "#{rake} RAILS_ENV=#{rails_env} #{migrate_env} migrate"
+#   start_solr
 end
 
 task :restart, :roles => :app do
  sudo "/usr/apache/bin/apachectl restart"
-end
-
-
-task :before_restart, :roles => [:app] do
-  build_solr
-  restart_solr
-end
-
-desc "build solr using ant"
-task :build_solr, :roles => :app do
-  run "cd #{current_path}/; ant"
-end
-
-desc "start solr server"
-task :start_solr, :roles => :app do
-  # the command was exiting and solr not starting without the sleep on the end
-  run "cd #{current_path}/solr/;  bash -c 'nohup java -jar start.jar > /dev/null &'; sleep 3"
-end
-desc "stop solr server"
-task :stop_solr, :roles => [:app] do
-  run "cd #{current_path}/solr/ && java -jar stop.jar"
-end
-desc "restart solr server"
-task :restart_solr, :roles => [:app] do
-  stop_solr
-  sleep 6
-  start_solr
 end
