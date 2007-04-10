@@ -11,11 +11,11 @@
 # form the root of the application path.
 
 set :application, "staging-web"
-
+set :sudo, "/usr/local/bin/sudo"
 # set :svn_password, Proc.new { Capistrano::CLI.password_prompt('SVN Password: ') }
 # set :repository, Proc.new { '--password "#{svn_password}" svn+ssh://erikhatcher@rubyforge.org/var/svn/subactive/collex'}
 set :repository, "https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web"
-set :deploy_to, "/p0/usr/local/patacriticism/#{application}" # defaults to "/u/apps/#{application}"
+set :deploy_to, "/usr/local/patacriticism/#{application}" # defaults to "/u/apps/#{application}"
 set :user, "nines"            # defaults to the currently logged in user
 set :rails_release, "rel_1-2-1"
 set :rails_path, "#{shared_path}/vendor/#{rails_release}"
@@ -175,10 +175,24 @@ task :after_update_code, :roles => [:app, :db] do
     ln -nfs #{rails_path} #{release_path}/vendor/rails &&
     rm -rf #{release_path}/docs
   CMD
+  sudo("chown webuser:staff #{release_path}/config/database.yml")
   #   send(run_method, "chmod -R g+w #{release_path}/web/")
   #   send(run_method, "chmod -R g+w #{release_path}/solr/logs/")
   #   send(run_method, "chmod -R g+w #{release_path}/solr/solr/")
   #   send(run_method, "chown -R www:www #{release_path}/")
+end
+desc <<-DESC
+Rewritten for Collex's Solaris environment which won't break the old link. 
+Update the 'current' symlink to point to the latest version of
+the application's code.
+DESC
+task :symlink, :except => { :no_release => true } do
+  on_rollback do 
+    run "rm #{current_path}"
+    run "ln -nfs #{previous_release} #{current_path}" 
+  end
+  run "rm #{current_path}"
+  run "ln -nfs #{current_release} #{current_path}"
 end
 
 task :after_deploy, :roles => [:app] do
@@ -189,5 +203,5 @@ task :after_cold_deploy, :roles => [:app] do
 end
 
 task :restart, :roles => :app do
- sudo "/usr/apache/bin/apachectl restart"
+ sudo "/usr/apache/bin/apachectl graceful"
 end
