@@ -14,6 +14,13 @@ test:
 
 production:
   adapter: mysql
+  database: nines_production
+  username: root
+  password: 
+  host: localhost
+
+staging:
+  adapter: mysql
   database: nines_development
   username: root
   password: 

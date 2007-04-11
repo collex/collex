@@ -57,6 +57,8 @@ require 'rexml/document'
 require 'collex_engine'
 require 'nines_collection_manager' # require this or get load errors in dev mode
 
+SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || "http://localhost:8983/solr"
+
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
 CACHE_DIR = "#{RAILS_ROOT}/cache"

@@ -23,5 +23,3 @@ ActionMailer::Base.server_settings = {
    :port => 25, 
    :domain => "nines.org", 
 } 
-
-SOLR_URL                                           = "http://localhost:8983/solr"

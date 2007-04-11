@@ -26,7 +26,5 @@ ActionMailer::Base.server_settings = {
    :domain => "ehatchersolutions.com"
 } 
 
-SOLR_URL                                           = "http://localhost:8983/solr"
-
 config.log_level = :info
 #ActiveRecord::Base.verification_timeout=100
