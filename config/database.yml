@@ -4,7 +4,6 @@ development:
     username: root
     password: 
     host: localhost
-    solrUrl: http://localhost:8983/solr/update
     
 test:
     adapter: mysql
@@ -12,7 +11,6 @@ test:
     username: root
     password: 
     host: localhost
-    solrUrl: http://localhost:8983/solr/update
 
 production:
   adapter: mysql
@@ -20,20 +18,3 @@ production:
   username: root
   password: 
   host: localhost
-  solrUrl: http://localhost:8983/solr/update
-    
-# In-memory SQLite 3 database.  Useful for tests.
-sqlite3_in_memory_example:
-  adapter: sqlite3
-  dbfile: ":memory:"
-
-#Java constants
-java_constants:
-  smtpServer: null
-  smtpFromEmail: null
-  smtpPassword: null
-  smtpPort: 465
-  rails_root: localhost:3000
-  dir1: /ninestestA
-  dir2: /ninestestB
-  tempdir: /tmp
