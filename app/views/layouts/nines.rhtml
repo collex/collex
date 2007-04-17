@@ -345,7 +345,7 @@ function validateCollector()
 		<div id="collectformarea" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;"> 
 		  <span style="clear:both;float:right;"><%= link_to_function '&#x2715;', 'Effect.Fade("collectformarea", { duration: 0.0 })'%> &nbsp;</span>
 		<% if is_logged_in? %>
-		<%= form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) %> 
+		<% form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) do %> 
 		  <div id="collector_header"></div>
 		  <%= hidden_field_tag :objid, "" -%>
 		  <label for="tags">&nbsp; keywords: &nbsp;</label> 
@@ -353,7 +353,7 @@ function validateCollector()
 		  <label for="annotation">&nbsp; notes:</label>
 		  <%= text_area_tag :annotation %>
 		  <span style="clear:both;float:right;"><%= link_to_function "collect", "validateCollector();" -%> &nbsp; </span>
-		<%= end_form_tag %> 
+		<% end %> 
 		<% else %>
 		  You must be logged in to collect objects.  If you are logged in, refresh the page. 
 		<% end %>

@@ -1,5 +1,5 @@
 <% table do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
-  <%= td thumbnail_image_tag @exhibited_resource.resource %>
+  <%= td thumbnail_image_tag(@exhibited_resource.resource) %>
   
   <% td do %>
     <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_resource. %>

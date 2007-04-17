@@ -4,19 +4,19 @@
 <% form_for(@exhibit, :url => exhibits_path) do |f| %>
   <%= f.hidden_field :user_id %>
   
-  <%= div label "Title" %>
-  <%= div f.text_field :title %>
+  <%= div label("Title")%>
+  <%= div f.text_field(:title)%>
 
-  <%= div label "Exhibit Type" %>
-  <%= div f.collection_select :exhibit_type_id, @exhibit_types, :id, :description %>
+  <%= div label("Exhibit Type") %>
+  <%= div f.collection_select(:exhibit_type_id, @exhibit_types, :id, :description) %>
 
-  <%= div label "License" %>
-  <%= div f.collection_select :license_id, @licenses, :id, :description %>
+  <%= div label("License") %>
+  <%= div f.collection_select(:license_id, @licenses, :id, :description) %>
 
-  <%= div label "Notes" %>
-  <%= div f.text_area :annotation %>
+  <%= div label("Notes") %>
+  <%= div f.text_area(:annotation) %>
 
-  <%= div submit_tag "Create Exhibit" %>
+  <%= div submit_tag("Create Exhibit") %>
 <% end %>
 
 <%= link_to 'Back', exhibits_path %>
