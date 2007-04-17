@@ -6,7 +6,10 @@ class AdminMessageController < ApplicationController
     if site
       render :text => "SITE_ALREADY_EXISTS"
     else
-      site = Site.new(:code => params[:code], :url => params[:url], :description => params[:description], :thumbnail => params[:thumbnail])
+      site = Site.new(:code => params[:code],
+                      :url => params[:url],
+                      :description => params[:description],
+                      :thumbnail => params[:thumbnail])
       site.save!
       render :text => "OK"
     end
