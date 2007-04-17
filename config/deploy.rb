@@ -9,8 +9,16 @@
 # repository must be the URL of the repository you want this recipe to
 # correspond to. The deploy_to path must be the path on each machine that will
 # form the root of the application path.
+if ENV['DEPLOY'] == 'production'
+   puts "*** Deploying to the PRODUCTION servers!"
+   set :application, "production-web"
+   set :rails_env, "production"
+else
+   puts "*** Deploying to the STAGING server!"
+   set :application, "staging-web"
+   set :rails_env, "staging"
+end
 
-set :application, "staging-web"
 set :sudo, "/usr/local/bin/sudo"
 # set :svn_password, Proc.new { Capistrano::CLI.password_prompt('SVN Password: ') }
 # set :repository, Proc.new { '--password "#{svn_password}" svn+ssh://erikhatcher@rubyforge.org/var/svn/subactive/collex'}
@@ -167,14 +175,15 @@ end
 desc "Custom stuff for after update_code"
 task :after_update_code, :roles => [:app, :db] do
   run <<-CMD
-    rm -rf #{release_path}/log #{release_path}/public/system &&
+    rm -rf #{release_path}/log; true &&
+    rm -rf #{release_path}/public/system; true &&
     ln -nfs #{shared_path}/log #{release_path}/log &&
     cp -fp #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
-    cp -fp #{shared_path}/config/environments/staging.rb #{release_path}/config/environments/staging.rb &&
     ln -nfs #{shared_path}/system #{release_path}/public/system &&
     ln -nfs #{rails_path} #{release_path}/vendor/rails &&
     rm -rf #{release_path}/docs
   CMD
+  
   sudo("chown webuser:staff #{release_path}/config/database.yml")
   #   send(run_method, "chmod -R g+w #{release_path}/web/")
   #   send(run_method, "chmod -R g+w #{release_path}/solr/logs/")
@@ -188,18 +197,11 @@ the application's code.
 DESC
 task :symlink, :except => { :no_release => true } do
   on_rollback do 
-    run "rm #{current_path}"
+    run "rm #{current_path}; true"
     run "ln -nfs #{previous_release} #{current_path}" 
   end
-  run "rm #{current_path}"
+  run "rm #{current_path}; true"
   run "ln -nfs #{current_release} #{current_path}"
-end
-
-task :after_deploy, :roles => [:app] do
-#   restart_solr
-end
-task :after_cold_deploy, :roles => [:app] do
-#   start_solr
 end
 
 task :restart, :roles => :app do
