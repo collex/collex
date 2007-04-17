@@ -29,7 +29,7 @@ class ApplicationHelperTest < HelperTestCase
     item = @item.merge({'archive' => 'generic', 'title' => 'The Generic'})
     expected = %(<img src="#{DEFAULT_THUMBNAIL_IMAGE_PATH}" alt="The Generic" align="left" id="thumbnail_#{URI}"/>)
     result = thumbnail_image_tag(item)
-    puts result
+    # puts result
     assert_dom_equal(expected, result)    
   end
   
@@ -37,7 +37,7 @@ class ApplicationHelperTest < HelperTestCase
     item = @item.merge({'archive' => 'site', 'title' => 'Specific Site Title'})
     expected = %(<img src="http://some.site.url.com/image.gif" alt="Specific Site Title" align="left" id="thumbnail_#{URI}"/>)
     result = thumbnail_image_tag(item)
-    puts result
+    # puts result
     assert_dom_equal(expected, result)
   end
   
@@ -45,7 +45,7 @@ class ApplicationHelperTest < HelperTestCase
     item = @item.merge({'archive' => 'site', 'title' => 'Specific Site Title', 'thumbnail' => 'http://some.specific.url.com/image.gif'})
     expected = %(<img src="http://some.specific.url.com/image.gif" alt="Specific Site Title" align="left" id="thumbnail_#{URI}"/>)
     result = thumbnail_image_tag(item)
-    puts result
+    # puts result
     assert_dom_equal(expected, result)
   end
 
@@ -53,7 +53,7 @@ class ApplicationHelperTest < HelperTestCase
     item = @item.merge({'archive' => 'site', 'title' => 'Specific Site Title', 'thumbnail' => 'http://www.purl.org/swinburnearchive/img/tsa9thmb00/'})
     expected = %(<img src="http://www.purl.org/swinburnearchive/img/tsa9thmb00/" alt="Specific Site Title" align="left" id="thumbnail_#{URI}"/>)
     result = thumbnail_image_tag(item)
-    puts result
+    # puts result
     assert_dom_equal(expected, result)
   end
   

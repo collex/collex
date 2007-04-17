@@ -11,11 +11,6 @@ class SidebarControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
-
   def test_bad_objid_detail
     get :detail, {"objid" => CollexEngine::BAD_OBJID}
     assert_response :redirect
