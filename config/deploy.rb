@@ -191,7 +191,7 @@ task :after_update_code, :roles => [:app, :db] do
   #   send(run_method, "chown -R www:www #{release_path}/")
 end
 desc <<-DESC
-Rewritten for Collex's Solaris environment which won't break the old link. 
+Rewritten for Collex's Solaris environment which won't break the old symlink. 
 Update the 'current' symlink to point to the latest version of
 the application's code.
 DESC
@@ -203,7 +203,22 @@ task :symlink, :except => { :no_release => true } do
   run "rm #{current_path}; true"
   run "ln -nfs #{current_release} #{current_path}"
 end
-
+desc <<-DESC
+Rewritten for Collex's Solaris environment which won't break old symlink.
+Rollback the latest checked-out version to the previous one by fixing the
+symlinks and deleting the current release from all servers.
+DESC
+task :rollback_code, :except => { :no_release => true } do
+  if releases.length < 2
+    raise "could not rollback the code because there is no prior release"
+  else
+    run <<-CMD
+      rm #{current_path}; true &&
+      ln -nfs #{previous_release} #{current_path} &&
+      rm -rf #{current_release}
+    CMD
+  end
+end
 task :restart, :roles => :app do
  sudo "/usr/apache/bin/apachectl graceful"
 end
