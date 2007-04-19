@@ -348,9 +348,9 @@ function validateCollector()
 		<% form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) do %> 
 		  <div id="collector_header"></div>
 		  <%= hidden_field_tag :objid, "" -%>
-		  <label for="tags">&nbsp; keywords: &nbsp;</label> 
+		  <label for="tags"> keywords: &nbsp;<span class="help" title="header=[keywords?] body=[add personal, one-word descriptors for this object. (to collect it, you must assign at least one.) separate your keywords by spaces and join multi-word descriptors with dashes, just-like-this.] offsetx=[140] offsety=[-40] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span></label> 
 		  <%= text_field_tag :tags, '', {:size => 23, :id => 'collector_tag'}  %> <br />
-		  <label for="annotation">&nbsp; notes:</label>
+		  <label for="annotation"> notes:</label>
 		  <%= text_area_tag :annotation %>
 		  <span style="clear:both;float:right;"><%= link_to_function "collect", "validateCollector();" -%> &nbsp; </span>
 		<% end %> 

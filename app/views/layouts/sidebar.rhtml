@@ -15,7 +15,7 @@ function clearInstructions(t) {
 
 function check_submit() {
     if (document.forms['dataform'].tags.value == '' || document.forms['dataform'].tags.value == "<%= TAG_INSTRUCTIONS %>") { 
-      alert('At least one tag is required to collect an object'); 
+      alert('Sorry! you must assign at least one keyword in order to collect an object.'); 
       return false; 
     }
     return true;

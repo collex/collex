@@ -1,5 +1,5 @@
-TAG_INSTRUCTIONS = 'add keywords'
-ANNOTATION_INSTRUCTIONS = 'annotate this item'
+TAG_INSTRUCTIONS = 'one-word keywords'
+ANNOTATION_INSTRUCTIONS = 'your annotations'
 
 class CollectionController < ApplicationController
   before_filter :authorize
