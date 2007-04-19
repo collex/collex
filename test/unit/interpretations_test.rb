@@ -22,5 +22,5 @@ class InterpretationsTest < Test::Unit::TestCase
     assert i1.valid?
     i2 = Interpretation.create(:user_id => 1, :object_uri => "baz")
     assert i2.valid?
-  end
+  end  
 end

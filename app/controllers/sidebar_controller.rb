@@ -94,8 +94,7 @@ class SidebarController < ApplicationController
     user = User.find_by_username(session[:user][:username])
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
     if not interpretation
-      interpretation = Interpretation.new(:object_uri => params[:objid])
-      user.interpretations << interpretation
+      interpretation = user.interpretations.build(:object_uri => params[:objid])
     end
     interpretation.annotation =  params[:annotation]
     interpretation.tag_list = params[:tags]
