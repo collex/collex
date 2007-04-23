@@ -57,9 +57,11 @@ require 'rexml/document'
 require 'collex_engine'
 require 'nines_collection_manager' # require this or get load errors in dev mode
 
-SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || "http://localhost:8983/solr"
+solr_url_for = { "staging" => "http://localhost:8989/solr" }
 
-puts "Starting Rails with Solr URL: #{SOLR_URL}"
+SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || solr_url_for[RAILS_ENV] || "http://localhost:8983/solr"
+
+puts "$$ Starting Rails with Solr URL: #{SOLR_URL}"
 
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
