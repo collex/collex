@@ -44,7 +44,7 @@ role :db,  "jarry.itc.virginia.edu", :primary => true
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
-
+set :rake, "/usr/local/bin/rake"
 # set :scm, :darcs               # defaults to :subversion
 set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
 set :checkout, "export --ignore-externals"
@@ -176,8 +176,10 @@ desc "Custom stuff for after update_code"
 task :after_update_code, :roles => [:app, :db] do
   run <<-CMD
     rm -rf #{release_path}/log; true &&
+    rm -rf #{release_path}/tmp; true &&
     rm -rf #{release_path}/public/system; true &&
     ln -nfs #{shared_path}/log #{release_path}/log &&
+    ln -nfs #{shared_path}/tmp #{release_path}/tmp &&
     cp -fp #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
     ln -nfs #{shared_path}/system #{release_path}/public/system &&
     ln -nfs #{rails_path} #{release_path}/vendor/rails &&
