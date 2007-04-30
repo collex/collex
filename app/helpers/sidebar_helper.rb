@@ -54,7 +54,7 @@ module SidebarHelper
       list.each do |item|
         xm.tr do
           xm.td :align => "center" do
-            xm << link_to_remote(thumbnail_image_tag(item, :class => 'image'), {:update => 'sidebar', :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);"}, {:class => "image"})
+            xm << thumbnail_image_tag(item, :class => 'image')
             xm << draggable_element("thumbnail_#{item['uri']}", :revert => true)
           end
           xm.td do
