@@ -12,8 +12,6 @@
 
   <%= div render( :partial => @exhibited_section.template, :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
   
-  <%#= drop_receiving_element("#{dom_id(section)}",
-        :onDrop => "function(element){$('exhibitForm')['new_resource'].value=element.id; $('exhibitForm')['section_id'].value='#{section.id}'; $('exhibitForm').submit(); return false;}") %>
   <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
         :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; $('add_object_form')['exhibited_section_id'].value='#{@exhibited_section.id}'; $('add_object_form').submit(); return false;}") %>
 <% end %>
