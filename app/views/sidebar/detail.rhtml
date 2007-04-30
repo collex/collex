@@ -12,11 +12,7 @@
   <% end %>
   <br />
   
-  <% if @object.url %>
-    <a target="_blank" href="<%=@object.url%>" class="image"><%= thumbnail_image_tag(@object) %></a>
-  <% else %>
-    <%= thumbnail_image_tag(@object) %>
-  <% end %>
+  <%= thumbnail_image_tag(@object) %>
   <%= draggable_element("thumbnail_#{@object.uri}", :revert => true) %>
 
 <div class="rdf">
