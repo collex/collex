@@ -1,4 +1,4 @@
-<% table do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
+<% table do tbody :id => "exhibited_section" do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
   <%= td thumbnail_image_tag(@exhibited_resource.resource) %>
   
   <% td do %>
@@ -21,6 +21,11 @@
       <%= p @exhibited_resource.annotation %>
     <%- end -%>
   <% end %>
-<% end end end %>
-
+  <% if controller.action_name == "edit" then td do %>
+    <%= p "&#x2191;" %>
+    <%= p "&#x2193;" %>
+  <% end end %>
+  
+<% end end end end %>
+<%= sortable_element 'exhibited_section', {:tag => "tr"} %>
 <hr/>
