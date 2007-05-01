@@ -499,7 +499,7 @@
   color: green;
   font-weight: bold;
 }
-.flash_warning, flash_error {
+.flash_warning, .flash_error {
   color: red;
   font-weight: bold;
   border: 1px solid red;
