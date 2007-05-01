@@ -9,6 +9,24 @@ class ExhibitedResourcesController < ApplicationController
       format.xml  { render :xml => @exhibited_resources.to_xml }
     end
   end
+  
+  def move_higher
+    @exhibited_resource = ExhibitedResource.find(params[:id])
+    @exhibited_resource.move_higher
+    flash[:notice] = "Moved Exhibited Resource Up."
+    redirect_after_move
+  end  
+  def move_lower
+    @exhibited_resource = ExhibitedResource.find(params[:id])
+    @exhibited_resource.move_lower
+    flash[:notice] = "Moved Exhibited Resource Down."
+    redirect_after_move
+  end
+  def redirect_after_move
+    page = params[:page] || 1
+    redirect_to edit_exhibit_path(:id => params[:exhibit_id], :anchor => dom_id(@exhibited_resource), :page => page)
+  end
+  private :redirect_after_move
 
   def show
     @exhibited_resource = ExhibitedResource.find(params[:id])
