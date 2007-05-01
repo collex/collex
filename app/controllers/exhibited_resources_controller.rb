@@ -11,22 +11,25 @@ class ExhibitedResourcesController < ApplicationController
   end
   
   def move_higher
-    @exhibited_resource = ExhibitedResource.find(params[:id])
-    @exhibited_resource.move_higher
-    flash[:notice] = "Moved Exhibited Resource Up."
-    redirect_after_move
+    move_item(:move_higher, "Moved Exhibited Resource Up.")
   end  
   def move_lower
-    @exhibited_resource = ExhibitedResource.find(params[:id])
-    @exhibited_resource.move_lower
-    flash[:notice] = "Moved Exhibited Resource Down."
-    redirect_after_move
+    move_item(:move_lower, "Moved Exhibited Resource Down.")
+  end  
+  def move_to_top
+    move_item(:move_to_top, "Moved Exhibited Resource to Top.")
+  end  
+  def move_to_bottom
+    move_item(:move_to_bottom, "Moved Exhibited Resource to Bottom.")
   end
-  def redirect_after_move
+  def move_item(command, notice)
+    @exhibited_resource = ExhibitedResource.find(params[:id])
+    @exhibited_resource.__send__(command)
+    flash[:notice] = notice
     page = params[:page] || 1
     redirect_to edit_exhibit_path(:id => params[:exhibit_id], :anchor => dom_id(@exhibited_resource), :page => page)
   end
-  private :redirect_after_move
+  private :move_item
 
   def show
     @exhibited_resource = ExhibitedResource.find(params[:id])
@@ -50,7 +53,7 @@ class ExhibitedResourcesController < ApplicationController
 
     respond_to do |format|
       if @exhibited_resource.save
-        flash[:notice] = 'ExhibitedResource was successfully created.'
+        flash[:notice] = 'Exhibited Resource was successfully created.'
         format.html { redirect_to exhibited_resource_url(@exhibited_resource) }
         format.xml  { head :created, :location => exhibited_resource_url(@exhibited_resource) }
       else
