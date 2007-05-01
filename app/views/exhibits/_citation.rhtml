@@ -22,8 +22,16 @@
     <%- end -%>
   <% end %>
   <% if controller.action_name == "edit" then td do %>
-    <%= p link_to "&uarr;", move_higher_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
-    <%= p link_to "&darr;", move_lower_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
+    <% p do %>
+      <%= link_to "&uarr;&uarr;", move_to_top_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
+      <br>
+      <%= link_to "&uarr;", move_higher_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
+    <% end %>
+    <% p do %>
+      <%= link_to "&darr;", move_lower_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
+      <br>
+      <%= link_to "&darr;&darr;", move_to_bottom_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
+    <% end %>
   <% end end %>
   
 <% end end end end %>
