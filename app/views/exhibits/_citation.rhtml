@@ -1,4 +1,4 @@
-<% table do tbody :id => "exhibited_section" do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
+<% table do tbody do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
   <%= td thumbnail_image_tag(@exhibited_resource.resource) %>
   
   <% td do %>
@@ -22,8 +22,8 @@
     <%- end -%>
   <% end %>
   <% if controller.action_name == "edit" then td do %>
-    <%= p "&#x2191;" %>
-    <%= p "&#x2193;" %>
+    <%= p link_to "&uarr;", move_higher_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
+    <%= p link_to "&darr;", move_lower_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
   <% end end %>
   
 <% end end end end %>
