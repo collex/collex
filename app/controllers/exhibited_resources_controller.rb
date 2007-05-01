@@ -1,8 +1,6 @@
 class ExhibitedResourcesController < ApplicationController
   in_place_edit_for_resource :exhibited_resource, :annotation
 
-  # GET /exhibited_resources
-  # GET /exhibited_resources.xml
   def index
     @exhibited_resources = ExhibitedResource.find(:all)
 
@@ -12,8 +10,6 @@ class ExhibitedResourcesController < ApplicationController
     end
   end
 
-  # GET /exhibited_resources/1
-  # GET /exhibited_resources/1.xml
   def show
     @exhibited_resource = ExhibitedResource.find(params[:id])
 
@@ -23,18 +19,14 @@ class ExhibitedResourcesController < ApplicationController
     end
   end
 
-  # GET /exhibited_resources/new
   def new
     @exhibited_resource = ExhibitedResource.new
   end
 
-  # GET /exhibited_resources/1;edit
   def edit
     @exhibited_resource = ExhibitedResource.find(params[:id])
   end
 
-  # POST /exhibited_resources
-  # POST /exhibited_resources.xml
   def create
     @exhibited_resource = ExhibitedResource.new(params[:exhibited_resource])
 
@@ -50,8 +42,6 @@ class ExhibitedResourcesController < ApplicationController
     end
   end
 
-  # PUT /exhibited_resources/1
-  # PUT /exhibited_resources/1.xml
   def update
     @exhibited_resource = ExhibitedResource.find(params[:id])
     @exhibit = Exhibit.find(params[:exhibit_id])
@@ -68,8 +58,6 @@ class ExhibitedResourcesController < ApplicationController
     end
   end
 
-  # DELETE /exhibited_resources/1
-  # DELETE /exhibited_resources/1.xml
   def destroy
     @exhibited_resource = ExhibitedResource.find(params[:id])
     @exhibit = Exhibit.find(params[:exhibit_id])
