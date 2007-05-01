@@ -83,7 +83,8 @@ class ExhibitedResourcesController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = 'Exhibited Resource was successfully removed.'
-      format.html { redirect_to edit_exhibit_url(@exhibit) }
+      page = params[:page] || 1
+      format.html { redirect_to edit_exhibit_url(:id => @exhibit, :page => page) }
       format.xml  { head :ok }
     end
   end
