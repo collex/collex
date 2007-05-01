@@ -23,7 +23,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :exhibits, :singular => "exhibit", 
                 :member => { :add_resource => :post, :update_title => :post, :update_annotation => :post } do |exhibit|
     exhibit.resources :exhibited_sections, :member => { :update_title => :post, :update_annotation => :post } do |section|
-      section.resources :exhibited_resources, :member => { :update_annotation => :post, :move_higher => :post, :move_lower => :post }
+      section.resources :exhibited_resources, :member => { :update_annotation => :post, 
+                                                           :move_higher => :post, 
+                                                           :move_lower => :post, 
+                                                           :move_to_top => :post, 
+                                                           :move_to_bottom => :post}
     end
   end
   
