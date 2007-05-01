@@ -81,7 +81,8 @@ class ExhibitsController < ApplicationController
         flash[:notice] = 'Exhibit was successfully updated.'
         format.html do
           unless er.blank?
-            redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er))
+            page = params[:page] || 1
+            redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er), :page => page)
           else
             redirect_to edit_exhibit_url(@exhibit)
           end
