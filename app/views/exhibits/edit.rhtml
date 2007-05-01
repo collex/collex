@@ -16,6 +16,7 @@
   <%= p "Select which section to add this object and the submit the form." %>
   <%= hidden_field_tag "new_resource", "" %>
   <%= hidden_field_tag "exhibited_section_id", "" %>
+  <%= hidden_field_tag "page", @exhibited_sections.page %>
 <%- end -%>
 
 
