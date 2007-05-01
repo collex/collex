@@ -16,7 +16,7 @@
     <%= p @exhibited_resource.resource.to_mla_citation %>
     <%- if controller.action_name == "edit"  -%>
       <%= exhibited_resource_in_place_editor_area :exhibited_resource, "annotation" %>
-      <%= link_to "Remove Item", exhibited_resource_path(@exhibited_resource.exhibited_section.exhibit, @exhibited_resource.exhibited_section, @exhibited_resource), :confirm => "Remove Item?", :method => :delete %>
+      <%= link_to "Remove Item", exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :confirm => "Remove Item?", :method => :delete %>
     <%- else -%>
       <%= p @exhibited_resource.annotation %>
     <%- end -%>
