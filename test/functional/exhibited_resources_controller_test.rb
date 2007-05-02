@@ -45,4 +45,33 @@ class ExhibitedResourcesControllerTest < Test::Unit::TestCase
     assert_response(:redirect)
     assert_redirected_to(edit_exhibit_path(:id => @exhibit, :page => @request.params[:page], :anchor => "exhibited_resource_#{@er2.id}"))
   end
+  def test_moves_resource_lower_and_returns_to_proper_page
+    assert(@er2.position < @er3.position)
+    post(:move_lower, :id => @er2.id, :exhibit_id => @exhibit.id, :exhibited_section => @es.id, :page => 1)
+    @er2.reload
+    @er3.reload
+    assert(@er2.position > @er3.position)
+    assert_response(:redirect)
+    assert_redirected_to(edit_exhibit_path(:id => @exhibit, :page => @request.params[:page], :anchor => "exhibited_resource_#{@er2.id}"))
+  end
+  def test_moves_resource_to_top_and_returns_to_proper_page
+    assert(@er1.position < @er2.position && @er2.position < @er3.position)
+    post(:move_to_top, :id => @er3.id, :exhibit_id => @exhibit.id, :exhibited_section => @es.id, :page => 1)
+    @er1.reload
+    @er2.reload
+    @er3.reload
+    assert(@er2.position > @er1.position && @er1.position > @er3.position)
+    assert_response(:redirect)
+    assert_redirected_to(edit_exhibit_path(:id => @exhibit, :page => @request.params[:page], :anchor => "exhibited_resource_#{@er3.id}"))
+  end
+  def test_moves_resource_to_bottom_and_returns_to_proper_page
+    assert(@er1.position < @er2.position && @er2.position < @er3.position)
+    post(:move_to_bottom, :id => @er1.id, :exhibit_id => @exhibit.id, :exhibited_section => @es.id, :page => 1)
+    @er1.reload
+    @er2.reload
+    @er3.reload
+    assert(@er1.position > @er3.position && @er3.position > @er2.position)
+    assert_response(:redirect)
+    assert_redirected_to(edit_exhibit_path(:id => @exhibit, :page => @request.params[:page], :anchor => "exhibited_resource_#{@er1.id}"))
+  end
 end
