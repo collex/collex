@@ -16,6 +16,12 @@ exhibit_owner:
   fullname: "Exhibit Owner"
   email: owner@exhibit.org
   password_hash: 
+exhibit_viewer:
+  id: 31
+  username: "viewer"
+  fullname: "Exhibit Viewer"
+  email: viewer@exhibit.org
+  password_hash: 
 dave:
   id: 99
   username: dave
