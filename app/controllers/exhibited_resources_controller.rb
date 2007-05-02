@@ -1,4 +1,7 @@
-class ExhibitedResourcesController < ApplicationController
+class ExhibitedResourcesController < ExhibitsBaseController
+  prepend_before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy, :move_higher, :move_lower, :move_to_top, :move_to_bottom]
+  before_filter :authorize_owner, :only => [:edit, :update, :destroy, :move_higher, :move_lower, :move_to_top, :move_to_bottom]
+  
   in_place_edit_for_resource :exhibited_resource, :annotation
 
   def index
@@ -25,9 +28,14 @@ class ExhibitedResourcesController < ApplicationController
   def move_item(command, notice)
     @exhibited_resource = ExhibitedResource.find(params[:id])
     @exhibited_resource.__send__(command)
+    logger.info("ExhibitedResource: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
     page = params[:page] || 1
     redirect_to edit_exhibit_path(:id => params[:exhibit_id], :anchor => dom_id(@exhibited_resource), :page => page)
+  rescue
+    logger.info("Error: #{command} with id=#{params[:id]} failed.")
+    flash[:error] = "There was an error moving your resource."
+    redirect_to edit_exhibit_path(:id => params[:exhibit_id], :page => page)
   end
   private :move_item
 
