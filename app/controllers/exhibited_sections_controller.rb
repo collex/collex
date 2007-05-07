@@ -1,8 +1,36 @@
-class ExhibitedSectionsController < ApplicationController
+class ExhibitedSectionsController < ExhibitsBaseController
+  prepend_before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy, :move_higher, :move_lower, :move_to_top, :move_to_bottom]
+  before_filter :authorize_owner, :only => [:edit, :update, :destroy, :move_higher, :move_lower, :move_to_top, :move_to_bottom]
   
   in_place_edit_for_resource :exhibited_section, :title
   in_place_edit_for_resource :exhibited_section, :annotation
-  
+
+  def move_higher
+    move_item(:move_higher, "Moved Exhibited Section Up.")
+  end  
+  def move_lower
+    move_item(:move_lower, "Moved Exhibited Section Down.")
+  end  
+  def move_to_top
+    move_item(:move_to_top, "Moved Exhibited Section to Top.")
+  end  
+  def move_to_bottom
+    move_item(:move_to_bottom, "Moved Exhibited Section to Bottom.")
+  end
+  def move_item(command, notice)
+    @exhibited_section = ExhibitedSection.find(params[:id])
+    @exhibited_section.__send__(command)
+    logger.info("ExhibitedSection: #{command.to_s}: #{params[:id]}")
+    flash[:notice] = notice
+    page = params[:page] || 1
+    redirect_to edit_exhibit_path(:id => params[:exhibit_id], :anchor => dom_id(@exhibited_section), :page => page)
+  rescue
+    logger.info("Error: #{command} with id=#{params[:id]} failed.")
+    flash[:error] = "There was an error moving your section."
+    redirect_to edit_exhibit_path(:id => params[:exhibit_id], :page => page)
+  end
+  private :move_item  
+
   def create
     @exhibit = Exhibit.find(params[:exhibit_id])
     respond_to do |format|
