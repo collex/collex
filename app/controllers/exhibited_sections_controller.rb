@@ -18,14 +18,14 @@ class ExhibitedSectionsController < ExhibitsBaseController
     move_item(:move_to_bottom, "Moved Exhibited Section to Bottom.")
   end
   def move_item(command, notice)
-    @exhibited_section = ExhibitedSection.find(params[:id])
+    @exhibited_section = @exhibit.exhibited_sections.find(params[:id])
     @exhibited_section.__send__(command)
     logger.info("ExhibitedSection: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
     page = params[:page] || 1
     redirect_to edit_exhibit_path(:id => params[:exhibit_id], :anchor => dom_id(@exhibited_section), :page => page)
-  rescue
-    logger.info("Error: #{command} with id=#{params[:id]} failed.")
+  rescue Exception => e
+    logger.info("Error: #{command} with id=#{params[:id]} failed with #{e}")
     flash[:error] = "There was an error moving your section."
     redirect_to edit_exhibit_path(:id => params[:exhibit_id], :page => page)
   end
