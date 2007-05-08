@@ -113,12 +113,6 @@ class PagingEnumerator
     end
   end
   
-  # Move to the page for the item or item id given if auto paging is enabled.
-  def item_page!(item)
-    id = item.is_a?(ActiveRecord::Base) ? item.id : item
-    self.each do |e| break if e.id == id end
-  end
-  
   def first_item
     ((self.page-1) * self.page_size) + 1
   end
