@@ -12,6 +12,29 @@ class PaginatingFindTest < Test::Unit::TestCase
     end
   end
   
+  def test_should_paginate_to_item_for_id_or_object
+    list_size = 12
+    h = ArticleHelper.new(list_size)
+    p = proc do |page_size, item_index|
+      h.find_articles(:all, :page => {:size => page_size, :auto => true}) do |results|
+        item = results.dup.to_a[item_index]
+        page = results.item_page!(item)
+        assert_equal (item_index.div(page_size) + 1), results.page, "Failed on page_size: #{page_size}, item_index: #{item_index} for object"
+      end
+      h.find_articles(:all, :page => {:size => page_size, :auto => true}) do |results|
+        item = results.dup.to_a[item_index]
+        page = results.item_page!(item.id)
+        assert_equal (item_index.div(page_size) + 1), results.page, "Failed on page_size: #{page_size}, item_index: #{item_index} for id"
+      end
+    end
+    # tests all list sizes and item indexes for the give list size
+    (1..list_size).each do |i|
+      (0..list_size - 1).each do |j|
+        p.call(i, j)
+      end
+    end
+  end
+  
   def test_should_paginate
     h = ArticleHelper.new(112)
     h.find_articles(:all, :page => {:size => 10}) do |results|
@@ -160,6 +183,8 @@ class ArticleHelper
   # and yield the results.
   #
   def find_articles(*args)
+    # blow away the fixtures first
+    Article.destroy_all
     (1..@how_many).each { |n| Article.create(:name => n, :author_id => 1) }
     results = Article.find(*args)
     if results.size > results.page_size
