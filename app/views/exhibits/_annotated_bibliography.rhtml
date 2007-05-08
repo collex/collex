@@ -5,13 +5,7 @@
     <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %> 
     
     <% p do %>
-      <%= link_to "&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => @exhibit, :id => @exhibited_section, :page => @exhibited_sections.page), :method => "post" %>
-      &nbsp;
-      <%= link_to "&uarr;", move_higher_exhibited_section_path(:exhibit_id => @exhibit, :id => @exhibited_section, :page => @exhibited_sections.page), :method => "post" %>
-      &nbsp;
-      <%= link_to "&darr;", move_lower_exhibited_section_path(:exhibit_id => @exhibit, :id => @exhibited_section, :page => @exhibited_sections.page), :method => "post" %>
-      &nbsp;
-      <%= link_to "&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => @exhibit, :id => @exhibited_section, :page => @exhibited_sections.page), :method => "post" %>
+      <%= move_exhibited_section_links(@exhibit, @exhibited_section, @exhibited_sections) %>
     <% end %>
     
     <%= p link_to("Remove Section and its Objects", exhibited_section_path(@exhibited_section.exhibit, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>

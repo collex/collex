@@ -1,4 +1,18 @@
 module ExhibitsHelper
+  def move_exhibited_section_links(exhibit, exhibited_section, pager)
+    html = ""
+    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.first_page), :method => "post")
+    html << "&nbsp;"
+    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.previous_page || pager.page), :method => "post")
+    html << "&nbsp;"
+    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.next_page || pager.page ), :method => "post")
+    html << "&nbsp;"
+    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.last_page), :method => "post")
+    html
+  end
+  
+  
+  
   def exhibit_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
         
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
