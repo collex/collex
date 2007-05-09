@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+archive:
+  id: 1
+  name: archive
+libraries:
+  id: 2
+  parent_id: 1
+  name: Libraries
+journals:
+  id: 3
+  parent_id: 1
+  name: Journals
+presses:
+  id: 4
+  parent_id: 1
+  name: Presses
+projects:
+  id: 5
+  parent_id: 1
+  name: Projects
+rossetti:
+  id: 6
+  parent_id: 5
+  name: rossetti
+
+
+
