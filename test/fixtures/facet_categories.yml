@@ -1,27 +1,29 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 archive:
   id: 1
-  name: archive
+  value: archive
+  type: FacetTree
 libraries:
   id: 2
   parent_id: 1
-  name: Libraries
+  value: Libraries
 journals:
   id: 3
   parent_id: 1
-  name: Journals
+  value: Journals
 presses:
   id: 4
   parent_id: 1
-  name: Presses
+  value: Presses
 projects:
   id: 5
   parent_id: 1
-  name: Projects
+  value: Projects
 rossetti:
   id: 6
   parent_id: 5
-  name: rossetti
+  value: rossetti
+  type: FacetValue
 
 
 

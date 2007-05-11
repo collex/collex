@@ -1,0 +1,20 @@
+<% if categories.size > 0 %>
+  <ul>
+    <% categories.each do |category| %>
+      <% if category[:count] > 0 %>
+        <li>
+          <% if category[:type] == :value %>
+            <%= site(category[:value]) ? site(category[:value])['description'] : category[:value] %>
+            <%= link_to "+ #{nbpluralize(category[:count], 'item')}", {:controller=>"search", :action => 'add_facet', :field => 'archive', :value => category[:value]}%>
+            or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => 'archive', :value => category[:value], :invert => true}%>
+            <img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/>
+          <% else # its a category %>
+            <%= category[:value]%>
+            <%=nbpluralize(category[:count], 'item')%>
+            <%= render :partial => 'categories', :locals => {:categories => category[:children], :max => max} %>
+          <% end %>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

@@ -36,6 +36,13 @@
 				  <td>&nbsp;</td>
                </tr>
 
+    <tr>
+      <th align="left">sites:</th>
+      <td>
+        <%= render :partial => 'categories', :locals => {:categories => @sites_forest, :max => max } %>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
 
     <%  
         facets = ["archive", "genre"]        
@@ -43,7 +50,7 @@
           if unsorted_values
             name_shown = false 
             label = facet_label(field)
-            values = field == "roles" ? unsorted_values : unsorted_values.sort {|a,b| b[1] <=> a[1]}
+            values = unsorted_values.sort {|a,b| b[1] <=> a[1]}
     %>
        <% values.each_with_index do |pair, i|  value=pair[0] 
           
@@ -73,23 +80,12 @@
       <% end %>
       <tr <% if i > 1 %>class="more_<%=field%>" style="display:none;"<% end %>>
                  <th align="left"><% if !name_shown %><%=h label%>:<% else %>&nbsp;<% end %></th>
-        <td><%=h value_display%>
-            <br/>
-            <% if field == "roles" and pair[1].size > 1
-                individual_roles = pair[1]
-                individual_roles.each do |individual_role|
-                  role_code = individual_role[0]
-                  role_name = RELATORS[role_code]
-                  role_freq = individual_role[1]
-            %>
-                <%= link_to "#{role_name} (#{role_freq})", {:controller => "search", :action => 'add_facet', :field => role_code, :value => value}%>                                           
-             <%  end %>
-            <% end %>
+        <td><%=h value_display%><br/>
         </td>
         <td align="center" nowrap="true">
-          <% freq= field=="roles" ? @results["facets"]["agent"][value] : pair[1] %>     
-            <%= link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_facet', :field => field == "roles" ? "agent" : field, :value => value}%>
-            <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => field == "roles" ? "agent" : field, :value => value, :invert => true}%><% end %>
+          <% freq = pair[1] %>     
+          <%= link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_facet', :field => field, :value => value}%>
+          <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => field, :value => value, :invert => true}%><% end %>
         </td>
         <td><img src="/images/pie_<%=(100 * freq).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * freq).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td>
       </tr>

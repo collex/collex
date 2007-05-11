@@ -15,6 +15,18 @@ class SearchController < ApplicationController
      @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
      @total_documents = @results["total_documents"]
      
+     # initially all unccategorized.  #to_facet_tree removes ones found in the category mappings
+     uncategorized_sites = @results["facets"]['archive'].clone  
+     @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'], uncategorized_sites)
+     
+     # Merge uncategorized facets under an "Uncategorized" child
+     uncategorized_tree = {:value => "Uncategorized", :children => [], :count => 0, :type => :category}
+     uncategorized_sites.each do |k,v|
+       uncategorized_tree[:children] << {:value => k, :children => [], :count => v, :type => :value}
+       uncategorized_tree[:count] += v
+     end
+     @sites_forest << uncategorized_tree
+     
      render :action => 'results'
    end
    
@@ -264,4 +276,6 @@ class SearchController < ApplicationController
      results
    end
    
+   def merge_categories_with_facets(categories, facets) # facets: {'rossetti' => 10}
+   end
 end

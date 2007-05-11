@@ -1,21 +1,24 @@
 class FacetCategory < ActiveRecord::Base
-  acts_as_tree
+  acts_as_tree  
   
-  attr_accessor :facet_count
+  def <<(sapling)
+    children << sapling
+  end
   
-  def to_facet_tree(facets)
+  def merge_facets(facets, uncategorized)
     # child is from the DB, kid is our home-grown tree
     kids = []
     children.each do |child|
-      facet_count = facets[child.name]
-      kids << {:children => child.to_facet_tree(facets), :name => child.name, :count => facet_count}
-      if !facet_count
-        kids.each do |kid|
-          kid[:count] = total(kid[:children])
-        end
-      else
-        # remove from uncategorized
-        # TODO
+      case child
+        when FacetValue  # Order matters: FacetValue is_a? FacetCategory, so trap that first
+          facet_count = facets[child.value]
+          kids << {:children => [], :value => child.value, :count => facet_count, :type => :value}
+          uncategorized.delete(child.value)
+        when FacetCategory
+          kids << {:children => child.merge_facets(facets,uncategorized), :value => child.value, :count => 0, :type => :category}
+          kids.each do |kid|
+            kid[:count] = total(kid[:children])
+          end
       end
     end
     

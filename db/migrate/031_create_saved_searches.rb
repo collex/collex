@@ -10,7 +10,7 @@ class CreateSavedSearches < ActiveRecord::Migration
       t.column :inverted, :boolean
       t.column :type, :string
       
-      # :field and :type are used differently, based on the :type
+      # :field and :value are used differently, based on the :type
       t.column :field, :string
       t.column :value, :string
     end
