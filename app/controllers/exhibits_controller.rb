@@ -40,15 +40,15 @@ class ExhibitsController < ExhibitsBaseController
   def edit
     # @exhibit retrieved in authorize_owner
     @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
+    @licenses = License.find(:all)
   end
 
   def create
     @exhibit = Exhibit.new(params[:exhibit])
-
     respond_to do |format|
       if @exhibit.save
         flash[:notice] = 'Exhibit was successfully created.'
-        format.html { redirect_to edit_exhibit_url(@exhibit) }
+        format.html { redirect_to edit_exhibit_url(:id => @exhibit) }
         format.xml  { head :created, :location => exhibit_url(@exhibit) }
       else
         format.html do
@@ -77,14 +77,14 @@ class ExhibitsController < ExhibitsBaseController
       end
     end
     respond_to do |format|
+      page = params[:page] || 1
       if @exhibit.update_attributes(params[:exhibit])
         flash[:notice] = 'Exhibit was successfully updated.'
         format.html do
           unless er.blank?
-            page = params[:page] || 1
             redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er), :page => page)
           else
-            redirect_to edit_exhibit_url(@exhibit)
+            redirect_to edit_exhibit_url(:id => @exhibit, :page => page)
           end
         end
         format.xml  { head :ok }
