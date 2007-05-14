@@ -2,9 +2,18 @@ class ExhibitsController < ExhibitsBaseController
   layout "nines"
   prepend_before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy]
   before_filter :authorize_owner, :only => [:edit, :update, :destroy]
-  
+
+  if ENV['RAILS_ENV'] == 'production'
+    before_filter :coming_soon
+  end  
+
   in_place_edit_for_resource :exhibit, :title
   in_place_edit_for_resource :exhibit, :annotation
+  
+  def coming_soon
+    render :template => "exhibits/coming_soon" and return
+  end
+  private :coming_soon
   
   def index
     @exhibits = Exhibit.find(:all)
