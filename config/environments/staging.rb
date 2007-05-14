@@ -31,7 +31,7 @@ config.action_view.debug_rjs                         = true
 # Disable delivery errors if you bad email addresses should just be ignored
 # config.action_mailer.raise_delivery_errors = false
 ActionMailer::Base.delivery_method = :smtp
-ActionMailer::Base.server_settings = { 
+ActionMailer::Base.smtp_settings = { 
    :address => "localhost", 
    :port => 25, 
    :domain => "nines.org", 
