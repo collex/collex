@@ -1,25 +1,3 @@
-<style type="text/css" media="screen">
-  #add_object_form {
-    position: fixed;
-    background-color: grey;
-    height: 200px;
-    width: 300px;
-    margin: 150px;
-    padding: 1em;
-    overflow: auto;
-    z-index:100;
-/*    display: none;*/
-  }
-</style>
-
-<%- form_for(@exhibit, :html => {:id => "add_object_form", :style => "display:none"}) do |f| -%>
-  <%= p "Select which section to add this object and the submit the form." %>
-  <%= hidden_field_tag "new_resource", "" %>
-  <%= hidden_field_tag "exhibited_section_id", "" %>
-  <%= hidden_field_tag "page", @exhibited_sections.page %>
-<%- end -%>
-
-
 <% div :id => "exhibit-body", :class => "edit" do %>
 
   <% div :id => "exhibit-menu", :class => "edit" do %>
@@ -34,9 +12,10 @@
   <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
   <%= p "page #{@exhibited_sections.page}" %>
   <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
-  <%- form_for(@exhibit, :html => {:id => "exhibitForm"}) do |f| -%>
+  <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
     <%= hidden_field_tag "new_resource", "" %>
-    <%= hidden_field_tag "section_id", "" %>
+    <%= hidden_field_tag "exhibited_section_id", "" %>
+    <%= hidden_field_tag "page", @exhibited_sections.page %>
     <%= h3 @exhibit.user.fullname %>
     <%= p @exhibit.license.description %>
   <%- end -%>  
