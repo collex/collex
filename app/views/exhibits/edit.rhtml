@@ -17,7 +17,6 @@
     <%= hidden_field_tag "exhibited_section_id", "" %>
     <%= hidden_field_tag "page", @exhibited_sections.page %>
     <%= h3 @exhibit.user.fullname %>
-    <%= p @exhibit.license.description %>
     <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
   <%- end -%>  
 
