@@ -4,6 +4,9 @@ require 'exhibits_controller'
 # Re-raise errors caught by the controller.
 class ExhibitsController; def rescue_action(e) raise e end; end
 
+#TODO need test coverage of edit/update and Paging
+
+
 # NOTE this test relies on FormTestHelper plugin:
 # http://form-test-helper.googlecode.com/svn/form_test_helper
 class ExhibitsControllerTest < Test::Unit::TestCase
