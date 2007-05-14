@@ -16,7 +16,7 @@ class SearchController < ApplicationController
      @total_documents = @results["total_documents"]
      
      # initially all unccategorized.  #to_facet_tree removes ones found in the category mappings
-     uncategorized_sites = @results["facets"]['archive'].clone  
+     uncategorized_sites = @results['facets']['archive'].clone  
      @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'], uncategorized_sites)
      
      # Merge uncategorized facets under an "Uncategorized" child

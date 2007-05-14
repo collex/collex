@@ -1,29 +1,184 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-archive:
+r_1: 
+  type: FacetTree
   id: 1
   value: archive
-  type: FacetTree
-libraries:
+  parent_id: 
+r_2: 
+  type: 
   id: 2
-  parent_id: 1
   value: Libraries
-journals:
+  parent_id: 1
+ 
+r_3: 
+  type: 
   id: 3
-  parent_id: 1
   value: Journals
-presses:
+  parent_id: 1
+ 
+r_4: 
+  type: 
   id: 4
-  parent_id: 1
   value: Presses
-projects:
-  id: 5
   parent_id: 1
+ 
+r_5: 
+  type: 
+  id: 5
   value: Projects
-rossetti:
-  id: 6
-  parent_id: 5
-  value: rossetti
+  parent_id: 1
+ 
+r_6: 
   type: FacetValue
-
-
-
+  id: 6
+  value: rossetti
+  parent_id: 5
+ 
+r_7: 
+  type: FacetValue
+  id: 7
+  value: uva_library
+  parent_id: 2
+ 
+r_8: 
+  type: FacetValue
+  id: 8
+  value: victbib
+  parent_id: 3
+ 
+r_9: 
+  type: FacetValue
+  id: 9
+  value: ron
+  parent_id: 3
+ 
+r_10: 
+  type: FacetValue
+  id: 10
+  value: JSTOR
+  parent_id: 3
+ 
+r_11: 
+  type: 
+  id: 11
+  value: University of Virginia Press
+  parent_id: 4
+ 
+r_12: 
+  type: FacetValue
+  id: 12
+  value: UVaPress_VLCS
+  parent_id: 11
+ 
+r_13: 
+  type: 
+  id: 13
+  value: Rotunda Imprint, University of Virginia
+  parent_id: 4
+ 
+r_14: 
+  type: FacetValue
+  id: 14
+  value: rotunda_arnold
+  parent_id: 13
+ 
+r_15: 
+  type: FacetValue
+  id: 15
+  value: rotunda_c-rosetti
+  parent_id: 13
+ 
+r_16: 
+  type: FacetValue
+  id: 16
+  value: poetess
+  parent_id: 5
+ 
+r_17: 
+  type: FacetValue
+  id: 17
+  value: swinburne
+  parent_id: 5
+ 
+r_18: 
+  type: FacetValue
+  id: 18
+  value: bierce
+  parent_id: 5
+ 
+r_19: 
+  type: FacetValue
+  id: 19
+  value: bwrp
+  parent_id: 5
+ 
+r_20: 
+  type: FacetValue
+  id: 20
+  value: chesnutt
+  parent_id: 5
+ 
+r_21: 
+  type: FacetValue
+  id: 21
+  value: cbw
+  parent_id: 5
+ 
+r_22: 
+  type: FacetValue
+  id: 22
+  value: dickinson
+  parent_id: 5
+ 
+r_23: 
+  type: FacetValue
+  id: 23
+  value: blake
+  parent_id: 5
+ 
+r_24: 
+  type: FacetValue
+  id: 24
+  value: cather
+  parent_id: 5
+ 
+r_25: 
+  type: 
+  id: 25
+  value: Whitman Archive
+  parent_id: 5
+ 
+r_26: 
+  type: FacetValue
+  id: 26
+  value: whitbib
+  parent_id: 25
+ 
+r_27: 
+  type: FacetValue
+  id: 27
+  value: whitman
+  parent_id: 25
+ 
+r_28: 
+  type: 
+  id: 28
+  value: Romantic Circles
+  parent_id: 5
+ 
+r_29: 
+  type: FacetValue
+  id: 29
+  value: rc
+  parent_id: 28
+ 
+r_30: 
+  type: FacetValue
+  id: 30
+  value: rc-editions
+  parent_id: 28
+ 
+r_31: 
+  type: FacetValue
+  id: 31
+  value: rc-resources
+  parent_id: 28
