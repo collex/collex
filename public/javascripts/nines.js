@@ -22,6 +22,21 @@ function popUp(URL) {
   eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
 }
 
+function validateCollector()
+{
+  if (document.forms['collectform'].collector_tag.value == '')
+  {
+    Effect.Appear('collect-status', { duration: 1.0 });
+    return false;
+  }
+  else
+  {
+    Effect.Fade('collect-status', { duration: 0.0 });
+    Effect.Appear('collected', { duration: 0.25 });
+    document.forms['collectform'].onsubmit();
+  }
+}
+
 /** Note: methods below are needed to overcome a bug in Firefox.  An explanation
  *        is at:
  *         
