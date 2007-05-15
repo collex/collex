@@ -27,23 +27,6 @@
 		</div>
 	</div>
 
-<script>
-function validateCollector()
-{
-  if (document.forms['collectform'].collector_tag.value == '')
-  {
-    Effect.Appear('collect-status', { duration: 1.0 });
-    return false;
-  }
-  else
-  {
-    Effect.Fade('collect-status', { duration: 0.0 });
-    Effect.Appear('collected', { duration: 0.25 });
-    document.forms['collectform'].onsubmit();
-  }
-}
-</script>
-	
 	<div id="mainContent">
 		<div id="collectformarea" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;"> 
 		  <span style="clear:both;float:right;"><%= link_to_function '&#x2715;', 'Effect.Fade("collectformarea", { duration: 0.0 })'%> &nbsp;</span>
