@@ -22,12 +22,12 @@ function check_submit() {
 }
 </script>
 
-<% if flash[:notice] -%> 
-  <div id="notice"><%= flash[:notice] %></div> 
+<% if flash[:sidebar_notice] -%> 
+  <div id="notice"><%= flash[:sidebar_notice] %></div> 
 <% end -%> 
 
-<% if flash[:error] -%> 
-  <div id="error"><%= flash[:error] %></div> 
+<% if flash[:sidbar_error] -%> 
+  <div id="error"><%= flash[:sidbar_error] %></div> 
 <% end -%> 
 
 <div class="account">

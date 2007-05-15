@@ -22,7 +22,7 @@ class LoginController < ApplicationController
         flash[:refresh_page] = true
         redirect_to(jumpto)
       else 
-        flash[:notice] = "Invalid user/password combination" 
+        flash[:sidebar_notice] = "Invalid user/password combination" 
       end 
     end
     
@@ -40,19 +40,19 @@ class LoginController < ApplicationController
     if params[:password]
       begin
         if params[:email] !~ /\@/
-          flash.now[:error] = "An e-mail address is required"
+          flash.now[:sidebar_error] = "An e-mail address is required"
           return
         end
         if params[:password] == params[:password2]
           session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:fullname], params[:email])
-          flash.now[:message] = "Profile updated"
+          flash.now[:sidebar_message] = "Profile updated"
           render_component(session[:sidebar_state] ? {:controller => "sidebar", :action => session[:sidebar_state][:action], :params => session[:sidebar_state][:params]}: {:controller => 'sidebar', :action => 'cloud', :params => {:user => session[:user][:username], :type => "genre"}})
           return
         else
-          flash.now[:error] = "Passwords do not match"
+          flash.now[:sidebar_error] = "Passwords do not match"
         end
       rescue UsernameAlreadyExistsException => e
-        flash.now[:error] = e.message
+        flash.now[:sidebar_error] = e.message
       end
     end
      
@@ -69,18 +69,18 @@ class LoginController < ApplicationController
   def signup
     if params[:username]
       if params[:username] !~ /^\w*$/
-        flash.now[:error] = "Invalid username, please use only alphanumeric characters and no spaces"
+        flash.now[:sidebar_error] = "Invalid username, please use only alphanumeric characters and no spaces"
         return
       end
       
       if params[:email] !~ /\@/
-        flash.now[:error] = "An e-mail address is required"
+        flash.now[:sidebar_error] = "An e-mail address is required"
         return
       end
       
       begin
         if params[:password].strip == ""
-          flash.now[:error] = "Password must not be blank"
+          flash.now[:sidebar_error] = "Password must not be blank"
           return
         end
         if params[:password] == params[:password2]
@@ -88,10 +88,10 @@ class LoginController < ApplicationController
           flash[:refresh_page] = true
           redirect_to({:controller => "sidebar", :action => "cloud", :type => "genre"})
         else
-          flash.now[:error] = "Passwords do not match"
+          flash.now[:sidebar_error] = "Passwords do not match"
         end
       rescue UsernameAlreadyExistsException => e
-        flash.now[:error] = e.message
+        flash.now[:sidebar_error] = e.message
       end
     end
      

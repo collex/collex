@@ -77,7 +77,7 @@ class SidebarController < ApplicationController
 #     @object, @mlt, @collection_info = COLLEX_MANAGER.object_detail(params[:objid], user ? user[:username] : nil)
     @object = SolrResource.find_by_uri(params[:objid], {:user => (user ? user[:username] : nil)})
     if @object.nil?
-      flash.now[:error] = "No object with that object ID could be found."
+      flash.now[:sidebar_error] = "No object with that object ID could be found."
       session[:sidebar_state] = nil
       logger.info("BAD PERMALINK objid: #{params[:objid]}")
       redirect_to :controller => "sidebar", :action => "cloud" and return 
