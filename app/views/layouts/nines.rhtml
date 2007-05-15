@@ -65,8 +65,13 @@
   		  <div class="pagination">
       		<div id="navcontainer2">
       			<ul id="navlist2">
+      			<%- if request.path =~ /collex/ -%>
       				<li class="active"><a id="current" title="header=[you are here] body=[locate, collect, and annotate digital resources] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">RESEARCH</a></li>
       				<li><%= link_to "CONTRIBUTE", exhibits_path, :title => "header=[contribute] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" %></li>
+    				<%- elsif request.path =~ /exhibits/ -%>
+        			<li><%= link_to "RESEARCH", {:controller => "search"}, :title => "header=[research] body=[locate, collect, and annotate digital resources]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" %></li>
+        			<li class="active"><a id="current" title="header=[you are here] body=[search &amp; browse user-created content, or create and publish your own online exhibits] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">CONTRIBUTE</a></li>
+    				<%- end -%>
       			</ul>
       		</div>  
       		<br class="clearboth" />
