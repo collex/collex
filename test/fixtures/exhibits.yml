@@ -6,6 +6,8 @@ dang:
   user_id: 21
   exhibit_type_id: 2
   annotation: My new exhibit annotation
+  shared: false
+  published: false
 martian: 
   title: Martian Chronicles
   id: 2
@@ -13,6 +15,8 @@ martian:
   user_id: 21
   exhibit_type_id: 2
   annotation: The Exhibit notes for Martian Chronicles. What a cool exhibit this will be.
+  shared: false
+  published: false
 foo: 
   title: Foo Exhibit
   id: 3
@@ -20,3 +24,5 @@ foo:
   user_id: 21
   exhibit_type_id: 2
   annotation: Some sort of note
+  shared: false
+  published: false
