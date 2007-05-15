@@ -70,33 +70,5 @@ class SolrResource < SolrBaseModel
     
     resource
   end
-  
-  def to_mla_citation
-    "#{self.mla_authors} <em>#{self.title}.</em> MORE TO BE ADDED LATER"
-  end
-  
-  def mla_authors
-    mla_names_for(self.role_AUTs)
-  end
-  
-  # This returns a list of names in the "Last, First." format.
-  # "First Last" and "Last, First" input are handled
-  # TODO handle "Jr", "II", "III", etc suffixes
-  def mla_names_for(name_list)
-    return "---." if name_list.size < 1
-    names = name_list.collect do |name|
-      if name.include?(", ") then name else n = name.split(" "); n.last + ", " + n[0..-2].join(" ") end
-    end
-    mla_names = case names.size
-    when 1
-      names[0]
-    when 2
-      names.join(" and ")
-    else
-      names[0..-2].join(", ") + ", and " + names.last
-    end
-    mla_names << "." unless mla_names[-1].chr == "."
-    mla_names
-  end
     
 end
