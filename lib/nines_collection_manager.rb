@@ -85,11 +85,8 @@ class NinesCollectionManager
     hash = Hash.new {|hash,key| hash[key] = key}
     hash["ART"] = "Artist"
     hash["AUT"] = "Author"
-    hash["CRE"] = "Creator"
     hash["EDT"] = "Editor"
-    hash["OWN"] = "Owner"
     hash["PBL"] = "Publisher"
-    hash["PHT"] = "Photographer"
     hash["TRL"] = "Translator"
     hash
   end
