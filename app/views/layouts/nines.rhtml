@@ -61,6 +61,16 @@
   		  <%= h3 flash[:notice], :class => "flash_notice" if flash[:notice] %> 
   		  <%= h3 flash[:warning], :class => "flash_warning" if flash[:warning] %> 
   		  <%= h3 flash[:error], :class => "flash_error" if flash[:error] %> 
+
+  		  <div class="pagination">
+      		<div id="navcontainer2">
+      			<ul id="navlist2">
+      				<li class="active"><a id="current" title="header=[you are here] body=[locate, collect, and annotate digital resources] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">RESEARCH</a></li>
+      				<li><a href="/exhibits" title="header=[contribute] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">CONTRIBUTE</a></li>
+      			</ul>
+      		</div>  <br class="clearboth" />
+      	</div>
+
         <%= yield %>
       </div>
     </div>
