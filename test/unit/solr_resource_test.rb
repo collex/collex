@@ -117,7 +117,7 @@ class SolrResourceTest < Test::Unit::TestCase
   
   def test_returns_proper_site_object_for_archive_code
     res = SolrResource.find_by_uri(URI)
-    assert_equal(Site.for_code('swinburne'), res.site)
+    assert_equal(Site.find_by_code('swinburne'), res.site)
   end
   
 end

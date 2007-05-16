@@ -22,7 +22,7 @@ class SolrResource < SolrBaseModel
   end
   
   def site
-    self.archive.blank? ? nil : Site.for_code(self.archive)
+    self.archive.blank? ? nil : Site.find_by_code(self.archive)
   end
   
   def initialize(*args)
