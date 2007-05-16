@@ -139,6 +139,6 @@ module ApplicationHelper
   end
   
   def site(code)
-    Site.for_code(code)
+    Site.find_by_code(code)
   end
 end
