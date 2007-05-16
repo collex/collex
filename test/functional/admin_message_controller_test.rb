@@ -35,11 +35,11 @@ class AdminMessageControllerTest < Test::Unit::TestCase
   end
 
   def test_site_exists
-    post :add_site, :code => 'rossetti', :description => "Thrown away description"
+    post :add_site, :code => 'rossetti', :description => "New description"
     assert_response :success
 
     site = Site.find_by_code('rossetti')
-    assert_equal "The Rossetti Archive", site.description
+    assert_equal "New description", site.description
   end
 
   def test_local_only_access

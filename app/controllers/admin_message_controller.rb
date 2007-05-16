@@ -2,17 +2,12 @@ class AdminMessageController < ApplicationController
   before_filter :allow_only_local
 
   def add_site
-    site = Site.find_by_code(params[:code])
-    if site
-      render :text => "SITE_ALREADY_EXISTS"
-    else
-      site = Site.new(:code => params[:code],
-                      :url => params[:url],
-                      :description => params[:description],
-                      :thumbnail => params[:thumbnail])
-      site.save!
-      render :text => "OK"
-    end
+    site = Site.find_or_create_by_code(params[:code])
+    site.url = params[:url]
+    site.description = params[:description]
+    site.thumbnail = params[:thumbnail]
+    site.save!
+    render :text => "OK"
   end
 
   private
