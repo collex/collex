@@ -31,5 +31,13 @@ class UserTest < Test::Unit::TestCase
     assert_equal([], user.role_names)
   end
   
+  def test_roles_available_as_boolean_attribute
+    assert_nothing_raised(NoMethodError, "admin? should respond true.") { @admin_user.admin? }
+    assert_nothing_raised(NoMethodError, "editor? should respond true.") { @editor_user.editor? }
+    
+    assert_raise(NoMethodError, "editor? should throw an NoMethodError on @admin_user") { @admin_user.editor? }
+    assert_raise(NoMethodError, "admin? should throw an NoMethodError on @admin_user") { @editor_user.admin? }
+  end
+  
   
 end
