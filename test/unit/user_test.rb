@@ -32,11 +32,15 @@ class UserTest < Test::Unit::TestCase
   end
   
   def test_roles_available_as_boolean_attribute
-    assert_nothing_raised(NoMethodError, "admin? should respond true.") { @admin_user.admin? }
-    assert_nothing_raised(NoMethodError, "editor? should respond true.") { @editor_user.editor? }
+    assert_nothing_raised(NoMethodError, "admin? should respond true.") { @admin_user.admin_role? }
+    assert_nothing_raised(NoMethodError, "editor? should respond true.") { @editor_user.editor_role? }
     
-    assert_raise(NoMethodError, "editor? should throw an NoMethodError on @admin_user") { @admin_user.editor? }
-    assert_raise(NoMethodError, "admin? should throw an NoMethodError on @admin_user") { @editor_user.admin? }
+    assert_nothing_raised(NoMethodError, "editor? should respond false.") { @admin_user.editor_role? }
+    assert_nothing_raised(NoMethodError, "admin? should respond false.") { @editor_user.admin_role? }
+    
+    # Make sure method_missing still throws errors on non _role? attributes that don't exist
+    assert_raise(NoMethodError, "admin? should throw an NoMethodError on @admin_user") { @admin_user.admin? }
+    assert_raise(NoMethodError, "editor? should throw an NoMethodError on @admin_user") { @editor_user.editor? }
   end
   
   
