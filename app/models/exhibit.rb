@@ -23,8 +23,13 @@ class Exhibit < ActiveRecord::Base
     self.shared  = true
   end
   
-  # when the value is +true+, just pass through.
-  # when the value is +false+, throw an error if the exhibit is published.
+  # Will throw an error if +published+ is true
+  def unshare!
+    self.shared = false
+  end
+  
+  # When the value is +true+, just pass through.
+  # When the value is +false+, throw an error if the exhibit is published.
   def shared=(value)
     case value
     when true
@@ -38,6 +43,10 @@ class Exhibit < ActiveRecord::Base
   def publish!
     self.published = true
   end
+  def unpublish!
+    self.published = false
+  end
+  
   # Will throw an error if value is +true+ when +shared+ is +false+.
   def published=(value)
     publishable? ? write_attribute(:published, value) : raise(Exception, ("Can not publish an unshared exhibit. You must share it first."))
