@@ -10,8 +10,8 @@ class User < ActiveRecord::Base
   
   # Added boolean convenience attribute for role names
   def method_missing(method, *args, &block)
-    if method.to_s =~ /\?$/ and role_names.include?(method.to_s.chop)
-      true
+    if method.to_s =~ /_role\?$/ 
+      role_names.include?(method.to_s.chop)
     else
       super
     end
