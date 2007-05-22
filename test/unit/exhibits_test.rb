@@ -56,8 +56,38 @@ class ExhibitsTest < Test::Unit::TestCase
   end
   
   def test_anyone_can_view_shared_exhibit
-    @exhibit.shared = true
+    @exhibit.share!
     assert(@exhibit.viewable_by?(User.new), "Anyone should be able to view a shared exhibit.")
+  end
+
+  def test_anyone_can_view_published_exibit
+    @exhibit.share!
+    @exhibit.publish!
+    assert(@exhibit.viewable_by?(User.new), "Anyone should be able to view a published exhibit.")
+  end
+  
+  # Sharing and Publishing
+  def test_unshared_cannot_be_published
+    @exhibit.shared = false
+    assert_raise(Exception) { @exhibit.published = true }
+    assert_raise(Exception) { @exhibit.publish! }
+  end
+  
+  def test_shared_can_be_published
+    @exhibit.shared = true
+    assert(@exhibit.publish!, "A shared exhibit should be publishable.")
+    assert(@exhibit.published = true, "A shared exhibit should be publishable.")
+  end
+  
+  def test_publshed_cannot_be_unshared
+    @exhibit.share!
+    @exhibit.publish!
+    assert_raise(Exception) { @exhibit.shared = false }
+  end
+  
+  def test_unpublished_can_be_unshared
+    @exhibit.share!
+    assert_nothing_raised(Exception, "Should be able to unshare unpublished exhibit.") { @exhibit.shared = false }
   end
 
 end
