@@ -7,4 +7,13 @@ class User < ActiveRecord::Base
   def role_names
     self.roles.collect { |role| role.name }
   end
+  
+  # Added boolean convenience attribute for role names
+  def method_missing(method, *args, &block)
+    if method.to_s =~ /\?$/ and role_names.include?(method.to_s.chop)
+      true
+    else
+      super
+    end
+  end
 end
