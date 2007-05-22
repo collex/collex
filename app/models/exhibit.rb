@@ -18,12 +18,32 @@ class Exhibit < ActiveRecord::Base
   def owner?(user)
     user.is_a?(Integer) ? self.user_id == user : self.user_id == user.id rescue false
   end
+  
+  def share!
+    self.shared  = true
+  end
+  
+  # when the value is +true+, just pass through.
+  # when the value is +false+, throw an error if the exhibit is published.
+  def shared=(value)
+    case value
+    when true
+      write_attribute(:shared, value)
+    when false
+      published? ? raise(Exception, ("Can not unshare a published exhibit.")) : write_attribute(:shared, value)
+    end
+  end
+  
+  # Will throw an error if is called when +shared+ is +false+.
+  def publish!
+    self.published = true
+  end
+  # Will throw an error if value is +true+ when +shared+ is +false+.
+  def published=(value)
+    publishable? ? write_attribute(:published, value) : raise(Exception, ("Can not publish an unshared exhibit. You must share it first."))
+  end
     
 # Permissions
-  def shared(value)
-    shared = value unless published?
-  end
-
   def publishable?
     shared?
   end
