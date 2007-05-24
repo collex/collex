@@ -24,7 +24,7 @@ class ConfigureFacetCategories < ActiveRecord::Migration
     
     rotunda = FacetCategory.new(:value => 'Rotunda Imprint, University of Virginia')
     rotunda << f('rotunda_arnold')
-    rotunda << f('rotunda_c-rosetti')
+    rotunda << f('rotunda_c-rossetti')
     presses << rotunda
     
     # Projects
