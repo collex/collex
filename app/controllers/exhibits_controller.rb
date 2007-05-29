@@ -1,7 +1,5 @@
 class ExhibitsController < ExhibitsBaseController
   layout "nines"
-  prepend_before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy]
-  before_filter :authorize_owner, :only => [:edit, :update, :destroy]
 
   if ENV['RAILS_ENV'] == 'production'
     before_filter :coming_soon
@@ -68,6 +66,39 @@ class ExhibitsController < ExhibitsBaseController
         format.xml  { render :xml => @exhibit.errors.to_xml }
       end
     end
+  end
+  
+  def share
+    if @exhibit.sharable_by?(user_or_guest)
+      @exhibit.share!
+      @exhibit.save!
+      flash[:notice] = "#{@exhibit.title} has been successfully shared."
+    else
+      flash[:error] = "You do not have persmission to share that exhibit."
+    end
+    redirect_to :action => "index"
+  end
+  
+  def unshare
+    if @exhibit.unsharable_by?(user_or_guest)
+      @exhibit.unshare!
+      @exhibit.save!
+      flash[:notice] = "#{@exhibit.title} has been successfully un-shared."
+    else
+      flash[:error] = "You do not have persmission to un-share that exhibit."
+    end
+    redirect_to :action => "index"
+  end
+
+  def publish
+    if @exhibit.publishable_by?(user_or_guest)
+      @exhibit.publish!
+      @exhibit.save!
+      flash[:notice] = "#{@exhibit.title} has been successfully published."
+    else
+      flash[:error] = "You do not have persmission to publish that exhibit."
+    end
+    redirect_to :action => "index"
   end
   
   def update
