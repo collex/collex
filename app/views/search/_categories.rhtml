@@ -1,20 +1,31 @@
 <% if categories.size > 0 %>
-  <ul>
-    <% categories.each do |category| %>
+    <% categories.sort{|x,y| y[:count] <=> x[:count]}.each do |category| %>
       <% if category[:count] > 0 %>
-        <li>
+        <tr id="siteslist">
+          <th align="left"><%if !labeled %>sites:<%end
+            labeled = true%></th>
           <% if category[:type] == :value %>
+            <td style="padding-left: <%=depth %>em;">
             <%= site(category[:value]) ? site(category[:value])['description'] : category[:value] %>
+            </td>
+            <td align="center" nowrap="true">
             <%= link_to "+ #{nbpluralize(category[:count], 'item')}", {:controller=>"search", :action => 'add_facet', :field => 'archive', :value => category[:value]}%>
             or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => 'archive', :value => category[:value], :invert => true}%>
-            <img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/>
+            </td>
+            <td><img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td>
           <% else # its a category %>
-            <%= category[:value]%>
-            <%=nbpluralize(category[:count], 'item')%>
-            <%= render :partial => 'categories', :locals => {:categories => category[:children], :max => max} %>
+            <td style="padding-left: <%=depth %>em; color: #666;">
+              <%= category[:value]%>
+            </td>
+            <td align="center" nowrap="true" style="color: #666;">
+              <%=nbpluralize(category[:count], 'item')%>
+            </td>
+            <td>&nbsp;</td>
           <% end %>
-        </li>
+        </tr>
+        <%= render :partial => 'categories', :locals => {:categories => category[:children], :max => max, :depth => depth + 1, :labeled => true} %>
       <% end %>
     <% end %>
-  </ul>
 <% end %>
+
+
