@@ -90,4 +90,10 @@ class ExhibitsTest < Test::Unit::TestCase
     assert_nothing_raised(Exception, "Should be able to unshare unpublished exhibit.") { @exhibit.shared = false }
   end
 
+  def test_published_is_not_deletable
+    @exhibit.share!
+    assert(@exhibit.deletable?, "A shared exhibit should be deletable.")
+    @exhibit.publish!
+    assert(!@exhibit.deletable?, "A published exhibit should not be deletable.")
+  end
 end
