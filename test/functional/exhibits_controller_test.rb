@@ -19,6 +19,7 @@ class ExhibitsControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     @exhibit = exhibits(:dang)
     @owner = users(:exhibit_owner)
+    @viewer = users(:exhibit_viewer)
     @request.session[:user] = {:username => @owner.username}
   end
 
@@ -94,46 +95,56 @@ class ExhibitsControllerTest < Test::Unit::TestCase
     assert_redirected_to(exhibits_path)
     assert_not_nil(flash[:warning])
   end
-
-#   def test_should_get_index
-#     get :index
-#     assert_response :success
-#     assert assigns(:exhibits)
-#   end
-# 
-#   def test_should_get_new
-#     get :new
-#     assert_response :success
-#   end
-#   
-#   def test_should_create_exhibit
-#     old_count = Exhibit.count
-#     post :create, :exhibit => { }
-#     assert_equal old_count+1, Exhibit.count
-#     
-#     assert_redirected_to exhibit_path(assigns(:exhibit))
-#   end
-# 
-#   def test_should_show_exhibit
-#     get :show, :id => 1
-#     assert_response :success
-#   end
-# 
-#   def test_should_get_edit
-#     get :edit, :id => 1
-#     assert_response :success
-#   end
-#   
-#   def test_should_update_exhibit
-#     put :update, :id => 1, :exhibit => { }
-#     assert_redirected_to exhibit_path(assigns(:exhibit))
-#   end
-#   
-#   def test_should_destroy_exhibit
-#     old_count = Exhibit.count
-#     delete :destroy, :id => 1
-#     assert_equal old_count-1, Exhibit.count
-#     
-#     assert_redirected_to exhibits_path
-#   end
+  
+  def test_can_share_exhibit
+    post(:share, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(exhibit.shared?, "Exhibit should be shared.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+  end
+  
+  def test_can_unshare_exhibit
+    @exhibit.share!
+    assert(@exhibit.save)
+    post(:unshare, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(!exhibit.shared?, "Exhibit should be unshared.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+  end
+  
+  def test_can_publish_exhibit
+    @exhibit.share!
+    assert(@exhibit.save)
+    post(:publish, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(exhibit.published?, "Exhibit should be published.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+  end
+  
+  def test_non_owner_and_non_admin_cannot_share_unshare_or_publish
+    @request.session[:user] = {:username => @viewer.username}
+    post(:share, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(!exhibit.shared?, "Exhibit should not have been shared.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+    
+    @exhibit.share!
+    @exhibit.save!
+    post(:unshare, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(exhibit.shared?, "Exhibit should not have been unshared.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+    
+    
+    post(:publish, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(!exhibit.published?, "Exhibit should not have been published.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+  end
 end
