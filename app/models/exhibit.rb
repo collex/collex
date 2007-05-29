@@ -66,7 +66,7 @@ class Exhibit < ActiveRecord::Base
   end
 
   def viewable_by?(viewer)
-    shared? or viewer == user or viewer.admin_role?
+    shared? or updatable_by?(viewer)
   end
 
   def updatable_by?(editor)
@@ -74,7 +74,7 @@ class Exhibit < ActiveRecord::Base
   end
 
   def deletable_by?(deleter)
-    deletable? and (deleter == user or deleter.admin_role?)
+    deletable? and updatable_by?(deleter)
   end
 
   def creatable_by?(creator)
@@ -82,10 +82,14 @@ class Exhibit < ActiveRecord::Base
   end
   
   def sharable_by?(sharer)
-    sharable? and (sharer == user or sharer.admin_role?)
+    sharable? and updatable_by?(sharer)
+  end
+  
+  def unsharable_by?(sharer)
+    !published? and shared? and updatable_by?(sharer)
   end
   
   def publishable_by?(publisher)
-    publishable? and (publisher == user or publisher.admin_role?)
+    publishable? and updatable_by?(publisher)
   end
 end
