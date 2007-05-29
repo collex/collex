@@ -1,6 +1,6 @@
 class ExhibitsBaseController < ApplicationController
-  prepend_before_filter :authorize, :except => [:index]
-  before_filter :authorize_owner, :except => [:create, :new, :index]
+  prepend_before_filter :authorize, :except => [:index, :show]
+  before_filter :authorize_owner, :except => [:create, :new, :index, :show]
   
   private
     def authorize_owner
