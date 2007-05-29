@@ -74,7 +74,7 @@ class Exhibit < ActiveRecord::Base
   end
 
   def creatable_by?(creator)
-    !creator.guest?
+    !creator.guest_role?
   end  
   
 end
