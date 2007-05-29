@@ -5,11 +5,13 @@
   </tr>
   
 <% for exhibit in @exhibits %>
-  <tr>
+  <% if exhibit.viewable_by?(user_or_guest) then tr do %>
     <%= td link_to(exhibit.title, exhibit_path(exhibit)) %>
-    <%= td link_to('Edit', edit_exhibit_path(exhibit)) if exhibit.owner?(user) %>
-    <%= td link_to('Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete) if exhibit.owner?(user) %>
-  </tr>
+    <%= td link_to('Edit', edit_exhibit_path(exhibit)) if exhibit.updatable_by?(user_or_guest) %>
+    <%= td link_to('Share', share_exhibit_path(exhibit)) if exhibit.sharable_by?(user_or_guest) %>
+    <%= td link_to('Publish', publish_exhibit_path(exhibit), :confirm => 'Are you sure you want to publish? Once published, it can not be edited or deleted.') if exhibit.publishable_by?(user_or_guest) %>
+    <%= td link_to('Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete) if exhibit.deletable_by?(user_or_guest) %>
+  <% end end %>
 <% end %>
 </table>
 
