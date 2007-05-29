@@ -75,6 +75,9 @@ class Exhibit < ActiveRecord::Base
 
   def creatable_by?(creator)
     !creator.guest_role?
-  end  
+  end
   
+  def publishable_by?(publisher)
+    publishable? and (publisher == user or publisher.admin_role?)
+  end
 end
