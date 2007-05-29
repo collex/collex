@@ -50,6 +50,13 @@ class ExhibitsTest < Test::Unit::TestCase
     assert(@exhibit.updatable_by?(@admin), "Admin should be able to update exhibit.")
   end
   
+  def test_no_one_can_update_a_published_exhibit
+    @exhibit.share!
+    @exhibit.publish!
+    assert(!@exhibit.updatable_by?(@owner), "The owner should not be able to edit a published exhibit.")
+    assert(!@exhibit.updatable_by?(@admin), "The admin user should not be able to edit a published exhibit.")
+  end
+  
   def test_non_owner_can_not_update_exhibit
     assert(!@exhibit.updatable_by?(User.new), "Non-owner should not be able to update exhibit.")
   end
