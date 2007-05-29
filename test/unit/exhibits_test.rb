@@ -117,7 +117,7 @@ class ExhibitsTest < Test::Unit::TestCase
   
   def test_unpublished_can_be_unshared
     @exhibit.share!
-    assert_nothing_raised(Exception, "Should be able to unshare unpublished exhibit.") { @exhibit.shared = false }
+    assert_nothing_raised(Exception, "Should be able to unshare unpublished exhibit.") { @exhibit.unshare! }
   end
 
   def test_published_is_not_deletable
