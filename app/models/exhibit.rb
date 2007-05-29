@@ -70,7 +70,7 @@ class Exhibit < ActiveRecord::Base
   end
 
   def deletable_by?(deleter)
-    deleter == user or deleter.admin_role?
+    deletable? and (deleter == user or deleter.admin_role?)
   end
 
   def creatable_by?(creator)
