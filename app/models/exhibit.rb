@@ -77,6 +77,10 @@ class Exhibit < ActiveRecord::Base
     !creator.guest_role?
   end
   
+  def sharable_by?(sharer)
+    !published? and (sharer == user or sharer.admin_role?)
+  end
+  
   def publishable_by?(publisher)
     publishable? and (publisher == user or publisher.admin_role?)
   end
