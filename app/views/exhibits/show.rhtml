@@ -1,7 +1,7 @@
 <% div :id => "exhibit-body" do %>
   <% div :id => "exhibit-menu" do ul do %>
     <%= li paginating_links(@exhibited_sections) %>
-    <%= li link_to 'Edit', edit_exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) %> 
+    <%= li link_to 'Edit', edit_exhibit_path(:id => @exhibit, :page => @exhibited_sections.page) if @exhibit.updatable_by?(user_or_guest) %> 
   <% end end %>
 
   <%= h2 @exhibit.title %>
