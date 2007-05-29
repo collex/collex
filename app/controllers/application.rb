@@ -69,6 +69,10 @@ class ApplicationController < ActionController::Base
       my_username ? User.find_by_username(my_username) : nil
     end
     
+    def user_or_guest
+      user || Guest.new
+    end
+    
     def self.in_place_edit_for_resource(object, attribute, options = {})
       define_method("update_#{attribute}") do
         @item = object.to_s.camelize.constantize.find(params[:id])
