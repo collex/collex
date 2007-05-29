@@ -96,6 +96,23 @@ class ExhibitsTest < Test::Unit::TestCase
     @exhibit.publishable_by?(@admin)
   end
   
+  def test_owner_and_admin_can_share_exhibit
+    assert(@exhibit.sharable_by?(@owner), "Owner should be able to share the exhibit.")
+    assert(@exhibit.sharable_by?(@admin), "Admin should be able to share the exhibit.")
+  end
+  
+  def test_others_cannot_share_exhibit
+    assert(!@exhibit.sharable_by?(User.new), "Others should not be able to share the exhibit.")
+    assert(!@exhibit.sharable_by?(Guest.new), "Guest should not be able to share the exhibit.")
+  end
+  
+  def test_published_is_not_sharable_by_anyone
+    @exhibit.share!
+    @exhibit.publish!
+    assert(!@exhibit.sharable_by?(@owner), "Owner should not be able to share a published exhibit.")
+    assert(!@exhibit.sharable_by?(@admin), "Admin should not be able to share a published exhibit.")
+  end
+  
   # Sharing and Publishing
   def test_unshared_cannot_be_published
     @exhibit.shared = false
