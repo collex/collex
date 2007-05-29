@@ -1,6 +1,4 @@
 class ExhibitedResourcesController < ExhibitsBaseController
-  prepend_before_filter :authorize, :only => [:create, :new, :edit, :update, :destroy, :move_higher, :move_lower, :move_to_top, :move_to_bottom]
-  before_filter :authorize_owner, :only => [:edit, :update, :destroy, :move_higher, :move_lower, :move_to_top, :move_to_bottom]
   
   in_place_edit_for_resource :exhibited_resource, :annotation
 

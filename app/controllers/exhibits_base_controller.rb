@@ -1,5 +1,7 @@
 class ExhibitsBaseController < ApplicationController
-
+  prepend_before_filter :authorize, :except => [:index]
+  before_filter :authorize_owner, :except => [:create, :new, :index]
+  
   private
     def authorize_owner
       id = params[:exhibit_id] || params[:id]
