@@ -58,15 +58,15 @@ class Exhibit < ActiveRecord::Base
   end
 
   def viewable_by?(viewer)
-    shared? or viewer == user
+    shared? or viewer == user or viewer.admin_role?
   end
 
   def updatable_by?(editor)
-    editor == user
+    editor == user or editor.admin_role?
   end
 
   def deletable_by?(deleter)
-    deleter == user
+    deleter == user or deleter.admin_role?
   end
 
   def creatable_by?(creator)
