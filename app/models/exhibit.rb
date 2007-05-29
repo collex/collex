@@ -56,6 +56,10 @@ class Exhibit < ActiveRecord::Base
   def publishable?
     shared?
   end
+  
+  def deletable?
+    !published?
+  end
 
   def viewable_by?(viewer)
     shared? or viewer == user or viewer.admin_role?
