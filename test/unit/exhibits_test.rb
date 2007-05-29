@@ -143,4 +143,12 @@ class ExhibitsTest < Test::Unit::TestCase
     @exhibit.publish!
     assert(!@exhibit.deletable?, "A published exhibit should not be deletable.")
   end
+  
+  def test_published_is_not_sharable
+    assert(@exhibit.sharable?, "Exhibit should be sharable.")
+    @exhibit.share!
+    assert(!@exhibit.sharable?, "Exhibit is already shared, so it shouldn't be sharable.")
+    @exhibit.publish!
+    assert(!@exhibit.sharable?, "Exhibit is already published, so it shouldn't be sharable.")
+  end
 end
