@@ -24,6 +24,7 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :add_resource      => :post, 
                              :update_title      => :post, 
                              :share             => :post, 
+                             :unshare           => :post, 
                              :publish           => :post, 
                              :update_annotation => :post } do |exhibit|
     exhibit.resources :exhibited_sections, 
