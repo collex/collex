@@ -1,7 +1,12 @@
+<%
+  labeled ||= false
+  depth ||= 0
+  path ||= []
+-%>
 <% if categories.size > 0 %>
     <% categories.sort{|x,y| y[:count] <=> x[:count]}.each do |category| %>
       <% if category[:count] > 0 %>
-        <tr id="siteslist">
+        <tr class="<%= path.join(' ')%>">
           <th align="left"><%if !labeled %>sites:<%end
             labeled = true%></th>
           <% if category[:type] == :value %>
@@ -13,9 +18,9 @@
             or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => 'archive', :value => category[:value], :invert => true}%>
             </td>
             <td><img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td>
-          <% else # its a category %>
+          <% else # its a category -%>
             <td style="padding-left: <%=depth %>em; color: #666;">
-              <%= category[:value]%>
+              <%= category[:value]%> <%=link_to_function('_', "toggleClass('cat_#{category[:id]}')")%>
             </td>
             <td align="center" nowrap="true" style="color: #666;">
               <%=nbpluralize(category[:count], 'item')%>
@@ -23,7 +28,7 @@
             <td>&nbsp;</td>
           <% end %>
         </tr>
-        <%= render :partial => 'categories', :locals => {:categories => category[:children], :max => max, :depth => depth + 1, :labeled => true} %>
+        <%= render :partial => 'categories', :locals => {:categories => category[:children], :max => max, :depth => depth + 1, :labeled => true, :path => path + ["cat_#{category[:id]}"]} %>
       <% end %>
     <% end %>
 <% end %>

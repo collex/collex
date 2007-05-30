@@ -16,6 +16,14 @@ function toggleIt(element) {
     if (tr == null || tr.className != className) break;
   }
 }
+
+function toggleClass(clazz) {
+	elems = document.getElementsByClassName(clazz)
+//	alert(clazz + " = " + elems);
+	for (var i=0; i < elems.length; i++) {  // TODO: replace with clever iterator
+		Element.toggle(elems[i]);
+	}
+}
 function popUp(URL) {
   day = new Date();
   id = day.getTime();

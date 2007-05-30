@@ -12,10 +12,10 @@ class FacetCategory < ActiveRecord::Base
       case child
         when FacetValue  # Order matters: FacetValue is_a? FacetCategory, so trap that first
           facet_count = facets[child.value] || 0
-          kids << {:children => [], :value => child.value, :count => facet_count, :type => :value}
+          kids << {:children => [], :value => child.value, :count => facet_count, :type => :value, :id => child.id}
           uncategorized.delete(child.value)
         when FacetCategory
-          category = {:children => child.merge_facets(facets,uncategorized), :value => child.value, :count => 0, :type => :category}
+          category = {:children => child.merge_facets(facets,uncategorized), :value => child.value, :count => 0, :type => :category, :id => child.id}
           kids << category
           category[:count] = total(category[:children])
       end

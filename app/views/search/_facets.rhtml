@@ -37,7 +37,7 @@
 				  <td>&nbsp;</td>
                </tr>
 
-           <%= render :partial => 'categories', :locals => {:categories => @sites_forest, :max => max, :depth => 0, :labeled => false } %>
+    <%= render :partial => 'categories', :locals => {:categories => @sites_forest, :max => max } %>
 
     <%  
         facets = ["genre"]        
