@@ -6,7 +6,7 @@
 <% if categories.size > 0 %>
     <% categories.sort{|x,y| y[:count] <=> x[:count]}.each do |category| %>
       <% if category[:count] > 0 %>
-        <tr class="<%= path.join(' ')%>">
+        <tr <% if !path.empty? %> class="<%= path.join(' ')%>" style="display:none;"<% end %>>
           <th align="left"><%if !labeled %>sites:<%end
             labeled = true%></th>
           <% if category[:type] == :value %>
@@ -20,7 +20,7 @@
             <td><img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td>
           <% else # its a category -%>
             <td style="padding-left: <%=depth %>em; color: #666;">
-              <%= category[:value]%> <%=link_to_function('_', "toggleClass('cat_#{category[:id]}')")%>
+              <%=link_to_function(category[:value], "toggleClass('cat_#{category[:id]}')")%>
             </td>
             <td align="center" nowrap="true" style="color: #666;">
               <%=nbpluralize(category[:count], 'item')%>
