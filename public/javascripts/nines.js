@@ -18,10 +18,15 @@ function toggleIt(element) {
 }
 
 function toggleClass(clazz) {
-	elems = document.getElementsByClassName(clazz)
+	elems = document.getElementsByClassName(clazz);
+	hidden = elems[0].hasClassName("noshow");
 //	alert(clazz + " = " + elems);
 	for (var i=0; i < elems.length; i++) {  // TODO: replace with clever iterator
-		Element.toggle(elems[i]);
+		if (hidden) {
+			Element.removeClassName(elems[i], "noshow");
+		} else {
+			Element.addClassName(elems[i], "noshow");
+		}
 	}
 }
 function popUp(URL) {

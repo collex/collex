@@ -6,7 +6,7 @@
 <% if categories.size > 0 %>
     <% categories.sort{|x,y| y[:count] <=> x[:count]}.each do |category| %>
       <% if category[:count] > 0 %>
-        <tr <% if !path.empty? %> class="<%= path.join(' ')%>" style="display:none;"<% end %>>
+        <tr <% if !path.empty? %> class="<%= path.join(' ')%> noshow"<% end %>>
           <th align="left"><%if !labeled %>sites:<%end
             labeled = true%></th>
           <% if category[:type] == :value %>
