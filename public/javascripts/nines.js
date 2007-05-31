@@ -17,17 +17,26 @@ function toggleIt(element) {
   }
 }
 
-function toggleClass(clazz) {
-	elems = document.getElementsByClassName(clazz);
-	hidden = elems[0].hasClassName("noshow");
-//	alert(clazz + " = " + elems);
+function toggleCategory(category_id) {
+	elems = document.getElementsByClassName("cat_" + category_id + "_child");
+	currently_hidden = elems[0].hasClassName("noshow");
+	if (!currently_hidden) { // if hiding, hide the whole tree
+		elems = document.getElementsByClassName("cat_" + category_id);
+	}
+	Element.toggle("cat_" + category_id + "_opened");
+	Element.toggle("cat_" + category_id + "_closed");
 	for (var i=0; i < elems.length; i++) {  // TODO: replace with clever iterator
-		if (hidden) {
+		if (currently_hidden) {
 			Element.removeClassName(elems[i], "noshow");
 		} else {
 			Element.addClassName(elems[i], "noshow");
+			if ($(elems[i].id + "_opened")) {Element.hide(elems[i].id + "_opened");}
+			if ($(elems[i].id + "_closed")) {Element.show(elems[i].id + "_closed");}
+//			alert(elems[i].id);
 		}
 	}
+	
+	return currently_hidden;
 }
 function popUp(URL) {
   day = new Date();
