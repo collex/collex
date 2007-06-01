@@ -20,7 +20,7 @@
             <td><img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td>
           <% else # its a category -%>
             <td style="padding-left: <%=depth %>em; color: #666;">
-              <span id="cat_<%=category[:id]%>_closed">&#x25B9;</span><span id="cat_<%=category[:id]%>_opened" style="display:none;">&#x25BF;</span><%=link_to_function(category[:value], "toggleCategory('#{category[:id]}');")%>
+              <span id="cat_<%=category[:id]%>_closed" style="font-family:arial;color:#999">&#x25B6; </span><span id="cat_<%=category[:id]%>_opened" style="display:none;font-family:arial;color:#999">&#x25BC; </span><%=link_to_function(category[:value], "toggleCategory('#{category[:id]}');")%>
             </td>
             <td align="center" nowrap="true" style="color: #666;">
               <%=nbpluralize(category[:count], 'item')%>
