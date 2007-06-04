@@ -1,11 +1,15 @@
 <% div :id => "exhibit-body", :class => "edit" do %>
 
   <% div :id => "exhibit-menu", :class => "edit" do %>
-    <% ul do  %>
+    <% ul :id => "exhibit-menu-list" do  %>
+      <%= li image_tag("loading.gif"), :style => "display:none;", :id => "exhibit-menu-spinner" %>
       <%= li paginating_links(@exhibited_sections) %>
       <%= li link_to('Close', exhibit_path(:id => @exhibit, :page => @exhibited_sections.page)) %>
       <%= li link_to("New Section", exhibited_sections_path(:exhibit_id => @exhibit, :exhibit_section_type_id => 1), :method => "post")%>
-      <%#= li link_to_function 'Save', "$('exhibitForm').submit()" %>
+      <%= li render(:partial => "share"), :id => "exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
+      <%= li render(:partial => "unshare"), :id => "exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
+      <%= li link_to('Destroy', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
+      <%= li render(:partial => "publish") if @exhibit.publishable_by?(user_or_guest) %>
   <% end end %>
 
 
