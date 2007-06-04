@@ -1,0 +1,3 @@
+<%= link_to_remote('Unshare', :url => unshare_exhibit_path(@exhibit), 
+                              :before => "$('exhibit-menu-spinner').show();",
+                              :complete => "$('exhibit-menu-spinner').hide();") %>
