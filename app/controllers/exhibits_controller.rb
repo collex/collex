@@ -73,16 +73,16 @@ class ExhibitsController < ExhibitsBaseController
       @exhibit.share!
       @exhibit.save!
       respond_to do |format|
+        format.html do
+          flash[:notice] = "#{@exhibit.title} has been successfully shared."
+          redirect_to(:action => "index")
+        end
         format.js do
           render :update do |page|
             page.replace_html 'exhibit-menu-share', :partial => 'unshare'
             page.insert_html :bottom, 'exhibit-menu-list', "<li id='exhibit-menu-publish'></li>"
             page.replace_html 'exhibit-menu-publish', :partial => 'publish'
           end
-        end
-        format.html do
-          flash[:notice] = "#{@exhibit.title} has been successfully shared."
-          redirect_to(:action => "index")
         end
       end
     else
@@ -98,17 +98,18 @@ class ExhibitsController < ExhibitsBaseController
       @exhibit.unshare!
       @exhibit.save!
       respond_to do |format|
+        format.html do
+          flash[:notice] = "#{@exhibit.title} has been successfully un-shared."
+          redirect_to(:action => "index")
+        end
         format.js do
           render :update do |page|
             page.replace_html 'exhibit-menu-share', :partial => 'share'
             page.remove 'exhibit-menu-publish'
           end
         end
-        format.html do
-          flash[:notice] = "#{@exhibit.title} has been successfully un-shared."
-          redirect_to(:action => "index")
-        end
-      end    else
+      end
+    else
       flash[:error] = "You do not have persmission to un-share that exhibit."
     end
   end
