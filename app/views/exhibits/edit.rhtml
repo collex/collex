@@ -9,7 +9,7 @@
       <%= li render(:partial => "share"), :id => "exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
       <%= li render(:partial => "unshare"), :id => "exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
       <%= li link_to('Destroy', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
-      <%= li render(:partial => "publish") if @exhibit.publishable_by?(user_or_guest) %>
+      <%= li render(:partial => "publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
   <% end end %>
 
 
