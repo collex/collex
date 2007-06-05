@@ -5,13 +5,15 @@
       <%= li image_tag("loading.gif"), :style => "display:none;", :id => "exhibit-menu-spinner" %>
       <%= li paginating_links(@exhibited_sections) %>
       <%= li link_to('Close', exhibit_path(:id => @exhibit, :page => @exhibited_sections.page)) %>
-      <%= li link_to("New Section", exhibited_sections_path(:exhibit_id => @exhibit, :exhibit_section_type_id => 1), :method => "post")%>
+      <%= li "Add a Section", :style => "background-color: #dcdcdc;" %>
+      <%- ul :style => "background-color: #dcdcdc;" do ExhibitType.find(@exhibit.exhibit_type_id).section_types.each do |section_type| -%>
+      <%= li link_to("New #{section_type.name}", exhibited_sections_path(:exhibit_id => @exhibit, :exhibit_section_type_id => section_type.id), :method => "post")%>
+      <%- end end -%>
       <%= li render(:partial => "share"), :id => "exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
       <%= li render(:partial => "unshare"), :id => "exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
       <%= li link_to('Destroy', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
       <%= li render(:partial => "publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
   <% end end %>
-
 
   <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
   <%= p "page #{@exhibited_sections.page}" %>
