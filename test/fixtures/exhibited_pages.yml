@@ -1,0 +1,29 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+bibliography_1:
+  id: 21
+  exhibit_id: 21
+  exhibit_page_type_id: 1
+  position: 1
+  title: Annotated Bibliography Page 1
+  annotation: Annotated Bibliography Page 1 Annotation
+bibliography_2:
+  id: 22
+  exhibit_id: 21
+  exhibit_page_type_id: 1
+  position: 2
+  title: Annotated Bibliography Page 2
+  annotation: Annotated Bibliography Page 2 Annotation
+bibliography_3:
+  id: 23
+  exhibit_id: 21
+  exhibit_page_type_id: 1
+  position: 3
+  title: Annotated Bibliography Page 3
+  annotation: Annotated Bibliography Page 3Annotation
+illustrated_essay_1:
+  id: 31
+  exhibit_id: 31
+  exhibit_page_type_id: 1
+  position: 1
+  title: Illustrated Essay Page 1
+  annotation: Illustrated Essay Page 1 Annotation

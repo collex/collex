@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+bibliography:
+  id: 1
+  name: Annotated Bibliography Page Type
+  description: Annotated Bibliography Page Type Description
+  template: base_page
+  min_sections: 1
+  max_sections: 1
+illustrated_essay:
+  id: 2
+  name: Illustrated Essay Page Type
+  description: Illustrated Essay Page Type Description
+  template: base_page
+  min_sections: 1
+  max_sections: 100
