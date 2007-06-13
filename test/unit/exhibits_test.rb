@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ExhibitsTest < Test::Unit::TestCase
-  fixtures :exhibits, :exhibited_resources, :exhibited_sections, :users, :roles, :roles_users
-  fixtures :licenses, :exhibit_section_types, :exhibit_types
+  fixtures :exhibits, :exhibited_pages, :exhibited_resources, :exhibited_sections, :users, :roles, :roles_users
+  fixtures :licenses, :exhibit_section_types, :exhibit_page_types, :exhibit_types
   
   # Note: only using fixtures for more static data.
   def setup
