@@ -1,11 +1,11 @@
 class ExhibitedSection < ActiveRecord::Base
   has_many :exhibited_resources, :order => "position", :dependent => :destroy
   belongs_to :exhibit_section_type
-  belongs_to :exhibit
-  acts_as_list
+  belongs_to :exhibited_page
+  acts_as_list :scope => :exhibited_page
   
   # Just show one section per page by default
-  set_page_size 1
+#   set_page_size 1
   
   def template
     self.exhibit_section_type.template

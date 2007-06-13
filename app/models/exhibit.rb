@@ -2,7 +2,7 @@ class Exhibit < ActiveRecord::Base
   belongs_to :user
   belongs_to :license
   belongs_to :exhibit_type
-  has_many :exhibited_sections, :order => "position"
+  has_many :exhibited_pages, :order => "position", :dependent => :destroy
   
   validates_presence_of :title, :license_id, :exhibit_type_id, :user_id
   
@@ -11,7 +11,11 @@ class Exhibit < ActiveRecord::Base
   end
   
   def uris
-    self.exhibited_sections.collect { |es| es.uris }.flatten
+    self.sections.collect { |es| es.uris }.flatten
+  end
+  
+  def sections
+    self.exhibited_pages.collect { |ep| ep.exhibited_sections }.flatten
   end
   
   # Takes a User object or a user_id
