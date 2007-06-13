@@ -20,26 +20,35 @@ ActionController::Routing::Routes.draw do |map|
                     :value => /[^\/]+/,
                     :user => nil
 
-  map.resources :exhibits, :singular => "exhibit", 
+  map.resources :exhibits, 
                 :member => { :add_resource      => :post, 
                              :update_title      => :post, 
                              :share             => :post, 
                              :unshare           => :post, 
                              :publish           => :post, 
                              :update_annotation => :post } do |exhibit|
-    exhibit.resources :exhibited_sections, 
+    exhibit.resources :pages, 
+                      :controller => :exhibited_pages,
                       :member => { :update_title      => :post, 
                                    :update_annotation => :post,
                                    :move_higher       => :post, 
                                    :move_lower        => :post, 
                                    :move_to_top       => :post, 
-                                   :move_to_bottom    => :post } do |section|
-      section.resources :exhibited_resources, 
-                        :member => { :update_annotation => :post, 
+                                   :move_to_bottom    => :post } do |page|
+      page.resources :exhibited_sections, 
+                        :member => { :update_title      => :post, 
+                                     :update_annotation => :post,
                                      :move_higher       => :post, 
                                      :move_lower        => :post, 
                                      :move_to_top       => :post, 
-                                     :move_to_bottom    => :post }
+                                     :move_to_bottom    => :post } do |section|
+        section.resources :exhibited_resources, 
+                          :member => { :update_annotation => :post, 
+                                       :move_higher       => :post, 
+                                       :move_lower        => :post, 
+                                       :move_to_top       => :post, 
+                                       :move_to_bottom    => :post }
+      end
     end
   end
   
