@@ -60,35 +60,35 @@ class ExhibitsControllerTest < Test::Unit::TestCase
     assertions.call
   end
   
-  def test_can_necrd_when_logged_in
-    # updates are done via ajax
-    assertions = proc do |response|
-      assert_response(response)
-      assert(exhibit = assigns(:exhibit), "Should have assigned :exhibit")
-      assert(exhibit.errors.empty?, "@exhibit should not have errors: #{exhibit.errors.inspect}")
-    end
-    exhibit_count = Exhibit.count
-    get(:new)
-    assertions.call(:success)
-    submit_form('new_exhibit') do |f|
-      f.exhibit.title = "New Exhibit"
-      f.exhibit.exhibit_type_id = 1
-      f.exhibit.license_id = 1
-      f.exhibit.annotation = "Exhibit notes."
-    end
-    assert_equal(exhibit_count += 1, Exhibit.count )
-    assertions.call(:redirect)
-    assert_redirected_to(edit_exhibit_path(assigns(:exhibit)))
-    assert(flash[:notice])
-    
-    get(:edit, :id => @exhibit.id)
-    assertions.call(:success)
-
-    delete(:destroy, :id => @exhibit.id)   
-    assert_equal(exhibit_count -= 1, Exhibit.count )
-    assert_response(:redirect)
-    assert_redirected_to(exhibits_path)
-  end
+#   def test_can_necrd_when_logged_in
+#     # updates are done via ajax
+#     assertions = proc do |response|
+#       assert_response(response)
+#       assert(exhibit = assigns(:exhibit), "Should have assigned :exhibit")
+#       assert(exhibit.errors.empty?, "@exhibit should not have errors: #{exhibit.errors.inspect}")
+#     end
+#     exhibit_count = Exhibit.count
+#     get(:new)
+#     assertions.call(:success)
+#     submit_form('new_exhibit') do |f|
+#       f.exhibit.title = "New Exhibit"
+#       f.exhibit.exhibit_type_id = 1
+#       f.exhibit.license_id = 1
+#       f.exhibit.annotation = "Exhibit notes."
+#     end
+#     assert_equal(exhibit_count += 1, Exhibit.count )
+#     assertions.call(:redirect)
+#     assert_redirected_to(edit_exhibit_path(assigns(:exhibit)))
+#     assert(flash[:notice])
+#     
+#     get(:edit, :id => @exhibit.id)
+#     assertions.call(:success)
+# 
+#     delete(:destroy, :id => @exhibit.id)   
+#     assert_equal(exhibit_count -= 1, Exhibit.count )
+#     assert_response(:redirect)
+#     assert_redirected_to(exhibits_path)
+#   end
   
   def test_edit_bad_exhibit_id_redirects_to_index_with_warning_when_logged_in
     get(:edit, :id => -1)
