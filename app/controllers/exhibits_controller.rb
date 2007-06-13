@@ -24,7 +24,7 @@ class ExhibitsController < ExhibitsBaseController
 
   def show
     @exhibit = Exhibit.find(params[:id])
-    @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
+    @exhibited_pages = @exhibit.exhibited_pages
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @exhibit.to_xml }
@@ -46,7 +46,8 @@ class ExhibitsController < ExhibitsBaseController
 
   def edit
     # @exhibit retrieved in authorize_owner
-    @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
+#     @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
+    @exhibited_pages = @exhibit.exhibited_pages.find(:all, :page => {:current => params[:page]})
     @licenses = License.find(:all)
   end
 

@@ -16,7 +16,7 @@ class ExhibitedSectionsController < ExhibitsBaseController
     move_item(:move_to_bottom, "Moved Exhibited Section to Bottom.")
   end
   def move_item(command, notice)
-    @exhibited_section = @exhibit.exhibited_sections.find(params[:id])
+    @exhibited_section = @exhibit.exhibited_pages.find(params[:exhibited_page_id]).exhibited_sections.find(params[:id])
     @exhibited_section.__send__(command)
     logger.info("ExhibitedSection: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice

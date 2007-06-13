@@ -5,8 +5,8 @@ require 'exhibited_sections_controller'
 class ExhibitedSectionsController; def rescue_action(e) raise e end; end
 
 class ExhibitedSectionsControllerTest < Test::Unit::TestCase
-  fixtures :exhibits, :exhibited_resources, :exhibited_sections, :users
-  fixtures :licenses, :exhibit_section_types, :exhibit_types
+  fixtures :exhibits, :exhibited_pages, :exhibited_resources, :exhibited_sections, :users
+  fixtures :licenses, :exhibit_page_types, :exhibit_section_types, :exhibit_types
   def setup
     @controller = ExhibitedSectionsController.new
     @request    = ActionController::TestRequest.new
@@ -15,10 +15,11 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @viewer = users(:exhibit_viewer)
     @request.session[:user] = {:username => @owner.username}
 
-    @exhibit = exhibits(:dang)
-    @es1 = exhibited_sections(:dang_1)
-    @es2 = exhibited_sections(:dang_2)
-    @es3 = exhibited_sections(:dang_3)
+    @exhibit = exhibits(:illustrated_essay)
+    @ep1 = exhibited_pages(:illustrated_essay_1)
+    @es1 = exhibited_sections(:illustrated_essay_1)
+    @es2 = exhibited_sections(:illustrated_essay_2)
+    @es3 = exhibited_sections(:illustrated_essay_3)
   end
 
   def test_redirects_to_login_if_not_logged_in
@@ -36,7 +37,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
   end
   def test_moves_section_higher_and_returns_to_proper_page
     assert(@es3.position > @es2.position)
-    post(:move_higher, :id => @es3.id, :exhibit_id => @exhibit.id, :page => 1)
+    post(:move_higher, :id => @es3.id, :exhibited_page_id => @ep1.id, :exhibit_id => @exhibit.id, :page => 1)
     @es3.reload
     @es2.reload
     assert(@es3.position < @es2.position)
@@ -44,7 +45,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     assert_redirected_to(edit_exhibit_path(:id => @exhibit, :page => @request.params[:page], :anchor => "exhibited_section_#{@es3.id}"))
     
     assert(@es3.position > @es1.position)
-    post(:move_higher, :id => @es3.id, :exhibit_id => @exhibit.id, :page => 1)
+    post(:move_higher, :id => @es3.id, :exhibited_page_id => @ep1.id, :exhibit_id => @exhibit.id, :page => 1)
     @es3.reload
     @es1.reload
     assert(@es3.position < @es1.position)
@@ -53,7 +54,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
   end
   def test_moves_section_lower_and_returns_to_proper_page
     assert(@es1.position < @es2.position)
-    post(:move_lower, :id => @es1.id, :exhibit_id => @exhibit.id, :page => 1)
+    post(:move_lower, :id => @es1.id, :exhibited_page_id => @ep1.id, :exhibit_id => @exhibit.id, :page => 1)
     @es1.reload
     @es2.reload
     assert(@es1.position > @es2.position)
@@ -61,7 +62,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     assert_redirected_to(edit_exhibit_path(:id => @exhibit, :page => @request.params[:page], :anchor => "exhibited_section_#{@es1.id}"))
     
     assert(@es1.position < @es3.position)
-    post(:move_lower, :id => @es1.id, :exhibit_id => @exhibit.id, :page => 1)
+    post(:move_lower, :id => @es1.id, :exhibited_page_id => @ep1.id, :exhibit_id => @exhibit.id, :page => 1)
     @es1.reload
     @es3.reload
     assert(@es1.position > @es3.position)
@@ -70,7 +71,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
   end
   def test_moves_section_to_top_and_returns_to_proper_page
     assert(@es1.position < @es2.position && @es2.position < @es3.position)
-    post(:move_to_top, :id => @es3.id, :exhibit_id => @exhibit.id, :page => 1)
+    post(:move_to_top, :id => @es3.id, :exhibited_page_id => @ep1.id, :exhibit_id => @exhibit.id, :page => 1)
     @es1.reload
     @es2.reload
     @es3.reload
@@ -80,7 +81,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
   end
   def test_moves_section_to_bottom_and_returns_to_proper_page
     assert(@es1.position < @es2.position && @es2.position < @es3.position)
-    post(:move_to_bottom, :id => @es1.id, :exhibit_id => @exhibit.id, :page => 1)
+    post(:move_to_bottom, :id => @es1.id, :exhibited_page_id => @ep1.id, :exhibit_id => @exhibit.id, :page => 1)
     @es1.reload
     @es2.reload
     @es3.reload

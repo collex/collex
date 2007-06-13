@@ -3,34 +3,77 @@ dang_1:
   title: Dang's First Section
   exhibit_section_type_id: 1
   id: 1
-  exhibit_id: 1
+  exhibited_page_id: 1
   annotation: Section notes
   position: 1
 dang_2: 
   title: Dang's Second Section
   exhibit_section_type_id: 1
   id: 2
-  exhibit_id: 1
+  exhibited_page_id: 1
   annotation: 
   position: 2
 dang_3: 
   title: Dang's Third Section
   exhibit_section_type_id: 1
   id: 3
-  exhibit_id: 1
+  exhibited_page_id: 1
   annotation: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
   position: 3
 foo_1: 
   title: Foo's First Section
   exhibit_section_type_id: 1
   id: 11
-  exhibit_id: 2
+  exhibited_page_id: 2
   annotation: Section notes
   position: 1
 foo_2: 
   title: Foo's Second Section
   exhibit_section_type_id: 1
   id: 12
-  exhibit_id: 2
+  exhibited_page_id: 2
   annotation: 
   position: 2
+bibliography_1: 
+  title: Annotated Bibliography
+  exhibit_section_type_id: 1
+  id: 21
+  exhibited_page_id: 21
+  annotation: Section notes
+  position: 1
+bibliography_2: 
+  title: Annotated Bibliography
+  exhibit_section_type_id: 1
+  id: 22
+  exhibited_page_id: 22
+  annotation: Section notes
+  position: 1
+bibliography_3: 
+  title: Annotated Bibliography
+  exhibit_section_type_id: 1
+  id: 23
+  exhibited_page_id: 23
+  annotation: Section notes
+  position: 1
+  
+illustrated_essay_1: 
+  title: Illustrated Essay
+  exhibit_section_type_id: 1
+  id: 31
+  exhibited_page_id: 31
+  annotation: Section notes
+  position: 1
+illustrated_essay_2: 
+  title: Illustrated Essay
+  exhibit_section_type_id: 1
+  id: 32
+  exhibited_page_id: 31
+  annotation: Section notes
+  position: 2
+illustrated_essay_3: 
+  title: Illustrated Essay
+  exhibit_section_type_id: 1
+  id: 33
+  exhibited_page_id: 31
+  annotation: Section notes
+  position: 3
