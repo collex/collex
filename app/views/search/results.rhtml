@@ -6,29 +6,29 @@
         <caption>your constraints</caption>
         <% if session[:constraints] && session[:constraints].size > 0 %>
         <% session[:constraints].each_with_index do |constraint,index|
-            value_display = constraint[:value]
-            if constraint[:field]=="archive"
-              if site(constraint[:value])
-                value_display = site(constraint[:value])['description']
+            value_display = constraint.value
+            if constraint.field=="archive"
+              if site(constraint.value)
+                value_display = site(constraint.value)['description']
               end
             end
         %>
-              <% if constraint[:type] == :expression %>
+              <% if constraint.is_a?(ExpressionConstraint) %>
               <tr>
                 <th align="left">phrase:</th>
-                 <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%><%=h constraint[:expression]%></td>
+                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%><%=h constraint.value%></td>
                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
               </tr>
-              <% elsif constraint[:type] == :facet %>
+              <% elsif constraint.is_a?(FacetConstraint) %>
               <tr>
-                 <th align="left"><%=facet_label(constraint[:field])%>:</th>
-                 <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h value_display%></td>
+                 <th align="left"><%=facet_label(constraint.field)%>:</th>
+                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h value_display%></td>
                  <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
               </tr>
-              <% elsif constraint[:type] == :saved %>
+              <% elsif constraint.is_a?(SavedSearchConstraint) %>
               <tr>
                  <th align="left">saved:</th>
-                 <td><%=link_to (constraint[:invert] ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h "#{constraint[:field]}:#{constraint[:value]}"%></td>
+                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h "#{constraint.field}:#{constraint.value}"%></td>
                  <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
               </tr>
               <% end %>

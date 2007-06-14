@@ -15,7 +15,7 @@ class SearchController < ApplicationController
      @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
      @total_documents = @results["total_documents"]
      
-     # initially all unccategorized.  #to_facet_tree removes ones found in the category mappings
+     # initially all uncategorized.  #to_facet_tree removes ones found in the category mappings
      uncategorized_sites = @results['facets']['archive'].clone  
      @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'], uncategorized_sites)
      
@@ -40,21 +40,21 @@ class SearchController < ApplicationController
    
    def add_facet
      if params[:field] and params[:value]
-       session[:constraints] << {:type => :facet, :field => params[:field], :value => params[:value], :invert => params[:invert] ? true : false}
+       session[:constraints] << FacetConstraint.new(:field => params[:field], :value => params[:value], :inverted => params[:invert] ? true : false)
      end
      redirect_to :action => 'browse'
    end
 
    def add_agent_facet
      if params['agent'] and params['agent']['name'] and not params['agent']['name'].strip.empty?
-       session[:constraints] << {:type => :facet, :field => "agent", :value => params['agent']['name'], :invert => params[:invert] ? true : false}
+       session[:constraints] << FacetConstraint.new(:field => 'agent', :value => params['agent']['name'], :inverted => params[:invert] ? true : false)
      end
      redirect_to :action => 'browse'
    end
 
    def add_year_facet
      if params['field'] and params['field']['year'] and not params['field']['year'].strip.empty?
-       session[:constraints] << {:type => :facet, :field => "year", :value => params['field']['year'], :invert => params[:invert] ? true : false}
+       session[:constraints] << FacetConstraint.new(:field => 'year', :value => params['field']['year'], :inverted => params[:invert] ? true : false)
      end
      redirect_to :action => 'browse'
    end
@@ -70,7 +70,8 @@ class SearchController < ApplicationController
    def invert_constraint
       index = params[:index].to_i
       if index < session[:constraints].size
-        session[:constraints][index][:invert] = !session[:constraints][index][:invert]
+        constraint = session[:constraints][index]
+        constraint.inverted = !constraint.inverted
       end
       redirect_to :action => 'browse'
    end
@@ -84,11 +85,14 @@ class SearchController < ApplicationController
      if params['field'] and params['field']['content']
        expression = params['field']['content']
        if expression and expression.strip.size > 0
-         logger.debug("------expression: #{expression}")
-         session[:constraints] << {:type => :expression, :expression => expression}
-         logger.debug("------constraints: #{session[:constraints].last[:expression]}")
+         session[:constraints] << ExpressionConstraint.new(:value => expression)
        end
      end
+     redirect_to :action => 'browse'
+   end
+   
+   def toggle_freeculture_facet
+     session[:constraints] << FreeCultureConstraint.new(:inverted => true)
      redirect_to :action => 'browse'
    end
    
@@ -211,17 +215,14 @@ class SearchController < ApplicationController
      
      search.constraints.clear
      session[:constraints].each do |c|
-       case c[:type]
-       when :expression
-         # TODO: The ExpressionConstraint model should be enhanced to have a #expression property on it so the "hack" is transparent
-         search.constraints << ExpressionConstraint.create(:value => c[:expression], :inverted => c[:invert])
-       when :facet
-         search.constraints << FacetConstraint.create(:field => c[:field], :value => c[:value], :inverted => c[:invert])
-       when :saved
-         saved_search = User.find_by_username(c[:field]).searches.find_by_name(c[:value])
+       case c
+       when SavedSearchConstraint
+         saved_search = User.find_by_username(c.field).searches.find_by_name(c.value)
          saved_search.constraints.each do |saved_constraint|
            search.constraints << saved_constraint.clone
          end
+       else
+         search.constraints << c
        end
      end
      search.save!
@@ -231,7 +232,7 @@ class SearchController < ApplicationController
    
    def add_saved_search
      # TODO: check for validity of saved search
-     session[:constraints] << {:type => :saved, :field => params[:username], :value => params[:name], :invert => params[:invert] ? true : false}
+     session[:constraints] << SavedSearchConstraint.new(:field => params[:username], :value => params[:name], :inverted => params[:invert] ? true : false)
      redirect_to :action => 'browse'
    end
    
@@ -241,7 +242,7 @@ class SearchController < ApplicationController
      if saved_search
        session[:constraints] = []
        saved_search.constraints.each do |saved_constraint|
-         session[:constraints] << saved_constraint.to_hash
+         session[:constraints] << saved_constraint
        end
      else
        flash[:error] = 'Saved search not found.'
@@ -253,7 +254,7 @@ class SearchController < ApplicationController
      user = User.find_by_username(session[:user][:username])
      search = user.searches.find(params[:id])
 
-     session[:constraints].delete_if {|item| item[:type] == :saved && item[:field] == session[:user][:username] && item[:value] == search.name }
+     session[:constraints].delete_if {|item| item.is_a?(SavedSearchConstraint) && item.field == session[:user][:username] && item.value == search.name }
      
      search.destroy
      
@@ -264,7 +265,7 @@ class SearchController < ApplicationController
      session[:constraints] = []
      saved_search = User.find_by_username(session[:user][:username]).searches.find(params[:id])
      saved_search.constraints.each do |saved_constraint|
-       session[:constraints] << saved_constraint.to_hash
+       session[:constraints] << saved_constraint
      end
      redirect_to :action => 'browse'      
    end

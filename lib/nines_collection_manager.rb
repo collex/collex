@@ -64,15 +64,15 @@ class NinesCollectionManager
   end
   
   def cloud(type, user = nil)
-    @solr.facet(type, [{:type => :facet, :field => "collected", :value => "collected"}], nil, nil, user)
+    @solr.facet(type, [FacetConstraint.new(:field => "collected", :value => "collected")], nil, nil, user)
   end
   
   def objects_by_type(type, value, user = nil, start = 0, max = 5)
-    constraints = [{:type => :facet, :field => type, :value => value}]
+    constraints = [FacetConstraint.new(:field => type, :value => value)]
     if user
-      constraints << {:type => :facet, :field => "username", :value => user}
+      constraints << FacetConstraint.new(:field => "username", :value => user)
     else
-      constraints << {:type => :facet, :field => "collected", :value => "collected"}
+      constraints << FacetConstraint.new(:field => "collected", :value => "collected")
     end
     @solr.search(constraints, start, max)
   end

@@ -5,7 +5,7 @@ class Search < ActiveRecord::Base
   def to_solr_expression
     clauses = []
     constraints.each do |constraint|
-      clauses << constraint.to_s
+      clauses << constraint.to_solr_expression
     end
     
     "(#{clauses.join(" AND ")})"

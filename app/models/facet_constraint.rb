@@ -1,11 +1,9 @@
 class FacetConstraint < Constraint
-  def to_s
-    <<-VALUE
-    #{operator}#{field}:"#{value}"
-VALUE
+  def to_solr_expression
+    "#{operator}#{field}:\"#{value}\""
   end
   
-  def to_hash
-    {:type => :facet, :field => field, :value => value, :invert => inverted}
+  def to_s
+    "#{operator}#{field}:#{value}"
   end
 end

@@ -1,9 +1,9 @@
 class ExpressionConstraint < Constraint
-  def to_s
-    "#{operator}#{value}"
+  def to_solr_expression
+    "#{operator}(#{value})"
   end
-
-  def to_hash
-    {:type => :expression, :expression => value, :invert => inverted}
+  
+  def to_s
+    "#{operator}?:#{value}"
   end
 end
