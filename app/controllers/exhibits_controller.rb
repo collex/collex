@@ -53,19 +53,15 @@ class ExhibitsController < ExhibitsBaseController
 
   def create
     @exhibit = Exhibit.new(params[:exhibit])
-    respond_to do |format|
-      if @exhibit.save
-        flash[:notice] = 'Exhibit was successfully created.'
-        format.html { redirect_to edit_exhibit_url(:id => @exhibit) }
-        format.xml  { head :created, :location => exhibit_url(@exhibit) }
-      else
-        format.html do
-          @licenses = License.find(:all)
-          @exhibit_types = ExhibitType.find(:all)
-          render :action => "new"
-        end
-        format.xml  { render :xml => @exhibit.errors.to_xml }
-      end
+    if @exhibit.save
+      flash[:notice] = 'Exhibit was successfully created.'
+      page_type = @exhibit.valid_page_types.first
+      @exhibit.pages.create({:exhibit_page_type_id => page_type.id})
+      redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
+    else
+      @licenses = License.find(:all)
+      @exhibit_types = ExhibitType.find(:all)
+      render :action => "new"
     end
   end
   
