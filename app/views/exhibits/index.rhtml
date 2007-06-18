@@ -6,7 +6,7 @@
   
 <% for exhibit in @exhibits %>
   <% if exhibit.viewable_by?(user_or_guest) then tr do %>
-    <%= td link_to(exhibit.title, exhibit_path(exhibit)) %>
+    <%= td link_to(exhibit.title, page_path(:exhibit_id => exhibit.id, :id => exhibit.exhibited_pages.first.id)) %>
     <%= td link_to('Edit', edit_exhibit_path(exhibit)) if exhibit.updatable_by?(user_or_guest) %>
     <%= td link_to('Share', share_exhibit_path(exhibit), :method => :post) if exhibit.sharable_by?(user_or_guest) %>
     <%= td link_to('Unshare', unshare_exhibit_path(exhibit), :method => :post) if exhibit.unsharable_by?(user_or_guest) %>
