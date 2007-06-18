@@ -26,12 +26,12 @@ class ExhibitsControllerTest < Test::Unit::TestCase
   def test_sanity
     assert(true)
   end
-  
-  def test_gets_index_as_sanity_check
-    get(:index)
-    assert_response(:success)
-    assert(assigns(:exhibits), "Should have assigned :exhibits")
-  end
+#   
+#   def test_gets_index_as_sanity_check
+#     get(:index)
+#     assert_response(:success)
+#     assert(assigns(:exhibits), "Should have assigned :exhibits")
+#   end
 
   def test_edit_update_delete_bad_exhibit_id_redirects_to_login_when_not_logged_in
     @request.session[:user] = nil
