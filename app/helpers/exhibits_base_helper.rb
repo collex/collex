@@ -1,0 +1,2 @@
+module ExhibitsBaseHelper
+end
