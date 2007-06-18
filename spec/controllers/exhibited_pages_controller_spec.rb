@@ -20,9 +20,10 @@ describe ExhibitedPagesController do
     controller.should be_an_instance_of(ExhibitedPagesController)
   end
   
-  it "GET index should return a list of an exhibit's pages" do
-    Exhibit.should_receive(:find).with("2").and_return(@exhibit)
+  it "GET 'index' should return a list of an exhibit's pages" do
+    Exhibit.stub!(:find).and_return(@exhibit)
     @exhibit.should_receive(:exhibited_pages).and_return([])
+    @exhibit.stub!(:updatable_by?).and_return(true)
     
     get :index, :exhibit_id => @exhibit.id
     response.should be_success 
@@ -30,7 +31,7 @@ describe ExhibitedPagesController do
     assigns[:exhibited_pages].should_not be_nil
   end
   
-  it "GET show should return just that page of the exhibit" do
+  it "GET 'show' should return just that page of the exhibit" do
     Exhibit.should_receive(:find).with("#{@exhibit.id}").and_return(@exhibit)
     @exhibited_pages.should_receive(:find).with("1").and_return(@page_1)
     @exhibit.should_receive(:viewable_by?).and_return(true)
@@ -60,9 +61,9 @@ describe ExhibitedPagesController do
   
   it "GET 'edit' with authorized owner should render" do
     request.session[:user] = {:username => @owner.username}
-    Exhibit.should_receive(:find).with("2").and_return(@exhibit)
-    @exhibit.should_receive(:exhibited_pages).and_return(@exhibited_pages)
-    @exhibit.should_receive(:updatable_by?).and_return(true)
+    Exhibit.stub!(:find).and_return(@exhibit)
+    @exhibit.stub!(:exhibited_pages).and_return(@exhibited_pages)
+    @exhibit.stub!(:updatable_by?).and_return(true)
     @exhibited_pages.should_receive(:find).with("1").and_return(@page_1)
     
     get :edit, :id => @page_1.id, :exhibit_id => @exhibit.id
