@@ -1,13 +1,31 @@
 module ExhibitsHelper
-  def move_exhibited_section_links(exhibit, exhibited_section, pager)
+  def move_exhibited_section_links(exhibited_section)
+    page = exhibited_section.exhibited_page
+    exhibit = page.exhibit
+    
     html = ""
-    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.first_page), :method => "post")
+    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
     html << "&nbsp;"
-    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.previous_page || pager.page), :method => "post")
+    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
     html << "&nbsp;"
-    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.next_page || pager.page ), :method => "post")
+    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
     html << "&nbsp;"
-    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page => pager.last_page), :method => "post")
+    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
+    html
+  end
+  
+  def move_exhibited_page_links(exhibited_page)
+    exhibited_page
+    exhibit = exhibited_page.exhibit
+    
+    html = ""
+    html << link_to("&uarr;&uarr;", move_to_top_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << "&nbsp;"
+    html << link_to("&uarr;", move_higher_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << "&nbsp;"
+    html << link_to("&darr;", move_lower_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << "&nbsp;"
+    html << link_to("&darr;&darr;", move_to_bottom_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
     html
   end
   
@@ -36,9 +54,21 @@ module ExhibitsHelper
   
   # Since Rails currently (1.2.1) does not generate proper URLs for nested resources without
   # the parent objects specified, this is a convenience
+  # TODO refactore these methods into two dynamic methods. There's a lot of repetition here.
+  def exhibited_page_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
+    in_place_editor_options[:url] ||=  eval("update_#{method}_page_path(#{tag.object.exhibit.id}, #{tag.object.id})") 
+    exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+  end
+  def exhibited_page_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+    in_place_editor_options[:rows] = 12
+    in_place_editor_options[:cols] = 60
+    exhibited_page_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+  end
+  
   def exhibited_section_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibit.id}, #{tag.object.id})") 
+    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_page.exhibit.id}, #{tag.object.exhibited_page.id}, #{tag.object.id})") 
     exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   def exhibited_section_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
@@ -49,7 +79,7 @@ module ExhibitsHelper
   
   def exhibited_resource_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibit.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
+    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
     exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   def exhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
