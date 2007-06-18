@@ -3,6 +3,7 @@ class Exhibit < ActiveRecord::Base
   belongs_to :license
   belongs_to :exhibit_type
   has_many :exhibited_pages, :order => "position", :dependent => :destroy
+  alias_method :pages, :exhibited_pages
   
   validates_presence_of :title, :license_id, :exhibit_type_id, :user_id
   
@@ -16,6 +17,10 @@ class Exhibit < ActiveRecord::Base
   
   def sections
     self.exhibited_pages.collect { |ep| ep.exhibited_sections }.flatten
+  end
+  
+  def valid_page_types
+    exhibit_type.page_types
   end
   
   # Takes a User object or a user_id
