@@ -1,2 +1,40 @@
-<h1>ExhibitedPages#edit</h1>
-<p>Find me in app/views/exhibited_pages/edit.rhtml</p>
+<% div :id => "exhibit-body", :class => "edit" do %>
+
+  <% div :id => "exhibit-menu", :class => "edit" do %>
+    <% ul :id => "exhibit-menu-list" do  %>
+      <%= li image_tag("loading.gif"), :style => "display:none;", :id => "exhibit-menu-spinner" %>
+      <%= li exhibited_pages_links(@exhibited_page, true) %>
+      <%= li link_to('Close', page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
+      <%= li link_to("New Page", pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
+      
+      <%- unless @exhibited_page.sections_full? -%>
+        <%= li "Add a Section", :style => "background-color: #dcdcdc;" %>
+        <%- ul :style => "background-color: #dcdcdc;" do ExhibitPageType.find(@exhibited_page.exhibit_page_type_id).section_types.each do |section_type| -%>
+        <%= li link_to("New #{section_type.name}", exhibited_sections_path(:exhibit_id => @exhibit, :exhibit_section_type_id => section_type.id, :page_id => @exhibited_page), :method => "post") %>
+        <%- end end -%>
+      <%- end -%>
+      
+      <%= li render(:partial => "share"), :id => "exhibits/exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
+      <%= li render(:partial => "unshare"), :id => "exhibits/exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
+      <%= li link_to('Destroy', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
+      <%= li render(:partial => "publish"), :id => "exhibits/exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
+  <% end end %>
+
+  <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
+  <%= p "page #{@exhibited_page.position}" %>
+  <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
+  <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
+    <%= hidden_field_tag "new_resource", "" %>
+    <%= hidden_field_tag "exhibited_section_id", "" %>
+    <%= hidden_field_tag "page", @exhibited_page.id %>
+    <%= h3 @exhibit.user.fullname %>
+    <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
+  <%- end -%>  
+
+  <%= render :partial => @exhibit.template %>
+
+<% end %>
+<%#= drop_receiving_element("resource-drop-zone",
+      :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; Element.show('add_object_form');}") %>
+
+
