@@ -22,18 +22,6 @@ class ExhibitsController < ExhibitsBaseController
     end
   end
 
-  def show
-    @exhibit = Exhibit.find(params[:id])
-    @exhibited_pages = @exhibit.exhibited_pages
-    respond_to do |format|
-      format.html # show.rhtml
-      format.xml  { render :xml => @exhibit.to_xml }
-    end
-  rescue ActiveRecord::RecordNotFound
-    flash[:warning] = "That Exhibit could not be found."
-    redirect_to :action => "index"
-  end
-
   def new
     @exhibit = Exhibit.new
     #TODO remove all this hard-coded data
@@ -42,13 +30,6 @@ class ExhibitsController < ExhibitsBaseController
     @exhibit.exhibit_type_id = 2
     @licenses = License.find(:all)
     @exhibit_types = ExhibitType.find(:all)
-  end
-
-  def edit
-    # @exhibit retrieved in authorize_owner
-#     @exhibited_sections = @exhibit.exhibited_sections.find(:all, :page => {:current => params[:page]})
-    @exhibited_pages = @exhibit.exhibited_pages.find(:all, :page => {:current => params[:page]})
-    @licenses = License.find(:all)
   end
 
   def create
