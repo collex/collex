@@ -137,22 +137,16 @@ class ExhibitsController < ExhibitsBaseController
         flash[:error] = "You already have that object in your collection."
       end
     end
-    respond_to do |format|
-      page = params[:page] || 1
-      if @exhibit.update_attributes(params[:exhibit])
-        flash[:notice] = 'Exhibit was successfully updated.'
-        format.html do
-          unless er.blank?
-            redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er), :page => page)
-          else
-            redirect_to edit_exhibit_url(:id => @exhibit, :page => page)
-          end
-        end
-        format.xml  { head :ok }
+    page = params[:page] || 1
+    if @exhibit.update_attributes(params[:exhibit])
+      flash[:notice] = 'Exhibit was successfully updated.'
+      unless er.blank?
+        redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er), :page => page)
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @exhibit.errors.to_xml }
+        redirect_to edit_exhibit_url(:id => @exhibit, :page => page)
       end
+    else
+      render :action => "edit"
     end
   end
 
