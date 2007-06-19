@@ -21,7 +21,6 @@
   <% end end %>
 
   <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
-  <%= p "page #{@exhibited_page.position}" %>
   <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
   <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
     <%= hidden_field_tag "new_resource", "" %>
