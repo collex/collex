@@ -29,11 +29,11 @@ class ExhibitedResourcesController < ExhibitsBaseController
     logger.info("ExhibitedResource: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
     page = params[:page] || 1
-    redirect_to edit_exhibit_path(:id => params[:exhibit_id], :anchor => dom_id(@exhibited_resource), :page => page)
+    redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :page_id => params[:page_id], :anchor => dom_id(@exhibited_resource))
   rescue
     logger.info("Error: #{command} with id=#{params[:id]} failed.")
     flash[:error] = "There was an error moving your resource."
-    redirect_to edit_exhibit_path(:id => params[:exhibit_id], :page => page)
+    redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :page_id => params[:page_id])
   end
   private :move_item
 
@@ -57,16 +57,23 @@ class ExhibitedResourcesController < ExhibitsBaseController
   def create
     @exhibited_resource = ExhibitedResource.new(params[:exhibited_resource])
 
-    respond_to do |format|
-      if @exhibited_resource.save
-        flash[:notice] = 'Exhibited Resource was successfully created.'
-        format.html { redirect_to exhibited_resource_url(@exhibited_resource) }
-        format.xml  { head :created, :location => exhibited_resource_url(@exhibited_resource) }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @exhibited_resource.errors.to_xml }
-      end
+    unless params[:new_resource].blank?
+      uri = params[:new_resource].match('thumbnail_').post_match
+      exhibited_section_id = params[:exhibited_section_id].to_i
+      es = ExhibitedSection.find(exhibited_section_id)
+      er = ExhibitedResource.new(:uri => uri)
+      es.exhibited_resources << er
+      es.exhibited_resources.last.move_to_top
+      flash[:error] = "You now have a duplicate of that object in your collection." if es.page.exhibit.uris.include?(uri)
+      flash[:notice] = "The Resource was successfully added."
+    else
+      flash[:error] = "No Resource could be added."
     end
+    unless er.blank?
+      redirect_to edit_page_url(:exhibit_id => es.page.exhibit, :id => es.page, :anchor => dom_id(er))
+    else
+      redirect_to edit_page_url(es.page.exhibit, es.page)
+    end  
   end
 
   def update
