@@ -29,7 +29,7 @@ class ExhibitedResourcesController < ExhibitsBaseController
     logger.info("ExhibitedResource: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
     redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id], :anchor => dom_id(@exhibited_resource))
-  rescue
+  rescue Exception
     logger.info("Error: #{command} with id=#{params[:id]} failed.")
     flash[:error] = "There was an error moving your resource."
     redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id])
