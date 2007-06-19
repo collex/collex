@@ -34,7 +34,7 @@ describe ExhibitedResourcesController do
     flash[:warning].should eql("You do not have permission to edit that Exhibit!")
   end  
   
-  it "authorized 'move_higher', 'move_lower', 'move_to_top', 'move_to_bottom' should move resource and redirect to edit_pages_path" do
+  it "authorized, successfull 'move_higher', 'move_lower', 'move_to_top', 'move_to_bottom' should redirect to edit_pages_path with anchor" do
     request.session[:user] = {:username => @owner.username}
     Exhibit.stub!(:find).and_return(@exhibit)
     @exhibit.stub!(:updatable_by?).and_return(true)
@@ -45,6 +45,20 @@ describe ExhibitedResourcesController do
       post command, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @resource_1.id
       response.should be_redirect
       response.should redirect_to(edit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id, :anchor => "exhibited_resource_#{@resource_1.id}"))
+    end
+  end
+  
+  it "authorized, but with error 'move_higher', 'move_lower', 'move_to_top', 'move_to_bottom' should redirect to edit_pages_path without anchor" do
+    request.session[:user] = {:username => @owner.username}
+    Exhibit.stub!(:find).and_return(@exhibit)
+    @exhibit.stub!(:updatable_by?).and_return(true)
+    ExhibitedResource.stub!(:find).and_return(@resource_1)
+
+    [:move_higher, :move_lower, :move_to_top, :move_to_bottom].each do |command|
+      @resource_1.should_receive(command).and_raise
+      post command, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @resource_1.id
+      response.should be_redirect
+      response.should redirect_to(edit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id))
     end
   end
 
