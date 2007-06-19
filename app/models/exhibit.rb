@@ -12,7 +12,7 @@ class Exhibit < ActiveRecord::Base
   end
   
   def uris
-    self.sections.collect { |es| es.uris }.flatten
+    self.pages.collect { |page| page.uris }.flatten
   end
   
   def sections
