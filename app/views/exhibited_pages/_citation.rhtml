@@ -17,22 +17,13 @@
     
     <%- if controller.action_name == "edit"  -%>
       <%= exhibited_resource_in_place_editor_area :exhibited_resource, "annotation" %>
-      <%= link_to "Remove Item", exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :confirm => "Remove Item?", :method => :delete %>
+      <%= link_to "Remove Item", exhibited_resource_path(@exhibit, section.page, section, @exhibited_resource), :confirm => "Remove Item?", :method => :delete %>
     <%- else -%>
       <%= p @exhibited_resource.annotation %>
     <%- end -%>
   <% end %>
   <% if controller.action_name == "edit" then td do %>
-    <% p do %>
-      <%= link_to "&uarr;&uarr;", move_to_top_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
-      <br>
-      <%= link_to "&uarr;", move_higher_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
-    <% end %>
-    <% p do %>
-      <%= link_to "&darr;", move_lower_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
-      <br>
-      <%= link_to "&darr;&darr;", move_to_bottom_exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :method => "post" %>
-    <% end %>
+    <%= move_exhibited_resources_links(@exhibited_resource) %>
   <% end end %>
   
 <% end end end end %>
