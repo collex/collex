@@ -1,3 +1,18 @@
+<%- if controller.action_name == "edit" -%>
+  <%= h3 exhibited_page_in_place_editor_field(:exhibited_page, "title") %> 
+  <%= exhibited_page_in_place_editor_area :exhibited_page, "annotation" %> 
+  
+  <% p do %>
+    <%= move_exhibited_page_links(@exhibited_page) %>
+  <% end %>
+  
+  <%= p link_to("Remove Page and its Objects", page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete)%>
+<%- else -%>
+  <%= h3 @exhibited_page.title unless @exhibited_page.title.blank? %>
+  <%= p @exhibited_page.annotation unless @exhibited_page.annotation.blank? %>
+<% end %>
+
+
 <% @exhibited_page.exhibited_sections.each do |@exhibited_section| %>
     
   <%- if controller.action_name == "edit" -%>
@@ -18,5 +33,5 @@
   <%= div render( :partial => @exhibited_section.template, :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
   
   <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
-        :onDrop => "function(element){$('exhibit_form')['new_resource'].value=element.id; $('exhibit_form')['exhibited_section_id'].value='#{@exhibited_section.id}'; $('exhibit_form').submit(); return false;}") %>
+         :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
 <% end %>
