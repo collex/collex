@@ -13,4 +13,8 @@ class ExhibitedPage < ActiveRecord::Base
     sections.count >= exhibit_page_type.max_sections
   end
   
+  def uris
+    self.sections.collect { |section| section.uris }.flatten
+  end
+  
 end
