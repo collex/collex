@@ -62,4 +62,16 @@ class ExhibitedPagesController < ExhibitsBaseController
       redirect_to edit_page_path(:id => params[:page_id], :exhibit_id => @exhibit)
     end
   end
+  
+  def destroy
+    @exhibited_page = ExhibitedPage.find(params[:id])
+    if(@exhibit.pages.count <= 1)
+      flash[:error] = "This is your only page, so it can not be removed."
+      redirect_to edit_page_path(@exhibit, @exhibited_page)
+    else
+      @exhibited_page.destroy
+      flash[:notice] = "Your Page was deleted successfully."
+      redirect_to edit_page_path(@exhibit, @exhibit.pages.first)
+    end
+  end
 end
