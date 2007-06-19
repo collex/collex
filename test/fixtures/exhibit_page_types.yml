@@ -1,6 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 bibliography:
   id: 1
+  exhibit_type_id: 2
   name: Annotated Bibliography Page Type
   description: Annotated Bibliography Page Type Description
   template: base_page
@@ -8,6 +9,7 @@ bibliography:
   max_sections: 1
 illustrated_essay:
   id: 2
+  exhibit_type_id: 3
   name: Illustrated Essay Page Type
   description: Illustrated Essay Page Type Description
   template: base_page
