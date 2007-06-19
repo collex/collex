@@ -124,27 +124,10 @@ class ExhibitsController < ExhibitsBaseController
   
   def update
     # @exhibit retrieved in authorize_owner
-    unless params[:new_resource].blank?
-      uri = params[:new_resource].match('thumbnail_').post_match
-      unless @exhibit.uris.include?(uri)
-        exhibited_section_id = params[:exhibited_section_id].to_i
-        es = @exhibit.exhibited_sections.find(exhibited_section_id)
-        er = ExhibitedResource.new(:uri => uri)
-        es.exhibited_resources << er
-        es.exhibited_resources.last.move_to_top
-        @exhibit.save
-      else
-        flash[:error] = "You already have that object in your collection."
-      end
-    end
-    page = params[:page] || 1
+    page_id = params[:page_id]
     if @exhibit.update_attributes(params[:exhibit])
       flash[:notice] = 'Exhibit was successfully updated.'
-      unless er.blank?
-        redirect_to edit_exhibit_url(:id => @exhibit, :anchor => dom_id(er), :page => page)
-      else
-        redirect_to edit_exhibit_url(:id => @exhibit, :page => page)
-      end
+      redirect_to edit_page_url(:exhibit_id => @exhibit, :id => page_id)
     else
       render :action => "edit"
     end
