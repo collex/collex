@@ -2,6 +2,7 @@ class ExhibitedSection < ActiveRecord::Base
   has_many :exhibited_resources, :order => "position", :dependent => :destroy
   belongs_to :exhibit_section_type
   belongs_to :exhibited_page
+  alias :page, :exhibited_page
   acts_as_list :scope => :exhibited_page
   
   # Just show one section per page by default
