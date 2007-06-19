@@ -7,3 +7,7 @@ annotated_bibliography:
   template: annotated_bibliography
   id: 2
   description: Annotated Bibliography
+illustrated_essay: 
+  template: illustrated_essay
+  id: 3
+  description: Illustrated Essay
