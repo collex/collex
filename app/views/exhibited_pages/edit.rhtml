@@ -14,10 +14,10 @@
         <%- end end -%>
       <%- end -%>
       
-      <%= li render(:partial => "share"), :id => "exhibits/exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
-      <%= li render(:partial => "unshare"), :id => "exhibits/exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
+      <%= li render(:partial => "exhibits/share"), :id => "exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
+      <%= li render(:partial => "exhibits/unshare"), :id => "exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
       <%= li link_to('Destroy', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
-      <%= li render(:partial => "publish"), :id => "exhibits/exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
+      <%= li render(:partial => "exhibits/publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
   <% end end %>
 
   <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
