@@ -1,2 +1,17 @@
-<h1>ExhibitedPages#show</h1>
-<p>Find me in app/views/exhibited_pages/show.rhtml</p>
+<% div :id => "exhibit-body" do %>
+  <% div :id => "exhibit-menu" do ul do %>
+    <%= li exhibited_pages_links(@exhibited_page) %>
+    <%= li link_to 'Edit', edit_page_path(@exhibit, @exhibited_page) if @exhibit.updatable_by?(user_or_guest) %> 
+  <% end end %>
+
+  <%= h2 @exhibit.title %>
+  <%= p @exhibit.annotation %>
+  <%= h3 @exhibit.user.fullname %>
+  <%= p @exhibit.license.description %>
+  
+  <%= render :partial => @exhibit.template %>
+  
+  <%# Resource.find(:first).properties.each do |prop| %>
+    <%#= p "#{prop.name}: #{prop.value}"  %>
+  <%# end %>
+<% end %>
