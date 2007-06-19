@@ -1,4 +1,21 @@
 module ExhibitsHelper
+  def move_exhibited_resources_links(exhibited_resource)
+    section = exhibited_resource.exhibited_section
+    page = section.exhibited_page
+    exhibit = page.exhibit
+    
+    html = "<p>"
+    html << link_to("&uarr;&uarr;", move_to_top_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << "<br/>"
+    html << link_to("&uarr;", move_higher_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << "</p><p>"
+    html << link_to("&darr;", move_lower_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << "<br/>"
+    html << link_to("&darr;&darr;", move_to_bottom_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << "</p>"
+    html
+  end
+  
   def move_exhibited_section_links(exhibited_section)
     page = exhibited_section.exhibited_page
     exhibit = page.exhibit
