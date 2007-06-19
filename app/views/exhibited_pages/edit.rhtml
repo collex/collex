@@ -23,11 +23,14 @@
   <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
   <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
   <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
-    <%= hidden_field_tag "new_resource", "" %>
-    <%= hidden_field_tag "exhibited_section_id", "" %>
-    <%= hidden_field_tag "page", @exhibited_page.id %>
+    <%= hidden_field_tag "page_id", @exhibited_page.id %>
     <%= h3 @exhibit.user.fullname %>
     <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
+  <%- end -%>  
+  
+  <%- form_tag('exhibit', :id => "add_resource_form") do |f| -%>
+    <%= hidden_field_tag "new_resource", "" %>
+    <%= hidden_field_tag "exhibited_section_id", "" %>
   <%- end -%>  
 
   <%= render :partial => @exhibit.template %>
