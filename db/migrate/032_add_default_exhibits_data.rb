@@ -5,7 +5,7 @@ class AddDefaultExhibitsData < ActiveRecord::Migration
   end
 
   def self.up
-    ExhibitSectionType.delete(1)
+    ExhibitSectionType.delete(1) rescue nil
     exhibit_section_type = ExhibitSectionType.new do |est|
       est.id = 1
       est.description = "Citation"
@@ -14,7 +14,7 @@ class AddDefaultExhibitsData < ActiveRecord::Migration
     end
     exhibit_section_type.save!
     
-    ExhibitType.delete([1,2])
+    ExhibitType.delete([1,2]) rescue nil
     text_exhibit_type = ExhibitType.new do |tet|
       tet.id = 1
       tet.description = "Text"
@@ -30,7 +30,7 @@ class AddDefaultExhibitsData < ActiveRecord::Migration
   end
 
   def self.down
-    ExhibitSectionType.delete(1)
-    ExhibitType.delete([1,2])
+    ExhibitSectionType.delete(1) rescue nil
+    ExhibitType.delete([1,2]) rescue nil
   end
 end

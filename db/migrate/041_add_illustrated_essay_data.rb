@@ -5,7 +5,7 @@ class AddIllustratedEssayData < ActiveRecord::Migration
   end
 
   def self.up
-    ExhibitSectionType.delete([2,3,4])
+    ExhibitSectionType.delete([2,3,4]) rescue nil
     exhibit_section_type = ExhibitSectionType.new do |est|
       est.id = 2
       est.description = "Text Only"
@@ -28,7 +28,7 @@ class AddIllustratedEssayData < ActiveRecord::Migration
     end
     exhibit_section_type.save!
     
-    ExhibitType.delete([3])
+    ExhibitType.delete([3]) rescue nil
     ie_exhibit_type = ExhibitType.new do |et|
       et.id = 3
       et.description = "Illustrated Essay"
@@ -38,7 +38,7 @@ class AddIllustratedEssayData < ActiveRecord::Migration
   end
 
   def self.down
-    ExhibitSectionType.delete([2,3,4])
-    ExhibitType.delete(3)
+    ExhibitSectionType.delete([2,3,4]) rescue nil
+    ExhibitType.delete(3) rescue nil
   end
 end
