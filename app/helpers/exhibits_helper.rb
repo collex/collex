@@ -96,7 +96,7 @@ module ExhibitsHelper
   
   def exhibited_resource_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
+    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
     exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   def exhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
