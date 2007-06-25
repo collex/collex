@@ -78,10 +78,14 @@
   margin-left: 3em;
 }
 
-
 #exhibit-body div.illustration-left {
   float: left;
   margin-right: 3em;
 }
 
+#exhibit-body .illustration-caption {
+  padding: .5em;
+  background-color: #DCDCDC;
+  color: #666;
+}
 
