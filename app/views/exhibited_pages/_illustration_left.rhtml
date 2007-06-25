@@ -1,1 +1,16 @@
-Illustrated Essay with illustration on left.
+
+<%- if controller.action_name == "edit" -%>
+  <%= div thumbnail_image_tag(@exhibited_section.resources.first), :class => "illustration-left" unless @exhibited_section.resources.blank? %>
+  
+  <%- if @exhibited_section.resources.blank? -%>
+    <%= div p("Drag your new resource here."), :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
+    <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
+          :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
+  <%- end -%>
+  
+  <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %> 
+  
+<%- else -%>
+  <%= div thumbnail_image_tag(@exhibited_section.resources.first), :class => "illustration-left" unless @exhibited_section.resources.blank? %>
+  <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
+<% end %>
