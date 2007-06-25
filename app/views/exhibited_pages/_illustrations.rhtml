@@ -1,0 +1,19 @@
+<%- if controller.action_name == "edit"  -%>
+  <%= div p("Drag your new resource here."), :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
+  <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
+  :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
+<%- end -%>
+
+<% table :width => "100%" do tbody do tr do section.exhibited_resources.each do |@exhibited_resource| td :id => dom_id(@exhibited_resource) do %>
+  <%= thumbnail_image_tag(@exhibited_resource.resource, :align => 'top') %>
+    
+  <%- if controller.action_name == "edit"  -%>
+    <%= p exhibited_resource_in_place_editor_area(:exhibited_resource, "annotation"), :class => "illustration-caption" %> 
+    <%= p move_exhibited_resources_links(@exhibited_resource, :sideways => true) %>
+    <%= p link_to "Remove Item", exhibited_resource_path(@exhibit, section.page, section, @exhibited_resource), :confirm => "Remove Item?", :method => :delete %>
+  <%- else -%>
+    <%= p @exhibited_resource.annotation, :class => "illustration-caption" unless @exhibited_resource.annotation.blank?%>      
+  <%- end -%>
+    
+<% end end end end end %>
+<hr/>
