@@ -75,6 +75,13 @@
 
 #exhibit-body div.illustration-right {
   float: right;
+  margin-left: 3em;
+}
+
+
+#exhibit-body div.illustration-left {
+  float: left;
+  margin-right: 3em;
 }
 
 
