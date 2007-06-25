@@ -1,8 +1,13 @@
+<%- @exhibited_resource =  @exhibited_section.exhibited_resources.first unless @exhibited_section.exhibited_resources.blank? -%>
 
 <%- if controller.action_name == "edit" -%>
-  <%= div thumbnail_image_tag(@exhibited_section.resources.first), :class => "illustration-#{side}" unless @exhibited_section.resources.blank? %>
-  
-  <%- if @exhibited_section.resources.blank? -%>
+  <%- unless @exhibited_resource.blank?  -%>
+    <% div :class => "illustration-#{side}" do %>
+      <%= thumbnail_image_tag(@exhibited_resource.resource, :align => 'top') %>
+      <%= p exhibited_resource_in_place_editor_area(:exhibited_resource, "annotation"), :class => "illustration-caption" %> 
+    <% end %>
+  <%- end -%>  
+  <%- if @exhibited_resource.blank? -%>
     <%= div p("Drag your new resource here."), :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
     <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
           :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
@@ -11,6 +16,11 @@
   <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %> 
   
 <%- else -%>
-  <%= div thumbnail_image_tag(@exhibited_section.resources.first), :class => "illustration-#{side}" unless @exhibited_section.resources.blank? %>
+  <%- unless @exhibited_resource.blank?  -%>
+    <% div :class => "illustration-#{side}" do %>
+      <%= thumbnail_image_tag(@exhibited_resource.resource, :align => 'top') %>
+      <%= p @exhibited_resource.annotation, :class => "illustration-caption" unless @exhibited_resource.annotation.blank?%>
+    <% end %>
+  <%- end -%>
   <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
 <% end %>
