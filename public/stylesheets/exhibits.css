@@ -84,6 +84,7 @@
 }
 
 #exhibit-body .illustration-caption {
+  max-width: 100px;  
   padding: .5em;
   background-color: #DCDCDC;
   color: #666;
