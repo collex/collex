@@ -1,16 +1,6 @@
-<% table do tbody do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
-  <%= td thumbnail_image_tag(@exhibited_resource.resource) %>
-  
-  <% td do %>
 
-    <%- if controller.action_name == "edit"  -%>
-      <%= exhibited_resource_in_place_editor_area :exhibited_resource, "annotation" %>
-      <%= link_to "Remove Item", exhibited_resource_path(:exhibit_id => @exhibit, :exhibited_section_id => section, :id => @exhibited_resource, :page => @exhibited_sections.page), :confirm => "Remove Item?", :method => :delete %>
-    <%- else -%>
-      <%= p @exhibited_resource.annotation %>
-    <%- end -%>
-  
-  <% end %>
-    
-<% end end end end %>
-<hr/>
+<%- if controller.action_name == "edit" -%>
+  <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %>   
+<%- else -%>
+  <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
+<% end %>
