@@ -72,3 +72,9 @@
 #exhibit-body span.label {
   color:grey;
 }
+
+#exhibit-body div.illustration-right {
+  float: right;
+}
+
+
