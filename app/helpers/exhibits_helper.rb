@@ -1,18 +1,21 @@
 module ExhibitsHelper
-  def move_exhibited_resources_links(exhibited_resource)
+  def move_exhibited_resources_links(exhibited_resource, options = {})
+    options = {:sideways => false}.merge(options).symbolize_keys
     section = exhibited_resource.exhibited_section
     page = section.exhibited_page
     exhibit = page.exhibit
+    up_arrow = options[:sideways] ? "&larr;" : "&uarr;"
+    down_arrow = options[:sideways] ? "&rarr;" : "&darr;"
     
-    html = "<p>"
-    html << link_to("&uarr;&uarr;", move_to_top_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
-    html << "<br/>"
-    html << link_to("&uarr;", move_higher_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
-    html << "</p><p>"
-    html << link_to("&darr;", move_lower_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
-    html << "<br/>"
-    html << link_to("&darr;&darr;", move_to_bottom_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
-    html << "</p>"
+    html = options[:sideways] ? "<span>" : "<p>"
+    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << (options[:sideways] ? "&nbsp;" : "<br/>")
+    html << link_to("#{up_arrow}", move_higher_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << (options[:sideways] ? "&nbsp;&nbsp;" : "</p><p>")
+    html << link_to("#{down_arrow}", move_lower_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << (options[:sideways] ? "&nbsp;" : "<br/>")
+    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibited_resource_path(exhibit, page, section, exhibited_resource), :method => "post")
+    html << (options[:sideways] ? "</span>" : "<p/>")
     html
   end
   
