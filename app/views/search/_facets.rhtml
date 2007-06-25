@@ -132,6 +132,18 @@ function yearValidation(theForm, event)
 		  <td>&nbsp;</td>
 	   </tr>
 
+    <% fc = session[:constraints].find {|constraint| constraint.is_a?(FreeCultureConstraint) } %>
+ 		<tr>
+ 	    <th align="left">free culture:</th>
+ 	    <td>
+ 	      <% form_tag ({:action => :toggle_freeculture_facet}) do %>
+ 	      <%= check_box_tag "freeculture", "on", fc && fc.inverted, {:onchange => 'this.form.submit()'}-%>
+ 	      <% end %>
+ 	    </td>
+ 	    <td align="center"></td>
+ 		  <td>&nbsp;</td>
+ 	   </tr>
+
 		<tr>
 	             <th align="left">name:</th>
 	              <td><%= start_form_tag({:controller => "search", :action => :add_agent_facet}, {:name => 'agentform'}) -%>

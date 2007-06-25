@@ -92,7 +92,12 @@ class SearchController < ApplicationController
    end
    
    def toggle_freeculture_facet
-     session[:constraints] << FreeCultureConstraint.new(:inverted => true)
+     fc = session[:constraints].find {|constraint| constraint.is_a?(FreeCultureConstraint) }
+     if !fc
+       session[:constraints] << FreeCultureConstraint.new(:inverted => true)
+     else
+       fc.inverted = !fc.inverted
+     end
      redirect_to :action => 'browse'
    end
    
