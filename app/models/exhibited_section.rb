@@ -1,12 +1,16 @@
 class ExhibitedSection < ActiveRecord::Base
-  has_many :exhibited_resources, :order => "position", :dependent => :destroy
+  # exhibited_texts and exhibited_resources are subclasses of exhibited_items
+  has_many :exhibited_items, :order => "position", :dependent => :destroy
+  alias_method :items, :exhibited_items
+  
+  has_many :exhibited_texts, :order => "position"
+  alias_method :texts, :exhibited_texts
+  has_many :exhibited_resources, :order => "position"
+  
   belongs_to :exhibit_section_type
   belongs_to :exhibited_page
   alias_method :page, :exhibited_page
   acts_as_list :scope => :exhibited_page
-  
-  # Just show one section per page by default
-#   set_page_size 1
   
   def template
     self.exhibit_section_type.template
