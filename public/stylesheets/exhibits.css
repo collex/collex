@@ -73,6 +73,12 @@
   color:grey;
 }
 
+#exhibit-body div.section {
+  border: 1px solid #999;
+  padding: 1em;
+  margin: 1em 0 1em 0;
+}
+
 #exhibit-body div.illustration-right {
   float: right;
   margin-left: 3em;
