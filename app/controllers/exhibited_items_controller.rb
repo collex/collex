@@ -68,12 +68,13 @@ class ExhibitedItemsController < ExhibitsBaseController
   def destroy
     @exhibited_item = ExhibitedItem.find(params[:id])
     @exhibit = Exhibit.find(params[:exhibit_id])
+    @exhibited_page = ExhibitedPage.find(params[:page_id])
     @exhibited_item.destroy
 
     respond_to do |format|
       flash[:notice] = 'Exhibited Item was successfully removed.'
       page = params[:page] || 1
-      format.html { redirect_to edit_exhibit_url(:id => @exhibit, :page => page) }
+      format.html { redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibited_page, :anchor => dom_id(@exhibited_item.section)) }
       format.xml  { head :ok }
     end
   end  
