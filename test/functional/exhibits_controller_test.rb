@@ -10,7 +10,7 @@ class ExhibitsController; def rescue_action(e) raise e end; end
 # NOTE this test relies on FormTestHelper plugin:
 # http://form-test-helper.googlecode.com/svn/form_test_helper
 class ExhibitsControllerTest < Test::Unit::TestCase
-  fixtures :exhibits, :exhibited_resources, :exhibited_sections, :users
+  fixtures :exhibits, :exhibited_items, :exhibited_sections, :users
   fixtures :licenses, :exhibit_section_types, :exhibit_types
 
   def setup

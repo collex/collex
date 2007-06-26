@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 51) do
+ActiveRecord::Schema.define(:version => 52) do
 
   create_table "constraints", :force => true do |t|
     t.column "search_id", :integer
@@ -44,6 +44,15 @@ ActiveRecord::Schema.define(:version => 51) do
     t.column "template",    :text
   end
 
+  create_table "exhibited_items", :force => true do |t|
+    t.column "exhibited_section_id", :integer, :null => false
+    t.column "citation",             :string
+    t.column "annotation",           :text
+    t.column "position",             :integer
+    t.column "uri",                  :string
+    t.column "type",                 :string
+  end
+
   create_table "exhibited_pages", :force => true do |t|
     t.column "exhibit_id",           :integer
     t.column "exhibit_page_type_id", :integer
@@ -52,17 +61,9 @@ ActiveRecord::Schema.define(:version => 51) do
     t.column "annotation",           :string
   end
 
-  create_table "exhibited_resources", :force => true do |t|
-    t.column "exhibited_section_id", :integer, :default => 0, :null => false
-    t.column "citation",             :string
-    t.column "annotation",           :text
-    t.column "position",             :integer
-    t.column "uri",                  :string
-  end
-
   create_table "exhibited_sections", :force => true do |t|
     t.column "exhibited_page_id",       :integer
-    t.column "exhibit_section_type_id", :integer, :default => 0, :null => false
+    t.column "exhibit_section_type_id", :integer, :null => false
     t.column "position",                :integer
     t.column "title",                   :string
     t.column "annotation",              :text
@@ -86,7 +87,7 @@ ActiveRecord::Schema.define(:version => 51) do
 
   create_table "interpretations", :force => true do |t|
     t.column "user_id",    :integer
-    t.column "object_uri", :text
+    t.column "object_uri", :string,   :limit => 512
     t.column "annotation", :text
     t.column "created_on", :datetime
     t.column "updated_on", :datetime

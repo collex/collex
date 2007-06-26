@@ -5,7 +5,7 @@ require 'exhibited_sections_controller'
 class ExhibitedSectionsController; def rescue_action(e) raise e end; end
 
 class ExhibitedSectionsControllerTest < Test::Unit::TestCase
-  fixtures :exhibits, :exhibited_pages, :exhibited_resources, :exhibited_sections, :users
+  fixtures :exhibits, :exhibited_pages, :exhibited_items, :exhibited_sections, :users
   fixtures :licenses, :exhibit_page_types, :exhibit_section_types, :exhibit_types
   def setup
     @controller = ExhibitedSectionsController.new
