@@ -1,6 +1,0 @@
-
-<%- if controller.action_name == "edit" -%>
-  <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %>   
-<%- else -%>
-  <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
-<% end %>
