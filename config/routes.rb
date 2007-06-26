@@ -42,6 +42,8 @@ ActionController::Routing::Routes.draw do |map|
                                      :move_lower        => :post, 
                                      :move_to_top       => :post, 
                                      :move_to_bottom    => :post } do |section|
+        section.resources :exhibited_texts, 
+                          :member => { :update_annotation => :post}
         section.resources :exhibited_resources, 
                           :member => { :update_annotation => :post}
         section.resources :exhibited_items, 
