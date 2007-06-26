@@ -48,6 +48,12 @@ ActionController::Routing::Routes.draw do |map|
                                        :move_lower        => :post, 
                                        :move_to_top       => :post, 
                                        :move_to_bottom    => :post }
+        section.resources :exhibited_items, 
+                          :member => { :update_annotation => :post, 
+                                       :move_higher       => :post, 
+                                       :move_lower        => :post, 
+                                       :move_to_top       => :post, 
+                                       :move_to_bottom    => :post }
       end
     end
   end
