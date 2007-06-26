@@ -25,29 +25,6 @@ class ExhibitedItemsController < ExhibitsBaseController
     redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id])
   end
   private :move_item
-  def create
-    @exhibited_item = ExhibitedItem.new(params[:exhibited_item])
-    exhibited_section_id = params[:exhibited_section_id].to_i
-    es = ExhibitedSection.find(exhibited_section_id)
-
-    if params[:new_item].blank?
-      er = ExhibitedItem.new
-      flash[:notice] = "The Text area was successfully created."
-      #flash[:error] = "You now have a duplicate of that object in your collection." if es.page.exhibit.uris.include?(uri)
-    else
-      uri = params[:new_item].match('thumbnail_').post_match
-      er = ExhibitedItem.new(:uri => uri)
-      flash[:notice] = "The Item was successfully added."
-      # flash[:error] = "No Item could be added."
-    end  
-    es.exhibited_items << er
-    es.exhibited_items.last.move_to_top
-    unless er.blank?
-      redirect_to edit_page_url(:exhibit_id => es.page.exhibit, :id => es.page, :anchor => dom_id(er))
-    else
-      redirect_to edit_page_url(es.page.exhibit, es.page)
-    end  
-  end
 
   def update
     @exhibited_item = ExhibitedItem.find(params[:id])
