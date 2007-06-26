@@ -12,7 +12,7 @@ module ExhibitedPagesHelper
     links << link_to(h("<"), __send__(route_method, exhibit, exhibit.pages[index - 1])) + "&nbsp;" unless index < 1
     links << "#{position}"
     links << "&nbsp;" + link_to(h(">"), __send__(route_method, exhibit, exhibit.pages[index + 1])) unless index >= max_index
-    links << "&nbsp;" + link_to(exhibit.pages.count, __send__(route_method, exhibit, exhibit.pages[-1])) unless index >= max_index
+    links << "&nbsp;" + link_to(exhibit.pages.size, __send__(route_method, exhibit, exhibit.pages[-1])) unless index >= max_index
     links
   end
 end
