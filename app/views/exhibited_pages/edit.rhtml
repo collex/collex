@@ -26,10 +26,14 @@
     <%= hidden_field_tag "page_id", @exhibited_page.id %>
     <%= h3 @exhibit.user.fullname %>
     <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
-  <%- end -%>  
+  <%- end -%>
   
   <%- form_tag('exhibit', :id => "add_resource_form") do |f| -%>
     <%= hidden_field_tag "new_resource", "" %>
+    <%= hidden_field_tag "exhibited_section_id", "" %>
+  <%- end -%>  
+  
+  <%- form_tag('exhibit', :id => "add_text_form") do |f| -%>
     <%= hidden_field_tag "exhibited_section_id", "" %>
   <%- end -%>  
 
