@@ -13,7 +13,7 @@
 <% end %>
 
 
-<% @exhibited_page.exhibited_sections.each do |@exhibited_section| %>
+<% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section" do %>
 
   <%= div render( :partial => @exhibited_section.template, :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
   
@@ -25,4 +25,4 @@
     <%= p link_to("Remove Section and its Objects", exhibited_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
   <% end %>
 
-<% end %>
+<% end end %>
