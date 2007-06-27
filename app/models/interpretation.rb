@@ -22,7 +22,6 @@ class Interpretation < ActiveRecord::Base
   def update_solr
     solr = CollexEngine.new
     solr.update(user.username, object_uri, tags.collect { |tag| tag.name }, annotation)
-    puts "****** #{solr_commit_disabled}"
     solr.commit unless solr_commit_disabled
   end
   
