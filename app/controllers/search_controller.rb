@@ -119,8 +119,10 @@ class SearchController < ApplicationController
        end
        interpretation.annotation =  params[:annotation]
        interpretation.tag_list = params[:tags]
+       interpretation.solr_commit_disabled = true
        interpretation.save!
      end
+     CollexEngine.new.commit
      
      if request.xhr?
        render_text "collected"

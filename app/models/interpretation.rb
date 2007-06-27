@@ -6,7 +6,9 @@ class Interpretation < ActiveRecord::Base
   belongs_to :user
   has_many :taggings, :dependent => :destroy
   has_many :tags, :through => :taggings
-
+  
+  attr_accessor :solr_commit_disabled
+  
   def tag_list
     tags.map { |t| t.name }.join(" ")
   end
@@ -20,12 +22,13 @@ class Interpretation < ActiveRecord::Base
   def update_solr
     solr = CollexEngine.new
     solr.update(user.username, object_uri, tags.collect { |tag| tag.name }, annotation)
-    solr.commit
+    puts "****** #{solr_commit_disabled}"
+    solr.commit unless solr_commit_disabled
   end
   
   def remove_from_solr
     solr = CollexEngine.new
     solr.remove(user.username, object_uri)
-    solr.commit
+    solr.commit unless solr_commit_disabled
   end
 end

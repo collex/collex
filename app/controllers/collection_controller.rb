@@ -44,10 +44,12 @@ class CollectionController < ApplicationController
             end
             interpretation.annotation =  annotation
             interpretation.tag_list = tags
+            interpretation.solr_commit_disabled = true
             interpretation.save!
           end
         end
      end     
+     CollexEngine.new.commit
 
      render_text <<-CLOSE
        <html>
