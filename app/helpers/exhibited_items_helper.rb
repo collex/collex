@@ -1,0 +1,2 @@
+module ExhibitedItemsHelper
+end

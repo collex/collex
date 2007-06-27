@@ -14,52 +14,8 @@ describe ExhibitedResourcesController do
     @owner.stub!(:username).and_return("owner")
     @viewer = mock("viewer")
     @viewer.stub!(:username).and_return("viewer")
-  end
+  end 
   
 
-  it "'move_higher' without logged in user should redirect to login" do
-    post :move_higher
-    response.should be_redirect
-    flash[:notice].should eql("please log in")
-    response.should redirect_to(:controller => :login, :action => :login)
-  end
-  
-  it "'move_higher' with logged in user but not authorization should redirect to exhibits_path" do
-    request.session[:user] = {:username => @viewer.username}
-    Exhibit.stub!(:find).and_return(@exhibit)
-    @exhibit.should_receive(:updatable_by?).and_return(false)
-    post :move_higher, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @resource_1.id
-    response.should be_redirect
-    response.should redirect_to(exhibits_path)
-    flash[:warning].should eql("You do not have permission to edit that Exhibit!")
-  end  
-  
-  it "authorized, successfull 'move_higher', 'move_lower', 'move_to_top', 'move_to_bottom' should redirect to edit_pages_path with anchor" do
-    request.session[:user] = {:username => @owner.username}
-    Exhibit.stub!(:find).and_return(@exhibit)
-    @exhibit.stub!(:updatable_by?).and_return(true)
-    ExhibitedResource.stub!(:find).and_return(@resource_1)
-
-    [:move_higher, :move_lower, :move_to_top, :move_to_bottom].each do |command|
-      @resource_1.should_receive(command).and_return(true)
-      post command, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @resource_1.id
-      response.should be_redirect
-      response.should redirect_to(edit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id, :anchor => "exhibited_resource_#{@resource_1.id}"))
-    end
-  end
-  
-  it "authorized, but with error 'move_higher', 'move_lower', 'move_to_top', 'move_to_bottom' should redirect to edit_pages_path without anchor" do
-    request.session[:user] = {:username => @owner.username}
-    Exhibit.stub!(:find).and_return(@exhibit)
-    @exhibit.stub!(:updatable_by?).and_return(true)
-    ExhibitedResource.stub!(:find).and_return(@resource_1)
-
-    [:move_higher, :move_lower, :move_to_top, :move_to_bottom].each do |command|
-      @resource_1.should_receive(command).and_raise
-      post command, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @resource_1.id
-      response.should be_redirect
-      response.should redirect_to(edit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id))
-    end
-  end
 
 end

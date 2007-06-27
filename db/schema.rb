@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 52) do
+ActiveRecord::Schema.define(:version => 53) do
 
   create_table "constraints", :force => true do |t|
     t.column "search_id", :integer
