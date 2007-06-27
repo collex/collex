@@ -4,12 +4,11 @@ class UpdateIllustratedEssaysData < ActiveRecord::Migration
 
   def self.up
     ExhibitSectionType.delete([2,3,4]) rescue nil
-    ExhibitSectionType.find_by_template("illustrations") do |ext|
-      ext.name = "Generic Illustrated Essay Template"
-      ext.template = "ie_generic"
-      ext.description = "Generic Illustrated Essay Template"
-      ext.save!
-    end
+    ext = ExhibitSectionType.find_by_template("illustrations")
+    ext.name = "Generic Illustrated Essay Template"
+    ext.template = "ie_generic"
+    ext.description = "Generic Illustrated Essay Template"
+    ext.save!
   end
 
   def self.down
