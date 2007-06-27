@@ -7,7 +7,7 @@
     <% categories.sort{|x,y| y[:count] <=> x[:count]}.each do |category| %>
       <% if category[:count] > 0 %>
         <tr id="cat_<%=category[:id]%>" <% if !path.empty? %> class="<%= path.join(' ')%> <%=path.last%>_child noshow"<% end %>>
-          <th align="left"><%if !labeled %>sites:<%end
+          <th align="left"><%if !labeled %>resources:<%end
             labeled = true%></th>
           <% if category[:type] == :value %>
             <td style="padding-left: <%=depth %>em;">
