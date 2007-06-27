@@ -15,7 +15,7 @@
     <%= p move_exhibited_items_links(@exhibited_item, :sideways => true) %>
     <%= p link_to "Remove Item", exhibited_item_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
   <%- else -%>
-    <%= p @exhibited_item.annotation, :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") if @exhibited_item.is_a?(ExhibitedResource) %>      
+    <%= p @exhibited_item.annotation, :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %>      
   <%- end -%>
     
 <% end end end end end %>
