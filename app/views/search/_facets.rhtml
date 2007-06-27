@@ -32,7 +32,7 @@
 
     	<tr>
                  <th align="left">phrase:</th>
-                  <td><%= start_form_tag({:controller => "search", :action => :add_expression}, {:name => 'phraseform'}) -%><%= text_field_with_suggest :field, :content,  {:size=>20}, {:min_chars => 2}-%>&nbsp;<span class="help" title="header=[full text search] body=[is available for most resources. Individual words are AND'ed together by default. Place phrases in quotes. The OR operator, and * wildcards are permitted.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span><%= end_form_tag -%></td>
+                  <td class="nowrap"><%= start_form_tag({:controller => "search", :action => :add_expression}, {:name => 'phraseform'}) -%><%= text_field_with_suggest :field, :content,  {:size=>20}, {:min_chars => 2}-%><span class="help" title="header=[full text search] body=[is available for most resources. Individual words are AND'ed together by default. Place phrases in quotes. The OR operator, and * wildcards are permitted.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">&nbsp;?&nbsp;</span><%= end_form_tag -%></td>
                   <td align="center"><%= link_to_function "add", "document.forms['phraseform'].submit();" -%></td>
 				  <td>&nbsp;</td>
                </tr>
@@ -92,8 +92,8 @@
     end %>
 		<tr>
 	             <th align="left">year:</th>
-	              <td><%= start_form_tag({:controller => "search", :action => :add_year_facet}, {:name => 'yearform'}) -%>
-	    <%= text_field_with_suggest :field, :year, {:size => 20},{:min_chars => 2} %>&nbsp;<span class="help" id="year-help" title="header=[year search] body=[type a four digit year, select a valid option from the drop-down menu, and click 'add'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
+	              <td class="nowrap"><%= start_form_tag({:controller => "search", :action => :add_year_facet}, {:name => 'yearform'}) -%>
+	    <%= text_field_with_suggest :field, :year, {:size => 20},{:min_chars => 2} %><span class="help" id="year-help" title="header=[year search] body=[type a four digit year, select a valid option from the drop-down menu, and click 'add'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">&nbsp;?&nbsp;</span><%= end_form_tag -%></td>
 <script>
 function yearValidation(theForm, event)
 {
@@ -136,8 +136,8 @@ function yearValidation(theForm, event)
 
 		<tr>
 	             <th align="left">name:</th>
-	              <td><%= start_form_tag({:controller => "search", :action => :add_agent_facet}, {:name => 'agentform'}) -%>
-	    <%= text_field_with_suggest :agent, :name, {:size => 20},{:min_chars => 2} %>&nbsp;<span class="help" title="header=[name search] body=[type the name of a person or institution, select a valid option from the drop-down menu, and click 'add.'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span><%= end_form_tag -%></td>
+	              <td class="nowrap"><%= start_form_tag({:controller => "search", :action => :add_agent_facet}, {:name => 'agentform'}) -%>
+	    <%= text_field_with_suggest :agent, :name, {:size => 20},{:min_chars => 2} %><span class="help" title="header=[name search] body=[type the name of a person or institution, select a valid option from the drop-down menu, and click 'add.'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">&nbsp;?&nbsp;</span><%= end_form_tag -%></td>
 	    <td align="center"><%= link_to_function "add", "document.forms['agentform'].submit();" -%></td>
 		  <td>&nbsp;</td>
 	   </tr>
@@ -150,7 +150,7 @@ function yearValidation(theForm, event)
        <% if freq > 0 %>
    		 <tr>
          <th align="left">limit to:</th>
-         <td>Citation Records &nbsp;<span class="help" title="header=[citation records] body=[these are bibliographical entries such as those you might find in a library catalog or in the MLA bibliography.  they do not necessarily lead to web-accessible resources.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span></td>
+         <td>Citation Records<span class="help" title="header=[citation records] body=[these are bibliographical entries such as those you might find in a library catalog or in the MLA bibliography.  they do not necessarily lead to web-accessible resources.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] offsety=[-100]">&nbsp;?&nbsp;</span></td>
          <td align="center" nowrap="true">
            <%= link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => 'Citation'}%>
            <% if not constraint_exists %> or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => 'genre', :value => 'Citation', :invert => true}%><% end %>
@@ -166,7 +166,7 @@ function yearValidation(theForm, event)
        <% if freq > 0 %>   
     	 <tr>
           <th align="left"><% if citation_generated %>&nbsp;<% else %> limit to:<% end %></th>
-          <td>Free Culture objects &nbsp;<span class="help" title="header=[free culture] body=[these are resources freely accessible to any users on the web.  toggling this constraint to negative (-) limits your search to commercial or subscriptions-based objects.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]  offsety=[-50]">?</span></td>
+          <td>Free Culture objects<span class="help" title="header=[free culture] body=[these are resources freely accessible to any users on the web.  toggling this constraint to negative (-) limits your search to commercial or subscriptions-based objects.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] offsety=[-100]">&nbsp;?&nbsp;</span></td>
           <td align="center" nowrap="true">
             <%= link_to_unless fc, "#{fc ? '' : '+ '}#{nbpluralize(freq, 'item')}", {:controller=>"search", :action => 'add_freeculture_facet'}%>
             <% if not fc %> or <%= link_to "-", {:controller => "search", :action => 'add_freeculture_facet', :invert => true}%><% end %>
