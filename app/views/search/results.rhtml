@@ -16,7 +16,7 @@
               <% if constraint.is_a?(FreeCultureConstraint) %>
               <tr>
                 <th align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                 <td><%=link_to (constraint.inverted ? "+" : "-"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>free culture</td>
+                 <td><%=link_to (constraint.inverted ? "+" : "-"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>Free Culture</td>
                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
               </tr>
               <% elsif constraint.is_a?(ExpressionConstraint) %>

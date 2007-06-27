@@ -141,4 +141,12 @@ module ApplicationHelper
   def site(code)
     Site.find_by_code(code)
   end
+  
+  def pie_by_percent(percentage)
+    %Q~<img src="/images/pie_#{percentage}.png" title="header=[#{percentage} per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/>~
+  end
+  
+  def pie(amount, total)
+    pie_by_percent((100 * amount).quo(total.to_i).ceil)
+  end
 end
