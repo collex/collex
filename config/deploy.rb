@@ -158,6 +158,7 @@ task :setup_shared, :roles => [:app, :web, :db] do
   CMD
 end
 
+# TODO this needs to check the remote system!
 def rails_release_up_to_date?
   /#{rails_release}/ =~ `svn propget svn:externals vendor/`
 end
