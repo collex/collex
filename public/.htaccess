@@ -1,6 +1,6 @@
 # General Apache options
 AddHandler fastcgi-script .fcgi
-Options +FollowSymLinks +ExecCGI +Indexes
+Options +FollowSymLinks +ExecCGI
 
 # If you don't want Rails to look in certain directories,
 # use the following rewrite rules so that Apache won't rewrite certain requests
@@ -24,6 +24,21 @@ RewriteEngine On
 # Example:
 #   Alias /myrailsapp /path/to/myrailsapp/public
 #   RewriteBase /myrailsapp
+
+RewriteCond %{REQUEST_URI} ^/about*
+RewriteRule .* - [L]
+
+RewriteCond %{REQUEST_URI} ^/contributors*
+RewriteRule .* - [L]
+
+RewriteCond %{REQUEST_URI} ^/events*
+RewriteRule .* - [L]
+
+RewriteCond %{REQUEST_URI} ^/join*
+RewriteRule .* - [L]
+
+RewriteCond %{REQUEST_URI} ^/tools*
+RewriteRule .* - [L]
 
 RewriteRule ^$ index.html [QSA]
 RewriteRule ^([^.]+)$ $1.html [QSA]
