@@ -8,7 +8,7 @@
 <%- end -%>
 
 <% table :width => "100%", :class => "items" do tbody do tr do section.exhibited_items.each do |@exhibited_item| td :id => dom_id(@exhibited_item) do %>
-  <%= thumbnail_image_tag(@exhibited_item.resource, :align => 'top') if @exhibited_item.is_a?(ExhibitedResource) %>
+  <%= link_to thumbnail_image_tag(@exhibited_item.resource, :align => 'top'), @exhibited_item.url, :target => "_blank" if @exhibited_item.is_a?(ExhibitedResource) %>
     
   <%- if controller.action_name == "edit" -%>
     <%= p exhibited_resource_in_place_editor_area(:exhibited_item, "annotation"), :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %> 
