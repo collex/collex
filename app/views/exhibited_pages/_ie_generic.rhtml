@@ -7,7 +7,7 @@
   :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
 <%- end -%>
 
-<% table :width => "100%" do tbody do tr do section.exhibited_items.each do |@exhibited_item| td :id => dom_id(@exhibited_item) do %>
+<% table :width => "100%", :class => "items" do tbody do tr do section.exhibited_items.each do |@exhibited_item| td :id => dom_id(@exhibited_item) do %>
   <%= thumbnail_image_tag(@exhibited_item.resource, :align => 'top') if @exhibited_item.is_a?(ExhibitedResource) %>
     
   <%- if controller.action_name == "edit" -%>
