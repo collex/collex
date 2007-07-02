@@ -96,3 +96,6 @@
   color: #666;
 }
 
+#exhibit-body img {
+  border: 0;
+}
