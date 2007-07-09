@@ -1,4 +1,5 @@
 class ExhibitedItemsController < ExhibitsBaseController
+  helper :exhibits
   in_place_edit_for_resource :exhibited_item, :annotation
 
   def move_higher
