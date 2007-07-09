@@ -102,22 +102,25 @@ module ExhibitsHelper
     in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
     exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
-  def exhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def Xexhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
     in_place_editor_options[:cols] = 60
     exhibited_resource_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   
-  def ZXexhibited_resource_in_place_editor_area(object, method, tag_options = {})
+  def exhibited_resource_in_place_editor_area(object, method, tag_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
+    update_id = tag_options[:update_id]
+    value = tag.object.__send__(method) || tag_options[:value] || "(No annotation given)"
     url = eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})")
     html = Builder::XmlMarkup.new(:indent => 2)
-    html.span(tag.object.__send__(method), :id => "text_#{tag.object.id}", :onclick => "Element.show('mce_#{tag.object.id}'); Element.hide('text_#{tag.object.id}')")
-    html.span(:style => "display: none;", :id => "mce_#{tag.object.id}") do
+    html.span(value, :id => "text_#{object}_#{tag.object.id}", :onclick => "Element.show('mce_#{object}_#{tag.object.id}'); Element.hide('text_#{object}_#{tag.object.id}')")
+    html.span(:style => "display: none;", :id => "mce_#{object}_#{tag.object.id}") do
       html << form_remote_tag(:url => url, :class => "tiny-mce-on")
-      html << text_area(object, method, :class => "tiny-mce")
+      html << text_area_tag(:value, value, :class => "tiny-mce")
+      html << hidden_field_tag(:update_id, update_id)
       html.input(:type => "submit", :value => "Save")
-      html << link_to_function("cancel", "Element.hide('mce_#{tag.object.id}'); Element.show('text_#{tag.object.id}')")
+      html << link_to_function("cancel", "Element.hide('mce_#{object}_#{tag.object.id}'); Element.show('text_#{object}_#{tag.object.id}')")
     end
     html << "</form>"
 #     render :partial => "tiny_mce_editor", :locals => {:url => url, :object => object, :method => method, :ojbect_id => tag.object.id}
