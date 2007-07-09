@@ -11,7 +11,7 @@
   <%= link_to thumbnail_image_tag(@exhibited_item.resource, :align => 'top'), @exhibited_item.url, :target => "_blank" if @exhibited_item.is_a?(ExhibitedResource) %>
     
   <%- if controller.action_name == "edit" -%>
-    <%= p exhibited_resource_in_place_editor_area(:exhibited_item, "annotation"), :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %> 
+    <%= p exhibited_resource_in_place_editor_area(:exhibited_item, "annotation", :update_id => "mce_container_exhibited_item_#{@exhibited_item.id}"), :id => "mce_container_exhibited_item_#{@exhibited_item.id}", :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %> 
     <%= p move_exhibited_items_links(@exhibited_item, :sideways => true) %>
     <%= p link_to "Remove Item", exhibited_item_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
   <%- else -%>
