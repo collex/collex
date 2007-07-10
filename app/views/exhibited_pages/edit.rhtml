@@ -28,12 +28,12 @@
     <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
   <%- end -%>
   
-  <%- form_tag('exhibit', :id => "add_resource_form") do |f| -%>
+  <%- form_tag('exhibit', {:id => "add_resource_form"}) do -%>
     <%= hidden_field_tag "new_resource", "" %>
     <%= hidden_field_tag "exhibited_section_id", "" %>
   <%- end -%>  
   
-  <%- form_tag('exhibit', :id => "add_text_form") do |f| -%>
+  <%- form_tag('exhibit', :id => "add_text_form") do -%>
     <%= hidden_field_tag "exhibited_section_id", "" %>
   <%- end -%>  
 
