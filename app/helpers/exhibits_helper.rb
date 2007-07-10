@@ -108,6 +108,7 @@ module ExhibitsHelper
     exhibited_resource_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   
+  # TODO clean this up, add error handling/reporting
   def exhibited_resource_in_place_editor_area(object, method, tag_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
     update_id = tag_options[:update_id]
