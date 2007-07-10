@@ -21,7 +21,7 @@
   <% end end %>
 
   <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
-  <%= exhibit_in_place_editor_area :exhibit, "annotation" %> 
+  <%= exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
   <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
     <%= hidden_field_tag "page_id", @exhibited_page.id %>
     <%= h3 @exhibit.user.fullname %>

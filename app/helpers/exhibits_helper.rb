@@ -102,20 +102,29 @@ module ExhibitsHelper
     in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
     exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
-  def Xexhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def exhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
     in_place_editor_options[:cols] = 60
     exhibited_resource_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
   end
   
   # TODO clean this up, add error handling/reporting
-  def exhibited_resource_in_place_editor_area(object, method, tag_options = {})
+  def exhibits_tiny_mce_in_place_editor(object, method, tag_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
     mce_id = "mce_#{object}_#{tag.object.id}"
     text_id = "text_#{object}_#{tag.object.id}"
     update_id = text_id
     value = tag.object.__send__(method) || tag_options[:value] || "(No annotation given)"
-    url = eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})")
+    
+    url = case object
+    when :exhibited_item
+      eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})")
+    when :exhibited_page
+      eval("update_#{method}_page_path(#{tag.object.exhibit.id}, #{tag.object.id})")
+    when :exhibit
+      eval("update_#{method}_#{object}_path(#{tag.object.id})")
+    end
+    
     html = Builder::XmlMarkup.new(:indent => 2)
     html << span(value, :id => text_id, :onclick => "Element.show('#{mce_id}'); Element.hide('#{text_id}')", :onmouseover => "this.style.backgroundColor = '#ffff99'; this.title = 'Click to edit';", :onmouseout => "this.style.backgroundColor = '#ffffff';")
     html.span(:style => "display: none;", :id => mce_id) do
@@ -127,4 +136,8 @@ module ExhibitsHelper
     html << "</form>"
     html.to_s
   end
+  
+  
+  
+  
 end
