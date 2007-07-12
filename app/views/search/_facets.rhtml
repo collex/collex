@@ -162,7 +162,7 @@ function yearValidation(theForm, event)
    	   end %>
    	   
   	   <% fc = session[:constraints].find {|constraint| constraint.is_a?(FreeCultureConstraint) } %>
-       <% freq = @results["facets"]['freeculture']['<unspecified>'] || 0 %>  
+       <% freq = @results["facets"]['freeculture']['<unspecified>'] || 0 rescue 0 %>  
        <% if freq > 0 %>   
     	 <tr>
           <th align="left"><% if citation_generated %>&nbsp;<% else %> limit to:<% end %></th>
