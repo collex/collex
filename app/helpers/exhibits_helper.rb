@@ -128,10 +128,10 @@ module ExhibitsHelper
     html = Builder::XmlMarkup.new(:indent => 2)
     html << span(value, :id => text_id, :onclick => "this.style.backgroundColor = '#ffffff';Element.show('#{mce_id}'); Element.hide('#{text_id}')", :onmouseover => "this.style.backgroundColor = '#ffff99'; this.title = 'Click to edit';", :onmouseout => "this.style.backgroundColor = '#ffffff';")
     html.span(:style => "display: none;", :id => mce_id) do
+      html << link_to_function("cancel", "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
       html << form_remote_tag(:url => url, :class => "tiny-mce-on", :update => text_id, :complete => "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
       html << text_area_tag(:value, value, :id => "text_area_#{object}_#{tag.object.id}", :class => "tiny-mce")
       html << hidden_field_tag(:update_id, update_id)
-      html << link_to_function("cancel", "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
       html << "</form>"
     end
   end
