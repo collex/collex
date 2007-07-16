@@ -40,6 +40,9 @@
   border: 1px solid #999;
   padding: 10px 15px;
 }
+#exhibit-body table td, #exhibit-body table th {
+  vertical-align: top;
+}
 #exhibit-body.edit, #exhibit-menu.edit {
   border-color: red;
 }
