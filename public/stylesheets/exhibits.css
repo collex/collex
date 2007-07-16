@@ -43,6 +43,12 @@
 #exhibit-body.edit, #exhibit-menu.edit {
   border-color: red;
 }
+
+#exhibit-body.edit textarea.tiny-mce {
+  width: 40em;
+  height: 30em;
+}
+
 #exhibit-menu {
 /*  float: right;*/
   position: absolute;
