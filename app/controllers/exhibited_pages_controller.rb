@@ -3,17 +3,20 @@ class ExhibitedPagesController < ExhibitsBaseController
   helper ExhibitsHelper
   before_filter :authorize_owner, :except => [:show]
   
-  uses_tiny_mce(:options => {:editor_selector => "tiny-mce",
-                :theme => "advanced", 
-                :theme_advanced_toolbar_location => "top",
-                :theme_advanced_toolbar_align => "left",
-                :theme_advanced_resizing => true,
-                :theme_advanced_buttons1 => "bold,italic,underline,separator,preview,separator,outdent,indent,unlink,link,separator,undo,redo,separator,cleanup,code,help,save,cancel",
-                :theme_advanced_buttons2 => "",
-                :theme_advanced_buttons3 => "",
-                :plugins => ["preview", "save"],
-                :save_enablewhendirty => true,
-                :entity_encoding => "raw"},
+  uses_tiny_mce(:options => {
+                  :browsers => "msie,gecko,opera",
+                  :editor_selector => "tiny-mce",
+                  :theme => "advanced", 
+                  :theme_advanced_toolbar_location => "top",
+                  :theme_advanced_toolbar_align => "left",
+                  :theme_advanced_resizing => true,
+                  :theme_advanced_buttons1 => "bold,italic,underline,separator,preview,separator,outdent,indent,unlink,link,separator,undo,redo,separator,cleanup,code,help,save",
+                  :theme_advanced_buttons2 => "",
+                  :theme_advanced_buttons3 => "",
+                  :plugins => ["preview", "save"],
+                  :save_enablewhendirty => true,
+                  :entity_encoding => "raw"
+                },
                 :only => [:edit])
   
   in_place_edit_for_resource :exhibited_page, :title
