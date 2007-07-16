@@ -132,9 +132,8 @@ module ExhibitsHelper
       html << text_area_tag(:value, value, :id => "text_area_#{object}_#{tag.object.id}", :class => "tiny-mce")
       html << hidden_field_tag(:update_id, update_id)
       html << link_to_function("cancel", "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
+      html << "</form>"
     end
-    html << "</form>"
-    html.to_s
   end
   
   
