@@ -52,6 +52,12 @@
   height: 30em;
 }
 
+/* set different width for the caption textarea */
+#exhibit-body.edit .illustration-caption textarea.tiny-mce {
+  width: 100px;
+  height: 30em;
+}
+
 #exhibit-menu {
 /*  float: right;*/
   position: absolute;
