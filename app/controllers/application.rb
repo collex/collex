@@ -80,5 +80,30 @@ class ApplicationController < ActionController::Base
         render :text => @item.send(attribute)
       end
     end
+    
+    # for debugging rescue_action_in_public
+    # def local_request?
+    #     false
+    # end
+    
+    def rescue_action_in_public(exception)
+      case exception
+        when ActiveRecord::RecordNotFound, ActionController::UnknownController, ActionController::UnknownAction, ActionController::RoutingError
+          render_404
+
+        else          
+          render_500
+
+          deliverer = self.class.exception_data
+          data = case deliverer
+            when nil then {}
+            when Symbol then send(deliverer)
+            when Proc then deliverer.call(self)
+          end
+
+          ExceptionNotifier.deliver_exception_notification(exception, self,
+            request, data)
+      end
+    end
 
 end
