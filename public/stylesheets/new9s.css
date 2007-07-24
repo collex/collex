@@ -273,10 +273,6 @@
 			width: 100%;
 			padding-right: 1em;
 		}
-		.nowrap {
-			white-space: nowrap; 
-			display: inline;
-		}
 		
 		/* commenting out IE-specific hacks now that we've capitulated and are doing tables...
 		
@@ -418,11 +414,6 @@
 	
 	#leftPanel #leftPanelContent{
 		padding:0px;
-	}
-	.help {
-		color: #A60000;
-		font-size: 12px;
-		padding-left: 5px;
 	}
 	.help:hover {
 		cursor: default;
