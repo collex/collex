@@ -1,5 +1,5 @@
 <%- if controller.action_name == "edit" -%>
-    <%= p move_exhibited_page_links(@exhibited_page) %>
+  <%= p move_exhibited_page_links(@exhibited_page) %>
   
   <%= p link_to("Remove Page and its Objects", page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete)%>
 <% end %>
@@ -11,9 +11,7 @@
     <%= h3 exhibited_section_in_place_editor_field(:exhibited_section, "title") %> 
     <%= exhibited_section_in_place_editor_area :exhibited_section, "annotation" %> 
     
-    <% p do %>
-      <%= move_exhibited_section_links(@exhibited_section) %>
-    <% end %>
+    <%= p move_exhibited_section_links(@exhibited_section) %>
     
     <%= p link_to("Remove Section and its Objects", exhibited_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
     <%= div p("Drag your new resource here."), :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
