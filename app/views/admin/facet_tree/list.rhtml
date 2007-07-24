@@ -1,0 +1,14 @@
+<h1>Listing facet trees</h1>
+
+<table>
+  <tr>
+    <th>Facet tree name</th>
+  </tr>
+  
+<% for tree in @facet_trees %>
+  <tr>
+    <td><%=h tree.value %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :tree => tree.value %></td>
+  </tr>
+<% end %>
+</table>

@@ -1,0 +1,19 @@
+<% if categories.size > 0 %>
+    <ul>
+      <% categories.each do |category| %>
+        <% @category = category %>
+        <li>
+          <%=in_place_editor_field(:category, :value) %>
+          
+          <%=link_to 'X', {:action => :remove, :id => category, :tree => tree},  :confirm => 'Are you sure?', :post => true %>
+          
+          <% if category.is_a?(FacetValue) %>
+          <% else # its a category -%>
+          <% end %>
+          <%= render :partial => 'categories', :locals => {:categories => category.children, :tree => tree} %>
+        </li>
+      <% end %>
+  </ul>
+<% end %>
+
+
