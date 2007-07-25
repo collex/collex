@@ -31,6 +31,15 @@ class Admin::FacetTreeController < Admin::BaseController
     redirect_to :action => :edit, :tree => params[:tree]
   end
   
+  def move
+    parent = FacetCategory.find(params[:id])
+    child = FacetCategory.find(params[:droppedid])
+    parent << child
+    parent.save
+    
+    render :partial => 'categories', :locals => {:categories => FacetTree.find_by_value(params[:tree]).children, :tree => params[:tree]}
+  end
+  
   def set_category_value
     item = FacetCategory.find(params[:id])
     item.value = params[:value]

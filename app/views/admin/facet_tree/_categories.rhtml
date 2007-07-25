@@ -1,17 +1,26 @@
 <% if categories.size > 0 %>
     <ul>
-      <% categories.each do |category| %>
-        <% @category = category %>
-        <li>
+      <% categories.each do |category|
+        @category = category # in_place_editor needs an instance variable, apparently
+      %>
+        <li <% if !category.is_a?(FacetValue)%>id="drop_<%= category.id%>"<% end %>>
+          <span class="category" id="drag_<%=category.id%>">drag me!</span>
+          <%=draggable_element("drag_#{category.id}", :ghosting => true, :revert => true)%>
           <%=in_place_editor_field(:category, :value) %>
           
           <%=link_to 'X', {:action => :remove, :id => category, :tree => tree},  :confirm => 'Are you sure?', :post => true %>
           
-          <% if category.is_a?(FacetValue) %>
-          <% else # its a category -%>
-          <% end %>
           <%= render :partial => 'categories', :locals => {:categories => category.children, :tree => tree} %>
         </li>
+
+        <% if !category.is_a?(FacetValue)%>
+          <%= drop_receiving_element("drop_#{category.id}", 
+             :accept => 'category', 
+             :hoverclass => 'hover', 
+             :update => 'facet_tree',
+             :with => "'droppedid=' + encodeURIComponent(element.id.split('_').last())", 
+             :url => {:action=>:move, :id=>category, :tree => tree})%>
+        <% end %>
       <% end %>
   </ul>
 <% end %>
