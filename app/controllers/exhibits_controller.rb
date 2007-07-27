@@ -5,6 +5,21 @@ class ExhibitsController < ExhibitsBaseController
     before_filter :coming_soon
   end  
 
+  uses_tiny_mce(:options => {
+                  :browsers => "msie,gecko,opera",
+                  :editor_selector => "tiny-mce",
+                  :theme => "advanced", 
+                  :theme_advanced_toolbar_location => "top",
+                  :theme_advanced_toolbar_align => "left",
+                  :theme_advanced_resizing => true,
+                  :theme_advanced_buttons1 => "bold,italic,underline,separator,preview,separator,outdent,indent,unlink,link,separator,undo,redo,separator,cleanup,code,help",
+                  :theme_advanced_buttons2 => "",
+                  :theme_advanced_buttons3 => "",
+                  :plugins => ["preview"],
+                  :entity_encoding => "raw"
+                },
+                :only => [:new])
+                
   in_place_edit_for_resource :exhibit, :title
   in_place_edit_for_resource :exhibit, :annotation
   
