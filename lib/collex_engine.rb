@@ -4,10 +4,11 @@ include ERB::Util
 require 'solr'
 
 class CollexEngine
-  def initialize
+  def initialize(params={})
     @num_docs = -1
     
     @solr = Solr::Connection.new(SOLR_URL)
+    @params = params
   end
   
   def num_docs
@@ -30,7 +31,7 @@ class CollexEngine
   end
   
   def search(constraints, start, max)
-    req = SearchRequest.new(:constraints => constraints, :start => start, :rows => max)
+    req = SearchRequest.new(:constraints => constraints, :start => start, :rows => max, :field_list => @params[:field_list], :facet_fields => @params[:facet_fields])
     
     results = {}
     results["total_documents"] = num_docs # TODO: pull from the response (but have to add it first)
