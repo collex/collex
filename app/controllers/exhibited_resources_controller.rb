@@ -11,7 +11,6 @@ class ExhibitedResourcesController < ExhibitedItemsController
       es = ExhibitedSection.find(exhibited_section_id)
       er = ExhibitedResource.new(:uri => uri)
       es.exhibited_resources << er
-      flash[:error] = "You now have a duplicate of that object in your collection." if es.page.exhibit.uris.include?(uri)
       flash[:notice] = "The Resource was successfully added."
     else
       flash[:error] = "Resource was not added."
