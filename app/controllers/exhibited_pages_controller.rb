@@ -71,6 +71,10 @@ class ExhibitedPagesController < ExhibitsBaseController
     flash[:notice] = 'Page was successfully created.'
     page_type = @exhibit.valid_page_types.first
     if @page = @exhibit.pages.create({:exhibit_page_type_id => page_type.id})
+      # if the page type has only one section type, go ahead and create it
+      if page_type.section_types.size == 1
+        @page.sections.create({:exhibit_section_type_id => page_type.section_types.first.id})
+      end
       flash[:notice] = 'Page was successfully created.'
       redirect_to edit_page_path(:id => @page, :exhibit_id => @exhibit)
     else
