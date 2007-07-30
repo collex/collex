@@ -10,10 +10,7 @@
       <%= li link_to("New Page", pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
       
       <%- unless @exhibited_page.sections_full? -%>
-        <%= li "Add a Section", :style => "background-color: #dcdcdc;" %>
-        <%- ul :style => "background-color: #dcdcdc;" do ExhibitPageType.find(@exhibited_page.exhibit_page_type_id).section_types.each do |section_type| -%>
-        <%= li link_to("New #{section_type.name}", exhibited_sections_path(:exhibit_id => @exhibit, :exhibit_section_type_id => section_type.id, :page_id => @exhibited_page), :method => "post") %>
-        <%- end end -%>
+        <%= link_to_add_section(@section_types, @exhibited_page) %>
       <%- end -%>
       
       <%= li render(:partial => "exhibits/share"), :id => "exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
