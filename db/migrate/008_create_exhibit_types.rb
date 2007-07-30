@@ -4,7 +4,6 @@ class CreateExhibitTypes < ActiveRecord::Migration
       t.column :description, :string
     end
     
-    ExhibitType.create(:description=>"Text")
   end
 
   def self.down

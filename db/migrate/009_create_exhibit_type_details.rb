@@ -18,12 +18,6 @@ class CreateExhibitTypeDetails < ActiveRecord::Migration
       t.column :section_type_id, :integer
     end
     
-    st = SectionType.new(:description=>"Text Only")
-    st.panel_types << PanelType.new(:description => "Text")
-    et = ExhibitType.find(:first)
-    et.section_types << st
-    et.save    
-    
   end
 
   def self.down

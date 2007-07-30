@@ -144,7 +144,7 @@ function yearValidation(theForm, event)
 	   
   	   
   	   <% constraint_exists = session[:constraints].find {|constraint| "genre" == constraint[:field] and "Citation" == constraint[:value] }
-       freq = @results["facets"]['genre']['Citation'] || 0
+       freq = @results["facets"]['genre']['Citation'] || 0 rescue 0
        citation_generated = false
        %>     
        <% if freq > 0 %>
