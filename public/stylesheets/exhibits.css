@@ -72,9 +72,10 @@
 .resource-drop-zone {
 /*  float: left;*/
   border: 1px dashed grey;
-  height: 10em;
-  text-align: justify;
-  padding: .4em;
+  height: 5em;
+  width: 10em;
+  text-align: center;
+  padding: 1em 1em;
   margin: .4em;
 }
 #exhibit-menu ul{
@@ -83,6 +84,10 @@
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+#exhibit-menu .add-a-section {
+  background-color: #dcdcdc;
 }
 
 #exhibit-body span.label {
