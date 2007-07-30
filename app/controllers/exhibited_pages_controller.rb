@@ -60,6 +60,7 @@ class ExhibitedPagesController < ExhibitsBaseController
   def edit
     @exhibited_page = @exhibit.exhibited_pages.find(params[:id])
     @licenses = License.find(:all)    
+    @section_types =  ExhibitPageType.find(@exhibited_page.exhibit_page_type_id).section_types
   end
 
   def new

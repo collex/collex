@@ -14,7 +14,7 @@
     <%= p move_exhibited_section_links(@exhibited_section) %>
     
     <%= p link_to("Remove Section and its Objects", exhibited_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
-    <%= div p("Drag your new resource here."), :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
+    <%= div "Drag your new resource here.", :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
   <%- else -%>
     <%= h3 @exhibited_section.title unless @exhibited_section.title.blank? %>
     <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
