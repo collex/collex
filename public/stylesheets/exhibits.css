@@ -35,11 +35,22 @@
 }
 #exhibit-body {
   position: relative;
-}
-#exhibit-body, #exhibit-menu {
   border: 1px solid #999;
+}
+
+#exhibit-content, #exhibit-menu {
   padding: 10px 15px;
 }
+#exhibit-menu {
+  float: right;
+  text-align: right;
+  width: auto;
+  border-left: 1px solid #999;
+  border-bottom: 1px solid #999;
+  border-top-style: none;
+  border-right-style: none;
+}
+
 #exhibit-body table td, #exhibit-body table th {
   vertical-align: top;
 }
@@ -58,16 +69,6 @@
   height: 30em;
 }
 
-#exhibit-menu {
-/*  float: right;*/
-  position: absolute;
-  text-align: right;
-  top: 0em;
-  width: auto;
-  right: 0em;
-  border-top-style: none;
-  border-right-style: none;
-}
 .resource-drop-zone {
 /*  float: left;*/
   border: 1px dashed grey;
