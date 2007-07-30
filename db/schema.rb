@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 53) do
+ActiveRecord::Schema.define(:version => 54) do
 
   create_table "constraints", :force => true do |t|
     t.column "search_id", :integer
@@ -10,12 +10,6 @@ ActiveRecord::Schema.define(:version => 53) do
     t.column "type",      :string
     t.column "field",     :string
     t.column "value",     :string
-  end
-
-  create_table "contributors", :force => true do |t|
-    t.column "archive_name", :string, :default => "", :null => false
-    t.column "email",        :string, :default => "", :null => false
-    t.column "contact",      :string, :default => "", :null => false
   end
 
   create_table "exhibit_page_types", :force => true do |t|
@@ -145,7 +139,6 @@ ActiveRecord::Schema.define(:version => 53) do
     t.column "password_hash", :string
     t.column "fullname",      :string
     t.column "email",         :string
-    t.column "isEditor",      :boolean
   end
 
 end
