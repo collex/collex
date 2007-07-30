@@ -3,6 +3,8 @@
   <% div :id => "exhibit-menu", :class => "edit" do %>
     <% ul :id => "exhibit-menu-list" do  %>
       <%= li image_tag("loading.gif"), :style => "display:none;", :id => "exhibit-menu-spinner" %>
+      <%= li link_to('All Exhibits', exhibits_path) %>
+      <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
       <%= li exhibited_pages_links(@exhibited_page, true) %>
       <%= li link_to('View', page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
       <%= li link_to("New Page", pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
@@ -16,7 +18,7 @@
       
       <%= li render(:partial => "exhibits/share"), :id => "exhibit-menu-share" if @exhibit.sharable_by?(user_or_guest) %>
       <%= li render(:partial => "exhibits/unshare"), :id => "exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
-      <%= li link_to('Destroy', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
+      <%= li link_to('Delete', exhibit_path(@exhibit), :confirm => 'Are you sure?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
       <%= li render(:partial => "exhibits/publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
   <% end end %>
 

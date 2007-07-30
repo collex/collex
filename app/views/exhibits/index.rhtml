@@ -1,21 +1,31 @@
-<%= h2 "Exhibits" %>
+<% div :id => "exhibit-body" do %>
 
-<table>
-  <tr>
-  </tr>
+  <% div :id => "exhibit-menu" do %>
+    <% ul :id => "exhibit-menu-list" do  %>
+      <%= li link_to('All Exhibits', exhibits_path) %>
+      <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
+      <%= li link_to('New Exhibit', new_exhibit_path) %>
+    <% end %>
+  <% end %>
   
-<% for exhibit in @exhibits %>
-  <% if exhibit.viewable_by?(user_or_guest) then tr do %>
-    <%= td link_to(exhibit.title, page_path(exhibit, exhibit.exhibited_pages.first)) %>
-    <%= td link_to('Edit', edit_page_path(exhibit, exhibit.pages.first)) if exhibit.updatable_by?(user_or_guest) %>
-    <%= td link_to('Share', share_exhibit_path(exhibit), :method => :post) if exhibit.sharable_by?(user_or_guest) %>
-    <%= td link_to('Unshare', unshare_exhibit_path(exhibit), :method => :post) if exhibit.unsharable_by?(user_or_guest) %>
-    <%= td link_to('Destroy', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete) if exhibit.deletable_by?(user_or_guest) %>
-    <%= td link_to('Publish', publish_exhibit_path(exhibit), :method => :post, :confirm => 'Are you sure you want to publish? Once published, it can not be edited or deleted.') if exhibit.publishable_by?(user_or_guest) %>
-  <% end end %>
+  <% div :id => "exhibit-content" do %>
+    <%= h2 params[:user_id] ? "My Exhibits" : "Exhibits" %>
+
+    <table>
+      <tr>
+      </tr>
+  
+    <% for exhibit in @exhibits %>
+      <% if exhibit.viewable_by?(user_or_guest) then tr do %>
+        <%= td link_to(exhibit.title, page_path(exhibit, exhibit.exhibited_pages.first)) %>
+        <%= td link_to('Edit', edit_page_path(exhibit, exhibit.pages.first)) if exhibit.updatable_by?(user_or_guest) %>
+        <%= td link_to('Share', share_exhibit_path(exhibit), :method => :post) if exhibit.sharable_by?(user_or_guest) %>
+        <%= td link_to('Unshare', unshare_exhibit_path(exhibit), :method => :post) if exhibit.unsharable_by?(user_or_guest) %>
+        <%= td link_to('Delete', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete) if exhibit.deletable_by?(user_or_guest) %>
+        <%= td link_to('Publish', publish_exhibit_path(exhibit), :method => :post, :confirm => 'Are you sure you want to publish? Once published, it can not be edited or deleted.') if exhibit.publishable_by?(user_or_guest) %>
+      <% end end %>
+    <% end %>
+    </table>
+
+  <% end %>
 <% end %>
-</table>
-
-<br />
-
-<%= link_to 'New exhibit', new_exhibit_path %>

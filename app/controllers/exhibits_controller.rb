@@ -29,7 +29,7 @@ class ExhibitsController < ExhibitsBaseController
   private :coming_soon
   
   def index
-    @exhibits = Exhibit.find(:all)
+    @exhibits = params[:user_id] ? Exhibit.find_all_by_user_id(params[:user_id]) : Exhibit.find(:all)
 
     respond_to do |format|
       format.html # index.rhtml
