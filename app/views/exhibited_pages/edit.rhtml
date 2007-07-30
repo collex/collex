@@ -4,7 +4,7 @@
     <% ul :id => "exhibit-menu-list" do  %>
       <%= li image_tag("loading.gif"), :style => "display:none;", :id => "exhibit-menu-spinner" %>
       <%= li exhibited_pages_links(@exhibited_page, true) %>
-      <%= li link_to('Close', page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
+      <%= li link_to('View', page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
       <%= li link_to("New Page", pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
       
       <%- unless @exhibited_page.sections_full? -%>
