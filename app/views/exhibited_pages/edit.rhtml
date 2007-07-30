@@ -20,25 +20,26 @@
       <%= li render(:partial => "exhibits/publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) %>
   <% end end %>
 
-  <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
-  <%= exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
-  <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
-    <%= hidden_field_tag "page_id", @exhibited_page.id %>
-    <%= h3 @exhibit.user.fullname %>
-    <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
-  <%- end -%>
+  <% div :id => "exhibit-content" do %>
+    <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
+    <%= exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
+    <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
+      <%= hidden_field_tag "page_id", @exhibited_page.id %>
+      <%= h3 @exhibit.user.fullname %>
+      <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
+    <%- end -%>
   
-  <%- form_tag('exhibit', {:id => "add_resource_form"}) do -%>
-    <%= hidden_field_tag "new_resource", "" %>
-    <%= hidden_field_tag "exhibited_section_id", "" %>
-  <%- end -%>  
+    <%- form_tag('exhibit', {:id => "add_resource_form"}) do -%>
+      <%= hidden_field_tag "new_resource", "" %>
+      <%= hidden_field_tag "exhibited_section_id", "" %>
+    <%- end -%>  
   
-  <%- form_tag('exhibit', :id => "add_text_form") do -%>
-    <%= hidden_field_tag "exhibited_section_id", "" %>
-  <%- end -%>  
+    <%- form_tag('exhibit', :id => "add_text_form") do -%>
+      <%= hidden_field_tag "exhibited_section_id", "" %>
+    <%- end -%>  
 
-  <%= render :partial => @exhibit.template %>
-
+    <%= render :partial => @exhibit.template %>
+  <% end %>
 <% end %>
 <%#= drop_receiving_element("resource-drop-zone",
       :onDrop => "function(element){$('add_object_form')['new_resource'].value=element.id; Element.show('add_object_form');}") %>

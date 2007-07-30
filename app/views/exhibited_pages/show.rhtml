@@ -3,15 +3,16 @@
     <%= li exhibited_pages_links(@exhibited_page) %>
     <%= li link_to 'Edit', edit_page_path(@exhibit, @exhibited_page) if @exhibit.updatable_by?(user_or_guest) %> 
   <% end end %>
-
-  <%= h2 @exhibit.title %>
-  <%= div @exhibit.annotation %>
-  <%= h3 @exhibit.user.fullname %>
-  <%= p @exhibit.license.description %>
+  <% div :id => "exhibit-content" do %>
+    <%= h2 @exhibit.title %>
+    <%= div @exhibit.annotation %>
+    <%= h3 @exhibit.user.fullname %>
+    <%= p @exhibit.license.description %>
   
-  <%= render :partial => @exhibit.template %>
+    <%= render :partial => @exhibit.template %>
   
-  <%# Resource.find(:first).properties.each do |prop| %>
-    <%#= p "#{prop.name}: #{prop.value}"  %>
-  <%# end %>
+    <%# Resource.find(:first).properties.each do |prop| %>
+      <%#= p "#{prop.name}: #{prop.value}"  %>
+    <%# end %>
+  <% end %>
 <% end %>
