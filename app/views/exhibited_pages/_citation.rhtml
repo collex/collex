@@ -5,7 +5,7 @@
     <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_resource. %>
     <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
     <%= div @exhibited_resource.title unless (@exhibited_resource.title.blank? or !@exhibited_resource.url.blank?) %>
-    <%= div "#{link_to(@exhibited_resource.title, @exhibited_resource.url, :target => "_blank")} &nbsp;&rarr;" unless (@exhibited_resource.title.blank? and @exhibited_resource.url.blank?) %>
+    <%= link_to_remote( h(@exhibited_resource.title), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_resource.uri}, :complete => "window.scrollTo(0,0);", :class => "title") %>
 
     <%= div "#{span 'source' + ":", :class => "label"} #{@exhibited_resource.source}" unless @exhibited_resource.source.blank? %>
     <%= div "#{span 'site' + ":", :class => "label"} #{link_to(@exhibited_resource.site.description, @exhibited_resource.site.url, :target => '_blank')}" unless @exhibited_resource.site.blank? %>
@@ -13,7 +13,8 @@
     <%= div "#{span 'date' + ":", :class => "label"} #{@exhibited_resource.date}" unless @exhibited_resource.date.blank? %>
     <%= div "#{span pluralize(@exhibited_resource.genres.size, 'genre', nil, false) + ":", :class => "label"} #{@exhibited_resource.genres.join(", ")}" unless @exhibited_resource.genres.blank? %>
   
-    <%= p "#{@exhibited_resource.title}: #{em @exhibited_resource.url}" unless (@exhibited_resource.title.blank? and @exhibited_resource.url.blank?) %>    
+    <%= p "#{link_to(@exhibited_resource.url, @exhibited_resource.url, :target => "_blank")} &nbsp;&rarr;" unless (@exhibited_resource.title.blank? and @exhibited_resource.url.blank?) %>
+    
     
     <%- if controller.action_name == "edit"  -%>
       <%= exhibited_resource_in_place_editor_area :exhibited_resource, "annotation" %>
