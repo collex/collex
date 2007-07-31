@@ -1,8 +1,9 @@
 <%- if controller.action_name == "edit" -%>
-  <% div :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" do %>
-    <%= p("Drag your new resource here.") %>
-    <%= p(link_to_function("Add Text Area", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibited_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;")) %>
-  <% end %>
+  <% div :class => "drop-zone-wrapper" do %>
+    <%= div(link_to_function("Add Text Area", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibited_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;"), :class => "add-text-area") %>
+    <%= div "Drag your new resource here.", :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
+  <% end %>  
+  
   <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
   :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
 <%- end -%>
