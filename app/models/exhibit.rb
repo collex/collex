@@ -19,6 +19,14 @@ class Exhibit < ActiveRecord::Base
     self.exhibited_pages.collect { |ep| ep.exhibited_sections }.flatten
   end
   
+  def title_message
+    exhibit_type.title_message
+  end
+  
+  def annotation_message
+    exhibit_type.annotation_message
+  end
+  
   def valid_page_types
     exhibit_type.page_types
   end

@@ -23,5 +23,13 @@ class ExhibitedSection < ActiveRecord::Base
   def uris
     self.exhibited_resources.collect { |er| er.uri }
   end
+
+  def title_message
+    self.exhibit_section_type.title_message
+  end
+  
+  def annotation_message
+    self.exhibit_section_type.annotation_message
+  end
   
 end

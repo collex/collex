@@ -78,7 +78,7 @@ module ExhibitsHelper
     in_place_editor_options[:size] ||= 35
     
 #     tag.to_content_tag(tag_options.delete(:tag), tag_options) + "&nbsp;" +    
-    value = tag.value(tag.object).blank? ? "(No #{method} given)" : tag.value(tag.object)
+    value = tag.value(tag.object) || tag_options[:value] || tag.object.__send__("#{method}_message")|| "(Insert #{method})"
     tag.content_tag(tag_options.delete(:tag), value, tag_options) + "&nbsp;" +
     in_place_editor(tag_options[:id], in_place_editor_options)
   end
@@ -131,7 +131,7 @@ module ExhibitsHelper
     mce_id = "mce_#{object}_#{tag.object.id}"
     text_id = "text_#{object}_#{tag.object.id}"
     update_id = text_id
-    value = tag.object.__send__(method) || tag_options[:value] || "(No annotation given)"
+    value = tag.object.__send__(method) || tag_options[:value] || tag.object.__send__("#{method}_message") || "(Insert #{method})"
     
     url = case object
     when :exhibited_item

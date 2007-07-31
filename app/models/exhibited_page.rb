@@ -17,4 +17,12 @@ class ExhibitedPage < ActiveRecord::Base
     self.sections.collect { |section| section.uris }.flatten
   end
   
+  def title_message
+    self.exhibited_page_type.title_message
+  end
+  
+  def annotation_message
+    self.exhibited_page_type.annotation_message
+  end
+  
 end
