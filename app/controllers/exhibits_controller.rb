@@ -53,6 +53,10 @@ class ExhibitsController < ExhibitsBaseController
       flash[:notice] = 'Exhibit was successfully created.'
       page_type = @exhibit.valid_page_types.first
       @exhibit.pages.create({:exhibit_page_type_id => page_type.id})
+
+      if page_type.section_types.size == 1
+        @exhibit.pages.last.sections.create({:exhibit_section_type_id => page_type.section_types.first.id})
+      end      
       redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
     else
       @licenses = License.find(:all)
