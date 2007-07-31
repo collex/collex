@@ -20,7 +20,7 @@
   <% end end %>
 
   <% div :id => "exhibit-content" do %>
-    <%= h2 exhibit_in_place_editor_field(:exhibit, "title")%> 
+    <%= h2 exhibit_in_place_editor_field(:exhibit, "title") %> 
     <%= exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
     <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
       <%= hidden_field_tag "page_id", @exhibited_page.id %>
