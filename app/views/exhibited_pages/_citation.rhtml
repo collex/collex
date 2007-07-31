@@ -1,30 +1,31 @@
-<% table do tbody do section.exhibited_resources.each do |@exhibited_resource| tr :id => dom_id(@exhibited_resource) do %>
-  <%= td thumbnail_image_tag(@exhibited_resource.resource) %>
+<% table do tbody do section.exhibited_resources.each do |@exhibited_item| tr :id => dom_id(@exhibited_item) do %>
+  <%= td thumbnail_image_tag(@exhibited_item.resource) %>
   
   <% td do %>
-    <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_resource. %>
+    <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_item. %>
     <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
-    <%= div @exhibited_resource.title unless (@exhibited_resource.title.blank? or !@exhibited_resource.url.blank?) %>
-    <%= link_to_remote( h(@exhibited_resource.title), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_resource.uri}, :complete => "window.scrollTo(0,0);", :class => "title") %>
+    <%= div @exhibited_item.title unless (@exhibited_item.title.blank? or !@exhibited_item.url.blank?) %>
+    <%= link_to_remote( h(@exhibited_item.title), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_item.uri}, :complete => "window.scrollTo(0,0);", :class => "title") %>
 
-    <%= div "#{span 'source' + ":", :class => "label"} #{@exhibited_resource.source}" unless @exhibited_resource.source.blank? %>
-    <%= div "#{span 'site' + ":", :class => "label"} #{link_to(@exhibited_resource.site.description, @exhibited_resource.site.url, :target => '_blank')}" unless @exhibited_resource.site.blank? %>
-    <%= div "#{span pluralize(@exhibited_resource.agents.size, 'name', nil, false) + ":", :class => "label"} #{@exhibited_resource.agents.join("; ")}" unless @exhibited_resource.agents.blank? %>
-    <%= div "#{span 'date' + ":", :class => "label"} #{@exhibited_resource.date}" unless @exhibited_resource.date.blank? %>
-    <%= div "#{span pluralize(@exhibited_resource.genres.size, 'genre', nil, false) + ":", :class => "label"} #{@exhibited_resource.genres.join(", ")}" unless @exhibited_resource.genres.blank? %>
+    <%= div "#{span 'source' + ":", :class => "label"} #{@exhibited_item.source}" unless @exhibited_item.source.blank? %>
+    <%= div "#{span 'site' + ":", :class => "label"} #{link_to(@exhibited_item.site.description, @exhibited_item.site.url, :target => '_blank')}" unless @exhibited_item.site.blank? %>
+    <%= div "#{span pluralize(@exhibited_item.agents.size, 'name', nil, false) + ":", :class => "label"} #{@exhibited_item.agents.join("; ")}" unless @exhibited_item.agents.blank? %>
+    <%= div "#{span 'date' + ":", :class => "label"} #{@exhibited_item.date}" unless @exhibited_item.date.blank? %>
+    <%= div "#{span pluralize(@exhibited_item.genres.size, 'genre', nil, false) + ":", :class => "label"} #{@exhibited_item.genres.join(", ")}" unless @exhibited_item.genres.blank? %>
   
-    <%= p "#{link_to(@exhibited_resource.url, @exhibited_resource.url, :target => "_blank")} &nbsp;&rarr;" unless (@exhibited_resource.title.blank? and @exhibited_resource.url.blank?) %>
+    <%= p "#{link_to(@exhibited_item.url, @exhibited_item.url, :target => "_blank")} &nbsp;&rarr;" unless (@exhibited_item.title.blank? and @exhibited_item.url.blank?) %>
     
     
     <%- if controller.action_name == "edit"  -%>
-      <%= exhibited_resource_in_place_editor_area :exhibited_resource, "annotation" %>
-      <%= link_to "Remove Item", exhibited_resource_path(@exhibit, section.page, section, @exhibited_resource), :confirm => "Remove Item?", :method => :delete %>
+    <%= div exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation"), :id => "mce_container_exhibited_item_#{@exhibited_item.id}" %> 
+      
+      <%= link_to "Remove Item", exhibited_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
     <%- else -%>
-      <%= p @exhibited_resource.annotation %>
+      <%= p @exhibited_item.annotation %>
     <%- end -%>
   <% end %>
   <% if controller.action_name == "edit" then td do %>
-    <%= move_exhibited_items_links(@exhibited_resource) %>
+    <%= move_exhibited_items_links(@exhibited_item) %>
   <% end end %>
   
 <% end end end end %>
