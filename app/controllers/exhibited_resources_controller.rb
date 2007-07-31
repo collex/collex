@@ -7,9 +7,18 @@ class ExhibitedResourcesController < ExhibitedItemsController
 
     unless params[:new_resource].blank?
       uri = params[:new_resource].match('thumbnail_').post_match
+      interpretation = Interpretation.find_by_user_id_and_object_uri(user.id, uri)
+      
+      annotation = case
+        when interpretation.nil?, interpretation.annotation.strip.blank?
+          nil
+        else
+          interpretation.annotation
+        end
+      
       exhibited_section_id = params[:exhibited_section_id].to_i
       es = ExhibitedSection.find(exhibited_section_id)
-      er = ExhibitedResource.new(:uri => uri)
+      er = ExhibitedResource.new(:uri => uri, :annotation => annotation)
       es.exhibited_resources << er
       flash[:notice] = "The Resource was successfully added."
     else
