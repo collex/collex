@@ -69,14 +69,27 @@
   height: 30em;
 }
 
-.resource-drop-zone {
-/*  float: left;*/
+.drop-zone-wrapper {
+  position: relative;
+  width: 32em;
+  height: 7em;
+  margin: .5em;
+}
+.resource-drop-zone, .add-text-area {
   border: 1px dashed grey;
   height: 5em;
   width: 10em;
   text-align: center;
   padding: 1em 1em;
   margin: .4em;
+}
+.drop-zone-wrapper .add-text-area {
+  position: absolute;
+  right: 0;
+}
+.drop-zone-wrapper .resource-drop-zone {
+  position: absolute;
+  left: 0;
 }
 #exhibit-menu ul{
   display: block;
