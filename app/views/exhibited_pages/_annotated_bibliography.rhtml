@@ -14,7 +14,10 @@
     <%= p move_exhibited_section_links(@exhibited_section) %>
     
     <%= p link_to("Remove Section and its Objects", exhibited_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
-    <%= div "Drag your new resource here.", :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" %>
+    <% div :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" do %>
+      Drag your new resource here.
+      <%= image_tag("loading.gif", :style => "display:none;", :id => "drop-zone-spinner-for-#{@exhibited_section.id}") %>
+    <% end %>
 
   <%- else -%>
     <%= h3 @exhibited_section.title unless @exhibited_section.title.blank? %>
@@ -24,5 +27,5 @@
   <%= div render(:partial => @exhibited_section.template, :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section), :class => "section" %>
   
   <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
-        :onDrop => "function(element){$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
+        :onDrop => "function(element){$('drop-zone-spinner-for-#{@exhibited_section.id}').show();$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
 <% end %>
