@@ -87,7 +87,7 @@ class Exhibit < ActiveRecord::Base
   end
 
   def updatable_by?(editor)
-    !published? and (editor == user or editor.admin_role?)
+    (!published? and editor == user) or editor.admin_role?
   end
 
   def deletable_by?(deleter)
@@ -107,6 +107,6 @@ class Exhibit < ActiveRecord::Base
   end
   
   def publishable_by?(publisher)
-    publishable? and updatable_by?(publisher)
+     publishable? and (publisher.admin_role? or publisher.editor_role?)
   end
 end
