@@ -7,6 +7,7 @@ describe ExhibitedPagesController do
     @exhibit.stub!(:title).and_return("Exhibit mock")
     @page_1 = mock_model(ExhibitedPage)
     @page_1.stub!(:id).and_return(1)
+    @page_1.stub!(:exhibit_page_type_id).and_return(1)
     
     @exhibited_pages = mock("exhibited_pages")
     
