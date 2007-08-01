@@ -134,3 +134,10 @@
 #exhibit-body img {
   border: 0;
 }
+
+a.double-arrow, a.single-arrow {
+  letter-spacing: -.4em;
+}
+a.single-arrow {
+  margin: auto .5em;
+}

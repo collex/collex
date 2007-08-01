@@ -24,13 +24,13 @@ module ExhibitsHelper
     down_arrow = options[:sideways] ? "&rarr;" : "&darr;"
     
     html = options[:sideways] ? "<span>" : "<p>"
-    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibited_item_path(exhibit, page, section, exhibited_item), :method => "post")
+    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post")
     html << (options[:sideways] ? "&nbsp;" : "<br/>")
-    html << link_to("#{up_arrow}", move_higher_exhibited_item_path(exhibit, page, section, exhibited_item), :method => "post")
+    html << link_to("#{up_arrow}", move_higher_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post")
     html << (options[:sideways] ? "&nbsp;&nbsp;" : "</p><p>")
-    html << link_to("#{down_arrow}", move_lower_exhibited_item_path(exhibit, page, section, exhibited_item), :method => "post")
+    html << link_to("#{down_arrow}", move_lower_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post")
     html << (options[:sideways] ? "&nbsp;" : "<br/>")
-    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibited_item_path(exhibit, page, section, exhibited_item), :method => "post")
+    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post")
     html << (options[:sideways] ? "</span>" : "<p/>")
     html
   end
@@ -40,13 +40,13 @@ module ExhibitsHelper
     exhibit = page.exhibit
     
     html = ""
-    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
+    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post")
     html << "&nbsp;"
-    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
+    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post")
     html << "&nbsp;"
-    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
+    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post")
     html << "&nbsp;"
-    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :method => "post")
+    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post")
     html
   end
   
@@ -55,13 +55,13 @@ module ExhibitsHelper
     exhibit = exhibited_page.exhibit
     
     html = ""
-    html << link_to("&uarr;&uarr;", move_to_top_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << link_to("&uarr;&uarr;", move_to_top_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post")
     html << "&nbsp;"
-    html << link_to("&uarr;", move_higher_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << link_to("&uarr;", move_higher_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post")
     html << "&nbsp;"
-    html << link_to("&darr;", move_lower_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << link_to("&darr;", move_lower_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post")
     html << "&nbsp;"
-    html << link_to("&darr;&darr;", move_to_bottom_page_path(:exhibit_id => exhibit, :id => exhibited_page), :method => "post")
+    html << link_to("&darr;&darr;", move_to_bottom_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post")
     html
   end
   
