@@ -136,9 +136,12 @@
   border: 0;
 }
 
-a.double-arrow, a.single-arrow {
+.double-arrow, .single-arrow {
   letter-spacing: -.4em;
 }
-a.single-arrow {
+.single-arrow {
   margin: auto .5em;
+}
+span.double-arrow, span.single-arrow {
+  color: #C9C9C9;
 }
