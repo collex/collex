@@ -21,6 +21,8 @@ class ExhibitsControllerTest < Test::Unit::TestCase
     @owner = users(:exhibit_owner)
     @viewer = users(:exhibit_viewer)
     @request.session[:user] = {:username => @owner.username}
+    @admin = users(:admin)
+    @editor = users(:editor)
   end
 
   def test_sanity
@@ -114,7 +116,19 @@ class ExhibitsControllerTest < Test::Unit::TestCase
     assert_redirected_to(:action => "index")
   end
   
-  def test_can_publish_exhibit
+  def test_admin_can_publish_exhibit
+    @request.session[:user] = {:username => @admin.username}
+    @exhibit.share!
+    assert(@exhibit.save)
+    post(:publish, :id => @exhibit.id)
+    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
+    assert(exhibit.published?, "Exhibit should be published.")
+    assert_response(:redirect)
+    assert_redirected_to(:action => "index")
+  end
+  
+  def test_editor_can_publish_exhibit
+    @request.session[:user] = {:username => @editor.username}
     @exhibit.share!
     assert(@exhibit.save)
     post(:publish, :id => @exhibit.id)
