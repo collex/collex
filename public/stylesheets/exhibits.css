@@ -53,6 +53,7 @@
 
 #exhibit-body table td, #exhibit-body table th {
   vertical-align: top;
+  padding: .5em;
 }
 #exhibit-body.edit, #exhibit-menu.edit {
   border-color: red;
