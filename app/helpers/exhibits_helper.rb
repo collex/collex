@@ -24,13 +24,25 @@ module ExhibitsHelper
     down_arrow = options[:sideways] ? "&rarr;" : "&darr;"
     
     html = options[:sideways] ? "<span>" : "<p>"
-    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post")
+    
+    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post") unless exhibited_item.first?
+    html << span("#{up_arrow}#{up_arrow}", :class => "double-arrow") if exhibited_item.first?
+    
     html << (options[:sideways] ? "&nbsp;" : "<br/>")
-    html << link_to("#{up_arrow}", move_higher_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post")
+
+    html << link_to("#{up_arrow}", move_higher_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post") unless exhibited_item.first?
+    html << span("#{up_arrow}", :class => "single-arrow") if exhibited_item.first?
+    
     html << (options[:sideways] ? "&nbsp;&nbsp;" : "</p><p>")
-    html << link_to("#{down_arrow}", move_lower_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post")
+    
+    html << link_to("#{down_arrow}", move_lower_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post") unless exhibited_item.last?
+    html << span("#{down_arrow}", :class => "single-arrow") if exhibited_item.last?
+    
     html << (options[:sideways] ? "&nbsp;" : "<br/>")
-    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post")
+    
+    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post") unless exhibited_item.last?
+    html << span("#{down_arrow}#{down_arrow}", :class => "double-arrow") if exhibited_item.last?
+    
     html << (options[:sideways] ? "</span>" : "<p/>")
     html
   end
@@ -40,13 +52,24 @@ module ExhibitsHelper
     exhibit = page.exhibit
     
     html = ""
-    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post")
+    
+    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post") unless exhibited_section.first?
+    html << span("&uarr;&uarr;", :class => "double-arrow") if exhibited_section.first?
+    
     html << "&nbsp;"
-    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post")
+    
+    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post") unless exhibited_section.first?
+    html << span("&uarr;", :class => "single-arrow") if exhibited_section.first?
+    
     html << "&nbsp;"
-    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post")
+    
+    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post") unless exhibited_section.last?
+    html << span("&darr;", :class => "single-arrow") if exhibited_section.last?
+    
     html << "&nbsp;"
-    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post")
+    
+    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post") unless exhibited_section.last?
+    html << span("&darr;&darr;", :class => "double-arrow") if exhibited_section.last?
     html
   end
   
@@ -55,13 +78,21 @@ module ExhibitsHelper
     exhibit = exhibited_page.exhibit
     
     html = ""
-    html << link_to("&uarr;&uarr;", move_to_top_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post")
+    
+    html << link_to("&uarr;&uarr;", move_to_top_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post") unless exhibited_page.first?
+    html << span("&uarr;&uarr;", :class => "double-arrow") if exhibited_page.first?
+    
     html << "&nbsp;"
-    html << link_to("&uarr;", move_higher_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post")
+    html << link_to("&uarr;", move_higher_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post") unless exhibited_page.first?
+    html << span("&uarr;", :class => "single-arrow") if exhibited_page.first?
+    
     html << "&nbsp;"
-    html << link_to("&darr;", move_lower_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post")
+    html << link_to("&darr;", move_lower_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post") unless exhibited_page.last?
+    html << span("&darr;", :class => "single-arrow") if exhibited_page.last?
+    
     html << "&nbsp;"
-    html << link_to("&darr;&darr;", move_to_bottom_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post")
+    html << link_to("&darr;&darr;", move_to_bottom_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post") unless exhibited_page.last?
+    html << span("&darr;&darr;", :class => "double-arrow") if exhibited_page.last?
     html
   end
   
