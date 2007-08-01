@@ -6,7 +6,7 @@
     <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
     <% div :class => "resource-title" do %>
       <%= @exhibited_item.title unless (@exhibited_item.title.blank? or !@exhibited_item.url.blank?) %>
-      <%= "#{link_to(@exhibited_item.title, @exhibited_item.url, :target => "_blank")} &rarr;" unless (@exhibited_item.title.blank? and @exhibited_item.url.blank?) %>
+      <%= link_to(@exhibited_item.title, @exhibited_item.url, :target => "_blank") + " &rarr;" unless (@exhibited_item.title.blank? and @exhibited_item.url.blank?) %>
     <% end %>  
     <%= div link_to_remote( "view in sidebar", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_item.uri}, :complete => "window.scrollTo(0,0);", :class => "title") %>
     
