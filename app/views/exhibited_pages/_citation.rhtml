@@ -21,7 +21,7 @@
       
       <%= link_to "Remove Item", exhibited_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
     <%- else -%>
-      <%= div span('annotation: ', :class => "label") + @exhibited_item.annotation %>
+      <%= div span('annotation: ', :class => "label") + @exhibited_item.annotation unless @exhibited_item.annotation.blank? %>
     <%- end -%>
   <% end %>
   <% if controller.action_name == "edit" then td do %>
