@@ -16,7 +16,7 @@
     <%= div span('date: ', :class => "label") + @exhibited_item.date_label_or_date unless @exhibited_item.date_label_or_date.blank? %>
     <%= div span(pluralize(@exhibited_item.genres.size, 'genre', nil, false) + ": ", :class => "label") + @exhibited_item.genres.join(", ") unless @exhibited_item.genres.blank? %>  
     
-    <%- if controller.action_name == "edit"  -%>
+    <%- if controller.action_name == "edit" -%>
     <%= div span('annotation: ', :class => "label") + exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation"), :id => "mce_container_exhibited_item_#{@exhibited_item.id}" %> 
       
       <%= link_to "Remove Item", exhibited_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
