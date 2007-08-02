@@ -36,6 +36,10 @@ class ExhibitsController < ExhibitsBaseController
       format.xml  { render :xml => @exhibits.to_xml }
     end
   end
+  
+  def show
+  end
+
 
   def new
     @exhibit = Exhibit.new

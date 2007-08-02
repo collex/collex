@@ -7,7 +7,7 @@
 
 <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section" do %>
 
-  <%= div render( :partial => @exhibited_section.template, :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
+  <%= div render( :partial => "exhibited_pages/#{@exhibited_section.template}", :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
   
   <%- if controller.action_name == "edit" -%>   
     <% p do %>
