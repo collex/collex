@@ -99,13 +99,19 @@ class SidebarController < ApplicationController
     interpretation.annotation =  params[:annotation]
     interpretation.tag_list = params[:tags]
     interpretation.save!
+    solr = CollexEngine.new
+    solr.update(user.username, params[:objid], interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
+    solr.commit
     redirect_to :action => 'detail', :objid => params[:objid]
   end
   
   def remove
     user = User.find_by_username(session[:user][:username])
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
-    Interpretation.destroy(interpretation.id)    
+    Interpretation.destroy(interpretation.id)
+    solr = CollexEngine.new
+    solr.remove(user.username, params[:objid])
+    solr.commit
     
     redirect_to :action => 'detail', :objid => params[:objid]
   end

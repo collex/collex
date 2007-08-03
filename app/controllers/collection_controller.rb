@@ -28,6 +28,7 @@ class CollectionController < ApplicationController
      # currently split by whitespace, but TODO in the future this should be enhanced to
      # allow tags to be quoted, so that the string /"this is a single tag" and-so-is-this/ is parsed
      # as two tags instead of six
+     solr = CollexEngine.new
      params.each do |key,value|
         match = /^tags-(.*)/.match(key.to_s)
         if match
@@ -44,12 +45,12 @@ class CollectionController < ApplicationController
             end
             interpretation.annotation =  annotation
             interpretation.tag_list = tags
-            interpretation.solr_commit_disabled = true
             interpretation.save!
+            solr.update(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
           end
         end
      end     
-     CollexEngine.new.commit
+     solr.commit
 
      render_text <<-CLOSE
        <html>

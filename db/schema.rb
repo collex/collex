@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 54) do
+ActiveRecord::Schema.define(:version => 56) do
 
   create_table "constraints", :force => true do |t|
     t.column "search_id", :integer
@@ -13,12 +13,14 @@ ActiveRecord::Schema.define(:version => 54) do
   end
 
   create_table "exhibit_page_types", :force => true do |t|
-    t.column "name",            :string
-    t.column "description",     :string
-    t.column "template",        :string
-    t.column "min_sections",    :integer
-    t.column "max_sections",    :integer
-    t.column "exhibit_type_id", :integer
+    t.column "name",               :string
+    t.column "description",        :string
+    t.column "template",           :string
+    t.column "min_sections",       :integer
+    t.column "max_sections",       :integer
+    t.column "exhibit_type_id",    :integer
+    t.column "title_message",      :string
+    t.column "annotation_message", :string
   end
 
   create_table "exhibit_section_types", :force => true do |t|
@@ -26,6 +28,8 @@ ActiveRecord::Schema.define(:version => 54) do
     t.column "template",             :string
     t.column "name",                 :string
     t.column "exhibit_page_type_id", :integer
+    t.column "title_message",        :string
+    t.column "annotation_message",   :string
   end
 
   create_table "exhibit_section_types_exhibit_types", :id => false, :force => true do |t|
@@ -34,8 +38,10 @@ ActiveRecord::Schema.define(:version => 54) do
   end
 
   create_table "exhibit_types", :force => true do |t|
-    t.column "description", :string
-    t.column "template",    :text
+    t.column "description",        :string
+    t.column "template",           :text
+    t.column "title_message",      :string
+    t.column "annotation_message", :string
   end
 
   create_table "exhibited_items", :force => true do |t|

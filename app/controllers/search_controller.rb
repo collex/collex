@@ -105,19 +105,18 @@ class SearchController < ApplicationController
      user = User.find_by_username(session[:user][:username])
      
      uris = params[:objid].split(' ~~ ')  # TODO make this a constant shared by the results.rhtml code that joins uris together
-     
+     solr = CollexEngine.new
      uris.each do |uri|
        interpretation = user.interpretations.find_by_object_uri(uri)
        if not interpretation
-         interpretation = Interpretation.new(:object_uri => uri)
-         user.interpretations << interpretation
+         interpretation = user.interpretations.build(:object_uri => uri)
        end
        interpretation.annotation =  params[:annotation]
        interpretation.tag_list = params[:tags]
-       interpretation.solr_commit_disabled = true
        interpretation.save!
+       solr.update(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
      end
-     CollexEngine.new.commit
+     solr.commit
      
      if request.xhr?
        render_text "collected"
