@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-   layout 'nines', :except => ['years']
+   layout 'nines'
    before_filter :authorize, :only => [:collect, :save, :remove_saved_search]
    
    def initialize
@@ -124,41 +124,6 @@ class SearchController < ApplicationController
        # TODO: set the "sidebar" state to the object detail
        redirect_to :controller => 'search', :action => 'browse'
      end
-   end
-   
-   def years
-     # TODO fix for Ruby object results, not XML
-     @results = @solr.facet('year',session[:constraints])
-     dom = @results[:dom]
-
-     list = dom.elements.to_a( "/response/lst/long" )
-     values = []
-     @unspecified = 0
-     list.each do |item|
-       year = item.attributes["name"]
-       if year != "<unspecified>"
-         if year == "0012"
-           year = "1881"
-         end
-         values << [year.to_i, item.text.to_i]
-       else
-         @unspecified = item.text
-       end
-     end
-     values.sort! {|a,b| a[0] <=> b[0]}
-     @buckets = Array.new(120) { 0 }
-     
-     min_year = values.first()[0].to_i
-     max_year = values.last()[0].to_i
-     years_per_bucket = (max_year - min_year).quo(120).ceil
-     logger.debug "#{min_year} - #{max_year} : #{years_per_bucket}"
-     values.each do |value|
-       bucket_index = (value[0].to_i - min_year).quo(years_per_bucket).floor
-       logger.debug "#{value[1]} : #{bucket_index}"
-       @buckets[bucket_index] += value[1]
-     end
-     
-     logger.debug "unspecified: #{@unspecified}"
    end
    
    def auto_complete_for_field_content

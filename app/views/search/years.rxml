@@ -1,7 +1,0 @@
-xml.rsp(:status_code => "0", :status_message => "Success") do
-  xml.daily_counts do
-    @buckets.each do |bucket|
-      xml.count(bucket, :date=>"20050412T00:00:00")
-    end
-  end
-end
