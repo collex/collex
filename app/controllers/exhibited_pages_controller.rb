@@ -1,5 +1,5 @@
 class ExhibitedPagesController < ExhibitsBaseController
-  layout "nines"
+  layout "collex"
   helper ExhibitsHelper
   before_filter :authorize_owner, :except => [:show]
   

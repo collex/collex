@@ -1,5 +1,5 @@
 class ExhibitsController < ExhibitsBaseController
-  layout "nines"
+  layout "collex"
 
   if ENV['RAILS_ENV'] == 'production'
     before_filter :coming_soon

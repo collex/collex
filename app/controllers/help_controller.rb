@@ -1,4 +1,4 @@
-class NinesController < ApplicationController
+class HelpController < ApplicationController
   layout 'popup'
   
   def sites

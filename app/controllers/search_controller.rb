@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-   layout 'nines'
+   layout 'collex'
    before_filter :authorize, :only => [:collect, :save, :remove_saved_search]
    
    def initialize
