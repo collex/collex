@@ -72,5 +72,29 @@ describe ExhibitedPagesController do
     assigns[:exhibit].should equal(@exhibit)
     assigns[:exhibited_page].should equal(@page_1)
   end
+  
+  it "GET 'creative_commons' should create new entry if it's not already in licenses table" do
+    request.session[:user] = {:username => @owner.username}
+    license_url = "http://fake.url.org/ccl"
+    license_button = "http://fake.url.org/button"
+    license_name = "cc name"
+    get :creative_commons, :license_name => license_name, :license_url => license_url, :license_button => license_button
+    response.should be_success
+    assigns[:license].name.should == license_name
+    assigns[:license].button_url.should == license_button
+    assigns[:license].url.should == license_url
+  end
+  
+  it "GET 'creative_commons' should find existing entry by url" do
+    request.session[:user] = {:username => @owner.username}
+    license_url = "http://fake.url.org/ccl"
+    license_button = "http://fake.url.org/button"
+    license_name = "cc name"
+    license = License.new(:name => license_name, :url => license_url, :button_url => license_button)
+    License.stub!(:find_by_url).and_return(license)
+    get :creative_commons, :license_name => license_name, :license_url => license_url, :license_button => license_button
+    response.should be_success
+    assigns[:license].should equal(license)
+  end
 
 end

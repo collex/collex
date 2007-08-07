@@ -66,6 +66,17 @@ class ExhibitedPagesController < ExhibitsBaseController
   def new
   end
   
+  def creative_commons
+    license_url = params[:license_url]
+    license_name = params[:license_name]
+    license_button = params[:license_button]
+    logger.debug("license_url: #{license_url}")
+    logger.debug("license_name: #{license_name}")
+    logger.debug("license_button: #{license_button}")
+    @license = License.find_by_url(license_url) || License.create(:name => license_name, :url => license_url, :button_url => license_button)
+    render :layout => false
+  end
+  
   # Note, just have one page type per exhibit right now, so grab the first
   def create
 #     @exhibit = Exhibit.find(params[:exhibit_id])
