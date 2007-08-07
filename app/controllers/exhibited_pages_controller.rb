@@ -1,7 +1,7 @@
 class ExhibitedPagesController < ExhibitsBaseController
   layout "collex"
   helper ExhibitsHelper
-  before_filter :authorize_owner, :except => [:show]
+  before_filter :authorize_owner, :except => [:show, :creative_commons]
   
   uses_tiny_mce(:options => {
                   :browsers => "msie,gecko,opera",
