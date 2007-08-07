@@ -13,6 +13,7 @@
 
     <% form_for(@exhibit, :url => exhibits_path) do |f| %>
       <%= f.hidden_field :user_id %>
+      <%= f.hidden_field :license_id %>
   
       <%= div label("Title")%>
       <%= div f.text_field(:title)%>
@@ -20,11 +21,11 @@
       <%= div label("Exhibit Type") %>
       <%= div f.collection_select(:exhibit_type_id, @exhibit_types, :id, :description) %>
 
-      <%= div label("License") %>
-      <%= div f.collection_select(:license_id, @licenses, :id, :description) %>
+      <%= label link_to("Choose a License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]", :popup => true) %>
+      <%= div "", :id => "license" %>
 
       <%= div label("Notes") %>
-      <%= p("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil %>
+      <%= div("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil %>
       <%= div f.text_area(:annotation, :class => "tiny-mce") %>
 
       <%= div submit_tag("Create Exhibit") %>

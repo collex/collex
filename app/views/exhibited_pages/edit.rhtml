@@ -24,8 +24,15 @@
     <%= exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
     <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
       <%= hidden_field_tag "page_id", @exhibited_page.id %>
+      <%= f.hidden_field :license_id %>
+      
       <%= h3 @exhibit.user.fullname %>
-      <%= div f.collection_select(:license_id, @licenses, :id, :description, {}, {:onChange => "this.form.submit();"}) %>
+      <%= label link_to("Change License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]#{url_encode('&')}submit_form=true", :popup => true) %>
+      <% div :id => "license" do %>
+        <%= link_to @exhibit.license.name, @exhibit.license.url, :target => "_blank" %>
+        <%= br %>
+        <%= image_tag @exhibit.license.button_url, :alt => @exhibit.license.name %>
+      <% end %>
     <%- end -%>
   
     <%- form_tag('exhibit', {:id => "add_resource_form"}) do -%>
