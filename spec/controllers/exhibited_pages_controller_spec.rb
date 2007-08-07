@@ -83,6 +83,8 @@ describe ExhibitedPagesController do
     assigns[:license].name.should == license_name
     assigns[:license].button_url.should == license_button
     assigns[:license].url.should == license_url
+    
+    assigns[:license].should equal(License.find_by_url(license_url))
   end
   
   it "GET 'creative_commons' should find existing entry by url" do
@@ -94,7 +96,7 @@ describe ExhibitedPagesController do
     License.stub!(:find_by_url).and_return(license)
     get :creative_commons, :license_name => license_name, :license_url => license_url, :license_button => license_button
     response.should be_success
-    assigns[:license].should equal(license)
+    assigns[:license].id.should == license.id
   end
 
 end
