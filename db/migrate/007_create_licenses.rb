@@ -1,4 +1,6 @@
 class CreateLicenses < ActiveRecord::Migration
+  class License < ActiveRecord::Base; end
+  
   def self.up
     create_table :licenses do |t|
       t.column :description, :string
