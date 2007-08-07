@@ -10,7 +10,7 @@
     <%= h2 @exhibit.title %>
     <%= div @exhibit.annotation %>
     <%= h3 @exhibit.user.fullname %>
-    <%= p @exhibit.license.description %>
+    <%= p link_to(@exhibit.license.name, @exhibit.license.url, :target => "_blank") %>
   
     <%= render :partial => @exhibit.template %>
   
