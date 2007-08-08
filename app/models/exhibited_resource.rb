@@ -2,7 +2,7 @@ class ExhibitedResource < ExhibitedItem
 #   belongs_to :resource, :class_name => "SolrResource"
   
   def resource
-    @resource ||= SolrResource.find_by_uri(self.uri)
+    @resource ||= SolrResource.find_by_uri(self.uri) || SolrResource.new
   end
   
   # Make the resource's properties transparent
