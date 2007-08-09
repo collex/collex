@@ -15,10 +15,41 @@ class Tag < ActiveRecord::Base
     
     # Parses a space separated list of tags into tag names
     #
-    #   Tag.parse('a, b, c')
+    #   Tag.parse('a b c')
     #   # => ['a', 'b', 'c']
-    def parse(list)
-      list.downcase.split.map(&:strip).delete_if { |s| s.blank? }.uniq
+    def parse(string)
+      if string.count('"') % 2 > 0
+        string[string.rindex('"')] = ''
+      end
+      
+      tags = []
+      buffer = ""
+      in_quotes = false
+      string.downcase.each_char do |c|
+        if in_quotes
+          if c == '"'
+            in_quotes = false
+            tags << buffer
+            buffer = ""
+          else
+            buffer << c
+          end
+        else
+          case c
+            when '"'
+              in_quotes = true
+            when ' ', ','
+              tags << buffer unless buffer.empty?
+              buffer = ""
+            else
+              buffer << c
+          end
+        end
+        
+      end
+      tags << buffer unless buffer.empty?
+
+      tags.map {|tag| tag.gsub(/[^\w\"\,\-\s]/,'').gsub(/[^\w]/,'-')}
     end
     
     # Returns Tags from an array of tag names
