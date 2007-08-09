@@ -84,7 +84,7 @@ describe ExhibitedPagesController do
     assigns[:license].button_url.should == license_button
     assigns[:license].url.should == license_url
     
-    assigns[:license].should equal(License.find_by_url(license_url))
+    assigns[:license].should eql(License.find_by_url(license_url))
   end
   
   it "GET 'creative_commons' should find existing entry by url" do
