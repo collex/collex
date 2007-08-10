@@ -29,7 +29,7 @@ class Tag < ActiveRecord::Base
         if in_quotes
           if c == '"'
             in_quotes = false
-            tags << buffer
+            tags << buffer unless buffer.empty?
             buffer = ""
           else
             buffer << c
@@ -49,7 +49,7 @@ class Tag < ActiveRecord::Base
       end
       tags << buffer unless buffer.empty?
 
-      tags.map {|tag| tag.gsub(/[^\w\"\,\-\s]/,'').gsub(/[^\w]/,'-')}
+      tags.map {|tag| tag.gsub(/[^\w\"\,\-\s]/,'').gsub(/[^\w]/,'-')}.uniq
     end
     
     # Returns Tags from an array of tag names
