@@ -80,3 +80,5 @@ COLLEX_ENGINE_PARAMS = {
   :field_list => "archive,agent,date_label,genre,role_*,source,thumbnail,title,alternative,uri,url",
   :facet_fields => ['genre','archive','freeculture']
 }
+
+EXHIBIT_WHITE_LIST = %w{jamieorc nowviskie}

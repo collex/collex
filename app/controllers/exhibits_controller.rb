@@ -24,7 +24,7 @@ class ExhibitsController < ExhibitsBaseController
   in_place_edit_for_resource :exhibit, :annotation
   
   def coming_soon
-    render :template => "exhibits/coming_soon" and return
+    render :template => "exhibits/coming_soon" and return unless (!username.nil?) and EXHIBIT_WHITE_LIST.include?(username)
   end
   private :coming_soon
   
