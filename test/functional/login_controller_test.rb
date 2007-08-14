@@ -25,4 +25,15 @@ class LoginControllerTest < Test::Unit::TestCase
     assert_redirected_to :controller => "sidebar", :action => "cloud", :type => "tag"
     assert_equal('username', session[:user][:username])  # Fix this
   end
+  
+  def test_logout_from_exhibits_redirects_to_exhibits
+    @request.env["HTTP_REFERER"] = "exhibits"
+    get :logout
+    assert_redirected_to(:controller => "exhibits")
+  end
+  
+  def test_logout_from_collect_redirects_to_collect
+    get :logout
+    assert_redirected_to(:controller => "search")
+  end
 end

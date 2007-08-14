@@ -33,7 +33,7 @@ class LoginController < ApplicationController
 
   def logout 
     session[:user] = nil 
-    redirect_to(:controller => "search", :action => "browse") 
+    request.env["HTTP_REFERER"] =~ /exhibit/ ? redirect_to(exhibits_path) : redirect_to(:controller => "search", :action => "browse")
   end
 
   def account
