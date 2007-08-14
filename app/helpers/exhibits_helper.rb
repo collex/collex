@@ -162,7 +162,8 @@ module ExhibitsHelper
     mce_id = "mce_#{object}_#{tag.object.id}"
     text_id = "text_#{object}_#{tag.object.id}"
     update_id = text_id
-    value = tag.value(tag.object) || tag_options[:value] || tag.object.__send__("#{method}_message") || "(Insert #{method})"
+    tag_value = tag.value(tag.object).blank? ? nil : tag.value(tag.object)
+    value = tag_value || tag_options[:value] || tag.object.__send__("#{method}_message") || "(Insert #{method})"
     
     url = case object
     when :exhibited_item
