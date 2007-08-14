@@ -24,7 +24,7 @@
       <%= label link_to("Choose a License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]", :popup => true) %>
       <%= div "", :id => "license" %>
 
-      <%= div label("Notes") %>
+      <%= div label("Abstract / Intro") %>
       <%= div("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil %>
       <%= div f.text_area(:annotation, :class => "tiny-mce") %>
 
