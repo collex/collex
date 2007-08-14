@@ -81,4 +81,4 @@ COLLEX_ENGINE_PARAMS = {
   :facet_fields => ['genre','archive','freeculture']
 }
 
-EXHIBIT_WHITE_LIST = %w{jamieorc nowviskie}
+EXHIBIT_WHITE_LIST = %w{jamieorc nowviskie jeromemcgann DWheeles mandellc erikhatcher aearhart}
