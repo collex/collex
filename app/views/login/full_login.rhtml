@@ -1,0 +1,22 @@
+<div class="">
+
+<%= h2 "Please Log in" %>
+<%= div flash[:sidebar_notice], :id => "message" if flash[:sidebar_notice] %>
+
+<%= form_tag :controller => "login", :action => "login" %> 
+<table> 
+  <tr> 
+    <td>user name:</td> 
+    <td><%= text_field_tag("username") %></td> 
+  </tr> 
+  <tr> 
+    <td>password:</td> 
+    <td><%= password_field_tag %></td> 
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td><input type="submit" value=" log in " /></td> 
+  </tr> 
+</table> 
+<%= end_form_tag %> 
+</div>

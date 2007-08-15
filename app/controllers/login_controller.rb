@@ -26,8 +26,10 @@ class LoginController < ApplicationController
       end 
     end
     
-    if (session[:jumpto] =~ /\/collection\/collect/ || session[:jumpto] =~ /\/exhibits?\//) and not request.xhr?
+    if session[:jumpto] =~ /\/collection\/collect/ and not request.xhr?
       render :action => "standalone_login"
+    elsif session[:jumpto] =~ /\/exhibits?\// and not request.xhr?
+      render :action => "full_login", :layout => "collex"
     end 
   end 
 
