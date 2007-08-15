@@ -77,78 +77,77 @@
 			background: #d3d3d3;
 			text-decoration: none;
 		}
-		#navlist li.active a {
+		#navlist li a.active {
 			padding: 0.25em 0.5em 0.25em 0.75em;
 			border-left: .8em solid #730000;
 			background: #A60000;
 			color: #fff;
 			text-decoration: none;
 		}
-		#navlist li.active a:link { color: #fff; }
-		#navlist li.active a:visited { color: #fff; }
-		
-
 		#navlist li a:link { color: #333; }
 		#navlist li a:visited { color: #999; }
+
+		#navlist li a.active:link { color: #fff; }
+		#navlist li a.active:visited { color: #fff; }
+		
 
 		#navlist li a:hover {
 			border-color: #730000;
 			color: #fff;
 			background: #A60000;
 		}
-				#navcontainer2 {
-					padding: 4px 0 5px 0;
-					float: right;
-				}
-				#navlist2 {
-					padding-left: 1px;
-					margin: 0;
-					font: 10px  trebuchet ms, verdana, sans-serif;
-				}
+		#navcontainer2 {
+			padding: 4px 0 5px 0;
+			float: right;
+		}
+		#navlist2 {
+			padding-left: 1px;
+			margin: 0;
+			font: 10px  trebuchet ms, verdana, sans-serif;
+		}
 
-				#navlist2 li {
-					list-style: none;
-					margin: 0;
-					/*border-top: 1px solid gray;*/
-					display: inline;
-					padding-right: 2px;
-				}
-				#navlist2 li a {
-					padding: 0.25em 0.5em 0.25em 0.75em;
-					border-left: .8em solid gray;
-					background: #fff;
-					text-decoration: none;
-					font-size: 11px;
-				}
-				#navlist2 li.active a {
-					padding: 0.25em 0.5em 0.25em 0.75em;
-					border-left: .8em solid #730000;
-					background: #A60000;
-					color: #fff;
-					text-decoration: none;
-				}
-				#navlist2 li.active a:link { color: #fff; }
-				#navlist2 li.active a:visited { color: #fff; }
+		#navlist2 li {
+			list-style: none;
+			margin: 0;
+			/*border-top: 1px solid gray;*/
+			display: inline;
+			padding-right: 2px;
+		}
+		#navlist2 li a {
+			padding: 0.25em 0.5em 0.25em 0.75em;
+			border-left: .8em solid gray;
+			background: #fff;
+			text-decoration: none;
+			font-size: 11px;
+		}
+		#navlist2 li a.active {
+			padding: 0.25em 0.5em 0.25em 0.75em;
+			border-left: .8em solid #730000;
+			background: #A60000;
+			color: #fff;
+			text-decoration: none;
+		}
+		#navlist2 li a.active:link { color: #fff; }
+		#navlist2 li a.active:visited { color: #fff; }
 
 
-				#navlist2 li a:link { color: #333; }
-				#navlist2 li a:visited { color: #999; }
+		#navlist2 li a:link { color: #333; }
+		#navlist2 li a:visited { color: #999; }
 
-				#navlist2 li a:hover {
-					border-color: #730000;
-					color: #fff;
-					background: #A60000;
-				}
+		#navlist2 li a:hover {
+			border-color: #730000;
+			color: #fff;
+			background: #A60000;
+		}
 		#navlist2 li a:hover {
 			border-color: gray;
 			color: #fff;
 			background: #A1A1A1;
 		}
-		#navlist2 li.active a:hover {
+		#navlist2 li a.active:hover {
 			border-color: #730000;
 			color: #fff;
 			background: #A60000;		
-			cursor: default;
 		}
 		.emph1 {
 			font: 2em  trebuchet ms, verdana, sans-serif;
