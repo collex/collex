@@ -9,7 +9,7 @@
     <%= h2 @exhibit.title %>
     <%= div @exhibit.annotation %>
     <%= h3 @exhibit.user.fullname %>
-    <%= p @exhibit.license.description %>
+    <%= p link_to(@exhibit.license.name, @exhibit.license.url, :target => "_blank") %>
   
     <%- @exhibit.pages.each do |@exhibited_page| -%>
       <%= render :partial => "exhibited_pages/#{@exhibit.template}" %>
