@@ -149,4 +149,20 @@ module ApplicationHelper
   def pie(amount, total)
     pie_by_percent((100 * amount).quo(total.to_i).ceil)
   end
+  
+  def link_to_exhibit()
+    if request.path =~ /exhibits/
+      link_to "CONTRIBUTE", exhibits_path, :title => "header=[you are here] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]", :class => "active"
+    else
+      link_to "CONTRIBUTE", exhibits_path, :title => "header=[contribute] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"
+    end
+  end
+  
+  def link_to_collect()
+    if request.path =~ /collex/
+      link_to "RESEARCH", {:controller => "search"}, :title => "header=[you are here] body=[locate, collect, and annotate digital resources]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]", :class => "active"
+    else
+      link_to "RESEARCH", {:controller => "search"}, :title => "header=[research] body=[locate, collect, and annotate digital resources]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"
+    end
+  end
 end
