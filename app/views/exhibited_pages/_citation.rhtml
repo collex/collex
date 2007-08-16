@@ -12,7 +12,7 @@
     
     <%= div span('source: ', :class => "label") + @exhibited_item.source unless @exhibited_item.source.blank? %>
     <%= div span('site: ', :class => "label") + link_to(@exhibited_item.site.description, @exhibited_item.site.url, :target => '_blank') unless @exhibited_item.site.blank? %>
-    <%= div span(pluralize(@exhibited_item.agents.size, 'name', nil, false) + ": ", :class => "label") + @exhibited_item.agents.join("; ") unless @exhibited_item.agents.blank? %>
+    <%= div span(pluralize(@exhibited_item.agents.size, 'name', nil, false) + ": ", :class => "label") + @exhibited_item.roles_with_agents.collect{|prop| "#{prop.value} (#{RELATORS[prop.name].downcase})"}.join(", ") unless @exhibited_item.agents.blank? %>
     <%= div span('date: ', :class => "label") + @exhibited_item.date_label_or_date unless @exhibited_item.date_label_or_date.blank? %>
     <%= div span(pluralize(@exhibited_item.genres.size, 'genre', nil, false) + ": ", :class => "label") + @exhibited_item.genres.join(", ") unless @exhibited_item.genres.blank? %>  
     
