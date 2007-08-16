@@ -12,7 +12,7 @@ class ObjectRequest < CollexRequest
     hash[:username] = @params[:username]
     hash[:rows] = @params[:rows]
 
-    hash[:fl] = 'title,alternative,genre,year,date_label,archive,agent,uri,url,thumbnail,source'
+    hash[:fl] = 'title,alternative,genre,year,date_label,archive,agent,role_*,uri,url,thumbnail,source'
     hash.merge(super.to_hash)
   end
 end
