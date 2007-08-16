@@ -37,9 +37,13 @@ class SolrResourceTest < Test::Unit::TestCase
     CollexEngine.new
   end
   
+  AUT = "AUT"
+  EDT = "EDT"
   def setup
     @r = SolrResource.new :uri => URI
     @jerry = SolrProperty.new(:name => "name", :value => "Jerry McGann")
+    @aut = SolrProperty.new(:name => "role_#{AUT}", :value => "Dana Wheeles")
+    @edt = SolrProperty.new(:name => "role_#{EDT}", :value => "Bethany Nowviskie")
   end
 
 
@@ -64,6 +68,15 @@ class SolrResourceTest < Test::Unit::TestCase
   def test_properties_accessable_directly_by_plural_name
     @r.properties << @jerry
     assert_equal(@jerry.value, @r.names[0])
+  end
+  
+  def test_roles_with_agents_returns_list_of_three_letter_name_and_agent_name
+    @r.properties << @aut
+    @r.properties << @edt
+    assert_equal(AUT, @r.roles_with_agents[0].name)
+    assert_equal(EDT, @r.roles_with_agents[1].name)
+    assert_equal(@aut.value, @r.roles_with_agents[0].value)
+    assert_equal(@edt.value, @r.roles_with_agents[1].value)
   end
   
   def test_non_property_returns_empty_string

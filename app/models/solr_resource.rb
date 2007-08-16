@@ -21,6 +21,11 @@ class SolrResource < SolrBaseModel
     end
   end
   
+  # return an array of the agents with roles, stripping out "role_" from the prop.name
+  def roles_with_agents
+    @roles_with_agents ||= properties.select {|prop| prop.name =~ /^role_/}.collect { |p| SolrProperty.new(:name => p.name[-3,3], :value => p.value) }
+  end
+  
   def site
     self.archive.blank? ? nil : Site.find_by_code(self.archive)
   end
