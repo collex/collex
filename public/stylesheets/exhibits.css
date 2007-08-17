@@ -104,6 +104,13 @@
   background-color: #dcdcdc;
 }
 
+#exhibit-menu .pagination {
+  font-size: .9em;
+  margin: auto;
+  padding: auto;
+  background-color: #fff;
+}
+
 #exhibit-body span.label {
   color:grey;
 }
