@@ -5,7 +5,7 @@ class Exhibit < ActiveRecord::Base
   has_many :exhibited_pages, :order => "position", :dependent => :destroy
   alias_method :pages, :exhibited_pages
   
-  validates_presence_of :title, :license_id, :exhibit_type_id, :user_id, :license
+  validates_presence_of :title, :exhibit_type_id, :user_id, :license
   
   def template
     self.exhibit_type.template
