@@ -69,7 +69,8 @@ class SidebarController < ApplicationController
     items_per_page = 5
     @page = params[:page] ? params[:page].to_i : 1
     @data = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user], (@page - 1) * items_per_page, items_per_page)
-    @num_pages = @data["total_hits"].to_i.quo(items_per_page).ceil      
+    @num_pages = @data["total_hits"].to_i.quo(items_per_page).ceil
+    @num_pages = 1 if @num_pages = 0  # makes UI better to say there is at least 1 page
   end
   
   def detail
