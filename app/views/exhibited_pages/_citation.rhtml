@@ -1,5 +1,8 @@
 <% table do tbody do section.exhibited_resources.each do |@exhibited_item| tr :id => dom_id(@exhibited_item) do %>
-  <%= td thumbnail_image_tag(@exhibited_item.resource) %>
+  <% td do %>
+    <%= thumbnail_image_tag(@exhibited_item.resource) %>
+    <%= span link_to_function("collect", "displayCollector('collectformarea', '#{@exhibited_item.uri}', event);"), :class => "collectlink" -%> 
+  <% end %>
   
   <% td do %>
     <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_item. %>
