@@ -16,8 +16,11 @@
 <% table :width => "100%", :class => "items" do tbody do tr do section.exhibited_items.each do |@exhibited_item| td :id => dom_id(@exhibited_item) do %>
   <%# link_to "external", @exhibited_item.url, :target => "_blank" if @exhibited_item.is_a?(ExhibitedResource) %>
   <%= thumbnail_image_tag(@exhibited_item.resource, :align => 'top') if @exhibited_item.is_a?(ExhibitedResource) %>
-  <%= div link_to_remote("view in sidebar", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_item.uri}, :complete => "window.scrollTo(0,0);", :class => "title") if @exhibited_item.is_a?(ExhibitedResource) %>
-    
+  <% div :class => "collectlink" do %>
+    <%= link_to_remote("view in sidebar", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_item.uri}, :complete => "window.scrollTo(0,0);", :class => "title") if @exhibited_item.is_a?(ExhibitedResource) %>
+    <%= br %>
+    <%= link_to_function("collect", "displayCollector('collectformarea', '#{@exhibited_item.uri}', event);") -%> 
+  <% end %>
   <%- if controller.action_name == "edit" -%>
     <%= div exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation", :value => (@exhibited_item.is_a?(ExhibitedResource) ? "(Insert Caption)" : "(Insert Text)")), :id => "mce_container_exhibited_item_#{@exhibited_item.id}", :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %> 
     <%= div move_exhibited_items_links(@exhibited_item, :sideways => true) %>
