@@ -242,7 +242,4 @@ class SearchController < ApplicationController
      
      results
    end
-   
-   def merge_categories_with_facets(categories, facets) # facets: {'rossetti' => 10}
-   end
 end
