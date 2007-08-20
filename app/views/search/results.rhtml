@@ -101,62 +101,6 @@
     <% end %>
      </div>
 
-<script>
-function displayCollector(id, uri, event, header)
-{
-  // reset the display properties for the status
-  Effect.Fade('collect-status', { duration: 0.0 });
-  Effect.Fade('collected', { duration: 0.0 });
-
-  new Effect.Appear('collectformarea', { duration: 0.5 }); 
-  showCollector(uri, event, header); 
-
-  // give focus to the tag field
-  if (document.forms['collectform'] && document.forms['collectform'].collector_tag)
-  {
-    setTimeout("document.forms['collectform'].collector_tag.focus()",100);
-  }
-}
-
-function bulkCollect(event) {
-  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
-  checked = new Array();
-  for (i=0; i < checkboxes.length; i++) {
-    checkbox = checkboxes[i];
-    if (checkbox.checked)
-      checked.push(checkbox.value);
-  }
-  
-  if (checked.length > 0) {
-    displayCollector('collectformarea', checked.join(' ~~ '), event, "<span class='collectwarn'>apply to all selected objects</span>");
-  } else {
-    alert("You must select one or more objects before clicking this button.")
-  }
-  
-  // TODO: uncheck all previously checked items
-}
-
-bulk_checked = false;
-
-function toggleAllBulkCollectCheckboxes(link) {
-  bulk_checked = !bulk_checked;
-  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
-  for (i=0; i < checkboxes.length; i++) {
-    checkbox = checkboxes[i];
-    checkbox.checked = bulk_checked;
-  }
-
-  elements = document.getElementsByClassName('bulk_select_all');
-  for (i=0; i<elements.length; i++) {
-    elements[i].toggle();
-  }
-
-  elements = document.getElementsByClassName('bulk_unselect_all');
-  for (i=0; i<elements.length; i++) {
-    elements[i].toggle();
-  }
-}
-</script>
 
 <span class="bulkcollect">
 <a class="thumb" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">select all</span><span class="bulk_unselect_all" style="display: none;">unselect all</span></a>  &#x23D0; 
