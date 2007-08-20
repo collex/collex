@@ -45,9 +45,6 @@ class ExhibitsController < ExhibitsBaseController
     @exhibit = Exhibit.new
     #TODO remove all this hard-coded data
     @exhibit.user = User.find_by_username(my_username)
-    @exhibit.license_id = 1
-    @exhibit.exhibit_type_id = 2
-    @licenses = License.find(:all)
     @exhibit_types = ExhibitType.find(:all)
   end
 
@@ -63,7 +60,6 @@ class ExhibitsController < ExhibitsBaseController
       end      
       redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
     else
-      @licenses = License.find(:all)
       @exhibit_types = ExhibitType.find(:all)
       render :action => "new"
     end
