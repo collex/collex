@@ -15,8 +15,4 @@ class ExhibitedResource < ExhibitedItem
     end
   end
   
-  def date_label_or_date
-    self.date_label.blank? ? self.date : self.date_label
-  end
-  
 end

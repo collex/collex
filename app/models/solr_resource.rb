@@ -36,7 +36,11 @@ class SolrResource < SolrBaseModel
     @mlt = []
     super
   end
-  
+
+  def date_label_or_date
+    self.date_label.blank? ? self.date : self.date_label
+  end
+    
   # Find item(s) by uri from the Solr index
   def self.find_by_uri(*args)
     valid_options = [:user, :start, :rows]
