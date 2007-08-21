@@ -32,7 +32,7 @@
 		<div id="collectformarea" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;"> 
 		  <span style="clear:both;float:right;"><%= link_to_function '&#x2715;', 'Effect.Fade("collectformarea", { duration: 0.0 })'%> &nbsp;</span>
 		<% if is_logged_in? %>
-		<% form_remote_tag(:url => { :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) do %> 
+		<% form_remote_tag(:url => {:controller => "search", :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) do %> 
 		  <div id="collector_header"></div>
 		  <%= hidden_field_tag :objid, "" -%>
 		  <label for="tags"> keywords: &nbsp;<span class="help" title="header=[keywords?] body=[add personal, one-word descriptors for this object. (to collect it, you must assign at least one.) separate your keywords by spaces and join multi-word descriptors with dashes, just-like-this.] offsetx=[140] offsety=[-40] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span></label> 
