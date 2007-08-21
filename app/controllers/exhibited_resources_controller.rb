@@ -3,18 +3,21 @@ class ExhibitedResourcesController < ExhibitedItemsController
   in_place_edit_for_resource :exhibited_resource, :annotation
 
   def create
-    @exhibited_resource = ExhibitedResource.new(params[:exhibited_resource])
-
     unless params[:new_resource].blank?
       uri = params[:new_resource].match('thumbnail_').post_match
       interpretation = Interpretation.find_by_user_id_and_object_uri(user.id, uri)
+      resource = SolrResource.find_by_uri(uri)
       
       annotation = case
         when interpretation.nil?, interpretation.annotation.strip.blank?
-          nil
+          ""
         else
           interpretation.annotation
         end
+      
+      annotation = "(#{resource.date_label_or_date}) " + annotation unless resource.nil? or resource.date_label_or_date.blank? 
+      annotation = "<em>#{resource.title}</em> " + annotation unless resource.nil? or resource.title.blank? 
+      annotation = nil if annotation.strip.blank?
       
       exhibited_section_id = params[:exhibited_section_id].to_i
       es = ExhibitedSection.find(exhibited_section_id)
