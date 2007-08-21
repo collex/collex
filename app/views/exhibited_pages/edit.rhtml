@@ -5,7 +5,6 @@
       <%= li image_tag("loading.gif"), :style => "display:none;", :id => "exhibit-menu-spinner" %>
       <%= li link_to('All Exhibits', exhibits_path) %>
       <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
-      <%= li exhibited_pages_links(@exhibited_page, true), :class => "pagination" %>
       <%= li link_to('Preview', page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
       <%= li link_to("New Page", pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
       
@@ -27,12 +26,10 @@
       <%= f.hidden_field :license_id %>
       
       <%= h3 @exhibit.user.fullname %>
-      <%= label link_to("Change License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]#{url_encode('&')}submit_form=true", :popup => true) %>
-      <% div :id => "license" do %>
-        <%= link_to @exhibit.license.name, @exhibit.license.url, :target => "_blank" %>
-        <%= br %>
-        <%= image_tag @exhibit.license.button_url, :alt => @exhibit.license.name %>
-      <% end %>
+      <%= label link_to("Change Creative Commons License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]#{url_encode('&')}submit_form=true", :popup => true) %> (<%= @exhibit.license.name %>)
+	  <% div :id => "license", :class => "edit" do %>
+	    <%= link_to image_tag (@exhibit.license.button_url), @exhibit.license.url, :target => "_blank", :title =>  @exhibit.license.name %>
+	  <% end %>
     <%- end -%>
   
     <%- form_tag('exhibit', {:id => "add_resource_form"}) do -%>
@@ -44,7 +41,11 @@
       <%= hidden_field_tag "exhibited_section_id", "" %>
     <%- end -%>  
 
+<%= div exhibited_pages_links(@exhibited_page), :class => "pagination" %>
+
     <%= render :partial => @exhibit.template %>
+
+<%= div exhibited_pages_links(@exhibited_page), :class => "pagination" %>
   <% end %>
 <% end %>
 <%#= drop_receiving_element("resource-drop-zone",

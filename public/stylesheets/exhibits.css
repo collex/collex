@@ -104,12 +104,6 @@
   background-color: #dcdcdc;
 }
 
-#exhibit-menu .pagination {
-  font-size: .9em;
-  margin: auto;
-  padding: auto;
-  background-color: #fff;
-}
 
 #exhibit-body span.label {
   color:grey;
@@ -151,6 +145,18 @@
 }
 span.double-arrow, span.single-arrow {
   color: #C9C9C9;
+}
+
+#license img {
+	width: 66px;
+	padding: 0 0 5px 0;
+}
+
+#license.edit {
+	padding: 2px 0 0 0;
+}
+#license.show {
+	text-align: right;
 }
 
 /* .collectlink is defined in new9s.css*/

@@ -2,7 +2,6 @@
   <% div :id => "exhibit-menu" do ul do %>
     <%= li link_to('All Exhibits', exhibits_path) %>
     <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
-    <%= li exhibited_pages_links(@exhibited_page), :class => "pagination" %>
     <%= li link_to("As One Page", exhibit_path(@exhibit)) %>
     <%= li link_to 'Edit', edit_page_path(@exhibit, @exhibited_page) if @exhibit.updatable_by?(user_or_guest) %> 
   <% end end %>
@@ -10,12 +9,18 @@
     <%= h2 @exhibit.title %>
     <%= div @exhibit.annotation %>
     <%= h3 @exhibit.user.fullname %>
-    <%= p link_to(@exhibit.license.name, @exhibit.license.url, :target => "_blank") %>
   
+<%= div exhibited_pages_links(@exhibited_page), :class => "pagination" %>
     <%= render :partial => @exhibit.template %>
+<%= div exhibited_pages_links(@exhibited_page), :class => "pagination" %>
   
     <%# Resource.find(:first).properties.each do |prop| %>
       <%#= p "#{prop.name}: #{prop.value}"  %>
     <%# end %>
+
+  <% div :id => "license", :class => "show" do %>
+    <%= link_to image_tag (@exhibit.license.button_url), @exhibit.license.url, :target => "_blank", :title =>  @exhibit.license.name %>
+  <% end %>
+
   <% end %>
 <% end %>
