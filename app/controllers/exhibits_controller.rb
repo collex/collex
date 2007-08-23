@@ -43,7 +43,6 @@ class ExhibitsController < ExhibitsBaseController
 
   def new
     @exhibit = Exhibit.new
-    #TODO remove all this hard-coded data
     @exhibit.user = User.find_by_username(my_username)
     @exhibit_types = ExhibitType.find(:all)
   end
