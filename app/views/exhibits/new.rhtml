@@ -13,6 +13,7 @@
 
     <% form_for(@exhibit, :url => exhibits_path) do |f| %>
       <%= f.hidden_field :user_id %>
+      <%= f.hidden_field :license_id %>
   
       <%= div label("Title")%>
       <%= div f.text_field(:title)%>
