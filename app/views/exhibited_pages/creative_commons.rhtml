@@ -1,9 +1,9 @@
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
-  var exhibit_license_id_input = window.opener.document.getElementById('exhibit_license_id');
-  exhibit_license_id_input.value = "<%= @license.id %>";
   var license = window.opener.document.getElementById('license');
   <%- if params[:submit_form] -%>
+    var exhibit_license_id_input = window.opener.document.getElementById('exhibit_license_id');
+    exhibit_license_id_input.value = "<%= @license.id %>";
     exhibit_license_id_input.form.submit();
     license.innerHTML = '<%= image_tag("loading.gif") %>';
   <%- else -%>
