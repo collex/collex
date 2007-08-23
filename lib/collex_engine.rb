@@ -13,7 +13,7 @@ class CollexEngine
   
   def num_docs
     if @num_docs == -1
-      request = Solr::Request::Standard.new(:query=>"type:A", :rows=>0)
+      request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0)
       response = @solr.send(request)
       
       @num_docs = response.total_hits
@@ -23,15 +23,30 @@ class CollexEngine
   end
   
   def all_facets
+    # TODO!!!
     @solr.send(FacetRequest.new).all_facets
   end
   
-  def facet(facet, constraints, field=nil, prefix=nil, username=nil)
-    @solr.send(FacetRequest.new(:facet => facet, :constraints => constraints, :field => field, :prefix => prefix, :username => username)).facet(facet)
+  def facet(facet, constraints, prefix=nil)
+    query, filter_queries = solrize_constraints(constraints)
+    req = Solr::Request::Standard.new(
+            :start => 0, :rows => 0,
+            :query => query, :filter_queries => filter_queries,
+            :facets => {:fields => [facet], :mincount => 1, :missing => true, :limit => -1, :prefix => prefix})
+    
+    response = @solr.send(req)
+    facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
   end
   
   def search(constraints, start, max)
-    req = SearchRequest.new(:constraints => constraints, :start => start, :rows => max, :field_list => @params[:field_list], :facet_fields => @params[:facet_fields])
+    query, filter_queries = solrize_constraints(constraints)
+
+    # TODO: switch to DisMax    
+    req = Solr::Request::Standard.new(:start => start, :rows => max,
+                                      :query => query, :filter_queries => filter_queries,
+                                      :field_list => @params[:field_list],
+                                      :facets => {:fields => @params[:facet_fields], :mincount => 1, :missing => true, :limit => -1},
+                                      :highlighting => {:field_list => ['text'], :fragment_size => 600})
     
     results = {}
     results["total_documents"] = num_docs # TODO: pull from the response (but have to add it first)
@@ -39,73 +54,95 @@ class CollexEngine
     response = @solr.send(req)
     
     results["total_hits"] = response.total_hits
-    results["hits"] = response.docs
-    results["facets"] = response.facets
-    results["highlighting"] = response.highlighting
+    results["hits"] = response.hits
+    
+    # Reformat the facets into what the UI wants, so as to leave that code as-is for now
+    results["facets"] = facets_to_hash(response.data['facet_counts']['facet_fields'])
+    results["highlighting"] = response.data['highlighting']
     
     results
     
-  rescue
+#  rescue
     # In case a bad expression was sent, return empty data so user sees no error and gets zero results
-    results["facets"] = {}
-    results["total_hits"] = 0
-    results
+    # TODO: need to handle parse exceptions and report those back to the UI
+#    results["facets"] = {}
+#    results["total_hits"] = 0
+#    results
   end
   
   def object_detail(objid, username)
-    req = ObjectRequest.new(:field => 'uri', :value => objid, :username => username)
+    query = "uri:#{Solr::Util.query_parser_escape(objid)}"
+    # TODO: generalize the field list here
+    field_list = ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
+    # TODO: tag is not currently stored, but to store it requires some strange contortions in #add currently
+    # however, to get tags, you could facet on the tag field
+    # field_list << 'tag' 
+    if username
+      field_list << "#{username}_tag"
+      field_list << "#{username}_annotation"
+    end
+    req = Solr::Request::Standard.new(
+             :start => 0, :rows => 1,
+             :query => query, :field_list => field_list,
+             :mlt => {:count => 3, :field_list => ["title", "genre", "agent", "year", "text","tag"]})
+    
     response = @solr.send(req)
     
-    document = response.doc
-    mlt = nil
-    collection_info = nil
-    if document
-      mlt = response.mlt
-      collection_info = {'users' => response.users}
-    end
+    document = response.hits[0]
+    mlt = response.data['moreLikeThis'][objid]['docs']
+    collection_info = {'users' => document['username']}
     
     [document, mlt, collection_info]
   end
   
   def objects_for_uris(uris, username=nil)
     #TODO allow paging through rows
-    #TODO add switch to avoid getting "more like this" in the solr response - it isn't needed in the case of the collector
-    req = ObjectRequest.new(:field => 'uri', :value => uris, :username => username, :rows => 500)
+    
+    query = uris.collect {|uri| "uri:#{Solr::Util.query_parser_escape(uri)}"}.join(" OR ")
+    # TODO: generalize the field list here
+    field_list = ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
+    if username
+      field_list << "#{username}_tag"
+      field_list << "#{username}_annotation"
+    end
+    req = Solr::Request::Standard.new(
+             :start => 0, :rows => 500,
+             :query => query, :field_list => field_list)
+    
     response = @solr.send(req)
-    response.docs
+    response.hits
   end
 
   def objects_behind_urls(urls, username=nil)
     #TODO allow paging through rows
-    #TODO add switch to avoid getting "more like this" in the solr response - it isn't needed in the case of the collector
-    req = ObjectRequest.new(:field => 'url', :value => urls, :username => username, :rows => 500)
+    query = urls.collect {|url| "url:#{Solr::Util.query_parser_escape(url)}"}.join(" OR ")
+    # TODO: generalize the field list here
+    field_list = ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
+    if username
+      field_list << "#{username}_tag"
+      field_list << "#{username}_annotation"
+    end
+    req = Solr::Request::Standard.new(
+             :start => 0, :rows => 500,
+             :query => query, :field_list => field_list)
+    
     response = @solr.send(req)
-
-    response
+    response.hits
   end
   
   def add(username, collectables)
-    date = DateTime.now.strftime("%Y%m%d")
-    
-    # Add statements linking user to added objects
-    docs = []
     collectables.each do |uri, info|
       tags = info[:tags]
       annotation = info[:annotation]
       
-      doc = {:uri => "#{uri}/#{username}",
-             :type => 'C',
-             :date_updated => date,
-             :username => username,
-             :object_uri => uri,
-             :annotation => annotation,
-             :tag => tags
-            }
-             
-      docs << doc
+      req = Solr::Request::ModifyDocument.new(
+          :uri => uri,
+          :overwrite => {"#{username}_annotation" => annotation,
+                         "#{username}_tag" => tags,
+                        },
+          :distinct => {:username => username})
+      @solr.send(req)      
     end
-    
-    @solr.add(docs)
   end
 
   def update(username, uri, tags, annotation)
@@ -122,5 +159,36 @@ class CollexEngine
   
   def commit
     @solr.commit(:wait_searcher => false, :wait_flush => false)
+  end
+
+private
+  # splits constraints into a full-text query (for relevancy ranking) and filter queries for constraining
+  def solrize_constraints(constraints)
+    queries = []
+    filter_queries = []
+    constraints.each do |constraint|
+      if constraint.is_a?(ExpressionConstraint)
+        queries << constraint.to_solr_expression
+      else
+        filter_queries << constraint.to_solr_expression
+      end
+    end
+    queries << "*:*" if queries.empty?
+    
+    [queries.join(" AND "), filter_queries]
+  end
+  
+  def facets_to_hash(facet_data)
+    # TODO: change how <unspecified> is dealt with, so that it can link back to a -field:[* TO *] query.
+    #       Leave nil as-is here, let the UI deal with rendering it as <unspecified>
+    facets = {}
+    facet_data.each do |facet,values|
+      facets[facet] = {}
+      Solr::Util.paired_array_each(values) do |key, value|
+        # despite requesting mincount => 1, nil (aka "<unspecified>") items can be returned with zero count anyway
+        facets[facet][key || "<unspecified>"] = value if value > 0 
+      end
+    end
+    facets
   end
 end

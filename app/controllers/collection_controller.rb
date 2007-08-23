@@ -15,10 +15,15 @@ class CollectionController < ApplicationController
 
      data = COLLEX_MANAGER.objects_behind_urls(urls, session[:user][:username])
      
-     @results = data.docs
-     
-     collectable_data = Solr::Util.paired_array_to_hash(data.data['collectable'])
-     @results.each {|r| r.merge!(Solr::Util.paired_array_to_hash(collectable_data[r['uri']]))}
+     @results = data
+     @results.each do |r|
+       # map user specific fields to something friendlier for the view
+       r['tag'] = r["#{session[:user][:username]}_tag"]
+       r['annotation'] = r["#{session[:user][:username]}_annotation"]
+       
+       #TODO implement fetching "tag" from Solr - careful though, storing it causes CollexEngine#add to need a contortion
+       r['all_tags'] = []
+     end
   end
 
   def add

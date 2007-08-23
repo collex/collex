@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require RAILS_ROOT + '/config/environment'
+
+solr = CollexEngine.new
+x = Interpretation.find(:all)
+puts "Re-indexing #{x.size} interpretations..."
+x.each {|i| solr.update(i.user.username, i.object_uri, i.tags.collect {|t| t.name}, i.annotation)}
+solr.commit
+puts "Done"

@@ -10,9 +10,10 @@ class StatsController < ApplicationController
     
     solr = CollexEngine.new
     @solr_stats = {
-      :facets => solr.all_facets,
-      :username => solr.facet('username', [{:field => "collected", :value => "collected"}]),
-      :tag => solr.facet('tag', [{:field => "collected", :value => "collected"}]),
+      # TODO: rework these stats
+#      :facets => solr.all_facets,
+#      :username => solr.facet('username', [{:field => "collected", :value => "collected"}]),
+#      :tag => solr.facet('tag', [{:field => "collected", :value => "collected"}]),
     }
   end
 end

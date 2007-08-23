@@ -63,16 +63,27 @@ class NinesCollectionManager
     @solr.objects_behind_urls(urls,user)
   end
   
+  # per user or global cloud of collected objects, counts per type
   def cloud(type, user = nil)
-    @solr.facet(type, [FacetConstraint.new(:field => "collected", :value => "collected")], nil, nil, user)
+    if type == "tag" && user != nil
+      # "tag" is a special - don't want to see tags that others have put on _my_ objects (well, not in the cloud at least for now)
+      # so, facet on <username>_tag when tag cloud is requested for a specific user
+      type = "#{user}_tag"
+    end
+    constraint = user ? FacetConstraint.new(:field => "username", :value => user) : ExpressionConstraint.new(:value => "username:[* TO *]")
+    @solr.facet(type, [constraint])
   end
   
   def objects_by_type(type, value, user = nil, start = 0, max = 5)
+    if type == "tag" && user != nil
+      # when asking for a tag list by username, need to use the <username>_tag field instead of just "tag"
+      type = "#{user}_tag"
+    end
     constraints = [FacetConstraint.new(:field => type, :value => value)]
     if user
       constraints << FacetConstraint.new(:field => "username", :value => user)
     else
-      constraints << FacetConstraint.new(:field => "collected", :value => "collected")
+      constraints << ExpressionConstraint.new(:value => "username:[* TO *]")  # these are the collected objects, any with a username value
     end
     @solr.search(constraints, start, max)
   end

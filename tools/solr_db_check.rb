@@ -29,6 +29,7 @@ in_solr_not_db = raw_solr_docs.reject do |solrdoc|
 end
 
 users = User.find(:all)
+# TODO: there is no longer a "collected" field.  rather use an expression of username:[* TO *]
 facets = solr.facet('username', [{:field => "collected", :value => "collected"}])
 solr_counts = {}
 db_counts = {}

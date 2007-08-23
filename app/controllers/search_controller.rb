@@ -127,10 +127,11 @@ class SearchController < ApplicationController
    end
    
    def auto_complete_for_field_content
+     # TODO
      @field = 'content'
      @values = []
      if params['field']
-       result = @solr.facet(@field, session[:constraints], @field, params['field']['content'])
+       result = @solr.facet(@field, session[:constraints], params['field']['content'])
        @values = result.sort {|a,b| b[1] <=> a[1]}
      end
      
@@ -138,10 +139,11 @@ class SearchController < ApplicationController
    end
 
    def auto_complete_for_field_year
+     # TODO
      @field = 'year'
      @values = []
      if params['field']
-       result = @solr.facet(@field, session[:constraints], @field, params['field']['year'])
+       result = @solr.facet(@field, session[:constraints], params['field']['year'])
        @values = result.sort {|a,b| b[1] <=> a[1]}
      end
      
@@ -149,9 +151,10 @@ class SearchController < ApplicationController
    end
    
    def auto_complete_for_agent_name
+     # TODO
      @values = []
      if params['agent']
-       results = @solr.facet('agent', session[:constraints], 'agent', params['agent']['name'])
+       results = @solr.facet('agent', session[:constraints], params['agent']['name'])
        results.each do |agent, roles_data|
          total = 0
          roles = {}

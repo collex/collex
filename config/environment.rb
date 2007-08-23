@@ -77,7 +77,8 @@ $KCODE = 'UTF8'
 
 # "nines"
 COLLEX_ENGINE_PARAMS = {
-  :field_list => "archive,agent,date_label,genre,role_*,source,thumbnail,title,alternative,uri,url",
+  # TODO: eventually leverage (an as yet undeveloped Solr feature) wildcarded field requests like "role_*"
+  :field_list => ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url"],
   :facet_fields => ['genre','archive','freeculture']
 }
 
