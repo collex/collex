@@ -19,7 +19,7 @@ class CollexEngine
     
   end
   
-  def facet(facet, constraints, field=nil, prefix=nil, username=nil)
+  def facet(facet, constraints, prefix=nil)
     nil
   end
 end
