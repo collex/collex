@@ -5,6 +5,12 @@ require RAILS_ROOT + '/config/environment'
 solr = CollexEngine.new
 x = Interpretation.find(:all)
 puts "Re-indexing #{x.size} interpretations..."
-x.each {|i| solr.update(i.user.username, i.object_uri, i.tags.collect {|t| t.name}, i.annotation)}
+x.each do |i| 
+  begin
+    solr.update(i.user.username, i.object_uri, i.tags.collect {|t| t.name}, i.annotation)
+  rescue Net::HTTPServerException => e
+    puts "Exception: #{e.to_s} indexing #{i.object_uri}/#{i.user.username}"
+  end
+end
 solr.commit
 puts "Done"
