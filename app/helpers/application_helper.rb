@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def cloud_list
-    ["archive", "agent", "year", "tag", "genre", "username"]
+    ["archive", "agent_facet", "year", "tag", "genre", "username"]
   end
   
   def cloud_list_links

@@ -64,7 +64,7 @@ module SidebarHelper
             xm.br
             xm.text(comma_separate(item['date_label']))
             xm.br
-            xm.text(comma_separate(item['agent']))
+            xm.text(comma_separate(item['agent_facet']))
             xm.br
             xm.text(comma_separate(item['genre']))
             xm.br

@@ -12,9 +12,9 @@ xml.feed "xml:lang" => "en-US", "xmlns" => 'http://www.w3.org/2005/Atom' do
 
   @items['hits'].each do |item|
     xml.entry do
-      if item['agent']
+      if item['agent_facet']
         xml.author do
-          name = item['agent'].join(", ")
+          name = item['agent_facet'].join(", ")
           xml.name name
         end
       end
