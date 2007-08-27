@@ -32,7 +32,7 @@ class CollexEngine
     req = Solr::Request::Standard.new(
             :start => 0, :rows => 0,
             :query => query, :filter_queries => filter_queries,
-            :facets => {:fields => [facet], :mincount => 1, :missing => true, :limit => -1, :prefix => prefix})
+            :facets => {:fields => [facet], :mincount => 1, :missing => (prefix ? false : true), :limit => -1, :prefix => prefix})
     
     response = @solr.send(req)
     facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
