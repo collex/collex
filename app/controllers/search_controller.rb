@@ -47,7 +47,7 @@ class SearchController < ApplicationController
 
    def add_agent_facet
      if params['agent'] and params['agent']['name'] and not params['agent']['name'].strip.empty?
-       session[:constraints] << FacetConstraint.new(:field => 'agent', :value => params['agent']['name'], :inverted => params[:invert] ? true : false)
+       session[:constraints] << FacetConstraint.new(:field => 'agent_facet', :value => params['agent']['name'], :inverted => params[:invert] ? true : false)
      end
      redirect_to :action => 'browse'
    end
@@ -154,19 +154,7 @@ class SearchController < ApplicationController
      # TODO
      @values = []
      if params['agent']
-       results = @solr.facet('agent', session[:constraints], params['agent']['name'])
-       results.each do |agent, roles_data|
-         total = 0
-         roles = {}
-         roles_data.each do |name, freq|
-           roles[name[-3,3]] = freq
-           total += freq
-         end
-         if total > 0
-           @values << {:name => agent, :roles => roles, :total => total}
-         end
-        end
-        @values.sort! {|a,b| b[:total] <=> a[:total]}
+       @values = @solr.agent_suggest(session[:constraints], params['agent']['name'])
      end
 
      render :partial => 'agents'

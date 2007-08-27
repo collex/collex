@@ -38,6 +38,40 @@ class CollexEngine
     facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
   end
   
+  def agent_suggest(constraints, prefix)
+    query, filter_queries = solrize_constraints(constraints)
+    
+    # a query is made for agent:#{prefix}* with facets requested for each of the roles
+    # TODO: generalize roles here
+    req = Solr::Request::Standard.new(
+            :start => 0, :rows => 0,
+            :query => "#{query} AND agent:#{prefix}*", :filter_queries => filter_queries,
+            :facets => {:fields => ["role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL"], :mincount => 1, :limit => -1})
+    
+    response = @solr.send(req)
+    facets = facets_to_hash(response.data['facet_counts']['facet_fields'])
+    agents = {}  
+    facets.each do |role_with_prefix, role_data|
+      role = role_with_prefix[-3,3]
+      role_data.each do |name,freq|
+        # because an object can have more than one agent in various roles, agents can be returned which do not match the prefix
+        # so a regex match is done to filter only the ones that match.  This is imperfect as it may match mid-string and return a role
+        # that doesn't quite match what is expected ("Bob Smith" would match a prefix of "mith", but only if there is another role that has a word that starts with "mith"),
+        if name =~ Regexp.new(prefix, Regexp::IGNORECASE)
+          role_counts = agents[name] ||= {}
+          role_counts[role] ||= 0
+          role_counts[role] = role_counts[role] + freq
+        end
+      end
+    end
+    
+    retval = []
+    agents.each do |name, roles|
+      retval << {:name => name, :roles => roles, :total => roles.values.inject(0) {|total,val| total + val}}
+    end
+    retval.sort {|a,b| b[:total] <=> a[:total]}
+  end
+  
   def search(constraints, start, max)
     query, filter_queries = solrize_constraints(constraints)
 
@@ -70,7 +104,7 @@ class CollexEngine
 #    results
   end
   
-  def object_detail(objid, username)
+  def object_detail(objid, username=nil)
     query = "uri:#{Solr::Util.query_parser_escape(objid)}"
     # TODO: generalize the field list here
     field_list = ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
@@ -90,7 +124,7 @@ class CollexEngine
     
     document = response.hits[0]
     mlt = response.data['moreLikeThis'][objid]['docs']
-    collection_info = {'users' => document['username']}
+    collection_info = username ? {'users' => document['username'] || []} : nil
     
     [document, mlt, collection_info]
   end
@@ -150,7 +184,13 @@ class CollexEngine
   end
 
   def remove(username, uri)
-    @solr.delete("#{uri}/#{username}")
+    req = Solr::Request::ModifyDocument.new(
+        :uri => uri,
+        :overwrite => {"#{username}_annotation" => nil,
+                       "#{username}_tag" => nil,
+                      },
+        :delete => {:username => username})
+    @solr.send(req)      
   end
   
   def optimize

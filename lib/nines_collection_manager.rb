@@ -85,6 +85,8 @@ class NinesCollectionManager
     else
       constraints << ExpressionConstraint.new(:value => "username:[* TO *]")  # these are the collected objects, any with a username value
     end
+    
+    # TODO: highlighting not necessary in this context, but still requested
     @solr.search(constraints, start, max)
   end
   

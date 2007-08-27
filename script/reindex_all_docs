@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require RAILS_ROOT + '/config/environment'
+
+solr = Solr::Connection.new(SOLR_URL)
+source = Solr::Importer::SolrSource.new(SOLR_URL,'*:*',nil,:field_list => ['uri'])
+uris = []
+source.each {|doc| uris << doc['uri']}
+puts "Processing #{uris.size} objects..."
+i = 0
+uris.each do |uri|
+  req = Solr::Request::ModifyDocument.new(:uri => uri, :overwrite => {:date_updated => nil, :type => nil})
+  solr.send(req)
+  i = i + 1
+  if i % 1000 == 0
+    puts i 
+    solr.commit
+  end
+end
+puts "Done."

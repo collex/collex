@@ -60,7 +60,7 @@ module ApplicationHelper
   def facet_label(field)
     label = case field
       when "archive"        then "sites"
-      when "roles", "agent" then "names"
+      when "roles", "agent","agent_facet" then "names"
       when "username"       then "peers"
       when "year"           then "dates"
       when "tag", "", nil          then "keywords"
