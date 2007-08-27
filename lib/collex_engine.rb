@@ -118,7 +118,7 @@ class CollexEngine
     req = Solr::Request::Standard.new(
              :start => 0, :rows => 1,
              :query => query, :field_list => field_list,
-             :mlt => {:count => 3, :field_list => ["title", "genre", "agent_facet", "year", "text","tag"]})
+             :mlt => {:count => 3, :field_list => ["title", "genre", "agent_facet", "year", "text","tag"], :min_term_freq => 1})
     
     response = @solr.send(req)
     
