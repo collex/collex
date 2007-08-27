@@ -107,7 +107,6 @@ class SidebarController < ApplicationController
   end
   
   def remove
-    # TODO: what if user clicks "uncollect" twice?
     user = User.find_by_username(session[:user][:username])
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
     Interpretation.destroy(interpretation.id) if interpretation
