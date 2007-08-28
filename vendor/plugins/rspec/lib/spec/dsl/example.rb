@@ -3,6 +3,9 @@ require 'timeout'
 module Spec
   module DSL
     class Example
+      # The global sequence number of this example
+      attr_accessor :number
+      
       def initialize(description, options={}, &example_block)
         @from = caller(0)[3]
         @options = options
@@ -13,20 +16,20 @@ module Spec
       
       def run(reporter, before_each_block, after_each_block, dry_run, execution_context, timeout=nil)
         @dry_run = dry_run
-        reporter.example_started(description)
-        return reporter.example_finished(description) if dry_run
+        reporter.example_started(self)
+        return reporter.example_finished(self) if dry_run
 
         errors = []
         location = nil
         Timeout.timeout(timeout) do
-          before_each_ok = setup_example(execution_context, errors, &before_each_block)
+          before_each_ok = before_example(execution_context, errors, &before_each_block)
           example_ok = run_example(execution_context, errors) if before_each_ok
-          after_each_ok = teardown_example(execution_context, errors, &after_each_block)
+          after_each_ok = after_example(execution_context, errors, &after_each_block)
           location = failure_location(before_each_ok, example_ok, after_each_ok)
         end
 
         ExampleShouldRaiseHandler.new(@from, @options).handle(errors)
-        reporter.example_finished(description, errors.first, location, @example_block.nil?) if reporter
+        reporter.example_finished(self, errors.first, location, @example_block.nil?) if reporter
       end
       
       def matches?(matcher, specified_examples)
@@ -34,10 +37,15 @@ module Spec
         matcher.matches?(specified_examples)
       end
       
-    private
       def description
         @description == :__generate_description ? generated_description : @description
       end
+      
+      def to_s
+        description
+      end
+
+    private
       
       def generated_description
         return @generated_description if @generated_description
@@ -52,7 +60,7 @@ module Spec
         end
       end
       
-      def setup_example(execution_context, errors, &behaviour_before_block)
+      def before_example(execution_context, errors, &behaviour_before_block)
         setup_mocks(execution_context)
         Spec::Matchers.description_generated(@description_generated_proc)
         
@@ -62,7 +70,7 @@ module Spec
         
         execution_context.instance_eval(&behaviour_before_block) if behaviour_before_block
         return errors.empty?
-      rescue => e
+      rescue Exception => e
         @failed = true
         errors << e
         return false
@@ -79,7 +87,7 @@ module Spec
         end
       end
 
-      def teardown_example(execution_context, errors, &behaviour_after_each)
+      def after_example(execution_context, errors, &behaviour_after_each)
         execution_context.instance_eval(&behaviour_after_each) if behaviour_after_each
 
         begin
@@ -95,7 +103,7 @@ module Spec
         execution_context.instance_eval(&after_proc)
 
         return errors.empty?
-      rescue => e
+      rescue Exception => e
         @failed = true
         errors << e
         return false

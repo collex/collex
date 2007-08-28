@@ -45,6 +45,10 @@ module Spec
               def controller_path
                 "#{derived_controller_name(options)}"
               end
+              
+              def controller_name
+                "#{derived_controller_name(options).split('/').last}"
+              end
             }
 
             @controller.send :forget_variables_added_to_assigns
@@ -66,10 +70,12 @@ module Spec
           def template
             @controller.template
           end
+          
         end
       end
-
+      
       class ViewExampleController < ActionController::Base #:nodoc:
+        include Spec::Rails::DSL::RenderObserver
         attr_reader :template
 
         def add_helper_for(template_path)
@@ -93,16 +99,22 @@ module Spec
         include Spec::Rails::DSL::ViewBehaviourHelpers
         def setup #:nodoc:
           super
-          # these go here so that flash and session work as they should.
+          ensure_that_flash_and_session_work_properly
+        end
+        
+        def ensure_that_flash_and_session_work_properly #:nodoc:
           @controller.send :initialize_template_class, @response
           @controller.send :assign_shortcuts, @request, @response
           @session = @controller.session
-          @controller.class.send :public, :flash # make flash accessible to the spec
+          @controller.class.send :public, :flash
         end
       
         def teardown #:nodoc:
           super
-          #necessary to ensure that base_view_path is not set across contexts
+          ensure_that_base_view_path_is_not_set_across_behaviours
+        end
+        
+        def ensure_that_base_view_path_is_not_set_across_behaviours #:nodoc:
           ActionView::Base.base_view_path = nil
         end
 
@@ -140,10 +152,9 @@ module Spec
           options[:helpers].each { |helper| @controller.add_helper(helper) } if options[:helpers]
         end
 
-
       end
 
-      # View Specs live in $RAILS_ROOT/spec/views/.
+      # View Examples live in $RAILS_ROOT/spec/views/.
       #
       # View Specs use Spec::Rails::DSL::ViewBehaviour,
       # which provides access to views without invoking any of your controllers.

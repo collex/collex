@@ -96,6 +96,30 @@ module Spec
           end
         end.should_not raise_error(ArgumentError)
       end
+      
+      it "should NOT complain when adding the same shared behaviour in same file with different absolute path" do
+        shared_behaviour_1 = behaviour_class.new("shared behaviour", :shared => true) {}
+        shared_behaviour_2 = behaviour_class.new("shared behaviour", :shared => true) {}
+
+        shared_behaviour_1.description[:spec_path] = "/my/spec/a/../shared.rb"
+        shared_behaviour_2.description[:spec_path] = "/my/spec/b/../shared.rb"
+
+        behaviour_class.add_shared_behaviour(shared_behaviour_1)
+        behaviour_class.add_shared_behaviour(shared_behaviour_2)
+      end
+        
+      it "should complain when adding a different shared behaviour with the same name in a different file with the same basename" do
+        shared_behaviour_1 = behaviour_class.new("shared behaviour", :shared => true) {}
+        shared_behaviour_2 = behaviour_class.new("shared behaviour", :shared => true) {}
+
+        shared_behaviour_1.description[:spec_path] = "/my/spec/a/shared.rb"
+        shared_behaviour_2.description[:spec_path] = "/my/spec/b/shared.rb"
+
+        behaviour_class.add_shared_behaviour(shared_behaviour_1)
+        lambda do
+          behaviour_class.add_shared_behaviour(shared_behaviour_2)
+        end.should raise_error(ArgumentError, /already exists/)
+      end
         
       it "should add examples to current behaviour when calling it_should_behave_like" do
         shared_behaviour = make_shared_behaviour("shared behaviour") {}

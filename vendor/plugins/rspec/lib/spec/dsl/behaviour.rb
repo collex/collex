@@ -7,7 +7,7 @@ module Spec
       class << self
         def add_shared_behaviour(behaviour)
           return if behaviour.equal?(found_behaviour = find_shared_behaviour(behaviour.description))
-          return if found_behaviour and behaviour.description[:spec_path] == found_behaviour.description[:spec_path]
+          return if found_behaviour and File.expand_path(behaviour.description[:spec_path]) == File.expand_path(found_behaviour.description[:spec_path])
           raise ArgumentError.new("Shared Behaviour '#{behaviour.description}' already exists") if found_behaviour
           shared_behaviours << behaviour
         end
@@ -63,18 +63,22 @@ module Spec
 
       def run(reporter, dry_run=false, reverse=false, timeout=nil)
         raise "shared behaviours should never run" if shared?
-        reporter.add_behaviour(description)
+        # TODO - change add_behaviour to add_description ??????
+        reporter.add_behaviour(@description)
         prepare_execution_context_class
-        errors = run_before_all(reporter, dry_run)
+        before_all_errors = run_before_all(reporter, dry_run)
 
-        specs = reverse ? examples.reverse : examples
+        exs = reverse ? examples.reverse : examples
         example_execution_context = nil
          
-        if errors.empty?
-          specs.each do |example|
+        if before_all_errors.empty?
+          exs.each do |example|
             example_execution_context = execution_context(example)
             example_execution_context.copy_instance_variables_from(@before_and_after_all_context_instance) unless before_all_proc(behaviour_type).nil?
-            example.run(reporter, before_each_proc(behaviour_type), after_each_proc(behaviour_type), dry_run, example_execution_context, timeout)
+            
+            befores = before_each_proc(behaviour_type) {|e| raise e}
+            afters = after_each_proc(behaviour_type)
+            example.run(reporter, befores, afters, dry_run, example_execution_context, timeout)
           end
         end
         
@@ -115,20 +119,25 @@ module Spec
 
       # Includes modules in the Behaviour (the <tt>describe</tt> block).
       def include(*args)
-        args << {} unless Hash === args.last
-        modules, options = args_and_options(*args)
-        required_behaviour_type = options[:behaviour_type]
-        if required_behaviour_type.nil? || required_behaviour_type.to_sym == behaviour_type.to_sym
-          @eval_module.include(*modules)
-        end
+        @eval_module.include(*args)
       end
 
       def behaviour_type #:nodoc:
         @description[:behaviour_type]
       end
+      
+      # Sets the #number on each Example and returns the next number
+      def set_sequence_numbers(number, reverse) #:nodoc:
+        exs = reverse ? examples.reverse : examples
+        exs.each do |example|
+          example.number = number
+          number += 1
+        end
+        number
+      end
 
     protected
-
+    
       # Messages that this class does not understand
       # are passed directly to the @eval_module.
       def method_missing(sym, *args, &block)
@@ -143,16 +152,15 @@ module Spec
       end
 
       def weave_in_included_modules
-        mods = included_modules
-        eval_module = @eval_module
+        mods = [@eval_module]
+        mods << included_modules.dup
+        mods << Spec::Runner.configuration.modules_for(behaviour_type)
         execution_context_class.class_eval do
-          include eval_module
-          Spec::Runner.configuration.included_modules.each do |mod|
-            include mod
-          end
-          mods.each do |mod|
-            include mod
-          end
+          # WARNING - the following can be executed in the context of any
+          # class, and should never pass more than one module to include
+          # even though we redefine include in this class. This is NOT
+          # tested anywhere, hence this comment.
+          mods.flatten.each {|mod| include mod}
         end
       end
 
@@ -166,10 +174,12 @@ module Spec
           begin
             @before_and_after_all_context_instance = execution_context(nil)
             @before_and_after_all_context_instance.instance_eval(&before_all_proc(behaviour_type))
-          rescue => e
+          rescue Exception => e
             errors << e
             location = "before(:all)"
-            reporter.example_finished(location, e, location) if reporter
+            # The easiest is to report this as an example failure. We don't have an Example
+            # at this point, so we'll just create a placeholder. 
+            reporter.example_finished(Example.new(location), e, location) if reporter
           end
         end
         errors
@@ -180,9 +190,9 @@ module Spec
           begin 
             @before_and_after_all_context_instance ||= execution_context(nil) 
             @before_and_after_all_context_instance.instance_eval(&after_all_proc(behaviour_type)) 
-          rescue => e
+          rescue Exception => e
             location = "after(:all)"
-            reporter.example_finished(location, e, location) if reporter
+            reporter.example_finished(Example.new(location), e, location) if reporter
           end
         end
       end

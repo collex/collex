@@ -24,26 +24,27 @@ module Spec
         def add_behaviour(name)
         end
 
-        # This method is invoked when an example starts. +name+ is the name of the
-        # example.
-        def example_started(name)
+        # This method is invoked when an +example+ starts.
+        def example_started(example)
         end
 
-        # This method is invoked when an example passes. +name+ is the name of the
-        # example.
-        def example_passed(name)
+        # This method is invoked when an +example+ passes.
+        def example_passed(example)
         end
 
-        # This method is invoked when an example fails, i.e. an exception occurred
-        # inside it (such as a failed should or other exception). +name+ is the name
-        # of the example. +counter+ is the sequence number of the failure
-        # (starting at 1) and +failure+ is the associated Failure object.
-        def example_failed(name, counter, failure)
+        # This method is invoked when an +example+ fails, i.e. an exception occurred
+        # inside it (such as a failed should or other exception). +counter+ is the 
+        # sequence number of the failure (starting at 1) and +failure+ is the associated 
+        # Failure object.
+        def example_failed(example, counter, failure)
         end
         
-        # This method is invoked when an example is not yet implemented (i.e. has not been provided a block). 
+        # This method is invoked when an example is not yet implemented (i.e. has not
+        # been provided a block), or when an ExamplePendingError is raised.
         # +name+ is the name of the example.
-        def example_not_implemented(name)
+        # +message+ is the message from the ExamplePendingError, if it exists, or the
+        # default value of "Not Yet Implemented"
+        def example_pending(behaviour_name, example_name, message)
         end
 
         # This method is invoked after all of the examples have executed. The next method
@@ -58,10 +59,17 @@ module Spec
         def dump_failure(counter, failure)
         end
       
-        # This method is invoked at the very end.
-        def dump_summary(duration, example_count, failure_count, not_implemented_count)
+        # This method is invoked after the dumping of examples and failures.
+        def dump_summary(duration, example_count, failure_count, pending_count)
+        end
+        
+        # This gets invoked after the summary if option is set to do so.
+        def dump_pending
         end
 
+        # This method is invoked at the very end. Allows the formatter to clean up, like closing open streams.
+        def close
+        end
       end
     end
   end

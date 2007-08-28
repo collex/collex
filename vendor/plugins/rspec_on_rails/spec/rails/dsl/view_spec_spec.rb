@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe "A view with an implicit helper", :behaviour_type => :view do
+describe "A template with an implicit helper", :behaviour_type => :view do
   before(:each) do
-    render "view_spec/show"
+    render "view_spec/implicit_helper"
   end
 
   it "should include the helper" do
@@ -14,7 +14,7 @@ describe "A view with an implicit helper", :behaviour_type => :view do
   end
 end
 
-describe "A view requiring an explicit helper", :behaviour_type => :view do
+describe "A template requiring an explicit helper", :behaviour_type => :view do
   before(:each) do
     render "view_spec/explicit_helper", :helper => 'explicit'
   end
@@ -28,12 +28,12 @@ describe "A view requiring an explicit helper", :behaviour_type => :view do
   end
 end
 
-describe "A view requiring multiple explicit helpers", :behaviour_type => :view do
+describe "A template requiring multiple explicit helpers", :behaviour_type => :view do
   before(:each) do
     render "view_spec/multiple_helpers", :helpers => ['explicit', 'more_explicit']
   end
 
-  it "should included all specified helpers" do
+  it "should include all specified helpers" do
     response.should have_tag('div', :content => "This is text from a method in the ExplicitHelper")
     response.should have_tag('div', :content => "This is text from a method in the MoreExplicitHelper")
   end
@@ -43,19 +43,33 @@ describe "A view requiring multiple explicit helpers", :behaviour_type => :view 
   end
 end
 
-describe "A view that includes a partial", :behaviour_type => :view do
+describe "Message Expectations on helper methods", :behaviour_type => :view do
+  it "should work" do
+    template.should_receive(:method_in_plugin_application_helper).and_return('alternate message 1')
+    render "view_spec/implicit_helper"
+    response.body.should =~ /alternate message 1/
+  end
+
+  it "should work twice" do
+    template.should_receive(:method_in_plugin_application_helper).and_return('alternate message 2')
+    render "view_spec/implicit_helper"
+    response.body.should =~ /alternate message 2/
+  end
+end
+
+describe "A template that includes a partial", :behaviour_type => :view do
   def render!
-    render "view_spec/partial_including_template"
+    render "view_spec/template_with_partial"
   end
 
   it "should render the enclosing template" do
     render!
-    response.should have_tag('div', "method_in_included_partial in ViewSpecHelper")
+    response.should have_tag('div', "method_in_partial in ViewSpecHelper")
   end
 
   it "should render the partial" do
     render!
-    response.should have_tag('div', "method_in_partial_including_template in ViewSpecHelper")
+    response.should have_tag('div', "method_in_template_with_partial in ViewSpecHelper")
   end
 
   it "should include the application helper" do
@@ -63,21 +77,69 @@ describe "A view that includes a partial", :behaviour_type => :view do
     response.should have_tag('div', "This is text from a method in the ApplicationHelper")
   end
   
-  it "should support mocking the render call" do
-    template.should_receive(:render).with(:partial => 'included_partial')
+  it "should pass expect_render with the right partial" do
+    template.expect_render(:partial => 'partial')
     render!
+    template.verify_rendered
+  end
+  
+  it "should fail expect_render with the wrong partial" do
+    template.expect_render(:partial => 'non_existent')
+    render!
+    begin
+      template.verify_rendered
+    rescue Spec::Mocks::MockExpectationError => e
+    ensure
+      e.backtrace.find{|line| line =~ /view_spec_spec\.rb\:87/}.should_not be_nil
+    end
+  end
+  
+  it "should pass expect_render when a partial is expected twice and happens twice" do
+    template.expect_render(:partial => 'partial_used_twice').twice
+    render!
+    template.verify_rendered
+  end
+  
+  it "should pass expect_render when a partial is expected once and happens twice" do
+    template.expect_render(:partial => 'partial_used_twice')
+    render!
+    begin
+      template.verify_rendered
+    rescue Spec::Mocks::MockExpectationError => e
+    ensure
+      e.backtrace.find{|line| line =~ /view_spec_spec\.rb\:104/}.should_not be_nil
+    end
+  end
+  
+  it "should fail expect_render with the right partial but wrong options" do
+    template.expect_render(:partial => 'partial', :locals => {:thing => Object.new})
+    render!
+    lambda {template.verify_rendered}.should raise_error(Spec::Mocks::MockExpectationError)
+  end
+end
+
+describe "A partial that includes a partial", :behaviour_type => :view do
+  it "should support expect_render with nested partial" do
+    obj = Object.new
+    template.expect_render(:partial => 'partial', :object => obj)
+    render :partial => "view_spec/partial_with_sub_partial", :locals => { :partial => obj }
   end
 end
 
 describe "A view that includes a partial using :collection and :spacer_template", :behaviour_type => :view  do
-  before(:each) do
-    render "view_spec/partial_collection_including_template"
+  it "should render the partial w/ spacer_tamplate" do
+    render "view_spec/template_with_partial_using_collection"
+    response.should have_tag('div',/method_in_partial/)
+    response.should have_tag('div',/ApplicationHelper/)
+    response.should have_tag('div',/ViewSpecHelper/)
+    response.should have_tag('hr#spacer')
   end
 
   it "should render the partial w/ spacer_tamplate" do
-    response.should have_tag('div', :content => 'Alice')
-    response.should have_tag('hr', :attributes =>{:id => "spacer"})
-    response.should have_tag('div', :content => 'Bob')
+    template.expect_render(:partial => 'partial',
+               :collection => ['Alice', 'Bob'],
+               :spacer_template => 'spacer')
+    render "view_spec/template_with_partial_using_collection"
   end
 
 end
@@ -85,7 +147,7 @@ end
 describe "A view that includes a partial using an array as partial_path", :behaviour_type => :view do
   before(:each) do
     module ActionView::Partials
-      def render_partial_with_array_support(partial_path, local_assigns = nil, deprecated_local_assigns = nil)
+      def render_template_with_partial_with_array_support(partial_path, local_assigns = nil, deprecated_local_assigns = nil)
         if partial_path.is_a?(Array)
           "Array Partial"
         else
@@ -94,7 +156,7 @@ describe "A view that includes a partial using an array as partial_path", :behav
       end
 
       alias :render_partial_without_array_support :render_partial
-      alias :render_partial :render_partial_with_array_support
+      alias :render_partial :render_template_with_partial_with_array_support
     end
 
     @array = ['Alice', 'Bob']
@@ -103,14 +165,14 @@ describe "A view that includes a partial using an array as partial_path", :behav
 
   after(:each) do
     module ActionView::Partials
-      alias :render_partial_with_array_support :render_partial
+      alias :render_template_with_partial_with_array_support :render_partial
       alias :render_partial :render_partial_without_array_support
-      undef render_partial_with_array_support
+      undef render_template_with_partial_with_array_support
     end
   end
 
   it "should render have the array passed through to render_partial without modification" do
-    render "view_spec/partial_with_array" 
+    render "view_spec/template_with_partial_with_array" 
     response.body.should match(/^Array Partial$/)
   end
 end
@@ -135,7 +197,6 @@ describe "A view", :behaviour_type => :view do
   end
 
   specify "should have access to params data" do
-    puts response.body
     response.should have_tag("div#params", "params")
   end
 
@@ -148,6 +209,20 @@ describe "A view with a form_tag", :behaviour_type => :view do
   it "should render the right action" do
     render "view_spec/entry_form"
     response.should have_tag("form[action=?]","/view_spec/entry_form")
+  end
+end
+
+describe "An instantiated ViewExampleController", :behaviour_type => :view do
+  before do
+    render "view_spec/foo/show"
+  end
+  
+  it "should return the name of the real controller that it replaces" do
+    @controller.controller_name.should == 'foo'
+  end
+  
+  it "should return the path of the real controller that it replaces" do
+    @controller.controller_path.should == 'view_spec/foo'
   end
 end
 

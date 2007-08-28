@@ -54,9 +54,9 @@ describe "OptionParser" do
     @out.read.should match(/Usage: spec \(FILE\|DIRECTORY\|GLOB\)\+ \[options\]/m)
   end
 
-  it "should print instructions about how to fix bad formatter" do
-    options = parse(["--format", "Custom::BadFormatter"])
-    @err.string.should match(/Couldn't find formatter class Custom::BadFormatter/n)
+  it "should print instructions about how to require missing formatter" do
+    lambda { options = parse(["--format", "Custom::MissingFormatter"]) }.should raise_error(NameError)
+    @err.string.should match(/Couldn't find formatter class Custom::MissingFormatter/n)
   end
 
   it "should print usage to err if no dir specified" do
@@ -133,7 +133,8 @@ describe "OptionParser" do
     options = parse(["--format", "html:test.html"])
     File.should be_exist('test.html')
     options.formatters[0].class.should equal(Spec::Runner::Formatter::HtmlFormatter)
-    FileUtils.rm 'test.html' #rescue nil # Help windows
+    options.formatters[0].close
+    FileUtils.rm 'test.html'
   end
 
   it "should use noisy backtrace tweaker with b option" do
@@ -199,9 +200,9 @@ describe "OptionParser" do
     options.differ_class.should == Custom::Formatter
   end
 
-  it "should print instructions about how to fix bad differ" do
-    options = parse(["--diff", "Custom::BadFormatter"])
-    @err.string.should match(/Couldn't find differ class Custom::BadFormatter/n)
+  it "should print instructions about how to fix missing differ" do
+    lambda { parse(["--diff", "Custom::MissingFormatter"]) }.should raise_error(NameError)
+    @err.string.should match(/Couldn't find differ class Custom::MissingFormatter/n)
   end
 
   it "should support --line to identify spec" do
@@ -293,8 +294,8 @@ describe "OptionParser" do
   it "should save config to file when --generate-options is specified" do
     FileUtils.rm 'test.spec.opts' if File.exist?('test.spec.opts')
     options = parse(["--colour", "--generate-options", "test.spec.opts", "--diff"])
-    File.open('test.spec.opts').read.should == "--colour\n--diff\n"
-    FileUtils.rm 'test.spec.opts' #rescue nil # Help windows
+    IO.read('test.spec.opts').should == "--colour\n--diff\n"
+    FileUtils.rm 'test.spec.opts'
   end
 
   it "should call DrbCommandLine when --drb is specified" do
@@ -322,19 +323,19 @@ describe "OptionParser" do
     end
   end
 
-  it "should not use a runner by default" do
+  it "should use the standard runner by default" do
     options = parse([])
-    options.runner_type.should be_nil
+    options.create_behaviour_runner.class.should equal(Spec::Runner::BehaviourRunner)
   end
 
   it "should use a custom runner when given" do
     options = parse(["--runner", "Custom::BehaviourRunner"])
-    options.runner_type.should equal(Custom::BehaviourRunner)
+    options.create_behaviour_runner.class.should equal(Custom::BehaviourRunner)
   end
 
-  it "should fail when custom runner not found" do
-    parse(["--runner", "whatever"])
-    @err.string.should match(/Couldn't find behaviour runner class/)
+  it "should use a custom runner with extra options" do
+    options = parse(["--runner", "Custom::BehaviourRunner:something"])
+    options.create_behaviour_runner.class.should equal(Custom::BehaviourRunner)
   end
 
   it "should return the correct default behaviour runner" do

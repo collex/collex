@@ -4,10 +4,11 @@ require 'rbconfig'
 dir = File.dirname(__FILE__)
 lib_path = File.expand_path("#{dir}/../lib")
 $LOAD_PATH.unshift lib_path unless $LOAD_PATH.include?(lib_path)
+$_spec_spec = true # Prevents Kernel.exit in various places
 
 require 'spec'
 require 'spec/mocks'
-require 'hpricot'
+require 'hpricot' # Needed to compare generated with wanted HTML
 spec_classes_path = File.expand_path("#{dir}/../spec/spec/spec_classes")
 require spec_classes_path unless $LOAD_PATH.include?(spec_classes_path)
 
@@ -26,7 +27,7 @@ module Spec
         begin
           proc.call
           true
-        rescue => @error
+        rescue Exception => @error
           false
         end
       end
@@ -41,3 +42,5 @@ module Spec
     end
   end
 end
+
+class NonStandardError < Exception; end

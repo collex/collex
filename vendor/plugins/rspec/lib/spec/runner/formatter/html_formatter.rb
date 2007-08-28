@@ -1,7 +1,10 @@
+require 'erb'
+
 module Spec
   module Runner
     module Formatter
       class HtmlFormatter < BaseTextFormatter
+        include ERB::Util # for the #h method
         
         def initialize(output)
           super
@@ -14,7 +17,7 @@ module Spec
           @current_behaviour_number
         end
         
-        # The number of the currently running example
+        # The number of the currently running example (a global counter)
         def current_example_number
           @current_example_number
         end
@@ -37,7 +40,7 @@ module Spec
           end
           @output.puts "<div class=\"behaviour\">"
           @output.puts "  <dl>"
-          @output.puts "  <dt id=\"behaviour_#{current_behaviour_number}\">#{escape(name)}</dt>"
+          @output.puts "  <dt id=\"behaviour_#{current_behaviour_number}\">#{h(name)}</dt>"
           @output.flush
         end
 
@@ -47,26 +50,28 @@ module Spec
           @output.flush
         end
 
-        def example_passed(name)
-          @current_example_number += 1
+        def example_started(example)
+          @current_example_number = example.number
+        end
+
+        def example_passed(example)
           move_progress
-          @output.puts "    <dd class=\"spec passed\"><span class=\"passed_spec_name\">#{escape(name)}</span></dd>"
+          @output.puts "    <dd class=\"spec passed\"><span class=\"passed_spec_name\">#{h(example.description)}</span></dd>"
           @output.flush
         end
 
-        def example_failed(name, counter, failure)
+        def example_failed(example, counter, failure)
           extra = extra_failure_content(failure)
-          
-          @current_example_number += 1
+          failure_style = failure.pending_fixed? ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
           @header_red = true
           @output.puts "    <script type=\"text/javascript\">makeRed('behaviour_#{current_behaviour_number}');</script>" unless @behaviour_red
           @behaviour_red = true
           move_progress
-          @output.puts "    <dd class=\"spec failed\">"
-          @output.puts "      <span class=\"failed_spec_name\">#{escape(name)}</span>"
+          @output.puts "    <dd class=\"spec #{failure_style}\">"
+          @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
           @output.puts "      <div class=\"failure\" id=\"failure_#{counter}\">"
-          @output.puts "        <div class=\"message\"><pre>#{escape(failure.exception.message)}</pre></div>" unless failure.exception.nil?
+          @output.puts "        <div class=\"message\"><pre>#{h(failure.exception.message)}</pre></div>" unless failure.exception.nil?
           @output.puts "        <div class=\"backtrace\"><pre>#{format_backtrace(failure.exception.backtrace)}</pre></div>" unless failure.exception.nil?
           @output.puts extra unless extra == ""
           @output.puts "      </div>"
@@ -74,14 +79,14 @@ module Spec
           @output.flush
         end
 
-        def example_not_implemented(name)
-          @current_example_number += 1
+        def example_pending(behaviour_name, example_name, message)
           @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>" unless @header_red
           @output.puts "    <script type=\"text/javascript\">makeYellow('behaviour_#{current_behaviour_number}');</script>" unless @behaviour_red
           move_progress
-          @output.puts "    <dd class=\"spec not_implemented\"><span class=\"not_implemented_spec_name\">#{escape(name)}</span></dd>"
+          @output.puts "    <dd class=\"spec not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example_name)}</span></dd>"
           @output.flush
         end
+
         # Override this method if you wish to output extra HTML for a failed spec. For example, you
         # could output links to images or other files produced during the specs.
         #
@@ -90,24 +95,20 @@ module Spec
         end
         
         def move_progress
-          percent_done = @example_count == 0 ? 100.0 : (current_example_number.to_f / @example_count.to_f * 1000).to_i / 10.0
+          percent_done = @example_count == 0 ? 100.0 : ((current_example_number + 1).to_f / @example_count.to_f * 1000).to_i / 10.0
           @output.puts "    <script type=\"text/javascript\">moveProgressBar('#{percent_done}');</script>"
           @output.flush
-        end
-        
-        def escape(string)
-          string.gsub(/&/n, '&amp;').gsub(/\"/n, '&quot;').gsub(/>/n, '&gt;').gsub(/</n, '&lt;')
         end
 
         def dump_failure(counter, failure)
         end
 
-        def dump_summary(duration, example_count, failure_count, not_implemented_count)
+        def dump_summary(duration, example_count, failure_count, pending_count)
           if @dry_run
             totals = "This was a dry-run"
           else
             totals = "#{example_count} example#{'s' unless example_count == 1}, #{failure_count} failure#{'s' unless failure_count == 1}"
-            totals << ", #{not_implemented_count} not implemented" if not_implemented_count > 0  
+            totals << ", #{pending_count} pending" if pending_count > 0  
           end
           @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{duration} seconds</strong>\";</script>"
           @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
@@ -264,6 +265,12 @@ dd.spec.not_implemented {
   background: #FCFB98; color: #131313;
 }
 
+dd.spec.pending_fixed {
+  border-left: 5px solid #0000C2;
+  border-bottom: 1px solid #0000C2;
+  color: #0000C2; background: #D3FBFF;
+}
+
 .backtrace {
   color: #000;
   font-size: 12px;
@@ -303,10 +310,10 @@ a {
 
 .ruby .offending { background-color: gray; }
 .ruby .linenum {
-	width: 75px;
-	padding: 0.1em 1em 0.2em 0;
-	color: #000000;
-	background-color: #FFFBD3;
+  width: 75px;
+  padding: 0.1em 1em 0.2em 0;
+  color: #000000;
+  background-color: #FFFBD3;
 }
 EOF
         end

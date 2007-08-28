@@ -6,17 +6,17 @@ module Spec
           @output.puts "# #{name}"
         end
   
-        def example_passed(name)
-          @output.puts "# * #{name}"
+        def example_passed(example)
+          @output.puts "# * #{example.description}"
           @output.flush
         end
 
-        def example_failed(name, counter, failure)
-          @output.puts "# * #{name} [#{counter} - FAILED]"
+        def example_failed(example, counter, failure)
+          @output.puts "# * #{example.description} [#{counter} - FAILED]"
         end
         
-        def example_not_implemented(name)
-          @output.puts "# * #{name} [NOT IMPLEMENTED]"
+        def example_pending(behaviour_name, example_name, message)
+          @output.puts "# * #{behaviour_name} #{example_name} [PENDING: #{message}]"
         end
       end
     end

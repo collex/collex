@@ -6,15 +6,15 @@ module Spec
           @behaviour_name = behaviour_name
         end
       
-        def example_failed(name, counter, failure)
-          @output.puts "#{@behaviour_name} #{name}"
+        def example_failed(example, counter, failure)
+          @output.puts "#{@behaviour_name} #{example.description}"
           @output.flush
         end
 
         def dump_failure(counter, failure)
         end
 
-        def dump_summary(duration, example_count, failure_count, not_implemented_count)
+        def dump_summary(duration, example_count, failure_count, pending_count)
         end
       end
     end

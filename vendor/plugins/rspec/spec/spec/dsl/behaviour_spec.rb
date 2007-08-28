@@ -8,7 +8,7 @@ module Spec
         @added_behaviour = description
       end
     end
-
+    
     describe Behaviour, "class methods" do
       before :each do
         @reporter = FakeReporter.new(mock("formatter", :null_object => true), mock("backtrace_tweaker", :null_object => true))
@@ -32,7 +32,7 @@ module Spec
 
       it "should not run any example if before(:all) fails" do
         spec_ran = false
-        Behaviour.before(:all) { raise "help" }
+        Behaviour.before(:all) { raise NonStandardError }
         @behaviour.it("test") {spec_ran = true}
         @behaviour.run(@reporter)
         spec_ran.should be_false
@@ -40,7 +40,7 @@ module Spec
 
       it "should run after(:all) if before(:all) fails" do
         after_all_ran = false
-        Behaviour.before(:all) { raise }
+        Behaviour.before(:all) { raise NonStandardError }
         Behaviour.after(:all) { after_all_ran = true }
         @behaviour.run(@reporter)
         after_all_ran.should be_true
@@ -48,7 +48,7 @@ module Spec
 
       it "should run after(:all) if before(:each) fails" do
         after_all_ran = false
-        Behaviour.before(:each) { raise }
+        Behaviour.before(:each) { raise NonStandardError }
         Behaviour.after(:all) { after_all_ran = true }
         @behaviour.run(@reporter)
         after_all_ran.should be_true
@@ -56,32 +56,95 @@ module Spec
 
       it "should run after(:all) if any example fails" do
         after_all_ran = false
-        @behaviour.it("should") { raise "before all error" }
+        @behaviour.it("should") { raise NonStandardError }
         Behaviour.after(:all) { after_all_ran = true }
         @behaviour.run(@reporter)
         after_all_ran.should be_true
       end
 
+      
+      it "should unregister a given after(:each) block" do
+        after_all_ran = false
+        @behaviour.it("example") {}
+        proc = Proc.new { after_all_ran = true }
+        Behaviour.after(:each, &proc)
+        @behaviour.run(@reporter)
+        after_all_ran.should be_true
+        
+        after_all_ran = false
+        Behaviour.remove_after(:each, &proc)
+        @behaviour.run(@reporter)
+        after_all_ran.should be_false
+      end
+      
+      it "should run second after(:each) block even if the first one fails" do
+        example = @behaviour.it("example") {}
+        second_after_ran = false
+        @behaviour.after(:each) do
+          second_after_ran = true
+          raise "second"
+        end
+        first_after_ran = false
+        @behaviour.after(:each) do
+          first_after_ran = true
+          raise "first"
+        end
+
+        @reporter.should_receive(:example_finished) do |example, error, location, example_not_implemented|
+          example.should equal(example)
+          error.message.should eql("first")
+          location.should eql("after(:each)")
+          example_not_implemented.should be_false
+        end
+        @behaviour.run(@reporter)
+        first_after_ran.should be_true
+        second_after_ran.should be_true
+      end
+
+      it "should not run second before(:each) if the first one fails" do
+        @behaviour.it("example") {}
+        first_before_ran = false
+        @behaviour.before(:each) do
+          first_before_ran = true
+          raise "first"
+        end
+        second_before_ran = false
+        @behaviour.before(:each) do
+          second_before_ran = true
+          raise "second"
+        end
+
+        @reporter.should_receive(:example_finished) do |name, error, location, example_not_implemented|
+          name.should eql("example")
+          error.message.should eql("first")
+          location.should eql("before(:each)")
+          example_not_implemented.should be_false
+        end
+        @behaviour.run(@reporter)
+        first_before_ran.should be_true
+        second_before_ran.should be_false
+      end
+
       it "should supply before(:all) as description if failure in before(:all)" do
-        @reporter.should_receive(:example_finished) do |name, error, location|
-          name.should eql("before(:all)")
-          error.message.should eql("in before(:all)")
+        @reporter.should_receive(:example_finished) do |example, error, location|
+          example.description.should eql("before(:all)")
+          error.message.should == "in before(:all)"
           location.should eql("before(:all)")
         end
 
-        Behaviour.before(:all) { raise "in before(:all)" }
+        Behaviour.before(:all) { raise NonStandardError.new("in before(:all)") }
         @behaviour.it("test") {true}
         @behaviour.run(@reporter)
       end
 
       it "should provide after(:all) as description if failure in after(:all)" do
-        @reporter.should_receive(:example_finished) do |name, error, location|
-          name.should eql("after(:all)")
+        @reporter.should_receive(:example_finished) do |example, error, location|
+          example.description.should eql("after(:all)")
           error.message.should eql("in after(:all)")
           location.should eql("after(:all)")
         end
 
-        Behaviour.after(:all) { raise "in after(:all)" }
+        Behaviour.after(:all) { raise NonStandardError.new("in after(:all)") }
         @behaviour.run(@reporter)
       end
     end
@@ -159,8 +222,8 @@ module Spec
       end
 
       it "should supply before(:all) as description if failure in before(:all)" do
-        @reporter.should_receive(:example_finished) do |name, error, location|
-          name.should eql("before(:all)")
+        @reporter.should_receive(:example_finished) do |example, error, location|
+          example.description.should eql("before(:all)")
           error.message.should eql("in before(:all)")
           location.should eql("before(:all)")
         end
@@ -171,8 +234,8 @@ module Spec
       end
 
       it "should provide after(:all) as description if failure in after(:all)" do
-        @reporter.should_receive(:example_finished) do |name, error, location|
-          name.should eql("after(:all)")
+        @reporter.should_receive(:example_finished) do |example, error, location|
+          example.description.should eql("after(:all)")
           error.message.should eql("in after(:all)")
           location.should eql("after(:all)")
         end
@@ -427,42 +490,6 @@ module Spec
         mod1_method_called.should be_true
         mod2_method_called.should be_true
       end
-      
-      it "should not include untargeted modules" do
-        special_method_called = false
-        special_mod = Module.new do
-          define_method :special_method do
-            special_method_called = true
-          end
-        end
-
-        behaviour = Behaviour.new("I'm not special", :behaviour_type => :not_special) {}
-        behaviour.include special_mod, :behaviour_type => :special
-        behaviour.it "test" do
-          special_method
-        end
-        behaviour.run(@reporter)
-
-        special_method_called.should be_false
-      end
-
-      it "should include targeted modules" do
-        special_method_called = false
-        special_mod = Module.new do
-          define_method :special_method do
-            special_method_called = true
-          end
-        end
-
-        behaviour = Behaviour.new("I'm not special", :behaviour_type => :special) {}
-        behaviour.include special_mod, :behaviour_type => :special
-        behaviour.it "test" do
-          special_method
-        end
-        behaviour.run(@reporter)
-
-        special_method_called.should be_true
-      end
 
       it "should have accessible class methods from included module" do
         mod1_method_called = false
@@ -522,7 +549,9 @@ module Spec
         @behaviour.should be_matches(['jalla'])
       end
       
-      it "should include any modules included using configuration" do
+      it "should include targetted modules included using configuration" do
+        $included_modules = []
+        
         mod1 = Module.new do
           class << self
             def included(mod)
@@ -539,21 +568,29 @@ module Spec
           end
         end
 
-        begin
-          $included_modules = []
-          Spec::Runner.configuration.include(mod1, mod2)
+        mod3 = Module.new do
+          class << self
+            def included(mod)
+              $included_modules << self
+            end
+          end
+        end
 
-          behaviour = Behaviour.new('example') do
+        begin
+          Spec::Runner.configuration.include(mod1, mod2)
+          Spec::Runner.configuration.include(mod3, :behaviour_type => :cat)
+
+          behaviour = Behaviour.new("I'm special", :behaviour_type => :dog) do
           end.run(@reporter)
         
           $included_modules.should include(mod1)
           $included_modules.should include(mod2)
+          $included_modules.should_not include(mod3)
         ensure
-          Spec::Runner.configuration.included_modules.delete(mod1)
-          Spec::Runner.configuration.included_modules.delete(mod2)
+          Spec::Runner.configuration.exclude(mod1, mod2, mod3)
         end
       end
-      
+
       it "should include any predicate_matchers included using configuration" do
         $included_predicate_matcher_found = false
         Spec::Runner.configuration.predicate_matchers[:do_something] = :does_something?

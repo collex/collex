@@ -22,19 +22,19 @@ module Spec
       end
 
       def add_message_expectation(expected_from, sym, opts={}, &block)
-        __add expected_from, sym, block
+        __add sym, block
         @expectations << MessageExpectation.new(@error_generator, @expectation_ordering, expected_from, sym, block_given? ? block : nil, 1, opts)
         @expectations.last
       end
 
       def add_negative_message_expectation(expected_from, sym, &block)
-        __add expected_from, sym, block
+        __add sym, block
         @expectations << NegativeMessageExpectation.new(@error_generator, @expectation_ordering, expected_from, sym, block_given? ? block : nil)
         @expectations.last
       end
 
       def add_stub(expected_from, sym)
-        __add expected_from, sym, nil
+        __add sym, nil
         @stubs.unshift MethodStub.new(@error_generator, @expectation_ordering, expected_from, sym, nil)
         @stubs.first
       end
@@ -85,17 +85,17 @@ module Spec
       
     private
 
-      def __add(expected_from, sym, block)
-        $rspec_mocks.add(@target)
+      def __add(sym, block)
+        $rspec_mocks.add(@target) unless $rspec_mocks.nil?
         define_expected_method(sym)
       end
       
       def define_expected_method(sym)
         if target_responds_to?(sym) && !@proxied_methods.include?(sym)
+          metaclass.__send__(:alias_method, munge(sym), sym) if metaclass.instance_methods.include?(sym.to_s)
           @proxied_methods << sym
-          metaclass.__send__(:alias_method, munge(sym), sym)
         end
-
+        
         metaclass_eval(<<-EOF, __FILE__, __LINE__)
           def #{sym}(*args, &block)
             __mock_proxy.message_received :#{sym}, *args, &block
@@ -141,8 +141,12 @@ module Spec
 
       def reset_proxied_methods
         @proxied_methods.each do |sym|
-          metaclass.__send__(:alias_method, sym, munge(sym))
-          metaclass.__send__(:undef_method, munge(sym))
+          if metaclass.instance_methods.include?(munge(sym).to_s)
+            metaclass.__send__(:alias_method, sym, munge(sym))
+            metaclass.__send__(:undef_method, munge(sym))
+          else
+            metaclass.__send__(:undef_method, sym)
+          end
         end
       end
 

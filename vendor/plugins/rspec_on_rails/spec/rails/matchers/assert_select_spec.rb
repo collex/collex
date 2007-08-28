@@ -180,13 +180,13 @@ describe "should have_tag", :behaviour_type => :controller do
       response.should have_tag("div#?", /\d+/) do |elements|
         elements.size.should == 3
       end
-    }.should raise_error(SpecFailed, "expected 3, got 2 (using ==)")
+    }.should raise_error(SpecFailed, "expected: 3,\n     got: 2 (using ==)")
     
     lambda {
       response.should have_tag("div#?", /\d+/) { |elements|
         elements.size.should == 3
       }
-    }.should raise_error(SpecFailed, "expected 3, got 2 (using ==)")
+    }.should raise_error(SpecFailed, "expected: 3,\n     got: 2 (using ==)")
 
     response.should have_tag("div#?", /\d+/) do |elements|
       elements.size.should == 2
@@ -224,6 +224,23 @@ describe "should have_tag", :behaviour_type => :controller do
         with_tag("input[type=text][name=other_input]")
       }
     }.should raise_error(SpecFailed)
+  end
+  
+  it "should should report the correct line number for a nested failure" do
+    pending("bug report: http://rubyforge.org/tracker/index.php?func=detail&aid=11602&group_id=797&atid=3149") do
+      render_html %Q{
+        <form action="test">
+          <input type="text" name="email">
+        </form>
+      }
+      begin
+        response.should have_tag("form[action=test]") {
+          with_tag("input[type=text][name=other_input]")
+        }
+      rescue => e
+        e.backtrace[3].to_s.should =~ /assert_select_spec.rb:238/
+      end
+    end
   end
   
   it "beatles" do

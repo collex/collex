@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper.rb'
 module Spec
   module Runner
     module Formatter
-      describe "ProgressBarFormatter" do
+      describe ProgressBarFormatter do
         before(:each) do
           @io = StringIO.new
           @formatter = ProgressBarFormatter.new(@io)
@@ -14,24 +14,51 @@ module Spec
           @io.string.should eql("\n")
         end
 
-        it "should produce standard summary without not implemented when not implemented has a 0 count" do
+        it "should produce standard summary without pending when pending has a 0 count" do
           @formatter.dump_summary(3, 2, 1, 0)
           @io.string.should eql("\nFinished in 3 seconds\n\n2 examples, 1 failure\n")
         end
         
         it "should produce standard summary" do
-          @formatter.dump_summary(3, 2, 1, 4)
-          @io.string.should eql("\nFinished in 3 seconds\n\n2 examples, 1 failure, 4 not implemented\n")
+          @formatter.example_pending("behaviour", "example", "message")  
+          @io.rewind
+          @formatter.dump_summary(3, 2, 1, 1)
+          @io.string.should eql(%Q|
+Finished in 3 seconds
+
+2 examples, 1 failure, 1 pending
+
+Pending:
+behaviour example (message)
+|)
         end
 
-        it "should push F for failing spec" do
-          @formatter.example_failed("spec", 98, Reporter::Failure.new("c s", RuntimeError.new))
-          @io.string.should eql("F")
-        end
-
-        it "should push dot for passing spec" do
+        it "should push green dot for passing spec" do
+          @io.should_receive(:tty?).and_return(true)
+          @formatter.colour = true
           @formatter.example_passed("spec")
-          @io.string.should eql(".")
+          @io.string.should == "\e[32m.\e[0m"
+        end
+
+        it "should push red F for failure spec" do
+          @io.should_receive(:tty?).and_return(true)
+          @formatter.colour = true
+          @formatter.example_failed("spec", 98, Reporter::Failure.new("c s", Spec::Expectations::ExpectationNotMetError.new))
+          @io.string.should eql("\e[31mF\e[0m")
+        end
+
+        it "should push magenta F for error spec" do
+          @io.should_receive(:tty?).and_return(true)
+          @formatter.colour = true
+          @formatter.example_failed("spec", 98, Reporter::Failure.new("c s", RuntimeError.new))
+          @io.string.should eql("\e[35mF\e[0m")
+        end
+
+        it "should push blue F for fixed pending spec" do
+          @io.should_receive(:tty?).and_return(true)
+          @formatter.colour = true
+          @formatter.example_failed("spec", 98, Reporter::Failure.new("c s", Spec::DSL::PendingFixedError.new))
+          @io.string.should eql("\e[34mF\e[0m")
         end
 
         it "should push nothing on start" do
@@ -53,6 +80,12 @@ EOE
 /tmp/x.rb:2:
 /tmp/x.rb:3:
 EOE
+        end
+        
+        it "should dump pending" do
+          @formatter.example_pending("behaviour", "example", "message")
+          @formatter.dump_pending
+          @io.string.should =~ /Pending\:\nbehaviour example \(message\)\n/
         end
       end
       

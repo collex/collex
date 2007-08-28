@@ -115,6 +115,12 @@ dd.spec.not_implemented {
   background: #FCFB98; color: #131313;
 }
 
+dd.spec.pending_fixed {
+  border-left: 5px solid #0000C2;
+  border-bottom: 1px solid #0000C2;
+  color: #0000C2; background: #D3FBFF;
+}
+
 .backtrace {
   color: #000;
   font-size: 12px;
@@ -154,10 +160,10 @@ a {
 
 .ruby .offending { background-color: gray; }
 .ruby .linenum {
-	width: 75px;
-	padding: 0.1em 1em 0.2em 0;
-	color: #000000;
-	background-color: #FFFBD3;
+  width: 75px;
+  padding: 0.1em 1em 0.2em 0;
+  color: #000000;
+  background-color: #FFFBD3;
 }
 
   </style>
@@ -176,18 +182,18 @@ a {
 <div class="behaviour">
   <dl>
   <dt id="behaviour_1">Mocker</dt>
-    <script type="text/javascript">moveProgressBar('6.2');</script>
+    <script type="text/javascript">moveProgressBar('5.8');</script>
     <dd class="spec passed"><span class="passed_spec_name">should be able to call mock()</span></dd>
     <script type="text/javascript">makeRed('rspec-header');</script>
     <script type="text/javascript">makeRed('behaviour_1');</script>
-    <script type="text/javascript">moveProgressBar('12.5');</script>
+    <script type="text/javascript">moveProgressBar('11.7');</script>
     <dd class="spec failed">
       <span class="failed_spec_name">should fail when expected message not received</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>Mock 'poke me' expected :poke with (any args) once, but received it 0 times</pre></div>
         <div class="backtrace"><pre>./failing_examples/mocking_example.rb:13:
-./spec/spec/runner/formatter/html_formatter_spec.rb:25:
-./spec/spec/runner/formatter/html_formatter_spec.rb:54:</pre></div>
+./spec/spec/runner/formatter/html_formatter_spec.rb:17:
+./spec/spec/runner/formatter/html_formatter_spec.rb:13:</pre></div>
     <pre class="ruby"><code><span class="linenum">11</span>  it "should fail when expected message not received" do
 <span class="linenum">12</span>    mock = mock("poke me")
 <span class="offending"><span class="linenum">13</span>    mock.should_receive(:poke)</span>
@@ -196,15 +202,14 @@ a {
 <span class="linenum">16</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('18.7');</script>
+    <script type="text/javascript">moveProgressBar('17.6');</script>
     <dd class="spec failed">
       <span class="failed_spec_name">should fail when messages are received out of order</span>
       <div class="failure" id="failure_2">
         <div class="message"><pre>Mock 'one two three' received :three out of order</pre></div>
         <div class="backtrace"><pre>./failing_examples/mocking_example.rb:22:
-./spec/spec_helper.rb:57:in `instance_eval'
-./spec/spec/runner/formatter/html_formatter_spec.rb:25:
-./spec/spec/runner/formatter/html_formatter_spec.rb:54:</pre></div>
+./spec/spec/runner/formatter/html_formatter_spec.rb:17:
+./spec/spec/runner/formatter/html_formatter_spec.rb:13:</pre></div>
     <pre class="ruby"><code><span class="linenum">20</span>    mock.should_receive(:three).ordered
 <span class="linenum">21</span>    mock.one
 <span class="offending"><span class="linenum">22</span>    mock.three</span>
@@ -213,14 +218,14 @@ a {
 <span class="linenum">25</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('25.0');</script>
+    <script type="text/javascript">moveProgressBar('23.5');</script>
     <dd class="spec failed">
       <span class="failed_spec_name">should get yelled at when sending unexpected messages</span>
       <div class="failure" id="failure_3">
         <div class="message"><pre>Mock 'don't talk to me' expected :any_message_at_all with (any args) 0 times, but received it once</pre></div>
         <div class="backtrace"><pre>./failing_examples/mocking_example.rb:28:
-./spec/spec/runner/formatter/html_formatter_spec.rb:25:
-./spec/spec/runner/formatter/html_formatter_spec.rb:54:</pre></div>
+./spec/spec/runner/formatter/html_formatter_spec.rb:17:
+./spec/spec/runner/formatter/html_formatter_spec.rb:13:</pre></div>
     <pre class="ruby"><code><span class="linenum">26</span>  it "should get yelled at when sending unexpected messages" do
 <span class="linenum">27</span>    mock = mock("don't talk to me")
 <span class="offending"><span class="linenum">28</span>    mock.should_not_receive(:any_message_at_all)</span>
@@ -229,19 +234,34 @@ a {
 <span class="linenum">31</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('31.2');</script>
-    <dd class="spec not_implemented"><span class="not_implemented_spec_name">should mage eggs and bacon</span></dd>
+    <script type="text/javascript">moveProgressBar('29.4');</script>
+    <dd class="spec pending_fixed">
+      <span class="failed_spec_name">has a bug we need to fix</span>
+      <div class="failure" id="failure_4">
+        <div class="message"><pre>Expected pending 'here is the bug' to fail. No Error was raised.</pre></div>
+        <div class="backtrace"><pre>./failing_examples/mocking_example.rb:33:
+./spec/spec/runner/formatter/html_formatter_spec.rb:17:
+./spec/spec/runner/formatter/html_formatter_spec.rb:13:</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span>
+<span class="linenum">32</span>  it "has a bug we need to fix" do
+<span class="offending"><span class="linenum">33</span>    pending "here is the bug" do</span>
+<span class="linenum">34</span>      # Actually, no. It's fixed. This will fail because it passes :-)
+<span class="linenum">35</span>      mock = mock("Bug")
+<span class="linenum">36</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
+      </div>
+    </dd>
   </dl>
 </div>
 <div class="behaviour">
   <dl>
   <dt id="behaviour_2">Running specs with --diff</dt>
     <script type="text/javascript">makeRed('behaviour_2');</script>
-    <script type="text/javascript">moveProgressBar('37.5');</script>
+    <script type="text/javascript">moveProgressBar('35.2');</script>
     <dd class="spec failed">
       <span class="failed_spec_name">should print diff of different strings</span>
-      <div class="failure" id="failure_4">
-        <div class="message"><pre>expected &quot;RSpec is a\nbehaviour driven development\nframework for Ruby\n&quot;, got &quot;RSpec is a\nbehavior driven development\nframework for Ruby\n&quot; (using ==)
+      <div class="failure" id="failure_5">
+        <div class="message"><pre>expected: &quot;RSpec is a\nbehaviour driven development\nframework for Ruby\n&quot;,
+     got: &quot;RSpec is a\nbehavior driven development\nframework for Ruby\n&quot; (using ==)
 Diff:
 @@ -1,4 +1,4 @@
  RSpec is a
@@ -249,10 +269,10 @@ Diff:
 +behaviour driven development
  framework for Ruby
 </pre></div>
-        <div class="backtrace"><pre>./failing_examples/diffing_spec.rb:13:
-./spec/spec_helper.rb:57:in `instance_eval'
-./spec/spec/runner/formatter/html_formatter_spec.rb:25:
-./spec/spec/runner/formatter/html_formatter_spec.rb:54:</pre></div>
+        <div class="backtrace"><pre>./failing_examples/diffing_spec.rb:13:in `=='
+./failing_examples/diffing_spec.rb:13:
+./spec/spec/runner/formatter/html_formatter_spec.rb:17:
+./spec/spec/runner/formatter/html_formatter_spec.rb:13:</pre></div>
     <pre class="ruby"><code><span class="linenum">11</span>framework for Ruby
 <span class="linenum">12</span>EOF
 <span class="offending"><span class="linenum">13</span>    usa.should == uk</span>
@@ -261,10 +281,10 @@ Diff:
 <span class="linenum">16</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('43.7');</script>
+    <script type="text/javascript">moveProgressBar('41.1');</script>
     <dd class="spec failed">
       <span class="failed_spec_name">should print diff of different objects' pretty representation</span>
-      <div class="failure" id="failure_5">
+      <div class="failure" id="failure_6">
         <div class="message"><pre>expected &lt;Animal
 name=bob,
 species=tortoise
@@ -283,9 +303,8 @@ Diff:
  &gt;
 </pre></div>
         <div class="backtrace"><pre>./failing_examples/diffing_spec.rb:34:
-./spec/spec_helper.rb:57:in `instance_eval'
-./spec/spec/runner/formatter/html_formatter_spec.rb:25:
-./spec/spec/runner/formatter/html_formatter_spec.rb:54:</pre></div>
+./spec/spec/runner/formatter/html_formatter_spec.rb:17:
+./spec/spec/runner/formatter/html_formatter_spec.rb:13:</pre></div>
     <pre class="ruby"><code><span class="linenum">32</span>    expected = Animal.new "bob", "giraffe"
 <span class="linenum">33</span>    actual   = Animal.new "bob", "tortoise"
 <span class="offending"><span class="linenum">34</span>    expected.should eql(actual)</span>
@@ -299,45 +318,58 @@ Diff:
 <div class="behaviour">
   <dl>
   <dt id="behaviour_3">A consumer of a stub</dt>
-    <script type="text/javascript">moveProgressBar('50.0');</script>
+    <script type="text/javascript">moveProgressBar('47.0');</script>
     <dd class="spec passed"><span class="passed_spec_name">should be able to stub methods on any Object</span></dd>
   </dl>
 </div>
 <div class="behaviour">
   <dl>
   <dt id="behaviour_4">A stubbed method on a class</dt>
-    <script type="text/javascript">moveProgressBar('56.2');</script>
+    <script type="text/javascript">moveProgressBar('52.9');</script>
     <dd class="spec passed"><span class="passed_spec_name">should return the stubbed value</span></dd>
-    <script type="text/javascript">moveProgressBar('62.5');</script>
+    <script type="text/javascript">moveProgressBar('58.8');</script>
     <dd class="spec passed"><span class="passed_spec_name">should revert to the original method after each spec</span></dd>
-    <script type="text/javascript">moveProgressBar('68.7');</script>
+    <script type="text/javascript">moveProgressBar('64.7');</script>
     <dd class="spec passed"><span class="passed_spec_name">can stub! and mock the same message</span></dd>
   </dl>
 </div>
 <div class="behaviour">
   <dl>
   <dt id="behaviour_5">A mock</dt>
-    <script type="text/javascript">moveProgressBar('75.0');</script>
+    <script type="text/javascript">moveProgressBar('70.5');</script>
     <dd class="spec passed"><span class="passed_spec_name">can stub!</span></dd>
-    <script type="text/javascript">moveProgressBar('81.2');</script>
+    <script type="text/javascript">moveProgressBar('76.4');</script>
     <dd class="spec passed"><span class="passed_spec_name">can stub! and mock</span></dd>
-    <script type="text/javascript">moveProgressBar('87.5');</script>
+    <script type="text/javascript">moveProgressBar('82.3');</script>
     <dd class="spec passed"><span class="passed_spec_name">can stub! and mock the same message</span></dd>
   </dl>
 </div>
 <div class="behaviour">
   <dl>
-  <dt id="behaviour_6">Stack (not implemented features)</dt>
+  <dt id="behaviour_6">pending example (using pending method)</dt>
     <script type="text/javascript">makeYellow('behaviour_6');</script>
-    <script type="text/javascript">moveProgressBar('93.7');</script>
-    <dd class="spec not_implemented"><span class="not_implemented_spec_name">should transform to xml using #to_xml</span></dd>
-    <script type="text/javascript">makeYellow('behaviour_6');</script>
+    <script type="text/javascript">moveProgressBar('88.2');</script>
+    <dd class="spec not_implemented"><span class="not_implemented_spec_name">should be reported as &quot;PENDING: for some reason&quot;</span></dd>
+  </dl>
+</div>
+<div class="behaviour">
+  <dl>
+  <dt id="behaviour_7">pending example (with no block)</dt>
+    <script type="text/javascript">makeYellow('behaviour_7');</script>
+    <script type="text/javascript">moveProgressBar('94.1');</script>
+    <dd class="spec not_implemented"><span class="not_implemented_spec_name">should be reported as &quot;PENDING: Not Yet Implemented&quot;</span></dd>
+  </dl>
+</div>
+<div class="behaviour">
+  <dl>
+  <dt id="behaviour_8">pending example (with block for pending)</dt>
+    <script type="text/javascript">makeYellow('behaviour_8');</script>
     <script type="text/javascript">moveProgressBar('100.0');</script>
-    <dd class="spec not_implemented"><span class="not_implemented_spec_name">should convert from xml using #from_xml</span></dd>
+    <dd class="spec not_implemented"><span class="not_implemented_spec_name">should have a failing block, passed to pending, reported as &quot;PENDING: for some reason&quot;</span></dd>
   </dl>
 </div>
 <script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>x seconds</strong>";</script>
-<script type="text/javascript">document.getElementById('totals').innerHTML = "16 examples, 5 failures, 3 not implemented";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "17 examples, 6 failures, 3 pending";</script>
 </div>
 </div>
 </body>

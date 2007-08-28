@@ -26,6 +26,11 @@ module Spec
         @config.mock_with(:flexmock)
         @config.mock_framework.should =~ /\/plugins\/mock_frameworks\/flexmock$/
       end
+
+      it "should let you set rr" do
+        @config.mock_with(:rr)
+        @config.mock_framework.should =~ /\/plugins\/mock_frameworks\/rr$/
+      end
       
       it "should let you set an arbitrary adapter module" do
         adapter = Module.new
@@ -36,7 +41,7 @@ module Spec
       it "should let you define modules to be included" do
         mod = Module.new
         @config.include mod
-        @config.included_modules.should include(mod)
+        @config.modules_for(nil).should include(mod)
       end
       
       [:prepend_before, :append_before, :prepend_after, :append_after].each do |m|
