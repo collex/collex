@@ -10,7 +10,18 @@ class SearchController < ApplicationController
      items_per_page = 20
      @page = params[:page] ? params[:page].to_i : 1
      
-     @results = search(session[:constraints], @page, items_per_page)
+     begin
+       @results = search(session[:constraints], @page, items_per_page)
+     rescue  Net::HTTPServerException => e
+       @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
+       error_message = e.message
+       if error_message =~ /Query_parsing_error_/
+         error_message = $'
+       else
+         error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
+       end
+       flash[:error] = render_to_string(:inline => "#{error_message.gsub(/_/,' ')}.  <%=link_to 'clear all constraints', :action => :clear_constraints%> or remove the offending individual one below.")
+     end
 
      @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
      @total_documents = @results["total_documents"]

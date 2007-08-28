@@ -81,27 +81,20 @@ class CollexEngine
                                       :field_list => @params[:field_list],
                                       :facets => {:fields => @params[:facet_fields], :mincount => 1, :missing => true, :limit => -1},
                                       :highlighting => {:field_list => ['text'], :fragment_size => 600})
-    
+  
     results = {}
     results["total_documents"] = num_docs # TODO: pull from the response (but have to add it first)
-    
+  
     response = @solr.send(req)
-    
+  
     results["total_hits"] = response.total_hits
     results["hits"] = response.hits
-    
+  
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
     results["facets"] = facets_to_hash(response.data['facet_counts']['facet_fields'])
     results["highlighting"] = response.data['highlighting']
-    
+  
     results
-    
-#  rescue
-    # In case a bad expression was sent, return empty data so user sees no error and gets zero results
-    # TODO: need to handle parse exceptions and report those back to the UI
-#    results["facets"] = {}
-#    results["total_hits"] = 0
-#    results
   end
   
   def object_detail(objid, username=nil)
