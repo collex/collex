@@ -6,6 +6,7 @@ class ExhibitedSection < ActiveRecord::Base
   has_many :exhibited_texts, :order => "position"
   alias_method :texts, :exhibited_texts
   has_many :exhibited_resources, :order => "position"
+  alias_method :resources, :exhibited_resources
   
   belongs_to :exhibit_section_type
   belongs_to :exhibited_page
@@ -14,10 +15,6 @@ class ExhibitedSection < ActiveRecord::Base
   
   def template
     self.exhibit_section_type.template
-  end
-  
-  def resources
-    self.exhibited_resources.collect { |er| er.resource }
   end
   
   def uris
