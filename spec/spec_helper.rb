@@ -1,6 +1,6 @@
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
-ENV["RAILS_ENV"] ||= "test"
+ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'spec/rails'
 
@@ -8,9 +8,6 @@ Spec::Runner.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
   config.fixture_path = RAILS_ROOT + '/test/fixtures'
-  config.before(:each, :behaviour_type => :controller) do
-    raise_controller_errors
-  end
 
   # You can declare fixtures for each behaviour like this:
   #   describe "...." do

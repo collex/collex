@@ -15,7 +15,7 @@ describe ExhibitedResource do
   
   it "'resource' should return empty SolrResource if Solr returns null for the id" do
     er = ExhibitedResource.new
-    er.resource.class.should == SolrResource
+    er.resource.class.should eql SolrResource
   end
   
   it "'after_create' should copy the SolrResource properties into ExhibitedProperties" do
