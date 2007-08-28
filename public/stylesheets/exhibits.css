@@ -160,6 +160,9 @@ span.double-arrow, span.single-arrow {
 }
 
 /* .collectlink is defined in new9s.css*/
+#exhibit-body .collectlink {
+  clear: both;
+}
 #exhibit-body .collectlink a {
   margin-left: 0;
 }
