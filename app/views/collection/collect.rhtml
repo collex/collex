@@ -102,7 +102,13 @@
                 <span class="bfacet">source:</span>
                 <%= site(result['archive']) ? site(result['archive'])['description'] : result['archive'] %><br/>
                 <span class="bfacet">genres:</span> <%= comma_separate(result['genre'])%> <br/>
-                <span class="bfacet">agents:</span> <%= comma_separate(result['agent_facet'])%> <br/>
+                <%
+                agents = []
+                result.each do |key,value|
+                  agents << value if key =~ /^role_/
+                end
+                %>
+                <span class="bfacet">agents:</span> <%= comma_separate(agents)%> <br/>
                 <span class="bfacet">dates:</span> <%= comma_separate(result['date_label'])%> 
               </td>
               <td>

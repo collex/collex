@@ -107,7 +107,7 @@ class CollexEngine
   def object_detail(objid, username=nil)
     query = "uri:#{Solr::Util.query_parser_escape(objid)}"
     # TODO: generalize the field list here
-    field_list = ["archive","agent_facet","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
+    field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
     # TODO: tag is not currently stored, but to store it requires some strange contortions in #add currently
     # however, to get tags, you could facet on the tag field
     # field_list << 'tag' 
@@ -118,7 +118,7 @@ class CollexEngine
     req = Solr::Request::Standard.new(
              :start => 0, :rows => 1,
              :query => query, :field_list => field_list,
-             :mlt => {:count => 3, :field_list => ["title", "genre", "agent_facet", "year", "text","tag"], :min_term_freq => 1})
+             :mlt => {:count => 3, :field_list => ["title", "genre", "agent", "year", "text","tag"], :min_term_freq => 1})
     
     response = @solr.send(req)
     
@@ -134,7 +134,7 @@ class CollexEngine
     
     query = uris.collect {|uri| "uri:#{Solr::Util.query_parser_escape(uri)}"}.join(" OR ")
     # TODO: generalize the field list here
-    field_list = ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
+    field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
     if username
       field_list << "#{username}_tag"
       field_list << "#{username}_annotation"
@@ -151,7 +151,7 @@ class CollexEngine
     #TODO allow paging through rows
     query = urls.collect {|url| "url:#{Solr::Util.query_parser_escape(url)}"}.join(" OR ")
     # TODO: generalize the field list here
-    field_list = ["archive","agent","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
+    field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
     if username
       field_list << "#{username}_tag"
       field_list << "#{username}_annotation"

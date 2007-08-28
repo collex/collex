@@ -64,7 +64,11 @@ module SidebarHelper
             xm.br
             xm.text(comma_separate(item['date_label']))
             xm.br
-            xm.text(comma_separate(item['agent_facet']))
+            agents = []
+            item.each do |key,value|
+              agents << value if key =~ /^role_/
+            end
+            xm.text(comma_separate(agents))
             xm.br
             xm.text(comma_separate(item['genre']))
             xm.br
