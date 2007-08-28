@@ -15,6 +15,9 @@ class Guest
     end
   end
 
+  def role_names
+    ROLES
+  end
   
   def username
     "guest"
