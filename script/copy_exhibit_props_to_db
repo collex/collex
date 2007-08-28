@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require RAILS_ROOT + '/config/environment'
+
+exhibited_resources = ExhibitedResource.find(:all)
+exhibited_resources.each do |er|
+  er.resource.properties.each do |prop|
+    er.properties.create(:name => prop.name, :value => prop.value) unless er.properties.include?(prop)
+  end
+end
