@@ -1,6 +1,6 @@
 <% table do tbody do section.exhibited_resources.each do |@exhibited_item| tr :id => dom_id(@exhibited_item) do %>
   <% td do %>
-    <%= thumbnail_image_tag(@exhibited_item.resource) %>
+    <%= thumbnail_image_tag(@exhibited_item) %>
     <%= span link_to_function("collect", "displayCollector('collectformarea', '#{@exhibited_item.uri}', event);"), :class => "collectlink" -%> 
   <% end %>
   

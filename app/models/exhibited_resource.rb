@@ -1,18 +1,21 @@
 class ExhibitedResource < ExhibitedItem
-#   belongs_to :resource, :class_name => "SolrResource"
+  has_many :exhibited_properties, :dependent => :destroy
+  alias_method :properties, :exhibited_properties
+  include PropertyMethods
+  
+  after_create :copy_solr_resource
   
   def resource
     @resource ||= SolrResource.find_by_uri(self.uri) || SolrResource.new
   end
   
-  # Make the resource's properties transparent
-  def method_missing(method_id, *arguments)
-    begin
-      super
-    rescue NoMethodError
-      name = method_id.to_s
-      self.resource.blank? ? nil : self.resource.__send__(name)
+  
+  private
+    #TODO filter out tags and annotations and usernames 
+    def copy_solr_resource
+      resource.properties.each do |prop|
+        properties << ExhibitedProperty.new(:name => prop.name, :value => prop.value)
+      end
     end
-  end
   
 end

@@ -5,6 +5,7 @@ describe ApplicationHelper do
   URI = 'http://test/uri'
   before(:each) do
     @item = {'uri' => URI}
+    @er = mock_model(ExhibitedResource)
     @generic_site = mock_model(Site, :thumbnail => '')
     @specific_site = mock_model(Site, :thumbnail => 'http://some.site.url.com/image.gif', :description => 'Site Description')
   end
