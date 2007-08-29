@@ -117,7 +117,7 @@ class CollexEngine
     
     document = response.hits[0]
     mlt = response.data['moreLikeThis'][objid]['docs'] rescue []
-    collection_info = username ? {'users' => document['username'] || []} : nil
+    collection_info = username ? {'users' => document['username'] || []} : nil  rescue nil
     
     [document, mlt, collection_info]
   end
