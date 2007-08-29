@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../config/boot'
 require RAILS_ROOT + '/config/environment'
 
 solr = Solr::Connection.new(SOLR_URL)
+solr.delete_by_query("type:C")
 source = Solr::Importer::SolrSource.new(SOLR_URL,'*:*',nil,:field_list => ['uri'])
 uris = []
 source.each {|doc| uris << doc['uri']}
@@ -17,4 +18,5 @@ uris.each do |uri|
     solr.commit
   end
 end
+solr.commit
 puts "Done."
