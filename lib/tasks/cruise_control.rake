@@ -1,5 +1,4 @@
-# TODO, this file should be renamed, since it has the lib tests.
-# Alternatively, the lib task could be put in its own rake file.
+# Cruise Control custom task: CC will run this task by default, or we can call it in cruise_config.rb.
 
 desc 'custom cruise control task'
 task :cruise do
