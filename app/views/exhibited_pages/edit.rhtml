@@ -41,11 +41,10 @@
       <%= hidden_field_tag "exhibited_section_id", "" %>
     <%- end -%>  
 
-<%= div exhibited_pages_links(@exhibited_page), :class => "pagination" %>
-
+    <%= div exhibited_pages_links(@exhibited_page, true), :class => "pagination" %>
     <%= render :partial => @exhibit.template %>
+    <%= div exhibited_pages_links(@exhibited_page, true), :class => "pagination" %>
 
-<%= div exhibited_pages_links(@exhibited_page), :class => "pagination" %>
   <% end %>
 <% end %>
 <%#= drop_receiving_element("resource-drop-zone",
