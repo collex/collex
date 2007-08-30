@@ -4,6 +4,7 @@ require RAILS_ROOT + '/config/environment'
 
 solr = Solr::Connection.new(SOLR_URL)
 solr.delete_by_query("type:C")
+solr.commit
 source = Solr::Importer::SolrSource.new(SOLR_URL,'*:*',nil,:field_list => ['uri'])
 uris = []
 source.each {|doc| uris << doc['uri']}
