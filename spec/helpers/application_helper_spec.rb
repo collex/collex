@@ -17,7 +17,6 @@ describe ApplicationHelper do
     expected = %(<img src="#{DEFAULT_THUMBNAIL_IMAGE_PATH}" alt="The Generic" align="left" id="thumbnail_#{@uri}"/>)
     result = thumbnail_image_tag(item)
     assert_dom_equal(expected, result)
-    fail
   end
   
   it "thumbnail_image_tag should get site image when no specific thumbnail" do
