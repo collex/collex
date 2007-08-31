@@ -11,7 +11,7 @@ class SearchController < ApplicationController
      @page = params[:page] ? params[:page].to_i : 1
      
      begin
-       @results = search(session[:constraints], @page, items_per_page)
+       @results = search_solr(session[:constraints], @page, items_per_page)
      rescue  Net::HTTPServerException => e
        @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
        error_message = e.message
@@ -39,6 +39,11 @@ class SearchController < ApplicationController
      @sites_forest << uncategorized_tree
      
      render :action => 'results'
+   end
+   
+   def search
+     session[:constraints] = [ExpressionConstraint.new(:value => params[:q])]
+     browse
    end
    
    def index
@@ -239,7 +244,7 @@ class SearchController < ApplicationController
    end
 
    private
-   def search(constraints, page, items_per_page)
+   def search_solr(constraints, page, items_per_page)
      results = @solr.search(session[:constraints], (page - 1) * items_per_page, items_per_page)   
      
      results
