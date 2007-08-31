@@ -24,6 +24,8 @@ class CollexEngine
   
   def all_facets
     # TODO!!!
+    # this is only used from the stats controller.  it needs to be ported to using Solr's Standard request, instead of the
+    # now removed FacetRequest
     @solr.send(FacetRequest.new).all_facets
   end
   
