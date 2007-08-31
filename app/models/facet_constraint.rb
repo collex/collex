@@ -7,6 +7,7 @@ class FacetConstraint < Constraint
     end
   end
   
+  # TODO: this custom #to_s is probably no longer used/needed
   def to_s
     "#{operator}#{field}:#{value}"
   end
