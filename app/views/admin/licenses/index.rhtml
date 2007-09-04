@@ -6,7 +6,7 @@
     <%= th "", :colspan => "3" %>
   <% end %>
   <% @licenses.each do |license| tr do %>
-    <%= td license.description %>
+    <%= td license.name %>
     <%= td link_to "Show", :action => "show", :id => license %>
     <%= td link_to "Edit", :action => "edit", :id => license %>
     <%= td link_to("Destroy", { :action => 'destroy', :id => license }, :confirm => 'Destroy License?', :post => true) %>
