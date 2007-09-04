@@ -14,8 +14,8 @@ class AddCourseSyllabusData < ActiveRecord::Migration
                                  :description => "Course Syllabus pages have one section per page.", 
                                  :min_sections => 1,
                                  :max_sections => 1,
-                                 :title_message => "(Insert Page Title)",
-                                 :annotation_message => "(Insert Page Notes)")
+                                 :title_message => "(Insert Date)",
+                                 :annotation_message => "(Insert Date Notes)")
     et.exhibit_page_types.first.exhibit_section_types.create(:description => "Citation", 
                                                              :template => "citation", 
                                                              :name => "Citation",
