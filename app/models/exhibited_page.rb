@@ -18,11 +18,11 @@ class ExhibitedPage < ActiveRecord::Base
   end
   
   def title_message
-    self.exhibited_page_type.title_message
+    self.exhibit_page_type.title_message
   end
   
   def annotation_message
-    self.exhibited_page_type.annotation_message
+    self.exhibit_page_type.annotation_message
   end
   
 end
