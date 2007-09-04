@@ -24,7 +24,10 @@ class AddCourseSyllabusData < ActiveRecord::Migration
   end
 
   def self.down
-    et = ExhibitType.find_by_template("course_syllabus")
-    et.destroy
+    begin
+      et = ExhibitType.find_by_template("course_syllabus")
+      et.destroy
+    rescue
+    end
   end
 end
