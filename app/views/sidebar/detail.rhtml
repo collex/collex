@@ -12,7 +12,7 @@
   <% end %>
   <br />
   
-  <%= thumbnail_image_tag(@object) %>
+  <%= thumbnail_image_tag(@object, :class => "draggable") %>
   <%= draggable_element("thumbnail_#{@object.uri}", :revert => true) %>
 
 <div class="rdf">
