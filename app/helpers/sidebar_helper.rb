@@ -54,7 +54,7 @@ module SidebarHelper
       list.each do |item|
         xm.tr do
           xm.td :align => "center" do
-            xm << thumbnail_image_tag(item, :class => 'image')
+            xm << thumbnail_image_tag(item, :class => 'image draggable')
             xm << draggable_element("thumbnail_#{item['uri']}", :revert => true)
           end
           xm.td do
