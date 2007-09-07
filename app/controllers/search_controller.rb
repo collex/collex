@@ -20,7 +20,7 @@ class SearchController < ApplicationController
        else
          error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
        end
-       flash[:error] = render_to_string(:inline => "#{error_message.gsub(/_/,' ')}.  <%=link_to 'clear all constraints', :action => :clear_constraints%> or remove the offending individual one below.")
+       flash[:error] = render_to_string(:inline => "Sorry! you've entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => :clear_constraints%> or remove the offending search string below.")
      end
 
      @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
