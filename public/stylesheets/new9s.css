@@ -504,3 +504,6 @@
   border: 1px solid red;
 }
 
+.draggable {
+  cursor: move;
+}
