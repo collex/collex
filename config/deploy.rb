@@ -9,14 +9,19 @@
 # repository must be the URL of the repository you want this recipe to
 # correspond to. The deploy_to path must be the path on each machine that will
 # form the root of the application path.
+
+require 'mongrel_cluster/recipes'
+
 if ENV['DEPLOY'] == 'production'
    puts "*** Deploying to the PRODUCTION servers!"
    set :application, "production-web"
    set :rails_env, "production"
+   set :mongrel_start_port, "8000"
 else
    puts "*** Deploying to the STAGING server!"
    set :application, "staging-web"
    set :rails_env, "staging"
+   set :mongrel_start_port, "8010"
 end
 
 set :sudo, "/usr/local/bin/sudo"
@@ -27,6 +32,8 @@ set :deploy_to, "/usr/local/patacriticism/#{application}" # defaults to "/u/apps
 set :user, "nines"            # defaults to the currently logged in user
 set :rails_release, "rel_1-2-3"
 set :rails_path, "#{shared_path}/vendor/#{rails_release}"
+
+set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 
 # =============================================================================
 # ROLES
@@ -225,3 +232,18 @@ end
 task :restart, :roles => :app do
  sudo "/usr/apache/bin/apachectl graceful"
 end
+
+
+desc "Upload mongrel_cluster.yml"
+task :upload_mongrel_cluster_config_file, :roles => [:app] do
+  put mongrel_cluster_config_file, "#{shared_path}/config/mongrel_cluster.yml"
+end
+set :mongrel_cluster_config_file, <<-CMD
+port: #{mongrel_start_port}
+pid_file: #{shared_path}/pids/#{application}-mongrel.pid
+servers: 3
+address: 127.0.0.1
+environment: #{rails_env}
+user: nines
+group: staff
+CMD
