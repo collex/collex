@@ -244,9 +244,6 @@ task :rollback_code, :except => { :no_release => true } do
     CMD
   end
 end
-task :restart, :roles => :app do
- sudo "/usr/apache/bin/apachectl graceful"
-end
 
 task :before_start_mongrel_cluster do
   set :use_sudo, false
