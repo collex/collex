@@ -16,12 +16,14 @@ if ENV['DEPLOY'] == 'production'
    puts "*** Deploying to the PRODUCTION servers!"
    set :application, "production-web"
    set :rails_env, "production"
-   set :mongrel_start_port, "8000"
+   set :mongrel_port, "8000"
+   set :mongrel_environment, "production"
 else
    puts "*** Deploying to the STAGING server!"
    set :application, "staging-web"
    set :rails_env, "staging"
-   set :mongrel_start_port, "8010"
+   set :mongrel_port, "8010"
+   set :mongrel_environment, "staging"
 end
 
 set :sudo, "/usr/local/bin/sudo"
@@ -33,7 +35,21 @@ set :user, "nines"            # defaults to the currently logged in user
 set :rails_release, "rel_1-2-3"
 set :rails_path, "#{shared_path}/vendor/#{rails_release}"
 
-set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
+set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"
+set :private_ip, "http://127.0.0.1"
+# set :mongrel_rails, "/opt/csw/bin/mongrel_rails"
+set :spinner_user, "nines"
+set :mongrel_servers, 3
+set :mongrel_address, "127.0.0.1"
+# set :mongrel_conf, nil
+set :mongrel_user, "nines"
+set :mongrel_group, "staff"
+# set :mongrel_prefix, nil
+# set :mongrel_rails, 'mongrel_rails'
+# set :mongrel_clean, false
+set :mongrel_pid_file, "#{shared_path}/pids/mongrel.pid"
+set :mongrel_log_file, "#{shared_path}/log/mongrel.log"
+# set :mongrel_config_script, nil
 
 # =============================================================================
 # ROLES
@@ -247,3 +263,25 @@ environment: #{rails_env}
 user: nines
 group: staff
 CMD
+
+
+task :before_start_mongrel_cluster do
+  set :use_sudo, false
+end
+task :after_start_mongrel_cluster do
+  set :use_sudo, true
+end
+
+task :before_stop_mongrel_cluster do
+  set :use_sudo, false
+end
+task :after_stop_mongrel_cluster do
+  set :use_sudo, true
+end
+
+task :before_restart_mongrel_cluster do
+  set :use_sudo, false
+end
+task :after_restart_mongrel_cluster do
+  set :use_sudo, true
+end
