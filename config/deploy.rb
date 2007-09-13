@@ -255,7 +255,7 @@ task :upload_mongrel_cluster_config_file, :roles => [:app] do
   put mongrel_cluster_config_file, "#{shared_path}/config/mongrel_cluster.yml"
 end
 set :mongrel_cluster_config_file, <<-CMD
-port: #{mongrel_start_port}
+port: #{mongrel_port}
 pid_file: #{shared_path}/pids/#{application}-mongrel.pid
 servers: 3
 address: 127.0.0.1
