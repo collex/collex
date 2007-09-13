@@ -36,7 +36,6 @@ set :rails_release, "rel_1-2-3"
 set :rails_path, "#{shared_path}/vendor/#{rails_release}"
 
 set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"
-set :private_ip, "http://127.0.0.1"
 # set :mongrel_rails, "/opt/csw/bin/mongrel_rails"
 set :spinner_user, "nines"
 set :mongrel_servers, 3
@@ -248,22 +247,6 @@ end
 task :restart, :roles => :app do
  sudo "/usr/apache/bin/apachectl graceful"
 end
-
-
-desc "Upload mongrel_cluster.yml"
-task :upload_mongrel_cluster_config_file, :roles => [:app] do
-  put mongrel_cluster_config_file, "#{shared_path}/config/mongrel_cluster.yml"
-end
-set :mongrel_cluster_config_file, <<-CMD
-port: #{mongrel_port}
-pid_file: #{shared_path}/pids/#{application}-mongrel.pid
-servers: 3
-address: 127.0.0.1
-environment: #{rails_env}
-user: nines
-group: staff
-CMD
-
 
 task :before_start_mongrel_cluster do
   set :use_sudo, false
