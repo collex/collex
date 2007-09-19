@@ -64,7 +64,7 @@ describe LoginController do
     response.should redirect_to(:controller => "sidebar", :action => "cloud", :type => "genre")
     session[:user][:username].should == "username"
 
-    post :signup, {:username => 'username', :email => "fakeemail.com", :fullname => "Full Name", :password => "password", :password2 => "password"}
+    post :signup, {:username => 'username', :email => "fake@email.com", :fullname => "Full Name", :password => "password", :password2 => "password"}
     response.should be_success
     response.should render_template("signup")
   end
