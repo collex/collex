@@ -10,6 +10,7 @@ describe LoginController do
     response.should redirect_to(:controller => "login", :action => "login")
   end
   
+  # there is a class NinesCollectionManager in test/mocks/test that makes this work. Should probaby change.
   it "valid user should login successfully" do
     post :login, {:username => 'username', :password => 'password'} 
     response.should redirect_to(:controller => "sidebar", :action => "cloud", :type => "tag")
