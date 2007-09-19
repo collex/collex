@@ -71,7 +71,7 @@ class LoginController < ApplicationController
   def signup
     if params[:username]
       if params[:username] !~ /^\w+[\w.]+$/
-        flash.now[:sidebar_error] = "Invalid username, please use only alphanumeric characters and no spaces"
+        flash.now[:sidebar_error] = "Invalid username, please use only alphanumeric characters, periods, and no spaces"
         return
       end
       
