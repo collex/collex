@@ -4,14 +4,14 @@
   </head>
   <body>
 
-  <% if flash[:sidebar_notice] -%> 
-    <div id="notice"><%= flash[:sidebar_notice] %></div> 
-  <% end -%> 
+    <% if flash[:sidebar_notice] -%> 
+      <div id="notice"><%= flash[:sidebar_notice] %></div> 
+    <% end -%> 
 
-  <% if flash[:sidebar_error] -%> 
-    <div id="error"><%= flash[:sidebar_error] %></div> 
-  <% end -%>
+    <% if flash[:sidebar_error] -%> 
+      <div id="error"><%= flash[:sidebar_error] %></div> 
+    <% end -%>
   
-      <%= yield %>
+    <%= yield %>
   </body>
 </html>
