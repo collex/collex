@@ -2,21 +2,21 @@
 <div class="pagination" style="margin-bottom:1em"><span class="emph2">sign up for Collex</span></div>
 
 <%= div flash[:message], :id => "message" if flash[:message] %>
-<%= div flash[:error], :id => "error" if flash[:error] %>
+<%= div flash[:sidebar_error], :id => "error" if flash[:error] %>
 
 <% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "signup"} do %> 
 <table> 
   <tr> 
     <td>User name:</td> 
-    <td><%= text_field_tag("username") %></td> 
+    <td><%= text_field_tag("username", params[:username]) %></td> 
   </tr> 
   <tr> 
     <td>Full name:</td> 
-    <td><%= text_field_tag("fullname")%></td> 
+    <td><%= text_field_tag("fullname", params[:fullname]) %></td> 
   </tr> 
   <tr> 
     <td>E-mail address:</td> 
-    <td><%= text_field_tag("email")%></td> 
+    <td><%= text_field_tag("email", params[:email])%></td> 
   </tr> 
   <tr> 
     <td>Password:</td> 
