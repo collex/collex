@@ -41,6 +41,7 @@ class SearchController < ApplicationController
      render :action => 'results'
    end
    
+   # allows queries to be linked in directly, or typed into the browser directly
    def search
      session[:constraints] = [ExpressionConstraint.new(:value => params[:q])]
      browse
