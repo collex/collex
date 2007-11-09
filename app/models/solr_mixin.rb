@@ -14,18 +14,22 @@
 # limitations under the License.
 ##########################################################################
 
-class SolrBaseModel < ActiveRecord::Base
-  include SolrMixin
-  
-  # From: http://rails.techno-weenie.net/forums/2/topics/724
-  self.abstract_class = true
-  def create_or_update
-    errors.empty?
+module SolrMixin
+  def self.included(receiver)
+    receiver.extend         ClassMethods
+    receiver.send :include, InstanceMethods
   end
-  
-  def self.columns() @columns ||= []; end
-  def self.column(name, sql_type = nil, default = nil, null = true)
-    columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+
+  module ClassMethods
+
+    def solr
+      CollexEngine.new
+    end      
+
   end
-  
+
+  module InstanceMethods
+
+  end
+
 end
