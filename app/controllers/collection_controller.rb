@@ -67,7 +67,7 @@ class CollectionController < ApplicationController
             interpretation.annotation =  annotation
             interpretation.tag_list = tags
             interpretation.save!
-            solr.update(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
+            solr.update_collectables(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
           end
         end
      end     

@@ -117,7 +117,7 @@ class SidebarController < ApplicationController
     interpretation.tag_list = params[:tags]
     interpretation.save!
     solr = CollexEngine.new
-    solr.update(user.username, params[:objid], interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
+    solr.update_collectables(user.username, params[:objid], interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
     solr.commit
     redirect_to :action => 'detail', :objid => params[:objid]
   end

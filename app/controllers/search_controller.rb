@@ -147,7 +147,7 @@ class SearchController < ApplicationController
        interpretation.annotation =  params[:annotation]
        interpretation.tag_list = params[:tags]
        interpretation.save!
-       solr.update(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
+       solr.update_collectables(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
      end
      solr.commit
      

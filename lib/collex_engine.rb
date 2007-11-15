@@ -175,7 +175,8 @@ class CollexEngine
     response.hits
   end
   
-  def add(username, collectables)
+  # Modifies or adds a document to Solr index. Currently only handles uri/tags/comments
+  def add_collectables(username, collectables)
     collectables.each do |uri, info|
       tags = info[:tags]
       annotation = info[:annotation]
@@ -190,8 +191,8 @@ class CollexEngine
     end
   end
 
-  def update(username, uri, tags, annotation)
-    add(username, {uri => {:tags => tags, :annotation => annotation}})
+  def update_collectables(username, uri, tags, annotation)
+    add_collectables(username, {uri => {:tags => tags, :annotation => annotation}})
   end
 
   def remove(username, uri)

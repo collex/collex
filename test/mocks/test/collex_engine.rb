@@ -17,7 +17,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../lib/collex_engine')
 class CollexEngine
   BAD_OBJID = "bad"
-  def update(username, uri, tags, annotation)
+  def update_collectables(username, uri, tags, annotation)
   end
 
   def remove(username, uri)
