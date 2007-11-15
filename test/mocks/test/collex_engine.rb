@@ -20,7 +20,7 @@ class CollexEngine
   def update_collectables(username, uri, tags, annotation)
   end
 
-  def remove(username, uri)
+  def remove_collectables(username, uri)
   end
   
   def commit

@@ -195,7 +195,7 @@ class CollexEngine
     add_collectables(username, {uri => {:tags => tags, :annotation => annotation}})
   end
 
-  def remove(username, uri)
+  def remove_collectables(username, uri)
     req = Solr::Request::ModifyDocument.new(
         :uri => uri,
         :overwrite => {"#{username}_annotation" => nil,

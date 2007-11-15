@@ -59,4 +59,4 @@ count_diffs = solr_counts.find_all {|k,v| facets[k] != v}
 
 
 
-#  in_solr_not_db.each {|d| solr.remove(d['username'],d['object_uri'])}
+#  in_solr_not_db.each {|d| solr.remove_collectables(d['username'],d['object_uri'])}

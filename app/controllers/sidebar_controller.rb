@@ -127,7 +127,7 @@ class SidebarController < ApplicationController
     interpretation = user.interpretations.find_by_object_uri(params[:objid])
     Interpretation.destroy(interpretation.id) if interpretation
     solr = CollexEngine.new
-    solr.remove(user.username, params[:objid])
+    solr.remove_collectables(user.username, params[:objid])
     solr.commit
     
     redirect_to :action => 'detail', :objid => params[:objid]
