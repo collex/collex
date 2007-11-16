@@ -29,7 +29,9 @@ module SolrMixin
   end
 
   module InstanceMethods
-
+    def solr
+      self.class.solr
+    end
   end
 
 end

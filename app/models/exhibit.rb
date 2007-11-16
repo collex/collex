@@ -15,6 +15,8 @@
 ##########################################################################
 
 class Exhibit < ActiveRecord::Base
+  include SolrMixin
+
   belongs_to :user
   belongs_to :license
   belongs_to :exhibit_type
@@ -25,6 +27,20 @@ class Exhibit < ActiveRecord::Base
   
   def template
     self.exhibit_type.template
+  end
+  
+  def indexed?
+    (! uri.blank?) and solr.indexed?(uri)
+  end
+  
+  # If not indexed, creates uri, adds exhibit to the index.
+  # Otherwise, updates the exisiting document in solr.
+  def index!
+    if indexed?
+      
+    else
+      self.uri = UUID.new
+    end
   end
   
   def uris

@@ -115,6 +115,13 @@ class CollexEngine
     results
   end
   
+  def indexed?(uri)
+    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
+    req = Solr::Request::Standard.new(:start => 0, :rows => 1, :query => query)
+    response = @solr.send(req)
+    response.hits[0] != nil
+  end
+  
   def object_detail(objid, username=nil)
     query = "uri:#{Solr::Util.query_parser_escape(objid)}"
     # TODO: generalize the field list here
@@ -138,13 +145,6 @@ class CollexEngine
     collection_info = username ? {'users' => document['username'] || []} : nil  rescue nil
     
     [document, mlt, collection_info]
-  end
-  
-  def indexed?(uri)
-    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
-    req = Solr::Request::Standard.new(:start => 0, :rows => 1, :query => query)
-    response = @solr.send(req)
-    response.hits[0] != nil
   end
   
   def objects_for_uris(uris, username=nil)

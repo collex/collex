@@ -18,8 +18,48 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Exhibit do
   fixtures :exhibits, :exhibited_pages, :exhibit_page_types, :exhibited_sections
+  
+  before(:each) do
+    @exhibit = Exhibit.new
+  end
 
   it "should test authorization/roles for Exhibit" do
     
   end
+  
+  it "'indexed?' should return false if there is no uri" do
+    @exhibit.indexed?.should == false
+  end
+  
+  it "'indexed?' should return false if there is a uri but object is not in index" do
+    @solr = mock("collex_engine")
+    @solr.stub!(:indexed?).and_return(false)
+    @exhibit.stub!(:solr).and_return(@solr)
+    @exhibit.uri = "as1234ds345s34ft"
+    @exhibit.indexed?.should == false
+  end
+  
+  it "'indexed?' should return true if there is a uri and the object exists in index" do
+    @solr = mock("collex_engine")
+    @solr.stub!(:indexed?).and_return(true)
+    @exhibit.stub!(:solr).and_return(@solr)
+    @exhibit.uri = "as1234ds345s34ft"
+    @exhibit.indexed?.should == true
+  end
+  
+  it "'index!' should create a uri if none" do
+    @solr = mock("collex_engine")
+    @solr.stub!(:indexed?).and_return(false)
+    @exhibit.stub!(:solr).and_return(@solr)
+    @exhibit.indexed?.should == false
+    @exhibit.uri.should be_nil
+    
+    @exhibit.index!
+    @exhibit.uri.should_not be_nil
+  end
+  
+  it "'index!' should add the exhibit to the Solr index with the uri as the object id" do
+    
+  end
+  
 end
