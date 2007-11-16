@@ -119,7 +119,7 @@ class CollexEngine
     query = "uri:#{Solr::Util.query_parser_escape(objid)}"
     # TODO: generalize the field list here
     field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
-    # TODO: tag is not currently stored, but to store it requires some strange contortions in #add currently
+    # TODO: tag is not currently stored, but to store it requires some strange contortions in #add_collectables currently
     # however, to get tags, you could facet on the tag field
     # field_list << 'tag' 
     if username
