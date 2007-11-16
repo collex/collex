@@ -140,6 +140,13 @@ class CollexEngine
     [document, mlt, collection_info]
   end
   
+  def indexed?(uri)
+    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
+    req = Solr::Request::Standard.new(:start => 0, :rows => 1, :query => query)
+    response = @solr.send(req)
+    response.hits[0] != nil
+  end
+  
   def objects_for_uris(uris, username=nil)
     #TODO allow paging through rows
     
