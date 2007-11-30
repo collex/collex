@@ -36,6 +36,11 @@ class ExhibitedSection < ActiveRecord::Base
   def uris
     self.exhibited_resources.collect { |er| er.uri }
   end
+  
+  # returns a unique list of all the genres in the section
+  def genres
+    self.exhibited_resources.collect { |er| er.genres }.flatten.uniq.sort
+  end
 
   def title_message
     self.exhibit_section_type.title_message
