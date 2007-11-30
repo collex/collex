@@ -33,9 +33,34 @@ class Exhibit < ActiveRecord::Base
     (! uri.blank?) and solr.indexed?(uri)
   end
   
+  # returns a unique list of all the genres in the exhibit
+  def genres
+    self.exhibited_pages.collect { |ep| ep.genres }.flatten.uniq.sort
+  end
+  
   # If not indexed, creates uri, adds exhibit to the index.
   # Otherwise, updates the exisiting document in solr.
+  # uri
+  # url
+  # archive--"nines"?
+  # author (role_aut)
+  # exhibit type
+  # status: published or shared
+  # license
+  # genres
+  # fulltext of exhibit content (not the contained objects)
+  # displayed metadata from the contained objects
   def index!
+#     map = { :uri => self.uri, 
+#             :url => "need to generate url", 
+#             :archive => "this should come from a configuration",
+#             :author => self.user.fullname,
+#             :exhibit_type => self.exhibit_type.description,
+#             :published => self.published?,
+#             :license => self.license.name,
+#             :genre => ["collect the genres of the exhibited items"]
+#             
+#           }
     if indexed?
       
     else
