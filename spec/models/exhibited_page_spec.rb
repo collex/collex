@@ -51,13 +51,13 @@ describe ExhibitedPage do
   
   it "'genres' should return a unique, sorted list of the genres collected from the page's sections " do
     @ep = ExhibitedPage.new
-    p1 = mock("page_1")
-    p2 = mock("page_2")
-    p3 = mock("page_3")
-    p1.stub!(:genres).and_return(['one', 'two', 'three'])
-    p2.stub!(:genres).and_return(['four', 'five', 'three'])
-    p3.stub!(:genres).and_return(['six', 'five', 'one'])
-    @ep.should_receive(:exhibited_sections).and_return([p1, p2, p3])
+    s1 = mock("section_1")
+    s2 = mock("section_2")
+    s3 = mock("section_3")
+    s1.stub!(:genres).and_return(['one', 'two', 'three'])
+    s2.stub!(:genres).and_return(['four', 'five', 'three'])
+    s3.stub!(:genres).and_return(['six', 'five', 'one'])
+    @ep.should_receive(:exhibited_sections).and_return([s1, s2, s3])
     @ep.genres.should == ['one', 'two', 'three', 'four', 'five', 'six'].sort
   end
   
