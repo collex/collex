@@ -50,6 +50,8 @@ class Exhibit < ActiveRecord::Base
   # genres
   # fulltext of exhibit content (not the contained objects)
   # displayed metadata from the contained objects
+  # TODO 'genre' is specific to the nines index and should not be coded in Exhibit/ExhibtedPage/ExhibitedSection/ExhibitedResource
+  # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
   def index!
 #     map = { :uri => self.uri, 
 #             :url => "need to generate url", 
