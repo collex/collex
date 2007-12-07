@@ -48,20 +48,25 @@ class Exhibit < ActiveRecord::Base
   # TODO 'genre' is specific to the nines index and should not be coded in Exhibit/ExhibtedPage/ExhibitedSection/ExhibitedResource
   # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
   def index!
-#     map = { :uri => self.uri, 
-#             :url => "need to generate url", 
-#             :archive => "this should come from a configuration",
-#             :author => self.user.fullname,
-#             :exhibit_type => self.exhibit_type.description,
-#             :published => self.published?,
-#             :license => self.license.name,
-#             :genre => ["collect the genres of the exhibited items"]
-#             
-#           }
+    solr = Solr::Connection.new(SOLR_URL)
+    map = { :uri => self.uri, 
+            :url => "need to generate url",
+            :title => self.title, 
+            :archive => "Nines",
+            :role_AUT => self.user.fullname,
+            :exhibit_type => self.exhibit_type.description,
+            :published => self.published?,
+            :license => self.license.name,
+            :genre => self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == 'genre'; a } }            
+          }
     if indexed?
       
     else
       self.uri = UUID.new
+      solr.add(map)
+      solr.commit
+      save!
+      
     end
   end
   

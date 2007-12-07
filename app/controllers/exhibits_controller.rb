@@ -55,6 +55,12 @@ class ExhibitsController < ExhibitsBaseController
   
   def show
   end
+  
+  def collect
+    @exhibit = Exhibit.find(params[:id])
+    @exhibit.index!
+    redirect_to exhibit_path(@exhibit)
+  end
 
 
   def new

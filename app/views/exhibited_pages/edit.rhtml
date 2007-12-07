@@ -23,6 +23,7 @@
       <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
       <%= li link_to('Preview', page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
       <%= li link_to("New Page", pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
+      <%= li link_to("Index", collect_exhibit_path(@exhibit), :method => "post") %>
       
       <%- unless @exhibited_page.sections_full? -%>
         <%= link_to_add_section(@section_types, @exhibited_page) %>
