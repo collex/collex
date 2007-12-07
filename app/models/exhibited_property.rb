@@ -14,6 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
+# Database version of a property from a Solr Resource. Used to permanently 
+# store the data in the +Exhibit+.
 class ExhibitedProperty < ActiveRecord::Base
   belongs_to :exhibited_resource
   
