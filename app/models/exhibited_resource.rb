@@ -14,6 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
+# Models a Solr Resource for an +Exhibit+. After +create+, the resource's properties are copied
+# into +ExhibitedProperty+s for permanent storage in the +Exhibit+.
 class ExhibitedResource < ExhibitedItem
   has_many :exhibited_properties, :dependent => :destroy
   alias_method :properties, :exhibited_properties
@@ -21,10 +23,14 @@ class ExhibitedResource < ExhibitedItem
   
   after_create :copy_solr_resource
   
+  # The actual +SolrResource+ at this instances +uri+. If none exists, then
+  # an empty +SolrResource+ is created.
+  # TODO Perhaps this method should be made private as +ExhibitedProperty+s should be
+  # accessed, rather than properties on the +SolrResource+. 
   def resource
     @resource ||= SolrResource.find_by_uri(self.uri) || SolrResource.new
   end
-  
+  alias_method :solr_resource, :resource
   
   private
     #TODO filter out tags and annotations and usernames 
