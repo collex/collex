@@ -73,7 +73,7 @@ class Exhibit < ActiveRecord::Base
     self.exhibited_pages.collect { |ep| ep.exhibited_sections }.flatten
   end
 
-  # Collection of all the +ExhibitedResource+s in the +Exhibited+
+  # Collection of all the +ExhibitedResource+s in the +Exhibit+
   def exhibited_resources
     self.sections.collect { |s| s.resources }.flatten
   end
