@@ -48,17 +48,4 @@ describe ExhibitedPage do
     page.sections.stub!(:count).and_return(9)
     page.sections_full?.should == false
   end
-  
-  it "'genres' should return a unique, sorted list of the genres collected from the page's sections " do
-    @ep = ExhibitedPage.new
-    s1 = mock("section_1")
-    s2 = mock("section_2")
-    s3 = mock("section_3")
-    s1.stub!(:genres).and_return(['one', 'two', 'three'])
-    s2.stub!(:genres).and_return(['four', 'five', 'three'])
-    s3.stub!(:genres).and_return(['six', 'five', 'one'])
-    @ep.should_receive(:exhibited_sections).and_return([s1, s2, s3])
-    @ep.genres.should == ['one', 'two', 'three', 'four', 'five', 'six'].sort
-  end
-  
 end

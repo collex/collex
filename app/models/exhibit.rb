@@ -33,11 +33,6 @@ class Exhibit < ActiveRecord::Base
     (! uri.blank?) and solr.indexed?(uri)
   end
   
-  # returns a unique list of all the genres in the exhibit
-  def genres
-    self.exhibited_pages.collect { |ep| ep.genres }.flatten.uniq.sort
-  end
-  
   # If not indexed, creates uri, adds exhibit to the index.
   # Otherwise, updates the exisiting document in solr.
   # uri

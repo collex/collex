@@ -40,10 +40,5 @@ class ExhibitedPage < ActiveRecord::Base
   def annotation_message
     self.exhibit_page_type.annotation_message
   end
-
-  # returns a unique list of all the genres in the section
-  def genres
-    self.exhibited_sections.collect { |es| es.genres }.flatten.uniq.sort
-  end
   
 end
