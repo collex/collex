@@ -25,6 +25,12 @@ class ExhibitedPage < ActiveRecord::Base
     self.exhibit_page_type.template
   end
   
+  # Collection of all the +ExhibitedResource+s in the +ExhibitedPage+
+  def exhibited_resources
+    self.sections.collect { |s| s.resources }.flatten
+  end
+  alias_method :resources, :exhibited_resources
+  
   def sections_full?
     sections.count >= exhibit_page_type.max_sections
   end
