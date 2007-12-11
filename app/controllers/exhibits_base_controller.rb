@@ -24,7 +24,7 @@ class ExhibitsBaseController < ApplicationController
     # If that URI is passed as the id, then the +Exhibit+ is found by the uri.
     def authorize_owner
       id = params[:exhibit_id] || params[:id]
-      @exhibit = id.contains?("-") ? Exhibit.find_by_uri(id) : Exhibit.find(id)
+      @exhibit = id.include?("-") ? Exhibit.find_by_uri(id) : Exhibit.find(id)
       unless @exhibit.updatable_by?(user_or_guest)
         logger.info("#{user_or_guest.username} with roles #{user_or_guest.role_names.join(', ')} may not edit #{@exhibit.title} (id=#{@exhibit.id})")
         flash[:warning] = "You do not have permission to edit that Exhibit!"
