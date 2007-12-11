@@ -90,7 +90,7 @@ class Exhibit < ActiveRecord::Base
   # An array of all annotations in the Exhibit, from +ExhibitedPage+s, +ExhibitedSection+s, +ExhibitedItem+s
   # This is a convenience for indexing the text in an +Exhibit+
   def annotations
-    array = [self.annotation]
+    array = self.annotation.blank? ? [] : [self.annotation]
     self.pages.inject(array) do |array, page|
       array << page.annotation unless page.annotation.blank?
       page.sections.each do |section|
