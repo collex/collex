@@ -27,6 +27,10 @@ class CollexEngine
     @params = params
   end
   
+  def connection
+    @solr
+  end
+  
   def num_docs
     if @num_docs == -1
       request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0)
