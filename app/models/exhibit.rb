@@ -48,17 +48,6 @@ class Exhibit < ActiveRecord::Base
   # TODO 'genre' is specific to the nines index and should not be coded in Exhibit/ExhibtedPage/ExhibitedSection/ExhibitedResource
   # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
   def index!
-    map = { :uri => self.uri, 
-            :url => "#{EXHIBITS_CONF['base_url']}/exhibits/#{self.uri}",
-            :title => self.title, 
-            :archive => EXHIBITS_CONF["archive"],
-            :role_AUT => self.user.fullname,
-            :exhibit_type => self.exhibit_type.description,
-            :published => self.published?,
-            :license => self.license.name,
-            :text => self.annotations,
-            :genre => self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == 'genre'; a } }.flatten            
-          }
     if indexed?
       self.solr.connection.delete("#{self.uri}")
       self.solr.connection.commit
@@ -67,6 +56,18 @@ class Exhibit < ActiveRecord::Base
       self.uri = UUID.new
       save!
     end
+    
+    map = { :uri => self.uri, 
+            :url => "#{EXHIBITS_CONF['base_url']}/exhibits/#{self.uri}",
+            :title => self.titles, 
+            :archive => EXHIBITS_CONF["archive"],
+            :role_AUT => self.user.fullname,
+            :exhibit_type => self.exhibit_type.description,
+            :published => self.published?,
+            :license => self.license.name,
+            :text => self.annotations,
+            :genre => self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == 'genre'; a } }.flatten.uniq      
+          }
     
     response = self.solr.connection.add(map)
     self.solr.connection.commit
@@ -98,6 +99,19 @@ class Exhibit < ActiveRecord::Base
         section.items.each do |item|
           array << item.annotation unless item.annotation.blank?
         end
+      end
+      array
+    end
+  end
+  
+  # An array of all titles in the Exhibit, from +ExhibitedPage+s, +ExhibitedSection+s, +ExhibitedItem+s
+  # This is a convenience for indexing the text in an +Exhibit+
+  def titles
+    array = self.title.blank? ? [] : [self.title]
+    self.pages.inject(array) do |array, page|
+      array << page.title unless page.title.blank?
+      page.sections.each do |section|
+        array << section.title unless section.title.blank?
       end
       array
     end
