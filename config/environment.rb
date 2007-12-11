@@ -99,3 +99,13 @@ COLLEX_ENGINE_PARAMS = {
 }
 
 EXHIBIT_WHITE_LIST = %w{jamieorc nowviskie jeromemcgann DWheeles mandellc erikhatcher aearhart cmw6s Laura_Nowocin}
+
+# Configuration for Exhibits
+def exhibits_configuration_file
+  File.expand_path(File.dirname(__FILE__) + "/exhibits.yml")
+end
+def exhibits_configuration
+  YAML::load(ERB.new(IO.read(exhibits_configuration_file)).result)
+end
+EXHBITS_CONFIG = exhibits_configuration[RAILS_ENV]
+puts "Exhibits Configuration: #{EXHBITS_CONFIG.inspect}"
