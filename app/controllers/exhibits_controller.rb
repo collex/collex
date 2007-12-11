@@ -58,8 +58,12 @@ class ExhibitsController < ExhibitsBaseController
   
   def collect
     @exhibit = Exhibit.find(params[:id])
-    @exhibit.index!
-    redirect_to exhibit_path(@exhibit)
+    if @exhibit.index!
+      flash[:notice] = 'Exhibit was successfully indexed.'
+    else
+      flash[:error] = 'There was a problem indexing your exhibit.'
+    end
+    redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
   end
 
 
