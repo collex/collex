@@ -61,6 +61,10 @@ describe Exhibit do
   it "'index!' should create a uri if none" do
     @solr = mock("collex_engine")
     @solr.stub!(:indexed?).and_return(false)
+    @connection = mock("connection")
+    @connection.stub!(:add)
+    @connection.stub!(:commit)
+    @solr.stub!(:connection).and_return(@connection)
     @exhibit.stub!(:solr).and_return(@solr)
     
     @exhibit.indexed?.should == false
@@ -73,9 +77,14 @@ describe Exhibit do
   it "'index!' should add the exhibit to the Solr index with the uri as the object id" do
     @solr = mock("collex_engine")
     @exhibit.stub!(:solr).and_return(@solr)
+    @connection = mock("connection")
+    @connection.stub!(:add)
+    @connection.stub!(:commit)
+    @solr.stub!(:connection).and_return(@connection)
+    
     @exhibit.indexed?.should == false
     @exhibit.uri.should be_nil
-
+    
     @exhibit.index!
     @exhibit.uri.should_not be_nil
     @solr.should_receive(:indexed?).and_return(true)
