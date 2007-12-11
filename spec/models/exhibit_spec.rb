@@ -146,3 +146,28 @@ describe "annotations()" do
     @exhibit.annotations.should_not include(nil)
   end
 end
+
+describe "titles()" do
+  before(:each) do
+    @exhibit = Exhibit.new(:title => "e1")
+    @p1 = @exhibit.pages.create(:title => "p1")
+    @p2 = @exhibit.pages.create(:title => "p2")
+    @s1 = @p1.sections.create(:title => "s1")
+    @s2 = @p2.sections.create(:title => "s2")
+  end
+  it "should return an array of all titles in the Exhibit, down the tree to Items" do
+    @exhibit.titles.length.should == 5
+    @exhibit.titles.should include("e1")
+    @exhibit.titles.should include("p1")
+    @exhibit.titles.should include("p2")
+    @exhibit.titles.should include("s1")
+    @exhibit.titles.should include("s2")
+  end
+  it "should not include blanks" do
+    @exhibit.title = nil
+    @exhibit.pages.create(:title => "")
+    @exhibit.titles.length.should == 4
+    @exhibit.titles.should_not include("")
+    @exhibit.titles.should_not include(nil)
+  end
+end
