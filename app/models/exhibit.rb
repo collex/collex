@@ -49,7 +49,7 @@ class Exhibit < ActiveRecord::Base
   # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
   def index!
     map = { :uri => self.uri, 
-            :url => "#{EXHIBITS_CONF['base_url']}/#{self.uri}",
+            :url => "#{EXHIBITS_CONF['base_url']}/exhibits/#{self.uri}",
             :title => self.title, 
             :archive => EXHIBITS_CONF["archive"],
             :role_AUT => self.user.fullname,
