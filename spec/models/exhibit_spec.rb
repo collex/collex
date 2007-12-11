@@ -21,6 +21,17 @@ describe Exhibit do
   
   before(:each) do
     @exhibit = Exhibit.new
+    @exhibit.title = "Exhibit Title"
+    (@user = User.new).save
+    @exhibit.user = @user
+    
+    (@et = ExhibitType.new).save
+    @exhibit.exhibit_type = @et
+    
+    (@license = License.new).save
+    @exhibit.license = @license
+    
+    @exhibit.save
   end
 
   it "should test authorization/roles for Exhibit" do
@@ -51,6 +62,7 @@ describe Exhibit do
     @solr = mock("collex_engine")
     @solr.stub!(:indexed?).and_return(false)
     @exhibit.stub!(:solr).and_return(@solr)
+    
     @exhibit.indexed?.should == false
     @exhibit.uri.should be_nil
     
