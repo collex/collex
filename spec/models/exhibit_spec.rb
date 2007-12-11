@@ -137,4 +137,11 @@ describe "annotations()" do
     @exhibit.annotations.should include("i1")
     @exhibit.annotations.should include("i2")
   end
+  it "should not include blanks" do
+    @exhibit.pages.create(:annotation => "")
+    @s2.items.create(:annotation => nil)
+    @exhibit.annotations.length.should == 7
+    @exhibit.annotations.should_not include("")
+    @exhibit.annotations.should_not include(nil)
+  end
 end

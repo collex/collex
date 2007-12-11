@@ -92,11 +92,11 @@ class Exhibit < ActiveRecord::Base
   def annotations
     array = [self.annotation]
     self.pages.inject(array) do |array, page|
-      array << page.annotation
+      array << page.annotation unless page.annotation.blank?
       page.sections.each do |section|
-        array << section.annotation
+        array << section.annotation unless section.annotation.blank?
         section.items.each do |item|
-          array << item.annotation
+          array << item.annotation unless item.annotation.blank?
         end
       end
       array
