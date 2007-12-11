@@ -116,3 +116,25 @@ describe Exhibit do
   end
   
 end
+
+describe "annotations()" do
+  before(:each) do
+    @exhibit = Exhibit.new(:annotation => "e1")
+    @p1 = @exhibit.pages.create(:annotation => "p1")
+    @p2 = @exhibit.pages.create(:annotation => "p2")
+    @s1 = @p1.sections.create(:annotation => "s1")
+    @s2 = @p2.sections.create(:annotation => "s2")
+    @i1 = @s1.items.create(:annotation => "i1")
+    @i2 = @s2.items.create(:annotation => "i2")
+  end
+  it "should return an array of all annotations in the Exhibit, down the tree to Items" do
+    @exhibit.annotations.length.should == 7
+    @exhibit.annotations.should include("e1")
+    @exhibit.annotations.should include("p1")
+    @exhibit.annotations.should include("p2")
+    @exhibit.annotations.should include("s1")
+    @exhibit.annotations.should include("s2")
+    @exhibit.annotations.should include("i1")
+    @exhibit.annotations.should include("i2")
+  end
+end

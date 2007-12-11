@@ -49,24 +49,28 @@ class Exhibit < ActiveRecord::Base
   # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
   def index!
     map = { :uri => self.uri, 
-            :url => "need to generate url",
+            :url => "#{EXHIBITS_CONF['base_url']}/#{self.uri}",
             :title => self.title, 
-            :archive => "Nines",
+            :archive => EXHIBITS_CONF["archive"],
             :role_AUT => self.user.fullname,
             :exhibit_type => self.exhibit_type.description,
             :published => self.published?,
             :license => self.license.name,
-            :genre => self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == 'genre'; a } }            
+            :text => self.annotations,
+            :genre => self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == 'genre'; a } }.flatten            
           }
     if indexed?
-      
-    else
-      self.uri = UUID.new
-      self.solr.connection.add(map)
+      self.solr.connection.delete("#{self.uri}")
       self.solr.connection.commit
-      save!
-      
     end
+    if self.uri.blank?
+      self.uri = UUID.new
+      save!
+    end
+    
+    response = self.solr.connection.add(map)
+    self.solr.connection.commit
+    response
   end
   
   def uris
@@ -82,6 +86,22 @@ class Exhibit < ActiveRecord::Base
     self.sections.collect { |s| s.resources }.flatten
   end
   alias_method :resources, :exhibited_resources
+  
+  # An array of all annotations in the Exhibit, from +ExhibitedPage+s, +ExhibitedSection+s, +ExhibitedItem+s
+  # This is a convenience for indexing the text in an +Exhibit+
+  def annotations
+    array = [self.annotation]
+    self.pages.inject(array) do |array, page|
+      array << page.annotation
+      page.sections.each do |section|
+        array << section.annotation
+        section.items.each do |item|
+          array << item.annotation
+        end
+      end
+      array
+    end
+  end
   
   def title_message
     exhibit_type.title_message
