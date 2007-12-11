@@ -48,7 +48,6 @@ class Exhibit < ActiveRecord::Base
   # TODO 'genre' is specific to the nines index and should not be coded in Exhibit/ExhibtedPage/ExhibitedSection/ExhibitedResource
   # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
   def index!
-    solr = Solr::Connection.new(SOLR_URL)
     map = { :uri => self.uri, 
             :url => "need to generate url",
             :title => self.title, 
@@ -63,8 +62,8 @@ class Exhibit < ActiveRecord::Base
       
     else
       self.uri = UUID.new
-      solr.add(map)
-      solr.commit
+      self.solr.connection.add(map)
+      self.solr.connection.commit
       save!
       
     end
