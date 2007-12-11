@@ -109,7 +109,7 @@ class ExhibitsControllerTest < Test::Unit::TestCase
 #   end
   
   def test_edit_bad_exhibit_id_redirects_to_index_with_warning_when_logged_in
-    get(:edit, :id => -1)
+    get(:edit, :id => 0)
     assert_redirected_to(exhibits_path)
     assert_not_nil(flash[:warning])
   end
