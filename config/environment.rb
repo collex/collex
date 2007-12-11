@@ -107,5 +107,5 @@ end
 def exhibits_configuration
   YAML::load(ERB.new(IO.read(exhibits_configuration_file)).result)
 end
-EXHBITS_CONFIG = exhibits_configuration[RAILS_ENV]
-puts "Exhibits Configuration: #{EXHBITS_CONFIG.inspect}"
+EXHIBITS_CONFIG = exhibits_configuration[RAILS_ENV]
+puts "Exhibits Configuration: #{EXHIBITS_CONFIG.inspect}"
