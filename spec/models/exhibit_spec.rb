@@ -170,4 +170,21 @@ describe "titles()" do
     @exhibit.titles.should_not include("")
     @exhibit.titles.should_not include(nil)
   end
+  
+  describe "properties_to_index_with_values()" do
+    before(:each) do
+      res = Struct.new(:properties)
+      prop = Struct.new(:name, :value)
+      @exhibit = Exhibit.new
+      @exhibit.stub!(:resources).and_return([res.new([prop.new('k1', 'v1'),
+                                                      prop.new('k4', 'v1')]), 
+                                             res.new([prop.new('k2', 'v1'), 
+                                                      prop.new('k2', 'v2'), 
+                                                      prop.new('k2', 'v2')])])
+      @exhibit.stub!(:properties_to_index).and_return(['k1', 'k2'])
+    end
+    it "should return a Hash map with values in properties_to_index() as keys and the ExhibitedProperty values in Arrays as values" do
+      @exhibit.properties_to_index_with_values.should == {'k1' => ['v1'], 'k2' => ['v1', 'v2']}
+    end
+  end
 end

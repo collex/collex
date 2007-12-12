@@ -65,13 +65,26 @@ class Exhibit < ActiveRecord::Base
             :exhibit_type => self.exhibit_type.description,
             :published => self.published?,
             :license => self.license.name,
-            :text => self.annotations,
-            :genre => self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == 'genre'; a } }.flatten.uniq      
-          }
+            :text => self.annotations     
+          }.merge(properties_to_index_with_values)
     
     response = self.solr.connection.add(map)
     self.solr.connection.commit
     response
+  end
+
+  # The +Array+ of +ExibitedProperties+ that should be indexed.
+  # This is configured in +config/exhibits.yml+.
+  def properties_to_index
+    EXHIBITS_CONF["properties_to_index"]
+  end
+  
+  # The +Hash+ map of +properties_to_index+ and their unique values collected in +Array+s.
+  def properties_to_index_with_values
+    self.properties_to_index.inject({}) do |hash, prop|
+      hash[prop] = self.resources.collect { |r| r.properties.inject([]) { |a,p| a << p.value if p.name == prop; a } }.flatten.uniq 
+      hash
+    end
   end
   
   def uris
