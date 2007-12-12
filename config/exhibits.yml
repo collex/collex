@@ -16,7 +16,7 @@
 
 # Configuration of Exhibits section, especially for Solr Indexing info that
 # is installation-specific.
-# +properties+ must be an array
+# +properties_to_index+ must be an array
 
 defaults: &defaults
   archive: Nines
