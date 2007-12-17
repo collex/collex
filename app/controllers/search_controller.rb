@@ -47,6 +47,7 @@ class SearchController < ApplicationController
      @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'], uncategorized_sites)
      
      # Merge uncategorized facets under an "Uncategorized" child
+     # TODO this should be moved into FacetCategory#merge_facets(). It's silly not to add this stuff in that method.
      uncategorized_tree = {:value => "Uncategorized", :children => [], :count => 0, :type => :category}
      uncategorized_sites.each do |k,v|
        uncategorized_tree[:children] << {:value => k, :children => [], :count => v, :type => :value}
