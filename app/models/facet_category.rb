@@ -21,9 +21,19 @@ class FacetCategory < ActiveRecord::Base
     children << sapling
   end
   
-  # Takes two +Hashes+ +facets+ and its clone, +uncategorized+, and removes _categorized_ FacetValues
-  # from +uncategorized+.
-  def merge_facets(facets, uncategorized)
+  def merge_facets(facets)
+    uncategorized = facets.clone
+    forest = merge_facets_with_uncategorized(facets, uncategorized)
+    
+    uncategorized_tree = {:value => "Uncategorized", :children => [], :count => 0, :type => :category}
+    uncategorized.each do |k,v|
+      uncategorized_tree[:children] << {:value => k, :children => [], :count => v, :type => :value}
+      uncategorized_tree[:count] += v
+    end
+    forest << uncategorized_tree
+  end
+  
+  def merge_facets_with_uncategorized(facets, uncategorized)
     # child is from the DB, kid is our home-grown tree
     kids = []
     children.each do |child|
@@ -33,7 +43,7 @@ class FacetCategory < ActiveRecord::Base
           kids << {:children => [], :value => child.value, :count => facet_count, :type => :value, :id => child.id}
           uncategorized.delete(child.value)
         when FacetCategory
-          category = {:children => child.merge_facets(facets,uncategorized), :value => child.value, :count => 0, :type => :category, :id => child.id}
+          category = {:children => child.merge_facets_with_uncategorized(facets,uncategorized), :value => child.value, :count => 0, :type => :category, :id => child.id}
           kids << category
           category[:count] = total(category[:children])
       end
