@@ -21,6 +21,8 @@ class FacetCategory < ActiveRecord::Base
     children << sapling
   end
   
+  # Takes two +Hashes+ +facets+ and its clone, +uncategorized+, and removes _categorized_ FacetValues
+  # from +uncategorized+.
   def merge_facets(facets, uncategorized)
     # child is from the DB, kid is our home-grown tree
     kids = []
