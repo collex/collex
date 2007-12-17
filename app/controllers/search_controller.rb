@@ -31,8 +31,8 @@ class SearchController < ApplicationController
      rescue  Net::HTTPServerException => e
        @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
        error_message = e.message
-       if error_message =~ /Query_parsing_error_/
-         error_message = $'
+       if (match = error_message.match /Query_parsing_error_/)
+         error_message = match.post_match
        else
          error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
        end
