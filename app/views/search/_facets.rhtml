@@ -67,11 +67,6 @@
         values.each do |pair|  value=pair[0] 
           next if field == "genre" && value == "Citation"
           value_display = value
-          if field=="archive"
-            if site(value)
-              value_display = site(value)['description']
-            end
-          end
           constraint_exists = false
           session[:constraints].each do |constraint|
             if field == constraint[:field] and value == constraint[:value]
