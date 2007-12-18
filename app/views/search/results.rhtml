@@ -147,62 +147,41 @@
                          <%= link_to_function "collect", "displayCollector('collectformarea', '#{hit["uri"]}', event);" -%> 
 	                </span> 
 	               </td>
-				</tr>
-				</table></td>
+				      </tr>
+				    </table>
+				  </td>
 
-
-               <td>
-                <table border="0">
-                 <tr>
-                  <td colspan="2">
-                <% if hit["url"] %>
-                  <a target="_blank" href="<%= hit["url"][0] %>">
-                     <% if hit["title"]%><%= h hit["title"][0] %><%end%>
-                  </a>&nbsp;&rarr;
-                <% else %>
-                  <% if hit["title"]%><%= h hit["title"][0] %><%end%>
-                <% end %>
+           <td>
+            <table border="0">
+              <tr>
+                <td colspan="2">
+                  <% if hit["url"] %>
+                    <a target="_blank" href="<%= hit["url"][0] %>">
+                       <% if hit["title"]%><%= h hit["title"][0] %><%end%>
+                    </a>&nbsp;&rarr;
+                  <% else %>
+                    <% if hit["title"]%><%= h hit["title"][0] %><%end%>
+                  <% end %>
                 
-                <div class="snippet">
+                  <div class="snippet">
                     <%=@results["highlighting"][hit["uri"]]["text"]%>
-                </div>
-               </td>
+                  </div>
+                </td>
               </tr>
 
-                <% if hit["alternative"]
-                   hit["alternative"].each do |alternative|
-                %>
-            <tr>
-             <td colspan="2">
-                  <%=h alternative %>
-                <% end
-                %>
-             </td>
-            </tr>
-                <% end
-                %>
-				
-                <% if hit["source"]
-                   first_source = true
-                   hit["source"].each do |source|
-                %>
-            <tr>
-             <td class="grey" valign="top">
-                  <% if first_source == true then
-                  %>
-              source:
-                  <% first_source = false
-                     end
-                  %>
-             </td>
-             <td>
-                  <%=h source%> 
-                <% end
-                %>
-             </td>
-            </tr>
-                <% end
-                %>
+              <% hit['alternative'].each do %>
+                <% tr do %>
+                  <%= td hit['alternative'], :valign => "top", :colspan => "2" %>
+                <% end %>
+              <% end if hit['alternative'] %>
+              
+              <% hit['source'].each_with_index do |source, i| %>
+                <% tr do %>
+                  <%= td((i < 1 ? "source:" : ""), :class => "grey", :valign => "top") %>
+                  <%= td h(source), :valign => "top" %>
+                <% end %>
+              <% end if hit['source'] %>
+              
               <tr>
                <td class="grey">
                 site:
@@ -213,62 +192,37 @@
                 <% end %>
                </td>
               </tr>
-                  <% 
-                     first_agent = true
-                     hit.select {|key,value| key =~ /^role_/}.each do |agent|
-                         agent[1].each do |name|
-                  %>
-              <tr>
-               <td class="grey">
-                    <% if first_agent == true then
-                    %>
-                name: 
-                    <% first_agent = false
-                       end
-                    %>
-               </td>
-               <td>
-                   <%=h name %> <% # takes a role like role_EDT, grabs the last three letters and looks up the label %>
-                   (<%=h COLLEX_MANAGER.relators[agent[0][-3,3]]%>)
-                  <% end end %>
-               </td>
-              </tr>
-                  <% if hit["date_label"]
-                  %>
-              <tr>
-               <td class="grey">
-                date:
-               </td>
-               <td>
-                    <%=h hit["date_label"].join('; ') %> 
-               </td>
-              </tr>
-                  <% end
-                   %>
-                  <% if hit["genre"]
-                     first_genre = true
-                     hit["genre"].each do |genre|
-                  %>
-              <tr>
-               <td class="grey">
-                    <% if first_genre == true then
-                    %>
-                genre:
-                    <% first_genre = false
-                       end
-                    %>
-               </td>
-               <td>
-                    <%=h genre%> <%= link_to nbpluralize(@results['facets']['genre'][genre], 'item'), {:controller=>'search', :action => 'add_facet', :field => 'genre', :value => genre}%>
-                  <% end
-                  %>
-               </td>
-              </tr>
-                  <% end
-                  %>
 
-
-                </table>
+              <% tr do %>
+                <%= td "exhibit type:", :class => "grey", :valign => "top" %>
+                <%= td hit['exhibit_type'], :valign => "top" %>
+              <% end if hit['exhibit_type'] %>
+              
+              <% tr do %>
+                <%= td "license:", :class => "grey", :valign => "top" %>
+                <%= td hit['license'], :valign => "top" %>
+              <% end if hit['license'] %>
+              
+              <% hit.select {|key,value| key =~ /^role_/}.each_with_index do |agent, i| agent[1].each do |name| %>
+                <% tr do %>
+                  <%= td((i < 1 ? "name:" : ""), :class => "grey", :valign => "top") %>
+                  <%= td h("#{name} (#{COLLEX_MANAGER.relators[agent[0][-3,3]]})"), :valign => "top" %>
+                <% end %>
+              <% end end %>
+              
+              <% tr do %>
+                <%= td "date:", :class => "grey", :valign => "top" %>
+                <%= td h(hit['date_label'].join('; ')), :valign => "top" %>
+              <% end if hit['date_label'] %>
+              
+              <% hit['genre'].each_with_index do |genre, i| %>
+                <% tr do %>
+                  <%= td((i < 1 ? "genre:" : ""), :class => "grey", :valign => "top") %>
+                  <%= td h(genre) + " " + link_to(nbpluralize(@results['facets']['genre'][genre], 'item'), {:controller=>'search', :action => 'add_facet', :field => 'genre', :value => genre}, :valign => "top") %>
+                <% end %>
+              <% end if hit['genre'] %>
+              
+            </table>
 	</tr>
            <% end %>
        </table>
