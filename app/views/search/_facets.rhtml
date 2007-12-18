@@ -56,15 +56,15 @@
     <%= render :partial => 'categories', :locals => {:categories => @sites_forest, :max => max } %>
 
     <%  
-        facets = ["genre"]        
-        facets.each do |field| unsorted_values=@results["facets"][field]
-          if unsorted_values
-            name_shown = false 
-            label = facet_label(field)
-            values = unsorted_values.sort {|a,b| b[1] <=> a[1]}
+    facets = ["genre"]        
+    facets.each do |field| unsorted_values=@results["facets"][field]
+      if unsorted_values
+        name_shown = false 
+        label = facet_label(field)
+        values = unsorted_values.sort {|a,b| b[1] <=> a[1]}
     %>
-       <% count = 0
-          values.each do |pair|  value=pair[0] 
+     <% count = 0
+        values.each do |pair|  value=pair[0] 
           next if field == "genre" && value == "Citation"
           value_display = value
           if field=="archive"
