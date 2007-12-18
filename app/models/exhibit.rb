@@ -45,8 +45,7 @@ class Exhibit < ActiveRecord::Base
   # genres
   # fulltext of exhibit content (not the contained objects)
   # displayed metadata from the contained objects
-  # TODO 'genre' is specific to the nines index and should not be coded in Exhibit/ExhibtedPage/ExhibitedSection/ExhibitedResource
-  # Instead, we need a way to configure installation-specific object fields for indexing in the Exhibit.
+  # TODO: al of the keys in the map are Nines specific. We need a way to configure this for the entire Exhibit.
   def index!
     if indexed?
       self.solr.connection.delete("#{self.uri}")
@@ -62,6 +61,7 @@ class Exhibit < ActiveRecord::Base
             :title => self.titles, 
             :archive => EXHIBITS_CONF["archive"],
             :role_AUT => self.user.fullname,
+            :date_label => [DateTime.now.year] ,
             :exhibit_type => self.exhibit_type.description,
             :published => self.published?,
             :license => self.license.name,
