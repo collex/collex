@@ -55,7 +55,8 @@
 
     <%= render :partial => 'categories', :locals => {:categories => @sites_forest, :max => max } %>
 
-    <%  
+    <% 
+    # TODO seems like we could move the facets list to a file in config a la exhibits.yml 
     facets = ["genre"]        
     facets.each do |field| unsorted_values=@results["facets"][field]
       if unsorted_values
