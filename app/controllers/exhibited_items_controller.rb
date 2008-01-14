@@ -35,11 +35,11 @@ class ExhibitedItemsController < ExhibitsBaseController
     @exhibited_item.__send__(command)
     logger.info("ExhibitedItem: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
-    redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id], :anchor => dom_id(@exhibited_item))
+    redirect_to edit_exhibit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id], :anchor => dom_id(@exhibited_item))
   rescue Exception
     logger.info("Error: #{command} with id=#{params[:id]} failed.")
     flash[:error] = "There was an error moving your item."
-    redirect_to edit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id])
+    redirect_to edit_exhibit_page_path(:exhibit_id => params[:exhibit_id], :id => params[:page_id])
   end
   private :move_item
 

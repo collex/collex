@@ -55,11 +55,11 @@ class ExhibitedPagesController < ExhibitsBaseController
     @exhibited_page.__send__(command)
     logger.info("ExhibitedPage: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
-    redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibit)
+    redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibit)
   rescue Exception => e
     logger.info("Error: #{command} with id=#{params[:id]} failed with #{e}")
     flash[:error] = "There was an error moving your page."
-    redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibit)
+    redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibit)
   end
   private :move_item
   
@@ -104,10 +104,10 @@ class ExhibitedPagesController < ExhibitsBaseController
         @page.sections.create({:exhibit_section_type_id => page_type.section_types.first.id})
       end
       flash[:notice] = 'Page was successfully created.'
-      redirect_to edit_page_path(:id => @page, :exhibit_id => @exhibit)
+      redirect_to edit_exhibit_page_path(:id => @page, :exhibit_id => @exhibit)
     else
       flash[:error] = 'There was an error creating the new page.'
-      redirect_to edit_page_path(:id => params[:page_id], :exhibit_id => @exhibit)
+      redirect_to edit_exhibit_page_path(:id => params[:page_id], :exhibit_id => @exhibit)
     end
   end
   
@@ -115,11 +115,11 @@ class ExhibitedPagesController < ExhibitsBaseController
     @exhibited_page = ExhibitedPage.find(params[:id])
     if(@exhibit.pages.count <= 1)
       flash[:error] = "This is your only page, so it can not be removed."
-      redirect_to edit_page_path(@exhibit, @exhibited_page)
+      redirect_to edit_exhibit_page_path(@exhibit, @exhibited_page)
     else
       @exhibited_page.destroy
       flash[:notice] = "Your Page was deleted successfully."
-      redirect_to edit_page_path(@exhibit, @exhibit.pages.first)
+      redirect_to edit_exhibit_page_path(@exhibit, @exhibit.pages.first)
     end
   end
 end

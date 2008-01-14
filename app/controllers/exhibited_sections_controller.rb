@@ -36,11 +36,11 @@ class ExhibitedSectionsController < ExhibitsBaseController
     @exhibited_section.__send__(command)
     logger.info("ExhibitedSection: #{command.to_s}: #{params[:id]}")
     flash[:notice] = notice
-    redirect_to edit_page_path(:id => params[:page_id], :exhibit_id => @exhibit, :anchor => dom_id(@exhibited_section))
+    redirect_to edit_exhibit_page_path(:id => params[:page_id], :exhibit_id => @exhibit, :anchor => dom_id(@exhibited_section))
   rescue Exception => e
     logger.info("Error: #{command} with id=#{params[:id]} failed with #{e}")
     flash[:error] = "There was an error moving your section."
-    redirect_to edit_page_path(:id => params[:page_id], :exhibit_id => @exhibit)
+    redirect_to edit_exhibit_page_path(:id => params[:page_id], :exhibit_id => @exhibit)
   end
   private :move_item  
 
@@ -51,12 +51,12 @@ class ExhibitedSectionsController < ExhibitsBaseController
       if @exhibited_page.exhibited_sections << ExhibitedSection.new(:exhibit_section_type_id => params[:exhibit_section_type_id])
         @exhibited_page.exhibited_sections.last.move_to_top
         flash[:notice] = 'A new Exhibited Section was successfully added.'
-        format.html { redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
+        format.html { redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
         format.xml  { head :ok }
       else
         format.html do
           flash[:error] = "There was a problem creating a new Exibited Section."
-          redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id)
+          redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id)
         end
         format.xml  { render :xml => @exhibited_section.errors.to_xml }
       end
@@ -71,10 +71,10 @@ class ExhibitedSectionsController < ExhibitsBaseController
     respond_to do |format|
       if @exhibited_section.update_attributes(params[:exhibited_section])
         flash[:notice] = 'Exhibited Section was successfully updated.'
-        format.html { redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id, :anchor => dom_id(@exhibited_section)) }
+        format.html { redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id, :anchor => dom_id(@exhibited_section)) }
         format.xml  { head :ok }
       else
-        format.html { redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
+        format.html { redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
         format.xml  { render :xml => @exhibited_section.errors.to_xml }
       end
     end
@@ -87,7 +87,7 @@ class ExhibitedSectionsController < ExhibitsBaseController
 
     respond_to do |format|
       flash[:notice] = 'Exhibited Section was successfully removed.'
-      format.html { redirect_to edit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
+      format.html { redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
       format.xml  { head :ok }
     end
   end

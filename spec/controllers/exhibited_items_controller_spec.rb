@@ -60,7 +60,7 @@ describe ExhibitedItemsController do
       @item_1.should_receive(command).and_return(true)
       post command, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @item_1.id
       response.should be_redirect
-      response.should redirect_to(edit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id, :anchor => "exhibited_item_#{@item_1.id}"))
+      response.should redirect_to(edit_exhibit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id, :anchor => "exhibited_item_#{@item_1.id}"))
     end
   end
   
@@ -74,7 +74,7 @@ describe ExhibitedItemsController do
       @item_1.should_receive(command).and_raise
       post command, :exhibit_id => @exhibit.id, :page_id => @page_1.id, :section_id => @section_1.id, :id => @item_1.id
       response.should be_redirect
-      response.should redirect_to(edit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id))
+      response.should redirect_to(edit_exhibit_page_path(:exhibit_id => @exhibit.id, :id => @page_1.id))
     end
   end
 

@@ -58,7 +58,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @es2.reload
     assert(@es3.position < @es2.position)
     assert_response(:redirect)
-    assert_redirected_to(edit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es3.id}"))
+    assert_redirected_to(edit_exhibit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es3.id}"))
     
     assert(@es3.position > @es1.position)
     post(:move_higher, :id => @es3.id, :page_id => @ep1.id, :exhibit_id => @exhibit.id)
@@ -66,7 +66,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @es1.reload
     assert(@es3.position < @es1.position)
     assert_response(:redirect)
-    assert_redirected_to(edit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es3.id}"))
+    assert_redirected_to(edit_exhibit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es3.id}"))
   end
   def test_moves_section_lower_and_returns_to_proper_page
     assert(@es1.position < @es2.position)
@@ -75,7 +75,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @es2.reload
     assert(@es1.position > @es2.position)
     assert_response(:redirect)
-    assert_redirected_to(edit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es1.id}"))
+    assert_redirected_to(edit_exhibit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es1.id}"))
     
     assert(@es1.position < @es3.position)
     post(:move_lower, :id => @es1.id, :page_id => @ep1.id, :exhibit_id => @exhibit.id)
@@ -83,7 +83,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @es3.reload
     assert(@es1.position > @es3.position)
     assert_response(:redirect)
-    assert_redirected_to(edit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es1.id}"))
+    assert_redirected_to(edit_exhibit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es1.id}"))
   end
   def test_moves_section_to_top_and_returns_to_proper_page
     assert(@es1.position < @es2.position && @es2.position < @es3.position)
@@ -93,7 +93,7 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @es3.reload
     assert(@es2.position > @es1.position && @es1.position > @es3.position)
     assert_response(:redirect)
-    assert_redirected_to(edit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es3.id}"))
+    assert_redirected_to(edit_exhibit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es3.id}"))
   end
   def test_moves_section_to_bottom_and_returns_to_proper_page
     assert(@es1.position < @es2.position && @es2.position < @es3.position)
@@ -103,6 +103,6 @@ class ExhibitedSectionsControllerTest < Test::Unit::TestCase
     @es3.reload
     assert(@es1.position > @es3.position && @es3.position > @es2.position)
     assert_response(:redirect)
-    assert_redirected_to(edit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es1.id}"))
+    assert_redirected_to(edit_exhibit_page_path(:exhibit_id => @exhibit, :id => @ep1.id, :anchor => "exhibited_section_#{@es1.id}"))
   end
 end
