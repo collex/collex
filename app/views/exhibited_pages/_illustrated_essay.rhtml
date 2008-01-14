@@ -17,7 +17,7 @@
 <%- if controller.action_name == "edit" -%>
     <%= p move_exhibited_page_links(@exhibited_page) %>
   
-  <%= p link_to("Remove Page and its Objects", page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete)%>
+  <%= p link_to("Remove Page and its Objects", exhibit_page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete)%>
 <% end %>
 
 
