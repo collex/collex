@@ -52,18 +52,22 @@ ActionController::Routing::Routes.draw do |map|
                                    :move_lower        => :post, 
                                    :move_to_top       => :post, 
                                    :move_to_bottom    => :post } do |page|
-      page.resources :exhibited_sections, 
+      page.resources :sections, 
+                        :controller => :exhibited_sections,
                         :member => { :update_title      => :post, 
                                      :update_annotation => :post,
                                      :move_higher       => :post, 
                                      :move_lower        => :post, 
                                      :move_to_top       => :post, 
                                      :move_to_bottom    => :post } do |section|
-        section.resources :exhibited_texts, 
+        section.resources :texts, 
+                          :controller => :exhibited_texts,
                           :member => { :update_annotation => :post}
-        section.resources :exhibited_resources, 
+        section.resources :resources, 
+                          :controller => :exhibited_resources,
                           :member => { :update_annotation => :post}
-        section.resources :exhibited_items, 
+        section.resources :items, 
+                          :controller => :exhibited_items,
                           :member => { :update_annotation => :post, 
                                        :move_higher       => :post, 
                                        :move_lower        => :post, 

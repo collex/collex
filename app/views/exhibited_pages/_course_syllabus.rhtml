@@ -43,5 +43,5 @@
   <%= div render(:partial => "exhibited_pages/#{@exhibited_section.template}", :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section), :class => "section" %>
   
   <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
-        :onDrop => "function(element){$('drop-zone-spinner-for-#{@exhibited_section.id}').show();$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibit_page_exhibited_section_exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
+        :onDrop => "function(element){$('drop-zone-spinner-for-#{@exhibited_section.id}').show();$('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibit_page_section_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
 <% end %>

@@ -17,12 +17,12 @@
 module ExhibitsHelper
   def link_to_add_section(section_types, page)
     if section_types.size == 1
-      li link_to("Add a Section", exhibit_page_exhibited_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_types.first.id, :page_id => page), :method => "post")
+      li link_to("Add a Section", exhibit_page_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_types.first.id, :page_id => page), :method => "post")
     elsif section_types.size > 1
       html = li("Add a Section", :class => "add-a-section")
       html << "<ul class='add-a-section'>"
       section_types.each do |section_type|
-        html << %{<li>#{link_to("New #{section_type.name}", exhibit_page_exhibited_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_type.id, :page_id => page), :method => "post")}</li>}
+        html << %{<li>#{link_to("New #{section_type.name}", exhibit_page_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_type.id, :page_id => page), :method => "post")}</li>}
       end
       html << "</ul>"
       html
@@ -41,22 +41,22 @@ module ExhibitsHelper
     
     html = options[:sideways] ? "<span>" : "<p>"
     
-    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post", :title => "make first item") unless exhibited_item.first?
+    html << link_to("#{up_arrow}#{up_arrow}", move_to_top_exhibit_page_section_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post", :title => "make first item") unless exhibited_item.first?
     html << span("#{up_arrow}#{up_arrow}", :class => "double-arrow", :title => "already the first item!") if exhibited_item.first?
     
     html << (options[:sideways] ? "&nbsp;" : "<br/>")
 
-    html << link_to("#{up_arrow}", move_higher_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post", :title => "move item up") unless exhibited_item.first?
+    html << link_to("#{up_arrow}", move_higher_exhibit_page_section_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post", :title => "move item up") unless exhibited_item.first?
     html << span("#{up_arrow}", :class => "single-arrow", :title => "already the first item!") if exhibited_item.first?
     
     html << (options[:sideways] ? "&nbsp;&nbsp;" : "</p><p>")
     
-    html << link_to("#{down_arrow}", move_lower_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post", :title => "move item down") unless exhibited_item.last?
+    html << link_to("#{down_arrow}", move_lower_exhibit_page_section_item_path(exhibit, page, section, exhibited_item), :class => "single-arrow", :method => "post", :title => "move item down") unless exhibited_item.last?
     html << span("#{down_arrow}", :class => "single-arrow", :title => "already last item!") if exhibited_item.last?
     
     html << (options[:sideways] ? "&nbsp;" : "<br/>")
     
-    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibited_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post", :title => "make last item") unless exhibited_item.last?
+    html << link_to("#{down_arrow}#{down_arrow}", move_to_bottom_exhibit_page_section_item_path(exhibit, page, section, exhibited_item), :class => "double-arrow", :method => "post", :title => "make last item") unless exhibited_item.last?
     html << span("#{down_arrow}#{down_arrow}", :class => "double-arrow", :title => "already last item!") if exhibited_item.last?
     
     html << (options[:sideways] ? "</span>" : "<p/>")
@@ -69,22 +69,22 @@ module ExhibitsHelper
     
     html = ""
     
-    html << link_to("&uarr;&uarr;", move_to_top_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post", :title => "make first section on page") unless exhibited_section.first?
+    html << link_to("&uarr;&uarr;", move_to_top_exhibit_page_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post", :title => "make first section on page") unless exhibited_section.first?
     html << span("&uarr;&uarr;", :class => "double-arrow", :title => "already first section on page!") if exhibited_section.first?
     
     html << "&nbsp;"
     
-    html << link_to("&uarr;", move_higher_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post", :title => "move section up") unless exhibited_section.first?
+    html << link_to("&uarr;", move_higher_exhibit_page_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post", :title => "move section up") unless exhibited_section.first?
     html << span("&uarr;", :class => "single-arrow", :title => "already first section on page!") if exhibited_section.first?
     
     html << "&nbsp;"
     
-    html << link_to("&darr;", move_lower_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post", :title => "move section down") unless exhibited_section.last?
+    html << link_to("&darr;", move_lower_exhibit_page_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "single-arrow", :method => "post", :title => "move section down") unless exhibited_section.last?
     html << span("&darr;", :class => "single-arrow", :title => "already last section on page!") if exhibited_section.last?
     
     html << "&nbsp;"
     
-    html << link_to("&darr;&darr;", move_to_bottom_exhibited_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post", :title => "make last section on page") unless exhibited_section.last?
+    html << link_to("&darr;&darr;", move_to_bottom_exhibit_page_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post", :title => "make last section on page") unless exhibited_section.last?
     html << span("&darr;&darr;", :class => "double-arrow", :title => "already last section on page!") if exhibited_section.last?
     html
   end
@@ -137,7 +137,7 @@ module ExhibitsHelper
   
   # Since Rails currently (1.2.1) does not generate proper URLs for nested resources without
   # the parent objects specified, this is a convenience
-  # TODO refactore these methods into two dynamic methods. There's a lot of repetition here.
+  # TODO refactor these methods into two dynamic methods. There's a lot of repetition here.
   def exhibited_page_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
     in_place_editor_options[:url] ||=  eval("update_#{method}_page_path(#{tag.object.exhibit.id}, #{tag.object.id})") 

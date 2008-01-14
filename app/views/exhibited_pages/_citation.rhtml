@@ -38,7 +38,7 @@
     <%- if controller.action_name == "edit" -%>
     <%= div span('annotation: ', :class => "label") + exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation"), :id => "mce_container_exhibited_item_#{@exhibited_item.id}" %> 
       
-      <%= link_to "Remove Item", exhibit_page_exhibited_section_exhibited_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
+      <%= link_to "Remove Item", exhibit_page_section_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
     <%- else -%>
       <%= div span('annotation: ', :class => "label") + @exhibited_item.annotation unless @exhibited_item.annotation.blank? %>
     <%- end -%>

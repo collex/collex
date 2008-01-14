@@ -30,7 +30,7 @@
       <%= move_exhibited_section_links(@exhibited_section) %>
     <% end %>
     
-    <%= p link_to("Remove Section and its Objects", exhibited_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
+    <%= p link_to("Remove Section and its Objects", exhibit_page_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
   <% end %>
 
 <% end end %>
