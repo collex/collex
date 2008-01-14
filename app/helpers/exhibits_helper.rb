@@ -95,99 +95,101 @@ module ExhibitsHelper
     
     html = ""
     
-    html << link_to("&uarr;&uarr;", move_to_top_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post", :title => "make this the first page") unless exhibited_page.first?
+    html << link_to("&uarr;&uarr;", move_to_top_exhibit_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post", :title => "make this the first page") unless exhibited_page.first?
     html << span("&uarr;&uarr;", :class => "double-arrow", :title => "already the first page!") if exhibited_page.first?
     
     html << "&nbsp;"
-    html << link_to("&uarr;", move_higher_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post", :title => "move page up") unless exhibited_page.first?
+    html << link_to("&uarr;", move_higher_exhibit_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post", :title => "move page up") unless exhibited_page.first?
     html << span("&uarr;", :class => "single-arrow", :title => "already the first page!") if exhibited_page.first?
     
     html << "&nbsp;"
-    html << link_to("&darr;", move_lower_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post", :title => "move page down") unless exhibited_page.last?
+    html << link_to("&darr;", move_lower_exhibit_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "single-arrow", :method => "post", :title => "move page down") unless exhibited_page.last?
     html << span("&darr;", :class => "single-arrow", :title => "already the last page!") if exhibited_page.last?
     
     html << "&nbsp;"
-    html << link_to("&darr;&darr;", move_to_bottom_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post", :title => "make this the last page") unless exhibited_page.last?
+    html << link_to("&darr;&darr;", move_to_bottom_exhibit_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post", :title => "make this the last page") unless exhibited_page.last?
     html << span("&darr;&darr;", :class => "double-arrow", :title => "already the last page!") if exhibited_page.last?
     html
   end
   
   
   
-  def exhibit_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def exhibit_in_place_editor_field(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
         
-    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    tag_options = {:tag => "span", :id => "#{object}_#{method}_#{tag.object.id}_in_place_editor", :class => "in_place_editor_field"}.merge(tag_options)
+    tag = ::ActionView::Helpers::InstanceTag.new(object_name, method_name, self)
+    tag_options = {:tag => "span", :id => "#{object_name}_#{method_name}_#{tag.object.id}_in_place_editor", :class => "in_place_editor_field"}.merge(tag_options)
     
     in_place_editor_options[:url] ||= 
-    eval("update_#{method}_#{object}_path(#{tag.object.id})") rescue url_for({ :action => "set_#{object}_#{method}", :id => tag.object.id })
-    in_place_editor_options[:saving_text] ||= "saving #{object.to_s.humanize.downcase} #{method.to_s.humanize.downcase}..."
+    eval("update_#{method_name}_exhibit_path(#{tag.object.id})") rescue url_for({ :action => "set_#{object_name}_#{method_name}", :id => tag.object.id })
+    in_place_editor_options[:saving_text] ||= "saving #{object_name.to_s.humanize.downcase} #{method_name.to_s.humanize.downcase}..."
     in_place_editor_options[:size] ||= 35
     
 #     tag.to_content_tag(tag_options.delete(:tag), tag_options) + "&nbsp;" +    
-    value = tag.value(tag.object) || tag_options[:value] || tag.object.__send__("#{method}_message")|| "(Insert #{method})"
+    value = tag.value(tag.object) || tag_options[:value] || tag.object.__send__("#{method_name}_message")|| "(Insert #{method_name})"
     tag.content_tag(tag_options.delete(:tag), value, tag_options) + "&nbsp;" +
     in_place_editor(tag_options[:id], in_place_editor_options)
   end
-  def exhibit_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def exhibit_in_place_editor_area(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
     in_place_editor_options[:cols] = 60
-    exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+    exhibit_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
+  
+  
   
   # Since Rails currently (1.2.1) does not generate proper URLs for nested resources without
   # the parent objects specified, this is a convenience
   # TODO refactor these methods into two dynamic methods. There's a lot of repetition here.
-  def exhibited_page_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
-    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    in_place_editor_options[:url] ||=  eval("update_#{method}_page_path(#{tag.object.exhibit.id}, #{tag.object.id})") 
-    exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+  def exhibited_page_in_place_editor_field(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+    tag = ::ActionView::Helpers::InstanceTag.new(object_name, method_name, self)
+    in_place_editor_options[:url] ||=  eval("update_#{method_name}_exhibit_page_path(#{tag.object.exhibit.id}, #{tag.object.id})") 
+    exhibit_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
-  def exhibited_page_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def exhibited_page_in_place_editor_area(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
     in_place_editor_options[:cols] = 60
-    exhibited_page_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+    exhibited_page_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
   
-  def exhibited_section_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
-    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_page.exhibit.id}, #{tag.object.exhibited_page.id}, #{tag.object.id})") 
-    exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+  def exhibited_section_in_place_editor_field(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+    tag = ::ActionView::Helpers::InstanceTag.new(object_name, method_name, self)
+    in_place_editor_options[:url] ||=  eval("update_#{method_name}_exhibt_page_section_path(#{tag.object.exhibited_page.exhibit.id}, #{tag.object.exhibited_page.id}, #{tag.object.id})") 
+    exhibit_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
-  def exhibited_section_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def exhibited_section_in_place_editor_area(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
     in_place_editor_options[:cols] = 60
-    exhibited_section_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+    exhibited_section_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
   
-  def exhibited_resource_in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
-    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    in_place_editor_options[:url] ||=  eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
-    exhibit_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+  def exhibited_resource_in_place_editor_field(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+    tag = ::ActionView::Helpers::InstanceTag.new(object_name, method_name, self)
+    in_place_editor_options[:url] ||=  eval("update_#{method_name}_exhibit_page_section_#{object_name}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})") 
+    exhibit_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
-  def exhibited_resource_in_place_editor_area(object, method, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
+  def exhibited_resource_in_place_editor_area(object_name, method_name, tag_options = {}, in_place_editor_options = {}, external_control_options = {})
     in_place_editor_options[:rows] = 12
     in_place_editor_options[:cols] = 60
-    exhibited_resource_in_place_editor_field(object, method, tag_options, in_place_editor_options, external_control_options)
+    exhibited_resource_in_place_editor_field(object_name, method_name, tag_options, in_place_editor_options, external_control_options)
   end
   
   # TODO clean this up, add error handling/reporting
-  def exhibits_tiny_mce_in_place_editor(object, method, tag_options = {})
-    tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
-    white_list(tag.object.__send__(method))
-    mce_id = "mce_#{object}_#{tag.object.id}"
-    text_id = "text_#{object}_#{tag.object.id}"
+  def exhibits_tiny_mce_in_place_editor(object_name, method_name, tag_options = {})
+    tag = ::ActionView::Helpers::InstanceTag.new(object_name, method_name, self)
+    white_list(tag.object.__send__(method_name))
+    mce_id = "mce_#{object_name}_#{tag.object.id}"
+    text_id = "text_#{object_name}_#{tag.object.id}"
     update_id = text_id
     tag_value = tag.value(tag.object).blank? ? nil : tag.value(tag.object)
-    value = tag_value || tag_options[:value] || tag.object.__send__("#{method}_message") || "(Insert #{method})"
+    value = tag_value || tag_options[:value] || tag.object.__send__("#{method_name}_message") || "(Insert #{method_name})"
     
-    url = case object
+    url = case object_name
     when :exhibited_item
-      eval("update_#{method}_#{object}_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})")
+      eval("update_#{method_name}_exhibit_page_section_item_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})")
     when :exhibited_page
-      eval("update_#{method}_page_path(#{tag.object.exhibit.id}, #{tag.object.id})")
+      eval("update_#{method_name}_exhibit_page_path(#{tag.object.exhibit.id}, #{tag.object.id})")
     when :exhibit
-      eval("update_#{method}_#{object}_path(#{tag.object.id})")
+      eval("update_#{method_name}_exhibit_path(#{tag.object.id})")
     end
     
     html = Builder::XmlMarkup.new(:indent => 2)
@@ -196,7 +198,7 @@ module ExhibitsHelper
       html.p("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil
       html << link_to_function("cancel", "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
       html << form_remote_tag(:url => url, :class => "tiny-mce-on", :update => text_id, :complete => "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
-      html << text_area_tag(:value, value, :id => "text_area_#{object}_#{tag.object.id}", :class => "tiny-mce")
+      html << text_area_tag(:value, value, :id => "text_area_#{object_name}_#{tag.object.id}", :class => "tiny-mce")
       html << hidden_field_tag(:update_id, update_id)
       html << "</form>"
     end
