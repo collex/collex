@@ -16,7 +16,7 @@
 
 <%- if controller.action_name == "edit" -%>
   <% div :class => "drop-zone-wrapper" do %>
-    <%= div(link_to_function("Add Text Area", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibited_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;"), :class => "add-text-area") %>
+    <%= div(link_to_function("Add Text Area", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibit_page_exhibited_section_exhibited_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;"), :class => "add-text-area") %>
     <% div :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{@exhibited_section.id}" do %>
       Drag your new resource here.
       <%= image_tag("loading.gif", :style => "display:none;", :id => "drop-zone-spinner-for-#{@exhibited_section.id}") %>
@@ -26,7 +26,7 @@
   <%= hr :style => "margin: 2em 0" %>
   
   <%= drop_receiving_element("resource-drop-zone-for-#{@exhibited_section.id}",
-  :onDrop => "function(element){$('drop-zone-spinner-for-#{@exhibited_section.id}').show(); $('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
+  :onDrop => "function(element){$('drop-zone-spinner-for-#{@exhibited_section.id}').show(); $('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_resource_form').action='#{exhibit_page_exhibited_section_exhibited_resources_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_resource_form').submit(); return false;}") %>
 <%- end -%>
 
 <% table :width => "100%", :class => "items" do tbody do tr do section.exhibited_items.each do |@exhibited_item| td :id => dom_id(@exhibited_item) do %>
@@ -40,7 +40,7 @@
   <%- if controller.action_name == "edit" -%>
     <%= div exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation", :value => (@exhibited_item.is_a?(ExhibitedResource) ? "(Insert Caption)" : "(Insert Text)")), :id => "mce_container_exhibited_item_#{@exhibited_item.id}", :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %> 
     <%= div move_exhibited_items_links(@exhibited_item, :sideways => true) %>
-    <%= div link_to "Remove Item", exhibited_item_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
+    <%= div link_to "Remove Item", exhibit_page_exhibited_section_exhibited_item_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
   <%- else -%>
     <%= div @exhibited_item.annotation, :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") unless @exhibited_item.annotation.blank? %>      
   <%- end -%>

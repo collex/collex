@@ -17,12 +17,12 @@
 module ExhibitsHelper
   def link_to_add_section(section_types, page)
     if section_types.size == 1
-      li link_to("Add a Section", exhibited_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_types.first.id, :page_id => page), :method => "post")
+      li link_to("Add a Section", exhibit_page_exhibited_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_types.first.id, :page_id => page), :method => "post")
     elsif section_types.size > 1
       html = li("Add a Section", :class => "add-a-section")
       html << "<ul class='add-a-section'>"
       section_types.each do |section_type|
-        html << %{<li>#{link_to("New #{section_type.name}", exhibited_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_type.id, :page_id => page), :method => "post")}</li>}
+        html << %{<li>#{link_to("New #{section_type.name}", exhibit_page_exhibited_sections_path(:exhibit_id => page.exhibit, :exhibit_section_type_id => section_type.id, :page_id => page), :method => "post")}</li>}
       end
       html << "</ul>"
       html
