@@ -193,7 +193,7 @@ module ExhibitsHelper
     end
     
     html = Builder::XmlMarkup.new(:indent => 2)
-    html << span(white_list(value), :id => text_id, :onclick => "this.style.backgroundColor = '#ffffff';Element.show('#{mce_id}'); Element.hide('#{text_id}')", :onmouseover => "this.style.backgroundColor = '#ffff99'; this.title = 'Click to edit';", :onmouseout => "this.style.backgroundColor = '#ffffff';")
+    html << span(white_list(value), :id => text_id, :onclick => "this.style.backgroundColor = '#ffffff';Element.show('#{mce_id}'); Element.hide('#{text_id}')", :onmouseover => "bgcolor#{mce_id} = this.style.backgroundColor; this.style.backgroundColor = '#ffff99'; this.title = 'Click to edit';", :onmouseout => "this.style.backgroundColor = bgcolor#{mce_id};")
     html.div(:style => "display: none;", :id => mce_id) do
       html.p("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if safari?
       html << form_remote_tag(:url => url, :class => "tiny-mce-on", :update => text_id, :complete => "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
