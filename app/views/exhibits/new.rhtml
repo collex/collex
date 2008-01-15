@@ -47,7 +47,7 @@
       <% end %>
 
       <%= div label("Abstract / Intro") %>
-      <%= div("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil %>
+      <%= div("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if safari? %>
       <%= div f.text_area(:annotation, :class => "tiny-mce") %>
 
       <%= div submit_tag("Create Exhibit") %>
