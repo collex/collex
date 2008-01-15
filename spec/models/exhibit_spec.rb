@@ -120,12 +120,12 @@ end
 describe "annotations()" do
   before(:each) do
     @exhibit = Exhibit.new(:annotation => "e1")
-    @p1 = @exhibit.pages.create(:annotation => "p1")
-    @p2 = @exhibit.pages.create(:annotation => "p2")
-    @s1 = @p1.sections.create(:annotation => "s1")
-    @s2 = @p2.sections.create(:annotation => "s2")
-    @i1 = @s1.items.create(:annotation => "i1")
-    @i2 = @s2.items.create(:annotation => "i2")
+    @p1 = @exhibit.pages.build(:annotation => "p1")
+    @p2 = @exhibit.pages.build(:annotation => "p2")
+    @s1 = @p1.sections.build(:annotation => "s1")
+    @s2 = @p2.sections.build(:annotation => "s2")
+    @i1 = @s1.items.build(:annotation => "i1")
+    @i2 = @s2.items.build(:annotation => "i2")
   end
   it "should return an array of all annotations in the Exhibit, down the tree to Items" do
     @exhibit.annotations.length.should == 7
@@ -139,8 +139,8 @@ describe "annotations()" do
   end
   it "should not include blanks" do
     @exhibit.annotation = nil
-    @exhibit.pages.create(:annotation => "")
-    @s2.items.create(:annotation => nil)
+    @exhibit.pages.build(:annotation => "")
+    @s2.items.build(:annotation => nil)
     @exhibit.annotations.length.should == 6
     @exhibit.annotations.should_not include("")
     @exhibit.annotations.should_not include(nil)
@@ -150,10 +150,10 @@ end
 describe "titles()" do
   before(:each) do
     @exhibit = Exhibit.new(:title => "e1")
-    @p1 = @exhibit.pages.create(:title => "p1")
-    @p2 = @exhibit.pages.create(:title => "p2")
-    @s1 = @p1.sections.create(:title => "s1")
-    @s2 = @p2.sections.create(:title => "s2")
+    @p1 = @exhibit.pages.build(:title => "p1")
+    @p2 = @exhibit.pages.build(:title => "p2")
+    @s1 = @p1.sections.build(:title => "s1")
+    @s2 = @p2.sections.build(:title => "s2")
   end
   it "should return an array of all titles in the Exhibit, down the tree to Items" do
     @exhibit.titles.length.should == 5
@@ -165,7 +165,7 @@ describe "titles()" do
   end
   it "should not include blanks" do
     @exhibit.title = nil
-    @exhibit.pages.create(:title => "")
+    @exhibit.pages.build(:title => "")
     @exhibit.titles.length.should == 4
     @exhibit.titles.should_not include("")
     @exhibit.titles.should_not include(nil)
