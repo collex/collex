@@ -17,6 +17,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ExhibitedPagesController do
+  fixtures :exhibit_types, :exhibit_page_types, :exhibit_section_types
+  
   before(:each) do
     @exhibit = mock_model(Exhibit)
     @exhibit.stub!(:id).and_return(2)
