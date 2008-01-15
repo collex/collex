@@ -28,7 +28,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
-  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user, :user_or_guest
+  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user, :user_or_guest,
+                :safari?
   
   def boom
     raise "boom!"
@@ -87,6 +88,10 @@ class ApplicationController < ActionController::Base
     
     def user_or_guest
       user || Guest.new
+    end
+    
+    def safari?
+      request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil
     end
     
     def self.in_place_edit_for_resource(object, attribute, options = {})
