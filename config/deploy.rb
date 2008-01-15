@@ -28,6 +28,14 @@
 
 require 'mongrel_cluster/recipes'
 
+# make sure we're using Capistrano 1.4.1 (not 2.x)
+if respond_to?(:namespace)
+  puts "########################################################################"
+  puts "Needs capistrano 1.4.1."
+  puts "If you have the gem installed, use 'cap _1.4.1_ <task>.'" 
+  abort "########################################################################"
+end
+
 if ENV['DEPLOY'] == 'production'
    puts "*** Deploying to the PRODUCTION servers!"
    set :application, "production-web"
