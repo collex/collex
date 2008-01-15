@@ -195,9 +195,11 @@ module ExhibitsHelper
     html = Builder::XmlMarkup.new(:indent => 2)
     html << span(white_list(value), :id => text_id, :onclick => "this.style.backgroundColor = '#ffffff';Element.show('#{mce_id}'); Element.hide('#{text_id}')", :onmouseover => "this.style.backgroundColor = '#ffff99'; this.title = 'Click to edit';", :onmouseout => "this.style.backgroundColor = '#ffffff';")
     html.div(:style => "display: none;", :id => mce_id) do
-      html.p("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil
-      html << link_to_function("cancel", "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
+      html.p("Rich text editing is not supported in Safari. For rich text editing, we recommend a gecko-based browser such as FireFox or Camino.") if safari?
       html << form_remote_tag(:url => url, :class => "tiny-mce-on", :update => text_id, :complete => "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
+      html << link_to_function("cancel", "Element.hide('#{mce_id}'); Element.show('#{text_id}')")
+      html << submit_tag('save') if safari?
+      html.br
       html << text_area_tag(:value, value, :id => "text_area_#{object_name}_#{tag.object.id}", :class => "tiny-mce")
       html << hidden_field_tag(:update_id, update_id)
       html << "</form>"
