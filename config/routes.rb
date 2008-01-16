@@ -104,6 +104,19 @@ ActionController::Routing::Routes.draw do |map|
                     :controller => 'sidebar', 
                     :action => 'permalink_detail'
 
+  map.connect 'redirect/ravon-nowviskie1.html', 
+    :controller =>'sidebar',
+    :action => 'permalink_list',
+    :value => 'collex',
+    :user => 'nowviskie',
+    :type => 'tag'
+
+  map.connect 'redirect/ravon-nowviskie2.html', 
+    :controller =>'search',
+    :action => 'saved_permalink',
+    :name => 'ravon-article',
+    :username => 'nowviskie'
+
   map.connect 'collex/:action', :controller => 'search'
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
   map.connect 'admin', :controller => 'admin/default'
