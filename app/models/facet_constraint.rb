@@ -23,8 +23,9 @@ class FacetConstraint < Constraint
     end
   end
   
-  # TODO: this custom #to_s is probably no longer used/needed
+  # used for creating fragment cache keys
   def to_s
-    "#{operator}#{field}:#{value}"
+    identifier = "#{field}_#{value}".downcase.gsub(/\W/,'_')
+    "#{operator}#{identifier}"
   end
 end

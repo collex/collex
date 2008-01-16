@@ -56,26 +56,30 @@ class SidebarController < ApplicationController
   end
   
   def cloud
-    @cloud_freq = []
     
     params[:type] ||= "tag"
     
-    data = COLLEX_MANAGER.cloud(params[:type], params[:user])
-    return if data == nil or data.size == 0
+    @cloud_fragment_key = cloud_fragment_key(params[:type], params[:user], params[:max])
      
-    # This groups by count, sorts each group's items alphabetically, sorts the group numerically descending, then 
-    # semi-flattens them into an array of arrays of pairs. We end up with the largest tags first, alphabetized.
-    grouped_data = data.group_by(&:last)
-    alphabetized_groups = grouped_data.each_value{ |group| group.sort!{ |x,y| x[0]<=>y[0] } }
-    sorted_data = alphabetized_groups.sort.reverse
-    @cloud_freq = sorted_data.inject([]){ |ar,val| ar.concat(val.last) }
-    
-    if params[:max]
-      @cloud_freq = @cloud_freq.first(params[:max].to_i)
+    unless read_fragment(@cloud_fragment_key) 
+      @cloud_freq = []
+      data = COLLEX_MANAGER.cloud(params[:type], params[:user])
+      return if data == nil or data.size == 0
+
+      # This groups by count, sorts each group's items alphabetically, sorts the group numerically descending, then 
+      # semi-flattens them into an array of arrays of pairs. We end up with the largest tags first, alphabetized.
+      grouped_data = data.group_by(&:last)
+      alphabetized_groups = grouped_data.each_value{ |group| group.sort!{ |x,y| x[0]<=>y[0] } }
+      sorted_data = alphabetized_groups.sort.reverse
+      @cloud_freq = sorted_data.inject([]){ |ar,val| ar.concat(val.last) }
+
+      if params[:max]
+        @cloud_freq = @cloud_freq.first(params[:max].to_i)
+      end
+
+      max_freq = @cloud_freq[0][1]     
+      @bucket_size = max_freq.quo(10).ceil     
     end
-     
-    max_freq = @cloud_freq[0][1]     
-    @bucket_size = max_freq.quo(10).ceil     
   end
   
   def list
@@ -161,5 +165,9 @@ class SidebarController < ApplicationController
     sidebar_params.delete "controller"
     session[:sidebar_state] = {:action => params["action"], :params => sidebar_params } 
   end
+  
+   def cloud_fragment_key( type, user, max )
+     "/cloud/#{type}/#{max}/#{user}_sidebar"
+   end
 
 end

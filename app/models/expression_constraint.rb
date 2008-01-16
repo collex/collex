@@ -20,6 +20,7 @@ class ExpressionConstraint < Constraint
   end
   
   def to_s
-    "#{operator}?:#{value}"
+     identifier = value.downcase.gsub(/\W/,'_')
+    "#{operator}phrase_#{identifier}"
   end
 end

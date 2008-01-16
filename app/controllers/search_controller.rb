@@ -26,24 +26,32 @@ class SearchController < ApplicationController
      items_per_page = 20
      @page = params[:page] ? params[:page].to_i : 1
      
-     begin
-       @results = search_solr(session[:constraints], @page, items_per_page)
-     rescue  Net::HTTPServerException => e
-       @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
-       error_message = e.message
-       if (match = error_message.match /Query_parsing_error_/)
-         error_message = match.post_match
-       else
-         error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
+     # TODO remove stubbed out code and refactor if we decide definitely not to go this way.
+#     @fragment_key = browse_fragment_key(session[:constraints],@page)
+     
+     # For now, just cache the top level page.
+     @fragment_key = '/browse/page1' unless session[:constraints].length > 0
+     
+     unless read_fragment(@fragment_key) 
+       logger.info("generating new browse fragment for key: #{@fragment_key}")
+       begin
+         @results = search_solr(session[:constraints], @page, items_per_page)
+       rescue  Net::HTTPServerException => e
+         @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
+         error_message = e.message
+         if (match = error_message.match( /Query_parsing_error_/ ))
+       	   error_message = match.post_match
+         else
+           error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
+         end
+         flash[:error] = render_to_string(:inline => "Sorry! you've entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => :clear_constraints%> or remove the offending search string below.")
        end
-       flash[:error] = render_to_string(:inline => "Sorry! you've entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => :clear_constraints%> or remove the offending search string below.")
+
+       @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
+       @total_documents = @results["total_documents"]     
+       @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'])
      end
 
-     @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
-     @total_documents = @results["total_documents"]
-     
-     @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'])
-     
      render :action => 'results'
    end
    
@@ -217,7 +225,8 @@ class SearchController < ApplicationController
    end
    
    def saved_permalink
-     saved_search = User.find_by_username(params[:username]).searches.find_by_name(params[:name])
+     user = User.find_by_username(params[:username])
+     saved_search = user.searches.find_by_name(params[:name]) unless user.nil?
      
      if saved_search
        session[:constraints] = []
@@ -252,8 +261,21 @@ class SearchController < ApplicationController
 
    private
    def search_solr(constraints, page, items_per_page)
-     results = @solr.search(session[:constraints], (page - 1) * items_per_page, items_per_page)   
-     
+     results = @solr.search(session[:constraints], (page - 1) * items_per_page, items_per_page)        
      results
    end
+
+# First attempt a fragment caching.. probably caches too much. My current thinking is that 
+# we won't have enough repition of search constraints to justify caching them. 
+#   private
+#   def browse_fragment_key( constraints, page )     
+#     parts = constraints.map { |constraint|
+#       constraint.to_s 
+#     }.sort
+#     key = "/browse/"
+#     parts.each { |p|
+#      key << p << "/"
+#     }
+#     key << "page#{page}"
+#   end
 end
