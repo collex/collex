@@ -1,0 +1,101 @@
+<table class="results" border="0" cellspacing="0">
+  <% @results["hits"].each_with_index do |hit,index| %>
+    <tr><td  valign="top" >
+    <table border="0">
+        <tr>
+         <td rowspan="2" valign="middle" align="left" width="10" class="thumbview">
+          <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
+         </td>
+         <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
+          <% if hit["uri"] %>
+            <a class="thumb" href="#" onclick="<%= %Q/displayCollector('collectformarea', '#{hit["uri"]}', event); return false;/%>">
+              <%= thumbnail_image_tag(hit) %>
+            </a>
+          <% else %>
+              <%= thumbnail_image_tag(hit) %>
+          <% end %>
+           </td></tr>
+             <tr><td rowspan="1" class="collected" valign="top" align="left"  width="100">
+                  <span id="collectlink-<%=index%>" class="collectlink">
+                   <%= link_to_function "collect", "displayCollector('collectformarea', '#{hit["uri"]}', event);" -%> 
+                  </span> 
+                 </td>
+        </tr>
+      </table>
+    </td>
+
+     <td>
+      <table border="0">
+        <tr>
+          <td colspan="2">
+            <% if hit["url"] %>
+              <a target="_blank" href="<%= hit["url"][0] %>">
+                 <% if hit["title"]%><%= h hit["title"][0] %><%end%>
+              </a>&nbsp;&rarr;
+            <% else %>
+              <% if hit["title"]%><%= h hit["title"][0] %><%end%>
+            <% end %>
+
+            <div class="snippet">
+              <%=@results["highlighting"][hit["uri"]]["text"]%>
+            </div>
+          </td>
+        </tr>
+
+        <% hit['alternative'].each do %>
+          <% tr do %>
+            <%= td hit['alternative'], :valign => "top", :colspan => "2" %>
+          <% end %>
+        <% end if hit['alternative'] %>
+
+        <% hit['source'].each_with_index do |source, i| %>
+          <% tr do %>
+            <%= td((i < 1 ? "source:" : ""), :class => "grey", :valign => "top") %>
+            <%= td h(source), :valign => "top" %>
+          <% end %>
+        <% end if hit['source'] %>
+
+        <tr>
+         <td class="grey">
+          site:
+         </td>
+         <td width="100%">
+          <% if hit['archive']%>
+          <% if site(hit['archive'])%><a target="_blank" href="<%= site(hit['archive'])['url'] %>"> <%=site(hit['archive'])['description']%></a>&nbsp;&rarr; <% else %><%= hit['archive']%><% end %>
+          <% end %>
+         </td>
+        </tr>
+
+        <% tr do %>
+          <%= td "exhibit type:", :class => "grey", :valign => "top" %>
+          <%= td hit['exhibit_type'], :valign => "top" %>
+        <% end if hit['exhibit_type'] %>
+
+        <% tr do %>
+          <%= td "license:", :class => "grey", :valign => "top" %>
+          <%= td hit['license'], :valign => "top" %>
+        <% end if hit['license'] %>
+
+        <% hit.select {|key,value| key =~ /^role_/}.each_with_index do |agent, i| agent[1].each do |name| %>
+          <% tr do %>
+            <%= td((i < 1 ? "name:" : ""), :class => "grey", :valign => "top") %>
+            <%= td h("#{name} (#{COLLEX_MANAGER.relators[agent[0][-3,3]]})"), :valign => "top" %>
+          <% end %>
+        <% end end %>
+
+        <% tr do %>
+          <%= td "date:", :class => "grey", :valign => "top" %>
+          <%= td h(hit['date_label'].join('; ')), :valign => "top" %>
+        <% end if hit['date_label'] %>
+
+        <% hit['genre'].each_with_index do |genre, i| %>
+          <% tr do %>
+            <%= td((i < 1 ? "genre:" : ""), :class => "grey", :valign => "top") %>
+            <%= td h(genre) + " " + link_to(nbpluralize(@results['facets']['genre'][genre], 'item'), {:controller=>'search', :action => 'add_facet', :field => 'genre', :value => genre}, :valign => "top") %>
+          <% end %>
+        <% end if hit['genre'] %>
+
+      </table>
+  </tr>
+ <% end %>
+</table>

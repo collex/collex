@@ -16,256 +16,29 @@
 
 <% cache @fragment_key do %>
 
-<table class="constables" cellspacing="0">
-	<tr colspan="2">
-		<td width="49%" valign="top" align="center">
-    
-    <table id="myconstraints" class="constraints" cellspacing="0">  
-        <caption>your constraints</caption>
-        <% if session[:constraints] && session[:constraints].size > 0 %>
-        <% session[:constraints].each_with_index do |constraint,index|
-            value_display = constraint.value
-            if constraint.field=="archive"
-              if site(constraint.value)
-                value_display = site(constraint.value)['description']
-              end
-            end
-        %>
-              <% if constraint.is_a?(FreeCultureConstraint) %>
-              <tr>
-                <th align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                 <td><%=link_to (constraint.inverted ? "+" : "-"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>Free Culture</td>
-                <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
-              </tr>
-              <% elsif constraint.is_a?(ExpressionConstraint) %>
-              <tr>
-                <th align="left">phrase:</th>
-                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%><%=h constraint.value%></td>
-                <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
-              </tr>
-              <% elsif constraint.is_a?(FacetConstraint) %>
-              <tr>
-                 <th align="left"><%=facet_label(constraint.field)%>:</th>
-                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h value_display%></td>
-                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
-              </tr>
-              <% elsif constraint.is_a?(SavedSearchConstraint) %>
-              <tr>
-                 <th align="left">saved:</th>
-                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h "#{constraint.field}:#{constraint.value}"%></td>
-                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
-              </tr>
-              <% end %>
+  <%= render( :partial => 'constraints' ) %>
 
-           <% end %>
-           <tr>
-             <th align="left">&nbsp;</th>
-             <td><% if is_logged_in? %>
-               <% form_tag({:action=>'save'},{:name => 'savesearch', :id => 'savesearch', :style => "display:none;"}) do %>
-                 <%= text_field_tag :name, "", {:size => 10, :id => "savesearch_name"} %>
-                 <%= link_to_function "save", "document.forms['savesearch'].submit();" -%>
-                 <%= link_to_function "cancel", "Element.toggle('savesearch'); Element.toggle('savesearch_link')" -%>
-               <% end %>
-               <%= link_to_function "save these constraints", "Element.toggle('savesearch'); Element.toggle('savesearch_link'); $('savesearch_name').focus()", {:id => "savesearch_link"} -%>
-             <% end %>
-             </td>
-             <td align="center"><%= link_to "clear all", {:controller=>'search', :action => 'clear_constraints'}%>                     
-           </tr>
-           <% else %>
-             <tr>
-                <th>&nbsp;</th>
-                <td align="center">none added yet</td>
-                <td>&nbsp;</td>
-             </tr>
-           <% end %>
-         </table>
-         
-        <% if session[:constraints].size > 0  %>
-        <br /><p class="matchpoint"><span class="resultsbutton"><a href="#results"> <%=pluralize(@results["total_hits"], "match") %></a></span>
-	
-            <%= image_tag "arrow2.gif" %></p>
-           <% else %>
-		<p class="logofade"><br /><img style="width:120px" src="/images/lg-harrington.gif" /></p> 
-        <% end %>
-       
-        <% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
-          <p class="matchpoint">No NINES objects fit your constraints.  Try removing constraints or toggling one from negative to positive.</p>
-        <% end %>
+  <div id="under">
+    <% if session[:constraints].size > 0 and @num_pages > 0 %>
+      <a name="results"></a>
 
-</td>
-<td width="50%" valign="top">
-        
-        <%= render :partial => 'facets' %>
-</td>
-</tr>
-</table> <!-- closing constables -->
+      <%= render( :partial => 'pagination' ) %>
+      <%= render( :partial => 'bulkcollect' ) %>
 
-<div id="under">
-         
-<% if session[:constraints].size > 0 %>
+      <form name="bulk_collect_form" id="bulk_collect_form">
+        <%= render( :partial => 'results' ) %>
+      </form>
 
-<% if @num_pages > 0 %>
-<a name="results"></a>
-    <br class="clearboth" />    
+      <%= render( :partial => 'bulkcollect' ) %>
+      <%= render( :partial => 'pagination' ) %>
 
-	
-     <div class="pagination">
-     <% if @page > 1 %>
-       <%= link_to "<span class='pagearrow'>&#x21E0;</span> last page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
-     <% end %>
-           <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
-    <% if @page < @num_pages %>
-      <%= link_to "next page <span class='pagearrow'>&#x21E2;</span>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
     <% end %>
-     </div>
 
+    <%= render :partial => 'footer' %>
 
-<span class="bulkcollect">
-<a class="thumb" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">select all</span><span class="bulk_unselect_all" style="display: none;">unselect all</span></a>  &#x23D0; 
-<a class="thumb" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="bulkCollect(event); return false;">collect selected</a>
-</span>
+    <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
+    <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
+  </div> 
 
-<form name="bulk_collect_form" id="bulk_collect_form">
-        <table class="results" border="0" cellspacing="0">
-           
-        <% @results["hits"].each_with_index do |hit,index| %>
-			<tr><td  valign="top" >
-				<table border="0">
-              <tr>
-               <td rowspan="2" valign="middle" align="left" width="10" class="thumbview">
-                <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
-               </td>
-               <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
-                <% if hit["uri"] %>
-                  <a class="thumb" href="#" onclick="<%= %Q/displayCollector('collectformarea', '#{hit["uri"]}', event); return false;/%>">
-                    <%= thumbnail_image_tag(hit) %>
-                  </a>
-                <% else %>
-                    <%= thumbnail_image_tag(hit) %>
-                <% end %>
-				 </td></tr>
-					 <tr><td rowspan="1" class="collected" valign="top" align="left"  width="100">
-	                <span id="collectlink-<%=index%>" class="collectlink">
-                         <%= link_to_function "collect", "displayCollector('collectformarea', '#{hit["uri"]}', event);" -%> 
-	                </span> 
-	               </td>
-				      </tr>
-				    </table>
-				  </td>
-
-           <td>
-            <table border="0">
-              <tr>
-                <td colspan="2">
-                  <% if hit["url"] %>
-                    <a target="_blank" href="<%= hit["url"][0] %>">
-                       <% if hit["title"]%><%= h hit["title"][0] %><%end%>
-                    </a>&nbsp;&rarr;
-                  <% else %>
-                    <% if hit["title"]%><%= h hit["title"][0] %><%end%>
-                  <% end %>
-                
-                  <div class="snippet">
-                    <%=@results["highlighting"][hit["uri"]]["text"]%>
-                  </div>
-                </td>
-              </tr>
-
-              <% hit['alternative'].each do %>
-                <% tr do %>
-                  <%= td hit['alternative'], :valign => "top", :colspan => "2" %>
-                <% end %>
-              <% end if hit['alternative'] %>
-              
-              <% hit['source'].each_with_index do |source, i| %>
-                <% tr do %>
-                  <%= td((i < 1 ? "source:" : ""), :class => "grey", :valign => "top") %>
-                  <%= td h(source), :valign => "top" %>
-                <% end %>
-              <% end if hit['source'] %>
-              
-              <tr>
-               <td class="grey">
-                site:
-               </td>
-               <td width="100%">
-                <% if hit['archive']%>
-                <% if site(hit['archive'])%><a target="_blank" href="<%= site(hit['archive'])['url'] %>"> <%=site(hit['archive'])['description']%></a>&nbsp;&rarr; <% else %><%= hit['archive']%><% end %>
-                <% end %>
-               </td>
-              </tr>
-
-              <% tr do %>
-                <%= td "exhibit type:", :class => "grey", :valign => "top" %>
-                <%= td hit['exhibit_type'], :valign => "top" %>
-              <% end if hit['exhibit_type'] %>
-              
-              <% tr do %>
-                <%= td "license:", :class => "grey", :valign => "top" %>
-                <%= td hit['license'], :valign => "top" %>
-              <% end if hit['license'] %>
-              
-              <% hit.select {|key,value| key =~ /^role_/}.each_with_index do |agent, i| agent[1].each do |name| %>
-                <% tr do %>
-                  <%= td((i < 1 ? "name:" : ""), :class => "grey", :valign => "top") %>
-                  <%= td h("#{name} (#{COLLEX_MANAGER.relators[agent[0][-3,3]]})"), :valign => "top" %>
-                <% end %>
-              <% end end %>
-              
-              <% tr do %>
-                <%= td "date:", :class => "grey", :valign => "top" %>
-                <%= td h(hit['date_label'].join('; ')), :valign => "top" %>
-              <% end if hit['date_label'] %>
-              
-              <% hit['genre'].each_with_index do |genre, i| %>
-                <% tr do %>
-                  <%= td((i < 1 ? "genre:" : ""), :class => "grey", :valign => "top") %>
-                  <%= td h(genre) + " " + link_to(nbpluralize(@results['facets']['genre'][genre], 'item'), {:controller=>'search', :action => 'add_facet', :field => 'genre', :value => genre}, :valign => "top") %>
-                <% end %>
-              <% end if hit['genre'] %>
-              
-            </table>
-	</tr>
-           <% end %>
-       </table>
-       </form>
-
-<span class="bulkcollect">
-       <a class="thumb" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">select all</span><span class="bulk_unselect_all" style="display: none;">unselect all</span></a> &#x23D0;
-       <a class="thumb" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="bulkCollect(event); return false;">collect selected</a>
-</span>
-
-    <br class="clearboth" />
-     <div class="pagination" style="background-color:#fff">
-     <% if @page > 1 %>
-       <%= link_to "<span class='pagearrow'>&#x21E0;</span> last page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
-     <% end %>
-           <span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
-    <% if @page < @num_pages %>
-      <%= link_to "next page <span class='pagearrow'>&#x21E2;</span>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
-    <% end %>
-     </div>
-
-<% end # if @num_pages > 0 %>
-<% end # if session[:constraints].size > 0 %>
-
-     <div id="footer" style="text-align:center">
-         <% if session[:constraints].size == 0 -%>
-           <a href="http://www.nines.org">NINES</a>: aggregating 
-         <% else -%>
-        <%= start_form_tag({:action => :new_expression}, :id=>'footer-search') -%>
-              start fresh! <%= text_field_tag "field[content]", "new search", :onFocus=>"this.value=''" -%>&nbsp;
-<span class="emph2"><span class="button"><%= link_to_function "Go!", "document.forms['footer-search'].submit();" -%></span></span>&nbsp;or&nbsp;&nbsp;
-<span class="emph2"><span class="button"><%=link_to "BROWSE", :controller=>'search', :action=>'clear_constraints' -%></span></span> &nbsp; 
-        <% end -%>
-<%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'collex', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.count%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'help', :action=>'sites'})%>.
-         <% if session[:constraints].size != 0 -%>
-            <%= end_form_tag -%>
-        <% end -%>
-     </div>
-	<!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
-	<div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
-	</div> <!-- closing id "under" -->
- 
 <% end %>
 

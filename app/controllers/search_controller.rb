@@ -33,7 +33,7 @@ class SearchController < ApplicationController
      @fragment_key = '/browse/page1' unless session[:constraints].length > 0
      
      unless read_fragment(@fragment_key) 
-       logger.info("generating new browse fragment for key: #{@fragment_key}")
+       #logger.info("generating new browse fragment for key: #{@fragment_key}")
        begin
          @results = search_solr(session[:constraints], @page, items_per_page)
        rescue  Net::HTTPServerException => e
