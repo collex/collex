@@ -98,7 +98,7 @@ COLLEX_ENGINE_PARAMS = {
   :facet_fields => ['genre','archive','freeculture']
 }
 
-EXHIBIT_WHITE_LIST = %w{jamieorc nowviskie jeromemcgann DWheeles mandellc erikhatcher aearhart cmw6s Laura_Nowocin}
+EXHIBIT_WHITE_LIST = %w{jamieorc nickl nowviskie jeromemcgann DWheeles mandellc erikhatcher aearhart cmw6s Laura_Nowocin wombat1 wombat2 wombat3 wombat4 wombat5}
 
 # Configuration for Exhibits
 def exhibits_configuration_file
