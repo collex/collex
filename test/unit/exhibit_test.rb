@@ -71,14 +71,6 @@ class ExhibitTest < Test::Unit::TestCase
     assert(@exhibit.updatable_by?(@admin), "Admin should be able to update exhibit.")
   end
   
-  def test_only_admin_can_update_a_published_exhibit
-    @exhibit.share!
-    @exhibit.publish!
-    assert(!@exhibit.updatable_by?(@owner), "The owner should not be able to edit a published exhibit.")
-    assert(!@exhibit.updatable_by?(@editor), "The editor should not be able to edit a published exhibit.")
-    assert(@exhibit.updatable_by?(@admin), "The admin user should be able to edit a published exhibit.")
-  end
-  
   def test_non_owner_can_not_update_exhibit
     assert(!@exhibit.updatable_by?(User.new), "Non-owner should not be able to update exhibit.")
   end
@@ -91,31 +83,10 @@ class ExhibitTest < Test::Unit::TestCase
   def test_non_owner_can_not_delete_exhibit
     assert(!@exhibit.deletable_by?(User.new), "Non-owner should not be able to delete another's exhibit.")
   end
-  
-  def test_published_can_not_be_deleted_by_anyone
-    @exhibit.share!
-    @exhibit.publish!
-    assert(!@exhibit.deletable_by?(@owner), "A published exhibit should not be deletable by the owner.")
-    assert(@admin.admin_role?, "Admin should have admin role.")
-    assert(!@exhibit.deletable_by?(@admin), "A published exhibit should not be deletable by the admin.")
-  end
-  
+    
   def test_anyone_can_view_shared_exhibit
     @exhibit.share!
     assert(@exhibit.viewable_by?(User.new), "Anyone should be able to view a shared exhibit.")
-  end
-
-  def test_anyone_can_view_published_exibit
-    @exhibit.share!
-    @exhibit.publish!
-    assert(@exhibit.viewable_by?(User.new), "Anyone should be able to view a published exhibit.")
-    assert(@exhibit.viewable_by?(Guest.new), "Guest should be able to view a published exhibit.")
-  end
-  
-  def test_owner_and_admin_can_publish_publishable_exhibit
-    @exhibit.share!
-    @exhibit.publishable_by?(@owner)
-    @exhibit.publishable_by?(@admin)
   end
   
   def test_owner_and_admin_can_share_exhibit
@@ -127,50 +98,5 @@ class ExhibitTest < Test::Unit::TestCase
     assert(!@exhibit.sharable_by?(User.new), "Others should not be able to share the exhibit.")
     assert(!@exhibit.sharable_by?(Guest.new), "Guest should not be able to share the exhibit.")
   end
-  
-  def test_published_is_not_sharable_by_anyone
-    @exhibit.share!
-    @exhibit.publish!
-    assert(!@exhibit.sharable_by?(@owner), "Owner should not be able to share a published exhibit.")
-    assert(!@exhibit.sharable_by?(@admin), "Admin should not be able to share a published exhibit.")
-  end
-  
-  # Sharing and Publishing
-  def test_unshared_cannot_be_published
-    @exhibit.shared = false
-    assert_raise(Exception) { @exhibit.published = true }
-    assert_raise(Exception) { @exhibit.publish! }
-  end
-  
-  def test_shared_can_be_published
-    @exhibit.shared = true
-    assert(@exhibit.publish!, "A shared exhibit should be publishable.")
-    assert(@exhibit.published = true, "A shared exhibit should be publishable.")
-  end
-  
-  def test_publshed_cannot_be_unshared
-    @exhibit.share!
-    @exhibit.publish!
-    assert_raise(Exception) { @exhibit.shared = false }
-  end
-  
-  def test_unpublished_can_be_unshared
-    @exhibit.share!
-    assert_nothing_raised(Exception, "Should be able to unshare unpublished exhibit.") { @exhibit.unshare! }
-  end
-
-  def test_published_is_not_deletable
-    @exhibit.share!
-    assert(@exhibit.deletable?, "A shared exhibit should be deletable.")
-    @exhibit.publish!
-    assert(!@exhibit.deletable?, "A published exhibit should not be deletable.")
-  end
-  
-  def test_published_is_not_sharable
-    assert(@exhibit.sharable?, "Exhibit should be sharable.")
-    @exhibit.share!
-    assert(!@exhibit.sharable?, "Exhibit is already shared, so it shouldn't be sharable.")
-    @exhibit.publish!
-    assert(!@exhibit.sharable?, "Exhibit is already published, so it shouldn't be sharable.")
-  end
+    
 end

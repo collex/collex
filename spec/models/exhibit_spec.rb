@@ -117,6 +117,93 @@ describe Exhibit do
   
 end
 
+describe "sharing and publishing" do
+  fixtures :exhibits, :exhibited_pages, :exhibited_items, :exhibited_sections, :users, :roles, :roles_users
+  fixtures :licenses, :exhibit_section_types, :exhibit_page_types, :exhibit_types
+
+  before(:each) do
+    @owner = users(:exhibit_owner)
+    @admin = users(:admin)
+    @editor = users(:editor)
+    @st = exhibit_section_types(:citation)
+    @et = exhibit_types(:annotated_bibliography)
+    @exhibit = exhibits(:dang)
+    
+    
+    @exhibit.stub!(:index!)
+    @exhibit.share!
+  end
+  
+  it "publish! should call index!" do
+    @exhibit.should_receive(:index!).once
+    @exhibit.publish!
+  end
+  
+  it "only an admin should be able to update a published exhibit" do
+    @exhibit.publish! 
+    @exhibit.updatable_by?(@owner).should == false
+    @exhibit.updatable_by?(@editor).should == false
+    @exhibit.updatable_by?(@admin).should == true
+  end
+
+  it "published exhibit should not be deletable" do
+    @exhibit.publish!
+    @exhibit.deletable_by?(@owner).should == false
+    @exhibit.deletable_by?(@editor).should == false
+    @exhibit.deletable_by?(@admin).should == false
+  end
+  
+  it "a published exhibit should be viewable by anyone" do
+    @exhibit.publish!
+    @exhibit.viewable_by?(User.new).should == true
+    @exhibit.viewable_by?(Guest.new).should == true
+  end
+  
+  it "should be publishable only by admin" do
+    @exhibit.publishable_by?(@owner).should == false
+    @exhibit.publishable_by?(@admin).should == true
+  end
+  
+  it "should not be sharable by anyone if published" do
+    @exhibit.publish!
+    @exhibit.sharable_by?(@owner).should == false
+    @exhibit.sharable_by?(@admin).should == false
+  end
+  
+  it "'publish!' should raise an error if exhibit is not shared" do
+    @exhibit.shared = false
+    lambda { @exhibit.publish! }.should raise_error(Exception)
+    lambda { @exhibit.published = true }.should raise_error(Exception)
+  end
+  
+  it "'publish' should not raise an error if shared" do
+    lambda { @exhibit.publish! }.should_not raise_error(Exception)
+    lambda { @exhibit.published = true }.should_not raise_error(Exception)
+  end
+  
+  it "should not be unshareable once published" do
+    @exhibit.publish!
+    lambda { @exhibit.unshare! }.should raise_error(Exception)
+    lambda { @exhibit.shared = false }.should raise_error(Exception)
+  end
+  
+  it "should not be deletable once published" do
+    @exhibit.deletable?.should == true
+    @exhibit.publish!
+    @exhibit.deletable?.should == false
+  end
+  
+  it "should not be sharable once shared or published" do
+    @exhibit.sharable?.should == false
+    @exhibit.publish!
+    @exhibit.sharable?.should == false
+  end
+  
+  it "should be unsharable if shared but not published" do
+    lambda { @exhibit.unshare! }.should_not raise_error
+  end
+end
+
 describe "annotations()" do
   before(:each) do
     @exhibit = Exhibit.new(:annotation => "e1")
