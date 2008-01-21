@@ -51,33 +51,6 @@ class ExhibitsControllerTest < Test::Unit::TestCase
 #     assert(assigns(:exhibits), "Should have assigned :exhibits")
 #   end
 
-  def test_edit_update_delete_bad_exhibit_id_redirects_to_login_when_not_logged_in
-    @request.session[:user] = nil
-    get(:edit, :id => -1)
-    assert_redirected_to(:action => "login", :controller => "login")
-    put(:update, :id => -1)
-    assert_redirected_to(:action => "login", :controller => "login")
-    delete(:destroy, :id => -1)
-    assert_redirected_to(:action => "login", :controller => "login")
-  end
-  
-  def test_necrud_exhibit_redirects_to_login_when_not_logged_in #necrud: new edit create update delete
-    @request.session[:user] = nil
-    assertions = proc do 
-      assert_redirected_to(:action => "login", :controller => "login")
-    end
-    get(:new)
-    assertions.call
-    get(:edit, :id => @exhibit.id)
-    assertions.call
-    post(:create)
-    assertions.call
-    put(:update, :id => @exhibit.id)
-    assertions.call
-    delete(:destroy, :id => @exhibit.id)
-    assertions.call
-  end
-  
 #   def test_can_necrd_when_logged_in
 #     # updates are done via ajax
 #     assertions = proc do |response|
@@ -108,73 +81,5 @@ class ExhibitsControllerTest < Test::Unit::TestCase
 #     assert_redirected_to(exhibits_path)
 #   end
   
-  def test_edit_bad_exhibit_id_redirects_to_index_with_warning_when_logged_in
-    get(:edit, :id => 0)
-    assert_redirected_to(exhibits_path)
-    assert_not_nil(flash[:warning])
-  end
-  
-  def test_can_share_exhibit
-    post(:share, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(exhibit.shared?, "Exhibit should be shared.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
-  end
-  
-  def test_can_unshare_exhibit
-    @exhibit.share!
-    assert(@exhibit.save)
-    post(:unshare, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(!exhibit.shared?, "Exhibit should be unshared.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
-  end
-  
-  def test_admin_can_publish_exhibit
-    @request.session[:user] = {:username => @admin.username}
-    @exhibit.share!
-    assert(@exhibit.save)
-    post(:publish, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(exhibit.published?, "Exhibit should be published.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
-  end
-  
-  def test_editor_can_publish_exhibit
-    @request.session[:user] = {:username => @editor.username}
-    @exhibit.share!
-    assert(@exhibit.save)
-    post(:publish, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(exhibit.published?, "Exhibit should be published.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
-  end
-  
-  def test_non_owner_and_non_admin_cannot_share_unshare_or_publish
-    @request.session[:user] = {:username => @viewer.username}
-    post(:share, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(!exhibit.shared?, "Exhibit should not have been shared.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
     
-    @exhibit.share!
-    @exhibit.save!
-    post(:unshare, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(exhibit.shared?, "Exhibit should not have been unshared.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
-    
-    
-    post(:publish, :id => @exhibit.id)
-    assert(exhibit = assigns(:exhibit), "@exhibit should have been assigned")
-    assert(!exhibit.published?, "Exhibit should not have been published.")
-    assert_response(:redirect)
-    assert_redirected_to(:action => "index")
-  end
 end
