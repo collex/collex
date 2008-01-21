@@ -21,7 +21,7 @@ module ExhibitedPagesHelper
     index = position - 1
     max_index = exhibit.pages.size - 1
     
-    route_method = edit ? :edit_exhibit_page_path : :page_path
+    route_method = edit ? :edit_exhibit_page_path : :exhibit_page_path
     links = ""
     links << link_to("|&larr;first&nbsp;", __send__(route_method, exhibit, exhibit.pages.first)) unless index < 1
     links << link_to("&nbsp;&#x21E0;&nbsp;prev&nbsp;", __send__(route_method, exhibit, exhibit.pages[index - 1])) + "&nbsp;" unless index < 1
