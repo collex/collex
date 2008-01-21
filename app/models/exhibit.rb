@@ -168,11 +168,19 @@ class Exhibit < ActiveRecord::Base
   end
   
   # Will throw an error if is called when +shared+ is +false+.
+  # Calls +index!+ as well.
   def publish!
     self.published = true
+    self.index!
   end
+  
+  # Will remove the item from the index as well.
   def unpublish!
     self.published = false
+    if indexed?
+      self.solr.connection.delete("#{self.uri}")
+      self.solr.connection.commit
+    end
   end
   
   # Will throw an error if value is +true+ when +shared+ is +false+.
