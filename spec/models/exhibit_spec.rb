@@ -375,6 +375,8 @@ describe "folksonomy methods for the exhibit" do
       "bart_tag" => ['krusty', 'klown'],
       "milhouse_tag" => ['blue', 'hair', 'glasses']
     }
+    
+    # stub the solr_object method so we don't need a real connection
     @solr_object = {
       "username" => ['lisa', 'bart', 'milhouse'],
     }.merge(@user_annotations).merge(@user_tags)
