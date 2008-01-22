@@ -47,7 +47,13 @@ class Exhibit < ActiveRecord::Base
   # displayed metadata from the contained objects
   # TODO: al of the keys in the map are Nines specific. We need a way to configure this for the entire Exhibit.
   def index!
+    user_tags = nil
+    user_annotations = nil
+    usernames = nil
     if indexed?
+      user_tags = self.user_tags
+      user_annotations = self.user_annotations
+      usernames = self.usernames
       self.solr.connection.delete("#{self.uri}")
       self.solr.connection.commit
     end
@@ -67,10 +73,35 @@ class Exhibit < ActiveRecord::Base
             :license => self.license.name,
             :text => self.annotations     
           }.merge(properties_to_index_with_values)
+    map.merge!(user_tags) if user_tags
+    map.merge!(user_annotations) if user_annotations
+    map.merge!(usernames) if usernames
+    
+    # reset this for the new indexing
+    @solr_object = nil
     
     response = self.solr.connection.add(map)
     self.solr.connection.commit
     response
+  end
+    
+  # Retrieves the user-added tags (folksonomy)
+  def user_tags
+    self.solr_object.inject({}) { |h,v| h[v.first] = v.last if v.first =~ /_tag$/; h }
+  end
+  
+  # Retrieves the user-added annotation (folksonomy)
+  def user_annotations
+    self.solr_object.inject({}){|h,v| h[v.first] = v.last if v.first =~ /_annotation$/; h}
+  end
+  
+  # Retrieves the folksonomy usernames
+  def usernames
+    {"username" => self.solr_object['username']}
+  end
+
+  def solr_object
+    @solr_object ||= self.solr.connection.query("uri:#{Solr::Util.query_parser_escape(self.uri)}").hits[0]
   end
 
   # The +Array+ of +ExibitedProperties+ that should be indexed.
