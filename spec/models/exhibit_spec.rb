@@ -117,6 +117,92 @@ describe Exhibit do
   
 end
 
+describe "roles and permissions" do
+  fixtures :exhibits, :exhibited_pages, :exhibited_items, :exhibited_sections, :users, :roles, :roles_users
+  fixtures :licenses, :exhibit_section_types, :exhibit_page_types, :exhibit_types
+
+  before(:each) do
+    @owner = users(:exhibit_owner)
+    @admin = users(:admin)
+    @editor = users(:editor)
+    @st = exhibit_section_types(:citation)
+    @et = exhibit_types(:annotated_bibliography)
+    @exhibit = exhibits(:dang)
+  
+  
+    @exhibit.stub!(:index!)
+  end
+  it "admin user has admin role" do
+    assert(@admin.admin_role?, "@admin should have admin_role?")
+  end  
+
+  it "editor user has editor role" do
+    assert(@editor.editor_role?, "@editor should have editor_role?")
+  end
+  
+  it "owner is true for owner" do
+    assert(@exhibit.owner?(@owner), "owner? should have responded true.")
+  end
+  
+  it "owner is true for owner id" do
+    assert(@exhibit.owner?(@owner.id), "owner? should have responded true.")
+  end
+  
+  it "owner is false for non owner" do
+    user = User.new
+    user.save
+    assert( !@exhibit.owner?(user), "owner? should have responded false.")
+  end
+  
+  it "owner is false for non owner id" do
+    assert( !@exhibit.owner?(@owner.id + 1), "owner? should have responded false.")
+  end
+  
+  # test permissions
+  it "owner and admin can view exhibit" do
+    assert @exhibit.viewable_by?(@owner)
+    assert @exhibit.viewable_by?(@admin)
+  end
+  
+  it "non owner can not view unshared exhibit" do
+    assert(!@exhibit.viewable_by?(User.new), "Non-owner should not be able to view unshared exhibit.")
+  end
+  
+  it "owner and admin can update exhibit" do
+    assert(@exhibit.updatable_by?(@owner), "Owner should be able to update exhibit.")
+    assert(@exhibit.updatable_by?(@admin), "Admin should be able to update exhibit.")
+  end
+  
+  it "non owner can not update exhibit" do
+    assert(!@exhibit.updatable_by?(User.new), "Non-owner should not be able to update exhibit.")
+  end
+  
+  it "owner and admin can delete exhibit" do
+    assert(@exhibit.deletable_by?(@owner), "Owner should be able to delete exhibit")
+    assert(@exhibit.deletable_by?(@admin), "Admin should be able to delete exhibit")
+  end
+  
+  it "non owner can not delete exhibit" do
+    assert(!@exhibit.deletable_by?(User.new), "Non-owner should not be able to delete another's exhibit.")
+  end
+    
+  it "anyone can view shared exhibit" do
+    @exhibit.share!
+    assert(@exhibit.viewable_by?(User.new), "Anyone should be able to view a shared exhibit.")
+  end
+  
+  it "owner and admin can share exhibit" do
+    assert(@exhibit.sharable_by?(@owner), "Owner should be able to share the exhibit.")
+    assert(@exhibit.sharable_by?(@admin), "Admin should be able to share the exhibit.")
+  end
+  
+  it "others cannot share exhibit" do
+    assert(!@exhibit.sharable_by?(User.new), "Others should not be able to share the exhibit.")
+    assert(!@exhibit.sharable_by?(Guest.new), "Guest should not be able to share the exhibit.")
+  end
+
+end
+
 describe "sharing and publishing" do
   fixtures :exhibits, :exhibited_pages, :exhibited_items, :exhibited_sections, :users, :roles, :roles_users
   fixtures :licenses, :exhibit_section_types, :exhibit_page_types, :exhibit_types
@@ -275,3 +361,5 @@ describe "titles()" do
     end
   end
 end
+
+
