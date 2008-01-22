@@ -362,4 +362,33 @@ describe "titles()" do
   end
 end
 
+describe "folksonomy methods for the exhibit" do
+  before(:each) do
+    @exhibit = Exhibit.new
+    @user_annotations = {
+      "lisa_annotation" => "lisa's annotation",
+      "bart_annotation" => "don't have a cow man",
+      "milhouse_annotation" => "can I be your friend?"
+    }
+    @user_tags = {
+      "lisa_tag" => ['malibu', 'stacy'],
+      "bart_tag" => ['krusty', 'klown'],
+      "milhouse_tag" => ['blue', 'hair', 'glasses']
+    }
+    @solr_object = {
+      "username" => ['lisa', 'bart', 'milhouse'],
+    }.merge(@user_annotations).merge(@user_tags)
+    @exhibit.stub!(:solr_object).and_return(@solr_object)
+  end
+  it "'usernames' should just return a hash with key 'username' and the list of usernames from the solr_object's username list" do
+    @exhibit.usernames.should == {'username' => @solr_object['username']}
+  end
+  it "'user_annotations' should return a Hash with <username>_annotation as the key to each annotation" do
+    @exhibit.user_annotations.should == @user_annotations
+  end
+  it "'user_tags' should return a Hash with <username>_tag as the key to each Array of keywords" do
+    @exhibit.user_tags.should == @user_tags
+  end
+end
+
 
