@@ -42,6 +42,7 @@ ActionController::Routing::Routes.draw do |map|
                              :share             => :post, 
                              :unshare           => :post, 
                              :publish           => :post, 
+                             :unpublish           => :post, 
                              :collect           => :post, 
                              :update_annotation => :post } do |exhibit|
     exhibit.resources :pages, 
@@ -52,14 +53,14 @@ ActionController::Routing::Routes.draw do |map|
                                    :move_lower        => :post, 
                                    :move_to_top       => :post, 
                                    :move_to_bottom    => :post } do |page|
-      page.resources :sections, 
-                        :controller => :exhibited_sections,
-                        :member => { :update_title      => :post, 
-                                     :update_annotation => :post,
-                                     :move_higher       => :post, 
-                                     :move_lower        => :post, 
-                                     :move_to_top       => :post, 
-                                     :move_to_bottom    => :post } do |section|
+      page.resources   :sections, 
+                       :controller => :exhibited_sections,
+                       :member => { :update_title      => :post, 
+                                    :update_annotation => :post,
+                                    :move_higher       => :post, 
+                                    :move_lower        => :post, 
+                                    :move_to_top       => :post, 
+                                    :move_to_bottom    => :post } do |section|
         section.resources :texts, 
                           :controller => :exhibited_texts,
                           :member => { :update_annotation => :post}

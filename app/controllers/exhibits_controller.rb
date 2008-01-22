@@ -146,6 +146,17 @@ class ExhibitsController < ExhibitsBaseController
     end
     redirect_to :action => "index"
   end
+
+  def unpublish
+    if @exhibit.publishable_by?(user_or_guest)
+      @exhibit.unpublish!
+      @exhibit.save!
+      flash[:notice] = "#{@exhibit.title} has been successfully un-published."
+    else
+      flash[:error] = "You do not have persmission to un-publish that exhibit."
+    end
+    redirect_to :action => "index"
+  end
   
   def update
     # @exhibit retrieved in authorize_owner
