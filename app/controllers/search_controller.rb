@@ -134,6 +134,9 @@ class SearchController < ApplicationController
    
    def collect
      user = User.find_by_username(session[:user][:username])
+
+     # expire the fragment caches for the clouds related to this user
+     expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
      
      uris = params[:objid].split(' ~~ ')  # TODO make this a constant shared by the results.rhtml code that joins uris together
      solr = CollexEngine.new
@@ -264,6 +267,7 @@ class SearchController < ApplicationController
      results = @solr.search(session[:constraints], (page - 1) * items_per_page, items_per_page)        
      results
    end
+  
 
 # First attempt a fragment caching.. probably caches too much. My current thinking is that 
 # we won't have enough repition of search constraints to justify caching them. 

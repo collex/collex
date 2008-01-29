@@ -60,8 +60,8 @@ class SidebarController < ApplicationController
     params[:type] ||= "tag"
     
     @cloud_fragment_key = cloud_fragment_key(params[:type], params[:user], params[:max])
-     
-    unless read_fragment(@cloud_fragment_key) 
+    
+    if is_cache_expired?(@cloud_fragment_key)
       @cloud_freq = []
       data = COLLEX_MANAGER.cloud(params[:type], params[:user])
       return if data == nil or data.size == 0
@@ -167,7 +167,7 @@ class SidebarController < ApplicationController
   end
   
    def cloud_fragment_key( type, user, max )
-     "/cloud/#{type}/#{max}/#{user}_sidebar"
+     "/cloud/#{user}_user/#{type}_#{max}_sidebar"
    end
 
 end

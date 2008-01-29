@@ -14,7 +14,7 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<% cache @cloud_fragment_key do %>
+<% cache_timeout(@cloud_fragment_key,1.hour.from_now) do %>
 
 <div class="content">
   <div id="permalink">
