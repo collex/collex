@@ -26,14 +26,11 @@ class SearchController < ApplicationController
      items_per_page = 20
      @page = params[:page] ? params[:page].to_i : 1
      
-     # TODO remove stubbed out code and refactor if we decide definitely not to go this way.
-#     @fragment_key = browse_fragment_key(session[:constraints],@page)
      
-     # For now, just cache the top level page.
+     # just cache the top level page.
      @fragment_key = '/browse/page1' unless session[:constraints].length > 0
      
-     unless read_fragment(@fragment_key) 
-       #logger.info("generating new browse fragment for key: #{@fragment_key}")
+     if is_cache_expired?(@fragment_key) 
        begin
          @results = search_solr(session[:constraints], @page, items_per_page)
        rescue  Net::HTTPServerException => e
@@ -268,18 +265,4 @@ class SearchController < ApplicationController
      results
    end
   
-
-# First attempt a fragment caching.. probably caches too much. My current thinking is that 
-# we won't have enough repition of search constraints to justify caching them. 
-#   private
-#   def browse_fragment_key( constraints, page )     
-#     parts = constraints.map { |constraint|
-#       constraint.to_s 
-#     }.sort
-#     key = "/browse/"
-#     parts.each { |p|
-#      key << p << "/"
-#     }
-#     key << "page#{page}"
-#   end
 end

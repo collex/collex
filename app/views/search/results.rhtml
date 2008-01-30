@@ -14,7 +14,7 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<% cache @fragment_key do %>
+<% cache_timeout(@fragment_key,1.hour.from_now) do %>
 
   <%= render( :partial => 'constraints' ) %>
 
