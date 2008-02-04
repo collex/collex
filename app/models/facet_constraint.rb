@@ -17,7 +17,7 @@
 class FacetConstraint < Constraint
   def to_solr_expression
     if value == '<unspecified>'
-      "#{inverted ? '' : '-'}#{field}:[* TO *]"
+      "#{inverted ? '-' : ''}#{field}:[* TO *]"
     else 
       "#{operator}#{field}:\"#{value}\""
     end
