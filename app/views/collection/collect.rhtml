@@ -100,7 +100,7 @@
             <% else %>
 
 
-        <%=start_form_tag({:action => "add"}, {:name => 'collectform'}) -%>
+        <% form({:action => "add"}, {:name => 'collectform'}) do -%>
         <table id="items" cellspacing="0">
 
         <tr class="nav">
@@ -151,7 +151,7 @@
         </td> 
         </tr>
         </table>
-        <%=end_form_tag%>
+        <% end #form %>
 
         <% end %>
 
