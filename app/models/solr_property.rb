@@ -19,6 +19,10 @@ class SolrProperty < SolrBaseModel
   
   column :name,  :string
   column :value, :string
+  
+  def agent_type()
+    self.name =~ /^role_/ ? self.name[-3,3] : nil      
+  end
     
   def ==(other)
     return false if other.nil?

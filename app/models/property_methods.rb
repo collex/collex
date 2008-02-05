@@ -32,7 +32,7 @@ module PropertyMethods
       end
     end
   end
-  
+    
   def date_label_or_date
     self.date_label.blank? ? self.date : self.date_label
   end  
@@ -44,7 +44,7 @@ module PropertyMethods
   # return an array of the agents with roles, stripping out "role_" from the prop.name.
   # It's fine to use SolrProperty with both SolrResources and ExhibitedResources, b/c they are for display only
   def roles_with_agents
-    @roles_with_agents ||= properties.select {|prop| prop.name =~ /^role_/}.collect { |p| SolrProperty.new(:name => p.name[-3,3], :value => p.value) }
+    @roles_with_agents ||= properties.select {|prop| !prop.agent_type.nil? }.collect { |p| SolrProperty.new(:name => p.agent_type, :value => p.value) }
   end
   
   def agents

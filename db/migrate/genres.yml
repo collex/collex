@@ -1,0 +1,102 @@
+architecture:
+  id: 1  
+  name: Architecture
+artifacts:
+  id: 2  
+  name: Artifacts
+bibliography:
+  id: 3  
+  name: Bibliography
+book_history:
+  id: 4  
+  name: Book History
+citation:
+  id: 5  
+  name: Citation
+collection:
+  id: 6  
+  name: Collection
+criticism:
+  id: 7  
+  name: Criticism
+drama:
+  id: 8  
+  name: Drama
+education:
+  id: 9  
+  name: Education
+ephemera:
+  id: 10  
+  name: Ephemera
+family_life:
+  id: 11  
+  name: Family Life
+fiction:
+  id: 12  
+  name: Fiction
+folklore:
+  id: 13  
+  name: Folklore
+history:
+  id: 14  
+  name: History
+humor:
+  id: 15  
+  name: Humor
+law:
+  id: 16  
+  name: Law
+leisure:
+  id: 17  
+  name: Leisure
+letters:
+  id: 18  
+  name: Letters
+life_writing:
+  id: 19
+  name: Life Writing
+manuscript:
+  id: 20  
+  name: Manuscript
+music:
+  id: 21  
+  name: Music
+nonfiction:
+  id: 22 
+  name: Nonfiction
+paratext:
+  id: 23 
+  name: Paratext
+periodical:
+  id: 24 
+  name: Periodical
+philosophy:
+  id: 25 
+  name: Philosophy
+photograph:
+  id: 26 
+  name: Photograph
+politics:
+  id: 27
+  name: Politics
+poetry:
+  id: 28 
+  name: Poetry
+reference_works:
+  id: 29 
+  name: Reference Works
+religion:
+  id: 30 
+  name: Religion
+review:
+  id: 31 
+  name: Review
+visual_art:
+  id: 32 
+  name: Visual Art
+translation:
+  id: 33 
+  name: Translation
+travel:
+  id: 34  
+  name: Travel
