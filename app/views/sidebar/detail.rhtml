@@ -41,7 +41,7 @@
   <% end %>
 
   <% if @object.agents then @object.agents.each do |agent|%>
-    <%= sb_link_to_remote('agent', agent) %><br/>
+    <%= sb_link_to_remote('agent_facet', agent) %><br/>
   <% end end %>
   <% if @object.genres then @object.genres.each do |genre|%>
     <%= sb_link_to_remote('genre', genre) %>
