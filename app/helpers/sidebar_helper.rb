@@ -78,15 +78,13 @@ module SidebarHelper
               xm << link_to_remote( h(item['title'] ? item['title'] : "<untitled>"), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);", :class => "title")
             end
             xm.br
-            xm.text(comma_separate(item['date_label']))
+            xm.text(item['data_label']) #comma_separate(item['date_label']))
             xm.br
-            agents = []
-            item.each do |key,value|
-              agents << value if key =~ /^role_/
-            end
-            xm.text(comma_separate(agents))
+            agent_names = item.cached_agents.map {|agent| agent.name }
+            xm.text(comma_separate(agent_names))
             xm.br
-            xm.text(comma_separate(item['genre']))
+            genre_names = item.genres.map { |genre| genre.name }
+            xm.text(comma_separate(genre_names))
             xm.br
             if site(item[:archive])
               xm.a(site(item['archive'])['description'], :href => site(item['archive'])['url'])

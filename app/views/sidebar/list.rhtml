@@ -14,7 +14,7 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<%= cloud_object(@data['total_hits'], params[:value], other_username) %>
+<%= cloud_object(@total_hits, params[:value], other_username) %>
 <div class="pagination">
   <% if @page > 1 %>
     <%= link_to_remote("<span class='pagearrow'>&#x21E0;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page - 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
@@ -33,11 +33,11 @@
   <%= tags_list_link_to(params[:type], params[:value], params[:user]) %>
 
   <div class="tagcloud">
-    <% if @data['hits'].size == 0 && params[:user] %>
+    <% if @data.empty? && params[:user] %>
       <%= me? ? "You haven't" : "#{params[:user]} hasn't" %>  used this <%=params[:type]%>, but <%= link_to_remote "others", :update => "sidebar", :url => {:controller => 'sidebar', :action => 'list', :params => {:user => nil, :type => params[:type], :value => params[:value]}} %> may have.
     <% end %>
 
-    <%= items_list(@data['hits']) %>
+    <%= items_list(@data) %>
 
   </div>
 </div>

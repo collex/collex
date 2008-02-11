@@ -56,40 +56,27 @@ class SidebarController < ApplicationController
   end
   
   def cloud
-    
     params[:type] ||= "tag"
     
     @cloud_fragment_key = cloud_fragment_key(params[:type], params[:user], params[:max])
     
     if is_cache_expired?(@cloud_fragment_key)
-      @cloud_freq = []
-      data = COLLEX_MANAGER.cloud(params[:type], params[:user])
-      return if data == nil or data.size == 0
-
-      # This groups by count, sorts each group's items alphabetically, sorts the group numerically descending, then 
-      # semi-flattens them into an array of arrays of pairs. We end up with the largest tags first, alphabetized.
-      grouped_data = data.group_by(&:last)
-      alphabetized_groups = grouped_data.each_value{ |group| group.sort!{ |x,y| x[0]<=>y[0] } }
-      sorted_data = alphabetized_groups.sort.reverse
-      @cloud_freq = sorted_data.inject([]){ |ar,val| ar.concat(val.last) }
-
-      if params[:max]
-        @cloud_freq = @cloud_freq.first(params[:max].to_i)
-      end
-
-      max_freq = @cloud_freq[0][1]     
-      @bucket_size = max_freq.quo(10).ceil     
+      @cloud_freq = CachedDocument.cloud(params[:type], User.find_by_username(params[:user]), params[:max])
+      unless @cloud_freq.empty?
+        max_freq = @cloud_freq[0][1]     
+        @bucket_size = max_freq.quo(10).ceil
+      end     
     end
   end
   
   def list
     @data = []
     return unless params[:type] and params[:value]
-
     items_per_page = 5
     @page = params[:page] ? params[:page].to_i : 1
-    @data = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user], (@page - 1) * items_per_page, items_per_page)
-    @num_pages = @data["total_hits"].to_i.quo(items_per_page).ceil
+    offset = (@page - 1) * items_per_page
+    @data, @total_hits = CachedDocument.list_from_cloud_tag(params[:type], params[:value], User.find_by_username(params[:user]), offset, items_per_page )
+    @num_pages = @total_hits.quo(items_per_page).ceil
     @num_pages = 1 if @num_pages == 0  # makes UI better to say there is at least 1 page
   end
   

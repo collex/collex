@@ -136,18 +136,18 @@ class SearchController < ApplicationController
      expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
      
      uris = params[:objid].split(' ~~ ')  # TODO make this a constant shared by the results.rhtml code that joins uris together
-     solr = CollexEngine.new
      uris.each do |uri|
+       cached_document = CachedDocument.create_cache_document(uri)
        interpretation = user.interpretations.find_by_object_uri(uri)
-       if not interpretation
-         interpretation = user.interpretations.build(:object_uri => uri)
-       end
-       interpretation.annotation =  params[:annotation]
+       interpretation = user.interpretations.build(:object_uri => uri) if interpretation.nil?
+       interpretation.annotation = params[:annotation]
        interpretation.tag_list = params[:tags]
        interpretation.save!
-       solr.update_collectables(user.username, uri, interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
+       interpretation.tags.each do |tag| 
+        cached_document.tags << tag
+       end
+       cached_document.save!
      end
-     solr.commit
      
      if request.xhr?
        render_text "collected"

@@ -3,5 +3,4 @@ one:
   id: 1
   uri: http://archive/test1
   title: test1
-  date_label: 1-21-08
   archive: archive
