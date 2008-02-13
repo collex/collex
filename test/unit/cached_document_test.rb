@@ -46,6 +46,12 @@ class CachedDocumentTest < Test::Unit::TestCase
     agent_types = cached_document.cached_agents.map { |agent| agent.agent_type.name }
     assert agent_types.include?(agent_types(:author).name)
   end
+
+  def test_create_cache_document_array        
+    cached_documents = CachedDocument.create_cache_document([URI])
+    assert_not_nil cached_documents
+    assert_equal 1, cached_documents.size  
+  end
   
   # test serialization of a solr document to a cache document
   def test_create_cache_document        
@@ -154,5 +160,5 @@ class CachedDocumentTest < Test::Unit::TestCase
       assert_not_nil item
       assert_equal cached_documents(:one).uri, item.uri 
     end
-    
+        
 end

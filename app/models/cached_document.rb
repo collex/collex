@@ -83,18 +83,48 @@ class CachedDocument < ActiveRecord::Base
       
       return list, count
    end   
-
+   
    # Looks up the specified document in the Solr index and creates a CachedDocument object. Returns the existing
    # cached document or the newly created one. Does not save the created object.
    def self.create_cache_document( uri )
 
-     # if this document already is cached, return it
-     cached_document = CachedDocument.find_by_uri(uri)
-     return cached_document unless cached_document.nil?
-     
-     # look the document up in solr
-     solr_document = SolrResource.find_by_uri(uri) 
-     return nil if solr_document.nil?
+     if uri.kind_of?(Array) 
+       cached_docs = []
+       uncached_docs = []
+       
+       # pull out the docs that have already been cached
+       uri.each { |current_uri|
+         cached_document = CachedDocument.find_by_uri(current_uri)
+         if cached_document.nil?
+           uncached_docs << current_uri
+         else   
+           cached_docs << cached_document
+         end
+       }
+       
+       # retrieve the remaining documents from solr and cache them
+       unless uncached_docs.empty?       
+        solr_documents = SolrResource.find_by_uri( uncached_docs )
+        solr_documents.each { |solr_doc| cached_docs << cache_solr_resource( solr_doc ) }
+       end
+       
+       return cached_docs       
+     else       
+       # if this document already is cached, return it
+       cached_document = CachedDocument.find_by_uri(uri)
+       return cached_document unless cached_document.nil?
+       
+       # look the document up in solr
+       solr_document = SolrResource.find_by_uri(uri) 
+       return nil if solr_document.nil?
+       
+       return cache_solr_resource( solr_document )
+     end
+
+   end
+   
+   
+   def self.cache_solr_resource( solr_document )
      
      # create a new cache document and populate it
      cached_document = CachedDocument.new

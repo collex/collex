@@ -36,17 +36,16 @@ class SolrResource < SolrBaseModel
     
     raise ArgumentError, "Need a uri (object id) for the search." if args.size < 1
     uri = args[0]
-    directive = uri.kind_of?(Array) ? :all : :first   # TODO: passing an array is never used, so this can probably be removed
+    directive = uri.kind_of?(Array) ? :all : :first  
     
     result = case directive
     when :first
       object, mlt, collection_info = solr.object_detail(uri, options[:user])
       resource = initialize_object_detail(object, mlt, collection_info)
-    # TODO: :all doesn't seem to be used and can probably be removed
     when :all
       solr.objects_for_uris(uri, options[:user]).collect { |item| initialize_object_detail(item) }
     end
-    result
+      result
   end
   
   def self.initialize_object_detail(object, mlt=[], collection_info=nil)

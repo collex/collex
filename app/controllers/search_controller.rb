@@ -136,10 +136,11 @@ class SearchController < ApplicationController
      expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
      
      uris = params[:objid].split(' ~~ ')  # TODO make this a constant shared by the results.rhtml code that joins uris together
-     uris.each do |uri|
-       cached_document = CachedDocument.create_cache_document(uri)
-       interpretation = user.interpretations.find_by_object_uri(uri)
-       interpretation = user.interpretations.build(:object_uri => uri) if interpretation.nil?
+     cached_documents = CachedDocument.create_cache_document(uris)
+     
+     cached_documents.each do |cached_document|
+       interpretation = user.interpretations.find_by_object_uri(cached_document.uri)
+       interpretation = user.interpretations.build(:object_uri => cached_document.uri) if interpretation.nil?
        interpretation.annotation = params[:annotation]
        interpretation.tag_list = params[:tags]
        interpretation.save!

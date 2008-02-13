@@ -33,7 +33,7 @@ class SearchControllerTest < Test::Unit::TestCase
     
     @request.session[:user] = {:username => "dave"}
   end
-  
+    
   def test_collect
      post :collect, { :objid => URI, :tags => "some tags", :annotation => "test annotation" }     
      assert_redirected_to :controller => 'search', :action => 'browse'      
