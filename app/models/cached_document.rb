@@ -153,7 +153,7 @@ class CachedDocument < ActiveRecord::Base
        unless genre.nil?
          cached_document.genres << genre
        else
-         logger.error "Unable to cache genre: '#{genre_name}' for document: #{uri}"
+         logger.error "Unable to cache genre: '#{genre_name}' for document: #{solr_document.uri}"
        end
      end
 
