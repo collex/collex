@@ -8,7 +8,7 @@ def self.up
 end 
 
 def self.down 
-  Genres.delete_all 
+  Genre.delete_all 
 end
 
 end 
