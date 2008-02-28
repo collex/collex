@@ -108,8 +108,7 @@ module ApplicationHelper
     end
   end
 
-  def link_to_list(type, value, frequency=nil)
-     html_options = {}
+  def link_to_list(type, value, frequency=nil, html_options = {})
      if frequency
         html_options[:title] = pluralize(frequency, 'object')
      end
@@ -117,7 +116,12 @@ module ApplicationHelper
      if (type=="archive")
        display = site(value) ? site(value)['description'] : value
      end
-     link_to_remote display, {:update => "sidebar", :url => sidebar_list_path(:type => type, :value => value, :user => params[:user])}, html_options
+     target = sidebar_list_path(:type => type, :value => value, :user => params[:user])
+     link_to_function display, update_sidebar(target), html_options
+  end
+  
+  def update_sidebar( target )
+     "sidebarTagCloud.updateSidebar('#{target}')"
   end
   
   def nbpluralize(count, singular, plural = nil)
@@ -128,15 +132,15 @@ module ApplicationHelper
     link_to_function(label, "popUp('#{url_for(options)}')", html_options)
   end
   
-  def link_to_cloud(type, label=type)
+  def link_to_cloud(type, label=type, html_options = {} )
     css_class = params[:type] == type ? "selected" : ""
-    link_to_remote facet_label(label), {:update => "sidebar",
-        :url => sidebar_cloud_path(:user => params[:user], :type => type)}, 
-        {:class => css_class}
+    target = sidebar_cloud_path(:user => params[:user], :type => type)
+    link_to_function facet_label(label), update_sidebar(target), html_options.merge( { :class => css_class } )
   end
   
-  def link_to_peer(user, count)
-    link_to_remote user, {:update=>"sidebar", :url => sidebar_cloud_path(:type => "tag", :user => user)}, {:title => pluralize(count, 'object')}
+  def link_to_peer(user, count, html_options = {} )
+    target = sidebar_cloud_path(:type => "tag", :user => user)
+    link_to_function display, update_sidebar(target), html_options.merge( {:title => pluralize(count, 'object')} )
   end
   
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})

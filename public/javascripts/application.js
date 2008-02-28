@@ -17,6 +17,12 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+// perform initialization after DOM loads
+Event.observe(window, 'load', function() {	
+	// initialize hacks whenever the page loads
+	initializeHacks();
+});	
+
 function toggleIt(element) {
   var tr = element.parentNode.parentNode;
   //alert("parent node: " + tr);
@@ -278,9 +284,6 @@ function hideCurrentPopup() {
 // ***********************
 // hacks and workarounds *
 // ***********************
-
-// initialize hacks whenever the page loads
-window.onload = initializeHacks;
 
 // setup an event handler to hide popups for generic clicks on the document
 document.onclick = hideCurrentPopup;

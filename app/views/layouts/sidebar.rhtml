@@ -17,7 +17,8 @@
 <%= javascript_tag("window.onload = window.location.reload();") if flash[:refresh_page] %>
 
 <script type="text/javascript">
-var instructions = new Array();
+
+var instructions = [];
 instructions['tags'] = '<%= TAG_INSTRUCTIONS %>';
 instructions['annotation'] = '<%= ANNOTATION_INSTRUCTIONS %>';
 
@@ -25,6 +26,7 @@ function defaultInstructions(t) {
   var key = t.name.split('-',1)[0];
   return instructions[key];
 }
+
 function clearInstructions(t) {
   if (t.value == defaultInstructions(t)) {t.value = '';}
 }
@@ -36,6 +38,12 @@ function check_submit() {
     }
     return true;
 }
+
+// perform initialization after DOM loads
+Event.observe(window, 'load', function() {		
+	sidebarTagCloud = new SidebarTagCloud( <%= NUM_VISIBLE_TAGS %> );
+});	
+
 </script>
 
 <% if flash[:sidebar_notice] -%> 
@@ -76,17 +84,16 @@ function check_submit() {
     @my_username = username || "<mine>"
 -%>
 <div class="topnav">
-  <%= search_form %>
+	
+ <!-- sidebar tag cloud filter -->
+  <div class="search">
+	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
+  </div>
+
   <div class="browsetags">
-    <%= link_to_remote @mine_label, 
-                      {:update => "sidebar",
-                       :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username}}, 
-                      {:class => (@mine ? 'selected' : 'unselected')} %>
+    <%= link_to_function @mine_label, update_sidebar( sidebar_cloud_path( :controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username )), {:class => (@mine ? 'selected' : 'unselected')}  %>
     <span class="bull"> &bull; </span>
-    <%= link_to_remote @all_label, 
-                       {:update => "sidebar",
-                        :url => {:controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil}}, 
-                       {:class => (@all ? 'selected' : 'unselected')} %>
+    <%= link_to_function @all_label, update_sidebar( sidebar_cloud_path( :controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil )), {:class => (@all ? 'selected' : 'unselected') } %>
   </div>
 </div>
 

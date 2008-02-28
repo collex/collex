@@ -26,17 +26,13 @@
   <% end %>
     
   <div class="tagcloud" id="tagcloud">
-    <%= tag_cloud(@cloud_freq.first(NUM_VISIBLE_TAGS), params[:type], @bucket_size) %>
+    <%= tag_cloud(@cloud_freq, params[:type], @bucket_size) %>
   </div>
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
     <span class="emph4">
-    <%= show_hide_link_to :show_label => "show more #{facet_label(params[:type])}", :hide_label => "hide more #{facet_label(params[:type])}",
-                          :hidden_element => "tagcloud-hidden", :id_suffix => "-more-tags" %>
+    	<%= link_to_function "show more", "sidebarTagCloud.toggleShowMoreCloudTags()", :id => 'toggle-show-all-tags' %>
     </span>
-    <div class="tagcloud" id="tagcloud-hidden" style="display:none">
-      <%= tag_cloud(@cloud_freq - @cloud_freq.first(NUM_VISIBLE_TAGS), params[:type], @bucket_size) %>
-    </div>
   <%- end -%>
   
 </div>

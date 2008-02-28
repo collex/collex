@@ -51,12 +51,15 @@ module SidebarHelper
   
   def tag_cloud(list, type, bucket_size)
     xm = Builder::XmlMarkup.new(:indent => 2)
+    i = 0
     list.each do |item|
+      i = i + 1
       xm.span :class => "cloud#{item.last.quo(bucket_size).ceil}" do
-         if type == "username"
-           xm << link_to_peer(item.first, item.last)
+        html = (i > NUM_VISIBLE_TAGS) ? { :style => "display:none;" } : {}
+        if type == "username"
+           xm << link_to_peer(item.first, item.last, html)
          else
-           xm << link_to_list(type, item.first, item.last)
+           xm << link_to_list(type, item.first, item.last, html)
          end
       end
     end
