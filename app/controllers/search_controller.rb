@@ -151,7 +151,7 @@ class SearchController < ApplicationController
      end
      
      if request.xhr?
-       render_text "collected"
+       render :text =>  "collected"
      else
        # TODO: set the "sidebar" state to the object detail
        redirect_to :controller => 'search', :action => 'browse'
