@@ -1,3 +1,3 @@
 class AgentType < ActiveRecord::Base
-  has_one :cached_agent  
+  has_many :cached_agents
 end
