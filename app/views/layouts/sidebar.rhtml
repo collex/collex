@@ -91,9 +91,9 @@ Event.observe(window, 'load', function() {
   </div>
 
   <div class="browsetags">
-    <%= link_to_function @mine_label, update_sidebar( sidebar_cloud_path( :controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username )), {:class => (@mine ? 'selected' : 'unselected')}  %>
+    <%= link_to_function @mine_label, update_sidebar( url_for( :controller => "sidebar", :action => 'cloud', :type => params[:type], :user => @my_username )), {:class => (@mine ? 'selected' : 'unselected')}  %>
     <span class="bull"> &bull; </span>
-    <%= link_to_function @all_label, update_sidebar( sidebar_cloud_path( :controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil )), {:class => (@all ? 'selected' : 'unselected') } %>
+    <%= link_to_function @all_label, update_sidebar( url_for( :controller => "sidebar", :action => 'cloud', :type => params[:type], :user => nil )), {:class => (@all ? 'selected' : 'unselected') } %>
   </div>
 </div>
 
