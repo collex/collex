@@ -140,7 +140,7 @@ module ApplicationHelper
   
   def link_to_peer(user, count, html_options = {} )
     target = sidebar_cloud_path(:type => "tag", :user => user)
-    link_to_function display, update_sidebar(target), html_options.merge( {:title => pluralize(count, 'object')} )
+    link_to_function user, update_sidebar(target), html_options.merge( {:title => pluralize(count, 'object')} )
   end
   
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
