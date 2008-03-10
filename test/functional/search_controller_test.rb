@@ -22,7 +22,7 @@ require 'search_controller'
 class SearchController; def rescue_action(e) raise e end; end
 
 class SearchControllerTest < Test::Unit::TestCase
-  fixtures :users, :genres, :agent_types
+  fixtures :users
 
   include TestCollexHelper
   
@@ -37,10 +37,10 @@ class SearchControllerTest < Test::Unit::TestCase
   def test_collect
      post :collect, { :objid => URI, :tags => "some tags", :annotation => "test annotation" }     
      assert_redirected_to :controller => 'search', :action => 'browse'      
-     cached_document = CachedDocument.find_by_uri(URI)
+     cached_document = CachedResource.find_by_uri(URI)
      assert_equal URI, cached_document.uri
      assert cached_document.tags.include?("some")
-     assert cached_document.genres.include?(Genre.find_by_name("Poetry"))
+     assert cached_document.genres.include?("Poetry")
   end
   
 end
