@@ -61,7 +61,7 @@ class SidebarController < ApplicationController
     @cloud_fragment_key = cloud_fragment_key(params[:type], params[:user], params[:max])
     
     if is_cache_expired?(@cloud_fragment_key)
-      @cloud_freq = CachedDocument.cloud(params[:type], User.find_by_username(params[:user]), params[:max])
+      @cloud_freq = CachedResource.cloud(params[:type], User.find_by_username(params[:user]), params[:max])
       unless @cloud_freq.empty?
         max_freq = @cloud_freq[0][1]     
         @bucket_size = max_freq.quo(10).ceil
@@ -75,7 +75,7 @@ class SidebarController < ApplicationController
     items_per_page = 5
     @page = params[:page] ? params[:page].to_i : 1
     offset = (@page - 1) * items_per_page
-    @data, @total_hits = CachedDocument.list_from_cloud_tag(params[:type], params[:value], User.find_by_username(params[:user]), offset, items_per_page )
+    @data, @total_hits = CachedResource.list_from_cloud_tag(params[:type], params[:value], User.find_by_username(params[:user]), offset, items_per_page )
     @num_pages = @total_hits.quo(items_per_page).ceil
     @num_pages = 1 if @num_pages == 0  # makes UI better to say there is at least 1 page
   end
