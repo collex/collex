@@ -24,15 +24,15 @@ def parse_command_line( command_line_args )
   
   opts = OptionParser.new do |opts|  
         
-    opts.on("-f", "--fill", "Fill the document cache based on existing interpretations table.") do |d|
+    opts.on("-f", "--fill", "Fill the resource cache based on existing interpretations table.") do |d|
       action = :fill
     end
 
-    opts.on("-c", "--clear", "Clear the document cache.") do |d|
+    opts.on("-c", "--clear", "Clear the resource cache.") do |d|
       action = :clear
     end
 
-    ## Display help message 
+    # Display help message 
     opts.on_tail("-h","--help", "Show this usage statement.") do |h|
       puts opts
       status = false
@@ -49,26 +49,27 @@ def parse_command_line( command_line_args )
   (status) ? action : nil 
 end
 
-def clear_document_cache()
-  puts "Clearing the document cache..."  
-  CachedDocument.destroy_all
-  CachedAgent.destroy_all
-  CachedDate.destroy_all
+def clear_resource_cache()
+  puts "Clearing the resource cache..."  
+  CachedResource.destroy_all
+  # destroy the associations
+  CachedResource.connection.execute 'delete from cached_resources_tags'
 end
 
-# Update the document cache based on the existing interpretations.
-def fill_document_cache()
-  puts "Filling the document cache..."
+# Update the resource cache based on the existing interpretations.
+def fill_resource_cache()
+  puts "Filling the resource cache..."
   interpretations = Interpretation.find(:all)     
   interpretations.each do |interpretation|
-    cached_document = CachedDocument.create_cache_document(interpretation.object_uri)
-    interpretation.tags.each { |tag| cached_document.tags << tag }
-    cached_document.save!
+    puts "Caching resource with URI #{interpretation.object_uri}"
+    cr = CachedResource.find_or_create_by_uri(interpretation.object_uri)
+    interpretation.tags.each { |tag| puts "adding tag #{tag.name}"; cr.tags << tag unless cr.tags.include?(tag) }
+    cr.save!
   end
 end
 
 # Run
 case parse_command_line(ARGV)
-  when :clear then clear_document_cache()
-  when :fill then fill_document_cache()
+  when :clear then clear_resource_cache
+  when :fill then fill_resource_cache
 end
