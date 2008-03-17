@@ -134,6 +134,7 @@ class CachedResource < ActiveRecord::Base
   private
     #TODO filter out tags and annotations and usernames 
     def copy_solr_resource
+      return if resource.nil?
       resource.properties.each do |prop|
         properties << CachedProperty.new(:name => prop.name, :value => prop.value)
       end
