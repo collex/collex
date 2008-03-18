@@ -18,6 +18,10 @@ require 'active_record/fixtures'
 
 class PopulateGenreData < ActiveRecord::Migration 
 
+  # Make sure we have this class available for self.down
+  class Genre < ActiveRecord::Base
+  end
+
 def self.up 
   down 
   Fixtures.create_fixtures(File.dirname(__FILE__), "genres") 
