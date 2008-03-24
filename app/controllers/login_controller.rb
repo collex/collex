@@ -51,6 +51,15 @@ class LoginController < ApplicationController
 
   def logout 
     session[:user] = nil 
+    
+    # TODO this block is taken from SidebarController#clear_user and should be dried up.
+    jumpto = {:controller => "sidebar", :action => "cloud", :type => "tag"}
+    if session[:sidebar_state]
+      session[:sidebar_state][:params].delete "user"
+      jumpto = {:controller => "sidebar", :action => session[:sidebar_state][:action]}
+      jumpto.merge! session[:sidebar_state][:params]
+    end
+    
     request.env["HTTP_REFERER"] =~ /exhibit/ ? redirect_to(exhibits_path) : redirect_to(:controller => "search", :action => "browse")
   end
 
