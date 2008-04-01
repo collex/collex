@@ -16,10 +16,10 @@
 
 <h1>Editing site</h1>
 
-<%= start_form_tag :action => 'update', :id => @site %>
+<% form_tag :action => 'update', :id => @site do %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
-<%= end_form_tag %>
+<% end %>
 
 <%= link_to 'Show', :action => 'show', :id => @site %> |
 <%= link_to 'Back', :action => 'list' %>

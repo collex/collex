@@ -16,9 +16,9 @@
 
 <h2>Add a New License</h2>
 
-<%= start_form_tag :action => 'create' %>
+<% form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Create' %>
-<%= end_form_tag %>
+<% end %>
 
 <%= link_to 'All Licenses', :action => 'index' %>

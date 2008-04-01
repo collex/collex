@@ -2,13 +2,13 @@
    <% if session[:constraints].size == 0 -%>
      <a href="http://www.nines.org">NINES</a>: aggregating 
    <% else -%>
-  <%= start_form_tag({:action => :new_expression}, :id=>'footer-search') -%>
+  <% form_tag ({:action => :new_expression}, :id=>'footer-search')  do -%>
         start fresh! <%= text_field_tag "field[content]", "new search", :onFocus=>"this.value=''" -%>&nbsp;
 <span class="emph2"><span class="button"><%= link_to_function "Go!", "document.forms['footer-search'].submit();" -%></span></span>&nbsp;or&nbsp;&nbsp;
 <span class="emph2"><span class="button"><%=link_to "BROWSE", :controller=>'search', :action=>'clear_constraints' -%></span></span> &nbsp; 
   <% end -%>
 <%=@results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'collex', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.count%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'help', :action=>'sites'})%>.
    <% if session[:constraints].size != 0 -%>
-      <%= end_form_tag -%>
+      <% end -%>
   <% end -%>
 </div>

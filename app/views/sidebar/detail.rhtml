@@ -65,7 +65,7 @@
 <br/>
 
 <% if is_logged_in? %>
-<%= form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :loading => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});", :condition => "check_submit()") -%>
+<% form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :loading => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});", :condition => "check_submit()") do -%>
   <%= hidden_field_tag :objid, params[:objid] -%>
   <%= text_field_tag :tags, @interpretation.tag_list.blank? ? TAG_INSTRUCTIONS : @interpretation.tag_list, :onfocus => "clearInstructions(this)" -%><span class="help" title="header=[keywords?] body=[add personal, one-word descriptors for this object. (to collect it, you must assign at least one.) separate your keywords by spaces and join multi-word descriptors with dashes, just-like-this.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span><br/>
       
@@ -77,7 +77,7 @@
     <% end -%>
     <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "document.forms['dataform'].onsubmit();" %>
   </span>
-<%= end_form_tag -%>
+<% end -%>
 <% else %>
   To collect or edit this object, <%=link_to_remote "log in and return", :update => "sidebar", :url => {:controller=>"sidebar", :action=>"detail", :objid => params[:objid],:user=>"<mine>"} %>.
 <% end %>

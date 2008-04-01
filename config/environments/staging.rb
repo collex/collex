@@ -32,8 +32,6 @@ config.whiny_nils = true
 # Use a different logger for distributed setups
 # config.logger        = SyslogLogger.new
 
-# Enable the breakpoint server that script/breakpointer connects to
-config.breakpoint_server = true
 
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false

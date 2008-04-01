@@ -63,7 +63,7 @@ class ExhibitsController < ExhibitsBaseController
     else
       flash[:error] = 'There was a problem indexing your exhibit.'
     end
-    redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
+    redirect_to edit_exhibit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
   end
 
 
@@ -83,7 +83,7 @@ class ExhibitsController < ExhibitsBaseController
       if page_type.section_types.size == 1
         @exhibit.pages.last.sections.create({:exhibit_section_type_id => page_type.section_types.first.id})
       end      
-      redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
+      redirect_to edit_exhibit_page_url(:exhibit_id => @exhibit, :id => @exhibit.pages.first.id)
     else
       @exhibit_types = ExhibitType.find(:all)
       render :action => "new"
@@ -163,7 +163,7 @@ class ExhibitsController < ExhibitsBaseController
     page_id = params[:page_id]
     if @exhibit.update_attributes(params[:exhibit])
       flash[:notice] = 'Exhibit was successfully updated.'
-      redirect_to edit_page_url(:exhibit_id => @exhibit, :id => page_id)
+      redirect_to edit_exhibit_page_url(:exhibit_id => @exhibit, :id => page_id)
     else
       render :action => "edit"
     end

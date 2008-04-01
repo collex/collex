@@ -26,9 +26,9 @@ class ExhibitedTextsController < ExhibitedItemsController
     es.items << et
     es.items.last.move_to_top
     unless et.blank?
-      redirect_to edit_page_url(:exhibit_id => es.page.exhibit, :id => es.page, :anchor => dom_id(et))
+      redirect_to edit_exhibit_page_url(:exhibit_id => es.page.exhibit, :id => es.page, :anchor => dom_id(et))
     else
-      redirect_to edit_page_url(es.page.exhibit, es.page)
+      redirect_to edit_exhibit_page_url(es.page.exhibit, es.page)
     end  
   end
 end

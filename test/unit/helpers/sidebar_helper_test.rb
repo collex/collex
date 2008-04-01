@@ -19,7 +19,11 @@ require File.dirname(__FILE__) + '/../../test_helper'
 class SidebarHelperTest < HelperTestCase
   include SidebarHelper
   #fixtures :users, :articles
-
+  
+  def protect_against_forgery?
+    false
+  end
+  
   def setup
     super
   end
@@ -44,7 +48,7 @@ class SidebarHelperTest < HelperTestCase
   def test_sb_link_to_remote_generates_label_from_value
     @type = "agent"
     @value = "David Ferris"
-    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list/agent/David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">David Ferris</a>}
+    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list/agent/David%20Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">David Ferris</a>}
     assert_dom_equal(expected, sb_link_to_remote(@type, @value))
   end
   
@@ -52,7 +56,7 @@ class SidebarHelperTest < HelperTestCase
     @type = "agent"
     @value = "David Ferris"
     @label = "LOUD LABEL"
-    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list/agent/David+Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">LOUD LABEL</a>}
+    expected = %Q{<a onclick="new Ajax.Updater('sidebar', '/sidebar/list/agent/David%20Ferris', {asynchronous:true, evalScripts:true}); return false;" href="#">LOUD LABEL</a>}
     assert_dom_equal(expected, sb_link_to_remote(@type, @value, @label))
   end
   

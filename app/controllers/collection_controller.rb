@@ -73,7 +73,7 @@ class CollectionController < ApplicationController
      end     
      solr.commit
 
-     render_text <<-CLOSE
+     render :text => <<-CLOSE
        <html>
          <head>
            <script type="text/javascript">

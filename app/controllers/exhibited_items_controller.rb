@@ -68,7 +68,7 @@ class ExhibitedItemsController < ExhibitsBaseController
     respond_to do |format|
       flash[:notice] = 'Exhibited Item was successfully removed.'
       page = params[:page] || 1
-      format.html { redirect_to edit_page_url(:exhibit_id => @exhibit, :id => @exhibited_page, :anchor => dom_id(@exhibited_item.section)) }
+      format.html { redirect_to edit_exhibit_page_url(:exhibit_id => @exhibit, :id => @exhibited_page, :anchor => dom_id(@exhibited_item.section)) }
       format.xml  { head :ok }
     end
   end  

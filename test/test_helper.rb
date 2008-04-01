@@ -18,11 +18,11 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 # below requires added to include the relevant stuff test_help brings in, without screwing up because of no test DB
-require 'test/unit'
-require 'action_controller/test_process'
-require 'action_web_service/test_invoke'
-require 'breakpoint'
-require 'application'
+# require 'test/unit'
+# require 'action_controller/test_process'
+# require 'action_web_service/test_invoke'
+# require 'breakpoint'
+# require 'application'
 require File.expand_path(File.dirname(__FILE__) + '/helper_testcase')
 
 #class Test::Unit::TestCase
