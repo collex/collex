@@ -56,7 +56,7 @@ set :sudo, "/usr/local/bin/sudo"
 set :repository, "https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web"
 set :deploy_to, "/usr/local/patacriticism/#{application}" # defaults to "/u/apps/#{application}"
 set :user, "nines"            # defaults to the currently logged in user
-set :rails_release, "rel_1-2-6"
+set :rails_release, "rel_2-0-2"
 set :rails_path, "#{shared_path}/vendor/#{rails_release}"
 
 set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml"
