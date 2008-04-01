@@ -60,7 +60,7 @@ module PaginatingFind
     #
     # Now this class will use 3 as the size automatically--no need to specify it on each call to find.
     def paginating_find(*args)
-      options = extract_options_from_args!(args) 
+      options = args.extract_options!
       page_options = options.delete(:page) || (args.delete(:page) ? {} : nil)
       # Enhancement: looks for page_size class method so it doesn't need to be passed in.
       page_options[:size] ||= page_size if page_options
