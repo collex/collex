@@ -29,8 +29,7 @@
   <% end end %>
 <% end %>
 
-<%= link_to 'Previous page', { :page => @license_pages.current.previous } if @license_pages.current.previous %>
-<%= link_to 'Next page', { :page => @license_pages.current.next } if @license_pages.current.next %> 
+<%= will_paginate @licenses %>
 
 <br/>
 <%= link_to "New License", :action => "new" %>

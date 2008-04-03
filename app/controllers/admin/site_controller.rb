@@ -21,7 +21,8 @@ class Admin::SiteController < Admin::BaseController
   end
 
   def list
-    @site_pages, @sites = paginate :sites, :per_page => 10
+#     @site_pages, @sites = paginate :sites, :per_page => 10
+    @sites = Site.paginate(:page => params[:page], :per_page => 10)
   end
 
   def show
