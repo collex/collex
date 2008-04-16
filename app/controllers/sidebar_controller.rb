@@ -63,7 +63,10 @@ class SidebarController < ApplicationController
     if is_cache_expired?(@cloud_fragment_key)
       @cloud_freq = CachedResource.cloud(params[:type], User.find_by_username(params[:user]), params[:max])
       unless @cloud_freq.empty?
-        max_freq = @cloud_freq[0][1]     
+        max_freq = 1
+        @cloud_freq.each { |entry| 
+          max_freq = entry[1] > max_freq ? entry[1] : max_freq 
+        }
         @bucket_size = max_freq.quo(10).ceil
       end     
     end
