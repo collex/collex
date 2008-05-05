@@ -23,7 +23,7 @@ class SearchController < ApplicationController
    end
    
    def browse
-     items_per_page = 20
+     items_per_page = 5
      @page = params[:page] ? params[:page].to_i : 1
      
      
