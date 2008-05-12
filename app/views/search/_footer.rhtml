@@ -1,5 +1,5 @@
 <% info = capture do %>
-  <%= @results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'collex', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.count%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'help', :action=>'sites'}) %>.
+  <%= @results['total_documents']%>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'help', :action=>'resources'})%>&nbsp;from&nbsp;<%=Site.count%>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'help', :action=>'sites'}) %>.
 <% end %>
 
 <div id="footer" style="text-align:center">
