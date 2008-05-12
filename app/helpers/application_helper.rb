@@ -123,7 +123,7 @@ module ApplicationHelper
   end
   
   def update_sidebar( target )
-     "sidebarTagCloud.updateSidebar('#{target}')"
+     %Q{sidebarTagCloud.updateSidebar("#{target}")}
   end
   
   def nbpluralize(count, singular, plural = nil)
