@@ -108,6 +108,7 @@ module ApplicationHelper
     end
   end
 
+  # +value+ has any ampersands changed to +&amp;+
   def link_to_list(type, value, frequency=nil, html_options = {})
      if frequency
         html_options[:title] = pluralize(frequency, 'object')
@@ -116,6 +117,7 @@ module ApplicationHelper
      if (type=="archive")
        display = site(value) ? site(value)['description'] : value
      end
+     amped_value = value.gsub(/&amp;/, "&").gsub(/&/, "&amp;")
      target = sidebar_list_path(:type => type, :value => value, :user => params[:user])
      link_to_function display, update_sidebar(target), html_options
   end
