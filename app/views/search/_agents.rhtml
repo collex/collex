@@ -16,7 +16,7 @@
 
 <ul class="cookies">
 <%
-@values.each do |value|
+@values[0..4].each do |value|
     constraint_exists = false
     session[:constraints].each do |constraint|
       if "agent" == constraint[:field] and value[:name] == constraint[:value]
