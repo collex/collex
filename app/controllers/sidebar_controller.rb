@@ -51,8 +51,8 @@ class SidebarController < ApplicationController
 
   def atom
     @items = COLLEX_MANAGER.objects_by_type(params[:type], params[:value], params[:user])
-    @headers['Content-Type'] = 'application/atom+xml'
-    render_without_layout
+    headers['Content-Type'] = 'application/atom+xml'
+    render :layout => nil
   end
   
   def cloud
