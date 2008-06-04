@@ -42,7 +42,7 @@
             <%= link_to_unless constraint_exists, "#{constraint_exists ? '' : '+ '}#{nbpluralize(category[:count], 'item')}", {:controller=>"search", :action => 'add_facet', :field => 'archive', :value => category[:value]}%>
             <% if !constraint_exists%>or <%= link_to "-", {:controller => "search", :action => 'add_facet', :field => 'archive', :value => category[:value], :invert => true}%><%end%>
             </td>
-            <td><img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td>
+            <!-- <td><img src="/images/pie_<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%>.png" title="header=[<%=(100 * category[:count]).quo(max.to_i).ceil rescue 0%> per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/></td> -->
           <% else # its a category -%>
             <td style="padding-left: <%=depth %>em; color: #666;">
               <span id="cat_<%=category[:id]%>_closed" style="font-family:arial;color:#999">&#x25B6; </span><span id="cat_<%=category[:id]%>_opened" style="display:none;font-family:arial;color:#999">&#x25BC; </span><%=link_to_function(category[:value], "toggleCategory('#{category[:id]}');")%>

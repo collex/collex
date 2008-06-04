@@ -169,7 +169,8 @@ module ApplicationHelper
   end
   
   def pie(amount, total)
-    pie_by_percent((100 * amount).quo(total.to_i).ceil)
+    #TODO renable pie.. disabled for performance testing 
+    #pie_by_percent((100 * amount).quo(total.to_i).ceil)
   end
   
   def link_to_exhibit()
