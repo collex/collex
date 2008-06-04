@@ -27,13 +27,7 @@
     
     if not constraint_exists
 %>
-   <li class="cookie"><span class="informal">&nbsp;</span><%=value[:name]%><span class="informal"> (<%=value[:total]%>)<br/>
-       <% if value[:roles].size > 1
-        value[:roles].each do |role, frequency| -%>
-       <span class="frequency">  <%=COLLEX_MANAGER.relators[role]%> (<%=frequency%>)</span>
-       <% end 
-       end -%>
-     </span></li>
+   <li class="cookie"><span class="informal">&nbsp;</span><%=value[:name]%><span class="informal"> (<%=value[:total]%>)</span></li>
 <%
    end # not constraint_exists
 end
