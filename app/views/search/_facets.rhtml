@@ -146,13 +146,13 @@ function yearValidation(theForm, event)
 	   </tr>
 
 
-		<tr>
+<!-- 		<tr>
 	             <th align="left"><span class="help" title="header=[name search] body=[type the name of a person or institution, select a valid option from the drop-down menu, and click 'add.'] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">name:</span></th>
 	              <td><% form_tag ({:controller => "search", :action => :add_agent_facet}, {:name => 'agentform'})  do -%>
 	    <%= text_field_with_suggest :agent, :name, {:size => 20},{:min_chars => 2} %><% end -%></td>
 	    <td align="center"><%= link_to_function "add", "document.forms['agentform'].submit();" -%></td>
 		  <td>&nbsp;</td>
-	   </tr>
+	   </tr> -->
 	   
   	   
   	   <% constraint_exists = session[:constraints].find {|constraint| "genre" == constraint[:field] and "Citation" == constraint[:value] }
