@@ -63,30 +63,36 @@ class CollexEngine
   def agent_suggest(constraints, prefix)
     query, filter_queries = solrize_constraints(constraints)
     
-    # a query is made for agent:#{prefix}* with facets requested for each of the roles
-    # TODO: generalize roles here
+    # case insensitive, replace commas, semicolons, and periods with spaces
+    raw_query_string = prefix.downcase.sub(/[,;.]/," ")
+
+    # each word in the query is a seperate name 
+    names = raw_query_string.split(" ") 
+            
     req = Solr::Request::Standard.new(
             :start => 0, :rows => 0,
-            :query => "#{query} AND agent:#{prefix}*", :filter_queries => filter_queries,
+            :query => "#{query} AND (#{name_query_string(names)})", :filter_queries => filter_queries,
             :facets => {:fields => ["role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL"], :mincount => 1, :limit => -1})
     
     response = @solr.send(req)
     facets = facets_to_hash(response.data['facet_counts']['facet_fields'])
     agents = {}  
+    hits = []
     facets.each do |role_with_prefix, role_data|
       role = role_with_prefix[-3,3]
-      role_data.each do |name,freq|
-        # because an object can have more than one agent in various roles, agents can be returned which do not match the prefix
-        # so a regex match is done to filter only the ones that match.  This is imperfect as it may match mid-string and return a role
-        # that doesn't quite match what is expected ("Bob Smith" would match a prefix of "mith", but only if there is another role that has a word that starts with "mith"),
-        if name =~ Regexp.new(prefix, Regexp::IGNORECASE)
-          role_counts = agents[name] ||= {}
-          role_counts[role] ||= 0
-          role_counts[role] = role_counts[role] + freq
-        end
+      role_data.each do |name,freq|  
+        names.each_index do |i|
+          
+         if name.downcase.starts_with?(names[i])
+           # count this as a match 
+           role_counts = agents[name] ||= {}
+           role_counts[role] ||= 0
+           role_counts[role] = role_counts[role] + freq             
+         end
+        end        
       end
     end
-    
+              
     retval = []
     agents.each do |name, roles|
       retval << {:name => name, :roles => roles, :total => roles.values.inject(0) {|total,val| total + val}}
@@ -222,6 +228,20 @@ class CollexEngine
   
   def commit
     @solr.commit(:wait_searcher => false, :wait_flush => false)
+  end
+  
+  def name_query_string( names )
+    # search on each name in the query
+    query_string = ""
+    names.each_index { |i|
+      last = (names.size-1 == i)
+      and_string = last ? "" : " AND "
+      # example: agent:gabriel* AND agent:dante* AND agent:rossetti*
+      query_string << "agent:#{names[i]}*#{and_string}"
+    }
+    
+    # return the accumulated query string and the names in it
+    return query_string
   end
 
 private
