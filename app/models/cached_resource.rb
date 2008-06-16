@@ -88,10 +88,10 @@ class CachedResource < ActiveRecord::Base
     type = type.to_sym
     limit = limit.nil? ? DOCUMENT_LIMIT : limit.to_i
           
-    if user.nil? 
-      cloud_of_ar_objects = find_by_sql([ CLOUD_SQL[type], limit ]) 
+    cloud_of_ar_objects = if user.nil? 
+      find_by_sql([ CLOUD_SQL[type], limit ]) 
     else
-      cloud_of_ar_objects = find_by_sql([ CLOUD_BY_USER_SQL[type], user, limit ])
+      find_by_sql([ CLOUD_BY_USER_SQL[type], user, limit ])
     end      
          
     # convert active record objects to [name,freq] pairs
