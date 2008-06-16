@@ -117,7 +117,7 @@ module ApplicationHelper
      if (type=="archive")
        display = site(value) ? site(value)['description'] : value
      end
-     amped_value = value.gsub(/&amp;/, "&").gsub(/&/, "&amp;")
+     amped_value = value.gsub(/&amp;/, "&").gsub(/&/, "&amp;").gsub(/ \/ \/ \*$/, "")
      target = sidebar_list_path(:type => type, :value => amped_value, :user => params[:user])
      link_to_function display, update_sidebar(target), html_options
   end
