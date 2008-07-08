@@ -1,4 +1,4 @@
-<%# ------------------------------------------------------------------------
+ <!-- 
     Copyright 2007 Applied Research in Patacriticism and the University of Virginia
     
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,10 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
----------------------------------------------------------------------------- %>
+ -->
 
-<ul class="cookies">
-<%
-@values.each do |value|
-    constraint_exists = false
-    session[:constraints].each do |constraint|
-      if "agent" == constraint[:field] and value[:name] == constraint[:value]
-        constraint_exists = true
-        break
-      end
-    end
-    
-    if not constraint_exists
-%>
-   <li class="cookie"><span class="informal">&nbsp;</span><%=value[:name]%><span class="informal"> (<%=value[:total]%>)</span></li>
-<%
-   end # not constraint_exists
-end
-%>
-</ul>
+<div class="popup">
+<p>The technical staff at NINES continue to refine and improve the Collex application, even as it is implemented in NINES. While most of its features are in place, access to some of them, such as the Exhibit Builder, is currently restricted to a small group of beta testers for further development.</p>
+
+<p>As we prepare for our offical software release of Collex in December of 2008, feedback and bug reports from our users are warmly welcomed. If you encounter technical difficulties using Collex, please contact us at <a href="mailto:technologies@nines.org">technologies@nines.org</a>.</p>
+</div>
