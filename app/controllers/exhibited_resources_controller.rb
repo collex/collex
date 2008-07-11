@@ -44,11 +44,7 @@ class ExhibitedResourcesController < ExhibitedItemsController
     else
       flash[:error] = "Resource was not added."
     end
-    unless er.blank?
-      redirect_to edit_exhibit_page_url(:exhibit_id => es.page.exhibit, :id => es.page, :anchor => dom_id(er))
-    else
-      redirect_to edit_exhibit_page_url(es.page.exhibit, es.page)
-    end  
+    redirect_to edit_exhibit_page_url(es.page.exhibit, es.page)
   end
 
 end
