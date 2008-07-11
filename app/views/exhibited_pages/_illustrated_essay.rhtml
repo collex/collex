@@ -21,6 +21,21 @@
 <% end %>
 
 
+<%# For drag and drop of objects %>
+<%- if controller.action_name == "edit" -%>
+  <% div :class => "inline-drop-zone-wrapper" do table do tr do %>
+    <%- @exhibited_page.exhibited_sections.each do |section| -%>
+      <% td :class => "resource-drop-zone", :id => "resource-drop-zone-for-#{section.id}" do %>
+        Drag and drop resources here for section <%= section.position %>.
+        <%= image_tag("loading.gif", :style => "display:none;", :id => "drop-zone-spinner-for-#{section.id}") %>
+      <% end %>
+      
+    <%= drop_receiving_element("resource-drop-zone-for-#{section.id}",
+    :onDrop => "function(element){$('drop-zone-spinner-for-#{section.id}').show(); $('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{section.id}';$('add_resource_form').action='#{exhibit_page_section_resources_path(@exhibit, @exhibited_page, section)}'; $('add_resource_form').submit(); return false;}") %>
+  <% end end end end %>
+<%- end #if -%>
+
+<%# For display of sections %>
 <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section" do %>
 
   <%= div render( :partial => "exhibited_pages/#{@exhibited_section.template}", :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
