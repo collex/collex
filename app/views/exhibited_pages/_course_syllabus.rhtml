@@ -19,7 +19,6 @@
   <%= div exhibits_tiny_mce_in_place_editor(:exhibited_page, :annotation), :id => "mce_container_exhibited_item_#{@exhibited_page.id}" %>
   <%= p move_exhibited_page_links(@exhibited_page) %>
   
-  <%= p link_to("Remove Page and its Objects", exhibit_page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete)%>
 <%- else -%>
   <%= h2 @exhibited_page.title unless @exhibited_page.title.blank? %>
   <%= p @exhibited_page.annotation  unless @exhibited_page.annotation.blank? %>

@@ -22,7 +22,8 @@
       <%= li link_to('All Exhibits', exhibits_path) %>
       <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
       <%= li link_to('Preview', exhibit_page_path(:exhibit_id => @exhibit.id, :id => @exhibited_page.id)) %>
-      <%= li link_to("New Page", exhibit_pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
+      <%= li link_to("Add a Page", exhibit_pages_path(:exhibit_id => @exhibit, :page_id => @exhibited_page), :method => "post") %>
+      <%= li link_to("Remove this Page and its Objects", exhibit_page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete) %>
       
       <%- unless @exhibited_page.sections_full? -%>
         <%= link_to_add_section(@section_types, @exhibited_page) %>

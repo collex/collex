@@ -16,8 +16,6 @@
 
 <%- if controller.action_name == "edit" -%>
     <%= p move_exhibited_page_links(@exhibited_page) %>
-  
-  <%= p link_to("Remove Page and its Objects", exhibit_page_path(@exhibited_page.exhibit, @exhibited_page), :confirm => "Remove Page?", :method => :delete)%>
 <% end %>
 
 
@@ -37,6 +35,15 @@
 
 <%# For display of sections %>
 <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section" do %>
+  <%- if controller.action_name == "edit" -%>
+    <% div :class => "section-menu" do %>
+      <% ul do  %>
+        <%= li b("Section Menu") %>
+        <%= li link_to("Remove Section and its Objects", exhibit_page_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete) %>
+        <%= li link_to_function("Add text area to this section", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibit_page_section_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;") %>
+      <% end #ul %>
+    <% end %>
+  <%- end -%>
 
   <%= div render( :partial => "exhibited_pages/#{@exhibited_section.template}", :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
   
