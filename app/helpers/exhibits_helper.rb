@@ -67,7 +67,7 @@ module ExhibitsHelper
     page = exhibited_section.exhibited_page
     exhibit = page.exhibit
     
-    html = ""
+    html = "move section: "
     
     html << link_to("&uarr;&uarr;", move_to_top_exhibit_page_section_path(:exhibit_id => exhibit, :id => exhibited_section, :page_id => page), :class => "double-arrow", :method => "post", :title => "make first section on page") unless exhibited_section.first?
     html << span("&uarr;&uarr;", :class => "double-arrow", :title => "already first section on page!") if exhibited_section.first?
@@ -93,7 +93,7 @@ module ExhibitsHelper
     exhibited_page
     exhibit = exhibited_page.exhibit
     
-    html = ""
+    html = "move page: "
     
     html << link_to("&uarr;&uarr;", move_to_top_exhibit_page_path(:exhibit_id => exhibit, :id => exhibited_page), :class => "double-arrow", :method => "post", :title => "make this the first page") unless exhibited_page.first?
     html << span("&uarr;&uarr;", :class => "double-arrow", :title => "already the first page!") if exhibited_page.first?
