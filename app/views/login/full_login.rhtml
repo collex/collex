@@ -19,7 +19,7 @@
 <%= h2 "Please Log in" %>
 <%= div flash[:sidebar_notice], :id => "message" if flash[:sidebar_notice] %>
 
-<%= form_tag :controller => "login", :action => "login" %> 
+<% form_tag :controller => "login", :action => "login" do |f| %> 
 <table> 
   <tr> 
     <td>user name:</td> 
