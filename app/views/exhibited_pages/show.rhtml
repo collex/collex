@@ -22,6 +22,7 @@
     <%= li link_to 'Edit', edit_exhibit_page_path(@exhibit, @exhibited_page) if @exhibit.updatable_by?(user_or_guest) %> 
   <% end end %>
   <% div :id => "exhibit-content" do %>
+    <%= h1 @exhibit.exhibit_type.description %>
     <%= h2 @exhibit.title %>
     <%= div @exhibit.annotation %>
     <%= h3 @exhibit.user.fullname %>
