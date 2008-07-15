@@ -38,10 +38,10 @@
   border: 1px solid #999;
 }
 
-#exhibit-content, #exhibit-menu {
+#exhibit-content, #exhibit-menu, .section-menu {
   padding: 10px 15px;
 }
-#exhibit-menu {
+#exhibit-menu, .section-menu {
   float: right;
   text-align: right;
   width: auto;
@@ -49,6 +49,10 @@
   border-bottom: 1px solid #999;
   border-top-style: none;
   border-right-style: none;
+}
+.section-menu {
+  margin-top: -11px;
+  margin-right: -12px;
 }
 
 #exhibit-body table td, #exhibit-body table th {
@@ -76,13 +80,21 @@
   height: 7em;
   margin: .5em;
 }
+
+.inline-drop-zone-wrapper {
+  position: relative;
+  border: 1px solid #999;
+  padding: 1em;
+  margin: 1em 0 1em 0;
+}
+
 .resource-drop-zone, .add-text-area {
   border: 1px dashed grey;
   height: 5em;
   width: 10em;
-  text-align: center;
   padding: 1em 1em;
   margin: .4em;
+  text-align: center;
 }
 .drop-zone-wrapper .add-text-area {
   position: absolute;
@@ -92,7 +104,8 @@
   position: absolute;
   left: 0;
 }
-#exhibit-menu ul{
+
+#exhibit-menu ul, .section-menu ul{
   display: block;
 /*  float: right;*/
   list-style: none;
