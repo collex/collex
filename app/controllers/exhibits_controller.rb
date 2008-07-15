@@ -17,9 +17,9 @@
 class ExhibitsController < ExhibitsBaseController
   layout "collex"
 
-  if ENV['RAILS_ENV'] == 'production'
-    before_filter :coming_soon
-  end  
+#   if ENV['RAILS_ENV'] == 'production'
+#     before_filter :coming_soon
+#   end  
 
   uses_tiny_mce(:options => {
                   :browsers => "msie,gecko,opera",
