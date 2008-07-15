@@ -17,8 +17,6 @@
 <%- if controller.action_name == "edit" -%>
   <%= h2 exhibited_page_in_place_editor_field(:exhibited_page, :title) %>
   <%= div exhibits_tiny_mce_in_place_editor(:exhibited_page, :annotation), :id => "mce_container_exhibited_item_#{@exhibited_page.id}" %>
-  <%= p move_exhibited_page_links(@exhibited_page) %>
-  
 <%- else -%>
   <%= h2 @exhibited_page.title unless @exhibited_page.title.blank? %>
   <%= p @exhibited_page.annotation  unless @exhibited_page.annotation.blank? %>

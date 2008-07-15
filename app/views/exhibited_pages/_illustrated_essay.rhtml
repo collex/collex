@@ -14,11 +14,6 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<%- if controller.action_name == "edit" -%>
-    <%= p move_exhibited_page_links(@exhibited_page) %>
-<% end %>
-
-
 <%# For drag and drop of objects %>
 <%- if controller.action_name == "edit" -%>
   <% div :class => "inline-drop-zone-wrapper" do table do tr do %>
@@ -41,18 +36,11 @@
         <%= li b("Section Menu") %>
         <%= li link_to("Remove Section and its Objects", exhibit_page_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete) %>
         <%= li link_to_function("Add text area to this section", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibit_page_section_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;") %>
+        <%= li move_exhibited_section_links(@exhibited_section) %>
       <% end #ul %>
     <% end %>
   <%- end -%>
 
   <%= div render( :partial => "exhibited_pages/#{@exhibited_section.template}", :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section) %>
-  
-  <%- if controller.action_name == "edit" -%>   
-    <% p do %>
-      <%= move_exhibited_section_links(@exhibited_section) %>
-    <% end %>
-    
-    <%= p link_to("Remove Section and its Objects", exhibit_page_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete)%>
-  <% end %>
 
 <% end end %>
