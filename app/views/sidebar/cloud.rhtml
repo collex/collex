@@ -25,8 +25,10 @@
     <div><%= "#{params[:user]}'s" %> <%=facet_label(params[:type])%></div>
   <% end %>
     
+  <div id="tag-cloud-spinner">
+  </div>
   <div class="tagcloud" id="tagcloud">
-    <%= tag_cloud(@cloud_freq, params[:type], @bucket_size) %>
+  	  <%= tag_cloud(@cloud_freq, params[:type], @bucket_size) %>
   </div>
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
@@ -34,7 +36,7 @@
     	<%= link_to_function "show more", "sidebarTagCloud.toggleShowMoreCloudTags()", :id => 'toggle-show-all-tags' %>
     </span>
   <%- end -%>
-  
+
 </div>
 
 <% end %>

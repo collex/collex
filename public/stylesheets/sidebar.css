@@ -1,4 +1,10 @@
- 	
+
+ 	#tag-cloud-spinner {
+		margin-left: 90px;
+		margin-top: 20px;
+		margin-bottom: 20px;
+    }
+
 	#sidebar {
 		width: 230px;
 		/*max-width: 320px;

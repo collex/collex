@@ -21,8 +21,13 @@ SidebarTagCloud = Class.create( {
 		this.initSidebarFilterHandler();			
 	},
 	
-	// initialize keystroke event for sidebar filter field
+	onSidebarLoadComplete: function() {
+		this.spinner.stop();
+		this.initSidebarFilterHandler();					
+	},
+	
 	initSidebarFilterHandler: function() {
+		// initialize keystroke event for sidebar filter field
 		this.showAllCloudTags = false;
 		this.sidebarTouched = false;
 		this.updateTagCloud();
@@ -83,11 +88,15 @@ SidebarTagCloud = Class.create( {
 	},
 
 	// update the sidebar with new content from the target URL
-	updateSidebar: function( targetURL ) {
+	updateSidebar: function( targetURL ) {		
+		// display a spinner
+		$('tagcloud').hide();
+		this.spinner = new Spinner( 'tag-cloud-spinner', { height: 48, width: 48, speed: 0.1, image: '/images/spinner.png'} );
+		
 		new Ajax.Updater('sidebar', targetURL, {
 			asynchronous:true, 
 			evalScripts:true,
-			onComplete: this.initSidebarFilterHandler.bindAsEventListener(this)
+			onComplete: this.onSidebarLoadComplete.bindAsEventListener(this)
 		});
 	}					
 });
