@@ -145,6 +145,11 @@ module ApplicationHelper
     link_to_function user, update_sidebar(target), html_options.merge( {:title => pluralize(count, 'object')} )
   end
   
+  def link_to_detail( label, options )
+    target = url_for( options )
+    link_to_function( label, update_sidebar(target) )
+  end
+  
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
      (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
      text_field(object, method, tag_options) +

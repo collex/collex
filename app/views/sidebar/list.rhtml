@@ -14,18 +14,20 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<%= cloud_object(@total_hits, params[:value], other_username) %>
-<div class="pagination">
-  <% if @page > 1 %>
-    <%= link_to_remote("<span class='pagearrow'>&#x21E0;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page - 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
-  <% end %>
-  page <%= @page %> of <%= @num_pages %>
-  <% if @page < @num_pages %>
-    <%= link_to_remote("<span class='pagearrow'>&#x21E2;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page + 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
-  <% end %>
-</div>
 
+<div id="sidebar-spinner" style="display:none;"></div>
 <div class="content">
+	<%= cloud_object(@total_hits, params[:value], other_username) %>
+	<div class="pagination">
+	  <% if @page > 1 %>
+	    <%= link_to_remote("<span class='pagearrow'>&#x21E0;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page - 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
+	  <% end %>
+	  page <%= @page %> of <%= @num_pages %>
+	  <% if @page < @num_pages %>
+	    <%= link_to_remote("<span class='pagearrow'>&#x21E2;</span>", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'list', :page => (@page + 1), :type => params[:type], :value => params[:value], :user => params[:user]}, :complete => "window.scrollTo(0,0);", :class => "title") %>
+	  <% end %>
+	</div>
+
   <div id="permalink">
     <span class="listtype"><%= @display %><%= link_to image_tag('/images/feed.png', :class => 'feed', :title => "header=[syndicated feed] body=[use a newsreader to subscribe to updates to this tag] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), :controller => "sidebar", :action=>"atom", :type => params[:type], :value => params[:value], :user => params[:user]%><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), permalink_list_url(:type => params[:type], :value => params[:value], :user => params[:user]), {:target => "_blank"}%></span>
   </div>

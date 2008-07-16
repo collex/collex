@@ -78,7 +78,8 @@ module SidebarHelper
           end
           xm.td do
             xm.span do 
-              xm << link_to_remote( h(item.title ? item.title : "<untitled>"), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);", :class => "title")
+              xm << link_to_detail( h(item.title ? item.title : "<untitled>"), {:controller=>"sidebar", :action => 'detail', :objid => item['uri']} ) 
+              #link_to_remote( h(item.title ? item.title : "<untitled>"), :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => item['uri']}, :complete => "window.scrollTo(0,0);", :class => "title")
             end
             xm.br
             xm.text(comma_separate(item.date_labels))
