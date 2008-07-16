@@ -89,9 +89,16 @@ SidebarTagCloud = Class.create( {
 
 	// update the sidebar with new content from the target URL
 	updateSidebar: function( targetURL ) {		
+
+		// hide the content
+		$$('.content').each( function(i) { 
+			i.hide();
+		});
+		
+		$('sidebar-spinner').show();
+		
 		// display a spinner
-		$('tagcloud').hide();
-		this.spinner = new Spinner( 'tag-cloud-spinner', { height: 48, width: 48, speed: 0.1, image: '/images/spinner.png'} );
+		this.spinner = new Spinner( 'sidebar-spinner', { height: 48, width: 48, speed: 0.1, image: '/images/spinner.png'} );
 		
 		new Ajax.Updater('sidebar', targetURL, {
 			asynchronous:true, 
