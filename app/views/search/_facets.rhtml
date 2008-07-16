@@ -37,7 +37,7 @@
                         <th align="left"><span class="help" title="header=[saved searches] body=[these are search parameters you've saved in previous sessions.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"><% if !name_shown %>saved:<% else %>&nbsp;<% end %></span></th>
 
 
-              <td><span title="<%=h saved_search.to_s%>"><%=h saved_search.name%></span>
+              <td><%= span h(saved_search.name) %>
                  <%=link_to '&#x21D0;', {:action => :edit_saved_search, :id => saved_search.id}, {:title => "header=[edit] body=[open this saved search in the constraints table for editing] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"} %><%=link_to '&#x2715;', {:action => :remove_saved_search, :id => saved_search.id}, { :class => 'savedsearch', :title => "header=[delete] body=[permanently delete this saved search] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"} %>
              </td>
        	    <td align="center"><%= link_to "add", {:controller=>"search", :action => 'add_saved_search', :username => username, :name => saved_search.name} -%></td>
