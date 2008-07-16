@@ -214,15 +214,7 @@ class SearchController < ApplicationController
      
      search.constraints.clear
      session[:constraints].each do |c|
-       case c
-       when SavedSearchConstraint
-         saved_search = User.find_by_username(c.field).searches.find_by_name(c.value)
-         saved_search.constraints.each do |saved_constraint|
-           search.constraints << saved_constraint.clone
-         end
-       else
-         search.constraints << c
-       end
+       search.constraints << c.clone
      end
      search.save!
      
