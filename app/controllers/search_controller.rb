@@ -27,6 +27,7 @@ class SearchController < ApplicationController
    end
    
    def browse     
+     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
      @page = params[:page] ? params[:page].to_i : 1
           
      # just cache the top level page.
