@@ -18,21 +18,23 @@ class SearchController < ApplicationController
    layout 'collex'
    before_filter :authorize, :only => [:collect, :save, :remove_saved_search]
    
+   # Number of search results to display by default
+   MIN_ITEMS_PER_PAGE = 5
+   MAX_ITEMS_PER_PAGE = 30
+   
    def initialize
       @solr = CollexEngine.new(COLLEX_ENGINE_PARAMS)
    end
    
-   def browse
-     items_per_page = 4
+   def browse     
      @page = params[:page] ? params[:page].to_i : 1
-     
-     
+          
      # just cache the top level page.
      @fragment_key = '/browse/page1' unless session[:constraints].length > 0
      
      if is_cache_expired?(@fragment_key) 
        begin
-         @results = search_solr(session[:constraints], @page, items_per_page)
+         @results = search_solr(session[:constraints], @page, session[:items_per_page])
        rescue  Net::HTTPServerException => e
          @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
          error_message = e.message
@@ -44,12 +46,19 @@ class SearchController < ApplicationController
          flash[:error] = render_to_string(:inline => "Sorry! you've entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => :clear_constraints%> or remove the offending search string below.")
        end
 
-       @num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil      
+       @num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil      
        @total_documents = @results["total_documents"]     
        @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'])
      end
-
+     
      render :action => 'results'
+   end
+   
+   def result_count
+     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
+     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+     redirect_to :action => 'index'
    end
    
    # allows queries to be linked in directly, or typed into the browser directly

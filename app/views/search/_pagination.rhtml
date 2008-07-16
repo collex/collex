@@ -1,5 +1,6 @@
 <br class="clearboth" />    
 <div class="pagination">
+ <%= render( :partial => 'result_count' ) %>    
  <% if @page > 1 %>
    <%= link_to "<span class='pagearrow'>&#x21E0;</span> last page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
  <% end %>
