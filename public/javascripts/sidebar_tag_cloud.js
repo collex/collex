@@ -16,9 +16,10 @@
 
 SidebarTagCloud = Class.create( {
 	
-	initialize: function( initialCloudSize ) {
+	initialize: function( initialCloudSize, instructions ) {				
+		this.instructions = instructions;
 		this.initialCloudSize = initialCloudSize;
-		this.initSidebarFilterHandler();			
+		this.initSidebarFilterHandler();	
 	},
 	
 	onSidebarLoadComplete: function() {
@@ -105,6 +106,23 @@ SidebarTagCloud = Class.create( {
 			evalScripts:true,
 			onComplete: this.onSidebarLoadComplete.bindAsEventListener(this)
 		});
-	}					
+	},	
+		
+	defaultInstructions: function(t) {
+	  var key = t.name.split('-',1)[0];
+	  return this.instructions[key];
+	},
+
+	clearInstructions: function(t) {
+	  if (t.value == this.defaultInstructions(t)) {t.value = '';}
+	},
+
+	check_submit: function() {		
+	    if (document.forms['dataform'].tag.value == '' || document.forms['dataform'].tag.value == this.instructions['tag'] ) { 
+	      alert('Sorry! you must assign at least one keyword in order to collect an object.'); 
+	      return false; 
+	    }
+	    return true;
+	}				
 });
 

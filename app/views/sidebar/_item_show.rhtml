@@ -1,0 +1,57 @@
+<div class="item">
+  <% if @object.url %>
+    <a target="_blank" href="<%=@object.url%>" class="title"><%= h title_for(@object) %></a> &rarr;
+  <% else %>
+    <%= h title_for(@object) %>
+  <% end %>
+  <br />
+  
+  <%= thumbnail_image_tag(@object, :class => "draggable") %>
+  <%= draggable_element("thumbnail_#{@object.uri}", :revert => true) %>
+
+<div class="rdf">
+<%- if @object.year or @object.agent or @object.genre -%>  
+  browse facets: <br/>
+  <% if @object.years then @object.years.each do |year|%>
+      <%= sb_link_to_remote('year', year) %>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <% if @object.agents then @object.agents.each do |agent|%>
+    <%= sb_link_to_remote('agent_facet', agent) %><br/>
+  <% end end %>
+  <% if @object.genres then @object.genres.each do |genre|%>
+    <%= sb_link_to_remote('genre', genre) %>
+  <% end end %>
+  <br/>
+<%- end -%>
+
+<% if site(@object.archive)%>
+  <%= a site(@object.archive)['description'], :href => site(@object.archive)['url'], :target => "_blank" %> &rarr;
+<% else %>
+  <%= @object[:archive]%>
+<% end %>
+</div>
+
+<div class="notes">
+<% unless @interpretation.tags.blank?() -%>
+  browse keywords: 
+	<ul>
+	  <% @sorted_tags.each do |tag| -%>
+	    <li><%= link_to_list 'tag', tag.name %></li>
+		<% end -%>           
+	</ul>
+<% end -%>
+
+</div>
+
+<% unless @object.users.blank?() then div :class => "users" do -%>
+    collected by:
+    <% @object.users.each do |username| -%>
+    	<%= link_to_remote( username, :update => "sidebar", :url => { :controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username } ) %>
+		<% end -%>
+<% end -%>
+<% end -%>
+
+</div>

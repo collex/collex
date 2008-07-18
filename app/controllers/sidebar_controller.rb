@@ -14,8 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
-TAG_INSTRUCTIONS = 'one-word keywords'
-ANNOTATION_INSTRUCTIONS = 'your annotations'
+TAG_INSTRUCTIONS = 'add tag'
+ANNOTATION_INSTRUCTIONS = 'enter annotation'
 NUM_VISIBLE_TAGS = 50
 NUM_VISIBLE_ITEMS = 5
 
@@ -99,6 +99,9 @@ class SidebarController < ApplicationController
     else
       @interpretation = Interpretation.new
     end
+    
+    # sorted alphabetically by name
+    @sorted_tags = @interpretation.tags.sort { |a,b| a.name <=> b.name }
   end
 
   def update
@@ -108,12 +111,25 @@ class SidebarController < ApplicationController
       interpretation = user.interpretations.build(:object_uri => params[:objid])
     end
     interpretation.annotation =  params[:annotation]
-    interpretation.tag_list = params[:tags]
+    interpretation.add_tag( params[:tag] )
     interpretation.save!
     solr = CollexEngine.new
     solr.update_collectables(user.username, params[:objid], interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
     solr.commit
     redirect_to :action => 'detail', :objid => params[:objid]
+  end
+  
+  def remove_tag
+    user = User.find_by_username(session[:user][:username])
+    interpretation = user.interpretations.find_by_object_uri(params[:objid])
+    if interpretation
+      interpretation.remove_tag( params[:tag] )
+      interpretation.save!
+      solr = CollexEngine.new
+      solr.update_collectables(user.username, params[:objid], interpretation.tags.collect { |tag| tag.name }, interpretation.annotation)
+      solr.commit
+      redirect_to :action => 'detail', :objid => params[:objid]
+    end
   end
   
   def remove

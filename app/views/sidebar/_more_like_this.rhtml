@@ -1,0 +1,14 @@
+<div class="likethis">
+<table cellspacing="0" class="more" width="100%">
+
+<% if @object.mlt.size > 0 %>
+<caption>more like this</caption>
+<% end %>
+<tr>
+  <% @object.mlt.each do |item| %>
+    <%= td link_to_remote thumbnail_image_tag(item, :title => "header=[Collex suggests... ] body=[#{h title_for(item).to_s.gsub(/\[/,'[[').gsub(/\]/,']]')}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on] windowlock=[off]", :alt => "#{h item['title']}"), :update => "sidebar", :url => {:controller => 'sidebar', :action => 'detail', :objid=> item['uri']} %>
+  <% end %>
+
+</tr>
+</table>
+</table>

@@ -19,10 +19,8 @@
 <div id="sidebar-spinner" style="display:none;"></div>
 <div class="content">
 
-  <div id="permalink">
-     <span class="listtype"><%=link_to image_tag('/images/permalink.png', :class => 'permalink', :title => "header=[permalink] body=[open in another window to see a direct URL you can share] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), permalink_cloud_url(:type => params[:type], :value => params[:value], :user => params[:user]), {:target => "_blank"}%></span>
-  </div>
-  
+	<%= render :partial => 'permalink', :object => permalink_cloud_url(:type => params[:type], :value => params[:value], :user => params[:user]) %>
+
   <% if not me? and params[:user] %>
     <div><%= "#{params[:user]}'s" %> <%=facet_label(params[:type])%></div>
   <% end %>

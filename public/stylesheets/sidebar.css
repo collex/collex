@@ -74,9 +74,21 @@
 		font-family:  courier, american typewriter, verdana, fixed-width;  
 		margin: 1em 0 0 0;
 		}
-	.notes a:link { color: #333; text-decoration: none; }
-	.notes a:visited { color: #666; text-decoration: none; }
-	.notes a:hover { color: #fff; text-decoration: none; }
+	
+	.notes ul {
+		list-style: none;
+		padding-left: 0px;
+		margin-top: .2em;
+	}
+		
+	.buttonlike-link:link, .buttonlike-link:visited {		
+		font-size: .8em;
+		background-color: #A60000;
+		color: white;
+		padding-right: .25em;
+		padding-left: .25em;
+	}
+		
 	.offsite {
 		height: .8em;
 		width: .8em;

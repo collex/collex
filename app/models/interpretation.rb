@@ -30,4 +30,13 @@ class Interpretation < ActiveRecord::Base
     taggings.reset
     tags.reset
   end
+    
+  def add_tag(tag_string)
+    Tagging.add_to(self, Tag.parse_to_tag(tag_string) )
+  end
+  
+  def remove_tag(tag_string)
+    Tagging.delete_from(self, Tag.parse_to_tag(tag_string) )
+  end
+  
 end

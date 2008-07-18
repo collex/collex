@@ -30,6 +30,11 @@ class Tag < ActiveRecord::Base
       find_or_create(parse(list))
     end
     
+    def parse_to_tag(user_entered_tag)
+      #TODO replace whitespace with _'s          
+      find_or_create(parse(user_entered_tag))      
+    end
+    
     # Parses a space separated list of tags into tag names
     #
     #   Tag.parse('a b c')

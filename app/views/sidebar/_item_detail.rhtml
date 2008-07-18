@@ -1,0 +1,74 @@
+<div class="item">
+  <% if @object.url %>
+    <a target="_blank" href="<%=@object.url%>" class="title"><%= h title_for(@object) %></a> &rarr;
+  <% else %>
+    <%= h title_for(@object) %>
+  <% end %>
+  <br />
+  
+  <%= thumbnail_image_tag(@object, :class => "draggable") %>
+  <%= draggable_element("thumbnail_#{@object.uri}", :revert => true) %>
+
+<div class="rdf">
+<%- if @object.year or @object.agent or @object.genre -%>  
+  browse facets: <br/>
+  <% if @object.years then @object.years.each do |year|%>
+      <%= sb_link_to_remote('year', year) %>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <% if @object.agents then @object.agents.each do |agent|%>
+    <%= sb_link_to_remote('agent_facet', agent) %><br/>
+  <% end end %>
+  <% if @object.genres then @object.genres.each do |genre|%>
+    <%= sb_link_to_remote('genre', genre) %>
+  <% end end %>
+  <br/>
+<%- end -%>
+
+<% if site(@object.archive)%>
+  <%= a site(@object.archive)['description'], :href => site(@object.archive)['url'], :target => "_blank" %> &rarr;
+<% else %>
+  <%= @object[:archive]%>
+<% end %>
+</div>
+
+<div class="notes">
+<% unless @interpretation.tags.blank?() -%>
+  browse keywords: 
+	<ul>
+	  <% @sorted_tags.each do |tag| -%>
+	    <li><%= link_to_list 'tag', tag.name %> <sup><%= link_to 'x', '#', :class => 'buttonlike-link' %></sup></li>
+		<% end -%>           
+	</ul>
+<% end -%>
+
+<% if is_logged_in?() %>
+	<% form_remote_tag(:update => 'sidebar', :url => {:controller=>"sidebar", :action => :update}, :html => {:name => 'dataform', :id=>'dataform'}, :loading => "new Effect.Highlight('dataform', {startcolor:'#999999', endcolor:'#dcdcdc', restorecolor:'#dcdcdc'});", :condition => "sidebarTagCloud.check_submit()") do -%>
+	  <%= hidden_field_tag :objid, params[:objid] -%>
+	  <%= text_field_tag :tag, TAG_INSTRUCTIONS, :onfocus => "sidebarTagCloud.clearInstructions(this)" -%><span class="help" title="header=[keywords?] body=[add personal, one-word descriptors for this object. (to collect it, you must assign at least one.) separate your keywords by spaces and join multi-word descriptors with dashes, just-like-this.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span><br/>
+    
+	  <%= text_area_tag(:annotation, @interpretation.annotation.blank? ? ANNOTATION_INSTRUCTIONS : @interpretation.annotation, :size => '22x8',
+	                    :onfocus => "sidebarTagCloud.clearInstructions(this)") -%><br/>
+	  <span class="emph4">
+	    <% unless @interpretation.new_record? -%>
+	      <%=link_to_remote "uncollect", :update => "sidebar", :url => {:controller=>'sidebar', :action => 'remove', :objid => params[:objid]}%>
+	    <% end -%>
+	    <%= link_to_function @interpretation.new_record? ? "collect" : "save changes", "document.forms['dataform'].onsubmit();" %>
+	  </span>
+	<% end -%>
+<% else %>
+	  To collect or edit this object, <%=link_to_remote "log in and return", :update => "sidebar", :url => {:controller=>"sidebar", :action=>"detail", :objid => params[:objid],:user=>"<mine>"} %>.
+<% end %>
+</div>
+
+<% unless @object.users.blank?() then div :class => "users" do -%>
+    collected by:
+    <% @object.users.each do |username| -%>
+    	<%= link_to_remote( username, :update => "sidebar", :url => { :controller => 'sidebar', :action => 'cloud', :type => 'tag', :user => username } ) %>
+		<% end -%>
+<% end -%>
+<% end -%>
+
+</div>

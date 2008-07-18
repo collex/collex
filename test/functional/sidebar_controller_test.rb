@@ -38,13 +38,13 @@ class SidebarControllerTest < Test::Unit::TestCase
   end
   
   def test_update
-    get :update, "tags"=>"consist of three parts",
+    get :update, "tag"=>"consist of three parts",
                  "action"=>"update", 
                  "controller"=>"sidebar", 
                  "objid"=>"http://www.rossettiarchive.org/docs/1-1864.s105.raw",
                  "annotation"=>"annotate this item"
                  
-     get :update, "tags"=>"consist of three parts",
+     get :update, "tag"=>"consist of three parts",
                   "action"=>"update", 
                   "controller"=>"sidebar", 
                   "objid"=>"http://www.rossettiarchive.org/docs/1-1864.s105.raw",

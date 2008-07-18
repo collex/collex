@@ -17,33 +17,13 @@
 <%= javascript_tag("window.onload = window.location.reload();") if flash[:refresh_page] %>
 
 <script type="text/javascript">
-
-var instructions = [];
-instructions['tags'] = '<%= TAG_INSTRUCTIONS %>';
-instructions['annotation'] = '<%= ANNOTATION_INSTRUCTIONS %>';
-
-function defaultInstructions(t) {
-  var key = t.name.split('-',1)[0];
-  return instructions[key];
-}
-
-function clearInstructions(t) {
-  if (t.value == defaultInstructions(t)) {t.value = '';}
-}
-
-function check_submit() {
-    if (document.forms['dataform'].tags.value == '' || document.forms['dataform'].tags.value == "<%= TAG_INSTRUCTIONS %>") { 
-      alert('Sorry! you must assign at least one keyword in order to collect an object.'); 
-      return false; 
-    }
-    return true;
-}
-
-// perform initialization after DOM loads
-Event.observe(window, 'load', function() {		
-	sidebarTagCloud = new SidebarTagCloud( <%= NUM_VISIBLE_TAGS %> );
-});	
-
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {		
+		var instructions = { 'tag': '<%= TAG_INSTRUCTIONS %>',
+												 'annotation': '<%= ANNOTATION_INSTRUCTIONS %>' };
+	
+		sidebarTagCloud = new SidebarTagCloud( <%= NUM_VISIBLE_TAGS %>, instructions );
+	});	
 </script>
 
 <% if flash[:sidebar_notice] -%> 
