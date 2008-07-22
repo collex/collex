@@ -42,9 +42,10 @@ ActionController::Routing::Routes.draw do |map|
                              :share             => :post, 
                              :unshare           => :post, 
                              :publish           => :post, 
-                             :unpublish           => :post, 
+                             :unpublish         => :post, 
                              :collect           => :post, 
-                             :update_annotation => :post } do |exhibit|
+                             :update_annotation => :post },
+                :collection => { :intro         => :get } do |exhibit|
     exhibit.resources :pages, 
                       :controller => :exhibited_pages,
                       :member => { :update_title      => :post, 
