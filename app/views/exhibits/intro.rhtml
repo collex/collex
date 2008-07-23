@@ -43,10 +43,14 @@
 	</tr>
 </table>
 
-<p class="blurb">
+<p class="blurb emph4">
   In anticipation of the official release of Collex in December 2008, NINES is <%= link_to "offering a peek", exhibits_path %> at our new Exhibit Builder, currently under development. Give it a test drive and let us know what you think! Send comments and feedback to <a href="mailTo:technologies@nines.org">technologies@nines.org</a>.
 </p>
-
+<div class="thumbnail" style="float: none; margin-left: 355px; margin-right: 379px">
+<%= link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :style => "margin: 0", :title => "header=[Guest Pass] body=[try out the pre-released exhibit builder today] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), exhibits_path %>
+<br/>Guest Pass
+</div>
+   
      <div id="footer" style="text-align:center">
            <a href="http://www.nines.org">NINES</a>: aggregating peer&#8209;reviewed&nbsp;<%= link_to_popup("digital objects", {:controller=>'nines', :action=>'resources'})%>&nbsp;from&nbsp;<%= Site.count %>&nbsp;federated&nbsp;<%= link_to_popup("sites", {:controller=>'nines', :action=>'sites'})%>.
      </div>
