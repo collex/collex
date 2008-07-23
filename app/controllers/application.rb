@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
   private
     def session_create
       session[:constraints] ||= []
+      session[:num_docs] ||= (CollexEngine.new).num_docs
     end
   
     def set_charset
