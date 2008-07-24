@@ -43,13 +43,16 @@
 	</tr>
 </table>
 
-<p class="blurb emph4">
-  In anticipation of the official release of Collex in December 2008, NINES is <%= link_to "offering a peek", exhibits_path %> at our new Exhibit Builder, currently under development. Give it a test drive and let us know what you think! Send comments and feedback to <a href="mailTo:technologies@nines.org">technologies@nines.org</a>.
-</p>
-<div class="thumbnail" style="float: none; margin-left: 355px; margin-right: 379px">
+
+<div class="thumbnail" style="float: right; margin-left: 30px; margin-right: 30px; margin-top: 20px; margin-bottom: 20px;">
 <%= link_to image_tag('/images/harrington.gif', :class => 'bigbutton', :style => "margin: 0", :title => "header=[Guest Pass] body=[try out the pre-released exhibit builder today] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), exhibits_path %>
 <br/>Guest Pass
 </div>
+<p class="blurb emph4" style="margin-top: 20px; margin-left: -75px;">
+  In anticipation of the official release of Collex in December 2008, NINES is <%= link_to "offering a peek", exhibits_path %> at our new Exhibit Builder, currently under development. Give it a test drive and let us know what you think! Send comments and feedback to <a href="mailTo:technologies@nines.org">technologies@nines.org</a>.
+</p>
+
+<p class="blurb" style="margin-top: 20px; margin-left: 10px;"><span class="emph2">Use Exhibit Builder Guest Pass Now</span> &nbsp; <%= link_to "&raquo;&raquo;", exhibits_path %> &nbsp; <%= link_to "&raquo;&raquo;", exhibits_path %> &nbsp; <%= link_to "&raquo;&raquo;", exhibits_path %></p>
    
 <%= render :partial => "search/footer" %>
 
