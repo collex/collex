@@ -34,6 +34,14 @@ production:
   <<: *defaults
   url_base: http://nines.org
   
+quandu_staging:  
+  <<: *defaults
+  url_base: http://staging.nines-test.lib.virginia.edu
+  
+quandu_production:  
+  <<: *defaults
+  url_base: http://nines-test.lib.virginia.edu
+  
 test:  
   <<: *defaults
   url_base: /
