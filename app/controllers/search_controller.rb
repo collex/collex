@@ -30,27 +30,22 @@ class SearchController < ApplicationController
      session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
      @page = params[:page] ? params[:page].to_i : 1
           
-     # just cache the top level page.
-     @fragment_key = '/browse/page1' unless session[:constraints].length > 0
-     
-     if is_cache_expired?(@fragment_key) 
-       begin
-         @results = search_solr(session[:constraints], @page, session[:items_per_page])
-       rescue  Net::HTTPServerException => e
-         @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
-         error_message = e.message
-         if (match = error_message.match( /Query_parsing_error_/ ))
-       	   error_message = match.post_match
-         else
-           error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
-         end
-         flash[:error] = render_to_string(:inline => "Sorry! you've entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => :clear_constraints%> or remove the offending search string below.")
+     begin
+       @results = search_solr(session[:constraints], @page, session[:items_per_page])
+     rescue  Net::HTTPServerException => e
+       @results = {"facets" => {"archive" => {}}, "total_hits" => 0}
+       error_message = e.message
+       if (match = error_message.match( /Query_parsing_error_/ ))
+     	   error_message = match.post_match
+       else
+         error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
        end
-
-       @num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil      
-       @total_documents = @results["total_documents"]     
-       @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'])
+       flash[:error] = render_to_string(:inline => "Sorry! you've entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => :clear_constraints%> or remove the offending search string below.")
      end
+
+     @num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil      
+     @total_documents = @results["total_documents"]     
+     @sites_forest = FacetCategory.find_by_value('archive').merge_facets(@results["facets"]['archive'])
      
      render :action => 'results'
    end

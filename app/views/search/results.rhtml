@@ -14,31 +14,27 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<% cache_timeout(@fragment_key,1.hour.from_now) do %>
+<%= render( :partial => 'constraints' ) %>
 
-  <%= render( :partial => 'constraints' ) %>
+<div id="under">
+  <% if session[:constraints].size > 0 and @num_pages > 0 %>
+    <a name="results"></a>
 
-  <div id="under">
-    <% if session[:constraints].size > 0 and @num_pages > 0 %>
-      <a name="results"></a>
+    <%= render( :partial => 'pagination' ) %>
+    <%= render( :partial => 'bulkcollect' ) %>
 
-      <%= render( :partial => 'pagination' ) %>
-      <%= render( :partial => 'bulkcollect' ) %>
+    <form name="bulk_collect_form" id="bulk_collect_form">
+      <%= render( :partial => 'results' ) %>
+    </form>
 
-      <form name="bulk_collect_form" id="bulk_collect_form">
-        <%= render( :partial => 'results' ) %>
-      </form>
+    <%= render( :partial => 'bulkcollect' ) %>
+    <%= render( :partial => 'pagination' ) %>
 
-      <%= render( :partial => 'bulkcollect' ) %>
-      <%= render( :partial => 'pagination' ) %>
+  <% end %>
 
-    <% end %>
+  <%= render :partial => 'footer' %>
 
-    <%= render :partial => 'footer' %>
-
-    <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
-    <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
-  </div> 
-
-<% end %>
+  <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
+  <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
+</div> 
 
