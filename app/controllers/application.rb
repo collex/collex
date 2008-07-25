@@ -19,6 +19,9 @@
 class ApplicationController < ActionController::Base
   include ExceptionNotifiable
   
+  session :session_key => "_nines_user_session"
+  session_times_out_in 30.minutes
+  
   filter_parameter_logging "password"
   
 #  local_addresses.clear  #uncomment to test e-mails locally in development mode
