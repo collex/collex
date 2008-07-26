@@ -60,7 +60,7 @@
 
 <p><a name="ssearch"></a><span class="emph3">saved searches:</span>  Collex makes it possible for you to keep certain sets of constraints as a "saved search," under any name you wish.  This feature is only available to users who are logged in via the Collex sidebar.  Once you are logged in and have selected some constraints, you will see a "save these constraints" button at the bottom of the left-hand table.  Click it to name your saved search and add it to your faceted browsing options in the right-hand table.  Your saved searches will appear every time you are logged in, at the top of the faceted browser.  You have several options with saved searches.  You may delete them permanently by clicking the "X" buttons next to them in the faceted browser.  You may "add" them, as abbreviated sets which will appear as single constraints in the "my constraints" table at left.  An arrow button next to each one opens it, in all its particulars, in the same table.  There, you can edit it by toggling constraints from positive to negative, or by adding or removing constraints.  Save the search using the same name and it will overwrite your old search, or give it a new name to create a new saved search.  Finally, you can use a permalink button (described <a href="#feeds">below</a>) to open the saved search in a new window.  This window will display a special URL for the search, which can be shared with colleagues or used to create hyperlinks in online documents.</p>
 
-<p>A sample saved search (covering the "query only the Swinburne and Rossetti archives" example cited above) is <a href="http://www.nines.org/browse/saved/nowviskie/DGR+and+ACS+only" target="_blank">available here</a>. <span class="top"><a href="#top">back</a></span></p>
+<p>A sample saved search (covering the "query only the Swinburne and Rossetti archives" example cited above) is <a href="http://www.nines.org/browse/saved/DWheeles/lady_RossettiandSwinburne" target="_blank">available here</a>. <span class="top"><a href="#top">back</a></span></p>
 
 <p>&nbsp;</p>
 
@@ -71,18 +71,6 @@
 <p>When you're ready, press the <span class="emph4">"collect"</span> button to save your work. Later, you'll have the opportunity to see how other users have tagged shared objects.  </p>
 
 <p>You may collect objects <i>en masse</i> as well, on a page-by-page basis in your search results, by selecting the checkboxes that correspond to your objects of interest and clicking the "collect selected" links at top and bottom of the search results.  Any tags and notes that you enter will be applied to all objects.</p>
-
-<p>You may also, optionally, use a <span class="emph4">Collex bookmarklet</span> to collect items directly from the pages of participating websites. A bookmarklet is a javascript link which you click and drag up to the menu or "bookmarks" bar of your web browser.</p>
-<p>Here's ours:
-<blockquote><span class="emph4">
-<a   href="javascript:fs=window.frames;u='';for(var%20i=0;i<fs.length;i++){u+='&url'+i+'='+escape(fs[i].location);}u+='&url='+escape(window.location);void(open('http://www.nines.org<%=url_for({:controller=>'collection', :action=>'collect'})%>?title='+escape(document.title)+u,'collex',%20'toolbar=no,width=700,height=400,scrollbars=yes,resizable=yes'));" title="header=[drag this bookmarklet] body=[click and drag this 'Collex' link up to your web browser's menu bar to install a shortcut for collecting &amp; annotating objects] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" style="background:#A60000;color:#fff;font-size:1.4em">&nbsp;COLLEX&nbsp;</a>
-</span> &#8617; drag and drop this bookmarklet!</blockquote>
-
-Drop it in the menu bar of your main browser window, and your system is ready.  (On Internet Explorer, you will need to right-click this link and save it as a "Favorite" or bookmark, accessible through the "Links" drop-down menu on your browser.)</p>
-
-<p>Now you can use the NINES faceted browser to locate digital objects that have been prepared for collection, annotation, and reuse in Collex.  (Or you can collect objects directly from the pages of participating NINES pilot contributors, without first going through the faceted browser.  Chances are, you'll find some Collex-able objects on every page of a <%= link_to "NINES-participating site", { :action => "sites" }, :popup => ['window_sites', 'height=400,width=300,top=50,left=50'] %>!)
-
-<p>Simply <span class="emph4">browse</span> to the web page on which your desired objects are found, and <span class="emph4">activate</span> the Collex bookmarklet by clicking it. Collex presents you with a list of all objects on the page that are available for collection, keywording, and annotation.  Fill in your keywords and any notes about the objects you wish to save, and just hit "collect."<span class="top"><a href="#top">back</a></span></p>
 
 <p>&nbsp;</p>
 
@@ -105,8 +93,8 @@ Drop it in the menu bar of your main browser window, and your system is ready.  
 
 <p>&nbsp;</p>
 
-<p><a name="issues"></a><span class="emph2">two small caveats</span><br />  We'd like to inform you about two known problems with the Collex system.  The first applies only to Firefox users and we are presently powerless to remedy it.  In some cases, the collector window that pops up when users click the Collex bookmarklet may appear <i>beneath</i> the main Firefox browser window.  If you access the bookmarklet and think nothing has happened, check there.  This is a documented Firefox bug which we expect will be fixed in the next version of that browser.</p>
-<p>The second problem is that list and cloud views in Collex sidebar do not update automatically when you collect an object using the bookmarklet or directly from search results in NINES.  It may take five or six seconds for Collex to register and index a new object collected in these ways, and you will need to refresh your browser to see updated lists and clouds.  We are currently exploring ways to optimize object collection.  <span class="top"><a href="#top">back</a></span></p>
+<p><a name="issues"></a><span class="emph2">one small caveat</span><br />  
+We'd like to inform you about a known problem with the Collex system. List and cloud views in Collex sidebar do not update automatically when you collect an object using the bookmarklet or directly from search results in NINES.  It may take several minutes for Collex to register and index a new object collected in these ways, and you will need to refresh your browser to see updated lists and clouds.  We are currently exploring ways to optimize object collection. <span class="top"><a href="#top">back</a></span></p>
 	
 	
 <p>&nbsp;</p>
