@@ -19,19 +19,30 @@
 
 <%= div flash[:sidebar_notice], :id => "message" if flash[:sidebar_notice] %>
 
-<%= form_tag :controller => "login", :action => "login" %> 
-<table> 
-<tr> 
-<td>user name:</td> 
-<td><%= text_field_tag("username") %></td> 
-</tr> 
-<tr> 
-<td>password:</td> 
-<td><%= password_field_tag %></td> 
-</tr> 
-<tr> 
-<td colspan="2"><input type="submit" value=" log in " /></td> 
-</tr> 
-</table> 
+<%= form_tag :controller => "login", :action => "login" do %> 
+<table>
+  <tr>
+    <td>
+      user name:
+    </td>
+    <td>
+      <%= text_field_tag("username") %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      password:
+    </td>
+    <td>
+      <%= password_field_tag %>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <input type="submit" value=" log in ">
+    </td>
+  </tr>
+</table>
+
 <% end %> 
 </div>
