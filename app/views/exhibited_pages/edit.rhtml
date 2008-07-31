@@ -33,7 +33,6 @@
       <%= li render(:partial => "exhibits/unshare"), :id => "exhibit-menu-share" if @exhibit.unsharable_by?(user_or_guest) %>
       <%= li link_to('Delete', exhibit_path(@exhibit), :confirm => 'Delete this exhibit?', :method => :delete) if @exhibit.deletable_by?(user_or_guest) %>
 
-      <%= li link_to((@exhibit.indexed? ? "Re-Index" : "Index"), collect_exhibit_path(@exhibit), :method => "post") %>
       <%= li render(:partial => "exhibits/publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) && !@exhibit.published? %>
       <%= li link_to("Un-Publish", unpublish_exhibit_path(@exhibit), :confirm => "Un-publish this exhibit?", :method => :post) if @exhibit.publishable_by?(user_or_guest) && @exhibit.published? %>
       <%= li move_exhibited_page_links(@exhibited_page) %>
