@@ -16,7 +16,7 @@
 
 class SearchController < ApplicationController
    layout 'collex'
-   before_filter :authorize, :only => [:collect, :save, :remove_saved_search]
+   before_filter :authorize, :only => [:collect, :save, :remove_saved_search, :edit_saved_search]
    
    # Number of search results to display by default
    MIN_ITEMS_PER_PAGE = 5
