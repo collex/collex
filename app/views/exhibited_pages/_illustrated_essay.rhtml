@@ -24,6 +24,7 @@
       <% end %>
       
     <%= drop_receiving_element("resource-drop-zone-for-#{section.id}",
+    :hoverclass => "drop-zone-hover",
     :onDrop => "function(element){$('drop-zone-spinner-for-#{section.id}').show(); $('add_resource_form')['new_resource'].value=element.id; $('add_resource_form')['exhibited_section_id'].value='#{section.id}';$('add_resource_form').action='#{exhibit_page_section_resources_path(@exhibit, @exhibited_page, section)}'; $('add_resource_form').submit(); return false;}") %>
   <% end end end end %>
 <%- end #if -%>
