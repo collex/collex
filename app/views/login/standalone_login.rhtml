@@ -19,7 +19,7 @@
 
 <%= div flash[:sidebar_notice], :id => "message" if flash[:sidebar_notice] %>
 
-<%= form_tag :controller => "login", :action => "login" do %> 
+<% form_tag(:controller => "login", :action => "login") do %> 
 <table>
   <tr>
     <td>
