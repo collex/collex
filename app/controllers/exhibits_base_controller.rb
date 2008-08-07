@@ -27,13 +27,8 @@ class ExhibitsBaseController < ApplicationController
       @exhibit = id.include?("-") ? Exhibit.find_by_uri(id) : Exhibit.find(id)
       unless @exhibit.updatable_by?(user_or_guest)
         logger.info("#{user_or_guest.username} with roles #{user_or_guest.role_names.join(', ')} may not edit #{@exhibit.title} (id=#{@exhibit.id})")
-        if user
-          flash[:warning] = "You do not have permission to edit that Exhibit!"
-          redirect_to(exhibits_path) and return false
-        else
-          flash[:warning] = "You do not have permission to edit that Exhibit. Perhaps your session timed out. You may login below."
-          redirect_to(:controller => "login", :action => "login") and return false
-        end
+        flash[:warning] = "You do not have permission to edit that Exhibit!"
+        redirect_to(exhibits_path) and return false
       end
     rescue ActiveRecord::RecordNotFound
       logger.info("Exhibit with id #{id} not found.")
