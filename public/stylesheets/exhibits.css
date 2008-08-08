@@ -127,6 +127,20 @@
   color:grey;
 }
 
+#exhibit-body #sortable-pages {
+  clear: both;
+  margin-top: 30px;
+}
+#exhibit-body div.sortable-page {
+  border: 1px solid #999;
+  padding: 1em;
+  margin: 1em 0 1em 0;
+}
+
+#exhibit-body .sortable-object {
+  margin: 10px;
+}
+
 #exhibit-body div.section {
   border: 1px solid #999;
   padding: 1em;
