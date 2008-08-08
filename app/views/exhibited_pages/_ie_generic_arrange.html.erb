@@ -14,11 +14,8 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-
-<%# table :width => "100%", :class => "items" do tbody do tr do section.exhibited_items.each do |@exhibited_item| td :id => dom_id(@exhibited_item), :class => "sortable-object" do %>
-<% section.exhibited_items.each do |@exhibited_item| div :id => dom_id(@exhibited_item), :class => "sortable-object draggable", :style => "display: inline" do %>
+<% section.exhibited_items.each do |@exhibited_item| span :id => dom_id(@exhibited_item), :class => "sortable-object draggable" do %>
   <%= thumbnail_image_tag(@exhibited_item, :align => 'top', :width => 50, :height => 50, :title => "header=[annotation] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]") if @exhibited_item.is_a?(ExhibitedResource) %>
 
-  <%= span truncate(@exhibited_item.annotation, 50), :title => "header=[complete text] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" unless @exhibited_item.is_a?(ExhibitedResource) %>      
+  <%= span truncate(default_text(@exhibited_item.annotation, "(no text given)"), 50), :title => "header=[complete text] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" if @exhibited_item.is_a?(ExhibitedText) %>      
 <% end end  %>    
-<%# end end end end end %>
