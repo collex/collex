@@ -19,6 +19,12 @@ module ApplicationHelper
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
+
+  # helper for adding default text if the property is blank
+  def default_text(item, text)
+    item.blank? ? text : item
+  end
+
   # Rewritten version of Rails pluralize() helper that allows no number to be rendered
   def pluralize(count, singular, plural = nil, use_number = true)
     prefix = use_number ? "#{count} " : ""
