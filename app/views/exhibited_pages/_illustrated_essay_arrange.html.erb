@@ -15,7 +15,7 @@
 ---------------------------------------------------------------------------- %>
 
 <%# For display of sections %>
-<% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section", :style => "clear:both;", :id => dom_id(@exhibited_section) do %>
+<% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section", :id => dom_id(@exhibited_section) do %>
   <%= p "Move Section", :class => "section-handle draggable" %>
   <%= render( :partial => "exhibited_pages/#{@exhibited_section.template}_arrange", :locals => {:section => @exhibited_section}) %>
 <% end end %>
