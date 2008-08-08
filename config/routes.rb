@@ -44,7 +44,9 @@ ActionController::Routing::Routes.draw do |map|
                              :publish           => :post, 
                              :unpublish         => :post, 
                              :collect           => :post, 
-                             :update_annotation => :post },
+                             :update_annotation => :post, 
+                             :arrange           => :get,
+                             :sort              =>  :post },
                 :collection => { :intro         => :get } do |exhibit|
     exhibit.resources :pages, 
                       :controller => :exhibited_pages,

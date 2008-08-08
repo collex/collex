@@ -44,6 +44,46 @@ class ExhibitsController < ExhibitsBaseController
   end
   private :coming_soon
   
+  def sort
+    logger.info("!!!!!!!!!!!!!!!! params dump: #{params.inspect}")
+    page_order = params["sortable-pages"]
+    
+    # dump parm keys like "exhibited_section_" to get keys, then get the values, which are the resources in each section.
+    logger.info("!!!!!!!!!!! params.keys: #{params.keys.class}")
+    section_keys = params.keys.inject([]){|a, key| a << key if key =~ /exhibited_section_/; a }
+    logger.info("!!!!!!!!!!! section keys: #{section_keys}")
+    
+    section_keys.each do |sk|
+      resource_order = params[sk]
+      logger.info("!!!!!!!!!!! sk: #{sk.split('_').last}")
+      
+      resource_order.each_with_index do |resource_id, k|
+        r = ExhibitedItem.find(resource_id)
+        r.position = k + 1
+        r.exhibited_section_id = sk.split('_').last.to_i
+        r.save
+      end
+    end
+    
+    #update the sections before the pages
+    page_order.each do |page_id|
+      section_order = params["exhibited_page_#{page_id}"] || []
+      section_order.each_with_index do |section_id, j|
+        s = ExhibitedSection.find(section_id)
+        s.position = j + 1
+        s.exhibited_page_id = page_id
+        s.save
+      end
+    end
+    
+    page_order.each_with_index do |page_id, i|
+      p = @exhibit.pages.find(page_id)
+      p.position = i + 1
+      p.save
+    end
+    render :nothing => true
+  end
+  
   def index
     @exhibits = params[:user_id] ? Exhibit.find_all_by_user_id(params[:user_id]) : Exhibit.find(:all)
 

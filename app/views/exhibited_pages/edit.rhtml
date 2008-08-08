@@ -36,6 +36,7 @@
       <%= li render(:partial => "exhibits/publish"), :id => "exhibit-menu-publish" if @exhibit.publishable_by?(user_or_guest) && !@exhibit.published? %>
       <%= li link_to("Un-Publish", unpublish_exhibit_path(@exhibit), :confirm => "Un-publish this exhibit?", :method => :post) if @exhibit.publishable_by?(user_or_guest) && @exhibit.published? %>
       <%= li move_exhibited_page_links(@exhibited_page) %>
+      <%= li link_to('Arrange', arrange_exhibit_path(@exhibit)) %>
   <% end end %>
 
   <% div :id => "exhibit-content" do %>
