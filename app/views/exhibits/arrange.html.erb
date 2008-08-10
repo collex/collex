@@ -24,8 +24,11 @@
     <%= li link_to("As Many Pages", exhibit_page_path(@exhibit, @exhibit.pages.first)) %>
     <%= li link_to 'Edit', edit_exhibit_page_path(@exhibit, @exhibit.pages.first) if @exhibit.updatable_by?(user_or_guest) %>
     
-    <%= li link_to_function('Hide Sections', "$$('.section').invoke('hide')") + " / " + link_to_function('Show Sections', "$$('.section').invoke('show')") %>
-    <%= li link_to_function('Hide Objects', "$$('.sortable-object').invoke('hide')") + " / " + link_to_function('Show Objects', "$$('.sortable-object').invoke('show')") %>
+    <%= li link_to_function('Hide Sections', "$$('.section').invoke('hide'); $('show-sections-link').show(); this.up().hide();"), :id => "hide-sections-link" %>
+    <%= li link_to_function('Show Sections', "$$('.section').invoke('show'); this.up().hide(); $('hide-sections-link').show()"), :id => "show-sections-link", :style => "display: none" %>
+    
+    <%= li link_to_function('Hide Objects', "$$('.sortable-object').invoke('hide'); $('show-objects-link').show(); this.up().hide();"), :id => "hide-objects-link" %>
+    <%= li link_to_function('Show Objects', "$$('.sortable-object').invoke('show'); this.up().hide(); $('hide-objects-link').show()"), :id => "show-objects-link", :style => "display: none" %>
     <%= li link_to_function('Save Arrangement', "SortableExhibit.submit('#{@exhibit.id}')") %>
     
   <% end end %>
