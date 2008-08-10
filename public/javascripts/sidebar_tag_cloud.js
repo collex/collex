@@ -92,9 +92,7 @@ SidebarTagCloud = Class.create( {
 	updateSidebar: function( targetURL ) {		
 
 		// hide the content
-		$$('.content').each( function(i) { 
-			i.hide();
-		});
+		$$('.content').invoke('hide');
 		
 		$('sidebar-spinner').show();
 		
