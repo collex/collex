@@ -13,17 +13,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ---------------------------------------------------------------------------- %>
-<script type="text/javascript" language="javascript" charset="utf-8">
-// <![CDATA[
-  
-//   var f = document.createElement('form');
-//   f.method = "post";
-//   f.action = "exhibits/foo";
-//   f.
-  
-// ]]>
-</script>
 
+<%= javascript_include_tag "sortable_exhibit" %>
 
 <% div :id => "exhibit-body" do %>
   <% div :id => "exhibit-menu" do ul do %>
@@ -35,9 +26,7 @@
     
     <%= li link_to_function('Hide Sections', "$$('.section').invoke('hide')") + " / " + link_to_function('Show Sections', "$$('.section').invoke('show')") %>
     <%= li link_to_function('Hide Objects', "$$('.sortable-object').invoke('hide')") + " / " + link_to_function('Show Objects', "$$('.sortable-object').invoke('show')") %>
-    <%#= li link_to_function('Alert Sorting', "alert(Sortable.serialize('sortable-pages'));") %>
-    <%#= li link_to_function('Alert Sections', "alert(Sortable.serialize('sortable-pages'));") %>
-    <%= li link_to_function('Save Arrangement', 'SortableStuff.submit()') %>
+    <%= li link_to_function('Save Arrangement', "SortableExhibit.submit('#{@exhibit.id}')") %>
     
   <% end end %>
   <% div :id => "exhibit-content" do %>
@@ -65,45 +54,9 @@
     <% end %>
   <% end %>
 <% end %>
+
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
-  var sortableSections = ['<%= @exhibit.sections.collect {|section| dom_id(section) }.join("\', \'") %>'];
-  var sortablePages = ['<%= @exhibit.pages.collect {|page| dom_id(page) }.join("\', \'") %>'];
-
-  var SortableStuff = {
-    submit: function() {
-      $('exhibit-menu-spinner').show();
-      $('arrange-save-successful').hide();
-      $('arrange-save-failed').hide();
-      
-      var serializedSections = sortablePages.collect(function(name) {
-        return Sortable.serialize(name);
-      }).join('&');
-       var serializedResources = sortableSections.collect(function(name) {
-        return Sortable.serialize(name);
-      }).join('&');
-      //alert(sortablePages);
-      new Ajax.Request("/exhibits/sort", {
-        method: "post",
-        parameters: Sortable.serialize("sortable-pages") + '&id=' + <%= @exhibit.id %> + '&' + serializedSections + '&' + serializedResources,
-        onComplete: function(transport){
-          $('exhibit-menu-spinner').hide();
-          if(200 == transport.status)
-            $('arrange-save-successful').show();
-          else
-            $('arrange-save-failed').show();
-          end
-        }
-      });
-    }
-  }
-  sortableSections.each(function(id){
-    Sortable.create(id, {tag: 'span', constraint: 'none', overlap: 'horizontal', only: 'sortable-object', containment: sortableSections, dropOnEmpty: true, handle: 'item-handle', scroll: window});
-  });
-  sortablePages.each(function(id){
-    Sortable.create(id, {tag: 'div', only: 'section', containment: sortablePages, dropOnEmpty: true, handle: 'section-handle', scroll: window});
-  });
-  Sortable.create("sortable-pages", {tag: 'div', only: 'sortable-page', handle: 'page-handle', scroll: window});
-
+  SortableExhibit.create("<%= @exhibit.id %>");
 // ]]>
 </script>
