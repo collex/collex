@@ -106,5 +106,9 @@ case parse_command_line(ARGV)
   when :missing
     missing
   else
+    puts "This script relies on the Rails Environment."
+    puts "The default is *development*."
+    puts "For another, prefix your command with RAILS_ENV=<environment-name>"
+    
     puts @opts
 end
