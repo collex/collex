@@ -31,8 +31,13 @@ def parse_command_line( command_line_args )
     opts.on("-c", "--clear", "Clear the resource cache.") do |d|
       action = :clear
     end
+    
     opts.on("-r", "--refill", "Clear, then fill the resource cache.") do |d|
       action = :refill
+    end
+        
+    opts.on("-m", "--missing", "List the URIs in the interpretations table that are missing from the Solr Index.") do |d|
+      action = :missing
     end
 
     ## Display help message 
@@ -67,11 +72,25 @@ def fill_resource_cache()
   interpretations = Interpretation.find(:all)     
   interpretations.each do |interpretation|
     puts "For URI: #{interpretation.object_uri}"
-    cached_resource = CachedResource.resources_by_uri(interpretation.object_uri)
-    unless cached_resource.nil? 
+    solr_resource = SolrResource.find_by_uri(interpretation.object_uri)
+    if solr_resource.nil? 
+      puts "!!!! URI #{interpretation.object_uri} does not exist in the index, so not cached."
+    else
+      cached_resource = CachedResource.resources_by_uri(interpretation.object_uri)
       interpretation.tags.each { |tag| cached_resource.tags << tag }
       cached_resource.save!
     end
+  end
+end
+
+# List the URIs in the interpretations table that are missing from the Solr Index
+def missing
+  puts "These URIs from the interpretations table have no entries in the Solr index:"
+
+  interpretations = Interpretation.find(:all)     
+  interpretations.each do |interpretation|
+    solr_resource = SolrResource.find_by_uri(interpretation.object_uri)
+    puts interpretation.object_uri if solr_resource.nil?
   end
 end
 
@@ -84,6 +103,8 @@ case parse_command_line(ARGV)
   when :refill 
     clear_resource_cache
     fill_resource_cache
+  when :missing
+    missing
   else
     puts @opts
 end
