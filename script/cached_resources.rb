@@ -22,7 +22,7 @@ def parse_command_line( command_line_args )
   status = true
   action = nil
   
-  opts = OptionParser.new do |opts|  
+  @opts = OptionParser.new do |opts|  
         
     opts.on("-f", "--fill", "Fill the resource cache based on existing interpretations table.") do |d|
       action = :fill
@@ -32,7 +32,7 @@ def parse_command_line( command_line_args )
       action = :clear
     end
     opts.on("-r", "--refill", "Clear, then fill the resource cache.") do |d|
-      action = :clear
+      action = :refill
     end
 
     ## Display help message 
@@ -43,9 +43,9 @@ def parse_command_line( command_line_args )
   end
 
   begin
-    opts.parse!(command_line_args)
+    @opts.parse!(command_line_args)
   rescue Exception => e
-    puts e, "", opts
+    puts e, "", @opts
     status = false
   end
   
@@ -77,7 +77,13 @@ end
 
 # Run
 case parse_command_line(ARGV)
-  when :clear then clear_resource_cache
-  when :fill then fill_resource_cache
-  when :refill then clear_resource_cache; fill_resource_cache
+  when :clear 
+    clear_resource_cache
+  when :fill 
+    fill_resource_cache
+  when :refill 
+    clear_resource_cache
+    fill_resource_cache
+  else
+    puts @opts
 end
