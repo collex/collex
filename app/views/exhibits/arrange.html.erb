@@ -47,19 +47,7 @@
       <%= link_to_function "(click to close notice)", "$('arrange-save-failed').hide()" %>
     <% end %>
     
-    <% div :id => "sortable-pages" do %>
-      <%- @exhibit.pages.each do |@exhibited_page| -%>
-        <% div :id => dom_id(@exhibited_page), :class => "sortable-page" do %>
-          <%= span "Move Page #{@exhibited_page.position}", :class => "page-handle draggable" %>
-          <%= render(:partial => "exhibited_pages/#{@exhibit.template}_arrange") %>
-        <% end #div %>
-      <%- end -%>
-    <% end %>
+    <%= render(:partial => "exhibited_pages/#{@exhibit.template}_arrange") %>
+    
   <% end %>
 <% end %>
-
-<script type="text/javascript" language="javascript" charset="utf-8">
-// <![CDATA[
-  SortableExhibit.create("<%= @exhibit.id %>");
-// ]]>
-</script>
