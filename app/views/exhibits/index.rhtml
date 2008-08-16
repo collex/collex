@@ -41,7 +41,8 @@
         <%= td link_to('Share', share_exhibit_path(exhibit), :method => :post) if exhibit.sharable_by?(user_or_guest) %>
         <%= td link_to('Unshare', unshare_exhibit_path(exhibit), :method => :post) if exhibit.unsharable_by?(user_or_guest) %>
         <%= td link_to('Delete', exhibit_path(exhibit), :confirm => 'Are you sure?', :method => :delete) if exhibit.deletable_by?(user_or_guest) %>
-        <%= td link_to('Publish', publish_exhibit_path(exhibit), :method => :post, :confirm => 'Are you sure you want to publish? Once published, it can not be edited or deleted.') if exhibit.publishable_by?(user_or_guest) %>
+        <%= td link_to('Publish', publish_exhibit_path(exhibit), :method => :post, :confirm => 'Are you sure you want to publish? Once published, it can not be edited or deleted.') if exhibit.publishable_by?(user_or_guest) && !exhibit.published? %>
+        <%= td em("Published") if exhibit.published? %>
       <% end end %>
     <% end %>
     </table>
