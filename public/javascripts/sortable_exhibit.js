@@ -16,20 +16,29 @@
 
 var SortableExhibit = {
 	
-	create: function(exhibit_id) {
+	create: function(exhibit_id, _options) {
+	  var options = Object.extend({
+      pageTag:        'div',
+      sectionTag:     'div',
+      objectTag:      'div',
+      pageOverlap:    'vertical',
+      sectionOverlap: 'vertical',
+      objectOverlap:  'vertical'
+    }, _options || { });
+    
 	  var exhibit_id = exhibit_id;
 	  var sortableSections = $$('.section').pluck('id');
 	  var sortablePages = $$('.sortable-page').pluck('id');
 	  
 	  sortableSections.each(function(id){
-      Sortable.create(id, {tag: 'span', constraint: 'none', overlap: 'horizontal', only: 'sortable-object', containment: sortableSections, dropOnEmpty: true, handle: 'item-handle', scroll: window});
+      Sortable.create(id, {tag: options.objectTag, overlap: options.objectOverlap, constraint: 'none', only: 'sortable-object', containment: sortableSections, dropOnEmpty: true, handle: 'item-handle', scroll: window});
     });
     
 	  sortablePages.each(function(id){
-      Sortable.create(id, {tag: 'div', only: 'section', containment: sortablePages, dropOnEmpty: true, handle: 'section-handle', scroll: window});
+      Sortable.create(id, {tag: options.sectionTag, overlap: options.sectionOverlap, only: 'section', containment: sortablePages, dropOnEmpty: true, handle: 'section-handle', scroll: window});
     });
     
-	  Sortable.create("sortable-pages", {tag: 'div', only: 'sortable-page', handle: 'page-handle', scroll: window});
+	  Sortable.create("sortable-pages", {tag: options.pageTag, overlap: options.pageOverlap, only: 'sortable-page', handle: 'page-handle', scroll: window});
 	},
 	
 	submit: function(exhibit_id) {
