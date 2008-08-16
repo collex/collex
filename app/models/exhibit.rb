@@ -25,6 +25,8 @@ class Exhibit < ActiveRecord::Base
   
   validates_presence_of :title, :exhibit_type_id, :user_id, :license
   
+  before_destroy "unpublish!" # clean up from index
+  
   def template
     self.exhibit_type.template
   end
