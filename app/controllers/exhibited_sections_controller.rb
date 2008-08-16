@@ -49,7 +49,6 @@ class ExhibitedSectionsController < ExhibitsBaseController
     @exhibited_page = @exhibit.exhibited_pages.find(params[:page_id])
     respond_to do |format|
       if @exhibited_page.exhibited_sections << ExhibitedSection.new(:exhibit_section_type_id => params[:exhibit_section_type_id])
-        @exhibited_page.exhibited_sections.last.move_to_top
         flash[:notice] = 'A new Exhibited Section was successfully added.'
         format.html { redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
         format.xml  { head :ok }
