@@ -39,7 +39,6 @@ class ExhibitedResourcesController < ExhibitedItemsController
       es = ExhibitedSection.find(exhibited_section_id)
       er = ExhibitedResource.new(:uri => uri, :annotation => annotation)
       es.exhibited_resources << er
-      es.exhibited_resources.last.move_to_top
       flash[:notice] = "The Resource was successfully added."
     else
       flash[:error] = "Resource was not added."
