@@ -19,6 +19,12 @@ module ApplicationHelper
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
+  # enhances truncate() to strip any tags off. 
+  # TODO should probably just override the built-in truncate, but need some alias_method_chain voodoo that doesn't work here.
+  def truncate_no_tags(text, length=30, truncate_string="...")
+    stripped = text.gsub(/<[^>]+>/, '')
+    truncate(stripped, length, truncate_string)
+  end
 
   # helper for adding default text if the property is blank
   def default_text(item, text)

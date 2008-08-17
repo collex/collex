@@ -26,6 +26,10 @@ describe ApplicationHelper do
     @specific_site = mock_model(Site, :thumbnail => 'http://some.site.url.com/image.gif', :description => 'Site Description')
   end
 
+  it "truncate should strip out any html tags first" do
+    str = "<em class='foo'>This is a test string that is surrounded by an em tag.</em>"
+    truncate_no_tags(str, 15).should == "This is a te..."
+  end
 
   it "'thumbnail_image' shoud get generic image when no others" do  
     Site.should_receive(:find_by_code).with('generic').and_return(@generic_site)
