@@ -45,6 +45,7 @@ ActionController::Routing::Routes.draw do |map|
                              :unpublish         => :post, 
                              :collect           => :post, 
                              :update_annotation => :post, 
+                             :update_thumbnail  => :post, 
                              :arrange           => :get,
                              :sort              =>  :post },
                 :collection => { :intro         => :get } do |exhibit|
