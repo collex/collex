@@ -25,7 +25,7 @@
   <% end %>
   <%- if controller.action_name == "edit" -%>
     <%= div exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation", :value => (@exhibited_item.is_a?(ExhibitedResource) ? "(Insert Caption)" : "(Insert Text)")), :id => "mce_container_exhibited_item_#{@exhibited_item.id}", :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") %> 
-    <%= div move_exhibited_items_links(@exhibited_item, :sideways => true) %>
+    <%#= div move_exhibited_items_links(@exhibited_item, :sideways => true) %>
     <%= div link_to "Remove Item", exhibit_page_section_item_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
   <%- else -%>
     <%= div @exhibited_item.annotation, :class => (@exhibited_item.is_a?(ExhibitedResource) ? "illustration-caption" : "") unless @exhibited_item.annotation.blank? %>      

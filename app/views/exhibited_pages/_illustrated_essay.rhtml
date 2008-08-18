@@ -37,7 +37,7 @@
         <%= li b("Section Menu") %>
         <%= li link_to("Remove Section and its Objects", exhibit_page_section_path(@exhibited_page.exhibit, @exhibited_page, @exhibited_section), :confirm => "Remove Section?", :method => :delete) %>
         <%= li link_to_function("Add text area to this section", "$('add_text_form')['exhibited_section_id'].value='#{@exhibited_section.id}';$('add_text_form').action='#{exhibit_page_section_texts_path(@exhibit, @exhibited_page, @exhibited_section)}'; $('add_text_form').submit(); return false;") %>
-        <%= li move_exhibited_section_links(@exhibited_section) %>
+        <%#= li move_exhibited_section_links(@exhibited_section) %>
       <% end #ul %>
     <% end %>
   <%- end -%>
