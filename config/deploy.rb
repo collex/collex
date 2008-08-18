@@ -90,7 +90,7 @@ role :db,  "jarry.itc.virginia.edu", :primary => true
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
-set :rake, "/usr/local/bin/rake"
+set :rake, "/opt/csw/bin/rake"
 # set :scm, :darcs               # defaults to :subversion
 set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
 set :checkout, "export --ignore-externals"
