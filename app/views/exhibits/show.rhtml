@@ -23,6 +23,7 @@
   <% end end %>
   <% div :id => "exhibit-content" do %>
     <%= h2 @exhibit.title %>
+    <%= image_tag @exhibit.thumbnail, :alt => "Exhibit Thumbnail Image" unless @exhibit.thumbnail.blank? %>    
     <%= div @exhibit.annotation %>
     <%= h3 @exhibit.user.fullname %>
     <%= p link_to(@exhibit.license.name, @exhibit.license.url, :target => "_blank") %>
