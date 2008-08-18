@@ -134,6 +134,22 @@ class Exhibit < ActiveRecord::Base
   end
   alias_method :resources, :exhibited_resources
   
+  # List of the thumbnail urls used in the exhibit. 
+  def thumbnails
+    self.exhibited_resources.collect { |er| er.thumbnail unless er.thumbnail.blank? }.compact
+  end
+  
+  # If thumbnail is blank then insert the first thumbnail in the exhibit
+  def thumbnail
+    if read_attribute(:thumbnail).blank?
+      if first = self.thumbnails.first
+        self.thumbnail = first
+        self.save
+      end
+    end
+    read_attribute(:thumbnail)
+  end
+  
   # An array of all annotations in the Exhibit, from +ExhibitedPage+s, +ExhibitedSection+s, +ExhibitedItem+s
   # This is a convenience for indexing the text in an +Exhibit+
   def annotations
