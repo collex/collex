@@ -42,7 +42,8 @@
   <% div :id => "exhibit-content" do %>
     <%= h1 @exhibit.exhibit_type.description %>
     <%= h2 exhibit_in_place_editor_field(:exhibit, "title") %> 
-    <%= exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
+    <%= image_tag @exhibit.thumbnail, :alt => "Exhibit Thumbnail Image" unless @exhibit.thumbnail.blank? %>    
+    <%= p exhibits_tiny_mce_in_place_editor :exhibit, "annotation" %> 
     <%- form_for(@exhibit, :html => {:id => "exhibit_form"}) do |f| -%>
       <%= hidden_field_tag "page_id", @exhibited_page.id %>
       <%= f.hidden_field :license_id %>
