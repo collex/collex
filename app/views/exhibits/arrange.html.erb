@@ -34,6 +34,21 @@
   <% end end %>
   <% div :id => "exhibit-content" do %>
     <%= h2 @exhibit.title %>
+
+    <%= link_to_function image_tag(@exhibit.thumbnail, :alt => "Exhibit Thumbnail Image", :id => "selected_thumbnail"), "$('thumbnails_selector').appear({duration: .2})" unless @exhibit.thumbnail.blank? %>
+
+    <% div :id => "thumbnails_selector", :style => "display: none" do  %>
+      <%- @exhibit.thumbnails.each_with_index do |thumb, i| -%>
+        <%= link_to_function image_tag(thumb, :alt => "Image located at #{thumb}", :id => "available_thumbnail_#{i}"), "$('selected_thumbnail').src = $('available_thumbnail_#{i}').src" %>
+      <%- end -%>
+      <%= link_to_function "Save", "new Ajax.Request('#{update_thumbnail_exhibit_path}', {
+        method: 'post',
+        parameters: { 'exhibit[thumbnail]' : $('selected_thumbnail').src },
+        onComplete: function(transport){ $('thumbnails_selector').fade(); }
+      })" %>
+    <% end %>
+    
+    
     <%= div @exhibit.annotation %>
     <%= h3 @exhibit.user.fullname %>
     <%= p link_to(@exhibit.license.name, @exhibit.license.url, :target => "_blank") %>
