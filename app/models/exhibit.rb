@@ -66,6 +66,7 @@ class Exhibit < ActiveRecord::Base
     
     map = { :uri => self.uri, 
             :url => "#{EXHIBITS_CONF['base_url']}/exhibits/#{self.uri}",
+            :thumbnail => self.thumbnail,
             :title => self.titles, 
             :archive => EXHIBITS_CONF["archive"],
             :role_AUT => self.user.fullname,
@@ -73,7 +74,7 @@ class Exhibit < ActiveRecord::Base
             :exhibit_type => self.exhibit_type.description,
             :published => self.published?,
             :license => self.license.name,
-            :text => self.annotations     
+            :text => self.annotations
           }.merge(properties_to_index_with_values)
     map.merge!(user_tags) if user_tags
     map.merge!(user_annotations) if user_annotations
