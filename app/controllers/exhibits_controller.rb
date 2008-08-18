@@ -208,6 +208,16 @@ class ExhibitsController < ExhibitsBaseController
       render :action => "edit"
     end
   end
+  
+  def update_thumbnail
+    if request.xhr?
+      if @exhibit.update_attributes(params[:exhibit])
+        render :nothing => true, :status => :ok
+      else
+        render :nothing => true, :status => 500
+      end
+    end
+  end
 
   def destroy
     # @exhibit retrieved in authorize_owner
