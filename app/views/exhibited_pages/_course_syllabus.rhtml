@@ -14,8 +14,6 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<%- @date = @exhibited_page.title ? Date.parse(@exhibited_page.title) : Date.today -%>
-
 <%- if controller.action_name == "edit" -%>
   <h2>
   <% form_remote_for(:exhibited_page, @exhibited_page, :url => update_title_exhibit_page_path(@exhibit, @exhibited_page)) do |f| %>
