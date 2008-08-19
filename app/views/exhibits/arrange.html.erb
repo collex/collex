@@ -35,7 +35,7 @@
   <% div :id => "exhibit-content" do %>
     <%= h2 @exhibit.title %>
 
-    <%= link_to_function image_tag(@exhibit.thumbnail, :alt => "Exhibit Thumbnail Image", :id => "selected_thumbnail"), "$('thumbnails_selector').appear({duration: .2})" unless @exhibit.thumbnail.blank? %>
+    <%= link_to_function image_tag(@exhibit.thumbnail, :alt => "Exhibit Thumbnail Image", :id => "selected_thumbnail", :title => "header=[Exhibit Thumbnail] body=[Click to show available images. Then click an image to select it.] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"), "$('thumbnails_selector').appear({duration: .2})" unless @exhibit.thumbnail.blank? %>
 
     <% div :id => "thumbnails_selector", :style => "display: none" do  %>
       <%- @exhibit.thumbnails.each_with_index do |thumb, i| -%>
