@@ -11,7 +11,7 @@ module DangDeveloper
       thead  tfoot  tbody  tr  th  td  h1  h2  h3  h4  h5  h6 
     }
     XHTMLTRANSITIONAL_TAGS = %w{ strike center dir noframes basefont u menu iframe font s applet isindex }
-    EXISTING_RAILS_METHODS = %w{ form input select }
+    EXISTING_RAILS_METHODS = %w{ form input label select }
     XHTML_CONTENT_TAGS = (XHTMLSTRICT_TAGS + XHTMLTRANSITIONAL_TAGS) - SELF_CLOSING_TAGS - EXISTING_RAILS_METHODS
     
     def self.self_closing_tags
