@@ -49,7 +49,7 @@
       <%= f.hidden_field :license_id %>
       
       <%= h3 @exhibit.user.fullname %>
-      <%= label link_to("Change Creative Commons License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]#{url_encode('&')}submit_form=true", :popup => true) %> (<%= @exhibit.license.name %>)
+      <%= link_to("Change Creative Commons License", "http://creativecommons.org/license/?partner=Nines&exit_url=#{url_for(:only_path => false, :controller => "exhibited_pages", :action => "creative_commons", :license_url => '[license_url]')}#{url_encode('&')}license_name=[license_name]#{url_encode('&')}license_button=[license_button]#{url_encode('&')}submit_form=true", :popup => true) %> (<%= @exhibit.license.name %>)
 	  <% div :id => "license", :class => "edit" do %>
 	    <%= link_to image_tag (@exhibit.license.button_url), @exhibit.license.url, :target => "_blank", :title =>  @exhibit.license.name %>
 	  <% end %>
