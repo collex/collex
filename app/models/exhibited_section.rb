@@ -19,10 +19,13 @@ class ExhibitedSection < ActiveRecord::Base
   has_many :exhibited_items, :order => "position", :dependent => :destroy
   alias_method :items, :exhibited_items
   
+  # These are the subclasses of +ExhibitedItem+
   has_many :exhibited_texts, :order => "position"
   alias_method :texts, :exhibited_texts
   has_many :exhibited_resources, :order => "position"
   alias_method :resources, :exhibited_resources
+  has_many :exhibited_user_resources, :order => "position"
+  alias_method :user_resources, :exhibited_user_resources
   
   belongs_to :exhibit_section_type
   belongs_to :exhibited_page
