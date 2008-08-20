@@ -14,7 +14,7 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<% table do tbody do section.exhibited_resources.each do |@exhibited_item| tr :id => dom_id(@exhibited_item) do %>
+<% table do tbody do section.exhibited_items.each do |@exhibited_item| tr :id => dom_id(@exhibited_item) do %>
   <% td do %>
     <%= thumbnail_image_tag(@exhibited_item) %>
     <%= div link_to_function("collect", "displayCollector('collectformarea', '#{@exhibited_item.uri}', event);"), :class => "collectlink" -%> 
