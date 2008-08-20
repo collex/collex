@@ -1,0 +1,48 @@
+<h1>ExhibitedUserResources#new</h1>
+
+<% form_for @exhibited_user_resource, :url => (exhibit_page_section_user_resources_path(@exhibit, @exhibited_page, @exhibited_section)) do |f| %>
+  <table>
+  <tbody>
+    <tr>
+      <%= td f.label :title, "Title" %>
+      <%= td f.text_field :title %>
+    </tr>
+    <tr>
+      <%= td f.label :url, "URL" %>
+      <%= td f.text_field :url %>
+    </tr>
+    <tr>
+      <%= td f.label :role_AUT, "Author" %>
+      <%= td f.text_field :role_AUT %>
+    </tr>
+    <tr>
+      <%= td f.label :role_EDT, "Editor" %>
+      <%= td f.text_field :role_EDT %>
+    </tr>
+    <tr>
+      <%= td f.label :role_PBL, "Publisher" %>
+      <%= td f.text_field :role_PBL %>
+    </tr>
+    <tr>
+      <%= td f.label :pubPlace, "PubPlace" %>
+      <%= td f.text_field :pubPlace %>
+    </tr>
+    <tr>
+      <%= td f.label :date_label, "Date" %>
+      <%= td f.text_field :date_label %>
+    </tr>
+    <tr>
+      <%= td f.label :pages, "Pages" %>
+      <%= td f.text_field :pages %>
+    </tr>
+    <tr>
+      <%= td f.label :annotation, "annotation" %>
+      <%= td f.text_area :annotation %>
+    </tr>
+    <tr>
+      <%= td %>
+      <%= td f.submit %>
+    </tr>
+  </tbody>
+  </table>
+<% end %>
