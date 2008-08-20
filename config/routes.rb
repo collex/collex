@@ -71,6 +71,8 @@ ActionController::Routing::Routes.draw do |map|
         section.resources :resources, 
                           :controller => :exhibited_resources,
                           :member => { :update_annotation => :post}
+        section.resources :user_resources, 
+                          :controller => :exhibited_user_resources
         section.resources :items, 
                           :controller => :exhibited_items,
                           :member => { :update_annotation => :post, 
