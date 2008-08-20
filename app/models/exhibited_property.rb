@@ -18,6 +18,7 @@
 # store the data in the +Exhibit+.
 class ExhibitedProperty < ActiveRecord::Base
   belongs_to :exhibited_resource
+  belongs_to :exhibited_user_resource
 
   def agent_type()
     self.name =~ /^role_/ ? self.name[-3,3] : nil      
