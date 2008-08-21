@@ -200,11 +200,13 @@ class Exhibit < ActiveRecord::Base
   
   def share!
     self.shared  = true
+    self.save!
   end
   
   # Will throw an error if +published+ is true
   def unshare!
     self.shared = false
+    self.save!
   end
   
   # When the value is +true+, just pass through.
