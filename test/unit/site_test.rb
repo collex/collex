@@ -23,4 +23,8 @@ class SiteTest < Test::Unit::TestCase
     assert_equal(9, Site.find(:all).size)
     assert_equal(['http://www.personal.psu.edu/faculty/c/a/caw43/bierce/main.gif', 'http://www.rc.umd.edu/images/nhead_01.jpg'], Site.thumbnails)
   end
+  
+  def test_thumbnails_for_codes_returns_a_list_of_thumbnails_for_listed_sitenames
+    assert_equal(["http://www.personal.psu.edu/faculty/c/a/caw43/bierce/main.gif"], Site.thumbnails_for_codes(['bierce']))
+  end
 end
