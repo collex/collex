@@ -44,6 +44,10 @@ class ExhibitsController < ExhibitsBaseController
   end
   private :coming_soon
   
+  def arrange
+    @thumbnails = @exhibit.thumbnails << DEFAULT_THUMBNAIL_IMAGE_PATH
+  end
+  
   def sort
     logger.info("!!!!!!!!!!!!!!!! params dump: #{params.inspect}")
     page_order = params["sortable-pages"]
