@@ -15,4 +15,7 @@
 ##########################################################################
 
 class Site < ActiveRecord::Base
+  def self.thumbnails
+    find(:all, :select => "thumbnail").collect{|v| v.thumbnail unless v.thumbnail.blank?}.compact
+  end
 end
