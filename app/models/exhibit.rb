@@ -72,6 +72,7 @@ class Exhibit < ActiveRecord::Base
             :role_AUT => self.user.fullname,
             :date_label => [DateTime.now.year] ,
             :exhibit_type => self.exhibit_type.description,
+            :is_exhibit => true,
             :published => self.published?,
             :license => self.license.name,
             :text => self.annotations
@@ -222,6 +223,7 @@ class Exhibit < ActiveRecord::Base
   def publish!
     self.published = true
     self.index!
+    self.save!
   end
   
   # Will remove the item from the index as well.
@@ -231,6 +233,7 @@ class Exhibit < ActiveRecord::Base
       self.solr.connection.delete("#{self.uri}")
       self.solr.connection.commit
     end
+    self.save!
   end
   
   # Will throw an error if value is +true+ when +shared+ is +false+.
