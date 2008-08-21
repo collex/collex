@@ -14,5 +14,20 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<h1>ExhibitedUserResources#edit</h1>
-<p>Find me in app/views/exhibited_user_resources/edit.html.erb</p>
+<% div :id => "exhibit-body", :class => "edit" do %>
+
+  <%= render :partial => 'exhibited_pages/menu' %>
+
+  <% div :id => "exhibit-content" do %>
+    <%= h1 @exhibit.exhibit_type.description %>
+    <%= h2 @exhibit.title %>
+    <%= image_tag @exhibit.thumbnail, :alt => "Exhibit Thumbnail Image" unless @exhibit.thumbnail.blank? %>    
+  
+    <%= h3 "Edit Your Resource" %>
+    <% form_for @exhibited_user_resource, :url => (exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_user_resource)) do |f| %>
+
+    <%= render :partial => 'user_resource_form', :locals => {:f  => f} %>
+
+    <% end %>
+  <% end #div exhibit-content %>
+<% end #div exhibit-body %>
