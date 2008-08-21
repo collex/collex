@@ -17,6 +17,8 @@
 class ExhibitedUserResourcesController < ExhibitedItemsController
   layout "collex"
   
+  before_filter :authorize_owner
+  
   #in_place_edit_for_resource :exhibited_user_resource, :annotation
   
   def new
