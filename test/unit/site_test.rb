@@ -19,8 +19,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class SiteTest < Test::Unit::TestCase
   fixtures :sites
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  def test_thumbnails_returns_a_list_of_available_site_thumbnail_urls
+    assert_equal(9, Site.find(:all).size)
+    assert_equal(['http://www.personal.psu.edu/faculty/c/a/caw43/bierce/main.gif', 'http://www.rc.umd.edu/images/nhead_01.jpg'], Site.thumbnails)
   end
 end
