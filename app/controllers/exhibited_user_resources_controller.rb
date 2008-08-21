@@ -27,7 +27,8 @@ class ExhibitedUserResourcesController < ExhibitedItemsController
   end  
 
   def edit
-    @exhibited_user_resource = ExhibtedUserResource.find(params[:id])
+    get_ancestors
+    @exhibited_user_resource = ExhibitedUserResource.find(params[:id])
   end
   
   def create
