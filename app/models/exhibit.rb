@@ -129,6 +129,11 @@ class Exhibit < ActiveRecord::Base
   def sections
     self.exhibited_pages.collect { |ep| ep.exhibited_sections }.flatten
   end
+  
+  # Returns a list of the site (archive) codes used in the exhibit
+  def site_codes
+    exhibited_resources.collect{|er| er.properties.find_by_name('archive').value}.uniq
+  end
 
   # Collection of all the +ExhibitedResource+s in the +Exhibit+
   def exhibited_resources
@@ -137,8 +142,11 @@ class Exhibit < ActiveRecord::Base
   alias_method :resources, :exhibited_resources
   
   # List of the thumbnail urls used in the exhibit. 
-  def thumbnails
-    self.exhibited_resources.collect { |er| er.thumbnail unless er.thumbnail.blank? }.compact
+  def thumbnails(options = {})
+    options = {:with_sites => true}.merge(options)
+    result = self.exhibited_resources.collect { |er| er.thumbnail unless er.thumbnail.blank? }.compact
+    result.concat(Site.thumbnails_for_codes(site_codes)) if options[:with_sites]
+    result
   end
   
   # If thumbnail is blank then insert the first thumbnail in the exhibit
