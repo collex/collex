@@ -21,4 +21,23 @@ class ExhibitedUserResource < ExhibitedItem
   alias_method :properties, :exhibited_properties
   include PropertyMethods
   
+  # Since a new object must be created before the associated properties, we only validate on update
+  validate :presence_of_title, :presence_of_role, :presence_of_publisher, :presence_of_date_label
+  
+  def presence_of_title
+    errors.add_to_base("You must include a title") unless exhibited_properties.detect{|ep| ep.name == 'title' && !ep.value.blank?}
+  end
+  
+  def presence_of_role
+    errors.add_to_base("You must include at least one author, editor or translator") unless exhibited_properties.detect{|ep| (ep.name == 'role_AUT' || ep.name == 'role_EDT' || ep.name == 'role_TRL') && !ep.value.blank?}
+  end
+
+  def presence_of_publisher
+    errors.add_to_base("You must include a publisher") unless exhibited_properties.detect{|ep| ep.name == 'role_PBL' && !ep.value.blank?}
+  end  
+  
+  def presence_of_date_label
+    errors.add_to_base("You must include a date") unless exhibited_properties.detect{|ep| ep.name == 'date_label' && !ep.value.blank?}
+  end
+  
 end
