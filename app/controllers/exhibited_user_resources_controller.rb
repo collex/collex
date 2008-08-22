@@ -46,17 +46,26 @@ class ExhibitedUserResourcesController < ExhibitedItemsController
   end
   
   # Since we're using +ExhibitedProperties+, we just clear out the old objects before making new assignments.
+  # Rails wants to save the associations--or ignore them depending on how they are assigned--even if the parent
+  # isn't saved, so this has been hacked a bit to work.
   def update
     get_ancestors
-    @exhibited_user_resource = ExhibitedUserResource.find(params[:id])
+    @exhibited_user_resource = ExhibitedUserResource.new
 
     @exhibited_user_resource.properties.clear
     common_assignments
 
-    if @exhibited_user_resource.save
+    if @exhibited_user_resource.valid?
+      eur = ExhibitedUserResource.find(params[:id])
+      eur.properties.clear
+      @exhibited_user_resource.properties.each {|prop| eur.properties << prop}
+      eur.annotation = @exhibited_user_resource.annotation
+      eur.save
+      @exhibited_user_resource = eur
       flash[:notice] = "Successfully updated new resource #{@exhibited_user_resource.title}"
       redirect_to edit_exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_user_resource)
     else
+      @exhibited_user_resource.id = params[:id]
       render :action => "edit"
     end
   end
