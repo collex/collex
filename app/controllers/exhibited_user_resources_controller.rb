@@ -34,33 +34,61 @@ class ExhibitedUserResourcesController < ExhibitedItemsController
   def create
     get_ancestors
     @exhibited_user_resource = @exhibited_section.user_resources.build
-    @exhibited_user_resource.annotation = params[:exhibited_user_resource][:annotation]
-    @exhibited_user_resource.save
-    
-    @exhibited_user_resource.properties.build(:name => "title", :value => params[:exhibited_user_resource][:title])
-    @exhibited_user_resource.properties.build(:name => "date_label", :value => params[:exhibited_user_resource][:date_label])
-    @exhibited_user_resource.properties.build(:name => "url", 
-      :value => params[:exhibited_user_resource][:url]) unless params[:exhibited_user_resource][:url].blank?
-    @exhibited_user_resource.properties.build(:name => "pubPlace", 
-      :value => params[:exhibited_user_resource][:pubPlace]) unless params[:exhibited_user_resource][:pubPlace].blank?
-    @exhibited_user_resource.properties.build(:name => "role_AUT", 
-      :value => params[:exhibited_user_resource][:role_AUT]) unless params[:exhibited_user_resource][:role_AUT].blank?
-    @exhibited_user_resource.properties.build(:name => "role_EDT", 
-      :value => params[:exhibited_user_resource][:role_EDT]) unless params[:exhibited_user_resource][:role_EDT].blank?
-    @exhibited_user_resource.properties.build(:name => "role_PBL", 
-      :value => params[:exhibited_user_resource][:role_PBL]) unless params[:exhibited_user_resource][:role_PBL].blank?
-    @exhibited_user_resource.properties.build(:name => "role_PBL", 
-      :value => params[:exhibited_user_resource][:role_PBL]) unless params[:exhibited_user_resource][:role_PBL].blank?
-    
-    @exhibited_user_resource.save
-    render :inline => "<%= @exhibited_user_resource.inspect %> <%= @exhibited_user_resource.properties.inspect %> "
+
+    common_assignments
+
+    if @exhibited_user_resource.save
+      flash[:notice] = "Successfully created new resource #{@exhibited_user_resource.title}"
+      redirect_to edit_exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_user_resource)
+    else
+      render :action => "new"
+    end
   end
   
+  # Since we're using +ExhibitedProperties+, we just clear out the old objects before making new assignments.
   def update
-    
+    get_ancestors
+    @exhibited_user_resource = ExhibitedUserResource.find(params[:id])
+
+    @exhibited_user_resource.properties.clear
+    common_assignments
+
+    if @exhibited_user_resource.save
+      flash[:notice] = "Successfully updated new resource #{@exhibited_user_resource.title}"
+      redirect_to edit_exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_user_resource)
+    else
+      render :action => "edit"
+    end
   end
   
   private
+  def common_assignments
+    @exhibited_user_resource.annotation = params[:exhibited_user_resource][:annotation]
+
+    @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "title", :value => params[:exhibited_user_resource][:title])
+    @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "date_label",:value => params[:exhibited_user_resource][:date_label])
+
+    @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "url", 
+      :value => params[:exhibited_user_resource][:url]) unless params[:exhibited_user_resource][:url].blank?
+
+    @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_CTY", 
+      :value => params[:exhibited_user_resource][:role_CTY]) unless params[:exhibited_user_resource][:role_CTY].blank?
+
+    params[:exhibited_user_resource][:role_AUT].each do |aut|
+      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_AUT", :value => aut)
+    end unless params[:exhibited_user_resource][:role_AUT].blank? 
+    
+    params[:exhibited_user_resource][:role_EDT].each do |edt|
+      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_EDT", :value => edt)
+    end unless params[:exhibited_user_resource][:role_EDT].blank?
+    
+    params[:exhibited_user_resource][:role_TRL].each do |trl|
+      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_TRL", :value => trl)
+    end unless params[:exhibited_user_resource][:role_TRL].blank?
+
+    @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_PBL", 
+      :value => params[:exhibited_user_resource][:role_PBL]) unless params[:exhibited_user_resource][:role_PBL].blank?
+  end
   def get_ancestors
     @exhibited_section = ExhibitedSection.find(params[:section_id])
     @exhibited_page = @exhibited_section.exhibited_page
