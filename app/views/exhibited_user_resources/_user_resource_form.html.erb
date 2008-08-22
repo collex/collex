@@ -1,3 +1,5 @@
+      <%= error_messages_for 'exhibited_user_resource', :class => "flash_error" %>
+
       <table>
       <tbody>
         <tr>
@@ -8,21 +10,31 @@
           <%= td f.label :url, "URL" %>
           <%= td f.text_field :url %>
         </tr>
+        <%- @exhibited_user_resource.role_AUTs.each do |aut| -%>
         <tr>
           <%= td f.label :role_AUT, "Author" %>
-          <%= td f.text_field :role_AUT %>
+          <%= td text_field_tag "exhibited_user_resource[role_AUT][]", aut %>
         </tr>
+        <%- end -%>
+        <%- @exhibited_user_resource.role_EDTs.each do |edt| -%>
         <tr>
           <%= td f.label :role_EDT, "Editor" %>
-          <%= td f.text_field :role_EDT %>
+          <%= td text_field_tag "exhibited_user_resource[role_EDT][]", edt %>
         </tr>
+        <%- end -%>
+        <%- @exhibited_user_resource.role_TRLs.each do |trl| -%>
+        <tr>
+          <%= td f.label :role_TRL, "Translator" %>
+          <%= td text_field_tag "exhibited_user_resource[role_TRL][]", trl %>
+        </tr>
+        <%- end -%>
         <tr>
           <%= td f.label :role_PBL, "Publisher" %>
           <%= td f.text_field :role_PBL %>
         </tr>
         <tr>
-          <%= td f.label :pubPlace, "PubPlace" %>
-          <%= td f.text_field :pubPlace %>
+          <%= td f.label :role_CTY, "City" %>
+          <%= td f.text_field :role_CTY %>
         </tr>
         <tr>
           <%= td f.label :date_label, "Date" %>
