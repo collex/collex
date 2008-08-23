@@ -25,7 +25,7 @@
   
     <%= h3 "Edit Your Resource" %>
     <% form_for @exhibited_user_resource, :url => (exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_user_resource)) do |f| %>
-
+      <input type="hidden" name="_method" value="put"/>
     <%= render :partial => 'user_resource_form', :locals => {:f  => f} %>
 
     <% end %>
