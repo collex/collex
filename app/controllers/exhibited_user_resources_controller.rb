@@ -84,15 +84,15 @@ class ExhibitedUserResourcesController < ExhibitedItemsController
       :value => params[:exhibited_user_resource][:role_CTY]) unless params[:exhibited_user_resource][:role_CTY].blank?
 
     params[:exhibited_user_resource][:role_AUT].each do |aut|
-      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_AUT", :value => aut)
+      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_AUT", :value => aut) unless aut.blank?
     end unless params[:exhibited_user_resource][:role_AUT].blank? 
     
     params[:exhibited_user_resource][:role_EDT].each do |edt|
-      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_EDT", :value => edt)
+      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_EDT", :value => edt) unless edt.blank?
     end unless params[:exhibited_user_resource][:role_EDT].blank?
     
     params[:exhibited_user_resource][:role_TRL].each do |trl|
-      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_TRL", :value => trl)
+      @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_TRL", :value => trl) unless trl.blank?
     end unless params[:exhibited_user_resource][:role_TRL].blank?
 
     @exhibited_user_resource.properties << ExhibitedProperty.new(:name => "role_PBL", 
