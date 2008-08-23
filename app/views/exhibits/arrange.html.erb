@@ -23,6 +23,7 @@
     <%= li link_to('My Exhibits', exhibits_path(:user_id => user.id)) if is_logged_in? %>
     <%= li link_to("As Many Pages", exhibit_page_path(@exhibit, @exhibit.pages.first)) %>
     <%= li link_to 'Edit', edit_exhibit_page_path(@exhibit, @exhibit.pages.first) if @exhibit.updatable_by?(user_or_guest) %>
+    <%= li link_to 'Preview', exhibit_page_path(@exhibit, @exhibit.pages.first) if @exhibit.updatable_by?(user_or_guest) %>
     
     <%= li link_to_function('Hide Sections', "$$('.section').invoke('hide'); $('show-sections-link').show(); this.up().hide();"), :id => "hide-sections-link" %>
     <%= li link_to_function('Show Sections', "$$('.section').invoke('show'); this.up().hide(); $('hide-sections-link').show()"), :id => "show-sections-link", :style => "display: none" %>
