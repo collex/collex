@@ -40,4 +40,9 @@ class ExhibitedUserResource < ExhibitedItem
     errors.add_to_base("You must include a date") unless exhibited_properties.detect{|ep| ep.name == 'date_label' && !ep.value.blank?}
   end
   
+  # TODO make this configurable and/or able for user to add path to thumbnail
+  def thumbnail
+    "/images/non_nines_user_resource.jpg"
+  end
+  
 end
