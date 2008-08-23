@@ -1,3 +1,4 @@
+      <%= javascript_include_tag 'exhibits.js' %>
       <%= error_messages_for 'exhibited_user_resource', :class => "flash_error" %>
 
       <table>
@@ -10,24 +11,48 @@
           <%= td f.label :url, "URL" %>
           <%= td f.text_field :url %>
         </tr>
-        <%- @exhibited_user_resource.role_AUTs.each do |aut| -%>
         <tr>
-          <%= td f.label :role_AUT, "Author" %>
-          <%= td text_field_tag "exhibited_user_resource[role_AUT][]", aut %>
+          <%= td f.label :role_AUT, "Author(s)" %>
+          <td>
+            <%= link_to_function("add author", "Exhibit.addAuthorInput('authors_list')") %>
+          </td>
         </tr>
-        <%- end -%>
-        <%- @exhibited_user_resource.role_EDTs.each do |edt| -%>
         <tr>
-          <%= td f.label :role_EDT, "Editor" %>
-          <%= td text_field_tag "exhibited_user_resource[role_EDT][]", edt %>
+          <%= td "" %>
+          <% td :id => "authors_list" do %>
+            <% @exhibited_user_resource.role_AUTs.each_with_index do |aut, i| div do %>
+              <%= text_field_tag("exhibited_user_resource[role_AUT][]", aut) %><%= link_to_function("remove", "this.up().remove(); return false") %>
+            <% end end %>
+          <% end #td %>
         </tr>
-        <%- end -%>
-        <%- @exhibited_user_resource.role_TRLs.each do |trl| -%>
         <tr>
-          <%= td f.label :role_TRL, "Translator" %>
-          <%= td text_field_tag "exhibited_user_resource[role_TRL][]", trl %>
+          <%= td f.label :role_EDT, "Editor(s)" %>
+          <td>
+            <%= link_to_function("add editor", "Exhibit.addEditorInput('editors_list')") %>
+          </td>
         </tr>
-        <%- end -%>
+        <tr>
+          <%= td "" %>
+          <% td :id => "editors_list" do %>
+            <% @exhibited_user_resource.role_EDTs.each do |edt| div do %>
+              <%= text_field_tag("exhibited_user_resource[role_EDT][]", edt) %><%= link_to_function("remove", "this.up().remove(); return false") %>
+            <% end end %>
+          <% end #td %>
+        </tr>
+        <tr>
+          <%= td f.label :role_TRL, "Translator(s)" %>
+          <td>
+            <%= link_to_function("add translator", "Exhibit.addTranslatorInput('translators_list')") %>
+          </td>
+        </tr>
+        <tr>
+          <%= td "" %>
+          <% td :id => "translators_list" do %>
+            <% @exhibited_user_resource.role_TRLs.each do |trl| div do %>
+              <%= text_field_tag("exhibited_user_resource[role_TRL][]", trl) %><%= link_to_function("remove", "this.up().remove(); return false") %>
+            <% end end %>
+          <% end #td %>
+        </tr>
         <tr>
           <%= td f.label :role_PBL, "Publisher" %>
           <%= td f.text_field :role_PBL %>
