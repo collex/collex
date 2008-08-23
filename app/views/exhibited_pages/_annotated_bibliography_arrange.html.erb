@@ -18,7 +18,7 @@
 <% div :id => "sortable-pages" do %>
   <%- @exhibit.pages.each do |@exhibited_page| -%>
     <% div :id => dom_id(@exhibited_page), :class => "sortable-page" do %>
-      <%= span "Move Page #{@exhibited_page.position}", :class => "page-handle draggable" %>
+      <%= span image_tag("draggable.jpg", :alt => "drag me") + "Move Page #{@exhibited_page.position}", :class => "page-handle draggable" %>
       
       <%# For display of sections %>
       <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section", :id => dom_id(@exhibited_section) do %>
