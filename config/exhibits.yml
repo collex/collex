@@ -21,6 +21,7 @@
 defaults: &defaults
   archive: Nines
   properties_to_index: [genre]
+  publish_recipients: dw6h@cms.mail.virginia.edu
 
 development:  
   <<: *defaults
