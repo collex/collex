@@ -1,0 +1,1 @@
+    <%= p %Q{This exhibit is a <em>shared</em> resource. It is available for general use but has not yet been peer-reviewed by the NINES Editorial Boards. If you would like to recommend this exhibit for peer-review, please contact the <a href="mailTo:dw6h@cms.mail.virginia.edu">Project Manager</a>.}, :class => "shared-not-published" if @exhibit.shared? && !@exhibit.published? %>

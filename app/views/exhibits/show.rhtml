@@ -22,6 +22,10 @@
     <%= li link_to 'Edit', edit_exhibit_page_path(@exhibit, @exhibit.pages.first) if @exhibit.updatable_by?(user_or_guest) %> 
   <% end end %>
   <% div :id => "exhibit-content" do %>
+
+    <%= render :partial => 'exhibited_pages/shared_disclaimer' %>
+  
+    <%= h1 @exhibit.exhibit_type.description %>
     <%= h2 @exhibit.title %>
     <%= image_tag @exhibit.thumbnail, :alt => "Exhibit Thumbnail Image" unless @exhibit.thumbnail.blank? %>    
     <%= div @exhibit.annotation %>
