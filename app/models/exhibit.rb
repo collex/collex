@@ -234,6 +234,7 @@ class Exhibit < ActiveRecord::Base
     self.published = true
     self.index!
     self.save!
+    ExhibitMailer.deliver_published_notification(self)
   end
   
   # Will remove the item from the index as well.
@@ -244,8 +245,9 @@ class Exhibit < ActiveRecord::Base
       self.solr.connection.commit
     end
     self.save!
+    ExhibitMailer.deliver_unpublished_notification(self)
   end
-  
+    
   # Will throw an error if value is +true+ when +shared+ is +false+.
   def published=(value)
     publishable? ? write_attribute(:published, value) : raise(Exception, ("Can not publish an unshared exhibit. You must share it first."))
