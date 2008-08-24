@@ -72,6 +72,12 @@
   text-align: right;
 }
 
+.shared-not-published {
+  background-color: #d3d3d3;
+  padding: 10px;
+  width: 650px;
+}
+
 /* set different width for the caption textarea */
 #exhibit-body.edit .illustration-caption textarea.tiny-mce {
   width: 100px;
