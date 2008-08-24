@@ -68,6 +68,10 @@
   height: 30em;
 }
 
+#exhibit-body .section-handle, #exhibit-body .page-handle {
+  text-align: right;
+}
+
 /* set different width for the caption textarea */
 #exhibit-body.edit .illustration-caption textarea.tiny-mce {
   width: 100px;
