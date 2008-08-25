@@ -74,7 +74,7 @@ module SidebarHelper
         xm.tr do
           xm.td :align => "center" do
             xm << thumbnail_image_tag(item, :class => 'image draggable')
-            xm << draggable_element("thumbnail_#{item['uri']}", :revert => true)
+            xm << draggable_element("thumbnail_#{item['uri']}", :revert => true, :scroll => "window")
           end
           xm.td do
             xm.span do 
