@@ -7,7 +7,7 @@
   <br />
   
   <%= thumbnail_image_tag(@object, :class => "draggable") %>
-  <%= draggable_element("thumbnail_#{@object.uri}", :revert => true) %>
+  <%= draggable_element("thumbnail_#{@object.uri}", :revert => true, :scroll => "window") %>
 
 <div class="rdf">
 <%- if @object.year or @object.agent or @object.genre -%>  
