@@ -186,6 +186,8 @@ module ExhibitsHelper
     url = case object_name
     when :exhibited_item
       eval("update_#{method_name}_exhibit_page_section_item_path(#{tag.object.exhibited_section.exhibited_page.exhibit.id}, #{tag.object.exhibited_section.exhibited_page.id}, #{tag.object.exhibited_section.id}, #{tag.object.id})")
+    when :exhibited_section
+      eval("update_#{method_name}_exhibit_page_section_path(#{tag.object.exhibited_page.exhibit.id}, #{tag.object.exhibited_page.id}, #{tag.object.id})")
     when :exhibited_page
       eval("update_#{method_name}_exhibit_page_path(#{tag.object.exhibit.id}, #{tag.object.id})")
     when :exhibit
