@@ -23,7 +23,8 @@
       
       <%# For display of sections %>
       <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section", :id => dom_id(@exhibited_section) do %>
-        <%#= p "Move Section", :class => "section-handle draggable" %>
+        <%= div "Move Section" + image_tag("draggable.jpg", :alt => "drag me"), :class => "section-handle draggable" %>
+
         <%= @exhibited_section.title %>
         <% @exhibited_section.exhibited_items.each do |@exhibited_item| div :id => dom_id(@exhibited_item), :class => "sortable-object draggable" do %>
           <%= thumbnail_image_tag(@exhibited_item, :align => 'top', :width => 50, :height => 50, :title => "header=[annotation] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]") %>
