@@ -19,12 +19,12 @@
   <%- @exhibit.pages.each do |@exhibited_page| -%>
     <% div :id => dom_id(@exhibited_page), :class => "sortable-page" do %>
       <%= div "Move Page #{@exhibited_page.position}" + image_tag("draggable.jpg", :alt => "drag me"), :class => "page-handle draggable" %>
-      <%= p Time.parse(@exhibited_page.title).to_date.to_s(:long) %>
+      <%= p @exhibited_page.title %>
       
       <%# For display of sections %>
       <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section", :id => dom_id(@exhibited_section) do %>
         <%#= p "Move Section", :class => "section-handle draggable" %>
-
+        <%= @exhibited_section.title %>
         <% @exhibited_section.exhibited_items.each do |@exhibited_item| div :id => dom_id(@exhibited_item), :class => "sortable-object draggable" do %>
           <%= thumbnail_image_tag(@exhibited_item, :align => 'top', :width => 50, :height => 50, :title => "header=[annotation] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]") %>
 
