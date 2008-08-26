@@ -24,9 +24,9 @@
     <%# SimplyHelpful does not render nested route's URLs properly, so it was hacked to take :url as a paramet@exhibited_item. %>
     <%# Unfortunately, David Black's inferred_routes plugin breaks some of our non RESTful routes, so this is not used. %>
     <% div :class => "resource-title" do %>
-      <%= @exhibited_item.title unless (@exhibited_item.title.blank? or !@exhibited_item.url.blank?) %>
-      <%= link_to(@exhibited_item.title, @exhibited_item.url, :target => "_blank") + " &rarr;" unless (@exhibited_item.title.blank? and @exhibited_item.url.blank?) %>
-    <% end %>  
+      <%= @exhibited_item.title unless (@exhibited_item.title.blank? || !@exhibited_item.url.blank?) %>
+      <%= link_to(@exhibited_item.title, @exhibited_item.url, :target => "_blank") + " &rarr;" unless (@exhibited_item.url.blank?) %>
+    <% end %>
     <%= div link_to_remote( "view in sidebar", :update => "sidebar", :url => {:controller=>"sidebar", :action => 'detail', :objid => @exhibited_item.uri}, :complete => "window.scrollTo(0,0);", :class => "title") unless @exhibited_item.is_a?(ExhibitedUserResource) %>
     
     <%= div span('source: ', :class => "label") + @exhibited_item.source unless @exhibited_item.source.blank? %>
@@ -38,7 +38,8 @@
     <%- if controller.action_name == "edit" -%>
     <%= div span('annotation: ', :class => "label") + exhibits_tiny_mce_in_place_editor(:exhibited_item, "annotation"), :id => "mce_container_exhibited_item_#{@exhibited_item.id}" %> 
       
-      <%= link_to "Remove Item", exhibit_page_section_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete %>
+      <%= div link_to("Edit Item", edit_exhibit_page_section_user_resource_path(@exhibit, section.page, section, @exhibited_item)) if @exhibited_item.is_a?(ExhibitedUserResource) %>
+      <%= div link_to("Remove Item", exhibit_page_section_resource_path(@exhibit, section.page, section, @exhibited_item), :confirm => "Remove Item?", :method => :delete) %>
     <%- else -%>
       <%= div span('annotation: ', :class => "label") + @exhibited_item.annotation unless @exhibited_item.annotation.blank? %>
     <%- end -%>
