@@ -16,6 +16,7 @@
 
 <% section.exhibited_items.each do |@exhibited_item| span :id => dom_id(@exhibited_item), :class => "sortable-object draggable" do %>
   <%= thumbnail_image_tag(@exhibited_item, :align => 'top', :width => 50, :height => 50, :title => "header=[annotation] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]") if @exhibited_item.is_a?(ExhibitedResource) %>
-
-  <%= span truncate_no_tags(default_text(@exhibited_item.annotation, "(no text given)"), 50), :title => "header=[complete text] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" if @exhibited_item.is_a?(ExhibitedText) %>      
+  
+  <%= image_tag "text_editor.jpg", :alt => "text thumbnail", :width => 50, :height => 50, :title => "header=[complete text] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" if @exhibited_item.is_a?(ExhibitedText) %>      
+  
 <% end end  %>    
