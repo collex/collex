@@ -503,11 +503,13 @@
 .flash_notice {
   color: green;
   font-weight: bold;
+  font-size: 1.5em;
 }
 .flash_warning, .flash_error {
   color: red;
   font-weight: bold;
   border: 1px solid red;
+  font-size: 1.5em;
 }
 
 .draggable {
