@@ -22,12 +22,11 @@
       Drag your new resource here.
       <%= image_tag("loading.gif", :style => "display:none;", :id => "drop-zone-spinner-for-#{@exhibited_section.id}") %>
     <% end %>
-
+    <%= link_to "Add your own resource", new_exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section) %>
   <%- else -%>
     <%= h3 @exhibited_section.title unless @exhibited_section.title.blank? %>
     <%= p @exhibited_section.annotation unless @exhibited_section.annotation.blank? %>
   <% end %>
-  <%= link_to "Add your own resource", new_exhibit_page_section_user_resource_path(@exhibit, @exhibited_page, @exhibited_section) %>
 
   <%= div render(:partial => "exhibited_pages/#{@exhibited_section.template}", :locals => {:section => @exhibited_section}), :style => "clear:both;", :id => dom_id(@exhibited_section), :class => "section" %>
   
