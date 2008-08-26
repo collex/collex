@@ -132,7 +132,7 @@ class Exhibit < ActiveRecord::Base
   
   # Returns a list of the site (archive) codes used in the exhibit
   def site_codes
-    exhibited_resources.collect{|er| er.properties.find_by_name('archive').value}.uniq
+    exhibited_resources.collect{|er| er.properties.find_by_name('archive').value}.uniq rescue []
   end
 
   # Collection of all the +ExhibitedResource+s in the +Exhibit+
