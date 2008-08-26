@@ -69,7 +69,14 @@
 }
 
 #exhibit-body .section-handle, #exhibit-body .page-handle {
-  text-align: right;
+  text-align: left;
+  position: relative;
+}
+
+#exhibit-body .section-handle img, #exhibit-body .page-handle img {
+  right: -9px;
+  top: -9px;
+  position: absolute;
 }
 
 .shared-not-published {
