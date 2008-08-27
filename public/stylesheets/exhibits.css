@@ -63,7 +63,8 @@
   border-color: red;
 }
 
-#exhibit-body.edit textarea.tiny-mce {
+#exhibit-body.edit textarea.tiny-mce,
+#exhibit-body.edit textarea.non-tiny-mce {
   width: 30em;
   height: 30em;
 }
@@ -86,7 +87,8 @@
 }
 
 /* set different width for the caption textarea */
-#exhibit-body.edit .illustration-caption textarea.tiny-mce {
+#exhibit-body.edit .illustration-caption textarea.tiny-mce,
+#exhibit-body.edit .illustration-caption textarea.non-tiny-mce {
   width: 100px;
   height: 30em;
 }
