@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   before_filter :session_create
   
   helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user, :user_or_guest,
-                :safari?
+                :non_mce_safari?
   
   def boom
     raise "boom!"
@@ -94,8 +94,12 @@ class ApplicationController < ActionController::Base
       user || Guest.new
     end
     
-    def safari?
-      request.env['HTTP_USER_AGENT'].downcase.index('safari') != nil
+    # We only care if it's Safari < version 3.x, which started with 500s. So "Safari/4xx" or less is not compatible with TinyMCE
+    # See http://developer.apple.com/internet/safari/uamatrix.html
+    def non_mce_safari?
+      logger.debug("!!!!!!!!!! HTTP_USER_AGENT: #{request.env['HTTP_USER_AGENT']}")
+      agent = request.env['HTTP_USER_AGENT'].downcase
+      agent =~ /safari\/[1-4]/ 
     end
     
     def self.in_place_edit_for_resource(object, attribute, options = {})

@@ -20,7 +20,7 @@ class ExhibitedPagesController < ExhibitsBaseController
   before_filter :authorize_owner, :except => [:show, :creative_commons]
   
   uses_tiny_mce(:options => {
-                  :browsers => "msie,gecko,opera",
+                  :browsers => "msie,gecko,opera,safari",
                   :editor_selector => "tiny-mce",
                   :theme => "advanced", 
                   :theme_advanced_toolbar_location => "top",
