@@ -117,6 +117,7 @@ class NinesCollectionManager
     hash["EDT"] = "Editor"
     hash["PBL"] = "Publisher"
     hash["TRL"] = "Translator"
+    hash["CTY"] = "City"
     hash
   end
 
