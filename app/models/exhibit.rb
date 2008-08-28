@@ -146,6 +146,7 @@ class Exhibit < ActiveRecord::Base
     options = {:with_sites => true}.merge(options)
     result = self.exhibited_resources.collect { |er| er.thumbnail unless er.thumbnail.blank? }.compact
     result.concat(Site.thumbnails_for_codes(site_codes)) if options[:with_sites]
+    result << DEFAULT_THUMBNAIL_IMAGE_PATH if options[:with_sites]
     result
   end
   
