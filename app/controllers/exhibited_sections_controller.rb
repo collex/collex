@@ -78,16 +78,27 @@ class ExhibitedSectionsController < ExhibitsBaseController
       end
     end
   end
-  
+
   def destroy
     @exhibited_page = @exhibit.exhibited_pages.find(params[:page_id])
     @exhibited_section = @exhibited_page.exhibited_sections.find(params[:id])
-    @exhibited_section.destroy
 
-    respond_to do |format|
-      flash[:notice] = 'Exhibited Section was successfully removed.'
-      format.html { redirect_to edit_exhibit_page_path(:id => @exhibited_page, :exhibit_id => @exhibited_page.exhibit_id) }
-      format.xml  { head :ok }
+    if @exhibited_section.destroy
+      message = "Your Exhibited Section was removed successfully."
+      if request.xhr?
+        render :json => {:message => message}, :status => 200 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+      else
+        flash[:notice] = message
+        redirect_to edit_exhibit_page_path(@exhibit, @exhibited_page)
+      end
+    else
+      message = "There was a problem removing your Exhibited Section."
+      if request.xhr?
+        render :json => {:message => message}, :status => 403 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+      else
+        flash[:error] = message
+        redirect_to edit_exhibit_page_path(@exhibit, @exhibited_page)
+      end
     end
   end
 end

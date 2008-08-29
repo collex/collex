@@ -74,7 +74,7 @@ class ExhibitedPagesController < ExhibitsBaseController
   end
 
   def edit
-    @exhibited_page = @exhibit.exhibited_pages.find(params[:id])
+    @exhibited_page = @exhibit.exhibited_pages.find(params[:id]) rescue @exhibit.exhibited_pages.first #easy way to handle ajax-removed pages and the edit links
     @licenses = License.find(:all)    
     @section_types =  ExhibitPageType.find(@exhibited_page.exhibit_page_type_id).section_types
   end
@@ -114,12 +114,22 @@ class ExhibitedPagesController < ExhibitsBaseController
   def destroy
     @exhibited_page = ExhibitedPage.find(params[:id])
     if(@exhibit.pages.count <= 1)
-      flash[:error] = "This is your only page, so it can not be removed."
-      redirect_to edit_exhibit_page_path(@exhibit, @exhibited_page)
+      message = "This is your only page, so it can not be removed."
+      if request.xhr?
+        render :json => {:message => message}, :status => 403 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+      else
+        flash[:error] = message
+        redirect_to edit_exhibit_page_path(@exhibit, @exhibited_page)
+      end
     else
       @exhibited_page.destroy
-      flash[:notice] = "Your Page was deleted successfully."
-      redirect_to edit_exhibit_page_path(@exhibit, @exhibit.pages.first)
+      message = "Your Page was deleted successfully."
+      if request.xhr?
+        render :json => {:message => message}, :status => 200 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+      else
+        flash[:notice] = message
+        redirect_to edit_exhibit_page_path(@exhibit, @exhibit.pages.first)
+      end
     end
   end
 end
