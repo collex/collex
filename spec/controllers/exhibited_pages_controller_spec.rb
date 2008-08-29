@@ -116,5 +116,39 @@ describe ExhibitedPagesController do
     response.should be_success
     assigns[:license].id.should == license.id
   end
+  
+  it "POST 'destroy' with authorized owner should return 403 and json message that page can't be removed." do
+    request.session[:user] = {:username => @owner.username}
+    Exhibit.stub!(:find).and_return(@exhibit)
+    ExhibitedPage.stub!(:find).and_return(@page_1)
+    @exhibit.stub!(:pages).and_return(@exhibited_pages)
+    @exhibit.stub!(:updatable_by?).and_return(true)
 
+    # if only one page, should not delete
+    @exhibited_pages.should_receive(:count).and_return(1)
+    
+    xhr :delete, :destroy, :id => @page_1.id, :exhibit_id => @exhibit.id
+    response.headers['Status'].should == "403 Forbidden"
+    response.body.should == %Q{{"message": "This is your only page, so it can not be removed."}}
+    assigns[:exhibit].should equal(@exhibit)
+    assigns[:exhibited_page].should equal(@page_1)
+  end
+  
+  it "POST 'destroy' with authorized owner should return 200 and json message that page was removed." do
+    request.session[:user] = {:username => @owner.username}
+    Exhibit.stub!(:find).and_return(@exhibit)
+    ExhibitedPage.stub!(:find).and_return(@page_1)
+    @exhibit.stub!(:pages).and_return(@exhibited_pages)
+    @exhibit.stub!(:updatable_by?).and_return(true)
+
+    # if more than one page, then should delete
+    @exhibited_pages.should_receive(:count).and_return(2)
+    @page_1.should_receive(:destroy).and_return(true)
+    
+    xhr :delete, :destroy, :id => @page_1.id, :exhibit_id => @exhibit.id
+    response.headers['Status'].should == "200 OK"
+    response.body.should == %Q{{"message": "Your Page was deleted successfully."}}
+    assigns[:exhibit].should equal(@exhibit)
+    assigns[:exhibited_page].should equal(@page_1)
+  end
 end
