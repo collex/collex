@@ -25,7 +25,7 @@ class Exhibit < ActiveRecord::Base
   
   validates_presence_of :title, :exhibit_type_id, :user_id, :license
   
-  before_destroy "unpublish!" # clean up from index
+  before_destroy "unindex!" # clean up from index
   
   def template
     self.exhibit_type.template
@@ -87,6 +87,13 @@ class Exhibit < ActiveRecord::Base
     response = self.solr.connection.add(map)
     self.solr.connection.commit
     response
+  end
+  
+  def unindex!
+    if indexed?
+      self.solr.connection.delete("#{self.uri}")
+      self.solr.connection.commit
+    end
   end
     
   # Retrieves the user-added tags (folksonomy)
@@ -241,10 +248,7 @@ class Exhibit < ActiveRecord::Base
   # Will remove the item from the index as well.
   def unpublish!
     self.published = false
-    if indexed?
-      self.solr.connection.delete("#{self.uri}")
-      self.solr.connection.commit
-    end
+    self.unindex!
     self.save!
     ExhibitMailer.deliver_unpublished_notification(self)
   end
