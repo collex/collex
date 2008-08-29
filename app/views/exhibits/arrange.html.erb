@@ -63,6 +63,15 @@
       <%= link_to_function "(click to close notice)", "$('arrange-save-failed').hide()" %>
     <% end %>
     
+    <% div :id => "arrange-request-successful", :style => "display: none;", :class => "flash_notice" do %>
+      <%= h2 "" %>
+      <%= link_to_function "(click to close notice)", "$('arrange-request-successful').hide()" %>
+    <% end %>
+    <% div :id => "arrange-request-failed", :style => "display: none;", :class => "flash_error" do %>
+      <%= h2 "" %>
+      <%= link_to_function "(click to close notice)", "$('arrange-request-failed').hide()" %>
+    <% end %>
+    
     <%= render(:partial => "exhibited_pages/#{@exhibit.template}_arrange") %>
     
   <% end %>
