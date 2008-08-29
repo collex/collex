@@ -65,5 +65,29 @@ var SortableExhibit = {
         end
       }
     });
-  }
+  },
+  
+  delete: function(url, dom_id) {
+    $('arrange-request-successful').hide();
+    $('arrange-request-failed').hide();
+    
+    if (!confirm("Remove?")) return false;
+    
+    new Ajax.Request(url, {
+      method: "post",
+      parameters: {_method: 'delete'},
+      onSuccess: function(transport){
+        var json = transport.responseText.evalJSON();
+        $('arrange-request-successful').down().update(json.message);
+        $('arrange-request-successful').show();
+        Effect.Puff(dom_id);
+      },
+      onFailure: function(transport){
+        var json = transport.responseText.evalJSON();
+        $('arrange-request-failed').down().update(json.message);
+        $('arrange-request-failed').show();
+      }
+    }); 
+  }  
 };
+
