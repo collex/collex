@@ -67,11 +67,11 @@ var SortableExhibit = {
     });
   },
   
-  delete: function(url, dom_id) {
+  remove: function(url, dom_id) {
     $('arrange-request-successful').hide();
     $('arrange-request-failed').hide();
     
-    if (!confirm("Remove?")) return false;
+    if (!confirm("Remove?")) return;
     
     new Ajax.Request(url, {
       method: "post",

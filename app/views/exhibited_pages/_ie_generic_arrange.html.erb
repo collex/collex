@@ -18,5 +18,5 @@
   <%= thumbnail_image_tag(@exhibited_item, :align => 'top', :width => 50, :height => 50, :title => "header=[annotation] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]") if @exhibited_item.is_a?(ExhibitedResource) %>
   
   <%= image_tag "text_editor.jpg", :alt => "text thumbnail", :width => 50, :height => 50, :title => "header=[complete text] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" if @exhibited_item.is_a?(ExhibitedText) %>      
-  <%= link_to_function "&nbsp;X&nbsp;", "SortableExhibit.delete('#{exhibit_page_section_item_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_item)}', '#{dom_id(@exhibited_item)}')", :title => "Remove this item"  %>
+  <%= link_to_function "&nbsp;X&nbsp;", "SortableExhibit.remove('#{exhibit_page_section_item_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_item)}', '#{dom_id(@exhibited_item)}')", :title => "Remove this item"  %>
 <% end end  %>    
