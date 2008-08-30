@@ -80,7 +80,7 @@ var SortableExhibit = {
         var json = transport.responseText.evalJSON();
         $('arrange-request-successful').down().update(json.message);
         $('arrange-request-successful').show();
-        Effect.Puff(dom_id);
+        Element.remove(dom_id);
       },
       onFailure: function(transport){
         var json = transport.responseText.evalJSON();
