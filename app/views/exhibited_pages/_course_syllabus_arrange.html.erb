@@ -18,17 +18,27 @@
 <% div :id => "sortable-pages" do %>
   <%- @exhibit.pages.each do |@exhibited_page| -%>
     <% div :id => dom_id(@exhibited_page), :class => "sortable-page" do %>
-      <%= div "Move Page #{@exhibited_page.position}" + image_tag("draggable.jpg", :alt => "drag me"), :class => "page-handle draggable" %>
+      <% div :class => "page-handle draggable" do %>
+        <%= "Move Page #{@exhibited_page.position}" %>
+        <%= link_to_function "&nbsp;X&nbsp;", "SortableExhibit.remove('#{exhibit_page_path(@exhibit, @exhibited_page)}', '#{dom_id(@exhibited_page)}')", :title => "Remove this page" %>
+        <%= image_tag("draggable.jpg", :alt => "drag me") %>
+      <% end #div %>
       <%= p @exhibited_page.title %>
       
       <%# For display of sections %>
       <% @exhibited_page.exhibited_sections.each do |@exhibited_section| div :class => "section", :id => dom_id(@exhibited_section) do %>
-        <%= div "Move Section" + image_tag("draggable.jpg", :alt => "drag me"), :class => "section-handle draggable" %>
+        <% div :class => "section-handle draggable" do %>
+          Move Section
+          <%= link_to_function "&nbsp;X&nbsp;", "SortableExhibit.remove('#{exhibit_page_section_path(@exhibit, @exhibited_page, @exhibited_section)}', '#{dom_id(@exhibited_section)}')", :title => "Remove this section" %>
+          <%= image_tag("draggable.jpg", :alt => "drag me") %>
+        <% end #div %>
 
         <%= @exhibited_section.title %>
         <% @exhibited_section.exhibited_items.each do |@exhibited_item| div :id => dom_id(@exhibited_item), :class => "sortable-object draggable" do %>
           <%= thumbnail_image_tag(@exhibited_item, :align => 'top', :width => 50, :height => 50, :title => "header=[annotation] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]") %>
-
+          
+          <%= link_to_function "&nbsp;X&nbsp;", "SortableExhibit.remove('#{exhibit_page_section_item_path(@exhibit, @exhibited_page, @exhibited_section, @exhibited_item)}', '#{dom_id(@exhibited_item)}')", :title => "Remove this item"  %>
+          
           <%= span truncate_no_tags(default_text(@exhibited_item.annotation, "(no text given)"), 50), :title => "header=[complete text] body=[#{@exhibited_item.annotation}] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" %>      
         <% end end  %>
       <% end end %>
