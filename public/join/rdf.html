@@ -33,29 +33,52 @@
 				
 			</div>
 
-			<div id="hnav">
+				<div id="hnav">
+					<ul><li><a
+						href="../about/index.html">About 9s</a><span> | </span></li><li><a
+						href="../contributors/index.html">People &amp; Projects</a><span> | </span></li><li><a
+						href="../tools/index.html">Tools &amp; Interfaces</a><span> | </span></li><li><a
 
-			</div>
+						class="on" href="index.html">Join 9s</a><span> | </span></li></ul>
+				</div>
+		
 
 			<div id="leftColumn">
 				<div id="innerLeftColumn">
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+					
+					<div id="vnav">
+						<ul><li><a 
+							href="workshop.html">sample rdf</a></li><li><a  
+							class="on" href="submissions.html">sample xsl</a></li></ul>
+					</div>
 
-					<center><img src="/css/images/harrington.gif" /></center>
+					
 
-<p>&nbsp;</p>
 				</div>
 			</div>
-
 			<div id="contentColumn">
 				<div id="innerContentColumn">
+<p class="about_header"><strong>submitting rdf</strong></p>
 
+<p>RDF is the metadata format that contributors use to make their resources available for use within NINES.  With RDF, contributors describe each of their resources in general terms that allow those resources to be categorized and searched through COLLEX.</p>
 
-  <span class="subhead">Looking for the ARP wiki?</span>
-<p>The ARP wiki is temporarily down for maintenance. We're working hard to make them available once more, and we apologize for the inconvenience.</p> 
+<p>On this page, contributors can find basic information about the composition of RDF files as well as links to sample RDF submissions and sample XSL transformations which can be used to turn XML resources into RDF.</p>
 
-<p>If you have additional questions or feedback, please e-mail us at <a href="mailto:technologies@nines.org">technologies@nines.org</a>.</p>
+<p class="about_header"><strong>rdf basics</strong></p>
+
+<p><b>R</b>esource <b>D</b>escription <b>F</b>ramework, or RDF, is the descriptive data which NINES uses in COLLEX; through the metadata contained by the RDF, COLLEX makes peer reviewed resources findable, interconnected, and ready for repurposing.</p>
+
+<p>RDF is an XML metadata model used for describing resources as part of the <a href="http://en.wikipedia.org/wiki/Semantic_Web" target="_blank">Semantic Web</a>.  NINES contributors identify the basic features of their digital objects, such as the title, creator, publisher, date of composition, genre, even a list of the component objects that make a greater whole. The NINES metadata scheme leverages some preexisting schemes, such as <a href="http://dublincore.org/ Dublin Core" target="_blank">Dublin Core</a> and Library of Congress <a href="http://lcweb2.loc.gov/cocoon/loc.terms/relators/dc-relators.html" target="_blank">Relator Terms</a>.</p>
+
+<p>Those interested in the nuts and bolts of RDF can find general information on <a href="http://en.wikipedia.org/wiki/Resource_Description_Framework" target="_blank">Wikipedia</a>.  Details on the generalized RDF specification can be found through the <a href="http://www.w3.org/RDF/" target="_blank">World Wide Web Consortium</a>.</p>
+
+<p>In thinking about the RDF creation process, contributors should first decide on how to define <em>objects</em> in their resources.  The RDF metadata scheme is predicated on the description of objects, but what comprises an object is left to the discretion of the contributor.  Contributors would be best to think of defining their objects as the units that contributors wish to make browseable, collectible, and available for repurposing.</p>
+
+<p>For example, a transcription of a novel would have an object for the unit of "the novel."  But a contributor could also decide that the chapters which constitute that novel might also be interesting to collect on their own; the contributor would then make RDF objects for each chapter unit as well.  One could easily imagine a poetry anthology receiving a similar distillation of its many layers: one RDF object for the anthology as a whole; one object for each author; one object for each poem; one object for each figure; even objects for the scholarly commentary or introductions.  Another contributor could treat a similar anthology in a totally dissimilar way, viewing the bibliographic page as the elementary unit instead of the logical divisions.  While contributors are free to  create whatever granularity or type of objectification they would like, their reason should be guided by a sensible judgment of what other scholars will find useful for collection and annotation.  A large book rendered as a monolithic object won't help to reveal the rich resources of its individual chapters, essays, poems, or pictures.  Likewise, a poetry anthology atomized into single lines of verse would have little use for collection and prove a nightmare for browsing.</p>
+
+<!--<p class="about_header"><strong>samples</strong></p>
+
+><p>Below is a generic, mock RDF file.  We have also made several <a href="">RDF samples</a> available, along with samples of <a href="">RDF XSLT</a> for transforming XML source files into RDF metadata.</p>-->
   
 
 				
