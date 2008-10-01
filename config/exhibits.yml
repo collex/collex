@@ -41,7 +41,7 @@ quandu_staging:
   
 quandu_production:  
   <<: *defaults
-  url_base: http://nines-test.lib.virginia.edu
+  url_base: http://nines.org
   
 test:  
   <<: *defaults
