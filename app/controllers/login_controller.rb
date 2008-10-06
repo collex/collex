@@ -90,7 +90,13 @@ class LoginController < ApplicationController
     if request.post? and params[:username] and params[:username].size > 0
       @user = COLLEX_MANAGER.reset_password(params[:username])
        if @user
-        LoginMailer.deliver_password_reset(:controller => self, :user => @user)
+          begin
+            LoginMailer.deliver_password_reset(:controller => self, :user => @user)
+          rescue Exception => msg
+            logger.error("**** ERROR: Can't send email: " + msg)
+            flash[:notice] = "There was a problem sending email. If this persists, report the problem to the administrator."
+            redirect_to :action => 'account_help', :username => params[:username]
+          end
       else
         flash[:notice] = "There is no user by that name."
         redirect_to :action => 'account_help', :username => params[:username]
@@ -102,7 +108,13 @@ class LoginController < ApplicationController
     if request.post? and params[:email] and params[:email].size > 0
       @user = COLLEX_MANAGER.find_by_email(params[:email])
       if @user != nil
-        LoginMailer.deliver_recover_username(:controller => self, :user => @user)
+          begin
+            LoginMailer.deliver_recover_username(:controller => self, :user => @user)
+          rescue Exception => msg
+            logger.error("**** ERROR: Can't send email: " + msg)
+            flash[:notice] = "There was a problem sending email. If this persists, report the problem to the administrator."
+            redirect_to :action => 'account_help', :username => params[:username]
+          end
       else
         flash[:notice] = "There is no user with that email address."
         redirect_to :action => 'account_help', :email => params[:email]
