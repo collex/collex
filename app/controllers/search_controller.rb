@@ -161,9 +161,6 @@ class SearchController < ApplicationController
    def tab_about #TODO: This will move when we implement the feature
    end
    
-   def tags #TODO: This will move when we implement the feature
-   end
-   
    # constrain search to only return free culture objects 
    def constrain_freeculture
      if params[:freeculture] 

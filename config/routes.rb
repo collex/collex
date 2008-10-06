@@ -136,7 +136,7 @@ ActionController::Routing::Routes.draw do |map|
   map.news '/news', :controller => 'search', :action => 'news'
   map.search '/search', :controller => 'search', :action => 'browse'
   map.tab_about '/tab_about', :controller => 'search', :action => 'tab_about'
-  map.tags '/tags', :controller => 'search', :action => 'tags'
+  map.tags '/tags', :controller => 'tag', :action => 'list'
   map.login '/login', :controller => 'login', :action => 'login'
 
   map.root :controller => "home", :action => "index"

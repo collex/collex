@@ -29,14 +29,17 @@
 	<!-- section styles -->
 	<%= case @site_section 
 		when :search 
-	  	stylesheet_link_tag "search", :media => "all" 
+	  	  stylesheet_link_tag "search", :media => "all" 
 		when :home 
 		  stylesheet_link_tag "home", :media => "all"
 		when :login 
 		  stylesheet_link_tag "login", :media => "all" 
+		when :tag
+		  stylesheet_link_tag("search", :media => "all") +
+		  stylesheet_link_tag("tag", :media => "all")
 		else 
-		  stylesheet_link_tag "sidebar", :media => "all" 
-		  stylesheet_link_tag "exhibits", :media => "all" 
+		  stylesheet_link_tag("sidebar", :media => "all") +
+		  stylesheet_link_tag("exhibits", :media => "all")
     end 
 	%>
 <!--[if IE]>
@@ -56,6 +59,7 @@
 		  javascript_include_tag 'search_validation'
 		when :home 
 		when :login 
+		when :tag
 		else 
 		  javascript_include_tag 'sidebar_tag_cloud'
     end 
