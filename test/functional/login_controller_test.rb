@@ -64,9 +64,23 @@ class LoginControllerTest < Test::Unit::TestCase
     assert_equal "There is no user by that name.", flash[:notice]
     assert_nil session[:user]
 
-    post :reset_password, { :username =>"dave" }
+    post :reset_password, { :username =>"paul" }
     assert_response :success
     assert_nil session[:user]
+    email_arr = ActionMailer::Base.deliveries
+    email = email_arr[email_arr.length-1]
+    to_addr = email.header['to']
+    assert_equal 'paul@example.com', to_addr.to_s
+    assert_equal 'Collex Password Reset', email.header['subject'].to_s
+    
+    # now find the new password and attempt to log in
+    body = email.body_port.to_s
+    password_prologue = "Your password is:"
+    pswd_start = body.index(password_prologue)
+    pswd_start += password_prologue.length + 3
+    new_pswd = body.slice(pswd_start, 8)
+    do_valid_login( { :expect_fail => true })
+    do_valid_login( { :password => new_pswd })
   end
   
   def test_signup
@@ -138,12 +152,24 @@ class LoginControllerTest < Test::Unit::TestCase
     assert_nil session[:user]
   end
   
-  def do_valid_login
-    post :verify_login, { :username => "paul", :password => "password" }
-    assert_response :redirect
-    assert_redirected_to "/" 
-    assert_equal 'paul', session[:user][:username]
-  end
+  def do_valid_login(params = nil)
+    if !params
+      params = {}
+    end
+    password = params[:password] ? params[:password] : "password"
+    expect_fail = params[:expect_fail]
+
+    post :verify_login, { :username => "paul", :password => password }
+    if expect_fail
+      assert_response :redirect
+      assert_redirected_to :action => 'login' 
+      assert_nil session[:user]
+    else
+      assert_response :redirect
+      assert_redirected_to "/" 
+      assert_equal 'paul', session[:user][:username]
+    end
+    end
   
 #    user_search_string = "dance"
 #    post :add_constraint, { :search_phrase => user_search_string }, { :name_of_search => "old_name" }
