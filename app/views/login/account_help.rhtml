@@ -16,7 +16,6 @@
 
 <div class="login-title">Collex Account Help</div>
 <div class="login-explanation">Having trouble signing in? Choose one of the options below.</div>
-<%= div flash[:notice], :id => "message" if flash[:notice] %>
 
 <div class="login-option">I forgot my password.</div>
 <% form_tag :controller => "login", :action => 'reset_password' do %> 
