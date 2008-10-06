@@ -1,14 +1,37 @@
 <% current_page "Tags" -%>
 <% if is_logged_in? -%>
-<div id="manage_my_objects"><%= link_to "Manage my objects", :action => 'results', :all_tags => false, :view => 'all_collected' %></div>
-<% end -%>
-<div id="xleftPanel">
-    <div id="xleftPanelContent">
-        <div id="sidebar">
-            <%= render_component(session[:sidebar_state] ? {:controller => "sidebar", :action => session[:sidebar_state][:action], :params => session[:sidebar_state][:params]} : {:controller => 'sidebar', :action => 'cloud', :params => {:user => params[:user], :type => "genre"}}) %>
-        </div>
-    </div>
+<div id="manage_my_objects"><%= link_to "Manage my objects", :action => 'results', :all_tags => false, :view => 'all_collected' %></div><br />
+<div id="all_tags_choice">
+	<% if params[:all_tags] -%>
+	<span class="tag_emph">All NINES Users</span> / <%= link_to "My tags only", :action => 'list', :all_tags => false %>
+	<% else -%>
+	<%= link_to "All NINES Users", :action => 'list', :all_tags => true %> / <span class="tag_emph">My tags only</span>
+	<% end -%>
 </div>
+<br />
+<% end -%>
+  <div class="search">
+	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
+  </div>
+<% cache_timeout(@cloud_fragment_key,1.hour.from_now) do %>
+
+<div id="sidebar-spinner" style="display:none;"></div>
+<div class="content">
+
+  <div class="tagcloud" id="tagcloud">
+  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
+  </div>
+  
+  <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
+    <span class="emph4">
+    	<%= link_to_function "show more", "sidebarTagCloud.toggleShowMoreCloudTags()", :id => 'toggle-show-all-tags' %>
+    </span>
+  <%- end -%>
+
+</div>
+
+<% end %>
+
 <div id="tag_explanation">
 	WHAT ARE TAGS? A tag is simply a word you use to descibe an object you find in NINES. Tags make it easy to organize and browse large collections.
 	Separate each tag with a space <i>(poem castle knight)</i> or to join two words together use a hyphen <i>(oil-painting).</i>

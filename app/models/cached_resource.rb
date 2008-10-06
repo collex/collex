@@ -33,7 +33,7 @@ class CachedResource < ActiveRecord::Base
   CLOUD_SQL = { 
     :archive => "select value as name, count(value) as freq from cached_properties as props join cached_resources as docs on docs.id=props.cached_resource_id where props.name = 'archive'  group by value order by value limit ?",
     :agent_facet => "select value as name, count(value) as freq from cached_properties as agents join cached_resources as docs on docs.id=agents.cached_resource_id  where agents.name like 'role_%' group by value order by value limit ?", 
-    :tag => "select name, count(name) as freq from tags join taggings on tags.id=taggings.tag_id group by name order by name limit ?",
+    :tag => "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name limit ?",
     :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id where genres.name = 'genre'  group by value order by name limit ?",     
     :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id group by username order by name limit ?",
     :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id where dates.name = 'date_label' group by dates.value order by value limit ?"
@@ -42,7 +42,7 @@ class CachedResource < ActiveRecord::Base
   CLOUD_BY_USER_SQL = { 
     :archive => "select value as name, count(value) as freq from cached_properties as props join cached_resources as docs on docs.id=props.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and props.name = 'archive' group by value order by value limit ?",
     :agent_facet => "select value as name, count(value) as freq from cached_properties as agents join cached_resources as docs on docs.id=agents.cached_resource_id join interpretations as i on docs.uri=i.object_uri where user_id=? and agents.name like 'role_%' group by value order by value limit ?", 
-    :tag => "select name, count(name) as freq from tags join taggings on tags.id=taggings.tag_id join interpretations as i on taggings.interpretation_id=i.id where user_id=? group by name order by name limit ?",
+    :tag => "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id join collected_items as i on tagassigns.collected_item_id=i.id where user_id=? group by name order by name limit ?",
     :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and genres.name = 'genre' group by value order by value limit ?",
     :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id where users.id = ? group by username order by name limit ?",
     :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id join interpretations as i on docs.uri=i.object_uri where user_id=? and dates.name = 'date_label' group by dates.value order by value limit ?",
