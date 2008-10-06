@@ -22,7 +22,7 @@ class FacetConstraint < Constraint
       "#{operator}#{field}:\"#{value}\""
     end
   end
-  
+      
   # used for creating fragment cache keys
   def to_s
     identifier = "#{field}_#{value}".downcase.gsub(/\W/,'_')

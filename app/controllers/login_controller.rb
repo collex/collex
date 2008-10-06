@@ -15,112 +15,155 @@
 ##########################################################################
 
 class LoginController < ApplicationController
-  layout "bare"
-  before_filter :authorize, :except => [:login, :logout, :signup, :reset_password]
+  layout "collex_tabs"
+  before_filter :authorize, :except => [:login, :logout, :signup, :submit_signup, :reset_password, :clear_user, :verify_login, :account_help, :recover_username]
+   before_filter :init_view_options
+   helper_method :get_page_to_return_to
+   
+   def get_page_to_return_to
+     return session[:current_page] if session[:current_page]
+     return request.env["HTTP_REFERER"] if request.env["HTTP_REFERER"]
+     return "/"
+   end
+   
+   def init_view_options # This controls how the layout portion of the page looks.
+     @use_tabs = false
+     @use_signin= false
+     @site_section = :login
+     return true
+   end
 
   def login 
-    if not params[:username]
       session[:user] = nil 
-    else 
-      logged_in_user = COLLEX_MANAGER.login(params[:username], params[:password])
-      if logged_in_user 
-        session[:user] = logged_in_user
-        jumpto = session[:jumpto]
-        if not session[:jumpto]
-          if session[:sidebar_state]
-            jumpto = {:controller => "sidebar", :action => session[:sidebar_state][:action]}
-            jumpto.merge! session[:sidebar_state][:params]
-          else
-            jumpto = {:controller => "sidebar", :action => "cloud", :type => "tag"}
-          end
-        end
-        session[:jumpto] = nil
-        flash[:refresh_page] = true
-        redirect_to(jumpto)
-      else 
-        flash[:sidebar_notice] = "Invalid user/password combination" 
-      end 
-    end
-    
-    if session[:jumpto] =~ /\/collection\/collect/ and not request.xhr?
-      render :action => "standalone_login"
-    elsif session[:jumpto] and not request.xhr?
-      render :action => "full_login", :layout => "collex"
-    end 
   end 
 
+  def verify_login
+    if not params[:username]
+      session[:user] = nil
+      redirect_to({:controller => "login", :action => "login" })
+      return
+    end
+    
+    logged_in_user = COLLEX_MANAGER.login(params[:username], params[:password])
+    if logged_in_user 
+      session[:user] = logged_in_user
+      flash[:refresh_page] = true
+      #session[:users_collections] = CachedResource.get_all_of_users_collections(User.find_by_username(logged_in_user[:username])) # store all the user's tags so we don't have to search for them for each returned book.
+      redirect_to get_page_to_return_to()
+      return
+    else 
+      flash[:notice] = "Invalid user/password combination" 
+    end
+    redirect_to(:action => 'login')
+  end
+  
   def logout 
     session[:user] = nil 
     
-    # TODO this block is taken from SidebarController#clear_user and should be dried up.
-    jumpto = {:controller => "sidebar", :action => "cloud", :type => "tag"}
-    if session[:sidebar_state]
-      session[:sidebar_state][:params].delete "user"
-      jumpto = {:controller => "sidebar", :action => session[:sidebar_state][:action]}
-      jumpto.merge! session[:sidebar_state][:params]
-    end
-    
-    request.env["HTTP_REFERER"] =~ /exhibit/ ? redirect_to(exhibits_path) : redirect_to(:controller => "search", :action => "browse")
+    request.env["HTTP_REFERER"] =~ /exhibit/ ? redirect_to(exhibits_path) : redirect_to(get_page_to_return_to())
   end
 
-  def account
+  def change_account
     if params[:password]
       begin
         if params[:email] !~ /\@/
-          flash.now[:sidebar_error] = "An e-mail address is required"
+          flash.now[:notice] = "An e-mail address is required"
           return
         end
         if params[:password] == params[:password2]
           session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:fullname], params[:email])
-          flash.now[:sidebar_message] = "Profile updated"
-          render_component(session[:sidebar_state] ? {:controller => "sidebar", :action => session[:sidebar_state][:action], :params => session[:sidebar_state][:params]}: {:controller => 'sidebar', :action => 'cloud', :params => {:user => session[:user][:username], :type => "genre"}})
+          flash.now[:notice] = "Profile updated"
+          redirect_to get_page_to_return_to()
           return
         else
-          flash.now[:sidebar_error] = "Passwords do not match"
+          flash.now[:notice] = "Passwords do not match"
         end
       rescue UsernameAlreadyExistsException => e
-        flash.now[:sidebar_error] = e.message
+        flash.now[:notice] = e.message
       end
     end
-     
+    # if there was an error, we fall through, so go back to the original action
+    redirect_to :action => 'account'
   end
   
   def reset_password
     if request.post? and params[:username] and params[:username].size > 0
       @user = COLLEX_MANAGER.reset_password(params[:username])
-      LoginMailer.deliver_password_reset(:controller => self, :user => @user) if @user
+       if @user
+        LoginMailer.deliver_password_reset(:controller => self, :user => @user)
+      else
+        flash[:notice] = "There is no user by that name."
+        redirect_to :action => 'account_help', :username => params[:username]
+      end
     end
   end
 
+  def recover_username
+    if request.post? and params[:email] and params[:email].size > 0
+      @user = COLLEX_MANAGER.find_by_email(params[:email])
+      if @user != nil
+        LoginMailer.deliver_recover_username(:controller => self, :user => @user)
+      else
+        flash[:notice] = "There is no user with that email address."
+        redirect_to :action => 'account_help', :email => params[:email]
+      end
+    end
+  end
+  
+  def account
+    
+  end
+  
+  def account_help
+    
+  end
   
   def signup
+    # This displays the signup form
+  end
+  
+  def submit_signup
+    if verify_signup_params(params)
+      redirect_to get_page_to_return_to()
+    else
+      redirect_to :action => 'signup', :username => params[:username], :fullname => params[:fullname], :email => params[:email]
+    end
+  end
+  
+  private
+  # this returns true if the user was created, and false if not.
+  # if there is an error, a flash message is created.
+  def verify_signup_params(params)
     if params[:username]
       if params[:username] !~ /^\w+[\w.]+$/
-        flash.now[:sidebar_error] = "Invalid username, please use only alphanumeric characters, periods, and no spaces"
-        return
+        flash[:notice] = "Invalid username, please use only alphanumeric characters, periods, and no spaces"
+        return false
       end
       
       if params[:email] !~ /\@/
-        flash.now[:sidebar_error] = "An e-mail address is required"
-        return
+        flash[:notice] = "An e-mail address is required"
+        return false
       end
       
       begin
         if params[:password].strip == ""
-          flash.now[:sidebar_error] = "Password must not be blank"
-          return
+          flash[:notice] = "Password must not be blank"
+          return false
         end
         if params[:password] == params[:password2]
           session[:user] = COLLEX_MANAGER.create_user(params[:username], params[:password].strip, params[:fullname], params[:email])
           flash[:refresh_page] = true
-          redirect_to({:controller => "sidebar", :action => "cloud", :type => "genre"})
+          return true
         else
-          flash.now[:sidebar_error] = "Passwords do not match"
+          flash[:notice] = "Passwords do not match"
+          return false
         end
       rescue UsernameAlreadyExistsException => e
-        flash.now[:sidebar_error] = e.message
+        flash[:notice] = e.message
+        return false
       end
     end
-     
+    # there shouldn't be a way to get here, but just in case, we'll consider that a failure.
+    return false
   end
 end

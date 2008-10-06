@@ -86,7 +86,7 @@ CACHE_DIR = "#{RAILS_ROOT}/cache"
 RELATORS = COLLEX_MANAGER.relators
 DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
 
-ExceptionNotifier.exception_recipients = %w(dw6h@cms.mail.virginia.edu nick@laiacona.com)
+ExceptionNotifier.exception_recipients = %w(dw6h@cms.mail.virginia.edu nick@performantsoftware.com paul@performantsoftware.com)
 ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
 ExceptionNotifier.email_prefix = "[Collex] "
 

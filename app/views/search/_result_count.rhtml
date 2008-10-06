@@ -1,4 +1,4 @@
 
 <% form_for :search, :url => { :action => :result_count }, :html => { :class => 'result-count-form' }  do |form| %> 
-	<span>Displaying <%= form.select :result_count, [5,15,30], { :selected => session[:items_per_page] }, { :onchange => 'submit();' } %> results per page.</span>
+	<span>Displaying <%= form.select :result_count, [5,15,30], { :selected => session[:items_per_page] }, { :onchange => 'submit();' } %> objects per page.</span>
 <% end %> 

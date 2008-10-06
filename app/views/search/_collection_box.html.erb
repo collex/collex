@@ -1,0 +1,15 @@
+<ul style='list-style-type: none;'>
+	<li><%= link_to_function "Details", "displayDetails('#{row_id}', #{page}, #{index}, '#{row_id}');",  :id => "display_details_#{index}" %></li>
+	<% item = get_collected_item(hit) -%>
+	<% if item != nil # if this item is collected. -%>
+		<li>Collected On: <%= item.updated_at.strftime("%b %d %Y") %></li>
+		<% tags = item.tags -%>
+		<% if tags != nil -%>
+	    	<% tags.each {|tag| -%>
+        	<li><%= link_to_function "x", "doRemoveTag(#{page}, #{index}, '#{row_id}', '#{tag}');" %>&nbsp;<%= tag %></li>
+			<% } #the tag loop -%>
+		<% end #if there are tags -%>
+      <li><%= link_to_function "Add a tag", "doAddTag('add_tag_#{index}', #{page}, #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}" %></li>
+      <li><%= link_to_function "Uncollect", "doRemoveCollect(#{page}, #{index}, '#{row_id}');" %></li>
+	<% end #if the item is collected -%>
+</ul>

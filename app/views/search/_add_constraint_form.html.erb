@@ -1,0 +1,30 @@
+<center><form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation(document.forms['add-search-constraint'], 'search_year', 'search_phrase', 'search_type', 'search_submit', event)" >
+<% if has_constraints? -%>
+<table><tr><td>
+<%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%>&nbsp;
+<select id="search_type" name="search_type" align="top" >
+<option value="Keyword" >Keyword</option>
+<option value="Author" >Author</option>
+<option value="Editor" >Editor</option>
+<option value="Publisher" >Publisher</option>
+<option value="Year" >Year (YYYY)</option>
+</select>
+<input id="search_submit" type="submit" value="Search" />
+</td></tr></table>
+<% else -%>
+<table>
+<tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%></td></tr>
+<tr><td>Author:</td><td><input name="search_author" id="search_author" size="30"/></td></tr>
+<tr><td>Editor:</td><td><input name="search_editor" id="search_editor" size="30"/></td></tr>
+<tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" size="30"/></td></tr>
+<tr><td>Year (YYYY):</td><td> <input name="search_year" id="search_year" size="30"/></td></tr>
+<tr><td colspan="2" align="right"><input id="search_submit" type="submit" value="Search" /></td></tr>
+</table>
+<% end -%>
+</form></center>
+
+<div id="yearalert" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+ <span style="clear:both;float:right;"><%= link_to_function 'x', 'Effect.Fade("yearalert", { duration: 0.0 })'%> &nbsp;</span>
+ <span id="year_numeric_error_msg">the year must contain only numerals</span>
+ <span id="year_length_error_msg">the year must be 4 digits long</span>
+</div>

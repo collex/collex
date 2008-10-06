@@ -1,0 +1,29 @@
+<%# ------------------------------------------------------------------------
+    Copyright 2007 Applied Research in Patacriticism and the University of Virginia
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+        http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+---------------------------------------------------------------------------- %>
+
+
+<% if resource.sorted_children.size > 0 -%>
+	<% category_subtotal = site_category_subtotal(resource) -%>
+	<li <%=gray_if_zero(category_subtotal)%>><%= "#{site_category_heading(resource.display_name, resource.id)} (#{number_with_delimiter( category_subtotal )})" %></li>
+	<ul class="cat_<%= resource.id %>_child noshow">
+		<% for resource in resource.sorted_children -%>
+			<%= render :partial => 'sub_category', :locals => { :resource => resource } %>
+		<% end -%>
+	</ul>
+<% else -%>
+	<% object_count = site_object_count(resource.value) -%>
+	<li <%=gray_if_zero(object_count)%>><input type="checkbox" <%= mark_as_checked_resource(resource.value) %> name="constrain_resources[<%= resource.value %>]"/><%= h resource.display_name %> (<%= number_with_delimiter( object_count ) %>)</li>
+<% end -%>

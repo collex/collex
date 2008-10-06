@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_many :exhibits
   has_and_belongs_to_many :roles
   has_many :searches
+  has_many :collected_items
   
   def role_names
     self.roles.collect { |role| role.name }

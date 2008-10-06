@@ -1,0 +1,24 @@
+/* global style graveyard.. factor these out
+*/
+body {
+	font-family: "Lucida Grande",  verdana, arial, helvetica, sans-serif;
+	color: #000;
+	background-color: #999;
+	background-image: url('../images/bodybg2.jpg');
+	background-repeat: repeat;
+	min-width: 970px;
+	margin:0px;
+	padding:0px;
+	height:100%;
+	font-size:11px;
+	line-height:130%;
+}
+
+a:link { color: #A60000; text-decoration: none; }
+a:visited { color: #A60000; text-decoration: none; }
+a:hover { color: #fff; text-decoration: none; background: #A60000; }
+
+form {
+	padding: 0;
+	margin: 0;
+}

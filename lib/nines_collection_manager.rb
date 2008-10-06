@@ -74,6 +74,10 @@ class NinesCollectionManager
     end
   end
   
+  def find_by_email(email)
+    return User.find(:first, :conditions => [ "email = ?", email ] )
+  end
+  
   # Through the nines model, return objects that match the given URL, along with their title and thumbnail URL.
   def objects_behind_urls(urls, user)
     @solr.objects_behind_urls(urls,user)

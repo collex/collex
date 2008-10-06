@@ -2,7 +2,8 @@
 # sets up mock collex engine for testing collex dependent units
 module TestCollexHelper
   URI = "http://some/fake/uri"
-  URLS = [URI << ".html"]
+  URI2 = "http://some/fake/uri2"
+  URLS = [URI + ".html"]
   THUMBNAIL = "http://some/fake/uri/img/thumbnail.png"
   USERNAME = "some_user"
   
@@ -25,7 +26,8 @@ module TestCollexHelper
       document = SOLR_DOCUMENT    
       mlt = MLTS
       collection_info = COLLECTION_INFO
-      if(objid == URI)
+      
+      if(objid == URI || objid == URI2)
         return [document, mlt, collection_info]
       else
         return [nil, nil, nil]

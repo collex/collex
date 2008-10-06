@@ -14,33 +14,35 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<div class="sidelogin">
-<div class="pagination" style="margin-bottom:1em"><span class="emph2">sign up for Collex</span></div>
+<div class="login-title">Create Your Collex Account</div>
+<div class="login-explanation">Fill in the fields below to instantly create a Collex account
+</div>
 
 <%= div flash[:message], :id => "message" if flash[:message] %>
 <%= div flash[:sidebar_error], :id => "error" if flash[:error] %>
 
-<% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "signup"} do %> 
-<table> 
+<div class="login-option">Log in</div>
+<% form_tag :controller => "login", :action => "submit_signup" do %> 
+  <table class="login-option2"> 
   <tr> 
     <td>User name:</td> 
-    <td><%= text_field_tag("username", params[:username]) %></td> 
+    <td><%= text_field_tag("username", params[:username], :size => 30) %></td> 
   </tr> 
   <tr> 
     <td>Full name:</td> 
-    <td><%= text_field_tag("fullname", params[:fullname]) %></td> 
+    <td><%= text_field_tag("fullname", params[:fullname], :size => 30) %></td> 
   </tr> 
   <tr> 
     <td>E-mail address:</td> 
-    <td><%= text_field_tag("email", params[:email])%></td> 
+    <td><%= text_field_tag("email", params[:email], :size => 30)%></td> 
   </tr> 
   <tr> 
     <td>Password:</td> 
-    <td><%= password_field_tag %></td> 
+    <td><%= password_field_tag('password', '', :size => 30 ) %></td> 
   </tr> 
   <tr> 
     <td>Re-type password:</td> 
-    <td><%= password_field_tag("password2")%></td> 
+    <td><%= password_field_tag('password2', '', :size => 30 ) %></td> 
   </tr> 
   <tr> 
     <td>&nbsp;</td> 
@@ -49,7 +51,9 @@
 </table> 
 <% end %> 
 
-<p>If you already have an account,<br />please <%= link_to_remote "log in", :update => "sidebar", :url => {:controller=>"login", :action=>"login"} %>.</p>
-
-<p><%=link_to_remote "return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
+<div class="login-option">I already have an account.</div>
+<div class="login-option2">
+	please <%= link_to "Log in", :action => 'login' %>.
 </div>
+
+<p><%=link_to "exit", get_page_to_return_to() %></p>

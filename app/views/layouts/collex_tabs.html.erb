@@ -1,0 +1,135 @@
+<%# ------------------------------------------------------------------------
+    Copyright 2007 Applied Research in Patacriticism and the University of Virginia
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+        http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+---------------------------------------------------------------------------- %>
+
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>N I N E S</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+
+	<!-- site wide styles -->
+  <%= stylesheet_link_tag "globals", :media => "all" %>
+  <%= stylesheet_link_tag "core", :media => "all" %>
+
+	<!-- section styles -->
+	<%= case @site_section 
+		when :search 
+	  	stylesheet_link_tag "search", :media => "all" 
+		when :home 
+		  stylesheet_link_tag "home", :media => "all"
+		when :login 
+		  stylesheet_link_tag "login", :media => "all" 
+		else 
+		  stylesheet_link_tag "sidebar", :media => "all" 
+		  stylesheet_link_tag "exhibits", :media => "all" 
+    end 
+	%>
+<!--[if IE]>
+	  	<%= stylesheet_link_tag "ie", :media => "all" %>
+<![endif]-->
+	
+	<!-- site wide scripts -->
+  <%= javascript_include_tag "protoaculous.1.8.1.min.js", "application.js" if RAILS_ENV =~ /production/ %>
+  <%= javascript_include_tag :defaults unless RAILS_ENV =~ /production/ %>
+  <%= javascript_include_tag 'spinner' %>
+  <%= javascript_include_tiny_mce_if_used %>
+  <%= tiny_mce if using_tiny_mce? %>
+
+	<!-- section scripts -->
+	<%= case @site_section 
+		when :search 
+		  javascript_include_tag 'search_validation'
+		when :home 
+		when :login 
+		else 
+		  javascript_include_tag 'sidebar_tag_cloud'
+    end 
+	%>
+
+</head>
+<body>
+	
+	<div id="mainContent">
+
+	<div id="container">
+		<div id="header-left">
+			<img src="/images/harrington.gif" alt="" />
+		</div>
+		<div id="header-center">
+			<span class="emph1"><a href="/">NINES</a></span><br /><i>your portal to nineteenth-century digital scholarship</i><br />
+		</div>
+		<div id="header-right">
+			<% if @use_signin -%>
+				<%= render :partial => '/common/login_slider' %>
+			<% end -%>
+		</div>
+<!--	    <div id="banner">
+	    	<table>
+	    		<tr valign="top">
+	    			<td><img src="/images/harrington.gif" alt="" /></td>
+					<td width="10px"></td>
+					<td width="100%">
+						<span class="emph1"><a href="/">NINES</a></span><br /><i>your portal to nineteenth-century digital scholarship</i><br />
+					</td>
+					<td valign="top" align="right">
+						<% if @use_signin -%>
+						<%= render :partial => '/common/login_slider' %>
+						<% end -%>
+					</td>
+	    		</tr>
+	    	</table>
+	    </div> -->
+  		<div id="content">
+  			<% if @use_tabs -%>
+			<table class="tabs" cellspacing='0px' >
+				<tr>
+					<td class="tab-spacer-left">&nbsp;</td>
+					<%= draw_tabs(yield(:current_page)) %>
+					<td class="tab-spacer-right">&nbsp;</td>
+				</tr>
+			</table>
+			<div class="tab-content-outline">
+			<div class="tab-content-outline2">
+			<div class="tab-content">
+	  		  <%= h3 flash[:notice], :class => "flash_notice" if flash[:notice] %> 
+	  		  <%= h3 flash[:warning], :class => "flash_warning" if flash[:warning] %> 
+	  		  <%= h3 flash[:error], :class => "flash_error" if flash[:error] %> 
+		      <%= yield %>
+			</div> 
+			</div> 
+			</div>
+		  	<%= render :partial => '/common/footer' %>
+			<% else -%>
+	  		  <%= h3 flash[:notice], :class => "flash_notice" if flash[:notice] %> 
+	  		  <%= h3 flash[:warning], :class => "flash_warning" if flash[:warning] %> 
+	  		  <%= h3 flash[:error], :class => "flash_error" if flash[:error] %> 
+		      <%= yield %>
+			<% end -%>
+      </div>
+    </div>
+	</div>
+	<!-- <script type="text/javascript" src="/javascripts/boxover.js"></script> -->
+<!--	<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+	</script>
+	<script type="text/javascript">
+	_uacct = "UA-1813036-1";
+	urchinTracker();
+	</script> -->
+  </body>
+</html>
+                

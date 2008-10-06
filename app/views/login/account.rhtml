@@ -14,32 +14,35 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<div class="pagination" style="margin-bottom:1em"><span class="emph2">manage your Collex account</span></div>
+<div class="login-title">Manage your Collex account</div>
+<div class="login-explanation">Change any of your account items below.
+</div>
 
 <%= div flash[:message], :id => "message" if flash[:message] %>
 <%= div flash[:error], :id => "error" if flash[:error] %>
 
-<% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "account"} do %> 
-<table> 
+<div class="login-option">Account</div>
+<% form_tag :controller => "login", :action => "change_account" do %> 
+  <table class="login-option2"> 
   <tr> 
     <td>User name:</td> 
     <td><%= session[:user][:username] %></td> 
   </tr> 
   <tr> 
     <td>Full name:</td> 
-    <td><%= text_field_tag("fullname",session[:user][:fullname])%></td> 
+    <td><%= text_field_tag("fullname",session[:user][:fullname], :size => 30)%></td> 
   </tr> 
   <tr> 
     <td>E-mail address:</td> 
-    <td><%= text_field_tag("email", session[:user][:email])%></td> 
+    <td><%= text_field_tag("email", session[:user][:email], :size => 30)%></td> 
   </tr> 
   <tr> 
     <td>Password:</td> 
-    <td><%= password_field_tag %><br />(leave blank if not changing your password)</td> 
+    <td><%= password_field_tag("password", "", :size => 30) %><br />(leave blank if not changing your password)</td> 
   </tr> 
   <tr> 
     <td>Re-type password:</td> 
-    <td><%= password_field_tag("password2")%></td> 
+    <td><%= password_field_tag("password2", "", :size => 30)%></td> 
   </tr> 
   <tr> 
     <td>&nbsp;</td> 
@@ -47,4 +50,4 @@
   </tr> 
 </table> 
 <% end %> 
-<p><%=link_to "return", :controller => "search", :action => "browse"%></p>
+<p><%=link_to "exit", get_page_to_return_to() %></p>

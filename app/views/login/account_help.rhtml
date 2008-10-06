@@ -1,0 +1,57 @@
+<%# ------------------------------------------------------------------------
+    Copyright 2007 Applied Research in Patacriticism and the University of Virginia
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+        http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+---------------------------------------------------------------------------- %>
+
+<div class="login-title">Collex Account Help</div>
+<div class="login-explanation">Having trouble signing in? Choose one of the options below.</div>
+<%= div flash[:notice], :id => "message" if flash[:notice] %>
+
+<div class="login-option">I forgot my password.</div>
+<% form_tag :controller => "login", :action => 'reset_password' do %> 
+	<table class="login-option2"> 
+	<tr> 
+  	<td>User name:</td>
+  	<td><%= text_field_tag("username", params[:username], :size => 30 ) %></td>
+	</tr>
+	<tr>
+  	<td colspan="2"><input type="submit" value="email me a new password" /></td>
+	</tr>
+	</table>
+<% end %> 
+
+<div class="login-option">I forgot my user name.</div>
+<% form_tag :controller => "login", :action => 'recover_username' do %> 
+	<table class="login-option2"> 
+	<tr> 
+  	<td>Email:</td>
+  	<td><%= text_field_tag("email", params[:email], :size => 30 ) %></td>
+	</tr>
+	<tr>
+  	<td colspan="2"><input type="submit" value="email me my user name" /></td>
+	</tr>
+	</table>
+<% end %> 
+
+<div class="login-option">I don't have an account.</div>
+<div class="login-option2">
+	please <%= link_to "Sign up", :action => 'signup' %>.
+</div>
+
+<div class="login-option">I want to try to log in again.</div>
+<div class="login-option2">
+	please <%= link_to "Log in", :action => 'login' %>.
+</div>
+
+<p><%=link_to "exit", get_page_to_return_to() %></p>

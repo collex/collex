@@ -1,0 +1,30 @@
+<h1>Listing collected_items</h1>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Cached resource</th>
+    <th>Tag</th>
+    <th>Annotation</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+  </tr>
+
+<% for collected_item in @collected_items %>
+  <tr>
+    <td><%=h collected_item.user_id %></td>
+    <td><%=h collected_item.cached_resource_id %></td>
+    <td><%=h collected_item.tag_id %></td>
+    <td><%=h collected_item.annotation %></td>
+    <td><%=h collected_item.created_at %></td>
+    <td><%=h collected_item.updated_at %></td>
+    <td><%= link_to 'Show', collected_item %></td>
+    <td><%= link_to 'Edit', edit_collected_item_path(collected_item) %></td>
+    <td><%= link_to 'Destroy', collected_item, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New collected_item', new_collected_item_path %>

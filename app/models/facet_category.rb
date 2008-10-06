@@ -15,50 +15,32 @@
 ##########################################################################
 
 class FacetCategory < ActiveRecord::Base
-  acts_as_tree  
+  acts_as_tree
   
-  def <<(sapling)
-    children << sapling
+  attr :display_name, true
+  attr :sorted_children, true
+  
+  def self.sorted_facet_tree()
+    tree_root = FacetCategory.find_by_value('archive')
+    self.recursively_sort_tree( tree_root )
   end
-  
-  def merge_facets(facets)
-    uncategorized = facets.clone
-    forest = merge_facets_with_uncategorized(facets, uncategorized)
-    
-    uncategorized_tree = {:value => "Uncategorized", :children => [], :count => 0, :type => :category}
-    uncategorized.each do |k,v|
-      uncategorized_tree[:children] << {:value => k, :children => [], :count => v, :type => :value}
-      uncategorized_tree[:count] += v
-    end
-    forest << uncategorized_tree
-  end
-  
-  def merge_facets_with_uncategorized(facets, uncategorized)
-    # child is from the DB, kid is our home-grown tree
-    kids = []
-    children.each do |child|
-      case child
-        when FacetValue  # Order matters: FacetValue is_a? FacetCategory, so trap that first
-          facet_count = facets[child.value] || 0
-          kids << {:children => [], :value => child.value, :count => facet_count, :type => :value, :id => child.id}
-          uncategorized.delete(child.value)
-        when FacetCategory
-          category = {:children => child.merge_facets_with_uncategorized(facets,uncategorized), :value => child.value, :count => 0, :type => :category, :id => child.id}
-          kids << category
-          category[:count] = total(category[:children])
-      end
+
+  private 
+  def self.recursively_sort_tree( node )    
+    if node[:type] == 'FacetValue'
+      site = Site.find_by_code(node.value)
+      node.display_name = site ? site.description : node.value      
+    else
+      node.display_name = node.value
     end
     
-    kids
-  end
-  
-  def total(kids)
-    total = 0
-    kids.each do |kid|
-      total += total(kid[:children]) + (kid[:type] == :value ? (kid[:count] || 0) : 0)
+    if node.children
+      named_children = node.children.map { |child| self.recursively_sort_tree(child) }      
+      node.sorted_children = named_children.sort { |a,b| a.display_name.downcase <=> b.display_name.downcase }    
     end
     
-    total
+    node
   end
+  
   
 end

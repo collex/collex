@@ -1,0 +1,33 @@
+<% current_page "Home" -%>
+<br /><br /><br /><br />
+<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search' } ) %>
+<div align="center">
+<table>
+	<tr>
+		<td><input name="search_phrase" id="search_phrase" size="60"/></td>
+		<td>
+			<%= link_to 'About Searching in NINES', tab_about_path %>
+		</td>
+	</tr>
+	<tr>
+		<td><center><input type="submit" value="Search Now!" /></center>
+		</td>
+	</tr>
+</table>
+<div class="contributor-list">
+<div class="contributor-list-caption">When you search NINES, you get results from:</div>
+<table cellspacing="0px">
+<% @sites.each_with_index do |site, i| -%>
+	<% if i % 3 == 0 -%>
+	<tr>
+		<td class="contributor-list-left-col"><a href="<%= @sites[i]['url']%>" target="_blank"><%= @sites[i]['description']%></a></td>
+		<td class="contributor-list-left-col"><a href="<%= @sites[i+1]['url']%>" target="_blank"><%= @sites[i+1]['description']%></a></td>
+		<td><a href="<%= @sites[i+2]['url']%>" target="_blank"><%= @sites[i+2]['description']%></a></td>
+	</tr>
+	<% end -%>
+<% end -%>
+</table>
+</div>
+</div>
+</form>
+<br /><br /><br /><br />

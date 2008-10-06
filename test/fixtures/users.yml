@@ -45,3 +45,10 @@ dave:
   password_hash: foobar
   fullname: Dave
   email: dave@whatever.com
+
+paul:
+    id: 23 
+    username: paul 
+    fullname: Paul 
+    email: paul@example.com
+    password_hash: <%= Digest::SHA1.hexdigest('password') %> 

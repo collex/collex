@@ -17,6 +17,10 @@
 class Constraint < ActiveRecord::Base
   belongs_to :search
   
+  def is_negative_facet_constraint?( facet )
+    is_a?(FacetConstraint) and value == facet and inverted == true 
+  end
+  
   def operator
     inverted ? '-' : ''
   end

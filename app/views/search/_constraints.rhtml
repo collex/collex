@@ -1,12 +1,10 @@
 
-<table class="constables" cellspacing="0">
-	<tr colspan="2">
-		<td width="49%" valign="top" align="center">
-    
     <table id="myconstraints" class="constraints" cellspacing="0">  
-        <caption>your constraints</caption>
-        <% if session[:constraints] && session[:constraints].size > 0 %>
-        <% session[:constraints].each_with_index do |constraint,index|
+        <!-- <caption>searching for:</caption> -->
+        <% if @listed_constraints.size > 0 %>
+        <% @listed_constraints.each do |constraint_data|
+						constraint = constraint_data[:constraint]
+						index = constraint_data[:id]
             value_display = constraint.value
             if constraint.field=="archive"
               if site(constraint.value)
@@ -14,71 +12,31 @@
               end
             end
         %>
-              <% if constraint.is_a?(FreeCultureConstraint) %>
-              <tr>
-                <th align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                 <td><%=link_to (constraint.inverted ? "+" : "-"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>Free Culture</td>
-                <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
-              </tr>
-              <% elsif constraint.is_a?(ExpressionConstraint) %>
-              <tr>
-                <th align="left">phrase:</th>
-                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%><%=h constraint.value%></td>
-                <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
+              <% if constraint.is_a?(ExpressionConstraint) %>
+ 	  			<tr>
+                 <td>Keyword:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h constraint.value%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
               </tr>
               <% elsif constraint.is_a?(FacetConstraint) %>
-              <tr>
-                 <th align="left"><%=facet_label(constraint.field)%>:</th>
-                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h value_display%></td>
-                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
-              </tr>
-              <% elsif constraint.is_a?(SavedSearchConstraint) %>
-              <tr>
-                 <th align="left">saved:</th>
-                 <td><%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}%>&nbsp;<%=h "#{constraint.field}:#{constraint.value}"%></td>
-                 <td align="center"><%= link_to "remove", {:controller=>'search', :action => 'remove_facet', :index => index} %></td>
+		 	  			<tr>
+                 <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h constraint.value%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
               </tr>
               <% end %>
 
-           <% end %>
+           <% end # closing the do loop for each constraint %>
            <tr>
-             <th align="left">&nbsp;</th>
-             <td><% if is_logged_in? %>
-               <% form_tag({:action=>'save'},{:name => 'savesearch', :id => 'savesearch', :style => "display:none;"}) do %>
-                 <%= text_field_tag :name, "", {:size => 10, :id => "savesearch_name"} %>
-                 <%= link_to_function "save", "document.forms['savesearch'].submit();" -%>
-                 <%= link_to_function "cancel", "Element.toggle('savesearch'); Element.toggle('savesearch_link')" -%>
-               <% end %>
-               <%= link_to_function "save these constraints", "Element.toggle('savesearch'); Element.toggle('savesearch_link'); $('savesearch_name').focus()", {:id => "savesearch_link"} -%>
-             <% end %>
-             </td>
-             <td align="center"><%= link_to "clear all", {:controller=>'search', :action => 'clear_constraints'}%>                     
-           </tr>
-           <% else %>
+             <td></td>
+		   		</tr>
+           <% else #if there aren't constaints (session[:constraints].size > 0) %>
              <tr>
-                <th>&nbsp;</th>
-                <td align="center">none added yet</td>
+                <td align="center"><span class="no-constraints-header">To begin, enter search terms and click 'Search'.</span><br />
+				<span class="no-constraints-body"></span></td>
                 <td>&nbsp;</td>
              </tr>
-           <% end %>
+           <% end #if session[:constraints].size > 0 %>
          </table>
-         
-        <% if session[:constraints].size > 0  %>
-        <br /><p class="matchpoint"><span class="resultsbutton"><a href="#results"> <%=pluralize(@results["total_hits"], "match") %></a></span>
-	
-            <%= image_tag "arrow2.gif" %></p>
-           <% else %>
-		<p class="logofade"><br /><img style="width:120px" src="/images/lg-harrington.gif" /></p> 
-        <% end %>
-       
-        <% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
-          <p class="matchpoint">No NINES objects fit your constraints.  Try removing constraints or toggling one from negative to positive.</p>
-        <% end %>
 
-</td>
-<td width="50%" valign="top">
-        
-        <%= render :partial => 'facets' %>
-</td>
-</tr>
-</table> <!-- closing constables -->
+
+       
+ 

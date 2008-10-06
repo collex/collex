@@ -1,0 +1,26 @@
+<% current_page "About" -%>
+
+<div class="bulkcollect">
+<%= link_to_popup "people &amp; projects", {:controller=>'help',:action=>'about'}, {:title => "header=[NINES] body=[learn more about the NINES initiative here] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"} -%><%= link_separator %>
+<%= link_to "tools &amp; interfaces",  { :controller=>'help',:action => "help" }, :title => 'header=[using Collex] body=[locate, collect, &amp; annotate digital objects with Collex] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]', :popup => ['window_help', 'height=700,width=700,top=75,left=100,scrollbars=yes'] %><%= link_separator %>
+<%= link_to_popup "join 9s", {:controller=>'help',:action=>'join'}, {:title => "header=[join us] body=[become a member of the NINES community] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"} -%>
+</div>
+
+<p class="about_header">NINES</p>
+<hr />
+NINES stands for a Networked Infrastructure for Nineteenth-century Electronic Scholarship, a scholarly organization in British and American nineteenth-century
+ studies supported by a software development group assembling a suite of critical and editorial tools for digital scholarship.<br/>
+ <br />
+In NINES you can:
+<ul>
+	<li>search and browse more than 175,000 peer-reviewed texts, images, and citations in 19th century studies;</li>
+	<li>build you own collections of documents, articles, images, and ephemera;</li>
+	<li>organize, add keywords, and annotate your work;</li>
+	<li>discover lines of critical inquiry related to your own;</li>
+	<li>and (coming soon!) create syllabi, annotated bibliographies, illustrated essays, and timelines.</li>
+</ul>
+<p><strong>NINES</strong> is powered by <a href="http://patacriticism.org/collex">Collex</a>, a free, open-source tool designed for scholars.</p> 
+
+<center>
+	<img src="/images/harrington.gif" style="width: 120px;"/>
+</center>

@@ -25,4 +25,12 @@ class LoginMailer < ActionMailer::Base
     @from       = 'mailto:technologies@nines.org'
     @headers    = {}
   end
+  
+  def recover_username(params)
+    @subject    = 'Collex User Name'
+    @body       = params
+    @recipients = params[:user][:email]
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+  end
 end

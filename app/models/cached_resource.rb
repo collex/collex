@@ -21,6 +21,7 @@ class CachedResource < ActiveRecord::Base
   
   has_and_belongs_to_many :tags
   has_many :cached_properties, :dependent => :destroy
+  has_one :collected_items
   alias properties cached_properties
   
   # The actual +SolrResource+ at this instances +uri+. 
@@ -44,7 +45,8 @@ class CachedResource < ActiveRecord::Base
     :tag => "select name, count(name) as freq from tags join taggings on tags.id=taggings.tag_id join interpretations as i on taggings.interpretation_id=i.id where user_id=? group by name order by name limit ?",
     :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and genres.name = 'genre' group by value order by value limit ?",
     :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id where users.id = ? group by username order by name limit ?",
-    :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id join interpretations as i on docs.uri=i.object_uri where user_id=? and dates.name = 'date_label' group by dates.value order by value limit ?"      
+    :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id join interpretations as i on docs.uri=i.object_uri where user_id=? and dates.name = 'date_label' group by dates.value order by value limit ?",
+    :all_tags => "select name, count(name) as freq from tags join taggings on tags.id=taggings.tag_id join interpretations as i on taggings.interpretation_id=i.id where user_id=? group by name order by name"
   }
   
   LIST_SQL_SELECT = "select docs.* from cached_resources as docs"
@@ -129,7 +131,29 @@ class CachedResource < ActiveRecord::Base
     end
   end
   
-
+  # get a list of all tags for a particular user. Pass in the actual user object (not just the user name), and get back a hash
+  # of key=uri, value=array of tags
+  def self.get_all_of_users_collections(user)
+    all_books = Hash.new
+    cloud_freq = self.get_all_tags(user) # get a list of all the tags
+    cloud_freq.each { |entry| # entry is an array. The first element is the tag name.
+      tag = entry[0]
+      data = self.get_all_items_by_tag(tag, user )  # for each tag, get a list of all the books that are tagged
+      if data != nil
+        data.each { |item|  # item is a class with a member named @attributes. That is a hash where 'uri' is the key we are interested in.
+          uri = item.attributes['uri']
+          tag_list = all_books[uri]
+          tag_list = Array.new if tag_list == nil
+          tag_list.insert(-1, tag)
+          all_books[uri] = tag_list
+        }
+      end
+      #uri = data.attributes[:uri]
+      #all_books[:uri] = tag
+    }
+    
+    return all_books  # return the rearranged data: the key is the book so it is easy to search in the way we need.
+  end
   
   private
     #TODO filter out tags and annotations and usernames 
@@ -140,4 +164,21 @@ class CachedResource < ActiveRecord::Base
       end
     end
   
+    def self.get_all_tags(user)
+      cloud_of_ar_objects = find_by_sql([ CLOUD_BY_USER_SQL[:all_tags], user.id ])
+           
+      # convert active record objects to [name,freq] pairs
+      unless cloud_of_ar_objects.nil?  
+        return cloud_of_ar_objects.map { |entry| [ entry.name, entry.freq.to_i ] }
+      else
+        return []
+      end
+    end
+
+    def self.get_all_items_by_tag(tag, user)
+      list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_USER_BY_TAG_SQL[:tag]}", tag, user ]) 
+       
+      return list
+    end   
+
 end

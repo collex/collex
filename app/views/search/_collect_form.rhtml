@@ -1,0 +1,18 @@
+<div id="collectformarea" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;"> 
+  <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("collectformarea", { duration: 0.0 })'%> &nbsp;</span>
+<% if is_logged_in? %>
+<% form_remote_tag(:url => {:controller => "search", :action => :collect}, :html => {:id => 'collectform'}, :loading => visual_effect(:fade, "collectformarea", :duration => 1.0) ) do %> 
+  <div id="collector_header"></div>
+  <%= hidden_field_tag :objid, "" -%>
+  <label for="tags"> keywords: &nbsp;<span class="help" title="header=[keywords?] body=[add personal, one-word descriptors for this object. (to collect it, you must assign at least one.) separate your keywords by spaces and join multi-word descriptors with dashes, just-like-this.] offsetx=[140] offsety=[-40] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]">?</span></label> 
+  <%= text_field_tag :tags, '', {:size => 23, :id => 'collector_tag'}  %> <br />
+  <label for="annotation"> notes:</label>
+  <%= text_area_tag :annotation %>
+  <span style="clear:both;float:right;"><%= link_to_function "collect", "validateCollector();" -%> &nbsp; </span>
+<% end %> 
+<% else %>
+  You must be logged in to collect objects.  
+<% end %>
+  <span id="collected" style="display:none;font-weight:bold;clear:both;float:right">COLLECTED</span>
+  <span id="collect-status" style="display:none;font-weight:bold;clear:both;float:right">enter a tag to collect this object</span>
+</div>

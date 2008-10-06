@@ -1,11 +1,3 @@
-<br class="clearboth" />    
 <div class="pagination">
- <%= render( :partial => 'result_count' ) %>    
- <% if @page > 1 %>
-   <%= link_to "<span class='pagearrow'>&#x21E0;</span> last page", {:controller=>'search', :action => 'browse', :page => (@page - 1)} %>&nbsp;&nbsp;
- <% end %>
-<span class="emph2"><%=nbpluralize(@results["total_hits"], 'result')%>: page <%= @page %> of <%= @num_pages %></span> &nbsp;&nbsp;
-<% if @page < @num_pages %>
-  <%= link_to "next page <span class='pagearrow'>&#x21E2;</span>", {:controller=>'search', :action => 'browse', :page => (@page + 1)} %>
-<% end %>
+ <%= draw_pagination(@page, @num_pages) %>
 </div>

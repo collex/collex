@@ -1,0 +1,15 @@
+<center>
+<div id="saved-searches" >
+<% saved = get_saved_searches -%>
+<h3>SAVED SEARCHES</h3>
+<%= "No searches saved" if saved.size == 0 %>
+<table>
+<% for s in saved -%>
+<tr>
+	<td><%= create_saved_search_link(s) %></td>
+	<td><%= create_remove_saved_search_link(s) %></td>
+</tr>	
+<% end -%>
+</table>
+</div>
+</center>

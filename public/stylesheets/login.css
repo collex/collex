@@ -1,0 +1,26 @@
+	/* styles for the login pages */
+	.login-title {
+		font-size: 2em;
+		padding: .6em;
+		font-weight: bold;
+	}
+	
+	.login-explanation {
+		font-style: italic;
+		font-size: 1.2em;
+		margin-bottom: 2em;
+	}
+	
+	.login-option {
+		font-weight: bold;
+	}
+	
+	.login-option2 {
+		margin-left: 2em;
+		margin-top: .5em;
+		margin-bottom: .5em;
+		border: 1px solid gray;
+		padding: 3px;
+		width: 35em;
+		background: #eeeeee;
+	}

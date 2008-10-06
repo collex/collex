@@ -15,6 +15,11 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
+  map.resources :tagassigns
+
+
+  map.resources :collected_items
+
   # Add your own custom routes here.
   # The priority is based upon order of creation: first created -> highest priority.
   
@@ -128,6 +133,14 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
   map.connect 'admin', :controller => 'admin/default'
   
+  map.news '/news', :controller => 'search', :action => 'news'
+  map.search '/search', :controller => 'search', :action => 'browse'
+  map.tab_about '/tab_about', :controller => 'search', :action => 'tab_about'
+  map.tags '/tags', :controller => 'search', :action => 'tags'
+  map.login '/login', :controller => 'login', :action => 'login'
+
+  map.root :controller => "home", :action => "index"
+
 # Install the default route as the lowest priority.
   map.connect ':controller/:action'
 end

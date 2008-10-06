@@ -17,7 +17,9 @@
 class Tag < ActiveRecord::Base
   has_many :taggings, :dependent => :destroy
   has_many :interpretations, :through => :taggings
-  has_and_belongs_to_many :cached_documents
+  #has_and_belongs_to_many :cached_documents
+  has_many :tagassigns 
+  has_many :collected_items, :through => :tagassigns 
 
   validates_uniqueness_of :name
 

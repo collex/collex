@@ -1,0 +1,24 @@
+<h1>Listing tagassigns</h1>
+
+<table>
+  <tr>
+    <th>Collected item</th>
+    <th>Tag</th>
+    <th>Created at</th>
+  </tr>
+
+<% for tagassign in @tagassigns %>
+  <tr>
+    <td><%=h tagassign.collected_item_id %></td>
+    <td><%=h tagassign.tag_id %></td>
+    <td><%=h tagassign.created_at %></td>
+    <td><%= link_to 'Show', tagassign %></td>
+    <td><%= link_to 'Edit', edit_tagassign_path(tagassign) %></td>
+    <td><%= link_to 'Destroy', tagassign, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New tagassign', new_tagassign_path %>

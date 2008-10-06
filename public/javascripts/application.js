@@ -42,27 +42,39 @@ function toggleIt(element) {
   }
 }
 
+// deselect all checkboxes within the specified div 
+function deselectAll(target) {
+	var checkboxes = $(target).select( 'input[type=checkbox]' );
+	for (var i=0; i < checkboxes.length; i++) {  
+		var checkbox = checkboxes[i];
+		checkbox.checked = false;
+	}		
+}
+
+// select all checkboxes within the specified div 
+function selectAll(target) {
+	var checkboxes = $(target).select( 'input[type=checkbox]' );
+	for (var i=0; i < checkboxes.length; i++) {  
+		var checkbox = checkboxes[i];
+		checkbox.checked = true;
+	}		
+}
+
 function toggleCategory(category_id) {
 	elems = document.getElementsByClassName("cat_" + category_id + "_child");
-	currently_hidden = elems[0].hasClassName("noshow");
-	if (!currently_hidden) { // if hiding, hide the whole tree
-		elems = document.getElementsByClassName("cat_" + category_id);
-	}
+
 	Element.toggle("cat_" + category_id + "_opened");
 	Element.toggle("cat_" + category_id + "_closed");
-	for (var i=0; i < elems.length; i++) {  // TODO: replace with clever iterator
-		if (currently_hidden) {
+
+	for (var i=0; i < elems.length; i++) {  
+		if ( elems[i].hasClassName("noshow") ) {
 			Element.removeClassName(elems[i], "noshow");
 		} else {
 			Element.addClassName(elems[i], "noshow");
-			if ($(elems[i].id + "_opened")) {Element.hide(elems[i].id + "_opened");}
-			if ($(elems[i].id + "_closed")) {Element.show(elems[i].id + "_closed");}
-//			alert(elems[i].id);
 		}
-	}
-	
-	return currently_hidden;
+	}	
 }
+
 function popUp(URL) {
   day = new Date();
   id = day.getTime();
@@ -213,6 +225,20 @@ function moveObject(objectId, newXCoordinate, newYCoordinate) {
     }
 } // moveObject
 
+function moveObject2(objectId, newXCoordinate, newYCoordinate) {
+    // get a reference to the cross-browser style object and make sure the object exists
+    var styleObject = getStyleObject(objectId);
+    if(styleObject) {
+	styleObject.left = "" + (newXCoordinate) + "px";
+	styleObject.top = "" + (newYCoordinate) + "px";
+//window.alert("left: " + styleObject.left + "  coord left: " + newXCoordinate + " id: " + objectId);
+	return true;
+    } else {
+	// we couldn't find the object, so we can't very well move it
+	return false;
+    }
+} // moveObject
+
 
 
 
@@ -337,7 +363,7 @@ function showCollector(uri, event, header) {
 
   var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
   var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
-  moveObject('collectformarea', newXCoordinate, newYCoordinate);
+  moveObject2('collectformarea', newXCoordinate, newYCoordinate);
 }
 
 function showAlert(divID, event)
@@ -345,7 +371,7 @@ function showAlert(divID, event)
   new Effect.Appear(divID, { duration: 0.5 }); 
   var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
   var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
-  moveObject(divID, newXCoordinate, newYCoordinate+40);
+  moveObject2(divID, newXCoordinate, newYCoordinate);
 }
 
 function displayCollector(id, uri, event, header)
@@ -362,6 +388,12 @@ function displayCollector(id, uri, event, header)
   {
     setTimeout("document.forms['collectform'].collector_tag.focus()",100);
   }
+}
+
+function collectItem(uri, event)
+{
+	// TODO: set this item to look collected with javascript, silently send back to server
+	displayCollector(0, uri, event);
 }
 
 function bulkCollect(event) {
@@ -402,3 +434,181 @@ function toggleAllBulkCollectCheckboxes(link) {
     elements[i].toggle();
   }
 }
+
+//
+// functions that handle the AJAX inside a result div
+//
+
+function getX( oElement )
+{
+	var iReturnValue = 0;
+	while( oElement != null ) {
+		iReturnValue += oElement.offsetLeft;
+		oElement = oElement.offsetParent;
+	}
+	return iReturnValue;
+}
+
+function getY( oElement )
+{
+	var iReturnValue = 0;
+	while( oElement != null ) {
+		iReturnValue += oElement.offsetTop;
+		oElement = oElement.offsetParent;
+	}
+	return iReturnValue;
+}
+
+function moveObjectToJustBelowItsParent(target_id, parent_id)
+{
+	// Get the absolute location of the parent
+	var par = document.getElementById(parent_id);
+	var x = getX(par);
+	var y = getY(par);
+	
+	// Get the right side of the parent and the target: we want to right justify
+	var targ = document.getElementById(target_id);
+	var targ_width = parseInt(targ.style.width);	// This includes the trailing 'px'
+	var par_width = par.offsetWidth;
+	var newXCoordinate = x + ((document.body.scrollLeft)?document.body.scrollLeft:0) - targ_width + par_width;
+	var newYCoordinate = y + ((document.body.scrollTop)?document.body.scrollTop:0) + par.offsetHeight;
+	moveObject2(target_id, newXCoordinate, newYCoordinate);
+}
+
+function moveObjectToLeftTopOfItsParent(target_id, parent_id)
+{
+	// Get the absolute location of the parent
+	var par = document.getElementById(parent_id);
+	var x = getX(par);
+	var y = getY(par);
+	
+	var newXCoordinate = x + ((document.body.scrollLeft)?document.body.scrollLeft:0);
+	var newYCoordinate = y + ((document.body.scrollTop)?document.body.scrollTop:0);
+	moveObject2(target_id, newXCoordinate, newYCoordinate);
+}
+
+function doCollect(page_num, row_num, row_id)
+{
+	var ptr = $(row_id);
+	ptr.removeClassName('result_without_tag');
+	ptr.addClassName('result_with_tag');
+
+	new Ajax.Updater(row_id, "/search/collect", {
+		parameters : "page_num="+ page_num + "&row_num=" + row_num,
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function doRemoveTag(page_num, row_num, row_id, tag_name)
+{
+	new Ajax.Updater(row_id, "/search/remove_tag", {
+		parameters : "page_num="+ page_num + "&row_num=" + row_num + "&tag=" + tag_name,
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function doRemoveCollect(page_num, row_num, row_id)
+{
+	var tr = document.getElementById(row_id);
+	tr.className = 'result_without_tag'; 
+	
+	new Ajax.Updater(row_id, "/search/uncollect", {
+		parameters : "page_num="+ page_num + "&row_num=" + row_num,
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function focusTag()
+{
+	document.getElementById('tag_tag').focus();
+}
+
+function doAddTag(parent_id, page_num, row_num, row_id)
+{
+	new Effect.Appear('tag-div', { duration: 0.5 }); 
+	moveObjectToJustBelowItsParent('tag-div', parent_id);
+	
+	document.getElementById('tag_page_num').value = page_num;
+	document.getElementById('tag_row_num').value = row_num;
+	document.getElementById('tag_row_id').value = row_id;
+	setTimeout(focusTag, 100);	// We need to delay setting the focus because the tag isn't on the screen until the Effect.Appear has finished.
+}
+
+function focusAnnotation()
+{
+	document.getElementById('note_notes').focus();
+}
+
+function doAnnotation(parent_id, page_num, row_num, row_id, curr_annotation_id)
+{
+	new Effect.Appear('note-div', { duration: 0.5 }); 
+	moveObjectToJustBelowItsParent('note-div', parent_id);
+	
+	document.getElementById('note_page_num').value = page_num;
+	document.getElementById('note_row_num').value = row_num;
+	document.getElementById('note_row_id').value = row_id;
+	document.getElementById('note_notes').value = document.getElementById(curr_annotation_id).innerHTML;
+	setTimeout(focusAnnotation, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+}
+
+function doAddTagSubmit(page_num, row_num, row_id)
+{
+	var el_page_num = document.getElementById('tag_page_num');
+	var el_row_num = document.getElementById('tag_row_num');
+	var el_row_id = document.getElementById('tag_row_id');
+	var el_tag = document.getElementById('tag_tag');
+    Effect.Fade('tag-div', { duration: 0.0 });
+
+	new Ajax.Updater(el_row_id.value, "/search/add_tag", {
+		parameters : "page_num="+ el_page_num.value + "&row_num=" + el_row_num.value + "&tag=" + el_tag.value,
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function doAnnotationSubmit(page_num, row_num, row_id)
+{
+	var el_page_num = document.getElementById('note_page_num');
+	var el_row_num = document.getElementById('note_row_num');
+	var el_row_id = document.getElementById('note_row_id');
+	var el_note = document.getElementById('note_notes');
+    Effect.Fade('note-div', { duration: 0.0 });
+
+	new Ajax.Updater(el_row_id.value, "/search/set_annotation", {
+		parameters : "page_num="+ el_page_num.value + "&row_num=" + el_row_num.value + "&note=" + el_note.value,
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function displayDetails(parent_id, page_num, row_num, row_id)
+{
+	new Effect.Appear('result-details-div', { duration: 0.5 }); 
+	moveObjectToLeftTopOfItsParent('result-details-div', parent_id);
+
+	new Ajax.Updater('result-details', "/search/details", {
+		parameters : "page_num="+ page_num + "&row_num=" + row_num,
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function focusSaveSearch()
+{
+	document.getElementById('save_name').focus();
+}
+
+function doSaveSearch(parent_id)
+{
+	new Effect.Appear('save-search-div', { duration: 0.5 }); 
+	moveObjectToJustBelowItsParent('save-search-div', parent_id);
+	
+	setTimeout(focusSaveSearch, 100);	// We need to delay setting the focus because the dlg isn't on the screen until the Effect.Appear has finished.
+}
+
+function doSaveSearchSubmit()
+{
+    Effect.Fade('save-search-div', { duration: 0.0 });
+
+	var form = document.getElementById('save-search-form');
+	form.submit();
+
+}
+

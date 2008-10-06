@@ -14,27 +14,88 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<%= render( :partial => 'constraints' ) %>
+<% current_page "Search" -%>
 
-<div id="under">
-  <% if session[:constraints].size > 0 and @num_pages > 0 %>
-    <a name="results"></a>
+<table id="search-outer" >
+	<tr>
+		<td id="search-sidebar">
+			<%= render( :partial => 'search_sidebar' ) %>
+		</td>
+		<td id="search-main">
+			<div id="search-terms">
+		  	<% if session[:constraints].size > 0 -%>
+				 <form action="/collex/new_search" method="post">
+						<input class="reset-search-button" type="submit" value="New Search"/>
+				 </form> 
+			 <% end -%>
+				<h1>SEARCH QUERY<%= render :partial => 'show_saved_search' %></h1>
+				<%= render( :partial => 'constraints' ) %>
+				<%= render( :partial => 'add_constraint_form' ) %>
+			  	<% if session[:constraints].size == 0 && is_logged_in? -%>
+					<%= render :partial => 'save_search_list' %>
+				<% end -%>
+			</div>
+	  	<% if session[:constraints].size > 0 and @num_pages > 0 -%>
+		    <a name="results"></a>
+				<div id="search-results">
+			  <%= render( :partial => 'result_count' ) %>    
+				<h1>SEARCH RESULTS: <%=number_with_delimiter(@results["total_hits"])%> OBJECTS FOUND</h1>
 
-    <%= render( :partial => 'pagination' ) %>
-    <%= render( :partial => 'bulkcollect' ) %>
+		    <%= render( :partial => 'bulkcollect' ) %>
+				<%= render( :partial => 'pagination' ) %>
+			
+		    <form name="bulk_collect_form" id="bulk_collect_form" method="post">
+		      <%= render( :partial => 'results' ) %>
+		    </form>
+	
+		    <%= render( :partial => 'pagination' ) %>
+		    <%= render( :partial => 'bulkcollect' ) %>
+		
+			<% else -%>
+		        <% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
+		          <p class="matchpoint">No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1 } %></p>
+		        <% end %>
+			<div class="no-results">
+				<br /><br /><br /><br /><center>
+			<img height="250px" src="../images/lg-harrington.gif" alt="" />
+			</center>
+			</div>
+			  <% end -%>
+			
+			  <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
+			  <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
+			</div>
+		</td>
+	</tr>
+</table>
 
-    <form name="bulk_collect_form" id="bulk_collect_form">
-      <%= render( :partial => 'results' ) %>
+<div id="note-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("note-div", { duration: 0.0 })' %>&nbsp;</span>
+    <form id="note-form" method="post">
+        <input type="hidden" name="note_page_num" id="note_page_num" />
+        <input type="hidden" name="note_row_num" id="note_row_num" />
+        <input type="hidden" name="note_row_id" id="note_row_id" />
+        <label for="annotation">notes:</label>
+        <textarea rows="5" columns="10" name="note_notes" id="note_notes"></textarea>
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doAnnotationSubmit();" -%>&nbsp; </span>
     </form>
+</div>
+		
+<div id="tag-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("tag-div", { duration: 0.0 })' %>&nbsp;</span>
+    <form id="tag-form" method="post" onsubmit='doAddTagSubmit();'>
+        <input type="hidden" name="tag_page_num" id="tag_page_num" />
+        <input type="hidden" name="tag_row_num" id="tag_row_num" />
+        <input type="hidden" name="tag_row_id" id="tag_row_id" />
+        <label for="tag">tags:</label>
+        <input type="text" name="tag_tag" id="tag_tag" />
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doAddTagSubmit();" -%>&nbsp; </span>
+    </form>
+</div>
 
-    <%= render( :partial => 'bulkcollect' ) %>
-    <%= render( :partial => 'pagination' ) %>
-
-  <% end %>
-
-  <%= render :partial => 'footer' %>
-
-  <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
-  <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
-</div> 
-
+<div id="result-details-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("result-details-div", { duration: 0.0 })' %>&nbsp;</span>
+    <div id="result-details">
+    	Please Wait
+    </div>
+</div>

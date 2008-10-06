@@ -16,6 +16,14 @@
 
 # The methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def is_admin?
+    user = session[:user]
+    if user and user[:role_names].include? 'admin'
+      return true
+    end
+    return false
+  end
+
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 
@@ -25,7 +33,53 @@ module ApplicationHelper
     stripped = text.gsub(/<[^>]+>/, '')
     truncate(stripped, length, truncate_string)
   end
+#This is a way for a page to tell the layout which page it is. It is used to draw the tabs correctly
+  def current_page(text)
+    content_for(:current_page) { text }
+  end
 
+private
+  def make_curr_tab(label)
+    "<td class='curr_tab'>#{label}</td>\n"
+  end
+
+  def make_link_tab(label, link)
+    "<td class='link_tab'>#{link_to label, link }</td>\n"
+  end
+
+  def make_disabled_tab(label)
+    "<td class='disabled_tab'>#{label}</td>\n"
+  end
+
+  public
+  def link_separator
+    return "&nbsp;|"
+  end
+#Drawing the Tab control
+  def draw_tabs(curr_page)
+    # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?
+    tabs_arr = [ ['Home', "/", true],
+      ['Search', search_path, true],
+      ['Tags', tags_path, false],
+      ['Exhibits', intro_exhibits_path, false],
+      ['News', news_path, false],
+      ['About', tab_about_path, false]
+   ]
+  
+    html = ""
+    tabs_arr.each {|tab|
+      if (tab[2] == false)
+        html += make_disabled_tab(tab[0])
+      elsif (curr_page == tab[0])
+        html += make_curr_tab(tab[0])
+        session[:current_page] = tab[1]
+      else
+        html += make_link_tab(tab[0], tab[1])
+      end
+    }
+    return html
+  end
+  
   # helper for adding default text if the property is blank
   def default_text(item, text)
     item.blank? ? text : item
@@ -33,7 +87,7 @@ module ApplicationHelper
 
   # Rewritten version of Rails pluralize() helper that allows no number to be rendered
   def pluralize(count, singular, plural = nil, use_number = true)
-    prefix = use_number ? "#{count} " : ""
+    prefix = use_number ? "#{number_with_delimiter(count)} " : ""
       prefix + if count == 1 || count == '1'
       singular
     elsif plural
@@ -178,7 +232,7 @@ module ApplicationHelper
   end
   
   def site(code)
-    Site.find_by_code(code)
+    Site.find_by_code(code) || { 'description' => code }
   end
   
   def pie_by_percent(percentage)

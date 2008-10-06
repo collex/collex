@@ -1,0 +1,9 @@
+<% current_page "Tags" -%>
+<div id="xleftPanel">
+    <div id="xleftPanelContent">
+        <div id="sidebar">
+            <%= render_component(session[:sidebar_state] ? {:controller => "sidebar", :action => session[:sidebar_state][:action], :params => session[:sidebar_state][:params]} : {:controller => 'sidebar', :action => 'cloud', :params => {:user => params[:user], :type => "genre"}}) %>
+        </div>
+    </div>
+</div>
+

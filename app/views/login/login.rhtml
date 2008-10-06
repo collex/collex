@@ -14,45 +14,42 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<div class="sidelogin">
-<div class="pagination" style="margin-bottom:1em;padding:.6em"><span class="emph2">C O L L E X</span></div>
-
+<div class="login-title">Collex Account Log In</div>
+<div class="login-explanation">Log in to personalize your Collex experience.<br/>
+If you log in, you can collect objects and create tags.
+</div>
 <%= div flash[:notice], :id => "message" if flash[:notice] %>
 
-<% form_remote_tag :update=>"sidebar", :url => {:controller => "login", :action => "login"} do %> 
-  <table> 
+<div class="login-option">Log in</div>
+<% form_tag :controller => "login", :action => "verify_login" do %> 
+  <table class="login-option2"> 
     <tr> 
-      <td>user name:</td> 
-      <td><%= text_field_tag("username", '', :size => 17) %></td> 
+      <td>User name:</td> 
+      <td><%= text_field_tag("username", '', :size => 30) %></td> 
     </tr> 
     <tr> 
-      <td>password:</td> 
-      <td><%= password_field_tag ('password', '', :size => 17 ) %></td> 
+      <td>Password:</td> 
+      <td><%= password_field_tag('password', '', :size => 30 ) %></td> 
     </tr> 
     <tr> 
-      <td colspan="2"><input type="submit" value=" log in " /></td> 
+      <td colspan="2"><input type="submit" value=" Log In" /></td> 
     </tr> 
   </table> 
 <% end %> 
 
-<p><span class="emph3" style="color:#000">new here?</span><br />
-	please <span class="emph3"><%= link_to_remote "SIGN UP", :update => "sidebar", :url => {:action => 'signup'}%></span>.</p>
+<div class="login-option">I don't have an account.</div>
+<div class="login-option2">
+	<%= link_to "Create a new account", :action => 'signup' %>.
+</div>
 
-<p><span class="emph3" style="color:#000">lost password?</span><br />enter your registered username below:
-	<% form_remote_tag :update => "sidebar", :url => {:controller => "login", :action => 'reset_password'} do %> 
-  	<table> 
-    	<tr> 
-      	<td>user name:</td>
-      	<td><%= text_field_tag("username", '', :size => 17 ) %></td>
-    	</tr>
-    	<tr>
-      	<td colspan="2"><input type="submit" value="email new password" /></td>
-    	</tr>
-  	</table>
-	<% end %> 
-</p>
+<div class="login-option">I can't access my account.</div>
+<div class="login-option2">
+	<%= link_to "Help", :action => 'account_help' %>
+</div>
 
 <p>&nbsp;</p>
-<p><%=link_to_remote "return", :update => "sidebar", :url => {:controller => "sidebar", :action => "clear_user"}%></p>
-<p>a <span class="emph3"><%= link_to "brief tutorial",  { :controller=>'help',:action => "help" }, :popup => ['window_help', 'height=700,width=700,top=75,left=100,scrollbars=yes'] %></span> on Collex and NINES<br />is available. <br />&nbsp;</p>
-</div>
+<p><%=link_to "exit", get_page_to_return_to %></p>
+
+<script language="JavaScript">
+	document.forms[0].username.focus();
+</script>

@@ -18,27 +18,27 @@
 development:
     adapter: mysql
     database: nines_development
-    username: root
-    password: 
+    username: nines
+    password: n1n3s
     host: localhost
     
 test:
     adapter: mysql
     database: nines_test
-    username: root
-    password: 
+    username: nines
+    password: n1n3s
     host: localhost
 
 production:
   adapter: mysql
   database: nines_production
-  username: root
-  password: 
+  username: nines
+  password: n1n3s
   host: localhost
 
 staging:
   adapter: mysql
   database: nines_development
-  username: root
-  password: 
+  username: nines
+  password: n1n3s
   host: localhost

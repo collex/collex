@@ -1,0 +1,18 @@
+<p>
+  <b>Collected item:</b>
+  <%=h @tagassign.collected_item_id %>
+</p>
+
+<p>
+  <b>Tag:</b>
+  <%=h @tagassign.tag_id %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @tagassign.created_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_tagassign_path(@tagassign) %> |
+<%= link_to 'Back', tagassigns_path %>

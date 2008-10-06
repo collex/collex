@@ -1,0 +1,41 @@
+<h1>New collected_item</h1>
+
+<%= error_messages_for :collected_item %>
+
+<% form_for(@collected_item) do |f| %>
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Cached resource</b><br />
+    <%= f.text_field :cached_resource_id %>
+  </p>
+
+  <p>
+    <b>Tag</b><br />
+    <%= f.text_field :tag_id %>
+  </p>
+
+  <p>
+    <b>Annotation</b><br />
+    <%= f.text_area :annotation %>
+  </p>
+
+  <p>
+    <b>Created at</b><br />
+    <%= f.datetime_select :created_at %>
+  </p>
+
+  <p>
+    <b>Updated at</b><br />
+    <%= f.datetime_select :updated_at %>
+  </p>
+
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', collected_items_path %>

@@ -1,0 +1,56 @@
+<%# ------------------------------------------------------------------------
+    Copyright 2007 Applied Research in Patacriticism and the University of Virginia
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+        http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+---------------------------------------------------------------------------- %>
+
+<div id="resource-list">
+	<h1>RESOURCES</h1>
+	<div class="resource-list-content">
+		<p class="instructions"><i>Select the resources to include in your search.</i></p>
+		<form id="add-constraint" method="post" action="/search/constrain_resources">
+			<% for resource_category in @sites_forest.sorted_children -%>
+				<h2><%= site_category_heading("#{h(resource_category.display_name.upcase)} (#{number_with_delimiter( site_category_subtotal(resource_category) )})", resource_category.id, :open ) %></h2>
+					<div id="cat_<%= resource_category.id %>" class="cat_<%= resource_category.id %>_child">
+						<%= link_to_function '[select all]', "selectAll('cat_#{resource_category.id}')", :class => "deselect-resource-link" %>
+						<%= link_to_function '[deselect all]', "deselectAll('cat_#{resource_category.id}')", :class => "deselect-resource-link" %>
+						<ul>
+						<% for resource in resource_category.sorted_children -%>
+							<%= render :partial => 'sub_category', :locals => { :resource => resource } %>
+						<% end -%>
+					</ul>
+					</div>
+			<% end -%>
+			<input class="submit-button" type="submit" value="Update" /><br /><br />	
+		</form>
+	</div>
+	<h1>GENRES</h1>
+	<div class="resource-list-content">
+		<p class="instructions"><i>Select the genres to include in your search.</i></p>
+			<ul>
+				<% for genre in @genre_data -%>
+					<li><%= genre_data_link( genre ) %></li>
+				<% end -%>
+			</ul>	
+	</div>
+	<h1>FREE CULTURE</h1>
+	<div class="resource-list-content">
+		<p class="instructions"><i>'Free Culture' resources are freely available in their full form on the Internet. Check this box to search for 'Free Culture' objects only.</i></p>
+			<form id="add-type-constraint" method="post" action="/search/constrain_freeculture">
+				<ul>
+					<li <%=gray_if_zero(@freeculture_count)%>><input type="checkbox" <%= mark_as_checked_freeculture() %> name="freeculture"/>Free Culture Only (<%= number_with_delimiter(@freeculture_count) %>)</li>
+				</ul>		
+				<input class="submit-button" type="submit" value="Update" /><br /><br />	
+			</form>	
+	</div>
+</div>

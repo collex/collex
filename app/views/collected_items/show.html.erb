@@ -1,0 +1,33 @@
+<p>
+  <b>User:</b>
+  <%=h @collected_item.user_id %>
+</p>
+
+<p>
+  <b>Cached resource:</b>
+  <%=h @collected_item.cached_resource_id %>
+</p>
+
+<p>
+  <b>Tag:</b>
+  <%=h @collected_item.tag_id %>
+</p>
+
+<p>
+  <b>Annotation:</b>
+  <%=h @collected_item.annotation %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%=h @collected_item.created_at %>
+</p>
+
+<p>
+  <b>Updated at:</b>
+  <%=h @collected_item.updated_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_collected_item_path(@collected_item) %> |
+<%= link_to 'Back', collected_items_path %>

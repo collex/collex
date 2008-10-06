@@ -1,0 +1,21 @@
+
+/* home.css - Styles that apply to the site home page */
+
+.contributor-list {
+	margin-top: 5em;
+	border-top: 1px solid black;
+}
+
+.contributor-list-left-col {
+	border-right: 1px solid black;
+}
+
+.contributor-list-caption {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	font-size: 1.3em;
+}
+
+.contributor-list td {
+	padding: 5px 20px 5px 20px;
+}

@@ -1,0 +1,26 @@
+<%# If a user is not logged in, then do nothing.
+	If the user just clicked on a saved search, then display the name.
+	Display the save link, and put up a form if the user wants to save the current search. -%>
+	
+<% if is_logged_in? -%>
+<% if session[:name_of_search] -%>
+: <%= session[:name_of_search] %>
+<% end # if there is a name for this search -%>
+<% form_tag({:action=>'save'},{:name => 'savesearch', :id => 'savesearch', :style => "display:none;"}) do %>
+	<%= text_field_tag :name, "", {:size => 10, :id => "savesearch_name"} %>
+	<%= link_to_function "save", "document.forms['savesearch'].submit();" -%>
+	<%= link_to_function "cancel", "Element.toggle('savesearch'); Element.toggle('savesearch_link')" -%>
+<% end %>
+<% if has_constraints? -%>
+<%= link_to_function "[save search]", "doSaveSearch('savesearch_link')", {:id => "savesearch_link"} -%>
+<% end # has constraints -%>
+
+<div id="save-search-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("save-search-div", { duration: 0.0 })' %>&nbsp;</span>
+	<form action="/collex/save_search" id="save-search-form" method="post" name="save-search-form" onsubmit='doSaveSearchSubmit();'>
+         <label for="save_name">Name:</label>
+        <input type="input" name="save_name" id="save_name" />
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doSaveSearchSubmit();" -%>&nbsp; </span>
+    </form>
+</div>
+<% end # if the user is logged in -%>
