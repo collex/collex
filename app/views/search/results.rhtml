@@ -38,18 +38,18 @@
 	  	<% if session[:constraints].size > 0 and @num_pages > 0 -%>
 		    <a name="results"></a>
 				<div id="search-results">
-			  <%= render( :partial => 'result_count' ) %>    
+			  <%= render( :partial => 'result/result_count' ) %>    
 				<h1>SEARCH RESULTS: <%=number_with_delimiter(@results["total_hits"])%> OBJECTS FOUND</h1>
 
-		    <%= render( :partial => 'bulkcollect' ) %>
-				<%= render( :partial => 'pagination' ) %>
+		    <%= render( :partial => 'results/bulkcollect' ) %>
+				<%= render( :partial => 'results/pagination' ) %>
 			
 		    <form name="bulk_collect_form" id="bulk_collect_form" method="post">
-		      <%= render( :partial => 'results', :locals => { :page => @page, :hits => @results['hits'] } ) %>
+		      <%= render( :partial => 'results/results', :locals => { :page => @page, :hits => @results['hits'] } ) %>
 		    </form>
 	
-		    <%= render( :partial => 'pagination' ) %>
-		    <%= render( :partial => 'bulkcollect' ) %>
+		    <%= render( :partial => 'results/pagination' ) %>
+		    <%= render( :partial => 'results/bulkcollect' ) %>
 		
 			<% else -%>
 		        <% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>

@@ -1,6 +1,42 @@
-<h1>Tag#results</h1>
-<p>Find me in app/views/tag/results.html.erb</p>
-Params sent:<br/>
-All Tags: <%= params[:all_tags] %><br />
-View: <%= params[:view] %><br/>
-Tag: <%= params[:tag] %>
+<% current_page "Tags" -%>
+<div class="tag_minor_nav"><%= link_to "Go back to the tag cloud", :action => 'list' %></div><br />
+<%= render( :partial => 'results/result_count' ) %>    
+<% if params[:view] == 'tag' -%>
+<%= @total_hits %> objects tagged as <%= params[:tag] %>.
+<% elsif params[:view] == 'all_collected' -%>
+<%= @total_hits %> objects collected.
+<% elsif params[:view] == 'untagged' -%>
+<%= @total_hits %> objects do not have tags.
+<% end -%>
+
+<% if is_logged_in? -%>
+<div class="tag_sidebar">
+	<h1>MY TAGS</h1>
+ 	  <%= tag_list(@cloud_freq, params[:all_tags], params[:tag]) %>
+	<h1>...</h1>
+	<% if params[:view] == 'untagged' -%>
+	<div class="sidebar_tag_link_selected">Untagged</div>
+	<% else -%>
+	<div class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
+	<% end -%>
+	
+	<% if params[:view] == 'all_collected' -%>
+	<div class="sidebar_tag_link_selected">All Collected</div>
+	<% else -%>
+	<div class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :all_tags => false, :view => 'all_collected' } %></div>
+	<% end -%>
+	
+</div>
+<% end -%>
+
+<div class="<%= 'tag_results' if is_logged_in? %>">
+<%= render( :partial => 'results/bulkcollect' ) %>
+<%= render( :partial => 'results/pagination' ) %>
+
+<form name="bulk_collect_form" id="bulk_collect_form" method="post">
+	<%= render( :partial => 'results/results', :locals => { :page => @page, :hits => @results } ) %>
+</form>
+
+<%= render( :partial => 'results/pagination' ) %>
+<%= render( :partial => 'results/bulkcollect' ) %>
+</div>

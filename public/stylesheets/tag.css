@@ -1,9 +1,22 @@
+.tag_sidebar {
+	position: absolute;
+	left: 20px;
+	top: 200px;
+	width: 200px;
+	border: 1px solid black;
+}
+
+.tag_results {
+	margin-left: 220px;
+	margin-top: 10px;
+}
+
 #tag_explanation {
 	background-color: #dddddd;
 	margin-top: 1em;
 }
 
-#manage_my_objects {
+.tag_minor_nav {
 	position: absolute;
 	right: 2em;
 }
@@ -14,6 +27,14 @@
 	width: 50em;
 	margin-left: -25em;
 	clear:both;
+}
+
+.sidebar_tag_link {
+	
+}
+
+.sidebar_tag_link_selected {
+	background-color: gray;
 }
 
 #tag_emph {

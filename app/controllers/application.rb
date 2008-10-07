@@ -22,6 +22,8 @@ class ApplicationController < ActionController::Base
   session :session_key => "_nines_user_session"
   session_times_out_in 30.minutes
   
+  helper :all # include all helpers, all the time
+
   filter_parameter_logging "password"
   
 #  local_addresses.clear  #uncomment to test e-mails locally in development mode

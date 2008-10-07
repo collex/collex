@@ -131,9 +131,49 @@ class CachedResource < ActiveRecord::Base
     end
   end
   
+  # this returns all the objects that the user has collected.
+  def self.get_all_collections(user) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
+    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
+    results = []
+    items.each { |item|
+      hit = get_hit_from_resource_id(item.cached_resource_id)
+      results.insert(-1, hit)
+    }
+    return results
+  end
+    
+  # if a user is passed, then only the objects for that user are returned. Otherwise all matching objects are returned.
+  def self.get_hits_for_tag(tag_name, user = nil)
+    results = []
+    tag = Tag.find_by_name(tag_name)
+    item_ids = Tagassign.find(:all, :conditions => [ "tag_id = ?", tag.id ] )
+    # item_ids are ids into the collected_items table.
+    item_ids.each { |item_id|
+      coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
+      if coll_item != nil && (user == nil || coll_item.user_id == user.id)
+        hit = get_hit_from_resource_id(coll_item.cached_resource_id)
+        results.insert(-1, hit)
+      end
+    }
+    return results
+  end
+  
+  def self.get_all_untagged(user)
+    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
+    results = []
+    items.each { |item|
+      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.cached_resource_id])
+      if !first_tag
+        hit = get_hit_from_resource_id(item.cached_resource_id)
+        results.insert(-1, hit)
+      end
+    }
+    return results
+  end
+  
   # get a list of all tags for a particular user. Pass in the actual user object (not just the user name), and get back a hash
   # of key=uri, value=array of tags
-  def self.get_all_of_users_collections(user)
+  def self.get_all_of_users_collections(user) # TODO: PER- I think this is out of date, but not sure.
     all_books = Hash.new
     cloud_freq = self.get_all_tags(user) # get a list of all the tags
     cloud_freq.each { |entry| # entry is an array. The first element is the tag name.
@@ -180,5 +220,19 @@ class CachedResource < ActiveRecord::Base
        
       return list
     end   
+
+  def self.get_hit_from_resource_id(resource_id)
+    hit = {}
+    uri = CachedResource.find(resource_id)
+    hit['uri'] = uri.uri
+    properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
+    properties.each do |property|
+      if !hit[property.name]
+        hit[property.name] = []
+      end
+      hit[property.name].insert(-1, property.value)
+    end
+    return hit
+  end
 
 end
