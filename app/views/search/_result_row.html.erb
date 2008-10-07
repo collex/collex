@@ -15,7 +15,7 @@
 	                <td rowspan="1" class="collected" valign="top" align="left" width="100">
 	                    <span id="collectlink-<%=@index%>" class="collectlink">
 	                    	<% if is_logged_in? -%>
-	                    	<%= link_to_function "collect", "doCollect(#{@page}, #{index}, '#{row_id}');" if !result_is_collected(hit) -%>
+	                    	<%= link_to_function "collect", "doCollect(#{page}, #{index}, '#{row_id}');" if !result_is_collected(hit) -%>
 							<% end -%>
 	                    </span>
 	                </td>
@@ -80,12 +80,12 @@
                 <%= td h(genre) %>
                 <% end %>
                 <% end if hit['genre'] %>
-				<% if @results["highlighting"][hit["uri"]]["text"] != nil -%>
+				<% if hit["text"] != nil -%>
                 <tr>
                     <td colspan='2'>
                     	<div class="grey">Excerpt from Full Text:</div>
                         <div class="snippet">
-                            <%=@results["highlighting"][hit["uri"]]["text"] %>
+                            <%=hit["text"] %>
                         </div>
 					</td>
 				</tr>
@@ -93,7 +93,7 @@
 				<% if result_is_collected(hit) -%>
 				<tr>
 					<td colspan='2'>
-						<%= link_to_function "#{has_annotation(hit)?"Edit":"Add"} Annotation", "doAnnotation('add_annotation_#{index}', #{@page}, #{index}, '#{row_id}', 'annotation_#{index}');",  :id => "add_annotation_#{index}" %>
+						<%= link_to_function "#{has_annotation(hit)?"Edit":"Add"} Annotation", "doAnnotation('add_annotation_#{index}', #{page}, #{index}, '#{row_id}', 'annotation_#{index}');",  :id => "add_annotation_#{index}" %>
 						<span id="annotation_<%=index%>"><%= get_annotation(hit) %></span>
 					</td>
 				</tr>
@@ -103,7 +103,7 @@
 			
 			<%# the right side with the tags -%>
             <td>
- 				<%= render :partial => 'collection_box', :locals => { :row_id => row_id, :page => @page, :index => index, :hit => hit }  %>
+ 				<%= render :partial => 'collection_box', :locals => { :row_id => row_id, :page => page, :index => index, :hit => hit }  %>
             </td>
 
  

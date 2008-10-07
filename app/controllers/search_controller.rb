@@ -122,6 +122,12 @@ class SearchController < ApplicationController
     
     begin
      @results = search_solr(session[:constraints], @page, session[:items_per_page])
+     # Add the highlighting to the hit object so that a result is completely contained inside the hit object
+     @results['hits'].each { |hit|
+       if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
+         hit['text'] = @results["highlighting"][hit["uri"]]["text"] 
+       end
+     }
     rescue  Net::HTTPServerException => e
      @results = rescue_search_error(e)
     end

@@ -45,7 +45,7 @@
 				<%= render( :partial => 'pagination' ) %>
 			
 		    <form name="bulk_collect_form" id="bulk_collect_form" method="post">
-		      <%= render( :partial => 'results' ) %>
+		      <%= render( :partial => 'results', :locals => { :page => @page, :hits => @results['hits'] } ) %>
 		    </form>
 	
 		    <%= render( :partial => 'pagination' ) %>
