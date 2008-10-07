@@ -1,13 +1,7 @@
 <% current_page "Tags" -%>
 <div class="tag_minor_nav"><%= link_to "Go back to the tag cloud", :action => 'list' %></div><br />
 <%= render( :partial => 'results/result_count' ) %>    
-<% if params[:view] == 'tag' -%>
-<%= @total_hits %> objects tagged as <%= params[:tag] %>.
-<% elsif params[:view] == 'all_collected' -%>
-<%= @total_hits %> objects collected.
-<% elsif params[:view] == 'untagged' -%>
-<%= @total_hits %> objects do not have tags.
-<% end -%>
+<%= create_total(params[:view], @total_hits, params[:tag]) %>
 
 <% if is_logged_in? -%>
 <div class="tag_sidebar">

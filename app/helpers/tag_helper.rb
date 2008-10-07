@@ -27,7 +27,17 @@ module TagHelper
     end
     return xm
   end
-  
+
+  def create_total(view_type, total_hits, tag)
+    if view_type == 'tag'
+      return "#{pluralize(total_hits, 'object')} tagged as #{tag}."
+    elsif view_type == 'all_collected'
+      return "#{pluralize(total_hits, 'object')} collected."
+    elsif view_type == 'untagged'
+      return "#{pluralize(total_hits, 'object')} do not have tags."
+    end
+end
+
   private
   # +value+ has any ampersands changed to +&amp;+
   def link_to_tag(value, frequency, all_tags, show_freq, html_options = {})
