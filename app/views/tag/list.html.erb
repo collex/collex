@@ -19,7 +19,7 @@
 <div class="content">
 
   <div class="tagcloud" id="tagcloud">
-  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
+  	  <%= tag_cloud(@cloud_freq, @bucket_size, params[:all_tags]) %>
   </div>
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
