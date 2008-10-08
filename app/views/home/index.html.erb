@@ -21,8 +21,12 @@
 	<% if i % 3 == 0 -%>
 	<tr>
 		<td class="contributor-list-left-col"><a href="<%= @sites[i]['url']%>" target="_blank"><%= @sites[i]['description']%></a></td>
-		<td class="contributor-list-left-col"><a href="<%= @sites[i+1]['url']%>" target="_blank"><%= @sites[i+1]['description']%></a></td>
-		<td><a href="<%= @sites[i+2]['url']%>" target="_blank"><%= @sites[i+2]['description']%></a></td>
+		<% if @sites[i+1] -%>
+			<td class="contributor-list-left-col"><a href="<%= @sites[i+1]['url']%>" target="_blank"><%= @sites[i+1]['description']%></a></td>
+		<% end -%>
+		<% if @sites[i+2] -%>		
+			<td><a href="<%= @sites[i+2]['url']%>" target="_blank"><%= @sites[i+2]['description']%></a></td>
+		<% end -%>
 	</tr>
 	<% end -%>
 <% end -%>
