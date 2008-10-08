@@ -29,13 +29,14 @@
 	<!-- section styles -->
 	<%= case @site_section 
 		when :search 
-	  	  stylesheet_link_tag "search", :media => "all" 
+		  stylesheet_link_tag("results", :media => "all") +
+	  	  stylesheet_link_tag("search", :media => "all")
 		when :home 
 		  stylesheet_link_tag "home", :media => "all"
 		when :login 
 		  stylesheet_link_tag "login", :media => "all" 
 		when :tag
-		  stylesheet_link_tag("search", :media => "all") +
+		  stylesheet_link_tag("results", :media => "all") +
 		  stylesheet_link_tag("tag", :media => "all")
 		else 
 		  stylesheet_link_tag("sidebar", :media => "all") +

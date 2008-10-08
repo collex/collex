@@ -1,0 +1,103 @@
+/* results.css  - This file contains style that only apply to functionality under the Results controller */
+
+.result-count-form {
+	margin-top: 5px;
+	margin-right: 5px;	
+}
+
+/* styles for search result */
+.result_with_tag {
+	background-color: #eeeeee;
+}
+
+.result_with_tag_background {
+	background-color: #eeeeee;
+}
+
+.result_without_tag {
+}
+
+.search-result-title {
+	font-size: larger;
+	font-weight: bold;
+}
+
+/*.collectlink {
+	text-align: left;
+	vertical-align: top;
+}
+
+.collectlink a {
+	color: #999;
+	font-size: 90%;
+	margin-left: 1em;
+}*/
+
+/*.collectlink a:hover {
+	color: #A60000;
+	background: #fff;
+}*/
+
+/*.detail-link {
+	text-align: left;
+	vertical-align: top;
+}
+.detail-link a {
+	color: #999;
+	font-size: 90%;
+	margin-left: 1em;
+}
+.detail-link a:hover {
+	color: #A60000;
+	background: #fff;
+}*/
+
+
+.results {
+	/*margin-left: 2em;
+	margin-right: 4em;*/
+	padding: 1em;
+}
+
+.results table {
+	margin-bottom: 1em;
+}
+
+.results img {
+	width: 100px;
+	/*max-width: 100px;*/
+	height: auto;
+	border: 1px solid #fff;
+	margin: 0 1em 0 1em;
+	background-color: #fff;
+}
+
+.results a img:hover {
+	border: 1px solid #A60000;
+	background-color: #fff;
+}
+
+.results a {
+	padding: 0 2px 0 2px;	
+	background: #fff;
+}
+
+.results a:hover {
+	padding: 0 2px 0 2px;	
+	background: #A60000;
+}
+
+.results a.thumb:hover {
+	padding: 0 2px 0 2px;	
+	background: #fff;
+}
+
+.bulkcollect {
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+
+.paginate-current {
+	font-weight: bold;
+}

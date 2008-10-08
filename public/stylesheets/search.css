@@ -9,27 +9,22 @@
 	width: 300px;
 }
 
-.results-number {
+/*.results-number {
 	font: 1.8em  trebuchet ms, verdana, sans-serif;
 	color: #000000;
 	line-height: 1.8em;
-}
+}*/
 
-.non-emph-results-line {
+/*.non-emph-results-line {
 	font: 1.8em  trebuchet ms, verdana, sans-serif;
 	color: #808080;
 	line-height: 1.8em;
-}
+}*/
 
 .reset-search-button {
 	margin-top: 5px;
 	margin-right: 5px;
 	float: right;
-}
-
-.result-count-form {
-	margin-top: 5px;
-	margin-right: 5px;	
 }
 
 #search-main h1 {
@@ -46,11 +41,11 @@
 	padding: 5px;
 }
 
-.results-number {
+/*.results-number {
 	padding-left: 10px;
-}
+}*/
 
-.instructions {
+.sidebar_instructions {
 	font-size: 9pt;
 	color: gray;
 }
@@ -101,10 +96,10 @@
 	border: 1px solid gray;
 }
 
-#search-divider {
+/*#search-divider {
 	vertical-align: top;
 	width: 2px;
-}
+}*/
 
 #search-outer {
 	width: 100%;
@@ -129,51 +124,6 @@
 }*/
 
 /* styles for search result */
-.result_with_tag {
-	background-color: #eeeeee;
-}
-
-.result_with_tag_background {
-	background-color: #eeeeee;
-}
-
-.result_without_tag {
-}
-
-.collectlink {
-	text-align: left;
-	vertical-align: top;
-}
-
-.collectlink a {
-	color: #999;
-	font-size: 90%;
-	margin-left: 1em;
-}
-
-/*.collectlink a:hover {
-	color: #A60000;
-	background: #fff;
-}*/
-
-.search-result-title {
-	font-size: larger;
-	font-weight: bold;
-}
-
-.detail-link {
-	text-align: left;
-	vertical-align: top;
-}
-.detail-link a {
-	color: #999;
-	font-size: 90%;
-	margin-left: 1em;
-}
-.detail-link a:hover {
-	color: #A60000;
-	background: #fff;
-}
 
 .constraints {
 	width: 100%;
@@ -186,9 +136,9 @@
 	padding: 0 2px 0 2px;	
 }
 
-.facettable-header {
+/*.facettable-header {
 	background-color: #d3d3d3;
-}
+}*/
 
 /*.constraints tr:hover {
 	background-color: #d3d3d3;	
@@ -198,12 +148,23 @@
 	color: #666;	
 }
 
+.constraints a:hover {
+	background-color: #730000;
+	color: #fff;	
+}
+
+.constraints caption {
+	text-transform: uppercase;
+	text-align: left;
+	color: #000000;
+}
+
 #myconstraints {
 	margin: 10px;
 }
 
-#facettable {
-	/*width: 98%;*/
+/*#facettable {
+	/*width: 98%;* /
 }
 
 #facettable-caption {
@@ -212,12 +173,12 @@
 
 #facettable img {
 	border: 0;
-}
+}*/
 
-.constables {
+/*.constables {
 	width: 100%;
 	padding-right: 1em;
-}
+}*/
 
 /* commenting out IE-specific hacks 
 
@@ -239,76 +200,21 @@
 
 */
 
-.constraints a:hover {
-	background-color: #730000;
-	color: #fff;	
-}
-
-.constraints caption {
-	text-transform: uppercase;
-	text-align: left;
-	color: #000000;
-}
-
-ul.results {
+/*ul.results {
 	list-style: none;
 }
 
 ul.results li {
 	padding: 1em;
 	clear: both;
-}
-
-.results {
-	/*margin-left: 2em;
-	margin-right: 4em;*/
-	padding: 1em;
-}
-
-.results table {
-	margin-bottom: 1em;
-}
-
-.results img {
-	width: 100px;
-	/*max-width: 100px;*/
-	height: auto;
-	border: 1px solid #fff;
-	margin: 0 1em 0 1em;
-	background-color: #fff;
-}
-
-.results a img:hover {
-	border: 1px solid #A60000;
-	background-color: #fff;
-}
-
-.results a {
-	padding: 0 2px 0 2px;	
-	background: #fff;
-}
-
-.results a:hover {
-	padding: 0 2px 0 2px;	
-	background: #A60000;
-}
-
-.bulkcollect {
-	margin-left: 10px;
-	margin-bottom: 10px;
-}
+}*/
 
 
-.results a.thumb:hover {
-	padding: 0 2px 0 2px;	
-	background: #fff;
-}
-
-.collecttd {
+/*.collecttd {
 	vertical-align: top;
-}
+}*/
 
-.resultsbutton {
+/*.resultsbutton {
 	padding-bottom: .3em;
 	vertical-align: top;
 	font-size:1.1em;
@@ -322,8 +228,5 @@ ul.results li {
 
 .resultsbutton a:hover {
 	background-color: #A60000;
-}
+}*/
 
-.paginate-current {
-	font-weight: bold;
-}
