@@ -487,33 +487,33 @@ function moveObjectToLeftTopOfItsParent(target_id, parent_id)
 	moveObject2(target_id, newXCoordinate, newYCoordinate);
 }
 
-function doCollect(page_num, row_num, row_id)
+function doCollect(uri, row_num, row_id)
 {
 	var ptr = $(row_id);
 	ptr.removeClassName('result_without_tag');
 	ptr.addClassName('result_with_tag');
 
-	new Ajax.Updater(row_id, "/search/collect", {
-		parameters : "page_num="+ page_num + "&row_num=" + row_num,
+	new Ajax.Updater(row_id, "/results/collect", {
+		parameters : "uri="+ uri + "&row_num=" + row_num,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
 
-function doRemoveTag(page_num, row_num, row_id, tag_name)
+function doRemoveTag(uri, row_num, row_id, tag_name)
 {
-	new Ajax.Updater(row_id, "/search/remove_tag", {
-		parameters : "page_num="+ page_num + "&row_num=" + row_num + "&tag=" + tag_name,
+	new Ajax.Updater(row_id, "/results/remove_tag", {
+		parameters : "uri="+ uri + "&row_num=" + row_num + "&tag=" + tag_name,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
 
-function doRemoveCollect(page_num, row_num, row_id)
+function doRemoveCollect(uri, row_num, row_id)
 {
 	var tr = document.getElementById(row_id);
 	tr.className = 'result_without_tag'; 
 	
-	new Ajax.Updater(row_id, "/search/uncollect", {
-		parameters : "page_num="+ page_num + "&row_num=" + row_num,
+	new Ajax.Updater(row_id, "/results/uncollect", {
+		parameters : "uri="+ uri + "&row_num=" + row_num,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -523,12 +523,12 @@ function focusTag()
 	document.getElementById('tag_tag').focus();
 }
 
-function doAddTag(parent_id, page_num, row_num, row_id)
+function doAddTag(parent_id, uri, row_num, row_id)
 {
 	new Effect.Appear('tag-div', { duration: 0.5 }); 
 	moveObjectToJustBelowItsParent('tag-div', parent_id);
 	
-	document.getElementById('tag_page_num').value = page_num;
+	document.getElementById('tag_uri').value = uri;
 	document.getElementById('tag_row_num').value = row_num;
 	document.getElementById('tag_row_id').value = row_id;
 	setTimeout(focusTag, 100);	// We need to delay setting the focus because the tag isn't on the screen until the Effect.Appear has finished.
@@ -539,56 +539,56 @@ function focusAnnotation()
 	document.getElementById('note_notes').focus();
 }
 
-function doAnnotation(parent_id, page_num, row_num, row_id, curr_annotation_id)
+function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 {
 	new Effect.Appear('note-div', { duration: 0.5 }); 
 	moveObjectToJustBelowItsParent('note-div', parent_id);
 	
-	document.getElementById('note_page_num').value = page_num;
+	document.getElementById('note_uri').value = uri;
 	document.getElementById('note_row_num').value = row_num;
 	document.getElementById('note_row_id').value = row_id;
 	document.getElementById('note_notes').value = document.getElementById(curr_annotation_id).innerHTML;
 	setTimeout(focusAnnotation, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
 }
 
-function doAddTagSubmit(page_num, row_num, row_id)
+function doAddTagSubmit()
 {
-	var el_page_num = document.getElementById('tag_page_num');
+	var el_uri = document.getElementById('tag_uri');
 	var el_row_num = document.getElementById('tag_row_num');
 	var el_row_id = document.getElementById('tag_row_id');
 	var el_tag = document.getElementById('tag_tag');
     Effect.Fade('tag-div', { duration: 0.0 });
 
-	new Ajax.Updater(el_row_id.value, "/search/add_tag", {
-		parameters : "page_num="+ el_page_num.value + "&row_num=" + el_row_num.value + "&tag=" + el_tag.value,
+	new Ajax.Updater(el_row_id.value, "/results/add_tag", {
+		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&tag=" + el_tag.value,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
 
-function doAnnotationSubmit(page_num, row_num, row_id)
+function doAnnotationSubmit()
 {
-	var el_page_num = document.getElementById('note_page_num');
+	var el_uri = document.getElementById('note_uri');
 	var el_row_num = document.getElementById('note_row_num');
 	var el_row_id = document.getElementById('note_row_id');
 	var el_note = document.getElementById('note_notes');
     Effect.Fade('note-div', { duration: 0.0 });
 
-	new Ajax.Updater(el_row_id.value, "/search/set_annotation", {
-		parameters : "page_num="+ el_page_num.value + "&row_num=" + el_row_num.value + "&note=" + el_note.value,
+	new Ajax.Updater(el_row_id.value, "/results/set_annotation", {
+		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&note=" + el_note.value,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
 
-function displayDetails(parent_id, page_num, row_num, row_id)
-{
-	new Effect.Appear('result-details-div', { duration: 0.5 }); 
-	moveObjectToLeftTopOfItsParent('result-details-div', parent_id);
-
-	new Ajax.Updater('result-details', "/search/details", {
-		parameters : "page_num="+ page_num + "&row_num=" + row_num,
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
-}
+//function displayDetails(parent_id, page_num, row_num, row_id)
+//{
+//	new Effect.Appear('result-details-div', { duration: 0.5 }); 
+//	moveObjectToLeftTopOfItsParent('result-details-div', parent_id);
+//
+//	new Ajax.Updater('result-details', "/results/details", {
+//		parameters : "page_num="+ page_num + "&row_num=" + row_num,
+//		onFailure : function(resp) { alert("Oops, there's been an error."); }
+//	});
+//}
 
 function focusSaveSearch()
 {

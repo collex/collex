@@ -55,38 +55,38 @@ class SearchControllerTest < Test::Unit::TestCase
     assert_equal 1, session[:constraints].length
 
     # Called from the new search on the Search page.
-    post :add_constraint, { :search_keyword => user_search_string, :search_year => "1877", :search_author => "poe", :search_editor => "poe", :search_publisher => "pocketbook" }, { :name_of_search => "old_name" }
+    post :add_constraint, { :search => { :keyword => user_search_string }, :search_year => "1877", :search_author => "poe", :search_editor => "poe", :search_publisher => "pocketbook" }, { :name_of_search => "old_name" }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
     assert_equal 5, session[:constraints].length
     
     # Called to add a constraint from the Search page
-    post :add_constraint, { :search_phrase => user_search_string, :search_type => "Keyword" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
+    post :add_constraint, { :search => { :phrase => user_search_string }, :search_type => "Keyword" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
     assert_equal 6, session[:constraints].length
     
-    post :add_constraint, { :search_phrase => user_search_string, :search_type => "Author" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
+    post :add_constraint, { :search => { :phrase => user_search_string }, :search_type => "Author" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
     assert_equal 7, session[:constraints].length
     
-    post :add_constraint, { :search_phrase => user_search_string, :search_type => "Editor" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
+    post :add_constraint, { :search => { :phrase => user_search_string }, :search_type => "Editor" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
     assert_equal 8, session[:constraints].length
     
-    post :add_constraint, { :search_phrase => user_search_string, :search_type => "Publisher" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
+    post :add_constraint, { :search => { :phrase => user_search_string }, :search_type => "Publisher" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
     assert_equal 9, session[:constraints].length
     
-    post :add_constraint, { :search_phrase => user_search_string, :search_type => "Year" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
+    post :add_constraint, { :search => { :phrase => user_search_string }, :search_type => "Year" }, { :name_of_search => "old_name" , :constraints => session[:constraints] }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
@@ -209,7 +209,7 @@ class SearchControllerTest < Test::Unit::TestCase
 
     post :add_constraint, { :search_phrase => user_search_string }
      
-    post :collect, { :row_num => "0", :page_num => "1" }, session
+    post :collect, { :controller => 'result', :row_num => "0", :page_num => "1" }, session
     assert_response :success
     
     user = User.find_by_username(session[:user][:username])
@@ -278,7 +278,7 @@ class SearchControllerTest < Test::Unit::TestCase
     
     # do another search and see that the saved search is still there, but the name that appears on the web site is not.
     # also note that there are now two constraints
-    post :add_constraint, { :search_phrase => user_search_string2, :search_type => 'Keyword' }, session
+    post :add_constraint, { :search => { :phrase => user_search_string2 }, :search_type => 'Keyword' }, session
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]

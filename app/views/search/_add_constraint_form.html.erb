@@ -1,7 +1,7 @@
 <center><form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation(document.forms['add-search-constraint'], 'search_year', 'search_phrase', 'search_type', 'search_submit', event)" >
 <% if has_constraints? -%>
 <table><tr><td>
-<%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%>&nbsp;
+<%= text_field_with_suggest :search, :phrase,  {:size=>30}, {:min_chars => 2}-%>&nbsp;
 <select id="search_type" name="search_type" align="top" >
 <option value="Keyword" >Keyword</option>
 <option value="Author" >Author</option>

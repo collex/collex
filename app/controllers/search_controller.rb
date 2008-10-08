@@ -46,19 +46,20 @@ class SearchController < ApplicationController
       # There are two types of input we can receive here, depending on whether the search form was expanded.
       # There might be a different input box for each type of search, or there might be a single input box with a select field determining the type.
 
-      phrase = params[:search_phrase]
-      if phrase == nil
+      if params[:search_phrase]
+        # basic search
+        # We were called from the home page, so make sure there aren't any constraints laying around
+        clear_constraints()
+        add_keyword_constraint(params[:search_phrase])
+        
+      elsif params[:search][:phrase] == nil
         # expanded input boxes
         add_keyword_constraint(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
         add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
         add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
         add_keyword_constraint(params[:search_publisher]) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year]) if params[:search_year] != ""
-      elsif params[:search_type] == nil
-        # basic search
-        # We were called from the home page, so make sure there aren't any constraints laying around
-        clear_constraints()
-        add_keyword_constraint(params[:search_phrase])
+
       else
         # single input box
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Keyword"
@@ -271,79 +272,7 @@ class SearchController < ApplicationController
     session[:constraints] = []
    end
    
-   def setup_ajax_calls(params)
-     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-     @page = params[:page_num].to_i
-     @index = params[:row_num].to_i 
-     @row_id = "search-result-#{@index}" 
-     @results = search_solr(session[:constraints], @page, session[:items_per_page])
-     @hit = @results['hits'][@index]
-     return user
-   end
-   
    public
-   def details
-      setup_ajax_calls(params)
-
-      render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
-  end
-   
-   def collect
-     # Only collect if the item isn't already collected and if there is a user logged in.
-     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
-     user = setup_ajax_calls(params)
-     CollectedItem.collect_item(user, @hit['uri']) unless user == nil
-
-     # expire the fragment caches for the clouds related to this user
-     #expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
-
-     render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
-   end
-
-   def uncollect
-     user = setup_ajax_calls(params)
-     CollectedItem.remove_collected_item(user, @hit['uri']) unless user == nil
-
-     # expire the fragment caches for the clouds related to this user
-     #expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
-
-     render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
-   end
-   
-   def add_tag
-     tag = params[:tag]
-     user = setup_ajax_calls(params)
-     CollectedItem.add_tag(user, @hit['uri'], tag) unless user == nil
-
-     # expire the fragment caches for the clouds related to this user
-     #expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
-
-     render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
-   end
-   
-   def remove_tag
-     tag = params[:tag]
-     user = setup_ajax_calls(params)
-     CollectedItem.delete_tag(user, @hit['uri'], tag) unless user == nil
-
-     # expire the fragment caches for the clouds related to this user
-     #expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
-
-     render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
-   end
-   
-   def set_annotation
-     note = params[:note]
-     user = setup_ajax_calls(params)
-     CollectedItem.set_annotation(user, @hit['uri'], note) unless user == nil
-
-     # expire the fragment caches for the clouds related to this user
-     #expire_timeout_fragment( %r{/cloud/#{session[:user][:username]}_user} )    
-
-     render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
-   end
-   
    def auto_complete_for_search_keyword
      @field = 'content'
      @values = []

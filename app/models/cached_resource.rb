@@ -121,6 +121,12 @@ class CachedResource < ActiveRecord::Base
      return list, count
   end   
   
+  def self.get_hit_from_uri(uri)
+    cr = CachedResource.find_by_uri(uri)
+    return nil if cr == nil
+    return get_hit_from_resource_id(cr.id)
+  end
+  
   # overrides dynamic find method +find_or_create_by_uri+ so that it can take/return a list
   def self.resources_by_uri( uri )
 
