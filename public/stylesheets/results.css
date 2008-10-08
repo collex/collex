@@ -1,5 +1,12 @@
 /* results.css  - This file contains style that only apply to functionality under the Results controller */
 
+#search-main h1 {
+	background: #E0E0E0;
+	font-size: 12pt;
+	margin-top: 0px;
+	padding: 5px;
+}
+
 .result-count-form {
 	margin-top: 5px;
 	margin-right: 5px;	

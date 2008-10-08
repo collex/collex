@@ -1,4 +1,4 @@
-NUM_VISIBLE_TAGS = 50
+NUM_VISIBLE_TAGS = 50000
 
 class TagController < ApplicationController
    layout 'collex_tabs'

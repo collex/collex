@@ -1,9 +1,10 @@
 <% current_page "Tags" -%>
-<div class="tag_minor_nav"><%= link_to "Go back to the tag cloud", :action => 'list' %></div><br />
+<div id="search-main">
+<div class="tag_minor_nav"><%= link_to "Go back to the tag cloud", :action => 'list', :all_tags => params[:all_tags] %></div><br />
 <%= render( :partial => 'results/result_count' ) %>    
-<%= create_total(params[:view], @total_hits, params[:tag]) %>
+<h1><%= create_total(params[:view], @total_hits, params[:tag]) %></h1>
 
-<% if is_logged_in? -%>
+<% if is_logged_in? && !params[:all_tags] -%>
 <div class="tag_sidebar">
 	<h1>MY TAGS</h1>
  	  <%= tag_list(@cloud_freq, params[:all_tags], params[:tag]) %>
@@ -33,4 +34,5 @@
 
 <%= render( :partial => 'results/pagination' ) %>
 <%= render( :partial => 'results/bulkcollect' ) %>
+</div>
 </div>

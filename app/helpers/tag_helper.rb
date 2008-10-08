@@ -30,7 +30,7 @@ module TagHelper
 
   def create_total(view_type, total_hits, tag)
     if view_type == 'tag'
-      return "#{pluralize(total_hits, 'object')} tagged as #{tag}."
+      return "#{pluralize(total_hits, 'object')} tagged as \"#{tag}\"."
     elsif view_type == 'all_collected'
       return "#{pluralize(total_hits, 'object')} collected."
     elsif view_type == 'untagged'
