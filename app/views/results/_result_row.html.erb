@@ -4,7 +4,7 @@
 	            <tr>
 	            	<% if is_logged_in? -%>
 	                <td rowspan="2" valign="middle" align="left" width="10" class="thumbview">
-	                    <input type="checkbox" name="bulk_collect" value="<%=hit["uri"]%>"/>
+	                    <input type="checkbox" name="bulk_collect" value="<%="#{hit['uri']}\t#{index}\t#{row_id}"%>"/>
 	                </td>
 					<% end -%>
 	                <td rowspan="1" valign="top" align="left" width="100" class="thumbview">

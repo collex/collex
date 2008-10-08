@@ -396,22 +396,25 @@ function collectItem(uri, event)
 	displayCollector(0, uri, event);
 }
 
-function bulkCollect(event) {
-  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
-  checked = new Array();
-  for (i=0; i < checkboxes.length; i++) {
-    checkbox = checkboxes[i];
-    if (checkbox.checked)
-      checked.push(checkbox.value);
-  }
-  
-  if (checked.length > 0) {
-    displayCollector('collectformarea', checked.join(' ~~ '), event, "<span class='collectwarn'>apply to all selected objects</span>");
-  } else {
-    alert("You must select one or more objects before clicking this button.")
-  }
-  
-  // TODO: uncheck all previously checked items
+function bulkCollect(event)
+{
+	checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
+	
+	var at_least_one = false;
+	for (i = 0; i < checkboxes.length; i++) {
+		var checkbox = checkboxes[i];
+		if (checkbox.checked) {
+			var arr = checkbox.value.split('\t');
+			doCollect(arr[0], arr[1], arr[2]);
+			at_least_one = true;
+		}
+	}
+	
+	if (!at_least_one) {
+		alert("You must select one or more objects before clicking this button.")
+	}
+	
+	// TODO: uncheck all previously checked items
 }
 
 bulk_checked = false;
