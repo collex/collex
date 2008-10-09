@@ -58,9 +58,10 @@
 	<%= case @site_section 
 		when :search 
 		  javascript_include_tag 'search_validation'
+		when :tag
+		  javascript_include_tag 'sidebar_tag_cloud'
 		when :home 
 		when :login 
-		when :tag
 		else 
 		  javascript_include_tag 'sidebar_tag_cloud'
     end 

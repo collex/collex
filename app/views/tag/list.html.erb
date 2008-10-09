@@ -38,3 +38,12 @@
 	Separate each tag with a space <i>(poem castle knight)</i> or to join two words together use a hyphen <i>(oil-painting).</i>
 </div>
 	
+<script type="text/javascript">
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {		
+		var instructions = { 'tag': '<%= TAG_INSTRUCTIONS %>',
+												 'annotation': '<%= ANNOTATION_INSTRUCTIONS %>' };
+	
+		sidebarTagCloud = new SidebarTagCloud( <%= NUM_VISIBLE_TAGS %>, instructions );
+	});	
+</script>

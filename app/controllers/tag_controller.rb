@@ -1,4 +1,6 @@
 NUM_VISIBLE_TAGS = 50000
+TAG_INSTRUCTIONS = 'add tag' # TODO-PER: these may not be relevant but were put in to make it not crash
+ANNOTATION_INSTRUCTIONS = 'enter annotation' # TODO-PER: these may not be relevant but were put in to make it not crash
 
 class TagController < ApplicationController
    layout 'collex_tabs'
