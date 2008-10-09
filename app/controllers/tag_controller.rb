@@ -19,7 +19,19 @@ class TagController < ApplicationController
    public
 
   def list
-    if params[:all_tags]
+    if params[:tag] != nil
+      session[:tag_current] = params[:tag]
+    else
+      params[:tag] = session[:tag_current]
+    end
+
+    if params[:which] != nil
+      session[:tag_which] = params[:which]
+    else
+      params[:which] = session[:tag_which]
+    end
+
+    if params[:which] == 'all'
       user = nil
       username = ""
     else
@@ -32,9 +44,30 @@ class TagController < ApplicationController
 
   def results
     # parameters:
-    #  :all_tags => true|false (All tags or My tags only)
+    #  :which => 'all':'my' (All tags or My tags only)
     #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
     #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
+    
+    # we save the view type in the session object in case we are called from a place that shouldn't care which type it is.
+    # In other words, if we have the param[:view] parameter, we use it and save it. If we don't, then we retrieve it.
+    if params[:view] != nil
+      session[:tag_view] = params[:view]
+    else
+      params[:view] = session[:tag_view]
+    end
+    
+    if params[:tag] != nil
+      session[:tag_current] = params[:tag]
+    else
+      params[:tag] = session[:tag_current]
+    end
+
+    if params[:which] != nil
+      session[:tag_which] = params[:which]
+    else
+      params[:which] = session[:tag_which]
+    end
+
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 
     if user
@@ -58,7 +91,7 @@ class TagController < ApplicationController
       end
       
     when 'tag'
-      @results = CachedResource.get_hits_for_tag(params[:tag], params[:all_tags] ? nil : user)
+      @results = CachedResource.get_hits_for_tag(params[:tag], params[:which] == 'all' ? nil : user)
       
     else
         @results = {}
