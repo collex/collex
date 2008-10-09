@@ -284,6 +284,16 @@ class SearchController < ApplicationController
      render :partial => 'suggest'
    end
 
+   def auto_complete_for_search_phrase
+     @field = 'content'
+     @values = []
+     if params['search']
+       result = @solr.facet(@field, session[:constraints], params['search']['phrase'])
+       @values = result.sort {|a,b| b[1] <=> a[1]}
+     end
+     
+     render :partial => 'suggest'
+   end
 #   def auto_complete_for_field_year
 #     # TODO
 #     @field = 'year'
