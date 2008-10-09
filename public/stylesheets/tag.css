@@ -1,14 +1,25 @@
+.tag_filter {
+	margin-top: 1.7em;
+	margin-bottom: 1.7em;
+}
+
+.tagcloud {
+	margin-left: 10em;
+	margin-right: 10em;
+	margin-bottom: 3em;
+}
+
 .tag_sidebar {
 	position: absolute;
 	left: 20px;
-	top: 200px;
+	top: 190px;
 	width: 200px;
-	border: 1px solid black;
+	border: 1px solid gray;
 }
 
 .tag_results {
 	margin-left: 220px;
-	margin-top: 10px;
+	margin-top: 1em;
 }
 
 #tag_explanation {
@@ -19,6 +30,7 @@
 .tag_minor_nav {
 	position: absolute;
 	right: 2em;
+	font-size: 1.3em;
 }
 
 #all_tags_choice {
@@ -27,14 +39,19 @@
 	width: 50em;
 	margin-left: -25em;
 	clear:both;
+	font-size: 1.4em;
 }
 
 .sidebar_tag_link {
-	
+	margin-left: 1em;
+	margin-right: 1em;
 }
 
 .sidebar_tag_link_selected {
-	background-color: gray;
+	background-color: #eeeeee;
+	margin-left: 1em;
+	margin-right: 1em;
+	font-style: italic;
 }
 
 #tag_emph {
@@ -42,61 +59,61 @@
 }
 
 .cloud1 {
-	font-size: 10px;
-	line-height: 1.1em;
+	font-size: 1.4em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud2 {
-	font-size: 12px; 
-	line-height: 1.1em;
+	font-size: 1.6em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud3 {
-	font-size: 14px;
-	line-height: 1.1em;
+	font-size: 1.8em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud4 {
-	font-size: 16px;
-	line-height: 1.1em;
+	font-size: 2em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud5 {
-	font-size: 18px;
-	line-height: 1.1em;
+	font-size: 2.2em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud6 {
-	font-size: 19px;
-	line-height: 1.1em;
+	font-size: 2.4em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud7 {
-	font-size: 20px;
-	line-height: 1.1em;
+	font-size: 2.6em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud8 {
-	font-size: 22px;
-	line-height: 1.1em;  
+	font-size: 2.8em;
+	line-height: 1.2em;  
 	margin-right: .3em; 
 }
 
 .cloud9 {
-	font-size: 24px;
-	line-height: 1.1em;
+	font-size: 3em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
 
 .cloud10 {
-	font-size: 26px;
-	line-height: 1.1em;
+	font-size: 3.2em;
+	line-height: 1.2em;
 	margin-right: .3em;
 }
