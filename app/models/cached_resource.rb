@@ -168,7 +168,7 @@ class CachedResource < ActiveRecord::Base
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
     results = []
     items.each { |item|
-      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.cached_resource_id])
+      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.id])
       if !first_tag
         hit = get_hit_from_resource_id(item.cached_resource_id)
         results.insert(-1, hit)
