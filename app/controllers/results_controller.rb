@@ -43,7 +43,7 @@ class ResultsController < ApplicationController
   def add_tag
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
-    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == nil
+    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
     
     render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit] }
   end
