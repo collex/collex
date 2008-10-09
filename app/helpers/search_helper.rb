@@ -25,7 +25,7 @@ module SearchHelper
   
   public
   
-  def draw_pagination(curr_page, num_pages)
+  def draw_pagination(curr_page, num_pages, destination_hash)
     html = ""
 
     # If there's only one page, don't show any pagination
@@ -52,28 +52,33 @@ module SearchHelper
     end
     
     if first > 1
-      html += link_to("first", {:controller=>'search', :action => 'browse', :page => 1}) + "&nbsp;&nbsp;"
+      destination_hash[:page] = 1
+      html += link_to("first", destination_hash) + "&nbsp;&nbsp;"
     end
 
     if curr_page > 1
-      html += link_to("<<", {:controller=>'search', :action => 'browse', :page => (curr_page - 1)}) + "&nbsp;&nbsp;"
+      destination_hash[:page] = (curr_page - 1)
+      html += link_to("<<", destination_hash) + "&nbsp;&nbsp;"
     end
 
     for pg in first..last do
       if pg == curr_page
         html += "<span class='paginate-current'>#{pg}</span>"
       else
-        html += link_to("#{pg}", {:controller=>'search', :action => 'browse', :page => pg } )
+        destination_hash[:page] = pg
+        html += link_to("#{pg}", destination_hash )
       end
       html += "&nbsp;&nbsp;"
     end 
     
     if curr_page < num_pages
-      html += link_to( ">>", {:controller=>'search', :action => 'browse', :page => (curr_page + 1)}) + "&nbsp;&nbsp;"
+      destination_hash[:page] = (curr_page + 1)
+      html += link_to( ">>", destination_hash) + "&nbsp;&nbsp;"
     end
     
     if last < num_pages
-      html += link_to("last", {:controller=>'search', :action => 'browse', :page => num_pages}) + "&nbsp;&nbsp;"
+      destination_hash[:page] = num_pages
+      html += link_to("last", destination_hash) + "&nbsp;&nbsp;"
     end
 
     return html

@@ -42,13 +42,13 @@
 				<h1>SEARCH RESULTS: <%=number_with_delimiter(@results["total_hits"])%> OBJECTS FOUND</h1>
 
 		    <%= render( :partial => 'results/bulkcollect' ) %>
-				<%= render( :partial => 'results/pagination' ) %>
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } } ) %>
 			
 		    <form name="bulk_collect_form" id="bulk_collect_form" method="post">
 		      <%= render( :partial => 'results/results', :locals => { :page => @page, :hits => @results['hits'] } ) %>
 		    </form>
 	
-		    <%= render( :partial => 'results/pagination' ) %>
+		    <%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } }  ) %>
 		    <%= render( :partial => 'results/bulkcollect' ) %>
 		
 			<% else -%>

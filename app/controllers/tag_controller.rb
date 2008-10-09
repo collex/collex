@@ -59,14 +59,44 @@ class TagController < ApplicationController
       
     when 'tag'
       @results = CachedResource.get_hits_for_tag(params[:tag], params[:all_tags] ? nil : user)
+      
+    else
+        @results = {}
     end
   
     @total_hits = @results.length
-    @page = 1
-    @num_pages = 1
+    
+    #do the pagination. We have all the results already, but we might want to limit them by cutting off the ones
+    # before the current page and after the maximum amount.
+    @page = params[:page] ? params[:page].to_i : 1
+    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+    @num_pages = @results.length.quo(session[:items_per_page]).ceil
+    
+    if @results.length > 0
+      # get the first page and make sure it is within bounds.
+      first = (@page-1) * session[:items_per_page]
+      while first >= @results.length do
+        @page -= 1
+        first = @page * session[:items_per_page]
+      end
+    
+      # get the last page and make sure it is within bounds
+      last = first + session[:items_per_page]
+      last = @results.length if last > @results.length
+      
+      @results = @results.slice(first...last)
+    end
   end
   
-  private
+   # adjust the number of search results per page
+   def result_count
+     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
+     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+     redirect_to :action => 'results'
+   end
+   
+   private
    def cloud_fragment_key( type, user, max )
      "/cloud/#{user}_user/#{type}_#{max}_sidebar"
    end

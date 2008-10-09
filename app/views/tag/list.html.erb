@@ -1,4 +1,5 @@
 <% current_page "Tags" -%>
+<center>
 <% if is_logged_in? -%>
 <div class="tag_minor_nav"><%= link_to "Manage my objects", :action => 'results', :all_tags => false, :view => 'all_collected' %></div><br />
 <div id="all_tags_choice">
@@ -10,7 +11,7 @@
 </div>
 <br />
 <% end -%>
-  <div class="search">
+  <div class="tag_filter">
 	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
   </div>
 <% cache_timeout(@cloud_fragment_key,1.hour.from_now) do %>
@@ -31,7 +32,7 @@
 </div>
 
 <% end %>
-
+</center>
 <div id="tag_explanation">
 	WHAT ARE TAGS? A tag is simply a word you use to descibe an object you find in NINES. Tags make it easy to organize and browse large collections.
 	Separate each tag with a space <i>(poem castle knight)</i> or to join two words together use a hyphen <i>(oil-painting).</i>
