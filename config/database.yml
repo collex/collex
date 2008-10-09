@@ -18,15 +18,15 @@
 development:
     adapter: mysql
     database: nines_development
-    username: nines
-    password: n1n3s
+    username: root
+    password: 
     host: localhost
     
 test:
     adapter: mysql
     database: nines_test
-    username: nines
-    password: n1n3s
+    username: root
+    password: 
     host: localhost
 
 production:
