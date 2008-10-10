@@ -152,6 +152,9 @@ class CachedResource < ActiveRecord::Base
   def self.get_hits_for_tag(tag_name, user = nil)
     results = []
     tag = Tag.find_by_name(tag_name)
+    # It's possible for this to return nil if a tag was deleted before this request was made.
+    return results if tag == nil
+    
     item_ids = Tagassign.find(:all, :conditions => [ "tag_id = ?", tag.id ] )
     # item_ids are ids into the collected_items table.
     item_ids.each { |item_id|

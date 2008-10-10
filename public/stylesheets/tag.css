@@ -1,3 +1,6 @@
+.results_layout {
+	width: 100%;
+}
 .tag_filter {
 	margin-top: 1.7em;
 	margin-bottom: 1.7em;
@@ -10,16 +13,13 @@
 }
 
 .tag_sidebar {
-	position: absolute;
-	left: 20px;
-	top: 190px;
-	width: 200px;
 	border: 1px solid gray;
+	vertical-align: top;
+	width: 200px;
 }
 
 .tag_results {
-	margin-left: 220px;
-	margin-top: 1em;
+	vertical-align: top;
 }
 
 #tag_explanation {
@@ -28,9 +28,10 @@
 }
 
 .tag_minor_nav {
-	position: absolute;
-	right: 2em;
+	text-align:right;
 	font-size: 1.3em;
+	line-height: 2em;
+	
 }
 
 #all_tags_choice {
@@ -45,6 +46,7 @@
 .sidebar_tag_link {
 	margin-left: 1em;
 	margin-right: 1em;
+	font-size: 1.1em;
 }
 
 .sidebar_tag_link_selected {
@@ -52,6 +54,7 @@
 	margin-left: 1em;
 	margin-right: 1em;
 	font-style: italic;
+	font-size: 1.1em;
 }
 
 #tag_emph {

@@ -59,6 +59,7 @@ class TagController < ApplicationController
     end
     
     if params[:tag] != nil
+      params[:tag] = params[:tag].gsub("&lt;","<").gsub("&gt;", ">").gsub("&amp;", "&").gsub("&quot;", '"')
       session[:tag_current] = params[:tag]
     else
       params[:tag] = session[:tag_current]

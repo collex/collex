@@ -166,7 +166,9 @@ module SearchHelper
     item = get_collected_item(hit)
     return "" if item == nil
     return "" if item.annotation == nil
-    return item.annotation
+    note = h(item.annotation)
+    note = note.gsub("\n", "<br />")
+    return note
   end
 
   def get_result_date(hit)

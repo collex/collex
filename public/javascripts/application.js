@@ -505,7 +505,7 @@ function doCollect(uri, row_num, row_id)
 function doRemoveTag(uri, row_num, row_id, tag_name)
 {
 	new Ajax.Updater(row_id, "/results/remove_tag", {
-		parameters : "uri="+ uri + "&row_num=" + row_num + "&tag=" + tag_name,
+		parameters : "uri="+ uri + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -550,7 +550,10 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 	document.getElementById('note_uri').value = uri;
 	document.getElementById('note_row_num').value = row_num;
 	document.getElementById('note_row_id').value = row_id;
-	document.getElementById('note_notes').value = document.getElementById(curr_annotation_id).innerHTML;
+	var existing_note = document.getElementById(curr_annotation_id).innerHTML;
+	existing_note = existing_note.gsub("<br />", "\n");
+	existing_note = existing_note.gsub("<br>", "\n");
+	document.getElementById('note_notes').value = existing_note;
 	setTimeout(focusAnnotation, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
 }
 
@@ -560,10 +563,11 @@ function doAddTagSubmit()
 	var el_row_num = document.getElementById('tag_row_num');
 	var el_row_id = document.getElementById('tag_row_id');
 	var el_tag = document.getElementById('tag_tag');
+	var tag_value = encodeForUri(el_tag.value);
     Effect.Fade('tag-div', { duration: 0.0 });
 
 	new Ajax.Updater(el_row_id.value, "/results/add_tag", {
-		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&tag=" + el_tag.value,
+		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&tag=" + tag_value,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -574,14 +578,23 @@ function doAnnotationSubmit()
 	var el_row_num = document.getElementById('note_row_num');
 	var el_row_id = document.getElementById('note_row_id');
 	var el_note = document.getElementById('note_notes');
+	var note_value = encodeForUri(el_note.value);
     Effect.Fade('note-div', { duration: 0.0 });
 
 	new Ajax.Updater(el_row_id.value, "/results/set_annotation", {
-		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&note=" + el_note.value,
+		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&note=" + note_value,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
 
+function encodeForUri(str)
+{
+	var value = str.gsub('%', '%25');
+	value = value.gsub('#', '%23');
+	value = value.gsub('&', '%26');
+	value = value.gsub(/\?/, '%3f');
+	return value;
+}
 //function displayDetails(parent_id, page_num, row_num, row_id)
 //{
 //	new Effect.Appear('result-details-div', { duration: 0.5 }); 

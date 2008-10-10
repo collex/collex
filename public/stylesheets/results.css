@@ -29,6 +29,9 @@
 	font-weight: bold;
 }
 
+.collect_link {
+	font-size: 1.4em;
+}
 /*.collectlink {
 	text-align: left;
 	vertical-align: top;

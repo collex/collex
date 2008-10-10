@@ -90,6 +90,7 @@ class CollectedItem < ActiveRecord::Base
     end
     
     # find or create the tag record.
+    tag_str = tag_str.gsub(' ', '_')
     tag_rec = Tag.find_by_name(tag_str)
     if tag_rec == nil
       tag_rec = Tag.new(:name => tag_str)
@@ -115,11 +116,10 @@ class CollectedItem < ActiveRecord::Base
       return
     end
 
-    # find or create the tag record.
+    # find the tag record.
     tag_rec = Tag.find_by_name(tag_str)
-    if tag_rec == nil
-      tag_rec = Tag.new(:name => tag_str)
-      tag_rec.save!
+    if tag_rec == nil # For some reason the tag was already deleted. Don't worry about it, it was probably a race condition or stale session.
+      return
     end
 
     # if the item was not tagged, throw an exception. Otherwise, delete the pairing, and if the tag no longer
