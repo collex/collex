@@ -1,11 +1,14 @@
 module TagHelper
-  def tag_cloud(list, bucket_size)
+  def tag_cloud(list, bucket_size, zoom_level)
     xm = Builder::XmlMarkup.new(:indent => 2)
     list.each do |item|
 #        html = (i > NUM_VISIBLE_TAGS) ? { :style => "display:none;" } : {}
       html = {}
-      xm.span :class => "cloud#{item.last.quo(bucket_size).ceil}" do
-        xm << link_to_tag(item.first, item.last, false, html)
+      size = item.last.quo(bucket_size).ceil
+      if (size >= zoom_level)
+        xm.span :class => "cloud#{size}" do
+          xm << link_to_tag(item.first, item.last, false, html)
+        end
       end
     end
     return xm

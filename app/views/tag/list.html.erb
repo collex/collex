@@ -10,17 +10,19 @@
 	<% end -%>
 </div>
 <br />
-<% end -%>
+<% end #if is_logged_in -%>
   <div class="tag_filter">
 	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
   </div>
+<table><tr>
+	<td>
 <% cache_timeout(@cloud_fragment_key,1.hour.from_now) do %>
 
 <div id="sidebar-spinner" style="display:none;"></div>
 <div class="content">
 
   <div class="tagcloud" id="tagcloud">
-  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
+  	  <%= tag_cloud(@cloud_freq, @bucket_size, session[:tag_zoom]) %>
   </div>
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
@@ -31,7 +33,24 @@
 
 </div>
 
-<% end %>
+<% end #cache_timeout block %>
+</td>
+<td valign="top">
+	<ul class="slider" style='list-style-type: none;'>
+		<li class="slider-header slider-middle"><%= link_to "+", :action => 'zoom', :level => '+' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 9 %>"><%= link_to "-", :action => 'zoom', :level => '9' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 8 %>"><%= link_to "-", :action => 'zoom', :level => '8' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 7 %>"><%= link_to "-", :action => 'zoom', :level => '7' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 6 %>"><%= link_to "-", :action => 'zoom', :level => '6' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 5 %>"><%= link_to "-", :action => 'zoom', :level => '5' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 4 %>"><%= link_to "-", :action => 'zoom', :level => '4' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 3 %>"><%= link_to "-", :action => 'zoom', :level => '3' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 2 %>"><%= link_to "-", :action => 'zoom', :level => '2' %></li>
+		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 1 %>"><%= link_to "-", :action => 'zoom', :level => '1' %></li>
+		<li class="slider-header slider-middle"><%= link_to "-", :action => 'zoom', :level => '-' %></li>
+	</ul>
+</td>
+</tr></table>
 </center>
 <div id="tag_explanation">
 	WHAT ARE TAGS? A tag is simply a word you use to descibe an object you find in NINES. Tags make it easy to organize and browse large collections.

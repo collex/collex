@@ -1,3 +1,32 @@
+/*td {
+	border: 1px dotted red;
+}*/
+
+.slider {
+	border: 1px groove black;
+	background-color: #dddddd;
+	padding: .2em;
+}
+
+.slider-header {
+	border: 1px solid black;
+}
+
+.slider-middle {
+	width: 1em;
+	text-align:center;
+}
+
+.slider-selected {
+	color: white;
+	background-color: white;
+	border: 1px solid black;
+}
+
+.slider-selected a {
+	color: white;
+}
+
 .results_layout {
 	width: 100%;
 }

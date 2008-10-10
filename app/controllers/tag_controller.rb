@@ -20,7 +20,29 @@ class TagController < ApplicationController
    end
    public
 
+  def zoom
+    level = params[:level]
+    session[:tag_zoom] ||= 1
+    case level
+      when '1' : session[:tag_zoom] = 1
+      when '2' : session[:tag_zoom] = 2
+      when '3' : session[:tag_zoom] = 3
+      when '4' : session[:tag_zoom] = 4
+      when '5' : session[:tag_zoom] = 5
+      when '6' : session[:tag_zoom] = 6
+      when '7' : session[:tag_zoom] = 7
+      when '8' : session[:tag_zoom] = 8
+      when '9' : session[:tag_zoom] = 9
+      when '+' : session[:tag_zoom] += 1 if session[:tag_zoom] < 9
+      when '-' : session[:tag_zoom] -= 1 if session[:tag_zoom] > 1
+    end
+    
+    redirect_to :action => 'list'
+  end
+
   def list
+    session[:tag_zoom] ||= 1
+
     if params[:tag] != nil
       session[:tag_current] = params[:tag]
     else
