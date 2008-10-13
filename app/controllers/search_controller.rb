@@ -129,6 +129,19 @@ class SearchController < ApplicationController
          hit['text'] = @results["highlighting"][hit["uri"]]["text"] 
        end
      }
+     
+     # Now repeat the search without any resource type constraints, so we can get the resource totals.
+     # The resource totals should stay the same whether the user has constrained by resources or not.
+     resourceless_constraints = []
+     session[:constraints].each {|constraint|
+      if constraint[:field] != 'archive' || constraint[:type] != 'FacetConstraint'
+        resourceless_constraints.insert(-1, constraint)
+      end
+     }
+     if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
+       resourceless_results = search_solr(resourceless_constraints, @page, session[:items_per_page])
+       @results['facets'] = resourceless_results['facets']
+     end
     rescue  Net::HTTPServerException => e
      @results = rescue_search_error(e)
     end
@@ -186,28 +199,40 @@ class SearchController < ApplicationController
    # constrains the search by the specified resources
    def constrain_resources
      
-     # this is the list of things that are checked
-     checked_facets = params[:constrain_resources] ? params[:constrain_resources].keys : []
-
-     # we don't want to negatively constrain on items that are checked, so remove any such constraints
-     checked_facets.each { |facet| 
-       existing_facet_constraints = session[:constraints].select { |constraint| constraint.is_negative_facet_constraint?(facet) } 
-       existing_facet_constraints.each { |constraint| session[:constraints].delete constraint }
-     }
-
-     # checkboxes don't give us a list of what is not checked, so we have to figure that out
-     all_facets = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-     unchecked_facets = all_facets - checked_facets
+     resource = params[:resource]
+     if params[:remove] == 'true'
+       session[:constraints].each {|constraint|
+         if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource
+           session[:constraints].delete(constraint)
+           break
+         end
+       }
+     else
+       session[:constraints] << FacetConstraint.new( :field => 'archive', :value => resource, :inverted => false )
+     end
      
-     # add a negative facet constraint for each unchecked item
-     unchecked_facets.each { |facet|
-       existing_facet_constraints = session[:constraints].select { |constraint| constraint.is_negative_facet_constraint?(facet) } 
-       session[:constraints] << FacetConstraint.new( :field => 'archive', :value => facet, :inverted => true ) unless existing_facet_constraints.size > 0
-     }
-     
-     # record which facets have been selected
-     session[:selected_resource_facets] = checked_facets
-     
+#     # this is the list of things that are checked
+#     checked_facets = params[:constrain_resources] ? params[:constrain_resources].keys : []
+#
+#     # we don't want to negatively constrain on items that are checked, so remove any such constraints
+#     checked_facets.each { |facet| 
+#       existing_facet_constraints = session[:constraints].select { |constraint| constraint.is_negative_facet_constraint?(facet) } 
+#       existing_facet_constraints.each { |constraint| session[:constraints].delete constraint }
+#     }
+#
+#     # checkboxes don't give us a list of what is not checked, so we have to figure that out
+#     all_facets = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
+#     unchecked_facets = all_facets - checked_facets
+#     
+#     # add a negative facet constraint for each unchecked item
+#     unchecked_facets.each { |facet|
+#       existing_facet_constraints = session[:constraints].select { |constraint| constraint.is_negative_facet_constraint?(facet) } 
+#       session[:constraints] << FacetConstraint.new( :field => 'archive', :value => facet, :inverted => true ) unless existing_facet_constraints.size > 0
+#     }
+#     
+#     # record which facets have been selected
+#     session[:selected_resource_facets] = checked_facets
+#     
      redirect_to :action => 'browse'
    end
    
@@ -403,8 +428,7 @@ class SearchController < ApplicationController
 
    private
    def search_solr(constraints, page, items_per_page)
-     results = @solr.search(session[:constraints], (page - 1) * items_per_page, items_per_page)        
-     results
+     return @solr.search(constraints, (page - 1) * items_per_page, items_per_page)        
    end
    
   # This chooses which constraints are listed on the results page above the results.
@@ -419,11 +443,12 @@ class SearchController < ApplicationController
 
     # We only want to display expressions and genres.
     # FreeCultureConstraint is derived from ExpressionConstraint, so we have to filter that out explicitly
-    constraints_with_ids.select { |constraint| 
-      !constraint[:constraint].is_a?(FreeCultureConstraint) and
-      (constraint[:constraint].is_a?(ExpressionConstraint) or 
-      (constraint[:constraint].is_a?(FacetConstraint) and constraint[:constraint][:field] == 'genre') )
-    }
+#    constraints_with_ids.select { |constraint| 
+#      !constraint[:constraint].is_a?(FreeCultureConstraint) and
+#      (constraint[:constraint].is_a?(ExpressionConstraint) or 
+#      (constraint[:constraint].is_a?(FacetConstraint) and constraint[:constraint][:field] == 'genre') )
+#    }
+    return constraints_with_ids # at the moment, we are showing all constraints.
   end
   
    # take the genre facet data and organize it for display

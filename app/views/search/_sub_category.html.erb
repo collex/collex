@@ -17,13 +17,14 @@
 
 <% if resource.sorted_children.size > 0 -%>
 	<% category_subtotal = site_category_subtotal(resource) -%>
+	<% if category_subtotal != 0 -%>
 	<li <%=gray_if_zero(category_subtotal)%>><%= "#{site_category_heading(resource.display_name, resource.id)} (#{number_with_delimiter( category_subtotal )})" %></li>
 	<ul class="cat_<%= resource.id %>_child noshow">
 		<% for resource in resource.sorted_children -%>
 			<%= render :partial => 'sub_category', :locals => { :resource => resource } %>
 		<% end -%>
 	</ul>
+	<% end # if category is not zero -%>
 <% else -%>
-	<% object_count = site_object_count(resource.value) -%>
-	<li <%=gray_if_zero(object_count)%>><input type="checkbox" <%= mark_as_checked_resource(resource.value) %> name="constrain_resources[<%= resource.value %>]"/><%= h resource.display_name %> (<%= number_with_delimiter( object_count ) %>)</li>
+	<%= resource_data_link( resource ) %>
 <% end -%>

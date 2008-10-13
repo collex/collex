@@ -12,17 +12,21 @@
               end
             end
         %>
-              <% if constraint.is_a?(ExpressionConstraint) %>
  	  			<tr>
+              <% if constraint.is_a?(FreeCultureConstraint) -%>
+                 <td>Free Culture:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %>Only</td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+              <% elsif constraint.is_a?(ExpressionConstraint) -%>
                  <td>Keyword:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h constraint.value%></td>
                  <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
-              </tr>
-              <% elsif constraint.is_a?(FacetConstraint) %>
-		 	  			<tr>
-                 <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h constraint.value%></td>
+              <% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre' -%>
+                 <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
                  <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+             <% elsif constraint.is_a?(FacetConstraint) -%>
+                 <td>Resource:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+              <% end -%>
               </tr>
-              <% end %>
 
            <% end # closing the do loop for each constraint %>
            <tr>

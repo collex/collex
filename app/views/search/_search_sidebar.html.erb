@@ -18,21 +18,18 @@
 	<h1>RESOURCES</h1>
 	<div class="resource-list-content">
 		<p class="sidebar_instructions"><i>Select the resources to include in your search.</i></p>
-		<form id="add-constraint" method="post" action="/search/constrain_resources">
 			<% for resource_category in @sites_forest.sorted_children -%>
+			<% if site_category_subtotal(resource_category) != 0 -%>
 				<h2><%= site_category_heading("#{h(resource_category.display_name.upcase)} (#{number_with_delimiter( site_category_subtotal(resource_category) )})", resource_category.id, :open ) %></h2>
 					<div id="cat_<%= resource_category.id %>" class="cat_<%= resource_category.id %>_child">
-						<%= link_to_function '[select all]', "selectAll('cat_#{resource_category.id}')", :class => "deselect-resource-link" %>
-						<%= link_to_function '[deselect all]', "deselectAll('cat_#{resource_category.id}')", :class => "deselect-resource-link" %>
 						<ul>
 						<% for resource in resource_category.sorted_children -%>
 							<%= render :partial => 'sub_category', :locals => { :resource => resource } %>
 						<% end -%>
 					</ul>
 					</div>
-					<input class="submit-button" type="submit" value="Update" /><br /><br />						
-			<% end -%>
-		</form>
+			<% end # if category is not zero -%>
+			<% end # for loop -%>
 	</div>
 	<h1>GENRES</h1>
 	<div class="resource-list-content">

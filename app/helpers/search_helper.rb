@@ -84,6 +84,43 @@ module SearchHelper
     return html
   end
 
+  def resource_is_in_constraints?(resource)
+    constraints = session[:constraints]
+    constraints.each {|constraint|
+      if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
+        return true
+      end
+    }
+    return false
+  end
+  
+  def resource_data_link( resource )
+    #     <form id="add-constraint" method="post" action="/search/constrain_resources">
+    object_count = site_object_count(resource.value)
+    if object_count != 0
+      display_str = "#{h(resource.display_name)} (#{number_with_delimiter( object_count )})"
+      if resource_is_in_constraints?(resource)
+        html = "&rarr; #{h display_str}&nbsp;"
+        html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post } 
+        return html
+      else
+        link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post }
+        return "<li>#{link}</li>"
+      end
+    else
+      return ""
+    end
+  
+#    if resource_data[:exists]
+#      html = "&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})&nbsp;"
+#      html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post } 
+#      return html
+#    else
+#      link_to "#{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post } 
+#    end
+
+  end
+  
   def genre_data_link( genre_data )
     if genre_data[:exists]
       html = "&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})&nbsp;"
