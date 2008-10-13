@@ -154,6 +154,16 @@ class TagController < ApplicationController
      redirect_to :action => 'results'
    end
    
+   def update_sidebar
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+
+    if user
+      set_cloud_list(user, user.username)
+    end
+
+    render :partial => 'sidebar', :locals => { :cloud_freq => @cloud_freq, :view => session[:tag_view], :tag =>  session[:tag_current] }
+   end
+   
    private
    def cloud_fragment_key( type, user, max )
      "/cloud/#{user}_user/#{type}_#{max}_sidebar"

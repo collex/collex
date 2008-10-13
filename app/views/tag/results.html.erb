@@ -8,26 +8,8 @@
 	</tr>
 	<tr>
 <% if is_logged_in? && params[:which] == 'my' -%>
-<td class="tag_sidebar">
-<div>
-	<h1>MY TAGS</h1>
- 	  <%= tag_list(@cloud_freq, params[:tag]) %>
-	  <br />
-	<h1>MY COLLECTION</h1>
-	<% if params[:view] == 'untagged' -%>
-	<div class="sidebar_tag_link_selected">Untagged</div>
-	<% else -%>
-	<div class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
-	<% end -%>
-	
-	<% if params[:view] == 'all_collected' -%>
-	<div class="sidebar_tag_link_selected">All Collected</div>
-	<% else -%>
-	<div class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :which => 'my', :view => 'all_collected' } %></div>
-	<% end -%>
-	<br />
-</div>
-</td>
+<td id="tag_sidebar" class="tag_sidebar">
+<%= render :partial => 'sidebar', :locals => { :cloud_freq => @cloud_freq, :view => params[:view], :tag => params[:tag] } %></td>
 <% end -%>
 
 <td class="tag_results">

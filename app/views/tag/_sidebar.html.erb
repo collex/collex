@@ -1,0 +1,18 @@
+<div>
+	<h1>MY TAGS</h1>
+ 	  <%= tag_list(cloud_freq, view == 'tag' ? tag : "" ) %>
+	  <br />
+	<h1>MY COLLECTION</h1>
+	<% if view == 'untagged' -%>
+	<div class="sidebar_tag_link_selected">Untagged</div>
+	<% else -%>
+	<div class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
+	<% end -%>
+	
+	<% if view == 'all_collected' -%>
+	<div class="sidebar_tag_link_selected">All Collected</div>
+	<% else -%>
+	<div class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :which => 'my', :view => 'all_collected' } %></div>
+	<% end -%>
+	<br />
+</div>

@@ -506,6 +506,7 @@ function doRemoveTag(uri, row_num, row_id, tag_name)
 {
 	new Ajax.Updater(row_id, "/results/remove_tag", {
 		parameters : "uri="+ uri + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name),
+		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -557,6 +558,17 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 	setTimeout(focusAnnotation, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
 }
 
+function tagFinishedUpdating()
+{
+	var el_sidebar = document.getElementById('tag_sidebar');
+	if (el_sidebar)
+	{
+		new Ajax.Updater('tag_sidebar', "/tag/update_sidebar", {
+			onFailure : function(resp) { alert("Oops, there's been an error."); }
+		});
+	}
+}
+
 function doAddTagSubmit()
 {
 	var el_uri = document.getElementById('tag_uri');
@@ -568,6 +580,7 @@ function doAddTagSubmit()
 
 	new Ajax.Updater(el_row_id.value, "/results/add_tag", {
 		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&tag=" + tag_value,
+		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
