@@ -204,6 +204,13 @@ class CachedResource < ActiveRecord::Base
     return all_books  # return the rearranged data: the key is the book so it is easy to search in the way we need.
   end
   
+  def recache_properties
+    copy_solr_resource
+    if !resource.nil?
+      save!
+    end
+  end
+  
   private
     #TODO filter out tags and annotations and usernames 
     def copy_solr_resource
