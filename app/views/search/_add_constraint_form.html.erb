@@ -10,7 +10,11 @@
 <option value="Year" >Year (YYYY)</option>
 </select>
 <input id="search_submit" type="submit" value="Search" />
-</td></tr></table>
+</td></tr>
+<tr>
+	<td>or&nbsp;<%= link_to "start over", :action => "new_search" %></td>
+</tr>
+</table>
 <% else -%>
 <table>
 <tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%></td></tr>
