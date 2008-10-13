@@ -14,8 +14,7 @@
   <div class="tag_filter">
 	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
   </div>
-<table><tr>
-	<td>
+
 <% cache_timeout(@cloud_fragment_key,1.hour.from_now) do %>
 
 <div id="sidebar-spinner" style="display:none;"></div>
@@ -34,8 +33,8 @@
 </div>
 
 <% end #cache_timeout block %>
-</td>
-<td valign="top">
+
+<div class="tag_zoom">
 	<ul class="slider" style='list-style-type: none;'>
 		<li class="slider-header slider-middle"><%= link_to "+", :action => 'zoom', :level => '+' %></li>
 		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 9 %>"><%= link_to "-", :action => 'zoom', :level => '9' %></li>
@@ -49,8 +48,7 @@
 		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 1 %>"><%= link_to "-", :action => 'zoom', :level => '1' %></li>
 		<li class="slider-header slider-middle"><%= link_to "-", :action => 'zoom', :level => '-' %></li>
 	</ul>
-</td>
-</tr></table>
+</div>
 </center>
 <div id="tag_explanation">
 	WHAT ARE TAGS? A tag is simply a word you use to descibe an object you find in NINES. Tags make it easy to organize and browse large collections.

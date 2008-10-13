@@ -2,6 +2,13 @@
 	border: 1px dotted red;
 }*/
 
+.tag_zoom {
+	position: absolute;
+	right: 10px;
+	top: 200px;
+	width: 2em;
+}
+
 .slider {
 	border: 1px groove black;
 	background-color: #dddddd;
