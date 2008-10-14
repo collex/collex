@@ -60,7 +60,7 @@ private
     # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?
     tabs_arr = [ ['Home', "/", true],
       ['Search', search_path, true],
-      ['Tags', tags_path, true],
+      ['Tags', tags_path, false],
       ['Exhibits', intro_exhibits_path, false],
       ['News', news_path, false],
       ['About', tab_about_path, false]
