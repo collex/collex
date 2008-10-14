@@ -5,19 +5,22 @@
 </td>
 <td>
 <%= text_field_with_suggest :search, :phrase,  {:size=>30}, {:min_chars => 2}-%>&nbsp;
-<select id="search_type" name="search_type" align="top" >
+</td><td>
+	<select id="search_type" name="search_type" align="top" >
 <option value="Keyword" >Keyword</option>
 <option value="Author" >Author</option>
 <option value="Editor" >Editor</option>
 <option value="Publisher" >Publisher</option>
 <option value="Year" >Year (YYYY)</option>
 </select>
+
 <input id="search_submit" type="submit" value="Search" />
 </td></tr>
 <tr><td></td>
-	<td>(or&nbsp;<%= link_to "start over", :action => "new_search" %>)</td>
+	<td><center>(or&nbsp;<%= link_to "start over", :action => "new_search" %>)</center></td>
 </tr>
 </table>
+
 <% else -%>
 <table>
 <tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%></td></tr>
