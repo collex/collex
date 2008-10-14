@@ -490,22 +490,34 @@ function moveObjectToLeftTopOfItsParent(target_id, parent_id)
 	moveObject2(target_id, newXCoordinate, newYCoordinate);
 }
 
+function getFullText(row_id)
+{
+	var el_full_text = document.getElementById(row_id+ "_full_text");
+	var full_text = "";
+	if (el_full_text)
+		full_text = encodeForUri(el_full_text.innerHTML);
+	return full_text;	
+}
+
 function doCollect(uri, row_num, row_id)
 {
 	var ptr = $(row_id);
 	ptr.removeClassName('result_without_tag');
 	ptr.addClassName('result_with_tag');
-
+	var full_text = getFullText(row_id);
+	
 	new Ajax.Updater(row_id, "/results/collect", {
-		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num,
+		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
 
 function doRemoveTag(uri, row_num, row_id, tag_name)
 {
+	var full_text = getFullText(row_id);
+
 	new Ajax.Updater(row_id, "/results/remove_tag", {
-		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name),
+		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,
 		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -515,9 +527,10 @@ function doRemoveCollect(uri, row_num, row_id)
 {
 	var tr = document.getElementById(row_id);
 	tr.className = 'result_without_tag'; 
+	var full_text = getFullText(row_id);
 	
 	new Ajax.Updater(row_id, "/results/uncollect", {
-		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num,
+		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -577,9 +590,10 @@ function doAddTagSubmit()
 	var el_tag = document.getElementById('tag_tag');
 	var tag_value = encodeForUri(el_tag.value);
     Effect.Fade('tag-div', { duration: 0.0 });
+	var full_text = getFullText(el_row_id.value);
 
 	new Ajax.Updater(el_row_id.value, "/results/add_tag", {
-		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&tag=" + tag_value,
+		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&tag=" + tag_value + "&full_text=" + full_text,
 		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -593,9 +607,10 @@ function doAnnotationSubmit()
 	var el_note = document.getElementById('note_notes');
 	var note_value = encodeForUri(el_note.value);
     Effect.Fade('note-div', { duration: 0.0 });
+	var full_text = getFullText(el_row_id.value);
 
 	new Ajax.Updater(el_row_id.value, "/results/set_annotation", {
-		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&note=" + note_value,
+		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&note=" + note_value + "&full_text=" + full_text,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }

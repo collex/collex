@@ -77,6 +77,9 @@ class ResultsController < ApplicationController
     else
       ret[:hit] = get_from_solr(params[:uri])
     end
+    if params[:full_text] && params[:full_text].length > 0
+      ret[:hit]['text'] = params[:full_text]
+    end
     ret[:uri] = params[:uri]
     ret[:index] = params[:row_num].to_i 
     ret[:row_id] = "search-result-#{ret[:index]}" 
