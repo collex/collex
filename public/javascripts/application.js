@@ -497,7 +497,7 @@ function doCollect(uri, row_num, row_id)
 	ptr.addClassName('result_with_tag');
 
 	new Ajax.Updater(row_id, "/results/collect", {
-		parameters : "uri="+ uri + "&row_num=" + row_num,
+		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -505,7 +505,7 @@ function doCollect(uri, row_num, row_id)
 function doRemoveTag(uri, row_num, row_id, tag_name)
 {
 	new Ajax.Updater(row_id, "/results/remove_tag", {
-		parameters : "uri="+ uri + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name),
+		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name),
 		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -517,7 +517,7 @@ function doRemoveCollect(uri, row_num, row_id)
 	tr.className = 'result_without_tag'; 
 	
 	new Ajax.Updater(row_id, "/results/uncollect", {
-		parameters : "uri="+ uri + "&row_num=" + row_num,
+		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -579,7 +579,7 @@ function doAddTagSubmit()
     Effect.Fade('tag-div', { duration: 0.0 });
 
 	new Ajax.Updater(el_row_id.value, "/results/add_tag", {
-		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&tag=" + tag_value,
+		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&tag=" + tag_value,
 		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -595,7 +595,7 @@ function doAnnotationSubmit()
     Effect.Fade('note-div', { duration: 0.0 });
 
 	new Ajax.Updater(el_row_id.value, "/results/set_annotation", {
-		parameters : "uri="+ el_uri.value + "&row_num=" + el_row_num.value + "&note=" + note_value,
+		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&note=" + note_value,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
