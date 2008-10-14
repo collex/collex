@@ -103,7 +103,7 @@ class TagController < ApplicationController
     when 'all_collected'
       # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
       if user
-        @results = CachedResource.get_all_collections(user)
+        @results = sort_by_date_collected(CachedResource.get_all_collections(user))
       else
         @results = {}
       end
@@ -116,7 +116,7 @@ class TagController < ApplicationController
       end
       
     when 'tag'
-      @results = CachedResource.get_hits_for_tag(params[:tag], params[:which] == 'all' ? nil : user)
+      @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], params[:which] == 'all' ? nil : user))
       
     else
         @results = {}
@@ -165,6 +165,26 @@ class TagController < ApplicationController
    end
    
    private
+   
+   def sort_by_date_collected(results)
+     sorted_results = []
+     results.each {|result|
+      cr = CachedResource.find_by_uri(result['uri'])
+      collects = CollectedItem.find(:all, :conditions => [ "cached_resource_id = ?", cr.id])
+      sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
+      str = result.to_s
+     }
+    sorted_results.sort! {|a,b| 
+        b[0] <=> a[0]
+    }
+    
+    ret_results = []
+    sorted_results.each {|result|
+      ret_results.insert(-1, result[1])
+    }
+     return ret_results
+   end
+   
    def cloud_fragment_key( type, user, max )
      "/cloud/#{user}_user/#{type}_#{max}_sidebar"
    end
