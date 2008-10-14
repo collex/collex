@@ -168,6 +168,23 @@ module SearchHelper
     count
   end
     
+  def is_constrained_by_child(resource)
+    constraints = session[:constraints]
+    resource_constraint = ""
+    constraints.each {|constraint|
+      if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint'
+        resource_constraint = constraint[:value]
+      end
+    }
+    return false if resource_constraint == ""
+    
+    resource.children.each {|child|
+      return true if child['value'] == resource_constraint
+    }
+    
+    return false
+  end
+  
   def mark_as_checked_freeculture()
     session[:selected_freeculture] ? 'checked="checked"' : ''  
   end

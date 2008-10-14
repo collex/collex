@@ -18,8 +18,8 @@
 <% if resource.sorted_children.size > 0 -%>
 	<% category_subtotal = site_category_subtotal(resource) -%>
 	<% if category_subtotal != 0 -%>
-	<li <%=gray_if_zero(category_subtotal)%>><%= "#{site_category_heading(resource.display_name, resource.id)} (#{number_with_delimiter( category_subtotal )})" %></li>
-	<ul class="cat_<%= resource.id %>_child noshow">
+	<li <%=gray_if_zero(category_subtotal)%>><%= "#{site_category_heading(resource.display_name, resource.id, is_constrained_by_child(resource) ? :open : :closed )} (#{number_with_delimiter( category_subtotal )})" %></li>
+	<ul class="cat_<%= resource.id %>_child <%= 'noshow' if !is_constrained_by_child(resource) %>">
 		<% for resource in resource.sorted_children -%>
 			<%= render :partial => 'sub_category', :locals => { :resource => resource } %>
 		<% end -%>
