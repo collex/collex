@@ -140,7 +140,7 @@ class SearchController < ApplicationController
      }
      if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
        resourceless_results = search_solr(resourceless_constraints, @page, session[:items_per_page])
-       @results['facets'] = resourceless_results['facets']
+       @results['facets']['archive'] = resourceless_results['facets']['archive']
      end
     rescue  Net::HTTPServerException => e
      @results = rescue_search_error(e)
@@ -183,15 +183,26 @@ class SearchController < ApplicationController
    
    # constrain search to only return free culture objects 
    def constrain_freeculture
-     if params[:freeculture] 
-       session[:selected_freeculture] = true 
-       existing_freeculture_constraint = session[:constraints].select { |constraint| constraint.is_a?(FreeCultureConstraint) } 
-       session[:constraints] << FreeCultureConstraint.new(:inverted => true) unless existing_freeculture_constraint.size > 0
+     if params[:remove] == 'true'
+       session[:constraints].each {|constraint|
+         if constraint[:type] == 'FreeCultureConstraint'
+           session[:constraints].delete(constraint)
+           break
+         end
+       }
      else
-       session[:selected_freeculture] = false
-       existing_freeculture_constraint = session[:constraints].select { |constraint| constraint.is_a?(FreeCultureConstraint) } 
-       existing_freeculture_constraint.each { |constraint| session[:constraints].delete constraint } if existing_freeculture_constraint.size > 0       
+       session[:constraints] << FreeCultureConstraint.new(:inverted => true )
      end
+   
+#     if params[:freeculture] 
+#       session[:selected_freeculture] = true 
+#       existing_freeculture_constraint = session[:constraints].select { |constraint| constraint.is_a?(FreeCultureConstraint) } 
+#       session[:constraints] << FreeCultureConstraint.new(:inverted => true) unless existing_freeculture_constraint.size > 0
+#     else
+#       session[:selected_freeculture] = false
+#       existing_freeculture_constraint = session[:constraints].select { |constraint| constraint.is_a?(FreeCultureConstraint) } 
+#       existing_freeculture_constraint.each { |constraint| session[:constraints].delete constraint } if existing_freeculture_constraint.size > 0       
+#     end
      
      redirect_to :action => 'browse'
    end
@@ -208,6 +219,13 @@ class SearchController < ApplicationController
          end
        }
      else
+       # Delete any previous resource constraint
+       session[:constraints].each {|constraint|
+         if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint'
+           session[:constraints].delete(constraint)
+           break
+         end
+       }
        session[:constraints] << FacetConstraint.new( :field => 'archive', :value => resource, :inverted => false )
      end
      

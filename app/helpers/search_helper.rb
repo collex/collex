@@ -100,8 +100,9 @@ module SearchHelper
     if object_count != 0
       display_str = "#{h(resource.display_name)} (#{number_with_delimiter( object_count )})"
       if resource_is_in_constraints?(resource)
-        html = "&rarr; #{h display_str}&nbsp;"
+        html = "<li><span class='resource_list_selected'>&rarr; #{h display_str}</span>&nbsp;"
         html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post } 
+        html += "</li>"
         return html
       else
         link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post }
@@ -121,9 +122,32 @@ module SearchHelper
 
   end
   
+  def free_culture_is_in_constraints?
+    constraints = session[:constraints]
+    constraints.each {|constraint|
+      if constraint[:type] == 'FreeCultureConstraint' 
+        return true
+      end
+    }
+    return false
+  end
+  
+  def free_culture_link(count)
+    display_str = "Free Culture Only (#{number_with_delimiter(count)})"
+    if free_culture_is_in_constraints?
+      html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
+      html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post } 
+      html += "</li>"
+      return html
+    else
+      link = link_to display_str, {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post }
+      return "<li>#{link}</li>"
+    end
+  end
+  
   def genre_data_link( genre_data )
     if genre_data[:exists]
-      html = "&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})&nbsp;"
+      html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})</span>&nbsp;"
       html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post } 
       return html
     else

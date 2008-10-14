@@ -17,7 +17,7 @@
 <div id="resource-list">
 	<h1>RESOURCES</h1>
 	<div class="resource-list-content">
-		<p class="sidebar_instructions"><i>Select the resources to include in your search.</i></p>
+		<p class="sidebar_instructions"><i>Select a resource with which to narrow your search.</i></p>
 			<% for resource_category in @sites_forest.sorted_children -%>
 			<% if site_category_subtotal(resource_category) != 0 -%>
 				<h2><%= site_category_heading("#{h(resource_category.display_name.upcase)} (#{number_with_delimiter( site_category_subtotal(resource_category) )})", resource_category.id, :open ) %></h2>
@@ -33,7 +33,7 @@
 	</div>
 	<h1>GENRES</h1>
 	<div class="resource-list-content">
-		<p class="instructions"><i>Select the genres to include in your search.</i></p>
+		<p class="sidebar_instructions"><i>Select the genres to include in your search.</i></p>
 			<ul>
 				<% for genre in @genre_data -%>
 					<li><%= genre_data_link( genre ) %></li>
@@ -43,11 +43,8 @@
 	<h1>FREE CULTURE</h1>
 	<div class="resource-list-content">
 		<p class="sidebar_instructions"><i>'Free Culture' resources are freely available in their full form on the Internet. Check this box to search for 'Free Culture' objects only.</i></p>
-			<form id="add-type-constraint" method="post" action="/search/constrain_freeculture">
-				<ul>
-					<li <%=gray_if_zero(@freeculture_count)%>><input type="checkbox" <%= mark_as_checked_freeculture() %> name="freeculture"/>Free Culture Only (<%= number_with_delimiter(@freeculture_count) %>)</li>
-				</ul>		
-				<input class="submit-button" type="submit" value="Update" /><br /><br />	
-			</form>	
+		<ul>
+			<%= free_culture_link(@freeculture_count) %>
+		</ul>		
 	</div>
 </div>
