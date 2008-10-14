@@ -78,6 +78,12 @@
 	padding-bottom: 3px;
 }
 
+.resource_list_selected {
+	font-style: italic;
+	font-weight: bold;
+	background-color: #eeeeee;
+}
+
 #resource-list .submit-button {
 	margin-top: 3px;
 	float: right;
