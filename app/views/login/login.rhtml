@@ -18,7 +18,6 @@
 <div class="login-explanation">Log in to personalize your Collex experience.<br/>
 If you log in, you can collect objects and create tags.
 </div>
-<%= div flash[:notice], :id => "message" if flash[:notice] %>
 
 <div class="login-option">Log in</div>
 <% form_tag :controller => "login", :action => "verify_login" do %> 
