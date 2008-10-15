@@ -44,7 +44,8 @@
 		    <%= render( :partial => 'results/bulkcollect' ) %>
 				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } } ) %>
 			
-		    <form name="bulk_collect_form" id="bulk_collect_form" method="post">
+		    <form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
+		    	<input type="hidden" name="return" value="/collex/browse" />
 		      <%= render( :partial => 'results/results', :locals => { :page => @page, :hits => @results['hits'] } ) %>
 		    </form>
 	

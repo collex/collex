@@ -64,6 +64,18 @@ class ResultsController < ApplicationController
     render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit] }
   end
   
+  def bulk_collect
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user != nil
+      uris = params[:bulk_collect]
+      uris.each {|key,uri|
+        CollectedItem.collect_item(user, uri)
+      }
+    end
+
+    redirect_to params[:return]
+  end
+  
   private
   def setup_ajax_calls(params, is_in_cache)
     # expire the fragment caches for the clouds related to this user

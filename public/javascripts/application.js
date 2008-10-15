@@ -390,38 +390,34 @@ function displayCollector(id, uri, event, header)
   }
 }
 
-function collectItem(uri, event)
-{
-	// TODO: set this item to look collected with javascript, silently send back to server
-	displayCollector(0, uri, event);
-}
-
 function bulkCollect(event)
 {
-	checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
+	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
 	
-	var at_least_one = false;
+	var has_one = false;
 	for (i = 0; i < checkboxes.length; i++) {
 		var checkbox = checkboxes[i];
 		if (checkbox.checked) {
-			var arr = checkbox.value.split('\t');
-			doCollect(arr[0], arr[1], arr[2]);
-			at_least_one = true;
+			has_one = true;
 		}
 	}
 	
-	if (!at_least_one) {
+	if (has_one)
+	{
+		var form = document.getElementById('bulk_collect_form');
+		form.submit();
+	}
+	else
+	{
 		alert("You must select one or more objects before clicking this button.")
 	}
-	
-	// TODO: uncheck all previously checked items
 }
 
 bulk_checked = false;
 
 function toggleAllBulkCollectCheckboxes(link) {
   bulk_checked = !bulk_checked;
-  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox', 'bulk_collect');
+  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
   for (i=0; i < checkboxes.length; i++) {
     checkbox = checkboxes[i];
     checkbox.checked = bulk_checked;
