@@ -22,6 +22,15 @@
               <% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre' -%>
                  <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
                  <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'author' -%>
+	                 <td>Author:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
+	                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'editor' -%>
+			                 <td>Editor:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
+			                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'publisher' -%>
+							                 <td>Publisher:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
+							                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
              <% elsif constraint.is_a?(FacetConstraint) -%>
                  <td>Resource:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
                  <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>

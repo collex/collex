@@ -58,6 +58,9 @@ class SearchController < ApplicationController
         add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
         add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
         add_keyword_constraint(params[:search_publisher]) if params[:search_publisher] != ""
+        # add_author_constraint(params[:search_author]) if params[:search_author] != ""
+        # add_editor_constraint(params[:search_editor]) if params[:search_editor] != ""
+        # add_publisher_constraint(params[:search_publisher]) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year]) if params[:search_year] != ""
 
       else
@@ -66,6 +69,9 @@ class SearchController < ApplicationController
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
+        # add_author_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
+        # add_editor_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
+        # add_publisher_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
         add_date_constraint(params[:search][:phrase]) if params[:search_type] == "Year"
       end
 
@@ -88,7 +94,19 @@ class SearchController < ApplicationController
   
   def add_author_constraint(phrase_str)
     if phrase_str and phrase_str.strip.size > 0
-       session[:constraints] << FacetConstraint.new(:field => 'agent', :value => phrase_str, :inverted => false)
+       session[:constraints] << FacetConstraint.new(:field => 'author', :value => phrase_str, :inverted => false)
+    end
+  end
+
+  def add_editor_constraint(phrase_str)
+    if phrase_str and phrase_str.strip.size > 0
+       session[:constraints] << FacetConstraint.new(:field => 'editor', :value => phrase_str, :inverted => false)
+    end
+  end
+
+  def add_publisher_constraint(phrase_str)
+    if phrase_str and phrase_str.strip.size > 0
+       session[:constraints] << FacetConstraint.new(:field => 'publisher', :value => phrase_str, :inverted => false)
     end
   end
 
