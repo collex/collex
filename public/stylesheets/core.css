@@ -8,42 +8,52 @@
 	border-color: black;
 }
 .link_tab {
-	border-width: 1px 0px 1px 1px;
+	border-width: 0px 0px 1px 0px;
 	border-style: solid;
 	margin: 0px;
-	padding:5px 30px 5px 30px;
+	padding:8px 35px 8px 35px;
+	background-image:url('../images/tab.png');
+	background-repeat:no-repeat;
 	background-color: #e0e0e0;
 }
 
 .disabled_tab {
-	border-width: 1px 0px 1px 1px; 
+	border-width: 0px 0px 1px 0px; 
 	border-style: solid;
 	margin: 0px;
-	padding:5px 30px 5px 30px;
+	padding:5px 35px 5px 35px;
 	font-style: italic;
 	color: gray;
+	background-image:url('../images/tab.png');
+	background-repeat:no-repeat;
 	background-color: #e0e0e0;
 }
 .curr_tab {
-	border-width: 1px 0px 0px 1px; 
-	border-style: solid;
+	/*border-width: 2px 0px 0px 2px;
+	border-style: solid;*/
 	margin: 0px;
 	font-weight: bold;
-	padding:5px 30px 5px 30px;
+	background: #fff;
+	background-image:url('../images/curr_tab.png');
+	background-repeat:no-repeat;
+	padding:5px 35px 5px 35px;
 }
 .tab-spacer-left {
 	border-width: 0px 0px 1px 0px;
 	border-style: solid;
 	width: 15px;
+	background-color: #660000;
 }
 .tab-spacer-right {
 	border-width: 0px 0px 1px 1px;
 	border-style: solid;
 	width: 100%;
+	background-color: #660000;
 }
 .tab-content-outline {
 	border-width: 0px 1px 1px 1px;
 	border-style: solid;
+	background: #fff;
 }
 
 .tab-content-outline2 {
@@ -54,12 +64,13 @@
 
 .tab-content {
 	margin-top: 20px;
+	background: #fff;
 }
 
 /* styles for the header */
 #header-left { position: absolute; left: 10px; width: 100px; }
-#header-center { margin-left: 100px; margin-top: 22px; margin-right: 400px; }
-#header-right { position: absolute; right: 30px; width: 390px; margin-top: -40px; text-align:right; font-size: 1.3em; }
+#header-center { margin-left: 100px; margin-top: 22px; margin-right: 400px; color:white;}
+#header-right { position: absolute; right: 30px; width: 390px; margin-top: -40px; text-align:right; font-size: 1.3em;}
 
 /* rest of the styles */		
 
@@ -94,18 +105,20 @@
 	padding-top: 2px;
 	/*width: 850px;*/
 	min-width: 850px;
-	background-color: #fff;
+	/*background-image:url('../images/banner_logo1.jpg');*/
+	background-repeat: no-repeat;
+	background-color: #660000;
 }
 
 #banner {
 	padding: 5px;
 	margin-bottom: 5px;
-	background-color: #fff;
+	background-color: #660000;
 }
 
 #content {
 	padding: 3px;
-	background: #fff;
+	background: #660000;
 	margin-top: 40px;
 }
 
@@ -213,7 +226,7 @@
 	background: #A60000;		
 }
 .emph1 {
-	font: 2em  trebuchet ms, verdana, sans-serif;
+	font: 2.5em  trebuchet ms, verdana, sans-serif;
 	color: #A60000;
 }
 .emph2 {
