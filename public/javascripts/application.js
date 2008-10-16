@@ -652,3 +652,134 @@ function doSaveSearchSubmit()
 
 }
 
+function setTagVisibility(zoom_level)
+{
+	var spans = $$('#tagcloud span');
+	for (i = 0; i < spans.length; i++)
+	{
+		var classname = spans[i].className;
+		var level = parseInt(classname.substring(5));
+		spans[i].style.display = (level >= zoom_level) ? 'inline' : 'none';
+	}
+}
+
+function doZoom(level)
+{
+	switch (level)
+	{
+		case "+": if (zoom_level < 10) zoom_level++; break;
+		case "-": if (zoom_level > 1) zoom_level--; break;
+		case "1": zoom_level = 1; break;
+		case "2": zoom_level = 2; break;
+		case "3": zoom_level = 3; break;
+		case "4": zoom_level = 4; break;
+		case "5": zoom_level = 5; break;
+		case "6": zoom_level = 6; break;
+		case "7": zoom_level = 7; break;
+		case "8": zoom_level = 8; break;
+		case "9": zoom_level = 9; break;
+		case "10": zoom_level = 10; break;
+	}
+	setTagVisibility(zoom_level);
+	
+	var thumb = $('tag_zoom_thumb');
+	thumb.style.top = "" + (306 - zoom_level*8) + "px";
+	
+	if (_dragElement == null)
+		new Ajax.Updater("", "/tag/set_zoom", { parameters : "level="+ zoom_level } );
+
+}
+
+var _startY = 0;  // mouse starting positions 
+var _offsetY = 0;  // current element offset 
+var _dragElement; // needs to be passed from OnMouseDown to OnMouseMove 
+var _oldZIndex = 0; // we temporarily increase the z-index during drag
+var _curr_pos = 0;
+
+function IsDraggable(target)
+{
+	// If any parent of what is clicked is draggable, the element is draggable.
+	while (target) {
+		if (target.id == 'tag_zoom_thumb') 
+			return target;
+		target = target.parentNode;
+	}
+	return null;
+}
+
+function ZoomThumbMouseDown(e)
+{
+	 // IE doesn't pass the event object
+	 if (e == null) e = window.event;
+	 // IE uses srcElement, others use target
+	 var target = e.target != null ? e.target : e.srcElement;
+	 target = IsDraggable(target);
+	  
+	  // for IE, left click == 1
+	  // for Firefox, left click == 0
+	  
+	  if ((e.button == 1 && window.event != null || e.button == 0) && target != null) {
+	  	// grab the mouse position
+	  	_startY = e.clientY;
+	  	// grab the clicked element's position
+	  	_offsetY = ExtractNumber(target.style.top);
+	  	// bring the clicked element to the front while it is being dragged
+	  	_oldZIndex = target.style.zIndex;
+	  	target.style.zIndex = 10000;
+	  	// we need to access the element in OnMouseMove
+	  	_dragElement = target;
+	  	// tell our code to start moving the element with the mouse
+	  	document.onmousemove = ZoomThumbMouseMove;
+	  	// cancel out any text selections
+	  	document.body.focus();
+	  	// prevent text selection in IE
+	  	document.onselectstart = function()
+	  	{
+	  		return false;
+	  	};
+	  	// prevent IE from trying to drag an image
+	  	target.ondragstart = function()
+	  	{
+	  		return false;
+	  	};
+	  	// prevent text selection (except IE)
+	  	return false;
+	  }
+}
+
+function ZoomThumbMouseMove(e)
+{
+	if (e == null) 
+		var e = window.event; // this is the actual "drag code"
+		
+	// We need to confine the drag to the area of the slider
+	var y = _offsetY + e.clientY - _startY;
+	if (y < 224) y = 224;
+	if (y> 297) y = 297;
+	_dragElement.style.top = y + 'px';
+	_curr_pos = Math.round((297 - y) / 8) + 1;
+	doZoom("" + _curr_pos);
+ }
+
+function ZoomThumbMouseUp(e)
+{
+	if (_dragElement != null)
+	{
+		_dragElement.style.zIndex = _oldZIndex;
+		// we're done with these events until the next OnMouseDown
+		document.onmousemove = null;
+		document.onselectstart = null;
+		_dragElement.ondragstart = null;
+		// this is how we know we're not dragging
+		_dragElement = null;
+		
+		doZoom("" + _curr_pos);
+	} 
+}
+
+function ExtractNumber(value)
+{
+	var n = parseInt(value);
+	return n == null || isNaN(n) ? 0 : n;
+}
+ 

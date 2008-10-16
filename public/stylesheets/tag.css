@@ -2,11 +2,20 @@
 	border: 1px dotted red;
 }*/
 
-.tag_zoom {
+#tag_zoom_scale {
 	position: absolute;
-	right: 10px;
+	right: 40px;
 	top: 200px;
-	width: 2em;
+}
+
+#tag_zoom_thumb {
+	position: absolute;
+	right: 45px;
+	cursor: move;
+}
+
+.tag_page {
+	min-height: 200px;
 }
 
 .slider {

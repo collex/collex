@@ -20,9 +20,11 @@ class TagController < ApplicationController
    end
    public
 
-  def zoom
+  def set_zoom
+    # This is called by an ajax request so that the zoom level is remembered for the
+    # next time the user visits the page. It doesn't need to render anything or set anything
+    # except to save the zoom level.
     level = params[:level]
-    session[:tag_zoom] ||= 1
     case level
       when '1' : session[:tag_zoom] = 1
       when '2' : session[:tag_zoom] = 2
@@ -33,11 +35,11 @@ class TagController < ApplicationController
       when '7' : session[:tag_zoom] = 7
       when '8' : session[:tag_zoom] = 8
       when '9' : session[:tag_zoom] = 9
-      when '+' : session[:tag_zoom] += 1 if session[:tag_zoom] < 9
-      when '-' : session[:tag_zoom] -= 1 if session[:tag_zoom] > 1
+      when '10' : session[:tag_zoom] = 10
+      else session[:tag_zoom] = 10 
     end
     
-    redirect_to :action => 'list'
+    render :nothing => true
   end
 
   def list

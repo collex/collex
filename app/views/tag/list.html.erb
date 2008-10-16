@@ -1,4 +1,5 @@
 <% current_page "Tags" -%>
+<div class="tag_page">
 <center>
 <% if is_logged_in? -%>
 <div class="tag_minor_nav"><%= link_to "Manage my objects", :action => 'results', :which => 'my', :view => 'all_collected' %></div><br />
@@ -21,7 +22,7 @@
 <div class="content">
 
   <div class="tagcloud" id="tagcloud">
-  	  <%= tag_cloud(@cloud_freq, @bucket_size, session[:tag_zoom]) %>
+  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
   </div>
   
   <%- if @cloud_freq.size > NUM_VISIBLE_TAGS -%>
@@ -34,27 +35,34 @@
 
 <% end #cache_timeout block %>
 
-<div class="tag_zoom">
-	<ul class="slider" style='list-style-type: none;'>
-		<li class="slider-header slider-middle"><%= link_to "+", :action => 'zoom', :level => '+' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 9 %>"><%= link_to "-", :action => 'zoom', :level => '9' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 8 %>"><%= link_to "-", :action => 'zoom', :level => '8' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 7 %>"><%= link_to "-", :action => 'zoom', :level => '7' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 6 %>"><%= link_to "-", :action => 'zoom', :level => '6' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 5 %>"><%= link_to "-", :action => 'zoom', :level => '5' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 4 %>"><%= link_to "-", :action => 'zoom', :level => '4' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 3 %>"><%= link_to "-", :action => 'zoom', :level => '3' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 2 %>"><%= link_to "-", :action => 'zoom', :level => '2' %></li>
-		<li class="slider-middle <%= 'slider-selected' if session[:tag_zoom] == 1 %>"><%= link_to "-", :action => 'zoom', :level => '1' %></li>
-		<li class="slider-header slider-middle"><%= link_to "-", :action => 'zoom', :level => '-' %></li>
-	</ul>
-</div>
 </center>
+</div>
 <div id="tag_explanation">
 	WHAT ARE TAGS? A tag is simply a word you use to descibe an object you find in NINES. Tags make it easy to organize and browse large collections.
 	Separate each tag with a space <i>(poem castle knight)</i> or to join two words together use a hyphen <i>(oil-painting).</i>
 </div>
-	
+
+<map name="zoom_map">
+	<area shape="rect" href="#" coords="0,0,26,22" onclick="doZoom('+');"" title="zoom in" />
+	<area shape="rect" href="#" coords="0,27,26,34" onclick="doZoom('10');" />
+	<area shape="rect" href="#" coords="0,35,26,42"  onclick="doZoom('9');" />
+	<area shape="rect" href="#" coords="0,43,26,50" onclick="doZoom('8');" />
+	<area shape="rect" href="#" coords="0,51,26,58" onclick="doZoom('7');" />
+	<area shape="rect" href="#" coords="0,59,26,66" onclick="doZoom('6');" />
+	<area shape="rect" href="#" coords="0,67,26,74" onclick="doZoom('5');" />
+	<area shape="rect" href="#" coords="0,75,26,82" onclick="doZoom('4');" />
+	<area shape="rect" href="#" coords="0,83,26,90" onclick="doZoom('3');" />
+	<area shape="rect" href="#" coords="0,91,26,98" onclick="doZoom('2');" />
+	<area shape="rect" href="#" coords="0,99,26,106" onclick="doZoom('1');" />
+	<area shape="rect" href="#" coords="0,103,26,132" onclick="doZoom('-');"  title="zoom out" />
+</map>
+<div id="tag_zoom_scale" >
+	<img src="/images/zoom_scale.png" usemap="#zoom_map" border="0" />
+</div>
+<div id="tag_zoom_thumb" >
+	<img src="/images/zoom_thumb.png" />
+</div>
+
 <script type="text/javascript">
 	// perform initialization after DOM loads
 	Event.observe(window, 'load', function() {		
@@ -63,4 +71,15 @@
 	
 		sidebarTagCloud = new SidebarTagCloud( <%= NUM_VISIBLE_TAGS %>, instructions );
 	});	
+</script>
+<script type="text/javascript">
+	var zoom_level = <%= session[:tag_zoom] %>;
+
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {
+		doZoom("" + zoom_level);
+	});
+	
+	document.onmousedown = ZoomThumbMouseDown;
+	document.onmouseup = ZoomThumbMouseUp; 
 </script>
