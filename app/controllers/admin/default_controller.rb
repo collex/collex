@@ -19,13 +19,13 @@ class Admin::DefaultController < Admin::BaseController
   
   def refresh_cached_objects
     # This reads all the items in the cached_resources table, and recreates the cached_properties table by retrieving the object from solr.
-    # TODO: If an object was collected but is no longer available, this will just ignore it.
+    # TODO: If an object was collected but is no longer available, this will just ignore it. Instead, it should create a list for an administator to straighten out.
+
     # TODO: If a user was deleted, all the user's collected objects and tags will still be in the system. We might want to weed out the cached_resources table
     # based on the collected_items table.
     # TODO: The tagassigns table has collected_item_ids. If we weed out collected_items, then we need to update that table, too.
+    # TODO: The cached_properties table may contain properties that are orphaned and don't have a valid cached resource id
 
-    CachedProperty.delete_all()
-    
     cached_resources = CachedResource.find(:all)
     cached_resources.each do |cr|
       cr.recache_properties()

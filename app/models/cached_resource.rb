@@ -86,6 +86,7 @@ class CachedResource < ActiveRecord::Base
   DOCUMENT_LIMIT = 1000
   
   # Returns a sorted array of [name,freq] pairs for the specified cloud type and optional user_id
+  # TODO-PER: This is probably obsolete and can go away.
   def self.cloud( type, user=nil, limit=nil )
     type = type.to_sym
     limit = limit.nil? ? DOCUMENT_LIMIT : limit.to_i
@@ -104,7 +105,26 @@ class CachedResource < ActiveRecord::Base
     end
   end
   
+  def self.tag_cloud(user)
+    sql_no_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name"
+    sql_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id join collected_items as i on tagassigns.collected_item_id=i.id where user_id=? group by name order by name"
+          
+    cloud_of_ar_objects = if user.nil? 
+      find_by_sql([ sql_no_user ]) 
+    else
+      find_by_sql([ sql_user, user ])
+    end      
+         
+    # convert active record objects to [name,freq] pairs
+    unless cloud_of_ar_objects.nil?  
+      return cloud_of_ar_objects.map { |entry| [ entry.name, entry.freq.to_i ] }
+    else
+      return []
+    end
+  end
+  
   # Returns a sorted array of CachedResource objects associated with a given cloud tag and optionally restricts by user
+  # TODO-PER: This is only called from the sidebar, so it can probably go away.
   def self.list_from_cloud_tag( type, tag, user=nil, offset=0, limit=nil )
     type = type.to_sym
     offset = offset.to_i
@@ -128,6 +148,7 @@ class CachedResource < ActiveRecord::Base
   end
   
   # overrides dynamic find method +find_or_create_by_uri+ so that it can take/return a list
+  # TODO-PER: Not sure this is called anywhere.
   def self.resources_by_uri( uri )
 
     if uri.kind_of?(Array) 
@@ -149,7 +170,7 @@ class CachedResource < ActiveRecord::Base
   end
     
   # if a user is passed, then only the objects for that user are returned. Otherwise all matching objects are returned.
-  def self.get_hits_for_tag(tag_name, user = nil)
+  def self.get_hits_for_tag(tag_name, user)
     results = []
     tag = Tag.find_by_name(tag_name)
     # It's possible for this to return nil if a tag was deleted before this request was made.
@@ -168,6 +189,7 @@ class CachedResource < ActiveRecord::Base
   end
   
   def self.get_all_untagged(user)
+    return [] if user == nil
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
     results = []
     items.each { |item|
@@ -182,32 +204,37 @@ class CachedResource < ActiveRecord::Base
   
   # get a list of all tags for a particular user. Pass in the actual user object (not just the user name), and get back a hash
   # of key=uri, value=array of tags
-  def self.get_all_of_users_collections(user) # TODO: PER- I think this is out of date, but not sure.
-    all_books = Hash.new
-    cloud_freq = self.get_all_tags(user) # get a list of all the tags
-    cloud_freq.each { |entry| # entry is an array. The first element is the tag name.
-      tag = entry[0]
-      data = self.get_all_items_by_tag(tag, user )  # for each tag, get a list of all the books that are tagged
-      if data != nil
-        data.each { |item|  # item is a class with a member named @attributes. That is a hash where 'uri' is the key we are interested in.
-          uri = item.attributes['uri']
-          tag_list = all_books[uri]
-          tag_list = Array.new if tag_list == nil
-          tag_list.insert(-1, tag)
-          all_books[uri] = tag_list
-        }
-      end
-      #uri = data.attributes[:uri]
-      #all_books[:uri] = tag
-    }
-    
-    return all_books  # return the rearranged data: the key is the book so it is easy to search in the way we need.
-  end
+#  def self.get_all_of_users_collections(user) # TODO: PER- I think this is out of date, but not sure.
+#    all_books = Hash.new
+#    cloud_freq = self.get_all_tags(user) # get a list of all the tags
+#    cloud_freq.each { |entry| # entry is an array. The first element is the tag name.
+#      tag = entry[0]
+#      data = self.get_all_items_by_tag(tag, user )  # for each tag, get a list of all the books that are tagged
+#      if data != nil
+#        data.each { |item|  # item is a class with a member named @attributes. That is a hash where 'uri' is the key we are interested in.
+#          uri = item.attributes['uri']
+#          tag_list = all_books[uri]
+#          tag_list = Array.new if tag_list == nil
+#          tag_list.insert(-1, tag)
+#          all_books[uri] = tag_list
+#        }
+#      end
+#      #uri = data.attributes[:uri]
+#      #all_books[:uri] = tag
+#    }
+#    
+#    return all_books  # return the rearranged data: the key is the book so it is easy to search in the way we need.
+#  end
   
   def recache_properties
-    copy_solr_resource
     if !resource.nil?
+      CachedProperty.delete_all( ["cached_resource_id = ?", id] )
+      copy_solr_resource
       save!
+    else
+      # The resource no longer exists. Add a property to tell us that. (Note that the current set of properties are not deleted, either)
+      CachedProperty.create(:name => 'stale', :value => 'yes', :cached_resource_id => id)
+      logger.info("Cached Resource \"#{uri}\" no longer exists in solr.")
     end
   end
   
