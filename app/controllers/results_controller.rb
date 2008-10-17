@@ -66,7 +66,7 @@ class ResultsController < ApplicationController
   
   def bulk_collect
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if user != nil
+    if user != nil && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
       uris.each {|key,uri|
         CollectedItem.collect_item(user, uri)
