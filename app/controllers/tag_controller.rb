@@ -1,6 +1,6 @@
-NUM_VISIBLE_TAGS = 50000
-TAG_INSTRUCTIONS = 'add tag' # TODO-PER: these may not be relevant but were put in to make it not crash
-ANNOTATION_INSTRUCTIONS = 'enter annotation' # TODO-PER: these may not be relevant but were put in to make it not crash
+#NUM_VISIBLE_TAGS = 50000
+#TAG_INSTRUCTIONS = 'add tag' # TODO-PER: these may not be relevant but were put in to make it not crash
+#ANNOTATION_INSTRUCTIONS = 'enter annotation' # TODO-PER: these may not be relevant but were put in to make it not crash
 
 class TagController < ApplicationController
    layout 'collex_tabs'
@@ -187,15 +187,15 @@ class TagController < ApplicationController
      return ret_results
    end
    
-   def cloud_fragment_key( type, user, max )
-     "/cloud/#{user}_user/#{type}_#{max}_sidebar"
+   def cloud_fragment_key( user )
+     "/cloud/#{user}_user/tag"
    end
  
   def set_cloud_list(user, username)
-    @cloud_fragment_key = cloud_fragment_key('tag', username, NUM_VISIBLE_TAGS)
+    @cloud_fragment_key = cloud_fragment_key(username)
     
     if is_cache_expired?(@cloud_fragment_key)
-      @cloud_freq = CachedResource.cloud('tag', user, NUM_VISIBLE_TAGS)
+      @cloud_freq = CachedResource.tag_cloud(user)
       unless @cloud_freq.empty?
         max_freq = 1
         @cloud_freq.each { |entry| 

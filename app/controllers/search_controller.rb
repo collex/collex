@@ -132,7 +132,7 @@ class SearchController < ApplicationController
     session[:constraints] ||= []
     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
     session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-    session[:selected_freeculture] ||= false
+    #session[:selected_freeculture] ||= false
 
     @page = params[:page] ? params[:page].to_i : 1
     
@@ -326,7 +326,7 @@ class SearchController < ApplicationController
    def clear_constraints
     session[:name_of_search] = nil
     session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-    session[:selected_freeculture] = false
+    #session[:selected_freeculture] = false
     session[:constraints] = []
    end
    
