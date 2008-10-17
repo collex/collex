@@ -185,13 +185,13 @@ module SearchHelper
     return false
   end
   
-  def mark_as_checked_freeculture()
-    session[:selected_freeculture] ? 'checked="checked"' : ''  
-  end
-  
-  def mark_as_checked_resource( facet )
-    session[:selected_resource_facets].include?(facet) ? 'checked="checked"' : ''
-  end
+#  def mark_as_checked_freeculture()
+#    session[:selected_freeculture] ? 'checked="checked"' : ''  
+#  end
+#  
+#  def mark_as_checked_resource( facet )
+#    session[:selected_resource_facets].include?(facet) ? 'checked="checked"' : ''
+#  end
   
   def gray_if_zero( count )
     count==0 ? 'class="grayed-out-resource"' : ''
