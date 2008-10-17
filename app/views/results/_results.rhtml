@@ -10,34 +10,3 @@
 	</tr>
 <% end -%>
 </table>
-
-<div id="tag-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
-    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("tag-div", { duration: 0.0 })' %>&nbsp;</span>
-    <form id="tag-form" method="post" onsubmit='doAddTagSubmit();'>
-        <input type="hidden" name="tag_uri" id="tag_uri" />
-        <input type="hidden" name="tag_row_num" id="tag_row_num" />
-        <input type="hidden" name="tag_row_id" id="tag_row_id" />
-        <label for="tag">tag:</label>
-        <input type="text" name="tag_tag" id="tag_tag" />
-        <span style="clear:both;float:right;"><%= link_to_function "ok", "doAddTagSubmit();" -%>&nbsp; </span>
-    </form>
-</div>
-
-<div id="note-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 420px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
-    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("note-div", { duration: 0.0 })' %>&nbsp;</span>
-    <form id="note-form" method="post" onsubmit='doAnnotationSubmit();'>
-        <input type="hidden" name="note_uri" id="note_uri" />
-        <input type="hidden" name="note_row_num" id="note_row_num" />
-        <input type="hidden" name="note_row_id" id="note_row_id" />
-        <label for="annotation">notes:</label>
-        <textarea rows="10" style="width:350px" name="note_notes" id="note_notes"></textarea>
-        <span style="clear:both;float:right;"><%= link_to_function "ok", "doAnnotationSubmit();" -%>&nbsp; </span>
-    </form>
-</div>
-		
-<% #<div id="result-details-div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
-    #<span style="clear:both;float:right;">< %= link_to_function 'X', 'Effect.Fade("result-details-div", { duration: 0.0 })' % >&nbsp;</span>
-    #<div id="result-details">
-    #	Please Wait
-    #</div>
-#</div> -%>
