@@ -12,6 +12,10 @@ class CollectedItemTest < ActiveSupport::TestCase
     fixtures :cached_properties
     fixtures :users
 
+  def setup
+       get_baseline()
+  end
+
   def get_baseline
     @all_tags_start = Tag.find(:all)
     @all_tagassigns_start = Tagassign.find(:all)
@@ -179,7 +183,7 @@ class CollectedItemTest < ActiveSupport::TestCase
     user = get_user(1)
     tag_str = "interesting"
     uri = "http://some/fake/uri"
-
+ 
     # first be sure that we can't add a tag if the item isn't collected.
     CollectedItem.add_tag(user, uri, tag_str)
     # this should fail silently
@@ -201,11 +205,12 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     # there should be just one item in the join table
     join = Tagassign.find(:all)
-    assert_equal(1, join.length)
+    assert_equal(@all_tagassigns_start.length + 1, join.length)
   end
   
   def test_add_same_tag_again
-    # this should just ignore the new entry
+    get_baseline()
+   # this should just ignore the new entry
     test_add_tag()
 
     user = get_user(1)
@@ -227,10 +232,11 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     # there should be just one item in the join table
     join = Tagassign.find(:all)
-    assert_equal(1, join.length)
+    assert_equal(@all_tagassigns_start.length + 1, join.length)
   end
   
   def test_add_second_tag
+   get_baseline()
     test_add_tag()
 
     user = get_user(1)
@@ -253,11 +259,11 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     # there should be two items in the join table
     join = Tagassign.find(:all)
-    assert_equal(2, join.length)
-    assert_equal("interesting", join[0].tag.name, "wrong tag in join table")
-    assert_equal(tag_str, join[1].tag.name, "wrong tag in join table")
-    assert_equal(uri, join[0].collected_item.cached_resource.uri, "wrong uri")
-    assert_equal(uri, join[1].collected_item.cached_resource.uri, "wrong uri")
+    assert_equal(@all_tagassigns_start.length + 2, join.length)
+    assert_equal("interesting", join[@all_tagassigns_start.length + 0].tag.name, "wrong tag in join table")
+    assert_equal(tag_str, join[@all_tagassigns_start.length + 1].tag.name, "wrong tag in join table")
+    assert_equal(uri, join[@all_tagassigns_start.length + 0].collected_item.cached_resource.uri, "wrong uri")
+    assert_equal(uri, join[@all_tagassigns_start.length + 1].collected_item.cached_resource.uri, "wrong uri")
     
   end
 
@@ -293,11 +299,11 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     # there should be two items in the join table
     join = Tagassign.find(:all)
-    assert_equal(2, join.length)
-    assert_equal(tag_str, join[0].tag.name, "wrong tag in join table")
-    assert_equal(tag_str, join[1].tag.name, "wrong tag in join table")
-    assert_equal(uri1, join[0].collected_item.cached_resource.uri, "wrong uri")
-    assert_equal(uri2, join[1].collected_item.cached_resource.uri, "wrong uri")
+    assert_equal(@all_tagassigns_start.length + 2, join.length)
+    assert_equal(tag_str, join[@all_tagassigns_start.length + 0].tag.name, "wrong tag in join table")
+    assert_equal(tag_str, join[@all_tagassigns_start.length + 1].tag.name, "wrong tag in join table")
+    assert_equal(uri1, join[@all_tagassigns_start.length + 0].collected_item.cached_resource.uri, "wrong uri")
+    assert_equal(uri2, join[@all_tagassigns_start.length + 1].collected_item.cached_resource.uri, "wrong uri")
     
   end
 
@@ -328,7 +334,7 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     # there should be just one item in the join table
     join = Tagassign.find(:all)
-    assert_equal(1, join.length)
+    assert_equal(@all_tagassigns_start.length + 1, join.length)
   end
   
   def test_delete_a_tag_with_one_collected_item
@@ -348,7 +354,7 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     # there should be nothing in the join table
     join = Tagassign.find(:all)
-    assert_equal(0, join.length)
+    assert_equal(@all_tagassigns_start.length + 0, join.length)
   end
 
   def test_delete_a_collected_item_that_has_a_tag
@@ -371,8 +377,8 @@ class CollectedItemTest < ActiveSupport::TestCase
     assert_equal(uri2, res.uri)
 
     join = Tagassign.find(:all)
-    assert_equal(1, join.length)
-    assert_equal(uri2, join[0].collected_item.cached_resource.uri)
+    assert_equal(@all_tagassigns_start.length + 1, join.length)
+    assert_equal(uri2, join[@all_tagassigns_start.length + 0].collected_item.cached_resource.uri)
     
     # remove the second one
     CollectedItem.remove_collected_item(user, uri2)
@@ -383,7 +389,7 @@ class CollectedItemTest < ActiveSupport::TestCase
     assert_equal(0, col.length)
 
     join = Tagassign.find(:all)
-    assert_equal(0, join.length)
+    assert_equal(@all_tagassigns_start.length + 0, join.length)
   end
  
   #####################################################
@@ -428,11 +434,11 @@ class CollectedItemTest < ActiveSupport::TestCase
     assert_equal(uri, col[1].cached_resource.uri)
 
     join = Tagassign.find(:all)
-    assert_equal(2, join.length)
-    assert_equal(uri, join[0].collected_item.cached_resource.uri)
-    assert_equal(tag_str, join[0].tag.name)
-    assert_equal(uri, join[1].collected_item.cached_resource.uri)
-    assert_equal(tag_str, join[1].tag.name)
+    assert_equal(@all_tagassigns_start.length + 2, join.length)
+    assert_equal(uri, join[@all_tagassigns_start.length + 0].collected_item.cached_resource.uri)
+    assert_equal(tag_str, join[@all_tagassigns_start.length + 0].tag.name)
+    assert_equal(uri, join[@all_tagassigns_start.length + 1].collected_item.cached_resource.uri)
+    assert_equal(tag_str, join[@all_tagassigns_start.length + 1].tag.name)
     
     all_items = CollectedItem.find(:all)
     assert_equal(@all_collected_items_start.length+2, all_items.length, "Should be two items in the collection")

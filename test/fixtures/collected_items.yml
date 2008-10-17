@@ -1,6 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
+  id: 1
   user_id: 1
   cached_resource_id: 9
   annotation: MyText
@@ -8,8 +9,57 @@ one:
   updated_at: 2008-09-05 16:27:31
 
 two:
+  id: 2
   user_id: 2
   cached_resource_id: 9
   annotation: MyText
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+paul_collect:
+  id: 3
+  user_id: 23
+  cached_resource_id: 1
+  annotation: paul_collect
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+dave_collect:
+  id: 4
+  user_id: 99
+  cached_resource_id: 2
+  annotation: dave_collect
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+paul_collect_shared:
+  id: 5
+  user_id: 23
+  cached_resource_id: 3
+  annotation: paul_collect_shared
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+dave_collect_shared:
+  id: 6
+  user_id: 99
+  cached_resource_id: 3
+  annotation: dave_collect_shared
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+paul_collect_no_tag:
+  id: 7
+  user_id: 23
+  cached_resource_id: 4
+  annotation: paul_collect_no_tag
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+dave_collect_no_tag:
+  id: 8
+  user_id: 99
+  cached_resource_id: 5
+  annotation: dave_collect_no_tag
   created_at: 2008-09-05 16:27:31
   updated_at: 2008-09-05 16:27:31

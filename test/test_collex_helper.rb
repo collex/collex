@@ -27,7 +27,7 @@ module TestCollexHelper
       mlt = MLTS
       collection_info = COLLECTION_INFO
       
-      if(objid == URI || objid == URI2)
+      if(objid == URI || objid == URI2 || objid == 'http://resource/1/paul' || objid == 'http://resource/2/dave' || objid == 'http://resource/4/paul_untagged')
         return [document, mlt, collection_info]
       else
         return [nil, nil, nil]

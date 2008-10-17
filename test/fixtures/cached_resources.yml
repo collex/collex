@@ -1,1 +1,22 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+paul:
+  id: 1
+  uri: http://resource/1/paul
+  
+dave:
+  id: 2
+  uri: http://resource/2/dave
+  
+both:
+  id: 3
+  uri: http://resource/3/both
+
+paul_untagged:
+  id: 4
+  uri: http://resource/4/paul_untagged
+  
+dave_untagged:
+  id: 5
+  uri: http://resource/5/dave_untagged
+  

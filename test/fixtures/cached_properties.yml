@@ -1,1 +1,91 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+thumb_1:
+  id: 1
+  name: thumbnail
+  value: http://resource/1/paul/thumb
+  cached_resource_id: 1
+  
+title_1:
+  id: 2
+  name: title
+  value: pauls resource
+  cached_resource_id: 1
+  
+archive_1:
+  id: 3
+  name: archive
+  value: cather
+  cached_resource_id: 1
+  
+thumb_2:
+  id: 4
+  name: thumbnail
+  value: http://resource/2/dave/thumb
+  cached_resource_id: 2
+  
+title_2:
+  id: 5
+  name: title
+  value: daves resource
+  cached_resource_id: 2
+  
+archive_2:
+  id: 6
+  name: archive
+  value: cather
+  cached_resource_id: 2
+  
+thumb_3:
+  id: 7
+  name: thumbnail
+  value: http://resource/3/both/thumb
+  cached_resource_id: 3
+  
+title_3:
+  id: 8
+  name: title
+  value: both resource
+  cached_resource_id: 3
+    
+archive_3:
+  id: 9
+  name: archive
+  value: cather
+  cached_resource_id: 3
+
+thumb_4:
+  id: 10
+  name: thumbnail
+  value: http://resource/4/paul/untagged/thumb
+  cached_resource_id: 4
+  
+title_4:
+  id: 11
+  name: title
+  value: paul untagged
+  cached_resource_id: 4
+    
+archive_4:
+  id: 12
+  name: archive
+  value: cather
+  cached_resource_id: 4
+
+thumb_5:
+  id: 13
+  name: thumbnail
+  value: http://resource/5/dave/untagged/thumb
+  cached_resource_id: 5
+  
+title_5:
+  id: 14
+  name: title
+  value: dave untagged
+  cached_resource_id: 5
+    
+archive_5:
+  id: 15
+  name: archive
+  value: cather
+  cached_resource_id: 5
+

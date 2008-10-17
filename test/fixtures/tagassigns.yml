@@ -1,3 +1,26 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+daves_tag:
+  collected_item_id: 4
+  tag_id: 3
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+pauls_tag:
+  collected_item_id: 3
+  tag_id: 4
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+pauls_good_tag:
+  collected_item_id: 5
+  tag_id: 5
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
+
+daves_good_tag:
+  collected_item_id: 6
+  tag_id: 5
+  created_at: 2008-09-05 16:27:31
+  updated_at: 2008-09-05 16:27:31
 

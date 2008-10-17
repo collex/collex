@@ -128,12 +128,13 @@ class SearchControllerTest < Test::Unit::TestCase
     post :constrain_freeculture, { :freeculture => 'on' }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal true, session[:selected_freeculture] 
+    assert_equal 1, session[:constraints].length
+    assert_equal 'FreeCultureConstraint', session[:constraints][0]['type']
 
     post :constrain_freeculture
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal false, session[:selected_freeculture] 
+    assert_equal 0, session[:constraints].length
   end
   
   def test_constrain_resources
@@ -193,13 +194,13 @@ class SearchControllerTest < Test::Unit::TestCase
     assert_equal 0, session[:constraints].length
   end
 
-  def test_details
-    user_search_string = "dance"
-    post :add_constraint, { :search_phrase => user_search_string }
-
-    post :details, { :row_num => "0", :page_num => "1" }, session
-    assert_response :success
-   end
+#  def test_details
+#    user_search_string = "dance"
+#    post :add_constraint, { :search_phrase => user_search_string }
+#
+#    post :details, { :row_num => "0", :page_num => "1" }, session
+#    assert_response :success
+#   end
 
   def test_collect_and_tags
     
@@ -357,10 +358,10 @@ class SearchControllerTest < Test::Unit::TestCase
     test_add_and_remove_genre
   end
   
-  def test_no_session_details
-    @request.session = {}
-    test_details
-  end
+#  def test_no_session_details
+#    @request.session = {}
+#    test_details
+#  end
   
   def test_no_session_collect_and_tags
     @request.session = {}
