@@ -111,3 +111,8 @@
 .paginate-current {
 	font-weight: bold;
 }
+
+.result_with_tag a {
+	background-color: #eeeeee;
+}
+
