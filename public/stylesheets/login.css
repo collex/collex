@@ -1,4 +1,10 @@
 	/* styles for the login pages */
+	
+#content {
+	background: #fff;
+}
+	
+	
 	.login-title {
 		font-size: 2em;
 		padding: .6em;
