@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   include ExceptionNotifiable
   
   session :session_key => "_nines_user_session"
-  session_times_out_in 30.minutes
+  session_times_out_in 2.hours
   
   helper :all # include all helpers, all the time
 
