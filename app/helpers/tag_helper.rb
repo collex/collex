@@ -14,6 +14,9 @@ module TagHelper
   
   def tag_list(list, selection)
     xm = Builder::XmlMarkup.new(:indent => 2)
+    if list == nil
+      return xm
+    end
     list.each do |item|
       html = {}
       if selection == item.first
