@@ -70,7 +70,16 @@
 /* styles for the header */
 #header-left { position: absolute; left: 10px; width: 100px; }
 #header-center { margin-left: 100px; margin-top: 22px; margin-right: 400px; color:white;}
-#header-right { position: absolute; right: 30px; width: 390px; margin-top: -40px; text-align:right; font-size: 1.3em;}
+#header-right { position: absolute; right: 30px; width: 390px; margin-top: -40px; text-align:right; font-size: 1.3em; color:#C0C0C0;}
+#header-right a {
+color: #fff;
+}
+
+#header-right a:hover {
+background-color: #C0C0C0;
+color:black;
+}
+
 
 /* rest of the styles */		
 
