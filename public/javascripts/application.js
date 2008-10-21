@@ -611,6 +611,20 @@ function doAnnotationSubmit()
 	});
 }
 
+function enter_edit_profile_mode(partial_id)
+{
+	new Ajax.Updater(partial_id, "/my9s/enter_edit_profile_mode", {
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function update_profile(partial_id)
+{
+	new Ajax.Updater(partial_id, "/my9s/update_profile", {
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
 function encodeForUri(str)
 {
 	var value = str.gsub('%', '%25');

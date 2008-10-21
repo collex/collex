@@ -118,8 +118,12 @@ class My9sController < ApplicationController
    end
 
   # This is called from AJAX to display the edit profile form in place.
-  def edit_profile
-    
+  def enter_edit_profile_mode
+      render :partial => 'profile', :locals => { :user => session[:user], :edit_mode => true }
+  end
+  
+  def update_profile
+      render :partial => 'profile', :locals => { :user => session[:user], :edit_mode => false }
   end
   
   private

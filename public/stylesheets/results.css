@@ -12,6 +12,11 @@
 	margin-right: 5px;	
 }
 
+#profile {
+	background-color: #eeeeee;
+	padding: 1em;
+}
+
 /* styles for search result */
 .result_with_tag {
 	background-color: #eeeeee;

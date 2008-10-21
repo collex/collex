@@ -1,0 +1,31 @@
+<div id="profile">
+	<% if edit_mode -%>
+		<form>
+			<table>
+				<tr><td>User name:</td><td><input type="text" name="username" id="username" /></td></tr>
+				<tr><td>Full name:</td><td><input type="text" name="fullname" id="fullname" /></td></tr>
+				<tr><td>Institution:</td><td><input type="text" name="institution" id="institution" /></td></tr>
+				<tr><td>Link:</td><td><input type="text" name="link" id="link" /></td></tr>
+				<tr><td>About me:</td><td><textarea name="sername" id="username" cols="35" rows="7" ></textarea></td></tr>
+			</table>
+		<%= button_to_function "Save", "update_profile('profile');" %> 
+		</form> 
+	<% else -%>
+		<table>
+			<tr valign="top">
+				<td></td><td colspan='2' align="right"><%= link_to_function "Edit Profile", "enter_edit_profile_mode('profile');" %></td>
+			</tr>
+			<tr>
+				<td><img src="/images/harrington.gif" alt="" /></td>
+				<td width="10px"></td>
+				<td width="100%">
+					Username: <%= user[:username] %><br/>
+					Full name:<br/>
+					Institution:<br />
+					Link: <br/>
+					About me: <br/>
+				</td>
+			</tr>
+		</table>
+	<% end -%>
+</div> <%# end profile %>

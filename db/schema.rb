@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 80) do
+ActiveRecord::Schema.define(:version => 81) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -197,6 +197,9 @@ ActiveRecord::Schema.define(:version => 80) do
     t.string "password_hash"
     t.string "fullname"
     t.string "email"
+    t.string "institution"
+    t.string "link"
+    t.text   "about_me"
   end
 
 end
