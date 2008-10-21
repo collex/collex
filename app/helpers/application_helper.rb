@@ -57,24 +57,28 @@ private
   end
 #Drawing the Tab control
   def draw_tabs(curr_page)
-    # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?
-    tabs_arr = [ ['Home', "/", true],
-      ['Search', search_path, true],
-      ['Tags', tags_path, false],
-      ['Exhibits', intro_exhibits_path, false],
-      ['News', news_path, false],
-      ['About', tab_about_path, false]
+    # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?, [3]=logged in only?
+    tabs_arr = [ ['Home', "/", true, false],
+      ['My&nbsp;9s', my9s_path, true, true],
+      ['Search', search_path, true, false],
+      ['Tags', tags_path, true, false],
+      ['Exhibits', intro_exhibits_path, false, false],
+      ['News', news_path, false, false],
+      ['About', tab_about_path, false, false]
    ]
   
     html = ""
     tabs_arr.each {|tab|
-      if (tab[2] == false)
-        html += make_disabled_tab(tab[0])
-      elsif (curr_page == tab[0])
-        html += make_curr_tab(tab[0])
-        session[:current_page] = tab[1]
-      else
-        html += make_link_tab(tab[0], tab[1])
+      if (tab[3] == false || is_logged_in?)
+        if (tab[2] == false)
+          html += make_disabled_tab(tab[0])
+        elsif (curr_page == tab[0])
+          html += make_curr_tab(tab[0])
+          logout_path = (tab[3] == false) ? tab[1] : tabs_arr[0][1]
+          session[:current_page] = [ tab[1], logout_path ]
+        else
+          html += make_link_tab(tab[0], tab[1])
+        end
       end
     }
     return html

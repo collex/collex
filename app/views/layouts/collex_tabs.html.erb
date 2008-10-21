@@ -31,6 +31,10 @@
 		when :search 
 		  stylesheet_link_tag("results", :media => "all") +
 	  	  stylesheet_link_tag("search", :media => "all")
+		when :my9s
+		  stylesheet_link_tag("results", :media => "all") +
+	  	  stylesheet_link_tag("search", :media => "all") +
+		  stylesheet_link_tag("tag", :media => "all")
 		when :home 
 		  stylesheet_link_tag "home", :media => "all"
 		when :login 
@@ -62,6 +66,7 @@
 		  javascript_include_tag 'sidebar_tag_cloud'
 		when :home 
 		when :login 
+		when :my9s
 		else 
 		  javascript_include_tag 'sidebar_tag_cloud'
     end 

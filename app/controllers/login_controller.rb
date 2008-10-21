@@ -20,8 +20,12 @@ class LoginController < ApplicationController
    before_filter :init_view_options
    helper_method :get_page_to_return_to
    
-   def get_page_to_return_to
-     return session[:current_page] if session[:current_page]
+   def get_page_to_return_to()
+     if is_logged_in?
+       return session[:current_page][0] if session[:current_page]
+     else
+       return session[:current_page][1] if session[:current_page]
+     end
      return request.env["HTTP_REFERER"] if request.env["HTTP_REFERER"]
      return "/"
    end

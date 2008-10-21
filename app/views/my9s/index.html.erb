@@ -1,0 +1,58 @@
+<% current_page "My&nbsp;9s" -%>
+<div id="search-main">
+<div class="tag_minor_nav"> 
+	<%= link_to "Manage my objects", :action => 'results', :which => 'my', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
+</div>
+<h2>Welcome, <%= session[:user][:username] %>!</h2>
+
+<table>
+	<tr>
+		<td width="80%">
+			<div id="profile">
+				<table>
+	    			<tr valign="top">
+	    				<td><img src="/images/harrington.gif" alt="" /></td>
+						<td width="10px"></td>
+						<td width="100%">
+							Username: <%= session[:user][:username] %><br/>
+							Full name:<br/>
+							Institution:<br />
+							Link: <br/>
+							About me: <br/>
+						</td>
+		    		</tr>
+		    	</table>
+			</div> <%# end profile %>
+			
+			<h2>Recently collected items:</h2>
+		      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>
+			<div class="tag_minor_nav"> 
+				<%= link_to "See more collected objects", :action => 'results', :which => 'my', :view => 'all_collected' %><br />
+			</div>
+		</td>
+		<td valign="top">
+			<%= render :partial => 'search/save_search_list' %>
+			<br/>
+			<div class="standard_box">
+				<center>
+					<h1>MY TAGS</h1>
+					<div class="inside_standard_box">
+				  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
+					</div>
+				</center>
+			</div>
+			<br />
+			<div class="standard_box">
+				<center>
+				<h1>MY EXHIBITS</h1>
+				<span style="color:gray; font-size: 1.3em;" ><i>Coming Soon!</i></span>
+				<br />
+				<br />
+				</center>
+			</div>
+		</td>
+	</tr>
+</table>
+
+</div>
+

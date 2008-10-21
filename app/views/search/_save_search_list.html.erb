@@ -1,7 +1,7 @@
 <center>
-<div id="saved-searches" >
+<div id="saved-searches" class="standard_box">
 <% saved = get_saved_searches -%>
-<h3>SAVED SEARCHES</h3>
+<h1>SAVED SEARCHES</h1>
 <%= "No searches saved" if saved.size == 0 %>
 <table>
 <% for s in saved -%>

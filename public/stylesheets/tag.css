@@ -58,26 +58,17 @@
 }
 
 .tag_sidebar {
-	border: 1px solid gray;
 	vertical-align: top;
 	width: 200px;
 }
 
 .tag_results {
 	vertical-align: top;
-	border: 1px solid gray;
 }
 
 #tag_explanation {
 	background-color: #dddddd;
 	margin-top: 1em;
-}
-
-.tag_minor_nav {
-	text-align:right;
-	font-size: 1.3em;
-	line-height: 2em;
-	
 }
 
 #all_tags_choice {
