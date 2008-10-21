@@ -92,7 +92,7 @@ class LoginControllerTest < Test::Unit::TestCase
   
   def test_change_account
     do_valid_login()
-    session[:current_page] = search_path
+    session[:current_page] = [ search_path, search_path ]
 
     post :change_account, { :password2 => "[FILTERED]", :fullname =>"paul e rosen", :password =>"[FILTERED]", :email =>"paul@performantsoftware.com" }
     assert_response :redirect
@@ -103,7 +103,7 @@ class LoginControllerTest < Test::Unit::TestCase
   def test_logout
     do_valid_login()
     
-    session[:current_page] = search_path
+    session[:current_page] = [ search_path, search_path ]
     
     get :logout
     assert_response :redirect 

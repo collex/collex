@@ -28,7 +28,6 @@ class My9sController < ApplicationController
   
   def results
     # parameters:
-    #  :which => 'all':'my' (All tags or My tags only)
     #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
     #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
     
@@ -45,12 +44,6 @@ class My9sController < ApplicationController
       session[:tag_current] = params[:tag]
     else
       params[:tag] = session[:tag_current]
-    end
-
-    if params[:which] != nil
-      session[:tag_which] = params[:which]
-    else
-      params[:which] = session[:tag_which]
     end
 
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
@@ -76,7 +69,7 @@ class My9sController < ApplicationController
       end
       
     when 'tag'
-      @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], params[:which] == 'all' ? nil : user))
+      @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], user))
       
     else
         @results = {}

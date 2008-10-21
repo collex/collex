@@ -16,69 +16,32 @@ class TagControllerTest < ActionController::TestCase
 
   def test_list
     # call this with all the different variations. The data can either be from the session data, or can be passed in as params.
-    get :list, { }, { :user => nil, :tag_current => nil, :tag_which => nil }
+    get :list, { }, { :user => nil, :tag_current => nil }
     assert_response :success
     
-    get :list, { :tag => 'pauls_tag', :which => 'my' }, { :user => nil, :tag_current => nil, :tag_which => nil }
+    get :list, { :tag => 'pauls_tag' }, { :user => nil, :tag_current => nil }
     assert_response :success
     assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'my', session[:tag_which]
 
-    get :list, { :tag => 'pauls_tag', :which => 'all' }, { :user => nil, :tag_current => nil, :tag_which => nil }
-    assert_response :success
-    assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'all', session[:tag_which]
-
-    get :list, { :tag => 'not_a_tag', :which => 'all' }, { :user => nil, :tag_current => nil, :tag_which => nil }
+    get :list, { :tag => 'not_a_tag' }, { :user => nil, :tag_current => nil }
     assert_response :success
     assert_equal 'not_a_tag', session[:tag_current]
-    assert_equal 'all', session[:tag_which]
 
-    get :list, { :which => 'my' }, { :user => nil, :tag_current => 'pauls_tag', :tag_which => nil }
+    get :list, { }, { :user => nil, :tag_current => 'pauls_tag' }
     assert_response :success
     assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'my', session[:tag_which]
 
-    get :list, { }, { :user => nil, :tag_current => 'pauls_tag', :tag_which => 'all' }
+    get :list, { :tag => 'pauls_tag' }, { :user => {:username => "paul", :role_names => []}, :tag_current => nil}
     assert_response :success
     assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'all', session[:tag_which]
 
-    get :list, { :tag => 'not_a_tag'}, { :user => nil, :tag_current => nil, :tag_which => 'my' }
+    get :list, { :tag => 'not_a_tag' }, { :user => {:username => "paul", :role_names => []}, :tag_current => nil }
     assert_response :success
     assert_equal 'not_a_tag', session[:tag_current]
-    assert_equal 'my', session[:tag_which]
 
-
-    get :list, { :tag => 'pauls_tag', :which => 'my' }, { :user => {:username => "paul", :role_names => []}, :tag_current => nil, :tag_which => nil }
+    get :list, { }, { :user => {:username => "paul", :role_names => []}, :tag_current => 'pauls_tag' }
     assert_response :success
     assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'my', session[:tag_which]
-
-    get :list, { :tag => 'pauls_tag', :which => 'all' }, { :user => {:username => "paul", :role_names => []}, :tag_current => nil, :tag_which => nil }
-    assert_response :success
-    assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'all', session[:tag_which]
-
-    get :list, { :tag => 'not_a_tag', :which => 'all' }, { :user => {:username => "paul", :role_names => []}, :tag_current => nil, :tag_which => nil }
-    assert_response :success
-    assert_equal 'not_a_tag', session[:tag_current]
-    assert_equal 'all', session[:tag_which]
-
-    get :list, { :which => 'my' }, { :user => {:username => "paul", :role_names => []}, :tag_current => 'pauls_tag', :tag_which => nil }
-    assert_response :success
-    assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'my', session[:tag_which]
-
-    get :list, { }, { :user => {:username => "paul", :role_names => []}, :tag_current => 'pauls_tag', :tag_which => 'all' }
-    assert_response :success
-    assert_equal 'pauls_tag', session[:tag_current]
-    assert_equal 'all', session[:tag_which]
-
-    get :list, { :tag => 'not_a_tag'}, { :user => {:username => "paul", :role_names => []}, :tag_current => nil, :tag_which => 'my' }
-    assert_response :success
-    assert_equal 'not_a_tag', session[:tag_current]
-    assert_equal 'my', session[:tag_which]
   end
 
   def test_results
@@ -86,44 +49,37 @@ class TagControllerTest < ActionController::TestCase
     assert_response :success
     get :results, { :view => 'untagged' }, {}
     assert_response :success
-    get :results, { :view => 'tag', :which => 'my', :tag => 'good' }, {}
+    get :results, { :view => 'tag', :tag => 'good' }, {}
     assert_response :success
-    get :results, { :view => 'tag', :which => 'my', :tag => 'bad' }, {}
-    assert_response :success
-    get :results, { :view => 'tag', :which => 'all', :tag => 'good' }, {}
+    get :results, { :view => 'tag', :tag => 'bad' }, {}
     assert_response :success
 
     get :results, { :view => 'all_collected' }, { :user => {:username => "paul", :role_names => []} }
     assert_response :success
     get :results, { :view => 'untagged' }, { :user => {:username => "paul", :role_names => []} }
     assert_response :success
-    get :results, { :view => 'tag', :which => 'my', :tag => 'good' }, { :user => {:username => "paul", :role_names => []} }
+    get :results, { :view => 'tag', :tag => 'good' }, { :user => {:username => "paul", :role_names => []} }
     assert_response :success
-    get :results, { :view => 'tag', :which => 'my', :tag => 'bad' }, { :user => {:username => "paul", :role_names => []} }
+    get :results, { :view => 'tag', :tag => 'bad' }, { :user => {:username => "paul", :role_names => []} }
     assert_response :success
-    get :results, { :view => 'tag', :which => 'all', :tag => 'good' }, { :user => {:username => "paul", :role_names => []} }
-    assert_response :success
+
 
     get :results, { }, { :tag_view => 'all_collected' }
     assert_response :success
     get :results, { }, { :tag_view => 'untagged' }
     assert_response :success
-    get :results, { }, { :tag_view => 'tag', :tag_which => 'my', :tag_current => 'good' }
+    get :results, { }, { :tag_view => 'tag', :tag_current => 'good' }
     assert_response :success
-    get :results, { }, { :tag_view => 'tag', :tag_which => 'my', :tag_current => 'bad' }
-    assert_response :success
-    get :results, { }, { :tag_view => 'tag', :tag_which => 'all', :tag_current => 'good' }
+    get :results, { }, { :tag_view => 'tag', :tag_current => 'bad' }
     assert_response :success
 
     get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'all_collected' }
     assert_response :success
     get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'untagged' }
     assert_response :success
-    get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'tag', :tag_which => 'my', :tag_current => 'good' }
+    get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'tag', :tag_current => 'good' }
     assert_response :success
-    get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'tag', :tag_which => 'my', :tag_current => 'bad' }
-    assert_response :success
-    get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'tag', :tag_which => 'all', :tag_current => 'good' }
+    get :results, { }, { :user => {:username => "paul", :role_names => []}, :tag_view => 'tag', :tag_current => 'bad' }
     assert_response :success
   end
 
