@@ -50,11 +50,11 @@ class SearchController < ApplicationController
         # basic search
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
-        add_keyword_constraint(params[:search_phrase])
+        parse_keyword_phrase(params[:search_phrase])
         
       elsif params[:search][:phrase] == nil
         # expanded input boxes
-        add_keyword_constraint(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
+        parse_keyword_phrase(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
         add_title_constraint(params[:search_title]) if params[:search_title] != ""
         add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
         add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
@@ -66,7 +66,7 @@ class SearchController < ApplicationController
 
       else
         # single input box
-        add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Keyword"
+        parse_keyword_phrase(params[:search][:phrase]) if params[:search_type] == "Keyword"
         add_title_constraint(params[:search][:phrase]) if params[:search_type] == "Title"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
@@ -81,6 +81,61 @@ class SearchController < ApplicationController
    end
    
    private
+   def parse_keyword_phrase(phrase_str)
+     # This breaks the keyword phrase that the user entered into separate searches and adds each constraint separately.
+
+     # look for "and" and throw it away. 
+     # Take each separate word and create separate constraints, except:
+     # keep NOT with next word and 
+     # keep the word before and after OR.
+     # Also, keep quoted substrings together.
+     
+     # To parse, we want to first divide the string non-destructively on both spaces and quotes (leaving both in the resulting array)
+     #words_arr = phrase_str.split(/ |\"/)
+     words_arr = phrase_str.scan %r{"[^"]*"|\S+}
+
+     # find AND and get rid of it
+     words_arr.each_with_index { |word, index|
+       if word.upcase == "AND"
+         words_arr[index] = ""
+       end
+     }
+     words_arr = words_arr.select { |word| word != "" }
+     
+     # find OR and stitch them together. Ignore the ones at the beginning and ends of the array, though.
+     or_indexes = []
+     words_arr.each_with_index { |word, i|
+       if i > 0 && i < words_arr.length - 1 && word.upcase == 'OR'
+         or_indexes.insert(-1, i)
+       end
+     }
+     or_indexes.each { |index|
+       words_arr[index-1] = words_arr[index-1] + " OR " + words_arr[index+1]
+       words_arr[index] = ""
+       words_arr[index+1] = ""
+     }
+     words_arr = words_arr.select { |word| word != "" }
+     
+     # find NOT and put it with the next word
+     not_indexes = []
+     words_arr.each_with_index { |word, i|
+       if i < words_arr.length - 1 && word.upcase == 'NOT'
+         not_indexes.insert(-1, i)
+       end
+     }
+     not_indexes.each { |index|
+       words_arr[index] = "NOT " + words_arr[index+1]
+       words_arr[index+1] = ""
+     }
+     words_arr = words_arr.select { |word| word != "" }
+
+      # Finally, create each constraint
+     words_arr.each { |word|
+        add_keyword_constraint(word)
+    }
+
+   end
+   
    def add_keyword_constraint(phrase_str)
        expression = phrase_str
        if expression and expression.strip.size > 0
