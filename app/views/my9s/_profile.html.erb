@@ -1,15 +1,26 @@
 <div id="profile">
 	<% if edit_mode -%>
-		<form>
-			<table>
-				<tr><td>User name:</td><td><input type="text" name="username" id="username" /></td></tr>
-				<tr><td>Full name:</td><td><input type="text" name="fullname" id="fullname" /></td></tr>
-				<tr><td>Institution:</td><td><input type="text" name="institution" id="institution" /></td></tr>
-				<tr><td>Link:</td><td><input type="text" name="link" id="link" /></td></tr>
-				<tr><td>About me:</td><td><textarea name="sername" id="username" cols="35" rows="7" ></textarea></td></tr>
-			</table>
-		<%= button_to_function "Save", "update_profile('profile');" %> 
-		</form> 
+		<table>
+			<tr valign="top">
+				<td></td><td colspan='2' align="right"><%= link_to_function "Cancel Edit", "cancel_edit_profile_mode('profile');" %></td>
+			</tr>
+			<tr>
+				<td><img src="/images/harrington.gif" alt="" /></td>
+				<td width="10px"></td>
+				<td width="100%">
+				<form>
+					<table>
+						<tr><td class="profile_label">User name:</td><td><%= user.username %></td></tr>
+						<tr><td class="profile_label">Full name:</td><td><input type="text" name="fullname" id="fullname" value="<%= user.fullname %>" /></td></tr>
+						<tr><td class="profile_label">Institution:</td><td><input type="text" name="institution" id="institution" value="<%= user.institution %>"/></td></tr>
+						<tr><td class="profile_label">Link:</td><td><input type="text" name="link" id="link" value="<%= user.link %>" /></td></tr>
+						<tr><td class="profile_label">About me:</td><td><textarea name="aboutme" id="aboutme" cols="35" rows="7" ><%= user.about_me %></textarea></td></tr>
+					</table>
+				<%= button_to_function "Save", "update_profile('profile');" %> 
+				</form> 
+				</td>
+			</tr>
+		</table>
 	<% else -%>
 		<table>
 			<tr valign="top">
@@ -19,11 +30,13 @@
 				<td><img src="/images/harrington.gif" alt="" /></td>
 				<td width="10px"></td>
 				<td width="100%">
-					Username: <%= user[:username] %><br/>
-					Full name:<br/>
-					Institution:<br />
-					Link: <br/>
-					About me: <br/>
+					<table>
+						<tr><td class="profile_label">Username:</td><td><%= user[:username] %></td></tr>
+						<tr><td class="profile_label">Full name:</td><td><%= user.fullname %></td></tr>
+						<tr><td class="profile_label">Institution:</td><td><%= user.institution %></td></tr>
+						<tr><td class="profile_label">Link:</td><td><%= user.link %></td></tr>
+						<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%= user.about_me %></td></tr>
+					</table>
 				</td>
 			</tr>
 		</table>

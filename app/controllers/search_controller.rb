@@ -20,7 +20,7 @@ class SearchController < ApplicationController
    before_filter :init_view_options
    
    # Number of search results to display by default
-   MIN_ITEMS_PER_PAGE = 5
+   MIN_ITEMS_PER_PAGE = 10
    MAX_ITEMS_PER_PAGE = 30
    
    def initialize
@@ -55,6 +55,7 @@ class SearchController < ApplicationController
       elsif params[:search][:phrase] == nil
         # expanded input boxes
         add_keyword_constraint(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
+        add_title_constraint(params[:search_title]) if params[:search_title] != ""
         add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
         add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
         add_keyword_constraint(params[:search_publisher]) if params[:search_publisher] != ""
@@ -66,6 +67,7 @@ class SearchController < ApplicationController
       else
         # single input box
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Keyword"
+        add_title_constraint(params[:search][:phrase]) if params[:search_type] == "Title"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
         add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
@@ -83,6 +85,13 @@ class SearchController < ApplicationController
        expression = phrase_str
        if expression and expression.strip.size > 0
          session[:constraints] << ExpressionConstraint.new(:value => expression)
+       end
+   end
+ 
+   def add_title_constraint(phrase_str)
+       expression = phrase_str
+       if expression and expression.strip.size > 0
+         session[:constraints] << FacetConstraint.new(:field => 'title', :value => phrase_str, :inverted => false)
        end
    end
  

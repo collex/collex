@@ -8,6 +8,7 @@
 </td><td>
 	<select id="search_type" name="search_type" align="top" >
 <option value="Keyword" >Keyword</option>
+<option value="Title" >Title</option>
 <option value="Author" >Author</option>
 <option value="Editor" >Editor</option>
 <option value="Publisher" >Publisher</option>
@@ -24,6 +25,7 @@
 <% else -%>
 <table>
 <tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%></td></tr>
+<tr><td>Title:</td><td><input name="search_title" id="search_title" size="30"/></td></tr>
 <tr><td>Author:</td><td><input name="search_author" id="search_author" size="30"/></td></tr>
 <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" size="30"/></td></tr>
 <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" size="30"/></td></tr>

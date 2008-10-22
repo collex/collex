@@ -8,7 +8,7 @@
 <table>
 	<tr>
 		<td width="80%">
-			<%= render :partial => 'profile', :locals => { :user => session[:user], :edit_mode => false } %>
+			<%= render :partial => 'profile', :locals => { :user => User.find_by_username(session[:user][:username]), :edit_mode => false } %>
 			
 			<h2>Recently collected items:</h2>
 		      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>

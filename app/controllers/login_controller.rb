@@ -75,7 +75,7 @@ class LoginController < ApplicationController
           return
         end
         if params[:password] == params[:password2]
-          session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:fullname], params[:email])
+          session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:email])
           flash.now[:notice] = "Profile updated"
           redirect_to get_page_to_return_to()
           return
@@ -142,7 +142,7 @@ class LoginController < ApplicationController
     if verify_signup_params(params)
       redirect_to get_page_to_return_to()
     else
-      redirect_to :action => 'signup', :username => params[:username], :fullname => params[:fullname], :email => params[:email]
+      redirect_to :action => 'signup', :username => params[:username], :email => params[:email]
     end
   end
   
@@ -167,7 +167,7 @@ class LoginController < ApplicationController
           return false
         end
         if params[:password] == params[:password2]
-          session[:user] = COLLEX_MANAGER.create_user(params[:username], params[:password].strip, params[:fullname], params[:email])
+          session[:user] = COLLEX_MANAGER.create_user(params[:username], params[:password].strip, params[:email])
           flash[:refresh_page] = true
           return true
         else

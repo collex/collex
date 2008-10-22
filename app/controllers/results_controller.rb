@@ -16,7 +16,7 @@
 
 class ResultsController < ApplicationController
   
-  MIN_ITEMS_PER_PAGE = 5
+  MIN_ITEMS_PER_PAGE = 10
   
   #   def details
   #      setup_ajax_calls(params)

@@ -36,7 +36,7 @@ class NinesCollectionManager
     return user ? {:username => user.username, :fullname => user.fullname, :email => user.email, :role_names => user.role_names} : nil
   end
   
-  def create_user(username, password, fullname, email)
+  def create_user(username, password, email)
     # first check if user exists, then raise an exception if so
     user = User.find_by_username(username)
     
@@ -44,22 +44,21 @@ class NinesCollectionManager
     
     hashed_password = password_hash(password)
 
-    user = User.create(:username => username, :password_hash => hashed_password, :fullname => fullname, :email => email)
+    user = User.create(:username => username, :fullname => username, :password_hash => hashed_password, :email => email)
     user.save
     
-    {:username => username, :fullname => fullname, :email => email, :role_names => user.role_names}
+    {:username => username, :fullname => username, :email => email, :role_names => user.role_names}
   end
   
-  def update_user(username, password, fullname, email)
+  def update_user(username, password, email)
     user = User.find_by_username(username)
-    user.fullname = fullname
     user.email = email
     if password != ""
       user.password_hash = password_hash(password)
     end
     user.save
     
-    {:username => username, :fullname => fullname, :email => email, :role_names => user.role_names}
+    {:username => username, :fullname => user.fullname, :email => email, :role_names => user.role_names}
   end
   
   def reset_password(username)

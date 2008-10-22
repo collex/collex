@@ -8,7 +8,7 @@ class TagController < ApplicationController
    before_filter :init_view_options
    
    # Number of search results to display by default
-   MIN_ITEMS_PER_PAGE = 5
+   MIN_ITEMS_PER_PAGE = 10
    MAX_ITEMS_PER_PAGE = 30
 
    private

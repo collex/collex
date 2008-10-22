@@ -15,6 +15,15 @@
 #profile {
 	background-color: #eeeeee;
 	padding: 1em;
+	font-size: 1.1em;
+}
+
+.profile_label {
+	font-weight: bold;
+}
+
+.profile_paragraph {
+	font-style: italic;
 }
 
 /* styles for search result */

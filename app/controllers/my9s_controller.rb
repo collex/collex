@@ -3,7 +3,7 @@ class My9sController < ApplicationController
   before_filter :init_view_options
 
    # Number of search results to display by default
-   MIN_ITEMS_PER_PAGE = 5
+   MIN_ITEMS_PER_PAGE = 10
    MAX_ITEMS_PER_PAGE = 30
 
   private
@@ -17,6 +17,10 @@ class My9sController < ApplicationController
  
   def index
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+      redirect_to "/"
+      return
+    end
 
     set_cloud_list(user, user.username)
     
@@ -27,6 +31,12 @@ class My9sController < ApplicationController
   end
   
   def results
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+      redirect_to "/"
+      return
+    end
+
     # parameters:
     #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
     #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
@@ -45,8 +55,6 @@ class My9sController < ApplicationController
     else
       params[:tag] = session[:tag_current]
     end
-
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 
     if user
       set_cloud_list(user, user.username)
@@ -109,6 +117,10 @@ class My9sController < ApplicationController
    
    def update_sidebar
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+      redirect_to "/"
+      return
+    end
 
     if user
       set_cloud_list(user, user.username)
@@ -119,11 +131,32 @@ class My9sController < ApplicationController
 
   # This is called from AJAX to display the edit profile form in place.
   def enter_edit_profile_mode
-      render :partial => 'profile', :locals => { :user => session[:user], :edit_mode => true }
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+      render :nothing => true
+      return
+    end
+    
+    render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
   end
   
   def update_profile
-      render :partial => 'profile', :locals => { :user => session[:user], :edit_mode => false }
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+      render :nothing => true
+      return
+    end
+
+    # if we weren't called with any parameters, then the user meant to cancel the operation
+    if params['institution'] != nil
+      user.institution = params['institution']
+      user.fullname = params['fullname']
+      user.link = params['link']
+      user.about_me = params['aboutme']
+      user.save
+    end
+
+    render :partial => 'profile', :locals => { :user => user, :edit_mode => false }
   end
   
   private

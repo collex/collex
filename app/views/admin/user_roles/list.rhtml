@@ -19,7 +19,6 @@
 <table>
   <tr>
     <th>Username</th>
-    <th>Fullname</th>
     <th>Email</th>
     <th>Roles</th>
   </tr>
@@ -27,8 +26,7 @@
 <% @users.each do |user| %>
   <tr>
     <td><%=h user.username %></td>
-    <td><%=h user.fullname %></td>
-    <td><%=h user.email %></td>
+     <td><%=h user.email %></td>
     <td>
       <%= user.role_names.join(", ") %>
     </td>

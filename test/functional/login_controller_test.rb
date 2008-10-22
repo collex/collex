@@ -94,7 +94,7 @@ class LoginControllerTest < Test::Unit::TestCase
     do_valid_login()
     session[:current_page] = [ search_path, search_path ]
 
-    post :change_account, { :password2 => "[FILTERED]", :fullname =>"paul e rosen", :password =>"[FILTERED]", :email =>"paul@performantsoftware.com" }
+    post :change_account, { :password2 => "[FILTERED]", :password =>"[FILTERED]", :email =>"paul@performantsoftware.com" }
     assert_response :redirect
     assert_redirected_to search_path
     assert_equal 'paul', session[:user][:username]
@@ -118,13 +118,13 @@ class LoginControllerTest < Test::Unit::TestCase
   end
   
   def test_submit_signup
-    post :submit_signup, { :password2 =>"freddy", :username =>"fred", :fullname =>"fred", :password => "freddy1", :email =>"fred@fred.com" }
+    post :submit_signup, { :password2 =>"freddy", :username =>"fred", :password => "freddy1", :email =>"fred@fred.com" }
     assert_response :redirect 
     assert_redirected_to :action => 'signup'
     assert_equal "Passwords do not match", flash[:notice]
     assert_nil session[:user]
 
-    post :submit_signup, { :password2 =>"freddy", :username =>"fred", :fullname =>"fred", :password => "freddy", :email =>"fred@fred.com" }
+    post :submit_signup, { :password2 =>"freddy", :username =>"fred", :password => "freddy", :email =>"fred@fred.com" }
     assert_response :redirect 
     assert_redirected_to "/"
     assert_equal 'fred', session[:user][:username]
