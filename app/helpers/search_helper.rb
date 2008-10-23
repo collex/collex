@@ -275,7 +275,7 @@ module SearchHelper
   end
 
   def create_remove_saved_search_link(s)
-    link_to "[remove]", {:controller=>"search", :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}
+    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}
   end
   
   def has_constraints?
