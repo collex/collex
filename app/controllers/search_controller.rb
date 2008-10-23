@@ -506,7 +506,7 @@ class SearchController < ApplicationController
        searches = user.searches
        saved_search = searches.find(params[:id])
   
-       session[:constraints].delete_if {|item| item.is_a?(SavedSearchConstraint) && item.field == session[:user][:username] && item.value == saved_search.name }
+       #session[:constraints].delete_if {|item| item.is_a?(SavedSearchConstraint) && item.field == session[:user][:username] && item.value == saved_search.name }
        
        saved_search.destroy
      end

@@ -1,19 +1,23 @@
 <% current_page "My&nbsp;9s" -%>
 <div id="search-main">
 <div class="tag_minor_nav"> 
-	<%= link_to "Manage my objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
+	My 9s<%= link_separator() %>&nbsp;<%= link_to "Manage my objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
 </div>
-<h2>Welcome, <%= session[:user][:username] %>!</h2>
 
 <table>
 	<tr>
 		<td width="80%">
+			<div class="standard_box">
+				<h1>PROFILE</h1>
 			<%= render :partial => 'profile', :locals => { :user => User.find_by_username(session[:user][:username]), :edit_mode => false } %>
-			
-			<h2>Recently collected items:</h2>
-		      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>
-			<div class="tag_minor_nav"> 
-				<%= link_to "See more collected objects", :action => 'results', :view => 'all_collected' %><br />
+			</div>
+			<br />
+			<div class="standard_box">
+				<h1>RECENTLY COLLECTED ITEMS</h1>
+			      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>
+				<div class="tag_minor_nav"> 
+					<%= link_to "See more collected objects", :action => 'results', :view => 'all_collected' %><br />
+				</div>
 			</div>
 		</td>
 		<td valign="top">

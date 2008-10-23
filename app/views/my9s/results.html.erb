@@ -1,11 +1,10 @@
 <% current_page "My&nbsp;9s" -%>
 <div id="search-main">
+<div class="tag_minor_nav"> 
+	<%= link_to "My 9s", :action => 'index' %><%= link_separator() %>&nbsp;Manage my objects<%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
+</div>
 
 <table class="results_layout"><tr>
-	<td class="tag_minor_nav" colspan="2">
-	<%= link_to "Go back to my 9s", :action => 'index' %>
-	</td>
-	</tr>
 	<tr>
 <td id="tag_sidebar" class="tag_sidebar standard_box">
 <%= render :partial => 'tag/sidebar', :locals => { :cloud_freq => @cloud_freq, :view => params[:view], :tag => params[:tag] } %></td>

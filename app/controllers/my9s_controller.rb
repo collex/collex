@@ -133,17 +133,18 @@ class My9sController < ApplicationController
   def enter_edit_profile_mode
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-      render :nothing => true
+      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
       return
     end
     
     render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
   end
   
+  # This is called from AJAX when the user has finished filling out the form.
   def update_profile
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-      render :nothing => true
+      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
       return
     end
 
@@ -153,12 +154,30 @@ class My9sController < ApplicationController
       user.fullname = params['fullname']
       user.link = params['link']
       user.about_me = params['aboutme']
+      #check the link for a javascript attack
+      if user.link.downcase.index("javascript:") != nil
+        user.link = "invalid link entered"
+      end
       user.save
     end
 
     render :partial => 'profile', :locals => { :user => user, :edit_mode => false }
   end
   
+   def remove_saved_search
+     if (session[:user])
+       user = User.find_by_username(session[:user][:username])
+       searches = user.searches
+       saved_search = searches.find(params[:id])
+  
+       #session[:constraints].delete_if {|item| item.is_a?(SavedSearchConstraint) && item.field == session[:user][:username] && item.value == saved_search.name }
+       
+       saved_search.destroy
+     end
+     
+     redirect_to :action => 'index'
+   end
+
   private
     #TODO-PER: This is repeated in tag_controller.rb
    def sort_by_date_collected(results)
