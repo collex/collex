@@ -160,10 +160,12 @@ class My9sController < ApplicationController
       if user.link.downcase.index("javascript:") != nil
         user.link = "invalid link entered"
       end
-      folder = "#{RAILS_ROOT}/public/images/users/"
-      image_path = "#{folder}#{user.id}"
-      Dir.mkdir(folder) unless File.exists?(folder)
-      File.open(image_path, "wb") { |f| f.write(params['image'].read) }
+      if params['image'].length > 0
+        folder = "#{RAILS_ROOT}/public/images/users/"
+        image_path = "#{folder}#{user.id}"
+        Dir.mkdir(folder) unless File.exists?(folder)
+        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
+      end
       user.save
      redirect_to :action => 'index'
     end
