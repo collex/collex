@@ -123,9 +123,10 @@
 		      <%= yield %>
 			</div> 
 			</div> 
-			</div>
 		  	<%= render :partial => '/common/footer' %>
-			<% else -%>
+			</div>
+			<br />
+			<% else # not if @user_tabs -%>
 	  		  <%= h3 flash[:notice], :class => "flash_notice" if flash[:notice] %> 
 	  		  <%= h3 flash[:warning], :class => "flash_warning" if flash[:warning] %> 
 	  		  <%= h3 flash[:error], :class => "flash_error" if flash[:error] %> 

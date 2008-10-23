@@ -163,7 +163,7 @@ color:black;
 #footer {
 	clear: both;
 	padding: 5px 15px 5px 15px;
-	margin: 0 -5px -5px -11px;
+	/*margin: 0 -5px -5px -11px;*/
 	margin-top: 15px;
 	background-color: #d3d3d3;
 	line-height: 1.5;
