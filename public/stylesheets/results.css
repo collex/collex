@@ -14,7 +14,7 @@
 
 #profile {
 	padding: 1em;
-	font-size: 1.1em;
+	/*font-size: 1.1em;*/
 }
 
 .profile_label {
@@ -38,12 +38,12 @@
 }
 
 .search-result-title {
-	font-size: larger;
+	/*font-size: larger;*/
 	font-weight: bold;
 }
 
 .collect_link {
-	font-size: 1.4em;
+	/*font-size: 1.4em;*/
 }
 /*.collectlink {
 	text-align: left;

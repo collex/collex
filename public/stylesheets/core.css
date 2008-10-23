@@ -8,7 +8,7 @@ td {
 
 /* Styles that create the tabs */
 .tabs {
-	font-size: 14px;
+	/*font-size: 14px;*/
 	border-color: black;
 }
 .link_tab {
@@ -73,8 +73,8 @@ td {
 
 /* styles for the header */
 #header-left { position: absolute; left: 10px; width: 100px; }
-#header-center { margin-left: 100px; margin-top: 22px; margin-right: 400px; color:white;}
-#header-right { position: absolute; right: 30px; width: 390px; margin-top: -40px; text-align:right; font-size: 1.3em; color:#C0C0C0;}
+#header-center { margin-left: 100px; margin-top: 22px; margin-right: 480px; color:white;}
+#header-right { position: absolute; right: 30px; width: 470px; margin-top: -40px; text-align:right; /*font-size: 1.3em;*/ color:#C0C0C0;}
 #header-right a {
 color: #fff;
 }
@@ -92,7 +92,7 @@ color:black;
 
 .standard_box h1 {
 	background: #E0E0E0;
-	font-size: 12pt;
+	font-size: 1.4em;
 	margin-top: 0px;
 	padding: 5px;
 }
@@ -106,7 +106,7 @@ color:black;
 /* rest of the styles */		
 
 .tag_minor_nav {
-	font-size: 1.3em;
+	/*font-size: 1.3em;*/
 	line-height: 2em;
 	text-align:center;
 	
@@ -231,7 +231,7 @@ color:black;
 	border-left: .8em solid gray;
 	background: #fff;
 	text-decoration: none;
-	font-size: 11px;
+	/*font-size: 11px;*/
 }
 #navlist2 li a.active {
 	padding: 0.25em 0.5em 0.25em 0.75em;
@@ -323,7 +323,7 @@ color:black;
 	padding: 1px;
 	background: #d3d3d3;
 	text-align: center;
-	font-size: 11px;
+	/*font-size: 11px;*/
 	font-family: "trebuchet ms", verdana, sans-serif;
 	line-height: 1.3em;	
 	width:120px;
@@ -437,7 +437,7 @@ font-family:"Trebuchet MS", "Lucida Grande", arial;
 border:1px solid #000;
 border-bottom: 0px;
 padding:1px;
-font-size:11px;
+/*font-size:11px;*/
 color:#fff;
 background:#A60000;
 filter:alpha(opacity=8);
@@ -449,7 +449,7 @@ font-family:"Lucida Grande", arial;
 border:1px solid #000;
 border-top: 0px;
 padding:1px;
-font-size:10px;
+/*font-size:10px;*/
 color:#000;
 background:#fff;
 filter:alpha(opacity=85);
@@ -457,7 +457,7 @@ opacity:0.85;
 }
 .snippet {
 font-style: italic;
-margin: 0 10em 0 2em;
+margin: 0 2em 0 2em;
 }
 .snippet em {
 font-style: normal;
@@ -476,7 +476,7 @@ line-height: 2em;
 padding-left: .4em;
 }
 .pagearrow {
-font-size: 16px;
+/*font-size: 16px;*/
 vertical-align: bottom;
 }
 

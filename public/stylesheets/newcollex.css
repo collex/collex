@@ -1,3 +1,4 @@
+/* TODO:-PER: This is only used in the "admin" view and the "tools/collex/collex-demo" area. It should be refactored out. */
 	body {
 		background-image: url('../images/bodybg2.jpg');
 		background-color: #999;

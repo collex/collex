@@ -1,15 +1,0 @@
-/* 	  	File Upload stylesheet 		*/
-/*		file_upload.rhtml 			*/
-
-#uploadbox {
-	font-size: 11px;
-	height: 80px;
-	padding: 40px 1em 0 1em;
-	width: 350px;
-}
-
-#uploadbox input {
-	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-}
-
-.constraints tr:hover {	background-color: #ededed;	}
