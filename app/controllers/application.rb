@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   
 #  local_addresses.clear  #uncomment to test e-mails locally in development mode
   
-  layout "common"
+  #layout "common"
   
   before_filter :set_charset
   before_filter :session_create
