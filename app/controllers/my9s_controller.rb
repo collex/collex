@@ -149,7 +149,9 @@ class My9sController < ApplicationController
     end
 
     # if we weren't called with any parameters, then the user meant to cancel the operation
-    if params['institution'] != nil
+    if params['institution'] == nil
+      render :partial => 'profile', :locals => { :user => user, :edit_mode => false }
+    else
       user.institution = params['institution']
       user.fullname = params['fullname']
       user.link = params['link']
@@ -158,10 +160,13 @@ class My9sController < ApplicationController
       if user.link.downcase.index("javascript:") != nil
         user.link = "invalid link entered"
       end
+      folder = "#{RAILS_ROOT}/public/images/users/"
+      image_path = "#{folder}#{user.id}"
+      Dir.mkdir(folder) unless File.exists?(folder)
+      File.open(image_path, "wb") { |f| f.write(params['image'].read) }
       user.save
+     redirect_to :action => 'index'
     end
-
-    render :partial => 'profile', :locals => { :user => user, :edit_mode => false }
   end
   
    def remove_saved_search
