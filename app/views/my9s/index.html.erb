@@ -1,9 +1,7 @@
 <% current_page "My&nbsp;9s" -%>
 <div id="search-main">
 	<% if !is_logged_in? -%>
-		<div class="my9s_instructions">
-			You are not logged in. If you were, you could collect items, add tags to items, save searches, create exhibits, and edit your profile.
-		</div>
+		<%= render :partial => 'my9s_instructions' %>
 	<% else -%>
 		<div class="tag_minor_nav"> 
 			My 9s<%= link_separator() %>&nbsp;<%= link_to "Manage my objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
