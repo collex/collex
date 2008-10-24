@@ -17,11 +17,10 @@ class My9sController < ApplicationController
  
   def index
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-      redirect_to "/"
+    if user == nil
       return
     end
-
+      
     set_cloud_list(user, user.username)
     
     @results = sort_by_date_collected(CachedResource.get_all_collections(user))
@@ -32,8 +31,7 @@ class My9sController < ApplicationController
   
   def results
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-      redirect_to "/"
+    if user == nil
       return
     end
 

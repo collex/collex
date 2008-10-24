@@ -59,10 +59,10 @@ private
   def draw_tabs(curr_page)
     # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?, [3]=logged in only?
     tabs_arr = [ ['Home', "/", true, false],
-      ['My&nbsp;9s', my9s_path, true, true],
+      ['My&nbsp;9s', my9s_path, true, false],
       ['Search', search_path, true, false],
       ['Tags', tags_path, true, false],
-      ['Exhibits', intro_exhibits_path, false, false],
+      ['Exhibits', intro_exhibits_path, true, false],
       ['News', news_path, false, false],
       ['About', tab_about_path, false, false]
    ]

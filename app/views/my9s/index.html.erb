@@ -1,48 +1,53 @@
 <% current_page "My&nbsp;9s" -%>
 <div id="search-main">
-<div class="tag_minor_nav"> 
-	My 9s<%= link_separator() %>&nbsp;<%= link_to "Manage my objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
-</div>
-
-<table>
-	<tr>
-		<td width="80%">
-			<div class="standard_box">
-				<h1>PROFILE</h1>
-			<%= render :partial => 'profile', :locals => { :user => User.find_by_username(session[:user][:username]), :edit_mode => false } %>
-			</div>
-			<br />
-			<div class="standard_box">
-				<h1>RECENTLY COLLECTED ITEMS</h1>
-			      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>
-				<div class="tag_minor_nav"> 
-					<%= link_to "See more collected objects", :action => 'results', :view => 'all_collected' %><br />
-				</div>
-			</div>
-		</td>
-		<td valign="top">
-			<%= render :partial => 'search/save_search_list' %>
-			<br/>
-			<div class="standard_box">
-				<center>
-					<h1>MY TAGS</h1>
-					<div class="inside_standard_box">
-				  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
+	<% if !is_logged_in? -%>
+		<div class="my9s_instructions">
+			You are not logged in. If you were, you could collect items, add tags to items, save searches, create exhibits, and edit your profile.
+		</div>
+	<% else -%>
+		<div class="tag_minor_nav"> 
+			My 9s<%= link_separator() %>&nbsp;<%= link_to "Manage my objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
+		</div>
+		
+		<table>
+			<tr>
+				<td width="80%">
+					<div class="standard_box">
+						<h1>PROFILE</h1>
+					<%= render :partial => 'profile', :locals => { :user => User.find_by_username(session[:user][:username]), :edit_mode => false } %>
 					</div>
-				</center>
-			</div>
-			<br />
-			<div class="standard_box">
-				<center>
-				<h1>MY EXHIBITS</h1>
-				<span style="color:gray;" ><i>Coming Soon!</i></span>
-				<br />
-				<br />
-				</center>
-			</div>
-		</td>
-	</tr>
-</table>
-
+					<br />
+					<div class="standard_box">
+						<h1>RECENTLY COLLECTED ITEMS</h1>
+					      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>
+						<div class="tag_minor_nav"> 
+							<%= link_to "See more collected objects", :action => 'results', :view => 'all_collected' %><br />
+						</div>
+					</div>
+				</td>
+				<td valign="top">
+					<%= render :partial => 'search/save_search_list' %>
+					<br/>
+					<div class="standard_box">
+						<center>
+							<h1>MY TAGS</h1>
+							<div class="inside_standard_box">
+						  	  <%= tag_cloud(@cloud_freq, @bucket_size) %>
+							</div>
+						</center>
+					</div>
+					<br />
+					<div class="standard_box">
+						<center>
+						<h1>MY EXHIBITS</h1>
+						<span style="color:gray;" ><i>Coming Soon!</i></span>
+						<br />
+						<br />
+						</center>
+					</div>
+				</td>
+			</tr>
+		</table>
+	<% end -%>
 </div>
 

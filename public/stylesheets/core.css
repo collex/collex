@@ -103,6 +103,12 @@ color:black;
 	margin-bottom: 1em;
 }
 
+/* my9s tab */
+
+.my9s_instructions {
+	font-style: italic;
+}
+
 /* rest of the styles */		
 
 .tag_minor_nav {
