@@ -8,7 +8,7 @@ td {
 
 /* Styles that create the tabs */
 .tabs {
-	/*font-size: 14px;*/
+	font-size: 15px;
 	border-color: black;
 }
 .link_tab {
