@@ -1,4 +1,4 @@
-.exhibits .thumbnail {
+/*.exhibits .thumbnail {
 	font-size:  1em;
 }
 .exhibits .thumbnail img {
@@ -84,10 +84,10 @@
   background-color: #d3d3d3;
   padding: 10px;
   width: 650px;
-}
+}*/
 
 /* set different width for the caption textarea */
-#exhibit-body.edit .illustration-caption textarea.tiny-mce,
+/*#exhibit-body.edit .illustration-caption textarea.tiny-mce,
 #exhibit-body.edit .illustration-caption textarea.non-tiny-mce {
   width: 100px;
   height: 30em;
@@ -131,7 +131,6 @@
 
 #exhibit-menu ul, .section-menu ul{
   display: block;
-/*  float: right;*/
   list-style: none;
   margin: 0;
   padding: 0;
@@ -208,12 +207,12 @@ span.double-arrow, span.single-arrow {
 }
 #license.show {
 	text-align: right;
-}
+}*/
 
 /* .collectlink is defined in new9s.css*/
-#exhibit-body .collectlink {
+/*#exhibit-body .collectlink {
   clear: both;
 }
 #exhibit-body .collectlink a {
   margin-left: 0;
-}
+}*/

@@ -41,54 +41,6 @@ ActionController::Routing::Routes.draw do |map|
                     :value => /[^\/]+/,
                     :user => nil
 
-  map.resources :exhibits, 
-                :member => { :add_resource      => :post, 
-                             :update_title      => :post, 
-                             :share             => :post, 
-                             :unshare           => :post, 
-                             :publish           => :post, 
-                             :unpublish         => :post, 
-                             :collect           => :post, 
-                             :update_annotation => :post, 
-                             :update_thumbnail  => :post, 
-                             :arrange           => :get,
-                             :sort              =>  :post },
-                :collection => { :intro         => :get } do |exhibit|
-    exhibit.resources :pages, 
-                      :controller => :exhibited_pages,
-                      :member => { :update_title      => :post, 
-                                   :update_annotation => :post,
-                                   :move_higher       => :post, 
-                                   :move_lower        => :post, 
-                                   :move_to_top       => :post, 
-                                   :move_to_bottom    => :post } do |page|
-      page.resources   :sections, 
-                       :controller => :exhibited_sections,
-                       :member => { :update_title      => :post, 
-                                    :update_annotation => :post,
-                                    :move_higher       => :post, 
-                                    :move_lower        => :post, 
-                                    :move_to_top       => :post, 
-                                    :move_to_bottom    => :post } do |section|
-        section.resources :texts, 
-                          :controller => :exhibited_texts,
-                          :member => { :update_annotation => :post}
-        section.resources :resources, 
-                          :controller => :exhibited_resources,
-                          :member => { :update_annotation => :post}
-        section.resources :user_resources, 
-                          :controller => :exhibited_user_resources
-        section.resources :items, 
-                          :controller => :exhibited_items,
-                          :member => { :update_annotation => :post, 
-                                       :move_higher       => :post, 
-                                       :move_lower        => :post, 
-                                       :move_to_top       => :post, 
-                                       :move_to_bottom    => :post }
-      end
-    end
-  end
-  
   # sidebar_list and permalink_list define :value to take any char but newline and / 
   map.sidebar_list  "sidebar/list/:type/:value/:user",
                     :controller => "sidebar",
