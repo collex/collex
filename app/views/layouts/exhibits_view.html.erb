@@ -19,7 +19,7 @@
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>N I N E S - Exhibit</title>
+  <title><%= @exhibit.title %></title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 
 	<!-- site wide styles -->
@@ -32,9 +32,10 @@
 		<div id="header-left">
 		</div>
 		<div id="header-center">
-			<span class="emph1"><a href="/">&nbsp;</a></span><br /><i>&nbsp;</i><br />
+			<span class="emph1"></span><br /><i>&nbsp;</i><br />
 		</div>
 		<div id="header-right">
+			<a href="/exhibit_list">Exhibit List</a>
 			<%= render :partial => '/common/login_slider' %>
 		</div>
     </div>

@@ -42,9 +42,10 @@
 		when :tag
 		  stylesheet_link_tag("results", :media => "all") +
 		  stylesheet_link_tag("tag", :media => "all")
+		when :exhibits
+		  stylesheet_link_tag("exhibit_list", :media => "all")
 		else 
-		  stylesheet_link_tag("sidebar", :media => "all") +
-		  stylesheet_link_tag("exhibits", :media => "all")
+		  ""
     end 
 	%>
 <!--[if IE]>

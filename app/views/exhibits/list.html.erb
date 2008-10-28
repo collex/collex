@@ -1,12 +1,13 @@
 <% current_page "Exhibits" -%>
-<h1>Choose an exhibit to view</h1>
-
+<div class="exhibit_list">
+<h2>Choose an exhibit to view</h2>
 <table>
 <% for exhibit in @exhibits -%>
 <% name = "#{exhibit.title} by #{User.find(exhibit.user_id).fullname}" -%>
 	<tr>
-		<td><img src="<%=exhibit.thumbnail%>" alt="" width="50"/></td>
-		<td><a href="/exhibits/view/<%= exhibit.id %>"><%= name %></a></td>
+		<td class="exhibit_thumbnail"><img src="<%=exhibit.thumbnail%>" alt="" width="50"/></td>
+		<td class="exhibit_link"><a href="/exhibits/view/<%= exhibit.id %>"><%= name %></a></td>
 	</tr>
 <% end -%>
 </table>
+</div>

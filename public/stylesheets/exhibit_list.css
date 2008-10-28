@@ -1,0 +1,13 @@
+.exhibit_list {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+.exhibit_link {
+	padding-left: 1em;
+}
+
+.exhibit_thumbnail {
+	padding: 2px;
+	background-color: gray;
+}

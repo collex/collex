@@ -47,7 +47,7 @@
 <br />
 <% if @page < num_pages -%>
 	<div class="exhibit_nextlink">
-	<%= link_to "next &raquo;", :action => 'view', :id => id, :page => @page + 1 %>
+	<%= link_to "next &raquo;", :action => 'view', :id => @exhibit.id, :page => @page + 1 %>
 	</div>
 <% end -%>
 </div>
