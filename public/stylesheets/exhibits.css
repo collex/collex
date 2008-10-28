@@ -1,11 +1,75 @@
+body {
+background:#FFFFFF none repeat scroll 0 0;
+color:#000000;
+font-family:Helvetica Neue,Trebuchet MS,Georgia,Times New Roman,serif;
+font-size:0.9em;
+line-height:1.4em;
+margin:2em 4em 0;
+padding:0;
+}
+
+#top_header {
+	line-height: 1.3;
+	border: 1px solid #333;
+	border-top: 0;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 20px;
+	padding: 2px;
+	padding-left: 8px;
+	padding-top: 2px;
+	min-width: 850px;
+	background-image:url('../images/banner.study.jpg');
+	background-repeat: no-repeat;
+	background-color: #660000;
+}
+
+/* styles for the header */
+#header-left { position: absolute; left: 10px; width: 100px; }
+#header-center { margin-left: 100px; margin-top: 22px; margin-right: 480px; color:white;}
+#header-right { position: absolute; right: 70px; width: 470px; margin-top: -40px; text-align:right; color:#C0C0C0;}
+#header-right a {
+color: #fff;
+}
+
+#header-right a:hover {
+background-color: #C0C0C0;
+color:black;
+}
+
+a {
+	color:#666666;
+}
+
+a:hover {
+	color:#333333;
+}
+
+a img:hover {
+	border:2px solid #999999;
+	padding:3px;
+}
+h2 {
+	color:#666666;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
+h3 {
+	color:#999999;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
 #exhibit_page {
 	background-color: #ffffff;
-	padding: 1em;
+	padding: 0em 1em 1em 1em;
 }
 
 .exhibit_section_with_border {
 	border: 1px solid #DCDCDC;
-	margin: 2em;
+	clear:both;
+	margin-bottom:1em;
+	margin-top:1em;
+	padding-bottom:1em;
 }
 
 .exhibit_section_without_border {
@@ -13,10 +77,6 @@
 }
 
 .exhibit_text {
-	color:#000000;
-	font-family:Helvetica Neue,Trebuchet MS,Georgia,Times New Roman,serif;
-	font-size:0.9em;
-	line-height:1.4em;
 	padding:1em;
 }
 
@@ -36,23 +96,41 @@
 }
 
 .exhibit_title {
-	padding-top:0.8em;
 	text-align:right;
-	color:#666666;
-	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;	
 }
 
 .exhibit_author {
 	text-align:right;
-	color:#999999;
-	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
 }
 
 .exhibit_nav {
+	clear:left;
+	float:right;
 	font-family:Verdana,sans;
 	font-size:2.4em;
-	color:#C0C0C0;
+}
+.exhibit_nav a:visited {
+	color:#DCDCDC;
+	text-decoration:none;
+}
+.exhibit_nav a:link {
+	color:#DCDCDC;
+	text-decoration:none;
+}
+.exhibit_nav a:hover {
+	color:#999999;
+}
+.exhibit_nav {
 	text-align:right;
+}
+.here a {
+	color:#999999;
+}
+.exhibit_nav .here a:hover {
+	color:#C0C0C0;
+}
+.arrowhere {
+	color:#C0C0C0;
 }
 
 .exhibit_nav a:hover {
@@ -117,221 +195,110 @@
 	text-decoration:none;
 }
 
-/*.exhibits .thumbnail {
-	font-size:  1em;
+/* These are from the original sample website. They probably aren't needed.
+.content {
+padding-bottom:1em;
 }
-.exhibits .thumbnail img {
-	margin-left:  3px;
-	margin-right:  0px;
-	width:  100px;
-	height:  100px;
-	border:  0px;
+.caption a {
+color:#999999;
 }
-.exhibits .thumbnail a {
-	padding: .2em;
+.caption a:hover {
+color:#333333;
 }
-.exhibits .thumbnail:hover a {
-	color:  #fff;
+img {
+border:1px solid #DCDCDC;
+margin:0.4em;
+padding:4px;
+width:250px;
 }
-.exhibits .blurb {
-	text-align: center;
-	padding-left: 6em;
-	padding-right: 6em;
+img.smaller {
+width:150px;
 }
-.exhibits .blurbette {
-	padding-left: 6em;
-	padding-right: 6em;
-}
-.exhibits .bigbuttons {
-	padding-left: 2em;
-}
-.exhibits .featured .thumbnail img {
-	padding:  .2em;
-	margin-right: 6px;
-}
-.exhibits .featured .thumbnail a:hover {
-	background: none;
-}
-#exhibit-body {
-  position: relative;
-  border: 1px solid #999;
+img.larger {
+width:350px;
 }
 
-#exhibit-content, #exhibit-menu, .section-menu {
-  padding: 10px 15px;
+table {
+border:1px solid #DCDCDC;
+clear:both;
+margin-bottom:1em;
+margin-top:1em;
+padding-bottom:1em;
 }
-#exhibit-menu, .section-menu {
-  float: right;
-  text-align: right;
-  width: auto;
-  border-left: 1px solid #999;
-  border-bottom: 1px solid #999;
-  border-top-style: none;
-  border-right-style: none;
+td {
+padding-left:1em;
+padding-right:1em;
 }
-.section-menu {
-  margin-top: -11px;
-  margin-right: -12px;
+.caption {
+background:#DCDCDC none repeat scroll 0 0;
+border:1px solid #999999;
+color:#666666;
+font-family:"Trebuchet MS",Arial,sans-serif;
+font-size:smaller;
+margin-left:2em;
+margin-right:2em;
+padding:0.5em;
+text-align:center;
 }
+.cite {
+background:#999999 none repeat scroll 0 0;
+color:#FFFFFF;
+margin:0.2em -0.5em -0.5em;
+padding:0.1em;
+}
+.first:first-letter {
+color:#999999;
+float:left;
+font-family:"Bell MT","Old English",Georgia,Times,serif;
+font-size:420%;
+line-height:0.85em;
+margin-bottom:-0.15em;
+margin-right:0.08em;
+}
+#collexbar {
+background:#DCDCDC none repeat scroll 0 0;
+border-bottom:1px solid #999999;
+font-size:0.8em;
+left:0;
+margin:0;
+padding:0.4em 1em;
+position:absolute;
+right:0;
+top:0;
+}
+.colophon {
+clear:none;
+}
+.technical {
+float:right;
+}
+#bcollexbar {
+background:#DCDCDC none repeat scroll 0 0;
+border-top:1px solid #999999;
+clear:right;
+font-size:0.8em;
+left:0;
+margin-top:1.6em;
+padding:0.4em 1em;
+position:absolute;
+right:0;
+}
+.nextlink {
+float:right;
+}
+.nextlink a {
+background:#DCDCDC none repeat scroll 0 0;
+border:1px solid #999999;
+clear:both;
+font-size:1.1em;
+margin:1em 0;
+padding:0.2em;
+text-decoration:none;
+}
+.nextlink a:hover {
+background:#999999 none repeat scroll 0 0;
+border:1px solid #666666;
+color:#FFFFFF;
+}
+*/
 
-#exhibit-body table td, #exhibit-body table th {
-  vertical-align: top;
-  padding: .5em;
-}
-#exhibit-body.edit, #exhibit-menu.edit {
-  border-color: red;
-}
-
-#exhibit-body.edit textarea.tiny-mce,
-#exhibit-body.edit textarea.non-tiny-mce {
-  width: 30em;
-  height: 30em;
-}
-
-#exhibit-body .section-handle, #exhibit-body .page-handle {
-  text-align: left;
-  position: relative;
-}
-
-#exhibit-body .section-handle img, #exhibit-body .page-handle img {
-  right: -9px;
-  top: -9px;
-  position: absolute;
-}
-
-.shared-not-published {
-  background-color: #d3d3d3;
-  padding: 10px;
-  width: 650px;
-}*/
-
-/* set different width for the caption textarea */
-/*#exhibit-body.edit .illustration-caption textarea.tiny-mce,
-#exhibit-body.edit .illustration-caption textarea.non-tiny-mce {
-  width: 100px;
-  height: 30em;
-}
-
-.drop-zone-wrapper {
-  position: relative;
-  width: 32em;
-  height: 7em;
-  margin: .5em;
-}
-
-.inline-drop-zone-wrapper {
-  position: relative;
-  border: 1px solid #999;
-  padding: 1em;
-  margin: 1em 0 1em 0;
-  background-color: #ffffff;
-}
-
-.resource-drop-zone, .add-text-area {
-  border: 1px dashed grey;
-  height: 5em;
-  width: 10em;
-  padding: 1em 1em;
-  margin: .4em;
-  text-align: center;
-}
-.drop-zone-wrapper .add-text-area {
-  position: absolute;
-  right: 0;
-}
-.drop-zone-wrapper .resource-drop-zone {
-  position: absolute;
-  left: 0;
-}
-
-.drop-zone-hover {
-  background-color: #ccc;
-}
-
-#exhibit-menu ul, .section-menu ul{
-  display: block;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-#exhibit-menu .add-a-section {
-  background-color: #dcdcdc;
-}
-
-
-#exhibit-body span.label {
-  color:grey;
-}
-
-#exhibit-body #sortable-pages {
-  clear: both;
-  margin-top: 30px;
-}
-#exhibit-body div.sortable-page {
-  border: 1px solid #999;
-  padding: 1em;
-  margin: 1em 0 1em 0;
-}
-
-#exhibit-body .sortable-object {
-  margin: 10px;
-}
-
-#exhibit-body div.section {
-  border: 1px solid #999;
-  padding: 1em;
-  margin: 1em 0 1em 0;
-}
-
-#exhibit-body div.illustration-right {
-  float: right;
-  margin-left: 3em;
-}
-
-#exhibit-body div.illustration-left {
-  float: left;
-  margin-right: 3em;
-}
-
-#exhibit-body .illustration-caption {
-  max-width: 100px;  
-  padding: .5em;
-  background-color: #DCDCDC;
-  color: #666;
-  margin: 1em 0;
-}
-
-#exhibit-body img {
-  border: 0;
-}
-
-.double-arrow, .single-arrow {
-  letter-spacing: -.4em;
-}
-.single-arrow {
-  margin: auto .5em;
-}
-span.double-arrow, span.single-arrow {
-  color: #C9C9C9;
-}
-
-#license img {
-	height: 20px;
-	padding: 0 0 5px 0;
-}
-
-#license.edit {
-	padding: 2px 0 0 0;
-}
-#license.show {
-	text-align: right;
-}*/
-
-/* .collectlink is defined in new9s.css*/
-/*#exhibit-body .collectlink {
-  clear: both;
-}
-#exhibit-body .collectlink a {
-  margin-left: 0;
-}*/

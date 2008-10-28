@@ -1,20 +1,20 @@
 <div class="exhibit_nav">
 	<% if curr_page == 1 -%>
-		<span>&laquo;</span>
+		<span class="arrowhere">&laquo;</span>
 	<% else -%>
 		<%= link_to "&laquo;", :action => 'view', :id => id, :page => curr_page - 1 %>
 	<% end -%>
 	
 	<% num_pages.times { |page| -%>
 		<% if curr_page == page+1 -%>
-			<span>&bull;</span>
+			<span class="here"><a title="you are here">&bull;</a></span>
 		<% else -%>
 			<span><%= link_to "&bull;", :action => 'view', :id => id, :page => page+1 %></span>
 		<% end -%>
 	<% } -%>
 
 	<% if curr_page == num_pages -%>
-		<span>&raquo;</span>
+		<span class="arrowhere">&raquo;</span>
 	<% else -%>
 		<%= link_to "&raquo;", :action => 'view', :id => id, :page => curr_page + 1 %>
 	<% end -%>

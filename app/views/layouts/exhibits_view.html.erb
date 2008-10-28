@@ -19,29 +19,17 @@
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>N I N E S</title>
+  <title>N I N E S - Exhibit</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 
 	<!-- site wide styles -->
-  <%= stylesheet_link_tag "globals", :media => "all" %>
-  <%= stylesheet_link_tag "core", :media => "all" %>
   <%= stylesheet_link_tag "exhibits", :media => "all" %>
-
-	<!-- site wide scripts -->
-  <%= javascript_include_tag "protoaculous.1.8.1.min.js", "application.js" if RAILS_ENV =~ /production/ %>
-  <%= javascript_include_tag :defaults unless RAILS_ENV =~ /production/ %>
-  <%= javascript_include_tag 'spinner' %>
-  <%= javascript_include_tiny_mce_if_used %>
-  <%= tiny_mce if using_tiny_mce? %>
 
 </head>
 <body>
 	
-	<div id="mainContent">
-
-	<div id="container">
+	<div id="top_header">
 		<div id="header-left">
-			<img src="" alt="" />
 		</div>
 		<div id="header-center">
 			<span class="emph1"><a href="/">&nbsp;</a></span><br /><i>&nbsp;</i><br />
@@ -49,14 +37,13 @@
 		<div id="header-right">
 			<%= render :partial => '/common/login_slider' %>
 		</div>
+    </div>
   		<div id="content">
   		  <%= h3 flash[:notice], :class => "flash_notice" if flash[:notice] %> 
   		  <%= h3 flash[:warning], :class => "flash_warning" if flash[:warning] %> 
   		  <%= h3 flash[:error], :class => "flash_error" if flash[:error] %> 
 	      <%= yield %>
       </div>
-    </div>
-	</div>
   </body>
 </html>
                 
