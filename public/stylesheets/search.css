@@ -42,6 +42,12 @@
 	color: gray;
 }
 
+.empty_list_text {
+	color: gray;
+	font-style: italic;
+	padding-bottom: 1em;
+}
+
 #resource-list h2 {
 	font-size: 1.2em;
 	margin-bottom: 3px;

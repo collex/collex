@@ -3,8 +3,9 @@
 	<% if !is_logged_in? -%>
 		<%= render :partial => 'my9s_instructions' %>
 	<% else -%>
+		<% curr_user = User.find_by_username(session[:user][:username]) -%>
 		<div class="tag_minor_nav"> 
-			My 9s<%= link_separator() %>&nbsp;<%= link_to "Manage my objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;<span style="color:gray;" ><i>My Exhibits</i></span>&nbsp;<br />
+			My 9s<%= link_separator() %>&nbsp;<%= link_to "My objects", :action => 'results', :view => 'all_collected' %>&nbsp;<br />
 		</div>
 		
 		<table>
@@ -12,7 +13,7 @@
 				<td width="80%">
 					<div class="standard_box">
 						<h1>PROFILE</h1>
-					<%= render :partial => 'profile', :locals => { :user => User.find_by_username(session[:user][:username]), :edit_mode => false } %>
+					<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
 					</div>
 					<br />
 					<div class="standard_box">
@@ -36,12 +37,21 @@
 					</div>
 					<br />
 					<div class="standard_box">
-						<center>
 						<h1>MY EXHIBITS</h1>
-						<span style="color:gray;" ><i>Coming Soon!</i></span>
-						<br />
-						<br />
-						</center>
+						<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', curr_user.id] ) -%>
+						<% if my_exhibits.length == 0 -%>
+							<div class="empty_list_text" >You have not created any exhibits</div>
+						<% else -%>
+							<table>
+							<% for exhibit in my_exhibits -%>
+								<tr>
+									<td class="exhibit_thumbnail"><img src="<%=exhibit.thumbnail == nil ? '../images/lg-harrington.gif' : exhibit.thumbnail %>" alt="" width="50"/></td>
+									<td class="exhibit_link"><%= exhibit.title %>&nbsp;<a href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
+								</tr>
+							<% end -%>
+							</table>
+						<% end # if there are exhibits -%>
+						<%= link_to "Create Exhibit", :action => 'new_exhibit' %>
 					</div>
 				</td>
 			</tr>

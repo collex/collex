@@ -183,6 +183,20 @@ class My9sController < ApplicationController
      redirect_to :action => 'index'
    end
 
+    def new_exhibit
+      if (session[:user])
+        user = User.find_by_username(session[:user][:username])
+        exhibit = Exhibit.create(:title =>'Untitled', :user_id => user.id)
+        redirect_to :action => 'edit_exhibit', :id => exhibit.id
+      else
+        redirect_to :action => 'index'
+      end
+    end
+    
+    def edit_exhibit
+      @exhibit = Exhibit.find(params[:id])
+    end
+    
   private
     #TODO-PER: This is repeated in tag_controller.rb
    def sort_by_date_collected(results)
