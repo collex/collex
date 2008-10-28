@@ -1,5 +1,5 @@
 <div id="logged_in_user_options">
-	<%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'index') if is_logged_in? && @exhibit.user_id == User.find_by_fullname(session[:user][:username]).id  %>
+	<%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'index') if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
 </div>
 <div id="exhibit_page">
 	<h2 class="exhibit_title" ><%= @exhibit.title %></h2>
