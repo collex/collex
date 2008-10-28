@@ -1,0 +1,18 @@
+<p>
+  <b>Title:</b>
+  <%=h @exhibit.title %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%=h @exhibit.user_id %>
+</p>
+
+<p>
+  <b>Thumbnail:</b>
+  <%=h @exhibit.thumbnail %>
+</p>
+
+
+<%= link_to 'Edit', edit_exhibit_path(@exhibit) %> |
+<%= link_to 'Back', exhibits_path %>

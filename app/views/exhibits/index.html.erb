@@ -1,0 +1,24 @@
+<h1>Listing exhibits</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>User</th>
+    <th>Thumbnail</th>
+  </tr>
+
+<% for exhibit in @exhibits %>
+  <tr>
+    <td><%=h exhibit.title %></td>
+    <td><%=h exhibit.user_id %></td>
+    <td><%=h exhibit.thumbnail %></td>
+    <td><%= link_to 'Show', exhibit %></td>
+    <td><%= link_to 'Edit', edit_exhibit_path(exhibit) %></td>
+    <td><%= link_to 'Destroy', exhibit, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New exhibit', new_exhibit_path %>

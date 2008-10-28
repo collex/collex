@@ -1,0 +1,18 @@
+<p>
+  <b>Exhibit page:</b>
+  <%=h @exhibit_section.exhibit_page_id %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%=h @exhibit_section.position %>
+</p>
+
+<p>
+  <b>Has border:</b>
+  <%=h @exhibit_section.has_border %>
+</p>
+
+
+<%= link_to 'Edit', edit_exhibit_section_path(@exhibit_section) %> |
+<%= link_to 'Back', exhibit_sections_path %>

@@ -1,0 +1,26 @@
+<h1>Listing exhibit_elements</h1>
+
+<table>
+  <tr>
+    <th>Exhibit section</th>
+    <th>Position</th>
+    <th>Exhibit element layout type</th>
+    <th>Element test</th>
+  </tr>
+
+<% for exhibit_element in @exhibit_elements %>
+  <tr>
+    <td><%=h exhibit_element.exhibit_section_id %></td>
+    <td><%=h exhibit_element.position %></td>
+    <td><%=h exhibit_element.exhibit_element_layout_type %></td>
+    <td><%=h exhibit_element.element_test %></td>
+    <td><%= link_to 'Show', exhibit_element %></td>
+    <td><%= link_to 'Edit', edit_exhibit_element_path(exhibit_element) %></td>
+    <td><%= link_to 'Destroy', exhibit_element, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New exhibit_element', new_exhibit_element_path %>

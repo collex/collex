@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 82) do
+ActiveRecord::Schema.define(:version => 87) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -45,6 +45,52 @@ ActiveRecord::Schema.define(:version => 82) do
     t.string  "type"
     t.string  "field"
     t.string  "value"
+  end
+
+  create_table "exhibit_elements", :force => true do |t|
+    t.integer  "exhibit_section_id",          :limit => 10, :precision => 10, :scale => 0
+    t.integer  "position",                    :limit => 10, :precision => 10, :scale => 0
+    t.string   "exhibit_element_layout_type"
+    t.text     "element_test"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "exhibit_illustrations", :force => true do |t|
+    t.integer  "exhibit_element_id", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "position",           :limit => 10, :precision => 10, :scale => 0
+    t.string   "type"
+    t.string   "image_url"
+    t.text     "illustration_text"
+    t.text     "caption1"
+    t.text     "caption2"
+    t.integer  "image_width",        :limit => 10, :precision => 10, :scale => 0
+    t.string   "link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "exhibit_pages", :force => true do |t|
+    t.integer  "exhibit_id", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "position",   :limit => 10, :precision => 10, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "exhibit_sections", :force => true do |t|
+    t.integer  "exhibit_page_id", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "position",        :limit => 10, :precision => 10, :scale => 0
+    t.integer  "has_border",      :limit => 10, :precision => 10, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "exhibits", :force => true do |t|
+    t.string   "title"
+    t.integer  "user_id",    :limit => 10, :precision => 10, :scale => 0
+    t.string   "thumbnail"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "facet_categories", :force => true do |t|

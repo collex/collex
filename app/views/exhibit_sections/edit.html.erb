@@ -1,0 +1,27 @@
+<h1>Editing exhibit_section</h1>
+
+<%= error_messages_for :exhibit_section %>
+
+<% form_for(@exhibit_section) do |f| %>
+  <p>
+    <b>Exhibit page</b><br />
+    <%= f.text_field :exhibit_page_id %>
+  </p>
+
+  <p>
+    <b>Position</b><br />
+    <%= f.text_field :position %>
+  </p>
+
+  <p>
+    <b>Has border</b><br />
+    <%= f.text_field :has_border %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @exhibit_section %> |
+<%= link_to 'Back', exhibit_sections_path %>

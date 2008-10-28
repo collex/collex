@@ -1,0 +1,12 @@
+<% current_page "Exhibits" -%>
+<h1>Choose an exhibit to view</h1>
+
+<table>
+<% for exhibit in @exhibits -%>
+<% name = "#{exhibit.title} by #{User.find(exhibit.user_id).fullname}" -%>
+	<tr>
+		<td><img src="<%=exhibit.thumbnail%>" alt="" width="50"/></td>
+		<td><a href="/exhibits/view/<%= exhibit.id %>"><%= name %></a></td>
+	</tr>
+<% end -%>
+</table>

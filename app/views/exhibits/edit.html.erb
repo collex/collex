@@ -1,0 +1,27 @@
+<h1>Editing exhibit</h1>
+
+<%= error_messages_for :exhibit %>
+
+<% form_for(@exhibit) do |f| %>
+  <p>
+    <b>Title</b><br />
+    <%= f.text_field :title %>
+  </p>
+
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Thumbnail</b><br />
+    <%= f.text_field :thumbnail %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @exhibit %> |
+<%= link_to 'Back', exhibits_path %>

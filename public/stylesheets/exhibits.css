@@ -1,3 +1,122 @@
+#exhibit_page {
+	background-color: #ffffff;
+	padding: 1em;
+}
+
+.exhibit_section_with_border {
+	border: 1px solid #DCDCDC;
+	margin: 2em;
+}
+
+.exhibit_section_without_border {
+	margin: 2em;
+}
+
+.exhibit_text {
+	color:#000000;
+	font-family:Helvetica Neue,Trebuchet MS,Georgia,Times New Roman,serif;
+	font-size:0.9em;
+	line-height:1.4em;
+	padding:1em;
+}
+
+.exhibit_first:first-letter {
+	color:#999999;
+	float:left;
+	font-family:"Bell MT","Old English",Georgia,Times,serif;
+	font-size:420%;
+	line-height:0.85em;
+	margin-bottom:-0.15em;
+	margin-right:0.08em;
+}
+
+.exhibit_header {
+	color:#999999;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
+.exhibit_title {
+	padding-top:0.8em;
+	text-align:right;
+	color:#666666;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;	
+}
+
+.exhibit_author {
+	text-align:right;
+	color:#999999;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
+.exhibit_nav {
+	font-family:Verdana,sans;
+	font-size:2.4em;
+	color:#C0C0C0;
+	text-align:right;
+}
+
+.exhibit_nav a:hover {
+	color:#999999;
+}
+
+.exhibit_nav a:visited {
+	color:#666666;
+}
+
+.exhibit_nav a:hover {
+	color:#333333;
+}
+
+.exhibit_nav a {
+	color:#666666;
+}
+
+.exhibit_caption1 {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	color:#666666;
+	font-family:"Trebuchet MS",Arial,sans-serif;
+	font-size:smaller;
+	margin-left:2em;
+	margin-right:2em;
+	padding:0.5em;
+	text-align:center;
+	line-height:1.4em;
+}
+
+.exhibit_caption2 {
+	background:#999999 none repeat scroll 0 0;
+	color:#FFFFFF;
+	margin:0.2em -0.5em -0.5em;
+	padding:0.1em;
+	line-height:1.4em;
+}
+
+.exhibit_illustration {
+	padding-left:1em;
+	padding-right:1em;
+}
+
+.exhibit_illustration img {
+	border:1px solid #DCDCDC;
+	margin:0.4em;
+	padding:4px;
+}
+
+.exhibit_nextlink {
+	float:right;
+}
+
+.exhibit_nextlink a {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	clear:both;
+	font-size:1.1em;
+	margin:1em 0;
+	padding:0.2em;
+	text-decoration:none;
+}
+
 /*.exhibits .thumbnail {
 	font-size:  1em;
 }

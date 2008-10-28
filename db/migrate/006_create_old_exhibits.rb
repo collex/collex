@@ -14,7 +14,7 @@
 # limitations under the License.
 ##########################################################################
 
-class CreateExhibits < ActiveRecord::Migration
+class CreateOldExhibits < ActiveRecord::Migration
   def self.up
     create_table :exhibits do |t|
       t.column :user_id, :integer

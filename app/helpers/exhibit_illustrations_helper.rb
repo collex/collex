@@ -1,0 +1,2 @@
+module ExhibitIllustrationsHelper
+end

@@ -1,0 +1,32 @@
+<h1>Editing exhibit_element</h1>
+
+<%= error_messages_for :exhibit_element %>
+
+<% form_for(@exhibit_element) do |f| %>
+  <p>
+    <b>Exhibit section</b><br />
+    <%= f.text_field :exhibit_section_id %>
+  </p>
+
+  <p>
+    <b>Position</b><br />
+    <%= f.text_field :position %>
+  </p>
+
+  <p>
+    <b>Exhibit element layout type</b><br />
+    <%= f.text_field :exhibit_element_layout_type %>
+  </p>
+
+  <p>
+    <b>Element test</b><br />
+    <%= f.text_area :element_test %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @exhibit_element %> |
+<%= link_to 'Back', exhibit_elements_path %>

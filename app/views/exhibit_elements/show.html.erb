@@ -1,0 +1,23 @@
+<p>
+  <b>Exhibit section:</b>
+  <%=h @exhibit_element.exhibit_section_id %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%=h @exhibit_element.position %>
+</p>
+
+<p>
+  <b>Exhibit element layout type:</b>
+  <%=h @exhibit_element.exhibit_element_layout_type %>
+</p>
+
+<p>
+  <b>Element test:</b>
+  <%=h @exhibit_element.element_test %>
+</p>
+
+
+<%= link_to 'Edit', edit_exhibit_element_path(@exhibit_element) %> |
+<%= link_to 'Back', exhibit_elements_path %>

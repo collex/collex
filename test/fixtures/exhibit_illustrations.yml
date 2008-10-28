@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  exhibit_element_id: 9.99
+  position: 9.99
+  type: MyString
+  image_url: MyString
+  illustration_text: MyText
+  caption1: MyText
+  caption2: MyText
+  image_width: 9.99
+  link: MyString
+
+two:
+  exhibit_element_id: 9.99
+  position: 9.99
+  type: MyString
+  image_url: MyString
+  illustration_text: MyText
+  caption1: MyText
+  caption2: MyText
+  image_width: 9.99
+  link: MyString

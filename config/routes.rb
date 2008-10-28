@@ -15,6 +15,16 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
+  map.resources :exhibit_illustrations
+
+  map.resources :exhibit_elements
+
+  map.resources :exhibit_sections
+
+  map.resources :exhibit_pages
+
+  map.resources :exhibits
+
   map.resources :tagassigns
 
 
@@ -91,6 +101,8 @@ ActionController::Routing::Routes.draw do |map|
   map.tags '/tags', :controller => 'tag', :action => 'list'
   map.login '/login', :controller => 'login', :action => 'login'
   map.my9s '/my9s', :controller => 'my9s', :action => 'index'
+  map.exhibit_list '/exhibit_list', :controller => 'exhibits', :action => 'list'
+  map.exhibits_view '/exhibits/view/:id', :controller => 'exhibits', :action => 'view'
 
   map.root :controller => "home", :action => "index"
 

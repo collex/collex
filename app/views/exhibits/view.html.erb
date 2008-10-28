@@ -1,0 +1,51 @@
+<div id="exhibit_page">
+	<h2 class="exhibit_title" ><%= @exhibit.title %></h2>
+	<h3 class="exhibit_author" ><%= User.find(@exhibit.user_id).fullname %></h3>
+	<% num_pages = @exhibit.exhibit_pages.length -%>
+	<%= render :partial => 'pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id } %>
+	<% page = @exhibit.exhibit_pages.find(@page) -%>
+	<% sections = page.exhibit_sections -%>
+	<% for section in sections -%>
+	<div class="<%= section.has_border == 1 ? 'exhibit_section_with_border' : 'exhibit_section_without_border' %>">
+		<% elements = section.exhibit_elements -%>
+		<% is_first = true -%>
+		<% for element in elements -%>
+			<% if element.exhibit_element_layout_type == 'header' -%>
+				<h3 class="exhibit_header"><%= element.element_test %></h3>
+			<% elsif element.exhibit_element_layout_type == 'text' -%>
+				<div class="exhibit_text <%= 'exhibit_first' if is_first %>"><%= element.element_test %></div>
+			<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+				<% illustration = element.exhibit_illustrations.find(:first) -%>
+				<table><tr>
+					<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
+					<td><div class="exhibit_text <%= 'exhibit_first' if is_first %>"><%= element.element_test %></div></td>
+				</tr></table>
+			<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+				<% illustration = element.exhibit_illustrations.find(:first) -%>
+				<table><tr>
+					<td><div class="exhibit_text <%= 'exhibit_first' if is_first %>"><%= element.element_test %></div></td>
+					<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
+				</tr></table>
+			<% elsif element.exhibit_element_layout_type == 'pics' -%>
+				<% pics = element.exhibit_illustrations -%>
+				<table><tr>
+					<% for pic in pics -%>
+					<td><%= render :partial => 'illustration', :locals => { :illustration => pic } %></td>
+					<% end -%>
+				</tr></table>
+			<% else -%>
+				Unknown element type:
+				<%= element.exhibit_element_layout_type %><br />
+			<% end -%>
+			<% is_first = false -%>
+		<% end # for element in elements -%>
+	</div>
+	<% end # for section in sections -%>
+<br />
+<% if @page < num_pages -%>
+	<div class="exhibit_nextlink">
+	<%= link_to "next &raquo;", :action => 'view', :id => id, :page => curr_page + 1 %>
+	</div>
+<% end -%>
+</div>
+

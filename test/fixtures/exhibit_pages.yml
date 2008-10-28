@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  exhibit_id: 9.99
+  position: 9.99
+
+two:
+  exhibit_id: 9.99
+  position: 9.99

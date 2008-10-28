@@ -1,0 +1,36 @@
+<h1>Listing exhibit_illustrations</h1>
+
+<table>
+  <tr>
+    <th>Exhibit element</th>
+    <th>Position</th>
+    <th>Type</th>
+    <th>Image url</th>
+    <th>Illustration text</th>
+    <th>Caption1</th>
+    <th>Caption2</th>
+    <th>Image width</th>
+    <th>Link</th>
+  </tr>
+
+<% for exhibit_illustration in @exhibit_illustrations %>
+  <tr>
+    <td><%=h exhibit_illustration.exhibit_element_id %></td>
+    <td><%=h exhibit_illustration.position %></td>
+    <td><%=h exhibit_illustration.type %></td>
+    <td><%=h exhibit_illustration.image_url %></td>
+    <td><%=h exhibit_illustration.illustration_text %></td>
+    <td><%=h exhibit_illustration.caption1 %></td>
+    <td><%=h exhibit_illustration.caption2 %></td>
+    <td><%=h exhibit_illustration.image_width %></td>
+    <td><%=h exhibit_illustration.link %></td>
+    <td><%= link_to 'Show', exhibit_illustration %></td>
+    <td><%= link_to 'Edit', edit_exhibit_illustration_path(exhibit_illustration) %></td>
+    <td><%= link_to 'Destroy', exhibit_illustration, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New exhibit_illustration', new_exhibit_illustration_path %>

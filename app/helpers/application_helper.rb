@@ -62,7 +62,7 @@ private
       ['My&nbsp;9s', my9s_path, true, false],
       ['Search', search_path, true, false],
       ['Tags', tags_path, true, false],
-      ['Exhibits', "/", false, false],
+      ['Exhibits', exhibit_list_path, true, false],
       ['News', news_path, false, false],
       ['About', tab_about_path, false, false]
    ]

@@ -1,0 +1,17 @@
+<center>
+<div class="exhibit_illustration">
+<% if illustration.link.length > 0 -%>
+	<a href="<%= illustration.link %>">
+<% end -%>
+<img src="<%= illustration.image_url %>" width="<%= illustration.image_width %>" alt="" />
+<% if illustration.link.length > 0 -%>
+	</a>
+<% end -%>
+<% if illustration.caption1.length > 0 -%>
+	<div class="exhibit_caption1"><%= illustration.caption1 %></div>
+	<% if illustration.caption2.length > 0 -%>
+		<div class="exhibit_caption2"><%= illustration.caption2 %></div>
+	<% end -%>
+<% end -%>
+</div>
+</center>
