@@ -12,7 +12,7 @@ class ExhibitsController < ApplicationController
   public
 
   def list
-    @exhibits = Exhibit.find(:all)
+    @exhibits = Exhibit.find(:all, :conditions => [ 'is_published = 1'])
   end
   
   def view
@@ -24,8 +24,9 @@ class ExhibitsController < ApplicationController
       @page = 1
      end
     render :layout => 'exhibits_view'
-end
-  
+  end
+
+  ##################################################################################
   # GET /exhibits
   # GET /exhibits.xml
   def index

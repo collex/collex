@@ -1,13 +1,13 @@
 <div id="logged_in_user_options">
-	<%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'index') if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
+	<%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'edit_exhibit', :id => @exhibit.id ) if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
 </div>
 <div id="exhibit_page">
 	<h2 class="exhibit_title" ><%= @exhibit.title %></h2>
 	<h3 class="exhibit_author" ><%= User.find(@exhibit.user_id).fullname %></h3>
 	<% num_pages = @exhibit.exhibit_pages.length -%>
 	<% if num_pages > 0 -%>
-		<%= render :partial => 'pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id } %>
-		<% page = @exhibit.exhibit_pages.find(@page) -%>
+		<%= render :partial => 'pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'view' } %>
+		<% page = @exhibit.exhibit_pages[@page-1] -%>
 		<% sections = page.exhibit_sections -%>
 		<% for section in sections -%>
 		<div class="<%= section.has_border == 1 ? 'exhibit_section_with_border' : 'exhibit_section_without_border' %>">
@@ -15,19 +15,19 @@
 			<% is_first = true -%>
 			<% for element in elements -%>
 				<% if element.exhibit_element_layout_type == 'header' -%>
-					<h3 class="exhibit_header"><%= element.element_test %></h3>
+					<%= render :partial => 'exhibit_header', :locals => { :text => element.element_text } %>
 				<% elsif element.exhibit_element_layout_type == 'text' -%>
-					<div class="exhibit_text <%= 'exhibit_first' if is_first %>"><%= element.element_test %></div>
+					<%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %>
 				<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
 					<% illustration = element.exhibit_illustrations.find(:first) -%>
 					<table><tr>
 						<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
-						<td><div class="exhibit_text <%= 'exhibit_first' if is_first %>"><%= element.element_test %></div></td>
+						<td><%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %></td>
 					</tr></table>
 				<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
 					<% illustration = element.exhibit_illustrations.find(:first) -%>
 					<table><tr>
-						<td><div class="exhibit_text <%= 'exhibit_first' if is_first %>"><%= element.element_test %></div></td>
+						<td><%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %></td>
 						<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
 					</tr></table>
 				<% elsif element.exhibit_element_layout_type == 'pics' -%>

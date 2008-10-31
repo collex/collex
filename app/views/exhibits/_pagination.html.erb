@@ -2,20 +2,20 @@
 	<% if curr_page == 1 -%>
 		<span class="arrowhere">&laquo;</span>
 	<% else -%>
-		<%= link_to "&laquo;", :action => 'view', :id => id, :page => curr_page - 1 %>
+		<%= link_to "&laquo;", :action => action, :id => id, :page => curr_page - 1 %>
 	<% end -%>
 	
 	<% num_pages.times { |page| -%>
 		<% if curr_page == page+1 -%>
 			<span class="here"><a title="you are here">&bull;</a></span>
 		<% else -%>
-			<span><%= link_to "&bull;", :action => 'view', :id => id, :page => page+1 %></span>
+			<span><%= link_to "&bull;", :action => action, :id => id, :page => page+1 %></span>
 		<% end -%>
 	<% } -%>
 
 	<% if curr_page == num_pages -%>
 		<span class="arrowhere">&raquo;</span>
 	<% else -%>
-		<%= link_to "&raquo;", :action => 'view', :id => id, :page => curr_page + 1 %>
+		<%= link_to "&raquo;", :action => action, :id => id, :page => curr_page + 1 %>
 	<% end -%>
 </div>

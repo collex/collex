@@ -5,7 +5,7 @@
 <% for exhibit in @exhibits -%>
 <% name = "#{exhibit.title} by #{User.find(exhibit.user_id).fullname}" -%>
 	<tr>
-		<td class="exhibit_thumbnail"><img src="<%=exhibit.thumbnail == nil ? '../images/lg-harrington.gif' : exhibit.thumbnail %>" alt="" width="50"/></td>
+		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
 		<td class="exhibit_link"><a href="/exhibits/view/<%= exhibit.id %>"><%= exhibit.title %></a>&nbsp;by&nbsp;<%= User.find(exhibit.user_id).fullname %></td>
 	</tr>
 <% end -%>

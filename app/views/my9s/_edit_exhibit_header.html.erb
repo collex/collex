@@ -1,0 +1,12 @@
+<table>
+	<tr>
+		<td>
+			<%= link_to_function change_char(), "change_header(#{exhibit.id}, #{page}, #{element.id}, 'header_#{element.id}' );", :title => 'Edit header' %>
+		</td>
+		<td>
+			<div id='header_<%= element.id %>'>
+				<h3 class="exhibit_header"><%= element.element_text %></h3>
+			</div>
+		</td>
+	</tr>
+</table>

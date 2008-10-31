@@ -1,0 +1,24 @@
+<% form_tag :action => "edit_exhibit_globals", :id => exhibit.id do %> 
+  <table class="edit_exhibit_form"> 
+  <tr> 
+    <td>Exhibit title:</td> 
+    <td><%= text_field_tag("title", exhibit.title, :size => 30) %></td> 
+  </tr> 
+  <tr> 
+    <td>Visible URL:</td> 
+    <td><%= text_field_tag("visible_url", exhibit.visible_url, :size => 30)%></td> 
+  </tr> 
+  <tr> 
+    <td>Thumbnail:</td> 
+    <td><%= text_field_tag("thumbnail", exhibit.thumbnail, :size => 30) %></td> 
+  </tr> 
+  <tr> 
+    <td>Published State:</td> 
+    <td><%= select_tag("is_published", options_for_select(%w{ Private Published }, exhibit.is_published == 1 ? "Published" : "Private" )) %></td> 
+  </tr> 
+  <tr> 
+    <td>&nbsp;</td> 
+    <td><input type="submit" value=" UPDATE " /></td> 
+  </tr> 
+</table> 
+<% end %>

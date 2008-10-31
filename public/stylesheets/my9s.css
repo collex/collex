@@ -1,0 +1,56 @@
+/* my9s.css  - This file contains style that only apply to functionality under the My9s tab */
+
+.edit_exhibit_header {
+	color: white;
+	background-color: gray;
+}
+
+/* styles for the standard boxes */
+
+.edit_exhibit_box {
+	border: 1px solid gray;
+}
+
+.edit_exhibit_box h1 {
+	background: #707070;
+	color: white;
+	font-size: .8em;
+	margin-top: 0px;
+	padding: 1px;
+	font-weight: normal;
+}
+
+.edit_exhibit_box h1 a {
+	color: #ffffff;
+}
+	
+.inside_edit_exhibit_box {
+	margin-left: .2em;
+	margin-right: .2em;
+	margin-bottom: .5em;
+}
+
+/* my9s tab */
+
+.my9s_instructions {
+	margin: 50px 200px 50px 200px;
+	border:gray 1px dotted;
+	background:#D3D3D3;	
+	text-align:center;
+	padding:5px;
+}
+
+.my9s_instructions span {
+font-weight:bold;
+}
+
+.my9s_instructions p{
+    font-style: italic;
+}
+
+.empty_list_text {
+	color: gray;
+	font-style: italic;
+	padding-bottom: 1em;
+}
+

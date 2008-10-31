@@ -4,10 +4,10 @@ one:
   exhibit_section_id: 9.99
   position: 9.99
   exhibit_element_layout_type: MyString
-  element_test: MyText
+  element_text: MyText
 
 two:
   exhibit_section_id: 9.99
   position: 9.99
   exhibit_element_layout_type: MyString
-  element_test: MyText
+  element_text: MyText

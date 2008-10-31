@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 87) do
+ActiveRecord::Schema.define(:version => 89) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(:version => 87) do
     t.integer  "exhibit_section_id",          :limit => 10, :precision => 10, :scale => 0
     t.integer  "position",                    :limit => 10, :precision => 10, :scale => 0
     t.string   "exhibit_element_layout_type"
-    t.text     "element_test"
+    t.text     "element_text"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(:version => 87) do
   create_table "exhibit_illustrations", :force => true do |t|
     t.integer  "exhibit_element_id", :limit => 10, :precision => 10, :scale => 0
     t.integer  "position",           :limit => 10, :precision => 10, :scale => 0
-    t.string   "type"
+    t.string   "illustration_type"
     t.string   "image_url"
     t.text     "illustration_text"
     t.text     "caption1"
@@ -87,10 +87,12 @@ ActiveRecord::Schema.define(:version => 87) do
 
   create_table "exhibits", :force => true do |t|
     t.string   "title"
-    t.integer  "user_id",    :limit => 10, :precision => 10, :scale => 0
+    t.integer  "user_id",      :limit => 10, :precision => 10, :scale => 0
     t.string   "thumbnail"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "visible_url"
+    t.integer  "is_published", :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "facet_categories", :force => true do |t|

@@ -187,6 +187,7 @@ class My9sController < ApplicationController
       if (session[:user])
         user = User.find_by_username(session[:user][:username])
         exhibit = Exhibit.create(:title =>'Untitled', :user_id => user.id)
+        ExhibitPage.create(:exhibit_id => exhibit.id, :position => 1) # create a page because we know the user will need at least one.
         redirect_to :action => 'edit_exhibit', :id => exhibit.id
       else
         redirect_to :action => 'index'
@@ -195,6 +196,184 @@ class My9sController < ApplicationController
     
     def edit_exhibit
       @exhibit = Exhibit.find(params[:id])
+      @page = params['page'] == nil ? 1 : params['page'].to_i
+    end
+
+    def edit_exhibit_globals
+      exhibit = Exhibit.find(params['id'])
+      exhibit.title = params['title']
+      exhibit.thumbnail = params['thumbnail']
+      exhibit.visible_url = params['visible_url']
+      exhibit.is_published = (params['is_published'] == 'Published' ? 1 : 0)
+      exhibit.save
+      redirect_to :action => 'edit_exhibit', :id => exhibit.id
+    end
+  
+    def delete_exhibit
+      # for security reasons, make sure that the exhibit belongs to the person who is trying to delete it.
+      if (session[:user])
+        user = User.find_by_username(session[:user][:username])
+        exhibit = Exhibit.find(params[:id])
+        if exhibit.user_id == user.id
+          Exhibit.destroy(params[:id])
+        end
+      end
+
+      redirect_to :action => 'index'
+    end
+    
+    def change_page
+      redirect_to :action => 'edit_exhibit', :id => params['id'], :page => params['page']
+    end
+
+    def edit_page
+      id = params[:id]
+      @page = params[:page].to_i
+      verb = params[:verb]
+      exhibit = Exhibit.find(id)
+      pages = exhibit.exhibit_pages
+      curr_page = pages[@page-1]
+      
+      case verb
+      when "up"
+        curr_page.move_higher()
+      when "down"
+        curr_page.move_lower()
+      when "insert"
+        new_section = ExhibitPage.create(:exhibit_id => id)
+        new_section.insert_at(@page)
+      when "delete"
+        curr_page.remove_from_list()
+        curr_page.destroy
+      end
+
+      redirect_to :action => 'edit_exhibit', :id => id
+    end
+    
+    def edit_section
+      id = params[:id]
+      @page = params[:page].to_i
+      section = params[:section].to_i
+      verb = params[:verb]
+      exhibit = Exhibit.find(id)
+      pages = exhibit.exhibit_pages
+      curr_page = pages[@page-1]
+      
+      case verb
+      when "up"
+        curr_page.exhibit_sections[section-1].move_higher()
+      when "down"
+        curr_page.exhibit_sections[section-1].move_lower()
+      when "insert"
+        new_section = ExhibitSection.create(:has_border => true, :exhibit_page_id => curr_page.id)
+        new_section.insert_at(section)
+      when "delete"
+        curr_page.exhibit_sections[section-1].remove_from_list()
+        curr_page.exhibit_sections[section-1].destroy
+      when "add_border"
+        curr_page.exhibit_sections[section-1].has_border = 1
+        curr_page.exhibit_sections[section-1].save
+      when "remove_border"
+        curr_page.exhibit_sections[section-1].has_border = 0
+        curr_page.exhibit_sections[section-1].save
+      end
+
+      redirect_to :action => 'edit_exhibit', :id => id
+    end
+    
+    def edit_element
+      id = params[:id]
+      @page = params[:page].to_i
+      section = params[:section].to_i
+      element = params[:element].to_i
+      verb = params[:verb]
+      exhibit = Exhibit.find(id)
+      pages = exhibit.exhibit_pages
+      curr_page = pages[@page-1]
+      curr_section = curr_page.exhibit_sections[section-1]
+      
+      case verb
+      when "up"
+        curr_section.exhibit_elements[element-1].move_higher()
+      when "down"
+        curr_section.exhibit_elements[element-1].move_lower()
+      when "insert"
+        new_element = ExhibitElement.create(:exhibit_section_id => curr_section.id, :exhibit_element_layout_type => 'text', :element_text => "Enter Your Text Here")
+        new_element.insert_at(element)
+      when "delete"
+        curr_section.exhibit_elements[element-1].remove_from_list()
+        curr_section.exhibit_elements[element-1].destroy
+      when "layout"
+        curr_section.exhibit_elements[element-1].exhibit_element_layout_type = params[:type]
+        curr_section.exhibit_elements[element-1].save
+      end
+
+      redirect_to :action => 'edit_exhibit', :id => id
+    end
+    
+    def insert_illustration
+      id = params[:id]
+      @page = params[:page].to_i
+      element = params[:element].to_i
+      pos = params[:position]
+
+      new_illustration = ExhibitIllustration.create(:exhibit_element_id => element, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
+      new_illustration.insert_at(pos)
+
+      redirect_to :action => 'edit_exhibit', :id => id
+    end
+    
+    def edit_text
+      id = params['exhibit_id']
+      page = params['page_num']
+      element_id = params['element_id']
+      
+      element = ExhibitElement.find(element_id)
+      element.element_text = params['text']
+      element.save
+      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+    end
+    
+    def edit_header
+      id = params['head_exhibit_id']
+      page = params['head_page_num']
+      element_id = params['head_element_id']
+      
+      element = ExhibitElement.find(element_id)
+      element.element_text = params['header']
+      element.save
+      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+    end
+    
+    def edit_illustration
+      id = params['ill_exhibit_id']
+      page = params['ill_page_num']
+      element_id = params['ill_element_id']
+      illustration_id = params['illustration_id'].to_i
+      image_url = params['image_url']
+      type = params['type']
+      link = params['link']
+      width = params['width']
+      caption1 = params['caption1']
+      caption2 = params['caption2']
+      text = params['text']
+
+      if illustration_id < 0
+        illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :position => 1, :illustration_type => type, :image_url => image_url, :illustration_text => text, :caption1 => caption1,
+          :caption2 => caption2, :image_width => width, :link => link)
+      else
+        illustration = ExhibitIllustration.find(illustration_id)
+        illustration.illustration_type = type
+        illustration.image_url = image_url
+        illustration.illustration_text = text
+        illustration.caption1 = caption1
+        illustration.caption2 = caption2
+        illustration.image_width = width
+        illustration.link = link
+        illustration.save
+      end
+
+     redirect_to :action => 'edit_exhibit', :id => id, :page => page
     end
     
   private

@@ -45,13 +45,13 @@
 							<table>
 							<% for exhibit in my_exhibits -%>
 								<tr>
-									<td class="exhibit_thumbnail"><img src="<%=exhibit.thumbnail == nil ? '../images/lg-harrington.gif' : exhibit.thumbnail %>" alt="" width="50"/></td>
+									<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
 									<td class="exhibit_link"><%= exhibit.title %>&nbsp;<a href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
 								</tr>
 							<% end -%>
 							</table>
 						<% end # if there are exhibits -%>
-						<%= link_to "Create Exhibit", :action => 'new_exhibit' %>
+						<%= link_to "Create New Exhibit", :action => 'new_exhibit' %>
 					</div>
 				</td>
 			</tr>

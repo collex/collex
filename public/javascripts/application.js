@@ -808,3 +808,117 @@ function ExtractNumber(value)
 	return n == null || isNaN(n) ? 0 : n;
 }
  
+ //
+ // for editting exhibits
+ //
+
+var focusedFieldId = '';
+ 
+function focusField()
+{
+	document.getElementById(focusedFieldId).focus();
+}
+
+function doPopupFormSubmit(form_id)
+{
+    Effect.Fade(form_id+ "_div", { duration: 0.0 });
+
+	var form = document.getElementById(form_id);
+	form.submit();
+}
+
+function change_text(exhibit_id, page_num, element_id, parent_id)
+{
+	new Effect.Appear('text_area_form_div', { duration: 0.5 }); 
+	moveObjectToJustBelowItsParent('text_area_form_div', parent_id);
+	
+	document.getElementById('exhibit_id').value = exhibit_id;
+	document.getElementById('page_num').value = page_num;
+	document.getElementById('element_id').value = element_id;
+	var arrDiv = $(parent_id).getElementsByTagName('div');
+	if (arrDiv.length > 0)
+		var existing_note = arrDiv[0].innerHTML;
+	else
+		var existing_note = document.getElementById(parent_id).innerHTML;
+	existing_note = existing_note.gsub("<br />", "\n");
+	existing_note = existing_note.gsub("<br>", "\n");
+	document.getElementById('text').value = existing_note;
+	focusedFieldId = 'text_area_form_div';
+	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+}
+
+function change_header(exhibit_id, page_num, element_id, parent_id)
+{
+	new Effect.Appear('header_form_div', { duration: 0.5 }); 
+	moveObjectToJustBelowItsParent('header_form_div', parent_id);
+	
+	document.getElementById('head_exhibit_id').value = exhibit_id;
+	document.getElementById('head_page_num').value = page_num;
+	document.getElementById('head_element_id').value = element_id
+	var existing_note = document.getElementById(parent_id).innerHTML;
+	var arrH3 = $(parent_id).getElementsByTagName('h3');
+	if (arrH3.length > 0)
+	{
+		for (var i = 0; i < arrH3.length; i++)
+		{
+			if (arrH3[i].className == 'exhibit_header')
+				existing_note = arrH3[i].innerHTML.strip();
+		}
+	}
+		
+	document.getElementById('header').value = existing_note;
+	focusedFieldId = 'header_form_div';
+	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+}
+
+function change_illustration(exhibit_id, page_num, element_id, illustration_id, parent_id)
+{
+	new Effect.Appear('illustration_form_div', { duration: 0.5 }); 
+	moveObjectToLeftTopOfItsParent('illustration_form_div', parent_id);
+
+	document.getElementById('ill_exhibit_id').value = exhibit_id;
+	document.getElementById('ill_page_num').value = page_num;
+	document.getElementById('ill_element_id').value = element_id;
+	document.getElementById('illustration_id').value = illustration_id;
+	var par = $(parent_id);
+	var arrLinks = par.getElementsByTagName('a');
+	var arrImg = par.getElementsByTagName('img');
+	var arrDiv = par.getElementsByTagName('div');
+	if (arrImg.length > 0)
+		document.getElementById('image_url').value = arrImg[0].src;
+	if (arrLinks.length > 0)
+		document.getElementById('link').value = arrLinks[0].href;
+	if (arrImg.length > 0)
+		document.getElementById('width').value = arrImg[0].width;
+	for (var i = 0; i < arrDiv.length; i++)
+	{
+		if (arrDiv[i].className == 'exhibit_caption1')
+		{
+			var str = arrDiv[i].innerHTML;
+			var idx = str.indexOf("<div class=");
+			if (idx >= 0)
+				str = str.substring(0, idx);
+			str = str.strip();
+			document.getElementById('caption1').value = str;
+		}
+		if (arrDiv[i].className == 'exhibit_caption2')
+			document.getElementById('caption2').value = arrDiv[i].innerHTML;
+	}
+
+	var existing_note = document.getElementById(parent_id).innerHTML;
+	existing_note = existing_note.gsub("<br />", "\n");
+	existing_note = existing_note.gsub("<br>", "\n");
+	document.getElementById('text').value = existing_note;
+
+	focusedFieldId = 'illustration_form_div';
+	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+}
+
+
+//
+//<a href="http://www.rossettiarchive.org/docs/s438.raw.html">
+//<img width="250" alt="" src="http://www.rossettiarchive.org/img/s438.jpg"/>
+//</a>
+//<div class="exhibit_caption1">
+//Formal Self-Portrait, pencil, 1861
+//<div class="exhibit_caption2">Birmingham Museum and Art Gallery</div>

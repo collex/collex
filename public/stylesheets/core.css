@@ -103,24 +103,6 @@ color:black;
 	margin-bottom: 1em;
 }
 
-/* my9s tab */
-
-.my9s_instructions {
-	margin: 50px 200px 50px 200px;
-	border:gray 1px dotted;
-	background:#D3D3D3;	
-	text-align:center;
-	padding:5px;
-}
-
-.my9s_instructions span {
-font-weight:bold;
-}
-
-.my9s_instructions p{
-    font-style: italic;
-}
-
 /* rest of the styles */		
 
 .tag_minor_nav {

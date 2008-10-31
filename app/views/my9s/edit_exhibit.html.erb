@@ -1,3 +1,4 @@
+  <%= stylesheet_link_tag "exhibits_elements", :media => "all" %>
 <% current_page "My&nbsp;9s" -%>
 <div id="search-main">
 	<% if !is_logged_in? -%>
@@ -8,7 +9,158 @@
 			<%= link_to "My9s", :action => 'index' %><%= link_separator() %>&nbsp;<%= link_to "My objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
-		<%= @exhibit.title %>
-	<% end -%>
+		<div class="edit_exhibit_box">
+			<h1>EDITING EXHIBIT:&nbsp;<%= @exhibit.title %></h1>
+			<div class="inside_edit_exhibit_box">
+				<table>
+					<tr>
+						<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => @exhibit } %></td>
+						<td><%= render :partial => 'exhibit_globals_form', :locals => { :exhibit => @exhibit }  %></td>
+						<td>
+							<%= link_to_function "Show Outline", "show_exhibit_outline()" %><br />
+							<%= link_to "Preview", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
+							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
+						</td>
+						<td id="debug">
+							<% for page in @exhibit.exhibit_pages -%>
+								Page <%= page.position %> <%= page.created_at.to_s()[11..19] %><br />
+								<% for section in page.exhibit_sections -%>
+									&nbsp;&nbsp;&nbsp;&nbsp;Section <%= section.position -%> <%= section.has_border == 1 ? "Border" : "No Border" %> <%= section.created_at.to_s()[11..19] %><br />
+									<% for element in section.exhibit_elements -%>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Element <%= element.position -%> Type: <%= element.exhibit_element_layout_type %>  <%=element.created_at.to_s()[11..19] %><br />
+									<% end -%>
+								<% end -%>
+							<% end -%>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div> <% # Editing Exhibit %>
+		<% page = @exhibit.exhibit_pages[@page-1] -%>
+		<% if page != nil -%>
+			<% num_pages = @exhibit.exhibit_pages.length -%>
+			<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
+			Editing Page: <%= page.position %>
+			<%= link_to "[insert page before]", :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'insert' %>
+			<%= link_to(up_char(), :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'up') if @page > 1 %>
+			<%= link_to(down_char(), :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'down') if @page < num_pages %>
+			<%= link_to del_char(), :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'delete' %>
+			<%= link_to "[insert page after]", :action => 'edit_page', :id => @exhibit.id, :page => @page+1, :verb => 'insert' %>
+			<br /><br /><br />
+
+					<% for section in page.exhibit_sections -%>
+						<div class="edit_exhibit_box">
+							<h1><%= link_to ins_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'insert' }, { :title => 'Insert Section Before' } %>
+								Section&nbsp;<%= section.position %>&nbsp;
+								<%= link_to(up_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'up'}, { :title => 'Move Section Up' }) if section.position > 1 %>
+								<%= link_to(down_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'down'}, { :title => 'Move Section Down' }) if section.position < page.exhibit_sections.length %>
+								<%= link_to del_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'delete'}, { :title => 'Delete Section' } %>
+								<%= link_to("[Add Border]", :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'add_border') if section.has_border == 0 %>
+								<%= link_to("[Remove Border]", :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'remove_border') if section.has_border == 1 %>
+							</h1>
+							<div class="inside_edit_exhibit_box">
+								<% is_first = true -%>
+								<% for element in section.exhibit_elements -%>
+									<div class="edit_exhibit_box">
+										<h1><%= link_to ins_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'insert'}, { :title => 'Insert Element Before' } %>
+											Element&nbsp;<%= element.position %>&nbsp;(<%= element.exhibit_element_layout_type %>)&nbsp;
+											<%= link_to up_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'up'}, { :title => 'Move Element Up' } %>
+											<%= link_to down_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'down'}, { :title => 'Move Element Down' } %>
+											<%= link_to del_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'delete'}, { :title => 'Delete Element' } %>
+											<%= link_to( "[Header]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'header') if element.exhibit_element_layout_type != 'header' %>
+											<%= link_to( "[Text]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'text') if element.exhibit_element_layout_type != 'text' %>
+											<%= link_to( "[Pic_Text]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'pic_text') if element.exhibit_element_layout_type != 'pic_text' %>
+											<%= link_to( "[Text_Pic]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'text_pic') if element.exhibit_element_layout_type != 'text_pic' %>
+											<%= link_to( "[Pics]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'pics') if element.exhibit_element_layout_type != 'pics' %>
+										</h1>
+										<div class="inside_edit_exhibit_box">
+											<% if element.exhibit_element_layout_type == 'header' -%>
+												<%= render :partial => 'edit_exhibit_header', :locals => { :exhibit => @exhibit, :page => @page, :element => element } %>
+											<% elsif element.exhibit_element_layout_type == 'text' -%>
+												<%= render :partial => 'edit_exhibit_text', :locals => { :exhibit => @exhibit, :page => @page, :element => element, :is_first => is_first } %>
+												<% is_first = false -%>
+											<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+												<% illustration = element.exhibit_illustrations.find(:first) -%>
+												<table><tr>
+													<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :exhibit => @exhibit, :page => @page, :element_id => element.id, :illustration => illustration } %></td>
+													<td><%= render :partial => 'edit_exhibit_text', :locals => { :exhibit => @exhibit, :page => @page, :element => element, :is_first => is_first } %></td>
+													<% is_first = false -%>
+												</tr></table>
+											<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+												<% illustration = element.exhibit_illustrations.find(:first) -%>
+												<table><tr>
+													<td><%= render :partial => 'edit_exhibit_text', :locals => { :exhibit => @exhibit, :page => @page, :element => element, :is_first => is_first } %></td>
+													<% is_first = false -%>
+													<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :exhibit => @exhibit, :page => @page, :element_id => element.id, :illustration => illustration } %></td>
+												</tr></table>
+											<% elsif element.exhibit_element_layout_type == 'pics' -%>
+												<% illustrations = element.exhibit_illustrations -%>
+												<table><tr>
+													<% for illustration in illustrations -%>
+													<td><%= link_to ins_char(), { :action => 'insert_illustration', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.id, :position => illustration.position }, { :title => 'Insert Illustration' } %></td>
+													<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :exhibit => @exhibit, :page => @page, :element_id => element.id, :illustration => illustration } %></td>
+													<% end -%>
+													<td><%= link_to ins_char(), { :action => 'insert_illustration', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.id, :position => illustrations.length+1 }, { :title => 'Insert Illustration' } %></td>
+												</tr></table>
+											<% else -%>
+												Unknown element type:
+												<%= element.exhibit_element_layout_type %><br />
+											<% end -%>
+										</div> <% # Editing Element inner box %>
+									</div> <% # Editing Element outer box %>
+								<% end # for each element -%>
+								<%= link_to ins_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => section.exhibit_elements.length+1, :verb => 'insert'}, { :title => 'Insert Element' } %>
+							</div> <% # Editing Section inner box %>
+						</div> <% # Editing Section outer box %>
+					<% end # for each section -%>
+					<%= link_to ins_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => page.exhibit_sections.length+1, :verb => 'insert'}, { :title => 'Insert Section' } %>
+
+		<% end # if page != nil -%>
+	<% end # is logged in -%>
+</div>
+
+<div id="text_area_form_div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 420px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("text_area_form_div", { duration: 0.0 })' %>&nbsp;</span>
+    <form id="text_area_form" method="post" action="/my9s/edit_text" onsubmit="doPopupFormSubmit('text_area_form');">
+        <input type="hidden" name="exhibit_id" id="exhibit_id" />
+        <input type="hidden" name="page_num" id="page_num" />
+        <input type="hidden" name="element_id" id="element_id" />
+        <textarea rows="10" style="width:350px" name="text" id="text"></textarea>
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doPopupFormSubmit('text_area_form');" -%>&nbsp; </span>
+    </form>
+</div>
+
+<div id="illustration_form_div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 420px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("illustration_form_div", { duration: 0.0 })' %>&nbsp;</span>
+    <form id="illustration_form" method="post" action="/my9s/edit_illustration" onsubmit="doPopupFormSubmit('illustration_form');">
+        <input type="hidden" name="ill_exhibit_id" id="ill_exhibit_id" />
+        <input type="hidden" name="ill_page_num" id="ill_page_num" />
+        <input type="hidden" name="ill_element_id" id="ill_element_id" />
+        <input type="hidden" name="illustration_id" id="illustration_id" />
+        <label for="type">type:</label>
+			<select id="type" name="type" align="top" >
+			<option value="Image" >Image</option>
+			<option value="Text" >Text</option>
+			</select><br />
+        <label for="image_url">image_url:</label><input type="text" name="image_url" id="image_url" size="40" /><br />
+        <label for="link">link:</label><input type="text" name="link" id="link" size="40" /><br />
+        <label for="width">width:</label><input type="text" name="width" id="width" /><br />
+        <label for="caption1">caption1:</label><input type="text" name="caption1" id="caption1" size="40" /><br />
+        <label for="caption2">caption2:</label><input type="text" name="caption2" id="caption2" size="40" /><br />
+        <textarea rows="10" style="width:350px" name="text" id="text"></textarea>
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doPopupFormSubmit('illustration_form');" -%>&nbsp; </span>
+    </form>
+</div>
+
+<div id="header_form_div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+    <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("header_form_div", { duration: 0.0 })' %>&nbsp;</span>
+    <form id="header_form" method="post" action="/my9s/edit_header" onsubmit="doPopupFormSubmit('header_form');">
+        <input type="hidden" name="head_exhibit_id" id="head_exhibit_id" />
+        <input type="hidden" name="head_page_num" id="head_page_num" />
+        <input type="hidden" name="head_element_id" id="head_element_id" />
+        <label for="header">header:</label>
+        <input type="text" name="header" id="header" />
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doPopupFormSubmit('header_form');" -%>&nbsp; </span>
+    </form>
 </div>
 
