@@ -71,7 +71,8 @@
 	margin-top: 1em;
 	margin-left: 3em;
 	margin-right: 900px;
-	min-width: 300px;
+	min-width: 325px;
+	max-width:500px;
 	font-size: 13px;
 	padding:5px;
 }
