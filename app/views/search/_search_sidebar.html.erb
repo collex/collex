@@ -15,7 +15,7 @@
 ---------------------------------------------------------------------------- %>
 
 <div id="resource-list">
-	<h1>RESOURCES</h1>
+	<h1>LIMIT BY RESOURCE</h1>
 	<div class="resource-list-content">
 		<p class="sidebar_instructions"><i>Select a resource with which to narrow your search.</i></p>
 			<% for resource_category in @sites_forest.sorted_children -%>
@@ -31,7 +31,7 @@
 			<% end # if category is not zero -%>
 			<% end # for loop -%>
 	</div>
-	<h1>GENRES</h1>
+	<h1>LIMIT BY GENRE</h1>
 	<div class="resource-list-content">
 		<p class="sidebar_instructions"><i>Select the genres to include in your search.</i></p>
 			<ul>
@@ -40,7 +40,7 @@
 				<% end -%>
 			</ul>	
 	</div>
-	<h1>FREE CULTURE</h1>
+	<h1>LIMIT TO FREE CULTURE</h1>
 	<div class="resource-list-content">
 		<p class="sidebar_instructions"><i>'Free Culture' resources are freely available in their full form on the Internet. Check this box to search for 'Free Culture' objects only.</i></p>
 		<ul>
