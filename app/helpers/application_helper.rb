@@ -64,7 +64,7 @@ private
       ['Tags', tags_path, true, false],
       ['Exhibits', exhibit_list_path, true, false],
       ['News', news_path, false, false],
-      ['About', tab_about_path, false, false]
+      ['About', tab_about_path, true, false]
    ]
   
     html = ""
