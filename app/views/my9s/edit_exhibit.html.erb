@@ -9,7 +9,7 @@
 			<%= link_to "My9s", :action => 'index' %><%= link_separator() %>&nbsp;<%= link_to "My objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
-		<div class="edit_exhibit_box">
+		<div id="overview_data" class="edit_exhibit_box">
 			<h1>EDITING EXHIBIT:&nbsp;<%= @exhibit.title %></h1>
 			<div class="inside_edit_exhibit_box">
 				<table>
@@ -21,16 +21,8 @@
 							<%= link_to "Preview", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
 							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
 						</td>
-						<td id="debug">
-							<% for page in @exhibit.exhibit_pages -%>
-								Page <%= page.position %> <%= page.created_at.to_s()[11..19] %><br />
-								<% for section in page.exhibit_sections -%>
-									&nbsp;&nbsp;&nbsp;&nbsp;Section <%= section.position -%> <%= section.has_border == 1 ? "Border" : "No Border" %> <%= section.created_at.to_s()[11..19] %><br />
-									<% for element in section.exhibit_elements -%>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Element <%= element.position -%> Type: <%= element.exhibit_element_layout_type %>  <%=element.created_at.to_s()[11..19] %><br />
-									<% end -%>
-								<% end -%>
-							<% end -%>
+						<td id="exhibit-outline">
+							<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit } %>
 						</td>
 					</tr>
 				</table>
@@ -49,33 +41,37 @@
 			<br /><br /><br />
 
 					<% for section in page.exhibit_sections -%>
-						<div class="edit_exhibit_box">
+						<div class="edit_exhibit_box <%= 'edit_exhibit_box_no_border' if section.has_border == 0 %>">
 							<h1><%= link_to ins_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'insert' }, { :title => 'Insert Section Before' } %>
 								Section&nbsp;<%= section.position %>&nbsp;
 								<%= link_to(up_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'up'}, { :title => 'Move Section Up' }) if section.position > 1 %>
 								<%= link_to(down_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'down'}, { :title => 'Move Section Down' }) if section.position < page.exhibit_sections.length %>
 								<%= link_to del_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'delete'}, { :title => 'Delete Section' } %>
-								<%= link_to("[Add Border]", :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'add_border') if section.has_border == 0 %>
-								<%= link_to("[Remove Border]", :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'remove_border') if section.has_border == 1 %>
+								<select onchange="location = this.options[this.selectedIndex].value;">
+								<option <%= "selected='selected'" if section.has_border == 1 %> value="edit_section?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&verb=add_border">Border</option>
+								<option <%= "selected='selected'" if section.has_border == 0 %> value="edit_section?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&verb=remove_border">No border</option>
+								</select>
 							</h1>
 							<div class="inside_edit_exhibit_box">
 								<% is_first = true -%>
 								<% for element in section.exhibit_elements -%>
-									<div class="edit_exhibit_box">
+									<div class="edit_exhibit_box <%= 'edit_exhibit_box_no_border' if section.has_border == 0 %>">
 										<h1><%= link_to ins_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'insert'}, { :title => 'Insert Element Before' } %>
-											Element&nbsp;<%= element.position %>&nbsp;(<%= element.exhibit_element_layout_type %>)&nbsp;
+											Element&nbsp;<%= element.position %>&nbsp;
 											<%= link_to up_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'up'}, { :title => 'Move Element Up' } %>
 											<%= link_to down_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'down'}, { :title => 'Move Element Down' } %>
 											<%= link_to del_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'delete'}, { :title => 'Delete Element' } %>
-											<%= link_to( "[Header]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'header') if element.exhibit_element_layout_type != 'header' %>
-											<%= link_to( "[Text]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'text') if element.exhibit_element_layout_type != 'text' %>
-											<%= link_to( "[Pic_Text]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'pic_text') if element.exhibit_element_layout_type != 'pic_text' %>
-											<%= link_to( "[Text_Pic]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'text_pic') if element.exhibit_element_layout_type != 'text_pic' %>
-											<%= link_to( "[Pics]", :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'layout', :type => 'pics') if element.exhibit_element_layout_type != 'pics' %>
+											<select onchange="location = this.options[this.selectedIndex].value;">
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=header">Header</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=text">Text</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=pic_text">Picture then Text</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=text_pic">Text then Picture</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=pics">Row of Pictures</option>
+											</select>
 										</h1>
 										<div class="inside_edit_exhibit_box">
 											<% if element.exhibit_element_layout_type == 'header' -%>
-												<%= render :partial => 'edit_exhibit_header', :locals => { :exhibit => @exhibit, :page => @page, :element => element } %>
+												<%= render :partial => 'exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
 											<% elsif element.exhibit_element_layout_type == 'text' -%>
 												<%= render :partial => 'edit_exhibit_text', :locals => { :exhibit => @exhibit, :page => @page, :element => element, :is_first => is_first } %>
 												<% is_first = false -%>

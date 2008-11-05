@@ -5,10 +5,26 @@
 	background-color: gray;
 }
 
+.exhibit_outline_text {
+	color: #bbbbbb;
+	font-style: italic;
+}
+
+.exhibit_outline_header {
+	font-size: larger;
+	font-weight: bold;
+	color:#999999;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
 /* styles for the standard boxes */
 
 .edit_exhibit_box {
 	border: 1px solid gray;
+}
+
+.edit_exhibit_box_no_border {
+	border: 0px;
 }
 
 .edit_exhibit_box h1 {
@@ -28,6 +44,12 @@
 	margin-left: .2em;
 	margin-right: .2em;
 	margin-bottom: .5em;
+}
+
+.exhibit_delta_link {
+	position: absolute;
+
+	z-index: 100;
 }
 
 /* my9s tab */

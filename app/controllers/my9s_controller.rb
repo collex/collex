@@ -335,14 +335,15 @@ class My9sController < ApplicationController
     end
     
     def edit_header
-      id = params['head_exhibit_id']
-      page = params['head_page_num']
-      element_id = params['head_element_id']
+      element = params['editorId']
+      arr = element.split('_')
+      element_id = arr[arr.length-1].to_i
       
+      value = params['value']
       element = ExhibitElement.find(element_id)
-      element.element_text = params['header']
+      element.element_text = value
       element.save
-      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+      render :text=> value
     end
     
     def edit_illustration

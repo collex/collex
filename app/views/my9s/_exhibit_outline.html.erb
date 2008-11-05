@@ -1,0 +1,29 @@
+<% for page in exhibit.exhibit_pages -%>
+	<span class="exhibit_outline_text">Page <%= page.position %>.</span><br />
+	<% for section in page.exhibit_sections -%>
+		<span class="exhibit_outline_text">&nbsp;&nbsp;&nbsp;&nbsp;Section <%= section.position -%>.</span><br />
+		<% for element in section.exhibit_elements -%>
+			<span class="exhibit_outline_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= element.position -%>.</span>
+			<% if element.exhibit_element_layout_type == 'text' -%>
+				<%= element_text_thumbnail(element) %>
+			<% elsif element.exhibit_element_layout_type == 'header' -%>
+				<span class="exhibit_outline_header"><b><big><%= element.element_text %></big></b></span>
+			<% elsif element.exhibit_element_layout_type == 'pics' -%>
+				<% illustrations = element.exhibit_illustrations -%>
+				<%= "[Row of pictures: none specified]" if illustrations.length == 0 %>
+				<% for illustration in illustrations -%>
+				<%= element_pic_thumbnail_illustration(illustration) %>
+				<% end -%>
+			<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+				<%= element_pic_thumbnail(element) %>
+				<%= element_text_thumbnail(element) %>
+			<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+				<%= element_text_thumbnail(element) %>
+				<%= element_pic_thumbnail(element) %>
+			<% else -%>
+				Error: unknown type
+			<% end -%>
+			<br />
+		<% end -%>
+	<% end -%>
+<% end -%>

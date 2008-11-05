@@ -913,12 +913,3 @@ function change_illustration(exhibit_id, page_num, element_id, illustration_id, 
 	focusedFieldId = 'illustration_form_div';
 	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
 }
-
-
-//
-//<a href="http://www.rossettiarchive.org/docs/s438.raw.html">
-//<img width="250" alt="" src="http://www.rossettiarchive.org/img/s438.jpg"/>
-//</a>
-//<div class="exhibit_caption1">
-//Formal Self-Portrait, pencil, 1861
-//<div class="exhibit_caption2">Birmingham Museum and Art Gallery</div>

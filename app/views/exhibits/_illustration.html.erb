@@ -1,12 +1,12 @@
 <center>
 <div class="exhibit_illustration">
 	<% if illustration == nil -%>
-		<img src="../images/lg-harrington.gif" width="100" alt="" />
+		<img src="../images/lg-harrington.gif" width="100px" alt="" />
 	<% else -%>
 		<% if illustration.link.length > 0 -%>
 			<a href="<%= illustration.link %>">
 		<% end -%>
-		<img src="<%= illustration.image_url %>" width="<%= illustration.image_width %>" alt="" />
+		<img id='illustration_img_<%= illustration.id %>' src="<%= illustration.image_url %>" width="<%= illustration.image_width %>" alt="" />
 		<% if illustration.link.length > 0 -%>
 			</a>
 		<% end -%>
