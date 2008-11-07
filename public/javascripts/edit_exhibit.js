@@ -462,41 +462,28 @@ var FullWindow = {
 
  var Widenable = {
  	einfo: false,
- 	//minheight: 50,
  	minwidth: 10,
- 	initialize: function()
- 	{
-		// Attach this class to the onload function so we can initialize at the right time.
- 		with (document) 
- 		if (getElementsByTagName && createElement && insertBefore && appendChild) {
- 			this.oldload = window.onload;
- 			window.onload = this.onload;
- 		}
- 	},
- 	onload: function()
- 	{
-		// First call the existing onload function so we don't break other scripts.
- 		if (Widenable.oldload) {
- 			Widenable.oldload();
- 			Widenable.oldload = null;
- 		}
-		
-		// Make all div's resizable if they have 'resizable' in the class name.
-		//var x = $$('.resizable');
-		//x.each( function(el) { Widenable.prepare(el) });
- 	},
  	prepare: function(ta, callbackFunction)
  	{
 		var target = $(ta);
 		target.callbackFunction = callbackFunction;
-		var wrapper = target.wrap('div');
- 		var handler = document.createElement('div');
- 		wrapper.style.width = ta.offsetWidth + 'px';
- 		handler.className = 'textarea-resizer';
- 		handler.style.width = (ta.offsetWidth - 2) + 'px';
+		
+		// Wrap the existing element in a table and put the handler beside it.
+		var wrapper1 = target.wrap('td');
+		var wrapper2 = wrapper1.wrap('tr');
+		var wrapper = wrapper2.wrap('table');
+		var column = new Element('td');
+ 		var handler = new Element('span');
+ 		wrapper2.appendChild(column);
+		column.appendChild(handler);
+
+ 		//wrapper.style.width = ta.offsetWidth + 'px';
+
+		handler.setStyle( { cursor: 'e-resize' });
+		handler.innerHTML = '&#x25BA;';
+
  		handler._wrapper = wrapper;
  		handler._ta = ta;
- 		wrapper.appendChild(handler);
  		handler.onmousedown = function(e)
  		{
  			Widenable.onmousedown(e, this);
@@ -513,9 +500,7 @@ var FullWindow = {
  			wrapper: handler._wrapper,
  			ta: handler._ta,
  			w: handler._ta.offsetWidth,
- 			//h: handler._ta.offsetHeight,
  			x: e.clientX,
- 			//y: e.clientY
  		};
  		with (this.einfo) {
  			ta.className += ' textarea-active';
@@ -552,10 +537,9 @@ var FullWindow = {
  			return;
  		if (!e) 
  			e = window.event;
- 		//this.einfo.ta.style.height = Math.max(this.minheight, this.einfo.h + e.clientY - this.einfo.y) + 'px';
  		this.einfo.ta.style.width = Math.max(this.minwidth, this.einfo.w + e.clientX - this.einfo.x) + 'px';
- 		this.einfo.handler.style.width = this.einfo.ta.style.width;
- 		this.einfo.wrapper.style.width = this.einfo.ta.style.width;
+ 		//this.einfo.handler.style.width = this.einfo.ta.style.width;
+ 		//this.einfo.wrapper.style.width = this.einfo.ta.style.width;
  		this.cancel_event(e);
  		return false;
  	},
@@ -570,4 +554,4 @@ var FullWindow = {
  	}
  };
  
-Widenable.initialize();
+//Widenable.initialize();
