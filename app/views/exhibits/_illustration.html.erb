@@ -1,12 +1,12 @@
 <center>
 <div class="exhibit_illustration">
 	<% if illustration == nil -%>
-		<img src="../images/lg-harrington.gif" width="100px" alt="" />
+		<img id='illustration_img_<%= illustration.id %>' src="../images/lg-harrington.gif" width="100px" alt="" />
 	<% else -%>
 		<% if illustration.link.length > 0 -%>
 			<a href="<%= illustration.link %>">
 		<% end -%>
-		<img id='illustration_img_<%= illustration.id %>' src="<%= illustration.image_url %>" width="<%= illustration.image_width %>" alt="" />
+		<img id='illustration_img_<%= illustration.id %>' src="<%= illustration.image_url %>" width="<%= illustration.image_width %>px" alt="" />
 		<% if illustration.link.length > 0 -%>
 			</a>
 		<% end -%>
@@ -16,6 +16,10 @@
 				<div class="exhibit_caption2"><%= illustration.caption2 %></div>
 			<% end -%>
 			</div>
+		<% else -%>
+			<% if illustration.caption2.length > 0 -%>
+				<div class="exhibit_caption2"><%= illustration.caption2 %></div>
+			<% end -%>
 		<% end -%>
 	<% end # illustration == nil -%>
 </div>

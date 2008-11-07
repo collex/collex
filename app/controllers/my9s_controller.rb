@@ -347,6 +347,17 @@ class My9sController < ApplicationController
       render :text=> value
     end
     
+    def change_img_width
+      element = params['illustration_id']
+      arr = element.split('_')
+      element_id = arr[arr.length-1].to_i
+      width = params['width'].to_i
+      illustration = ExhibitIllustration.find(element_id)
+      illustration.image_width = width
+      illustration.save
+      render :text=> ""
+    end
+    
     def edit_illustration
       id = params['ill_exhibit_id']
       page = params['ill_page_num']

@@ -29,7 +29,18 @@
 	el = $('full_window');
 	if (el)
 		FullWindow.initialize('full_window', "OUTLINE");
+		
+	els = $$('.exhibit_illustration img');
+	els.each(function(el) { Widenable.prepare(el, imgResized); });
  });
+
+function imgResized(illustration_id, width)
+{
+	new Ajax.Request("/my9s/change_img_width", {
+		parameters : "illustration_id="+ illustration_id + "&width=" + width,
+		onFailure : function(resp) { alert("Oops, there's been an error: "); }
+	});
+}
 
 //<div class="full_window_wrapper" style="position:absolute; width: 362px;">// wrapper
 //	<div class="full_window_client" style="z-index: 0; left: 435px; top: 209px; height: 477px; width: 362px;">
@@ -449,10 +460,10 @@ var FullWindow = {
 	},	// end initialize()
 };
 
- var Resizer = {
+ var Widenable = {
  	einfo: false,
- 	minheight: 50,
- 	minwidth: 100,
+ 	//minheight: 50,
+ 	minwidth: 10,
  	initialize: function()
  	{
 		// Attach this class to the onload function so we can initialize at the right time.
@@ -465,18 +476,19 @@ var FullWindow = {
  	onload: function()
  	{
 		// First call the existing onload function so we don't break other scripts.
- 		if (Resizer.oldload) {
- 			Resizer.oldload();
- 			Resizer.oldload = null;
+ 		if (Widenable.oldload) {
+ 			Widenable.oldload();
+ 			Widenable.oldload = null;
  		}
 		
 		// Make all div's resizable if they have 'resizable' in the class name.
-		var x = $$('.resizable');
-		x.each( function(el) { Resizer.prepare(el) });
+		//var x = $$('.resizable');
+		//x.each( function(el) { Widenable.prepare(el) });
  	},
- 	prepare: function(ta)
+ 	prepare: function(ta, callbackFunction)
  	{
 		var target = $(ta);
+		target.callbackFunction = callbackFunction;
 		var wrapper = target.wrap('div');
  		var handler = document.createElement('div');
  		wrapper.style.width = ta.offsetWidth + 'px';
@@ -487,7 +499,7 @@ var FullWindow = {
  		wrapper.appendChild(handler);
  		handler.onmousedown = function(e)
  		{
- 			Resizer.onmousedown(e, this);
+ 			Widenable.onmousedown(e, this);
  		}
  	},
  	onmousedown: function(e, handler)
@@ -501,9 +513,9 @@ var FullWindow = {
  			wrapper: handler._wrapper,
  			ta: handler._ta,
  			w: handler._ta.offsetWidth,
- 			h: handler._ta.offsetHeight,
+ 			//h: handler._ta.offsetHeight,
  			x: e.clientX,
- 			y: e.clientY
+ 			//y: e.clientY
  		};
  		with (this.einfo) {
  			ta.className += ' textarea-active';
@@ -513,11 +525,11 @@ var FullWindow = {
  		this.oldmouseup = document.onmouseup;
  		document.onmousemove = function(e)
  		{
- 			Resizer.onmousemove(e);
+ 			Widenable.onmousemove(e);
  		}
  		document.onmouseup = function(e)
  		{
- 			Resizer.onmouseup(e);
+ 			Widenable.onmouseup(e);
  		}
  	},
  	onmouseup: function(e)
@@ -527,6 +539,8 @@ var FullWindow = {
  		with (this.einfo) {
  			ta.className = ta.className.replace(/ *textarea-active/, '');
  			wrapper.className = '';
+			var callbackFunction = $(ta).callbackFunction;
+			callbackFunction(ta.id, $(ta).getStyle('width'));
  		}
  		this.einfo = false;
  		document.onmousemove = this.oldmousemove;
@@ -538,7 +552,7 @@ var FullWindow = {
  			return;
  		if (!e) 
  			e = window.event;
- 		this.einfo.ta.style.height = Math.max(this.minheight, this.einfo.h + e.clientY - this.einfo.y) + 'px';
+ 		//this.einfo.ta.style.height = Math.max(this.minheight, this.einfo.h + e.clientY - this.einfo.y) + 'px';
  		this.einfo.ta.style.width = Math.max(this.minwidth, this.einfo.w + e.clientX - this.einfo.x) + 'px';
  		this.einfo.handler.style.width = this.einfo.ta.style.width;
  		this.einfo.wrapper.style.width = this.einfo.ta.style.width;
@@ -556,4 +570,4 @@ var FullWindow = {
  	}
  };
  
- Resizer.initialize();
+Widenable.initialize();
