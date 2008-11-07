@@ -5,9 +5,22 @@
 	background-color: gray;
 }
 
+.outline_toggle {
+	margin-right: 3px;
+}
+
+.outline_tree li {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	padding-bottom:3px;
+}
+
 .exhibit_outline_text {
 	color: #bbbbbb;
 	font-style: italic;
+	margin-right: 3px;
+	cursor: move;
 }
 
 .exhibit_outline_header {
@@ -15,6 +28,22 @@
 	font-weight: bold;
 	color:#999999;
 	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
+#exhibit_outline_title {
+	background-color: #cccccc;
+	font-weight: bold;
+	text-align: center;
+	cursor: move;
+}
+
+.textarea-resizer {
+	background:#E0E0E0 url(../images/resize-handler.gif) no-repeat scroll 100% 100%;
+	border:1px solid #B0B0B0;
+	cursor:se-resize;
+	font-size:11px;
+	height:11px;
+	line-height:11px;
 }
 
 /* styles for the standard boxes */

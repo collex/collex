@@ -1,9 +1,12 @@
+<ul id="exhibit_outline" class="outline_tree">
 <% for page in exhibit.exhibit_pages -%>
-	<span class="exhibit_outline_text">Page <%= page.position %>.</span><br />
+	<li><%= tree_node( "Page #{page.position}.", "p#{page.position}", "outline", "exhibit_outline_text", "toggle_outline", :open ) %></li>
+	<ul id='outline_<%= "p#{page.position}" %>'>
 	<% for section in page.exhibit_sections -%>
-		<span class="exhibit_outline_text">&nbsp;&nbsp;&nbsp;&nbsp;Section <%= section.position -%>.</span><br />
+		<li><%= tree_node( "Section #{section.position}.", "s#{section.position}", "outline", "exhibit_outline_text", "toggle_outline", :open ) %></li>
+		<ul id='outline_<%= "s#{section.position}" %>'>
 		<% for element in section.exhibit_elements -%>
-			<span class="exhibit_outline_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= element.position -%>.</span>
+			<li><span class="exhibit_outline_text"><%= element.position -%>.</span>
 			<% if element.exhibit_element_layout_type == 'text' -%>
 				<%= element_text_thumbnail(element) %>
 			<% elsif element.exhibit_element_layout_type == 'header' -%>
@@ -23,7 +26,10 @@
 			<% else -%>
 				Error: unknown type
 			<% end -%>
-			<br />
+			</li>
 		<% end -%>
+		</ul>
 	<% end -%>
+	</ul>
 <% end -%>
+</ul>

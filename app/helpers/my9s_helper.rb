@@ -37,4 +37,15 @@ module My9sHelper
   def element_pic_thumbnail_illustration(illustration)
       "<img src='#{illustration.image_url}' height='20' />"
   end
+  
+  def tree_node( item_name, item_id, item_id_prefix, class_name, toggle_function, initial_state = :closed )
+    display_none = 'style="display:none"'
+    label = "<span id=\"#{item_id_prefix}_#{item_id}_closed\" #{initial_state == :open ? display_none : ''} class='outline_toggle'>"
+    label << link_to_function('&#x25BA;',"#{toggle_function}('#{item_id}')")
+    label << "</span>"
+    label << "<span id=\"#{item_id_prefix}_#{item_id}_opened\" #{initial_state == :closed ? display_none : ''} class='outline_toggle'>"
+    label << link_to_function('&#x25BC;', "#{toggle_function}('#{item_id}')")
+    label << "</span>"
+    label << "<span class='#{class_name}'>" + item_name + "</span>"
+  end  
 end

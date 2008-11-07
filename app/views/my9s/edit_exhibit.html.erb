@@ -1,5 +1,17 @@
-  <%= stylesheet_link_tag "exhibits_elements", :media => "all" %>
+<%= stylesheet_link_tag "exhibits_elements", :media => "all" %>
 <% current_page "My&nbsp;9s" -%>
+
+<!-- <div id="exhibit_outline_window" class="resizable">
+	<div id="exhibit_outline_title">
+		OUTLINE
+	</div>
+	< %= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit } %>
+</div> -->
+
+<div id="full_window">
+	<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit } %>
+</div>
+
 <div id="search-main">
 	<% if !is_logged_in? -%>
 		<%= render :partial => 'my9s_instructions' %>
@@ -20,9 +32,6 @@
 							<%= link_to_function "Show Outline", "show_exhibit_outline()" %><br />
 							<%= link_to "Preview", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
 							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
-						</td>
-						<td id="exhibit-outline">
-							<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit } %>
 						</td>
 					</tr>
 				</table>

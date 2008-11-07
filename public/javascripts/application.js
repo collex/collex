@@ -75,6 +75,12 @@ function toggleCategory(category_id) {
 	}	
 }
 
+function toggle_outline(node_id) {
+	Element.toggle("outline_" + node_id + "_opened");
+	Element.toggle("outline_" + node_id + "_closed");
+	Element.toggle("outline_" + node_id);
+}
+
 function popUp(URL) {
   day = new Date();
   id = day.getTime();
