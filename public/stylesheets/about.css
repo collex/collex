@@ -20,7 +20,7 @@ padding:2px;
 	background-repeat:no-repeat;
 	margin-top:10px;
 	width: 800px;
-	height: 370px;
+	height: 360px;
 }
 
 #aboutContent p {
@@ -72,8 +72,12 @@ border:maroon solid 1px;
 
 #innerContent {
 	background-color:white;
-	margin-top: 25px;
+	margin-top: 20px;
 	margin-left:15px;
 	margin-right:15px;
+}
+
+p.header {
+border-bottom:gray 1px solid;
 }
 
