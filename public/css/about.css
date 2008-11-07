@@ -1,0 +1,77 @@
+#aboutContent {
+background-image:url('images/gradient_bar.lg.jpg');
+background-repeat:no-repeat;
+margin:40px 25px 30px 25px;
+min-width: 925px;
+padding:6px;
+
+
+}
+
+#aboutContent p {
+min-width: 400px;
+max-width:450px;
+padding: 6px;
+font-size:10pt;
+text-align:center;
+margin: 10px 20px 10px 10px;
+}
+
+#aboutContent h2 {
+text-align:center;
+font-size:1.5em;
+margin: 5px 0px 0px 0px;
+}
+
+#aboutScholarly {
+margin: 10px 10px 10px 10px;
+float:left;
+}
+
+#aboutScholarly img {
+float:left;
+}
+
+
+
+#innerContent {
+
+}
+
+
+
+/*#rightColumn{
+border:black 1px solid;
+margin-top:-180px;
+margin-left:690px;
+margin-right:35px;
+min-width:300px;
+max-width:350px;
+font-size:medium;
+}
+
+#rightColumn p {
+text-align:center;
+margin: 8px 5px 5px 5px;
+padding: 3px;
+
+}*/
+
+.about_header {
+border-bottom: 1px solid #999;
+font-variant:small-caps;
+font-size: 1.4em;
+font-weight:bold;
+color:#999;
+padding-top:.4em;
+}
+
+
+	
+img {
+background: #cccccc;
+border: #cccccc solid;
+}
+
+a {
+color: maroon;}
