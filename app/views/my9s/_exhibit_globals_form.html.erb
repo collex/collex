@@ -2,15 +2,15 @@
   <table class="edit_exhibit_form"> 
   <tr> 
     <td>Exhibit title:</td> 
-    <td><%= text_field_tag("title", exhibit.title, :size => 30) %></td> 
+    <td><%= text_field_tag("title", exhibit.title, :size => 50) %></td> 
   </tr> 
   <tr> 
     <td>Visible URL:</td> 
-    <td><%= text_field_tag("visible_url", exhibit.visible_url, :size => 30)%></td> 
+    <td>http://nines.org/exhibit/<%= text_field_tag("visible_url", exhibit.visible_url, :size => 21)%></td> 
   </tr> 
   <tr> 
     <td>Thumbnail:</td> 
-    <td><%= text_field_tag("thumbnail", exhibit.thumbnail, :size => 30) %></td> 
+    <td><%= text_field_tag("thumbnail", exhibit.thumbnail, :size => 50) %></td> 
   </tr> 
   <tr> 
     <td>Published State:</td> 

@@ -228,11 +228,11 @@ class My9sController < ApplicationController
 
     def edit_page
       id = params[:id]
-      @page = params[:page].to_i
+      page = params[:page].to_i
       verb = params[:verb]
       exhibit = Exhibit.find(id)
       pages = exhibit.exhibit_pages
-      curr_page = pages[@page-1]
+      curr_page = pages[page-1]
       
       case verb
       when "up"
@@ -241,18 +241,18 @@ class My9sController < ApplicationController
         curr_page.move_lower()
       when "insert"
         new_section = ExhibitPage.create(:exhibit_id => id)
-        new_section.insert_at(@page)
+        new_section.insert_at(page)
       when "delete"
         curr_page.remove_from_list()
         curr_page.destroy
       end
 
-      redirect_to :action => 'edit_exhibit', :id => id
+      redirect_to :action => 'edit_exhibit', :id => id, :page => page
     end
     
     def edit_section
       id = params[:id]
-      @page = params[:page].to_i
+      page = params[:page].to_i
       section = params[:section].to_i
       verb = params[:verb]
       exhibit = Exhibit.find(id)
@@ -278,18 +278,18 @@ class My9sController < ApplicationController
         curr_page.exhibit_sections[section-1].save
       end
 
-      redirect_to :action => 'edit_exhibit', :id => id
+      redirect_to :action => 'edit_exhibit', :id => id, :page => page
     end
     
     def edit_element
       id = params[:id]
-      @page = params[:page].to_i
+      page = params[:page].to_i
       section = params[:section].to_i
       element = params[:element].to_i
       verb = params[:verb]
       exhibit = Exhibit.find(id)
       pages = exhibit.exhibit_pages
-      curr_page = pages[@page-1]
+      curr_page = pages[page-1]
       curr_section = curr_page.exhibit_sections[section-1]
       
       case verb
@@ -308,30 +308,31 @@ class My9sController < ApplicationController
         curr_section.exhibit_elements[element-1].save
       end
 
-      redirect_to :action => 'edit_exhibit', :id => id
+      redirect_to :action => 'edit_exhibit', :id => id, :page => page
     end
     
     def insert_illustration
       id = params[:id]
-      @page = params[:page].to_i
+      page = params[:page].to_i
       element = params[:element].to_i
       pos = params[:position]
 
       new_illustration = ExhibitIllustration.create(:exhibit_element_id => element, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
       new_illustration.insert_at(pos)
 
-      redirect_to :action => 'edit_exhibit', :id => id
+      redirect_to :action => 'edit_exhibit', :id => id, :page => page
     end
     
     def edit_text
-      id = params['exhibit_id']
-      page = params['page_num']
-      element_id = params['element_id']
+      element = params['editorId']
+      arr = element.split('_')
+      element_id = arr[arr.length-1].to_i
       
+      value = params['value']
       element = ExhibitElement.find(element_id)
-      element.element_text = params['text']
+      element.element_text = value
       element.save
-      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+      render :text=> value
     end
     
     def edit_header

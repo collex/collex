@@ -3,23 +3,32 @@
  */
 
  document.observe('dom:loaded', function() {
- 	var els = document.getElementsByClassName('exhibit_header');
+ 	var els = $$('.exhibit_header');
 	for (var i = 0; i < els.length; i++)
 	{
 		new Ajax.InPlaceEditor(els[i], 'edit_header');
 	}
  	
-	els = document.getElementsByClassName('exhibit_text');
+	els = $$('.exhibit_text');
 	for (var i = 0; i < els.length; i++)
 	{
-		new Ajax.InPlaceEditor(els[i], 'edit_text', { rows : '20', cols : '40' });
+		new Ajax.InPlaceEditor(els[i], 'edit_text', 
+			{ 
+				onEnterEditMode: function(form, value) { },
+				rows : '20', 
+				cols : '60' 
+			});
 	}
 	
-	Sortable.create('exhibit_outline');
+	var el = $('exhibit_outline');
+	if (el)
+		Sortable.create(el);
 	//Sortable.create('exhibit_outline_page');
 	//Sortable.create('exhibit_outline_section');
 	
-	FullWindow.initialize('full_window', "OUTLINE");
+	el = $('full_window');
+	if (el)
+		FullWindow.initialize('full_window', "OUTLINE");
  });
 
 //<div class="full_window_wrapper" style="position:absolute; width: 362px;">// wrapper
