@@ -1,17 +1,45 @@
 
 /* Use this CSS file for styles that are specfic to "About" section */
 
+.tag_minor_nav a.here {
+color:black;
+font-size: 14pt;
+background-color:white;
+padding:2px;
+}
+
+/*#iconNav {
+text-align:center;
+margin-top:30px;
+margin-bottom:30px;
+padding:2px;
+}*/
+
 #aboutContent {
 	background-image:url('/images/aboutContent.jpg');
 	background-repeat:no-repeat;
+	margin-top:10px;
 	width: 800px;
-	height: 390px;
+	height: 370px;
 }
 
 #aboutContent p {
 	font-size:9pt;
 	padding-left: 3px;
-	text-align:left;
+	text-align:center;
+}
+
+#aboutContent a {
+ border:none;
+}
+
+#aboutContent a:hover {
+border:maroon;
+background-color:white;
+}
+
+#aboutContent a span {
+border:none;
 }
 
 #aboutContent h2 {
@@ -25,15 +53,27 @@
 }
 
 .about-banner-column {
-	margin-top:80px;
-	margin-left:45px;
+	margin-top:77px;
+	margin-left:48px;
 	padding-left: 3px;
 	width: 200px;
 	float:left;	
 }
 
+.about-banner-column img {
+ margin-left: 15px;
+ margin-bottom:-3px;
+ border:none;
+}
+
+.about-banner-column img:hover {
+border:maroon solid 1px;
+}
+
 #innerContent {
 	background-color:white;
 	margin-top: 25px;
+	margin-left:15px;
+	margin-right:15px;
 }
 
