@@ -52,13 +52,20 @@ border:none;
 	color:maroon;
 }
 
+#about-tools-banner {
+margin: 10px 25px 10px 25px;
+background-color:#E0E0E0;
+}
+
+
 .about-banner-column {
 	margin-top:77px;
 	margin-left:48px;
-	padding-left: 3px;
+	padding-left: 2px;
 	width: 200px;
 	float:left;	
 }
+
 
 .about-banner-column img {
  margin-left: 15px;
@@ -70,12 +77,61 @@ border:none;
 border:maroon solid 1px;
 }
 
+.about-tools-banner-column {
+	margin-top:30px;
+	margin-left:50px;
+	margin-bottom:30px;
+	padding-left: 1px;
+	width: 250px;
+	height: 300px;
+	float:left;	
+	text-align:center;
+}
+
+.about-tools-banner-column img{
+border:#E0E0E0 solid 5px;
+
+}
+
+.about-tools-banner-column img:hover{
+border:gray solid 5px;
+
+}
+
+.about-tools-banner-column a {
+background-color:white;
+}
+
+.about-tools-banner-column a:hover {
+color:maroon;
+}
+
 #innerContent {
 	background-color:white;
-	margin-top: 15px;
-	margin-left:15px;
-	margin-right:15px;
+	margin-top: 10px;
+	margin-left:25px;
+	margin-right:20px;
+	width:765px;
 }
+
+#toolsHeader {
+background-color:#E0E0E0;
+margin:30px 100px 10px 30px;
+padding:.9em;
+width:875px;
+font-size:11pt;
+}
+
+#toolsContent {
+background-color:#E0E0E0;
+margin-top: 450px;
+margin-left:50px;
+margin-right:20px;
+width:875px;
+font-size:11pt;
+}
+
+
 
 p.header {
 border-bottom:gray 1px solid;
