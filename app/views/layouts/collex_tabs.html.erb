@@ -70,7 +70,9 @@
 		when :tag
 		  javascript_include_tag 'sidebar_tag_cloud'
 		when :my9s
-		  javascript_include_tag 'edit_exhibit'
+		  javascript_include_tag('full_window') +
+		  javascript_include_tag('widenable') +
+		  javascript_include_tag('edit_exhibit')
 		when :home 
 		when :login 
 		else 

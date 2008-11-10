@@ -312,15 +312,23 @@ class My9sController < ApplicationController
     end
     
     def insert_illustration
-      id = params[:id]
-      page = params[:page].to_i
-      element = params[:element].to_i
+      element_id = params[:element_id]
       pos = params[:position]
+      element = ExhibitElement.find(element_id)
 
-      new_illustration = ExhibitIllustration.create(:exhibit_element_id => element, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
+      new_illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
       new_illustration.insert_at(pos)
 
-      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+    end
+    
+    def change_element_type
+      element_id = params[:element_id]
+      type = params[:type]
+      element = ExhibitElement.find(element_id)
+      element.exhibit_element_layout_type = type
+      element.save
+      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def edit_text
@@ -359,9 +367,7 @@ class My9sController < ApplicationController
     end
     
     def edit_illustration
-      id = params['ill_exhibit_id']
-      page = params['ill_page_num']
-      element_id = params['ill_element_id']
+      element_id = params['element_id']
       illustration_id = params['illustration_id'].to_i
       image_url = params['image_url']
       type = params['type']
@@ -386,7 +392,8 @@ class My9sController < ApplicationController
         illustration.save
       end
 
-     redirect_to :action => 'edit_exhibit', :id => id, :page => page
+      element = ExhibitElement.find(element_id)
+      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
   private

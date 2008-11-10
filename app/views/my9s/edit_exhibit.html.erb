@@ -63,47 +63,16 @@
 											<%= link_to up_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'up'}, { :title => 'Move Element Up' } %>
 											<%= link_to down_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'down'}, { :title => 'Move Element Down' } %>
 											<%= link_to del_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'delete'}, { :title => 'Delete Element' } %>
-											<select onchange="location = this.options[this.selectedIndex].value;">
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=header">Header</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=text">Text</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=pic_text">Picture then Text</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=text_pic">Text then Picture</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="edit_element?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&element=<%= element.position %>&verb=layout&type=pics">Row of Pictures</option>
+											<select onchange='elementTypeChanged("element_<%= element.id %>", <%= element.id %>, this.options[this.selectedIndex].value);'>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Picture then Text</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Picture</option>
+											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Pictures</option>
 											</select>
 										</h1>
-										<div class="inside_edit_exhibit_box">
-											<% if element.exhibit_element_layout_type == 'header' -%>
-												<%= render :partial => 'exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
-											<% elsif element.exhibit_element_layout_type == 'text' -%>
-												<%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :id => element.id, :is_first => is_first } %>
-												<% is_first = false -%>
-											<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
-												<% illustration = element.exhibit_illustrations.find(:first) -%>
-												<table><tr>
-													<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :exhibit => @exhibit, :page => @page, :element_id => element.id, :illustration => illustration } %></td>
-													<td><%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :id => element.id, :is_first => is_first } %></td>
-													<% is_first = false -%>
-												</tr></table>
-											<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
-												<% illustration = element.exhibit_illustrations.find(:first) -%>
-												<table><tr>
-													<td><%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :id => element.id, :is_first => is_first } %></td>
-													<% is_first = false -%>
-													<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :exhibit => @exhibit, :page => @page, :element_id => element.id, :illustration => illustration } %></td>
-												</tr></table>
-											<% elsif element.exhibit_element_layout_type == 'pics' -%>
-												<% illustrations = element.exhibit_illustrations -%>
-												<table><tr>
-													<% for illustration in illustrations -%>
-													<td><%= link_to ins_char(), { :action => 'insert_illustration', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.id, :position => illustration.position }, { :title => 'Insert Illustration' } %></td>
-													<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :exhibit => @exhibit, :page => @page, :element_id => element.id, :illustration => illustration } %></td>
-													<% end -%>
-													<td><%= link_to ins_char(), { :action => 'insert_illustration', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.id, :position => illustrations.length+1 }, { :title => 'Insert Illustration' } %></td>
-												</tr></table>
-											<% else -%>
-												Unknown element type:
-												<%= element.exhibit_element_layout_type %><br />
-											<% end -%>
+										<div id="element_<%= element.id %>" class="inside_edit_exhibit_box">
+											<%= render :partial => 'edit_exhibit_element', :locals => { :element => element } %>
 										</div> <% # Editing Element inner box %>
 									</div> <% # Editing Element outer box %>
 								<% end # for each element -%>
@@ -132,9 +101,7 @@
 
 <div id="illustration_form_div" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 420px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
     <span style="clear:both;float:right;"><%= link_to_function 'X', 'Effect.Fade("illustration_form_div", { duration: 0.0 })' %>&nbsp;</span>
-    <form id="illustration_form" method="post" action="/my9s/edit_illustration" onsubmit="doPopupFormSubmit('illustration_form');">
-        <input type="hidden" name="ill_exhibit_id" id="ill_exhibit_id" />
-        <input type="hidden" name="ill_page_num" id="ill_page_num" />
+    <form id="illustration_form" method="post" action="/my9s/edit_illustration" onsubmit='doIllustrationFormSubmit();'>
         <input type="hidden" name="ill_element_id" id="ill_element_id" />
         <input type="hidden" name="illustration_id" id="illustration_id" />
         <label for="type">type:</label>
@@ -147,8 +114,8 @@
         <label for="width">width:</label><input type="text" name="width" id="width" /><br />
         <label for="caption1">caption1:</label><input type="text" name="caption1" id="caption1" size="40" /><br />
         <label for="caption2">caption2:</label><input type="text" name="caption2" id="caption2" size="40" /><br />
-        <textarea rows="10" style="width:350px" name="text" id="text"></textarea>
-        <span style="clear:both;float:right;"><%= link_to_function "ok", "doPopupFormSubmit('illustration_form');" -%>&nbsp; </span>
+        <textarea rows="10" style="width:350px" name="ill_text" id="ill_text"></textarea>
+        <span style="clear:both;float:right;"><%= link_to_function "ok", "doIllustrationFormSubmit();" -%>&nbsp; </span>
     </form>
 </div>
 
