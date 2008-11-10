@@ -3,6 +3,22 @@
  */
 
  document.observe('dom:loaded', function() {
+ 	initializeElementEditing();
+	
+	var el = $('exhibit_outline');
+	if (el)
+		Sortable.create(el);
+	//Sortable.create('exhibit_outline_page');
+	//Sortable.create('exhibit_outline_section');
+	
+	el = $('full_window');
+	if (el)
+		FullWindow.initialize('full_window', "OUTLINE");
+	
+ });
+
+function initializeElementEditing()
+{
  	var els = $$('.exhibit_header');
 	for (var i = 0; i < els.length; i++)
 	{
@@ -20,24 +36,15 @@
 			});
 	}
 	
-	var el = $('exhibit_outline');
-	if (el)
-		Sortable.create(el);
-	//Sortable.create('exhibit_outline_page');
-	//Sortable.create('exhibit_outline_section');
-	
-	el = $('full_window');
-	if (el)
-		FullWindow.initialize('full_window', "OUTLINE");
-		
 	els = $$('.exhibit_illustration img');
 	els.each(function(el) { Widenable.prepare(el, imgResized); });
- });
+}
 
 function imgResized(illustration_id, width)
 {
 	new Ajax.Request("/my9s/change_img_width", {
 		parameters : "illustration_id="+ illustration_id + "&width=" + width,
+		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
 	});
 }
@@ -46,6 +53,7 @@ function elementTypeChanged(div, element_id, newType)
 {
 	new Ajax.Updater(div, "/my9s/change_element_type", {
 		parameters : "element_id="+ element_id + "&type=" + newType,
+		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -54,6 +62,7 @@ function insertIllustration(div, element_id, illustration_position)
 {
 	new Ajax.Updater(div, "/my9s/insert_illustration", {
 		parameters : "element_id="+ element_id + "&position=" + illustration_position,
+		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -115,6 +124,15 @@ function doIllustrationFormSubmit()
 	new Ajax.Updater("element_"+element_id, "/my9s/edit_illustration", {
 		parameters : "element_id="+ element_id + "&illustration_id=" + illustration_id + "&image_url=" + image_url + 
 			"&type=" + type + "&link=" + link + "&width=" + width + "&caption1=" + caption1 + "&caption2=" + caption2 + "&text=" + ill_text,
+		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
+}
+
+function doAjaxLink(div, url, params)
+{
+	new Ajax.Updater(div, url, {
+		parameters : params,
+		onComplete : setTimeout("initializeElementEditing()", 1000),
+		onFailure : function(resp) { alert("Oops, there's been an error."); }});
 }

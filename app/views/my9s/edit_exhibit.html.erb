@@ -41,47 +41,9 @@
 			<%= link_to del_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'delete' }, { :title => 'Delete this page' }  %>
 			<%= link_to "[insert page after]", { :action => 'edit_page', :id => @exhibit.id, :page => @page+1, :verb => 'insert' }, { :title => 'Insert a page after this one' }  %>
 			<br /><br /><br />
-
-					<% for section in page.exhibit_sections -%>
-						<div class="edit_exhibit_box <%= 'edit_exhibit_box_no_border' if section.has_border == 0 %>">
-							<h1><%= link_to ins_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'insert' }, { :title => 'Insert Section Before' } %>
-								Section&nbsp;<%= section.position %>&nbsp;
-								<%= link_to(up_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'up'}, { :title => 'Move Section Up' }) if section.position > 1 %>
-								<%= link_to(down_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'down'}, { :title => 'Move Section Down' }) if section.position < page.exhibit_sections.length %>
-								<%= link_to del_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => section.position, :verb => 'delete'}, { :title => 'Delete Section' } %>
-								<select onchange="location = this.options[this.selectedIndex].value;">
-								<option <%= "selected='selected'" if section.has_border == 1 %> value="edit_section?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&verb=add_border">Border</option>
-								<option <%= "selected='selected'" if section.has_border == 0 %> value="edit_section?id=<%= @exhibit.id %>&page=<%= @page %>&section=<%= section.position %>&verb=remove_border">No border</option>
-								</select>
-							</h1>
-							<div class="inside_edit_exhibit_box">
-								<% is_first = true -%>
-								<% for element in section.exhibit_elements -%>
-									<div class="edit_exhibit_box <%= 'edit_exhibit_box_no_border' if section.has_border == 0 %>">
-										<h1><%= link_to ins_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'insert'}, { :title => 'Insert Element Before' } %>
-											Element&nbsp;<%= element.position %>&nbsp;
-											<%= link_to up_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'up'}, { :title => 'Move Element Up' } %>
-											<%= link_to down_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'down'}, { :title => 'Move Element Down' } %>
-											<%= link_to del_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => element.position, :verb => 'delete'}, { :title => 'Delete Element' } %>
-											<select onchange='elementTypeChanged("element_<%= element.id %>", <%= element.id %>, this.options[this.selectedIndex].value);'>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Picture then Text</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Picture</option>
-											<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Pictures</option>
-											</select>
-										</h1>
-										<div id="element_<%= element.id %>" class="inside_edit_exhibit_box">
-											<%= render :partial => 'edit_exhibit_element', :locals => { :element => element } %>
-										</div> <% # Editing Element inner box %>
-									</div> <% # Editing Element outer box %>
-								<% end # for each element -%>
-								<%= link_to ins_char(), { :action => 'edit_element', :id => @exhibit.id, :page => @page, :section => section.position, :element => section.exhibit_elements.length+1, :verb => 'insert'}, { :title => 'Insert Element' } %>
-							</div> <% # Editing Section inner box %>
-						</div> <% # Editing Section outer box %>
-					<% end # for each section -%>
-					<%= link_to ins_char(), { :action => 'edit_section', :id => @exhibit.id, :page => @page, :section => page.exhibit_sections.length+1, :verb => 'insert'}, { :title => 'Insert Section' } %>
-
+			<div id="edit_exhibit_page">
+				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page } %>
+			</div>
 		<% else # if page is nil -%>
 			<%= link_to "[insert page]", { :action => 'edit_page', :id => @exhibit.id, :page => 1, :verb => 'insert'}, { :title => 'Create first page' } %>
 		<% end # if page != nil -%>

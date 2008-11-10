@@ -251,64 +251,60 @@ class My9sController < ApplicationController
     end
     
     def edit_section
-      id = params[:id]
-      page = params[:page].to_i
-      section = params[:section].to_i
+      page_id = params[:page].to_i
+      section_pos = params[:section].to_i
       verb = params[:verb]
-      exhibit = Exhibit.find(id)
-      pages = exhibit.exhibit_pages
-      curr_page = pages[@page-1]
+      
+      page = ExhibitPage.find(page_id)
       
       case verb
       when "up"
-        curr_page.exhibit_sections[section-1].move_higher()
+        page.exhibit_sections[section_pos-1].move_higher()
       when "down"
-        curr_page.exhibit_sections[section-1].move_lower()
+        page.exhibit_sections[section_pos-1].move_lower()
       when "insert"
-        new_section = ExhibitSection.create(:has_border => true, :exhibit_page_id => curr_page.id)
-        new_section.insert_at(section)
+        new_section = ExhibitSection.create(:has_border => true, :exhibit_page_id => page.id)
+        new_section.insert_at(section_pos)
       when "delete"
-        curr_page.exhibit_sections[section-1].remove_from_list()
-        curr_page.exhibit_sections[section-1].destroy
+        page.exhibit_sections[section_pos-1].remove_from_list()
+        page.exhibit_sections[section_pos-1].destroy
       when "add_border"
-        curr_page.exhibit_sections[section-1].has_border = 1
-        curr_page.exhibit_sections[section-1].save
+        page.exhibit_sections[section_pos-1].has_border = 1
+        page.exhibit_sections[section_pos-1].save
       when "remove_border"
-        curr_page.exhibit_sections[section-1].has_border = 0
-        curr_page.exhibit_sections[section-1].save
+        page.exhibit_sections[section_pos-1].has_border = 0
+        page.exhibit_sections[section_pos-1].save
       end
 
-      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
     end
     
     def edit_element
-      id = params[:id]
-      page = params[:page].to_i
-      section = params[:section].to_i
-      element = params[:element].to_i
+      page_id = params[:page].to_i
+      section_id = params[:section].to_i
+      element_pos = params[:element].to_i
       verb = params[:verb]
-      exhibit = Exhibit.find(id)
-      pages = exhibit.exhibit_pages
-      curr_page = pages[page-1]
-      curr_section = curr_page.exhibit_sections[section-1]
+
+      section = ExhibitSection.find(section_id)
       
       case verb
       when "up"
-        curr_section.exhibit_elements[element-1].move_higher()
+        section.exhibit_elements[element_pos-1].move_higher()
       when "down"
-        curr_section.exhibit_elements[element-1].move_lower()
+        section.exhibit_elements[element_pos-1].move_lower()
       when "insert"
-        new_element = ExhibitElement.create(:exhibit_section_id => curr_section.id, :exhibit_element_layout_type => 'text', :element_text => "Enter Your Text Here")
-        new_element.insert_at(element)
+        new_element = ExhibitElement.create(:exhibit_section_id => section.id, :exhibit_element_layout_type => 'text', :element_text => "Enter Your Text Here")
+        new_element.insert_at(element_pos)
       when "delete"
-        curr_section.exhibit_elements[element-1].remove_from_list()
-        curr_section.exhibit_elements[element-1].destroy
+        section.exhibit_elements[element_pos-1].remove_from_list()
+        section.exhibit_elements[element_pos-1].destroy
       when "layout"
-        curr_section.exhibit_elements[element-1].exhibit_element_layout_type = params[:type]
-        curr_section.exhibit_elements[element-1].save
+        section.exhibit_elements[element_pos-1].exhibit_element_layout_type = params[:type]
+        section.exhibit_elements[element_pos-1].save
       end
 
-      redirect_to :action => 'edit_exhibit', :id => id, :page => page
+      # We need to get the records again because the local variables are probably stale.
+      render :partial => 'edit_exhibit_section', :locals => { :section => ExhibitSection.find(section_id), :page => ExhibitPage.find(page_id) }
     end
     
     def insert_illustration
@@ -360,9 +356,14 @@ class My9sController < ApplicationController
       arr = element.split('_')
       element_id = arr[arr.length-1].to_i
       width = params['width'].to_i
-      illustration = ExhibitIllustration.find(element_id)
-      illustration.image_width = width
-      illustration.save
+      if element_id == 0
+        illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => width, :link => "" )
+        illustration.insert_at(1)
+      else
+        illustration = ExhibitIllustration.find(element_id)
+        illustration.image_width = width
+        illustration.save
+      end
       render :text=> ""
     end
     
