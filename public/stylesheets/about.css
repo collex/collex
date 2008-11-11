@@ -75,7 +75,7 @@ background-color:#E0E0E0;
 
 #vnav {
 background-color:white;
-margin-top:0px;
+margin-top:20px;
 margin-bottom:40px;
 width: 180px;
 padding:10px;
@@ -111,6 +111,26 @@ color:black;
 
 #vnav a.here{
 background-color:#E0E0E0;
+}
+
+.columnEntry{
+background-color:white;
+border:gray dotted 2px;
+width:150px;
+text-align:center;
+margin-top:0px;
+margin-left:22px;
+font-size:10pt;
+}
+
+.columnEntry p{
+margin-left:5px;
+margin-right:5px;
+}
+
+a .noBorder{
+border:none;
+background-color:white;
 }
 
 .about-banner-column {
@@ -161,6 +181,10 @@ background-color:white;
 color:maroon;
 }
 
+.leftColumn{
+height:200px;
+}
+
 #innerContent {
 	background-color:white;
 	margin-top: 0px;
@@ -170,18 +194,22 @@ color:maroon;
 }
 
 #contentColumn{
-margin-top:-500px;
-margin-left:50px;
+margin-top:-810px;
+margin-left:75px;
+padding:4px;
 }
+
 
 #innerContentColumn{
 margin-left:200px;
 margin-right:50px;
+font-size:12pt;
 
 }
 
 #innerContentColumn img{
-margin:0px 150px 10px 150px;
+margin:20px 160px 30px 160px;
+border:#E0E0E0 8px solid;
 }
 
 
@@ -199,6 +227,7 @@ margin-right:20px;
 #innerFooter {
 text-align:center;
 }
+
 
 .grayBox {
 background-color:#E0E0E0;
