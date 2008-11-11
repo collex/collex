@@ -22,7 +22,7 @@
 						<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => @exhibit } %></td>
 						<td><%= render :partial => 'exhibit_globals_form', :locals => { :exhibit => @exhibit }  %></td>
 						<td>
-							<!-- < %= link_to_function "Show Outline", "show_exhibit_outline()" %><br /> -->
+							<%= link_to_function "Show Outline", "showExhibitOutline();" %><br />
 							<%= link_to "Preview", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
 							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
 						</td>

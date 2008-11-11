@@ -136,3 +136,8 @@ function doAjaxLink(div, url, params)
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }});
 }
+
+function showExhibitOutline()
+{
+	$("full_window_full_window").show();
+}

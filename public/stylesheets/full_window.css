@@ -1,0 +1,10 @@
+.full_window_wrapper {
+	background-color: white;
+	border: 4px solid #000088;
+}
+
+.full_window_title {
+	background-color: #cccccc;
+	font-weight: bold;
+	text-align: center;	
+}

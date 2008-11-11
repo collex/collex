@@ -373,24 +373,41 @@ var FullWindow = {
 		// The first div in the client div is the title and contains the title_str. That is what the user grabs to drag.
 		// The last div is the actual content that is passed in by the user.
 		var elContent = $(content_element);
+		var fullWindowId = elContent.id + '_full_window';
 		var elClient = elContent.wrap('div', { 'class' : 'full_window_client' });
-		var elTitle = new Element('div', { 'class' : 'full_window_title' });
+		var elTitleTable = new Element('table', { 'class' : 'full_window_title' });
+		elClient.insert(elTitleTable, 'top');
+		var elTitleTableRow = new Element('tr');
+		elTitleTable.insert(elTitleTableRow, 'top');
+		var elTitleTableLeftCol = new Element('td');
+		elTitleTableRow.insert(elTitleTableLeftCol, 'top');
+		var elTitleTableRightCol = new Element('td');
+		elTitleTableRow.insert(elTitleTableRightCol, 'bottom');
+		
+		var elTitle = new Element('div');
 		elTitle.innerHTML = title_str;
 		elTitle.setStyle(
 			{
-				backgroundColor: '#cccccc',
-				fontWeight: 'bold',
-				textAlign: 'center',
 				cursor: 'move'
 			});
-		elClient.insert(elTitle, 'top');
+		elTitleTableLeftCol.insert(elTitle, 'top');
+		elTitleTableLeftCol.setStyle(
+			{
+				width: '100%'
+			});			
+		var elCloseButton = new Element('a', { href : 'javascript:FullWindow.hideWindow("' + fullWindowId + '");' });
+		elCloseButton.innerHTML = "X";
+
+		elTitleTableRightCol.insert(elCloseButton, 'top');
+		elTitleTableRightCol.setStyle(
+			{
+				width: '12px'
+			});		
 		elContent.remove();
 		elClient.insert(elContent, 'bottom');
-		var elWrapper = elClient.wrap('div', { 'class' : 'full_window_wrapper' });
+		var elWrapper = elClient.wrap('div', { 'class' : 'full_window_wrapper', id : fullWindowId });
 		elWrapper.setStyle(
 			{ position : 'absolute',
-				backgroundColor: 'white',
-				border: '4px solid #000088',
 				overflow: 'auto'
 			  });
 		var elResizer = new Element('div', { 'class' : 'full_window_resizer' });
@@ -409,4 +426,8 @@ var FullWindow = {
 		new Resizable(elResizer);
 
 	},	// end initialize()
+	
+	hideWindow: function(id) {
+		$(id).hide();
+	}, // end closeWindow()
 };
