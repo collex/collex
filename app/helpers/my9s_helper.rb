@@ -14,6 +14,12 @@ module My9sHelper
   def change_char
     "&Delta;"
   end
+  def left_char
+    "&lArr;"
+  end
+  def right_char
+    "&rArr;"
+  end
   
   def element_text_thumbnail(element)
     if element.element_text == nil || element.element_text.length == 0

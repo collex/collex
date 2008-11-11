@@ -237,14 +237,17 @@ class My9sController < ApplicationController
       case verb
       when "up"
         curr_page.move_higher()
+        page = page - 1
       when "down"
         curr_page.move_lower()
+        page = page + 1
       when "insert"
         new_section = ExhibitPage.create(:exhibit_id => id)
         new_section.insert_at(page)
       when "delete"
         curr_page.remove_from_list()
         curr_page.destroy
+        page = page -1 if page == exhibit.exhibit_pages.length
       end
 
       redirect_to :action => 'edit_exhibit', :id => id, :page => page
@@ -305,6 +308,26 @@ class My9sController < ApplicationController
 
       # We need to get the records again because the local variables are probably stale.
       render :partial => 'edit_exhibit_section', :locals => { :section => ExhibitSection.find(section_id), :page => ExhibitPage.find(page_id) }
+    end
+    
+    def edit_row_of_illustrations
+      element_id = params[:element_id]
+      pos = params[:position].to_i
+      element = ExhibitElement.find(element_id)
+      verb = params[:verb]
+
+      case verb
+      when "left"
+        element.exhibit_illustrations[pos-1].move_higher()
+      when "right"
+        element.exhibit_illustrations[pos-1].move_lower()
+      when "delete"
+        element.exhibit_illustrations[pos-1].remove_from_list()
+        element.exhibit_illustrations[pos-1].destroy
+       end
+
+      # We need to get the records again because the local variables are probably stale.
+      render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def insert_illustration

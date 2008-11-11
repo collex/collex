@@ -6,9 +6,10 @@
 	<%= link_to_function(up_char(), "doAjaxLink(#{ajax_section_div_id}, #{ajax_section_action}, #{ajax_section_params}+ 'up');", { :title => 'Move Section Up' }) if section.position > 1 %>
 	<%= link_to_function(down_char(), "doAjaxLink(#{ajax_section_div_id}, #{ajax_section_action}, #{ajax_section_params}+ 'down');", { :title => 'Move Section Down' }) if (section.position <= page.exhibit_sections.length) %>
 	<%= link_to_function del_char(), "doAjaxLink(#{ajax_section_div_id}, #{ajax_section_action}, #{ajax_section_params}+ 'delete');", { :title => 'Delete Section' } %>
-	<select onchange="location = this.options[this.selectedIndex].value;">
-	<option <%= "selected='selected'" if section.has_border == 1 %> value="edit_section?section=<%= section.position %>&verb=add_border">Border</option>
-	<option <%= "selected='selected'" if section.has_border == 0 %> value="edit_section?section=<%= section.position %>&verb=remove_border">No border</option>
+	<% ajax_call_str = "#{ajax_section_div_id}, #{ajax_section_action}, #{ajax_section_params}+this.options[this.selectedIndex].value);" -%>
+	<select onchange="doAjaxLink(<%= ajax_call_str %>">
+	<option <%= "selected='selected'" if section.has_border == 1 %> value="add_border">Border</option>
+	<option <%= "selected='selected'" if section.has_border == 0 %> value="remove_border">No border</option>
 	</select>
 </h1>
 <div class="inside_edit_exhibit_box">
