@@ -255,7 +255,9 @@ var Resizable = Class.create({
 			height : par_height + "px"
 		}
 	);
-	//$(this.element).setStyle( { top : par_height - 20 + 'px'});
+	$(this.element).setStyle( { top : par_height - 11 + 'px',
+		left : par_width - 11 + 'px'
+	});
 
     if(this.options.scroll && (this.options.scroll != window && this._isScrollChild)) {
       pos[0] -= this.options.scroll.scrollLeft-this.originalScrollLeft;
@@ -405,6 +407,7 @@ var FullWindow = {
 			});		
 		elContent.remove();
 		elClient.insert(elContent, 'bottom');
+
 		var elWrapper = elClient.wrap('div', { 'class' : 'full_window_wrapper', id : fullWindowId });
 		elWrapper.setStyle(
 			{ position : 'absolute',
@@ -419,6 +422,10 @@ var FullWindow = {
 			fontSize : '11px',
 			height : '11px',
 			lineHeight :'11px',
+			width :'11px',
+			position : 'absolute',
+			left : parseInt(elWrapper.getStyle('width')) - 11 + 'px',
+			top : parseInt(elWrapper.getStyle('height')) - 11 + 'px'
 		});
 		elWrapper.insert(elResizer, 'bottom');
 
