@@ -137,7 +137,29 @@ function doAjaxLink(div, url, params)
 		onFailure : function(resp) { alert("Oops, there's been an error."); }});
 }
 
+function doAjaxLinkOnSelection(verb, exhibit_id)
+{
+	var allElements = $$(".outline_tree_element_selected");
+	if (allElements.length == 1)
+	{
+		var id = allElements[0].id;
+		var arr = id.split("_");
+		var element_id = arr[arr.length-1];
+		new Ajax.Updater("full_window", "/my9s/modify_outline", {
+			parameters : "verb="+verb+"&element_id="+element_id+"&exhibit_id="+exhibit_id,
+			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+	}
+}
+
 function showExhibitOutline()
 {
 	$("full_window_full_window").show();
+}
+
+function selectLine(id)
+{
+	var allElements = $$(".outline_tree_element_selected");
+	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
+	
+	$(id).addClassName( "outline_tree_element_selected" );
 }

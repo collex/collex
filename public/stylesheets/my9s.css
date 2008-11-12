@@ -7,17 +7,41 @@
 
 .outline_toggle {
 	margin-right: 3px;
+	float: right;
 }
 
-.outline_tree li {
+.outline_tree {
+	padding-left: 0px;
+}
+
+.outline_tree > li {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
-	padding-bottom:3px;
+	margin-top:1em;
+	margin-bottom:1em;
+	background-color: #cccccc;
+}
+
+.outline_tree_elements {
+	padding-left: 1em;
+}
+
+.outline_tree_elements li {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:.5em;
+	border: 1px dotted gray;
+	padding-top: 1px;
+}
+
+.outline_tree_element_selected {
+	background-color: gray;
 }
 
 .exhibit_outline_text {
-	color: #bbbbbb;
+	color: black;
 	font-style: italic;
 	margin-right: 3px;
 	cursor: move;
@@ -79,6 +103,15 @@
 	position: absolute;
 
 	z-index: 100;
+}
+
+.outline_section_with_border {
+	border: 3px solid gray;
+	margin-right: 1em;
+	margin-bottom: 2px;
+}
+
+.outline_section_without_border {
 }
 
 /* my9s tab */

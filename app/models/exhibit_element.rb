@@ -3,4 +3,9 @@ class ExhibitElement < ActiveRecord::Base
   acts_as_list :scope => :exhibit_section
   
   has_many :exhibit_illustrations, :order => :position
+  
+  def change_layout(new_layout)
+        exhibit_element_layout_type = new_layout
+        save
+  end
 end

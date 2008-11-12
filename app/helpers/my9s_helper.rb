@@ -20,6 +20,9 @@ module My9sHelper
   def right_char
     "&rArr;"
   end
+  def element_bullet
+    "&para;"
+  end
   
   def element_text_thumbnail(element)
     if element.element_text == nil || element.element_text.length == 0
@@ -46,12 +49,12 @@ module My9sHelper
   
   def tree_node( item_name, item_id, item_id_prefix, class_name, toggle_function, initial_state = :closed )
     display_none = 'style="display:none"'
-    label = "<span id=\"#{item_id_prefix}_#{item_id}_closed\" #{initial_state == :open ? display_none : ''} class='outline_toggle'>"
-    label << link_to_function('&#x25BA;',"#{toggle_function}('#{item_id}')")
-    label << "</span>"
-    label << "<span id=\"#{item_id_prefix}_#{item_id}_opened\" #{initial_state == :closed ? display_none : ''} class='outline_toggle'>"
+    label = "<div id=\"#{item_id_prefix}_#{item_id}_closed\" #{initial_state == :open ? display_none : ''} class='outline_toggle''>"
+    label << link_to_function('&#x25B2;',"#{toggle_function}('#{item_id}')")
+    label << "</div>"
+    label << "<div id=\"#{item_id_prefix}_#{item_id}_opened\" #{initial_state == :closed ? display_none : ''} class='outline_toggle'>"
     label << link_to_function('&#x25BC;', "#{toggle_function}('#{item_id}')")
-    label << "</span>"
+    label << "</div>"
     label << "<span class='#{class_name}'>" + item_name + "</span>"
   end  
 end

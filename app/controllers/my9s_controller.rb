@@ -231,22 +231,18 @@ class My9sController < ApplicationController
       page = params[:page].to_i
       verb = params[:verb]
       exhibit = Exhibit.find(id)
-      pages = exhibit.exhibit_pages
-      curr_page = pages[page-1]
       
       case verb
       when "up"
-        curr_page.move_higher()
+        exhibit.move_page_up(page)
         page = page - 1
       when "down"
-        curr_page.move_lower()
+        exhibit.move_page_down(page)
         page = page + 1
       when "insert"
-        new_section = ExhibitPage.create(:exhibit_id => id)
-        new_section.insert_at(page)
+        exhibit.insert_page(page)
       when "delete"
-        curr_page.remove_from_list()
-        curr_page.destroy
+        exhibit.delete_page(page)
         page = page -1 if page == exhibit.exhibit_pages.length
       end
 
@@ -292,18 +288,15 @@ class My9sController < ApplicationController
       
       case verb
       when "up"
-        section.exhibit_elements[element_pos-1].move_higher()
+        section.move_element_up(element_pos)
       when "down"
-        section.exhibit_elements[element_pos-1].move_lower()
+        section.move_element_down(element_pos)
       when "insert"
-        new_element = ExhibitElement.create(:exhibit_section_id => section.id, :exhibit_element_layout_type => 'text', :element_text => "Enter Your Text Here")
-        new_element.insert_at(element_pos)
+        section.insert_element(element_pos)
       when "delete"
-        section.exhibit_elements[element_pos-1].remove_from_list()
-        section.exhibit_elements[element_pos-1].destroy
+        section.delete_element(element_pos)
       when "layout"
-        section.exhibit_elements[element_pos-1].exhibit_element_layout_type = params[:type]
-        section.exhibit_elements[element_pos-1].save
+        section.exhibit_elements[element_pos-1].change_layout(params[:type])
       end
 
       # We need to get the records again because the local variables are probably stale.
@@ -418,6 +411,52 @@ class My9sController < ApplicationController
 
       element = ExhibitElement.find(element_id)
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+    end
+    
+    def modify_outline
+      exhibit_id = params['exhibit_id']
+      element_id = params['element_id']
+      verb = params['verb']
+      
+      exhibit = Exhibit.find(exhibit_id)
+      element = ExhibitElement.find(element_id)
+      section = ExhibitSection.find(element.exhibit_section_id)
+      page = ExhibitPage.find(section.exhibit_page_id)
+      
+      case verb
+      when "insert_element"
+        section.insert_element(element.position)
+      when "move_element_up"
+        section.move_element_up(element.position)
+      when "move_element_down"
+        section.move_element_down(element.position)
+      when "delete_element"
+        section.delete_element(element.position)
+
+      when "insert_border"
+        page.insert_border(section)
+      when "move_top_of_border_up"
+        page.move_top_of_border_up(section)
+      when "move_top_of_border_down"
+        page.move_top_of_border_down(section)
+      when "move_bottom_of_border_up"
+        page.move_bottom_of_border_up(section)
+      when "move_bottom_of_border_down"
+        page.move_bottom_of_border_down(section)
+      when "delete_border"
+        page.delete_border(section)
+  
+      when "insert_page"
+        exhibit.insert_page(page.position)
+      when "move_page_up"
+        exhibit.move_page_up(page.position)
+      when "move_page_down"
+        exhibit.move_page_down(page.position)
+      when "delete_page"
+        exhibit.delete_page(page.position)
+      end
+      
+      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id) }
     end
     
   private
