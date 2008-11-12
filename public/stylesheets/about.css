@@ -221,7 +221,7 @@ width:875px;
 #toolsContent {
 margin-top: 450px;
 margin-left:50px;
-margin-right:20px;
+margin-right:50px;
 }
 
 #innerFooter {
@@ -230,15 +230,17 @@ text-align:center;
 
 
 .grayBox {
+margin-top:30px;
 background-color:#E0E0E0;
 font-size:11pt;
 padding:.9em;
-width:875px;
+/*width:875px;*/
 }
 
 
 
 p.header {
+margin-top:30px;
 border-bottom:gray 1px solid;
 }
 
