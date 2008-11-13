@@ -22,10 +22,10 @@
 	<% illustrations = element.exhibit_illustrations -%>
 	<table><tr>
 		<% for illustration in illustrations -%>
-		<td><%= link_to_function ins_char(), "insertIllustration('element_#{element.id}', #{element.id}, #{illustration.position});", { :title => 'Insert Illustration' } %></td>
+		<td><% #= link_to_function ins_char(), "insertIllustration('element_#{element.id}', #{element.id}, #{illustration.position});", { :title => 'Insert Illustration' } %></td>
 		<td><%= render :partial => 'edit_exhibit_illustration', :locals => {  :element_id => element.id, :illustration => illustration } %></td>
 		<% end -%>
-		<td><%= link_to_function ins_char(), "insertIllustration('element_#{element.id}', #{element.id}, #{illustrations.length+1});", { :title => 'Insert Illustration' } %></td>
+		<td><% #= link_to_function ins_char(), "insertIllustration('element_#{element.id}', #{element.id}, #{illustrations.length+1});", { :title => 'Insert Illustration' } %></td>
 	</tr></table>
 <% else -%>
 	Unknown element type:

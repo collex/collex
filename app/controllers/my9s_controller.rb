@@ -211,7 +211,7 @@ class My9sController < ApplicationController
       exhibit.title = params['title']
       exhibit.thumbnail = params['thumbnail']
       exhibit.visible_url = params['visible_url']
-      exhibit.is_published = (params['is_published'] == 'Published' ? 1 : 0)
+      exhibit.is_published = (params['is_published'] == 'Visible to Everyone' ? 1 : 0)
       exhibit.save
       redirect_to :action => 'edit_exhibit', :id => exhibit.id
     end

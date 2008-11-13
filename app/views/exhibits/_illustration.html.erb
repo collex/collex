@@ -3,11 +3,15 @@
 	<% if illustration == nil -%>
 		<img id='illustration_img_0' src="../images/lg-harrington.gif" width="100px" alt="" />
 	<% else -%>
-		<% if illustration.link.length > 0 -%>
+		<% if illustration.link.length > 0 && edit_mode == nil -%>
 			<a href="<%= illustration.link %>">
 		<% end -%>
+		<% if edit_mode -%>
+			<% illustration_div = "\"illustration_#{illustration_id}\"" %>
+			<a title="Edit illustration options" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
+		<% end -%>
 		<img id='illustration_img_<%= illustration.id %>' src="<%= illustration.image_url %>" width="<%= illustration.image_width %>px" alt="" />
-		<% if illustration.link.length > 0 -%>
+		<% if edit_mode || illustration.link.length > 0 -%>
 			</a>
 		<% end -%>
 		<% if illustration.caption1.length > 0 -%>

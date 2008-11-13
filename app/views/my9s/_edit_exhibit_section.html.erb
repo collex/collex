@@ -19,11 +19,16 @@
 	<% for element in section.exhibit_elements -%>
 		<% ajax_params = "'page=#{page.id}&section=#{section.id}&element=#{element.position}&verb='" -%>
 		<div class="edit_exhibit_box edit_exhibit_box_no_border">
-			<!--<h1>--><%= link_to_function ins_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'insert');", { :title => 'Insert Element Before' } %>
-				<!--Element&nbsp;<%= element.position %>&nbsp;-->
-				<%= link_to_function( up_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'up');", { :title => 'Move Element Up' }) if element.position > 1 %>
-				<%= link_to_function( down_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'down');", { :title => 'Move Element Down' }) if element.position < section.exhibit_elements.length %>
-				<%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element' } %>
+			<h1>
+				<div class="outline_right_controls">
+					<%= link_to_function( "[outline]", "showExhibitOutline(#{element.id});", { :title => 'Show Outline' }) %>
+					<% #= link_to_function ins_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'insert');", { :title => 'Insert Element Before' } %>
+					<%= link_to_function( up_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'up');", { :title => 'Move Element Up' }) if element.position > 1 %>
+					<%= link_to_function( down_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'down');", { :title => 'Move Element Down' }) if element.position < section.exhibit_elements.length %>
+					<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element' } %></span>
+				</div>
+				<span class="edit_exhibit_element_number"><%= element_count %></span>
+				<% element_count = element_count + 1 -%>
 				<select onchange='elementTypeChanged("element_<%= element.id %>", <%= element.id %>, this.options[this.selectedIndex].value);'>
 				<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
 				<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
@@ -31,7 +36,7 @@
 				<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Picture</option>
 				<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Pictures</option>
 				</select>
-			<!--</h1>-->
+			</h1>
 			<div id="element_<%= element.id %>" class="inside_edit_exhibit_box">
 				<%= render :partial => 'edit_exhibit_element', :locals => { :element => element } %>
 			</div> <% # Editing Element inner box %>
@@ -39,5 +44,5 @@
 	<% end # for each element -%>
 	
 	<% ajax_params = "'page=#{page.id}&section=#{section.id}&element=#{section.exhibit_elements.length+1}&verb='" -%>
-	<%= link_to_function ins_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'insert');", { :title => 'Insert Element After' } %>
+	<% #= link_to_function ins_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'insert');", { :title => 'Insert Element After' } %>
 </div> <% # Editing Section inner box %>

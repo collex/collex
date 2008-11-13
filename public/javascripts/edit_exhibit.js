@@ -14,7 +14,7 @@
 	el = $('full_window');
 	if (el)
 		FullWindow.initialize('full_window', "OUTLINE");
-	
+	$("full_window_full_window").hide();
  });
 
 function initializeElementEditing()
@@ -168,9 +168,11 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 	}
 }
 
-function showExhibitOutline()
+function showExhibitOutline(element_id)
 {
 	$("full_window_full_window").show();
+	if (element_id > 0)
+		selectLine('outline_element_' + element_id);
 }
 
 function selectLine(id)

@@ -80,6 +80,15 @@
 	color: black;
 }
 
+.edit_exhibit_element_number {
+	background-color: #eeeeee;
+	color: black;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
 .exhibit_outline_text {
 	color: black;
 	font-style: italic;
@@ -114,6 +123,10 @@
 
 .edit_exhibit_box {
 	border: 1px solid gray;
+}
+
+.edit_exhibit_section_box {
+		border: 3px solid gray;
 }
 
 .edit_exhibit_box_no_border {

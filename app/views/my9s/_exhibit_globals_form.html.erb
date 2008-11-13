@@ -13,8 +13,8 @@
     <td><%= text_field_tag("thumbnail", exhibit.thumbnail, :size => 50) %></td> 
   </tr> 
   <tr> 
-    <td>Published State:</td> 
-    <td><%= select_tag("is_published", options_for_select(%w{ Private Published }, exhibit.is_published == 1 ? "Published" : "Private" )) %></td> 
+    <td>Sharing:</td> 
+    <td><%= select_tag("is_published", options_for_select([ "Visible to Everyone", "Visible to Just Me" ], exhibit.is_published == 1 ? "Visible to Everyone" : "Visible to Just Me" )) %></td> 
   </tr> 
   <tr> 
     <td>&nbsp;</td> 

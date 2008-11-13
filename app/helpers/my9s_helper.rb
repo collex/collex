@@ -23,6 +23,12 @@ module My9sHelper
   def element_bullet
     "&para;"
   end
+  def opened_char
+    '&#x25BC;'
+  end
+  def closed_char
+    '&#x25B2;'
+  end
   
   def element_text_thumbnail(element)
     if element.element_text == nil || element.element_text.length == 0
@@ -57,10 +63,10 @@ module My9sHelper
     label << '</span>'
     label << "</div>"
     label << "<span id=\"#{item_id_prefix}_p#{page_num}_closed\" #{initial_state == :open ? display_none : ''} >"
-    label << link_to_function('&#x25B2;',"#{toggle_function}('p#{page_num}')")
+    label << link_to_function(closed_char(),"#{toggle_function}('#{item_id_prefix}_p#{page_num}')")
     label << "</span>"
     label << "<span id=\"#{item_id_prefix}_p#{page_num}_opened\" #{initial_state == :closed ? display_none : ''} >"
-    label << link_to_function('&#x25BC;', "#{toggle_function}('p#{page_num}')")
+    label << link_to_function(opened_char(), "#{toggle_function}('#{item_id_prefix}_p#{page_num}')")
     label << "</span>"
     label << "<span class='#{class_name}'>" + "Page " + page_num + "</span>"
   end  

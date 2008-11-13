@@ -1,9 +1,11 @@
+<% element_count = 1 -%>
 <% for section in page.exhibit_sections -%>
-	<div id="section_<%= section.position %>" class="edit_exhibit_box <%= 'edit_exhibit_box_no_border' if section.has_border == 0 %>">
-		<%= render :partial => 'edit_exhibit_section', :locals => { :section => section, :page => page } %>
+	<div id="section_<%= section.position %>" class="edit_exhibit_box edit_exhibit_section_box <%= 'edit_exhibit_box_no_border' if section.has_border == 0 %>">
+		<%= render :partial => 'edit_exhibit_section', :locals => { :section => section, :page => page, :element_count => element_count } %>
+		<% element_count += section.exhibit_elements.length -%>
 	</div> <% # Editing Section outer box %>
 <% end # for each section -%>
 <% ajax_section_action = "'/my9s/edit_section'" -%>
 <% ajax_section_div_id = "'edit_exhibit_page'" -%>
 <% ajax_section_params = "'page=#{page.id}&section=#{page.exhibit_sections.length+1}&verb='" -%>
-<%= link_to_function ins_char(), "doAjaxLink(#{ajax_section_div_id}, #{ajax_section_action}, #{ajax_section_params}+'insert');", { :title => 'Insert Section After' } %>
+<% #= link_to_function ins_char(), "doAjaxLink(#{ajax_section_div_id}, #{ajax_section_action}, #{ajax_section_params}+'insert');", { :title => 'Insert Section After' } %>

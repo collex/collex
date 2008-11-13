@@ -15,15 +15,18 @@
 		</div>
 		
 		<div id="overview_data" class="edit_exhibit_box">
-			<h1>EDITING EXHIBIT:&nbsp;<%= @exhibit.title %></h1>
-			<div class="inside_edit_exhibit_box">
+			<h1>
+				<div class="outline_right_controls">
+					<%= link_to_function opened_char(), "toggle_by_id('global_form');", { :title => 'Close Form', :id => 'global_form_opened' } %>
+					<%= link_to_function closed_char(), "toggle_by_id('global_form');", { :title => 'Open Form', :id => 'global_form_closed' , :style => 'display: none;' } %>
+				</div>
+				EDITING EXHIBIT:&nbsp;<%= @exhibit.title %></h1>
+			<div id="global_form" class="inside_edit_exhibit_box">
 				<table>
 					<tr>
 						<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => @exhibit } %></td>
 						<td><%= render :partial => 'exhibit_globals_form', :locals => { :exhibit => @exhibit }  %></td>
 						<td>
-							<%= link_to_function "Show Outline", "showExhibitOutline();" %><br />
-							<%= link_to "Preview", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
 							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
 						</td>
 					</tr>
@@ -40,6 +43,8 @@
 			<%= link_to(down_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'down' }, { :title => 'Move this page down' } ) if @page < num_pages %>
 			<%= link_to del_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'delete' }, { :title => 'Delete this page' }  %>
 			<%= link_to "[insert page after]", { :action => 'edit_page', :id => @exhibit.id, :page => @page+1, :verb => 'insert' }, { :title => 'Insert a page after this one' }  %>
+			<%= link_to_function "[Show Outline]", "showExhibitOutline(-1);" %>
+			<%= link_to "[Preview]", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
 			<br /><br /><br />
 			<div id="edit_exhibit_page">
 				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page } %>
