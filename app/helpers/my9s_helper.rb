@@ -37,24 +37,31 @@ module My9sHelper
   def element_pic_thumbnail(element)
     illustrations = element.exhibit_illustrations
     if illustrations.length > 0
-      "<img src='#{illustrations[0].image_url}' height='20' />"
+      "<img src='#{illustrations[0].image_url}' height='16px' />"
     else
-      "<img src='../images/lg-harrington.gif' height='20' />"
+      "<img src='../images/lg-harrington.gif' height='16px' />"
     end
   end
   
   def element_pic_thumbnail_illustration(illustration)
-      "<img src='#{illustration.image_url}' height='20' />"
+      "<img src='#{illustration.image_url}' height='16px' />"
   end
   
-  def tree_node( item_name, item_id, item_id_prefix, class_name, toggle_function, initial_state = :closed )
+  def tree_node( page_num, item_id_prefix, class_name, toggle_function, exhibit_id, initial_state = :closed )
     display_none = 'style="display:none"'
-    label = "<div id=\"#{item_id_prefix}_#{item_id}_closed\" #{initial_state == :open ? display_none : ''} class='outline_toggle''>"
-    label << link_to_function('&#x25B2;',"#{toggle_function}('#{item_id}')")
+    label = "<div class='outline_right_controls''>"
+    label << link_to_function(up_char(), "doAjaxLinkOnPage('move_page_up', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Up' })
+    label << link_to_function(down_char(), "doAjaxLinkOnPage('move_page_down', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Down' })
+    label << '&nbsp;<span class="close_link">'
+    label << link_to_function(del_char(), "doAjaxLinkOnPage('delete_page', #{exhibit_id}, #{page_num} );", { :title => 'Delete Page' })
+    label << '</span>'
     label << "</div>"
-    label << "<div id=\"#{item_id_prefix}_#{item_id}_opened\" #{initial_state == :closed ? display_none : ''} class='outline_toggle'>"
-    label << link_to_function('&#x25BC;', "#{toggle_function}('#{item_id}')")
-    label << "</div>"
-    label << "<span class='#{class_name}'>" + item_name + "</span>"
+    label << "<span id=\"#{item_id_prefix}_p#{page_num}_closed\" #{initial_state == :open ? display_none : ''} >"
+    label << link_to_function('&#x25B2;',"#{toggle_function}('p#{page_num}')")
+    label << "</span>"
+    label << "<span id=\"#{item_id_prefix}_p#{page_num}_opened\" #{initial_state == :closed ? display_none : ''} >"
+    label << link_to_function('&#x25BC;', "#{toggle_function}('p#{page_num}')")
+    label << "</span>"
+    label << "<span class='#{class_name}'>" + "Page " + page_num + "</span>"
   end  
 end

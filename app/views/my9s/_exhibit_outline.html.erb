@@ -1,51 +1,55 @@
-	<%= link_to_function(ins_char(), "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'Insert Element' }) %>
-	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
-	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
-	<%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %>
-	&nbsp;
+<%= link_to_function("[New Section]", "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'New Section' }) %>
+<%= link_to_function("[New Page]", "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'New Page' }) %>
+&nbsp;
 
+<span class="standard_box">
 	<%= link_to_function(ins_char(), "doAjaxLinkOnSelection('insert_border', #{exhibit.id} );", { :title => 'Insert Border' }) %>
 	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_top_of_border_up', #{exhibit.id} );", { :title => 'Move Top of Border Up' }) %>
 	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_top_of_border_down', #{exhibit.id} );", { :title => 'Move Top of Border Down' }) %>
 	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_bottom_of_border_up', #{exhibit.id} );", { :title => 'Move Bottom of Border Up' }) %>
 	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_bottom_of_border_down', #{exhibit.id} );", { :title => 'Move Bottom of Border Down' }) %>
 	<%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_border', #{exhibit.id} );", { :title => 'Delete Border' }) %>
-	&nbsp;
-
-	<%= link_to_function(ins_char(), "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'Insert Page' }) %>
-	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_page_up', #{exhibit.id} );", { :title => 'Move Page Up' }) %>
-	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_page_down', #{exhibit.id} );", { :title => 'Move Page Down' }) %>
-	<%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_page', #{exhibit.id} );", { :title => 'Delete Page' }) %>
+</span>
 	
 <ul id="exhibit_outline" class="outline_tree">
 	<% is_first = true -%>
 <% for page in exhibit.exhibit_pages -%>
-	<li><%= tree_node( "Page #{page.position}.", "p#{page.position}", "outline", "exhibit_outline_text", "toggle_outline", :open ) %></li>
+	<% element_count = 1 -%>
+	<li><%= tree_node( "#{page.position}", "outline", "exhibit_outline_text", "toggle_outline", exhibit.id, :open ) %></li>
 	<ul id='outline_<%= "p#{page.position}" %>' class="outline_tree_elements">
 	<% for section in page.exhibit_sections -%>
 		<div class="outline_section_with<%= 'out' if section.has_border == 0 %>_border">
 			<% for element in section.exhibit_elements -%>
-				<li class="outline_element<%= " outline_tree_element_selected" if is_first == true %>" id='outline_element_<%= element.id %>'><%= link_to_function element_bullet(), "selectLine('outline_element_#{element.id}')" %>&nbsp;
-				<% is_first = false -%>
-				<% if element.exhibit_element_layout_type == 'text' -%>
-					<%= element_text_thumbnail(element) %>
-				<% elsif element.exhibit_element_layout_type == 'header' -%>
-					<span class="exhibit_outline_header"><b><big><%= element.element_text %></big></b></span>
-				<% elsif element.exhibit_element_layout_type == 'pics' -%>
-					<% illustrations = element.exhibit_illustrations -%>
-					<%= "[Row of pictures: none specified]" if illustrations.length == 0 %>
-					<% for illustration in illustrations -%>
-					<%= element_pic_thumbnail_illustration(illustration) %>
-					<% end -%>
-				<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
-					<%= element_pic_thumbnail(element) %>
-					<%= element_text_thumbnail(element) %>
-				<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
-					<%= element_text_thumbnail(element) %>
-					<%= element_pic_thumbnail(element) %>
-				<% else -%>
-					Error: unknown type
-				<% end # type of element -%>
+				<li class="outline_element<%= " outline_tree_element_selected" if is_first == true %>" id='outline_element_<%= element.id %>'>
+					<div class="outline_right_controls">
+						<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
+						<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
+						&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %></span>
+					</div>
+					<span class="count"><%= link_to_function element_count, "selectLine('outline_element_#{element.id}')" %></span>
+					<% element_count = element_count + 1 -%>
+					<% is_first = false -%>
+					<span onclick="selectLine('outline_element_<%= element.id %>')">
+					<% if element.exhibit_element_layout_type == 'text' -%>
+						<%= element_text_thumbnail(element) %>
+					<% elsif element.exhibit_element_layout_type == 'header' -%>
+						<span class="exhibit_outline_header"><b><big><%= element.element_text %></big></b></span>
+					<% elsif element.exhibit_element_layout_type == 'pics' -%>
+						<% illustrations = element.exhibit_illustrations -%>
+						<%= "[Row of pictures: none specified]" if illustrations.length == 0 %>
+						<% for illustration in illustrations -%>
+						<%= element_pic_thumbnail_illustration(illustration) %>
+						<% end -%>
+					<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+						<%= element_pic_thumbnail(element) %>
+						<%= element_text_thumbnail(element) %>
+					<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+						<%= element_text_thumbnail(element) %>
+						<%= element_pic_thumbnail(element) %>
+					<% else -%>
+						Error: unknown type
+					<% end # type of element -%>
+					</span>
 				</li>
 			<% end # each element -%>
 		</div>

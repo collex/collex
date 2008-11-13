@@ -32,7 +32,10 @@ function initializeElementEditing()
 			{ 
 				onEnterEditMode: function(form, value) { },
 				rows : '20', 
-				cols : '60' 
+				cols : '60'
+				//veButton: true,
+				//veIsOn: true,
+				//veText: {0: 'Turn on the editor', 1: 'Turn off the editor'} 
 			});
 	}
 	
@@ -151,6 +154,20 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 	}
 }
 
+function doAjaxLinkOnPage(verb, exhibit_id, page_num)
+{
+	var allElements = $$(".outline_tree_element_selected");
+	if (allElements.length == 1)
+	{
+		var id = allElements[0].id;
+		var arr = id.split("_");
+		var element_id = arr[arr.length-1];
+		new Ajax.Updater("full_window", "/my9s/modify_outline_page", {
+			parameters : "verb="+verb+"&page_num="+page_num+"&exhibit_id="+exhibit_id,
+			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+	}
+}
+
 function showExhibitOutline()
 {
 	$("full_window_full_window").show();
@@ -163,3 +180,106 @@ function selectLine(id)
 	
 	$(id).addClassName( "outline_tree_element_selected" );
 }
+
+Ajax.InPlaceRichEditor = Class.create();
+Object.extend(Ajax.InPlaceRichEditor.prototype, Ajax.InPlaceEditor.prototype);
+Object.extend(Ajax.InPlaceRichEditor.prototype,
+{
+	enterEditMode: function(evt)
+	{
+		if (this.saving) return;
+		if (this.editing) return;
+
+		this.editing = true;
+		this.onEnterEditMode();
+
+		if (this.options.externalControl)
+		{
+			Element.hide(this.options.externalControl);
+		}
+
+		Element.hide(this.element);
+		this.createForm();
+		this.element.parentNode.insertBefore(this.form, this.element);
+		Field.scrollFreeActivate(this.editField);
+
+		if (this.options.textarea)
+		{
+			tinyMCE.addMCEControl(this.editField, 'value');
+		}
+
+		// stop the event to avoid a page refresh in Safari
+		if (evt)
+		{
+			Event.stop(evt);
+		}
+		return false;
+	},
+	onclickCancel: function()
+	{
+		if (this.options.textarea)
+		{
+			tinyMCE.removeMCEControl('value');
+		}
+
+		this.onComplete();
+		this.leaveEditMode();
+		return false;
+	},
+	onSubmit: function()
+	{
+		// onLoading resets these so we need to save them away for the Ajax call
+		var form = this.form;
+
+		if (this.options.textarea)
+		{
+			var tinyVal = tinyMCE.getContent('value');
+
+			if (tinyVal)
+				this.editField.value = tinyVal;
+
+			tinyMCE.removeMCEControl('value');
+		}
+
+		var value = this.editField.value;
+
+		// do this first, sometimes the ajax call returns before we get a chance to switch on Saving...
+		// which means this will actually switch on Saving... *after* we've left edit mode causing Saving...
+		// to be displayed indefinitely
+		this.onLoading();
+
+		if (this.options.evalScripts)
+		{
+			new Ajax.Request(
+				this.url, Object.extend(
+				{
+					parameters: this.options.callback(form, value),
+					onComplete: this.onComplete.bind(this),
+					onFailure: this.onFailure.bind(this),
+					asynchronous:true, 
+					evalScripts:true
+				}, this.options.ajaxOptions));
+		}
+		else
+		{
+			new Ajax.Updater(
+				{
+					success: this.element,
+					// don't update on failure (this could be an option)
+					failure: null
+				}, 
+				this.url, Object.extend(
+				{
+					parameters: this.options.callback(form, value),
+					onComplete: this.onComplete.bind(this),
+					onFailure: this.onFailure.bind(this)
+				}, this.options.ajaxOptions));
+		}
+		// stop the event to avoid a page refresh in Safari
+		if (arguments.length > 1)
+		{
+			Event.stop(arguments[0]);
+		}
+		return false;
+	}
+});

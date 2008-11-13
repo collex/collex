@@ -1,13 +1,31 @@
 /* my9s.css  - This file contains style that only apply to functionality under the My9s tab */
 
+#edit_exhibit_sidebar {
+	vertical-align: top;
+	width: 350px;
+}
+
+#edit_exhibit_outer {
+	width: 100%;
+}
+
+#edit_exhibit_main {
+	vertical-align: top;
+}
+
 .edit_exhibit_header {
 	color: white;
 	background-color: gray;
 }
 
-.outline_toggle {
+.outline_right_controls {
 	margin-right: 3px;
 	float: right;
+}
+
+.close_link a {
+	background-color: #a60000;
+	color: white;
 }
 
 .outline_tree {
@@ -38,6 +56,28 @@
 
 .outline_tree_element_selected {
 	background-color: gray;
+}
+
+.outline_element .count a {
+	background-color: gray;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+.outline_element .outline_right_controls {
+	display: none;
+}
+
+.outline_tree_element_selected .outline_right_controls {
+	display: inherit;
+}
+
+.outline_tree_element_selected .count a {
+	background-color: #eeeeee;
+	color: black;
 }
 
 .exhibit_outline_text {

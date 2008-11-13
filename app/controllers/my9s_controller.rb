@@ -1,3 +1,4 @@
+#require 'tiny_mce'
 class My9sController < ApplicationController
   layout 'collex_tabs'
   before_filter :init_view_options
@@ -197,6 +198,12 @@ class My9sController < ApplicationController
     def edit_exhibit
       @exhibit = Exhibit.find(params[:id])
       @page = params['page'] == nil ? 1 : params['page'].to_i
+#      uses_tiny_mce :options => {
+#                              :theme => 'advanced',
+#                              :theme_advanced_resizing => true,
+#                              :theme_advanced_resize_horizontal => false,
+#                              :plugins => %w{ table fullscreen }
+#                            }
     end
 
     def edit_exhibit_globals
@@ -448,12 +455,25 @@ class My9sController < ApplicationController
   
       when "insert_page"
         exhibit.insert_page(page.position)
+      end
+      
+      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id) }
+    end
+    
+    def modify_outline_page
+      exhibit_id = params['exhibit_id']
+      page_num = params['page_num'].to_i
+      verb = params['verb']
+      
+      exhibit = Exhibit.find(exhibit_id)
+      
+      case verb
       when "move_page_up"
-        exhibit.move_page_up(page.position)
+        exhibit.move_page_up(page_num)
       when "move_page_down"
-        exhibit.move_page_down(page.position)
+        exhibit.move_page_down(page_num)
       when "delete_page"
-        exhibit.delete_page(page.position)
+        exhibit.delete_page(page_num)
       end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id) }
