@@ -64,7 +64,7 @@ class LoginController < ApplicationController
   def logout 
     session[:user] = nil 
     
-    request.env["HTTP_REFERER"] =~ /exhibit/ ? redirect_to(exhibits_path) : redirect_to(get_page_to_return_to())
+    request.env["HTTP_REFERER"] = redirect_to(get_page_to_return_to())
   end
 
   def change_account
