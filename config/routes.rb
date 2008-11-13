@@ -23,6 +23,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :exhibit_pages
 
+  map.exhibits_display '/exhibits/:id', :controller => 'exhibits', :action => 'view'
   map.resources :exhibits
 
   map.resources :tagassigns

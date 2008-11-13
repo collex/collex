@@ -6,7 +6,7 @@
 <% name = "#{exhibit.title} by #{User.find(exhibit.user_id).fullname}" -%>
 	<tr>
 		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
-		<td class="exhibit_link"><a href="/exhibits/view/<%= exhibit.id %>"><%= exhibit.title %></a>&nbsp;by&nbsp;<%= User.find(exhibit.user_id).fullname %></td>
+		<td class="exhibit_link"><a href="/exhibits/<%= exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by&nbsp;<%= User.find(exhibit.user_id).fullname %></td>
 	</tr>
 <% end -%>
 </table>
