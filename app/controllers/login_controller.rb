@@ -26,7 +26,9 @@ class LoginController < ApplicationController
      else
        return session[:current_page][1] if session[:current_page]
      end
-     return request.env["HTTP_REFERER"] if request.env["HTTP_REFERER"]
+     if request.env["HTTP_REFERER"] && request.env["HTTP_REFERER"] !~ /login/
+       return request.env["HTTP_REFERER"]
+     end
      return "/"
    end
    
