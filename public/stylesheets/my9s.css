@@ -167,6 +167,12 @@
 .outline_section_without_border {
 }
 
+.illustration_control_border {
+	border: 4px solid gray;
+}
+
+
+
 /* my9s tab */
 
 .my9s_instructions {

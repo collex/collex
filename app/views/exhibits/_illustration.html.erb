@@ -1,3 +1,12 @@
+<% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
+<% if edit_mode -%>
+	<div class="ill_illustration_type" style="display:none;"><%= illustration.illustration_type if illustration%></div>
+	<div class="ill_image_url" style="display:none;"><%= illustration.image_url if illustration %></div>
+	<div class="ill_link" style="display:none;"><%= illustration.link if illustration %></div>
+	<div class="ill_image_width" style="display:none;"><%= illustration.image_width if illustration %></div>
+	<div class="ill_illustration_text" style="display:none;"><%= illustration.illustration_text if illustration %></div>
+<% end -%>
+
 <center>
 <div class="exhibit_illustration">
 	<% if illustration == nil -%>
@@ -8,12 +17,29 @@
 		<% end -%>
 		<% if edit_mode -%>
 			<% illustration_div = "\"illustration_#{illustration_id}\"" %>
+			<div class="illustration_control_border">
+				<div class="outline_right_controls">
+				<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
+				<% ajax_div_id = "'element_#{element_id}'" -%>
+				<% ajax_params = "'element_id=#{element_id}&position=#{illustration.position}&verb='" -%>
+					<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
+				</div>
 			<a title="Edit illustration options" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
 		<% end -%>
-		<img id='illustration_img_<%= illustration.id %>' src="<%= illustration.image_url %>" width="<%= illustration.image_width %>px" alt="" />
+		<% if illustration.illustration_type == 'Image' -%>
+			<% url = illustration.image_url -%>
+			<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
+			<img id='illustration_img_<%= illustration.id %>' src="<%= url %>" width="<%= illustration.image_width %>px" alt="" />
+		<% else -%>
+			<div class="exhibit_illustration_text"><%= illustration.illustration_text %></div>
+		<% end -%>
 		<% if edit_mode || illustration.link.length > 0 -%>
 			</a>
 		<% end -%>
+		<% if edit_mode -%>
+			</div>
+		<% end -%>
+		
 		<% if illustration.caption1.length > 0 -%>
 			<div class="exhibit_caption1"><%= illustration.caption1 %>
 			<% if illustration.caption2.length > 0 -%>

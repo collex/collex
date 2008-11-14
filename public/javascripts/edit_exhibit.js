@@ -12,9 +12,10 @@
 	//Sortable.create('exhibit_outline_section');
 	
 	el = $('full_window');
-	if (el)
+	if (el) {
 		FullWindow.initialize('full_window', "OUTLINE");
-	$("full_window_full_window").hide();
+		$("full_window_full_window").hide();
+	}
  });
 
 function initializeElementEditing()
@@ -75,37 +76,43 @@ function change_illustration(element_id, illustration_id, parent_id)
 	new Effect.Appear('illustration_form_div', { duration: 0.5 }); 
 	moveObjectToLeftTopOfItsParent('illustration_form_div', parent_id);
 
+	var strBaseSelector = "#illustration_" + illustration_id + " .ill_";
+	var arrIllustrationType = $$(strBaseSelector + "illustration_type");
+	var arrImageUrl = $$(strBaseSelector + "image_url");
+	var arrLink = $$(strBaseSelector + "link");
+	var arrWidth = $$(strBaseSelector + "image_width");
+	var arrText = $$(strBaseSelector + "illustration_text");
+	var arrCaption1 = $$("#illustration_" + illustration_id + " .exhibit_caption1");
+	var arrCaption2 = $$("#illustration_" + illustration_id + " .exhibit_caption2");
+
 	$('ill_element_id').value = element_id;
 	$('illustration_id').value = illustration_id;
-	var par = $(parent_id);
-	var arrLinks = par.getElementsByTagName('a');
-	var arrImg = par.getElementsByTagName('img');
-	var arrDiv = par.getElementsByTagName('div');
-	if (arrImg.length > 0)
-		$('image_url').value = arrImg[0].src;
-	if (arrLinks.length > 0)
-		$('link').value = arrLinks[0].href;
-	if (arrImg.length > 0)
-		$('width').value = arrImg[0].width;
-	for (var i = 0; i < arrDiv.length; i++)
-	{
-		if (arrDiv[i].className == 'exhibit_caption1')
-		{
-			var str = arrDiv[i].innerHTML;
-			var idx = str.indexOf("<div class=");
-			if (idx >= 0)
-				str = str.substring(0, idx);
-			str = str.strip();
-			$('caption1').value = str;
-		}
-		if (arrDiv[i].className == 'exhibit_caption2')
-			$('caption2').value = arrDiv[i].innerHTML;
-	}
 
-	var existing_note = document.getElementById(parent_id).innerHTML;
-	existing_note = existing_note.gsub("<br />", "\n");
-	existing_note = existing_note.gsub("<br>", "\n");
-	$('text').value = existing_note;
+	$('image_url').value = arrImageUrl[0].innerHTML;
+	$('link').value = arrLink[0].innerHTML;
+	$('width').value = arrWidth[0].innerHTML;
+	$('ill_text').value = arrText[0].innerHTML;
+	if (arrCaption1.length > 0) 
+	{
+		var str = arrCaption1[0].innerHTML;
+		var arr = str.split("<div");
+		$('caption1').value = arr[0];
+		
+	}
+	if (arrCaption2.length > 0) 
+		$('caption2').value = arrCaption2[0].innerHTML;
+	
+	var opt = $$('#type option');
+	if (arrIllustrationType[0].innerHTML == "Text")
+	{
+		opt[0].removeAttribute('selected');
+		opt[1].writeAttribute('selected', 'selected');
+	}
+	else
+	{
+		opt[0].writeAttribute('selected', 'selected');
+		opt[1].removeAttribute('selected');
+	}
 
 	focusedFieldId = 'illustration_form_div';
 	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.

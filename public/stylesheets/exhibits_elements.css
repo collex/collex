@@ -110,6 +110,20 @@ h3 {
 	color:#666666;
 }
 
+.exhibit_illustration_text {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	color:#666666;
+	font-family:"Trebuchet MS",Arial,sans-serif;
+	font-size:smaller;
+	margin-left:2em;
+	margin-right:2em;
+	padding:0.5em;
+	text-align:center;
+	line-height:1.4em;
+	margin-bottom: 8px;
+}
+
 .exhibit_caption1 {
 	background:#DCDCDC none repeat scroll 0 0;
 	border:1px solid #999999;

@@ -335,7 +335,7 @@ class My9sController < ApplicationController
       pos = params[:position]
       element = ExhibitElement.find(element_id)
 
-      new_illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
+      new_illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'Image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
       new_illustration.insert_at(pos)
 
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
