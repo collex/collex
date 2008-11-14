@@ -7,7 +7,11 @@ var Widenable = {
  	prepare: function(ta, callbackFunction)
  	{
 		var target = $(ta);
+		if (target.hasClassName("widenable_attached"))
+			return;
+			
 		target.callbackFunction = callbackFunction;
+		target.addClassName("widenable_attached");
 		
 		// Wrap the existing element in a table and put the handler beside it.
 		var wrapper1 = target.wrap('td');
@@ -17,11 +21,17 @@ var Widenable = {
  		var handler = new Element('span');
  		wrapper2.appendChild(column);
 		column.appendChild(handler);
+		column.setStyle({ verticalAlign : 'bottom' });
 
  		//wrapper.style.width = ta.offsetWidth + 'px';
+		//wrapper.setAttribute({cellSpacing : '0px', cellPadding: '0px' });
+		wrapper.setStyle({cellSpacing : '0px', cellPadding: '0px' });
 
-		handler.setStyle( { cursor: 'e-resize' });
-		handler.innerHTML = '&#x25BA;';
+		handler.setStyle( { cursor: 'e-resize',
+			border : "0px",
+			padding: "0px" });
+		handler.innerHTML = '<img src="../images/resize-handler.gif" alt="" class="resizer" />';
+		//handler.innerHTML = '&hArr;';
 
  		handler._wrapper = wrapper;
  		handler._ta = ta;

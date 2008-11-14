@@ -17,27 +17,37 @@
 		<% end -%>
 		<% if edit_mode -%>
 			<% illustration_div = "\"illustration_#{illustration_id}\"" %>
-			<div class="illustration_control_border">
-				<div class="outline_right_controls">
-				<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
-				<% ajax_div_id = "'element_#{element_id}'" -%>
-				<% ajax_params = "'element_id=#{element_id}&position=#{illustration.position}&verb='" -%>
-					<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
-				</div>
-			<a title="Edit illustration options" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
+			<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
+			<% ajax_div_id = "'element_#{element_id}'" -%>
+			<% ajax_params = "'element_id=#{element_id}&position=#{illustration.position}&verb='" -%>
+				<table><tr>
+				<% if illustration.position > 1 -%>
+					<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"  class="edit_exhibit_widget"><img src="../images/left-image-arrow.gif" alt="" /></a></td>
+				<% end -%>
+					<td class="edit_illustration_column"><div class="illustration_control_border">
+						<div class="outline_right_controls_no_space">
+							<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
+						</div>
+						<a title="Edit illustration options" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
 		<% end -%>
+		
 		<% if illustration.illustration_type == 'Image' -%>
-			<% url = illustration.image_url -%>
-			<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
-			<img id='illustration_img_<%= illustration.id %>' src="<%= url %>" width="<%= illustration.image_width %>px" alt="" />
+							<% url = illustration.image_url -%>
+							<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
+							<img id='illustration_img_<%= illustration.id %>' src="<%= url %>" width="<%= illustration.image_width %>px" alt="" class="widenable"/>
 		<% else -%>
-			<div class="exhibit_illustration_text"><%= illustration.illustration_text %></div>
+							<div class="exhibit_illustration_text"><%= illustration.illustration_text %></div>
 		<% end -%>
+		
 		<% if edit_mode || illustration.link.length > 0 -%>
-			</a>
+						</a>
 		<% end -%>
 		<% if edit_mode -%>
-			</div>
+					</div></td>
+				<% if illustration.position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
+					<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" class="edit_exhibit_widget" ><img src="../images/right-image-arrow.gif" alt="" /></a></td>
+				<% end -%>
+				</tr></table>
 		<% end -%>
 		
 		<% if illustration.caption1.length > 0 -%>

@@ -40,7 +40,7 @@ function initializeElementEditing()
 			});
 	}
 	
-	els = $$('.exhibit_illustration img');
+	els = $$('.exhibit_illustration .widenable');
 	els.each(function(el) { Widenable.prepare(el, imgResized); });
 }
 
