@@ -1,15 +1,18 @@
 <%= link_to_function("[New Section]", "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'New Section' }) %>
 <%= link_to_function("[New Page]", "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'New Page' }) %>
+<%= link_to_function("[Edit Border]", "doEnterEditBorder(#{exhibit.id} );", { :title => 'Edit the border surrounding the selected section', :id => 'edit_border' }) %>
 &nbsp;
 
-<span class="standard_box">
-	<%= link_to_function(ins_char(), "doAjaxLinkOnSelection('insert_border', #{exhibit.id} );", { :title => 'Insert Border' }) %>
+<div id="border_controls" class="border_controls" style="display: none; text-align:right;" >
 	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_top_of_border_up', #{exhibit.id} );", { :title => 'Move Top of Border Up' }) %>
 	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_top_of_border_down', #{exhibit.id} );", { :title => 'Move Top of Border Down' }) %>
+	<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_border', #{exhibit.id} );", { :title => 'Delete Border' }) %></span>
+</div>
+
+<div id="border_controls_bottom" class="border_controls" style="display: none; text-align:right;" >
 	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_bottom_of_border_up', #{exhibit.id} );", { :title => 'Move Bottom of Border Up' }) %>
 	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_bottom_of_border_down', #{exhibit.id} );", { :title => 'Move Bottom of Border Down' }) %>
-	<%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_border', #{exhibit.id} );", { :title => 'Delete Border' }) %>
-</span>
+</div>
 	
 <ul id="exhibit_outline" class="outline_tree">
 	<% is_first = true -%>

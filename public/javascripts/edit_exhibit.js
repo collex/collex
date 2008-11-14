@@ -175,6 +175,58 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 	}
 }
 
+var strStopEditingText = '[Stop Editing Border]';
+
+function doEnterEditBorder(exhibit_id)
+{
+	// this is called both to start editing and to stop editing.
+	// If we want to stop editing, we just hide the controls and return.
+	var didExit = exitEditBorderMode();
+	if (didExit)
+		return;
+	
+	// First find the selected item so we know which section to manipulate.
+	var allElements = $$(".outline_tree_element_selected");
+	if (allElements.length == 1)
+	{
+		var id = allElements[0].id;
+		var arr = id.split("_");
+		var element_id = arr[arr.length-1];
+		
+		var section = allElements[0].up();
+		// If the section doesn't have a border, add one automatically.
+		if (section.hasClassName("outline_section_without_border"))
+		{
+			doAjaxLinkOnSelection('insert_border', exhibit_id);
+			return;
+		}
+		
+		var editBorderButton = $('edit_border');
+		editBorderButton.innerHTML = strStopEditingText;
+		var borderControls = $("border_controls");
+		var borderControlsBottom = $("border_controls_bottom");
+		borderControls.show();
+		borderControlsBottom.show();
+		section.insert({
+			top: borderControls,
+			bottom: borderControlsBottom
+		});
+	}	
+}
+
+function exitEditBorderMode()
+{
+	var editBorderButton = $('edit_border');
+	if (editBorderButton.innerHTML == strStopEditingText)
+	{
+		editBorderButton.innerHTML = "[Edit Border]";
+		$("border_controls").hide();
+		$("border_controls_bottom").hide();
+		return true;
+	}
+	return false;
+}
+
 function showExhibitOutline(element_id)
 {
 	$("full_window_full_window").show();
@@ -184,6 +236,8 @@ function showExhibitOutline(element_id)
 
 function selectLine(id)
 {
+	exitEditBorderMode();
+	
 	var allElements = $$(".outline_tree_element_selected");
 	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
 	

@@ -23,6 +23,10 @@
 	float: right;
 }
 
+.border_controls {
+	background-color: #dddddd;
+}
+
 .outline_right_controls_no_space {
 	margin-right: 0px;
 	float: right;
