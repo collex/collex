@@ -44,10 +44,10 @@ function initializeElementEditing()
 	els.each(function(el) { Widenable.prepare(el, imgResized); });
 }
 
-function imgResized(illustration_id, width)
+function imgResized(illustration_id, element_id, width)
 {
-	new Ajax.Request("/my9s/change_img_width", {
-		parameters : "illustration_id="+ illustration_id + "&width=" + width,
+	new Ajax.Updater("element_"+element_id, "/my9s/change_img_width", {
+		parameters : "element_id="+ element_id + "&illustration_id="+ illustration_id + "&width=" + width,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
 	});
@@ -55,6 +55,11 @@ function imgResized(illustration_id, width)
 
 function elementTypeChanged(div, element_id, newType)
 {
+	if (newType == 'pics')
+		$("add_image_" + element_id).show();
+	else
+		$("add_image_" + element_id).hide();
+
 	new Ajax.Updater(div, "/my9s/change_element_type", {
 		parameters : "element_id="+ element_id + "&type=" + newType,
 		onComplete : setTimeout("initializeElementEditing()", 1000),

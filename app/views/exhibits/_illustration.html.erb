@@ -7,49 +7,83 @@
 	<div class="ill_illustration_text" style="display:none;"><%= illustration.illustration_text if illustration %></div>
 <% end -%>
 
+<% # Set up all variables in advance to make the html code cleaner -%>
+<% if illustration == nil -%>
+	<% illustration_id = -1 -%>
+	<% url = "../images/lg-harrington.gif" -%>
+	<% width = 100 -%>
+	<% illustration_position = 1 -%>
+	<% link = "" -%>
+	<% illustration_type = 'Image' -%>
+<% else -%>
+	<% illustration_id = illustration.id -%>
+	<% url = illustration.image_url -%>
+	<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
+	<% width = illustration.image_width -%>
+	<% illustration_position = illustration.position -%>
+	<% link = illustration.link -%>
+	<% illustration_type = illustration.illustration_type -%>
+<% end -%>
+
+<% if edit_mode != nil -%>
+	<% wrapper_type = 'edit' -%>
+<% else -%>
+	<% if link == "" -%>
+		<% wrapper_type = 'none' -%>
+	<% else -%>
+		<% wrapper_type = 'link' -%>
+	<% end -%>
+<% end -%>
+
+<% illustration_div = "\"illustration_#{illustration_id}\"" %>
+<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
+<% ajax_div_id = "'element_#{element_id}'" -%>
+<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
+
 <center>
 <div class="exhibit_illustration">
-	<% if illustration == nil -%>
-		<img id='illustration_img_0' src="../images/lg-harrington.gif" width="100px" alt="" />
+	<% # The wrapper is either nothing, if this is live and there was no link specified, or the link if specified, or a table if we are in edit mode. -%>
+	<% if wrapper_type == 'link' -%>
+		<a href="<%= link %>">
+	<% elsif wrapper_type == 'edit' -%>
+		<% # We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
+			<table><tr>
+			<% if illustration_position > 1 -%>
+				<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"  class="edit_exhibit_widget"><img src="../images/left-image-arrow.gif" alt="" /></a><%=illustration_position%></td>
+			<% end -%>
+			
+			<td class="edit_illustration_column"><div class="illustration_control_border">
+				<% if part_of_row == true -%>
+					<div class="outline_right_controls_no_space">
+						<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
+					</div>
+				<% end -%>
+				<a title="Edit illustration options"  widenableelement="illustration_img_<%= illustration_id %>" class="widenable" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
+	<% end -%>
+	
+	<% # Create the actual content -%>	
+	<% if illustration_type == 'Image' -%>
+		<img id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt=""/>
 	<% else -%>
-		<% if illustration.link.length > 0 && edit_mode == nil -%>
-			<a href="<%= illustration.link %>">
-		<% end -%>
-		<% if edit_mode -%>
-			<% illustration_div = "\"illustration_#{illustration_id}\"" %>
-			<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
-			<% ajax_div_id = "'element_#{element_id}'" -%>
-			<% ajax_params = "'element_id=#{element_id}&position=#{illustration.position}&verb='" -%>
-				<table><tr>
-				<% if illustration.position > 1 -%>
-					<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"  class="edit_exhibit_widget"><img src="../images/left-image-arrow.gif" alt="" /></a></td>
-				<% end -%>
-					<td class="edit_illustration_column"><div class="illustration_control_border">
-						<div class="outline_right_controls_no_space">
-							<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
-						</div>
-						<a title="Edit illustration options" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
-		<% end -%>
+		<div class="exhibit_illustration_text"><%= illustration.illustration_text %></div>
+	<% end -%>
+
+	<% # Close the wrapper created above -%>
+	<% if wrapper_type == 'link' -%>
+		</a>
+	<% elsif wrapper_type == 'edit' -%>
+		</a>	<% # The link to the edit dialog -%>
+		</div> <% # The illustration control border -%>
+		</td>	<% # The middle column containing the content and the image control stuff -%>
 		
-		<% if illustration.illustration_type == 'Image' -%>
-							<% url = illustration.image_url -%>
-							<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
-							<img id='illustration_img_<%= illustration.id %>' src="<%= url %>" width="<%= illustration.image_width %>px" alt="" class="widenable"/>
-		<% else -%>
-							<div class="exhibit_illustration_text"><%= illustration.illustration_text %></div>
+		<% if illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
+			<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" class="edit_exhibit_widget" ><img src="../images/right-image-arrow.gif" alt="" /></a><%=illustration_position%></td>
 		<% end -%>
-		
-		<% if edit_mode || illustration.link.length > 0 -%>
-						</a>
-		<% end -%>
-		<% if edit_mode -%>
-					</div></td>
-				<% if illustration.position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
-					<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" class="edit_exhibit_widget" ><img src="../images/right-image-arrow.gif" alt="" /></a></td>
-				<% end -%>
-				</tr></table>
-		<% end -%>
-		
+		</tr></table>
+	<% end -%>
+
+	<% # draw the caption(s) -%>
+	<% if illustration != nil -%>
 		<% if illustration.caption1.length > 0 -%>
 			<div class="exhibit_caption1"><%= illustration.caption1 %>
 			<% if illustration.caption2.length > 0 -%>
@@ -61,6 +95,6 @@
 				<div class="exhibit_caption2"><%= illustration.caption2 %></div>
 			<% end -%>
 		<% end -%>
-	<% end # illustration == nil -%>
+	<% end -%>
 </div>
 </center>

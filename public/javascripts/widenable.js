@@ -10,7 +10,6 @@ var Widenable = {
 		if (target.hasClassName("widenable_attached"))
 			return;
 			
-		target.callbackFunction = callbackFunction;
 		target.addClassName("widenable_attached");
 		
 		// Wrap the existing element in a table and put the handler beside it.
@@ -30,11 +29,15 @@ var Widenable = {
 		handler.setStyle( { cursor: 'e-resize',
 			border : "0px",
 			padding: "0px" });
-		handler.innerHTML = '<img src="../images/resize-handler.gif" alt="" class="resizer" />';
+		handler.innerHTML = '<img src="../images/resize-handler.gif" alt="" class="resizer" onmousedown="Widenable.onmousedown(event, this);"/>';
 		//handler.innerHTML = '&hArr;';
 
  		handler._wrapper = wrapper;
- 		handler._ta = ta;
+		var elToWiden = $(target.getAttribute('widenableelement'));
+		if (!elToWiden)
+			elToWiden = target;
+		elToWiden.callbackFunction = callbackFunction;
+ 		handler._ta = elToWiden;
  		handler.onmousedown = function(e)
  		{
  			Widenable.onmousedown(e, this);
@@ -76,7 +79,7 @@ var Widenable = {
  			ta.className = ta.className.replace(/ *textarea-active/, '');
  			wrapper.className = '';
 			var callbackFunction = $(ta).callbackFunction;
-			callbackFunction(ta.id, $(ta).getStyle('width'));
+			callbackFunction(ta.id, $(ta).getAttribute("element_id"), parseInt($(ta).getStyle('width')));
  		}
  		this.einfo = false;
  		document.onmousemove = this.oldmousemove;

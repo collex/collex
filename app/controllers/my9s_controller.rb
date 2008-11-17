@@ -332,13 +332,16 @@ class My9sController < ApplicationController
     
     def insert_illustration
       element_id = params[:element_id]
-      pos = params[:position]
+      pos = params[:position].to_i
       element = ExhibitElement.find(element_id)
+      if pos == -1
+        pos = element.exhibit_illustrations.length+1
+      end
 
       new_illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'Image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
       new_illustration.insert_at(pos)
 
-      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+      render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def change_element_type
@@ -375,19 +378,20 @@ class My9sController < ApplicationController
     end
     
     def change_img_width
-      element = params['illustration_id']
-      arr = element.split('_')
-      element_id = arr[arr.length-1].to_i
+      element_id = params['element_id']
+      illustration = params['illustration_id']
+      arr = illustration.split('_')
+      illustration_id = arr[arr.length-1].to_i
       width = params['width'].to_i
-      if element_id == 0
-        illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => width, :link => "" )
+      if illustration_id <= 0
+        illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'Image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => width, :link => "" )
         illustration.insert_at(1)
       else
-        illustration = ExhibitIllustration.find(element_id)
+        illustration = ExhibitIllustration.find(illustration_id)
         illustration.image_width = width
         illustration.save
       end
-      render :text=> ""
+     render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def edit_illustration

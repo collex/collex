@@ -13,6 +13,16 @@
 	vertical-align: top;
 }
 
+.illustration_control_border a:hover {
+	/*color: white;*/
+	background: white;
+	border: 0 none;
+}
+
+.illustration_control_border a {
+	border: 0 none;
+}
+
 .edit_exhibit_header {
 	color: white;
 	background-color: gray;

@@ -37,12 +37,18 @@
 				<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Pictures</option>
 				</select>
 				<% if element.exhibit_element_layout_type == 'pics' %>
-					<% ajax_action = "'/my9s/insert_illustration'" -%>
-					<% ajax_div_id = "'element_#{element.id}'" -%>
-					<% illustration_pos = element.exhibit_illustrations.length+1 -%>
-					<% ajax_params = "'element_id=#{element.id}&position=#{illustration_pos}'" -%>
-					<%= link_to_function("[add image]", "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params});", { :title => 'Append New Illustration To End' }) %>
+					<% style = "" -%>
+				<% else -%>
+					<% style = "display: none;" -%>
 				<% end -%>
+				<% ajax_action = "'/my9s/insert_illustration'" -%>
+				<% ajax_div_id = "'element_#{element.id}'" -%>
+				<% illustration_pos = element.exhibit_illustrations.length+1 -%>
+				<% ajax_params = "'element_id=#{element.id}&position=-1'" -%>
+				<% for p in element.exhibit_illustrations -%>
+				<%= "#{p.id},#{p.position};" %>
+				<% end -%>
+				<%= link_to_function("[add image]", "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params});", { :id => "add_image_#{element.id}", :title => 'Append New Illustration To End', :style => style }) %>
 			</h1>
 			<div id="element_<%= element.id %>" class="inside_edit_exhibit_box">
 				<%= render :partial => 'edit_exhibit_element', :locals => { :element => element } %>

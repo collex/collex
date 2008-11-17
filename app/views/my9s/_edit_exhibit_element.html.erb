@@ -7,7 +7,7 @@
 <% elsif element.exhibit_element_layout_type == 'pic_text' -%>
 	<% illustration = element.exhibit_illustrations.find(:first) -%>
 	<table><tr>
-		<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :element_id => element.id, :illustration => illustration } %></td>
+		<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :element_id => element.id, :illustration => illustration, :part_of_row => false } %></td>
 		<td><%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :id => element.id, :is_first => is_first } %></td>
 		<% is_first = false -%>
 	</tr></table>
@@ -16,14 +16,14 @@
 	<table><tr>
 		<td><%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :id => element.id, :is_first => is_first } %></td>
 		<% is_first = false -%>
-		<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :element_id => element.id, :illustration => illustration } %></td>
+		<td><%= render :partial => 'edit_exhibit_illustration', :locals => { :element_id => element.id, :illustration => illustration, :part_of_row => false } %></td>
 	</tr></table>
 <% elsif element.exhibit_element_layout_type == 'pics' -%>
 	<% illustrations = element.exhibit_illustrations -%>
 	<table><tr>
 		<% for illustration in illustrations -%>
 		<td><% #= link_to_function ins_char(), "insertIllustration('element_#{element.id}', #{element.id}, #{illustration.position});", { :title => 'Insert Illustration' } %></td>
-		<td><%= render :partial => 'edit_exhibit_illustration', :locals => {  :element_id => element.id, :illustration => illustration } %></td>
+		<td><%= render :partial => 'edit_exhibit_illustration', :locals => {  :element_id => element.id, :illustration => illustration, :part_of_row => true } %></td>
 		<% end -%>
 		<td><% #= link_to_function ins_char(), "insertIllustration('element_#{element.id}', #{element.id}, #{illustrations.length+1});", { :title => 'Insert Illustration' } %></td>
 	</tr></table>
