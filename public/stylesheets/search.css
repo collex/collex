@@ -112,6 +112,10 @@ text-align:center;
 	vertical-align: top;
 }
 
+#search-main h1 {
+font-size:12pt;
+}
+
 #search-terms {
 	margin-bottom: 10px;
 }
@@ -121,6 +125,11 @@ font-size:12pt;
 }
 
 #search-results {
+}
+
+
+#search-results h1{
+font-size: 12pt;
 }
 
 /* style for the drop down drawer 
