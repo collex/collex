@@ -2,8 +2,9 @@ class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position
   
   def insert_page(page_num)
-    new_section = ExhibitPage.create(:exhibit_id => id)
-    new_section.insert_at(page_num)
+    new_page = ExhibitPage.create(:exhibit_id => id)
+    new_page.insert_at(page_num)
+    new_page.insert_section(1)
   end
   
   def move_page_up(page_num)

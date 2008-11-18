@@ -9,6 +9,12 @@ class ExhibitPage < ActiveRecord::Base
     section.save
   end
 
+  def insert_section(pos)
+    new_section = ExhibitSection.create(:has_border => true, :exhibit_page_id => id)
+    new_section.insert_at(pos)
+    new_section.insert_element(1)
+  end
+
   def move_top_of_border_down(section)
     # insert a section above the current one, then add the first element in this section to that one.
     # Then remove that element from this one.

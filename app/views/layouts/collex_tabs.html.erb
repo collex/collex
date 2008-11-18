@@ -58,15 +58,15 @@
 <![endif]-->
 	
 	<!-- site wide scripts -->
-  <%= javascript_include_tag 'prototype' %>
-  <% # NOTE: declare "uses_tiny_mce" in the controller to use -%>
-  <% #include_tiny_mce_if_needed -%>
-  <%= javascript_include_tag 'effects' %>
-  <%= javascript_include_tag 'dragdrop' %>
-  <%= javascript_include_tag 'controls' %>
-  <%= javascript_include_tag 'application' %>
-  <%= javascript_include_tag 'spinner' %>
-	
+	<% # NOTE: declare "uses_tiny_mce" in the controller to use -%>
+	<% #include_tiny_mce_if_needed -%>
+	<% if @uses_tiny_mce -%>
+	  <%= javascript_include_tag :defaults, 'tiny_mce/tiny_mce_src', 'tiny_mce_init', 'inplacericheditor',  'initialize_inplacericheditor' %>
+	  <% #= javascript_include_tag :defaults, 'patch_inplaceeditor_1-8-1', 'patch_inplaceeditor_editonblank_1-8-1', 'tiny_mce/tiny_mce_src', 'tiny_mce_init', 'inplacericheditor' %>
+ 	<% else -%>
+	  <%= javascript_include_tag :defaults %>
+	<% end -%>	
+
 	<!-- section scripts -->
 	<%= case @site_section 
 		when :search 

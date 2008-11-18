@@ -12,6 +12,7 @@ class My9sController < ApplicationController
     @use_tabs = true
     @use_signin= true
     @site_section = :my9s
+    @uses_tiny_mce = true
     return true
   end
   public
@@ -188,7 +189,9 @@ class My9sController < ApplicationController
       if (session[:user])
         user = User.find_by_username(session[:user][:username])
         exhibit = Exhibit.create(:title =>'Untitled', :user_id => user.id)
-        ExhibitPage.create(:exhibit_id => exhibit.id, :position => 1) # create a page because we know the user will need at least one.
+        page = ExhibitPage.create(:exhibit_id => exhibit.id, :position => 1) # create a page because we know the user will need at least one.
+        section = ExhibitSection.create(:exhibit_page_id => page.id, :position => 1, :has_border => true)
+        section.insert_element(1)
         redirect_to :action => 'edit_exhibit', :id => exhibit.id
       else
         redirect_to :action => 'index'
@@ -250,7 +253,7 @@ class My9sController < ApplicationController
         exhibit.insert_page(page)
       when "delete"
         exhibit.delete_page(page)
-        page = page -1 if page == exhibit.exhibit_pages.length
+        page = page - 1 if page == exhibit.exhibit_pages.length
       end
 
       redirect_to :action => 'edit_exhibit', :id => id, :page => page
@@ -269,8 +272,7 @@ class My9sController < ApplicationController
       when "down"
         page.exhibit_sections[section_pos-1].move_lower()
       when "insert"
-        new_section = ExhibitSection.create(:has_border => true, :exhibit_page_id => page.id)
-        new_section.insert_at(section_pos)
+        page.insert_section(section_pos)
       when "delete"
         page.exhibit_sections[section_pos-1].remove_from_list()
         page.exhibit_sections[section_pos-1].destroy
