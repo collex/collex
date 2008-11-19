@@ -2,13 +2,19 @@
  * @author paulrosen
  */
 
- document.observe('dom:loaded', function() {
- 	var editors = $$('div[inplacericheditor]');
+document.observe('dom:loaded', function() {
+	initializeAllInplaceRichEditors();
+});
+
+function initializeAllInplaceRichEditors()
+{
+	var editors = $$('div[inplacericheditor]');
 	editors.each( function(ed) {
 		var ajaxLink = ed.readAttribute('inplacericheditor');
 		initInPlaceRichEditor(ed.id, ajaxLink);
+		ed.removeAttribute('inplacericheditor');
 	});
- });
+}
 
 function initInPlaceRichEditor(el_id, action)
 {

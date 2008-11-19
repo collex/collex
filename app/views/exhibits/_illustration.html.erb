@@ -1,4 +1,5 @@
 <% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
+<% edit_mode ||= false -%>
 <% if edit_mode -%>
 	<div class="ill_illustration_type" style="display:none;"><%= illustration.illustration_type if illustration%></div>
 	<div class="ill_image_url" style="display:none;"><%= illustration.image_url if illustration %></div>
@@ -25,20 +26,20 @@
 	<% illustration_type = illustration.illustration_type -%>
 <% end -%>
 
-<% if edit_mode != nil -%>
+<% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
+	<% illustration_div = "\"illustration_#{illustration_id}\"" %>
+	<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
+	<% ajax_div_id = "'element_#{element_id}'" -%>
+	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 <% else -%>
+	<% element_id = -1 -%>
 	<% if link == "" -%>
 		<% wrapper_type = 'none' -%>
 	<% else -%>
 		<% wrapper_type = 'link' -%>
 	<% end -%>
 <% end -%>
-
-<% illustration_div = "\"illustration_#{illustration_id}\"" %>
-<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
-<% ajax_div_id = "'element_#{element_id}'" -%>
-<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 
 <center>
 <div class="exhibit_illustration">
@@ -84,14 +85,14 @@
 
 	<% # draw the caption(s) -%>
 	<% if illustration != nil -%>
-		<% if illustration.caption1.length > 0 -%>
+		<% if illustration.caption1 && illustration.caption1.length > 0 -%>
 			<div class="exhibit_caption1"><%= illustration.caption1 %>
-			<% if illustration.caption2.length > 0 -%>
+			<% if illustration.caption2 && illustration.caption2.length > 0 -%>
 				<div class="exhibit_caption2"><%= illustration.caption2 %></div>
 			<% end -%>
 			</div>
 		<% else -%>
-			<% if illustration.caption2.length > 0 -%>
+			<% if illustration.caption2 && illustration.caption2.length > 0 -%>
 				<div class="exhibit_caption2"><%= illustration.caption2 %></div>
 			<% end -%>
 		<% end -%>

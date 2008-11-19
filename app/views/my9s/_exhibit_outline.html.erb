@@ -23,7 +23,7 @@
 	<% for section in page.exhibit_sections -%>
 		<div class="outline_section_with<%= 'out' if section.has_border == 0 %>_border">
 			<% for element in section.exhibit_elements -%>
-				<li class="outline_element<%= " outline_tree_element_selected" if is_first == true %>" id='outline_element_<%= element.id %>'>
+				<li class="outline_element<%= " outline_tree_element_selected" if (is_first == true && element_id_selected.to_i == -1) || (element_id_selected.to_i == element.id.to_i) %>" id='outline_element_<%= element.id %>'>
 					<div class="outline_right_controls">
 						<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
 						<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
@@ -60,3 +60,9 @@
 	</ul>
 <% end # each page -%>
 </ul>
+
+<% if is_editing_border -%>
+<script language="JavaScript">
+	doEnterEditBorder(<%=exhibit.id%>);
+</script>
+<% end -%>

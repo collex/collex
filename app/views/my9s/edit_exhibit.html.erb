@@ -2,7 +2,7 @@
 <% current_page "My&nbsp;9s" -%>
 
 <div id="full_window">
-	<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit } %>
+	<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit, :element_id_selected => -1, :is_editing_border => false } %>
 </div>
 
 <div id="search-main">
@@ -38,13 +38,13 @@
 			<% num_pages = @exhibit.exhibit_pages.length -%>
 			<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
 			Editing Page: <%= page.position %>
-			<%= link_to "[insert page before]", { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'insert' }, { :title => 'Insert a page before this one' }  %>
-			<%= link_to(up_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'up' }, { :title => 'Move this page up' } ) if @page > 1 %>
-			<%= link_to(down_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'down' }, { :title => 'Move this page down' } ) if @page < num_pages %>
-			<%= link_to del_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'delete' }, { :title => 'Delete this page' }  %>
-			<%= link_to "[insert page after]", { :action => 'edit_page', :id => @exhibit.id, :page => @page+1, :verb => 'insert' }, { :title => 'Insert a page after this one' }  %>
+			<% #= link_to "[insert page before]", { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'insert' }, { :title => 'Insert a page before this one' }  %>
+			<% #= link_to(up_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'up' }, { :title => 'Move this page up' } ) if @page > 1 %>
+			<% #= link_to(down_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'down' }, { :title => 'Move this page down' } ) if @page < num_pages %>
+			<% #= link_to del_char(), { :action => 'edit_page', :id => @exhibit.id, :page => @page, :verb => 'delete' }, { :title => 'Delete this page' }  %>
+			<% #= link_to "[insert page after]", { :action => 'edit_page', :id => @exhibit.id, :page => @page+1, :verb => 'insert' }, { :title => 'Insert a page after this one' }  %>
 			<%= link_to_function "[Show Outline]", "showExhibitOutline(-1);" %>
-			<%= link_to "[Preview]", :controller => 'exhibits', :action => 'view', :id => @exhibit.id %><br />
+			<%= link_to "[Preview]", :controller => 'exhibits', :action => 'view', :id => @exhibit.visible_url.length > 0 ? @exhibit.visible_url : @exhibit.id %><br />
 			<br /><br /><br />
 			<div id="edit_exhibit_page">
 				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page } %>

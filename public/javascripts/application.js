@@ -489,6 +489,14 @@ function moveObjectToLeftTopOfItsParent(target_id, parent_id)
 	
 	var newXCoordinate = x + ((document.body.scrollLeft)?document.body.scrollLeft:0);
 	var newYCoordinate = y + ((document.body.scrollTop)?document.body.scrollTop:0);
+	
+	// Adjust the width if the dialog would be off the side of the page
+	var max_x = document.width;
+	var t = $(target_id);
+	var w = parseInt(t.getStyle('width'));
+	var max_x = document.width - w - 10;	// Add a little margin so it is not right against the page.
+	if (newXCoordinate > max_x)
+		newXCoordinate = max_x;
 	moveObject2(target_id, newXCoordinate, newYCoordinate);
 }
 

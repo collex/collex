@@ -294,6 +294,7 @@ class My9sController < ApplicationController
       verb = params[:verb]
 
       section = ExhibitSection.find(section_id)
+      should_redraw = true
       
       case verb
       when "up"
@@ -303,13 +304,17 @@ class My9sController < ApplicationController
       when "insert"
         section.insert_element(element_pos)
       when "delete"
-        section.delete_element(element_pos)
+        should_redraw = section.delete_element(element_pos)
       when "layout"
         section.exhibit_elements[element_pos-1].change_layout(params[:type])
       end
 
       # We need to get the records again because the local variables are probably stale.
-      render :partial => 'edit_exhibit_section', :locals => { :section => ExhibitSection.find(section_id), :page => ExhibitPage.find(page_id) }
+      if should_redraw
+        render :partial => 'edit_exhibit_section', :locals => { :section => ExhibitSection.find(section_id), :page => ExhibitPage.find(page_id), :element_count => 1 }
+      else
+        render :text => ""
+      end
     end
     
     def edit_row_of_illustrations
@@ -435,6 +440,7 @@ class My9sController < ApplicationController
       element = ExhibitElement.find(element_id)
       section = ExhibitSection.find(element.exhibit_section_id)
       page = ExhibitPage.find(section.exhibit_page_id)
+      is_editing_border = false
       
       case verb
       when "insert_element"
@@ -445,17 +451,22 @@ class My9sController < ApplicationController
         section.move_element_down(element.position)
       when "delete_element"
         section.delete_element(element.position)
+        element_id = -1
 
       when "insert_border"
         page.insert_border(section)
       when "move_top_of_border_up"
         page.move_top_of_border_up(section)
+        is_editing_border = true
       when "move_top_of_border_down"
         page.move_top_of_border_down(section)
+        is_editing_border = true
       when "move_bottom_of_border_up"
         page.move_bottom_of_border_up(section)
+        is_editing_border = true
       when "move_bottom_of_border_down"
         page.move_bottom_of_border_down(section)
+        is_editing_border = true
       when "delete_border"
         page.delete_border(section)
   
@@ -463,14 +474,15 @@ class My9sController < ApplicationController
         exhibit.insert_page(page.position)
       end
       
-      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id) }
+      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
     end
     
     def modify_outline_page
       exhibit_id = params['exhibit_id']
       page_num = params['page_num'].to_i
       verb = params['verb']
-      
+      element_id = params['element_id']
+     
       exhibit = Exhibit.find(exhibit_id)
       
       case verb
@@ -480,9 +492,10 @@ class My9sController < ApplicationController
         exhibit.move_page_down(page_num)
       when "delete_page"
         exhibit.delete_page(page_num)
+        element_id = -1
       end
       
-      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id) }
+      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false  }
     end
     
   private

@@ -30,6 +30,8 @@ class ExhibitPage < ActiveRecord::Base
       element.exhibit_section_id = new_section.id
       element.position = 1
       element.save
+      
+      section.delete_if_empty()
     end
   end
 
@@ -47,6 +49,8 @@ class ExhibitPage < ActiveRecord::Base
       element.exhibit_section_id = new_section.id
       element.position = 1
       element.save
+
+      section.delete_if_empty()
     end
   end
 
@@ -64,11 +68,8 @@ class ExhibitPage < ActiveRecord::Base
         element.save()
       end
       
-      if loser_section.exhibit_elements.length == 0
-        # If there is now an empty section, delete it
-        loser_section.remove_from_list()
-        loser_section.destroy()
-      end
+      # If there is now an empty section, delete it
+      loser_section.delete_if_empty()
     end
   end
 
@@ -86,11 +87,8 @@ class ExhibitPage < ActiveRecord::Base
         element.save()
       end
       
-      if loser_section.exhibit_elements.length == 0
-        # If there is now an empty section, delete it
-        loser_section.remove_from_list()
-        loser_section.destroy()
-      end
+      # If there is now an empty section, delete it
+      loser_section.delete_if_empty()
     end
   end
 

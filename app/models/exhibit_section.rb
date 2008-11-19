@@ -21,5 +21,16 @@ class ExhibitSection < ActiveRecord::Base
   def delete_element(element_pos)
     exhibit_elements[element_pos-1].remove_from_list()
     exhibit_elements[element_pos-1].destroy
+    return delete_if_empty
+  end
+  
+  def delete_if_empty
+    if exhibit_elements.length > 0
+      return true
+    else
+      remove_from_list()
+      destroy()
+      return false
+    end
   end
 end

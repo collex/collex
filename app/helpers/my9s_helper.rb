@@ -32,11 +32,14 @@ module My9sHelper
   
   def element_text_thumbnail(element)
     if element.element_text == nil || element.element_text.length == 0
-      "[no text]"
-    elsif element.element_text.length < 30
-      element.element_text
+      return "[no text]"
+    end
+    
+    text = strip_tags(element.element_text)
+    if text.length < 30
+      return text
     else
-      element.element_text[0..29] + "..."
+      return text[0..29] + "..."
     end
   end
   

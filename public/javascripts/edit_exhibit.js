@@ -48,6 +48,7 @@ function imgResized(illustration_id, element_id, width)
 {
 	new Ajax.Updater("element_"+element_id, "/my9s/change_img_width", {
 		parameters : "element_id="+ element_id + "&illustration_id="+ illustration_id + "&width=" + width,
+		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
 	});
@@ -62,6 +63,7 @@ function elementTypeChanged(div, element_id, newType)
 
 	new Ajax.Updater(div, "/my9s/change_element_type", {
 		parameters : "element_id="+ element_id + "&type=" + newType,
+		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -71,6 +73,7 @@ function insertIllustration(div, element_id, illustration_position)
 {
 	new Ajax.Updater(div, "/my9s/insert_illustration", {
 		parameters : "element_id="+ element_id + "&position=" + illustration_position,
+		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -134,11 +137,21 @@ function doIllustrationFormSubmit()
 	var caption1 = $('caption1').value;
 	var caption2 = $('caption2').value;
 	var ill_text = $('ill_text').value;
+//	var el = $('ill_text_tbl');
+//	el = el.down();
+//	el = el.down();
+//	el = el.down();
+//	el = el.down();
+//	el = el.down();
+//	el = el.down(1);
+//
+//	var ill_text = el.innerHTML;
 	
     Effect.Fade('illustration_form_div', { duration: 0.0 });
 	new Ajax.Updater("element_"+element_id, "/my9s/edit_illustration", {
-		parameters : "element_id="+ element_id + "&illustration_id=" + illustration_id + "&image_url=" + image_url + 
-			"&type=" + type + "&link=" + link + "&width=" + width + "&caption1=" + caption1 + "&caption2=" + caption2 + "&text=" + ill_text,
+		parameters : { element_id: element_id, illustration_id: illustration_id, image_url: image_url, 
+			type: type, link: link, width: width, caption1: caption1, caption2: caption2, text: ill_text },
+		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -148,6 +161,7 @@ function doAjaxLink(div, url, params)
 {
 	new Ajax.Updater(div, url, {
 		parameters : params,
+		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error."); }});
 }
@@ -161,7 +175,8 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 		var arr = id.split("_");
 		var element_id = arr[arr.length-1];
 		new Ajax.Updater("full_window", "/my9s/modify_outline", {
-			parameters : "verb="+verb+"&element_id="+element_id+"&exhibit_id="+exhibit_id,
+			parameters : { verb: verb, element_id: element_id, exhibit_id: exhibit_id },
+			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
 	}
 }
@@ -175,7 +190,8 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 		var arr = id.split("_");
 		var element_id = arr[arr.length-1];
 		new Ajax.Updater("full_window", "/my9s/modify_outline_page", {
-			parameters : "verb="+verb+"&page_num="+page_num+"&exhibit_id="+exhibit_id,
+			parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
+			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
 	}
 }
@@ -248,106 +264,3 @@ function selectLine(id)
 	
 	$(id).addClassName( "outline_tree_element_selected" );
 }
-
-//Ajax.InPlaceRichEditor = Class.create();
-//Object.extend(Ajax.InPlaceRichEditor.prototype, Ajax.InPlaceEditor.prototype);
-//Object.extend(Ajax.InPlaceRichEditor.prototype,
-//{
-//	enterEditMode: function(evt)
-//	{
-//		if (this.saving) return;
-//		if (this.editing) return;
-//
-//		this.editing = true;
-//		this.onEnterEditMode();
-//
-//		if (this.options.externalControl)
-//		{
-//			Element.hide(this.options.externalControl);
-//		}
-//
-//		Element.hide(this.element);
-//		this.createForm();
-//		this.element.parentNode.insertBefore(this.form, this.element);
-//		Field.scrollFreeActivate(this.editField);
-//
-//		if (this.options.textarea)
-//		{
-//			tinyMCE.addMCEControl(this.editField, 'value');
-//		}
-//
-//		// stop the event to avoid a page refresh in Safari
-//		if (evt)
-//		{
-//			Event.stop(evt);
-//		}
-//		return false;
-//	},
-//	onclickCancel: function()
-//	{
-//		if (this.options.textarea)
-//		{
-//			tinyMCE.removeMCEControl('value');
-//		}
-//
-//		this.onComplete();
-//		this.leaveEditMode();
-//		return false;
-//	},
-//	onSubmit: function()
-//	{
-//		// onLoading resets these so we need to save them away for the Ajax call
-//		var form = this.form;
-//
-//		if (this.options.textarea)
-//		{
-//			var tinyVal = tinyMCE.getContent('value');
-//
-//			if (tinyVal)
-//				this.editField.value = tinyVal;
-//
-//			tinyMCE.removeMCEControl('value');
-//		}
-//
-//		var value = this.editField.value;
-//
-//		// do this first, sometimes the ajax call returns before we get a chance to switch on Saving...
-//		// which means this will actually switch on Saving... *after* we've left edit mode causing Saving...
-//		// to be displayed indefinitely
-//		this.onLoading();
-//
-//		if (this.options.evalScripts)
-//		{
-//			new Ajax.Request(
-//				this.url, Object.extend(
-//				{
-//					parameters: this.options.callback(form, value),
-//					onComplete: this.onComplete.bind(this),
-//					onFailure: this.onFailure.bind(this),
-//					asynchronous:true, 
-//					evalScripts:true
-//				}, this.options.ajaxOptions));
-//		}
-//		else
-//		{
-//			new Ajax.Updater(
-//				{
-//					success: this.element,
-//					// don't update on failure (this could be an option)
-//					failure: null
-//				}, 
-//				this.url, Object.extend(
-//				{
-//					parameters: this.options.callback(form, value),
-//					onComplete: this.onComplete.bind(this),
-//					onFailure: this.onFailure.bind(this)
-//				}, this.options.ajaxOptions));
-//		}
-//		// stop the event to avoid a page refresh in Safari
-//		if (arguments.length > 1)
-//		{
-//			Event.stop(arguments[0]);
-//		}
-//		return false;
-//	}
-//});
