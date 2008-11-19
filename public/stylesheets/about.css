@@ -194,7 +194,7 @@ margin-right:70px;
    /* background-color: #E0E0E0;*/
    background-color:white;
 	margin-top:30px;
-	margin-left:55px;
+	margin-left:30px;
 	margin-bottom:30px;
 	padding-left: 1px;
 	width: 150px;
@@ -256,9 +256,21 @@ margin-right:50px;
 }
 
 #communityContent {
-margin-top: 0px;
+margin-top: -75px;
 margin-left:170px;
 margin-right:50px;
+}
+
+#communityContent td{
+font-size:11pt;
+text-align:center;
+width:340px;
+height:200px;
+}
+
+#communityContent td img {
+border:gray solid 4px;
+
 }
 
 #innerFooter {
