@@ -46,13 +46,13 @@ td {
 	border-width: 0px 0px 1px 0px;
 	border-style: solid;
 	width: 15px;
-	background-color: #660000;
+	background-color: #670001;
 }
 .tab-spacer-right {
 	border-width: 0px 0px 1px 1px;
 	border-style: solid;
 	width: 100%;
-	background-color: #660000;
+	background-color: #670001;
 }
 .tab-content-outline {
 	border-width: 0px 1px 1px 1px;
@@ -143,20 +143,20 @@ color:black;
 	padding-top: 2px;
 	/*width: 850px;*/
 	min-width: 850px;
-	background-image:url('../images/banner.study.jpg');
+	background-image:url('../images/banner.study.gif');
 	background-repeat: no-repeat;
-	background-color: #660000;
+	background-color: #670001;
 }
 
 #banner {
 	padding: 5px;
 	margin-bottom: 5px;
-	background-color: #660000;
+	background-color: #670001;
 }
 
 #content {
 	padding: 3px;
-	background: #660000;
+	background: #670001;
 	margin-top: 40px;
 }
 

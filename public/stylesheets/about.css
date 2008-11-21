@@ -194,11 +194,11 @@ margin-right:70px;
    /* background-color: #E0E0E0;*/
    background-color:white;
 	margin-top:30px;
-	margin-left:30px;
-	margin-bottom:30px;
+	margin-left:80px;
+	margin-bottom:10px;
 	padding-left: 1px;
-	width: 150px;
-	height: 260px;
+	width: 200px;
+	height: 200px;
 	float:left;	
 	text-align:center;
 
@@ -232,6 +232,7 @@ padding:4px;
 
 
 #innerContentColumn{
+margin-top:10px;
 margin-left:200px;
 margin-right:50px;
 font-size:12pt;
@@ -239,7 +240,7 @@ font-size:12pt;
 }
 
 #innerContentColumn img{
-margin:20px 160px 30px 160px;
+margin:10px 160px 30px 160px;
 border:#E0E0E0 8px solid;
 }
 
@@ -265,12 +266,28 @@ margin-right:50px;
 font-size:11pt;
 text-align:center;
 width:340px;
-height:200px;
+height:250px;
 }
 
 #communityContent td img {
 border:gray solid 4px;
 
+}
+
+#rightBar {
+margin-left:850px;
+margin-top:-500px;
+width:200px;
+text-align:center;
+
+}
+
+#rightBar p{
+margin-top:-160px;
+margin-left:20px;
+margin-right:20px;
+padding:6px;
+font-size:11pt;
 }
 
 #innerFooter {
@@ -284,6 +301,10 @@ background-color:#E0E0E0;
 font-size:11pt;
 padding:.9em;
 /*width:875px;*/
+}
+
+.grayBox img{
+padding:15px;
 }
 
 #innerContentColumn img .noBorder{
