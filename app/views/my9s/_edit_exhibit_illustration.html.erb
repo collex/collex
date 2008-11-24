@@ -1,4 +1,8 @@
 <% illustration_id = illustration != nil ? illustration.id : -1 %>
-<div id='illustration_<%= illustration_id %>'>
+<div id='illustration_<%= illustration_id %>' class="illustration_block">
 	<%= render :partial => 'exhibits/illustration', :locals => { :illustration => illustration, :edit_mode => true, :element_id => element_id, :part_of_row => part_of_row } %>
 </div>
+<script language="JavaScript">
+	if(window.initializeInplaceIllustrationEditor)
+		initializeInplaceIllustrationEditor(<%= "'illustration_#{illustration_id}'"%>, "/my9s/edit_illustration");
+</script>

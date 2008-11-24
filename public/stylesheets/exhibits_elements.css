@@ -150,6 +150,10 @@ h3 {
 	padding-right:1em;
 }
 
+.exhibit_illustration_img {
+	padding: 3px;
+}
+
 /*.exhibit_illustration .widenable {
 	border:1px solid #DCDCDC;
 	margin:0.4em;

@@ -1,30 +1,24 @@
 <% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
 <% edit_mode ||= false -%>
 <% if edit_mode -%>
-	<div class="ill_illustration_type" style="display:none;"><%= illustration.illustration_type if illustration%></div>
-	<div class="ill_image_url" style="display:none;"><%= illustration.image_url if illustration %></div>
-	<div class="ill_link" style="display:none;"><%= illustration.link if illustration %></div>
-	<div class="ill_image_width" style="display:none;"><%= illustration.image_width if illustration %></div>
-	<div class="ill_illustration_text" style="display:none;"><%= illustration.illustration_text if illustration %></div>
+	<div class="saved_data ill_illustration_type" style="display:none;"><%= illustration.illustration_type %></div>
+	<div class="saved_data ill_image_url" style="display:none;"><%= illustration.image_url %></div>
+	<div class="saved_data ill_link" style="display:none;"><%= illustration.link %></div>
+	<div class="saved_data ill_image_width" style="display:none;"><%= illustration.image_width %></div>
+	<div class="saved_data ill_illustration_text" style="display:none;"><%= illustration.illustration_text %></div>
+	<div class="saved_data ill_illustration_alt_text" style="display:none;"><%= illustration.alt_text %></div>
+	<div class="saved_data ill_illustration_caption1" style="display:none;"><%= illustration.caption1 %></div>
+	<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
 <% end -%>
 
 <% # Set up all variables in advance to make the html code cleaner -%>
-<% if illustration == nil -%>
-	<% illustration_id = -1 -%>
-	<% url = "../images/lg-harrington.gif" -%>
-	<% width = 100 -%>
-	<% illustration_position = 1 -%>
-	<% link = "" -%>
-	<% illustration_type = 'Image' -%>
-<% else -%>
-	<% illustration_id = illustration.id -%>
-	<% url = illustration.image_url -%>
-	<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
-	<% width = illustration.image_width -%>
-	<% illustration_position = illustration.position -%>
-	<% link = illustration.link -%>
-	<% illustration_type = illustration.illustration_type -%>
-<% end -%>
+<% illustration_id = illustration.id -%>
+<% url = illustration.image_url -%>
+<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
+<% width = illustration.image_width -%>
+<% illustration_position = illustration.position -%>
+<% link = illustration.link -%>
+<% illustration_type = illustration.illustration_type -%>
 
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
@@ -59,14 +53,14 @@
 						<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
 					</div>
 				<% end -%>
-				<a title="Edit illustration options"  widenableelement="illustration_img_<%= illustration_id %>" class="widenable" <%= "onclick='change_illustration(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
+				<a title="Edit illustration options"  widenableelement="illustration_img_<%= illustration_id %>" class="widenable" <% #= "onclick='change_illustration2(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
 	<% end -%>
 	
 	<% # Create the actual content -%>	
-	<% if illustration_type == 'Image' -%>
-		<img id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt=""/>
+	<% if illustration_type == ExhibitIllustration.get_illustration_type_image() -%>
+		<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
 	<% else -%>
-		<div class="exhibit_illustration_text"><%= illustration.illustration_text %></div>
+		<div class="exhibit_illustration_text" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" ><%= illustration.illustration_text %></div>
 	<% end -%>
 
 	<% # Close the wrapper created above -%>

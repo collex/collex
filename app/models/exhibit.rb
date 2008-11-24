@@ -1,5 +1,11 @@
 class Exhibit < ActiveRecord::Base
-  has_many :exhibit_pages, :order => :position
+  has_many :exhibit_pages, :order => :position, :dependent=>:destroy
+  
+  def self.factory(user_id)
+    exhibit = Exhibit.create(:title =>'Untitled', :user_id => user_id)
+    exhibit.insert_page(1)
+    return exhibit
+  end
   
   def insert_page(page_num)
     new_page = ExhibitPage.create(:exhibit_id => id)

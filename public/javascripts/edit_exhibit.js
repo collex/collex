@@ -5,9 +5,9 @@
  document.observe('dom:loaded', function() {
  	initializeElementEditing();
 	
-	var el = $('exhibit_outline');
-	if (el)
-		Sortable.create(el);
+//	var el = $('exhibit_outline');
+//	if (el)
+//		Sortable.create(el);
 	//Sortable.create('exhibit_outline_page');
 	//Sortable.create('exhibit_outline_section');
 	

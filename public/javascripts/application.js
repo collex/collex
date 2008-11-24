@@ -464,6 +464,29 @@ function getY( oElement )
 	return iReturnValue;
 }
 
+
+function currentScrollPos() {
+	var pos = [
+		f_filterResults (
+			window.pageXOffset ? window.pageXOffset : 0,
+			document.documentElement ? document.documentElement.scrollLeft : 0,
+			document.body ? document.body.scrollLeft : 0
+		),
+		f_filterResults (
+			window.pageYOffset ? window.pageYOffset : 0,
+			document.documentElement ? document.documentElement.scrollTop : 0,
+			document.body ? document.body.scrollTop : 0
+		)];
+		return pos;
+}
+
+function f_filterResults(n_win, n_docel, n_body) {
+	var n_result = n_win ? n_win : 0;
+	if (n_docel && (!n_result || (n_result > n_docel)))
+		n_result = n_docel;
+	return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
+}
+
 function moveObjectToJustBelowItsParent(target_id, parent_id)
 {
 	// Get the absolute location of the parent
@@ -861,27 +884,27 @@ function change_text(exhibit_id, page_num, element_id, parent_id)
 	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
 }
 
-function change_header(exhibit_id, page_num, element_id, parent_id)
-{
-	new Effect.Appear('header_form_div', { duration: 0.5 }); 
-	moveObjectToJustBelowItsParent('header_form_div', parent_id);
-	
-	document.getElementById('head_exhibit_id').value = exhibit_id;
-	document.getElementById('head_page_num').value = page_num;
-	document.getElementById('head_element_id').value = element_id
-	var existing_note = document.getElementById(parent_id).innerHTML;
-	var arrH3 = $(parent_id).getElementsByTagName('h3');
-	if (arrH3.length > 0)
-	{
-		for (var i = 0; i < arrH3.length; i++)
-		{
-			if (arrH3[i].className == 'exhibit_header')
-				existing_note = arrH3[i].innerHTML.strip();
-		}
-	}
-		
-	document.getElementById('header').value = existing_note;
-	focusedFieldId = 'header_form_div';
-	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
-}
+//function change_header(exhibit_id, page_num, element_id, parent_id)
+//{
+//	new Effect.Appear('header_form_div', { duration: 0.5 }); 
+//	moveObjectToJustBelowItsParent('header_form_div', parent_id);
+//	
+//	document.getElementById('head_exhibit_id').value = exhibit_id;
+//	document.getElementById('head_page_num').value = page_num;
+//	document.getElementById('head_element_id').value = element_id
+//	var existing_note = document.getElementById(parent_id).innerHTML;
+//	var arrH3 = $(parent_id).getElementsByTagName('h3');
+//	if (arrH3.length > 0)
+//	{
+//		for (var i = 0; i < arrH3.length; i++)
+//		{
+//			if (arrH3[i].className == 'exhibit_header')
+//				existing_note = arrH3[i].innerHTML.strip();
+//		}
+//	}
+//		
+//	document.getElementById('header').value = existing_note;
+//	focusedFieldId = 'header_form_div';
+//	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+//}
 

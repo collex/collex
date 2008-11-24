@@ -1,25 +1,132 @@
-<h1>Listing exhibit_elements</h1>
+<h1>All Exhibit Elements</h1>
 
-<table>
+<table border='1px solid black' cellspacing=0>
   <tr>
-    <th>Exhibit section</th>
+  	<th>ID</th>
+	<th>Exhibit</th>
+	<th>page</th>
+    <th>section</th>
     <th>Position</th>
-    <th>Exhibit element layout type</th>
-    <th>Element test</th>
+    <th>Layout type</th>
+    <th>Element text</th>
+	<th>Illustration list</th>
   </tr>
 
-<% for exhibit_element in @exhibit_elements %>
+<% records = [] -%>
+<% for exhibit_element in @exhibit_elements
+	record = {}
+	exhibit_section = ExhibitSection.find_by_id(exhibit_element.exhibit_section_id)
+	exhibit = nil
+	page = nil
+	if exhibit_section != nil
+		page = ExhibitPage.find_by_id(exhibit_section.exhibit_page_id)
+		if page != nil
+			exhibit = Exhibit.find_by_id(page.exhibit_id)
+		end
+	end
+	record[:exhibit_element] = exhibit_element
+	record[:exhibit_element_id] = exhibit_element.id
+	if exhibit == nil
+		record[:exhibit] = 'Orphan'
+	else
+		record[:exhibit] = "#{exhibit.id} #{exhibit.title}"
+	end
+
+	if page == nil
+		record[:page] = 'Orphan'
+		record[:page_pos] = -1
+	else
+		record[:page] = "#{page.id} (pos: #{page.position})"
+		record[:page_pos] = page.position
+	end
+
+	record[:section_id] = exhibit_element.exhibit_section_id
+	if exhibit_section == nil
+		record[:section] = 'Orphan'
+		record[:section_pos] = -1
+	else
+		record[:section] = "(pos: #{exhibit_section.position})"
+		record[:section_pos] = exhibit_section.position
+	end
+
+    record[:position] = exhibit_element.position
+    record[:layout_type] = exhibit_element.exhibit_element_layout_type
+    record[:thumbnail] = element_text_thumbnail(exhibit_element)
+	record[:illustration_list] = ""
+	exhibit_element.exhibit_illustrations.each { |ill| record[:illustration_list] += "#{ill['id']}," }
+
+	records.insert(-1, record)
+end -%>
+<% records = records.sort { |x,y|
+	if x[:exhibit] < y[:exhibit]
+		-1
+	elsif x[:exhibit] > y[:exhibit]
+		1
+	elsif x[:page_pos] < y[:page_pos]
+		-1
+	elsif x[:page_pos] > y[:page_pos]
+		1
+	elsif x[:section_pos] < y[:section_pos]
+		-1
+	elsif x[:section_pos] > y[:section_pos]
+		1
+	elsif x[:position] < y[:position]
+		-1
+	elsif x[:position] > y[:position]
+		1
+	else
+		0
+	end
+}
+-%>
+
+<% for record in records %>
   <tr>
-    <td><%=h exhibit_element.exhibit_section_id %></td>
-    <td><%=h exhibit_element.position %></td>
-    <td><%=h exhibit_element.exhibit_element_layout_type %></td>
-    <td><%=h exhibit_element.element_text %></td>
-    <td><%= link_to 'Show', exhibit_element %></td>
-    <td><%= link_to 'Edit', edit_exhibit_element_path(exhibit_element) %></td>
-    <td><%= link_to 'Destroy', exhibit_element, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= record[:exhibit_element_id] %></td>
+    <td><%= record[:exhibit] %></td>
+    <td><%= record[:page] %></td>
+    <td><%= record[:section_id] %><%= record[:section] %></td>
+    <td><%= record[:position] %></td>
+    <td><%= record[:layout_type] %></td>
+    <td><%= record[:thumbnail] %></td>
+    <td><%= record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
+    <td><%= link_to 'Edit', edit_exhibit_element_path(record[:exhibit_element]) %></td>
+    <td><%= link_to 'Destroy', record[:exhibit_element], :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
+
+<h1>Exhibits # pages:</h1>
+<% exhibits = Exhibit.find(:all)
+	for exhibit in exhibits -%>
+		<%= "#{exhibit.id}: #{exhibit.exhibit_pages.length}" %>
+		<%= link_to 'Destroy', exhibit, :confirm => 'Are you sure?', :method => :delete %>
+		<br />
+<%end -%>
+
+<h1>Pages # sections:</h1>
+<% pages = ExhibitPage.find(:all)
+	for page in pages -%>
+		<%= "#{page.id}: #{page.exhibit_sections.length}"  %>
+		<%= link_to 'Destroy', page, :confirm => 'Are you sure?', :method => :delete %>
+		<br />
+<%end -%>
+
+<h1>Sections # elements:</h1>
+<% sections = ExhibitSection.find(:all)
+	for section in sections -%>
+		<%= "#{section.id}: #{section.exhibit_elements.length}" %>
+		<%= link_to 'Destroy', section, :confirm => 'Are you sure?', :method => :delete %>
+		<br />
+<%end -%>
+
+<h1>Illustrations belong to element:</h1>
+<% illustrations = ExhibitIllustration.find(:all)
+	for illustration in illustrations -%>
+		<%= "#{illustration.id} -&gt; #{illustration.exhibit_element_id}"  %>
+		<%= link_to 'Destroy', illustration, :confirm => 'Are you sure?', :method => :delete %>
+		<br />
+<%end -%>
 
 <br />
 

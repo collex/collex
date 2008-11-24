@@ -188,10 +188,7 @@ class My9sController < ApplicationController
     def new_exhibit
       if (session[:user])
         user = User.find_by_username(session[:user][:username])
-        exhibit = Exhibit.create(:title =>'Untitled', :user_id => user.id)
-        page = ExhibitPage.create(:exhibit_id => exhibit.id, :position => 1) # create a page because we know the user will need at least one.
-        section = ExhibitSection.create(:exhibit_page_id => page.id, :position => 1, :has_border => true)
-        section.insert_element(1)
+        exhibit = Exhibit.factory(user.id)
         redirect_to :action => 'edit_exhibit', :id => exhibit.id
       else
         redirect_to :action => 'index'
@@ -345,8 +342,7 @@ class My9sController < ApplicationController
         pos = element.exhibit_illustrations.length+1
       end
 
-      new_illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'Image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => 100, :link => "" )
-      new_illustration.insert_at(pos)
+      ExhibitIllustration.factory(element_id, pos)
 
       render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
@@ -357,11 +353,15 @@ class My9sController < ApplicationController
       element = ExhibitElement.find(element_id)
       element.exhibit_element_layout_type = type
       element.save
+      # if we are just creating an element that takes an illustration, then create the illustration, too.
+      if (type == 'pic_text' || type == 'text_pic') && element.exhibit_illustrations.length == 0
+        ExhibitIllustration.factory(element_id, 1)
+      end
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def edit_text
-      element = params['editorId']
+      element = params['element_id']
       arr = element.split('_')
       element_id = arr[arr.length-1].to_i
       
@@ -369,7 +369,8 @@ class My9sController < ApplicationController
       element = ExhibitElement.find(element_id)
       element.element_text = value
       element.save
-      render :text=> value
+      
+      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def edit_header
@@ -391,42 +392,40 @@ class My9sController < ApplicationController
       illustration_id = arr[arr.length-1].to_i
       width = params['width'].to_i
       if illustration_id <= 0
-        illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :illustration_type => 'Image', :illustration_text => "", :caption1 => "", :caption2 => "", :image_width => width, :link => "" )
-        illustration.insert_at(1)
+        illustration = ExhibitIllustration.factory(element_id, 1)
       else
         illustration = ExhibitIllustration.find(illustration_id)
-        illustration.image_width = width
-        illustration.save
       end
+      illustration.image_width = width
+      illustration.save
      render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def edit_illustration
-      element_id = params['element_id']
-      illustration_id = params['illustration_id'].to_i
+      illustration = params['ill_illustration_id']
+      arr = illustration.split('_')
+      illustration_id = arr[arr.length-1].to_i
       image_url = params['image_url']
       type = params['type']
-      link = params['link']
-      width = params['width']
+      link = params['link_url']
+      width = params['ill_width']
       caption1 = params['caption1']
       caption2 = params['caption2']
-      text = params['text']
+      text = params['ill_text']
+      alt_text = params['alt_text']
 
-      if illustration_id < 0
-        illustration = ExhibitIllustration.create(:exhibit_element_id => element_id, :position => 1, :illustration_type => type, :image_url => image_url, :illustration_text => text, :caption1 => caption1,
-          :caption2 => caption2, :image_width => width, :link => link)
-      else
-        illustration = ExhibitIllustration.find(illustration_id)
-        illustration.illustration_type = type
-        illustration.image_url = image_url
-        illustration.illustration_text = text
-        illustration.caption1 = caption1
-        illustration.caption2 = caption2
-        illustration.image_width = width
-        illustration.link = link
-        illustration.save
-      end
+      illustration = ExhibitIllustration.find(illustration_id)
+      illustration.illustration_type = type
+      illustration.image_url = image_url
+      illustration.illustration_text = text
+      illustration.caption1 = caption1
+      illustration.caption2 = caption2
+      illustration.image_width = width if width != nil
+      illustration.link = link
+      illustration.alt_text = alt_text
+      illustration.save
 
+      element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end

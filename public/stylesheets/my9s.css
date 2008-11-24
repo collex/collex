@@ -13,6 +13,14 @@
 	vertical-align: top;
 }
 
+.richEditorHover {
+	border: 1px dashed black;
+}
+
+.edit_exhibit_hover {
+	background-color: blue;
+}
+
 .illustration_control_border a:hover {
 	/*color: white;*/
 	background: white;

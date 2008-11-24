@@ -1,6 +1,7 @@
-<div class="exhibit_delta_link">
-	<%= link_to_function change_char(), "change_text(#{exhibit.id}, #{page}, #{element.id}, 'text_#{element.id}' );", :title => 'Edit text' %>
-</div>
 <div id='text_<%= element.id %>'>
 	<%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %>
 </div>
+<script language="JavaScript">
+	if(window.initializeInplaceRichEditor)
+		initializeInplaceRichEditor(<%= "'text_#{element.id}'"%>, "/my9s/edit_text");
+</script>
