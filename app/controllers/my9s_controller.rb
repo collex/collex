@@ -210,7 +210,13 @@ class My9sController < ApplicationController
       exhibit = Exhibit.find(params['id'])
       exhibit.title = params['title']
       exhibit.thumbnail = params['thumbnail']
-      exhibit.visible_url = params['visible_url']
+      ex = Exhibit.find_by_visible_url(params['visible_url'])
+      if ex == nil
+        exhibit.visible_url = params['visible_url']
+      else
+        flash[:warning] = "The url \"http://nines.org/exhibits/#{params['visible_url']}\" has already been used by another project. Choose a different Visual URL."
+      end
+      
       exhibit.is_published = (params['is_published'] == 'Visible to Everyone' ? 1 : 0)
       exhibit.save
       redirect_to :action => 'edit_exhibit', :id => exhibit.id
@@ -374,7 +380,7 @@ class My9sController < ApplicationController
     end
     
     def edit_header
-      element = params['editorId']
+      element = params['element_id']
       arr = element.split('_')
       element_id = arr[arr.length-1].to_i
       
@@ -382,7 +388,7 @@ class My9sController < ApplicationController
       element = ExhibitElement.find(element_id)
       element.element_text = value
       element.save
-      render :text=> value
+      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def change_img_width
