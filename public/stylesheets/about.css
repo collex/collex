@@ -23,6 +23,7 @@ margin: 0px 20px 0px 20px;
 #aboutContent {
 	background-image:url('/images/aboutContent.jpg');
 	background-repeat:no-repeat;
+	margin-left:100px;
 	margin-top:10px;
 	width: 800px;
 	height: 360px;
@@ -218,7 +219,7 @@ height:200px;
 
 #innerContent {
 	background-color:white;
-	margin-top: 0px;
+	margin-top: -20px;
 	margin-left:25px;
 	margin-right:20px;
 	width:765px;
@@ -232,7 +233,7 @@ padding:4px;
 
 
 #innerContentColumn{
-margin-top:10px;
+margin-top:-10px;
 margin-left:200px;
 margin-right:50px;
 font-size:12pt;
@@ -313,8 +314,16 @@ background-color:white;
 margin-left: 5px;
 }
 
+#about-main ul li {
+padding: 4px;
+}
+
 p.header {
 margin-top:30px;
 border-bottom:gray 1px solid;
+}
+
+img .grayBorder {
+border:#E0E0E0 8px solid;
 }
 
