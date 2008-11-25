@@ -1,6 +1,12 @@
 <% is_first = true # TODO-PER: refactor this out. %>
 <% if element.exhibit_element_layout_type == 'header' -%>
-	<%= render :partial => 'exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
+	<div id="header_<%= element.id %>">
+		<%= render :partial => 'exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
+	</div>
+	<script language="JavaScript">
+		if(window.initializeInplaceHeaderEditor)
+			initializeInplaceHeaderEditor(<%= "'header_#{element.id}'"%>, "/my9s/edit_header");
+	</script>
 <% elsif element.exhibit_element_layout_type == 'text' -%>
 	<%= render :partial => 'edit_exhibit_text', :locals => { :element => element, :is_first => is_first } %>
 	<% is_first = false -%>
