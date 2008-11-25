@@ -50,7 +50,7 @@ InputDialog.prototype = {
 			hideEffect: Element.hide,
 			maximizable: false,
 			minimizable: false,
-			resizable: false
+			resizable: true
 		});
 
 		var buttons = new Element('p', { style: "text-align: center;" });

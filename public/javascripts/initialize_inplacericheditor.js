@@ -1,62 +1,33 @@
 /**
  * @author paulrosen
+ * This contains the glue code between the input_dialog object and the HTML elements
+ * that the user is able to click on to edit. To use, pass in the element_id and the callback
+ * URL that will report the user's changes. There is an entry point for each type of popup
+ * dialog that should be displayed.
+ * 
  */
 
 function initializeInplaceRichEditor(element_id, action)
 {
-	// We pass in <div id='illustration_YY' class="illustration_block"> as the element_id
+	// We pass in <div id='text_YY'> as the element_id
 	// We want to use <div id="element_XX" class="element_block"> for the ajax call
 	// The element_block will be a parent of the element_id object
 	var el = $(element_id);
 	var ajax_action_element_id = $(element_id).up('.element_block').id;
 
 	InputDialog.prototype.prepareDomForEditing(element_id, ajax_action_element_id, action, 'richEditorHover', 'showRichEditor');
-//	initializeInplaceEditor(element_id, action, 'richEditorHover', 'richEditorExitHover', 'showRichEditor');
 }
 
-//function richEditorHover(This)
-//{
-//	var el = $(This);
-//	var div = el.down();
-//	div.addClassName('richEditorHover');
-//}
-//
-//function richEditorExitHover(This)
-//{
-//	var el = $(This);
-//	var div = el.down();
-//	div.removeClassName('richEditorHover');
-//}
+function initializeInplaceHeaderEditor(element_id, action)
+{
+	// We pass in <div id='text_YY'> as the element_id
+	// We want to use <div id="element_XX" class="element_block"> for the ajax call
+	// The element_block will be a parent of the element_id object
+	var el = $(element_id);
+	var ajax_action_element_id = $(element_id).up('.element_block').id;
 
-//function richEditorOk(element_id)
-//{
-//	// Just set a timeout here. This allows the tinyMCE to get the
-//	// on submit callback and put the user's changed back in the
-//	// original textarea. It also lets tinyMCE turn off the callbacks
-//	// to that control so there isn't a javascript crash after removing
-//	// it from the page.
-//	setTimeout('richEditorOk2("' + element_id + '");', 300);
-//}
-//
-//function richEditorOk2(element_id)
-//{
-//	var el = $(element_id);
-//	var action = el.up().readAttribute('action');
-//
-//	var ta = $('richeditor_ta');
-//	var txt = ta.value;
-//
-//	new Ajax.Updater(el, action, {
-//		parameters : { editorId: element_id, value: txt },
-//		evalScripts : false,
-//		//onComplete : setTimeout("initializeInplaceRichEditor('" + element_id + "', '" + action + "')", 1000),
-//		onFailure : function(resp) { alert("Oops, there's been an error."); }
-//	});
-//	
-//	Windows.closeAllModalWindows();
-//}
-
-
+	InputDialog.prototype.prepareDomForEditing(element_id, ajax_action_element_id, action, 'richEditorHover', 'showHeaderEditor');
+}
 
 function initializeInplaceIllustrationEditor(element_id, action)
 {
@@ -69,8 +40,15 @@ function initializeInplaceIllustrationEditor(element_id, action)
 	InputDialog.prototype.prepareDomForEditing(element_id, ajax_action_element_id, action, 'richEditorHover', 'showIllustrationEditor');
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// Private functions
+/////////////////////////////////////////////////////////////////////////////////////////
+
 function selectionChanged(currSelection)
 {
+	// This is a callback that is fired whenever the user changes the select
+	// box while editing illustrations. It is also fired when the dialog first
+	// is displayed.
 	var image_only = $$('.image_only');
 	var text_only = $$ ('.text_only');
 	if (currSelection == 'Internet Image') {
@@ -167,22 +145,30 @@ function showRichEditor(element_id)
 	dlg.show("Enter Text", getX(el), getY(el), values );
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// Generalized functions for all pop up dialogs
-/////////////////////////////////////////////////////////////////////////////////////////
-
-function initializeInplaceEditor(element_id, action, strEditorHover, strEditorExitHover, strShowEditor)
+function showHeaderEditor(element_id)
 {
+	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
+	// That is, el = <div id='header_YY'>
+
+	// First construct the dialog
+	var dlg = new InputDialog(element_id);
+    dlg.addHidden("element_id");
+	
+	dlg.addTextInput('Header:', 'value', 40);
+
+	// Now populate a hash with all the starting values.	
+	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+
+	var values = {};
+	
+	values['value'] = $(element_id).down().innerHTML;
+	
+	// We also need to set the hidden fields on our form. This is the mechanism
+	// for passing back the context to the controller.
+	values['element_id'] = element_id;
+
+	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
-	// first see if there is already a wrapper. We don't want to wrap twice.
-	var par = el.up();
-	if (par.getAttribute('action') == action)
-		return;
-		
-	var elWrapper = el.wrap('a', { href: '#' });
-	elWrapper.writeAttribute('action', action);
-	elWrapper.writeAttribute('onmouseover', strEditorHover + '(this);');
-	elWrapper.writeAttribute('onmouseout', strEditorExitHover + "(this);");
-	elWrapper.writeAttribute('onclick', strShowEditor + "(this); return false;");
+	dlg.show("Enter Header", getX(el), getY(el), values );
 }
 

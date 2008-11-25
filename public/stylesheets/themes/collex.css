@@ -1,0 +1,333 @@
+/* Focused windows */
+.overlay_collex {
+	background-color: #85BBEF;
+	filter:alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+
+.collex_nw {
+	background: transparent url(collex/TL_Main.png) no-repeat 0 0;			
+  width:24px;
+  height:30px;
+}
+
+.collex_n {
+  background: transparent url(collex/T_Main.png) repeat-x 0 0;			
+  height:21px;
+}
+
+.collex_ne {
+  background: transparent url(collex/TR_Main.png) no-repeat 0 0;			
+  width:31px;	  
+  height:30px;
+}
+
+.collex_w {
+  background: transparent url(collex/L_Main.png) repeat-y top left;			
+  width:16px;
+}
+
+.collex_e {
+  background: transparent url(collex/R_Main.png) repeat-y top right;			
+  width:16px;	  
+}
+
+.collex_sw {
+  background: transparent url(collex/BL_Main.png) no-repeat 0 0;			
+  width:31px;
+  height:40px;
+}
+
+.collex_s {
+  background: transparent url(collex/B_Main.png) repeat-x 0 0;			
+  height:40px;
+}
+
+.collex_se, .collex_sizer {
+  background: transparent url(collex/BR_Main.png) no-repeat 0 0;			
+  width:31px;
+  height:40px;
+}
+
+.collex_sizer {
+	cursor:se-resize;	
+}
+
+.collex_close {
+	width: 19px;
+	height: 19px;
+	background: transparent url(collex/close.gif) no-repeat 0 0;			
+	position:absolute;
+	top:12px;
+	right:15px;
+	cursor:pointer;
+	z-index:1000;
+}
+
+.collex_minimize {
+	width: 19px;
+	height: 19px;
+	background: transparent url(collex/minimize.gif) no-repeat 0 0;			
+	position:absolute;
+	top:12px;
+	right:34px;
+	cursor:pointer;
+	z-index:1000;
+}
+
+.collex_maximize {
+	width: 19px;
+	height: 19px;
+	background: transparent url(collex/maximize.gif) no-repeat 0 0;			
+	position:absolute;
+	top:12px;
+	left:65px;
+	cursor:pointer;
+	z-index:1000;
+}
+
+.collex_title {
+	float:left;
+	height:14px;
+	font-family: Tahoma, Arial, sans-serif;
+	font-size:12px;
+	text-align:center;
+	margin-top:8px;
+	width:100%;
+	color:#000;
+}
+
+.collex_content {
+	overflow:auto;
+	/*color: #222;*/
+	/*font-family: Tahoma, Arial, sans-serif;*/
+	/*font-size: 10px;*/
+	background:#FFF;
+}
+.collex_s .status_bar {
+  padding-bottom:24px;
+}
+
+/* FOR IE */
+* html .collex_nw {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/TL_Main.png", sizingMethod="crop");
+}
+
+* html .collex_n {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/T_Main.png", sizingMethod="scale");
+}
+
+* html .collex_ne {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/TR_Main.png", sizingMethod="crop");
+}
+
+* html .collex_w {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/L_Main.png", sizingMethod="scale");
+}
+
+* html .collex_e {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/R_Main.png", sizingMethod="scale");
+}
+
+* html .collex_sw {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/BL_Main.png", sizingMethod="crop");
+}
+
+* html .collex_s {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/B_Main.png", sizingMethod="scale");
+}
+
+* html .collex_se {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/BR_Main.png", sizingMethod="crop");
+}
+
+* html .collex_sizer {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/BR_Main.png", sizingMethod="crop");
+}
+
+
+/* Focused windows */
+.overlay_blur_collex {
+	background-color: #85BBEF;
+	filter:alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+
+.blur_collex_nw {
+	background: transparent url(collex/TL.png) no-repeat 0 0;			
+  width:24px;
+  height:30px;
+}
+
+.blur_collex_n {
+  background: transparent url(collex/T.png) repeat-x 0 0;			
+  height:30px;
+}
+
+.blur_collex_ne {
+  background: transparent url(collex/TR.png) no-repeat 0 0;			
+  width:31px;	  
+  height:30px;
+}
+
+.blur_collex_w {
+  background: transparent url(collex/L.png) repeat-y top left;			
+  width:16px;
+}
+
+.blur_collex_e {
+  background: transparent url(collex/R.png) repeat-y top right;			
+  width:16px;	  
+}
+
+.blur_collex_sw {
+  background: transparent url(collex/BL.png) no-repeat 0 0;			
+  width:31px;
+  height:40px;
+}
+
+.blur_collex_s {
+  background: transparent url(collex/B.png) repeat-x 0 0;			
+  height:40px;
+}
+
+.blur_collex_se, .blur_collex_sizer {
+  background: transparent url(collex/BR.png) no-repeat 0 0;			
+  width:31px;
+  height:40px;
+}
+
+.blur_collex_sizer {
+	cursor:se-resize;	
+}
+
+.blur_collex_close {
+	width: 19px;
+	height: 19px;
+	background: transparent url(collex/close.gif) no-repeat 0 0;			
+	position:absolute;
+	top:12px;
+	left:25px;
+	cursor:pointer;
+	z-index:1000;
+}
+
+.blur_collex_minimize {
+	width: 19px;
+	height: 19px;
+	background: transparent url(collex/minimize.gif) no-repeat 0 0;			
+	position:absolute;
+	top:12px;
+	left:45px;
+	cursor:pointer;
+	z-index:1000;
+}
+
+.blur_collex_maximize {
+	width: 19px;
+	height: 19px;
+	background: transparent url(collex/maximize.gif) no-repeat 0 0;			
+	position:absolute;
+	top:12px;
+	left:65px;
+	cursor:pointer;
+	z-index:1000;
+}
+
+.blur_collex_title {
+	float:left;
+	height:14px;
+	font-family: Tahoma, Arial, sans-serif;
+	font-size:12px;
+	text-align:center;
+	margin-top:8px;
+	width:100%;
+	color:#000;
+}
+
+.blur_collex_content {
+	overflow:auto;
+	color: #222;
+	font-family: Tahoma, Arial, sans-serif;
+	font-size: 10px;
+	background:#FFF;
+}
+.blur_collex_s .status_bar {
+  padding-bottom:24px;
+}
+
+/* FOR IE */
+* html .blur_collex_nw {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/TL.png", sizingMethod="crop");
+}
+
+* html .blur_collex_n {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/T.png", sizingMethod="scale");
+}
+
+* html .blur_collex_ne {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/TR.png", sizingMethod="crop");
+}
+
+* html .blur_collex_w {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/L.png", sizingMethod="scale");
+}
+
+* html .blur_collex_e {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/R.png", sizingMethod="scale");
+}
+
+* html .blur_collex_sw {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/BL.png", sizingMethod="crop");
+}
+
+* html .blur_collex_s {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/B.png", sizingMethod="scale");
+}
+
+* html .blur_collex_se {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/BR.png", sizingMethod="crop");
+}
+
+* html .blur_collex_sizer {
+	background-color: transparent;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../themes/collex/BR.png", sizingMethod="crop");
+}
+

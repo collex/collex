@@ -53,7 +53,7 @@
 						<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration' } %></span>
 					</div>
 				<% end -%>
-				<a title="Edit illustration options"  widenableelement="illustration_img_<%= illustration_id %>" class="widenable" <% #= "onclick='change_illustration2(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>
+				<!--<a title="Edit illustration options"  widenableelement="illustration_img_< %= illustration_id %>" class="widenable" < % #= "onclick='change_illustration2(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>-->
 	<% end -%>
 	
 	<% # Create the actual content -%>	
@@ -67,7 +67,7 @@
 	<% if wrapper_type == 'link' -%>
 		</a>
 	<% elsif wrapper_type == 'edit' -%>
-		</a>	<% # The link to the edit dialog -%>
+		<% # </a>	 The link to the edit dialog -%>
 		</div> <% # The illustration control border -%>
 		</td>	<% # The middle column containing the content and the image control stuff -%>
 		

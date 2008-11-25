@@ -11,20 +11,20 @@
 	//Sortable.create('exhibit_outline_page');
 	//Sortable.create('exhibit_outline_section');
 	
-	el = $('full_window');
-	if (el) {
-		FullWindow.initialize('full_window', "OUTLINE");
-		$("full_window_full_window").hide();
-	}
+//	el = $('full_window');
+//	if (el) {
+//		FullWindow.initialize('full_window', "OUTLINE");
+//		$("full_window_full_window").hide();
+//	}
  });
 
 function initializeElementEditing()
 {
- 	var els = $$('.exhibit_header');
-	for (var i = 0; i < els.length; i++)
-	{
-		new Ajax.InPlaceEditor(els[i], 'edit_header');
-	}
+// 	var els = $$('.exhibit_header');
+//	for (var i = 0; i < els.length; i++)
+//	{
+//		new Ajax.InPlaceEditor(els[i], 'edit_header');
+//	}
  	
 //	els = $$('.exhibit_text');
 //	for (var i = 0; i < els.length; i++)
@@ -79,83 +79,83 @@ function insertIllustration(div, element_id, illustration_position)
 	});
 }
 
-function change_illustration(element_id, illustration_id, parent_id)
-{
-	new Effect.Appear('illustration_form_div', { duration: 0.5 }); 
-	moveObjectToLeftTopOfItsParent('illustration_form_div', parent_id);
-
-	var strBaseSelector = "#illustration_" + illustration_id + " .ill_";
-	var arrIllustrationType = $$(strBaseSelector + "illustration_type");
-	var arrImageUrl = $$(strBaseSelector + "image_url");
-	var arrLink = $$(strBaseSelector + "link");
-	var arrWidth = $$(strBaseSelector + "image_width");
-	var arrText = $$(strBaseSelector + "illustration_text");
-	var arrCaption1 = $$("#illustration_" + illustration_id + " .exhibit_caption1");
-	var arrCaption2 = $$("#illustration_" + illustration_id + " .exhibit_caption2");
-
-	$('ill_element_id').value = element_id;
-	$('illustration_id').value = illustration_id;
-
-	$('image_url').value = arrImageUrl[0].innerHTML;
-	$('link').value = arrLink[0].innerHTML;
-	$('width').value = arrWidth[0].innerHTML;
-	$('ill_text').value = arrText[0].innerHTML;
-	if (arrCaption1.length > 0) 
-	{
-		var str = arrCaption1[0].innerHTML;
-		var arr = str.split("<div");
-		$('caption1').value = arr[0];
-		
-	}
-	if (arrCaption2.length > 0) 
-		$('caption2').value = arrCaption2[0].innerHTML;
-	
-	var opt = $$('#type option');
-	if (arrIllustrationType[0].innerHTML == "Text")
-	{
-		opt[0].removeAttribute('selected');
-		opt[1].writeAttribute('selected', 'selected');
-	}
-	else
-	{
-		opt[0].writeAttribute('selected', 'selected');
-		opt[1].removeAttribute('selected');
-	}
-
-	focusedFieldId = 'illustration_form_div';
-	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
-}
-
-function doIllustrationFormSubmit()
-{
-	var element_id = $('ill_element_id').value;
-	var illustration_id = $('illustration_id').value;
-	var image_url = $('image_url').value;
-	var type = $('type').value;
-	var link = $('link').value;
-	var width = $('width').value;
-	var caption1 = $('caption1').value;
-	var caption2 = $('caption2').value;
-	var ill_text = $('ill_text').value;
-//	var el = $('ill_text_tbl');
-//	el = el.down();
-//	el = el.down();
-//	el = el.down();
-//	el = el.down();
-//	el = el.down();
-//	el = el.down(1);
+//function change_illustration(element_id, illustration_id, parent_id)
+//{
+//	new Effect.Appear('illustration_form_div', { duration: 0.5 }); 
+//	moveObjectToLeftTopOfItsParent('illustration_form_div', parent_id);
 //
-//	var ill_text = el.innerHTML;
-	
-    Effect.Fade('illustration_form_div', { duration: 0.0 });
-	new Ajax.Updater("element_"+element_id, "/my9s/edit_illustration", {
-		parameters : { element_id: element_id, illustration_id: illustration_id, image_url: image_url, 
-			type: type, link: link, width: width, caption1: caption1, caption2: caption2, text: ill_text },
-		evalScripts : true,
-		onComplete : setTimeout("initializeElementEditing()", 1000),
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
-}
+//	var strBaseSelector = "#illustration_" + illustration_id + " .ill_";
+//	var arrIllustrationType = $$(strBaseSelector + "illustration_type");
+//	var arrImageUrl = $$(strBaseSelector + "image_url");
+//	var arrLink = $$(strBaseSelector + "link");
+//	var arrWidth = $$(strBaseSelector + "image_width");
+//	var arrText = $$(strBaseSelector + "illustration_text");
+//	var arrCaption1 = $$("#illustration_" + illustration_id + " .exhibit_caption1");
+//	var arrCaption2 = $$("#illustration_" + illustration_id + " .exhibit_caption2");
+//
+//	$('ill_element_id').value = element_id;
+//	$('illustration_id').value = illustration_id;
+//
+//	$('image_url').value = arrImageUrl[0].innerHTML;
+//	$('link').value = arrLink[0].innerHTML;
+//	$('width').value = arrWidth[0].innerHTML;
+//	$('ill_text').value = arrText[0].innerHTML;
+//	if (arrCaption1.length > 0) 
+//	{
+//		var str = arrCaption1[0].innerHTML;
+//		var arr = str.split("<div");
+//		$('caption1').value = arr[0];
+//		
+//	}
+//	if (arrCaption2.length > 0) 
+//		$('caption2').value = arrCaption2[0].innerHTML;
+//	
+//	var opt = $$('#type option');
+//	if (arrIllustrationType[0].innerHTML == "Text")
+//	{
+//		opt[0].removeAttribute('selected');
+//		opt[1].writeAttribute('selected', 'selected');
+//	}
+//	else
+//	{
+//		opt[0].writeAttribute('selected', 'selected');
+//		opt[1].removeAttribute('selected');
+//	}
+//
+//	focusedFieldId = 'illustration_form_div';
+//	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+//}
+//
+//function doIllustrationFormSubmit()
+//{
+//	var element_id = $('ill_element_id').value;
+//	var illustration_id = $('illustration_id').value;
+//	var image_url = $('image_url').value;
+//	var type = $('type').value;
+//	var link = $('link').value;
+//	var width = $('width').value;
+//	var caption1 = $('caption1').value;
+//	var caption2 = $('caption2').value;
+//	var ill_text = $('ill_text').value;
+////	var el = $('ill_text_tbl');
+////	el = el.down();
+////	el = el.down();
+////	el = el.down();
+////	el = el.down();
+////	el = el.down();
+////	el = el.down(1);
+////
+////	var ill_text = el.innerHTML;
+//	
+//    Effect.Fade('illustration_form_div', { duration: 0.0 });
+//	new Ajax.Updater("element_"+element_id, "/my9s/edit_illustration", {
+//		parameters : { element_id: element_id, illustration_id: illustration_id, image_url: image_url, 
+//			type: type, link: link, width: width, caption1: caption1, caption2: caption2, text: ill_text },
+//		evalScripts : true,
+//		onComplete : setTimeout("initializeElementEditing()", 1000),
+//		onFailure : function(resp) { alert("Oops, there's been an error."); }
+//	});
+//}
 
 function doAjaxLink(div, url, params)
 {
@@ -248,13 +248,6 @@ function exitEditBorderMode()
 	return false;
 }
 
-function showExhibitOutline(element_id)
-{
-	$("full_window_full_window").show();
-	if (element_id > 0)
-		selectLine('outline_element_' + element_id);
-}
-
 function selectLine(id)
 {
 	exitEditBorderMode();
@@ -263,4 +256,41 @@ function selectLine(id)
 	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
 	
 	$(id).addClassName( "outline_tree_element_selected" );
+}
+
+var _exhibit_outline = null;
+
+function showExhibitOutline(element_id)
+{
+	$(_exhibit_outline).show();
+	if (element_id > 0)
+		selectLine('outline_element_' + element_id);
+}
+
+function initOutline(div_id)
+{
+	var left = 40;
+	var top = 160;
+	_exhibit_outline = new Window({
+		title: 'OUTLINE',
+		//className: 'darkX',
+		className: "collex",
+		//className: "mac_os_x",
+		width: null,
+		height: null,
+		destroyOnClose: false,
+		left: left,
+		top: top,
+		width: 300,
+		height: 400,
+		showEffect: Element.show,
+		hideEffect: Element.hide,
+		maximizable: false,
+		minimizable: true,
+		resizable: true
+	});
+
+	_exhibit_outline.getContent().update($(div_id));
+	//_win.setConstraint(true, {left:10 - pos[0], right:30 - pos[1], top: 10 - pos[0], bottom:10 - pos[1]});
+	_exhibit_outline.show(false);
 }
