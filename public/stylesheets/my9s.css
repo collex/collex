@@ -15,6 +15,7 @@
 
 .richEditorHover {
 	border: 1px dashed black;
+	margin: -1px;
 }
 
 .edit_exhibit_hover {

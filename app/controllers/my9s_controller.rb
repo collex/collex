@@ -366,6 +366,11 @@ class My9sController < ApplicationController
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
+    def redraw_exhibit_page
+      page_id = params[:page]
+      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
+    end
+    
     def edit_text
       element = params['element_id']
       arr = element.split('_')

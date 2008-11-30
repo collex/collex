@@ -4,42 +4,10 @@
 
  document.observe('dom:loaded', function() {
  	initializeElementEditing();
-	
-//	var el = $('exhibit_outline');
-//	if (el)
-//		Sortable.create(el);
-	//Sortable.create('exhibit_outline_page');
-	//Sortable.create('exhibit_outline_section');
-	
-//	el = $('full_window');
-//	if (el) {
-//		FullWindow.initialize('full_window', "OUTLINE");
-//		$("full_window_full_window").hide();
-//	}
  });
 
 function initializeElementEditing()
 {
-// 	var els = $$('.exhibit_header');
-//	for (var i = 0; i < els.length; i++)
-//	{
-//		new Ajax.InPlaceEditor(els[i], 'edit_header');
-//	}
- 	
-//	els = $$('.exhibit_text');
-//	for (var i = 0; i < els.length; i++)
-//	{
-//		new Ajax.InPlaceEditor(els[i], 'edit_text', 
-//			{ 
-//				onEnterEditMode: function(form, value) { },
-//				rows : '20', 
-//				cols : '60'
-//				//veButton: true,
-//				//veIsOn: true,
-//				//veText: {0: 'Turn on the editor', 1: 'Turn off the editor'} 
-//			});
-//	}
-	
 	els = $$('.exhibit_illustration .widenable');
 	els.each(function(el) { Widenable.prepare(el, imgResized); });
 }
@@ -47,7 +15,7 @@ function initializeElementEditing()
 function imgResized(illustration_id, element_id, width)
 {
 	new Ajax.Updater("element_"+element_id, "/my9s/change_img_width", {
-		parameters : "element_id="+ element_id + "&illustration_id="+ illustration_id + "&width=" + width,
+		parameters : { element_id: element_id, illustration_id: illustration_id, width: width },
 		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
@@ -79,84 +47,6 @@ function insertIllustration(div, element_id, illustration_position)
 	});
 }
 
-//function change_illustration(element_id, illustration_id, parent_id)
-//{
-//	new Effect.Appear('illustration_form_div', { duration: 0.5 }); 
-//	moveObjectToLeftTopOfItsParent('illustration_form_div', parent_id);
-//
-//	var strBaseSelector = "#illustration_" + illustration_id + " .ill_";
-//	var arrIllustrationType = $$(strBaseSelector + "illustration_type");
-//	var arrImageUrl = $$(strBaseSelector + "image_url");
-//	var arrLink = $$(strBaseSelector + "link");
-//	var arrWidth = $$(strBaseSelector + "image_width");
-//	var arrText = $$(strBaseSelector + "illustration_text");
-//	var arrCaption1 = $$("#illustration_" + illustration_id + " .exhibit_caption1");
-//	var arrCaption2 = $$("#illustration_" + illustration_id + " .exhibit_caption2");
-//
-//	$('ill_element_id').value = element_id;
-//	$('illustration_id').value = illustration_id;
-//
-//	$('image_url').value = arrImageUrl[0].innerHTML;
-//	$('link').value = arrLink[0].innerHTML;
-//	$('width').value = arrWidth[0].innerHTML;
-//	$('ill_text').value = arrText[0].innerHTML;
-//	if (arrCaption1.length > 0) 
-//	{
-//		var str = arrCaption1[0].innerHTML;
-//		var arr = str.split("<div");
-//		$('caption1').value = arr[0];
-//		
-//	}
-//	if (arrCaption2.length > 0) 
-//		$('caption2').value = arrCaption2[0].innerHTML;
-//	
-//	var opt = $$('#type option');
-//	if (arrIllustrationType[0].innerHTML == "Text")
-//	{
-//		opt[0].removeAttribute('selected');
-//		opt[1].writeAttribute('selected', 'selected');
-//	}
-//	else
-//	{
-//		opt[0].writeAttribute('selected', 'selected');
-//		opt[1].removeAttribute('selected');
-//	}
-//
-//	focusedFieldId = 'illustration_form_div';
-//	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
-//}
-//
-//function doIllustrationFormSubmit()
-//{
-//	var element_id = $('ill_element_id').value;
-//	var illustration_id = $('illustration_id').value;
-//	var image_url = $('image_url').value;
-//	var type = $('type').value;
-//	var link = $('link').value;
-//	var width = $('width').value;
-//	var caption1 = $('caption1').value;
-//	var caption2 = $('caption2').value;
-//	var ill_text = $('ill_text').value;
-////	var el = $('ill_text_tbl');
-////	el = el.down();
-////	el = el.down();
-////	el = el.down();
-////	el = el.down();
-////	el = el.down();
-////	el = el.down(1);
-////
-////	var ill_text = el.innerHTML;
-//	
-//    Effect.Fade('illustration_form_div', { duration: 0.0 });
-//	new Ajax.Updater("element_"+element_id, "/my9s/edit_illustration", {
-//		parameters : { element_id: element_id, illustration_id: illustration_id, image_url: image_url, 
-//			type: type, link: link, width: width, caption1: caption1, caption2: caption2, text: ill_text },
-//		evalScripts : true,
-//		onComplete : setTimeout("initializeElementEditing()", 1000),
-//		onFailure : function(resp) { alert("Oops, there's been an error."); }
-//	});
-//}
-
 function doAjaxLink(div, url, params)
 {
 	new Ajax.Updater(div, url, {
@@ -168,6 +58,8 @@ function doAjaxLink(div, url, params)
 
 function doAjaxLinkOnSelection(verb, exhibit_id)
 {
+	// this is called from the outline, so we also need to update the regular page, too.
+	
 	var allElements = $$(".outline_tree_element_selected");
 	if (allElements.length == 1)
 	{
@@ -176,6 +68,13 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 		var element_id = arr[arr.length-1];
 		new Ajax.Updater("full_window", "/my9s/modify_outline", {
 			parameters : { verb: verb, element_id: element_id, exhibit_id: exhibit_id },
+			evalScripts : true,
+			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+			
+		// TODO-PER: We only need this if the action affected the current page.
+		var page_id = $('current_page').innerHTML;
+		new Ajax.Updater("edit_exhibit_page", "/my9s/redraw_exhibit_page", {
+			parameters : { page: page_id },
 			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
 	}
@@ -256,6 +155,41 @@ function selectLine(id)
 	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
 	
 	$(id).addClassName( "outline_tree_element_selected" );
+	
+	// now scroll the page to show the element selected.
+	var arr = id.split('_');
+	var el_id = arr[arr.length-1];
+	//location.replace('#top-of-' + el_id);
+	var distance = y_distance_that_the_element_is_not_in_view('top-of-' + el_id);
+	// move the scroll position the amount needed, and move the outline view the
+	// same amount in the opposite direction so it doesn't move.
+	window.scrollBy(0, distance);
+}
+
+function y_distance_that_the_element_is_not_in_view(element_id)
+{
+	// This returns the Y-distance that the window needs to scroll to get the named
+	// element into view.
+	var el = $(element_id);
+	if (el == null)
+		return 0;
+	
+	var y_element = el.getStyle('top');
+	var viewport_height = window.innerHeight;	// TODO: is this browser independent?
+	var scroll_pos = (document.documentElement.scrollTop ?
+            document.documentElement.scrollTop :
+            document.body.scrollTop);
+
+	// if the element is before the scroll position, we need to scroll up	
+	if (scroll_pos > y_element)
+		return y_element - scroll_pos;
+		
+	// if the element is after the scroll position and the size of the screen, we need to scroll down.
+	if (scroll_pos + viewport_height < y_element)
+		return y_element - scroll_pos;
+		
+	// if it is on the screen at all, return zero so it doesn't move.
+	return 0;
 }
 
 var _exhibit_outline = null;
