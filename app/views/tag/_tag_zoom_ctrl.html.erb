@@ -1,0 +1,44 @@
+<% # parameters: starting_zoom -%>
+<map name="zoom_map">
+	<area shape="rect" href="#" coords="0,0,26,22" onclick="doZoom('+');"" title="zoom in" />
+	<area shape="rect" href="#" coords="0,27,26,34" onclick="doZoom('10');" />
+	<area shape="rect" href="#" coords="0,35,26,42"  onclick="doZoom('9');" />
+	<area shape="rect" href="#" coords="0,43,26,50" onclick="doZoom('8');" />
+	<area shape="rect" href="#" coords="0,51,26,58" onclick="doZoom('7');" />
+	<area shape="rect" href="#" coords="0,59,26,66" onclick="doZoom('6');" />
+	<area shape="rect" href="#" coords="0,67,26,74" onclick="doZoom('5');" />
+	<area shape="rect" href="#" coords="0,75,26,82" onclick="doZoom('4');" />
+	<area shape="rect" href="#" coords="0,83,26,90" onclick="doZoom('3');" />
+	<area shape="rect" href="#" coords="0,91,26,98" onclick="doZoom('2');" />
+	<area shape="rect" href="#" coords="0,99,26,106" onclick="doZoom('1');" />
+	<area shape="rect" href="#" coords="0,103,26,132" onclick="doZoom('-');"  title="zoom out" />
+</map>
+<div id="tag_zoom_scale" >
+	<img src="/images/zoom_scale.png" usemap="#zoom_map" border="0" />
+</div>
+<div id="tag_zoom_thumb" >
+	<img src="/images/zoom_thumb.png" />
+</div>
+
+<script type="text/javascript">
+	var zoom_level = <%= starting_zoom %>;
+
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {
+		doZoom("" + zoom_level);
+	});
+	
+	document.onmousedown = ZoomThumbMouseDown;
+	document.onmouseup = ZoomThumbMouseUp; 
+</script>
+
+<script type="text/javascript">
+	// This turns on the filtering of the tag cloud
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {		
+		var instructions = { 'tag': 'tag',
+												 'annotation': 'annotation' };
+	
+		sidebarTagCloud = new SidebarTagCloud( 50000, instructions );
+	});	
+</script>

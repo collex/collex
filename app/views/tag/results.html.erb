@@ -1,5 +1,6 @@
 <% current_page "Tags" -%>
 <div id="search-main">
+<% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
 
 <table class="results_layout"><tr>
 	<td class="tag_minor_nav" colspan="2">
@@ -16,7 +17,7 @@
 
 <form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
 	<input type="hidden" name="return" value="/tag/results" />
-	<%= render( :partial => 'results/results', :locals => { :page => @page, :hits => @results } ) %>
+	<%= render( :partial => 'results/results', :locals => { :user_id => curr_user == nil ? -1 : curr_user.id, :hits => @results } ) %>
 </form>
 
 <%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>

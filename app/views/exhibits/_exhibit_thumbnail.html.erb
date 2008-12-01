@@ -1,1 +1,3 @@
-<div class="exhibit_thumbnail"><img src="<%= exhibit.thumbnail == nil || exhibit.thumbnail.length == 0 ? '../images/lg-harrington.gif' : exhibit.thumbnail %>" alt="" width="50"/></div>
+<% #parameters: Exhibit exhibit; int height=50; -%>
+<% height ||= 50 -%>
+<div class="exhibit_thumbnail"><img src="<%= exhibit.thumbnail == nil || exhibit.thumbnail.length == 0 ? '../images/lg-harrington.gif' : exhibit.thumbnail %>" alt="" height="<%= height %>"/></div>

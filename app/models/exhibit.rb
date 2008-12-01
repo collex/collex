@@ -1,5 +1,6 @@
 class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
+  has_many :exhibit_objects, :dependent=>:destroy
   
   def self.factory(user_id)
     exhibit = Exhibit.create(:title =>'Untitled', :user_id => user_id)

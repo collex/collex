@@ -77,11 +77,7 @@
 		when :tag
 		  javascript_include_tag 'sidebar_tag_cloud'
 		when :my9s
-		  javascript_include_tag('full_window') + "\n" +
-		  javascript_include_tag('widenable') + "\n" +
-		  javascript_include_tag('window') + "\n" +
-		  javascript_include_tag('input_dialog') + "\n" +
-		  javascript_include_tag('edit_exhibit')
+		  javascript_include_tag('full_window', 'widenable', 'window', 'input_dialog', 'sidebar_tag_cloud', 'edit_exhibit')
 		when :home 
 		when :login 
 		else 

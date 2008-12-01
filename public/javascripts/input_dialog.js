@@ -26,11 +26,13 @@ InputDialog.prototype = {
 		var elWrapper = el.wrap('a', { href: '#' });
 		el.writeAttribute('action', action);
 		el.writeAttribute('ajax_action_element_id', ajax_action_element_id);
-		elWrapper.writeAttribute('hoverclass', strHoverClass);
-
-		elWrapper.writeAttribute('onmouseover', 'InputDialog.prototype._editorHover(this);');
-		elWrapper.writeAttribute('onmouseout', "InputDialog.prototype._editorExitHover(this);");
-		elWrapper.writeAttribute('onclick', strShowEditor + "('" + element_id + "'); return false;");
+		if (strHoverClass != undefined) {
+			elWrapper.writeAttribute('hoverclass', strHoverClass);
+			elWrapper.writeAttribute('onmouseover', 'InputDialog.prototype._editorHover(this);');
+			elWrapper.writeAttribute('onmouseout', "InputDialog.prototype._editorExitHover(this);");
+		}
+		if (strShowEditor != undefined)
+			elWrapper.writeAttribute('onclick', strShowEditor + "('" + element_id + "'); return false;");
 	},
 	
 	show: function(title, left, top, dataHash)
@@ -164,12 +166,35 @@ InputDialog.prototype = {
 		els = $$('#' + form_id + ' select');
 		els.each(function(e) { params[e.id] = e.value; });
 	
-		new Ajax.Updater(ajax_action_element_id, action, {
-			parameters : params,
-			evalScripts : true,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
-		});
-		
+		// If we have a comma separated list, we want to send the alert synchronously to each action
+		// (Doing this synchronously eliminates any race condition: The first call can update the data and
+		// the rest of the calls just update the page.
+		var actions = action.split(',');
+		var action_elements = ajax_action_element_id.split(',');
+		if (actions.length == 1)
+		{
+			new Ajax.Updater(ajax_action_element_id, action, {
+				parameters : params,
+				evalScripts : true,
+				onFailure : function(resp) { alert("Oops, there's been an error."); }
+			});
+		}
+		else
+		{
+			new Ajax.Updater(action_elements[0], actions[0], {
+				parameters : params,
+				evalScripts : true,
+				onComplete: function(resp) {
+					new Ajax.Updater(action_elements[1], actions[1], {
+						parameters : params,
+						evalScripts : true,
+						onFailure : function(resp) { alert("Oops, there's been an error."); }
+					});
+				},
+				onFailure : function(resp) { alert("Oops, there's been an error."); }
+			});
+		}
+				
 		Windows.closeAllModalWindows();
 	},
 	

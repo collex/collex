@@ -1,0 +1,21 @@
+<h1>New exhibit_object</h1>
+
+<%= error_messages_for :exhibit_object %>
+
+<% form_for(@exhibit_object) do |f| %>
+  <p>
+    <b>Uri</b><br />
+    <%= f.text_field :uri %>
+  </p>
+
+  <p>
+    <b>Exhibit</b><br />
+    <%= f.text_field :exhibit_id %>
+  </p>
+
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', exhibit_objects_path %>

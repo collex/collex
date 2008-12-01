@@ -37,6 +37,7 @@ class My9sController < ApplicationController
       return
     end
 
+    session[:tag_zoom] ||= 1
     # parameters:
     #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
     #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
@@ -506,6 +507,23 @@ class My9sController < ApplicationController
       end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false  }
+    end
+
+    def remove_exhibited_object
+      user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+      uri = params[:uri]
+      exhibit_id = params[:exhibit_id]
+      if user != nil
+        obj = ExhibitObject.find(:first, :conditions => ["uri = ? AND exhibit_id = ?", uri, exhibit_id ] )
+        obj.destroy if obj
+      end
+      
+      render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
+    end
+    
+    def resend_exhibited_objects
+      # This is to update the section after a change elsewhere on the page
+      render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
     end
     
   private

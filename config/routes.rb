@@ -15,6 +15,8 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
+  #map.resources :exhibit_objects
+
   map.resources :exhibit_illustrations
 
   map.resources :exhibit_elements

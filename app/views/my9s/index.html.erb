@@ -18,7 +18,7 @@
 					<br />
 					<div class="standard_box">
 						<h1>RECENTLY COLLECTED ITEMS</h1>
-					      <%= render( :partial => 'results/results', :locals => { :page => 1, :hits => @results } ) %>
+					      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user.id, :hits => @results } ) %>
 						<div class="tag_minor_nav"> 
 							<%= link_to "See more collected objects", :action => 'results', :view => 'all_collected' %><br />
 						</div>

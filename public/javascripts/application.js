@@ -648,6 +648,48 @@ function doAnnotationSubmit()
 	});
 }
 
+function doRemoveObjectFromExhibit(exhibit_id, uri)
+{
+	new Ajax.Updater("exhibited_objects_container", "/my9s/remove_exhibited_object", {
+		parameters : { uri: uri, exhibit_id: exhibit_id },
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}
+
+function doAddToExhibit(uri, index, row_id)
+{
+	// put up a Prototype window type dialog.
+	InputDialog.prototype.prepareDomForEditing("link_" + row_id, row_id + ",exhibited_objects_container", "/results/add_object_to_exhibit,/my9s/resend_exhibited_objects");
+	showAddToExhibitDlg(uri, index, row_id);
+}
+
+function showAddToExhibitDlg(uri, index, row_id)
+{
+	// First construct the dialog
+	var dlg = new InputDialog("link_"+row_id);
+	dlg.addHidden("uri");
+	dlg.addHidden("index");
+	dlg.addHidden("row_id");
+	
+	dlg.addSelect('Exhibit:', 'exhibit', exhibit_names);
+	
+	// Now populate a hash with all the starting values.	
+	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+	
+	var values = {};
+	
+	// We also need to set the hidden fields on our form. This is the mechanism
+	// for passing back the context to the controller.
+	values['uri'] = uri;
+	values['index'] = index;
+	values['row_id'] = row_id;
+	
+	// Now, everything is initialized, fire up the dialog.
+	var el = $("link_"+row_id);
+	dlg.show("Choose exhibit", getX(el), getY(el), values );
+}
+
+
 function cancel_edit_profile_mode(partial_id)
 {
 	new Ajax.Updater(partial_id, "/my9s/update_profile", {

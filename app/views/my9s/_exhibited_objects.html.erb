@@ -1,0 +1,30 @@
+<% # parameters: current_user_id -%>
+<h1>EXHIBITED OBJECTS</h1>
+<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', current_user_id] ) -%>
+<% if my_exhibits.length == 0 -%>
+	<div class="empty_list_text" >You have not created any exhibits</div>
+<% else -%>
+	<table>
+	<% for exhibit in my_exhibits -%>
+		<tr>
+			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :height => 15 } %></td>
+			<td class="exhibit_link" colspan="3"><%= exhibit.title %></td>
+		</tr>
+		<% for object in exhibit.exhibit_objects -%>
+			<% cr = CachedResource.find_by_uri(object.uri) -%>
+			<tr>
+				<td></td>
+				<td>
+					<% thumbnail = CachedProperty.find(:first, :conditions => [ "cached_resource_id = ? AND name = ?", cr.id, 'thumbnail' ] ) -%>
+					<img src="<%= thumbnail == nil || thumbnail.value.length == 0 ? '../images/lg-harrington.gif' : thumbnail.value %>" alt="" height="15"/>
+				</td>
+				<td>
+					<% title = CachedProperty.find(:first, :conditions => [ "cached_resource_id = ? AND name = ?", cr.id, 'title' ] ) -%>
+					<%= title.value %>
+				</td>
+				<td><%= link_to_function "x", "doRemoveObjectFromExhibit('#{exhibit.id}', '#{object.uri}');" %></td>
+			</tr>
+		<% end # for each object -%>
+	<% end # for each exhibit -%>
+	</table>
+<% end # if there are exhibits -%>

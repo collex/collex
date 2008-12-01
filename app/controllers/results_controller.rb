@@ -76,6 +76,17 @@ class ResultsController < ApplicationController
     redirect_to params[:return]
   end
   
+  def add_object_to_exhibit
+    locals = setup_ajax_calls(params, true)
+    exhibit_name = params[:exhibit]
+    if locals[:user] != nil
+      exhibit = Exhibit.find(:first, :conditions => [ "title = ? AND user_id = ?", exhibit_name, locals[:user].id ] )
+      ExhibitObject.add(exhibit.id, locals[:uri])
+    end
+
+    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit] }
+  end
+
   private
   def setup_ajax_calls(params, is_in_cache)
     # expire the fragment caches for the clouds related to this user

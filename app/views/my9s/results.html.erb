@@ -9,24 +9,48 @@
 		
 		<table class="results_layout"><tr>
 			<tr>
-		<td id="tag_sidebar" class="tag_sidebar standard_box">
-		<%= render :partial => 'tag/sidebar', :locals => { :cloud_freq => @cloud_freq, :view => params[:view], :tag => params[:tag] } %></td>
-		
-		<td class="tag_results standard_box">
-		<%= render( :partial => 'results/result_count' ) %>    
-		<h1><%= create_total(params[:view], @total_hits, params[:tag]) %></h1>
-		<%= render( :partial => 'results/bulkcollect' ) %>
-		<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
-		
-		<form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
-			<input type="hidden" name="return" value="/my9s/results" />
-			<%= render( :partial => 'results/results', :locals => { :page => @page, :hits => @results } ) %>
-		</form>
-		
-		<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
-		<%= render( :partial => 'results/bulkcollect' ) %>
-		</td>
-		</tr></table>
+				<td id="tag_sidebar" class="tag_sidebar standard_box">
+					<% #= render :partial => 'tag/sidebar', :locals => { :cloud_freq => @cloud_freq, :view => params[:view], :tag => params[:tag] } %>
+					<h1>MY TAGS</h1>
+	<% if params[:view] == 'untagged' -%>
+	<div class="sidebar_tag_link_selected">Untagged</div>
+	<% else -%>
+	<div class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
+	<% end -%>
+	
+	<% if params[:view] == 'all_collected' -%>
+	<div class="sidebar_tag_link_selected">All Collected</div>
+	<% else -%>
+	<div class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></div>
+	<% end -%>
+					<%= render :partial => 'tag/cloud', :locals => { :cloud_fragment_key => @cloud_fragment_key, :cloud_freq => @cloud_freq, :bucket_size => @bucket_size } %>
+					<%= render :partial => 'tag/tag_zoom_ctrl', :locals => { :starting_zoom => session[:tag_zoom]  } %>
+				</td>
+				<td rowspan="2" width="150px" valign="top">
+					<div id="exhibited_objects_container" class="standard_box">
+						<%= render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id } %>
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="tag_results standard_box">
+				<%= render( :partial => 'results/result_count' ) %>    
+				<h1><%= create_total(params[:view], @total_hits, params[:tag]) %></h1>
+				<%= render( :partial => 'results/bulkcollect' ) %>
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
+				
+				<form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
+					<input type="hidden" name="return" value="/my9s/results" />
+					<div id="all_displayed_results">
+						<%= render( :partial => 'results/results', :locals => { :user_id => user.id, :hits => @results } ) %>
+					</div>
+				</form>
+				
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
+				<%= render( :partial => 'results/bulkcollect' ) %>
+				</td>
+			</tr></table>
 		</div>
 		
 		<%= render :partial => 'common/ajax_forms' %>

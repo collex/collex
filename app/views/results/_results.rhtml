@@ -1,9 +1,23 @@
-<% # Call with "hits" as an array of results and "page" as the current page number. %>
+<% # parameter: results hits[]; int user_id; -%>
+<% has_exhibits = false -%>
+<% if user_id > 0 -%>
+	<script language="javascript">
+		var exhibit_names = [
+			<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', user_id] ) -%>
+			<% for exhibit in my_exhibits -%>
+			<% # TODO-PER: guard against exhibit.title containing a quote. Don't put last comma on end. -%>
+				"<%= exhibit.title %>",
+				<% has_exhibits = true -%>
+			<% end -%>
+		];
+	</script>
+<% end # if user_id -%>
+
 <table class="results" border="0" cellspacing="0">
   <% hits.each_with_index do |hit,index| -%>
     <% row_id = "search-result-#{index}" -%>
     <tr id="<%= row_id %>" class='result_with<%= "out" if !result_is_collected(hit)%>_tag' > <%# for each search result %>
-	<%= render :partial => 'results/result_row', :locals => { :row_id => row_id, :index => index, :hit => hit } %>
+	<%= render :partial => 'results/result_row', :locals => { :row_id => row_id, :index => index, :hit => hit, :has_exhibits => has_exhibits } %>
 	</tr>
 	<tr> <!-- put a little spacing between the results -->
 		<td height="1px" ></td>

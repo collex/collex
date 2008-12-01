@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 90) do
+ActiveRecord::Schema.define(:version => 91) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -69,6 +69,13 @@ ActiveRecord::Schema.define(:version => 90) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "alt_text"
+  end
+
+  create_table "exhibit_objects", :force => true do |t|
+    t.string   "uri"
+    t.integer  "exhibit_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "exhibit_pages", :force => true do |t|

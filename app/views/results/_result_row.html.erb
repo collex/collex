@@ -1,3 +1,4 @@
+<% #  parameters: int row_id; int index; hit hit; bool has_exhibits; -%>
 	    <%# The left side that contains the checkbox, graphic and the collect button -%>
 	    <td valign="top">
 	        <table border="0">
@@ -82,6 +83,15 @@
 				</tr>
 				<% end # if there is a full text excerpt -%>
 				<% if result_is_collected(hit) -%>
+				<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
+				<% if exhibits.length > 0 -%>
+					<tr><td class='grey'>exhibits:</td>
+					<td>
+					<% for exhibit in exhibits -%>
+						<%= Exhibit.find(exhibit.exhibit.id).title -%>&nbsp;
+					<% end # each exhibit -%>
+					</td></tr>
+				<% end # if there are exhibits that use this object -%>
 				<tr>
 					<td colspan='2'>
 						<%= link_to_function "#{has_annotation(hit)?"Edit":"Add"} Annotation", "doAnnotation('add_annotation_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', 'annotation_#{index}');",  :id => "add_annotation_#{index}" %>
@@ -95,7 +105,7 @@
 			
 			<%# the right side with the tags -%>
             <td>
- 				<%= render :partial => 'results/collection_box', :locals => { :row_id => row_id, :index => index, :hit => hit }  %>
+ 				<%= render :partial => 'results/collection_box', :locals => { :row_id => row_id, :index => index, :hit => hit, :has_exhibits => has_exhibits }  %>
             </td>
 
  

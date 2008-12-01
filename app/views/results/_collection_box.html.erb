@@ -1,3 +1,4 @@
+<% #  parameters: int row_id; int index; hit hit; bool has_exhibits; -%>
 <ul style='list-style-type: none;'>
 	<% #<li>< %= link_to_function "Details", "displayDetails('#{row_id}', #{hit['uri']}, #{index}, '#{row_id}');",  :id => "display_details_#{index}" % ></li> -%>
 	<% if is_logged_in? -%>
@@ -12,7 +13,10 @@
         	<li><%= link_to_function "x", "doRemoveTag('#{hit['uri']}', #{index}, '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');" %>&nbsp;<%=h tag %></li>
 			<% } #the tag loop -%>
 		<% end #if there are tags -%>
-      <li><%= link_to_function "Add a tag", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}" %></li>
-      <li><%= link_to_function "Uncollect", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');" %></li>
+		<li><%= link_to_function "Add a tag", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}" %></li>
+		<li><%= link_to_function "Uncollect", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');" %></li>
+		<% if has_exhibits -%>
+			<li><%= link_to_function "Add to exhibit", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');", { :id => "link_#{row_id}" } %></li>
+		<% end -%>
 	<% end #if the item is collected -%>
 </ul>
