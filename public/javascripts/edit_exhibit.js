@@ -161,8 +161,8 @@ function selectLine(id)
 	var el_id = arr[arr.length-1];
 	//location.replace('#top-of-' + el_id);
 	var distance = y_distance_that_the_element_is_not_in_view('top-of-' + el_id);
-	// move the scroll position the amount needed, and move the outline view the
-	// same amount in the opposite direction so it doesn't move.
+
+	// move the scroll position the amount needed.
 	window.scrollBy(0, distance);
 }
 
@@ -174,11 +174,9 @@ function y_distance_that_the_element_is_not_in_view(element_id)
 	if (el == null)
 		return 0;
 	
-	var y_element = el.getStyle('top');
+	var y_element = getY(el);
 	var viewport_height = window.innerHeight;	// TODO: is this browser independent?
-	var scroll_pos = (document.documentElement.scrollTop ?
-            document.documentElement.scrollTop :
-            document.body.scrollTop);
+	var scroll_pos = currentScrollPos()[1];
 
 	// if the element is before the scroll position, we need to scroll up	
 	if (scroll_pos > y_element)
