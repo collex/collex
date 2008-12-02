@@ -134,8 +134,12 @@ function showRichEditor(element_id)
 
 	var values = {};
 	
-	values['value'] = $(element_id).down().innerHTML;
-	
+	var downDiv = $(element_id).down('.exhibit_text');
+	if (downDiv != null)
+		values['value'] = downDiv.innerHTML;
+	else
+		values['value'] = $(element_id).innerHTML;
+
 	// We also need to set the hidden fields on our form. This is the mechanism
 	// for passing back the context to the controller.
 	values['element_id'] = element_id;
