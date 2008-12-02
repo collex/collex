@@ -212,7 +212,7 @@ class My9sController < ApplicationController
       exhibit.title = params['title']
       exhibit.thumbnail = params['thumbnail']
       ex = Exhibit.find_by_visible_url(params['visible_url'])
-      if ex == nil
+      if ex == nil || ex.id == exhibit.id
         exhibit.visible_url = params['visible_url']
       else
         flash[:warning] = "The url \"http://nines.org/exhibits/#{params['visible_url']}\" has already been used by another project. Choose a different Visual URL."
