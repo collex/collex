@@ -20,11 +20,13 @@ padding:2px;
 margin: 0px 20px 0px 20px;
 }
 
+/* Main About Page graphics */
+
 #aboutContent {
 	background-image:url('/images/aboutContent.jpg');
 	background-repeat:no-repeat;
 	margin-left:100px;
-	margin-top:10px;
+	margin-top:25px;
 	width: 800px;
 	height: 360px;
 }
@@ -44,6 +46,12 @@ border:maroon;
 background-color:white;
 }
 
+#aboutContent a.normal:hover {
+background-color:maroon;
+color:white;
+
+}
+
 #aboutContent a span {
 border:none;
 }
@@ -58,11 +66,14 @@ border:none;
 	color:maroon;
 }
 
+/* Main tools page graphics */
+
 #about-tools-banner {
 margin: 10px 25px 10px 25px;
 background-color:#E0E0E0;
 }
 
+/* Left-hand navigation bar for subsidiary pages*/
 
 #vnav {
 background-color:white;
@@ -137,6 +148,8 @@ border:none;
 background-color:white;
 }
 
+
+
 .about-banner-column {
 	margin-top:77px;
 	margin-left:48px;
@@ -157,7 +170,7 @@ border:maroon solid 1px;
 }
 
 .about-tools-banner-column {
-	margin-top:30px;
+	margin-top:12px;
 	margin-left:50px;
 	margin-bottom:30px;
 	padding-left: 1px;
@@ -185,24 +198,17 @@ background-color:white;
 color:maroon;
 }
 
-#columnWrapper {
-/*background-color: #B38481;*/
-background-color:#E0E0E0;
-height:290px;
-width:900px;
-margin-left:25px;
-margin-right:70px;
-}
+/* Column styles for community page graphics */
 
 .about-community-banner-column {
    /* background-color: #E0E0E0;*/
    background-color:white;
-	margin-top:30px;
+	margin-top:40px;
 	margin-left:80px;
 	margin-bottom:10px;
 	padding-left: 1px;
 	width: 200px;
-	height: 200px;
+	height: 170px;
 	float:left;	
 	text-align:center;
 
@@ -220,9 +226,9 @@ padding: 1px;
 #innerContent {
 	background-color:white;
 	margin-top: 0px;
-	margin-left:25px;
+	margin-left:45px;
 	margin-right:20px;
-	width:765px;
+	/*width:1000px;*/
 }
 
 #contentColumn{
@@ -265,7 +271,7 @@ width:875px;
 }
 
 #toolsContent {
-margin-top: 450px;
+margin-top: 380px;
 margin-left:50px;
 margin-right:50px;
 }
@@ -303,6 +309,8 @@ margin-right:20px;
 padding:6px;
 font-size:11pt;
 }
+
+/*New styles for footer */
 
 #aboutFooter {
 color:gray;
@@ -350,7 +358,7 @@ padding: 4px;
 }
 
 p.header {
-margin-top:30px;
+margin-top:40px;
 border-bottom:gray 1px solid;
 }
 
