@@ -39,8 +39,7 @@
 
 		</div>
 		<div id="header-right">
-							<div>
-    <a href="/login">sign in</a>	</div>
+							<!-- <div><a href="/login">sign in</a>	</div> -->
 
 					</div>
 	<div id="content">
