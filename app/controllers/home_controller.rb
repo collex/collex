@@ -13,5 +13,9 @@ class HomeController < ApplicationController
   def index
     @sites = Site.find(:all, :order => "description ASC")
   end
+  
+  def news
+    @site_section = :news
+  end
 
 end
