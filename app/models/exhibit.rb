@@ -29,4 +29,11 @@ class Exhibit < ActiveRecord::Base
     curr_page.remove_from_list()
     curr_page.destroy
   end
+  
+  def self.find_by_element_id(element_id)
+    element = ExhibitElement.find(element_id)
+    section = ExhibitSection.find(element.exhibit_section_id)
+    page = ExhibitPage.find(section.exhibit_page_id)
+    return Exhibit.find(page.exhibit_id)
+  end
 end

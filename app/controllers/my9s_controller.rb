@@ -488,6 +488,15 @@ class My9sController < ApplicationController
       render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
     end
     
+    def refresh_outline
+      element_div_id = params['element_id']
+      arr = element_div_id.split('_')
+      element_id = arr[arr.length-1].to_i
+      exhibit = Exhibit.find_by_element_id(element_id)
+      
+      render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
+    end
+    
     def modify_outline_page
       exhibit_id = params['exhibit_id']
       page_num = params['page_num'].to_i

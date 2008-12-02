@@ -906,25 +906,25 @@ function doPopupFormSubmit(form_id)
 	form.submit();
 }
 
-function change_text(exhibit_id, page_num, element_id, parent_id)
-{
-	new Effect.Appear('text_area_form_div', { duration: 0.5 }); 
-	moveObjectToJustBelowItsParent('text_area_form_div', parent_id);
-	
-	document.getElementById('exhibit_id').value = exhibit_id;
-	document.getElementById('page_num').value = page_num;
-	document.getElementById('element_id').value = element_id;
-	var arrDiv = $(parent_id).getElementsByTagName('div');
-	if (arrDiv.length > 0)
-		var existing_note = arrDiv[0].innerHTML;
-	else
-		var existing_note = document.getElementById(parent_id).innerHTML;
-	existing_note = existing_note.gsub("<br />", "\n");
-	existing_note = existing_note.gsub("<br>", "\n");
-	document.getElementById('text').value = existing_note;
-	focusedFieldId = 'text_area_form_div';
-	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
-}
+//function change_text(exhibit_id, page_num, element_id, parent_id)
+//{
+//	new Effect.Appear('text_area_form_div', { duration: 0.5 }); 
+//	moveObjectToJustBelowItsParent('text_area_form_div', parent_id);
+//	
+//	document.getElementById('exhibit_id').value = exhibit_id;
+//	document.getElementById('page_num').value = page_num;
+//	document.getElementById('element_id').value = element_id;
+//	var arrDiv = $(parent_id).getElementsByTagName('div');
+//	if (arrDiv.length > 0)
+//		var existing_note = arrDiv[0].innerHTML;
+//	else
+//		var existing_note = document.getElementById(parent_id).innerHTML;
+//	existing_note = existing_note.gsub("<br />", "\n");
+//	existing_note = existing_note.gsub("<br>", "\n");
+//	document.getElementById('text').value = existing_note;
+//	focusedFieldId = 'text_area_form_div';
+//	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+//}
 
 //function change_header(exhibit_id, page_num, element_id, parent_id)
 //{

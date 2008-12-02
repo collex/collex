@@ -9,24 +9,26 @@
 
 function initializeInplaceRichEditor(element_id, action)
 {
-	// We pass in <div id='text_YY'> as the element_id
-	// We want to use <div id="element_XX" class="element_block"> for the ajax call
-	// The element_block will be a parent of the element_id object
-	var el = $(element_id);
-	var ajax_action_element_id = $(element_id).up('.element_block').id;
-
-	InputDialog.prototype.prepareDomForEditing(element_id, ajax_action_element_id, action, 'richEditorHover', 'showRichEditor');
+	_initializeInplace(element_id, action, 'showRichEditor');
 }
 
 function initializeInplaceHeaderEditor(element_id, action)
 {
+	_initializeInplace(element_id, action, 'showHeaderEditor');
+}
+
+function _initializeInplace(element_id, action, setupMethod)
+{
 	// We pass in <div id='text_YY'> as the element_id
 	// We want to use <div id="element_XX" class="element_block"> for the ajax call
 	// The element_block will be a parent of the element_id object
-	var el = $(element_id);
-	var ajax_action_element_id = $(element_id).up('.element_block').id;
+	var elements = element_id.split(',');
+	var el = $(elements[0]);
+	var ajax_action_element_id = el.up('.element_block').id;
+	if (elements.length > 1)
+		ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
 
-	InputDialog.prototype.prepareDomForEditing(element_id, ajax_action_element_id, action, 'richEditorHover', 'showHeaderEditor');
+	InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', setupMethod);
 }
 
 function initializeInplaceIllustrationEditor(element_id, action)
