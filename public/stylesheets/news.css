@@ -7,5 +7,26 @@
 }
 
 #installation-instructions {
-	margin-left: 20px;	
+	margin-left: 50px;	
+	margin-right: 50px;
+}
+
+#installation-instructions blockquote {
+	margin-left: 100px;
+	margin-right: 100px;	
+	background-color: #E0E0E0;
+	padding: 10px;
+	border: 1px solid black;
+}
+
+#installation-instructions p {
+	margin-left: 10px;
+	margin-right: 10px;	
+}
+
+.instructions-note {
+	background-color: #670001;
+	color: white;
+	padding-left: 10px;
+	border: 3px solid black;
 }
