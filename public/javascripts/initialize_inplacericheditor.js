@@ -53,11 +53,22 @@ function selectionChanged(currSelection)
 	// is displayed.
 	var image_only = $$('.image_only');
 	var text_only = $$ ('.text_only');
-	if (currSelection == 'Internet Image') {
+	var nines_only = $$ ('.nines_only');
+	var not_nines = $$ ('.not_nines');
+	if (currSelection == gIllustrationTypes[0]) {	// image
 		image_only.each(function(el) { el.show(); });
+		not_nines.each(function(el) { el.show(); });
+		nines_only.each(function(el) { el.hide(); });
 		text_only.each(function(el) { el.hide(); });
-	} else if (currSelection == 'Textual Illustration') {
+	} else if (currSelection == gIllustrationTypes[1]) {	// nines object
 		image_only.each(function(el) { el.hide(); });
+		not_nines.each(function(el) { el.hide(); });
+		nines_only.each(function(el) { el.show(); });
+		text_only.each(function(el) { el.hide(); });
+	} else if (currSelection == gIllustrationTypes[2]) {	// text
+		image_only.each(function(el) { el.hide(); });
+		not_nines.each(function(el) { el.show(); });
+		nines_only.each(function(el) { el.hide(); });
 		text_only.each(function(el) { el.show(); });
 	}
 }
@@ -77,10 +88,11 @@ function showIllustrationEditor(element_id)
 	dlg.addTextInput('Second Caption:', 'caption2', size);
 	dlg.addHr();
 	dlg.addTextInput('Image URL:', 'image_url', size, 'image_only');
-	dlg.addTextInput('Link URL:', 'link_url', size);
+	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
 	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
 	dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
 	dlg.addTextArea('ill_text', 300, 100, 'text_only');
+	dlg.addList('nines_objects', gCollectedObjects, size, 'nines_only');
 
 	// Now populate a hash with all the starting values.	
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with

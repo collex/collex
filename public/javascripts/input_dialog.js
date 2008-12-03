@@ -94,6 +94,25 @@ InputDialog.prototype = {
 		_table.appendChild(wrapper);
 	},
 
+	addList: function(id, objs, size, className)
+	{
+		var wrapper = new Element('tr');
+		if (className != undefined)
+			wrapper.addClassName(className);
+		var el = new Element('ul', { id: id, name: id, align: 'top' });
+		el.setStyle({ listStyleType: 'none' });
+		wrapper.appendChild(el.wrap('td', { colspan: 2 }));
+		_table.appendChild(wrapper);
+		objs.each(function(obj) {
+			var li = new Element('li');
+			var thumb = new Element('img', { src: obj.thumbnail, height: '20px' });
+			li.appendChild(thumb);
+			var span =new Element('a', { href: '#' }).update(obj.title);
+			li.appendChild(span);
+			el.appendChild(li);
+		});
+	},
+	
 	addTextInput: function(label, id, size, className)
 	{
 		var wrapper = new Element('tr');

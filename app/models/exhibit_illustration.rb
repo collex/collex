@@ -7,6 +7,8 @@ class ExhibitIllustration < ActiveRecord::Base
       illustration_type = 0
     elsif illustration_type == 'Textual Illustration'
       illustration_type = 1
+    elsif illustration_type == 'NINES Object'
+      illustration_type = 2
     else
       illustration_type = -1
     end
@@ -17,17 +19,23 @@ class ExhibitIllustration < ActiveRecord::Base
       illustration_type = 'Internet Image'
     elsif illustration_type == 1
       illustration_type = 'Textual Illustration'
+    elsif illustration_type == 2
+      illustration_type = 'NINES Object'
     else
       illustration_type = 'Unknown'
     end
   end
   
   def self.get_illustration_type_array
-    return "['Internet Image', 'Textual Illustration' ]"
+    return "['Internet Image', 'NINES Object', 'Textual Illustration' ]"
   end
   
   def self.get_illustration_type_image
     return 'Internet Image';
+  end
+  
+  def self.get_illustration_type_text
+    return 'Textual Illustration';
   end
   
   def self.factory(element_id, pos)

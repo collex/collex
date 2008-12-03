@@ -3,6 +3,7 @@
 
 <script language="JavaScript">
 	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
+	var gCollectedObjects = <%= ExhibitObject.get_collected_object_array(@exhibit.id) %>;
 </script>
 
 <div id="full_window">
