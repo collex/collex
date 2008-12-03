@@ -203,23 +203,28 @@ color:maroon;
 .about-community-banner-column {
    /* background-color: #E0E0E0;*/
    background-color:white;
+   background-image:url(/images/postIt.jpg);
+   background-repeat:no-repeat;
 	margin-top:40px;
 	margin-left:80px;
 	margin-bottom:10px;
 	padding-left: 1px;
-	width: 200px;
-	height: 170px;
+	width: 220px;
+	height: 280px;
 	float:left;	
 	text-align:center;
 
 }
 
 .about-community-banner-column p {
+margin-top: -2px;
+margin-left: 5px;
+margin-right:5px;
 padding: 1px;
 }
 
 .about-community-banner-column img{
-/*border:dotted maroon 1px;*/
+margin-top:38px;
 }
 
 
@@ -265,6 +270,29 @@ border:#E0E0E0 8px solid;
 }
 
 
+#scholarshipBanner {
+margin-top: 30px;
+margin-left: 120px;
+margin-bottom:20px;
+width:780px;
+height:140px;
+border:#E0E0E0 solid 8px;
+}
+
+#scholarshipBanner img {
+margin: 11px 2px 5px 0px;
+}
+
+#scholarshipText {
+margin-left: 140px;
+margin-top: -160px;
+
+font-weight:bold;
+font-size:12pt;
+padding: 22px;
+}
+
+
 #toolsHeader {
 margin:30px 100px 10px 30px;
 width:875px;
@@ -274,6 +302,11 @@ width:875px;
 margin-top: 380px;
 margin-left:50px;
 margin-right:50px;
+}
+
+img.inset {
+margin: 0px 10px 0px 8px;
+border:gray 1px solid;
 }
 
 #communityContent {
@@ -345,6 +378,7 @@ padding:.9em;
 
 .grayBox img{
 padding:15px;
+border:none;
 }
 
 #innerContentColumn img .noBorder{
