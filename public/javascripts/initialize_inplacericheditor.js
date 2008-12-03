@@ -132,6 +132,32 @@ function showIllustrationEditor(element_id)
 	selectionChanged(values['type']);
 }
 
+function showNinesObjectDlg(ed)
+{
+	var str = ed.selection.getContent();
+	var rng = ed.selection.getRng();
+	if (str == '')
+		str = "[NINES Object]";
+
+	var dlg = new InputDialog('nines_object');
+	
+	var size = 52;
+	dlg.addList('nines_objects', gCollectedObjects, size, 'nines_only');
+
+	// Now populate a hash with all the starting values.	
+	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+
+	var values = {};
+	
+	// Now, everything is initialized, fire up the dialog.
+	var el = $(ed.formElement);
+	dlg.show("Create Link to NINES Object", getX(el), getY(el), values );
+
+	ed.selection.setRng(rng);
+	ed.selection.setContent('<strong>' + str + '</strong>');
+
+}
+
 function showRichEditor(element_id)
 {
 	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
@@ -141,7 +167,15 @@ function showRichEditor(element_id)
 	var dlg = new InputDialog(element_id);
     dlg.addHidden("element_id");
 	
-	dlg.addTextArea('value', 300, 100);
+	var extraButton = {
+		id : 'ninesobj',
+		insertionPoint : 'redo,|',
+		title :  'Link to NINES object',
+		image : '/images/mce_link_to_nines_obj.gif',
+		onclick : 'showNinesObjectDlg(ed);'
+	};
+
+	dlg.addTextArea('value', 300, 100, null, extraButton);
 
 	// Now populate a hash with all the starting values.	
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with

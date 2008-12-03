@@ -13,6 +13,11 @@
 	vertical-align: top;
 }
 
+.mceIcon:hover {
+	border: 0px;
+	padding: 0px;
+}
+
 .richEditorHover {
 	border: 1px dashed black;
 	margin: -1px;

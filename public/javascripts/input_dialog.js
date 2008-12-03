@@ -9,6 +9,7 @@ var InputDialog = Class.create();
 InputDialog._win = null;
 InputDialog._form = null;
 InputDialog._table = null;
+InputDialog._extraButton = null;
 
 InputDialog.prototype = {
 	initialize: function(element_id)
@@ -61,16 +62,38 @@ InputDialog.prototype = {
 		_win.getContent().update(_form);
 		//_win.setConstraint(true, {left:10 - pos[0], right:30 - pos[1], top: 10 - pos[0], bottom:10 - pos[1]});
 		_win.show(true);
+		var strButtons1 = "cut,copy,paste,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect";
+		var strButtons2 = "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,ninesobj,link,unlink,code,|,forecolor,backcolor,hr,removeformat,|,sub,sup,|,charmap,media";
+		if (_extraButton != null)
+		{
+			strButtons1 = strButtons1.replace(_extraButton.insertionPoint, _extraButton.insertionPoint + ',' + _extraButton.id);
+			strButtons2 = strButtons2.replace(_extraButton.insertionPoint, _extraButton.insertionPoint + ',' + _extraButton.id);
+		}
+		
 		tinyMCE.init({
 			mode: "textareas",
 			theme: "advanced",
 			plugins : "style,advlink,media,contextmenu,paste,visualchars",
-			theme_advanced_buttons1 : "cut,copy,paste,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect",
-			theme_advanced_buttons2 : "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,code,|,forecolor,backcolor,hr,removeformat,|,sub,sup,|,charmap,media",
+			theme_advanced_buttons1 : strButtons1,
+			theme_advanced_buttons2 : strButtons2,
 			theme_advanced_buttons3: "",
 			theme_advanced_toolbar_location : "top",
-			theme_advanced_toolbar_align : "left"
+			theme_advanced_toolbar_align : "left",
+		    setup : function(ed) {
+		        // Add a custom button
+				if (_extraButton != null)
+				{
+			        ed.addButton(_extraButton.id, {
+			            title : _extraButton.title,
+			            image : _extraButton.image,
+			            onclick : function() {
+							eval(_extraButton.onclick);
+			            }
+			        });
+				}
+		    }
 		});
+
 		// TODO: This returns null for the width and height. How do you get the width?
 		//var w = _form.getStyle('width');
 		//var h = _form.getStyle('height');
@@ -100,12 +123,12 @@ InputDialog.prototype = {
 		if (className != undefined)
 			wrapper.addClassName(className);
 		var el = new Element('ul', { id: id, name: id, align: 'top' });
-		el.setStyle({ listStyleType: 'none' });
+		el.setStyle({ listStyleType: 'none', backgroundColor: 'white' });
 		wrapper.appendChild(el.wrap('td', { colspan: 2 }));
 		_table.appendChild(wrapper);
 		objs.each(function(obj) {
 			var li = new Element('li');
-			var thumb = new Element('img', { src: obj.thumbnail, height: '20px' });
+			var thumb = new Element('img', { src: obj.thumbnail, height: '35px' });
 			li.appendChild(thumb);
 			var span =new Element('a', { href: '#' }).update(obj.title);
 			li.appendChild(span);
@@ -140,7 +163,7 @@ InputDialog.prototype = {
 		_form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 	},
 	
-	addTextArea: function(id, width, height, className)
+	addTextArea: function(id, width, height, className, extraButton)
 	{
 		var wrapper = new Element('tr');
 		if (className != undefined)
@@ -149,6 +172,7 @@ InputDialog.prototype = {
 		el.setStyle({ width: width + 'px', height: height + 'px' });
 		wrapper.appendChild(el.wrap('td', { colspan: 2, style: 'text-align: center' }));
 		_table.appendChild(wrapper);
+		_extraButton = extraButton;
 	},
 
 	///////////////////////////////// private members //////////////////////////////////
