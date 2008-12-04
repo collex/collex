@@ -2,6 +2,10 @@ class ExhibitObject < ActiveRecord::Base
   belongs_to :exhibit
   
   def self.add(exhibit_id, uri)
+    # Don't add a duplicate
+    obj = self.find(:first, :conditions => [ "exhibit_id = ? AND uri = ?", exhibit_id, uri ])
+    return obj if obj != nil
+    
     return self.create(:exhibit_id => exhibit_id, :uri => uri)
   end
   
