@@ -408,6 +408,7 @@ cursor: default;
 }
 div.auto_complete {
     width: 300px !important;
+    font-size:10pt;
  /*line-height: 20px;*/
   }
   div.auto_complete ul li {
