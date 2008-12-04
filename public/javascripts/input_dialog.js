@@ -20,9 +20,9 @@ InputDialog.prototype = {
 			submitCode = 'InputDialog.prototype._userPressedOk("' + element_id + '","' + form_id + '"); return false;';
 		else
 			submitCode += "; return false;";
-		_form = new Element('form', { id: form_id, onsubmit:  submitCode});
-		_table = new Element('table');
-		_form.appendChild(_table);
+		this._form = new Element('form', { id: form_id, onsubmit:  submitCode});
+		this._table = new Element('table');
+		this._form.appendChild(this._table);
 	},
 	
 	prepareDomForEditing: function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor)
@@ -46,7 +46,7 @@ InputDialog.prototype = {
 //		var w = _table.getStyle('width') + 10;
 //		var h = _form.getStyle('height');
 		
-		_win = new Window({
+		this._win = new Window({
 			title: title,
 			className: 'darkX',
 			width: null,
@@ -63,16 +63,16 @@ InputDialog.prototype = {
 
 		var buttons = new Element('p', { style: "text-align: center;" });
 		buttons.appendChild(new Element('input', { type: 'submit', 'class': 'editor_ok_button', value: 'ok'}));
-		_form.appendChild(buttons);
-		_win.getContent().update(_form);
+		this._form.appendChild(buttons);
+		this._win.getContent().update(this._form);
 		//_win.setConstraint(true, {left:10 - pos[0], right:30 - pos[1], top: 10 - pos[0], bottom:10 - pos[1]});
-		_win.show(true);
+		this._win.show(true);
 		var strButtons1 = "cut,copy,paste,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect";
 		var strButtons2 = "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,ninesobj,link,unlink,code,|,forecolor,backcolor,hr,removeformat,|,sub,sup,|,charmap,media";
-		if (_extraButton != null)
+		if (this._extraButton != null)
 		{
-			strButtons1 = strButtons1.replace(_extraButton.insertionPoint, _extraButton.insertionPoint + ',' + _extraButton.id);
-			strButtons2 = strButtons2.replace(_extraButton.insertionPoint, _extraButton.insertionPoint + ',' + _extraButton.id);
+			strButtons1 = strButtons1.replace(this._extraButton.insertionPoint, this._extraButton.insertionPoint + ',' + this._extraButton.id);
+			strButtons2 = strButtons2.replace(this._extraButton.insertionPoint, this._extraButton.insertionPoint + ',' + this._extraButton.id);
 		}
 		
 		tinyMCE.init({
@@ -86,13 +86,13 @@ InputDialog.prototype = {
 			theme_advanced_toolbar_align : "left",
 		    setup : function(ed) {
 		        // Add a custom button
-				if (_extraButton != null)
+				if (this._extraButton != null)
 				{
-			        ed.addButton(_extraButton.id, {
-			            title : _extraButton.title,
-			            image : _extraButton.image,
+			        ed.addButton(this._extraButton.id, {
+			            title : this._extraButton.title,
+			            image : this._extraButton.image,
 			            onclick : function() {
-							eval(_extraButton.onclick);
+							eval(this._extraButton.onclick);
 			            }
 			        });
 				}
@@ -119,17 +119,17 @@ InputDialog.prototype = {
 			el.appendChild(new Element('option', { value: option}).update(option));
 		});
 		wrapper.appendChild(el.wrap('td'));
-		_table.appendChild(wrapper);
+		this._table.appendChild(wrapper);
 	},
 
 	addList: function(id, tbl)
 	{
-		_form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
+		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 		var wrapper = new Element('tr');
 		var wrapper2 = new Element('td', { colspan: 2 });
 		wrapper2.innerHTML = tbl;
 		wrapper.appendChild(wrapper2);
-		_table.appendChild(wrapper);
+		this._table.appendChild(wrapper);
 	},
 	
 	addTextInput: function(label, id, size, className)
@@ -141,7 +141,7 @@ InputDialog.prototype = {
 		wrapper.appendChild(el_label.wrap('td', { style: 'text-align: right;' }));
 		var el = new Element('input', { type: 'text', id: id, name: id, size: size});
 		wrapper.appendChild(el.wrap('td'));
-		_table.appendChild(wrapper);
+		this._table.appendChild(wrapper);
 	},
 
 	addHr: function(className)
@@ -151,12 +151,12 @@ InputDialog.prototype = {
 			wrapper.addClassName(className);
 		var el = new Element('hr');
 		wrapper.appendChild(el.wrap('td', { colspan: 2 }));
-		_table.appendChild(wrapper);
+		this._table.appendChild(wrapper);
 	},
 	
 	addHidden: function(id)
 	{
-		_form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
+		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 	},
 	
 	addTextArea: function(id, width, height, className, extraButton)
@@ -167,8 +167,8 @@ InputDialog.prototype = {
 		var el = new Element('textarea', { id: id, name: id });
 		el.setStyle({ width: width + 'px', height: height + 'px' });
 		wrapper.appendChild(el.wrap('td', { colspan: 2, style: 'text-align: center' }));
-		_table.appendChild(wrapper);
-		_extraButton = extraButton;
+		this._table.appendChild(wrapper);
+		this._extraButton = extraButton;
 	},
 
 	///////////////////////////////// private members //////////////////////////////////
