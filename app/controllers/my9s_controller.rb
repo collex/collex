@@ -425,6 +425,7 @@ class My9sController < ApplicationController
       caption2 = params['caption2']
       text = params['ill_text']
       alt_text = params['alt_text']
+      nines_object = params['nines_object']
 
       illustration = ExhibitIllustration.find(illustration_id)
       illustration.illustration_type = type
@@ -435,6 +436,7 @@ class My9sController < ApplicationController
       illustration.image_width = width if width != nil
       illustration.link = link
       illustration.alt_text = alt_text
+      illustration.nines_object_uri = nines_object
       illustration.save
 
       element_id = illustration.exhibit_element_id

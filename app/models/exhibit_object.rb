@@ -12,7 +12,7 @@ class ExhibitObject < ActiveRecord::Base
     hit = CachedResource.get_hit_from_uri(obj.uri)
       if hit != nil
         #str += "{ thumbnail: '#{hit['thumbnail']}', title: '#{hit['title']}' },\n"
-        str += "{ thumbnail: '#{self.escape_quote(hit['thumbnail'])}', title: '#{self.escape_quote(hit['title'])}'},\n"
+        str += "{ uri: '#{obj.uri}', thumbnail: '#{self.escape_quote(hit['thumbnail'])}', title: '#{self.escape_quote(hit['title'])}'},\n"
       end
     }
     str += ']'

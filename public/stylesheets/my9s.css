@@ -13,6 +13,20 @@
 	vertical-align: top;
 }
 
+.input_dlg_list {
+	background-color: white;
+	color: black;
+}
+
+.input_dlg_list_item_selected td {
+	background-color: gray;
+	color: white;
+}
+
+.nines_obj_uri {
+	text-decoration:underline;
+}
+
 .mceIcon:hover {
 	border: 0px;
 	padding: 0px;

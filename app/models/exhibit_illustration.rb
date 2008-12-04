@@ -34,6 +34,10 @@ class ExhibitIllustration < ActiveRecord::Base
     return 'Internet Image';
   end
   
+  def self.get_illustration_type_nines_obj
+    return 'NINES Object';
+  end
+  
   def self.get_illustration_type_text
     return 'Textual Illustration';
   end

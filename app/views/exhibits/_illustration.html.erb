@@ -9,11 +9,18 @@
 	<div class="saved_data ill_illustration_alt_text" style="display:none;"><%= illustration.alt_text %></div>
 	<div class="saved_data ill_illustration_caption1" style="display:none;"><%= illustration.caption1 %></div>
 	<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
+	<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
 <% end -%>
 
 <% # Set up all variables in advance to make the html code cleaner -%>
 <% illustration_id = illustration.id -%>
 <% url = illustration.image_url -%>
+<% if illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
+	hit = CachedResource.get_hit_from_uri(illustration.nines_object_uri)
+	thumb = hit['thumbnail']
+	url = ""
+	url = thumb[0] if thumb != nil && thumb.length > 0
+end -%>
 <% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
 <% width = illustration.image_width -%>
 <% illustration_position = illustration.position -%>
@@ -59,8 +66,10 @@
 	<% # Create the actual content -%>	
 	<% if illustration_type == ExhibitIllustration.get_illustration_type_image() -%>
 		<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
-	<% else -%>
+	<% elsif illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
 		<div class="exhibit_illustration_text" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" ><%= illustration.illustration_text %></div>
+	<% else # nines object -%>
+		<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
 	<% end -%>
 
 	<% # Close the wrapper created above -%>

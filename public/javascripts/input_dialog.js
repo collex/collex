@@ -12,10 +12,15 @@ InputDialog._table = null;
 InputDialog._extraButton = null;
 
 InputDialog.prototype = {
-	initialize: function(element_id)
+	initialize: function(element_id, submitCode)
 	{
 		var form_id = element_id + '_form';
-		_form = new Element('form', { id: form_id, onsubmit: 'InputDialog.prototype._userPressedOk("' + element_id + '","' + form_id + '"); return false;' });
+		// If submitCode is not passed in, then the submit button does an Ajax callback.
+		if (submitCode == null || submitCode == undefined)
+			submitCode = 'InputDialog.prototype._userPressedOk("' + element_id + '","' + form_id + '"); return false;';
+		else
+			submitCode += "; return false;";
+		_form = new Element('form', { id: form_id, onsubmit:  submitCode});
 		_table = new Element('table');
 		_form.appendChild(_table);
 	},
@@ -117,23 +122,14 @@ InputDialog.prototype = {
 		_table.appendChild(wrapper);
 	},
 
-	addList: function(id, objs, size, className)
+	addList: function(id, tbl)
 	{
+		_form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 		var wrapper = new Element('tr');
-		if (className != undefined)
-			wrapper.addClassName(className);
-		var el = new Element('ul', { id: id, name: id, align: 'top' });
-		el.setStyle({ listStyleType: 'none', backgroundColor: 'white' });
-		wrapper.appendChild(el.wrap('td', { colspan: 2 }));
+		var wrapper2 = new Element('td', { colspan: 2 });
+		wrapper2.innerHTML = tbl;
+		wrapper.appendChild(wrapper2);
 		_table.appendChild(wrapper);
-		objs.each(function(obj) {
-			var li = new Element('li');
-			var thumb = new Element('img', { src: obj.thumbnail, height: '35px' });
-			li.appendChild(thumb);
-			var span =new Element('a', { href: '#' }).update(obj.title);
-			li.appendChild(span);
-			el.appendChild(li);
-		});
 	},
 	
 	addTextInput: function(label, id, size, className)

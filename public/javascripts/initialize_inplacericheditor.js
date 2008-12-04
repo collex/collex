@@ -78,22 +78,6 @@ function showIllustrationEditor(element_id)
 	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 	// That is, el = <div id='illustration_YY' class="illustration_block">
 
-	// First construct the dialog
-	var dlg = new InputDialog(element_id);
-    dlg.addHidden("ill_illustration_id");
-	
-	var size = 52;
-	dlg.addSelect('Type of Illustration:', 'type', gIllustrationTypes, 'selectionChanged(this.options[this.selectedIndex].value);');
-	dlg.addTextInput('First Caption:', 'caption1', size);
-	dlg.addTextInput('Second Caption:', 'caption2', size);
-	dlg.addHr();
-	dlg.addTextInput('Image URL:', 'image_url', size, 'image_only');
-	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
-	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
-	dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
-	dlg.addTextArea('ill_text', 300, 100, 'text_only');
-	dlg.addList('nines_objects', gCollectedObjects, size, 'nines_only');
-
 	// Now populate a hash with all the starting values.	
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
 
@@ -120,11 +104,30 @@ function showIllustrationEditor(element_id)
 			values['caption1'] = hidden.innerHTML;
 		else if (hidden.hasClassName('ill_illustration_caption2'))
 			values['caption2'] = hidden.innerHTML;
+		else if (hidden.hasClassName('ill_nines_object_uri'))
+			values['nines_object'] = hidden.innerHTML;
 	});
 
 	// We also need to set the hidden fields on our form. This is the mechanism
 	// for passing back the context to the controller.
 	values['ill_illustration_id'] = element_id;
+
+	// First construct the dialog
+	var dlg = new InputDialog(element_id);
+    dlg.addHidden("ill_illustration_id");
+	
+	var size = 52;
+	dlg.addSelect('Type of Illustration:', 'type', gIllustrationTypes, 'selectionChanged(this.options[this.selectedIndex].value);');
+	dlg.addTextInput('First Caption:', 'caption1', size);
+	dlg.addTextInput('Second Caption:', 'caption2', size);
+	dlg.addHr();
+	dlg.addTextInput('Image URL:', 'image_url', size, 'image_only');
+	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
+	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
+	dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
+	dlg.addTextArea('ill_text', 300, 100, 'text_only');
+	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object']);
+	dlg.addList('nines_object', list.list);
 
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
@@ -132,30 +135,80 @@ function showIllustrationEditor(element_id)
 	selectionChanged(values['type']);
 }
 
+var _ninesDlg_ed = null;
+var _ninesDlg_str = null;
+var _ninesDlg_rng = null;
+
 function showNinesObjectDlg(ed)
 {
-	var str = ed.selection.getContent();
-	var rng = ed.selection.getRng();
-	if (str == '')
-		str = "[NINES Object]";
+	_ninesDlg_ed = ed;
+	_ninesDlg_str = ed.selection.getContent();
+	_ninesDlg_rng = ed.selection.getRng();
+	if (_ninesDlg_str == '')
+		_ninesDlg_str = "[NINES Object]";
 
-	var dlg = new InputDialog('nines_object');
+	var dlg = new InputDialog('nines_object', '_ninesObjectSelected(this);');
 	
 	var size = 52;
-	dlg.addList('nines_objects', gCollectedObjects, size, 'nines_only');
-
-	// Now populate a hash with all the starting values.	
-	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+	var list = new CreateList(gCollectedObjects);
+	dlg.addList('nines_object', list.list);
 
 	var values = {};
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(ed.formElement);
 	dlg.show("Create Link to NINES Object", getX(el), getY(el), values );
+}
 
-	ed.selection.setRng(rng);
-	ed.selection.setContent('<strong>' + str + '</strong>');
+function _ninesObjectSelected(This)
+{
+	var uri = $('nines_object').value;
+	var win = $(This).up('.dialog');
+	Windows.close(win.id);
+//	_ninesDlg_ed.selection.setRng(_ninesDlg_rng);
+//	_ninesDlg_ed.selection.setContent('<span nines_obj_uri="' + uri + '" >' + _ninesDlg_str + '</span>');
+	setTimeout('_ninesObjectSelected2("' + uri + '");', 300);
+}
 
+function _ninesObjectSelected2(uri)
+{
+	_ninesDlg_ed.selection.setRng(_ninesDlg_rng);
+	_ninesDlg_ed.selection.setContent('<span class="nines_obj_uri" nines_obj_uri="' + uri + '" >' + _ninesDlg_str + '</span>');
+}
+
+var CreateList = Class.create({
+	list : null,
+	initialize : function(gCollectedObjects, className, initial_selected_uri)
+	{
+		var This = this;
+		if (className != null && className != undefined)
+			This.list = "<table class='input_dlg_list " + className + "' >";
+		else
+			This.list = "<table class='input_dlg_list' >";
+		gCollectedObjects.each(function(obj) {
+			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri == initial_selected_uri);
+		});
+		This.list += "</table>";
+	},
+	
+	constructItem: function(uri, thumbnail, title, is_selected)
+	{
+		var str = "";
+		if (is_selected)
+			str = " class='input_dlg_list_item_selected' ";
+		return "<tr " + str + "onclick='CreateList.prototype._select(this);' uri='" + uri + "' ><td><img src='" + thumbnail + "' alt='' height='40' /></td><td>" + title + "</td></tr>\n";
+	}
+});
+
+CreateList.prototype._select = function(item)
+{
+	var selClass = "input_dlg_list_item_selected";
+	$$("." + selClass).each(function(el)
+	{
+		el.removeClassName(selClass);
+	});
+	$(item).addClassName(selClass);
+	$('nines_object').value = $(item).getAttribute('uri');
 }
 
 function showRichEditor(element_id)
