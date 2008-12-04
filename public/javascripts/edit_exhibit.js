@@ -164,6 +164,7 @@ function selectLine(id)
 
 	// move the scroll position the amount needed.
 	window.scrollBy(0, distance);
+	new Effect.Highlight("element_" + el_id);
 }
 
 function y_distance_that_the_element_is_not_in_view(element_id)
