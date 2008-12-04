@@ -32,6 +32,10 @@
 	padding: 0px;
 }
 
+.mceIframeContainer {
+	height: 100%;
+}
+
 .richEditorHover {
 	border: 1px dashed black;
 	margin: -1px;

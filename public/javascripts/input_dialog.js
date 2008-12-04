@@ -48,9 +48,8 @@ InputDialog.prototype = {
 		
 		this._win = new Window({
 			title: title,
-			className: 'darkX',
-			width: null,
-			height: null,
+			//className: 'darkX',
+			className: "collex",
 			destroyOnClose: true,
 			left: left,
 			top: top,
@@ -60,7 +59,7 @@ InputDialog.prototype = {
 			minimizable: false,
 			resizable: true
 		});
-
+		
 		var buttons = new Element('p', { style: "text-align: center;" });
 		buttons.appendChild(new Element('input', { type: 'submit', 'class': 'editor_ok_button', value: 'ok'}));
 		this._form.appendChild(buttons);
@@ -98,7 +97,7 @@ InputDialog.prototype = {
 				}
 		    }
 		});
-
+		
 		// TODO: This returns null for the width and height. How do you get the width?
 		//var w = _form.getStyle('width');
 		//var h = _form.getStyle('height');
@@ -253,3 +252,30 @@ InputDialog.prototype = {
 		div.removeClassName(hover);
 	}
 };
+
+var _observer = {
+  onResize: function(eventName, win) {
+	var mce = $(win.element).down('.mceIframeContainer');
+	if (mce != null)
+	{
+		var mcei = mce.down('iframe');
+		mcei.setStyle({ height: '100%' });
+		var mcel = $(win.element).down('.mceLayout');
+		mcel.setStyle({ width: '' });
+
+		// Height manipulation: needs to take the offset of the interior edit box, plus the offset to the 
+		// larger edit box (that includes the toolbar), and the height of the OK button, plus some extra
+		// for the window borders and a margin.
+		var mcetd = mcel.up().up();	// get to the <td> element
+		var top = mce.offsetTop + mcetd.offsetTop;
+		var ok = $(win.element).down('.editor_ok_button');
+		var margin = ok.offsetHeight + 30;
+		var height = win.height - top - margin;
+		
+		// Width manipulation: just needs a margin
+		var width = win.width - 10;
+		mce.setStyle({ height: height + "px", width: width + 'px' });
+	}
+  }
+}
+Windows.addObserver(_observer);

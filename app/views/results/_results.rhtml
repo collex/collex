@@ -5,7 +5,7 @@
 		var exhibit_names = [
 			<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', user_id] ) -%>
 			<% for exhibit in my_exhibits -%>
-			<% # TODO-PER: guard against exhibit.title containing a quote. Don't put last comma on end. -%>
+			<% # TODO-PER: guard against exhibit.title containing a quote. Also, don't put last comma on end. -%>
 				"<%= exhibit.title %>",
 				<% has_exhibits = true -%>
 			<% end -%>
