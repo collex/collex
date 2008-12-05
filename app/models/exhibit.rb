@@ -30,6 +30,11 @@ class Exhibit < ActiveRecord::Base
     curr_page.destroy
   end
   
+  def self.find_by_illustration_id(illustration_id)
+    illustration = ExhibitIllustration.find(illustration_id)
+    return self.find_by_element_id(illustration.exhibit_element_id)
+  end
+  
   def self.find_by_element_id(element_id)
     element = ExhibitElement.find(element_id)
     return self.find_by_section_id(element.exhibit_section_id)

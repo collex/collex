@@ -494,12 +494,18 @@ class My9sController < ApplicationController
       element_div_id = params['element_id']
       if element_div_id != nil
         arr = element_div_id.split('_')
-        element_id = arr[arr.length-1].to_i
-        exhibit = Exhibit.find_by_element_id(element_id)
+        id_num = arr[arr.length-1].to_i
+        if arr[0] == 'illustration'
+          exhibit = Exhibit.find_by_illustration_id(id_num)
+          element_id = ExhibitIllustration.find(id_num).exhibit_element_id
+        else
+          exhibit = Exhibit.find_by_element_id(id_num)
+          element_id = id_num
+        end
       else
         # We were passed a section id
         exhibit = Exhibit.find_by_section_id(params[:section])
-        
+        element_id = -1
       end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
