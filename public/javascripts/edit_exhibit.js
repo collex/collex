@@ -227,8 +227,16 @@ function showExhibitOutline(element_id)
 
 function initOutline(div_id)
 {
-	var left = 40;
-	var top = 160;
+	var outline_width = 300;
+	var outline_height = 400;
+	
+	var outer_win = $$('.tab-content-outline2');
+	var x = getX(outer_win[0]);
+	var y = getY(outer_win[0]);
+	var w = parseInt(outer_win[0].getStyle('width'));
+	var left = x + w - outline_width - 55;
+	var top = y + 25;
+	
 	_exhibit_outline = new Window({
 		title: 'OUTLINE',
 		//className: 'darkX',
@@ -239,8 +247,8 @@ function initOutline(div_id)
 		destroyOnClose: false,
 		left: left,
 		top: top,
-		width: 300,
-		height: 400,
+		width: outline_width,
+		height: outline_height,
 		showEffect: Element.show,
 		hideEffect: Element.hide,
 		maximizable: false,
