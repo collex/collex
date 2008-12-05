@@ -1,4 +1,4 @@
 		<div class="my9s_instructions">
 			<span>You are not logged in.</span> 
-			<p>Sign in or create an account to collect and tag items, save searches, create exhibits, and edit your profile.</p>
+			<p><%= link_to('Sign in', :controller => 'login') %> or <%= link_to('create an account', :controller => 'login', :action => 'signup' ) %> to collect and tag items, save searches, create exhibits, and edit your profile.</p>
 		</div>
