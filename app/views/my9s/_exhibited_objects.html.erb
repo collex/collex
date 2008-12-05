@@ -6,13 +6,21 @@
 <% else -%>
 	<table>
 	<% for exhibit in my_exhibits -%>
-		<tr>
+		<tr class="exhibit_tree_exhibit_row">
+			<td>
+				<span style="display:none" class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
+					<%= link_to_function('&#x25BA;',"toggleElementsByClass('exhibit_tree_#{exhibit.id}')") %>
+				</span>
+				<span class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
+					<%= link_to_function('&#x25BC;', "toggleElementsByClass('exhibit_tree_#{exhibit.id}')") %>
+				</span>
+			</td>
 			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :height => 15 } %></td>
 			<td class="exhibit_link" colspan="3"><%= exhibit.title %></td>
 		</tr>
 		<% for object in exhibit.exhibit_objects -%>
 			<% cr = CachedResource.find_by_uri(object.uri) -%>
-			<tr>
+			<tr class="exhibit_tree_<%= exhibit.id %>" >
 				<td></td>
 				<td>
 					<% thumbnail = CachedProperty.find(:first, :conditions => [ "cached_resource_id = ? AND name = ?", cr.id, 'thumbnail' ] ) -%>

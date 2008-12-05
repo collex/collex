@@ -81,6 +81,12 @@ function toggle_by_id(node_id) {
 	Element.toggle(node_id);
 }
 
+function toggleElementsByClass(cls)
+{
+	var els = $$('.'+cls);	
+	els.each(function(el){ el.toggle(); });
+}
+
 function popUp(URL) {
   day = new Date();
   id = day.getTime();

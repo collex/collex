@@ -28,7 +28,15 @@
 					<% selected_tag = "" -%>
 					<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
 					<%= render :partial => 'tag/cloud', :locals => { :cloud_fragment_key => @cloud_fragment_key, :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag } %>
-					<%= render :partial => 'tag/tag_zoom_ctrl', :locals => { :starting_zoom => session[:tag_zoom]  } %>
+					<!--< %= render :partial => 'tag/tag_zoom_ctrl', :locals => { :starting_zoom => session[:tag_zoom]  } %>-->
+<script type="text/javascript">
+	// This turns on the filtering of the tag cloud
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {		
+		var instructions = { 'tag': 'tag', 'annotation': 'annotation' };
+		sidebarTagCloud = new SidebarTagCloud( 50000, instructions );
+	});	
+</script>
 				</td>
 				<td rowspan="2" width="150px" valign="top">
 					<div id="exhibited_objects_container" class="standard_box">

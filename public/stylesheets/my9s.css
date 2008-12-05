@@ -13,6 +13,10 @@
 	vertical-align: top;
 }
 
+.exhibit_tree_exhibit_row td {
+	background-color: #e0e0e0;
+}
+
 .input_dlg_list {
 	background-color: white;
 	color: black;
