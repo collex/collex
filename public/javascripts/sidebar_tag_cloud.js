@@ -58,7 +58,7 @@ SidebarTagCloud = Class.create( {
 
 		// hide tags that don't match the filter
 		tags.each( function(tag) {
-			if( sidebarFilterString.blank() || tag.text.toLowerCase().startsWith( sidebarFilterString ) ) {
+			if( sidebarFilterString.blank() || (tag.text.toLowerCase().indexOf( sidebarFilterString ) >= 0) ) {
 				tag.show();
 				visibleTags[i++] = tag;
 			} 
