@@ -692,7 +692,7 @@ function showAddToExhibitDlg(uri, index, row_id)
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $("link_"+row_id);
-	dlg.show("Choose exhibit", getX(el), getY(el), values );
+	dlg.show("Choose exhibit", getX(el), getY(el), 400, 100, values );
 }
 
 

@@ -1,16 +1,4 @@
-<% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
 <% edit_mode ||= false -%>
-<% if edit_mode -%>
-	<div class="saved_data ill_illustration_type" style="display:none;"><%= illustration.illustration_type %></div>
-	<div class="saved_data ill_image_url" style="display:none;"><%= illustration.image_url %></div>
-	<div class="saved_data ill_link" style="display:none;"><%= illustration.link %></div>
-	<div class="saved_data ill_image_width" style="display:none;"><%= illustration.image_width %></div>
-	<div class="saved_data ill_illustration_text" style="display:none;"><%= illustration.illustration_text %></div>
-	<div class="saved_data ill_illustration_alt_text" style="display:none;"><%= illustration.alt_text %></div>
-	<div class="saved_data ill_illustration_caption1" style="display:none;"><%= illustration.caption1 %></div>
-	<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
-	<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
-<% end -%>
 
 <% # Set up all variables in advance to make the html code cleaner -%>
 <% illustration_id = illustration.id -%>
@@ -29,9 +17,8 @@ end -%>
 
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
-	<% illustration_div = "\"illustration_#{illustration_id}\"" %>
-	<% ajax_action = "'/my9s/edit_row_of_illustrations',/my9s/refresh_outline" -%>
-	<% ajax_div_id = "'element_#{element_id}',full_window" -%>
+	<% ajax_action = "'/my9s/edit_row_of_illustrations,/my9s/refresh_outline'" -%>
+	<% ajax_div_id = "'element_#{element_id},full_window'" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 <% else -%>
 	<% element_id = -1 -%>
@@ -63,14 +50,29 @@ end -%>
 				<!--<a title="Edit illustration options"  widenableelement="illustration_img_< %= illustration_id %>" class="widenable" < % #= "onclick='change_illustration2(#{element_id}, #{illustration_id}, #{illustration_div}); return false;'" %> href='#'>-->
 	<% end -%>
 	
-	<% # Create the actual content -%>	
-	<% if illustration_type == ExhibitIllustration.get_illustration_type_image() -%>
-		<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
-	<% elsif illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
-		<div class="exhibit_illustration_text" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" ><%= illustration.illustration_text %></div>
-	<% else # nines object -%>
-		<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
-	<% end -%>
+	<div id='illustration_inner_<%= illustration_id %>'>
+		<% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
+		<% if edit_mode -%>
+			<div class="saved_data ill_illustration_type" style="display:none;"><%= illustration.illustration_type %></div>
+			<div class="saved_data ill_image_url" style="display:none;"><%= illustration.image_url %></div>
+			<div class="saved_data ill_link" style="display:none;"><%= illustration.link %></div>
+			<div class="saved_data ill_image_width" style="display:none;"><%= illustration.image_width %></div>
+			<div class="saved_data ill_illustration_text" style="display:none;"><%= illustration.illustration_text %></div>
+			<div class="saved_data ill_illustration_alt_text" style="display:none;"><%= illustration.alt_text %></div>
+			<div class="saved_data ill_illustration_caption1" style="display:none;"><%= illustration.caption1 %></div>
+			<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
+			<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
+		<% end -%>
+	
+		<% # Create the actual content -%>	
+		<% if illustration_type == ExhibitIllustration.get_illustration_type_image() -%>
+			<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
+		<% elsif illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
+			<div class="exhibit_illustration_text" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" ><%= illustration.illustration_text %></div>
+		<% else # nines object -%>
+			<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
+		<% end -%>
+	</div>
 
 	<% # Close the wrapper created above -%>
 	<% if wrapper_type == 'link' -%>

@@ -41,7 +41,7 @@ InputDialog.prototype = {
 			elWrapper.writeAttribute('onclick', strShowEditor + "('" + element_id + "'); return false;");
 	},
 	
-	show: function(title, left, top, dataHash)
+	show: function(title, left, top, width, height, dataHash)
 	{
 //		var w = _table.getStyle('width') + 10;
 //		var h = _form.getStyle('height');
@@ -57,6 +57,8 @@ InputDialog.prototype = {
 			hideEffect: Element.hide,
 			maximizable: false,
 			minimizable: false,
+			width: width,
+			height: height,
 			resizable: true
 		});
 		
@@ -104,6 +106,9 @@ InputDialog.prototype = {
 		//var par = _form.up();
 		//par.setStyle({ width: w + 20 + 'px', height: h + 40 + 'px' });
 		this._initData(dataHash);
+		
+		__win = this._win;	// TODO-PER: Temporarily set a global variable to pass the window on.
+		setTimeout('_observer.onResize("resize", __win)', 600);
 	},
 	
 	addSelect: function(label, id, options, change, className)

@@ -1,18 +1,48 @@
-<div>
+<% #parameters: view=tag,untagged,all_collected, tag = tag, cloud_fragment_key, cloud_freq, bucket_size %>
+<h1>MY TAGS</h1>
+<% selected_tag = "" -%>
+<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
+<%= render :partial => 'tag/cloud', :locals => { :cloud_fragment_key => @cloud_fragment_key, :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag } %>
+<!--< %= render :partial => 'tag/tag_zoom_ctrl', :locals => { :starting_zoom => session[:tag_zoom]  } %>-->
+<div class="untagged_and_all_links">
+	<% if params[:view] == 'untagged' -%>
+	<span class="sidebar_tag_link_selected">List Untagged Objects</span>
+	<% else -%>
+	<span class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></span>
+	<% end -%>
+	&nbsp;
+	<% if params[:view] == 'all_collected' -%>
+	<span class="sidebar_tag_link_selected">List All Collected Objects</span>
+	<% else -%>
+	<span class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></span>
+	<% end -%>
+</div>
+
+<script type="text/javascript">
+	// This turns on the filtering of the tag cloud
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {		
+		var instructions = { 'tag': 'tag', 'annotation': 'annotation' };
+		sidebarTagCloud = new SidebarTagCloud( 50000, instructions );
+	});	
+</script>
+
+<!-- <div>
 	<h1>MY TAGS</h1>
- 	  <%= tag_list(cloud_freq, view == 'tag' ? tag : "" ) %>
+ 	  < %= tag_list(cloud_freq, view == 'tag' ? tag : "" ) %>
 	  <br />
 	<h1>MY COLLECTION</h1>
-	<% if view == 'untagged' -%>
+	< % if view == 'untagged' -%>
 	<div class="sidebar_tag_link_selected">Untagged</div>
-	<% else -%>
-	<div class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
-	<% end -%>
+	< % else -%>
+	<div class="sidebar_tag_link">< %= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
+	< % end -%>
 	
-	<% if view == 'all_collected' -%>
+	< % if view == 'all_collected' -%>
 	<div class="sidebar_tag_link_selected">All Collected</div>
-	<% else -%>
-	<div class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></div>
-	<% end -%>
+	< % else -%>
+	<div class="sidebar_tag_link">< %= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></div>
+	< % end -%>
 	<br />
 </div>
+-->

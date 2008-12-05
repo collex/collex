@@ -457,7 +457,8 @@ class My9sController < ApplicationController
       
       case verb
       when "insert_element"
-        section.insert_element(element.position)
+        new_element = section.insert_element(element.position+1)
+        element_id = new_element.id
       when "move_element_up"
         section.move_element_up(element.position)
       when "move_element_down"

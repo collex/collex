@@ -134,7 +134,7 @@ function showIllustrationEditor(element_id)
 
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
-	dlg.show("Edit Illustration", getX(el), getY(el), values );
+	dlg.show("Edit Illustration", getX(el), getY(el), 530, 350, values );
 	selectionChanged(values['type']);
 }
 
@@ -160,7 +160,7 @@ function showNinesObjectDlg(ed)
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(ed.formElement);
-	dlg.show("Create Link to NINES Object", getX(el), getY(el), values );
+	dlg.show("Create Link to NINES Object", getX(el), getY(el), 400, 400, values );
 }
 
 function _ninesObjectSelected(This)
@@ -250,7 +250,7 @@ function showRichEditor(element_id)
 
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
-	dlg.show("Enter Text", getX(el), getY(el), values );
+	dlg.show("Enter Text", getX(el), getY(el), 600, 300, values );
 }
 
 function showHeaderEditor(element_id)
@@ -277,6 +277,6 @@ function showHeaderEditor(element_id)
 
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
-	dlg.show("Enter Header", getX(el), getY(el), values );
+	dlg.show("Enter Header", getX(el), getY(el), 380, 100, values );
 }
 
