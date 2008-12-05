@@ -49,11 +49,36 @@ function insertIllustration(div, element_id, illustration_position)
 
 function doAjaxLink(div, url, params)
 {
-	new Ajax.Updater(div, url, {
-		parameters : params,
-		evalScripts : true,
-		onComplete : setTimeout("initializeElementEditing()", 1000),
-		onFailure : function(resp) { alert("Oops, there's been an error."); }});
+	// If we have a comma separated list, we want to send the alert synchronously to each action
+	// (Doing this synchronously eliminates any race condition: The first call can update the data and
+	// the rest of the calls just update the page.
+	var actions = url.split(',');
+	var action_elements = div.split(',');
+	if (actions.length == 1)
+	{
+		new Ajax.Updater(div, url, {
+			parameters : params,
+			evalScripts : true,
+			onComplete : setTimeout("initializeElementEditing()", 1000),
+			onFailure : function(resp) { alert("Oops, there's been an error."); }
+		});
+	}
+	else
+	{
+		new Ajax.Updater(action_elements[0], actions[0], {
+			parameters : params,
+			evalScripts : true,
+			onComplete: function(resp) {
+				new Ajax.Updater(action_elements[1], actions[1], {
+					parameters : params,
+					evalScripts : true,
+					onComplete : setTimeout("initializeElementEditing()", 1000),
+					onFailure : function(resp) { alert("Oops, there's been an error."); }
+				});
+			},
+			onFailure : function(resp) { alert("Oops, there's been an error."); }
+		});
+	}
 }
 
 function doAjaxLinkOnSelection(verb, exhibit_id)

@@ -21,7 +21,7 @@
 	url = ""
 	url = thumb[0] if thumb != nil && thumb.length > 0
 end -%>
-<% url = "../images/lg-harrington.gif" if !url || url.length == 0 -%>
+<% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
 <% illustration_position = illustration.position -%>
 <% link = illustration.link -%>
@@ -30,8 +30,8 @@ end -%>
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
 	<% illustration_div = "\"illustration_#{illustration_id}\"" %>
-	<% ajax_action = "'/my9s/edit_row_of_illustrations'" -%>
-	<% ajax_div_id = "'element_#{element_id}'" -%>
+	<% ajax_action = "'/my9s/edit_row_of_illustrations',/my9s/refresh_outline" -%>
+	<% ajax_div_id = "'element_#{element_id}',full_window" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 <% else -%>
 	<% element_id = -1 -%>

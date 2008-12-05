@@ -32,7 +32,11 @@ class Exhibit < ActiveRecord::Base
   
   def self.find_by_element_id(element_id)
     element = ExhibitElement.find(element_id)
-    section = ExhibitSection.find(element.exhibit_section_id)
+    return self.find_by_section_id(element.exhibit_section_id)
+  end
+  
+  def self.find_by_section_id(section_id)
+    section = ExhibitSection.find(section_id)
     page = ExhibitPage.find(section.exhibit_page_id)
     return Exhibit.find(page.exhibit_id)
   end

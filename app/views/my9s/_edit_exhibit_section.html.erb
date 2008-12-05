@@ -14,8 +14,8 @@
 </h1>-->
 <div class="inside_edit_exhibit_box">
 	<% is_first = true -%>
-	<% ajax_action = "'/my9s/edit_element'" -%>
-	<% ajax_div_id = "'section_#{section.position}'" -%>
+	<% ajax_action = "'/my9s/edit_element,/my9s/refresh_outline'" -%>
+	<% ajax_div_id = "'section_#{section.position},full_window'" -%>
 	<% for element in section.exhibit_elements -%>
 		<% ajax_params = "'page=#{page.id}&section=#{section.id}&element=#{element.position}&verb='" -%>
 		<div class="edit_exhibit_box edit_exhibit_box_no_border">

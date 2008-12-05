@@ -19,16 +19,14 @@
 			<td class="exhibit_link" colspan="3"><%= exhibit.title %></td>
 		</tr>
 		<% for object in exhibit.exhibit_objects -%>
-			<% cr = CachedResource.find_by_uri(object.uri) -%>
+			<% hit = CachedResource.get_hit_from_uri(object.uri) -%>
 			<tr class="exhibit_tree_<%= exhibit.id %>" >
 				<td></td>
 				<td>
-					<% thumbnail = CachedProperty.find(:first, :conditions => [ "cached_resource_id = ? AND name = ?", cr.id, 'thumbnail' ] ) -%>
-					<img src="<%= thumbnail == nil || thumbnail.value.length == 0 ? '../images/lg-harrington.gif' : thumbnail.value %>" alt="" height="15"/>
+					<img src="<%= get_image_url(hit['thumbnail']) %>" alt="" height="15"/>
 				</td>
 				<td>
-					<% title = CachedProperty.find(:first, :conditions => [ "cached_resource_id = ? AND name = ?", cr.id, 'title' ] ) -%>
-					<%= title.value %>
+					<%= hit['title'] %>
 				</td>
 				<td><%= link_to_function "x", "doRemoveObjectFromExhibit('#{exhibit.id}', '#{object.uri}');" %></td>
 			</tr>

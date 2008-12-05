@@ -492,9 +492,15 @@ class My9sController < ApplicationController
     
     def refresh_outline
       element_div_id = params['element_id']
-      arr = element_div_id.split('_')
-      element_id = arr[arr.length-1].to_i
-      exhibit = Exhibit.find_by_element_id(element_id)
+      if element_div_id != nil
+        arr = element_div_id.split('_')
+        element_id = arr[arr.length-1].to_i
+        exhibit = Exhibit.find_by_element_id(element_id)
+      else
+        # We were passed a section id
+        exhibit = Exhibit.find_by_section_id(params[:section])
+        
+      end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
     end

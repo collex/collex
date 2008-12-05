@@ -46,16 +46,33 @@ module My9sHelper
   def element_pic_thumbnail(element)
     illustrations = element.exhibit_illustrations
     if illustrations.length > 0
-      "<img src='#{illustrations[0].image_url}' height='16px' />"
+      element_pic_thumbnail_illustration(illustrations[0])
     else
-      "<img src='../images/lg-harrington.gif' height='16px' />"
+      "<img src='#{get_image_url(nil)}' height='16px' />"
     end
   end
   
-  def element_pic_thumbnail_illustration(illustration)
-      "<img src='#{illustration.image_url}' height='16px' />"
+  def get_image_url(url)
+    if url == nil || url.length == 0
+      return '../images/lg-harrington.gif'
+    end
+    return url
   end
   
+  def element_pic_thumbnail_illustration(illustration)
+    if illustration.illustration_type == ExhibitIllustration.get_illustration_type_image()
+      "<img src='#{get_image_url(illustration.image_url)}' height='16px' />"
+    elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
+      hit = CachedResource.get_hit_from_uri(illustration.nines_object_uri)
+      thumb = hit['thumbnail']
+      url = ""
+      url = thumb[0] if thumb != nil && thumb.length > 0
+      "<img src='#{get_image_url(url)}' height='16px' />"
+    elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_text()
+      "..."
+    end
+  end
+
   def tree_node( page_num, item_id_prefix, class_name, toggle_function, exhibit_id, initial_state = :closed )
     display_none = 'style="display:none"'
     label = "<div class='outline_right_controls''>"
