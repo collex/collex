@@ -30,6 +30,10 @@
 	<%= case @site_section 
 		when :search 
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
+		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
+		  stylesheet_link_tag("themes/default", :media => "all") + "\n" +
+		  #stylesheet_link_tag("themes/darkX", :media => "all") + "\n" +
+		  stylesheet_link_tag("themes/collex", :media => "all") + "\n" +
 	  	  stylesheet_link_tag("search", :media => "all")
 		when :my9s
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
@@ -47,6 +51,10 @@
 		  stylesheet_link_tag "login", :media => "all" 
 		when :tag
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
+		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
+		  stylesheet_link_tag("themes/default", :media => "all") + "\n" +
+		  #stylesheet_link_tag("themes/darkX", :media => "all") + "\n" +
+		  stylesheet_link_tag("themes/collex", :media => "all") + "\n" +
 		  stylesheet_link_tag("tag", :media => "all")
 		when :exhibits
 		  stylesheet_link_tag("exhibit_list", :media => "all")
@@ -75,9 +83,9 @@
 	<!-- section scripts -->
 	<%= case @site_section 
 		when :search 
-		  javascript_include_tag 'search_validation'
+		  javascript_include_tag 'search_validation', 'window', 'input_dialog'
 		when :tag
-		  javascript_include_tag 'sidebar_tag_cloud'
+		  javascript_include_tag 'sidebar_tag_cloud', 'window', 'input_dialog'
 		when :my9s
 		  javascript_include_tag('full_window', 'widenable', 'window', 'input_dialog', 'sidebar_tag_cloud', 'edit_exhibit')
 		when :home 
