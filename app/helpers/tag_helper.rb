@@ -1,12 +1,17 @@
 module TagHelper
-  def tag_cloud(list, bucket_size)
+  def tag_cloud(list, bucket_size, selection)
     xm = Builder::XmlMarkup.new(:indent => 2)
     list.each do |item|
-#        html = (i > NUM_VISIBLE_TAGS) ? { :style => "display:none;" } : {}
       html = {}
       size = item.last.quo(bucket_size).ceil
-      xm.span :class => "cloud#{size}" do
-        xm << link_to_tag(item.first, item.last, false, html)
+      if selection == item.first
+        xm.span :class => "cloud#{size} sidebar_tag_link_selected" do
+          xm << "#{h(item.first)}"
+        end
+      else
+        xm.span :class => "cloud#{size}" do
+          xm << link_to_tag(item.first, item.last, false, html)
+        end
       end
     end
     return xm

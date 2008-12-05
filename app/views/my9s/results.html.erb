@@ -10,20 +10,24 @@
 		<table class="results_layout"><tr>
 			<tr>
 				<td id="tag_sidebar" class="tag_sidebar standard_box">
-					<% #= render :partial => 'tag/sidebar', :locals => { :cloud_freq => @cloud_freq, :view => params[:view], :tag => params[:tag] } %>
 					<h1>MY TAGS</h1>
-	<% if params[:view] == 'untagged' -%>
-	<div class="sidebar_tag_link_selected">Untagged</div>
-	<% else -%>
-	<div class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></div>
-	<% end -%>
-	
-	<% if params[:view] == 'all_collected' -%>
-	<div class="sidebar_tag_link_selected">All Collected</div>
-	<% else -%>
-	<div class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></div>
-	<% end -%>
-					<%= render :partial => 'tag/cloud', :locals => { :cloud_fragment_key => @cloud_fragment_key, :cloud_freq => @cloud_freq, :bucket_size => @bucket_size } %>
+					<div>
+						<% if params[:view] == 'untagged' -%>
+						<span class="sidebar_tag_link_selected">Untagged</span>
+						<% else -%>
+						<span class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></span>
+						<% end -%>
+						&nbsp;
+						<% if params[:view] == 'all_collected' -%>
+						<span class="sidebar_tag_link_selected">All Collected</span>
+						<% else -%>
+						<span class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></span>
+						<% end -%>
+					</div>
+					<br />
+					<% selected_tag = "" -%>
+					<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
+					<%= render :partial => 'tag/cloud', :locals => { :cloud_fragment_key => @cloud_fragment_key, :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag } %>
 					<%= render :partial => 'tag/tag_zoom_ctrl', :locals => { :starting_zoom => session[:tag_zoom]  } %>
 				</td>
 				<td rowspan="2" width="150px" valign="top">
