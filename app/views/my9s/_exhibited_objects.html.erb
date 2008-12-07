@@ -16,7 +16,7 @@
 				</span>
 			</td>
 			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :height => 15 } %></td>
-			<td class="exhibit_link" colspan="3"><%= exhibit.title %></td>
+			<td class="exhibit_link" colspan="3"><%= link_to exhibit.title, "/my9s/edit_exhibit?id=#{exhibit.id}", { :title => 'Edit Exhibit' } %></td>
 		</tr>
 		<% for object in exhibit.exhibit_objects -%>
 			<% hit = CachedResource.get_hit_from_uri(object.uri) -%>
