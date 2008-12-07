@@ -93,21 +93,6 @@ function popUp(URL) {
   eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
 }
 
-function validateCollector()
-{
-  if (document.forms['collectform'].collector_tag.value == '')
-  {
-    Effect.Appear('collect-status', { duration: 1.0 });
-    return false;
-  }
-  else
-  {
-    Effect.Fade('collect-status', { duration: 0.0 });
-    Effect.Appear('collected', { duration: 0.25 });
-    document.forms['collectform'].onsubmit();
-  }
-}
-
 /** Note: methods below are needed to overcome a bug in Firefox.  An explanation
  *        is at:
  *         
@@ -362,45 +347,6 @@ function explorerMacResizeFix () {
 }
 
 // -----
-function showCollector(uri, event, header) {
-  f = $('collectform');
-  if (f) {
-    f.reset();
-    f.objid.value = uri;        
-    if (!header) header = '';
-    $('collector_header').innerHTML = header;
-  }
-  //alert(uri);
-  //showPopup('collectformarea', event);
-
-  var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
-  var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
-  moveObject2('collectformarea', newXCoordinate, newYCoordinate);
-}
-
-function showAlert(divID, event)
-{
-  new Effect.Appear(divID, { duration: 0.5 }); 
-  var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
-  var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
-  moveObject2(divID, newXCoordinate, newYCoordinate);
-}
-
-function displayCollector(id, uri, event, header)
-{
-  // reset the display properties for the status
-  Effect.Fade('collect-status', { duration: 0.0 });
-  Effect.Fade('collected', { duration: 0.0 });
-
-  new Effect.Appear('collectformarea', { duration: 0.5 }); 
-  showCollector(uri, event, header); 
-
-  // give focus to the tag field
-  if (document.forms['collectform'] && document.forms['collectform'].collector_tag)
-  {
-    setTimeout("document.forms['collectform'].collector_tag.focus()",100);
-  }
-}
 
 function bulkCollect(event)
 {
@@ -529,6 +475,9 @@ function moveObjectToLeftTopOfItsParent(target_id, parent_id)
 	moveObject2(target_id, newXCoordinate, newYCoordinate);
 }
 
+// This gets the "full text" field in the search results. That is not saved in the cache,
+// so if we do Ajax operations on a row with full text, then we would lose it. Therefore,
+// we read it, then send it back to the server.
 function getFullText(row_id)
 {
 	var el_full_text = document.getElementById(row_id+ "_full_text");
@@ -574,20 +523,12 @@ function doRemoveCollect(uri, row_num, row_id)
 	});
 }
 
-function focusTag()
-{
-	document.getElementById('tag_tag').focus();
-}
-
 function doAddTag(parent_id, uri, row_num, row_id)
 {
-	new Effect.Appear('tag-div', { duration: 0.5 }); 
-	moveObjectToJustBelowItsParent('tag-div', parent_id);
-	
-	document.getElementById('tag_uri').value = uri;
-	document.getElementById('tag_row_num').value = row_num;
-	document.getElementById('tag_row_id').value = row_id;
-	setTimeout(focusTag, 100);	// We need to delay setting the focus because the tag isn't on the screen until the Effect.Appear has finished.
+	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
+		row_id + ",tag_sidebar",
+		"/results/add_tag,/tag/update_sidebar", 
+		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }) );
 }
 
 function focusAnnotation()
@@ -621,23 +562,6 @@ function tagFinishedUpdating()
 	}
 }
 
-function doAddTagSubmit()
-{
-	var el_uri = document.getElementById('tag_uri');
-	var el_row_num = document.getElementById('tag_row_num');
-	var el_row_id = document.getElementById('tag_row_id');
-	var el_tag = document.getElementById('tag_tag');
-	var tag_value = encodeForUri(el_tag.value);
-    Effect.Fade('tag-div', { duration: 0.0 });
-	var full_text = getFullText(el_row_id.value);
-
-	new Ajax.Updater(el_row_id.value, "/results/add_tag", {
-		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&tag=" + tag_value + "&full_text=" + full_text,
-		onComplete : tagFinishedUpdating,
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
-}
-
 function doAnnotationSubmit()
 {
 	var el_uri = document.getElementById('note_uri');
@@ -664,37 +588,15 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 
 function doAddToExhibit(uri, index, row_id)
 {
-	// put up a Prototype window type dialog.
-	InputDialog.prototype.prepareDomForEditing("link_" + row_id, row_id + ",exhibited_objects_container", "/results/add_object_to_exhibit,/my9s/resend_exhibited_objects");
-	showAddToExhibitDlg(uri, index, row_id);
+	doSingleInputPrompt("Choose exhibit", 
+		'Exhibit:', 
+		'exhibit', 
+		"link_" + row_id, 
+		row_id + ",exhibited_objects_container",
+		"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
+		$H({ uri: uri, index: index, row_id: row_id }), 
+		exhibit_names);
 }
-
-function showAddToExhibitDlg(uri, index, row_id)
-{
-	// First construct the dialog
-	var dlg = new InputDialog("link_"+row_id);
-	dlg.addHidden("uri");
-	dlg.addHidden("index");
-	dlg.addHidden("row_id");
-	
-	dlg.addSelect('Exhibit:', 'exhibit', exhibit_names);
-	
-	// Now populate a hash with all the starting values.	
-	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
-	
-	var values = {};
-	
-	// We also need to set the hidden fields on our form. This is the mechanism
-	// for passing back the context to the controller.
-	values['uri'] = uri;
-	values['index'] = index;
-	values['row_id'] = row_id;
-	
-	// Now, everything is initialized, fire up the dialog.
-	var el = $("link_"+row_id);
-	dlg.show("Choose exhibit", getX(el), getY(el), 400, 100, values );
-}
-
 
 function cancel_edit_profile_mode(partial_id)
 {
@@ -729,37 +631,13 @@ function encodeForUri(str)
 	value = value.gsub(/\?/, '%3f');
 	return value;
 }
-//function displayDetails(parent_id, page_num, row_num, row_id)
-//{
-//	new Effect.Appear('result-details-div', { duration: 0.5 }); 
-//	moveObjectToLeftTopOfItsParent('result-details-div', parent_id);
-//
-//	new Ajax.Updater('result-details', "/results/details", {
-//		parameters : "page_num="+ page_num + "&row_num=" + row_num,
-//		onFailure : function(resp) { alert("Oops, there's been an error."); }
-//	});
-//}
-
-function focusSaveSearch()
-{
-	document.getElementById('save_name').focus();
-}
 
 function doSaveSearch(parent_id)
 {
-	new Effect.Appear('save-search-div', { duration: 0.5 }); 
-	moveObjectToJustBelowItsParent('save-search-div', parent_id);
-	
-	setTimeout(focusSaveSearch, 100);	// We need to delay setting the focus because the dlg isn't on the screen until the Effect.Appear has finished.
-}
-
-function doSaveSearchSubmit()
-{
-    Effect.Fade('save-search-div', { duration: 0.0 });
-
-	var form = document.getElementById('save-search-form');
-	form.submit();
-
+	doSingleInputPrompt("Save Search", 'Name:', 'save_name', parent_id, 
+		"saved_search_name",
+		"/search/save_search", 
+		$H({ }) );
 }
 
 function setTagVisibility(zoom_level)
@@ -892,67 +770,5 @@ function ExtractNumber(value)
 	var n = parseInt(value);
 	return n == null || isNaN(n) ? 0 : n;
 }
- 
- //
- // for editting exhibits
- //
 
-var focusedFieldId = '';
- 
-function focusField()
-{
-	document.getElementById(focusedFieldId).focus();
-}
-
-function doPopupFormSubmit(form_id)
-{
-    Effect.Fade(form_id+ "_div", { duration: 0.0 });
-
-	var form = document.getElementById(form_id);
-	form.submit();
-}
-
-//function change_text(exhibit_id, page_num, element_id, parent_id)
-//{
-//	new Effect.Appear('text_area_form_div', { duration: 0.5 }); 
-//	moveObjectToJustBelowItsParent('text_area_form_div', parent_id);
-//	
-//	document.getElementById('exhibit_id').value = exhibit_id;
-//	document.getElementById('page_num').value = page_num;
-//	document.getElementById('element_id').value = element_id;
-//	var arrDiv = $(parent_id).getElementsByTagName('div');
-//	if (arrDiv.length > 0)
-//		var existing_note = arrDiv[0].innerHTML;
-//	else
-//		var existing_note = document.getElementById(parent_id).innerHTML;
-//	existing_note = existing_note.gsub("<br />", "\n");
-//	existing_note = existing_note.gsub("<br>", "\n");
-//	document.getElementById('text').value = existing_note;
-//	focusedFieldId = 'text_area_form_div';
-//	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
-//}
-
-//function change_header(exhibit_id, page_num, element_id, parent_id)
-//{
-//	new Effect.Appear('header_form_div', { duration: 0.5 }); 
-//	moveObjectToJustBelowItsParent('header_form_div', parent_id);
-//	
-//	document.getElementById('head_exhibit_id').value = exhibit_id;
-//	document.getElementById('head_page_num').value = page_num;
-//	document.getElementById('head_element_id').value = element_id
-//	var existing_note = document.getElementById(parent_id).innerHTML;
-//	var arrH3 = $(parent_id).getElementsByTagName('h3');
-//	if (arrH3.length > 0)
-//	{
-//		for (var i = 0; i < arrH3.length; i++)
-//		{
-//			if (arrH3[i].className == 'exhibit_header')
-//				existing_note = arrH3[i].innerHTML.strip();
-//		}
-//	}
-//		
-//	document.getElementById('header').value = existing_note;
-//	focusedFieldId = 'header_form_div';
-//	setTimeout(focusField, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
-//}
 

@@ -16,9 +16,9 @@
 
 SidebarTagCloud = Class.create( {
 	
-	initialize: function( initialCloudSize, instructions ) {				
-		this.instructions = instructions;
-		this.initialCloudSize = initialCloudSize;
+	initialize: function( ) {				
+		this.instructions = { 'tag': 'tag', 'annotation': 'annotation' };
+		this.initialCloudSize = 50000;
 		this.initSidebarFilterHandler();	
 	},
 	

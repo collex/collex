@@ -83,3 +83,11 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
   theForm.submit(); 
   return true;
 }
+
+function showAlert(divID, event)
+{
+  new Effect.Appear(divID, { duration: 0.5 }); 
+  var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
+  var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
+  moveObject2(divID, newXCoordinate, newYCoordinate);
+}

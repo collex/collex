@@ -284,3 +284,37 @@ var _observer = {
   }
 }
 Windows.addObserver(_observer);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Create a small prompt dialog with one field, then send the user's response to the server by ajax.
+function doSingleInputPrompt(titleStr, // The string that appears in the title bar
+	promptStr, // The string that appears to the left of the input
+	promptId, // The key that will be used in the params[] hash in the ajax call
+	referenceElementId, // The element that the dialog will appear above
+	actionElementIds, // The list of elements that should be updated by the ajax calls (comma separated)
+	actions, // The list of urls that should be called by Ajax (should be the same number as above)
+	hiddenDataHash, // Extra data that should be sent back to the server .eg.: $H({ key1: 'value1', key2: 'value2' })
+	selectValues	// If this is null, then an input field is created, if this is a hash, then a select field is created.
+	)
+{
+	// put up a Prototype window type dialog.
+	InputDialog.prototype.prepareDomForEditing(referenceElementId, actionElementIds, actions);
+	
+	// First construct the dialog
+	var dlg = new InputDialog(referenceElementId);
+	hiddenDataHash.each(function(datum) {
+		dlg.addHidden(datum.key);
+	});
+	
+	if (selectValues == undefined || selectValues == null)
+		dlg.addTextInput(promptStr, promptId, 40);
+	else
+		dlg.addSelect(promptStr, promptId, selectValues);
+	
+	// Now, everything is initialized, fire up the dialog.
+	var el = $(referenceElementId);
+	dlg.show(titleStr, getX(el), getY(el), 400, 100, hiddenDataHash );
+	setTimeout(function() { $(promptId).focus() }, 600);
+}
+

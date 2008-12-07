@@ -459,7 +459,8 @@ class SearchController < ApplicationController
        saved_search.save!
      end
      
-     redirect_to :action => 'browse'
+     render :partial => 'show_saved_search'
+     #redirect_to :action => 'browse'
    end
    
    def apply_saved_search

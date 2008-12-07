@@ -29,7 +29,7 @@
 						<input class="reset-search-button" type="submit" value="New Search"/>
 				 </form> 
 			 <% end -%>
-				<h1>SEARCH QUERY<%= render :partial => 'show_saved_search' %></h1>
+				<h1>SEARCH QUERY<span id="saved_search_name"><%= render :partial => 'show_saved_search' %></span></h1>
 				<%= render( :partial => 'constraints' ) %>
 				<%= render( :partial => 'add_constraint_form' ) %>
 			  	<% if session[:constraints].size == 0 && is_logged_in? -%>
