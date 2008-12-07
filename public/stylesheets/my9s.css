@@ -231,12 +231,37 @@ a.edit_exhibit_widget {
 	background: white;
 }
 
+a.edit_exhibit_widget img:hover {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+
 .edit_illustration_column {
 	padding: 0px;
 	margin: 0px;
 }
 
-.resizer a:hover {
+.resizer {
+	color: white;
+}
+
+img.resizer:link {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+img.resizer:visited {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+img.resizer:hover {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+img.resizer:active {
 	border: 0px;
 	color: white;
 	padding: 0px;
