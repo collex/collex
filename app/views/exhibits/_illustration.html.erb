@@ -66,11 +66,11 @@ end -%>
 	
 		<% # Create the actual content -%>	
 		<% if illustration_type == ExhibitIllustration.get_illustration_type_image() -%>
-			<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
+			<img class="exhibit_illustration_img widenable" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
 		<% elsif illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
 			<div class="exhibit_illustration_text" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" ><%= illustration.illustration_text %></div>
 		<% else # nines object -%>
-			<img class="exhibit_illustration_img" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
+			<img class="exhibit_illustration_img widenable" id='illustration_img_<%= illustration_id %>' element_id="<%= element_id %>" src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>"/>
 		<% end -%>
 	</div>
 
