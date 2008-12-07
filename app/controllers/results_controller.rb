@@ -73,7 +73,8 @@ class ResultsController < ApplicationController
       }
     end
 
-    redirect_to params[:return]
+    redirect_to :back
+    #redirect_to params[:return]
   end
   
   def add_object_to_exhibit
