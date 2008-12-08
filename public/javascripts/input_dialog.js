@@ -24,6 +24,7 @@ InputDialog.prototype = {
 		this._form = new Element('form', { id: form_id, onsubmit:  submitCode});
 		this._table = new Element('table');
 		this._form.appendChild(this._table);
+		this._useRichEditor = true;
 	},
 	
 	prepareDomForEditing: function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor)
