@@ -116,33 +116,6 @@ private
     in_place_editor(tag_options[:id], in_place_editor_options)
   end
   
-
-  def show_hide_link_to(options={})
-    options = options.symbolize_keys
-    options = {:show_label => "show", :hide_label => "hide", :hidden_element => "hidden", :id_suffix => ""}.update(options)
-    show_result = capture do
-      link_to_function(options[:show_label], nil, :id => "show" + options[:id_suffix]) do |page|
-        page.show options[:hidden_element], "hide#{options[:id_suffix]}"
-        page.hide "show#{options[:id_suffix]}"
-      end
-    end
-    hide_result = capture do
-      link_to_function(options[:hide_label], nil, :id => "hide" + options[:id_suffix], :style => "display:none") do |page|
-        page.hide options[:hidden_element], "hide#{options[:id_suffix]}"
-        page.show "show#{options[:id_suffix]}"
-      end
-    end
-    show_result + hide_result
-  end
-
-  def cloud_list
-    ["archive", "agent_facet", "year", "tag", "genre", "username"]
-  end
-  
-  def cloud_list_links
-    cloud_list.collect { |name| link_to_cloud name }.join(" ")
-  end
-
   def facet_label(field)
     label = case field
       when "archive"        then "sites"
@@ -202,22 +175,6 @@ private
   
   def link_to_popup(label, options, html_options={})
     link_to_function(label, "popUp('#{url_for(options)}')", html_options)
-  end
-  
-  def link_to_cloud(type, label=type, html_options = {} )
-    css_class = params[:type] == type ? "selected" : ""
-    target = sidebar_cloud_path(:user => params[:user], :type => type)
-    link_to_function facet_label(label), update_sidebar(target), html_options.merge( { :class => css_class } )
-  end
-  
-  def link_to_peer(user, count, html_options = {} )
-    target = sidebar_cloud_path(:type => "tag", :user => user)
-    link_to_function user, update_sidebar(target), html_options.merge( {:title => pluralize(count, 'object')} )
-  end
-  
-  def link_to_detail( label, options )
-    target = url_for( options )
-    link_to_function( label, update_sidebar(target) )
   end
   
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
