@@ -68,6 +68,8 @@ InputDialog.prototype = {
 		this._win.getContent().update(this._form);
 		//_win.setConstraint(true, {left:10 - pos[0], right:30 - pos[1], top: 10 - pos[0], bottom:10 - pos[1]});
 		this._win.show(true);
+		this._initData(dataHash);
+
 		var strButtons1 = "cut,copy,paste,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect";
 		var strButtons2 = "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,ninesobj,link,unlink,code,|,forecolor,backcolor,hr,removeformat,|,sub,sup,|,charmap,media";
 		if (this._extraButton != null)
@@ -105,7 +107,6 @@ InputDialog.prototype = {
 		//var h = _form.getStyle('height');
 		//var par = _form.up();
 		//par.setStyle({ width: w + 20 + 'px', height: h + 40 + 'px' });
-		this._initData(dataHash);
 		
 		__win = this._win;	// TODO-PER: Temporarily set a global variable to pass the window on.
 		setTimeout('_observer.onResize("resize", __win)', 600);
