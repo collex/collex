@@ -103,7 +103,7 @@ private
     end
   end
   
-  # Adds abilitity to use restful routes custom methods directly without passing in the :url
+  # Adds ability to use restful routes custom methods directly without passing in the :url
   # assumes an :update_(method) member of a mapped resource with a :post type, ie:
   # map.resources :exhibits, :member => { :update_title => :post }
   # which will generate a url like /exhibits/6;update_title

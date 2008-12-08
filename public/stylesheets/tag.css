@@ -57,6 +57,12 @@
 	margin-bottom: 3em;
 }
 
+.narrow_tag_cloud .tagcloud {
+	margin-left: 0em;
+	margin-right: 0em;
+	margin-bottom: 1em;
+}
+
 .tag_sidebar {
 	vertical-align: top;
 	width: 200px;

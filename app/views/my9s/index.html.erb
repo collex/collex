@@ -27,11 +27,12 @@
 				<td valign="top">
 					<%= render :partial => 'search/save_search_list' %>
 					<br/>
-					<div class="standard_box">
+					<div class="standard_box narrow_tag_cloud">
 						<center>
 							<h1>MY TAGS</h1>
-							<div class="inside_standard_box">
-						  	  <%= tag_cloud(@cloud_freq, @bucket_size, "") %>
+							<br /><br />
+							<div id="tag_cloud_div" class="inside_standard_box">
+						  	  <%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => "" } %>
 							</div>
 						</center>
 					</div>

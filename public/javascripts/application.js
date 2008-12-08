@@ -526,8 +526,8 @@ function doRemoveCollect(uri, row_num, row_id)
 function doAddTag(parent_id, uri, row_num, row_id)
 {
 	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
-		row_id + ",tag_sidebar",
-		"/results/add_tag,/tag/update_sidebar", 
+		row_id + ",tag_cloud_div",
+		"/results/add_tag,/tag/update_tag_cloud", 
 		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }) );
 }
 
@@ -553,10 +553,10 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 
 function tagFinishedUpdating()
 {
-	var el_sidebar = document.getElementById('tag_sidebar');
+	var el_sidebar = document.getElementById('tag_cloud_div');
 	if (el_sidebar)
 	{
-		new Ajax.Updater('tag_sidebar', "/tag/update_sidebar", {
+		new Ajax.Updater('tag_cloud_div', "/tag/update_tag_cloud", {
 			onFailure : function(resp) { alert("Oops, there's been an error."); }
 		});
 	}

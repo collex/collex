@@ -54,7 +54,6 @@ class LoginController < ApplicationController
     if logged_in_user 
       session[:user] = logged_in_user
       flash[:refresh_page] = true
-      #session[:users_collections] = CachedResource.get_all_of_users_collections(User.find_by_username(logged_in_user[:username])) # store all the user's tags so we don't have to search for them for each returned book.
       redirect_to get_page_to_return_to()
       return
     else 

@@ -9,16 +9,13 @@
 		
 		<table class="results_layout"><tr>
 			<tr>
-				<td id="tag_sidebar" class="tag_sidebar standard_box">
-					<!--< %= render :partial => 'tag/sidebar', 
-						:locals => { :view => params[:view], :tag => params[:tag], :cloud_fragment_key => @cloud_fragment_key,
-							:cloud_freq => @cloud_freq, :bucket_size => @bucket_size } %>
--->
+				<td class="tag_sidebar standard_box">
 					<h1>MY TAGS</h1>
 					<% selected_tag = "" -%>
 					<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
-					<%= render :partial => 'tag/cloud', :locals => { :cloud_fragment_key => @cloud_fragment_key, :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag } %>
-					<!--< %= render :partial => 'tag/tag_zoom_ctrl', :locals => { :starting_zoom => session[:tag_zoom]  } %>-->
+					<div id="tag_cloud_div">
+						<%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag } %>
+					</div>
 					<div class="untagged_and_all_links">
 						<% if params[:view] == 'untagged' -%>
 						<span class="sidebar_tag_link_selected">Untagged</span>
@@ -32,13 +29,6 @@
 						<span class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></span>
 						<% end -%>
 					</div>
-<script type="text/javascript">
-	// This turns on the filtering of the tag cloud
-	// perform initialization after DOM loads
-	Event.observe(window, 'load', function() {		
-		sidebarTagCloud = new SidebarTagCloud( );
-	});	
-</script>
 				</td>
 				<td rowspan="2" width="150px" valign="top">
 					<div id="exhibited_objects_container" class="standard_box">

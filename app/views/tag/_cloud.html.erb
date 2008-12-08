@@ -1,19 +1,25 @@
-<% #parameters: cloud_fragment_key, cloud_freq, bucket_size%>
+<% #parameters: cloud_freq, bucket_size, selected_tag %>
 <center>
   <div class="tag_filter">
 	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
   </div>
 
-<% cache_timeout(cloud_fragment_key,1.hour.from_now) do %>
+<!-- < % cache_timeout(cloud_fragment_key,1.hour.from_now) do %>
 
-<div id="sidebar-spinner" style="display:none;"></div>
+<div id="sidebar-spinner" style="display:none;"></div>-->
 <div class="content">
 
   <div class="tagcloud" id="tagcloud">
   	  <%= tag_cloud(cloud_freq, bucket_size, selected_tag) %>
   </div>
 </div>
-
-<% end #cache_timeout block %>
-
+<% #end #cache_timeout block %>
 </center>
+
+<script type="text/javascript">
+	// This turns on the filtering of the tag cloud
+	// perform initialization after DOM loads
+	Event.observe(window, 'load', function() {		
+		sidebarTagCloud = new SidebarTagCloud( );
+	});	
+</script>

@@ -116,20 +116,6 @@ class My9sController < ApplicationController
      redirect_to :action => 'results'
    end
    
-#   def update_sidebar
-#    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-#    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-#      redirect_to "/"
-#      return
-#    end
-#
-#    if user
-#      set_cloud_list(user, user.username)
-#    end
-#
-#    render :partial => 'sidebar', :locals => { :cloud_freq => @cloud_freq, :view => session[:tag_view], :tag =>  session[:tag_current] }
-#   end
-
   # This is called from AJAX to display the edit profile form in place.
   def enter_edit_profile_mode
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil

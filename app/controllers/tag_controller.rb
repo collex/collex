@@ -136,14 +136,15 @@ class TagController < ApplicationController
      redirect_to :action => 'results'
    end
    
-   def update_sidebar
+   def update_tag_cloud
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 
     if user
       set_cloud_list(user, user.username)
     end
 
-    render :partial => 'sidebar', :locals => { :cloud_freq => @cloud_freq, :view => session[:tag_view], :tag =>  session[:tag_current] }
+    selected_tag = (session[:tag_view] == 'tag') ? session[:tag_current] : ""
+    render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size =>@bucket_size, :selected_tag => selected_tag }
    end
    
    private
