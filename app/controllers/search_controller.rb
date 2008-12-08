@@ -57,24 +57,24 @@ class SearchController < ApplicationController
         # expanded input boxes
         parse_keyword_phrase(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
         add_title_constraint(params[:search_title]) if params[:search_title] != ""
-        add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
-        add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
-        add_keyword_constraint(params[:search_publisher]) if params[:search_publisher] != ""
-        # add_author_constraint(params[:search_author]) if params[:search_author] != ""
-        # add_editor_constraint(params[:search_editor]) if params[:search_editor] != ""
-        # add_publisher_constraint(params[:search_publisher]) if params[:search_publisher] != ""
+        # add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
+        # add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
+        # add_keyword_constraint(params[:search_publisher]) if params[:search_publisher] != ""
+        add_author_constraint(params[:search_author]) if params[:search_author] != ""
+        add_editor_constraint(params[:search_editor]) if params[:search_editor] != ""
+        add_publisher_constraint(params[:search_publisher]) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year]) if params[:search_year] != ""
 
       else
         # single input box
         parse_keyword_phrase(params[:search][:phrase]) if params[:search_type] == "Keyword"
         add_title_constraint(params[:search][:phrase]) if params[:search_type] == "Title"
-        add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
-        add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
-        add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
-        # add_author_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
-        # add_editor_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
-        # add_publisher_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
+        # add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
+        # add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
+        # add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
+        add_author_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
+        add_editor_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
+        add_publisher_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
         add_date_constraint(params[:search][:phrase]) if params[:search_type] == "Year"
       end
 
