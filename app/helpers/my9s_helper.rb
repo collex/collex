@@ -54,7 +54,7 @@ module My9sHelper
   
   def get_image_url(url)
     if url == nil || url.length == 0
-      return '../images/lg-harrington.gif'
+      return DEFAULT_THUMBNAIL_IMAGE_PATH # '../images/lg-harrington.gif'
     end
     return url
   end

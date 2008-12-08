@@ -16,7 +16,9 @@ class ExhibitObject < ActiveRecord::Base
     hit = CachedResource.get_hit_from_uri(obj.uri)
       if hit != nil
         #str += "{ thumbnail: '#{hit['thumbnail']}', title: '#{hit['title']}' },\n"
-        str += "{ uri: '#{obj.uri}', thumbnail: '#{self.escape_quote(hit['thumbnail'])}', title: '#{self.escape_quote(hit['title'])}'},\n"
+        image = self.escape_quote(hit['thumbnail'])
+        image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == ""
+        str += "{ uri: '#{obj.uri}', thumbnail: '#{image}', title: '#{self.escape_quote(hit['title'])}'},\n"
       end
     }
     str += ']'
@@ -26,6 +28,6 @@ class ExhibitObject < ActiveRecord::Base
   def self.escape_quote(arr)
     return '' if arr == nil
     return '' if arr[0] == nil
-    return arr[0].gsub("'", "`") #TODO-PER: get the real syntax for this
+    return arr[0].gsub("'", "`") #TODO-PER: get the real syntax for this. We want to replace "single quote" with "backslash single quote"
   end
 end

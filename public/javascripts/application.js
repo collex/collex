@@ -528,27 +528,20 @@ function doAddTag(parent_id, uri, row_num, row_id)
 	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
 		row_id + ",tag_cloud_div",
 		"/results/add_tag,/tag/update_tag_cloud", 
-		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }) );
-}
-
-function focusAnnotation()
-{
-	document.getElementById('note_notes').focus();
+		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text' );
 }
 
 function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 {
-	new Effect.Appear('note-div', { duration: 0.5 }); 
-	moveObjectToJustBelowItsParent('note-div', parent_id);
-	
-	document.getElementById('note_uri').value = uri;
-	document.getElementById('note_row_num').value = row_num;
-	document.getElementById('note_row_id').value = row_id;
-	var existing_note = document.getElementById(curr_annotation_id).innerHTML;
+	var existing_note = $(curr_annotation_id).innerHTML;
 	existing_note = existing_note.gsub("<br />", "\n");
 	existing_note = existing_note.gsub("<br>", "\n");
-	document.getElementById('note_notes').value = existing_note;
-	setTimeout(focusAnnotation, 100);	// We need to delay setting the focus because the annotation isn't on the screen until the Effect.Appear has finished.
+
+	doSingleInputPrompt("Edit Annotation", 'Annotation:', 'note', parent_id, 
+		row_id,
+		"/results/set_annotation", 
+		$H({ uri: uri, row_num: row_num, full_text: getFullText(row_id), note: existing_note }), 'textarea',
+		$H({ width: 370, height: 100}) );
 }
 
 function tagFinishedUpdating()
@@ -560,22 +553,6 @@ function tagFinishedUpdating()
 			onFailure : function(resp) { alert("Oops, there's been an error."); }
 		});
 	}
-}
-
-function doAnnotationSubmit()
-{
-	var el_uri = document.getElementById('note_uri');
-	var el_row_num = document.getElementById('note_row_num');
-	var el_row_id = document.getElementById('note_row_id');
-	var el_note = document.getElementById('note_notes');
-	var note_value = encodeForUri(el_note.value);
-    Effect.Fade('note-div', { duration: 0.0 });
-	var full_text = getFullText(el_row_id.value);
-
-	new Ajax.Updater(el_row_id.value, "/results/set_annotation", {
-		parameters : "uri="+ encodeForUri(el_uri.value) + "&row_num=" + el_row_num.value + "&note=" + note_value + "&full_text=" + full_text,
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
 }
 
 function doRemoveObjectFromExhibit(exhibit_id, uri)
@@ -594,7 +571,7 @@ function doAddToExhibit(uri, index, row_id)
 		"link_" + row_id, 
 		row_id + ",exhibited_objects_container",
 		"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
-		$H({ uri: uri, index: index, row_id: row_id }), 
+		$H({ uri: uri, index: index, row_id: row_id }), 'select',
 		exhibit_names);
 }
 
@@ -637,7 +614,7 @@ function doSaveSearch(parent_id)
 	doSingleInputPrompt("Save Search", 'Name:', 'save_name', parent_id, 
 		"saved_search_name",
 		"/search/save_search", 
-		$H({ }) );
+		$H({ }), 'text' );
 }
 
 function setTagVisibility(zoom_level)

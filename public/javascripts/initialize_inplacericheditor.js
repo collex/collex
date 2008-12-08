@@ -130,7 +130,7 @@ function showIllustrationEditor(element_id)
 	dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
 	dlg.addTextArea('ill_text', 300, 100, 'text_only');
 	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object']);
-	dlg.addList('nines_object', list.list);
+	dlg.addList('nines_object', list.list, 'nines_only');
 
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
@@ -181,14 +181,14 @@ function _ninesObjectSelected2(uri)
 
 var CreateList = Class.create({
 	list : null,
-	initialize : function(gCollectedObjects, className, initial_selected_uri)
+	initialize : function(items, className, initial_selected_uri)
 	{
 		var This = this;
 		if (className != null && className != undefined)
 			This.list = "<table class='input_dlg_list " + className + "' >";
 		else
 			This.list = "<table class='input_dlg_list' >";
-		gCollectedObjects.each(function(obj) {
+		items.each(function(obj) {
 			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri == initial_selected_uri);
 		});
 		This.list += "</table>";

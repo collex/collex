@@ -10,6 +10,7 @@ InputDialog._win = null;
 InputDialog._form = null;
 InputDialog._table = null;
 InputDialog._extraButton = null;
+InputDialog._useRichEditor = true;
 
 InputDialog.prototype = {
 	initialize: function(element_id, submitCode)
@@ -70,37 +71,40 @@ InputDialog.prototype = {
 		this._win.show(true);
 		this._initData(dataHash);
 
-		var strButtons1 = "cut,copy,paste,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect";
-		var strButtons2 = "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,ninesobj,link,unlink,code,|,forecolor,backcolor,hr,removeformat,|,sub,sup,|,charmap,media";
-		if (this._extraButton != null)
+		if (this._useRichEditor)
 		{
-			strButtons1 = strButtons1.replace(this._extraButton.insertionPoint, this._extraButton.insertionPoint + ',' + this._extraButton.id);
-			strButtons2 = strButtons2.replace(this._extraButton.insertionPoint, this._extraButton.insertionPoint + ',' + this._extraButton.id);
+			var strButtons1 = "cut,copy,paste,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect";
+			var strButtons2 = "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,ninesobj,link,unlink,code,|,forecolor,backcolor,hr,removeformat,|,sub,sup,|,charmap,media";
+			if (this._extraButton != null)
+			{
+				strButtons1 = strButtons1.replace(this._extraButton.insertionPoint, this._extraButton.insertionPoint + ',' + this._extraButton.id);
+				strButtons2 = strButtons2.replace(this._extraButton.insertionPoint, this._extraButton.insertionPoint + ',' + this._extraButton.id);
+			}
+			
+			tinyMCE.init({
+				mode: "textareas",
+				theme: "advanced",
+				plugins : "style,advlink,media,contextmenu,paste,visualchars",
+				theme_advanced_buttons1 : strButtons1,
+				theme_advanced_buttons2 : strButtons2,
+				theme_advanced_buttons3: "",
+				theme_advanced_toolbar_location : "top",
+				theme_advanced_toolbar_align : "left",
+			    setup : function(ed) {
+			        // Add a custom button
+					if (this._extraButton != null)
+					{
+				        ed.addButton(this._extraButton.id, {
+				            title : this._extraButton.title,
+				            image : this._extraButton.image,
+				            onclick : function() {
+								eval(this._extraButton.onclick);
+				            }
+				        });
+					}
+			    }
+			});
 		}
-		
-		tinyMCE.init({
-			mode: "textareas",
-			theme: "advanced",
-			plugins : "style,advlink,media,contextmenu,paste,visualchars",
-			theme_advanced_buttons1 : strButtons1,
-			theme_advanced_buttons2 : strButtons2,
-			theme_advanced_buttons3: "",
-			theme_advanced_toolbar_location : "top",
-			theme_advanced_toolbar_align : "left",
-		    setup : function(ed) {
-		        // Add a custom button
-				if (this._extraButton != null)
-				{
-			        ed.addButton(this._extraButton.id, {
-			            title : this._extraButton.title,
-			            image : this._extraButton.image,
-			            onclick : function() {
-							eval(this._extraButton.onclick);
-			            }
-			        });
-				}
-		    }
-		});
 		
 		// TODO: This returns null for the width and height. How do you get the width?
 		//var w = _form.getStyle('width');
@@ -127,10 +131,12 @@ InputDialog.prototype = {
 		this._table.appendChild(wrapper);
 	},
 
-	addList: function(id, tbl)
+	addList: function(id, tbl, className)
 	{
 		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 		var wrapper = new Element('tr');
+		if (className != undefined)
+			wrapper.addClassName(className);
 		var wrapper2 = new Element('td', { colspan: 2 });
 		wrapper2.innerHTML = tbl;
 		wrapper.appendChild(wrapper2);
@@ -296,7 +302,11 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	actionElementIds, // The list of elements that should be updated by the ajax calls (comma separated)
 	actions, // The list of urls that should be called by Ajax (should be the same number as above)
 	hiddenDataHash, // Extra data that should be sent back to the server .eg.: $H({ key1: 'value1', key2: 'value2' })
-	selectValues	// If this is null, then an input field is created, if this is a hash, then a select field is created.
+	inputType,	// one of: 'text', 'select', or 'textarea'
+	options	// This is a hash that contains whatever is needed by the inputType
+		// text: null
+		// select: array of strings that become the choices. 
+		// textarea: { height: xx, width: yy }
 	)
 {
 	// put up a Prototype window type dialog.
@@ -308,14 +318,29 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 		dlg.addHidden(datum.key);
 	});
 	
-	if (selectValues == undefined || selectValues == null)
-		dlg.addTextInput(promptStr, promptId, 40);
-	else
-		dlg.addSelect(promptStr, promptId, selectValues);
+	var width = 400;
+	var height = 100;
+	
+	switch (inputType)
+	{
+		case 'text':
+			dlg.addTextInput(promptStr, promptId, 40);
+			break;
+		case 'select':
+			dlg.addSelect(promptStr, promptId, options);
+			break;
+		case 'textarea':
+			dlg.addTextArea(promptId, options.get('width'), options.get('height'));
+			dlg._useRichEditor = false;
+			width = options.get('width') + 10;
+			height = options.get('height') + 60;
+			break;
+	}
+		
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(referenceElementId);
-	dlg.show(titleStr, getX(el), getY(el), 400, 100, hiddenDataHash );
+	dlg.show(titleStr, getX(el), getY(el), width, height, hiddenDataHash );
 	setTimeout(function() { $(promptId).focus() }, 600);
 }
 
