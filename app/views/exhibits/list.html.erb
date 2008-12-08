@@ -3,10 +3,16 @@
 <h2>Choose an exhibit to view</h2>
 <table>
 <% for exhibit in @exhibits -%>
-<% name = "#{exhibit.title} by #{User.find(exhibit.user_id).fullname}" -%>
+<% owner = User.find(exhibit.user_id) -%>
 	<tr>
 		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
-		<td class="exhibit_link"><a href="/exhibits/<%= exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by&nbsp;<%= User.find(exhibit.user_id).fullname %></td>
+		<td class="exhibit_link"><a href="/exhibits/<%= exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by
+			<% if owner.link != nil && owner.link != "" -%>
+				<%= link_to(owner.fullname, owner.link) %>
+			<% else -%>
+				<%= owner.fullname %>
+			<% end -%>
+		</td>
 	</tr>
 <% end -%>
 </table>
