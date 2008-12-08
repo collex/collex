@@ -18,15 +18,15 @@
 					</div>
 					<div class="untagged_and_all_links">
 						<% if params[:view] == 'untagged' -%>
-						<span class="sidebar_tag_link_selected">Untagged</span>
+						<span class="sidebar_tag_link_selected">List All Untagged Objects</span>
 						<% else -%>
-						<span class="sidebar_tag_link"><%= link_to "Untagged", { :action => 'results', :view => 'untagged' } %></span>
+						<span class="sidebar_tag_link"><%= link_to "List All Untagged Objects", { :action => 'results', :view => 'untagged', :anchor => "top_of_results" } %></span>
 						<% end -%>
 						&nbsp;
 						<% if params[:view] == 'all_collected' -%>
-						<span class="sidebar_tag_link_selected">All Collected</span>
+						<span class="sidebar_tag_link_selected">List All Collected Objects</span>
 						<% else -%>
-						<span class="sidebar_tag_link"><%= link_to "All Collected", { :action => 'results', :view => 'all_collected' } %></span>
+						<span class="sidebar_tag_link"><%= link_to "List All Collected Objects", { :action => 'results', :view => 'all_collected', :anchor => "top_of_results" } %></span>
 						<% end -%>
 					</div>
 				</td>
