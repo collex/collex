@@ -178,7 +178,8 @@ InputDialog.prototype = {
 			wrapper.addClassName(className);
 		var el = new Element('textarea', { id: id, name: id });
 		el.setStyle({ width: width + 'px', height: height + 'px' });
-		wrapper.appendChild(el.wrap('td', { colspan: 2, style: 'text-align: center' }));
+		var td = Element.wrap(el, 'td', { colspan: 2, style: 'text-align: center' });
+		wrapper.appendChild(td);
 		this._table.appendChild(wrapper);
 		this._extraButton = extraButton;
 	},

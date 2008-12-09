@@ -54,12 +54,10 @@ var Widenable = {
  			wrapper: handler._wrapper,
  			ta: handler._ta,
  			w: handler._ta.offsetWidth,
- 			x: e.clientX,
+ 			x: e.clientX
  		};
- 		with (this.einfo) {
- 			ta.className += ' textarea-active';
- 			wrapper.className = 'textarea-wrapper';
- 		}
+		this.einfo.ta.className += ' textarea-active';
+		this.einfo.wrapper.className = 'textarea-wrapper';
  		this.oldmousemove = document.onmousemove;
  		this.oldmouseup = document.onmouseup;
  		document.onmousemove = function(e)
@@ -75,12 +73,10 @@ var Widenable = {
  	{
  		if (!this.einfo) 
  			return;
- 		with (this.einfo) {
- 			ta.className = ta.className.replace(/ *textarea-active/, '');
- 			wrapper.className = '';
-			var callbackFunction = $(ta).callbackFunction;
-			callbackFunction(ta.id, $(ta).getAttribute("element_id"), parseInt($(ta).getStyle('width')));
- 		}
+		this.einfo.ta.className = this.einfo.ta.className.replace(/ *textarea-active/, '');
+		this.einfo.wrapper.className = '';
+		var callbackFunction = $(this.einfo.ta).callbackFunction;
+		callbackFunction(this.einfo.ta.id, $(this.einfo.ta).getAttribute("element_id"), parseInt($(this.einfo.ta).getStyle('width')));
  		this.einfo = false;
  		document.onmousemove = this.oldmousemove;
  		document.onmouseup = this.oldmouseup;
