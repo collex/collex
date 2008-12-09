@@ -1,19 +1,19 @@
 <% current_page "Home" -%>
-<br /><br /><br /><br />
 <%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search' } ) %>
 <div align="center">
 <table>
 	<tr>
-		<td><input name="search_phrase" id="search_phrase" size="60"/></td>
-		<td><input type="submit" value="Search Now!" />
-			
-		</td>
+		<td><div id="welcome-to-nines"><b>Welcome to the new NINES!</b> <u><a href="#">Click here to learn more about our new features.</a></u></div></td>
 	</tr>
 	<tr>
-		<td><center><%= link_to 'About Searching in NINES', tab_about_path %></center>
+		<td><center><input name="search_phrase" id="search_phrase" size="60"/><input class="search-button" type="submit" value="Search Now!" /></center></td>
+	</tr>
+	<tr>
+		<td><center><b><%= link_to 'WHAT IS NINES?', tab_about_path %></b></center>
 		</td>
 	</tr>
 </table>
+<div id="home-instructions"><img src="/images/home-instructions.jpg"/></div>
 <div class="contributor-list">
 <div class="contributor-list-caption">When you search NINES, you get results from:</div>
 <table cellspacing="0px">

@@ -2,12 +2,15 @@
 /* home.css - Styles that apply to the site home page */
 
 .contributor-list {
-	margin-top: 5em;
 	border-top: 1px solid black;
 }
 
 .contributor-list-left-col {
 	border-right: 1px solid black;
+}
+
+.search-button {
+	margin-left: 5px;
 }
 
 .contributor-list-caption {
@@ -18,4 +21,20 @@
 
 .contributor-list td {
 	padding: 5px 20px 5px 20px;
+}
+
+#welcome-to-nines {
+	background: #f1de3e;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	margin-bottom: 25px;
+}
+
+#home-instructions {
+	margin-top: 25px;
+	margin-bottom: 5px;
+	border-top: 1px solid black;	
+	padding-top: 10px;
 }
