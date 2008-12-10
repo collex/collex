@@ -229,7 +229,7 @@ function showExhibitOutline(element_id)
 
 function initOutline(div_id)
 {
-	var outline_width = 300;
+	var outline_width = 370;
 	var outline_height = 400;
 	
 	var outer_win = $$('.tab-content-outline2');
