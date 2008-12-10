@@ -3,13 +3,14 @@
 <% # Set up all variables in advance to make the html code cleaner -%>
 <% illustration_id = illustration.id -%>
 <% url = illustration.image_url -%>
+<% link = illustration.link -%>
 <% if illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
 	url = CachedResource.get_image_from_uri(illustration.nines_object_uri)
+	link = CachedResource.get_link_from_uri(illustration.nines_object_uri)
 end -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
 <% illustration_position = illustration.position -%>
-<% link = illustration.link -%>
 <% illustration_type = illustration.illustration_type -%>
 
 <% if edit_mode -%>
