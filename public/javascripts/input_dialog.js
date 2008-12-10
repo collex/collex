@@ -32,7 +32,7 @@ InputDialog.prototype = {
 	{
 		var el = $(element_id);
 			
-		var elWrapper = el.wrap('a', { href: '#' });
+		var elWrapper = el.wrap('a');
 		el.writeAttribute('action', action);
 		el.writeAttribute('ajax_action_element_id', ajax_action_element_id);
 		if (strHoverClass != undefined) {
