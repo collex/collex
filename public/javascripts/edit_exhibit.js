@@ -12,10 +12,12 @@ function initializeElementEditing()
 	els.each(function(el) { Widenable.prepare(el, imgResized); });
 }
 
-function imgResized(illustration_id, element_id, width)
+function imgResized(illustration_id, width)
 {
-	new Ajax.Updater("element_"+element_id, "/my9s/change_img_width", {
-		parameters : { element_id: element_id, illustration_id: illustration_id, width: width },
+	var element = $(illustration_id).up('.element_block');
+	new Ajax.Updater(element.id, "/my9s/change_img_width",
+	{
+		parameters : { illustration_id: illustration_id, width: width },
 		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
@@ -256,7 +258,8 @@ function initOutline(div_id)
 		resizable: true
 	});
 
-	_exhibit_outline.getContent().update($(div_id));
+	var content = _exhibit_outline.getContent();
+	content.update($(div_id));
 	//_win.setConstraint(true, {left:10 - pos[0], right:30 - pos[1], top: 10 - pos[0], bottom:10 - pos[1]});
 	_exhibit_outline.show(false);
 }

@@ -384,16 +384,12 @@ class My9sController < ApplicationController
     end
     
     def change_img_width
-      element_id = params['element_id']
       illustration = params['illustration_id']
       arr = illustration.split('_')
       illustration_id = arr[arr.length-1].to_i
       width = params['width'].to_i
-      if illustration_id <= 0
-        illustration = ExhibitIllustration.factory(element_id, 1)
-      else
-        illustration = ExhibitIllustration.find(illustration_id)
-      end
+      illustration = ExhibitIllustration.find(illustration_id)
+      element_id = illustration.exhibit_element_id
       illustration.image_width = width
       illustration.save
      render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 

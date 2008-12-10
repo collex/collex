@@ -7,14 +7,40 @@
  * 
  */
 
+var _inplaceObjects = [];
+var _inplaceObjectsAlreadyLoaded = false;
+
+// Delay modifying the DOM until after the page has loaded because IE 7 gives the "internet explorer cannot open the internet site" message.
+ document.observe('dom:loaded', function() {
+ 	_inplaceObjects.each(function(obj) {
+		if (obj.type == 'illustration')
+			_initializeInplaceIllustrationEditor(obj.element_id, obj.action)
+		else
+			_initializeInplace(obj.element_id, obj.action, obj.setupMethod);
+	});
+	_inplaceObjectsAlreadyLoaded = true;
+ });
+
 function initializeInplaceRichEditor(element_id, action)
 {
-	_initializeInplace(element_id, action, 'showRichEditor');
+	if (!_inplaceObjectsAlreadyLoaded)
+	{
+		var obj = { element_id: element_id, action: action, setupMethod: 'showRichEditor', type: 'inplace' };
+		_inplaceObjects.push(obj);
+	}
+	else
+		_initializeInplace(element_id, action, 'showRichEditor');
 }
 
 function initializeInplaceHeaderEditor(element_id, action)
 {
-	_initializeInplace(element_id, action, 'showHeaderEditor');
+	if (!_inplaceObjectsAlreadyLoaded)
+	{
+		var obj = { element_id: element_id, action: action, setupMethod: 'showHeaderEditor', type: 'inplace' };
+		_inplaceObjects.push(obj);
+	}
+	else
+		_initializeInplace(element_id, action, 'showHeaderEditor');
 }
 
 function _initializeInplace(element_id, action, setupMethod)
@@ -32,6 +58,17 @@ function _initializeInplace(element_id, action, setupMethod)
 }
 
 function initializeInplaceIllustrationEditor(element_id, action)
+{
+	if (!_inplaceObjectsAlreadyLoaded)
+	{
+		var obj = { element_id: element_id, action: action, type: 'illustration' };
+		_inplaceObjects.push(obj);
+	}
+	else
+		 _initializeInplaceIllustrationEditor(element_id, action);
+}
+
+function _initializeInplaceIllustrationEditor(element_id, action)
 {
 	// We pass in <div id='illustration_YY' class="illustration_block"> as the element_id
 	// We want to use <div id="element_XX" class="element_block"> for the ajax call

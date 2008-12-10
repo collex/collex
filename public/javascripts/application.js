@@ -267,40 +267,40 @@ else
 }
 var yOffset = -5;
 
-function showPopup (targetObjectId, eventObj) {
-    if(eventObj) {
-	// hide any currently-visible popups
-	hideCurrentPopup();
-	// stop event from bubbling up any farther
-	eventObj.cancelBubble = true;
-	// move popup div to current cursor position 
-	// (add scrollTop to account for scrolling for IE)
-	var newXCoordinate = (eventObj.pageX)?eventObj.pageX + xOffset:eventObj.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
-	var newYCoordinate = (eventObj.pageY)?eventObj.pageY + yOffset:eventObj.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
-	moveObject(targetObjectId, newXCoordinate, newYCoordinate);
-	// and make it visible
-	if( changeObjectVisibility(targetObjectId, 'visible') ) {
-	    // if we successfully showed the popup
-	    // store its Id on a globally-accessible object
-	    window.currentlyVisiblePopup = targetObjectId;
-	    return true;
-	} else {
-	    // we couldn't show the popup, boo hoo!
-	    return false;
-	}
-    } else {
-	// there was no event object, so we won't be able to position anything, so give up
-	return false;
-    }
-} // showPopup
-
-function hideCurrentPopup() {
-    // note: we've stored the currently-visible popup on the global object window.currentlyVisiblePopup
-    if(window.currentlyVisiblePopup) {
-	changeObjectVisibility(window.currentlyVisiblePopup, 'hidden');
-	window.currentlyVisiblePopup = false;
-    }
-} // hideCurrentPopup
+//function showPopup (targetObjectId, eventObj) {
+//    if(eventObj) {
+//	// hide any currently-visible popups
+//	hideCurrentPopup();
+//	// stop event from bubbling up any farther
+//	eventObj.cancelBubble = true;
+//	// move popup div to current cursor position 
+//	// (add scrollTop to account for scrolling for IE)
+//	var newXCoordinate = (eventObj.pageX)?eventObj.pageX + xOffset:eventObj.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
+//	var newYCoordinate = (eventObj.pageY)?eventObj.pageY + yOffset:eventObj.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
+//	moveObject(targetObjectId, newXCoordinate, newYCoordinate);
+//	// and make it visible
+//	if( changeObjectVisibility(targetObjectId, 'visible') ) {
+//	    // if we successfully showed the popup
+//	    // store its Id on a globally-accessible object
+//	    window.currentlyVisiblePopup = targetObjectId;
+//	    return true;
+//	} else {
+//	    // we couldn't show the popup, boo hoo!
+//	    return false;
+//	}
+//    } else {
+//	// there was no event object, so we won't be able to position anything, so give up
+//	return false;
+//    }
+//} // showPopup
+//
+//function hideCurrentPopup() {
+//    // note: we've stored the currently-visible popup on the global object window.currentlyVisiblePopup
+//    if(window.currentlyVisiblePopup) {
+//	changeObjectVisibility(window.currentlyVisiblePopup, 'hidden');
+//	window.currentlyVisiblePopup = false;
+//    }
+//} // hideCurrentPopup
 
 
 
@@ -309,7 +309,7 @@ function hideCurrentPopup() {
 // ***********************
 
 // setup an event handler to hide popups for generic clicks on the document
-document.onclick = hideCurrentPopup;
+//document.onclick = hideCurrentPopup;
 
 function initializeHacks() {
     // this ugly little hack resizes a blank div to make sure you can click

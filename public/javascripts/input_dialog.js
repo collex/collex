@@ -24,6 +24,7 @@ InputDialog.prototype = {
 		this._form = new Element('form', { id: form_id, onsubmit:  submitCode});
 		this._table = new Element('table');
 		this._form.appendChild(this._table);
+		this._table.appendChild(new Element('tbody'));
 		this._useRichEditor = true;
 	},
 	
@@ -129,7 +130,7 @@ InputDialog.prototype = {
 			el.appendChild(new Element('option', { value: option}).update(option));
 		});
 		wrapper.appendChild(el.wrap('td'));
-		this._table.appendChild(wrapper);
+		this._table.down().appendChild(wrapper);
 	},
 
 	addList: function(id, tbl, className)
@@ -141,7 +142,7 @@ InputDialog.prototype = {
 		var wrapper2 = new Element('td', { colspan: 2 });
 		wrapper2.innerHTML = tbl;
 		wrapper.appendChild(wrapper2);
-		this._table.appendChild(wrapper);
+		this._table.down().appendChild(wrapper);
 	},
 	
 	addTextInput: function(label, id, size, className)
@@ -150,10 +151,11 @@ InputDialog.prototype = {
 		if (className != undefined)
 			wrapper.addClassName(className);
 		var el_label = new Element('label', { 'for': id} ).update(label);
-		wrapper.appendChild(el_label.wrap('td', { style: 'text-align: right;' }));
+		//wrapper.appendChild(el_label.wrap('td', { style: 'text-align: right;' }));
+		wrapper.appendChild(el_label.wrap('td'));
 		var el = new Element('input', { type: 'text', id: id, name: id, size: size});
 		wrapper.appendChild(el.wrap('td'));
-		this._table.appendChild(wrapper);
+		this._table.down().appendChild(wrapper);
 	},
 
 	addHr: function(className)
@@ -163,7 +165,7 @@ InputDialog.prototype = {
 			wrapper.addClassName(className);
 		var el = new Element('hr');
 		wrapper.appendChild(el.wrap('td', { colspan: 2 }));
-		this._table.appendChild(wrapper);
+		this._table.down().appendChild(wrapper);
 	},
 	
 	addHidden: function(id)
@@ -180,7 +182,7 @@ InputDialog.prototype = {
 		el.setStyle({ width: width + 'px', height: height + 'px' });
 		var td = Element.wrap(el, 'td', { colspan: 2, style: 'text-align: center' });
 		wrapper.appendChild(td);
-		this._table.appendChild(wrapper);
+		this._table.down().appendChild(wrapper);
 		this._extraButton = extraButton;
 	},
 

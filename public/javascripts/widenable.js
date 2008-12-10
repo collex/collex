@@ -15,7 +15,8 @@ var Widenable = {
 		// Wrap the existing element in a table and put the handler beside it.
 		var wrapper1 = target.wrap('td');
 		var wrapper2 = wrapper1.wrap('tr');
-		var wrapper = wrapper2.wrap('table');
+		var wrapper3 = wrapper2.wrap('tbody');
+		var wrapper = wrapper3.wrap('table');
 		var column = new Element('td');
  		var handler = new Element('span');
  		wrapper2.appendChild(column);
@@ -76,7 +77,7 @@ var Widenable = {
 		this.einfo.ta.className = this.einfo.ta.className.replace(/ *textarea-active/, '');
 		this.einfo.wrapper.className = '';
 		var callbackFunction = $(this.einfo.ta).callbackFunction;
-		callbackFunction(this.einfo.ta.id, $(this.einfo.ta).getAttribute("element_id"), parseInt($(this.einfo.ta).getStyle('width')));
+		callbackFunction(this.einfo.ta.id, parseInt($(this.einfo.ta).getStyle('width')));
  		this.einfo = false;
  		document.onmousemove = this.oldmousemove;
  		document.onmouseup = this.oldmouseup;
