@@ -147,6 +147,20 @@ class CachedResource < ActiveRecord::Base
     return get_hit_from_resource_id(cr.id)
   end
   
+  def self.get_image_from_uri(uri)
+    hit = CachedResource.get_hit_from_uri(uri)
+  	return nil unless hit
+    	
+    image = hit['image']
+  	if image.kind_of?(Array) && image.length > 0
+  	  return image[0]
+  	elsif image.kind_of?(String)
+  	  return image
+  	else
+  	  nil
+  	end
+  end
+  
   # overrides dynamic find method +find_or_create_by_uri+ so that it can take/return a list
   # TODO-PER: Not sure this is called anywhere.
   def self.resources_by_uri( uri )

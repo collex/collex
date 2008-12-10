@@ -4,10 +4,7 @@
 <% illustration_id = illustration.id -%>
 <% url = illustration.image_url -%>
 <% if illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
-	hit = CachedResource.get_hit_from_uri(illustration.nines_object_uri)
-	thumb = (hit == nil ? nil : hit['thumbnail'])
-	url = ""
-	url = thumb[0] if thumb != nil && thumb.length > 0
+	url = CachedResource.get_image_from_uri(illustration.nines_object_uri)
 end -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
