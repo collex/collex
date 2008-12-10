@@ -253,19 +253,19 @@ function moveObject2(objectId, newXCoordinate, newYCoordinate) {
 // store variables to control where the popup will appear relative to the cursor position
 // positive numbers are below and to the right of the cursor, negative numbers are above and to the left
 
-var agt=navigator.userAgent.toLowerCase()
-var is_ie  = agt.indexOf("msie") != -1
+//var agt=navigator.userAgent.toLowerCase()
+//var is_ie  = agt.indexOf("msie") != -1
 
 // internet explorer sucks and needs to be tricked into getting the right offset
-if (is_ie)
-{
-  var xOffset = 240;
-}
-else
-{
-  var xOffset = 30;
-}
-var yOffset = -5;
+//if (is_ie)
+//{
+//  var xOffset = 240;
+//}
+//else
+//{
+//  var xOffset = 30;
+//}
+//var yOffset = -5;
 
 //function showPopup (targetObjectId, eventObj) {
 //    if(eventObj) {
