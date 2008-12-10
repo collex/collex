@@ -11,18 +11,21 @@ class ExhibitObject < ActiveRecord::Base
   
   def self.get_collected_object_array(exhibit_id)
     objs = find_all_by_exhibit_id(exhibit_id)
-    str = "["
+    str = ""
     objs.each {|obj|
     hit = CachedResource.get_hit_from_uri(obj.uri)
       if hit != nil
         #str += "{ thumbnail: '#{hit['thumbnail']}', title: '#{hit['title']}' },\n"
         image = self.escape_quote(hit['thumbnail'])
         image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == ""
-        str += "{ uri: '#{obj.uri}', thumbnail: '#{image}', title: '#{self.escape_quote(hit['title'])}'},\n"
+        if str != ""
+          str += ",\n"
+        end
+        str += "{ uri: '#{obj.uri}', thumbnail: '#{image}', title: '#{self.escape_quote(hit['title'])}'}"
       end
     }
-    str += ']'
-    return str
+    
+    return '[' + str + ']'
   end
   
   def self.escape_quote(arr)

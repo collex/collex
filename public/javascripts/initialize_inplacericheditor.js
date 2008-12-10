@@ -25,22 +25,22 @@ function initializeInplaceRichEditor(element_id, action)
 {
 	if (!_inplaceObjectsAlreadyLoaded)
 	{
-		var obj = { element_id: element_id, action: action, setupMethod: 'showRichEditor', type: 'inplace' };
+		var obj = { element_id: element_id, action: action, setupMethod: showRichEditor, type: 'inplace' };
 		_inplaceObjects.push(obj);
 	}
 	else
-		_initializeInplace(element_id, action, 'showRichEditor');
+		_initializeInplace(element_id, action, showRichEditor);
 }
 
 function initializeInplaceHeaderEditor(element_id, action)
 {
 	if (!_inplaceObjectsAlreadyLoaded)
 	{
-		var obj = { element_id: element_id, action: action, setupMethod: 'showHeaderEditor', type: 'inplace' };
+		var obj = { element_id: element_id, action: action, setupMethod: showHeaderEditor, type: 'inplace' };
 		_inplaceObjects.push(obj);
 	}
 	else
-		_initializeInplace(element_id, action, 'showHeaderEditor');
+		_initializeInplace(element_id, action, showHeaderEditor);
 }
 
 function _initializeInplace(element_id, action, setupMethod)
@@ -79,7 +79,7 @@ function _initializeInplaceIllustrationEditor(element_id, action)
 	if (elements.length > 1)
 		ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
 
-	InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', 'showIllustrationEditor');
+	InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', showIllustrationEditor);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -113,8 +113,11 @@ function selectionChanged(currSelection)
 	}
 }
 
-function showIllustrationEditor(element_id)
+function showIllustrationEditor(event)
 {
+	var This = $(this).down();
+	var element_id = This.id;
+	
 	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 	// That is, el = <div id='illustration_YY' class="illustration_block">
 
@@ -251,8 +254,11 @@ CreateList.prototype._select = function(item)
 	$('nines_object').value = $(item).getAttribute('uri');
 }
 
-function showRichEditor(element_id)
+function showRichEditor(event)
 {
+	var This = $(this).down();
+	var element_id = This.id;
+	
 	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 	// That is, el = <div id='text_YY'>
 
@@ -288,10 +294,14 @@ function showRichEditor(element_id)
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
 	dlg.show("Enter Text", getX(el), getY(el), 600, 300, values );
+	return false;
 }
 
-function showHeaderEditor(element_id)
+function showHeaderEditor(event)
 {
+	var This = $(this).down();
+	var element_id = This.id;
+
 	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 	// That is, el = <div id='header_YY'>
 

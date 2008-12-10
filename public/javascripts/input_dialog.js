@@ -37,11 +37,11 @@ InputDialog.prototype = {
 		el.writeAttribute('ajax_action_element_id', ajax_action_element_id);
 		if (strHoverClass != undefined) {
 			elWrapper.writeAttribute('hoverclass', strHoverClass);
-			elWrapper.writeAttribute('onmouseover', 'InputDialog.prototype._editorHover(this);');
-			elWrapper.writeAttribute('onmouseout', "InputDialog.prototype._editorExitHover(this);");
+			elWrapper.observe('mouseover', InputDialog.prototype._editorHover);
+			elWrapper.observe('mouseout', InputDialog.prototype._editorExitHover);
 		}
 		if (strShowEditor != undefined)
-			elWrapper.writeAttribute('onclick', strShowEditor + "('" + element_id + "'); return false;");
+			elWrapper.observe('click', strShowEditor);
 	},
 	
 	show: function(title, left, top, width, height, dataHash)
@@ -252,17 +252,17 @@ InputDialog.prototype = {
 		Windows.closeAllModalWindows();
 	},
 	
-	_editorHover: function(This)
+	_editorHover: function(ev)
 	{
-		var el = $(This);
+		var el = $(this);
 		var hover = el.readAttribute('hoverClass');
 		var div = el.down();
 		div.addClassName(hover);
 	},
 	
-	_editorExitHover: function(This)
+	_editorExitHover: function(ev)
 	{
-		var el = $(This);
+		var el = $(this);
 		var hover = el.readAttribute('hoverClass');
 		var div = el.down();
 		div.removeClassName(hover);
