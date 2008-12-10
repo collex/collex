@@ -152,6 +152,7 @@ class CachedResource < ActiveRecord::Base
   	return nil unless hit
     	
     image = hit['image']
+    image = hit['thumbnail'] if image == nil
   	if image.kind_of?(Array) && image.length > 0
   	  return image[0]
   	elsif image.kind_of?(String)
