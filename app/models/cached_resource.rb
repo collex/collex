@@ -150,17 +150,44 @@ class CachedResource < ActiveRecord::Base
   def self.get_image_from_uri(uri)
     hit = CachedResource.get_hit_from_uri(uri)
   	return nil unless hit
-    	
-    image = hit['image']
-    image = hit['thumbnail'] if image == nil
-  	if image.kind_of?(Array) && image.length > 0
-  	  return image[0]
-  	elsif image.kind_of?(String)
-  	  return image
-  	else
-  	  nil
-  	end
+    return self.get_image_from_hit(hit)
   end
+  
+  def self.get_image_from_hit(hit)
+    image = self.solr_obj_to_str(hit['image'])
+    if image == nil
+      image = self.get_thumbnail_from_hit(hit)
+    end
+    return image
+  end
+  
+  def self.get_thumbnail_from_uri(uri)
+   hit = CachedResource.get_hit_from_uri(uri)
+    return nil unless hit
+    return self.get_thumbnail_from_hit(hit)
+  end
+  
+  def self.get_thumbnail_from_hit(hit)
+    image =  self.solr_obj_to_str(hit['thumbnail'])
+    return image if image != nil
+
+    site = Site.find_by_code(hit['archive'])
+    return nil if site == nil
+    
+    return self.solr_obj_to_str(site.thumbnail)
+  end
+  
+  private
+  def self.solr_obj_to_str(obj)
+    if obj.kind_of?(Array) && obj.length > 0
+      return obj[0]
+    elsif obj.kind_of?(String)
+      return obj
+    else
+      nil
+    end
+  end
+  public
   
   # overrides dynamic find method +find_or_create_by_uri+ so that it can take/return a list
   # TODO-PER: Not sure this is called anywhere.

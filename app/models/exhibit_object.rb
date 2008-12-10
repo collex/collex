@@ -15,8 +15,7 @@ class ExhibitObject < ActiveRecord::Base
     objs.each {|obj|
     hit = CachedResource.get_hit_from_uri(obj.uri)
       if hit != nil
-        #str += "{ thumbnail: '#{hit['thumbnail']}', title: '#{hit['title']}' },\n"
-        image = self.escape_quote(hit['thumbnail'])
+        image = CachedResource.get_thumbnail_from_hit(hit)
         image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == ""
         if str != ""
           str += ",\n"

@@ -63,11 +63,8 @@ module My9sHelper
     if illustration.illustration_type == ExhibitIllustration.get_illustration_type_image()
       "<img src='#{get_image_url(illustration.image_url)}' height='16px' />"
     elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
-      hit = CachedResource.get_hit_from_uri(illustration.nines_object_uri)
-      thumb = (hit == nil ? nil : hit['thumbnail'])
-      url = ""
-      url = thumb[0] if thumb != nil && thumb.length > 0
-      "<img src='#{get_image_url(url)}' height='16px' />"
+      thumb = CachedResource.get_thumbnail_from_uri(illustration.nines_object_uri)
+      "<img src='#{get_image_url(thumb)}' height='16px' />"
     elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_text()
       "..."
     end

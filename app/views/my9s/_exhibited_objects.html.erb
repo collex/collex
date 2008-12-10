@@ -23,7 +23,7 @@
 			<tr class="exhibit_tree_<%= exhibit.id %>" >
 				<td></td>
 				<td>
-					<img src="<%= get_image_url(hit['thumbnail']) %>" alt="" height="15"/>
+					<img src="<%= get_image_url(CachedResource.get_thumbnail_from_hit(hit)) %>" alt="" height="15"/>
 				</td>
 				<td>
 					<%= hit['title'] %>

@@ -131,24 +131,10 @@ private
     label
   end
   
-  def thumbnail_image_tag(item, options = {})
-    if item.kind_of?(Hash)
-      options = {:align => 'left'}.merge(options)
-      site_thumbnail = site(item['archive']).thumbnail.strip rescue ''
-      site_url = site_thumbnail.length > 0 ? site_thumbnail : false
-      item_thumbnail = item['thumbnail'][0].strip rescue ''
-      item_url = item_thumbnail.length > 0 ? item_thumbnail : false
-      path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
-      tag "img", options.merge({:alt => item['title'], :src => path, :id => "thumbnail_#{item['uri']}"})
-    else  
-      options = {:align => 'left'}.merge(options)
-      site_thumbnail = site(item.archive).thumbnail.strip rescue ''
-      site_url = site_thumbnail.length > 0 ? site_thumbnail : false
-      item_thumbnail = item.thumbnail.strip rescue ''
-      item_url = item_thumbnail.length > 0 ? item_thumbnail : false
-      path = item_url ? item_url : (site_url ? site_url : DEFAULT_THUMBNAIL_IMAGE_PATH)
-      tag "img", options.merge({:alt => item.title, :src => path, :id => "thumbnail_#{item.uri}"})
-    end
+  def thumbnail_image_tag(hit, options = {})
+    options = {:align => 'left'}.merge(options)
+    thumb = CachedResource.get_thumbnail_from_hit(hit)
+    tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}"})
   end
 
   # +value+ has any ampersands changed to +&amp;+
