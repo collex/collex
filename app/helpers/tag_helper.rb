@@ -1,5 +1,5 @@
 module TagHelper
-  def tag_cloud(list, bucket_size, selection)
+  def tag_cloud(list, bucket_size, selection, controller)
     xm = Builder::XmlMarkup.new(:indent => 2)
     list.each do |item|
       html = {}
@@ -10,7 +10,7 @@ module TagHelper
         end
       else
         xm.span :class => "cloud#{size}" do
-          xm << link_to_tag(item.first, item.last, false, html)
+          xm << link_to_tag(item.first, item.last, false, controller, html)
         end
       end
     end
@@ -61,7 +61,7 @@ end
   
   private
   # +value+ has any ampersands changed to +&amp;+
-  def link_to_tag(value, frequency, show_freq, html_options = {})
+  def link_to_tag(value, frequency, show_freq, controller, html_options = {})
      if frequency
         html_options[:title] = pluralize(frequency, 'object')
      end
@@ -72,6 +72,6 @@ end
      else
        visible = escaped_value
      end
-     link_to visible, { :action => 'results', :view => 'tag', :tag => escaped_value }, html_options
+     link_to visible, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value }, html_options
   end
 end

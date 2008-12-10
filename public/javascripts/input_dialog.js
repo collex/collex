@@ -248,7 +248,7 @@ InputDialog.prototype = {
 				onFailure : function(resp) { alert("Oops, there's been an error."); }
 			});
 		}
-				
+		
 		Windows.closeAllModalWindows();
 	},
 	

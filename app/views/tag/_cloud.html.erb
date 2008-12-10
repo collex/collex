@@ -1,4 +1,4 @@
-<% #parameters: cloud_freq, bucket_size, selected_tag %>
+<% #parameters: cloud_freq, bucket_size, selected_tag, controller_for_tags %>
 <center>
   <div class="tag_filter">
 	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
@@ -10,7 +10,7 @@
 <div class="content">
 
   <div class="tagcloud" id="tagcloud">
-  	  <%= tag_cloud(cloud_freq, bucket_size, selected_tag) %>
+  	  <%= tag_cloud(cloud_freq, bucket_size, selected_tag, controller_for_tags) %>
   </div>
 </div>
 <% #end #cache_timeout block %>

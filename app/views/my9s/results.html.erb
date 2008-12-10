@@ -14,7 +14,7 @@
 					<% selected_tag = "" -%>
 					<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
 					<div id="tag_cloud_div">
-						<%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag } %>
+						<%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s'  } %>
 					</div>
 					<div class="untagged_and_all_links">
 						<% if params[:view] == 'untagged' -%>
