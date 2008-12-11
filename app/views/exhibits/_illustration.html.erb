@@ -16,7 +16,7 @@ end -%>
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
 	<% ajax_action = "'/my9s/edit_row_of_illustrations,/my9s/refresh_outline'" -%>
-	<% ajax_div_id = "'element_#{element_id},full_window'" -%>
+	<% ajax_div_id = "'element_#{element_id},full-window-content'" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 <% else -%>
 	<% element_id = -1 -%>

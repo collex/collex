@@ -4,13 +4,18 @@
 
 <% form_for(@exhibit_element) do |f| %>
   <p>
-    <b>Exhibit section</b><br />
-    <%= f.text_field :exhibit_section_id %>
+    <b>Exhibit page</b><br />
+    <%= f.text_field :exhibit_page_id %>
   </p>
 
   <p>
     <b>Position</b><br />
     <%= f.text_field :position %>
+  </p>
+
+  <p>
+    <b>Border type enum</b><br />
+    <%= f.text_field :border_type_enum %>
   </p>
 
   <p>

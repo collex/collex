@@ -233,78 +233,72 @@ class My9sController < ApplicationController
       exhibit = Exhibit.find(id)
       
       case verb
-      when "up"
-        exhibit.move_page_up(page)
-        page = page - 1
-      when "down"
-        exhibit.move_page_down(page)
-        page = page + 1
+#      when "up"
+#        exhibit.move_page_up(page)
+#        page = page - 1
+#      when "down"
+#        exhibit.move_page_down(page)
+#        page = page + 1
       when "insert"
         exhibit.insert_page(page)
-      when "delete"
-        exhibit.delete_page(page)
-        page = page - 1 if page == exhibit.exhibit_pages.length
+#      when "delete"
+#        exhibit.delete_page(page)
+#        page = page - 1 if page == exhibit.exhibit_pages.length
       end
 
       redirect_to :action => 'edit_exhibit', :id => id, :page => page
     end
     
-    def edit_section
+#    def edit_section
+#      page_id = params[:page].to_i
+#      section_pos = params[:section].to_i
+#      verb = params[:verb]
+#      
+#      page = ExhibitPage.find(page_id)
+#      
+#      case verb
+#      when "up"
+#        page.exhibit_sections[section_pos-1].move_higher()
+#      when "down"
+#        page.exhibit_sections[section_pos-1].move_lower()
+#      when "insert"
+#        page.insert_section(section_pos)
+#      when "delete"
+#        page.exhibit_sections[section_pos-1].remove_from_list()
+#        page.exhibit_sections[section_pos-1].destroy
+#      when "add_border"
+#        page.exhibit_sections[section_pos-1].has_border = 1
+#        page.exhibit_sections[section_pos-1].save
+#      when "remove_border"
+#        page.exhibit_sections[section_pos-1].has_border = 0
+#        page.exhibit_sections[section_pos-1].save
+#      end
+#
+#      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
+#    end
+    
+    def edit_element
       page_id = params[:page].to_i
-      section_pos = params[:section].to_i
+      element_pos = params[:element].to_i
       verb = params[:verb]
-      
+
       page = ExhibitPage.find(page_id)
       
       case verb
       when "up"
-        page.exhibit_sections[section_pos-1].move_higher()
+        page.move_element_up(element_pos)
       when "down"
-        page.exhibit_sections[section_pos-1].move_lower()
+        page.move_element_down(element_pos)
       when "insert"
-        page.insert_section(section_pos)
+        page.insert_element(element_pos)
       when "delete"
-        page.exhibit_sections[section_pos-1].remove_from_list()
-        page.exhibit_sections[section_pos-1].destroy
-      when "add_border"
-        page.exhibit_sections[section_pos-1].has_border = 1
-        page.exhibit_sections[section_pos-1].save
-      when "remove_border"
-        page.exhibit_sections[section_pos-1].has_border = 0
-        page.exhibit_sections[section_pos-1].save
-      end
-
-      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
-    end
-    
-    def edit_element
-      page_id = params[:page].to_i
-      section_id = params[:section].to_i
-      element_pos = params[:element].to_i
-      verb = params[:verb]
-
-      section = ExhibitSection.find(section_id)
-      should_redraw = true
-      
-      case verb
-      when "up"
-        section.move_element_up(element_pos)
-      when "down"
-        section.move_element_down(element_pos)
-      when "insert"
-        section.insert_element(element_pos)
-      when "delete"
-        should_redraw = section.delete_element(element_pos)
+        page.delete_element(element_pos)
       when "layout"
-        section.exhibit_elements[element_pos-1].change_layout(params[:type])
+        page.exhibit_elements[element_pos-1].change_layout(params[:type])
       end
 
       # We need to get the records again because the local variables are probably stale.
-      if should_redraw
-        render :partial => 'edit_exhibit_section', :locals => { :section => ExhibitSection.find(section_id), :page => ExhibitPage.find(page_id), :element_count => 1 }
-      else
-        render :text => ""
-      end
+      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
     end
     
     def edit_row_of_illustrations
@@ -433,20 +427,19 @@ class My9sController < ApplicationController
       
       exhibit = Exhibit.find(exhibit_id)
       element = ExhibitElement.find(element_id)
-      section = ExhibitSection.find(element.exhibit_section_id)
-      page = ExhibitPage.find(section.exhibit_page_id)
+      page = ExhibitPage.find(element.exhibit_page_id)
       is_editing_border = false
       
       case verb
       when "insert_element"
-        new_element = section.insert_element(element.position+1)
+        new_element = page.insert_element(element.position+1)
         element_id = new_element.id
       when "move_element_up"
-        section.move_element_up(element.position)
+        page.move_element_up(element.position)
       when "move_element_down"
-        section.move_element_down(element.position)
+        page.move_element_down(element.position)
       when "delete_element"
-        section.delete_element(element.position)
+        page.delete_element(element.position)
         element_id = -1
 
       when "insert_border"
@@ -467,7 +460,7 @@ class My9sController < ApplicationController
         page.delete_border(section)
   
       when "insert_page"
-        exhibit.insert_page(page.position)
+        exhibit.insert_page(page.position+1)
       end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
@@ -486,9 +479,11 @@ class My9sController < ApplicationController
           element_id = id_num
         end
       else
-        # We were passed a section id
-        exhibit = Exhibit.find_by_section_id(params[:section])
-        element_id = -1
+        # We were passed a page id
+        page = ExhibitPage.find(params[:page])
+        element_pos = params[:element].to_i
+        exhibit = Exhibit.find(page.exhibit_id)
+        element_id = page.exhibit_elements[element_pos-1].id
       end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 92) do
+ActiveRecord::Schema.define(:version => 94) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(:version => 92) do
     t.text     "element_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "border_type_enum",            :limit => 10, :precision => 10, :scale => 0
+    t.integer  "exhibit_page_id",             :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "exhibit_illustrations", :force => true do |t|

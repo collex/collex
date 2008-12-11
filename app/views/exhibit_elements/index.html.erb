@@ -1,29 +1,14 @@
 <h1>All Exhibit Elements</h1>
 
-<table border='1px solid black' cellspacing=0>
-  <tr>
-  	<th>ID</th>
-	<th>Exhibit</th>
-	<th>page</th>
-    <th>section</th>
-    <th>Position</th>
-    <th>Layout type</th>
-    <th>Element text</th>
-	<th>Illustration list</th>
-  </tr>
-
 <% records = [] -%>
 <% for exhibit_element in @exhibit_elements
 	record = {}
-	exhibit_section = ExhibitSection.find_by_id(exhibit_element.exhibit_section_id)
 	exhibit = nil
-	page = nil
-	if exhibit_section != nil
-		page = ExhibitPage.find_by_id(exhibit_section.exhibit_page_id)
-		if page != nil
-			exhibit = Exhibit.find_by_id(page.exhibit_id)
-		end
+	page = ExhibitPage.find_by_id(exhibit_element.exhibit_page_id)
+	if page != nil
+		exhibit = Exhibit.find_by_id(page.exhibit_id)
 	end
+
 	record[:exhibit_element] = exhibit_element
 	record[:exhibit_element_id] = exhibit_element.id
 	if exhibit == nil
@@ -40,21 +25,14 @@
 		record[:page_pos] = page.position
 	end
 
-	record[:section_id] = exhibit_element.exhibit_section_id
-	if exhibit_section == nil
-		record[:section] = 'Orphan'
-		record[:section_pos] = -1
-	else
-		record[:section] = "(pos: #{exhibit_section.position})"
-		record[:section_pos] = exhibit_section.position
-	end
-
     record[:position] = exhibit_element.position
     record[:layout_type] = exhibit_element.exhibit_element_layout_type
     record[:thumbnail] = element_text_thumbnail(exhibit_element)
 	record[:illustration_list] = ""
 	exhibit_element.exhibit_illustrations.each { |ill| record[:illustration_list] += "#{ill['id']}," }
-
+	
+	record[:new_page] = exhibit_element.exhibit_page_id
+	record[:border] = exhibit_element.border_type_enum
 	records.insert(-1, record)
 end -%>
 <% records = records.sort { |x,y|
@@ -66,10 +44,6 @@ end -%>
 		-1
 	elsif x[:page_pos] > y[:page_pos]
 		1
-	elsif x[:section_pos] < y[:section_pos]
-		-1
-	elsif x[:section_pos] > y[:section_pos]
-		1
 	elsif x[:position] < y[:position]
 		-1
 	elsif x[:position] > y[:position]
@@ -80,16 +54,28 @@ end -%>
 }
 -%>
 
+<table border='1px solid black' cellspacing=0>
+  <tr>
+  	<th>ID</th>
+	<th>Exhibit</th>
+	<th>page</th>
+    <th>Position</th>
+    <th>Layout type</th>
+    <th>Element text</th>
+	<th>Illustration list</th>
+	<th>border</th>
+  </tr>
+
 <% for record in records %>
   <tr>
     <td><%= record[:exhibit_element_id] %></td>
     <td><%= record[:exhibit] %></td>
-    <td><%= record[:page] %></td>
-    <td><%= record[:section_id] %><%= record[:section] %></td>
+    <td><%= record[:new_page] %>/<%= record[:page] %></td>
     <td><%= record[:position] %></td>
     <td><%= record[:layout_type] %></td>
     <td><%= record[:thumbnail] %></td>
     <td><%= record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
+    <td><%= record[:border] %></td>
     <td><%= link_to 'Edit', edit_exhibit_element_path(record[:exhibit_element]) %></td>
     <td><%= link_to 'Destroy', record[:exhibit_element], :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
@@ -104,19 +90,11 @@ end -%>
 		<br />
 <%end -%>
 
-<h1>Pages # sections:</h1>
+<h1>Pages # elements:</h1>
 <% pages = ExhibitPage.find(:all)
 	for page in pages -%>
-		<%= "#{page.id}: #{page.exhibit_sections.length}"  %>
+		<%= "#{page.id}: #{page.exhibit_elements.length}"  %>
 		<%= link_to 'Destroy', page, :confirm => 'Are you sure?', :method => :delete %>
-		<br />
-<%end -%>
-
-<h1>Sections # elements:</h1>
-<% sections = ExhibitSection.find(:all)
-	for section in sections -%>
-		<%= "#{section.id}: #{section.exhibit_elements.length}" %>
-		<%= link_to 'Destroy', section, :confirm => 'Are you sure?', :method => :delete %>
 		<br />
 <%end -%>
 

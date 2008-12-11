@@ -31,23 +31,9 @@ function elementTypeChanged(div, element_id, newType)
 	else
 		$("add_image_" + element_id).hide();
 
-	new Ajax.Updater(div, "/my9s/change_element_type", {
-		parameters : "element_id="+ element_id + "&type=" + newType,
-		evalScripts : true,
-		onComplete : setTimeout("initializeElementEditing()", 1000),
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
-}
-
-function insertIllustration(div, element_id, illustration_position)
-{
-	new Ajax.Updater(div, "/my9s/insert_illustration", {
-		parameters : "element_id="+ element_id + "&position=" + illustration_position,
-		evalScripts : true,
-		onComplete : setTimeout("initializeElementEditing()", 1000),
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
-}
+	var params = { element_id: element_id, type: newType };
+	doAjaxLink(div+",full-window-content", "/my9s/change_element_type,/my9s/refresh_outline", params);
+ }
 
 function doAjaxLink(div, url, params)
 {

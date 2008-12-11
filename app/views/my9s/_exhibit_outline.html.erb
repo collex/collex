@@ -22,43 +22,41 @@
 	<% element_count = 1 -%>
 	<li><%= tree_node( "#{page.position}", "outline", "exhibit_outline_text", "toggle_by_id", exhibit.id, :open ) %></li>
 	<ul id='outline_<%= "p#{page.position}" %>' class="outline_tree_elements">
-	<% for section in page.exhibit_sections -%>
-		<div class="outline_section_with<%= 'out' if section.has_border == 0 %>_border">
-			<% for element in section.exhibit_elements -%>
-				<li class="outline_element<%= " outline_tree_element_selected" if (is_first == true && element_id_selected.to_i == -1) || (element_id_selected.to_i == element.id.to_i) %>" id='outline_element_<%= element.id %>'>
-					<div class="outline_right_controls">
-						<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
-						<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
-						&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %></span>
-					</div>
-					<span class="count"><%= link_to_function element_count, "selectLine('outline_element_#{element.id}')" %></span>
-					<% element_count = element_count + 1 -%>
-					<% is_first = false -%>
-					<span onclick="selectLine('outline_element_<%= element.id %>')">
-					<% if element.exhibit_element_layout_type == 'text' -%>
-						<%= element_text_thumbnail(element) %>
-					<% elsif element.exhibit_element_layout_type == 'header' -%>
-						<span class="exhibit_outline_header"><b><big><%=h element.element_text %></big></b></span>
-					<% elsif element.exhibit_element_layout_type == 'pics' -%>
-						<% illustrations = element.exhibit_illustrations -%>
-						<%= "[Row of pictures: none specified]" if illustrations.length == 0 %>
-						<% for illustration in illustrations -%>
-						<%= element_pic_thumbnail_illustration(illustration) %>
-						<% end -%>
-					<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
-						<%= element_pic_thumbnail(element) %>
-						<%= element_text_thumbnail(element) %>
-					<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
-						<%= element_text_thumbnail(element) %>
-						<%= element_pic_thumbnail(element) %>
-					<% else -%>
-						Error: unknown type
-					<% end # type of element -%>
-					</span>
-				</li>
-			<% end # each element -%>
+	<% for element in page.exhibit_elements -%>
+		<div class="outline_section_with_border">
+			<li class="outline_element<%= " outline_tree_element_selected" if (is_first == true && element_id_selected.to_i == -1) || (element_id_selected.to_i == element.id.to_i) %>" id='outline_element_<%= element.id %>'>
+				<div class="outline_right_controls">
+					<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
+					<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
+					&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %></span>
+				</div>
+				<span class="count"><%= link_to_function element_count, "selectLine('outline_element_#{element.id}')" %></span>
+				<% element_count = element_count + 1 -%>
+				<% is_first = false -%>
+				<span onclick="selectLine('outline_element_<%= element.id %>')">
+				<% if element.exhibit_element_layout_type == 'text' -%>
+					<%= element_text_thumbnail(element) %>
+				<% elsif element.exhibit_element_layout_type == 'header' -%>
+					<span class="exhibit_outline_header"><b><big><%=h element.element_text %></big></b></span>
+				<% elsif element.exhibit_element_layout_type == 'pics' -%>
+					<% illustrations = element.exhibit_illustrations -%>
+					<%= "[Row of pictures: none specified]" if illustrations.length == 0 %>
+					<% for illustration in illustrations -%>
+					<%= element_pic_thumbnail_illustration(illustration) %>
+					<% end -%>
+				<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+					<%= element_pic_thumbnail(element) %>
+					<%= element_text_thumbnail(element) %>
+				<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+					<%= element_text_thumbnail(element) %>
+					<%= element_pic_thumbnail(element) %>
+				<% else -%>
+					Error: unknown type
+				<% end # type of element -%>
+				</span>
+			</li>
 		</div>
-	<% end # each section -%>
+	<% end # each element -%>
 	</ul>
 <% end # each page -%>
 </ul>

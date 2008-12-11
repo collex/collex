@@ -21,7 +21,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :exhibit_elements
 
-  map.resources :exhibit_sections
+  #map.resources :exhibit_sections
 
   map.resources :exhibit_pages
 
