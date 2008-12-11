@@ -1,7 +1,9 @@
+<div id="full-window-content">
+<div id="outline-toolbar">
 <%= link_to_function("[New Section]", "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'New Section' }) %>
 <%= link_to_function("[New Page]", "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'New Page' }) %>
 <%= link_to_function("[Edit Border]", "doEnterEditBorder(#{exhibit.id} );", { :title => 'Edit the border surrounding the selected section', :id => 'edit_border' }) %>
-&nbsp;
+</div>
 
 <div id="border_controls" class="border_controls" style="display: none; text-align:right;" >
 	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_top_of_border_up', #{exhibit.id} );", { :title => 'Move Top of Border Up' }) %>
@@ -60,6 +62,7 @@
 	</ul>
 <% end # each page -%>
 </ul>
+</div>
 
 <% if is_editing_border -%>
 <script language="JavaScript">

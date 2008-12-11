@@ -93,7 +93,7 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 		var id = allElements[0].id;
 		var arr = id.split("_");
 		var element_id = arr[arr.length-1];
-		new Ajax.Updater("full_window", "/my9s/modify_outline", {
+		new Ajax.Updater("full-window-content", "/my9s/modify_outline", {
 			parameters : { verb: verb, element_id: element_id, exhibit_id: exhibit_id },
 			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
@@ -115,7 +115,7 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 		var id = allElements[0].id;
 		var arr = id.split("_");
 		var element_id = arr[arr.length-1];
-		new Ajax.Updater("full_window", "/my9s/modify_outline_page", {
+		new Ajax.Updater("full-window-content", "/my9s/modify_outline_page", {
 			parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
 			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
@@ -222,44 +222,21 @@ var _exhibit_outline = null;
 
 function showExhibitOutline(element_id)
 {
-	$(_exhibit_outline).show();
+	_exhibit_outline.show();
 	if (element_id > 0)
 		selectLine('outline_element_' + element_id);
 }
 
 function initOutline(div_id)
 {
-	var outline_width = 370;
-	var outline_height = 400;
-	
-	var outer_win = $$('.tab-content-outline2');
-	var x = getX(outer_win[0]);
-	var y = getY(outer_win[0]);
-	var w = parseInt(outer_win[0].getStyle('width'));
-	var left = x + w - outline_width - 55;
-	var top = y + 25;
-	
-	_exhibit_outline = new Window({
-		title: 'OUTLINE',
-		//className: 'darkX',
-		className: "collex",
-		//className: "mac_os_x",
-		width: null,
-		height: null,
-		destroyOnClose: false,
-		left: left,
-		top: top,
-		width: outline_width,
-		height: outline_height,
-		showEffect: Element.show,
-		hideEffect: Element.hide,
-		maximizable: false,
-		minimizable: true,
-		resizable: true
+	//create Dialog:
+	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
+		width: "320px",
+		draggable: true,
+		fixedcenter: true,
+		visible: false
 	});
 
-	var content = _exhibit_outline.getContent();
-	content.update($(div_id));
-	//_win.setConstraint(true, {left:10 - pos[0], right:30 - pos[1], top: 10 - pos[0], bottom:10 - pos[1]});
-	_exhibit_outline.show(false);
+	_exhibit_outline.setHeader("OUTLINE");
+	_exhibit_outline.render();
 }

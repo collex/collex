@@ -221,10 +221,10 @@
 .outline_section_without_border {
 }
 
-.illustration_control_border {
+/*.illustration_control_border {
 	border: 4px solid gray;
 }
-
+*/
 a.edit_exhibit_widget {
 	border: 0px;
 	color: white;

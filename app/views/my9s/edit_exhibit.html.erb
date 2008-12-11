@@ -12,15 +12,8 @@
 <script language="JavaScript">
 document.observe('dom:loaded', function() {
 	if (window.initOutline)
-	{
-		initOutline("full_window");
-		//var fw = $("full_window");
-		//var outer_dlg = fw.up(".dialog");
-		var outer_dlg = $("full_window").up(".dialog");
-		outer_dlg.setStyle({ position: 'fixed' });
-		$(_exhibit_outline).hide();
-	}
-});
+			initOutline("full_window");
+	});
 </script>
 
 <div id="search-main">

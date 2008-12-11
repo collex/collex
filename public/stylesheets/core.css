@@ -6,6 +6,14 @@ td {
 	border: 1px dotted red;
 }*/
 
+
+#mainContent{
+	background-color: #999;
+	background-image: url('../images/bodybg2.jpg');
+	background-repeat: repeat;
+top:0px;
+}
+
 /* Styles that create the tabs */
 .tabs {
 	font-size: 15px;
@@ -378,15 +386,6 @@ margin-left:0px;
 }
 #leftPanel div{
 padding:0px;
-}
-#mainContent{
-/*width:850px;*/
-	background-color: #999;
-	background-image: url('../images/bodybg2.jpg');
-	background-repeat: repeat;
-position: relative;
-/*left:230px;*/
-top:0px;
 }
 
 #leftPanel{	
