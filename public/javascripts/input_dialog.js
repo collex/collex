@@ -46,7 +46,7 @@ InputDialog.prototype = {
 	
 	show: function(title, left, top, width, height, dataHash)
 	{
-			modalDialog.show(title, dataHash.element_id, this._form);
+			modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height);
 			this._initData(dataHash);				
 	},
 	
@@ -131,13 +131,12 @@ InputDialog.prototype = {
 			wrapper.addClassName(className);
 		var el_label = new Element('label', { 'for': id} ).update(label);
 		wrapper.appendChild(el_label.wrap('td'));
-		var el = new Element('select', { id: id, name: id, align: 'top' /*, onchange: change*/ });
+		var el = new Element('select', { id: id, name: id, align: 'top', onchange: change });
 		options.each(function(option) {
 			el.appendChild(new Element('option', { value: option}).update(option));
 		});
 		wrapper.appendChild(el.wrap('td'));
 		this._table.down().appendChild(wrapper);
-		el.observe('change', change);
 	},
 
 	addList: function(id, tbl, className)

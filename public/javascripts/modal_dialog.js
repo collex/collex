@@ -42,15 +42,17 @@ ModalDialog.prototype = {
 		this.dialog.destroy();
 	},	
 	
-	show: function(title, targetElement, form) {
+	show: function(title, targetElement, form, left, top, width, height) {
 
 		var modalDialogDiv = new Element("div", { id: 'modal_dialog' });
 		$$('body').first().appendChild(modalDialogDiv);
 
 		//create Dialog:
 		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
-			width:"725px",
-			fixedcenter:true,
+			x: left,
+			y: top,
+			width: width,
+			height: height,
 			modal: true
 		});
 
