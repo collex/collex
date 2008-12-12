@@ -33,7 +33,7 @@ font-size:13pt;
 }
 
 #aboutContent p {
-	font-size:9pt;
+	font-size:10pt;
 	padding-left: 3px;
 	text-align:center;
 }
@@ -63,7 +63,7 @@ border:none;
 }
 
 #aboutContent span {
-	font-size: 1.3em;
+	font-size: 1.2em;
 	color:maroon;
 }
 
@@ -160,6 +160,7 @@ background-color:white;
 }
 
 
+
 .about-banner-column img {
  margin-left: 15px;
  margin-bottom:-3px;
@@ -234,6 +235,7 @@ margin-top:38px;
 	margin-top: 0px;
 	margin-left:45px;
 	margin-right:20px;
+	font-size:13pt;
 	/*width:1000px;*/
 }
 
