@@ -1,9 +1,9 @@
 module My9sHelper
   def down_char
-    "&dArr;"
+    "&darr;"
   end
   def up_char
-    "&uArr;"
+    "&uarr;"
   end
   def del_char
     "&times;"
@@ -15,10 +15,10 @@ module My9sHelper
     "&Delta;"
   end
   def left_char
-    "&lArr;"
+    "&larr;"
   end
   def right_char
-    "&rArr;"
+    "&rarr;"
   end
   def element_bullet
     "&para;"
