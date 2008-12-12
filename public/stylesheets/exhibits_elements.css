@@ -51,6 +51,10 @@ h3 {
 	margin-right:0.08em;
 }
 
+.exhibit_first {
+	padding-bottom: 2em;
+}
+
 .exhibit_header {
 	color:#999999;
 	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
