@@ -194,8 +194,9 @@ class ExhibitPage < ActiveRecord::Base
   end
   
   def delete_element(element_pos)
-    exhibit_elements[element_pos-1].remove_from_list()
-    exhibit_elements[element_pos-1].destroy
+    element = ExhibitElement.find(exhibit_elements[element_pos-1].id)  # fetch it again to be sure it is fresh: otherwise the wrong illustrations may be attached.
+    element.remove_from_list()
+    element.destroy
     return false
   end
 end
