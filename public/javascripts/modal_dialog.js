@@ -45,12 +45,13 @@ ModalDialog.prototype = {
 	show: function(title, targetElement, form) {
 
 		var modalDialogDiv = new Element("div", { id: 'modal_dialog' });
-		$('mainContent').appendChild(modalDialogDiv);
+		$$('body').first().appendChild(modalDialogDiv);
 
 		//create Dialog:
 		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
 			width:"725px",
-			fixedcenter:true
+			fixedcenter:true,
+			modal: true
 		});
 
 		//set up buttons for the Dialog and wire them
