@@ -3,7 +3,7 @@
 
 .tag_minor_nav a.here {
 color:black;
-font-size: 14pt;
+font-size: 1.3em;
 background-color:white;
 padding:2px;
 }
@@ -18,6 +18,7 @@ padding:2px;
 #about-main {
 
 margin: 0px 20px 0px 20px;
+font-size:13pt;
 }
 
 /* Main About Page graphics */
@@ -79,7 +80,7 @@ background-color:#E0E0E0;
 background-color:white;
 margin-top:20px;
 margin-bottom:40px;
-width: 180px;
+width: 190px;
 padding:10px;
 border-left:black dotted 1px;
 border-top:black dotted 1px;
@@ -120,7 +121,7 @@ background-color:#E0E0E0;
 #leftContentColumn {
 background-color:#E0E0E0;
 margin: 50px 15px 10px 0px;
-width: 200px;
+width: 210px;
 }
 
 .leftColumn{
@@ -171,7 +172,7 @@ border:maroon solid 1px;
 
 .about-tools-banner-column {
 	margin-top:12px;
-	margin-left:50px;
+	margin-left:60px;
 	margin-bottom:30px;
 	padding-left: 1px;
 	width: 250px;
@@ -217,7 +218,7 @@ color:maroon;
 }
 
 .about-community-banner-column p {
-margin-top: -2px;
+margin-top: -8px;
 margin-left: 5px;
 margin-right:5px;
 padding: 1px;
@@ -247,7 +248,7 @@ padding:4px;
 margin-top: -110px;
 margin-left:200px;
 margin-right:50px;
-font-size:12pt;
+font-size:13pt;
 
 }
 
@@ -255,7 +256,7 @@ font-size:12pt;
 margin-top: 225px;
 margin-left:200px;
 margin-right:50px;
-font-size:12pt;
+font-size:13pt;
 
 }
 
@@ -288,13 +289,13 @@ margin-left: 140px;
 margin-top: -160px;
 
 font-weight:bold;
-font-size:12pt;
+font-size:13pt;
 padding: 22px;
 }
 
 
 #toolsHeader {
-margin:30px 100px 10px 30px;
+margin:30px 100px 10px 60px;
 width:875px;
 }
 
@@ -302,6 +303,7 @@ width:875px;
 margin-top: 380px;
 margin-left:50px;
 margin-right:50px;
+font-size:13pt;
 }
 
 img.inset {
@@ -313,10 +315,11 @@ border:gray 1px solid;
 margin-top: -130px;
 margin-left:190px;
 margin-right:50px;
+font-size:13pt;
 }
 
 #communityContent td{
-font-size:11pt;
+font-size:12pt;
 text-align:center;
 width:340px;
 height:250px;
@@ -371,7 +374,7 @@ margin-top: -1.5em;
 .grayBox {
 margin-top:30px;
 background-color:#E0E0E0;
-font-size:11pt;
+font-size:13pt;
 padding:.9em;
 /*width:875px;*/
 }
@@ -388,12 +391,13 @@ margin-left: 5px;
 }
 
 #about-main ul li {
-padding: 4px;
+padding: 5px;
 }
 
 p.header {
 margin-top:40px;
 border-bottom:gray 1px solid;
+font-weight:bold;
 }
 
 img .grayBorder {
