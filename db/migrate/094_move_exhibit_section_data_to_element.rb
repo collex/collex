@@ -1,3 +1,6 @@
+class ExhibitSection < ActiveRecord::Base
+end
+
 class MoveExhibitSectionDataToElement < ActiveRecord::Migration
   def self.up
     # Add a default border value .
