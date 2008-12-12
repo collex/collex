@@ -10,7 +10,7 @@ class MoveExhibitSectionDataToElement < ActiveRecord::Migration
     elements = ExhibitElement.find(:all)
     for element in elements
       element.border_type_enum = 0
-      if element.exhibit_section_id >= 1
+      if element.exhibit_section_id != nil  # If there were a mix of new and old style objects, then this might not have been used.
         section = ExhibitSection.find_by_id(element.exhibit_section_id)
         element.exhibit_page_id = section.exhibit_page_id
   
