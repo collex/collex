@@ -35,7 +35,7 @@ end -%>
 	<% elsif wrapper_type == 'edit' -%>
 		<% # We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
 			<table><tr>
-			<% if illustration_position > 1 -%>
+			<% if part_of_row && illustration_position > 1 -%>
 				<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"  class="edit_exhibit_widget"><img src="../images/left-image-arrow.gif" alt="" /></a></td>
 			<% end -%>
 			
@@ -80,7 +80,7 @@ end -%>
 		</div> <% # The illustration control border -%>
 		</td>	<% # The middle column containing the content and the image control stuff -%>
 		
-		<% if illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
+		<% if part_of_row && illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
 			<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" class="edit_exhibit_widget" ><img src="../images/right-image-arrow.gif" alt="" /></a></td>
 		<% end -%>
 		</tr></table>
