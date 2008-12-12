@@ -62,6 +62,7 @@ document.observe('dom:loaded', function() {
 			<div id="edit_exhibit_page">
 				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page } %>
 			</div>
+			<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
 		<% else # if page is nil -%>
 			<%= link_to "[insert page]", { :action => 'edit_page', :id => @exhibit.id, :page => 1, :verb => 'insert'}, { :title => 'Create first page' } %>
 		<% end # if page != nil -%>
