@@ -1,4 +1,5 @@
 <% element_count = 1 -%>
+
 <div id="current_page" style="display:none;"><%= page.id %></div>
 
 <div class="edit_exhibit_box edit_exhibit_section_box">
@@ -21,7 +22,7 @@
 						<span class="edit_exhibit_element_number"><%= element_count %></span>
 						<% element_count = element_count + 1 -%>
 					</a>
-					<select onchange='elementTypeChanged("element_<%= element.id %>", <%= element.id %>, this.options[this.selectedIndex].value);'>
+					<select class="select_element_type" onchange='elementTypeChanged("element_<%= element.id %>", <%= element.id %>, this.options[this.selectedIndex].value);'>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Picture then Text</option>
@@ -47,3 +48,12 @@
 		
 	</div> <% # Editing Section inner box %>
 </div>
+
+<% if top != nil -%>
+<script language="JavaScript">
+	var target_el = "target_" + <%= top %>;
+	var element_el= "element_" + <%= top %>;
+	scroll_to_target(target_el, element_el);
+</script>
+<% end -%>
+

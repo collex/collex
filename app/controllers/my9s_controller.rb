@@ -274,7 +274,7 @@ class My9sController < ApplicationController
 #        page.exhibit_sections[section_pos-1].save
 #      end
 #
-#      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
+#      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id), :top => nil }
 #    end
     
     def edit_element
@@ -298,7 +298,7 @@ class My9sController < ApplicationController
       end
 
       # We need to get the records again because the local variables are probably stale.
-      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
+      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id), :top => nil }
     end
     
     def edit_row_of_illustrations
@@ -349,7 +349,7 @@ class My9sController < ApplicationController
     
     def redraw_exhibit_page
       page_id = params[:page]
-      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id) }
+      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id), :top => nil }
     end
     
     def edit_text
@@ -483,6 +483,16 @@ class My9sController < ApplicationController
       end
       
       render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
+    end
+    
+    def find_page_containing_element
+      div_id = params[:element]
+      arr = div_id.split('-')
+      el_num = arr[arr.length-1].to_i
+      element = ExhibitElement.find(el_num)
+      page = ExhibitPage.find(element.exhibit_page_id)
+        
+      render :partial => 'edit_exhibit_page', :locals => { :page => page, :top => el_num }
     end
     
     def modify_outline_page

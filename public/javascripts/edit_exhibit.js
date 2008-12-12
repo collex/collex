@@ -185,12 +185,29 @@ function selectLine(id)
 	// now scroll the page to show the element selected.
 	var arr = id.split('_');
 	var el_id = arr[arr.length-1];
-	//location.replace('#top-of-' + el_id);
-	var distance = y_distance_that_the_element_is_not_in_view('top-of-' + el_id);
 
-	// move the scroll position the amount needed.
-	window.scrollBy(0, distance);
-	new Effect.Highlight("element_" + el_id);
+	var target_el = 'top-of-' + el_id;
+	if ($(target_el) != null)
+	{
+		scroll_to_target(target_el, "element_" + el_id);
+	}
+	else
+	{
+		// The element must be on another page. Go get that.
+		new Ajax.Updater("edit_exhibit_page", "/my9s/find_page_containing_element", {
+			parameters : { element: target_el },
+			evalScripts : true,
+			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+	}
+}
+
+function scroll_to_target(target_el, element_el)
+{
+		var distance = y_distance_that_the_element_is_not_in_view(target_el);
+	
+		// move the scroll position the amount needed.
+		window.scrollBy(0, distance);
+		new Effect.Highlight(element_el);
 }
 
 function y_distance_that_the_element_is_not_in_view(element_id)

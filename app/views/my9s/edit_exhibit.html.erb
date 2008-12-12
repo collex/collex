@@ -60,7 +60,7 @@ document.observe('dom:loaded', function() {
 			<%= link_to "[Preview]", :controller => 'exhibits', :action => 'view', :id => preview_id %><br />
 			<br /><br /><br />
 			<div id="edit_exhibit_page">
-				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page } %>
+				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page, :top => nil } %>
 			</div>
 			<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
 		<% else # if page is nil -%>
