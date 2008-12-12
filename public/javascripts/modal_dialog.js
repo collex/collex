@@ -48,7 +48,7 @@ ModalDialog.prototype = {
 		$('mainContent').appendChild(modalDialogDiv);
 
 		//create Dialog:
-		this.dialog = new YAHOO.widget.Dialog(modalDialogDiv.id, {
+		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
 			width:"725px",
 			fixedcenter:true
 		});
@@ -68,14 +68,14 @@ ModalDialog.prototype = {
 		this.targetElement = targetElement;
 		this.formID = form.id;
 
-		// this is a hack for IE6 compatibility, render the dialog late so that it works properly. 
-		//document.getElementById("modal_dialog").style.display = "block";
-		this.dialog.render();
-		
 		// var element = new Element("div", { id: 'descriptionContainer' });
 		// form.appendChild(element);
 		$("modal_dialog").appendChild(form);			
 			
+		// this is a hack for IE6 compatibility, render the dialog late so that it works properly. 
+		//document.getElementById("modal_dialog").style.display = "block";
+		this.dialog.render();
+		
 		
 		var textAreas = $$('#'+this.formID+' textarea');
 		
