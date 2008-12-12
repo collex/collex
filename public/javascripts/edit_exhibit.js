@@ -35,6 +35,14 @@ function elementTypeChanged(div, element_id, newType)
 	doAjaxLink(div+",full-window-content", "/my9s/change_element_type,/my9s/refresh_outline", params);
  }
 
+function doAjaxLinkConfirm(div, url, params)
+{
+	if (!confirm('You are about to delete this element. Do you want to continue?')) 
+		return;
+	
+	doAjaxLink(div, url, params);
+}
+
 function doAjaxLink(div, url, params)
 {
 	// If we have a comma separated list, we want to send the alert synchronously to each action
@@ -71,6 +79,9 @@ function doAjaxLink(div, url, params)
 
 function doAjaxLinkOnSelection(verb, exhibit_id)
 {
+	if (verb == 'delete_element' && !confirm('You are about to delete this element. Do you want to continue?')) 
+		return;
+
 	// this is called from the outline, so we also need to update the regular page, too.
 	
 	var allElements = $$(".outline_tree_element_selected");
