@@ -443,21 +443,17 @@ class My9sController < ApplicationController
         element_id = -1
 
       when "insert_border"
-        page.insert_border(section)
+        page.insert_border(element)
       when "move_top_of_border_up"
-        page.move_top_of_border_up(section)
-        is_editing_border = true
+        is_editing_border = page.move_top_of_border_up(element)
       when "move_top_of_border_down"
-        page.move_top_of_border_down(section)
-        is_editing_border = true
+        is_editing_border = page.move_top_of_border_down(element)
       when "move_bottom_of_border_up"
-        page.move_bottom_of_border_up(section)
-        is_editing_border = true
+        is_editing_border = page.move_bottom_of_border_up(element)
       when "move_bottom_of_border_down"
-        page.move_bottom_of_border_down(section)
-        is_editing_border = true
+        is_editing_border = page.move_bottom_of_border_down(element)
       when "delete_border"
-        page.delete_border(section)
+        page.delete_border(element)
   
       when "insert_page"
         exhibit.insert_page(page.position+1)

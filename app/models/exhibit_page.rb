@@ -4,98 +4,152 @@ class ExhibitPage < ActiveRecord::Base
   
   has_many :exhibit_elements, :order => :position, :dependent=>:destroy
 
-  def insert_border(section)
-#    section.has_border = 1
-#    section.save
+  def insert_border(element)
+      element.set_border_type('start_border')
   end
 
+  private
+  # NOTE: Because the :order interface is one based, it is difficult to keep track of when there is an
+  # off by one error. Therefore the following convention has been used:
+  # variables named "pos" or "position" are one based and should be used to store values in the database.
+  # variables named "i" or "index" are zero based and should be used in all array indexes.
+  
+  def has_border(pos)
+    elements = self.exhibit_elements
+    return elements[pos-1].get_border_type() != 'no_border'
+  end
+  
+  def find_top_of_border(pos)
+    # We are either at the top now or at a continuation.
+    # This shouldn't be called if we aren't in a border. But if it is, then return -1. 
+    # There should always be a start above a continuation, but if not, then the highest continuation is returned.
+    elements = self.exhibit_elements
+    i = pos-1
+    
+    return -1 if elements[i].get_border_type() == 'no_border'
+    
+    while i >= 0
+      return i if elements[i].get_border_type() == 'start_border'
+      return i+1  if elements[i].get_border_type() == 'no_border'
+      i = i - 1
+    end
+    return 0  # we got to the top, so that is the start of the border.
+  end
+  
+  def find_bottom_of_border(pos)
+    # We are either at the top or at a continuation.
+    # We are looking for anything except a continuation and we want to return the last continuation.
+    # If we are erroneously called while not in a border, then return -1
+    elements = self.exhibit_elements
+    i = pos-1
+    
+    return -1 if elements[i].get_border_type() == 'no_border'
+    i = i+1 # We start at the next element because the current one could be a start. That's ok for the first element.
+
+    while i < self.exhibit_elements.length
+      return i-1 if elements[i].get_border_type() != 'continue_border'
+      i = i + 1
+    end
+    return self.exhibit_elements.length-1 # There must have been continues all the way to the bottom, so the bottom is the last one.
+  end
+
+  def get_top_border_elements(pos)
+    i = find_top_of_border(pos)
+    return [ nil, nil, nil ] if i < 0
+    el1 = (i > 0) ? self.exhibit_elements[i-1] : nil
+    el2 = self.exhibit_elements[i]
+    el3 = (i < self.exhibit_elements.length-1) ? self.exhibit_elements[i+1] : nil
+    return [el1, el2, el3]
+  end
+  
+  def get_bottom_border_elements(pos)
+    i = find_bottom_of_border(pos)
+    return [ nil, nil, nil, nil ] if i < 0
+    el1 = (i > 0) ? self.exhibit_elements[i-1] : nil
+    el2 = self.exhibit_elements[i]
+    el3 = (i < self.exhibit_elements.length-1) ? self.exhibit_elements[i+1] : nil
+    el4 = (i < self.exhibit_elements.length-2) ? self.exhibit_elements[i+2] : nil
+    return [el1, el2, el3, el4]
+  end
+  
+  public
  
-#  def insert_section(pos)
-#    new_section = ExhibitSection.create(:has_border => true, :exhibit_page_id => id)
-#    new_section.insert_at(pos)
-#    new_section.insert_element(1)
-#  end
+  def move_top_of_border_down(element)
+    els = get_top_border_elements(element.position)
 
-  def move_top_of_border_down(section)
-    # insert a section above the current one, then add the first element in this section to that one.
-    # Then remove that element from this one.
-    # NOTE: If there is only one element in the section, this degenerates into just removing the border.
-#    if section.exhibit_elements.length == 1
-#      delete_border(section)
-#    elsif section.exhibit_elements.length > 0
-#      new_section = ExhibitSection.create(:has_border => false, :exhibit_page_id => section.exhibit_page_id)
-#      new_section.insert_at(section.position)
-#      
-#      element = section.exhibit_elements[0]
-#      element.remove_from_list()
-#      element.exhibit_section_id = new_section.id
-#      element.position = 1
-#      element.save
-#      
-#      section.delete_if_empty()
-#    end
+    if els[1]
+      els[1].set_border_type('no_border')
+    end
+    
+    if els[2]
+      els[2].set_border_type('start_border')
+    end
+    
+    return has_border(element.position)
   end
 
-  def move_bottom_of_border_up(section)
-    #insert a section below the current one, then add the last element in this section to that one.
-    #NOTE: If there is only one element in the section, this degenerates into just deleting the border.
-#    if section.exhibit_elements.length == 1
-#      delete_border(section)
-#    elsif section.exhibit_elements.length > 0
-#      new_section = ExhibitSection.create(:has_border => false, :exhibit_page_id => section.exhibit_page_id)
-#      new_section.insert_at(section.position+1)
-#      
-#      element = section.exhibit_elements[section.exhibit_elements.length-1]
-#      element.remove_from_list()
-#      element.exhibit_section_id = new_section.id
-#      element.position = 1
-#      element.save
-#
-#      section.delete_if_empty()
+  def move_bottom_of_border_up(element)
+    els = get_bottom_border_elements(element.position)
+    
+#    if els[0]
+#      els[0].set_border_type('start_border')
 #    end
+    
+    if els[1]
+      els[1].set_border_type('no_border')
+    end
+    
+    return has_border(element.position)
   end
 
-  def move_top_of_border_up(section)
-    # find the element just above this one and switch it from its section to this one.
-    # NOTE: if it is the only element in that section, then delete that section, too.
-    # NOTE: if this is the first section on the page, then we do nothing.
-#    if section.position > 1
-#      loser_section = exhibit_sections[section.position-2]
-#      if loser_section.exhibit_elements.length > 0
-#        element = loser_section.exhibit_elements[loser_section.exhibit_elements.length-1]
-#        element.remove_from_list()
-#        element.exhibit_section_id = section.id
-#        element.insert_at(1)
-#        element.save()
-#      end
-#      
-#      # If there is now an empty section, delete it
-#      loser_section.delete_if_empty()
-#    end
+  def move_top_of_border_up(element)
+    els = get_top_border_elements(element.position)
+    
+    if els[0]
+      els[0].set_border_type('start_border')
+    end
+
+    if els[1]
+      els[1].set_border_type('continue_border')
+    end
+    
+    return has_border(element.position)
   end
 
-  def move_bottom_of_border_down(section)
-    # find the element just below this one and switch it from its section to this one.
-    # NOTE: if it is the only element in that section, then delete that section, too.
-    # NOTE: if this is the last section on the page, then we do nothing.
-#    if section.position < exhibit_sections.length
-#      loser_section = exhibit_sections[section.position]
-#      if loser_section.exhibit_elements.length > 0
-#        element = loser_section.exhibit_elements[0]
-#        element.remove_from_list()
-#        element.exhibit_section_id = section.id
-#        element.insert_at(section.exhibit_elements.length)
-#        element.save()
-#      end
-#      
-#      # If there is now an empty section, delete it
-#      loser_section.delete_if_empty()
-#    end
+  def move_bottom_of_border_down(element)
+    els = get_bottom_border_elements(element.position)
+    
+    
+    if els[2]
+      swap = els[2].get_border_type()
+      els[2].set_border_type('continue_border')
+      if els[3]
+        els[3].set_border_type(swap)
+      end
+    end
+    
+    return has_border(element.position)
   end
 
-  def delete_border(section)
-#    section.has_border = 0
-#    section.save
+  def delete_border(element)
+    els = get_top_border_elements(element.position)
+    els2 = get_bottom_border_elements(element.position)
+    
+    top_el = els[1]
+    bottom_el = els2[1]
+    
+    if top_el == nil || bottom_el == nil
+      return
+    end
+    
+    index_start = top_el.position - 1 
+    index_end = bottom_el.position - 1
+    
+    elements = self.exhibit_elements
+    while index_start <= index_end
+      elements[index_start].set_border_type('no_border')
+      index_start = index_start + 1
+    end
   end
 
   def move_element_up(element_pos)

@@ -87,4 +87,39 @@ module My9sHelper
     label << "</span>"
     label << "<span class='#{class_name}'>" + "Page " + page_num + "</span>"
   end  
+  
+  def create_border_div(element, border_active, border_class)
+    # This creates either an open div tag with a border, nothing, or a close div tag .
+    # If this is the first element in a section, then is_first is returned true .
+    close_div = "</div>\n"
+    open_div = "<div class='#{border_class}'>\n"
+    border_type = element.get_border_type()
+    if border_type == "start_border" && border_active == true
+      html = close_div + open_div
+      border_active = true
+      is_first = true
+    elsif border_type == "start_border" && border_active == false
+      html = open_div
+      border_active = true
+      is_first = true
+    elsif border_type == "continue_border" && border_active == true
+      html = ""
+      border_active = true
+      is_first = false
+    elsif border_type == "continue_border" && border_active == false
+      html = open_div
+      border_active = true
+      is_first = true
+    elsif border_type == "no_border" && border_active == true
+      html = close_div
+      border_active = false
+      is_first = true
+    elsif border_type == "no_border" && border_active == false
+      html = ""
+      border_active = false
+      is_first = true
+    end
+    
+    return { :is_first => is_first, :border_active => border_active, :html => html };
+  end
 end

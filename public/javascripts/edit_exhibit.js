@@ -95,6 +95,8 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 
 function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 {
+	if (verb == 'delete_page' && !confirm('You are about to delete page number ' + page_num + '. Do you want to continue?')) 
+		return;
 	var allElements = $$(".outline_tree_element_selected");
 	if (allElements.length == 1)
 	{
@@ -128,7 +130,7 @@ function doEnterEditBorder(exhibit_id)
 		
 		var section = allElements[0].up();
 		// If the section doesn't have a border, add one automatically.
-		if (section.hasClassName("outline_section_without_border"))
+		if (section.hasClassName("outline_section_with_border") == false)
 		{
 			doAjaxLinkOnSelection('insert_border', exhibit_id);
 			return;

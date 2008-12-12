@@ -10,18 +10,19 @@ class ExhibitElement < ActiveRecord::Base
   
   def get_border_type
     case border_type_enum
-      when 0: return "continue"
+      when 0: return "no_border"
       when 1: return "start_border"
-      when 2: return "start_no_border"
+      when 2: return "continue_border"
     end
   end
   
   def set_border_type(border_type)
     case border_type
-      when "continue": self.border_type_enum = 0
+      when "no_border": self.border_type_enum = 0
       when "start_border": self.border_type_enum = 1
-      when "start_no_border": self.border_type_enum = 2
+      when "continue_border": self.border_type_enum = 2
     end
+    save()
   end
   
   def change_layout(new_layout)
