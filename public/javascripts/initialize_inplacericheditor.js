@@ -154,7 +154,8 @@ function showIllustrationEditor(event)
 	// We also need to set the hidden fields on our form. This is the mechanism
 	// for passing back the context to the controller.
 	values['ill_illustration_id'] = element_id;
-
+	values['element_id'] = element_id; 
+	
 	// First construct the dialog
 	var dlg = new InputDialog(element_id);
     dlg.addHidden("ill_illustration_id");

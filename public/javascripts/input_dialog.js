@@ -46,6 +46,12 @@ InputDialog.prototype = {
 	
 	show: function(title, left, top, width, height, dataHash)
 	{
+			modalDialog.show(title, dataHash.element_id, this._form);
+			this._initData(dataHash);				
+	},
+	
+	oldshow: function(title, left, top, width, height, dataHash)
+	{
 //		var w = _table.getStyle('width') + 10;
 //		var h = _form.getStyle('height');
 		

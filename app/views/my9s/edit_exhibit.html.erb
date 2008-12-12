@@ -10,11 +10,32 @@
 	<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit, :element_id_selected => -1, :is_editing_border => false } %>
 </div>
 <script language="JavaScript">
+var modalDialog = null;
 document.observe('dom:loaded', function() {
 	if (window.initOutline)
 			initOutline("full_window");
+	
+	modalDialog = new ModalDialog();
 	});
 </script>
+
+
+<!-- <div id="rich_text_editor_dialog" style="display:none">
+	<div class="hd">Editing Text</div>
+	<div class="bd">
+		<form id="rich_text_editor_form" name="rich_text_editor_form" method="post" action="../editor/assets/post.php">
+			<p><textarea name="value" id="value"></textarea></p>
+			<div id="descriptionContainer"></div>
+			
+			<p><input id="submitButton" type="submit" /></p>
+			
+		</form>
+	</div>
+</div> -->
+
+<div id="modal_dialog" style="display:none">
+	<div id="descriptionContainer"></div>
+</div>
 
 <div id="search-main">
 	<% if !is_logged_in? -%>
