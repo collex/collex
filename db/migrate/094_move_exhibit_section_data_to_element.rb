@@ -1,7 +1,7 @@
-class ExhibitSection < ActiveRecord::Base
-end
-
 class MoveExhibitSectionDataToElement < ActiveRecord::Migration
+  class ExhibitSection < ActiveRecord::Base
+  end
+
   def self.up
     # Add a default border value .
     # Find what page the elements are on by looking at their section .
@@ -10,14 +10,16 @@ class MoveExhibitSectionDataToElement < ActiveRecord::Migration
     elements = ExhibitElement.find(:all)
     for element in elements
       element.border_type_enum = 0
-      section = ExhibitSection.find(element.exhibit_section_id)
-      element.exhibit_page_id = section.exhibit_page_id
-
-      pos = page_position[section.exhibit_page_id]
-      pos = 0 unless pos
-      element.position = pos + 1
-      page_position[section.exhibit_page_id] = element.position
-      element.save
+      if element.exhibit_section_id >= 1
+        section = ExhibitSection.find_by_id(element.exhibit_section_id)
+        element.exhibit_page_id = section.exhibit_page_id
+  
+        pos = page_position[section.exhibit_page_id]
+        pos = 0 unless pos
+        element.position = pos + 1
+        page_position[section.exhibit_page_id] = element.position
+        element.save
+      end
     end
   end
 
