@@ -294,3 +294,7 @@ font-weight:bold;
 .untagged_and_all_links {
 	text-align: center;
 }
+
+.select_element_type {
+	padding-right: 1em;
+}
