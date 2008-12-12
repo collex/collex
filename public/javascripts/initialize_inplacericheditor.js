@@ -86,7 +86,14 @@ function _initializeInplaceIllustrationEditor(element_id, action)
 // Private functions
 /////////////////////////////////////////////////////////////////////////////////////////
 
-function selectionChanged(currSelection)
+function selectionChanged(event)
+{
+	var This = $(this);
+	var currSelection = This.value;
+	doSelectionChanged(currSelection);
+}
+
+function doSelectionChanged(currSelection)
 {
 	// This is a callback that is fired whenever the user changes the select
 	// box while editing illustrations. It is also fired when the dialog first
@@ -95,12 +102,12 @@ function selectionChanged(currSelection)
 	var text_only = $$ ('.text_only');
 	var nines_only = $$ ('.nines_only');
 	var not_nines = $$ ('.not_nines');
-	if (currSelection == gIllustrationTypes[0]) {	// image
+	if (currSelection == gIllustrationTypes[1]) {	// image
 		image_only.each(function(el) { el.show(); });
 		not_nines.each(function(el) { el.show(); });
 		nines_only.each(function(el) { el.hide(); });
 		text_only.each(function(el) { el.hide(); });
-	} else if (currSelection == gIllustrationTypes[1]) {	// nines object
+	} else if (currSelection == gIllustrationTypes[0]) {	// nines object
 		image_only.each(function(el) { el.hide(); });
 		not_nines.each(function(el) { el.hide(); });
 		nines_only.each(function(el) { el.show(); });
@@ -161,7 +168,7 @@ function showIllustrationEditor(event)
     dlg.addHidden("ill_illustration_id");
 	
 	var size = 52;
-	dlg.addSelect('Type of Illustration:', 'type', gIllustrationTypes, 'selectionChanged(this.options[this.selectedIndex].value);');
+	dlg.addSelect('Type of Illustration:', 'type', gIllustrationTypes, selectionChanged);
 	dlg.addTextInput('First Caption:', 'caption1', size);
 	dlg.addTextInput('Second Caption:', 'caption2', size);
 	dlg.addHr();
@@ -176,7 +183,7 @@ function showIllustrationEditor(event)
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
 	dlg.show("Edit Illustration", getX(el), getY(el), 530, 350, values );
-	selectionChanged(values['type']);
+	doSelectionChanged(values['type']);
 }
 
 var _ninesDlg_ed = null;
