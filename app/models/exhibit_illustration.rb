@@ -27,7 +27,7 @@ class ExhibitIllustration < ActiveRecord::Base
   end
   
   def self.get_illustration_type_array
-    return "['Internet Image', 'NINES Object', 'Textual Illustration' ]"
+    return "['NINES Object', 'Internet Image', 'Textual Illustration' ]"
   end
   
   def self.get_illustration_type_image
