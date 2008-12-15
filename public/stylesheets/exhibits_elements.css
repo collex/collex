@@ -73,7 +73,9 @@ h3 {
 	float:right;
 	font-family:Verdana,sans;
 	font-size:2.4em;
+	text-align:right;
 }
+
 .exhibit_nav a:visited {
 	color:#DCDCDC;
 	text-decoration:none;
@@ -82,12 +84,7 @@ h3 {
 	color:#DCDCDC;
 	text-decoration:none;
 }
-.exhibit_nav a:hover {
-	color:#999999;
-}
-.exhibit_nav {
-	text-align:right;
-}
+
 .here a {
 	color:#999999;
 }
@@ -96,14 +93,6 @@ h3 {
 }
 .arrowhere {
 	color:#C0C0C0;
-}
-
-.exhibit_nav a:hover {
-	color:#999999;
-}
-
-.exhibit_nav a:visited {
-	color:#666666;
 }
 
 .exhibit_nav a:hover {
