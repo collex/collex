@@ -355,7 +355,15 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(referenceElementId);
-	dlg.show(titleStr, getX(el), getY(el), width, height, hiddenDataHash );
+	var viewportWidth = getViewportWidth() + currentScrollPos()[0];
+	var left = getX(el);
+	if (left + width > viewportWidth)
+		left = viewportWidth - width;
+	var viewportHeight = getViewportHeight() + currentScrollPos()[1];
+	var top = getY(el);
+	if (top + height > viewportHeight)
+		top = viewportHeight - height;
+	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
 	setTimeout(function() { $(promptId).focus() }, 600);
 }
 
