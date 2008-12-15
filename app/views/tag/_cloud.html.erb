@@ -1,7 +1,7 @@
 <% #parameters: cloud_freq, bucket_size, selected_tag, controller_for_tags %>
 <center>
   <div class="tag_filter">
-	<form>&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
+	<form onsubmit="return false;">&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
   </div>
 
 <!-- < % cache_timeout(cloud_fragment_key,1.hour.from_now) do %>
