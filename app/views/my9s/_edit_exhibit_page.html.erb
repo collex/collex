@@ -25,9 +25,9 @@
 					<select class="select_element_type" onchange='elementTypeChanged("element_<%= element.id %>", <%= element.id %>, this.options[this.selectedIndex].value);'>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
-					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Picture then Text</option>
-					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Picture</option>
-					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Pictures</option>
+					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Illustration then Text</option>
+					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Illustration</option>
+					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Illustrations</option>
 					</select>
 					<% if element.exhibit_element_layout_type == 'pics' %>
 						<% style = "" -%>
