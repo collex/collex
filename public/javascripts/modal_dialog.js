@@ -26,6 +26,11 @@ ModalDialog.prototype = {
 	},	
 	
 	show: function(title, targetElement, form, left, top, width, height) {
+		
+		// if it already exists, destroy and recreate it
+		if( $('modal_dialog') ) {
+			this.dialog.destroy();
+		}
 
 		var modalDialogDiv = new Element("div", { id: 'modal_dialog' });
 		$$('body').first().appendChild(modalDialogDiv);
@@ -36,6 +41,8 @@ ModalDialog.prototype = {
 			y: top,
 			width: width,
 			height: height,
+			constraintoviewport: true,
+			// fixedcenter: true,
 			modal: true
 		});
 
