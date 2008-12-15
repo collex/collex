@@ -21,7 +21,7 @@
 	<% is_first = true -%>
 <% for page in exhibit.exhibit_pages -%>
 	<% element_count = 1 -%>
-	<li><%= tree_node( "#{page.position}", "outline", "exhibit_outline_text", "toggle_by_id", exhibit.id, :open ) %></li>
+	<li><%= tree_node( "#{page.position}", "outline", "exhibit_outline_text", "toggle_by_id", exhibit.id, exhibit.exhibit_pages.length, :open ) %></li>
 	<ul id='outline_<%= "p#{page.position}" %>' class="outline_tree_elements">
 	<% border_active = false -%>
 	<% for element in page.exhibit_elements -%>

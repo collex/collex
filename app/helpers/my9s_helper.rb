@@ -70,15 +70,23 @@ module My9sHelper
     end
   end
 
-  def tree_node( page_num, item_id_prefix, class_name, toggle_function, exhibit_id, initial_state = :closed )
+  def tree_node( page_num, item_id_prefix, class_name, toggle_function, exhibit_id, num_pages, initial_state )
     display_none = 'style="display:none"'
-    label = "<div class='outline_right_controls''>"
-    label << link_to_function(up_char(), "doAjaxLinkOnPage('move_page_up', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Up' })
-    label << link_to_function(down_char(), "doAjaxLinkOnPage('move_page_down', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Down' })
-    label << '&nbsp;<span class="close_link">'
-    label << link_to_function(del_char(), "doAjaxLinkOnPage('delete_page', #{exhibit_id}, #{page_num} );", { :title => 'Delete Page' })
-    label << '</span>'
-    label << "</div>"
+    label = ""
+    if num_pages > 1  # We don't want any page controls if there is only one page.
+      label << "<div class='outline_right_controls''>"
+      if page_num.to_i > 1
+        label << link_to_function(up_char(), "doAjaxLinkOnPage('move_page_up', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Up' })
+      end
+      if page_num.to_i < num_pages
+        label << link_to_function(down_char(), "doAjaxLinkOnPage('move_page_down', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Down' })
+      end
+      label << '&nbsp;<span class="close_link">'
+      label << link_to_function(del_char(), "doAjaxLinkOnPage('delete_page', #{exhibit_id}, #{page_num} );", { :title => 'Delete Page' })
+      label << '</span>'
+      label << "</div>"
+    end
+    
     label << "<span id=\"#{item_id_prefix}_p#{page_num}_closed\" #{initial_state == :open ? display_none : ''} >"
     label << link_to_function(closed_char(),"#{toggle_function}('#{item_id_prefix}_p#{page_num}')")
     label << "</span>"
