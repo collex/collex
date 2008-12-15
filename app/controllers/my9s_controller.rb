@@ -444,6 +444,7 @@ class My9sController < ApplicationController
 
       when "insert_border"
         page.insert_border(element)
+        is_editing_border = true
       when "move_top_of_border_up"
         is_editing_border = page.move_top_of_border_up(element)
       when "move_top_of_border_down"
