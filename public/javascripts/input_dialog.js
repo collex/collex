@@ -206,59 +206,60 @@ InputDialog.prototype = {
 
 	_userPressedOk: function(element_id, form_id)
 	{
+		modalDialog.handleSave();
 		// Just set a timeout here. This allows the tinyMCE to get the
 		// on submit callback and put the user's changed back in the
 		// original textarea. It also lets tinyMCE turn off the callbacks
 		// to that control so there isn't a javascript crash after removing
 		// it from the page.
-		setTimeout('InputDialog.prototype._userPressedOk2("' + element_id + '","' + form_id + '");', 300);
+		//setTimeout('InputDialog.prototype._userPressedOk2("' + element_id + '","' + form_id + '");', 300);
 	},
 
-	_userPressedOk2: function(element_id, form_id)
-	{
-		var el = $(element_id);
-		var action = el.readAttribute('action');
-		var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
-	
-		var params = { element_id: element_id };
-		var els = $$('#' + form_id + ' input');
-		els.each(function(e) { params[e.id] = e.value; });
-		els = $$('#' + form_id + ' textarea');
-		els.each(function(e) { params[e.id] = e.value; });
-		els = $$('#' + form_id + ' select');
-		els.each(function(e) { params[e.id] = e.value; });
-	
-		// If we have a comma separated list, we want to send the alert synchronously to each action
-		// (Doing this synchronously eliminates any race condition: The first call can update the data and
-		// the rest of the calls just update the page.
-		var actions = action.split(',');
-		var action_elements = ajax_action_element_id.split(',');
-		if (actions.length == 1)
-		{
-			new Ajax.Updater(ajax_action_element_id, action, {
-				parameters : params,
-				evalScripts : true,
-				onFailure : function(resp) { alert("Oops, there's been an error."); }
-			});
-		}
-		else
-		{
-			new Ajax.Updater(action_elements[0], actions[0], {
-				parameters : params,
-				evalScripts : true,
-				onComplete: function(resp) {
-					new Ajax.Updater(action_elements[1], actions[1], {
-						parameters : params,
-						evalScripts : true,
-						onFailure : function(resp) { alert("Oops, there's been an error."); }
-					});
-				},
-				onFailure : function(resp) { alert("Oops, there's been an error."); }
-			});
-		}
-		
-		Windows.closeAllModalWindows();
-	},
+//	_userPressedOk2: function(element_id, form_id)
+//	{
+//		var el = $(element_id);
+//		var action = el.readAttribute('action');
+//		var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
+//	
+//		var params = { element_id: element_id };
+//		var els = $$('#' + form_id + ' input');
+//		els.each(function(e) { params[e.id] = e.value; });
+//		els = $$('#' + form_id + ' textarea');
+//		els.each(function(e) { params[e.id] = e.value; });
+//		els = $$('#' + form_id + ' select');
+//		els.each(function(e) { params[e.id] = e.value; });
+//	
+//		// If we have a comma separated list, we want to send the alert synchronously to each action
+//		// (Doing this synchronously eliminates any race condition: The first call can update the data and
+//		// the rest of the calls just update the page.
+//		var actions = action.split(',');
+//		var action_elements = ajax_action_element_id.split(',');
+//		if (actions.length == 1)
+//		{
+//			new Ajax.Updater(ajax_action_element_id, action, {
+//				parameters : params,
+//				evalScripts : true,
+//				onFailure : function(resp) { alert("Oops, there's been an error."); }
+//			});
+//		}
+//		else
+//		{
+//			new Ajax.Updater(action_elements[0], actions[0], {
+//				parameters : params,
+//				evalScripts : true,
+//				onComplete: function(resp) {
+//					new Ajax.Updater(action_elements[1], actions[1], {
+//						parameters : params,
+//						evalScripts : true,
+//						onFailure : function(resp) { alert("Oops, there's been an error."); }
+//					});
+//				},
+//				onFailure : function(resp) { alert("Oops, there's been an error."); }
+//			});
+//		}
+//		
+//		Windows.closeAllModalWindows();
+//	},
 	
 	_editorHover: function(ev)
 	{
