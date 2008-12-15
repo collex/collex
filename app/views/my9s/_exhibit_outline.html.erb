@@ -31,10 +31,10 @@
 			<li class="outline_element<%= " outline_tree_element_selected" if (is_first == true && element_id_selected.to_i == -1) || (element_id_selected.to_i == element.id.to_i) %>" id='outline_element_<%= element.id %>'>
 				<% if page.exhibit_elements.length > 1 -%>
 					<div class="outline_right_controls">
-						<% if element.position > 1 -%>
+						<% if page.position > 1 || element.position > 1 -%>
 							<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
 						<% end -%>
-						<% if element.position < page.exhibit_elements.length -%>
+						<% if page.position < exhibit.exhibit_pages.length || element.position < page.exhibit_elements.length -%>
 							<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
 						<% end -%>
 						&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %></span>
