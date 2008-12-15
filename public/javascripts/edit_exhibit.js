@@ -250,8 +250,46 @@ function initOutline(div_id)
 		width: "320px",
 		draggable: true,
 		fixedcenter: true,
+		constraintoviewport: true,
 		visible: false
 	});
+	
+   var resize = new YAHOO.util.Resize(div_id, {
+       handles: ["br"],
+       autoRatio: false,
+       minWidth: 300,
+       minHeight: 100,
+       status: false 
+   });
+
+   // Setup startResize handler, to constrain the resize width/height
+   // if the constraintoviewport configuration property is enabled.
+   resize.on("startResize", function(args) {
+			 if (this.cfg.getProperty("constraintoviewport")) {
+          var D = YAHOO.util.Dom;
+
+          var clientRegion = D.getClientRegion();
+          var elRegion = D.getRegion(this.element);
+
+          resize.set("maxWidth", clientRegion.right - elRegion.left - YAHOO.widget.Overlay.VIEWPORT_OFFSET);
+          resize.set("maxHeight", clientRegion.bottom - elRegion.top - YAHOO.widget.Overlay.VIEWPORT_OFFSET);
+		    } else {
+          resize.set("maxWidth", null);
+          resize.set("maxHeight", null);
+				}
+   }, _exhibit_outline, true);
+
+   // Setup resize handler to update the Panel's 'height' configuration property 
+   // whenever the size of the 'resizablepanel' DIV changes.
+
+   // Setting the height configuration property will result in the 
+   // body of the Panel being resized to fill the new height (based on the
+   // autofillheight property introduced in 2.6.0) and the iframe shim and 
+   // shadow being resized also if required (for IE6 and IE7 quirks mode).
+   resize.on("resize", function(args) {
+       var panelHeight = args.height;
+       this.cfg.setProperty("height", panelHeight + "px");
+   }, _exhibit_outline, true);
 
 	_exhibit_outline.setHeader("OUTLINE");
 	_exhibit_outline.render();

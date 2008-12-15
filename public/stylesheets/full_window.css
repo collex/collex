@@ -20,3 +20,9 @@
 	top: 50px;
 	position: fixed;
 }
+
+
+#full_window .bd {
+  overflow:auto;
+}
+
