@@ -29,11 +29,17 @@
 		<%= ret[:html] %>
 		<% border_active = ret[:border_active] -%>
 			<li class="outline_element<%= " outline_tree_element_selected" if (is_first == true && element_id_selected.to_i == -1) || (element_id_selected.to_i == element.id.to_i) %>" id='outline_element_<%= element.id %>'>
-				<div class="outline_right_controls">
-					<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
-					<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
-					&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %></span>
-				</div>
+				<% if page.exhibit_elements.length > 1 -%>
+					<div class="outline_right_controls">
+						<% if element.position > 1 -%>
+							<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up' }) %>
+						<% end -%>
+						<% if element.position < page.exhibit_elements.length -%>
+							<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down' }) %>
+						<% end -%>
+						&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element' }) %></span>
+					</div>
+				<% end -%>
 				<span class="count"><%= link_to_function "#{element_count}", "selectLine('outline_element_#{element.id}')" %></span>
 				<% element_count = element_count + 1 -%>
 				<% is_first = false -%>

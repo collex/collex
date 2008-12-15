@@ -16,7 +16,9 @@
 						<%= link_to_function( "[outline]", "showExhibitOutline(#{element.id});", { :title => 'Show Outline' }) %>
 						<%= link_to_function( up_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'up');", { :title => 'Move Element Up' }) if element.position > 1 %>
 						<%= link_to_function( down_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'down');", { :title => 'Move Element Down' }) if element.position < page.exhibit_elements.length %>
-						<span class="close_link"><%= link_to_function del_char(), "doAjaxLinkConfirm(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element' } %></span>
+						<% if page.exhibit_elements.length > 1 -%>
+							<span class="close_link"><%= link_to_function del_char(), "doAjaxLinkConfirm(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element' } %></span>
+						<% end -%>
 					</div>
 					<a id="top-of-<%= element.id %>" name="top-of-<%= element.id %>">
 						<span class="edit_exhibit_element_number"><%= element_count %></span>
