@@ -525,3 +525,7 @@ border: 1px solid red;
 .draggable {
 cursor: move;
 }
+
+.modal_dialog_form {
+	padding: 1em;
+}

@@ -21,7 +21,7 @@ InputDialog.prototype = {
 			submitCode = 'InputDialog.prototype._userPressedOk("' + element_id + '","' + form_id + '"); return false;';
 		else
 			submitCode += "; return false;";
-		this._form = new Element('form', { id: form_id, onsubmit:  submitCode});
+		this._form = new Element('form', { id: form_id, 'class': 'modal_dialog_form', onsubmit:  submitCode});
 		this._table = new Element('table');
 		this._form.appendChild(this._table);
 		this._table.appendChild(new Element('tbody'));
@@ -357,13 +357,14 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(referenceElementId);
 	var viewportWidth = getViewportWidth() + currentScrollPos()[0];
+	var margin = 25;
 	var left = getX(el);
-	if (left + width > viewportWidth)
-		left = viewportWidth - width;
+	if (left + width + margin > viewportWidth)
+		left = viewportWidth - width - margin;
 	var viewportHeight = getViewportHeight() + currentScrollPos()[1];
 	var top = getY(el);
-	if (top + height > viewportHeight)
-		top = viewportHeight - height;
+	if (top + height + margin > viewportHeight)
+		top = viewportHeight - height - margin;
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
 	setTimeout(function() { $(promptId).focus() }, 600);
 }
