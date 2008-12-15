@@ -396,6 +396,16 @@ function toggleAllBulkCollectCheckboxes(link) {
 // functions that handle the AJAX inside a result div
 //
 
+function getViewportWidth()
+{
+    return (document.documentElement.clientWidth || document.body.clientWidth);
+}
+
+function getViewportHeight()
+{
+    return (document.documentElement.clientHeight || document.body.clientHeight);
+}
+
 function getX( oElement )
 {
 	var iReturnValue = 0;
