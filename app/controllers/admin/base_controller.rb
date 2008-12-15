@@ -30,7 +30,7 @@ class Admin::BaseController < ApplicationController
       return
     end
 
-    redirect_to "/collex"
+    redirect_to "/"
   end
 
 end

@@ -1,4 +1,4 @@
-class ExhibitElementsController < ApplicationController
+class ExhibitElementsController < Admin::BaseController
   # GET /exhibit_elements
   # GET /exhibit_elements.xml
   def index
@@ -10,49 +10,49 @@ class ExhibitElementsController < ApplicationController
     end
   end
 
-  # GET /exhibit_elements/1
-  # GET /exhibit_elements/1.xml
-  def show
-    @exhibit_element = ExhibitElement.find(params[:id])
+#  # GET /exhibit_elements/1
+#  # GET /exhibit_elements/1.xml
+#  def show
+#    @exhibit_element = ExhibitElement.find(params[:id])
+#
+#    respond_to do |format|
+#      format.html # show.html.erb
+#      format.xml  { render :xml => @exhibit_element }
+#    end
+#  end
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @exhibit_element }
-    end
-  end
-
-  # GET /exhibit_elements/new
-  # GET /exhibit_elements/new.xml
-  def new
-    @exhibit_element = ExhibitElement.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @exhibit_element }
-    end
-  end
+#  # GET /exhibit_elements/new
+#  # GET /exhibit_elements/new.xml
+#  def new
+#    @exhibit_element = ExhibitElement.new
+#
+#    respond_to do |format|
+#      format.html # new.html.erb
+#      format.xml  { render :xml => @exhibit_element }
+#    end
+#  end
 
   # GET /exhibit_elements/1/edit
   def edit
     @exhibit_element = ExhibitElement.find(params[:id])
   end
 
-  # POST /exhibit_elements
-  # POST /exhibit_elements.xml
-  def create
-    @exhibit_element = ExhibitElement.new(params[:exhibit_element])
-
-    respond_to do |format|
-      if @exhibit_element.save
-        flash[:notice] = 'ExhibitElement was successfully created.'
-        format.html { redirect_to(@exhibit_element) }
-        format.xml  { render :xml => @exhibit_element, :status => :created, :location => @exhibit_element }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @exhibit_element.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
+#  # POST /exhibit_elements
+#  # POST /exhibit_elements.xml
+#  def create
+#    @exhibit_element = ExhibitElement.new(params[:exhibit_element])
+#
+#    respond_to do |format|
+#      if @exhibit_element.save
+#        flash[:notice] = 'ExhibitElement was successfully created.'
+#        format.html { redirect_to(@exhibit_element) }
+#        format.xml  { render :xml => @exhibit_element, :status => :created, :location => @exhibit_element }
+#      else
+#        format.html { render :action => "new" }
+#        format.xml  { render :xml => @exhibit_element.errors, :status => :unprocessable_entity }
+#      end
+#    end
+#  end
 
   # PUT /exhibit_elements/1
   # PUT /exhibit_elements/1.xml
