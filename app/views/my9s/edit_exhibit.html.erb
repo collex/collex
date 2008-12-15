@@ -6,6 +6,15 @@
 	var gCollectedObjects = <%= ExhibitObject.get_collected_object_array(@exhibit.id) %>;
 </script>
 
+<script language="JavaScript">
+var modalDialog = null;
+document.observe('dom:loaded', function() {
+	if (window.initOutline) 
+		initOutline("full_window");	
+	});
+</script>
+
+
 <div id="full_window">
 	<div class="bd">
 		<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit, :element_id_selected => -1, :is_editing_border => false } %>
