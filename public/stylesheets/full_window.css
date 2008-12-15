@@ -14,3 +14,9 @@
 #modal_dialog {
 	background: white;
 }
+
+#full_window_positioning_guide {
+	left: 500px;
+	top: 50px;
+	position: fixed;
+}

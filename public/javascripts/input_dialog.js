@@ -328,6 +328,9 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 		dlg.addHidden(datum.key);
 	});
 	
+	// Store the reference element
+	hiddenDataHash['element_id'] = referenceElementId;
+	
 	var width = 400;
 	var height = 100;
 	

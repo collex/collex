@@ -4,23 +4,6 @@ ModalDialog = Class.create();
 
 ModalDialog.prototype = {
 	initialize: function () {
-
-		// //create Dialog:
-		// this.dialog = new YAHOO.widget.Dialog("modal_dialog", {
-		// 	width:"725px",
-		// 	fixedcenter:true
-		// });
-		// 
-		// //set up buttons for the Dialog and wire them
-		// //up to our handlers:
-		// var myButtons = [ { text:"Save", 
-		// 									  handler: { fn: this.handleSave, obj: null, scope: this } 
-		// 									},
-		// 				  				{ text:"Cancel", 
-		// 										handler: { fn: this.handleCancel, obj: null, scope: this },
-		// 										isDefault:true 
-		// 									}];
-		// this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
 	//if the user clicks "save", then we save the HTML
