@@ -83,6 +83,10 @@
 	color: white;
 }
 
+.exhibit_illustration .close_link {
+	margin-right: -20px;	
+}
+
 .outline_tree {
 	padding-left: 0px;
 }
@@ -229,6 +233,7 @@ a.edit_exhibit_widget {
 	border: 0px;
 	color: white;
 	background: white;
+	margin: 8px;
 }
 
 a.edit_exhibit_widget img:hover {

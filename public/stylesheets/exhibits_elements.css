@@ -6,10 +6,6 @@ a:hover {
 	color:#333333;
 }
 
-a img:hover {
-	border:2px solid #999999;
-	padding:3px;
-}
 h2 {
 	color:#666666;
 	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
@@ -138,20 +134,9 @@ h3 {
 	line-height:1.4em;
 }
 
-.exhibit_illustration {
-	padding-left:1em;
-	padding-right:1em;
+.yui-resize-wrap {
+	padding: 8px;
 }
-
-.exhibit_illustration_img {
-	padding: 3px;
-}
-
-/*.exhibit_illustration .widenable {
-	border:1px solid #DCDCDC;
-	margin:0.4em;
-	padding:4px;
-}*/
 
 .exhibit_nextlink {
 	float:right;

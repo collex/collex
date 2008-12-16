@@ -8,16 +8,19 @@
 
 function initializeElementEditing()
 {
-	els = $$('.exhibit_illustration .widenable');
-	els.each(function(el) { Widenable.prepare(el, imgResized); });
+	var widenableElements = $$('.exhibit_illustration .widenable');
+	widenableElements.each(function(widenableElement) { 
+		var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
+		resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+	});
 }
 
-function imgResized(illustration_id, width)
+function imgResized(event, illustrationElement)
 {
-	var element = $(illustration_id).up('.element_block');
+	var element = illustrationElement.up('.element_block');
 	new Ajax.Updater(element.id, "/my9s/change_img_width",
 	{
-		parameters : { illustration_id: illustration_id, width: width },
+		parameters : { illustration_id: illustrationElement.id, width: illustrationElement.width },
 		evalScripts : true,
 		onComplete : setTimeout("initializeElementEditing()", 1000),
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
