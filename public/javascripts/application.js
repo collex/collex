@@ -506,6 +506,7 @@ function doCollect(uri, row_num, row_id)
 	
 	new Ajax.Updater(row_id, "/results/collect", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
+		evalScripts : true,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
@@ -516,6 +517,7 @@ function doRemoveTag(uri, row_num, row_id, tag_name)
 
 	new Ajax.Updater(row_id, "/results/remove_tag", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,
+		evalScripts : true,
 		onComplete : tagFinishedUpdating,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
@@ -529,6 +531,7 @@ function doRemoveCollect(uri, row_num, row_id)
 	
 	new Ajax.Updater(row_id, "/results/uncollect", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
+		evalScripts : true,
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
 	});
 }
