@@ -72,10 +72,17 @@
 		  ""
     end 
 	%>
+	
 <!--[if IE]>
 	  	<%= stylesheet_link_tag "ie", :media => "all" %>
 <![endif]-->
-	
+
+<% if @site_section == :about -%>	
+<!--[if lte IE 6]>
+	            <link href="/stylesheets/about4ie.css" media="all" rel="stylesheet" type="text/css" />
+<![endif]-->
+<% end -%>
+
 	<!-- site wide scripts -->
 	<% # NOTE: declare "uses_tiny_mce" in the controller to use -%>
 	<% #include_tiny_mce_if_needed -%>
