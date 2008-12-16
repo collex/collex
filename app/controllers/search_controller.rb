@@ -32,7 +32,7 @@ class SearchController < ApplicationController
      @use_tabs = true
      @use_signin= true
      @site_section = :search
-     @uses_tiny_mce = true
+     @uses_yui = true
      return true
    end
    public

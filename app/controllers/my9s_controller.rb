@@ -12,7 +12,7 @@ class My9sController < ApplicationController
     @use_tabs = true
     @use_signin= true
     @site_section = :my9s
-    @uses_tiny_mce = true
+    @uses_yui = true
     return true
   end
   public
@@ -185,12 +185,6 @@ class My9sController < ApplicationController
     def edit_exhibit
       @exhibit = Exhibit.find(params[:id])
       @page = params['page'] == nil ? 1 : params['page'].to_i
-#      uses_tiny_mce :options => {
-#                              :theme => 'advanced',
-#                              :theme_advanced_resizing => true,
-#                              :theme_advanced_resize_horizontal => false,
-#                              :plugins => %w{ table fullscreen }
-#                            }
     end
 
     def edit_exhibit_globals
