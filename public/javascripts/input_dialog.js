@@ -292,6 +292,6 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	if (top + height + margin > viewportHeight)
 		top = viewportHeight - height - margin;
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
-	setTimeout(function() { $(promptId).focus() }, 600);
+	$(promptId).focus();
 }
 
