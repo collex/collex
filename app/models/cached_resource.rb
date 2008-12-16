@@ -180,7 +180,7 @@ class CachedResource < ActiveRecord::Base
   def self.get_link_from_uri(uri)
     hit = CachedResource.get_hit_from_uri(uri)
     return nil unless hit
-    return self.get_image_from_hit(hit)
+    return self.get_link_from_hit(hit)
   end
   
   def self.get_link_from_hit(hit)

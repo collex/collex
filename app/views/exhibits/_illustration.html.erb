@@ -7,6 +7,7 @@
 <% if illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
 	url = CachedResource.get_image_from_uri(illustration.nines_object_uri)
 	link = CachedResource.get_link_from_uri(illustration.nines_object_uri)
+	link = "" if link == nil
 end -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
@@ -31,7 +32,7 @@ end -%>
 <div class="exhibit_illustration">
 	<% # The wrapper is either nothing, if this is live and there was no link specified, or the link if specified, or a table if we are in edit mode. -%>
 	<% if wrapper_type == 'link' -%>
-		<a href="<%= link %>">
+		<a target="_blank" href="<%= link %>">
 	<% elsif wrapper_type == 'edit' -%>
 		<% # We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
 			<table><tr>
