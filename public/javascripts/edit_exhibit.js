@@ -8,10 +8,15 @@
 
 function initializeElementEditing()
 {
+	// find all the elements marked as widenable and add resize handles to them
 	var widenableElements = $$('.exhibit_illustration .widenable');
-	widenableElements.each(function(widenableElement) { 
-		var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
-		resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+	widenableElements.each(function(widenableElement) {
+		// ignore elements that have already been given resize handles
+		var existingResizeWrap = widenableElement.up('.yui-resize-wrap');
+		if( existingResizeWrap == null ) {
+			var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
+			resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+		}
 	});
 }
 
@@ -22,7 +27,7 @@ function imgResized(event, illustrationElement)
 	{
 		parameters : { illustration_id: illustrationElement.id, width: illustrationElement.width },
 		evalScripts : true,
-		onComplete : setTimeout("initializeElementEditing()", 1000),
+		onComplete : initializeElementEditing,
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
 	});
 }
@@ -58,7 +63,7 @@ function doAjaxLink(div, url, params)
 		new Ajax.Updater(div, url, {
 			parameters : params,
 			evalScripts : true,
-			onComplete : setTimeout("initializeElementEditing()", 1000),
+			onComplete : initializeElementEditing,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }
 		});
 	}
@@ -71,7 +76,7 @@ function doAjaxLink(div, url, params)
 				new Ajax.Updater(action_elements[1], actions[1], {
 					parameters : params,
 					evalScripts : true,
-					onComplete : setTimeout("initializeElementEditing()", 1000),
+					onComplete : initializeElementEditing(),
 					onFailure : function(resp) { alert("Oops, there's been an error."); }
 				});
 			},

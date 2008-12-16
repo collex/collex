@@ -127,6 +127,7 @@ ModalDialog.prototype = {
 			new Ajax.Updater(ajax_action_element_id, action, {
 				parameters : params,
 				evalScripts : true,
+				onComplete : initializeElementEditing,				
 				onFailure : function(resp) { alert("Oops, there's been an error."); }
 			});
 		}
@@ -139,6 +140,7 @@ ModalDialog.prototype = {
 					new Ajax.Updater(action_elements[1], actions[1], {
 						parameters : params,
 						evalScripts : true,
+						onComplete : initializeElementEditing,						
 						onFailure : function(resp) { alert("Oops, there's been an error."); }
 					});
 				},
