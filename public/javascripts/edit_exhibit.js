@@ -14,8 +14,16 @@ function initializeElementEditing()
 		// ignore elements that have already been given resize handles
 		var existingResizeWrap = widenableElement.up('.yui-resize-wrap');
 		if( existingResizeWrap == null ) {
-			var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
-			resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+			if (widenableElement.tagName == 'IMG')
+			{
+				var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
+				resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+			}
+			else
+			{
+				var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:false, handles: [ 'r' ] });
+				resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+			}
 		}
 	});
 }
@@ -23,9 +31,12 @@ function initializeElementEditing()
 function imgResized(event, illustrationElement)
 {
 	var element = illustrationElement.up('.element_block');
+	var newWidth = illustrationElement.width;	// This is the width if it is a picture
+	if (newWidth == undefined || newWidth == null)
+		newWidth = parseInt(illustrationElement.getStyle('width'));
 	new Ajax.Updater(element.id, "/my9s/change_img_width",
 	{
-		parameters : { illustration_id: illustrationElement.id, width: illustrationElement.width },
+		parameters : { illustration_id: illustrationElement.id, width: newWidth },
 		evalScripts : true,
 		onComplete : initializeElementEditing,
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
