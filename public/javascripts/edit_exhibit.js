@@ -255,11 +255,13 @@ function showExhibitOutline(element_id)
 function initOutline(div_id)
 {
 	var width = 320;
+	var top = 180;
+	var height = getViewportHeight() - top - 80;
 	//create Dialog:
 	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
 		width: width + "px",
+		height: height + 'px',
 		draggable: true,
-		//fixedcenter: true,
 		constraintoviewport: true,
 		visible: false,
 		xy: [ getViewportWidth()-width-60, 180 ]
