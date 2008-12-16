@@ -2,14 +2,14 @@
 
 .about-banner-column {
 	margin-top:77px;
-	margin-left:48px;
+	margin-left:20px;
 	padding-left: 2px;
-	width: 250px;
+	width: 222px;
 	float:left;
 }
 
 .about-banner-column p {
-width: 250px;
+width: 190px;
 }
 
 .about-banner-column img {
@@ -20,4 +20,12 @@ width: 250px;
 
 .about-banner-column img:hover {
 border:maroon solid 1px;
+}
+
+.about-tools-banner-column {
+	margin-top:77px;
+	margin-left:20px;
+	padding-left: 2px;
+	width: 200px;
+	float:left;
 }
