@@ -261,6 +261,7 @@ function initOutline(div_id)
 	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
 		width: width + "px",
 		height: height + 'px',
+		fixedcenter: (supportsFixedPositioning == false),
 		draggable: true,
 		constraintoviewport: true,
 		visible: false,
@@ -306,5 +307,7 @@ function initOutline(div_id)
 
 	_exhibit_outline.setHeader("OUTLINE");
 	_exhibit_outline.render();
-	$('full_window_c').setStyle({ position: 'fixed'});
+	
+	if (supportsFixedPositioning)
+		$('full_window_c').setStyle({ position: 'fixed'});
 }

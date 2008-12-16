@@ -17,11 +17,14 @@ InputDialog.prototype = {
 	{
 		var form_id = element_id + '_form';
 		// If submitCode is not passed in, then the submit button does an Ajax callback.
+		var inlineSubmitCode = "";
 		if (submitCode == null || submitCode == undefined)
-			submitCode = 'InputDialog.prototype._userPressedOk("' + element_id + '","' + form_id + '"); return false;';
+			inlineSubmitCode = '';
 		else
-			submitCode += "; return false;";
-		this._form = new Element('form', { id: form_id, 'class': 'modal_dialog_form', onsubmit:  submitCode});
+			inlineSubmitCode += "; return false;";
+		this._form = new Element('form', { id: form_id, 'class': 'modal_dialog_form', onsubmit:  inlineSubmitCode});
+		if (submitCode == null || submitCode == undefined)
+			this._form.observe('submit', InputDialog.prototype._observerSubmit);
 		this._table = new Element('table');
 		this._form.appendChild(this._table);
 		this._table.appendChild(new Element('tbody'));
@@ -130,6 +133,11 @@ InputDialog.prototype = {
 		} );
 	},
 
+	_observerSubmit: function(event)
+	{
+		modalDialog.handleSave();
+	},
+	
 	_userPressedOk: function(element_id, form_id)
 	{
 		modalDialog.handleSave();

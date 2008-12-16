@@ -73,8 +73,14 @@
     end 
 	%>
 	
+<script language="JavaScript">
+	var supportsFixedPositioning = true;
+</script>
 <!--[if IE]>
 	  	<%= stylesheet_link_tag "ie", :media => "all" %>
+<script language="JavaScript">
+	supportsFixedPositioning = false;
+</script>
 <![endif]-->
 
 <% if @site_section == :about || @site_section == :tag  -%>	

@@ -47,7 +47,7 @@
 				<% if element.exhibit_element_layout_type == 'text' -%>
 					<%= element_text_thumbnail(element) %>
 				<% elsif element.exhibit_element_layout_type == 'header' -%>
-					<span class="exhibit_outline_header"><b><big><%=h element.element_text %></big></b></span>
+					<span class="exhibit_outline_header"><b><big><%=h strip_tags(element.element_text) %></big></b></span>
 				<% elsif element.exhibit_element_layout_type == 'pics' -%>
 					<% illustrations = element.exhibit_illustrations -%>
 					<%= "[Row of illustrations: none specified]" if illustrations.length == 0 %>

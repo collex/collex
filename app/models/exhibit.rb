@@ -41,6 +41,20 @@ class Exhibit < ActiveRecord::Base
     return Exhibit.find(page.exhibit_id)
   end
   
+  def self.js_array_of_all_my_exhibits(user_id)
+    my_exhibits = find(:all, :conditions => ['user_id = ?', user_id] )
+    return "" if my_exhibits.length == 0
+    
+    str = ""
+    for exhibit in my_exhibits
+      if str != ""
+        str += ","
+      end
+      str += '"' + exhibit.title.gsub('"', "'") + '"' # TBD-PER: HACK: change double quotes to single quotes so the javascript doesn't break
+    end
+    return str
+  end
+
 #  def self.find_by_section_id(section_id)
 #    section = ExhibitSection.find(section_id)
 #    page = ExhibitPage.find(section.exhibit_page_id)

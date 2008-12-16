@@ -1,15 +1,10 @@
 <% # parameter: results hits[]; int user_id; -%>
 <% has_exhibits = false -%>
 <% if user_id > 0 -%>
+	<% exhibit_list = Exhibit.js_array_of_all_my_exhibits(user_id) -%>
+	<% has_exhibits = exhibit_list.length > 0 -%>
 	<script language="javascript">
-		var exhibit_names = [
-			<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', user_id] ) -%>
-			<% for exhibit in my_exhibits -%>
-			<% # TODO-PER: guard against exhibit.title containing a quote. Also, don't put last comma on end. -%>
-				"<%= exhibit.title %>",
-				<% has_exhibits = true -%>
-			<% end -%>
-		];
+		var exhibit_names = [ <%= exhibit_list %> ];
 	</script>
 <% end # if user_id -%>
 
