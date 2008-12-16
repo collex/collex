@@ -5,8 +5,13 @@
 	            <tr>
 	            	<% if is_logged_in? -%>
 	                <td rowspan="2" valign="middle" align="left" width="10" class="thumbview">
-	                    <input type="checkbox" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>"/>
+	                    <input type="checkbox" id="bulk_collect_<%=index%>" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>" style="display: none;"/>
 	                </td>
+<script language="JavaScript">
+	var bulk_form = $("bulk_collect_form");
+	if (bulk_form != null)
+		$("bulk_collect_<%=index%>").show();
+</script>
 					<% end -%>
 	                <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
 	                    <%= thumbnail_image_tag(hit) %>
