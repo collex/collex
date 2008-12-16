@@ -236,12 +236,6 @@ a.edit_exhibit_widget {
 	margin: 8px;
 }
 
-a.edit_exhibit_widget img:hover {
-	border: 0px;
-	color: white;
-	padding: 0px;
-}
-
 .edit_illustration_column {
 	padding: 0px;
 	margin: 0px;
