@@ -113,7 +113,7 @@ InputDialog.prototype = {
 		if (className != undefined)
 			wrapper.addClassName(className);
 		var el = new Element('textarea', { id: id, name: id });
-		el.setStyle({ width: width + 'px', height: height + 'px' });
+		el.setStyle({ width: width + 'px', height: height + 'px', display: 'none' });
 		var td = Element.wrap(el, 'td', { colspan: 2, style: 'text-align: center' });
 		wrapper.appendChild(td);
 		this._table.down().appendChild(wrapper);
