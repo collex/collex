@@ -1,0 +1,23 @@
+/* Use this CSS file for styles that are specfic to IE 6 */
+
+.about-banner-column {
+	margin-top:77px;
+	margin-left:48px;
+	padding-left: 2px;
+	width: 250px;
+	float:left;
+}
+
+.about-banner-column p {
+width: 250px;
+}
+
+.about-banner-column img {
+ margin-left: 15px;
+ margin-bottom:-3px;
+ border:none;
+}
+
+.about-banner-column img:hover {
+border:maroon solid 1px;
+}
