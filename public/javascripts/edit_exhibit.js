@@ -243,6 +243,7 @@ function y_distance_that_the_element_is_not_in_view(element_id)
 }
 
 var _exhibit_outline = null;
+var _exhibit_outline_pos = null;
 
 function showExhibitOutline(element_id)
 {
@@ -253,13 +254,15 @@ function showExhibitOutline(element_id)
 
 function initOutline(div_id)
 {
+	var width = 320;
 	//create Dialog:
 	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
-		width: "320px",
+		width: width + "px",
 		draggable: true,
-		fixedcenter: true,
+		//fixedcenter: true,
 		constraintoviewport: true,
-		visible: false
+		visible: false,
+		xy: [ getViewportWidth()-width-60, 180 ]
 	});
 	
    var resize = new YAHOO.util.Resize(div_id, {
@@ -301,4 +304,5 @@ function initOutline(div_id)
 
 	_exhibit_outline.setHeader("OUTLINE");
 	_exhibit_outline.render();
+	$('full_window_c').setStyle({ position: 'fixed'});
 }
