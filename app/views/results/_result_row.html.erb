@@ -20,8 +20,8 @@
             <table border="0">
                 <tr>
                     <td colspan="2">
-                    	image: <%= hit['image'] %><br/>
-						uri: <%= hit['uri'] %><br />
+                    	<!-- image: <%= hit['image'] %><br/>
+						uri: <%= hit['uri'] %><br /> -->
                         <% if hit["url"] %>
                         <a class="search-result-title <%= 'result_with_tag_background' if result_is_collected(hit)%>" target="_blank" href="<%= hit["url"][0] %>"><% if hit["title"] %><%= h hit["title"][0] %><%end %>
                         </a>&nbsp;&rarr;<% else %>
