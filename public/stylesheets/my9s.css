@@ -180,14 +180,6 @@
 
 /* styles for the standard boxes */
 
-.edit_exhibit_box {
-	border: 1px solid gray;
-}
-
-.edit_exhibit_section_box {
-		border: 3px solid gray;
-}
-
 .edit_exhibit_box_no_border {
 	border: 0px;
 }
@@ -196,8 +188,7 @@
 	background: #707070;
 	color: white;
 	font-size: .8em;
-	margin-top: 0px;
-	padding: 1px;
+	padding: 3px;
 	font-weight: normal;
 }
 
