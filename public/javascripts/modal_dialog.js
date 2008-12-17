@@ -46,14 +46,6 @@ ModalDialog.prototype = {
 			modal: true
 		});
 
-		var klEsc = new YAHOO.util.KeyListener(document, { keys:27 },  							
-			{ fn:this.dialog.hide,
-				scope:this.dialog,
-				correctScope:true }, "keyup" ); 
-			// keyup is used here because Safari won't recognize the ESC
-			// keydown event, which would normally be used by default
-		this.dialog.cfg.queueProperty("keylisteners", klEsc);
-
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
 		var myButtons = [ { text:"Save", 
@@ -197,9 +189,11 @@ ModalDialog.prototype = {
 		els = $$('#' + form_id + ' select');
 		els.each(function(e) { params[e.id] = e.value; });
 		
-		var onCompleteCallback =  function() {}
-		if( document.initializeElementEditing ) {
-			onCompleteCallback =  document.initializeElementEditing;
+		var onCompleteCallback = function() {
+		  Try.these(
+		    function() { initializeElementEditing() },
+				function() {}
+		  );
 		}
 	
 		// If we have a comma separated list, we want to send the alert synchronously to each action
