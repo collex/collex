@@ -188,6 +188,11 @@ ModalDialog.prototype = {
 		els.each(function(e) { params[e.id] = e.value; });
 		els = $$('#' + form_id + ' select');
 		els.each(function(e) { params[e.id] = e.value; });
+		
+		var onCompleteCallback =  function() {}
+		if( document.initializeElementEditing ) {
+			onCompleteCallback =  document.initializeElementEditing;
+		}
 	
 		// If we have a comma separated list, we want to send the alert synchronously to each action
 		// (Doing this synchronously eliminates any race condition: The first call can update the data and
@@ -199,7 +204,7 @@ ModalDialog.prototype = {
 			new Ajax.Updater(ajax_action_element_id, action, {
 				parameters : params,
 				evalScripts : true,
-				onComplete : initializeElementEditing,				
+				onComplete : onCompleteCallback,				
 				onFailure : function(resp) { alert("Oops, there's been an error."); }
 			});
 		}
@@ -212,7 +217,7 @@ ModalDialog.prototype = {
 					new Ajax.Updater(action_elements[1], actions[1], {
 						parameters : params,
 						evalScripts : true,
-						onComplete : initializeElementEditing,						
+						onComplete : onCompleteCallback,						
 						onFailure : function(resp) { alert("Oops, there's been an error."); }
 					});
 				},
