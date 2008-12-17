@@ -21,16 +21,15 @@ h3 {
 	padding: 0em 1em 1em 1em;
 }
 
-.exhibit_section_with_border {
-	border: 1px solid #DCDCDC;
+#exhibit_page table {
 	clear:both;
 	margin-bottom:1em;
 	margin-top:1em;
 	padding-bottom:1em;
 }
 
-.exhibit_section_without_border {
-	margin: 2em;
+.exhibit_section_with_border table {
+	border: 1px solid #DCDCDC;
 }
 
 .exhibit_text {
