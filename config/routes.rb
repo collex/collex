@@ -49,50 +49,60 @@ ActionController::Routing::Routes.draw do |map|
 #  map.connect ':controller/service.wsdl', :action => 'wsdl'
 
   map.atom_feed 'atom/:type/:value/:user', 
-                    :controller => 'sidebar',
+                    :controller => 'home',
                     :action => 'atom',
                     :value => /[^\/]+/,
                     :user => nil
 
   # sidebar_list and permalink_list define :value to take any char but newline and / 
-  map.sidebar_list  "sidebar/list/:type/:value/:user",
-                    :controller => "sidebar",
-                    :action => "list",
-                    :type => /\w+/,
-                    :value => /[^\/]+/,
-                    :user => nil  
-                   
-  map.sidebar_cloud "sidebar/cloud/:type/:user",
-                    :controller => "sidebar",
-                    :action => "cloud",
-                    :type => /\w+/,
-                    :user => nil
-  
-  map.permalink_list 'permalink/list/:type/:value/:user', 
-                    :controller => 'sidebar', 
-                    :action => 'permalink_list',
-                    :value => /[^\/]+/,
-                    :user => nil
-  map.permalink_cloud 'permalink/cloud/:type/:user', 
-                    :controller => 'sidebar', 
-                    :action => 'permalink_cloud',
-                    :user => nil
-  map.permalink_detail 'permalink/detail', 
-                    :controller => 'sidebar', 
-                    :action => 'permalink_detail'
+#  map.sidebar_list  "sidebar/list/:type/:value/:user",
+#                    :controller => "sidebar",
+#                    :action => "list",
+#                    :type => /\w+/,
+#                    :value => /[^\/]+/,
+#                    :user => nil  
+#                   
+#  map.sidebar_cloud "sidebar/cloud/:type/:user",
+#                    :controller => "sidebar",
+#                    :action => "cloud",
+#                    :type => /\w+/,
+#                    :user => nil
+#  
+#  map.permalink_list 'permalink/list/:type/:value/:user', 
+#                    :controller => 'sidebar', 
+#                    :action => 'permalink_list',
+#                    :value => /[^\/]+/,
+#                    :user => nil
+#  map.permalink_cloud 'permalink/cloud/:type/:user', 
+#                    :controller => 'sidebar', 
+#                    :action => 'permalink_cloud',
+#                    :user => nil
+#  map.permalink_detail 'permalink/detail', 
+#                    :controller => 'sidebar', 
+#                    :action => 'permalink_detail'
+#
+#  map.connect 'redirect/ravon-nowviskie1.html', 
+#    :controller =>'sidebar',
+#    :action => 'permalink_list',
+#    :value => 'collex',
+#    :user => 'nowviskie',
+#    :type => 'tag'
+#
+#  map.connect 'redirect/ravon-nowviskie2.html', 
+#    :controller =>'search',
+#    :action => 'saved_permalink',
+#    :name => 'ravon-article',
+#    :username => 'nowviskie'
 
-  map.connect 'redirect/ravon-nowviskie1.html', 
-    :controller =>'sidebar',
-    :action => 'permalink_list',
-    :value => 'collex',
-    :user => 'nowviskie',
-    :type => 'tag'
+  # All the old links just go to the main page now.
+  map.sidebar_list  "sidebar/list/:type/:value/:user", :controller => "home", :action => "index"
+  map.sidebar_cloud "sidebar/cloud/:type/:user", :controller => "home", :action => "index"
+  map.permalink_list 'permalink/list/:type/:value/:user', :controller => "home", :action => "index"
+  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "index"
+  map.permalink_detail 'permalink/detail', :controller => "home", :action => "index"
+  map.connect 'redirect/ravon-nowviskie1.html', :controller => "home", :action => "index"
+  map.connect 'redirect/ravon-nowviskie2.html', :controller => "home", :action => "index"
 
-  map.connect 'redirect/ravon-nowviskie2.html', 
-    :controller =>'search',
-    :action => 'saved_permalink',
-    :name => 'ravon-article',
-    :username => 'nowviskie'
 
   map.connect 'collex/:action', :controller => 'search'
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
