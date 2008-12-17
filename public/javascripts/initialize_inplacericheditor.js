@@ -175,7 +175,7 @@ function showIllustrationEditor(event)
 	dlg.addTextInput('Image URL:', 'image_url', size, 'image_only');
 	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
 	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
-	dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
+	//dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
 	dlg.addTextArea('ill_text', 300, 100, 'text_only');
 	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object']);
 	dlg.addList('nines_object', list.list, 'nines_only');

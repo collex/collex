@@ -390,7 +390,7 @@ class My9sController < ApplicationController
       image_url = params['image_url']
       type = params['type']
       link = params['link_url']
-      width = params['ill_width']
+      #width = params['ill_width']
       caption1 = params['caption1']
       caption2 = params['caption2']
       text = params['ill_text']
@@ -403,7 +403,7 @@ class My9sController < ApplicationController
       illustration.illustration_text = text
       illustration.caption1 = caption1
       illustration.caption2 = caption2
-      illustration.image_width = width if width != nil
+      #illustration.image_width = width if width != nil
       illustration.link = link
       illustration.alt_text = alt_text
       illustration.nines_object_uri = nines_object
