@@ -14,18 +14,20 @@ function initializeElementEditing()
 		// ignore elements that have already been given resize handles
 		var existingResizeWrap = widenableElement.up('.yui-resize-wrap');
 		if( existingResizeWrap == null ) {
-			if (widenableElement.tagName == 'IMG')
-			{
-				var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
-				resizer.subscribe( 'endResize', imgResized, widenableElement, false);
-			}
-			else
+			// for images, the resizer is added after the image is finished loading
+			if (widenableElement.tagName != 'IMG')
 			{
 				var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:false, handles: [ 'r' ] });
 				resizer.subscribe( 'endResize', imgResized, widenableElement, false);
 			}
 		}
 	});
+}
+
+function initializeResizableImageElement( element_id ) {
+	var widenableElement = $(element_id);
+	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
+	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
 }
 
 function imgResized(event, illustrationElement)
