@@ -22,7 +22,7 @@ class Admin::SiteController < Admin::BaseController
 
   def list
 #     @site_pages, @sites = paginate :sites, :per_page => 10
-    @sites = Site.paginate(:page => params[:page], :per_page => 10)
+    @sites = Site.paginate(:page => params[:page], :per_page => 20, :order => 'code')
   end
 
   def show
@@ -37,7 +37,7 @@ class Admin::SiteController < Admin::BaseController
     @site = Site.new(params[:site])
     if @site.save
       flash[:notice] = 'Site was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :action => 'list', :page => params[:page]
     else
       render :action => 'new'
     end
@@ -51,7 +51,7 @@ class Admin::SiteController < Admin::BaseController
     @site = Site.find(params[:id])
     if @site.update_attributes(params[:site])
       flash[:notice] = 'Site was successfully updated.'
-      redirect_to :action => 'show', :id => @site
+      redirect_to :action => 'show', :id => @site, :page => params[:page]
     else
       render :action => 'edit'
     end
@@ -59,7 +59,7 @@ class Admin::SiteController < Admin::BaseController
 
   def destroy
     Site.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    redirect_to :action => 'list', :page => params[:page]
   end
 
 end

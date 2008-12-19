@@ -22,7 +22,7 @@ class Admin::UserRolesController < Admin::BaseController
 
   def list
 #     @user_pages, @users = paginate :users, :per_page => 10
-    @users = User.paginate(:page => params[:page], :per_page => 10)
+    @users = User.paginate(:page => params[:page], :per_page => 20, :order => 'username')
   end
 
   def show
@@ -44,14 +44,14 @@ class Admin::UserRolesController < Admin::BaseController
     
     if @user.save
       flash[:notice] = 'User was successfully updated.'
-      redirect_to :action => 'edit', :id => @user
+      redirect_to :action => 'edit', :id => @user, :page => params[:page]
     else
-      render :action => 'edit'
+      render :action => 'edit', :page => params[:page]
     end
   end
 
   def destroy
     User.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    redirect_to :action => 'list', :page => params[:page]
   end
 end

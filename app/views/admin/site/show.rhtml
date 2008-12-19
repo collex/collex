@@ -20,5 +20,5 @@
 </p>
 <% end %>
 
-<%= link_to 'Edit', :action => 'edit', :id => @site %> |
-<%= link_to 'Back', :action => 'list' %>
+<%= link_to 'Edit', :action => 'edit', :id => @site,  :page => params[:page] %> |
+<%= link_to 'Back', :action => 'list',  :page => params[:page] %>

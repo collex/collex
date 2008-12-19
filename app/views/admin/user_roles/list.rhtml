@@ -16,6 +16,8 @@
 
 <h1>Listing users</h1>
 
+<%= will_paginate @users %>
+
 <table>
   <tr>
     <th>Username</th>
@@ -31,8 +33,7 @@
       <%= user.role_names.join(", ") %>
     </td>
     
-    <td><%= link_to 'Show', :action => 'show', :id => user %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => user,  :page => params[:page] %></td>
   </tr>
 <% end %>
 </table>

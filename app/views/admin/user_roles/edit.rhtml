@@ -22,8 +22,8 @@
 
 <% form_tag :action => 'update', :id => @user do %>
   <%= render :partial => 'form' %>
+  <input type='hidden' name='page' id='page' value='<%=params[:page]%>'/>
   <%= submit_tag 'Edit' %>
 <% end %>
 
-<%= link_to 'Show', :action => 'show', :id => @user %> |
-<%= link_to 'All Users', :action => 'list' %>
+<%= link_to 'All Users', :action => 'list',  :page => params[:page] %>

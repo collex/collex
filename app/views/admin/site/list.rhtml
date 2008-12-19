@@ -16,6 +16,9 @@
 
 <h1>Listing sites</h1>
 
+<%= will_paginate @sites %>
+<%= link_to 'New site', :action => 'new' %>
+
 <table>
   <tr>
   <% for column in Site.content_columns %>
@@ -28,9 +31,8 @@
   <% for column in Site.content_columns %>
     <td><%=h site.send(column.name) %></td>
   <% end %>
-    <td><%= link_to 'Show', :action => 'show', :id => site %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => site %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => site }, :confirm => 'Are you sure?', :post => true %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => site, :page => params[:page] %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => site, :page => params[:page] }, :confirm => 'Are you sure?', :method => 'post' %></td>
   </tr>
 <% end %>
 </table>

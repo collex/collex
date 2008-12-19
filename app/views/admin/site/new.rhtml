@@ -18,7 +18,8 @@
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>
+  <input type='hidden' name='page' id='page' value='<%=params[:page]%>'/>
   <%= submit_tag "Create" %>
 <% end %>
 
-<%= link_to 'Back', :action => 'list' %>
+<%= link_to 'Back', :action => 'list', :page => params[:page] %>

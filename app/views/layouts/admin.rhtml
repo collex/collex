@@ -19,7 +19,7 @@
 	
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>NINES: <%=controller.controller_name %> / <%= controller.action_name %></title>
+	<title>NINES Administration: <%= controller.action_name %></title>
 
     <script src="/javascripts/prototype.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -32,7 +32,7 @@
     <%= stylesheet_link_tag "new9s", :media => "all" %>
     <%= stylesheet_link_tag "newcollex", :media => "all" %>
     <style>
-		#user { padding: 1em 0 0 1em; background : #fff; }
+		#user { padding: 1em 0 1em 1em; background : #fff; border-bottom:1px solid black; }
 		#user .name { font-weight: bold; }
 		#main { padding: .6em 1em 1em 1em; }
 		#footer { margin: 0; }
@@ -46,11 +46,12 @@
     
     <div id="page">
     
-        <div id="header">        
+        <div id="header">
             <div id="user">
+        	<h1>NINES Administrator</h1>
               <% if session[:user] -%>
-				logged in as: <%= span(session[:user][:username], :class => "name") %> <br />
-                <%= link_to("log out", {:controller => "login", :action => "logout"}) %> 
+				logged in as: <%= span(session[:user][:username], :class => "name") %> |
+                <%= link_to("Return to NINES", {:controller => "/home", :action => "index"}) %> 
               <% end -%>
             </div>
         </div><!-- end header -->
@@ -72,7 +73,7 @@
           </div><!-- end main -->
 
         <div id="footer">
-            <a href="http://www.patacriticism.org" target="_blank">Applied Research in Patacriticism</a>
+		  	<%= render :partial => '/common/footer' %>
         </div><!-- end footer -->
         </div><!-- end content -->
         

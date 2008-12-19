@@ -18,8 +18,8 @@
 
 <% form_tag :action => 'update', :id => @site do %>
   <%= render :partial => 'form' %>
+  <input type='hidden' name='page' id='page' value='<%=params[:page]%>'/>
   <%= submit_tag 'Edit' %>
 <% end %>
 
-<%= link_to 'Show', :action => 'show', :id => @site %> |
-<%= link_to 'Back', :action => 'list' %>
+<%= link_to 'Back', :action => 'list', :page => params[:page] %>
