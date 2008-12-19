@@ -95,13 +95,14 @@ ActionController::Routing::Routes.draw do |map|
 #    :username => 'nowviskie'
 
   # All the old links just go to the main page now.
-  map.sidebar_list  "sidebar/list/:type/:value/:user", :controller => "home", :action => "index"
-  map.sidebar_cloud "sidebar/cloud/:type/:user", :controller => "home", :action => "index"
-  map.permalink_list 'permalink/list/:type/:value/:user', :controller => "home", :action => "index"
-  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "index"
-  map.permalink_detail 'permalink/detail', :controller => "home", :action => "index"
-  map.connect 'redirect/ravon-nowviskie1.html', :controller => "home", :action => "index"
-  map.connect 'redirect/ravon-nowviskie2.html', :controller => "home", :action => "index"
+  map.connect 'collex', :controller => 'home', :action => 'redirect_to_index'
+  map.sidebar_list  "sidebar/list/:type/:value/:user", :controller => "home", :action => "redirect_to_index"
+  map.sidebar_cloud "sidebar/cloud/:type/:user", :controller => "home", :action => "redirect_to_index"
+  map.permalink_list 'permalink/list/:type/:value/:user', :controller => "home", :action => "redirect_to_index"
+  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "redirect_to_index"
+  map.permalink_detail 'permalink/detail', :controller => "home", :action => "redirect_to_index"
+  map.connect 'redirect/ravon-nowviskie1.html', :controller => "home", :action => "redirect_to_index"
+  map.connect 'redirect/ravon-nowviskie2.html', :controller => "home", :action => "redirect_to_index"
 
 
   map.connect 'collex/:action', :controller => 'search'

@@ -10,6 +10,10 @@ class HomeController < ApplicationController
     return true
   end
   
+  def redirect_to_index
+    redirect_to :controller => 'home', :action => 'index'
+  end
+  
   def index
     @sites = Site.find(:all, :order => "description ASC")
   end
