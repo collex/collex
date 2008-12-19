@@ -16,8 +16,9 @@
 
 class Admin::FacetTreeController < Admin::BaseController
   def index
-    list
-    render :action => 'list'
+    params[:tree] = 'archive'
+    edit
+    render :action => 'edit'
   end
 
   def list
@@ -29,17 +30,20 @@ class Admin::FacetTreeController < Admin::BaseController
   end
   
   def add_category
-    facet_tree = FacetTree.find_by_value(params[:tree])
-    facet_tree << FacetCategory.new(:value => "New Category")
-    facet_tree.save
-    redirect_to :action => :edit, :tree => facet_tree.value
+#    facet_tree = FacetTree.find_by_value(params[:tree])
+#    facet_tree << FacetCategory.new(:value => "New Category")
+#    facet_tree.save
+    FacetCategory.create(:value => "New Category", :parent_id => FacetTree.find_by_value('archive').id)
+    redirect_to :action => :edit, :tree => 'archive'
   end
   
   def add_value
-    facet_tree = FacetTree.find_by_value(params[:tree])
-    facet_tree << FacetValue.new(:value => "new_value")
-    facet_tree.save
-    redirect_to :action => :edit, :tree => facet_tree.value
+#    facet_tree = FacetTree.find_by_value(params[:tree])
+#    facet_tree << FacetValue.new(:value => "new_value")
+#    facet_tree.save
+#    redirect_to :action => :edit, :tree => facet_tree.value
+    FacetCategory.create(:value => "new_value", :parent_id => FacetTree.find_by_value('archive').id, :type => "FacetValue")
+    redirect_to :action => :edit, :tree => 'archive'
   end
 
   def remove
@@ -48,10 +52,11 @@ class Admin::FacetTreeController < Admin::BaseController
   end
   
   def move
-    parent = FacetCategory.find(params[:id])
+    #parent = FacetCategory.find(params[:id])
     child = FacetCategory.find(params[:droppedid])
-    parent << child
-    parent.save
+    child.parent_id = params[:id]
+    #parent << child
+    child.save
     
     render :partial => 'categories', :locals => {:categories => FacetTree.find_by_value(params[:tree]).children, :tree => params[:tree]}
   end
