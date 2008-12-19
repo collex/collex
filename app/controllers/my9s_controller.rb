@@ -474,6 +474,11 @@ class My9sController < ApplicationController
         page = ExhibitPage.find(params[:page])
         element_pos = params[:element].to_i
         exhibit = Exhibit.find(page.exhibit_id)
+        
+        element_pos = element_pos - 1
+        if element_pos < 0 || element_pos >= page.exhibit_elements.length
+          element_pos = 0
+        end
         element_id = page.exhibit_elements[element_pos-1].id
       end
       
