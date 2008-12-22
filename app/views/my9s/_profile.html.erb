@@ -29,7 +29,7 @@
 						<tr><td class="profile_label">Username:</td><td><%=h user.username %></td></tr>
 						<tr><td class="profile_label">Full name:</td><td><%=h user.fullname %></td></tr>
 						<tr><td class="profile_label">Institution:</td><td><%=h user.institution %></td></tr>
-						<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link) : "" %></td></tr>
+						<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link, {:target => '_blank' } ) : "" %></td></tr>
 						<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%=h user.about_me %></td></tr>
 					</table>
 				<% end -%>
