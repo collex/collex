@@ -258,11 +258,28 @@ function y_distance_that_the_element_is_not_in_view(element_id)
 var _exhibit_outline = null;
 var _exhibit_outline_pos = null;
 
-function showExhibitOutline(element_id)
+function showExhibitOutline(element_id, page_num)
 {
 	_exhibit_outline.show();
 	if (element_id > 0)
 		selectLine('outline_element_' + element_id);
+		
+	var done = false;
+	var count = 1;
+	while (!done)
+	{
+		var id = 'outline_p' + count;
+		if ($(id) == null)
+			done = true;
+		else
+		{
+			if (page_num == count)
+				open_by_id(id);
+			else
+				hide_by_id(id);
+		}
+		count++;
+	}
 }
 
 function initOutline(div_id)

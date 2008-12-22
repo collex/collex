@@ -81,6 +81,18 @@ function toggle_by_id(node_id) {
 	Element.toggle(node_id);
 }
 
+function open_by_id(node_id) {
+	Element.show(node_id + "_opened");
+	Element.hide(node_id + "_closed");
+	Element.show(node_id);
+}
+
+function hide_by_id(node_id) {
+	Element.hide(node_id + "_opened");
+	Element.show(node_id + "_closed");
+	Element.hide(node_id);
+}
+
 function toggleElementsByClass(cls)
 {
 	var els = $$('.'+cls);	
