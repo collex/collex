@@ -12,6 +12,9 @@
 			<% else -%>
 				<%= owner.fullname %>
 			<% end -%>
+			<% if is_logged_in? && exhibit.user_id == User.find_by_username(session[:user][:username]).id -%>
+				| <%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id ) %>
+			<% end -%>
 		</td>
 	</tr>
 <% end -%>
