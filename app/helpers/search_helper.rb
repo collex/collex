@@ -204,12 +204,11 @@ module SearchHelper
   def site_category_heading( category_name, category_id, initial_state = :closed )
     display_none = 'style="display:none"'
     label = "<span id=\"cat_#{category_id}_closed\" #{initial_state == :open ? display_none : ''} class=\"site-category-toggle\">"
-    label << link_to_function('&#x25BA;',"toggleCategory('#{category_id}')")
+    label << link_to_function('&#x25BA; ' + category_name,"toggleCategory('#{category_id}')")
     label << "</span>"
     label << "<span id=\"cat_#{category_id}_opened\" #{initial_state == :closed ? display_none : ''} class=\"site-category-toggle\">"
-    label << link_to_function('&#x25BC;', "toggleCategory('#{category_id}')")
+    label << link_to_function('&#x25BC; ' + category_name, "toggleCategory('#{category_id}')")
     label << "</span>"
-    label << category_name
   end
   
   def result_is_collected(hit)
