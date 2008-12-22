@@ -20,7 +20,7 @@
 		<p class="sidebar_instructions"><i>Select a resource with which to narrow your search.</i></p>
 			<% for resource_category in @sites_forest.sorted_children -%>
 			<% if site_category_subtotal(resource_category) != 0 -%>
-				<h2><%= site_category_heading("#{h(resource_category.display_name.upcase)} (#{number_with_delimiter( site_category_subtotal(resource_category) )})", resource_category.id, :open ) %></h2>
+				<h2><%= site_category_heading("#{h(resource_category.display_name.upcase)} (#{pluralize( site_category_subtotal(resource_category), 'object' )})", resource_category.id, :open ) %></h2>
 					<div id="cat_<%= resource_category.id %>" class="cat_<%= resource_category.id %>_child">
 						<ul>
 						<% for resource in resource_category.sorted_children -%>

@@ -98,7 +98,7 @@ module SearchHelper
     #     <form id="add-constraint" method="post" action="/search/constrain_resources">
     object_count = site_object_count(resource.value)
     if object_count != 0
-      display_str = "#{h(resource.display_name)} (#{number_with_delimiter( object_count )})"
+      display_str = "#{h(resource.display_name)} (#{pluralize( object_count, 'object' )})"
       if resource_is_in_constraints?(resource)
         html = "<li><span class='resource_list_selected'>&rarr; #{h display_str}</span>&nbsp;"
         html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post } 
@@ -133,7 +133,7 @@ module SearchHelper
   end
   
   def free_culture_link(count)
-    display_str = "Free Culture Only (#{number_with_delimiter(count)})"
+    display_str = "Free Culture Only (#{pluralize(count, 'object')})"
     if free_culture_is_in_constraints?
       html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
       html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post } 
@@ -147,11 +147,11 @@ module SearchHelper
   
   def genre_data_link( genre_data )
     if genre_data[:exists]
-      html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})</span>&nbsp;"
+      html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})</span>&nbsp;"
       html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post } 
       return html
     else
-      link_to "#{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post } 
+      link_to "#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post } 
     end
 
   end

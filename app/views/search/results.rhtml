@@ -40,7 +40,7 @@
 		    <a name="results"></a>
 				<div id="search-results">
 			  <%= render( :partial => 'results/result_count' ) %>    
-				<h1>SEARCH RESULTS: <%=number_with_delimiter(@results["total_hits"])%> OBJECTS FOUND</h1>
+				<h1>SEARCH RESULTS: <%=pluralize(@results["total_hits"], "OBJECT", "OBJECTS")%> FOUND</h1>
 
 		    <%= render( :partial => 'results/bulkcollect' ) %>
 				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } } ) %>
