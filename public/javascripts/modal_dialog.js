@@ -71,12 +71,16 @@ ModalDialog.prototype = {
 
 		// var element = new Element("div", { id: 'descriptionContainer' });
 		// form.appendChild(element);
-		$("modal_dialog").appendChild(form);			
-			
+		$("modal_dialog").appendChild(form);
+		
 		// this is a hack for IE6 compatibility, render the dialog late so that it works properly. 
 		//document.getElementById("modal_dialog").style.display = "block";
 		this.dialog.render();
 		
+		// fix the tab order: we don't want the close X in it.
+		var closeX = $$('.container-close');
+		if (closeX.length > 0)
+			closeX[0].writeAttribute({ tabindex: 20 });
 		
 		var textAreas = $$('#'+this.formID+' textarea');
 		
