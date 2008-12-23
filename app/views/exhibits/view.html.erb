@@ -1,6 +1,8 @@
 <div id="logged_in_user_options">
+	<span class="not_peer_reviewed">This exhibit is not peer reviewed.</span>
 	<%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'edit_exhibit', :id => @exhibit.id ) if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
 </div>
+
 <div id="exhibit_page">
 	<h2 class="exhibit_title" ><%= @exhibit.title %></h2>
 	<h3 class="exhibit_author" ><%= User.find(@exhibit.user_id).fullname %></h3>

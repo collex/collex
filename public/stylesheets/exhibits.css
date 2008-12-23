@@ -38,3 +38,7 @@ background-color: #C0C0C0;
 color:black;
 }
 
+.not_peer_reviewed {
+	color: red;
+	font-style: italic;
+}
