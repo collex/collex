@@ -186,8 +186,36 @@ ModalDialog.prototype = {
 
 		this.dialog.show();		
 				
+		// If there is a rich text editor on the form, then allow the dlg to be resized.
+		if (this.usesRichTextArea)
+		{
+			var resizer = new YAHOO.util.Resize("modal_dialog");
+			resizer.subscribe( 'resize', this.dlgResized, textAreas[0].id, this);
+		}
 	},
 	
+	dlgResized: function (event, elementIdToResize)
+	{
+		var el = $(elementIdToResize+"_container");
+		var elForm = el.up(".modal_dialog_form");
+		var fontSize = parseFloat(elForm.getStyle("fontSize"));
+		var margin = parseInt(fontSize*2 + "");
+		el.setStyle({ width: event.width - margin - 10 + 'px'});
+		
+		var elFt = $("modal_dialog").down('.ft');
+		var ftHeight = parseInt(elFt.getStyle('height'));
+		var elHd = $("modal_dialog").down('.hd');
+		var hdHeight = parseInt(elHd.getStyle('height'));
+		var elTb = el.down(".yui-toolbar-container");
+		var tbHeight = parseInt(elTb.getStyle('height'));
+		var yEl = getY(el);
+		var yDlg = getY($("modal_dialog"));
+		var relPos = yEl - yDlg;
+		
+		var elHeight = el.down(".yui-editor-editable-container");
+		elHeight.setStyle({ height: event.height - relPos - margin/2 - ftHeight - hdHeight - tbHeight + 'px'});
+	},
+
 	sendToServer: function( element_id, form_id ) {
 		var el = $(element_id);
 		var action = el.readAttribute('action');
