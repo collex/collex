@@ -20,6 +20,7 @@
 .input_dlg_list {
 	background-color: white;
 	color: black;
+	max-width: 50em;
 }
 
 .input_dlg_list_item_selected td {
