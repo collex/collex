@@ -25,27 +25,19 @@ ModalDialog.prototype = {
 		this.dialog.destroy();
 	},	
 	
-	show: function(title, targetElement, form, left, top, width, height) {
-		
+	_createDiv : function(id)
+	{
 		// if it already exists, destroy and recreate it
-		if( $('modal_dialog') ) {
+		if( $(id) ) {
 			this.dialog.destroy();
 		}
 
-		var modalDialogDiv = new Element("div", { id: 'modal_dialog' });
+		var modalDialogDiv = new Element("div", { id: id });
 		$$('body').first().appendChild(modalDialogDiv);
-
-		//create Dialog:
-		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
-			x: left,
-			y: top,
-			width: width,
-			height: height,
-			constraintoviewport: true,
-			// fixedcenter: true,
-			modal: true
-		});
-
+	},
+	
+	_handleEsc : function()
+	{
 		var klEsc = new YAHOO.util.KeyListener(document, { keys:27 },  							
 			{ fn:this.dialog.hide,
 				scope:this.dialog,
@@ -53,7 +45,10 @@ ModalDialog.prototype = {
 			// keyup is used here because Safari won't recognize the ESC
 			// keydown event, which would normally be used by default
 		this.dialog.cfg.queueProperty("keylisteners", klEsc);
-
+	},
+	
+	_setButtons : function()
+	{
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
 		var myButtons = [ { text:"Save", 
@@ -64,24 +59,10 @@ ModalDialog.prototype = {
 												isDefault:true 
 											}];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
-		
-		this.dialog.setHeader(title);
-		this.targetElement = targetElement;
-		this.formID = form.id;
-
-		// var element = new Element("div", { id: 'descriptionContainer' });
-		// form.appendChild(element);
-		$("modal_dialog").appendChild(form);
-		
-		// this is a hack for IE6 compatibility, render the dialog late so that it works properly. 
-		//document.getElementById("modal_dialog").style.display = "block";
-		this.dialog.render();
-		
-		// fix the tab order: we don't want the close X in it.
-		var closeX = $$('.container-close');
-		if (closeX.length > 0)
-			closeX[0].writeAttribute({ tabindex: 20 });
-		
+	},
+	
+	_setRichTextAreas : function()
+	{
 		var textAreas = $$('#'+this.formID+' textarea');
 		
 		this.usesRichTextArea = (textAreas.length > 0);
@@ -182,16 +163,76 @@ ModalDialog.prototype = {
 			//shown/hidden so that it can recover from these actions:
 			this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
 			this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);							
-		}, this); 
-
-		this.dialog.show();		
-				
+		}, this); 		
+	},
+	
+	_setResize: function(id)
+	{
 		// If there is a rich text editor on the form, then allow the dlg to be resized.
 		if (this.usesRichTextArea)
 		{
-			var resizer = new YAHOO.util.Resize("modal_dialog");
+			var textAreas = $$('#'+this.formID+' textarea');
+			var resizer = new YAHOO.util.Resize(id);
 			resizer.subscribe( 'resize', this.dlgResized, textAreas[0].id, this);
 		}
+	},
+
+	_renderForm: function(title, targetElement, form)
+	{
+		this.dialog.setHeader(title);
+		this.targetElement = targetElement;
+		this.formID = form.id;
+
+		// var element = new Element("div", { id: 'descriptionContainer' });
+		// form.appendChild(element);
+		$("modal_dialog").appendChild(form);
+		
+		// this is a hack for IE6 compatibility, render the dialog late so that it works properly. 
+		//document.getElementById("modal_dialog").style.display = "block";
+		this.dialog.render();
+		
+		// fix the tab order: we don't want the close X in it.
+		var closeX = $$('.container-close');
+		if (closeX.length > 0)
+			closeX[0].writeAttribute({ tabindex: 20 });
+	},
+
+	show: function(title, targetElement, form, left, top, width, height) {
+		
+		this._createDiv('modal_dialog');
+
+		//create Dialog:
+		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
+			x: left,
+			y: top,
+			width: width,
+			height: height,
+			constraintoviewport: true,
+			// fixedcenter: true,
+			modal: true
+		});
+		
+		this._handleEsc();
+		this._setButtons();
+		this._renderForm(title, targetElement, form);
+		this._setRichTextAreas();
+		this.dialog.show();
+		this._setResize("modal_dialog");
+	},
+	
+	showLightbox: function(title, targetElement, form) {
+		
+		this._createDiv('modal_dialog');
+
+		//create Dialog:
+		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
+			constraintoviewport: true,
+			fixedcenter: true,
+			modal: true
+		});
+		
+		this._handleEsc();
+		this._renderForm(title, targetElement, form);
 	},
 	
 	dlgResized: function (event, elementIdToResize)
@@ -269,5 +310,11 @@ ModalDialog.prototype = {
 	}
 }
 
-
+function showInLightbox(imageUrl)
+{
+	var divName = "lightbox";
+	var img = new Element('img', { src: imageUrl, alt: ""});
+	var form = img.wrap('form', { id: divName + "_id"});
+	modalDialog.showLightbox("Image", divName, form);
+}
 

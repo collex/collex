@@ -138,7 +138,12 @@ private
   def thumbnail_image_tag(hit, options = {})
     options = {:align => 'left'}.merge(options)
     thumb = CachedResource.get_thumbnail_from_hit(hit)
-    tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}"})
+    image = CachedResource.get_image_from_hit(hit)
+    str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}"})
+    if image != thumb
+      str = "<a onclick='showInLightbox(\"#{image}\"); return false;' href='#'>#{str}</a>"
+    end
+    return str
   end
 
   # +value+ has any ampersands changed to +&amp;+
