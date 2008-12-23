@@ -7,50 +7,58 @@
 	<% num_pages = @exhibit.exhibit_pages.length -%>
 	<% if num_pages > 0 -%>
 		<%= render :partial => 'pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'view' } %>
-		<% page = @exhibit.exhibit_pages[@page-1] -%>
-		<% border_active = false -%>
-		<% elements = page.exhibit_elements -%>
-		<% for element in elements -%>
-			<% ret = create_border_div(element, border_active, "exhibit_section_with_border") %>
-			<%= ret[:html] %>
-			<% border_active = ret[:border_active] -%>
-			<% is_first = ret[:is_first] -%>
-				<% if element.exhibit_element_layout_type == 'header' -%>
-					<%= render :partial => 'exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
-				<% elsif element.exhibit_element_layout_type == 'text' -%>
-					<%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %>
-				<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
-					<% illustration = element.exhibit_illustrations.find(:first) -%>
-					<table><tr>
-						<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
-						<td><%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %></td>
-					</tr></table>
-				<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
-					<% illustration = element.exhibit_illustrations.find(:first) -%>
-					<table><tr>
-						<td><%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %></td>
-						<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
-					</tr></table>
-				<% elsif element.exhibit_element_layout_type == 'pics' -%>
-					<% pics = element.exhibit_illustrations -%>
-					<table><tr>
-						<% for pic in pics -%>
-						<td><%= render :partial => 'illustration', :locals => { :illustration => pic } %></td>
-						<% end -%>
-					</tr></table>
-				<% else -%>
-					Unknown element type:
-					<%= element.exhibit_element_layout_type %><br />
-				<% end -%>
-				<% is_first = false -%>
-		<% end # for element in elements -%>
-		<%= '</div>' if border_active %>
-	<br />
-	<% if @page < num_pages -%>
-		<div class="exhibit_nextlink">
-		<%= link_to "next &raquo;", :action => 'view', :id => @exhibit.id, :page => @page + 1 %>
-		</div>
-	<% end -%>
+		<% if @page > 0 -%>
+			<% page = @exhibit.exhibit_pages[@page-1] -%>
+			<% border_active = false -%>
+			<% elements = page.exhibit_elements -%>
+			<% for element in elements -%>
+				<% ret = create_border_div(element, border_active, "exhibit_section_with_border") %>
+				<%= ret[:html] %>
+				<% border_active = ret[:border_active] -%>
+				<% is_first = ret[:is_first] -%>
+					<% if element.exhibit_element_layout_type == 'header' -%>
+						<%= render :partial => 'exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
+					<% elsif element.exhibit_element_layout_type == 'text' -%>
+						<%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %>
+					<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+						<% illustration = element.exhibit_illustrations.find(:first) -%>
+						<table><tr>
+							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
+							<td><%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %></td>
+						</tr></table>
+					<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+						<% illustration = element.exhibit_illustrations.find(:first) -%>
+						<table><tr>
+							<td><%= render :partial => 'exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %></td>
+							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
+						</tr></table>
+					<% elsif element.exhibit_element_layout_type == 'pics' -%>
+						<% pics = element.exhibit_illustrations -%>
+						<table><tr>
+							<% for pic in pics -%>
+							<td><%= render :partial => 'illustration', :locals => { :illustration => pic } %></td>
+							<% end -%>
+						</tr></table>
+					<% else -%>
+						Unknown element type:
+						<%= element.exhibit_element_layout_type %><br />
+					<% end -%>
+					<% is_first = false -%>
+				<% end # for element in elements -%>
+				<%= '</div>' if border_active %>
+			<br />
+			<% if @page < num_pages -%>
+				<div class="exhibit_nextlink">
+				<%= link_to "next &raquo;", :action => 'view', :id => @exhibit.id, :page => @page + 1 %>
+				</div>
+			<% end -%>
+		<% else # if page < 0 (bibliography page) -%>
+			<% hits = [] -%>
+			<% for object in @exhibit.exhibit_objects -%>
+				<% hits.insert(-1, CachedResource.get_hit_from_uri(object.uri)) -%>
+			<% end # for each object -%>
+			<%= render :partial => 'results/results', :locals => { :hits => hits, :user_id => 0 } %>
+		<% end # if page > 0 -%>
 <% end #if there are pages defined -%>
 </div>
 
