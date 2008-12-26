@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 94) do
+ActiveRecord::Schema.define(:version => 95) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -124,6 +124,16 @@ ActiveRecord::Schema.define(:version => 94) do
     t.string "name"
     t.string "url"
     t.string "button_url"
+  end
+
+  create_table "logs", :force => true do |t|
+    t.string   "user"
+    t.string   "request_method"
+    t.text     "request_uri"
+    t.text     "http_referer"
+    t.text     "params"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "old_exhibit_page_types", :force => true do |t|

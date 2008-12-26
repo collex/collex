@@ -109,3 +109,29 @@ end -%>
 <br />
 
 <%= link_to 'New exhibit_element', new_exhibit_element_path %>
+<br />
+
+<table border='1px solid black' cellspacing=0>
+  <tr>
+  	<th>ID</th>
+	<th>User</th>
+	<th>Method</th>
+    <th>URI</th>
+    <th>Params</th>
+    <th>Referer</th>
+    <th>Time</th>
+  </tr>
+
+<% logs = Log.find(:all, :order => 'updated_at', :limit => 200) -%>
+<% for log in logs %>
+  <tr>
+    <td><%= log.id %></td>
+    <td><%= log.user %></td>
+    <td><%= log.request_method %></td>
+    <td><%= log.request_uri %></td>
+    <td><%=h log.params %></td>
+    <td><%= log.http_referer %></td>
+    <td><%= log.updated_at %></td>
+  </tr>
+<% end %>
+</table>
