@@ -92,13 +92,24 @@
 	padding-left: 0px;
 }
 
+.unselected_page {
+	background-color: #cccccc;
+}
+
+.selected_page {
+	background-color: gray;
+}
+
+.selected_page .exhibit_outline_text {
+	color: white;
+}
+
 .outline_tree > li {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
 	margin-top:1em;
 	margin-bottom:1em;
-	background-color: #cccccc;
 }
 
 .outline_tree_elements {

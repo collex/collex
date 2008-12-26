@@ -203,6 +203,12 @@ function selectLine(id)
 	
 	$(id).addClassName( "outline_tree_element_selected" );
 	
+	var allElements = $$(".selected_page");
+	allElements.each( function(el) { el.removeClassName( "selected_page" );  });
+	var curr_page = $(id).up('.outline_tree_elements');
+	var curr_page1 = curr_page.previous('.unselected_page');
+	curr_page1.addClassName('selected_page');
+
 	// now scroll the page to show the element selected.
 	var arr = id.split('_');
 	var el_id = arr[arr.length-1];
@@ -263,20 +269,32 @@ function showExhibitOutline(element_id, page_num)
 	_exhibit_outline.show();
 	if (element_id > 0)
 		selectLine('outline_element_' + element_id);
+	else
+	{
+		// need to set the page_num to the current page number
+		page_num = parseInt($("current_page_num").innerHTML);
+	}
 		
 	var done = false;
 	var count = 1;
 	while (!done)
 	{
 		var id = 'outline_p' + count;
+		var curr_page = $('outline_page_' + count);
 		if ($(id) == null)
 			done = true;
 		else
 		{
 			if (page_num == count)
+			{
+				curr_page.addClassName('selected_page');
 				open_by_id(id);
+			}
 			else
+			{
+				curr_page.removeClassName('selected_page');
 				hide_by_id(id);
+			}
 		}
 		count++;
 	}
