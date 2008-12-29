@@ -243,7 +243,7 @@ module SearchHelper
     item = get_collected_item(hit)
     return "" if item == nil
     return "" if item.annotation == nil
-    note = h(item.annotation)
+    note = item.annotation
     note = note.gsub("\n", "<br />")
     return note
   end
