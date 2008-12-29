@@ -176,7 +176,7 @@ function showIllustrationEditor(event)
 	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
 	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
 	//dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
-	dlg.addTextArea('ill_text', 300, 100, 'text_only');
+	dlg.addTextArea('ill_text', 300, 100, 'text_only', [ 'alignment' ]);
 	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object']);
 	dlg.addList('nines_object', list.list, 'nines_only');
 
@@ -282,7 +282,7 @@ function showRichEditor(event)
 		onclick : 'showNinesObjectDlg(ed);'
 	};
 
-	dlg.addTextArea('value', 300, 100, null, extraButton);
+	dlg.addTextArea('value', 300, 100, null, [ 'drop_cap' ]);
 
 	// Now populate a hash with all the starting values.	
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with

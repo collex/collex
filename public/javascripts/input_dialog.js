@@ -10,7 +10,6 @@ InputDialog._win = null;
 InputDialog._form = null;
 InputDialog._table = null;
 InputDialog._extraButton = null;
-InputDialog._useRichEditor = true;
 
 InputDialog.prototype = {
 	initialize: function(element_id, submitCode)
@@ -28,7 +27,6 @@ InputDialog.prototype = {
 		this._table = new Element('table');
 		this._form.appendChild(this._table);
 		this._table.appendChild(new Element('tbody'));
-		this._useRichEditor = true;
 	},
 	
 	prepareDomForEditing: function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor)
@@ -49,7 +47,7 @@ InputDialog.prototype = {
 	
 	show: function(title, left, top, width, height, dataHash)
 	{
-			modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height);
+			modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton);
 			this._initData(dataHash);				
 	},
 	
@@ -110,17 +108,17 @@ InputDialog.prototype = {
 		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 	},
 	
-	addTextArea: function(id, width, height, className, extraButton)
+	addTextArea: function(id, width, height, className, extraButtons)
 	{
 		var wrapper = new Element('tr');
-		if (className != undefined)
+		if (className != null)
 			wrapper.addClassName(className);
 		var el = new Element('textarea', { id: id, name: id });
 		el.setStyle({ width: width + 'px', height: height + 'px', display: 'none' });
 		var td = Element.wrap(el, 'td', { colspan: 2, style: 'text-align: center' });
 		wrapper.appendChild(td);
 		this._table.down().appendChild(wrapper);
-		this._extraButton = extraButton;
+		this._extraButton = extraButtons;
 	},
 
 	///////////////////////////////// private members //////////////////////////////////
@@ -280,8 +278,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 			dlg.addSelect(promptStr, promptId, options);
 			break;
 		case 'textarea':
-			dlg.addTextArea(promptId, options.get('width'), options.get('height'));
-			dlg._useRichEditor = false;
+			dlg.addTextArea(promptId, options.get('width'), options.get('height'), null, [ ]);
 			width = options.get('width') + 10;
 			height = options.get('height') + 60;
 			break;

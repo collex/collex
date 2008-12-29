@@ -36,7 +36,7 @@ h3 {
 	padding:1em;
 }
 
-.exhibit_first:first-letter {
+.drop_cap:first-letter {
 	color:#999999;
 	float:left;
 	font-family:"Bell MT","Old English",Georgia,Times,serif;
@@ -46,8 +46,14 @@ h3 {
 	margin-right:0.08em;
 }
 
-.exhibit_first {
-	padding-bottom: 2em;
+.drop_cap p:first-letter {
+	color:#999999;
+	float:left;
+	font-family:"Bell MT","Old English",Georgia,Times,serif;
+	font-size:420%;
+	line-height:0.85em;
+	margin-bottom:-0.15em;
+	margin-right:0.08em;
 }
 
 .exhibit_header {
