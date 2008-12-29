@@ -221,12 +221,12 @@ ModalDialog.prototype = {
 		this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
 		this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);							
 		
-		setTimeout(function() {
+	    this.editor('afterRender', function() {
 			var toolbar = $(textAreaId + "_toolbar");
 			toolbar.setStyle({ position: 'absolute', right: '10px' });
 			var editArea = toolbar.next('.yui-editor-editable-container');
 			editArea.setStyle({ marginRight: '100px' });
-		}, 400);
+		}, this.editor, this);
 	},
 
 	_processDropCap : function()
@@ -287,8 +287,16 @@ ModalDialog.prototype = {
 			this.editor = new YAHOO.widget.SimpleEditor(textArea.id, {
 				  width: '702px',
 					height: '200px',
+					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
 					toolbar: toolbar,
 			});
+			
+//			this.editor._handleCreateLinkClick = function() {
+//			    this.on('afterExecCommand', function() {
+//			        var str = prompt('URL: ', 'link');
+//			        var el = this.currentElement[0].setAttribute('href', str);
+//			    }, this.editor, this);
+//			};
 			
 			if (extraButtons[0] == 'drop_cap')
 				this._processDropCap();
