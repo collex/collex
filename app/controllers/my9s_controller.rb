@@ -457,6 +457,18 @@ class My9sController < ApplicationController
       render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
     end
     
+    def modify_outline_add_first_element
+      page_id = params[:page]
+      page = ExhibitPage.find(page_id)
+      exhibit_id = page.exhibit_id
+      is_editing_border = false
+
+      new_element = page.insert_element(1)
+      element_id = new_element.id
+      
+      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
+    end
+    
     def refresh_outline
       element_div_id = params['element_id']
       if element_div_id != nil
