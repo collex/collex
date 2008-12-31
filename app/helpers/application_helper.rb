@@ -215,4 +215,52 @@ private
       link_to "RESEARCH", {:controller => "search"}, :title => "header=[research] body=[locate, collect, and annotate digital resources]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"
     end
   end
+  
+  def decode_exhibit_links(text)
+    # This routine turns our special <span> into a standard <a>
+    #<span class="linklike" nines="http://www.rossettiarchive.org/docs/s58.rap#2" title="NINES Object: http://www.rossettiarchive.org/docs/s58.rap#2">course</span>
+    # becomes:
+    #<a href="http://www.rossettiarchive.org/docs/s58.rap#2" target="_blank">course</a>
+    
+    # find all the spans
+    span_str = '<span'
+    arr = text.split(span_str)
+    return text if arr.length == 1
+    
+    str = arr[0]  # the first element has everything before the first span, so we just start with that.
+    is_first = true
+    for span in arr
+      if is_first
+        is_first = false  # skip the first section since we dealt with it above.
+      else
+        if span.include?('class="linklike') #if it is one of our spans, then translate it into a link
+          el= span.split('>', 2)  # find the end of the opening part of the span tag.
+          if (el[0].include?('nines="'))
+            # nines object type link. Convert the uri into a url
+            el2 = el[0].split('nines="', 2) # The uri is saved, we need to extract it, then convert it into a url.
+            el3 = el2[1].split('"', 2)
+            uri = el3[0]
+            url = CachedResource.get_link_from_uri(uri)
+            el4 = el[1].split('</span>', 2)
+            str += "<a href=\"#{url}\" target=\"_blank\">#{el4[0]}</a>#{el4[1]}"
+          elsif (el[0].include?('ext_link="'))
+            # external link
+            el2 = el[0].split('ext_link="', 2)
+            el3 = el2[1].split('"', 2)
+            url = el3[0]
+            url = "http://" + url if url.index("http://") != 0
+            el4 = el[1].split('</span>', 2)
+            str += "<a href=\"#{url}\" target=\"_blank\">#{el4[0]}</a>#{el4[1]}"
+          else
+            # don't know what it is, so just output it.
+            str += span_str + span
+          end
+        else
+          # Not one of our spans, so just stitch it back together
+          str += span_str + span
+        end
+      end
+    end
+    return str
+  end
 end

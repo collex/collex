@@ -20,7 +20,9 @@ end -%>
 	<% ajax_div_id = "'element_#{element_id},full-window-content'" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 	<% onload_text = "onload=\"initializeResizableImageElement('illustration_img_#{illustration_id}');\"" -%>
+	<% illustration_text = illustration.illustration_text -%>
 <% else -%>
+	<% illustration_text = decode_exhibit_links(illustration.illustration_text) -%>
 	<% element_id = -1 -%>
 	<% if link == "" -%>
 		<% wrapper_type = 'none' -%>
@@ -69,7 +71,7 @@ end -%>
 		<% if illustration_type == ExhibitIllustration.get_illustration_type_image() -%>
 			<img class="exhibit_illustration_img widenable" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>" <%= onload_text %> />
 		<% elsif illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
-			<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='width:<%= width %>px;'><%= illustration.illustration_text %></div>
+			<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='width:<%= width %>px;'><%= illustration_text %></div>
 		<% else # nines object -%>
 			<img class="exhibit_illustration_img widenable" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= illustration.alt_text %>" <%= onload_text %> />
 		<% end -%>
