@@ -259,13 +259,15 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 }
 
 // Take an image and show it in a modal lightbox.
+var _lightboxModalDialog = null;	// There is a problem with the object not destroying itself on close, so this is a hack so there is never more than one created.
 function showInLightbox(imageUrl)
 {
 	var divName = "lightbox";
 	var img = new Element('img', { src: imageUrl, alt: ""});
 	var form = img.wrap('form', { id: divName + "_id"});
-	var modalDialog = new ModalDialog();
-	modalDialog.showLightbox("Image", divName, form);
+	if (_lightboxModalDialog == null)
+		_lightboxModalDialog = new ModalDialog();
+	_lightboxModalDialog.showLightbox("Image", divName, form);
 }
 
 

@@ -64,16 +64,30 @@ ModalDialog.prototype = {
 		
 		this._divId = title.gsub(' ', '') + "_modal_dialog";
 		this._createDiv(this._divId);
-
+		
 		//create Dialog:
 		this.dialog = new YAHOO.widget.Dialog(this._divId, {
 			constraintoviewport: true,
-			fixedcenter: true,
 			modal: true
 		});
 		
 		this._handleEsc();
 		this._renderForm(title, targetElement, form);
+		
+		__divId = this._divId;
+		setTimeout(function() {
+			var div = $(__divId).up();
+			var w = parseInt(div.getStyle('width'));
+			var h = parseInt(div.getStyle('height'));
+			var vpHeight = getViewportHeight();
+			var vpWidth = getViewportWidth();
+			
+			// Now that we see how big the image is, center it
+			var left = (vpWidth - w)/2;
+			var top = (vpHeight - h)/2;
+			div.setStyle({ left: left + currentScrollPos()[0] + 'px', top: top + currentScrollPos()[1] + 'px' });
+
+		}, 300);
 	},
 
 	///////////////////////// private functions //////////////////////////////////////
