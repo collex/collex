@@ -17,6 +17,9 @@ body {
 a:link { color: #A60000; text-decoration: none; }
 a:visited { color: #A60000; text-decoration: none; }
 a:hover { color: #fff; text-decoration: none; background: #A60000; }
+.linklike {
+	color:#A60000;
+}
 
 form {
 	padding: 0;

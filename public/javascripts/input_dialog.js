@@ -10,6 +10,10 @@ InputDialog._win = null;
 InputDialog._form = null;
 InputDialog._table = null;
 InputDialog._extraButton = null;
+InputDialog._linkDlgHandler = null;
+InputDialog._modalDialog = null;
+InputDialog._okFunction = null;
+InputDialog._okObject = null;
 
 InputDialog.prototype = {
 	initialize: function(element_id, submitCode)
@@ -47,10 +51,20 @@ InputDialog.prototype = {
 	
 	show: function(title, left, top, width, height, dataHash)
 	{
-			modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton);
-			this._initData(dataHash);				
+		InputDialog._modalDialog = new ModalDialog();
+		if (this._okFunction)
+			InputDialog._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
+		else
+			InputDialog._modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._linkDlgHandler);
+		this._initData(dataHash);				
 	},
 	
+	setOkFunction : function(okFunction, okObject)
+	{
+		this._okFunction = okFunction;
+		this._okObject = okObject;
+	},
+
 	addSelect: function(label, id, options, change, className)
 	{
 		var wrapper = new Element('tr');
@@ -108,7 +122,7 @@ InputDialog.prototype = {
 		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 	},
 	
-	addTextArea: function(id, width, height, className, extraButtons)
+	addTextArea: function(id, width, height, className, extraButtons, linkDlgHandler)
 	{
 		var wrapper = new Element('tr');
 		if (className != null)
@@ -119,6 +133,7 @@ InputDialog.prototype = {
 		wrapper.appendChild(td);
 		this._table.down().appendChild(wrapper);
 		this._extraButton = extraButtons;
+		this._linkDlgHandler = linkDlgHandler;
 	},
 
 	///////////////////////////////// private members //////////////////////////////////
@@ -133,65 +148,8 @@ InputDialog.prototype = {
 
 	_observerSubmit: function(event)
 	{
-		modalDialog.handleSave();
+		InputDialog._modalDialog._handleSave();
 	},
-	
-	_userPressedOk: function(element_id, form_id)
-	{
-		modalDialog.handleSave();
-		// Just set a timeout here. This allows the tinyMCE to get the
-		// on submit callback and put the user's changed back in the
-		// original textarea. It also lets tinyMCE turn off the callbacks
-		// to that control so there isn't a javascript crash after removing
-		// it from the page.
-		//setTimeout('InputDialog.prototype._userPressedOk2("' + element_id + '","' + form_id + '");', 300);
-	},
-
-//	_userPressedOk2: function(element_id, form_id)
-//	{
-//		var el = $(element_id);
-//		var action = el.readAttribute('action');
-//		var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
-//	
-//		var params = { element_id: element_id };
-//		var els = $$('#' + form_id + ' input');
-//		els.each(function(e) { params[e.id] = e.value; });
-//		els = $$('#' + form_id + ' textarea');
-//		els.each(function(e) { params[e.id] = e.value; });
-//		els = $$('#' + form_id + ' select');
-//		els.each(function(e) { params[e.id] = e.value; });
-//	
-//		// If we have a comma separated list, we want to send the alert synchronously to each action
-//		// (Doing this synchronously eliminates any race condition: The first call can update the data and
-//		// the rest of the calls just update the page.
-//		var actions = action.split(',');
-//		var action_elements = ajax_action_element_id.split(',');
-//		if (actions.length == 1)
-//		{
-//			new Ajax.Updater(ajax_action_element_id, action, {
-//				parameters : params,
-//				evalScripts : true,
-//				onFailure : function(resp) { alert("Oops, there's been an error."); }
-//			});
-//		}
-//		else
-//		{
-//			new Ajax.Updater(action_elements[0], actions[0], {
-//				parameters : params,
-//				evalScripts : true,
-//				onComplete: function(resp) {
-//					new Ajax.Updater(action_elements[1], actions[1], {
-//						parameters : params,
-//						evalScripts : true,
-//						onFailure : function(resp) { alert("Oops, there's been an error."); }
-//					});
-//				},
-//				onFailure : function(resp) { alert("Oops, there's been an error."); }
-//			});
-//		}
-//		
-//		Windows.closeAllModalWindows();
-//	},
 	
 	_editorHover: function(ev)
 	{
@@ -210,31 +168,31 @@ InputDialog.prototype = {
 	}
 };
 
-var _observer = {
-  onResize: function(eventName, win) {
-	var mce = $(win.element).down('.mceIframeContainer');
-	if (mce != null)
-	{
-		var mcei = mce.down('iframe');
-		mcei.setStyle({ height: '100%' });
-		var mcel = $(win.element).down('.mceLayout');
-		mcel.setStyle({ width: '' });
-
-		// Height manipulation: needs to take the offset of the interior edit box, plus the offset to the 
-		// larger edit box (that includes the toolbar), and the height of the OK button, plus some extra
-		// for the window borders and a margin.
-		var mcetd = mcel.up().up();	// get to the <td> element
-		var top = mce.offsetTop + mcetd.offsetTop;
-		var ok = $(win.element).down('.editor_ok_button');
-		var margin = ok.offsetHeight + 30;
-		var height = win.height - top - margin;
-		
-		// Width manipulation: just needs a margin
-		var width = win.width - 10;
-		mce.setStyle({ height: height + "px", width: width + 'px' });
-	}
-  }
-}
+//var _observer = {
+//  onResize: function(eventName, win) {
+//	var mce = $(win.element).down('.mceIframeContainer');
+//	if (mce != null)
+//	{
+//		var mcei = mce.down('iframe');
+//		mcei.setStyle({ height: '100%' });
+//		var mcel = $(win.element).down('.mceLayout');
+//		mcel.setStyle({ width: '' });
+//
+//		// Height manipulation: needs to take the offset of the interior edit box, plus the offset to the 
+//		// larger edit box (that includes the toolbar), and the height of the OK button, plus some extra
+//		// for the window borders and a margin.
+//		var mcetd = mcel.up().up();	// get to the <td> element
+//		var top = mce.offsetTop + mcetd.offsetTop;
+//		var ok = $(win.element).down('.editor_ok_button');
+//		var margin = ok.offsetHeight + 30;
+//		var height = win.height - top - margin;
+//		
+//		// Width manipulation: just needs a margin
+//		var width = win.width - 10;
+//		mce.setStyle({ height: height + "px", width: width + 'px' });
+//	}
+//  }
+//}
 //Windows.addObserver(_observer);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,7 +236,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 			dlg.addSelect(promptStr, promptId, options);
 			break;
 		case 'textarea':
-			dlg.addTextArea(promptId, options.get('width'), options.get('height'), null, [ ]);
+			dlg.addTextArea(promptId, options.get('width'), options.get('height'), null, [ ], null);
 			width = options.get('width') + 10;
 			height = options.get('height') + 60;
 			break;
@@ -299,4 +257,15 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
 	$(promptId).focus();
 }
+
+// Take an image and show it in a modal lightbox.
+function showInLightbox(imageUrl)
+{
+	var divName = "lightbox";
+	var img = new Element('img', { src: imageUrl, alt: ""});
+	var form = img.wrap('form', { id: divName + "_id"});
+	var modalDialog = new ModalDialog();
+	modalDialog.showLightbox("Image", divName, form);
+}
+
 

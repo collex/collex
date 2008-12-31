@@ -6,21 +6,93 @@ ModalDialog.prototype = {
 	initialize: function () {
 	},
 	
+	_divId: null,
+	dialog: null,
+	editor: null,
+	targetElement: null,
+	formID: null,
+	usesRichTextArea: false,
+	_okFunction: null,
+	_okObject: null,
+	_linkDlgHandler: null,
+	
+	showPrompt: function(title, targetElement, form, left, top, width, height, extraButtons, okFunction, okObject) {
+		
+		this._okFunction = okFunction;
+		this._okObject = okObject;
+		
+		this._divId = title.gsub(' ', '') + "_modal_dialog";
+		this._createDiv(this._divId);
+
+		//create Dialog:
+		this.dialog = new YAHOO.widget.Dialog(this._divId, {
+			x: left, y: top, width: width, height: height,
+			constraintoviewport: true,
+			modal: true
+		});
+		
+		this._handleEsc();
+		this._setButtons();
+		this._renderForm(title, targetElement, form);
+		this._setRichTextAreas(extraButtons);
+		this.dialog.show();
+		this._setResize(this._divId);
+	},
+	
+	show: function(title, targetElement, form, left, top, width, height, extraButtons, linkDlgHandler) {
+		
+		this._linkDlgHandler = linkDlgHandler;
+		this._divId = title.gsub(' ', '') + "_modal_dialog";
+		this._createDiv(this._divId);
+
+		//create Dialog:
+		this.dialog = new YAHOO.widget.Dialog(this._divId, {
+			x: left, y: top, width: width, height: height,
+			constraintoviewport: true,
+			modal: true
+		});
+		
+		this._handleEsc();
+		this._setButtons();
+		this._renderForm(title, targetElement, form);
+		this._setRichTextAreas(extraButtons);
+		this.dialog.show();
+		this._setResize(this._divId);
+	},
+	
+	showLightbox: function(title, targetElement, form) {
+		
+		this._divId = title.gsub(' ', '') + "_modal_dialog";
+		this._createDiv(this._divId);
+
+		//create Dialog:
+		this.dialog = new YAHOO.widget.Dialog(this._divId, {
+			constraintoviewport: true,
+			fixedcenter: true,
+			modal: true
+		});
+		
+		this._handleEsc();
+		this._renderForm(title, targetElement, form);
+	},
+
+	///////////////////////// private functions //////////////////////////////////////
+
 	//if the user clicks "save", then we save the HTML
 	//content of the RTE and submit the dialog:
-	handleSave: function() {
+	_handleSave: function() {
 		
 		if( this.usesRichTextArea )
 			this.editor.saveHTML();
 		
-		this.sendToServer(this.targetElement, this.formID);
+		this._sendToServer(this.targetElement, this.formID);
 		this.dialog.hide();
 		this.dialog.destroy();
 	},
 
 	//if the user clicks cancel, we call Dialog's
 	//cancel method:
-	handleCancel: function() {
+	_handleCancel: function() {
 		this.dialog.cancel();
 		this.dialog.destroy();
 	},	
@@ -51,13 +123,8 @@ ModalDialog.prototype = {
 	{
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
-		var myButtons = [ { text:"Save", 
-											  handler: { fn: this.handleSave, obj: null, scope: this } 
-											},
-						  				{ text:"Cancel", 
-												handler: { fn: this.handleCancel, obj: null, scope: this },
-												isDefault:true 
-											}];
+		var myButtons = [ { text:"Save", handler: { fn: this._handleSave, obj: null, scope: this } 	},
+			{ text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
@@ -202,32 +269,32 @@ ModalDialog.prototype = {
 		}]
 	},
 	
-	_setRichTextAreaTiny : function(textAreaId)
-	{
-		//create the RTE:
-		this.editor = new YAHOO.widget.SimpleEditor(textAreaId, {
-			  width: '400px',
-				height: '2em',
-				toolbar: this._toolbarSimple
-		});
-
-		//render the editor explicitly into a container
-		//within the Dialog's DOM:
-		this.editor.render();
-		
-		//RTE needs a little love to work in in a Dialog that can be 
-		//shown and hidden; we let it know that it's being
-		//shown/hidden so that it can recover from these actions:
-		this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
-		this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);							
-		
-	    this.editor('afterRender', function() {
-			var toolbar = $(textAreaId + "_toolbar");
-			toolbar.setStyle({ position: 'absolute', right: '10px' });
-			var editArea = toolbar.next('.yui-editor-editable-container');
-			editArea.setStyle({ marginRight: '100px' });
-		}, this.editor, this);
-	},
+//	_setRichTextAreaTiny : function(textAreaId)
+//	{
+//		//create the RTE:
+//		this.editor = new YAHOO.widget.SimpleEditor(textAreaId, {
+//			  width: '400px',
+//				height: '2em',
+//				toolbar: this._toolbarSimple
+//		});
+//
+//		//render the editor explicitly into a container
+//		//within the Dialog's DOM:
+//		this.editor.render();
+//		
+//		//RTE needs a little love to work in in a Dialog that can be 
+//		//shown and hidden; we let it know that it's being
+//		//shown/hidden so that it can recover from these actions:
+//		this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
+//		this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);							
+//		
+//	    this.editor('afterRender', function() {
+//			var toolbar = $(textAreaId + "_toolbar");
+//			toolbar.setStyle({ position: 'absolute', right: '10px' });
+//			var editArea = toolbar.next('.yui-editor-editable-container');
+//			editArea.setStyle({ marginRight: '100px' });
+//		}, this.editor, this);
+//	},
 
 	_processDropCap : function()
 	{
@@ -275,6 +342,9 @@ ModalDialog.prototype = {
 		
 		// TODO-PER: Make this generic. Should be able to mix and match buttons. Right now there are only the following combos that are accepted.
 		var toolbar = null;
+		if (extraButtons == undefined)
+			extraButtons = [];
+			
 		if (extraButtons.length == 0)
 			toolbar = this._toolbarNoExtra;
 		else if (extraButtons[0] == 'alignment')
@@ -284,21 +354,16 @@ ModalDialog.prototype = {
 
 		textAreas.each( function(textArea) { 
 			//create the RTE:
+			// TODO-PER: This only works if there is only one textarea in the form. Make this generic when the second textarea is added.
 			this.editor = new YAHOO.widget.SimpleEditor(textArea.id, {
 				  width: '702px',
 					height: '200px',
-					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
+					// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
+					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' .linklike { color:#A60000; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
 					toolbar: toolbar,
 			});
 			
-//			this.editor._handleCreateLinkClick = function() {
-//			    this.on('afterExecCommand', function() {
-//			        var str = prompt('URL: ', 'link');
-//			        var el = this.currentElement[0].setAttribute('href', str);
-//			    }, this.editor, this);
-//			};
-			
-			if (extraButtons[0] == 'drop_cap')
+			if (extraButtons.length > 0 && extraButtons[0] == 'drop_cap')
 				this._processDropCap();
 
 			//attach the Editor's reusable property-editor
@@ -317,7 +382,11 @@ ModalDialog.prototype = {
 			//shown and hidden; we let it know that it's being
 			//shown/hidden so that it can recover from these actions:
 			this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
-			this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);							
+			this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);
+			
+			// Replace the link dialog with our own.
+			if (this._linkDlgHandler)
+				this._initLinkDlg(this.editor, textArea.id + "_container");
 		}, this);
 	},
 	
@@ -328,7 +397,7 @@ ModalDialog.prototype = {
 		{
 			var textAreas = $$('#'+this.formID+' textarea');
 			var resizer = new YAHOO.util.Resize(id);
-			resizer.subscribe( 'resize', this.dlgResized, textAreas[0].id, this);
+			resizer.subscribe( 'resize', this._dlgResized, textAreas[0].id, this);
 		}
 	},
 
@@ -340,10 +409,10 @@ ModalDialog.prototype = {
 
 		// var element = new Element("div", { id: 'descriptionContainer' });
 		// form.appendChild(element);
-		$("modal_dialog").appendChild(form);
+		$(this._divId).appendChild(form);
 		
 		// this is a hack for IE6 compatibility, render the dialog late so that it works properly. 
-		//document.getElementById("modal_dialog").style.display = "block";
+		//document.getElementById(this._divId).style.display = "block";
 		this.dialog.render();
 		
 		// fix the tab order: we don't want the close X in it.
@@ -351,72 +420,77 @@ ModalDialog.prototype = {
 		if (closeX.length > 0)
 			closeX[0].writeAttribute({ tabindex: 20 });
 	},
-
-	show: function(title, targetElement, form, left, top, width, height, extraButtons) {
-		
-		this._createDiv('modal_dialog');
-
-		//create Dialog:
-		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
-			x: left,
-			y: top,
-			width: width,
-			height: height,
-			constraintoviewport: true,
-			// fixedcenter: true,
-			modal: true
-		});
-		
-		this._handleEsc();
-		this._setButtons();
-		this._renderForm(title, targetElement, form);
-		this._setRichTextAreas(extraButtons);
-		//this._setRichTextAreaTiny('value');
-		this.dialog.show();
-		this._setResize("modal_dialog");
+	
+	wrapSelection : function(tag)
+	{
+		//Focus the editor's window 
+		this.editor._focusWindow(); 
+		this.editor._createCurrentElement(tag);
+		// PER: Don't know why the element is created with a spurious element "tag"
+		this.editor.currentElement[0].setAttribute('tag', '');
+		this.editor.currentElement[0].removeAttribute('tag');
+		return this.editor.currentElement[0];
 	},
 	
-	showLightbox: function(title, targetElement, form) {
-		
-		this._createDiv('modal_dialog');
-
-		//create Dialog:
-		this.dialog = new YAHOO.widget.Dialog('modal_dialog', {
-			constraintoviewport: true,
-			fixedcenter: true,
-			modal: true
-		});
-		
-		this._handleEsc();
-		this._renderForm(title, targetElement, form);
+	selectNode : function(node)
+	{
+		this.editor._selectNode(node);
 	},
-	
-	dlgResized: function (event, elementIdToResize)
+
+	_initLinkDlg : function(myEditor, id)
+	{
+		myEditor.on('toolbarLoaded', function() {
+		    //When the toolbar is loaded, add a listener to the insertimage button
+		    this.editor.toolbar.on('createlinkClick', function() {
+				// We only want to allow the user a chance to make a link if they've selected something useful.
+				// That is one of two things: more than one character in the same node (that is, there is no formatting),
+				// or the cursor or selection is in an anchor node already.
+				// In the second case, the current link is preselected when the dialog is shown.
+				// If the user has selected something we can't use, then give a friendly message.
+				// Also, if the user selected part of an existing anchor, then select the entire anchor.
+				
+				// be sure the selection doesn't go over different tags.
+				var s = this.editor._getSelection();
+				var single = (s.anchorNode == s.focusNode);
+				if (!single)
+				{
+					alert("The selection covers more than one editing element. A link cannot be created until you select something different.");
+					return false;
+				}
+				
+				this._linkDlgHandler.onShowLinkDlg(this, id, s.focusNode.parentNode, (s.anchorOffset != s.focusOffset));
+
+	            //This is important.. Return false here to not fire the rest of the listeners
+	            return false;
+		    }, this, true);
+		}, this, true);
+	},
+
+	_dlgResized: function (event, elementIdToResize)
 	{
 		var el = $(elementIdToResize+"_container");
-		var elForm = el.up(".modal_dialog_form");
+		//var elForm = el.up("." + this._divId + "_form");
+		var elForm = $(this.formID);
 		var fontSize = parseFloat(elForm.getStyle("fontSize"));
 		var margin = parseInt(fontSize*2 + "");
 		el.setStyle({ width: event.width - margin - 10 + 'px'});
 		
-		var elFt = $("modal_dialog").down('.ft');
+		var elFt = $(this._divId).down('.ft');
 		var ftHeight = parseInt(elFt.getStyle('height'));
-		var elHd = $("modal_dialog").down('.hd');
+		var elHd = $(this._divId).down('.hd');
 		var hdHeight = parseInt(elHd.getStyle('height'));
 		var elTb = el.down(".yui-toolbar-container");
 		var tbHeight = parseInt(elTb.getStyle('height'));
 		var yEl = getY(el);
-		var yDlg = getY($("modal_dialog"));
+		var yDlg = getY($(this._divId));
 		var relPos = yEl - yDlg;
 		
 		var elHeight = el.down(".yui-editor-editable-container");
 		elHeight.setStyle({ height: event.height - relPos - margin/2 - ftHeight - hdHeight - tbHeight + 'px'});
 	},
 
-	sendToServer: function( element_id, form_id ) {
+	_sendToServer: function( element_id, form_id ) {
 		var el = $(element_id);
-		var action = el.readAttribute('action');
-		var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
 	
 		var params = { element_id: element_id };
 		var els = $$('#' + form_id + ' input');
@@ -426,51 +500,54 @@ ModalDialog.prototype = {
 		els = $$('#' + form_id + ' select');
 		els.each(function(e) { params[e.id] = e.value; });
 		
-		var onCompleteCallback = function() {
-		  Try.these(
-		    function() { initializeElementEditing() },
-				function() {}
-		  );
-		}
-	
-		// If we have a comma separated list, we want to send the alert synchronously to each action
-		// (Doing this synchronously eliminates any race condition: The first call can update the data and
-		// the rest of the calls just update the page.
-		var actions = action.split(',');
-		var action_elements = ajax_action_element_id.split(',');
-		if (actions.length == 1)
+		if (this._okFunction != null)
 		{
-			new Ajax.Updater(ajax_action_element_id, action, {
-				parameters : params,
-				evalScripts : true,
-				onComplete : onCompleteCallback,				
-				onFailure : function(resp) { alert("Oops, there's been an error."); }
-			});
+			this._okFunction(	this._okObject, params);	
 		}
 		else
 		{
-			new Ajax.Updater(action_elements[0], actions[0], {
-				parameters : params,
-				evalScripts : true,
-				onComplete: function(resp) {
-					new Ajax.Updater(action_elements[1], actions[1], {
-						parameters : params,
-						evalScripts : true,
-						onComplete : onCompleteCallback,						
-						onFailure : function(resp) { alert("Oops, there's been an error."); }
-					});
-				},
-				onFailure : function(resp) { alert("Oops, there's been an error."); }
-			});
+			// We weren't given a function for ok, therefore we want to ajax the results back to the server.
+			var action = el.readAttribute('action');
+			var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
+			
+			var onCompleteCallback = function() {
+			  Try.these(
+			    function() { initializeElementEditing() },
+					function() {}
+			  );
+			}
+		
+			// If we have a comma separated list, we want to send the alert synchronously to each action
+			// (Doing this synchronously eliminates any race condition: The first call can update the data and
+			// the rest of the calls just update the page.
+			var actions = action.split(',');
+			var action_elements = ajax_action_element_id.split(',');
+			if (actions.length == 1)
+			{
+				new Ajax.Updater(ajax_action_element_id, action, {
+					parameters : params,
+					evalScripts : true,
+					onComplete : onCompleteCallback,				
+					onFailure : function(resp) { alert("Oops, there's been an error."); }
+				});
+			}
+			else
+			{
+				new Ajax.Updater(action_elements[0], actions[0], {
+					parameters : params,
+					evalScripts : true,
+					onComplete: function(resp) {
+						new Ajax.Updater(action_elements[1], actions[1], {
+							parameters : params,
+							evalScripts : true,
+							onComplete : onCompleteCallback,						
+							onFailure : function(resp) { alert("Oops, there's been an error."); }
+						});
+					},
+					onFailure : function(resp) { alert("Oops, there's been an error."); }
+				});
+			}
 		}
 	}
-}
-
-function showInLightbox(imageUrl)
-{
-	var divName = "lightbox";
-	var img = new Element('img', { src: imageUrl, alt: ""});
-	var form = img.wrap('form', { id: divName + "_id"});
-	modalDialog.showLightbox("Image", divName, form);
 }
 
