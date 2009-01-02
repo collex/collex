@@ -273,25 +273,24 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 }
 
 // Take an image and show it in a modal lightbox.
-var _lightboxModalDialog = null;	// There is a problem with the object not destroying itself on close, so this is a hack so there is never more than one created.
+//var _lightboxModalDialog = null;	// There is a problem with the object not destroying itself on close, so this is a hack so there is never more than one created.
 function showInLightbox(imageUrl, referenceElementId)
 {
 	var divName = "lightbox";
 	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
 	img.setStyle({display: 'none' });
-	img.observe('load', _lightboxCenter);
 	var form = img.wrap('form', { id: divName + "_id"});
 	var progress = new Element('center', { id: 'lightbox_img_spinner', 'class': 'lightbox_img_spinner'});
 	progress.appendChild(new Element('div').update("Image Loading..."));
 	progress.appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
-	if (_lightboxModalDialog == null)
-		_lightboxModalDialog = new ModalDialog();
+	var lightboxModalDialog = new ModalDialog();
+	img.observe('load', _lightboxCenter.bind(lightboxModalDialog));
 	var el = $(referenceElementId);
 	var left = getX(el);
 	var top = getY(el);
-	_lightboxModalDialog.showLightbox("Image", divName, form, left, top);
+	lightboxModalDialog.showLightbox("Image", divName, form, left, top);
 }
 
 function _lightboxCenter()
@@ -316,5 +315,5 @@ function _lightboxCenter()
 		img.height = vpHeight - 80;
 	}
 
-	_lightboxModalDialog.center();
+	this.center();
 }

@@ -52,6 +52,8 @@ ModalDialog.prototype = {
 		this._setRichTextAreas(extraButtons);
 		this.dialog.show();
 		this._setResize(this._divId);
+		
+		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
 	},
 	
 	show: function(title, targetElement, form, left, top, width, height, extraButtons, linkDlgHandler) {
@@ -73,6 +75,8 @@ ModalDialog.prototype = {
 		this._setRichTextAreas(extraButtons);
 		this.dialog.show();
 		this._setResize(this._divId);
+		
+		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
 	},
 	
 	showLightbox: function(title, targetElement, form, left, top) {
@@ -91,6 +95,8 @@ ModalDialog.prototype = {
 		this._handleEsc();
 		this._setCancelButton();
 		this._renderForm(title, targetElement, form);
+		
+		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
 	},
 	
 	center: function()
@@ -131,9 +137,9 @@ ModalDialog.prototype = {
 	_createDiv : function(id)
 	{
 		// if it already exists, destroy and recreate it
-		if( $(id) ) {
-			this.dialog.destroy();
-		}
+//		if( $(id) ) {
+//			this.dialog.destroy();
+//		}
 
 		var modalDialogDiv = new Element("div", { id: id });
 		$$('body').first().appendChild(modalDialogDiv);
