@@ -263,11 +263,31 @@ var _lightboxModalDialog = null;	// There is a problem with the object not destr
 function showInLightbox(imageUrl)
 {
 	var divName = "lightbox";
-	var img = new Element('img', { src: imageUrl, alt: ""});
+	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
+	//img.setStyle({maxWidth: getViewportWidth()-40 });
+	img.observe('load', _lightboxCenter);
 	var form = img.wrap('form', { id: divName + "_id"});
 	if (_lightboxModalDialog == null)
 		_lightboxModalDialog = new ModalDialog();
 	_lightboxModalDialog.showLightbox("Image", divName, form);
 }
 
+function _lightboxCenter()
+{
+	var img = $('lightbox_img');
+	var w = parseInt(img.getStyle('width'));
+	var vpWidth = getViewportWidth();
+	if (w > vpWidth)
+		img.width = vpWidth - 40;
+	var h = parseInt(img.getStyle('height'));
+	var vpHeight = getViewportHeight();
+	if (h > vpHeight)
+	{
+		img.removeAttribute('width');
+		img.height = vpHeight - 80;
+	}
 
+	setTimeout(function() {
+		_lightboxModalDialog.center();
+	}, 100);
+}

@@ -68,26 +68,27 @@ ModalDialog.prototype = {
 		//create Dialog:
 		this.dialog = new YAHOO.widget.Dialog(this._divId, {
 			constraintoviewport: true,
+			x: currentScrollPos()[0], y: currentScrollPos()[1],
 			modal: true
 		});
 		
 		this._handleEsc();
+		this._setCancelButton();
 		this._renderForm(title, targetElement, form);
+	},
+	
+	center: function()
+	{
+		var div = $(this._divId).up();
+		var w = parseInt(div.getStyle('width'));
+		var h = parseInt(div.getStyle('height'));
+		var vpHeight = getViewportHeight();
+		var vpWidth = getViewportWidth();
 		
-		__divId = this._divId;
-		setTimeout(function() {
-			var div = $(__divId).up();
-			var w = parseInt(div.getStyle('width'));
-			var h = parseInt(div.getStyle('height'));
-			var vpHeight = getViewportHeight();
-			var vpWidth = getViewportWidth();
-			
-			// Now that we see how big the image is, center it
-			var left = (vpWidth - w)/2;
-			var top = (vpHeight - h)/2;
-			div.setStyle({ left: left + currentScrollPos()[0] + 'px', top: top + currentScrollPos()[1] + 'px' });
-
-		}, 300);
+		// Now that we see how big the image is, center it
+		var left = (vpWidth - w)/2;
+		var top = (vpHeight - h)/2;
+		div.setStyle({ left: left + currentScrollPos()[0] + 'px', top: top + currentScrollPos()[1] + 'px' });
 	},
 
 	///////////////////////// private functions //////////////////////////////////////
@@ -139,6 +140,14 @@ ModalDialog.prototype = {
 		//up to our handlers:
 		var myButtons = [ { text:"Save", handler: { fn: this._handleSave, obj: null, scope: this } 	},
 			{ text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
+		this.dialog.cfg.queueProperty("buttons", myButtons);
+	},
+	
+	_setCancelButton : function()
+	{
+		//set up buttons for the Dialog and wire them
+		//up to our handlers:
+		var myButtons = [ { text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
