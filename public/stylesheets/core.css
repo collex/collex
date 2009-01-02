@@ -114,6 +114,7 @@ color:inherit;
 
 .standard_box {
 	border: 1px solid gray;
+	margin-bottom: 1em;
 }
 
 .standard_box h1 {

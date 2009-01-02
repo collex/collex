@@ -26,46 +26,47 @@
 		
 		<table class="results_layout"><tr>
 			<tr>
-				<td class="tag_results standard_box">
-					<h1>MY TAGS</h1>
-					<% selected_tag = "" -%>
-					<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
-					<div id="tag_cloud_div">
-						<%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s'  } %>
+				<td  valign="top">
+					<div class="tag_results standard_box">
+						<h1>MY TAGS</h1>
+						<% selected_tag = "" -%>
+						<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
+						<div id="tag_cloud_div">
+							<%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s'  } %>
+						</div>
+						<div class="untagged_and_all_links">
+							<% if params[:view] == 'untagged' -%>
+							<span class="sidebar_tag_link_selected">List All Untagged Objects</span>
+							<% else -%>
+							<span class="sidebar_tag_link"><%= link_to "List All Untagged Objects", { :action => 'results', :view => 'untagged', :anchor => "top_of_results" } %></span>
+							<% end -%>
+							&nbsp;
+							<% if params[:view] == 'all_collected' -%>
+							<span class="sidebar_tag_link_selected">List All Collected Objects</span>
+							<% else -%>
+							<span class="sidebar_tag_link"><%= link_to "List All Collected Objects", { :action => 'results', :view => 'all_collected', :anchor => "top_of_results" } %></span>
+							<% end -%>
+						</div>
 					</div>
-					<div class="untagged_and_all_links">
-						<% if params[:view] == 'untagged' -%>
-						<span class="sidebar_tag_link_selected">List All Untagged Objects</span>
-						<% else -%>
-						<span class="sidebar_tag_link"><%= link_to "List All Untagged Objects", { :action => 'results', :view => 'untagged', :anchor => "top_of_results" } %></span>
-						<% end -%>
-						&nbsp;
-						<% if params[:view] == 'all_collected' -%>
-						<span class="sidebar_tag_link_selected">List All Collected Objects</span>
-						<% else -%>
-						<span class="sidebar_tag_link"><%= link_to "List All Collected Objects", { :action => 'results', :view => 'all_collected', :anchor => "top_of_results" } %></span>
-						<% end -%>
+					<div class="tag_results standard_box">
+						<%= render( :partial => 'results/result_count' ) %>    
+						<h1><a id="top_of_results"><%= create_total(params[:view], @total_hits, params[:tag]) %><a></h1>
+						<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results"} }  ) %>
+						
+						<div id="all_displayed_results">
+							<%= render( :partial => 'results/results', :locals => { :user_id => user.id, :hits => @results } ) %>
+						</div>
+						
+						<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results" } } ) %>
 					</div>
 				</td>
-				<td rowspan="2" width="150px" valign="top">
+				<td width="200px" valign="top">
 					<div id="exhibited_objects_container" class="standard_box">
 						<%= render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id } %>
 					</div>
 				</td>
 			</tr>
 
-			<tr>
-				<td class="tag_results standard_box">
-				<%= render( :partial => 'results/result_count' ) %>    
-				<h1><a id="top_of_results"><%= create_total(params[:view], @total_hits, params[:tag]) %><a></h1>
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results"} }  ) %>
-				
-				<div id="all_displayed_results">
-					<%= render( :partial => 'results/results', :locals => { :user_id => user.id, :hits => @results } ) %>
-				</div>
-				
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results" } } ) %>
-				</td>
-			</tr></table>
+		</table>
 		</div>
 	<% end -%>

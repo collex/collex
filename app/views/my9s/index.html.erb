@@ -32,7 +32,6 @@
 						<h1>PROFILE</h1>
 					<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
 					</div>
-					<br />
 					<div class="standard_box">
 						<h1>RECENTLY COLLECTED ITEMS</h1>
 					      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user.id, :hits => @results } ) %>
@@ -43,7 +42,6 @@
 				</td>
 				<td valign="top">
 					<%= render :partial => 'search/save_search_list' %>
-					<br/>
 					<div class="standard_box narrow_tag_cloud">
 						<center>
 							<h1>MY TAGS</h1>
@@ -53,7 +51,6 @@
 							</div>
 						</center>
 					</div>
-					<br />
 					<div class="standard_box">
 						<h1>MY EXHIBITS</h1>
 						<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', curr_user.id] ) -%>
