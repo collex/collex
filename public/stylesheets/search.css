@@ -178,6 +178,9 @@ font-size: 12pt;
 	margin: 10px;
 }
 
+.save_search_instruction {
+	font-style: italic;
+}
 /*#facettable {
 	/*width: 98%;* /
 }

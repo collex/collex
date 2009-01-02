@@ -1,7 +1,24 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+	
 <%# If a user is not logged in, then do nothing.
 	If the user just clicked on a saved search, then display the name.
 	Display the save link, and put up a form if the user wants to save the current search. -%>
-	
+
 <% if is_logged_in? -%>
 <% if session[:name_of_search] -%>
 : <%= session[:name_of_search] %>
@@ -10,7 +27,7 @@
 	<%= text_field_tag :name, "", {:size => 10, :id => "savesearch_name"} %>
 	<%= link_to_function "save", "document.forms['savesearch'].submit();" -%>
 	<%= link_to_function "cancel", "Element.toggle('savesearch'); Element.toggle('savesearch_link')" -%>
-<% end %>
+<% end #creating the form -%>
 <% if has_constraints? -%>
 <%= link_to_function "[save search]", "doSaveSearch('savesearch_link')", {:id => "savesearch_link"} -%>
 <% end # has constraints -%>
@@ -23,4 +40,6 @@
         <span style="clear:both;float:right;"><%= link_to_function "ok", "doSaveSearchSubmit();" -%>&nbsp; </span>
     </form>
 </div>
+<% else # not logged in -%>
+<span class="save_search_instruction">&nbsp;&nbsp;(<%= link_to "Sign in", :controller => 'login' %> to save this search)</span>
 <% end # if the user is logged in -%>

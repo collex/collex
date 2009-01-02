@@ -14,16 +14,16 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<div class="login-title">Collex Account Log In</div>
-<div class="login-explanation">Log in to personalize your Collex experience.<br/>
-If you log in, you can collect objects and create tags.
+<div class="login-title">Collex Account Sign In</div>
+<div class="login-explanation">Sign in to personalize your Collex experience.<br/>
+If you sign in, you can collect objects and create tags.
 </div>
 
-<div class="login-option">Log in</div>
+<div class="login-option">Sign in</div>
 <% form_tag :controller => "login", :action => "verify_login" do %> 
   <table class="login-option2"> 
     <tr> 
-      <td>User name:</td> 
+      <td>User name:</td>
       <td><%= text_field_tag("username", '', :size => 30) %></td> 
     </tr> 
     <tr> 
@@ -31,7 +31,7 @@ If you log in, you can collect objects and create tags.
       <td><%= password_field_tag('password', '', :size => 30 ) %></td> 
     </tr> 
     <tr> 
-      <td colspan="2"><input type="submit" value=" Log In" /></td> 
+      <td colspan="2"><input type="submit" value=" Sign In" /></td> 
     </tr> 
   </table> 
 <% end %> 
