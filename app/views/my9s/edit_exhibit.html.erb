@@ -73,18 +73,18 @@ document.observe('dom:loaded', function() {
 		<%= link_to "[Preview]", :controller => 'exhibits', :action => 'view', :id => preview_id %><br />
 		<br /><br />
 
-		<% if @page > 0 -%>
-			<% page = @exhibit.exhibit_pages[@page-1] -%>
-			<div id="edit_exhibit_page">
+		<div id="edit_exhibit_page">
+			<% if @page > 0 -%>
+				<% page = @exhibit.exhibit_pages[@page-1] -%>
 				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page, :top => nil } %>
-			</div>
-		<% else # if page < 0 (bibliography page) -%>
-			<% hits = [] -%>
-			<% for object in @exhibit.exhibit_objects -%>
-				<% hits.insert(-1, CachedResource.get_hit_from_uri(object.uri)) -%>
-			<% end # for each object -%>
-			<%= render :partial => 'results/results', :locals => { :hits => hits, :user_id => 0 } %>
-		<% end # if page > 0 -%>
+			<% else # if page < 0 (bibliography page) -%>
+				<% hits = [] -%>
+				<% for object in @exhibit.exhibit_objects -%>
+					<% hits.insert(-1, CachedResource.get_hit_from_uri(object.uri)) -%>
+				<% end # for each object -%>
+				<%= render :partial => 'results/results', :locals => { :hits => hits, :user_id => 0 } %>
+			<% end # if page > 0 -%>
+		</div>
 		<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
 	<% end # is logged in -%>
 </div>

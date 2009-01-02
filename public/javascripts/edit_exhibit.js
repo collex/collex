@@ -279,6 +279,10 @@ var _exhibit_outline_pos = null;
 function showExhibitOutline(element_id, page_num)
 {
 	_exhibit_outline.show();
+	
+	if (page_num == -1)
+		return;
+
 	if (element_id > 0)
 		selectLine('outline_element_' + element_id);
 	else
