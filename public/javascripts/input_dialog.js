@@ -274,21 +274,32 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 
 // Take an image and show it in a modal lightbox.
 var _lightboxModalDialog = null;	// There is a problem with the object not destroying itself on close, so this is a hack so there is never more than one created.
-function showInLightbox(imageUrl)
+function showInLightbox(imageUrl, referenceElementId)
 {
 	var divName = "lightbox";
 	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
-	//img.setStyle({maxWidth: getViewportWidth()-40 });
+	img.setStyle({display: 'none' });
 	img.observe('load', _lightboxCenter);
 	var form = img.wrap('form', { id: divName + "_id"});
+	form.appendChild(new Element('img', { id: 'lightbox_img_spinner', src: "/images/ajax_loader.gif", alt: 'Please Wait...'}).wrap('center'));
 	if (_lightboxModalDialog == null)
 		_lightboxModalDialog = new ModalDialog();
-	_lightboxModalDialog.showLightbox("Image", divName, form);
+	var el = $(referenceElementId);
+	var left = getX(el);
+	var top = getY(el);
+	_lightboxModalDialog.showLightbox("Image", divName, form, left, top);
 }
 
 function _lightboxCenter()
 {
 	var img = $('lightbox_img');
+	if (!img)	// The user must have cancelled.
+		return;
+
+	var img_spinner = $('lightbox_img_spinner');
+	if (img_spinner)
+		img_spinner.remove();
+	img.setStyle({display: 'inherit'});
 	var w = parseInt(img.getStyle('width'));
 	var vpWidth = getViewportWidth();
 	if (w > vpWidth)
@@ -301,7 +312,5 @@ function _lightboxCenter()
 		img.height = vpHeight - 80;
 	}
 
-	setTimeout(function() {
-		_lightboxModalDialog.center();
-	}, 100);
+	_lightboxModalDialog.center();
 }

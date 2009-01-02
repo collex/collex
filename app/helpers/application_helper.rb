@@ -141,7 +141,7 @@ private
     image = CachedResource.get_image_from_hit(hit)
     str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}"})
     if image != thumb
-      str = "<a onclick='showInLightbox(\"#{image}\"); return false;' href='#'>#{str}</a>"
+      str = "<a onclick='showInLightbox(\"#{image}\", \"thumbnail_#{hit['uri']}\"); return false;' href='#'>#{str}</a>"
     end
     return str
   end

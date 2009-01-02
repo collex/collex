@@ -75,15 +75,16 @@ ModalDialog.prototype = {
 		this._setResize(this._divId);
 	},
 	
-	showLightbox: function(title, targetElement, form) {
+	showLightbox: function(title, targetElement, form, left, top) {
 		
 		this._divId = title.gsub(' ', '') + "_modal_dialog";
 		this._createDiv(this._divId);
 		
 		//create Dialog:
 		this.dialog = new YAHOO.widget.Dialog(this._divId, {
-			constraintoviewport: true,
-			x: currentScrollPos()[0], y: currentScrollPos()[1],
+			//constraintoviewport: true,
+			//x: currentScrollPos()[0], y: currentScrollPos()[1],
+			x: left, y: top,
 			modal: true
 		});
 		
@@ -141,8 +142,8 @@ ModalDialog.prototype = {
 	_handleEsc : function()
 	{
 		var klEsc = new YAHOO.util.KeyListener(document, { keys:27 },  							
-			{ fn:this.dialog.hide,
-				scope:this.dialog,
+			{ fn:this._handleCancel,
+				scope:this,
 				correctScope:true }, "keyup" ); 
 			// keyup is used here because Safari won't recognize the ESC
 			// keydown event, which would normally be used by default
