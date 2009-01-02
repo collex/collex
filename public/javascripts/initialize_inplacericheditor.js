@@ -253,6 +253,7 @@ LinkDlgHandler.prototype = {
 		var size = 52;
 		dlg.addSelect('Type of Link:', 'ld_type', this._linkTypes, this._selectionChanged);
 		dlg.addTextInput('Link URL:', 'ld_link_url', size, 'ld_link_only');
+		dlg.addHr();
 		var list = new CreateList(gCollectedObjects, 'ld_nines_only', values['ld_nines_object'], 'ld_nines_object');
 		dlg.addList('ld_nines_object', list.list, 'ld_nines_only');
 	
