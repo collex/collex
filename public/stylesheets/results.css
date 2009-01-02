@@ -45,6 +45,17 @@
 .collect_link {
 	/*font-size: 1.4em;*/
 }
+
+.lightbox_img_spinner div {
+	font-size: 1.5em;
+	padding: 1em;
+	width: 300px;
+}
+
+.lightbox_img_spinner img {
+	padding: 35px;
+}
+
 /*.collectlink {
 	text-align: left;
 	vertical-align: top;

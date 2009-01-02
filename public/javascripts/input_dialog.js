@@ -281,7 +281,11 @@ function showInLightbox(imageUrl, referenceElementId)
 	img.setStyle({display: 'none' });
 	img.observe('load', _lightboxCenter);
 	var form = img.wrap('form', { id: divName + "_id"});
-	form.appendChild(new Element('img', { id: 'lightbox_img_spinner', src: "/images/ajax_loader.gif", alt: 'Please Wait...'}).wrap('center'));
+	var progress = new Element('center', { id: 'lightbox_img_spinner', 'class': 'lightbox_img_spinner'});
+	progress.appendChild(new Element('div').update("Image Loading..."));
+	progress.appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+	progress.appendChild(new Element('div').update("Please wait"));
+	form.appendChild(progress);
 	if (_lightboxModalDialog == null)
 		_lightboxModalDialog = new ModalDialog();
 	var el = $(referenceElementId);
