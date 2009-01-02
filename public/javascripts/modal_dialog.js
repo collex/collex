@@ -492,7 +492,7 @@ ModalDialog.prototype = {
 				var single = (s.anchorNode == s.focusNode);
 				if (!single)
 				{
-					alert("The selection covers more than one editing element. A link cannot be created until you select something different.");
+					alert("When creating a link, the selected text may not span across multiple text styles or other links. Please adjust your selection to create a link.");
 					return false;
 				}
 				
