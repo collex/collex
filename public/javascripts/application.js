@@ -773,4 +773,35 @@ function ExtractNumber(value)
 	return n == null || isNaN(n) ? 0 : n;
 }
 
+function thumbnail_resize()
+{
+	var img = $(this);
+	var height = parseInt(img.up().getStyle('height'));
+
+	var natural_width = img.width;
+	var natural_height = img.height;
+	var ratio = natural_width / natural_height;
+	
+    if (natural_width > natural_height)
+	{
+      var margin_top = 0;
+      var img_width = parseInt(height*ratio + "");
+      var margin_left = parseInt((height - img_width) / 2 + "");
+    } else {
+      var inner_height = height/ratio;
+      var margin_top = '-' + parseInt((inner_height - height) / 2 + "");
+      var margin_left = 0;
+      var img_width = height;
+    }
+	
+	img.setStyle({
+		display: 'inherit',
+		marginTop: margin_top + 'px',
+		marginLeft: margin_left +'px'
+	});
+	
+	img.writeAttribute('width', img_width);
+}
+
+
 
