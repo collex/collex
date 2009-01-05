@@ -221,7 +221,9 @@ private
     #<span class="linklike" nines="http://www.rossettiarchive.org/docs/s58.rap#2" title="NINES Object: http://www.rossettiarchive.org/docs/s58.rap#2">course</span>
     # becomes:
     #<a href="http://www.rossettiarchive.org/docs/s58.rap#2" target="_blank">course</a>
-    
+
+    return text if text == nil || text == ''
+
     # find all the spans
     span_str = '<span'
     arr = text.split(span_str)
