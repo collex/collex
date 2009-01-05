@@ -778,6 +778,8 @@ function thumbnail_resize()
 	var img = $(this);
 	var height = parseInt(img.up().getStyle('height'));
 
+	img.show();
+		
 	var natural_width = img.width;
 	var natural_height = img.height;
 	var ratio = natural_width / natural_height;
@@ -795,7 +797,6 @@ function thumbnail_resize()
     }
 	
 	img.setStyle({
-		display: 'inherit',
 		marginTop: margin_top + 'px',
 		marginLeft: margin_left +'px'
 	});
