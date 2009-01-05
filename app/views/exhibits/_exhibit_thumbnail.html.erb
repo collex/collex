@@ -1,3 +1,8 @@
 <% #parameters: Exhibit exhibit; int height=50; -%>
 <% height ||= 50 -%>
-<div class="exhibit_thumbnail"><img src="<%= get_image_url(exhibit.thumbnail) %>" alt="" height="<%= height %>"/></div>
+<% dimensions = get_exhibit_thumbnail_dimensions(exhibit, height) -%>
+<div class="exhibit_thumbnail" style="overflow: hidden;width:<%= height %>px;height:<%= height %>px"><img id="thumbnail_<%=exhibit.id %>" src="<%= get_image_url(exhibit.thumbnail)%>" style="display:none;" alt=""/></div>
+<script language="JavaScript">
+	$("thumbnail_<%=exhibit.id %>").observe('load', thumbnail_resize);
+</script>
+

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 95) do
+ActiveRecord::Schema.define(:version => 97) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -104,6 +104,9 @@ ActiveRecord::Schema.define(:version => 95) do
     t.datetime "updated_at"
     t.string   "visible_url"
     t.integer  "is_published", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbleft",    :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbwidth",   :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbtop",     :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "facet_categories", :force => true do |t|
