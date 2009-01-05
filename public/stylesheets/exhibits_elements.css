@@ -158,6 +158,13 @@ h3 {
 	text-decoration:none;
 }
 
+.bibliography_explanation {
+	background-color: #dddddd;
+	margin-top: 1em;
+	margin-left: 3em;
+	font-size: 1.2em;
+	padding:5px;
+}
 /* These are from the original sample website. They probably aren't needed.
 .content {
 padding-bottom:1em;

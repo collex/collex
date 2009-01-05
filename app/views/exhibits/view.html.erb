@@ -60,6 +60,9 @@
 				<% hits.insert(-1, CachedResource.get_hit_from_uri(object.uri)) -%>
 			<% end # for each object -%>
 			<%= render :partial => 'results/results', :locals => { :hits => hits, :user_id => 0 } %>
+			<% if hits.length == 0 -%>
+				<span class="bibliography_explanation">No objects have been collected for this exhibit.</span>
+			<% end -%>
 		<% end # if page > 0 -%>
 <% end #if there are pages defined -%>
 </div>
