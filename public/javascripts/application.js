@@ -782,6 +782,14 @@ function thumbnail_resize()
 		
 	var natural_width = img.width;
 	var natural_height = img.height;
+	
+	if (natural_height == 0)
+	{
+		// On IE7 this functions seems to be called early sometimes.
+		setTimeout(thumbnail_resize.bind(this), 500);
+		return;
+	}
+	
 	var ratio = natural_width / natural_height;
 	
     if (natural_width > natural_height)

@@ -302,7 +302,7 @@ function _lightboxCenter()
 	var img_spinner = $('lightbox_img_spinner');
 	if (img_spinner)
 		img_spinner.remove();
-	img.setStyle({display: 'inherit'});
+	img.show();
 	var w = parseInt(img.getStyle('width'));
 	var vpWidth = getViewportWidth();
 	if (w > vpWidth)

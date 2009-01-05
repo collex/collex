@@ -304,7 +304,7 @@ LinkDlgHandler.prototype = {
 		el.setAttribute('class', 'linklike');
 		//<span nines="nines_uri" class="linklike">target</span>
 		//<span link="ext_link" class="linklike">target</span>
-	},
+	}
 };
 
 //var _ninesDlg_ed = null;
