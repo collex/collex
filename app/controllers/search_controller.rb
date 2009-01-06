@@ -53,7 +53,7 @@ class SearchController < ApplicationController
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase])
         
-      elsif params[:search][:phrase] == nil
+      elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
         parse_keyword_phrase(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
         add_title_constraint(params[:search_title]) if params[:search_title] != ""
@@ -65,7 +65,7 @@ class SearchController < ApplicationController
         add_publisher_constraint(params[:search_publisher]) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year]) if params[:search_year] != ""
 
-      else
+      elsif params[:search]
         # single input box
         parse_keyword_phrase(params[:search][:phrase]) if params[:search_type] == "Keyword"
         add_title_constraint(params[:search][:phrase]) if params[:search_type] == "Title"
@@ -185,7 +185,7 @@ class SearchController < ApplicationController
      if session[:constraints].length == 1 && session[:constraints][0]['type'] == "ExpressionConstraint"
        flash[:error] = render_to_string(:inline => "The search string \"#{session[:constraints][0]['value']}\" contains invalid characters. Try another search.")
      else
-       flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', :action => 'new_search' %> or remove the offending search string below.")
+       flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', { :action => 'new_search' }, { :class => 'nav_link' } %> or remove the offending search string below.")
      end 
      return {"facets" => {"archive" => {}, "freeculture" => {}, "genre" => {}}, "total_hits" => 0, "hits" => [], "total_documents" => 0}
   end
