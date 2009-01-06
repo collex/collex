@@ -28,7 +28,9 @@ class ResultsController < ApplicationController
     # Only collect if the item isn't already collected and if there is a user logged in.
     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
     locals = setup_ajax_calls(params, false)
-    CollectedItem.collect_item(locals[:user], locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+    if locals[:is_error] == nil
+      CollectedItem.collect_item(locals[:user], locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+    end
     
     render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits] }
   end
@@ -100,6 +102,11 @@ class ResultsController < ApplicationController
       ret[:hit] = get_from_cache(params[:uri], ret[:user])
     else
       ret[:hit] = get_from_solr(params[:uri])
+      if ret[:hit] == nil
+        ret[:is_error] = true
+        ret[:hit] = get_from_cache(params[:uri], ret[:user])
+        ret[:hit]['title'] = [ 'Note: This object no longer exists in the index']
+      end
     end
     if params[:full_text] && params[:full_text].length > 0
       ret[:hit]['text'] = params[:full_text]
