@@ -567,8 +567,9 @@ class My9sController < ApplicationController
      results.each {|result|
       cr = CachedResource.find_by_uri(result['uri'])
       collects = CollectedItem.find(:all, :conditions => [ "cached_resource_id = ?", cr.id])
-      sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
-      str = result.to_s
+      if collects && collects[collects.length-1]
+        sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
+      end
      }
     sorted_results.sort! {|a,b| 
         b[0] <=> a[0]
