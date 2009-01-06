@@ -19,7 +19,7 @@
 <p><span class="emph2">scholarly projects</span> participating in NINES/Collex include:
 <ul>
 <% @sites.each do |site|%>
-<li><a href="<%= site['url']%>" target="_blank"><%= site['description']%></a></li>
+<li><a class="nines_link" href="<%= site['url']%>" target="_blank"><%= site['description']%></a></li>
 <% end %>
 </ul>
 </p>

@@ -53,12 +53,12 @@ module SearchHelper
     
     if first > 1
       destination_hash[:page] = 1
-      html += link_to("first", destination_hash) + "&nbsp;&nbsp;"
+      html += link_to("first", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
     end
 
     if curr_page > 1
       destination_hash[:page] = (curr_page - 1)
-      html += link_to("<<", destination_hash) + "&nbsp;&nbsp;"
+      html += link_to("<<", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
     end
 
     for pg in first..last do
@@ -66,19 +66,19 @@ module SearchHelper
         html += "<span class='paginate-current'>#{pg}</span>"
       else
         destination_hash[:page] = pg
-        html += link_to("#{pg}", destination_hash )
+        html += link_to("#{pg}", destination_hash, :class => 'nav_link' )
       end
       html += "&nbsp;&nbsp;"
     end 
     
     if curr_page < num_pages
       destination_hash[:page] = (curr_page + 1)
-      html += link_to( ">>", destination_hash) + "&nbsp;&nbsp;"
+      html += link_to( ">>", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
     end
     
     if last < num_pages
       destination_hash[:page] = num_pages
-      html += link_to("last", destination_hash) + "&nbsp;&nbsp;"
+      html += link_to("last", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
     end
 
     return html
@@ -101,11 +101,11 @@ module SearchHelper
       display_str = "#{h(resource.display_name)} (#{pluralize( object_count, 'object' )})"
       if resource_is_in_constraints?(resource)
         html = "<li><span class='resource_list_selected'>&rarr; #{h display_str}</span>&nbsp;"
-        html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post } 
+        html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post, :class => 'nav_link' } 
         html += "</li>"
         return html
       else
-        link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post }
+        link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post, :class => 'nav_link' }
         return "<li>#{link}</li>"
       end
     else
@@ -136,11 +136,11 @@ module SearchHelper
     display_str = "Free Culture Only (#{pluralize(count, 'object')})"
     if free_culture_is_in_constraints?
       html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
-      html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post } 
+      html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post, :class => 'nav_link' } 
       html += "</li>"
       return html
     else
-      link = link_to display_str, {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post }
+      link = link_to display_str, {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' }
       return "<li>#{link}</li>"
     end
   end
@@ -148,10 +148,10 @@ module SearchHelper
   def genre_data_link( genre_data )
     if genre_data[:exists]
       html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})</span>&nbsp;"
-      html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post } 
+      html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post, :class => 'nav_link' } 
       return html
     else
-      link_to "#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post } 
+      link_to "#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post, :class => 'nav_link' } 
     end
 
   end
@@ -204,10 +204,10 @@ module SearchHelper
   def site_category_heading( category_name, category_id, initial_state = :closed )
     display_none = 'style="display:none"'
     label = "<span id=\"cat_#{category_id}_closed\" #{initial_state == :open ? display_none : ''} class=\"site-category-toggle\">"
-    label << link_to_function('&#x25BA; ' + category_name,"toggleCategory('#{category_id}')")
+    label << link_to_function('&#x25BA; ' + category_name,"toggleCategory('#{category_id}')", { :class => 'nav_link'})
     label << "</span>"
     label << "<span id=\"cat_#{category_id}_opened\" #{initial_state == :closed ? display_none : ''} class=\"site-category-toggle\">"
-    label << link_to_function('&#x25BC; ' + category_name, "toggleCategory('#{category_id}')")
+    label << link_to_function('&#x25BC; ' + category_name, "toggleCategory('#{category_id}')", { :class => 'nav_link' })
     label << "</span>"
   end
   
@@ -226,7 +226,7 @@ module SearchHelper
       tags.each {|t|
         str += "<li>x&nbsp;#{tags.name}</li>\n"
       }
-      str += "<a href='#'>Add a tag</a>\n"
+      str += "<a class='modify_link' href='#'>Add a tag</a>\n"
       str += "</ul>\n"
     end
     return str
@@ -270,11 +270,11 @@ module SearchHelper
   end
   
   def create_saved_search_link(s)
-    link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name}
+    link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name, :class => 'nav_link'}
   end
 
   def create_remove_saved_search_link(s)
-    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}
+    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id, :class => 'modify_link'}
   end
   
   def has_constraints?

@@ -127,29 +127,13 @@ end
 
 	<div id="container">
 		<div id="header-center">
-			<span class="emph1"><a href="/">&nbsp;</a></span><br /><i>&nbsp;</i><br />
+			<span class="emph1">&nbsp;</span><br /><i>&nbsp;</i><br />
 		</div>
 		<div id="header-right">
 			<% if @use_signin -%>
 				<%= render :partial => '/common/login_slider' %>
 			<% end -%>
 		</div>
-<!--	    <div id="banner">
-	    	<table>
-	    		<tr valign="top">
-	    			<td><img src="/images/harrington.gif" alt="" /></td>
-					<td width="10px"></td>
-					<td width="100%">
-						<span class="emph1"><a href="/">NINES</a></span><br /><i>your portal to nineteenth-century digital scholarship</i><br />
-					</td>
-					<td valign="top" align="right">
-						<% if @use_signin -%>
-						<%= render :partial => '/common/login_slider' %>
-						<% end -%>
-					</td>
-	    		</tr>
-	    	</table>
-	    </div> -->
   		<div id="content">
   			<% if @use_tabs -%>
 			<table class="tabs" cellspacing='0px' >

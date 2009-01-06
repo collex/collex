@@ -83,6 +83,7 @@ end
      else
        visible = escaped_value
      end
+     html_options[:class] = 'nav_link'
      link_to visible, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value }, html_options
   end
 end

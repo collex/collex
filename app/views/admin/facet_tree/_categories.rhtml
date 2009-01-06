@@ -24,7 +24,7 @@
           <%=draggable_element("drag_#{category.id}", :ghosting => true, :revert => true)%>
           <%=in_place_editor_field(:category, :value) %>
           
-          <%=link_to 'X', {:action => :remove, :id => category, :tree => tree},  :confirm => 'Are you sure?', :post => true %>
+          <%=link_to 'X', {:action => :remove, :id => category, :tree => tree},  :confirm => 'Are you sure?', :post => true, :class => 'modify_link' %>
           
           <%= render :partial => 'categories', :locals => {:categories => category.children, :tree => tree} %>
         </li>

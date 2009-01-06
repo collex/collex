@@ -76,8 +76,8 @@ end -%>
     <td><%= record[:thumbnail] %></td>
     <td><%= record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
     <td><%= record[:border] %></td>
-    <td><%= link_to 'Edit', edit_exhibit_element_path(record[:exhibit_element]) %></td>
-    <td><%= link_to 'Destroy', record[:exhibit_element], :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Edit', edit_exhibit_element_path(record[:exhibit_element]), :class => 'nav_link' %></td>
+    <td><%= link_to 'Destroy', record[:exhibit_element], :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %></td>
   </tr>
 <% end %>
 </table>
@@ -86,7 +86,7 @@ end -%>
 <% exhibits = Exhibit.find(:all)
 	for exhibit in exhibits -%>
 		<%= "#{exhibit.id}: #{exhibit.exhibit_pages.length}" %>
-		<%= link_to 'Destroy', exhibit, :confirm => 'Are you sure?', :method => :delete %>
+		<%= link_to 'Destroy', exhibit, :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %>
 		<br />
 <%end -%>
 
@@ -94,7 +94,7 @@ end -%>
 <% pages = ExhibitPage.find(:all)
 	for page in pages -%>
 		<%= "#{page.id}: #{page.exhibit_elements.length}"  %>
-		<%= link_to 'Destroy', page, :confirm => 'Are you sure?', :method => :delete %>
+		<%= link_to 'Destroy', page, :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %>
 		<br />
 <%end -%>
 
@@ -102,13 +102,13 @@ end -%>
 <% illustrations = ExhibitIllustration.find(:all)
 	for illustration in illustrations -%>
 		<%= "#{illustration.id} -&gt; #{illustration.exhibit_element_id}"  %>
-		<%= link_to 'Destroy', illustration, :confirm => 'Are you sure?', :method => :delete %>
+		<%= link_to 'Destroy', illustration, :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %>
 		<br />
 <%end -%>
 
 <br />
 
-<%= link_to 'New exhibit_element', new_exhibit_element_path %>
+<%= link_to 'New exhibit_element', new_exhibit_element_path, :class => 'nav_link' %>
 <br />
 
 <table border='1px solid black' cellspacing=0>

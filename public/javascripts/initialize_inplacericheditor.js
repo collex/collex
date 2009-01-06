@@ -293,60 +293,20 @@ LinkDlgHandler.prototype = {
 
 		if (values['ld_type'] == This._linkTypes[0])
 		{
-			el.setAttribute('nines', values['ld_nines_object']);
+			//<span real_link="nines_uri" class="nines_linklike">target</span>
+			el.setAttribute('real_link', values['ld_nines_object']);
 			el.setAttribute('title', 'NINES Object: ' + values['ld_nines_object']);
+			el.setAttribute('class', 'nines_linklike');
 		}
 		else
 		{
-			el.setAttribute('ext_link', values['ld_link_url']);
+			//<span real_link="ext_link" class="ext_linklike">target</span>
+			el.setAttribute('real_link', values['ld_link_url']);
 			el.setAttribute('title', 'External Link: ' + values['ld_link_url']);
+			el.setAttribute('class', 'ext_linklike');
 		}
-		el.setAttribute('class', 'linklike');
-		//<span nines="nines_uri" class="linklike">target</span>
-		//<span link="ext_link" class="linklike">target</span>
 	}
 };
-
-//var _ninesDlg_ed = null;
-//var _ninesDlg_str = null;
-//var _ninesDlg_rng = null;
-//
-//function showNinesObjectDlg(ed)
-//{
-//	_ninesDlg_ed = ed;
-//	_ninesDlg_str = ed.selection.getContent();
-//	_ninesDlg_rng = ed.selection.getRng();
-//	if (_ninesDlg_str == '')
-//		_ninesDlg_str = "[NINES Object]";
-//
-//	var dlg = new InputDialog('nines_object', '_ninesObjectSelected(this);');
-//	
-//	var size = 52;
-//	var list = new CreateList(gCollectedObjects);
-//	dlg.addList('nines_object', list.list);
-//
-//	var values = {};
-//	
-//	// Now, everything is initialized, fire up the dialog.
-//	var el = $(ed.formElement);
-//	dlg.show("Create Link to NINES Object", getX(el), getY(el), 400, 400, values );
-//}
-//
-//function _ninesObjectSelected(This)
-//{
-//	var uri = $('nines_object').value;
-//	var win = $(This).up('.dialog');
-//	Windows.close(win.id);
-////	_ninesDlg_ed.selection.setRng(_ninesDlg_rng);
-////	_ninesDlg_ed.selection.setContent('<span nines_obj_uri="' + uri + '" >' + _ninesDlg_str + '</span>');
-//	setTimeout('_ninesObjectSelected2("' + uri + '");', 300);
-//}
-//
-//function _ninesObjectSelected2(uri)
-//{
-//	_ninesDlg_ed.selection.setRng(_ninesDlg_rng);
-//	_ninesDlg_ed.selection.setContent('<span class="nines_obj_uri" nines_obj_uri="' + uri + '" >' + _ninesDlg_str + '</span>');
-//}
 
 var CreateList = Class.create({
 	list : null,

@@ -404,10 +404,10 @@ ModalDialog.prototype = {
 				  width: '702px',
 					height: '200px',
 					// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' .linklike { color:#A60000; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
+					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' .nines_linklike { color: red; background-color: green; } .ext_linklike { 	color: green; background-color: red; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
 					toolbar: toolbar
 			});
-			
+
 			if (extraButtons.length > 0 && extraButtons[0] == 'drop_cap')
 				this._processDropCap();
 

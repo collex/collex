@@ -38,16 +38,16 @@ If you sign in, you can collect objects and create tags.
 
 <div class="login-option">I don't have an account.</div>
 <div class="login-option2">
-	<%= link_to "Create a new account", :action => 'signup' %>.
+	<%= link_to "Create a new account", :action => 'signup', :class => 'nav_link' %>.
 </div>
 
 <div class="login-option">I can't access my account.</div>
 <div class="login-option2">
-	<%= link_to "Help", :action => 'account_help' %>
+	<%= link_to "Help", :action => 'account_help', :class => 'nav_link' %>
 </div>
 
 <p>&nbsp;</p>
-<p><%=link_to "Return to NINES", get_page_to_return_to %></p>
+<p><%=link_to "Return to NINES", get_page_to_return_to, :class => 'nav_link' %></p>
 
 <script language="JavaScript">
 	document.forms[0].username.focus();

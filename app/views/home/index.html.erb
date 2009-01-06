@@ -3,13 +3,13 @@
 <div align="center">
 <table>
 	<tr>
-		<td><div id="welcome-to-nines"><b>Welcome to the new NINES!</b> <u><a href="/news/?p=7">Click here to learn more about our new features.</a></u></div></td>
+		<td><div id="welcome-to-nines"><b>Welcome to the new NINES!</b> <u><a class="nav_link" href="/news/?p=7">Click here to learn more about our new features.</a></u></div></td>
 	</tr>
 	<tr>
 		<td><center><input name="search_phrase" id="search_phrase" size="60"/><input class="search-button" type="submit" value="Search Now!" /></center></td>
 	</tr>
 	<tr>
-		<td><center><b><%= link_to 'What is NINES?', tab_about_path %></b></center>
+		<td><center><b><%= link_to 'What is NINES?', tab_about_path, :class => 'nav_link' %></b></center>
 		</td>
 	</tr>
 </table>
@@ -20,14 +20,14 @@
 <% @sites.each_with_index do |site, i| -%>
 	<% if i % 3 == 0 -%>
 	<tr>
-		<td class="contributor-list-left-col"><a href="<%= @sites[i]['url']%>" target="_blank"><%= @sites[i]['description']%></a></td>
+		<td class="contributor-list-left-col"><a class="nav_link" href="<%= @sites[i]['url']%>" target="_blank"><%= @sites[i]['description']%></a></td>
 		<% if @sites[i+1] -%>
-			<td class="contributor-list-left-col"><a href="<%= @sites[i+1]['url']%>" target="_blank"><%= @sites[i+1]['description']%></a></td>
+			<td class="contributor-list-left-col"><a class="nav_link" href="<%= @sites[i+1]['url']%>" target="_blank"><%= @sites[i+1]['description']%></a></td>
 		<% else -%>	
 			<td class="contributor-list-left-col"></td>		
 		<% end -%>
 		<% if @sites[i+2] -%>		
-			<td><a href="<%= @sites[i+2]['url']%>" target="_blank"><%= @sites[i+2]['description']%></a></td>
+			<td><a class="nav_link" href="<%= @sites[i+2]['url']%>" target="_blank"><%= @sites[i+2]['description']%></a></td>
 		<% end -%>
 	</tr>
 	<% end -%>

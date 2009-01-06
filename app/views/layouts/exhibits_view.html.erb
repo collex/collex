@@ -23,6 +23,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 
 	<!-- site wide styles -->
+  <%= stylesheet_link_tag "globals", :media => "all" %>
   <%= stylesheet_link_tag "exhibits", :media => "all" %>
   <%= stylesheet_link_tag "exhibits_elements", :media => "all" %>
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/fonts/fonts-min.css" />
@@ -54,7 +55,7 @@
 			<span class="emph1"></span><br /><i>&nbsp;</i><br />
 		</div>
 		<div id="header-right">
-			<a href="/exhibit_list">Exhibit List</a>
+			<a class="nav_link" href="/exhibit_list">Exhibit List</a>
 			<%= render :partial => '/common/login_slider' %>
 		</div>
     </div>

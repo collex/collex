@@ -17,9 +17,8 @@
 	
 <% #  parameters: int row_id; int index; hit hit; bool has_exhibits; -%>
 <ul style='list-style-type: none;'>
-	<% #<li>< %= link_to_function "Details", "displayDetails('#{row_id}', #{hit['uri']}, #{index}, '#{row_id}');",  :id => "display_details_#{index}" % ></li> -%>
 	<% if is_logged_in? -%>
-	<span class="collect_link"><%= link_to_function "collect", "doCollect('#{hit['uri']}', #{index}, '#{row_id}');" if !result_is_collected(hit) -%></span>
+	<span class="collect_link"><%= link_to_function "collect", "doCollect('#{hit['uri']}', #{index}, '#{row_id}');", :class => 'modify_link' if !result_is_collected(hit) -%></span>
 	<% end -%>
 	<% item = get_collected_item(hit) -%>
 	<% if item != nil # if this item is collected. -%>
@@ -27,13 +26,13 @@
 		<% tags = item.tags -%>
 		<% if tags != nil -%>
 	    	<% tags.each {|tag| -%>
-        	<li><%= link_to_function "x", "doRemoveTag('#{hit['uri']}', #{index}, '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');" %>&nbsp;<%=h tag %></li>
+        	<li><%= link_to_function "x", "doRemoveTag('#{hit['uri']}', #{index}, '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link' %>&nbsp;<%=h tag %></li>
 			<% } #the tag loop -%>
 		<% end #if there are tags -%>
-		<li><%= link_to_function "Add a tag", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}" %></li>
-		<li><%= link_to_function "Uncollect", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');" %></li>
+		<li><%= link_to_function "Add a tag", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}", :class => 'modify_link' %></li>
+		<li><%= link_to_function "Uncollect", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');", :class => 'modify_link' %></li>
 		<% if has_exhibits -%>
-			<li><%= link_to_function "Add to exhibit", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');", { :id => "link_#{row_id}" } %></li>
+			<li><%= link_to_function "Add to exhibit", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');", { :id => "link_#{row_id}", :class => 'modify_link' } %></li>
 		<% end -%>
 	<% end #if the item is collected -%>
 </ul>

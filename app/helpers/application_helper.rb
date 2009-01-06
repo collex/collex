@@ -48,7 +48,7 @@ private
   end
 
   def make_link_tab(label, link)
-    "<td class='link_tab'>#{link_to label, link }</td>\n"
+    "<td class='link_tab'>#{link_to(label, link, { :class => 'nav_link' })}</td>\n"
   end
 
   def make_disabled_tab(label)
@@ -141,7 +141,7 @@ private
     image = CachedResource.get_image_from_hit(hit)
     str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}"})
     if image != thumb
-      str = "<a onclick='showInLightbox(\"#{image}\", \"thumbnail_#{hit['uri']}\"); return false;' href='#'>#{str}</a>"
+      str = "<a class='nines_pic_link' onclick='showInLightbox(\"#{image}\", \"thumbnail_#{hit['uri']}\"); return false;' href='#'>#{str}</a>"
     end
     return str
   end
@@ -169,6 +169,7 @@ private
   end
   
   def link_to_popup(label, options, html_options={})
+    html_options[:class] = 'nav_link'
     link_to_function(label, "popUp('#{url_for(options)}')", html_options)
   end
   
@@ -235,28 +236,21 @@ private
       if is_first
         is_first = false  # skip the first section since we dealt with it above.
       else
-        if span.include?('class="linklike') #if it is one of our spans, then translate it into a link
-          el= span.split('>', 2)  # find the end of the opening part of the span tag.
-          if (el[0].include?('nines="'))
-            # nines object type link. Convert the uri into a url
-            el2 = el[0].split('nines="', 2) # The uri is saved, we need to extract it, then convert it into a url.
-            el3 = el2[1].split('"', 2)
-            uri = el3[0]
-            url = CachedResource.get_link_from_uri(uri)
-            el4 = el[1].split('</span>', 2)
-            str += "<a href=\"#{url}\" target=\"_blank\">#{el4[0]}</a>#{el4[1]}"
-          elsif (el[0].include?('ext_link="'))
-            # external link
-            el2 = el[0].split('ext_link="', 2)
-            el3 = el2[1].split('"', 2)
-            url = el3[0]
-            url = "http://" + url if url.index("http://") != 0
-            el4 = el[1].split('</span>', 2)
-            str += "<a href=\"#{url}\" target=\"_blank\">#{el4[0]}</a>#{el4[1]}"
-          else
-            # don't know what it is, so just output it.
-            str += span_str + span
-          end
+        if span.include?('class="nines_linklike') #if it is one of our spans, then translate it into a link
+          # nines object type link. Convert the uri into a url
+          uri = extract_link_from_encoded_span(span)
+          url = CachedResource.get_link_from_uri(uri)
+          visible_text = extract_inner_html(span)
+          rest_of_it = extract_trailing_html(span)
+          str += "<a class='nines_link' href=\"#{url}\" target=\"_blank\">#{visible_text}</a>#{rest_of_it}"
+          
+        elsif span.include?('class="ext_linklike') #if it is one of our spans, then translate it into a link
+          # external link
+          url = extract_link_from_encoded_span(span)
+          url = "http://" + url if url.index("http://") != 0
+          visible_text = extract_inner_html(span)
+          rest_of_it = extract_trailing_html(span)
+          str += "<a class='ext_link' href=\"#{url}\" target=\"_blank\">#{visible_text}</a>#{rest_of_it}"
         else
           # Not one of our spans, so just stitch it back together
           str += span_str + span
@@ -264,5 +258,31 @@ private
       end
     end
     return str
+  end
+  
+  # Some private convenience functions to make the above routine clearer
+  def extract_link_from_encoded_span(span)
+    el= span.split('>', 2)  # find the end of the opening part of the span tag.
+    arr = el[0].split('real_link="', 2)
+    return "" if arr.length < 2
+    arr2 = arr[1].split('"')
+    return arr2[0]
+  end
+  
+  def extract_inner_html(span)
+    el = span.split('>', 2)  # find the end of the opening part of the span tag.
+    return "" if el.length < 2
+    
+    el2 = el[1].split('</span>')
+    return "" if el2.length < 2
+    
+    return el2[0]
+  end
+  
+  def extract_trailing_html(span)
+    el = span.split('</span>')
+    return "" if el.length < 2
+    
+    return el[1]
   end
 end

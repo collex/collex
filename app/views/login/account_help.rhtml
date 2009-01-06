@@ -45,12 +45,12 @@
 
 <div class="login-option">I don't have an account.</div>
 <div class="login-option2">
-	please <%= link_to "Sign up", :action => 'signup' %>.
+	please <%= link_to "Sign up", :action => 'signup', :class => 'nav_link' %>.
 </div>
 
 <div class="login-option">I want to try to log in again.</div>
 <div class="login-option2">
-	please <%= link_to "Log in", :action => 'login' %>.
+	please <%= link_to "Log in", :action => 'login', :class => 'nav_link' %>.
 </div>
 
-<p><%=link_to "Return to NINES", get_page_to_return_to() %></p>
+<p><%=link_to "Return to NINES", get_page_to_return_to(), :class => 'nav_link' %></p>

@@ -22,7 +22,7 @@
 	<% else -%>
 		<% curr_user = User.find_by_username(session[:user][:username]) -%>
 		<div class="tag_minor_nav"> 
-			My 9s<%= link_separator() %>&nbsp;<%= link_to "My objects", :action => 'results', :view => 'all_collected' %>&nbsp;<br />
+			My 9s<%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>&nbsp;<br />
 		</div>
 		
 		<table>
@@ -36,7 +36,7 @@
 						<h1>RECENTLY COLLECTED ITEMS</h1>
 					      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user.id, :hits => @results } ) %>
 						<div class="tag_minor_nav"> 
-							<%= link_to "See more collected objects", :action => 'results', :view => 'all_collected' %><br />
+							<%= link_to "See more collected objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><br />
 						</div>
 					</div>
 				</td>
@@ -61,12 +61,12 @@
 							<% for exhibit in my_exhibits -%>
 								<tr>
 									<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
-									<td class="exhibit_link"><%= exhibit.title %>&nbsp;<a href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
+									<td class="exhibit_link"><%= exhibit.title %>&nbsp;<a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
 								</tr>
 							<% end -%>
 							</table>
 						<% end # if there are exhibits -%>
-						<%= link_to "Create New Exhibit", :action => 'new_exhibit' %>
+						<%= link_to "Create New Exhibit", { :action => 'new_exhibit' }, :class => 'modify_link' %>
 					</div>
 				</td>
 			</tr>

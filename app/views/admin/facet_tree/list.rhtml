@@ -24,7 +24,7 @@
 <% for tree in @facet_trees %>
   <tr>
     <td><%=h tree.value %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :tree => tree.value %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :tree => tree.value, , :class => 'modify_link' %></td>
   </tr>
 <% end %>
 </table>

@@ -33,7 +33,7 @@
       <%= user.role_names.join(", ") %>
     </td>
     
-    <td><%= link_to 'Edit', :action => 'edit', :id => user,  :page => params[:page] %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => user,  :page => params[:page], :class => 'nav_link' %></td>
   </tr>
 <% end %>
 </table>

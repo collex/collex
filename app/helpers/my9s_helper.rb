@@ -74,26 +74,26 @@ module My9sHelper
     display_none = 'style="display:none"'
     label = ""
     if num_pages > 1  # We don't want any page controls if there is only one page.
-      label << "<div class='outline_right_controls''>"
+      label << "<div class='outline_right_controls'>\n"
       if page_num.to_i > 1
-        label << link_to_function(up_char(), "doAjaxLinkOnPage('move_page_up', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Up' })
+        label << link_to_function(up_char(), "doAjaxLinkOnPage('move_page_up', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Up', :class => 'modify_link' }) + "\n"
       end
       if page_num.to_i < num_pages
-        label << link_to_function(down_char(), "doAjaxLinkOnPage('move_page_down', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Down' })
+        label << link_to_function(down_char(), "doAjaxLinkOnPage('move_page_down', #{exhibit_id}, #{page_num} );", { :title => 'Move Page Down', :class => 'modify_link' }) +"\n"
       end
       label << '&nbsp;<span class="close_link">'
-      label << link_to_function(del_char(), "doAjaxLinkOnPage('delete_page', #{exhibit_id}, #{page_num} );", { :title => 'Delete Page' })
-      label << '</span>'
-      label << "</div>"
+      label << link_to_function(del_char(), "doAjaxLinkOnPage('delete_page', #{exhibit_id}, #{page_num} );", { :title => 'Delete Page', :class => 'modify_link' })
+      label << "</span>\n"
+      label << "</div>\n"
     end
     
     label << "<span id=\"#{item_id_prefix}_p#{page_num}_closed\" #{initial_state == :open ? display_none : ''} >"
-    label << link_to_function(closed_char(),"#{toggle_function}('#{item_id_prefix}_p#{page_num}')")
-    label << "</span>"
+    label << link_to_function(closed_char(),"#{toggle_function}('#{item_id_prefix}_p#{page_num}')", { :class => 'modify_link' })
+    label << "</span>\n"
     label << "<span id=\"#{item_id_prefix}_p#{page_num}_opened\" #{initial_state == :closed ? display_none : ''} >"
-    label << link_to_function(opened_char(), "#{toggle_function}('#{item_id_prefix}_p#{page_num}')")
-    label << "</span>"
-    label << "<span class='#{class_name}'>" + "Page " + page_num + "</span>"
+    label << link_to_function(opened_char(), "#{toggle_function}('#{item_id_prefix}_p#{page_num}')", { :class => 'modify_link'})
+    label << "</span>\n"
+    label << "<span class='#{class_name}'>" + "Page " + page_num + "</span>\n"
   end  
   
   def create_border_div(element, border_active, border_class)

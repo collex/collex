@@ -21,7 +21,7 @@
 		<%= render :partial => 'my9s_instructions' %>
 	<% else -%>
 		<div class="tag_minor_nav"> 
-			<%= link_to "My 9s", :action => 'index' %><%= link_separator() %>&nbsp;My objects&nbsp;<br />
+			<%= link_to "My 9s", { :action => 'index' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;My objects&nbsp;<br />
 		</div> 
 		
 		<table class="results_layout"><tr>
@@ -38,19 +38,19 @@
 							<% if params[:view] == 'untagged' -%>
 							<span class="sidebar_tag_link_selected">List All Untagged Objects</span>
 							<% else -%>
-							<span class="sidebar_tag_link"><%= link_to "List All Untagged Objects", { :action => 'results', :view => 'untagged', :anchor => "top_of_results" } %></span>
+							<span class="sidebar_tag_link"><%= link_to "List All Untagged Objects", { :action => 'results', :view => 'untagged', :anchor => "top_of_results" }, :class => 'nav_link' %></span>
 							<% end -%>
 							&nbsp;
 							<% if params[:view] == 'all_collected' -%>
 							<span class="sidebar_tag_link_selected">List All Collected Objects</span>
 							<% else -%>
-							<span class="sidebar_tag_link"><%= link_to "List All Collected Objects", { :action => 'results', :view => 'all_collected', :anchor => "top_of_results" } %></span>
+							<span class="sidebar_tag_link"><%= link_to "List All Collected Objects", { :action => 'results', :view => 'all_collected', :anchor => "top_of_results" }, :class => 'nav_link' %></span>
 							<% end -%>
 						</div>
 					</div>
 					<div class="tag_results standard_box">
 						<%= render( :partial => 'results/result_count' ) %>    
-						<h1><a id="top_of_results"><%= create_total(params[:view], @total_hits, params[:tag]) %><a></h1>
+						<h1><a id="top_of_results"><%= create_total(params[:view], @total_hits, params[:tag]) %></a></h1>
 						<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results"} }  ) %>
 						
 						<div id="all_displayed_results">

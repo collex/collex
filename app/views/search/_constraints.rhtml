@@ -30,29 +30,29 @@
         %>
  	  			<tr>
               <% if constraint.is_a?(FreeCultureConstraint) -%>
-                 <td>Free Culture:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %>Only</td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+                 <td>Free Culture:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %>Only</td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post , :class => 'nav_link'} %></td>
               <% elsif constraint.is_a?(ExpressionConstraint) -%>
-                 <td>Keyword:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h constraint.value%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+                 <td>Keyword:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h constraint.value%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
               <% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre' -%>
-                 <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+                 <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
               <% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'year' -%>
-                 <td>Year:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+                 <td>Year:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
 							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'author' -%>
-	                 <td>Author:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
-	                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+	                 <td>Author:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
+	                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
 							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'editor' -%>
-			                 <td>Editor:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
-			                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+			                 <td>Editor:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
+			                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
 							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'publisher' -%>
-							                 <td>Publisher:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
-							                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+							                 <td>Publisher:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
+							                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
              <% elsif constraint.is_a?(FacetConstraint) -%>
-                 <td>Resource:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post } %><%=h value_display%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post } %></td>
+                 <td>Resource:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
+                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
               <% end -%>
               </tr>
 

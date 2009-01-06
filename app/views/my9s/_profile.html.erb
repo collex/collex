@@ -30,7 +30,7 @@
 				<% if edit_mode -%>
 					<form enctype="multipart/form-data" action="/my9s/update_profile" method="post" >
 						<table>
-							<tr><td></td><td  align="right"><%= link_to_function "Cancel Edit", "cancel_edit_profile_mode('profile');" %></td></tr>
+							<tr><td></td><td  align="right"><%= link_to_function "Cancel Edit", "cancel_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
 							<tr><td class="profile_label">User name:</td><td><%= user.username %></td></tr>
 							<tr><td class="profile_label">Full name:</td><td><input type="text" name="fullname" id="fullname" size="65" value="<%= user.fullname %>" /></td></tr>
 							<tr><td class="profile_label">Institution:</td><td><input type="text" name="institution" id="institution" size="65" value="<%= user.institution %>"/></td></tr>
@@ -42,11 +42,11 @@
 					</form> 
 				<% else -%>
 					<table>
-						<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "enter_edit_profile_mode('profile');" %></td></tr>
+						<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "enter_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
 						<tr><td class="profile_label">Username:</td><td><%=h user.username %></td></tr>
 						<tr><td class="profile_label">Full name:</td><td><%=h user.fullname %></td></tr>
 						<tr><td class="profile_label">Institution:</td><td><%=h user.institution %></td></tr>
-						<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link, {:target => '_blank' } ) : "" %></td></tr>
+						<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link, {:target => '_blank', :class => 'nav_link' } ) : "" %></td></tr>
 						<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%=h user.about_me %></td></tr>
 					</table>
 				<% end -%>

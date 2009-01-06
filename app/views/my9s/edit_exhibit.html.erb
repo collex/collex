@@ -43,14 +43,14 @@ document.observe('dom:loaded', function() {
 	<% else -%>
 		<% curr_user = User.find_by_username(session[:user][:username]) -%>
 		<div class="tag_minor_nav"> 
-			<%= link_to "My9s", :action => 'index' %><%= link_separator() %>&nbsp;<%= link_to "My objects", :action => 'results', :view => 'all_collected' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
+			<%= link_to "My9s", { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
 		<div id="overview_data" class="edit_exhibit_box">
 			<h1>
 				<div class="outline_right_controls">
-					<%= link_to_function opened_char(), "toggle_by_id('global_form');", { :title => 'Close Form', :id => 'global_form_opened' } %>
-					<%= link_to_function closed_char(), "toggle_by_id('global_form');", { :title => 'Open Form', :id => 'global_form_closed' , :style => 'display: none;' } %>
+					<%= link_to_function opened_char(), "toggle_by_id('global_form');", { :title => 'Close Form', :id => 'global_form_opened', :class => 'nav_link' } %>
+					<%= link_to_function closed_char(), "toggle_by_id('global_form');", { :title => 'Open Form', :id => 'global_form_closed' , :style => 'display: none;', :class => 'nav_link' } %>
 				</div>
 				EDITING EXHIBIT:&nbsp;<%= @exhibit.title %></h1>
 			<div id="global_form" class="inside_edit_exhibit_box">
@@ -59,7 +59,7 @@ document.observe('dom:loaded', function() {
 						<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => @exhibit } %></td>
 						<td><%= render :partial => 'exhibit_globals_form', :locals => { :exhibit => @exhibit }  %></td>
 						<td>
-							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
+							<%= link_to 'Completely Delete Exhibit', { :action => 'delete_exhibit', :id => @exhibit.id }, :class => 'modify_link', :confirm => 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' %>
 						</td>
 					</tr>
 				</table>
@@ -68,9 +68,9 @@ document.observe('dom:loaded', function() {
 
 		<% num_pages = @exhibit.exhibit_pages.length -%>
 		<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
-		<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);" %>
+		<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
 		<% preview_id = @exhibit.visible_url ? (@exhibit.visible_url.length > 0 ? @exhibit.visible_url : @exhibit.id) : @exhibit.id -%>
-		<%= link_to "[Preview]", :controller => 'exhibits', :action => 'view', :id => preview_id %><br />
+		<%= link_to "[Preview]", { :controller => 'exhibits', :action => 'view', :id => preview_id}, :class => 'nav_link' %><br />
 		<br /><br />
 
 		<div id="edit_exhibit_page">

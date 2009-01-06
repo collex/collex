@@ -14,12 +14,73 @@ body {
 	line-height:130%;
 }
 
-a:link { color: #A60000; text-decoration: none; }
-a:visited { color: #A60000; text-decoration: none; }
-a:hover { color: #fff; text-decoration: none; background: #A60000; }
-.linklike {
-	color:#A60000;
-}
+/* This is used for all links that navigate to other parts of this system */
+.nav_link:link { color: #A60000; text-decoration: none; }
+.nav_link:visited { color: #A60000; text-decoration: none; }
+.nav_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+/* This is used for all links that change, or potentially change, the database */
+.modify_link:link { color: #A60000; text-decoration: none; }
+.modify_link:visited { color: #A60000; text-decoration: none; }
+.modify_link:hover { color: black; background: green; text-decoration: none; }
+
+/* This is used for all links that go to external websites */
+.ext_link:link { color: #A60000; text-decoration: none; }
+.ext_link:visited { color: #A60000; text-decoration: none; }
+.ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+/* This is used for all links that go to the NINES sites. */
+.nines_link:link { color: #A60000; text-decoration: none; }
+.nines_link:visited { color: #A60000; text-decoration: none; }
+.nines_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+/* This is used for all picture links that go to the NINES sites. */
+.nines_pic_link:link img { border: 4px solid green; text-decoration: none; }
+.nines_pic_link:visited img { border: 4px solid green; text-decoration: none; }
+.nines_pic_link:hover img { border: 4px solid black; text-decoration: none; }
+
+/* This is used for all picture links that go to external websites. */
+.ext_pic_link:link img { border: 4px solid red; text-decoration: none; }
+.ext_pic_link:visited img { border: 4px solid red; text-decoration: none; }
+.ext_pic_link:hover img { border: 4px solid black; text-decoration: none; }
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike { color: #A60000; } /* should match nines_link:link */
+.ext_linklike { color: #A60000; } /* should match ext_link:link */
+
+/* This gets rid of the automatic border around an image that is used as a link */
+a img { border: 0; }
+
+/*.nav_link:link { color: white; background-color: black; text-decoration: none; }
+.nav_link:visited { color: white; background-color: black; text-decoration: none; }
+.nav_link:hover { color: black; background-color: orange; text-decoration: none; }
+
+.content_link:link { color: #A60000; text-decoration: none; }
+.content_link:visited { color: #A60000; text-decoration: none; }
+.content_link:hover { color: #fff; text-decoration: none; background: #A60000; }
+
+.modify_link:link { color: black; background-color: red; text-decoration: none; }
+.modify_link:visited { color: black; background-color: red; text-decoration: none; }
+.modify_link:hover { color: red; background: black; text-decoration: none; }
+
+.ext_link:link { color: green; background-color: red; text-decoration: none; }
+.ext_link:visited { color: green; background-color: red; text-decoration: none; }
+.ext_link:hover { color: red; background-color: green; text-decoration: none; }
+
+.nines_link:link { color: red; background-color: green; text-decoration: none; }
+.nines_link:visited { color: red; background-color: green; text-decoration: none; }
+.nines_link:hover { color: green; background-color: red; text-decoration: none; }
+
+.nines_pic_link:link img { border: 2px solid orange; text-decoration: none; }
+.nines_pic_link:visited img { border: 2px solid orange; text-decoration: none; }
+.nines_pic_link:hover img { border: 2px solid pink; text-decoration: none; }
+
+.ext_pic_link:link img { border: 2px solid red; text-decoration: none; }
+.ext_pic_link:visited img { border: 2px solid red; text-decoration: none; }
+.ext_pic_link:hover img { border: 2px solid black; text-decoration: none; }
+
+.nines_linklike { color: red; background-color: green; }
+.ext_linklike { color: green; background-color: red; }*/
 
 form {
 	padding: 0;

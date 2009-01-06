@@ -6,14 +6,14 @@
 <% owner = User.find(exhibit.user_id) -%>
 	<tr>
 		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
-		<td class="exhibit_link"><a href="/exhibits/<%= exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by
+		<td class="exhibit_link"><a class="nav_link" href="/exhibits/<%= exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by
 			<% if owner.link != nil && owner.link != "" -%>
-				<%= link_to(owner.fullname, owner.link) %>
+				<%= link_to(owner.fullname, owner.link, :class => 'nav_link') %>
 			<% else -%>
 				<%= owner.fullname %>
 			<% end -%>
 			<% if is_logged_in? && exhibit.user_id == User.find_by_username(session[:user][:username]).id -%>
-				| <%= link_to("[Edit this exhibit]", :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id ) %>
+				| <%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 		</td>
 	</tr>
