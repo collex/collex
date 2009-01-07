@@ -404,7 +404,7 @@ ModalDialog.prototype = {
 				  width: '702px',
 					height: '200px',
 					// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' .nines_linklike { color: red; background-color: green; } .ext_linklike { 	color: green; background-color: red; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
+					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; } .ext_linklike { 	color: #A60000; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
 					toolbar: toolbar
 			});
 
@@ -496,7 +496,15 @@ ModalDialog.prototype = {
 				
 				// be sure the selection doesn't go over different tags.
 				var s = this.editor._getSelection();
-				var single = (s.anchorNode == s.focusNode);
+				// for some reason just comparing the nodes isn't reliable, so we will see if they have the same previous and next sibling.
+				var aprev = s.anchorNode.previousSibling;
+				var anext = s.anchorNode.nextSibling;
+				var fprev = s.focusNode.previousSibling;
+				var fnext = s.focusNode.nextSibling;
+				var c1 = (aprev == fprev);
+				var c2 = (anext == fnext);
+				var c3 = (s.anchorNode == s.focusNode)
+				var single = c1 && c2;
 				if (!single)
 				{
 					alert("When creating a link, the selected text may not span across multiple text styles or other links. Please adjust your selection to create a link.");

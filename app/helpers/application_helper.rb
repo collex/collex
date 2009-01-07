@@ -219,9 +219,9 @@ private
   
   def decode_exhibit_links(text)
     # This routine turns our special <span> into a standard <a>
-    #<span class="linklike" nines="http://www.rossettiarchive.org/docs/s58.rap#2" title="NINES Object: http://www.rossettiarchive.org/docs/s58.rap#2">course</span>
+    #<span class="ext_linklike" real_link="xxx" title="NINES Object: xxx">yyy</span>
     # becomes:
-    #<a href="http://www.rossettiarchive.org/docs/s58.rap#2" target="_blank">course</a>
+    #<a href="http://xxx" target="_blank">yyy</a>
 
     return text if text == nil || text == ''
 

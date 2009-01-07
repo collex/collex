@@ -215,15 +215,17 @@ LinkDlgHandler.prototype = {
 		var starting_selection = "";
 		var starting_type = 0;
 		
-		var nines = par.getAttribute('nines');
-		var ext_link = par.getAttribute('ext_link');
-		if ((par.tagName == 'SPAN') && (nines != null))
+		var ext_link = par.getAttribute('real_link');
+		var cls = par.className;
+		var is_nines = cls.indexOf('nines_linklike') >= 0;
+		var is_ext = cls.indexOf('ext_linklike') >= 0;
+		if ((par.tagName == 'SPAN') && is_nines)
 		{
 			modalDlg.selectNode(elSelectionParent);
 			starting_type = 0;
-			starting_selection = nines;
+			starting_selection = ext_link;
 		}
-		else if ((par.tagName == 'SPAN') && ext_link != null)
+		else if ((par.tagName == 'SPAN') && is_ext)
 		{
 			modalDlg.selectNode(elSelectionParent);
 			starting_type = 1;

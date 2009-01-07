@@ -367,6 +367,7 @@ class My9sController < ApplicationController
       element_id = arr[arr.length-1].to_i
       
       value = params['value']
+      value = clean_up_links(value)
       element = ExhibitElement.find(element_id)
       element.element_text = value
       element.save
@@ -602,4 +603,52 @@ class My9sController < ApplicationController
     
   end
   
+  def clean_up_links(text)
+    # This converts any <a href="xxx">yyy</a> to
+    #<span class="ext_linklike" real_link="xxx" title="External Link: xxx">yyy</span>
+    # find all the spans
+    a_str = '<a'
+    arr = text.split(a_str)
+    return text if arr.length == 1
+    
+    str = arr[0]  # the first element has everything before the first span, so we just start with that.
+    is_first = true
+    for a in arr
+      if is_first
+        is_first = false  # skip the first section since we dealt with it above.
+      else
+        url = extract_link_from_encoded_a(a)
+        visible_text = extract_inner_html(a)
+        rest_of_it = extract_trailing_html(a)
+        str += "<span class='ext_linklike' real_link=\"#{url}\" title=\"External Link: #{url}\">#{visible_text}</span>#{rest_of_it}"
+      end
+    end
+    return str
+  end
+  # Some private convenience functions to make the above routine clearer
+  def extract_link_from_encoded_a(str)
+    el= str.split('>', 2)  # find the end of the opening part of the span tag.
+    arr = el[0].split('href=', 2)
+    return "" if arr.length < 2
+    quote = arr[1][0,1]
+    arr2 = arr[1].split(quote)
+    return arr2[1]
+  end
+  
+  def extract_inner_html(str)
+    el = str.split('>', 2)  # find the end of the opening part of the span tag.
+    return "" if el.length < 2
+    
+    el2 = el[1].split('</a>')
+    return "" if el2.length < 2
+    
+    return el2[0]
+  end
+  
+  def extract_trailing_html(str)
+    el = str.split('</a>')
+    return "" if el.length < 2
+    
+    return el[1]
+  end
 end
