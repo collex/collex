@@ -375,3 +375,143 @@ function initOutline(div_id)
 	if (supportsFixedPositioning)
 		$('full_window_c').setStyle({ position: 'fixed'});
 }
+
+BorderDialog = Class.create();
+
+BorderDialog.prototype = {
+	initialize: function () {
+		this._myPanel = new YAHOO.widget.Dialog("edit_border_dlg", {
+			width:"320px",
+			fixedcenter: true,
+			constraintoviewport: true,
+			underlay:"shadow",
+			close:true,
+			visible:true,
+			modal: true,
+			draggable:true
+		});
+		this._myPanel.setHeader("Edit Border");
+	
+		var myButtons = [ { text:"Submit", handler:this._handleSubmit, isDefault:true },
+						  { text:"Cancel", handler:this._handleCancel } ];
+		this._myPanel.cfg.queueProperty("buttons", myButtons);
+		
+		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
+		elOuterContainer.appendChild(new Element('div', { 'class': 'instructions'}).update('Drag the mouse over sections that you want to group together'));
+		var elToolbar = new Element('div', { 'class': 'toolbar'});
+		elToolbar.appendChild(new Element('a', { href: "#", 'class': 'nav_link' }).update('Add Border'));
+		elToolbar.appendChild(new Element('span').update(' | '));
+		elToolbar.appendChild(new Element('a', { href: "#", 'class': 'nav_link' }).update('Remove Border'));
+		elOuterContainer.appendChild(elToolbar);
+		var elContainer = new Element('div', { id: 'border_container' });
+		elOuterContainer.appendChild(elContainer);
+	
+		// First copy all the elements over that we want to use
+		var elements = $$(".selected_page .outline_element");
+		elements.each(function(el) {
+			var par = el.up();
+			var cls = 'border_dlg_element';
+			if (par.hasClassName('outline_section_with_border'))
+				cls += " border_top border_sides border_bottom";
+			var inner = el.innerHTML;
+			elContainer.appendChild(new Element('div', {id: "border_" + el.id, 'class' : cls }).update(inner));
+		}, this);
+		
+		this._myPanel.setBody(elOuterContainer);
+		this._myPanel.render(document.body); 
+	
+		elements = $$('#border_container .outline_right_controls');
+		elements.each(function(el) {
+			el.remove();
+		}, this);
+	
+		elements = $$('#border_container .count');
+		elements.each(function(el) {
+			var num = el.down().innerHTML;
+			el.update(num);
+			el.addClassName('count');
+		}, this);
+		
+		elements = $$('#border_container [onclick]');
+		elements.each(function(el) {
+			el.removeAttribute('onclick');
+		}, this);
+		
+		var el = $('border_container');
+		el.observe('mousedown', this._mouseDown.bind(this));
+		el.observe('mousemove', this._mouseMove.bind(this));
+		el.observe('mouseup', this._mouseUp.bind(this));
+	},
+	
+	_isDragging: false,
+	_anchor: null,
+	
+	_redrawRubberband : function(focus)
+	{
+		var t = (focus > this._anchor) ? this._anchor : focus;
+		var b = (focus < this._anchor) ? this._anchor : focus;
+		
+		$$('.selection_border_top').each(function(el) { el.removeClassName('selection_border_top')});
+		$$('.selection_border_sides').each(function(el) { el.removeClassName('selection_border_sides')});
+		$$('.selection_border_bottom').each(function(el) { el.removeClassName('selection_border_bottom')});
+		
+		var elements = $$('.border_dlg_element');
+		elements.each(function(el) {
+			var count = parseInt(el.down('.count').innerHTML);
+			if (count == t)
+				el.addClassName('selection_border_top');
+			if ((count >= t) && (count <= b))
+				el.addClassName('selection_border_sides');
+			if (count == b)
+				el.addClassName('selection_border_bottom');
+		});
+	},
+	
+	_getCurrentElement : function(event)
+	{
+		var tar = $(event.originalTarget);
+		if (tar == undefined)
+			tar = $(event.srcElement);
+		var el = (tar.hasClassName('border_dlg_element') ? tar : tar.up('.border_dlg_element'));
+		return parseInt(el.down('.count').innerHTML);
+	},
+	
+	_mouseDown: function(event) {
+
+		this._isDragging = true;
+		this._anchor = this._getCurrentElement(event);
+		this._redrawRubberband(this._anchor);
+		Event.stop(event);
+	},
+	_mouseMove: function(event) {
+		if (this._isDragging)
+		{
+			this._redrawRubberband(this._getCurrentElement(event));
+		}
+		Event.stop(event);
+	},
+	_mouseUp: function(event) {
+		if (this._isDragging)
+		{
+			
+		}
+		this._isDragging = false;
+		Event.stop(event);
+	},
+	
+	_handleCancel: function() {
+		this.cancel();
+	},
+
+	_handleSubmit: function() {
+		alert("hit submit");
+		this.cancel();
+		//this.submit();
+	}
+	
+}
+
+function createBorderDlg()
+{
+	new BorderDialog();
+}
