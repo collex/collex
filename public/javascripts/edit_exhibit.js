@@ -217,9 +217,9 @@ function selectLine(id)
 	
 	var allElements = $$(".selected_page");
 	allElements.each( function(el) { el.removeClassName( "selected_page" );  });
-	var curr_page = $(id).up('.outline_tree_elements');
-	var curr_page1 = curr_page.previous('.unselected_page');
-	curr_page1.addClassName('selected_page');
+	var curr_page = $(id).up('.unselected_page');
+	//var curr_page1 = curr_page.previous('.unselected_page');
+	curr_page.addClassName('selected_page');
 
 	// now scroll the page to show the element selected.
 	var arr = id.split('_');
