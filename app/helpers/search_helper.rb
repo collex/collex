@@ -270,11 +270,11 @@ module SearchHelper
   end
   
   def create_saved_search_link(s)
-    link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name, :class => 'nav_link'}
+    link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name }, :class => 'nav_link'
   end
 
   def create_remove_saved_search_link(s)
-    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id, :class => 'modify_link'}
+    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, :class => 'modify_link'
   end
   
   def has_constraints?
