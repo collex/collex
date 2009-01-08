@@ -133,7 +133,7 @@ color:inherit;
 /* rest of the styles */		
 
 .tag_minor_nav {
-	font-size: 1.1em;
+	font-size: 1.2em;
 	line-height: 2em;
 	text-align:center;
 	
@@ -440,7 +440,7 @@ cursor: default;
 }
 div.auto_complete {
     width: 300px !important;
-    font-size:10pt;
+    font-size:.9em;
  /*line-height: 20px;*/
   }
   div.auto_complete ul li {
