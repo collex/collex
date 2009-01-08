@@ -401,16 +401,16 @@ BorderDialog.prototype = {
 		});
 		this._myPanel.setHeader("Edit Border");
 	
-		var myButtons = [ { text:"Submit", handler:this._handleSubmit, isDefault:true },
+		var myButtons = [ { text:"Submit", handler:this._handleSubmit },
 						  { text:"Cancel", handler:this._handleCancel } ];
 		this._myPanel.cfg.queueProperty("buttons", myButtons);
 		
 		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
-		elOuterContainer.appendChild(new Element('div', { 'class': 'instructions'}).update('Drag the mouse over sections that you want to group together.'));
+		elOuterContainer.appendChild(new Element('div', { id: 'border_dlg_instructions', 'class': 'instructions'}).update('First, drag the mouse over some sections and then click "Add Border" or "Remove Border".'));
 		var elToolbar = new Element('div', { 'class': 'toolbar'});
-		elToolbar.appendChild(new Element('a', { id: 'add_border', href: "#", 'class': 'nav_link' }).update('Add Border'));
-		elToolbar.appendChild(new Element('span').update(' | '));
-		elToolbar.appendChild(new Element('a', { id: 'remove_border', href: "#", 'class': 'nav_link' }).update('Remove Border'));
+		elToolbar.appendChild(new Element('a', { id: 'add_border', href: "#", 'class': 'nav_link border_dlg_toolbar' }).update('[ Add Border ]'));
+		elToolbar.appendChild(new Element('span').update('  '));
+		elToolbar.appendChild(new Element('a', { id: 'remove_border', href: "#", 'class': 'nav_link border_dlg_toolbar' }).update('[ Remove Border ]'));
 		elOuterContainer.appendChild(elToolbar);
 		var elContainer = new Element('div', { id: 'border_container' });
 		elOuterContainer.appendChild(elContainer);
@@ -468,11 +468,34 @@ BorderDialog.prototype = {
 		
 		$('add_border').observe('click', this._addBorder.bind(this));
 		$('remove_border').observe('click', this._removeBorder.bind(this));
+		
+		this._enableSubmit(false);
 	},
 	
 	_isDragging: false,
 	_anchor: null,
 	_focus: null,
+	
+	_enableSubmit: function(enable)
+	{
+		var buttons = $$('#edit_border_dlg button');
+		buttons.each(function(but) {
+			if (but.innerHTML == 'Submit')
+			{
+				if (enable == true)
+				{
+					but.disabled = false;
+					but.up().removeClassName('yui-button-disabled');
+				}
+				else
+				{
+					but.disabled = true;
+					but.up().addClassName('yui-button-disabled');
+				}
+			}
+		});
+		
+	},
 	
 	_redrawRubberband : function(focus)
 	{
@@ -582,6 +605,7 @@ BorderDialog.prototype = {
 		});
 		this._adjustOverlappingBorder();
 		this._removeRubberband();
+		this._enableSubmit(true);
 	},
 	
 	_removeBorder: function(event) {
@@ -596,6 +620,7 @@ BorderDialog.prototype = {
 		});
 		this._adjustOverlappingBorder();
 		this._removeRubberband();
+		this._enableSubmit(true);
 	},
 	
 	_handleCancel: function() {

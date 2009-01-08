@@ -315,7 +315,7 @@ font-weight:bold;
 
 #border_outer_container .instructions {
 	font-style: italic;
-	padding-bottom: .5em;
+	padding-bottom: .8em;
 }
 
 #border_outer_container .toolbar {
@@ -355,4 +355,8 @@ font-weight:bold;
 
 #border_container .selection_border_bottom {
 	border-bottom: 2px dotted black;
+}
+
+.border_dlg_toolbar {
+	font-size: larger;
 }
