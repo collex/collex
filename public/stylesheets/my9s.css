@@ -321,6 +321,7 @@ font-weight:bold;
 
 #border_container .border_top {
 	border-top: 3px solid gray;
+	margin-top: 1px;
 }
 
 #border_container .border_sides {
@@ -330,17 +331,25 @@ font-weight:bold;
 
 #border_container .border_bottom {
 	border-bottom: 3px solid gray;
+	margin-bottom: 1px;
+}
+
+.rubberband_dlg_element {
+	padding-left: 2px;
+	padding-right: 2px;
+	border-left: 2px solid #F2F2F2;
+	border-right: 2px solid #F2F2F2;
 }
 
 #border_container .selection_border_top {
-	border-top: 3px dashed black;
+	border-top: 2px dotted black;
 }
 
 #border_container .selection_border_sides {
-	border-left: 3px dashed black;
-	border-right: 3px dashed black;
+	border-left: 2px dotted black;
+	border-right: 2px dotted black;
 }
 
 #border_container .selection_border_bottom {
-	border-bottom: 3px dashed black;
+	border-bottom: 2px dotted black;
 }

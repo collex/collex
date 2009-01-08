@@ -430,6 +430,25 @@ class My9sController < ApplicationController
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
+    def modify_border
+      element_id = params['element_id']
+      borders = params['borders']
+      
+      #exhibit = Exhibit.find(exhibit_id)
+      element = ExhibitElement.find(element_id)
+      page = ExhibitPage.find(element.exhibit_page_id)
+      exhibit_id = page.exhibit_id
+      
+      arr = borders.split(',')
+      if arr.length == page.exhibit_elements.length
+        0.upto(arr.length-1) do |i|
+          page.exhibit_elements[i].set_border_type(arr[i])
+        end
+      end
+      
+      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false }
+    end
+
     def modify_outline
       exhibit_id = params['exhibit_id']
       element_id = params['element_id']
@@ -452,19 +471,19 @@ class My9sController < ApplicationController
         page.delete_element(element.position)
         element_id = -1
 
-      when "insert_border"
-        page.insert_border(element)
-        is_editing_border = true
-      when "move_top_of_border_up"
-        is_editing_border = page.move_top_of_border_up(element)
-      when "move_top_of_border_down"
-        is_editing_border = page.move_top_of_border_down(element)
-      when "move_bottom_of_border_up"
-        is_editing_border = page.move_bottom_of_border_up(element)
-      when "move_bottom_of_border_down"
-        is_editing_border = page.move_bottom_of_border_down(element)
-      when "delete_border"
-        page.delete_border(element)
+#      when "insert_border"
+#        page.insert_border(element)
+#        is_editing_border = true
+#      when "move_top_of_border_up"
+#        is_editing_border = page.move_top_of_border_up(element)
+#      when "move_top_of_border_down"
+#        is_editing_border = page.move_top_of_border_down(element)
+#      when "move_bottom_of_border_up"
+#        is_editing_border = page.move_bottom_of_border_up(element)
+#      when "move_bottom_of_border_down"
+#        is_editing_border = page.move_bottom_of_border_down(element)
+#      when "delete_border"
+#        page.delete_border(element)
   
       when "insert_page"
         exhibit.insert_page(page.position+1)

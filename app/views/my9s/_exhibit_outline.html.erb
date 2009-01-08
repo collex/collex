@@ -15,7 +15,6 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<div id="full-window-content">
 <div id="outline-toolbar">
 <%= link_to_function("[New Section]", "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'New Section', :class => 'modify_link' }) %>
 <%= link_to_function("[New Page]", "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'New Page', :class => 'modify_link' }) %>
@@ -90,10 +89,7 @@
 	</li>
 <% end # each page -%>
 </ul>
-</div>
 
-<% if is_editing_border -%>
 <script language="JavaScript">
-	doEnterEditBorder(<%=exhibit.id%>);
+	setPageSelected();
 </script>
-<% end -%>

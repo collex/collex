@@ -154,72 +154,81 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 	}
 }
 
-var strStopEditingText = '[Stop Editing Border]';
+//var strStopEditingText = '[Stop Editing Border]';
+//
+//function doEnterEditBorder(exhibit_id)
+//{
+//	// this is called both to start editing and to stop editing.
+//	// If we want to stop editing, we just hide the controls and return.
+//	var didExit = exitEditBorderMode();
+//	if (didExit)
+//		return;
+//	
+//	// First find the selected item so we know which section to manipulate.
+//	var allElements = $$(".outline_tree_element_selected");
+//	if (allElements.length == 1)
+//	{
+//		var id = allElements[0].id;
+//		var arr = id.split("_");
+//		var element_id = arr[arr.length-1];
+//		
+//		var section = allElements[0].up();
+//		// If the section doesn't have a border, add one automatically.
+//		if (section.hasClassName("outline_section_with_border") == false)
+//		{
+//			doAjaxLinkOnSelection('insert_border', exhibit_id);
+//			return;
+//		}
+//		
+//		var editBorderButton = $('edit_border');
+//		editBorderButton.innerHTML = strStopEditingText;
+//		var borderControls = $("border_controls");
+//		var borderControlsBottom = $("border_controls_bottom");
+//		borderControls.show();
+//		borderControlsBottom.show();
+//		section.insert({
+//			top: borderControls,
+//			bottom: borderControlsBottom
+//		});
+//	}	
+//}
+//
+//function exitEditBorderMode()
+//{
+//	var editBorderButton = $('edit_border');
+//	if (editBorderButton.innerHTML == strStopEditingText)
+//	{
+//		editBorderButton.innerHTML = "[Edit Border]";
+//		$("border_controls").hide();
+//		$("border_controls_bottom").hide();
+//		return true;
+//	}
+//	return false;
+//}
 
-function doEnterEditBorder(exhibit_id)
+function setPageSelected()
 {
-	// this is called both to start editing and to stop editing.
-	// If we want to stop editing, we just hide the controls and return.
-	var didExit = exitEditBorderMode();
-	if (didExit)
-		return;
-	
-	// First find the selected item so we know which section to manipulate.
-	var allElements = $$(".outline_tree_element_selected");
-	if (allElements.length == 1)
+	var allElements = $$(".selected_page");
+	allElements.each( function(el) { el.removeClassName( "selected_page" );  });
+	var sel_element = $$(".outline_tree_element_selected");
+	if (sel_element.length > 0)
 	{
-		var id = allElements[0].id;
-		var arr = id.split("_");
-		var element_id = arr[arr.length-1];
-		
-		var section = allElements[0].up();
-		// If the section doesn't have a border, add one automatically.
-		if (section.hasClassName("outline_section_with_border") == false)
-		{
-			doAjaxLinkOnSelection('insert_border', exhibit_id);
-			return;
-		}
-		
-		var editBorderButton = $('edit_border');
-		editBorderButton.innerHTML = strStopEditingText;
-		var borderControls = $("border_controls");
-		var borderControlsBottom = $("border_controls_bottom");
-		borderControls.show();
-		borderControlsBottom.show();
-		section.insert({
-			top: borderControls,
-			bottom: borderControlsBottom
-		});
-	}	
-}
-
-function exitEditBorderMode()
-{
-	var editBorderButton = $('edit_border');
-	if (editBorderButton.innerHTML == strStopEditingText)
-	{
-		editBorderButton.innerHTML = "[Edit Border]";
-		$("border_controls").hide();
-		$("border_controls_bottom").hide();
-		return true;
+		var curr_page = $(sel_element[0]).up('.unselected_page');
+		if (curr_page != undefined)
+			curr_page.addClassName('selected_page');
 	}
-	return false;
 }
 
 function selectLine(id)
 {
-	exitEditBorderMode();
+	//exitEditBorderMode();
 	
 	var allElements = $$(".outline_tree_element_selected");
 	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
 	
 	$(id).addClassName( "outline_tree_element_selected" );
 	
-	var allElements = $$(".selected_page");
-	allElements.each( function(el) { el.removeClassName( "selected_page" );  });
-	var curr_page = $(id).up('.unselected_page');
-	//var curr_page1 = curr_page.previous('.unselected_page');
-	curr_page.addClassName('selected_page');
+	setPageSelected();
 
 	// now scroll the page to show the element selected.
 	var arr = id.split('_');
@@ -381,7 +390,7 @@ BorderDialog = Class.create();
 BorderDialog.prototype = {
 	initialize: function () {
 		this._myPanel = new YAHOO.widget.Dialog("edit_border_dlg", {
-			width:"320px",
+			width:"380px",
 			fixedcenter: true,
 			constraintoviewport: true,
 			underlay:"shadow",
@@ -399,9 +408,9 @@ BorderDialog.prototype = {
 		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
 		elOuterContainer.appendChild(new Element('div', { 'class': 'instructions'}).update('Drag the mouse over sections that you want to group together'));
 		var elToolbar = new Element('div', { 'class': 'toolbar'});
-		elToolbar.appendChild(new Element('a', { href: "#", 'class': 'nav_link' }).update('Add Border'));
+		elToolbar.appendChild(new Element('a', { id: 'add_border', href: "#", 'class': 'nav_link' }).update('Add Border'));
 		elToolbar.appendChild(new Element('span').update(' | '));
-		elToolbar.appendChild(new Element('a', { href: "#", 'class': 'nav_link' }).update('Remove Border'));
+		elToolbar.appendChild(new Element('a', { id: 'remove_border', href: "#", 'class': 'nav_link' }).update('Remove Border'));
 		elOuterContainer.appendChild(elToolbar);
 		var elContainer = new Element('div', { id: 'border_container' });
 		elOuterContainer.appendChild(elContainer);
@@ -410,11 +419,20 @@ BorderDialog.prototype = {
 		var elements = $$(".selected_page .outline_element");
 		elements.each(function(el) {
 			var par = el.up();
+			var prev = el.previous();
+			var next = el.next();
 			var cls = 'border_dlg_element';
 			if (par.hasClassName('outline_section_with_border'))
-				cls += " border_top border_sides border_bottom";
+			{
+				cls += " border_sides";
+				if (prev == undefined)
+					cls += " border_top";
+				if (next == undefined)
+					cls += " border_bottom";
+			}
 			var inner = el.innerHTML;
-			elContainer.appendChild(new Element('div', {id: "border_" + el.id, 'class' : cls }).update(inner));
+			var elBorder = new Element('div', {id: "border_" + el.id, 'class' : cls }).update(inner);
+			elContainer.appendChild(elBorder.wrap('div', { id: 'rubberband_' + el.id, 'class': 'rubberband_dlg_element'}));
 		}, this);
 		
 		this._myPanel.setBody(elOuterContainer);
@@ -441,21 +459,23 @@ BorderDialog.prototype = {
 		el.observe('mousedown', this._mouseDown.bind(this));
 		el.observe('mousemove', this._mouseMove.bind(this));
 		el.observe('mouseup', this._mouseUp.bind(this));
+		
+		$('add_border').observe('click', this._addBorder.bind(this));
+		$('remove_border').observe('click', this._removeBorder.bind(this));
 	},
 	
 	_isDragging: false,
 	_anchor: null,
+	_focus: null,
 	
 	_redrawRubberband : function(focus)
 	{
 		var t = (focus > this._anchor) ? this._anchor : focus;
 		var b = (focus < this._anchor) ? this._anchor : focus;
 		
-		$$('.selection_border_top').each(function(el) { el.removeClassName('selection_border_top')});
-		$$('.selection_border_sides').each(function(el) { el.removeClassName('selection_border_sides')});
-		$$('.selection_border_bottom').each(function(el) { el.removeClassName('selection_border_bottom')});
+		this._removeRubberband();
 		
-		var elements = $$('.border_dlg_element');
+		var elements = $$('.rubberband_dlg_element');
 		elements.each(function(el) {
 			var count = parseInt(el.down('.count').innerHTML);
 			if (count == t)
@@ -465,15 +485,31 @@ BorderDialog.prototype = {
 			if (count == b)
 				el.addClassName('selection_border_bottom');
 		});
+		
+		this._focus = focus;
+	},
+	
+	_removeRubberband: function()
+	{
+		$$('.selection_border_top').each(function(el) { el.removeClassName('selection_border_top')});
+		$$('.selection_border_sides').each(function(el) { el.removeClassName('selection_border_sides')});
+		$$('.selection_border_bottom').each(function(el) { el.removeClassName('selection_border_bottom')});
 	},
 	
 	_getCurrentElement : function(event)
 	{
+		var tar = this._getTarget(event);
+		var el = (tar.hasClassName('rubberband_dlg_element') ? tar : tar.up('.rubberband_dlg_element'));
+		if (el == undefined)
+			return -1;
+		return parseInt(el.down('.count').innerHTML);
+	},
+	
+	_getTarget : function(event) {
 		var tar = $(event.originalTarget);
 		if (tar == undefined)
 			tar = $(event.srcElement);
-		var el = (tar.hasClassName('border_dlg_element') ? tar : tar.up('.border_dlg_element'));
-		return parseInt(el.down('.count').innerHTML);
+		return tar;
 	},
 	
 	_mouseDown: function(event) {
@@ -483,29 +519,110 @@ BorderDialog.prototype = {
 		this._redrawRubberband(this._anchor);
 		Event.stop(event);
 	},
+	
 	_mouseMove: function(event) {
 		if (this._isDragging)
 		{
-			this._redrawRubberband(this._getCurrentElement(event));
+			var focus = this._getCurrentElement(event);
+			if (focus != this._focus)
+			{
+				if (focus >= 0)
+					this._redrawRubberband(focus);
+			}
 		}
 		Event.stop(event);
 	},
+	
 	_mouseUp: function(event) {
-		if (this._isDragging)
-		{
-			
-		}
 		this._isDragging = false;
 		Event.stop(event);
 	},
 	
+	_adjustOverlappingBorder: function() {
+		// If the rubberband overlaps a current border, then adjust the edges of that border.
+		var tops = $$('.selection_border_top');
+		var bottoms = $$('.selection_border_bottom');
+		// There should be exactly one of each of these. If not, then just ignore.
+		if (tops.length != 1 || bottoms.length != 1)
+			return;
+		
+		var previous = tops[0].previous();
+		if (previous && previous.down().hasClassName('border_sides'))	// if the top isn't the first item, and the item before has a border
+			previous.down().addClassName('border_bottom');
+			
+		var next = bottoms[0].next();
+		if (next && next.down().hasClassName('border_sides'))	// if the bottom isn't the last item, and the item after has a border
+			next.down().addClassName('border_top');
+	},
+	
+	_addBorder: function(event) {
+		var elements = $$('.rubberband_dlg_element');
+		elements.each(function(el) {
+			// If the item doesn't have sides then it isn't part of this selection
+			if (el.hasClassName('selection_border_sides'))
+			{
+				el.down().addClassName('border_sides');
+				
+				if (el.hasClassName('selection_border_top'))
+					el.down().addClassName('border_top');
+				else
+					el.down().removeClassName('border_top');
+	
+				if (el.hasClassName('selection_border_bottom'))
+					el.down().addClassName('border_bottom');
+				else
+					el.down().removeClassName('border_bottom');
+			}
+		});
+		this._adjustOverlappingBorder();
+		this._removeRubberband();
+	},
+	
+	_removeBorder: function(event) {
+		var elements = $$('.rubberband_dlg_element');
+		elements.each(function(el) {
+			if (el.hasClassName('selection_border_sides'))
+			{
+				el.down().removeClassName('border_top');
+				el.down().removeClassName('border_sides');
+				el.down().removeClassName('border_bottom');
+			}
+		});
+		this._adjustOverlappingBorder();
+		this._removeRubberband();
+	},
+	
 	_handleCancel: function() {
 		this.cancel();
+		this.destroy();
 	},
 
 	_handleSubmit: function() {
-		alert("hit submit");
+		var elements = $$('.border_dlg_element');
+		var str = "";
+		elements.each(function(el) {
+			if (el.hasClassName('border_top'))
+				str += 'start_border' + ',';
+			else if (el.hasClassName('border_sides'))
+				str += 'continue_border' + ',';
+			else
+				str += 'no_border' + ',';
+		});
+
+		var els = $$('.outline_tree_element_selected');
+		if (els.length > 0)
+		{
+			var element_id = els[0].id;
+			element_id = element_id.substring(element_id.lastIndexOf('_')+1);
+			
+			new Ajax.Updater("full-window-content", "/my9s/modify_border", {
+				parameters : { borders: str, element_id: element_id },
+				evalScripts : true,
+				onFailure : function(resp) { alert("Oops, there's been an error."); }});
+		}
+
 		this.cancel();
+		this.destroy();
 		//this.submit();
 	}
 	
