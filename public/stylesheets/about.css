@@ -18,7 +18,7 @@ padding:2px;
 #about-main {
 
 margin: 0px 20px 0px 20px;
-font-size:1.1em;
+font-size:1.2em;
 }
 
 /* Main About Page graphics */
@@ -237,7 +237,7 @@ margin-top:38px;
 	margin-top: 0px;
 	margin-left:45px;
 	margin-right:20px;
-	font-size:13pt;
+	font-size:1.3em;
 	/*width:1000px;*/
 }
 
@@ -252,7 +252,7 @@ padding:4px;
 margin-top: -110px;
 margin-left:200px;
 margin-right:50px;
-font-size:13pt;
+font-size:1.1em;
 
 }
 
@@ -260,7 +260,7 @@ font-size:13pt;
 margin-top: 225px;
 margin-left:200px;
 margin-right:50px;
-font-size:13pt;
+font-size:1.2em;
 
 }
 
@@ -293,7 +293,7 @@ margin-left: 140px;
 margin-top: -160px;
 
 font-weight:bold;
-font-size:13pt;
+font-size:1.2em;
 padding: 22px;
 }
 
@@ -307,7 +307,7 @@ width:875px;
 margin-top: 380px;
 margin-left:50px;
 margin-right:50px;
-font-size:13pt;
+font-size:1.2em;
 }
 
 img.inset {
@@ -319,11 +319,11 @@ border:gray 1px solid;
 margin-top: -130px;
 margin-left:190px;
 margin-right:50px;
-font-size:13pt;
+font-size:1.2em;
 }
 
 #communityContent td{
-font-size:12pt;
+font-size:1.1em;
 text-align:center;
 width:340px;
 height:250px;
@@ -342,13 +342,13 @@ text-align:center;
 
 }
 
-#rightBar p{
+/*#rightBar p{
 margin-top:-160px;
 margin-left:20px;
 margin-right:20px;
 padding:6px;
 font-size:11pt;
-}
+}*/
 
 /*New styles for footer */
 
@@ -378,7 +378,7 @@ margin-top: -1.5em;
 .grayBox {
 margin-top:30px;
 background-color:#E0E0E0;
-font-size:13pt;
+font-size:1.2em;
 padding:.9em;
 /*width:875px;*/
 }
