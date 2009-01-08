@@ -294,7 +294,10 @@ font-weight:bold;
 }
 
 #border_container {
-	padding: 1em;
+	background-color:white;
+	border-top:1px solid black;
+	margin-top:10px;
+	padding:0.7em;
 }
 
 .border_dlg_element {
@@ -337,8 +340,8 @@ font-weight:bold;
 .rubberband_dlg_element {
 	padding-left: 2px;
 	padding-right: 2px;
-	border-left: 2px solid #F2F2F2;
-	border-right: 2px solid #F2F2F2;
+	border-left: 2px solid white;
+	border-right: 2px solid white;
 }
 
 #border_container .selection_border_top {

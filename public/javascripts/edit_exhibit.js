@@ -406,7 +406,7 @@ BorderDialog.prototype = {
 		this._myPanel.cfg.queueProperty("buttons", myButtons);
 		
 		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
-		elOuterContainer.appendChild(new Element('div', { 'class': 'instructions'}).update('Drag the mouse over sections that you want to group together'));
+		elOuterContainer.appendChild(new Element('div', { 'class': 'instructions'}).update('Drag the mouse over sections that you want to group together.'));
 		var elToolbar = new Element('div', { 'class': 'toolbar'});
 		elToolbar.appendChild(new Element('a', { id: 'add_border', href: "#", 'class': 'nav_link' }).update('Add Border'));
 		elToolbar.appendChild(new Element('span').update(' | '));
@@ -415,6 +415,12 @@ BorderDialog.prototype = {
 		var elContainer = new Element('div', { id: 'border_container' });
 		elOuterContainer.appendChild(elContainer);
 	
+		// Here's our header
+		var headers = $$('.selected_page .exhibit_outline_text');
+		var page_num = headers[0].innerHTML;
+		var span = new Element('span', { 'class': 'exhibit_outline_text' }).update('&nbsp;&nbsp;' + page_num);
+		elContainer.appendChild(span.wrap('div', { 'class': 'unselected_page selected_page ' }));
+
 		// First copy all the elements over that we want to use
 		var elements = $$(".selected_page .outline_element");
 		elements.each(function(el) {
