@@ -50,7 +50,8 @@ module TagHelper
 
   def create_total(view_type, total_hits, tag)
     if view_type == 'tag'
-      return "#{pluralize(total_hits, 'object')} tagged as \"#{h(tag)}\"."
+      rss = "<a href='/tags/rss/#{tag}.xml'><img src='/images/RSS_icon.jpg' height='14px' alt='RSS'/></a>"
+      return "#{pluralize(total_hits, 'object')} tagged as \"#{h(tag)} #{rss}\". "
     elsif view_type == 'all_collected'
       return "#{pluralize(total_hits, 'object')} collected."
     elsif view_type == 'untagged'

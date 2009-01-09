@@ -1,0 +1,57 @@
+<% #parameters: hit, row_id -%>
+<% # this needs to be called inside a <table> element -%>
+<% hit['alternative'].each do %>
+<% tr do %>
+<%= td hit['alternative'], :valign => "top", :colspan => "2" %>
+<% end %>
+<% end if hit['alternative'] %>
+<% hit['source'].each_with_index do |source, i| %>
+<% tr do %>
+<%= td((i < 1 ? "source:" : ""), :class => "grey", :valign => "top") %>
+<%= td h(source), :valign => "top" %>
+<% end %>
+<% end if hit['source'] %>
+<tr>
+    <td class="grey">
+        site:
+    </td>
+    <td width="100%">
+        <% if hit['archive'] %>
+        <% if site(hit['archive']) %><a class="nav_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a>&nbsp;&rarr; <% else %><%= hit['archive'] %><% end %>
+        <% end %>
+    </td>
+</tr>
+<% tr do %>
+<%= td "exhibit type:", :class => "grey", :valign => "top" %>
+<%= td hit['exhibit_type'], :valign => "top" %>
+<% end if hit['exhibit_type'] %>
+<% tr do %>
+<%= td "license:", :class => "grey", :valign => "top" %>
+<%= td hit['license'], :valign => "top" %>
+<% end if hit['license'] %>
+<% hit.select {|key,value| key =~ /^role_/}.each_with_index do |agent, i| agent[1].each do |name| %>
+<% tr do %>
+<%= td((i < 1 ? "name:" : ""), :class => "grey", :valign => "top") %>
+<%= td h("#{name} (#{COLLEX_MANAGER.relators[agent[0][-3,3]]})"), :valign => "top" %>
+<% end %>
+<% end end %>
+<% tr do %>
+<%= td "date:", :class => "grey", :valign => "top" %>
+<%= td h(hit['date_label'].join('; ')), :valign => "top" %>
+<% end if hit['date_label'] %>
+<% hit['genre'].each_with_index do |genre, i| %>
+<% tr do %>
+<%= td((i < 1 ? "genre:" : ""), :class => "grey", :valign => "top") %>
+<%= td h(genre) %>
+<% end %>
+<% end if hit['genre'] %>
+<% if hit["text"] != nil -%>
+<tr>
+    <td colspan='2'>
+    	<div class="grey">Excerpt from Full Text:</div>
+        <div class="snippet" id="<%=row_id%>_full_text">
+            <%=hit["text"] %>
+        </div>
+	</td>
+</tr>
+<% end # if there is a full text excerpt -%>

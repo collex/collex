@@ -217,6 +217,27 @@ private
     end
   end
   
+  def escape_for_xml(obj)
+    # This either gets a string passed to it or an array of strings
+    if obj.kind_of?(Array)
+      str = ""
+      obj.each do |s|
+        str += s + ' '
+      end
+    else
+      str = obj
+    end
+    
+    return "" if str == nil
+
+    str = str.gsub('&', '&amp;')
+    str = str.gsub('<', '&lt;')
+    str = str.gsub('>', '&gt;')
+    str = str.gsub('"', '&quot;')
+    str = str.gsub("'", '&apos;')
+    return str
+  end
+  
   def decode_exhibit_links(text)
     # This routine turns our special <span> into a standard <a>
     #<span class="ext_linklike" real_link="xxx" title="NINES Object: xxx">yyy</span>

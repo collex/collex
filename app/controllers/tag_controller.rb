@@ -163,6 +163,19 @@ class TagController < ApplicationController
     render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size =>@bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s' }
    end
    
+   def rss
+     @tag = params[:tag]
+     @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], nil))
+     #@items = [ { :title => 'first', :description => 'this is the first'}, { :title => 'second', :description => 'another entry' } ]
+     render :partial => 'rss'
+   end
+   
+
+    def object
+      @hit = CachedResource.get_hit_from_uri(params[:uri])
+      render :layout => 'simple'
+    end
+   
    private
    
    def sort_by_date_collected(results)

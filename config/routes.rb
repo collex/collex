@@ -109,6 +109,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
   map.connect 'admin', :controller => 'admin/default'
   
+  map.tag_rss '/tags/rss/:tag.xml', :controller => 'tag', :action => 'rss'
+  map.tag_obj '/tags/object', :controller => 'tag', :action => 'object'
+  
   map.news '/news', :controller => 'home', :action => 'news'
   map.search '/search', :controller => 'search', :action => 'browse'
   map.tab_about '/tab_about', :controller => 'about', :action => 'index'

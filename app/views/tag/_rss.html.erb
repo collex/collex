@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<rss version="0.91">
+<% base_url = 'http://' + request.host_with_port() -%>
+
+	<channel>
+		<title>NINES Tag: <%= @tag %></title>
+		<link><%= base_url %>/tags/results?tag=<%= @tag %>&amp;view=tag</link>
+		<description>nineteenth-century studies online</description>
+		<language>en-us</language>
+
+		<image>
+			<title>NINES</title>
+			<url><%= base_url %>/images/harrington.gif</url>
+			<link><%= base_url %></link>
+			<width>83</width>
+			<height>83</height>
+		</image>
+
+<% for hit in @results -%>
+		<item>
+			<title><%= escape_for_xml(hit["title"]) %></title>
+			<link><%= base_url %>/tags/object?uri=<%= escape_for_xml(hit['uri']) %></link>
+			<description>
+				&lt;table&gt;
+					&lt;tr&gt;
+						&lt;td&gt;
+							resource:
+						&lt;/td&gt;
+						&lt;td&gt;
+							&lt;a href=&quot;<%= escape_for_xml(hit["url"]) %>&quot;&gt;<%= escape_for_xml(hit["url"]) %>&lt;/a&gt;
+						&lt;/td&gt;
+					&lt;/tr&gt;
+					<%= escape_for_xml(render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => 'row' }) %>
+				&lt;/table&gt;
+			</description>
+		</item>
+<% end -%>
+	</channel>
+ </rss>
