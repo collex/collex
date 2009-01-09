@@ -95,6 +95,37 @@ class ResultsController < ApplicationController
     #redirect_to params[:return]
   end
   
+  def edit_tag
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user != nil
+      old_name = params[:old_name]
+      new_name = params[:new_name]
+      
+      tagged_items = CachedResource.get_hits_for_tag(old_name, user)
+      
+      tagged_items.each { |item|
+        CollectedItem.rename_tag(user, item['uri'], old_name, new_name)
+      }
+  
+    end
+    redirect_to :back
+  end
+  
+  def remove_tag
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user != nil
+      tag = params[:tag]
+      
+      tagged_items = CachedResource.get_hits_for_tag(tag, user)
+      
+      tagged_items.each { |item|
+        CollectedItem.delete_tag(user, item['uri'], tag)
+      }
+  
+    end
+    redirect_to :back
+  end
+
   def add_object_to_exhibit
     locals = setup_ajax_calls(params, true)
     exhibit_name = params[:exhibit]

@@ -49,8 +49,10 @@
 						</div>
 					</div>
 					<div class="tag_results standard_box">
-						<%= render( :partial => 'results/result_count' ) %>    
-						<h1><a id="top_of_results"><%= create_total(params[:view], @total_hits, params[:tag]) %></a></h1>
+						<%= render( :partial => 'results/result_count' ) %>
+						<h1><a id="top_of_results"><%= create_total(params[:view], @total_hits, params[:tag]) %></a><%= link_to_function('[ Edit Tag ]', "editTag('edit_tag', '#{params[:tag]}')", { :id => 'edit_tag', :class => 'modify_link' }) if params[:view] == 'tag' %>
+							<%= link_to_function('[ Remove Tag ]', "removeTag('edit_tag', '#{params[:tag]}')", { :class => 'modify_link' }) if params[:view] == 'tag' %>
+						</h1>
 						<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results"} }  ) %>
 						
 						<div id="all_displayed_results">

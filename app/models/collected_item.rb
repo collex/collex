@@ -150,6 +150,11 @@ class CollectedItem < ActiveRecord::Base
     end
   end
   
+  def self.rename_tag(user, uri, old_tag_str, new_tag_str)
+    self.add_tag(user, uri, new_tag_str)
+    self.delete_tag(user, uri, old_tag_str)
+  end
+
   private
   def self.delete_tag_if_orphan(tag_str)
     tag_rec = Tag.find_by_name(tag_str)

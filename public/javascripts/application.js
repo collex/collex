@@ -575,6 +575,28 @@ function doRemoveCollect(uri, row_num, row_id)
 	});
 }
 
+function editTag(parent_id, tag_name)
+{
+	doSingleInputPrompt("Edit Tag", 'Tag:', 'new_name', parent_id, 
+		"",
+		"/results/edit_tag", 
+		$H({ old_name: tag_name, new_name: tag_name }), 'text' );
+}
+
+function removeTag(parent_id, tag_name)
+{
+	if (confirm("Are you sure you want to remove all instances of the " + tag_name + " tag that you created?"))
+	{
+		var new_form = new Element('form', { id: "remove_tag", method: 'post', onsubmit: "this.submit();", action: "/results/remove_tag" });
+		new_form.observe('submit', "this.submit();");
+		document.body.appendChild(new_form);
+		new_form.appendChild(new Element('input', { name: 'tag', value: tag_name, id: 'tag' }));
+
+		$(parent_id).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+		new_form.submit();
+	}
+}
+
 function doAddTag(parent_id, uri, row_num, row_id)
 {
 	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
