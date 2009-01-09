@@ -216,7 +216,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	promptStr, // The string that appears to the left of the input
 	promptId, // The key that will be used in the params[] hash in the ajax call
 	referenceElementId, // The element that the dialog will appear above
-	actionElementIds, // The list of elements that should be updated by the ajax calls (comma separated)
+	actionElementIds, // The list of elements that should be updated by the ajax calls (comma separated) [ if this is "", then the entire page should be redrawn ]
 	actions, // The list of urls that should be called by Ajax (should be the same number as above)
 	hiddenDataHash, // Extra data that should be sent back to the server .eg.: $H({ key1: 'value1', key2: 'value2' })
 	inputType,	// one of: 'text', 'select', or 'textarea'

@@ -360,6 +360,33 @@ function explorerMacResizeFix () {
 
 // -----
 
+function bulkTag(event)
+{
+	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
+	
+	var uris = "";
+	var has_one = false;
+	for (i = 0; i < checkboxes.length; i++) {
+		var checkbox = checkboxes[i];
+		if (checkbox.checked) {
+			uris += checkbox.value + '\t';
+			has_one = true;
+		}
+	}
+	
+	if (has_one)
+	{
+		doSingleInputPrompt("Add Tag To All Checked Objects", 'Tag:', 'tag', 'bulk_tag', 
+			"",
+			"/results/bulk_add_tag", 
+			$H({ uris: uris }), 'text' );
+	}
+	else
+	{
+		alert("You must select one or more objects before clicking this button.")
+	}
+}
+
 function bulkCollect(event)
 {
 	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');

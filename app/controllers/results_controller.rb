@@ -66,6 +66,22 @@ class ResultsController < ApplicationController
     render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits] }
   end
   
+  def bulk_add_tag
+    tag = params['tag']
+    uris = params['uris']
+    uris = uris.split("\t")
+    
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    
+    if user != nil && tag != nil && tag.length > 0
+      uris.each{ |uri|
+        CollectedItem.collect_item(user, uri) # this just returns if the object is already collected.
+        CollectedItem.add_tag(user, uri, tag)
+      }
+    end
+    redirect_to :back
+  end
+  
   def bulk_collect
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil && params[:bulk_collect] != nil
@@ -99,7 +115,7 @@ class ResultsController < ApplicationController
     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
     ret[:user] = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if is_in_cache
-      ret[:hit] = get_from_cache(params[:uri], ret[:user])
+      ret[:hit] = get_from_cache(params[:uri])
     else
       ret[:hit] = get_from_solr(params[:uri])
       if ret[:hit] == nil
@@ -130,7 +146,7 @@ class ResultsController < ApplicationController
     return nil
   end
 
-  def get_from_cache(uri, user)
+  def get_from_cache(uri)
     return CachedResource.get_hit_from_uri(uri)
   end
 end

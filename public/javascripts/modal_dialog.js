@@ -563,6 +563,26 @@ ModalDialog.prototype = {
 			var action = el.readAttribute('action');
 			var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
 			
+			if (ajax_action_element_id == "")
+			{
+				// Instead of replacing an element, we want to redraw the entire page. There seems to be some conflict
+				// if the form is resubmitted, so duplicate the form.
+				new_form = new Element('form', { id: form_id + "2", method: 'post', onsubmit: "this.submit();", action: action });
+				new_form.observe('submit', "this.submit();");
+				document.body.appendChild(new_form);
+				var els = $$('#' + form_id + ' input');
+				els.each(function(e) { new_form.appendChild(new Element('input', { name: e.id, value: e.value, id: e.id })); });
+				els = $$('#' + form_id + ' textarea');
+				els.each(function(e) { new_form.appendChild(new Element('textarea', { name: e.id, value: e.value, id: e.id })); });
+				els = $$('#' + form_id + ' select');
+				els.each(function(e) { new_form.appendChild(new Element('select', { name: e.id, value: e.value, id: e.id })); });
+
+				$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+				new_form.submit();
+				
+				return;
+			}
+			
 			var onCompleteCallback = function() {
 			  Try.these(
 			    function() { initializeElementEditing() },

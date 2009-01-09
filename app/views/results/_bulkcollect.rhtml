@@ -17,7 +17,8 @@
 	
 <% if is_logged_in? -%>
 <div class="bulkcollect">
-  <a class="thumb modify_link" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">[select all]</span><span class="bulk_unselect_all" style="display: none;">[unselect all]</span></a> |
-  <a class="thumb modify_link" title="header=[(on this page only)]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]" href="#" onclick="bulkCollect(event); return false;">[collect selected]</a>
+  <a class="modify_link" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">[select all]</span><span class="bulk_unselect_all" style="display: none;">[unselect all]</span></a> |
+  <a class="modify_link" href="#" onclick="bulkCollect(event); return false;">[collect selected]</a>
+  <a id="bulk_tag" class="modify_link" href="#" onclick="bulkTag(event); return false;">[tag selected]</a>
 </div>
 <% end -%>
