@@ -22,7 +22,7 @@ body {
 /* This is used for all links that change, or potentially change, the database */
 .modify_link:link { color: #A60000; text-decoration: none; }
 .modify_link:visited { color: #A60000; text-decoration: none; }
-.modify_link:hover { color: black; background: green; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
 
 /* This is used for all links that go to external websites */
 .ext_link:link { color: #A60000; text-decoration: none; }
