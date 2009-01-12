@@ -66,7 +66,8 @@ class Exhibit < ActiveRecord::Base
       if str != ""
         str += ","
       end
-      str += '"' + exhibit.title.gsub('"', "'") + '"' # TBD-PER: HACK: change double quotes to single quotes so the javascript doesn't break
+      str += '"' + h(exhibit.title) + '"'
+      #str += '"' + exhibit.title.gsub('"', "\\\"") + '"'
     end
     return str
   end

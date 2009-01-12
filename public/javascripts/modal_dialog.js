@@ -551,7 +551,7 @@ ModalDialog.prototype = {
 		els = $$('#' + form_id + ' textarea');
 		els.each(function(e) { params[e.id] = e.value; });
 		els = $$('#' + form_id + ' select');
-		els.each(function(e) { params[e.id] = e.value; });
+		els.each(function(e) { params[e.id] = e.value.unescapeHTML(); });
 		
 		if (this._okFunction != null)
 		{
@@ -575,7 +575,7 @@ ModalDialog.prototype = {
 				els = $$('#' + form_id + ' textarea');
 				els.each(function(e) { new_form.appendChild(new Element('textarea', { name: e.id, value: e.value, id: e.id })); });
 				els = $$('#' + form_id + ' select');
-				els.each(function(e) { new_form.appendChild(new Element('select', { name: e.id, value: e.value, id: e.id })); });
+				els.each(function(e) { new_form.appendChild(new Element('select', { name: e.id, value: e.value.unescapeHTML(), id: e.id })); });
 
 				$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 				new_form.submit();
