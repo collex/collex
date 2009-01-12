@@ -111,7 +111,7 @@ class ResultsController < ApplicationController
     redirect_to :back
   end
   
-  def remove_tag
+  def remove_all_tags
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil
       tag = params[:tag]

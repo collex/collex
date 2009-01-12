@@ -587,7 +587,7 @@ function removeTag(parent_id, tag_name)
 {
 	if (confirm("Are you sure you want to remove all instances of the " + tag_name + " tag that you created?"))
 	{
-		var new_form = new Element('form', { id: "remove_tag", method: 'post', onsubmit: "this.submit();", action: "/results/remove_tag" });
+		var new_form = new Element('form', { id: "remove_tag", method: 'post', onsubmit: "this.submit();", action: "/results/remove_all_tags" });
 		new_form.observe('submit', "this.submit();");
 		document.body.appendChild(new_form);
 		new_form.appendChild(new Element('input', { name: 'tag', value: tag_name, id: 'tag' }));
