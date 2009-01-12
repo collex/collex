@@ -149,6 +149,15 @@ InputDialog.prototype = {
 		this._extraButton = extraButtons;
 		this._linkDlgHandler = linkDlgHandler;
 	},
+	
+	addLink: function(strText, strUrl, strConfirm, className)
+	{
+		var wrapper = new Element('tr');
+		wrapper.appendChild(new Element('td'));
+		var el = new Element('a', { 'class': className, href: strUrl, onclick: "return confirm('" + strConfirm + "');"  }).update(strText);
+		wrapper.appendChild(el.wrap('td'));
+		this._table.down().appendChild(wrapper);
+	},
 
 	///////////////////////////////// private members //////////////////////////////////
 	_initData: function(dataHash)
