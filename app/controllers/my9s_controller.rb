@@ -202,6 +202,17 @@ class My9sController < ApplicationController
       @page = params['page'] == nil ? 1 : params['page'].to_i
     end
 
+    def edit_exhibit_overview
+      exhibit_id = params[:exhibit_id]
+      exhibit = Exhibit.find(exhibit_id)
+      exhibit.title = params[:overview_title_dlg]
+      exhibit.is_published = (params[:overview_published_dlg] == 'Visible to Everyone')
+      exhibit.thumbnail = params[:overview_thumbnail_dlg]
+      exhibit.visible_url = params[:overview_visible_url_dlg]
+      exhibit.save
+      render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+    end
+    
     def edit_exhibit_globals
       exhibit = Exhibit.find(params['id'])
       exhibit.title = params['title']

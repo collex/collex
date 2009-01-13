@@ -1,0 +1,33 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+	
+<% #parameters: Exhibit exhibit; bool show_immediately -%>
+<h1>
+	<div class="outline_right_controls">
+		<%= link_to_function opened_char(), "toggle_by_id('global_form');", { :title => 'Close Form', :id => 'global_form_opened', :class => 'nav_link' } %>
+		<%= link_to_function closed_char(), "toggle_by_id('global_form');", { :title => 'Open Form', :id => 'global_form_closed' , :style => 'display: none;', :class => 'nav_link' } %>
+	</div>
+	EDITING EXHIBIT:&nbsp;<span id="overview_title" class="overview_field"><%= h(exhibit.title) %></span></h1>
+	
+<div id="global_form" class="inside_edit_exhibit_box">
+	<table>
+		<tr>
+			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></td>
+			<td><%= render :partial => 'exhibit_globals_form', :locals => { :exhibit => exhibit }  %></td>
+		</tr>
+	</table>
+</div>

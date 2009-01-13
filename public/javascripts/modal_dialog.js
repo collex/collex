@@ -21,6 +21,8 @@ ModalDialog.prototype = {
 	initialize: function () {
 	},
 	
+	_type: "ModalDialog",
+
 	_divId: null,
 	dialog: null,
 	editor: null,
@@ -30,6 +32,8 @@ ModalDialog.prototype = {
 	_okFunction: null,
 	_okObject: null,
 	_linkDlgHandler: null,
+	_cancelCallback: null,
+	_cancelThis: null,
 	
 	showPrompt: function(title, targetElement, form, left, top, width, height, extraButtons, okFunction, okObject) {
 		
@@ -56,8 +60,10 @@ ModalDialog.prototype = {
 		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
 	},
 	
-	show: function(title, targetElement, form, left, top, width, height, extraButtons, linkDlgHandler) {
+	show: function(title, targetElement, form, left, top, width, height, extraButtons, linkDlgHandler, noButtons, cancelCallback, cancelThis) {
 		
+		this._cancelCallback = cancelCallback;
+		this._cancelThis = cancelThis;
 		this._linkDlgHandler = linkDlgHandler;
 		this._divId = title.gsub(' ', '') + "_modal_dialog";
 		this._createDiv(this._divId);
@@ -70,7 +76,8 @@ ModalDialog.prototype = {
 		});
 		
 		this._handleEsc();
-		this._setButtons();
+		if (!noButtons)
+			this._setButtons();
 		this._renderForm(title, targetElement, form);
 		this._setRichTextAreas(extraButtons);
 		this.dialog.show();
@@ -132,6 +139,10 @@ ModalDialog.prototype = {
 	_handleCancel: function() {
 		this.dialog.cancel();
 		this.dialog.destroy();
+		if (this._cancelCallback)
+		{
+			this._cancelCallback(this._cancelThis);
+		}
 	},	
 	
 	_createDiv : function(id)

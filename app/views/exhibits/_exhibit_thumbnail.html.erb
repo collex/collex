@@ -1,7 +1,26 @@
-<% #parameters: Exhibit exhibit; int height=50; -%>
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+	
+<% #parameters: Exhibit exhibit; int height=50; bool show_immediately -%>
 <% height ||= 50 -%>
 <div class="exhibit_thumbnail" style="overflow: hidden;width:<%= height %>px;height:<%= height %>px"><img id="thumbnail_<%=exhibit.id %>" src="<%= get_image_url(exhibit.thumbnail)%>" style="display:none;" alt=""/></div>
 <script language="JavaScript">
 	$("thumbnail_<%=exhibit.id %>").observe('load', thumbnail_resize);
+	<% if show_immediately -%>
+	setTimeout(thumbnail_resize.bind($("thumbnail_<%=exhibit.id %>")), 500);
+	<% end -%>
 </script>
-

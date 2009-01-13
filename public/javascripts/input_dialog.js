@@ -28,6 +28,9 @@ InputDialog._linkDlgHandler = null;
 InputDialog._modalDialog = null;
 InputDialog._okFunction = null;
 InputDialog._okObject = null;
+InputDialog._noButtons = false;
+InputDialog._cancelCallback = null;
+InputDialog._cancelThis = null;
 
 InputDialog.prototype = {
 	initialize: function(element_id, submitCode)
@@ -47,6 +50,8 @@ InputDialog.prototype = {
 		this._table.appendChild(new Element('tbody'));
 	},
 	
+	_type: "InputDialog",
+	
 	prepareDomForEditing: function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor)
 	{
 		var el = $(element_id);
@@ -65,11 +70,11 @@ InputDialog.prototype = {
 	
 	show: function(title, left, top, width, height, dataHash)
 	{
-		InputDialog._modalDialog = new ModalDialog();
+		this._modalDialog = new ModalDialog();
 		if (this._okFunction)
-			InputDialog._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
+			this._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
 		else
-			InputDialog._modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._linkDlgHandler);
+			this._modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._linkDlgHandler, this._noButtons, this._cancelCallback, this._cancelThis);
 		this._initData(dataHash);				
 	},
 	
@@ -77,6 +82,25 @@ InputDialog.prototype = {
 	{
 		this._okFunction = okFunction;
 		this._okObject = okObject;
+	},
+	
+	setNoButtons : function()
+	{
+		this._noButtons = true;
+	},
+	
+	setNotifyCancel : function(cancelCallback, cancelThis)
+	{
+		this._cancelCallback = cancelCallback;
+		this._cancelThis = cancelThis;
+	},
+	
+	cancel : function()
+	{
+		this._modalDialog._handleCancel();
+		//this._modalDialog.dialog.cancel();
+		//this._modalDialog.dialog.destroy();
+
 	},
 
 	addSelect: function(label, id, options, change, className)
@@ -150,12 +174,27 @@ InputDialog.prototype = {
 		this._linkDlgHandler = linkDlgHandler;
 	},
 	
-	addLink: function(strText, strUrl, strConfirm, className)
+	addLink: function(strText, strUrl, clickAction, className)
 	{
 		var wrapper = new Element('tr');
 		wrapper.appendChild(new Element('td'));
-		var el = new Element('a', { 'class': className, href: strUrl, onclick: "return confirm('" + strConfirm + "');"  }).update(strText);
+		var el = new Element('a', { 'class': className, href: strUrl, onclick: clickAction }).update(strText);
 		wrapper.appendChild(el.wrap('td'));
+		this._table.down().appendChild(wrapper);
+	},
+
+	addButtons: function(arrButtons)
+	{
+		var wrapper = new Element('tr');
+		wrapper.appendChild(new Element('td'));
+		var td = new Element('td');
+		arrButtons.each(function(but) {
+			var el = new Element('a', { href: "#", onclick: but.action }).update(but.text);
+			var el2 = el.wrap('span', { 'class': 'first-child' });
+			var el3 = el2.wrap('span', { 'class': 'yui-button yui-link-button' });
+			td.appendChild(el3);
+		});
+		wrapper.appendChild(td);
 		this._table.down().appendChild(wrapper);
 	},
 

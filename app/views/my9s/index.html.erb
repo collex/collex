@@ -60,7 +60,7 @@
 							<table>
 							<% for exhibit in my_exhibits -%>
 								<tr>
-									<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit } %></td>
+									<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
 									<td class="exhibit_link"><%= exhibit.title %>&nbsp;<a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
 								</tr>
 							<% end -%>

@@ -385,6 +385,37 @@ function initOutline(div_id)
 		$('full_window_c').setStyle({ position: 'fixed'});
 }
 
+function editGlobalExhibitItems(update_id, exhibit_id, data_class)
+{
+	var data = $$("." + data_class);
+
+	// Now populate a hash with all the starting values.	 The data we are starting with is all on the page with the data_class class.
+	var values = {};
+	data.each(function(fld) {
+		values[fld.id + '_dlg'] = fld.innerHTML.unescapeHTML();
+	});
+	values['exhibit_id'] = exhibit_id;
+	values['element_id'] = update_id;
+
+	// First construct the dialog
+	var dlg = new InputDialog(update_id);
+	var size = 52;
+	dlg.addHidden('exhibit_id');
+	dlg.addTextInput('Exhibit title:', 'overview_title_dlg', size);
+	dlg.addTextInput('Visible URL:', 'overview_visible_url_dlg', size);
+	dlg.addTextInput('Thumbnail:', 'overview_thumbnail_dlg', size);
+	dlg.addSelect('Sharing:', 'overview_published_dlg', [ "Visible to Everyone" , "Visible to Just Me"], null);
+	dlg.addLink("[ Completely Delete Exhibit ]", "/my9s/delete_exhibit?id="+exhibit_id, "return confirm('Warning: This will permanently remove this exhibit. Are you sure you want to continue?');", "modify_link");
+	
+	// Now, everything is initialized, fire up the dialog.
+	var el = $(update_id);
+	dlg.show("Edit Exhibit Overview", getX(el), getY(el), 530, 350, values );
+}
+
+//////////////////////////////////////////////////////
+/// Create the dialog that manipulates the border in edit exhibits.
+//////////////////////////////////////////////////////
+
 BorderDialog = Class.create();
 
 BorderDialog.prototype = {
@@ -407,11 +438,6 @@ BorderDialog.prototype = {
 		
 		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
 		elOuterContainer.appendChild(new Element('div', { id: 'border_dlg_instructions', 'class': 'instructions'}).update('First, drag the mouse over some sections and then click "Add Border" or "Remove Border".'));
-		var elToolbar = new Element('div', { 'class': 'toolbar'});
-		elToolbar.appendChild(new Element('a', { id: 'add_border', href: "#", 'class': 'nav_link border_dlg_toolbar' }).update('[ Add Border ]'));
-		elToolbar.appendChild(new Element('span').update('  '));
-		elToolbar.appendChild(new Element('a', { id: 'remove_border', href: "#", 'class': 'nav_link border_dlg_toolbar' }).update('[ Remove Border ]'));
-		elOuterContainer.appendChild(elToolbar);
 		var elContainer = new Element('div', { id: 'border_container' });
 		elOuterContainer.appendChild(elContainer);
 	
@@ -466,36 +492,36 @@ BorderDialog.prototype = {
 		el.observe('mousemove', this._mouseMove.bind(this));
 		el.observe('mouseup', this._mouseUp.bind(this));
 		
-		$('add_border').observe('click', this._addBorder.bind(this));
-		$('remove_border').observe('click', this._removeBorder.bind(this));
+//		$('add_border').observe('click', this._addBorder.bind(this));
+//		$('remove_border').observe('click', this._removeBorder.bind(this));
 		
-		this._enableSubmit(false);
+		//this._enableSubmit(false);
 	},
 	
 	_isDragging: false,
 	_anchor: null,
 	_focus: null,
 	
-	_enableSubmit: function(enable)
-	{
-		var buttons = $$('#edit_border_dlg button');
-		buttons.each(function(but) {
-			if (but.innerHTML == 'Submit')
-			{
-				if (enable == true)
-				{
-					but.disabled = false;
-					but.up().removeClassName('yui-button-disabled');
-				}
-				else
-				{
-					but.disabled = true;
-					but.up().addClassName('yui-button-disabled');
-				}
-			}
-		});
-		
-	},
+//	_enableSubmit: function(enable)
+//	{
+//		var buttons = $$('#edit_border_dlg button');
+//		buttons.each(function(but) {
+//			if (but.innerHTML == 'Submit')
+//			{
+//				if (enable == true)
+//				{
+//					but.disabled = false;
+//					but.up().removeClassName('yui-button-disabled');
+//				}
+//				else
+//				{
+//					but.disabled = true;
+//					but.up().addClassName('yui-button-disabled');
+//				}
+//			}
+//		});
+//		
+//	},
 	
 	_redrawRubberband : function(focus)
 	{
@@ -562,9 +588,29 @@ BorderDialog.prototype = {
 		Event.stop(event);
 	},
 	
+	_selectionMenu : null,
+	
 	_mouseUp: function(event) {
-		this._isDragging = false;
+		if (this._isDragging)
+		{
+			this._isDragging = false;
+			this._selectionMenu = new InputDialog("border_selection");
+			this._selectionMenu.setNoButtons();
+			this._selectionMenu.setNotifyCancel(this._userCanceled, this);
+			this._selectionMenu.addButtons([ 
+				{ text: "Add Border", action: "BorderDialog.prototype._addBorder(); borderDialog._selectionMenu.cancel();" },
+				{ text: "Remove Border", action: "BorderDialog.prototype._removeBorder(); borderDialog._selectionMenu.cancel();" },
+			]);
+//			this._selectionMenu.addLink("[ Add border where dotted line is ]", "#", "BorderDialog.prototype._addBorder(); borderDialog._selectionMenu.cancel();", "modify_link");
+//			this._selectionMenu.addLink("[ Remove any border inside dotted line ]", "#", "BorderDialog.prototype._removeBorder(); borderDialog._selectionMenu.cancel();", "modify_link");
+			this._selectionMenu.show("Border Action", event.clientX, event.clientY, 530, 350, [] );
+		}
 		Event.stop(event);
+	},
+	
+	_userCanceled: function(This)
+	{
+		This._removeRubberband();
 	},
 	
 	_adjustOverlappingBorder: function() {
@@ -605,7 +651,7 @@ BorderDialog.prototype = {
 		});
 		this._adjustOverlappingBorder();
 		this._removeRubberband();
-		this._enableSubmit(true);
+		//this._enableSubmit(true);
 	},
 	
 	_removeBorder: function(event) {
@@ -620,12 +666,16 @@ BorderDialog.prototype = {
 		});
 		this._adjustOverlappingBorder();
 		this._removeRubberband();
-		this._enableSubmit(true);
+		//this._enableSubmit(true);
 	},
 	
 	_handleCancel: function() {
 		this.cancel();
 		this.destroy();
+	},
+
+	_handleCancel2: function() {
+		this._myPanel._handleCancel();
 	},
 
 	_handleSubmit: function() {
@@ -659,7 +709,9 @@ BorderDialog.prototype = {
 	
 }
 
+var borderDialog = null;
+
 function createBorderDlg()
 {
-	new BorderDialog();
+	borderDialog = new BorderDialog();
 }

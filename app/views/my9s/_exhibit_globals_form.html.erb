@@ -15,27 +15,21 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% form_tag :action => "edit_exhibit_globals", :id => exhibit.id do %> 
   <table class="edit_exhibit_form"> 
   <tr> 
-    <td>Exhibit title:</td> 
-    <td><%= text_field_tag("title", exhibit.title, :size => 50) %></td> 
-  </tr> 
-  <tr> 
     <td>Visible URL:</td> 
-    <td>http://nines.org/exhibits/<%= text_field_tag("visible_url", exhibit.visible_url, :size => 21)%></td> 
+    <td>http://nines.org/exhibits/<span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></td> 
   </tr> 
   <tr> 
     <td>Thumbnail:</td> 
-    <td><%= text_field_tag("thumbnail", exhibit.thumbnail, :size => 50) %></td> 
+    <td><span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail %></span></td> 
   </tr> 
   <tr> 
     <td>Sharing:</td> 
-    <td><%= select_tag("is_published", options_for_select([ "Visible to Everyone", "Visible to Just Me" ], exhibit.is_published == 1 ? "Visible to Everyone" : "Visible to Just Me" )) %></td> 
+    <td><span id="overview_published" class="overview_field"><%= exhibit.is_published == 1 ? "Visible to Everyone" : "Visible to Just Me" %></span></td> 
   </tr> 
-  <tr> 
-    <td>&nbsp;</td> 
-    <td><input type="submit" value=" UPDATE " /></td> 
-  </tr> 
+  <tr>
+  	<td></td>
+	<td><%= link_to_function("[Edit Overview Data]", "editGlobalExhibitItems('overview_data', #{exhibit.id}, 'overview_field'); return false;", { :class => 'modify_link' }) %></td>
+  </tr>
 </table> 
-<% end %>

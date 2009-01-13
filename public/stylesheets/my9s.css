@@ -357,6 +357,15 @@ font-weight:bold;
 	border-bottom: 2px dotted black;
 }
 
-.border_dlg_toolbar {
-	font-size: larger;
+#overview_data {
+	border: 1px solid gray;
+	margin-bottom: 1em;
+}
+
+#overview_data h1 {
+	margin-top: 0px;
+}
+
+#global_form{
+	padding-bottom: 1em;
 }
