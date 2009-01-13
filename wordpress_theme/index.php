@@ -46,13 +46,13 @@
 		<table class="tabs" cellspacing='0px' >
 				<tr>
 					<td class="tab-spacer-left">&nbsp;</td>
-					<td class='link_tab'><a href="/">Home</a></td>
-					<td class='link_tab'><a href="/my9s">My&nbsp;9s</a></td>
-					<td class='link_tab'><a href="/search">Search</a></td>
-					<td class='link_tab'><a href="/tags">Tags</a></td>
-					<td class='link_tab'><a href="/exhibit_list">Exhibits</a></td>
+					<td class='link_tab'><a href="/" class="nav_link">Home</a></td>
+					<td class='link_tab'><a href="/my9s" class="nav_link">My&nbsp;9s</a></td>
+					<td class='link_tab'><a href="/search" class="nav_link">Search</a></td>
+					<td class='link_tab'><a href="/tags" class="nav_link">Tags</a></td>
+					<td class='link_tab'><a href="/exhibit_list" class="nav_link">Exhibits</a></td>
 					<td class='curr_tab'>News</td>
-					<td class='link_tab'><a href="/tab_about">About</a></td>
+					<td class='link_tab'><a href="/tab_about" class="nav_link">About</a></td>
 					<td class="tab-spacer-right">&nbsp;</td>
 				</tr>
 		</table>
@@ -60,6 +60,7 @@
 		<div class="tab-content-outline">
 		<div class="tab-content-outline2">
 		<div class="tab-content">
+		<div class="wordpress_styles">
 
 				<?php if (have_posts()) : ?>
 
@@ -88,6 +89,7 @@
 
 				<?php endif; ?>
 
+			</div> 
 			</div> 
 			</div> 
 			</div>

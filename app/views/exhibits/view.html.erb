@@ -51,7 +51,7 @@
 			<br />
 			<% if @page < num_pages -%>
 				<div class="exhibit_nextlink">
-				<%= link_to "next &raquo;", :action => 'view', :id => @exhibit.id, :page => @page + 1, :class => 'nav_link' %>
+				<%= link_to "next &raquo;", { :action => 'view', :id => @exhibit.id, :page => @page + 1}, { :class => 'nav_link' } %>
 				</div>
 			<% end -%>
 		<% else # if page < 0 (bibliography page) -%>

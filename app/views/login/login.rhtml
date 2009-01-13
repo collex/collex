@@ -38,12 +38,12 @@ If you sign in, you can collect objects and create tags.
 
 <div class="login-option">I don't have an account.</div>
 <div class="login-option2">
-	<%= link_to "Create a new account", :action => 'signup', :class => 'nav_link' %>.
+	<%= link_to "Create a new account", { :action => 'signup' }, { :class => 'nav_link' } %>.
 </div>
 
 <div class="login-option">I can't access my account.</div>
 <div class="login-option2">
-	<%= link_to "Help", :action => 'account_help', :class => 'nav_link' %>
+	<%= link_to "Help", { :action => 'account_help' }, { :class => 'nav_link' } %>
 </div>
 
 <p>&nbsp;</p>
