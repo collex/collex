@@ -35,13 +35,13 @@ body {
 .nines_link:hover { color: #fff; background: #A60000; text-decoration: none; }
 
 /* This is used for all picture links that go to the NINES sites. */
-.nines_pic_link:link img { border: 4px solid #A60000; text-decoration: none; }
-.nines_pic_link:visited img { border: 4px solid #A60000; text-decoration: none; }
+.nines_pic_link:link img { border: 4px solid gray; text-decoration: none; }
+.nines_pic_link:visited img { border: 4px solid gray; text-decoration: none; }
 .nines_pic_link:hover img { border: 4px solid black; text-decoration: none; }
 
 /* This is used for all picture links that go to external websites. */
-.ext_pic_link:link img { border: 4px solid #A60000; text-decoration: none; }
-.ext_pic_link:visited img { border: 4px solid #A60000; text-decoration: none; }
+.ext_pic_link:link img { border: 4px solid gray; text-decoration: none; }
+.ext_pic_link:visited img { border: 4px solid gray; text-decoration: none; }
 .ext_pic_link:hover img { border: 4px solid black; text-decoration: none; }
 
 /* These are used to make non-links look like links for the exhibit builder. */
