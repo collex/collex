@@ -26,9 +26,10 @@
 	</tr>
 	<tr>
 
-<td class="tag_results standard_box">
+<td class="tag_results">
 <%= render( :partial => 'results/result_count' ) %>    
-<h1><%= create_total(params[:view], @total_hits, params[:tag]) %></h1>
+<%= rounded_h1("#{create_total(params[:view], @total_hits, params[:tag])}") %>
+<div class="tag_results standard_box">
 <%= render( :partial => 'results/bulkcollect' ) %>
 <%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
 
@@ -39,6 +40,7 @@
 
 <%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
 <%= render( :partial => 'results/bulkcollect' ) %>
+</div>
 </td>
 </tr></table>
 </div>

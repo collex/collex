@@ -27,8 +27,8 @@
 		<table class="results_layout"><tr>
 			<tr>
 				<td  valign="top">
+					<%= rounded_h1("MY TAGS") %>
 					<div class="tag_results standard_box">
-						<h1>MY TAGS</h1>
 						<% selected_tag = "" -%>
 						<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
 						<div id="tag_cloud_div">
@@ -63,6 +63,7 @@
 					</div>
 				</td>
 				<td width="200px" valign="top">
+					<%= rounded_h1("EXHIBITED OBJECTS") %>
 					<div id="exhibited_objects_container" class="standard_box">
 						<%= render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id } %>
 					</div>

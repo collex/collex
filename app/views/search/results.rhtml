@@ -19,15 +19,15 @@
 
 <table id="search-outer" >
 	<tr>
-		<td valign='top' id="search-sidebar" class="standard_box">
+		<td valign='top' id="search-sidebar">
 			<%= render( :partial => 'search_sidebar' ) %>
 		</td>
 		<td valign='top'> <% # the large right side of the page %>
 			<table width="100%" style="margin-top:-4px;">
 				<tr> <% # search query box %>
 					<td valign='top'>
+						<%= rounded_h1("SEARCH QUERY<span id='saved_search_name'>#{render :partial => 'show_saved_search'}</span>") %>
 						<div id="search-main" class="standard_box">
-							<h1>SEARCH QUERY<span id="saved_search_name"><%= render :partial => 'show_saved_search' %></span></h1>
 								<% if has_constraints? #@listed_constraints.size > 0 %>
 									<%= render( :partial => 'constraints' ) %>
 								<% else #if this is a new search  %>
@@ -35,7 +35,7 @@
 										<div class="no-constraints-header">To begin, enter search terms and click 'Search'.</div>
 										<%= render( :partial => 'add_constraint_form' ) %>
 									  	<% if is_logged_in? -%>
-											<%= render :partial => 'save_search_list' %>
+											<%= render :partial => 'save_search_list', :locals => { :rounded => false } %>
 										<% end -%>
 									</div>
 								<% end #if session[:constraints].size > 0 %>

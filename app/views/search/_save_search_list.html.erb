@@ -14,11 +14,17 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
+
+<% # Parameter: bool rounded %>
 <center>
+<% if rounded -%>
+	<%= rounded_h1("SAVED SEARCHES") %>
+<% end -%>
 <div id="saved-searches" class="standard_box">
-<% saved = get_saved_searches -%>
+<% if !rounded -%>
 <h1>SAVED SEARCHES</h1>
+<% end -%>
+<% saved = get_saved_searches -%>
 <%= "No searches saved" if saved.size == 0 %>
 <table>
 <% for s in saved -%>

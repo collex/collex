@@ -15,7 +15,8 @@
 ---------------------------------------------------------------------------- %>
 
 <div id="resource-list">
-	<h1>LIMIT BY RESOURCE</h1>
+	<%= rounded_h1("LIMIT BY RESOURCE") %>
+	<div class="standard_box">
 	<div class="resource-list-content">
 		<p class="sidebar_instructions"><i>Select a resource with which to narrow your search.</i></p>
 			<% for resource_category in @sites_forest.sorted_children -%>
@@ -46,5 +47,6 @@
 		<ul>
 			<%= free_culture_link(@freeculture_count) %>
 		</ul>		
+	</div>
 	</div>
 </div>

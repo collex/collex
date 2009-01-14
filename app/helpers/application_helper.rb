@@ -28,6 +28,12 @@ module ApplicationHelper
     return false
   end
 
+  def rounded_h1(text)
+    "<div class='rounded_left'><div class='rounded_middle'><div class='rounded_right'>\n" +
+    "  <h1 class='rounded_h1'>#{text}</h1>\n" +
+    "</div></div></div>"
+  end
+
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 

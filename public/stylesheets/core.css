@@ -130,6 +130,27 @@ color:inherit;
 	margin-bottom: 1em;
 }
 
+.rounded_left {
+	background: url(../images/rounded_header_left.jpg) 0 0 no-repeat;
+	padding-left: 17px;
+}
+
+.rounded_middle {
+	background: url(../images/rounded_header_middle.jpg) 0 0 repeat-x;
+}
+
+.rounded_right {
+	background: url(../images/rounded_header_right.jpg) 100% 0 no-repeat;
+}
+
+.rounded_h1 {
+	background: none !important;
+	font-size:12pt;
+	margin-top: 0px;
+	margin-bottom:0;
+	padding:5px;
+}
+
 /* rest of the styles */		
 
 .tag_minor_nav {

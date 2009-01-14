@@ -16,7 +16,6 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% # parameters: current_user_id -%>
-<h1>EXHIBITED OBJECTS</h1>
 <% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', current_user_id] ) -%>
 <% if my_exhibits.length == 0 -%>
 	<div class="empty_list_text" >You have not created any exhibits</div>

@@ -28,8 +28,8 @@
 		<table>
 			<tr>
 				<td width="80%">
+					<%= rounded_h1("PROFILE") %>
 					<div class="standard_box">
-						<h1>PROFILE</h1>
 					<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
 					</div>
 					<div class="standard_box">
@@ -41,7 +41,7 @@
 					</div>
 				</td>
 				<td valign="top">
-					<%= render :partial => 'search/save_search_list' %>
+					<%= render :partial => 'search/save_search_list', :locals => { :rounded => true } %>
 					<div class="standard_box narrow_tag_cloud">
 						<center>
 							<h1>MY TAGS</h1>
