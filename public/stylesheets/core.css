@@ -147,6 +147,9 @@ color:inherit;
 .no-constraints-header {
 	color: gray;
 	font-weight: bold;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	text-align: center;
 }
 
 .no-constraints-body {

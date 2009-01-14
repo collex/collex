@@ -19,54 +19,80 @@
 
 <table id="search-outer" >
 	<tr>
-		<td id="search-sidebar" class="standard_box">
+		<td valign='top' id="search-sidebar" class="standard_box">
 			<%= render( :partial => 'search_sidebar' ) %>
 		</td>
-		<td id="search-main" class="standard_box">
-			<div id="search-terms">
-		  	<% if session[:constraints].size > 0 -%>
-				 <form action="/collex/new_search" method="post">
-						<input class="reset-search-button" type="submit" value="New Search"/>
-				 </form> 
-			 <% end -%>
-				<h1>SEARCH QUERY<span id="saved_search_name"><%= render :partial => 'show_saved_search' %></span></h1>
-				<%= render( :partial => 'constraints' ) %>
-				<%= render( :partial => 'add_constraint_form' ) %>
-			  	<% if session[:constraints].size == 0 && is_logged_in? -%>
-					<%= render :partial => 'save_search_list' %>
-				<% end -%>
-			</div>
-	  	<% if session[:constraints].size > 0 and @num_pages > 0 -%>
-		    <a name="results"></a>
-				<div id="search-results">
-			  <%= render( :partial => 'results/result_count' ) %>    
-				<h1>SEARCH RESULTS: <%=pluralize(@results["total_hits"], "OBJECT", "OBJECTS")%> FOUND</h1>
+		<td valign='top'> <% # the large right side of the page %>
+			<table width="100%" style="margin-top:-4px;">
+				<tr> <% # search query box %>
+					<td valign='top'>
+						<div id="search-main" class="standard_box">
+							<h1>SEARCH QUERY<span id="saved_search_name"><%= render :partial => 'show_saved_search' %></span></h1>
+								<% if has_constraints? #@listed_constraints.size > 0 %>
+									<%= render( :partial => 'constraints' ) %>
+								<% else #if this is a new search  %>
+									<div id="search-terms">
+										<div class="no-constraints-header">To begin, enter search terms and click 'Search'.</div>
+										<%= render( :partial => 'add_constraint_form' ) %>
+									  	<% if is_logged_in? -%>
+											<%= render :partial => 'save_search_list' %>
+										<% end -%>
+									</div>
+								<% end #if session[:constraints].size > 0 %>
+						</div>
+					</td>
+				  	<% if session[:constraints].size > 0 -%>
+						<td align="center" width="110">
+							<img id="new_search_button2" src="../images/start_over_up.jpg" alt="New Search" 
+								onmousedown="$('new_search_button2').src='../images/start_over_down.jpg';"
+								onmouseout="$('new_search_button2').src='../images/start_over_up.jpg';"
+								onmouseup="window.location = '/collex/new_search';" />
+						</td>
+					<% end -%>
+				</tr> <% # end search query box %>
+				<tr> <% # search result box %>
+					<td colspan='2'>
+					  	<% if session[:constraints].size > 0 and @num_pages > 0 # if there are results -%>
+							<div class="standard_box">
+						    <a name="results"></a>
+								<div id="search-results">
+									<%= render( :partial => 'results/result_count' ) %>    
+									<h1>SEARCH RESULTS: <%=pluralize(@results["total_hits"], "OBJECT", "OBJECTS")%> FOUND</h1>
+					
+							    	<%= render( :partial => 'results/bulkcollect' ) %>
+									<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } } ) %>
+								
+								    <form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
+								    	<input type="hidden" name="return" value="/collex/browse" />
+								      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user == nil ? -1 : curr_user.id, :hits => @results['hits'] } ) %>
+								    </form>
+							
+								    <%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } }  ) %>
+								    <%= render( :partial => 'results/bulkcollect' ) %>
+								</div>
+							</div>
+						
+						<% else # if there are no results -%>
+							<% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
+								<p class="matchpoint">No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1, :class => 'nav_link' } %></p>
+							<% end %>
+							<div class="no-results">
+								<br /><br /><br /><br />
+							<center><img height="250px" src="../images/lg-harrington.gif" alt="" /></center>
+						<% end -%>
+					</td>
+				</tr><% # end search result box %>
+			</table>
 
-		    <%= render( :partial => 'results/bulkcollect' ) %>
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } } ) %>
-			
-		    <form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
-		    	<input type="hidden" name="return" value="/collex/browse" />
-		      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user == nil ? -1 : curr_user.id, :hits => @results['hits'] } ) %>
-		    </form>
-	
-		    <%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } }  ) %>
-		    <%= render( :partial => 'results/bulkcollect' ) %>
-		
-			<% else -%>
-		        <% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
-		          <p class="matchpoint">No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1, :class => 'nav_link' } %></p>
-		        <% end %>
-			<div class="no-results">
-				<br /><br /><br /><br /><center>
-			<img height="250px" src="../images/lg-harrington.gif" alt="" />
-			</center>
-			</div>
-			  <% end -%>
-			
-			  <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
-			  <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
-			</div>
-		</td>
+		</td> <% # end of entire right side of page %>
 	</tr>
 </table>
+<!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
+<div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
+</div>
+
+<div id="yearalert" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
+ <span style="clear:both;float:right;"><%= link_to_function 'x', 'Effect.Fade("yearalert", { duration: 0.0 })', :class => 'nav_link' %> &nbsp;</span>
+ <span id="year_numeric_error_msg">the year must contain only numerals</span>
+ <span id="year_length_error_msg">the year must be 4 digits long</span>
+</div>

@@ -51,38 +51,33 @@ class SearchController < ApplicationController
         # basic search
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
-        parse_keyword_phrase(params[:search_phrase])
+        parse_keyword_phrase(params[:search_phrase], false)
         
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
-        parse_keyword_phrase(params[:search][:keyword]) if params[:search] && params[:search][:keyword] != ""
-        add_title_constraint(params[:search_title]) if params[:search_title] != ""
-        # add_keyword_constraint(params[:search_author]) if params[:search_author] != ""
-        # add_keyword_constraint(params[:search_editor]) if params[:search_editor] != ""
-        # add_keyword_constraint(params[:search_publisher]) if params[:search_publisher] != ""
-        add_author_constraint(params[:search_author]) if params[:search_author] != ""
-        add_editor_constraint(params[:search_editor]) if params[:search_editor] != ""
-        add_publisher_constraint(params[:search_publisher]) if params[:search_publisher] != ""
-        add_date_constraint(params[:search_year]) if params[:search_year] != ""
+        parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
+        add_title_constraint(params[:search_title], false) if params[:search_title] != ""
+        add_author_constraint(params[:search_author], false) if params[:search_author] != ""
+        add_editor_constraint(params[:search_editor], false) if params[:search_editor] != ""
+        add_publisher_constraint(params[:search_publisher], false) if params[:search_publisher] != ""
+        add_date_constraint(params[:search_year], false) if params[:search_year] != ""
 
       elsif params[:search]
         # single input box
-        parse_keyword_phrase(params[:search][:phrase]) if params[:search_type] == "Keyword"
-        add_title_constraint(params[:search][:phrase]) if params[:search_type] == "Title"
-        # add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
-        # add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
-        # add_keyword_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
-        add_author_constraint(params[:search][:phrase]) if params[:search_type] == "Author"
-        add_editor_constraint(params[:search][:phrase]) if params[:search_type] == "Editor"
-        add_publisher_constraint(params[:search][:phrase]) if params[:search_type] == "Publisher"
-        add_date_constraint(params[:search][:phrase]) if params[:search_type] == "Year"
+        invert = (params[:search_not] == "Not")
+        parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Keyword"
+        add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
+        add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
+        add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
+        add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
+        add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year"
       end
 
      redirect_to :action => 'browse'
    end
    
    private
-   def parse_keyword_phrase(phrase_str)
+   def parse_keyword_phrase(phrase_str, invert)
      # This breaks the keyword phrase that the user entered into separate searches and adds each constraint separately.
 
      # look for "and" and throw it away. 
@@ -132,46 +127,46 @@ class SearchController < ApplicationController
 
       # Finally, create each constraint
      words_arr.each { |word|
-        add_keyword_constraint(word)
+        add_keyword_constraint(word, invert)
     }
 
    end
    
-   def add_keyword_constraint(phrase_str)
+   def add_keyword_constraint(phrase_str, invert)
        expression = phrase_str
        if expression and expression.strip.size > 0
-         session[:constraints] << ExpressionConstraint.new(:value => expression)
+         session[:constraints] << ExpressionConstraint.new(:value => expression, :inverted => invert)
        end
    end
  
-   def add_title_constraint(phrase_str)
+   def add_title_constraint(phrase_str, invert)
        expression = phrase_str
        if expression and expression.strip.size > 0
-         session[:constraints] << FacetConstraint.new(:field => 'title', :value => phrase_str, :inverted => false)
+         session[:constraints] << FacetConstraint.new(:field => 'title', :value => phrase_str, :inverted => invert)
        end
    end
  
-  def add_date_constraint(phrase_str)
+  def add_date_constraint(phrase_str, invert)
      if phrase_str and not phrase_str.strip.empty?
-       session[:constraints] << FacetConstraint.new(:field => 'year', :value => phrase_str, :inverted => false)
+       session[:constraints] << FacetConstraint.new(:field => 'year', :value => phrase_str, :inverted => invert)
      end
   end
   
-  def add_author_constraint(phrase_str)
+  def add_author_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0
-       session[:constraints] << FacetConstraint.new(:field => 'author', :value => phrase_str, :inverted => false)
+       session[:constraints] << FacetConstraint.new(:field => 'author', :value => phrase_str, :inverted => invert)
     end
   end
 
-  def add_editor_constraint(phrase_str)
+  def add_editor_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0
-       session[:constraints] << FacetConstraint.new(:field => 'editor', :value => phrase_str, :inverted => false)
+       session[:constraints] << FacetConstraint.new(:field => 'editor', :value => phrase_str, :inverted => invert)
     end
   end
 
-  def add_publisher_constraint(phrase_str)
+  def add_publisher_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0
-       session[:constraints] << FacetConstraint.new(:field => 'publisher', :value => phrase_str, :inverted => false)
+       session[:constraints] << FacetConstraint.new(:field => 'publisher', :value => phrase_str, :inverted => invert)
     end
   end
 
@@ -476,7 +471,7 @@ class SearchController < ApplicationController
            if saved_constraint.is_a?(FreeCultureConstraint)
              session[:constraints] << FreeCultureConstraint.new(:inverted => true)
            elsif saved_constraint.is_a?(ExpressionConstraint)
-             add_keyword_constraint(saved_constraint[:value])
+             add_keyword_constraint(saved_constraint[:value], saved_constraint[:inverted])
            elsif saved_constraint.is_a?(FacetConstraint)
              session[:constraints] << FacetConstraint.new(:field => saved_constraint[:field], :value => saved_constraint[:value], :inverted => saved_constraint[:inverted])
            end

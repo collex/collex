@@ -861,5 +861,40 @@ function thumbnail_resize()
 	img.writeAttribute('width', img_width);
 }
 
+function postToUrl(url, hashParams)
+{
+	var myForm = document.createElement("form");
+	myForm.method="post";
+	myForm.action = url;
+	for (var k in hashParams) {
+		var myInput = document.createElement("input") ;
+		myInput.setAttribute("name", k);
+		myInput.setAttribute("value", hashParams[k]);
+		myForm.appendChild(myInput);
+	}
+	document.body.appendChild(myForm);
+	myForm.submit();
+	document.body.removeChild(myForm);
+}
 
+// This is an extension to prototype from http://mir.aculo.us/2009/1/7/using-input-values-as-hints-the-easy-way
+// It allows input fields to have hints
+(function(){
+  var methods = {
+    defaultValueActsAsHint: function(element){
+      element = $(element);
+      element._default = element.value;
+      
+      return element.observe('focus', function(){
+        if(element._default != element.value) return;
+        element.removeClassName('inputHintStyle').value = '';
+      }).observe('blur', function(){
+        if(element.value.strip() != '') return;
+        element.addClassName('inputHintStyle').value = element._default;
+      }).addClassName('inputHintStyle');
+    }
+  };
+   
+  $w('input').each(function(tag){ Element.addMethods(tag, methods) });
+})();
 

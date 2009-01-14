@@ -114,6 +114,7 @@ text-align:center;
 
 #search-main h1 {
 font-size:12pt;
+margin-bottom: 0px;
 }
 
 #search-terms {
@@ -143,7 +144,7 @@ font-size: 12pt;
 .constraints {
 	width: 100%;
 /*	border: 1px solid #666;*/
-	padding: .4em;
+/*	padding: .4em; */
 /*	background-color: #ededed;*/
 }
 
@@ -174,13 +175,44 @@ font-size: 12pt;
 	color: #000000;
 }
 
-#myconstraints {
-	margin: 10px;
+.add_constraint_row_first {
+	border-left: 2px solid red;
+	border-top: 2px solid red;
+	border-bottom: 2px solid red;
+	border-right: 1px solid #E0E0E0;
+	padding: .7em;
+}
+
+.add_constraint_row_mid {
+	border-left: 1px solid #E0E0E0;
+	border-top: 2px solid red;
+	border-bottom: 2px solid red;
+	border-right: 1px solid #E0E0E0;
+	padding: .7em;
+}
+
+.add_constraint_row_last {
+	border-left:1px solid #E0E0E0;
+	border-top: 2px solid red;
+	border-bottom: 2px solid red;
+	border-right: 2px solid red;
+	padding: .7em;
+}
+
+.constraint_row td {
+	border: 1px solid #E0E0E0;
+	padding: .7em;
 }
 
 .save_search_instruction {
 	font-style: italic;
 }
+
+.inputHintStyle {
+  color: silver;
+  font-style: italic;
+}
+
 /*#facettable {
 	/*width: 98%;* /
 }

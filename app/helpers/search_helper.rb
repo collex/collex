@@ -280,4 +280,47 @@ module SearchHelper
   def has_constraints?
     return session[:constraints].length != 0
   end
+  
+  def format_constraint(constraint)
+    ret = {}
+    value_display = constraint.value
+    if constraint.field=="archive"
+      if site(constraint.value)
+        value_display = site(constraint.value)['description']
+      end
+    end
+    
+    ret[:not] = constraint.inverted
+    if constraint.is_a?(FreeCultureConstraint)
+      ret[:title] ="Free Culture"
+      ret[:value] = 'Only resources that are freely available in their full form'
+    elsif constraint.is_a?(ExpressionConstraint)
+      ret[:title] ="Keyword"
+      ret[:value] = constraint.value
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre'
+      ret[:title] ="Genre"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'title'
+      ret[:title] ="Title"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'year'
+      ret[:title] ="Year"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'author'
+      ret[:title] ="Author"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'editor'
+      ret[:title] ="Editor"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'publisher'
+      ret[:title] ="Publisher"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint)
+      ret[:title] ="Resource"
+      ret[:value] = value_display
+    else
+      return nil
+    end
+    return ret
+  end
 end

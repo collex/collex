@@ -15,60 +15,55 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-    <table id="myconstraints" class="constraints" cellspacing="0">  
-        <!-- <caption>searching for:</caption> -->
-        <% if @listed_constraints.size > 0 %>
-        <% @listed_constraints.each do |constraint_data|
-						constraint = constraint_data[:constraint]
-						index = constraint_data[:id]
-            value_display = constraint.value
-            if constraint.field=="archive"
-              if site(constraint.value)
-                value_display = site(constraint.value)['description']
-              end
-            end
-        %>
- 	  			<tr>
-              <% if constraint.is_a?(FreeCultureConstraint) -%>
-                 <td>Free Culture:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %>Only</td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post , :class => 'nav_link'} %></td>
-              <% elsif constraint.is_a?(ExpressionConstraint) -%>
-                 <td>Keyword:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h constraint.value%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-              <% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre' -%>
-                 <td>Genre:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-              <% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'year' -%>
-                 <td>Year:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'author' -%>
-	                 <td>Author:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
-	                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'editor' -%>
-			                 <td>Editor:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
-			                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-							<% elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'publisher' -%>
-							                 <td>Publisher:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
-							                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-             <% elsif constraint.is_a?(FacetConstraint) -%>
-                 <td>Resource:&nbsp;&nbsp;<%=link_to (constraint.inverted ? "-" : "+"),{:controller=>'search', :action => 'invert_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %><%=h value_display%></td>
-                 <td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post, :class => 'nav_link' } %></td>
-              <% end -%>
-              </tr>
-
-           <% end # closing the do loop for each constraint %>
-           <tr>
-             <td></td>
-		   		</tr>
-           <% else #if there aren't constaints (session[:constraints].size > 0) %>
-             <tr>
-                <td align="center"><span class="no-constraints-header">To begin, enter search terms and click 'Search'.</span><br />
-				<span class="no-constraints-body"></span></td>
-                <td>&nbsp;</td>
-             </tr>
-           <% end #if session[:constraints].size > 0 %>
-         </table>
-
-
-       
- 
+<table class="constraints" cellspacing="0">  
+	<% @listed_constraints.each do |constraint_data|
+		constraint = constraint_data[:constraint]
+		index = constraint_data[:id]
+	%>
+		<% ret = format_constraint(constraint) -%>
+		<% if ret != nil -%>
+			<tr class="constraint_row">
+				<td><%= ret[:title] %></td>
+				<td width="100%"><%= ret[:value] %></td>
+				<td>
+					<% # we want to post back to the server if the user changed the selection by either a mouse click or keypress. We need to make sure that there really was a change, so only post back if the current value doesn't equal the starting value (starting value is ret[:not]) -%>
+					<% is_not = ret[:not]?'true':'false' # make sure that a string value is used for the following script -%>
+					<select onkeyup="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'Not')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });" onchange="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'Not')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });">
+						<option value="And">And</option>
+						<option value="Not" <%= "selected='selected'" if ret[:not] %> >Not</option>
+					</select>
+				</td>
+				<td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post , :class => 'nav_link'} %></td>
+			</tr>
+		<% end -%>
+	<% end # closing the do loop for each constraint %>
+	<tr>
+		<form id="add-search-constraint" onsubmit="return yearValidation(document.forms['add-search-constraint'], 'search_year', 'search_phrase', 'search_type', 'search_submit', event)" action="/collex/add_constraint" method="post">
+			<td class="add_constraint_row_first">
+				<select id="search_type" name="search_type" align="top" >
+					<option value="Keyword" >Keyword</option>
+					<option value="Title" >Title</option>
+					<option value="Author" >Author</option>
+					<option value="Editor" >Editor</option>
+					<option value="Publisher" >Publisher</option>
+					<option value="Year" >Year (YYYY)</option>
+				</select>
+			</td>
+			<td class="add_constraint_row_mid">
+				<%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>'click here to add new search term'}, {:min_chars => 2} -%>&nbsp;
+<script type="text/javascript" charset="utf-8">
+    $('search_phrase').defaultValueActsAsHint();
+  </script>
+			</td>
+			<td class="add_constraint_row_mid">
+				<select id='search_not' name='search_not'>
+					<option value="And">And</option>
+					<option value="Not">Not</option>
+				</select>
+			</td>
+			<td class="add_constraint_row_last">
+				<input id="search_submit" type="submit" value="Add" />
+  			</td>
+		</form>
+	</tr>
+</table>
