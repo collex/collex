@@ -19,7 +19,7 @@
 <% for hit in @results -%>
 		<item>
 			<title><%= escape_for_xml(hit["title"]) %></title>
-			<link><%= base_url %>/tags/object?uri=<%= escape_for_xml(hit['uri']).gsub('#', '%23') %></link>
+			<link><%= base_url %>/tags/object?uri=<%= CGI.escape(escape_for_xml(hit['uri'])) %></link>
 			<description>
 				&lt;table&gt;
 					&lt;tr&gt;
