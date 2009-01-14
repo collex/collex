@@ -17,7 +17,7 @@
 function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_id, event)
 {
 	// First disable the submit button so we don't get a double click.
-	var submit_button = document.getElementById(submit_id);
+	var submit_button = $(submit_id);
 	var submit_text = submit_button.value;
 	submit_button.disabled = true;
 	submit_button.value = "......";
@@ -25,7 +25,7 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
 	// Either there is a control named input_id, or there are two controls, alt_input_id, alt_input_type.
 	// In the second case, the type is a select control and we want to ignore the validation unless
 	// the type="Year".
-	var input_year = document.getElementById(input_id);
+	var input_year = $(input_id);
 	var year_val = "";
 	if (input_year != null)
 	{
@@ -39,12 +39,20 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
 	}
 	else
 	{
-		var input_year = document.getElementById(alt_input_id);
-		var input_type = document.getElementById(alt_input_type);
+		var input_year = $(alt_input_id);
+		var input_type = $(alt_input_type);
 		if (input_year == null || input_type == null)
 		{
 			theForm.submit();
 			return true;
+		}
+		
+		// Be sure the hint text isn't still displayed
+		if (input_year.hasClassName('inputHintStyle'))
+		{
+			submit_button.disabled = false;
+			submit_button.value = submit_text;
+		    return false;
 		}
 		
 		if (input_type.value != "Year")
