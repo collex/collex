@@ -64,7 +64,7 @@ class SearchController < ApplicationController
 
       elsif params[:search]
         # single input box
-        invert = (params[:search_not] == "Not")
+        invert = (params[:search_not] == "NOT")
         parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Keyword"
         add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
         add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"

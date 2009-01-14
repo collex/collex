@@ -28,9 +28,9 @@
 				<td>
 					<% # we want to post back to the server if the user changed the selection by either a mouse click or keypress. We need to make sure that there really was a change, so only post back if the current value doesn't equal the starting value (starting value is ret[:not]) -%>
 					<% is_not = ret[:not]?'true':'false' # make sure that a string value is used for the following script -%>
-					<select onkeyup="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'Not')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });" onchange="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'Not')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });">
-						<option value="And">And</option>
-						<option value="Not" <%= "selected='selected'" if ret[:not] %> >Not</option>
+					<select onkeyup="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });" onchange="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });">
+						<option value="AND">AND</option>
+						<option value="NOT" <%= "selected='selected'" if ret[:not] %> >NOT</option>
 					</select>
 				</td>
 				<td><%= link_to "[remove]", {:controller=>'search', :action => 'remove_constraint', :index => index}, { :method  => :post , :class => 'nav_link'} %></td>
@@ -57,8 +57,8 @@
 			</td>
 			<td class="add_constraint_row_mid">
 				<select id='search_not' name='search_not'>
-					<option value="And">And</option>
-					<option value="Not">Not</option>
+					<option value="AND">AND</option>
+					<option value="NOT">NOT</option>
 				</select>
 			</td>
 			<td class="add_constraint_row_last">
