@@ -19,7 +19,7 @@
 <% for hit in @results -%>
 		<item>
 			<title><%= escape_for_xml(hit["title"]) %></title>
-			<link><%= base_url %>/tags/object?uri=<%= escape_for_xml(hit['uri']) %></link>
+			<link><%= base_url %>/tags/object?uri=<%= escape_for_xml(hit['uri']).gsub('#', '%23') %></link>
 			<description>
 				&lt;table&gt;
 					&lt;tr&gt;
@@ -30,7 +30,7 @@
 							&lt;a href=&quot;<%= escape_for_xml(hit["url"]) %>&quot;&gt;<%= escape_for_xml(hit["url"]) %>&lt;/a&gt;
 						&lt;/td&gt;
 					&lt;/tr&gt;
-					<%= escape_for_xml(render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => 'row' }) %>
+					<%= escape_for_xml(render(:partial => '/results/hit_body', :locals => { :hit => hit, :row_id => 'row' })) %>
 				&lt;/table&gt;
 			</description>
 		</item>
