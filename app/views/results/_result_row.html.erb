@@ -67,6 +67,7 @@
 						<%= link_to_function "#{has_annotation(hit)?"Edit":"Add"} Annotation", "doAnnotation('add_annotation_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', 'annotation_#{index}');",  :id => "add_annotation_#{index}", :class => 'modify_link' %>
 						<%= "<br />" if has_annotation(hit) -%>
 						<span id="annotation_<%=index%>" class='annotation'><%= get_annotation(hit) %></span>
+						<%= "<br/><span class='annotation'>#{hit['warning']}</span>" if hit['warning'] %>
 					</td>
 				</tr>
 				<% end # if the item is collected -%>

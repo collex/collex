@@ -130,8 +130,18 @@ class ResultsController < ApplicationController
     locals = setup_ajax_calls(params, true)
     exhibit_name = params[:exhibit]
     if locals[:user] != nil
+      arr = exhibit_name.split("")
+      str = '/' + h(arr.join('.')) + "/<br />"
+      exes = Exhibit.find(:all, :conditions => ["user_id = ?", locals[:user].id])
+      exes.each {|ex|
+        arr = ex.title.split("")
+        str += '/' + h(arr.join('.')) + "/<br />"
+      }
+      locals[:hit]['warning'] = str
       exhibit = Exhibit.find(:first, :conditions => [ "title = ? AND user_id = ?", exhibit_name, locals[:user].id ] )
-      ExhibitObject.add(exhibit.id, locals[:uri])
+      if exhibit != nil
+        ExhibitObject.add(exhibit.id, locals[:uri])
+      end
     end
 
     render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits] }
