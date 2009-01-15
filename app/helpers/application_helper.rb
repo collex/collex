@@ -34,6 +34,9 @@ module ApplicationHelper
     "</div></div></div>"
   end
 
+  def gradient_h1(text)
+    "<div class='rounded_middle'><h1 class='rounded_h1'>#{text}</h1></div>"
+  end
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
 

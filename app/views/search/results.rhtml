@@ -53,11 +53,11 @@
 				<tr> <% # search result box %>
 					<td colspan='2'>
 					  	<% if session[:constraints].size > 0 and @num_pages > 0 # if there are results -%>
+							<%= render( :partial => 'results/result_count' ) %>    
+							<%= rounded_h1("SEARCH RESULTS: #{pluralize(@results["total_hits"], "OBJECT", "OBJECTS")} FOUND") %>
 							<div class="standard_box">
 						    <a name="results"></a>
 								<div id="search-results">
-									<%= render( :partial => 'results/result_count' ) %>    
-									<h1>SEARCH RESULTS: <%=pluralize(@results["total_hits"], "OBJECT", "OBJECTS")%> FOUND</h1>
 					
 							    	<%= render( :partial => 'results/bulkcollect' ) %>
 									<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'collex', :action => 'browse' } } ) %>

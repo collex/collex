@@ -117,12 +117,12 @@ color:inherit;
 	margin-bottom: 1em;
 }
 
-.standard_box h1 {
+/*.standard_box h1 {
 	background: #E0E0E0;
 	font-size: 1.4em;
 	margin-top: 0px;
 	padding: 5px;
-}
+}*/
 
 .inside_standard_box {
 	margin-left: 1em;
@@ -148,7 +148,8 @@ color:inherit;
 	font-size:12pt;
 	margin-top: 0px;
 	margin-bottom:0;
-	padding:5px;
+	padding-top:8px;
+	padding-bottom:2px;
 }
 
 /* rest of the styles */		
@@ -553,4 +554,8 @@ cursor: move;
 
 .modal_dialog_form {
 	padding: 1em;
+}
+
+.annotation {
+	background-color: yellow;
 }

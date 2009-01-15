@@ -32,8 +32,8 @@
 					<div class="standard_box">
 					<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
 					</div>
+					<%= rounded_h1("RECENTLY COLLECTED ITEMS") %>
 					<div class="standard_box">
-						<h1>RECENTLY COLLECTED ITEMS</h1>
 					      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user.id, :hits => @results } ) %>
 						<div class="tag_minor_nav"> 
 							<%= link_to "See more collected objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><br />
@@ -42,17 +42,17 @@
 				</td>
 				<td valign="top">
 					<%= render :partial => 'search/save_search_list', :locals => { :rounded => true } %>
+					<center><%= rounded_h1("MY TAGS") %></center>
 					<div class="standard_box narrow_tag_cloud">
 						<center>
-							<h1>MY TAGS</h1>
 							<br /><br />
 							<div id="tag_cloud_div" class="inside_standard_box">
 						  	  <%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => "", :controller_for_tags => 'my9s' } %>
 							</div>
 						</center>
 					</div>
+					<center><%= rounded_h1("MY EXHIBITS") %></center>
 					<div class="standard_box">
-						<h1>MY EXHIBITS</h1>
 						<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', curr_user.id] ) -%>
 						<% if my_exhibits.length == 0 -%>
 							<div class="empty_list_text" >You have not created any exhibits</div>
