@@ -78,7 +78,7 @@
 						
 						<% else # if there are no results -%>
 							<% if @num_pages == 0 && session[:constraints] && session[:constraints].size > 0 %>
-								<p class="matchpoint">No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1, :class => 'nav_link' } %></p>
+								<p class="matchpoint">No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
 							<% end %>
 							<div class="no-results">
 								<br /><br /><br /><br />
