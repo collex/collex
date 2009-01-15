@@ -85,6 +85,6 @@ end
        visible = escaped_value
      end
      html_options[:class] = 'nav_link'
-     link_to visible, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value }, html_options
+     link_to visible, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value, :anchor => "top_of_results" }, html_options
   end
 end
