@@ -35,7 +35,11 @@
 										<div class="no-constraints-header">To begin, enter search terms and click 'Search'.</div>
 										<%= render( :partial => 'add_constraint_form' ) %>
 									  	<% if is_logged_in? -%>
-											<%= render :partial => 'save_search_list', :locals => { :rounded => false } %>
+											<center>
+												<div id="saved-searches">
+													<%= render :partial => 'save_search_list' %>
+												</div>
+											</center>
 										<% end -%>
 									</div>
 								<% end #if session[:constraints].size > 0 %>

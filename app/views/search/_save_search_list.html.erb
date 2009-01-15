@@ -15,15 +15,9 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% # Parameter: bool rounded %>
 <center>
-<% if rounded -%>
-	<%= rounded_h1("SAVED SEARCHES") %>
-<% end -%>
-<div id="saved-searches" class="standard_box">
-<% if !rounded -%>
-<h1>SAVED SEARCHES</h1>
-<% end -%>
+<%= rounded_h1("SAVED SEARCHES") %>
+<div class="standard_box">
 <% saved = get_saved_searches -%>
 <%= "No searches saved" if saved.size == 0 %>
 <table>
