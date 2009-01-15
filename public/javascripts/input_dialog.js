@@ -51,6 +51,7 @@ InputDialog.prototype = {
 	},
 	
 	_type: "InputDialog",
+	_buttonAction: [],
 	
 	prepareDomForEditing: function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor)
 	{
@@ -75,7 +76,12 @@ InputDialog.prototype = {
 			this._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
 		else
 			this._modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._linkDlgHandler, this._noButtons, this._cancelCallback, this._cancelThis);
-		this._initData(dataHash);				
+		this._initData(dataHash);
+		var buttons = $$("a[clickaction]");
+		buttons.each(function(but) {
+			var count = but.getAttribute('clickaction');
+			but.observe('click', this._buttonAction[count]);
+		}, this);
 	},
 	
 	setOkFunction : function(okFunction, okObject)
@@ -189,11 +195,13 @@ InputDialog.prototype = {
 		wrapper.appendChild(new Element('td'));
 		var td = new Element('td');
 		arrButtons.each(function(but) {
-			var el = new Element('a', { href: "#", onclick: but.action }).update(but.text);
+			var count = this._buttonAction.length;
+			this._buttonAction[count] = but.action;
+			var el = new Element('a', { href: "#", clickaction: count }).update(but.text);
 			var el2 = el.wrap('span', { 'class': 'first-child' });
 			var el3 = el2.wrap('span', { 'class': 'yui-button yui-link-button' });
 			td.appendChild(el3);
-		});
+		}, this);
 		wrapper.appendChild(td);
 		this._table.down().appendChild(wrapper);
 	},

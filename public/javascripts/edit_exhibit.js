@@ -598,8 +598,8 @@ BorderDialog.prototype = {
 			this._selectionMenu.setNoButtons();
 			this._selectionMenu.setNotifyCancel(this._userCanceled, this);
 			this._selectionMenu.addButtons([ 
-				{ text: "Add Border", action: "BorderDialog.prototype._addBorder(); borderDialog._selectionMenu.cancel();" },
-				{ text: "Remove Border", action: "BorderDialog.prototype._removeBorder(); borderDialog._selectionMenu.cancel();" },
+				{ text: "Add Border", action: BorderDialog.prototype._addBorder },
+				{ text: "Remove Border", action: BorderDialog.prototype._removeBorder }
 			]);
 //			this._selectionMenu.addLink("[ Add border where dotted line is ]", "#", "BorderDialog.prototype._addBorder(); borderDialog._selectionMenu.cancel();", "modify_link");
 //			this._selectionMenu.addLink("[ Remove any border inside dotted line ]", "#", "BorderDialog.prototype._removeBorder(); borderDialog._selectionMenu.cancel();", "modify_link");
@@ -649,9 +649,9 @@ BorderDialog.prototype = {
 					el.down().removeClassName('border_bottom');
 			}
 		});
-		this._adjustOverlappingBorder();
-		this._removeRubberband();
-		//this._enableSubmit(true);
+		borderDialog._adjustOverlappingBorder();
+		borderDialog._removeRubberband();
+		borderDialog._selectionMenu.cancel();
 	},
 	
 	_removeBorder: function(event) {
@@ -664,9 +664,9 @@ BorderDialog.prototype = {
 				el.down().removeClassName('border_bottom');
 			}
 		});
-		this._adjustOverlappingBorder();
-		this._removeRubberband();
-		//this._enableSubmit(true);
+		borderDialog._adjustOverlappingBorder();
+		borderDialog._removeRubberband();
+		borderDialog._selectionMenu.cancel();
 	},
 	
 	_handleCancel: function() {
