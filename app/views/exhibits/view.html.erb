@@ -4,7 +4,7 @@
 </div>
 
 <div id="exhibit_page">
-	<h2 class="exhibit_title" ><%= @exhibit.title %></h2>
+	<h2 class="exhibit_title" ><%=h @exhibit.title %></h2>
 	<h3 class="exhibit_author" ><%= User.find(@exhibit.user_id).fullname %></h3>
 	<% num_pages = @exhibit.exhibit_pages.length -%>
 	<% if num_pages > 0 -%>
