@@ -144,7 +144,7 @@ color:inherit;
 }
 
 .rounded_h1 {
-	background: none !important;
+	/*background: none !important;*/
 	font-size:12pt;
 	margin-top: 0px;
 	margin-bottom:0;
