@@ -133,19 +133,19 @@ class ResultsController < ApplicationController
       exhibit = Exhibit.find(:first, :conditions => [ "title = ? AND user_id = ?", exhibit_name, locals[:user].id ] )
       if exhibit == nil
         # TODO-PER: HACK! I don't know why, but sometimes the exhibit name comes back with quotes encrypted. If we can't find the exhibit
-        # with this name, then try unencrypting it and trying again.
+        # with this name, then try unencrypting it and trying again. (It is possible that this was just a cached file in the user's browser.)
         name = exhibit_name.gsub("&quot;", '"')
         exhibit = Exhibit.find(:first, :conditions => [ "title = ? AND user_id = ?", name, locals[:user].id ] )
-        arr = exhibit_name.split("")
-        str = '/' + h(arr.join('.')) + "/<br />"
-        arr = name.split("")
-        str += '/' + h(arr.join('.')) + "/<br />"
-        exes = Exhibit.find(:all, :conditions => ["user_id = ?", locals[:user].id])
-        exes.each {|ex|
-          arr = ex.title.split("")
-          str += '/' + h(arr.join('.')) + "/<br />"
-        }
-        locals[:hit]['warning'] = str
+#        arr = exhibit_name.split("")
+#        str = '/' + h(arr.join('.')) + "/<br />"
+#        arr = name.split("")
+#        str += '/' + h(arr.join('.')) + "/<br />"
+#        exes = Exhibit.find(:all, :conditions => ["user_id = ?", locals[:user].id])
+#        exes.each {|ex|
+#          arr = ex.title.split("")
+#          str += '/' + h(arr.join('.')) + "/<br />"
+#        }
+#        locals[:hit]['warning'] = str
       end
       ExhibitObject.add(exhibit.id, locals[:uri])
     end
