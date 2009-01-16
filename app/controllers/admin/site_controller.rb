@@ -22,7 +22,9 @@ class Admin::SiteController < Admin::BaseController
 
   def list
 #     @site_pages, @sites = paginate :sites, :per_page => 10
-    @sites = Site.paginate(:page => params[:page], :per_page => 20, :order => 'code')
+    page = params[:page]
+    page = 1 if page == nil || page == ""
+    @sites = Site.paginate(:page => page, :per_page => 20, :order => 'code')
   end
 
   def show

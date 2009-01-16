@@ -42,7 +42,7 @@ class Admin::FacetTreeController < Admin::BaseController
 #    facet_tree << FacetValue.new(:value => "new_value")
 #    facet_tree.save
 #    redirect_to :action => :edit, :tree => facet_tree.value
-    FacetCategory.create(:value => "new_value", :parent_id => FacetTree.find_by_value('archive').id, :type => "FacetValue")
+    FacetValue.create(:value => "new_value", :parent_id => FacetTree.find_by_value('archive').id)
     redirect_to :action => :edit, :tree => 'archive'
   end
 
