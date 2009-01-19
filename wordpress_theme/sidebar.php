@@ -6,11 +6,11 @@
 ?>
 	<div id="sidebar">
 		<ul>
-			<?php 	/* Widgetized sidebar, if you have the plugin installed. */
-					if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
+			<!--	<?php 	/* Widgetized sidebar, if you have the plugin installed. */
+				if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
 			<li>
 				<?php get_search_form(); ?>
-			</li>
+			</li>-->
 
 			<!-- Author information is disabled per default. Uncomment and fill in your details if you want to use it.
 			<li><h2>Author</h2>
