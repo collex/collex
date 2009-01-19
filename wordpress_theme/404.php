@@ -1,4 +1,13 @@
-<?php get_header(); ?>
+<?php
+/**
+ * @package WordPress
+ * @subpackage Default_Theme
+ */
+
+get_header();
+?>
+
+<?php get_sidebar(); ?>
 
 	<div id="content" class="narrowcolumn">
 
@@ -6,6 +15,5 @@
 
 	</div>
 
-<?php get_sidebar(); ?>
 
 <?php get_footer(); ?>

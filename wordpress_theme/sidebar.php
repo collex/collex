@@ -1,9 +1,15 @@
+<?php
+/**
+ * @package WordPress
+ * @subpackage Default_Theme
+ */
+?>
 	<div id="sidebar">
 		<ul>
 			<?php 	/* Widgetized sidebar, if you have the plugin installed. */
 					if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
 			<li>
-				<?php include (TEMPLATEPATH . '/searchform.php'); ?>
+				<?php get_search_form(); ?>
 			</li>
 
 			<!-- Author information is disabled per default. Uncomment and fill in your details if you want to use it.
@@ -43,27 +49,31 @@
 
 			</li> <?php }?>
 
-			<?php wp_list_pages('title_li=<h2>Pages</h2>' ); ?>
+			<table><tr>
+			<td><a href="http://localhost/wp/?feed=rss2"><img src="/images/RSS_icon.jpg" alt="rss" width="40" /></a></td>
+			<td>Want to learn more about NINES?</td>
+			</tr></table>
+			<div class="rss_feed_link"><a href="http://localhost/wp/?feed=rss2">Subscribe to our RSS feed here</a></div>
 
-			<li><h2>Archives</h2>
+			<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Archives</h3></div></div></div>
 				<ul>
 				<?php wp_get_archives('type=monthly'); ?>
 				</ul>
 			</li>
 
-			<?php wp_list_categories('show_count=1&title_li=<h2>Categories</h2>'); ?>
+			<?php wp_list_categories('show_count=1&title_li=<div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Categories</h3></div></div></div>'); ?>
 
 			<?php /* If this is the frontpage */ if ( is_home() || is_page() ) { ?>
-				<?php wp_list_bookmarks(); ?>
+				<?php wp_list_bookmarks('title_li=Blogroll&title_before=<div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">&title_after=</h3></div></div></div>'); ?>
 
-				<li><h2>Meta</h2>
+			<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Contact</h3></div></div></div>
+				<div class="questions">Questions? Contact NINES at inquiries(at)nines(dot)org.</div>
+			</li>
+
+				<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Administration</h3></div></div></div>
 				<ul>
 					<?php wp_register(); ?>
 					<li><?php wp_loginout(); ?></li>
-					<li><a href="http://validator.w3.org/check/referer" title="This page validates as XHTML 1.0 Transitional">Valid <abbr title="eXtensible HyperText Markup Language">XHTML</abbr></a></li>
-					<li><a href="http://gmpg.org/xfn/"><abbr title="XHTML Friends Network">XFN</abbr></a></li>
-					<li><a href="http://wordpress.org/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform.">WordPress</a></li>
-					<?php wp_meta(); ?>
 				</ul>
 				</li>
 			<?php } ?>

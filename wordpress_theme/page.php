@@ -1,4 +1,12 @@
-<?php get_header(); ?>
+<?php
+/**
+ * @package WordPress
+ * @subpackage Default_Theme
+ */
+
+get_header(); ?>
+
+<?php get_sidebar(); ?>
 
 	<div id="content" class="narrowcolumn">
 
@@ -15,7 +23,5 @@
 		<?php endwhile; endif; ?>
 	<?php edit_post_link('Edit this entry.', '<p>', '</p>'); ?>
 	</div>
-
-<?php get_sidebar(); ?>
 
 <?php get_footer(); ?>
