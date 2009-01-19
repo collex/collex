@@ -9,7 +9,7 @@
 			<!--	<?php 	/* Widgetized sidebar, if you have the plugin installed. */
 				if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
 			<li>
-				<?php get_search_form(); ?>
+				< ? p h p   g e t _ s e a r c h _ f o r m ( ) ;   ? >
 			</li>-->
 
 			<!-- Author information is disabled per default. Uncomment and fill in your details if you want to use it.
