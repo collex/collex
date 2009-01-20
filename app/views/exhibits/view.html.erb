@@ -26,12 +26,12 @@
 						<% illustration = element.exhibit_illustrations.find(:first) -%>
 						<table><tr>
 							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
-							<td><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
+							<td width='100%'><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
 						</tr></table>
 					<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
 						<% illustration = element.exhibit_illustrations.find(:first) -%>
 						<table><tr>
-							<td><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
+							<td width='100%'><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
 							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
 						</tr></table>
 					<% elsif element.exhibit_element_layout_type == 'pics' -%>
@@ -46,15 +46,15 @@
 						<% illustration2 = element.exhibit_illustrations[1] -%>
 						<table><tr>
 							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
-							<td><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
+							<td width='100%'><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
 							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration2 } %></td>
 						</tr></table>
 					<% elsif element.exhibit_element_layout_type == 'text_pic_text' -%>
 						<% illustration = element.exhibit_illustrations.find(:first) -%>
 						<table><tr>
-							<td><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text2), :is_first => is_first } %></td>
+							<td width='50%'><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text2), :is_first => is_first } %></td>
 							<td><%= render :partial => 'illustration', :locals => { :illustration => illustration } %></td>
-							<td><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
+							<td width='50%'><%= render :partial => 'exhibit_text', :locals => { :text => decode_exhibit_links(element.element_text), :is_first => is_first } %></td>
 						</tr></table>
 					<% else -%>
 						Unknown element type:
