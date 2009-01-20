@@ -473,7 +473,7 @@ html>body .entry li {
 #sidebar ul li {
 	list-style-type: none;
 	list-style-image: none;
-	margin-bottom: 15px;
+	margin-bottom: 30px;
 	}
 
 #sidebar ul p, #sidebar ul select {
@@ -601,7 +601,7 @@ select {
 #sidebar
 {
 	padding-left: 20px;
-	padding-right:10px;
+	padding-right:15px;
 	margin-left: 10px;
 	width: 195px;
 	float: left;
@@ -746,4 +746,9 @@ div.aligncenter {
 .questions {
 	padding-top: .3em;
 	font-size: .9em;
+}
+
+.news_link {
+	text-align:center;
+	padding-bottom: 5px;
 }

@@ -9,6 +9,7 @@
 			<?php 	/* Widgetized sidebar, if you have the plugin installed. */
 				if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
 			<li>
+				<div class="news_link"><a href="<?php bloginfo('url'); ?>">Return to News</a></div>
 				<?php get_search_form(); ?>
 			</li>
 
