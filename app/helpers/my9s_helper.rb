@@ -30,12 +30,12 @@ module My9sHelper
     '&#x25B2;'
   end
   
-  def element_text_thumbnail(element)
-    if element.element_text == nil || element.element_text.length == 0
+  def element_text_thumbnail(text)
+    if text == nil || text.length == 0
       return "[no text]"
     end
     
-    text = strip_tags(element.element_text)
+    text = strip_tags(text)
     if text.length < 30
       return text
     else
@@ -43,10 +43,10 @@ module My9sHelper
     end
   end
   
-  def element_pic_thumbnail(element)
+  def element_pic_thumbnail(element, pos)
     illustrations = element.exhibit_illustrations
-    if illustrations.length > 0
-      element_pic_thumbnail_illustration(illustrations[0])
+    if illustrations.length > pos
+      element_pic_thumbnail_illustration(illustrations[pos])
     else
       "<img src='#{get_image_url(nil)}' height='16px' />"
     end

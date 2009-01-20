@@ -27,7 +27,7 @@
 
     record[:position] = exhibit_element.position
     record[:layout_type] = exhibit_element.exhibit_element_layout_type
-    record[:thumbnail] = element_text_thumbnail(exhibit_element)
+    record[:thumbnail] = element_text_thumbnail(exhibit_element.element_text)
 	record[:illustration_list] = ""
 	exhibit_element.exhibit_illustrations.each { |ill| record[:illustration_list] += "#{ill['id']}," }
 	

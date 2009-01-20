@@ -48,6 +48,8 @@ Editing Page: <span id="current_page_num"><%= page.position %></span>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Illustration then Text</option>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Illustration</option>
 					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Illustrations</option>
+					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text_pic' %> value="pic_text_pic">Illustration, Text, Illustration</option>
+					<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic_text' %> value="text_pic_text">Text, Illustration, Text</option>
 					</select>
 					<% if element.exhibit_element_layout_type == 'pics' %>
 						<% style = "" -%>

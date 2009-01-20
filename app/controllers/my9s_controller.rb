@@ -361,8 +361,11 @@ class My9sController < ApplicationController
       element.exhibit_element_layout_type = type
       element.save
       # if we are just creating an element that takes an illustration, then create the illustration, too.
-      if (type == 'pic_text' || type == 'text_pic') && element.exhibit_illustrations.length == 0
+      if (type == 'pic_text' || type == 'text_pic' || type == 'text_pic_text' || type == 'pic_text_pic') && element.exhibit_illustrations.length == 0
         ExhibitIllustration.factory(element_id, 1)
+      end
+      if (type == 'pic_text_pic') && element.exhibit_illustrations.length < 2
+        ExhibitIllustration.factory(element_id, 2)
       end
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
@@ -375,12 +378,25 @@ class My9sController < ApplicationController
     def edit_text
       element = params['element_id']
       arr = element.split('_')
-      element_id = arr[arr.length-1].to_i
+      last_str = arr[arr.length-1]
+      first_one = true
+      if last_str == 'left'
+        element_id = arr[arr.length-2].to_i
+      elsif last_str == 'right'
+        element_id = arr[arr.length-2].to_i
+        first_one = false
+      else
+        element_id = last_str.to_i
+      end
       
       value = params['value']
       value = clean_up_links(value)
       element = ExhibitElement.find(element_id)
-      element.element_text = value
+      if first_one
+        element.element_text = value
+      else
+        element.element_text2 = value
+      end
       element.save
       
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
@@ -519,7 +535,14 @@ class My9sController < ApplicationController
       element_div_id = params['element_id']
       if element_div_id != nil
         arr = element_div_id.split('_')
-        id_num = arr[arr.length-1].to_i
+        last_str = arr[arr.length-1]
+        if last_str == 'left'
+          id_num = arr[arr.length-2].to_i
+        elsif last_str == 'right'
+          id_num = arr[arr.length-2].to_i
+        else
+          id_num = last_str.to_i
+        end
         if arr[0] == 'illustration'
           exhibit = Exhibit.find_by_illustration_id(id_num)
           element_id = ExhibitIllustration.find(id_num).exhibit_element_id

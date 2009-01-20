@@ -14,11 +14,14 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
-<div id='text_<%= element.id %>'>
-	<%= render :partial => 'exhibits/exhibit_text', :locals => { :text => element.element_text, :is_first => is_first } %>
+
+<% # parameters: ExhibitElement element; enum which { left, right, only }, bool is_first %>
+<% div_id = "text_#{element.id}" -%>
+<% div_id += "_#{which}" if which != "only" -%>
+<div id='<%= div_id %>'>
+	<%= render :partial => 'exhibits/exhibit_text', :locals => { :text => (which == 'right' ? element.element_text2 : element.element_text), :is_first => is_first } %>
 </div>
 <script language="JavaScript">
 	if(window.initializeInplaceRichEditor)
-		initializeInplaceRichEditor(<%= "'text_#{element.id},full-window-content'"%>, "/my9s/edit_text,/my9s/refresh_outline");
+		initializeInplaceRichEditor('<%= div_id %>,full-window-content', "/my9s/edit_text,/my9s/refresh_outline");
 </script>

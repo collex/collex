@@ -21,7 +21,7 @@ class ExhibitElement < ActiveRecord::Base
   has_many :exhibit_illustrations, :order => :position, :dependent=>:destroy
   
   def self.factory(page)
-    return ExhibitElement.create(:exhibit_page_id => page, :border_type_enum => 0, :exhibit_element_layout_type => 'text', :element_text => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>")
+    return ExhibitElement.create(:exhibit_page_id => page, :border_type_enum => 0, :exhibit_element_layout_type => 'text', :element_text2 => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>", :exhibit_element_layout_type => 'text', :element_text => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>")
   end
   
   def get_border_type

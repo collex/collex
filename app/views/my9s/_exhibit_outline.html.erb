@@ -63,7 +63,7 @@
 				<% is_first = false -%>
 				<span onclick="selectLine('outline_element_<%= element.id %>')">
 				<% if element.exhibit_element_layout_type == 'text' -%>
-					<%= element_text_thumbnail(element) %>
+					<%= element_text_thumbnail(element.element_text) %>
 				<% elsif element.exhibit_element_layout_type == 'header' -%>
 					<span class="exhibit_outline_header"><b><big><%=h strip_tags(element.element_text) %></big></b></span>
 				<% elsif element.exhibit_element_layout_type == 'pics' -%>
@@ -73,11 +73,19 @@
 					<%= element_pic_thumbnail_illustration(illustration) %>
 					<% end -%>
 				<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
-					<%= element_pic_thumbnail(element) %>
-					<%= element_text_thumbnail(element) %>
+					<%= element_pic_thumbnail(element, 0) %>
+					<%= element_text_thumbnail(element.element_text) %>
 				<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
-					<%= element_text_thumbnail(element) %>
-					<%= element_pic_thumbnail(element) %>
+					<%= element_text_thumbnail(element.element_text) %>
+					<%= element_pic_thumbnail(element, 0) %>
+				<% elsif element.exhibit_element_layout_type == 'pic_text_pic' -%>
+					<%= element_pic_thumbnail(element, 0) %>
+					<%= element_text_thumbnail(element.element_text) %>
+					<%= element_pic_thumbnail(element, 1) %>
+				<% elsif element.exhibit_element_layout_type == 'text_pic_text' -%>
+					<%= element_text_thumbnail(element.element_text) %>
+					<%= element_pic_thumbnail(element, 0) %>
+					<%= element_text_thumbnail(element.element_text2) %>
 				<% else -%>
 					Error: unknown type
 				<% end # type of element -%>
