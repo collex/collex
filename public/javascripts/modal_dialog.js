@@ -34,6 +34,7 @@ ModalDialog.prototype = {
 	_linkDlgHandler: null,
 	_cancelCallback: null,
 	_cancelThis: null,
+	_onCompleteCallback:null,
 	
 	showPrompt: function(title, targetElement, form, left, top, width, height, extraButtons, okFunction, okObject) {
 		
@@ -104,6 +105,11 @@ ModalDialog.prototype = {
 		this._renderForm(title, targetElement, form);
 		
 		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
+	},
+	
+	setCompleteCallback: function(callBack)
+	{
+		this._onCompleteCallback = callBack;
 	},
 	
 	center: function()
@@ -593,13 +599,6 @@ ModalDialog.prototype = {
 				
 				return;
 			}
-			
-			var onCompleteCallback = function() {
-			  Try.these(
-			    function() { initializeElementEditing() },
-					function() {}
-			  );
-			}
 		
 			// If we have a comma separated list, we want to send the alert synchronously to each action
 			// (Doing this synchronously eliminates any race condition: The first call can update the data and
@@ -611,7 +610,7 @@ ModalDialog.prototype = {
 				new Ajax.Updater(ajax_action_element_id, action, {
 					parameters : params,
 					evalScripts : true,
-					onComplete : onCompleteCallback,				
+					onComplete : this._onCompleteCallback,				
 					onFailure : function(resp) { alert("Oops, there's been an error."); }
 				});
 			}
@@ -624,7 +623,7 @@ ModalDialog.prototype = {
 						new Ajax.Updater(action_elements[1], actions[1], {
 							parameters : params,
 							evalScripts : true,
-							onComplete : onCompleteCallback,						
+							onComplete : this._onCompleteCallback,						
 							onFailure : function(resp) { alert("Oops, there's been an error."); }
 						});
 					},

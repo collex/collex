@@ -192,6 +192,11 @@ function showIllustrationEditor(event)
 	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object'], 'nines_object');
 	dlg.addList('nines_object', list.list, 'nines_only');
 
+	var onCompleteCallback = function() {
+		initializeElementEditing();
+		};
+	dlg.setCompleteCallback(onCompleteCallback);
+
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
 	dlg.show("Edit Illustration", getX(el), getY(el), 530, 350, values );

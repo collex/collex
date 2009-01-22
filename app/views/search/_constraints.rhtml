@@ -38,7 +38,7 @@
 		<% end -%>
 	<% end # closing the do loop for each constraint %>
 	<tr>
-		<form id="add-search-constraint" onsubmit="return yearValidation(document.forms['add-search-constraint'], 'search_year', 'search_phrase', 'search_type', 'search_submit', event)" action="/collex/add_constraint" method="post">
+		<form id="add-search-constraint" onsubmit="return yearValidation('search_year', 'search_phrase', 'search_type', 'search_submit');" action="/collex/add_constraint" method="post">
 			<td class="add_constraint_row_first">
 				<select id="search_type" name="search_type" align="top" >
 					<option value="Keyword" >Keyword</option>

@@ -31,6 +31,7 @@ InputDialog._okObject = null;
 InputDialog._noButtons = false;
 InputDialog._cancelCallback = null;
 InputDialog._cancelThis = null;
+InputDialog._onCompleteCallback = null;
 
 InputDialog.prototype = {
 	initialize: function(element_id, submitCode)
@@ -44,7 +45,7 @@ InputDialog.prototype = {
 			inlineSubmitCode += "; return false;";
 		this._form = new Element('form', { id: form_id, 'class': 'modal_dialog_form', onsubmit:  inlineSubmitCode});
 		if (submitCode == null || submitCode == undefined)
-			this._form.observe('submit', InputDialog.prototype._observerSubmit);
+			this._form.observe('submit', InputDialog.prototype._observerSubmit.bind(this));
 		this._table = new Element('table');
 		this._form.appendChild(this._table);
 		this._table.appendChild(new Element('tbody'));
@@ -72,6 +73,9 @@ InputDialog.prototype = {
 	show: function(title, left, top, width, height, dataHash)
 	{
 		this._modalDialog = new ModalDialog();
+		if (this._onCompleteCallback)
+			this._modalDialog.setCompleteCallback(this._onCompleteCallback);
+
 		if (this._okFunction)
 			this._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
 		else
@@ -99,6 +103,11 @@ InputDialog.prototype = {
 	{
 		this._cancelCallback = cancelCallback;
 		this._cancelThis = cancelThis;
+	},
+	
+	setCompleteCallback : function(callBack)
+	{
+		this._onCompleteCallback = callBack;
 	},
 	
 	cancel : function()
@@ -138,13 +147,22 @@ InputDialog.prototype = {
 		this._table.down().appendChild(wrapper);
 	},
 	
+	addPrompt: function(label, className)
+	{
+		var wrapper = new Element('tr');
+		if (className != undefined)
+			wrapper.addClassName(className);
+		var el_label = new Element('td', { 'colspan': 2} ).update(label);
+		wrapper.appendChild(el_label.wrap('td'));
+		this._table.down().appendChild(wrapper);
+	},
+	
 	addTextInput: function(label, id, size, className)
 	{
 		var wrapper = new Element('tr');
 		if (className != undefined)
 			wrapper.addClassName(className);
 		var el_label = new Element('label', { 'for': id} ).update(label);
-		//wrapper.appendChild(el_label.wrap('td', { style: 'text-align: right;' }));
 		wrapper.appendChild(el_label.wrap('td'));
 		var el = new Element('input', { type: 'text', id: id, name: id, size: size});
 		wrapper.appendChild(el.wrap('td'));
@@ -218,7 +236,8 @@ InputDialog.prototype = {
 
 	_observerSubmit: function(event)
 	{
-		InputDialog._modalDialog._handleSave();
+		//InputDialog._modalDialog._handleSave();
+		this._modalDialog._handleSave();
 	},
 	
 	_editorHover: function(ev)
@@ -272,10 +291,10 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	promptStr, // The string that appears to the left of the input
 	promptId, // The key that will be used in the params[] hash in the ajax call
 	referenceElementId, // The element that the dialog will appear above
-	actionElementIds, // The list of elements that should be updated by the ajax calls (comma separated) [ if this is "", then the entire page should be redrawn ]
+	actionElementIds, // The list of elements that should be updated by the ajax calls (comma separated) [ if this is "", then the entire page should be redrawn. If this is null, then no OK button exists. ]
 	actions, // The list of urls that should be called by Ajax (should be the same number as above)
 	hiddenDataHash, // Extra data that should be sent back to the server .eg.: $H({ key1: 'value1', key2: 'value2' })
-	inputType,	// one of: 'text', 'select', or 'textarea'
+	inputType,	// one of: 'text', 'select', or 'textarea'; or 'none' meaning that this dialog is just for info.
 	options	// This is a hash that contains whatever is needed by the inputType
 		// text: null
 		// select: array of strings that become the choices. 
@@ -283,12 +302,14 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	)
 {
 	// put up a Prototype window type dialog.
-	InputDialog.prototype.prepareDomForEditing(referenceElementId, actionElementIds, actions);
+	if (actionElementIds != null)
+		InputDialog.prototype.prepareDomForEditing(referenceElementId, actionElementIds, actions);
 	
 	// First construct the dialog
 	var dlg = new InputDialog(referenceElementId);
 	hiddenDataHash.each(function(datum) {
-		dlg.addHidden(datum.key);
+		if (datum.key != promptId)
+			dlg.addHidden(datum.key);
 	});
 	
 	// Store the reference element
@@ -310,6 +331,9 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 			width = options.get('width') + 10;
 			height = options.get('height') + 60;
 			break;
+		case 'none':
+			dlg.addPrompt(promptStr);
+			break;
 	}
 		
 	
@@ -324,8 +348,16 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	var top = getY(el);
 	if (top + height + margin > viewportHeight)
 		top = viewportHeight - height - margin;
+	if (actionElementIds == null)
+		dlg.setNoButtons();
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
-	$(promptId).focus();
+	
+	var prompt = $(promptId);
+	if (prompt)
+	{
+		$(promptId).focus();
+		$(promptId).select();
+	}
 }
 
 // Take an image and show it in a modal lightbox.

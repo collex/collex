@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<center><form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation(document.forms['add-search-constraint'], 'search_year', 'search_phrase', 'search_type', 'search_submit', event)" >
+<center><form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation('search_year', 'search_phrase', 'search_type', 'search_submit');" >
 <table>
 <tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%></td></tr>
 <tr><td>Title:</td><td><input name="search_title" id="search_title" size="30"/></td></tr>

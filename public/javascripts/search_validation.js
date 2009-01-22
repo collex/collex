@@ -14,7 +14,7 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_id, event)
+function yearValidation(input_id, alt_input_id, alt_input_type, submit_id)
 {
 	// First disable the submit button so we don't get a double click.
 	var submit_button = $(submit_id);
@@ -32,7 +32,6 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
 		year_val = input_year.value;
 		if (year_val == "")
 		{
-			theForm.submit();
 			return true;
 		}
 		
@@ -43,7 +42,6 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
 		var input_type = $(alt_input_type);
 		if (input_year == null || input_type == null)
 		{
-			theForm.submit();
 			return true;
 		}
 		
@@ -57,32 +55,16 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
 		
 		if (input_type.value != "Year")
 		{
-			theForm.submit();
 			return true;
 		}
 		year_val = input_year.value;
 	}
 	// At this point, year_val contains the user's input for the year. Make sure it is exactly 4 digits
 	
-	// Figure out where to put the error box if we need one. 
-	var par = theForm.offsetParent;
-	var x = theForm.offsetLeft + input_year.offsetLeft;
-	var y = theForm.offsetTop + input_year.offsetTop;
-	while (par != undefined)
-	{
-		x += par.offsetLeft;
-		y += par.offsetTop;
-		par = par.offsetParent;
-	}
-
   // test if the year is an integer
   if (year_val != parseInt(year_val))
   {
-  	event.x = x;
-	event.y = y;
-    showAlert('yearalert', event);
-    new Effect.Appear('year_numeric_error_msg', { duration: 0.0 });
-    new Effect.Fade('year_length_error_msg', { duration: 0.0 });
+	doSingleInputPrompt("Error", "The year must contain only numerals.", null, submit_id, null, null, $H({ }), "none", null);
 
 	submit_button.disabled = false;
 	submit_button.value = submit_text;
@@ -92,11 +74,7 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
   // test if the year is 4 digits in length
   if (year_val.length != 4)
   {
-  	event.x = x;
-	event.y = y;
-    showAlert('yearalert', event);
-    new Effect.Appear('year_length_error_msg', { duration: 0.0 });
-    new Effect.Fade('year_numeric_error_msg', { duration: 0.0 });
+	doSingleInputPrompt("Error", "The year must  be 4 digits long.", null, submit_id, null, null, $H({ }), "none", null);
 
 	submit_button.disabled = false;
 	submit_button.value = submit_text;
@@ -104,14 +82,5 @@ function yearValidation(theForm, input_id, alt_input_id, alt_input_type, submit_
   }
 
   // if the two validation steps above pass, submit the form
-  theForm.submit(); 
   return true;
-}
-
-function showAlert(divID, event)
-{
-  new Effect.Appear(divID, { duration: 0.5 }); 
-  var newXCoordinate = (event.pageX)?event.pageX + xOffset:event.x + xOffset + ((document.body.scrollLeft)?document.body.scrollLeft:0);
-  var newYCoordinate = (event.pageY)?event.pageY + yOffset:event.y + yOffset + ((document.body.scrollTop)?document.body.scrollTop:0);
-  moveObject2(divID, newXCoordinate, newYCoordinate);
 }
