@@ -47,9 +47,9 @@
 					</td>
 				  	<% if session[:constraints].size > 0 -%>
 						<td align="center" width="110">
-							<img id="new_search_button2" src="../images/start_over_up.jpg" alt="New Search" 
-								onmousedown="$('new_search_button2').src='../images/start_over_down.jpg';"
-								onmouseout="$('new_search_button2').src='../images/start_over_up.jpg';"
+							<img id="new_search_button2" src="/images/start_over_up.jpg" alt="New Search" 
+								onmousedown="$('new_search_button2').src='/images/start_over_down.jpg';"
+								onmouseout="$('new_search_button2').src='/images/start_over_up.jpg';"
 								onmouseup="window.location = '/collex/new_search';" />
 						</td>
 					<% end -%>
@@ -82,7 +82,7 @@
 							<% end %>
 							<div class="no-results">
 								<br /><br /><br /><br />
-							<center><img height="250px" src="../images/lg-harrington.gif" alt="" /></center>
+							<center><img height="250px" src="/images/lg-harrington.gif" alt="" /></center>
 						<% end -%>
 					</td>
 				</tr><% # end search result box %>
