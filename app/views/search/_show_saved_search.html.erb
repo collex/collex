@@ -21,7 +21,7 @@
 
 <% if is_logged_in? -%>
 <% if session[:name_of_search] -%>
-: <%= session[:name_of_search] %>
+: <%= h(session[:name_of_search]) %>
 <% end # if there is a name for this search -%>
 <% form_tag({:action=>'save'},{:name => 'savesearch', :id => 'savesearch', :style => "display:none;"}) do %>
 	<%= text_field_tag :name, "", {:size => 10, :id => "savesearch_name"} %>

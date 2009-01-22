@@ -564,15 +564,18 @@ function doRemoveTag(uri, row_num, row_id, tag_name)
 
 function doRemoveCollect(uri, row_num, row_id)
 {
-	var tr = document.getElementById(row_id);
-	tr.className = 'result_without_tag'; 
-	var full_text = getFullText(row_id);
-	
-	new Ajax.Updater(row_id, "/results/uncollect", {
-		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
-		evalScripts : true,
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
-	});
+	if (confirm("Are you sure you want to uncollect this object?"))
+	{
+		var tr = document.getElementById(row_id);
+		tr.className = 'result_without_tag'; 
+		var full_text = getFullText(row_id);
+		
+		new Ajax.Updater(row_id, "/results/uncollect", {
+			parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
+			evalScripts : true,
+			onFailure : function(resp) { alert("Oops, there's been an error."); }
+		});
+	}
 }
 
 function editTag(parent_id, tag_name)
@@ -685,10 +688,18 @@ function encodeForUri(str)
 
 function doSaveSearch(parent_id)
 {
-	doSingleInputPrompt("Save Search", 'Name:', 'save_name', parent_id, 
+	doSingleInputPrompt("Save Search", 'Name:', 'saved_search_name', parent_id, 
 		"saved_search_name",
 		"/search/save_search", 
 		$H({ }), 'text' );
+}
+
+function showString(parent_id, str)
+{
+	doSingleInputPrompt("Saved Search Permalink", 'Link:', 'show_save_name', parent_id, 
+		null,
+		null, 
+		$H( { show_save_name: str } ), 'text' );
 }
 
 function setTagVisibility(zoom_level)

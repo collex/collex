@@ -269,12 +269,37 @@ module SearchHelper
     return user.searches.find(:all)
   end
   
+  def encodeForUri(str)
+    value = str.gsub('%', '%25')
+    value = value.gsub('#', '%23')
+    value = value.gsub('&', '%26')
+    value = value.gsub(/\?/, '%3f')
+    value = value.gsub('.', '%2e')
+    value = value.gsub('"', '%22')
+    value = value.gsub("'", '%27')
+    value = value.gsub("<", '%3c')
+    value = value.gsub(">", '%3e')
+    value = value.gsub("\\", '%5c')
+    return value
+  end
+  
+  def create_saved_search_url(user_name, search_name)
+    "/search/saved?user=#{user_name}&name=#{encodeForUri(search_name)}"
+  end
+  
+  def create_saved_search_permalink(s)
+    base_url = 'http://' + request.host_with_port()
+    permalink_id = "permalink_#{encodeForUri(h(s.name))}"
+    return "<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{permalink_id}\", \"#{base_url}#{create_saved_search_url(session[:user][:username], s.name)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>"
+  end
+
   def create_saved_search_link(s)
-    link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name }, :class => 'nav_link'
+    return "<a class='nav_link' href='#{create_saved_search_url(session[:user][:username], s.name)}'>#{h(s.name)}</a>"
+    #link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name }, :class => 'nav_link'
   end
 
   def create_remove_saved_search_link(s)
-    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, :class => 'modify_link'
+    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, :class => 'modify_link', :confirm => "Are you sure you want to remove this saved search?"
   end
   
   def has_constraints?

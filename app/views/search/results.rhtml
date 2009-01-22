@@ -94,9 +94,3 @@
 <!-- leave this blank div in here to make sure you can click anywhere on the document for MSIE 5 mac -->
 <div id="blankDiv" style="position: absolute; left: 0; top: 0; visibility: hidden"></div>
 </div>
-
-<div id="yearalert" style="float: none; left: 50px; top: 50px; display: none; POSITION: absolute; BACKGROUND-COLOR: #ededed; LAYER-BACKGROUND-COLOR: #fff; width: 200px; border: 1px solid #666; PADDING: 3px; z-index: 10;">
- <span style="clear:both;float:right;"><%= link_to_function 'x', 'Effect.Fade("yearalert", { duration: 0.0 })', :class => 'nav_link' %> &nbsp;</span>
- <span id="year_numeric_error_msg">the year must contain only numerals</span>
- <span id="year_length_error_msg">the year must be 4 digits long</span>
-</div>

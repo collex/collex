@@ -439,9 +439,9 @@ class SearchController < ApplicationController
 #   end
    
    def save_search
-     if (session[:user])  # see if the session has timed out since the last browser action
+     name = params[:saved_search_name]
+     if (session[:user] && name.length > 0)  # see if the session has timed out since the last browser action, and the user actually inputted sometime.
        user = User.find_by_username(session[:user][:username])
-       name = params[:save_name]
        session[:name_of_search] = name
        saved_search = user.searches.find_or_create_by_name(name)
   
@@ -458,44 +458,26 @@ class SearchController < ApplicationController
      #redirect_to :action => 'browse'
    end
    
-   def apply_saved_search
-     if (session[:user])
-       user = User.find_by_username(session[:user][:username])
-       session[:constraints] = []
-       session[:name_of_search] = params[:name]
+   def saved
+     user = User.find_by_username(params[:user])
+     session[:constraints] = []
+     session[:name_of_search] = params[:name]
 
-       saved_search = user.searches.find_by_name(params[:name])
-       if (saved_search)
-         # Recreate the original search instead of adding a constraint of SavedSearchConstraint
-         saved_search.constraints.each do |saved_constraint|
-           if saved_constraint.is_a?(FreeCultureConstraint)
-             session[:constraints] << FreeCultureConstraint.new(:inverted => true)
-           elsif saved_constraint.is_a?(ExpressionConstraint)
-             add_keyword_constraint(saved_constraint[:value], saved_constraint[:inverted])
-           elsif saved_constraint.is_a?(FacetConstraint)
-             session[:constraints] << FacetConstraint.new(:field => saved_constraint[:field], :value => saved_constraint[:value], :inverted => saved_constraint[:inverted])
-           end
+     saved_search = user.searches.find_by_name(params[:name])
+     if (saved_search)
+       # Recreate the original search instead of adding a constraint of SavedSearchConstraint
+       saved_search.constraints.each do |saved_constraint|
+         if saved_constraint.is_a?(FreeCultureConstraint)
+           session[:constraints] << FreeCultureConstraint.new(:inverted => true)
+         elsif saved_constraint.is_a?(ExpressionConstraint)
+           add_keyword_constraint(saved_constraint[:value], saved_constraint[:inverted])
+         elsif saved_constraint.is_a?(FacetConstraint)
+           session[:constraints] << FacetConstraint.new(:field => saved_constraint[:field], :value => saved_constraint[:value], :inverted => saved_constraint[:inverted])
          end
        end
      end
-     #session[:constraints] << SavedSearchConstraint.new(:field => params[:username], :value => params[:name], :inverted => params[:invert] ? true : false)
-     redirect_to :action => 'browse'
+     browse()
    end
-   
-#   def saved_permalink
-#     user = User.find_by_username(params[:username])
-#     saved_search = user.searches.find_by_name(params[:name]) unless user.nil?
-#     
-#     if saved_search
-#       session[:constraints] = []
-#       saved_search.constraints.each do |saved_constraint|
-#         session[:constraints] << saved_constraint
-#       end
-#     else
-#       flash[:error] = 'Saved search not found.'
-#     end
-#     browse
-#   end
    
    def remove_saved_search
      if (session[:user])
@@ -511,15 +493,6 @@ class SearchController < ApplicationController
      redirect_to :action => 'browse'
    end
    
-#   def edit_saved_search
-#     session[:constraints] = []
-#     saved_search = User.find_by_username(session[:user][:username]).searches.find(params[:id])
-#     saved_search.constraints.each do |saved_constraint|
-#       session[:constraints] << saved_constraint
-#     end
-#     redirect_to :action => 'browse'      
-#   end
-
    private
    def search_solr(constraints, page, items_per_page)
      return @solr.search(constraints, (page - 1) * items_per_page, items_per_page)        
