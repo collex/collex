@@ -157,10 +157,12 @@ class TagController < ApplicationController
 
     if user
       set_cloud_list(user, user.username)
-    end
 
-    selected_tag = (session[:tag_view] == 'tag') ? session[:tag_current] : ""
-    render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size =>@bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s' }
+      selected_tag = (session[:tag_view] == 'tag') ? session[:tag_current] : ""
+      render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size =>@bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s' }
+    else
+      render :text => 'Session expired. Please log in again.'
+    end
    end
    
    def rss
