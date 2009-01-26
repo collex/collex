@@ -40,3 +40,11 @@
 	padding-top: 25px;
 	padding-bottom: 25px;
 }
+
+.summer_workshop {
+	background: #f1de3e;
+	font-size: 1.2em;
+	position:absolute;
+	right: 40px;
+	width: 150px;
+}
