@@ -11,9 +11,10 @@
 	link = CachedResource.get_link_from_uri(illustration.nines_object_uri)
 	link = "" if link == nil
 	link_style = 'nines_pic_link'
-	alt = CachedResource.get_hit_from_uri(illustration.nines_object_uri)['title']
+	ht = CachedResource.get_hit_from_uri(illustration.nines_object_uri) if illustration.nines_object_uri
+	alt = ht['title'] if ht
 end -%>
-<% alt = illustration.alt_text if illustration.alt_text.length > 0 %>
+<% alt = illustration.alt_text if illustration.alt_text && illustration.alt_text.length > 0 %>
 <% alt = "Picture" if alt.length == 0 -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
