@@ -51,10 +51,10 @@
 			</li> <?php }?>
 
 			<table><tr>
-			<td><a href="http://localhost/wp/?feed=rss2"><img src="/images/RSS_icon.jpg" alt="rss" width="40" /></a></td>
+			<td><a href="/news?feed=rss2"><img src="/images/RSS_icon.jpg" alt="rss" width="40" /></a></td>
 			<td>Want to learn more about NINES?</td>
 			</tr></table>
-			<div class="rss_feed_link"><a href="http://localhost/wp/?feed=rss2">Subscribe to our RSS feed here</a></div>
+			<div class="rss_feed_link"><a href="/news?feed=rss2">Subscribe to our RSS feed here</a></div>
 
 			<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Archives</h3></div></div></div>
 				<ul>
