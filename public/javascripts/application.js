@@ -696,7 +696,7 @@ function doSaveSearch(parent_id)
 
 function showString(parent_id, str)
 {
-	doSingleInputPrompt("Saved Search Permalink", 'Link:', 'show_save_name', parent_id, 
+	doSingleInputPrompt("Copy and Paste link into E-mail or IM", 'Link:', 'show_save_name', parent_id, 
 		null,
 		null, 
 		$H( { show_save_name: str } ), 'text' );
