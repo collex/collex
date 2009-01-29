@@ -34,8 +34,9 @@ h3 {
 	font-family:"Bell MT","Old English",Georgia,Times,serif;
 	font-size:420%;
 	line-height:0.85em;
-	margin-bottom:-0.15em;
+	margin-bottom:-0.13em;
 	margin-right:0.08em;
+	padding: 2px;
 }
 
 .drop_cap p:first-letter {
