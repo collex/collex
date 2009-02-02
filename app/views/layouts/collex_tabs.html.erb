@@ -37,18 +37,12 @@
 		when :search 
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
 		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/default", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/darkX", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/collex", :media => "all") + "\n" +
 	  	  stylesheet_link_tag("search", :media => "all")
 		when :my9s
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
 			stylesheet_link_tag("search", :media => "all") + "\n" +
 		  stylesheet_link_tag("tag", :media => "all") + "\n" +
 		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/default", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/darkX", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/collex", :media => "all") + "\n" +
 		  stylesheet_link_tag("exhibit_list", :media => "all") + "\n" +
 		  stylesheet_link_tag("my9s", :media => "all")
 		when :home 
@@ -58,9 +52,6 @@
 		when :tag
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
 		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/default", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/darkX", :media => "all") + "\n" +
-		  #stylesheet_link_tag("themes/collex", :media => "all") + "\n" +
 		  stylesheet_link_tag("tag", :media => "all")
 		when :exhibits
 		  stylesheet_link_tag("exhibit_list", :media => "all")
@@ -126,9 +117,11 @@ end
 	<div id="mainContent">
 
 	<div id="container">
-		<div id="header-center">
-			<span class="emph1">&nbsp;</span><br /><i>&nbsp;</i><br />
-		</div>
+		<a href="/"><div id="header-center">
+			<br />
+			<br />
+			<br />
+		</div></a>
 		<div id="header-right">
 			<% if @use_signin -%>
 				<%= render :partial => '/common/login_slider' %>
