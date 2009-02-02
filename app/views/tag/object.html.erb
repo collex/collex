@@ -1,3 +1,6 @@
+<% if @hit == nil -%>
+Tagged object not found.
+<% else -%>
 <table>
 	<tr>
 		<td>
@@ -9,4 +12,4 @@
 	</tr>
 	<%= render :partial => '/results/hit_body', :locals => { :hit => @hit, :row_id => 'row' } %>
 </table>
-
+<% end -%>
