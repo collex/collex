@@ -76,7 +76,7 @@ private
       ['Search', search_path, true, false],
       ['Tags', tags_path, true, false],
       ['Exhibits', exhibit_list_path, true, false],
-      ['News', news_path, true, false],
+      ['News', news_path + '/', true, false],
       ['About', tab_about_path, true, false]
    ]
   

@@ -180,7 +180,7 @@
 }
 
 .textarea-resizer {
-	background:#E0E0E0 url(../images/resize-handler.gif) no-repeat scroll 100% 100%;
+	background:#E0E0E0 url(/images/resize-handler.gif) no-repeat scroll 100% 100%;
 	border:1px solid #B0B0B0;
 	cursor:se-resize;
 	font-size:11px;

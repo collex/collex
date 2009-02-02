@@ -16,7 +16,7 @@ td {
 	border-style: solid;
 	margin: 0px;
 	padding:8px 35px 8px 35px;
-	background-image:url('../images/tab.png');
+	background-image:url('/images/tab.png');
 	background-repeat:no-repeat;
 	background-color: #e0e0e0;
 }
@@ -28,7 +28,7 @@ td {
 	padding:5px 35px 5px 35px;
 	font-style: italic;
 	color: gray;
-	background-image:url('../images/tab.png');
+	background-image:url('/images/tab.png');
 	background-repeat:no-repeat;
 	background-color: #e0e0e0;
 }
@@ -38,7 +38,7 @@ td {
 	margin: 0px;
 	font-weight: bold;
 	background: #fff;
-	background-image:url('../images/curr_tab.png');
+	background-image:url('/images/curr_tab.png');
 	background-repeat:no-repeat;
 	padding:5px 35px 5px 35px;
 }
@@ -131,16 +131,16 @@ color:inherit;
 }
 
 .rounded_left {
-	background: url(../images/rounded_header_left.jpg) 0 0 no-repeat;
+	background: url(/images/rounded_header_left.jpg) 0 0 no-repeat;
 	padding-left: 15px;
 }
 
 .rounded_middle {
-	background: url(../images/rounded_header_middle.jpg) 0 0 repeat-x;
+	background: url(/images/rounded_header_middle.jpg) 0 0 repeat-x;
 }
 
 .rounded_right {
-	background: url(../images/rounded_header_right.jpg) 100% 0 no-repeat;
+	background: url(/images/rounded_header_right.jpg) 100% 0 no-repeat;
 }
 
 .rounded_h1 {
@@ -195,7 +195,7 @@ color:inherit;
 	padding-top: 2px;
 	/*width: 850px;*/
 	min-width: 850px;
-	background-image:url('../images/banner.study.gif');
+	background-image:url('/images/banner.study.gif');
 	background-repeat: no-repeat;
 	background-color: #670001;
 }
@@ -439,7 +439,7 @@ padding:0px;
 #mainContent{
 /*width:850px;*/
 	background-color: #999;
-	background-image: url('../images/bodybg2.jpg');
+	background-image: url('/images/bodybg2.jpg');
 	background-repeat: repeat;
 position: relative;
 /*left:230px;*/
@@ -448,7 +448,7 @@ top:0px;
 
 #leftPanel{	
 background-color: #999;	
-background-image: url('../images/bodybg2.jpg');
+background-image: url('/images/bodybg2.jpg');
 background-repeat: repeat;	
 height:100%;
 width: 230px;		

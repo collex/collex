@@ -4,7 +4,7 @@ body {
 	font-family: "Lucida Grande",  verdana, arial, helvetica, sans-serif;
 	color: #000;
 	background-color: #999;
-	background-image: url('../images/bodybg2.jpg');
+	background-image: url('/images/bodybg2.jpg');
 	background-repeat: repeat;
 	min-width: 970px;
 	margin:0px;

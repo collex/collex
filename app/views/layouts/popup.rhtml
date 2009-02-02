@@ -29,7 +29,7 @@
         eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
       }
     </script>
-    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag :defaults, 'nospam' %>
 </head>
 <body style="background-color:#fff;background-image:none;line-height:1.4em;width:98%;padding-left:4px;" onload="window.focus();">
 

@@ -3,7 +3,7 @@
 			font-family: "Lucida Grande",  verdana, arial, helvetica, sans-serif;
 			color: #000;
 			background-color: #999;
-			background-image: url('../images/bodybg2.jpg');
+			background-image: url('/images/bodybg2.jpg');
 			background-repeat: repeat;
 			width: 992px;
 			margin:0px;
@@ -400,7 +400,7 @@
 	#mainContent{
 		width:850px;
 			background-color: #999;
-			background-image: url('../images/bodybg2.jpg');
+			background-image: url('/images/bodybg2.jpg');
 			background-repeat: repeat;
 		position: relative;
 		left:230px;
@@ -409,7 +409,7 @@
 	
 	#leftPanel{	
 		background-color: #999;	
-		background-image: url('../images/bodybg2.jpg');
+		background-image: url('/images/bodybg2.jpg');
 		background-repeat: repeat;	
 		height:100%;
 		width: 230px;		

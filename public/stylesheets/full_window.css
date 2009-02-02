@@ -27,22 +27,22 @@
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-firstletter span.yui-toolbar-icon { 
-	background-image: url(../images/icon_for_drop_cap.gif ); 
+	background-image: url(/images/icon_for_drop_cap.gif ); 
 	background-position: 4px 0px; 
 } 
 
 .yui-skin-sam .yui-toolbar-container .yui-button-firstletter-selected span.yui-toolbar-icon { 
-	background-image: url(../images/icon_for_drop_cap.gif ); 
+	background-image: url(/images/icon_for_drop_cap.gif ); 
 	background-position: 4px 0px; 
 } 
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-createnineslink span.yui-toolbar-icon { 
-	background-image: url(../images/mce_link_to_nines_obj.gif ); 
+	background-image: url(/images/mce_link_to_nines_obj.gif ); 
 	background-position: 4px 0px; 
 } 
 
 .yui-skin-sam .yui-toolbar-container .yui-button-createnineslink-selected span.yui-toolbar-icon { 
-	background-image: url(../images/mce_link_to_nines_obj.gif ); 
+	background-image: url(/images/mce_link_to_nines_obj.gif ); 
 	background-position: 4px 0px; 
 } 
 
