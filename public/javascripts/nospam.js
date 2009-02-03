@@ -40,7 +40,7 @@ document.observe('dom:loaded', function() {
 				var addr = arr[0] + '@' + arr[1] + '.' + arr[2];
 				link.href = "mailto:" + addr;
 				if (link.innerHTML == '$$$$')
-					link.innerHTML = "DESPAMMED!" + addr;	// Add some identifying text while debugging. Remove this before checking in.
+					link.innerHTML = addr; // "DESPAMMED!" + addr;	// Add some identifying text while debugging. Remove this before checking in.
 			}
 		});
 	}, 100);
