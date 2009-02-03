@@ -85,6 +85,8 @@ COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
 CACHE_DIR = "#{RAILS_ROOT}/cache"
 RELATORS = COLLEX_MANAGER.relators
 DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
+EXHIBIT_BUILDER_TODO_PATH = "/images/clicktoadd.jpg"
+PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 
 ExceptionNotifier.exception_recipients = %w(dw6h@cms.mail.virginia.edu nick@performantsoftware.com paul@performantsoftware.com)
 ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
