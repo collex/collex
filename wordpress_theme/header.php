@@ -54,9 +54,11 @@ if ( !empty($withcomments) && !is_single() ) {
 		<div id="header-left">
 			<img src="" alt="" />
 		</div>
-		<div id="header-center">
-			<span class="emph1"><a href="/">&nbsp;</a></span><br /><i>&nbsp;</i><br />
-		</div>
+		<a href="/"><div id="header-center">
+			<br />
+			<br />
+			<br />
+		</div></a>
 		<div id="header-right">
 		</div>
 
