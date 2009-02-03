@@ -25,8 +25,6 @@
 // The second form is where the visible text is not the email address. For instance, it could be "click here to email us".
 // The encoded_address replaces the @ and the . with spaces. For instance, if this is encoded "me example com", then the address is "me@example.com".
 
-"http://192.168.1.101:3001/technologies%20nines%20org"
-
 document.observe('dom:loaded', function() {
  	setTimeout(function() {
 		var links = $$("a.nospam");
