@@ -1,7 +1,7 @@
 <?php
 /**
  * @package WordPress
- * @subpackage Default_Theme
+ * @subpackage NINES_Theme
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -15,6 +15,7 @@
 	<!-- site wide styles -->
   <link href="/stylesheets/globals.css" media="all" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/core.css" media="all" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css"> 
 
 	<!-- section styles -->
   <link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />
@@ -28,6 +29,8 @@
 <link rel="alternate" type="application/rss+xml" title="<?php bloginfo('name'); ?> RSS Feed" href="<?php bloginfo('rss2_url'); ?>" />
 <link rel="alternate" type="application/atom+xml" title="<?php bloginfo('name'); ?> Atom Feed" href="<?php bloginfo('atom_url'); ?>" />
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+<script type="text/javascript" src="/javascripts/prototype.js"></script>
+<script type="text/javascript" src="/javascripts/nospam.js"></script>
 
 <style type="text/css" media="screen">
 
@@ -81,5 +84,6 @@ if ( !empty($withcomments) && !is_single() ) {
 		<div class="tab-content-outline2">
 
 		<div class="tab-content">
-<div id="nines-page">
+			<div id="doc3" class="yui-t2">
 <hr />
+<div id="nines-page">

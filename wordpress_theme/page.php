@@ -1,14 +1,18 @@
 <?php
 /**
  * @package WordPress
- * @subpackage Default_Theme
+ * @subpackage NINES_Theme
  */
 
 get_header(); ?>
 
 <?php get_sidebar(); ?>
 
-	<div id="content" class="narrowcolumn">
+<div id="bd">
+<div id="yui-main">
+<div class="yui-b">
+<div class="yui-g">
+	<!--<div id="wp-content" class="narrowcolumn">-->
 
 		<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 		<div class="post" id="post-<?php the_ID(); ?>">
@@ -23,5 +27,7 @@ get_header(); ?>
 		<?php endwhile; endif; ?>
 	<?php edit_post_link('Edit this entry.', '<p>', '</p>'); ?>
 	</div>
-
+</div>
+</div>
+</div>
 <?php get_footer(); ?>

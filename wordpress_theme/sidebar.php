@@ -1,10 +1,10 @@
 <?php
 /**
  * @package WordPress
- * @subpackage Default_Theme
+ * @subpackage NINES_Theme
  */
 ?>
-	<div id="sidebar">
+	<div id="sidebar" class="yui-b">
 		<ul>
 			<?php 	/* Widgetized sidebar, if you have the plugin installed. */
 				if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
@@ -68,7 +68,7 @@
 				<?php wp_list_bookmarks('title_li=Blogroll&title_before=<div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">&title_after=</h3></div></div></div>'); ?>
 
 			<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Contact</h3></div></div></div>
-				<div class="questions">Questions? Contact NINES at inquiries(at)nines(dot)org.</div>
+				<div class="questions">Questions? Contact NINES at <a class="nospam" href="inquiries nines org">$$$$</a>.</div>
 			</li>
 
 				<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Administration</h3></div></div></div>

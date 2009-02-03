@@ -1,17 +1,16 @@
 /*
-Theme Name: WordPress Default
-Theme URI: http://wordpress.org/
-Description: The default WordPress theme based on the famous <a href="http://binarybonsai.com/kubrick/">Kubrick</a>.
-Version: 1.6
-Author: Michael Heilemann
-Author URI: http://binarybonsai.com/
+Theme Name: WordPress NINES
+Theme URI: http://nines.org/
+Description: The NINES WordPress theme based on the Default WordPress theme, based on Kubrick.
+Version: 1.0
+Author: Performant Software
+Author URI: http://performantsoftware.com/
 Tags: blue, custom header, fixed width, two columns, widgets
 
-	Kubrick v1.5
-	 http://binarybonsai.com/kubrick/
+	NINES v1.0
+	 http://nines.org
 
-	This theme was designed and built by Michael Heilemann,
-	whose blog you will find at http://binarybonsai.com/
+	This theme was adapted from the Kubrick theme for the NINES project.
 
 	The CSS, XHTML and design is released under GPL:
 	http://www.opensource.org/licenses/gpl-license.php
@@ -22,7 +21,7 @@ Tags: blue, custom header, fixed width, two columns, widgets
 
 /* Begin Typography & Colors */
 body {
-	/*font-size: 62.5%;*/ /* Resets 1em to 10px */
+	font-size: 1em;
 	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
 	/*background: #d5d6d7 url('images/kubrickbgcolor.jpg');*/
 	color: #333;
@@ -294,7 +293,7 @@ body {
 .post {
 	/*margin: 0 0 40px;*/
 	text-align: justify;
-	margin-left: 60px;
+	margin-left: 4em;
 	margin-right: 70px;
 	padding: 40px;
 	border: inherit;
@@ -331,14 +330,17 @@ body {
 	margin: 5px 0px;
 }
 
-.postmetadata {
+/*.postmetadata {
 	clear: both;
-}
+}*/
 
 .clear {
 	clear: both;
 }
 
+.nines_footer {
+	text-align:center;
+}
 #footer {
 	padding: 0;
 	margin: 0 auto;
@@ -602,10 +604,7 @@ select {
 {
 	padding-left: 20px;
 	padding-right:15px;
-	margin-left: 10px;
 	width: 195px;
-	float: left;
-	position: absolute;
 	border-right: 2px solid gray;
 	}
 

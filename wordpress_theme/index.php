@@ -1,14 +1,18 @@
 <?php
 /**
  * @package WordPress
- * @subpackage Default_Theme
+ * @subpackage NINES_Theme
  */
 
 get_header(); ?>
 
 <?php get_sidebar(); ?>
 
-	<div id="wp-content" class="narrowcolumn">
+<div id="bd">
+<div id="yui-main">
+<div class="yui-b">
+<div class="yui-g">
+	<!--<div id="wp-content" class="narrowcolumn">-->
 
 	<?php if (have_posts()) : ?>
 
@@ -40,6 +44,9 @@ get_header(); ?>
 
 	<?php endif; ?>
 
+	</div>
+	</div>
+	</div>
 	</div>
 
 <?php get_footer(); ?>
