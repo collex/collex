@@ -37,6 +37,7 @@ function initializeElementEditing()
 }
 
 function initializeResizableImageElement( element_id ) {
+	hideSpinner(element_id);
 	var widenableElement = $(element_id);
 	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
 	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
@@ -327,6 +328,7 @@ function showExhibitOutline(element_id, page_num)
 
 function initOutline(div_id)
 {
+	$('full_window').removeClassName('hidden');
 	var width = 320;
 	var top = 180;
 	var height = getViewportHeight() - top - 80;

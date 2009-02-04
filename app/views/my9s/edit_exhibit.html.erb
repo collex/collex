@@ -31,7 +31,7 @@ document.observe('dom:loaded', function() {
 </script>
 
 
-<div id="full_window">
+<div id="full_window" class="hidden">
 	<div class="bd">
 		<div id="full-window-content">
 			<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit, :element_id_selected => -1, :is_editing_border => false } %>
