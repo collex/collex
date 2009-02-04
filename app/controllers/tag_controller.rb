@@ -159,7 +159,7 @@ class TagController < ApplicationController
       set_cloud_list(user, user.username)
 
       selected_tag = (session[:tag_view] == 'tag') ? session[:tag_current] : ""
-      render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size =>@bucket_size, :selected_tag => selected_tag, :controller_for_tags => 'my9s' }
+      render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => selected_tag, :controller_for_tags => 'my9s' }
     else
       render :text => 'Session expired. Please log in again.'
     end
@@ -207,14 +207,7 @@ class TagController < ApplicationController
     @cloud_fragment_key = cloud_fragment_key(username)
     
     if is_cache_expired?(@cloud_fragment_key)
-      @cloud_freq = CachedResource.tag_cloud(user)
-      unless @cloud_freq.empty?
-        max_freq = 1
-        @cloud_freq.each { |entry| 
-          max_freq = entry[1] > max_freq ? entry[1] : max_freq 
-        }
-        @bucket_size = max_freq.quo(10).ceil
-      end     
+      @cloud_info = CachedResource.get_tag_cloud_info(user)
     end
     
   end

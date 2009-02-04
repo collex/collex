@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% #parameters: cloud_freq, bucket_size, selected_tag, controller_for_tags %>
+<% #parameters: cloud_info, selected_tag, controller_for_tags %>
 <center>
   <div class="tag_filter">
 	<form onsubmit="return false;">&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
@@ -27,7 +27,7 @@
 <div class="content">
 
   <div class="tagcloud" id="tagcloud">
-  	  <%= tag_cloud(cloud_freq, bucket_size, selected_tag, controller_for_tags) %>
+  	  <%= tag_cloud(cloud_info, selected_tag, controller_for_tags) %>
   </div>
 </div>
 <% #end #cache_timeout block %>

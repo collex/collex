@@ -1,16 +1,17 @@
 module TagHelper
-  def tag_cloud(list, bucket_size, selection, controller)
+  def tag_cloud(cloud_info, selection, controller)
     str = ""
-    list.each do |item|
+    cloud_info[:cloud_freq].each do |item|
       html = {}
-      size = item.last.quo(bucket_size).ceil
+      #size = item.last.quo(cloud_info[:bucket_size]).ceil
+      size = cloud_info[:bucket_size][item.last]
       if selection == item.first
         str += "<span class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first)}</span>\n"
       else
         str += "<span class='cloud#{size}'>#{link_to_tag(item.first, item.last, false, controller, html)}</span>\n"
        end
     end
-    return str
+   return str
 #    xm = Builder::XmlMarkup.new(:indent => 2)
 #    list.each do |item|
 #      html = {}

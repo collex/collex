@@ -25,28 +25,28 @@ class CachedResourceTest < Test::Unit::TestCase
   end
   
   def test_tag_cloud
-    tags = CachedResource.tag_cloud(nil)
-    assert_equal 3, tags.length
-    assert_equal 'daves_tag', tags[0][0]
-    assert_equal 1, tags[0][1]
-    assert_equal 'good', tags[1][0]
-    assert_equal 2, tags[1][1]
-    assert_equal 'pauls_tag', tags[2][0]
-    assert_equal 1, tags[2][1]
+    tags = CachedResource.get_tag_cloud_info(nil)
+    assert_equal 3, tags[:cloud_freq].length
+    assert_equal 'daves_tag', tags[:cloud_freq][0][0]
+    assert_equal 1, tags[:cloud_freq][0][1]
+    assert_equal 'good', tags[:cloud_freq][1][0]
+    assert_equal 2, tags[:cloud_freq][1][1]
+    assert_equal 'pauls_tag', tags[:cloud_freq][2][0]
+    assert_equal 1, tags[:cloud_freq][2][1]
 
-    tags =  CachedResource.tag_cloud(@paul)
-    assert_equal 2, tags.length
-    assert_equal 'good', tags[0][0]
-    assert_equal 1, tags[0][1]
-    assert_equal 'pauls_tag', tags[1][0]
-    assert_equal 1, tags[1][1]
+    tags =  CachedResource.get_tag_cloud_info(@paul)
+    assert_equal 2, tags[:cloud_freq].length
+    assert_equal 'good', tags[:cloud_freq][0][0]
+    assert_equal 1, tags[:cloud_freq][0][1]
+    assert_equal 'pauls_tag', tags[:cloud_freq][1][0]
+    assert_equal 1, tags[:cloud_freq][1][1]
 
-    tags =  CachedResource.tag_cloud(@dave)
-    assert_equal 2, tags.length
-    assert_equal 'daves_tag', tags[0][0]
-    assert_equal 1, tags[0][1]
-    assert_equal 'good', tags[1][0]
-    assert_equal 1, tags[1][1]
+    tags =  CachedResource.get_tag_cloud_info(@dave)
+    assert_equal 2, tags[:cloud_freq].length
+    assert_equal 'daves_tag', tags[:cloud_freq][0][0]
+    assert_equal 1, tags[:cloud_freq][0][1]
+    assert_equal 'good', tags[:cloud_freq][1][0]
+    assert_equal 1, tags[:cloud_freq][1][1]
   end
 
   def test_get_hit_from_uri

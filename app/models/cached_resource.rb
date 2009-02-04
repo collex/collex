@@ -105,6 +105,7 @@ class CachedResource < ActiveRecord::Base
     end
   end
   
+  private
   def self.tag_cloud(user)
     sql_no_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name"
     sql_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id join collected_items as i on tagassigns.collected_item_id=i.id where user_id=? group by name order by name"
@@ -122,6 +123,66 @@ class CachedResource < ActiveRecord::Base
       return []
     end
   end
+  public
+  
+  def self.get_tag_cloud_info(user)
+    # This gets all the tags, the number of times they've been used, and their relative sizes in the cloud.
+    # The return value is a list of all tag names and their frequency, also a hash of all frequencies and their bucket size.
+
+    # The relative sizes of the tags should be distributed as equally as possible.
+    # The problem is that the number of times they've been used is not distributed equally. The lower numbers
+    # tend to occur much more frequently than the higher numbers, so if a pure mean were used, then most of the
+    # tags would be the smallest size and the last few sizes would tend to have the same number of items in it.
+    # Therefore, the following algorithm is used to try to distribute the sizes.
+    
+    # First, we create a hash with the key being the number of times a tag has occurred and the value being the number of tags
+    # that occur that many times. That is, the hash { 5 => 2 } means that there are two tags, each of which occurs five times.
+    # If there are less than 10 items in the hash, then we just distribute the tags from the smallest size and we're done.
+
+    # Otherwise, we have to figure out which frequencies go in each bucket.
+    # We fill the buckets up from smallest to largest. The first bucket starts with the least frequent tags (probably the ones occurring only once).
+    # We take the total number of tags / 10 to get the average number of tags we'd like in each bucket. If the first bucket has less than that number
+    # of tags, then we also fill it with the next batch of tags, etc, until we've put "total / 10" tags in the bucket.
+    # Now, because of our distribution, we've probably put many more tags in that bucket than we'd like, so instead of filling the rest of the buckets
+    # equally, we subtract the number of tags we've used from the total, then divide that number by 9 to get the ideal number of tags for the next bucket.
+    
+    cloud_freq = self.tag_cloud(user) # cloud_freq is an array of arrays, with the inner array containing 0=tag_name, 1=frequency
+
+    if cloud_freq.empty?
+      return { :cloud_freq => cloud_freq, :bucket_size => {} }
+    end
+  
+    # create a hash of buckets so we can see each frequency.
+    # the key is a frequency, and the value is the number of tags with that frequency.
+    buckets = {}
+    cloud_freq.each do |item|
+      size = item.last
+      if buckets[size]
+        buckets[size] = buckets[size] + 1
+      else
+        buckets[size] = 1
+      end
+    end # for each item in cloud_freq
+    buckets = buckets.sort
+    
+    bucket_size = {}
+    bucket = 1
+    total_tags_left = cloud_freq.length
+    ideal_tags_per_bucket = total_tags_left / (11 - bucket)
+    num_in_this_bucket = 0
+    buckets.each do |key,value|
+      bucket_size[key] = bucket
+      num_in_this_bucket = num_in_this_bucket + value
+      total_tags_left = total_tags_left - value
+      if num_in_this_bucket > ideal_tags_per_bucket && bucket < 10
+        bucket += 1
+        num_in_this_bucket = 0
+        ideal_tags_per_bucket = total_tags_left / (11 - bucket)
+      end # if we're starting a new bucket
+    end # for each item in the bucket hash
+
+    return { :cloud_freq => cloud_freq, :bucket_size => bucket_size }
+    end
   
   # Returns a sorted array of CachedResource objects associated with a given cloud tag and optionally restricts by user
   # TODO-PER: This is only called from the sidebar, so it can probably go away.

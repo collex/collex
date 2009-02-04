@@ -21,7 +21,7 @@
 		<span>WHAT ARE TAGS?</span> A tag is simply a word you use to descibe an object you find in NINES. Tags make it easy to organize and browse large collections. To join two words together use a hyphen <i>(oil-painting)</i> or an underscore <i>(oil_painting)</i>.
 	</div>
 	<div id="tag_cloud_div">
-		<%= render :partial => '/tag/cloud', :locals => { :cloud_freq => @cloud_freq, :bucket_size => @bucket_size, :selected_tag => '', :controller_for_tags => 'tag'  } %>
+		<%= render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => '', :controller_for_tags => 'tag'  } %>
 	</div>
 </div>
 

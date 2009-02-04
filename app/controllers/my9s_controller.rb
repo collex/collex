@@ -644,16 +644,8 @@ class My9sController < ApplicationController
     @cloud_fragment_key = cloud_fragment_key(username)
     
     if is_cache_expired?(@cloud_fragment_key)
-      @cloud_freq = CachedResource.tag_cloud(user)
-      unless @cloud_freq.empty?
-        max_freq = 1
-        @cloud_freq.each { |entry| 
-          max_freq = entry[1] > max_freq ? entry[1] : max_freq 
-        }
-        @bucket_size = max_freq.quo(10).ceil
-      end     
+      @cloud_info = CachedResource.get_tag_cloud_info(user)
     end
-    
   end
   
   def clean_up_links(text)
