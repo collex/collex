@@ -222,9 +222,12 @@ function setPageSelected()
 
 function selectLine(id)
 {
-	//exitEditBorderMode();
-	
 	var allElements = $$(".outline_tree_element_selected");
+
+	// We don't have to do anything if the element is already selected. This also keeps the item from flashing too quickly if the user double clicks on the item.
+	if (allElements.length == 1 && allElements[0].id == id)
+		return;
+
 	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
 	
 	$(id).addClassName( "outline_tree_element_selected" );
