@@ -19,7 +19,7 @@ padding:2px;
 #about-main {
 
 margin: 0px 20px 0px 20px;
-font-size:1.2em;
+/*font-size:1.2em;*/
 }
 
 /* Main About Page graphics */
@@ -183,6 +183,7 @@ border:maroon solid 1px;
 	height: 300px;
 	float:left;	
 	text-align:center;
+	font-size:1.2em;
 }
 
 .about-tools-banner-column img{
@@ -222,10 +223,11 @@ color:maroon;
 }
 
 .about-community-banner-column p {
-margin-top: -8px;
+/*margin-top: -8px;*/
 margin-left: 5px;
 margin-right:5px;
-padding: 1px;
+padding: 2px;
+font-size:1.2em;
 }
 
 .about-community-banner-column img{
@@ -250,10 +252,10 @@ padding:4px;
 
 
 #innerContentColumn{
-margin-top: -110px;
+margin-top: -90px;
 margin-left:200px;
 margin-right:50px;
-font-size:1.1em;
+font-size:1.3em;
 
 }
 
@@ -291,7 +293,7 @@ margin: 11px 2px 5px 0px;
 
 #scholarshipText {
 margin-left: 140px;
-margin-top: -170px;
+margin-top: -155px;
 
 font-weight:bold;
 font-size:1.2em;
@@ -308,7 +310,7 @@ width:875px;
 margin-top: 380px;
 margin-left:50px;
 margin-right:50px;
-font-size:1.2em;
+font-size:1.3em;
 }
 
 img.inset {
@@ -317,10 +319,10 @@ border:gray 1px solid;
 }
 
 #communityContent {
-margin-top: -130px;
+margin-top: -100px;
 margin-left:190px;
 margin-right:50px;
-font-size:1.2em;
+font-size:1.3em;
 }
 
 #communityContent td{
