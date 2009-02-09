@@ -36,7 +36,7 @@
 						</tr></table>
 					<% elsif element.exhibit_element_layout_type == 'pics' -%>
 						<% pics = element.exhibit_illustrations -%>
-						<table><tr>
+						<table align="<%= element.get_justification() %>"><tr>
 							<% for pic in pics -%>
 							<td><%= render :partial => 'illustration', :locals => { :illustration => pic } %></td>
 							<% end -%>

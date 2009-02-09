@@ -61,12 +61,24 @@ function imgResized(event, illustrationElement)
 function elementTypeChanged(div, element_id, newType)
 {
 	if (newType == 'pics')
+	{
 		$("add_image_" + element_id).show();
+		$("justify_" + element_id).show();
+	}
 	else
+	{
 		$("add_image_" + element_id).hide();
+		$("justify_" + element_id).hide();
+	}
 
 	var params = { element_id: element_id, type: newType };
 	doAjaxLink(div+",full-window-content", "/my9s/change_element_type,/my9s/refresh_outline", params);
+ }
+
+function illustrationJustificationChanged(div, element_id, newJustification)
+{
+	var params = { element_id: element_id, justify: newJustification };
+	doAjaxLink(div, "/my9s/change_illustration_justification", params);
  }
 
 function doAjaxLinkConfirm(div, url, params)

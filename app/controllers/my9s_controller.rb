@@ -369,6 +369,16 @@ class My9sController < ApplicationController
       end
       render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
+   
+    def change_illustration_justification
+      element_id = params[:element_id]
+      justify = params[:justify]
+      element = ExhibitElement.find(element_id)
+      element.set_justification(justify)
+      element.save
+
+      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+    end
     
     def redraw_exhibit_page
       page_id = params[:page]

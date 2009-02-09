@@ -58,4 +58,21 @@ class ExhibitElement < ActiveRecord::Base
       illustration.save()
     }
   end
+  
+  def get_justification
+    case justify
+      when 0: return "left"
+      when 1: return "center"
+      when 2: return "right"
+      else return "left"
+    end
+  end
+  
+  def set_justification(j)
+    case j
+      when "left" : self.justify = 0
+      when "center" : self.justify = 1
+      when "right" : self.justify = 2
+    end
+  end
 end
