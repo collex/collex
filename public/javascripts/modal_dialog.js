@@ -71,7 +71,7 @@ ModalDialog.prototype = {
 
 		//create Dialog:
 		this.dialog = new YAHOO.widget.Dialog(this._divId, {
-			x: left, y: top, width: width, height: height,
+			x: left, y: top, //width: width, height: height,
 			constraintoviewport: true,
 			modal: true
 		});
