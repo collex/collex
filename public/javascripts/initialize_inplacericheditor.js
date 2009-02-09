@@ -348,6 +348,9 @@ CreateList.prototype._select = function(item, value_field)
 	});
 	$(item).addClassName(selClass);
 	$(value_field).value = $(item).getAttribute('uri');
+	var caption = $('caption1');
+	if (caption != null)
+		caption.value = $(item).down().next().innerHTML;
 }
 
 function showRichEditor(event)
