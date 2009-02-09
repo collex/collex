@@ -144,7 +144,7 @@ ModalDialog.prototype = {
 	//cancel method:
 	_handleCancel: function() {
 		this.dialog.cancel();
-		this.dialog.destroy();
+		YAHOO.lang.later(500, this.dialog, this.dialog.destroy, null, false);	// Delay destroy to fix crash in IE7 when X is clicked
 		if (this._cancelCallback)
 		{
 			this._cancelCallback(this._cancelThis);
