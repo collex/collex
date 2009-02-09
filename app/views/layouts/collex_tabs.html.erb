@@ -84,16 +84,17 @@
 <%= javascript_include_tag :defaults, 'nospam' %>
 
 <% if @uses_yui -%>
+<% min = "-min" # "-min" # this should be released equal to -min, but for debugging purposes it can be an empty string. -%>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/json/json-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/element/element-beta-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/button/button-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/container/container-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/connection/connection-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/menu/menu-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/editor/editor-min.js"></script>	
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/dragdrop/dragdrop-min.js"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/resize/resize-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/json/json<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/element/element-beta<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/button/button<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/container/container<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/connection/connection<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/menu/menu<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/editor/editor<%= min %>.js"></script>	
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/dragdrop/dragdrop<%= min %>.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/resize/resize<%= min %>.js"></script>
 <%= javascript_include_tag 'input_dialog', 'modal_dialog', 'initialize_inplacericheditor' %>
 <% end -%>
 
