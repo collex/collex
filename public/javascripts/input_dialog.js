@@ -353,10 +353,10 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
 	
 	var prompt = $(promptId);
-	if (prompt)
+	if (prompt && prompt.tagName != "TEXTAREA")
 	{
-		$(promptId).focus();
-		$(promptId).select();
+		prompt.focus();
+		prompt.select();
 	}
 }
 
