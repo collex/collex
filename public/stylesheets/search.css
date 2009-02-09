@@ -73,6 +73,7 @@ text-align:center;
 
 #resource-list ul {
 	padding-left: 20px;
+	margin-left: 0px;
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
