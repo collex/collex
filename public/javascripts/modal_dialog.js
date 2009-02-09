@@ -379,7 +379,7 @@ ModalDialog.prototype = {
 							if (classPos == -1)
 								html = "<p class='drop_cap'" + html.substring(2);
 							else
-								html = html.substring(0, classPos+7) + "drop_cap" + html.substring(classPos+8);
+								html = html.substring(0, classPos+7) + "drop_cap " + html.substring(classPos+7);
 						}
 					}
 				}
