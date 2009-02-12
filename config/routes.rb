@@ -99,13 +99,13 @@ ActionController::Routing::Routes.draw do |map|
   map.sidebar_list  "sidebar/list/:type/:value/:user", :controller => "home", :action => "redirect_to_index"
   map.sidebar_cloud "sidebar/cloud/:type/:user", :controller => "home", :action => "redirect_to_index"
   map.permalink_list 'permalink/list/:type/:value/:user', :controller => "home", :action => "redirect_to_index"
-  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "redirect_to_index"
+  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "redirect_to_tag_cloud_update"
   map.permalink_detail 'permalink/detail', :controller => "home", :action => "redirect_to_index"
   map.connect 'redirect/ravon-nowviskie1.html', :controller => "home", :action => "redirect_to_index"
   map.connect 'redirect/ravon-nowviskie2.html', :controller => "home", :action => "redirect_to_index"
 
   # here are some permalinks that got moved
-  map.cloud1 'permalink/cloud/:type', '/tagCloudUpdate.html'
+  map.cloud1 'permalink/cloud/:type', :controller => "home", :action => "redirect_to_tag_cloud_update"
 
   map.connect 'collex/:action', :controller => 'search'
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'

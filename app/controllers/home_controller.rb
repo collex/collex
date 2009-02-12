@@ -14,6 +14,10 @@ class HomeController < ApplicationController
     redirect_to :controller => 'home', :action => 'index'
   end
   
+ def redirect_to_tag_cloud_update
+    redirect_to  '/tagCloudUpdate.html'
+  end
+
   def index
     @sites = Site.find(:all, :order => "description ASC")
   end
