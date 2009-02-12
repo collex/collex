@@ -104,6 +104,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'redirect/ravon-nowviskie1.html', :controller => "home", :action => "redirect_to_index"
   map.connect 'redirect/ravon-nowviskie2.html', :controller => "home", :action => "redirect_to_index"
 
+  # here are some permalinks that got moved
+  map.cloud1 'permalink/cloud/:type', '/tagCloudUpdate.html'
 
   map.connect 'collex/:action', :controller => 'search'
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
