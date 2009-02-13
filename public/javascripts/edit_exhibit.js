@@ -39,7 +39,7 @@ function initializeElementEditing()
 function initializeResizableImageElement( element_id ) {
 	hideSpinner(element_id);
 	var widenableElement = $(element_id);
-	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true});
+	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true, handles: ['r', 'l', 'b', 'br', 'bl' ]});
 	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
 }
 
