@@ -330,6 +330,7 @@ class SearchController < ApplicationController
    end
    
    def add_facet
+     session[:name_of_search] = nil
      if params[:field] and params[:value]
        session[:constraints] << FacetConstraint.new(:field => params[:field], :value => params[:value], :inverted => params[:invert] ? true : false)
      end
@@ -337,6 +338,7 @@ class SearchController < ApplicationController
    end
 
   def remove_genre
+     session[:name_of_search] = nil
     for item in session[:constraints]
       if item[:field] == 'genre' && item[:value] == params[:value]
         session[:constraints].delete(item)
@@ -346,6 +348,7 @@ class SearchController < ApplicationController
   end
   
    def remove_constraint
+     session[:name_of_search] = nil
       idx = params[:index].to_i
       if idx < session[:constraints].size
         session[:constraints].delete_at idx
@@ -354,6 +357,7 @@ class SearchController < ApplicationController
    end
    
    def invert_constraint
+     session[:name_of_search] = nil
       idx = params[:index].to_i
       if idx < session[:constraints].size
         constraint = session[:constraints][idx]

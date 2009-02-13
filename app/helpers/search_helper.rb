@@ -289,8 +289,8 @@ module SearchHelper
   
   def create_saved_search_permalink(s)
     base_url = 'http://' + request.host_with_port()
-    permalink_id = "permalink_#{encodeForUri(h(s.name))}"
-    return "<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{permalink_id}\", \"#{base_url}#{create_saved_search_url(session[:user][:username], s.name)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>"
+    permalink_id = "permalink_#{encodeForUri(h(s))}"
+    return "<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{permalink_id}\", \"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>"
   end
 
   def create_saved_search_link(s)
