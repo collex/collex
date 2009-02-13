@@ -634,6 +634,9 @@ function tagFinishedUpdating()
 
 function doRemoveObjectFromExhibit(exhibit_id, uri)
 {
+	var reference = $("in_exhibit_" + exhibit_id + "_" + uri);
+	if (reference != null)
+		reference.remove();
 	new Ajax.Updater("exhibited_objects_container", "/my9s/remove_exhibited_object", {
 		parameters : { uri: uri, exhibit_id: exhibit_id },
 		onFailure : function(resp) { alert("Oops, there's been an error."); }
