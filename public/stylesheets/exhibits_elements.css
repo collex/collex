@@ -22,6 +22,7 @@ h3 {
 
 .exhibit_section_with_border {
 	border: 1px solid #DCDCDC;
+	clear:both;
 }
 
 .exhibit_text {
