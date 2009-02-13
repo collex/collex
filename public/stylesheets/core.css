@@ -559,3 +559,12 @@ cursor: move;
 .annotation {
 	background-color: #FFFF99;
 }
+
+.no_bullets {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+.no_bullets li {
+	list-style: none;
+}

@@ -52,16 +52,29 @@
                     </td>
                 </tr>
 				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id } %>
-				<% if result_is_collected(hit) -%>
 				<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
 				<% if exhibits.length > 0 -%>
 					<tr><td class='grey'>exhibits:</td>
-					<td>
-					<% for exhibit in exhibits -%>
-						<%= Exhibit.find(exhibit.exhibit.id).title -%>&nbsp;
-					<% end # each exhibit -%>
-					</td></tr>
+					<td><ul class="no_bullets">
+   						<% user_name = session[:user] ? session[:user][:username] : nil -%>
+						<% for exhibit in exhibits -%>
+							<% # We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public -%>
+							<% # We only want to have the edit link if it is owned by the current user. -%>
+							<% real_exhibit = Exhibit.find(exhibit.exhibit.id) -%>
+							<% owner = User.find(real_exhibit.user_id) -%>
+							<% is_published = real_exhibit.is_published == 1 -%>
+							<% if user_name == owner.username || is_published -%>
+								<li id="in_exhibit_<%= exhibit.exhibit.id %>_<%= hit['uri'] %>"><%= real_exhibit.title -%>
+									<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
+									<% if user_name == owner.username -%>
+										<%= link_to("[edit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
+									 <% end -%>
+								</li>
+							<% end -%>
+						<% end # each exhibit -%>
+					</ul></td></tr>
 				<% end # if there are exhibits that use this object -%>
+				<% if result_is_collected(hit) -%>
 				<tr>
 					<td colspan='2'>
 						<%= link_to_function "#{has_annotation(hit)?"Edit":"Add"} Annotation", "doAnnotation('add_annotation_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', 'annotation_#{index}');",  :id => "add_annotation_#{index}", :class => 'modify_link' %>
