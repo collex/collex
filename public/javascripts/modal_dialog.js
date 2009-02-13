@@ -486,7 +486,7 @@ ModalDialog.prototype = {
 	wrapSelection : function(tag)
 	{
 		//Focus the editor's window 
-		this.editor._focusWindow(); 
+		//this.editor._focusWindow(); 
 		this.editor._createCurrentElement(tag);
 		// PER: Don't know why the element is created with a spurious element "tag"
 		this.editor.currentElement[0].setAttribute('tag', '');
@@ -513,15 +513,27 @@ ModalDialog.prototype = {
 				
 				// be sure the selection doesn't go over different tags.
 				var s = this.editor._getSelection();
-				// for some reason just comparing the nodes isn't reliable, so we will see if they have the same previous and next sibling.
-				var aprev = s.anchorNode.previousSibling;
-				var anext = s.anchorNode.nextSibling;
-				var fprev = s.focusNode.previousSibling;
-				var fnext = s.focusNode.nextSibling;
-				var c1 = (aprev == fprev);
-				var c2 = (anext == fnext);
-				var c3 = (s.anchorNode == s.focusNode)
-				var single = c1 && c2;
+				
+				try
+				{
+					// for some reason just comparing the nodes isn't reliable, so we will see if they have the same previous and next sibling.
+					var aprev = s.anchorNode.previousSibling;
+					var anext = s.anchorNode.nextSibling;
+					var fprev = s.focusNode.previousSibling;
+					var fnext = s.focusNode.nextSibling;
+					var c1 = (aprev == fprev);
+					var c2 = (anext == fnext);
+					var c3 = (s.anchorNode == s.focusNode)
+					var single = c1 && c2;
+				}
+				catch (e)
+				{
+					// This happens on IE 7
+					// TODO-PER: Figure out why the s object doesn't contain the same thing on IE as other browsers.
+					alert("To create a link, you must first select some text.");
+					return false;
+				}
+
 				if (!single)
 				{
 					alert("When creating a link, the selected text may not span across multiple text styles or other links. Please adjust your selection to create a link.");
