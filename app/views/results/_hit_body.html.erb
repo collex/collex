@@ -39,11 +39,9 @@
 <%= td "date:", :class => "grey", :valign => "top" %>
 <%= td h(hit['date_label'].join('; ')), :valign => "top" %>
 <% end if hit['date_label'] %>
-<% hit['genre'].each_with_index do |genre, i| %>
 <% tr do %>
-<%= td((i < 1 ? "genre:" : ""), :class => "grey", :valign => "top") %>
-<%= td h(genre) %>
-<% end %>
+<%= td("genre:", :class => "grey", :valign => "top") %>
+<%= td h(hit['genre'].join('; ')) %>
 <% end if hit['genre'] %>
 <% if hit["text"] != nil -%>
 <tr>
