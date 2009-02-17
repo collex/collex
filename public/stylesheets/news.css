@@ -2,6 +2,16 @@
 	margin-left: 20px;
 }
 
+/*posts*/
+
+.widecolumn .entry p {
+padding: 5px;
+}
+
+p img {
+padding: 10px;
+}
+
 #installation-instructions {
 	margin-left: 50px;	
 	margin-right: 50px;
