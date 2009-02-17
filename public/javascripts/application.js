@@ -550,9 +550,10 @@ function doCollect(uri, row_num, row_id)
 	});
 }
 
-function doRemoveTag(uri, row_num, row_id, tag_name)
+function doRemoveTag(uri, row_id, tag_name)
 {
 	var full_text = getFullText(row_id);
+	var row_num = row_id.subString(row_id.lastIndexOf('_')+1);
 
 	new Ajax.Updater(row_id, "/results/remove_tag", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,

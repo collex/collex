@@ -84,6 +84,8 @@ class CollectedItem < ActiveRecord::Base
         tags.push(tag.name)
       }
     }
+    
+    tags.sort!.uniq!
     return tags
   end
 

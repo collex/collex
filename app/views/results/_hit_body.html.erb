@@ -1,4 +1,4 @@
-<% #parameters: hit, row_id -%>
+<% #parameters: hit, row_id, bool no_links -%>
 <% # this needs to be called inside a <table> element -%>
 <% hit['alternative'].each do %>
 <% ################### -%>
@@ -55,10 +55,29 @@
 <% ################### -%>
 <% tr do %>
 <%= td("tags:", :class => "grey", :valign => "top") %>
+<% if no_links -%>
 <%= td h(tags.join('; ')) %>
+<% else -%>
+<td>
+	<% item = get_collected_item(hit) -%>
+	<% my_tags = [] -%>
+	<% if item != nil # if this item is collected. -%>
+		<% my_tags = item.tags -%>
+	<% end #if the item is collected by the user. -%>
+   	<% tags.each {|tag| -%>
+		<% is_mine = my_tags.include?(tag) -%>
+		<% if is_mine -%>
+        	<%= link_to_function "x", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag', :title => "remove tag \"#{tag}\"" %>
+			<%= link_to h(tag)+';', { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
+		<% else -%>
+			<%= link_to h(tag)+';', { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link', :title => "view all objects tagged \"#{tag}\"" } %>
+		<% end #if this tag was created by the current user -%>
+	<% } #the tag loop -%>
+</td>
+<% end -%>
 <% end if tags.length > 0 -%>
-<% if hit["text"] != nil -%>
 <% ################### -%>
+<% if hit["text"] != nil -%>
 <tr>
     <td colspan='2'>
     	<div class="grey">Excerpt from Full Text:</div>

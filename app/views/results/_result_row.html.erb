@@ -51,7 +51,7 @@
                         <% end %>
                     </td>
                 </tr>
-				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id } %>
+				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id, :no_links => false } %>
 				<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
 				<% if exhibits.length > 0 -%>
 					<tr><td class='grey'>exhibits:</td>
