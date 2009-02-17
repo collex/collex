@@ -65,7 +65,7 @@
 							<% is_published = real_exhibit.is_published == 1 -%>
 							<% if user_name == owner.username || is_published -%>
 								<li id="in_exhibit_<%= exhibit.exhibit.id %>_<%= hit['uri'] %>"><%= real_exhibit.title -%>
-									<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
+									<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
 									<% if user_name == owner.username -%>
 										<%= link_to("[edit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
 									 <% end -%>
