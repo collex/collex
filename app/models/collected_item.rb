@@ -66,6 +66,27 @@ class CollectedItem < ActiveRecord::Base
     return item
   end
   
+  def self.get_tags_for_uri(uri)
+    # find the cached item. If it isn't cached, we know there aren't any tags for it.
+    cached_resource = CachedResource.find(:first, :conditions => [ "uri = ?" , uri ])
+    if (cached_resource == nil)
+      return []
+    end
+
+    # find all the times the item was collected. (This is once per user who has collected it)
+    items = find(:all, :conditions => [ "cached_resource_id = ?", cached_resource.id ])
+    
+    tags = []
+    items.each { |item| # for each person's tags
+      assignments = Tagassign.find(:all, :conditions => [ "collected_item_id = ?", item.id])
+      assignments.each { |assignment| # for each time it was tagged.
+        tag = Tag.find(assignment.tag_id)
+        tags.push(tag.name)
+      }
+    }
+    return tags
+  end
+
   def self.remove_collected_item(user, uri)
     # Right now we've decided to never remove an item from the cache, even if it is no longer referenced, so we just
     # need to delete the reference. This may change if the cache grows stupendously.
