@@ -137,3 +137,7 @@
 .my_tag {
 	font-weight: bold;
 }
+
+.tags_instructions {
+	font-style: italic;
+}
