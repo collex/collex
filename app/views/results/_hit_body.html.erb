@@ -73,6 +73,7 @@
 			<%= link_to h(tag)+';', { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link', :title => "view all objects tagged \"#{tag}\"" } %>
 		<% end #if this tag was created by the current user -%>
 	<% } #the tag loop -%>
+	<%= "[#{link_to('sign in', { :controller => 'login'}, :class => 'nav_link')} to add tags]" if session[:user] == nil %>
 </td>
 <% end -%>
 <% end if tags.length > 0 -%>
