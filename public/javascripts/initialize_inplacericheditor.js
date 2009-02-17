@@ -320,14 +320,21 @@ var CreateList = Class.create({
 	initialize : function(items, className, initial_selected_uri, value_field)
 	{
 		var This = this;
-		if (className != null && className != undefined)
-			This.list = "<table class='input_dlg_list " + className + "' >";
+		if (items.length > 10)
+			This.list = "<div style='overflow:auto; height: 450px;'>";
 		else
-			This.list = "<table class='input_dlg_list' >";
+			This.list = "";
+			
+		if (className != null && className != undefined)
+			This.list += "<table class='input_dlg_list " + className + "' >";
+		else
+			This.list += "<table class='input_dlg_list' >";
 		items.each(function(obj) {
 			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri == initial_selected_uri, value_field);
 		});
 		This.list += "</table>";
+		if (items.length > 10)
+			This.list += "</div>";
 	},
 	
 	constructItem: function(uri, thumbnail, title, is_selected, value_field)
