@@ -69,7 +69,7 @@
 		<%= " | " if tag != tags[0] %>
 		<% if is_mine -%>
 			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
-        	<%= link_to_function "X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag', :title => "delete tag \"#{tag}\"" %>
+        	<%= link_to_function "X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag}\"" %>
 		<% else -%>
 			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link', :title => "view all objects tagged \"#{tag}\"" } %>
 		<% end #if this tag was created by the current user -%>

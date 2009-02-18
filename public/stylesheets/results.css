@@ -141,3 +141,7 @@
 .tags_instructions {
 	font-style: italic;
 }
+
+.remove_tag {
+	color: gray !important;
+}
