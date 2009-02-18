@@ -421,13 +421,74 @@ function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 	dlg.addTextInput('Exhibit title:', 'overview_title_dlg', size);
 	dlg.addTextInput('Visible URL:', 'overview_visible_url_dlg', size);
 	dlg.addTextInput('Thumbnail:', 'overview_thumbnail_dlg', size);
-	dlg.addSelect('Sharing:', 'overview_published_dlg', [ "Visible to Everyone" , "Visible to Just Me"], null);
 	dlg.addLink("[ Completely Delete Exhibit ]", "/my9s/delete_exhibit?id="+exhibit_id, "return confirm('Warning: This will permanently remove this exhibit. Are you sure you want to continue?');", "modify_link");
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(update_id);
 	dlg.show("Edit Exhibit Overview", getX(el), getY(el), 530, 350, values );
 }
+
+function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callback_url)
+{
+	// Now populate a hash with all the starting values.	 The data we are starting with is all on the page with the data_class class.
+	var values = {};
+	var value_field = 'sharing';
+	values[value_field] = iShareStart;
+	values['exhibit_id'] = exhibit_id;
+	values['element_id'] = update_id;
+	$(update_id).writeAttribute('action', callback_url);
+	$(update_id).writeAttribute('ajax_action_element_id', update_id);
+
+	// First construct the dialog
+	var dlg = new InputDialog(update_id);
+	var size = 52;
+	dlg.addHidden('exhibit_id');
+	dlg.addPrompt("<span class='input_dlg_license_list_header'>Share this exhibit under the following license:</span>");
+	dlg.addLinkToNewWindow("[ Learn more about CC licenses ]", "http://creativecommons.org/about/licenses", null, "nav_link");
+	var list = new CreateSharingList(licenseInfo, iShareStart, value_field);
+	dlg.addList(value_field, list.list, null);
+	dlg.addPrompt("Licenses provided courtesy of Creative Commons");
+	
+	// Now, everything is initialized, fire up the dialog.
+	var el = $(update_id);
+	dlg.show("Change Sharing", getX(el), getY(el), 530, 350, values );
+}
+
+var CreateSharingList = Class.create({
+	list : null,
+	initialize : function(items, initial_selection, value_field)
+	{
+		var This = this;
+		This.list = "<table class='input_dlg_list input_dlg_license_list' cellspacing='0'>";
+		var iCount = 0;
+		items.each(function(obj) {
+			This.list += This.constructItem(obj.text, obj.icon, iCount, iCount == initial_selection, value_field);
+			iCount++;
+		});
+		This.list += "</table>";
+	},
+	
+	constructItem: function(text, icon, index, is_selected, value_field)
+	{
+		var str = "";
+		if (is_selected)
+			str = " class='input_dlg_list_item_selected' ";
+		return "<tr " + str + "onclick='CreateSharingList.prototype._select(this,\"" + value_field + "\" );' index='" + index + "' >" +
+		"<td>" + icon + "</td><td>" + text + "</td></tr>\n";
+	}
+});
+
+CreateSharingList.prototype._select = function(item, value_field)
+{
+	var selClass = "input_dlg_list_item_selected";
+	$$("." + selClass).each(function(el)
+	{
+		el.removeClassName(selClass);
+	});
+	$(item).addClassName(selClass);
+	$(value_field).value = $(item).getAttribute('index');
+}
+
 
 //////////////////////////////////////////////////////
 /// Create the dialog that manipulates the border in edit exhibits.

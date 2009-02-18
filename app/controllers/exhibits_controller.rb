@@ -28,7 +28,7 @@ class ExhibitsController < ApplicationController
   public
 
   def list
-    @exhibits = Exhibit.find(:all, :conditions => [ 'is_published = 1'])
+    @exhibits = Exhibit.get_all_published()
   end
   
   def view

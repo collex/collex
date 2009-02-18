@@ -62,8 +62,7 @@
 							<% # We only want to have the edit link if it is owned by the current user. -%>
 							<% real_exhibit = Exhibit.find(exhibit.exhibit.id) -%>
 							<% owner = User.find(real_exhibit.user_id) -%>
-							<% is_published = real_exhibit.is_published == 1 -%>
-							<% if user_name == owner.username || is_published -%>
+							<% if user_name == owner.username || real_exhibit.published? -%>
 								<li id="in_exhibit_<%= exhibit.exhibit.id %>_<%= hit['uri'] %>"><%= real_exhibit.title -%>
 									<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
 									<% if user_name == owner.username -%>

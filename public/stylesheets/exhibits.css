@@ -42,3 +42,16 @@ color:black;
 	color: red;
 	font-style: italic;
 }
+
+.exhibit_footer {
+	background-color: #721909;
+	color: white;
+	text-align: center;
+	margin-top: 20px;
+	padding-top: 1em;
+	padding-bottom: .2em;
+}
+
+.exhibit_footer a {
+color: white;
+}

@@ -206,28 +206,37 @@ class My9sController < ApplicationController
       exhibit_id = params[:exhibit_id]
       exhibit = Exhibit.find(exhibit_id)
       exhibit.title = params[:overview_title_dlg]
-      exhibit.is_published = (params[:overview_published_dlg] == 'Visible to Everyone')
+      #exhibit.is_published = (params[:overview_published_dlg] == 'Visible to Everyone')
       exhibit.thumbnail = params[:overview_thumbnail_dlg]
       exhibit.visible_url = params[:overview_visible_url_dlg]
       exhibit.save
       render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end
     
-    def edit_exhibit_globals
-      exhibit = Exhibit.find(params['id'])
-      exhibit.title = params['title']
-      exhibit.thumbnail = params['thumbnail']
-      ex = Exhibit.find_by_visible_url(params['visible_url'])
-      if ex == nil || ex.id == exhibit.id || params['visible_url'].length == 0
-        exhibit.visible_url = params['visible_url']
-      else
-        flash[:warning] = "The url \"http://nines.org/exhibits/#{params['visible_url']}\" has already been used by another project. Choose a different Visual URL."
-      end
-      
-      exhibit.is_published = (params['is_published'] == 'Visible to Everyone' ? 1 : 0)
+    def change_sharing
+      exhibit_id = params[:exhibit_id]
+      sharing_level = params[:sharing]
+      exhibit = Exhibit.find(exhibit_id)
+      exhibit.set_sharing(sharing_level)
       exhibit.save
-      redirect_to :action => 'edit_exhibit', :id => exhibit.id
+      render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end
+  
+#    def edit_exhibit_globals
+#      exhibit = Exhibit.find(params['id'])
+#      exhibit.title = params['title']
+#      exhibit.thumbnail = params['thumbnail']
+#      ex = Exhibit.find_by_visible_url(params['visible_url'])
+#      if ex == nil || ex.id == exhibit.id || params['visible_url'].length == 0
+#        exhibit.visible_url = params['visible_url']
+#      else
+#        flash[:warning] = "The url \"http://nines.org/exhibits/#{params['visible_url']}\" has already been used by another project. Choose a different Visual URL."
+#      end
+#      
+#      exhibit.is_published = (params['is_published'] == 'Visible to Everyone' ? 1 : 0)
+#      exhibit.save
+#      redirect_to :action => 'edit_exhibit', :id => exhibit.id
+#    end
   
     def delete_exhibit
       # for security reasons, make sure that the exhibit belongs to the person who is trying to delete it.

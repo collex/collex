@@ -28,6 +28,26 @@
 	color: white;
 }
 
+.input_dlg_license_list {
+	border: 1px solid black;
+}
+
+.input_dlg_license_list tr {
+	height: 4em;
+}
+
+.input_dlg_license_list_header {
+	font-size: 1.5em;
+}
+
+.input_dlg_license_list td {
+	border-top: 1px solid black;
+	padding-bottom:2px;
+	padding-left:5px;
+	padding-top:2px;
+	min-height: 3em;
+}
+
 .nines_obj_uri {
 	text-decoration:underline;
 }

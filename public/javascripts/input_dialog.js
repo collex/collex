@@ -206,6 +206,15 @@ InputDialog.prototype = {
 		wrapper.appendChild(el.wrap('td'));
 		this._table.down().appendChild(wrapper);
 	},
+	
+	addLinkToNewWindow: function(strText, strUrl, clickAction, className)
+	{
+		var wrapper = new Element('tr');
+		wrapper.appendChild(new Element('td'));
+		var el = new Element('a', { 'class': className, target: '_blank', href: strUrl, onclick: clickAction }).update(strText);
+		wrapper.appendChild(el.wrap('td'));
+		this._table.down().appendChild(wrapper);
+	},
 
 	addButtons: function(arrButtons)
 	{
