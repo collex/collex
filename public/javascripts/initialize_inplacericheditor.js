@@ -319,6 +319,7 @@ var CreateList = Class.create({
 	list : null,
 	initialize : function(items, className, initial_selected_uri, value_field)
 	{
+		items = items.sortBy(function(item) { return item.title; });
 		var This = this;
 		if (items.length > 10)
 			This.list = "<div style='overflow:auto; height: 450px;'>";
