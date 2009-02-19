@@ -153,7 +153,11 @@ class Exhibit < ActiveRecord::Base
   end
   
   def self.get_sharing_icon_url(is_published)
-    return "<img alt='Creative Commons License' style='border-width:0' src='http://i.creativecommons.org/l/#{get_sharing_license_type(is_published)}/3.0/us/88x31.png' />"
+    if is_published != 0
+      return "<img alt='Creative Commons License' style='border-width:0' src='http://i.creativecommons.org/l/#{get_sharing_license_type(is_published)}/3.0/us/88x31.png' />"
+    else
+      return "<img alt='Creative Commons License' height='31' style='border-width:0' src='/images/not_shared.jpg' />"
+    end
   end
   
   def get_sharing_icon_with_link()
@@ -167,7 +171,7 @@ class Exhibit < ActiveRecord::Base
   end
   
   def self.getJsonLicenseInfo()
-    str = "[ { text: 'Exhibit should be visible to just me', icon: '' },"
+    str = "[ { text: 'Exhibit should be visible to just me', icon: \"#{self.get_sharing_icon_url(0)}\" },"
     1.upto(6) do |i|
       str = str + "{ text: '" + self.get_sharing_text(i) + "', icon: \"" + self.get_sharing_icon_url(i) + "\" }"
 #      str = str + "{ text: '" + "t" + "', icon: \"" + "i" + "\" }"

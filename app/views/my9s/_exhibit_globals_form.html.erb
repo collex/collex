@@ -22,22 +22,25 @@
 <table class="edit_exhibit_form"> 
 	<tr> 
 		<td>Visible URL:</td> 
-		<td>http://nines.org/exhibits/<span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></td> 
+		<td colspan="2">http://nines.org/exhibits/<span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></td> 
 	</tr> 
 	<tr> 
 		<td>Thumbnail:</td> 
-		<td><span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail %></span></td> 
+		<td colspan="2"><span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail %></span></td> 
 	</tr> 
 	<tr>
 		<td></td>
-		<td><%= link_to_function("[Edit Overview Data]", "editGlobalExhibitItems('overview_data', #{exhibit.id}, 'overview_field'); return false;", { :class => 'modify_link' }) %></td>
+		<td colspan="2"><%= link_to_function("[Edit Overview Data]", "editGlobalExhibitItems('overview_data', #{exhibit.id}, 'overview_field'); return false;", { :class => 'modify_link' }) %></td>
 	</tr>
 	<tr> 
 		<td>Sharing:</td> 
 		<td>
-			<span id="overview_published" class="overview_field"><%= exhibit.published? ? "Visible to Everyone using Creative Commons' #{exhibit.get_sharing()} License" : "Visible to Just Me" %></span>
-			<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog(gLicenseInfo, #{exhibit.is_published}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;", { :class => "modify_link" }) %>
-			<br /><%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog(gLicenseInfo, #{exhibit.is_published}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;") if exhibit.published? %>
+			<%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog(gLicenseInfo, #{exhibit.is_published}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;") %>
+		</td>
+		<td>
+			<span id="overview_published" class="overview_field"><%= exhibit.published? ? "Visible to Everyone using Creative Commons' #{exhibit.get_sharing()} License" : "Visible to Just Me" %>
+				<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog(gLicenseInfo, #{exhibit.is_published}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;", { :class => "modify_link" }) %>
+			</span>
 		</td> 
 	</tr> 
 </table> 
