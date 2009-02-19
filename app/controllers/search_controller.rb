@@ -464,22 +464,24 @@ class SearchController < ApplicationController
    
    def saved
      user = User.find_by_username(params[:user])
-     session[:constraints] = []
-     session[:name_of_search] = params[:name]
-
-     saved_search = user.searches.find_by_name(params[:name])
-     if (saved_search)
-       # Recreate the original search instead of adding a constraint of SavedSearchConstraint
-       saved_search.constraints.each do |saved_constraint|
-         if saved_constraint.is_a?(FreeCultureConstraint)
-           session[:constraints] << FreeCultureConstraint.new(:inverted => true)
-         elsif saved_constraint.is_a?(ExpressionConstraint)
-           add_keyword_constraint(saved_constraint[:value], saved_constraint[:inverted])
-         elsif saved_constraint.is_a?(FacetConstraint)
-           session[:constraints] << FacetConstraint.new(:field => saved_constraint[:field], :value => saved_constraint[:value], :inverted => saved_constraint[:inverted])
-         end
-       end
-     end
+     if user != nil # If the session didn't time out
+       session[:constraints] = []
+       session[:name_of_search] = params[:name]
+  
+       saved_search = user.searches.find_by_name(params[:name])
+       if (saved_search)  # If we found the search that the user requested (normally, will always succeed)
+         # Recreate the original search instead of adding a constraint of SavedSearchConstraint
+         saved_search.constraints.each do |saved_constraint|
+           if saved_constraint.is_a?(FreeCultureConstraint)
+             session[:constraints] << FreeCultureConstraint.new(:inverted => true)
+           elsif saved_constraint.is_a?(ExpressionConstraint)
+             add_keyword_constraint(saved_constraint[:value], saved_constraint[:inverted])
+           elsif saved_constraint.is_a?(FacetConstraint)
+             session[:constraints] << FacetConstraint.new(:field => saved_constraint[:field], :value => saved_constraint[:value], :inverted => saved_constraint[:inverted])
+           end  # if saved_constraint.is_a
+         end  # end do
+       end  # if saved_search
+     end  # if the session didn't timeout
      browse()
    end
    
