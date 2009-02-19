@@ -199,6 +199,7 @@ class My9sController < ApplicationController
     
     def edit_exhibit
       @exhibit = Exhibit.find(params[:id])
+      @exhibit.is_published = 0 if @exhibit.is_published == nil || @exhibit.is_published == ""
       @page = params['page'] == nil ? 1 : params['page'].to_i
     end
 
