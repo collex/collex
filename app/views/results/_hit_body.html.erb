@@ -10,32 +10,32 @@
 <% end %>
 <% end if hit['alternative'] %>
 <% ################### -%>
-<%= result_row_item(:separate_lines, hit, 'source', 'Source') %>
+<%= result_row_item(:separate_lines, hit, 'source', 'Source', true) %>
 <% ################### -%>
-<tr>
-    <td class="grey">
-        Site:
-    </td>
-    <td width="100%">
-        <% if hit['archive'] %>
-        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
-        <% end %>
-    </td>
-</tr>
+<% if hit['archive'] %>
+	<tr class="hidden">
+	    <td class="grey">
+	        Site:
+	    </td>
+	    <td>
+	        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
+	    </td>
+	</tr>
+<% end %>
 <% ################### -%>
-<%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type') %>
+<%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type', true) %>
 <% ################### -%>
-<%= result_row_item(:single_item, hit, 'license', 'License') %>
+<%= result_row_item(:single_item, hit, 'license', 'License', true) %>
 <% ################### -%>
-<%= result_row_item(:multiple_item, hit, 'role_AUT', 'By') %>
-<%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist') %>
-<%= result_row_item(:multiple_item, hit, 'role_EDT', 'Editor') %>
-<%= result_row_item(:multiple_item, hit, 'role_PBL', 'Publisher') %>
-<%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator') %>
+<%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
+<%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
+<%= result_row_item(:multiple_item, hit, 'role_EDT', 'Editor', true) %>
+<%= result_row_item(:multiple_item, hit, 'role_PBL', 'Publisher', true) %>
+<%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator', true) %>
 <% ################### -%>
-<%= result_row_item(:multiple_item, hit, 'date_label', 'Date') %>
+<%= result_row_item(:multiple_item, hit, 'date_label', 'Date', true) %>
 <% ################### -%>
-<%= result_row_item(:multiple_item, hit, 'genre', 'Genre') %>
+<%= result_row_item(:multiple_item, hit, 'genre', 'Genre', false) %>
 <% ################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
 <% tr do %>

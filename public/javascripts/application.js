@@ -536,6 +536,12 @@ function getFullText(row_id)
 	return full_text;	
 }
 
+function removeHidden(more_id, target_id)
+{
+	$$('#' + target_id + " .hidden").each(function (el) { el.removeClassName('hidden'); });
+	$(more_id).addClassName('hidden');
+}
+
 function doDiscuss(id)
 {
 	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null);
