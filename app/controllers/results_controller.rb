@@ -167,7 +167,8 @@ class ResultsController < ApplicationController
       ret[:hit] = get_from_solr(params[:uri])
       if ret[:hit] == nil
         ret[:is_error] = true
-        ret[:hit] = get_from_cache(params[:uri], ret[:user])
+        ret[:hit] = get_from_cache(params[:uri])
+        ret[:hit] = {} if ret[:hit] == nil
         ret[:hit]['title'] = [ 'Note: This object no longer exists in the index']
       end
     end
