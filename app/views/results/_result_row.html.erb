@@ -71,8 +71,8 @@
 						<% end # each exhibit -%>
 					</ul></td></tr>
 				<% end # if there are exhibits that use this object -%>
-				<tr id='more-<%= row_id %>'>
-					<td><%= link_to_function("[more]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
+				<tr id='more-<%= row_id %>' class="more">
+					<td><%= link_to_function("[more...]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
 				<tr>
 				<% if result_is_collected(hit) -%>
 					<td colspan='2'>

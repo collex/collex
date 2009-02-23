@@ -542,6 +542,12 @@ function removeHidden(more_id, target_id)
 	$(more_id).addClassName('hidden');
 }
 
+function expandAllItems()
+{
+	$$('#search-results' + " .hidden").each(function (el) { el.removeClassName('hidden'); });
+	$$('.more').each(function (el) { el.addClassName('hidden'); });
+}
+
 function doDiscuss(id)
 {
 	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null);
