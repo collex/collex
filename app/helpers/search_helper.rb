@@ -100,7 +100,7 @@ module SearchHelper
     if object_count != 0
       display_str = "#{h(resource.display_name)} (#{pluralize( object_count, 'object' )})"
       if resource_is_in_constraints?(resource)
-        html = "<li><span class='resource_list_selected'>&rarr; #{h display_str}</span>&nbsp;"
+        html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
         html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post, :class => 'nav_link' } 
         html += "</li>"
         return html
@@ -349,20 +349,22 @@ module SearchHelper
     return ret
   end
   
-  def result_row_item(type, hit, key, label)
+  def result_row_item(type, hit, key, label, is_hidden)
     if !hit[key]
       return ""
     end
+    
+    cls = is_hidden ? "class='hidden'" : ""
     
     if type == :separate_lines
       # multiple items on separate lines
       str = ""
       hit[key].each_with_index do |item, i|
-        str += "<tr>\n"
+        str += "<tr #{cls}>\n"
         str += "\t<td class='grey' valign='top'>"
         str += label + ":" if i < 1
         str += "</td>\n"
-        str += "\t<td valign='top'>"
+        str += "\t<td valign='top' width='100%'>"
         str += h(item)
         str += "</td>\n"
         str += "</tr>\n"
@@ -370,22 +372,22 @@ module SearchHelper
 
     elsif type == :single_item
       # single item
-      str = "<tr>\n"
+      str = "<tr #{cls}>\n"
       str += "\t<td class='grey' valign='top'>"
       str += label + ":"
       str += "</td>\n"
-      str += "\t<td valign='top'>"
+      str += "\t<td valign='top' width='100%'>"
       str += h(hit[key])
       str += "</td>\n"
       str += "</tr>\n"
 
     elsif type == :multiple_item
       # multiple item, one line
-      str = "<tr>\n"
+      str = "<tr #{cls}>\n"
       str += "\t<td class='grey' valign='top'>"
       str += label + ":"
       str += "</td>\n"
-      str += "\t<td valign='top'>"
+      str += "\t<td valign='top' width='100%'>"
       str += h(hit[key].join('; '))
       str += "</td>\n"
       str += "</tr>\n"
