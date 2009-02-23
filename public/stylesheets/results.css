@@ -97,6 +97,7 @@
 	background-image: url(/images/row_seperator.jpg);
 	background-position:bottom right;
 	background-repeat:no-repeat;
+	width: 100%
 }
 
 .results img {
@@ -138,6 +139,12 @@
 	margin-top: 1em;
 }
 
+.showall {
+	margin-right: 1.2em;
+	margin-bottom: 10px;
+	margin-top: 1em;
+	text-align: right;
+}
 
 .paginate-current {
 	font-weight: bold;
