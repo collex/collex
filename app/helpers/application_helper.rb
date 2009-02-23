@@ -28,6 +28,14 @@ module ApplicationHelper
     return false
   end
 
+  def rounded_button(text, id, action)
+    "<a id='#{id}'>#{text}</a>\n" +
+    "<script type='text/javascript'>\n" +
+    "function button#{id}() { #{action}; return false; }\n" +
+    "var oButton = new YAHOO.widget.Button('#{id}', { type: 'link', onclick: { fn: button#{id} } });\n" +
+    "</script>\n"
+  end
+  
   def rounded_h1(text)
     "<div class='rounded_left'><div class='rounded_middle'><div class='rounded_right'>\n" +
     "  <h1 class='rounded_h1'>#{text}</h1>\n" +

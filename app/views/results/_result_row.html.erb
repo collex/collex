@@ -38,20 +38,18 @@
 	    </td>
 
 	    <%# The middle with the actual search results -%>
-        <td width="100%">
+        <td class="result_row_td">
             <table border="0">
                 <tr>
                     <td colspan="2">
-                    	<!-- image: <%= hit['image'] %><br/>
-						uri: <%= hit['uri'] %><br /> -->
                         <% if hit["url"] %>
-                        <a class="nav_link search-result-title <%= 'result_with_tag_background' if result_is_collected(hit)%>" target="_blank" href="<%= hit["url"][0] %>"><% if hit["title"] %><%= h hit["title"][0] %><%end %>
-                        </a>&nbsp;&rarr;<% else %>
-                        <% if hit["title"] %><%= h hit["title"][0] %><%end %>
+                        	<a class="nines_link search-result-title" target="_blank" href="<%= hit["url"][0] %>"><%= h hit["title"][0] if hit["title"] %></a>
+						<% else %>
+                        	<%= h hit["title"][0] if hit["title"] %>
                         <% end %>
                     </td>
                 </tr>
-				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id, :no_links => false } %>
+				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id, :index => index, :no_links => false } %>
 				<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
 				<% if exhibits.length > 0 -%>
 					<tr><td class='grey'>exhibits:</td>
@@ -83,12 +81,18 @@
 					</td>
 				</tr>
 				<% end # if the item is collected -%>
+				<tr>
+					<td></td>
+					<td align="right">
+						<br />
+						<%= rounded_button("discuss", "discuss_#{index}", "doDiscuss('discuss_#{index}');") %>
+						<%= rounded_button("exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+						<%= rounded_button("collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}');") if is_logged_in? && !result_is_collected(hit) %>
+						<%= rounded_button("collect", "collect_#{index}", "doSingleInputPrompt('Please sign in', 'You must be signed in to collect objects.', null, 'collect_#{index}', null, null, $H({ }), 'none', null);") if !is_logged_in? %>
+						<%= rounded_button("uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+					</td>
+				</tr>
             </table>
 			</td>
-			
-			<%# the right side with the tags -%>
-            <td>
- 				<%= render :partial => 'results/collection_box', :locals => { :row_id => row_id, :index => index, :hit => hit, :has_exhibits => has_exhibits }  %>
-            </td>
 
  

@@ -348,4 +348,48 @@ module SearchHelper
     end
     return ret
   end
+  
+  def result_row_item(type, hit, key, label)
+    if !hit[key]
+      return ""
+    end
+    
+    if type == :separate_lines
+      # multiple items on separate lines
+      str = ""
+      hit[key].each_with_index do |item, i|
+        str += "<tr>\n"
+        str += "\t<td class='grey' valign='top'>"
+        str += label + ":" if i < 1
+        str += "</td>\n"
+        str += "\t<td valign='top'>"
+        str += h(item)
+        str += "</td>\n"
+        str += "</tr>\n"
+      end
+
+    elsif type == :single_item
+      # single item
+      str = "<tr>\n"
+      str += "\t<td class='grey' valign='top'>"
+      str += label + ":"
+      str += "</td>\n"
+      str += "\t<td valign='top'>"
+      str += h(hit[key])
+      str += "</td>\n"
+      str += "</tr>\n"
+
+    elsif type == :multiple_item
+      # multiple item, one line
+      str = "<tr>\n"
+      str += "\t<td class='grey' valign='top'>"
+      str += label + ":"
+      str += "</td>\n"
+      str += "\t<td valign='top'>"
+      str += h(hit[key].join('; '))
+      str += "</td>\n"
+      str += "</tr>\n"
+    end
+    return str
+  end
 end

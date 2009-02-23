@@ -20,11 +20,9 @@
 
 /* styles for search result */
 .result_with_tag {
-	background-color: #eeeeee;
-}
-
-.result_with_tag_background {
-	background-color: #eeeeee;
+	background-image:url(../images/collected_row_gradient.jpg);
+	background-position: right;
+	background-repeat:repeat-y;
 }
 
 .result_without_tag {
@@ -87,7 +85,18 @@
 }
 
 .results table {
-	margin-bottom: 1em;
+	padding-bottom: 1em;
+}
+
+.result_row_td {
+	width: 100%;
+}
+
+.result_row_td table {
+	border-right: 4px solid #822210;
+	background-image: url(/images/row_seperator.jpg);
+	background-position:bottom right;
+	background-repeat:no-repeat;
 }
 
 .results img {

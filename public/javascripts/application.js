@@ -536,6 +536,11 @@ function getFullText(row_id)
 	return full_text;	
 }
 
+function doDiscuss(id)
+{
+	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null);
+}
+
 function doCollect(uri, row_num, row_id)
 {
 	var ptr = $(row_id);
@@ -553,7 +558,7 @@ function doCollect(uri, row_num, row_id)
 function doRemoveTag(uri, row_id, tag_name)
 {
 	var full_text = getFullText(row_id);
-	var row_num = row_id.subString(row_id.lastIndexOf('_')+1);
+	var row_num = row_id.substring(row_id.lastIndexOf('_')+1);
 
 	new Ajax.Updater(row_id, "/results/remove_tag", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,

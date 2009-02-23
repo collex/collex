@@ -10,6 +10,6 @@ Tagged object not found.
 			<a href="<%= @hit["url"] %>"><%= @hit["url"] %></a>
 		</td>
 	</tr>
-	<%= render :partial => '/results/hit_body', :locals => { :hit => @hit, :row_id => 'row', :no_links => false } %>
+	<%= render :partial => '/results/hit_body', :locals => { :hit => @hit, :row_id => 'row', :index => -1, :no_links => true } %>
 </table>
 <% end -%>

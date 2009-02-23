@@ -1,83 +1,82 @@
-<% #parameters: hit, row_id, bool no_links -%>
+<% #parameters: hit, row_id, index, bool no_links -%>
 <% # this needs to be called inside a <table> element -%>
-<% hit['alternative'].each do %>
+<% item = get_collected_item(hit) -%>
+<% is_collected =(item != nil) -%>
+
 <% ################### -%>
+<% hit['alternative'].each do %>
 <% tr do %>
 <%= td hit['alternative'], :valign => "top", :colspan => "2" %>
 <% end %>
 <% end if hit['alternative'] %>
-<% hit['source'].each_with_index do |source, i| %>
 <% ################### -%>
-<% tr do %>
-<%= td((i < 1 ? "source:" : ""), :class => "grey", :valign => "top") %>
-<%= td h(source), :valign => "top" %>
-<% end %>
-<% end if hit['source'] %>
+<%= result_row_item(:separate_lines, hit, 'source', 'Source') %>
 <% ################### -%>
 <tr>
     <td class="grey">
-        site:
+        Site:
     </td>
     <td width="100%">
         <% if hit['archive'] %>
-        <% if site(hit['archive']) %><a class="nav_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a>&nbsp;&rarr; <% else %><%= hit['archive'] %><% end %>
+        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
         <% end %>
     </td>
 </tr>
 <% ################### -%>
-<% tr do %>
-<%= td "exhibit type:", :class => "grey", :valign => "top" %>
-<%= td hit['exhibit_type'], :valign => "top" %>
-<% end if hit['exhibit_type'] %>
+<%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type') %>
 <% ################### -%>
-<% tr do %>
-<%= td "license:", :class => "grey", :valign => "top" %>
-<%= td hit['license'], :valign => "top" %>
-<% end if hit['license'] %>
-<% hit.select {|key,value| key =~ /^role_/}.each_with_index do |agent, i| agent[1].each do |name| %>
+<%= result_row_item(:single_item, hit, 'license', 'License') %>
 <% ################### -%>
-<% tr do %>
-<%= td((i < 1 ? "name:" : ""), :class => "grey", :valign => "top") %>
-<%= td h("#{name} (#{COLLEX_MANAGER.relators[agent[0][-3,3]]})"), :valign => "top" %>
-<% end %>
-<% end end %>
+<%= result_row_item(:multiple_item, hit, 'role_AUT', 'By') %>
+<%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist') %>
+<%= result_row_item(:multiple_item, hit, 'role_EDT', 'Editor') %>
+<%= result_row_item(:multiple_item, hit, 'role_PBL', 'Publisher') %>
+<%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator') %>
 <% ################### -%>
-<% tr do %>
-<%= td "date:", :class => "grey", :valign => "top" %>
-<%= td h(hit['date_label'].join('; ')), :valign => "top" %>
-<% end if hit['date_label'] %>
+<%= result_row_item(:multiple_item, hit, 'date_label', 'Date') %>
 <% ################### -%>
-<% tr do %>
-<%= td("genre:", :class => "grey", :valign => "top") %>
-<%= td h(hit['genre'].join('; ')) %>
-<% end if hit['genre'] %>
+<%= result_row_item(:multiple_item, hit, 'genre', 'Genre') %>
+<% ################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
-<% ################### -%>
 <% tr do %>
-<%= td("tags:", :class => "grey", :valign => "top") %>
+<%= td("Collected&nbsp;on:", :class => "grey", :valign => "top") %>
+<%= td h(item.updated_at.strftime("%b %d, %Y")) %>
+<% end if is_collected %>
+<% ################### -%>
 <% if no_links -%>
+<% tr do %>
+<%= td("Tags:", :class => "grey", :valign => "top") %>
 <%= td h(tags.join('; ')) %>
+<% end if tags.length > 0 -%>
 <% else -%>
+<% tr do %>
+<%= td("Tags:", :class => "grey", :valign => "top") %>
 <td>
-	<% item = get_collected_item(hit) -%>
 	<% my_tags = [] -%>
-	<% if item != nil # if this item is collected. -%>
+	<% if is_collected -%>
 		<% my_tags = item.tags -%>
 	<% end #if the item is collected by the user. -%>
    	<% tags.each {|tag| -%>
 		<% is_mine = my_tags.include?(tag) -%>
 		<%= " | " if tag != tags[0] %>
 		<% if is_mine -%>
-			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
+			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
         	<%= link_to_function "X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag}\"" %>
 		<% else -%>
-			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'nav_link', :title => "view all objects tagged \"#{tag}\"" } %>
+			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link', :title => "view all objects tagged \"#{tag}\"" } %>
 		<% end #if this tag was created by the current user -%>
 	<% } #the tag loop -%>
-	<span class="tags_instructions"><%= "[#{link_to('sign in', { :controller => 'login'}, :class => 'nav_link')} to add tags]" if session[:user] == nil %></span>
+	<% if !no_links -%>
+		<% if session[:user] == nil -%>
+			<span class="tags_instructions"><%= "[#{link_to('sign in', { :controller => 'login'}, :class => 'nav_link')} to add tags]" %></span>
+		<% else -%>
+			<%= link_to_function "[add&nbsp;tag]", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}", :class => 'modify_link' if is_collected %>
+			<%= "<span class='tags_instructions'>Collect this item to add tags</span>" if !is_collected %>
+		<% end #if the user is logged in. -%>
+	<% end #if !no_links -%>
 </td>
-<% end -%>
-<% end if tags.length > 0 -%>
+<% end #tr do -%>
+<% end # if no_links -%>
 <% ################### -%>
 <% if hit["text"] != nil -%>
 <tr>
