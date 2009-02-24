@@ -666,7 +666,7 @@ function doAddToExhibit(uri, index, row_id)
 	doSingleInputPrompt("Choose exhibit", 
 		'Exhibit:', 
 		'exhibit', 
-		"link_" + row_id, 
+		"exhibit_" + index,
 		row_id + ",exhibited_objects_container",
 		"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
 		$H({ uri: uri, index: index, row_id: row_id }), 'select',
