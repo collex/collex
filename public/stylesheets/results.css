@@ -92,6 +92,9 @@
 
 .result_row_td {
 	width: 100%;
+}
+
+.result_with_tag .result_row_td {
 	background-image:url(../images/collected_row_gradient.jpg);
 	background-position: right;
 	background-repeat:repeat-y;
