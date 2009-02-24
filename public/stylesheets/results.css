@@ -19,11 +19,11 @@
 }
 
 /* styles for search result */
-.result_with_tag {
+/*.result_with_tag {
 	background-image:url(../images/collected_row_gradient.jpg);
 	background-position: right;
 	background-repeat:repeat-y;
-}
+}*/
 
 .result_without_tag {
 }
@@ -31,6 +31,7 @@
 .search-result-title {
 	/*font-size: larger;*/
 	font-weight: bold;
+	font-size: 1.2em;
 }
 
 .collect_link {
@@ -82,6 +83,7 @@
 	/*margin-left: 2em;
 	margin-right: 4em;*/
 	padding: 1em;
+	width: 100%;
 }
 
 .results table {
@@ -90,6 +92,9 @@
 
 .result_row_td {
 	width: 100%;
+	background-image:url(../images/collected_row_gradient.jpg);
+	background-position: right;
+	background-repeat:repeat-y;
 }
 
 .result_row_td table {
