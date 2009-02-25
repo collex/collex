@@ -51,7 +51,7 @@
         	<h1>NINES Administrator</h1>
               <% if session[:user] -%>
 				logged in as: <%= span(session[:user][:username], :class => "name") %> |
-                <%= link_to("Return to NINES", {:controller => "/home", :action => "index", :class => 'nav_link'}) %> 
+                <%= link_to("Return to NINES", {:controller => "/home", :action => "index"}, {:class => 'nav_link'}) %> 
               <% end -%>
             </div>
         </div><!-- end header -->
@@ -59,9 +59,10 @@
         <div id="content">
           <div id="navlist">
             <ul>
-              <li><%= link_to "Sites", :controller => "site", :action => "index", :class => 'nav_link' %></li>
-              <li><%= link_to "User Roles", :controller => "user_roles", :action => "index", :class => 'nav_link' %></li>
-              <li><%= link_to "Facet Trees", :controller => "facet_tree", :action => "index", :class => 'nav_link' %></li>
+              <li><%= link_to "Sites", { :controller => "site", :action => "index"}, {:class => 'nav_link'} %></li>
+              <li><%= link_to "User Roles", { :controller => "user_roles", :action => "index"}, {:class => 'nav_link'} %></li>
+              <li><%= link_to "Facet Trees", { :controller => "facet_tree", :action => "index"}, {:class => 'nav_link'} %></li>
+              <li><%= link_to "Discussion Topics", { :controller => "discussion_topics", :action => "index"}, {:class => 'nav_link'} %></li>
             </ul>
           </div>
         
