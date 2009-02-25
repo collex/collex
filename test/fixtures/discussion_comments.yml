@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  discussion_thread_id: 1
+  user_id: 1
+  position: 1
+  comment_type: 1
+  cached_resource_id: 1
+  exhibit_id: 1
+  link_url: MyString
+  image_url: MyString
+  comment: MyText
+
+two:
+  discussion_thread_id: 1
+  user_id: 1
+  position: 1
+  comment_type: 1
+  cached_resource_id: 1
+  exhibit_id: 1
+  link_url: MyString
+  image_url: MyString
+  comment: MyText
