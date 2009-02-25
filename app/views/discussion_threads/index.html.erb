@@ -1,0 +1,56 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+
+<% current_page "Discuss" -%>
+
+<% topics = DiscussionTopic.find(:all) -%>
+<% for topic in topics -%>
+	<h2><%= topic.topic %></h2>
+	<%= link_to "[new thread]", { :action => 'start_discussion', :topic_id => topic.id }, { :class => 'nav_link' } %><br .>
+	<% threads =  topic.discussion_threads -%>
+	<% for thread in threads -%>
+		<% if thread.discussion_comments.length < 1 -%>
+			ERROR: ill-formed thread. (Main comment is missing)<br/>
+		<% else -%>
+			<% main_comment = thread.discussion_comments[0] -%>
+			<% if main_comment.get_type() == "comment" -%>
+				<%= thread.title %><br />
+			<% elsif main_comment.get_type() == "nines_object" -%>
+				TODO: nines object<br />
+			<% elsif main_comment.get_type() == "nines_exhibit" -%>
+				TODO: nines object<br />
+			<% elsif main_comment.get_type() == "inet_object" -%>
+				TODO: nines object<br />
+			<% else -%>
+				ERROR: ill-formed thread. (Main comment type <%- main_comment.comment_type %> is unknown)<br/>
+			<% end -%>
+		<% end # there is a comment -%>
+	<% end # threads -%>
+<% end # topics -%>
+
+<!--
+list of topics
+list of threads under each (as a tree)
+(Graphic: thumbnail if object, profile pic if comment was the first item in the thread; then title of the thread)
+
+Clicking on the new “Discussions” tab takes the user to the Discussions home page. From here 
+the user can see a list of available topics for discussion. Topics are displayed as headings and 
+underneath each topic heading is a list of Discussion Threads. Each discussion thread has a title 
+and a graphic which it draws from the object or comment under discussion. Clicking on a discussion 
+thread opens the discussion thread and brings the user to the end of the thread (the last page.)
+
+-->

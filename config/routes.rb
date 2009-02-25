@@ -15,6 +15,12 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
+#  map.resources :discussion_comments
+
+#  map.resources :discussion_threads
+
+#  map.resources :discussion_topics
+
   #map.resources :exhibit_objects
 
   map.resources :exhibit_illustrations
@@ -120,6 +126,7 @@ ActionController::Routing::Routes.draw do |map|
   map.tags '/tags', :controller => 'tag', :action => 'list'
   map.login '/login', :controller => 'login', :action => 'login'
   map.my9s '/my9s', :controller => 'my9s', :action => 'index'
+  map.discussion '/discussion', :controller => 'discussion_threads', :action => 'index'
   map.exhibit_list '/exhibit_list', :controller => 'exhibits', :action => 'list'
   map.exhibits_view '/exhibits/view/:id', :controller => 'exhibits', :action => 'view'
 

@@ -1,0 +1,65 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+
+<% current_page "Discuss" -%>
+
+<div class="tag_minor_nav"> 
+	<%= link_to "View All Discussion Topics", { :action => 'index' }, :class => 'nav_link' %><br />
+</div>
+
+<%= rounded_h1("Starting a New Discussion in \"#{DiscussionTopic.find(params[:topic_id]).topic}\"...") %>
+<div class="standard_box">
+	<table>
+		<tr valign="top">
+			<td>
+				<% user = User.find_by_username(session[:user][:username]) -%>
+				<% if File.exists?("#{RAILS_ROOT}/public/images/users/#{user.id}") -%>
+					<img src=<%= "/images/users/#{user.id}" %> width="130" alt="" />
+				<% else -%>
+					<img src="/images/person_placeholder.jpg" alt="" />
+				<% end -%>
+			</td>
+			<td>
+				<form name='post_comment' method="post" action='/discussion_threads/post_comment_to_new_thread'>
+					<input type="hidden" name="topic_id" value="<%= params[:topic_id] %>">
+					<input type="text" name="title" value="Enter a discussion topic here" /><br />
+					<textarea name="comment"></textarea><br />
+					<%= rounded_button("post", "post_id", " document.post_comment.submit();") %>
+					<%= rounded_button("cancel", "cancel_id", "window.location = '/discussion'") %>
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="start_discussion_with_obj">
+	OR, Start the Discussion with an Object
+	<%= rounded_button("post object", "post_object_id", "alert('clicked post object');") %>
+</div>
+
+<!--
+list of topics
+list of threads under each (as a tree)
+(Graphic: thumbnail if object, profile pic if comment was the first item in the thread; then title of the thread)
+
+Clicking on the new “Discussions” tab takes the user to the Discussions home page. From here 
+the user can see a list of available topics for discussion. Topics are displayed as headings and 
+underneath each topic heading is a list of Discussion Threads. Each discussion thread has a title 
+and a graphic which it draws from the object or comment under discussion. Clicking on a discussion 
+thread opens the discussion thread and brings the user to the end of the thread (the last page.)
+
+-->

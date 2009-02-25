@@ -1,0 +1,57 @@
+<h1>Editing discussion_comment</h1>
+
+<%= error_messages_for :discussion_comment %>
+
+<% form_for(@discussion_comment) do |f| %>
+  <p>
+    <b>Discussion thread</b><br />
+    <%= f.text_field :discussion_thread_id %>
+  </p>
+
+  <p>
+    <b>User</b><br />
+    <%= f.text_field :user_id %>
+  </p>
+
+  <p>
+    <b>Position</b><br />
+    <%= f.text_field :position %>
+  </p>
+
+  <p>
+    <b>Comment type</b><br />
+    <%= f.text_field :comment_type %>
+  </p>
+
+  <p>
+    <b>Cached resource</b><br />
+    <%= f.text_field :cached_resource_id %>
+  </p>
+
+  <p>
+    <b>Exhibit</b><br />
+    <%= f.text_field :exhibit_id %>
+  </p>
+
+  <p>
+    <b>Link url</b><br />
+    <%= f.text_field :link_url %>
+  </p>
+
+  <p>
+    <b>Image url</b><br />
+    <%= f.text_field :image_url %>
+  </p>
+
+  <p>
+    <b>Comment</b><br />
+    <%= f.text_area :comment %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @discussion_comment %> |
+<%= link_to 'Back', discussion_comments_path %>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 99) do
+ActiveRecord::Schema.define(:version => 102) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -45,6 +45,33 @@ ActiveRecord::Schema.define(:version => 99) do
     t.string  "type"
     t.string  "field"
     t.string  "value"
+  end
+
+  create_table "discussion_comments", :force => true do |t|
+    t.integer  "discussion_thread_id"
+    t.integer  "user_id"
+    t.integer  "position"
+    t.integer  "comment_type"
+    t.integer  "cached_resource_id"
+    t.integer  "exhibit_id"
+    t.string   "link_url"
+    t.string   "image_url"
+    t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "discussion_threads", :force => true do |t|
+    t.integer  "discussion_topic_id"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "discussion_topics", :force => true do |t|
+    t.string   "topic"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "exhibit_elements", :force => true do |t|

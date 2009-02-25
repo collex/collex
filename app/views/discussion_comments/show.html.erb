@@ -1,0 +1,48 @@
+<p>
+  <b>Discussion thread:</b>
+  <%=h @discussion_comment.discussion_thread_id %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%=h @discussion_comment.user_id %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%=h @discussion_comment.position %>
+</p>
+
+<p>
+  <b>Comment type:</b>
+  <%=h @discussion_comment.comment_type %>
+</p>
+
+<p>
+  <b>Cached resource:</b>
+  <%=h @discussion_comment.cached_resource_id %>
+</p>
+
+<p>
+  <b>Exhibit:</b>
+  <%=h @discussion_comment.exhibit_id %>
+</p>
+
+<p>
+  <b>Link url:</b>
+  <%=h @discussion_comment.link_url %>
+</p>
+
+<p>
+  <b>Image url:</b>
+  <%=h @discussion_comment.image_url %>
+</p>
+
+<p>
+  <b>Comment:</b>
+  <%=h @discussion_comment.comment %>
+</p>
+
+
+<%= link_to 'Edit', edit_discussion_comment_path(@discussion_comment) %> |
+<%= link_to 'Back', discussion_comments_path %>
