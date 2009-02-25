@@ -1,0 +1,6 @@
+				<% user = User.find_by_username(session[:user][:username]) -%>
+				<% if File.exists?("#{RAILS_ROOT}/public/images/users/#{user.id}") -%>
+					<img src=<%= "/images/users/#{user.id}" %> width="130" alt="" />
+				<% else -%>
+					<img src="/images/person_placeholder.jpg" alt="" />
+				<% end -%>

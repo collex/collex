@@ -28,7 +28,15 @@
 		<% else -%>
 			<% main_comment = thread.discussion_comments[0] -%>
 			<% if main_comment.get_type() == "comment" -%>
-				<%= thread.title %><br />
+				<table>
+					<tr valign="top">
+						<td><%= render :partial => 'users_picture' %></td>
+						<td>
+							<h3><%= thread.title %></h3>
+							<%= main_comment.comment %>
+						</td>
+					</tr>
+				</table>
 			<% elsif main_comment.get_type() == "nines_object" -%>
 				TODO: nines object<br />
 			<% elsif main_comment.get_type() == "nines_exhibit" -%>

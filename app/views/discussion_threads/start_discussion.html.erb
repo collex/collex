@@ -25,14 +25,7 @@
 <div class="standard_box">
 	<table>
 		<tr valign="top">
-			<td>
-				<% user = User.find_by_username(session[:user][:username]) -%>
-				<% if File.exists?("#{RAILS_ROOT}/public/images/users/#{user.id}") -%>
-					<img src=<%= "/images/users/#{user.id}" %> width="130" alt="" />
-				<% else -%>
-					<img src="/images/person_placeholder.jpg" alt="" />
-				<% end -%>
-			</td>
+			<td><%= render :partial => 'users_picture' %></td>
 			<td>
 				<form name='post_comment' method="post" action='/discussion_threads/post_comment_to_new_thread'>
 					<input type="hidden" name="topic_id" value="<%= params[:topic_id] %>">
