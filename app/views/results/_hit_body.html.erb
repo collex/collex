@@ -10,6 +10,9 @@
 <% end %>
 <% end if hit['alternative'] %>
 <% ################### -%>
+<%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
+<%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
+<%= result_row_item(:multiple_item, hit, 'genre', 'Genre', false) %>
 <%= result_row_item(:separate_lines, hit, 'source', 'Source', true) %>
 <% ################### -%>
 <% if hit['archive'] %>
@@ -24,18 +27,11 @@
 <% end %>
 <% ################### -%>
 <%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type', true) %>
-<% ################### -%>
 <%= result_row_item(:single_item, hit, 'license', 'License', true) %>
-<% ################### -%>
-<%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
-<%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_EDT', 'Editor', true) %>
 <%= result_row_item(:multiple_item, hit, 'role_PBL', 'Publisher', true) %>
 <%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator', true) %>
-<% ################### -%>
 <%= result_row_item(:multiple_item, hit, 'date_label', 'Date', true) %>
-<% ################### -%>
-<%= result_row_item(:multiple_item, hit, 'genre', 'Genre', false) %>
 <% ################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
 <% tr do %>

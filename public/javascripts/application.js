@@ -538,14 +538,21 @@ function getFullText(row_id)
 
 function removeHidden(more_id, target_id)
 {
-	$$('#' + target_id + " .hidden").each(function (el) { el.removeClassName('hidden'); });
-	$(more_id).addClassName('hidden');
+	// This toggles, so see if the more_id contains the text "more" or "less"
+	var btn = $(more_id);
+	if (btn.innerHTML.indexOf("more") > 0) {
+		$$('#' + target_id + " .hidden").each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
+		btn.innerHTML = btn.innerHTML.gsub("more", "less");
+	} else {
+		$$('#' + target_id + " .was_hidden").each(function (el) { el.addClassName('hidden'); });
+		btn.innerHTML = btn.innerHTML.gsub("less", "more");
+	}
 }
 
 function expandAllItems()
 {
-	$$('#search-results' + " .hidden").each(function (el) { el.removeClassName('hidden'); });
-	$$('.more').each(function (el) { el.addClassName('hidden'); });
+	$$('.result_row_td .hidden').each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
+	$$('.more').each(function (el) { el.innerHTML = el.innerHTML.gsub("more", "less"); });
 }
 
 function doDiscuss(id)
