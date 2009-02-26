@@ -21,11 +21,18 @@ class LoginController < ApplicationController
    helper_method :get_page_to_return_to
    
    def get_page_to_return_to()
-     if is_logged_in?
-       return session[:current_page][0] if session[:current_page]
-     else
-       return session[:current_page][1] if session[:current_page]
+     if session[:current_page]
+       url = "/#{session[:current_page]['controller']}/#{session[:current_page]['action']}"
+       param_str = ""
+         session[:current_page].each {|key, value|
+          if key != 'controller' && key != 'action'
+            param_str += (param_str == "")? "?" : "&"
+            param_str += key + "=" + value
+          end
+       } 
+       return url + param_str
      end
+     
      if request.env["HTTP_REFERER"] && request.env["HTTP_REFERER"] !~ /login/
        return request.env["HTTP_REFERER"]
      end
