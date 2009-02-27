@@ -1,0 +1,72 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+
+<% current_page "Discuss" -%>
+
+View thread:
+<%= @thread.id %>
+
+<!--
+-return to topics page
+-paginated list of comments & objects & deleted placeholders
+-RSS feed
+-button: post an object [if logged in]
+-button: post a comment [if logged in]
+-button: start discussion (next to each topic)
+-result row if item is nines object 
+-comment item:
+-button: delete comment/object [if admin or user who posted]
+-button: report. if objectionable
+-user's name [ link to their home page ]
+-date/time
+-user's profile pic
+
+The Action Bar always appears at the end of the thread after the most recent entry. From here the user can 
+“Post an Object” or “Post a Comment”. Posting an Object brings up a dialog box that allows the user to 
+select the object to post. This dialog is similar to the Edit Illustration dialog in the Exhibit Builder. The user 
+may post a NINES Object, a NINES Exhibit, or an Internet Link. The list of NINES Object is drawn from the 
+user’s collect objects listed alphabetically. For an Internet Link, the user may fill in the following fields: Link 
+URL, Image URL, and description (memo field like textual illustration entry).
+
+When the user adds an object to the discourse, a single line message appears followed by the object added.
+The message reads: “ has added the following object to the discourse…”
+
+When a user decides to “Post a Comment”, a rich edit box appears for them to post their comment. To the 
+left of the comment is the user’s profile picture (or the placeholder if he or she doesn’t have one). This is 
+just like the text editor for exhibits with similar capabilities with regards to linking. To the bottom right of 
+the rich text editor are two buttons: “Post Comment” and “Cancel”.
+
+Once a comment is posted, the user who posted the comment has the option to delete the comment by 
+clicking on a red “X” in the top right hand side of the comment row. Admins have a red “X” always available 
+and can delete anything posted or any threads. A “Are You Sure?” confirmation dialog guards the delete 
+function. Please also be sure to make this and other destructive actions POST requests so it can’t be 
+spidered by Google Web Accelerator or other such programs.
+
+If a user finds something that another user has posted objectionable, they can click on the “Report” button. 
+This is guarded by an “Are You Sure?” dialog. If the user affirms their intent to report the content, a popup 
+appears informing them that an email message has been sent to the site administrator. The email is sent to 
+a list of addresses configurable via config/environments files. The email includes the post that was objected 
+to and a link to it on the site.
+
+Note that the user’s name is a link to their home page.
+
+RSS Feed: users can subscribe to a RSS feed for a given discussion thread. Later, we might expand this to 
+subscribe to a topic or even all discussions.
+
+Subsequent comments within a discussion are not given a title, instead the user’s name and the date posted 
+are shown. 
+-->

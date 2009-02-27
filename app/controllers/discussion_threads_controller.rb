@@ -88,6 +88,11 @@ class DiscussionThreadsController < ApplicationController
     redirect_to :action => :index
   end
   
+  def view_thread
+    thread_id = params[:thread]
+    @thread = DiscussionThread.find(thread_id)
+  end
+  
 # GET /discussion_threads
   # GET /discussion_threads.xml
   def index

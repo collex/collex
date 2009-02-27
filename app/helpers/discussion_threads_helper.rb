@@ -15,4 +15,16 @@
 ##########################################################################
 
 module DiscussionThreadsHelper
+  def toggle_discussion_topic( topic_num, item_id_prefix, toggle_function, initial_state )
+    display_none = 'style="display:none"'
+    label = ""
+    
+    label << "<span id=\"#{item_id_prefix}_#{topic_num}_closed\" #{initial_state == :open ? display_none : ''} >"
+    label << link_to_function(closed_char(),"#{toggle_function}('#{item_id_prefix}_#{topic_num}')", { :class => 'modify_link' })
+    label << "</span>\n"
+    label << "<span id=\"#{item_id_prefix}_#{topic_num}_opened\" #{initial_state == :closed ? display_none : ''} >"
+    label << link_to_function(opened_char(), "#{toggle_function}('#{item_id_prefix}_#{topic_num}')", { :class => 'modify_link'})
+    label << "</span>\n"
+    return label
+  end
 end
