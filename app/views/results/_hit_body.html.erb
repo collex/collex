@@ -79,7 +79,9 @@
     <td colspan='2'>
     	<div class="grey">Excerpt from Full Text:</div>
         <div class="snippet" id="<%=row_id%>_full_text">
-            <%=h hit["text"] %>
+        	<% # We want to escape everything except the bolding so that random control chars can't mess up the display -%>
+            <% text = h hit["text"] -%>
+			<%= text.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>") %>
         </div>
 	</td>
 </tr>
