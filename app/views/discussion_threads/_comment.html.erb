@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link) -%>
+<% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link), bool can_delete -%>
 
 <table class="discussion_thread_list">
 	<tr valign="top">
@@ -22,26 +22,34 @@
 			<td><%= render :partial => 'users_picture', :locals => { :user_id => comment.user_id } %></td>
 			<td>
 				<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' if thread_link %>
+				<%= link_to '[delete]', comment, :confirm => 'Are you sure?', :method => :delete, :class => 'nav_link' if can_delete %>
 				<h3><%= DiscussionThread.find(thread_id).title %></h3>
 				<%=h comment.comment %>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment } %>
 			</td>
 		<% elsif comment.get_type() == "nines_object" -%>
 			<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
-			<td><%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' if thread_link %></td>
 			<%= render :partial => '/results/result_row', :locals => { :row_id => "test", :index => 2, :hit => hit, :has_exhibits => false } %>
+			<td><%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' if thread_link %>
+				<%= link_to '[delete]', comment, :confirm => 'Are you sure?', :method => :delete, :class => 'nav_link' if can_delete %>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment } %></td>
 		<% elsif comment.get_type() == "nines_exhibit" -%>
 			<% exhibit = Exhibit.find(comment.exhibit_id) -%>
 			<td><img src="<%= exhibit.thumbnail %>" alt="exhibit" /></td>
 			<td>
 				<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link'  if thread_link %>
+				<%= link_to '[delete]', comment, :confirm => 'Are you sure?', :method => :delete, :class => 'nav_link' if can_delete %>
 				<h3><%=h exhibit.title %></h3>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment } %>
 			</td>
 		<% elsif comment.get_type() == "inet_object" -%>
 			<td><img src="<%= comment.image_url %>" alt="thumbnail" /></td>
 			<td>
 				<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link'  if thread_link %>
+				<%= link_to '[delete]', comment, :confirm => 'Are you sure?', :method => :delete, :class => 'nav_link' if can_delete %>
 				<a class="ext_link" target="_blank" href="<%= comment.link_url %>" ><%=h comment.link_url %></a>
 				<p><%=h comment.comment %></p>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment } %>
 			</td>
 		<% else -%>
 			<td>ERROR: ill-formed comment. (Comment type <%- comment.comment_type %> is unknown)</td>

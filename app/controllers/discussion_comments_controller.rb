@@ -91,10 +91,18 @@ class DiscussionCommentsController < ApplicationController
   # DELETE /discussion_comments/1.xml
   def destroy
     @discussion_comment = DiscussionComment.find(params[:id])
-    @discussion_comment.destroy
+    ok_to_delete = true
+    if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
+      if discussion_comment.discussion_thread.discussion_comments.length == 1
+        discussion_comment.discussion_thread.destroy
+      else
+        ok_to_delete = false
+      end
+    end
+    @discussion_comment.destroy if ok_to_delete
 
     respond_to do |format|
-      format.html { redirect_to(discussion_comments_url) }
+      format.html { redirect_to('/discussion') }
       format.xml  { head :ok }
     end
   end

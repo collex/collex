@@ -16,6 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 
 <% current_page "Discuss" -%>
+<% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 
 <% topics = DiscussionTopic.find(:all) -%>
 <% for topic in topics -%>
@@ -31,7 +32,7 @@
 				ERROR: ill-formed thread. (Main comment is missing)<br/>
 			<% else -%>
 				<% main_comment = thread.discussion_comments[0] -%>
-				<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => thread.id, :thread_link => true } %>
+				<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => thread.id, :thread_link => true, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id)) } %>
 			<% end # there is a comment -%>
 		<% end # threads -%>
 	</div>

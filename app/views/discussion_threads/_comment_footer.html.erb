@@ -1,0 +1,24 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<% # comment_footer --- params: ActiveRecord comment -%>
+<% user = User.find(comment.user_id) %>
+<div>
+	<a class="ext_link" target="_blank" href="<%= user.link %>" ><%= user.fullname %></a>
+	<%= comment.updated_at.strftime("%b %d, %Y %I:%M%p") %>
+	<%= rounded_button("report", "report_id_#{comment.id}", 
+		"var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;") %>
+</div>

@@ -198,3 +198,30 @@ var NewDiscussionObjectDlg = Class.create({
 	}
 });
 
+//////////////////////////////////////////
+
+//If a user finds something that another user has posted objectionable, they can click on the “Report” button. 
+//This is guarded by an “Are You Sure?” dialog. If the user affirms their intent to report the content, a popup 
+//appears informing them that an email message has been sent to the site administrator. The email is sent to 
+//a list of addresses configurable via config/environments files. The email includes the post that was objected 
+//to and a link to it on the site.
+
+var DiscussionReportDlg = Class.create({
+	initialize: function (params) {
+		this.class_type = 'DiscussionReportDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		var thread_id = params.comment_id;
+		var submit_url = params.submit_url;
+		var parent_id = params.parent_id;
+		
+		// privileged methods
+		this.get_type_list = function () { return type_list; };
+		
+		this.show = function () {
+			alert("Report comment");
+		};
+	}
+});
+
