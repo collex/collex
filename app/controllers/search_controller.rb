@@ -229,6 +229,31 @@ class SearchController < ApplicationController
     @freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
     @listed_constraints = marshall_listed_constraints() 
     
+#      113.upto(@num_pages) do |i|
+#        puts "#{i} \n"
+#        
+#       @test = search_solr(session[:constraints], i, i*1)
+#       @test['hits'].each_with_index { |hit, i|
+#       }
+#     end
+
+#      14760.upto(@num_pages) do |i|
+#        puts "#{i} \n"
+#        
+#       @test = search_solr(session[:constraints], i, i*10)
+#       @test['hits'].each_with_index { |hit, i|
+#          if hit['exhibit_type']
+#            uri = hit['uri']
+#          end
+#          if hit['license']
+#            uri = hit['uri']
+#          end
+#          if hit['role_TRN'] && hit['role_TRN'].length > 1
+#            uri = hit['uri']
+#          end
+#       }
+#     end
+
     render :action => 'results'
    end
    
