@@ -91,7 +91,24 @@ class DiscussionThreadsController < ApplicationController
   def view_thread
     thread_id = params[:thread]
     @thread = DiscussionThread.find(thread_id)
+    @page = 1
+    @num_pages = 2
   end
+  
+  def rss
+     thread_id = params[:thread]
+     thread = DiscussionThread.find(thread_id)
+     
+     #@items = [ { :title => 'first', :description => 'this is the first'}, { :title => 'second', :description => 'another entry' } ]
+     render :partial => 'rss', :locals => { :thread => thread }
+  end
+  
+   def result_count
+     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
+     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+     redirect_to :action => 'view_thread'
+   end
   
 # GET /discussion_threads
   # GET /discussion_threads.xml

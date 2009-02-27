@@ -18,6 +18,7 @@ ActionController::Routing::Routes.draw do |map|
 #  map.resources :discussion_comments
 
 #  map.resources :discussion_threads
+  map.discussion_thread_rss '/discussion_threads/rss/:thread.xml', :controller => 'discussion_threads', :action => 'rss'
 
 #  map.resources :discussion_topics
 

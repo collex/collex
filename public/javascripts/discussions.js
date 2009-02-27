@@ -148,4 +148,53 @@ var NewThreadObjectDlg = Class.create({
 	}
 });
 
+//////////////////////////////////////////
+
+//TODO: When a user decides to “Post a Comment”, a rich edit box appears for them to post their comment. To the 
+//left of the comment is the user’s profile picture (or the placeholder if he or she doesn’t have one). This is 
+//just like the text editor for exhibits with similar capabilities with regards to linking. To the bottom right of 
+//the rich text editor are two buttons: “Post Comment” and “Cancel”.
+
+var NewDiscussionCommentDlg = Class.create({
+	initialize: function (params) {
+		this.class_type = 'NewDiscussionCommentDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		var thread_id = params.thread_id;
+		var submit_url = params.submit_url;
+		var parent_id = params.parent_id;
+		
+		// privileged methods
+		this.get_type_list = function () { return type_list; };
+		
+		this.show = function () {
+			alert("Discussion comment");
+		};
+	}
+});
+
+//////////////////////////////////////////
+
+var NewDiscussionObjectDlg = Class.create({
+	initialize: function (params) {
+		this.class_type = 'NewDiscussionObjectDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		var thread_id = params.thread_id;
+		var obj_list = params.obj_list;
+		var exhibit_list = params.exhibit_list;
+		var type_list = params.type_list;
+		var submit_url = params.submit_url;
+		var parent_id = params.parent_id;
+		
+		// privileged methods
+		this.get_type_list = function () { return type_list; };
+		
+		this.show = function () {
+			alert("Discussion object");
+		};
+	}
+});
 
