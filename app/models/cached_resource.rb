@@ -295,7 +295,7 @@ class CachedResource < ActiveRecord::Base
       coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
       if coll_item != nil && (user == nil || coll_item.user_id == user.id)
         hit = get_hit_from_resource_id(coll_item.cached_resource_id)
-        results.insert(-1, hit)
+        results.insert(-1, hit) if !results.detect {|item| item['uri'] == hit['uri']} 
       end
     }
     return results
