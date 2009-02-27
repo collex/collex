@@ -21,12 +21,21 @@ class DiscussionComment < ActiveRecord::Base
   acts_as_list :scope => :discussion_thread
   
   def before_save
-    case comment_type
-      when 'comment': comment_type = 1
-      when 'nines_object': comment_type = 2
-      when 'nines_exhibit': comment_type = 3
-      when 'inet_object': comment_type = 4
+    a = @attributes
+    c = a['comment_type']
+    if c == 'comment'
+      comment_type = 1
+    elsif c == 'nines_object'
+      comment_type = 2
+    elsif c == 'nines_exhibit'
+      comment_type = 3
+    elsif c == 'inet_object'
+      comment_type = 4
+    else
+      comment_type = -1
     end
+    @attributes['comment_type'] = comment_type
+    attributes['comment_type'] = comment_type
   end
 
   def get_type

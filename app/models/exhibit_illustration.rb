@@ -46,6 +46,10 @@ class ExhibitIllustration < ActiveRecord::Base
     return "['NINES Object', 'Internet Image', 'Textual Illustration' ]"
   end
   
+  def self.get_illustration_type_array_with_exhibit
+    return "['NINES Object', 'NINES Exhibit', 'Internet Image' ]"
+  end
+  
   def self.get_illustration_type_image
     return 'Internet Image';
   end
@@ -56,6 +60,10 @@ class ExhibitIllustration < ActiveRecord::Base
   
   def self.get_illustration_type_text
     return 'Textual Illustration';
+  end
+  
+  def self.get_exhibit_type_text
+    return 'NINES Exhibit';
   end
   
   def self.factory(element_id, pos)

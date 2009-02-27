@@ -27,25 +27,33 @@
 			ERROR: ill-formed thread. (Main comment is missing)<br/>
 		<% else -%>
 			<% main_comment = thread.discussion_comments[0] -%>
-			<% if main_comment.get_type() == "comment" -%>
-				<table>
-					<tr valign="top">
-						<td><%= render :partial => 'users_picture' %></td>
+			<table class="discussion_thread_list">
+				<tr valign="top">
+					<% if main_comment.get_type() == "comment" -%>
+						<td><%= render :partial => 'users_picture', :locals => { :user_id => main_comment.user_id } %></td>
 						<td>
 							<h3><%= thread.title %></h3>
-							<%= main_comment.comment %>
+							<%=h main_comment.comment %>
 						</td>
-					</tr>
-				</table>
-			<% elsif main_comment.get_type() == "nines_object" -%>
-				TODO: nines object<br />
-			<% elsif main_comment.get_type() == "nines_exhibit" -%>
-				TODO: nines object<br />
-			<% elsif main_comment.get_type() == "inet_object" -%>
-				TODO: nines object<br />
-			<% else -%>
-				ERROR: ill-formed thread. (Main comment type <%- main_comment.comment_type %> is unknown)<br/>
-			<% end -%>
+					<% elsif main_comment.get_type() == "nines_object" -%>
+						<% hit = CachedResource.get_hit_from_resource_id(main_comment.cached_resource_id) -%>
+						<%= render :partial => '/results/result_row', :locals => { :row_id => "test", :index => 2, :hit => hit, :has_exhibits => false } %>
+					<% elsif main_comment.get_type() == "nines_exhibit" -%>
+						<% exhibit = Exhibit.find(main_comment.exhibit_id) -%>
+						<td><img src="<%= exhibit.thumbnail %>" alt="exhibit" /></td>
+						<td>
+							<h3><%=h exhibit.title %></h3>
+						</td>
+					<% elsif main_comment.get_type() == "inet_object" -%>
+						<td><img src="<%= main_comment.image_url %>" alt="thumbnail" /></td>
+						<td><a class="ext_link" target="_blank" href="<%= main_comment.link_url %>" ><%=h main_comment.link_url %></a>
+						<p><%=h main_comment.comment %></p>
+						</td>
+					<% else -%>
+						<td>ERROR: ill-formed thread. (Main comment type <%- main_comment.comment_type %> is unknown)</td>
+					<% end -%>
+				</tr>
+			</table>
 		<% end # there is a comment -%>
 	<% end # threads -%>
 <% end # topics -%>

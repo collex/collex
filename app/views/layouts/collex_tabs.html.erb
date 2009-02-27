@@ -59,6 +59,12 @@
 		  stylesheet_link_tag("about", :media => "all")
 		when :news
 		  stylesheet_link_tag("news", :media => "all")
+		when :discuss
+			stylesheet_link_tag("search", :media => "all") + "\n" +
+			stylesheet_link_tag("discussions", :media => "all") + "\n" +
+		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
+		  stylesheet_link_tag("results", :media => "all") + "\n" +
+		  stylesheet_link_tag("my9s", :media => "all")
 	  else 
 		  ""
     end 
@@ -106,6 +112,8 @@
 	  javascript_include_tag 'sidebar_tag_cloud'
 	when :my9s
 	  javascript_include_tag 'sidebar_tag_cloud', 'edit_exhibit'
+	when :discuss
+	  javascript_include_tag 'discussions'
 	when :home 
 	when :login 
 		""

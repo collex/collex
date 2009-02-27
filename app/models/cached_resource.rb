@@ -377,6 +377,7 @@ class CachedResource < ActiveRecord::Base
       return list
     end   
 
+  public
   def self.get_hit_from_resource_id(resource_id)
     hit = {}
     uri = CachedResource.find(resource_id)

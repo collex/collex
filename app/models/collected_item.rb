@@ -24,6 +24,31 @@ class CollectedItem < ActiveRecord::Base
     return find(:all, :conditions => [ "user_id = ?", user.id ])
   end
 
+  def self.get_collected_object_array(user_id)
+    objs = find(:all, :conditions => [ "user_id = ?", user_id ])
+    str = ""
+    objs.each {|obj|
+      hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+      if hit != nil
+        image = CachedResource.get_thumbnail_from_hit(hit)
+        image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == ""
+        if str != ""
+          str += ",\n"
+        end
+        str += "{ uri: '#{hit['uri']}', thumbnail: '#{image}', title: '#{self.escape_quote(hit['title'])}'}"
+      end
+    }
+    
+    return '[' + str + ']'
+  end
+
+  def self.escape_quote(arr)
+    return '' if arr == nil
+    return '' if arr[0] == nil
+    str = arr[0].gsub("\n", " ").gsub("\r", " ")
+    return str.gsub("'", "`") #TODO-PER: get the real syntax for this. We want to replace "single quote" with "backslash single quote"
+  end
+  
   def self.collect_item(user, uri)
     # This collects an item for a particular user. Different users can collect the same item, but a single
     # user can only collect an item once. If the items was collected successfully, then this returns the

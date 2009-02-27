@@ -599,12 +599,13 @@ ModalDialog.prototype = {
 				new_form = new Element('form', { id: form_id + "2", method: 'post', onsubmit: "this.submit();", action: action });
 				new_form.observe('submit', "this.submit();");
 				document.body.appendChild(new_form);
-				var els = $$('#' + form_id + ' input');
-				els.each(function(e) { new_form.appendChild(new Element('input', { name: e.id, value: e.value, id: e.id })); });
-				els = $$('#' + form_id + ' textarea');
-				els.each(function(e) { new_form.appendChild(new Element('textarea', { name: e.id, value: e.value, id: e.id })); });
-				els = $$('#' + form_id + ' select');
-				els.each(function(e) { new_form.appendChild(new Element('select', { name: e.id, value: e.value.unescapeHTML(), id: e.id })); });
+				$H(params).each(function (p) { new_form.appendChild(new Element('input', { name: p.key, value: p.value, id: p.key })); });
+//				var els = $$('#' + form_id + ' input');
+//				els.each(function(e) { new_form.appendChild(new Element('input', { name: e.id, value: e.value, id: e.id })); });
+//				els = $$('#' + form_id + ' textarea');
+//				els.each(function(e) { new_form.appendChild(new Element('textarea', { name: e.id, value: e.value, id: e.id })); });
+//				els = $$('#' + form_id + ' select');
+//				els.each(function(e) { new_form.appendChild(new Element('select', { name: e.id, value: e.value.unescapeHTML(), id: e.id })); });
 
 				$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 				new_form.submit();

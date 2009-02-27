@@ -71,6 +71,18 @@ class Exhibit < ActiveRecord::Base
     end
     return str
   end
+  
+  def self.js_array_of_all_public_exhibits()
+    exhibits = self.get_all_published()
+    str = ""
+    for exhibit in exhibits
+      if str != ""
+        str += ",\n"
+      end
+      str += "{ title: \"#{h(exhibit.title)}\", thumbnail: \"#{exhibit.thumbnail}\" }";
+    end
+    return str
+  end
 
   def self.get_sharing_text(s)
     case s

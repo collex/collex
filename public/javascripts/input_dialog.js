@@ -126,7 +126,7 @@ InputDialog.prototype = {
 		var el_label = new Element('label', { 'for': id} ).update(label);
 		wrapper.appendChild(el_label.wrap('td'));
 		var el = new Element('select', { id: id, name: id, align: 'top' });
-		if (change != null && change.length > 0)
+		if (change != null && change != undefined)
 			el.observe('change', change);
 		options.each(function(option) {
 			el.appendChild(new Element('option', { value: option}).update(option));
