@@ -34,7 +34,7 @@ var CreateListOfExhibits = Class.create({
 		else
 			This.list = "";
 			
-		if (className != null && className != undefined)
+		if (className !== null && className !== undefined)
 			This.list += "<table class='input_dlg_list " + className + "' >";
 		else
 			This.list += "<table class='input_dlg_list' >";
@@ -53,12 +53,12 @@ var CreateListOfExhibits = Class.create({
 		var str = "";
 		if (is_selected)
 			str = " class='input_dlg_list_item_selected' ";
-		var click = "onclick='CreateListOfExhibits.prototype._select(this,\"" + value_field + "\" );'";
+		var click = "onclick='CreateListOfExhibits.prototype.select(this,\"" + value_field + "\" );'";
 		return "<tr " + str + click + " ><td><img src='" + thumbnail + "' alt='exhibit' height='40' /></td><td>" + title + "</td></tr>\n";
 	}
 });
 
-CreateListOfExhibits.prototype._select = function(item, value_field)
+CreateListOfExhibits.prototype.select = function(item, value_field)
 {
 	var selClass = "input_dlg_list_item_selected";
 	$$("." + selClass).each(function(el)
@@ -67,7 +67,7 @@ CreateListOfExhibits.prototype._select = function(item, value_field)
 	});
 	$(item).addClassName(selClass);
 	$(value_field).value = $(item).down().next().innerHTML.unescapeHTML();
-}
+};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -148,8 +148,4 @@ var NewThreadObjectDlg = Class.create({
 	}
 });
 
-// public static methods
-//NewThreadObjectDlg.prototype.show = function () {
-//	alert("Show: " + this.get_topic_id() + " " + this.get_user_id());
-//}
 
