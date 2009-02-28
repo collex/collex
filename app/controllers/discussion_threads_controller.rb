@@ -55,44 +55,100 @@ class DiscussionThreadsController < ApplicationController
     redirect_to :action => :index
   end
   
+  def post_comment_to_existing_thread
+    thread_id = params[:thread_id]
+    if !is_logged_in?
+      flash[:error] = 'You must be signed in to post a comment.'
+    else
+      comment = params[:new_comment]
+      user = User.find_by_username(session[:user][:username])
+      thread = DiscussionThread.find(thread_id)
+      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length, :comment_type => 'comment', :comment => comment)
+    end
+
+    redirect_to :action => :view_thread, :thread => thread_id
+  end
+  
   def post_object_to_new_thread
     if !is_logged_in?
       flash[:error] = 'You must be signed in to start a discussion.'
     else
       topic_id = params[:topic_id]
-      disc_type = params[:disc_type]
-      nines_object = params[:nines_object]
-      inet_thumbnail = params[:inet_thumbnail]
-      inet_url = params[:inet_url]
-      inet_description = params[:inet_description]
-      nines_exhibit = params[:nines_exhibit]
-      user = User.find_by_username(session[:user][:username])
-      
-      if ExhibitIllustration.get_illustration_type_nines_obj() == disc_type
-        thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => "")
-        cr = CachedResource.find_by_uri(nines_object)
-        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-          :comment_type => 'nines_object', :cached_resource_id => cr.id)
-      elsif ExhibitIllustration.get_exhibit_type_text() == disc_type
-        exhibit = Exhibit.find_by_title(nines_exhibit)
-        thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => "")
-        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-          :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id)
-      elsif ExhibitIllustration.get_illustration_type_image() == disc_type
-        thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => "")
-        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-          :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => inet_description)
-      end
+      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => "")
+      post_object(thread, params)
     end
 
     redirect_to :action => :index
   end
+  
+  def post_object_to_existing_thread
+    if !is_logged_in?
+      flash[:error] = 'You must be signed in to post an object.'
+    else
+      thread_id = params[:thread_id]
+      thread = DiscussionThread.find(thread_id)
+      post_object(thread, params)
+    end
+
+    redirect_to :action => :view_thread, :thread => thread_id
+  end
+  
+  private
+  def post_object(thread, params)
+    disc_type = params[:disc_type]
+    nines_object = params[:nines_object]
+    inet_thumbnail = params[:inet_thumbnail]
+    inet_url = params[:inet_url]
+    inet_description = params[:inet_description]
+    nines_exhibit = params[:nines_exhibit]
+    user = User.find_by_username(session[:user][:username])
+    
+    if ExhibitIllustration.get_illustration_type_nines_obj() == disc_type
+      cr = CachedResource.find_by_uri(nines_object)
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+        :comment_type => 'nines_object', :cached_resource_id => cr.id)
+    elsif ExhibitIllustration.get_exhibit_type_text() == disc_type
+      exhibit = Exhibit.find_by_title(nines_exhibit)
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+        :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id)
+    elsif ExhibitIllustration.get_illustration_type_image() == disc_type
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+        :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => inet_description)
+    end
+  end
+  public
   
   def view_thread
     thread_id = params[:thread]
     @thread = DiscussionThread.find(thread_id)
     @page = 1
     @num_pages = 2
+  end
+  
+  def delete_comment
+    discussion_comment = DiscussionComment.find(params[:comment])
+    thread_id = discussion_comment.discussion_thread_id
+    
+    if !is_logged_in?
+      flash[:error] = 'You must be signed in to delete a comment.'
+    else
+      user = User.find_by_username(session[:user][:username])
+      if !is_admin? && user.id != discussion_comment.id
+        flash[:error] = 'You must own the comment to delete it.'
+      else
+        ok_to_delete = true
+        if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
+          if discussion_comment.discussion_thread.discussion_comments.length == 1 # only delete the first comment if there are no follow up comments
+            discussion_comment.discussion_thread.destroy
+          else
+            ok_to_delete = false
+          end
+        end
+      end
+      discussion_comment.destroy if ok_to_delete
+    end
+    
+    redirect_to :action => :view_thread, :thread => thread_id
   end
   
   def rss

@@ -77,7 +77,8 @@ var NewThreadObjectDlg = Class.create({
 
 		// private variables
 		var This = this;
-		var topic_id = params.topic_id;
+		var topic_id = params.topic_id;	// we are passed either a thread or a topic id.
+		var thread_id = params.thread_id;
 		var obj_list = params.obj_list;
 		var exhibit_list = params.exhibit_list;
 		var type_list = params.type_list;
@@ -123,12 +124,16 @@ var NewThreadObjectDlg = Class.create({
 			InputDialog.prototype.prepareDomForEditing(parent_id, '', submit_url);
 
 			var values = {};
-			values.element_id = parent_id; 
-			values.topic_id = topic_id;
+			values.element_id = parent_id;
+			if (topic_id !== undefined)
+				values.topic_id = topic_id;
+			if (thread_id !== undefined)
+				values.thread_id = thread_id;
 			values.disc_type = type_list[0];
 
 			var dlg = new InputDialog(parent_id);
 			dlg.addHidden("topic_id");
+			dlg.addHidden("thread_id");
 			var size = 52;
 			dlg.addSelect('Type of Object:', 'disc_type', type_list, selectionChanged);
 			dlg.addTextInput('Link URL:', 'inet_url', size, 'inet');
@@ -169,31 +174,8 @@ var NewDiscussionCommentDlg = Class.create({
 		this.get_type_list = function () { return type_list; };
 		
 		this.show = function () {
-			alert("Discussion comment");
-		};
-	}
-});
-
-//////////////////////////////////////////
-
-var NewDiscussionObjectDlg = Class.create({
-	initialize: function (params) {
-		this.class_type = 'NewDiscussionObjectDlg';	// for debugging
-
-		// private variables
-		var This = this;
-		var thread_id = params.thread_id;
-		var obj_list = params.obj_list;
-		var exhibit_list = params.exhibit_list;
-		var type_list = params.type_list;
-		var submit_url = params.submit_url;
-		var parent_id = params.parent_id;
-		
-		// privileged methods
-		this.get_type_list = function () { return type_list; };
-		
-		this.show = function () {
-			alert("Discussion object");
+			doSingleInputPrompt("Add Comment", "Comment:", "new_comment", parent_id, "", submit_url,
+				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }));
 		};
 	}
 });

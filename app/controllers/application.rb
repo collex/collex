@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   before_filter :session_create
   
   helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user, :user_or_guest,
-                :non_mce_safari?
+                :non_mce_safari?, :is_admin?
   
   def boom
     raise "boom!"
@@ -68,6 +68,14 @@ class ApplicationController < ActionController::Base
       session[:user] ? true : false
     end
 
+    def is_admin?
+      user = session[:user]
+      if user and user[:role_names].include? 'admin'
+        return true
+      end
+      return false
+    end
+  
     def me?
       session[:user] ? (params[:user] == username) : false
     end
