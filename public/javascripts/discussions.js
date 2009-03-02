@@ -194,7 +194,7 @@ var DiscussionReportDlg = Class.create({
 
 		// private variables
 		var This = this;
-		var thread_id = params.comment_id;
+		var comment_id = params.comment_id;
 		var submit_url = params.submit_url;
 		var parent_id = params.parent_id;
 		
@@ -202,7 +202,10 @@ var DiscussionReportDlg = Class.create({
 		this.get_type_list = function () { return type_list; };
 		
 		this.show = function () {
-			alert("Report comment");
+			doSingleInputPrompt("Report this comment as objectionable",
+				"Press Ok if you want an email sent to the administrators complaining about this entry",
+				"", parent_id, "", submit_url,
+				$H({ comment_id: comment_id }), 'none', null);
 		};
 	}
 });

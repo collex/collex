@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 102) do
+ActiveRecord::Schema.define(:version => 103) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(:version => 102) do
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "reported"
   end
 
   create_table "discussion_threads", :force => true do |t|

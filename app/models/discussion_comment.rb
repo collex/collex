@@ -31,6 +31,10 @@ class DiscussionComment < ActiveRecord::Base
       comment_type = 3
     elsif c == 'inet_object'
       comment_type = 4
+    elsif c == 1 || c == 2 || c == 3 || c == 4
+      comment_type = c
+    elsif c == "1" || c == "2" || c == "3" || c == "4"
+      comment_type = c
     else
       comment_type = -1
     end

@@ -17,6 +17,15 @@
 <% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link), bool can_delete -%>
 
 <table class="discussion_thread_list">
+	<% if comment.reported == 1 -%>
+	<tr valign="top">
+		<td colspan="4">
+			<div class="reported_comment">
+			NOTICE: This comment has been reported as objectionable, and is pending moderation.
+			</div>
+		</td>
+	</tr>
+	<% end -%>
 	<tr valign="top">
 		<% if comment.get_type() == "comment" -%>
 			<td><%= render :partial => 'users_picture', :locals => { :user_id => comment.user_id } %></td>

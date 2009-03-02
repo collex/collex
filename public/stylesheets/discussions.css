@@ -1,3 +1,9 @@
 .discussion_thread_list {
 	border: 1px solid gray;
 }
+
+.reported_comment {
+	border: 2px double red;
+	color: red;
+	font-size: 1.3em;
+}
