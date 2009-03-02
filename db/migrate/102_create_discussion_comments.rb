@@ -10,6 +10,8 @@ class CreateDiscussionComments < ActiveRecord::Migration
       t.string :link_url
       t.string :image_url
       t.text :comment
+      t.integer :reported
+      t.integer :reporter_id
 
       t.timestamps
     end

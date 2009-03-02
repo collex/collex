@@ -152,12 +152,18 @@ class DiscussionThreadsController < ApplicationController
   end
   
   def report_comment
-    comment_id = params["comment_id"]
-    comment = DiscussionComment.find(comment_id)
-    comment.reported = 1
-    comment.save
-    # TODO-PER: actually send email at this point
-    redirect_to :action => :view_thread, :thread => comment.discussion_thread_id
+    if !is_logged_in?
+      flash[:error] = 'You must be signed in to delete a comment.'
+    else
+      user = User.find_by_username(session[:user][:username])
+      comment_id = params["comment_id"]
+      comment = DiscussionComment.find(comment_id)
+      comment.reported = 1
+      comment.reporter_id = user.id
+      comment.save
+      # TODO-PER: actually send email at this point
+      redirect_to :action => :view_thread, :thread => comment.discussion_thread_id
+    end
   end
   
   def rss

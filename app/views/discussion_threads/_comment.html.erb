@@ -17,11 +17,11 @@
 <% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link), bool can_delete -%>
 
 <table class="discussion_thread_list">
-	<% if comment.reported == 1 -%>
+	<% if comment.reported == 1 && can_delete -%>
 	<tr valign="top">
 		<td colspan="4">
 			<div class="reported_comment">
-			NOTICE: This comment has been reported as objectionable, and is pending moderation.
+			NOTICE: This comment has been reported as objectionable by <%= user.fullname %>, and is pending moderation.
 			</div>
 		</td>
 	</tr>
