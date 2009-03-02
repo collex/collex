@@ -542,17 +542,18 @@ function removeHidden(more_id, target_id)
 	var btn = $(more_id);
 	if (btn.innerHTML.indexOf("more") > 0) {
 		$$('#' + target_id + " .hidden").each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
-		btn.innerHTML = btn.innerHTML.gsub("more", "less");
+		btn.update(btn.innerHTML.gsub("more", "less"));
+		//btn.innerHTML = btn.innerHTML.gsub("more", "less");
 	} else {
 		$$('#' + target_id + " .was_hidden").each(function (el) { el.addClassName('hidden'); });
-		btn.innerHTML = btn.innerHTML.gsub("less", "more");
+		btn.update(btn.innerHTML.gsub("less", "more"));
 	}
 }
 
 function expandAllItems()
 {
 	$$('.result_row_td .hidden').each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
-	$$('.more').each(function (el) { el.innerHTML = el.innerHTML.gsub("more", "less"); });
+	$$('.more').each(function (el) { el.update(el.innerHTML.gsub("more", "less")); });
 }
 
 function doDiscuss(id)
