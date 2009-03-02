@@ -83,7 +83,7 @@ private
       ['My&nbsp;9s', my9s_path, true],
       ['Search', search_path, true],
       ['Tags', tags_path, true],
-      ['Discuss', discussion_path, true],
+      #['Discuss', discussion_path, true],
       ['Exhibits', exhibit_list_path, true],
       ['News', news_path + '/', true],
       ['About', tab_about_path, true]

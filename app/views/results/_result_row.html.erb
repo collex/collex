@@ -92,9 +92,9 @@
 					<td align="right">
 						<br />
 						<%= rounded_button("collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}');") if is_logged_in? && !result_is_collected(hit) %>
-						<%= rounded_button("collect", "collect_#{index}", "doSingleInputPrompt('Please sign in', 'You must be signed in to collect objects.', null, 'collect_#{index}', null, null, $H({ }), 'none', null);") if !is_logged_in? %>
+						<%#= rounded_button("collect", "collect_#{index}", "doSingleInputPrompt('Please sign in', 'You must be signed in to collect objects.', null, 'collect_#{index}', null, null, $H({ }), 'none', null);") if !is_logged_in? %>
 						<%= rounded_button("uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
-						<%= rounded_button("discuss", "discuss_#{index}", "doDiscuss('discuss_#{index}');") %>
+						<%#= rounded_button("discuss", "discuss_#{index}", "doDiscuss('discuss_#{index}');") %>
 						<%= rounded_button("exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
 					</td>
 				</tr>
