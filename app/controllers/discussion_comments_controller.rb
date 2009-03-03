@@ -15,95 +15,95 @@
 ##########################################################################
 
 class DiscussionCommentsController < ApplicationController
-  # GET /discussion_comments
-  # GET /discussion_comments.xml
-  def index
-    @discussion_comments = DiscussionComment.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @discussion_comments }
-    end
-  end
-
-  # GET /discussion_comments/1
-  # GET /discussion_comments/1.xml
-  def show
-    @discussion_comment = DiscussionComment.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @discussion_comment }
-    end
-  end
-
-  # GET /discussion_comments/new
-  # GET /discussion_comments/new.xml
-  def new
-    @discussion_comment = DiscussionComment.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @discussion_comment }
-    end
-  end
-
-  # GET /discussion_comments/1/edit
-  def edit
-    @discussion_comment = DiscussionComment.find(params[:id])
-  end
-
-  # POST /discussion_comments
-  # POST /discussion_comments.xml
-  def create
-    @discussion_comment = DiscussionComment.new(params[:discussion_comment])
-
-    respond_to do |format|
-      if @discussion_comment.save
-        flash[:notice] = 'DiscussionComment was successfully created.'
-        format.html { redirect_to(@discussion_comment) }
-        format.xml  { render :xml => @discussion_comment, :status => :created, :location => @discussion_comment }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @discussion_comment.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # PUT /discussion_comments/1
-  # PUT /discussion_comments/1.xml
-  def update
-    @discussion_comment = DiscussionComment.find(params[:id])
-
-    respond_to do |format|
-      if @discussion_comment.update_attributes(params[:discussion_comment])
-        flash[:notice] = 'DiscussionComment was successfully updated.'
-        format.html { redirect_to(@discussion_comment) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @discussion_comment.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /discussion_comments/1
-  # DELETE /discussion_comments/1.xml
-  def destroy
-    @discussion_comment = DiscussionComment.find(params[:id])
-    ok_to_delete = true
-    if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
-      if discussion_comment.discussion_thread.discussion_comments.length == 1
-        discussion_comment.discussion_thread.destroy
-      else
-        ok_to_delete = false
-      end
-    end
-    @discussion_comment.destroy if ok_to_delete
-
-    respond_to do |format|
-      format.html { redirect_to('/discussion') }
-      format.xml  { head :ok }
-    end
-  end
+#  # GET /discussion_comments
+#  # GET /discussion_comments.xml
+#  def index
+#    @discussion_comments = DiscussionComment.find(:all)
+#
+#    respond_to do |format|
+#      format.html # index.html.erb
+#      format.xml  { render :xml => @discussion_comments }
+#    end
+#  end
+#
+#  # GET /discussion_comments/1
+#  # GET /discussion_comments/1.xml
+#  def show
+#    @discussion_comment = DiscussionComment.find(params[:id])
+#
+#    respond_to do |format|
+#      format.html # show.html.erb
+#      format.xml  { render :xml => @discussion_comment }
+#    end
+#  end
+#
+#  # GET /discussion_comments/new
+#  # GET /discussion_comments/new.xml
+#  def new
+#    @discussion_comment = DiscussionComment.new
+#
+#    respond_to do |format|
+#      format.html # new.html.erb
+#      format.xml  { render :xml => @discussion_comment }
+#    end
+#  end
+#
+#  # GET /discussion_comments/1/edit
+#  def edit
+#    @discussion_comment = DiscussionComment.find(params[:id])
+#  end
+#
+#  # POST /discussion_comments
+#  # POST /discussion_comments.xml
+#  def create
+#    @discussion_comment = DiscussionComment.new(params[:discussion_comment])
+#
+#    respond_to do |format|
+#      if @discussion_comment.save
+#        flash[:notice] = 'DiscussionComment was successfully created.'
+#        format.html { redirect_to(@discussion_comment) }
+#        format.xml  { render :xml => @discussion_comment, :status => :created, :location => @discussion_comment }
+#      else
+#        format.html { render :action => "new" }
+#        format.xml  { render :xml => @discussion_comment.errors, :status => :unprocessable_entity }
+#      end
+#    end
+#  end
+#
+#  # PUT /discussion_comments/1
+#  # PUT /discussion_comments/1.xml
+#  def update
+#    @discussion_comment = DiscussionComment.find(params[:id])
+#
+#    respond_to do |format|
+#      if @discussion_comment.update_attributes(params[:discussion_comment])
+#        flash[:notice] = 'DiscussionComment was successfully updated.'
+#        format.html { redirect_to(@discussion_comment) }
+#        format.xml  { head :ok }
+#      else
+#        format.html { render :action => "edit" }
+#        format.xml  { render :xml => @discussion_comment.errors, :status => :unprocessable_entity }
+#      end
+#    end
+#  end
+#
+#  # DELETE /discussion_comments/1
+#  # DELETE /discussion_comments/1.xml
+#  def destroy
+#    @discussion_comment = DiscussionComment.find(params[:id])
+#    ok_to_delete = true
+#    if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
+#      if discussion_comment.discussion_thread.discussion_comments.length == 1
+#        discussion_comment.discussion_thread.destroy
+#      else
+#        ok_to_delete = false
+#      end
+#    end
+#    @discussion_comment.destroy if ok_to_delete
+#
+#    respond_to do |format|
+#      format.html { redirect_to('/discussion') }
+#      format.xml  { head :ok }
+#    end
+#  end
 end

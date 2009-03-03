@@ -237,7 +237,7 @@ class SearchController < ApplicationController
 #       }
 #     end
 
-#      14760.upto(@num_pages) do |i|
+#      75.upto(@num_pages) do |i|
 #        puts "#{i} \n"
 #        
 #       @test = search_solr(session[:constraints], i, i*10)

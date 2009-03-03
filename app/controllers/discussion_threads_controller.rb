@@ -137,9 +137,11 @@ class DiscussionThreadsController < ApplicationController
         flash[:error] = 'You must own the comment to delete it.'
       else
         ok_to_delete = true
+        redirect_to_index = false
         if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
           if discussion_comment.discussion_thread.discussion_comments.length == 1 # only delete the first comment if there are no follow up comments
             discussion_comment.discussion_thread.destroy
+            redirect_to_index = true
           else
             ok_to_delete = false
           end
@@ -148,7 +150,11 @@ class DiscussionThreadsController < ApplicationController
       discussion_comment.destroy if ok_to_delete
     end
     
-    redirect_to :action => :view_thread, :thread => thread_id
+    if redirect_to_index
+      redirect_to :action => :index
+    else
+      redirect_to :action => :view_thread, :thread => thread_id
+    end
   end
   
   def report_comment
@@ -181,87 +187,87 @@ class DiscussionThreadsController < ApplicationController
      redirect_to :action => 'view_thread'
    end
   
-# GET /discussion_threads
-  # GET /discussion_threads.xml
-  def index
-    @discussion_threads = DiscussionThread.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @discussion_threads }
-    end
-  end
-
-  # GET /discussion_threads/1
-  # GET /discussion_threads/1.xml
-  def show
-    @discussion_thread = DiscussionThread.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @discussion_thread }
-    end
-  end
-
-  # GET /discussion_threads/new
-  # GET /discussion_threads/new.xml
-  def new
-    @discussion_thread = DiscussionThread.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @discussion_thread }
-    end
-  end
-
-  # GET /discussion_threads/1/edit
-  def edit
-    @discussion_thread = DiscussionThread.find(params[:id])
-  end
-
-  # POST /discussion_threads
-  # POST /discussion_threads.xml
-  def create
-    @discussion_thread = DiscussionThread.new(params[:discussion_thread])
-
-    respond_to do |format|
-      if @discussion_thread.save
-        flash[:notice] = 'DiscussionThread was successfully created.'
-        format.html { redirect_to(@discussion_thread) }
-        format.xml  { render :xml => @discussion_thread, :status => :created, :location => @discussion_thread }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @discussion_thread.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # PUT /discussion_threads/1
-  # PUT /discussion_threads/1.xml
-  def update
-    @discussion_thread = DiscussionThread.find(params[:id])
-
-    respond_to do |format|
-      if @discussion_thread.update_attributes(params[:discussion_thread])
-        flash[:notice] = 'DiscussionThread was successfully updated.'
-        format.html { redirect_to(@discussion_thread) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @discussion_thread.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /discussion_threads/1
-  # DELETE /discussion_threads/1.xml
-  def destroy
-    @discussion_thread = DiscussionThread.find(params[:id])
-    @discussion_thread.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(discussion_threads_url) }
-      format.xml  { head :ok }
-    end
-  end
+## GET /discussion_threads
+#  # GET /discussion_threads.xml
+#  def index
+#    @discussion_threads = DiscussionThread.find(:all)
+#
+#    respond_to do |format|
+#      format.html # index.html.erb
+#      format.xml  { render :xml => @discussion_threads }
+#    end
+#  end
+#
+#  # GET /discussion_threads/1
+#  # GET /discussion_threads/1.xml
+#  def show
+#    @discussion_thread = DiscussionThread.find(params[:id])
+#
+#    respond_to do |format|
+#      format.html # show.html.erb
+#      format.xml  { render :xml => @discussion_thread }
+#    end
+#  end
+#
+#  # GET /discussion_threads/new
+#  # GET /discussion_threads/new.xml
+#  def new
+#    @discussion_thread = DiscussionThread.new
+#
+#    respond_to do |format|
+#      format.html # new.html.erb
+#      format.xml  { render :xml => @discussion_thread }
+#    end
+#  end
+#
+#  # GET /discussion_threads/1/edit
+#  def edit
+#    @discussion_thread = DiscussionThread.find(params[:id])
+#  end
+#
+#  # POST /discussion_threads
+#  # POST /discussion_threads.xml
+#  def create
+#    @discussion_thread = DiscussionThread.new(params[:discussion_thread])
+#
+#    respond_to do |format|
+#      if @discussion_thread.save
+#        flash[:notice] = 'DiscussionThread was successfully created.'
+#        format.html { redirect_to(@discussion_thread) }
+#        format.xml  { render :xml => @discussion_thread, :status => :created, :location => @discussion_thread }
+#      else
+#        format.html { render :action => "new" }
+#        format.xml  { render :xml => @discussion_thread.errors, :status => :unprocessable_entity }
+#      end
+#    end
+#  end
+#
+#  # PUT /discussion_threads/1
+#  # PUT /discussion_threads/1.xml
+#  def update
+#    @discussion_thread = DiscussionThread.find(params[:id])
+#
+#    respond_to do |format|
+#      if @discussion_thread.update_attributes(params[:discussion_thread])
+#        flash[:notice] = 'DiscussionThread was successfully updated.'
+#        format.html { redirect_to(@discussion_thread) }
+#        format.xml  { head :ok }
+#      else
+#        format.html { render :action => "edit" }
+#        format.xml  { render :xml => @discussion_thread.errors, :status => :unprocessable_entity }
+#      end
+#    end
+#  end
+#
+#  # DELETE /discussion_threads/1
+#  # DELETE /discussion_threads/1.xml
+#  def destroy
+#    @discussion_thread = DiscussionThread.find(params[:id])
+#    @discussion_thread.destroy
+#
+#    respond_to do |format|
+#      format.html { redirect_to(discussion_threads_url) }
+#      format.xml  { head :ok }
+#    end
+#  end
 end
