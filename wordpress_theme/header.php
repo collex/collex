@@ -15,7 +15,7 @@
 	<!-- site wide styles -->
   <link href="/stylesheets/globals.css" media="all" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/core.css" media="all" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css"> 
+  <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css"> 
 
 	<!-- section styles -->
   <link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />

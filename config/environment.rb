@@ -101,14 +101,16 @@ COLLEX_ENGINE_PARAMS = {
   :facet_fields => ['genre','archive','freeculture']
 }
 
-EXHIBIT_WHITE_LIST = %w{jamieorc nickl nowviskie jeromemcgann DWheeles mandellc erikhatcher aearhart cmw6s Laura_Nowocin wombat1 wombat2 wombat3 wombat4 wombat5}
+#EXHIBIT_WHITE_LIST = %w{jamieorc nickl nowviskie jeromemcgann DWheeles mandellc erikhatcher aearhart cmw6s Laura_Nowocin wombat1 wombat2 wombat3 wombat4 wombat5}
+#
+## Configuration for Exhibits
+#def exhibits_configuration_file
+#  File.expand_path(File.dirname(__FILE__) + "/exhibits.yml")
+#end
+#def exhibits_configuration
+#  YAML::load(ERB.new(IO.read(exhibits_configuration_file)).result)
+#end
+#EXHIBITS_CONF = exhibits_configuration[RAILS_ENV]
+#puts "Exhibits Configuration: #{EXHIBITS_CONF.inspect}"
 
-# Configuration for Exhibits
-def exhibits_configuration_file
-  File.expand_path(File.dirname(__FILE__) + "/exhibits.yml")
-end
-def exhibits_configuration
-  YAML::load(ERB.new(IO.read(exhibits_configuration_file)).result)
-end
-EXHIBITS_CONF = exhibits_configuration[RAILS_ENV]
-puts "Exhibits Configuration: #{EXHIBITS_CONF.inspect}"
+DEPLOYMENT_SERVER = "nines.org"
