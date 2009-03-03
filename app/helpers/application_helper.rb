@@ -28,12 +28,18 @@ module ApplicationHelper
     return false
   end
 
+#  def rounded_button(text, id, action)
+#    "<a id='#{id}'>#{text}</a>\n" +
+#    "<script type='text/javascript'>\n" +
+#    "function button#{id}() { #{action}; return false; }\n" +
+#    "var oButton = new YAHOO.widget.Button('#{id}', { type: 'link', onclick: { fn: button#{id} } });\n" +
+#    "</script>\n"
+#  end
+  
   def rounded_button(text, id, action)
-    "<a id='#{id}'>#{text}</a>\n" +
-    "<script type='text/javascript'>\n" +
-    "function button#{id}() { #{action}; return false; }\n" +
-    "var oButton = new YAHOO.widget.Button('#{id}', { type: 'link', onclick: { fn: button#{id} } });\n" +
-    "</script>\n"
+    "<div id='#{id}' class='rounded_button_left' onclick='#{action.gsub('\'', '"')}; return false;'><div class='rounded_button_middle'><div class='rounded_button_right'>\n" +
+    "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
+    "</div></div></div>"
   end
   
   def rounded_h1(text)
@@ -83,7 +89,7 @@ private
       ['My&nbsp;9s', my9s_path, true],
       ['Search', search_path, true],
       ['Tags', tags_path, true],
-      #['Discuss', discussion_path, true],
+      ['Discuss', discussion_path, true],
       ['Exhibits', exhibit_list_path, true],
       ['News', news_path + '/', true],
       ['About', tab_about_path, true]

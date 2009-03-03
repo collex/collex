@@ -152,6 +152,58 @@ color:inherit;
 	padding-bottom:2px;
 }
 
+.rounded_button_left {
+	background: url(/images/red_button_left.jpg) 0 0 no-repeat;
+	padding-left: 8px;
+	width: 100px;
+	margin-right: 4px;
+	text-align: center;
+	height: 25px;
+
+    float:right;
+    display:inline; /*required by IE6*/
+    margin:0 3px 0 6px;
+	cursor: pointer;
+}
+
+.rounded_button_middle {
+	background: url(/images/red_button_middle.jpg) 0 0 repeat-x;
+	height: 25px;
+}
+
+.rounded_button_right {
+	background: url(/images/red_button_right.jpg) 100% 0 no-repeat;
+	height: 25px;
+}
+
+.rounded_button_top_spacing {
+	height: 3px;
+}
+
+.rounded_button_link {
+	/*background: none !important;*/
+	margin-top: 0px;
+	margin-bottom:0;
+	padding-top:8px;
+	padding-bottom:8px;
+	color: white;
+	text-transform: uppercase;
+	text-decoration: none;
+	margin-right: 8px;
+}
+
+.rounded_button_left:hover {
+	background: url(/images/red_button_left_hover.jpg) 0 0 no-repeat;
+}
+
+.rounded_button_middle:hover {
+	background: url(/images/red_button_middle_hover.jpg) 0 0 repeat-x;
+}
+
+.rounded_button_right:hover {
+	background: url(/images/red_button_right_hover.jpg) 100% 0 no-repeat;
+}
+
 /* rest of the styles */		
 
 .tag_minor_nav {
