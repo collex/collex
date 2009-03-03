@@ -33,7 +33,7 @@
 				<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' if thread_link %>
 				<%= link_to '[delete]', "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' if can_delete %>
 				<h3><%= DiscussionThread.find(thread_id).title %></h3>
-				<%=h comment.comment %>
+				<%= comment.comment %>
 				<%= render :partial => 'comment_footer', :locals => { :comment => comment } %>
 			</td>
 		<% elsif comment.get_type() == "nines_object" -%>
