@@ -14,6 +14,10 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
+/*global Class, $, $$, $H */
+/*global InputDialog, LinkDlgHandler, CreateList, doSingleInputPrompt */
+/*global getX, getY */
+
 //Posting an Object brings up a dialog box that allows the user to select the object to post. 
 //This dialog is similar to the Edit Illustration dialog in the Exhibit Builder. The user may post a 
 //NINES Object, a NINES Exhibit, or an Internet Link. The list of NINES Object is drawn from the 
@@ -33,7 +37,7 @@ var CreateListOfExhibits = Class.create({
 			This.list = "<div style='overflow:auto; height: 450px;'>";
 		else
 			This.list = "";
-			
+
 		if (className !== null && className !== undefined)
 			This.list += "<table class='input_dlg_list " + className + "' >";
 		else
@@ -170,9 +174,6 @@ var NewDiscussionCommentDlg = Class.create({
 		var submit_url = params.submit_url;
 		var parent_id = params.parent_id;
 		
-		// privileged methods
-		this.get_type_list = function () { return type_list; };
-		
 		this.show = function () {
 			doSingleInputPrompt("Add Comment", "Comment:", "new_comment", parent_id, "", submit_url,
 				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }));
@@ -197,9 +198,6 @@ var DiscussionReportDlg = Class.create({
 		var comment_id = params.comment_id;
 		var submit_url = params.submit_url;
 		var parent_id = params.parent_id;
-		
-		// privileged methods
-		this.get_type_list = function () { return type_list; };
 		
 		this.show = function () {
 			doSingleInputPrompt("Report this comment as objectionable",
