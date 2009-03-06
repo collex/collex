@@ -12,11 +12,25 @@
 			<!--[if lte IE 6]>
 			<link href="/stylesheets/about4ie.css" media="all" rel="stylesheet" type="text/css" />
 			<![endif]-->
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
 		<script type="text/javascript" src="/javascripts/prototype.js"></script>
 		<script type="text/javascript" src="/javascripts/nospam.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor-min.js"></script>	
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop-min.js"></script>
+		<script type="text/javascript" src="/javascripts/general_dialog.js"></script>
+		<script type="text/javascript" src="/javascripts/login.js"></script>
 
 	</head>
-	<body>
+<body class=" yui-skin-sam">
+	<div id="popup_dialog_anchor"></div>
 	<div id="mainContent">
 
 	<div id="container">
@@ -27,7 +41,12 @@
 			<br />
 		</div></a>
 		<div id="header-right">
-			<div><a class="nav_link" href="/login">sign in&nbsp;</a></div>
+			<div id="login"></div>
+			<script language="JavaScript">
+			document.observe('dom:loaded', function() {
+				new Ajax.Updater('login', '/login/login_controls'	);
+				});
+			</script>
 		</div>
 		<div id="content">
 			<table class="tabs" cellspacing="0">
@@ -55,7 +74,7 @@
 
 													href="/community/index.html">community</a>&nbsp;<br/>
 									</div>
-									<div class="grayBox"><img src="/images/right_arrow.jpg" align="left" alt=""/><p><strong>Setting up a free <a class="nav_link" href="/login/signup">Collex account</a> is the easiest way to become a member of the NINES community. <a class="nav_link" href="/login/signup">Sign up</a> today to access to a personalized <a class="nav_link" href="/my9s">MY 9s</a> page, where you can organize your collections, tag and annotate items and share your research using the <a class="nav_link" href="/exhibits">Exhibit Builder</a></strong>.</p></div>
+									<div class="grayBox"><img src="/images/right_arrow.jpg" align="left" alt=""/><p><strong>Setting up a free <a class="nav_link" href="#" onclick="var dlg = new SignInDlg(); dlg.show('popup_dialog_anchor', 'create_account');; return false;">Collex account</a> is the easiest way to become a member of the NINES community. <a class="nav_link" href="#" onclick="var dlg = new SignInDlg(); dlg.show('popup_dialog_anchor', 'create_account');; return false;">Sign up</a> today to access to a personalized <a class="nav_link" href="/my9s">MY 9s</a> page, where you can organize your collections, tag and annotate items and share your research using the <a class="nav_link" href="/exhibits">Exhibit Builder</a></strong>.</p></div>
 									<div id="ninesGroup" class="about-community-banner-column"><p><img src="/images/editorialBoards.jpg" alt="editorial boards" /></p><p>The NINES community includes the <a class="nav_link" href="council.html">Executive Council</a>, the <a class="nav_link" href="RandD.html">Research and Development</a> team, and the <a class="nav_link" href="/scholarship/boards.html">Editorial Boards</a>.</p></div>
 									<div id="editorial" class="about-community-banner-column">
 								
@@ -69,7 +88,7 @@
 					<div id="toolsContent">
 	<p class="header"><img src="/images/joining9s.jpg" alt="join 9s" /></p>
 
-	<p><strong>Everyday users of NINES are important contributors to the project</strong>.  We encourage you to create a <a class="nav_link" href="/login/signup">Collex account</a> which will let you collect, tag, and annotate digital objects you locate in NINES as part of your own research.  The tags you apply to objects in your personal collections then become part of the Collex system, helping other users locate and re-purpose scholarly materials.</p>
+	<p><strong>Everyday users of NINES are important contributors to the project</strong>.  We encourage you to create a <a class="nav_link" href="#" onclick="var dlg = new SignInDlg(); dlg.show('popup_dialog_anchor', 'create_account');; return false;">Collex account</a> which will let you collect, tag, and annotate digital objects you locate in NINES as part of your own research.  The tags you apply to objects in your personal collections then become part of the Collex system, helping other users locate and re-purpose scholarly materials.</p>
 	
 	<p>NINES is always in search of new projects and digital materials to be aggregated into the Collex interface. If you administer a project in nineteenth-century studies that you would like to be peer-reviewed by the NINES <a class="nav_link" href="/scholarship/boards.html">Editorial Boards</a> please contact us at <a class="nav_link nospam" href="inquiries nines org">$$$$</a>.</p>
 	

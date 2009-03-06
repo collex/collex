@@ -18,14 +18,14 @@
 <div>
 <% if is_logged_in? %>
 	signed in as <%= session[:user][:username] %><%= link_separator %>
-    <%= link_to "my account", :controller=>"login", :action=>"account" %><%= link_separator %>
+    <%= my_account_link({}) %>
+    <%= link_separator %>
 	<%= link_to 'sign out', :controller => 'login', :action => 'logout' %>
 	<% if is_admin? -%>
 		<%= link_separator %>
 		<%= link_to 'admin', :controller => 'admin/default', :action => 'index' %>
 	<% end -%>
 <% else -%>
-    <%= link_to "sign in", :controller=>"login", :action=>"login" %><% #= link_separator %>
-	<% #= link_to_remote "sign up", :update => "login-slider", :url => {:controller=>"login", :action => 'signup'}%>
+    <%= sign_in_link({}) %>
 <% end -%>
 </div>

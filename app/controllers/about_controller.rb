@@ -8,6 +8,7 @@ class AboutController < ApplicationController
      @use_tabs = true
      @use_signin= true
      @site_section = :about
+     @uses_yui = true
      return true
    end
    

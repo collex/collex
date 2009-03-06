@@ -9,8 +9,24 @@
 		<link rel="stylesheet" type="text/css" href="/stylesheets/globals.css" />
 		<link rel="stylesheet" type="text/css" href="/stylesheets/about.css" />
 		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/fonts/fonts-min.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
+		<script type="text/javascript" src="/javascripts/prototype.js"></script>
+		<script type="text/javascript" src="/javascripts/nospam.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container-min.js"></script>
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor-min.js"></script>	
+		<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop-min.js"></script>
+		<script type="text/javascript" src="/javascripts/general_dialog.js"></script>
+		<script type="text/javascript" src="/javascripts/login.js"></script>
 	</head>
-	<body>
+<body class=" yui-skin-sam">
+	<div id="popup_dialog_anchor"></div>
 	<div id="mainContent">
 
 	<div id="container">
@@ -23,12 +39,13 @@
 			<br />
 		</div></a>
 		<div id="header-right">
-							<div>
-
-	<a class="nav_link" href="/login">sign in</a>
-	</div>
-
-					</div>
+			<div id="login"></div>
+			<script language="JavaScript">
+			document.observe('dom:loaded', function() {
+				new Ajax.Updater('login', '/login/login_controls'	);
+				});
+			</script>
+		</div>
 						<div id="content">
 				  						<table class="tabs" cellspacing="0">
 								<tbody><tr>

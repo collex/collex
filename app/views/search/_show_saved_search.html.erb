@@ -29,5 +29,5 @@
 		<% end # has constraints -%>
 	<% end # if there is a name for this search -%>
 <% else # not logged in -%>
-	<span class="save_search_instruction">&nbsp;&nbsp;(<%= link_to "Sign in", { :controller => 'login' }, { :class => 'nav_link' } %> to save this search)</span>
+	<span class="save_search_instruction">&nbsp;&nbsp;(<%= sign_in_link({ :class => 'nav_link' }) %> to save this search)</span>
 <% end # if the user is logged in -%>

@@ -23,6 +23,7 @@ class ExhibitsController < ApplicationController
     @use_tabs = true
     @use_signin= true
     @site_section = :exhibits
+    @uses_yui = true
     return true
   end
   public

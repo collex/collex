@@ -17,5 +17,6 @@
 	
 <div class="my9s_instructions">
 	<span>You are not logged in.</span> 
-	<p><%= link_to('Sign in', { :controller => 'login'}, :class => 'nav_link') %> or <%= link_to('create an account', { :controller => 'login', :action => 'signup' }, :class => 'nav_link' ) %> to collect and tag items, save searches, create exhibits, and edit your profile.</p>
+	<p><%= sign_in_link({ :class => 'nav_link'}) %> or <%= sign_up_link({ :class => 'nav_link' }) %> to collect and tag items, save searches, create exhibits, and edit your profile.</p>
 </div>
+

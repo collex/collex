@@ -107,7 +107,7 @@
 <script type="text/javascript" src="<%= yui_path %>/build/editor/editor<%= min %>.js"></script>	
 <script type="text/javascript" src="<%= yui_path %>/build/dragdrop/dragdrop<%= min %>.js"></script>
 <script type="text/javascript" src="<%= yui_path %>/build/resize/resize<%= min %>.js"></script>
-<%= javascript_include_tag 'input_dialog', 'modal_dialog', 'initialize_inplacericheditor' %>
+<%= javascript_include_tag 'input_dialog', 'modal_dialog', 'initialize_inplacericheditor', 'general_dialog', 'login' %>
 <% end -%>
 
 <!-- section scripts -->
@@ -128,7 +128,7 @@ end
 
 </head>
 <body class=" yui-skin-sam">
-	
+	<div id="popup_dialog_anchor"></div>
 	<div id="mainContent">
 
 	<div id="container">
