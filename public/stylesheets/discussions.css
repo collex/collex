@@ -1,5 +1,10 @@
+.discussion_thread_list_item {
+	margin-left: 25px;
+}
+
 .discussion_thread_list {
 	border: 1px solid gray;
+	width: 100%;
 }
 
 .reported_comment {
