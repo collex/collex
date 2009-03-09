@@ -18,7 +18,7 @@
 /*global YAHOO */
 
 var GeneralDialog = Class.create({
-	initialize: function (parent_id, this_id, title, elements) {
+	initialize: function (parent_id, this_id, title, elements, flash_notice) {
 		this.class_type = 'GeneralDialog';	// for debugging
 
 		// private variables
@@ -48,7 +48,7 @@ var GeneralDialog = Class.create({
 		// Create all the html for the dialog
 		var listenerArray = [];
 		var body = new Element('div');
-		body.appendChild(new Element('div', { id: this_id + 'flash', 'class': 'flash_notice' }));
+		body.appendChild(new Element('div', { id: this_id + 'flash', 'class': 'flash_notice' }).update(flash_notice));
 		elements.each(function (el){
 			var elClass = el.page;
 			body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-title", style: 'display:none;' }).update(el.title));

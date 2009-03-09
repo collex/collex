@@ -19,12 +19,29 @@
 
 // This contains popup dialogs for signing in, my account info, creating an account, and sign in help
 
+var RedirectIfLoggedIn = Class.create({
+	initialize: function (parent_id, url, message, isLoggedIn) {
+		this.class_type = 'RedirectIfLoggedIn';	// for debugging
+		
+		if (isLoggedIn)
+			window.location = url;
+		else {
+			var dlg = new SignInDlg();
+			dlg.setInitialMessage(message);
+			dlg.setRedirectPage(url);
+			dlg.show(parent_id, 'sign_in'); 
+		}
+	}
+});
+
 var SignInDlg = Class.create({
 	initialize: function () {
 		this.class_type = 'SignInDlg';	// for debugging
 
 		// private variables
 		var This = this;
+		var initialFlashMessage = "";
+		var redirectPage = "";
 		
 		// private functions
 		this.changeView = function (event, view)
@@ -63,12 +80,26 @@ var SignInDlg = Class.create({
 			els.each(function(el) { p[el.id] = el.value; });
 			var x = new Ajax.Request(url, {
 				parameters : p,
-				onSuccess : function(resp) { $(flash_id).update(resp.responseText); window.location.reload(true); },
+				onSuccess : function(resp) {
+					$(flash_id).update(resp.responseText);
+					if (redirectPage === "")
+						window.location.reload(true);
+					else
+						window.location = redirectPage;
+				},
 				onFailure : function(resp) { $(flash_id).update(resp.responseText); }
 			});
 		};
 
 		// privileged methods
+		this.setInitialMessage = function (message) {
+			initialFlashMessage = message;
+		};
+		
+		this.setRedirectPage = function (url) {
+			redirectPage = url;
+		}
+		
 		this.show = function (parent_id, view, username, email) {
 
 			var elements = [
@@ -206,7 +237,7 @@ var SignInDlg = Class.create({
 				}
 			];
 			
-			var dlg = new GeneralDialog(parent_id, "login_dlg", "Collex Account", elements);
+			var dlg = new GeneralDialog(parent_id, "login_dlg", "Collex Account", elements, initialFlashMessage);
 			this.changeView(null, view);
 			dlg.center();
 		};
