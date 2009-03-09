@@ -39,8 +39,8 @@
 					<input type="hidden" name="topic_id" value="<%= params[:topic_id] %>">
 					<input type="text" name="title" value="Enter a discussion topic here" /><br />
 					<textarea name="comment"></textarea><br />
-					<%= rounded_button("post", "post_id", " document.post_comment.submit();") %>
-					<%= rounded_button("cancel", "cancel_id", "window.location = '/discussion'") %>
+					<%= rounded_button("post", "post_id", " document.post_comment.submit();", 'red') %>
+					<%= rounded_button("cancel", "cancel_id", "window.location = '/discussion'", 'red') %>
 				</form>
 			</td>
 		</tr>

@@ -20,5 +20,5 @@
 	<a class="ext_link" target="_blank" href="<%= user.link %>" ><%= user.fullname %></a>
 	<%= comment.updated_at.strftime("%b %d, %Y %I:%M%p") %>
 	<%= rounded_button("report", "report_id_#{comment.id}", 
-		"var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;") %>
+		"var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'gray') %>
 </div>

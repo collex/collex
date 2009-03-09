@@ -47,9 +47,9 @@
 <div class="discussion_action_bar">
 	<% if is_logged_in? -%>
 		<%= rounded_button("post comment", "post_comment_id", 
-			"var dlg = new NewDiscussionCommentDlg({ thread_id: #{thread_id}, submit_url: '/discussion_threads/post_comment_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;") %>
+			"var dlg = new NewDiscussionCommentDlg({ thread_id: #{thread_id}, submit_url: '/discussion_threads/post_comment_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'red') %>
 		<%= rounded_button("post object", "post_object_id", 
-			"var dlg = new NewThreadObjectDlg({thread_id: #{thread_id}, obj_list: gCollectedObjects, exhibit_list: gExhibitNames, type_list: gIllustrationTypes, submit_url: '/discussion_threads/post_object_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;") %>
+			"var dlg = new NewThreadObjectDlg({thread_id: #{thread_id}, obj_list: gCollectedObjects, exhibit_list: gExhibitNames, type_list: gIllustrationTypes, submit_url: '/discussion_threads/post_object_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'red') %>
 	<% end -%>
 </div>
 

@@ -36,8 +36,8 @@ module ApplicationHelper
 #    "</script>\n"
 #  end
   
-  def rounded_button(text, id, action)
-    "<div id='#{id}' class='rounded_button_left' onclick='#{action.gsub('\'', '"')}; return false;'><div class='rounded_button_middle'><div class='rounded_button_right'>\n" +
+  def rounded_button(text, id, action, color)
+    "<div id='#{id}' class='#{color}_rounded_button_left' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_middle'><div class='#{color}_rounded_button_right'>\n" +
     "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
     "</div></div></div>"
   end
