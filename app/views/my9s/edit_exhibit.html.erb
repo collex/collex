@@ -48,7 +48,7 @@ document.observe('dom:loaded', function() {
 			<%= link_to "My9s", { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
-		<div id="overview_data" class="edit_exhibit_box" action="/my9s/edit_exhibit_overview" ajax_action_element_id="overview_data">
+		<div id="overview_data" class="edit_exhibit_box">
 			<%= render :partial => 'overview_data', :locals => { :exhibit => @exhibit, :show_immediately => false } %>
 		</div> <% # Exhibit iverview data %>
 

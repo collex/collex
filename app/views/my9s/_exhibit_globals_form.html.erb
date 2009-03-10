@@ -35,11 +35,11 @@
 	<tr> 
 		<td>Sharing:</td> 
 		<td>
-			<%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog(gLicenseInfo, #{exhibit.is_published}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;") %>
+			<%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog(gLicenseInfo, #{exhibit.get_sharing_int()}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;") %>
 		</td>
 		<td>
 			<span id="overview_published" class="overview_field"><%= exhibit.published? ? "Visible to Everyone using Creative Commons' #{exhibit.get_sharing()} License" : "Visible to Just Me" %>
-				<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog(gLicenseInfo, #{exhibit.is_published}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;", { :class => "modify_link" }) %>
+				<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog(gLicenseInfo, #{exhibit.get_sharing_int()}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;", { :class => "modify_link" }) %>
 			</span>
 		</td> 
 	</tr> 

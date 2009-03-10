@@ -404,6 +404,9 @@ function initOutline(div_id)
 
 function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 {
+	$(update_id).setAttribute('action', "/my9s/edit_exhibit_overview");
+	$(update_id).setAttribute('ajax_action_element_id', "overview_data");
+	
 	var data = $$("." + data_class);
 
 	// Now populate a hash with all the starting values.	 The data we are starting with is all on the page with the data_class class.

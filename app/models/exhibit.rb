@@ -17,9 +17,9 @@
 class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
   has_many :exhibit_objects, :dependent=>:destroy
-  
+
   def self.factory(user_id)
-    exhibit = Exhibit.create(:title =>'Untitled', :user_id => user_id)
+    exhibit = Exhibit.create(:title =>'Untitled', :user_id => user_id, :thumbnail => '', :visible_url => '', :is_published => 0)
     exhibit.insert_page(1)
     return exhibit
   end
@@ -86,6 +86,7 @@ class Exhibit < ActiveRecord::Base
 
   def self.get_sharing_text(s)
     case s
+      when nil: return ""
       when 0: return ""
       when 1: return "This license lets others distribute, remix, tweak, and build upon your work, even commercially, as long as they credit you for the original creation. This is the most accommodating of licenses offered, in terms of what others can do with your works licensed under Attribution."
       when 2: return "This license lets others remix, tweak, and build upon your work even for commercial reasons, as long as they credit you and license their new creations under the identical terms. This license is often compared to open source software licenses. All new works based on yours will carry the same license, so any derivatives will also allow commercial use."
@@ -98,15 +99,20 @@ class Exhibit < ActiveRecord::Base
   end
 
   def published?()
-    return is_published != 0
+    return is_published != nil && is_published != 0
   end
   
   def get_sharing()
     return Exhibit.get_sharing_static(is_published)
   end
   
+  def get_sharing_int()
+    return is_published == nil ? 0 : is_published
+  end
+  
   def self.get_sharing_static(s)
     case s
+      when nil: return "Not Shared"
       when 0: return "Not Shared"
       when 1: return "Attribution"
       when 2: return "Attribution Share Alike"
@@ -146,7 +152,7 @@ class Exhibit < ActiveRecord::Base
       when 4: return "by-nc"
       when 5: return "by-nc-sa"
       when 6: return "by-nc-nd"
-      else return ""
+      else return "ERROR"
     end
   end
 
@@ -165,7 +171,7 @@ class Exhibit < ActiveRecord::Base
   end
   
   def self.get_sharing_icon_url(is_published)
-    if is_published != 0
+    if is_published != nil && is_published != 0
       return "<img alt='Creative Commons License' style='border-width:0' src='http://i.creativecommons.org/l/#{get_sharing_license_type(is_published)}/3.0/us/88x31.png' />"
     else
       return "<img alt='Creative Commons License' height='31' style='border-width:0' src='/images/not_shared.jpg' />"
