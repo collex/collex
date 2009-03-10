@@ -53,16 +53,16 @@ class ApplicationController < ActionController::Base
       headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     end
       
-#    def authorize
-#      unless session[:user] 
-#        flash[:notice] = "please log in" 
-#      
-#        # save the URL the user requested so we can hop back to it after login
-#        session[:jumpto] = request.request_uri if not request.xhr?
-#      
-#        redirect_to(:controller => "login", :action => "login") and return false
-#      end 
-#    end 
+    def authorize
+      unless session[:user] 
+        flash[:notice] = "please log in" 
+      
+        # save the URL the user requested so we can hop back to it after login
+        session[:jumpto] = request.request_uri if not request.xhr?
+      
+        redirect_to(:controller => "login", :action => "login") and return false
+      end 
+    end 
 
     def is_logged_in?
       session[:user] ? true : false
