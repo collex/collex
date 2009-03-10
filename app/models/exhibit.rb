@@ -198,6 +198,13 @@ class Exhibit < ActiveRecord::Base
     str = str + "]"
     return str
   end
+  
+  def get_id_if_no_visible_url()
+    if visible_url == nil || visible_url.length == 0
+      return "#{id}"
+    end
+    return ''
+  end
 
 #  def self.find_by_section_id(section_id)
 #    section = ExhibitSection.find(section_id)

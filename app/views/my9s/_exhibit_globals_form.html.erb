@@ -22,7 +22,7 @@
 <table class="edit_exhibit_form"> 
 	<tr> 
 		<td>Visible URL:</td> 
-		<td colspan="2">http://nines.org/exhibits/<span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></td> 
+		<td colspan="2">http://<%= request.host_with_port() %>/exhibits/<%= exhibit.get_id_if_no_visible_url() %><span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></td> 
 	</tr> 
 	<tr> 
 		<td>Thumbnail:</td> 
