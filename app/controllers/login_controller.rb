@@ -86,19 +86,19 @@ class LoginController < ApplicationController
       if params[:password]
         begin
           if params[:email] !~ /\@/
-            flash.now[:notice] = "An e-mail address is required"
+            flash[:notice] = "An e-mail address is required"
             return
           end
           if params[:password] == params[:password2]
             session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:email])
-            flash.now[:notice] = "Profile updated"
+            flash[:notice] = "Profile updated"
             redirect_to get_page_to_return_to()
             return
           else
-            flash.now[:notice] = "Passwords do not match"
+            flash[:notice] = "Passwords do not match"
           end
         rescue UsernameAlreadyExistsException => e
-          flash.now[:notice] = e.message
+          flash[:notice] = e.message
         end
       end
       # if there was an error, we fall through, so go back to the original action
