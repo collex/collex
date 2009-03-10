@@ -6,7 +6,7 @@
 <% owner = User.find(exhibit.user_id) -%>
 	<tr>
 		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
-		<td class="exhibit_link"><a class="nav_link" href="/exhibits/<%= exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by
+		<td class="exhibit_link"><a class="nav_link" href="/exhibits/<%= exhibit.visible_url && exhibit.visible_url.length > 0 ? exhibit.visible_url : exhibit.id %>"><%= exhibit.title %></a>&nbsp;by
 			<% if owner.link != nil && owner.link != "" -%>
 				<%= link_to(owner.fullname, owner.link, :class => 'nav_link') %>
 			<% else -%>
