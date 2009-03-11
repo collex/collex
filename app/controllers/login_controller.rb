@@ -30,9 +30,9 @@ class LoginController < ApplicationController
   # TODO-PER: old way
   helper_method :get_page_to_return_to
   def get_page_to_return_to()
-    return session[:current_page] if session[:current_page]
+    return session[:current_page] if session && session[:current_page]
 
-    if request.env["HTTP_REFERER"] && request.env["HTTP_REFERER"] !~ /login/
+    if request && request.env && request.env["HTTP_REFERER"] && request.env["HTTP_REFERER"] !~ /login/
       return request.env["HTTP_REFERER"]
     end
     return "/"
