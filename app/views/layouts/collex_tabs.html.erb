@@ -38,6 +38,7 @@
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/container/assets/skins/sam/container.css" />
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/editor/assets/skins/sam/editor.css" />
   <link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/resize/assets/skins/sam/resize.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/assets/skins/sam/skin.css">
 
 	<!-- section styles -->
 	<%= case @site_section 
@@ -173,8 +174,8 @@ end
     </div>
 	</div>
 	
-	<!-- for Google Analytics -->
 	<% if run_analytics -%>
+		<!-- for Google Analytics -->
 		<script type="text/javascript">
 			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
