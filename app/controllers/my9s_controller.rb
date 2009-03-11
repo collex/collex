@@ -411,6 +411,7 @@ class My9sController < ApplicationController
       
       value = params['value']
       value = clean_up_links(value)
+      value = remove_empty_spans(value)
       element = ExhibitElement.find(element_id)
       if first_one
         element.element_text = value
@@ -690,6 +691,18 @@ class My9sController < ApplicationController
     end
     return str
   end
+  
+  def remove_empty_spans(text)
+    # we are looking for "<span...></span>"
+    text = text.gsub(/<span[^>]*><\/span>/, '')
+#    text = text.gsub(/<span>.*<\/span>/) { |s|
+#      str = s[6, s.length-13]
+#      puts "Replacement: " + str
+#      return str
+#    }
+    return text
+  end
+  
   # Some private convenience functions to make the above routine clearer
   def extract_link_from_encoded_a(str)
     el= str.split('>', 2)  # find the end of the opening part of the span tag.
