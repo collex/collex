@@ -112,11 +112,36 @@ ActiveRecord::Schema.define(:version => 102) do
     t.datetime "updated_at"
   end
 
+  create_table "exhibit_page_types", :force => true do |t|
+    t.string  "name"
+    t.string  "description"
+    t.string  "template"
+    t.integer "min_sections"
+    t.integer "max_sections"
+    t.integer "exhibit_type_id"
+    t.string  "title_message"
+    t.string  "annotation_message"
+  end
+
   create_table "exhibit_pages", :force => true do |t|
     t.integer  "exhibit_id", :limit => 10, :precision => 10, :scale => 0
     t.integer  "position",   :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "exhibit_section_types", :force => true do |t|
+    t.string  "description"
+    t.string  "template"
+    t.string  "name"
+    t.integer "exhibit_page_type_id"
+    t.string  "title_message"
+    t.string  "annotation_message"
+  end
+
+  create_table "exhibit_section_types_exhibit_types", :id => false, :force => true do |t|
+    t.integer "exhibit_type_id"
+    t.integer "exhibit_section_type_id"
   end
 
   create_table "exhibit_sections", :force => true do |t|
@@ -125,6 +150,44 @@ ActiveRecord::Schema.define(:version => 102) do
     t.integer  "has_border",      :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "exhibit_types", :force => true do |t|
+    t.string "description"
+    t.text   "template"
+    t.string "title_message"
+    t.string "annotation_message"
+  end
+
+  create_table "exhibited_items", :force => true do |t|
+    t.integer "exhibited_section_id", :default => 0, :null => false
+    t.string  "citation"
+    t.text    "annotation"
+    t.integer "position"
+    t.string  "uri"
+    t.string  "type"
+  end
+
+  create_table "exhibited_pages", :force => true do |t|
+    t.integer "exhibit_id"
+    t.integer "exhibit_page_type_id"
+    t.integer "position"
+    t.string  "title"
+    t.text    "annotation"
+  end
+
+  create_table "exhibited_properties", :force => true do |t|
+    t.integer "exhibited_resource_id"
+    t.string  "name"
+    t.string  "value"
+  end
+
+  create_table "exhibited_sections", :force => true do |t|
+    t.integer "exhibited_page_id"
+    t.integer "exhibit_section_type_id", :default => 0, :null => false
+    t.integer "position"
+    t.string  "title"
+    t.text    "annotation"
   end
 
   create_table "exhibits", :force => true do |t|
