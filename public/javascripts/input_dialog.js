@@ -84,7 +84,10 @@ InputDialog.prototype = {
 		var buttons = $$("a[clickaction]");
 		buttons.each(function(but) {
 			var count = but.getAttribute('clickaction');
-			but.observe('click', this._buttonAction[count]);
+			if (this._buttonAction[count].context === null || this._buttonAction[count].context === undefined)
+				but.observe('click', this._buttonAction[count].action);
+			else
+				Event.observe(but, 'click', this._buttonAction[count].action.bindAsEventListener(this._buttonAction[count].context));
 		}, this);
 	},
 	
@@ -223,7 +226,7 @@ InputDialog.prototype = {
 		var td = new Element('td');
 		arrButtons.each(function(but) {
 			var count = this._buttonAction.length;
-			this._buttonAction[count] = but.action;
+			this._buttonAction[count] = { action: but.action, context: but.context };
 			var el = new Element('a', { href: "#", clickaction: count }).update(but.text);
 			var el2 = el.wrap('span', { 'class': 'first-child' });
 			var el3 = el2.wrap('span', { 'class': 'yui-button yui-link-button' });

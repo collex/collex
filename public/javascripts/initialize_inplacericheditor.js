@@ -210,41 +210,153 @@ LinkDlgHandler.prototype = {
 	},
 	
 	_modalDlg: null,
+
+//	onShowLinkDlg : function(modalDlg, id, elSelectionParent, hasSelection)
+//	{
+//		this._modalDlg = modalDlg;
+//		
+//		// see if there is already a link
+//		var par = $(elSelectionParent);
+//		var starting_selection = "";
+//		var starting_type = 0;
+//		
+//		var ext_link = par.getAttribute('real_link');
+//		var cls = par.className;
+//		var is_nines = cls.indexOf('nines_linklike') >= 0;
+//		var is_ext = cls.indexOf('ext_linklike') >= 0;
+//		if ((par.tagName == 'SPAN') && is_nines)
+//		{
+//			modalDlg.selectNode(elSelectionParent);
+//			starting_type = 0;
+//			starting_selection = ext_link;
+//		}
+//		else if ((par.tagName == 'SPAN') && is_ext)
+//		{
+//			modalDlg.selectNode(elSelectionParent);
+//			starting_type = 1;
+//			starting_selection = ext_link;
+//		}
+//		else
+//		{
+//			// Be sure that at least one character was selected
+//			if (!hasSelection)
+//			{
+//				alert("There is nothing selected. First select some text, then press the link button again.");
+//				return;
+//			}
+//		}
+//		
+//		// Put up the selection dialog
+//		this._createLinkDlg(id, starting_type, starting_selection);
+//	},
 	
-	onShowLinkDlg : function(modalDlg, id, elSelectionParent, hasSelection)
+	_getFirstOf : function (str, start, match1, match2) {
+		var i = str.substring(start).indexOf(match1);
+		var j = str.substring(start).indexOf(match2);
+		if (i >= 0 && (j == -1 || i < j))
+			return { found: match1, index: start + i };
+		if (j >= 0)
+			return { found: match2, index: start + j };
+		return { found: "" };
+	},
+	
+	_getLastOf : function (str, end, match1, match2) {
+		var i = str.substring(0, end).lastIndexOf(match1);
+		var j = str.substring(0, end).lastIndexOf(match2);
+		if (i >= 0 && i > j)
+			return { found: match1, index: i };
+		if (j >= 0)
+			return { found: match2, index: j };
+		return { found: "" };
+	},
+	
+	_getEncompassingLink : function ( rawHtmlOfEditor, iPos ) {
+		// The html passed may have multiple levels of spans and other tags. We only care about spans, though.
+		// We know if we got this far that the selection completely is encompassed by legal html, so we only need
+		// to look at the starting position, since the end position will give the same results.
+		// The algorithm is: look backwards in the string for either "</span>" or "real_link".
+		// If "</span" is found, then ignore anything until before the next "<span" element.
+		// If "real_link" is found, then look backwards for the "<span" element. That is the start.
+		// If the start was not found, then return null.
+		// If the start was found, then look forward for "<span" and "</span>".
+		// If "<span" was found, then ignore everything until after the next "</span>".
+		// If "</span>" was found, then that is the end. Return the [start, end] pair.
+		
+		var done = false;
+		var iStart = iPos;
+		while (!done) {
+			var ret = this._getLastOf(rawHtmlOfEditor, iStart, "</span>", "real_link");
+			if (ret.found === "</span>") {
+				iStart = rawHtmlOfEditor.substring(0, ret.index).lastIndexOf("<span");	// skip this span, so set the index to just before it.
+			} else if (ret.found === "real_link") {
+				iStart = rawHtmlOfEditor.substring(0, ret.index).lastIndexOf("<span");
+				done = true;
+			} else
+				return null;
+		}
+		
+		done = false;
+		var iEnd = iPos;
+		while (!done) {
+			var ret = this._getFirstOf(rawHtmlOfEditor, iEnd, "</span>", "<span");
+			if (ret.found === "</span>") {
+				iEnd = ret.index + 7;	// add the length of the tag itself
+				done = true;
+			} else if (ret.found === "<span") {
+				iEnd = rawHtmlOfEditor.substring(ret.index).lastIndexOf("</span>");	// skip this span, so set the index to just before it.
+			} else
+				return null;
+		}
+		
+		return [ iStart, iEnd ];
+	},
+	
+	_getInternalLink : function (str)
+	{
+		// This will only find the first link. That's ok, that's what we want.
+		var i = str.indexOf('real_link');
+		if (i < 0)
+			return null;
+		
+		var j = str.substring(i+11).indexOf('"');
+		return str.substring(i+11, i+11+j);
+	},
+	
+	onShowLinkDlg : function(modalDlg, id, rawHtmlOfEditor, iStartPos, iEndPos)
 	{
 		this._modalDlg = modalDlg;
+		this._iStartPos = iStartPos;
+		this._iEndPos = iEndPos;
+		this._rawHtmlOfEditor = rawHtmlOfEditor;
 		
-		// see if there is already a link
-		var par = $(elSelectionParent);
+		// See if there is already a link. There is a link if there is one of our spans either inside the selection or outside the selection.
+		// The which one it is matters. If there is a link outside the selection, then we want to expand the selection area to the size of the link
+		// and pass the selection value to the dialog as a starting place.
+		// If there is a link inside the selection (and there could potentially be two links!) then we keep the selection size as it is passed to us, start
+		// the dialog with the first link found, and, if the user presses ok, then remove the interior links and replace them with the larger link.
+		// If there are neither of the above is true, then we put up the dialog with the first NINES link selected.
+		
 		var starting_selection = "";
 		var starting_type = 0;
-		
-		var ext_link = par.getAttribute('real_link');
-		var cls = par.className;
-		var is_nines = cls.indexOf('nines_linklike') >= 0;
-		var is_ext = cls.indexOf('ext_linklike') >= 0;
-		if ((par.tagName == 'SPAN') && is_nines)
-		{
-			modalDlg.selectNode(elSelectionParent);
-			starting_type = 0;
-			starting_selection = ext_link;
-		}
-		else if ((par.tagName == 'SPAN') && is_ext)
-		{
-			modalDlg.selectNode(elSelectionParent);
-			starting_type = 1;
-			starting_selection = ext_link;
-		}
-		else
-		{
-			// Be sure that at least one character was selected
-			if (!hasSelection)
-			{
-				alert("There is nothing selected. First select some text, then press the link button again.");
-				return;
+
+		// See if a link encompasses the selection.
+		var ret = this._getEncompassingLink(rawHtmlOfEditor, iStartPos);
+		if (ret) {
+			this._iStartPos = ret[0];
+			this._iEndPos = ret[1];
+			var selStr = rawHtmlOfEditor.substring(this._iStartPos, this._iEndPos);
+			if (selStr.indexOf('ext_linklike') > 0)
+				starting_type = 1;
+			var i = selStr.indexOf('real_link') + 11;
+			var j = selStr.substring(i).indexOf('"');
+			starting_selection = selStr.substring(i, i+j);
+		} else { // see if a link is contained in the selection. If so, use the first one.
+			ret = this._getInternalLink(rawHtmlOfEditor.substring(this._iStartPos, this._iEndPos));
+			if (ret) {
+				starting_selection = ret;
 			}
 		}
+		
 		
 		// Put up the selection dialog
 		this._createLinkDlg(id, starting_type, starting_selection);
@@ -252,22 +364,37 @@ LinkDlgHandler.prototype = {
 	
 	_linkTypes: [ 'NINES Object', 'External Link' ],
 	
+	_removeLink : function(event)
+	{
+		var html = this._splitRawHtml();
+		html.selection = this._removeLinksFromSelection(html.selection);
+		this._modalDlg.editor.setEditorHTML(html.prologue + html.selection + html.ending);
+		this._popup.cancel();
+		//this._popup.destroy();
+	},
+	
 	_createLinkDlg : function(element_id, starting_type, starting_selection)
 	{
-		var dlg = new InputDialog(element_id);
+		this._popup = new InputDialog(element_id);
 		
 		var values = starting_type == 0 ? { ld_type: this._linkTypes[starting_type], ld_nines_object: starting_selection } : { ld_type: this._linkTypes[starting_type], ld_link_url: starting_selection };
 		var size = 52;
-		dlg.addSelect('Type of Link:', 'ld_type', this._linkTypes, this._selectionChanged);
-		dlg.addTextInput('Link URL:', 'ld_link_url', size, 'ld_link_only');
-		dlg.addHr();
+		this._popup.addSelect('Type of Link:', 'ld_type', this._linkTypes, this._selectionChanged);
+		this._popup.addTextInput('Link URL:', 'ld_link_url', size, 'ld_link_only');
+		this._popup.addHr();
 		var list = new CreateList(gCollectedObjects, 'ld_nines_only', values['ld_nines_object'], 'ld_nines_object');
-		dlg.addList('ld_nines_object', list.list, 'ld_nines_only');
+		this._popup.addList('ld_nines_object', list.list, 'ld_nines_only');
+
+		if (starting_selection.length > 0) {
+			this._popup.addButtons([ 
+				{ text: "Remove Link", action: LinkDlgHandler.prototype._removeLink, context: this }
+			]);
+		}
 	
 		// Now, everything is initialized, fire up the dialog.
 		var el = $(element_id);
-		dlg.setOkFunction(this._processLink, this);
-		dlg.show("Set Link", getX(el), getY(el), 530, 350, values );
+		this._popup.setOkFunction(this._processLink, this);
+		this._popup.show("Set Link", getX(el), getY(el), 530, 350, values );
 		this._doSelectionChanged(this._linkTypes[starting_type]);
 	},
 	
@@ -294,23 +421,49 @@ LinkDlgHandler.prototype = {
 		}
 	},
 	
+	_removeLinksFromSelection: function (strSel)
+	{
+		var str = strSel;
+		// find "<span....real_link...>" and remove it, and also remove the matching "</span>"
+		var iRealLink = str.indexOf("real_link");
+		while (iRealLink > 0) {
+			var iStart = str.substring(0, iRealLink).lastIndexOf("<span");
+			var iEnd = str.substring(iRealLink).indexOf(">");
+			var iClose = str.substring(iRealLink).indexOf("</span>");	// TBD-PER: This might not work if there is a complicated set of spans in the selection.
+			if (iStart < 0 || iEnd < 0 || iClose < 0)
+				return strSel;	// something went wrong, so it is safe to not remove anything
+			str = str.substring(0, iStart) + str.substring(iRealLink+iEnd+1, iRealLink+iClose) + str.substring(iRealLink+iClose+7);
+			iRealLink = str.indexOf("real_link");
+		}
+		return str;
+	},
+	
+	_splitRawHtml: function ()
+	{
+		return { prologue: this._rawHtmlOfEditor.substring(0, this._iStartPos),
+			selection: this._rawHtmlOfEditor.substring(this._iStartPos, this._iEndPos),
+			ending: this._rawHtmlOfEditor.substring(this._iEndPos)
+		};
+	},
+	
 	_processLink: function(This, values)
 	{
-		var el = This._modalDlg.wrapSelection('span');
-
+		var html = This._splitRawHtml();
+		html.selection = This._removeLinksFromSelection(html.selection);
+		
 		if (values['ld_type'] == This._linkTypes[0])
 		{
-			//<span real_link="nines_uri" class="nines_linklike">target</span>
-			el.setAttribute('real_link', values['ld_nines_object']);
-			el.setAttribute('title', 'NINES Object: ' + values['ld_nines_object']);
-			el.setAttribute('class', 'nines_linklike');
+			//<span title="NINES Object: uri" real_link="uri" class="nines_linklike">target</span>
+			html.selection = '<span title="NINES Object: ' + values['ld_nines_object'] + '" real_link="' + 
+				values['ld_nines_object'] + '" class="nines_linklike">' + html.selection + "</span>";
+			This._modalDlg.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 		}
 		else
 		{
-			//<span real_link="ext_link" class="ext_linklike">target</span>
-			el.setAttribute('real_link', values['ld_link_url']);
-			el.setAttribute('title', 'External Link: ' + values['ld_link_url']);
-			el.setAttribute('class', 'ext_linklike');
+			//<span title="External Link: url" real_link="url" class="ext_linklike">target</span>
+			html.selection = '<span title="NINES Object: ' + values['ld_link_url'] + '" real_link="' + 
+				values['ld_link_url'] + '" class="ext_linklike">' + html.selection + "</span>";
+			This._modalDlg.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 		}
 	}
 };
@@ -331,6 +484,8 @@ var CreateList = Class.create({
 		else
 			This.list += "<table class='input_dlg_list' >";
 		items.each(function(obj) {
+			if (initial_selected_uri === "")	// If nothing is selected, then automatically select the first one.
+				initial_selected_uri = obj.uri;
 			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri == initial_selected_uri, value_field);
 		});
 		This.list += "</table>";

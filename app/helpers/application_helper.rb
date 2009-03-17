@@ -17,7 +17,7 @@
 # The methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def collex_version
-    return "1.4.7.11"
+    return "1.4.7.12"
   end
   
   def is_admin?
@@ -325,7 +325,7 @@ private
   end
   
   def extract_trailing_html(span)
-    el = span.split('</span>')
+    el = span.split('</span>', 2)
     return "" if el.length < 2
     
     return el[1]

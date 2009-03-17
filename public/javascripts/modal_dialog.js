@@ -14,8 +14,248 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
+/*global YAHOO */
+/*global Class, $, $$, $H, Ajax */
 
-ModalDialog = Class.create();
+//
+// Monkey patch to get the editor to return the real selection.
+//
+var debugStr = "";
+
+// This searches the node for the number of previous siblings it has.
+YAHOO.widget.SimpleEditor.prototype.getNumSibs = function (node) {
+	var sibs = 0;
+	var x = node;
+	while (x.previousSibling) {
+		x = x.previousSibling;
+		sibs++;
+	}
+	return sibs;	
+};
+
+YAHOO.widget.SimpleEditor.prototype.getXPathPosition = function (node) {
+	// This figures out the xpath of the element in the node.
+	// It traces back through all the parentNodes, and all the previousSiblings.
+	// The position of each level is the number of siblings before it.
+	var siblings = this.getNumSibs(node);
+	var parents = [];
+	var x = node;
+	while (x.parentNode.tagName !== 'BODY') {
+		if (x.parentNode)
+			parents.push(this.getNumSibs(x.parentNode));
+		x = x.parentNode;
+	}
+
+	// We discovered the parent's positions by working backwards, so we want to reverse the array before returning it.
+	var xpath = [];
+	for (var i = parents.length-1; i >= 0; i-- )
+		xpath.push(parents[i]);
+	
+	// And add the current node's position, too.
+	xpath.push(siblings);
+				
+	return xpath;
+};
+
+YAHOO.widget.SimpleEditor.prototype.checkStringForMatchingTags = function (str) {
+	var level = 0;
+	for (var i = 0; i < str.length-1; i++) {
+		if (str[i] === '<') {
+			if (str[i+1] === '/')
+				level--;
+			else
+				level++;
+		}
+		if (level < 0)	// if there is an end tag before a start tag
+			return false;
+	}
+	return level === 0;
+};
+
+YAHOO.widget.SimpleEditor.prototype.splitHtmlIntoArray = function (str) {
+	// Split the string into an array where each element is a string containing either text, a start tag, or an end tag
+	var arr = str.split('<');
+	arr = arr.map(function(i) { return '<' + i; });
+	// We don't want a blank first element, and we don't want the "<" on the first element.
+	if (arr[0] === '<')
+		arr.shift();
+	else
+		arr[0] = arr[0].substring(1);	// Don't want the < on the first element
+	
+	// split out the tags from the text that follows.
+	var arr2 = [];
+	for (var i = 0; i < arr.length; i++) {	// move close tags to the element above
+		if (arr[i].indexOf('>') > 0) {
+			var x = arr[i].split('>');
+			arr2.push(x[0] + '>');
+			arr2.push(x[1]);
+		}
+		else
+			arr2.push(arr[i]);
+	}
+	
+	return arr2;
+};
+
+YAHOO.widget.SimpleEditor.prototype.excludeOuterTagsFromSelection = function (val, aOffset, fOffset) {
+	// Get rid of any tags in the front.
+	while (val[aOffset] === '<') {
+		aOffset = aOffset + val.substring(aOffset).indexOf('>') + 1;
+	}
+	
+	// Get rid of any tags in the back.
+	var x = val[fOffset-1];
+	while (val[fOffset-1] === '>') {
+		fOffset = val.substring(0, fOffset-1).lastIndexOf('<');
+	}
+	return { aOffset: aOffset, fOffset: fOffset };
+};
+
+YAHOO.widget.SimpleEditor.prototype.canInsertTagsAroundSelection = function (val, aOffset, fOffset) {
+	// Be sure that the two insertion points will make legal HTML code. We do that by making sure that there are the same
+	// number of start and end tags inside the selection.
+	var selection = val.substring(aOffset, fOffset);
+	var match = this.checkStringForMatchingTags(selection);
+	
+	if (!match) {
+		// Get rid of the bounding tags and try again.
+		var newSel = this.excludeOuterTagsFromSelection(val, aOffset, fOffset);
+		aOffset = newSel.aOffset;
+		fOffset = newSel.fOffset;
+		selection = val.substring(aOffset, fOffset);
+		match = this.checkStringForMatchingTags(selection);
+	}
+	
+	if (!match) {
+		// The user selected in the middle of a couple of different levels of nodes. This would
+		// create illegal HTML if we tried to inject start and end tags there.
+		return { errorMsg: "You cannot create a link when the selection is over different levels. [" + selection + ']' };
+	}
+	
+	return { aOffset: aOffset, fOffset: fOffset, selection: selection, errorMsg: null };
+};
+
+// This fixes a bug in FF 3.0.7 where sometimes only one side of the selection is returned.
+YAHOO.widget.SimpleEditor.prototype.guessSelectionEnd = function (val, selStart, selStr) {
+	var ln = (selStr+'').length;	// Without adding an empty string, the length function returns "undefined" on FF 3.0.7
+	var v = val.substring(selStart-ln, selStart);
+	if (v === selStr)
+		return selStart - ln;
+	v = val.substring(selStart, selStart+ln);
+	if (v === selStr)
+		return selStart + ln;
+	return -1;
+};
+
+// Get the user's selection in offsets into the raw HTML.
+// A hash is returned with the start and end positions, and an error string, if any.
+YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
+	if (this.browser.ie || this.browser.opera) {
+		return null;
+	}
+	
+	// Use the editor's routine to get the selection. This will be really different between IE 6/7 and other browsers
+	var s = this._getSelection();
+	if (this.browser.webkit) {
+		if (s+'' === '') {
+			s = null;
+		}
+	} else {
+		if (!s || (s.toString() === '') || (s === undefined)) {
+			s = null;
+		}
+	}
+
+	if (s.rangeCount !== 1)
+		return { errorMsg: "You cannot create a link when more than one area is selected." };
+	
+	// get what we need out of the selection object
+	var a = s.anchorNode;
+	var aoff = s.anchorOffset;
+	var f = s.focusNode;
+	var foff = s.focusOffset;
+	var selStr = s.toString();
+	
+	// In Firefox 3.0.7, at least, we sometimes aren't returned both sides of the selection. If we get at least
+	// one side, we have the workaround that we can get the selection's text, and we have either the start
+	// or the end of the selection, so we can figure it out (unless there are two repeated strings on either side of
+	// the selection, like "abc|abc" where the bar is the selection point.)
+	if (a.tagName === 'BODY' && f.tagName === 'BODY')	// Neither side was returned. We have nothing to work with.
+		return { errorMsg: "The selection cannot be determined. Try selecting in a different way." };
+	
+	// if we don't have the info in the selection for one side, we make that object null, and compensate below.
+	var apos = (a.tagName === 'BODY') ? null : this.getXPathPosition(a);
+	var fpos = (f.tagName === 'BODY') ? null : this.getXPathPosition(f);
+
+	// Now parse the raw string to figure out where the xpaths created above (in aoff and foff) fall in the string.
+	var val = this.getEditorHTML();
+	var arr = this.splitHtmlIntoArray(val);
+
+	// Now we go through the raw html, create xpath levels for each node, and
+	// keep track of the number of characters consumed so that we can get a
+	// character position of where the selection was in relation to the entire
+	// raw html string.
+	var aOffset = -1;
+	var fOffset = -1;
+	
+	var arrLevels = [ -1 ];
+	var ty = "";
+	var charCount = 0;
+	debugStr = "";
+	arr.each(function(i) {
+		if (i === "<br>") { // the item is self-contained.
+			arrLevels[arrLevels.length-1]++;
+		} else if (i.substring(0, 2) === "</") {	// this array item is an end tag.
+			arrLevels.pop();
+		} else if (i.substring(0, 1) === "<" && i.substring(i.length-3) === "/>") { // the item is self contained
+			arrLevels[arrLevels.length-1]++;
+		} else if (i.substring(0, 1) === "<") {	// this array item is a start tag.
+			arrLevels[arrLevels.length-1]++;
+			arrLevels.push(-1);
+		} else if (i === "" ){	// The item is empty, so don't count it.
+		} else {	// this array item is text.
+			arrLevels[arrLevels.length-1]++;
+		}
+		
+		// See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
+		var match = "";
+		var levelStr = arrLevels.join(',');
+		if (apos && apos.join(',') === levelStr)
+			aOffset = charCount + aoff;
+		if (fpos && fpos.join(',') === levelStr)
+			fOffset = charCount + foff;
+		
+		charCount += i.length;
+		debugStr += arrLevels.join(',') + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.escapeHTML() + "<br />";
+	});
+	
+	// If either offset is missing, try to figure it out by using the selection string.
+	if (aOffset === -1) {
+		aOffset = this.guessSelectionEnd(val, fOffset, selStr);
+	}
+	if (fOffset === -1) {
+		fOffset = this.guessSelectionEnd(val, aOffset, selStr);
+	}
+	
+	// Switch the anchor and the focus in case the user selected from right to left
+	if (aOffset > fOffset) {
+		var x = aOffset;
+		aOffset = fOffset;
+		fOffset = x;
+	}
+	
+	var ret = this.canInsertTagsAroundSelection(val, aOffset, fOffset);
+	if (ret.errorMsg) {
+		// The user selected in the middle of a couple of different levels of nodes. This would
+		// create illegal HTML if we tried to inject start and end tags there.
+		return { errorMsg: ret.errorMsg };
+	}
+
+	return { startPos: ret.aOffset, endPos: ret.fOffset, selection: ret.selection, errorMsg: null };
+};
+
+///////////////////////////////////////////
+var ModalDialog = Class.create();
 
 ModalDialog.prototype = {
 	initialize: function () {
@@ -132,8 +372,10 @@ ModalDialog.prototype = {
 	//content of the RTE and submit the dialog:
 	_handleSave: function() {
 		
-		if( this.usesRichTextArea )
+		if( this.usesRichTextArea ) {
+			this.editor.cleanHTML();
 			this.editor.saveHTML();
+		}
 		
 		this._sendToServer(this.targetElement, this.formID);
 		this.dialog.hide();
@@ -331,33 +573,6 @@ ModalDialog.prototype = {
 		}]
 	},
 	
-//	_setRichTextAreaTiny : function(textAreaId)
-//	{
-//		//create the RTE:
-//		this.editor = new YAHOO.widget.SimpleEditor(textAreaId, {
-//			  width: '400px',
-//				height: '2em',
-//				toolbar: this._toolbarSimple
-//		});
-//
-//		//render the editor explicitly into a container
-//		//within the Dialog's DOM:
-//		this.editor.render();
-//		
-//		//RTE needs a little love to work in in a Dialog that can be 
-//		//shown and hidden; we let it know that it's being
-//		//shown/hidden so that it can recover from these actions:
-//		this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
-//		this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);							
-//		
-//	    this.editor('afterRender', function() {
-//			var toolbar = $(textAreaId + "_toolbar");
-//			toolbar.setStyle({ position: 'absolute', right: '10px' });
-//			var editArea = toolbar.next('.yui-editor-editable-container');
-//			editArea.setStyle({ marginRight: '100px' });
-//		}, this.editor, this);
-//	},
-
 	_processDropCap : function()
 	{
 	    this.editor.on('toolbarLoaded', function() { 
@@ -487,10 +702,13 @@ ModalDialog.prototype = {
 	{
 		//Focus the editor's window 
 		//this.editor._focusWindow(); 
-		this.editor._createCurrentElement(tag);
+		//this.editor._createCurrentElement(tag);
+		
 		// PER: Don't know why the element is created with a spurious element "tag"
-		this.editor.currentElement[0].setAttribute('tag', '');
-		this.editor.currentElement[0].removeAttribute('tag');
+		//this.editor.currentElement[0].setAttribute('tag', '');
+		//this.editor.currentElement[0].removeAttribute('tag');
+		
+		//this.editor._swapEl(this.editor.currentElement[0],'span');
 		return this.editor.currentElement[0];
 	},
 	
@@ -499,49 +717,76 @@ ModalDialog.prototype = {
 		this.editor._selectNode(node);
 	},
 
+//	dumpObj : function (obj, indent)
+//	{
+//		var str = "";
+//		var tab = "";
+//		for (var i = 0; i < indent; i++)
+//			tab += "&nbsp;&nbsp;&nbsp;&nbsp;";
+//			
+//		for (x in obj) {
+//			if (obj[x])
+//				var ty = "x" + obj[x].constructor;
+//			else
+//				var ty = "null null";
+//			var arr = ty.split(' ');
+//			ty = arr[1].replace("(", "");
+//			ty = ty.replace(")", "");
+//			ty = ty.replace(']', "");
+//			if (ty === 'String')
+//				str += tab + ty + ' ' + x + '=' + obj[x].escapeHTML() + "<br />";
+//			else
+//				str += tab + ty + ' ' + x + '=' + obj[x] + "<br />";
+//			if ((ty == 'Text' || ty == 'TextConstructor') && indent == 0) {	// Text for Firefox, TextConstructor for Safari
+//				str += this.dumpObj(obj[x], 1);
+//			}
+//		}
+//		return str;
+//	},
+	
+	formatSelection: function () {
+        var selectedText = this.editor._getSelection().createRange().text;
+        
+        if (selectedText != "") {
+            var newText = "[" + selectedText + "]";
+            this.editor._getSelection().createRange().text = newText;
+        }
+    },
+	
 	_initLinkDlg : function(myEditor, id)
 	{
 		myEditor.on('toolbarLoaded', function() {
 		    //When the toolbar is loaded, add a listener to the insertimage button
 		    this.editor.toolbar.on('createlinkClick', function() {
-				// We only want to allow the user a chance to make a link if they've selected something useful.
-				// That is one of two things: more than one character in the same node (that is, there is no formatting),
-				// or the cursor or selection is in an anchor node already.
-				// In the second case, the current link is preselected when the dialog is shown.
-				// If the user has selected something we can't use, then give a friendly message.
-				// Also, if the user selected part of an existing anchor, then select the entire anchor.
 				
-				// be sure the selection doesn't go over different tags.
-				var s = this.editor._getSelection();
-				
-				try
-				{
-					// for some reason just comparing the nodes isn't reliable, so we will see if they have the same previous and next sibling.
-					var aprev = s.anchorNode.previousSibling;
-					var anext = s.anchorNode.nextSibling;
-					var fprev = s.focusNode.previousSibling;
-					var fnext = s.focusNode.nextSibling;
-					var c1 = (aprev == fprev);
-					var c2 = (anext == fnext);
-					var c3 = (s.anchorNode == s.focusNode)
-					var single = c1 && c2;
-				}
-				catch (e)
-				{
-					// This happens on IE 7
-					// TODO-PER: Figure out why the s object doesn't contain the same thing on IE as other browsers.
-					alert("To create a link, you must first select some text.");
+				// Get the selection object. Unfortunately, what is returned varies widely between browsers.
+				var result = this.editor.getRawSelectionPosition();
+				if (!result) {
+					alert("IE has not been implemented yet.")
+					//this.formatSelection();
 					return false;
 				}
 
-				if (!single)
-				{
-					alert("When creating a link, the selected text may not span across multiple text styles or other links. Please adjust your selection to create a link.");
+				if (result.errorMsg) {
+					alert(result.errorMsg);
 					return false;
 				}
 				
-				this._linkDlgHandler.onShowLinkDlg(this, id, s.focusNode.parentNode, (s.anchorOffset != s.focusOffset));
+				/////////////////////////////////////////////////
+//				var val = this.editor.getEditorHTML();
+//				val = val.substr(0,result.endPos) + "[FOCUS]" + val.substr(result.endPos);
+//				val = val.substr(0,result.startPos) + "[ANCHOR]" + val.substr(result.startPos);
+//				var str = result.selection.escapeHTML() + "<br />" + val.escapeHTML();
+//
+//				var el = $("debug_area");
+//				if (!el) {
+//					el = new Element("div", { id: 'debug_area', style: 'padding: 5px; width: 700px;'});
+//					$("EnterText_modal_dialog").appendChild(el);
+//				}
+//				el.update(debugStr + result.startPos + " " + result.endPos + " " + str);
 
+				this._linkDlgHandler.onShowLinkDlg(this, id, this.editor.getEditorHTML(), result.startPos, result.endPos);
+				
 	            //This is important.. Return false here to not fire the rest of the listeners
 	            return false;
 		    }, this, true);
