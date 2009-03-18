@@ -155,7 +155,7 @@ color:inherit;
 .red_rounded_button_left {
 	background: url(/images/red_button_left.jpg) 0 0 no-repeat;
 	padding-left: 8px;
-	width: 100px;
+	/*width: 100px;*/
 	margin-right: 4px;
 	text-align: center;
 	height: 25px;
@@ -191,7 +191,7 @@ color:inherit;
 .gray_rounded_button_left {
 	background: url(/images/gray_button_left.jpg) 0 0 no-repeat;
 	padding-left: 8px;
-	width: 100px;
+	/*width: 100px;*/
 	margin-right: 4px;
 	text-align: center;
 	height: 25px;
@@ -238,6 +238,8 @@ color:inherit;
 	text-transform: uppercase;
 	text-decoration: none;
 	margin-right: 8px;
+	font-size:10pt;
+	font-weight:normal;
 }
 
 /* rest of the styles */		
