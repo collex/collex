@@ -44,8 +44,11 @@ var SignInDlg = Class.create({
 		var redirectPage = "";
 		
 		// private functions
-		this.changeView = function (event, view)
+		this.changeView = function (event, param)
 		{
+			var view = param[0];
+			var dlg = param[1];
+			
 			// These are all the elements that can be turned on and off in the dialog.
 			// All elements have switchable_element, and they each then have another class
 			// that matches the value of the view parameter. Then this loop either hides or shows
@@ -60,10 +63,10 @@ var SignInDlg = Class.create({
 			
 			switch (view)
 			{
-				case 'my_account': $('account_email').focus(); break;
-				case 'sign_in': $('signin_username').focus(); break;
-				case 'create_account': $('create_username').focus(); break;
-				case 'account_help': $('help_username').focus(); break;
+				case 'my_account': dlg.setTitle('Manage your Collex account'); $('account_email').focus(); break;
+				case 'sign_in': dlg.setTitle('Collex Account Sign in'); $('signin_username').focus(); break;
+				case 'create_account': dlg.setTitle('Create Your Collex Account'); $('create_username').focus(); break;
+				case 'account_help': dlg.setTitle('Collex Account Help'); $('help_username').focus(); break;
 			}
 
 			return false;
@@ -71,10 +74,17 @@ var SignInDlg = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
+			var getForm = function(This) {
+				if (This.up)
+					return This.up('form');
+				var els = $$("." + This);
+				return els[0].up('form');
+			};
+			
 			var url = params[0];
 			var flash_id = params[1];
 			// Get the parameters from the enclosing form
-			var form = this.up('form');
+			var form = getForm(this);
 			var els = form.select('input');
 			var p = {};
 			els.each(function(el) { p[el.id] = el.value; });
@@ -123,22 +133,27 @@ var SignInDlg = Class.create({
 			var elements = [
 				{
 					page: 'my_account',
-					title: 'Manage your Collex account',
+					//title: 'Manage your Collex account',
 					elements: [
 						{
-							item_type: 'instructions', data: 'Change any of your account items below.'
-						},
-						{
 							item_type: 'group', data: {
-								title: 'Account',
+								title: '',
+								cls: "",
 								fields: [
 									{ id: 'account_username', label: 'User name:', fixed: (username === undefined) ? '' : username },
 									{ id: 'account_email', label: 'E-mail address:', text: 30, value: (email === undefined) ? '' : email },
 									{ id: 'account_password', label: 'Password:', password: 30 },
 									{ label: ' ', fixed: '(leave blank if not changing your password)' },
-									{ id: 'account_password2', label: 'Re-type password:', password: 30 },
-									{ submit: 'UPDATE', submit_url: '/login/change_account', callback: this.sendWithAjax }
+									{ id: 'account_password2', label: 'Re-type password:', password: 30 }
+									//{ submit: 'UPDATE', submit_url: '/login/change_account', callback: this.sendWithAjax }
 								]
+							}
+						},
+						{
+							item_type: 'button', data: {
+								name: 'Update',
+								submit_url: '/login/change_account', 
+								callback: this.sendWithAjax
 							}
 						}
 					]
@@ -146,7 +161,7 @@ var SignInDlg = Class.create({
 
 				{
 					page: 'sign_in',
-					title: 'Collex Account Sign in',
+					//title: 'Collex Account Sign in',
 					elements: [
 						{
 							item_type: 'instructions', data: 'Sign in to personalize your Collex experience.<br/>If you sign in, you can collect objects and create tags.'
@@ -154,6 +169,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: 'Sign in',
+								cls: "login-option2",
 								fields: [
 									{ id: 'signin_username', label: 'User name:', text: 30 },
 									{ id: 'signin_password', label: 'Password:', password: 30 },
@@ -164,6 +180,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: "I don't have an account.",
+								cls: "login-option2",
 								fields: [
 									{ page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView }
 								]
@@ -172,6 +189,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: "I can't access my account.",
+								cls: "login-option2",
 								fields: [
 									{ page_link: 'Help', new_page: 'account_help', callback: this.changeView }
 								]
@@ -182,7 +200,7 @@ var SignInDlg = Class.create({
 				
 				{
 					page: 'create_account',
-					title: 'Create Your Collex Account',
+					//title: 'Create Your Collex Account',
 					elements: [
 						{
 							item_type: 'instructions', data: 'Fill in the fields below to instantly create a Collex account.'
@@ -190,6 +208,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: 'Sign up',
+								cls: "login-option2",
 								fields: [
 									{ id: 'create_username', label: 'User name:', text: 30 },
 									{ id: 'create_email', label: 'E-mail address:', text: 30 },
@@ -202,6 +221,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: "I already have an account.",
+								cls: "login-option2",
 								fields: [
 									{ page_link: 'please Sign in', new_page: 'sign_in', callback: this.changeView }
 								]
@@ -212,7 +232,7 @@ var SignInDlg = Class.create({
 				
 				{
 					page: 'account_help',
-					title: 'Collex Account Help',
+					//title: 'Collex Account Help',
 					elements: [
 						{
 							item_type: 'instructions', data: 'Having trouble signing in? Choose one of the options below.'
@@ -220,6 +240,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: 'I forgot my password.',
+								cls: "login-option2",
 								fields: [
 									{ id: 'help_username', label: 'User name:', text: 30 },
 									{ submit: 'email me a new password', submit_url: '/login/reset_password', callback: this.sendWithAjax }
@@ -229,6 +250,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: 'I forgot my user name.',
+								cls: "login-option2",
 								fields: [
 									{ id: 'help_email', label: 'E-mail address:', text: 30 },
 									{ submit: 'email me my user name', submit_url: '/login/recover_username', callback: this.sendWithAjax }
@@ -238,6 +260,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: "I don't have an account.",
+								cls: "login-option2",
 								fields: [
 									{ page_link: 'please Sign up', new_page: 'create_account', callback: this.changeView }
 								]
@@ -246,6 +269,7 @@ var SignInDlg = Class.create({
 						{
 							item_type: 'group', data: {
 								title: "I want to try to log in again.",
+								cls: "login-option2",
 								fields: [
 									{ page_link: 'please Sign in', new_page: 'sign_in', callback: this.changeView }
 								]
@@ -255,8 +279,8 @@ var SignInDlg = Class.create({
 				}
 			];
 			
-			var dlg = new GeneralDialog(parent_id, "login_dlg", "Collex Account", elements, initialFlashMessage);
-			this.changeView(null, view);
+			var dlg = new GeneralDialog(parent_id, "login_dlg", elements, initialFlashMessage);
+			this.changeView(null, [ view, dlg ]);
 			dlg.center();
 		};
 	}

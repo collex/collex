@@ -18,7 +18,7 @@
 /*global YAHOO */
 
 var GeneralDialog = Class.create({
-	initialize: function (parent_id, this_id, title, elements, flash_notice) {
+	initialize: function (parent_id, this_id, elements, flash_notice) {
 		this.class_type = 'GeneralDialog';	// for debugging
 
 		// private variables
@@ -37,8 +37,6 @@ var GeneralDialog = Class.create({
 			buttons: [ { text:"Cancel", handler:handleCancel } ]
 		});
 		
-		panel.setHeader(title); 
-		
 		var klEsc = new YAHOO.util.KeyListener(document, { keys:27 },  							
 			{ fn:handleCancel,
 				scope:panel,
@@ -51,14 +49,15 @@ var GeneralDialog = Class.create({
 		body.appendChild(new Element('div', { id: this_id + 'flash', 'class': 'flash_notice' }).update(flash_notice));
 		elements.each(function (el){
 			var elClass = el.page;
-			body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-title", style: 'display:none;' }).update(el.title));
+			//body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-title", style: 'display:none;' }).update(el.title));
 			el.elements.each(function (subel) {
 				if (subel.item_type === 'instructions')
 					body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-explanation", style: 'display:none;' }).update(subel.data));
 				else if (subel.item_type === 'group')
 				{
-					body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-option", style: 'display:none;' }).update(subel.data.title));
-					var table = new Element('table', { 'class': elClass + ' switchable_element login-option2', style: 'display:none;' });
+					if (subel.data.title.length > 0)
+						body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-option", style: 'display:none;' }).update(subel.data.title));
+					var table = new Element('table', { 'class': elClass + ' switchable_element ' + subel.data.cls, style: 'display:none;' });
 					var tbody = new Element('tbody');
 					var form = new Element('form');
 					table.appendChild(tbody);
@@ -87,9 +86,14 @@ var GeneralDialog = Class.create({
 						}
 						if (fld.page_link !== undefined) {
 							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('a', { id: 'a' + listenerArray.length, href: '#', 'class': 'nav_link' }).update(fld.page_link)));
-							listenerArray.push({ id: 'a' + listenerArray.length, callback: fld.callback, param: fld.new_page });
+							listenerArray.push({ id: 'a' + listenerArray.length, callback: fld.callback, param: [ fld.new_page, this ] });
 						}
 					}, this);
+				}
+				else if (subel.item_type === 'button') {
+					var but = [ { text: subel.data.name, handler: { fn: subel.data.callback, obj: [ subel.data.submit_url, this_id + 'flash'], scope: elClass } },
+					 { text:"Cancel", handler:handleCancel } ];
+					panel.cfg.queueProperty("buttons", but);
 				}
 			}, this);
 		}, this);
@@ -100,6 +104,10 @@ var GeneralDialog = Class.create({
 		listenerArray.each(function (listen, i) {
 			YAHOO.util.Event.addListener(listen.id, "click", listen.callback, listen.param); 
 		});
+		
+		this.setTitle = function(title) {
+			panel.setHeader(title); 
+		};
 		
 		this.center = function() {
 			var dlg = $(this_id);
