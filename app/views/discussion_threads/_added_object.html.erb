@@ -14,9 +14,8 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # added_object --- params: ActiveRecord comment, bool can_delete, bool is_first  -%>
+<% # added_object --- params: ActiveRecord comment, bool is_first  -%>
 <% if !is_first -%>
 	<div class='discussion_added_row'><%= get_user_link(comment.user_id)%> has added the following object to the discourse:
-		<%= link_to 'X', "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' if can_delete %>
 	</div>
 <% end -%>

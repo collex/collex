@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link), bool can_delete, bool is_main -%>
+<% # params: ActiveRecord comment, int thread_id, bool can_delete, bool is_main -%>
 
 <div class="<%= is_main ? 'new_discussion' : 'discussion_thread_list' %>">
 	<div class="discussion_comment2">
@@ -43,7 +43,6 @@
 		</tr><tr>
 			<td valign="top"><div class="discussion_user_picture"><%= render :partial => 'users_picture', :locals => { :user_id => comment.user_id } %></div></td>
 			<td valign="top" width="100%">
-				<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' if thread_link %>
 				<%= comment.comment %>
 			</td>
 		</tr><tr>
@@ -52,8 +51,8 @@
 
 	<% elsif comment.get_type() == "nines_object" -%>
 			<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
-			<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' if thread_link %>
-			<%= render :partial => 'added_object', :locals => {:comment => comment, :can_delete => can_delete, :is_first => comment.position == 1 } %>
+			<%= render :partial => 'added_object', :locals => {:comment => comment, :is_first => comment.position == 1 } %>
+			<%= link_to 'X', "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link', :style => 'float:right;' if can_delete %>
 			<table><tr>
 				<%= render :partial => '/results/result_row', :locals => { :row_id => "test", :index => 2, :hit => hit, :has_exhibits => false } %>
 			</tr><tr><td></td><td colspan='4'>
@@ -61,8 +60,8 @@
 			</td></tr></table>
 		<% elsif comment.get_type() == "nines_exhibit" -%>
 			<% exhibit = Exhibit.find(comment.exhibit_id) -%>
-			<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link'  if thread_link %>
-			<%= render :partial => 'added_object', :locals => {:comment => comment, :can_delete => can_delete, :is_first => comment.position == 1 } %>
+			<%= render :partial => 'added_object', :locals => {:comment => comment, :is_first => comment.position == 1 } %>
+			<%= link_to 'X', "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link', :style => 'float:right;' if can_delete %>
 			<table><tr>
 			<td><div class="discussion_user_picture"><img src="<%= exhibit.thumbnail %>" alt="exhibit" /></div></td>
 			<td valign="top" width="100%">
@@ -71,8 +70,8 @@
 			</td>
 			</tr></table>
 		<% elsif comment.get_type() == "inet_object" -%>
-			<%= link_to "[go to thread]", "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link'  if thread_link %>
-			<%= render :partial => 'added_object', :locals => {:comment => comment, :can_delete => can_delete, :is_first => comment.position == 1 } %>
+			<%= render :partial => 'added_object', :locals => {:comment => comment, :is_first => comment.position == 1 } %>
+			<%= link_to 'X', "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link', :style => 'float:right;' if can_delete %>
 			<table><tr>
 			<td><div class="discussion_user_picture"><img src="<%= comment.image_url %>" alt="thumbnail" /></div></td>
 			<td valign="top" width="100%">
