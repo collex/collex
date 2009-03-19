@@ -18,13 +18,17 @@
 <% current_page "Discuss" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 
+<div id="discussion_thread">&nbsp;</div>
+
 <% topics = DiscussionTopic.find(:all) -%>
 <% for topic in topics -%>
-	<h2>
-		<%= toggle_discussion_topic(topic.id, "topic", "toggle_by_id", :open) %>
-		<%= topic.topic %>
-		<%= link_to_function "[new thread]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
-	</h2>
+	<div class="discussion_topic_title">
+		<h2>
+			<%= toggle_discussion_topic(topic.id, "topic", "toggle_by_id", :open) %>
+			<%= topic.topic %>
+			<%= link_to_function "[new thread]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
+		</h2>
+	</div>
 	<div id="topic_<%= topic.id %>" class="discussion_thread_list_item">
 		<% threads =  topic.discussion_threads -%>
 		<% for thread in threads -%>
@@ -32,7 +36,7 @@
 				ERROR: ill-formed thread. (Main comment is missing)<br/>
 			<% else -%>
 				<% main_comment = thread.discussion_comments[0] -%>
-				<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => thread.id, :thread_link => true, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id)) } %>
+				<%= render :partial => 'summary', :locals => { :comment=> main_comment, :thread_id => thread.id, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id)) } %>
 			<% end # there is a comment -%>
 		<% end # threads -%>
 	</div>

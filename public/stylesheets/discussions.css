@@ -11,6 +11,25 @@
 	width: 100%;
 }
 
+.discussion_summary {
+	clear: both;
+}
+
+.discussion_topic_title {
+	clear: both;
+}
+
+.discussion_summary img {
+	float: left;
+	padding-right: 15px;
+	padding-bottom: 5px;
+	width: 50px;
+}
+
+.discussion_summary_title {
+	font-size: 1.2em;
+}
+
 .discussion_comment2 {
 	padding-right: 15px;
 }

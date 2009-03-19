@@ -14,9 +14,11 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # comment_footer --- params: ActiveRecord comment, string username  -%>
+<% # comment_footer --- params: ActiveRecord comment, string username, bool include_report  -%>
 <div>
-	<%= rounded_button("report", "report_id_#{comment.id}", 
-		"var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'gray') %>
+	<% if include_report -%>
+		<%= rounded_button("report", "report_id_#{comment.id}", 
+			"var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'gray') %>
+	<% end -%>
 	Posted <%= "by #{username} " if username %>on <%= comment.updated_at.strftime("%b %d, %Y %I:%M%p") %><br /><br />
 </div>

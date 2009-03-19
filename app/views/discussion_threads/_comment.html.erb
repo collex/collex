@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link), bool can_delete, bool , is_main -%>
+<% # params: ActiveRecord comment, int thread_id, bool thread_link (whether to display the go to thread link), bool can_delete, bool is_main -%>
 
 <div class="<%= is_main ? 'new_discussion' : 'discussion_thread_list' %>">
 	<div class="discussion_comment2">
@@ -47,7 +47,7 @@
 				<%= comment.comment %>
 			</td>
 		</tr><tr>
-			<td></td><td><%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => is_main ? get_user_link(comment_user) : nil } %></td>
+			<td></td><td><%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => is_main ? get_user_link(comment_user) : nil, :include_report => true } %></td>
 		</tr></table>
 
 	<% elsif comment.get_type() == "nines_object" -%>
@@ -57,7 +57,7 @@
 			<table><tr>
 				<%= render :partial => '/results/result_row', :locals => { :row_id => "test", :index => 2, :hit => hit, :has_exhibits => false } %>
 			</tr><tr><td></td><td colspan='4'>
-				<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil } %>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil, :include_report => false } %>
 			</td></tr></table>
 		<% elsif comment.get_type() == "nines_exhibit" -%>
 			<% exhibit = Exhibit.find(comment.exhibit_id) -%>
@@ -67,7 +67,7 @@
 			<td><div class="discussion_user_picture"><img src="<%= exhibit.thumbnail %>" alt="exhibit" /></div></td>
 			<td valign="top" width="100%">
 				<h3><%= get_exhibit_link(exhibit) %></h3>
-				<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil } %>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil, :include_report => false } %>
 			</td>
 			</tr></table>
 		<% elsif comment.get_type() == "inet_object" -%>
@@ -78,7 +78,7 @@
 			<td valign="top" width="100%">
 				<%=make_ext_link(comment.link_url) %>
 				<p><%=h comment.comment %></p>
-				<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil } %>
+				<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil, :include_report => true } %>
 			</td>
 			</tr></table>
 		<% else -%>

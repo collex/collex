@@ -46,4 +46,12 @@ module DiscussionThreadsHelper
     end
     return "<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>"
   end
+  
+  def get_user_picture(user_id)
+    if File.exists?("#{RAILS_ROOT}/public/images/users/#{user_id}")
+      return "/images/users/#{user_id}"
+    else
+      return "/images/person_placeholder.jpg"
+    end
+  end
 end

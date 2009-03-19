@@ -17,8 +17,5 @@
 
 <% # users_picture partial. Parameters: user_id %>
 
-<% if File.exists?("#{RAILS_ROOT}/public/images/users/#{user_id}") -%>
-	<img src=<%= "/images/users/#{user_id}" %> width="130" alt="" />
-<% else -%>
-	<img src="/images/person_placeholder.jpg" alt="" />
-<% end -%>
+<% pic = get_user_picture(user_id) -%>
+<img src=<%= pic %> width="130" alt="" />
