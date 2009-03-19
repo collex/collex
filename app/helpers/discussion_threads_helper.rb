@@ -27,4 +27,23 @@ module DiscussionThreadsHelper
     label << "</span>\n"
     return label
   end
+  
+  def get_user_link(user)
+    if user.class == Fixnum
+      user = User.find(user)
+    end
+    if user.link != nil && user.link != ""
+      link_to(user.fullname, user.link, :class => 'nav_link')
+    else
+      user.fullname
+    end
+  end
+  
+  def make_ext_link(url)
+    str = h(url)
+    if url.index("http") != 0  # if the link doesn't start ith http, then we'll add it.
+      url = "http://" + url
+    end
+    return "<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>"
+  end
 end

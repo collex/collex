@@ -33,13 +33,14 @@
 <%= render( :partial => '/results/result_count' ) %>
 <%= rounded_h1("<a href='/discussion_threads/rss/#{thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;Follow this discussion on RSS") %>
 <div class="standard_box">
-	<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'destination_threads', :action => 'view_thread' } } ) %>
-	<h2>Discuss the following:</h2>
+	<div class="discuss_following">
+		Discuss the following:
+	</div>
 	<% main_comment = @thread.discussion_comments[0] -%>
-	<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :thread_link => false, :can_delete => false } %>
-	<hr />
+	<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :thread_link => false, :can_delete => false, :is_main => true } %>
+	<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'destination_threads', :action => 'view_thread' } } ) %>
 	<% 1.upto(@thread.discussion_comments.length-1) do |i| -%>
-		<%= render :partial => 'comment', :locals => { :comment=> @thread.discussion_comments[i], :thread_id => @thread.id, :thread_link => false, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id))  } %>
+		<%= render :partial => 'comment', :locals => { :comment=> @thread.discussion_comments[i], :thread_id => @thread.id, :thread_link => false, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id)), :is_main => false  } %>
 	<% end -%>
 
 	<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'destination_threads', :action => 'view_thread' } } ) %>

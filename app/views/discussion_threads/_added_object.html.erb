@@ -14,9 +14,9 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # comment_footer --- params: ActiveRecord comment, string username  -%>
-<div>
-	<%= rounded_button("report", "report_id_#{comment.id}", 
-		"var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'gray') %>
-	Posted <%= "by #{username} " if username %>on <%= comment.updated_at.strftime("%b %d, %Y %I:%M%p") %><br /><br />
-</div>
+<% # added_object --- params: ActiveRecord comment, bool can_delete, bool is_first  -%>
+<% if !is_first -%>
+	<div class='discussion_added_row'><%= get_user_link(comment.user_id)%> has added the following object to the discourse:
+		<%= link_to 'X', "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' if can_delete %>
+	</div>
+<% end -%>

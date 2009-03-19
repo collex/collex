@@ -24,7 +24,9 @@
 	var gCollectedObjects = <%= CollectedItem.get_collected_object_array(user_id) %>;
 	var gExhibitNames = [ <%= Exhibit.js_array_of_all_public_exhibits() %> ];
 	
+	var commentEditor = null;
 	document.observe('dom:loaded', function() {
+		
 		// Switch the textarea for the YUI RTE
 		var toolbar = {
 			buttonType: 'advanced',
@@ -66,8 +68,8 @@
 			}]
 		};
 		
-	    var myEditor = new YAHOO.widget.SimpleEditor('comment', { toolbar: toolbar });
-	    myEditor.render();
+	    commentEditor = new YAHOO.widget.SimpleEditor('comment', { toolbar: toolbar });
+	    commentEditor.render();
 	});
 
 </script>
@@ -78,7 +80,7 @@
 
 <%= rounded_h1("Starting a New Discussion in \"#{DiscussionTopic.find(topic_id).topic}\"...") %>
 <div class="standard_box new_discussion">
-	<div class="user_picture">
+	<div class="discussion_user_picture">
 		<%= render :partial => 'users_picture', :locals => { :user_id => user_id } %>
 	</div>
 	<div class="comment_form">
@@ -89,14 +91,14 @@
 				<textarea name="comment" id="comment"></textarea>
 				<div class="buttons">
 					<%= rounded_button("cancel", "cancel_id", "window.location = '/discussion'", 'red') %>
-					<%= rounded_button("post", "post_id", " document.post_comment.submit();", 'red') %>
+					<%= rounded_button("post", "post_id", "commentEditor.saveHTML(); document.post_comment.submit();", 'red') %>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
 
-<div class="start_discussion_with_obj">
+<div class="discussion_action_row">
 	<table><tr>
 		<td>OR, Start the Discussion with an Object:</td>
 		<td><%= rounded_button("post object", "post_object_id", 
