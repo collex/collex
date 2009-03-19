@@ -373,8 +373,11 @@ ModalDialog.prototype = {
 	_handleSave: function() {
 		
 		if( this.usesRichTextArea ) {
-			this.editor.cleanHTML();
-			this.editor.saveHTML();
+			var b = this.editor._getDoc().body;
+			if (b !== undefined) {
+				this.editor.cleanHTML();
+				this.editor.saveHTML();
+			}
 		}
 		
 		this._sendToServer(this.targetElement, this.formID);
