@@ -18,6 +18,26 @@
 /*global InputDialog, LinkDlgHandler, CreateList, doSingleInputPrompt */
 /*global getX, getY */
 
+function postNewComment() {
+	commentEditor.saveHTML();
+	var t = $('title');
+	if (t.defaultValue === t.value) {
+		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a title for the comment.', null, 'title', null, null, $H({ }), 'none', null);
+		return false;
+	}
+	
+	var comment = $('comment').value;
+	comment = comment.gsub("&nbsp;", "");
+	if (comment.strip().length === 0) {
+		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a comment in the comment area', null, 'title', null, null, $H({ }), 'none', null);
+		return false;
+	}
+	
+	document.post_comment.submit();
+}
+
+/////////////////////////////////////////////////////////////
+
 //Posting an Object brings up a dialog box that allows the user to select the object to post. 
 //This dialog is similar to the Edit Illustration dialog in the Exhibit Builder. The user may post a 
 //NINES Object, a NINES Exhibit, or an Internet Link. The list of NINES Object is drawn from the 

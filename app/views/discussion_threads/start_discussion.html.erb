@@ -94,7 +94,7 @@
 				<textarea name="comment" id="comment"></textarea>
 				<div class="buttons">
 					<%= rounded_button("cancel", "cancel_id", "window.location = '/discussion'", 'red') %>
-					<%= rounded_button("post", "post_id", "commentEditor.saveHTML(); document.post_comment.submit();", 'red') %>
+					<%= rounded_button("post", "post_id", "postNewComment();", 'red') %>
 				</div>
 			</form>
 		</div>
