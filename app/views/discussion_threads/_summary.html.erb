@@ -34,7 +34,7 @@
 	<% thumbnail = "" -%>
 <% end -%>
 <div class="discussion_summary">
-	<img src="<%= thumbnail %>" alt="thumbnail" />
+	<%= render :partial => 'img_with_progress_spinner', :locals => { :src => thumbnail, :alt => 'thumbnail' } %>
 	<% if comment.reported == 1 && can_delete -%>
 		<div class="reported_comment">
 			NOTICE: This comment has been reported as objectionable by <%= user.fullname %>, and is pending moderation.
@@ -43,5 +43,5 @@
 	<div class="discussion_summary_title">
 		<%= link_to title, "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' %>
 	</div>
-	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :username => nil, :include_report => true } %>
+	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => true, :include_report => true } %>
 </div>

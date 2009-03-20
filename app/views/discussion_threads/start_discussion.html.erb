@@ -80,14 +80,17 @@
 
 <%= rounded_h1("Starting a New Discussion in \"#{DiscussionTopic.find(topic_id).topic}\"...") %>
 <div class="standard_box new_discussion">
-	<div class="discussion_user_picture">
+	<div class="discussion_user_picture discussion_user_picture_new">
 		<%= render :partial => 'users_picture', :locals => { :user_id => user_id } %>
 	</div>
 	<div class="comment_form">
 		<div class="comment_form2">
 			<form name='post_comment' method="post" action='/discussion_threads/post_comment_to_new_thread'>
 				<input type="hidden" name="topic_id" value="<%= params[:topic_id] %>">
-				<input type="text" name="title" value="Enter a discussion topic here" />
+				<input type="text" id="title" name="title" class="inputHintStyle" value="Enter a discussion topic here" />
+<script type="text/javascript" charset="utf-8">
+    $('title').defaultValueActsAsHint();
+  </script>
 				<textarea name="comment" id="comment"></textarea>
 				<div class="buttons">
 					<%= rounded_button("cancel", "cancel_id", "window.location = '/discussion'", 'red') %>

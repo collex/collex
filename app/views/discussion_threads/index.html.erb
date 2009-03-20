@@ -36,7 +36,7 @@
 				ERROR: ill-formed thread. (Main comment is missing)<br/>
 			<% else -%>
 				<% main_comment = thread.discussion_comments[0] -%>
-				<%= render :partial => 'summary', :locals => { :comment=> main_comment, :thread_id => thread.id, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id)) } %>
+				<%= render :partial => 'summary', :locals => { :comment=> main_comment, :thread_id => thread.id, :can_delete => is_logged_in? && (is_admin? || (main_comment.user_id == user_id)) } %>
 			<% end # there is a comment -%>
 		<% end # threads -%>
 	</div>

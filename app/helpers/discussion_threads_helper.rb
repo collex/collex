@@ -33,7 +33,7 @@ module DiscussionThreadsHelper
       user = User.find(user)
     end
     if user.link != nil && user.link != ""
-      link_to(user.fullname, user.link, :class => 'nav_link')
+      link_to(user.fullname, user.link, :class => 'ext_link', :target => '_blank')
     else
       user.fullname
     end

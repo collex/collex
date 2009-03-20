@@ -14,15 +14,6 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # comment_footer --- params: ActiveRecord comment, bool include_username, bool include_report  -%>
-<div>
-	<% if include_report -%>
-		<% if is_logged_in? -%>
-			<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
-		<% else -%>
-			<% action = "new RedirectIfLoggedIn('popup_dialog_anchor', '', 'You must be signed in to report a comment', false);" -%>
-		<% end -%>
-		<%= rounded_button("report", "report_id_#{comment.id}", action, 'gray') %>
-	<% end -%>
-	Posted <%= "by #{get_user_link(User.find(comment.user_id))} " if include_username %>on <%= comment.updated_at.strftime("%b %d, %Y %I:%M%p") %><br /><br />
-</div>
+<% # img_with_progress_spinner: params: src, alt -%>
+<img src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
+<img class="hidden" src="<%= src %>" alt="<%= alt %>" onload="$(this).previous().addClassName('hidden'); $(this).removeClassName('hidden');" />

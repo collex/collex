@@ -73,9 +73,17 @@ class DiscussionThreadsController < ApplicationController
     if !is_logged_in?
       flash[:error] = 'You must be signed in to start a discussion.'
     else
+      # There are two records that must be updated to create the new thread. If the second record
+      # isn't created, then we need to back off the first one.
       topic_id = params[:topic_id]
       thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => "")
-      post_object(thread, params)
+
+      begin
+        post_object(thread, params)
+      rescue
+        thread.destroy()
+        flash[:error] = "We're sorry. An error occurred when attempting to start the discussion thread."
+      end
     end
 
     redirect_to :action => :index
