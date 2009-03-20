@@ -14,8 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # added_object --- params: ActiveRecord comment, string title, bool is_first  -%>
-<% if !is_first -%>
-	<div class='discussion_added_row'><%= get_user_link(comment.user_id)%> has added the following <%= title %> to the discourse:
-	</div>
-<% end -%>
+<% # comment_template2: ActiveRecord comment, bool include_username, bool include_report  -%>
+<div class="discussion_thread_margin discussion_thread_footer">
+	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => include_username, :include_report => include_report } %>
+</div>

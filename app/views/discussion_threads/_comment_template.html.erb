@@ -14,8 +14,8 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # added_object --- params: ActiveRecord comment, string title, bool is_first  -%>
-<% if !is_first -%>
-	<div class='discussion_added_row'><%= get_user_link(comment.user_id)%> has added the following <%= title %> to the discourse:
-	</div>
+<% # comment_template: string picture_src, string picture_alt, ActiveRecord comment, bool can_delete  -%>
+<div class="discussion_user_picture"><%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => picture_alt } %></div>
+<% if can_delete -%>
+	<div style="float:right;"><%= link_to del_char(), "/discussion_threads/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %></div>
 <% end -%>

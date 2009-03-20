@@ -8,7 +8,9 @@
 	background-position:right bottom;
 	background-repeat:no-repeat;
 	border-right:4px solid #822210;
-	width: 100%;
+	/*width: 100%;*/
+	margin-right:10px;
+	margin-bottom:5px;
 }
 
 .discussion_summary {
@@ -17,6 +19,15 @@
 
 .discussion_topic_title {
 	clear: both;
+}
+
+.discussion_thread_margin {
+	margin-left: 80px;
+}
+
+.discussion_thread_footer {
+	clear:both;
+	margin-top:10px;
 }
 
 .discussion_summary img {
@@ -37,6 +48,7 @@
 .discussion_title {
 	font-size: 2em;
 	font-weight: bold;
+	margin-left: 10px;
 }
 
 .discussion_comment_title {
@@ -57,17 +69,17 @@
 
 .discussion_user_picture_new {
 	padding-top: 27px;
+	padding-bottom: 27px;
 }
 
 .discussion_user_picture {
 	padding-left: 12px;
-	padding-bottom: 27px;
 	padding-right: 12px;
 	float: left;
 }
 
 .discussion_user_picture img {
-	width: 90px;
+	width: 50px;
 	border: 3px solid #aaaaaa;
 }
 
@@ -124,6 +136,7 @@
 	padding-left:10px;
 	padding-top:6px;
 	margin-left:10px;
+	margin-bottom:6px;
 }
 
 .discuss_following {
