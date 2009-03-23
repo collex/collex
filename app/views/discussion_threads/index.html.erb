@@ -20,7 +20,7 @@
 
 <div id="discussion_thread">&nbsp;</div>
 
-<% topics = DiscussionTopic.find(:all) -%>
+<% topics = DiscussionTopic.find(:all, :order => 'position') -%>
 <% for topic in topics -%>
 	<div class="discussion_topic_title">
 		<h2>

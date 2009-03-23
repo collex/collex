@@ -18,7 +18,7 @@ class Admin::DiscussionTopicsController < Admin::BaseController
   # GET /discussion_topics
   # GET /discussion_topics.xml
   def index
-    @discussion_topics = DiscussionTopic.find(:all)
+    @discussion_topics = DiscussionTopic.find(:all, :order => 'position')
 
     respond_to do |format|
       format.html # index.html.erb
@@ -57,6 +57,7 @@ class Admin::DiscussionTopicsController < Admin::BaseController
   # POST /discussion_topics.xml
   def create
     @discussion_topic = DiscussionTopic.new(params[:discussion_topic])
+    @discussion_topic.position = DiscussionTopic.count + 1
 
     respond_to do |format|
       if @discussion_topic.save
@@ -70,6 +71,36 @@ class Admin::DiscussionTopicsController < Admin::BaseController
     end
   end
 
+  def move_up
+    @discussion_topic = DiscussionTopic.find(params[:id])
+    pos = @discussion_topic.position
+    if pos > 1
+      prev = DiscussionTopic.find_by_position(pos-1)
+      if prev
+        prev.position = prev.position + 1
+        prev.save
+      end
+      @discussion_topic.position = @discussion_topic.position - 1
+      @discussion_topic.save
+    end
+    redirect_to :action => 'index'
+  end
+  
+  def move_down
+    @discussion_topic = DiscussionTopic.find(params[:id])
+    pos = @discussion_topic.position
+    if pos < DiscussionTopic.count
+      nex = DiscussionTopic.find_by_position(pos+1)
+      if nex
+        nex.position = nex.position - 1
+        nex.save
+      end
+      @discussion_topic.position = @discussion_topic.position + 1
+      @discussion_topic.save
+    end
+    redirect_to :action => 'index'
+  end
+  
   # PUT /discussion_topics/1
   # PUT /discussion_topics/1.xml
   def update
@@ -91,7 +122,16 @@ class Admin::DiscussionTopicsController < Admin::BaseController
   # DELETE /discussion_topics/1.xml
   def destroy
     @discussion_topic = DiscussionTopic.find(params[:id])
+    pos = @discussion_topic.position
     @discussion_topic.destroy
+    
+    topics = DiscussionTopic.find(:all)
+    topics.each do |topic|
+      if topic.position > pos
+        topic.position = topic.position - 1
+        topic.save
+      end
+    end
 
     respond_to do |format|
       format.html { redirect_to(:action => 'index') }
