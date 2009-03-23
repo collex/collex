@@ -65,6 +65,7 @@
 .new_discussion {
 	background-color: #e1cecc;
 	border-bottom: 6px solid #e2e2e2;
+	padding-top:8px;
 }
 
 .discussion_user_picture_new {

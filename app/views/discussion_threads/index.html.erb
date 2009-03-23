@@ -26,7 +26,9 @@
 		<h2>
 			<%= toggle_discussion_topic(topic.id, "topic", "toggle_by_id", :open) %>
 			<%= topic.topic %>
-			<%= link_to_function "[new thread]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
+			<%= "(#{topic.discussion_threads.length} threads " if topic.discussion_threads.length > 1 %>
+			<%= link_to_function "[start new thread]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
+			<%= ")" if topic.discussion_threads.length > 1 %>
 		</h2>
 	</div>
 	<div id="topic_<%= topic.id %>" class="discussion_thread_list_item">
