@@ -101,11 +101,14 @@
 }
 
 .result_row_td table {
+	width: 100%;
+}
+
+.gradient_border {
 	border-right: 4px solid #822210;
 	background-image: url(/images/row_seperator.jpg);
 	background-position:bottom right;
 	background-repeat:no-repeat;
-	width: 100%
 }
 
 .results img {

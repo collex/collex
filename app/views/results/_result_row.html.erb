@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% #  parameters: int row_id; int index; hit hit; bool has_exhibits; -%>
+<% #  result_row parameters: int row_id; int index; hit hit; bool has_exhibits; bool add_border -%>
 	    <%# The left side that contains the checkbox, graphic and the collect button -%>
 	    <td valign="top">
 	        <table border="0">
@@ -39,7 +39,7 @@
 
 	    <%# The middle with the actual search results -%>
         <td class="result_row_td">
-            <table border="0">
+            <table border="0" class="<%= 'gradient_border' if add_border %>">
                 <tr>
                     <td colspan="2">
                         <% if hit["url"] %>

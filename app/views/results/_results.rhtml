@@ -29,7 +29,7 @@
   <% hits.each_with_index do |hit,index| -%>
     <% row_id = "search-result-#{index}" -%>
     <tr id="<%= row_id %>" class='result_with<%= "out" if !result_is_collected(hit)%>_tag' > <%# for each search result %>
-	<%= render :partial => 'results/result_row', :locals => { :row_id => row_id, :index => index, :hit => hit, :has_exhibits => has_exhibits } %>
+	<%= render :partial => 'results/result_row', :locals => { :row_id => row_id, :index => index, :hit => hit, :has_exhibits => has_exhibits, :add_border => true } %>
 	</tr>
 	<tr> <!-- put a little spacing between the results -->
 		<td height="1px" ></td>
