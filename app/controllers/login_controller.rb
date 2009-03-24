@@ -23,21 +23,23 @@ class LoginController < ApplicationController
      @use_tabs = false
      @use_signin= false
      @site_section = :login
-     @uses_separate_pages = true
+     @uses_separate_pages = false #true
      return true
    end
 
-  # TODO-PER: old way
+  # We first just try to go back to the referrer page. That may not be available if the
+  # session timed out and possibly in other cases. If the referrer page is not available,
+  # just go back to the main page.
   helper_method :get_page_to_return_to
   def get_page_to_return_to()
-    return session[:current_page] if session && session[:current_page]
+    # TODO-PER: old way
+    #return session[:current_page] if session && session[:current_page]
 
     if request && request.env && request.env["HTTP_REFERER"] && request.env["HTTP_REFERER"] !~ /login/
       return request.env["HTTP_REFERER"]
     end
     return "/"
   end
-  # TODO-PER: end old way
    
     def login_controls
       render :partial => '/common/login_slider'

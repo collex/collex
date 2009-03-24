@@ -39,6 +39,7 @@
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/editor/assets/skins/sam/editor.css" />
   <link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/resize/assets/skins/sam/resize.css" />
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/assets/skins/sam/skin.css">
+	stylesheet_link_tag "login", :media => "all" 
 
 	<!-- section styles -->
 	<%= case @site_section 
@@ -55,8 +56,6 @@
 		  stylesheet_link_tag("my9s", :media => "all")
 		when :home 
 		  stylesheet_link_tag "home", :media => "all"
-		when :login 
-		  stylesheet_link_tag "login", :media => "all" 
 		when :tag
 		  stylesheet_link_tag("results", :media => "all") + "\n" +
 		  stylesheet_link_tag("full_window", :media => "all") + "\n" +
