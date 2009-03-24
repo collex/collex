@@ -39,23 +39,24 @@ class My9sController < ApplicationController
     end
       
     set_cloud_list(user, user.username)
-    
-    @results = sort_by_date_collected(CachedResource.get_all_collections(user))
-    if @results.length > 5
-      @results = @results.slice(0...5)
-    end
+
+    @results = CachedResource.get_newest_collections(user, 5)
   end
   
   def results
+    # parameters:
+    #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
+    #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
+    
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user == nil
       return
     end
 
     session[:tag_zoom] ||= 1
-    # parameters:
-    #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
-    #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
+    #do the pagination.
+    @page = params[:page] ? params[:page].to_i : 1
+    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
     
     # we save the view type in the session object in case we are called from a place that shouldn't care which type it is.
     # In other words, if we have the param[:view] parameter, we use it and save it. If we don't, then we retrieve it.
@@ -72,55 +73,31 @@ class My9sController < ApplicationController
       params[:tag] = session[:tag_current]
     end
 
-    if user
-      set_cloud_list(user, user.username)
-    end
+    set_cloud_list(user, user.username)
     
+    # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
     case params[:view]
     when 'all_collected'
-      # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
-      if user
-        @results = sort_by_date_collected(CachedResource.get_all_collections(user))
-      else
-        @results = {}
-      end
+      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, session[:items_per_page])
+      @results = ret[:results]
+      @total_hits = ret[:total]
       
     when 'untagged'
-      if user
-        @results = CachedResource.get_all_untagged(user)
-      else
-        @results = {}
-      end
+      ret = CachedResource.get_page_of_all_untagged(user, @page-1, session[:items_per_page])
+      @results = ret[:results]
+      @total_hits = ret[:total]
       
     when 'tag'
-      @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], user))
-      
+      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, session[:items_per_page])
+      @results = ret[:results]
+      @total_hits = ret[:total]
+     
     else
-        @results = {}
+      @results = {}
+      @total_hits = @results.length
     end
   
-    @total_hits = @results.length
-    
-    #do the pagination. We have all the results already, but we might want to limit them by cutting off the ones
-    # before the current page and after the maximum amount.
-    @page = params[:page] ? params[:page].to_i : 1
-    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-    @num_pages = @results.length.quo(session[:items_per_page]).ceil
-    
-    if @results.length > 0
-      # get the first page and make sure it is within bounds.
-      first = (@page-1) * session[:items_per_page]
-      while first >= @results.length do
-        @page -= 1
-        first = @page * session[:items_per_page]
-      end
-    
-      # get the last page and make sure it is within bounds
-      last = first + session[:items_per_page]
-      last = @results.length if last > @results.length
-      
-      @results = @results.slice(first...last)
-    end
+    @num_pages = @total_hits.quo(session[:items_per_page]).ceil
   end
 
    # adjust the number of search results per page
@@ -636,27 +613,6 @@ class My9sController < ApplicationController
     end
     
   private
-    #TODO-PER: This is repeated in tag_controller.rb
-   def sort_by_date_collected(results)
-     sorted_results = []
-     results.each {|result|
-      cr = CachedResource.find_by_uri(result['uri'])
-      collects = CollectedItem.find(:all, :conditions => [ "cached_resource_id = ?", cr.id])
-      if collects && collects[collects.length-1]
-        sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
-      end
-     }
-    sorted_results.sort! {|a,b| 
-        b[0] <=> a[0]
-    }
-    
-    ret_results = []
-    sorted_results.each {|result|
-      ret_results.insert(-1, result[1])
-    }
-     return ret_results
-   end
-   
    def cloud_fragment_key( user )
      "/cloud/#{user}_user/tag"
    end

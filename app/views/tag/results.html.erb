@@ -28,7 +28,7 @@
 
 <td class="tag_results">
 <%= render( :partial => 'results/result_count' ) %>    
-<% total_link = "<a id='top_of_results'>#{create_total(params[:view], @total_hits, params[:tag])}</a>" -%>
+<% total_link = "<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>" -%>
 <%= rounded_h1(total_link) %>
 <div class="tag_results standard_box">
 <%= render( :partial => 'results/bulkcollect' ) %>

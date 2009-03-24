@@ -271,6 +271,11 @@ class CachedResource < ActiveRecord::Base
     end
   end
   
+  def self.get_page_of_hits_by_user(user, page_num, items_per_page)
+    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
+    return self.get_page_of_results(items, page_num, items_per_page)
+  end
+
   # this returns all the objects that the user has collected.
   def self.get_all_collections(user) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
@@ -281,7 +286,17 @@ class CachedResource < ActiveRecord::Base
     }
     return results
   end
-    
+   
+  def self.get_newest_collections(user, count) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
+    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC', :limit => count )
+    results = []
+    items.each { |item|
+      hit = get_hit_from_resource_id(item.cached_resource_id)
+      results.insert(-1, hit)
+    }
+    return results
+  end
+   
   # if a user is passed, then only the objects for that user are returned. Otherwise all matching objects are returned.
   def self.get_hits_for_tag(tag_name, user)
     results = []
@@ -301,6 +316,25 @@ class CachedResource < ActiveRecord::Base
     return results
   end
   
+  def self.get_page_of_hits_for_tag(tag_name, user, page_num, items_per_page)
+    results = []
+    tag = Tag.find_by_name(tag_name)
+    # It's possible for this to return nil if a tag was deleted before this request was made.
+    return { :results => [], :total => 0 } if tag == nil
+    
+    items = []
+    item_ids = Tagassign.find(:all, :conditions => [ "tag_id = ?", tag.id ] )
+    # item_ids are ids into the collected_items table.
+    item_ids.each { |item_id|
+      coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
+      if coll_item != nil && (user == nil || coll_item.user_id == user.id)
+        items.insert(-1, coll_item)
+        #results.insert(-1, hit) if !results.detect {|item| item['uri'] == hit['uri']} 
+      end
+    }
+    return self.get_page_of_results(items, page_num, items_per_page)
+  end
+  
   def self.get_all_untagged(user)
     return [] if user == nil
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
@@ -313,6 +347,19 @@ class CachedResource < ActiveRecord::Base
       end
     }
     return results
+  end
+  
+  def self.get_page_of_all_untagged(user, page_num, items_per_page)
+    return { :results => [], :total => 0 } if user == nil
+    all_items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC'  )
+    items = []
+    all_items.each { |item|
+      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.id])
+      if !first_tag
+        items.insert(-1, item)
+      end
+    }
+    return self.get_page_of_results(items, page_num, items_per_page)
   end
   
   # get a list of all tags for a particular user. Pass in the actual user object (not just the user name), and get back a hash
@@ -352,6 +399,20 @@ class CachedResource < ActiveRecord::Base
   end
   
   private
+  def self.get_page_of_results(items, page_num, items_per_page)
+    # items can either be an array of CollectedItem or resource_id
+    first = page_num*items_per_page
+    last = first + items_per_page - 1
+    last = items.length - 1 if last > items.length - 1
+    
+    results = []
+    first.upto(last) { |i|
+      hit = get_hit_from_resource_id(items[i].cached_resource_id)
+      results.insert(-1, hit)
+    }
+    return { :results => results, :total => items.length }
+  end
+  
     #TODO filter out tags and annotations and usernames 
     def copy_solr_resource
       return if resource.nil?
@@ -392,4 +453,54 @@ class CachedResource < ActiveRecord::Base
     return hit
   end
 
+  def self.single_table_get_hit_from_resource_id(resource_id)
+    cr = CachedResource.find(resource_id)
+    hit = {}
+    hit['uri'] = cr.uri
+#    properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
+
+    # The old way of storing properties was in the separate properties table. Now we store them in a single field
+    # in this table and parse them as a string. This is for efficiency.
+
+    # We first check to see if the properties field is used. If so, then just return it. If not, then look for the
+    # properties in the old table and write them to the properties field.
+    str = cr.attributes['properties']
+    if str == nil
+      props = cr.cached_properties
+#      prop_hash = { }
+#      properties.each do |property|
+#        if !prop_hash[property.name]
+#          prop_hash[property.name] = []
+#        end
+#        prop_hash[property.name].insert(-1, property.value)
+#      end
+      
+      str = ""
+      props.each { |prop| 
+        str += prop.name + "\t" + prop.value + "\n"
+      }
+      cr.properties = str
+      cr.save
+    end
+
+    prop_arr = str.split("\n")
+    prop_arr.each do |prop_str|
+      prop = prop_str.split("\t")
+      if !hit[prop[0]]
+        hit[prop[0]] = []
+      end
+      hit[prop[0]].insert(-1, prop[1])
+    end
+    
+#    hit['thumbnail'] = [ "http://www.rossettiarchive.org/img/thumbs_small/s77.jpg" ]
+#    hit['role_AUT'] = [ "Jerome J. McGann"  ]
+##    hit['uri'] = "http://www.rossettiarchive.org/docs/s77.raw"
+#    hit['archive'] = [ "rossetti" ]
+#    hit['title'] = [ 'Commentary for Cats Cradle' ]
+#    hit['date_label'] = [ '2008' ]
+#    hit['url'] = [ "http://www.rossettiarchive.org/docs/s77.raw.html" ]
+#    hit['genre'] = [ "Criticism" ]
+#    hit['image'] = [ "http://www.rossettiarchive.org/img/s77.jpg" ]
+    return hit
+  end
 end

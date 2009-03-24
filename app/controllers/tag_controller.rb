@@ -73,17 +73,9 @@ class TagController < ApplicationController
 
   def results
     # parameters:
-    #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
-    #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
+    #  :tag => 'tag_name'
     
-    # we save the view type in the session object in case we are called from a place that shouldn't care which type it is.
-    # In other words, if we have the param[:view] parameter, we use it and save it. If we don't, then we retrieve it.
-    if params[:view] != nil
-      session[:tag_view] = params[:view]
-    else
-      params[:view] = session[:tag_view]
-    end
-    
+    # we save the tag in the session object in case we are called from a place that shouldn't care which type it is.
     if params[:tag] != nil
       params[:tag] = params[:tag].gsub("&lt;","<").gsub("&gt;", ">").gsub("&amp;", "&").gsub("&quot;", '"')
       session[:tag_current] = params[:tag]
@@ -97,51 +89,16 @@ class TagController < ApplicationController
       set_cloud_list(user, user.username)
     end
     
-    case params[:view]
-    when 'all_collected'
-      # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
-      if user
-        @results = sort_by_date_collected(CachedResource.get_all_collections(user))
-      else
-        @results = {}
-      end
-      
-    when 'untagged'
-      if user
-        @results = CachedResource.get_all_untagged(user)
-      else
-        @results = {}
-      end
-      
-    when 'tag'
-      @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], nil))
-      
-    else
-        @results = {}
-    end
-  
-    @total_hits = @results.length
-    
-    #do the pagination. We have all the results already, but we might want to limit them by cutting off the ones
-    # before the current page and after the maximum amount.
+    #do the pagination.
     @page = params[:page] ? params[:page].to_i : 1
     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-    @num_pages = @results.length.quo(session[:items_per_page]).ceil
+
+    ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, session[:items_per_page])
+    @results = ret[:results]
+    @total_hits = ret[:total]
     
-    if @results.length > 0
-      # get the first page and make sure it is within bounds.
-      first = (@page-1) * session[:items_per_page]
-      while first >= @results.length do
-        @page -= 1
-        first = @page * session[:items_per_page]
-      end
+    @num_pages = @total_hits.quo(session[:items_per_page]).ceil
     
-      # get the last page and make sure it is within bounds
-      last = first + session[:items_per_page]
-      last = @results.length if last > @results.length
-      
-      @results = @results.slice(first...last)
-    end
   end
   
    # adjust the number of search results per page
