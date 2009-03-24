@@ -17,7 +17,7 @@
 # The methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def collex_version
-    return "1.4.7.12"
+    return "1.4.7.13"
   end
   
   def is_admin?
@@ -92,7 +92,7 @@ private
       ['My&nbsp;9s', my9s_path, true],
       ['Search', search_path, true],
       ['Tags', tags_path, true],
-      ['Discuss', discussion_path, true],
+      #['Discuss', discussion_path, true],
       ['Exhibits', exhibit_list_path, true],
       ['News', news_path + '/', true],
       ['About', tab_about_path, true]
