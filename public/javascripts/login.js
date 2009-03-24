@@ -113,22 +113,22 @@ var SignInDlg = Class.create({
 		this.show = function (parent_id, view, username, email) {
 			
 			// TODO-PER: Code to just do a call back instead of this dialog
-//			switch (view)
-//			{
-//				case 'sign_in':
-//					window.location = '/login/login';
-//					break;
-//				case 'my_account':
-//					window.location = '/login/account';
-//					break;
-//				case 'create_account':
-//					window.location = '/login/signup';
-//					break;
-//				case 'account_help':
-//					window.location = '/login/account_help';
-//					break;
-//			}
-//			return;
+			switch (view)
+			{
+				case 'sign_in':
+					window.location = '/login/login';
+					break;
+				case 'my_account':
+					window.location = '/login/account';
+					break;
+				case 'create_account':
+					window.location = '/login/signup';
+					break;
+				case 'account_help':
+					window.location = '/login/account_help';
+					break;
+			}
+			return;
 
 			var elements = [
 				{
