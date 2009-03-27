@@ -10,10 +10,10 @@
 <% end %>
 <% end if hit['alternative'] %>
 <% ################### -%>
+<%= result_row_item(:separate_lines, hit, 'source', 'Source', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
 <%= result_row_item(:multiple_item, hit, 'genre', 'Genre', false) %>
-<%= result_row_item(:separate_lines, hit, 'source', 'Source', true) %>
 <% ################### -%>
 <% if hit['archive'] %>
 	<tr class="hidden">
