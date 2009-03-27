@@ -640,7 +640,7 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 	existing_note = existing_note.gsub("<br />", "\n");
 	existing_note = existing_note.gsub("<br>", "\n");
 
-	doSingleInputPrompt("Edit Annotation", 'Annotation:', 'note', parent_id, 
+	doSingleInputPrompt("Edit Private Annotation", 'Annotation:', 'note', parent_id, 
 		row_id,
 		"/results/set_annotation", 
 		$H({ uri: uri, row_num: row_num, full_text: getFullText(row_id), note: existing_note }), 'textarea',
