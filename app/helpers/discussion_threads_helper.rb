@@ -49,6 +49,7 @@ module DiscussionThreadsHelper
   
   def get_user_picture(user_id, type)
     placeholder = "/images/person_placeholder.jpg"
+    user = User.find_by_id(user_id)
     return placeholder if user == nil
     return placeholder if user.image == nil
     return placeholder if user.image.public_filename == nil
