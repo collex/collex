@@ -48,6 +48,11 @@ module DiscussionThreadsHelper
   end
   
   def get_user_picture(user_id, type)
+    placeholder = "/images/person_placeholder.jpg"
+    return placeholder if user == nil
+    return placeholder if user.image == nil
+    return placeholder if user.image.public_filename == nil
+
     full_size_path = user.image.public_filename
     file_path = user.image.public_filename(type)
   
@@ -56,7 +61,7 @@ module DiscussionThreadsHelper
     elsif File.exists?("#{RAILS_ROOT}/public/#{full_size_path}")
       return full_size_path
     else
-      return "/images/person_placeholder.jpg"
+      return placeholder
     end
   end
 end
