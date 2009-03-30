@@ -49,46 +49,90 @@ var GeneralDialog = Class.create({
 		body.appendChild(new Element('div', { id: this_id + 'flash', 'class': 'flash_notice' }).update(flash_notice));
 		elements.each(function (el){
 			var elClass = el.page;
-			//body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-title", style: 'display:none;' }).update(el.title));
 			el.elements.each(function (subel) {
 				if (subel.item_type === 'instructions')
-					body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-explanation", style: 'display:none;' }).update(subel.data));
+					body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-explanation hidden" }).update(subel.data));
 				else if (subel.item_type === 'group')
 				{
 					if (subel.data.title.length > 0)
-						body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-option", style: 'display:none;' }).update(subel.data.title));
-					var table = new Element('table', { 'class': elClass + ' switchable_element ' + subel.data.cls, style: 'display:none;' });
-					var tbody = new Element('tbody');
+						body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-option hidden" }).update(subel.data.title));
 					var form = new Element('form');
-					table.appendChild(tbody);
-					form.appendChild(table);
 					body.appendChild(form);
 					subel.data.fields.each(function (fld) {
-						var tr = new Element('tr', { 'class': elClass + " switchable_element", style: 'display:none;' });
-						tbody.appendChild(tr);
+						var row = new Element('div', { 'class': elClass + " switchable_element hidden" });
+						form.appendChild(row);
 
 						if (fld.label !== undefined) {
-							tr.appendChild(new Element('td').update(fld.label));
+							row.appendChild(new Element('span', { 'class': "login-row"}).update(fld.label));
 						}
 						if (fld.fixed !== undefined) {
-							tr.appendChild(new Element('td', { colspan: 2, id: (fld.id !== undefined) ? fld.id : '' }).update(fld.fixed));
+							row.appendChild(new Element('span', { id: (fld.id !== undefined) ? fld.id : '' }).update(fld.fixed));
 						}
 						if (fld.text !== undefined) {
-							tr.appendChild(new Element('td', { colspan: 2}).appendChild(
-								new Element('input', { 'type': 'text', size: fld.text, id: (fld.id !== undefined) ? fld.id : '', value: (fld.value !== undefined) ? fld.value : '' })));
+							var el1 = new Element('input', { 'class': elClass + " switchable_element hidden", 'type': 'text', size: fld.text });
+							if (fld.id !== undefined)
+								el1.writeAttribute({id: fld.id });
+							if (fld.value !== undefined)
+								el1.writeAttribute({value: fld.value });
+							row.appendChild(new Element('span').appendChild(new Element('div').appendChild(el1)));
 						}
 						if (fld.password !== undefined) {
-							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('input', { 'type': 'password', size: fld.text, id: (fld.id !== undefined) ? fld.id : '' })));
+							row.appendChild(new Element('span').appendChild(new Element('input', { 'type': 'password', size: fld.text, id: (fld.id !== undefined) ? fld.id : '' })));
 						}
 						if (fld.submit !== undefined) {
-							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('input', { id: 'btn' + listenerArray.length, 'type': 'button', value: fld.submit })));
+							var span = new Element('span', { 'class': "login-row"});
+							var input = new Element('input', { id: 'btn' + listenerArray.length, 'type': 'button', value: fld.submit });
+							span.appendChild(input);
+							row.appendChild(span);
 							listenerArray.push({ id: 'btn' + listenerArray.length, callback: fld.callback, param: [ fld.submit_url, this_id + 'flash' ] });
 						}
 						if (fld.page_link !== undefined) {
-							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('a', { id: 'a' + listenerArray.length, href: '#', 'class': 'nav_link' }).update(fld.page_link)));
+							var span = new Element('span', { 'class': "login-row"});
+							var a = new Element('a', { id: 'a' + listenerArray.length, href: '#', 'class': 'nav_link' }).update(fld.page_link);
+							span.appendChild(a);
+							row.appendChild(span);
 							listenerArray.push({ id: 'a' + listenerArray.length, callback: fld.callback, param: [ fld.new_page, this ] });
 						}
 					}, this);
+
+//					if (subel.data.title.length > 0)
+//						body.appendChild(new Element('div', { 'class': elClass + " switchable_element login-option hidden" }).update(subel.data.title));
+//					var table = new Element('table', { 'class': elClass + ' switchable_element hidden ' + subel.data.cls });
+//					var tbody = new Element('tbody');
+//					var form = new Element('form');
+//					table.appendChild(tbody);
+//					form.appendChild(table);
+//					body.appendChild(form);
+//					subel.data.fields.each(function (fld) {
+//						var tr = new Element('tr', { 'class': elClass + " switchable_element hidden" });
+//						tbody.appendChild(tr);
+//
+//						if (fld.label !== undefined) {
+//							tr.appendChild(new Element('td').update(fld.label));
+//						}
+//						if (fld.fixed !== undefined) {
+//							tr.appendChild(new Element('td', { colspan: 2, id: (fld.id !== undefined) ? fld.id : '' }).update(fld.fixed));
+//						}
+//						if (fld.text !== undefined) {
+//							var el1 = new Element('input', { 'class': elClass + " switchable_element hidden", 'type': 'text', size: fld.text });
+//							if (fld.id !== undefined)
+//								el1.writeAttribute({id: fld.id });
+//							if (fld.value !== undefined)
+//								el1.writeAttribute({value: fld.value });
+//							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('div').appendChild(el1)));
+//						}
+//						if (fld.password !== undefined) {
+//							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('input', { 'type': 'password', size: fld.text, id: (fld.id !== undefined) ? fld.id : '' })));
+//						}
+//						if (fld.submit !== undefined) {
+//							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('input', { id: 'btn' + listenerArray.length, 'type': 'button', value: fld.submit })));
+//							listenerArray.push({ id: 'btn' + listenerArray.length, callback: fld.callback, param: [ fld.submit_url, this_id + 'flash' ] });
+//						}
+//						if (fld.page_link !== undefined) {
+//							tr.appendChild(new Element('td', { colspan: 2}).appendChild(new Element('a', { id: 'a' + listenerArray.length, href: '#', 'class': 'nav_link' }).update(fld.page_link)));
+//							listenerArray.push({ id: 'a' + listenerArray.length, callback: fld.callback, param: [ fld.new_page, this ] });
+//						}
+//					}, this);
 				}
 				else if (subel.item_type === 'button') {
 					var but = [ { text: subel.data.name, handler: { fn: subel.data.callback, obj: [ subel.data.submit_url, this_id + 'flash'], scope: elClass } },

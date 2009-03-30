@@ -56,9 +56,9 @@ var SignInDlg = Class.create({
 			var els = $$('.switchable_element');
 			els.each(function (el) {
 				if (el.hasClassName(view))
-					el.show();
+					el.removeClassName('hidden');
 				else
-					el.hide();
+					el.addClassName('hidden');
 			});
 			
 			switch (view)

@@ -31,6 +31,11 @@
 }
 
 .flash_notice {
-color: green;
-font-weight: bold;
+	color: green;
+	font-weight: bold;
+}
+
+.login-row {
+	padding-left: 1em;
+	padding-right: 2em;
 }
