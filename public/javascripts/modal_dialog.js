@@ -640,7 +640,9 @@ ModalDialog.prototype = {
 					height: '200px',
 					// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
 					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
-					toolbar: toolbar
+					toolbar: toolbar,
+		            dompath: true,
+		            animate: true
 			});
 
 			if (extraButtons.length > 0 && extraButtons[0] == 'drop_cap')
@@ -676,8 +678,35 @@ ModalDialog.prototype = {
 		if (this.usesRichTextArea)
 		{
 			var textAreas = $$('#'+this.formID+' textarea');
-			var resizer = new YAHOO.util.Resize(id);
-			resizer.subscribe( 'resize', this._dlgResized, textAreas[0].id, this);
+			
+			var editor = this.editor;
+
+			editor.on('editorContentLoaded', function() { 
+				var resize = new YAHOO.util.Resize(editor.get('element_cont').get('element'), {
+				    handles: ['b', 'r', 'br'],
+				    autoRatio: true,
+				    status: true,
+				    proxy: true,
+				    setSize: false //This is where the magic happens
+				});
+				resize.on('startResize', function() {
+				    this.hide();
+				    this.set('disabled', true);
+				}, editor, true);
+				resize.on('resize', function(args) {
+				    var h = args.height;
+				    var th = (this.toolbar.get('element').clientHeight + 2); //It has a 1px border..
+				    var dh = (this.dompath.clientHeight + 1); //It has a 1px top border..
+				    var newH = (h - th - dh);
+				    this.set('width', args.width + 'px');
+				    this.set('height', newH + 'px');
+				    this.set('disabled', false);
+				    this.show();
+				}, editor, true);
+			});
+
+			//var resizer = new YAHOO.util.Resize(id);
+			//resizer.subscribe( 'resize', this._dlgResized, textAreas[0].id, this);
 		}
 	},
 
@@ -796,28 +825,28 @@ ModalDialog.prototype = {
 		}, this, true);
 	},
 
-	_dlgResized: function (event, elementIdToResize)
-	{
-		var el = $(elementIdToResize+"_container");
-		//var elForm = el.up("." + this._divId + "_form");
-		var elForm = $(this.formID);
-		var fontSize = parseFloat(elForm.getStyle("fontSize"));
-		var margin = parseInt(fontSize*2 + "");
-		el.setStyle({ width: event.width - margin - 10 + 'px'});
-		
-		var elFt = $(this._divId).down('.ft');
-		var ftHeight = parseInt(elFt.getStyle('height'));
-		var elHd = $(this._divId).down('.hd');
-		var hdHeight = parseInt(elHd.getStyle('height'));
-		var elTb = el.down(".yui-toolbar-container");
-		var tbHeight = parseInt(elTb.getStyle('height'));
-		var yEl = getY(el);
-		var yDlg = getY($(this._divId));
-		var relPos = yEl - yDlg;
-		
-		var elHeight = el.down(".yui-editor-editable-container");
-		elHeight.setStyle({ height: event.height - relPos - margin/2 - ftHeight - hdHeight - tbHeight + 'px'});
-	},
+//	_dlgResized: function (event, elementIdToResize)
+//	{
+//		var el = $(elementIdToResize+"_container");
+//		//var elForm = el.up("." + this._divId + "_form");
+//		var elForm = $(this.formID);
+//		var fontSize = parseFloat(elForm.getStyle("fontSize"));
+//		var margin = parseInt(fontSize*2 + "");
+//		el.setStyle({ width: event.width - margin - 10 + 'px'});
+//		
+//		var elFt = $(this._divId).down('.ft');
+//		var ftHeight = parseInt(elFt.getStyle('height'));
+//		var elHd = $(this._divId).down('.hd');
+//		var hdHeight = parseInt(elHd.getStyle('height'));
+//		var elTb = el.down(".yui-toolbar-container");
+//		var tbHeight = parseInt(elTb.getStyle('height'));
+//		var yEl = getY(el);
+//		var yDlg = getY($(this._divId));
+//		var relPos = yEl - yDlg;
+//		
+//		var elHeight = el.down(".yui-editor-editable-container");
+//		elHeight.setStyle({ height: event.height - relPos - margin/2 - ftHeight - hdHeight - tbHeight + 'px'});
+//	},
 
 	_sendToServer: function( element_id, form_id ) {
 		var el = $(element_id);
