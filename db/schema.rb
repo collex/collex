@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 103) do
+ActiveRecord::Schema.define(:version => 105) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -210,6 +210,18 @@ ActiveRecord::Schema.define(:version => 103) do
     t.string  "type"
   end
 
+  create_table "images", :force => true do |t|
+    t.integer  "parent_id"
+    t.string   "content_type"
+    t.string   "filename"
+    t.string   "thumbnail"
+    t.integer  "size"
+    t.integer  "width"
+    t.integer  "height"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "interpretations", :force => true do |t|
     t.integer  "user_id"
     t.text     "object_uri"
@@ -360,13 +372,14 @@ ActiveRecord::Schema.define(:version => 103) do
   add_index "tags", ["name"], :name => "tags_name", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string "username"
-    t.string "password_hash"
-    t.string "fullname"
-    t.string "email"
-    t.string "institution"
-    t.string "link"
-    t.text   "about_me"
+    t.string  "username"
+    t.string  "password_hash"
+    t.string  "fullname"
+    t.string  "email"
+    t.string  "institution"
+    t.string  "link"
+    t.text    "about_me"
+    t.integer "image_id",      :limit => 10, :precision => 10, :scale => 0
   end
 
 end

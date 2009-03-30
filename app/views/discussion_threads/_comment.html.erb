@@ -28,7 +28,7 @@
 		<% if is_main -%>
 			<span class="discussion_title"><%= DiscussionThread.find(thread_id).title %></span>
 		<% end -%>
-		<%= render :partial => 'comment_template', :locals => { :picture_src => get_user_picture(comment.user_id), :picture_alt => 'user', :comment => comment, :can_delete => !is_main && can_delete } %>
+		<%= render :partial => 'comment_template', :locals => { :picture_src => get_user_picture(comment.user_id, :thumb), :picture_alt => 'user', :comment => comment, :can_delete => !is_main && can_delete } %>
 
 		<% if !is_main -%>
 			<span class="discussion_comment_title">	<%= get_user_link(User.find(comment.user_id)) %> comments:</span>

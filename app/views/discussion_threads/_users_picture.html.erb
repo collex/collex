@@ -17,5 +17,5 @@
 
 <% # users_picture partial. Parameters: user_id %>
 
-<% pic = get_user_picture(user_id) -%>
-<img src=<%= pic %> width="130" alt="" />
+<% pic = get_user_picture(user_id, :thumb) -%>
+<img src=<%= pic %> max-width="130" alt="" />

@@ -17,7 +17,7 @@
 <% # summary: params: ActiveRecord comment, int thread_id, bool can_delete -%>
 <% if comment.get_type() == "comment" -%>
 	<% title = DiscussionThread.find(thread_id).title -%>
-	<% thumbnail = get_user_picture(comment.user_id) -%>
+	<% thumbnail = get_user_picture(comment.user_id, :thumb) -%>
 <% elsif comment.get_type() == "nines_object" -%>
 	<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
 	<% title = h hit["title"][0] -%>

@@ -19,11 +19,7 @@
 	<table>
 		<tr valign="top">
 			<td>
-				<% if File.exists?("#{RAILS_ROOT}/public/images/users/#{user.id}") -%>
-					<img src=<%= "/images/users/#{user.id}" %> width="130" alt="" />
-				<% else -%>
-					<img src="/images/person_placeholder.jpg" alt="" />
-				<% end -%>
+				<%= image_tag(get_user_picture(user.id, :full), :style => 'max-height:180px') %>
 			</td>
 			<td width="10px"></td>
 			<td> <%# right hand side of profile, with everything but the picture %>

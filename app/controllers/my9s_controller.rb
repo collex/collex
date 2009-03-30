@@ -140,11 +140,15 @@ class My9sController < ApplicationController
         user.link = "invalid link entered"
       end
       if params['image'].length > 0
-        folder = "#{RAILS_ROOT}/public/images/users/"
-        image_path = "#{folder}#{user.id}"
-        Dir.mkdir(folder) unless File.exists?(folder)
-        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
+        user.image = Image.new({ :uploaded_data => params['image'] })
       end
+    
+#      if params['image'].length > 0
+#        folder = "#{RAILS_ROOT}/public/images/users/"
+#        image_path = "#{folder}#{user.id}"
+#        Dir.mkdir(folder) unless File.exists?(folder)
+#        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
+#      end
       user.save
      redirect_to :action => 'index'
     end

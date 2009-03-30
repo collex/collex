@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   has_many :searches
   has_many :collected_items
+  belongs_to :image#, :dependent=>:destroy
   
   def role_names
     self.roles.collect { |role| role.name }
