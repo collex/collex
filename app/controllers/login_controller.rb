@@ -23,7 +23,7 @@ class LoginController < ApplicationController
      @use_tabs = false
      @use_signin= false
      @site_section = :login
-     @uses_separate_pages = true
+     @uses_separate_pages = false #true
      return true
    end
 
