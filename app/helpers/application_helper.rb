@@ -36,17 +36,28 @@ module ApplicationHelper
 #    "</script>\n"
 #  end
   
+  def switchClassesOnElement(el_str, class1, class2)
+    # This returns the javascript to change a class in an element. It uses double quotes in the returned string.
+    return "#{el_str}.addClassName(\"#{class1}\"); #{el_str}.removeClassName(\"#{class2}\");"
+  end
+  
   def rounded_button(text, id, action, color)
 #    return yahoo_button(text, id, action)
-# TODO-PER: Use this instead to get the new buttons
+    enterHover = switchClassesOnElement("$(this).down()", "#{color}_rounded_button_left_hover", "#{color}_rounded_button_left") +
+      switchClassesOnElement("$(this).down().down()", "#{color}_rounded_button_middle_hover", "#{color}_rounded_button_middle") +
+      switchClassesOnElement("$(this).down().next()", "#{color}_rounded_button_right_hover", "#{color}_rounded_button_right")
+    leaveHover = switchClassesOnElement("$(this).down()", "#{color}_rounded_button_left", "#{color}_rounded_button_left_hover") +
+      switchClassesOnElement("$(this).down().down()", "#{color}_rounded_button_middle", "#{color}_rounded_button_middle_hover") +
+      switchClassesOnElement("$(this).down().next()", "#{color}_rounded_button_right", "#{color}_rounded_button_right_hover")
+
     "<!--[if IE 6]>\n<div id='#{id}' class='ie6_rounded_button' onclick='#{action.gsub('\'', '"')}; return false;'>#{text}</div><![endif]-->\n" +
     "<!--[if gte IE 7]><!-->\n" +
-    "<div id='#{id}' class='rounded_button_container' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_left'><div class='#{color}_rounded_button_middle'>\n" +
+    "<div id='#{id}' class='rounded_button_container' onmouseover='#{enterHover}' onmouseout='#{leaveHover}' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_left'><div class='#{color}_rounded_button_middle'>\n" +
     "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
     "</div></div><div class='#{color}_rounded_button_right'></div></div>" +
     "<!--<![endif]-->\n"
   end
-  
+
   def rounded_h1(text)
     "<div class='rounded_left'><div class='rounded_middle'><div class='rounded_right'>\n" +
     "  <h1 class='rounded_h1'>#{text}</h1>\n" +
