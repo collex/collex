@@ -38,11 +38,13 @@ module ApplicationHelper
   
   def rounded_button(text, id, action, color)
 #    return yahoo_button(text, id, action)
-    
 # TODO-PER: Use this instead to get the new buttons
+    "<!--[if IE 6]>\n<div id='#{id}' class='ie6_rounded_button' onclick='#{action.gsub('\'', '"')}; return false;'>#{text}</div><![endif]-->\n" +
+    "<!--[if gte IE 7]><!-->\n" +
     "<div id='#{id}' class='rounded_button_container' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_left'><div class='#{color}_rounded_button_middle'>\n" +
     "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
-    "</div></div><div class='#{color}_rounded_button_right'></div></div>"
+    "</div></div><div class='#{color}_rounded_button_right'></div></div>" +
+    "<!--<![endif]-->\n"
   end
   
   def rounded_h1(text)
