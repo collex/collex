@@ -152,80 +152,85 @@ color:inherit;
 	padding-bottom:2px;
 }
 
-.red_rounded_button_left {
-	background: url(/images/red_button_left.jpg) 0 0 no-repeat;
-	padding-left: 8px;
-	/*width: 100px;*/
-	margin-right: 4px;
-	text-align: center;
-	height: 25px;
-
+.rounded_button_container {
     float:right;
     display:inline; /*required by IE6*/
-    margin:0 3px 0 6px;
 	cursor: pointer;
 }
 
+.red_rounded_button_left {
+	background: url(/images/red_button_left.png) 0 0 no-repeat;
+	padding-left: 8px;
+/*	margin-right: 4px;*/
+	text-align: center;
+	height: 28px;
+    margin:0 3px 0 6px;
+}
+
 .red_rounded_button_middle {
-	background: url(/images/red_button_middle.jpg) 0 0 repeat-x;
-	height: 25px;
+	background: url(/images/red_button_middle.png) 0 0 repeat-x;
+	height: 28px;
+	margin-right:6px;
 }
 
 .red_rounded_button_right {
-	background: url(/images/red_button_right.jpg) 100% 0 no-repeat;
-	height: 25px;
+	background: url(/images/red_button_right.png) 100% 0 no-repeat;
+	height: 28px;
+	display:inline;
+	float:right;
+	margin-top:-28px;
+	width:9px;
 }
 
-.red_rounded_button_left:hover {
-	background: url(/images/red_button_left_hover.jpg) 0 0 no-repeat;
-}
+/*.red_rounded_button_left:hover {
+	background: url(/images/red_button_left_hover.png) 0 0 no-repeat;
+}*/
 
 .red_rounded_button_middle:hover {
-	background: url(/images/red_button_middle_hover.jpg) 0 0 repeat-x;
+	background: url(/images/red_button_middle_hover.png) 0 0 repeat-x;
 }
 
-.red_rounded_button_right:hover {
-	background: url(/images/red_button_right_hover.jpg) 100% 0 no-repeat;
-}
+/*.red_rounded_button_right:hover {
+	background: url(/images/red_button_right_hover.png) 100% 0 no-repeat;
+}*/
 
 .gray_rounded_button_left {
 	background: url(/images/gray_button_left.jpg) 0 0 no-repeat;
 	padding-left: 8px;
-	/*width: 100px;*/
-	margin-right: 4px;
+/*	margin-right: 4px;*/
 	text-align: center;
-	height: 25px;
-
-    float:right;
-    display:inline; /*required by IE6*/
+	height: 28px;
     margin:0 3px 0 6px;
-	cursor: pointer;
 }
 
 .gray_rounded_button_middle {
 	background: url(/images/gray_button_middle.jpg) 0 0 repeat-x;
-	height: 25px;
+	height: 28px;
+	margin-right:6px;
 }
 
 .gray_rounded_button_right {
 	background: url(/images/gray_button_right.jpg) 100% 0 no-repeat;
-	height: 25px;
+	height: 28px;
+	float:right;
+	margin-top:-28px;
+	width:9px;
 }
 
-.gray_rounded_button_left:hover {
+/*.gray_rounded_button_left:hover {
 	background: url(/images/gray_button_left_hover.jpg) 0 0 no-repeat;
-}
+}*/
 
 .gray_rounded_button_middle:hover {
 	background: url(/images/gray_button_middle_hover.jpg) 0 0 repeat-x;
 }
 
-.gray_rounded_button_right:hover {
+/*.gray_rounded_button_right:hover {
 	background: url(/images/gray_button_right_hover.jpg) 100% 0 no-repeat;
-}
+}*/
 
 .rounded_button_top_spacing {
-	height: 3px;
+	height: 5px;
 }
 
 .rounded_button_link {
@@ -240,6 +245,7 @@ color:inherit;
 	margin-right: 8px;
 	font-size:10pt;
 	font-weight:normal;
+	padding-left:7px;
 }
 
 /* rest of the styles */		
