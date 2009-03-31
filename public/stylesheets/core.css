@@ -152,6 +152,18 @@ color:inherit;
 	padding-bottom:2px;
 }
 
+.ie6_rounded_button {
+	border: 1px solid black;
+	background: #721909;
+	color: #ffffff;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	padding: 10px;
+	display: inline;
+	margin: 10px;
+}
+
 .rounded_button_container {
     float:right;
     display:inline; /*required by IE6*/
