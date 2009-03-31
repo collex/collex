@@ -142,7 +142,7 @@ end
 				<%= render :partial => '/common/login_slider' %>
 			<% end -%>
 		</div>
-  		<div id="content">
+  		<div id="<%= "login_" if @site_section == :login %>content">
   			<% if @use_tabs -%>
 			<table class="tabs" cellspacing='0px' >
 				<tr>
