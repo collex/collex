@@ -212,6 +212,7 @@ color:inherit;
 .gray_rounded_button_right {
 	background: url(/images/gray_button_right.jpg) 100% 0 no-repeat;
 	height: 28px;
+	display:inline;
 	float:right;
 	margin-top:-28px;
 	width:9px;
