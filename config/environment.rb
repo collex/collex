@@ -74,7 +74,7 @@ require 'rexml/document'
 require 'collex_engine'
 require 'nines_collection_manager' # require this or get load errors in dev mode
 
-solr_url_for = { "staging" => "http://localhost:8989/solr", "quandu_production" => "http://sds.itc.virginia.edu:8080/nines-solr1.3", "quandu_staging" => "http://sds6.itc.virginia.edu:8080/nines-solr1.3" }
+solr_url_for = { "staging" => "http://localhost:8989/solr", "quandu_production" => "http://127.0.0.1:8080/nines-solr1.3", "quandu_staging" => "http://sds6.itc.virginia.edu:8080/nines-solr1.3" }
 
 SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || solr_url_for[RAILS_ENV] || "http://localhost:8983/solr"
 
