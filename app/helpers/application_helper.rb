@@ -28,21 +28,21 @@ module ApplicationHelper
     return false
   end
 
-#  def yahoo_button(text, id, action)
-#    "<a id='#{id}'>#{text}</a>\n" +
-#    "<script type='text/javascript'>\n" +
-#    "function button#{id}() { #{action}; return false; }\n" +
-#    "var oButton = new YAHOO.widget.Button('#{id}', { type: 'link', onclick: { fn: button#{id} } });\n" +
-#    "</script>\n"
-#  end
+  def yahoo_button(text, id, action)
+    "<a id='#{id}'>#{text}</a>\n" +
+    "<script type='text/javascript'>\n" +
+    "function button#{id}() { #{action}; return false; }\n" +
+    "var oButton = new YAHOO.widget.Button('#{id}', { type: 'link', onclick: { fn: button#{id} } });\n" +
+    "</script>\n"
+  end
   
   def rounded_button(text, id, action, color)
-#    return yahoo_button(text, id, action)
+    return yahoo_button(text, id, action)
     
 # TODO-PER: Use this instead to get the new buttons
-    "<div id='#{id}' class='#{color}_rounded_button_left' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_middle'><div class='#{color}_rounded_button_right'>\n" +
-    "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
-    "</div></div></div>"
+#    "<div id='#{id}' class='#{color}_rounded_button_left' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_middle'><div class='#{color}_rounded_button_right'>\n" +
+#    "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
+#    "</div></div></div>"
   end
   
   def rounded_h1(text)
