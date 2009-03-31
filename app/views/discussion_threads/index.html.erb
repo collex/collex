@@ -18,21 +18,37 @@
 <% current_page "Discuss" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 
+<div class="discussion_explanation">
+	<span>Welcome to the NINES Forum!</span> We've set aside this portion of NINES for commentary, discussion and collaboration among the NINES community.
+	Join in the conversations below immediately, or login to your free account to associate objects of searches with your entries.
+</div>
+
 <div id="discussion_thread">&nbsp;</div>
 
+<div class="discussion_topic_index_header">
+	<h2>Current Threads</span><span class="discussion_topic_sort_by">&nbsp;&nbsp;(sorted by: Recent Activity | Alphabetically)</h2>
+</div>
 <% topics = DiscussionTopic.find(:all, :order => 'position') -%>
 <% for topic in topics -%>
+	<% threads = topic.discussion_threads -%>
 	<div class="discussion_topic_title">
 		<h2>
 			<%= toggle_discussion_topic(topic.id, "topic", "toggle_by_id", :open) %>
 			<%= topic.topic %>
-			<%= "(#{topic.discussion_threads.length} threads " if topic.discussion_threads.length > 1 %>
-			<%= link_to_function "[start new thread]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
-			<%= ")" if topic.discussion_threads.length > 1 %>
+			<% if threads.length >= 1 -%>
+				<span class="discussion_topic_count">
+					(<%= pluralize(threads.length, 'discussion') %> |
+					<% last_updated_date = get_last_updated_date(topic) -%>
+					<%= "<span class='discussion_topic_recent_update'>" if is_new_post(last_updated_date) %>
+						Last updated <%= comment_time_format(last_updated_date) %>
+					<%= "</span>" if is_new_post(last_updated_date) %>
+					)
+				</span>
+			<% end -%>
 		</h2>
+		<span class="discussion_topic_new"><%= link_to_function "[start new discussion]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %></span>
 	</div>
 	<div id="topic_<%= topic.id %>" class="discussion_thread_list_item">
-		<% threads =  topic.discussion_threads -%>
 		<% for thread in threads -%>
 			<% if thread.discussion_comments.length < 1 -%>
 				ERROR: ill-formed thread. (Main comment is missing)<br/>

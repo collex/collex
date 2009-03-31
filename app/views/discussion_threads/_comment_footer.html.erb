@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # comment_footer --- params: ActiveRecord comment, bool include_username, bool include_report  -%>
+<% # comment_footer --- params: ActiveRecord comment, bool include_username, bool include_report, bool include_last_updated -%>
 <div>
 	<% if include_report -%>
 		<% if is_logged_in? -%>
@@ -24,5 +24,19 @@
 		<% end -%>
 		<%= rounded_button("report", "report_id_#{comment.id}", action, 'gray') %>
 	<% end -%>
-	Posted <%= "by #{get_user_link(User.find(comment.user_id))} " if include_username %>on <%= comment.updated_at.strftime("%b %d, %Y %I:%M%p") %><br /><br />
+	<% if include_last_updated -%>
+		Original Post by
+	<% else -%>
+		Posted by
+	<% end -%>
+	<%= "#{get_user_link(User.find(comment.user_id))} " if include_username %>on <%= comment_time_format(comment.updated_at) %>
+	<% if include_last_updated -%>
+		<% thread = DiscussionThread.find(comment.discussion_thread_id) -%>
+		<% last_comment = thread.discussion_comments[thread.discussion_comments.length-1] -%>
+		|
+		<%= "<span class='discussion_topic_recent_update'>" if is_new_post(last_comment.updated_at) -%>
+		Last updated by <%= get_user_link(User.find(last_comment.user_id)) %> on <%= comment_time_format(last_comment.updated_at) %>
+		<%= "</span>" if is_new_post(last_comment.updated_at) -%>
+	<% end -%>
+	<br /><br />
 </div>

@@ -15,10 +15,21 @@
 
 .discussion_summary {
 	clear: both;
+	margin-left: 3em;
 }
 
 .discussion_topic_title {
 	clear: both;
+	margin-left: 3em;
+	padding-bottom: 2em;
+}
+
+.discussion_topic_title h2 {
+	margin-bottom: 2px;
+}
+
+.discussion_topic_new {
+	padding-left: 2em;
 }
 
 .discussion_thread_margin {
@@ -146,4 +157,40 @@
 	padding: 6px;
 	font-size: 1.4em;
 	font-weight: bold;
+}
+
+.discussion_explanation {
+	background-color:#DDDDDD;
+	font-size:13px;
+	margin-left:3em;
+	margin-right:100px;
+	margin-top:1em;
+	max-width:800px;
+	min-width:325px;
+	padding:5px;
+}
+
+.discussion_explanation span {
+	font-size:14px;
+	font-weight:bold;
+	padding:2px;
+}
+
+.discussion_topic_sort_by {
+	font-size:14px;
+	color: gray;
+}
+
+.discussion_topic_index_header {
+	border-bottom: 1px solid black;
+	margin-left: 3em;
+}
+
+.discussion_topic_count {
+	color: #4e4e4e;
+	font-size: .7em;
+}
+
+.discussion_topic_recent_update {
+	background-color: #e8e08f;
 }

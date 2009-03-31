@@ -65,4 +65,25 @@ module DiscussionThreadsHelper
       return placeholder
     end
   end
+  
+  def is_new_post(tim)
+    return tim > (Time.now - 86400*1)
+  end
+  
+  def comment_time_format(tim)
+    return tim.strftime("%b %d, %Y %I:%M%p")
+  end
+  
+  def get_last_updated_date(topic_rec)
+    threads = topic_rec.discussion_threads
+    newest_date = nil
+    for thread in threads
+      comments = thread.discussion_comments
+      last_comment_time = comments[comments.length-1].updated_at
+      if newest_date == nil || newest_date < last_comment_time
+        newest_date = last_comment_time
+      end
+    end
+    return newest_date
+  end
 end

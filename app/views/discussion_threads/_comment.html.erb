@@ -60,7 +60,7 @@
 		<table><tr>
 			<%= render :partial => '/results/result_row', :locals => { :row_id => "test", :index => 2, :hit => hit, :has_exhibits => false, :add_border => false } %>
 		</tr><tr><td></td><td colspan='4'>
-			<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => false, :include_report => false } %>
+			<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => false, :include_report => false, :include_last_updated => false } %>
 		</td></tr></table>
 		<% else -%>
 			ERROR: ill-formed comment. (Comment type <%- comment.comment_type %> is unknown)

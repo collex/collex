@@ -16,5 +16,5 @@
     # ---------------------------------------------------------------------------- -%>
 <% # comment_template2: ActiveRecord comment, bool include_username, bool include_report  -%>
 <div class="discussion_thread_margin discussion_thread_footer">
-	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => include_username, :include_report => include_report } %>
+	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => include_username, :include_report => include_report, :include_last_updated => false } %>
 </div>
