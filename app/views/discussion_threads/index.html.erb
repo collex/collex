@@ -26,10 +26,16 @@
 <div id="discussion_thread">&nbsp;</div>
 
 <div class="discussion_topic_index_header">
-	<h2>Current Threads</span><span class="discussion_topic_sort_by">&nbsp;&nbsp;(sorted by: Recent Activity | Alphabetically)</h2>
+	<h2>Current Threads</span><span class="discussion_topic_sort_by">&nbsp;&nbsp;(sorted by: 
+		<%= link_to_if(session[:discussion_topic_sort] != 'date', "Recent Activity", { :action => 'sort_by_date' }, { :class => 'nav_link' }) %> |
+		<%= link_to_if(session[:discussion_topic_sort] == 'date', "Alphabetically", { :action => 'sort_by_topic' }, { :class => 'nav_link' }) %>)
+	</h2>
 </div>
-<% topics = DiscussionTopic.find(:all, :order => 'position') -%>
-<% for topic in topics -%>
+<% topics = DiscussionTopic.get_all_with_date() -%>
+<% topics = sort_topics(session[:discussion_topic_sort] == 'date', topics) -%>
+<% for topic_arr in topics -%>
+	<% topic = topic_arr[:topic_rec] -%>
+	<% last_updated_date = topic_arr[:date] -%>
 	<% threads = topic.discussion_threads -%>
 	<div class="discussion_topic_title">
 		<h2>
@@ -38,7 +44,6 @@
 			<% if threads.length >= 1 -%>
 				<span class="discussion_topic_count">
 					(<%= pluralize(threads.length, 'discussion') %> |
-					<% last_updated_date = get_last_updated_date(topic) -%>
 					<%= "<span class='discussion_topic_recent_update'>" if is_new_post(last_updated_date) %>
 						Last updated <%= comment_time_format(last_updated_date) %>
 					<%= "</span>" if is_new_post(last_updated_date) %>
@@ -46,7 +51,7 @@
 				</span>
 			<% end -%>
 		</h2>
-		<span class="discussion_topic_new"><%= link_to_function "[start new discussion]", "new RedirectIfLoggedIn('popup_dialog_anchor', 'discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %></span>
+		<span class="discussion_topic_new"><%= link_to_function "[start new discussion]", "new RedirectIfLoggedIn('popup_dialog_anchor', '/discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %></span>
 	</div>
 	<div id="topic_<%= topic.id %>" class="discussion_thread_list_item">
 		<% for thread in threads -%>

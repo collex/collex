@@ -73,17 +73,23 @@ module DiscussionThreadsHelper
   def comment_time_format(tim)
     return tim.strftime("%b %d, %Y %I:%M%p")
   end
-  
-  def get_last_updated_date(topic_rec)
-    threads = topic_rec.discussion_threads
-    newest_date = nil
-    for thread in threads
-      comments = thread.discussion_comments
-      last_comment_time = comments[comments.length-1].updated_at
-      if newest_date == nil || newest_date < last_comment_time
-        newest_date = last_comment_time
-      end
+
+  def sort_topics(by_date, topics)
+    if by_date
+      topics = topics.sort {|a,b| 
+        if b[:date] && a[:date] # if there are posts in both items, then compare the dates.
+          b[:date] <=> a[:date]
+        elsif !b[:date] && !a[:date]  # if there are posts in neither item, then compare alpha
+          a[:topic_rec].topic <=> b[:topic_rec].topic
+        elsif a[:date]  # if there are posts in only one item, then that item is sorted first
+          -1
+        else
+          1
+        end
+      }
+    else
+      topics = topics.sort {|a,b| a[:topic_rec].topic <=> b[:topic_rec].topic }
     end
-    return newest_date
+    return topics
   end
 end

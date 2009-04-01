@@ -195,6 +195,20 @@ class DiscussionThreadsController < ApplicationController
      redirect_to :action => 'view_thread'
    end
   
+  def index
+     session[:discussion_topic_sort] ||= 'date'
+  end
+  
+  def sort_by_topic
+     session[:discussion_topic_sort] = 'topic'
+     redirect_to :back
+  end
+  
+  def sort_by_date
+     session[:discussion_topic_sort] = 'date'
+     redirect_to :back
+  end
+
 ## GET /discussion_threads
 #  # GET /discussion_threads.xml
 #  def index
