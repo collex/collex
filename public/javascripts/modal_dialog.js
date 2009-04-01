@@ -275,6 +275,7 @@ ModalDialog.prototype = {
 	_cancelCallback: null,
 	_cancelThis: null,
 	_onCompleteCallback:null,
+	_saveButtonName: 'Save',
 	
 	showPrompt: function(title, targetElement, form, left, top, width, height, extraButtons, okFunction, okObject) {
 		
@@ -352,6 +353,10 @@ ModalDialog.prototype = {
 		this._onCompleteCallback = callBack;
 	},
 	
+	setSaveButton: function(name) {
+		this._saveButtonName = name;
+	},
+	
 	center: function()
 	{
 		var div = $(this._divId).up();
@@ -422,7 +427,7 @@ ModalDialog.prototype = {
 	{
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
-		var myButtons = [ { text:"Save", handler: { fn: this._handleSave, obj: null, scope: this } 	},
+		var myButtons = [ { text: this._saveButtonName, handler: { fn: this._handleSave, obj: null, scope: this } 	},
 			{ text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},

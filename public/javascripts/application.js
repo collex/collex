@@ -379,7 +379,7 @@ function bulkTag(event)
 		doSingleInputPrompt("Add Tag To All Checked Objects", 'Tag:', 'tag', 'bulk_tag', 
 			"",
 			"/results/bulk_add_tag", 
-			$H({ uris: uris }), 'text' );
+			$H({ uris: uris }), 'text', null, null );
 	}
 	else
 	{
@@ -558,7 +558,7 @@ function expandAllItems()
 
 function doDiscuss(id)
 {
-	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null);
+	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null, "Ok");
 }
 
 function doCollect(uri, row_num, row_id)
@@ -609,7 +609,7 @@ function editTag(parent_id, tag_name)
 	doSingleInputPrompt("Edit Tag", 'Tag:', 'new_name', parent_id, 
 		"",
 		"/results/edit_tag", 
-		$H({ old_name: tag_name, new_name: tag_name }), 'text' );
+		$H({ old_name: tag_name, new_name: tag_name }), 'text', null, null );
 }
 
 function removeTag(parent_id, tag_name)
@@ -631,7 +631,7 @@ function doAddTag(parent_id, uri, row_num, row_id)
 	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
 		row_id + ",tag_cloud_div",
 		"/results/add_tag,/tag/update_tag_cloud", 
-		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text' );
+		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text', null, null );
 }
 
 function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
@@ -644,7 +644,7 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 		row_id,
 		"/results/set_annotation", 
 		$H({ uri: uri, row_num: row_num, full_text: getFullText(row_id), note: existing_note }), 'textarea',
-		$H({ width: 370, height: 100}) );
+		$H({ width: 370, height: 100}), null );
 }
 
 function tagFinishedUpdating()
@@ -678,7 +678,7 @@ function doAddToExhibit(uri, index, row_id)
 		row_id + ",exhibited_objects_container",
 		"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
 		$H({ uri: uri, index: index, row_id: row_id }), 'select',
-		exhibit_names);
+		exhibit_names, null);
 }
 
 function cancel_edit_profile_mode(partial_id)
@@ -720,7 +720,7 @@ function doSaveSearch(parent_id)
 	doSingleInputPrompt("Save Search", 'Name:', 'saved_search_name', parent_id, 
 		"saved_search_name",
 		"/search/save_search", 
-		$H({ }), 'text' );
+		$H({ }), 'text', null, null );
 }
 
 function showString(parent_id, str)
@@ -728,7 +728,7 @@ function showString(parent_id, str)
 	doSingleInputPrompt("Copy and Paste link into E-mail or IM", 'Link:', 'show_save_name', parent_id, 
 		null,
 		null, 
-		$H( { show_save_name: str } ), 'text' );
+		$H( { show_save_name: str } ), 'text', null, "Ok" );
 }
 
 function setTagVisibility(zoom_level)

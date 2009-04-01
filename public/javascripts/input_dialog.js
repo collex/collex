@@ -75,6 +75,8 @@ InputDialog.prototype = {
 		this._modalDialog = new ModalDialog();
 		if (this._onCompleteCallback)
 			this._modalDialog.setCompleteCallback(this._onCompleteCallback);
+		if (this._saveButtonName)
+			this._modalDialog.setSaveButton(this._saveButtonName);
 
 		if (this._okFunction)
 			this._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
@@ -89,6 +91,10 @@ InputDialog.prototype = {
 			else
 				Event.observe(but, 'click', this._buttonAction[count].action.bindAsEventListener(this._buttonAction[count].context));
 		}, this);
+	},
+	
+	setSaveButton : function(name) {
+		this._saveButtonName = name;
 	},
 	
 	setOkFunction : function(okFunction, okObject)
@@ -307,10 +313,11 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	actions, // The list of urls that should be called by Ajax (should be the same number as above)
 	hiddenDataHash, // Extra data that should be sent back to the server .eg.: $H({ key1: 'value1', key2: 'value2' })
 	inputType,	// one of: 'text', 'select', or 'textarea'; or 'none' meaning that this dialog is just for info.
-	options	// This is a hash that contains whatever is needed by the inputType
+	options,	// This is a hash that contains whatever is needed by the inputType
 		// text: null
 		// select: array of strings that become the choices. 
 		// textarea: { height: xx, width: yy }
+	saveButtonName	// either a string that appears as the text of the save button, or null to take the default
 	)
 {
 	// put up a Prototype window type dialog.
@@ -362,6 +369,8 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 		top = viewportHeight - height - margin;
 	if (actionElementIds == null)
 		dlg.setNoButtons();
+	if (saveButtonName)
+		dlg.setSaveButton(saveButtonName);
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
 	
 	var prompt = $(promptId);

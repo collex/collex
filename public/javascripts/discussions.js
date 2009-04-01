@@ -22,14 +22,14 @@ function postNewComment() {
 	commentEditor.saveHTML();
 	var t = $('title');
 	if (t.defaultValue === t.value) {
-		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a title for the comment.', null, 'title', null, null, $H({ }), 'none', null);
+		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a title for the comment.', null, 'title', null, null, $H({ }), 'none', null, "Ok");
 		return false;
 	}
 	
 	var comment = $('comment').value;
 	comment = comment.gsub("&nbsp;", "");
 	if (comment.strip().length === 0) {
-		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a comment in the comment area', null, 'title', null, null, $H({ }), 'none', null);
+		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a comment in the comment area', null, 'title', null, null, $H({ }), 'none', null, "Ok");
 		return false;
 	}
 	
@@ -196,7 +196,7 @@ var NewDiscussionCommentDlg = Class.create({
 		
 		this.show = function () {
 			doSingleInputPrompt("Add Comment", "Comment:", "new_comment", parent_id, "", submit_url,
-				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }));
+				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }), null);
 		};
 	}
 });
@@ -221,9 +221,9 @@ var DiscussionReportDlg = Class.create({
 		
 		this.show = function () {
 			doSingleInputPrompt("Report this comment as objectionable",
-				"Press Ok if you want an email sent to the administrators complaining about this entry",
+				"Press Ok if you want an email sent to the administrators complaining about this entry.",
 				"", parent_id, "", submit_url,
-				$H({ comment_id: comment_id }), 'none', null);
+				$H({ comment_id: comment_id }), 'none', null, "Ok");
 		};
 	}
 });

@@ -64,7 +64,7 @@ function yearValidation(input_id, alt_input_id, alt_input_type, submit_id)
   // test if the year is an integer
   if (year_val != parseInt(year_val))
   {
-	doSingleInputPrompt("Error", "The year must contain only numerals.", null, submit_id, null, null, $H({ }), "none", null);
+	doSingleInputPrompt("Error", "The year must contain only numerals.", null, submit_id, null, null, $H({ }), "none", null, "Ok");
 
 	submit_button.disabled = false;
 	submit_button.value = submit_text;
@@ -74,7 +74,7 @@ function yearValidation(input_id, alt_input_id, alt_input_type, submit_id)
   // test if the year is 4 digits in length
   if (year_val.length != 4)
   {
-	doSingleInputPrompt("Error", "The year must  be 4 digits long.", null, submit_id, null, null, $H({ }), "none", null);
+	doSingleInputPrompt("Error", "The year must  be 4 digits long.", null, submit_id, null, null, $H({ }), "none", null, "Ok");
 
 	submit_button.disabled = false;
 	submit_button.value = submit_text;
