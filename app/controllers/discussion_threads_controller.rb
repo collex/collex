@@ -107,21 +107,21 @@ class DiscussionThreadsController < ApplicationController
     nines_object = params[:nines_object]
     inet_thumbnail = params[:inet_thumbnail]
     inet_url = params[:inet_url]
-    inet_description = params[:inet_description]
+    description = params[:description]
     nines_exhibit = params[:nines_exhibit]
     user = User.find_by_username(session[:user][:username])
     
     if ExhibitIllustration.get_illustration_type_nines_obj() == disc_type
       cr = CachedResource.find_by_uri(nines_object)
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-        :comment_type => 'nines_object', :cached_resource_id => cr.id)
+        :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif ExhibitIllustration.get_exhibit_type_text() == disc_type
       exhibit = Exhibit.find_by_title(nines_exhibit)
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-        :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id)
+        :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif ExhibitIllustration.get_illustration_type_image() == disc_type
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-        :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => inet_description)
+        :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
   end
   public

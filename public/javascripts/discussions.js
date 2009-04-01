@@ -162,13 +162,14 @@ var NewThreadObjectDlg = Class.create({
 			dlg.addSelect('Type of Object:', 'disc_type', type_list, selectionChanged);
 			dlg.addTextInput('Link URL:', 'inet_url', size, 'inet');
 			dlg.addTextInput('Thumbnail URL:', 'inet_thumbnail', size, 'inet');
-			dlg.addTextArea('inet_description', 300, 100, 'inet', [ 'alignment' ], new LinkDlgHandler());
 			
 			var list = new CreateList(obj_list, 'nines_object', values.nines_object, 'nines_object');
 			dlg.addList('nines_object', list.list, 'nines_object');
 			
 			var exlist = new CreateListOfExhibits(exhibit_list, 'nines_exhibit', values.nines_exhibit, 'nines_exhibit');
 			dlg.addList('nines_exhibit', exlist.list, 'nines_exhibit');
+
+			dlg.addTextArea('description', 300, 100, null, [ 'alignment' ], new LinkDlgHandler());
 			
 			var el = $(parent_id);
 			dlg.show("Post Object", getX(el), getY(el), 530, 350, values );
@@ -196,7 +197,7 @@ var NewDiscussionCommentDlg = Class.create({
 		
 		this.show = function () {
 			doSingleInputPrompt("Add Comment", "Comment:", "new_comment", parent_id, "", submit_url,
-				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }), null);
+				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }), null, null);
 		};
 	}
 });
