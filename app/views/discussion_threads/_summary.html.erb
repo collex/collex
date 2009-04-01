@@ -43,5 +43,5 @@
 	<div class="discussion_summary_title">
 		<%= link_to title, "/discussion_threads/view_thread?thread=#{thread_id}", :class => 'nav_link' %>
 	</div>
-	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => true, :include_report => true, :include_last_updated => true } %>
+	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => true, :include_report => false, :include_last_updated => true } %>
 </div>
