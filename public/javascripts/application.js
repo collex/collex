@@ -671,13 +671,16 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 
 function doAddToExhibit(uri, index, row_id)
 {
+	var arr = row_id.split('-');
+	var row_num = arr[arr.length-1];
+	
 	doSingleInputPrompt("Choose exhibit", 
 		'Exhibit:', 
 		'exhibit', 
 		"exhibit_" + index,
 		row_id + ",exhibited_objects_container",
 		"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
-		$H({ uri: uri, index: index, row_id: row_id }), 'select',
+		$H({ uri: uri, index: index, row_num: row_num }), 'select',
 		exhibit_names, null);
 }
 
