@@ -19,21 +19,6 @@
 
 // This contains popup dialogs for signing in, my account info, creating an account, and sign in help
 
-var RedirectIfLoggedIn = Class.create({
-	initialize: function (parent_id, url, message, isLoggedIn) {
-		this.class_type = 'RedirectIfLoggedIn';	// for debugging
-		
-		if (isLoggedIn)
-			window.location = url;
-		else {
-			var dlg = new SignInDlg();
-			dlg.setInitialMessage(message);
-			dlg.setRedirectPage(url);
-			dlg.show(parent_id, 'sign_in'); 
-		}
-	}
-});
-
 var SignInDlg = Class.create({
 	initialize: function () {
 		this.class_type = 'SignInDlg';	// for debugging
@@ -63,13 +48,18 @@ var SignInDlg = Class.create({
 			
 			switch (view)
 			{
-				case 'my_account': dlg.setTitle('Manage your Collex account'); $('account_email').focus(); break;
-				case 'sign_in': dlg.setTitle('Collex Account Sign in'); $('signin_username').focus(); break;
-				case 'create_account': dlg.setTitle('Create Your Collex Account'); $('create_username').focus(); break;
-				case 'account_help': dlg.setTitle('Collex Account Help'); $('help_username').focus(); break;
+				case 'my_account': $('account_email').focus(); break;
+				case 'sign_in': $('signin_username').focus(); break;
+				case 'create_account': $('create_username').focus(); break;
+				case 'account_help': $('help_username').focus(); break;
 			}
 
 			return false;
+		};
+		
+		this.cancel = function(event, params)
+		{
+			params[2].cancel();
 		};
 		
 		this.sendWithAjax = function (event, params)
@@ -108,7 +98,7 @@ var SignInDlg = Class.create({
 		
 		this.setRedirectPage = function (url) {
 			redirectPage = url;
-		}
+		};
 		
 		this.show = function (parent_id, view, username, email) {
 			
@@ -130,159 +120,91 @@ var SignInDlg = Class.create({
 //			}
 //			return;
 
-			var elements = [
-				{
-					page: 'my_account',
-					//title: 'Manage your Collex account',
-					elements: [
-						{
-							item_type: 'group', data: {
-								title: '',
-								cls: "",
-								fields: [
-									{ id: 'account_username', label: 'User name:', fixed: (username === undefined) ? '' : username },
-									{ id: 'account_email', label: 'E-mail address:', text: 30, value: (email === undefined) ? '' : email },
-									{ id: 'account_password', label: 'Password:', password: 30 },
-									{ label: ' ', fixed: '(leave blank if not changing your password)' },
-									{ id: 'account_password2', label: 'Re-type password:', password: 30 }
-									//{ submit: 'UPDATE', submit_url: '/login/change_account', callback: this.sendWithAjax }
-								]
-							}
-						},
-						{
-							item_type: 'button', data: {
-								name: 'Update',
-								submit_url: '/login/change_account', 
-								callback: this.sendWithAjax
-							}
-						}
-					]
-				},
-
-				{
+			var login = {
 					page: 'sign_in',
-					//title: 'Collex Account Sign in',
-					elements: [
-						{
-							item_type: 'instructions', data: 'Sign in to personalize your Collex experience.<br/>If you sign in, you can collect objects and create tags.'
-						},
-						{
-							item_type: 'group', data: {
-								title: 'Sign in',
-								cls: "login-option2",
-								fields: [
-									{ id: 'signin_username', label: 'User name:', text: 30 },
-									{ id: 'signin_password', label: 'Password:', password: 30 },
-									{ submit: 'Sign In', submit_url: '/login/verify_login', callback: this.sendWithAjax }
-								]
-							}
-						},
-						{
-							item_type: 'group', data: {
-								title: "I don't have an account.",
-								cls: "login-option2",
-								fields: [
-									{ page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView }
-								]
-							}
-						},
-						{
-							item_type: 'group', data: {
-								title: "I can't access my account.",
-								cls: "login-option2",
-								fields: [
-									{ page_link: 'Help', new_page: 'account_help', callback: this.changeView }
-								]
-							}
-						}
+					rows: [
+						[ { text: 'Log in', klass: 'login_title' } ],
+						[ { text: 'User name:', klass: 'login_label' } ],
+						[ { input: 'signin_username', klass: 'login_input' } ],
+						[ { text: 'Password:', klass: 'login_label' } ],
+						[ { password: 'signin_password', klass: 'login_input' } ],
+						[ { button: 'Log in', url: '/login/verify_login', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel }],
+						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
+						[ { page_link: 'Forgot user name or password?', new_page: 'account_help', callback: this.changeView } ]
 					]
-				},
-				
-				{
-					page: 'create_account',
-					//title: 'Create Your Collex Account',
-					elements: [
-						{
-							item_type: 'instructions', data: 'Fill in the fields below to instantly create a Collex account.'
-						},
-						{
-							item_type: 'group', data: {
-								title: 'Sign up',
-								cls: "login-option2",
-								fields: [
-									{ id: 'create_username', label: 'User name:', text: 30 },
-									{ id: 'create_email', label: 'E-mail address:', text: 30 },
-									{ id: 'create_password', label: 'Password:', password: 30 },
-									{ id: 'create_password2', label: 'Re-type password:', password: 30 },
-									{ submit: 'SIGN UP', submit_url: '/login/submit_signup', callback: this.sendWithAjax }
-								]
-							}
-						},
-						{
-							item_type: 'group', data: {
-								title: "I already have an account.",
-								cls: "login-option2",
-								fields: [
-									{ page_link: 'please Sign in', new_page: 'sign_in', callback: this.changeView }
-								]
-							}
-						}
-					]
-				},
-				
-				{
+				};
+
+			var account_help = {
 					page: 'account_help',
-					//title: 'Collex Account Help',
-					elements: [
-						{
-							item_type: 'instructions', data: 'Having trouble signing in? Choose one of the options below.'
-						},
-						{
-							item_type: 'group', data: {
-								title: 'I forgot my password.',
-								cls: "login-option2",
-								fields: [
-									{ id: 'help_username', label: 'User name:', text: 30 },
-									{ submit: 'email me a new password', submit_url: '/login/reset_password', callback: this.sendWithAjax }
-								]
-							}
-						},
-						{
-							item_type: 'group', data: {
-								title: 'I forgot my user name.',
-								cls: "login-option2",
-								fields: [
-									{ id: 'help_email', label: 'E-mail address:', text: 30 },
-									{ submit: 'email me my user name', submit_url: '/login/recover_username', callback: this.sendWithAjax }
-								]
-							}
-						},
-						{
-							item_type: 'group', data: {
-								title: "I don't have an account.",
-								cls: "login-option2",
-								fields: [
-									{ page_link: 'please Sign up', new_page: 'create_account', callback: this.changeView }
-								]
-							}
-						},
-						{
-							item_type: 'group', data: {
-								title: "I want to try to log in again.",
-								cls: "login-option2",
-								fields: [
-									{ page_link: 'please Sign in', new_page: 'sign_in', callback: this.changeView }
-								]
-							}
-						}
+					rows: [
+						[ { text: 'I forgot my password.', klass: 'login_title' } ],
+						[ { text: 'User name:', klass: 'login_label' } ],
+						[ { input: 'help_username', klass: 'login_input' } ],
+						[ { button: 'email me a new password', url: '/login/reset_password', callback: this.sendWithAjax } ],
+						[ { text: '', klass: 'login_label' } ],
+						[ { text: 'I forgot user name.', klass: 'login_title' } ],
+						[ { text: 'E-mail address:', klass: 'login_label' } ],
+						[ { input: 'help_email', klass: 'login_input' } ],
+						[ { button: 'email me my user name', url: '/login/recover_username', callback: this.sendWithAjax } ],
+						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
+						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ],
+						[ { button: 'Cancel', callback: this.cancel } ]
 					]
-				}
-			];
-			
-			var dlg = new GeneralDialog(parent_id, "login_dlg", elements, initialFlashMessage);
+				};
+
+			var create_account = {
+					page: 'create_account',
+					rows: [
+						[ { text: 'User name:', klass: 'login_label' } ],
+						[ { input: 'create_username', klass: 'login_input' } ],
+						[ { text: 'E-mail address::', klass: 'login_label' } ],
+						[ { input: 'create_email', klass: 'login_input' } ],
+						[ { text: 'Password:', klass: 'login_label' } ],
+						[ { password: 'create_password', klass: 'login_input' } ],
+						[ { text: 'Re-type password:', klass: 'login_label' } ],
+						[ { password: 'create_password2', klass: 'login_input' } ],
+						[ { button: 'Sign up', url: '/login/submit_signup', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ],
+						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ]
+					]
+				};
+				
+				var my_account = {
+					page: 'my_account',
+					rows: [
+						[ { text: 'User name:', klass: 'login_label' },
+							{ id: 'account_username', klass: 'login_input', text: username } ],
+						[ { text: 'E-mail address:', klass: 'login_label' } ],
+						[ { input: 'account_email', klass: 'login_input', value: email } ],
+						[ { text: 'Password:', klass: 'login_label' } ],
+						[ { text: '(leave blank if not changing your password)', klass: 'login_label' } ],
+						[ { password: 'account_password', klass: 'login_input' } ],
+						[ { text: 'Re-type password:', klass: 'login_label' } ],
+						[ { password: 'account_password2', klass: 'login_input' } ],
+						[ { button: 'Update', url: '/login/change_account', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					]
+				};
+			var pages = [ login, account_help, create_account, my_account ];
+
+			var dlg = new GeneralDialog(parent_id, "login_dlg", pages, initialFlashMessage);
 			this.changeView(null, [ view, dlg ]);
 			dlg.center();
+			
+			return;
 		};
 	}
 });
 
+var RedirectIfLoggedIn = Class.create({
+	initialize: function (parent_id, url, message, isLoggedIn) {
+		this.class_type = 'RedirectIfLoggedIn';	// for debugging
+		
+		if (isLoggedIn)
+			window.location = url;
+		else {
+			var dlg = new SignInDlg();
+			dlg.setInitialMessage(message);
+			dlg.setRedirectPage(url);
+			dlg.show(parent_id, 'sign_in'); 
+		}
+	}
+});
