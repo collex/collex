@@ -429,6 +429,11 @@ function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(update_id);
 	dlg.show("Edit Exhibit Overview", getX(el), getY(el), 530, 350, values );
+	el = $('overview_title_dlg');
+	if (el !== null) {
+		el.focus();
+		el.select();
+	}
 }
 
 function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callback_url)
