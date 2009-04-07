@@ -115,7 +115,7 @@ class LoginController < ApplicationController
           end
           if params[:account_password] == params[:account_password2]
             session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
-            render :text => "Profile updated", :status => :bad_request
+            render :text => "Profile updated"
           else
             render :text => "Passwords do not match", :status => :bad_request
           end
