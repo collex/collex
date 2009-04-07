@@ -332,7 +332,7 @@ private
     return "" if el.length < 2
     
     el2 = el[1].split('</span>')
-    return "" if el2.length < 2
+    return "" if el2.length == el[1].length
     
     return el2[0]
   end
