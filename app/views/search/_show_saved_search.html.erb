@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
+<% #show_saved_search -%>
 <%# If a user is not logged in, then do nothing.
 	If the user just clicked on a saved search, then display the name.
 	Display the save link, and put up a form if the user wants to save the current search. -%>
@@ -28,6 +28,6 @@
 		<%= link_to_function "[save search]", "doSaveSearch('savesearch_link')", {:id => "savesearch_link", :class => 'modify_link'} -%>
 		<% end # has constraints -%>
 	<% end # if there is a name for this search -%>
-<% else # not logged in -%>
+<% elsif session[:constraints].length > 0 # not logged in, and there's a search -%>
 	<span class="save_search_instruction">&nbsp;&nbsp;(<%= sign_in_link({ :class => 'nav_link' }) %> to save this search)</span>
 <% end # if the user is logged in -%>
