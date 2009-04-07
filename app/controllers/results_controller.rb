@@ -106,9 +106,10 @@ class ResultsController < ApplicationController
       tagged_items.each { |item|
         CollectedItem.rename_tag(user, item['uri'], old_name, new_name)
       }
-  
     end
-    redirect_to :back
+    back = request.env["HTTP_REFERER"]
+    back = back.gsub(old_name, new_name)
+    redirect_to back
   end
   
   def remove_all_tags
@@ -123,7 +124,9 @@ class ResultsController < ApplicationController
       }
   
     end
-    redirect_to :back
+    back = request.env["HTTP_REFERER"]
+    back = back.split('?')[0] + '?view=all_collected'
+    redirect_to back
   end
 
   def add_object_to_exhibit
