@@ -85,3 +85,22 @@
 .login_row {
 	padding-bottom: 10px;
 }
+
+.login_instructions {
+	font-style: italic;
+	color: #777777;
+}
+
+.flash_notice_ok {
+	color: green;
+	font-weight: bold;
+	padding-bottom:10px;
+}
+
+.flash_notice_error {
+	color: red;
+	font-weight: bold;
+	padding-bottom:10px;
+}
+
+

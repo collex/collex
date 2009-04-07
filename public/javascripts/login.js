@@ -82,12 +82,18 @@ var SignInDlg = Class.create({
 				parameters : p,
 				onSuccess : function(resp) {
 					$(flash_id).update(resp.responseText);
+					$(flash_id).addClassName('flash_notice_ok');
+					$(flash_id).removeClassName('flash_notice_error');
 					if (redirectPage === "")
 						window.location.reload(true);
 					else
 						window.location = redirectPage;
 				},
-				onFailure : function(resp) { $(flash_id).update(resp.responseText); }
+				onFailure : function(resp) {
+					$(flash_id).update(resp.responseText);
+					$(flash_id).addClassName('flash_notice_error');
+					$(flash_id).removeClassName('flash_notice_ok');
+				}
 			});
 		};
 
@@ -138,14 +144,17 @@ var SignInDlg = Class.create({
 					page: 'account_help',
 					rows: [
 						[ { text: 'I forgot my password.', klass: 'login_title' } ],
+						[ { text: 'Enter your user name and we will email a new password to your email account on file.', klass: 'login_instructions' } ],
 						[ { text: 'User name:', klass: 'login_label' } ],
 						[ { input: 'help_username', klass: 'login_input' } ],
-						[ { button: 'email me a new password', url: '/login/reset_password', callback: this.sendWithAjax } ],
+						[ { button: 'submit', url: '/login/reset_password', callback: this.sendWithAjax } ],
 						[ { text: '', klass: 'login_label' } ],
-						[ { text: 'I forgot user name.', klass: 'login_title' } ],
+						[ { text: '', klass: 'login_label' } ],
+						[ { text: 'I forgot my user name.', klass: 'login_title' } ],
+						[ { text: 'Enter your email address and we will email you your user name.', klass: 'login_instructions' } ],
 						[ { text: 'E-mail address:', klass: 'login_label' } ],
 						[ { input: 'help_email', klass: 'login_input' } ],
-						[ { button: 'email me my user name', url: '/login/recover_username', callback: this.sendWithAjax } ],
+						[ { button: 'submit', url: '/login/recover_username', callback: this.sendWithAjax } ],
 						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
 						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ],
 						[ { button: 'Cancel', callback: this.cancel } ]
@@ -155,6 +164,7 @@ var SignInDlg = Class.create({
 			var create_account = {
 					page: 'create_account',
 					rows: [
+						[ { text: 'Create a New Account', klass: 'login_title' } ],
 						[ { text: 'User name:', klass: 'login_label' } ],
 						[ { input: 'create_username', klass: 'login_input' } ],
 						[ { text: 'E-mail address::', klass: 'login_label' } ],
@@ -171,12 +181,13 @@ var SignInDlg = Class.create({
 				var my_account = {
 					page: 'my_account',
 					rows: [
+						[ { text: 'Edit Account', klass: 'login_title' } ],
 						[ { text: 'User name:', klass: 'login_label' },
 							{ id: 'account_username', klass: 'login_input', text: username } ],
 						[ { text: 'E-mail address:', klass: 'login_label' } ],
 						[ { input: 'account_email', klass: 'login_input', value: email } ],
 						[ { text: 'Password:', klass: 'login_label' } ],
-						[ { text: '(leave blank if not changing your password)', klass: 'login_label' } ],
+						[ { text: '(leave blank if not changing your password)', klass: 'login_instructions' } ],
 						[ { password: 'account_password', klass: 'login_input' } ],
 						[ { text: 'Re-type password:', klass: 'login_label' } ],
 						[ { password: 'account_password2', klass: 'login_input' } ],

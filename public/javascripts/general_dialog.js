@@ -48,7 +48,7 @@ var GeneralDialog = Class.create({
 		var body = new Element('div', { id: 'login_div' });
 		body.addClassName("login_div");
 		var flash = new Element('div', { id: this_id + 'flash' }).update(flash_notice);
-		flash.addClassName("flash_notice");
+		flash.addClassName("flash_notice_ok");
 		body.appendChild(flash);
 		
 		pages.each(function(page) {
