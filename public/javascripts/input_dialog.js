@@ -390,7 +390,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 		prompt.select();
 		prompt.focus();
 	}
-	if (prompt.tagName === "TEXTAREA") {
+	if (prompt && prompt.tagName === "TEXTAREA") {
 		dlg._modalDialog.editors[0].editor.on('afterRender', function() {
 			dlg.center();
 		}, this, true);
