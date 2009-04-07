@@ -56,7 +56,7 @@ document.observe('dom:loaded', function() {
 		<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
 		<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
 		<% preview_id = @exhibit.visible_url ? (@exhibit.visible_url.length > 0 ? @exhibit.visible_url : @exhibit.id) : @exhibit.id -%>
-		<%= link_to "[Preview]", { :controller => 'exhibits', :action => 'view', :id => preview_id}, :class => 'nav_link' %><br />
+		<%= link_to "[Preview]", { :controller => 'exhibits', :action => 'view', :id => preview_id}, { :class => 'nav_link', :target => '_blank' } %><br />
 		<br /><br />
 
 		<div id="edit_exhibit_page">
