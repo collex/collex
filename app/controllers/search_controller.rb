@@ -283,6 +283,7 @@ class SearchController < ApplicationController
    
    # constrain search to only return free culture objects 
    def constrain_freeculture
+     session[:name_of_search] = nil
      if params[:remove] == 'true'
        session[:constraints].each {|constraint|
          if constraint[:type] == 'FreeCultureConstraint'
@@ -310,6 +311,7 @@ class SearchController < ApplicationController
    # constrains the search by the specified resources
    def constrain_resources
      
+     session[:name_of_search] = nil
      resource = params[:resource]
      if params[:remove] == 'true'
        session[:constraints].each {|constraint|
