@@ -8,7 +8,7 @@
 	<h3 class="exhibit_author" ><%= User.find(@exhibit.user_id).fullname %></h3>
 	<% num_pages = @exhibit.exhibit_pages.length -%>
 	<% if num_pages > 0 -%>
-		<%= render :partial => 'pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'view' } %>
+		<%= render :partial => 'pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => get_exhibit_id(@exhibit), :action => 'view' } %>
 		<% if @page > 0 -%>
 			<% page = @exhibit.exhibit_pages[@page-1] -%>
 			<% border_active = false -%>
