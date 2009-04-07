@@ -188,7 +188,7 @@ function showIllustrationEditor(event)
 	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
 	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
 	//dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
-	dlg.addTextArea('ill_text', 300, 100, 'text_only', [ 'alignment' ], new LinkDlgHandler);
+	dlg.addTextArea('ill_text', 300, 100, 'text_only', [ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
 	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object'], 'nines_object');
 	dlg.addList('nines_object', list.list, 'nines_only');
 
@@ -201,6 +201,11 @@ function showIllustrationEditor(event)
 	var el = $(element_id);
 	dlg.show("Edit Illustration", getX(el), getY(el), 530, 350, values );
 	doSelectionChanged(values['type']);
+	list.makeSureThereIsASelection();
+	dlg._modalDialog.editors[0].editor.on('afterRender', function() {
+			dlg.center();
+	}, this, true);
+	dlg.center();
 }
 
 LinkDlgHandler = Class.create();
@@ -396,6 +401,7 @@ LinkDlgHandler.prototype = {
 		this._popup.setOkFunction(this._processLink, this);
 		this._popup.show("Set Link", getX(el), getY(el), 530, 350, values );
 		this._doSelectionChanged(this._linkTypes[starting_type]);
+		list.makeSureThereIsASelection();
 	},
 	
 	_selectionChanged: function(event)
@@ -472,6 +478,7 @@ var CreateList = Class.create({
 	list : null,
 	initialize : function(items, className, initial_selected_uri, value_field)
 	{
+		this.value_field = value_field;
 		items = items.sortBy(function(item) { return item.title; });
 		var This = this;
 		if (items.length > 10)
@@ -484,8 +491,8 @@ var CreateList = Class.create({
 		else
 			This.list += "<table class='input_dlg_list' >";
 		items.each(function(obj) {
-			if (initial_selected_uri === "")	// If nothing is selected, then automatically select the first one.
-				initial_selected_uri = obj.uri;
+//			if (initial_selected_uri === "")	// If nothing is selected, then automatically select the first one.
+//				initial_selected_uri = obj.uri;
 			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri == initial_selected_uri, value_field);
 		});
 		This.list += "</table>";
@@ -499,6 +506,12 @@ var CreateList = Class.create({
 		if (is_selected)
 			str = " class='input_dlg_list_item_selected' ";
 		return "<tr " + str + "onclick='CreateList.prototype._select(this,\"" + value_field + "\" );' uri='" + uri + "' ><td><img src='" + thumbnail + "' alt='' height='40' /></td><td>" + title + "</td></tr>\n";
+	},
+	
+	makeSureThereIsASelection: function() {
+		var el = $$(".input_dlg_list tr");
+		if (el.length > 0)
+			this._select(el[0], this.value_field);
 	}
 });
 
@@ -536,7 +549,7 @@ function showRichEditor(event)
 //		onclick : 'showNinesObjectDlg(ed);'
 //	};
 
-	dlg.addTextArea('value', 300, 100, null, [ 'drop_cap' ], new LinkDlgHandler);
+	dlg.addTextArea('value', 600, 100, null, [ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler());
 
 	// Now populate a hash with all the starting values.	
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
@@ -556,6 +569,9 @@ function showRichEditor(event)
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
 	dlg.show("Enter Text", getX(el), getY(el), 600, 300, values );
+	dlg._modalDialog.editors[0].editor.on('afterRender', function() {
+			dlg.center();
+	}, this, true);
 	return false;
 }
 
@@ -587,5 +603,8 @@ function showHeaderEditor(event)
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(element_id);
 	dlg.show("Enter Header", getX(el), getY(el), 380, 100, values );
+	var prompt = $('value');
+	prompt.focus();
+	prompt.select();
 }
 

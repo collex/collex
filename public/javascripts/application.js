@@ -561,8 +561,15 @@ function doDiscuss(id)
 	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null, "Ok");
 }
 
-function doCollect(uri, row_num, row_id)
+function doCollect(uri, row_num, row_id, is_logged_in)
 {
+	if (!is_logged_in) {
+		var dlg = new SignInDlg();
+		dlg.setInitialMessage("Please log in to collect objects");
+		dlg.show('popup_dialog_anchor', 'sign_in');
+		return;
+	}
+	
 	var ptr = $(row_id);
 	ptr.removeClassName('result_without_tag');
 	ptr.addClassName('result_with_tag');
@@ -634,17 +641,60 @@ function doAddTag(parent_id, uri, row_num, row_id)
 		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text', null, null );
 }
 
+function realLinkToEditorLink(str) {
+	// Turn real links into our links. Take this:
+	//	<a class="ext_link" target="_blank" href="http://example.com">example</a>
+	// and turn it into:
+	//	<span class="ext_linklike" real_link="http://example.com" title="NINES Object: http://example.com">example</span>
+	var i = str.indexOf("<a");
+	if (i < 0)		// If there is no link, we're done.
+		return str;
+	var prologue = str.substring(0, i);	// strip off and save the part of the string before the link.
+	var link = str.substring(i);
+	i = link.indexOf("</a>");
+	if (i < 0)		// If there is something illformed at any time, then just bail and return the original string.
+		return str;
+	var ending = link.substring(i+4);	// strip off and save the part of the string after the link.
+	link = link.substring(0, i);
+	var type = 'ext_linklike';	// If we find nines_link we know what it is, otherwise it is an ext_link. That catches links we didn't make.
+	var type2 = 'External Link';
+	if (link.indexOf('nines_link') > 0) {
+		type = 'nines_linklike';
+		type2 = 'NINES Object';
+	}
+	i = link.indexOf('href=');	// find the actual link.
+	if (i < 0)
+		return str;
+	link = link.substring(i+6);
+	i = link.indexOf('"');	// could be either kind of quote, so look for both
+	var j = link.indexOf("'");
+	if (i < 0)
+		i = j;
+	else {
+		if (j >= 0 && j < i)
+			i = j;
+	}
+	var addr = link.substring(0, i);
+	i = link.indexOf('>');
+	if (i < 0)
+		return str;
+	var text = link.substring(i+1);
+	link = '<span class="' + type + '" real_link="' + addr + '" title="' + type2 + ': ' + addr +'">' + text + '</span>';
+	return realLinkToEditorLink(prologue + link + ending);	// call recursively to get all the links
+}
+
 function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id)
 {
 	var existing_note = $(curr_annotation_id).innerHTML;
 	existing_note = existing_note.gsub("<br />", "\n");
 	existing_note = existing_note.gsub("<br>", "\n");
+	existing_note = realLinkToEditorLink(existing_note);
 
 	doSingleInputPrompt("Edit Private Annotation", 'Annotation:', 'note', parent_id, 
 		row_id,
 		"/results/set_annotation", 
 		$H({ uri: uri, row_num: row_num, full_text: getFullText(row_id), note: existing_note }), 'textarea',
-		$H({ width: 370, height: 100}), null );
+		$H({ width: 370, height: 100, linkDlgHandler: new LinkDlgHandler() }), null );
 }
 
 function tagFinishedUpdating()
@@ -731,7 +781,7 @@ function showString(parent_id, str)
 	doSingleInputPrompt("Copy and Paste link into E-mail or IM", 'Link:', 'show_save_name', parent_id, 
 		null,
 		null, 
-		$H( { show_save_name: str } ), 'text', null, "Ok" );
+		$H( { show_save_name: str } ), 'text', $H( { width: 60 } ), "Ok" );
 }
 
 function setTagVisibility(zoom_level)

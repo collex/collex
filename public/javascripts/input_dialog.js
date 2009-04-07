@@ -93,6 +93,10 @@ InputDialog.prototype = {
 		}, this);
 	},
 	
+	center: function() {
+		this._modalDialog.center();
+	},
+	
 	setSaveButton : function(name) {
 		this._saveButtonName = name;
 	},
@@ -314,9 +318,9 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	hiddenDataHash, // Extra data that should be sent back to the server .eg.: $H({ key1: 'value1', key2: 'value2' })
 	inputType,	// one of: 'text', 'select', or 'textarea'; or 'none' meaning that this dialog is just for info.
 	options,	// This is a hash that contains whatever is needed by the inputType
-		// text: null
+		// text: null, or width: yy
 		// select: array of strings that become the choices. 
-		// textarea: { height: xx, width: yy }
+		// textarea: { height: xx, width: yy, toolbarGroups: [ ' ', ' ' ], linkDlgHandler: new LinkDlgHandler() }
 	saveButtonName	// either a string that appears as the text of the save button, or null to take the default
 	)
 {
@@ -340,13 +344,20 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	switch (inputType)
 	{
 		case 'text':
-			dlg.addTextInput(promptStr, promptId, 40);
+			if (options !== null)
+				width = options.get('width');
+			else
+				width = 40;
+			dlg.addTextInput(promptStr, promptId, width);
 			break;
 		case 'select':
 			dlg.addSelect(promptStr, promptId, options);
 			break;
 		case 'textarea':
-			dlg.addTextArea(promptId, options.get('width'), options.get('height'), null, [ ], null);
+			var toolbarGroups = options.get('toolbarGroups');
+			if (toolbarGroups === undefined)
+				toolbarGroups = [ 'font', 'fontstyle', 'list', 'link' ];
+			dlg.addTextArea(promptId, options.get('width'), options.get('height'), null, toolbarGroups, options.get('linkDlgHandler'));
 			width = options.get('width') + 10;
 			height = options.get('height') + 60;
 			break;
@@ -374,10 +385,15 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
 	
 	var prompt = $(promptId);
-	if (prompt && prompt.tagName != "TEXTAREA")
+	if (prompt && prompt.tagName !== "TEXTAREA")
 	{
-		prompt.focus();
 		prompt.select();
+		prompt.focus();
+	}
+	if (prompt.tagName === "TEXTAREA") {
+		dlg._modalDialog.editors[0].editor.on('afterRender', function() {
+			dlg.center();
+		}, this, true);
 	}
 }
 

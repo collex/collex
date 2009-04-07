@@ -254,21 +254,318 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 	return { startPos: ret.aOffset, endPos: ret.fOffset, selection: ret.selection, errorMsg: null };
 };
 
-///////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var RichTextEditor = Class.create({
+	initialize: function (params) {
+		this.class_type = 'RichTextEditor';	// for debugging
+
+		// private variables
+		var This = this;
+		var id = params.id;
+		var toolbarGroups = params.toolbarGroups;
+		var linkDlgHandler = params.linkDlgHandler;
+
+		var toolgroupFont = {
+			group: 'fontstyle',
+			label: 'Font Name and Size',
+			buttons: [{
+				type: 'select', label: 'Arial', value: 'fontname', disabled: true,
+				menu: [{ text: 'Arial', checked: true },
+					{ text: 'Arial Black' },
+					{ text: 'Comic Sans MS' },
+					{ text: 'Courier New' },
+					{ text: 'Lucida Console' },
+					{ text: 'Tahoma' },
+					{ text: 'Times New Roman' },
+					{ text: 'Trebuchet MS' },
+					{ text: 'Verdana' } ]},
+				{ type: 'spin', label: '13', value: 'fontsize', range: [9, 75], disabled: true
+			}]
+		};
+		
+		var toolgroupFontStyle = {
+			group: 'textstyle', label: 'Font Style',
+			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' }]
+		};
+		
+		var toolgroupFontStyleDropCap = {
+			group: 'textstyle', label: 'Font Style',
+			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+				{ type: 'push', label: 'First Letter', value: 'firstletter' 	}]
+		};
+
+		var toolgroupAlignment = {
+			group: 'alignment', label: 'Alignment', 
+	        buttons: [ 
+	            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' }, 
+	            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' }, 
+	            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' }, 
+	            { type: 'push', label: 'Justify', value: 'justifyfull' } 
+	        ] 
+	    };
+
+		var toolgroupList = {
+			group: 'indentlist',
+			label: 'Lists',
+			buttons: [{ type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
+				{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }]
+		};
+		
+		var toolgroupLink = {
+			group: 'insertitem',
+			label: 'Insert Item',
+			buttons: [{ 	type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
+		};
+		
+		var toolgroupSeparator = {
+			type: 'separator'
+		};
+
+		// private functions
+		var processDropCap = function()
+		{
+			var editor = This.editor;
+
+		    editor.on('toolbarLoaded', function() { 
+		         this.toolbar.on('firstletterClick', function(ev) {	// 'this' is now the editor
+					var html = this.getEditorHTML();
+					// TODO-PER: how do you get the button to stay selected or unselected? Until then, just look for the class to see which to do.
+					var sel = !html.include("drop_cap"); // !ev.button.isSelected
+					if (sel)
+					{
+						// If there is a <p> that starts everything, then add the drop class to it, if it is not already there. If not, then add the p element.
+						if (!html.include("drop_cap"))
+						{
+							if (!html.startsWith("<p"))
+								html = "<p class='drop_cap'>" + html + "</p>";
+							else
+							{
+								var firstp = html.substring(0, html.indexOf('>'));
+								var classPos = firstp.indexOf('class=');
+								if (classPos === -1)
+									html = "<p class='drop_cap'" + html.substring(2);
+								else
+									html = html.substring(0, classPos+7) + "drop_cap " + html.substring(classPos+7);
+							}
+						}
+					}
+					else
+					{
+						// Remove the drop class whereever it appears.
+						html = html.gsub("drop_cap", "");
+					}
+					this.setEditorHTML(html);
+	//					var _button = this.toolbar.getButtonByValue('firstletter'); 
+	//					_button._selected = true;
+					//this.execCommand('inserthtml', "TEST");
+		        }, this, true);
+		    });
+		};
+		
+		var initLinkDlg = function()
+		{
+			if (linkDlgHandler === undefined || linkDlgHandler === null)
+				return;
+				
+			var editor = This.editor;
+
+			editor.on('toolbarLoaded', function() {
+			    //When the toolbar is loaded, add a listener to the insertimage button
+			    editor.toolbar.on('createlinkClick', function() {
+					
+					// Get the selection object. Unfortunately, what is returned varies widely between browsers.
+					var result = editor.getRawSelectionPosition();
+					if (!result) {
+						alert("IE has not been implemented yet.");
+						//this.formatSelection();
+						return false;
+					}
+	
+					if (result.errorMsg) {
+						alert(result.errorMsg);
+						return false;
+					}
+					
+					linkDlgHandler.onShowLinkDlg(This, id + "_container", editor.getEditorHTML(), result.startPos, result.endPos);
+					
+		            //This is important.. Return false here to not fire the rest of the listeners
+		            return false;
+			    }, this, true);
+			}, this, true);
+		};
+
+		var setResize = function(id)
+		{
+			var editor = This.editor;
+
+			editor.on('editorContentLoaded', function() { 
+				var resize = new YAHOO.util.Resize(editor.get('element_cont').get('element'), {
+				    handles: ['b', 'r', 'br'],
+				    autoRatio: true,
+				    status: false,
+				    proxy: true,
+				    setSize: false //This is where the magic happens
+				});
+				resize.on('startResize', function() {
+				    this.hide();
+				    this.set('disabled', true);
+				}, editor, true);
+				resize.on('resize', function(args) {
+				    var h = args.height;
+				    var th = (this.toolbar.get('element').clientHeight + 2); //It has a 1px border..
+				    var dh = 0; //(this.dompath.clientHeight + 1); //It has a 1px top border..
+				    var newH = (h - th - dh);
+				    this.set('width', args.width + 'px');
+				    this.set('height', newH + 'px');
+				    this.set('disabled', false);
+				    this.show();
+				}, editor, true);
+			});
+		};
+	
+		// privileged methods
+		this.attachToDialog = function(dialog) {
+			//RTE needs a little love to work in in a Dialog that can be 
+			//shown and hidden; we let it know that it's being
+			//shown/hidden so that it can recover from these actions:
+			dialog.showEvent.subscribe(this.editor.show, this.editor, true);
+			dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);
+		};
+		
+		// This puts the edited content back in the original textArea so it can be send back to the server.
+		this.save = function() {
+			var b = this.editor._getDoc().body;
+			if (b !== undefined) {
+				this.editor.cleanHTML();
+				this.editor.saveHTML();
+			}
+		};
+		
+		//
+		// constructor code
+		//
+		
+		// TODO-PER: Make this generic. Should be able to mix and match buttons. Right now there are only the following combos that are accepted.
+		var toolbar = {
+			buttonType: 'advanced',
+			draggable: false,
+			buttons: []
+		};
+		
+		var hasDropCap = false;
+		var isFirst = true;
+		toolbarGroups.each(function(group) {
+			if (!isFirst)
+				toolbar.buttons.push(toolgroupSeparator);
+			isFirst = false;
+
+			switch (group)
+			{
+				case 'font':
+					toolbar.buttons.push(toolgroupFont);
+					break;
+				case 'fontstyle':
+					toolbar.buttons.push(toolgroupFontStyle);
+					break;
+				case 'dropcap':
+					hasDropCap = true;
+					toolbar.buttons.push(toolgroupFontStyleDropCap);
+					break;
+				case 'alignment':
+					toolbar.buttons.push(toolgroupAlignment);
+					break;
+				case 'list':
+					toolbar.buttons.push(toolgroupList);
+					break;
+				case 'link':
+					toolbar.buttons.push(toolgroupLink);
+					break;
+			}
+		});
+
+		//create the RTE:
+		this.editor = new YAHOO.widget.SimpleEditor(id, {
+			  width: '702px',
+				height: '200px',
+				// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
+				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
+				toolbar: toolbar,
+	            //dompath: true,
+	            animate: true
+		});
+
+		if (hasDropCap)
+			processDropCap();
+
+		//render the editor explicitly into a container
+		//within the Dialog's DOM:
+		this.editor.render();
+		
+		// Replace the link dialog with our own.
+		initLinkDlg();
+		
+		// Add the resizing widgets
+		setResize();
+	}
+});
+	
+	//	dumpObj : function (obj, indent)
+	//	{
+	//		var str = "";
+	//		var tab = "";
+	//		for (var i = 0; i < indent; i++)
+	//			tab += "&nbsp;&nbsp;&nbsp;&nbsp;";
+	//			
+	//		for (x in obj) {
+	//			if (obj[x])
+	//				var ty = "x" + obj[x].constructor;
+	//			else
+	//				var ty = "null null";
+	//			var arr = ty.split(' ');
+	//			ty = arr[1].replace("(", "");
+	//			ty = ty.replace(")", "");
+	//			ty = ty.replace(']', "");
+	//			if (ty === 'String')
+	//				str += tab + ty + ' ' + x + '=' + obj[x].escapeHTML() + "<br />";
+	//			else
+	//				str += tab + ty + ' ' + x + '=' + obj[x] + "<br />";
+	//			if ((ty == 'Text' || ty == 'TextConstructor') && indent == 0) {	// Text for Firefox, TextConstructor for Safari
+	//				str += this.dumpObj(obj[x], 1);
+	//			}
+	//		}
+	//		return str;
+	//	},
+		
+	//	formatSelection: function () {
+	//        var selectedText = this.editor._getSelection().createRange().text;
+	//        
+	//        if (selectedText != "") {
+	//            var newText = "[" + selectedText + "]";
+	//            this.editor._getSelection().createRange().text = newText;
+	//        }
+	//    },
+	//	});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var ModalDialog = Class.create();
 
 ModalDialog.prototype = {
 	initialize: function () {
+		this.editors = [];
 	},
 	
 	_type: "ModalDialog",
 
 	_divId: null,
 	dialog: null,
-	editor: null,
 	targetElement: null,
 	formID: null,
-	usesRichTextArea: false,
 	_okFunction: null,
 	_okObject: null,
 	_linkDlgHandler: null,
@@ -297,7 +594,6 @@ ModalDialog.prototype = {
 		this._renderForm(title, targetElement, form);
 		this._setRichTextAreas(extraButtons);
 		this.dialog.show();
-		this._setResize(this._divId);
 		
 		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
 	},
@@ -323,7 +619,6 @@ ModalDialog.prototype = {
 		this._renderForm(title, targetElement, form);
 		this._setRichTextAreas(extraButtons);
 		this.dialog.show();
-		this._setResize(this._divId);
 		
 		YAHOO.util.Event.on(YAHOO.util.Dom.getElementsByClassName("container-close", "a", this._divId), "click", this._handleCancel, this, true);
 	},
@@ -377,14 +672,10 @@ ModalDialog.prototype = {
 	//content of the RTE and submit the dialog:
 	_handleSave: function() {
 		
-		if( this.usesRichTextArea ) {
-			var b = this.editor._getDoc().body;
-			if (b !== undefined) {
-				this.editor.cleanHTML();
-				this.editor.saveHTML();
-			}
-		}
-		
+		this.editors.each(function(editor) {
+			editor.save();
+		})
+
 		this._sendToServer(this.targetElement, this.formID);
 		this.dialog.hide();
 		this.dialog.destroy();
@@ -427,8 +718,8 @@ ModalDialog.prototype = {
 	{
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
-		var myButtons = [ { text: this._saveButtonName, handler: { fn: this._handleSave, obj: null, scope: this } 	},
-			{ text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
+		var myButtons = [ { text: this._saveButtonName, handler: { fn: this._handleSave, obj: null, scope: this }, isDefault:true 	},
+			{ text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this } }];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
@@ -440,281 +731,17 @@ ModalDialog.prototype = {
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
-	_toolbarSimple : {
-		buttonType: 'advanced',
-		draggable: false,
-		buttons: [{
-			group: 'textstyle',
-			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' }]
-		}]
-	},
-	
-	_toolbarNoExtra : {
-		buttonType: 'advanced',
-		//titlebar: 'My tool',
-		draggable: false,
-		buttons: [{
-			group: 'fontstyle',
-			label: 'Font Name and Size',
-			buttons: [{
-				type: 'select', label: 'Arial', value: 'fontname', disabled: true,
-				menu: [{ text: 'Arial', checked: true },
-					{ text: 'Arial Black' },
-					{ text: 'Comic Sans MS' },
-					{ text: 'Courier New' },
-					{ text: 'Lucida Console' },
-					{ text: 'Tahoma' },
-					{ text: 'Times New Roman' },
-					{ text: 'Trebuchet MS' },
-					{ text: 'Verdana' } ]},
-				{ type: 'spin', label: '13', value: 'fontsize', range: [9, 75], disabled: true
-			}]
-		},
-		{ type: 'separator' },
-		{ group: 'textstyle', label: 'Font Style',
-			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-				{ type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' }]
-		}, 
-		{ type: 'separator'	},
-		{ group: 'indentlist',
-			label: 'Lists',
-			buttons: [{ type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
-				{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }]
-		},
-		{ type: 'separator' },
-		{ group: 'insertitem',
-			label: 'Insert Item',
-			buttons: [{ 	type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
-		}]
-	},
-	
-	_toolbarWithAlignment : {
-		buttonType: 'advanced',
-		//titlebar: 'My tool',
-		draggable: false,
-		buttons: [{
-			group: 'fontstyle',
-			label: 'Font Name and Size',
-			buttons: [{
-				type: 'select', label: 'Arial', value: 'fontname', disabled: true,
-				menu: [{ text: 'Arial', checked: true },
-					{ text: 'Arial Black' },
-					{ text: 'Comic Sans MS' },
-					{ text: 'Courier New' },
-					{ text: 'Lucida Console' },
-					{ text: 'Tahoma' },
-					{ text: 'Times New Roman' },
-					{ text: 'Trebuchet MS' },
-					{ text: 'Verdana' } ]},
-				{ type: 'spin', label: '13', value: 'fontsize', range: [9, 75], disabled: true
-			}]
-		},
-		{ type: 'separator' },
-		{ group: 'textstyle', label: 'Font Style',
-			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-				{ type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' }]
-		}, 
-	    { type: 'separator' }, 
-	    { group: 'alignment', label: 'Alignment', 
-	        buttons: [ 
-	            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' }, 
-	            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' }, 
-	            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' }, 
-	            { type: 'push', label: 'Justify', value: 'justifyfull' } 
-	        ] 
-	    }, 
-		{ type: 'separator'	},
-		{ group: 'indentlist',
-			label: 'Lists',
-			buttons: [{ type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
-				{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }]
-		},
-		{ type: 'separator' },
-		{ group: 'insertitem',
-			label: 'Insert Item',
-			buttons: [{ 	type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
-		}]
-	},
-	
-	_toolbarWithDropCap : {
-		buttonType: 'advanced',
-		//titlebar: 'My tool',
-		draggable: false,
-		buttons: [{
-			group: 'fontstyle',
-			label: 'Font Name and Size',
-			buttons: [{
-				type: 'select', label: 'Arial', value: 'fontname', disabled: true,
-				menu: [{ text: 'Arial', checked: true },
-					{ text: 'Arial Black' },
-					{ text: 'Comic Sans MS' },
-					{ text: 'Courier New' },
-					{ text: 'Lucida Console' },
-					{ text: 'Tahoma' },
-					{ text: 'Times New Roman' },
-					{ text: 'Trebuchet MS' },
-					{ text: 'Verdana' } ]},
-				{ type: 'spin', label: '13', value: 'fontsize', range: [9, 75], disabled: true
-			}]
-		},
-		{ type: 'separator' },
-		{ group: 'textstyle', label: 'Font Style',
-			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-				{ type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
-				{ type: 'push', label: 'First Letter', value: 'firstletter' 	}]
-		}, 
-		{ type: 'separator'	},
-		{ group: 'indentlist',
-			label: 'Lists',
-			buttons: [{ type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
-				{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }]
-		},
-		{ type: 'separator' },
-		{ group: 'insertitem',
-			label: 'Insert Item',
-			buttons: [{ 	type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
-		}]
-	},
-	
-	_processDropCap : function()
-	{
-	    this.editor.on('toolbarLoaded', function() { 
-	         this.toolbar.on('firstletterClick', function(ev) {
-				var html = this.getEditorHTML();
-				// TODO-PER: how do you get the button to stay selected or unselected? Until then, just look for the class to see which to do.
-				var sel = !html.include("drop_cap"); // !ev.button.isSelected
-				if (sel)
-				{
-					// If there is a <p> that starts everything, then add the drop class to it, if it is not already there. If not, then add the p element.
-					if (!html.include("drop_cap"))
-					{
-						if (!html.startsWith("<p"))
-							html = "<p class='drop_cap'>" + html + "</p>";
-						else
-						{
-							var firstp = html.substring(0, html.indexOf('>'));
-							var classPos = firstp.indexOf('class=');
-							if (classPos == -1)
-								html = "<p class='drop_cap'" + html.substring(2);
-							else
-								html = html.substring(0, classPos+7) + "drop_cap " + html.substring(classPos+7);
-						}
-					}
-				}
-				else
-				{
-					// Remove the drop class whereever it appears.
-					html = html.gsub("drop_cap", "");
-				}
-				this.setEditorHTML(html);
-//					var _button = this.toolbar.getButtonByValue('firstletter'); 
-//					_button._selected = true;
-				//this.execCommand('inserthtml', "TEST");
-	        }, this, true);
-	    });
-	},
-	
 	_setRichTextAreas : function(extraButtons)
 	{
 		var textAreas = $$('#'+this.formID+' textarea');
 		
-		this.usesRichTextArea = (textAreas.length > 0);
-		
-		// TODO-PER: Make this generic. Should be able to mix and match buttons. Right now there are only the following combos that are accepted.
-		var toolbar = null;
-		if (extraButtons == undefined)
-			extraButtons = [];
-			
-		if (extraButtons.length == 0)
-			toolbar = this._toolbarNoExtra;
-		else if (extraButtons[0] == 'alignment')
-			toolbar = this._toolbarWithAlignment;
-		else if (extraButtons[0] == 'drop_cap')
-			toolbar = this._toolbarWithDropCap;
-
 		textAreas.each( function(textArea) { 
-			//create the RTE:
-			// TODO-PER: This only works if there is only one textarea in the form. Make this generic when the second textarea is added.
-			this.editor = new YAHOO.widget.SimpleEditor(textArea.id, {
-				  width: '702px',
-					height: '200px',
-					// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-					css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
-					toolbar: toolbar,
-		            dompath: true,
-		            animate: true
-			});
-
-			if (extraButtons.length > 0 && extraButtons[0] == 'drop_cap')
-				this._processDropCap();
-
-			//attach the Editor's reusable property-editor
-			//panel to an element inside our main Dialog --
-			//this allows it to get focus even when the Dialog
-			//is modal:
-			// this.editor.on('windowRender', function() {
-			// 	document.getElementById('descriptionContainer').appendChild(this.get('panel').element);
-			// });
-
-			//render the editor explicitly into a container
-			//within the Dialog's DOM:
-			this.editor.render();
-			
-			//RTE needs a little love to work in in a Dialog that can be 
-			//shown and hidden; we let it know that it's being
-			//shown/hidden so that it can recover from these actions:
-			this.dialog.showEvent.subscribe(this.editor.show, this.editor, true);
-			this.dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);
-			
-			// Replace the link dialog with our own.
-			if (this._linkDlgHandler)
-				this._initLinkDlg(this.editor, textArea.id + "_container");
+			var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: extraButtons, linkDlgHandler: this._linkDlgHandler });
+			editor.attachToDialog(this.dialog);
+			this.editors.push(editor);
 		}, this);
 	},
 	
-	_setResize: function(id)
-	{
-		// If there is a rich text editor on the form, then allow the dlg to be resized.
-		if (this.usesRichTextArea)
-		{
-			var textAreas = $$('#'+this.formID+' textarea');
-			
-			var editor = this.editor;
-
-			editor.on('editorContentLoaded', function() { 
-				var resize = new YAHOO.util.Resize(editor.get('element_cont').get('element'), {
-				    handles: ['b', 'r', 'br'],
-				    autoRatio: true,
-				    status: true,
-				    proxy: true,
-				    setSize: false //This is where the magic happens
-				});
-				resize.on('startResize', function() {
-				    this.hide();
-				    this.set('disabled', true);
-				}, editor, true);
-				resize.on('resize', function(args) {
-				    var h = args.height;
-				    var th = (this.toolbar.get('element').clientHeight + 2); //It has a 1px border..
-				    var dh = (this.dompath.clientHeight + 1); //It has a 1px top border..
-				    var newH = (h - th - dh);
-				    this.set('width', args.width + 'px');
-				    this.set('height', newH + 'px');
-				    this.set('disabled', false);
-				    this.show();
-				}, editor, true);
-			});
-
-			//var resizer = new YAHOO.util.Resize(id);
-			//resizer.subscribe( 'resize', this._dlgResized, textAreas[0].id, this);
-		}
-	},
-
 	_renderForm: function(title, targetElement, form)
 	{
 		this.dialog.setHeader(title);
@@ -734,124 +761,6 @@ ModalDialog.prototype = {
 		if (closeX.length > 0)
 			closeX[0].writeAttribute({ tabindex: 20 });
 	},
-	
-	wrapSelection : function(tag)
-	{
-		//Focus the editor's window 
-		//this.editor._focusWindow(); 
-		//this.editor._createCurrentElement(tag);
-		
-		// PER: Don't know why the element is created with a spurious element "tag"
-		//this.editor.currentElement[0].setAttribute('tag', '');
-		//this.editor.currentElement[0].removeAttribute('tag');
-		
-		//this.editor._swapEl(this.editor.currentElement[0],'span');
-		return this.editor.currentElement[0];
-	},
-	
-	selectNode : function(node)
-	{
-		this.editor._selectNode(node);
-	},
-
-//	dumpObj : function (obj, indent)
-//	{
-//		var str = "";
-//		var tab = "";
-//		for (var i = 0; i < indent; i++)
-//			tab += "&nbsp;&nbsp;&nbsp;&nbsp;";
-//			
-//		for (x in obj) {
-//			if (obj[x])
-//				var ty = "x" + obj[x].constructor;
-//			else
-//				var ty = "null null";
-//			var arr = ty.split(' ');
-//			ty = arr[1].replace("(", "");
-//			ty = ty.replace(")", "");
-//			ty = ty.replace(']', "");
-//			if (ty === 'String')
-//				str += tab + ty + ' ' + x + '=' + obj[x].escapeHTML() + "<br />";
-//			else
-//				str += tab + ty + ' ' + x + '=' + obj[x] + "<br />";
-//			if ((ty == 'Text' || ty == 'TextConstructor') && indent == 0) {	// Text for Firefox, TextConstructor for Safari
-//				str += this.dumpObj(obj[x], 1);
-//			}
-//		}
-//		return str;
-//	},
-	
-	formatSelection: function () {
-        var selectedText = this.editor._getSelection().createRange().text;
-        
-        if (selectedText != "") {
-            var newText = "[" + selectedText + "]";
-            this.editor._getSelection().createRange().text = newText;
-        }
-    },
-	
-	_initLinkDlg : function(myEditor, id)
-	{
-		myEditor.on('toolbarLoaded', function() {
-		    //When the toolbar is loaded, add a listener to the insertimage button
-		    this.editor.toolbar.on('createlinkClick', function() {
-				
-				// Get the selection object. Unfortunately, what is returned varies widely between browsers.
-				var result = this.editor.getRawSelectionPosition();
-				if (!result) {
-					alert("IE has not been implemented yet.")
-					//this.formatSelection();
-					return false;
-				}
-
-				if (result.errorMsg) {
-					alert(result.errorMsg);
-					return false;
-				}
-				
-				/////////////////////////////////////////////////
-//				var val = this.editor.getEditorHTML();
-//				val = val.substr(0,result.endPos) + "[FOCUS]" + val.substr(result.endPos);
-//				val = val.substr(0,result.startPos) + "[ANCHOR]" + val.substr(result.startPos);
-//				var str = result.selection.escapeHTML() + "<br />" + val.escapeHTML();
-//
-//				var el = $("debug_area");
-//				if (!el) {
-//					el = new Element("div", { id: 'debug_area', style: 'padding: 5px; width: 700px;'});
-//					$("EnterText_modal_dialog").appendChild(el);
-//				}
-//				el.update(debugStr + result.startPos + " " + result.endPos + " " + str);
-
-				this._linkDlgHandler.onShowLinkDlg(this, id, this.editor.getEditorHTML(), result.startPos, result.endPos);
-				
-	            //This is important.. Return false here to not fire the rest of the listeners
-	            return false;
-		    }, this, true);
-		}, this, true);
-	},
-
-//	_dlgResized: function (event, elementIdToResize)
-//	{
-//		var el = $(elementIdToResize+"_container");
-//		//var elForm = el.up("." + this._divId + "_form");
-//		var elForm = $(this.formID);
-//		var fontSize = parseFloat(elForm.getStyle("fontSize"));
-//		var margin = parseInt(fontSize*2 + "");
-//		el.setStyle({ width: event.width - margin - 10 + 'px'});
-//		
-//		var elFt = $(this._divId).down('.ft');
-//		var ftHeight = parseInt(elFt.getStyle('height'));
-//		var elHd = $(this._divId).down('.hd');
-//		var hdHeight = parseInt(elHd.getStyle('height'));
-//		var elTb = el.down(".yui-toolbar-container");
-//		var tbHeight = parseInt(elTb.getStyle('height'));
-//		var yEl = getY(el);
-//		var yDlg = getY($(this._divId));
-//		var relPos = yEl - yDlg;
-//		
-//		var elHeight = el.down(".yui-editor-editable-container");
-//		elHeight.setStyle({ height: event.height - relPos - margin/2 - ftHeight - hdHeight - tbHeight + 'px'});
-//	},
 
 	_sendToServer: function( element_id, form_id ) {
 		var el = $(element_id);
@@ -882,12 +791,6 @@ ModalDialog.prototype = {
 				new_form.observe('submit', "this.submit();");
 				document.body.appendChild(new_form);
 				$H(params).each(function (p) { new_form.appendChild(new Element('input', { name: p.key, value: p.value, id: p.key })); });
-//				var els = $$('#' + form_id + ' input');
-//				els.each(function(e) { new_form.appendChild(new Element('input', { name: e.id, value: e.value, id: e.id })); });
-//				els = $$('#' + form_id + ' textarea');
-//				els.each(function(e) { new_form.appendChild(new Element('textarea', { name: e.id, value: e.value, id: e.id })); });
-//				els = $$('#' + form_id + ' select');
-//				els.each(function(e) { new_form.appendChild(new Element('select', { name: e.id, value: e.value.unescapeHTML(), id: e.id })); });
 
 				$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 				new_form.submit();

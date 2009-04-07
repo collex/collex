@@ -17,17 +17,6 @@
 	background-color: #e0e0e0;
 }
 
-.input_dlg_list {
-	background-color: white;
-	color: black;
-	max-width: 50em;
-}
-
-.input_dlg_list_item_selected td {
-	background-color: gray;
-	color: white;
-}
-
 .input_dlg_license_list {
 	border: 1px solid black;
 }

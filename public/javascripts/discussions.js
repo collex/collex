@@ -19,7 +19,7 @@
 /*global getX, getY */
 
 function postNewComment() {
-	commentEditor.saveHTML();
+	commentEditor.save();
 	var t = $('title');
 	if (t.defaultValue === t.value) {
 		doSingleInputPrompt("Notice: Can't Create Comment", 'You must enter a title for the comment.', null, 'title', null, null, $H({ }), 'none', null, "Ok");
@@ -169,11 +169,12 @@ var NewThreadObjectDlg = Class.create({
 			var exlist = new CreateListOfExhibits(exhibit_list, 'nines_exhibit', values.nines_exhibit, 'nines_exhibit');
 			dlg.addList('nines_exhibit', exlist.list, 'nines_exhibit');
 
-			dlg.addTextArea('description', 300, 100, null, [ 'alignment' ], new LinkDlgHandler());
+			dlg.addTextArea('description', 300, 100, null, [ 'fontstyle', 'link' ], new LinkDlgHandler());
 			
 			var el = $(parent_id);
 			dlg.show("Post Object", getX(el), getY(el), 530, 350, values );
 			doSelectionChanged(values.disc_type);
+			list.makeSureThereIsASelection();
 		};
 	}
 });
@@ -197,7 +198,7 @@ var NewDiscussionCommentDlg = Class.create({
 		
 		this.show = function () {
 			doSingleInputPrompt("Add Comment", "Comment:", "new_comment", parent_id, "", submit_url,
-				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80 }), null, null);
+				$H({ thread_id: thread_id }), 'textarea', $H({ height: 80, width: 80, toolbarGroups: [ 'fontstyle', 'link' ] }), null, null);
 		};
 	}
 });
