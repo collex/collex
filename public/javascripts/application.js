@@ -771,7 +771,7 @@ function encodeForUri(str)
 function doSaveSearch(parent_id)
 {
 	doSingleInputPrompt("Save Search", 'Name:', 'saved_search_name', parent_id, 
-		"saved_search_name",
+		"saved_search_name_span",
 		"/search/save_search", 
 		$H({ }), 'text', null, null );
 }

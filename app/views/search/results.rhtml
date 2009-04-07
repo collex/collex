@@ -26,7 +26,7 @@
 			<table width="100%" style="margin-top:-4px;">
 				<tr> <% # search query box %>
 					<td valign='top'>
-						<%= rounded_h1("SEARCH QUERY<span id='saved_search_name'>#{render :partial => 'show_saved_search'}</span>") %>
+						<%= rounded_h1("SEARCH QUERY<span id='saved_search_name_span'>#{render :partial => 'show_saved_search'}</span>") %>
 						<div id="search-main" class="standard_box">
 								<% if has_constraints? #@listed_constraints.size > 0 %>
 									<%= render( :partial => 'constraints' ) %>
