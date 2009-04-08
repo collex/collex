@@ -31,35 +31,27 @@ var SignInDlg = Class.create({
 		// private functions
 		this.changeView = function (event, param)
 		{
-			var view = param[0];
-			var dlg = param[1];
+			var curr_page = param.curr_page;
+			var view = param.destination;
+			var dlg = param.dlg;
 			
-			// These are all the elements that can be turned on and off in the dialog.
-			// All elements have switchable_element, and they each then have another class
-			// that matches the value of the view parameter. Then this loop either hides or shows
-			// each element.
-			var els = $$('.switchable_element');
-			els.each(function (el) {
-				if (el.hasClassName(view))
-					el.removeClassName('hidden');
-				else
-					el.addClassName('hidden');
-			});
-			
+			var focus_el = null;
 			switch (view)
 			{
-				case 'my_account': $('account_email').focus(); break;
-				case 'sign_in': $('signin_username').focus(); break;
-				case 'create_account': $('create_username').focus(); break;
-				case 'account_help': $('help_username').focus(); break;
+				case 'my_account': focus_el = 'account_email'; break;
+				case 'sign_in': focus_el = 'signin_username'; break;
+				case 'create_account': focus_el = 'create_username'; break;
+				case 'account_help': focus_el = 'help_username'; break;
 			}
+
+			dlg.changePage(view, focus_el);
 
 			return false;
 		};
 		
 		this.cancel = function(event, params)
 		{
-			params[2].cancel();
+			params.dlg.cancel();
 		};
 		
 		this.sendWithAjax = function (event, params)
@@ -71,8 +63,10 @@ var SignInDlg = Class.create({
 				return els[0].up('form');
 			};
 			
-			var url = params[0];
-			var flash_id = params[1];
+			var curr_page = params.curr_page;
+			var url = params.destination;
+			var dlg = params.dlg;
+
 			// Get the parameters from the enclosing form
 			var form = getForm(this);
 			var els = form.select('input');
@@ -81,18 +75,14 @@ var SignInDlg = Class.create({
 			var x = new Ajax.Request(url, {
 				parameters : p,
 				onSuccess : function(resp) {
-					$(flash_id).update(resp.responseText);
-					$(flash_id).addClassName('flash_notice_ok');
-					$(flash_id).removeClassName('flash_notice_error');
+					dlg.setFlash(resp.responseText, false);
 					if (redirectPage === "")
 						window.location.reload(true);
 					else
 						window.location = redirectPage;
 				},
 				onFailure : function(resp) {
-					$(flash_id).update(resp.responseText);
-					$(flash_id).addClassName('flash_notice_error');
-					$(flash_id).removeClassName('flash_notice_ok');
+					dlg.setFlash(resp.responseText, true);
 				}
 			});
 		};
@@ -168,7 +158,7 @@ var SignInDlg = Class.create({
 						[ { text: 'Create a New Account', klass: 'login_title' } ],
 						[ { text: 'User name:', klass: 'login_label' } ],
 						[ { input: 'create_username', klass: 'login_input' } ],
-						[ { text: 'E-mail address::', klass: 'login_label' } ],
+						[ { text: 'E-mail address:', klass: 'login_label' } ],
 						[ { input: 'create_email', klass: 'login_input' } ],
 						[ { text: 'Password:', klass: 'login_label' } ],
 						[ { password: 'create_password', klass: 'login_input' } ],
@@ -197,8 +187,9 @@ var SignInDlg = Class.create({
 				};
 			var pages = [ login, account_help, create_account, my_account ];
 
-			var dlg = new GeneralDialog(parent_id, "login_dlg", pages, initialFlashMessage);
-			this.changeView(null, [ view, dlg ]);
+			var params = { parent_id: parent_id, this_id: "login_dlg", pages: pages, flash_notice: initialFlashMessage, body_style: "login_div", row_style: "login_row" };
+			var dlg = new GeneralDialog(params);
+			this.changeView(null, { curr_page: '', destination: view, dlg: dlg });
 			dlg.center();
 			
 			return;
