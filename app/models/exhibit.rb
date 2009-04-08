@@ -18,10 +18,41 @@ class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
   has_many :exhibit_objects, :dependent=>:destroy
 
-  def self.factory(user_id)
-    exhibit = Exhibit.create(:title =>'Untitled', :user_id => user_id, :thumbnail => '', :visible_url => '', :is_published => 0)
-    exhibit.insert_page(1)
+  def self.factory(user_id, url, title, thumbnail)
+    if thumbnail.index('http') != 0
+      thumbnail = "http://" + thumbnail
+    end
+    exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => url, :is_published => 0)
+    exhibit.insert_example_page(1)
+    exhibit.insert_example_page(2)
     return exhibit
+  end
+  
+  def insert_example_page(page_num)
+    new_page = ExhibitPage.create(:exhibit_id => id)
+    new_page.insert_at(page_num)
+    
+    type1 = 'pic_text'
+    type2 = 'text_pic'
+    if page_num == 2
+      type1 = 'text_pic'
+      type2 = 'pic_text'
+    end
+    el = new_page.insert_element(1)
+    el.element_text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    el.save
+    el.change_layout(type1)
+    ExhibitIllustration.factory(el.id, 1)
+
+    el = new_page.insert_element(2)
+    el.element_text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+    el.save
+
+    el = new_page.insert_element(3)
+    el.element_text = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+    el.save
+    el.change_layout(type2)
+    ExhibitIllustration.factory(el.id, 1)
   end
   
   def insert_page(page_num)

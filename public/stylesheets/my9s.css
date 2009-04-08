@@ -379,3 +379,39 @@ font-weight:bold;
 #global_form{
 	padding-bottom: 1em;
 }
+
+/*****************************************/
+
+.new_exhibit_div {
+	width: 400px;
+}
+
+.new_exhibit_title {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.new_exhibit_label {
+	
+}
+
+.new_exhibit_input {
+	width: 200px;
+}
+
+.new_exhibit_input_long {
+	width: 380px;
+}
+
+.new_exhibit_div input[type="button"] {
+	margin-right: 10px;
+}
+
+.new_exhibit_row {
+	padding-bottom: 10px;
+}
+
+.new_exhibit_instructions {
+	font-style: italic;
+	color: #777777;
+}

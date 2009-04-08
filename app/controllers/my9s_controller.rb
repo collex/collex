@@ -167,16 +167,52 @@ class My9sController < ApplicationController
      
      redirect_to :action => 'index'
    end
-
-    def new_exhibit
-      if (session[:user])
-        user = User.find_by_username(session[:user][:username])
-        exhibit = Exhibit.factory(user.id)
-        redirect_to :action => 'edit_exhibit', :id => exhibit.id
+   
+  def verify_title
+    title = params[:title]
+    if session[:user] == nil
+      render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
+    else
+      user = User.find_by_username(session[:user][:username])
+      exhibit = Exhibit.find(:first, :conditions => ['user_id = ? AND title = ?', user.id, title])
+      if (exhibit != nil)
+        render :text => 'You already have an exhibit by that name. Please choose another.', :status => :bad_request
       else
-        redirect_to :action => 'index'
+        # The name is ok. Now create a url.
+        url = title.downcase()
+        url = url.tr('^a-z0-9', '_')
+        render :text => url
       end
     end
+  end
+  
+  def create_exhibit
+    exhibit_url = params[:exhibit_url]
+    exhibit_title = params[:exhibit_title]
+    exhibit_thumbnail = params[:exhibit_thumbnail]
+    if session[:user] == nil
+      render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
+    else
+      ex = Exhibit.find_by_visible_url(exhibit_url)
+      if ex != nil
+        render :text => 'There is already an exhibit in NINES with that url. Please choose another.', :status => :bad_request
+      else
+        user = User.find_by_username(session[:user][:username])
+        exhibit = Exhibit.factory(user.id, exhibit_url, exhibit_title, exhibit_thumbnail)
+        render :text => "#{exhibit.id}"
+      end
+    end
+  end
+
+#    def new_exhibit
+#      if (session[:user])
+#        user = User.find_by_username(session[:user][:username])
+#        exhibit = Exhibit.factory(user.id)
+#        redirect_to :action => 'edit_exhibit', :id => exhibit.id
+#      else
+#        redirect_to :action => 'index'
+#      end
+#    end
     
     def edit_exhibit
       @exhibit = Exhibit.find(params[:id])
