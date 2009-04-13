@@ -101,7 +101,7 @@ function _initializeInplaceIllustrationEditor(element_id, action)
 function getElementBlock(el)
 {
 	var element = el.up('.element_block');
-	if (element === null)
+	if (element === null || element === undefined)
 		element = el.up('.element_block_hover');
 	return element;
 }
