@@ -180,3 +180,8 @@ h3 {
 	padding:5px;
 }
 
+.row_of_illustration_msg {
+	font-size: 1.5em;
+	color: gray;
+	font-style: italic;
+}
