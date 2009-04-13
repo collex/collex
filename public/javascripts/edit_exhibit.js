@@ -143,7 +143,7 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 			
 		// TODO-PER: We only need this if the action affected the current page.
 		var page_id = $('current_page').innerHTML;
-		new Ajax.Updater("edit_exhibit_page", "/my9s/redraw_exhibit_page", {
+		new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
 			parameters : { page: page_id },
 			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
@@ -404,8 +404,8 @@ function initOutline(div_id)
 
 function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 {
-	$(update_id).setAttribute('action', "/my9s/edit_exhibit_overview");
-	$(update_id).setAttribute('ajax_action_element_id', "overview_data");
+	$(update_id).setAttribute('action', "/my9s/edit_exhibit_overview,/my9s/update_title");
+	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
 	
 	var data = $$("." + data_class);
 
@@ -934,3 +934,24 @@ var CreateNewExhibitWizard = Class.create({
 	}
 });
 
+////////////////////////////////////////////////////////////////////////////////////
+
+function sectionHovered(el, edit_bar_id, addClass, removeClass)
+{
+	$(el).addClassName(addClass);
+	$(el).removeClassName(removeClass);
+	$(el).down('.' + edit_bar_id).removeClassName('hidden');
+	return false;
+}
+
+function sectionUnhovered(el, edit_bar_id, addClass, removeClass)
+{
+	$(el).addClassName(addClass);
+	$(el).removeClassName(removeClass);
+	$(el).down('.' + edit_bar_id).addClassName('hidden');
+	return false;
+}
+
+
+ "onmouseout=\"\" onmouseover=\"$(this).down('.edit_bar').removeClassName('hidden'); return false;\""
+ 

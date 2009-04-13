@@ -105,29 +105,29 @@ module My9sHelper
     if border_type == "start_border" && border_active == true
       html = close_div + open_div
       border_active = true
-      is_first = true
+      #is_first = true
     elsif border_type == "start_border" && border_active == false
       html = open_div
       border_active = true
-      is_first = true
+      #is_first = true
     elsif border_type == "continue_border" && border_active == true
       html = ""
       border_active = true
-      is_first = false
+      #is_first = false
     elsif border_type == "continue_border" && border_active == false
       html = open_div
       border_active = true
-      is_first = true
+      #is_first = true
     elsif border_type == "no_border" && border_active == true
       html = close_div
       border_active = false
-      is_first = true
+      #is_first = true
     elsif border_type == "no_border" && border_active == false
       html = ""
       border_active = false
-      is_first = true
+      #is_first = true
     end
     
-    return { :is_first => is_first, :border_active => border_active, :html => html };
+    return { :border_active => border_active, :html => html };
   end
 end

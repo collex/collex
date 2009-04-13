@@ -1,4 +1,20 @@
-<% edit_mode ||= false -%>
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<% # illustration params: bool edit_mode, ActiveRecord illustration, int element_id, bool part_of_row -%>
 
 <% # Set up all variables in advance to make the html code cleaner -%>
 <% illustration_id = illustration.id -%>
@@ -41,76 +57,84 @@ end -%>
 	<% onload_text = "onload=\"hideSpinner('illustration_img_#{illustration_id}');\"" -%>
 <% end -%>
 
-<center>
-<div class="exhibit_illustration">
-	<% # The wrapper is either nothing, if this is live and there was no link specified, or the link if specified, or a table if we are in edit mode. -%>
-	<% if wrapper_type == 'link' -%>
-		<a class='<%= link_style %>' target="_blank" href="<%= link %>">
-	<% elsif wrapper_type == 'edit' -%>
-		<% # We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
-			<table><tr>
-			<% if part_of_row && illustration_position > 1 -%>
-				<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"><img src="/images/left-image-arrow.gif" alt="" /></a></td>
-			<% end -%>
-			
-			<td class="edit_illustration_column"><div class="illustration_control_border">
-				<% if part_of_row == true -%>
-					<div class="outline_right_controls_no_space">
-						<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration', :class => 'modify_link' } %></span>
-					</div>
+<div id='illustration_<%= illustration_id %>' class="illustration_block">
+	<center>
+	<div class="exhibit_illustration">
+		<% # The wrapper is either nothing, if this is live and there was no link specified, or the link if specified, or a table if we are in edit mode. -%>
+		<% if wrapper_type == 'link' -%>
+			<a class='<%= link_style %>' target="_blank" href="<%= link %>">
+		<% elsif wrapper_type == 'edit' -%>
+			<% # We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
+				<table><tr>
+				<% if part_of_row && illustration_position > 1 -%>
+					<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"><img src="/images/left-image-arrow.gif" alt="" /></a></td>
 				<% end -%>
-	<% end -%>
+				
+				<td class="edit_illustration_column"><div class="illustration_control_border">
+					<% if part_of_row == true -%>
+						<div class="outline_right_controls_no_space">
+							<span class="close_link"><%= link_to_function del_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Remove Illustration', :class => 'modify_link' } %></span>
+						</div>
+					<% end -%>
+		<% end -%>
+		
+		<div id='illustration_inner_<%= illustration_id %>' class="illustration_inner">
+			<% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
+			<% if edit_mode -%>
+				<div class="saved_data ill_illustration_type" style="display:none;"><%= illustration.illustration_type %></div>
+				<div class="saved_data ill_image_url" style="display:none;"><%= illustration.image_url %></div>
+				<div class="saved_data ill_link" style="display:none;"><%= illustration.link %></div>
+				<div class="saved_data ill_image_width" style="display:none;"><%= illustration.image_width %></div>
+				<div class="saved_data ill_illustration_text" style="display:none;"><%= illustration.illustration_text %></div>
+				<div class="saved_data ill_illustration_alt_text" style="display:none;"><%= illustration.alt_text %></div>
+				<div class="saved_data ill_illustration_caption1" style="display:none;"><%= illustration.caption1 %></div>
+				<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
+				<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
+			<% end -%>
+		
+			<% # Create the actual content -%>	
+			<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
+				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='width:<%= width %>px;'><%= illustration_text %></div>
+			<% else # nines object or internet image -%>
+				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
+				<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= onload_text %> />
+			<% end -%>
+		</div>
 	
-	<div id='illustration_inner_<%= illustration_id %>'>
-		<% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
-		<% if edit_mode -%>
-			<div class="saved_data ill_illustration_type" style="display:none;"><%= illustration.illustration_type %></div>
-			<div class="saved_data ill_image_url" style="display:none;"><%= illustration.image_url %></div>
-			<div class="saved_data ill_link" style="display:none;"><%= illustration.link %></div>
-			<div class="saved_data ill_image_width" style="display:none;"><%= illustration.image_width %></div>
-			<div class="saved_data ill_illustration_text" style="display:none;"><%= illustration.illustration_text %></div>
-			<div class="saved_data ill_illustration_alt_text" style="display:none;"><%= illustration.alt_text %></div>
-			<div class="saved_data ill_illustration_caption1" style="display:none;"><%= illustration.caption1 %></div>
-			<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
-			<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
+		<% # Close the wrapper created above -%>
+		<% if wrapper_type == 'link' -%>
+			</a>
+		<% elsif wrapper_type == 'edit' -%>
+			<% # </a>	 The link to the edit dialog -%>
+			</div> <% # The illustration control border -%>
+			</td>	<% # The middle column containing the content and the image control stuff -%>
+			
+			<% if part_of_row && illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
+				<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" ><img src="/images/right-image-arrow.gif" alt="" /></a></td>
+			<% end -%>
+			</tr></table>
 		<% end -%>
 	
-		<% # Create the actual content -%>	
-		<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
-			<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='width:<%= width %>px;'><%= illustration_text %></div>
-		<% else # nines object or internet image -%>
-			<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
-			<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= onload_text %> />
+		<% # draw the caption(s) -%>
+		<% if illustration != nil -%>
+			<% if illustration.caption1 && illustration.caption1.length > 0 -%>
+				<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px"><%= illustration.caption1 %>
+				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
+					<div class="exhibit_caption2"><%= illustration.caption2 %></div>
+				<% end -%>
+				</div>
+			<% else -%>
+				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
+					<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px"><%= illustration.caption2 %></div>
+				<% end -%>
+			<% end -%>
 		<% end -%>
 	</div>
-
-	<% # Close the wrapper created above -%>
-	<% if wrapper_type == 'link' -%>
-		</a>
-	<% elsif wrapper_type == 'edit' -%>
-		<% # </a>	 The link to the edit dialog -%>
-		</div> <% # The illustration control border -%>
-		</td>	<% # The middle column containing the content and the image control stuff -%>
-		
-		<% if part_of_row && illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
-			<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" ><img src="/images/right-image-arrow.gif" alt="" /></a></td>
-		<% end -%>
-		</tr></table>
-	<% end -%>
-
-	<% # draw the caption(s) -%>
-	<% if illustration != nil -%>
-		<% if illustration.caption1 && illustration.caption1.length > 0 -%>
-			<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px"><%= illustration.caption1 %>
-			<% if illustration.caption2 && illustration.caption2.length > 0 -%>
-				<div class="exhibit_caption2"><%= illustration.caption2 %></div>
-			<% end -%>
-			</div>
-		<% else -%>
-			<% if illustration.caption2 && illustration.caption2.length > 0 -%>
-				<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px"><%= illustration.caption2 %></div>
-			<% end -%>
-		<% end -%>
-	<% end -%>
+	</center>
 </div>
-</center>
+<% if edit_mode -%>
+	<script language="JavaScript">
+		if(window.initializeInplaceIllustrationEditor)
+			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},full-window-content'"%>, "/my9s/edit_illustration,/my9s/refresh_outline");
+	</script>
+<% end -%>

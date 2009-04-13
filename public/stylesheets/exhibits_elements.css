@@ -27,6 +27,25 @@ h3 {
 
 .exhibit_text {
 	padding:1em;
+	border: 1px solid white;
+
+}
+
+.illustration_inner {
+	border: 1px solid white;
+}
+
+.element_block {
+	border: 4px solid white;
+	padding-top: 20px;
+}
+
+.element_block_hover {
+	border: 4px solid #aaaaaa;
+}
+
+.header_outer {
+	border: 1px solid white;
 }
 
 .drop_cap:first-letter {
@@ -57,6 +76,7 @@ h3 {
 
 .exhibit_title {
 	text-align:right;
+	clear:both;
 }
 
 .exhibit_author {

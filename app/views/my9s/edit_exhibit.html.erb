@@ -14,22 +14,19 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
 <%= stylesheet_link_tag "exhibits_elements", :media => "all" %>
 <% current_page "My&nbsp;9s" -%>
-
 <script language="JavaScript">
 	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
 	var gCollectedObjects = <%= ExhibitObject.get_collected_object_array(@exhibit.id) %>;
 </script>
 
 <script language="JavaScript">
-document.observe('dom:loaded', function() {
-	if (window.initOutline) 
-		initOutline("full_window");	
-	});
+	document.observe('dom:loaded', function() {
+		if (window.initOutline) 
+			initOutline("full_window");	
+		});
 </script>
-
 
 <div id="full_window" class="hidden">
 	<div class="bd">
@@ -43,37 +40,27 @@ document.observe('dom:loaded', function() {
 	<% if !is_logged_in? -%>
 		<%= render :partial => 'my9s_instructions' %>
 	<% else -%>
-		<% curr_user = User.find_by_username(session[:user][:username]) -%>
 		<div class="tag_minor_nav"> 
 			<%= link_to "My9s", { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
-		<div id="overview_data" class="edit_exhibit_box">
-			<%= render :partial => 'overview_data', :locals => { :exhibit => @exhibit, :show_immediately => false } %>
-		</div> <% # Exhibit iverview data %>
+		<table class="edit_exhibit_heading"><tr>
+			<td valign="top" width="50%">
+				<%= render :partial => 'exhibit_palette', :locals => { :exhibit => @exhibit } %>
+			</td>
+			<td valign="top" width="50%">
+				<div id="overview_data" class="edit_exhibit_box">
+					<%= render :partial => 'overview_data', :locals => { :exhibit => @exhibit, :show_immediately => false } %>
+				</div> <% # Exhibit overview data %>
+			</td>
+		</tr></table>
 
-		<% num_pages = @exhibit.exhibit_pages.length -%>
-		<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
-		<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
-		<% preview_id = @exhibit.visible_url ? (@exhibit.visible_url.length > 0 ? @exhibit.visible_url : @exhibit.id) : @exhibit.id -%>
-		<%= link_to "[Preview]", { :controller => 'exhibits', :action => 'view', :id => preview_id}, { :class => 'nav_link', :target => '_blank' } %><br />
-		<br /><br />
-
-		<div id="edit_exhibit_page">
-			<% if @page > 0 -%>
-				<% page = @exhibit.exhibit_pages[@page-1] -%>
-				<%= render :partial => 'edit_exhibit_page', :locals => { :page => page, :top => nil } %>
-			<% else # if page < 0 (bibliography page) -%>
-				<% hits = [] -%>
-				<% for object in @exhibit.exhibit_objects -%>
-					<% hits.insert(-1, CachedResource.get_hit_from_uri(object.uri)) -%>
-				<% end # for each object -%>
-				<%= render :partial => 'results/results', :locals => { :hits => hits, :user_id => 0 } %>
-				<% if hits.length == 0 -%>
-					<span class="bibliography_explanation">No objects have been collected for this exhibit.</span>
-				<% end -%>
-			<% end # if page > 0 -%>
+		<div class="edit_exhibit_links">
+			<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
+			<% preview_id = @exhibit.visible_url ? (@exhibit.visible_url.length > 0 ? @exhibit.visible_url : @exhibit.id) : @exhibit.id -%>
+			<%= link_to_function "[Preview]", "var el = $('overview_visible_url'); window.open('/exhibits/view/'+el.innerHTML);", { :class => 'nav_link', :target => '_blank' } %>
 		</div>
-		<%= render :partial => 'exhibits/pagination', :locals => { :curr_page => @page, :num_pages => num_pages, :id => @exhibit.id, :action => 'change_page' } %>
+		
+		<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => true, :top => nil } %>
 	<% end # is logged in -%>
 </div>

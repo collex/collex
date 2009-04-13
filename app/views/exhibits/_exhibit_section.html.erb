@@ -1,0 +1,91 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<% # exhibit_section params: ActiveRecord element, bool is_edit_mode, int element_count -%>
+<%= render :partial => '/my9s/edit_bar', :locals => { :element => element, :element_count => element_count } if is_edit_mode %>
+<% if element.exhibit_element_layout_type == 'header' -%>
+	<div id="header_<%= element.id %>" class="header_outer">
+		<%= render :partial => '/exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
+	</div>
+	<% if is_edit_mode -%>
+		<script language="JavaScript">
+			if(window.initializeInplaceHeaderEditor)
+				initializeInplaceHeaderEditor(<%= "'header_#{element.id},full-window-content'"%>, "/my9s/edit_header,/my9s/refresh_outline");
+		</script>
+	<% end -%>
+<% elsif element.exhibit_element_layout_type == 'text' -%>
+	<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'only' } %>
+<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+	<% illustration = element.exhibit_illustrations.find(:first) -%>
+	<table><tr>
+		<td>
+			<%= render :partial => '/exhibits/illustration', :locals => { :illustration => illustration, :edit_mode => is_edit_mode, :element_id => element.id, :part_of_row => false } %>
+		</td>
+		<td width='100%'>
+			<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'only' } %>
+		</td>
+	</tr></table>
+<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+	<% illustration = element.exhibit_illustrations.find(:first) -%>
+	<table><tr>
+		<td width='100%'>
+			<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'only' } %>
+		</td>
+		<td>
+			<%= render :partial => '/exhibits/illustration', :locals => { :illustration => illustration, :edit_mode => is_edit_mode, :element_id => element.id, :part_of_row => false } %>
+		</td>
+	</tr></table>
+<% elsif element.exhibit_element_layout_type == 'pics' -%>
+	<% pics = element.exhibit_illustrations -%>
+	<table align="<%= element.get_justification() %>"><tr>
+		<% for pic in pics -%>
+		<td>
+			<%= render :partial => '/exhibits/illustration', :locals => { :illustration => pic, :edit_mode => is_edit_mode, :element_id => element.id, :part_of_row => true } %>
+		</td>
+		<% end -%>
+	</tr></table>
+<% elsif element.exhibit_element_layout_type == 'pic_text_pic' -%>
+	<% illustration = element.exhibit_illustrations.find(:first) -%>
+	<% illustration2 = element.exhibit_illustrations[1] -%>
+	<table><tr>
+		<td>
+			<%= render :partial => '/exhibits/illustration', :locals => { :illustration => illustration, :edit_mode => is_edit_mode, :element_id => element.id, :part_of_row => false } %>
+		</td>
+		<td width='100%'>
+			<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'only' } %>
+		</td>
+		<td>
+			<%= render :partial => '/exhibits/illustration', :locals => { :illustration => illustration2, :edit_mode => is_edit_mode, :element_id => element.id, :part_of_row => false } %>
+		</td>
+	</tr></table>
+<% elsif element.exhibit_element_layout_type == 'text_pic_text' -%>
+	<% illustration = element.exhibit_illustrations.find(:first) -%>
+	<table><tr>
+		<td width='50%'>
+			<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'left' } %>
+		</td>
+		<td>
+			<%= render :partial => '/exhibits/illustration', :locals => { :illustration => illustration, :edit_mode => is_edit_mode, :element_id => element.id, :part_of_row => false } %>
+		</td>
+		<td width='50%'>
+			<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'right' } %>
+		</td>
+	</tr></table>
+<% else -%>
+	Unknown element type:
+	<%= element.exhibit_element_layout_type %><br />
+<% end -%>
+

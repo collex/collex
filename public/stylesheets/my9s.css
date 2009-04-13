@@ -51,8 +51,7 @@
 }
 
 .richEditorHover {
-	border: 1px dashed black;
-	margin: -1px;
+	border: 1px dashed black !important;
 }
 
 .edit_exhibit_hover {
@@ -212,6 +211,16 @@
 	font-weight: normal;
 }
 
+.edit_bar {
+	background: #aaaaaa;
+	color: white;
+/*	font-size: .8em;
+	padding: 3px;
+	font-weight: normal;
+	position:absolute;
+	z-index:100;*/
+}
+
 /*.edit_exhibit_box h1 a {
 	color: #ffffff;
 }*/
@@ -368,7 +377,6 @@ font-weight:bold;
 }
 
 #overview_data {
-	border: 1px solid gray;
 	margin-bottom: 1em;
 }
 
@@ -377,7 +385,48 @@ font-weight:bold;
 }
 
 #global_form{
-	padding-bottom: 1em;
+	border:1px solid gray;
+	margin: 0px 4px 4px 0px;
+	padding: 1em;
+	height:134px;
+}
+
+.exhibit_palette {
+	border:1px solid gray;
+	margin: 0px 4px 4px 0px;
+	padding: 1em;
+}
+
+.exhibit_profile {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.exhibit_preview_thumbnail {
+	float: left;
+	padding-right: 10px;
+	padding-bottom: 6px;
+}
+
+.exhibit_profile_preview {
+	padding-top:0.5em;
+}
+
+.exhibit_profile_label {
+	color: #777777;
+}
+
+.exhibit_sharing {
+	clear: both;
+}
+
+.edit_exhibit_links {
+	float:right;
+	margin-bottom:1em;
+}
+
+.edit_exhibit_heading {
+	padding-top:10px;
 }
 
 /*****************************************/

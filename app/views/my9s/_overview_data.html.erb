@@ -16,18 +16,22 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% #parameters: Exhibit exhibit; bool show_immediately -%>
-<h1>
-	<div class="outline_right_controls">
-		<%= link_to_function opened_char(), "toggle_by_id('global_form');", { :title => 'Close Form', :id => 'global_form_opened', :class => 'nav_link' } %>
-		<%= link_to_function closed_char(), "toggle_by_id('global_form');", { :title => 'Open Form', :id => 'global_form_closed' , :style => 'display: none;', :class => 'nav_link' } %>
-	</div>
-	EDITING EXHIBIT:&nbsp;<span id="overview_title" class="overview_field"><%= h(exhibit.title) %></span></h1>
-	
+<script language="JavaScript">
+	var gLicenseInfo = <%= Exhibit.getJsonLicenseInfo() %>;
+</script>
 <div id="global_form" class="inside_edit_exhibit_box">
-	<table>
-		<tr>
-			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></td>
-			<td><%= render :partial => 'exhibit_globals_form', :locals => { :exhibit => exhibit }  %></td>
-		</tr>
-	</table>
+	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editGlobalExhibitItems('overview_data', #{exhibit.id}, 'overview_field'); return false;", { :class => 'modify_link' }) %></div>
+	<div class="exhibit_preview_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
+	<div class="exhibit_profile_preview">
+		<div><span class="exhibit_profile_label">Visible URL:</span>
+			http://<%= request.host_with_port() %>/exhibits/<%= exhibit.get_id_if_no_visible_url() %><span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></div>
+	<span class="exhibit_profile_label">Thumbnail:</span>
+	<span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail %></span>
+	</div>
+	<div class="exhibit_sharing">
+	<div class="exhibit_preview_thumbnail"><%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog(gLicenseInfo, #{exhibit.get_sharing_int()}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;") %></div>
+		<span id="overview_published" class="overview_field"><%= exhibit.published? ? "Visible to Everyone using Creative Commons' #{exhibit.get_sharing()} License" : "Visible to Just Me" %>
+		</span>
+		<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog(gLicenseInfo, #{exhibit.get_sharing_int()}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;", { :class => "modify_link" }) %>
+	</div>
 </div>

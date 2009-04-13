@@ -231,6 +231,10 @@ class My9sController < ApplicationController
       render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end
     
+    def update_title
+      render :text => params[:overview_title_dlg]
+    end
+    
     def change_sharing
       exhibit_id = params[:exhibit_id]
       sharing_level = params[:sharing]
@@ -345,7 +349,7 @@ class My9sController < ApplicationController
       end
 
       # We need to get the records again because the local variables are probably stale.
-      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id), :top => nil }
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
     end
     
     def edit_row_of_illustrations
@@ -365,7 +369,9 @@ class My9sController < ApplicationController
        end
 
       # We need to get the records again because the local variables are probably stale.
-      render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
+      element = ExhibitElement.find(element_id)
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+      #render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def insert_illustration
@@ -378,7 +384,10 @@ class My9sController < ApplicationController
 
       ExhibitIllustration.factory(element_id, pos)
 
-      render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
+      # We need to get the records again because the local variables are probably stale.
+      element = ExhibitElement.find(element_id)
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+      #render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def change_element_type
@@ -394,7 +403,8 @@ class My9sController < ApplicationController
       if (type == 'pic_text_pic') && element.exhibit_illustrations.length < 2
         ExhibitIllustration.factory(element_id, 2)
       end
-      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+       render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+       #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
    
     def change_illustration_justification
@@ -404,12 +414,14 @@ class My9sController < ApplicationController
       element.set_justification(justify)
       element.save
 
-      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+     render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+       #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def redraw_exhibit_page
       page_id = params[:page]
-      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id), :top => nil }
+      page = ExhibitPage.find(page_id)
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
     end
     
     def edit_text
@@ -436,8 +448,7 @@ class My9sController < ApplicationController
         element.element_text2 = value
       end
       element.save
-      
-      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
     end
     
     def edit_header
@@ -449,7 +460,8 @@ class My9sController < ApplicationController
       element = ExhibitElement.find(element_id)
       element.element_text = value
       element.save
-      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+      # render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def change_img_width
@@ -461,7 +473,9 @@ class My9sController < ApplicationController
       element_id = illustration.exhibit_element_id
       illustration.image_width = width
       illustration.save
-     render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
+      element = ExhibitElement.find(element_id)
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+      #render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
     
     def edit_illustration
@@ -492,7 +506,8 @@ class My9sController < ApplicationController
 
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
-      render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+      #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
     
     def modify_border
@@ -610,8 +625,8 @@ class My9sController < ApplicationController
       el_num = arr[arr.length-1].to_i
       element = ExhibitElement.find(el_num)
       page = ExhibitPage.find(element.exhibit_page_id)
-        
-      render :partial => 'edit_exhibit_page', :locals => { :page => page, :top => el_num }
+
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => el_num }
     end
     
     def modify_outline_page
