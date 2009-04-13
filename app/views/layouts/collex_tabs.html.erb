@@ -25,8 +25,9 @@
 	<% # Figure out how we're running so we know what files to load -%>
 	<% # We only run Google Analytics if we are on the real deployment. -%>
 	<% # We want to load the non-minimized versions of YUI if we are running development -%>
-	<% min = (RAILS_ENV == 'development') ? "" : "-min" -%>
-	<% yui_path = (RAILS_ENV == 'development') ? "/javascripts/yui_2_7_0" : "http://yui.yahooapis.com/2.7.0" -%>
+	<% quick_load = (RAILS_ENV == 'development') && (request.host().index('performantsoftware') == nil) -%>
+	<% min = quick_load ? "" : "-min" -%>
+	<% yui_path = quick_load ? "/javascripts/yui_2_7_0" : "http://yui.yahooapis.com/2.7.0" -%>
 	<% run_analytics = (request.host() == DEPLOYMENT_SERVER) %>
 
 	<!-- site wide styles -->
