@@ -46,6 +46,8 @@ function initializeResizableImageElement( element_id ) {
 function imgResized(event, illustrationElement)
 {
 	var element = illustrationElement.up('.element_block');
+	if (element === null)
+		element = illustrationElement.up('.element_block_hover');
 	var newWidth = illustrationElement.width;	// This is the width if it is a picture
 	if (newWidth == undefined || newWidth == null)
 		newWidth = parseInt(illustrationElement.getStyle('width'));

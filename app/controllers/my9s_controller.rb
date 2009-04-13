@@ -403,7 +403,7 @@ class My9sController < ApplicationController
       if (type == 'pic_text_pic') && element.exhibit_illustrations.length < 2
         ExhibitIllustration.factory(element_id, 2)
       end
-       render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+       render :partial => '/exhibits/exhibit_section', :locals => { :element => ExhibitElement.find(element_id), :is_edit_mode => true, :element_count => element.position } 
        #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
    

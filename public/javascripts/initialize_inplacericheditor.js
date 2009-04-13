@@ -62,7 +62,7 @@ function _initializeInplace(element_id, action, setupMethod)
 	// The element_block will be a parent of the element_id object
 	var elements = element_id.split(',');
 	var el = $(elements[0]);
-	var ajax_action_element_id = el.up('.element_block').id;
+	var ajax_action_element_id = getElementBlock(el).id;
 	if (elements.length > 1)
 		ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
 
@@ -87,7 +87,7 @@ function _initializeInplaceIllustrationEditor(element_id, action)
 	// The element_block will be a parent of the element_id object
 	var elements = element_id.split(',');
 	var el = $(elements[0]);
-	var ajax_action_element_id = el.up('.element_block').id;
+	var ajax_action_element_id = getElementBlock(el).id;
 	if (elements.length > 1)
 		ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
 
@@ -97,6 +97,14 @@ function _initializeInplaceIllustrationEditor(element_id, action)
 /////////////////////////////////////////////////////////////////////////////////////////
 // Private functions
 /////////////////////////////////////////////////////////////////////////////////////////
+
+function getElementBlock(el)
+{
+	var element = el.up('.element_block');
+	if (element === null)
+		element = el.up('.element_block_hover');
+	return element;
+}
 
 function selectionChanged(event)
 {
