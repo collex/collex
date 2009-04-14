@@ -464,3 +464,44 @@ font-weight:bold;
 	font-style: italic;
 	color: #777777;
 }
+
+/*****************************************/
+
+.object_list_outer {
+	overflow:auto;
+	height: 450px;
+	width: 200px;
+	border: 1px solid black;
+}
+
+.object_list_img {
+	float:left;
+	padding: 3px;
+	height: 40px;
+}
+
+.object_list_row {
+	clear: both;
+}
+
+.object_list_row_odd {
+	background-color: #dddddd;
+}
+
+.object_list_row_even {
+	background-color: #aaaaaa;
+}
+
+.object_list_row_selected {
+	background-color: red;
+	clear: both;
+}
+
+.object_list_title {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.edit_palette_dlg {
+	width: 460px;
+}

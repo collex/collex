@@ -25,6 +25,14 @@ class ExhibitObject < ActiveRecord::Base
     return self.create(:exhibit_id => exhibit_id, :uri => uri)
   end
   
+  def self.set_objects(exhibit_id, objects)
+    destroy_all(["exhibit_id = ?", exhibit_id]) 
+
+    objects.each {|obj|
+      self.add(exhibit_id, obj)
+    }
+  end
+  
   def self.get_collected_object_array(exhibit_id)
     objs = find_all_by_exhibit_id(exhibit_id)
     str = ""

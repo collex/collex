@@ -14,9 +14,8 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
- document.observe('dom:loaded', function() {
- 	initializeElementEditing();
- });
+/*global Class, $, $$, $H, Element, Ajax */
+/*global YAHOO */
 
 function initializeElementEditing()
 {
@@ -25,9 +24,9 @@ function initializeElementEditing()
 	widenableElements.each(function(widenableElement) {
 		// ignore elements that have already been given resize handles
 		var existingResizeWrap = widenableElement.up('.yui-resize-wrap');
-		if( existingResizeWrap == null ) {
+		if( existingResizeWrap === null ) {
 			// for images, the resizer is added after the image is finished loading
-			if (widenableElement.tagName != 'IMG')
+			if (widenableElement.tagName !== 'IMG')
 			{
 				var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:false, handles: [ 'r' ] });
 				resizer.subscribe( 'endResize', imgResized, widenableElement, false);
@@ -36,20 +35,13 @@ function initializeElementEditing()
 	});
 }
 
-function initializeResizableImageElement( element_id ) {
-	hideSpinner(element_id);
-	var widenableElement = $(element_id);
-	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true, handles: ['r', 'l', 'b', 'br', 'bl' ]});
-	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
-}
-
 function imgResized(event, illustrationElement)
 {
 	var element = illustrationElement.up('.element_block');
 	if (element === null)
 		element = illustrationElement.up('.element_block_hover');
 	var newWidth = illustrationElement.width;	// This is the width if it is a picture
-	if (newWidth == undefined || newWidth == null)
+	if (newWidth === undefined || newWidth === null)
 		newWidth = parseInt(illustrationElement.getStyle('width'));
 	new Ajax.Updater(element.id, "/my9s/change_img_width",
 	{
@@ -58,6 +50,51 @@ function imgResized(event, illustrationElement)
 		onComplete : initializeElementEditing,
 		onFailure : function(resp) { alert("Oops, there's been an error: "); }
 	});
+}
+
+document.observe('dom:loaded', function() {
+	initializeElementEditing();
+});
+
+function initializeResizableImageElement( element_id ) {
+	hideSpinner(element_id);
+	var widenableElement = $(element_id);
+	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true, handles: ['r', 'l', 'b', 'br', 'bl' ]});
+	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+}
+
+function doAjaxLink(div, url, params)
+{
+	// If we have a comma separated list, we want to send the alert synchronously to each action
+	// (Doing this synchronously eliminates any race condition: The first call can update the data and
+	// the rest of the calls just update the page.
+	var actions = url.split(',');
+	var action_elements = div.split(',');
+	if (actions.length === 1)
+	{
+		new Ajax.Updater(div, url, {
+			parameters : params,
+			evalScripts : true,
+			onComplete : initializeElementEditing,
+			onFailure : function(resp) { alert("Oops, there's been an error."); }
+		});
+	}
+	else
+	{
+		new Ajax.Updater(action_elements[0], actions[0], {
+			parameters : params,
+			evalScripts : true,
+			onComplete: function(resp) {
+				new Ajax.Updater(action_elements[1], actions[1], {
+					parameters : params,
+					evalScripts : true,
+					onComplete : initializeElementEditing(),
+					onFailure : function(resp) { alert("Oops, there's been an error."); }
+				});
+			},
+			onFailure : function(resp) { alert("Oops, there's been an error."); }
+		});
+	}
 }
 
 function elementTypeChanged(div, element_id, newType)
@@ -89,40 +126,6 @@ function doAjaxLinkConfirm(div, url, params)
 		return;
 	
 	doAjaxLink(div, url, params);
-}
-
-function doAjaxLink(div, url, params)
-{
-	// If we have a comma separated list, we want to send the alert synchronously to each action
-	// (Doing this synchronously eliminates any race condition: The first call can update the data and
-	// the rest of the calls just update the page.
-	var actions = url.split(',');
-	var action_elements = div.split(',');
-	if (actions.length == 1)
-	{
-		new Ajax.Updater(div, url, {
-			parameters : params,
-			evalScripts : true,
-			onComplete : initializeElementEditing,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
-		});
-	}
-	else
-	{
-		new Ajax.Updater(action_elements[0], actions[0], {
-			parameters : params,
-			evalScripts : true,
-			onComplete: function(resp) {
-				new Ajax.Updater(action_elements[1], actions[1], {
-					parameters : params,
-					evalScripts : true,
-					onComplete : initializeElementEditing(),
-					onFailure : function(resp) { alert("Oops, there's been an error."); }
-				});
-			},
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
-		});
-	}
 }
 
 function doAjaxLinkOnSelection(verb, exhibit_id)
@@ -954,6 +957,276 @@ function sectionUnhovered(el, edit_bar_id, addClass, removeClass)
 	return false;
 }
 
+////////////////////////////////////////////////////////////////////////////
+/// Create the control that adds and subtracts objects from exhibits
+////////////////////////////////////////////////////////////////////////////
 
- "onmouseout=\"\" onmouseover=\"$(this).down('.edit_bar').removeClassName('hidden'); return false;\""
- 
+var ObjectList = Class.create({
+	initialize: function (progress_img, title) {
+		// This creates a control that contains a list of NINES Objects. When the user clicks on an object, then it is selected.
+		// The control is populated by a call that either passes an array (that replaces the contents), or is passed an object and that object
+		// is either added or removed.
+		// When the control is first created, then an image is displayed instead. This is intended to be a progress spinner.
+		this.class_type = 'ObjectList';	// for debugging
+
+		// private variables
+		var This = this;
+		var outer = null;
+		var div = null;
+		var objs = null;
+		var actions = [];
+		
+		// private functions
+		var select = function(event)
+		{
+			var sel = $(this);
+			var parent = sel.up('.object_list_outer');
+			var els = parent.select('.object_list_row_selected');
+			els.each(function(el) {
+				el.removeClassName('object_list_row_selected');
+			});
+			sel.addClassName('object_list_row_selected');
+		};
+
+		var isEven = function(num) {
+		  return !(num % 2);
+		};
+		
+		var formatObj = function(obj, alt)
+		{
+			var div = new Element('div');
+			//div.writeAttribute({ onclick: ObjectList.select });
+			actions.push({el: div, action: select });
+			div.writeAttribute({ uri: obj.uri });
+			div.addClassName('object_list_row');
+			div.addClassName(alt ? 'object_list_row_even' : 'object_list_row_odd');
+			var img = new Element('img', { src: obj.thumbnail, alt: obj.thumbnail });
+			img.addClassName('object_list_img');
+			div.appendChild(img);
+			div.appendChild(new Element('span').update(obj.title));
+			return div;
+		};
+		
+		// privileged functions
+		this.populate = function (objects)
+		{
+			div.update('');
+			var alt = false;	// For alternate rows
+			objects.each(function(obj) {
+				div.appendChild(formatObj(obj, alt));
+				alt = !alt;
+			});
+			actions.each(function(action) {
+				action.el.observe('click', action.action);
+			});
+		};
+		
+		this.add = function(object)
+		{
+			var els = div.select('.object_list_row');
+			div.appendChild(formatObj(object, isEven(els.length)));
+			actions[actions.length-1].el.observe('click', actions[actions.length-1].action);
+		};
+		
+		this.subtract = function(object_uri)
+		{
+			var sel = div.select('[uri=' + object_uri + ']');
+			if (sel.length > 0)
+				sel[0].remove();
+		};
+		
+		this.getSelection = function()
+		{
+			// This returns the object that is currently selected.
+			var sel = div.select('.object_list_row_selected');
+			if (sel.length === 0)
+				return null;
+			return sel[0].readAttribute('uri');
+		};
+		
+		this.getMarkup =  function()
+		{
+			if (outer === null) {
+				outer = new Element('div');
+				var header = new Element('div').update(title);
+				header.addClassName('object_list_title');
+				outer.appendChild(header);
+				div = new Element('div', { 'class': 'object_list_outer' });
+				outer.appendChild(div);
+				div.appendChild(new Element('img', { src: progress_img, alt: 'progress' }));
+			}
+			return outer;
+		};
+		
+		this.getAllObjects = function()
+		{
+			var objs = [];
+			var sel = div.select('.object_list_row');
+			sel.each(function(el) {
+				objs.push(el.readAttribute('uri'));
+			});
+			return objs;
+		}
+	}
+});
+
+var ObjectSelector = Class.create({
+	initialize: function (progress_img, url_get_objects, exhibit_id) {
+		// This creates 4 controls: the unselected list, the selected list, and the buttons to move items between the two
+		this.class_type = 'ObjectSelector';	// for debugging
+
+		// private variables
+		var This = this;
+		var olUnchosen = new ObjectList(progress_img, "Available Objects");
+		var olChosen = new ObjectList(progress_img, "Objects In Exhibit");
+		var divMarkup = null;
+		var actions = [];
+		var objs = null;
+		
+		// private functions
+		var addSelection = function()
+		{
+			var sel = olUnchosen.getSelection();
+			var obj = objs.detect(function(o) { return o.uri === sel; });
+			if (obj) {
+				olUnchosen.subtract(sel);
+				olChosen.add(obj);
+			}
+		};
+		
+		var removeSelection = function()
+		{
+			var sel = olChosen.getSelection();
+			var obj = objs.detect(function(o) { return o.uri === sel; });
+			if (obj) {
+				olChosen.subtract(sel);
+				olUnchosen.add(obj);
+			}
+		};
+		
+		// privileged functions
+		this.populate = function(dlg)
+		{
+			// Call the server to get the data, then pass it to the ObjectLists
+			dlg.setFlash('Getting objects...', false);
+			new Ajax.Request(url_get_objects, { method: 'get', parameters: { exhibit_id: exhibit_id },
+				onSuccess : function(resp) {
+					dlg.setFlash('', false);
+					try {
+						objs = resp.responseText.evalJSON(true);
+					} catch (e) {
+						alert("Error:" + e);
+					}
+					// We got all the data, we now want to sort it into two arrays depending on if it has been chosen,
+					// then send the arrays to the correct side.
+					var chosen = [];
+					var unchosen = [];
+					objs.each(function(obj) {
+						if (obj.chosen)
+							chosen.push(obj);
+						else
+							unchosen.push(obj);
+					});
+					olChosen.populate(chosen);
+					olUnchosen.populate(unchosen);
+					actions.each(function(action) {
+						action.el.observe('click', action.action);
+					});
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
+		
+		this.getMarkup =  function()
+		{
+			if (divMarkup !== null)
+				return divMarkup;
+				
+			divMarkup = new Element('div', { 'class': 'object_selector'});
+			var table = new Element('table');
+			var tbody = new Element('tbody');
+			var tr = new Element('tr');
+			divMarkup.appendChild(table);
+			table.appendChild(tbody);
+			tbody.appendChild(tr);
+			var td = new Element('td', { valign: 'top' });
+			tr.appendChild(td);
+			td.appendChild(olUnchosen.getMarkup());
+			td = new Element('td');
+			tr.appendChild(td);
+			var but = new Element('input', { type: 'button', value: '<<' });
+			td.appendChild(but);
+			actions.push({el: but, action: removeSelection });
+			but2 = new Element('input', { type: 'button', value: '>>' });
+			td.appendChild(but2);
+			actions.push({el: but2, action: addSelection });
+			td = new Element('td', { valign: 'top' });
+			tr.appendChild(td);
+			td.appendChild(olChosen.getMarkup());
+			return divMarkup;
+		};
+		
+		this.getSelectedObjects = function()
+		{
+			return olChosen.getAllObjects();
+		}
+	}
+});
+
+var EditExhibitObjectListDlg = Class.create({
+	initialize: function (progress_img, url_get_objects, url_update_objects, exhibit_id, palette_el_id) {
+		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
+		this.class_type = 'EditExhibitObjectListDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		var obj_selector = new ObjectSelector(progress_img, url_get_objects, exhibit_id);
+		
+		// private functions
+		
+		// privileged functions
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+		
+		this.sendWithAjax = function (event, params)
+		{
+			var curr_page = params.curr_page;
+			var url = params.destination;
+			var dlg = params.dlg;
+			
+			dlg.setFlash('Updating Exhibit\'s Objects...', false);
+			var data = { exhibit_id: exhibit_id, objects: obj_selector.getSelectedObjects().join('\t') };
+
+			var x = new Ajax.Updater(palette_el_id, url, {
+				parameters : data,
+				evalScripts : true,
+				onSuccess : function(resp) {
+					dlg.cancel();
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
+		
+		var dlgLayout = {
+				page: 'choose_objects',
+				rows: [
+					[ { text: 'Select object from the list on the left and press the ">>" button to move it to the exhibit.', klass: 'new_exhibit_instructions' } ],
+					[ { custom: obj_selector } ],
+					[ { button: 'Ok', url: url_update_objects, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+				]
+			};
+		
+		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('choose_objects', null);
+		dlg.center();
+		obj_selector.populate(dlg);
+	}
+});
+

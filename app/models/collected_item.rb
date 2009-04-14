@@ -24,6 +24,7 @@ class CollectedItem < ActiveRecord::Base
     return find(:all, :conditions => [ "user_id = ?", user.id ])
   end
 
+  # This returns the collected objects as a json string
   def self.get_collected_object_array(user_id)
     objs = find(:all, :conditions => [ "user_id = ?", user_id ])
     str = ""
@@ -40,6 +41,22 @@ class CollectedItem < ActiveRecord::Base
     }
     
     return '[' + str + ']'
+  end
+
+  # this returns the collected objects as a ruby array
+  def self.get_collected_object_ruby_array(user_id)
+    objs = find(:all, :conditions => [ "user_id = ?", user_id ])
+    arr = []
+    objs.each {|obj|
+      hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+      if hit != nil
+        image = CachedResource.get_thumbnail_from_hit(hit)
+        image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == ""
+        arr.insert(-1, { :uri => hit['uri'], :thumbnail => image, :title => self.escape_quote(hit['title']) })
+      end
+    }
+    
+    return arr
   end
 
   def self.escape_quote(arr)

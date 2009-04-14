@@ -35,7 +35,14 @@ var GeneralDialog = Class.create({
 		
 		var flash_id = this_id + '_flash';
 		var dlg_id = this_id;
-		
+
+		if (parent_id === undefined) {
+			parent_id = 'modal_dlg_parent';
+			var parent = $(parent_id);
+			if (parent === null)
+				parent = document.getElementsByTagName("body").item(0).appendChild(new Element('div', { id: parent_id }));
+		}
+			
 		this.getAllData = function() {
 			var inputs = $$("#" + dlg_id + " input");
 			var data = {};
@@ -128,6 +135,10 @@ var GeneralDialog = Class.create({
 						a.addClassName('nav_link');
 						row.appendChild(a);
 						listenerArray.push({ id: 'a' + listenerArray.length, callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+					} else if (subel.custom !== undefined) {
+						var custom = subel.custom;
+						var div = custom.getMarkup();
+						row.appendChild(div);
 					}
 				});
 			});

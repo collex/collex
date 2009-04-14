@@ -667,6 +667,39 @@ class My9sController < ApplicationController
       render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
     end
     
+    def get_all_collected_objects
+      user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+      if user
+        exhibit_id = params[:exhibit_id]
+        
+        obj = CollectedItem.get_collected_object_ruby_array(user.id)
+        selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+        obj.each { |o|
+          uri = o[:uri]
+          i = selected.detect {|sel|
+            sel[:uri] == uri
+          }
+          o[:chosen] = i == nil ? false : true
+        }
+
+        str = obj.to_json();
+        render :text => str
+      else
+        render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
+      end
+    end
+  
+    def update_objects_in_exhibits
+      exhibit_id = params[:exhibit_id]
+      user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+      if user
+        objects = params[:objects].split("\t")
+        ExhibitObject.set_objects(exhibit_id, objects)
+      end
+      render :partial => 'exhibit_palette', :locals => { :exhibit => Exhibit.find(exhibit_id) }
+      
+    end
+  
   private
    def cloud_fragment_key( user )
      "/cloud/#{user}_user/tag"

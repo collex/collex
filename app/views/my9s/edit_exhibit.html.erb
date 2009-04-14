@@ -46,7 +46,9 @@
 		
 		<table class="edit_exhibit_heading"><tr>
 			<td valign="top" width="50%">
-				<%= render :partial => 'exhibit_palette', :locals => { :exhibit => @exhibit } %>
+				<div id="exhibit_palette" class="exhibit_palette">
+					<%= render :partial => 'exhibit_palette', :locals => { :exhibit => @exhibit } %>
+				</div>
 			</td>
 			<td valign="top" width="50%">
 				<div id="overview_data" class="edit_exhibit_box">
