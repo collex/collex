@@ -810,11 +810,12 @@ function createBorderDlg()
 /////////////////////////////////////////////////////////////////////////////////
 
 var CreateNewExhibitWizard = Class.create({
-	initialize: function () {
+	initialize: function (progress_img, url_get_objects) {
 		this.class_type = 'CreateNewExhibitWizard';	// for debugging
 
 		// private variables
 		var This = this;
+		var obj_selector = new ObjectSelector(progress_img, url_get_objects, -1);
 		
 		// private functions
 		
@@ -855,6 +856,7 @@ var CreateNewExhibitWizard = Class.create({
 				case 'choose_palette': break;
 			}
 			dlg.changePage(view, focus_el);
+			obj_selector.populate(dlg);
 
 			return false;
 		};
@@ -903,7 +905,7 @@ var CreateNewExhibitWizard = Class.create({
 					rows: [
 						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
 						[ { text: 'Step 2: Add objects to your exhibit.', klass: 'new_exhibit_label' } ],
-						[ { text: 'The palette goes here', klass: 'new_exhibit_label' } ],
+						[ { custom: obj_selector } ],
 						[ { text: 'Any object you have collected is available for use in your exhibit. You may add or remove objects from this list at any time.', klass: 'new_exhibit_instructions' } ],
 						[ { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]

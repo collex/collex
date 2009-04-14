@@ -66,7 +66,7 @@
 							<% end -%>
 							</table>
 						<% end # if there are exhibits -%>
-						<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard(); dlg.show('popup_dialog_anchor');", :class => 'modify_link' %>
+						<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects'); dlg.show('popup_dialog_anchor');", :class => 'modify_link' %>
 					</div>
 				</td>
 			</tr>
