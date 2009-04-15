@@ -856,7 +856,6 @@ var CreateNewExhibitWizard = Class.create({
 				case 'choose_palette': break;
 			}
 			dlg.changePage(view, focus_el);
-			obj_selector.populate(dlg);
 
 			return false;
 		};
@@ -874,6 +873,7 @@ var CreateNewExhibitWizard = Class.create({
 			
 			dlg.setFlash('Verifying exhibit parameters...', false);
 			var data = dlg.getAllData();
+			data.objects = obj_selector.getSelectedObjects().join('\t');
 
 			var x = new Ajax.Request(url, {
 				parameters : data,
@@ -935,6 +935,7 @@ var CreateNewExhibitWizard = Class.create({
 			var dlg = new GeneralDialog(params);
 			this.changeView(null, { curr_page: '', destination: 'choose_title', dlg: dlg });
 			dlg.center();
+			obj_selector.populate(dlg);
 			
 			return;
 		};

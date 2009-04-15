@@ -190,6 +190,7 @@ class My9sController < ApplicationController
     exhibit_url = params[:exhibit_url]
     exhibit_title = params[:exhibit_title]
     exhibit_thumbnail = params[:exhibit_thumbnail]
+    objects = params[:objects].split("\t")
     if session[:user] == nil
       render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
     else
@@ -199,6 +200,7 @@ class My9sController < ApplicationController
       else
         user = User.find_by_username(session[:user][:username])
         exhibit = Exhibit.factory(user.id, exhibit_url, exhibit_title, exhibit_thumbnail)
+        ExhibitObject.set_objects(exhibit.id, objects)
         render :text => "#{exhibit.id}"
       end
     end
