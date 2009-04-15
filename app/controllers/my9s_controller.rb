@@ -280,57 +280,6 @@ class My9sController < ApplicationController
       redirect_to :action => 'edit_exhibit', :id => params['id'], :page => params['page']
     end
 
-    def edit_page
-      id = params[:id]
-      page = params[:page].to_i
-      verb = params[:verb]
-      exhibit = Exhibit.find(id)
-      
-      case verb
-#      when "up"
-#        exhibit.move_page_up(page)
-#        page = page - 1
-#      when "down"
-#        exhibit.move_page_down(page)
-#        page = page + 1
-      when "insert"
-        exhibit.insert_page(page)
-#      when "delete"
-#        exhibit.delete_page(page)
-#        page = page - 1 if page == exhibit.exhibit_pages.length
-      end
-
-      redirect_to :action => 'edit_exhibit', :id => id, :page => page
-    end
-    
-#    def edit_section
-#      page_id = params[:page].to_i
-#      section_pos = params[:section].to_i
-#      verb = params[:verb]
-#      
-#      page = ExhibitPage.find(page_id)
-#      
-#      case verb
-#      when "up"
-#        page.exhibit_sections[section_pos-1].move_higher()
-#      when "down"
-#        page.exhibit_sections[section_pos-1].move_lower()
-#      when "insert"
-#        page.insert_section(section_pos)
-#      when "delete"
-#        page.exhibit_sections[section_pos-1].remove_from_list()
-#        page.exhibit_sections[section_pos-1].destroy
-#      when "add_border"
-#        page.exhibit_sections[section_pos-1].has_border = 1
-#        page.exhibit_sections[section_pos-1].save
-#      when "remove_border"
-#        page.exhibit_sections[section_pos-1].has_border = 0
-#        page.exhibit_sections[section_pos-1].save
-#      end
-#
-#      render :partial => 'edit_exhibit_page', :locals => { :page => ExhibitPage.find(page_id), :top => nil }
-#    end
-    
     def edit_element
       page_id = params[:page].to_i
       element_pos = params[:element].to_i
@@ -423,6 +372,11 @@ class My9sController < ApplicationController
     
     def redraw_exhibit_page
       page_id = params[:page]
+      if page_id == nil
+        id = params[:element_id]
+        element = ExhibitElement.find(id)
+        page_id = element.exhibit_page_id
+      end
       page = ExhibitPage.find(page_id)
       render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
     end
@@ -553,20 +507,6 @@ class My9sController < ApplicationController
       when "delete_element"
         page.delete_element(element.position)
         element_id = -1
-
-#      when "insert_border"
-#        page.insert_border(element)
-#        is_editing_border = true
-#      when "move_top_of_border_up"
-#        is_editing_border = page.move_top_of_border_up(element)
-#      when "move_top_of_border_down"
-#        is_editing_border = page.move_top_of_border_down(element)
-#      when "move_bottom_of_border_up"
-#        is_editing_border = page.move_bottom_of_border_up(element)
-#      when "move_bottom_of_border_down"
-#        is_editing_border = page.move_bottom_of_border_down(element)
-#      when "delete_border"
-#        page.delete_border(element)
   
       when "insert_page"
         exhibit.insert_page(page.position+1)

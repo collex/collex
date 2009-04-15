@@ -195,7 +195,6 @@ function showIllustrationEditor(event)
 	dlg.addTextInput('Image URL:', 'image_url', size, 'image_only');
 	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
 	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
-	//dlg.addTextInput('Width:', 'ill_width', size, 'image_only');
 	dlg.addTextArea('ill_text', 300, 100, 'text_only', [ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
 	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object'], 'nines_object');
 	dlg.addList('nines_object', list.list, 'nines_only');
@@ -517,6 +516,10 @@ var CreateList = Class.create({
 	},
 	
 	makeSureThereIsASelection: function() {
+		var sel = $$('.input_dlg_list .input_dlg_list_item_selected');
+		if (sel.length > 0)
+			return;
+			
 		var el = $$(".input_dlg_list tr");
 		if (el.length > 0)
 			this._select(el[0], this.value_field);

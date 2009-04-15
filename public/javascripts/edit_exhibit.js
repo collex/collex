@@ -38,7 +38,7 @@ function initializeElementEditing()
 function imgResized(event, illustrationElement)
 {
 	var element = illustrationElement.up('.element_block');
-	if (element === null)
+	if (element === undefined)
 		element = illustrationElement.up('.element_block_hover');
 	var newWidth = illustrationElement.width;	// This is the width if it is a picture
 	if (newWidth === undefined || newWidth === null)
@@ -263,7 +263,7 @@ function selectLine(id)
 	else
 	{
 		// The element must be on another page. Go get that.
-		new Ajax.Updater("edit_exhibit_page", "/my9s/find_page_containing_element", {
+		new Ajax.Updater("exhibit_page", "/my9s/find_page_containing_element", {
 			parameters : { element: target_el },
 			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
@@ -790,7 +790,14 @@ BorderDialog.prototype = {
 			new Ajax.Updater("full-window-content", "/my9s/modify_border", {
 				parameters : { borders: str, element_id: element_id },
 				evalScripts : true,
-				onFailure : function(resp) { alert("Oops, there's been an error."); }});
+				onSuccess: function(resp) {
+					new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
+						parameters : { borders: str, element_id: element_id },
+						evalScripts : true,
+						onFailure : function(resp) { alert("Oops, there's been an error."); }});
+				},
+				onFailure : function(resp) { alert("Oops, there's been an error."); }
+			});
 		}
 
 		this.cancel();

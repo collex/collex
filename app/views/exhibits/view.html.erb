@@ -18,7 +18,9 @@
 	<span class="not_peer_reviewed">This exhibit is not peer reviewed.</span>
 	<%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => @exhibit.id, :page => @page }, :class => 'nav_link' ) if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
 </div>
-<%= render :partial => 'exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => false, :top => nil } %>
+<div id="exhibit_page">
+	<%= render :partial => 'exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => false, :top => nil } %>
+</div>
 <div class="exhibit_footer">
 	<%= @exhibit.get_sharing_widget() %>
 </div>

@@ -15,38 +15,36 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # exhibit_page params: ActiveRecord exhibit, int page_num, bool is_edit_mode, int top (nil or the element id that should be scrolled to) -%>
-<div id="exhibit_page">
-	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
-	<h3 class="exhibit_author" ><%= User.find(exhibit.user_id).fullname %></h3>
-	<% num_pages = exhibit.exhibit_pages.length -%>
-	<% if num_pages > 0 -%>
-		<% page_controller = is_edit_mode ? 'my9s' : 'exhibits' -%>
-		<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
-		<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action } %>
-		<% page = exhibit.exhibit_pages[page_num-1] -%>
-		<div id="current_page" class="hidden"><%= page.id %></div><% # This makes the current page available to ajax calls. %>
-		<% @border_active = false -%>
-		<% element_count = 1 -%>
-		<% elements = page.exhibit_elements -%>
-		<% for element in elements -%>
-			<% ret = create_border_div(element, @border_active, "exhibit_section_with_border") %>
-			<%= ret[:html] %><% #this may create a div that contains the visible border, depending on whether the section starts a border, continues a border, ends a border, or isn't in a border %>
-			<% @border_active = ret[:border_active] -%>
-			<% show_edit_controls = "onmouseout=\"return sectionUnhovered(this, 'edit_bar', 'element_block', 'element_block_hover');\" onmouseover=\"return sectionHovered(this, 'edit_bar', 'element_block_hover', 'element_block');\"" -%>
-			<div  id="element_<%= element.id %>" class="clearboth element_block" <%= "#{show_edit_controls}" if is_edit_mode %>>
-				<%= render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => is_edit_mode, :element_count => element_count} %>
-			</div>
-			<% element_count = element_count + 1 -%>
-		<% end # for element in elements -%>
-		<%= '</div>' if @border_active %>
-		<br />
-		<% if page_num < num_pages -%>
-			<div class="exhibit_nextlink">
-				<%= link_to "next &raquo;", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num + 1}, { :class => 'nav_link' } %>
-			</div>
-		<% end -%>
-	<% end #if there are pages defined -%>
-</div>
+<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
+<h3 class="exhibit_author" ><%= User.find(exhibit.user_id).fullname %></h3>
+<% num_pages = exhibit.exhibit_pages.length -%>
+<% if num_pages > 0 -%>
+	<% page_controller = is_edit_mode ? 'my9s' : 'exhibits' -%>
+	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
+	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action } %>
+	<% page = exhibit.exhibit_pages[page_num-1] -%>
+	<div id="current_page" class="hidden"><%= page.id %></div><% # This makes the current page available to ajax calls. %>
+	<% @border_active = false -%>
+	<% element_count = 1 -%>
+	<% elements = page.exhibit_elements -%>
+	<% for element in elements -%>
+		<% ret = create_border_div(element, @border_active, "exhibit_section_with_border") %>
+		<%= ret[:html] %><% #this may create a div that contains the visible border, depending on whether the section starts a border, continues a border, ends a border, or isn't in a border %>
+		<% @border_active = ret[:border_active] -%>
+		<% show_edit_controls = "onmouseout=\"return sectionUnhovered(this, 'edit_bar', 'element_block', 'element_block_hover');\" onmouseover=\"return sectionHovered(this, 'edit_bar', 'element_block_hover', 'element_block');\"" -%>
+		<div  id="element_<%= element.id %>" class="clearboth element_block" <%= "#{show_edit_controls}" if is_edit_mode %>>
+			<%= render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => is_edit_mode, :element_count => element_count} %>
+		</div>
+		<% element_count = element_count + 1 -%>
+	<% end # for element in elements -%>
+	<%= '</div>' if @border_active %>
+	<br />
+	<% if page_num < num_pages -%>
+		<div class="exhibit_nextlink">
+			<%= link_to "next &raquo;", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num + 1}, { :class => 'nav_link' } %>
+		</div>
+	<% end -%>
+<% end #if there are pages defined -%>
 
 <% if top != nil -%>
 <script language="JavaScript">

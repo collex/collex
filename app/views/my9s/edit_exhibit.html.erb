@@ -63,6 +63,8 @@
 			<%= link_to_function "[Preview]", "var el = $('overview_visible_url'); window.open('/exhibits/view/'+el.innerHTML+'?page=#{@page}');", { :class => 'nav_link', :target => '_blank' } %>
 		</div>
 		
-		<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => true, :top => nil } %>
+		<div id="exhibit_page">
+			<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => true, :top => nil } %>
+		</div>
 	<% end # is logged in -%>
 </div>
