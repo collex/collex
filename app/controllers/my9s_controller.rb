@@ -181,6 +181,10 @@ class My9sController < ApplicationController
         # The name is ok. Now create a url.
         url = title.downcase()
         url = url.tr('^a-z0-9', '_')
+        # remove more than one underline in a row
+        url = url.gsub(/_+/, '_')
+        url = url.slice(0..29) if url.length > 30
+        
         render :text => url
       end
     end
