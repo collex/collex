@@ -19,7 +19,8 @@ class Exhibit < ActiveRecord::Base
   has_many :exhibit_objects, :dependent=>:destroy
 
   def self.factory(user_id, url, title, thumbnail)
-    if thumbnail.index('http') != 0
+    thumbnail = thumbnail.strip
+    if thumbnail.length > 0 && thumbnail.index('http') != 0
       thumbnail = "http://" + thumbnail
     end
     exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => url, :is_published => 0)
