@@ -139,7 +139,9 @@ class My9sController < ApplicationController
       if user.link.downcase.index("javascript:") != nil
         user.link = "invalid link entered"
       end
+      old_image = nil
       if params['image'].length > 0
+        old_image = user.image_id
         user.image = Image.new({ :uploaded_data => params['image'] })
       end
     
@@ -150,6 +152,26 @@ class My9sController < ApplicationController
 #        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
 #      end
       user.save
+      
+      # now we need to figure out what happened with the attachment.
+      # If there was an error image_id is set to nil, and we want to reset it to the previous image.
+      # If there was no error, and there was a previous image, then we want to delete the previous one from the file system.
+      if old_image != nil
+        if user.image_id == nil
+          user.image = nil
+          user.update_attribute(:image_id, old_image) 
+        else
+          id = old_image.to_s.rjust(4, '0')
+          folder = "#{RAILS_ROOT}/public/uploads/0000/#{id}/"
+          d = Dir.new(folder)
+          d.each {|f|
+            if f != '.' && f != '..'
+              File.delete(folder + f)
+            end
+          }
+          Dir.delete(folder)
+        end
+      end
      redirect_to :action => 'index'
     end
   end
