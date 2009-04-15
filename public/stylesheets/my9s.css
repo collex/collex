@@ -429,6 +429,12 @@ font-weight:bold;
 	padding-top:10px;
 }
 
+.exhibit_palette_items {
+	overflow:auto;
+	height:120px;
+	width:338px;
+}
+
 /*****************************************/
 
 .new_exhibit_div {
