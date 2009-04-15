@@ -179,11 +179,7 @@ class My9sController < ApplicationController
         render :text => 'You already have an exhibit by that name. Please choose another.', :status => :bad_request
       else
         # The name is ok. Now create a url.
-        url = title.downcase()
-        url = url.tr('^a-z0-9', '_')
-        # remove more than one underline in a row
-        url = url.gsub(/_+/, '_')
-        url = url.slice(0..29) if url.length > 30
+        url = Exhibit.transform_url(title)
         
         render :text => url
       end
@@ -192,18 +188,19 @@ class My9sController < ApplicationController
   
   def create_exhibit
     exhibit_url = params[:exhibit_url]
+    visible_url = Exhibit.transform_url(exhibit_url)
     exhibit_title = params[:exhibit_title]
     exhibit_thumbnail = params[:exhibit_thumbnail]
     objects = params[:objects].split("\t")
     if session[:user] == nil
       render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
     else
-      ex = Exhibit.find_by_visible_url(exhibit_url)
+      ex = Exhibit.find_by_visible_url(visible_url)
       if ex != nil
-        render :text => 'There is already an exhibit in NINES with that url. Please choose another.', :status => :bad_request
+        render :text => "There is already an exhibit in NINES with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
       else
         user = User.find_by_username(session[:user][:username])
-        exhibit = Exhibit.factory(user.id, exhibit_url, exhibit_title, exhibit_thumbnail)
+        exhibit = Exhibit.factory(user.id, visible_url, exhibit_title, exhibit_thumbnail)
         ExhibitObject.set_objects(exhibit.id, objects)
         render :text => "#{exhibit.id}"
       end
@@ -232,7 +229,7 @@ class My9sController < ApplicationController
       exhibit.title = params[:overview_title_dlg]
       #exhibit.is_published = (params[:overview_published_dlg] == 'Visible to Everyone')
       exhibit.thumbnail = params[:overview_thumbnail_dlg]
-      exhibit.visible_url = params[:overview_visible_url_dlg]
+      exhibit.visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
       exhibit.save
       render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end

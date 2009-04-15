@@ -23,10 +23,22 @@ class Exhibit < ActiveRecord::Base
     if thumbnail.length > 0 && thumbnail.index('http') != 0
       thumbnail = "http://" + thumbnail
     end
-    exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => url, :is_published => 0)
+    exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0)
     exhibit.insert_example_page(1)
     exhibit.insert_example_page(2)
     return exhibit
+  end
+  
+  def self.transform_url(url)
+    # The legal characters are: Letters (A-Z and a-z), numbers (0-9) and the characters '-', '~' and '_'
+    # All other characters are replaced by underscores, then multiple underscores are replaced by one underscore.
+    # This never returns more than 30 characters.
+
+    url = url.tr('^A-Za-z0-9\-\~', '_')
+    # remove more than one underline in a row
+    url = url.gsub(/_+/, '_')
+    url = url.slice(0..29) if url.length > 30
+    return url
   end
   
   def insert_example_page(page_num)
