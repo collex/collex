@@ -1,0 +1,180 @@
+/*********************************/
+/* styles for all javascript-created dialogs */
+/*********************************/
+
+.flash_notice_ok {
+	color: green;
+	font-weight: bold;
+	padding-bottom:10px;
+}
+
+.flash_notice_error {
+	color: red;
+	font-weight: bold;
+	padding-bottom:10px;
+}
+
+/***********************/
+/* styles for the login pages */
+/***********************/
+	
+.login_div {
+	margin:-10px;
+	padding-bottom:20px;
+	padding-left:18px;
+	padding-right:20px;
+	padding-top:80px;
+	background-image:url("/images/login_header.jpg");
+	background-repeat:no-repeat;
+	border-left: 8px solid #670001;
+	border-right: 8px solid #670001;
+	border-bottom: 8px solid #670001;
+/*	border-left: 8px solid #5f3119;
+	border-right: 8px solid #5f3119;
+	border-bottom: 8px solid #5f3119;*/
+	width: 272px;
+}
+
+.login_title {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.login_label {
+	
+}
+
+.login_div input[type="text"] {
+	width: 200px;
+}
+
+.login_div input[type="password"] {
+	width: 200px;
+}
+
+.login_div input[type="button"] {
+	margin-right: 10px;
+}
+
+.login_row {
+	padding-bottom: 10px;
+}
+
+.login_instructions {
+	font-style: italic;
+	color: #777777;
+}
+
+/*****************************************/
+
+.new_exhibit_div {
+	width: 460px;
+}
+
+.new_exhibit_title {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.new_exhibit_label {
+	
+}
+
+.new_exhibit_input {
+	width: 200px;
+}
+
+.new_exhibit_input_long {
+	width: 380px;
+}
+
+.new_exhibit_div input[type="button"] {
+	margin-right: 10px;
+}
+
+.new_exhibit_row {
+	padding-bottom: 10px;
+}
+
+.new_exhibit_instructions {
+	font-style: italic;
+	color: #777777;
+}
+
+/*****************************************/
+
+.object_list_outer {
+	overflow:auto;
+	height: 450px;
+	width: 200px;
+	border: 1px solid black;
+}
+
+.object_list_img {
+	float:left;
+	padding: 3px;
+	height: 40px;
+}
+
+.object_list_row {
+	clear: both;
+}
+
+.object_list_row_odd {
+	background-color: #dddddd;
+}
+
+.object_list_row_even {
+	background-color: #aaaaaa;
+}
+
+.object_list_row_selected {
+	background-color: red;
+	clear: both;
+}
+
+.object_list_title {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.edit_palette_dlg {
+	width: 460px;
+}
+
+/*****************************************/
+
+.input_dlg_list {
+	background-color: white;
+	color: black;
+	max-width: 50em;
+}
+
+.input_dlg_list_item_selected td {
+	background-color: gray;
+	color: white;
+}
+
+/*****************************************/
+
+.input_dlg_license_list {
+	border: 1px solid black;
+}
+
+.input_dlg_license_list tr {
+	height: 4em;
+}
+
+.input_dlg_license_list_header {
+	font-size: 1.5em;
+}
+
+.input_dlg_license_list td {
+	border-top: 1px solid black;
+	padding-bottom:2px;
+	padding-left:5px;
+	padding-top:2px;
+	min-height: 3em;
+}
+
+
