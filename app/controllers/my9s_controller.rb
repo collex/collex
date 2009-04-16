@@ -18,9 +18,9 @@ class My9sController < ApplicationController
   layout 'collex_tabs'
   before_filter :init_view_options
 
-   # Number of search results to display by default
-   MIN_ITEMS_PER_PAGE = 10
-   MAX_ITEMS_PER_PAGE = 30
+  # Number of search results to display by default
+  MIN_ITEMS_PER_PAGE = 10
+  MAX_ITEMS_PER_PAGE = 30
 
   private
   def init_view_options
@@ -30,25 +30,42 @@ class My9sController < ApplicationController
     @uses_yui = true
     return true
   end
+
+  def get_user(session)
+    return session[:user] ? User.find_by_username(session[:user][:username]) : nil
+  end
+
+  def can_edit_exhibit(user, exhibit_id)
+    return false if user == nil
+    return true if is_admin?
+    exhibit = Exhibit.find(exhibit_id)
+    return exhibit.user_id == user.id
+  end
+
+  def get_exhibit_id_from_element(element)
+    page = ExhibitPage.find(element.exhibit_page_id)
+    return page.exhibit_id
+  end
+
   public
- 
+
   def index
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    user = get_user(session)
     if user == nil
       return
     end
-      
+
     set_cloud_list(user, user.username)
 
     @results = CachedResource.get_newest_collections(user, 5)
   end
-  
+
   def results
     # parameters:
     #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
     #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
-    
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+
+    user = get_user(session)
     if user == nil
       return
     end
@@ -77,51 +94,51 @@ class My9sController < ApplicationController
     
     # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
     case params[:view]
-    when 'all_collected'
+      when 'all_collected'
       ret = CachedResource.get_page_of_hits_by_user(user, @page-1, session[:items_per_page])
       @results = ret[:results]
       @total_hits = ret[:total]
-      
-    when 'untagged'
+
+      when 'untagged'
       ret = CachedResource.get_page_of_all_untagged(user, @page-1, session[:items_per_page])
       @results = ret[:results]
       @total_hits = ret[:total]
-      
-    when 'tag'
+
+      when 'tag'
       ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, session[:items_per_page])
       @results = ret[:results]
       @total_hits = ret[:total]
-     
+
     else
       @results = {}
       @total_hits = @results.length
     end
-  
+
     @num_pages = @total_hits.quo(session[:items_per_page]).ceil
   end
 
-   # adjust the number of search results per page
-   def result_count
-     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
-     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-     redirect_to :action => 'results'
-   end
-   
+  # adjust the number of search results per page
+  def result_count
+    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+    requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
+    session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+    redirect_to :action => 'results'
+  end
+
   # This is called from AJAX to display the edit profile form in place.
   def enter_edit_profile_mode
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    user = get_user(session)
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
       render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
       return
     end
-    
+
     render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
   end
-  
+
   # This is called from AJAX when the user has finished filling out the form.
   def update_profile
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    user = get_user(session)
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
       render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
       return
@@ -144,15 +161,15 @@ class My9sController < ApplicationController
         old_image = user.image_id
         user.image = Image.new({ :uploaded_data => params['image'] })
       end
-    
-#      if params['image'].length > 0
-#        folder = "#{RAILS_ROOT}/public/images/users/"
-#        image_path = "#{folder}#{user.id}"
-#        Dir.mkdir(folder) unless File.exists?(folder)
-#        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
-#      end
+
+      #      if params['image'].length > 0
+      #        folder = "#{RAILS_ROOT}/public/images/users/"
+      #        image_path = "#{folder}#{user.id}"
+      #        Dir.mkdir(folder) unless File.exists?(folder)
+      #        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
+      #      end
       user.save
-      
+
       # now we need to figure out what happened with the attachment.
       # If there was an error image_id is set to nil, and we want to reset it to the previous image.
       # If there was no error, and there was a previous image, then we want to delete the previous one from the file system.
@@ -172,30 +189,28 @@ class My9sController < ApplicationController
           Dir.delete(folder)
         end
       end
-     redirect_to :action => 'index'
+      redirect_to :action => 'index'
     end
   end
-  
-   def remove_saved_search
-     if (session[:user])
-       user = User.find_by_username(session[:user][:username])
-       searches = user.searches
-       saved_search = searches.find(params[:id])
-  
-       #session[:constraints].delete_if {|item| item.is_a?(SavedSearchConstraint) && item.field == session[:user][:username] && item.value == saved_search.name }
-       
-       saved_search.destroy
-     end
-     
-     redirect_to :action => 'index'
-   end
-   
-  def verify_title
+
+  def remove_saved_search
+    user = get_user(session)
+    if (user != nil)
+      searches = user.searches
+      saved_search = searches.find(params[:id])
+
+      saved_search.destroy
+    end
+
+    redirect_to :action => 'index'
+  end
+
+  def verify_title  # Called by the "new exhibit" wizard
     title = params[:title]
-    if session[:user] == nil
+    user = get_user(session)
+    if user == nil
       render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
     else
-      user = User.find_by_username(session[:user][:username])
       exhibit = Exhibit.find(:first, :conditions => ['user_id = ? AND title = ?', user.id, title])
       if (exhibit != nil)
         render :text => 'You already have an exhibit by that name. Please choose another.', :status => :bad_request
@@ -207,21 +222,21 @@ class My9sController < ApplicationController
       end
     end
   end
-  
-  def create_exhibit
+
+  def create_exhibit # Called by the "new exhibit" wizard
     exhibit_url = params[:exhibit_url]
     visible_url = Exhibit.transform_url(exhibit_url)
     exhibit_title = params[:exhibit_title]
     exhibit_thumbnail = params[:exhibit_thumbnail]
     objects = params[:objects].split("\t")
-    if session[:user] == nil
+    user = get_user(session)
+    if user == nil
       render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
     else
       ex = Exhibit.find_by_visible_url(visible_url)
       if ex != nil
         render :text => "There is already an exhibit in NINES with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
       else
-        user = User.find_by_username(session[:user][:username])
         exhibit = Exhibit.factory(user.id, visible_url, exhibit_title, exhibit_thumbnail)
         ExhibitObject.set_objects(exhibit.id, objects)
         render :text => "#{exhibit.id}"
@@ -229,129 +244,123 @@ class My9sController < ApplicationController
     end
   end
 
-#    def new_exhibit
-#      if (session[:user])
-#        user = User.find_by_username(session[:user][:username])
-#        exhibit = Exhibit.factory(user.id)
-#        redirect_to :action => 'edit_exhibit', :id => exhibit.id
-#      else
-#        redirect_to :action => 'index'
-#      end
-#    end
-    
-    def edit_exhibit
-      @exhibit = Exhibit.find(params[:id])
-      #@exhibit.is_published = 0 if @exhibit.is_published == nil || @exhibit.is_published == ""
+  def edit_exhibit
+    exhibit_id = params[:id]
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
+      @exhibit = Exhibit.find(exhibit_id)
       @page = params['page'] == nil ? 1 : params['page'].to_i
+    else
+      redirect_to :action => 'index'
     end
+  end
 
-    def edit_exhibit_overview
-      exhibit_id = params[:exhibit_id]
-      exhibit = Exhibit.find(exhibit_id)
+  def edit_exhibit_overview
+    exhibit_id = params[:exhibit_id]
+    user = get_user(session)
+    exhibit = Exhibit.find(exhibit_id)
+    if can_edit_exhibit(user, exhibit_id)
       exhibit.title = params[:overview_title_dlg]
-      #exhibit.is_published = (params[:overview_published_dlg] == 'Visible to Everyone')
       exhibit.thumbnail = params[:overview_thumbnail_dlg]
       exhibit.visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
       exhibit.save
-      render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end
-    
-    def update_title
-      render :text => params[:overview_title_dlg]
-    end
-    
-    def change_sharing
-      exhibit_id = params[:exhibit_id]
+    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+  end
+
+  def update_title # ajax call after title changes to display it on the page
+    render :text => params[:overview_title_dlg]
+  end
+
+  def change_sharing
+    exhibit_id = params[:exhibit_id]
+    user = get_user(session)
+    exhibit = Exhibit.find(exhibit_id)
+    if can_edit_exhibit(user, exhibit_id)
       sharing_level = params[:sharing]
-      exhibit = Exhibit.find(exhibit_id)
       exhibit.set_sharing(sharing_level)
       exhibit.save
-      render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end
-  
-#    def edit_exhibit_globals
-#      exhibit = Exhibit.find(params['id'])
-#      exhibit.title = params['title']
-#      exhibit.thumbnail = params['thumbnail']
-#      ex = Exhibit.find_by_visible_url(params['visible_url'])
-#      if ex == nil || ex.id == exhibit.id || params['visible_url'].length == 0
-#        exhibit.visible_url = params['visible_url']
-#      else
-#        flash[:warning] = "The url \"http://nines.org/exhibits/#{params['visible_url']}\" has already been used by another project. Choose a different Visual URL."
-#      end
-#      
-#      exhibit.is_published = (params['is_published'] == 'Visible to Everyone' ? 1 : 0)
-#      exhibit.save
-#      redirect_to :action => 'edit_exhibit', :id => exhibit.id
-#    end
-  
-    def delete_exhibit
-      # for security reasons, make sure that the exhibit belongs to the person who is trying to delete it.
-      if (session[:user])
-        user = User.find_by_username(session[:user][:username])
-        exhibit = Exhibit.find(params[:id])
-        if exhibit.user_id == user.id
-          Exhibit.destroy(params[:id])
-        end
-      end
+    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+  end
 
+  def delete_exhibit
+    # for security reasons, make sure that the exhibit belongs to the person who is trying to delete it.
+    exhibit_id = params[:id]
+    user = get_user(session)
+    exhibit = Exhibit.find(exhibit_id)
+    if can_edit_exhibit(user, exhibit_id)
+      Exhibit.destroy(exhibit_id)
+    end
+
+    redirect_to :action => 'index'
+  end
+
+  def change_page
+    exhibit_id = params[:id]
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
+      redirect_to :action => 'edit_exhibit', :id => params['id'], :page => params['page']
+    else
       redirect_to :action => 'index'
     end
-    
-    def change_page
-      redirect_to :action => 'edit_exhibit', :id => params['id'], :page => params['page']
+  end
+
+  def edit_element
+    page_id = params[:page].to_i
+    element_pos = params[:element].to_i
+    verb = params[:verb]
+
+    page = ExhibitPage.find(page_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, page.exhibit_id)
+      case verb
+        when "up"
+        page.move_element_up(element_pos)
+        when "down"
+        page.move_element_down(element_pos)
+        when "insert"
+        page.insert_element(element_pos)
+        when "delete"
+        page.delete_element(element_pos)
+        when "layout"
+        page.exhibit_elements[element_pos-1].change_layout(params[:type])
+      end
     end
 
-    def edit_element
-      page_id = params[:page].to_i
-      element_pos = params[:element].to_i
-      verb = params[:verb]
+    # We need to get the records again because the local variables are probably stale.
+    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+  end
 
-      page = ExhibitPage.find(page_id)
-      
+  def edit_row_of_illustrations
+    element_id = params[:element_id]
+    pos = params[:position].to_i
+    element = ExhibitElement.find(element_id)
+    verb = params[:verb]
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       case verb
-      when "up"
-        page.move_element_up(element_pos)
-      when "down"
-        page.move_element_down(element_pos)
-      when "insert"
-        page.insert_element(element_pos)
-      when "delete"
-        page.delete_element(element_pos)
-      when "layout"
-        page.exhibit_elements[element_pos-1].change_layout(params[:type])
+        when "left"
+        element.exhibit_illustrations[pos-1].move_higher()
+        when "right"
+        element.exhibit_illustrations[pos-1].move_lower()
+        when "delete"
+        element.exhibit_illustrations[pos-1].remove_from_list()
+        element.exhibit_illustrations[pos-1].destroy
       end
 
       # We need to get the records again because the local variables are probably stale.
-      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+      element = ExhibitElement.find(element_id)
     end
-    
-    def edit_row_of_illustrations
-      element_id = params[:element_id]
-      pos = params[:position].to_i
-      element = ExhibitElement.find(element_id)
-      verb = params[:verb]
+    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+  end
 
-      case verb
-      when "left"
-        element.exhibit_illustrations[pos-1].move_higher()
-      when "right"
-        element.exhibit_illustrations[pos-1].move_lower()
-      when "delete"
-        element.exhibit_illustrations[pos-1].remove_from_list()
-        element.exhibit_illustrations[pos-1].destroy
-       end
-
-      # We need to get the records again because the local variables are probably stale.
-      element = ExhibitElement.find(element_id)
-      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
-      #render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
-    end
-    
-    def insert_illustration
-      element_id = params[:element_id]
-      pos = params[:position].to_i
-      element = ExhibitElement.find(element_id)
+  def insert_illustration
+    element_id = params[:element_id]
+    pos = params[:position].to_i
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       if pos == -1
         pos = element.exhibit_illustrations.length+1
       end
@@ -360,14 +369,16 @@ class My9sController < ApplicationController
 
       # We need to get the records again because the local variables are probably stale.
       element = ExhibitElement.find(element_id)
-      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
-      #render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
-    
-    def change_element_type
-      element_id = params[:element_id]
-      type = params[:type]
-      element = ExhibitElement.find(element_id)
+    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+  end
+
+  def change_element_type
+    element_id = params[:element_id]
+    type = params[:type]
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       element.exhibit_element_layout_type = type
       element.save
       # if we are just creating an element that takes an illustration, then create the illustration, too.
@@ -377,107 +388,125 @@ class My9sController < ApplicationController
       if (type == 'pic_text_pic') && element.exhibit_illustrations.length < 2
         ExhibitIllustration.factory(element_id, 2)
       end
-       render :partial => '/exhibits/exhibit_section', :locals => { :element => ExhibitElement.find(element_id), :is_edit_mode => true, :element_count => element.position } 
-       #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => ExhibitElement.find(element_id), :is_edit_mode => true, :element_count => element.position } 
     end
-   
-    def change_illustration_justification
-      element_id = params[:element_id]
-      justify = params[:justify]
-      element = ExhibitElement.find(element_id)
+  end
+
+  def change_illustration_justification
+    element_id = params[:element_id]
+    justify = params[:justify]
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       element.set_justification(justify)
       element.save
 
-     render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
-       #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
     end
-    
-    def redraw_exhibit_page
-      page_id = params[:page]
-      if page_id == nil
-        id = params[:element_id]
+  end
+
+  def redraw_exhibit_page  # This is called for a number of different ajax actions to update the view.
+    page_id = params[:page]
+    if page_id == nil
+      id = params[:element_id]
+      if id != nil  # something probably timed out if this happens
         element = ExhibitElement.find(id)
         page_id = element.exhibit_page_id
       end
+    end
+    if page_id != nil
       page = ExhibitPage.find(page_id)
       render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+    else
+      render :text => 'Your session has timed out due to inactivity. Please login again.'
     end
-    
-    def edit_text
-      element = params['element_id']
-      arr = element.split('_')
-      last_str = arr[arr.length-1]
-      first_one = true
-      if last_str == 'left'
-        element_id = arr[arr.length-2].to_i
-      elsif last_str == 'right'
-        element_id = arr[arr.length-2].to_i
-        first_one = false
-      else
-        element_id = last_str.to_i
-      end
-      
+  end
+
+  def edit_text
+    element = params['element_id']
+    arr = element.split('_')
+    last_str = arr[arr.length-1]
+    first_one = true
+    if last_str == 'left'
+      element_id = arr[arr.length-2].to_i
+    elsif last_str == 'right'
+      element_id = arr[arr.length-2].to_i
+      first_one = false
+    else
+      element_id = last_str.to_i
+    end
+
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       value = params['value']
       value = clean_up_links(value)
       value = remove_empty_spans(value)
-      element = ExhibitElement.find(element_id)
       if first_one
         element.element_text = value
       else
         element.element_text2 = value
       end
       element.save
-      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
     end
-    
-    def edit_header
-      element = params['element_id']
-      arr = element.split('_')
-      element_id = arr[arr.length-1].to_i
-      
-      value = params['value']
-      element = ExhibitElement.find(element_id)
+    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+  end
+
+  def edit_header
+    element = params['element_id']
+    arr = element.split('_')
+    element_id = arr[arr.length-1].to_i
+
+    value = params['value']
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       element.element_text = value
       element.save
-      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
-      # render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
-    
-    def change_img_width
-      illustration = params['illustration_id']
-      arr = illustration.split('_')
-      illustration_id = arr[arr.length-1].to_i
-      width = params['width'].to_i
-      illustration = ExhibitIllustration.find(illustration_id)
-      element_id = illustration.exhibit_element_id
+    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+  end
+
+  def change_img_width
+    illustration = params['illustration_id']
+    arr = illustration.split('_')
+    illustration_id = arr[arr.length-1].to_i
+    width = params['width'].to_i
+    illustration = ExhibitIllustration.find(illustration_id)
+    element_id = illustration.exhibit_element_id
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       illustration.image_width = width
       illustration.save
       element = ExhibitElement.find(element_id)
-      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
-      #render :partial => 'edit_exhibit_element', :locals => { :element => ExhibitElement.find(element_id) } 
     end
-    
-    def edit_illustration
-      illustration = params['ill_illustration_id']
-      arr = illustration.split('_')
-      illustration_id = arr[arr.length-1].to_i
-      image_url = params['image_url']
-      type = params['type']
-      link = params['link_url']
-      #width = params['ill_width']
-      caption1 = params['caption1']
-      caption2 = params['caption2']
-      text = params['ill_text']
-      alt_text = params['alt_text']
-      nines_object = params['nines_object']
+    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+  end
 
-      illustration = ExhibitIllustration.find(illustration_id)
+  def edit_illustration
+    illustration = params['ill_illustration_id']
+    arr = illustration.split('_')
+    illustration_id = arr[arr.length-1].to_i
+    image_url = params['image_url']
+    type = params['type']
+    link = params['link_url']
+    caption1 = params['caption1']
+    caption2 = params['caption2']
+    text = params['ill_text']
+    alt_text = params['alt_text']
+    nines_object = params['nines_object']
+
+    illustration = ExhibitIllustration.find(illustration_id)
+    element_id = illustration.exhibit_element_id
+    element = ExhibitElement.find(element_id)
+    user = get_user(session)
+    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       illustration.illustration_type = type
       illustration.image_url = image_url
       illustration.illustration_text = text
       illustration.caption1 = caption1
       illustration.caption2 = caption2
-      #illustration.image_width = width if width != nil
       illustration.link = link
       illustration.alt_text = alt_text
       illustration.nines_object_uri = nines_object
@@ -485,219 +514,234 @@ class My9sController < ApplicationController
 
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
-      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
-      #render :partial => 'edit_exhibit_element', :locals => { :element => element } 
     end
-    
-    def modify_border
-      element_id = params['element_id']
-      borders = params['borders']
-      
-      #exhibit = Exhibit.find(exhibit_id)
-      element = ExhibitElement.find(element_id)
-      page = ExhibitPage.find(element.exhibit_page_id)
-      exhibit_id = page.exhibit_id
-      
+    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+  end
+
+  def modify_border
+    element_id = params['element_id']
+    borders = params['borders']
+
+    element = ExhibitElement.find(element_id)
+    page = ExhibitPage.find(element.exhibit_page_id)
+    exhibit_id = page.exhibit_id
+
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
       arr = borders.split(',')
       if arr.length == page.exhibit_elements.length
         0.upto(arr.length-1) do |i|
           page.exhibit_elements[i].set_border_type(arr[i])
         end
       end
-      
-      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false }
     end
 
-    def modify_outline
-      exhibit_id = params['exhibit_id']
-      element_id = params['element_id']
-      verb = params['verb']
-      
-      exhibit = Exhibit.find(exhibit_id)
-      element = ExhibitElement.find(element_id)
-      page = ExhibitPage.find(element.exhibit_page_id)
-      is_editing_border = false
-      
+    render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false }
+  end
+
+  def modify_outline
+    exhibit_id = params['exhibit_id']
+    element_id = params['element_id']
+    verb = params['verb']
+
+    exhibit = Exhibit.find(exhibit_id)
+    element = ExhibitElement.find(element_id)
+    page = ExhibitPage.find(element.exhibit_page_id)
+    is_editing_border = false
+
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
       case verb
-      when "insert_element"
+        when "insert_element"
         new_element = page.insert_element(element.position+1)
         element_id = new_element.id
-      when "move_element_up"
+        when "move_element_up"
         page.move_element_up(element.position)
-      when "move_element_down"
+        when "move_element_down"
         page.move_element_down(element.position)
-      when "delete_element"
+        when "delete_element"
         page.delete_element(element.position)
         element_id = -1
-  
-      when "insert_page"
+
+        when "insert_page"
         exhibit.insert_page(page.position+1)
       end
-      
-      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
     end
-    
-    def modify_outline_add_first_element
-      page_id = params[:page]
-      page = ExhibitPage.find(page_id)
-      exhibit_id = page.exhibit_id
-      is_editing_border = false
 
+    render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
+  end
+
+  def modify_outline_add_first_element
+    page_id = params[:page]
+    page = ExhibitPage.find(page_id)
+    exhibit_id = page.exhibit_id
+    is_editing_border = false
+
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
       new_element = page.insert_element(1)
       element_id = new_element.id
-      
-      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
     end
-    
-    def refresh_outline
-      element_div_id = params['element_id']
-      if element_div_id != nil
-        arr = element_div_id.split('_')
-        last_str = arr[arr.length-1]
-        if last_str == 'left'
-          id_num = arr[arr.length-2].to_i
-        elsif last_str == 'right'
-          id_num = arr[arr.length-2].to_i
-        else
-          id_num = last_str.to_i
-        end
-        if arr[0] == 'illustration'
-          exhibit = Exhibit.find_by_illustration_id(id_num)
-          element_id = ExhibitIllustration.find(id_num).exhibit_element_id
-        else
-          exhibit = Exhibit.find_by_element_id(id_num)
-          element_id = id_num
-        end
-      else
-        # We were passed a page id
-        page = ExhibitPage.find(params[:page])
-        element_pos = params[:element].to_i
-        exhibit = Exhibit.find(page.exhibit_id)
-        
-        element_pos = element_pos - 1
-        if element_pos < 0 || element_pos >= page.exhibit_elements.length
-          element_pos = 0
-        end
-        element_id = page.exhibit_elements[element_pos-1].id
-      end
-      
-      render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
-    end
-    
-    def find_page_containing_element
-      div_id = params[:element]
-      arr = div_id.split('-')
-      el_num = arr[arr.length-1].to_i
-      element = ExhibitElement.find(el_num)
-      page = ExhibitPage.find(element.exhibit_page_id)
 
-      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => el_num }
+    render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
+  end
+
+  def refresh_outline
+    element_div_id = params['element_id']
+    if element_div_id != nil
+      arr = element_div_id.split('_')
+      last_str = arr[arr.length-1]
+      if last_str == 'left'
+        id_num = arr[arr.length-2].to_i
+      elsif last_str == 'right'
+        id_num = arr[arr.length-2].to_i
+      else
+        id_num = last_str.to_i
+      end
+      if arr[0] == 'illustration'
+        exhibit = Exhibit.find_by_illustration_id(id_num)
+        element_id = ExhibitIllustration.find(id_num).exhibit_element_id
+      else
+        exhibit = Exhibit.find_by_element_id(id_num)
+        element_id = id_num
+      end
+    else
+      # We were passed a page id
+      page = ExhibitPage.find(params[:page])
+      element_pos = params[:element].to_i
+      exhibit = Exhibit.find(page.exhibit_id)
+
+      element_pos = element_pos - 1
+      if element_pos < 0 || element_pos >= page.exhibit_elements.length
+        element_pos = 0
+      end
+      element_id = page.exhibit_elements[element_pos-1].id
     end
-    
-    def modify_outline_page
-      exhibit_id = params['exhibit_id']
-      page_num = params['page_num'].to_i
-      verb = params['verb']
-      element_id = params['element_id']
-     
-      exhibit = Exhibit.find(exhibit_id)
-      
+
+    render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
+  end
+
+  def find_page_containing_element
+    div_id = params[:element]
+    arr = div_id.split('-')
+    el_num = arr[arr.length-1].to_i
+    element = ExhibitElement.find(el_num)
+    page = ExhibitPage.find(element.exhibit_page_id)
+
+    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => el_num }
+  end
+
+  def resend_exhibited_objects
+    # This is to update the section after a change elsewhere on the page
+    render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
+  end
+
+  def remove_exhibited_object
+    user = get_user(session)
+    uri = params[:uri]
+    exhibit_id = params[:exhibit_id]
+    if can_edit_exhibit(user, exhibit_id)
+      obj = ExhibitObject.find(:first, :conditions => ["uri = ? AND exhibit_id = ?", uri, exhibit_id ] )
+      obj.destroy if obj
+    end
+
+    render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
+  end
+
+  def get_all_collected_objects # called when creating a new exhibit
+    user = get_user(session)
+    exhibit_id = params[:exhibit_id]
+    if user != nil
+      obj = CollectedItem.get_collected_object_ruby_array(user.id)
+      selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+      obj.each { |o|
+        uri = o[:uri]
+        i = selected.detect {|sel|
+          sel[:uri] == uri
+        }
+        o[:chosen] = i == nil ? false : true
+      }
+
+      str = obj.to_json()
+      render :text => str
+    else
+      render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
+    end
+  end
+
+  def update_objects_in_exhibits
+    exhibit_id = params[:exhibit_id]
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
+      objects = params[:objects].split("\t")
+      ExhibitObject.set_objects(exhibit_id, objects)
+    end
+    render :partial => 'exhibit_palette', :locals => { :exhibit => Exhibit.find(exhibit_id) }
+
+  end
+
+  def get_all_users
+    ret = []
+    if is_admin? # only allow adminstrators to call this
+      # this returns a json object of all the users and their ids
+      users = User.find(:all)
+      users.each {|user|
+        ret.push({ :value => user.id, :text => user.fullname })
+      }
+    end
+    render :text => ret.to_json()
+  end
+
+  def set_exhibit_author_alias
+    exhibit_id = params[:exhibit_id]
+    user_id = params[:user_id]
+    page_num = params[:page_num].to_i
+    user = get_user(session)
+    exhibit = Exhibit.find(exhibit_id)
+    if can_edit_exhibit(user, exhibit_id)
+      exhibit.alias_id = user_id
+      exhibit.save
+    end
+    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil }
+  end
+
+  def modify_outline_page
+    exhibit_id = params['exhibit_id']
+    page_num = params['page_num'].to_i
+    verb = params['verb']
+    element_id = params['element_id']
+
+    exhibit = Exhibit.find(exhibit_id)
+
+    user = get_user(session)
+    if can_edit_exhibit(user, exhibit_id)
       case verb
-      when "move_page_up"
+        when "move_page_up"
         exhibit.move_page_up(page_num)
-      when "move_page_down"
+        when "move_page_down"
         exhibit.move_page_down(page_num)
-      when "delete_page"
+        when "delete_page"
         exhibit.delete_page(page_num)
         element_id = -1
       end
-      
-      render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false  }
     end
 
-    def remove_exhibited_object
-      user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-      uri = params[:uri]
-      exhibit_id = params[:exhibit_id]
-      if user != nil
-        obj = ExhibitObject.find(:first, :conditions => ["uri = ? AND exhibit_id = ?", uri, exhibit_id ] )
-        obj.destroy if obj
-      end
-      
-      render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
-    end
-    
-    def resend_exhibited_objects
-      # This is to update the section after a change elsewhere on the page
-      render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
-    end
-    
-    def get_all_collected_objects
-      user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-      if user
-        exhibit_id = params[:exhibit_id]
-        
-        obj = CollectedItem.get_collected_object_ruby_array(user.id)
-        selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
-        obj.each { |o|
-          uri = o[:uri]
-          i = selected.detect {|sel|
-            sel[:uri] == uri
-          }
-          o[:chosen] = i == nil ? false : true
-        }
-
-        str = obj.to_json()
-        render :text => str
-      else
-        render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
-      end
-    end
-  
-    def update_objects_in_exhibits
-      exhibit_id = params[:exhibit_id]
-      user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-      if user
-        objects = params[:objects].split("\t")
-        ExhibitObject.set_objects(exhibit_id, objects)
-      end
-      render :partial => 'exhibit_palette', :locals => { :exhibit => Exhibit.find(exhibit_id) }
-      
-    end
-  
-  def get_all_users
-    # this returns a json object of all the users and their ids
-    users = User.find(:all)
-    ret = []
-    users.each {|user|
-      ret.push({ :value => user.id, :text => user.fullname })
-    }
-    render :text => ret.to_json()
+    render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false  }
   end
-  
-  def set_exhibit_author_alias
-     exhibit_id = params[:exhibit_id]
-     user_id = params[:user_id]
-     page_num = params[:page_num].to_i
-     exhibit = Exhibit.find(exhibit_id)
-     exhibit.alias_id = user_id
-     exhibit.save
-     render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil }
-   end
-  
+
   private
-   def cloud_fragment_key( user )
-     "/cloud/#{user}_user/tag"
-   end
-   
-   def set_cloud_list(user, username)
+  def cloud_fragment_key( user )
+       "/cloud/#{user}_user/tag"
+  end
+
+  def set_cloud_list(user, username)
     @cloud_fragment_key = cloud_fragment_key(username)
-    
+
     if is_cache_expired?(@cloud_fragment_key)
       @cloud_info = CachedResource.get_tag_cloud_info(user)
     end
   end
-  
+
   def clean_up_links(text)
     # This converts any <a href="xxx">yyy</a> to
     #<span class="ext_linklike" real_link="xxx" title="External Link: xxx">yyy</span>
@@ -705,7 +749,7 @@ class My9sController < ApplicationController
     a_str = '<a'
     arr = text.split(a_str)
     return text if arr.length == 1
-    
+
     str = arr[0]  # the first element has everything before the first span, so we just start with that.
     is_first = true
     for a in arr
@@ -720,18 +764,18 @@ class My9sController < ApplicationController
     end
     return str
   end
-  
+
   def remove_empty_spans(text)
     # we are looking for "<span...></span>"
     text = text.gsub(/<span[^>]*><\/span>/, '')
-#    text = text.gsub(/<span>.*<\/span>/) { |s|
-#      str = s[6, s.length-13]
-#      puts "Replacement: " + str
-#      return str
-#    }
+    #    text = text.gsub(/<span>.*<\/span>/) { |s|
+    #      str = s[6, s.length-13]
+    #      puts "Replacement: " + str
+    #      return str
+    #    }
     return text
   end
-  
+
   # Some private convenience functions to make the above routine clearer
   def extract_link_from_encoded_a(str)
     el= str.split('>', 2)  # find the end of the opening part of the span tag.
@@ -741,21 +785,21 @@ class My9sController < ApplicationController
     arr2 = arr[1].split(quote)
     return arr2[1]
   end
-  
+
   def extract_inner_html(str)
     el = str.split('>', 2)  # find the end of the opening part of the span tag.
     return "" if el.length < 2
-    
+
     el2 = el[1].split('</a>')
     return "" if el2.length < 2
-    
+
     return el2[0]
   end
-  
+
   def extract_trailing_html(str)
     el = str.split('</a>')
     return "" if el.length < 2
-    
+
     return el[1]
   end
 end
