@@ -58,12 +58,14 @@ SidebarTagCloud = Class.create( {
 
 		// hide tags that don't match the filter
 		tags.each( function(tag) {
-			if( sidebarFilterString.blank() || (tag.innerHTML.toLowerCase().indexOf( sidebarFilterString ) >= 0) ) {
-				tag.show();
-				visibleTags[i++] = tag;
-			} 
-			else {
-				tag.hide();
+			if (tag.hasClassName('dont_filter') === false) {
+				if( sidebarFilterString.blank() || (tag.innerHTML.toLowerCase().indexOf( sidebarFilterString ) >= 0) ) {
+					tag.show();
+					visibleTags[i++] = tag;
+				} 
+				else {
+					tag.hide();
+				}
 			}
 		});
 

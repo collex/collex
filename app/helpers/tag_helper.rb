@@ -1,15 +1,24 @@
 module TagHelper
-  def tag_cloud(cloud_info, selection, controller)
+  def tag_cloud(cloud_info, selection, controller, hide_some)
     str = ""
-    cloud_info[:cloud_freq].each do |item|
+    is_hiding = false
+    cloud_info[:cloud_freq].each_with_index do |item, i|
       html = {}
-      #size = item.last.quo(cloud_info[:bucket_size]).ceil
       size = cloud_info[:bucket_size][item.last]
       if selection == item.first
         str += "<span class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first)}</span>\n"
       else
         str += "<span class='cloud#{size}'>#{link_to_tag(item.first, item.last, false, controller, html)}</span>\n"
-       end
+      end
+      if hide_some && i == 25
+        is_hiding = true
+        str += "<div>#{link_to_function('[show entire tag cloud]', '$(\'more_tags\').show(); $(this).hide();', :id => 'more_tag_link', :class => 'nav_link dont_filter')}</div>\n"
+        str += "<div id='more_tags' style='display:none;'>\n"
+      end
+    end
+    
+    if is_hiding
+      str += "<br />#{link_to_function('[show fewer tags]', '$(\'more_tags\').hide(); $(\'more_tag_link\').show();', :class => 'nav_link dont_filter')}</div>\n"
     end
    return str
 #    xm = Builder::XmlMarkup.new(:indent => 2)
