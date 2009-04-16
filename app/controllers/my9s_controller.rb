@@ -647,7 +647,7 @@ class My9sController < ApplicationController
           o[:chosen] = i == nil ? false : true
         }
 
-        str = obj.to_json();
+        str = obj.to_json()
         render :text => str
       else
         render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
@@ -664,6 +664,26 @@ class My9sController < ApplicationController
       render :partial => 'exhibit_palette', :locals => { :exhibit => Exhibit.find(exhibit_id) }
       
     end
+  
+  def get_all_users
+    # this returns a json object of all the users and their ids
+    users = User.find(:all)
+    ret = []
+    users.each {|user|
+      ret.push({ :value => user.id, :text => user.fullname })
+    }
+    render :text => ret.to_json()
+  end
+  
+  def set_exhibit_author_alias
+     exhibit_id = params[:exhibit_id]
+     user_id = params[:user_id]
+     page_num = params[:page_num].to_i
+     exhibit = Exhibit.find(exhibit_id)
+     exhibit.alias_id = user_id
+     exhibit.save
+     render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil }
+   end
   
   private
    def cloud_fragment_key( user )

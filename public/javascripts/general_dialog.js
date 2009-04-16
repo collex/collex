@@ -35,6 +35,15 @@ var GeneralDialog = Class.create({
 		
 		var flash_id = this_id + '_flash';
 		var dlg_id = this_id;
+		
+		var selectChange = function(event, param)
+		{
+			var This = $(this);
+			var currSelection = This.value;
+			var id = param.id;
+			var el = $(id);
+			el.value = currSelection; 
+		};
 
 		if (parent_id === undefined) {
 			parent_id = 'modal_dlg_parent';
@@ -129,12 +138,26 @@ var GeneralDialog = Class.create({
 					} else if (subel.button !== undefined) {
 						var input = new Element('input', { id: 'btn' + listenerArray.length, 'type': 'button', value: subel.button });
 						row.appendChild(input);
-						listenerArray.push({ id: 'btn' + listenerArray.length, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						listenerArray.push({ id: 'btn' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 					} else if (subel.page_link !== undefined) {
 						var a = new Element('a', { id: 'a' + listenerArray.length, href: '#' }).update(subel.page_link);
 						a.addClassName('nav_link');
 						row.appendChild(a);
-						listenerArray.push({ id: 'a' + listenerArray.length, callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+						listenerArray.push({ id: 'a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+					} else if (subel.select !== undefined) {
+						var selectValue = new Element('input', { id: subel.select, name: subel.select });
+						selectValue.addClassName('hidden');
+						row.appendChild(selectValue);
+						var select = new Element('select', { id: 'sel' + listenerArray.length });
+						if (subel.klass)
+							select.addClassName(subel.klass);
+						row.appendChild(select);
+						listenerArray.push({ id: 'sel' + listenerArray.length, event: 'change', callback: selectChange, param: { id: subel.select } });
+						if (subel.options) {
+							subel.options.each(function(opt) {
+								select.appendChild(new Element('option', { value: opt.value}).update(opt.text));
+							});
+						}
 					} else if (subel.custom !== undefined) {
 						var custom = subel.custom;
 						var div = custom.getMarkup();
@@ -148,7 +171,7 @@ var GeneralDialog = Class.create({
 		panel.render(parent_id);
 		
 		listenerArray.each(function (listen, i) {
-			YAHOO.util.Event.addListener(listen.id, "click", listen.callback, listen.param); 
+			YAHOO.util.Event.addListener(listen.id, listen.event, listen.callback, listen.param); 
 		});
 		
 		// These are all the elements that can be turned on and off in the dialog.
