@@ -1,0 +1,16 @@
+<h1>NINES Statistics</h1>
+
+<table>
+	<tr>
+		<td>Total Users:</td>
+		<td><%= User.count() %></td>
+	</tr>
+	<tr>
+		<td>Total Objects:</td>
+		<td><%= number_with_delimiter(session[:num_docs]) %></td>
+	</tr>
+	<tr>
+		<td>Total Active Users (logged in within the year):</td>
+		<td><%= get_user_login_info() %></td>
+	</tr>
+</table>

@@ -15,4 +15,14 @@
 ##########################################################################
 
 module Admin::DefaultHelper
+  class Session < ActiveRecord::Base
+  end
+  def get_user_login_info
+#    ss = Session.find(:all)
+#    s = ss[ss.length-1]
+#    d = "\x04\x08" + s.data
+#    obj = Marshal.load(d)
+#    return obj.to_s
+    return "Who knows?"
+  end
 end
