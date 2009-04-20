@@ -39,3 +39,5 @@ ActionMailer::Base.smtp_settings = {
    :port => 25, 
    :domain => "nines.org", 
 } 
+
+config.log_level = :info
