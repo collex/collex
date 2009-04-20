@@ -1,5 +1,7 @@
 <h1>NINES Statistics</h1>
-
+<% lines = get_user_login_info() -%>
+<% str = "" -%>
+<% lines.each {|line| str += line + "<br />" } -%>
 <table>
 	<tr>
 		<td>Total Users:</td>
@@ -10,7 +12,7 @@
 		<td><%= number_with_delimiter(session[:num_docs]) %></td>
 	</tr>
 	<tr>
-		<td>Total Active Users (logged in within the year):</td>
-		<td><%= get_user_login_info() %></td>
+		<td valign='top'>All available login info:</td>
+		<td><%= str %></td>
 	</tr>
 </table>

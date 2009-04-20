@@ -18,11 +18,35 @@ module Admin::DefaultHelper
   class Session < ActiveRecord::Base
   end
   def get_user_login_info
-#    ss = Session.find(:all)
-#    s = ss[ss.length-1]
-#    d = "\x04\x08" + s.data
-#    obj = Marshal.load(d)
-#    return obj.to_s
-    return "Who knows?"
+    ret = []
+    fname = "#{RAILS_ROOT}/log/#{RAILS_ENV}.log"
+    f = File.new(fname)
+    tim = "TIME"
+    name = "NAME"
+    f.each_line do |line|
+        if line.index('LoginController#verify_login') != nil
+          s = line.index(' at ') + 4
+          e = line.index(')') - 1
+          tim = line[s..e]
+        elsif line.index('login/verify_login]') != nil
+          status = line.index('302 Found') ? "OK" : line.index('200 OK') ? "OK" : "Illegal"
+          ret.push(tim + " " + name + " " + status)
+          tim = "TIME"
+          name = "NAME"
+        elsif line.index('verify_login') != nil
+          s = line.index('username"=>"')
+          if s != nil
+            arr = line.split('username"=>"')
+            arr = arr[1].split('"')
+            name = arr[0]
+          elsif line.index('UPDATE `logs` SET') != nil
+            # just ignore the SQL log
+          else
+            ret.push(tim + " " + line)
+          end
+        end
+    end
+    return ret
   end
+
 end
