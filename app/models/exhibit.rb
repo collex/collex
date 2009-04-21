@@ -91,13 +91,18 @@ class Exhibit < ActiveRecord::Base
   end
   
   def self.find_by_illustration_id(illustration_id)
-    illustration = ExhibitIllustration.find(illustration_id)
+    return nil if illustration_id == nil || illustration_id == 0
+    illustration = ExhibitIllustration.find_by_id(illustration_id)
+    return nil if illustration == nil
     return self.find_by_element_id(illustration.exhibit_element_id)
   end
   
   def self.find_by_element_id(element_id)
-    element = ExhibitElement.find(element_id)
-    page = ExhibitPage.find(element.exhibit_page_id)
+    return nil if element_id == nil || element_id == 0
+    element = ExhibitElement.find_by_id(element_id)
+    return nil if element == nil
+    page = ExhibitPage.find_by_id(element.exhibit_page_id)
+    return nil if page == nil
     return Exhibit.find(page.exhibit_id)
   end
   

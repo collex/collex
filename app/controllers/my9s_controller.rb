@@ -37,12 +37,14 @@ class My9sController < ApplicationController
 
   def can_edit_exhibit(user, exhibit_id)
     return false if user == nil
+    return false if exhibit_id == nil
     return true if is_admin?
     exhibit = Exhibit.find(exhibit_id)
     return exhibit.user_id == user.id
   end
 
   def get_exhibit_id_from_element(element)
+    return nil if element == nil || element == 0
     page = ExhibitPage.find(element.exhibit_page_id)
     return page.exhibit_id
   end
@@ -311,9 +313,10 @@ class My9sController < ApplicationController
     element_pos = params[:element].to_i
     verb = params[:verb]
 
-    page = ExhibitPage.find(page_id)
+    page = ExhibitPage.find_by_id(page_id)
+    exhibit_id = page ? page.exhibit_id : nil
     user = get_user(session)
-    if can_edit_exhibit(user, page.exhibit_id)
+    if can_edit_exhibit(user, exhibit_id)
       case verb
         when "up"
         page.move_element_up(element_pos)
@@ -329,13 +332,17 @@ class My9sController < ApplicationController
     end
 
     # We need to get the records again because the local variables are probably stale.
-    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+    if page == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+    end
   end
 
   def edit_row_of_illustrations
     element_id = params[:element_id]
     pos = params[:position].to_i
-    element = ExhibitElement.find(element_id)
+    element = ExhibitElement.find_by_id(element_id)
     verb = params[:verb]
     user = get_user(session)
     if can_edit_exhibit(user, get_exhibit_id_from_element(element))
@@ -352,13 +359,17 @@ class My9sController < ApplicationController
       # We need to get the records again because the local variables are probably stale.
       element = ExhibitElement.find(element_id)
     end
-    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+    if element == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+    end
   end
 
   def insert_illustration
     element_id = params[:element_id]
     pos = params[:position].to_i
-    element = ExhibitElement.find(element_id)
+    element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
     if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       if pos == -1
@@ -370,7 +381,11 @@ class My9sController < ApplicationController
       # We need to get the records again because the local variables are probably stale.
       element = ExhibitElement.find(element_id)
     end
-    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+    if element == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+    end
   end
 
   def change_element_type
@@ -395,16 +410,35 @@ class My9sController < ApplicationController
   def change_illustration_justification
     element_id = params[:element_id]
     justify = params[:justify]
-    element = ExhibitElement.find(element_id)
+    element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
     if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       element.set_justification(justify)
       element.save
-
+    end
+    if element == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
       render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
     end
   end
 
+  def reset_exhibit_page_from_outline
+    page_num = params[:page_num].to_i
+    exhibit_id = params[:exhibit_id]
+    exhibit = Exhibit.find_by_id(exhibit_id)
+    if exhibit
+      if exhibit.exhibit_pages.length >= page_num
+        page_num = exhibit.exhibit_pages.length - 1
+      end
+    end
+    if exhibit == nil || page_num == 0
+      render :text => "[Empty Exhibit]"
+    else
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil }
+    end
+  end
+  
   def redraw_exhibit_page  # This is called for a number of different ajax actions to update the view.
     page_id = params[:page]
     if page_id == nil
@@ -415,8 +449,12 @@ class My9sController < ApplicationController
       end
     end
     if page_id != nil
-      page = ExhibitPage.find(page_id)
-      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+      page = ExhibitPage.find_by_id(page_id)
+      if page == nil
+        render :text =>'Error in editing section. Please refresh your browser page.'
+      else
+        render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+      end
     else
       render :text => 'Your session has timed out due to inactivity. Please login again.'
     end
@@ -436,7 +474,7 @@ class My9sController < ApplicationController
       element_id = last_str.to_i
     end
 
-    element = ExhibitElement.find(element_id)
+    element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
     if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       value = params['value']
@@ -449,7 +487,11 @@ class My9sController < ApplicationController
       end
       element.save
     end
-    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+    if element == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+    end
   end
 
   def edit_header
@@ -458,13 +500,17 @@ class My9sController < ApplicationController
     element_id = arr[arr.length-1].to_i
 
     value = params['value']
-    element = ExhibitElement.find(element_id)
+    element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
     if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       element.element_text = value
       element.save
     end
-    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+    if element == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+    end
   end
 
   def change_img_width
@@ -472,16 +518,22 @@ class My9sController < ApplicationController
     arr = illustration.split('_')
     illustration_id = arr[arr.length-1].to_i
     width = params['width'].to_i
-    illustration = ExhibitIllustration.find(illustration_id)
-    element_id = illustration.exhibit_element_id
-    element = ExhibitElement.find(element_id)
-    user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
-      illustration.image_width = width
-      illustration.save
+    illustration = ExhibitIllustration.find_by_id(illustration_id)
+    if illustration != nil
+      element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
+      user = get_user(session)
+      if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+        illustration.image_width = width
+        illustration.save
+        element = ExhibitElement.find(element_id)
+      end
     end
-    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+    if illustration == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+    end
   end
 
   def edit_illustration
@@ -497,25 +549,31 @@ class My9sController < ApplicationController
     alt_text = params['alt_text']
     nines_object = params['nines_object']
 
-    illustration = ExhibitIllustration.find(illustration_id)
-    element_id = illustration.exhibit_element_id
-    element = ExhibitElement.find(element_id)
-    user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
-      illustration.illustration_type = type
-      illustration.image_url = image_url
-      illustration.illustration_text = text
-      illustration.caption1 = caption1
-      illustration.caption2 = caption2
-      illustration.link = link
-      illustration.alt_text = alt_text
-      illustration.nines_object_uri = nines_object
-      illustration.save
-
+    illustration = ExhibitIllustration.find_by_id(illustration_id)
+    if illustration != nil
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
+      user = get_user(session)
+      if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+        illustration.illustration_type = type
+        illustration.image_url = image_url
+        illustration.illustration_text = text
+        illustration.caption1 = caption1
+        illustration.caption2 = caption2
+        illustration.link = link
+        illustration.alt_text = alt_text
+        illustration.nines_object_uri = nines_object
+        illustration.save
+  
+        element_id = illustration.exhibit_element_id
+        element = ExhibitElement.find(element_id)
+      end
     end
-    render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position } 
+    if illustration == nil
+      render :text =>'Error in editing section. Please refresh your browser page.'
+    else
+      render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
+    end
   end
 
   def modify_border
@@ -600,25 +658,31 @@ class My9sController < ApplicationController
       end
       if arr[0] == 'illustration'
         exhibit = Exhibit.find_by_illustration_id(id_num)
-        element_id = ExhibitIllustration.find(id_num).exhibit_element_id
+        element_id = ExhibitIllustration.find(id_num).exhibit_element_id if exhibit != nil
       else
         exhibit = Exhibit.find_by_element_id(id_num)
         element_id = id_num
       end
     else
       # We were passed a page id
-      page = ExhibitPage.find(params[:page])
+      page = ExhibitPage.find_by_id(params[:page])
       element_pos = params[:element].to_i
-      exhibit = Exhibit.find(page.exhibit_id)
+      exhibit = page ? Exhibit.find(page.exhibit_id) : nil
 
-      element_pos = element_pos - 1
-      if element_pos < 0 || element_pos >= page.exhibit_elements.length
-        element_pos = 0
+      if page
+        element_pos = element_pos - 1
+        if element_pos < 0 || element_pos >= page.exhibit_elements.length
+          element_pos = 0
+        end
+        element_id = page.exhibit_elements[element_pos-1].id
       end
-      element_id = page.exhibit_elements[element_pos-1].id
     end
 
-    render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
+    if exhibit == nil
+      render :text => "Error in displaying the outline. Please refresh your browser."
+    else
+      render :partial => 'exhibit_outline', :locals => { :exhibit => exhibit, :element_id_selected => element_id, :is_editing_border => false }
+    end
   end
 
   def find_page_containing_element

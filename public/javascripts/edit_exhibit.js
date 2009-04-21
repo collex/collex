@@ -157,7 +157,7 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 
 function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 {
-	if (verb == 'delete_page' && !confirm('You are about to delete page number ' + page_num + '. Do you want to continue?')) 
+	if (verb === 'delete_page' && !confirm('You are about to delete page number ' + page_num + '. Do you want to continue?')) 
 		return;
 	var allElements = $$(".outline_tree_element_selected");
 	if (allElements.length == 1)
@@ -168,6 +168,15 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 		new Ajax.Updater("full-window-content", "/my9s/modify_outline_page", {
 			parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
 			evalScripts : true,
+			onComplete: function(resp) {
+				if (verb === 'delete_page') {
+					var page_id = $('current_page').innerHTML;
+					new Ajax.Updater("exhibit_page", "/my9s/reset_exhibit_page_from_outline", {
+						parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
+						evalScripts : true,
+						onFailure : function(resp) { alert("Oops, there's been an error."); }});
+				}
+			},
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
 	}
 }
@@ -528,15 +537,21 @@ BorderDialog.prototype = {
 		this._myPanel.cfg.queueProperty("buttons", myButtons);
 		
 		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
-		elOuterContainer.appendChild(new Element('div', { id: 'border_dlg_instructions', 'class': 'instructions'}).update('First, drag the mouse over some sections and then click "Add Border" or "Remove Border".'));
+		var elDiv = new Element('div', { id: 'border_dlg_instructions' }).update('First, drag the mouse over some sections and then click "Add Border" or "Remove Border".');
+		elDiv.addClassName('instructions');
+		elOuterContainer.appendChild(elDiv);
 		var elContainer = new Element('div', { id: 'border_container' });
 		elOuterContainer.appendChild(elContainer);
 	
 		// Here's our header
 		var headers = $$('.selected_page .exhibit_outline_text');
 		var page_num = headers[0].innerHTML;
-		var span = new Element('span', { 'class': 'exhibit_outline_text' }).update('&nbsp;&nbsp;' + page_num);
-		elContainer.appendChild(span.wrap('div', { 'class': 'unselected_page selected_page ' }));
+		var span = new Element('span').update('&nbsp;&nbsp;' + page_num);
+		span.addClassName('exhibit_outline_text');
+		var span2 = span.wrap('div');
+		span2.addClassName('unselected_page');
+		span2.addClassName('selected_page');
+		elContainer.appendChild(span2);
 
 		// First copy all the elements over that we want to use
 		var elements = $$(".selected_page .outline_element");
@@ -554,8 +569,11 @@ BorderDialog.prototype = {
 					cls += " border_bottom";
 			}
 			var inner = el.innerHTML;
-			var elBorder = new Element('div', {id: "border_" + el.id, 'class' : cls }).update(inner);
-			elContainer.appendChild(elBorder.wrap('div', { id: 'rubberband_' + el.id, 'class': 'rubberband_dlg_element'}));
+			var elBorder = new Element('div', {id: "border_" + el.id }).update(inner);
+			elBorder.addClassName(cls);
+			var elBorder2 = elBorder.wrap('div', { id: 'rubberband_' + el.id });
+			elBorder2.addClassName('rubberband_dlg_element');
+			elContainer.appendChild(elBorder2);
 		}, this);
 		
 		this._myPanel.setBody(elOuterContainer);
@@ -1061,7 +1079,8 @@ var ObjectList = Class.create({
 				var header = new Element('div').update(title);
 				header.addClassName('object_list_title');
 				outer.appendChild(header);
-				div = new Element('div', { 'class': 'object_list_outer' });
+				div = new Element('div');
+				div.addClassName('object_list_outer');
 				outer.appendChild(div);
 				div.appendChild(new Element('img', { src: progress_img, alt: 'progress' }));
 			}
@@ -1154,7 +1173,8 @@ var ObjectSelector = Class.create({
 			if (divMarkup !== null)
 				return divMarkup;
 				
-			divMarkup = new Element('div', { 'class': 'object_selector'});
+			divMarkup = new Element('div');
+			divMarkup.addClassName('object_selector');
 			var table = new Element('table');
 			var tbody = new Element('tbody');
 			var tr = new Element('tr');
