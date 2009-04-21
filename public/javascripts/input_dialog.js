@@ -43,7 +43,8 @@ InputDialog.prototype = {
 			inlineSubmitCode = '';
 		else
 			inlineSubmitCode += "; return false;";
-		this._form = new Element('form', { id: form_id, 'class': 'modal_dialog_form', onsubmit:  inlineSubmitCode});
+		this._form = new Element('form', { id: form_id, onsubmit:  inlineSubmitCode});
+		this._form.addClassName('modal_dialog_form');
 		if (submitCode == null || submitCode == undefined)
 			this._form.observe('submit', InputDialog.prototype._observerSubmit.bind(this));
 		this._table = new Element('table');
@@ -215,7 +216,8 @@ InputDialog.prototype = {
 	{
 		var wrapper = new Element('tr');
 		wrapper.appendChild(new Element('td'));
-		var el = new Element('a', { 'class': className, href: strUrl, onclick: clickAction }).update(strText);
+		var el = new Element('a', { href: strUrl, onclick: clickAction }).update(strText);
+		el.addClassName(className);
 		wrapper.appendChild(el.wrap('td'));
 		this._table.down().appendChild(wrapper);
 	},
@@ -224,7 +226,8 @@ InputDialog.prototype = {
 	{
 		var wrapper = new Element('tr');
 		wrapper.appendChild(new Element('td'));
-		var el = new Element('a', { 'class': className, target: '_blank', href: strUrl, onclick: clickAction }).update(strText);
+		var el = new Element('a', { target: '_blank', href: strUrl, onclick: clickAction }).update(strText);
+		el.addClassName(className);
 		wrapper.appendChild(el.wrap('td'));
 		this._table.down().appendChild(wrapper);
 	},
@@ -238,8 +241,11 @@ InputDialog.prototype = {
 			var count = this._buttonAction.length;
 			this._buttonAction[count] = { action: but.action, context: but.context };
 			var el = new Element('a', { href: "#", clickaction: count }).update(but.text);
-			var el2 = el.wrap('span', { 'class': 'first-child' });
-			var el3 = el2.wrap('span', { 'class': 'yui-button yui-link-button' });
+			var el2 = el.wrap('span');
+			el2.addClassName('first-child');
+			var el3 = el2.wrap('span');
+			el3.addClassName('yui-button');
+			el3.addClassName('yui-link-button');
 			td.appendChild(el3);
 		}, this);
 		wrapper.appendChild(td);
@@ -405,7 +411,8 @@ function showInLightbox(imageUrl, referenceElementId)
 	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
 	img.setStyle({display: 'none' });
 	var form = img.wrap('form', { id: divName + "_id"});
-	var progress = new Element('center', { id: 'lightbox_img_spinner', 'class': 'lightbox_img_spinner'});
+	var progress = new Element('center', { id: 'lightbox_img_spinner'});
+	progress.addClassName('lightbox_img_spinner');
 	progress.appendChild(new Element('div').update("Image Loading..."));
 	progress.appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 	progress.appendChild(new Element('div').update("Please wait"));
