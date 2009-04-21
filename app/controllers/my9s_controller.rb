@@ -750,7 +750,8 @@ class My9sController < ApplicationController
       # this returns a json object of all the users and their ids
       users = User.find(:all)
       users.each {|user|
-        ret.push({ :value => user.id, :text => user.fullname })
+        # On IE, there are lots of characters that cause the json to be illegal. We'll just replace most weird characters just in case.
+        ret.push({ :value => user.id, :text => user.fullname.gsub(/[^-'a-zA-Z0-9_. ]/, "*") })
       }
     end
     render :text => ret.to_json()
