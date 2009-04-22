@@ -20,7 +20,7 @@ class Log < ActiveRecord::Base
 
     str = ""
     for param in params
-      str += "#{param[0]} => \"#{param[1]}\", " if param[0] != 'action' and param[0] != 'controller'
+      str += "#{param[0]} => \"#{param[1]}\", " if param[0] != 'action' and param[0] != 'controller' and param[0].index('password') == nil
     end
     
     count = Log.count
