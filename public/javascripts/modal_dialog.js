@@ -150,7 +150,7 @@ YAHOO.widget.SimpleEditor.prototype.guessSelectionEnd = function (val, selStart,
 // Get the user's selection in offsets into the raw HTML.
 // A hash is returned with the start and end positions, and an error string, if any.
 YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
-	if (this.browser.ie || this.browser.opera) {
+	if (this.browser.opera) {
 		return null;
 	}
 	
@@ -160,6 +160,16 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 		if (s+'' === '') {
 			s = null;
 		}
+	} else if (this.browser.ie) {
+		// TODO-PER: This isn't right. It will match the first occurrance of the text selected. It's better than nothing, though.
+		var rng = s.createRange();
+		var selText = rng.htmlText;
+		var val = this.getEditorHTML();
+		var idx = val.indexOf(selText);
+		if (idx === -1)
+			s.rangeCount = 2;
+		else
+			return { startPos: idx, endPos: idx + selText.length, selection: selText, errorMsg: null };
 	} else {
 		if (!s || (s.toString() === '') || (s === undefined)) {
 			s = null;
