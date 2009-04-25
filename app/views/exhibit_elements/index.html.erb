@@ -68,14 +68,14 @@ end -%>
 
 <% for record in records %>
   <tr>
-    <td><%= record[:exhibit_element_id] %></td>
-    <td><%= record[:exhibit] %></td>
-    <td><%= record[:new_page] %>/<%= record[:page] %></td>
-    <td><%= record[:position] %></td>
-    <td><%= record[:layout_type] %></td>
-    <td><%= record[:thumbnail] %></td>
-    <td><%= record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
-    <td><%= record[:border] %></td>
+    <td><%=h record[:exhibit_element_id] %></td>
+    <td><%=h record[:exhibit] %></td>
+    <td><%=h record[:new_page] %>/<%= record[:page] %></td>
+    <td><%=h record[:position] %></td>
+    <td><%=h record[:layout_type] %></td>
+    <td><%=h record[:thumbnail] %></td>
+    <td><%=h record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
+    <td><%=h record[:border] %></td>
     <td><%= link_to 'Edit', edit_exhibit_element_path(record[:exhibit_element]), :class => 'nav_link' %></td>
     <td><%= link_to 'Destroy', record[:exhibit_element], :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %></td>
   </tr>
@@ -122,7 +122,16 @@ end -%>
     <th>Time</th>
   </tr>
 
-<% logs = Log.find(:all, :order => 'updated_at DESC', :limit => 200) -%>
+<% logs = Log.find(:all, :order => 'updated_at DESC', :limit => 700 ) -%>
+<% logs = logs.sort { |a,b|
+	if a.user == b.user
+		b.updated_at <=> a.updated_at
+	else
+		au = a.user ? a.user : ''
+		bu = b.user ? b.user : ''
+		bu <=> au
+	end
+} -%>
 <% for log in logs %>
   <tr>
     <td><%= log.id %></td>
