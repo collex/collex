@@ -426,8 +426,12 @@ class SearchController < ApplicationController
      @field = 'content'
      @values = []
      if params['search']
-       result = @solr.facet(@field, session[:constraints], params['search']['keyword'])
-       @values = result.sort {|a,b| b[1] <=> a[1]}
+       begin
+         result = @solr.facet(@field, session[:constraints], params['search']['keyword'])
+         @values = result.sort {|a,b| b[1] <=> a[1]}
+       rescue  Net::HTTPServerException => e
+         # don't do anything if this fails.
+       end
      end
      
      render :partial => 'suggest'
