@@ -252,6 +252,8 @@ class My9sController < ApplicationController
     if can_edit_exhibit(user, exhibit_id)
       @exhibit = Exhibit.find(exhibit_id)
       @page = params['page'] == nil ? 1 : params['page'].to_i
+      num_pages = @exhibit.exhibit_pages.length
+      @page = num_pages if @page > num_pages
     else
       redirect_to :action => 'index'
     end
@@ -428,9 +430,8 @@ class My9sController < ApplicationController
     exhibit_id = params[:exhibit_id]
     exhibit = Exhibit.find_by_id(exhibit_id)
     if exhibit
-      if exhibit.exhibit_pages.length >= page_num
-        page_num = exhibit.exhibit_pages.length - 1
-      end
+      num_pages = exhibit.exhibit_pages.length
+      page_num = num_pages if page_num > num_pages
     end
     if exhibit == nil || page_num == 0
       render :text => "[Empty Exhibit]"
