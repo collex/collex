@@ -45,11 +45,13 @@ class ExhibitsController < ApplicationController
       end
     end
 
+    @page = -1
     if params[:page]
       @page = params[:page].to_i
-     else
+    end
+    if @page < 1 || @page > @exhibit.exhibit_pages.length
       @page = 1
-     end
+    end
     render :layout => 'exhibits_view'
   end
 
