@@ -832,6 +832,7 @@ class My9sController < ApplicationController
 
   def remove_empty_spans(text)
     # we are looking for "<span...></span>"
+    return "" if text == nil || text == ""
     text = text.gsub(/<span[^>]*><\/span>/, '')
     #    text = text.gsub(/<span>.*<\/span>/) { |s|
     #      str = s[6, s.length-13]
