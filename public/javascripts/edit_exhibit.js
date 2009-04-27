@@ -969,19 +969,84 @@ var CreateNewExhibitWizard = Class.create({
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+// There is a lot of "bounce" where we get an unhover and hover events next to each other.
+// We'll damp them out by putting a delay in the unhover that can get canceled by the next hover.
+var unhoverlist = $H({});
+
+function initSelectCtrl(select_el_id, onchange_callback)
+{
+	var sel = $(select_el_id);
+	if (sel) {	// Initializing the select wipes out the original select id, so it if it there, then we haven't initialized.
+		var opt = sel.down('option', sel.selectedIndex);	// Get the currently selected item: that is set in the original HTML as the selection.
+		var start_text = opt.innerHTML;
+		var oMenuButton1 = new YAHOO.widget.Button({ 
+			id: "menu" + select_el_id, 
+			name: "menu" + select_el_id,
+			label: "<span class=\"yui-button-label\">" + start_text + "</span>",
+			type: "menu",  
+			menu: select_el_id, 
+			container: select_el_id + "_wrapper"
+		});
+		
+		//	"selectedMenuItemChange" event handler for a Button that will set 
+		//	the Button's "label" attribute to the value of the "text" 
+		//	configuration property of the MenuItem that was clicked.
+		var onSelectedMenuItemChange = function (event) {
+			var oMenuItem = event.newValue;
+			var new_text = oMenuItem.cfg.getProperty("text");
+			this.set("label", ("<span class=\"yui-button-label\">" + 
+				new_text + "</span>"));
+			if (start_text !== new_text) {
+				onchange_callback(oMenuItem.value);
+			}
+		};
+		
+		//	Register a "selectedMenuItemChange" event handler that will sync the 
+		//	Button's "label" attribute to the MenuItem that was clicked.
+		oMenuButton1.on("selectedMenuItemChange", onSelectedMenuItemChange);
+	}
+}
+
 function sectionHovered(el, edit_bar_id, addClass, removeClass)
 {
-	$(el).addClassName(addClass);
-	$(el).removeClassName(removeClass);
-	$(el).down('.' + edit_bar_id).removeClassName('hidden');
+	var arr = el.id.split('_');
+	var element_id = arr[1];
+	
+	initSelectCtrl(el.id + "_select_type", function(value) {
+		elementTypeChanged(el.id, element_id, value);
+	});
+	
+	initSelectCtrl("justify_" + element_id, function(value) {
+		illustrationJustificationChanged(el.id, element_id, value);
+	});
+
+	if (unhoverlist.get(el.id) === 'waiting') {
+		unhoverlist.set(el.id, 'hovered');
+	}
+	else {
+		$(el).addClassName(addClass);
+		$(el).removeClassName(removeClass);
+		var edit_bar = $(el).down('.' + edit_bar_id);
+		edit_bar.removeClassName('hidden');
+	}
 	return false;
+}
+
+function doUnhover(el, edit_bar_id, addClass, removeClass)
+{
+	if (unhoverlist.get(el.id) === 'waiting') {
+		unhoverlist.set(el.id, 'cleared');
+		$(el).addClassName(addClass);
+		$(el).removeClassName(removeClass);
+		var edit_bar = $(el).down('.' + edit_bar_id);
+		$(el).down('.' + edit_bar_id).addClassName('hidden');
+	}
 }
 
 function sectionUnhovered(el, edit_bar_id, addClass, removeClass)
 {
-	$(el).addClassName(addClass);
-	$(el).removeClassName(removeClass);
-	$(el).down('.' + edit_bar_id).addClassName('hidden');
+	unhoverlist.set(el.id, 'waiting');
+	doUnhover.delay(.1, el, edit_bar_id, addClass, removeClass);
 	return false;
 }
 

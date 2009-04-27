@@ -201,6 +201,10 @@
 	z-index:100;*/
 }
 
+.edit_bar a {
+	vertical-align:super;
+}
+
 /*.edit_exhibit_box h1 a {
 	color: #ffffff;
 }*/
@@ -289,7 +293,7 @@ font-weight:bold;
 }
 
 .select_element_type {
-	padding-right: 1em;
+	margin-right: 1em;
 }
 
 #border_container {
