@@ -99,15 +99,15 @@ function doAjaxLink(div, url, params)
 
 function elementTypeChanged(div, element_id, newType)
 {
-	if (newType == 'pics')
+	if (newType === 'pics')
 	{
 		$("add_image_" + element_id).show();
-		$("justify_" + element_id).show();
+		$("justify_" + element_id + "_wrapper").show();
 	}
 	else
 	{
 		$("add_image_" + element_id).hide();
-		$("justify_" + element_id).hide();
+		$("justify_" + element_id + "_wrapper").hide();
 	}
 
 	var params = { element_id: element_id, type: newType };
