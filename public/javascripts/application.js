@@ -1165,6 +1165,10 @@ function loadLatestNews( targetList, rssFeedURL, maxItems ) {
 		method: 'get',
 		onSuccess : function(resp) {
 			var rss = resp.responseXML;
+			if (rss === null) {
+				$(targetList).update("<ul><li>Error in retrieving News Feed.</li>\n");
+				return;
+			}
 			var doc = rss.documentElement;
 			var channel = doc.getElementsByTagName('channel');
 			var items = channel[0].getElementsByTagName('item');
@@ -1172,7 +1176,7 @@ function loadLatestNews( targetList, rssFeedURL, maxItems ) {
 			var len = 5;
 			if (aitems.length < 5)
 				len = aitems.length;
-			var str = "<ul><li>Don't forget to change the address for the feed before checking in!</li>\n";
+			var str = "";
 			for (var i = 0; i < len; i++) {
 				var title = aitems[i].getElementsByTagName('title');
 				var link = aitems[i].getElementsByTagName('link');
