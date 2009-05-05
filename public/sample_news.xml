@@ -1,0 +1,1231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds2.feedburner.com/~d/styles/itemcontent.css"?><rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" version="2.0">
+
+<channel>
+	<title>Ajaxian » Front Page</title>
+	
+	<link>http://ajaxian.com</link>
+	<description>Cleaning up the web with Ajax</description>
+	<pubDate>Thu, 23 Apr 2009 13:00:52 +0000</pubDate>
+	<generator>http://wordpress.org/?v=2.6</generator>
+	<language>en</language>
+			<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" href="http://ajaxian.com/index.xml" type="application/rss+xml" /><feedburner:browserFriendly>This is an XML content feed. It is intended to be viewed in a newsreader or syndicated to another site, subject to copyright and fair use.</feedburner:browserFriendly><item>
+		<title>myPatterns: XSLT / RegEx for JS Objects</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/JQ9gXJGL7zs/mypatterns-xslt-regex-for-js-objects</link>
+		<comments>http://ajaxian.com/archives/mypatterns-xslt-regex-for-js-objects#comments</comments>
+		<pubDate>Thu, 23 Apr 2009 13:00:52 +0000</pubDate>
+		<dc:creator>Ben Galbraith</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<category><![CDATA[Library]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6679</guid>
+		<description><![CDATA[Nic Volanschi pointed us to myPatterns:
+
+myPatterns is a new library adding custom notations for data structures in JS (and also C). It's really useful for writing elegant programs using general pattern matching.
+
+To explain myPatterns, let's introduce a standard JavaScript object:
+PLAIN TEXT
+JavaScript:
+
+
+
+
+&#123; 
+
+
+&#160; name: &#123; firstname: "John", lastname: "Smith" &#125;, 
+
+
+&#160; children: &#91; 
+
+
+&#160; &#160; &#123; [...]]]></description>
+			<content:encoded><![CDATA[<p>Nic Volanschi pointed us to <a href="http://mypatterns.free.fr/">myPatterns</a>:</p>
+<blockquote><p>
+myPatterns is a new library adding custom notations for data structures in JS (and also C). It's really useful for writing elegant programs using general pattern matching.
+</p></blockquote>
+<p>To explain myPatterns, let's introduce a standard JavaScript object:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-4');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JavaScript:</span>
+<div id="javascript-4">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#123;</span> </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; <span style="color: #000066;">name</span>: <span style="color:#006600; font-weight:bold;">&#123;</span> firstname: <span style="color: #3366CC;">"John"</span>, lastname: <span style="color: #3366CC;">"Smith"</span> <span style="color:#006600; font-weight:bold;">&#125;</span>, </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; children: <span style="color:#006600; font-weight:bold;">&#91;</span> </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color:#006600; font-weight:bold;">&#123;</span> firstname: <span style="color: #3366CC;">"Eric"</span>, gender: <span style="color: #3366CC;">"male"</span>, born: <span style="color:#800000;">1991</span> <span style="color:#006600; font-weight:bold;">&#125;</span>, </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color:#006600; font-weight:bold;">&#123;</span> firstname: <span style="color: #3366CC;">"Deborah"</span>, gender: <span style="color: #3366CC;">"female"</span>, born: <span style="color:#800000;">1996</span> <span style="color:#006600; font-weight:bold;">&#125;</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; <span style="color:#006600; font-weight:bold;">&#93;</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#125;</span> </div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>Using myPattern, you can write a test to check if this object represents a person whose first child is a boy 18 years old:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-5');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JavaScript:</span>
+<div id="javascript-5">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#40;</span>s = match<span style="color:#006600; font-weight:bold;">&#40;</span>x, <span style="color: #3366CC;">"{name:{lastname: %l}, children:[{gender: 'male', born: %b} | %x]}"</span><span style="color:#006600; font-weight:bold;">&#41;</span><span style="color:#006600; font-weight:bold;">&#41;</span> </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&amp;&amp; <span style="color: #003366; font-weight: bold;">new</span> Date<span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#41;</span>.<span style="color: #006600;">getFullYear</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#41;</span> - s.<span style="color: #006600;">b</span> == <span style="color:#800000;">18</span> </div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>The website explains the pattern above:</p>
+<blockquote><p>
+In the above, the match() statement both checks whether the object has a certain form (e.g. that the children field is an array containing a first element of a given form), and returns a "substitution" object s having the following value: {l: "Smith", b: 1991, x: [ {firstname: "Deborah" , born: 1996} ]}.</p>
+<p>Furthermore, using your own notations, you could write the same condition more concisely, and with your own personal touch, for example:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-6');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JavaScript:</span>
+<div id="javascript-6">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">s = match<span style="color:#006600; font-weight:bold;">&#40;</span>x, <span style="color: #3366CC;">"&lt;%first ~ %last: [boy(18) | %rest]&gt;"</span><span style="color:#006600; font-weight:bold;">&#41;</span> </div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>In the above, the object is noted in a more concise way, and the age of the first son is directly specified in the pattern, as if it was stored in the object, taking advantage of active patterns to compute the age on the fly.
+</p></blockquote>
+<p>Neat!</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=JQ9gXJGL7zs:rOrgIvPOf6k:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=JQ9gXJGL7zs:rOrgIvPOf6k:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=JQ9gXJGL7zs:rOrgIvPOf6k:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=JQ9gXJGL7zs:rOrgIvPOf6k:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/mypatterns-xslt-regex-for-js-objects/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/mypatterns-xslt-regex-for-js-objects</feedburner:origLink></item>
+		<item>
+		<title>More Web Workers in Action</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/Y4qbVp0xqOs/more-web-workers-in-action</link>
+		<comments>http://ajaxian.com/archives/more-web-workers-in-action#comments</comments>
+		<pubDate>Thu, 23 Apr 2009 12:14:15 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[HTML]]></category>
+
+		<category><![CDATA[Standards]]></category>
+
+		<category><![CDATA[workers]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6641</guid>
+		<description><![CDATA[Another day, another Paul Rouget HTML 5 demo :)  This time he does something fun with Web Workers to allow you to see the difference that you can get when you use them.
+
+His latest simulation has him implementing Simulated Annealing (in video) which is useful for finding the shortest path between several points in [...]]]></description>
+			<content:encoded><![CDATA[<p>Another day, another <a href="http://blog.mozbox.org/post/2009/04/10/Web-Workers-in-action">Paul Rouget HTML 5 demo</a> :)  This time he does something fun with Web Workers to allow you to see the difference that you can get when you use them.</p>
+<p><img src="http://blog.mozbox.org/public/img/sa.png"/></p>
+<p>His latest <a href="http://people.mozilla.com/~prouget/demos/worker_and_simulatedannealing/index.xhtml">simulation</a> has him implementing <a href="http://people.mozilla.com/%7Eprouget/videos/demo_worker.html">Simulated Annealing (in video)</a> which is useful for finding the shortest path between several points in a canvas.</p>
+<p>If you run the demo <a href="http://people.mozilla.com/~prouget/demos/worker_and_simulatedannealing/index.xhtml">demo</a> and watch the animated PNG you will see how smooth the world is based on if the animation stops from time to time. Try it with workers on and off to see.</p>
+<p>We have been using Workers in Bespin from the get go. Malte Ubl is doing very cool work to <a href="http://hg.mozilla.org/labs/bespin/file/2235bd96c4f0/frontend/js/bespin/worker/worker.js">ironout the differences</a> between different Web Worker implementations (Firefox, Safari, and Gears). For example, through his abstraction you get the standard <code>importScripts</code> in Gears too, and it includes a mutex abstraction to boot. This has been crucial for us as we add more JS intensive features to the code editor such as realtime syntax checking, rich syntax highlighting, JSLint error reports inline, and more.</p>
+<p>We have found that you do have to be careful with Workers though. You don't want to fire too many off as you end up with a raging CPU if you aren't careful, so Malte and others are working on a slicing plan that will keep the CPU down but also keep the UI responsive. We will report back.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=Y4qbVp0xqOs:vMyzEQHAkj4:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=Y4qbVp0xqOs:vMyzEQHAkj4:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=Y4qbVp0xqOs:vMyzEQHAkj4:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=Y4qbVp0xqOs:vMyzEQHAkj4:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/more-web-workers-in-action/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/more-web-workers-in-action</feedburner:origLink></item>
+		<item>
+		<title>How many ways can you iterate over an array in JavaScript?</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/JqkVzIMduDE/how-many-ways-can-you-iterate-over-an-array-in-javascript</link>
+		<comments>http://ajaxian.com/archives/how-many-ways-can-you-iterate-over-an-array-in-javascript#comments</comments>
+		<pubDate>Thu, 23 Apr 2009 09:29:51 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<category><![CDATA[Tip]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6643</guid>
+		<description><![CDATA[Myk is one of the nicest chaps that I have had the pleasure to sit closely to in Mozilla building "S".
+He has a nice little tip on the many syntaxes that you can use to iterate over arrays in various JavaScript implementations and standards. Some folks had some interesting points on the various approaches:
+
+for each [...]]]></description>
+			<content:encoded><![CDATA[<p>Myk is one of the nicest chaps that I have had the pleasure to sit closely to in Mozilla building "S".</p>
+<p>He has a nice little tip on <a href="http://www.melez.com/mykzilla/2009/04/syntaxes-for-iterating-arrays-in.html">the many syntaxes that you can use to iterate over arrays in various JavaScript implementations and standards</a>. Some folks had some interesting points on the various approaches:</p>
+<blockquote>
+<p><a href="https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Statements/for_each...in">for each in</a>:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-13');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-13">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #000066; font-weight: bold;">for</span> each <span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #003366; font-weight: bold;">var</span> <span style="color: #000066; font-weight: bold;">item</span> <span style="color: #000066; font-weight: bold;">in</span> <span style="color:#006600; font-weight:bold;">&#91;</span><span style="color:#800000;">1</span>, <span style="color:#800000;">2</span>, <span style="color:#800000;">3</span><span style="color:#006600; font-weight:bold;">&#93;</span><span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color: #000066;">alert</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066; font-weight: bold;">item</span><span style="color:#006600; font-weight:bold;">&#41;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>The MDC docs for "for each" say not to iterate arrays that way, too, so I never use it on them. The usual (would need to guard with <code>hasOwnProperty()</code> issue).</p>
+<p><a href="https://developer.mozilla.org/en/New_in_JavaScript_1.6">JavaScript 1.6</a> added the <a href="https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Global_Objects/Array/forEach">Array.forEach method</a>:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-14');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-14">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#91;</span><span style="color:#800000;">1</span>, <span style="color:#800000;">2</span>, <span style="color:#800000;">3</span><span style="color:#006600; font-weight:bold;">&#93;</span>.<span style="color: #006600;">forEach</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #003366; font-weight: bold;">function</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066; font-weight: bold;">item</span><span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color:#006600; font-weight:bold;">&#123;</span> <span style="color: #000066;">alert</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066; font-weight: bold;">item</span><span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#41;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p><a href="https://developer.mozilla.org/En/New_in_JavaScript_1.7">JavaScript 1.7</a> added <a href="https://developer.mozilla.org/en/Core_JavaScript_1.5_Guide/Working_with_Arrays#Array_comprehensions">array comprehensions</a> for array initialization:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-15');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-15">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #003366; font-weight: bold;">var</span> squares = <span style="color:#006600; font-weight:bold;">&#91;</span><span style="color: #000066; font-weight: bold;">item</span> * <span style="color: #000066; font-weight: bold;">item</span> <span style="color: #000066; font-weight: bold;">for</span> each <span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066; font-weight: bold;">item</span> <span style="color: #000066; font-weight: bold;">in</span> <span style="color:#006600; font-weight:bold;">&#91;</span><span style="color:#800000;">1</span>, <span style="color:#800000;">2</span>, <span style="color:#800000;">3</span><span style="color:#006600; font-weight:bold;">&#93;</span><span style="color:#006600; font-weight:bold;">&#41;</span><span style="color:#006600; font-weight:bold;">&#93;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>I just realized I can (ab)use comprehensions to iterate arrays with Perl-like syntax by throwing away the result:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-16');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-16">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#91;</span><span style="color: #000066;">alert</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066; font-weight: bold;">item</span><span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color: #000066; font-weight: bold;">for</span> each <span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066; font-weight: bold;">item</span> <span style="color: #000066; font-weight: bold;">in</span> <span style="color:#006600; font-weight:bold;">&#91;</span><span style="color:#800000;">1</span>, <span style="color:#800000;">2</span>, <span style="color:#800000;">3</span><span style="color:#006600; font-weight:bold;">&#93;</span><span style="color:#006600; font-weight:bold;">&#41;</span><span style="color:#006600; font-weight:bold;">&#93;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>I can iterate object properties the same way:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-17');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-17">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #003366; font-weight: bold;">var</span> obj = <span style="color:#006600; font-weight:bold;">&#123;</span> foo: <span style="color:#800000;">1</span>, bar: <span style="color:#800000;">2</span>, baz: <span style="color:#800000;">3</span> <span style="color:#006600; font-weight:bold;">&#125;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#91;</span><span style="color: #000066;">alert</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066;">name</span> + <span style="color: #3366CC;">"="</span> + obj<span style="color:#006600; font-weight:bold;">&#91;</span><span style="color: #000066;">name</span><span style="color:#006600; font-weight:bold;">&#93;</span><span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color: #000066; font-weight: bold;">for</span> <span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #000066;">name</span> <span style="color: #000066; font-weight: bold;">in</span> obj<span style="color:#006600; font-weight:bold;">&#41;</span><span style="color:#006600; font-weight:bold;">&#93;</span>;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>Edward Lee points out how to use Iterators:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-18');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-18">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#91;</span><span style="color: #000066;">alert</span><span style="color:#006600; font-weight:bold;">&#40;</span>key + <span style="color: #3366CC;">"="</span> + val<span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color: #000066; font-weight: bold;">for</span> <span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#91;</span>key, val<span style="color:#006600; font-weight:bold;">&#93;</span> <span style="color: #000066; font-weight: bold;">in</span> Iterator<span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#123;</span>a:<span style="color:#800000;">1</span>,b:<span style="color:#800000;">2</span>,c:<span style="color:#800000;">3</span><span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#41;</span><span style="color:#006600; font-weight:bold;">&#41;</span><span style="color:#006600; font-weight:bold;">&#93;</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</blockquote>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=JqkVzIMduDE:NJXaA2En3t8:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=JqkVzIMduDE:NJXaA2En3t8:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=JqkVzIMduDE:NJXaA2En3t8:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=JqkVzIMduDE:NJXaA2En3t8:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/how-many-ways-can-you-iterate-over-an-array-in-javascript/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/how-many-ways-can-you-iterate-over-an-array-in-javascript</feedburner:origLink></item>
+		<item>
+		<title>Dynamically Generated PDFs… with JavaScript?</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/VnhcQu4RCZs/dynamically-generic-pdfs-with-javascript</link>
+		<comments>http://ajaxian.com/archives/dynamically-generic-pdfs-with-javascript#comments</comments>
+		<pubDate>Wed, 22 Apr 2009 14:30:19 +0000</pubDate>
+		<dc:creator>Ben Galbraith</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6672</guid>
+		<description><![CDATA[
+In the "it-had-to-be-done-at-some-point" category, we give you James Hall's latest project:
+
+I have started working on jsPDF, an entirely Javascript-based PDF generator. Currently the demo serves up the generated PDF as a Data URI, but it could be used on the server side or within browser extensions. It currently only supports simple text, but I'm working [...]]]></description>
+			<content:encoded><![CDATA[<p><img src="http://ajaxian.com/wp-content/uploads/pdf.png" alt="" title="Client-side PDF" width="470" height="128" class="alignnone size-full wp-image-6673" /></p>
+<p>In the "it-had-to-be-done-at-some-point" category, we give you James Hall's latest project:</p>
+<blockquote><p>
+I have started working on <a href="http://code.google.com/p/jspdf/">jsPDF</a>, an entirely Javascript-based PDF generator. Currently the demo serves up the generated PDF as a Data URI, but it could be used on the server side or within browser extensions. It currently only supports simple text, but I'm working on images and font embedding at the moment.
+</p></blockquote>
+<p>If you're using Safari, Opera, or Firefox 3.5 Beta, the <a href="http://jspdf.googlecode.com/svn/trunk/examples/basic.htm">demo</a> is pretty cool; the client-side JavaScript code generates a data URL which the browser displays.</p>
+<p>Neat.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=VnhcQu4RCZs:ERngQCbxAsY:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=VnhcQu4RCZs:ERngQCbxAsY:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=VnhcQu4RCZs:ERngQCbxAsY:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=VnhcQu4RCZs:ERngQCbxAsY:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/dynamically-generic-pdfs-with-javascript/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/dynamically-generic-pdfs-with-javascript</feedburner:origLink></item>
+		<item>
+		<title>Dynamic Content Injection with HTML5 Canvas and Video</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/r8YYSoIS5w0/dynamic-content-injection-with-html5-canvas-and-video</link>
+		<comments>http://ajaxian.com/archives/dynamic-content-injection-with-html5-canvas-and-video#comments</comments>
+		<pubDate>Wed, 22 Apr 2009 13:50:07 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Canvas]]></category>
+
+		<category><![CDATA[Examples]]></category>
+
+		<category><![CDATA[Firefox]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Video]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6638</guid>
+		<description><![CDATA[Paul Rouget and Tristan Nitot are having a lot of obvious fun with Canvas and &#60;video&#62; these days. The latest goodness is a demo by Paul that shows real-time dynamic content injection.
+
+Notice the Firefox logo in between the two phones with bright screens? That is injected into the world thanks to Canvas.
+How did Paul do [...]]]></description>
+			<content:encoded><![CDATA[<p>Paul Rouget and Tristan Nitot are having a lot of obvious fun with Canvas and &lt;video&gt; these days. The latest goodness is a demo by Paul that shows <a href="http://blog.mozbox.org/post/2009/04/12/Firefox-35%3A-a-new-experiment-with-Canvas-Video">real-time dynamic content injection</a>.</p>
+<p><img src="http://ajaxian.com/wp-content/uploads/contentinjection.png" alt="" title="contentinjection" width="500" height="270" class="alignnone size-full wp-image-6639" /></p>
+<p>Notice the Firefox logo in between the two phones with bright screens? That is injected into the world thanks to Canvas.</p>
+<p>How did Paul do this? He told us:</p>
+<blockquote><p>
+Obviously, I use the <a href="https://developer.mozilla.org/En/HTML/Element/Video">&lt;video/&gt;</a> tag.<br />
+But what you see is not the video element (<em>display: none;</em>), but a<br />
+<a href="https://developer.mozilla.org/En/HTML/Canvas">&lt;canvas/&gt;</a> tag.<br />
+All the patterns you see on the top right are regular &lt;img/&gt;,<br />
+&lt;video/&gt; and &lt;canvas/&gt; elements. The <em>play/pause</em> button is<br />
+a <a href="https://developer.mozilla.org/En/SVG">&lt;svg/&gt;</a> element<br />
+(<em>position: absolute;</em>) on the top of the main &lt;canvas/&gt; element.</p>
+<p>A canvas element provides a method named <em>drawImage</em> which let you<br />
+inject the content of a DOM element in the canvas (like a screenshot). It works<br />
+with three kinds of elements: &lt;img/&gt;, &lt;canvas/&gt; and<br />
+&lt;video/&gt;.</p>
+<p>When you click on the &lt;svg/&gt; button, the Javascript code launches the<br />
+main video. Then, the main javascript loop is executed each 10<br />
+milliseconds.</p>
+<p>Here are key things that occur during the main loop:</p>
+<ul>
+<li>first, the content of the video is injected in the main canvas. That's why<br />
+the canvas element looks like a video element;</li>
+<li>second, the position of the 2 brighter areas of the canvas are computed<br />
+(you have access to all pixels values);</li>
+<li>third, the required transformation is computed (rotation, scale,<br />
+translation);</li>
+<li>fourth, the content of the selected pattern is injected in the main canvas<br />
+following the transformation.</li>
+</ul>
+<p>A little drawing:</p>
+<p><img src="http://blog.mozbox.org/public/img/DCI.png" alt="DCI" title="DCI, Apr 2009"/></p>
+</blockquote>
+<p><a href="http://people.mozilla.com/~prouget/demos/DynamicContentInjection/play.xhtml">Check out the demo</a> in a bleeding edge Firefox browser, or <a href="http://standblog.org/blog/post/2009/04/15/Making-video-a-first-class-citizen-of-the-Web">watch the video</a>:</p>
+<p><video src="http://people.mozilla.com/~prouget/videos/ogv/DCI.ogv" controls height="374" width="664px"><br />
+    <object data="http://people.mozilla.com/~prouget/videos/flv/app/flvplayer.swf" type="application/x-shockwave-flash" width="664" height="374"><param value="http://people.mozilla.com/~prouget/videos/flv/app/flvplayer.swf" name="movie" /><param value="file=http://people.mozilla.com/~prouget/videos/flv/DCI.flv&amp;bufferlength=10&amp;autostart=false" name="FlashVars" /></object><br />
+    </video></p>
+<p>Crazy cool stuff :)</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=r8YYSoIS5w0:m4nwwePD2Yk:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=r8YYSoIS5w0:m4nwwePD2Yk:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=r8YYSoIS5w0:m4nwwePD2Yk:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=r8YYSoIS5w0:m4nwwePD2Yk:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/dynamic-content-injection-with-html5-canvas-and-video/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/dynamic-content-injection-with-html5-canvas-and-video</feedburner:origLink></item>
+		<item>
+		<title>Using Base64 encoded images on IE too</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/EFSztrjAlOY/using-base64-encoded-images-on-ie-too</link>
+		<comments>http://ajaxian.com/archives/using-base64-encoded-images-on-ie-too#comments</comments>
+		<pubDate>Wed, 22 Apr 2009 10:19:33 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Browsers]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[PHP]]></category>
+
+		<category><![CDATA[crossbrowser]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6635</guid>
+		<description><![CDATA[Being able to use data: URIs to do interesting things such as inline images is incredibly useful.
+IE 8 added support for data URIs but what about older versions of IE (which are still far too prevalent)?
+This nice PHP script shows how you can send back data URIs for those who support it, and for older [...]]]></description>
+			<content:encoded><![CDATA[<p>Being able to use <code>data:</code> URIs to do interesting things such as inline images is incredibly useful.</p>
+<p>IE 8 added <a href="http://code.msdn.microsoft.com/Release/ProjectReleases.aspx?ProjectName=ie8whitepapers&#038;ReleaseId=575">support for data URIs</a> but what about older versions of IE (which are still far too prevalent)?</p>
+<p><a href="http://www.hedgerwow.com/360/dhtml/base64-image/demo.php">This nice PHP script</a> shows how you can send back data URIs for those who support it, and for older IE, use the message/rfc822 mime type that email clients often use to encode images:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('php-20');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">PHP:</span>
+<div id="php-20">
+<div class="php">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><a href="http://www.php.net/header"><span style="color:#000066;">header</span></a><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#FF0000;">'Content-type:message/rfc822'</span><span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">MIME-Version: <span style="color:#800000;">1</span>.<span style="color:#800000;">0</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Type: multipart/related; boundary=<span style="color:#FF0000;">"NEXT_MHTML_DATA_PART"</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">--NEXT_MHTML_DATA_PART</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Location: </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Transfer-Encoding: quoted-printable</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Type: text/html; charset=<span style="color:#FF0000;">"utf-8"</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&lt;!-- put the HTML in here including a <span style="color:#616100;">for</span> loop displaying: --&gt;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&lt;div <span style="color:#000000; font-weight:bold;">class</span>=<span style="color:#FF0000;">"img"</span> style=<span style="color:#FF0000;">"background-image:url(MHTML_IMG&lt;?php echo $index?&gt;)"</span>&gt;&lt;/div&gt;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">--NEXT_MHTML_DATA_PART</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Location: MHTML_IMG&lt;?php <a href="http://www.php.net/echo"><span style="color:#000066;">echo</span></a> <span style="color:#0000FF;">$index</span>?&gt; &lt;!-- <span style="color:#616100;">for</span> <a href="http://www.php.net/each"><span style="color:#000066;">each</span></a> index --&gt;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600;">Content</span>-Transfer-Encoding: base64</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Type: image/png</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&lt;!-- the image data here --&gt;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">--NEXT_MHTML_DATA_PART</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Location: END_OF_MHTML_FILE</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Transfer-Encoding: base64</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">Content-Type: image/png</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">IE_NEED_THIS_TO_END_DATA</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>Very nice, via (<a href="http://twitter.com/simonw/">@simonw</a>) :)</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=EFSztrjAlOY:uEp-p4doz4s:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=EFSztrjAlOY:uEp-p4doz4s:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=EFSztrjAlOY:uEp-p4doz4s:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=EFSztrjAlOY:uEp-p4doz4s:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/using-base64-encoded-images-on-ie-too/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/using-base64-encoded-images-on-ie-too</feedburner:origLink></item>
+		<item>
+		<title>O3D: Google releases 3D API in a Browser Plugin</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/2K2qDV7fndc/o3d-google-releases-3d-api-in-a-browser-plugin</link>
+		<comments>http://ajaxian.com/archives/o3d-google-releases-3d-api-in-a-browser-plugin#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 19:23:44 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Google]]></category>
+
+		<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6668</guid>
+		<description><![CDATA[
+Google has released O3D, a browser plugin that gives developers a 3D API. It sits at a slightly higher level than other APIs (such as OpenGL / Canvas 3D type implementations) so it will be interesting to see if developers like the higher level abstraction, especially for building games. These APIs can also be implemented [...]]]></description>
+			<content:encoded><![CDATA[<p><object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/uofWfXOzX-g&#038;rel=0&#038;color1=0xb1b1b1&#038;color2=0xcfcfcf&#038;hl=en&#038;feature=player_embedded&#038;fs=1"></param><param name="allowFullScreen" value="true"></param><embed src="http://www.youtube.com/v/uofWfXOzX-g&#038;rel=0&#038;color1=0xb1b1b1&#038;color2=0xcfcfcf&#038;hl=en&#038;feature=player_embedded&#038;fs=1" type="application/x-shockwave-flash" allowfullscreen="true" width="425" height="344"></embed></object></p>
+<p>Google has released <a href="http://code.google.com/apis/o3d/">O3D</a>, a browser plugin that gives developers a 3D API. It sits at a slightly higher level than other APIs (such as OpenGL / Canvas 3D type implementations) so it will be interesting to see if developers like the higher level abstraction, especially for building games. These APIs can also be implemented on top of the lower level APIs, so in theory it could sit on top of Canvas 3D.</p>
+<p>There are plenty of <a href="http://code.google.com/apis/o3d/docs/samplesdirectory.html">demos</a>, samples of code and shaders (they created a <a href="http://code.google.com/apis/o3d/docs/shadinglanguage.html">O3D shading language</a>. </p>
+<p>Interestingly, it embeds V8 as the JavaScript engine which makes for a uniform engine, but unfortunately you can't use your browser debugger (e.g. no Firebug).</p>
+<p>It has also been carefully positioned "This API is shared at an early stage as part of a conversation with the broader developer community about establishing an open web standard for 3D graphics."</p>
+<p>It is interesting to see another new plugin from Google. I always hoped that Gears would be one developer plugin to rule them all but then we have the Earth API, and this (as well as the non developer ones like the defunct Lively).</p>
+<p>Anyway, cool to see rich experiments in bringing 3D to Web developers, and I look forward to seeing what people do with it! Leisure Suit Larry 3D anyone? :)</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=2K2qDV7fndc:pUpI4n9ZOfA:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=2K2qDV7fndc:pUpI4n9ZOfA:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=2K2qDV7fndc:pUpI4n9ZOfA:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=2K2qDV7fndc:pUpI4n9ZOfA:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/o3d-google-releases-3d-api-in-a-browser-plugin/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/o3d-google-releases-3d-api-in-a-browser-plugin</feedburner:origLink></item>
+		<item>
+		<title>Persevere’s JavaScriptDB: Impressive JSON Performance</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/vNEMORHgSt8/perseveres-javascriptdb-impressive-json-performance</link>
+		<comments>http://ajaxian.com/archives/perseveres-javascriptdb-impressive-json-performance#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 18:00:58 +0000</pubDate>
+		<dc:creator>Ben Galbraith</dc:creator>
+		
+		<category><![CDATA[Database]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JSON]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6665</guid>
+		<description><![CDATA[Kris Zyp recently posted about an intriguing new chapter in the application persistence space:
+
+The latest beta of Persevere features a new native object storage engine called JavaScriptDB that provides high-end scalability and performance. Persevere now outperforms the common PHP and MySQL combination for accessing data via HTTP by about 40% and outperforms CouchDB by 249%. [...]]]></description>
+			<content:encoded><![CDATA[<p>Kris Zyp recently <a href="http://www.sitepen.com/blog/2009/04/20/javascriptdb-perseveres-new-high-performance-storage-engine/">posted about an intriguing new chapter in the application persistence space</a>:</p>
+<blockquote><p>
+The latest beta of Persevere features a new native object storage engine called JavaScriptDB that provides high-end scalability and performance. Persevere now outperforms the common PHP and MySQL combination for accessing data via HTTP by about 40% and outperforms CouchDB by 249%. The new storage engine is designed and optimized specifically for persisting JavaScript and JSON data with dynamic object structures. It is also built for extreme scalability, with support for up to 9,000 petabytes of JSON/JS data in addition to any binary data.
+</p></blockquote>
+<p><img src="http://ajaxian.com/wp-content/uploads/pgraph.png" alt="" title="Perservere\&#039;s Performance" width="470" height="273" class="alignnone size-full wp-image-6666" /></p>
+<p>This comparison isn't exactly apples-to-apples as it turns out–for the web app use case, Perservere has a bunch of value-adds on top of data storage:</p>
+<blockquote><p>
+Persevere/JavaScriptDB goes further [than relational DBs] with the flexibility to evolve schemas and handle partial schemas. Persevere also provides integrated server side JavaScript (SSJS) with persistence, Comet-driven data change notifications, JSONQuery, standards based HTTP interface with content negotiation, JSON-RPC interface to SSJS, cross-domain handling, CSRF protection, and more. All of these things are additional features that one would have to add to the stack for other storage systems, making them even slower. Persevere includes this functionality out of the box, while still maintaining extremely fast performance.
+</p></blockquote>
+<p>Kris spends a bit of time in his post explaining his test setup, but then gets to the good stuff:</p>
+<blockquote><p>
+So how does Persevere achieve this level of performance with the JavaScriptDB storage? The dynamic object-oriented nature of the data that is stored in JavaScriptDB is much different than that of a traditional relational database, so a number of innovative approaches were employed.
+</p></blockquote>
+<p>He goes into quite a bit of detail explaining the implementation details behind JavaScriptDB. The summary (with lightly edited quotes) is:</p>
+<ul>
+<li>Direct Data-Bound Object Representation: "In a traditional application stack, a record must have separate in-memory representations for [the database] and [the application] result set which then might be mapped to an object representation. With JavaScriptDB, the single in-memory object is reused for all result sets and data caching."</li>
+<li>Shared Cache of Objects with Copy-on-Write</li>
+<li>Append-based Database Storage: "Many traditional database commit data to a transaction log before committing data to the table, requiring multiple writes. JavaScriptDB appends transactional data directly to the main storage file; writes can be committed with a single IO operation."</li>
+<li>Adaptive On-Demand Concurrent Indexing</li>
+<li>Batched writes in integrity mode</li>
+<li>Pluggable Storage</li>
+</ul>
+<p>Check out the <a href="http://www.sitepen.com/blog/2009/04/20/javascriptdb-perseveres-new-high-performance-storage-engine/">full post</a> all the details.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=vNEMORHgSt8:aG9Jbehc5J0:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=vNEMORHgSt8:aG9Jbehc5J0:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=vNEMORHgSt8:aG9Jbehc5J0:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=vNEMORHgSt8:aG9Jbehc5J0:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/perseveres-javascriptdb-impressive-json-performance/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/perseveres-javascriptdb-impressive-json-performance</feedburner:origLink></item>
+		<item>
+		<title>An Introduction to W3C Widgets</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/rTgA7Teof5A/an-introduction-to-w3c-widgets</link>
+		<comments>http://ajaxian.com/archives/an-introduction-to-w3c-widgets#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 16:59:51 +0000</pubDate>
+		<dc:creator>Ben Galbraith</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[W3C]]></category>
+
+		<category><![CDATA[Widgets]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6663</guid>
+		<description><![CDATA[The king of browser compatibility tables, ppk, recently posted an introduction to W3C Widgets:
+
+The time has come to talk about the W3C Widgets part of my job. Exactly what is a widget, how do you create one, why would you want to, and which systems support them?
+Personally I firmly believe that widgets are the future [...]]]></description>
+			<content:encoded><![CDATA[<p>The king of browser compatibility tables, <a href="http://www.quirksmode.org/about/">ppk</a>, recently posted an <a href="http://www.quirksmode.org/blog/archives/2009/04/introduction_to.html">introduction to W3C Widgets</a>:</p>
+<blockquote><p>
+The time has come to talk about the W3C Widgets part of my job. Exactly what is a widget, how do you create one, why would you want to, and which systems support them?</p>
+<p>Personally I firmly believe that widgets are the future of the mobile web. They are easy to create, they’re based on open standards, they save the end user quite a bit of network traffic, and many people around the world already know how to create them.</p>
+<p>In contrast to other recent publications about widgets, I’ll tell you the whole story — or rather, a condensed version thereof.
+</p></blockquote>
+<p>He provides a concise definition of what is meant by "widget":</p>
+<blockquote><p>
+Essentially, a widget is a local HTML/CSS/JavaScript web application. A mobile phone user downloads a widget once, and from that moment on he has a web application stored locally on his mobile phone.
+</p></blockquote>
+<p>He then elaborates on the value provided by widgets:</p>
+<blockquote><p>
+The beauty of the widget model is that, even if this spreadsheet application needs 200K of custom JavaScript plus a few libraries, the end user has to download these scripts only once instead of every time he starts up the app, as in the traditional web application model. After the initial download the entire application is installed locally and can be fired up from the local files.</p>
+<p>Many web applications will want to display fresh data, and therefore most widgets will fire an Ajax request as soon as they’re started up. For that they need a network connection and some data traffic.</p>
+<p>Nonetheless, the fact that the application itself doesn’t have to be downloaded every time the user starts it up diminishes the network traffic by a lot; and that’s important on mobile phones with their unreliable and sometimes crawlingly slow connections.
+</p></blockquote>
+<p>This all ties into the Open Web Platform meme that's been circulating (and given a big boost by the Palm Pre), which ppk highlights:</p>
+<blockquote><p>
+In itself the widget concept is no different from the countless application models currently being set up for the iPhone, Android, Blackberry, Windows Mobile, and many more systems. These, too, will put the core files on your phone and use the network connection only for data traffic.</p>
+<p>All proprietary systems, however, require programmers to train themselves in new skills and techniques that are not interoperable. Widgets, on the other hand, use the open web technologies that hundreds of thousands of developers all over the world are already familiar with.</p>
+<p>Better still, widgets will eventually conform to the “write once, run anywhere” principle; though right now that’s not yet the case.</p>
+<p>Personally I firmly believe that widgets are the future of the mobile web. They are easy to create, they’re based on open standards, they save the end user quite a bit of network traffic, and many people around the world already know how to create them.
+</p></blockquote>
+<p>So, how do you create a widget? Thankfully, it's simple, sort of:</p>
+<blockquote><p>
+Widgets are nothing more than zipped websites. You create an HTML file, add as many CSS, JavaScript and image files as you need, zip the lot, change the extension to .wgt and it works. Just like that.</p>
+<p>Well, almost just like that. The rest of this entry explains the “almost.”
+</p></blockquote>
+<p>And, check out <a href="http://www.quirksmode.org/blog/archives/2009/04/introduction_to.html">his blog post</a> for more details.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=rTgA7Teof5A:lUaS9fu0_AE:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=rTgA7Teof5A:lUaS9fu0_AE:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=rTgA7Teof5A:lUaS9fu0_AE:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=rTgA7Teof5A:lUaS9fu0_AE:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/an-introduction-to-w3c-widgets/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/an-introduction-to-w3c-widgets</feedburner:origLink></item>
+		<item>
+		<title>Browsing on the Couch</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/R6nW35hlh2c/browsing-on-the-couch</link>
+		<comments>http://ajaxian.com/archives/browsing-on-the-couch#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 11:34:29 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Database]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JSON]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<category><![CDATA[Library]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6627</guid>
+		<description><![CDATA[Atul Varma, a fantastic colleague in Building "S" at Mozilla, has been playing with a JavaScript implementation of CouchDB called BrowserCouch:
+
+BrowserCouch is an attempt at an in-browser MapReduce  implementation. It's written entirely in JavaScript and intended to work on all browsers, gracefully upgrading when support for better efficiency or feature set is detected.
+Not coincidentally, [...]]]></description>
+			<content:encoded><![CDATA[<p>Atul Varma, a fantastic colleague in Building "S" at Mozilla, has been playing with a <a href="http://www.toolness.com/wp/?p=580">JavaScript implementation of CouchDB</a> called <a href="http://hg.toolness.com/browser-couch/raw-file/blog-post/index.html">BrowserCouch</a>:</p>
+<blockquote><p>
+BrowserCouch is an attempt at an in-browser MapReduce  implementation. It's written entirely in JavaScript and intended to work on all browsers, gracefully upgrading when support for better efficiency or feature set is detected.</p>
+<p>Not coincidentally, this library is intended to mimic the functionality of CouchDB on the client-side, and may even support integration with CouchDB in the future.</p>
+<p><b>Why?</b></p>
+<p>This prototype is intended as a response to Vladimir Vuki?evi?'s blog post entitled HTML5 Web Storage and SQL. A CouchDB-like API seems like a nice solution to persistent storage on the Web because so many of its semantics are delegated out to the JavaScript language, which makes it potentially easy to standardize. Furthermore, the MapReduce paradigm also naturally takes advantage of multiple processor cores—something that is increasingly common in today's computing devices.
+</p></blockquote>
+<p>There is also an <a href="http://labs.mudynamics.com/2009/04/03/interactive-couchdb/">interactive CouchDB</a> project that "is an emulator written in 100% JavaScript with tons of jQuery thrown in. It also implements the collation schemes as well as the map/reduce algorithms. While it doesn’t demonstrate replication, conflict management and a host of other capabilities in CouchDB, it does strive to illustrate concepts like schema-less JSON documents, map/reduce and how these things fit together."</p>
+<p>You can check out the <a href="http://labs.mudynamics.com/wp-content/uploads/2009/04/icouch.html">emulator here</a>.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=R6nW35hlh2c:Aekmn_ubPIw:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=R6nW35hlh2c:Aekmn_ubPIw:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=R6nW35hlh2c:Aekmn_ubPIw:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=R6nW35hlh2c:Aekmn_ubPIw:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/browsing-on-the-couch/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/browsing-on-the-couch</feedburner:origLink></item>
+		<item>
+		<title>Common HTTP Tracing Export Format</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/Y1s33ZwJ07M/common-http-tracing-export-format</link>
+		<comments>http://ajaxian.com/archives/common-http-tracing-export-format#comments</comments>
+		<pubDate>Tue, 21 Apr 2009 10:39:16 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Performance]]></category>
+
+		<category><![CDATA[Utility]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6629</guid>
+		<description><![CDATA[There are many tools that can track HTTP at various levels, but they each have their own format. What if we lived in a world where there was a common format which would enable the following:
+
+Steve Souders: "Hey Dion, Facebook is doing something wacky on their category pages. Take a look at the waterfall that [...]]]></description>
+			<content:encoded><![CDATA[<p>There are many tools that can track HTTP at various levels, but they each have their own format. What if we lived in a world where there was a common format which would enable the following:</p>
+<blockquote><p>
+Steve Souders: "Hey Dion, Facebook is doing something wacky on their category pages. Take a look at the waterfall that you see in this data that I exported from AOL PageTest"</p>
+<p>Dion Almaer: "Interesting. I just imported it into Firebug, and I see what you mean."
+</p></blockquote>
+<p>Well, Jan Odvarko of the Firebug team is <a href="http://www.softwareishard.com/blog/firebug/http-tracing-export-format/">working on just that</a>:</p>
+<blockquote><p>
+There is currently several existing tools that can be used for HTTP tracking. To name a few:</p>
+<ul>
+<li><a href="http://getfirebug.com/">Firebug</a> (in browser)
+</li>
+<li><a href="http://www.httpwatch.com/">HTTPWatch</a> (in browser)
+</li>
+<li><a href="http://www.fiddler2.com/fiddler2/">Fiddler</a> (proxy based)
+</li>
+<li><a href="http://blogs.technet.com/netmon/">Netmon</a> (network level)
+</li>
+<li><a href="http://www.wireshark.org/">Wireshark</a> (network level)
+</li>
+</ul>
+<p>They have various advantages over each other. For example, in-browser tools can easily group requests by page and analyze browser-cache usage while network-level tools can easily gather low level detailed info (e.g. HTTP compression). But in general, they all can be used to track HTTP traffic.</p>
+<p>It would be obviously very beneficial to have a common export/import format that is used across all HTTP tracing tools and perhaps other projects. This would allow effective processing and analyzing data coming from various sources.</p>
+<p>I have put together a document (fist draft) that represents a proposal for HTTP Trace Data export/import format (based on HTTPWatch's structure, but designed for JSON). Any comments and suggestions are greatly appreciated!
+</p></blockquote>
+<p>I hope this happens.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=Y1s33ZwJ07M:pXXwdOxC7W4:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=Y1s33ZwJ07M:pXXwdOxC7W4:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=Y1s33ZwJ07M:pXXwdOxC7W4:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=Y1s33ZwJ07M:pXXwdOxC7W4:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/common-http-tracing-export-format/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/common-http-tracing-export-format</feedburner:origLink></item>
+		<item>
+		<title>How JSON Schema is turning out for the Chrome extension APIs</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/tiV-Mt2B0jY/jsonschema-chrome</link>
+		<comments>http://ajaxian.com/archives/jsonschema-chrome#comments</comments>
+		<pubDate>Mon, 20 Apr 2009 10:19:25 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Chrome]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JSON]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6625</guid>
+		<description><![CDATA[When Aaron talked about the Chrome extension API he mentioned how he would see if JSON Schema could help them have a JSON heavy API and allow them to easily validate.
+He has quickly reported back and is happy with the results.
+Something like this:
+PLAIN TEXT
+JAVASCRIPT:
+
+
+
+
+&#160;
+
+
+chromium.tabs.createTab = function&#40;tab, callback&#41; &#123;
+
+
+&#160; validate&#40;arguments, arguments.callee.params&#41;;
+
+
+&#160; sendRequest&#40;CreateTab, tab, callback&#41;;
+
+
+&#125;;
+
+
+&#160;
+
+
+chromium.tabs.createTab.params = &#91;
+
+
+&#160; [...]]]></description>
+			<content:encoded><![CDATA[<p>When Aaron talked about <a href="http://ajaxian.com/archives/chrome-extension-api-how-we-wish-we-have-named-parameters">the Chrome extension API</a> he mentioned how he would see if JSON Schema could help them have a JSON heavy API and allow them to easily validate.</p>
+<p>He has quickly <a href="http://www.aaronboodman.com/2009/04/json-schema-part-2.html">reported back</a> and is happy with the results.</p>
+<p>Something like this:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-22');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-22">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">chromium.<span style="color: #006600;">tabs</span>.<span style="color: #006600;">createTab</span> = <span style="color: #003366; font-weight: bold;">function</span><span style="color:#006600; font-weight:bold;">&#40;</span>tab, callback<span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color:#006600; font-weight:bold;">&#123;</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; validate<span style="color:#006600; font-weight:bold;">&#40;</span>arguments, arguments.<span style="color: #006600;">callee</span>.<span style="color: #006600;">params</span><span style="color:#006600; font-weight:bold;">&#41;</span>;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; sendRequest<span style="color:#006600; font-weight:bold;">&#40;</span>CreateTab, tab, callback<span style="color:#006600; font-weight:bold;">&#41;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#125;</span>;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">chromium.<span style="color: #006600;">tabs</span>.<span style="color: #006600;">createTab</span>.<span style="color: #006600;">params</span> = <span style="color:#006600; font-weight:bold;">&#91;</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; <span style="color:#006600; font-weight:bold;">&#123;</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; type: <span style="color: #3366CC;">"object"</span>,</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; properties: <span style="color:#006600; font-weight:bold;">&#123;</span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; windowId: chromium.<span style="color: #006600;">types</span>.<span style="color: #006600;">optPInt</span>,</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; url: chromium.<span style="color: #006600;">types</span>.<span style="color: #006600;">optStr</span>,</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; &nbsp; selected: chromium.<span style="color: #006600;">types</span>.<span style="color: #006600;">optBool</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color:#006600; font-weight:bold;">&#125;</span>,</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; additionalProperties: <span style="color: #003366; font-weight: bold;">false</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; <span style="color:#006600; font-weight:bold;">&#125;</span>,</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; chromium.<span style="color: #006600;">types</span>.<span style="color: #006600;">optFun</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#93;</span>;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>will give you errors such as:</p>
+<blockquote><p>
+Invalid value for parameter 0. Property windowId: expected integer, got string.
+</p></blockquote>
+<p>It will be interesting to see how the APIs look when you go for this style throughout. Looking forward to see more.</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=tiV-Mt2B0jY:7Qu6Xm58Cno:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=tiV-Mt2B0jY:7Qu6Xm58Cno:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=tiV-Mt2B0jY:7Qu6Xm58Cno:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=tiV-Mt2B0jY:7Qu6Xm58Cno:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/jsonschema-chrome/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/jsonschema-chrome</feedburner:origLink></item>
+		<item>
+		<title>Visualizing sort algorithms with Canvas</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/oYBDG9hCNiU/visualizing-sort-algorithms-with-canvas</link>
+		<comments>http://ajaxian.com/archives/visualizing-sort-algorithms-with-canvas#comments</comments>
+		<pubDate>Mon, 20 Apr 2009 07:36:04 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Canvas]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Fun]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6622</guid>
+		<description><![CDATA[
+The image above is a visualization of a bubble sort with 15 elements.
+Jacob came up with the goods again as he was inspired by Aldo Cortesi's work doing this with Cairo.
+Nicely done guys. If we ever get a sort algorithm question again not only will we be able to give the big O notation, but [...]]]></description>
+			<content:encoded><![CDATA[<p><img src="http://ajaxian.com/wp-content/uploads/bubblesort.png" alt="" title="bubblesort" width="500" height="225" class="alignnone size-full wp-image-6623" /></p>
+<p>The image above is a <a href="http://www.nihilogic.dk/labs/sorting_visualization/">visualization of a bubble sort with 15 elements</a>.</p>
+<p>Jacob came up with the <a href="http://blog.nihilogic.dk/2009/04/canvas-visualizations-of-sorting.html">goods again</a> as he was inspired by <a href="http://www.hatfulofhollow.com/posts/code/visualisingsorting/index.html">Aldo Cortesi's work</a> doing this with Cairo.</p>
+<p>Nicely done guys. If we ever get a sort algorithm question again not only will we be able to give the big O notation, but imagine pulling out some Canvas code to visualize ;)</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=oYBDG9hCNiU:r16q4oOPgjs:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=oYBDG9hCNiU:r16q4oOPgjs:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=oYBDG9hCNiU:r16q4oOPgjs:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=oYBDG9hCNiU:r16q4oOPgjs:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/visualizing-sort-algorithms-with-canvas/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/visualizing-sort-algorithms-with-canvas</feedburner:origLink></item>
+		<item>
+		<title>Sarien: Multiplayer Game Engine goes Open Source</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/0UnB3h6ldys/sarien-multiplayer-game-engine-goes-open-source</link>
+		<comments>http://ajaxian.com/archives/sarien-multiplayer-game-engine-goes-open-source#comments</comments>
+		<pubDate>Sun, 19 Apr 2009 15:54:41 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Games]]></category>
+
+		<category><![CDATA[Showcase]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6658</guid>
+		<description><![CDATA[Ben loves to talk about old games such as Dark Castle. I personally love remembering old Sinclair ZX Spectrum games but also fondly remember Leisure Suit Larry.
+Wouldn't it be nice if you could play classic old games such as these easily online? Martin Kool thought so, and wanted to create an open source adventure game [...]]]></description>
+			<content:encoded><![CDATA[<p>Ben loves to talk about old games such as <a href="http://en.wikipedia.org/wiki/Dark_Castle">Dark Castle</a>. I personally love remembering old <a href="http://en.wikipedia.org/wiki/ZX_Spectrum">Sinclair ZX Spectrum</a> games but also fondly remember Leisure Suit Larry.</p>
+<p>Wouldn't it be nice if you could play classic old games such as these easily online? Martin Kool thought so, and wanted to create an open source adventure game system, and just released <a href="http://sarien.net/">Sarien.net</a> "the portal for reliving the classic Sierra On-Line adventure games. With its focus on instant fun and a unique multiplayer experience, Sarien.net hopes to win new gamers' hearts and promote the adventure game genre."</p>
+<p><img src="http://ajaxian.com/wp-content/uploads/sarien.png" alt="" title="sarien" width="500" height="304" class="alignnone size-full wp-image-6659" /></p>
+<p><b>Features</b></p>
+<p>Completely browser based, runs in IE, FF, Opera, Safari, Chrome</p>
+<ul>
+<li>Works on the iphone and Wii (both needs fixing at the moment I believe)
+</li>
+<li>Games are completely playable using mouse or keyboard input. A lot of effort has been put into the user interface to make it work for the era that we’re in
+</li>
+<li>Multiplayer! This was not in the original games, but what you can do now is; when you are playing your own game at your own pace, and are in game X room Y, you’ll see other players in that same game X room Y doing their things
+</li>
+<li>You can talk to eachother and replay scenes together
+</li>
+<li>All game areas are accessible directly through the address bar, and bookmarkable. Giving players the instant kick of replaying a certain scene
+</li>
+<li>While playing, you encounter other npc’s. These add up to your own list of avatars that you can choose to be, not influincing the gameplay but it adds up to the fun (especially in multiplayer)
+</li>
+<li>There’s even an extra Studio tool to let you view all game resources, similar to existing tools such as AGI Studio
+</li>
+</ul>
+<p>Check out <a href="http://www.sarien.net/larry/penthouse">some of the games</a> and then delve into the <a href="http://www.sarien.net/studio">resource explorer studio</a> and build your own stuff.</p>
+<p>Thanks for doing this Martin! What games would you like to see / create? :)</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=0UnB3h6ldys:ctWPVHJjrSA:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=0UnB3h6ldys:ctWPVHJjrSA:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=0UnB3h6ldys:ctWPVHJjrSA:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=0UnB3h6ldys:ctWPVHJjrSA:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/sarien-multiplayer-game-engine-goes-open-source/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/sarien-multiplayer-game-engine-goes-open-source</feedburner:origLink></item>
+		<item>
+		<title>Quince: UX Pattern Explorer (in Silverlight)</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/6i9JSJfqAco/quince</link>
+		<comments>http://ajaxian.com/archives/quince#comments</comments>
+		<pubDate>Fri, 17 Apr 2009 16:07:04 +0000</pubDate>
+		<dc:creator>Ben Galbraith</dc:creator>
+		
+		<category><![CDATA[Design]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Microsoft]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6631</guid>
+		<description><![CDATA[
+A reader recently pointed us to Quince, an on-line directory of UX design patterns created by Infragistics. At first glance, Quince seems an Ajax application with some interesting animated effects, but it turns out to have been written using Silverlight (no surprise given Infragistics background).
+Run-time platform notwithstanding, Quince contains around 100 patterns with large numbers [...]]]></description>
+			<content:encoded><![CDATA[<p><img src="http://ajaxian.com/wp-content/uploads/quince1.png" alt="" title="Quince" width="470" height="328" class="alignnone size-full wp-image-6632" /></p>
+<p>A reader recently pointed us to <a href="http://quince.infragistics.com/">Quince</a>, an on-line directory of UX design patterns created by Infragistics. At first glance, Quince seems an Ajax application with some interesting animated effects, but it turns out to have been written using Silverlight (no surprise given Infragistics background).</p>
+<p>Run-time platform notwithstanding, Quince contains around 100 patterns with large numbers of examples from desktop, web, and other platforms.</p>
+<p><img src="http://ajaxian.com/wp-content/uploads/quince2.png" alt="" title="Quince" width="470" height="280" class="alignnone size-full wp-image-6633" /></p>
+<p>What other UX design pattern resources do you use?</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=6i9JSJfqAco:rg2egE4qN5Y:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=6i9JSJfqAco:rg2egE4qN5Y:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=6i9JSJfqAco:rg2egE4qN5Y:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=6i9JSJfqAco:rg2egE4qN5Y:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/quince/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/quince</feedburner:origLink></item>
+		<item>
+		<title>FireDiff: Firebug extension to track changes to DOM and CSS</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/dXOPZ-NVhWs/firediff-firebug-extension-to-track-changes-to-dom-and-css</link>
+		<comments>http://ajaxian.com/archives/firediff-firebug-extension-to-track-changes-to-dom-and-css#comments</comments>
+		<pubDate>Fri, 17 Apr 2009 13:59:16 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Debugging]]></category>
+
+		<category><![CDATA[Firefox]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[Mozilla]]></category>
+
+		<category><![CDATA[firebug]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6605</guid>
+		<description><![CDATA[Kevin Decker has released FireDiff a very cool Firebug extension that tracks changes to the page and CSS.
+
+
+Firediff implements a change monitor that records all of the changes made by firebug and the application itself to CSS and the DOM. This provides insight into the functionality of the application as well as provide a record [...]]]></description>
+			<content:encoded><![CDATA[<p>Kevin Decker has released <a href="http://www.incaseofstairs.com/firediff/">FireDiff</a> a very cool Firebug extension that tracks changes to the page and CSS.</p>
+<p><img src="http://www.incaseofstairs.com/wp-content/uploads/2009/04/firediff_small.png"/></p>
+<blockquote><p>
+Firediff implements a change monitor that records all of the changes made by firebug and the application itself to CSS and the DOM. This provides insight into the functionality of the application as well as provide a record of the changes that were required to debug and tweak the page’s display.
+</p></blockquote>
+<p>The release, which you can <a href="http://www.incaseofstairs.com/firediff/firediff011/">find here</a> uses recent features of the latest Firebug 1.4 code. Early days!</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=dXOPZ-NVhWs:3Rt7yzYyYmc:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=dXOPZ-NVhWs:3Rt7yzYyYmc:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=dXOPZ-NVhWs:3Rt7yzYyYmc:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=dXOPZ-NVhWs:3Rt7yzYyYmc:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/firediff-firebug-extension-to-track-changes-to-dom-and-css/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/firediff-firebug-extension-to-track-changes-to-dom-and-css</feedburner:origLink></item>
+		<item>
+		<title>SVG Open 2009: “SVG coming of age”</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/bONzOffh05s/svg-open-2009-call-for-participation-svg-coming-of-age-at-google-mountain-view</link>
+		<comments>http://ajaxian.com/archives/svg-open-2009-call-for-participation-svg-coming-of-age-at-google-mountain-view#comments</comments>
+		<pubDate>Fri, 17 Apr 2009 10:00:55 +0000</pubDate>
+		<dc:creator>Brad Neuberg</dc:creator>
+		
+		<category><![CDATA[Announcements]]></category>
+
+		<category><![CDATA[Conferences]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[SVG]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6616</guid>
+		<description><![CDATA[Cool things are finally happening with SVG these days. It's showing up natively in browsers (including Firefox, Safari, Opera, Chrome and more). It's natively supported on the iPhone, and work is happening in various open source communities to create options for Internet Explorer. Google uses it under the covers in Google Maps (to create vector [...]]]></description>
+			<content:encoded><![CDATA[<p>Cool things are finally happening with SVG these days. It's showing up natively in browsers (including Firefox, Safari, Opera, Chrome and more). It's natively supported on the iPhone, and work is happening in various open source communities to create options for Internet Explorer. Google uses it under the covers in Google Maps (to create vector line drawings showing where to go); Google Docs (for drawing into presentations); and more. Wikipedia, one of the top web sites on the Internet, has a huge repository of SVG images, while many tools such as Inkscape, Illustrator, and Visio can either export to SVG or work with it natively. Vector graphics support through SVG and Canvas is consistently <a href="http://www.openajax.org/runtime/wiki/Summary_Report">one of the top voted requests</a> by developers.</p>
+<p>Since more and more is happening with SVG these days, we thought it would be great to host the SVG Open 2009 conference this fall in Mountain View at the Google campus from October 2-4, 2009. The theme this year is "SVG coming of age".</p>
+<p>We are looking for contributors to present papers or teach courses. Presenters are asked to submit an extended abstract in English with an approximate length of 400 to 800 words by May 15 to <a href="http://www.svgopen.org/">http://www.svgopen.org/</a>. The abstracts are reviewed by a reviewing committee and presenters will be informed about acceptance on or before June 26. If your abstract is accepted, you will be asked to submit your full paper by August 31, according to instructions that will be sent to you.</p>
+<p>I'd love to see presentations from the Ajax community combining SVG with JavaScript in various creative ways. <a href="http://www.svgopen.org/">Come and join us in the fall at SVG Open</a>!</p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=bONzOffh05s:9MXLvG0MOIU:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=bONzOffh05s:9MXLvG0MOIU:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=bONzOffh05s:9MXLvG0MOIU:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=bONzOffh05s:9MXLvG0MOIU:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/svg-open-2009-call-for-participation-svg-coming-of-age-at-google-mountain-view/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/svg-open-2009-call-for-participation-svg-coming-of-age-at-google-mountain-view</feedburner:origLink></item>
+		<item>
+		<title>Thumbnails.js: Screenshots via Page Glimpse</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/wwziA4oVbyo/thumbnailsjs-screenshots-via-page-glimpse</link>
+		<comments>http://ajaxian.com/archives/thumbnailsjs-screenshots-via-page-glimpse#comments</comments>
+		<pubDate>Fri, 17 Apr 2009 09:03:53 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<category><![CDATA[Library]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6597</guid>
+		<description><![CDATA[Eric Ferraiuolo, inspired by the deprecation notice of Alexa, wrote a webpage thumbnails JavaScript library that lets you grab web page thumbnails via Page Glimpse:
+PLAIN TEXT
+JAVASCRIPT:
+
+
+
+
+&#160;
+
+
+var container = document.getElementById&#40;'container'&#41;, 
+
+
+&#160; &#160; thumbs = Thumbnails&#40;&#123; devkey:'xxx' &#125;&#41;; 
+
+
+&#160;
+
+
+thumbs.get&#40;'http://google.com', append&#41;; 
+
+
+thumbs.get&#40;&#91; 
+
+
+&#160; &#160; 'http://eric.ferraiuolo.name/', 
+
+
+&#160; &#160; 'http://925html.com', 
+
+
+&#160; &#160; 'http://oddnut.com' 
+
+
+&#93;, append&#41;; 
+
+
+&#160;
+
+
+function append &#40; url, img [...]]]></description>
+			<content:encoded><![CDATA[<p>Eric Ferraiuolo, inspired by the deprecation notice of Alexa, wrote a <a href="http://925html.com/code/webpage-thumbnails/">webpage thumbnails JavaScript library</a> that lets you grab web page thumbnails via <a href="http://www.pageglimpse.com/">Page Glimpse</a>:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('javascript-24');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">JAVASCRIPT:</span>
+<div id="javascript-24">
+<div class="javascript">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #003366; font-weight: bold;">var</span> container = document.<span style="color: #006600;">getElementById</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #3366CC;">'container'</span><span style="color:#006600; font-weight:bold;">&#41;</span>, </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; thumbs = Thumbnails<span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#123;</span> devkey:<span style="color: #3366CC;">'xxx'</span> <span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">thumbs.<span style="color: #006600;">get</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #3366CC;">'http://google.com'</span>, append<span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">thumbs.<span style="color: #006600;">get</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#91;</span> </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #3366CC;">'http://eric.ferraiuolo.name/'</span>, </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #3366CC;">'http://925html.com'</span>, </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #3366CC;">'http://oddnut.com'</span> </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#93;</span>, append<span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #003366; font-weight: bold;">function</span> append <span style="color:#006600; font-weight:bold;">&#40;</span> url, img <span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color:#006600; font-weight:bold;">&#123;</span> </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; <span style="color: #003366; font-weight: bold;">var</span> link = document.<span style="color: #006600;">createElement</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color: #3366CC;">'a'</span><span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; link.<span style="color: #006600;">href</span> = url; </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; link.<span style="color: #006600;">appendChild</span><span style="color:#006600; font-weight:bold;">&#40;</span>img<span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; container.<span style="color: #006600;">appendChild</span><span style="color:#006600; font-weight:bold;">&#40;</span>link<span style="color:#006600; font-weight:bold;">&#41;</span>; </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color:#006600; font-weight:bold;">&#125;</span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=wwziA4oVbyo:xQ8_16KHGZM:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=wwziA4oVbyo:xQ8_16KHGZM:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=wwziA4oVbyo:xQ8_16KHGZM:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=wwziA4oVbyo:xQ8_16KHGZM:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/thumbnailsjs-screenshots-via-page-glimpse/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/thumbnailsjs-screenshots-via-page-glimpse</feedburner:origLink></item>
+		<item>
+		<title>Jabbify Comet Service Released</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/1M4BaTfoozc/jabbify-comet-service-released</link>
+		<comments>http://ajaxian.com/archives/jabbify-comet-service-released#comments</comments>
+		<pubDate>Thu, 16 Apr 2009 18:14:11 +0000</pubDate>
+		<dc:creator>Ben Galbraith</dc:creator>
+		
+		<category><![CDATA[Comet]]></category>
+
+		<category><![CDATA[Front Page]]></category>
+
+		<category><![CDATA[JavaScript]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6613</guid>
+		<description><![CDATA[Brian Moschel and Justin Meyer of JavaScriptMVC have opened their Jabbify chat client into a general purpose Comet service called Jabbify. Some of their claims:
+
+
+Automatic Scaling: Jabbify scales to thousands of users per domain with no additional maintenance on your part.
+Instant setup: Download a script and you're developing with Comet in 30 seconds or less.
+Simple [...]]]></description>
+			<content:encoded><![CDATA[<p>Brian Moschel and Justin Meyer of JavaScriptMVC have opened their Jabbify chat client into a general purpose Comet service called <a href="http://jabbify.com/">Jabbify</a>. Some of their claims:</p>
+<blockquote>
+<ul>
+<li>Automatic Scaling: Jabbify scales to thousands of users per domain with no additional maintenance on your part.</li>
+<li>Instant setup: <a href="http://jabbify.com/downloads/jabbify_get_started.zip">Download a script</a> and you're developing with Comet in 30 seconds or less.</li>
+<li>Simple to use: Its easy. Really really easy. All you need is the <a href="http://jabbify.com/docs/classes/Jabbify.html">JavaScript API</a> or <a href="http://wiki.jabbify.com/index.php?title=The_Server_Side">GET requests</a>, technologies most developers are very familiar with. Simply connect and send your message.</li>
+</ul>
+</blockquote>
+<p>Here's a graphic showing how the service works:</p>
+<p><img src="http://ajaxian.com/wp-content/uploads/jabbify.png" alt="" title="Jabbify" width="470" height="382" class="alignnone size-full wp-image-6614" /></p>
+<p>Here's an example of how to use Jabbify to send a message to all users connected to a domain:</p>
+<div class="igBar"><a href="javascript:showCodeTxt('html-26');">PLAIN TEXT</a></div>
+<div class="syntax_hilite"><span style="color:#000000; font-weight:bold;">HTML:</span>
+<div id="html-26">
+<div class="html">
+<ol>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #009900;"><a href="http://december.com/html/4/element/script.html"><span style="color: #000000; font-weight: bold;">&lt;script</span></a> <span style="color: #000066;">type</span>=<span style="color: #ff0000;">'text/javascript'</span> <span style="color: #000066;">src</span>=<span style="color: #ff0000;">'jabbify.js'</span><span style="color: #000000; font-weight: bold;">&gt;</span></a></span><span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;/script&gt;</span></span></div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #009900;"><a href="http://december.com/html/4/element/script.html"><span style="color: #000000; font-weight: bold;">&lt;script</span></a> <span style="color: #000066;">type</span>=<span style="color: #ff0000;">'text/javascript'</span><span style="color: #000000; font-weight: bold;">&gt;</span></a></span></div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; // subscribe to incoming Comet messages</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; OpenAjax.hub.subscribe(&quot;jabbify.message.create&quot;, function(name, results){ alert(name) });</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; // connect to the server</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; Jabbify.connect({name: &quot;Brian&quot;}, function(){</div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; // send hello world to all connected users</div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; &nbsp; Jabbify.send(&quot;message&quot;, &quot;create&quot;, { message: &quot;hello world&quot; }); </div>
+</li>
+<li style="font-family: 'Courier New', Courier, monospace; color: black; font-weight: normal; font-style: normal;color:#3A6A8B;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;">&nbsp; }) </div>
+</li>
+<li style="font-weight: bold;color:#26536A;">
+<div style="color:#000000; font-family: 'Courier New', Courier, monospace; font-weight: normal;"><span style="color: #009900;"><span style="color: #000000; font-weight: bold;">&lt;/script&gt;</span></span> </div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p>The service is currently in beta and is free to use; further:</p>
+<blockquote><p>
+It will always be free for websites with a small number of concurrent users. We’ve tried to make it as easy as possible to get started with plenty of docs and demos. There’s:</p>
+<p>    * A <a href="http://jabbify.com/downloads/jabbify_get_started.zip">downloadable page</a> that runs from the filesystem<br />
+    * A <a href="http://jabbify.com/home/comet_service">service overview page</a><br />
+    * An <a href="http://jabbify.com/demos/api.html">API demo</a><br />
+    * A <a href="http://jabbify.com/demos/keyboard.html">keyboard demo</a><br />
+    * An open source <a href="http://wiki.jabbify.com/index.php?title=Get_Started_with_Simple_Client">chat client demo</a><br />
+    * <a href="http://jabbify.com/docs/classes/Jabbify.html">API documentation</a> </p>
+<p>We’d love to <a href="http://jabbify.com/">chat</a> with people to see what they think about a service like this.</p></blockquote>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=1M4BaTfoozc:6wQWO3TC-xA:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=1M4BaTfoozc:6wQWO3TC-xA:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=1M4BaTfoozc:6wQWO3TC-xA:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=1M4BaTfoozc:6wQWO3TC-xA:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/jabbify-comet-service-released/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/jabbify-comet-service-released</feedburner:origLink></item>
+		<item>
+		<title>Shoes and Swiby; A way to build RIAs that you haven’t thought about</title>
+		<link>http://feedproxy.google.com/~r/ajaxian/~3/DvcsghMlv5A/shoes-and-swiby-a-way-to-build-rias-that-you-havent-thought-about</link>
+		<comments>http://ajaxian.com/archives/shoes-and-swiby-a-way-to-build-rias-that-you-havent-thought-about#comments</comments>
+		<pubDate>Thu, 16 Apr 2009 11:46:41 +0000</pubDate>
+		<dc:creator>Dion Almaer</dc:creator>
+		
+		<category><![CDATA[Front Page]]></category>
+
+		<guid isPermaLink="false">http://ajaxian.com/?p=6595</guid>
+		<description><![CDATA[Shoes and Swiby? Changes are you haven't heard of these technologies, but Paul Hammant had a nice write up with rich clients that access Google App Engine for Java which I linked too from my own piece on the announcement.
+Now, Paul has a detailed comparisons of the two Ruby clients with a nice screencast:
+
+]]></description>
+			<content:encoded><![CDATA[<p>Shoes and Swiby? Changes are you haven't heard of these technologies, but Paul Hammant had a nice write up with <a href="http://paulhammant.com/blog/google-app-engine-for-java-with-rich-ruby-clients.html">rich clients that access Google App Engine for Java</a> which I <a href="http://almaer.com/blog/google-app-engine-and-the-java-web-the-wrong-java">linked too</a> from my own piece on the announcement.</p>
+<p>Now, Paul has a detailed <a href="http://paulhammant.com/blog/comparing-two-alternate-ruby-clients-for-rich-internet-applications.html">comparisons</a> of the two Ruby clients with a nice screencast:</p>
+<p><object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/mVrtdKOesVQ&#038;hl=en&#038;fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/mVrtdKOesVQ&#038;hl=en&#038;fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object></p>
+<div class="feedflare">
+<a href="http://feeds2.feedburner.com/~ff/ajaxian?a=DvcsghMlv5A:WKQR-kIUvWg:yIl2AUoC8zA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=yIl2AUoC8zA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=DvcsghMlv5A:WKQR-kIUvWg:7Q72WNTAKBA"><img src="http://feeds2.feedburner.com/~ff/ajaxian?d=7Q72WNTAKBA" border="0"></img></a> <a href="http://feeds2.feedburner.com/~ff/ajaxian?a=DvcsghMlv5A:WKQR-kIUvWg:D7DqB2pKExk"><img src="http://feeds2.feedburner.com/~ff/ajaxian?i=DvcsghMlv5A:WKQR-kIUvWg:D7DqB2pKExk" border="0"></img></a>
+</div>]]></content:encoded>
+			<wfw:commentRss>http://ajaxian.com/archives/shoes-and-swiby-a-way-to-build-rias-that-you-havent-thought-about/feed</wfw:commentRss>
+		<feedburner:origLink>http://ajaxian.com/archives/shoes-and-swiby-a-way-to-build-rias-that-you-havent-thought-about</feedburner:origLink></item>
+	</channel>
+</rss>

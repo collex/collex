@@ -30,7 +30,7 @@
 					<select class="query_and-not_select" onkeyup="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });" onchange="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT')) postToUrl('/search/invert_constraint', { index: '<%= index %>' });">
 					<option value="AND">AND</option><option value="NOT" <%= "selected='selected'" if ret[:not] %>>NOT</option></select>
 			</td>
-			<td class="query_remove"><a method="post" href="/search/remove_constraint?index=<%= index %>"><img src="/stylesheets/images/lvl2_trash.gif" alt="Remove Term" /></a></td>
+			<td class="query_remove"><a method="post" href="/search/remove_constraint?index=<%= index %>"><img src="/images/lvl2_trash.gif" alt="Remove Term" /></a></td>
 		</tr>
 	<% end -%>
 

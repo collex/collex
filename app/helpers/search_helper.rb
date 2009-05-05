@@ -420,8 +420,8 @@ module SearchHelper
     # if category, put in arrow for expand/collapse
     html = "<tr class='#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>"
     if is_category
-      html = html + "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onmousedown='open_tree(event, \"#{id}\"); return false;'><img src='/stylesheets/images/arrow.gif' /></a>"
-      html = html + "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onmousedown='close_tree(event, \"#{id}\"); return false;'><img src='/stylesheets/images/arrow_dn.gif' /></a>"
+      html = html + "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onmousedown='open_tree(event, \"#{id}\"); return false;'><img src='/images/arrow.gif' /></a>"
+      html = html + "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onmousedown='close_tree(event, \"#{id}\"); return false;'><img src='/images/arrow_dn.gif' /></a>"
     end
      if is_edit_mode
        if is_found
