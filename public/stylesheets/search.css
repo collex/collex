@@ -1,283 +1,149 @@
-/* search.css  - This file contains style that only apply to functionality under the Search tab */
+@charset "UTF-8";
+/* CSS Document */
 
-#add-search-constraint input {
-	margin-bottom: .8em;
-	font-size:8pt;
+table td {
+	padding:10px 10px 10px 0px;
+	text-align:right;
 }
 
-#saved-searches {
-	width: 300px;
+.search_entry_box {
+	width:400px;
 }
 
-/*.results-number {
-	font: 1.8em  trebuchet ms, verdana, sans-serif;
-	color: #000000;
-	line-height: 1.8em;
-}*/
-
-/*.non-emph-results-line {
-	font: 1.8em  trebuchet ms, verdana, sans-serif;
-	color: #808080;
-	line-height: 1.8em;
-}*/
-
-.reset-search-button {
-	margin-top: 5px;
-	margin-right: 5px;
-	float: right;
+.new_search {
+	background:url(/images/lvl2_new_search.jpg) top left no-repeat;
+	width:97px;
+	height:39px;
+	float:right;
 }
 
-#resource-list h1 {
-font-size: 12pt;
-text-align:center;
+.new_search:hover {
+	background:url(/images/lvl2_new_search_rl.jpg) top left no-repeat;
+	width:97px;
+	height:39px;
+	float:right;
 }
 
-/*#resource-list h1 {
-	background: #E0E0E0;
-	font-size: 12pt;
-	margin-top: 0px;
-	padding: 5px;
-}*/
-
-/*.results-number {
-	padding-left: 10px;
-}*/
-
-.sidebar_instructions {
-	/*font-size: 9pt;*/
-	color: gray;
+table.query {
+	border-top:1px solid #CEB6A6;
+	border-left:1px solid #CEB6A6;
+	width:100%;
+	margin-top:10px;
 }
 
-#resource-list h2 {
-	font-size: 1em;
-	margin-bottom: 3px;
+#saved-searches table.query {
+	width:inherit;
 }
 
-.grayed-out-resource {
-	color: gray;
+table.query select {
+	font-size:0.8em;
 }
 
-.site-category-toggle {
-	margin-right: 3px;
+table.query td {
+	border-right:1px solid #CEB6A6;
+	border-bottom:1px solid #CEB6A6;
 }
 
-.deselect-resource-link {
-	margin-left: 20px;
+td.query_type {
+	width:80px;
+	text-align:right;
+	padding:3px 5px 3px 5px;
 }
 
-.resource-list-content {
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-bottom: 5px;
+td.query_term {
+	text-align:left;
+	padding:3px 5px 3px 5px;
 }
 
-#resource-list ul {
-	padding-left: 20px;
-	margin-left: 0px;
-	margin-top: 5px;
-	margin-bottom: 5px;
+.query_term input {
+	width:80%;
 }
 
-#resource-list li {
-	/*font-size: 9pt;*/
-	list-style: none;
-	padding-bottom: 3px;
+td.query_and-not {
+	padding:3px 5px 3px 5px;
+	width:80px;
+	text-align:center;
 }
 
-.resource_list_selected {
-	font-style: italic;
+.query_and-not_select{
+	font-size:0.8em;
+}
+
+td.query_remove {
+	padding:5px 8px 5px 8px;
+	width:25px;
+	text-align:center;
+}
+
+
+/*----------------------------*/
+
+th.num_objects {
+	text-align:center;
+	width:70px;
+}
+
+td.num_objects {
+	text-align:right;
+	width:50px;
+}
+
+td.limit_to_lvl1 {
+	text-align:left;
+}
+
+td.limit_to_lvl2 {
+	padding-left:12px;
+	text-align:left;
+}
+
+td.limit_to_lvl3 {
+	padding-left:24px;
+	text-align:left;
+}
+
+td.limit_to_lvl4 {
+	padding-left:36px;
+	text-align:left;
+}
+
+tr.limit_to_selected {
+	background:#3C3C3D;
+	color:#FFFFFF;
+}
+
+.limit_to_category {
 	font-weight: bold;
-	background-color: #eeeeee;
 }
 
-#resource-list .submit-button {
-	margin-top: 3px;
-	float: right;
+.no_results_msg {
+	text-align: center;
+	font-size: 1.5em;
+	padding-top: 40px;
 }
 
-#search-sidebar {
-	vertical-align: top;
-	width: 350px;
+#savesearch_link {
+	font-size: .7em;
 }
 
-/*#search-divider {
-	vertical-align: top;
-	width: 2px;
-}*/
-
-#search-outer {
-	width: 100%;
+.limit_to {
+	width:90%;
+	margin:10px 5% 10px 5%;
 }
 
-#search-main {
-	vertical-align: top;
+.limit_to td, .limit_to th {
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 
-#search-main h1 {
-font-size:12pt;
-margin-bottom: 0px;
+.limit_to th {
+	background:#B99A86;
+	color:#FFFFFF;
+	border:none;
+	font-size:0.8em;
+	vertical-align:bottom;
 }
 
-#search-terms {
-	margin-bottom: 10px;
+.limit_to td {
+	border-bottom:solid 1px #966C54;
 }
-
-#search-terms h1 {
-font-size:12pt;
-}
-
-#search-results {
-}
-
-
-#search-results h1{
-font-size: 12pt;
-}
-
-/* style for the drop down drawer 
-#login-slider {
-	position: absolute;
-	width: 400px;
-}*/
-
-/* styles for search result */
-
-.constraints {
-	width: 100%;
-/*	border: 1px solid #666;*/
-/*	padding: .4em; */
-/*	background-color: #ededed;*/
-}
-
-.constraints a {
-	padding: 0 2px 0 2px;	
-}
-
-/*.facettable-header {
-	background-color: #d3d3d3;
-}*/
-
-/*.constraints tr:hover {
-	background-color: #d3d3d3;	
-}*/
-.constraints th {
-	font-weight: normal;
-	color: #666;	
-}
-
-.constraints a:hover {
-	background-color: #730000;
-	color: #fff;	
-}
-
-.constraints caption {
-	text-transform: uppercase;
-	text-align: left;
-	color: #000000;
-}
-
-.add_constraint_row_first {
-	border-left: 2px solid red;
-	border-top: 2px solid red;
-	border-bottom: 2px solid red;
-	border-right: 1px solid #E0E0E0;
-	padding: .7em;
-}
-
-.add_constraint_row_mid {
-	border-left: 1px solid #E0E0E0;
-	border-top: 2px solid red;
-	border-bottom: 2px solid red;
-	border-right: 1px solid #E0E0E0;
-	padding: .7em;
-}
-
-.add_constraint_row_last {
-	border-left:1px solid #E0E0E0;
-	border-top: 2px solid red;
-	border-bottom: 2px solid red;
-	border-right: 2px solid red;
-	padding: .7em;
-}
-
-.constraint_row td {
-	border: 1px solid #E0E0E0;
-	padding: .7em;
-}
-
-.save_search_instruction {
-	font-style: italic;
-}
-
-.inputHintStyle {
-  color: silver;
-  font-style: italic;
-}
-
-/*#facettable {
-	/*width: 98%;* /
-}
-
-#facettable-caption {
-	margin-top: 5px;
-}
-
-#facettable img {
-	border: 0;
-}*/
-
-/*.constables {
-	width: 100%;
-	padding-right: 1em;
-}*/
-
-/* commenting out IE-specific hacks 
-
-* html .constables {
-	display: block;
-	position: relative;
-}
-* html #facettable {
-	float: none;
-	position: relative;
-	left: 48%;
-}
-* html #myconstraints {
-
-}   
-* html #under {
-
-}
-
-*/
-
-/*ul.results {
-	list-style: none;
-}
-
-ul.results li {
-	padding: 1em;
-	clear: both;
-}*/
-
-
-/*.collecttd {
-	vertical-align: top;
-}*/
-
-/*.resultsbutton {
-	padding-bottom: .3em;
-	vertical-align: top;
-	font-size:1.1em;
-}
-
-.resultsbutton a {
-	background-color:#d3d3d3;
-	padding:.3em;
-	border: 1px solid #333;
-}
-
-.resultsbutton a:hover {
-	background-color: #A60000;
-}*/
-

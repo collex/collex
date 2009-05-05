@@ -1,141 +1,115 @@
-/* my9s.css  - This file contains style that only apply to functionality under the My9s tab */
+@charset "UTF-8";
+/* CSS Document */
 
-#edit_exhibit_sidebar {
-	vertical-align: top;
-	width: 350px;
+.my9s_instructions {
+	margin: 50px 200px 50px 200px;
+	border:gray 1px dotted;
+	background:#D3D3D3;	
+	text-align:center;
+	padding:5px;
 }
 
-#edit_exhibit_outer {
-	width: 100%;
+.my9s_instructions span {
+font-weight:bold;
 }
 
-#edit_exhibit_main {
-	vertical-align: top;
+.my9s_instructions p{
+    font-style: italic;
 }
 
-.exhibit_tree_exhibit_row td {
-	background-color: #e0e0e0;
+.narrow_tag_cloud .tagcloud {
+	margin-left: 0em;
+	margin-right: 0em;
+	margin-bottom: 1em;
+	margin-top: 1em;
 }
 
-.nines_obj_uri {
-	text-decoration:underline;
+.narrow_tag_cloud .tag_filter {
+	margin-top: 1em;
 }
 
-.mceIcon:hover {
-	border: 0px;
-	padding: 0px;
+.empty_list_text {
+	color: gray;
+	font-style: italic;
+	padding-bottom: 1em;
 }
 
-.mceIframeContainer {
-	height: 100%;
+.edit_tag_link {
+	font-size: .7em;
+	font-weight: normal;
 }
 
-.richEditorHover {
-	border: 1px dashed black !important;
-}
-
-.edit_exhibit_hover {
-	background-color: blue;
-}
-
-/*.illustration_control_border a:hover {
-	background: white;
-	border: 0 none;
-}
-
-.illustration_control_border a {
-	border: 0 none;
-}*/
-
-.edit_exhibit_header {
-	color: white;
-	background-color: gray;
-}
-
-.outline_right_controls {
-	margin-right: 3px;
-	float: right;
-}
-
-.border_controls {
-	background-color: #dddddd;
-}
-
-.outline_right_controls_no_space {
-	margin-right: 0px;
-	float: right;
-}
+/* Exhibit builder */
 
 .exhibit_illustration .close_link {
 	margin-right: -20px;	
 }
 
-.outline_tree {
-	padding-left: 0px;
-	margin-left:0px;
+.edit_exhibit_heading {
+	padding-top:10px;
 }
 
-.unselected_page {
-	background-color: #cccccc;
+.exhibit_palette {
+	border:1px solid gray;
+	margin: 0px 4px 4px 0px;
+	padding: 1em;
 }
 
-.selected_page {
-	background-color: gray;
+.exhibit_palette_items {
+	overflow:auto;
+	height:120px;
+	/*width:338px;*/
 }
 
-.selected_page .exhibit_outline_text {
+.exhibit_profile {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.exhibit_profile_preview {
+	padding-top:0.5em;
+}
+
+.exhibit_profile_label {
+	color: #777777;
+}
+
+.exhibit_preview_thumbnail {
+	float: left;
+	padding-right: 10px;
+	padding-bottom: 6px;
+}
+
+.edit_bar {
+	background: #dddddd;
 	color: white;
 }
 
-.outline_tree > li {
-	list-style-image:none;
-	list-style-position:outside;
-	list-style-type:none;
-	margin-top:1em;
+.edit_bar a {
+	vertical-align:super;
+}
+
+.exhibit_sharing {
+	clear: both;
+}
+
+.edit_exhibit_box h1 {
+	background: #707070;
+	color: white;
+	font-size: .8em;
+	padding: 3px;
+	font-weight: normal;
+}
+
+.inside_edit_exhibit_box {
+	margin-left: .2em;
+	margin-right: .2em;
+	margin-bottom: .5em;
+}
+
+.edit_exhibit_links {
+	float:right;
 	margin-bottom:1em;
-}
-
-.outline_tree_elements {
-	padding-top: .5em;
-	padding-left: 1em;
-	background-color: white;
-}
-
-.outline_element {
-	list-style-image:none;
-	list-style-position:outside;
-	list-style-type:none;
-	margin:.5em;
-	border: 1px dotted gray;
-	padding-top: 1px;
-}
-
-.outline_tree_element_selected {
-	background-color: gray;
-}
-
-.outline_element .count a {
-	background-color: gray;
-	color: white;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-bottom: 2px;
-	padding-top: 2px;
-	text-decoration: none;
-}
-
-.outline_element .outline_right_controls {
-	display: none;
-}
-
-.outline_tree_element_selected .outline_right_controls {
-	display: inherit;
-}
-
-.outline_tree_element_selected .count a {
-	background-color: #eeeeee;
-	color: black;
-	text-decoration: none;
 }
 
 .edit_exhibit_element_number {
@@ -147,92 +121,9 @@
 	padding-top: 2px;
 }
 
-.exhibit_outline_text {
-	color: black;
-	font-style: italic;
-	margin-right: 3px;
-	/*cursor: move;*/
-}
-
-.exhibit_outline_header {
-	font-size: larger;
-	font-weight: bold;
-	color:#999999;
-	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
-}
-
-#exhibit_outline_title {
-	background-color: #cccccc;
-	font-weight: bold;
-	text-align: center;
-	cursor: move;
-}
-
-.textarea-resizer {
-	background:#E0E0E0 url(/images/resize-handler.gif) no-repeat scroll 100% 100%;
-	border:1px solid #B0B0B0;
-	cursor:se-resize;
-	font-size:11px;
-	height:11px;
-	line-height:11px;
-}
-
-/* styles for the standard boxes */
-
-.edit_exhibit_box_no_border {
-	border: 0px;
-}
-
-.edit_exhibit_box h1 {
-	background: #707070;
-	color: white;
-	font-size: .8em;
-	padding: 3px;
-	font-weight: normal;
-}
-
-.edit_bar {
-	background: #aaaaaa;
-	color: white;
-/*	font-size: .8em;
-	padding: 3px;
-	font-weight: normal;
-	position:absolute;
-	z-index:100;*/
-}
-
-.edit_bar a {
-	vertical-align:super;
-}
-
-/*.edit_exhibit_box h1 a {
-	color: #ffffff;
-}*/
-	
-.inside_edit_exhibit_box {
-	margin-left: .2em;
-	margin-right: .2em;
-	margin-bottom: .5em;
-}
-
-.exhibit_delta_link {
-	position: absolute;
-	z-index: 100;
-}
-
-.outline_section_with_border {
-	border: 3px solid gray;
+.select_element_type {
 	margin-right: 1em;
-	margin-bottom: 2px;
 }
-
-.outline_section_without_border {
-}
-
-/*.illustration_control_border {
-	border: 4px solid gray;
-}
-*/
 
 .edit_illustration_column {
 	padding: 0px;
@@ -264,38 +155,22 @@ img.resizer:active {
 	padding: 0px;
 }
 
-/* my9s tab */
-
-.my9s_instructions {
-	margin: 50px 200px 50px 200px;
-	border:gray 1px dotted;
-	background:#D3D3D3;	
-	text-align:center;
-	padding:5px;
+#overview_data {
+	margin-bottom: 1em;
 }
 
-.my9s_instructions span {
-font-weight:bold;
+#overview_data h1 {
+	margin-top: 0px;
 }
 
-.my9s_instructions p{
-    font-style: italic;
+#global_form{
+	border:1px solid gray;
+	margin: 0px 4px 4px 0px;
+	padding: 1em;
+	height:134px;
 }
 
-.empty_list_text {
-	color: gray;
-	font-style: italic;
-	padding-bottom: 1em;
-}
-
-.untagged_and_all_links {
-	text-align: center;
-}
-
-.select_element_type {
-	margin-right: 1em;
-}
-
+/* For border dialog */
 #border_container {
 	background-color:white;
 	border-top:1px solid black;
@@ -358,64 +233,5 @@ font-weight:bold;
 
 #border_container .selection_border_bottom {
 	border-bottom: 2px dotted black;
-}
-
-#overview_data {
-	margin-bottom: 1em;
-}
-
-#overview_data h1 {
-	margin-top: 0px;
-}
-
-#global_form{
-	border:1px solid gray;
-	margin: 0px 4px 4px 0px;
-	padding: 1em;
-	height:134px;
-}
-
-.exhibit_palette {
-	border:1px solid gray;
-	margin: 0px 4px 4px 0px;
-	padding: 1em;
-}
-
-.exhibit_profile {
-	font-weight: bold;
-	font-size: 1.1em;
-}
-
-.exhibit_preview_thumbnail {
-	float: left;
-	padding-right: 10px;
-	padding-bottom: 6px;
-}
-
-.exhibit_profile_preview {
-	padding-top:0.5em;
-}
-
-.exhibit_profile_label {
-	color: #777777;
-}
-
-.exhibit_sharing {
-	clear: both;
-}
-
-.edit_exhibit_links {
-	float:right;
-	margin-bottom:1em;
-}
-
-.edit_exhibit_heading {
-	padding-top:10px;
-}
-
-.exhibit_palette_items {
-	overflow:auto;
-	height:120px;
-	width:338px;
 }
 
