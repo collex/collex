@@ -14,18 +14,21 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-
-<div>
+<% # login_slider params: string current_page -%>
 <% if is_logged_in? %>
 	signed in as <%= session[:user][:username] %><%= link_separator %>
-    <%= my_account_link({}) %>
+    <%= my_account_link({ :class => 'nav_link' }) %>
     <%= link_separator %>
-	<%= link_to 'sign out', :controller => 'login', :action => 'logout' %>
+	<%= link_to 'log out', { :controller => 'login', :action => 'logout' }, { :class => 'nav_link' } %>
 	<% if is_admin? -%>
 		<%= link_separator %>
-		<%= link_to 'admin', :controller => 'admin/default', :action => 'index' %>
+		<% if current_page == 'admin' -%>
+			<span class="admin_active">admin</span>
+		<% else -%>
+			<%= link_to 'admin', { :controller => 'admin/default', :action => 'index' }, { :class => 'nav_link' } %>
+		<% end -%>
 	<% end -%>
 <% else -%>
-    <%= sign_in_link({}) %>
+    <%= sign_in_link({ :class => 'nav_link' }) %> | 
+	<%= sign_up_link({ :class => 'nav_link' }) %>
 <% end -%>
-</div>

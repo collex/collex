@@ -15,7 +15,6 @@
 ##########################################################################
 
 class Admin::DefaultController < Admin::BaseController
-  layout 'admin'
   
   def refresh_cached_objects
     # This reads all the items in the cached_resources table, and recreates the cached_properties table by retrieving the object from solr.

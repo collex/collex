@@ -1,0 +1,75 @@
+@charset "UTF-8";
+/* CSS Document */
+
+#header_container {
+	width:100%;
+	height:121px;
+	background:url(/images/index_header_stretch.jpg) bottom left repeat-x;
+}
+
+#header_left {
+	width:755px;
+	height:89px;
+	float:left;
+	background:url(/images/lvl2_header.jpg) top left no-repeat;
+}
+
+#header_right {
+}
+
+
+#nav_container {
+	position:absolute;
+	right:41px;
+	top:89px;
+}
+
+.mynines_link {
+	position:absolute;
+	left:40px;
+	top:89px;
+	height:23px;
+	width:71px;
+	float:left;
+	background:url(/images/lvl2_tab_mynines.gif) top left no-repeat;
+	color:#55220F;
+	font-weight:bold;
+	text-decoration:none;
+	padding-top:9px;
+}
+
+.mynines_link:hover {
+	text-decoration:underline;
+}
+
+.mynines_link_current {
+	position:absolute;
+	left:40px;
+	top:89px;
+	height:23px;
+	width:71px;
+	float:left;
+	background:url(/images/lvl2_tab_mynines_dn.gif) top left no-repeat;
+	color:#55220F;
+	font-weight:bold;
+	text-decoration:none;
+	padding-top:9px;
+}
+
+.mynines_link_current:hover {
+	text-decoration:underline;
+}
+
+#content_container {
+	/*height:1200px;*/
+	text-align:left;
+}
+.page_header {
+	font-size:1.5em;
+	padding:10px 0px 0px 0px;
+	margin:0px;
+	font-weight:bold;
+}
+.page_subheader {
+	padding:10px 0px 0px 0px;
+}

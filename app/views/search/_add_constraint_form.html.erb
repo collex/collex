@@ -15,15 +15,22 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<center><form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation('search_year', 'search_phrase', 'search_type', 'search_submit');" >
-<table>
-<tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:size=>30}, {:min_chars => 2}-%></td></tr>
-<tr><td>Title:</td><td><input name="search_title" id="search_title" size="30"/></td></tr>
-<tr><td>Author:</td><td><input name="search_author" id="search_author" size="30"/></td></tr>
-<tr><td>Editor:</td><td><input name="search_editor" id="search_editor" size="30"/></td></tr>
-<tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" size="30"/></td></tr>
-<tr><td>Year (YYYY):</td><td> <input name="search_year" id="search_year" size="30"/></td></tr>
-<tr><td colspan="2" align="right"><input id="search_submit" type="submit" value="Search" /></td></tr>
-</table>
-</form></center>
-
+<div class="page_header">Search Nines</div>
+<div class="page_subheader">Search will return results that meet all of the criteria entered below.</div>
+    <form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation('search_year', 'search_phrase', 'search_type', 'search_submit');" >
+	<table>
+        <tr><td>Keyword:</td><td><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box"}, {:min_chars => 2}-%></td></tr>
+        <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" /></td></tr>
+        <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" /></td></tr>
+        <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" /></td></tr>
+        <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" /></td></tr>
+        <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" /></td></tr>
+        <tr><td colspan="2"><input id="search_submit" type="submit" value="Search" /></td></tr>
+    </table>
+	</form>
+	
+	<% if is_logged_in? -%>
+		<div id="saved-searches">
+			<%= render :partial => 'save_search_list', :locals => { :header_class => 'page_header' } %>
+		</div>
+<% end -%>

@@ -23,6 +23,62 @@ Event.observe(window, 'load', function() {
 	initializeHacks();
 });	
 
+function open_tree(event, id)
+{
+	var This = $("site_opened_" + id);
+	var That = $("site_closed_" + id);
+	This.addClassName('hidden');
+	That.removeClassName('hidden');
+	var child_class = "child_of_" + id;
+	var children = $$('.' + child_class);
+	children.each(function(child) { child.removeClassName('hidden')});
+}
+
+function close_tree(event, id)
+{
+	var This = $("site_closed_" + id);
+	var That = $("site_opened_" + id);
+	This.addClassName('hidden');
+	That.removeClassName('hidden');
+	var child_class = "child_of_" + id;
+	var children = $$('.' + child_class);
+	children.each(function(child) { child.addClassName('hidden')});
+}
+
+function toggle_tree(event, id)
+{
+	var open = $("site_opened_" + id);
+	if (open.hasClassName('hidden'))
+		close_tree(event, id);
+	else
+		open_tree(event, id);
+}
+
+function showResultRowImage(This, max_size, progress_id)
+{
+	// This is called after the result row thumbnail has finished loading.
+	// At the start of this function, the progress spinner is on the page and the thumbnail is hidden.
+	// This sizes and centers the image, removes the spinner, and unhides the image.
+	var img = $(This);
+	var width = img.width;
+	var height = img.height;
+	if (height > width && height > 100) {
+		// shrink the height
+		img.height = 100;
+	} else if (width >= height && width > 100) {
+		// shrink the width
+		img.width = 100;
+	}
+
+	// Add padding so that the image is centered vertically.
+	var padding = (100 - height) / 2;
+	if (padding > 0)
+		img.setStyle({ paddingTop: padding + "px" });
+
+	$(progress_id).remove();
+	img.removeClassName('hidden');
+}
+
 function toggleIt(element) {
   var tr = element.parentNode.parentNode;
   //alert("parent node: " + tr);
@@ -541,7 +597,10 @@ function removeHidden(more_id, target_id)
 	// This toggles, so see if the more_id contains the text "more" or "less"
 	var btn = $(more_id);
 	if (btn.innerHTML.indexOf("more") > 0) {
-		$$('#' + target_id + " .hidden").each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
+		$$('#' + target_id + " .hidden").each(function (el) {
+			if( el.tagName !== "IMG")
+				el.removeClassName('hidden'); el.addClassName('was_hidden');
+		});
 		btn.update(btn.innerHTML.gsub("more", "less"));
 		//btn.innerHTML = btn.innerHTML.gsub("more", "less");
 	} else {
@@ -552,12 +611,112 @@ function removeHidden(more_id, target_id)
 
 function expandAllItems()
 {
-	$$('.result_row_td .hidden').each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
+	$$('.search_result_data .hidden').each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
 	$$('.more').each(function (el) { el.update(el.innerHTML.gsub("more", "less")); });
 }
 
-function doDiscuss(id)
+var StartDiscussionWithObject = Class.create({
+	initialize: function (url_get_topics, url_update, uri, discussion_button, is_logged_in) {
+		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
+		this.class_type = 'StartDiscussionWithObject';	// for debugging
+
+		// private variables
+		var This = this;
+		
+		// private functions
+		var populate = function()
+		{
+			new Ajax.Request(url_get_topics, { method: 'get', parameters: { },
+				onSuccess : function(resp) {
+					var topics = null;
+					dlg.setFlash('', false);
+					try {
+						topics = resp.responseText.evalJSON(true);
+					} catch (e) {
+						alert("Error:" + e);
+					}
+					// We got all the users. Now put it on the dialog
+					var sel_arr = $$('.discussion_topic_select');
+					var select = sel_arr[0];
+					select.update('');
+					topics = topics.sortBy(function(topic) { return topic.text; });
+					topics.each(function(topic) {
+						select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
+					});
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});			
+		};
+		
+		// privileged functions
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+		
+		this.sendWithAjax = function (event, params)
+		{
+			var curr_page = params.curr_page;
+			var url = params.destination;
+			var dlg = params.dlg;
+			
+			dlg.setFlash('Updating Discussion Topics...', false);
+			var data = dlg.getAllData();
+			data.inet_thumbnail = "";
+			data.thread_id = "";
+			data.nines_exhibit = "";
+			data.description = "";	// TODO: Do we want to let the user enter something for this?
+			data.nines_object = uri;
+			data.inet_url = "";
+			data.disc_type = "NINES Object";
+
+			var x = new Ajax.Request(url, {
+				parameters : data,
+				evalScripts : true,
+				onSuccess : function(resp) {
+					$(discussion_button).hide();
+					dlg.cancel();
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
+		
+		var dlgLayout = {
+				page: 'start_discussion',
+				rows: [
+					[ { text: 'Select the topic you want this discussion to appear under', klass: 'new_exhibit_instructions' } ],
+					[ { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { button: 'Ok', url: url_update, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+				]
+			};
+
+		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('start_discussion', null);
+		dlg.center();
+		populate(dlg);
+	}
+});
+
+function doDiscuss(uri, discussion_button, is_logged_in)
 {
+	if (!is_logged_in) {
+		var dlg = new SignInDlg();
+		dlg.setInitialMessage("Please log in to discuss objects");
+		dlg.show('sign_in');
+		return;
+	}
+	
+//	 "description"=>"", "topic_id"=>"2"
+//	 
+//	 "disc_type"=>"NINES Object"
+//	 "nines_object"=>"http://www.rossettiarchive.org/docs/s228.raw"
+//	/discussion_threads/post_object_to_new_thread
+
 	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null, "Ok");
 }
 
@@ -566,7 +725,7 @@ function doCollect(uri, row_num, row_id, is_logged_in)
 	if (!is_logged_in) {
 		var dlg = new SignInDlg();
 		dlg.setInitialMessage("Please log in to collect objects");
-		dlg.show('popup_dialog_anchor', 'sign_in');
+		dlg.show('sign_in');
 		return;
 	}
 	
@@ -1000,4 +1159,37 @@ function hideSpinner(element_id)
 	widenableElement.removeClassName("hidden");
 }
 
+// asynchronously load the rss feed and pull out the news items
+function loadLatestNews( targetList, rssFeedURL, maxItems ) {	
+	new Ajax.Request(rssFeedURL, {
+		method: 'get',
+		onSuccess : function(resp) {
+			var rss = resp.responseXML;
+			var doc = rss.documentElement;
+			var channel = doc.getElementsByTagName('channel');
+			var items = channel[0].getElementsByTagName('item');
+			var aitems = $A(items);
+			var len = 5;
+			if (aitems.length < 5)
+				len = aitems.length;
+			var str = "<ul><li>Don't forget to change the address for the feed before checking in!</li>\n";
+			for (var i = 0; i < len; i++) {
+				var title = aitems[i].getElementsByTagName('title');
+				var link = aitems[i].getElementsByTagName('link');
+				// Unfortunately, firefox defines the attribute textContent, but IE defines text for the same thing.
+				var title_text = title[0].text;
+				if (title_text === undefined)
+					title_text = title[0].textContent;
+				var link_text = link[0].text;
+				if (link_text === undefined)
+					link_text = link[0].textContent;
+				str += "<li><a href=\"" + link_text + "\" class=\"nav_link\" >" + title_text + "</a></li>\n";
+			};
+			str += "<li><a href=\"/news/\" class=\"nav_link\">MORE</a></li></ul>\n";
 
+			$(targetList).update(str);
+		},
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+
+}

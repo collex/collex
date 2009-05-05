@@ -32,7 +32,7 @@
 		<%= ret[:html] %><% #this may create a div that contains the visible border, depending on whether the section starts a border, continues a border, ends a border, or isn't in a border %>
 		<% @border_active = ret[:border_active] -%>
 		<% show_edit_controls = "onmouseout=\"return sectionUnhovered(this, 'edit_bar', 'element_block', 'element_block_hover');\" onmouseover=\"return sectionHovered(this, 'edit_bar', 'element_block_hover', 'element_block');\"" -%>
-		<div  id="element_<%= element.id %>" class="clearboth element_block" <%= "#{show_edit_controls}" if is_edit_mode %>>
+		<div  id="element_<%= element.id %>" class="clear_both element_block" <%= "#{show_edit_controls}" if is_edit_mode %>>
 			<%= render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => is_edit_mode, :element_count => element_count} %>
 		</div>
 		<% element_count = element_count + 1 -%>

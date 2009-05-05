@@ -1,0 +1,155 @@
+@charset "UTF-8";
+/* CSS Document */
+
+#edit_exhibit_outline {
+	padding-top: 3px;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	background: white;
+}
+
+#outline_toolbar {
+	padding-top: 3px;
+	padding-left: 5px;
+}
+
+#edit_exhibit_outline_positioning_guide {
+	left: 500px;
+	top: 50px;
+	position: fixed;
+}
+
+
+#edit_exhibit_outline .bd {
+  overflow:auto;
+}
+
+.yui-skin-sam .yui-toolbar-container .yui-toolbar-firstletter span.yui-toolbar-icon { 
+	background-image: url(/images/icon_for_drop_cap.gif ); 
+	background-position: 4px 0px; 
+} 
+
+.yui-skin-sam .yui-toolbar-container .yui-button-firstletter-selected span.yui-toolbar-icon { 
+	background-image: url(/images/icon_for_drop_cap.gif ); 
+	background-position: 4px 0px; 
+} 
+
+.yui-skin-sam .yui-toolbar-container .yui-toolbar-createnineslink span.yui-toolbar-icon { 
+	background-image: url(/images/mce_link_to_nines_obj.gif ); 
+	background-position: 4px 0px; 
+} 
+
+.yui-skin-sam .yui-toolbar-container .yui-button-createnineslink-selected span.yui-toolbar-icon { 
+	background-image: url(/images/mce_link_to_nines_obj.gif ); 
+	background-position: 4px 0px; 
+} 
+
+.border_controls {
+	background-color: #dddddd;
+}
+
+.outline_tree {
+	padding-left: 0px;
+	margin-left:0px;
+}
+
+.outline_tree > li {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin-top:1em;
+	margin-bottom:1em;
+}
+
+.outline_tree_elements {
+	padding-top: .5em;
+	padding-left: 1em;
+	background-color: white;
+}
+
+.outline_tree_element_selected {
+	background-color: gray;
+}
+
+.outline_tree_element_selected .outline_right_controls {
+	display: inherit;
+}
+
+.outline_tree_element_selected .count a {
+	background-color: #eeeeee;
+	color: black;
+	text-decoration: none;
+}
+
+.outline_element {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:.5em;
+	border: 1px dotted gray;
+	padding-top: 1px;
+}
+
+.outline_element .count a {
+	background-color: gray;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+	text-decoration: none;
+}
+
+.outline_element .outline_right_controls {
+	display: none;
+}
+
+.outline_right_controls {
+	margin-right: 3px;
+	float: right;
+}
+
+.outline_right_controls_no_space {
+	margin-right: 0px;
+	float: right;
+}
+
+.unselected_page {
+	background-color: #cccccc;
+}
+
+.selected_page {
+	background-color: gray;
+}
+
+.selected_page .exhibit_outline_text {
+	color: white;
+}
+
+.exhibit_outline_text {
+	color: black;
+	font-style: italic;
+	margin-right: 3px;
+	/*cursor: move;*/
+}
+
+.exhibit_outline_header {
+	font-size: larger;
+	font-weight: bold;
+	color:#999999;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
+.outline_section_with_border {
+	border: 3px solid gray;
+	margin-right: 1em;
+	margin-bottom: 2px;
+}
+
+.outline_section_without_border {
+}
+
+.outline_tree_element_selected .outline_right_controls {
+	display:inherit;
+}

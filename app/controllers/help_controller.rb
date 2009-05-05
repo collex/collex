@@ -15,9 +15,14 @@
 ##########################################################################
 
 class HelpController < ApplicationController
-  layout 'popup'
+  #layout 'popup'
   
   def sites
     @sites = Site.find(:all, :order => "description ASC")
+    render :partial => '/help/sites'
+  end
+  
+  def resources
+    render :partial => '/help/resources'
   end
 end

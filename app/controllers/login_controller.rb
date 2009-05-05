@@ -15,7 +15,6 @@
 ##########################################################################
 
 class LoginController < ApplicationController
-  layout "collex_tabs"
   before_filter :authorize, :except => [:login_controls, :login, :logout, :signup, :submit_signup, :reset_password, :clear_user, :verify_login, :account_help, :recover_username]
    before_filter :init_view_options
    
@@ -41,8 +40,8 @@ class LoginController < ApplicationController
     return "/"
   end
    
-    def login_controls
-      render :partial => '/common/login_slider'
+    def login_controls  # This is called by html pages using ajax to render the login controls
+      render :partial => '/common/login_slider', :locals => { :current_page => 'about' }
     end
   
   def verify_login
@@ -65,8 +64,8 @@ class LoginController < ApplicationController
       redirect_to(:action => 'login')
       
     else  # javascript version
-      name = params[:signin_username]
-      pass = params[:signin_password]
+      name = params[:signin_username] ? params[:signin_username] : ""
+      pass = params[:signin_password] ? params[:signin_password] : ""
       
       logged_in_user = COLLEX_MANAGER.login(name, pass)
       if logged_in_user 

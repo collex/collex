@@ -16,32 +16,13 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% current_page "Tags" -%>
-<div id="search-main">
 <% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
 
-<table class="results_layout"><tr>
-	<td class="tag_minor_nav" colspan="2">
+<div class="subpage_nav">
 	<%= link_to "View full tag cloud", { :action => 'list' }, :class => 'nav_link' %>
-	</td>
-	</tr>
-	<tr>
-
-<td class="tag_results">
-<%= render( :partial => 'results/result_count' ) %>    
-<% total_link = "<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>" -%>
-<%= rounded_h1(total_link) %>
-<div class="tag_results standard_box">
-<%= render( :partial => 'results/bulkcollect' ) %>
-<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
-
-<form name="bulk_collect_form" id="bulk_collect_form" action="/results/bulk_collect" method="post">
-	<input type="hidden" name="return" value="/tag/results" />
-	<%= render( :partial => 'results/results', :locals => { :user_id => curr_user == nil ? -1 : curr_user.id, :hits => @results } ) %>
-</form>
-
-<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results'} }  ) %>
-<%= render( :partial => 'results/bulkcollect' ) %>
 </div>
-</td>
-</tr></table>
+
+<div class="inner_content_container">
+	<% total_link = "<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>" -%>
+	<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => total_link, :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'tag', :action => 'results' } %>
 </div>

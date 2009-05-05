@@ -23,7 +23,6 @@ var GeneralDialog = Class.create({
 
 		// private variables
 		var This = this;
-		var parent_id = params.parent_id;
 		var this_id = params.this_id;
 		var pages = params.pages;
 		var flash_notice = params.flash_notice;
@@ -45,12 +44,10 @@ var GeneralDialog = Class.create({
 			el.value = currSelection; 
 		};
 
-		if (parent_id === undefined) {
-			parent_id = 'modal_dlg_parent';
-			var parent = $(parent_id);
-			if (parent === null)
-				parent = document.getElementsByTagName("body").item(0).appendChild(new Element('div', { id: parent_id }));
-		}
+		var parent_id = 'modal_dlg_parent';
+		var parent = $(parent_id);
+		if (parent === null)
+			parent = document.getElementsByTagName("body").item(0).appendChild(new Element('div', { id: parent_id, style: 'text-align:left;' }));
 			
 		this.getAllData = function() {
 			var inputs = $$("#" + dlg_id + " input");

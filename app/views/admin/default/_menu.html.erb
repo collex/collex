@@ -1,0 +1,29 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<% # menu params: string current_page -%>
+<div id="admin_menu">
+	<ul>
+	  <li><%= make_sub_menu_link("Home", "default", "index", current_page) %></li>
+	  <li><%= make_sub_menu_link("Resources", "facet_tree", "index", current_page) %></li>
+	  <li><%= make_sub_menu_link("User Roles", "user_roles", "index", current_page) %></li>
+	  <li><%= make_sub_menu_link("Discussion Topics", "discussion_topics", "index", current_page) %></li>
+	  <li><%= make_sub_menu_link("Statistics", "default", "stats", current_page) %></li>
+	  <li><%= make_sub_menu_link("Licenses", "licenses", "index", current_page) %></li>
+	  <li><%= make_sub_menu_link("Sites", "site", "index", current_page) %></li>
+	  <li><%= make_sub_menu_link("Facet Trees", "facet_tree", "index", current_page) %></li>
+	</ul>
+</div>

@@ -15,7 +15,7 @@
 ##########################################################################
 
 class My9sController < ApplicationController
-  layout 'collex_tabs'
+  layout 'nines'
   before_filter :init_view_options
 
   # Number of search results to display by default
@@ -325,7 +325,7 @@ class My9sController < ApplicationController
         when "down"
         page.move_element_down(element_pos)
         when "insert"
-        page.insert_element(element_pos)
+        page.insert_element(element_pos+1)
         when "delete"
         page.delete_element(element_pos)
         when "layout"
@@ -406,7 +406,9 @@ class My9sController < ApplicationController
         ExhibitIllustration.factory(element_id, 2)
       end
       render :partial => '/exhibits/exhibit_section', :locals => { :element => ExhibitElement.find(element_id), :is_edit_mode => true, :element_count => element.position } 
-    end
+    else
+      render :text => 'Your session has timed out due to inactivity. Please login again.'
+     end
   end
 
   def change_illustration_justification

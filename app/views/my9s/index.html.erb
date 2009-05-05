@@ -15,62 +15,38 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% current_page "My&nbsp;9s" -%>
-<div id="search-main">
-	<% if !is_logged_in? -%>
+<% current_page "My 9s" -%>
+<% if !is_logged_in? -%>
+	<div class="inner_content_container">
 		<%= render :partial => 'my9s_instructions' %>
-	<% else -%>
-		<% curr_user = User.find_by_username(session[:user][:username]) -%>
-		<div class="tag_minor_nav"> 
-			My 9s<%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>&nbsp;<br />
-		</div>
+	</div>
+<% else -%>
+	<% curr_user = User.find_by_username(session[:user][:username]) -%>
+	<div class="subpage_nav"> 
+		My 9s<%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>&nbsp;<br />
+	</div>
 		
-		<table>
-			<tr>
-				<td valign="top" width="80%">
-					<%= rounded_h1("PROFILE") %>
-					<div class="standard_box">
-					<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
-					</div>
-					<%= rounded_h1("RECENTLY COLLECTED ITEMS") %>
-					<div class="standard_box">
-					      <%= render( :partial => 'results/results', :locals => { :user_id => curr_user.id, :hits => @results } ) %>
-						<div class="tag_minor_nav"> 
-							<%= link_to "See more collected objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><br />
-						</div>
-					</div>
-				</td>
-				<td valign="top">
-					<%= render :partial => 'search/save_search_list' %>
-					<center><%= rounded_h1("MY TAGS") %></center>
-					<div class="standard_box narrow_tag_cloud">
-						<center>
-							<br /><br />
-							<div id="tag_cloud_div" class="inside_standard_box">
-						  	  <%= render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => "", :controller_for_tags => 'my9s', :hide_some => true } %>
-							</div>
-						</center>
-					</div>
-					<center><%= rounded_h1("MY EXHIBITS") %></center>
-					<div class="standard_box">
-						<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', curr_user.id] ) -%>
-						<% if my_exhibits.length == 0 -%>
-							<div class="empty_list_text" >You have not created any exhibits</div>
-						<% else -%>
-							<table>
-							<% for exhibit in my_exhibits -%>
-								<tr>
-									<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
-									<td class="exhibit_link"><%=h exhibit.title %>&nbsp;<a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
-								</tr>
-							<% end -%>
-							</table>
-						<% end # if there are exhibits -%>
-						<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects'); dlg.show('popup_dialog_anchor');", :class => 'modify_link' %>
-					</div>
-				</td>
-			</tr>
-		</table>
-	<% end -%>
-</div>
+	<div class="inner_content_container">
+		<div class="left_column">
+			<div id="profile">
+				<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
+			</div>
+			<div id="recently_collected_items">
+				<%= render :partial => 'recently_collected_items', :locals => { :user_id => curr_user.id, :hits => @results } %>
+			</div>
+		</div>
+		<div class="right_column">
+			<div id="saved_searches">
+				<%= render :partial => 'search/save_search_list', :locals => { :header_class => 'right_column_header' } %>
+			</div>
+			<div id="tag_cloud">
+				<%= render :partial => 'tag_cloud_sidebar', :locals => { :cloud_info => @cloud_info } %>
+			</div>
+			<div id="my_exhibits">
+				<%= render :partial => 'my_exhibits_list', :locals => { :user_id => curr_user.id } %>
+			</div>
+		</div>
+		<div class="clear_both"></div>
+	</div>
+<% end -%>
 

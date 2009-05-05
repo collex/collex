@@ -13,6 +13,23 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ---------------------------------------------------------------------------- %>
+<% current_page "admin" -%>
+<% current_sub_page "Resources" -%>
+
+<div class="site_list">
+<table class="limit_to">
+	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => true, :parent_id => '', :start_hidden => false } %>
+</table>
+
+<table class="limit_to">
+	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false } %>
+</table>
+</div>
+
+<b>Resources unaccounted for:<br/>
+<%= @found_resources.join("<br />") %></b>
+<br />
+<br />
 
 <%=link_to "Add new value", :action => :add_value, :tree => @facet_tree.value, :class => 'modify_link' %> |
 <%=link_to "Add new category", :action =>:add_category, :tree => @facet_tree.value, :class => 'modify_link' %>

@@ -17,7 +17,7 @@
 # The methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def collex_version
-    return "1.4.7.18"
+    return "1.4.8.0"
   end
   
   def is_admin?
@@ -39,6 +39,10 @@ module ApplicationHelper
   def switchClassesOnElement(el_str, class1, class2)
     # This returns the javascript to change a class in an element. It uses double quotes in the returned string.
     return "#{el_str}.addClassName(\"#{class1}\"); #{el_str}.removeClassName(\"#{class2}\");"
+  end
+  
+  def result_button(text, id, action)
+    "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
   
   def rounded_button(text, id, action, color)
@@ -80,6 +84,9 @@ module ApplicationHelper
   def current_page(text)
     content_for(:current_page) { text }
   end
+  def current_sub_page(text)
+    content_for(:current_sub_page) { text }
+  end
 
 private
   def make_curr_tab(label)
@@ -98,32 +105,61 @@ private
   def link_separator
     return "&nbsp;|"
   end
-#Drawing the Tab control
-  def draw_tabs(curr_page)
-    # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?
-    tabs_arr = [ ['Home', "/", true],
-      ['My&nbsp;9s', my9s_path, true],
-      ['Search', search_path, true],
-      ['Tags', tags_path, true],
-      ['Discuss', discussion_path, true],
-      ['Exhibits', exhibit_list_path, true],
-      ['News', news_path + '/', true],
-      ['About', tab_about_path, true]
-   ]
   
-    html = ""
-    tabs_arr.each {|tab|
-      if (tab[2] == false)
-        html += make_disabled_tab(tab[0])
-      elsif (curr_page == tab[0])
-        html += make_curr_tab(tab[0])
-        session[:current_page] = params
+  def draw_tabs(curr_page)
+    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true },
+      { :name => 'News', :link => news_path + '/', :use_logo_style => true },
+      { :name => 'Forum', :link => discussion_path },
+      { :name => 'Exhibits', :link => exhibit_list_path },
+      { :name => 'Tags', :link => tags_path },
+      { :name => 'Search', :link => search_path }
+    ]
+    
+    # the my9s tab is separate, and is rendered first
+    cls = (curr_page == 'My 9s') ? 'mynines_link_current' : 'mynines_link'
+    html = "\t" + link_to('My 9s', my9s_path, { :class => cls }) + "\n"
+    html += "\t" + "<div id='nav_container'>\n"
+    tabs.each { |tab|
+      if tab[:dont_show_yourself] && curr_page == tab[:name]
+        # There's an exception: We don't want the home tab if we're on the home page
       else
-        html += make_link_tab(tab[0], tab[1])
+        if tab[:use_logo_style] && curr_page == 'HOME'
+          cls = 'tab_link_logo'
+        else
+          cls = (curr_page == tab[:name]) ? 'tab_link_current' : 'tab_link'
+        end
+        html += "\t\t" + link_to(tab[:name], tab[:link], { :class => cls }) + "\n"
       end
     }
-    return html
+    html += "\t" + "</div>\n"
   end
+
+#Drawing the Tab control
+#  def draw_tabs(curr_page)
+#    # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?
+#    tabs_arr = [ ['Home', "/", true],
+#      ['My&nbsp;9s', my9s_path, true],
+#      ['Search', search_path, true],
+#      ['Tags', tags_path, true],
+#      #['Discuss', discussion_path, true],
+#      ['Exhibits', exhibit_list_path, true],
+#      ['News', news_path + '/', true],
+#      ['About', tab_about_path, true]
+#   ]
+#  
+#    html = ""
+#    tabs_arr.each {|tab|
+#      if (tab[2] == false)
+#        html += make_disabled_tab(tab[0])
+#      elsif (curr_page == tab[0])
+#        html += make_curr_tab(tab[0])
+#        session[:current_page] = params
+#      else
+#        html += make_link_tab(tab[0], tab[1])
+#      end
+#    }
+#    return html
+#  end
   
   # helper for adding default text if the property is blank
   def default_text(item, text)
@@ -173,13 +209,14 @@ private
   end
   
   def thumbnail_image_tag(hit, options = {})
-    options = {:align => 'left'}.merge(options)
     thumb = CachedResource.get_thumbnail_from_hit(hit)
     image = CachedResource.get_image_from_hit(hit)
-    str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}"})
+    progress_id = "progress_#{hit['uri']}"
+    str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "showResultRowImage(this, 100, '#{progress_id}');" })
     if image != thumb
       str = "<a class='nines_pic_link' onclick='showInLightbox(\"#{image}\", \"thumbnail_#{hit['uri']}\"); return false;' href='#'>#{str}</a>"
     end
+    str = "<img id='#{progress_id}' class='result_row_img_progress' src='/images/ajax_loader.gif' alt='loading...' />\n" + str
     return str
   end
 

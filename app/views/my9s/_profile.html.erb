@@ -14,39 +14,38 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
-<div id="profile">
-	<table>
-		<tr valign="top">
-			<td>
-				<%= image_tag(get_user_picture(user.id, :full), :style => 'max-height:180px') %>
-			</td>
-			<td width="10px"></td>
-			<td> <%# right hand side of profile, with everything but the picture %>
-				<% if edit_mode -%>
-					<form enctype="multipart/form-data" action="/my9s/update_profile" method="post" >
-						<table>
-							<tr><td></td><td  align="right"><%= link_to_function "Cancel Edit", "cancel_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
-							<tr><td class="profile_label">User name:</td><td><%= user.username %></td></tr>
-							<tr><td class="profile_label">Full name:</td><td><input type="text" name="fullname" id="fullname" size="65" value="<%= user.fullname %>" /></td></tr>
-							<tr><td class="profile_label">Institution:</td><td><input type="text" name="institution" id="institution" size="65" value="<%= user.institution %>"/></td></tr>
-							<tr><td class="profile_label">Link:</td><td><input type="text" name="link" id="link" size="65" value="<%= user.link %>" /></td></tr>
-							<tr><td class="profile_label">About me:</td><td><textarea name="aboutme" id="aboutme" cols="56" rows="7" ><%= user.about_me %></textarea></td></tr>
-							<tr><td class="profile_label">Image:</td><td><input type="file" name="image" id="image" size="65" /></tr>
-							<tr><td></td><td><input type="submit" value="Save" /> </td></tr>
-						</table>
-					</form> 
-				<% else -%>
+<% # profile: params: ActiveRecord user, bool edit_mode -%>
+<div class="page_header">Profile</div>
+<table>
+	<tr valign="top">
+		<td>
+			<%= image_tag(get_user_picture(user.id, :full), :style => 'max-height:180px') %>
+		</td>
+		<td width="10px"></td>
+		<td> <%# right hand side of profile, with everything but the picture %>
+			<% if edit_mode -%>
+				<form enctype="multipart/form-data" action="/my9s/update_profile" method="post" >
 					<table>
-						<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "enter_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
-						<tr><td class="profile_label">Username:</td><td><%=h user.username %></td></tr>
-						<tr><td class="profile_label">Full name:</td><td><%=h user.fullname %></td></tr>
-						<tr><td class="profile_label">Institution:</td><td><%=h user.institution %></td></tr>
-						<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link, {:target => '_blank', :class => 'nav_link' } ) : "" %></td></tr>
-						<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%=h user.about_me %></td></tr>
+						<tr><td></td><td  align="right"><%= link_to_function "Cancel Edit", "cancel_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
+						<tr><td class="profile_label">User name:</td><td><%= user.username %></td></tr>
+						<tr><td class="profile_label">Full name:</td><td><input type="text" name="fullname" id="fullname" size="65" value="<%= user.fullname %>" /></td></tr>
+						<tr><td class="profile_label">Institution:</td><td><input type="text" name="institution" id="institution" size="65" value="<%= user.institution %>"/></td></tr>
+						<tr><td class="profile_label">Link:</td><td><input type="text" name="link" id="link" size="65" value="<%= user.link %>" /></td></tr>
+						<tr><td class="profile_label">About me:</td><td><textarea name="aboutme" id="aboutme" cols="56" rows="7" ><%= user.about_me %></textarea></td></tr>
+						<tr><td class="profile_label">Image:</td><td><input type="file" name="image" id="image" size="65" /></tr>
+						<tr><td></td><td><input type="submit" value="Save" /> </td></tr>
 					</table>
-				<% end -%>
-			</td>
-		</tr>
-	</table>
-</div> <%# end profile %>
+				</form> 
+			<% else -%>
+				<table>
+					<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "enter_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
+					<tr><td class="profile_label">Username:</td><td><%=h user.username %></td></tr>
+					<tr><td class="profile_label">Full name:</td><td><%=h user.fullname %></td></tr>
+					<tr><td class="profile_label">Institution:</td><td><%=h user.institution %></td></tr>
+					<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link, {:target => '_blank', :class => 'nav_link' } ) : "" %></td></tr>
+					<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%=h user.about_me %></td></tr>
+				</table>
+			<% end -%>
+		</td>
+	</tr>
+</table>

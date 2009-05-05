@@ -96,7 +96,7 @@ var SignInDlg = Class.create({
 			redirectPage = url;
 		};
 		
-		this.show = function (parent_id, view, username, email) {
+		this.show = function (view, username, email) {
 			
 			// TODO-PER: Code to just do a call back instead of this dialog
 //			switch (view)
@@ -187,7 +187,7 @@ var SignInDlg = Class.create({
 				};
 			var pages = [ login, account_help, create_account, my_account ];
 
-			var params = { parent_id: parent_id, this_id: "login_dlg", pages: pages, flash_notice: initialFlashMessage, body_style: "login_div", row_style: "login_row" };
+			var params = { this_id: "login_dlg", pages: pages, flash_notice: initialFlashMessage, body_style: "login_div", row_style: "login_row" };
 			var dlg = new GeneralDialog(params);
 			this.changeView(null, { curr_page: '', destination: view, dlg: dlg });
 			dlg.center();
@@ -198,7 +198,7 @@ var SignInDlg = Class.create({
 });
 
 var RedirectIfLoggedIn = Class.create({
-	initialize: function (parent_id, url, message, isLoggedIn) {
+	initialize: function (url, message, isLoggedIn) {
 		this.class_type = 'RedirectIfLoggedIn';	// for debugging
 		
 		if (isLoggedIn)
@@ -207,7 +207,7 @@ var RedirectIfLoggedIn = Class.create({
 			var dlg = new SignInDlg();
 			dlg.setInitialMessage(message);
 			dlg.setRedirectPage(url);
-			dlg.show(parent_id, 'sign_in'); 
+			dlg.show('sign_in'); 
 		}
 	}
 });

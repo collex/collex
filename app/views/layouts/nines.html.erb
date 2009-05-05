@@ -1,0 +1,155 @@
+<%# ------------------------------------------------------------------------
+    Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+        http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+---------------------------------------------------------------------------- -%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>N I N E S</title>
+	<% # Figure out how we're running so we know what files to load -%>
+	<% # We only run Google Analytics if we are on the real deployment. -%>
+	<% # We want to load the non-minimized versions of YUI if we are running development -%>
+	<% quick_load = (RAILS_ENV == 'development') && (request.host().index('performantsoftware') == nil) -%>
+	<% min = quick_load ? "" : "-min" -%>
+	<% yui_path = quick_load ? "/javascripts/yui_2_7_0" : "http://yui.yahooapis.com/2.7.0" -%>
+	<% run_analytics = (request.host() == DEPLOYMENT_SERVER) -%>
+
+	<% # site wide styles -%>
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/base/base-min.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/menu/assets/skins/sam/menu.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/button/assets/skins/sam/button.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/container/assets/skins/sam/container.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/editor/assets/skins/sam/editor.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/resize/assets/skins/sam/resize.css" />
+	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/assets/skins/sam/skin.css">
+
+	<%= stylesheet_link_tag "main", :media => "all" %>
+	<%= stylesheet_link_tag "nav", :media => "all" %>
+	<%= case @site_section 
+		when :search 
+			stylesheet_link_tag "lvl2", "search", "right_column", "result_row", :media => "all"
+		when :tag
+			stylesheet_link_tag "lvl2", "tag", "result_row", :media => "all"
+		when :my9s
+			stylesheet_link_tag "lvl2", "my9s", "right_column", "tag", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", :media => "all"
+		when :discuss
+			stylesheet_link_tag "lvl2", "result_row", :media => "all"
+		when :home
+			stylesheet_link_tag "index", "featured_exhibit", :media => "all"
+		when :exhibits
+			stylesheet_link_tag "lvl2", "featured_exhibit", "exhibit_list", :media => "all"
+		when :admin
+			stylesheet_link_tag "lvl2", "admin", "search", :media => "all"
+		when :about
+			stylesheet_link_tag "lvl2", "about", :media => "all"
+		when :view_exhibit
+			stylesheet_link_tag "lvl3", "exhibit", :media => "all"
+	end %>
+	<%= stylesheet_link_tag "js_dialog", :media => "all" %>
+<!--[if lt IE 7]>
+	<%= stylesheet_link_tag "iehacks", :media => "all" %>
+<![endif]-->
+<!--[if IE 7]>
+	<%= stylesheet_link_tag "ie7hacks", :media => "all" %>
+<![endif]-->
+
+	<% # site wide scripts -%>
+	<%= javascript_include_tag :defaults %>
+	
+	<% if @uses_yui -%>
+	<script type="text/javascript" src="<%= yui_path %>/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/json/json<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/element/element<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/button/button<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/container/container<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/connection/connection<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/menu/menu<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/editor/editor<%= min %>.js"></script>	
+	<script type="text/javascript" src="<%= yui_path %>/build/dragdrop/dragdrop<%= min %>.js"></script>
+	<script type="text/javascript" src="<%= yui_path %>/build/resize/resize<%= min %>.js"></script>
+	<%= javascript_include_tag 'input_dialog', 'modal_dialog', 'initialize_inplacericheditor', 'general_dialog', 'login', 'nospam' %>
+	<% end -%>
+	
+	<% # section scripts -%>
+	<%= case @site_section 
+		when :search 
+		  javascript_include_tag 'search_validation'
+		when :tag
+		  javascript_include_tag 'sidebar_tag_cloud'
+		when :my9s
+		  javascript_include_tag 'sidebar_tag_cloud', 'edit_exhibit'
+		when :discuss
+		  javascript_include_tag 'discussions'
+		when :home 
+		when :login 
+			""
+	end 
+	%>
+	<script language="JavaScript">
+		var supportsFixedPositioning = true;
+	</script>
+	<!--[if IE]>
+		  	<%= stylesheet_link_tag "ie", :media => "all" %>
+	<script language="JavaScript">
+		supportsFixedPositioning = false;
+	</script>
+	<![endif]-->
+</head>
+<body class="yui-skin-sam">
+	<div id="main_container">
+		<div id="header_container">
+			<% if yield(:current_page) != "HOME" -%>
+				<a href="/"><div id="header_left"></div></a>
+			<% else -%>
+				<div id="header_left"></div>
+			<% end -%>
+			<div id="header_right"></div>
+		</div>
+		<%= draw_tabs(yield(:current_page)) %>
+
+    	<div id="subnav_container">
+        	<div id="login_container">
+				<%= render :partial => '/common/login_slider', :locals => { :current_page => yield(:current_page) } %>
+            </div>
+            <div id="subnav_links_container">
+            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="nav_link">Community</a> 
+            </div>
+           	<div class="clear_both"></div>
+			<% if yield(:current_page) == "admin" -%>
+				<%= render :partial => '/admin/default/menu', :locals => { :current_page => yield(:current_sub_page) } %>
+			<% end -%>
+        </div>
+		<div id="content_container">
+			<%= yield %>
+		</div>        
+	</div>
+
+ 	<div class="clear_both"></div>
+	<%= render :partial => '/common/footer' %>
+	<% if run_analytics -%>
+		<!-- for Google Analytics -->
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+			var pageTracker = _gat._getTracker("UA-5450014-1");
+			pageTracker._trackPageview();
+			} catch(err) {}
+		</script> 
+	<% end -%>
+</body></html>

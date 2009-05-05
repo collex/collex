@@ -15,40 +15,50 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% #  result_row parameters: int row_id; int index; hit hit; bool has_exhibits; bool add_border -%>
-	    <%# The left side that contains the checkbox, graphic and the collect button -%>
-	    <td valign="top">
-	        <table border="0">
-	            <tr>
-	            	<% if is_logged_in? -%>
-	                <td rowspan="2" valign="middle" align="left" width="10" class="thumbview">
-	                    <input type="checkbox" id="bulk_collect_<%=index%>" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>" style="display: none;"/>
-	                </td>
-<script language="JavaScript">
-	var bulk_form = $("bulk_collect_form");
-	if (bulk_form != null)
-		$("bulk_collect_<%=index%>").show();
-</script>  
-					<% end -%>
-	                <td rowspan="1" valign="top" align="left" width="100" class="thumbview">
-	                    <%= thumbnail_image_tag(hit) %>
-	                </td>
-	            </tr>
-	        </table>
-	    </td>
+<% #  result_row parameters: int index; hit hit; bool has_exhibits; bool add_border -%>
+<% row_id = "search_result_#{index}" -%>
+<div class="clear_both"></div>
+<hr class="search_results_hr" />
+<div id="search_result_<%= index %>">
+    <%# The left side that contains the checkbox, graphic and the collect button -%>
+   	<% if is_logged_in? -%>
+		<div class="search_result_left_logged_in">
+			<table><tr>
+				<td><input type="checkbox" id="bulk_collect_<%=index%>" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>" /></td>
+				<td><div class="search_result_image"><%= thumbnail_image_tag(hit) %></div></td>
+			<tr><td></td><td>
+		        <div class="search_result_buttons">
+					<%= result_button("Collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});") if !result_is_collected(hit) %>
+					<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+					<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/discussion_threads/get_all_topics', '/discussion_threads/post_object_to_new_thread', '#{hit['uri']}', 'discuss_#{index}', #{is_logged_in? ? true : false});") %>
+					<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+		        </div>
+			</td></tr>
+			</tr></table>
+	    </div>
+	<% else -%>
+		<div class="search_result_left">
+			<div class="search_result_image"><%= thumbnail_image_tag(hit) %></div>
+	        <div class="search_result_buttons">
+				<%= result_button("Collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});") if !result_is_collected(hit) %>
+				<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+				<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/discussion_threads/get_all_topics', '/discussion_threads/post_object_to_new_thread', '#{hit['uri']}', 'discuss_#{index}', #{is_logged_in? ? true : false});") %>
+				<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+	        </div>
+	    </div>
+	<% end -%>
 
+	<div class="search_result_right<%= " result_row_collected" if result_is_collected(hit) %>">
 	    <%# The middle with the actual search results -%>
-        <td class="result_row_td">
-            <table border="0" class="<%= 'gradient_border' if add_border %>">
-                <tr>
-                    <td colspan="2">
-                        <% if hit["url"] %>
-                        	<a class="nines_link search-result-title" target="_blank" href="<%= hit["url"][0] %>"><%= h hit["title"][0] if hit["title"] %></a>
-						<% else %>
-                        	<%= h hit["title"][0] if hit["title"] %>
-                        <% end %>
-                    </td>
-                </tr>
+    	<div class="search_result_header">
+            <% if hit["url"] %>
+            	<a class="nines_link" target="_blank" href="<%= hit["url"][0] %>"><%= h hit["title"][0] if hit["title"] %></a>
+			<% else %>
+            	<%= h hit["title"][0] if hit["title"] %>
+            <% end %>
+		</div>
+    	<div class="search_result_data_container">
+	        <table class="search_result_data">
 				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id, :index => index, :no_links => false } %>
 				<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
 				<% is_first = true -%>
@@ -65,7 +75,7 @@
 								<% is_first = false -%>
 							</td>
 							<td valign='top' width='100%'>
-								<%= real_exhibit.title -%>
+								<%=h real_exhibit.title -%>
 								<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
 								<% if user_name == owner.username -%>
 									<%= link_to("[edit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
@@ -74,9 +84,10 @@
 						</tr>
 					<% end -%>
 				<% end # each exhibit -%>
-
+	
 				<tr id='more-<%= row_id %>' class="more">
 					<td><%= link_to_function("[more...]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
+				</tr>
 				<tr>
 				<% if result_is_collected(hit) -%>
 					<td colspan='2'>
@@ -87,16 +98,8 @@
 					</td>
 				</tr>
 				<% end # if the item is collected -%>
-				<tr>
-					<td></td>
-					<td align="right">
-						<%= rounded_button("collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});", 'red') if !result_is_collected(hit) %>
-						<%= rounded_button("uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');", 'red') if result_is_collected(hit) %>
-						<% # = rounded_button("discuss", "discuss_#{index}", "doDiscuss('discuss_#{index}');", 'red') %>
-						<%= rounded_button("exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');", 'red') if result_is_collected(hit) %>
-					</td>
-				</tr>
-            </table>
-			</td>
+	        </table>
+		</div>
+	</div>
+</div>
 
- 

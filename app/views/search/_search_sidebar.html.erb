@@ -14,39 +14,27 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-<div id="resource-list">
-	<%= rounded_h1("LIMIT BY RESOURCE") %>
-	<div class="standard_box">
-	<div class="resource-list-content">
-		<p class="sidebar_instructions"><i>Select a resource with which to narrow your search.</i></p>
-			<% for resource_category in @sites_forest.sorted_children -%>
-			<% if site_category_subtotal(resource_category) != 0 -%>
-				<h2><%= site_category_heading("#{h(resource_category.display_name.upcase)} (#{pluralize( site_category_subtotal(resource_category), 'object' )})", resource_category.id, :open ) %></h2>
-					<div id="cat_<%= resource_category.id %>" class="cat_<%= resource_category.id %>_child">
-						<ul>
-						<% for resource in resource_category.sorted_children -%>
-							<%= render :partial => 'sub_category', :locals => { :resource => resource } %>
-						<% end -%>
-					</ul>
-					</div>
-			<% end # if category is not zero -%>
-			<% end # for loop -%>
-	</div>
-	<%= gradient_h1("LIMIT BY GENRE") %>
-	<div class="resource-list-content">
-		<p class="sidebar_instructions"><i>Select the genres to include in your search.</i></p>
-			<ul>
-				<% for genre in @genre_data -%>
-					<li><%= genre_data_link( genre ) %></li>
-				<% end -%>
-			</ul>	
-	</div>
-	<%= gradient_h1("LIMIT TO FREE CULTURE") %>
-	<div class="resource-list-content">
-		<p class="sidebar_instructions"><i>'Free Culture' resources are freely available in their full form on the Internet.</i></p>
-		<ul>
-			<%= free_culture_link(@freeculture_count) %>
-		</ul>		
-	</div>
-	</div>
+<div class="right_column">
+	<div class="right_column_header">Limit Results to...</div>
+    <p>Select a resource and genre below to limit your search results</p>
+    
+	<table class="limit_to">
+		<tr>
+			<th>Resource</th>
+			<th class="num_objects"># of Objects</th>
+		</tr>
+		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false } %>
+	</table>
+   
+    <table class="limit_to">
+	    <tr><th>Genre</th><th class="num_objects"># of Objects</th></tr>
+		<% for genre in @genre_data -%>
+			<%= genre_selector( genre ) %>
+		<% end -%>
+    </table>    
+   
+    <table class="limit_to">
+	    <tr><th>Free Culture</th><th class="num_objects"># of Objects</th></tr>
+		<%= free_culture_selector( @freeculture_count ) %>
+    </table>    
 </div>

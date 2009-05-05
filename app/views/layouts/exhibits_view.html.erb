@@ -67,7 +67,7 @@
 		</div></a>
 		<div id="header-right">
 			<a href="/exhibit_list">Exhibit List</a>
-			<%= render :partial => '/common/login_slider' %>
+			<%= render :partial => '/common/login_slider', :locals => { :current_page => yield(:current_page) } %>
 		</div>
     </div>
   		<div id="content">

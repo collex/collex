@@ -15,7 +15,7 @@
 ##########################################################################
 
 class ExhibitsController < ApplicationController
-  layout 'collex_tabs'
+  layout 'nines'
   before_filter :init_view_options
 
   private
@@ -45,6 +45,7 @@ class ExhibitsController < ApplicationController
       end
     end
 
+    @site_section = :view_exhibit
     @page = -1
     if params[:page]
       @page = params[:page].to_i
@@ -52,7 +53,7 @@ class ExhibitsController < ApplicationController
     if @page < 1 || @page > @exhibit.exhibit_pages.length
       @page = 1
     end
-    render :layout => 'exhibits_view'
+    #render :layout => 'exhibits_view'
   end
 
   ##################################################################################

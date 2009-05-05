@@ -1,0 +1,13 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.right_column p {
+	margin:10px 10px 10px 10px;
+}
+
+.right_column_header {
+	color:#FFFFFF;
+	background:#471A08;
+	width:90%;
+	padding:4px 5% 4px 5%;
+}

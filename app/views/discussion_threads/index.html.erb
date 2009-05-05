@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page "Discuss" -%>
+<% current_page "Forum" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 
 <div class="discussion_explanation">
@@ -51,7 +51,7 @@
 				</span>
 			<% end -%>
 		</h2>
-		<span class="discussion_topic_new"><%= link_to_function "[start new discussion]", "new RedirectIfLoggedIn('popup_dialog_anchor', '/discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %></span>
+		<span class="discussion_topic_new"><%= link_to_function "[start new discussion]", "new RedirectIfLoggedIn('/discussion_threads/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %></span>
 	</div>
 	<div id="topic_<%= topic.id %>" class="discussion_thread_list_item">
 		<% for thread in threads -%>

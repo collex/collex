@@ -18,18 +18,18 @@ module LoginHelper
   def my_account_link(params)
     cls = params[:class] || ''
     text = params[:text] || "my account"
-     link_to_function text, "var dlg = new SignInDlg(); dlg.show('popup_dialog_anchor', 'my_account', '#{session[:user][:username]}', '#{session[:user][:email]}');", :class => cls
+     link_to_function text, "var dlg = new SignInDlg(); dlg.show('my_account', '#{session[:user][:username]}', '#{session[:user][:email]}');", :class => cls
   end
   
   def sign_in_link(params)
     cls = params[:class] || ''
-    text = params[:text] || "sign in"
-    link_to_function text, "var dlg = new SignInDlg(); dlg.show('popup_dialog_anchor', 'sign_in');", :class => cls
+    text = params[:text] || "LOG IN"
+    link_to_function text, "var dlg = new SignInDlg(); dlg.show('sign_in');", :class => cls
   end
   
   def sign_up_link(params)
     cls = params[:class] || ''
-    text = params[:text] || "sign up"
-    link_to_function text, "var dlg = new SignInDlg(); dlg.show('popup_dialog_anchor', 'create_account');", :class => cls
+    text = params[:text] || "Create new account"
+    link_to_function text, "var dlg = new SignInDlg(); dlg.show('create_account');", :class => cls
   end
 end

@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page "Discuss" -%>
+<% current_page "Forum" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topic_id = params[:topic_id] -%>
 <% thread_id = @thread.id -%>

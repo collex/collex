@@ -121,9 +121,9 @@ ActionController::Routing::Routes.draw do |map|
   map.tag_rss '/tags/rss/:tag.xml', :controller => 'tag', :action => 'rss'
   map.tag_obj '/tags/object', :controller => 'tag', :action => 'object'
   
-  map.news '/news', :controller => 'home', :action => 'news'
+  map.news '/news', :controller => 'about', :action => 'news'
   map.search '/search', :controller => 'search', :action => 'browse'
-  map.tab_about '/tab_about', :controller => 'about', :action => 'index'
+  map.about '/about', :controller => 'about', :action => 'index'
   map.tags '/tags', :controller => 'tag', :action => 'list'
   #map.login '/login', :controller => 'login', :action => 'login'
   map.my9s '/my9s', :controller => 'my9s', :action => 'index'

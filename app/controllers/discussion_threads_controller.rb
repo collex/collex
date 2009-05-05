@@ -15,7 +15,7 @@
 ##########################################################################
 
 class DiscussionThreadsController < ApplicationController
-  layout 'collex_tabs'
+  layout 'nines'
   before_filter :init_view_options
 
    # Number of search results to display by default
@@ -207,6 +207,16 @@ class DiscussionThreadsController < ApplicationController
   def sort_by_date
      session[:discussion_topic_sort] = 'date'
      redirect_to :back
+  end
+
+  def get_all_topics
+    ret = []
+    # this returns a json object of all the topics and their ids
+    topics = DiscussionTopic.find(:all)
+    topics.each {|topic|
+      ret.push({ :value => topic.id, :text => topic.topic })
+    }
+    render :text => ret.to_json()
   end
 
 ## GET /discussion_threads

@@ -449,3 +449,32 @@ function _lightboxCenter()
 
 	this.center();
 }
+
+
+function showPartialInLightBox(ajax_url)
+{
+	var divName = "lightbox";
+	var div = new Element('div', { id: 'lightbox_contents' });
+	div.setStyle({display: 'none' });
+	var form = div.wrap('form', { id: divName + "_id"});
+	var progress = new Element('center', { id: 'lightbox_img_spinner'});
+	progress.addClassName('lightbox_img_spinner');
+	progress.appendChild(new Element('div').update("Loading..."));
+	progress.appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+	progress.appendChild(new Element('div').update("Please wait"));
+	form.appendChild(progress);
+	var lightboxModalDialog = new ModalDialog();
+	var scroll = currentScrollPos();
+	lightboxModalDialog.showLightbox("Help", divName, form, scroll[0]+10, scroll[1]+10);
+	new Ajax.Updater('lightbox_contents', ajax_url, {
+		evalScripts : true,
+		onComplete : function(resp) {
+			var img_spinner = $('lightbox_img_spinner');
+			if (img_spinner)
+				img_spinner.remove();
+			$('lightbox_contents').show();
+			lightboxModalDialog.center();
+		},				
+		onFailure : function(resp) { alert("Oops, there's been an error."); }
+	});
+}

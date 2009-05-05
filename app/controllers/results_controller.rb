@@ -21,7 +21,7 @@ class ResultsController < ApplicationController
   #   def details
   #      setup_ajax_calls(params)
   #
-  #      render :partial => 'result_row', :locals => { :row_id => @row_id, :page => @page, :index => @index, :hit => @hit }
+  #      render :partial => 'result_row', :locals => { :page => @page, :index => @index, :hit => @hit }
   #  end
   
   def collect
@@ -32,14 +32,14 @@ class ResultsController < ApplicationController
       CollectedItem.collect_item(locals[:user], locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
     end
     
-    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
   def uncollect
     locals = setup_ajax_calls(params, true)
     CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
     
-    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
   def add_tag
@@ -47,7 +47,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
     
-    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
   def remove_tag
@@ -55,7 +55,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
     
-    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
   def set_annotation
@@ -63,7 +63,7 @@ class ResultsController < ApplicationController
     note = params[:note]
     CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
     
-    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
   def bulk_add_tag
@@ -153,7 +153,7 @@ class ResultsController < ApplicationController
       ExhibitObject.add(exhibit.id, locals[:uri])
     end
 
-    render :partial => 'result_row', :locals => { :row_id => locals[:row_id], :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
 
   private
@@ -180,7 +180,6 @@ class ResultsController < ApplicationController
     end
     ret[:uri] = params[:uri]
     ret[:index] = params[:row_num].to_i 
-    ret[:row_id] = "search-result-#{ret[:index]}" 
 
     if ret[:user] != nil
       ret[:has_exhibits] = (Exhibit.find_by_user_id(ret[:user].id) != nil)

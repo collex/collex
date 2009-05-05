@@ -15,62 +15,38 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% current_page "My&nbsp;9s" -%>
-<div id="search-main">
-	<% if !is_logged_in? -%>
+<% current_page "My 9s" -%>
+<% if !is_logged_in? -%>
+	<div class="inner_content_container">
 		<%= render :partial => 'my9s_instructions' %>
-	<% else -%>
-		<div class="tag_minor_nav"> 
-			<%= link_to "My 9s", { :action => 'index' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;My objects&nbsp;<br />
-		</div> 
-		
-		<table class="results_layout"><tr>
-			<tr>
-				<td valign="top">
-					<%= rounded_h1("MY TAGS") %>
-					<div class="tag_results standard_box">
-						<% selected_tag = "" -%>
-						<% selected_tag = params[:tag] if params[:view] == 'tag' -%>
-						<div id="tag_cloud_div">
-							<%= render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => selected_tag, :controller_for_tags => 'my9s', :hide_some => false  } %>
-						</div>
-						<div class="untagged_and_all_links">
-							<% if params[:view] == 'untagged' -%>
-							<span class="sidebar_tag_link_selected">List All Untagged Objects</span>
-							<% else -%>
-							<span class="sidebar_tag_link"><%= link_to "List All Untagged Objects", { :action => 'results', :view => 'untagged', :anchor => "top_of_results" }, :class => 'nav_link' %></span>
-							<% end -%>
-							&nbsp;
-							<% if params[:view] == 'all_collected' -%>
-							<span class="sidebar_tag_link_selected">List All Collected Objects</span>
-							<% else -%>
-							<span class="sidebar_tag_link"><%= link_to "List All Collected Objects", { :action => 'results', :view => 'all_collected', :anchor => "top_of_results" }, :class => 'nav_link' %></span>
-							<% end -%>
-						</div>
-					</div>
-					<%= render( :partial => 'results/result_count' ) %>
-					<% total_link = "<a id='top_of_results'>#{create_total(params[:view], @total_hits, params[:tag])}</a>" -%>
-					<% edit_tag_link = (params[:view] == 'tag') ? link_to_function('[ Edit Tag ]', "editTag('edit_tag', '#{params[:tag]}')", { :id => 'edit_tag', :class => 'modify_link' }) : "" -%>
-					<% remove_tag_link = (params[:view] == 'tag') ? link_to_function('[ Remove Tag ]', "removeTag('edit_tag', '#{params[:tag]}')", { :class => 'modify_link' }) : "" -%>
-					<%= rounded_h1("#{total_link}#{edit_tag_link}#{remove_tag_link}") %>
-					<div class="tag_results standard_box">
-						<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results"} }  ) %>
-						
-						<div id="all_displayed_results">
-							<%= render( :partial => 'results/results', :locals => { :user_id => user.id, :hits => @results } ) %>
-						</div>
-						
-						<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :action => 'results', :anchor => "top_of_results" } } ) %>
-					</div>
-				</td>
-				<td width="200px" valign="top">
-					<%= rounded_h1("EXHIBITED OBJECTS") %>
-					<div id="exhibited_objects_container" class="standard_box">
-						<%= render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id } %>
-					</div>
-				</td>
-			</tr>
-
-		</table>
+	</div>
+<% else -%>
+	<div class="subpage_nav"> 
+		<%= link_to "My 9s", { :action => 'index' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;My objects&nbsp;<br />
+	</div> 
+	
+	<div class="inner_content_container">
+		<div class="left_column">
+			<div id="tag_cloud">
+				<%= render :partial => 'tag_cloud_top', :locals => { :cloud_info => @cloud_info, :view => params[:view], :tag => params[:tag] } %>
+			</div>
+			<div id="result_list">
+				<% total_link = "<a id='top_of_results'>#{create_total(params[:view], @total_hits, params[:tag])}</a>" -%>
+				<% if params[:view] == 'tag' -%>
+					<% edit_tag_link = link_to_function('[ Edit Tag ]', "editTag('edit_tag', '#{params[:tag]}')", { :id => 'edit_tag', :class => 'modify_link' }) -%>
+					<% remove_tag_link = link_to_function('[ Remove Tag ]', "removeTag('edit_tag', '#{params[:tag]}')", { :class => 'modify_link' }) -%>
+					<% extra = "<br /><span class='edit_tag_link'>#{edit_tag_link} #{remove_tag_link}</span>" -%>
+				<% else -%>
+					<% extra = "" -%>
+				<% end -%>
+				<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'my9s', :action => 'results' } %>
+			</div>
 		</div>
-	<% end -%>
+		<div class="right_column">
+			<div id="exhibited_objects_container">
+				<%= render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id } %>
+			</div>
+		</div>
+		<div class="clear_both"></div>
+	</div>
+<% end # if logged in -%>

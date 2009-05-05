@@ -1,0 +1,138 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+	background:#000000;
+	position:absolute;
+	width:100%;
+	min-width:880px;
+	margin:0px;
+	padding:0px;
+	
+	font-family:"Times New Roman", Times, serif;
+	font-size:16px;
+}
+
+table, table td, table tr {
+	border:none;
+}
+
+.nav_link:link, .nav_link:visited {
+	color:#AC2E20;
+	text-decoration:none;
+}
+
+.nav_link:hover {
+	text-decoration:underline;
+}
+
+.tag_link:link { color: #A60000; }
+.tag_link:visited { color: #A60000; }
+.tag_link:hover { color: #fff; background: #A60000; }
+
+/* This is used for all links that change, or potentially change, the database */
+.modify_link:link { color: #A60000; text-decoration: none; }
+.modify_link:visited { color: #A60000; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+/* This is used for all links that go to the NINES sites. */
+.nines_link:link { color: #A60000; }
+.nines_link:visited { color: #A60000; }
+.nines_link:hover { color: #fff; background: #A60000; }
+
+.nines_link {
+	background: url(/images/nines_link.jpg) center right no-repeat;
+	padding-right: 13px;
+}
+
+/* This is used for all links that go to external websites */
+.ext_link:link { color: #A60000; text-decoration: none; }
+.ext_link:visited { color: #A60000; text-decoration: none; }
+.ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+.ext_link {
+	background: url(/images/external_link.jpg) center right no-repeat;
+	padding-right: 13px;
+}
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike {
+	color: #A60000;
+	background: url(/images/nines_link.jpg) center right no-repeat;
+	padding-right: 13px;
+} /* should match nines_link:link */
+
+.ext_linklike {
+	color: #A60000;
+	background: url(/images/external_link.jpg) center right no-repeat;
+	padding-right: 13px;
+} /* should match ext_link:link */
+
+.float_right {
+	float:right;
+	margin:0px 0px 10px 10px;
+}
+
+.clear_both{
+	clear:both;
+}
+
+.clear_right{
+	clear:right;
+}
+
+.noshow, .hidden {
+	display: none;
+}
+
+#main_container {
+	border-left:10px #371911 solid;
+	border-right:10px #371911 solid;
+	border-bottom:10px #371911 solid;
+	margin:0px 30px 10px 30px;
+	background:#FFFFFF;
+
+}
+
+#footer_container {
+	font-family:Arial, Helvetica, sans-serif;
+	color:#FDDFAB;
+	padding:10px 0px 10px 0px;
+	text-align:center;
+	background:#000000;
+}
+
+#footer_container a, #footer_container a.link, #footer_container a.visited{
+	color:#9D1E16;
+	font-weight:bold;
+}
+
+.inner_content_container {
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:0.9em;
+	height:auto;
+	padding:20px 10px 10px 20px;
+}
+
+.left_column {
+	float:left;
+	width:70%;
+}
+
+.right_column {
+	width:25%;
+	float:right;
+	background:#F7F4EA;
+	padding:0px 0px 10px 0px;
+}
+
+.right_column p {
+	color:#000000;
+}
+
+.inputHintStyle {
+  color: silver;
+  font-style: italic;
+}
+
+

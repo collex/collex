@@ -1,39 +1,60 @@
-<% current_page "Home" -%>
-<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search' } ) %>
-<div align="center">
-<table>
-	<tr>
-		<td><div id="welcome-to-nines"><b>Welcome to the new NINES!</b> <u><a class="nav_link" href="/news/?p=7">Click here to learn more about our new features.</a></u></div></td>
-	</tr>
-	<tr>
-		<td><center><input name="search_phrase" id="search_phrase" size="60"/><input class="search-button" type="submit" value="Search Now!" /></center></td>
-	</tr>
-	<tr>
-		<td><center><b><%= link_to 'What is NINES?', tab_about_path, :class => 'nav_link' %></b></center>
-		</td>
-	</tr>
-</table>
-<div id="home-instructions"><img src="/images/home-instructions.jpg"/></div>
-<div class="contributor-list">
-<div class="contributor-list-caption">When you search NINES, you get results from:</div>
-<table cellspacing="0px">
-<% @sites.each_with_index do |site, i| -%>
-	<% if i % 3 == 0 -%>
-	<tr>
-		<td class="contributor-list-left-col"><a class="nav_link" href="<%= @sites[i]['url']%>" target="_blank"><%= @sites[i]['description']%></a></td>
-		<% if @sites[i+1] -%>
-			<td class="contributor-list-left-col"><a class="nav_link" href="<%= @sites[i+1]['url']%>" target="_blank"><%= @sites[i+1]['description']%></a></td>
-		<% else -%>	
-			<td class="contributor-list-left-col"></td>		
-		<% end -%>
-		<% if @sites[i+2] -%>		
-			<td><a class="nav_link" href="<%= @sites[i+2]['url']%>" target="_blank"><%= @sites[i+2]['description']%></a></td>
-		<% end -%>
-	</tr>
-	<% end -%>
-<% end -%>
-</table>
-</div>
-</div>
-</form>
-<br /><br /><br /><br />
+<% current_page "HOME" -%>
+    	<div id="search_container">
+        	<div id="search_box">
+				<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search' } ) %>
+	            	<strong>Search NINES:</strong><br />
+	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" /> 
+	                <div id="search_note_container">
+	               	  <div id="search_note">Searching <%= number_with_delimiter(session[:num_docs]) %> peer-reviewed digital objects from <%=number_with_delimiter(Site.count)%> federated sites  </div>
+	                    <div id="advanced_link"><%= link_to("Advanced Search", search_path, { :class => 'nav_link' } ) %></div>
+	                    <div class="clear_both"></div>
+	                </div>
+				</form>
+            </div>
+        </div>
+		<div id="popular_container">
+			<table>
+            	<tbody><tr><td colspan="5" class="spacer_cell"></td></tr>
+            	<tr>
+                	<td id="discussions" valign="top">
+                    <div class="popular_title">Popular Discussions</div>
+                    <ul>
+                    	<% @discussions.each {|discussion| -%>
+						<li><%= link_to(discussion[:title], "/discussion_threads/view_thread?thread=#{discussion[:id]}", { :class => 'nav_link' }) %></li>
+                    	<% } -%>
+                		<li><%= link_to("MORE", discussion_path, { :class => 'nav_link' }) %></li>
+                	</ul>
+                    </td>
+                   	<td class="spacer_cell"></td>
+                    <td id="tags" valign="top">
+                    <div class="popular_title">Popular Tags</div>
+					<% tag_links = [] -%>
+					<% @tags.each {|tag| tag_links.push(link_to(tag[0], "/tag/results?tag=#{tag[0]}&view=tag", { :class => tag[2] ? 'nav_link tag_lvl1' : 'nav_link' })) } -%>
+					<%= tag_links.join(" • ") %>
+					</td>
+                    <td class="spacer_cell"></td>
+                    <td id="news" valign="top">
+                    <div class="popular_title">Recent News</div>
+					<div id="recent_news"></div>
+                    </td>
+              </tr>
+            	<tr><td colspan="5" class="spacer_cell"></td></tr>
+            </tbody></table>
+		</div>
+        
+	<%= render :partial => 'featured_exhibit' %>
+        
+    <div id="carousel_container">
+		    <img src="stylesheets/images/index_flash_dummy.jpg">
+    </div>
+
+<script type="text/javascript">
+	document.observe('dom:loaded', function() {
+		// initialize carousel
+		//jQuery('#homepage_carousel').jcarousel({ scroll: 1 });
+
+		// load news items
+		//loadLatestNews('recent_news','/news/?feed=rss2',5);
+		loadLatestNews('recent_news','/sample_news.xml',5);
+	});
+</script>

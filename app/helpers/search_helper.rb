@@ -63,7 +63,7 @@ module SearchHelper
 
     for pg in first..last do
       if pg == curr_page
-        html += "<span class='paginate-current'>#{pg}</span>"
+        html += "<span class='current_serp'>#{pg}</span>"
       else
         destination_hash[:page] = pg
         html += link_to("#{pg}", destination_hash, :class => 'nav_link' )
@@ -88,6 +88,16 @@ module SearchHelper
     constraints = session[:constraints]
     constraints.each {|constraint|
       if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
+        return true
+      end
+    }
+    return false
+  end
+  
+  def site_is_in_constraints?(site_value)
+    constraints = session[:constraints]
+    constraints.each {|constraint|
+      if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == site_value
         return true
       end
     }
@@ -156,16 +166,20 @@ module SearchHelper
 
   end
   
-  def site_category_subtotal(facet_category)    
+  def site_subtotal(facet_category)    
     count = 0
-    facet_category.sorted_children.each { |child| 
-      if child.children.size > 0 
-        count = count + site_category_subtotal(child)
-      else
-        count = count + site_object_count(child.value)
-      end    
-    }    
-    count
+    if facet_category['type'] == nil
+      facet_category.sorted_children.each { |child| 
+        if child.children.size > 0 
+          count = count + site_subtotal(child)
+        else
+          count = count + site_object_count(child.value)
+        end    
+      }
+    else
+      count = site_object_count(facet_category.value)
+    end
+    return count
   end
     
   def is_constrained_by_child(resource)
@@ -201,15 +215,16 @@ module SearchHelper
     @results['facets']['archive'][code].to_i
   end
   
-  def site_category_heading( category_name, category_id, initial_state = :closed )
-    display_none = 'style="display:none"'
-    label = "<span id=\"cat_#{category_id}_closed\" #{initial_state == :open ? display_none : ''} class=\"site-category-toggle\">"
-    label << link_to_function('&#x25BA; ' + category_name,"toggleCategory('#{category_id}')", { :class => 'nav_link'})
-    label << "</span>"
-    label << "<span id=\"cat_#{category_id}_opened\" #{initial_state == :closed ? display_none : ''} class=\"site-category-toggle\">"
-    label << link_to_function('&#x25BC; ' + category_name, "toggleCategory('#{category_id}')", { :class => 'nav_link' })
-    label << "</span>"
-  end
+#  def site_category_heading( category_name, category_id, initial_state = :closed )
+#    display_none = 'style="display:none"'
+#    label = "<span id=\"cat_#{category_id}_closed\" #{initial_state == :open ? display_none : ''} class=\"site-category-toggle\">"
+#    label << link_to_function('&#x25BA; ' + category_name,"toggleCategory('#{category_id}')", { :class => 'nav_link'})
+#    label << "</span>"
+#    label << "<span id=\"cat_#{category_id}_opened\" #{initial_state == :closed ? display_none : ''} class=\"site-category-toggle\">"
+#    label << link_to_function('&#x25BC; ' + category_name, "toggleCategory('#{category_id}')", { :class => 'nav_link' })
+#    label << "</span>"
+#  '<tr><td><img src="images/arrow_dn.gif" /> Collections</td><td class="num_objects">1,131</td></tr>'
+#  end
   
   def result_is_collected(hit)
     return get_collected_item(hit) != nil
@@ -361,7 +376,7 @@ module SearchHelper
       str = ""
       hit[key].each_with_index do |item, i|
         str += "<tr #{cls}>\n"
-        str += "\t<td class='grey' valign='top'>"
+        str += "\t<td class='search_result_data_label' valign='top'>"
         str += label + ":" if i < 1
         str += "</td>\n"
         str += "\t<td valign='top' width='100%'>"
@@ -373,7 +388,7 @@ module SearchHelper
     elsif type == :single_item
       # single item
       str = "<tr #{cls}>\n"
-      str += "\t<td class='grey' valign='top'>"
+      str += "\t<td class='search_result_data_label' valign='top'>"
       str += label + ":"
       str += "</td>\n"
       str += "\t<td valign='top' width='100%'>"
@@ -384,7 +399,7 @@ module SearchHelper
     elsif type == :multiple_item
       # multiple item, one line
       str = "<tr #{cls}>\n"
-      str += "\t<td class='grey' valign='top'>"
+      str += "\t<td class='search_result_data_label' valign='top'>"
       str += label + ":"
       str += "</td>\n"
       str += "\t<td valign='top' width='100%'>"
@@ -393,5 +408,60 @@ module SearchHelper
       str += "</tr>\n"
     end
     return str
+  end
+  
+  ##############################
+  # Helpers for the facet tree that shows resources
+  # These are called either in edit mode or normal mode
+  # For the administrator page or the search page.
+  def site_selector(display_name, total, id, value, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found )
+    # This is one line in the resources.
+    # If edit mode: don't show # objects, show value instead.
+    # if category, put in arrow for expand/collapse
+    html = "<tr class='#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>"
+    if is_category
+      html = html + "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onmousedown='open_tree(event, \"#{id}\"); return false;'><img src='/stylesheets/images/arrow.gif' /></a>"
+      html = html + "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onmousedown='close_tree(event, \"#{id}\"); return false;'><img src='/stylesheets/images/arrow_dn.gif' /></a>"
+    end
+     if is_edit_mode
+       if is_found
+        html += display_name + " [#{value}]"
+      else
+        html += "<b>Not found: " + display_name + "</b> [#{value}]"
+      end
+    else
+      if is_category
+        html += "<a href='#' onmousedown='toggle_tree(event, \"#{id}\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
+      else
+        if site_is_in_constraints?(value)
+          html += display_name + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
+        else
+          onclick = "var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit();return false;"
+          html += "<a href='/collex/constrain_resources?resource=#{value}' class='nav_link' onclick=\"#{onclick}\" >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
+        end
+      end
+    end
+    html = html + "</td></tr>"
+    return html
+  end
+  
+  def genre_selector( genre_data )
+    if genre_data[:exists]
+      html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}"
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + link_to("#{h genre_data[:value]}", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post, :class => 'nav_link' })
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(genre_data[:count])}</td></tr>"
+    return html
+  end
+
+  def free_culture_selector(count)
+    if free_culture_is_in_constraints?
+      html = "<tr class='limit_to_selected'><td>Free Culture Only"
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + link_to("Free Culture Only", {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' })
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+    return html
   end
 end

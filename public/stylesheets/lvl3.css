@@ -1,0 +1,49 @@
+@charset "UTF-8";
+/* CSS Document */
+
+#header_container {
+	width:100%;
+	height:33px;
+	background-color: black;
+	/*background:url(/images/index_header_stretch.jpg) bottom left repeat-x;*/
+}
+
+#header_left {
+	width:755px;
+	height:33px;
+	float:left;
+	background:url(/images/lvl3_header.jpg) top left no-repeat;
+}
+
+#header_right {
+}
+
+.mynines_link {
+	display: none;
+}
+
+#nav_container {
+	display:none;
+}
+
+#login_container {
+	display: none;
+}
+
+#subnav_links_container {
+	display: none;
+}
+
+#content_container {
+	/*height:1200px;*/
+	text-align:left;
+}
+.page_header {
+	font-size:1.5em;
+	padding:10px 0px 0px 0px;
+	margin:0px;
+	font-weight:bold;
+}
+.page_subheader {
+	padding:10px 0px 0px 0px;
+}

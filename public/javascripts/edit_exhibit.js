@@ -111,7 +111,7 @@ function elementTypeChanged(div, element_id, newType)
 	}
 
 	var params = { element_id: element_id, type: newType };
-	doAjaxLink(div+",full-window-content", "/my9s/change_element_type,/my9s/refresh_outline", params);
+	doAjaxLink(div+",exhibit_builder_outline_content", "/my9s/change_element_type,/my9s/refresh_outline", params);
  }
 
 function illustrationJustificationChanged(div, element_id, newJustification)
@@ -141,7 +141,7 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 		var id = allElements[0].id;
 		var arr = id.split("_");
 		var element_id = arr[arr.length-1];
-		new Ajax.Updater("full-window-content", "/my9s/modify_outline", {
+		new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline", {
 			parameters : { verb: verb, element_id: element_id, exhibit_id: exhibit_id },
 			evalScripts : true,
 			onFailure : function(resp) { alert("Oops, there's been an error."); }});
@@ -165,7 +165,7 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 		var id = allElements[0].id;
 		var arr = id.split("_");
 		var element_id = arr[arr.length-1];
-		new Ajax.Updater("full-window-content", "/my9s/modify_outline_page", {
+		new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline_page", {
 			parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
 			evalScripts : true,
 			onComplete: function(resp) {
@@ -357,7 +357,7 @@ function showExhibitOutline(element_id, page_num)
 
 function initOutline(div_id)
 {
-	$('full_window').removeClassName('hidden');
+	$(div_id).removeClassName('hidden');
 	var width = 320;
 	var top = 180;
 	var height = getViewportHeight() - top - 80;
@@ -413,7 +413,7 @@ function initOutline(div_id)
 	_exhibit_outline.render();
 	
 	if (supportsFixedPositioning)
-		$('full_window_c').setStyle({ position: 'fixed'});
+		$(div_id + '_c').setStyle({ position: 'fixed'});
 }
 
 function editGlobalExhibitItems(update_id, exhibit_id, data_class)
@@ -805,7 +805,7 @@ BorderDialog.prototype = {
 			var element_id = els[0].id;
 			element_id = element_id.substring(element_id.lastIndexOf('_')+1);
 			
-			new Ajax.Updater("full-window-content", "/my9s/modify_border", {
+			new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_border", {
 				parameters : { borders: str, element_id: element_id },
 				evalScripts : true,
 				onSuccess: function(resp) {
@@ -913,7 +913,7 @@ var CreateNewExhibitWizard = Class.create({
 		};
 
 		// privileged methods
-		this.show = function (parent_id) {
+		this.show = function () {
 			var choose_title = {
 					page: 'choose_title',
 					rows: [
@@ -956,7 +956,7 @@ var CreateNewExhibitWizard = Class.create({
 
 			var pages = [ choose_title, choose_palette, choose_other_options ];
 
-			var params = { parent_id: parent_id, this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "New Exhibit Wizard" };
+			var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "New Exhibit Wizard" };
 			var dlg = new GeneralDialog(params);
 			this.changeView(null, { curr_page: '', destination: 'choose_title', dlg: dlg });
 			dlg.center();

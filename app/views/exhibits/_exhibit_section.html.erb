@@ -23,7 +23,7 @@
 	<% if is_edit_mode -%>
 		<script language="JavaScript">
 			if(window.initializeInplaceHeaderEditor)
-				initializeInplaceHeaderEditor(<%= "'header_#{element.id},full-window-content'"%>, "/my9s/edit_header,/my9s/refresh_outline");
+				initializeInplaceHeaderEditor(<%= "'header_#{element.id},exhibit_builder_outline_content'"%>, "/my9s/edit_header,/my9s/refresh_outline");
 		</script>
 	<% end -%>
 <% elsif element.exhibit_element_layout_type == 'text' -%>

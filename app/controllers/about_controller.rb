@@ -1,5 +1,5 @@
 class AboutController < ApplicationController
-   layout 'collex_tabs'
+   layout 'nines'
 
    before_filter :init_view_options
 

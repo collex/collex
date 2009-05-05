@@ -14,6 +14,15 @@
 	padding-bottom:10px;
 }
 
+.modal_dialog_form {
+	padding: 1em;
+	text-align: left;
+}
+
+.yui-module {
+	background: white;
+}
+
 /***********************/
 /* styles for the login pages */
 /***********************/
@@ -26,12 +35,12 @@
 	padding-top:80px;
 	background-image:url("/images/login_header.jpg");
 	background-repeat:no-repeat;
-	border-left: 8px solid #670001;
+/*	border-left: 8px solid #670001;
 	border-right: 8px solid #670001;
-	border-bottom: 8px solid #670001;
-/*	border-left: 8px solid #5f3119;
+	border-bottom: 8px solid #670001;*/
+	border-left: 8px solid #5f3119;
 	border-right: 8px solid #5f3119;
-	border-bottom: 8px solid #5f3119;*/
+	border-bottom: 8px solid #5f3119;
 	width: 272px;
 }
 
@@ -68,7 +77,7 @@
 /*****************************************/
 
 .new_exhibit_div {
-	width: 460px;
+	width: 500px;
 }
 
 .new_exhibit_title {
@@ -99,6 +108,12 @@
 .new_exhibit_instructions {
 	font-style: italic;
 	color: #777777;
+}
+
+/*****************************************/
+
+#border_outer_container {
+	text-align: left;
 }
 
 /*****************************************/
@@ -139,7 +154,7 @@
 }
 
 .edit_palette_dlg {
-	width: 460px;
+	width: 500px;
 }
 
 /*****************************************/
@@ -159,6 +174,7 @@
 
 .input_dlg_license_list {
 	border: 1px solid black;
+	text-align: left;
 }
 
 .input_dlg_license_list tr {
@@ -177,4 +193,9 @@
 	min-height: 3em;
 }
 
+/*****************************************/
+
+#lightbox_id {
+	padding: 5px;
+}
 

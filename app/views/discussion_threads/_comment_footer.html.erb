@@ -20,7 +20,7 @@
 		<% if is_logged_in? -%>
 			<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/discussion_threads/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
 		<% else -%>
-			<% action = "new RedirectIfLoggedIn('popup_dialog_anchor', '', 'You must be signed in to report a comment', false);" -%>
+			<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
 		<% end -%>
 		<%= rounded_button("report", "report_id_#{comment.id}", action, 'gray') %>
 	<% end -%>

@@ -26,9 +26,27 @@ class Admin::FacetTreeController < Admin::BaseController
   end
 
   def edit
+    @sites_forest = FacetCategory.sorted_facet_tree().sorted_children
     @facet_tree = FacetTree.find_by_value(params[:tree])
+    @found_resources = get_all_found_resources()
+    solr = CollexEngine.new(COLLEX_ENGINE_PARAMS)
+    @results = solr.search([], 1, 10) # temp, to test the drawing of the tree
+    search_one_branch(@sites_forest, @found_resources)
   end
-  
+private
+  def search_one_branch(site_arr, found_resources)
+    site_arr.each {|site|
+      if site['type'] == nil
+        search_one_branch(site.sorted_children, found_resources)
+      else
+        name = site['value']
+        index = found_resources.index(name)
+        site['found'] = (index != nil)
+        found_resources.delete_at(index) if index != nil
+    end
+    }
+  end
+public
   def add_category
 #    facet_tree = FacetTree.find_by_value(params[:tree])
 #    facet_tree << FacetCategory.new(:value => "New Category")
@@ -73,5 +91,13 @@ class Admin::FacetTreeController < Admin::BaseController
   #   FacetTree.find(params_by_value[:tree]).destroy
   #   redirect_to :action => 'list'
   # end
-
+private
+  def get_all_found_resources
+    solr = CollexEngine.new(COLLEX_ENGINE_PARAMS)
+    results = solr.search([], 1, 10)
+    found_resources = results['facets']['archive']
+    resources = []
+    found_resources.each {|key,val| resources.push(key)}
+    return resources
+  end
 end

@@ -19,7 +19,7 @@
 #ANNOTATION_INSTRUCTIONS = 'enter annotation' # TODO-PER: these may not be relevant but were put in to make it not crash
 
 class TagController < ApplicationController
-   layout 'collex_tabs'
+   layout 'nines'
    #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
    

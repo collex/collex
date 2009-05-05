@@ -12,18 +12,44 @@
 
 <title>N I N E S</title>
 
-	<!-- site wide styles -->
-  <link href="/stylesheets/globals.css" media="all" rel="stylesheet" type="text/css" />
-  <link href="/stylesheets/core.css" media="all" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" type="text/css"> 
-
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/base/base-min.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
+	<link href="/stylesheets/main.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/nav.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/lvl2.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/about.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
 	<!-- section styles -->
-  <link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />
 
-	
-<!--[if IE]>
-	  	<link href="/stylesheets/ie.css" media="all" rel="stylesheet" type="text/css" />
+<!--[if lt IE 7]>
+	<link href="/stylesheets/iehacks.css" media="all" rel="stylesheet" type="text/css" />
 <![endif]-->
+<!--[if IE 7]>
+	<link href="/stylesheets/ie7hacks.css" media="all" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+	<script src="/javascripts/application.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
+	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/login.js" type="text/javascript"></script>
+	<script src="/javascripts/nospam.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" type="text/css" media="screen" />
 <link rel="alternate" type="application/rss+xml" title="<?php bloginfo('name'); ?> RSS Feed" href="<?php bloginfo('rss2_url'); ?>" />
@@ -49,41 +75,38 @@ if ( !empty($withcomments) && !is_single() ) {
 
 <?php wp_head(); ?>
 </head>
-<body>
 
-<div id="mainContent">
-
-	<div id="container">
-		<div id="header-left">
-			<img src="" alt="" />
+<body class="yui-skin-sam">
+	<div id="main_container">
+		<div id="header_container">
+			<a href="/"><div id="header_left"></div></a>
+			<div id="header_right"></div>
 		</div>
-		<a href="/"><div id="header-center">
-			<br />
-			<br />
-			<br />
-		</div></a>
-		<div id="header-right">
+		<a href="/my9s" class="mynines_link">My 9s</a>
+
+		<div id='nav_container'>
+			<a href="/" class="tab_link">HOME</a>
+			<a href="/news/" class="tab_link_current">News</a>
+			<a href="/discussion" class="tab_link">Forum</a>
+			<a href="/exhibit_list" class="tab_link">Exhibits</a>
+			<a href="/tags" class="tab_link">Tags</a>
+			<a href="/search" class="tab_link">Search</a>
 		</div>
 
-	<div id="nines-content">
-		<table class="tabs" cellspacing='0px' >
-			<tr>
-				<td class="tab-spacer-left">&nbsp;</td>
-				<td class='link_tab'><a href="/" class="nav_link">Home</a></td>
-				<td class='link_tab'><a href="/my9s" class="nav_link">My&nbsp;9s</a></td>
-				<td class='link_tab'><a href="/search" class="nav_link">Search</a></td>
-				<td class='link_tab'><a href="/tags" class="nav_link">Tags</a></td>
-				<td class='link_tab'><a href="/exhibit_list" class="nav_link">Exhibits</a></td>
-				<td class='curr_tab'>News</td>
-				<td class='link_tab'><a href="/tab_about" class="nav_link">About</a></td>
-				<td class="tab-spacer-right">&nbsp;</td>
-			</tr>
-		</table>
-
-		<div class="tab-content-outline">
-		<div class="tab-content-outline2">
-
-		<div class="tab-content">
-			<div id="doc3" class="yui-t2">
+    	<div id="subnav_container">
+        	<div id="login_container">
+				<script language="JavaScript">
+				document.observe('dom:loaded', function() {
+					new Ajax.Updater('login_container', '/login/login_controls');
+					});
+				</script>
+            </div>
+            <div id="subnav_links_container">
+            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/software/index.html" class="here nav_link">Software</a>  |  <a href="/community/index.html" class="nav_link">Community</a> 
+            </div>
+           	<div class="clear_both"></div>
+		</div>
+		<div id="content_container">
+			<div class="inner_content_container">
 <hr />
 <div id="nines-page">

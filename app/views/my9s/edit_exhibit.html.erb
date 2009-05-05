@@ -14,8 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%= stylesheet_link_tag "exhibits_elements", :media => "all" %>
-<% current_page "My&nbsp;9s" -%>
+<% current_page "My 9s" -%>
 <script language="JavaScript">
 	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
 	var gCollectedObjects = <%= ExhibitObject.get_collected_object_array(@exhibit.id) %>;
@@ -24,23 +23,23 @@
 <script language="JavaScript">
 	document.observe('dom:loaded', function() {
 		if (window.initOutline) 
-			initOutline("full_window");	
+			initOutline("edit_exhibit_outline");	
 		});
 </script>
 
-<div id="full_window" class="hidden">
+<div id="edit_exhibit_outline" class="hidden">
 	<div class="bd">
-		<div id="full-window-content">
+		<div id="exhibit_builder_outline_content">
 			<%= render :partial => 'exhibit_outline', :locals => { :exhibit => @exhibit, :element_id_selected => -1, :is_editing_border => false } %>
 		</div>
 	</div>
 </div>
 
-<div id="search-main">
+<div class="inner_content_container">
 	<% if !is_logged_in? -%>
 		<%= render :partial => 'my9s_instructions' %>
 	<% else -%>
-		<div class="tag_minor_nav"> 
+		<div class="subpage_nav"> 
 			<%= link_to "My9s", { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		

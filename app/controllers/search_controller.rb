@@ -15,7 +15,7 @@
 ##########################################################################
 
 class SearchController < ApplicationController
-   layout 'collex_tabs'
+   layout 'nines'
    #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
    
@@ -51,7 +51,12 @@ class SearchController < ApplicationController
         # basic search
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
-        parse_keyword_phrase(params[:search_phrase], false)
+        parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Keyword"
+#        add_title_constraint(params[:search_phrase], false) if params[:search_type] == "Title"
+#        add_author_constraint(params[:search_phrase], false) if params[:search_type] == "Author"
+#        add_editor_constraint(params[:search_phrase], false) if params[:search_type] == "Editor"
+#        add_publisher_constraint(params[:search_phrase], false) if params[:search_type] == "Publisher"
+#        add_date_constraint(params[:search_phrase], false) if params[:search_type] == "Year"
         
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
@@ -223,7 +228,7 @@ class SearchController < ApplicationController
 
     @num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil      
     @total_documents = @results["total_documents"]     
-    @sites_forest = FacetCategory.sorted_facet_tree()
+    @sites_forest = FacetCategory.sorted_facet_tree().sorted_children
     @genre_data = marshall_genre_data(@results["facets"]["genre"])
     @citation_count = @results['facets']['genre']['Citation'] || 0
     @freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
@@ -276,9 +281,6 @@ class SearchController < ApplicationController
    end
    
    def results  # TODO: This should only be called by an internal redirect. Is there a danger in having this exposed to someone typing it in their browser?
-   end
-   
-   def tab_about #TODO: This will move when we implement the feature
    end
    
    # constrain search to only return free culture objects 

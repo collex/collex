@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
 
-  layout 'collex_tabs'
+  layout 'nines'
   before_filter :init_view_options
   
   def init_view_options
@@ -20,7 +20,25 @@ class HomeController < ApplicationController
   end
 
   def index
-    @sites = Site.find(:all, :order => "description ASC")
+    #@sites = Site.find(:all, :order => "description ASC")
+    threads = DiscussionThread.find(:all, :order => 'updated_at', :limit => '5')
+    @discussions = []
+    threads.each {|thread|
+      @discussions.push({ :title => thread.title.length > 0 ? thread.title : "[Untitled]", :id => thread.id })
+    }
+    
+    cloud_info = CachedResource.get_tag_cloud_info(nil) # get all tags and their frequencies
+    @tags = cloud_info[:cloud_freq].sort {|a,b| b[1] <=> a[1]} # sort by frequency
+    total_tags_wanted = @tags.length > 40 ? 40 : @tags.length
+    total_bigger_tags = total_tags_wanted / 5
+    @tags = @tags.slice(0, total_tags_wanted)  # we just want the top 40 tags.
+    0.upto(total_bigger_tags-1) { |i| # now make a few of the tags larger
+      @tags[i][2] = true
+    }
+    total_bigger_tags.upto(total_tags_wanted-1) { |i| # now make a few of the tags larger
+      @tags[i][2] = false
+    }
+    @tags = @tags.sort {|a,b| a[0] <=> b[0]}  # now sort by tag name for display
   end
   
   def news

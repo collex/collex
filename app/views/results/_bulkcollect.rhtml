@@ -17,9 +17,9 @@
 	
 <div class="bulkcollect">
 <% if is_logged_in? -%>
-  <a class="modify_link" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">[select all]</span><span class="bulk_unselect_all" style="display: none;">[unselect all]</span></a>
-  <a class="modify_link" href="#" onclick="bulkCollect(event); return false;">[collect selected]</a>
-  <a id="bulk_tag" class="modify_link" href="#" onclick="bulkTag(event); return false;">[tag selected]</a>
+  <a class="modify_link" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">[Select All]</span><span class="bulk_unselect_all" style="display: none;">[Unselect All]</span></a>
+  <a class="modify_link" href="#" onclick="bulkCollect(event); return false;">[Collect Selected]</a>
+  <a id="bulk_tag" class="modify_link" href="#" onclick="bulkTag(event); return false;">[Tag Selected]</a>
 <% end -%>
-	<a class="nav_link" href="#" onclick="expandAllItems(); return false;">[expand all items]</a>
+	<a class="nav_link" href="#" onclick="expandAllItems(); return false;">[Expand All Entries]</a>
 </div>

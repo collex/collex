@@ -1,0 +1,28 @@
+<%
+# ------------------------------------------------------------------------
+#    Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+#    
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#  
+#        http://www.apache.org/licenses/LICENSE-2.0
+#  
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#---------------------------------------------------------------------------- -%>
+<% # /common/facet_tree_one_branch params: FacetCategory branch, int indent, bool is_edit_mode, string parent_id, bool start_hidden -%>
+<% suppress_empty_nodes = !is_edit_mode -%>
+<% for site in branch -%>
+	<% if !suppress_empty_nodes || site_subtotal(site) != 0 -%>
+		<% if site['type'] == nil # is category -%>
+			<%= site_selector(site.display_name, site_subtotal(site), site.id, site['value'], indent, is_edit_mode, true, parent_id, start_hidden, true ) %>
+			<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => site.sorted_children, :indent => indent + 1, :is_edit_mode => is_edit_mode, :parent_id => "#{parent_id} child_of_#{site.id}", :start_hidden => true } %>
+		<% else # is site -%>
+			<%= site_selector(site.display_name, site_subtotal(site), site.id, site['value'], indent, is_edit_mode, false, parent_id, start_hidden, site['found'] ) %>
+		<% end # if it is a category or site -%>
+	<% end # if the site isn't suppressed -%>
+<% end # each site -%>

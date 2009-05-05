@@ -15,12 +15,21 @@
 ##########################################################################
 
 class Admin::BaseController < ApplicationController
-  layout 'admin'
+  layout 'nines'
   before_filter :check_admin_privileges
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
   
+  before_filter :init_view_options
+  
+  def init_view_options
+    @use_tabs = true
+    @use_signin= true
+    @site_section = :admin
+     @uses_yui = true
+    return true
+  end
 
   private
   #TODO: move this to a general /admin area controller superclass
