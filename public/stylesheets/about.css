@@ -1,7 +1,7 @@
+@charset "UTF-8";
+/* CSS Document */
 
-/* Use this CSS file for styles that are specfic to "About" section */
-
-.tag_minor_nav a.here {
+#subnav_links_container a.here {
 color:black;
 font-size: 1.3em;
 background-color:white;
@@ -411,4 +411,25 @@ font-weight:bold;
 img .grayBorder {
 border:#E0E0E0 8px solid;
 }
+
+/* For news installation */
+
+#installation-instructions {
+	margin-left: 50px;	
+	margin-right: 50px;
+}
+
+#installation-instructions blockquote {
+	margin-left: 100px;
+	margin-right: 100px;	
+	background-color: #E0E0E0;
+	padding: 10px;
+	border: 1px solid black;
+}
+
+#installation-instructions p {
+	margin-left: 10px;
+	margin-right: 10px;	
+}
+
 
