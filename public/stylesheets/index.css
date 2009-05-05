@@ -7,11 +7,39 @@
 	background:url(/images/index_header_stretch.jpg) top left repeat-x;
 }
 
-#header_left {
+#header_left1 {
 	width:373px;
 	height:152px;
 	float:left;
-	background:url(/images/index_header_left.jpg) top left no-repeat;
+	background:url(/images/index_header_left1.jpg) top left no-repeat;
+}
+
+#header_left2 {
+	width:373px;
+	height:152px;
+	float:left;
+	background:url(/images/index_header_left2.jpg) top left no-repeat;
+}
+
+#header_left3 {
+	width:373px;
+	height:152px;
+	float:left;
+	background:url(/images/index_header_left3.jpg) top left no-repeat;
+}
+
+#header_left4 {
+	width:373px;
+	height:152px;
+	float:left;
+	background:url(/images/index_header_left4.jpg) top left no-repeat;
+}
+
+#header_left5 {
+	width:373px;
+	height:152px;
+	float:left;
+	background:url(/images/index_header_left5.jpg) top left no-repeat;
 }
 
 #header_right {

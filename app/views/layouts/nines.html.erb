@@ -114,7 +114,7 @@
 			<% if yield(:current_page) != "HOME" -%>
 				<a href="/"><div id="header_left"></div></a>
 			<% else -%>
-				<div id="header_left"></div>
+				<div id="header_left<%= rand(5) + 1 %>"></div>
 			<% end -%>
 			<div id="header_right"></div>
 		</div>
