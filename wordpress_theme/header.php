@@ -99,7 +99,7 @@ if ( !empty($withcomments) && !is_single() ) {
 				</script>
             </div>
             <div id="subnav_links_container">
-            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="nav_link">Community</a> 
+            	<a href="/about">What is NINES?</a>  |  <a href="/scholarship/index.html">Scholarship</a>  |  <a href="/software/index.html">Software</a>  |  <a href="/community/index.html">Community</a> 
             </div>
            	<div class="clear_both"></div>
 		</div>
