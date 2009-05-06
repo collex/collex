@@ -264,6 +264,22 @@ a.tab_link_current:hover {
 	background:url(/images/index_tab_dn.gif) top left no-repeat;
 }
 
+a.nav_link {
+	color: white;
+	background: #A60000;
+}
+
+a.nav_link:visited {
+	color: white;
+	background: #A60000;
+}
+
+a.nav_link:hover {
+	text-decoration:underline;
+	color: white;
+	background: #A60000;
+}
+
 a {
 	color: #A60000;
 	text-decoration: none;
