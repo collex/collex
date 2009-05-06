@@ -23,10 +23,9 @@
 	<link href="/stylesheets/main.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/nav.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/lvl2.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/about.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
 	<!-- section styles -->
-	<link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />
 
 <!--[if lt IE 7]>
 	<link href="/stylesheets/iehacks.css" media="all" rel="stylesheet" type="text/css" />
@@ -55,8 +54,6 @@
 <link rel="alternate" type="application/rss+xml" title="<?php bloginfo('name'); ?> RSS Feed" href="<?php bloginfo('rss2_url'); ?>" />
 <link rel="alternate" type="application/atom+xml" title="<?php bloginfo('name'); ?> Atom Feed" href="<?php bloginfo('atom_url'); ?>" />
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
-<script type="text/javascript" src="/javascripts/prototype.js"></script>
-<script type="text/javascript" src="/javascripts/nospam.js"></script>
 
 <style type="text/css" media="screen">
 
@@ -102,11 +99,11 @@ if ( !empty($withcomments) && !is_single() ) {
 				</script>
             </div>
             <div id="subnav_links_container">
-            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/software/index.html" class="here nav_link">Software</a>  |  <a href="/community/index.html" class="nav_link">Community</a> 
+            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="nav_link">Community</a> 
             </div>
            	<div class="clear_both"></div>
 		</div>
 		<div id="content_container">
-			<div class="inner_content_container">
+			<div class="inner_content_container yui-t2">
 <hr />
 <div id="nines-page">
