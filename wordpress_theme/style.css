@@ -265,13 +265,13 @@ a.tab_link_current:hover {
 }
 
 a.nav_link {
-	color: white;
-	background: #A60000;
+	color: #A60000;
+	background: white;
 }
 
 a.nav_link:visited {
-	color: white;
-	background: #A60000;
+	color: #A60000;
+	background: white;
 }
 
 a.nav_link:hover {
