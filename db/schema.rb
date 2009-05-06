@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 106) do
+ActiveRecord::Schema.define(:version => 107) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -209,6 +209,11 @@ ActiveRecord::Schema.define(:version => 106) do
     t.integer "parent_id"
     t.string  "value"
     t.string  "type"
+    t.integer "carousel_include",     :limit => 10, :precision => 10, :scale => 0
+    t.string  "carousel_title"
+    t.text    "carousel_description"
+    t.string  "carousel_url"
+    t.integer "image_id",             :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "images", :force => true do |t|

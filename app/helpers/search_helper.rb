@@ -414,22 +414,30 @@ module SearchHelper
   # Helpers for the facet tree that shows resources
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
-  def site_selector(display_name, total, id, value, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found )
+  def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found )
+    display_name = site.display_name
+    total = site_subtotal(site)
+    id = site.id
+    value = site['value']
+    
     # This is one line in the resources.
     # If edit mode: don't show # objects, show value instead.
     # if category, put in arrow for expand/collapse
-    html = "<tr class='#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>"
+    html = "<tr class='#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
     if is_category
-      html = html + "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onmousedown='open_tree(event, \"#{id}\"); return false;'><img src='/images/arrow.gif' /></a>"
-      html = html + "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onmousedown='close_tree(event, \"#{id}\"); return false;'><img src='/images/arrow_dn.gif' /></a>"
+      html += "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onmousedown='open_tree(event, \"#{id}\"); return false;'><img src='/images/arrow.gif' /></a>"
+      html += "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onmousedown='close_tree(event, \"#{id}\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
     end
-     if is_edit_mode
+    
+    if is_edit_mode
        if is_found
-        html += display_name + " [#{value}]"
+        html += display_name
       else
-        html += "<b>Not found: " + display_name + "</b> [#{value}]"
+        html += "<b>Not found: " + display_name + "</b>"
       end
-    else
+      html += " [#{value}]" if !is_category
+      html += "</td><td class='num_objects'>#{'no' if site.carousel_include != 1}</td><td class='num_objects'><a href='#' class='modify_link' onclick='new EditFacetDialog(); return false;'>[Edit]</a>"
+    else # not edit mode
       if is_category
         html += "<a href='#' onmousedown='toggle_tree(event, \"#{id}\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
@@ -441,7 +449,7 @@ module SearchHelper
         end
       end
     end
-    html = html + "</td></tr>"
+    html += "</td></tr>\n"
     return html
   end
   
