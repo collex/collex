@@ -248,6 +248,22 @@ a.mynines_link:hover {
 	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
 }
 
+a.tab_link_current {
+	color:black;
+	background:url(/images/index_tab_dn.gif) top left no-repeat;
+}
+
+a.tab_link_current:visited {
+	color:black;
+	background:url(/images/index_tab_dn.gif) top left no-repeat;
+}
+
+a.tab_link_current:hover {
+	text-decoration:underline;
+	color:black;
+	background:url(/images/index_tab_dn.gif) top left no-repeat;
+}
+
 a {
 	color: #A60000;
 	text-decoration: none;
