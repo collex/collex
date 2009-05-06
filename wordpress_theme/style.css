@@ -215,32 +215,37 @@ acronym, abbr, span.caps
 .nav_link:visited { color: #A60000; text-decoration: none; }
 .nav_link:hover { color: #fff; background: #A60000; text-decoration: none; }*/
 
-.tab_link {
+a.tab_link {
 	color:#FDDFAB;
+	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
 }
 
 
-.tab_link:visited {
+a.tab_link:visited {
 	color:#FDDFAB;
+	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
 }
 
-.tab_link:hover {
+a.tab_link:hover {
 	text-decoration:underline;
 	color:#FDDFAB;
+	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
 }
 
-.mynines_link {
+a.mynines_link {
 	color:#55220F;
+	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
 }
 
-
-.mynines_link:visited {
+a.mynines_link:visited {
 	color:#55220F;
+	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
 }
 
-.mynines_link:hover {
+a.mynines_link:hover {
 	text-decoration:underline;
 	color:#55220F;
+	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
 }
 
 a {
