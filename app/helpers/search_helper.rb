@@ -416,7 +416,6 @@ module SearchHelper
   # For the administrator page or the search page.
   def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found )
     display_name = site.display_name
-    total = site_subtotal(site)
     id = site.id
     value = site['value']
     
@@ -425,8 +424,8 @@ module SearchHelper
     # if category, put in arrow for expand/collapse
     html = "<tr class='#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
     if is_category
-      html += "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onmousedown='open_tree(event, \"#{id}\"); return false;'><img src='/images/arrow.gif' /></a>"
-      html += "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onmousedown='close_tree(event, \"#{id}\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
+      html += "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onclick='open_tree(event, \"#{id}\"); return false;'><img src='/images/arrow.gif' /></a>"
+      html += "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onclick='close_tree(event, \"#{id}\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
     end
     
     if is_edit_mode
@@ -436,10 +435,11 @@ module SearchHelper
         html += "<b>Not found: " + display_name + "</b>"
       end
       html += " [#{value}]" if !is_category
-      html += "</td><td class='num_objects'>#{'no' if site.carousel_include != 1}</td><td class='num_objects'><a href='#' class='modify_link' onclick='new EditFacetDialog(); return false;'>[Edit]</a>"
+      html += "</td><td class='num_objects'>#{'Yes' if site.carousel_include == 1}</td><td class='num_objects'><a href='#' class='modify_link' onclick='new EditFacetDialog(\"edit_site_list\", \"/admin/facet_tree/edit_facet\", \"#{value}\", \"/admin/facet_tree/get_categories\", \"/admin/facet_tree/get_resource_details\"); return false;'>[edit]</a>"
     else # not edit mode
+      total = site_subtotal(site)
       if is_category
-        html += "<a href='#' onmousedown='toggle_tree(event, \"#{id}\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
+        html += "<a href='#' onclick='toggle_tree(event, \"#{id}\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
         if site_is_in_constraints?(value)
           html += display_name + "</td><td class='num_objects'>#{number_with_delimiter(total)}"

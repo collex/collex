@@ -16,6 +16,7 @@
 
 class FacetCategory < ActiveRecord::Base
   acts_as_tree
+  belongs_to :image
   
   attr :display_name, true
   attr :sorted_children, true
@@ -25,7 +26,23 @@ class FacetCategory < ActiveRecord::Base
     self.recursively_sort_tree( tree_root )
   end
 
+  def self.get_all_categories()
+    sites_forest = self.sorted_facet_tree().sorted_children
+    return self.recursive_get_all_categories(sites_forest)
+  end
+
   private 
+  def self.recursive_get_all_categories(sites_forest)
+    missing_sites = []
+    for site in sites_forest
+      if site['type'] == nil # is category
+        missing_sites.push(site)
+        missing_sites.concat(self.recursive_get_all_categories(site.sorted_children))
+      end
+    end
+    return missing_sites
+  end
+
   def self.recursively_sort_tree( node )    
     if node[:type] == 'FacetValue'
       site = Site.find_by_code(node.value)

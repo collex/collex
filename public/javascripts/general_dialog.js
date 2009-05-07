@@ -53,13 +53,25 @@ var GeneralDialog = Class.create({
 			var inputs = $$("#" + dlg_id + " input");
 			var data = {};
 			inputs.each(function(el) {
-				if (el.type !== 'button') {
-					var id = el.id;
-					var value = el.value;
-					data[id] = value;
+				if (el.type === 'checkbox') {
+					data[el.id] = el.checked;
+				} else if (el.type !== 'button') {
+					data[el.id] = el.value;
 				}
 			});
+			var textareas = $$("#" + dlg_id + " textarea");
+			textareas.each(function(el) {
+				var id = el.id;
+				var value = el.value;
+				data[id] = value;
+			});
 			return data;
+		};
+		
+		this.submitForm = function(id, action) {
+			var form = $(id);
+			form.writeAttribute({ action: action });
+			form.submit();
 		};
 
 		this.setFlash = function(msg, is_error) {
@@ -104,7 +116,7 @@ var GeneralDialog = Class.create({
 		body.appendChild(flash);
 		
 		pages.each(function(page) {
-			var form = new Element('form');
+			var form = new Element('form', { id: page.page });
 			form.addClassName(page.page);	// IE doesn't seem to like the 'class' attribute in the Element, so we set the classes separately.
 			form.addClassName("switchable_element");
 			form.addClassName("hidden");
@@ -159,6 +171,29 @@ var GeneralDialog = Class.create({
 						var custom = subel.custom;
 						var div = custom.getMarkup();
 						row.appendChild(div);
+					} else if (subel.checkbox !== undefined) {
+						var checkbox = new Element('input', { id: subel.checkbox, 'type': "checkbox", value: subel.checkbox, name: subel.checkbox });
+						if (subel.klass)
+							checkbox.addClassName(subel.klass);
+						row.appendChild(checkbox);
+					} else if (subel.textarea !== undefined) {
+						var textarea = new Element('textarea', { id: subel.textarea, name: subel.textarea });
+						if (subel.klass)
+							textarea.addClassName(subel.klass);
+						row.appendChild(textarea);
+					} else if (subel.image !== undefined) {
+						var image = new Element('div', { id: subel.image + '_div' });
+						image.appendChild(new Element('img', { src: '', id: subel.image + "_img", alt: '' }));
+						image.appendChild(new Element('input', { id: subel.image, type: 'file', name: subel.image }));
+						if (subel.klass)
+							image.addClassName(subel.klass);
+						row.appendChild(image);
+						
+						// We have to go through a bunch of hoops to get the file uploaded, since
+						// you can't upload a file through Ajax.
+						form.writeAttribute({ enctype: "multipart/form-data", target: "upload_target", method: 'post' });
+						body.appendChild(new Element('iframe', { id: "upload_target", name: "upload_target", src: "#", style: "width:0;height:0;border:0px solid #fff;" }));
+
 					}
 				});
 			});
