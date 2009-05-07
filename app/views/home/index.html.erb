@@ -43,10 +43,23 @@
 		</div>
         
 	<%= render :partial => 'featured_exhibit' %>
-        
-    <div id="carousel_container">
-		    <img src="/images/index_flash_dummy.jpg">
-    </div>
+
+	<center>
+	<div id="carousel_container"><div class="carousel_title">Partner Websites</div>
+	  <ol id="carousel">
+			<% for item in @carousel -%>
+				<li class="item">
+		    		<a href="<%= item[:url] %>"><img class="carousel_image" src="<%= item[:image] %>" alt="<%= item[:title] %>" /></a>
+					<a href="<%= item[:url] %>" class="carousel_item_title nines_link"><%= item[:title] %></a>
+					<%= item[:description] %><a href="<%= item[:url] %>" class="carousel_item_title nines_link">VISIT SITE</a>
+				</li>
+			<% end -%>
+	  </ol>
+	</div>
+	</center>
+
+	<br /><br /><img src="/images/index_flash_dummy.jpg">
+
 
 <script type="text/javascript">
 	document.observe('dom:loaded', function() {
@@ -56,5 +69,13 @@
 		// load news items
 		loadLatestNews('recent_news','/news/?feed=rss2',5);
 		//loadLatestNews('recent_news','/sample_news.xml',5);
+	});
+	
+	YAHOO.util.Event.onDOMReady(function (ev) {
+	  var carousel = new YAHOO.widget.Carousel("carousel_container", {
+	    animation: { speed: 0.5 }
+	  });
+	  carousel.render(); // get ready for rendering the widget
+	  carousel.show();   // display the widget
 	});
 </script>

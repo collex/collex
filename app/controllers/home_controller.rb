@@ -39,6 +39,13 @@ class HomeController < ApplicationController
       @tags[i][2] = false
     }
     @tags = @tags.sort {|a,b| a[0] <=> b[0]}  # now sort by tag name for display
+    
+    # carousel
+    facets = FacetCategory.find(:all, :conditions => ['carousel_include = 1'])
+    @carousel = []
+    for facet in facets
+      @carousel.push({ :title => facet[:carousel_title], :description => facet[:carousel_description], :url => facet[:carousel_url], :image => facet.image ? facet.image.public_filename : '' })
+    end
   end
   
   def news
