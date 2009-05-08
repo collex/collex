@@ -78,6 +78,11 @@ td.query_remove {
 
 /*----------------------------*/
 
+td.edit_delete_col {
+	text-align:right;
+	width:90px;
+}
+
 th.num_objects {
 	text-align:center;
 	width:70px;

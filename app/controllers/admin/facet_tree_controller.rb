@@ -47,10 +47,17 @@ class Admin::FacetTreeController < Admin::BaseController
     ret[:image] = rec.image.public_filename if rec && rec.image
     if rec != nil && rec[:type] != nil
       desc_rec = Site.find_by_code(site)
-      ret[:display_name] = desc_rec[:description]
-      ret[:is_category] = false
-      ret[:site_url] = desc_rec[:url]
-      ret[:site_thumbnail] = desc_rec[:thumbnail]
+      if desc_rec
+        ret[:display_name] = desc_rec[:description]
+        ret[:is_category] = false
+        ret[:site_url] = desc_rec[:url]
+        ret[:site_thumbnail] = desc_rec[:thumbnail]
+      else
+        ret[:display_name] = ""
+        ret[:is_category] = false
+        ret[:site_url] = ""
+        ret[:site_thumbnail] = ""
+      end
     else
       ret[:display_name] = ""
       ret[:is_category] = true
@@ -114,6 +121,15 @@ class Admin::FacetTreeController < Admin::BaseController
   end
   
   def add_category
+    name = params[:category_name]
+    parent = params[:parent_category_id]
+    FacetCategory.create(:value => name, :parent_id => parent)
+    render_edit_site_list()
+  end
+  
+  def delete_facet
+    value = params[:site]
+    facet = FacetCategory.find_by_value(value)
     render_edit_site_list()
   end
   

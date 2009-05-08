@@ -39,7 +39,7 @@ var AddCategoryDlg = Class.create({
 					}
 					// We got all the categories. Now put it on the dialog
 					var sel_arr = $$('.categories_select');
-					var select = sel_arr[0];
+					var select = sel_arr.pop();
 					select.update('');
 					categories = categories.sortBy(function(category) { return category.text; });
 					categories.each(function(category) {
@@ -89,7 +89,7 @@ var AddCategoryDlg = Class.create({
 				]
 			};
 		
-		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Add Category To Resource Tree" };
+		var params = { this_id: "add_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Add Category To Resource Tree" };
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
@@ -119,7 +119,7 @@ var AddSiteDlg = Class.create({
 					}
 					// We got all the categories. Now put it on the dialog
 					var sel_arr = $$('.categories_select');
-					var select = sel_arr[0];
+					var select = sel_arr.pop();
 					select.update('');
 					categories = categories.sortBy(function(category) { return category.text; });
 					categories.each(function(category) {
@@ -231,6 +231,68 @@ var RemoveSiteDlg = Class.create({
 	}
 });
 
+var DeleteFacetDialog = Class.create({
+	initialize: function (parent_div, ok_action, resource, is_category) {
+		// This puts up a modal dialog that allows the administrator to remove a category or site from the resources.
+		this.class_type = 'DeleteSiteDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		
+		// private functions
+		
+		// privileged functions
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+		
+		this.sendWithAjax = function (event, params)
+		{
+			var curr_page = params.curr_page;
+			var url = params.destination;
+			var dlg = params.dlg;
+			
+			dlg.setFlash('Deleting the site...', false);
+			var data = dlg.getAllData();
+			data.site = resource;
+
+			new Ajax.Updater(parent_div, url, {
+				parameters : data,
+				evalScripts : true,
+				onSuccess : function(resp) {
+					dlg.cancel();
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
+		
+		if (is_category) {
+			var dlgLayout = {
+					page: 'layout',
+					rows: [
+						[ { text: 'You are about to delete the category "' + resource + '" from the Resource Tree. All of its children will be moved up to its parent.', klass: 'new_exhibit_instructions' } ],
+						[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					]
+				};
+		} else {
+			var dlgLayout = {
+					page: 'layout',
+					rows: [
+						[ { text: 'You are about to delete the site "' + resource + '" from the Resource Tree. This resource is indexed in solr so results from this resource can be seen in the search page. Are you sure?', klass: 'new_exhibit_instructions' } ],
+						[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					]
+				};
+		}
+		
+		var params = { this_id: "delete_site_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Delete Site From Resource Tree" };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+	}
+});
 
 var EditFacetDialog = Class.create({
 	initialize: function (parent_div, ok_action, resource, get_categories_action, get_resource_details_action) {
@@ -258,7 +320,7 @@ var EditFacetDialog = Class.create({
 					}
 					// We got all the categories. Now put it on the dialog
 					var sel_arr = $$('.categories_select');
-					var select = sel_arr[0];
+					var select = sel_arr.pop();
 					select.update('');
 					categories = categories.sortBy(function(category) { return category.text; });
 					categories.each(function(category) {
@@ -288,8 +350,8 @@ var EditFacetDialog = Class.create({
 					$('parent_category_id').value = obj.parent_id;
 					if (obj.is_category) {
 						$('display_name').value = resource;
-						$('site_url').hide();
-						$('site_thumbnail').hide();
+						var to_hide = $$('.hide_if_category');
+						to_hide.each(function(el) { el.hide(); });
 					} else {
 						$('display_name').value = obj.display_name;
 						$('site_url').value = obj.site_url;
@@ -300,14 +362,6 @@ var EditFacetDialog = Class.create({
 					$('carousel_description').value = obj.carousel_description;
 					$('carousel_url').value = obj.carousel_url;
 					$('carousel_thumbnail_img').src = obj.image;
-					// We got all the categories. Now put it on the dialog
-//					var sel_arr = $$('.categories_select');
-//					var select = sel_arr[0];
-//					select.update('');
-//					categories = categories.sortBy(function(category) { return category.text; });
-//					categories.each(function(category) {
-//						select.appendChild(new Element('option', { value: category.value }).update(category.text));
-//					});
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
@@ -354,15 +408,15 @@ var EditFacetDialog = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: 'Edit the facet "' + resource + '" for both the Resource Tree and the Carousel.', klass: 'new_exhibit_instructions' } ],
-					[ { text: 'Parent Category:', klass: 'new_exhibit_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { text: 'Name in Resource Tree:', klass: 'new_exhibit_label' }, { input: 'display_name', klass: 'new_exhibit_input' } ],
-					[ { text: 'Site URL:', klass: 'new_exhibit_label' }, { input: 'site_url', klass: 'new_exhibit_input' } ],
-					[ { text: 'NINES Thumbnail:', klass: 'new_exhibit_label' }, { input: 'site_thumbnail', klass: 'new_exhibit_input' } ],
-					[ { text: 'Include in Carousel:', klass: 'new_exhibit_label' }, { checkbox: 'carousel_include', klass: '' } ],
-					[ { text: 'Carousel Title:', klass: 'new_exhibit_label' }, { input: 'carousel_title', klass: 'new_exhibit_input' } ],
-					[ { text: 'Carousel Description:', klass: 'new_exhibit_label' }, { textarea: 'carousel_description', klass: 'new_exhibit_input' } ],
-					[ { text: 'Carousel URL:', klass: 'new_exhibit_label' }, { input: 'carousel_url', klass: 'new_exhibit_input' } ],
-					[ { text: 'Carousel Thumbnail:', klass: 'new_exhibit_label' }, { image: 'carousel_thumbnail' } ],
+					[ { text: 'Parent Category:', klass: 'edit_facet_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
+					[ { text: 'Name in Resource Tree:', klass: 'edit_facet_label' }, { input: 'display_name', klass: 'edit_facet_input' } ],
+					[ { text: 'Site URL:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_url', klass: 'hide_if_category edit_facet_input' } ],
+					[ { text: 'NINES Thumbnail:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_thumbnail', klass: 'hide_if_category edit_facet_input' } ],
+					[ { text: 'Include in Carousel:', klass: 'edit_facet_label' }, { checkbox: 'carousel_include', klass: '' } ],
+					[ { text: 'Carousel Title:', klass: 'edit_facet_label' }, { input: 'carousel_title', klass: 'edit_facet_input' } ],
+					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
+					[ { text: 'Carousel URL:', klass: 'edit_facet_label' }, { input: 'carousel_url', klass: 'edit_facet_input' } ],
+					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail' } ],
 					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};

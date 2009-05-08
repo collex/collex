@@ -223,15 +223,20 @@
 	font-size: 1.3em;
 	left:60px;
 	position:relative;
-	top:-35px;
+	top:-25px;
 }
 
 .yui-carousel-element li {
     height: 384px;
+	border: 0px;
+}
+
+.yui-carousel .yui-carousel-item-selected {
+	border: 0px;
 }
 
 .yui-carousel-content {
-	margin-top:-20px;
+	margin-top:-10px;
 }
 
 #carousel_container .item {
@@ -241,6 +246,7 @@
 /*    padding-right: 40px;*/
     overflow: hidden;
     width: 212px;
+	background:white none repeat scroll 0 0;
 }
 
 .carousel_image {
@@ -250,3 +256,50 @@
 .carousel_item_title {
 	font-weight: bold;
 }
+
+#carousel_left {
+	background:transparent url(/images/carousel_left_arrow.jpg) no-repeat scroll 0 0;
+	width:40px;
+	height:384px;
+}
+#carousel_right {
+	background:transparent url(/images/carousel_right_arrow.jpg) no-repeat scroll 0 0;
+	width:40px;
+	height:384px;
+}
+
+#carousel_left.yui-carousel-first-button-disabled {
+	background:transparent url(/images/carousel_left_arrow_disabled.jpg) no-repeat scroll 0 0;
+}
+
+#carousel_right.yui-carousel-button-disabled {
+	background:transparent url(/images/carousel_right_arrow_disabled.jpg) no-repeat scroll 0 0;
+}
+
+.yui-skin-sam .yui-carousel, .yui-skin-sam .yui-carousel-vertical {
+	border: 0px;
+}
+
+.carousel_background {
+	background:transparent url(/images/index_flash_background.jpg) repeat-x scroll center top;
+	height:445px;
+}
+
+.carousel_column {
+	padding-top: 0px;
+}
+
+.carousel_button_column {
+	padding-top: 35px;
+}
+/*.yui-skin-sam .yui-carousel-button {
+	background:transparent url(/images/carousel_right_arrow.jpg) no-repeat scroll 0 0;
+	float:right;
+	height:384px;
+	left:700px;
+	margin:5px;
+	overflow:hidden;
+	position:absolute;
+	top:20px;
+	width:40px;
+}*/

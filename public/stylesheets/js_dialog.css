@@ -76,6 +76,20 @@
 
 /*****************************************/
 
+.edit_facet_label {
+	float:left;
+	width:160px;
+}
+
+.edit_facet_textarea {
+	height: 300px;
+	width: 300px;
+}
+
+.edit_facet_input {
+	width: 300px;
+}
+
 .new_exhibit_div {
 	width: 500px;
 }

@@ -44,22 +44,25 @@
         
 	<%= render :partial => 'featured_exhibit' %>
 
+<div class="carousel_background">
 	<center>
-	<div id="carousel_container"><div class="carousel_title">Partner Websites</div>
-	  <ol id="carousel">
-			<% for item in @carousel -%>
-				<li class="item">
-		    		<a href="<%= item[:url] %>"><img class="carousel_image" src="<%= item[:image] %>" alt="<%= item[:title] %>" /></a>
-					<a href="<%= item[:url] %>" class="carousel_item_title nines_link"><%= item[:title] %></a>
-					<%= item[:description] %><a href="<%= item[:url] %>" class="carousel_item_title nines_link">VISIT SITE</a>
-				</li>
-			<% end -%>
-	  </ol>
-	</div>
+		<table><tr>
+			<td class="carousel_button_column"><div id="carousel_left"></div></td>
+			<td class="carousel_column"><div id="carousel_container"><div class="carousel_title">Partner Websites</div>
+			  <ol id="carousel">
+					<% for item in @carousel -%>
+						<li class="item">
+				    		<a href="<%= item[:url] %>"><img class="carousel_image" src="<%= item[:image] %>" alt="<%= item[:title] %>" /></a>
+							<a href="<%= item[:url] %>" class="carousel_item_title nines_link"><%= item[:title] %></a>
+							<%= item[:description] %><a href="<%= item[:url] %>" class="carousel_item_title nines_link">VISIT SITE</a>
+						</li>
+					<% end -%>
+			  </ol>
+			</div></td>
+			<td class="carousel_button_column"><div id="carousel_right"></div></td>
+		</tr></table>
 	</center>
-
-	<br /><br /><img src="/images/index_flash_dummy.jpg">
-
+</div>
 
 <script type="text/javascript">
 	document.observe('dom:loaded', function() {
@@ -73,7 +76,9 @@
 	
 	YAHOO.util.Event.onDOMReady(function (ev) {
 	  var carousel = new YAHOO.widget.Carousel("carousel_container", {
-	    animation: { speed: 0.5 }
+	    animation: { speed: 0.5 },
+		navigation: { prev: 'carousel_left', next: 'carousel_right' }
+		//isCircular: true
 	  });
 	  carousel.render(); // get ready for rendering the widget
 	  carousel.show();   // display the widget
