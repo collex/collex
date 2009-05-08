@@ -16,29 +16,31 @@
 <% current_page "admin" -%>
 <% current_sub_page "User Roles" -%>
 
-<h1>Listing users</h1>
+<div class="inner_content_container">
+	<div class="page_header">Listing Users</div>
 
-<%= will_paginate @users %>
-
-<table>
-  <tr>
-    <th>Username</th>
-    <th>Email</th>
-    <th>Roles</th>
-  </tr>
-  
-<% @users.each do |user| %>
-  <tr>
-    <td><%=h user.username %></td>
-     <td><%=h user.email %></td>
-    <td>
-      <%= user.role_names.join(", ") %>
-    </td>
-    
-    <td><%= link_to 'Edit', :action => 'edit', :id => user,  :page => params[:page], :class => 'nav_link' %></td>
-  </tr>
-<% end %>
-</table>
-
-<%= will_paginate @users %>
-
+	<%= will_paginate @users %>
+	
+	<table>
+	  <tr>
+	    <th>Username</th>
+	    <th>Email</th>
+	    <th>Roles</th>
+	  </tr>
+	  
+	<% @users.each do |user| %>
+	  <tr>
+	    <td><%=h user.username %></td>
+	     <td><%=h user.email %></td>
+	    <td>
+	      <%= user.role_names.join(", ") %>
+	    </td>
+	    
+	    <td><%= link_to 'Edit', :action => 'edit', :id => user,  :page => params[:page], :class => 'nav_link' %></td>
+	  </tr>
+	<% end %>
+	</table>
+	
+	<%= will_paginate @users %>
+	
+</div>

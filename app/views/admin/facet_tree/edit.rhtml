@@ -19,27 +19,3 @@
 <div id="edit_site_list" class="site_list">
 	<%= render :partial => 'edit_site_list', :locals => { :sites_forest => @sites_forest, :found_resources => @found_resources, :parent_div => 'edit_site_list' } %>
 </div>
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<%=link_to "Add new value", :action => :add_value, :tree => @facet_tree.value, :class => 'modify_link' %> |
-<%=link_to "Add new category", :action =>:add_category, :tree => @facet_tree.value, :class => 'modify_link' %>
-
-<ul>
-  <li id="drop_<%=@facet_tree.id%>">
-    <%=h @facet_tree.value%> facet
-    <div id="facet_tree"><%= render :partial => 'categories', :locals => {:categories => @facet_tree.children, :tree => @facet_tree.value } %></div>
-  </li>
-  <%= drop_receiving_element("drop_#{@facet_tree.id}", 
-     :accept => 'category', 
-     :hoverclass => 'hover', 
-     :update => 'facet_tree',
-     :with => "'droppedid=' + encodeURIComponent(element.id.split('_').last())", 
-     :url => {:action=>:move, :id=>@facet_tree, :tree => @facet_tree.value})%>
-</ul>

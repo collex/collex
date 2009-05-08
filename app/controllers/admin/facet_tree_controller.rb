@@ -130,14 +130,48 @@ class Admin::FacetTreeController < Admin::BaseController
   def delete_facet
     value = params[:site]
     facet = FacetCategory.find_by_value(value)
+    if facet[:type] == nil
+      # category
+      parent_id = facet.parent_id
+      children = FacetCategory.find(:all, :conditions => [ 'parent_id = ?', facet.id])
+      children.each { |child|
+        child.parent_id = parent_id
+        child.save
+      }
+    else
+      # site
+      site = Site.find_by_code(value)
+      site.destroy
+    end
+    facet.destroy
     render_edit_site_list()
   end
   
   def add_site
+    name = params[:display_name]
+    parent = params[:parent_category_id]
+    value = params[:site]
+    facet = FacetCategory.find_by_value(value)
+    if facet == nil
+      FacetValue.create(:value => value, :parent_id => parent)
+    else
+      facet.update_attributes
+    end
+    
+    site = Site.find_by_code(value)
+    if site == nil
+      Site.create(:code => value, :description => name)
+    end
     render_edit_site_list()
   end
   
   def remove_site
+    value = params[:site]
+    facet = FacetCategory.find_by_value(value)
+    facet.destroy if facet
+    site = Site.find_by_code(value)
+    site.destroy if site
+    
     render_edit_site_list()
   end
   
@@ -171,36 +205,36 @@ public
 #    redirect_to :action => :edit, :tree => 'archive'
 #  end
   
-  def add_value
-#    facet_tree = FacetTree.find_by_value(params[:tree])
-#    facet_tree << FacetValue.new(:value => "new_value")
-#    facet_tree.save
-#    redirect_to :action => :edit, :tree => facet_tree.value
-    FacetValue.create(:value => "new_value", :parent_id => FacetTree.find_by_value('archive').id)
-    redirect_to :action => :edit, :tree => 'archive'
-  end
-
-  def remove
-    FacetCategory.find(params[:id]).destroy
-    redirect_to :action => :edit, :tree => params[:tree]
-  end
-  
-  def move
-    #parent = FacetCategory.find(params[:id])
-    child = FacetCategory.find(params[:droppedid])
-    child.parent_id = params[:id]
-    #parent << child
-    child.save
-    
-    render :partial => 'categories', :locals => {:categories => FacetTree.find_by_value(params[:tree]).children, :tree => params[:tree]}
-  end
-  
-  def set_category_value
-    item = FacetCategory.find(params[:id])
-    item.value = params[:value]
-    item.save
-    render :text => item.value
-  end
+#  def add_value
+##    facet_tree = FacetTree.find_by_value(params[:tree])
+##    facet_tree << FacetValue.new(:value => "new_value")
+##    facet_tree.save
+##    redirect_to :action => :edit, :tree => facet_tree.value
+#    FacetValue.create(:value => "new_value", :parent_id => FacetTree.find_by_value('archive').id)
+#    redirect_to :action => :edit, :tree => 'archive'
+#  end
+#
+#  def remove
+#    FacetCategory.find(params[:id]).destroy
+#    redirect_to :action => :edit, :tree => params[:tree]
+#  end
+#  
+#  def move
+#    #parent = FacetCategory.find(params[:id])
+#    child = FacetCategory.find(params[:droppedid])
+#    child.parent_id = params[:id]
+#    #parent << child
+#    child.save
+#    
+#    render :partial => 'categories', :locals => {:categories => FacetTree.find_by_value(params[:tree]).children, :tree => params[:tree]}
+#  end
+#  
+#  def set_category_value
+#    item = FacetCategory.find(params[:id])
+#    item.value = params[:value]
+#    item.save
+#    render :text => item.value
+#  end
 
   # destroying a facet tree is serious business - the UI may depend on it, such as the NINES "archive" tree
   # def destroy

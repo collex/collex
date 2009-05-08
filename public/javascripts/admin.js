@@ -45,6 +45,7 @@ var AddCategoryDlg = Class.create({
 					categories.each(function(category) {
 						select.appendChild(new Element('option', { value: category.value }).update(category.text));
 					});
+					$('parent_category_id').value = categories[0].value;
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
@@ -125,6 +126,7 @@ var AddSiteDlg = Class.create({
 					categories.each(function(category) {
 						select.appendChild(new Element('option', { value: category.value }).update(category.text));
 					});
+					$('parent_category_id').value = categories[0].value;
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);

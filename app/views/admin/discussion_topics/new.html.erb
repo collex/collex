@@ -1,13 +1,15 @@
 <% current_page "admin" -%>
 <% current_sub_page "Discussion Topics" -%>
-<h1>New Discussion Topic</h1>
+<div class="inner_content_container">
+	<div class="page_header">New Discussion Topic</div>
 
-<%= error_messages_for :discussion_topic %>
-
-<% form_tag :action => 'create' do %>
-<p><label for="topic">Topic</label><br/>
-<%= text_field 'discussion_topic', 'topic'  %></p>
-<%= submit_tag "Create" %>
-<% end %>
-
-<%= link_to 'Back', {:action => 'index'}, {:class => 'modify_link'} %>
+	<%= error_messages_for :discussion_topic %>
+	
+	<% form_tag :action => 'create' do %>
+	<p><label for="topic">Topic</label><br/>
+	<%= text_field 'discussion_topic', 'topic'  %></p>
+	<%= submit_tag "Create" %>
+	<% end %>
+	
+	<%= link_to 'Back', {:action => 'index'}, {:class => 'modify_link'} %>
+</div>

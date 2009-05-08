@@ -32,6 +32,8 @@ class Admin::UserRolesController < Admin::BaseController
   def edit
     @user = User.find(params[:id])
     @roles = Role.find :all
+    @page = params[:page]
+    @page = '1' if !@page || @page.length == 0
   end
 
   def update
@@ -44,9 +46,9 @@ class Admin::UserRolesController < Admin::BaseController
     
     if @user.save
       flash[:notice] = 'User was successfully updated.'
-      redirect_to :action => 'edit', :id => @user, :page => params[:page]
+      redirect_to :action => 'list', :page => params[:page]
     else
-      render :action => 'edit', :page => params[:page]
+      render :action => 'list', :page => params[:page]
     end
   end
 

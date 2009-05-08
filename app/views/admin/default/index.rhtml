@@ -16,10 +16,13 @@
 <% current_page "admin" -%>
 <% current_sub_page "Home" -%>
 
-<%= p "Welcome to the 'admin' area of Collex!"  %>
+<div class="inner_content_container">
 
-<%= p "From here, you can make adjustments to user roles, the hierarchies or 'trees' that control how facets display, and to the appearance (descriptions, default thumbnails, etc.) of contributing projects in Collex." %>
-
-<%= link_to "Refresh cached objects", { :action => 'refresh_cached_objects'},  :confirm => 'Note: This will take a while! This is only needed if the indexing in Collex changes or a bug is found that has caused the cached objects to be out of date. Do you want to continue?', :post => true, :class => 'modify_link' %>
-
-<p><a class='nav_link' href="/news/wp-admin/">Wordpress Admin Panel</a></p>
+	<div class="page_header">Welcome to the 'admin' area of NINES.</div>
+	
+	<%= p "From here, you can make adjustments to user roles, the hierarchies or 'trees' that control how facets display, and to the appearance (descriptions, default thumbnails, etc.) of contributing projects in Collex." %>
+	
+	<%= link_to "Refresh cached objects", { :action => 'refresh_cached_objects'},  :confirm => 'Note: This will take a while! This is only needed if the indexing in Collex changes or a bug is found that has caused the cached objects to be out of date. Do you want to continue?', :post => true, :class => 'modify_link' %>
+	
+	<p><a class='nav_link' href="/news/wp-admin/">Wordpress Admin Panel</a></p>
+</div>

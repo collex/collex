@@ -202,6 +202,10 @@ var GeneralDialog = Class.create({
 		panel.setBody(body);
 		panel.render(parent_id);
 		
+		panel.cancelEvent.subscribe(function(e, a, o){
+			setTimeout(function() { panel.destroy(); }, 500);
+		});
+		
 		listenerArray.each(function (listen, i) {
 			YAHOO.util.Event.addListener(listen.id, listen.event, listen.callback, listen.param); 
 		});
