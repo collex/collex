@@ -13,7 +13,6 @@
 <%= result_row_item(:separate_lines, hit, 'source', 'Source', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
-<%= result_row_item(:multiple_item, hit, 'genre', 'Genre', false) %>
 <% ################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
 <% tr do %>
@@ -65,6 +64,7 @@
 	</tr>
 <% end %>
 <% ################### -%>
+<%= result_row_item(:multiple_item, hit, 'genre', 'Genre', true) %>
 <%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type', true) %>
 <%= result_row_item(:single_item, hit, 'license', 'License', true) %>
 <%= result_row_item(:multiple_item, hit, 'role_EDT', 'Editor', true) %>
