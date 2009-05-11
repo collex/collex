@@ -31,13 +31,16 @@ hr.search_results_hr {
 	height:100px;
 	text-align:center;
 	vertical-align:middle;
-	border:solid 2px #966C54;
 	margin:0px 0px 10px 0px;
+}
+
+.search_result_image a img {
+	border:solid 2px #966C54;
 }
 
 .search_result_right{
 	float:left;
-	max-width:74%;
+	max-width:64%;
 	width:100%;
 }
 
@@ -49,6 +52,11 @@ hr.search_results_hr {
 
 .search_result_data_label {
 	width:85px;
+	color: gray;
+}
+
+.search_result_full_text_label {
+	color: gray;
 }
 
 .result_row_collected {
@@ -71,7 +79,22 @@ hr.search_results_hr {
 }
 
 .search_result_buttons {
+	
+}
+
+.search_result_buttons a {
+	background:transparent url(/images/lvl2_result_row_button.jpg) no-repeat scroll left top;
+	height: 20px;
+	width:97px;
+	float: right;
+	margin-bottom: 4px;
 	text-align: center;
+	color: white;
+	cursor: pointer;
+}
+
+.search_result_buttons a:hover {
+	background:url(/images/lvl2_result_row_button_rl.jpg) no-repeat scroll left top;
 }
 
 .result_row_img {

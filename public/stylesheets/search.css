@@ -10,6 +10,15 @@ table td {
 	width:400px;
 }
 
+.search_entry_box_keyword {
+	width:500px;
+}
+
+.search_entry_box_keyword_divider {
+	border-bottom: 1px solid black;
+	height:1px;
+}
+
 .new_search {
 	background:url(/images/lvl2_new_search.jpg) top left no-repeat;
 	width:97px;
@@ -183,4 +192,9 @@ div.auto_complete ul li img {
 div.auto_complete ul li .frequency {
 	color: #858585;
 	clear:none;
+}
+
+.add_constraint_form {
+	width: 520px;
+	text-align: left;
 }

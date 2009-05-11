@@ -17,7 +17,7 @@
 <% ################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
 <% tr do %>
-<%= td("Collected&nbsp;on:", :class => "grey", :valign => "top") %>
+<%= td("Collected&nbsp;on:", :class => "search_result_data_label", :valign => "top") %>
 <%= td h(item.updated_at.strftime("%b %d, %Y")) %>
 <% end if is_collected %>
 <% ################### -%>
@@ -57,7 +57,7 @@
 <% end # if no_links -%>
 <% ################### -%>
 <% if hit['archive'] %>
-	<tr class="hidden">
+	<tr>
 	    <td class="search_result_data_label">Site:</td>
 	    <td>
 	        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
@@ -75,7 +75,7 @@
 <% if hit["text"] != nil -%>
 <tr>
     <td colspan='2'>
-    	<div colspan="2">Excerpt from Full Text:</div>
+    	<div colspan="2" class="search_result_full_text_label">Excerpt from Full Text:</div>
         <div colspan="2" id="<%=row_id%>_full_text" class="snippet">
         	<% # We want to escape everything except the bolding so that random control chars can't mess up the display -%>
             <% text = h hit["text"] -%>

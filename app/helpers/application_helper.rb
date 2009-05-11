@@ -42,7 +42,8 @@ module ApplicationHelper
   end
   
   def result_button(text, id, action)
-    "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
+    "<a id='#{id}' onclick='#{action.gsub('\'', '"')}; return false;' />#{text}</a>"
+    # "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
   
   def rounded_button(text, id, action, color)
