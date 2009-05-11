@@ -816,3 +816,7 @@ div.aligncenter {
 	text-align:center;
 	padding-bottom: 5px;
 }
+
+.inner_content_container {
+	margin:inherit;
+}
