@@ -152,3 +152,35 @@ tr.limit_to_selected {
 .limit_to td {
 	border-bottom:solid 1px #966C54;
 }
+
+div.auto_complete {
+    width: 300px !important;
+    font-size:.9em;
+	text-align: left;
+}
+
+div.auto_complete ul {
+	list-style-type:none;
+}
+
+div.auto_complete ul li {
+	list-style-type:none;
+	clear:both;
+}
+
+div.auto_complete ul li.selected { 
+	background-color: #dcdcdc !important; 
+}
+
+div.auto_complete ul li img {
+	clear:none;
+	padding:0;
+	margin:0;
+	float:right;
+	vertical-align: top;
+}
+
+div.auto_complete ul li .frequency {
+	color: #858585;
+	clear:none;
+}
