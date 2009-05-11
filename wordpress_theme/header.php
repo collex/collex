@@ -23,7 +23,6 @@
 	<link href="/stylesheets/main.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/nav.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/lvl2.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/news.css" media="all" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
 	<!-- section styles -->
 

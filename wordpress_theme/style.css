@@ -320,8 +320,12 @@ a:hover {
 /* Begin Structure */
 body {
 	margin: 0 0 20px 0;
-	padding: 0;
-	}
+	padding-left:30px;
+}
+
+#main_container {
+	margin:0 0 10px;
+}
 
 #page {
 	background-color: white;
