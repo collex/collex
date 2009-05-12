@@ -230,7 +230,7 @@ class Exhibit < ActiveRecord::Base
   def get_sharing_icon_with_link()
     license = Exhibit.get_sharing_license_type(is_published)
     return "<a rel=\"license\" target='_blank' href=\"http://creativecommons.org/licenses/" +
-      license + "/3.0/us/\">#{Exhibit.get_sharing_icon_url(is_published)}</a>"
+      license + "/3.0/us/\" title='This work is licensed under a Creative Commons #{get_sharing()} 3.0 United States License'>#{Exhibit.get_sharing_icon_url(is_published)}</a>"
   end
   
   def self.get_all_published

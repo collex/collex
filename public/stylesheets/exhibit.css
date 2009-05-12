@@ -169,6 +169,11 @@
 	border: 1px solid white;
 }
 
+.exhibit_sharing_notice {
+	float: right;
+	padding-right: 10px;
+}
+
 .exhibit_footer {
 	background-color: #721909;
 	color: white;

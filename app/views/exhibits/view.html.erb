@@ -15,6 +15,9 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% current_page "View Exhibit" -%>
+<div class="exhibit_sharing_notice">
+	<%= @exhibit.get_sharing_icon_with_link() %>
+</div>
 <div class="inner_content_container">
 	<div class="subpage_nav">
 		<span class="not_peer_reviewed">This exhibit is not peer reviewed.</span>&nbsp;
