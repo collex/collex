@@ -84,13 +84,14 @@ hr.search_results_hr {
 
 .search_result_buttons a {
 	background:transparent url(/images/lvl2_result_row_button.jpg) no-repeat scroll left top;
-	height: 22px;
-	width:97px;
+	height: 23px;
+	width:80px;
 	float: right;
 	margin-bottom: 4px;
 	text-align: center;
 	color: white;
 	cursor: pointer;
+	padding-top: 2px;
 }
 
 .search_result_buttons a:hover {
