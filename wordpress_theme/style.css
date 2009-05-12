@@ -321,6 +321,7 @@ a:hover {
 body {
 	margin: 0 0 20px 0;
 	padding-left:30px;
+	width: 97%;
 }
 
 #main_container {
