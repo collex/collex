@@ -715,7 +715,7 @@ function doDiscuss(uri, discussion_button, is_logged_in)
 //	 
 //	 "disc_type"=>"NINES Object"
 //	 "nines_object"=>"http://www.rossettiarchive.org/docs/s228.raw"
-//	/discussion_threads/post_object_to_new_thread
+//	/forum/post_object_to_new_thread
 
 	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null, "Ok");
 }

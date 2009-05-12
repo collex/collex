@@ -20,9 +20,9 @@
                     <div class="popular_title">Popular Discussions</div>
                     <ul>
                     	<% @discussions.each {|discussion| -%>
-						<li><%= link_to(discussion[:title], "/discussion_threads/view_thread?thread=#{discussion[:id]}", { :class => 'nav_link' }) %></li>
+						<li><%= link_to(discussion[:title], "/forum/view_thread?thread=#{discussion[:id]}", { :class => 'nav_link' }) %></li>
                     	<% } -%>
-                		<li><%= link_to("MORE", discussion_path, { :class => 'nav_link' }) %></li>
+                		<li><%= link_to("MORE", forum_path, { :class => 'nav_link' }) %></li>
                 	</ul>
                     </td>
                    	<td class="spacer_cell"></td>

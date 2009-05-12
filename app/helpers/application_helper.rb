@@ -110,7 +110,7 @@ private
   def draw_tabs(curr_page)
     tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true },
       { :name => 'News', :link => news_path + '/', :use_logo_style => true },
-      { :name => 'Forum', :link => discussion_path },
+      { :name => 'Forum', :link => forum_path },
       { :name => 'Exhibits', :link => exhibit_list_path },
       { :name => 'Tags', :link => tags_path },
       { :name => 'Search', :link => search_path }
@@ -142,7 +142,7 @@ private
 #      ['My&nbsp;9s', my9s_path, true],
 #      ['Search', search_path, true],
 #      ['Tags', tags_path, true],
-#      #['Discuss', discussion_path, true],
+#      #['Discuss', forum_path, true],
 #      ['Exhibits', exhibit_list_path, true],
 #      ['News', news_path + '/', true],
 #      ['About', tab_about_path, true]

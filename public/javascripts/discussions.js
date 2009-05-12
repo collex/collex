@@ -44,7 +44,7 @@ function postNewComment() {
 //user’s collect objects listed alphabetically. For an Internet Link, the user may fill in the following 
 //fields: Link URL, Image URL, and description (memo field like textual illustration entry).
 
-// This either cancels, or it redirects to /discussions/new_thread_object with parameters for the object.
+// This either cancels, or it redirects to /forum/new_thread_object with parameters for the object.
 
 var CreateListOfExhibits = Class.create({
 	initialize : function(items, className, initial_selected_uri, value_field)

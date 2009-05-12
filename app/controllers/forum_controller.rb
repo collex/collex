@@ -14,7 +14,7 @@
 # limitations under the License.
 ##########################################################################
 
-class DiscussionThreadsController < ApplicationController
+class ForumController < ApplicationController
   layout 'nines'
   before_filter :init_view_options
 

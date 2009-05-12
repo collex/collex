@@ -18,7 +18,7 @@ ActionController::Routing::Routes.draw do |map|
 #  map.resources :discussion_comments
 
 #  map.resources :discussion_threads
-  map.discussion_thread_rss '/discussion_threads/rss/:thread.xml', :controller => 'discussion_threads', :action => 'rss'
+  map.discussion_thread_rss '/forum/rss/:thread.xml', :controller => 'forum', :action => 'rss'
 
 #  map.resources :discussion_topics
 
@@ -127,7 +127,7 @@ ActionController::Routing::Routes.draw do |map|
   map.tags '/tags', :controller => 'tag', :action => 'list'
   #map.login '/login', :controller => 'login', :action => 'login'
   map.my9s '/my9s', :controller => 'my9s', :action => 'index'
-  map.discussion '/discussion', :controller => 'discussion_threads', :action => 'index'
+  map.forum '/forum', :controller => 'forum', :action => 'index'
   map.exhibit_list '/exhibit_list', :controller => 'exhibits', :action => 'list'
   map.exhibits_view '/exhibits/view/:id', :controller => 'exhibits', :action => 'view'
 
