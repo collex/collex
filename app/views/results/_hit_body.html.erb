@@ -5,9 +5,9 @@
 
 <% ################### -%>
 <% hit['alternative'].each do %>
-<% tr do %>
-<%= td hit['alternative'], :valign => "top", :colspan => "2" %>
-<% end %>
+<tr>
+<td valign="top" colspan="2"><%= hit['alternative'] %></td>
+</tr>
 <% end if hit['alternative'] %>
 <% ################### -%>
 <%= result_row_item(:separate_lines, hit, 'source', 'Source', false) %>
@@ -15,19 +15,23 @@
 <%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
 <% ################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
-<% tr do %>
-<%= td("Collected&nbsp;on:", :class => "search_result_data_label", :valign => "top") %>
-<%= td h(item.updated_at.strftime("%b %d, %Y")) %>
-<% end if is_collected %>
+<%  if is_collected -%>
+	<tr>
+	<td valign="top" class="search_result_data_label">Collected&nbsp;on:</td>
+	<td><%= h(item.updated_at.strftime("%b %d, %Y")) %></td>
+	</tr>
+<% end -%>
 <% ################### -%>
 <% if no_links -%>
-<% tr do %>
-<%= td("Tags:", :class => "search_result_data_label", :valign => "top") %>
-<%= td h(tags.join('; ')) %>
-<% end if tags.length > 0 -%>
+<% if tags.length > 0 -%>
+<tr>
+<td valign="top" class="search_result_data_label">Tags:</td>
+<td><%= h(tags.join('; ')) %></td>
+</tr>
+<% end -%>
 <% else -%>
-<% tr do %>
-<%= td("Tags:", :class => "search_result_data_label", :valign => "top") %>
+<tr>
+<td valign="top" class="search_result_data_label">Tags:</td>
 <td>
 	<% my_tags = [] -%>
 	<% if is_collected -%>
@@ -52,7 +56,7 @@
 		<% end #if the user is logged in. -%>
 	<% end #if !no_links -%>
 </td>
-<% end #tr do -%>
+</tr>
 <% end # if no_links -%>
 <% ################### -%>
 <% if hit['archive'] %>
