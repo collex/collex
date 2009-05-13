@@ -22,7 +22,7 @@ class Admin::UserRolesController < Admin::BaseController
 
   def list
 #     @user_pages, @users = paginate :users, :per_page => 10
-    @users = User.paginate(:page => params[:page], :per_page => 20, :order => 'username')
+    @users = User.paginate(:page => params[:page], :per_page => 30, :order => 'username')
   end
 
   def show
