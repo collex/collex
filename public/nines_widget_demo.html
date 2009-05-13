@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/index.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>The Poetess Archive</title>
+<!-- InstanceEndEditable --><link href="css/screen.css" rel="stylesheet" type="text/css" media="screen" />
+<!-- InstanceBeginEditable name="head" -->
+
+<meta name="description" content="The Poetess Archive is fundamentally a bibliography of writings by and about popular poetry written between 1750 and 1900 in Britain and America. It is now in database form to allow you multiple ways of organizing and selecting that data." />
+
+<link href="css/screen.css" rel="stylesheet" type="text/css" media="screen" />
+<style type="text/css">
+	
+* {
+margin:0;
+padding:0;
+}
+body {
+-x-system-font:none;
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/body.gif) repeat-x scroll 0 0;
+color:#333333;
+font-family:"Lucida Sans",Verdana,Arial,Helvetica,sans-serif;
+font-size:0.85em;
+font-size-adjust:none;
+font-stretch:normal;
+font-style:normal;
+font-variant:normal;
+font-weight:normal;
+line-height:1.6;
+text-align:center;
+}
+#container {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/containerbg.gif) repeat-y scroll 0 0;
+border:1px solid #CCCCCC;
+margin:20px auto;
+text-align:left;
+width:700px;
+}
+h1 {
+-x-system-font:none;
+color:#000000;
+font-family:"Times New Roman",Times,serif;
+font-size:170%;
+font-size-adjust:none;
+font-stretch:normal;
+font-style:normal;
+font-variant:small-caps;
+font-weight:200;
+letter-spacing:0.05em;
+line-height:normal;
+margin:1em 0 0;
+}
+h2 {
+-x-system-font:none;
+color:#6699CC;
+font-family:"Times New Roman",Times,serif;
+font-size:155%;
+font-size-adjust:none;
+font-stretch:normal;
+font-style:normal;
+font-variant:small-caps;
+font-weight:300;
+letter-spacing:0.05em;
+line-height:normal;
+margin:0.7em 0 0;
+}
+.sub {
+color:#336666;
+font-size:1em;
+font-weight:bold;
+letter-spacing:0.05em;
+margin:0.7em 0 0;
+text-transform:uppercase;
+}
+h3 {
+color:#669966;
+font-size:100%;
+font-weight:bold;
+letter-spacing:0.05em;
+margin:0.7em 0 0;
+text-transform:uppercase;
+}
+hr {
+border-color:-moz-use-text-color -moz-use-text-color #CCCCCC;
+border-style:none none dashed;
+border-width:0 0 1px;
+height:1px;
+margin:10px 0;
+}
+blockquote {
+font-size:90%;
+padding:0 30px;
+}
+#header {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/titmouse.gif) no-repeat scroll 475px 10px;
+height:171px;
+}
+#logo {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/header.jpg) no-repeat scroll 0 0;
+float:left;
+height:171px;
+margin-right:225px;
+width:475px;
+}
+#logo, #logo span {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/header.jpg) no-repeat scroll 0 0;
+height:171px;
+width:475px;
+}
+#logo span {
+margin-bottom:-75px;
+}
+#header h1 span {
+display:block;
+position:relative;
+z-index:1;
+}
+#header h1 {
+margin:0;
+overflow:hidden;
+padding:0;
+}
+#header p {
+float:right;
+font-size:80%;
+margin:42px 0 0;
+width:135px;
+}
+#top_nav {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/topmenubg.gif) repeat-x scroll center bottom;
+float:left;
+font-size:90%;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+width:100%;
+}
+#top_nav li {
+float:left;
+margin:0 5px 0 0;
+padding:0;
+}
+#top_nav a {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/top_nav.gif) repeat-x scroll left top;
+border-color:#CCCCCC #CCCCCC -moz-use-text-color;
+border-style:solid solid none;
+border-width:1px 1px medium;
+color:#333333;
+display:block;
+float:left;
+margin:0 1px 0 0;
+padding:4px;
+text-decoration:none;
+}
+#top_nav a:hover, body#home #t-home a, body#authors #t-authors a, body#collections #t-collections a, body#criticism #t-criticism a, body#search #t-search a, body#journal #t-journal a, body#about #t-about a {
+background:#FFFFFF none repeat scroll 0 0;
+color:#333333;
+padding-bottom:5px;
+}
+#t-home a {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/home.gif) repeat-x scroll left top;
+}
+#t-journal a, #t-about a {
+background:#FFFFFF url(http://unixgen.muohio.edu/~poetess/images/global/about.gif) repeat-x scroll left top;
+}
+#side_menus {
+float:right;
+font-size:90%;
+line-height:1.5em;
+margin-top:20px;
+width:190px;
+}
+#side_menus h2, #side_menus h3, #side_menus dt {
+margin:1em 0;
+}
+#side_menus ul, #side_menus dl {
+letter-spacing:0.09em;
+list-style-position:outside;
+list-style-type:none;
+}
+#side_menus li, #side_menus dd {
+border-bottom:1px solid #D3E5F7;
+margin:0 0 6px;
+padding:5px 0;
+}
+#side_menus li a, #side_menus dd a {
+color:#584646;
+text-decoration:none;
+}
+#side_menus a:hover {
+background-color:#FFFF99;
+color:#000000;
+}
+#main_content {
+border-right:1px solid #D3E5F7;
+margin:10px 210px 0 0;
+padding:10px 30px 0;
+white-space:normal;
+}
+#main_content a, #header p a {
+color:#336633;
+}
+#main_content a:hover {
+background-color:#FFFF99;
+}
+#main_content p {
+padding:0.7em 0;
+}
+#main_content form {
+line-height:2.5em;
+padding:0.7em 0;
+}
+#main_content ul {
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+}
+#main_content ul li {
+list-style-image:url(http://unixgen.muohio.edu/~poetess/images/global/list2.png);
+list-style-position:outside;
+list-style-type:disc;
+margin-bottom:10px;
+}
+#main_content ol li {
+padding:0 0 10px;
+}
+#main_content ul li ul li, #main_content dl dd ul li {
+list-style-image:url(http://unixgen.muohio.edu/~poetess/images/global/list.png);
+list-style-position:inside;
+list-style-type:none;
+margin:0;
+padding:0;
+}
+#main_content table, th, tr, td {
+border:1px solid #CCCCCC;
+padding:5px;
+text-align:center;
+}
+#main_content img {
+border:0 none;
+}
+#main_content dl {
+margin:0.7em 0;
+}
+#main_content dt, #side_menus dt {
+color:#6699CC;
+font-size:100%;
+font-weight:bold;
+letter-spacing:0.05em;
+margin:1em 0 0;
+text-transform:uppercase;
+}
+#main_content dd {
+line-height:normal;
+margin:0.7em 0;
+padding-left:15px;
+}
+.in_text_figure {
+border:1px solid #CCCCCC;
+float:right;
+font-size:smaller;
+margin:0 0 5px 20px;
+padding:2px;
+text-align:center;
+}
+.link_xref {
+font-weight:bold;
+}
+#xml_links {
+margin-bottom:40px;
+width:100%;
+}
+#xml_links ul {
+color:#666666;
+font-family:arial,helvetica,sans-serif;
+margin-left:0;
+padding-left:0;
+}
+#xml_links ul li {
+display:inline;
+}
+#xml_links ul li a {
+background-color:#D3E5F7;
+border-bottom:medium none;
+border-right:1px solid #FFFFFF;
+color:#666666;
+float:left;
+padding:0.02em 0.5em;
+text-decoration:none;
+}
+#xml_links ul li a:hover {
+background-color:#336699;
+color:#FFFFFF;
+}
+.alpha_index, .location_index {
+float:left;
+margin-bottom:40px;
+width:390px;
+}
+.alpha_index ul, .location_index ul {
+color:#666666;
+font-family:arial,helvetica,sans-serif;
+margin-left:0;
+padding-left:0;
+}
+.alpha_index ul li, .location_index ul li {
+display:inline;
+}
+.alpha_index ul li a, .location_index ul li a {
+background-color:#D3E5F7;
+border-bottom:medium none;
+border-right:1px solid #FFFFFF;
+border-top:1px solid #FFFFFF;
+color:#666666;
+float:left;
+padding:0.02em 0.5em;
+text-decoration:none;
+}
+.alpha_index ul li a:hover, .location_index ul li a:hover {
+background-color:#336699;
+color:#FFFFFF;
+}
+#results ul li ul li {
+line-height:normal;
+list-style-image:url(http://unixgen.muohio.edu/~poetess/images/global/list.png);
+list-style-position:inside;
+list-style-type:none;
+padding:0;
+}
+.little_link {
+font-size:smaller;
+}
+#footer {
+background:#FFFFFF none repeat scroll 0 0;
+border-top:1px solid #CCCCCC;
+clear:both;
+font-size:0.8em;
+margin-top:20px;
+padding-top:10px;
+text-align:center;
+text-transform:lowercase;
+}
+#footer a {
+color:#584646;
+text-decoration:none;
+}
+#footer a:hover {
+text-decoration:underline;
+}	
+	
+#blurb {
+
+width: 150px;
+padding: 5px 10px;
+background-color:#FFFFCC;
+border: 1px solid #ccc;
+border-bottom: 1px solid #666;
+border-right: 1px solid #666;
+}
+
+#blurb h3 {border-bottom: 1px dashed #ccc;}
+
+#blurb a {
+color: #333;
+}
+
+#blurb a:hover {background-color:#FF66CC;}
+</style>
+
+<!-- InstanceEndEditable -->
+
+</head>
+<body id="home">
+<div id="container">
+<!--Begin header-->
+<div id="header">
+<a name="top" id="top"></a>
+<h1 id="logo"><a href="index.html" title="The Poetess Archive of Writers and Writing"><span></span>The Poetess Archive</a></h1>
+<p><strong>Masthead</strong><br />
+Editor: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#110;&#100;&#101;&#108;&#108;&#99;&#64;&#109;&#117;&#111;&#104;&#105;&#111;&#46;&#101;&#100;&#117;">Laura&nbsp;Mandell</a><br />
+Site design: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#107;&#97;&#114;&#101;&#110;&#64;&#107;&#97;&#114;&#101;&#109;&#105;&#122;&#117;&#46;&#99;&#111;&#109;">Karen&nbsp;Shimizu</a><br />
+
+Database &amp; PHP: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#111;&#111;&#100;&#115;&#100;&#109;&#50;&#64;&#109;&#117;&#111;&#104;&#105;&#111;&#46;&#101;&#100;&#117;">Dave&nbsp;Woods</a><br />
+&copy;2006</p>
+</div><!-- End header -->
+<!-- Begin top navigation -->
+<ul id="top_nav">
+	<li id="t-home"><a href="index.html">Home</a></li>
+	<li id="t-authors"><a href="creators/index.php">Search Authors</a></li>
+
+	<li id="t-collections"><a href="collections/index.php">Search Collections</a></li>
+	<li id="t-criticism"><a href="criticism/index.php">Search Criticism</a></li>
+	<li id="t-search"><a href="search.php">Advanced Search</a></li>
+	<li id="t-journal"><a href="PAJournal/index.html">PA Journal</a></li>
+	<li id="t-about"><a href="about/index.html">About</a></li>
+</ul>
+<!--End top nav-->
+
+<div id="side_menus">
+<!-- Search NINES -->
+<center>
+<form method='GET' style="font-size-adjust:none;font-style:normal;font-variant:normal;font-weight:normal;line-height:1.231;color:#000000;" action="http://www.nines.org/search/add_constraint">
+<div style="background:url(/images/widget_background.jpg) no-repeat scroll left top;height:28px;width:235px;font-size:12px;margin:0;padding:40px 0 0 73px;text-align:left;font-family:'Times New Roman',Times,serif;font-size-adjust:none;font-style:normal;font-variant:normal;font-weight:normal;line-height:1.231;color:#000000;">
+<input type=text name='search_phrase' size=16 maxlength=255 value="" style="-x-system-font:none;font-family:arial,helvetica,clean,sans-serif;font-size-adjust:none;font-stretch:normal;font-style:normal;font-variant:normal;font-weight:normal;line-height:normal;margin:0;padding:0;text-align:left;color:#000000;" />
+<input type=submit value="Search NINES" style="padding:1px;-x-system-font:none;font-family:arial,helvetica,clean,sans-serif;font-size:99%;font-size-adjust:none;font-stretch:normal;font-style:normal;font-variant:normal;font-weight:normal;line-height:normal;margin:0;text-align:left;color:#000000;"/>
+</div>
+</form>
+</center>
+<!-- Search NINES -->
+  <!-- InstanceBeginEditable name="indexsidemenu" -->
+  <div id="blurb">
+    <h3>About 2008: posted 7/29/08</h3>
+	<ul>
+	<li>We are upgrading the site to TEI P5 during the NINES Summer Workshop, 22-29 July 2008.</li><li>We presented our first "drafts" of the Poetry Visualization Tool at MLA, Dec. 2007.  You can see these drafts <a href="http://miamichat.wordpress.com/">here</a></li>.
+	<li>We are presenting the FINISHED Poetry Visualization Tool at the Benjamin Robert Haydon conference at the University of Cincinnati, 7-8 November 2008, and at a launching of Romantic Circles 2.0 during the summer 2009.</li>
+
+    <li>If you use the site, please fill out our <a href="about/form.html">Feedback Form</a> and let us know how we're doing.</li></ul>
+    </div>
+  <!-- InstanceEndEditable --></div>
+
+
+<!-- Begin main content -->
+<div id="main_content">
+  <!-- InstanceBeginEditable name="main_content" -->
+  <h1>Welcome</h1>
+
+  <p>Written and published during what one literary critic has called the &ldquo;bull market&rdquo; of poetry, writings in the poetess tradition were disseminated in myriad collections &ndash; miscellanies, beauties, literary annuals, gift books &ndash; and achieved prominence . . . . <br />
+    <a href="about/index.html">Read more &gt;&gt;</a></p>
+  <h2>Coming Soon</h2>
+ <h3>Visualization Tool for Poetic Elements 1750-1850</h3>
+
+ <p>This web-based tool written in Java will allow users to try out various hypotheses about poetry production
+during this period.&nbsp; From a drop-down box listing twenty items, users will be able to select as many elements as they wish
+to &quot;privilege&quot; or to view as part of their visual model.&nbsp; These elements will range from
+metrical forms to semantics, publication venue to graphics on the page, images, bookboards, slipcases . . . .<br />
+<a href="vmodel/vmodel.html">Read more &gt;&gt;</a></p>
+ 
+  <h2>New to the Poetess Archive</h2>
+  <p>Rather than a static bibliographic list, each entry has been put into a database which will allow you myriad ways of searching and ordering the information available at this site.  We do also have some full texts available here corresponding to bibliographic entries, and so the database will return links to full-text html and xml pages, as well as to pages that provide only bibliographic information.  We hope to acquire many, many more full texts soon; please return often to see our progress.</p>
+
+<!-- InstanceEndEditable -->
+</div>
+<!--End main content-->
+
+  <!-- Begin footer -->
+  <div id="footer">
+  <p><a href="#top">Back to the top of the page</a></p>
+<p><a href="http://validator.w3.org/check?uri=referer">xhtml</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">css</a></p>
+  </div>
+
+  <!--End footer -->
+
+</div>
+<!--End container-->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-3018752-1";
+urchinTracker();
+</script>
+</body> 
+<!-- InstanceEnd --></html>
