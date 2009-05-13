@@ -14,9 +14,9 @@ table td {
 	width:500px;
 }
 
-.search_entry_box_keyword_divider {
+.search_entry_instructions {
 	border-bottom: 1px solid black;
-	height:1px;
+	text-align: left;
 }
 
 .new_search {

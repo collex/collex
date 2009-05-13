@@ -20,14 +20,14 @@
 	<div class="page_header">Search Nines:</div>
     <form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation('search_year', 'search_phrase', 'search_type', 'search_submit');" >
 	<table>
-        <tr><td colspan='2'><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword"}, {:min_chars => 2}-%></td></tr>
-        <tr><td colspan='2'><div class="search_entry_box_keyword_divider">&nbsp;</div></td></tr>
+        <tr><td colspan='2'><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword"}, {:min_chars => 2}-%></td><td><input id="search_submit" type="submit" value="Search" /></td></tr>
+        <tr><td colspan='3'><div class="search_entry_instructions">Other search items:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" /></td></tr>
         <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" /></td></tr>
         <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" /></td></tr>
         <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" /></td></tr>
         <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" /></td></tr>
-        <tr><td colspan="2"><input id="search_submit" type="submit" value="Search" /></td></tr>
+        <tr><td colspan="3"><input id="search_submit" type="submit" value="Search" /></td></tr>
     </table>
 	</form>
 		
