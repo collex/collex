@@ -161,11 +161,11 @@ class TagController < ApplicationController
    end
  
   def set_cloud_list(user, username)
-    @cloud_fragment_key = cloud_fragment_key(username)
-    
-    if is_cache_expired?(@cloud_fragment_key)
+#    @cloud_fragment_key = cloud_fragment_key(username)
+#    
+#    if is_cache_expired?(@cloud_fragment_key)
       @cloud_info = CachedResource.get_tag_cloud_info(user)
-    end
+#    end
     
   end
 end
