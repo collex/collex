@@ -17,16 +17,18 @@
 <% # saved_search_list: params: string header_class %>
 <div class="<%= header_class %>">Saved Searches</div>
 <% saved = get_saved_searches() -%>
-<table class="query">
-	<% if saved.size == 0 -%>
-		<tr><td class="query_term">No searches saved</td></tr>
-	<% else -%>
-		<% for s in saved -%>
-			<tr>
-				<td class="query_term"><%= create_saved_search_link(s) %></td>
-				<td class="query_type"><%= create_remove_saved_search_link(s) %></td>
-				<td class="query_and-not"><%= create_saved_search_permalink(s.name) %></td>
-			</tr>	
+<center>
+	<table class="query">
+		<% if saved.size == 0 -%>
+			<tr><td class="query_term">No searches saved</td></tr>
+		<% else -%>
+			<% for s in saved -%>
+				<tr>
+					<td class="query_term"><%= create_saved_search_link(s) %></td>
+					<td class="query_type"><%= create_remove_saved_search_link(s) %></td>
+					<td class="query_and-not"><%= create_saved_search_permalink(s.name) %></td>
+				</tr>	
+			<% end -%>
 		<% end -%>
-	<% end -%>
-</table>
+	</table>
+</center>

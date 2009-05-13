@@ -17,6 +17,7 @@ table td {
 .search_entry_instructions {
 	border-bottom: 1px solid black;
 	text-align: left;
+	padding-top: 18px;
 }
 
 .new_search {
