@@ -47,7 +47,10 @@
 			</div>
 		<% end -%>
 	<% else # this is a new search -%>
-		<%= render( :partial => 'add_constraint_form' ) %>
+		<div class="left_column">
+			<%= render( :partial => 'add_constraint_form' ) %>
+		</div>
+		<%= render( :partial => 'search_sidebar' ) %>
 	<% end -%>
 	<div class="clear_both"></div>
 </div>

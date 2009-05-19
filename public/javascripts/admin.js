@@ -297,7 +297,7 @@ var DeleteFacetDialog = Class.create({
 });
 
 var EditFacetDialog = Class.create({
-	initialize: function (parent_div, ok_action, resource, get_categories_action, get_resource_details_action) {
+	initialize: function (parent_div, ok_action, resource, get_resource_details_action) {
 		// This puts up a modal dialog that allows the administrator to change information about a site or category.
 		this.class_type = 'EditFacetDialog';	// for debugging
 
@@ -308,15 +308,15 @@ var EditFacetDialog = Class.create({
 		var populate = function()
 		{
 			dlg.setFlash('Loading data, please wait...', false);
-			var responseCount = 0;
 			var categories = null;
-			new Ajax.Request(get_categories_action, { method: 'get', parameters: { },
+			var obj = null;
+			new Ajax.Request(get_resource_details_action, { method: 'get', parameters: { site: resource },
 				onSuccess : function(resp) {
-					responseCount++;
-					if (responseCount === 2)
-						dlg.setFlash('', false);
+					dlg.setFlash('', false);
 					try {
-						categories = resp.responseText.evalJSON(true);
+						ret = resp.responseText.evalJSON(true);
+						categories = ret.categories;
+						obj = ret.details;
 					} catch (e) {
 						alert("Error:" + e);
 					}
@@ -328,22 +328,8 @@ var EditFacetDialog = Class.create({
 					categories.each(function(category) {
 						select.appendChild(new Element('option', { value: category.value }).update(category.text));
 					});
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});	
-			var obj = null;
-			new Ajax.Request(get_resource_details_action, { method: 'get', parameters: { site: resource },
-				onSuccess : function(resp) {
-					responseCount++;
-					if (responseCount === 2)
-						dlg.setFlash('', false);
-					try {
-						obj = resp.responseText.evalJSON(true);
-					} catch (e) {
-						alert("Error:" + e);
-					}
+					
+					// Put the details on the dialog.
 					var par = $('sel0');
 					$A(par.options).each(function(option) {
 						if (parseInt(option.value) === obj.parent_id)
@@ -368,7 +354,68 @@ var EditFacetDialog = Class.create({
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
 				}
-			});			
+			});	
+//			var responseCount = 0;
+//			var categories = null;
+//			new Ajax.Request(get_categories_action, { method: 'get', parameters: { },
+//				onSuccess : function(resp) {
+//					responseCount++;
+//					if (responseCount === 2)
+//						dlg.setFlash('', false);
+//					try {
+//						categories = resp.responseText.evalJSON(true);
+//					} catch (e) {
+//						alert("Error:" + e);
+//					}
+//					// We got all the categories. Now put it on the dialog
+//					var sel_arr = $$('.categories_select');
+//					var select = sel_arr.pop();
+//					select.update('');
+//					categories = categories.sortBy(function(category) { return category.text; });
+//					categories.each(function(category) {
+//						select.appendChild(new Element('option', { value: category.value }).update(category.text));
+//					});
+//				},
+//				onFailure : function(resp) {
+//					dlg.setFlash(resp.responseText, true);
+//				}
+//			});	
+//			var obj = null;
+//			new Ajax.Request(get_resource_details_action, { method: 'get', parameters: { site: resource },
+//				onSuccess : function(resp) {
+//					responseCount++;
+//					if (responseCount === 2)
+//						dlg.setFlash('', false);
+//					try {
+//						obj = resp.responseText.evalJSON(true);
+//					} catch (e) {
+//						alert("Error:" + e);
+//					}
+//					var par = $('sel0');
+//					$A(par.options).each(function(option) {
+//						if (parseInt(option.value) === obj.parent_id)
+//							option.selected = 'selected';
+//					});
+//					$('parent_category_id').value = obj.parent_id;
+//					if (obj.is_category) {
+//						$('display_name').value = resource;
+//						var to_hide = $$('.hide_if_category');
+//						to_hide.each(function(el) { el.hide(); });
+//					} else {
+//						$('display_name').value = obj.display_name;
+//						$('site_url').value = obj.site_url;
+//						$('site_thumbnail').value = obj.site_thumbnail;
+//					}
+//					$('carousel_include').checked = (obj.carousel_include === 1);
+//					$('carousel_title').value = obj.carousel_title;
+//					$('carousel_description').value = obj.carousel_description;
+//					$('carousel_url').value = obj.carousel_url;
+//					$('carousel_thumbnail_img').src = obj.image;
+//				},
+//				onFailure : function(resp) {
+//					dlg.setFlash(resp.responseText, true);
+//				}
+//			});			
 		};
 		
 		// privileged functions

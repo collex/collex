@@ -17,7 +17,9 @@
 <% #cloud: parameters: cloud_info, selected_tag, controller_for_tags, bool hide_some (should only the first few tags be shown with an option to show all?) -%>
 <center>
   <div class="tag_filter">
-	<form onsubmit="return false;">&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;</form>
+	<form onsubmit="return false;">&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;
+    	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+	</form>
   </div>
 
 <!-- < % cache_timeout(cloud_fragment_key,1.hour.from_now) do %>

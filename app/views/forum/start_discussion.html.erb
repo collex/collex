@@ -45,6 +45,7 @@
 	<div class="comment_form">
 		<div class="comment_form2">
 			<form name='post_comment' method="post" action='/forum/post_comment_to_new_thread'>
+    			<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 				<input type="hidden" name="topic_id" value="<%= params[:topic_id] %>">
 				<input type="text" id="title" name="title" class="inputHintStyle" value="Enter a discussion topic here" />
 <script type="text/javascript" charset="utf-8">

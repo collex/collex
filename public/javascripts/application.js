@@ -1118,6 +1118,7 @@ function postToUrl(url, hashParams)
 	var myForm = document.createElement("form");
 	myForm.method="post";
 	myForm.action = url;
+	hashParams.authenticity_token = form_authenticity_token;
 	for (var k in hashParams) {
 		var myInput = document.createElement("input") ;
 		myInput.setAttribute("name", k);

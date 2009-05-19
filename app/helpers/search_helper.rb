@@ -437,10 +437,11 @@ module SearchHelper
       html += " [#{value}]" if !is_category
       html += "</td><td class='num_objects'>#{'Yes' if site.carousel_include == 1}</td><td class='edit_delete_col'>"
       if is_found
-        html += "<a href='#' class='modify_link' onclick='new EditFacetDialog(\"edit_site_list\", \"/admin/facet_tree/edit_facet\", \"#{value}\", \"/admin/facet_tree/get_categories\", \"/admin/facet_tree/get_resource_details\"); return false;'>[edit]</a>"
-        html += "<a href='#' class='modify_link' onclick='new DeleteFacetDialog(\"edit_site_list\", \"/admin/facet_tree/delete_facet\", \"#{value}\", #{is_category}); return false;'>[delete]</a>"
+        sanitized_value = value.gsub("'") { |apos| "&apos;" }
+        html += "<a href='#' class='modify_link' onclick='new EditFacetDialog(\"edit_site_list\", \"/admin/facet_tree/edit_facet\", \"#{sanitized_value}\", \"/admin/facet_tree/get_categories_and_details\"); return false;'>[edit]</a>"
+        html += "<a href='#' class='modify_link' onclick='new DeleteFacetDialog(\"edit_site_list\", \"/admin/facet_tree/delete_facet\", \"#{sanitized_value}\", #{is_category}); return false;'>[delete]</a>"
       else
-        html += "<a class='modify_link' href='#' onclick='new RemoveSiteDlg(\"edit_site_list\", \"/admin/facet_tree/remove_site\", \"#{value}\"); return false;'>[remove]</a>"
+        html += "<a class='modify_link' href='#' onclick='new RemoveSiteDlg(\"edit_site_list\", \"/admin/facet_tree/remove_site\", \"#{sanitized_value}\"); return false;'>[remove]</a>"
       end
     else # not edit mode
       total = site_subtotal(site)
@@ -450,8 +451,8 @@ module SearchHelper
         if site_is_in_constraints?(value)
           html += display_name + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
         else
-          onclick = "var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;f.submit();return false;"
-          html += "<a href='/collex/constrain_resources?resource=#{value}' class='nav_link' onclick=\"#{onclick}\" >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
+          link = link_to(display_name, {:controller=>"search", :action => 'constrain_resource', :resource => value }, { :method => :post, :class => 'nav_link' })
+          html += "#{link}</td><td class='num_objects'>#{number_with_delimiter(total)}"
         end
       end
     end

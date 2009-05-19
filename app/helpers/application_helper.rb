@@ -14,7 +14,7 @@
 # limitations under the License.
 ##########################################################################
 
-# The methods added to this helper will be available to all templates in the application.
+# Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def collex_version
     return "1.4.8.0"

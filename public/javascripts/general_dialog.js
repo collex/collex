@@ -188,6 +188,7 @@ var GeneralDialog = Class.create({
 						if (subel.klass)
 							image.addClassName(subel.klass);
 						row.appendChild(image);
+						row.appendChild(new Element('input', { id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token }).update(form_authenticity_token));
 						
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.

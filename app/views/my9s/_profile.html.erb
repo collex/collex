@@ -25,6 +25,7 @@
 		<td> <%# right hand side of profile, with everything but the picture %>
 			<% if edit_mode -%>
 				<form enctype="multipart/form-data" action="/my9s/update_profile" method="post" >
+    				<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 					<table>
 						<tr><td></td><td  align="right"><%= link_to_function "Cancel Edit", "cancel_edit_profile_mode('profile');", :class => 'nav_link' %></td></tr>
 						<tr><td class="profile_label">User name:</td><td><%= user.username %></td></tr>

@@ -53,3 +53,18 @@
 	background:#F7F4EA;
 	padding:0px 0px 10px 0px;
 }
+
+.user_roles {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.user_roles th {
+	border: none;
+}
+
+.user_roles td {
+	text-align: left;
+}
+
