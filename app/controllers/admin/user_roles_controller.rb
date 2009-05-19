@@ -16,14 +16,13 @@
 
 class Admin::UserRolesController < Admin::BaseController
   def index
-    list
-    render :action => 'list'
-  end
-
-  def list
-#     @user_pages, @users = paginate :users, :per_page => 10
+#    @users = User.all(:order => 'username')
     @users = User.paginate(:page => params[:page], :per_page => 30, :order => 'username')
   end
+
+#  def list
+#    @users = User.paginate(:page => params[:page], :per_page => 30, :order => 'username')
+#  end
 
   def show
     @user = User.find(params[:id])
@@ -46,14 +45,14 @@ class Admin::UserRolesController < Admin::BaseController
     
     if @user.save
       flash[:notice] = 'User was successfully updated.'
-      redirect_to :action => 'list', :page => params[:page]
+      redirect_to :action => 'index', :page => params[:page]
     else
-      render :action => 'list', :page => params[:page]
+      render :action => 'index', :page => params[:page]
     end
   end
 
   def destroy
     User.find(params[:id]).destroy
-    redirect_to :action => 'list', :page => params[:page]
+    redirect_to :action => 'index', :page => params[:page]
   end
 end

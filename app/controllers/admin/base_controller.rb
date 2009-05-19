@@ -18,8 +18,8 @@ class Admin::BaseController < ApplicationController
   layout 'nines'
   before_filter :check_admin_privileges
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
+#  verify :method => :post, :only => [ :destroy, :create, :update ],
+#         :redirect_to => { :action => :list }
   
   before_filter :init_view_options
   

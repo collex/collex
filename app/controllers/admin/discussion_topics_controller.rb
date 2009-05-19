@@ -19,11 +19,6 @@ class Admin::DiscussionTopicsController < Admin::BaseController
   # GET /discussion_topics.xml
   def index
     @discussion_topics = DiscussionTopic.find(:all, :order => 'position')
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @discussion_topics }
-    end
   end
 
 #  # GET /discussion_topics/1
@@ -41,11 +36,6 @@ class Admin::DiscussionTopicsController < Admin::BaseController
   # GET /discussion_topics/new.xml
   def new
     @discussion_topic = DiscussionTopic.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @discussion_topic }
-    end
   end
 
   # GET /discussion_topics/1/edit

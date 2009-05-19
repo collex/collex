@@ -14,21 +14,20 @@
 # limitations under the License.
 ##########################################################################
 
-# The filters added to this controller will be run for all controllers in the application.
-# Likewise will all the methods added be available for all controllers.
+# Filters added to this controller apply to all controllers in the application.
+# Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   include ExceptionNotifiable
   
-  session :session_key => "_nines_user_session"
+  #session :session_key => "_nines_user_session"
   session_times_out_in 2.hours
   
   helper :all # include all helpers, all the time
-
+  protect_from_forgery # See ActionController::RequestForgeryProtection for details
+  # Scrub sensitive parameters from your log
   filter_parameter_logging "password"
   
 #  local_addresses.clear  #uncomment to test e-mails locally in development mode
-  
-  #layout "common"
   
   before_filter :set_charset
   before_filter :session_create
@@ -44,6 +43,7 @@ class ApplicationController < ActionController::Base
     def session_create
       session[:constraints] ||= []
       session[:num_docs] ||= (CollexEngine.new).num_docs
+      session[:num_docs] ||= 1000
       Log.append_record(session, request.env, params)
     end
   
@@ -53,16 +53,16 @@ class ApplicationController < ActionController::Base
       headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     end
       
-    def authorize
-      unless session[:user] 
-        flash[:notice] = "please log in" 
-      
-        # save the URL the user requested so we can hop back to it after login
-        session[:jumpto] = request.request_uri if not request.xhr?
-      
-        redirect_to(:controller => "login", :action => "login") and return false
-      end 
-    end 
+#TODO:PER_DEBUGGING     def authorize
+#TODO:PER_DEBUGGING       unless session[:user] 
+#TODO:PER_DEBUGGING         flash[:notice] = "please log in" 
+#TODO:PER_DEBUGGING       
+#TODO:PER_DEBUGGING         # save the URL the user requested so we can hop back to it after login
+#TODO:PER_DEBUGGING         session[:jumpto] = request.request_uri if not request.xhr?
+#TODO:PER_DEBUGGING       
+#TODO:PER_DEBUGGING         redirect_to(:controller => "login", :action => "login") and return false
+#TODO:PER_DEBUGGING       end 
+#TODO:PER_DEBUGGING     end 
 
     def is_logged_in?
       session[:user] ? true : false
@@ -105,13 +105,13 @@ class ApplicationController < ActionController::Base
       user || Guest.new
     end
     
-    def self.in_place_edit_for_resource(object, attribute, options = {})
-      define_method("update_#{attribute}") do
-        @item = object.to_s.camelize.constantize.find(params[:id])
-        @item.update_attribute(attribute, params[:value])
-        render :text => @item.send(attribute)
-      end
-    end
+#TODO:PER_DEBUGGING     def self.in_place_edit_for_resource(object, attribute, options = {})
+#TODO:PER_DEBUGGING       define_method("update_#{attribute}") do
+#TODO:PER_DEBUGGING         @item = object.to_s.camelize.constantize.find(params[:id])
+#TODO:PER_DEBUGGING         @item.update_attribute(attribute, params[:value])
+#TODO:PER_DEBUGGING         render :text => @item.send(attribute)
+#TODO:PER_DEBUGGING       end
+#TODO:PER_DEBUGGING     end
     
     # for debugging rescue_action_in_public
     # def local_request?

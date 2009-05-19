@@ -16,25 +16,62 @@
 
 class Admin::FacetTreeController < Admin::BaseController
   def index
-    params[:tree] = 'archive'
-    edit
-    render :action => 'edit'
-  end
-
-  def list
-    @facet_trees = FacetTree.find(:all)
-  end
-
-  def edit
     @sites_forest = FacetCategory.sorted_facet_tree().sorted_children
-    @facet_tree = FacetTree.find_by_value(params[:tree])
+    @facet_tree = FacetTree.find_by_value('archive')
     @found_resources = get_all_found_resources()
-#    solr = CollexEngine.new(COLLEX_ENGINE_PARAMS)
-#    @results = solr.search([], 1, 10) # temp, to test the drawing of the tree
     search_one_branch(@sites_forest, @found_resources)
   end
   
-  def get_resource_details
+#  def get_resource_details
+#    site = params[:site]
+#    rec = FacetCategory.find_by_value(site)
+#    ret = {}
+#    ret[:parent_id] = rec[:parent_id]
+#    ret[:carousel_include] = rec[:carousel_include]
+#    ret[:carousel_title] = rec[:carousel_title]
+#    ret[:carousel_description] = rec[:carousel_description]
+#    ret[:carousel_url] = rec[:carousel_url]
+#    ret[:image] = ''  #'/uploads/0000/0057/rossetti_painting_thumb.jpg'
+#    ret[:image] = rec.image.public_filename if rec && rec.image
+#    if rec != nil && rec[:type] != nil
+#      desc_rec = Site.find_by_code(site)
+#      if desc_rec
+#        ret[:display_name] = desc_rec[:description]
+#        ret[:is_category] = false
+#        ret[:site_url] = desc_rec[:url]
+#        ret[:site_thumbnail] = desc_rec[:thumbnail]
+#      else
+#        ret[:display_name] = ""
+#        ret[:is_category] = false
+#        ret[:site_url] = ""
+#        ret[:site_thumbnail] = ""
+#      end
+#    else
+#      ret[:display_name] = ""
+#      ret[:is_category] = true
+#      ret[:site_url] = ""
+#      ret[:site_thumbnail] = ""
+#    end
+#    render :text => ret.to_json()
+#  end
+
+  def get_categories
+    categories = FacetCategory.get_all_categories()
+    ret = [{ :value => 1, :text => '[root]' }]
+    categories.each {|category|
+      ret.push({ :value => category.id, :text => category.display_name })
+    }
+
+    render :text => ret.to_json()
+  end
+  
+  def get_categories_and_details
+    categories = FacetCategory.get_all_categories()
+    cat_ret = [{ :value => 1, :text => '[root]' }]
+    categories.each {|category|
+      cat_ret.push({ :value => category.id, :text => category.display_name })
+    }
+
     site = params[:site]
     rec = FacetCategory.find_by_value(site)
     ret = {}
@@ -64,17 +101,8 @@ class Admin::FacetTreeController < Admin::BaseController
       ret[:site_url] = ""
       ret[:site_thumbnail] = ""
     end
-    render :text => ret.to_json()
-  end
-
-  def get_categories
-    categories = FacetCategory.get_all_categories()
-    ret = [{ :value => 1, :text => '[root]' }]
-    categories.each {|category|
-      ret.push({ :value => category.id, :text => category.display_name })
-    }
-
-    render :text => ret.to_json()
+    render :text => { :categories => cat_ret, :details => ret }.to_json()
+    
   end
   
   # The file upload is done in a separate call because of ajax limitations.
@@ -196,52 +224,7 @@ private
     end
     }
   end
-public
-#  def add_category
-##    facet_tree = FacetTree.find_by_value(params[:tree])
-##    facet_tree << FacetCategory.new(:value => "New Category")
-##    facet_tree.save
-#    FacetCategory.create(:value => "New Category", :parent_id => FacetTree.find_by_value('archive').id)
-#    redirect_to :action => :edit, :tree => 'archive'
-#  end
-  
-#  def add_value
-##    facet_tree = FacetTree.find_by_value(params[:tree])
-##    facet_tree << FacetValue.new(:value => "new_value")
-##    facet_tree.save
-##    redirect_to :action => :edit, :tree => facet_tree.value
-#    FacetValue.create(:value => "new_value", :parent_id => FacetTree.find_by_value('archive').id)
-#    redirect_to :action => :edit, :tree => 'archive'
-#  end
-#
-#  def remove
-#    FacetCategory.find(params[:id]).destroy
-#    redirect_to :action => :edit, :tree => params[:tree]
-#  end
-#  
-#  def move
-#    #parent = FacetCategory.find(params[:id])
-#    child = FacetCategory.find(params[:droppedid])
-#    child.parent_id = params[:id]
-#    #parent << child
-#    child.save
-#    
-#    render :partial => 'categories', :locals => {:categories => FacetTree.find_by_value(params[:tree]).children, :tree => params[:tree]}
-#  end
-#  
-#  def set_category_value
-#    item = FacetCategory.find(params[:id])
-#    item.value = params[:value]
-#    item.save
-#    render :text => item.value
-#  end
 
-  # destroying a facet tree is serious business - the UI may depend on it, such as the NINES "archive" tree
-  # def destroy
-  #   FacetTree.find(params_by_value[:tree]).destroy
-  #   redirect_to :action => 'list'
-  # end
-private
   def get_all_found_resources
     solr = CollexEngine.new(COLLEX_ENGINE_PARAMS)
     results = solr.search([], 1, 10)

@@ -297,22 +297,11 @@ class SearchController < ApplicationController
        session[:constraints] << FreeCultureConstraint.new(:inverted => true )
      end
    
-#     if params[:freeculture] 
-#       session[:selected_freeculture] = true 
-#       existing_freeculture_constraint = session[:constraints].select { |constraint| constraint.is_a?(FreeCultureConstraint) } 
-#       session[:constraints] << FreeCultureConstraint.new(:inverted => true) unless existing_freeculture_constraint.size > 0
-#     else
-#       session[:selected_freeculture] = false
-#       existing_freeculture_constraint = session[:constraints].select { |constraint| constraint.is_a?(FreeCultureConstraint) } 
-#       existing_freeculture_constraint.each { |constraint| session[:constraints].delete constraint } if existing_freeculture_constraint.size > 0       
-#     end
-     
      redirect_to :action => 'browse'
    end
    
    # constrains the search by the specified resources
-   def constrain_resources
-     
+   def constrain_resource
      session[:name_of_search] = nil
      resource = params[:resource]
      if params[:remove] == 'true'
@@ -333,28 +322,6 @@ class SearchController < ApplicationController
        session[:constraints] << FacetConstraint.new( :field => 'archive', :value => resource, :inverted => false )
      end
      
-#     # this is the list of things that are checked
-#     checked_facets = params[:constrain_resources] ? params[:constrain_resources].keys : []
-#
-#     # we don't want to negatively constrain on items that are checked, so remove any such constraints
-#     checked_facets.each { |facet| 
-#       existing_facet_constraints = session[:constraints].select { |constraint| constraint.is_negative_facet_constraint?(facet) } 
-#       existing_facet_constraints.each { |constraint| session[:constraints].delete constraint }
-#     }
-#
-#     # checkboxes don't give us a list of what is not checked, so we have to figure that out
-#     all_facets = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-#     unchecked_facets = all_facets - checked_facets
-#     
-#     # add a negative facet constraint for each unchecked item
-#     unchecked_facets.each { |facet|
-#       existing_facet_constraints = session[:constraints].select { |constraint| constraint.is_negative_facet_constraint?(facet) } 
-#       session[:constraints] << FacetConstraint.new( :field => 'archive', :value => facet, :inverted => true ) unless existing_facet_constraints.size > 0
-#     }
-#     
-#     # record which facets have been selected
-#     session[:selected_resource_facets] = checked_facets
-#     
      redirect_to :action => 'browse'
    end
    

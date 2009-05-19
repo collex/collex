@@ -1,0 +1,46 @@
+<%# ------------------------------------------------------------------------
+    Copyright 2007 Applied Research in Patacriticism and the University of Virginia
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+        http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+---------------------------------------------------------------------------- %>
+<% current_page "admin" -%>
+<% current_sub_page "User Roles" -%>
+
+<div class="inner_content_container">
+	<div class="page_header">Edit User Roles</div>
+
+	<%= will_paginate @users %>
+	
+	<table class='user_roles'>
+	  <tr>
+	    <th>Username</th>
+	    <th>Email</th>
+	    <th>Roles</th>
+	  </tr>
+	  
+	<% @users.each do |user| %>
+	  <tr>
+	    <td><%=h user.username %></td>
+	     <td><%=h user.email %></td>
+	    <td>
+	      <%= user.role_names.join(", ") %>
+	    </td>
+	    
+	    <td><%= link_to 'Edit', :action => 'edit', :id => user,  :page => params[:page], :class => 'nav_link' %></td>
+	  </tr>
+	<% end %>
+	</table>
+	
+	<%= will_paginate @users %>
+	
+</div>
