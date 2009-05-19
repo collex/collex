@@ -18,9 +18,8 @@ module SessionTimeout
         reset_session
         unless opts[:after_timeout].nil?
           logger.info "::: Calling after timeout callback"
-          opts[:after_timeout].call(self) if opts[:after_timeout].instance_of?(Proc)
-          self.send(opts[:after_timeout]) if opts[:after_timeout].instance_of?(Symbol)
-          return
+          return opts[:after_timeout].call(self) if opts[:after_timeout].instance_of?(Proc)
+          return self.send(opts[:after_timeout]) if opts[:after_timeout].instance_of?(Symbol)
         end
       else
         logger.info "::: Session has not expired. Reinitialising."
