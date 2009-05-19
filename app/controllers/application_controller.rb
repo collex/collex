@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   session_times_out_in 2.hours
   
   helper :all # include all helpers, all the time
-  protect_from_forgery # See ActionController::RequestForgeryProtection for details
+  #protect_from_forgery # See ActionController::RequestForgeryProtection for details
   # Scrub sensitive parameters from your log
   filter_parameter_logging "password"
   
