@@ -111,6 +111,7 @@ class Admin::FacetTreeController < Admin::BaseController
     facet = FacetCategory.find_by_value(value)
     if params['carousel_thumbnail'].length > 0
       facet.image = Image.new({ :uploaded_data => params['carousel_thumbnail'] })
+      facet.image.save!
       facet.save
     end
     render :text => ""  # just need to return anything. This isn't displayed anyway.

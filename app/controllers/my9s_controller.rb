@@ -162,6 +162,7 @@ class My9sController < ApplicationController
       if params['image'].length > 0
         old_image = user.image_id
         user.image = Image.new({ :uploaded_data => params['image'] })
+        user.image.save!
       end
 
       #      if params['image'].length > 0
