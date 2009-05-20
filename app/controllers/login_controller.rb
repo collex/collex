@@ -15,7 +15,7 @@
 ##########################################################################
 
 class LoginController < ApplicationController
-  before_filter :authorize, :except => [:login_controls, :login, :logout, :signup, :submit_signup, :reset_password, :clear_user, :verify_login, :account_help, :recover_username]
+  #before_filter :authorize, :except => [:login_controls, :login, :logout, :signup, :submit_signup, :reset_password, :clear_user, :verify_login, :account_help, :recover_username]
    before_filter :init_view_options
    
    def init_view_options # This controls how the layout portion of the page looks.
