@@ -19,6 +19,7 @@
 <div class="add_constraint_form">
 	<div class="page_header">Search Nines:</div>
     <form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return yearValidation('search_year', 'search_phrase', 'search_type', 'search_submit');" >
+    	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 	<table>
         <tr><td colspan='2'><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword"}, {:min_chars => 2}-%></td><td><input id="search_submit" type="submit" value="Search" /></td></tr>
         <tr><td colspan='3'><div class="search_entry_instructions">Other search options:</div></td></tr>
