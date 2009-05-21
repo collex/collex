@@ -1,7 +1,7 @@
 <% current_page "admin" -%>
-<% current_sub_page "Discussion Topics" -%>
+<% current_sub_page "Forum Topics" -%>
 <div class="inner_content_container">
-	<div class="page_header">Editing Discussion Topic</div>
+	<div class="page_header">Editing Forum Topic</div>
 
 	<%= error_messages_for :discussion_topic %>
 	
@@ -11,5 +11,5 @@
 	<%= submit_tag "Update" %>
 	<% end %>
 	
-	<%= link_to 'Back', {:action => 'index'}, {:class => 'modify_link'} %>
+	<%= link_to 'Return to Forum Topic List', {:action => 'index'}, {:class => 'modify_link'} %>
 </div>
