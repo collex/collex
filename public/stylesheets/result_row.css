@@ -40,7 +40,7 @@ hr.search_results_hr {
 
 .search_result_right{
 	float:left;
-	width:57%;
+	width:74%;
 }
 
 .search_result_data td {
@@ -59,7 +59,7 @@ hr.search_results_hr {
 }
 
 .result_row_collected {
-	background-color: #FEE4DA;
+	background:transparent url(/images/search_collected_gradient.jpg) repeat-y;
 }
 
 .search_result_header {

@@ -35,6 +35,12 @@
 	<% end -%>
 
 	<div class="search_result_right<%= " result_row_collected" if result_is_collected(hit) %>">
+	    <div class="search_result_buttons">
+			<%= result_button("Collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});") if !result_is_collected(hit) %>
+			<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+			<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{hit['uri']}', 'discuss_#{index}', #{is_logged_in? ? true : false});") %>
+			<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
+	    </div>
 	    <%# The middle with the actual search results -%>
     	<div class="search_result_header">
             <% if hit["url"] %>
@@ -87,12 +93,6 @@
 	        </table>
 		</div>
 	</div>
-    <div class="search_result_buttons">
-		<%= result_button("Collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});") if !result_is_collected(hit) %>
-		<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
-		<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{hit['uri']}', 'discuss_#{index}', #{is_logged_in? ? true : false});") %>
-		<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
-    </div>
 
 </div>
 
