@@ -940,7 +940,7 @@ function showString(parent_id, str)
 	doSingleInputPrompt("Copy and Paste link into E-mail or IM", 'Link:', 'show_save_name', parent_id, 
 		null,
 		null, 
-		$H( { show_save_name: str } ), 'text', $H( { width: 60 } ), "Ok" );
+		$H( { show_save_name: str } ), 'text', $H( { width: 70 } ), "Ok" );
 }
 
 function setTagVisibility(zoom_level)
