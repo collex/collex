@@ -28,8 +28,8 @@
 <td valign="top" class="search_result_data_label">Tags:</td>
 <td><%= h(tags.join('; ')) %></td>
 </tr>
-<% end -%>
-<% else -%>
+<% end # if there are tags -%>
+<% else # if we want links on the tags -%>
 <tr>
 <td valign="top" class="search_result_data_label">Tags:</td>
 <td>
@@ -38,7 +38,7 @@
 		<% my_tags = item.tags -%>
 	<% end #if the item is collected by the user. -%>
    	<% tags.each {|tag| -%>
-		<% is_mine = my_tags.include?(tag) -%>
+		<% is_mine = is_in_tag_array(my_tags, tag) -%>
 		<%= " | " if tag != tags[0] %>
 		<% if is_mine -%>
 			<%= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>

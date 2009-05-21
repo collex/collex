@@ -323,6 +323,15 @@ module SearchHelper
     link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, :class => 'modify_link', :confirm => "Are you sure you want to remove this saved search?"
   end
   
+  def is_in_tag_array(arr, str)
+    for item in arr
+      if str == item['name']
+        return true
+      end
+    end
+    return false
+  end
+  
   def has_constraints?
     return session[:constraints].length != 0
   end
