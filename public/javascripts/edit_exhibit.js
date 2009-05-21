@@ -919,7 +919,7 @@ var CreateNewExhibitWizard = Class.create({
 					rows: [
 						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
 						[ { text: 'Step 1: Please choose a title for your new exhibit.', klass: 'new_exhibit_label' } ],
-						[ { input: 'exhibit_title', klass: 'new_exhibit_input' } ],
+						[ { input: 'exhibit_title', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'This is the title that will show up in the exhibit list once you decide to share it with other users. You can edit this later by selecting Edit Exhibit Profile at the top of your exhibit editing page.', klass: 'new_exhibit_instructions' } ],
 						[ { button: 'Next', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]
