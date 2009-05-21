@@ -16,12 +16,15 @@
 
 function yearValidation(input_id, alt_input_id, alt_input_type, submit_id)
 {
-	// First disable the submit button so we don't get a double click.
+	// First disable the submit buttons so we don't get a double click.
 	var submit_button = $(submit_id);
 	var submit_text = submit_button.value;
 	submit_button.disabled = true;
 	submit_button.value = "......";
-	 
+	submit_button = $(submit_id + '2');
+	submit_button.disabled = true;
+	submit_button.value = "......";
+
 	// Either there is a control named input_id, or there are two controls, alt_input_id, alt_input_type.
 	// In the second case, the type is a select control and we want to ignore the validation unless
 	// the type="Year".
