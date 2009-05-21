@@ -68,3 +68,12 @@
 	text-align: left;
 }
 
+.pagination a:link, .pagination a:visited {
+	color:#AC2E20;
+	text-decoration:none;
+}
+
+.pagination a:hover {
+	text-decoration:underline;
+}
+
