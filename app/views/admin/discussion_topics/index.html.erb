@@ -11,8 +11,8 @@
 	<% for discussion_topic in @discussion_topics %>
 	  <tr>
 	    <td><%=h discussion_topic.topic %></td>
-	    <td><%= link_to 'Move Up', { :action => 'move_up', :id => discussion_topic }, :method => 'post', :class => 'modify_link' %></td>
-	    <td><%= link_to 'Move Down', { :action => 'move_down', :id => discussion_topic }, :method => 'post', :class => 'modify_link' %></td>
+	    <td><%= link_to( 'Move Up', { :action => 'move_up', :id => discussion_topic }, :method => 'post', :class => 'modify_link') if discussion_topic.position != 1 %></td>
+	    <td><%= link_to( 'Move Down', { :action => 'move_down', :id => discussion_topic }, :method => 'post', :class => 'modify_link') if discussion_topic.position != @discussion_topics.length %></td>
 	    <td><%= link_to 'Edit', {:action => 'edit', :id => discussion_topic}, {:class => 'modify_link'}  %></td>
 	    <td><%= link_to 'Destroy', { :action => 'destroy', :id => discussion_topic }, :confirm => 'Are you sure?', :method => 'post', :class => 'modify_link' %></td>
 	  </tr>
