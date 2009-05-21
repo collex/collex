@@ -40,8 +40,7 @@ hr.search_results_hr {
 
 .search_result_right{
 	float:left;
-	max-width:64%;
-	width:100%;
+	width:57%;
 }
 
 .search_result_data td {
@@ -79,7 +78,8 @@ hr.search_results_hr {
 }
 
 .search_result_buttons {
-	
+	float: right;
+	width: 82px;
 }
 
 .search_result_buttons a {
@@ -92,6 +92,7 @@ hr.search_results_hr {
 	color: white;
 	cursor: pointer;
 	padding-top: 2px;
+	display: block;
 }
 
 .search_result_buttons a:hover {
