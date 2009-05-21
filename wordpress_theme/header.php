@@ -83,7 +83,7 @@ if ( !empty($withcomments) && !is_single() ) {
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
 			<a href="/news/" class="tab_link_current">News</a>
-			<a href="/discussion" class="tab_link">Forum</a>
+			<a href="/forum" class="tab_link">Forum</a>
 			<a href="/exhibit_list" class="tab_link">Exhibits</a>
 			<a href="/tags" class="tab_link">Tags</a>
 			<a href="/search" class="tab_link">Search</a>
