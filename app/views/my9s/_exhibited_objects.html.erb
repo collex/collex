@@ -26,10 +26,10 @@
 		<tr class="exhibit_tree_exhibit_row">
 			<td>
 				<span style="display:none" class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
-					<%= link_to_function('&#x25BA;',"toggleElementsByClass('exhibit_tree_#{exhibit.id}')", :class => 'nav_link') %>
+					<%= link_to_function("<img src='/images/arrow.gif' />","toggleElementsByClass('exhibit_tree_#{exhibit.id}')") %>
 				</span>
 				<span class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
-					<%= link_to_function('&#x25BC;', "toggleElementsByClass('exhibit_tree_#{exhibit.id}')", :class => 'nav_link') %>
+					<%= link_to_function("<img src='/images/arrow_dn.gif' />", "toggleElementsByClass('exhibit_tree_#{exhibit.id}')") %>
 				</span>
 			</td>
 			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :height => 15, :show_immediately => false } %></td>
