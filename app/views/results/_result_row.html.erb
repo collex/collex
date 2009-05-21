@@ -56,7 +56,7 @@
 					<% owner = User.find(real_exhibit.user_id) -%>
 					<% if user_name == owner.username || real_exhibit.published? -%>
 						<tr class="hidden" id="in_exhibit_<%= exhibit.exhibit.id %>_<%= hit['uri'] %>">
-							<td class='grey' valign='top'>
+							<td class='search_result_data_label' valign='top'>
 								<%= "Exhibits:" if is_first == true -%>
 								<% is_first = false -%>
 							</td>
