@@ -159,7 +159,7 @@ class My9sController < ApplicationController
         user.link = "invalid link entered"
       end
       old_image = nil
-      if params['image'].length > 0
+      if params['image'] != nil && params['image'].length > 0
         old_image = user.image_id
         user.image = Image.new({ :uploaded_data => params['image'] })
         user.image.save!
