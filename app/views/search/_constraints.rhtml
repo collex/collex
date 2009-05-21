@@ -38,7 +38,7 @@
 	<tr>
 		<td class="query_type">
     		<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-			<select id="search_type" name="search_type" class="query_type_select"><option>Keyword</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
+			<select id="search_type" name="search_type" class="query_type_select"><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
 		<td class="query_term"><%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>'click here to add new search term'}, {:min_chars => 2} -%></td>
 		<td class="query_and-not"><select id='search_not' name='search_not' class="query_and-not_select"><option>AND</option><option>NOT</option></select>
 		</td>

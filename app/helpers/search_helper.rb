@@ -350,7 +350,7 @@ module SearchHelper
       ret[:title] ="Free Culture"
       ret[:value] = 'Only resources that are freely available in their full form'
     elsif constraint.is_a?(ExpressionConstraint)
-      ret[:title] ="Keyword"
+      ret[:title] ="Search Term"
       ret[:value] = constraint.value
     elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre'
       ret[:title] ="Genre"

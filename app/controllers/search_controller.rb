@@ -51,7 +51,7 @@ class SearchController < ApplicationController
         # basic search
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
-        parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Keyword"
+        parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
 #        add_title_constraint(params[:search_phrase], false) if params[:search_type] == "Title"
 #        add_author_constraint(params[:search_phrase], false) if params[:search_type] == "Author"
 #        add_editor_constraint(params[:search_phrase], false) if params[:search_type] == "Editor"
@@ -70,7 +70,7 @@ class SearchController < ApplicationController
       elsif params[:search]
         # single input box
         invert = (params[:search_not] == "NOT")
-        parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Keyword"
+        parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
         add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
         add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
         add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
