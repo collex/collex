@@ -60,6 +60,8 @@ hr.search_results_hr {
 
 .result_row_collected {
 	background:transparent url(/images/search_collected_gradient.jpg) repeat-y;
+	padding-left: 10px;
+	padding-top: 5px;
 }
 
 .search_result_header {
