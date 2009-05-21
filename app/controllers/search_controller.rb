@@ -75,7 +75,7 @@ class SearchController < ApplicationController
         add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
         add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
         add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
-        add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year"
+        add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
       end
 
      redirect_to :action => 'browse'
