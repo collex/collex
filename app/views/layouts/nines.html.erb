@@ -17,7 +17,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>N I N E S</title>
 	<% # Figure out how we're running so we know what files to load -%>
 	<% # We only run Google Analytics if we are on the real deployment. -%>
 	<% # We want to load the non-minimized versions of YUI if we are running development -%>
@@ -26,6 +25,7 @@
 	<% yui_path = quick_load ? "/javascripts/yui_2_7_0" : "http://yui.yahooapis.com/2.7.0" -%>
 	<% run_analytics = (request.host() == DEPLOYMENT_SERVER) -%>
 
+<title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %></title>
 	<% # site wide styles -%>
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/reset-fonts-grids/reset-fonts-grids.css" />
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/base/base-min.css" />
