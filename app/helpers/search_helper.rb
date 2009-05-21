@@ -71,6 +71,12 @@ module SearchHelper
       html += "&nbsp;&nbsp;"
     end 
     
+    if last < num_pages
+      html += "...&nbsp;&nbsp;" if num_pages > 12
+      destination_hash[:page] = num_pages
+      html += link_to(num_pages, destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
+    end
+    
     if curr_page < num_pages
       destination_hash[:page] = (curr_page + 1)
       html += link_to( ">>", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
