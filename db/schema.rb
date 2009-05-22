@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 107) do
+ActiveRecord::Schema.define(:version => 20090522143427) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -210,7 +210,6 @@ ActiveRecord::Schema.define(:version => 107) do
     t.string  "value"
     t.string  "type"
     t.integer "carousel_include",     :limit => 10, :precision => 10, :scale => 0
-    t.string  "carousel_title"
     t.text    "carousel_description"
     t.string  "carousel_url"
     t.integer "image_id",             :limit => 10, :precision => 10, :scale => 0

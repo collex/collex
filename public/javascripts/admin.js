@@ -341,12 +341,13 @@ var EditFacetDialog = Class.create({
 						var to_hide = $$('.hide_if_category');
 						to_hide.each(function(el) { el.hide(); });
 					} else {
+						var to_hide = $$('.hide_if_site');
+						to_hide.each(function(el) { el.hide(); });
 						$('display_name').value = obj.display_name;
 						$('site_url').value = obj.site_url;
 						$('site_thumbnail').value = obj.site_thumbnail;
 					}
 					$('carousel_include').checked = (obj.carousel_include === 1);
-					$('carousel_title').value = obj.carousel_title;
 					$('carousel_description').value = obj.carousel_description;
 					$('carousel_url').value = obj.carousel_url;
 					$('carousel_thumbnail_img').src = obj.image;
@@ -407,7 +408,6 @@ var EditFacetDialog = Class.create({
 //						$('site_thumbnail').value = obj.site_thumbnail;
 //					}
 //					$('carousel_include').checked = (obj.carousel_include === 1);
-//					$('carousel_title').value = obj.carousel_title;
 //					$('carousel_description').value = obj.carousel_description;
 //					$('carousel_url').value = obj.carousel_url;
 //					$('carousel_thumbnail_img').src = obj.image;
@@ -462,9 +462,8 @@ var EditFacetDialog = Class.create({
 					[ { text: 'Site URL:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_url', klass: 'hide_if_category edit_facet_input' } ],
 					[ { text: 'NINES Thumbnail:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_thumbnail', klass: 'hide_if_category edit_facet_input' } ],
 					[ { text: 'Include in Carousel:', klass: 'edit_facet_label' }, { checkbox: 'carousel_include', klass: '' } ],
-					[ { text: 'Carousel Title:', klass: 'edit_facet_label' }, { input: 'carousel_title', klass: 'edit_facet_input' } ],
 					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
-					[ { text: 'Carousel URL:', klass: 'edit_facet_label' }, { input: 'carousel_url', klass: 'edit_facet_input' } ],
+					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'hide_if_site carousel_url', klass: 'edit_facet_input' } ],
 					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail' } ],
 					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]

@@ -44,7 +44,14 @@ class HomeController < ApplicationController
     facets = FacetCategory.find(:all, :conditions => ['carousel_include = 1'])
     @carousel = []
     for facet in facets
-      @carousel.push({ :title => facet[:carousel_title], :description => facet[:carousel_description], :url => facet[:carousel_url], :image => facet.image ? facet.image.public_filename : '' })
+      title = facet[:value]
+      url = facet[:carousel_url]
+      if facet[:type] == 'FacetValue'
+        site = Site.find_by_code(title)
+        title = site.description
+        url = site.url
+      end
+      @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image ? facet.image.public_filename : '' })
     end
   end
   

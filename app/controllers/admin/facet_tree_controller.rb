@@ -28,7 +28,6 @@ class Admin::FacetTreeController < Admin::BaseController
 #    ret = {}
 #    ret[:parent_id] = rec[:parent_id]
 #    ret[:carousel_include] = rec[:carousel_include]
-#    ret[:carousel_title] = rec[:carousel_title]
 #    ret[:carousel_description] = rec[:carousel_description]
 #    ret[:carousel_url] = rec[:carousel_url]
 #    ret[:image] = ''  #'/uploads/0000/0057/rossetti_painting_thumb.jpg'
@@ -77,7 +76,6 @@ class Admin::FacetTreeController < Admin::BaseController
     ret = {}
     ret[:parent_id] = rec[:parent_id]
     ret[:carousel_include] = rec[:carousel_include]
-    ret[:carousel_title] = rec[:carousel_title]
     ret[:carousel_description] = rec[:carousel_description]
     ret[:carousel_url] = rec[:carousel_url]
     ret[:image] = ''  #'/uploads/0000/0057/rossetti_painting_thumb.jpg'
@@ -123,7 +121,6 @@ class Admin::FacetTreeController < Admin::BaseController
     carousel_url = params[:carousel_url]
     carousel_description = params[:carousel_description]
     parent_category_id = params[:parent_category_id]
-    carousel_title = params[:carousel_title]
     value = params[:site]
     display_name = params[:display_name]
     carousel_include = params[:carousel_include]
@@ -131,7 +128,6 @@ class Admin::FacetTreeController < Admin::BaseController
     facet = FacetCategory.find_by_value(value)
     facet.carousel_url = carousel_url
     facet.carousel_description = carousel_description
-    facet.carousel_title = carousel_title
     facet.carousel_include = (carousel_include == 'true') ? 1 : 0
     facet.parent_id = parent_category_id
 
