@@ -48,7 +48,7 @@ module DiscussionThreadsHelper
   end
   
   def get_user_picture(user_id, type)
-    placeholder = "/images/person_placeholder.jpg"
+    placeholder = "/images/forum_generic_user.gif"
     user = User.find_by_id(user_id)
     return placeholder if user == nil
     return placeholder if user.image == nil
@@ -91,5 +91,30 @@ module DiscussionThreadsHelper
       topics = topics.sort {|a,b| a[:topic_rec].topic <=> b[:topic_rec].topic }
     end
     return topics
+  end
+  
+  def get_comment_header_info(comment)
+    if comment.get_type() == "comment"
+      title = DiscussionThread.find(comment.discussion_thread_id).title
+      thumbnail = nil #get_user_picture(comment.user_id, :thumb)
+    elsif comment.get_type() == "nines_object"
+      hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id)
+       title = h hit["title"][0]
+       thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit(hit))
+    elsif comment.get_type() == "nines_exhibit"
+       exhibit = Exhibit.find(comment.exhibit_id)
+       title = h exhibit.title
+       thumbnail = exhibit.thumbnail
+    elsif comment.get_type() == "inet_object"
+       title = h comment.link_url
+       thumbnail = comment.image_url
+    else
+       title = "ERROR: ill-formed comment. (Comment type #{ comment.comment_type } is unknown)"
+       thumbnail = nil
+    end
+    thread = DiscussionThread.find(comment.discussion_thread_id)
+    last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
+    return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), 
+      :last_comment_author => User.find(last_comment.user_id), :last_comment_time => last_comment.updated_at }
   end
 end

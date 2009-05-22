@@ -15,8 +15,39 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # params: ActiveRecord comment, int thread_id, bool can_delete, bool is_main -%>
+<% # the difference between the main comment and the others is that the main 
+	# comment has a title and a background color. -%>
+    <div class="<%= is_main ? "FP_original_post" : "FP_reply_container" %>">
+		<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).title}</div>" if is_main %>
+		<% if comment.reported == 1 -%>
+			<div class="reported_comment">
+				NOTICE: This comment has been reported as objectionable by <%= user.fullname %>, and is pending moderation.
+			</div>
+		<% end -%>
+		<div class="FP_user_image">
+			<% picture_src = get_user_picture(comment.user_id, :thumb) -%>
+			<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user' } if picture_src && picture_src.length > 0 %>
+			<%= get_user_link(User.find(comment.user_id)) %>
+		</div>
 
-<div class="<%= is_main ? 'new_discussion' : 'discussion_thread_list' %>">
+		<div class="FP_post_body">
+			<p>Posted by <%= User.find(comment.user_id).fullname %> on Mar 09, 2009—02:01PM 
+			<% if is_logged_in? -%>
+				<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/forum/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
+			<% else -%>
+				<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
+			<% end -%>
+			<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+			<%= decode_exhibit_links(comment.comment) %>
+		</div>
+			<% if comment.get_type() != "comment" -%>
+				<%= render :partial => 'attachment', :locals => { :comment => comment } %>
+			<% end -%>
+        <div class="clear_both"></div>
+    </div>
+	
+<% # TODO: The following is old -%>	
+<!-- <div class="<%= is_main ? 'new_discussion' : 'discussion_thread_list' %>">
 	<div class="discussion_comment2">
 	<% if comment.reported == 1 && can_delete -%>
 		<div class="reported_comment">
@@ -71,3 +102,4 @@
 		<% end -%>
 	</div>
 </div>
+-->

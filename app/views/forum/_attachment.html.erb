@@ -1,0 +1,47 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<% # params: ActiveRecord comment -%>
+
+<div class="FP_attachment">
+	<% if comment.get_type() == "nines_exhibit" -%>
+		<% exhibit = Exhibit.find(comment.exhibit_id) -%>
+		<% img = "<img src='exhibit.thumbnail' alt='exhibit' class='FP_attachment_img'/>" -%>
+		<% title = "TODO" -%>
+	<% elsif comment.get_type() == "inet_object" -%>
+		<% img = "<img src='comment.image_url' alt='link' class='FP_attachment_img' />" -%>
+		<% title = "TODO" -%>
+	<% elsif comment.get_type() == "nines_object" -%>
+		<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
+		<% img = thumbnail_image_tag(hit) -%>
+		<% title = h hit["title"][0] if hit["title"] -%>
+	<% end -%>
+	<%= img %>
+	<p class="FP_attachment_title"><a href="#"><%= title %></a></p>
+	<% if comment.get_type() == "nines_object" -%>
+		<p><a href="#">[Details]</a></p>
+      <p><a href="#">[Hide Details]</a></p>
+      <p class="FP_attachment_details">Artist:<br />
+        Dante Gabriel Rossetti</p>
+
+      <p class="FP_attachment_details">Genre: <br />
+        Visual Art</p>
+      <p class="FP_attachment_details">Tags:<br />
+        <a href="#">europe</a> | <a href="#">rossetti</a> <br />
+        <a href="#">[LOG IN to add tags]</a></p>
+	<% end -%>
+</div>		
+

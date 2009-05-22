@@ -15,25 +15,16 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # summary: params: ActiveRecord comment, int thread_id, bool can_delete -%>
-<% if comment.get_type() == "comment" -%>
-	<% title = DiscussionThread.find(thread_id).title -%>
-	<% thumbnail = get_user_picture(comment.user_id, :thumb) -%>
-<% elsif comment.get_type() == "nines_object" -%>
-	<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
-	<% title = h hit["title"][0] -%>
-	<% thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit(hit)) -%>
-<% elsif comment.get_type() == "nines_exhibit" -%>
-	<% exhibit = Exhibit.find(comment.exhibit_id) -%>
-	<% title = h exhibit.title -%>
-	<% thumbnail = exhibit.thumbnail -%>
-<% elsif comment.get_type() == "inet_object" -%>
-	<% title = h comment.link_url -%>
-	<% thumbnail = comment.image_url -%>
-<% else -%>
-	<% title = "ERROR: ill-formed comment. (Comment type #{ comment.comment_type } is unknown)" -%>
-	<% thumbnail = "" -%>
-<% end -%>
-<div class="discussion_summary">
+<% comment_info = get_comment_header_info(comment) -%>
+<p>
+	<% if comment_info[:thumbnail] != nil -%>
+		<img src="<%= comment_info[:thumbnail] %>" class="FH_post_image" />
+	<% end -%>
+	<%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread_id}", :class => 'FH_post_title nav_link' %>
+</p>
+Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format(comment_info[:last_comment_time]) %>
+
+<!-- <div class="discussion_summary">
 	<%= render :partial => 'img_with_progress_spinner', :locals => { :src => thumbnail, :alt => 'thumbnail' } %>
 	<% if comment.reported == 1 && can_delete -%>
 		<div class="reported_comment">
@@ -45,3 +36,4 @@
 	</div>
 	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => true, :include_report => false, :include_last_updated => true } %>
 </div>
+-->

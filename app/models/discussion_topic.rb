@@ -16,6 +16,7 @@
 
 class DiscussionTopic < ActiveRecord::Base
   has_many :discussion_threads
+  acts_as_list
   
   def self.get_all_with_date()
     topics = DiscussionTopic.find(:all)

@@ -1,0 +1,80 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+
+<% current_page "Forum" -%>
+<% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
+<% topic = @topic -%>
+<% last_updated_date = topic.get_last_updated_date -%>
+<% threads = topic.discussion_threads -%>
+
+<div class="subpage_nav">
+	<%= link_to "View All Forum Topics", { :action => 'index' }, :class => 'nav_link' %>
+</div>
+
+	<div class="page_header"><%= topic.topic %></div>
+<div class="page_subheader">We've set aside this portion of NINES for commentary, discussion and collaboration among the NINES community.
+	Join in the conversations below immediately, or login to your free account to associate objects of searches with your entries.</div>
+
+<table class="FH_cat_table" border="0" cellpadding="0" cellspacing="0">
+	<tr><td colspan="9" class="FH_cat_info">
+		<p><%= topic.description %></p>
+		<p><%= pluralize(threads.length, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if threads.length > 0 %></p>
+		<%= link_to_function "[New #{topic.topic} Post]", "new RedirectIfLoggedIn('/forum/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
+		</td>
+	</tr>
+	<tr>
+		<td class="FC_pages" colspan="9"> < 1  <a href="#">2</a>  <a href="#">3</a>  <a href="#">4</a> ></td>
+	</tr>
+	<tr>
+		<td class="FC_post_title">Discussion thread</td>
+		<td class="FC_spacer"></td>
+		<td class="FC_last_comment">Last comment by</td>
+		<td class="FC_spacer"></td>
+		<td class="FC_replies"># of Replies</td>
+		<td class="FC_spacer"></td>
+		<td class="FC_views"># of Views</td>
+		<td class="FC_spacer"></td>
+		<td class="FC_object">Object</td>
+	</tr>
+
+	<% for thread in threads -%>
+	<tr>
+		<% if thread.discussion_comments.length < 1 -%>
+			<td class="FH_post">ERROR: ill-formed thread. (Main comment is missing)</td>
+		<% else -%>
+			<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
+			<td class="FC_post_title">
+				<p><%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread.id}", :class => 'FH_post_title nav_link' %><br />
+				By <%= get_user_link(comment_info[:author]) %><br />
+				(<a href="#">1</a>, <a href="#">2</a>, <a href="#">3</a>)</p>
+			</td>
+			<td class="FC_spacer"></td>
+			<td class="FC_last_comment"><%= get_user_link(comment_info[:last_comment_author]) %><br />
+			<%= comment_time_format(comment_info[:last_comment_time]) %></td>
+			<td class="FC_spacer"></td>
+			<td class="FC_replies"><%= thread.discussion_comments.length-1 %></td>
+			<td class="FC_spacer"></td>
+			<td class="FC_views">XXXX</td>
+			<td class="FC_spacer"></td>
+			<td class="FC_object"><img src="<%= comment_info[:thumbnail] %>" class="FH_post_image" /></td>
+		<% end # if legal comment -%>
+	</tr>
+	<% end # for each thread -%>
+	<tr>
+		<td class="FC_pages" colspan="9"> < 1  <a href="#">2</a>  <a href="#">3</a>  <a href="#">4</a> ></td>
+	</tr>
+</table>

@@ -126,6 +126,10 @@ class ForumController < ApplicationController
   end
   public
   
+  def view_topic
+    @topic = DiscussionTopic.find(params[:topic])
+  end
+  
   def view_thread
     thread_id = params[:thread]
     @thread = DiscussionThread.find(thread_id)

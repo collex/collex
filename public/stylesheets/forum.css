@@ -1,0 +1,222 @@
+#content_container {
+	padding:20px 20px 10px 20px;
+	height:auto;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:0.9em;
+}
+
+.FH_cat_table {
+	width:100%;
+	margin:10px 0px 20px 0px;
+}
+
+.FH_cat_header {
+	width:100%;
+	text-align:left;
+	font-weight:bold;
+	background:#914C29;
+	color:#FFFFFF;
+	padding:4px 12px 4px 12px;	
+}
+
+.FH_cat_header a {
+	color:#FFFFFF;
+}
+
+.FH_cat_info {
+	width:100%;
+	text-align:left;
+	background:#F7ECDB;
+	padding:12px 12px 12px 12px;	
+
+}
+
+.FH_post {
+	width:32%;
+	border-bottom: 2px solid #C7C8CB;
+	text-align:left;
+	padding:12px 12px 8px 12px;
+	vertical-align:top;
+}
+
+.FH_spacer {
+	width:2%
+}	
+
+.FH_post_title {
+	font-weight:bold;
+}
+
+.FH_post_image {
+	float:right;
+	margin-left:5px;
+	height:80px;
+}
+
+.FH_view_all {
+	text-align:left;
+}
+
+.FP_original_post {
+	background: #F7ECDB;
+	margin:10px 0px 10px 0px;
+	padding:20px 15px 20px 15px;
+}
+
+.FP_post_header {
+	font-size:1.5em;
+	font-weight:bold;
+	padding:0px 0px 10px 0px;
+}
+
+.FP_user_image {
+	width:100px;
+	float:left;
+	font-size:0.9em;
+	text-align:center;
+}
+
+.FP_user_img {
+	border: 2px solid #7F5C52;
+	margin:0px 0px 5px 0px;
+}
+
+.FP_post_body {
+	width:60%;
+	float:left;
+	padding:0px 20px 0px 20px;
+}
+
+.FP_attachment {
+	width:150px;
+	float:right;
+	text-align:center;
+
+}
+
+.FP_attachment_img {
+	margin:0px 0px 10px 0px;
+}
+
+.FP_attachment_title {
+	font-weight:bold;
+}
+
+.FP_attachment_details {
+	font-size:0.9em;
+	text-align:left;
+	margin:5px 0px 8px 0px;
+}
+
+.FP_replies {
+	margin:10px 0px 10px 0px;
+	padding:20px 15px 20px 15px;
+}
+
+.FP_reply_header {
+	border-top: 2px solid #966C54;
+	border-bottom: 2px solid #966C54;
+	padding:10px 0px 10px 0px;
+	margin:10px 0px 10px 0px;
+}
+
+.FP_reply_footer {
+	border-bottom: 2px solid #966C54;
+	padding:5px 0px 10px 0px;
+	margin:10px 0px 10px 0px;
+}
+
+
+.FP_reply_number {
+	font-size:1.3em;
+	font-weight:bold;
+	float:left;
+}
+
+.FP_reply_pages {
+	float:right;
+	padding-top:0.3em;
+}
+
+.FP_replies_per_page {
+	float:left;
+}
+
+.FP_reply_container {
+	border-bottom: 2px solid #966C54;
+	margin-bottom:10px;
+}
+
+.FP_breadcrumb {
+	margin:10px 0px 10px 0px;
+}
+
+
+.FC_pages {
+	padding:10px;
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_post_title{
+	text-align:left;
+	vertical-align:top;
+	width:50%;
+	padding:10px;
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_last_comment{
+	text-align:left;
+	vertical-align:top;
+	width:300px;
+	padding:10px;
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_replies{
+	text-align:center;
+	vertical-align:top;
+	width:100px;
+	padding:10px;
+	border-bottom: 2px solid #C7C8CB;
+
+}
+
+.FC_views{
+	text-align:center;
+	vertical-align:top;
+	width:100px;
+	padding:10px;
+	border-bottom: 2px solid #C7C8CB;
+
+}
+
+.FC_object {
+	text-align:center;
+	vertical-align:middle;
+	width:80px;
+	padding:5px;
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_post_image {
+	height:80px;
+}
+
+.FP_original_post .FC_report_link {
+	background:url(/images/abuse_brown.gif) top left no-repeat;
+	text-decoration: none;
+}
+
+.FP_original_post .FC_report_link:hover {
+	background:url(/images/abuse_brown_rl.gif) top left no-repeat;
+}
+
+.FP_reply_container .FC_report_link {
+	background:url(/images/abuse_white.gif) top left no-repeat;
+	text-decoration: none;
+}
+
+.FP_reply_container .FC_report_link:hover {
+	background:url(/images/abuse_white_rl.gif) top left no-repeat;
+}

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090522143427) do
+ActiveRecord::Schema.define(:version => 20090522173037) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -74,7 +74,8 @@ ActiveRecord::Schema.define(:version => 20090522143427) do
     t.string   "topic"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "position",   :limit => 10, :precision => 10, :scale => 0
+    t.integer  "position",    :limit => 10, :precision => 10, :scale => 0
+    t.text     "description"
   end
 
   create_table "exhibit_elements", :force => true do |t|

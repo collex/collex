@@ -8,6 +8,8 @@
 	<% form_tag :action => 'update', :id => @discussion_topic do %>
 	<p><label for="topic">Topic</label><br/>
 	<%= text_field 'discussion_topic', 'topic'  %></p>
+	<p><label for="description">Description</label><br/>
+	<%= text_area 'discussion_topic', 'description'  %></p>
 	<%= submit_tag "Update" %>
 	<% end %>
 	
