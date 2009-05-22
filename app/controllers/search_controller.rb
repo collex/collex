@@ -390,14 +390,21 @@ class SearchController < ApplicationController
     session[:constraints] = []
    end
    
-   public
-   def auto_complete_for_search_keyword
+   def auto_complete(keyword)
      @field = 'content'
      @values = []
      if params['search']
        begin
-         result = @solr.facet(@field, session[:constraints], params['search']['keyword'])
-         @values = result.sort {|a,b| b[1] <=> a[1]}
+         result = @solr.facet(@field, session[:constraints], keyword)
+         # Because the indexing isn't perfect, we will receive entries that contain numbers and punctuation.
+         # The user can't search by that so we'll filter them out.
+         result.each { |value|
+           @values.push(value) if value[0].index(/[^A-Za-z]/) == nil
+         }
+         # Sort by how many hits they get.
+         @values = @values.sort {|a,b| b[1] <=> a[1]}
+         #only return a reasonable number
+         @values = @values.slice(0..14)
        rescue  Net::HTTPServerException => e
          # don't do anything if this fails.
        end
@@ -405,19 +412,13 @@ class SearchController < ApplicationController
      
      render :partial => 'suggest'
    end
+   public
+   def auto_complete_for_search_keyword
+    auto_complete(params['search']['keyword'])
+   end
 
    def auto_complete_for_search_phrase
-     @field = 'content'
-     @values = []
-     if params['search']
-       begin
-         result = @solr.facet(@field, session[:constraints], params['search']['phrase'])
-         @values = result.sort {|a,b| b[1] <=> a[1]}
-       rescue  Net::HTTPServerException => e
-         # don't do anything if this fails.
-       end
-     end
-     render :partial => 'suggest'
+    auto_complete(params['search']['phrase'])
    end
 #   def auto_complete_for_field_year
 #     # TODO
