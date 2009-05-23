@@ -19,7 +19,7 @@
 <p>
 	<% if comment.reported == 1 -%>
 		<div class="reported_comment">
-			NOTICE: This comment has been reported as objectionable by <%= user.fullname %>, and is pending moderation.
+			NOTICE: This comment has been reported as objectionable by <%= User.find(comment.reporter_id).fullname %>, and is pending moderation.
 		</div>
 	<% end -%>
 	<% if comment_info[:thumbnail] != nil -%>

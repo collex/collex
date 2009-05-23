@@ -21,7 +21,7 @@
 		<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).title}</div>" if is_main %>
 		<% if comment.reported == 1 -%>
 			<div class="reported_comment">
-				NOTICE: This comment has been reported as objectionable by <%= user.fullname %>, and is pending moderation.
+				NOTICE: This comment has been reported as objectionable by <%= User.find(comment.reporter_id).fullname %>, and is pending moderation.
 			</div>
 		<% end -%>
 		<div class="FP_user_image">
