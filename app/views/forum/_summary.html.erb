@@ -17,23 +17,14 @@
 <% # summary: params: ActiveRecord comment, int thread_id, bool can_delete -%>
 <% comment_info = get_comment_header_info(comment) -%>
 <p>
-	<% if comment_info[:thumbnail] != nil -%>
-		<img src="<%= comment_info[:thumbnail] %>" class="FH_post_image" />
-	<% end -%>
-	<%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread_id}", :class => 'FH_post_title nav_link' %>
-</p>
-Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format(comment_info[:last_comment_time]) %>
-
-<!-- <div class="discussion_summary">
-	<%= render :partial => 'img_with_progress_spinner', :locals => { :src => thumbnail, :alt => 'thumbnail' } %>
-	<% if comment.reported == 1 && can_delete -%>
+	<% if comment.reported == 1 -%>
 		<div class="reported_comment">
 			NOTICE: This comment has been reported as objectionable by <%= user.fullname %>, and is pending moderation.
 		</div>
 	<% end -%>
-	<div class="discussion_summary_title">
-		<%= link_to title, "/forum/view_thread?thread=#{thread_id}", :class => 'nav_link' %>
-	</div>
-	<%= render :partial => 'comment_footer', :locals => { :comment => comment, :include_username => true, :include_report => false, :include_last_updated => true } %>
-</div>
--->
+	<% if comment_info[:thumbnail] != nil -%>
+		<%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FH_post_image" } %>
+	<% end -%>
+	<%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread_id}", :class => 'FH_post_title nav_link' %>
+</p>
+Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format(comment_info[:last_comment_time]) %>

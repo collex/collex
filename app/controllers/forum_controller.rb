@@ -131,10 +131,23 @@ class ForumController < ApplicationController
   end
   
   def view_thread
+    session[:items_per_page] ||= 10
     thread_id = params[:thread]
     @thread = DiscussionThread.find(thread_id)
-    @page = 1
-    @num_pages = 2
+    num_views = @thread.number_of_views
+    num_views = 0 if num_views == nil
+    num_views += 1
+    @thread.update_attribute(:number_of_views, num_views)
+    @page = params[:page] ? params[:page].to_i : 1
+    @replies = @thread.discussion_comments
+    @total = @replies.length-1
+    @num_pages = @total.quo(session[:items_per_page]).ceil
+    start = @page-1
+    len = session[:items_per_page]
+    start = start * len
+    @replies = @replies.slice(start+1,len)
+    x = (@page-1)*session[:items_per_page]
+    y = session[:items_per_page]
   end
   
   def delete_comment
@@ -196,7 +209,7 @@ class ForumController < ApplicationController
      session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
      requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
      session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-     redirect_to :action => 'view_thread'
+     redirect_to :back
    end
   
   def index

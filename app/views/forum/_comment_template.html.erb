@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # comment_template: string picture_src, string picture_alt, ActiveRecord comment, bool can_delete  -%>
-<div class="discussion_user_picture"><%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => picture_alt } if picture_src && picture_src.length > 0 %></div>
+<div class="discussion_user_picture"><%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => picture_alt, :klass => '' } if picture_src && picture_src.length > 0 %></div>
 <% if can_delete -%>
 	<div style="float:right;"><%= link_to del_char(), "/forum/delete_comment?comment=#{comment.id}", :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %></div>
 <% end -%>

@@ -19,11 +19,11 @@
 <div class="FP_attachment">
 	<% if comment.get_type() == "nines_exhibit" -%>
 		<% exhibit = Exhibit.find(comment.exhibit_id) -%>
-		<% img = "<img src='exhibit.thumbnail' alt='exhibit' class='FP_attachment_img'/>" -%>
-		<% title = "TODO" -%>
+		<% img = render :partial => 'img_with_progress_spinner', :locals => { :src => exhibit.thumbnail, :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 150 } -%>
+		<% title = get_exhibit_link(exhibit) -%>
 	<% elsif comment.get_type() == "inet_object" -%>
-		<% img = "<img src='comment.image_url' alt='link' class='FP_attachment_img' />" -%>
-		<% title = "TODO" -%>
+		<% img = render :partial => 'img_with_progress_spinner', :locals => { :src => comment.image_url, :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 150 } -%>
+		<% title = make_ext_link(comment.link_url) -%>
 	<% elsif comment.get_type() == "nines_object" -%>
 		<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
 		<% img = thumbnail_image_tag(hit) -%>

@@ -68,7 +68,7 @@
 			<td class="FC_spacer"></td>
 			<td class="FC_replies"><%= thread.discussion_comments.length-1 %></td>
 			<td class="FC_spacer"></td>
-			<td class="FC_views">XXXX</td>
+			<td class="FC_views"><%= thread.number_of_views ? thread.number_of_views : 0 %></td>
 			<td class="FC_spacer"></td>
 			<td class="FC_object"><img src="<%= comment_info[:thumbnail] %>" class="FH_post_image" /></td>
 		<% end # if legal comment -%>

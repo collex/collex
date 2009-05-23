@@ -26,86 +26,46 @@
 	var gExhibitNames = [ <%= Exhibit.js_array_of_all_public_exhibits() %> ];
 </script>
 
-    <div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
-    <div class="FP_breadcrumb">
-    	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).title %></div>
-	<% main_comment = @thread.discussion_comments[0] -%>
-	<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => false, :is_main => true } %>
+<div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
+<a href='/forum/rss/<%=thread_id%>.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;Follow this discussion on RSS
+<div class="FP_breadcrumb">
+	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).title %>
+</div>
+<% main_comment = @thread.discussion_comments[0] -%>
+<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => false, :is_main => true } %>
 
-    <div class="FP_replies">
-		<div class="FP_reply_number">Replies to this topic (18)</div>
-        <div class="clear_both"></div>
-    	<div class="FP_reply_header"><div class="FP_replies_per_page">Displaying <select><option value="5" selected="selected">5</option>
-<option value="10">10</option>
-<option value="25">25</option></select> replies per page.</div><div class="FP_reply_pages"><strong>1</strong> <a href="#">2</a> <a href="#">3</a> <a href="#">4</a> <a href="#">>></a></div>
-
-        <div class="clear_both"></div>
-    	</div>
-   	  <div class="FP_reply_container">
-            <div class="FP_user_image"><img src="/images/forum_generic_user.gif" class="FP_user_img" /><a href="#">Nick Laiacona</a></div>
-          <div class="FP_post_body">
-            <p>Posted by Nick Laiacona on Mar 09, 2009—02:34PM <img src="/images/abuse_white.gif" width="51" height="16" /></p>
-              <p>Suspendisse libero justo, hendrerit ac cursus non, convallis quis felis. Donec dapibus dignissim orci id faucibus. Curabitur sed quam metus. Curabitur ut gravida turpis. Suspendisse sodales venenatis orci quis porttitor. Nulla facilisi. Cras fringilla, mi non tincidunt iaculis, felis leo gravida purus, pellentesque placerat libero quam vel nulla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis consequat sagittis gravida. Suspendisse potenti. In at dignissim urna. In velit nunc, venenatis non hendrerit interdum, ornare id justo. Suspendisse ut sodales justo. Ut laoreet elementum nisl sit amet dictum. Morbi vehicula posuere elit, at egestas metus malesuada et. Cras nec malesuada velit. Cras nec est augue. Pellentesque in urna ac nulla imperdiet rutrum quis quis massa. Duis eu nisl sem. Mauris pulvinar mi eget eros aliquam gravida. </p>
-
-        </div>
-            <div class="FP_attachment">&nbsp;
-            </div>		
-            <div class="clear_both"></div>
-      </div>
-<div class="FP_reply_container">
-            <div class="FP_user_image"><img src="/images/forum_generic_user.gif" class="FP_user_img" /><a href="#">Nick Laiacona</a></div>
-            <div class="FP_post_body">
-              <p>Posted by Nick Laiacona on Mar 13, 2009—11:19PM <img src="/images/abuse_white.gif" width="51" height="16" /></p><p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer sodales tempus nisi, in pharetra sem mattis id. Phasellus ut dolor nisi. Duis nunc nibh, condimentum a cursus ac, hendrerit eu lectus. Nunc at dolor feugiat mi fringilla ultricies non at enim. In eu ligula id quam cursus fringilla. Donec vestibulum semper nisi sed tincidunt. Praesent lacinia, ipsum ut pellentesque interdum, diam nisi porta odio, et vestibulum mi magna eget leo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla risus lorem, posuere sed vestibulum nec, consectetur id justo. </p>
-
-              <p>Donec quis elit et velit blandit varius et et est. Aliquam dapibus est non tellus sollicitudin rutrum. Mauris ut felis id nulla ultrices accumsan. Suspendisse quis pretium ante. Donec eget sapien vel ante tristique posuere vitae quis ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel libero tellus. Vestibulum elementum, tellus vestibulum tristique congue, quam risus dictum ipsum, sit amet ullamcorper turpis augue sed ante. Donec tempor ipsum scelerisque turpis fringilla tempus. </p>
-            </div>
-<div class="FP_attachment"><img src="/images/europeaprophecy.jpg" class="FP_attachment_img" />
-      <p class="FP_attachment_title"><a href="#">Europe, a Prophecy</a></p>
-      <p><a href="#">[Hide Details]</a></p>
-      <p class="FP_attachment_details">Artist:<br />
-        Dante Gabriel Rossetti</p>
-
-      <p class="FP_attachment_details">Genre: <br />
-        Visual Art</p>
-      <p class="FP_attachment_details">Tags:<br />
-        <a href="#">europe</a> | <a href="#">rossetti</a> <br />
-        <a href="#">[LOG IN to add tags]</a></p>
-
-</div>            <div class="clear_both"></div>
-        </div>
-        <div class="FP_reply_footer"><div class="FP_replies_per_page">Displaying <select><option value="5" selected="selected">5</option>
-<option value="10">10</option>
-<option value="25">25</option></select> replies per page.</div><div class="FP_reply_pages"><strong>1</strong> <a href="#">2</a> <a href="#">3</a> <a href="#">4</a> <a href="#">>></a></div>
-
-        <div class="clear_both"></div>
-    	</div>
-
--------------------------
-<%= render( :partial => '/results/result_count' ) %>
-<%= rounded_h1("<a href='/forum/rss/#{thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;Follow this discussion on RSS") %>
-<div class="standard_box">
-	<div class="discuss_following">
-		Discuss the following:
+<div class="FP_replies">
+	<div class="FP_reply_number">Replies to this topic (<%= @total %>)</div>
+	<div class="clear_both"></div>
+	
+	<% if @replies.length > 0 -%>
+		<div class="FP_reply_header">
+			<div class="FP_replies_per_page"><%= render( :partial => 'results/result_count' ) %></div>
+			<div class="FP_reply_pages">
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread' } } ) %>
+			</div>
+			<div class="clear_both"></div>
+		</div>
+	<% end -%>
+	
+	<% @replies.each {|reply| -%>
+		<%= render :partial => 'comment', :locals => { :comment=> reply, :thread_id => @thread.id, :can_delete => is_logged_in? && (is_admin? || (reply.user_id == user_id)), :is_main => false  } %>
+	<% } -%>
+	
+	<% if @replies.length > 0 -%>
+		<div class="FP_reply_footer">
+			<div class="FP_replies_per_page"><%= render( :partial => 'results/result_count' ) %></div>
+			<div class="FP_reply_pages">
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread' } } ) %>
+			</div>
+			<div class="clear_both"></div>
+		</div>
+	<% end -%>
+	
+	<div id="discussion_thread" class="discussion_action_bar">
+		<% if is_logged_in? -%>
+			<%= link_to_function("[post comment]", 	"var dlg = new NewDiscussionCommentDlg({ thread_id: #{thread_id}, submit_url: '/forum/post_comment_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", :class => 'modify_link') %>
+			<%= link_to_function("[post object]", "var dlg = new NewThreadObjectDlg({thread_id: #{thread_id}, obj_list: gCollectedObjects, exhibit_list: gExhibitNames, type_list: gIllustrationTypes, submit_url: '/forum/post_object_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", :class => 'modify_link') %>
+		<% end -%>
 	</div>
-	<% main_comment = @thread.discussion_comments[0] -%>
-	<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => false, :is_main => true } %>
-	<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'destination_threads', :action => 'view_thread' } } ) %>
-	<% 1.upto(@thread.discussion_comments.length-1) do |i| -%>
-		<%= render :partial => 'comment', :locals => { :comment=> @thread.discussion_comments[i], :thread_id => @thread.id, :can_delete => is_logged_in? && (is_admin? || (@thread.discussion_comments[i].user_id == user_id)), :is_main => false  } %>
-	<% end -%>
-
-	<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'destination_threads', :action => 'view_thread' } } ) %>
 </div>
-<div class="discussion_action_bar">
-	<% if is_logged_in? -%>
-		<%= rounded_button("post comment", "post_comment_id", 
-			"var dlg = new NewDiscussionCommentDlg({ thread_id: #{thread_id}, submit_url: '/forum/post_comment_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'red') %>
-		<%= rounded_button("post object", "post_object_id", 
-			"var dlg = new NewThreadObjectDlg({thread_id: #{thread_id}, obj_list: gCollectedObjects, exhibit_list: gExhibitNames, type_list: gIllustrationTypes, submit_url: '/forum/post_object_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", 'red') %>
-	<% end -%>
-</div>
-
-<!--
-When the user adds an object to the discourse, a single line message appears followed by the object added.
-The message reads: “ has added the following object to the discourse…”
--->
