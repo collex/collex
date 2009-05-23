@@ -19,7 +19,6 @@
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topic = @topic -%>
 <% last_updated_date = topic.get_last_updated_date -%>
-<% threads = topic.discussion_threads -%>
 
 <div class="subpage_nav">
 	<%= link_to "View All Forum Topics", { :action => 'index' }, :class => 'nav_link' %>
@@ -32,12 +31,14 @@
 <table class="FH_cat_table" border="0" cellpadding="0" cellspacing="0">
 	<tr><td colspan="9" class="FH_cat_info">
 		<p><%= topic.description %></p>
-		<p><%= pluralize(threads.length, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if threads.length > 0 %></p>
+		<p><%= pluralize(@total, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if @threads.length > 0 %></p>
 		<%= link_to_function "[New #{topic.topic} Post]", "new RedirectIfLoggedIn('/forum/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
 		</td>
 	</tr>
 	<tr>
-		<td class="FC_pages" colspan="9"> < 1  <a href="#">2</a>  <a href="#">3</a>  <a href="#">4</a> ></td>
+		<td class="FC_pages" colspan="9">
+			<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_topic', :topic => topic.id } } ) %>
+		</td>
 	</tr>
 	<tr>
 		<td class="FC_post_title">Discussion thread</td>
@@ -51,7 +52,7 @@
 		<td class="FC_object">Object</td>
 	</tr>
 
-	<% for thread in threads -%>
+	<% for thread in @threads -%>
 	<tr>
 		<% if thread.discussion_comments.length < 1 -%>
 			<td class="FH_post">ERROR: ill-formed thread. (Main comment is missing)</td>
@@ -70,11 +71,13 @@
 			<td class="FC_spacer"></td>
 			<td class="FC_views"><%= thread.number_of_views ? thread.number_of_views : 0 %></td>
 			<td class="FC_spacer"></td>
-			<td class="FC_object"><img src="<%= comment_info[:thumbnail] %>" class="FH_post_image" /></td>
+			<td class="FC_object"><%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FC_post_image" } if comment_info[:thumbnail] != nil %></td>
 		<% end # if legal comment -%>
 	</tr>
 	<% end # for each thread -%>
 	<tr>
-		<td class="FC_pages" colspan="9"> < 1  <a href="#">2</a>  <a href="#">3</a>  <a href="#">4</a> ></td>
+		<td class="FC_pages" colspan="9">
+			<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_topic', :topic => topic.id } } ) %>
+		</td>
 	</tr>
 </table>

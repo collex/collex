@@ -127,7 +127,13 @@ class ForumController < ApplicationController
   public
   
   def view_topic
+    @page = params[:page] ? params[:page].to_i : 1
     @topic = DiscussionTopic.find(params[:topic])
+    @threads = @topic.discussion_threads
+    @total = @threads.length
+    @num_pages = @total.quo(session[:items_per_page]).ceil
+    start = (@page-1) * session[:items_per_page]
+    @threads = @threads.slice(start,session[:items_per_page])
   end
   
   def view_thread
@@ -142,12 +148,8 @@ class ForumController < ApplicationController
     @replies = @thread.discussion_comments
     @total = @replies.length-1
     @num_pages = @total.quo(session[:items_per_page]).ceil
-    start = @page-1
-    len = session[:items_per_page]
-    start = start * len
-    @replies = @replies.slice(start+1,len)
-    x = (@page-1)*session[:items_per_page]
-    y = session[:items_per_page]
+    start = (@page-1) * session[:items_per_page]
+    @replies = @replies.slice(start+1,session[:items_per_page])
   end
   
   def delete_comment

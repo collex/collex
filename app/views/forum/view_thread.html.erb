@@ -42,7 +42,7 @@
 		<div class="FP_reply_header">
 			<div class="FP_replies_per_page"><%= render( :partial => 'results/result_count' ) %></div>
 			<div class="FP_reply_pages">
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread' } } ) %>
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread', :thread => thread_id } } ) %>
 			</div>
 			<div class="clear_both"></div>
 		</div>
@@ -56,7 +56,7 @@
 		<div class="FP_reply_footer">
 			<div class="FP_replies_per_page"><%= render( :partial => 'results/result_count' ) %></div>
 			<div class="FP_reply_pages">
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread' } } ) %>
+				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread', :thread => thread_id } } ) %>
 			</div>
 			<div class="clear_both"></div>
 		</div>
@@ -66,6 +66,8 @@
 		<% if is_logged_in? -%>
 			<%= link_to_function("[post comment]", 	"var dlg = new NewDiscussionCommentDlg({ thread_id: #{thread_id}, submit_url: '/forum/post_comment_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", :class => 'modify_link') %>
 			<%= link_to_function("[post object]", "var dlg = new NewThreadObjectDlg({thread_id: #{thread_id}, obj_list: gCollectedObjects, exhibit_list: gExhibitNames, type_list: gIllustrationTypes, submit_url: '/forum/post_object_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", :class => 'modify_link') %>
+		<% else -%>
+			(Log in to reply to this thread.)
 		<% end -%>
 	</div>
 </div>

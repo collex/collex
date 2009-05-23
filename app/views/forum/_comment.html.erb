@@ -37,7 +37,10 @@
 			<% else -%>
 				<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
 			<% end -%>
-			<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+			<% if comment.reported != 1 -%>
+				<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			<% end -%>
+			</p>
 			<%= decode_exhibit_links(comment.comment) %>
 		</div>
 			<% if comment.get_type() != "comment" -%>
