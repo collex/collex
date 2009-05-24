@@ -126,7 +126,7 @@
 			<% else -%>
 				<div id="header_left<%= rand(5) + 1 %>"></div>
 			<% end -%>
-			<div id="header_right"></div>
+			<div id="header_right"><%= sign_in_link({ :class => 'nav_link' }) if !is_logged_in? %></div>
 		</div>
 		<%= draw_tabs(yield(:current_page)) %>
 
