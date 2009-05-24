@@ -451,7 +451,7 @@ function _lightboxCenter()
 }
 
 
-function showPartialInLightBox(ajax_url)
+function showPartialInLightBox(ajax_url, title)
 {
 	var divName = "lightbox";
 	var div = new Element('div', { id: 'lightbox_contents' });
@@ -465,7 +465,7 @@ function showPartialInLightBox(ajax_url)
 	form.appendChild(progress);
 	var lightboxModalDialog = new ModalDialog();
 	var scroll = currentScrollPos();
-	lightboxModalDialog.showLightbox("Help", divName, form, scroll[0]+10, scroll[1]+10);
+	lightboxModalDialog.showLightbox(title, divName, form, scroll[0]+10, scroll[1]+10);
 	new Ajax.Updater('lightbox_contents', ajax_url, {
 		evalScripts : true,
 		onComplete : function(resp) {

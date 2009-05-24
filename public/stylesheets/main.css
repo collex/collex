@@ -145,4 +145,17 @@ table, table td, table tr {
   font-style: italic;
 }
 
+.emph2 {
+	font: 1.4em  trebuchet ms, verdana, sans-serif;
+	line-height: 1.4em;
+}
 
+.small_list {
+	font-size: .8em;
+}
+
+.small_list td {
+	padding: 0px;
+	padding-right: 10px;
+	text-align: left;
+}
