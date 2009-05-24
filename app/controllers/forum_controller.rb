@@ -127,6 +127,7 @@ class ForumController < ApplicationController
   public
   
   def view_topic
+    session[:items_per_page] ||= 10
     @page = params[:page] ? params[:page].to_i : 1
     @topic = DiscussionTopic.find(params[:topic])
     @threads = @topic.discussion_threads
