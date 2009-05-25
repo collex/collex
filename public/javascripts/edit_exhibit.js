@@ -48,7 +48,7 @@ function imgResized(event, illustrationElement)
 		parameters : { illustration_id: illustrationElement.id, width: newWidth },
 		evalScripts : true,
 		onComplete : initializeElementEditing,
-		onFailure : function(resp) { alert("Oops, there's been an error: "); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error: "); }
 	});
 }
 
@@ -65,7 +65,7 @@ function initializeResizableImageElement( element_id ) {
 
 function doAjaxLink(div, url, params)
 {
-	// If we have a comma separated list, we want to send the alert synchronously to each action
+	// If we have a comma separated list, we want to send the request synchronously to each action
 	// (Doing this synchronously eliminates any race condition: The first call can update the data and
 	// the rest of the calls just update the page.
 	var actions = url.split(',');
@@ -76,7 +76,7 @@ function doAjaxLink(div, url, params)
 			parameters : params,
 			evalScripts : true,
 			onComplete : initializeElementEditing,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 	}
 	else
@@ -89,10 +89,10 @@ function doAjaxLink(div, url, params)
 					parameters : params,
 					evalScripts : true,
 					onComplete : initializeElementEditing(),
-					onFailure : function(resp) { alert("Oops, there's been an error."); }
+					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 				});
 			},
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 	}
 }
@@ -144,14 +144,14 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 		new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline", {
 			parameters : { verb: verb, element_id: element_id, exhibit_id: exhibit_id },
 			evalScripts : true,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
 			
 		// TODO-PER: We only need this if the action affected the current page.
 		var page_id = $('current_page').innerHTML;
 		new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
 			parameters : { page: page_id },
 			evalScripts : true,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
 	}
 }
 
@@ -174,10 +174,10 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 					new Ajax.Updater("exhibit_page", "/my9s/reset_exhibit_page_from_outline", {
 						parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
 						evalScripts : true,
-						onFailure : function(resp) { alert("Oops, there's been an error."); }});
+						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
 				}
 			},
-			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
 	}
 }
 
@@ -275,7 +275,7 @@ function selectLine(id)
 		new Ajax.Updater("exhibit_page", "/my9s/find_page_containing_element", {
 			parameters : { element: target_el },
 			evalScripts : true,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }});
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
 	}
 }
 
@@ -812,9 +812,9 @@ BorderDialog.prototype = {
 					new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
 						parameters : { borders: str, element_id: element_id },
 						evalScripts : true,
-						onFailure : function(resp) { alert("Oops, there's been an error."); }});
+						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
 				},
-				onFailure : function(resp) { alert("Oops, there's been an error."); }
+				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 			});
 		}
 
@@ -1209,7 +1209,7 @@ var ObjectSelector = Class.create({
 					try {
 						objs = resp.responseText.evalJSON(true);
 					} catch (e) {
-						alert("Error:" + e);
+						new MessageBoxDlg("Error", e);
 					}
 					// We got all the data, we now want to sort it into two arrays depending on if it has been chosen,
 					// then send the arrays to the correct side.
@@ -1345,7 +1345,7 @@ var SetExhibitAuthorAlias = Class.create({
 					try {
 						users = resp.responseText.evalJSON(true);
 					} catch (e) {
-						alert("Error:" + e);
+						new MessageBoxDlg("Error", e);
 					}
 					// We got all the users. Now put it on the dialog
 					var sel_arr = $$('.user_alias_select');

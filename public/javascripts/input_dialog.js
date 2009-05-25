@@ -475,6 +475,6 @@ function showPartialInLightBox(ajax_url, title)
 			$('lightbox_contents').show();
 			lightboxModalDialog.center();
 		},				
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }

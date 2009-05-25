@@ -249,3 +249,36 @@ var GeneralDialog = Class.create({
 		};
 	}
 });
+
+/////////////////////////////////////////////////////
+// Here are some generic uses for the the above dialog
+/////////////////////////////////////////////////////
+
+var MessageBoxDlg = Class.create({
+	initialize: function (title, message) {
+		// This puts up a modal dialog that replaces the alert() call.
+		this.class_type = 'MessageBoxDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		
+		// privileged functions
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+		
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: message, klass: 'new_exhibit_label' } ],
+					[ { button: 'Cancel', callback: this.cancel } ]
+				]
+			};
+		
+		var params = { this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: title };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+	}
+});

@@ -391,13 +391,13 @@ var RichTextEditor = Class.create({
 					// Get the selection object. Unfortunately, what is returned varies widely between browsers.
 					var result = editor.getRawSelectionPosition();
 					if (!result) {
-						alert("IE has not been implemented yet.");
+						new MessageBoxDlg("Error", "IE has not been implemented yet.");
 						//this.formatSelection();
 						return false;
 					}
 	
 					if (result.errorMsg) {
-						alert(result.errorMsg);
+						new MessageBoxDlg("Error", result.errorMsg);
 						return false;
 					}
 					
@@ -808,7 +808,7 @@ ModalDialog.prototype = {
 				return;
 			}
 		
-			// If we have a comma separated list, we want to send the alert synchronously to each action
+			// If we have a comma separated list, we want to send the request synchronously to each action
 			// (Doing this synchronously eliminates any race condition: The first call can update the data and
 			// the rest of the calls just update the page.
 			var actions = action.split(',');
@@ -819,7 +819,7 @@ ModalDialog.prototype = {
 					parameters : params,
 					evalScripts : true,
 					onComplete : this._onCompleteCallback,				
-					onFailure : function(resp) { alert("Oops, there's been an error."); }
+					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 				});
 			}
 			else
@@ -832,10 +832,10 @@ ModalDialog.prototype = {
 							parameters : params,
 							evalScripts : true,
 							onComplete : this._onCompleteCallback,						
-							onFailure : function(resp) { alert("Oops, there's been an error."); }
+							onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 						});
 					},
-					onFailure : function(resp) { alert("Oops, there's been an error."); }
+					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 				});
 			}
 		}

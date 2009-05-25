@@ -35,7 +35,7 @@ var AddCategoryDlg = Class.create({
 					try {
 						categories = resp.responseText.evalJSON(true);
 					} catch (e) {
-						alert("Error:" + e);
+						new MessageBoxDlg("Error", e);
 					}
 					// We got all the categories. Now put it on the dialog
 					var sel_arr = $$('.categories_select');
@@ -116,7 +116,7 @@ var AddSiteDlg = Class.create({
 					try {
 						categories = resp.responseText.evalJSON(true);
 					} catch (e) {
-						alert("Error:" + e);
+						new MessageBoxDlg("Error", e);
 					}
 					// We got all the categories. Now put it on the dialog
 					var sel_arr = $$('.categories_select');
@@ -318,7 +318,7 @@ var EditFacetDialog = Class.create({
 						categories = ret.categories;
 						obj = ret.details;
 					} catch (e) {
-						alert("Error:" + e);
+						new MessageBoxDlg("Error", e);
 					}
 					// We got all the categories. Now put it on the dialog
 					var sel_arr = $$('.categories_select');
@@ -366,7 +366,7 @@ var EditFacetDialog = Class.create({
 //					try {
 //						categories = resp.responseText.evalJSON(true);
 //					} catch (e) {
-//						alert("Error:" + e);
+//						new MessageBoxDlg("Error", e);
 //					}
 //					// We got all the categories. Now put it on the dialog
 //					var sel_arr = $$('.categories_select');
@@ -390,7 +390,7 @@ var EditFacetDialog = Class.create({
 //					try {
 //						obj = resp.responseText.evalJSON(true);
 //					} catch (e) {
-//						alert("Error:" + e);
+//						new MessageBoxDlg("Error", e);
 //					}
 //					var par = $('sel0');
 //					$A(par.options).each(function(option) {

@@ -2,6 +2,19 @@
 /* styles for all javascript-created dialogs */
 /*********************************/
 
+.yui-skin-sam .container-close {
+	background:transparent url(/images/popup_box_x.gif) no-repeat scroll 0 0;
+	height: 19px;
+}
+
+.yui-skin-sam .container-close:hover {
+	background:transparent url(/images/popup_box_x_rl.gif) no-repeat scroll 0 0;
+}
+
+.yui-skin-sam .yui-panel .hd {
+	background: #F7ECDB none repeat scroll 0 0;
+}
+
 .flash_notice_ok {
 	color: green;
 	font-weight: bold;

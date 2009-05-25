@@ -42,9 +42,9 @@ function searchValidation(year_input_id, input_type, submit_id, submit_id2)
 		submit_button.value = submit_text;
 		});
 	};
-	
+
 	var errorDlg = function(message) {
-		doSingleInputPrompt("Error", message, null, submit_id, null, null, $H({ }), "none", null, "Ok");
+		new MessageBoxDlg("Error", message);
 		restoreSubmitButtons();
 	};
 	

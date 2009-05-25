@@ -253,7 +253,7 @@ LinkDlgHandler.prototype = {
 //			// Be sure that at least one character was selected
 //			if (!hasSelection)
 //			{
-//				alert("There is nothing selected. First select some text, then press the link button again.");
+//				new MessageBoxDlg("Error", "There is nothing selected. First select some text, then press the link button again.");
 //				return;
 //			}
 //		}

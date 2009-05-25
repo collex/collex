@@ -81,19 +81,14 @@ function showResultRowImage(This, max_size, progress_id)
 
 function toggleIt(element) {
   var tr = element.parentNode.parentNode;
-  //alert("parent node: " + tr);
   var className = tr.className;
-  //if (tr.previousSibling.className == className) 
   if (node_before(tr).className == className) { 
-    //tr = tr.previousSibling; 
     tr = node_before(tr);
   }
 
   while (true) {
     Element.toggle(tr);
-    //tr = tr.nextSibling;
     tr = node_after(tr);
-    //window.alert("sibling: " + tr);
     if (tr == null || tr.className != className) break;
   }
 }
@@ -282,7 +277,6 @@ function moveObject(objectId, newXCoordinate, newYCoordinate) {
     if(styleObject) {
 	styleObject.left = "" + (newXCoordinate-500) + "px";
 	styleObject.top = "" + (newYCoordinate-50) + "px";
-//window.alert("left: " + styleObject.left + "  coord left: " + newXCoordinate + " id: " + objectId);
 	return true;
     } else {
 	// we couldn't find the object, so we can't very well move it
@@ -296,7 +290,6 @@ function moveObject2(objectId, newXCoordinate, newYCoordinate) {
     if(styleObject) {
 	styleObject.left = "" + (newXCoordinate) + "px";
 	styleObject.top = "" + (newYCoordinate) + "px";
-//window.alert("left: " + styleObject.left + "  coord left: " + newXCoordinate + " id: " + objectId);
 	return true;
     } else {
 	// we couldn't find the object, so we can't very well move it
@@ -439,7 +432,7 @@ function bulkTag(event)
 	}
 	else
 	{
-		alert("You must select one or more objects before clicking this button.")
+		new MessageBoxDlg("Error", "You must select one or more objects before clicking this button.")
 	}
 }
 
@@ -462,7 +455,7 @@ function bulkCollect(event)
 	}
 	else
 	{
-		alert("You must select one or more objects before clicking this button.")
+		new MessageBoxDlg("Error", "You must select one or more objects before clicking this button.")
 	}
 }
 
@@ -633,7 +626,7 @@ var StartDiscussionWithObject = Class.create({
 					try {
 						topics = resp.responseText.evalJSON(true);
 					} catch (e) {
-						alert("Error:" + e);
+						new MessageBoxDlg("Error", e);
 					}
 					// We got all the users. Now put it on the dialog
 					var sel_arr = $$('.discussion_topic_select');
@@ -737,7 +730,7 @@ function doCollect(uri, row_num, row_id, is_logged_in)
 	new Ajax.Updater(row_id, "/results/collect", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
 		evalScripts : true,
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }
 
@@ -750,7 +743,7 @@ function doRemoveTag(uri, row_id, tag_name)
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,
 		evalScripts : true,
 		onComplete : tagFinishedUpdating,
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }
 
@@ -765,7 +758,7 @@ function doRemoveCollect(uri, row_num, row_id)
 		new Ajax.Updater(row_id, "/results/uncollect", {
 			parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
 			evalScripts : true,
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 	}
 }
@@ -862,7 +855,7 @@ function tagFinishedUpdating()
 	if (el_sidebar)
 	{
 		new Ajax.Updater('tag_cloud_div', "/tag/update_tag_cloud", {
-			onFailure : function(resp) { alert("Oops, there's been an error."); }
+			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 	}
 }
@@ -874,7 +867,7 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 		reference.remove();
 	new Ajax.Updater("exhibited_objects_container", "/my9s/remove_exhibited_object", {
 		parameters : { uri: uri, exhibit_id: exhibit_id },
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }
 
@@ -896,14 +889,14 @@ function doAddToExhibit(uri, index, row_id)
 function cancel_edit_profile_mode(partial_id)
 {
 	new Ajax.Updater(partial_id, "/my9s/update_profile", {
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }
 
 function enter_edit_profile_mode(partial_id)
 {
 	new Ajax.Updater(partial_id, "/my9s/enter_edit_profile_mode", {
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }
 
@@ -914,7 +907,7 @@ function enter_edit_profile_mode(partial_id)
 //			"&institution=" + encodeForUri($("institution").value) + 
 //			"&link=" + encodeForUri($("link").value) + 
 //			"&aboutme=" + encodeForUri($("aboutme").value),
-//		onFailure : function(resp) { alert("Oops, there's been an error."); }
+//		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 //	});
 //}
 
@@ -1194,7 +1187,7 @@ function loadLatestNews( targetList, rssFeedURL, maxItems ) {
 
 			$(targetList).update(str);
 		},
-		onFailure : function(resp) { alert("Oops, there's been an error."); }
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 
 }
