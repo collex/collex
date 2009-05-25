@@ -253,3 +253,7 @@ table.query td {
 	max-width:82px;
 	overflow:hidden;
 }
+
+#exhibited_objects_container table td {
+	text-align: left;
+}
