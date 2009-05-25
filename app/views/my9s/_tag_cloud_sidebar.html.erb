@@ -17,9 +17,13 @@
 <% # tag_cloud_sidebar params: array cloud_info -%>
 <div class="right_column_header">My Tags</div>
 <div class="narrow_tag_cloud">
-	<center>
-		<div id="tag_cloud_div">
-	  	  <%= render :partial => '/tag/cloud', :locals => { :cloud_info => cloud_info, :selected_tag => "", :controller_for_tags => 'my9s', :hide_some => true } %>
-		</div>
-	</center>
+	<% if cloud_info[:cloud_freq].length == 0 -%>
+		<div class="empty_list_text">You have not tagged any items (yet!) Use tags to categorize the items you collect and help other NINES users find them. Your tagged items will remain anonymous.</div>
+	<% else -%>
+		<center>
+			<div id="tag_cloud_div">
+				<%= render :partial => '/tag/cloud', :locals => { :cloud_info => cloud_info, :selected_tag => "", :controller_for_tags => 'my9s', :hide_some => true } %>
+			</div>
+		</center>
+	<% end -%>
 </div>

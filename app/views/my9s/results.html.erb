@@ -31,15 +31,20 @@
 				<%= render :partial => 'tag_cloud_top', :locals => { :cloud_info => @cloud_info, :view => params[:view], :tag => params[:tag] } %>
 			</div>
 			<div id="result_list">
-				<% total_link = "<a id='top_of_results'>#{create_total(params[:view], @total_hits, params[:tag])}</a>" -%>
-				<% if params[:view] == 'tag' -%>
-					<% edit_tag_link = link_to_function('[Edit Tag]', "editTag('edit_tag', '#{params[:tag]}')", { :id => 'edit_tag', :class => 'modify_link' }) -%>
-					<% remove_tag_link = link_to_function('[Remove Tag]', "removeTag('edit_tag', '#{params[:tag]}')", { :class => 'modify_link' }) -%>
-					<% extra = "<br /><span class='edit_tag_link'>#{edit_tag_link} #{remove_tag_link}</span>" -%>
+				<% if @results.length == 0 -%>
+					<div class="page_header">Collected Items</div>
+					<div class="empty_list_text">You have not collected any items (yet)! Collect items directly from your search results to save and tag them.</div>
 				<% else -%>
-					<% extra = "" -%>
+					<% total_link = "<a id='top_of_results'>#{create_total(params[:view], @total_hits, params[:tag])}</a>" -%>
+					<% if params[:view] == 'tag' -%>
+						<% edit_tag_link = link_to_function('[Edit Tag]', "editTag('edit_tag', '#{params[:tag]}')", { :id => 'edit_tag', :class => 'modify_link' }) -%>
+						<% remove_tag_link = link_to_function('[Remove Tag]', "removeTag('edit_tag', '#{params[:tag]}')", { :class => 'modify_link' }) -%>
+						<% extra = "<br /><span class='edit_tag_link'>#{edit_tag_link} #{remove_tag_link}</span>" -%>
+					<% else -%>
+						<% extra = "" -%>
+					<% end -%>
+					<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'my9s', :action => 'results' } %>
 				<% end -%>
-				<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'my9s', :action => 'results' } %>
 			</div>
 		</div>
 		<div class="right_column">

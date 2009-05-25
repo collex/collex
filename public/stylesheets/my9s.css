@@ -31,7 +31,7 @@ font-weight:bold;
 .empty_list_text {
 	color: gray;
 	font-style: italic;
-	padding-bottom: 1em;
+	padding: 1em;
 }
 
 .edit_tag_link {

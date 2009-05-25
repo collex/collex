@@ -16,9 +16,15 @@
     # ---------------------------------------------------------------------------- -%>
 <% # recently_collected_items params: int user_id, array hits -%>
 <div class="page_header">Recently Collected Items</div>
-<%= render( :partial => 'results/results', :locals => { :user_id => user_id, :hits => hits } ) %>
+<% if hits.length == 0 -%>
+	<div class="empty_list_text">You have not collected any items (yet)! Collect items directly from your search results to save and tag them.</div>
+<% else -%>
+	<%= render( :partial => 'results/results', :locals => { :user_id => user_id, :hits => hits } ) %>
+<% end -%>
 <div class="clear_both bottom_nav"> 
 </div>
-<div class="subpage_nav"> 
-	<%= link_to "See more collected objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>
-</div>
+<% if hits.length != 0 -%>
+	<div class="subpage_nav"> 
+		<%= link_to "See more collected objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>
+	</div>
+<% end -%>
