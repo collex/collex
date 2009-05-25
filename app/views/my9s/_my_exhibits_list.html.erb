@@ -20,14 +20,11 @@
 	<% if my_exhibits.length == 0 -%>
 		<div class="empty_list_text" >You have not created any exhibits</div>
 	<% else -%>
-		<table>
 		<% for exhibit in my_exhibits -%>
-			<tr>
-				<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
-				<td class="exhibit_link"><%=h exhibit.title %>&nbsp;<a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a>&nbsp;<a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></td>
-			</tr>
+			<div class="side_bar_exhibit_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></div>
+			<div class="side_bar_exhibit_text exhibit_link"><%=h exhibit.title %> <a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a> <a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a></div>
+			<div class="side_bar_exhibit_spacer clear_both"></div>
 		<% end -%>
-		</table>
 	<% end # if there are exhibits -%>
-	<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects'); dlg.show();", :class => 'modify_link' %>
+	&nbsp;<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects'); dlg.show();", :class => 'modify_link' %>
 </div>

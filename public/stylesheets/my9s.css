@@ -235,3 +235,21 @@ img.resizer:active {
 	border-bottom: 2px dotted black;
 }
 
+.side_bar_exhibit_thumbnail {
+	float: left;
+	margin-left:4px;
+	margin-top:2px;
+}
+
+.side_bar_exhibit_text {
+	margin-left:50px;
+}
+
+.side_bar_exhibit_spacer {
+	border-bottom:1px solid #966C54;
+}
+
+table.query td {
+	max-width:82px;
+	overflow:hidden;
+}
