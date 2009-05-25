@@ -22,12 +22,18 @@
 }
 
 #header_right {
-	color:#966C54;
 	float:right;
 	margin-right:20px;
 	margin-top:10px;
 }
 
+#header_right a {
+	color:#b06e41;
+}
+
+#header_right a:visited {
+	color:#b06e41;
+}
 
 #nav_container {
 	position:absolute;

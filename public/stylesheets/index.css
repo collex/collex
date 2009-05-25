@@ -47,6 +47,17 @@
 	height:152px;
 	float:right;
 	background:url(/images/index_header_right.jpg) top left no-repeat;
+	text-align:right;
+}
+
+#header_right a {
+	color:#b06e41;
+	font-size: .8em;
+	margin-right: 2px;
+}
+
+#header_right a:visited {
+	color:#b06e41;
 }
 
 #nav_container {
