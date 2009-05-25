@@ -24,10 +24,10 @@
 	<% count = 0 -%>
 	<% 0.upto((collected_object_thumbnails.length/11.0).ceil()) do -%>
 		<tr>
-			<% 0.upto(10) do -%>
+			<% 0.upto(9) do -%>
 				<td>
 					<% if count < collected_object_thumbnails.length -%>
-						<img width="25px" height="25px" src="<%= collected_object_thumbnails[count][:image] %>" alt="<%= collected_object_thumbnails[count][:title] %>" title="<%= collected_object_thumbnails[count][:title] %>" />
+						<%= render :partial => 'forum/img_with_progress_spinner', :locals => { :src => collected_object_thumbnails[count][:image], :alt => collected_object_thumbnails[count][:title], :title => collected_object_thumbnails[count][:title], :width => "25", :height => "25" } %>
 						<% count = count + 1 -%>
 					<% else -%>
 						<div style="width:25px;height:25px;"></div>
