@@ -135,4 +135,21 @@ hr.search_results_hr {
 	background-color: #FFFF99;
 }
 
+.my_tag {
+	font-weight: bold;
+}
+
+.tags_instructions {
+	font-style: italic;
+}
+
+.remove_tag {
+	color: gray !important;
+}
+
+.remove_tag:hover {
+	background-color:#e0e0e0;
+	color: black !important;
+}
+
 
