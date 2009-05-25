@@ -82,6 +82,7 @@ hr.search_results_hr {
 .search_result_buttons {
 	float: right;
 	width: 82px;
+	margin-left:10px;
 }
 
 .search_result_buttons a {
