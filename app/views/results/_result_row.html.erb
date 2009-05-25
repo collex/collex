@@ -17,9 +17,6 @@
 	
 <% #  result_row parameters: int index; hit hit; bool has_exhibits; bool add_border -%>
 <% row_id = "search_result_#{index}" -%>
-<div class="clear_both"></div>
-<hr class="search_results_hr" />
-<div id="search_result_<%= index %>">
     <%# The left side that contains the checkbox, graphic and the collect button -%>
    	<% if is_logged_in? -%>
 		<div class="search_result_left_logged_in">
@@ -94,5 +91,4 @@
 		</div>
 	</div>
 
-</div>
 

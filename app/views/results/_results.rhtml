@@ -29,5 +29,9 @@
 <% end # if user_id -%>
 
   <% hits.each_with_index do |hit,index| -%>
-	<%= render :partial => 'results/result_row', :locals => { :index => index, :hit => hit, :has_exhibits => has_exhibits, :add_border => true } %>
+	<div class="clear_both"></div>
+	<hr class="search_results_hr" />
+	<div id="search_result_<%= index %>">
+		<%= render :partial => 'results/result_row', :locals => { :index => index, :hit => hit, :has_exhibits => has_exhibits, :add_border => true } %>
+	</div>
 <% end -%>
