@@ -32,7 +32,7 @@
 			
 				<%= render( :partial => 'constraints' ) %>
 			        
-				<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "Search Results (#{@results["total_hits"]})", :results => @results['hits'], :page => @page, :num_pages => @num_pages, :controller => 'collex', :action => 'browse' } %>
+				<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "Search Results (#{number_with_delimiter(@results["total_hits"])})", :results => @results['hits'], :page => @page, :num_pages => @num_pages, :controller => 'collex', :action => 'browse' } %>
 			</div>
 			<%= render( :partial => 'search_sidebar' ) %>
 		<% else # there were no results -%>
