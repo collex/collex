@@ -379,6 +379,33 @@ module SearchHelper
     return ret
   end
   
+  def forum_result_row_item_format(label, item)
+    return "<p class='FP_attachment_details'>#{label}:<br />#{item}</p>"
+  end
+
+  def forum_result_row_item(type, hit, key, label)
+    if !hit[key]
+      return ""
+    end
+    
+    if type == :separate_lines
+      # multiple items on separate lines
+      str = ""
+      hit[key].each_with_index do |item, i|
+        str += forum_result_row_item_format(label, h(item))
+      return str
+      end
+
+    elsif type == :single_item
+      # single item
+      return forum_result_row_item_format(label, h(hit[key]))
+
+    elsif type == :multiple_item
+      # multiple item, one line
+      return forum_result_row_item_format(label, h(hit[key].join('; ')))
+    end
+  end
+  
   def result_row_item(type, hit, key, label, is_hidden)
     if !hit[key]
       return ""

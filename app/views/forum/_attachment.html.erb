@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment -%>
+<% # attachment params: ActiveRecord comment -%>
 
 <div class="FP_attachment">
 	<% if comment.get_type() == "nines_exhibit" -%>
@@ -27,21 +27,24 @@
 	<% elsif comment.get_type() == "nines_object" -%>
 		<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
 		<% img = thumbnail_image_tag(hit) -%>
-		<% title = h hit["title"][0] if hit["title"] -%>
+		<% title = "" -%>
+		<% if hit["title"] -%>
+			<% title = h hit["title"][0] -%>
+			<% if hit["url"] %>
+				<% title = link_to(title, hit["url"][0], { :class=> "nines_link", :target => "_blank" }) %>
+			<% end %>
+		<% end %>
 	<% end -%>
 	<%= img %>
-	<p class="FP_attachment_title"><a href="#"><%= title %></a></p>
+	<p class="FP_attachment_title"><%= title %></p>
+	<% details_id = "nines_object_#{comment.id}" -%>
+	<% details_id_show = "#{details_id}_show" -%>
+	<% details_id_hide = "#{details_id}_hide" -%>
 	<% if comment.get_type() == "nines_object" -%>
-		<p><a href="#">[Details]</a></p>
-      <p><a href="#">[Hide Details]</a></p>
-      <p class="FP_attachment_details">Artist:<br />
-        Dante Gabriel Rossetti</p>
-
-      <p class="FP_attachment_details">Genre: <br />
-        Visual Art</p>
-      <p class="FP_attachment_details">Tags:<br />
-        <a href="#">europe</a> | <a href="#">rossetti</a> <br />
-        <a href="#">[LOG IN to add tags]</a></p>
+		<p><a id='<%= details_id_show %>' href="#" class='nav_link' onclick='$("<%= details_id %>").show(); $("<%= details_id_hide %>").show(); $("<%= details_id_show %>").hide();''>[Details]</a>
+			<a id='<%= details_id_hide %>' style='display:none' href="#" class='nav_link' onclick='$("<%= details_id %>").hide(); $("<%= details_id_hide %>").hide(); $("<%= details_id_show %>").show();'>[Hide Details]</a></p>
+		<div id='<%= details_id %>' class='nines_object_details' style='display:none' >
+			<%= render :partial => 'nines_object_details', :locals => { :hit => hit, :details_id => details_id } %>
+		</div>
 	<% end -%>
 </div>		
-
