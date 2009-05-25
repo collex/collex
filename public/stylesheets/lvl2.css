@@ -8,6 +8,13 @@
 }
 
 #header_left {
+	width:755px;
+	height:89px;
+	float:left;
+	background:url(/images/lvl2_header.jpg) top left no-repeat;
+}
+
+#header_left a {
 	width:400px;
 	height:89px;
 	float:left;
