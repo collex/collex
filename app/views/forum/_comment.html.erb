@@ -18,6 +18,9 @@
 <% # the difference between the main comment and the others is that the main 
 	# comment has a title and a background color. -%>
     <div class="<%= is_main ? "FP_original_post" : "FP_reply_container" %>">
+    	<% if can_delete -%>
+			<div style="float:right;"><%= link_to_confirm del_char(), "/forum/delete_comment?comment=#{comment.id}", "Delete Comment", 'You are about to permanently delete this comment. Are you sure?' %></div>
+		<% end -%>
 		<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).get_title()}</div>" if is_main %>
 		<% if comment.reported == 1 -%>
 			<div class="reported_comment">
