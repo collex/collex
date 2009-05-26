@@ -50,12 +50,28 @@ class ResultsController < ApplicationController
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
+  def add_tag_forum
+    locals = setup_ajax_calls(params, true)
+    tag = params[:tag]
+    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
+    
+    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
+  end
+  
   def remove_tag
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
     CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
     
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+  end
+  
+  def remove_tag_forum
+    locals = setup_ajax_calls(params, true)
+    tag = params[:tag]
+    CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
+    
+    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
   end
   
   def set_annotation

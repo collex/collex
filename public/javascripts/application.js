@@ -747,6 +747,15 @@ function doRemoveTag(uri, row_id, tag_name)
 	});
 }
 
+function doRemoveTagForum(uri, row_id, tag_name)
+{
+	new Ajax.Updater(row_id, "/results/remove_tag_forum", {
+		parameters : { uri: uri, row_id: row_id, tag: tag_name },
+		evalScripts : true,
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+	});
+}
+
 function doRemoveCollect(uri, row_num, row_id)
 {
 	var uncollect = function() {
@@ -792,6 +801,14 @@ function doAddTag(parent_id, uri, row_num, row_id)
 		row_id + ",tag_cloud_div",
 		"/results/add_tag,/tag/update_tag_cloud", 
 		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text', null, null );
+}
+
+function doAddTagForum(parent_id, uri, row_id)
+{
+	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
+		row_id,
+		"/results/add_tag_forum", 
+		$H({ uri: uri, row_id: row_id }), 'text', null, null );
 }
 
 function realLinkToEditorLink(str) {

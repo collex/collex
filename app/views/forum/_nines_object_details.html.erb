@@ -20,38 +20,33 @@
 <%= forum_result_row_item(:multiple_item, hit, 'role_AUT', 'By') %>
 <%= forum_result_row_item(:multiple_item, hit, 'role_ART', 'Artist') %>
 <% ################### -%>
-<!--
-< % tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
-< %  if is_collected -%>
-	< %= forum_result_row_item_format("Collected&nbsp;on", h(item.updated_at.strftime("%b %d, %Y"))) %>
-< % end -%>
-< % ################### -%>
-<td valign="top" class="search_result_data_label">Tags:</td>
-<td>
-	< % my_tags = [] -%>
-	< % if is_collected -%>
-		< % my_tags = item.tags -%>
-	< % end #if the item is collected by the user. -%>
-   	< % tags.each {|tag| -%>
-		< % is_mine = is_in_tag_array(my_tags, tag) -%>
-		< %= " | " if tag != tags[0] %>
-		< % if is_mine -%>
-			< %= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
-        	< %= link_to_function "X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag}\"" %>
-		< % else -%>
-			< %= link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link', :title => "view all objects tagged \"#{tag}\"" } %>
-		< % end #if this tag was created by the current user -%>
-	< % } #the tag loop -%>
-	< % if !no_links -%>
-		< % if session[:user] == nil -%>
-			<span class="tags_instructions"><%= "[#{sign_in_link({:class => 'nav_link'})} to add tags]" %></span>
-		< % else -%>
-			< %= link_to_function "[add&nbsp;tag]", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}", :class => 'modify_link' if is_collected %>
-			< %= "<span class='tags_instructions'>Collect this item to add tags</span>" if !is_collected %>
-		< % end #if the user is logged in. -%>
-	< % end #if !no_links -%>
-</td>
--->
+<% item = get_collected_item(hit) -%>
+<% is_collected =(item != nil) -%>
+<%  if is_collected -%>
+	<%= forum_result_row_item_format("Collected&nbsp;on", h(item.updated_at.strftime("%b %d, %Y"))) %>
+<% end -%>
+<% ################### -%>
+<% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
+<% my_tags = is_collected ? item.tags : [] -%>
+<% tag_str = "" -%>
+<% tags.each {|tag| -%>
+	<% is_mine = is_in_tag_array(my_tags, tag) -%>
+	<% tag_str += " | " if tag != tags[0] -%>
+	<% if is_mine -%>
+		<% tag_str += link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } -%>
+		<% tag_str += " " + link_to_function("X", "doRemoveTagForum('#{hit['uri']}', '#{details_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag}\"") -%>
+	<% else -%>
+		<% tag_str += link_to h(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link', :title => "view all objects tagged \"#{tag}\"" } -%>
+	<% end #if this tag was created by the current user -%>
+<% } #the tag loop -%>
+<% if session[:user] == nil -%>
+	<% tag_str += "<span class='tags_instructions'>[#{sign_in_link({:class => 'nav_link'})} to add tags]</span>" %>
+<% else -%>
+	<% tag_str += link_to_function " [add&nbsp;tag]", "doAddTagForum('add_tag_#{details_id}', '#{hit['uri']}', '#{details_id}');",  :id => "add_tag_#{details_id}", :class => 'modify_link' if is_collected -%>
+	<% tag_str += "<span class='tags_instructions'> Collect this item to add tags</span>" if !is_collected -%>
+<% end #if the user is logged in. -%>
+
+<%= forum_result_row_item_format("Tags", tag_str) %>
 <% ################### -%>
 <% if hit['archive'] %>
 <% site = site(hit['archive']) ? link_to(site(hit['archive'])['description'], site(hit['archive'])['url'], { :class => 'nines_link', :target => '_blank' } ) : hit['archive'] -%>

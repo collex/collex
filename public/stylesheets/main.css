@@ -30,6 +30,15 @@ table, table td, table tr {
 .tag_link:visited { color: #A60000; }
 .tag_link:hover { color: #fff; background: #A60000; }
 
+.remove_tag {
+	color: gray !important;
+}
+
+.remove_tag:hover {
+	background-color:#e0e0e0;
+	color: black !important;
+}
+
 /* This is used for all links that change, or potentially change, the database */
 .modify_link:link { color: #A60000; text-decoration: none; }
 .modify_link:visited { color: #A60000; text-decoration: none; }

@@ -41,8 +41,8 @@
 	<% details_id_show = "#{details_id}_show" -%>
 	<% details_id_hide = "#{details_id}_hide" -%>
 	<% if comment.get_type() == "nines_object" -%>
-		<p><a id='<%= details_id_show %>' href="#" class='nav_link' onclick='$("<%= details_id %>").show(); $("<%= details_id_hide %>").show(); $("<%= details_id_show %>").hide();''>[Details]</a>
-			<a id='<%= details_id_hide %>' style='display:none' href="#" class='nav_link' onclick='$("<%= details_id %>").hide(); $("<%= details_id_hide %>").hide(); $("<%= details_id_show %>").show();'>[Hide Details]</a></p>
+		<p><a id='<%= details_id_show %>' href="#" class='nav_link' onclick='$("<%= details_id %>").show(); $("<%= details_id_hide %>").show(); $("<%= details_id_show %>").hide(); return false;''>[Details]</a>
+			<a id='<%= details_id_hide %>' style='display:none' href="#" class='nav_link' onclick='$("<%= details_id %>").hide(); $("<%= details_id_hide %>").hide(); $("<%= details_id_show %>").show(); return false;'>[Hide Details]</a></p>
 		<div id='<%= details_id %>' class='nines_object_details' style='display:none' >
 			<%= render :partial => 'nines_object_details', :locals => { :hit => hit, :details_id => details_id } %>
 		</div>
