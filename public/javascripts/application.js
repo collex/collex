@@ -749,8 +749,7 @@ function doRemoveTag(uri, row_id, tag_name)
 
 function doRemoveCollect(uri, row_num, row_id)
 {
-	if (confirm("Are you sure you want to uncollect this object?"))
-	{
+	var uncollect = function() {
 		var tr = document.getElementById(row_id);
 		tr.className = 'result_without_tag'; 
 		var full_text = getFullText(row_id);
@@ -760,7 +759,8 @@ function doRemoveCollect(uri, row_num, row_id)
 			evalScripts : true,
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
-	}
+	};
+	new ConfirmDlg("Uncollect", "Are you sure you want to uncollect this object?", "Yes", "No", uncollect);
 }
 
 function editTag(parent_id, tag_name)
@@ -773,7 +773,7 @@ function editTag(parent_id, tag_name)
 
 function removeTag(parent_id, tag_name)
 {
-	if (confirm("Are you sure you want to remove all instances of the " + tag_name + " tag that you created?"))
+	var remove = function()
 	{
 		var new_form = new Element('form', { id: "remove_tag", method: 'post', onsubmit: "this.submit();", action: "/results/remove_all_tags" });
 		new_form.observe('submit', "this.submit();");
@@ -782,7 +782,8 @@ function removeTag(parent_id, tag_name)
 
 		$(parent_id).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 		new_form.submit();
-	}
+	};
+	new ConfirmDlg("Remove Tag", "Are you sure you want to remove all instances of the " + tag_name + " tag that you created?", "Yes", "No", uncollect);
 }
 
 function doAddTag(parent_id, uri, row_num, row_id)

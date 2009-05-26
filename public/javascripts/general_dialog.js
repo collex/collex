@@ -282,3 +282,56 @@ var MessageBoxDlg = Class.create({
 		dlg.center();
 	}
 });
+
+var ConfirmDlg = Class.create({
+	initialize: function (title, message, okStr, cancelStr, action) {
+		// This puts up a modal dialog that replaces the confirm() call.
+		this.class_type = 'ConfirmDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		
+		// privileged functions
+		this.ok = function(event, params)
+		{
+			params.dlg.cancel();
+			action();
+		};
+		
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+		
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: message, klass: 'new_exhibit_label' } ],
+					[ { button: okStr, callback: this.ok }, { button: cancelStr, callback: this.cancel } ]
+				]
+			};
+		
+		var params = { this_id: "confirm_box_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: title };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+	}
+});
+
+var ConfirmLinkDlg = Class.create({
+	initialize: function (el, title, message) {
+		// This puts up a confirmation dialog before following a link. It is intended to be used as the onclick handler in a <a> tag.
+		this.class_type = 'ConfirmLinkDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		var link = el.href;
+		
+		var ok = function(event, params)
+		{
+			window.location = link;
+		};
+		
+		new ConfirmDlg(title, message, "Yes", "No", ok);
+	}
+});

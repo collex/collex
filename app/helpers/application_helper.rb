@@ -248,6 +248,10 @@ private
     link_to_function(label, "popUp('#{url_for(options)}')", html_options)
   end
   
+  def link_to_confirm(title, params, confirm_title, confirm_question)
+    link_to title, params, { :post => true, :class => 'modify_link', :onclick => "new ConfirmLinkDlg(this, '#{confirm_title}', '#{confirm_question}'); return false;" }
+  end
+  
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
      (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
      text_field(object, method, tag_options) +

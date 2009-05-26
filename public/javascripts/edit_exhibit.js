@@ -122,63 +122,98 @@ function illustrationJustificationChanged(div, element_id, newJustification)
 
 function doAjaxLinkConfirm(div, url, params)
 {
-	if (!confirm('You are about to delete this element. Do you want to continue?')) 
-		return;
+	var del = function(){
+		doAjaxLink(div, url, params);
+	}
 	
-	doAjaxLink(div, url, params);
+	new ConfirmDlg("Delete Section", "You are about to delete this section. Do you want to continue?", "Yes", "No", del);
 }
 
 function doAjaxLinkOnSelection(verb, exhibit_id)
 {
-	if (verb == 'delete_element' && !confirm('You are about to delete this element. Do you want to continue?')) 
-		return;
-
 	// this is called from the outline, so we also need to update the regular page, too.
-	
-	var allElements = $$(".outline_tree_element_selected");
-	if (allElements.length == 1)
-	{
-		var id = allElements[0].id;
-		var arr = id.split("_");
-		var element_id = arr[arr.length-1];
-		new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline", {
-			parameters : { verb: verb, element_id: element_id, exhibit_id: exhibit_id },
-			evalScripts : true,
-			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
+	var action = function(){
+		var allElements = $$(".outline_tree_element_selected");
+		if (allElements.length == 1) {
+			var id = allElements[0].id;
+			var arr = id.split("_");
+			var element_id = arr[arr.length - 1];
+			new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline", {
+				parameters: {
+					verb: verb,
+					element_id: element_id,
+					exhibit_id: exhibit_id
+				},
+				evalScripts: true,
+				onFailure: function(resp){
+					new MessageBoxDlg("Error", "Oops, there's been an error.");
+				}
+			});
 			
-		// TODO-PER: We only need this if the action affected the current page.
-		var page_id = $('current_page').innerHTML;
-		new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
-			parameters : { page: page_id },
-			evalScripts : true,
-			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
-	}
+			// TODO-PER: We only need this if the action affected the current page.
+			var page_id = $('current_page').innerHTML;
+			new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
+				parameters: {
+					page: page_id
+				},
+				evalScripts: true,
+				onFailure: function(resp){
+					new MessageBoxDlg("Error", "Oops, there's been an error.");
+				}
+			});
+		}
+	};
+	
+	if (verb === 'delete_element')
+		new ConfirmDlg("Delete Section", "You are about to delete this section. Do you want to continue?", "Yes", "No", action);
+	else
+		action();
 }
 
 function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 {
-	if (verb === 'delete_page' && !confirm('You are about to delete page number ' + page_num + '. Do you want to continue?')) 
-		return;
-	var allElements = $$(".outline_tree_element_selected");
-	if (allElements.length == 1)
-	{
-		var id = allElements[0].id;
-		var arr = id.split("_");
-		var element_id = arr[arr.length-1];
-		new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline_page", {
-			parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
-			evalScripts : true,
-			onComplete: function(resp) {
-				if (verb === 'delete_page') {
-					var page_id = $('current_page').innerHTML;
-					new Ajax.Updater("exhibit_page", "/my9s/reset_exhibit_page_from_outline", {
-						parameters : { verb: verb, page_num: page_num, exhibit_id: exhibit_id, element_id: element_id },
-						evalScripts : true,
-						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
+	var action = function(){
+		var allElements = $$(".outline_tree_element_selected");
+		if (allElements.length == 1) {
+			var id = allElements[0].id;
+			var arr = id.split("_");
+			var element_id = arr[arr.length - 1];
+			new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_outline_page", {
+				parameters: {
+					verb: verb,
+					page_num: page_num,
+					exhibit_id: exhibit_id,
+					element_id: element_id
+				},
+				evalScripts: true,
+				onComplete: function(resp){
+					if (verb === 'delete_page') {
+						var page_id = $('current_page').innerHTML;
+						new Ajax.Updater("exhibit_page", "/my9s/reset_exhibit_page_from_outline", {
+							parameters: {
+								verb: verb,
+								page_num: page_num,
+								exhibit_id: exhibit_id,
+								element_id: element_id
+							},
+							evalScripts: true,
+							onFailure: function(resp){
+								new MessageBoxDlg("Error", "Oops, there's been an error.");
+							}
+						});
+					}
+				},
+				onFailure: function(resp){
+					new MessageBoxDlg("Error", "Oops, there's been an error.");
 				}
-			},
-			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
+			});
+		}
 	}
+	
+	if (verb === 'delete_page')
+		new ConfirmDlg("Delete Page", "You are about to delete page number " + page_num + ". Do you want to continue?", "Yes", "No", action);
+	else
+		action();
 }
 
 //var strStopEditingText = '[Stop Editing Border]';
@@ -438,7 +473,7 @@ function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 	dlg.addTextInput('Exhibit title:', 'overview_title_dlg', size);
 	dlg.addTextInput('Visible URL:', 'overview_visible_url_dlg', size);
 	dlg.addTextInput('Thumbnail:', 'overview_thumbnail_dlg', size);
-	dlg.addLink("[ Completely Delete Exhibit ]", "/my9s/delete_exhibit?id="+exhibit_id, "return confirm('Warning: This will permanently remove this exhibit. Are you sure you want to continue?');", "modify_link");
+	dlg.addLink("[ Completely Delete Exhibit ]", "/my9s/delete_exhibit?id="+exhibit_id, "new ConfirmLinkDlg(this, 'Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?'); return false;", "modify_link");
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(update_id);

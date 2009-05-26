@@ -320,7 +320,7 @@ module SearchHelper
   end
 
   def create_remove_saved_search_link(s)
-    link_to "[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, :class => 'modify_link', :confirm => "Are you sure you want to remove this saved search?"
+    link_to_confirm("[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, 'Saved Search', 'Are you sure you want to remove this saved search?')
   end
   
   def is_in_tag_array(arr, str)
