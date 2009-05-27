@@ -79,16 +79,16 @@
  */
 .edit_bar .yui-button button, .edit_bar .yui-button a {
 	padding-right:20px;
-	line-height:2;
-	min-height:2em;
+	line-height:1.5;
+	min-height:1em;
 	font-weight: normal;
 }
 
 .edit_bar .yui-button {
 	background:transparent url(/javascripts/yui_2_7_0/build/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
-	border-color:#808080;
+/*	border-color:#808080;
 	border-style:solid;
-	border-width:1px 0;
+	border-width:1px 0;*/
 }
 
 /***********************/

@@ -121,11 +121,30 @@
 
 .element_block {
 	border: 4px solid white;
-	padding-top: 27px;
+	padding-top: 19px;
 }
+
+/* Hack to get Safari to use the correct padding */
+.element_block {
+[padding-top: 19px;	/* older mozilla */
+padding-top: 21px;	/* safari */
+]padding-top: 19px; /* ie7 */
+}
+.dummyend[id]{clear:both;}
+
+/*If you see black, you are using a newer Standarized browser like Opera or Mozilla.
+If you see red, you are using an older version of Mozilla (< version 1.01).
+If you see blue, you are using Macintosh Safari Only (versions 1 through 3).
+If you see purple, you are using Internet Explorer 7!
+If you see green, you are using Internet Explorer 6!
+If you see orange, you are using a Internet Explorer 5!.
+*/
 
 .element_block_hover {
 	border: 4px solid #aaaaaa;
+}
+
+.edit_bar .close_link {
 }
 
 .exhibit_nextlink {
