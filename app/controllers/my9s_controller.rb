@@ -128,15 +128,15 @@ class My9sController < ApplicationController
   end
 
   # This is called from AJAX to display the edit profile form in place.
-  def enter_edit_profile_mode
-    user = get_user(session)
-    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
-      return
-    end
-
-    render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
-  end
+#  def enter_edit_profile_mode
+#    user = get_user(session)
+#    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+#      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
+#      return
+#    end
+#
+#    render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
+#  end
 
   # This is called from AJAX when the user has finished filling out the form.
   def update_profile
@@ -146,54 +146,60 @@ class My9sController < ApplicationController
       return
     end
 
-    # if we weren't called with any parameters, then the user meant to cancel the operation
-    if params['institution'] == nil
-      render :partial => 'profile', :locals => { :user => user, :edit_mode => false }
-    else
-      user.institution = params['institution']
-      user.fullname = params['fullname']
-      user.link = params['link']
-      user.about_me = params['aboutme']
-      #check the link for a javascript attack
-      if user.link.downcase.index("javascript:") != nil
-        user.link = "invalid link entered"
-      end
-      old_image = nil
-      if params['image'] != nil && params['image'].length > 0
-        old_image = user.image_id
-        user.image = Image.new({ :uploaded_data => params['image'] })
-        user.image.save!
-      end
+    user.institution = params['institution']
+    user.fullname = params['fullname']
+    user.link = params['link']
+    user.about_me = params['aboutme']
+    #check the link for a javascript attack
+    if user.link.downcase.index("javascript:") != nil
+      user.link = "invalid link entered"
+    end
+    user.save
 
-      #      if params['image'].length > 0
-      #        folder = "#{RAILS_ROOT}/public/images/users/"
-      #        image_path = "#{folder}#{user.id}"
-      #        Dir.mkdir(folder) unless File.exists?(folder)
-      #        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
-      #      end
+    render :partial => 'profile', :locals => { :user => user }
+  end
+
+  # The file upload is done in a separate call because of ajax limitations.
+  def update_profile_upload
+    user = get_user(session)
+    if params['image'].length > 0
+      user.image = Image.new({ :uploaded_data => params['image'] })
+      user.image.save!
       user.save
+    end
+#    old_image = nil
+#    if params['image'] != nil && params['image'].length > 0
+#      old_image = user.image_id
+#      user.image = Image.new({ :uploaded_data => params['image'] })
+#      user.image.save!
+#    end
 
       # now we need to figure out what happened with the attachment.
       # If there was an error image_id is set to nil, and we want to reset it to the previous image.
       # If there was no error, and there was a previous image, then we want to delete the previous one from the file system.
-      if old_image != nil
-        if user.image_id == nil
-          user.image = nil
-          user.update_attribute(:image_id, old_image) 
-        else
-          id = old_image.to_s.rjust(4, '0')
-          folder = "#{RAILS_ROOT}/public/uploads/0000/#{id}/"
-          d = Dir.new(folder)
-          d.each {|f|
-            if f != '.' && f != '..'
-              File.delete(folder + f)
-            end
-          }
-          Dir.delete(folder)
-        end
-      end
-      redirect_to :action => 'index'
-    end
+#      if old_image != nil
+#        if user.image_id == nil
+#          user.image = nil
+#          user.update_attribute(:image_id, old_image) 
+#        else
+#          id = old_image.to_s.rjust(4, '0')
+#          folder = "#{RAILS_ROOT}/public/uploads/0000/#{id}/"
+#          d = Dir.new(folder)
+#          d.each {|f|
+#            if f != '.' && f != '..'
+#              File.delete(folder + f)
+#            end
+#          }
+#          Dir.delete(folder)
+#        end
+#      end
+    #      if params['image'].length > 0
+    #        folder = "#{RAILS_ROOT}/public/images/users/"
+    #        image_path = "#{folder}#{user.id}"
+    #        Dir.mkdir(folder) unless File.exists?(folder)
+    #        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
+    #      end
+    render :text => "<script language='javascript' type='text/javascript'>window.top.window.stopUpload();</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
   def remove_saved_search

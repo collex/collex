@@ -207,11 +207,14 @@ var GeneralDialog = Class.create({
 						var textarea = new Element('textarea', { id: subel.textarea, name: subel.textarea });
 						if (subel.klass)
 							textarea.addClassName(subel.klass);
+						if (subel.value !== undefined)
+							textarea.update(subel.value);
 						row.appendChild(textarea);
 						// IMAGE
 					} else if (subel.image !== undefined) {
 						var image = new Element('div', { id: subel.image + '_div' });
-						image.appendChild(new Element('img', { src: '', id: subel.image + "_img", alt: '' }));
+						var src = subel.value !== undefined ? subel.value : "";
+						image.appendChild(new Element('img', { src: src, id: subel.image + "_img", alt: '' }));
 						image.appendChild(new Element('input', { id: subel.image, type: 'file', name: subel.image }));
 						if (subel.klass)
 							image.addClassName(subel.klass);
