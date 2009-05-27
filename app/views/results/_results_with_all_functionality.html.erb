@@ -29,5 +29,5 @@
 </form>
 <div class="clear_both"></div>
 <hr class="search_results_hr" />
+<div class="expand_all_link"><%= render( :partial => 'results/bulkcollect' ) %></div>
 <div class="search_results_pages"><%= render( :partial => 'results/pagination', :locals => { :page => page, :num_pages => num_pages, :destination_hash => { :controller => controller, :action => action } }  ) %></div>
-<%= render( :partial => 'results/bulkcollect' ) %>
