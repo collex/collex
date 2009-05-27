@@ -1301,6 +1301,11 @@ var ObjectSelector = Class.create({
 		this.getSelectedObjects = function()
 		{
 			return olChosen.getAllObjects();
+		};
+		
+		this.getSelection = function() {
+			// TODO: This is the new way of getting the selection from custom controls.
+			return "";
 		}
 	}
 });

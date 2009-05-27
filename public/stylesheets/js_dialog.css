@@ -12,7 +12,45 @@
 }
 
 .yui-skin-sam .yui-panel .hd {
-	background: #F7ECDB none repeat scroll 0 0;
+	background: transparent url(/images/popup_box_header.jpg) repeat-y scroll 0 0;
+	color: white;
+	font-family: Verdana, sans-serif;
+	font-weight: bold;
+}
+
+.yui-skin-sam .yui-button {
+	background: transparent url(/images/button.jpg) repeat-y scroll 0 0;
+	border: none;
+}
+
+.yui-skin-sam .yui-button button, .yui-skin-sam .yui-button a {
+	font-weight:bold;
+	line-height:1.5;
+	min-height:1em;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.yui-skin-sam .yui-button .first-child {
+	border: none;
+}
+
+.yui-skin-sam .button_tab {
+	background: #FCDFAC none repeat scroll 0 0;
+	border: none;
+	font-weight: bold;
+}
+
+.yui-skin-sam .button_tab .first-child {
+	border: none;
+}
+
+.yui-skin-sam .button_tab_selected {
+	background: transparent url(/images/attachment_button_down.jpg) repeat-y scroll 0 0;
+}
+
+.yui-button-hover a {
+	background: transparent url(/images/attachment_button_down.jpg) repeat-y scroll 0 0;
 }
 
 .flash_notice_ok {
@@ -34,6 +72,72 @@
 
 .yui-module {
 	background: white;
+}
+
+/* The following is a hack to get the select boxes to look ok for now.
+ * With this, they will only work in the exhibit builder edit bar.
+ */
+.edit_bar .yui-button button, .edit_bar .yui-button a {
+	padding-right:20px;
+	line-height:2;
+	min-height:2em;
+	font-weight: normal;
+}
+
+.edit_bar .yui-button {
+	background:transparent url(/javascripts/yui_2_7_0/build/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
+	border-color:#808080;
+	border-style:solid;
+	border-width:1px 0;
+}
+
+/***********************/
+/* styles for the link dialog   */
+/***********************/
+
+.linkdlg_item {
+	background-color: white;
+	color: black;
+	max-width: 50em;
+}
+
+.linkdlg_item_selected {
+	background-color: gray;
+	color: white;
+}
+
+.linkdlg_img_wrapper {
+	float:left;
+}
+
+.linkdlg_img {
+	height: 40px;
+	width: 40px;
+}
+
+.linkdlg_text {
+	margin-left: 50px;
+	font-size: .8em;
+}
+
+.linkdlg_firstline {
+	font-weight: bold;
+}
+
+.linkdlg_secondline {
+	
+}
+
+.linkdlg_list {
+	overflow: auto;
+	height: 230px;
+}
+
+hr.linkdlg_hr {
+	background:#C7C8CB none repeat scroll 0 0;
+	border:medium none;
+	height:2px;
+	margin:0;
 }
 
 /***********************/

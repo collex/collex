@@ -20,12 +20,6 @@
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
 
-<script language="JavaScript">
-	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array_with_exhibit() %>;
-	var gCollectedObjects = <%= user_id ? CollectedItem.get_collected_object_array(user_id) : "[]" %>;
-	var gExhibitNames = [ <%= Exhibit.js_array_of_all_public_exhibits() %> ];
-</script>
-
 <div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
 <a href='/forum/rss/<%=thread_id%>.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;Follow this discussion on RSS
 <div class="FP_breadcrumb">
@@ -34,40 +28,33 @@
 <% main_comment = @thread.discussion_comments[0] -%>
 <%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => false, :is_main => true } %>
 
-<div class="FP_replies">
-	<div class="FP_reply_number">Replies to this topic (<%= @total %>)</div>
-	<div class="clear_both"></div>
-	
-	<% if @replies.length > 0 -%>
-		<div class="FP_reply_header">
-			<div class="FP_replies_per_page"><%= render( :partial => 'results/result_count' ) %></div>
-			<div class="FP_reply_pages">
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread', :thread => thread_id } } ) %>
-			</div>
-			<div class="clear_both"></div>
-		</div>
+<div id="replies" class="FP_replies">
+	<%= render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread } %>
+</div>
+
+<div id="discussion_thread" class="discussion_action_bar">
+	<% if is_logged_in? -%>
+		<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
+		<script type="text/javascript">
+			document.observe('dom:loaded', function() {
+			    var onButtonClick = function (e) {
+			        new ForumReplyDlg({ thread_id: <%= @thread.id %>, 
+						ajax_div: 'replies',
+						submit_url: '/forum/post_comment_to_existing_thread', 
+						populate_exhibit_url: '/forum/get_exhibit_list',
+						populate_nines_obj_url: '/forum/get_nines_obj_list',
+						progress_img: '<%= PROGRESS_SPINNER_PATH %>',
+						logged_in: <%= is_logged_in? %>
+					});
+					return false;
+			    };
+			    var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
+				YAHOO.util.Event.onAvailable('replyButton-button', function() {
+					$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+				}, this);
+			});
+		</script>
+	<% else -%>
+		(Log in to reply to this thread.)
 	<% end -%>
-	
-	<% @replies.each {|reply| -%>
-		<%= render :partial => 'comment', :locals => { :comment=> reply, :thread_id => @thread.id, :can_delete => is_logged_in? && (is_admin? || (reply.user_id == user_id)), :is_main => false  } %>
-	<% } -%>
-	
-	<% if @replies.length > 0 -%>
-		<div class="FP_reply_footer">
-			<div class="FP_replies_per_page"><%= render( :partial => 'results/result_count' ) %></div>
-			<div class="FP_reply_pages">
-				<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_thread', :thread => thread_id } } ) %>
-			</div>
-			<div class="clear_both"></div>
-		</div>
-	<% end -%>
-	
-	<div id="discussion_thread" class="discussion_action_bar">
-		<% if is_logged_in? -%>
-			<%= link_to_function("[post comment]", 	"var dlg = new NewDiscussionCommentDlg({ thread_id: #{thread_id}, submit_url: '/forum/post_comment_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", :class => 'modify_link') %>
-			<%= link_to_function("[post object]", "var dlg = new NewThreadObjectDlg({thread_id: #{thread_id}, obj_list: gCollectedObjects, exhibit_list: gExhibitNames, type_list: gIllustrationTypes, submit_url: '/forum/post_object_to_existing_thread', parent_id: 'discussion_thread' }); dlg.show(); return false;", :class => 'modify_link') %>
-		<% else -%>
-			(Log in to reply to this thread.)
-		<% end -%>
-	</div>
 </div>

@@ -33,7 +33,7 @@
     	<tr><td colspan="5" class="FH_cat_info">
         	<p><%= topic.description %></p>
         	<p><%= pluralize(threads.length, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if threads.length > 0 %></p>
-			<%= link_to_function "[New #{topic.topic} Post]", "new RedirectIfLoggedIn('/forum/start_discussion?topic_id=#{topic.id}', 'You must be signed in to start a discussion', #{is_logged_in? ? 'true' : 'false'});", { :class => 'nav_link' } %>
+			<%= link_to_function "[New #{topic.topic} Post]", "new ForumReplyDlg({ topic_id: #{topic.id}, submit_url: '/forum/post_comment_to_new_thread', populate_exhibit_url: '/forum/get_exhibit_list', populate_nines_obj_url: '/forum/get_nines_obj_list', progress_img: '#{PROGRESS_SPINNER_PATH}', logged_in: #{is_logged_in?}, redirect: '/forum/view_topic?topic=#{topic.id}&page=-1'	});", { :class => 'nav_link' } %>
     	</tr>
 		<% num_displayed = threads.length < 6 ? threads.length : 6 -%>
 		<% num_displayed.times do |i| -%>

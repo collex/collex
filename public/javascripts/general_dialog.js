@@ -16,6 +16,8 @@
 
 /*global Class, $, $$, $H, Element */
 /*global YAHOO */
+/*global form_authenticity_token */
+/*global RichTextEditor */
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {
@@ -34,6 +36,8 @@ var GeneralDialog = Class.create({
 		
 		var flash_id = this_id + '_flash';
 		var dlg_id = this_id;
+		var editors = [];
+		var customList = [];
 		
 		var selectChange = function(event, param)
 		{
@@ -59,6 +63,16 @@ var GeneralDialog = Class.create({
 					data[el.id] = el.value;
 				}
 			});
+			
+			editors.each(function(editor) {
+				editor.save();
+			});
+			
+			customList.each(function(ctrl) {
+				var cl = ctrl.getSelection();
+				data[cl.field] = cl.value;
+			});
+	
 			var textareas = $$("#" + dlg_id + " textarea");
 			textareas.each(function(el) {
 				var id = el.id;
@@ -109,6 +123,7 @@ var GeneralDialog = Class.create({
 
 		// Create all the html for the dialog
 		var listenerArray = [];
+		var buttonArray = [];
 		var body = new Element('div', { id: body_style });
 		body.addClassName(body_style);
 		var flash = new Element('div', { id: flash_id }).update(flash_notice);
@@ -126,33 +141,39 @@ var GeneralDialog = Class.create({
 				row.addClassName(row_style);
 				form.appendChild(row);
 				el.each(function (subel) {
+					// TEXT
 					if (subel.text !== undefined) {
 						var elText = new Element('span').update(subel.text);
 						elText.addClassName(subel.klass);
 						if (subel.id !== undefined)
 							elText.writeAttribute({ id: subel.id });
 						row.appendChild(elText);
+						// INPUT
 					} else if (subel.input !== undefined) {
 						var el1 = new Element('input', { id: subel.input, 'type': 'text' });
 						el1.addClassName(subel.klass);
 						if (subel.value !== undefined)
 							el1.writeAttribute({value: subel.value });
 						row.appendChild(el1);
+						// PASSWORD
 					} else if (subel.password !== undefined) {
 						var el2 = new Element('input', { id: subel.password, 'type': 'password'});
 						el2.addClassName(subel.klass);
 						if (subel.value !== undefined)
 							el2.writeAttribute({value: subel.value });
 						row.appendChild(el2);
+						// BUTTON
 					} else if (subel.button !== undefined) {
-						var input = new Element('input', { id: 'btn' + listenerArray.length, 'type': 'button', value: subel.button });
+						var input = new Element('input', { id: 'btn' + buttonArray.length, 'type': 'button', value: subel.button });
 						row.appendChild(input);
-						listenerArray.push({ id: 'btn' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						buttonArray.push({ id: 'btn' + buttonArray.length, event: 'click', klass: subel.klass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
-						var a = new Element('a', { id: 'a' + listenerArray.length, href: '#' }).update(subel.page_link);
+						var a = new Element('a', { id: 'a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
 						a.addClassName('nav_link');
 						row.appendChild(a);
 						listenerArray.push({ id: 'a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+						// SELECT
 					} else if (subel.select !== undefined) {
 						var selectValue = new Element('input', { id: subel.select, name: subel.select });
 						selectValue.addClassName('hidden');
@@ -167,20 +188,27 @@ var GeneralDialog = Class.create({
 								select.appendChild(new Element('option', { value: opt.value}).update(opt.text));
 							});
 						}
+						// CUSTOM
 					} else if (subel.custom !== undefined) {
 						var custom = subel.custom;
+						customList.push(subel.custom);
 						var div = custom.getMarkup();
+						if (subel.klass)
+							div.addClassName(subel.klass);
 						row.appendChild(div);
+						// CHECKBOX
 					} else if (subel.checkbox !== undefined) {
 						var checkbox = new Element('input', { id: subel.checkbox, 'type': "checkbox", value: subel.checkbox, name: subel.checkbox });
 						if (subel.klass)
 							checkbox.addClassName(subel.klass);
 						row.appendChild(checkbox);
+						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
 						var textarea = new Element('textarea', { id: subel.textarea, name: subel.textarea });
 						if (subel.klass)
 							textarea.addClassName(subel.klass);
 						row.appendChild(textarea);
+						// IMAGE
 					} else if (subel.image !== undefined) {
 						var image = new Element('div', { id: subel.image + '_div' });
 						image.appendChild(new Element('img', { src: '', id: subel.image + "_img", alt: '' }));
@@ -207,10 +235,20 @@ var GeneralDialog = Class.create({
 			setTimeout(function() { panel.destroy(); }, 500);
 		});
 		
-		listenerArray.each(function (listen, i) {
+		listenerArray.each(function (listen) {
 			YAHOO.util.Event.addListener(listen.id, listen.event, listen.callback, listen.param); 
 		});
 		
+		buttonArray.each(function(btn){
+			var fn = function(event, id) {
+				var cb = btn.callback.bind($(id));
+				cb(event, btn.param);
+			};
+			
+			var ybtn = new YAHOO.widget.Button(btn.id, { onclick: { fn: fn, obj: btn.id, scope: this }});
+			if (btn.klass)
+				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass); }); 
+		});
 		// These are all the elements that can be turned on and off in the dialog.
 		// All elements have switchable_element, and they each then have another class
 		// that matches the value of the view parameter. Then this loop either hides or shows
@@ -247,6 +285,23 @@ var GeneralDialog = Class.create({
 			var el = dlg.up();
 			el.setStyle({ left: x + 'px', top: y + 'px'});
 		};
+		
+		this.initTextAreas =  function(toolbarGroups, linkDlgHandler) {
+			var dlg = $(this_id);
+			var w = parseInt(dlg.getStyle('width'), 10);
+			var inner_el = dlg.down('.bd');
+			var padL = parseInt(inner_el.getStyle('padding-left'));
+			var padR = parseInt(inner_el.getStyle('padding-right'));
+			var width = w - padL - padR;
+			
+			var textAreas = $$("#" + dlg_id + " textarea");
+			textAreas.each( function(textArea) { 
+				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width });
+				editor.attachToDialog(panel);
+				editors.push(editor);
+			}, this);
+		};
+		
 	}
 });
 

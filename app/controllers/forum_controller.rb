@@ -45,30 +45,82 @@ class ForumController < ApplicationController
     else
       topic_id = params[:topic_id]
       title = params[:title]
-      comment = params[:comment]
-      user = User.find_by_username(session[:user][:username])
-      
       thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title)
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, :comment_type => 'comment', :comment => comment)
+
+      params[:thread_id] = thread.id
+      create_comment(params)
     end
 
     redirect_to :action => :index
   end
   
   def post_comment_to_existing_thread
-    thread_id = params[:thread_id]
     if !is_logged_in?
       flash[:error] = 'You must be signed in to post a comment.'
     else
-      comment = params[:new_comment]
-      user = User.find_by_username(session[:user][:username])
-      thread = DiscussionThread.find(thread_id)
-      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length, :comment_type => 'comment', :comment => comment)
+      create_comment(params)
+#      thread_id = params[:thread_id]
+#      inet_thumbnail = params[:inet_thumbnail]
+#      inet_url = params[:inet_url]
+#      nines_object = params[:nines_obj_list]
+#      nines_exhibit = params[:exhibit_list]
+#      description = params[:reply]
+#      disc_type = params[:obj_type]
+#      user = User.find_by_username(session[:user][:username])
+#      thread = DiscussionThread.find(thread_id)
+#   
+#      if disc_type == ''
+#        DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length, :comment_type => 'comment', :comment => description)
+#      elsif disc_type == 'mycollection'
+#        cr = CachedResource.find_by_uri(nines_object)
+#        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+#          :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
+#      elsif disc_type == 'exhibit'
+#        a = nines_exhibit.split('_')
+#        exhibit = Exhibit.find(a[1])
+#        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+#          :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
+#      elsif disc_type == 'weblink'
+#        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+#          :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
+#      end
     end
+    
+    retrieve_thread({ :thread => params[:thread_id], :page => '-1' })
+    render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread }
+#    redirect_to :action => :view_thread, :thread => thread_id
+  end
 
-    redirect_to :action => :view_thread, :thread => thread_id
+  private
+  def create_comment(params)
+    thread_id = params[:thread_id]
+    inet_thumbnail = params[:inet_thumbnail]
+    inet_url = params[:inet_url]
+    nines_object = params[:nines_obj_list]
+    nines_exhibit = params[:exhibit_list]
+    description = params[:reply]
+    disc_type = params[:obj_type]
+    user = User.find_by_username(session[:user][:username])
+    thread = DiscussionThread.find(thread_id)
+ 
+    if disc_type == ''
+      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
+    elsif disc_type == 'mycollection'
+      cr = CachedResource.find_by_uri(nines_object)
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
+        :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
+    elsif disc_type == 'exhibit'
+      a = nines_exhibit.split('_')
+      exhibit = Exhibit.find(a[1])
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
+        :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
+    elsif disc_type == 'weblink'
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
+        :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
+    end
   end
   
+  public
   def post_object_to_new_thread
     if !is_logged_in?
       flash[:error] = 'You must be signed in to start a discussion.'
@@ -89,16 +141,55 @@ class ForumController < ApplicationController
     redirect_to :action => :index
   end
   
-  def post_object_to_existing_thread
-    if !is_logged_in?
-      flash[:error] = 'You must be signed in to post an object.'
-    else
-      thread_id = params[:thread_id]
-      thread = DiscussionThread.find(thread_id)
-      post_object(thread, params)
+#  def post_object_to_existing_thread
+#    if !is_logged_in?
+#      flash[:error] = 'You must be signed in to post an object.'
+#    else
+#      thread_id = params[:thread_id]
+#      thread = DiscussionThread.find(thread_id)
+#      post_object(thread, params)
+#    end
+#
+#    redirect_to :action => :view_thread, :thread => thread_id
+#  end
+  
+  def get_exhibit_list
+    # This is called through ajax and wants a json object back.
+    exhibits = Exhibit.get_all_published()
+    ret = []
+    exhibits.each { |exhibit|
+      obj = {}
+      obj[:id] = "id_#{exhibit.id}"
+      obj[:img] = exhibit.thumbnail
+      obj[:title] = exhibit.title
+      obj[:strFirstLine] = exhibit.title
+      obj[:strSecondLine] = ""
+      ret.push(obj)
+    }
+    render :text => ret.to_json()
+  end
+  
+  def get_nines_obj_list
+    ret = []
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user
+      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
+      objs.each {|obj|
+        hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+        if hit != nil
+          image = CachedResource.get_thumbnail_from_hit(hit)
+          image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+          obj = {}
+          obj[:id] = hit['uri']
+          obj[:img] = image
+          obj[:title] = hit['title'][0]
+          obj[:strFirstLine] = hit['title'][0]
+          obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
+          ret.push(obj)
+        end
+      }
     end
-
-    redirect_to :action => :view_thread, :thread => thread_id
+    render :text => ret.to_json()
   end
   
   private
@@ -133,25 +224,33 @@ class ForumController < ApplicationController
     @threads = @topic.discussion_threads
     @total = @threads.length
     @num_pages = @total.quo(session[:items_per_page]).ceil
+    @page = @num_pages if @page == -1
     start = (@page-1) * session[:items_per_page]
     @threads = @threads.slice(start,session[:items_per_page])
   end
   
   def view_thread
-    session[:items_per_page] ||= 10
-    thread_id = params[:thread]
-    @thread = DiscussionThread.find(thread_id)
+    retrieve_thread(params)
     num_views = @thread.number_of_views
     num_views = 0 if num_views == nil
     num_views += 1
     @thread.update_attribute(:number_of_views, num_views)
+  end
+
+  private
+  def retrieve_thread(params)
+    session[:items_per_page] ||= 10
+    thread_id = params[:thread]
+    @thread = DiscussionThread.find(thread_id)
     @page = params[:page] ? params[:page].to_i : 1
     @replies = @thread.discussion_comments
     @total = @replies.length-1
     @num_pages = @total.quo(session[:items_per_page]).ceil
+    @page = @num_pages if @page == -1
     start = (@page-1) * session[:items_per_page]
     @replies = @replies.slice(start+1,session[:items_per_page])
   end
+  public
   
   def delete_comment
     discussion_comment = DiscussionComment.find(params[:comment])
