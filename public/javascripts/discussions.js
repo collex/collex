@@ -149,8 +149,7 @@ var ForumReplyDlg = Class.create({
 					[ { textarea: 'reply' } ],
 					[ { page_link: 'Attach an Item...', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],
-					[ { custom: objlist, klass: 'mycollection hidden' } ],
-					[ { custom: exlist, klass: 'exhibit hidden' } ],
+					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
 					[ { text: 'URL', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_url', klass: 'new_exhibit_input_long weblink hidden' } ],
 					[ { text: 'Thumbnail for Item', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_thumbnail', klass: 'new_exhibit_input_long weblink hidden' } ],
 					[ { button: 'Post', url: submit_url, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]

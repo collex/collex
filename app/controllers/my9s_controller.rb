@@ -716,23 +716,57 @@ class My9sController < ApplicationController
     render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
   end
 
-  def get_all_collected_objects # called when creating a new exhibit
-    user = get_user(session)
-    exhibit_id = params[:exhibit_id]
-    if user != nil
-      obj = CollectedItem.get_collected_object_ruby_array(user.id)
-      selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
-      obj.each { |o|
-        uri = o[:uri]
-        i = selected.detect {|sel|
-          sel[:uri] == uri
-        }
-        o[:chosen] = i == nil ? false : true
-      }
+#  def get_all_collected_objects # called when creating a new exhibit
+#    user = get_user(session)
+#    exhibit_id = params[:exhibit_id]
+#    if user != nil
+#      obj = CollectedItem.get_collected_object_ruby_array(user.id)
+#      selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+#      obj.each { |o|
+#        uri = o[:uri]
+#        i = selected.detect {|sel|
+#          sel[:uri] == uri
+#        }
+#        o[:chosen] = i == nil ? false : true
+#      }
+#
+#      str = obj.to_json()
+#      render :text => str
+#    else
+#      render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
+#    end
+#  end
 
-      str = obj.to_json()
-      render :text => str
-    else
+  def get_all_collected_objects
+    chosen = params[:chosen]
+    exhibit_id = params[:exhibit_id]
+    ret = []
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user
+      selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
+      objs.each {|obj|
+        hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+        if hit != nil
+          uri = hit['uri']
+          i = selected.detect {|sel|
+            sel[:uri] == uri
+          }
+          if (i == nil && chosen == 'false') || (i != nil && chosen == 'true')  # i is nil if the object is not chosen
+            image = CachedResource.get_thumbnail_from_hit(hit)
+            image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+            obj = {}
+            obj[:id] = hit['uri']
+            obj[:img] = image
+            obj[:title] = hit['title'][0]
+            obj[:strFirstLine] = hit['title'][0]
+            obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
+            ret.push(obj)
+          end # should we include this?
+        end # does the hit exist?
+      } # for each object
+      render :text => ret.to_json()
+    else # not logged in
       render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
     end
   end

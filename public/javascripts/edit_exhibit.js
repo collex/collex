@@ -965,6 +965,7 @@ var CreateNewExhibitWizard = Class.create({
 					rows: [
 						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
 						[ { text: 'Step 2: Add objects to your exhibit.', klass: 'new_exhibit_label' } ],
+						[ { text: 'Choose resources from your collected objects to add to this new exhibit.', klass: 'new_exhibit_instructions' } ],
 						[ { custom: obj_selector } ],
 						[ { text: 'Any object you have collected is available for use in your exhibit. You may add or remove objects from this list at any time.', klass: 'new_exhibit_instructions' } ],
 						[ { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
@@ -1089,115 +1090,115 @@ function sectionUnhovered(el, edit_bar_id, addClass, removeClass)
 /// Create the control that adds and subtracts objects from exhibits
 ////////////////////////////////////////////////////////////////////////////
 
-var ObjectList = Class.create({
-	initialize: function (progress_img, title) {
-		// This creates a control that contains a list of NINES Objects. When the user clicks on an object, then it is selected.
-		// The control is populated by a call that either passes an array (that replaces the contents), or is passed an object and that object
-		// is either added or removed.
-		// When the control is first created, then an image is displayed instead. This is intended to be a progress spinner.
-		this.class_type = 'ObjectList';	// for debugging
-
-		// private variables
-		var This = this;
-		var outer = null;
-		var div = null;
-		var objs = null;
-		var actions = [];
-		
-		// private functions
-		var select = function(event)
-		{
-			var sel = $(this);
-			var parent = sel.up('.object_list_outer');
-			var els = parent.select('.object_list_row_selected');
-			els.each(function(el) {
-				el.removeClassName('object_list_row_selected');
-			});
-			sel.addClassName('object_list_row_selected');
-		};
-
-		var isEven = function(num) {
-		  return !(num % 2);
-		};
-		
-		var formatObj = function(obj, alt)
-		{
-			var div = new Element('div');
-			//div.writeAttribute({ onclick: ObjectList.select });
-			actions.push({el: div, action: select });
-			div.writeAttribute({ uri: obj.uri });
-			div.addClassName('object_list_row');
-			div.addClassName(alt ? 'object_list_row_even' : 'object_list_row_odd');
-			var img = new Element('img', { src: obj.thumbnail, alt: obj.thumbnail });
-			img.addClassName('object_list_img');
-			div.appendChild(img);
-			div.appendChild(new Element('span').update(obj.title));
-			return div;
-		};
-		
-		// privileged functions
-		this.populate = function (objects)
-		{
-			div.update('');
-			var alt = false;	// For alternate rows
-			objects.each(function(obj) {
-				div.appendChild(formatObj(obj, alt));
-				alt = !alt;
-			});
-			actions.each(function(action) {
-				action.el.observe('click', action.action);
-			});
-		};
-		
-		this.add = function(object)
-		{
-			var els = div.select('.object_list_row');
-			div.appendChild(formatObj(object, isEven(els.length)));
-			actions[actions.length-1].el.observe('click', actions[actions.length-1].action);
-		};
-		
-		this.subtract = function(object_uri)
-		{
-			var sel = div.select('[uri=' + object_uri + ']');
-			if (sel.length > 0)
-				sel[0].remove();
-		};
-		
-		this.getSelection = function()
-		{
-			// This returns the object that is currently selected.
-			var sel = div.select('.object_list_row_selected');
-			if (sel.length === 0)
-				return null;
-			return sel[0].readAttribute('uri');
-		};
-		
-		this.getMarkup =  function()
-		{
-			if (outer === null) {
-				outer = new Element('div');
-				var header = new Element('div').update(title);
-				header.addClassName('object_list_title');
-				outer.appendChild(header);
-				div = new Element('div');
-				div.addClassName('object_list_outer');
-				outer.appendChild(div);
-				div.appendChild(new Element('img', { src: progress_img, alt: 'progress' }));
-			}
-			return outer;
-		};
-		
-		this.getAllObjects = function()
-		{
-			var objs = [];
-			var sel = div.select('.object_list_row');
-			sel.each(function(el) {
-				objs.push(el.readAttribute('uri'));
-			});
-			return objs;
-		}
-	}
-});
+//var ObjectList = Class.create({
+//	initialize: function (progress_img, title) {
+//		// This creates a control that contains a list of NINES Objects. When the user clicks on an object, then it is selected.
+//		// The control is populated by a call that either passes an array (that replaces the contents), or is passed an object and that object
+//		// is either added or removed.
+//		// When the control is first created, then an image is displayed instead. This is intended to be a progress spinner.
+//		this.class_type = 'ObjectList';	// for debugging
+//
+//		// private variables
+//		var This = this;
+//		var outer = null;
+//		var div = null;
+//		var objs = null;
+//		var actions = [];
+//		
+//		// private functions
+//		var select = function(event)
+//		{
+//			var sel = $(this);
+//			var parent = sel.up('.object_list_outer');
+//			var els = parent.select('.object_list_row_selected');
+//			els.each(function(el) {
+//				el.removeClassName('object_list_row_selected');
+//			});
+//			sel.addClassName('object_list_row_selected');
+//		};
+//
+//		var isEven = function(num) {
+//		  return !(num % 2);
+//		};
+//		
+//		var formatObj = function(obj, alt)
+//		{
+//			var div = new Element('div');
+//			//div.writeAttribute({ onclick: ObjectList.select });
+//			actions.push({el: div, action: select });
+//			div.writeAttribute({ uri: obj.uri });
+//			div.addClassName('object_list_row');
+//			div.addClassName(alt ? 'object_list_row_even' : 'object_list_row_odd');
+//			var img = new Element('img', { src: obj.thumbnail, alt: obj.thumbnail });
+//			img.addClassName('object_list_img');
+//			div.appendChild(img);
+//			div.appendChild(new Element('span').update(obj.title));
+//			return div;
+//		};
+//		
+//		// privileged functions
+//		this.populate = function (objects)
+//		{
+//			div.update('');
+//			var alt = false;	// For alternate rows
+//			objects.each(function(obj) {
+//				div.appendChild(formatObj(obj, alt));
+//				alt = !alt;
+//			});
+//			actions.each(function(action) {
+//				action.el.observe('click', action.action);
+//			});
+//		};
+//		
+//		this.add = function(object)
+//		{
+//			var els = div.select('.object_list_row');
+//			div.appendChild(formatObj(object, isEven(els.length)));
+//			actions[actions.length-1].el.observe('click', actions[actions.length-1].action);
+//		};
+//		
+//		this.subtract = function(object_uri)
+//		{
+//			var sel = div.select('[uri=' + object_uri + ']');
+//			if (sel.length > 0)
+//				sel[0].remove();
+//		};
+//		
+//		this.getSelection = function()
+//		{
+//			// This returns the object that is currently selected.
+//			var sel = div.select('.object_list_row_selected');
+//			if (sel.length === 0)
+//				return null;
+//			return sel[0].readAttribute('uri');
+//		};
+//		
+//		this.getMarkup =  function()
+//		{
+//			if (outer === null) {
+//				outer = new Element('div');
+//				var header = new Element('div').update(title);
+//				header.addClassName('object_list_title');
+//				outer.appendChild(header);
+//				div = new Element('div');
+//				div.addClassName('object_list_outer');
+//				outer.appendChild(div);
+//				div.appendChild(new Element('img', { src: progress_img, alt: 'progress' }));
+//			}
+//			return outer;
+//		};
+//		
+//		this.getAllObjects = function()
+//		{
+//			var objs = [];
+//			var sel = div.select('.object_list_row');
+//			sel.each(function(el) {
+//				objs.push(el.readAttribute('uri'));
+//			});
+//			return objs;
+//		}
+//	}
+//});
 
 var ObjectSelector = Class.create({
 	initialize: function (progress_img, url_get_objects, exhibit_id) {
@@ -1206,8 +1207,10 @@ var ObjectSelector = Class.create({
 
 		// private variables
 		var This = this;
-		var olUnchosen = new ObjectList(progress_img, "Available Objects");
-		var olChosen = new ObjectList(progress_img, "Objects In Exhibit");
+		var olUnchosen = new CreateListOfObjects(url_get_objects + '?chosen=false&exhibit_id='+exhibit_id, '', 'unchosen_objects', progress_img);
+		var olChosen = new CreateListOfObjects(url_get_objects + '?chosen=true&exhibit_id='+exhibit_id, '', 'chosen_objects', progress_img);
+
+//		var olChosen = new ObjectList(progress_img, "Objects In Exhibit");
 		var divMarkup = null;
 		var actions = [];
 		var objs = null;
@@ -1215,22 +1218,16 @@ var ObjectSelector = Class.create({
 		// private functions
 		var addSelection = function()
 		{
-			var sel = olUnchosen.getSelection();
-			var obj = objs.detect(function(o) { return o.uri === sel; });
-			if (obj) {
-				olUnchosen.subtract(sel);
+			var obj = olUnchosen.popSelection();
+			if (obj)
 				olChosen.add(obj);
-			}
 		};
 		
 		var removeSelection = function()
 		{
-			var sel = olChosen.getSelection();
-			var obj = objs.detect(function(o) { return o.uri === sel; });
-			if (obj) {
-				olChosen.subtract(sel);
+			var obj = olChosen.popSelection();
+			if (obj)
 				olUnchosen.add(obj);
-			}
 		};
 		
 		// privileged functions
@@ -1238,33 +1235,10 @@ var ObjectSelector = Class.create({
 		{
 			// Call the server to get the data, then pass it to the ObjectLists
 			dlg.setFlash('Getting objects...', false);
-			new Ajax.Request(url_get_objects, { method: 'get', parameters: { exhibit_id: exhibit_id },
-				onSuccess : function(resp) {
-					dlg.setFlash('', false);
-					try {
-						objs = resp.responseText.evalJSON(true);
-					} catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					// We got all the data, we now want to sort it into two arrays depending on if it has been chosen,
-					// then send the arrays to the correct side.
-					var chosen = [];
-					var unchosen = [];
-					objs.each(function(obj) {
-						if (obj.chosen)
-							chosen.push(obj);
-						else
-							unchosen.push(obj);
-					});
-					olChosen.populate(chosen);
-					olUnchosen.populate(unchosen);
-					actions.each(function(action) {
-						action.el.observe('click', action.action);
-					});
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
+			olUnchosen.populate(dlg);
+			olChosen.populate(dlg);
+			actions.each(function(action) {
+				action.el.observe('click', action.action);
 			});
 		};
 		
@@ -1275,26 +1249,25 @@ var ObjectSelector = Class.create({
 				
 			divMarkup = new Element('div');
 			divMarkup.addClassName('object_selector');
-			var table = new Element('table');
-			var tbody = new Element('tbody');
-			var tr = new Element('tr');
-			divMarkup.appendChild(table);
-			table.appendChild(tbody);
-			tbody.appendChild(tr);
-			var td = new Element('td', { valign: 'top' });
-			tr.appendChild(td);
-			td.appendChild(olUnchosen.getMarkup());
-			td = new Element('td');
-			tr.appendChild(td);
+
+			var divLeftText = new Element('div').update('Available Objects:');
+			divLeftText.addClassName('select_objects_label select_objects_label_left');
+			divMarkup.appendChild(divLeftText);
+			var divRightText = new Element('div').update('Objects in Exhibit:');
+			divRightText.addClassName('select_objects_label select_objects_label_right');
+			divMarkup.appendChild(divRightText);
+
+			divMarkup.appendChild(olUnchosen.getMarkup());
+			var mid = new Element('div');
+			mid.addClassName('select_objects_buttons');
+			but2 = new Element('input', { type: 'button', value: 'ADD >>' });
+			mid.appendChild(but2);
 			var but = new Element('input', { type: 'button', value: '<<' });
-			td.appendChild(but);
+			mid.appendChild(but);
 			actions.push({el: but, action: removeSelection });
-			but2 = new Element('input', { type: 'button', value: '>>' });
-			td.appendChild(but2);
 			actions.push({el: but2, action: addSelection });
-			td = new Element('td', { valign: 'top' });
-			tr.appendChild(td);
-			td.appendChild(olChosen.getMarkup());
+			divMarkup.appendChild(mid);
+			divMarkup.appendChild(olChosen.getMarkup());
 			return divMarkup;
 		};
 		

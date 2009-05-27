@@ -131,6 +131,37 @@
 .linkdlg_list {
 	overflow: auto;
 	height: 230px;
+	background-color:white;
+}
+
+#unchosen_objects {
+	width:205px;
+	float:left;
+}
+
+#chosen_objects {
+	width:205px;
+}
+
+.select_objects_label {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.select_objects_label_left {
+	float: left;
+}
+
+.select_objects_label_right {
+	padding-left: 295px;
+}
+
+.select_objects_buttons {
+	float:left;
+	text-align:center;
+	padding-top:90px;
+	width:90px;
+	font-size:0.8em;
 }
 
 hr.linkdlg_hr {
