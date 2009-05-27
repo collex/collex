@@ -891,17 +891,22 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 
 function doAddToExhibit(uri, index, row_id)
 {
-	var arr = row_id.split('-');
-	var row_num = arr[arr.length-1];
-	
-	doSingleInputPrompt("Choose exhibit", 
-		'Exhibit:', 
-		'exhibit', 
-		"exhibit_" + index,
-		row_id + ",exhibited_objects_container",
-		"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
-		$H({ uri: uri, index: index, row_num: row_num }), 'select',
-		exhibit_names, null);
+	if (exhibit_names.length === 0) {
+		new MessageBoxDlg('Exhibits', 
+			'You have not yet created any exhibits. <a href="/my9s" class="nav_link" >Click here</a> to get started with the Exhibi Wizard.');
+	} else {
+		var arr = row_id.split('-');
+		var row_num = arr[arr.length-1];
+		
+		doSingleInputPrompt("Choose exhibit", 
+			'Exhibit:', 
+			'exhibit', 
+			"exhibit_" + index,
+			row_id + ",exhibited_objects_container",
+			"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
+			$H({ uri: uri, index: index, row_num: row_num }), 'select',
+			exhibit_names, null);
+	}
 }
 
 function cancel_edit_profile_mode(partial_id)
