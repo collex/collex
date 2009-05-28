@@ -58,20 +58,23 @@ var CreateListOfObjects = Class.create({
 			div.addClassName('linkdlg_item');
 			var imgdiv = new Element('div');
 			imgdiv.addClassName('linkdlg_img_wrapper');
-			var spinner = new Element('img', {
-				src: progress_img,
-				alt: alt,
-				title: alt
-			});
-			spinner.addClassName('linkdlg_img');
-			var imgEl = new Element('img', {
-				src: img,
-				alt: alt,
-				title: alt,
-				onload: 'linkdlg_finishedLoadingImage(this);'
-			});
-			imgEl.addClassName('linkdlg_img');
-			imgEl.addClassName('hidden');
+			if (img.length > 0) {
+				var spinner = new Element('img', {
+					src: progress_img,
+					alt: alt,
+					title: alt
+				});
+				spinner.addClassName('linkdlg_img');
+				
+				var imgEl = new Element('img', {
+					src: img,
+					alt: alt,
+					title: alt,
+					onload: 'linkdlg_finishedLoadingImage(this);'
+				});
+				imgEl.addClassName('linkdlg_img');
+				imgEl.addClassName('hidden');
+			}
 			// onload="$(this).previous().addClassName('hidden'); $(this).removeClassName('hidden');" />
 			var text = new Element('div');
 			text.addClassName('linkdlg_text');
@@ -86,8 +89,10 @@ var CreateListOfObjects = Class.create({
 			// Connect the elements
 			text.appendChild(first);
 			text.appendChild(second);
-			imgdiv.appendChild(spinner);
-			imgdiv.appendChild(imgEl);
+			if (img.length > 0) {
+				imgdiv.appendChild(spinner);
+				imgdiv.appendChild(imgEl);
+			}
 			div.appendChild(imgdiv);
 			div.appendChild(text);
 			div.appendChild(spacer);

@@ -110,6 +110,11 @@
 	float:left;
 }
 
+.linkdlg_img_wrapper {
+	height: 40px;
+	width: 40px;
+}
+
 .linkdlg_img {
 	height: 40px;
 	width: 40px;
