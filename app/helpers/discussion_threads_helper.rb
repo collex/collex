@@ -94,23 +94,20 @@ module DiscussionThreadsHelper
   end
   
   def get_comment_header_info(comment)
+    title = DiscussionThread.find(comment.discussion_thread_id).get_title()
     if comment.get_type() == "comment"
-      title = DiscussionThread.find(comment.discussion_thread_id).title
       thumbnail = nil #get_user_picture(comment.user_id, :thumb)
     elsif comment.get_type() == "nines_object"
       hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id)
-       title = h hit["title"][0]
-       thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit(hit))
+      thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit(hit))
     elsif comment.get_type() == "nines_exhibit"
-       exhibit = Exhibit.find(comment.exhibit_id)
-       title = h exhibit.title
-       thumbnail = exhibit.thumbnail
+      exhibit = Exhibit.find(comment.exhibit_id)
+      thumbnail = exhibit.thumbnail
     elsif comment.get_type() == "inet_object"
-       title = h comment.link_url
-       thumbnail = comment.image_url
+      thumbnail = comment.image_url
     else
-       title = "ERROR: ill-formed comment. (Comment type #{ comment.comment_type } is unknown)"
-       thumbnail = nil
+      title = "ERROR: ill-formed comment. (Comment type #{ comment.comment_type } is unknown)"
+      thumbnail = nil
     end
     thread = DiscussionThread.find(comment.discussion_thread_id)
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]

@@ -19,6 +19,10 @@ class DiscussionThread < ActiveRecord::Base
   has_many :discussion_comments, :order => :position
   
   def get_title
+    if title && title.length > 0
+      return title
+    end
+    
     ty = discussion_comments[0].get_type()
     case ty
       when "comment":
