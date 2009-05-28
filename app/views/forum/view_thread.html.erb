@@ -23,7 +23,7 @@
 <div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
 <a href='/forum/rss/<%=thread_id%>.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;Follow this discussion on RSS
 <div class="FP_breadcrumb">
-	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).title %>
+	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).get_title() %>
 </div>
 <% main_comment = @thread.discussion_comments[0] -%>
 <%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => false, :is_main => true } %>
@@ -33,28 +33,24 @@
 </div>
 
 <div id="discussion_thread" class="discussion_action_bar">
-	<% if is_logged_in? -%>
-		<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
-		<script type="text/javascript">
-			document.observe('dom:loaded', function() {
-			    var onButtonClick = function (e) {
-			        new ForumReplyDlg({ thread_id: <%= @thread.id %>, 
-						ajax_div: 'replies',
-						submit_url: '/forum/post_comment_to_existing_thread', 
-						populate_exhibit_url: '/forum/get_exhibit_list',
-						populate_nines_obj_url: '/forum/get_nines_obj_list',
-						progress_img: '<%= PROGRESS_SPINNER_PATH %>',
-						logged_in: <%= is_logged_in? %>
-					});
-					return false;
-			    };
-			    var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
-				YAHOO.util.Event.onAvailable('replyButton-button', function() {
-					$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
-				}, this);
-			});
-		</script>
-	<% else -%>
-		(Log in to reply to this thread.)
-	<% end -%>
+	<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
+	<script type="text/javascript">
+		document.observe('dom:loaded', function() {
+		    var onButtonClick = function (e) {
+		        new ForumReplyDlg({ thread_id: <%= @thread.id %>, 
+					ajax_div: 'replies',
+					submit_url: '/forum/post_comment_to_existing_thread', 
+					populate_exhibit_url: '/forum/get_exhibit_list',
+					populate_nines_obj_url: '/forum/get_nines_obj_list',
+					progress_img: '<%= PROGRESS_SPINNER_PATH %>',
+					logged_in: <%= is_logged_in? %>
+				});
+				return false;
+		    };
+		    var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
+			YAHOO.util.Event.onAvailable('replyButton-button', function() {
+				$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+			}, this);
+		});
+	</script>
 </div>
