@@ -60,7 +60,16 @@
 			<td class="FC_post_title">
 				<p><%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread.id}", :class => 'FH_post_title nav_link' %><br />
 				By <%= get_user_link(comment_info[:author]) %><br />
-				(<a href="#">1</a>, <a href="#">2</a>, <a href="#">3</a>)</p>
+				<% num_pages = (thread.discussion_comments.length-1).quo(session[:items_per_page]).ceil -%>
+				<% if num_pages > 1 -%>
+					(
+					<% 1.upto(num_pages) do |i| -%>
+						<%= "," if i != 1 -%>
+						<%= link_to "#{i}", "/forum/view_thread?thread=#{thread.id}&page=#{i}", :class => 'nav_link' %>
+					<% end -%>	
+					)
+				<% end -%>
+				</p>
 			</td>
 			<td class="FC_spacer"></td>
 			<td class="FC_last_comment"><%= get_user_link(comment_info[:last_comment_author]) %><br />
