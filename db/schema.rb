@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090523033709) do
+ActiveRecord::Schema.define(:version => 20090528145344) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(:version => 20090523033709) do
     t.datetime "updated_at"
     t.string   "alt_text"
     t.string   "nines_object_uri"
+    t.integer  "height",             :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "exhibit_objects", :force => true do |t|

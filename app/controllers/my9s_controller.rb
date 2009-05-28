@@ -528,6 +528,7 @@ class My9sController < ApplicationController
     arr = illustration.split('_')
     illustration_id = arr[arr.length-1].to_i
     width = params['width'].to_i
+    height = params['height'].to_i
     illustration = ExhibitIllustration.find_by_id(illustration_id)
     if illustration != nil
       element_id = illustration.exhibit_element_id
@@ -535,6 +536,7 @@ class My9sController < ApplicationController
       user = get_user(session)
       if can_edit_exhibit(user, get_exhibit_id_from_element(element))
         illustration.image_width = width
+        illustration.height = height if illustration.illustration_type == ExhibitIllustration.get_illustration_type_text()
         illustration.save
         element = ExhibitElement.find(element_id)
       end

@@ -20,7 +20,7 @@
 function initializeElementEditing()
 {
 	// find all the elements marked as widenable and add resize handles to them
-	var widenableElements = $$('.exhibit_illustration .widenable');
+	var widenableElements = $$('.widenable');
 	widenableElements.each(function(widenableElement) {
 		// ignore elements that have already been given resize handles
 		var existingResizeWrap = widenableElement.up('.yui-resize-wrap');
@@ -43,9 +43,12 @@ function imgResized(event, illustrationElement)
 	var newWidth = illustrationElement.width;	// This is the width if it is a picture
 	if (newWidth === undefined || newWidth === null)
 		newWidth = parseInt(illustrationElement.getStyle('width'));
+	var newHeight = illustrationElement.height;	// This is the height if it is a textual illustration
+	if (newHeight === undefined || newHeight === null)
+		newHeight = parseInt(illustrationElement.getStyle('height'));
 	new Ajax.Updater(element.id, "/my9s/change_img_width",
 	{
-		parameters : { illustration_id: illustrationElement.id, width: newWidth },
+		parameters : { illustration_id: illustrationElement.id, width: newWidth, height: newHeight },
 		evalScripts : true,
 		onComplete : initializeElementEditing,
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error: "); }
@@ -60,6 +63,12 @@ function initializeResizableImageElement( element_id ) {
 	hideSpinner(element_id);
 	var widenableElement = $(element_id);
 	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:true, handles: ['r', 'l', 'b', 'br', 'bl' ]});
+	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
+}
+
+function initializeResizableTextualElement( element_id ) {
+	var widenableElement = $(element_id);
+	var resizer = new YAHOO.util.Resize(widenableElement.id, {ratio:false, handles: ['r', 'l', 'b', 'br', 'bl' ]});
 	resizer.subscribe( 'endResize', imgResized, widenableElement, false);
 }
 

@@ -36,8 +36,10 @@ end -%>
 <% url = EXHIBIT_BUILDER_TODO_PATH if url == nil || url == "" %>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
+<% height = illustration.height != nil ? "min-height:#{illustration.height}px;" : "" -%>
 <% illustration_position = illustration.position -%>
 <% illustration_type = illustration.illustration_type -%>
+<% create_resizable = "" %>
 
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
@@ -45,6 +47,9 @@ end -%>
 	<% ajax_div_id = "'element_#{element_id},exhibit_builder_outline_content'" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 	<% onload_text = "onload=\"initializeResizableImageElement('illustration_img_#{illustration_id}');\"" -%>
+	<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
+		<% create_resizable = "<script language='JavaScript'>\n\tinitializeResizableTextualElement('illustration_img_#{illustration_id}');\n</script>\n" -%>
+	<% end -%>
 	<% illustration_text = illustration.illustration_text -%>
 <% else -%>
 	<% illustration_text = decode_exhibit_links(illustration.illustration_text) -%>
@@ -94,7 +99,8 @@ end -%>
 		
 			<% # Create the actual content -%>	
 			<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
-				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='width:<%= width %>px;'><%= illustration_text %></div>
+				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='width:<%= width %>px;<%= height %>'><%= illustration_text %></div>
+				<%= create_resizable -%>
 			<% else # nines object or internet image -%>
 				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
 				<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= onload_text %> />
