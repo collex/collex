@@ -128,7 +128,7 @@ class ForumController < ApplicationController
       # There are two records that must be updated to create the new thread. If the second record
       # isn't created, then we need to back off the first one.
       topic_id = params[:topic_id]
-      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => "")
+      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => params[:title])
 
       begin
         post_object(thread, params)
@@ -138,7 +138,11 @@ class ForumController < ApplicationController
       end
     end
 
-    redirect_to :action => :index
+    # now tell the caller where the post landed so they can go there.
+    session[:items_per_page] ||= 10
+    threads = DiscussionTopic.find(topic_id).discussion_threads
+    num_pages = threads.length.quo(session[:items_per_page]).ceil
+    render :text => "/forum/view_topic?page=#{num_pages}&topic=#{topic_id}"
   end
   
 #  def post_object_to_existing_thread

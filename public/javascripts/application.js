@@ -628,7 +628,7 @@ var StartDiscussionWithObject = Class.create({
 					} catch (e) {
 						new MessageBoxDlg("Error", e);
 					}
-					// We got all the users. Now put it on the dialog
+					// We got all the topics. Now put them on the dialog.
 					var sel_arr = $$('.discussion_topic_select');
 					var select = sel_arr[0];
 					select.update('');
@@ -660,7 +660,6 @@ var StartDiscussionWithObject = Class.create({
 			data.inet_thumbnail = "";
 			data.thread_id = "";
 			data.nines_exhibit = "";
-			data.description = "";	// TODO: Do we want to let the user enter something for this?
 			data.nines_object = uri;
 			data.inet_url = "";
 			data.disc_type = "NINES Object";
@@ -671,6 +670,7 @@ var StartDiscussionWithObject = Class.create({
 				onSuccess : function(resp) {
 					$(discussion_button).hide();
 					dlg.cancel();
+					window.location = resp.responseText;
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
@@ -681,37 +681,21 @@ var StartDiscussionWithObject = Class.create({
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [
-					[ { text: 'Select the topic you want this discussion to appear under', klass: 'new_exhibit_instructions' } ],
-					[ { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { text: 'Title', klass: 'new_exhibit_label' }, { input: 'title', klass: 'new_exhibit_input_long' } ],
+					[ { text: 'Select the topic you want this discussion to appear under', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { textarea: 'description' } ],
 					[ { button: 'Ok', url: url_update, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 
 		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
 		var dlg = new GeneralDialog(params);
+		dlg.initTextAreas([ 'fontstyle', 'link' ], null);
 		dlg.changePage('start_discussion', null);
 		dlg.center();
 		populate(dlg);
 	}
 });
-
-function doDiscuss(uri, discussion_button, is_logged_in)
-{
-	if (!is_logged_in) {
-		var dlg = new SignInDlg();
-		dlg.setInitialMessage("Please log in to discuss objects");
-		dlg.show('sign_in');
-		return;
-	}
-	
-//	 "description"=>"", "topic_id"=>"2"
-//	 
-//	 "disc_type"=>"NINES Object"
-//	 "nines_object"=>"http://www.rossettiarchive.org/docs/s228.raw"
-//	/forum/post_object_to_new_thread
-
-	doSingleInputPrompt('Discussion', 'Not so fast! We haven\'t implemented the Discussion feature, yet', null, id, null, null, $H({ }), 'none', null, "Ok");
-}
 
 function doCollect(uri, row_num, row_id, is_logged_in)
 {
