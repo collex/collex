@@ -139,8 +139,8 @@ var ForumReplyDlg = Class.create({
 			}
 		};
 		
-		var objlist = new CreateListOfObjects(populate_nines_obj_url, '', 'nines_obj_list', progress_img);
-		var exlist = new CreateListOfObjects(populate_exhibit_url, '', 'exhibit_list', progress_img);
+		var objlist = new CreateListOfObjects(populate_nines_obj_url, null, 'nines_obj_list', progress_img);
+		var exlist = new CreateListOfObjects(populate_exhibit_url, null, 'exhibit_list', progress_img);
 
 		var dlgLayout = {
 				page: 'layout',

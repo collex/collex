@@ -401,7 +401,7 @@ var RichTextEditor = Class.create({
 						return false;
 					}
 					
-					linkDlgHandler.onShowLinkDlg(This, id + "_container", editor.getEditorHTML(), result.startPos, result.endPos);
+					linkDlgHandler.show(This, id + "_container", editor.getEditorHTML(), result.startPos, result.endPos);
 					
 		            //This is important.. Return false here to not fire the rest of the listeners
 		            return false;

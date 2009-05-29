@@ -192,8 +192,10 @@ class ForumController < ApplicationController
           ret.push(obj)
         end
       }
+      render :text => ret.to_json()
+    else
+      render :text => "Your session has expired. Please log in again.", :status => :bad_request
     end
-    render :text => ret.to_json()
   end
   
   private

@@ -1216,8 +1216,8 @@ var ObjectSelector = Class.create({
 
 		// private variables
 		var This = this;
-		var olUnchosen = new CreateListOfObjects(url_get_objects + '?chosen=false&exhibit_id='+exhibit_id, '', 'unchosen_objects', progress_img);
-		var olChosen = new CreateListOfObjects(url_get_objects + '?chosen=true&exhibit_id='+exhibit_id, '', 'chosen_objects', progress_img);
+		var olUnchosen = new CreateListOfObjects(url_get_objects + '?chosen=false&exhibit_id='+exhibit_id, null, 'unchosen_objects', progress_img);
+		var olChosen = new CreateListOfObjects(url_get_objects + '?chosen=true&exhibit_id='+exhibit_id, null, 'chosen_objects', progress_img);
 
 //		var olChosen = new ObjectList(progress_img, "Objects In Exhibit");
 		var divMarkup = null;
