@@ -23,6 +23,26 @@
 /// Create the controls that select an object or an exhibit.
 ////////////////////////////////////////////////////////////////////////////
 
+var CacheObjects = Class.create({
+	initialize: function(){
+		var cache = null;
+
+		this.get = function() {
+			return cache;
+		};
+		
+		this.reset = function() {
+			cache = null;
+		};
+		
+		this.set = function(c) {
+			cache = c;
+		};
+	}
+});
+
+var ninesObjCache = new CacheObjects();
+
 // TODO: put these inside class / make it work for IE!
 function linkdlg_finishedLoadingImage(This)
 {
@@ -48,17 +68,21 @@ function linkdlg_finishedLoadingImage(This)
 	$(This).removeClassName('hidden');
 }
 
+var linkdlg_selectionCallBack = null;	// TODO-PER: Hack! put this inside the class
 function linkdlg_select(parent_id, selClass, id){
 	$(parent_id).select("." + selClass).each(function(el){
 		el.removeClassName(selClass);
 	});
 	$(id).addClassName(selClass);
+	if (linkdlg_selectionCallBack)
+		linkdlg_selectionCallBack(id);
 }
 
 var CreateListOfObjects = Class.create({
-	initialize: function(populate_url, initial_selection, parent_id, progress_img){
+	initialize: function(populate_url, initial_selection, parent_id, progress_img, selectionCallBack){
 		var selClass = "linkdlg_item_selected";
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
+		linkdlg_selectionCallBack = selectionCallBack;
 		
 		// Handles the user's selection
 		this.getSelection = function(){
@@ -120,55 +144,70 @@ var CreateListOfObjects = Class.create({
 //			YAHOO.util.Event.addListener($(id), 'click', CreateListOfObjects.select, id); 
 		};
 		
-		// privileged functions
-		this.populate = function(dlg, selectFirst){
-			// Call the server to get the data, then pass it to the ObjectLists
-			dlg.setFlash('Getting objects...', false);
-			var objs = null;
-			new Ajax.Request(populate_url, {
-				method: 'get',
-				onSuccess: function(resp){
-					dlg.setFlash('', false);
-					try {
-						objs = resp.responseText.evalJSON(true);
-					} 
-					catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					
-					objs.each(function(obj){
-						linkItem(obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
+		var createRows = function(objs, selectFirst) {
+			objs.each(function(obj){
+				linkItem(obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
+			});
+			
+			if (initial_selection) {
+				var sel = $(initial_selection);
+				if (sel) {
+					sel.addClassName(selClass);
+					YAHOO.util.Event.onAvailable(sel.id, function() {
+						var selOffset = sel.offsetTop;	// This is to the top of the outer container div, not the container with the scroll bar
+						var divTop = parent.offsetTop;
+						var selTop = selOffset - divTop;	// NOW this is the distance from the container with the scrollbar
+						var selMiddle = parseInt(sel.getStyle('height')) / 2;
+						var divHeight = parseInt(parent.getStyle('height'));
+						if (selTop + selMiddle > divHeight) { // Only scroll if the selection isn't on the first page
+							parent.scrollTop = selTop + selMiddle - divHeight / 2;
+						};
 					});
-					
-					if (initial_selection) {
-						var sel = $(initial_selection);
-						if (sel) {
-							sel.addClassName(selClass);
-							var selOffset = sel.offsetTop;	// This is to the top of the outer container div, not the container with the scroll bar
-							var divTop = parent.offsetTop;
-							var selTop = selOffset - divTop;	// NOW this is the distance from the container with the scrollbar
-							var selMiddle = parseInt(sel.getStyle('height')) / 2;
-							var divHeight = parseInt(parent.getStyle('height'));
-							if (selTop + selMiddle > divHeight) { // Only scroll if the selection isn't on the first page
-								parent.scrollTop = selTop + selMiddle - divHeight / 2;
-							}
-						} else {
-							var first_item = parent.down();
-							first_item.addClassName(selClass);
-						}
-					} else if (selectFirst) {
-						var first_item2 = parent.down();
-						if (first_item2)	// this can be null if there are no objects in the list.
-							first_item2.addClassName(selClass);
-					}
+				} else {
+					var first_item = parent.down();
+					first_item.addClassName(selClass);
+				}
+			} else if (selectFirst) {
+				var first_item2 = parent.down();
+				if (first_item2)	// this can be null if there are no objects in the list.
+					first_item2.addClassName(selClass);
+			}
 //					actions.each(function(action){
 //						action.el.observe('click', action.action);
 //					});
-				},
-				onFailure: function(resp){
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
+			
+		};
+		
+		// privileged functions
+		this.populate = function(dlg, selectFirst){
+			// See if the item's in the cache first, and if not, call the server for it.
+			var objs = ninesObjCache.get();
+			
+			if (objs)
+				createRows(objs, selectFirst);
+			else {
+				// Call the server to get the data, then pass it to the ObjectLists
+				dlg.setFlash('Getting objects...', false);
+				new Ajax.Request(populate_url, {
+					method: 'get',
+					onSuccess: function(resp){
+						dlg.setFlash('', false);
+						try {
+							objs = resp.responseText.evalJSON(true);
+							ninesObjCache.set(objs);
+							createRows(objs, selectFirst);
+						} 
+						catch (e) {
+							new MessageBoxDlg("Error", e);
+						}
+						
+					},
+					onFailure: function(resp){
+						dlg.setFlash(resp.responseText, true);
+					}
+				});
+			}
+			
 		};
 		
 		this.add = function(object)

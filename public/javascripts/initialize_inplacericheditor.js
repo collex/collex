@@ -183,35 +183,116 @@ function showIllustrationEditor(event)
 	values['ill_illustration_id'] = element_id;
 	values['element_id'] = element_id; 
 	
-	// First construct the dialog
-	var dlg = new InputDialog(element_id);
-    dlg.addHidden("ill_illustration_id");
+	var selChanged = function(id, currSelection) {
+		if (currSelection === gIllustrationTypes[0]) {
+			$$('.image_only').each(function(el) { el.addClassName('hidden'); });
+			$$('.text_only').each(function(el) { el.addClassName('hidden'); });
+			$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
+			$$('.nines_only').each(function(el) { el.removeClassName('hidden'); });
+		} else if (currSelection === gIllustrationTypes[1]) {	// External Link
+			$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
+			$$('.text_only').each(function(el) { el.addClassName('hidden'); });
+			$$('.image_only').each(function(el) { el.removeClassName('hidden'); });
+			$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
+		} else if (currSelection === gIllustrationTypes[2]) {	// Textual Illustration
+			$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
+			$$('.image_only').each(function(el) { el.addClassName('hidden'); });
+			$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
+			$$('.text_only').each(function(el) { el.removeClassName('hidden'); });
+		}
+	};
 	
-	var size = 52;
-	dlg.addSelect('Type of Illustration:', 'type', gIllustrationTypes, selectionChanged);
-	dlg.addTextInput('First Caption:', 'caption1', size);
-	dlg.addTextInput('Second Caption:', 'caption2', size);
-	dlg.addHr();
-	dlg.addTextInput('Image URL:', 'image_url', size, 'image_only');
-	dlg.addTextInput('Link URL:', 'link_url', size, 'not_nines');
-	dlg.addTextInput('Alt Text:', 'alt_text', size, 'image_only');
-	dlg.addTextArea('ill_text', 300, 100, 'text_only', [ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
-	var list = new CreateList(gCollectedObjects, 'nines_only', values['nines_object'], 'nines_object');
-	dlg.addList('nines_object', list.list, 'nines_only');
+	var cancel = function(event, params)
+	{
+		params.dlg.cancel();
+	};
+	
+	// TODO-PER: Make this generic: probably put in general_dialog
+	var ajaxUpdateFromElement = function(el, data, callback) {
+		var action = el.readAttribute('action');
+		var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
 
-	var onCompleteCallback = function() {
-		initializeElementEditing();
+		// If we have a comma separated list, we want to send the request synchronously to each action
+		// (Doing this synchronously eliminates any race condition: The first call can update the data and
+		// the rest of the calls just update the page.
+		var actions = action.split(',');
+		var action_elements = ajax_action_element_id.split(',');
+		if (actions.length == 1)
+		{
+			new Ajax.Updater(ajax_action_element_id, action, {
+				parameters : data,
+				evalScripts : true,
+				onComplete : initializeElementEditing,				
+				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+			});
+		}
+		else
+		{
+			new Ajax.Updater(action_elements[0], actions[0], {
+				parameters : data,
+				evalScripts : true,
+				onComplete: function(resp) {
+					new Ajax.Updater(action_elements[1], actions[1], {
+						parameters : data,
+						evalScripts : true,
+						onComplete : initializeElementEditing,				
+						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+					});
+				},
+				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+			});
+		}
+	};
+	
+	var setCaption = function(id) {
+		// This is a callback that is called when the user selects a NINES Object.
+		var caption = $(id).down(".linkdlg_firstline");
+		$('caption1').writeAttribute('value', caption.innerHTML);
+		caption = $(id).down(".linkdlg_secondline");
+		$('caption2').writeAttribute('value', caption.innerHTML);
+		
+	}
+	
+	var okAction = function(event, params) {
+		// Save has been pressed.
+		var url = params.destination;
+		var dlg = params.dlg;
+		var data = dlg.getAllData();
+		data.ill_illustration_id = element_id;
+		data.element_id = element_id;
+		
+		dlg.setFlash('Updating Illustration...', false);
+		ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+
+		params.dlg.cancel();
+	};
+	
+	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+	var objlist = new CreateListOfObjects(populate_nines_obj_url, values['nines_object'], 'nines_object', progress_img, setCaption);
+
+	var dlgLayout = {
+			page: 'layout',
+			rows: [
+				[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values['type'], options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
+				[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values['caption1'], klass: 'new_exhibit_input_long' } ],
+				[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values["caption2"], klass: 'new_exhibit_input_long' } ],
+
+				[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values["image_url"], klass: 'new_exhibit_input_long image_only hidden' },
+				  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
+				[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values["link_url"], klass: 'new_exhibit_input_long not_nines hidden' } ],
+				[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values["alt_text"], klass: 'new_exhibit_input_long image_only hidden' } ],
+				[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values['ill_text'] } ],
+				[ { button: 'Save', callback: okAction }, { button: 'Cancel', callback: cancel } ]
+			]
 		};
-	dlg.setCompleteCallback(onCompleteCallback);
-
-	// Now, everything is initialized, fire up the dialog.
-	var el = $(element_id);
-	dlg.show("Edit Illustration", getX(el), getY(el), 530, 350, values );
-	doSelectionChanged(values['type']);
-	list.makeSureThereIsASelection();
-	dlg._modalDialog.editors[0].editor.on('afterRender', function() {
-			dlg.center();
-	}, this, true);
+		
+	var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
+	var dlg = new GeneralDialog(dlgParams);
+	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
+	dlg.changePage('layout', null);
+	objlist.populate(dlg, true);
+	selChanged(null, values['type']);
 	dlg.center();
 }
 

@@ -311,6 +311,9 @@ var GeneralDialog = Class.create({
 			
 			var textAreas = $$("#" + dlg_id + " textarea");
 			textAreas.each( function(textArea) { 
+				var classes = textArea.readAttribute('class');
+				var wrapper = textArea.wrap('div');
+				wrapper.addClassName(classes);
 				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width });
 				editor.attachToDialog(panel);
 				editors.push(editor);

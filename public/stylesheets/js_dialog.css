@@ -53,6 +53,10 @@
 	background: transparent url(/images/attachment_button_down.jpg) repeat-y scroll 0 0;
 }
 
+.yui-toolbar-container .yui-button-hover a {
+	background: inherit;
+}
+
 .flash_notice_ok {
 	color: green;
 	font-weight: bold;
