@@ -753,7 +753,7 @@ function doRemoveCollect(uri, row_num, row_id)
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 	};
-	new ConfirmDlg("Uncollect", "Are you sure you want to uncollect this object?", "Yes", "No", uncollect);
+	new ConfirmDlg("Remove Object from Collection?", "Are you sure you wish to remove this object from your collection?", "Yes", "No", uncollect);
 }
 
 function editTag(parent_id, tag_name)
@@ -829,6 +829,7 @@ function realLinkToEditorLink(str) {
 			i = j;
 	}
 	var addr = link.substring(0, i);
+	//addr = addr.gsub("%7E", '~');	// Firefox, and perhaps other browsers, change this character when returning innerHTML, so we change it back.
 	i = link.indexOf('>');
 	if (i < 0)
 		return str;
