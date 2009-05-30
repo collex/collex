@@ -236,9 +236,11 @@
 	color: #ffe6b7;
 	font-style: italic;
 	font-size: 1.3em;
-	left:60px;
-	position:relative;
-	top:-25px;
+	left: 10px;
+	position: relative;
+	top: -469px;
+	text-align: left;
+	width: 200px;
 }
 
 .yui-carousel-element li {
@@ -251,7 +253,7 @@
 }
 
 .yui-carousel-content {
-	margin-top:-10px;
+	margin-top: 10px;
 }
 
 #carousel_container .item {
@@ -302,10 +304,14 @@
 
 .carousel_column {
 	padding-top: 0px;
+	padding-right:0px;
+	padding-left:0px;
 }
 
 .carousel_button_column {
-	padding-top: 35px;
+	padding-top: 20px;
+	padding-left:5px;
+	padding-right:5px;
 }
 /*.yui-skin-sam .yui-carousel-button {
 	background:transparent url(/images/carousel_right_arrow.jpg) no-repeat scroll 0 0;
