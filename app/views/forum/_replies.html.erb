@@ -28,6 +28,7 @@
 	</div>
 <% end -%>
 
+<% user_id = session[:user] ? user = User.find_by_username(session[:user][:username]).id : nil %>
 <% replies.each {|reply| -%>
 	<%= render :partial => 'comment', :locals => { :comment=> reply, :thread_id => thread.id, :can_delete => is_logged_in? && (is_admin? || (reply.user_id == user_id)), :is_main => false  } %>
 <% } -%>

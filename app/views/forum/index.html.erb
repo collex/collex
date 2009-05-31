@@ -21,14 +21,14 @@
 
 	<div class="page_header">Forum</div>
     <div class="page_subheader">We've set aside this portion of NINES for commentary, discussion and collaboration among the NINES community.
-	Join in the conversations below immediately, or login to your free account to associate objects of searches with your entries.</div>
+	Login to your free account to join in the conversations below and to discuss the objects of your research at Nines.</div>
 
 <% for topic_arr in topics -%>
 	<% topic = topic_arr[:topic_rec] -%>
 	<% last_updated_date = topic_arr[:date] -%>
 	<% threads = topic.discussion_threads -%>
 	<table class="FH_cat_table" border="0" cellpadding="0" cellspacing="0">
-    	<tr><td colspan="5" class="FH_cat_header"><%= topic.topic %></td></tr>
+    	<tr><td colspan="5" class="FH_cat_header"><%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'forum_header_link' %></td></tr>
 
     	<tr><td colspan="5" class="FH_cat_info">
         	<p><%= topic.description %></p>

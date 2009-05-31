@@ -18,19 +18,11 @@
 <% # the difference between the main comment and the others is that the main 
 	# comment has a title and a background color. -%>
     <div class="<%= is_main ? "FP_original_post" : "FP_reply_container" %>">
-    	<% if can_delete -%>
-			<div style="float:right;"><%= link_to_confirm del_char(), "/forum/delete_comment?comment=#{comment.id}", "Delete Comment", 'You are about to permanently delete this comment. Are you sure?' %></div>
-		<% end -%>
 		<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).get_title()}</div>" if is_main %>
-		<% if comment.reported == 1 -%>
-			<div class="reported_comment">
-				NOTICE: This comment has been reported as objectionable by <%= User.find(comment.reporter_id).fullname %>, and is pending moderation.
-			</div>
-		<% end -%>
 		<div class="FP_user_image">
 			<% picture_src = get_user_picture(comment.user_id, :thumb) -%>
 			<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img' } if picture_src && picture_src.length > 0 %>
-			<%= get_user_link(User.find(comment.user_id)) %>
+			<div class="FP_user_name"><%= get_user_link(User.find(comment.user_id)) %></div>
 		</div>
 
 		<div class="FP_post_body">
@@ -40,15 +32,28 @@
 			<% else -%>
 				<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
 			<% end -%>
-			<% if comment.reported != 1 -%>
+			<% # We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
+			<% # We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
+			<% this_user = session[:user] ? user = User.find_by_username(session[:user][:username]).id : -1 %>
+			<% allow_user_to_report = (this_user > 0) && (this_user != comment.reporter_id) && (this_user != comment.user_id) %>
+			<% if allow_user_to_report -%>
 				<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			<% end -%>
+	    	<% if can_delete -%>
+				&nbsp;<%= link_to_confirm "[remove]", "/forum/delete_comment?comment=#{comment.id}", "Delete Comment", 'You are about to permanently delete this comment. Are you sure?' %>
 			<% end -%>
 			</p>
 			<%= decode_exhibit_links(comment.comment) %>
 		</div>
-			<% if comment.get_type() != "comment" -%>
-				<%= render :partial => 'attachment', :locals => { :comment => comment } %>
-			<% end -%>
+		<% if comment.get_type() != "comment" -%>
+			<%= render :partial => 'attachment', :locals => { :comment => comment } %>
+		<% end -%>
         <div class="clear_both"></div>
+		<% show_report = comment.reported == 1 && (is_admin? || this_user == comment.reporter_id) -%>
+		<% if show_report -%>
+			<div class="reported_comment">
+				NOTICE: This comment has been reported as objectionable by <%= User.find(comment.reporter_id).fullname %>, and is pending moderation.
+			</div>
+		<% end -%>
     </div>
 

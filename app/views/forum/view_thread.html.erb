@@ -30,27 +30,27 @@
 
 <div id="replies" class="FP_replies">
 	<%= render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread } %>
-</div>
 
-<div id="discussion_thread" class="discussion_action_bar">
-	<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
-	<script type="text/javascript">
-		document.observe('dom:loaded', function() {
-		    var onButtonClick = function (e) {
-		        new ForumReplyDlg({ thread_id: <%= @thread.id %>, 
-					ajax_div: 'replies',
-					submit_url: '/forum/post_comment_to_existing_thread', 
-					populate_exhibit_url: '/forum/get_exhibit_list',
-					populate_nines_obj_url: '/forum/get_nines_obj_list',
-					progress_img: '<%= PROGRESS_SPINNER_PATH %>',
-					logged_in: <%= is_logged_in? %>
-				});
-				return false;
-		    };
-		    var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
-			YAHOO.util.Event.onAvailable('replyButton-button', function() {
-				$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
-			}, this);
-		});
-	</script>
+	<div id="discussion_thread" class="discussion_action_bar">
+		<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
+		<script type="text/javascript">
+			document.observe('dom:loaded', function() {
+			    var onButtonClick = function (e) {
+			        new ForumReplyDlg({ thread_id: <%= @thread.id %>, 
+						ajax_div: 'replies',
+						submit_url: '/forum/post_comment_to_existing_thread', 
+						populate_exhibit_url: '/forum/get_exhibit_list',
+						populate_nines_obj_url: '/forum/get_nines_obj_list',
+						progress_img: '<%= PROGRESS_SPINNER_PATH %>',
+						logged_in: <%= is_logged_in? %>
+					});
+					return false;
+			    };
+			    var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
+				YAHOO.util.Event.onAvailable('replyButton-button', function() {
+					$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+				}, this);
+			});
+		</script>
+	</div>
 </div>
