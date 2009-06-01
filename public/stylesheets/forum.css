@@ -232,6 +232,10 @@
 	cursor: pointer;
 }
 
+.forum_header_link:hover {
+	text-decoration:underline;
+}
+	
 .FP_user_name {
 	padding-bottom: 2px;
 }
