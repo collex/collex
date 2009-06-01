@@ -165,6 +165,7 @@ class ForumController < ApplicationController
       obj = {}
       obj[:id] = "id_#{exhibit.id}"
       obj[:img] = exhibit.thumbnail
+      obj[:img] = DEFAULT_THUMBNAIL_IMAGE_PATH if obj[:img] == "" || obj[:img] == nil
       obj[:title] = exhibit.title
       obj[:strFirstLine] = exhibit.title
       obj[:strSecondLine] = ""
