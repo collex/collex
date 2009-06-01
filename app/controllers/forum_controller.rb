@@ -102,6 +102,13 @@ class ForumController < ApplicationController
     disc_type = params[:obj_type]
     user = User.find_by_username(session[:user][:username])
     thread = DiscussionThread.find(thread_id)
+    
+    # If an attachment was not selected, but the type expected an attachment, just change the type to regular comment
+    if disc_type == 'mycollection' && nines_object.length == 0
+      disc_type = ''
+    elsif disc_type == 'exhibit' && nines_exhibit.length == 0
+      disc_type = ''
+    end
  
     if disc_type == ''
       DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)

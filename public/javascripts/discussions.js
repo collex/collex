@@ -164,7 +164,7 @@ var ForumReplyDlg = Class.create({
 				]
 			};
 		
-		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Reply" };
+		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: topic_id ? "New Post" : "Reply" };
 		var dlg = new GeneralDialog(dlgParams);
 		if (topic_id)
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });

@@ -643,6 +643,7 @@ var StartDiscussionWithObject = Class.create({
 					topics.each(function(topic) {
 						select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
 					});
+					$('topic_id').writeAttribute('value', topics[0].value);
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
