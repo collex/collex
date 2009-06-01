@@ -107,6 +107,9 @@ class ForumController < ApplicationController
       DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
     elsif disc_type == 'mycollection'
       cr = CachedResource.find_by_uri(nines_object)
+      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
+        cr = CollectedItem.collect_item(user, nines_object)
+      end
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
         :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif disc_type == 'exhibit'
@@ -211,6 +214,10 @@ class ForumController < ApplicationController
     
     if ExhibitIllustration.get_illustration_type_nines_obj() == disc_type
       cr = CachedResource.find_by_uri(nines_object)
+      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
+        CollectedItem.collect_item(user, nines_object)
+        cr = CachedResource.find_by_uri(nines_object)
+      end
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
         :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif ExhibitIllustration.get_exhibit_type_text() == disc_type

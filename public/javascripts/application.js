@@ -616,6 +616,13 @@ var StartDiscussionWithObject = Class.create({
 		// private variables
 		var This = this;
 		
+		if (!is_logged_in) {
+			var dlg = new SignInDlg();
+			dlg.setInitialMessage("Please log in to start a discussion");
+			dlg.show('sign_in');
+			return;
+		}
+		
 		// private functions
 		var populate = function()
 		{
