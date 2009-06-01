@@ -1488,9 +1488,13 @@ var EditProfileDialog = Class.create({
 				rows: [
 					[ { text: 'User Name:', klass: 'edit_facet_label' }, { text: user.username, klass: 'new_exhibit_label' } ],
 					[ { text: 'Full Name:', klass: 'edit_facet_label' }, { input: 'fullname', value: user.fullname, klass: 'edit_facet_input' } ],
+					[ { text: 'Email:', klass: 'edit_facet_label' }, { input: 'account_email', value: user.email, klass: 'edit_facet_input' } ],
 					[ { text: 'Institution:', klass: 'edit_facet_label' }, { input: 'institution', value: user.institution, klass: 'edit_facet_input' } ],
 					[ { text: 'Link:', klass: 'edit_facet_label' }, { input: 'link', value: user.link, klass: 'edit_facet_input' } ],
-					[ { text: 'About me:', klass: 'edit_facet_label' }, { textarea: 'aboutme', value: user.about_me, klass: 'edit_facet_textarea' } ],
+					[ { text: '(leave blank if not changing your password)', klass: 'login_instructions' } ],
+					[ { text: 'Password:', klass: 'edit_facet_label' }, { password: 'account_password', klass: 'edit_facet_input' } ],
+					[ { text: 'Re-type password:', klass: 'edit_facet_label' }, { password: 'account_password2', klass: 'edit_facet_input' } ],
+					[ { text: 'About me:', klass: 'edit_facet_label' }, { textarea: 'aboutme', value: user.about_me, klass: 'edit_profile_textarea' } ],
 					[ { text: 'Thumbnail:', klass: 'edit_facet_label' }, { image: 'image', value: curr_image_src } ],
 					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]

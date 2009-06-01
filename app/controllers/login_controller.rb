@@ -82,48 +82,48 @@ class LoginController < ApplicationController
     redirect_to get_page_to_return_to()
   end
 
-  def change_account
-    if @uses_separate_pages # TODO-PER: old way
-      if params[:password]
-        begin
-          if params[:email] !~ /\@/
-            flash[:notice] = "An e-mail address is required"
-            return
-          end
-          if params[:password] == params[:password2]
-            session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:email])
-            flash[:notice] = "Profile updated"
-            redirect_to get_page_to_return_to()
-            return
-          else
-            flash[:notice] = "Passwords do not match"
-          end
-        rescue UsernameAlreadyExistsException => e
-          flash[:notice] = e.message
-        end
-      end
-      # if there was an error, we fall through, so go back to the original action
-      redirect_to :action => 'account'
-
-    else  # javascript version
-      if request.post?
-        begin
-          if params[:account_email] !~ /\@/
-            render :text => "An e-mail address is required", :status => :bad_request
-            return
-          end
-          if params[:account_password] == params[:account_password2]
-            session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
-            render :text => "Profile updated"
-          else
-            render :text => "Passwords do not match", :status => :bad_request
-          end
-        rescue UsernameAlreadyExistsException => e
-          render :text => e.message, :status => :bad_request
-        end
-      end
-    end
-  end
+#  def change_account
+#    if @uses_separate_pages # TODO-PER: old way
+#      if params[:password]
+#        begin
+#          if params[:email] !~ /\@/
+#            flash[:notice] = "An e-mail address is required"
+#            return
+#          end
+#          if params[:password] == params[:password2]
+#            session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:password].strip, params[:email])
+#            flash[:notice] = "Profile updated"
+#            redirect_to get_page_to_return_to()
+#            return
+#          else
+#            flash[:notice] = "Passwords do not match"
+#          end
+#        rescue UsernameAlreadyExistsException => e
+#          flash[:notice] = e.message
+#        end
+#      end
+#      # if there was an error, we fall through, so go back to the original action
+#      redirect_to :action => 'account'
+#
+#    else  # javascript version
+#      if request.post?
+#        begin
+#          if params[:account_email] !~ /\@/
+#            render :text => "An e-mail address is required", :status => :bad_request
+#            return
+#          end
+#          if params[:account_password] == params[:account_password2]
+#            session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
+#            render :text => "Profile updated"
+#          else
+#            render :text => "Passwords do not match", :status => :bad_request
+#          end
+#        rescue UsernameAlreadyExistsException => e
+#          render :text => e.message, :status => :bad_request
+#        end
+#      end
+#    end
+#  end
   
   def reset_password
     if @uses_separate_pages # TODO-PER: old way

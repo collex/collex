@@ -257,3 +257,8 @@ table.query td {
 #exhibited_objects_container table td {
 	text-align: left;
 }
+
+.user_profile td {
+	padding-top: .1em;
+	padding-bottom: .1em;
+}

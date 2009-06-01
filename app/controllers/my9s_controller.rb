@@ -144,10 +144,18 @@ class My9sController < ApplicationController
   def update_profile
     user = get_user(session)
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
+      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?", :status => :bad_request
       return
     end
 
+    if params[:account_email] !~ /\@/
+      render :text => "An e-mail address is required", :status => :bad_request
+      return
+    end
+    if params[:account_password] != params[:account_password2]
+      render :text => "Passwords do not match", :status => :bad_request
+      return
+    end
     user.institution = params['institution']
     user.fullname = params['fullname']
     user.link = params['link']
@@ -157,6 +165,8 @@ class My9sController < ApplicationController
       user.link = "invalid link entered"
     end
     user.save
+
+    session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
 
     render :partial => 'profile', :locals => { :user => user }
   end

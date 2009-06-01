@@ -244,6 +244,11 @@ hr.linkdlg_hr {
 	width: 300px;
 }
 
+.edit_profile_textarea {
+	height: 200px;
+	width: 300px;
+}
+
 .edit_facet_input {
 	width: 300px;
 }
