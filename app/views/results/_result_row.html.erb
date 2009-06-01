@@ -16,7 +16,8 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% #  result_row parameters: int index; hit hit; bool has_exhibits; bool add_border -%>
-<% row_id = "search_result_#{index}" -%>
+<div <%= "class='result_row_collected'" if result_is_collected(hit) %>>
+	<% row_id = "search_result_#{index}" -%>
     <%# The left side that contains the checkbox, graphic and the collect button -%>
    	<% if is_logged_in? -%>
 		<div class="search_result_left_logged_in">
@@ -31,7 +32,7 @@
 	    </div>
 	<% end -%>
 
-	<div class="search_result_right<%= " result_row_collected" if result_is_collected(hit) %>">
+	<div class="search_result_right">
 	    <div class="search_result_buttons">
 			<%= result_button("Collect", "collect_#{index}", "doCollect('#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});") if !result_is_collected(hit) %>
 			<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{hit['uri']}', #{index}, '#{row_id}');") if result_is_collected(hit) %>
@@ -90,5 +91,5 @@
 	        </table>
 		</div>
 	</div>
-
-
+	<div class="clear_both"></div>
+</div>
