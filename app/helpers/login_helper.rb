@@ -15,11 +15,11 @@
 ##########################################################################
 
 module LoginHelper
-  def my_account_link(params)
-    cls = params[:class] || ''
-    text = params[:text] || "my account"
-     link_to_function text, "var dlg = new SignInDlg(); dlg.show('my_account', '#{session[:user][:username]}', '#{session[:user][:email]}');", :class => cls
-  end
+#  def my_account_link(params)
+#    cls = params[:class] || ''
+#    text = params[:text] || "my account"
+#     link_to_function text, "var dlg = new SignInDlg(); dlg.show('my_account', '#{session[:user][:username]}', '#{session[:user][:email]}');", :class => cls
+#  end
   
   def sign_in_link(params)
     cls = params[:class] || ''
