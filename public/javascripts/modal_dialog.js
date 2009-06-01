@@ -521,7 +521,7 @@ var RichTextEditor = Class.create({
 		initLinkDlg();
 		
 		// Add the resizing widgets
-		setResize();
+		//setResize();
 	}
 });
 	

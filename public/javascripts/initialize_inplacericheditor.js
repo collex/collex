@@ -281,8 +281,8 @@ function showIllustrationEditor(event)
 				[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values["image_url"], klass: 'new_exhibit_input_long image_only hidden' },
 				  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
 				[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values["link_url"], klass: 'new_exhibit_input_long not_nines hidden' } ],
-				[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values["alt_text"], klass: 'new_exhibit_input_long image_only hidden' } ],
 				[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values['ill_text'] } ],
+				[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values["alt_text"], klass: 'new_exhibit_input_long image_only hidden' } ],
 				[ { button: 'Save', callback: okAction }, { button: 'Cancel', callback: cancel } ]
 			]
 		};
