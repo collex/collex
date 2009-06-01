@@ -78,15 +78,23 @@ var ForumReplyDlg = Class.create({
 			params.dlg.cancel();
 		};
 		
+		var currSel = "";
+		var currSelClass = "";
 		this.attachItem = function(event, params)
 		{
 			$(this.id).addClassName('hidden');
 			var sel = $$('.attach');
 			sel.each(function(s) { s.removeClassName('hidden'); });
+			
+			// Now select the first tab, which is the My Collection.
+			params.destination = "mycollection";
+			currSel = 'btn0';
+			currSelClass = params.destination;
+			var fn = This.switch_page.bind($(currSel));
+			fn(event, params);
+			//$(currSel).addClassName('button_tab_selected');
 		};
 		
-		var currSel = "";
-		var currSelClass = "";
 		this.switch_page = function(event, params)
 		{
 			if (currSel !== "") {
@@ -160,7 +168,7 @@ var ForumReplyDlg = Class.create({
 		var dlg = new GeneralDialog(dlgParams);
 		if (topic_id)
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
-		dlg.initTextAreas([ 'fontstyle', 'link' ], null);
+		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler());
 		dlg.changePage('layout', null);
 		objlist.populate(dlg);
 		exlist.populate(dlg);
