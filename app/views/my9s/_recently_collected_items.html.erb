@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # recently_collected_items params: int user_id, array hits -%>
+<% # recently_collected_items params: int user_id, array hits, bool has_more -%>
 <div class="page_header">Recently Collected Items</div>
 <% if hits.length == 0 -%>
 	<div class="empty_list_text">You have not collected any items (yet)! Collect items directly from your search results to save and tag them.</div>
@@ -23,7 +23,7 @@
 <% end -%>
 <div class="clear_both bottom_nav"> 
 </div>
-<% if hits.length != 0 -%>
+<% if has_more == true -%>
 	<div class="subpage_nav"> 
 		<%= link_to "See more collected objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>
 	</div>

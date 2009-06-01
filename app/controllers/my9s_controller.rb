@@ -60,6 +60,8 @@ class My9sController < ApplicationController
     set_cloud_list(user, user.username)
 
     @results = CachedResource.get_newest_collections(user, 5)
+    more_results = CachedResource.get_newest_collections(user, 6)
+    @has_more = @results.length < more_results.length
   end
 
   def results

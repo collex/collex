@@ -32,7 +32,7 @@
 				<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
 			</div>
 			<div id="recently_collected_items">
-				<%= render :partial => 'recently_collected_items', :locals => { :user_id => curr_user.id, :hits => @results } %>
+				<%= render :partial => 'recently_collected_items', :locals => { :user_id => curr_user.id, :hits => @results, :has_more => @has_more } %>
 			</div>
 		</div>
 		<div class="right_column">
