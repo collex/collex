@@ -26,3 +26,4 @@
 	<% total_link = "<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>" -%>
 	<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => total_link, :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'tag', :action => 'results' } %>
 </div>
+<div class="clear_both">&nbsp;</div>
