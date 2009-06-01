@@ -25,18 +25,18 @@
 
 var CacheObjects = Class.create({
 	initialize: function(){
-		var cache = null;
+		var cache = new Hash();
 
-		this.get = function() {
-			return cache;
+		this.get = function(populate_url) {
+			return cache.get(populate_url);
 		};
 		
-		this.reset = function() {
-			cache = null;
+		this.reset = function(populate_url) {
+			cache.set(populate_url, null);
 		};
 		
-		this.set = function(c) {
-			cache = c;
+		this.set = function(populate_url, c) {
+			cache.set(populate_url, c);
 		};
 	}
 });
@@ -101,7 +101,7 @@ var CreateListOfObjects = Class.create({
 			div.addClassName('linkdlg_item');
 			var imgdiv = new Element('div');
 			imgdiv.addClassName('linkdlg_img_wrapper');
-			if (img.length > 0) {
+			if (img && img.length > 0) {
 				var spinner = new Element('img', {
 					src: progress_img,
 					alt: alt,
@@ -132,7 +132,7 @@ var CreateListOfObjects = Class.create({
 			// Connect the elements
 			text.appendChild(first);
 			text.appendChild(second);
-			if (img.length > 0) {
+			if (img && img.length > 0) {
 				imgdiv.appendChild(spinner);
 				imgdiv.appendChild(imgEl);
 			}
@@ -181,7 +181,7 @@ var CreateListOfObjects = Class.create({
 		// privileged functions
 		this.populate = function(dlg, selectFirst){
 			// See if the item's in the cache first, and if not, call the server for it.
-			var objs = ninesObjCache.get();
+			var objs = ninesObjCache.get(populate_url);
 			
 			if (objs)
 				createRows(objs, selectFirst);
@@ -194,7 +194,7 @@ var CreateListOfObjects = Class.create({
 						dlg.setFlash('', false);
 						try {
 							objs = resp.responseText.evalJSON(true);
-							ninesObjCache.set(objs);
+							ninesObjCache.set(populate_url, objs);
 							createRows(objs, selectFirst);
 						} 
 						catch (e) {
