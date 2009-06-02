@@ -157,6 +157,11 @@
 	border-bottom: 2px solid #C7C8CB;
 }
 
+.FC_pages_bottom {
+	padding:10px;
+	border-top: 2px solid #C7C8CB;
+}
+
 .FC_post_title{
 	text-align:left;
 	vertical-align:top;
@@ -203,6 +208,11 @@
 	height:80px;
 }
 
+.FC_header {
+	font-weight: bold;
+	border-bottom: 2px solid #C7C8CB;
+}
+
 .FP_original_post .FC_report_link {
 	background:url(/images/abuse_brown.gif) top left no-repeat;
 	text-decoration: none;
@@ -242,4 +252,36 @@
 
 .discussion_action_bar {
 	margin-left:-4px;
+}
+
+.discussion_title_tooltip_title {
+	font-weight: bold;
+	margin-bottom: .5em;
+	border-bottom: 1px solid gray;
+}
+
+a.tooltip{
+    position:relative; /*this is the key*/
+}
+
+a.tooltip:hover {
+	z-index:25; 
+	background-color:#ff0;
+}
+
+a.tooltip span { 
+	display: none;
+}
+
+a.tooltip:hover span{ /*the span will display just on :hover state*/
+	display: block;
+    position:absolute;
+    top:2em; 
+	left:2em; 
+	width:20em;
+    border:1px solid #0cf;
+    background-color:#cff; 
+	color:#000;
+    text-align: left;
+	font-weight: normal;
 }

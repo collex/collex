@@ -22,7 +22,7 @@
 
 <div class="page_header"><%= topic.topic %></div>
 <div class="page_subheader">We've set aside this portion of NINES for commentary, discussion and collaboration among the NINES community.
-	Join in the conversations below immediately, or login to your free account to associate objects of searches with your entries.</div>
+	Log in to your free account to join in the conversations below and to discuss the objects of your research at Nines.</div>
 
 <div class="FP_breadcrumb">
 	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= topic.topic %>
@@ -31,7 +31,26 @@
 	<tr><td colspan="9" class="FH_cat_info">
 		<p><%= topic.description %></p>
 		<p><%= pluralize(@total, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if @threads.length > 0 %></p>
-		<%= link_to_function "[New #{topic.topic} Post]", "new ForumReplyDlg({ topic_id: #{topic.id}, submit_url: '/forum/post_comment_to_new_thread', populate_exhibit_url: '/forum/get_exhibit_list', populate_nines_obj_url: '/forum/get_nines_obj_list', progress_img: '#{PROGRESS_SPINNER_PATH}', logged_in: #{is_logged_in?}, redirect: '/forum/view_topic?topic=#{topic.id}&page=-1'	});", { :class => 'nav_link' } %>
+		<%= link_to("New Post", "#", :onclick => 'return false;', :id => "new_post_#{topic.id}", :class => 'modify_link') %>
+		<script type="text/javascript">
+			document.observe('dom:loaded', function() {
+			    var onButtonClick = function (e) {
+					new ForumReplyDlg({ topic_id: <%= topic.id %>,
+						submit_url: '/forum/post_comment_to_new_thread',
+						populate_exhibit_url: '/forum/get_exhibit_list',
+						populate_nines_obj_url: '/forum/get_nines_obj_list',
+						progress_img: '<%=PROGRESS_SPINNER_PATH %>',
+						logged_in: <%= is_logged_in? %>,
+						redirect: '/forum/view_topic?topic=<%= topic.id %>&page=-1'
+					});
+					return false;
+			    };
+			    var oButton = new YAHOO.widget.Button("new_post_<%= topic.id %>", { onclick: { fn: onButtonClick } });
+				YAHOO.util.Event.onAvailable('"new_post_<%= topic.id %>"-button', function() {
+					$('"new_post_<%= topic.id %>"-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+				}, this);
+			});
+		</script>
 		</td>
 	</tr>
 	<tr>
@@ -40,15 +59,15 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="FC_post_title">Discussion thread</td>
+		<td class="FC_header">Discussion thread</td>
 		<td class="FC_spacer"></td>
-		<td class="FC_last_comment">Last comment by</td>
+		<td class="FC_header">Last comment by</td>
 		<td class="FC_spacer"></td>
-		<td class="FC_replies"># of Replies</td>
+		<td class="FC_header"># of Replies</td>
 		<td class="FC_spacer"></td>
-		<td class="FC_views"># of Views</td>
+		<td class="FC_header"># of Views</td>
 		<td class="FC_spacer"></td>
-		<td class="FC_object">Object</td>
+		<td class="FC_header">Object</td>
 	</tr>
 
 	<% for thread in @threads -%>
@@ -58,7 +77,7 @@
 		<% else -%>
 			<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
 			<td class="FC_post_title">
-				<p><%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread.id}", :class => 'FH_post_title nav_link' %><br />
+				<p><%= link_to forum_title_with_tooltip(comment_info[:title], thread.discussion_comments[0].comment), "/forum/view_thread?thread=#{thread.id}", :class => 'FH_post_title nav_link tooltip' %><br />
 				By <%= get_user_link(comment_info[:author]) %><br />
 				<% num_pages = (thread.discussion_comments.length-1).quo(session[:items_per_page]).ceil -%>
 				<% if num_pages > 1 -%>
@@ -84,7 +103,7 @@
 	</tr>
 	<% end # for each thread -%>
 	<tr>
-		<td class="FC_pages" colspan="9">
+		<td class="FC_pages_bottom" colspan="9">
 			<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_topic', :topic => topic.id } } ) %>
 		</td>
 	</tr>

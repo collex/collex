@@ -21,7 +21,7 @@
 
 	<div class="page_header">Forum</div>
     <div class="page_subheader">We've set aside this portion of NINES for commentary, discussion and collaboration among the NINES community.
-	Login to your free account to join in the conversations below and to discuss the objects of your research at Nines.</div>
+	Log in to your free account to join in the conversations below and to discuss the objects of your research at Nines.</div>
 
 <% for topic_arr in topics -%>
 	<% topic = topic_arr[:topic_rec] -%>
@@ -32,8 +32,26 @@
 
     	<tr><td colspan="5" class="FH_cat_info">
         	<p><%= topic.description %></p>
-        	<p><%= pluralize(threads.length, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if threads.length > 0 %></p>
-			<%= link_to_function "[New #{topic.topic} Post]", "new ForumReplyDlg({ topic_id: #{topic.id}, submit_url: '/forum/post_comment_to_new_thread', populate_exhibit_url: '/forum/get_exhibit_list', populate_nines_obj_url: '/forum/get_nines_obj_list', progress_img: '#{PROGRESS_SPINNER_PATH}', logged_in: #{is_logged_in?}, redirect: '/forum/view_topic?topic=#{topic.id}&page=-1'	});", { :class => 'nav_link' } %>
+			<%= link_to("New Post", "#", :onclick => 'return false;', :id => "new_post_#{topic.id}", :class => 'modify_link') %>
+			<script type="text/javascript">
+				document.observe('dom:loaded', function() {
+				    var onButtonClick = function (e) {
+						new ForumReplyDlg({ topic_id: <%= topic.id %>,
+							submit_url: '/forum/post_comment_to_new_thread',
+							populate_exhibit_url: '/forum/get_exhibit_list',
+							populate_nines_obj_url: '/forum/get_nines_obj_list',
+							progress_img: '<%=PROGRESS_SPINNER_PATH %>',
+							logged_in: <%= is_logged_in? %>,
+							redirect: '/forum/view_topic?topic=<%= topic.id %>&page=-1'
+						});
+						return false;
+				    };
+				    var oButton = new YAHOO.widget.Button("new_post_<%= topic.id %>", { onclick: { fn: onButtonClick } });
+					YAHOO.util.Event.onAvailable('"new_post_<%= topic.id %>"-button', function() {
+						$('"new_post_<%= topic.id %>"-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+					}, this);
+				});
+			</script>
     	</tr>
 		<% num_displayed = threads.length < 6 ? threads.length : 6 -%>
 		<% num_displayed.times do |i| -%>
@@ -56,9 +74,7 @@
             <td class="FH_spacer"></td>
 			<% end -%>
 		<% end -%>
-		<% if threads.length > 6 -%>
-	        <tr><td colspan="5" class="FH_view_all"><%= link_to("View all #{topic.topic} Posts …", { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link') %></td>
-		<% end -%>
+	        <tr><td colspan="5" class="FH_view_all"><%= link_to("[View all #{pluralize(threads.length, topic.topic + ' Post')}]", { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link') %></td>
         </tr>    
     </table>
  <% end -%>   

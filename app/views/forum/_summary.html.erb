@@ -20,6 +20,8 @@
 	<% if comment_info[:thumbnail] != nil -%>
 		<%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FH_post_image" } %>
 	<% end -%>
-	<%= link_to comment_info[:title], "/forum/view_thread?thread=#{thread_id}", :class => 'FH_post_title nav_link' %>
+	<%= link_to forum_title_with_tooltip(comment_info[:title], comment.comment), "/forum/view_thread?thread=#{thread_id}", :class => 'FH_post_title nav_link tooltip' %>
 </p>
-Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format(comment_info[:last_comment_time]) %>
+Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format_relative(comment_info[:last_comment_time]) %>
+
+

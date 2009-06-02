@@ -74,6 +74,10 @@ module DiscussionThreadsHelper
     return tim.strftime("%b %d, %Y %I:%M%p")
   end
 
+  def comment_time_format_relative(tim)
+    return time_ago_in_words(tim) + " ago"
+  end
+
   def sort_topics(by_date, topics)
     if by_date
       topics = topics.sort {|a,b| 
@@ -113,5 +117,13 @@ module DiscussionThreadsHelper
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
     return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), 
       :last_comment_author => User.find(last_comment.user_id), :last_comment_time => last_comment.updated_at }
+  end
+  
+  def forum_title_with_tooltip(title, comment)
+    comment = strip_tags(comment) if comment != nil
+    comment = comment.slice(0,200) if comment != nil
+    abbrev_title = title.slice(0,60)
+    abbrev_title = abbrev_title + "..." if title.length > 60
+    "#{abbrev_title}<span><div class='discussion_title_tooltip_title'>#{title}</div>#{comment}</span>"
   end
 end
