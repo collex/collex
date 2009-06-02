@@ -21,10 +21,10 @@ class HomeController < ApplicationController
 
   def index
     #@sites = Site.find(:all, :order => "description ASC")
-    threads = DiscussionThread.find(:all, :order => 'updated_at', :limit => '5')
+    threads = DiscussionThread.find(:all, :order => 'number_of_views desc', :limit => '5')
     @discussions = []
     threads.each {|thread|
-      @discussions.push({ :title => thread.title.length > 0 ? thread.title : "[Untitled]", :id => thread.id })
+      @discussions.push({ :title => thread.get_title().length > 0 ? thread.get_title() : "[Untitled]", :id => thread.id })
     }
     
     cloud_info = CachedResource.get_tag_cloud_info(nil) # get all tags and their frequencies
