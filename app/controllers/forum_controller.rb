@@ -281,7 +281,7 @@ class ForumController < ApplicationController
       flash[:error] = 'You must be signed in to delete a comment.'
     else
       user = User.find_by_username(session[:user][:username])
-      if !is_admin? && user.id != discussion_comment.id
+      if !is_admin? && user.id != discussion_comment.user_id
         flash[:error] = 'You must own the comment to delete it.'
       else
         ok_to_delete = true
