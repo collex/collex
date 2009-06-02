@@ -61,6 +61,10 @@ font-weight:bold;
 	/*width:338px;*/
 }
 
+.exhibit_palette_items td {
+	padding: 0.3em;
+}
+
 .exhibit_profile {
 	font-weight: bold;
 	font-size: 1.1em;

@@ -851,6 +851,11 @@ class My9sController < ApplicationController
 
     render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => false  }
   end
+  
+  def get_object_details
+    hit = CachedResource.get_hit_from_uri(params[:uri])
+    render :partial => '/results/result_row_for_popup', :locals => { :hit => hit }
+  end
 
   private
   def cloud_fragment_key( user )
