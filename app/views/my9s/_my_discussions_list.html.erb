@@ -21,11 +21,15 @@
 <% my_comments.each { |comment| -%>
 	<% my_threads[comment.discussion_thread_id] = true -%>
 <% } -%>
-<ul class="my_discussions">
-	<% for thread_id in my_threads -%>
-		<% thread = DiscussionThread.find_by_id(thread_id[0]) -%>
-		<% if thread != nil # this should always be true, but if the database gets a little corrupted, but don't want to crash -%>
-			<li><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread_id[0] }, :class => 'nav_link') %></li>
+<% if my_threads.length == 0 -%>
+	<div class="empty_list_text" >You have not started or joined any discussions</div>
+<% else -%>
+	<ul class="my_discussions">
+		<% for thread_id in my_threads -%>
+			<% thread = DiscussionThread.find_by_id(thread_id[0]) -%>
+			<% if thread != nil # this should always be true, but if the database gets a little corrupted, but don't want to crash -%>
+				<li><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread_id[0] }, :class => 'nav_link') %></li>
+			<% end -%>
 		<% end -%>
-	<% end -%>
-</ul>
+	</ul>
+<% end -%>
