@@ -42,6 +42,9 @@
 			<div id="tag_cloud">
 				<%= render :partial => 'tag_cloud_sidebar', :locals => { :cloud_info => @cloud_info } %>
 			</div>
+			<div id="discussions">
+				<%= render :partial => 'my_discussions_list', :locals => { :user_id => curr_user.id } %>
+			</div>
 			<div id="my_exhibits">
 				<%= render :partial => 'my_exhibits_list', :locals => { :user_id => curr_user.id } %>
 			</div>
