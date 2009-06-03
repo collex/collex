@@ -19,7 +19,7 @@
 	signed in as <%= session[:user][:username] %><%= link_separator %>
     <% #= my_account_link({ :class => 'nav_link' }) %>
     <% #= link_separator %>
-	<%= link_to 'log out', { :controller => 'login', :action => 'logout' }, { :class => 'nav_link' } %>
+	<%= link_to 'log out', { :controller => '/login', :action => 'logout' }, { :class => 'nav_link' } %>
 	<% if is_admin? -%>
 		<%= link_separator %>
 		<% if current_page == 'admin' -%>
