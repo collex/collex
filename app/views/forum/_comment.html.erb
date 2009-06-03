@@ -52,7 +52,7 @@
 		<% show_report = comment.reported == 1 && (is_admin? || comment.has_been_reported_by(this_user)) -%>
 		<% if show_report -%>
 			<div class="reported_comment">
-				NOTICE: This comment has been reported as objectionable by <%= comment.get_reported_by_list() %>, and is pending moderation.
+				NOTICE: This comment has been reported as objectionable by <%= is_admin? ? comment.get_reported_by_list() : 'you' %>, and is pending moderation.
 			</div>
 		<% end -%>
     </div>
