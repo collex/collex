@@ -31,6 +31,12 @@
 	color: #666666;
 }
 
+.exhibit_institution {
+	text-align:right;
+	font-size: 1.0em;
+	color: #666666;
+}
+
 .exhibit_nav {
 	clear:left;
 	float:right;
