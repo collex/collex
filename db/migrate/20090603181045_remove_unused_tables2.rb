@@ -1,14 +1,14 @@
 class RemoveUnusedTables2 < ActiveRecord::Migration
   def self.up
-   drop_table :exhibit_page_types
-   drop_table :exhibit_section_types
-   drop_table :exhibit_section_types_exhibit_types
-   drop_table :exhibit_types
+   #drop_table :exhibit_page_types
+   #drop_table :exhibit_section_types
+   #drop_table :exhibit_section_types_exhibit_types
+   #drop_table :exhibit_types
    drop_table :exhibit_sections
-   drop_table :exhibited_pages
-   drop_table :exhibited_properties
-   drop_table :exhibited_sections
-   drop_table :exhibited_items
+   #drop_table :exhibited_pages
+   #drop_table :exhibited_properties
+   #drop_table :exhibited_sections
+   #drop_table :exhibited_items
 
    drop_table :old_exhibit_page_types
    drop_table :old_exhibit_section_types
