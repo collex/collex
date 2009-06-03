@@ -21,7 +21,7 @@
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
 
 <div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
-<a href='/forum/rss/<%=thread_id%>.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;Follow this discussion on RSS
+<br /><br />
 <div class="FP_breadcrumb">
 	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).get_title() %>
 </div>
