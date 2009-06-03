@@ -34,8 +34,8 @@
 			<% end -%>
 			<% # We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
 			<% # We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
-			<% this_user = session[:user] ? user = User.find_by_username(session[:user][:username]).id : -1 %>
-			<% allow_user_to_report = (this_user > 0) && (this_user != comment.reporter_id) && (this_user != comment.user_id) %>
+			<% this_user = session[:user] ? User.find_by_username(session[:user][:username]).id : -1 %>
+			<% allow_user_to_report = (this_user > 0) && !comment.has_been_reported_by(this_user) && (this_user != comment.user_id) %>
 			<% if allow_user_to_report -%>
 				<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 			<% end -%>
@@ -49,10 +49,10 @@
 			<%= render :partial => 'attachment', :locals => { :comment => comment } %>
 		<% end -%>
         <div class="clear_both"></div>
-		<% show_report = comment.reported == 1 && (is_admin? || this_user == comment.reporter_id) -%>
+		<% show_report = comment.reported == 1 && (is_admin? || comment.has_been_reported_by(this_user)) -%>
 		<% if show_report -%>
 			<div class="reported_comment">
-				NOTICE: This comment has been reported as objectionable by <%= User.find(comment.reporter_id).fullname %>, and is pending moderation.
+				NOTICE: This comment has been reported as objectionable by <%= comment.get_reported_by_list() %>, and is pending moderation.
 			</div>
 		<% end -%>
     </div>

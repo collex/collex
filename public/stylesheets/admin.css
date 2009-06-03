@@ -77,3 +77,10 @@
 	text-decoration:underline;
 }
 
+.reported_abuse {
+	border: 1px solid gray;
+}
+
+.reported_abuse td {
+	border: 1px solid gray;
+}

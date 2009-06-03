@@ -20,6 +20,45 @@ class DiscussionComment < ActiveRecord::Base
   belongs_to :exhibit
   acts_as_list :scope => :discussion_thread
   
+  def self.clear_all_report_flags
+    comments = DiscussionComment.all
+    comments.each { |comment|
+      if comment.reported != nil || comment.reported != 0
+        comment.update_attribute(:reported, 0)
+      end
+    }
+  end
+  
+  def has_been_reported_by(user_id)
+    # This returns true if the user has reported this comment
+    return false if reporter_ids == nil
+    
+    ids = reporter_ids.split(',')
+    ids.each { |id|
+      if id == "#{user_id}"
+        return true
+      end
+    }
+    return false
+  end
+  
+  def get_reported_by_list()
+    ids = reporter_ids.split(',')
+    names = []
+    ids.each { |id|
+      names.push(User.find(id).fullname)
+    }
+    return names.join(", ")
+  end
+  
+  def self.add_reporter(comment, id)
+    ids = "#{id}"
+    if comment.reporter_ids != nil && comment.reporter_ids.length > 0
+      ids = ids + "," + comment.reporter_ids
+    end
+    comment.reporter_ids = ids
+  end
+  
   def before_save
     a = @attributes
     c = a['comment_type']

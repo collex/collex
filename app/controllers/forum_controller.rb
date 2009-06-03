@@ -313,7 +313,7 @@ class ForumController < ApplicationController
       comment_id = params["comment_id"]
       comment = DiscussionComment.find(comment_id)
       comment.reported = 1
-      comment.reporter_id = user.id
+      DiscussionComment.add_reporter(comment, user.id)
       comment.save
       # TODO-PER: actually send email at this point
       redirect_to :action => :view_thread, :thread => comment.discussion_thread_id

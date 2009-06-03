@@ -1,0 +1,23 @@
+<% current_page "admin" -%>
+<% current_sub_page "Forum Pending Reports" -%>
+<div class="inner_content_container">
+	<div class="page_header">Pending Reported Comments in the Forum</div>
+	<br />
+	<% spams = DiscussionComment.find_all_by_reported(1) -%>
+	<table class="reported_abuse">
+		<tr>
+			<th>Name</th>
+			<th>Comment</th>
+			<th colspan=3>Actions</th>
+		</tr>
+		<% for spam in spams -%>
+			<tr>
+				<td><%= User.find(spam.user_id).fullname -%></td>
+				<td><%= spam.comment -%></td>
+				<td><%= link_to "[Go to]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
+				<td><%= link_to "[Delete Comment]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
+				<td><%= link_to "[Remove Abuse Flag]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
+			</tr>
+		<% end -%>
+	</table>
+</div>
