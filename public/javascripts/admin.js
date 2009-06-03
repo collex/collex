@@ -340,6 +340,7 @@ var EditFacetDialog = Class.create({
 						$('display_name').value = resource;
 						var to_hide = $$('.hide_if_category');
 						to_hide.each(function(el) { el.hide(); });
+						$('carousel_url').value = obj.carousel_url;
 					} else {
 						var to_hide = $$('.hide_if_site');
 						to_hide.each(function(el) { el.hide(); });
@@ -349,7 +350,6 @@ var EditFacetDialog = Class.create({
 					}
 					$('carousel_include').checked = (obj.carousel_include === 1);
 					$('carousel_description').value = obj.carousel_description;
-					$('carousel_url').value = obj.carousel_url;
 					$('carousel_thumbnail_img').src = obj.image;
 				},
 				onFailure : function(resp) {
@@ -463,7 +463,7 @@ var EditFacetDialog = Class.create({
 					[ { text: 'NINES Thumbnail:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_thumbnail', klass: 'hide_if_category edit_facet_input' } ],
 					[ { text: 'Include in Carousel:', klass: 'edit_facet_label' }, { checkbox: 'carousel_include', klass: '' } ],
 					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
-					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'hide_if_site carousel_url', klass: 'edit_facet_input' } ],
+					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'carousel_url', klass: 'hide_if_site edit_facet_input' } ],
 					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail' } ],
 					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
