@@ -20,8 +20,8 @@
     <div class="<%= is_main ? "FP_original_post" : "FP_reply_container" %>">
 		<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).get_title()}</div>" if is_main %>
 		<div class="FP_user_image">
-			<% picture_src = get_user_picture(comment.user_id, :thumb) -%>
-			<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img' } if picture_src && picture_src.length > 0 %>
+			<% picture_src = get_user_picture(comment.user_id, :full) -%>
+			<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img', :width => 100, :height => 125 } if picture_src && picture_src.length > 0 %>
 			<div class="FP_user_name"><%= get_user_link(User.find(comment.user_id)) %></div>
 		</div>
 

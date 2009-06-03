@@ -59,7 +59,7 @@ class ExhibitObject < ActiveRecord::Base
       if hit != nil
         image = CachedResource.get_thumbnail_from_hit(hit)
         image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
-        arr.insert(-1, { :image => image, :title => self.escape_quote(hit['title']) } )
+        arr.insert(-1, { :image => image, :title => self.escape_quote(hit['title']), :uri => obj.uri } )
       end
     }
     

@@ -98,7 +98,7 @@
 			<td class="FC_spacer"></td>
 			<td class="FC_views"><%= thread.number_of_views ? thread.number_of_views : 0 %></td>
 			<td class="FC_spacer"></td>
-			<td class="FC_object"><%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FC_post_image" } if comment_info[:thumbnail] != nil %></td>
+			<td class="FC_object"><%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FC_post_image", :width => 100, :height => 125 } if comment_info[:thumbnail] != nil %></td>
 		<% end # if legal comment -%>
 	</tr>
 	<% end # for each thread -%>

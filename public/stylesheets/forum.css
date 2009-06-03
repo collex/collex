@@ -50,7 +50,7 @@
 .FH_post_image {
 	float:right;
 	margin-left:5px;
-	height:80px;
+/*	height:80px;*/
 }
 
 .FH_view_all {
@@ -205,7 +205,7 @@
 }
 
 .FC_post_image {
-	height:80px;
+/*	height:80px;*/
 }
 
 .FC_header {

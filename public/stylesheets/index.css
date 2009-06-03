@@ -286,11 +286,11 @@
 }
 
 #carousel_left.yui-carousel-first-button-disabled {
-	background:transparent url(/images/carousel_left_arrow_disabled.jpg) no-repeat scroll 0 0;
+	background:transparent url(/images/index_carousel_left_off.gif) no-repeat scroll 0 0;
 }
 
 #carousel_right.yui-carousel-button-disabled {
-	background:transparent url(/images/carousel_right_arrow_disabled.jpg) no-repeat scroll 0 0;
+	background:transparent url(/images/index_carousel_right_off.gif) no-repeat scroll 0 0;
 }
 
 .yui-skin-sam .yui-carousel, .yui-skin-sam .yui-carousel-vertical {

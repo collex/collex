@@ -14,13 +14,11 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # img_with_progress_spinner: params: src, alt, klass=nil, width=nil, height=nil, title=nil -%>
-<% width ||= 'none' %>
-<% height ||= 'none' %>
+<% # img_with_progress_spinner : params: src, alt, klass=nil, width, height, title=nil -%>
 <% title ||= '' %>
 <% klass ||= '' %>
-<% width_str = width == 'none' ? '' : "width='#{width}px'" %>
-<% height_str = height == 'none' ? '' : "height='#{height}px'" %>
+<% width_str = "width='#{width}px'" %>
+<% height_str = "height='#{height}px'" %>
 <% title_str = title == '' ? '' : "title='#{title}'" %>
 <img class='<%= klass %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" <%= title_str %> <%= width_str %> <%= height_str %>/>
-<img class="<%= klass %> hidden" src="<%= src %>" alt="<%= alt %>" <%= title_str %> <%= width_str %> <%= height_str %> onload="$(this).previous().addClassName('hidden'); $(this).removeClassName('hidden');" />
+<img class="<%= klass %> hidden" src="<%= src %>" alt="<%= alt %>" <%= title_str %> onload="finishedLoadingImage($(this).previous(), $(this), <%= width %>, <%= height %>);" />

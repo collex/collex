@@ -54,30 +54,78 @@ function toggle_tree(event, id)
 		open_tree(event, id);
 }
 
-function showResultRowImage(This, max_size, progress_id)
+function finishedLoadingImage(progress_el, img_el, max_width, max_height)
 {
-	// This is called after the result row thumbnail has finished loading.
-	// At the start of this function, the progress spinner is on the page and the thumbnail is hidden.
-	// This sizes and centers the image, removes the spinner, and unhides the image.
-	var img = $(This);
-	var width = img.width;
-	var height = img.height;
-	if (height > width && height > 100) {
-		// shrink the height
-		img.height = 100;
-	} else if (width >= height && width > 100) {
-		// shrink the width
-		img.width = 100;
+	// figure out if we should limit by width or height. We want to limit by whichever dimension is larger.
+	// Since the optimum placement (max_width X max_height) may not be square, we'll just figure it out.
+	var natural_width = $(img_el).width;
+	var natural_height = $(img_el).height;
+	
+	// We'll set zero or one of these below, depending on the picture's natural dimensions.
+	var width = null;
+	var height = null;
+	if ((natural_width <= max_width) && (natural_height <= max_height))	// If the image is completely smaller than the opening, then don't limit either dimension.
+		;
+	else if ((natural_width <= max_width) && (natural_height > max_height))	// Only the height is too big, so limit the height
+		height = max_height;
+	else if ((natural_width > max_width) && (natural_height <= max_height))	// Only the width is too big, so limit the width
+		width = max_width;
+	else	// both the height and width are too big, so figure out which is more too big than the other.
+	{
+		var width_percent_over = natural_width / max_width;
+		var height_percent_over = natural_height / max_height;
+		if (width_percent_over > height_percent_over)
+			width = max_width;
+		else
+			height = max_height;
+	}
+	
+	if (width) {
+		$(img_el).width = width;
+		// Now center the image vertically
+		var new_height = $(img_el).height;
+		var padding = (max_height - new_height) / 2;
+		if (padding > 0)
+			$(img_el).setStyle({ paddingTop: padding + "px" });
 	}
 
-	// Add padding so that the image is centered vertically.
-	var padding = (100 - height) / 2;
-	if (padding > 0)
-		img.setStyle({ paddingTop: padding + "px" });
+	if (height) {
+		$(img_el).height = height;
+		// Now center the image horizontally
+		var new_width = $(img_el).width;
+		var padding = (max_width - new_width) / 2;
+		if (padding > 0)
+			$(img_el).setStyle({ paddingLeft: padding + "px" });
+	}
 
-	$(progress_id).remove();
-	img.removeClassName('hidden');
+	$(progress_el).addClassName('hidden');
+	$(img_el).removeClassName('hidden');
 }
+
+//function showResultRowImage(This, max_size, progress_id)
+//{
+//	// This is called after the result row thumbnail has finished loading.
+//	// At the start of this function, the progress spinner is on the page and the thumbnail is hidden.
+//	// This sizes and centers the image, removes the spinner, and unhides the image.
+//	var img = $(This);
+//	var width = img.width;
+//	var height = img.height;
+//	if (height > width && height > 100) {
+//		// shrink the height
+//		img.height = 100;
+//	} else if (width >= height && width > 100) {
+//		// shrink the width
+//		img.width = 100;
+//	}
+//
+//	// Add padding so that the image is centered vertically.
+//	var padding = (100 - height) / 2;
+//	if (padding > 0)
+//		img.setStyle({ paddingTop: padding + "px" });
+//
+//	$(progress_id).remove();
+//	img.removeClassName('hidden');
+//}
 
 function toggleIt(element) {
   var tr = element.parentNode.parentNode;

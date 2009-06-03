@@ -213,7 +213,7 @@ private
     thumb = CachedResource.get_thumbnail_from_hit(hit)
     image = CachedResource.get_image_from_hit(hit)
     progress_id = "progress_#{hit['uri']}"
-    str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "showResultRowImage(this, 100, '#{progress_id}');" })
+    str = tag "img", options.merge({:alt => hit['title'], :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
     if image != thumb
       str = "<a class='nines_pic_link' onclick='showInLightbox(\"#{image}\", \"thumbnail_#{hit['uri']}\"); return false;' href='#'>#{str}</a>"
     end
