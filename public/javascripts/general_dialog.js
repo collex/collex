@@ -216,12 +216,16 @@ var GeneralDialog = Class.create({
 						row.appendChild(checkbox);
 						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
+						var wrapper = new Element('div');
 						var textarea = new Element('textarea', { id: subel.textarea, name: subel.textarea });
-						if (subel.klass)
+						if (subel.klass) {
 							textarea.addClassName(subel.klass);
+							wrapper.addClassName(subel.klass);
+						}
 						if (subel.value !== undefined)
 							textarea.update(subel.value);
-						row.appendChild(textarea);
+						wrapper.appendChild(textarea);
+						row.appendChild(wrapper);
 						// IMAGE
 					} else if (subel.image !== undefined) {
 						var image = new Element('div', { id: subel.image + '_div' });
@@ -311,9 +315,6 @@ var GeneralDialog = Class.create({
 			
 			var textAreas = $$("#" + dlg_id + " textarea");
 			textAreas.each( function(textArea) { 
-				var classes = textArea.readAttribute('class');
-				var wrapper = textArea.wrap('div');
-				wrapper.addClassName(classes);
 				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width });
 				editor.attachToDialog(panel);
 				editors.push(editor);
