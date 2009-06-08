@@ -122,9 +122,9 @@ var CreateListOfObjects = Class.create({
 					This.height = targetSize;
 					This.width = targetSize;
 				} else if (height >= width) {
-					This.style.height = targetSize;
+					This.height = targetSize;
 				} else {
-					This.style.width = targetSize;
+					This.width = targetSize;
 					var newHeight = targetSize * height / width; // ratio of x/height = target/width
 					var pad = parseInt((targetSize - newHeight) / 2);
 					This.style.paddingTop = pad + 'px';
