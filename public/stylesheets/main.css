@@ -135,11 +135,11 @@ table, table td, table tr {
 
 .left_column {
 	float:left;
-	width:70%;
+	width:66%;
 }
 
 .right_column {
-	width:25%;
+	width:29%;
 	float:right;
 	background:#F7F4EA;
 	padding:0px 0px 10px 0px;
