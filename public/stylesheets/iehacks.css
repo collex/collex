@@ -13,3 +13,12 @@
 	margin:8px 0px 2px -30px;
 	width:320px;
 }
+
+#unchosen_objects {
+	width:190px;
+}
+
+#chosen_objects {
+	width:190px;
+}
+
