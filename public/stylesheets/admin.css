@@ -16,7 +16,8 @@
 	list-style: none;
 	margin: 0;
 	display: inline;
-	padding-right: 2px;
+	padding-right: 10px;
+	border-right: 1px solid white;
 }
 
 #admin_menu li a {
@@ -83,4 +84,14 @@
 
 .reported_abuse td {
 	border: 1px solid gray;
+}
+
+.not_published {
+	color: gray;
+	font-style: italic;
+}
+
+.exhibit_category td {
+	padding: 3px;
+	border: 1px solid #dddddd;
 }

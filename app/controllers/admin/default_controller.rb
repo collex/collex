@@ -32,4 +32,12 @@ class Admin::DefaultController < Admin::BaseController
 
     redirect_to :controller => 'admin/default', :action => 'index'
   end
+  
+  def change_category
+    exhibit_id = params[:exhibit_id]
+    category = params[:category_id]
+    exhibit = Exhibit.find(exhibit_id)
+    exhibit.update_attribute('category', category)
+    render :text => category
+  end
 end

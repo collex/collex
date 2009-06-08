@@ -14,22 +14,18 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page "Exhibits" -%>
-
-<div class="inner_content_container">
-	<%= render :partial => 'home/featured_exhibit' %>
-	
-	<% non_reviewed = [] -%>
-	<% student = [] -%>
-	<% @exhibits.each {|exhibit| exhibit.category == 'student' ? student.push(exhibit) : non_reviewed.push(exhibit)  } -%>
-	<div class="exhibit_list">
-		<div class="page_header">Choose an exhibit to view</div>
-		<div class="exhibit_left_column">
-			<%= render :partial => 'exhibit_list', :locals => { :title=> 'Non Peer Reviewed', :exhibit_list => non_reviewed } %>	
-		</div>
-		<div class="exhibit_right_column">
-			<%= render :partial => 'exhibit_list', :locals => { :title=> 'Student', :exhibit_list => student } %>	
-		</div>
-	</div>
-	<div class="clear_both"></div>
-</div>
+<% # exhibit_list params: string title, array exhibit_list -%>
+<div class="exhibit_category"><%= title %></div>
+<table>
+<% for exhibit in exhibit_list -%>
+	<tr>
+		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
+		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+			<%= get_exhibit_user_link(exhibit) %>
+			<% if is_logged_in? && exhibit.user_id == User.find_by_username(session[:user][:username]).id -%>
+				| <%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+			<% end -%>
+		</td>
+	</tr>
+<% end -%>
+</table>

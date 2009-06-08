@@ -476,3 +476,57 @@ var EditFacetDialog = Class.create({
 		populate(dlg);
 	}
 });
+
+var EditExhibitCategory = Class.create({
+	initialize: function (parent_div, ok_action, exhibit_id, starting_selection) {
+		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
+		this.class_type = 'EditExhibitCategory';	// for debugging
+
+		// private variables
+		var This = this;
+		
+		// private functions
+		
+		// privileged functions
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+		
+		this.sendWithAjax = function (event, params)
+		{
+			var curr_page = params.curr_page;
+			var url = params.destination;
+			var dlg = params.dlg;
+			
+			dlg.setFlash('Updating Exhibit Category...', false);
+			var data = dlg.getAllData();
+			data.exhibit_id = exhibit_id;
+
+			new Ajax.Updater(parent_div, url, {
+				parameters : data,
+				evalScripts : true,
+				onSuccess : function(resp) {
+					dlg.cancel();
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
+		
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
+					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'sandbox', text: 'Sandbox' }, { value: 'student', text: 'Student' } ] } ],
+					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+				]
+			};
+		
+		var params = { this_id: "change_exhibit_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Change Exhibit Category" };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+	}
+});

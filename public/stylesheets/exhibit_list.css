@@ -11,3 +11,18 @@
 	padding: 2px;
 }
 
+.exhibit_left_column {
+	float: left;
+	width: 400px;
+	margin-top: 20px;
+}
+
+.exhibit_right_column {
+	margin-left: 430px;
+	margin-top: 20px;
+}
+
+.exhibit_category {
+	font-size: 1.2em;
+	font-weight: bold;
+}

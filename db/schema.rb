@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090603181045) do
+ActiveRecord::Schema.define(:version => 20090608194658) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(:version => 20090603181045) do
     t.integer  "thumbwidth",   :limit => 10, :precision => 10, :scale => 0
     t.integer  "thumbtop",     :limit => 10, :precision => 10, :scale => 0
     t.integer  "alias_id",     :limit => 10, :precision => 10, :scale => 0
+    t.string   "category"
   end
 
   create_table "facet_categories", :force => true do |t|
