@@ -43,46 +43,10 @@ var CacheObjects = Class.create({
 
 var ninesObjCache = new CacheObjects();
 
-// TODO: put these inside class / make it work for IE!
-function linkdlg_finishedLoadingImage(This)
-{
-	// This replaces the spinny with the real image.
-	// We don't have any control over the size of the image, so we need to scale it so that the
-	// larger size fits in the outer div. We do this by only setting one of the height or width, whichever is bigger.
-	// Then we want to center the image. Centering horizontally is easy and can be done with CSS. Centering vertically,
-	// however, requires us to figure out how much blank space is around the image, and using padding to move the image down.
-	$(This).previous().addClassName('hidden');
-	var targetSize = parseInt($(This).getStyle('height'));
-	$(This).removeClassName('linkdlg_img');
-	var height = $(This).height;
-	var width = $(This).width;
-	if (height >= width) 
-		$(This).height = targetSize;
-	else {
-		$(This).width = targetSize;
-		var newHeight = targetSize*height/width;	// ratio of x/height = target/width
-		var pad = parseInt((targetSize - newHeight) / 2);
-		$(This).style.paddingTop = pad + 'px';
-	}
-	
-	$(This).removeClassName('hidden');
-}
-
-var linkdlg_selectionCallBack = null;	// TODO-PER: Hack! put this inside the class
-function linkdlg_select(parent_id, selClass, id){
-	$(parent_id).select("." + selClass).each(function(el){
-		el.removeClassName(selClass);
-	});
-	$(id).addClassName(selClass);
-	if (linkdlg_selectionCallBack)
-		linkdlg_selectionCallBack(id);
-}
-
 var CreateListOfObjects = Class.create({
 	initialize: function(populate_url, initial_selection, parent_id, progress_img, selectionCallBack){
 		var selClass = "linkdlg_item_selected";
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
-		linkdlg_selectionCallBack = selectionCallBack;
 		
 		// Handles the user's selection
 		this.getSelection = function(){
@@ -95,8 +59,7 @@ var CreateListOfObjects = Class.create({
 		var linkItem = function(id, img, alt, strFirstLine, strSecondLine){
 			// Create all the elements we're going to need.
 			var div = new Element('div', {
-				id: id,
-				onclick: 'linkdlg_select("' + parent_id + '", "' + selClass + '", "' + id + '");'
+				id: id
 			});
 			div.addClassName('linkdlg_item');
 			var imgdiv = new Element('div');
@@ -110,10 +73,10 @@ var CreateListOfObjects = Class.create({
 				spinner.addClassName('linkdlg_img');
 				
 				var imgEl = new Element('img', {
-					src: img,
+					id: id + "_img",
+ 					src: img,
 					alt: alt,
-					title: alt,
-					onload: 'linkdlg_finishedLoadingImage(this);'
+					title: alt
 				});
 				imgEl.addClassName('linkdlg_img');
 				imgEl.addClassName('hidden');
@@ -140,8 +103,46 @@ var CreateListOfObjects = Class.create({
 			div.appendChild(text);
 			div.appendChild(spacer);
 			parent.appendChild(div);
-//			YAHOO.util.Event.addListener(id + "_img", 'load', finishedLoadingImage); 
-//			YAHOO.util.Event.addListener($(id), 'click', CreateListOfObjects.select, id); 
+			
+			// Add the handler for when the picture has finished loading.
+			var finishedLoadingImage = function(ev) {
+				// This replaces the spinny with the real image.
+				// We don't have any control over the size of the image, so we need to scale it so that the
+				// larger size fits in the outer div. We do this by only setting one of the height or width, whichever is bigger.
+				// Then we want to center the image. Centering horizontally is easy and can be done with CSS. Centering vertically,
+				// however, requires us to figure out how much blank space is around the image, and using padding to move the image down.
+				var This = $(this);
+				This.previous().addClassName('hidden');
+				var targetSize = parseInt(This.getStyle('height'));
+				This.removeClassName('linkdlg_img');
+				var height = This.height;
+				var width = This.width;
+				if (height === 0 && width === 0) {
+					// This happens in IE
+					This.height = targetSize;
+					This.width = targetSize;
+				} else if (height >= width) {
+					This.style.height = targetSize;
+				} else {
+					This.style.width = targetSize;
+					var newHeight = targetSize * height / width; // ratio of x/height = target/width
+					var pad = parseInt((targetSize - newHeight) / 2);
+					This.style.paddingTop = pad + 'px';
+				}
+				This.removeClassName('hidden');
+			};
+			YAHOO.util.Event.addListener(id + "_img", 'load', finishedLoadingImage); 
+
+			// Add the selection event
+			var userSelect = function(ev) {
+				$(parent_id).select("." + selClass).each(function(el){
+					el.removeClassName(selClass);
+				});
+				$(this.id).addClassName(selClass);
+				if (selectionCallBack)
+					selectionCallBack(this.id);
+			}
+			YAHOO.util.Event.addListener(id, 'click', userSelect); 
 		};
 		
 		var createRows = function(objs, selectFirst) {
