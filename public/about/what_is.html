@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>N I N E S</title>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/base/base-min.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
+<link href="../stylesheets/main.css" rel="stylesheet" type="text/css" />
+<link href="../stylesheets/nav.css" rel="stylesheet" type="text/css" />
+<link href="../stylesheets/lvl2.css" rel="stylesheet" type="text/css" />
+<link href="../stylesheets/about.css" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
+	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+	<script src="/javascripts/application.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
+	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/login.js" type="text/javascript"></script>
+	<script src="/javascripts/nospam.js" type="text/javascript"></script>
+</head>
+
+<body>
+<div id="main_container">
+		<div id="header_container">
+			<a href="/"><div id="header_left"></div></a>
+			<div id="header_right"></div>
+		</div>
+		<a href="/my9s" class="mynines_link">My 9s</a>
+		<div id='nav_container'>
+			<a href="/" class="tab_link">HOME</a>
+			<a href="/news/" class="tab_link">News</a>
+			<a href="/forum" class="tab_link">Forum</a>
+			<a href="/exhibit_list" class="tab_link">Exhibits</a>
+			<a href="/tags" class="tab_link">Tags</a>
+			<a href="/search" class="tab_link">Search</a>
+		</div>
+   	<div id="subnav_container">
+       	<div id="login_container">
+				<script language="JavaScript">
+				document.observe('dom:loaded', function() {
+					new Ajax.Updater('login_container', '/login/login_controls');
+					});
+				</script>
+           </div>
+           <div id="subnav_links_container">
+           	<a href="/about" class="nav_link">What is NINES?</a>  | <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  | <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="here nav_link">Community</a>
+           </div>
+          	<div class="clear_both"></div>
+		</div>
+<div id="content_container">
+
+	<div class="about_left">
+    	<div class="about_nav_container">
+        	<p><div class="a_nav_1_dn">What Is Nines?</div></p>
+        	<p><a href="scholarship/index.html" class="a_nav_1">Scholarship</a><br />
+        	<a href="scholarship/peerReview.html" class="a_nav_2">Peer Review</a><br />
+        	<a href="scholarship/boards.html" class="a_nav_2">Editorial Boards</a><br />
+        	<a href="scholarship/scholarlyProjects.html" class="a_nav_2">Scholarly Projects</a><br />
+        	<a href="scholarship/resources.html" class="a_nav_2">Other Resources</a><br />
+        	<a href="scholarship/rdf.html" class="a_nav_2">Submissions</a><br />
+        	<a href="scholarship/readings.html" class="a_nav_2">Readings</a></p>
+        	<p><a href="software/index.html" class="a_nav_1">Software</a><br />
+        	<a href="software/collex.html" class="a_nav_2">Collex</a><br />
+        	<a href="software/juxta.html" class="a_nav_2">Juxta</a><br />
+        	<a href="software/ivanhoe.html" class="a_nav_2">Ivanhoe</a></p>
+        	<p><a href="community/index.html" class="a_nav_1">Community</a><br />
+        	<a href="community/executive.html" class="a_nav_2">Executive Council</a><br />
+        	<a href="community/RandD.html" class="a_nav_2">Research and Development</a><br />
+        	<a href="community/affiliates.html" class="a_nav_2">Affiliates</a><br />
+        	<a href="community/outreach.html" class="a_nav_2">Outreach</a><br />
+        	<a href="community/workshop.html" class="a_nav_2">Workshops</a><br />
+        	<a href="community/widgets.html" class="a_nav_2">Widget Gallery</a></p>
+            
+        </div>
+    
+    </div>
+    
+   	<div class="about_right">
+   	  <h1>What is NINES?</h1>
+   	  <p>NINES is a scholarly organization devoted to forging links between the material archive of the nineteenth century and the digital research environment of the twenty-first. Our activities are driven by three primary goals:</p>
+   	  <ul>
+   	    <li> to serve as a <a href="scholarship/peerReview.html">peer-reviewing body</a> for digital work in the long 19th-century (1770-1920), British and American;</li>
+        <li> to support scholars’ priorities and best practices in the creation of digital research materials;</li>
+   	    <li> to develop <a href="software/index.html">software tools</a> for new and traditional forms of research and critical analysis.</li>
+   	  </ul>
+   	  <p>The NINES <a href="software/collex.html">Collex interface</a> is at the center of these efforts. It aims to gather the best scholarly resources in the field and make them fully searchable and interoperable; and to provide an online collecting and authoring space in which researchers can create and publish their own work.</p>
+   	  <p>NINES also is home to <a href="software/juxta.html">Juxta</a>, a tool for comparing and collating multiple documentary instances of the same work; and to <a href="software/ivanhoe.html">Ivanhoe</a>, a collaborative game-space for interpreting textual and other cultural materials. Other interpretive tools and applications are in the planning stages.</p>
+   	  <p>&nbsp;</p>
+   	  <p>WORKSHOPS</p>
+   	  <p>Each summer, NINES hosts a summer <a href="community/workshop.html">workshop</a> to assist scholars in their development of digital research projects in nineteenth-century studies. Our goal is to encourage attention to <a href="scholarship/peerReview.html">data structure</a>, <a href="scholarship/rdf.html">interoperability</a>, and <a href="scholarship/rdf.html#sustainability">sustainability</a> as these projects go forward.</p>
+   	  <p>&nbsp;</p>
+   	  <p>THE COLLEX INTERFACE</p>
+   	  <p>Use the tabs above to search peer-reviewed <a href="scholarship/scholarlyProjects.html">scholarly projects</a> online and other <a href="other_projects.html">contextual information</a>, browse the NINES <a href="http://nines.org/tags">tag cloud</a>, and read essays, or Exhibits, written by members of the NINES <a href="community/index.html">community</a>. With a <a href="http://nines.org/tab_about#">free account</a>, you can save useful searches, collect objects of interest, tag them and even create your own exhibits to share with other users. The new <a href="http://nines.org/my9s">My 9s</a> page provides your very own workspace within NINES, so that you can manage your online research in one central location.</p>
+   	  <p><br />
+   	    <strong>We are always working to make the NINES site better. Please contact us at <a class="nav_link nospam" href="technologies nines org">$$$$</a> with your feedback.</strong>
+
+   	</div>       
+	<div class="clear_both"></div>
+</div>
+ 	<div class="clear_both"></div>
+</div>
+<div id="footer_container">
+NINES: aggregating 400,877 peer‑reviewed <a href="#">digital objects</a> from 54 <a href="#">federated sites</a>.<br />
+Powered by Collex v1.4.7.12.
+</div>    
+</body>
+</html>

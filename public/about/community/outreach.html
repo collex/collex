@@ -1,28 +1,38 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>N I N E S - About</title>
-	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>N I N E S</title>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/base/base-min.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
-	<link href="/stylesheets/main.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/nav.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/lvl2.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/about.css" media="all" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/main.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/nav.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/lvl2.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/about.css" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
-<!--[if lt IE 7]>
-	<link href="/stylesheets/iehacks.css" media="all" rel="stylesheet" type="text/css" />
-<![endif]-->
-<!--[if IE 7]>
-	<link href="/stylesheets/ie7hacks.css" media="all" rel="stylesheet" type="text/css" />
-<![endif]-->
-
+	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+	<script src="/javascripts/application.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
+	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/login.js" type="text/javascript"></script>
+	<script src="/javascripts/nospam.js" type="text/javascript"></script>
+	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
 	<script src="/javascripts/prototype.js" type="text/javascript"></script>
 	<script src="/javascripts/application.js" type="text/javascript"></script>
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
@@ -39,14 +49,14 @@
 	<script src="/javascripts/login.js" type="text/javascript"></script>
 	<script src="/javascripts/nospam.js" type="text/javascript"></script>
 </head>
-<body class="yui-skin-sam">
-	<div id="main_container">
+
+<body>
+<div id="main_container">
 		<div id="header_container">
 			<a href="/"><div id="header_left"></div></a>
 			<div id="header_right"></div>
 		</div>
 		<a href="/my9s" class="mynines_link">My 9s</a>
-
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
 			<a href="/news/" class="tab_link">News</a>
@@ -55,85 +65,72 @@
 			<a href="/tags" class="tab_link">Tags</a>
 			<a href="/search" class="tab_link">Search</a>
 		</div>
-
-    	<div id="subnav_container">
-        	<div id="login_container">
+   	<div id="subnav_container">
+       	<div id="login_container">
 				<script language="JavaScript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
 					});
 				</script>
-            </div>
-            <div id="subnav_links_container">
-            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="here nav_link">Community</a> 
-            </div>
-           	<div class="clear_both"></div>
+           </div>
+           <div id="subnav_links_container">
+           	<a href="/about" class="nav_link">What is NINES?</a>  | <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  | <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="here nav_link">Community</a>
+           </div>
+          	<div class="clear_both"></div>
 		</div>
-		<div id="content_container">
-			<div class="inner_content_container">
+<div id="content_container">
 
-
-
-									      <div id="about-main">
-													<div id="vnav">
-														<div class="vnavItem"><a class="nav_link" href="index.html">community</a></div>
-														<div class="vnavItem"><a class="nav_link" href="council.html">executive council</a></div>
-														<div class="vnavItem"><a class="nav_link" href="RandD.html">r &amp; d</a></div>
-														<div class="vnavItem"><a class="nav_link" href="affiliates.html">affiliates</a></div>
-														<div class="vnavHotItem here"><a class="nav_link" href="">outreach</a></div>
-														<div class="vnavItem"><a class="nav_link" href="workshop.html">workshops</a></div>
-													</div>
-													<div id="leftContentColumn">
-
-													<div id="leftColumn1" class="leftColumn">
-														<p>&nbsp;</p>
-														<div class="columnEntry">
-															<h3><a class="nav_link" href="/news/">NINES Blog</a></h3>
-														<p><img src="/images/RSS_icon.jpg" alt="rss" /></p>
-													<p>Visit the <a class="nav_link" href="/news/" target="_blank">NINES Blog</a> to learn more about new projects and upcoming events.</p></div>
-													<p>&nbsp;</p>
-													<p>&nbsp;</p>
-
-													</div>
-
-												
-													</div>	
-												
-
-
-			<div id="contentColumn">
-				<div id="communityContent">	
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					<p>&nbsp;</p>
-					
-					
-	<p class="header"><img src="/images/outreach_header.jpg" class="noBorder" alt="" /></p>	
+	<div class="about_left">
+    	<div class="about_nav_container">
+        	<p><a href="../what_is.html" class="a_nav_1">What Is Nines?</a></p>
+        	<p><a href="../scholarship/index.html" class="a_nav_1">Scholarship</a><br />
+        	<a href="../scholarship/peerReview.html" class="a_nav_2">Peer Review</a><br />
+        	<a href="../scholarship/boards.html" class="a_nav_2">Editorial Boards</a><br />
+        	<a href="../scholarship/scholarlyProjects.html" class="a_nav_2">Scholarly Projects</a><br />
+        	<a href="../scholarship/resources.html" class="a_nav_2">Other Resources</a><br />
+        	<a href="../scholarship/rdf.html" class="a_nav_2">Submissions</a><br />
+        	<a href="../scholarship/readings.html" class="a_nav_2">Readings</a></p>
+        	<p><a href="../software/index.html" class="a_nav_1">Software</a><br />
+        	<a href="../software/collex.html" class="a_nav_2">Collex</a><br />
+        	<a href="../software/juxta.html" class="a_nav_2">Juxta</a><br />
+        	<a href="../software/ivanhoe.html" class="a_nav_2">Ivanhoe</a></p>
+        	<p><a href="index.html" class="a_nav_1">Community</a><br />
+        	<a href="executive.html" class="a_nav_2">Executive Council</a><br />
+        	<a href="RandD.html" class="a_nav_2">Research and Development</a><br />
+        	<a href="affiliates.html" class="a_nav_2">Affiliates</a><br />
+        	<div class="a_nav_2_dn">Outreach</div>
+        	<a href="workshop.html" class="a_nav_2">Workshops</a><br />
+        	<a href="widgets.html" class="a_nav_2">Widget Gallery</a></p>
+            
+        </div>
+    
+    </div>
+    
+   	<div class="about_right">
+	<h1>NINES Outreach</h1>
 	<p>NINES is not just a committee of concerned scholars who mean to discuss the problems and opportunities presented by digital technology. Because an important part of our mission is to gather a significant body of digital scholarship and criticism of every kind under the auspices of NINES, outreach and the support of new projects is essential to our operations. In addition to the <a class="nav_link" href="/software/index.html">development of tools</a> to help scholars and students produce their work in digital form, we have also set up a series of <a class="nav_link" href="workshop.html">summer workshops</a> for scholars who are working on digital projects: to answer their questions and help them get their scholarship recognized.</p>
+
 	
-	<p class="header"><a class="nav_link" name="workshops"><strong>NINES SUMMER WORKSHOPS</strong></a></p>
+	<p class="header"><a class="nav_link" name="workshops"></a><strong>NINES SUMMER WORKSHOPS</strong></p>
 		<p>NINES sponsors summer workshops to promote the development of computerized scholarly projects in 19th-century British and American literature and cultural studies. NINES workshops will bring a dozen or more scholars together to work on their individual projects in an environment where they can interact with other scholars who are also doing digital projects in closely related historical and cultural areas. NINES will make available to these scholars the tools and development expertise that have become a major part of the culture of digital humanities during the past 10+ years, and may offer financial aid to applicants.</p>
 	<p>We are currently accepting <a class="nav_link" href="workshop.html">applications</a> for the 2009 Summer Workshop in Dublin, Ireland. </p>	
-	<p>&nbsp;</p>			
-	<p class="header"><strong><a class="nav_link" name="fellows">NINES FELLOWS</a></strong></p>
+	<p class="header"><strong><a class="nav_link" name="fellows"></a>NINES FELLOWS</strong></p>
 	<p>Every year, NINES sponsors two graduate student fellowships for students active in Digital Scholarship at the University of Virginia. These students develop their own digital projects while contributing to the everyday operations of NINES.</p>	
-	<p>&nbsp;</p>
+
 	<p><strong>NINES Fellows for 2008-2009</strong></p>
 
 		<p class="header"><strong>Paul Fyfe</strong></p>
 		<p>Paul Fyfe is a Ph.D. Candidate in English at the University of Virginia. His project, as part of a dissertation on accidents in Victorian metropolitan literature, involves using databases to aggregate, compare, and visualize the linguistic usages of accident and its conceptual partners in the nineteenth century.</p>
 		<p class="header"><strong>Melissa White</strong></p>
 		<p>Melissa White is a Ph.D. Candidate at the University of Virginia. She is contributing an edition of Laetitia Davidson's poetry for the <a class="nav_link" href="http://unixgen.muohio.edu/~poetess/" target="_blank">Poetess Archive</a>.</p>
-		
-			
-	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>		
+</div>        
 
-
-				</div></div></div>
-				</div></div></div>
-			</body></html>
+  </div>
+ 	<div class="clear_both"></div>
+</div>
+<div id="footer_container">
+NINES: aggregating 400,877 peer‑reviewed <a href="#">digital objects</a> from 54 <a href="#">federated sites</a>.<br />
+Powered by Collex v1.4.7.12.
+</div>    
+</body>
+</html>

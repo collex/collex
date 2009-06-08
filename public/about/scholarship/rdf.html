@@ -1,28 +1,38 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>N I N E S - About</title>
-	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>N I N E S</title>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/base/base-min.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
-	<link href="/stylesheets/main.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/nav.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/lvl2.css" media="all" rel="stylesheet" type="text/css" />
-	<link href="/stylesheets/about.css" media="all" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/main.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/nav.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/lvl2.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/about.css" rel="stylesheet" type="text/css" />
 	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
-<!--[if lt IE 7]>
-	<link href="/stylesheets/iehacks.css" media="all" rel="stylesheet" type="text/css" />
-<![endif]-->
-<!--[if IE 7]>
-	<link href="/stylesheets/ie7hacks.css" media="all" rel="stylesheet" type="text/css" />
-<![endif]-->
-
+	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+	<script src="/javascripts/application.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
+	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/login.js" type="text/javascript"></script>
+	<script src="/javascripts/nospam.js" type="text/javascript"></script>
+	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
 	<script src="/javascripts/prototype.js" type="text/javascript"></script>
 	<script src="/javascripts/application.js" type="text/javascript"></script>
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
@@ -39,14 +49,14 @@
 	<script src="/javascripts/login.js" type="text/javascript"></script>
 	<script src="/javascripts/nospam.js" type="text/javascript"></script>
 </head>
-<body class="yui-skin-sam">
-	<div id="main_container">
+
+<body>
+<div id="main_container">
 		<div id="header_container">
 			<a href="/"><div id="header_left"></div></a>
 			<div id="header_right"></div>
 		</div>
 		<a href="/my9s" class="mynines_link">My 9s</a>
-
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
 			<a href="/news/" class="tab_link">News</a>
@@ -55,79 +65,56 @@
 			<a href="/tags" class="tab_link">Tags</a>
 			<a href="/search" class="tab_link">Search</a>
 		</div>
-
-    	<div id="subnav_container">
-        	<div id="login_container">
+   	<div id="subnav_container">
+       	<div id="login_container">
 				<script language="JavaScript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
 					});
 				</script>
-            </div>
-            <div id="subnav_links_container">
-            	<a href="/about" class="nav_link">What is NINES?</a>  |  <a href="/scholarship/index.html" class="here nav_link">Scholarship</a>  |  <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="nav_link">Community</a> 
-            </div>
-           	<div class="clear_both"></div>
+           </div>
+           <div id="subnav_links_container">
+           	<a href="/about" class="nav_link">What is NINES?</a>  | <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  | <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="here nav_link">Community</a>
+           </div>
+          	<div class="clear_both"></div>
 		</div>
-		<div id="content_container">
-			<div class="inner_content_container">
-					
-														      <div id="about-main">
+<div id="content_container">
 
-												<div id="vnav">
-													<div class="vnavItem"><a class="nav_link" href="peerReview.html">peer review</a></div>
-													<div class="vnavItem"><a class="nav_link" href="boards.html">editorial boards</a></div>
-													<div class="vnavItem"><a class="nav_link" href="scholarlyProjects.html">scholarly projects</a></div>
-													<div class="vnavItem"><a class="nav_link" href="otherResources.html">other resources</a></div>
-													<div class="vnavHotItem"><a class="nav_link here" href="rdf.html">submissions</a></div>
-													<div class="vnavItem"><a class="nav_link" href="readings.html">readings</a></div>
-												
-												</div>
-											
-												<div id="leftContentColumn">
-
-												<div id="leftColumn1" class="leftColumn">
-													<p>&nbsp;</p>
-													<div class="columnEntry">
-														<h3><a class="nav_link" href="/news/">NINES Blog</a></h3>
-													<p><img src="/images/RSS_icon.jpg" alt="rss" /></p>
-												<p>Visit the <a class="nav_link" href="/news/">NINES Blog</a> to learn more about new projects and upcoming events.</p></div>
-
-												<p>&nbsp;</p>
-
-												</div>
-
-
-												<div class="leftColumn">
-
-													<div class="columnEntry">
-
-													<p><img src="http://www.rossettiarchive.org/img/thumbs_small/s438.jpg" alt="rossetti archive" /></p>
-													<h3><a class="nav_link" href="/exhibits/rossettibio">Featured Exhibit</a></h3>
-												<p><strong>Jerome McGann's</strong> <i><a class="nav_link" href="/exhibits/rossettibio">Biography of Dante Gabriel Rossetti</a></i>.</p>
-													</div>
-												</div>
-</div>
-
-
-												</div>
-											</div>
-
-							
-													<div id="contentColumn">
-
-
-
-									<div id="innerContentColumn">
-										<img src="/images/metadata.jpg" alt="" />
-									<p class="header"><strong>SUBMITTING RDF</strong></p>
-
-									<p>RDF is the metadata format that contributors use to make their resources available for use within NINES.  With RDF, contributors describe each of their resources in general terms that allow those resources to be categorized and searched through COLLEX.</p>
+	<div class="about_left">
+    	<div class="about_nav_container">
+        	<p><a href="../what_is.html" class="a_nav_1">What Is Nines?</a></p>
+        	<p><a href="index.html" class="a_nav_1">Scholarship</a><br />
+        	<a href="peerReview.html" class="a_nav_2">Peer Review</a><br />
+        	<a href="boards.html" class="a_nav_2">Editorial Boards</a><br />
+        	<a href="scholarlyProjects.html" class="a_nav_2">Scholarly Projects</a><br />
+        	<a href="resources.html" class="a_nav_2">Other Resources</a><br />
+        	<div class="a_nav_2_dn">Submissions</div>
+        	<a href="readings.html" class="a_nav_2">Readings</a></p>
+        	<p><a href="../software/index.html" class="a_nav_1">Software</a><br />
+        	<a href="../software/collex.html" class="a_nav_2">Collex</a><br />
+        	<a href="../software/juxta.html" class="a_nav_2">Juxta</a><br />
+        	<a href="../software/ivanhoe.html" class="a_nav_2">Ivanhoe</a></p>
+        	<p><a href="../community/index.html" class="a_nav_1">Community</a><br />
+        	<a href="../community/executive.html" class="a_nav_2">Executive Council</a><br />
+        	<a href="../community/RandD.html" class="a_nav_2">Research and Development</a><br />
+        	<a href="../community/affiliates.html" class="a_nav_2">Affiliates</a><br />
+        	<a href="../community/outreach.html" class="a_nav_2">Outreach</a><br />
+        	<a href="../community/workshop.html" class="a_nav_2">Workshops</a><br />
+        	<a href="../community/widgets.html" class="a_nav_2">Widget Gallery</a></p>
+            
+        </div>
+    
+    </div>
+    
+   	<div class="about_right">
+   	  <h1>Submissions</h1>
+   	  <p><strong>SUBMITTING RDF</strong>
+   	  <p>RDF is the metadata format that contributors use to make their resources available for use within NINES.  With RDF, contributors describe each of their resources in general terms that allow those resources to be categorized and searched through COLLEX.</p>
 
 									<p>On this page, contributors can find basic information about RDF files. For technical specifications and links to sample RDF submissions and sample XSL transformations (used to turn XML resources into RDF) see our <a class="nav_link" href="http://www.performantsoftware.com/nines_wiki/index.php/Submitting_RDF">wiki</a>.</p>
 
+									<p class="header">&nbsp;</p>
 									<p class="header"><strong>RDF BASICS</strong></p>
-
 									<p><b>R</b>esource <b>D</b>escription <b>F</b>ramework, or RDF, is the descriptive data which NINES uses in COLLEX; through the metadata contained by the RDF, COLLEX makes peer reviewed resources findable, interconnected, and ready for repurposing.</p>
 
 									<p>RDF is an XML metadata model used for describing resources as part of the <a class="nav_link" href="http://en.wikipedia.org/wiki/Semantic_Web" target="_blank">Semantic Web</a>.  NINES contributors identify the basic features of their digital objects, such as the title, creator, publisher, date of composition, genre, even a list of the component objects that make a greater whole. The NINES metadata scheme leverages some preexisting schemes, such as <a class="nav_link" href="http://dublincore.org/" target="_blank">Dublin Core</a> and Library of Congress <a class="nav_link" href="http://lcweb2.loc.gov/cocoon/loc.terms/relators/dc-relators.html" target="_blank">Relator Terms</a>.</p>
@@ -138,15 +125,18 @@
 
 									<p>For example, a transcription of a novel would have an object for the unit of "the novel."  But a contributor could also decide that the chapters which constitute that novel might also be interesting to collect on their own; the contributor would then make RDF objects for each chapter unit as well.  One could easily imagine a poetry anthology receiving a similar distillation of its many layers: one RDF object for the anthology as a whole; one object for each author; one object for each poem; one object for each figure; even objects for the scholarly commentary or introductions.  Another contributor could treat a similar anthology in a totally dissimilar way, viewing the bibliographic page as the elementary unit instead of the logical divisions.  While contributors are free to  create whatever granularity or type of objectification they would like, their reason should be guided by a sensible judgment of what other scholars will find useful for collection and annotation.  A large book rendered as a monolithic object won't help to reveal the rich resources of its individual chapters, essays, poems, or pictures.  Likewise, a poetry anthology atomized into single lines of verse would have little use for collection and prove a nightmare for browsing.</p>
 
+									<p class="header">&nbsp;</p>
 									<p class="header"><a class="nav_link" name="sustainability"></a><strong>SUSTAINABILITY</strong></p>
 									<p>NINES is an <em>aggregator</em> of digital resources, bringing together disparate projects into a common arena. This means that NINES does not host the material for any given site, but rather indexes metadata (RDF) contributed by those sites. There are many varieties of structured data, from XML databases to texts encoded according to standards of <a class="nav_link" href="http://www.tei-c.org/index.xml" target="_blank">Text Encoding Initiave</a> (TEI), and RDF allows NINES to bring them all in communication with each other. However, this situation requires that contributors maintain contact with the staff at NINES, and alert us to any major updates or changes in site structure. It is important that NINES be able to present an up-to-date version of each project, and assure internal stability so that users may collect, annotate and work with digital objects to the fullest extent possible in Collex.</p>
+</p>
+</div>        
 
-
-				
-				</div>
-				</div>
-				</div>
-				</div>
-				</body>
-				</html>
-				
+  </div>
+ 	<div class="clear_both"></div>
+</div>
+<div id="footer_container">
+NINES: aggregating 400,877 peer‑reviewed <a href="#">digital objects</a> from 54 <a href="#">federated sites</a>.<br />
+Powered by Collex v1.4.7.12.
+</div>    
+</body>
+</html>

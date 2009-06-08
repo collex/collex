@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>N I N E S</title>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/base/base-min.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/skins/sam/menu.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/button/assets/skins/sam/button.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
+<link href="../../stylesheets/main.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/nav.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/lvl2.css" rel="stylesheet" type="text/css" />
+<link href="../../stylesheets/about.css" rel="stylesheet" type="text/css" />
+	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
+	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+	<script src="/javascripts/application.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
+	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/login.js" type="text/javascript"></script>
+	<script src="/javascripts/nospam.js" type="text/javascript"></script>
+	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
+	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+	<script src="/javascripts/application.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
+	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/login.js" type="text/javascript"></script>
+	<script src="/javascripts/nospam.js" type="text/javascript"></script>
+</head>
+
+<body>
+<div id="main_container">
+		<div id="header_container">
+			<a href="/"><div id="header_left"></div></a>
+			<div id="header_right"></div>
+		</div>
+		<a href="/my9s" class="mynines_link">My 9s</a>
+		<div id='nav_container'>
+			<a href="/" class="tab_link">HOME</a>
+			<a href="/news/" class="tab_link">News</a>
+			<a href="/forum" class="tab_link">Forum</a>
+			<a href="/exhibit_list" class="tab_link">Exhibits</a>
+			<a href="/tags" class="tab_link">Tags</a>
+			<a href="/search" class="tab_link">Search</a>
+		</div>
+   	<div id="subnav_container">
+       	<div id="login_container">
+				<script language="JavaScript">
+				document.observe('dom:loaded', function() {
+					new Ajax.Updater('login_container', '/login/login_controls');
+					});
+				</script>
+           </div>
+           <div id="subnav_links_container">
+           	<a href="/about" class="nav_link">What is NINES?</a>  | <a href="/scholarship/index.html" class="nav_link">Scholarship</a>  | <a href="/software/index.html" class="nav_link">Software</a>  |  <a href="/community/index.html" class="here nav_link">Community</a>
+           </div>
+          	<div class="clear_both"></div>
+		</div>
+<div id="content_container">
+
+	<div class="about_left">
+    	<div class="about_nav_container">
+        	<p><a href="../what_is.html" class="a_nav_1">What Is Nines?</a></p>
+        	<p><a href="../scholarship/index.html" class="a_nav_1">Scholarship</a><br />
+        	<a href="../scholarship/peerReview.html" class="a_nav_2">Peer Review</a><br />
+        	<a href="../scholarship/boards.html" class="a_nav_2">Editorial Boards</a><br />
+        	<a href="../scholarship/scholarlyProjects.html" class="a_nav_2">Scholarly Projects</a><br />
+        	<a href="../scholarship/resources.html" class="a_nav_2">Other Resources</a><br />
+        	<a href="../scholarship/rdf.html" class="a_nav_2">Submissions</a><br />
+        	<a href="../scholarship/readings.html" class="a_nav_2">Readings</a></p>
+        	<p><a href="../software/index.html" class="a_nav_1">Software</a><br />
+        	<a href="../software/collex.html" class="a_nav_2">Collex</a><br />
+        	<a href="../software/juxta.html" class="a_nav_2">Juxta</a><br />
+        	<a href="../software/ivanhoe.html" class="a_nav_2">Ivanhoe</a></p>
+        	<p><a href="index.html" class="a_nav_1">Community</a><br />
+        	<div class="a_nav_2_dn">Executive Council</div>
+        	<a href="RandD.html" class="a_nav_2">Research and Development</a><br />
+        	<a href="affiliates.html" class="a_nav_2">Affiliates</a><br />
+        	<a href="outreach.html" class="a_nav_2">Outreach</a><br />
+        	<a href="workshop.html" class="a_nav_2">Workshops</a><br />
+        	<a href="widgets.html" class="a_nav_2">Widget Gallery</a></p>
+            
+        </div>
+    
+    </div>
+    
+   	<div class="about_right">
+   	  <h1>Executive Council</h1>
+<p>NINES is headed by an Executive Council and maintained by a <a class="nav_link" href="RandD.html">Research and Development team</a>. For more on the <a class="nav_link" href="/scholarship/boards.html">NINES Editorial Boards</a>, please see the <a class="nav_link" href="/scholarship/peerReview.html">peer review</a> page.</p>
+
+
+	<p class="header"><strong>EXECUTIVE COUNCIL</strong></p>
+	<ul>
+
+	<li>Stephanie Browner, Berea College</li>
+	<li>John Bryant, Hofstra University</li>
+	<li>Jay Clayton, Vanderbilt University</li>
+	<li>Amy Earhart, Texas A&#x0026;M University</li>
+	<li>Morris Eaves, University of Rochester</li>
+	<li>Michael Eberle-Sinatra, Universit&#x00e9; de Montr&#x00e9;al </li>
+
+	<li>Julia Flanders, Brown University</li>
+	<li>Dino Franco Felluga, Purdue University</li>
+	<li>Neil Fraistat, University of Maryland</li>
+	<li>Amanda Gailey, University of Georgia</li>
+	<li>Lauren Goodlad, University of Illinois</li>
+	<li>Sharon Harris, University of Connecticut</li>
+
+	<li>Steve Jones, Loyola University, Chicago</li>
+	<li>Mark Kamrath, University of Central Florida</li>
+	<li>George Landow, Brown University</li>
+	<li>Laura Mandell, Miami University, Ohio</li>
+	<li>Jerome McGann, University of Virginia</li>
+	<li>Joel Myerson, University of South Carolina</li>
+
+	<li>Bethany Nowviskie, University of Virginia</li>
+	<li>Kenneth Price, University of Nebraska, Lincoln</li>
+	<li>Susan Schreibman, Digital Humanities Observatory (Royal Irish Academy)</li>
+	<li>Martha Nell Smith, University of Maryland</li>
+	<li>Andrew Stauffer, University of Virginia</li>
+	<li>John Walsh, Indiana University</li>
+
+	<li>Perry Willett, University of Michigan</li>
+	</ul>
+</div>        
+
+  </div>
+ 	<div class="clear_both"></div>
+</div>
+<div id="footer_container">
+NINES: aggregating 400,877 peer‑reviewed <a href="#">digital objects</a> from 54 <a href="#">federated sites</a>.<br />
+Powered by Collex v1.4.7.12.
+</div>    
+</body>
+</html>
