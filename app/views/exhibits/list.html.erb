@@ -21,11 +21,17 @@
 	
 	<% non_reviewed = [] -%>
 	<% student = [] -%>
-	<% @exhibits.each {|exhibit| exhibit.category == 'student' ? student.push(exhibit) : non_reviewed.push(exhibit)  } -%>
+	<% @exhibits.each {|exhibit| 
+		if exhibit.category == 'student'
+			student.push(exhibit)
+		elsif exhibit.category != 'peer-reviewed'
+			non_reviewed.push(exhibit)  
+		end
+	} -%>
 	<div class="exhibit_list">
 		<div class="page_header">Choose an exhibit to view</div>
 		<div class="exhibit_left_column">
-			<%= render :partial => 'exhibit_list', :locals => { :title=> 'Non Peer Reviewed', :exhibit_list => non_reviewed } %>	
+			<%= render :partial => 'exhibit_list', :locals => { :title=> 'Sandbox', :exhibit_list => non_reviewed } %>	
 		</div>
 		<div class="exhibit_right_column">
 			<%= render :partial => 'exhibit_list', :locals => { :title=> 'Student', :exhibit_list => student } %>	
