@@ -50,7 +50,7 @@
 	<script src="/javascripts/nospam.js" type="text/javascript"></script>
 </head>
 
-<body>
+<body class="yui-skin-sam">
 <div id="main_container">
 		<div id="header_container">
 			<a href="/"><div id="header_left"></div></a>
@@ -65,8 +65,7 @@
 			<a href="/tags" class="tab_link">Tags</a>
 			<a href="/search" class="tab_link">Search</a>
 		</div>
-   	<div id="subnav_container"><div id="login_container">
-				<script language="JavaScript">
+   	<div id="subnav_container"><div id="login_container"><script language="JavaScript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
 					});
@@ -119,8 +118,8 @@
 				<p>
 					NINES resources can be either free culture/open access projects (i.e., projects whose content is distributed freely on the web under a Creative Commons license, is in the public domain, or falls under fair-use protection) or revenue-generating projects (like those of most journal publishers and university presses).  We have produced two documents addressing frequently asked questions about joining the NINES consortium: 
 	  <ul>
-		<li><a href="freeculture.pdf">a precis for "free culture" resources in the humanities</a> (PDF, 205kb)</li>
-		<li><a href="revenue.pdf">a precis for revenue and subscriptions-based organizations</a> (PDF, 206kb)</li>
+		<li><a class="nav_link" href="freeculture.pdf">a precis for "free culture" resources in the humanities</a> (PDF, 205kb)</li>
+		<li><a class="nav_link" href="revenue.pdf">a precis for revenue and subscriptions-based organizations</a> (PDF, 206kb)</li>
 	  </ul>
 				</p>								
 						
