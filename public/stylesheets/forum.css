@@ -266,7 +266,6 @@ a.tooltip{
 
 a.tooltip:hover {
 	z-index:25; 
-	background-color:#ff0;
 }
 
 a.tooltip span { 
@@ -279,7 +278,7 @@ a.tooltip:hover span{ /*the span will display just on :hover state*/
     top:2em; 
 	left:2em; 
 	width:20em;
-    border:1px solid #0cf;
+    border:1px solid #914C29;
     background-color: #F7ECDB; 
 	color:#000;
     text-align: left;
