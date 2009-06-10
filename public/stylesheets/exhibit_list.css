@@ -13,17 +13,22 @@
 
 .exhibit_left_column {
 	float: left;
-	width: 400px;
+	width: 450px;
 	margin-top: 20px;
 	border-right: 2px solid #C7AA97;
 }
 
 .exhibit_right_column {
-	margin-left: 430px;
+	margin-left: 470px;
 	margin-top: 20px;
 }
 
 .exhibit_category {
 	font-size: 1.2em;
 	font-weight: bold;
+}
+
+.exhibit_list_title_explanation {
+	color: gray;
+	font-size: .8em;
 }
