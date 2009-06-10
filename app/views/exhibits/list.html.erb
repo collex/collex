@@ -31,10 +31,10 @@
 	<div class="exhibit_list">
 		<div class="page_header">Choose an exhibit to view</div>
 		<div class="exhibit_left_column">
-			<%= render :partial => 'exhibit_list', :locals => { :title=> "Sandbox <div class='exhibit_list_title_explanation'>These exhibits are publicly shared but not peer-reviewed.</div>", :exhibit_list => non_reviewed } %>	
+			<%= render :partial => 'exhibit_list', :locals => { :title=> "Sandbox <div class='exhibit_list_title_explanation'>Exhibits that have been shared but are not peer-reviewed.</div>", :exhibit_list => non_reviewed } %>	
 		</div>
 		<div class="exhibit_right_column">
-			<%= render :partial => 'exhibit_list', :locals => { :title=> "Student Section<div class='exhibit_list_title_explanation'>These exhibits are publicly shared student work.</div>", :exhibit_list => student } %>	
+			<%= render :partial => 'exhibit_list', :locals => { :title=> "Student Section<div class='exhibit_list_title_explanation'>Student work that has been shared.</div>", :exhibit_list => student } %>	
 		</div>
 	</div>
 	<div class="clear_both"></div>
