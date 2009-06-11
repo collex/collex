@@ -9,7 +9,7 @@
 			<?php 	/* Widgetized sidebar, if you have the plugin installed. */
 				if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar() ) : ?>
 			<li>
-				<div class="news_link"><a href="<?php bloginfo('url'); ?>">Return to News</a></div>
+				<!-- <div class="news_link"><a href="<?php bloginfo('url'); ?>">Return to News</a></div> -->
 				<?php get_search_form(); ?>
 			</li>
 
@@ -71,12 +71,12 @@
 				<div class="questions">Questions? Contact NINES at <a class="nospam" href="inquiries nines org">$$$$</a>.</div>
 			</li>
 
-				<li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Administration</h3></div></div></div>
+				<!-- <li><div class="rounded_left"><div class="rounded_middle"><div class="rounded_right"><h3 class="rounded_h1">Administration</h3></div></div></div>
 				<ul>
 					<?php wp_register(); ?>
 					<li><?php wp_loginout(); ?></li>
 				</ul>
-				</li>
+				</li> -->
 			<?php } ?>
 
 			<?php endif; ?>
