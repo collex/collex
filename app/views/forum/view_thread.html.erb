@@ -34,6 +34,7 @@
 
 <div id="replies" class="FP_replies">
 	<%= render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread } %>
+</div>
 
 	<div id="discussion_thread" class="discussion_action_bar">
 		<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
@@ -57,4 +58,3 @@
 			});
 		</script>
 	</div>
-</div>

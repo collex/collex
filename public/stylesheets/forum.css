@@ -110,7 +110,7 @@
 
 .FP_replies {
 	margin:10px 0px 10px 0px;
-	padding:20px 15px 20px 15px;
+	padding:20px 15px 0px 15px;
 }
 
 .FP_reply_header {
@@ -284,4 +284,9 @@ a.tooltip:hover span{ /*the span will display just on :hover state*/
     text-align: left;
 	font-weight: normal;
 	padding: .3em;
+}
+
+.forum_modified_time {
+	font-style: italic;
+	color: #777777;
 }

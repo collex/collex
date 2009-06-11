@@ -110,19 +110,19 @@ class ForumController < ApplicationController
     end
  
     if disc_type == ''
-      comment.update_attributes(:comment_type => 'comment', :comment => description)
+      comment.update_attributes(:comment_type => 'comment', :comment => description, :user_modified_at => Time.now)
     elsif disc_type == 'mycollection'
       cr = CachedResource.find_by_uri(nines_object)
       if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
         cr = CollectedItem.collect_item(user, nines_object)
       end
-      comment.update_attributes(:comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
+      comment.update_attributes(:comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description, :user_modified_at => Time.now)
     elsif disc_type == 'exhibit'
       a = nines_exhibit.split('_')
       exhibit = Exhibit.find(a[1])
-      comment.update_attributes(:comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
+      comment.update_attributes(:comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description, :user_modified_at => Time.now)
     elsif disc_type == 'weblink'
-      comment.update_attributes(:comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
+      comment.update_attributes(:comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description, :user_modified_at => Time.now)
     end
     
     if title.length > 0 && comment.position == 1

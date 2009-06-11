@@ -25,7 +25,7 @@
 </div>
 
 <div class="FP_post_body">
-	<p>Posted by <%= User.find(comment.user_id).fullname %> on Mar 09, 2009—02:01PM 
+	<p>Posted by <%= User.find(comment.user_id).fullname %> on <%= comment_time_format(comment.created_at) %> 
 	<% if is_logged_in? -%>
 		<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/forum/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
 	<% else -%>
@@ -53,6 +53,9 @@
 	<%= render :partial => 'attachment', :locals => { :comment => comment } %>
 <% end -%>
 <div class="clear_both"></div>
+<% if comment.user_modified_at -%>
+	<div class="forum_modified_time">This comment was modified on <%= comment_time_format(comment.user_modified_at) %></div>
+<% end -%>
 <% show_report = comment.reported == 1 && (is_admin? || comment.has_been_reported_by(this_user)) -%>
 <% if show_report -%>
 	<div class="reported_comment">
