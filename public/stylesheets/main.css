@@ -168,3 +168,11 @@ table, table td, table tr {
 	padding-right: 10px;
 	text-align: left;
 }
+
+.post > h2 {
+	margin-bottom: 5px;
+}
+
+.size-full img {
+	padding: 10px;
+}
