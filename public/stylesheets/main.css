@@ -183,4 +183,8 @@ table, table td, table tr {
 	margin-top: 10px;
 	margin-bottom: 60px;
 	padding-bottom: 1px;
-	}
+}
+
+.navigation > div {
+	width: 200px;
+}
