@@ -1218,7 +1218,7 @@ function hideSpinner(element_id)
 }
 
 // asynchronously load the rss feed and pull out the news items
-function loadLatestNews( targetList, rssFeedURL, maxItems ) {	
+function loadLatestNews( targetList, rssFeedURL, maxItems, retry ) {	
 	new Ajax.Request(rssFeedURL, {
 		method: 'get',
 		onSuccess : function(resp) {
@@ -1251,7 +1251,13 @@ function loadLatestNews( targetList, rssFeedURL, maxItems ) {
 
 			$(targetList).update(str);
 		},
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+		onFailure : function(resp) {
+			// This can be a transient error, so we'll retry once, then just leave the area blank.
+			if (retry === true)
+				loadLatestNews( targetList, rssFeedURL, maxItems, false );
+			else
+				$(targetList).update("<ul><li>News feed currently unavailable.</li></ul>\n");
+		}
 	});
 
 }
