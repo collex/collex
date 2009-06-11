@@ -185,6 +185,9 @@ table, table td, table tr {
 	padding-bottom: 1px;
 }
 
+.navigation > div {
+	width: 200px;
+}
 
 /* Captions */
 .aligncenter {
