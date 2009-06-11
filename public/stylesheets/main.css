@@ -176,3 +176,11 @@ table, table td, table tr {
 .size-medium {
 	padding: 10px;
 }
+
+.navigation {
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 60px;
+	padding-bottom: 1px;
+	}
