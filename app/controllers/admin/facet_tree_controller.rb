@@ -107,7 +107,7 @@ class Admin::FacetTreeController < Admin::BaseController
   def edit_facet_upload
     value = params[:value]
     facet = FacetCategory.find_by_value(value)
-    if params['carousel_thumbnail'].length > 0
+    if params['carousel_thumbnail'] != nil && params['carousel_thumbnail'].length > 0
       facet.image = Image.new({ :uploaded_data => params['carousel_thumbnail'] })
       facet.image.save!
       facet.save
