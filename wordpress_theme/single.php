@@ -12,10 +12,8 @@ get_header();
 	<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 
 		<div class="navigation">
-			<div class="alignleft">&laquo;</div>
-			<div class="alignleft"><?php previous_post_link('%link', 'Previous', TRUE ); ?></div>
-			<div class="alignright">&raquo;</div>
-			<div class="alignright"><?php next_post_link('%link', 'Next', TRUE ); ?></div>
+			<div class="alignleft"><?php previous_post_link('%link', '&laquo; Previous'); ?></div>
+			<div class="alignright"><?php next_post_link('%link', 'Next &raquo;'); ?></div>
 			<div class="aligncenter"><a href="<?php bloginfo('url'); ?>">Return to News</a></div>
 		</div>
 
