@@ -13,9 +13,9 @@ get_header();
 
 		<div class="navigation">
 			<div class="alignleft">&laquo;</div>
-			<div class="alignleft"><?php previous_post_link('%link', 'Previous', TRUE ) ?></div>
+			<div class="alignleft"><?php previous_post_link('%link', 'Previous', TRUE ); ?></div>
 			<div class="alignright">&raquo;</div>
-			<div class="alignright"><?php next_post_link('%link', 'Next', TRUE ) ?></div>
+			<div class="alignright"><?php next_post_link('%link', 'Next', TRUE ); ?></div>
 			<div class="aligncenter"><a href="<?php bloginfo('url'); ?>">Return to News</a></div>
 		</div>
 
