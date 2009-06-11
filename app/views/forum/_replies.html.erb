@@ -30,7 +30,9 @@
 
 <% user_id = session[:user] ? user = User.find_by_username(session[:user][:username]).id : nil %>
 <% replies.each {|reply| -%>
-	<%= render :partial => 'comment', :locals => { :comment=> reply, :thread_id => thread.id, :can_delete => is_logged_in? && (is_admin? || (reply.user_id == user_id)), :is_main => false  } %>
+    <div id="<%= "comment_id_#{reply.id}" %>" class="FP_reply_container">
+		<%= render :partial => 'comment', :locals => { :comment=> reply, :thread_id => thread.id, :can_delete => is_logged_in? && (is_admin? || (reply.user_id == user_id)), :can_edit => (reply.user_id == user_id), :is_main => false  } %>
+	</div>
 <% } -%>
 
 <% if replies.length > 0 -%>

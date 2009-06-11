@@ -51,6 +51,8 @@ var ForumReplyDlg = Class.create({
 	initialize: function (params) {
 		// This puts up a modal dialog that allows the user to reply to a thread.
 		// If the topic_id is passed, then this should start a new thread.
+		// If comment_id is passed, then this will edit an existing comment.
+		// in that case, the following are also passed:  title, obj_type, reply, nines_obj_list, exhibit_list, inet_thumbnail, inet_url
 		this.class_type = 'ForumReplyDlg';	// for debugging
 		var topic_id = params.topic_id;
 		var thread_id = params.thread_id;
@@ -61,6 +63,16 @@ var ForumReplyDlg = Class.create({
 		var ajax_div = params.ajax_div;
 		var logged_in = params.logged_in;
 		var redirect = params.redirect;
+		var comment_id = params.comment_id;
+		if (comment_id !== undefined) {
+			var starting_title = params.title;
+			var starting_obj_type = params.obj_type;
+			var starting_comment_el = params.reply;
+			var starting_nines_obj_list = params.nines_obj_list;
+			var starting_exhibit_list = params.exhibit_list;
+			var starting_inet_thumbnail = params.inet_thumbnail;
+			var starting_inet_url = params.inet_url;
+		}
 		
 		if (!logged_in) {
 			new MessageBoxDlg("Warning", "You must be logged in to create a comment");
@@ -78,13 +90,20 @@ var ForumReplyDlg = Class.create({
 			params.dlg.cancel();
 		};
 		
+		var removeAttachItem = function() {
+			var attach_el = $$('.attach_item')[0];
+			attach_el.addClassName('hidden');
+			setTimeout(function() {
+				var sel = $$('.attach');
+				sel.each(function(s) { s.removeClassName('hidden'); });
+				}, 50);
+		};
+		
 		var currSel = "";
 		var currSelClass = "";
 		this.attachItem = function(event, params)
 		{
-			$(this.id).addClassName('hidden');
-			var sel = $$('.attach');
-			sel.each(function(s) { s.removeClassName('hidden'); });
+			removeAttachItem();
 			
 			// Now select the first tab, which is the My Collection.
 			params.destination = "mycollection";
@@ -119,6 +138,7 @@ var ForumReplyDlg = Class.create({
 			var data = dlg.getAllData();
 			data.thread_id = thread_id;
 			data.topic_id = topic_id;
+			data.comment_id = comment_id;
 			data.obj_type = currSelClass;
 
 			if (ajax_div) {
@@ -147,32 +167,45 @@ var ForumReplyDlg = Class.create({
 			}
 		};
 		
-		var objlist = new CreateListOfObjects(populate_nines_obj_url, null, 'nines_obj_list', progress_img);
-		var exlist = new CreateListOfObjects(populate_exhibit_url, null, 'exhibit_list', progress_img);
+		var objlist = new CreateListOfObjects(populate_nines_obj_url, starting_nines_obj_list, 'nines_obj_list', progress_img);
+		var exlist = new CreateListOfObjects(populate_exhibit_url, starting_exhibit_list, 'exhibit_list', progress_img);
 
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Title', klass: 'new_exhibit_label title hidden' }, { input: 'title', klass: 'new_exhibit_input_long title hidden' } ],
-					[ { textarea: 'reply' } ],
-					[ { page_link: 'Attach an Item...', new_page: "", callback: this.attachItem }],
+					[ { text: 'Title', klass: 'new_exhibit_label title hidden' }, { input: 'title', value: starting_title, klass: 'new_exhibit_input_long title hidden' } ],
+					[ { textarea: 'reply', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
+					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
-					[ { text: 'URL', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_url', klass: 'new_exhibit_input_long weblink hidden' } ],
-					[ { text: 'Thumbnail for Item', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_thumbnail', klass: 'new_exhibit_input_long weblink hidden' } ],
+					[ { text: 'URL', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'new_exhibit_input_long weblink hidden' } ],
+					[ { text: 'Thumbnail for Item', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'new_exhibit_input_long weblink hidden' } ],
 					[ { button: 'Post', url: submit_url, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 		
-		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: topic_id ? "New Post" : "Reply" };
+		var dlgTitle = topic_id ? "New Post" : (thread_id ? "Reply" : "Edit Comment");
+		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: dlgTitle };
 		var dlg = new GeneralDialog(dlgParams);
-		if (topic_id)
+		if (topic_id || (comment_id && starting_title))
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
 		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler());
 		dlg.changePage('layout', null);
 		objlist.populate(dlg);
 		exlist.populate(dlg);
 		dlg.center();
+		if (starting_obj_type && starting_obj_type !== 1) {
+			YAHOO.util.Event.onAvailable('reply_container', function() {	// We want this to happen after creating the RTE because the user sees that first.
+				removeAttachItem();
+				
+				var pages = [ 'mycollection', 'exhibit', 'weblink' ];
+				var params = { destination: pages[starting_obj_type-2] };
+				currSel = 'btn' + (starting_obj_type-2);
+				currSelClass = params.destination;
+				var fn = This.switch_page.bind($(currSel));
+				fn(event, params);
+			}, this);
+		}
 	}
 });
 

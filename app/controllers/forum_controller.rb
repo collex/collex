@@ -91,6 +91,48 @@ class ForumController < ApplicationController
 #    redirect_to :action => :view_thread, :thread => thread_id
   end
 
+  def edit_existing_comment
+    comment_id = params[:comment_id]
+    inet_thumbnail = params[:inet_thumbnail]
+    inet_url = params[:inet_url]
+    nines_object = params[:nines_obj_list]
+    nines_exhibit = params[:exhibit_list]
+    description = params[:reply]
+    disc_type = params[:obj_type]
+    title = params[:title]
+    
+    comment = DiscussionComment.find(comment_id)
+    # If an attachment was not selected, but the type expected an attachment, just change the type to regular comment
+    if disc_type == 'mycollection' && nines_object.length == 0
+      disc_type = ''
+    elsif disc_type == 'exhibit' && nines_exhibit.length == 0
+      disc_type = ''
+    end
+ 
+    if disc_type == ''
+      comment.update_attributes(:comment_type => 'comment', :comment => description)
+    elsif disc_type == 'mycollection'
+      cr = CachedResource.find_by_uri(nines_object)
+      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
+        cr = CollectedItem.collect_item(user, nines_object)
+      end
+      comment.update_attributes(:comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
+    elsif disc_type == 'exhibit'
+      a = nines_exhibit.split('_')
+      exhibit = Exhibit.find(a[1])
+      comment.update_attributes(:comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
+    elsif disc_type == 'weblink'
+      comment.update_attributes(:comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
+    end
+    
+    if title.length > 0 && comment.position == 1
+      thread = DiscussionThread.find(comment.discussion_thread_id)
+      thread.update_attributes(:title => title)
+    end
+    
+    render :partial => 'comment', :locals => { :comment => comment, :thread_id => comment.discussion_thread_id, :can_delete => false, :can_edit => true, :is_main => comment.position == 1 }
+  end
+  
   private
   def create_comment(params)
     thread_id = params[:thread_id]

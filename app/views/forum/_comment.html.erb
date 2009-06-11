@@ -14,46 +14,49 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment, int thread_id, bool can_delete, bool is_main -%>
+<% # params: ActiveRecord comment, int thread_id, bool can_delete, bool can_edit, bool is_main -%>
 <% # the difference between the main comment and the others is that the main 
 	# comment has a title and a background color. -%>
-    <div class="<%= is_main ? "FP_original_post" : "FP_reply_container" %>">
-		<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).get_title()}&nbsp;<a href='/forum/rss/#{thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a></div>" if is_main %>
-		<div class="FP_user_image">
-			<% picture_src = get_user_picture(comment.user_id, :full) -%>
-			<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img', :width => 100, :height => 125 } if picture_src && picture_src.length > 0 %>
-			<div class="FP_user_name"><%= get_user_link(User.find(comment.user_id)) %></div>
-		</div>
+<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).get_title()}&nbsp;<a href='/forum/rss/#{thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a></div>" if is_main %>
+<div class="FP_user_image">
+	<% picture_src = get_user_picture(comment.user_id, :full) -%>
+	<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img', :width => 100, :height => 125 } if picture_src && picture_src.length > 0 %>
+	<div class="FP_user_name"><%= get_user_link(User.find(comment.user_id)) %></div>
+</div>
 
-		<div class="FP_post_body">
-			<p>Posted by <%= User.find(comment.user_id).fullname %> on Mar 09, 2009—02:01PM 
-			<% if is_logged_in? -%>
-				<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/forum/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
-			<% else -%>
-				<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
-			<% end -%>
-			<% # We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
-			<% # We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
-			<% this_user = session[:user] ? User.find_by_username(session[:user][:username]).id : -1 %>
-			<% allow_user_to_report = (this_user > 0) && !comment.has_been_reported_by(this_user) && (this_user != comment.user_id) %>
-			<% if allow_user_to_report -%>
-				<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			<% end -%>
-	    	<% if can_delete -%>
-				&nbsp;<%= link_to_confirm "[remove]", "/forum/delete_comment?comment=#{comment.id}", "Delete #{is_main ? 'Thread' : 'Comment'}", "You are about to permanently delete this #{is_main ? 'thread' : 'comment'}. Are you sure?" %>
-			<% end -%>
-			</p>
-			<%= decode_exhibit_links(comment.comment) %>
-		</div>
-		<% if comment.get_type() != "comment" -%>
-			<%= render :partial => 'attachment', :locals => { :comment => comment } %>
-		<% end -%>
-        <div class="clear_both"></div>
-		<% show_report = comment.reported == 1 && (is_admin? || comment.has_been_reported_by(this_user)) -%>
-		<% if show_report -%>
-			<div class="reported_comment">
-				NOTICE: This comment has been reported as objectionable by <%= is_admin? ? comment.get_reported_by_list() : 'you' %>, and is pending moderation.
-			</div>
-		<% end -%>
-    </div>
+<div class="FP_post_body">
+	<p>Posted by <%= User.find(comment.user_id).fullname %> on Mar 09, 2009—02:01PM 
+	<% if is_logged_in? -%>
+		<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/forum/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
+	<% else -%>
+		<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
+	<% end -%>
+	<% # We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
+	<% # We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
+	<% this_user = session[:user] ? User.find_by_username(session[:user][:username]).id : -1 %>
+	<% allow_user_to_report = (this_user > 0) && !comment.has_been_reported_by(this_user) && (this_user != comment.user_id) %>
+	<% if allow_user_to_report -%>
+		<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+	<% end -%>
+	<% if can_edit -%>
+		&nbsp;<%= make_edit_link(comment, is_main) %>
+	<% end -%>
+	<% if can_delete -%>
+		&nbsp;<%= link_to_confirm "[remove]", "/forum/delete_comment?comment=#{comment.id}", "Delete #{is_main ? 'Thread' : 'Comment'}", "You are about to permanently delete this #{is_main ? 'thread' : 'comment'}. Are you sure?" %>
+	<% end -%>
+	</p>
+	<div id="<%= "comment_body_#{comment.id}" %>">
+		<%= decode_exhibit_links(comment.comment) %>
+	</div>
+</div>
+<% if comment.get_type() != "comment" -%>
+	<%= render :partial => 'attachment', :locals => { :comment => comment } %>
+<% end -%>
+<div class="clear_both"></div>
+<% show_report = comment.reported == 1 && (is_admin? || comment.has_been_reported_by(this_user)) -%>
+<% if show_report -%>
+	<div class="reported_comment">
+		NOTICE: This comment has been reported as objectionable by <%= is_admin? ? comment.get_reported_by_list() : 'you' %>, and is pending moderation.
+	</div>
+<% end -%>
 

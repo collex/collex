@@ -28,7 +28,9 @@
 <% main_comment = @thread.discussion_comments[0] -%>
 <% # the thread itself can be deleted if the current user is an administrator, or the current user created the thread and there are no comments, yet. -%>
 <% can_delete = is_admin? || (main_comment.user_id == user_id && @replies.length == 0) -%>
-<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => can_delete, :is_main => true } %>
+<div id="<%= "comment_id_#{main_comment.id}" %>" class="FP_original_post">
+	<%= render :partial => 'comment', :locals => { :comment=> main_comment, :thread_id => @thread.id, :can_delete => can_delete, :can_edit => (main_comment.user_id == user_id), :is_main => true } %>
+</div>
 
 <div id="replies" class="FP_replies">
 	<%= render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread } %>

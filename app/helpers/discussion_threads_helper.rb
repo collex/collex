@@ -47,6 +47,27 @@ module DiscussionThreadsHelper
     return "<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>"
   end
   
+  def make_edit_link(comment, is_main)
+    html = "<a href='#' class='nav_link' onclick=\"new ForumReplyDlg({" +
+      "comment_id: #{comment.id},"
+    if is_main # only the main comment has a title.
+      html += "title: '#{DiscussionThread.find(comment.discussion_thread_id).get_title()}',"
+    end
+    html += "obj_type: #{comment.comment_type}," +
+      "reply: 'comment_body_#{comment.id}'," +
+      "nines_obj_list: '#{comment.cached_resource_id && comment.cached_resource_id > 0 ? CachedResource.find(comment.cached_resource_id).uri : ''}'," +
+      "exhibit_list: 'id_#{comment.exhibit_id}'," +
+      "inet_thumbnail: '#{comment.image_url}'," +
+      "inet_url: '#{comment.link_url}'," +
+      "ajax_div: 'comment_id_#{comment.id}'," +
+      "submit_url: '/forum/edit_existing_comment'," +
+      "populate_exhibit_url: '/forum/get_exhibit_list'," +
+      "populate_nines_obj_url: '/forum/get_nines_obj_list'," +
+      "progress_img: '#{PROGRESS_SPINNER_PATH}'," +
+      "logged_in: true }); return false;\">[edit]</a>"
+    return html
+  end
+  
   def get_user_picture(user_id, type)
     placeholder = "/images/forum_generic_user.gif"
     user = User.find_by_id(user_id)
