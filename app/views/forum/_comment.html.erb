@@ -40,7 +40,7 @@
 				<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 			<% end -%>
 	    	<% if can_delete -%>
-				&nbsp;<%= link_to_confirm "[remove]", "/forum/delete_comment?comment=#{comment.id}", "Delete Comment", 'You are about to permanently delete this comment. Are you sure?' %>
+				&nbsp;<%= link_to_confirm "[remove]", "/forum/delete_comment?comment=#{comment.id}", "Delete #{is_main ? 'Thread' : 'Comment'}", "You are about to permanently delete this #{is_main ? 'thread' : 'comment'}. Are you sure?" %>
 			<% end -%>
 			</p>
 			<%= decode_exhibit_links(comment.comment) %>
