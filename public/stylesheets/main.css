@@ -173,6 +173,6 @@ table, table td, table tr {
 	margin-bottom: 5px;
 }
 
-.size-full img {
+.post > img {
 	padding: 10px;
 }
