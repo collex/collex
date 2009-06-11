@@ -151,5 +151,5 @@
 }
 
 .outline_tree_element_selected .outline_right_controls {
-	display:inherit;
+	display: block;
 }
