@@ -76,12 +76,13 @@
 	});
 	
 	YAHOO.util.Event.onDOMReady(function (ev) {
-	  var carousel = new YAHOO.widget.Carousel("carousel_container", {
-	    animation: { speed: 0.5 },
-		navigation: { prev: 'carousel_left', next: 'carousel_right' }
-		//isCircular: true
-	  });
-	  carousel.render(); // get ready for rendering the widget
-	  carousel.show();   // display the widget
+		var carousel = new YAHOO.widget.Carousel(null);
+		carousel.CONFIG.MAX_PAGER_BUTTONS = 20;
+		carousel.init("carousel_container", {
+			animation: { speed: 0.5 },
+			navigation: { prev: 'carousel_left', next: 'carousel_right' }
+		});
+		carousel.render(); // get ready for rendering the widget
+		carousel.show();   // display the widget
 	});
 </script>
