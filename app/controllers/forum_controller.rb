@@ -288,6 +288,7 @@ class ForumController < ApplicationController
     @total = @threads.length
     @num_pages = @total.quo(session[:items_per_page]).ceil
     @page = @num_pages if @page == -1
+    @page = 1 if @page == 0
     start = (@page-1) * session[:items_per_page]
     @threads = @threads.slice(start,session[:items_per_page])
   end
@@ -310,6 +311,7 @@ class ForumController < ApplicationController
     @total = @replies.length-1
     @num_pages = @total.quo(session[:items_per_page]).ceil
     @page = @num_pages if @page == -1
+    @page = 1 if @page == 0
     start = (@page-1) * session[:items_per_page]
     @replies = @replies.slice(start+1,session[:items_per_page])
   end
