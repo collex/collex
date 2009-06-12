@@ -355,12 +355,16 @@ class ForumController < ApplicationController
     else
       user = User.find_by_username(session[:user][:username])
       comment_id = params["comment_id"]
+      can_edit = params['can_edit'] == 'true'
+      can_delete = params['can_delete'] == 'true'
+      is_main = params['is_main'] == 'true'
       comment = DiscussionComment.find(comment_id)
       comment.reported = 1
       DiscussionComment.add_reporter(comment, user.id)
       comment.save
       # TODO-PER: actually send email at this point
-      redirect_to :action => :view_thread, :thread => comment.discussion_thread_id
+      render :partial => 'comment', :locals => { :comment => comment, :can_edit => can_edit, :can_delete => can_delete, :is_main => is_main }
+      #redirect_to :action => :view_thread, :thread => comment.discussion_thread_id
     end
   end
   

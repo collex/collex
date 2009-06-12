@@ -392,9 +392,50 @@ var ConfirmDlg = Class.create({
 	}
 });
 
-var ConfirmLinkDlg = Class.create({
+// el: the element to update
+// action: the url to call
+// params: the params for the url
+// onComplete: what to call after the operation finishes
+// onFailure: what to call if the operation fails.
+function updateWithAjax(params)
+{
+	new Ajax.Updater(params.el, params.action, {
+		parameters : params.params,
+		evalScripts : true,
+		onComplete : function(resp) {
+			if(params.onComplete)
+				params.onComplete(resp);
+		},
+		onFailure : function(resp) {
+			if (params.onFailure)
+				params.onFailure();
+			else
+				new MessageBoxDlg("Error", "Oops, there's been an error.");
+		}
+	});
+}
+
+var ConfirmAjaxDlg = Class.create({
+	initialize: function (title, message, params) {
+		// This puts up a confirmation dialog before doing an ajax update.
+		this.class_type = 'ConfirmAjaxDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		
+		var ok = function()
+		{
+			updateWithAjax(params);
+		};
+		
+		new ConfirmDlg(title, message, "Yes", "No", ok);
+	}
+});
+
+var ConfirmLinkDlg =  Class.create({
 	initialize: function (el, title, message) {
 		// This puts up a confirmation dialog before following a link. It is intended to be used as the onclick handler in a <a> tag.
+		// Put the link you want to follow in the href property of the a-tag.
 		this.class_type = 'ConfirmLinkDlg';	// for debugging
 
 		// private variables

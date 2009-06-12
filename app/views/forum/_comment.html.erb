@@ -14,10 +14,10 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment, int thread_id, bool can_delete, bool can_edit, bool is_main -%>
+<% # params: ActiveRecord comment, bool can_delete, bool can_edit, bool is_main -%>
 <% # the difference between the main comment and the others is that the main 
 	# comment has a title and a background color. -%>
-<%= "<div class='FP_post_header'>#{DiscussionThread.find(thread_id).get_title()}&nbsp;<a href='/forum/rss/#{thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a></div>" if is_main %>
+<%= "<div class='FP_post_header'>#{DiscussionThread.find(comment.discussion_thread_id).get_title()}&nbsp;<a href='/forum/rss/#{comment.discussion_thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a></div>" if is_main %>
 <div class="FP_user_image">
 	<% picture_src = get_user_picture(comment.user_id, :full) -%>
 	<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img', :width => 100, :height => 125 } if picture_src && picture_src.length > 0 %>
@@ -27,7 +27,7 @@
 <div class="FP_post_body">
 	<p>Posted by <%= User.find(comment.user_id).fullname %> on <%= comment_time_format(comment.created_at) %> 
 	<% if is_logged_in? -%>
-		<% action = "var dlg = new DiscussionReportDlg({ comment_id: #{comment.id}, submit_url: '/forum/report_comment', parent_id: 'discussion_thread' }); dlg.show(); return false;" -%>
+		<% action = "new ConfirmAjaxDlg('Report this comment as objectionable', 'Press Ok if you want an email sent to the administrators complaining about this entry.', { el: 'comment_id_#{comment.id}', action: '/forum/report_comment', params: { comment_id: #{comment.id}, can_edit: #{can_edit}, can_delete: #{can_delete}, is_main: #{is_main} }}); return false;" -%>
 	<% else -%>
 		<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
 	<% end -%>
