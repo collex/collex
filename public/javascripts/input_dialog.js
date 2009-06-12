@@ -389,6 +389,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	if (saveButtonName)
 		dlg.setSaveButton(saveButtonName);
 	dlg.show(titleStr, left, top, width, height, hiddenDataHash );
+	dlg.center();
 	
 	var prompt = $(promptId);
 	if (prompt && prompt.tagName !== "TEXTAREA")
