@@ -238,6 +238,11 @@ class CachedResource < ActiveRecord::Base
     return self.solr_obj_to_str(site.thumbnail)
   end
   
+  def self.get_thumbnail_from_hit_no_site(hit)
+    image =  self.solr_obj_to_str(hit['thumbnail'])
+    return image
+  end
+  
   def self.get_link_from_uri(uri)
     hit = CachedResource.get_hit_from_uri(uri)
     return nil unless hit

@@ -122,21 +122,31 @@ module DiscussionThreadsHelper
     title = DiscussionThread.find(comment.discussion_thread_id).get_title()
     if comment.get_type() == "comment"
       thumbnail = nil #get_user_picture(comment.user_id, :thumb)
+      link = nil
+      caption = nil
     elsif comment.get_type() == "nines_object"
       hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id)
-      thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit(hit))
+      thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit_no_site(hit))
+      link = hit["url"] ? hit["url"][0] : nil
+      caption = hit['title']
     elsif comment.get_type() == "nines_exhibit"
       exhibit = Exhibit.find(comment.exhibit_id)
       thumbnail = exhibit.thumbnail
+      link = get_exhibit_url(exhibit)
+      caption = exhibit.title
     elsif comment.get_type() == "inet_object"
       thumbnail = comment.image_url
+      link = comment.link_url
+      caption = comment.link_url
     else
       title = "ERROR: ill-formed comment. (Comment type #{ comment.comment_type } is unknown)"
       thumbnail = nil
+      link = nil
+      caption = nil
     end
     thread = DiscussionThread.find(comment.discussion_thread_id)
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
-    return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), 
+    return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), :link => link, :caption => caption,
       :last_comment_author => User.find(last_comment.user_id), :last_comment_time => last_comment.updated_at }
   end
   

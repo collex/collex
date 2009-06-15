@@ -17,25 +17,15 @@
 <% # attachment params: ActiveRecord comment -%>
 
 <div class="FP_attachment">
-	<% if comment.get_type() == "nines_exhibit" -%>
-		<% exhibit = Exhibit.find(comment.exhibit_id) -%>
-		<% img = render :partial => 'img_with_progress_spinner', :locals => { :src => exhibit.thumbnail, :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 100, :height => 125 } if exhibit.thumbnail && exhibit.thumbnail.length > 0 -%>
-		<% title = get_exhibit_link(exhibit) -%>
-	<% elsif comment.get_type() == "inet_object" -%>
-		<% img = render :partial => 'img_with_progress_spinner', :locals => { :src => comment.image_url, :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 100, :height => 125 } if comment.image_url && comment.image_url.length > 0 -%>
-		<% title = make_ext_link(comment.link_url) -%>
-	<% elsif comment.get_type() == "nines_object" -%>
-		<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
-		<% img = thumbnail_image_tag(hit) -%>
-		<% title = "" -%>
-		<% if hit["title"] -%>
-			<% title = h hit["title"][0] -%>
-			<% if hit["url"] %>
-				<% title = link_to(title, hit["url"][0], { :class=> "nines_link", :target => "_blank" }) %>
-			<% end %>
-		<% end %>
+	<% comment_info = get_comment_header_info(comment) -%>
+	<% if comment_info[:link] -%>
+		<% title = link_to(comment_info[:caption], comment_info[:link], :class => 'nav_link') -%>
+	<% else -%>
+		<% title = comment_info[:caption] -%>
 	<% end -%>
-	<%= img %>
+	<% if comment_info[:thumbnail] -%>
+		<%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 100, :height => 125 } -%>
+	<% end -%>
 	<p class="FP_attachment_title"><%= title %></p>
 	<% details_id = "nines_object_#{comment.id}" -%>
 	<% details_id_show = "#{details_id}_show" -%>
@@ -44,6 +34,7 @@
 		<p><a id='<%= details_id_show %>' href="#" class='nav_link' onclick='$("<%= details_id %>").show(); $("<%= details_id_hide %>").show(); $("<%= details_id_show %>").hide(); return false;''>[Details]</a>
 			<a id='<%= details_id_hide %>' style='display:none' href="#" class='nav_link' onclick='$("<%= details_id %>").hide(); $("<%= details_id_hide %>").hide(); $("<%= details_id_show %>").show(); return false;'>[Hide Details]</a></p>
 		<div id='<%= details_id %>' class='nines_object_details' style='display:none' >
+			<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
 			<%= render :partial => 'nines_object_details', :locals => { :hit => hit, :details_id => details_id } %>
 		</div>
 	<% end -%>
