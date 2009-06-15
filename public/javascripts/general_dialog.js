@@ -235,13 +235,13 @@ var GeneralDialog = Class.create({
 						if (subel.klass)
 							image.addClassName(subel.klass);
 						row.appendChild(image);
-						row.appendChild(new Element('input', { id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token }).update(form_authenticity_token));
+						var inputEl = new Element('input', { id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token });
+						row.appendChild(inputEl);
 						
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.
 						form.writeAttribute({ enctype: "multipart/form-data", target: "upload_target", method: 'post' });
 						body.appendChild(new Element('iframe', { id: "upload_target", name: "upload_target", src: "#", style: "width:0;height:0;border:0px solid #fff;" }));
-
 					}
 				});
 			});
