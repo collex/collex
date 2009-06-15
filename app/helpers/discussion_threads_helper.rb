@@ -152,9 +152,11 @@ module DiscussionThreadsHelper
   
   def forum_title_with_tooltip(title, comment)
     comment = strip_tags(comment) if comment != nil
-    comment = comment.slice(0,200) if comment != nil
+    abbrev_comment = ""
+    abbrev_comment = comment.slice(0,100) if comment != nil
+    abbrev_comment += '...' if abbrev_comment != comment
     abbrev_title = title.slice(0,60)
     abbrev_title = abbrev_title + "..." if title.length > 60
-    "#{abbrev_title}<span><div class='discussion_title_tooltip_title'>#{title}</div>#{comment}</span>"
+    "#{abbrev_title}<span><div class='discussion_title_tooltip_title'>#{title}</div>#{abbrev_comment}</span>"
   end
 end
