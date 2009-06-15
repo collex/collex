@@ -231,7 +231,10 @@ var GeneralDialog = Class.create({
 						var image = new Element('div', { id: subel.image + '_div' });
 						var src = subel.value !== undefined ? subel.value : "";
 						image.appendChild(new Element('img', { src: src, id: subel.image + "_img", alt: '' }));
-						image.appendChild(new Element('input', { id: subel.image, type: 'file', name: subel.image }));
+						var file_input = new Element('input', { id: subel.image, type: 'file', name: subel.image });
+						if (subel.size)
+							file_input.writeAttribute({ size: subel.size});
+						image.appendChild(file_input);
 						if (subel.klass)
 							image.addClassName(subel.klass);
 						row.appendChild(image);

@@ -1495,7 +1495,7 @@ var EditProfileDialog = Class.create({
 					[ { text: 'Password:', klass: 'edit_facet_label' }, { password: 'account_password', klass: 'edit_facet_input' } ],
 					[ { text: 'Re-type password:', klass: 'edit_facet_label' }, { password: 'account_password2', klass: 'edit_facet_input' } ],
 					[ { text: 'About me:', klass: 'edit_facet_label' }, { textarea: 'aboutme', value: user.about_me, klass: 'edit_profile_textarea' } ],
-					[ { text: 'Thumbnail:', klass: 'edit_facet_label' }, { image: 'image', value: curr_image_src } ],
+					[ { text: 'Thumbnail:', klass: 'edit_facet_label' }, { image: 'image', klass: 'edit_profile_image', size: 35, value: curr_image_src } ],
 					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
