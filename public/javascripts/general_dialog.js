@@ -127,7 +127,7 @@ var GeneralDialog = Class.create({
 		// Create all the html for the dialog
 		var listenerArray = [];
 		var buttonArray = [];
-		var body = new Element('div', { id: body_style });
+		var body = new Element('div', { id: this_id + '_' + body_style });
 		body.addClassName(body_style);
 		var flash = new Element('div', { id: flash_id }).update(flash_notice);
 		flash.addClassName("flash_notice_ok");
@@ -273,7 +273,7 @@ var GeneralDialog = Class.create({
 		// that matches the value of the view parameter. Then this loop either hides or shows
 		// each element.
 		this.changePage = function(view, focus_el) {
-			var els = $$('.switchable_element');
+			var els = $(this_id).select('.switchable_element');
 			els.each(function (el) {
 				if (el.hasClassName(view))
 					el.removeClassName('hidden');

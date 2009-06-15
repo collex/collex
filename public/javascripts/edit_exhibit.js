@@ -1422,7 +1422,7 @@ var SetExhibitAuthorAlias = Class.create({
 				]
 			};
 		
-		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
+		var params = { this_id: "set_exhibit_author_alias_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('choose_objects', null);
 		dlg.center();

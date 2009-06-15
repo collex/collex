@@ -744,7 +744,7 @@ var StartDiscussionWithObject = Class.create({
 				]
 			};
 
-		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
+		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
 		var dlg = new GeneralDialog(params);
 		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler());
 		dlg.changePage('start_discussion', null);
