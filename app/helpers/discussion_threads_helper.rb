@@ -92,7 +92,7 @@ module DiscussionThreadsHelper
   end
   
   def comment_time_format(tim)
-    return tim.strftime("%b %d, %Y %I:%M%p")
+    return tim.getlocal().strftime("%b %d, %Y %I:%M%p")
   end
 
   def comment_time_format_relative(tim)

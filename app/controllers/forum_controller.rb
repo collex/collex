@@ -32,13 +32,13 @@ class ForumController < ApplicationController
   end
   public
 
-  def start_discussion
-    if !is_logged_in?
-      flash[:error] = 'You must be signed in to start a discussion.'
-      redirect_to :action => :index
-    end
-  end
-  
+#  def start_discussion
+#    if !is_logged_in?
+#      flash[:error] = 'You must be signed in to start a discussion.'
+#      redirect_to :action => :index
+#    end
+#  end
+#  
   def post_comment_to_new_thread
     if !is_logged_in?
       flash[:error] = 'You must be signed in to start a discussion.'
@@ -285,6 +285,9 @@ class ForumController < ApplicationController
     @page = params[:page] ? params[:page].to_i : 1
     @topic = DiscussionTopic.find(params[:topic])
     @threads = @topic.discussion_threads
+    @threads = @threads.sort {|a,b|
+      b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
+    }
     @total = @threads.length
     @num_pages = @total.quo(session[:items_per_page]).ceil
     @page = @num_pages if @page == -1
