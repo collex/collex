@@ -51,7 +51,7 @@ var CreateListOfObjects = Class.create({
 		// Handles the user's selection
 		this.getSelection = function(){
 			var el = parent.down("." + selClass);
-			var sel = el ? el.id : "";
+			var sel = el ? el.id.substring(el.id.indexOf('_')+1) : "";
 			return { field: parent_id, value: sel };
 		};
 		
@@ -145,13 +145,13 @@ var CreateListOfObjects = Class.create({
 			YAHOO.util.Event.addListener(id, 'click', userSelect); 
 		};
 		
-		var createRows = function(objs, selectFirst) {
+		var createRows = function(objs, selectFirst, id_prefix) {
 			objs.each(function(obj){
-				linkItem(obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
+				linkItem(id_prefix + '_' + obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
 			});
 			
 			if (initial_selection) {
-				var sel = $(initial_selection);
+				var sel = $(id_prefix + "_" + initial_selection);
 				if (sel) {
 					sel.addClassName(selClass);
 					YAHOO.util.Event.onAvailable(sel.id, function() {
@@ -180,12 +180,12 @@ var CreateListOfObjects = Class.create({
 		};
 		
 		// privileged functions
-		this.populate = function(dlg, selectFirst){
+		this.populate = function(dlg, selectFirst, id_prefix){
 			// See if the item's in the cache first, and if not, call the server for it.
 			var objs = ninesObjCache.get(populate_url);
 			
 			if (objs)
-				createRows(objs, selectFirst);
+				createRows(objs, selectFirst, id_prefix);
 			else {
 				// Call the server to get the data, then pass it to the ObjectLists
 				dlg.setFlash('Getting objects...', false);
@@ -196,7 +196,7 @@ var CreateListOfObjects = Class.create({
 						try {
 							objs = resp.responseText.evalJSON(true);
 							ninesObjCache.set(populate_url, objs);
-							createRows(objs, selectFirst);
+							createRows(objs, selectFirst, id_prefix);
 						} 
 						catch (e) {
 							new MessageBoxDlg("Error", e);
@@ -231,7 +231,9 @@ var CreateListOfObjects = Class.create({
 			var objs = [];
 			var sel = parent.select('.linkdlg_item');
 			sel.each(function(el) {
-				objs.push(el.readAttribute('id'));
+				var url = el.readAttribute('id');
+				url = url.substring(url.indexOf('_')+1);
+				objs.push(url);
 			});
 			return objs;
 		};
@@ -410,7 +412,7 @@ var LinkDlgHandler = Class.create({
 			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
 			var dlg = new GeneralDialog(dlgParams);
 			dlg.changePage('layout', null);
-			objlist.populate(dlg, true);
+			objlist.populate(dlg, true, 'rte');
 			if (starting_selection.length > 0)
 				$$(".remove").each(function(el) { el.removeClassName('hidden'); });
 			selChanged(null, linkTypes[starting_type]);

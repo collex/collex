@@ -1244,8 +1244,8 @@ var ObjectSelector = Class.create({
 		{
 			// Call the server to get the data, then pass it to the ObjectLists
 			dlg.setFlash('Getting objects...', false);
-			olUnchosen.populate(dlg);
-			olChosen.populate(dlg);
+			olUnchosen.populate(dlg, false, 'new');
+			olChosen.populate(dlg, false, 'new');
 			actions.each(function(action) {
 				action.el.observe('click', action.action);
 			});

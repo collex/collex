@@ -79,7 +79,7 @@ var ForumReplyDlg = Class.create({
 			
 			// Now select the first tab, which is the My Collection.
 			params.destination = "mycollection";
-			currSel = 'btn0';
+			currSel = 'forum_reply_dlg_btn0';
 			currSelClass = params.destination;
 			var fn = This.switch_page.bind($(currSel));
 			fn(event, params);
@@ -163,8 +163,8 @@ var ForumReplyDlg = Class.create({
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
 		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler());
 		dlg.changePage('layout', null);
-		objlist.populate(dlg);
-		exlist.populate(dlg);
+		objlist.populate(dlg, false, 'forum');
+		exlist.populate(dlg, false, 'forum');
 		dlg.center();
 		if (starting_obj_type && starting_obj_type !== 1) {
 			YAHOO.util.Event.onAvailable('reply_container', function() {	// We want this to happen after creating the RTE because the user sees that first.
@@ -172,7 +172,7 @@ var ForumReplyDlg = Class.create({
 				
 				var pages = [ 'mycollection', 'exhibit', 'weblink' ];
 				var params = { destination: pages[starting_obj_type-2] };
-				currSel = 'btn' + (starting_obj_type-2);
+				currSel = 'forum_reply_dlg_btn' + (starting_obj_type-2);
 				currSelClass = params.destination;
 				var fn = This.switch_page.bind($(currSel));
 				fn(event, params);

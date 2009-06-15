@@ -291,7 +291,7 @@ function showIllustrationEditor(event)
 	var dlg = new GeneralDialog(dlgParams);
 	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
 	dlg.changePage('layout', null);
-	objlist.populate(dlg, true);
+	objlist.populate(dlg, true, 'illust');
 	selChanged(null, values['type']);
 	dlg.center();
 }

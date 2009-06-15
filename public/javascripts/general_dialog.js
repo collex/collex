@@ -167,17 +167,17 @@ var GeneralDialog = Class.create({
 						row.appendChild(el2);
 						// BUTTON
 					} else if (subel.button !== undefined) {
-						var input = new Element('input', { id: 'btn' + buttonArray.length, 'type': 'button', value: subel.button });
+						var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: subel.button });
 						row.appendChild(input);
-						buttonArray.push({ id: 'btn' + buttonArray.length, event: 'click', klass: subel.klass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: subel.klass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
-						var a = new Element('a', { id: 'a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
+						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
 						a.addClassName('nav_link');
 						if (subel.klass)
 							a.addClassName(subel.klass);
 						row.appendChild(a);
-						listenerArray.push({ id: 'a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+						listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
 						// SELECT
 					} else if (subel.select !== undefined) {
 						var selectValue = new Element('input', { id: subel.select, name: subel.select });
@@ -187,11 +187,11 @@ var GeneralDialog = Class.create({
 						}
 						selectValue.addClassName('hidden');
 						row.appendChild(selectValue);
-						var select = new Element('select', { id: 'sel' + listenerArray.length });
+						var select = new Element('select', { id: this_id + '_sel' + listenerArray.length });
 						if (subel.klass)
 							select.addClassName(subel.klass);
 						row.appendChild(select);
-						listenerArray.push({ id: 'sel' + listenerArray.length, event: 'change', callback: selectChange, param: { id: subel.select, callback: subel.change } });
+						listenerArray.push({ id: this_id + '_sel' + listenerArray.length, event: 'change', callback: selectChange, param: { id: subel.select, callback: subel.change } });
 						if (subel.options) {
 							subel.options.each(function(opt) {
 								var opt = new Element('option', { value: opt.value}).update(opt.text);
