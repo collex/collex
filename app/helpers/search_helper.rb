@@ -491,7 +491,7 @@ module SearchHelper
         html += "<a href='#' onclick='toggle_tree(event, \"#{id}\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
         if site_is_in_constraints?(value)
-          html += display_name + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
+          html += display_name + "&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_resource', :resource => value, :remove => 'true'}, { :class => 'modify_link' }) + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
         else
           link = link_to(display_name, {:controller=>"search", :action => 'constrain_resource', :resource => value }, { :method => :post, :class => 'nav_link' })
           html += "#{link}</td><td class='num_objects'>#{number_with_delimiter(total)}"
@@ -504,7 +504,7 @@ module SearchHelper
   
   def genre_selector( genre_data )
     if genre_data[:exists]
-      html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}"
+      html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'remove_genre', :value => genre_data[:value]}, { :class => 'modify_link' })
     else
       html = "<tr><td class='limit_to_lvl1'>" + link_to("#{h genre_data[:value]}", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post, :class => 'nav_link' })
     end
@@ -514,7 +514,7 @@ module SearchHelper
 
   def free_culture_selector(count)
     if free_culture_is_in_constraints?
-      html = "<tr class='limit_to_selected'><td>Free Culture Only"
+      html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_freeculture', :remove => 'true'}, { :class => 'modify_link' })
     else
       html = "<tr><td class='limit_to_lvl1'>" + link_to("Free Culture Only", {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' })
     end
