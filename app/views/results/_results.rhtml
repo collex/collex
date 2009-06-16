@@ -16,9 +16,6 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% # parameter: results hits[]; int user_id; -%>
-<script language="JavaScript">
-	var gCollectedObjects = <%= CollectedItem.get_collected_object_array(user_id) %>;
-</script>
 <% has_exhibits = false -%>
 <% if user_id > 0 -%>
 	<% exhibit_list = Exhibit.js_array_of_all_my_exhibits(user_id) -%>

@@ -772,6 +772,10 @@ function doCollect(uri, row_num, row_id, is_logged_in)
 		evalScripts : true,
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
+	
+	// This operation changes the set of collected objects, so we need to request them again next time.
+	if (ninesObjCache)
+		ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
 }
 
 function doRemoveTag(uri, row_id, tag_name)
@@ -808,6 +812,10 @@ function doRemoveCollect(uri, row_num, row_id)
 			evalScripts : true,
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
+
+		// This operation changes the set of collected objects, so we need to request them again next time.
+		if (ninesObjCache)
+			ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
 	};
 	new ConfirmDlg("Remove Object from Collection?", "Are you sure you wish to remove this object from your collection?", "Yes", "No", uncollect);
 }
