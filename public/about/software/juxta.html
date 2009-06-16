@@ -32,22 +32,8 @@
 	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
 	<script src="/javascripts/login.js" type="text/javascript"></script>
 	<script src="/javascripts/nospam.js" type="text/javascript"></script>
-	<link href="/stylesheets/js_dialog.css" media="all" rel="stylesheet" type="text/css" />
-	<script src="/javascripts/prototype.js" type="text/javascript"></script>
-	<script src="/javascripts/application.js" type="text/javascript"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/button/button.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/container/container.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/menu/menu.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/editor/editor.js"></script>	
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/dragdrop/dragdrop.js"></script>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/resize/resize.js"></script>
-	<script src="/javascripts/general_dialog.js" type="text/javascript"></script>
-	<script src="/javascripts/login.js" type="text/javascript"></script>
-	<script src="/javascripts/nospam.js" type="text/javascript"></script>
+	<script src="/javascripts/modal_dialog.js" type="text/javascript"></script>
+	<script src="/javascripts/input_dialog.js" type="text/javascript"></script>
 </head>
 
 <body class="yui-skin-sam">
@@ -116,8 +102,22 @@
  	<div class="clear_both"></div>
 </div>
 <div id="footer_container">
-NINES: aggregating 400,877 peer‑reviewed <a href="#">digital objects</a> from 54 <a href="#">federated sites</a>.<br />
-Powered by Collex v1.4.7.12.
+NINES: aggregating <span id='num_docs'>###</span> peer&#8209;reviewed <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/resources', 'Digital Objects'); return false;">digital objects</a> from <span id='num_sites'>###</span> <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/sites', 'Federated Sites'); return false;">federated sites</a>.
+<br/>Questions? Find a bug? <a class="nav_link nospam" href="technologies nines org">Contact us</a>.
+<br />(Powered by Collex v<span id='collex_version'>###</span>.)
+<script language="JavaScript">
+	document.observe('dom:loaded', function() {
+				new Ajax.Request('/home/get_footer_data', {
+					evalScripts: true,
+					onSuccess: function(resp){
+						var data = resp.responseText.evalJSON(true);
+						$('num_docs').update(data.num_docs);
+						$('num_sites').update(data.num_sites);
+						$('collex_version').update(data.collex_version);
+					}
+				});
+		});
+</script>
 </div>    
 </body>
 </html>

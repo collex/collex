@@ -55,6 +55,10 @@ class HomeController < ApplicationController
     end
   end
   
+  def get_footer_data
+    render :partial => 'footer_data'
+  end
+  
   def news
     @site_section = :news
   end
