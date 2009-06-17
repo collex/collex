@@ -71,11 +71,11 @@ class SearchController < ApplicationController
         # single input box
         invert = (params[:search_not] == "NOT")
         parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
-        add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
-        add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
-        add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
-        add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
-        add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
+        add_title_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Title"
+        add_author_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Author"
+        add_editor_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Editor"
+        add_publisher_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Publisher"
+        add_date_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Year (YYYY)"
       end
 
      redirect_to :action => 'browse'
@@ -414,11 +414,11 @@ class SearchController < ApplicationController
    end
    public
    def auto_complete_for_search_keyword
-    auto_complete(params['search']['keyword'])
+    auto_complete(params['search']['keyword']) if params['search']  # google bot will hit this without parameters, so check for that
    end
 
    def auto_complete_for_search_phrase
-    auto_complete(params['search']['phrase'])
+    auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
    end
 #   def auto_complete_for_field_year
 #     # TODO

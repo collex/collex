@@ -18,7 +18,7 @@
 
 // Returns true if the form should be submitted.
 // Puts up a message, then returns false if the form shouldn't be submitted.
-function searchValidation(year_input_id, input_type, submit_id, submit_id2)
+function searchValidation(year_input_id, phrase_input_id, input_type, submit_id, submit_id2)
 {
 	// First disable the submit buttons so we don't get a double click.
 	// The second submit button might be null.
@@ -64,12 +64,19 @@ function searchValidation(year_input_id, input_type, submit_id, submit_id2)
 	}
 	
 	// Be sure the hint text isn't still displayed
-	if (input_year.hasClassName('inputHintStyle'))
+	var hint_text_id = null;
+	if (!input_type)
+		hint_text_id = year_input_id;
+	else if ($(input_type).value === 'Search Term')
+		hint_text_id = phrase_input_id;
+	else hint_text_id = year_input_id;
+	
+	if ($(hint_text_id).hasClassName('inputHintStyle'))
 	{
 		errorDlg("Please enter some text before searching.");
 	    return false;
-	}
-	
+	} 
+		
 	// Now see if the year item is legal. If input_type is null, then the year_input_id really is
 	// just for the year. If input_type is not null, then it is a select control that must have the value "Year".
 	if ((input_type !== null) && ($(input_type).value !== "Year (YYYY)"))	// See if the input_year element really contains a year.

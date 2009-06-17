@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 
 <div class="page_subheader">Add new search criteria or select limiters to refine your search.</div>
-<form id="add-search-constraint" onsubmit="return searchValidation('search_phrase', 'search_type', 'search_submit', null);" action="/collex/add_constraint" method="post">
+<form id="add-search-constraint" onsubmit="return searchValidation('search_notphrase', 'search_phrase', 'search_type', 'search_submit', null);" action="/collex/add_constraint" method="post">
 <table class="query">
 	<% @listed_constraints.each do |constraint_data| -%>
 		<% constraint = constraint_data[:constraint] -%>
@@ -38,8 +38,8 @@
 	<tr>
 		<td class="query_type">
     		<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-			<select id="search_type" name="search_type" class="query_type_select"><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
-		<td class="query_term"><%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>'click here to add new search term'}, {:min_chars => 2} -%></td>
+			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
+		<td class="query_term"><input name="search[notphrase]" id="search_notphrase" type="text" value='click here to add new search term' class='hidden'/><%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>'click here to add new search term'}, {:min_chars => 2} -%></td>
 		<td class="query_and-not"><select id='search_not' name='search_not' class="query_and-not_select"><option>AND</option><option>NOT</option></select>
 		</td>
 		<td class="query_remove"><input id="search_submit" type="submit" value="Add" /></td>
@@ -48,4 +48,15 @@
 </form>
 <script type="text/javascript" charset="utf-8">
     $('search_phrase').defaultValueActsAsHint();
+    $('search_notphrase').defaultValueActsAsHint();
+	
+	function searchTypeChanged(This) {
+		if (This.value === 'Search Term') {
+			$('search_notphrase').addClassName('hidden')
+			$('search_phrase').removeClassName('hidden')
+		} else {
+			$('search_phrase').addClassName('hidden')
+			$('search_notphrase').removeClassName('hidden')
+		}
+	}
   </script>
