@@ -242,6 +242,7 @@ hr.linkdlg_hr {
 .edit_facet_textarea {
 	height: 300px;
 	width: 300px;
+	margin-bottom:25px;
 }
 
 .edit_profile_textarea {

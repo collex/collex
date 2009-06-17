@@ -330,7 +330,7 @@ var EditFacetDialog = Class.create({
 					});
 					
 					// Put the details on the dialog.
-					var par = $('sel0');
+					var par = $('edit_facet_dlg_sel0');
 					$A(par.options).each(function(option) {
 						if (parseInt(option.value) === obj.parent_id)
 							option.selected = 'selected';
@@ -464,7 +464,7 @@ var EditFacetDialog = Class.create({
 					[ { text: 'Include in Carousel:', klass: 'edit_facet_label' }, { checkbox: 'carousel_include', klass: '' } ],
 					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
 					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'carousel_url', klass: 'hide_if_site edit_facet_input' } ],
-					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail' } ],
+					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail', klass: 'edit_profile_image' } ],
 					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
