@@ -108,6 +108,12 @@
 	margin:5px 0px 8px 0px;
 }
 
+.FP_attachment_collected {
+	background:transparent url(/images/forum_collected_gradient.jpg) repeat-x scroll 0 0;
+	padding-left:10px;
+	padding-top:5px;
+}
+
 .FP_replies {
 	margin:10px 0px 10px 0px;
 	padding:20px 15px 0px 15px;

@@ -46,7 +46,7 @@
 		when :my9s
 			stylesheet_link_tag "lvl2", "right_column", "tag", "search", "my9s", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", :media => "all"
 		when :discuss
-			stylesheet_link_tag "lvl2", "search", "forum", :media => "all"
+			stylesheet_link_tag "lvl2", "search", "result_row", "forum", :media => "all"
 		when :home
 			stylesheet_link_tag "index", "featured_exhibit", :media => "all"
 		when :exhibits
@@ -94,9 +94,9 @@
 		when :tag
 		  javascript_include_tag 'sidebar_tag_cloud'
 		when :my9s
-		  javascript_include_tag 'sidebar_tag_cloud', 'edit_exhibit'
+		  javascript_include_tag 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup'
 		when :discuss
-		  javascript_include_tag 'discussions'
+		  javascript_include_tag 'discussions', 'result_row_popup'
 		when :admin
 		  javascript_include_tag 'admin'
 		when :home 

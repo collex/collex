@@ -16,7 +16,13 @@
     # ---------------------------------------------------------------------------- -%>
 <% # attachment params: ActiveRecord comment -%>
 
-<div class="FP_attachment">
+<% if comment.get_type() == "nines_object" -%>
+	<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
+	<% is_collected = result_is_collected(hit) %>
+<% else -%>
+	<% is_collected = false %>
+<% end -%>
+<div class="FP_attachment<%= ' FP_attachment_collected' if is_collected %>">
 	<% comment_info = get_comment_header_info(comment) -%>
 	<% if comment_info[:link] -%>
 		<% title = link_to(comment_info[:caption], comment_info[:link], :class => 'nav_link') -%>
@@ -24,18 +30,15 @@
 		<% title = comment_info[:caption] -%>
 	<% end -%>
 	<% if comment_info[:thumbnail] -%>
-		<%= render :partial => 'img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 100, :height => 125 } -%>
+		<%= render :partial => '/forum/img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 100, :height => 125 } -%>
 	<% end -%>
 	<p class="FP_attachment_title"><%= title %></p>
 	<% details_id = "nines_object_#{comment.id}" -%>
 	<% details_id_show = "#{details_id}_show" -%>
 	<% details_id_hide = "#{details_id}_hide" -%>
 	<% if comment.get_type() == "nines_object" -%>
-		<p><a id='<%= details_id_show %>' href="#" class='nav_link' onclick='$("<%= details_id %>").show(); $("<%= details_id_hide %>").show(); $("<%= details_id_show %>").hide(); return false;''>[Details]</a>
-			<a id='<%= details_id_hide %>' style='display:none' href="#" class='nav_link' onclick='$("<%= details_id %>").hide(); $("<%= details_id_hide %>").hide(); $("<%= details_id_show %>").show(); return false;'>[Hide Details]</a></p>
-		<div id='<%= details_id %>' class='nines_object_details' style='display:none' >
-			<% hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id) -%>
-			<%= render :partial => 'nines_object_details', :locals => { :hit => hit, :details_id => details_id } %>
-		</div>
+		<p>
+			<a class="nav_link" href="#" onclick="new ResultRowDlg('/my9s/get_object_details', '<%= hit['uri'] %>', '<%= PROGRESS_SPINNER_PATH %>', { partial: '/forum/attachment', index: <%= comment.id %>, target_el: '<%= "attachment_#{comment.id}" %>'}); return false;">[view details...]</a>
+		</p>
 	<% end -%>
 </div>		

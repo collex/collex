@@ -32,14 +32,24 @@ class ResultsController < ApplicationController
       CollectedItem.collect_item(locals[:user], locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
     end
     
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    partial = params[:partial]
+    if partial == '/results/result_row'
+      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    elsif partial == '/forum/attachment'
+      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
+    end
   end
   
   def uncollect
     locals = setup_ajax_calls(params, true)
     CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
     
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    partial = params[:partial]
+    if partial == '/results/result_row'
+      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    elsif partial == '/forum/attachment'
+      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
+    end
   end
   
   def add_tag
@@ -50,13 +60,13 @@ class ResultsController < ApplicationController
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
-  def add_tag_forum
-    locals = setup_ajax_calls(params, true)
-    tag = params[:tag]
-    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
-    
-    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
-  end
+#  def add_tag_forum
+#    locals = setup_ajax_calls(params, true)
+#    tag = params[:tag]
+#    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
+#    
+#    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
+#  end
   
   def remove_tag
     locals = setup_ajax_calls(params, true)
@@ -66,13 +76,13 @@ class ResultsController < ApplicationController
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
   end
   
-  def remove_tag_forum
-    locals = setup_ajax_calls(params, true)
-    tag = params[:tag]
-    CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
-    
-    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
-  end
+#  def remove_tag_forum
+#    locals = setup_ajax_calls(params, true)
+#    tag = params[:tag]
+#    CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
+#    
+#    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
+#  end
   
   def set_annotation
     locals = setup_ajax_calls(params, true)
@@ -169,7 +179,12 @@ class ResultsController < ApplicationController
       ExhibitObject.add(exhibit.id, locals[:uri])
     end
 
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    partial = params[:partial]
+    if partial == 'result_row'
+      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    elsif partial == '/forum/attachment'
+      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
+    end
   end
 
   private

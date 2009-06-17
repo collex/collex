@@ -50,7 +50,9 @@
 	</div>
 </div>
 <% if comment.get_type() != "comment" -%>
-	<%= render :partial => 'attachment', :locals => { :comment => comment } %>
+	<div id="attachment_<%= comment.id %>">
+		<%= render :partial => 'attachment', :locals => { :comment => comment } %>
+	</div>
 <% end -%>
 <div class="clear_both"></div>
 <% if comment.user_modified_at -%>

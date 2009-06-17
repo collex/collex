@@ -15,14 +15,25 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% #  result_row_for_popup parameters: hit hit; -%>
+<% #  result_row_for_popup parameters: hit hit; hash extra_button_data{partial, index, target_el}  -%>
 <% index = -1
 	has_exhibits = false
 	add_border = false -%>
 <div>
 	<% row_id = "search_result_#{index}" -%>
     <%# The left side that contains the checkbox, graphic and the collect button -%>
-	<div class="search_result_left">
+	<div class="search_result_left_for_popup">
+		<% if extra_button_data[:partial] -%>
+			<div class="search_result_buttons">
+				<% is_collected = result_is_collected(hit) -%>
+				<% if is_collected -%>
+					<%= result_button("Uncollect", "uncollect_#{extra_button_data[:index]}", "doRemoveCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');") %>
+					<%= result_button("Exhibit", "exhibit_#{extra_button_data[:index]}", "doAddToExhibit('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');") %>
+				<% else -%>
+					<%= result_button("Collect", "collect_#{-1}", "doCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}', #{is_logged_in? ? true : false});") %>
+				<% end -%>
+			</div>
+		<% end -%>
 		<div class="search_result_image"><%= thumbnail_image_tag(hit) %></div>
     </div>
 

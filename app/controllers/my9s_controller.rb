@@ -854,7 +854,7 @@ class My9sController < ApplicationController
   
   def get_object_details
     hit = CachedResource.get_hit_from_uri(params[:uri])
-    render :partial => '/results/result_row_for_popup', :locals => { :hit => hit }
+    render :partial => '/results/result_row_for_popup', :locals => { :hit => hit, :extra_button_data => { :partial => params[:partial], :index => params[:index], :target_el  => params[:target_el]} }
   end
 
   private

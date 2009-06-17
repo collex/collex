@@ -753,7 +753,7 @@ var StartDiscussionWithObject = Class.create({
 	}
 });
 
-function doCollect(uri, row_num, row_id, is_logged_in)
+function doCollect(partial, uri, row_num, row_id, is_logged_in)
 {
 	if (!is_logged_in) {
 		var dlg = new SignInDlg();
@@ -767,8 +767,9 @@ function doCollect(uri, row_num, row_id, is_logged_in)
 	ptr.addClassName('result_with_tag');
 	var full_text = getFullText(row_id);
 	
+	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 	new Ajax.Updater(row_id, "/results/collect", {
-		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
+		parameters : params,
 		evalScripts : true,
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
@@ -791,24 +792,25 @@ function doRemoveTag(uri, row_id, tag_name)
 	});
 }
 
-function doRemoveTagForum(uri, row_id, tag_name)
-{
-	new Ajax.Updater(row_id, "/results/remove_tag_forum", {
-		parameters : { uri: uri, row_id: row_id, tag: tag_name },
-		evalScripts : true,
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-	});
-}
+//function doRemoveTagForum(uri, row_id, tag_name)
+//{
+//	new Ajax.Updater(row_id, "/results/remove_tag_forum", {
+//		parameters : { uri: uri, row_id: row_id, tag: tag_name },
+//		evalScripts : true,
+//		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+//	});
+//}
 
-function doRemoveCollect(uri, row_num, row_id)
+function doRemoveCollect(partial, uri, row_num, row_id)
 {
 	var uncollect = function() {
 		var tr = document.getElementById(row_id);
 		tr.className = 'result_without_tag'; 
 		var full_text = getFullText(row_id);
+		var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 		
 		new Ajax.Updater(row_id, "/results/uncollect", {
-			parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&full_text=" + full_text,
+			parameters : params,
 			evalScripts : true,
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
@@ -851,13 +853,13 @@ function doAddTag(parent_id, uri, row_num, row_id)
 		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text', null, null );
 }
 
-function doAddTagForum(parent_id, uri, row_id)
-{
-	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
-		row_id,
-		"/results/add_tag_forum", 
-		$H({ uri: uri, row_id: row_id }), 'text', null, null );
-}
+//function doAddTagForum(parent_id, uri, row_id)
+//{
+//	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
+//		row_id,
+//		"/results/add_tag_forum", 
+//		$H({ uri: uri, row_id: row_id }), 'text', null, null );
+//}
 
 function realLinkToEditorLink(str) {
 	// Turn real links into our links. Take this:
@@ -938,11 +940,11 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 	});
 }
 
-function doAddToExhibit(uri, index, row_id)
+function doAddToExhibit(partial, uri, index, row_id)
 {
 	if (exhibit_names.length === 0) {
 		new MessageBoxDlg('Exhibits', 
-			'You have not yet created any exhibits. <a href="/my9s" class="nav_link" >Click here</a> to get started with the Exhibi Wizard.');
+			'You have not yet created any exhibits. <a href="/my9s" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
 	} else {
 		var arr = row_id.split('-');
 		var row_num = arr[arr.length-1];
@@ -953,7 +955,7 @@ function doAddToExhibit(uri, index, row_id)
 			"exhibit_" + index,
 			row_id + ",exhibited_objects_container",
 			"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects", 
-			$H({ uri: uri, index: index, row_num: row_num }), 'select',
+			$H({ partial: partial, uri: uri, row_num: index }), 'select',
 			exhibit_names, null);
 	}
 }

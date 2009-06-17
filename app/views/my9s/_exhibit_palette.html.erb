@@ -27,7 +27,7 @@
 			<% 0.upto(9) do -%>
 				<td>
 					<% if count < collected_object_thumbnails.length -%>
-						<a href="#" onclick="new ResultRowDlg('/my9s/get_object_details', '<%= collected_object_thumbnails[count][:uri] %>', '<%= PROGRESS_SPINNER_PATH %>'); return false;">
+						<a href="#" onclick="new ResultRowDlg('/my9s/get_object_details', '<%= collected_object_thumbnails[count][:uri] %>', '<%= PROGRESS_SPINNER_PATH %>', {}); return false;">
 							<%= render :partial => 'forum/img_with_progress_spinner', :locals => { :src => collected_object_thumbnails[count][:image], :alt => collected_object_thumbnails[count][:title], :title => collected_object_thumbnails[count][:title] + " (click for details)", :width => "25", :height => "25" } %>
 						</a>
 						<% count = count + 1 -%>

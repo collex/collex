@@ -26,6 +26,14 @@ hr.search_results_hr {
 	text-align:center;
 }
 
+.search_result_left_for_popup {
+	height:100px;
+	width:500px;
+	margin:0px 15px 0px 0px;
+	float:left;
+	text-align:center;
+}
+
 .search_result_image {
 	width:100px;
 	height:100px;
