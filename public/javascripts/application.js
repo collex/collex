@@ -753,7 +753,7 @@ var StartDiscussionWithObject = Class.create({
 	}
 });
 
-function doCollect(partial, uri, row_num, row_id, is_logged_in)
+function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 {
 	if (!is_logged_in) {
 		var dlg = new SignInDlg();
@@ -771,6 +771,7 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in)
 	new Ajax.Updater(row_id, "/results/collect", {
 		parameters : params,
 		evalScripts : true,
+		onSuccess: function(resp) { if (successCallback) successCallback(resp); },
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 	
@@ -801,7 +802,7 @@ function doRemoveTag(uri, row_id, tag_name)
 //	});
 //}
 
-function doRemoveCollect(partial, uri, row_num, row_id)
+function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 {
 	var uncollect = function() {
 		var tr = document.getElementById(row_id);
@@ -812,6 +813,7 @@ function doRemoveCollect(partial, uri, row_num, row_id)
 		new Ajax.Updater(row_id, "/results/uncollect", {
 			parameters : params,
 			evalScripts : true,
+			onSuccess: function(resp) { if (successCallback) successCallback(resp); },
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 

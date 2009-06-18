@@ -34,6 +34,7 @@ var ResultRowDlg = Class.create({
 		ajax_params.uri = uri;
 		var populate = function() {
 			new Ajax.Request(populate_action, { method: 'get', parameters: ajax_params,
+				evalScripts : true,
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
 					try {
@@ -46,7 +47,7 @@ var ResultRowDlg = Class.create({
 					// We got the details. Now put it on the dialog.
 					var details_arr = $$('.result_row_details');
 					var details = details_arr[0];
-					details.update("<table>" + obj + "</table>");
+					details.update(obj);
 					var hidden_els = details.select(".search_result_data .hidden");
 					hidden_els.each(function(el) {
 						el.removeClassName('hidden');

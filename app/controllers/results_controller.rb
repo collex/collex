@@ -186,6 +186,11 @@ class ResultsController < ApplicationController
       render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
     end
   end
+  
+  def redraw_result_row_for_popup_buttons
+    hit = get_from_cache(params[:uri])
+    render :partial => 'result_row_for_popup_buttons', :locals => { :hit => hit, :index => params[:index], :partial => params[:partial], :target_el => params[:target_el] }
+  end
 
   private
   def setup_ajax_calls(params, is_in_cache)

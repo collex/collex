@@ -24,11 +24,8 @@
     <%# The left side that contains the checkbox, graphic and the collect button -%>
 	<div class="search_result_left_for_popup">
 		<% if extra_button_data[:partial] -%>
-			<div class="search_result_buttons">
-				<% is_collected = result_is_collected(hit) -%>
-				<%= result_button("Uncollect", "uncollect_#{extra_button_data[:index]}", "doRemoveCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');", is_collected) %>
-				<%= result_button("Exhibit", "exhibit_#{extra_button_data[:index]}", "doAddToExhibit('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');", is_collected) %>
-				<%= result_button("Collect", "collect_#{-1}", "doCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}', #{is_logged_in? ? true : false});", !is_collected) %>
+			<div id="search_result_buttons" class="search_result_buttons">
+				<%= render :partial => '/results/result_row_for_popup_buttons', :locals => { :hit => hit, :index => extra_button_data[:index], :partial  => extra_button_data[:partial], :target_el => extra_button_data[:target_el] } %>
 			</div>
 		<% end -%>
 		<div class="search_result_image"><%= thumbnail_image_tag(hit) %></div>

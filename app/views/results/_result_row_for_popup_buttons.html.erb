@@ -1,0 +1,29 @@
+<%
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+	
+<% #  result_row_for_popup_buttons parameters: hit hit, index, partial, target_el  -%>
+<script language="javascript">
+	redrawResultRowForPopupButtons = function() {
+		new Ajax.Updater('search_result_buttons', 
+			'/results/redraw_result_row_for_popup_buttons', 
+			{ parameters: { uri: '<%=hit['uri']%>', index: <%=index%>, partial: '<%=partial%>', target_el: '<%=target_el%>' } }
+		)};
+</script>
+<% is_collected = result_is_collected(hit) -%>
+<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', redrawResultRowForPopupButtons);", is_collected) %>
+<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}');", is_collected) %>
+<%= result_button("Collect", "collect_#{-1}", "doCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', #{is_logged_in? ? true : false}, redrawResultRowForPopupButtons);", !is_collected) %>
