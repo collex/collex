@@ -24,7 +24,7 @@
 		<% ret = format_constraint(constraint) -%>
 		<tr>
 			<td class="query_type"><%= ret[:title] %></td>
-			<td class="query_term"><%= ret[:value] %></td>
+			<td class="query_term"><%=h ret[:value] %></td>
 			<td class="query_and-not">
 					<% # we want to post back to the server if the user changed the selection by either a mouse click or keypress. We need to make sure that there really was a change, so only post back if the current value doesn't equal the starting value (starting value is ret[:not]) -%>
 					<% is_not = ret[:not]?'true':'false' # make sure that a string value is used for the following script -%>
