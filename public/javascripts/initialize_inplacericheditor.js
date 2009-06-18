@@ -287,7 +287,7 @@ function showIllustrationEditor(event)
 			]
 		};
 		
-	var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
+	var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
 	var dlg = new GeneralDialog(dlgParams);
 	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
 	dlg.changePage('layout', null);
