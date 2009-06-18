@@ -47,7 +47,16 @@ var ForumReplyDlg = Class.create({
 		}
 		
 		if (!logged_in) {
-			new MessageBoxDlg("Warning", "You must be logged in to create a comment");
+			var dlg = new SignInDlg();
+			dlg.setInitialMessage("You must be logged in to create a comment.");
+			var url = '' + window.location;
+			if (url.indexOf('?') > 0)
+				url += '&';
+			else
+				url += '?';
+			url += 'script=ForumReplyDlg';
+			dlg.setRedirectPage(url);
+			dlg.show('sign_in');
 			return;
 		}
 

@@ -41,7 +41,7 @@
 						populate_nines_obj_url: '/forum/get_nines_obj_list',
 						progress_img: '<%=PROGRESS_SPINNER_PATH %>',
 						logged_in: <%= is_logged_in? %>,
-						redirect: '/forum/view_topic?topic=<%= topic.id %>&page=-1'
+						redirect: '/forum/view_topic?topic=<%= topic.id %>&page=1'
 					});
 					return false;
 			    };
@@ -49,6 +49,9 @@
 				YAHOO.util.Event.onAvailable('"new_post_<%= topic.id %>"-button', function() {
 					$('"new_post_<%= topic.id %>"-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
 				}, this);
+			<% if @script == 'ForumReplyDlg' %>
+				onButtonClick();
+			<% end %>
 			});
 		</script>
 		</td>

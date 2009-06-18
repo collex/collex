@@ -59,6 +59,9 @@
 				YAHOO.util.Event.onAvailable('replyButton-button', function() {
 					$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
 				}, this);
+			<% if @script == 'ForumReplyDlg' %>
+				onButtonClick();
+			<% end %>
 			});
 		</script>
 	</div>

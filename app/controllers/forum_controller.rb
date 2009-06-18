@@ -281,27 +281,47 @@ class ForumController < ApplicationController
   public
   
   def view_topic
-    session[:items_per_page] ||= 10
-    @page = params[:page] ? params[:page].to_i : 1
-    @topic = DiscussionTopic.find(params[:topic])
-    @threads = @topic.discussion_threads
-    @threads = @threads.sort {|a,b|
-      b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
-    }
-    @total = @threads.length
-    @num_pages = @total.quo(session[:items_per_page]).ceil
-    @page = @num_pages if @page == -1
-    @page = 1 if @page == 0
-    start = (@page-1) * session[:items_per_page]
-    @threads = @threads.slice(start,session[:items_per_page])
+    if params[:script]
+      session[:script] = params[:script]
+      params[:script] = nil
+      redirect_to params
+    else
+      if session[:script]
+        @script = session[:script]
+        session[:script] = nil
+      end
+      session[:items_per_page] ||= 10
+      @page = params[:page] ? params[:page].to_i : 1
+      @topic = DiscussionTopic.find(params[:topic])
+      @threads = @topic.discussion_threads
+      @threads = @threads.sort {|a,b|
+        b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
+      }
+      @total = @threads.length
+      @num_pages = @total.quo(session[:items_per_page]).ceil
+      @page = @num_pages if @page == -1
+      @page = 1 if @page == 0
+      start = (@page-1) * session[:items_per_page]
+      @threads = @threads.slice(start,session[:items_per_page])
+    end
   end
   
   def view_thread
-    retrieve_thread(params)
-    num_views = @thread.number_of_views
-    num_views = 0 if num_views == nil
-    num_views += 1
-    @thread.update_attribute(:number_of_views, num_views)
+    if params[:script]
+      session[:script] = params[:script]
+      params[:script] = nil
+      redirect_to params
+    else
+      if session[:script]
+        @script = session[:script]
+        session[:script] = nil
+      end
+      retrieve_thread(params)
+      num_views = @thread.number_of_views
+      num_views = 0 if num_views == nil
+      num_views += 1
+      @thread.update_attribute(:number_of_views, num_views)
+    end
   end
 
   private
@@ -387,7 +407,17 @@ class ForumController < ApplicationController
    end
   
   def index
-     session[:discussion_topic_sort] ||= 'date'
+    if params[:script]
+      session[:script] = params[:script]
+      params[:script] = nil
+      redirect_to params
+    else
+      if session[:script]
+        @script = session[:script]
+        session[:script] = nil
+      end
+      session[:discussion_topic_sort] ||= 'date'
+    end
   end
   
   def sort_by_topic
