@@ -106,6 +106,10 @@ hr.search_results_hr {
 	display: block;
 }
 
+.search_result_buttons a.hidden {
+	display: none;
+}
+
 .search_result_buttons a:hover {
 	background:url(/images/lvl2_result_row_button_rl.jpg) no-repeat scroll left top;
 }

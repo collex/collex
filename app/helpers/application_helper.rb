@@ -41,8 +41,9 @@ module ApplicationHelper
     return "#{el_str}.addClassName(\"#{class1}\"); #{el_str}.removeClassName(\"#{class2}\");"
   end
   
-  def result_button(text, id, action)
-    "<a id='#{id}' onclick='#{action.gsub('\'', '"')}; return false;' />#{text}</a>"
+  def result_button(text, id, action, visible)
+    cls = visible ? "" : "class='hidden' "
+    "<a id='#{id}' #{cls}onclick='#{action.gsub('\'', '"')}; return false;' />#{text}</a>"
     # "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
   

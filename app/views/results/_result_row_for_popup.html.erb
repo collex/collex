@@ -26,12 +26,9 @@
 		<% if extra_button_data[:partial] -%>
 			<div class="search_result_buttons">
 				<% is_collected = result_is_collected(hit) -%>
-				<% if is_collected -%>
-					<%= result_button("Uncollect", "uncollect_#{extra_button_data[:index]}", "doRemoveCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');") %>
-					<%= result_button("Exhibit", "exhibit_#{extra_button_data[:index]}", "doAddToExhibit('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');") %>
-				<% else -%>
-					<%= result_button("Collect", "collect_#{-1}", "doCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}', #{is_logged_in? ? true : false});") %>
-				<% end -%>
+				<%= result_button("Uncollect", "uncollect_#{extra_button_data[:index]}", "doRemoveCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');", is_collected) %>
+				<%= result_button("Exhibit", "exhibit_#{extra_button_data[:index]}", "doAddToExhibit('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}');", is_collected) %>
+				<%= result_button("Collect", "collect_#{-1}", "doCollect('#{extra_button_data[:partial]}', '#{hit['uri']}', #{extra_button_data[:index]}, '#{extra_button_data[:target_el]}', #{is_logged_in? ? true : false});", !is_collected) %>
 			</div>
 		<% end -%>
 		<div class="search_result_image"><%= thumbnail_image_tag(hit) %></div>

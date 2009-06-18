@@ -21,7 +21,7 @@
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
 
 <script language="javascript">
-	var exhibit_names = [ <%= Exhibit.js_array_of_all_my_exhibits(user_id) if user_id > 0 %> ];
+	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];
 </script>
 
 <div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
