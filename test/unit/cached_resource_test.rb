@@ -57,17 +57,17 @@ class CachedResourceTest < Test::Unit::TestCase
     assert_nil hit
   end
   
-  def test_get_all_collections
-    # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
-    colls = CachedResource.get_all_collections(@paul)
-    assert_equal 3, colls.length
-    assert_equal 1, colls[0]['thumbnail'].length
-    assert_equal "http://resource/1/paul", colls[0]['uri']
-    assert_equal 1, colls[1]['thumbnail'].length
-    assert_equal "http://resource/3/both", colls[1]['uri']
-    assert_equal 1, colls[1]['thumbnail'].length
-    assert_equal "http://resource/4/paul_untagged", colls[2]['uri']
-  end
+#  def test_get_all_collections
+#    # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
+#    colls = CachedResource.get_all_collections(@paul)
+#    assert_equal 3, colls.length
+#    assert_equal 1, colls[0]['thumbnail'].length
+#    assert_equal "http://resource/1/paul", colls[0]['uri']
+#    assert_equal 1, colls[1]['thumbnail'].length
+#    assert_equal "http://resource/3/both", colls[1]['uri']
+#    assert_equal 1, colls[1]['thumbnail'].length
+#    assert_equal "http://resource/4/paul_untagged", colls[2]['uri']
+#  end
   
   def test_get_hits_for_tag
     hits = CachedResource.get_hits_for_tag("good", @paul)
@@ -85,13 +85,13 @@ class CachedResourceTest < Test::Unit::TestCase
     hits = CachedResource.get_hits_for_tag("good", nil)
   end
   
-  def test_get_all_untagged
-    hits = CachedResource.get_all_untagged(nil)
-    assert_equal 0, hits.length
-    hits = CachedResource.get_all_untagged(@paul)
-    assert_equal 1, hits.length
-    assert_equal "http://resource/4/paul_untagged", hits[0]['uri']
-  end
+#  def test_get_all_untagged
+#    hits = CachedResource.get_all_untagged(nil)
+#    assert_equal 0, hits.length
+#    hits = CachedResource.get_all_untagged(@paul)
+#    assert_equal 1, hits.length
+#    assert_equal "http://resource/4/paul_untagged", hits[0]['uri']
+#  end
   
   def test_recache_properties
     cached_resources = CachedResource.find(:all)

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090611214745) do
+ActiveRecord::Schema.define(:version => 20090619184649) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -25,11 +25,6 @@ ActiveRecord::Schema.define(:version => 20090611214745) do
   end
 
   add_index "cached_resources", ["uri"], :name => "index_cached_resources_on_uri"
-
-  create_table "cached_resources_tags", :id => false, :force => true do |t|
-    t.integer "cached_resource_id"
-    t.integer "tag_id"
-  end
 
   create_table "collected_items", :force => true do |t|
     t.integer  "user_id",            :limit => 10, :precision => 10, :scale => 0
@@ -161,14 +156,6 @@ ActiveRecord::Schema.define(:version => 20090611214745) do
     t.datetime "updated_at"
   end
 
-  create_table "interpretations", :force => true do |t|
-    t.integer  "user_id"
-    t.text     "object_uri"
-    t.text     "annotation"
-    t.datetime "created_on"
-    t.datetime "updated_on"
-  end
-
   create_table "logs", :force => true do |t|
     t.string   "user"
     t.string   "request_method"
@@ -214,12 +201,6 @@ ActiveRecord::Schema.define(:version => 20090611214745) do
     t.integer  "tag_id",            :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "taggings", :force => true do |t|
-    t.integer  "tag_id"
-    t.integer  "interpretation_id"
-    t.datetime "created_on"
   end
 
   create_table "tags", :force => true do |t|

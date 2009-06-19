@@ -18,8 +18,14 @@ module SearchHelper
   private
   def get_collected_item(hit)
     return nil if session[:user] == nil
+    if @cached_collected_item
+      if @cached_collected_item[:user] == session[:user][:username] && @cached_collected_item[:uri] == hit['uri']
+        return @cached_collected_item[:item]
+      end
+    end
     user = User.find_by_username(session[:user][:username])
     item = CollectedItem.get(user, hit['uri'])
+    @cached_collected_item = { :user => session[:user][:username], :uri => hit['uri'], :item => item }
     return item
   end
   

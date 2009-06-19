@@ -30,80 +30,80 @@ class CachedResource < ActiveRecord::Base
   end
   alias_method :solr_resource, :resource
   
-  CLOUD_SQL = { 
-    :archive => "select value as name, count(value) as freq from cached_properties as props join cached_resources as docs on docs.id=props.cached_resource_id where props.name = 'archive'  group by value order by value limit ?",
-    :agent_facet => "select value as name, count(value) as freq from cached_properties as agents join cached_resources as docs on docs.id=agents.cached_resource_id  where agents.name like 'role_%' group by value order by value limit ?", 
-    :tag => "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name limit ?",
-    :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id where genres.name = 'genre'  group by value order by name limit ?",     
-    :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id group by username order by name limit ?",
-    :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id where dates.name = 'date_label' group by dates.value order by value limit ?"
-  }
+#  CLOUD_SQL = { 
+#    :archive => "select value as name, count(value) as freq from cached_properties as props join cached_resources as docs on docs.id=props.cached_resource_id where props.name = 'archive'  group by value order by value limit ?",
+#    :agent_facet => "select value as name, count(value) as freq from cached_properties as agents join cached_resources as docs on docs.id=agents.cached_resource_id  where agents.name like 'role_%' group by value order by value limit ?", 
+#    :tag => "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name limit ?",
+#    :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id where genres.name = 'genre'  group by value order by name limit ?",     
+#    :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id group by username order by name limit ?",
+#    :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id where dates.name = 'date_label' group by dates.value order by value limit ?"
+#  }
+#  
+#  CLOUD_BY_USER_SQL = { 
+#    :archive => "select value as name, count(value) as freq from cached_properties as props join cached_resources as docs on docs.id=props.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and props.name = 'archive' group by value order by value limit ?",
+#    :agent_facet => "select value as name, count(value) as freq from cached_properties as agents join cached_resources as docs on docs.id=agents.cached_resource_id join interpretations as i on docs.uri=i.object_uri where user_id=? and agents.name like 'role_%' group by value order by value limit ?", 
+#    :tag => "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id join collected_items as i on tagassigns.collected_item_id=i.id where user_id=? group by name order by name limit ?",
+#    :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and genres.name = 'genre' group by value order by value limit ?",
+#    :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id where users.id = ? group by username order by name limit ?",
+#    :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id join interpretations as i on docs.uri=i.object_uri where user_id=? and dates.name = 'date_label' group by dates.value order by value limit ?",
+#    :all_tags => "select name, count(name) as freq from tags join taggings on tags.id=taggings.tag_id join interpretations as i on taggings.interpretation_id=i.id where user_id=? group by name order by name"
+#  }
   
-  CLOUD_BY_USER_SQL = { 
-    :archive => "select value as name, count(value) as freq from cached_properties as props join cached_resources as docs on docs.id=props.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and props.name = 'archive' group by value order by value limit ?",
-    :agent_facet => "select value as name, count(value) as freq from cached_properties as agents join cached_resources as docs on docs.id=agents.cached_resource_id join interpretations as i on docs.uri=i.object_uri where user_id=? and agents.name like 'role_%' group by value order by value limit ?", 
-    :tag => "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id join collected_items as i on tagassigns.collected_item_id=i.id where user_id=? group by name order by name limit ?",
-    :genre => "select value as name, count(value) as freq from cached_properties as genres join cached_resources as docs on docs.id=genres.cached_resource_id join interpretations as i on docs.uri=i.object_uri  where user_id=? and genres.name = 'genre' group by value order by value limit ?",
-    :username => "select username as name, count(username) as freq from users join interpretations as i on users.id=i.user_id where users.id = ? group by username order by name limit ?",
-    :year => "select value as name, count(value) as freq from cached_properties as dates join cached_resources as docs on dates.cached_resource_id=docs.id join interpretations as i on docs.uri=i.object_uri where user_id=? and dates.name = 'date_label' group by dates.value order by value limit ?",
-    :all_tags => "select name, count(name) as freq from tags join taggings on tags.id=taggings.tag_id join interpretations as i on taggings.interpretation_id=i.id where user_id=? group by name order by name"
-  }
-  
-  LIST_SQL_SELECT = "select docs.* from cached_resources as docs"
-  LIST_SQL_COUNT = "select count(*) as hits from cached_resources as docs"
-  LIST_SQL_ORDER_AND_LIMIT = " limit ?,?"
-  
-  LIST_BY_TAG_SQL = {
-    :archive => "join cached_properties props on docs.id = props.cached_resource_id where name='archive' and value=?",
-    :agent_facet => "join cached_properties as props on docs.id=props.cached_resource_id where props.name like 'role_%' and props.value = ?", 
-    :tag => "join cached_resources_tags as doc_tags on docs.id=doc_tags.cached_resource_id join tags on doc_tags.tag_id=tags.id where tags.name=?", 
-    :genre => "join cached_properties as props on docs.id=props.cached_resource_id where props.name = 'genre' and props.value = ?",
-    :username => "join interpretations as i on docs.uri=i.object_uri join users on i.user_id=users.id where i.user_id.username=?",
-    :year => "join cached_properties as props on docs.id=props.cached_resource_id where props.name = 'date_label' and props.value = ?"
-  }
+#  LIST_SQL_SELECT = "select docs.* from cached_resources as docs"
+#  LIST_SQL_COUNT = "select count(*) as hits from cached_resources as docs"
+#  LIST_SQL_ORDER_AND_LIMIT = " limit ?,?"
+#  
+#  LIST_BY_TAG_SQL = {
+#    :archive => "join cached_properties props on docs.id = props.cached_resource_id where name='archive' and value=?",
+#    :agent_facet => "join cached_properties as props on docs.id=props.cached_resource_id where props.name like 'role_%' and props.value = ?", 
+#    :tag => "join cached_resources_tags as doc_tags on docs.id=doc_tags.cached_resource_id join tags on doc_tags.tag_id=tags.id where tags.name=?", 
+#    :genre => "join cached_properties as props on docs.id=props.cached_resource_id where props.name = 'genre' and props.value = ?",
+#    :username => "join interpretations as i on docs.uri=i.object_uri join users on i.user_id=users.id where i.user_id.username=?",
+#    :year => "join cached_properties as props on docs.id=props.cached_resource_id where props.name = 'date_label' and props.value = ?"
+#  }
+#
+#  LIST_BY_USER_BY_TAG_SQL = {
+#    :archive => "join cached_properties props on docs.id = props.cached_resource_id 
+#                 join interpretations as i on docs.uri=i.object_uri 
+#                 where name='archive' and value=? and i.user_id = ?",
+#    :agent_facet => "join interpretations as i on docs.uri=i.object_uri 
+#                     join cached_properties as props on docs.id=props.cached_resource_id 
+#                     where props.name like 'role_%' and props.value = ? and i.user_id = ?", 
+#    :tag => "join interpretations as i on docs.uri=i.object_uri 
+#             join cached_resources_tags as doc_tags on docs.id=doc_tags.cached_resource_id 
+#             join tags on doc_tags.tag_id=tags.id 
+#             where tags.name=? and i.user_id = ?", 
+#    :genre => "join interpretations as i on docs.uri=i.object_uri 
+#               join cached_properties as props on docs.id=props.cached_resource_id 
+#               where props.name = 'genre' and props.value = ? and i.user_id = ?",   
+#    :username => "join interpretations as i on docs.uri=i.object_uri 
+#                  join users on i.user_id=users.id where users.username=? and i.user_id = ?",
+#    :year => "join interpretations as i on docs.uri=i.object_uri 
+#              join cached_properties as props on docs.id=props.cached_resource_id 
+#              where props.name = 'date_label' and props.value = ? and i.user_id = ?"
+#  }
 
-  LIST_BY_USER_BY_TAG_SQL = {
-    :archive => "join cached_properties props on docs.id = props.cached_resource_id 
-                 join interpretations as i on docs.uri=i.object_uri 
-                 where name='archive' and value=? and i.user_id = ?",
-    :agent_facet => "join interpretations as i on docs.uri=i.object_uri 
-                     join cached_properties as props on docs.id=props.cached_resource_id 
-                     where props.name like 'role_%' and props.value = ? and i.user_id = ?", 
-    :tag => "join interpretations as i on docs.uri=i.object_uri 
-             join cached_resources_tags as doc_tags on docs.id=doc_tags.cached_resource_id 
-             join tags on doc_tags.tag_id=tags.id 
-             where tags.name=? and i.user_id = ?", 
-    :genre => "join interpretations as i on docs.uri=i.object_uri 
-               join cached_properties as props on docs.id=props.cached_resource_id 
-               where props.name = 'genre' and props.value = ? and i.user_id = ?",   
-    :username => "join interpretations as i on docs.uri=i.object_uri 
-                  join users on i.user_id=users.id where users.username=? and i.user_id = ?",
-    :year => "join interpretations as i on docs.uri=i.object_uri 
-              join cached_properties as props on docs.id=props.cached_resource_id 
-              where props.name = 'date_label' and props.value = ? and i.user_id = ?"
-  }
-
-  DOCUMENT_LIMIT = 1000
+#  DOCUMENT_LIMIT = 1000
   
   # Returns a sorted array of [name,freq] pairs for the specified cloud type and optional user_id
   # TODO-PER: This is probably obsolete and can go away.
-  def self.cloud( type, user=nil, limit=nil )
-    type = type.to_sym
-    limit = limit.nil? ? DOCUMENT_LIMIT : limit.to_i
-          
-    cloud_of_ar_objects = if user.nil? 
-      find_by_sql([ CLOUD_SQL[type], limit ]) 
-    else
-      find_by_sql([ CLOUD_BY_USER_SQL[type], user, limit ])
-    end      
-         
-    # convert active record objects to [name,freq] pairs
-    unless cloud_of_ar_objects.nil?  
-      return cloud_of_ar_objects.map { |entry| [ entry.name, entry.freq.to_i ] }
-    else
-      return []
-    end
-  end
+#  def self.cloud( type, user=nil, limit=nil )
+#    type = type.to_sym
+#    limit = limit.nil? ? DOCUMENT_LIMIT : limit.to_i
+#          
+#    cloud_of_ar_objects = if user.nil? 
+#      find_by_sql([ CLOUD_SQL[type], limit ]) 
+#    else
+#      find_by_sql([ CLOUD_BY_USER_SQL[type], user, limit ])
+#    end      
+#         
+#    # convert active record objects to [name,freq] pairs
+#    unless cloud_of_ar_objects.nil?  
+#      return cloud_of_ar_objects.map { |entry| [ entry.name, entry.freq.to_i ] }
+#    else
+#      return []
+#    end
+#  end
   
   private
   def self.tag_cloud(user)
@@ -186,21 +186,21 @@ class CachedResource < ActiveRecord::Base
   
   # Returns a sorted array of CachedResource objects associated with a given cloud tag and optionally restricts by user
   # TODO-PER: This is only called from the sidebar, so it can probably go away.
-  def self.list_from_cloud_tag( type, tag, user=nil, offset=0, limit=nil )
-    type = type.to_sym
-    offset = offset.to_i
-    limit = limit.nil? ? DOCUMENT_LIMIT : limit.to_i
-
-     if user.nil? 
-       list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_TAG_SQL[type]} #{LIST_SQL_ORDER_AND_LIMIT}", tag, offset, limit ]) 
-       count = find_by_sql([ "#{LIST_SQL_COUNT} #{LIST_BY_TAG_SQL[type]}", tag ]).first.hits.to_i
-     else
-       list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_USER_BY_TAG_SQL[type]} #{LIST_SQL_ORDER_AND_LIMIT}", tag, user, offset, limit ]) 
-       count = find_by_sql([ "#{LIST_SQL_COUNT} #{LIST_BY_USER_BY_TAG_SQL[type]}", tag, user ]).first.hits.to_i
-     end      
-     
-     return list, count
-  end   
+#  def self.list_from_cloud_tag( type, tag, user=nil, offset=0, limit=nil )
+#    type = type.to_sym
+#    offset = offset.to_i
+#    limit = limit.nil? ? DOCUMENT_LIMIT : limit.to_i
+#
+#     if user.nil? 
+#       list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_TAG_SQL[type]} #{LIST_SQL_ORDER_AND_LIMIT}", tag, offset, limit ]) 
+#       count = find_by_sql([ "#{LIST_SQL_COUNT} #{LIST_BY_TAG_SQL[type]}", tag ]).first.hits.to_i
+#     else
+#       list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_USER_BY_TAG_SQL[type]} #{LIST_SQL_ORDER_AND_LIMIT}", tag, user, offset, limit ]) 
+#       count = find_by_sql([ "#{LIST_SQL_COUNT} #{LIST_BY_USER_BY_TAG_SQL[type]}", tag, user ]).first.hits.to_i
+#     end      
+#     
+#     return list, count
+#  end   
   
   def self.get_hit_from_uri(uri)
     cr = CachedResource.find_by_uri(uri)
@@ -267,14 +267,14 @@ class CachedResource < ActiveRecord::Base
   
   # overrides dynamic find method +find_or_create_by_uri+ so that it can take/return a list
   # TODO-PER: Not sure this is called anywhere.
-  def self.resources_by_uri( uri )
-
-    if uri.kind_of?(Array) 
-      uri.collect { |u| find_or_create_by_uri(u) }.flatten
-    else       
-      find_or_create_by_uri(uri)
-    end
-  end
+#  def self.resources_by_uri( uri )
+#
+#    if uri.kind_of?(Array) 
+#      uri.collect { |u| find_or_create_by_uri(u) }.flatten
+#    else       
+#      find_or_create_by_uri(uri)
+#    end
+#  end
   
   def self.get_page_of_hits_by_user(user, page_num, items_per_page)
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
@@ -282,15 +282,15 @@ class CachedResource < ActiveRecord::Base
   end
 
   # this returns all the objects that the user has collected.
-  def self.get_all_collections(user) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
-    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
-    results = []
-    items.each { |item|
-      hit = get_hit_from_resource_id(item.cached_resource_id)
-      results.insert(-1, hit)
-    }
-    return results
-  end
+#  def self.get_all_collections(user) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
+#    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
+#    results = []
+#    items.each { |item|
+#      hit = get_hit_from_resource_id(item.cached_resource_id)
+#      results.insert(-1, hit)
+#    }
+#    return results
+#  end
    
   def self.get_newest_collections(user, count) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC', :limit => count )
@@ -340,19 +340,19 @@ class CachedResource < ActiveRecord::Base
     return self.get_page_of_results(items, page_num, items_per_page)
   end
   
-  def self.get_all_untagged(user)
-    return [] if user == nil
-    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
-    results = []
-    items.each { |item|
-      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.id])
-      if !first_tag
-        hit = get_hit_from_resource_id(item.cached_resource_id)
-        results.insert(-1, hit)
-      end
-    }
-    return results
-  end
+#  def self.get_all_untagged(user)
+#    return [] if user == nil
+#    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id] )
+#    results = []
+#    items.each { |item|
+#      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.id])
+#      if !first_tag
+#        hit = get_hit_from_resource_id(item.cached_resource_id)
+#        results.insert(-1, hit)
+#      end
+#    }
+#    return results
+#  end
   
   def self.get_page_of_all_untagged(user, page_num, items_per_page)
     return { :results => [], :total => 0 } if user == nil
@@ -426,22 +426,22 @@ class CachedResource < ActiveRecord::Base
       end
     end
   
-    def self.get_all_tags(user)
-      cloud_of_ar_objects = find_by_sql([ CLOUD_BY_USER_SQL[:all_tags], user.id ])
-           
-      # convert active record objects to [name,freq] pairs
-      unless cloud_of_ar_objects.nil?  
-        return cloud_of_ar_objects.map { |entry| [ entry.name, entry.freq.to_i ] }
-      else
-        return []
-      end
-    end
+#    def self.get_all_tags(user)
+#      cloud_of_ar_objects = find_by_sql([ CLOUD_BY_USER_SQL[:all_tags], user.id ])
+#           
+#      # convert active record objects to [name,freq] pairs
+#      unless cloud_of_ar_objects.nil?  
+#        return cloud_of_ar_objects.map { |entry| [ entry.name, entry.freq.to_i ] }
+#      else
+#        return []
+#      end
+#    end
 
-    def self.get_all_items_by_tag(tag, user)
-      list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_USER_BY_TAG_SQL[:tag]}", tag, user ]) 
-       
-      return list
-    end   
+#    def self.get_all_items_by_tag(tag, user)
+#      list = find_by_sql([ "#{LIST_SQL_SELECT} #{LIST_BY_USER_BY_TAG_SQL[:tag]}", tag, user ]) 
+#       
+#      return list
+#    end   
 
   public
   def self.get_hit_from_resource_id(resource_id)
@@ -458,54 +458,54 @@ class CachedResource < ActiveRecord::Base
     return hit
   end
 
-  def self.single_table_get_hit_from_resource_id(resource_id)
-    cr = CachedResource.find(resource_id)
-    hit = {}
-    hit['uri'] = cr.uri
-#    properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
-
-    # The old way of storing properties was in the separate properties table. Now we store them in a single field
-    # in this table and parse them as a string. This is for efficiency.
-
-    # We first check to see if the properties field is used. If so, then just return it. If not, then look for the
-    # properties in the old table and write them to the properties field.
-    str = cr.attributes['properties']
-    if str == nil
-      props = cr.cached_properties
-#      prop_hash = { }
-#      properties.each do |property|
-#        if !prop_hash[property.name]
-#          prop_hash[property.name] = []
-#        end
-#        prop_hash[property.name].insert(-1, property.value)
+#  def self.single_table_get_hit_from_resource_id(resource_id)
+#    cr = CachedResource.find(resource_id)
+#    hit = {}
+#    hit['uri'] = cr.uri
+##    properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
+#
+#    # The old way of storing properties was in the separate properties table. Now we store them in a single field
+#    # in this table and parse them as a string. This is for efficiency.
+#
+#    # We first check to see if the properties field is used. If so, then just return it. If not, then look for the
+#    # properties in the old table and write them to the properties field.
+#    str = cr.attributes['properties']
+#    if str == nil
+#      props = cr.cached_properties
+##      prop_hash = { }
+##      properties.each do |property|
+##        if !prop_hash[property.name]
+##          prop_hash[property.name] = []
+##        end
+##        prop_hash[property.name].insert(-1, property.value)
+##      end
+#      
+#      str = ""
+#      props.each { |prop| 
+#        str += prop.name + "\t" + prop.value + "\n"
+#      }
+#      cr.properties = str
+#      cr.save
+#    end
+#
+#    prop_arr = str.split("\n")
+#    prop_arr.each do |prop_str|
+#      prop = prop_str.split("\t")
+#      if !hit[prop[0]]
+#        hit[prop[0]] = []
 #      end
-      
-      str = ""
-      props.each { |prop| 
-        str += prop.name + "\t" + prop.value + "\n"
-      }
-      cr.properties = str
-      cr.save
-    end
-
-    prop_arr = str.split("\n")
-    prop_arr.each do |prop_str|
-      prop = prop_str.split("\t")
-      if !hit[prop[0]]
-        hit[prop[0]] = []
-      end
-      hit[prop[0]].insert(-1, prop[1])
-    end
-    
-#    hit['thumbnail'] = [ "http://www.rossettiarchive.org/img/thumbs_small/s77.jpg" ]
-#    hit['role_AUT'] = [ "Jerome J. McGann"  ]
-##    hit['uri'] = "http://www.rossettiarchive.org/docs/s77.raw"
-#    hit['archive'] = [ "rossetti" ]
-#    hit['title'] = [ 'Commentary for Cats Cradle' ]
-#    hit['date_label'] = [ '2008' ]
-#    hit['url'] = [ "http://www.rossettiarchive.org/docs/s77.raw.html" ]
-#    hit['genre'] = [ "Criticism" ]
-#    hit['image'] = [ "http://www.rossettiarchive.org/img/s77.jpg" ]
-    return hit
-  end
+#      hit[prop[0]].insert(-1, prop[1])
+#    end
+#    
+##    hit['thumbnail'] = [ "http://www.rossettiarchive.org/img/thumbs_small/s77.jpg" ]
+##    hit['role_AUT'] = [ "Jerome J. McGann"  ]
+###    hit['uri'] = "http://www.rossettiarchive.org/docs/s77.raw"
+##    hit['archive'] = [ "rossetti" ]
+##    hit['title'] = [ 'Commentary for Cats Cradle' ]
+##    hit['date_label'] = [ '2008' ]
+##    hit['url'] = [ "http://www.rossettiarchive.org/docs/s77.raw.html" ]
+##    hit['genre'] = [ "Criticism" ]
+##    hit['image'] = [ "http://www.rossettiarchive.org/img/s77.jpg" ]
+#    return hit
+#  end
 end

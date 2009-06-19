@@ -85,9 +85,9 @@ class TagController < ApplicationController
 
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 
-    if user
-      set_cloud_list(user, user.username)
-    end
+#    if user
+#      set_cloud_list(user, user.username)
+#    end
     
     #do the pagination.
     @page = params[:page] ? params[:page].to_i : 1
