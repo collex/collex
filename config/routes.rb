@@ -113,6 +113,23 @@ ActionController::Routing::Routes.draw do |map|
 
   # here are some permalinks that got moved
   map.cloud1 'permalink/cloud/:type', :controller => "home", :action => "redirect_to_tag_cloud_update"
+  
+  # All the old about pages
+  map.about_software '/software/:page.html', :controller => 'about', :action => 'software', :ext => 'html'
+  map.about_software2 '/software/:page.pdf', :controller => 'about', :action => 'software', :ext => 'pdf'
+  map.about_software3 '/software/:page.doc', :controller => 'about', :action => 'software', :ext => 'doc'
+  map.about_software4 '/software/:page', :controller => 'about', :action => 'software', :ext => 'html'
+  map.about_software5 '/software', :controller => 'about', :action => 'software', :ext => 'html'
+  map.about_community '/community/:page.html', :controller => 'about', :action => 'community', :ext => 'html'
+  map.about_community2 '/community/:page.pdf', :controller => 'about', :action => 'community', :ext => 'pdf'
+  map.about_community3 '/community/:page.doc', :controller => 'about', :action => 'community', :ext => 'doc'
+  map.about_community4 '/community/:page', :controller => 'about', :action => 'community', :ext => 'html'
+  map.about_community5 '/community', :controller => 'about', :action => 'community', :ext => 'html'
+  map.about_scholarship '/scholarship/:page.html', :controller => 'about', :action => 'scholarship', :ext => 'html'
+  map.about_scholarship2 '/scholarship/:page.pdf', :controller => 'about', :action => 'scholarship', :ext => 'pdf'
+  map.about_scholarship3 '/scholarship/:page.doc', :controller => 'about', :action => 'scholarship', :ext => 'doc'
+  map.about_scholarship4 '/scholarship/:page', :controller => 'about', :action => 'scholarship', :ext => 'html'
+  map.about_scholarship5 '/scholarship', :controller => 'about', :action => 'scholarship', :ext => 'html'
 
   map.connect 'collex/:action', :controller => 'search'
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
