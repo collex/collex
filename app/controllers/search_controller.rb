@@ -415,10 +415,16 @@ class SearchController < ApplicationController
    public
    def auto_complete_for_search_keyword
     auto_complete(params['search']['keyword']) if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
    end
 
    def auto_complete_for_search_phrase
     auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
    end
 #   def auto_complete_for_field_year
 #     # TODO
