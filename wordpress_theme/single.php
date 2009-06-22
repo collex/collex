@@ -7,7 +7,14 @@
 get_header();
 ?>
 
-	<div id="content" class="widecolumn">
+<?php get_sidebar(); ?>
+
+<div id="bd">
+<div id="yui-main">
+<div class="yui-b">
+<div class="yui-g">
+	<!--<div id="wp-content" class="narrowcolumn">-->
+	<!--<div id="content" class="widecolumn">-->
 
 	<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 
@@ -70,5 +77,8 @@ get_header();
 <?php endif; ?>
 
 	</div>
+</div>
+</div>
+</div>
 
 <?php get_footer(); ?>
