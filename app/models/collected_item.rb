@@ -171,7 +171,7 @@ class CollectedItem < ActiveRecord::Base
     end
     
     # find or create the tag record.
-    tag_str = tag_str.gsub(' ', '_')
+    tag_str = normalize_tag_name(tag_str)
     tag_rec = Tag.find_by_name(tag_str)
     if tag_rec == nil
       tag_rec = Tag.new(:name => tag_str)
@@ -216,6 +216,10 @@ class CollectedItem < ActiveRecord::Base
   end
   
   def self.rename_tag(user, uri, old_tag_str, new_tag_str)
+    old_tag_str = normalize_tag_name(old_tag_str)
+    new_tag_str = normalize_tag_name(new_tag_str)
+    return if old_tag_str == new_tag_str  || new_tag_str.length== 0 # if the tag name hasn't changed, then we have nothing to do
+
     self.add_tag(user, uri, new_tag_str)
     self.delete_tag(user, uri, old_tag_str)
   end
@@ -229,5 +233,11 @@ class CollectedItem < ActiveRecord::Base
     if col.length == 0
       tag_rec.destroy
     end
+  end
+  
+  def self.normalize_tag_name(tag)
+    tag = tag.strip()
+    tag = tag.downcase()
+    return tag.gsub(' ', '_')
   end
 end

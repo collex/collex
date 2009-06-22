@@ -322,7 +322,6 @@ class CachedResource < ActiveRecord::Base
   end
   
   def self.get_page_of_hits_for_tag(tag_name, user, page_num, items_per_page)
-    results = []
     tag = Tag.find_by_name(tag_name)
     # It's possible for this to return nil if a tag was deleted before this request was made.
     return { :results => [], :total => 0 } if tag == nil
@@ -333,8 +332,7 @@ class CachedResource < ActiveRecord::Base
     item_ids.each { |item_id|
       coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
       if coll_item != nil && (user == nil || coll_item.user_id == user.id)
-        items.insert(-1, coll_item)
-        #results.insert(-1, hit) if !results.detect {|item| item['uri'] == hit['uri']} 
+        items.insert(-1, coll_item) if !items.detect {|item| item.cached_resource_id == coll_item.cached_resource_id} 
       end
     }
     return self.get_page_of_results(items, page_num, items_per_page)

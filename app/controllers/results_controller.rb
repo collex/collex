@@ -121,6 +121,22 @@ class ResultsController < ApplicationController
     #redirect_to params[:return]
   end
   
+  private
+  def encodeForUri(str) # TODO-PER: this is in a helper, so it can't be called from a controller, so we are just repeating it.
+    value = str.gsub('%', '%25')
+    value = value.gsub('#', '%23')
+    value = value.gsub('&', '%26')
+    value = value.gsub(/\?/, '%3f')
+    value = value.gsub('.', '%2e')
+    value = value.gsub('"', '%22')
+    value = value.gsub("'", '%27')
+    value = value.gsub("<", '%3c')
+    value = value.gsub(">", '%3e')
+    value = value.gsub("\\", '%5c')
+    return value
+  end
+  public
+
   def edit_tag
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil
@@ -134,7 +150,7 @@ class ResultsController < ApplicationController
       }
     end
     back = request.env["HTTP_REFERER"]
-    back = back.gsub(old_name, new_name)
+    back = back.gsub(encodeForUri(old_name), encodeForUri(new_name))
     redirect_to back
   end
   

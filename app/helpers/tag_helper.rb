@@ -6,7 +6,7 @@ module TagHelper
       html = {}
       size = cloud_info[:bucket_size][item.last]
       if selection == item.first
-        str += "<span class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first)}</span>\n"
+        str += "<span class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first.downcase)}</span>\n"
       else
         str += "<span class='cloud#{size}'>#{link_to_tag(item.first, item.last, false, controller, html)}</span>\n"
       end
@@ -62,7 +62,7 @@ module TagHelper
     if view_type == 'tag'
       encoded = encodeForUri(h(tag))
       rss = "<a href='/tags/rss/#{encoded}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;"
-      return "#{rss}#{pluralize(total_hits, 'object')} tagged as \"#{h(tag)}\". "
+      return "#{rss}#{pluralize(total_hits, 'object')} tagged as \"#{h(tag).downcase}\". "
     elsif view_type == 'all_collected'
       return "#{pluralize(total_hits, 'object')} collected."
     elsif view_type == 'untagged'
@@ -96,6 +96,6 @@ end
        visible = escaped_value
      end
      html_options[:class] = 'nav_link'
-     link_to visible, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value, :anchor => "top_of_results" }, html_options
+     link_to visible.downcase, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value, :anchor => "top_of_results" }, html_options
   end
 end

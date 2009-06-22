@@ -844,7 +844,7 @@ function removeTag(parent_id, tag_name)
 		$(parent_id).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 		new_form.submit();
 	};
-	new ConfirmDlg("Remove Tag", "Are you sure you want to remove all instances of the " + tag_name + " tag that you created?", "Yes", "No", remove);
+	new ConfirmDlg("Remove Tag", "Are you sure you want to remove all instances of the \"" + tag_name + "\" tag that you created?", "Yes", "No", remove);
 }
 
 function doAddTag(parent_id, uri, row_num, row_id)
