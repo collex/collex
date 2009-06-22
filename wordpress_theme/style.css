@@ -612,6 +612,9 @@ select {
 #respond {
 	margin-left: 2em;
 }
+#comments {
+	margin-left: 2em;
+}
 #respond:after {
 		content: "."; 
 	    display: block; 
