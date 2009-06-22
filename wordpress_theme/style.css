@@ -364,7 +364,7 @@ body {
 	/*margin: 0 0 40px;*/
 	text-align: justify;
 	margin-left: 2em;
-	margin-right: 70px;
+	/*margin-right: 70px;*/
 	padding: 40px;
 	border: inherit;
 	padding:inherit;
@@ -462,7 +462,7 @@ h3.comments {
 
 /* Begin Images */
 p img {
-	padding: 0;
+	padding: 10px;
 	max-width: 100%;
 	}
 
