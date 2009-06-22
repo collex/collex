@@ -25,8 +25,8 @@
 			<% for s in saved -%>
 				<tr>
 					<td class="query_term"><%= create_saved_search_link(s) %></td>
-					<td class="query_type"><%= create_remove_saved_search_link(s) %></td>
-					<td class="query_and-not"><%= create_saved_search_permalink(s.name) %></td>
+					<td class="query_remove"><%= create_remove_saved_search_link(s) %></td>
+					<td class="saved_search_link"><%= create_saved_search_permalink(s.name) %></td>
 				</tr>	
 			<% end -%>
 		<% end -%>

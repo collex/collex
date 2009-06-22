@@ -85,6 +85,11 @@ td.query_remove {
 	text-align:center;
 }
 
+td.saved_search_link {
+	padding:3px 5px 3px 5px;
+	width:10px;
+	text-align:center;
+}
 
 /*----------------------------*/
 
