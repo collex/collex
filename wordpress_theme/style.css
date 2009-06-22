@@ -603,12 +603,15 @@ select {
 	}
 
 #commentform {
-	margin: 5px 10px 0 0;
+	margin: 5px 10px 0 2em;
 	}
 #commentform textarea {
 	width: 100%;
 	padding: 2px;
 	}
+#respond {
+	margin-left: 2em;
+}
 #respond:after {
 		content: "."; 
 	    display: block; 
