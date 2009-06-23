@@ -778,8 +778,8 @@ class My9sController < ApplicationController
             obj = {}
             obj[:id] = hit['uri']
             obj[:img] = image
-            obj[:title] = hit['title'][0]
-            obj[:strFirstLine] = hit['title'][0]
+            obj[:title] = CachedResource.fix_char_set(hit['title'][0])
+            obj[:strFirstLine] = CachedResource.fix_char_set(hit['title'][0])
             obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
             ret.push(obj)
           end # should we include this?

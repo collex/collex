@@ -36,7 +36,7 @@ class CollectedItem < ActiveRecord::Base
         if str != ""
           str += ",\n"
         end
-        str += "{ uri: '#{hit['uri']}', thumbnail: '#{image}', title: '#{self.escape_quote(hit['title'])}'}"
+        str += "{ uri: '#{hit['uri']}', thumbnail: '#{image}', title: '#{CachedResource.fix_char_set(self.escape_quote(hit['title']))}'}"
       end
     }
     
@@ -52,7 +52,7 @@ class CollectedItem < ActiveRecord::Base
       if hit != nil
         image = CachedResource.get_thumbnail_from_hit(hit)
         image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
-        arr.insert(-1, { :uri => hit['uri'], :thumbnail => image, :title => self.escape_quote(hit['title']) })
+        arr.insert(-1, { :uri => hit['uri'], :thumbnail => image, :title => CachedResource.fix_char_set(self.escape_quote(hit['title'])) })
       end
     }
     

@@ -29,7 +29,7 @@ class DiscussionThread < ActiveRecord::Base
         return title
       when "nines_object":
         hit = CachedResource.get_hit_from_resource_id(discussion_comments[0].cached_resource_id)
-        return h(hit["title"][0]) if hit["title"]
+        return h(CachedResource.fix_char_set(hit["title"][0])) if hit["title"]
         return "object" # TODO: can this ever happen? What does it mean if it does?
       when "nines_exhibit":
         exhibit = Exhibit.find(discussion_comments[0].exhibit_id)

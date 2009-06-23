@@ -218,6 +218,7 @@ class ResultsController < ApplicationController
     ret[:user] = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if is_in_cache
       ret[:hit] = get_from_cache(params[:uri])
+#      ret[:hit]['title'][0] = '[cache]' + ret[:hit]['title'][0]
     else
       ret[:hit] = get_from_solr(params[:uri])
       if ret[:hit] == nil
@@ -226,6 +227,11 @@ class ResultsController < ApplicationController
         ret[:hit] = {} if ret[:hit] == nil
         ret[:hit]['title'] = [ 'Note: This object no longer exists in the index']
       end
+#      bytes = ''
+#      ret[:hit]['title'][0].each_byte { |c|
+#        bytes += c > 127 ? "[#{c}] " : "#{c} "
+#      }
+#      ret[:hit]['title'][0] = '[solr]' + ret[:hit]['title'][0] + bytes
     end
     if params[:full_text] && params[:full_text].length > 0
       ret[:hit]['text'] = params[:full_text]

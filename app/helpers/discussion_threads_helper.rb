@@ -128,7 +128,7 @@ module DiscussionThreadsHelper
       hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id)
       thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit_no_site(hit))
       link = hit["url"] ? hit["url"][0] : nil
-      caption = hit['title']
+      caption = hit['title'] ? CachedResource.fix_char_set(hit['title'][0]) : ""
     elsif comment.get_type() == "nines_exhibit"
       exhibit = Exhibit.find(comment.exhibit_id)
       thumbnail = exhibit.thumbnail

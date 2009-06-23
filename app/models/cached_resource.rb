@@ -393,7 +393,14 @@ class CachedResource < ActiveRecord::Base
     if !resource.nil?
       CachedProperty.delete_all( ["cached_resource_id = ?", id] )
       copy_solr_resource
-      save!
+      logger.info("#{id}. Recaching: #{uri}")
+      
+      begin
+        save!
+      rescue ActiveRecord::RecordInvalid => e
+        # This can fail if a duplicate URI gets in the database for whatever reason. Don't worry about that
+        logger.info("-- Duplicate record")
+      end
     else
       # The resource no longer exists. Add a property to tell us that. (Note that the current set of properties are not deleted, either)
       CachedProperty.create(:name => 'stale', :value => 'yes', :cached_resource_id => id)
@@ -451,7 +458,13 @@ class CachedResource < ActiveRecord::Base
       if !hit[property.name]
         hit[property.name] = []
       end
-      hit[property.name].insert(-1, property.value)
+      if property.name == 'title'
+        bytes = ""
+        property.value.each_byte { |c| bytes += "#{c} " if c > 127 }
+        hit[property.name].insert(-1, property.value + bytes)
+      else
+        hit[property.name].insert(-1, property.value)
+      end
     end
     return hit
   end
@@ -506,4 +519,16 @@ class CachedResource < ActiveRecord::Base
 ##    hit['image'] = [ "http://www.rossettiarchive.org/img/s77.jpg" ]
 #    return hit
 #  end
+  
+  # This takes either a UTF-8 encoded string or an ISO-8859-1 encoded string and
+  # outputs a UTF-8 encoded string.
+  def self.fix_char_set(str)
+    begin
+      arr = str.unpack('U*')  # This will fail if it is not a UTF-8 encoded string
+    rescue
+      arr = str.unpack('C*')  # Therefore it was an ISO-8859-1 encoded string
+    end
+    return arr.pack('U*') # Turn it back into a string
+  end
+  
 end

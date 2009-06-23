@@ -18,7 +18,7 @@
 
 <% for hit in @results -%>
 		<item>
-			<title><%= escape_for_xml(hit["title"]) %></title>
+			<title><%= CachedResource.fix_char_set(escape_for_xml(hit["title"])) %></title>
 			<link><%= base_url %>/tags/object?uri=<%= CGI.escape(escape_for_xml(hit['uri'])) %></link>
 			<description>
 				&lt;table&gt;
