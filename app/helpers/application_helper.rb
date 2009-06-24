@@ -343,7 +343,7 @@ private
           url = CachedResource.get_link_from_uri(uri)
           visible_text = extract_inner_html(span)
           rest_of_it = extract_trailing_html(span)
-          str += "<a class='nines_link' href=\"#{url}\" target=\"_blank\">#{visible_text}</a>#{rest_of_it}"
+          str += "<a class='nines_link' href=\"#{url}\" target=\"_blank\" uri='#{uri}'>#{visible_text}</a>#{rest_of_it}"
           
         elsif span.include?('class="ext_linklike') #if it is one of our spans, then translate it into a link
           # external link

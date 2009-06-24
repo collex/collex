@@ -884,10 +884,17 @@ function realLinkToEditorLink(str) {
 		type = 'nines_linklike';
 		type2 = 'NINES Object';
 	}
-	i = link.indexOf('href=');	// find the actual link.
+
+	// If the type is a NINES Object, then we don't want the link, we want the URI.
+	if (type === 'nines_linklike')
+		i = link.indexOf('uri=');	// find the actual link.
+	else
+		i = link.indexOf('href=');	// find the actual link.
+
 	if (i < 0)
 		return str;
-	link = link.substring(i+6);
+	var equ = link.substring(i).indexOf('=');
+	link = link.substring(i+equ+2);
 	i = link.indexOf('"');	// could be either kind of quote, so look for both
 	var j = link.indexOf("'");
 	if (i < 0)
@@ -896,6 +903,7 @@ function realLinkToEditorLink(str) {
 		if (j >= 0 && j < i)
 			i = j;
 	}
+
 	var addr = link.substring(0, i);
 	//addr = addr.gsub("%7E", '~');	// Firefox, and perhaps other browsers, change this character when returning innerHTML, so we change it back.
 	i = link.indexOf('>');
