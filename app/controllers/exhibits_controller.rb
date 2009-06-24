@@ -53,6 +53,22 @@ class ExhibitsController < ApplicationController
     if @page < 1 || @page > @exhibit.exhibit_pages.length
       @page = 1
     end
+
+		# Be sure the current user is authorized to see this exhibit
+		if @exhibit.is_published == 0	# allows allow published exhibits
+			user = session[:user]
+			if user == nil	# if the user isn't logged in, then disallow.
+				redirect_to :action => 'list'
+				return
+			end
+			if !is_admin?
+				user = User.find_all_by_fullname(user[:fullname])
+				if user.id != @exhibit.user_id
+					redirect_to :action => 'list'
+					return
+				end
+			end
+		end
     #render :layout => 'exhibits_view'
   end
 
