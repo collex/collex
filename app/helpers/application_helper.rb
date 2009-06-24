@@ -43,7 +43,7 @@ module ApplicationHelper
   
   def result_button(text, id, action, visible)
     cls = visible ? "" : "class='hidden' "
-    "<a id='#{id}' #{cls}onclick='#{action.gsub('\'', '"')}; return false;' />#{text}</a>"
+    "<a id='#{id}' #{cls}onclick='#{action.gsub('\'', '"')}; return false;' >#{text}</a>"
     # "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
   
