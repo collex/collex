@@ -78,16 +78,16 @@
 				<tr id='more-<%= row_id %>' class="more">
 					<td><%= link_to_function("[more...]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
 				</tr>
-				<tr>
 				<% if result_is_collected(hit) -%>
+				<tr>
 					<td colspan='2'>
 						<%= link_to_function "#{has_annotation(hit)?"Edit":"Add"} Private Annotation", "doAnnotation('add_annotation_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', 'annotation_#{index}');",  :id => "add_annotation_#{index}", :class => 'modify_link' %>
 						<%= "<br />" if has_annotation(hit) -%>
 						<span id="annotation_<%=index%>" class='annotation'><%= decode_exhibit_links(get_annotation(hit)) %></span>
 						<%= "<br/><span class='annotation'>#{hit['warning']}</span>" if hit['warning'] %>
 					</td>
-				<% end # if the item is collected -%>
 				</tr>
+				<% end # if the item is collected -%>
 	        </table>
 		</div>
 	</div>
