@@ -25,7 +25,7 @@
 	<% yui_path = quick_load ? "/javascripts/yui_2_7_0" : "http://yui.yahooapis.com/2.7.0" -%>
 	<% run_analytics = (request.host() == DEPLOYMENT_SERVER) -%>
 
-<title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %></title>
+<title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
 	<% # site wide styles -%>
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/reset-fonts-grids/reset-fonts-grids.css" />
 	<link rel="stylesheet" type="text/css" href="<%= yui_path %>/build/base/base-min.css" />

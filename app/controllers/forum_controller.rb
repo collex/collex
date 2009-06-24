@@ -322,6 +322,8 @@ class ForumController < ApplicationController
       num_views += 1
       @thread.update_attribute(:number_of_views, num_views)
     end
+
+		@subtitle = " : #{@thread.get_title()}"
   end
 
   private
