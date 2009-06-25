@@ -62,6 +62,9 @@
 			<% if @script == 'ForumReplyDlg' %>
 				onButtonClick();
 			<% end %>
+			<% if @script == 'doCollect' %>
+				doCollect("/forum/attachment", '<%= @uri %>' , <%= @row_num %> , '<%= @row_id %>', true);
+			<% end %>
 			});
 		</script>
 	</div>

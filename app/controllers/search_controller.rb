@@ -193,73 +193,96 @@ class SearchController < ApplicationController
     public
   
    # generate search results based on constraints
-   def browse     
-    session[:constraints] ||= []
-    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-    session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-    #session[:selected_freeculture] ||= false
+   def browse
+    if params[:script]
+      session[:script] = params[:script]
+			session[:uri] = params[:uri]
+			session[:row_num] = params[:row_num]
+			session[:row_id] = params[:row_id]
+      params[:script] = nil
+      params[:uri] = nil
+      params[:row_num] = nil
+      params[:row_id] = nil
+      redirect_to params
+    else
+      if session[:script]
+        @script = session[:script]
+				@uri = session[:uri]
+				@row_num = session[:row_num]
+				@row_id = session[:row_id]
 
-    @page = params[:page] ? params[:page].to_i : 1
-    
-    begin
-     @results = search_solr(session[:constraints], @page, session[:items_per_page])
-     # Add the highlighting to the hit object so that a result is completely contained inside the hit object
-     @results['hits'].each { |hit|
-       if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
-         hit['text'] = @results["highlighting"][hit["uri"]]["text"] 
-       end
-     }
-     
-     # Now repeat the search without any resource type constraints, so we can get the resource totals.
-     # The resource totals should stay the same whether the user has constrained by resources or not.
-     resourceless_constraints = []
-     session[:constraints].each {|constraint|
-      if constraint[:field] != 'archive' || constraint[:type] != 'FacetConstraint'
-        resourceless_constraints.insert(-1, constraint)
+        session[:script] = nil
+        session[:uri] = nil
+        session[:row_num] = nil
+        session[:row_id] = nil
       end
-     }
-     if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
-       resourceless_results = search_solr(resourceless_constraints, @page, session[:items_per_page])
-       @results['facets']['archive'] = resourceless_results['facets']['archive']
-     end
-    rescue  Net::HTTPServerException => e
-     @results = rescue_search_error(e)
-    end
+			session[:constraints] ||= []
+			session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
+			#session[:selected_freeculture] ||= false
 
-    @num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil      
-    @total_documents = @results["total_documents"]     
-    @sites_forest = FacetCategory.sorted_facet_tree().sorted_children
-    @genre_data = marshall_genre_data(@results["facets"]["genre"])
-    @citation_count = @results['facets']['genre']['Citation'] || 0
-    @freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
-    @listed_constraints = marshall_listed_constraints() 
-    
-#      113.upto(@num_pages) do |i|
-#        puts "#{i} \n"
-#        
-#       @test = search_solr(session[:constraints], i, i*1)
-#       @test['hits'].each_with_index { |hit, i|
-#       }
-#     end
+			@page = params[:page] ? params[:page].to_i : 1
 
-#      75.upto(@num_pages) do |i|
-#        puts "#{i} \n"
-#        
-#       @test = search_solr(session[:constraints], i, i*10)
-#       @test['hits'].each_with_index { |hit, i|
-#          if hit['exhibit_type']
-#            uri = hit['uri']
-#          end
-#          if hit['license']
-#            uri = hit['uri']
-#          end
-#          if hit['role_TRN'] && hit['role_TRN'].length > 1
-#            uri = hit['uri']
-#          end
-#       }
-#     end
+			begin
+			 @results = search_solr(session[:constraints], @page, session[:items_per_page])
+			 # Add the highlighting to the hit object so that a result is completely contained inside the hit object
+			 @results['hits'].each { |hit|
+				 if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
+					 hit['text'] = @results["highlighting"][hit["uri"]]["text"]
+				 end
+			 }
 
-    render :action => 'results'
+			 # Now repeat the search without any resource type constraints, so we can get the resource totals.
+			 # The resource totals should stay the same whether the user has constrained by resources or not.
+			 resourceless_constraints = []
+			 session[:constraints].each {|constraint|
+				if constraint[:field] != 'archive' || constraint[:type] != 'FacetConstraint'
+					resourceless_constraints.insert(-1, constraint)
+				end
+			 }
+			 if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
+				 resourceless_results = search_solr(resourceless_constraints, @page, session[:items_per_page])
+				 @results['facets']['archive'] = resourceless_results['facets']['archive']
+			 end
+			rescue  Net::HTTPServerException => e
+			 @results = rescue_search_error(e)
+			end
+
+			@num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil
+			@total_documents = @results["total_documents"]
+			@sites_forest = FacetCategory.sorted_facet_tree().sorted_children
+			@genre_data = marshall_genre_data(@results["facets"]["genre"])
+			@citation_count = @results['facets']['genre']['Citation'] || 0
+			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
+			@listed_constraints = marshall_listed_constraints()
+
+	#      113.upto(@num_pages) do |i|
+	#        puts "#{i} \n"
+	#
+	#       @test = search_solr(session[:constraints], i, i*1)
+	#       @test['hits'].each_with_index { |hit, i|
+	#       }
+	#     end
+
+	#      75.upto(@num_pages) do |i|
+	#        puts "#{i} \n"
+	#
+	#       @test = search_solr(session[:constraints], i, i*10)
+	#       @test['hits'].each_with_index { |hit, i|
+	#          if hit['exhibit_type']
+	#            uri = hit['uri']
+	#          end
+	#          if hit['license']
+	#            uri = hit['uri']
+	#          end
+	#          if hit['role_TRN'] && hit['role_TRN'].length > 1
+	#            uri = hit['uri']
+	#          end
+	#       }
+	#     end
+
+			render :action => 'results'
+		end
    end
    
    # adjust the number of search results per page

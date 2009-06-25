@@ -309,21 +309,33 @@ class ForumController < ApplicationController
   def view_thread
     if params[:script]
       session[:script] = params[:script]
+			session[:uri] = params[:uri]
+			session[:row_num] = params[:row_num]
+			session[:row_id] = params[:row_id]
       params[:script] = nil
+      params[:uri] = nil
+      params[:row_num] = nil
+      params[:row_id] = nil
       redirect_to params
     else
       if session[:script]
         @script = session[:script]
+				@uri = session[:uri]
+				@row_num = session[:row_num]
+				@row_id = session[:row_id]
+
         session[:script] = nil
+        session[:uri] = nil
+        session[:row_num] = nil
+        session[:row_id] = nil
       end
       retrieve_thread(params)
       num_views = @thread.number_of_views
       num_views = 0 if num_views == nil
       num_views += 1
       @thread.update_attribute(:number_of_views, num_views)
+			@subtitle = " : #{@thread.get_title()}"
     end
-
-		@subtitle = " : #{@thread.get_title()}"
   end
 
   private

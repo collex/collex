@@ -194,10 +194,10 @@ var GeneralDialog = Class.create({
 						listenerArray.push({ id: this_id + '_sel' + listenerArray.length, event: 'change', callback: selectChange, param: { id: subel.select, callback: subel.change } });
 						if (subel.options) {
 							subel.options.each(function(opt) {
-								var opt = new Element('option', { value: opt.value}).update(opt.text);
+								var opt2 = new Element('option', { value: opt.value}).update(opt.text);
 								if (subel.value === opt.value)
-									opt.writeAttribute('selected', 'selected');
-								select.appendChild(opt);
+									opt2.writeAttribute('selected', 'selected');
+								select.appendChild(opt2);
 							});
 						}
 						// CUSTOM

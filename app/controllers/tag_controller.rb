@@ -72,33 +72,51 @@ class TagController < ApplicationController
   end
 
   def results
-    # parameters:
-    #  :tag => 'tag_name'
-    
-    # we save the tag in the session object in case we are called from a place that shouldn't care which type it is.
-    if params[:tag] != nil
-      params[:tag] = params[:tag].gsub("&lt;","<").gsub("&gt;", ">").gsub("&amp;", "&").gsub("&quot;", '"')
-      session[:tag_current] = params[:tag]
+    if params[:script]
+      session[:script] = params[:script]
+			session[:uri] = params[:uri]
+			session[:row_num] = params[:row_num]
+			session[:row_id] = params[:row_id]
+      params[:script] = nil
+      params[:uri] = nil
+      params[:row_num] = nil
+      params[:row_id] = nil
+      redirect_to params
     else
-      params[:tag] = session[:tag_current]
-    end
+      if session[:script]
+        @script = session[:script]
+				@uri = session[:uri]
+				@row_num = session[:row_num]
+				@row_id = session[:row_id]
 
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+        session[:script] = nil
+        session[:uri] = nil
+        session[:row_num] = nil
+        session[:row_id] = nil
+      end
+			# parameters:
+			#  :tag => 'tag_name'
 
-#    if user
-#      set_cloud_list(user, user.username)
-#    end
-    
-    #do the pagination.
-    @page = params[:page] ? params[:page].to_i : 1
-    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			# we save the tag in the session object in case we are called from a place that shouldn't care which type it is.
+			if params[:tag] != nil
+				params[:tag] = params[:tag].gsub("&lt;","<").gsub("&gt;", ">").gsub("&amp;", "&").gsub("&quot;", '"')
+				session[:tag_current] = params[:tag]
+			else
+				params[:tag] = session[:tag_current]
+			end
 
-    ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, session[:items_per_page])
-    @results = ret[:results]
-    @total_hits = ret[:total]
-    
-    @num_pages = @total_hits.quo(session[:items_per_page]).ceil
-    
+			user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+
+			#do the pagination.
+			@page = params[:page] ? params[:page].to_i : 1
+			session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+
+			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, session[:items_per_page])
+			@results = ret[:results]
+			@total_hits = ret[:total]
+
+			@num_pages = @total_hits.quo(session[:items_per_page]).ceil
+		end
   end
   
    # adjust the number of search results per page

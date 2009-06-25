@@ -32,3 +32,8 @@
 		<%= render :partial => 'results/result_row', :locals => { :index => index, :hit => hit, :has_exhibits => has_exhibits, :add_border => true } %>
 	</div>
 <% end -%>
+<% if @script == 'doCollect' %>
+	<script type="text/javascript">
+		doCollect("/results/result_row", '<%= @uri %>' , <%= @row_num %> , '<%= @row_id %>', true);
+	</script>
+<% end %>

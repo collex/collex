@@ -93,9 +93,9 @@ function finishedLoadingImage(progress_el, img_el, max_width, max_height)
 		$(img_el).height = height;
 		// Now center the image horizontally
 		var new_width = $(img_el).width;
-		var padding = (max_width - new_width) / 2;
-		if (padding > 0)
-			$(img_el).setStyle({ paddingLeft: padding + "px" });
+		var padding2 = (max_width - new_width) / 2;
+		if (padding2 > 0)
+			$(img_el).setStyle({ paddingLeft: padding2 + "px" });
 	}
 
 	$(progress_el).addClassName('hidden');
@@ -160,7 +160,7 @@ function selectAll(target) {
 }
 
 function toggleCategory(category_id) {
-	elems = document.getElementsByClassName("cat_" + category_id + "_child");
+	var elems = document.getElementsByClassName("cat_" + category_id + "_child");
 
 	Element.toggle("cat_" + category_id + "_opened");
 	Element.toggle("cat_" + category_id + "_closed");
@@ -199,8 +199,8 @@ function toggleElementsByClass(cls)
 }
 
 function popUp(URL) {
-  day = new Date();
-  id = day.getTime();
+  var day = new Date();
+  var id = day.getTime();
   eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=400');");
 }
 
@@ -463,7 +463,7 @@ function bulkTag(event)
 	
 	var uris = "";
 	var has_one = false;
-	for (i = 0; i < checkboxes.length; i++) {
+	for (var i = 0; i < checkboxes.length; i++) {
 		var checkbox = checkboxes[i];
 		if (checkbox.checked) {
 			uris += checkbox.value + '\t';
@@ -507,17 +507,17 @@ function bulkCollect(event)
 	}
 }
 
-bulk_checked = false;
+var bulk_checked = false;
 
 function toggleAllBulkCollectCheckboxes(link) {
   bulk_checked = !bulk_checked;
-  checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
+  var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
   for (i=0; i < checkboxes.length; i++) {
-    checkbox = checkboxes[i];
+    var checkbox = checkboxes[i];
     checkbox.checked = bulk_checked;
   }
 
-  elements = document.getElementsByClassName('bulk_select_all');
+  var elements = document.getElementsByClassName('bulk_select_all');
   for (i=0; i<elements.length; i++) {
     elements[i].toggle();
   }
@@ -612,7 +612,7 @@ function moveObjectToLeftTopOfItsParent(target_id, parent_id)
 	var newYCoordinate = y + ((document.body.scrollTop)?document.body.scrollTop:0);
 	
 	// Adjust the width if the dialog would be off the side of the page
-	var max_x = document.width;
+	//var max_x = document.width;
 	var t = $(target_id);
 	var w = parseInt(t.getStyle('width'));
 	var max_x = document.width - w - 10;	// Add a little margin so it is not right against the page.
@@ -665,9 +665,10 @@ var StartDiscussionWithObject = Class.create({
 		var This = this;
 		
 		if (!is_logged_in) {
-			var dlg = new SignInDlg();
-			dlg.setInitialMessage("Please log in to start a discussion");
-			dlg.show('sign_in');
+			var logdlg = new SignInDlg();
+			logdlg.setInitialMessage("Please log in to start a discussion");
+			logdlg.setRedirectPageToCurrentWithParam('script=StartDiscussionWithObject');
+			logdlg.show('sign_in');
 			return;
 		}
 		
@@ -758,6 +759,7 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 	if (!is_logged_in) {
 		var dlg = new SignInDlg();
 		dlg.setInitialMessage("Please log in to collect objects");
+		dlg.setRedirectPageToCurrentWithParam('script=doCollect&uri='+uri+'&row_num='+row_num+'&row_id='+row_id);
 		dlg.show('sign_in');
 		return;
 	}
@@ -1033,6 +1035,7 @@ function setTagVisibility(zoom_level)
 
 function doZoom(level)
 {
+	var zoom_level;
 	switch (level)
 	{
 		case "+": if (zoom_level < 10) zoom_level++; break;
@@ -1118,7 +1121,7 @@ function ZoomThumbMouseDown(e)
 function ZoomThumbMouseMove(e)
 {
 	if (e == null) 
-		var e = window.event; // this is the actual "drag code"
+		e = window.event; // this is the actual "drag code"
 		
 	// We need to confine the drag to the area of the slider
 	var y = _offsetY + e.clientY - _startY;
@@ -1170,16 +1173,19 @@ function thumbnail_resize()
 	
 	var ratio = natural_width / natural_height;
 	
+	var margin_top;
+	var margin_left;
+	var img_width;
     if (natural_width > natural_height)
 	{
-      var margin_top = 0;
-      var img_width = parseInt(height*ratio + "");
-      var margin_left = parseInt((height - img_width) / 2 + "");
+      margin_top = 0;
+      img_width = parseInt(height*ratio + "");
+      margin_left = parseInt((height - img_width) / 2 + "");
     } else {
       var inner_height = height/ratio;
-      var margin_top = '-' + parseInt((inner_height - height) / 2 + "");
-      var margin_left = 0;
-      var img_width = height;
+      margin_top = '-' + parseInt((inner_height - height) / 2 + "");
+      margin_left = 0;
+      img_width = height;
     }
 	
 	img.setStyle({

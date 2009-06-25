@@ -95,6 +95,21 @@ var SignInDlg = Class.create({
 		this.setRedirectPage = function (url) {
 			redirectPage = url;
 		};
+
+		this.setRedirectPageToCurrentWithParam = function(str) {
+			var url = '' + window.location;
+			var anchor = "";
+			if (url.indexOf('#') > 0) {
+				anchor = url.substring(url.indexOf('#'));
+				url = url.substring(0, url.indexOf('#'));
+			}
+			if (url.indexOf('?') > 0)
+				url += '&';
+			else
+				url += '?';
+			url += str;
+			redirectPage = url + anchor;
+		};
 		
 		this.show = function (view, username, email) {
 			
