@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% #  result_row_for_popup_buttons parameters: hit hit, index, partial, target_el  -%>
-<script language="javascript">
+<script type="text/javascript">
 	redrawResultRowForPopupButtons = function() {
 		new Ajax.Updater('search_result_buttons', 
 			'/results/redraw_result_row_for_popup_buttons', 

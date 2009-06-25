@@ -105,19 +105,6 @@ class ApplicationController < ActionController::Base
       user || Guest.new
     end
     
-#TODO:PER_DEBUGGING     def self.in_place_edit_for_resource(object, attribute, options = {})
-#TODO:PER_DEBUGGING       define_method("update_#{attribute}") do
-#TODO:PER_DEBUGGING         @item = object.to_s.camelize.constantize.find(params[:id])
-#TODO:PER_DEBUGGING         @item.update_attribute(attribute, params[:value])
-#TODO:PER_DEBUGGING         render :text => @item.send(attribute)
-#TODO:PER_DEBUGGING       end
-#TODO:PER_DEBUGGING     end
-    
-    # for debugging rescue_action_in_public
-    # def local_request?
-    #     false
-    # end
-    
     def rescue_action_in_public(exception)
       case exception
         when ::ActiveRecord::RecordNotFound, ::ActionController::UnknownController, ::ActionController::UnknownAction, ::ActionController::RoutingError

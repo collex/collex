@@ -211,7 +211,7 @@ class My9sController < ApplicationController
     #        Dir.mkdir(folder) unless File.exists?(folder)
     #        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
     #      end
-    render :text => "<script language='javascript' type='text/javascript'>window.top.window.stopUpload();</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+    render :text => "<script type='text/javascript'>window.top.window.stopUpload();</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
   def remove_saved_search

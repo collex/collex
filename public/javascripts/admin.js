@@ -270,9 +270,10 @@ var DeleteFacetDialog = Class.create({
 				}
 			});
 		};
-		
+
+		var dlgLayout = null;
 		if (is_category) {
-			var dlgLayout = {
+			dlgLayout = {
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the category "' + resource + '" from the Resource Tree. All of its children will be moved up to its parent.', klass: 'new_exhibit_instructions' } ],
@@ -280,7 +281,7 @@ var DeleteFacetDialog = Class.create({
 					]
 				};
 		} else {
-			var dlgLayout = {
+			dlgLayout = {
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the site "' + resource + '" from the Resource Tree. This resource is indexed in solr so results from this resource can be seen in the search page. Are you sure?', klass: 'new_exhibit_instructions' } ],
@@ -342,8 +343,8 @@ var EditFacetDialog = Class.create({
 						to_hide.each(function(el) { el.hide(); });
 						$('carousel_url').value = obj.carousel_url;
 					} else {
-						var to_hide = $$('.hide_if_site');
-						to_hide.each(function(el) { el.hide(); });
+						var to_hide2 = $$('.hide_if_site');
+						to_hide2.each(function(el) { el.hide(); });
 						$('display_name').value = obj.display_name;
 						$('site_url').value = obj.site_url;
 						$('site_thumbnail').value = obj.site_thumbnail;

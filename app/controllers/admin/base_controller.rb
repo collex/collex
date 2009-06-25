@@ -32,7 +32,6 @@ class Admin::BaseController < ApplicationController
   end
 
   private
-  #TODO: move this to a general /admin area controller superclass
   def check_admin_privileges
     user = session[:user]
     if user and user[:role_names].include? 'admin'

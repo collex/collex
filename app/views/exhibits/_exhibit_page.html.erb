@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -48,7 +48,7 @@
 <% end #if there are pages defined -%>
 
 <% if top != nil -%>
-<script language="JavaScript">
+<script type="text/javascript">
 	var target_el = "target_" + <%= top %>;
 	var element_el= "element_" + <%= top %>;
 	scroll_to_target(target_el, element_el);

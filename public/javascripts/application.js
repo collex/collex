@@ -1297,7 +1297,7 @@ function loadLatestNews( targetList, rssFeedURL, maxItems, retry ) {
 				if (link_text === undefined)
 					link_text = link[0].textContent;
 				str += "<li><a href=\"" + link_text + "\" class=\"nav_link\" >" + title_text + "</a></li>\n";
-			};
+			}
 			str += "<li><a href=\"/news/\" class=\"nav_link\">MORE</a></li></ul>\n";
 
 			$(targetList).update(str);

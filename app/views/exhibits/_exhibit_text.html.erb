@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -21,7 +21,7 @@
 	<div id='<%= div_id %>' class="exhibit_text">
 		<%= (which == 'right' ? element.element_text2 : element.element_text) %>
 	</div>
-	<script language="JavaScript">
+	<script type="text/javascript">
 		if(window.initializeInplaceRichEditor)
 			initializeInplaceRichEditor('<%= div_id %>,exhibit_builder_outline_content', "/my9s/edit_text,/my9s/refresh_outline");
 	</script>

@@ -162,7 +162,7 @@ var CreateListOfObjects = Class.create({
 						var divHeight = parseInt(parent.getStyle('height'));
 						if (selTop + selMiddle > divHeight) { // Only scroll if the selection isn't on the first page
 							parent.scrollTop = selTop + selMiddle - divHeight / 2;
-						};
+						}
 					});
 				} else {
 					var first_item = parent.down();

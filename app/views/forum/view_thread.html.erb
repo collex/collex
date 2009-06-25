@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -20,7 +20,7 @@
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
 
-<script language="javascript">
+<script type="text/javascript">
 	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];
 </script>
 

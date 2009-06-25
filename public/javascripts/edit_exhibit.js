@@ -1501,7 +1501,7 @@ var EditProfileDialog = Class.create({
 			};
 		
 		var params = { this_id: "edit_profile_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Profile" };
-		var dlg = new GeneralDialog(params);
+		dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
 	}

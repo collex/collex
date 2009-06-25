@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -95,8 +95,8 @@
 <% if hit["text"] != nil -%>
 <tr>
     <td colspan='2'>
-    	<div colspan="2" class="search_result_full_text_label">Excerpt from Full Text:</div>
-        <div colspan="2" id="<%=row_id%>_full_text" class="snippet">
+    	<div class="search_result_full_text_label">Excerpt from Full Text:</div>
+        <div id="<%=row_id%>_full_text" class="snippet">
         	<% # We want to escape everything except the bolding so that random control chars can't mess up the display -%>
             <% text = h hit["text"] -%>
 			<%= text.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>") %>

@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -48,7 +48,7 @@ end -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 	<% onload_text = "onload=\"initializeResizableImageElement('illustration_img_#{illustration_id}');\"" -%>
 	<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
-		<% create_resizable = "<script language='JavaScript'>\n\tinitializeResizableTextualElement('illustration_img_#{illustration_id}');\n</script>\n" -%>
+		<% create_resizable = "<script type='text/javascript'>\n\tinitializeResizableTextualElement('illustration_img_#{illustration_id}');\n</script>\n" -%>
 	<% end -%>
 	<% illustration_text = illustration.illustration_text -%>
 <% else -%>
@@ -139,7 +139,7 @@ end -%>
 	</center>
 </div>
 <% if edit_mode -%>
-	<script language="JavaScript">
+	<script type="text/javascript">
 		if(window.initializeInplaceIllustrationEditor)
 			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},exhibit_builder_outline_content'"%>, "/my9s/edit_illustration,/my9s/refresh_outline");
 	</script>

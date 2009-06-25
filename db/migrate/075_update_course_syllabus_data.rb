@@ -61,7 +61,7 @@ class UpdateCourseSyllabusData < ActiveRecord::Migration
     end
   end
 
-  # TODO write a down script for putting exhibits
+  # oldTODO write a down script for putting exhibits
   def self.down
     et = ExhibitType.find_by_template("course_syllabus")
     et.exhibit_page_types.first.update_attributes(

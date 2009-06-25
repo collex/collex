@@ -11,7 +11,7 @@
 
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
-	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css" />
 <link href="../../stylesheets/main.css" rel="stylesheet" type="text/css" />
 <link href="../../stylesheets/nav.css" rel="stylesheet" type="text/css" />
 <link href="../../stylesheets/lvl2.css" rel="stylesheet" type="text/css" />
@@ -52,7 +52,7 @@
 			<a href="/search" class="tab_link">Search</a>
 		</div>
    	<div id="subnav_container"><div id="login_container">
-				<script language="JavaScript">
+				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
 					});
@@ -96,10 +96,9 @@
 	<p>If you are just beginning a digital project, and would like to learn more about creating effective and sustainable online scholarship, you may be interested in the NINES <a class="nav_link" href="workshop.html">Summer Workshop</a>, an annual event that instructs scholars in essential topics such as <a class="nav_link" href="http://www.w3.org/XML/1999/XML-in-10-points" target="_blank">XML</a>, <a class="nav_link" href="http://www.w3schools.com/xsl/xsl_intro.asp" target="_blank">XSLT</a>, <a class="nav_link" href="http://www.tei-c.org/index.xml" target="_blank">TEI encoding standards</a>, and <a class="nav_link" href="../scholarship/rdf.html" target="_blank">NINES metadata standards</a>.</p>
 	<p><strong>NINES is currently accepting applications for the 2009 NINES <a class="nav_link" href="workshop.html">Summer Workshop</a> in Dublin, Ireland. Send all questions and inquiries to <a class="nav_link nospam" href="workshops nines org">$$$$</a>, or click <a class="nav_link" href="sumWkshp.pdf">here</a> (PDF, 694kb) to download the CFP.</strong></p>
 	<p>&nbsp;</p>
-	<strong>THE NINES COMMUNITY</strong></p>
+	<p><strong>THE NINES COMMUNITY</strong></p>
 	  <p><a class="nav_link" href="http://maps.google.com/maps/ms?msa=0&msid=110903367062041473962.00045a6959bd97bff048e" target="_blank"><img src="/images/projectMap.jpg" alt="project map" /></a></p>
 		<p>NINES is directed by an <a class="nav_link" href="executive.html">Executive Council</a>, with a <a class="nav_link" href="RandD.html">Research and Development Team</a> overseeing software development and the integration of new resources. Three discipline-specific <a class="nav_link" href="/scholarship/boards.html">editorial boards</a> peer review each scholarly project before it is aggregated. To get a sense of the variety of projects already a part of NINES, visit the full list <a class="nav_link" href="../scholarship/scholarlyProjects.html">here</a>, or take a look at the frequently updated <a class="nav_link" href="http://maps.google.com/maps/ms?msa=0&msid=110903367062041473962.00045a6959bd97bff048e" target="_blank">NINES Project Map</a> at Google Maps.</p>
-	  </p>
 </div>        
 
   </div>
@@ -109,7 +108,7 @@
 NINES: aggregating <span id='num_docs'>###</span> peer&#8209;reviewed <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/resources', 'Digital Objects'); return false;">digital objects</a> from <span id='num_sites'>###</span> <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/sites', 'Federated Sites'); return false;">federated sites</a>.
 <br/>Questions? Find a bug? <a class="nav_link nospam" href="technologies nines org">Contact us</a>.
 <br />(Powered by Collex v<span id='collex_version'>###</span>.)
-<script language="JavaScript">
+<script type="text/javascript">
 	document.observe('dom:loaded', function() {
 				new Ajax.Request('/home/get_footer_data', {
 					evalScripts: true,

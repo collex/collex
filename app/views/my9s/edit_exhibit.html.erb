@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -15,11 +15,9 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% current_page "My 9s" -%>
-<script language="JavaScript">
+<script type="text/javascript">
 	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
-</script>
 
-<script language="JavaScript">
 	document.observe('dom:loaded', function() {
 		if (window.initOutline) 
 			initOutline("edit_exhibit_outline");	

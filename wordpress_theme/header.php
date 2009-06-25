@@ -91,7 +91,7 @@ if ( !empty($withcomments) && !is_single() ) {
 
     	<div id="subnav_container">
         	<div id="login_container">
-				<script language="JavaScript">
+				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
 					});

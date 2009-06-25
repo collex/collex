@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -21,7 +21,7 @@
 		<%= render :partial => '/exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
 	</div>
 	<% if is_edit_mode -%>
-		<script language="JavaScript">
+		<script type="text/javascript">
 			if(window.initializeInplaceHeaderEditor)
 				initializeInplaceHeaderEditor(<%= "'header_#{element.id},exhibit_builder_outline_content'"%>, "/my9s/edit_header,/my9s/refresh_outline");
 		</script>

@@ -11,7 +11,7 @@
 
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/editor/assets/skins/sam/editor.css" />
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/resize/assets/skins/sam/resize.css" />
-	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css">
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/assets/skins/sam/skin.css" />
 <link href="../../stylesheets/main.css" rel="stylesheet" type="text/css" />
 <link href="../../stylesheets/nav.css" rel="stylesheet" type="text/css" />
 <link href="../../stylesheets/lvl2.css" rel="stylesheet" type="text/css" />
@@ -52,7 +52,7 @@
 			<a href="/search" class="tab_link">Search</a>
 		</div>
    	<div id="subnav_container"><div id="login_container">
-				<script language="JavaScript">
+				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
 					});
@@ -165,7 +165,7 @@
 NINES: aggregating <span id='num_docs'>###</span> peer&#8209;reviewed <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/resources', 'Digital Objects'); return false;">digital objects</a> from <span id='num_sites'>###</span> <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/sites', 'Federated Sites'); return false;">federated sites</a>.
 <br/>Questions? Find a bug? <a class="nav_link nospam" href="technologies nines org">Contact us</a>.
 <br />(Powered by Collex v<span id='collex_version'>###</span>.)
-<script language="JavaScript">
+<script type="text/javascript">
 	document.observe('dom:loaded', function() {
 				new Ajax.Request('/home/get_footer_data', {
 					evalScripts: true,

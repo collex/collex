@@ -47,10 +47,10 @@ var ForumReplyDlg = Class.create({
 		}
 		
 		if (!logged_in) {
-			var dlg = new SignInDlg();
-			dlg.setInitialMessage("You must be logged in to create a comment.");
-			dlg.setRedirectPageToCurrentWithParam('script=ForumReplyDlg');
-			dlg.show('sign_in');
+			var logdlg = new SignInDlg();
+			logdlg.setInitialMessage("You must be logged in to create a comment.");
+			logdlg.setRedirectPageToCurrentWithParam('script=ForumReplyDlg');
+			logdlg.show('sign_in');
 			return;
 		}
 
