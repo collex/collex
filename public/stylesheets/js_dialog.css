@@ -383,3 +383,7 @@ hr.linkdlg_hr {
 	text-align: left;
 }
 
+.text_input_dlg_input {
+	margin-left: 15px;
+	width: 440px;
+}

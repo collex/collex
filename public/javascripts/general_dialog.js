@@ -38,6 +38,8 @@ var GeneralDialog = Class.create({
 		var dlg_id = this_id;
 		var editors = [];
 		var customList = [];
+		var defaultAction = null;
+		var defaultParam = null;
 		
 		var selectChange = function(event, param)
 		{
@@ -122,7 +124,12 @@ var GeneralDialog = Class.create({
 			{ fn:handleCancel,
 				scope:panel,
 				correctScope:true }, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
-		panel.cfg.queueProperty("keylisteners", klEsc);
+
+		var klEnter = new YAHOO.util.KeyListener(document, { keys:13 },
+			{ fn:function() { if (defaultAction) defaultAction(null, defaultParam); },
+				scope:panel,
+				correctScope:true }, "keydown" );
+		panel.cfg.queueProperty("keylisteners", [klEsc, klEnter]);
 
 		// Create all the html for the dialog
 		var listenerArray = [];
@@ -147,7 +154,8 @@ var GeneralDialog = Class.create({
 					// TEXT
 					if (subel.text !== undefined) {
 						var elText = new Element('span').update(subel.text);
-						elText.addClassName(subel.klass);
+						if (subel.klass)
+							elText.addClassName(subel.klass);
 						if (subel.id !== undefined)
 							elText.writeAttribute({ id: subel.id });
 						row.appendChild(elText);
@@ -170,6 +178,10 @@ var GeneralDialog = Class.create({
 						var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: subel.button });
 						row.appendChild(input);
 						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: subel.klass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						if (subel.isDefault) {
+							defaultAction = subel.callback;
+							defaultParam = { curr_page: page.page, destination: subel.url, dlg: This };
+						}
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
 						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
@@ -411,11 +423,25 @@ function updateWithAjax(params)
 		},
 		onFailure : function(resp) {
 			if (params.onFailure)
-				params.onFailure();
+				params.onFailure(resp);
 			else
 				new MessageBoxDlg("Error", "Oops, there's been an error.");
 		}
 	});
+}
+
+function recurseUpdateWithAjax(actions, els, onComplete, onFailure, params)
+{
+	if (actions.length === 0) {
+		if (onComplete)
+			onComplete();
+		return;
+	}
+
+	var action = actions.shift();
+	var el = els.shift();
+	var ajaxparams = { action: action, el: el, onComplete: function(resp) { recurseUpdateWithAjax(actions, els, onComplete, onFailure, params); }, onFailure: onFailure, params: params };
+	updateWithAjax(ajaxparams);
 }
 
 var ConfirmAjaxDlg = Class.create({
@@ -451,5 +477,60 @@ var ConfirmLinkDlg =  Class.create({
 		};
 		
 		new ConfirmDlg(title, message, "Yes", "No", ok);
+	}
+});
+
+var TextInputDlg = Class.create({
+	initialize: function (params) {
+		var title = params.title;
+		var prompt = params.prompt;
+		var id = params.id;
+		var okStr = params.okStr;
+		var actions = params.actions;
+		var onComplete = params.onComplete;
+		var onFailure = params.onFailure;
+		var target_els = params.target_els;
+		var extraParams = params.extraParams;
+
+		// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
+		this.class_type = 'TextInputDlg';	// for debugging
+
+		// private variables
+		var This = this;
+
+		// privileged functions
+		this.ok = function(event, params)
+		{
+			params.dlg.cancel();
+
+			// Recursively run through the list of actions we were passed.
+			var data = dlg.getAllData();
+			extraParams[id] = data[id];
+			recurseUpdateWithAjax(actions, target_els, onComplete, onFailure, extraParams);
+//			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
+//			updateWithAjax(ajaxparams);
+		};
+
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: prompt, klass: 'new_exhibit_label' }, { input: id, klass: 'text_input_dlg_input' } ],
+					[ { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
+				]
+			};
+
+		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: title };
+		var dlg = new GeneralDialog(dlgparams);
+		dlg.changePage('layout', null);
+		dlg.center();
+
+		var input = $(id);
+		input.select();
+		input.focus();
 	}
 });

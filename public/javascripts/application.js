@@ -768,12 +768,16 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 	ptr.removeClassName('result_without_tag');
 	ptr.addClassName('result_with_tag');
 	var full_text = getFullText(row_id);
-	
+
+	var less = $('less-search_result_'+row_num);
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 	new Ajax.Updater(row_id, "/results/collect", {
 		parameters : params,
 		evalScripts : true,
-		onSuccess: function(resp) { if (successCallback) successCallback(resp); },
+		onSuccess: function(resp) {
+			if (successCallback) successCallback(resp);
+			if (less) removeHidden.delay(.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		},
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 	
@@ -787,10 +791,14 @@ function doRemoveTag(uri, row_id, tag_name)
 	var full_text = getFullText(row_id);
 	var row_num = row_id.substring(row_id.lastIndexOf('_')+1);
 
+	var less = $('less-search_result_'+row_num);
 	new Ajax.Updater(row_id, "/results/remove_tag", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,
 		evalScripts : true,
-		onComplete : tagFinishedUpdating,
+		onComplete : function(resp) {
+			tagFinishedUpdating();
+			if (less) removeHidden.delay(.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		},
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 	});
 }
@@ -812,10 +820,14 @@ function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 		var full_text = getFullText(row_id);
 		var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 		
+		var less = $('less-search_result_'+row_num);
 		new Ajax.Updater(row_id, "/results/uncollect", {
 			parameters : params,
 			evalScripts : true,
-			onSuccess: function(resp) { if (successCallback) successCallback(resp); },
+			onSuccess: function(resp) {
+				if (successCallback) successCallback(resp);
+				if (less) removeHidden.delay(.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+			},
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 
@@ -851,10 +863,23 @@ function removeTag(parent_id, tag_name)
 
 function doAddTag(parent_id, uri, row_num, row_id)
 {
-	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id, 
-		row_id + ",tag_cloud_div",
-		"/results/add_tag,/tag/update_tag_cloud", 
-		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text', null, null );
+	var less = $('less-search_result_'+row_num);
+	var params = {
+		title: "Add Tag",
+		prompt: 'Tag:',
+		id: 'tag',
+		okStr: 'Save',
+		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) },
+		actions: [ '/results/add_tag', '/tag/update_tag_cloud' ],
+		target_els: [ row_id, 'tag_cloud_div' ],
+		onComplete: function(resp) { if (less) removeHidden.delay(.1, 'more-search_result_'+row_num, 'search_result_'+row_num); }
+	};
+	
+	new TextInputDlg(params);
+//	doSingleInputPrompt("Add Tag", 'Tag:', 'tag', parent_id,
+//		row_id + ",tag_cloud_div",
+//		"/results/add_tag,/tag/update_tag_cloud",
+//		$H({ uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) }), 'text', null, null );
 }
 
 //function doAddTagForum(parent_id, uri, row_id)
