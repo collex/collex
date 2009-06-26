@@ -1,4 +1,4 @@
-<%
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -17,24 +17,24 @@
 	
 <% # parameters: starting_zoom -%>
 <map name="zoom_map">
-	<area shape="rect" href="#" coords="0,0,26,22" onclick="doZoom('+'); return false;" title="zoom in" />
-	<area shape="rect" href="#" coords="0,27,26,34" onclick="doZoom('10'); return false;" />
-	<area shape="rect" href="#" coords="0,35,26,42"  onclick="doZoom('9'); return false;" />
-	<area shape="rect" href="#" coords="0,43,26,50" onclick="doZoom('8'); return false;" />
-	<area shape="rect" href="#" coords="0,51,26,58" onclick="doZoom('7'); return false;" />
-	<area shape="rect" href="#" coords="0,59,26,66" onclick="doZoom('6'); return false;" />
-	<area shape="rect" href="#" coords="0,67,26,74" onclick="doZoom('5'); return false;" />
-	<area shape="rect" href="#" coords="0,75,26,82" onclick="doZoom('4'); return false;" />
-	<area shape="rect" href="#" coords="0,83,26,90" onclick="doZoom('3'); return false;" />
-	<area shape="rect" href="#" coords="0,91,26,98" onclick="doZoom('2'); return false;" />
-	<area shape="rect" href="#" coords="0,99,26,106" onclick="doZoom('1'); return false;" />
-	<area shape="rect" href="#" coords="0,103,26,132" onclick="doZoom('-'); return false;"  title="zoom out" />
+	<area shape="rect" href="#" alt="zoom in" coords="0,0,26,22" onclick="doZoom('+'); return false;" title="zoom in" />
+	<area shape="rect" href="#" alt="zoom 10" coords="0,27,26,34" onclick="doZoom('10'); return false;" />
+	<area shape="rect" href="#" alt="zoom 9" coords="0,35,26,42"  onclick="doZoom('9'); return false;" />
+	<area shape="rect" href="#" alt="zoom 8" coords="0,43,26,50" onclick="doZoom('8'); return false;" />
+	<area shape="rect" href="#" alt="zoom 7" coords="0,51,26,58" onclick="doZoom('7'); return false;" />
+	<area shape="rect" href="#" alt="zoom 6" coords="0,59,26,66" onclick="doZoom('6'); return false;" />
+	<area shape="rect" href="#" alt="zoom 5" coords="0,67,26,74" onclick="doZoom('5'); return false;" />
+	<area shape="rect" href="#" alt="zoom 4" coords="0,75,26,82" onclick="doZoom('4'); return false;" />
+	<area shape="rect" href="#" alt="zoom 3" coords="0,83,26,90" onclick="doZoom('3'); return false;" />
+	<area shape="rect" href="#" alt="zoom 2" coords="0,91,26,98" onclick="doZoom('2'); return false;" />
+	<area shape="rect" href="#" alt="zoom 1" coords="0,99,26,106" onclick="doZoom('1'); return false;" />
+	<area shape="rect" href="#" alt="zoom out" coords="0,103,26,132" onclick="doZoom('-'); return false;"  title="zoom out" />
 </map>
 <div id="tag_zoom_scale" >
-	<img src="/images/zoom_scale.png" usemap="#zoom_map" border="0" />
+	<img src="/images/zoom_scale.png" usemap="#zoom_map" border="0" alt="zoom" />
 </div>
 <div id="tag_zoom_thumb" >
-	<img src="/images/zoom_thumb.png" />
+	<img src="/images/zoom_thumb.png" alt="zoom thumb" />
 </div>
 
 <script type="text/javascript">

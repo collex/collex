@@ -155,6 +155,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 	}
 	
 	// Use the editor's routine to get the selection. This will be really different between IE 6/7 and other browsers
+	var val = null;
 	var s = this._getSelection();
 	if (this.browser.webkit) {
 		if (s+'' === '') {
@@ -164,7 +165,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 		// TODO-PER: This isn't right. It will match the first occurrance of the text selected. It's better than nothing, though.
 		var rng = s.createRange();
 		var selText = rng.htmlText;
-		var val = this.getEditorHTML();
+		val = this.getEditorHTML();
 		var idx = val.indexOf(selText);
 		if (idx === -1)
 			s.rangeCount = 2;
@@ -198,7 +199,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 	var fpos = (f.tagName === 'BODY') ? null : this.getXPathPosition(f);
 
 	// Now parse the raw string to figure out where the xpaths created above (in aoff and foff) fall in the string.
-	var val = this.getEditorHTML();
+	val = this.getEditorHTML();
 	var arr = this.splitHtmlIntoArray(val);
 
 	// Now we go through the raw html, create xpath levels for each node, and

@@ -1058,9 +1058,10 @@ function setTagVisibility(zoom_level)
 	}
 }
 
+var zoom_level = 10;
+
 function doZoom(level)
 {
-	var zoom_level;
 	switch (level)
 	{
 		case "+": if (zoom_level < 10) zoom_level++; break;
@@ -1141,6 +1142,7 @@ function ZoomThumbMouseDown(e)
 	  	// prevent text selection (except IE)
 	  	return false;
 	  }
+  	return true;
 }
 
 function ZoomThumbMouseMove(e)
