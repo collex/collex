@@ -92,7 +92,8 @@ class CollectedItem < ActiveRecord::Base
     item.user = user
     item.cached_resource = cached_resource
     item.save!
-    
+
+		ObjectActivity.record_collect(user, uri)
     return item
   end
   
@@ -148,6 +149,7 @@ class CollectedItem < ActiveRecord::Base
       delete_tag_if_orphan(tag_str)
     }
     item.destroy()
+		ObjectActivity.record_uncollect(user, uri)
   end
   
   def self.set_annotation(user, uri, note_str)
@@ -186,6 +188,8 @@ class CollectedItem < ActiveRecord::Base
     else
       tagassign.update_attribute(:updated_at, Time.now)
     end
+
+		ObjectActivity.record_tag(user, uri, tag_str)
   end
 
   def self.delete_tag(user, uri, tag_str)
@@ -213,6 +217,7 @@ class CollectedItem < ActiveRecord::Base
       tagassign.destroy
       delete_tag_if_orphan(tag_str)
     end
+		ObjectActivity.record_untag(user, uri, tag_str)
   end
   
   def self.rename_tag(user, uri, old_tag_str, new_tag_str)

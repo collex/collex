@@ -2,7 +2,9 @@
 <% current_sub_page "Statistics" -%>
 <div class="inner_content_container">
 	<div class="page_header">NINES Statistics</div>
+	[NOTE: These statistics only count activity since June 30, 2009]
 	<% login_stats = LoginInfo.get_stats() -%>
+	<% object_stats = ObjectActivity.get_stats() -%>
 	<% lines = get_user_login_info() -%>
 	<% str = "" -%>
 	<% lines.each {|line| str += line + "<br />" } -%>
@@ -47,6 +49,58 @@
 			<td>Signups Past year:</td>
 			<td><%= login_stats[:signups_this_year] %></td>
 		</tr>
+
+		<tr>
+			<td>Objects collected Past 24 hours:</td>
+			<td><%= object_stats[:objects_collected_today] %></td>
+		</tr>
+		<tr>
+			<td>Objects collected Past 7 days:</td>
+			<td><%= object_stats[:objects_collected_this_week] %></td>
+		</tr>
+		<tr>
+			<td>Objects collected Past 30 days:</td>
+			<td><%= object_stats[:objects_collected_this_month] %></td>
+		</tr>
+		<tr>
+			<td>Objects collected Past year:</td>
+			<td><%= object_stats[:objects_collected_this_year] %></td>
+		</tr>
+
+		<tr>
+			<td>Objects tagged Past 24 hours:</td>
+			<td><%= object_stats[:objects_tagged_today] %></td>
+		</tr>
+		<tr>
+			<td>Objects tagged Past 7 days:</td>
+			<td><%= object_stats[:objects_tagged_this_week] %></td>
+		</tr>
+		<tr>
+			<td>Objects tagged Past 30 days:</td>
+			<td><%= object_stats[:objects_tagged_this_month] %></td>
+		</tr>
+		<tr>
+			<td>Objects tagged Past year:</td>
+			<td><%= object_stats[:objects_tagged_this_year] %></td>
+		</tr>
+
+		<tr>
+			<td>Number of users who have tagged an object:</td>
+			<td><%= object_stats[:num_users_with_tags] %></td>
+		</tr>
+		<tr>
+			<td>Average number of tags per user who has tagged objects:</td>
+			<td><%= object_stats[:ave_num_tags_per_user] %></td>
+		</tr>
+		<tr>
+			<td>Number of users who have collected an object:</td>
+			<td><%= object_stats[:num_users_with_collect] %></td>
+		</tr>
+		<tr>
+			<td>Average number of collections per user who has collected objects:</td>
+			<td><%= object_stats[:ave_num_collect_per_user] %></td>
+		</tr>
+
 	<!--	<tr>
 			<td valign='top'>All available login info:</td>
 			<td><%= str %></td>
@@ -58,6 +112,7 @@
 			<th>Name</th>
 			<th>IP address</th>
 			<th>action</th>
+			<th>time</th>
 		</tr>
 		<% logins = LoginInfo.all() -%>
 		<% for login in logins -%>
@@ -65,6 +120,28 @@
 			<td><%= h login.username %></td>
 			<td><%= h login.address %></td>
 			<td><%= h login.action %></td>
+			<td><%= h comment_time_format(login.updated_at) %></td>
+		</tr>
+		<% end -%>
+	</table>
+
+	<div class="page_header">Detail Object Information:</div>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>action</th>
+			<th>uri</th>
+			<th>tag</th>
+			<th>time</th>
+		</tr>
+		<% objects = ObjectActivity.all() -%>
+		<% for object in objects -%>
+		<tr>
+			<td><%= h object.username %></td>
+			<td><%= h object.action %></td>
+			<td><%= h object.uri %></td>
+			<td><%= h object.tagname %></td>
+			<td><%= h comment_time_format(object.updated_at) %></td>
 		</tr>
 		<% end -%>
 	</table>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090626135309) do
+ActiveRecord::Schema.define(:version => 20090626161243) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -170,6 +170,15 @@ ActiveRecord::Schema.define(:version => 20090626135309) do
     t.text     "request_uri"
     t.text     "http_referer"
     t.text     "params"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "object_activities", :force => true do |t|
+    t.string   "username"
+    t.string   "action"
+    t.string   "uri"
+    t.string   "tagname"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
