@@ -29,9 +29,9 @@ class ObjectActivity < ActiveRecord::Base
 		objects_tagged_this_month = self.num_recs('tag', month)
 		objects_tagged_this_year = self.num_recs('tag', year)
 		num_users_with_tags = self.get_num_uniq_users('tag')
-		ave_num_tags_per_user = num_users_with_tags ? self.get_total('tag') / num_users_with_tags : 0
+		ave_num_tags_per_user = num_users_with_tags > 0 ? self.get_total('tag') / num_users_with_tags : 0
 		num_users_with_collect = self.get_num_uniq_users('collect')
-		ave_num_collect_per_user = num_users_with_collect ? self.get_total('collect') / num_users_with_collect : 0
+		ave_num_collect_per_user = num_users_with_collect > 0 ? self.get_total('collect') / num_users_with_collect : 0
 
 		return { :objects_collected_today => objects_collected_today, :objects_collected_this_week => objects_collected_this_week,
 			:objects_collected_this_month => objects_collected_this_month, :objects_collected_this_year => objects_collected_this_year,
