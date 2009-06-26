@@ -41,54 +41,42 @@ class ForumController < ApplicationController
 #  
   def post_comment_to_new_thread
     if !is_logged_in?
-      flash[:error] = 'You must be signed in to start a discussion.'
+      render :text => 'You must be signed in to start a discussion.', :status => :bad_request
     else
-      topic_id = params[:topic_id]
-      title = params[:title]
-      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title)
+			params[:title] = params[:title].strip()
+			params[:reply] = params[:reply].strip()
+			err_msg = has_title(params)
+			err_msg = has_body(params) if err_msg == nil
 
-      params[:thread_id] = thread.id
-      create_comment(params)
+			if err_msg
+				render :text => err_msg, :status => :bad_request
+			else
+				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title)
+
+				topic_id = params[:topic_id]
+				title = params[:title]
+				params[:thread_id] = thread.id
+				create_comment(params)
+
+		    redirect_to :action => :index
+			end
     end
-
-    redirect_to :action => :index
   end
   
   def post_comment_to_existing_thread
     if !is_logged_in?
-      flash[:error] = 'You must be signed in to post a comment.'
+      render :text => 'You must be signed in to reply to a thread.', :status => :bad_request
     else
-      create_comment(params)
-#      thread_id = params[:thread_id]
-#      inet_thumbnail = params[:inet_thumbnail]
-#      inet_url = params[:inet_url]
-#      nines_object = params[:nines_obj_list]
-#      nines_exhibit = params[:exhibit_list]
-#      description = params[:reply]
-#      disc_type = params[:obj_type]
-#      user = User.find_by_username(session[:user][:username])
-#      thread = DiscussionThread.find(thread_id)
-#   
-#      if disc_type == ''
-#        DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length, :comment_type => 'comment', :comment => description)
-#      elsif disc_type == 'mycollection'
-#        cr = CachedResource.find_by_uri(nines_object)
-#        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-#          :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
-#      elsif disc_type == 'exhibit'
-#        a = nines_exhibit.split('_')
-#        exhibit = Exhibit.find(a[1])
-#        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-#          :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
-#      elsif disc_type == 'weblink'
-#        DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-#          :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
-#      end
+			params[:reply] = params[:reply].strip()
+			err_msg = has_body(params)
+			if err_msg
+				render :text => err_msg, :status => :bad_request
+			else
+				create_comment(params)
+				retrieve_thread({ :thread => params[:thread_id], :page => '-1' })
+				render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread }
+			end
     end
-    
-    retrieve_thread({ :thread => params[:thread_id], :page => '-1' })
-    render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread }
-#    redirect_to :action => :view_thread, :thread => thread_id
   end
 
   def edit_existing_comment
@@ -134,6 +122,31 @@ class ForumController < ApplicationController
   end
   
   private
+	def has_title(params) # returns nil if ok, otherwise returns an error message
+		return nil if params[:title].length > 0
+    disc_type = params[:obj_type]
+    if disc_type == 'mycollection' && params[:nines_obj_list].length == 0
+      disc_type = ''
+    elsif disc_type == 'exhibit' && params[:exhibit_list].length == 0
+      disc_type = ''
+    end
+		return "Please enter a title or select an object to post a comment." if disc_type.length == 0
+
+		return nil
+	end
+
+	def has_body(params)
+    disc_type = params[:obj_type]
+    if disc_type == 'mycollection' && params[:nines_obj_list].length == 0
+      disc_type = ''
+    elsif disc_type == 'exhibit' && params[:exhibit_list].length == 0
+      disc_type = ''
+    end
+
+		return "Please enter a comment." if disc_type == '' && params[:reply].length == 0
+		return nil
+	end
+
   def create_comment(params)
     thread_id = params[:thread_id]
     inet_thumbnail = params[:inet_thumbnail]
