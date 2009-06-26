@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090619184649) do
+ActiveRecord::Schema.define(:version => 20090626135309) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -152,6 +152,14 @@ ActiveRecord::Schema.define(:version => 20090619184649) do
     t.integer  "size"
     t.integer  "width"
     t.integer  "height"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "login_infos", :force => true do |t|
+    t.string   "username"
+    t.string   "address"
+    t.string   "action"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

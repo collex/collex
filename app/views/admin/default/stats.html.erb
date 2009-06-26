@@ -2,6 +2,7 @@
 <% current_sub_page "Statistics" -%>
 <div class="inner_content_container">
 	<div class="page_header">NINES Statistics</div>
+	<% login_stats = LoginInfo.get_stats() -%>
 	<% lines = get_user_login_info() -%>
 	<% str = "" -%>
 	<% lines.each {|line| str += line + "<br />" } -%>
@@ -14,9 +15,57 @@
 			<td>Total Objects:</td>
 			<td><%= number_with_delimiter(session[:num_docs]) %></td>
 		</tr>
+		<tr>
+			<td>Unique Logins Past 24 hours:</td>
+			<td><%= login_stats[:unique_logins_today] %></td>
+		</tr>
+		<tr>
+			<td>Unique Logins Past 7 days:</td>
+			<td><%= login_stats[:unique_logins_this_week] %></td>
+		</tr>
+		<tr>
+			<td>Unique Logins Past 30 days:</td>
+			<td><%= login_stats[:unique_logins_this_month] %></td>
+		</tr>
+		<tr>
+			<td>Unique Logins Past year:</td>
+			<td><%= login_stats[:unique_logins_this_year] %></td>
+		</tr>
+		<tr>
+			<td>Signups Past 24 hours:</td>
+			<td><%= login_stats[:signups_today] %></td>
+		</tr>
+		<tr>
+			<td>Signups Past 7 days:</td>
+			<td><%= login_stats[:signups_this_week] %></td>
+		</tr>
+		<tr>
+			<td>Signups Past 30 days:</td>
+			<td><%= login_stats[:signups_this_month] %></td>
+		</tr>
+		<tr>
+			<td>Signups Past year:</td>
+			<td><%= login_stats[:signups_this_year] %></td>
+		</tr>
 	<!--	<tr>
 			<td valign='top'>All available login info:</td>
 			<td><%= str %></td>
 		</tr> -->
+	</table>
+	<div class="page_header">Detail Login Information:</div>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>IP address</th>
+			<th>action</th>
+		</tr>
+		<% logins = LoginInfo.all() -%>
+		<% for login in logins -%>
+		<tr>
+			<td><%= h login.username %></td>
+			<td><%= h login.address %></td>
+			<td><%= h login.action %></td>
+		</tr>
+		<% end -%>
 	</table>
 </div>

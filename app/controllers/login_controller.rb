@@ -47,13 +47,16 @@ class LoginController < ApplicationController
 		logged_in_user = COLLEX_MANAGER.login(name, pass)
 		if logged_in_user
 			session[:user] = logged_in_user
+			LoginInfo.record_login(logged_in_user)
 			render :text => "Logging in..." # since this doesn't set the status, the Ajax handler will request the page again
 		else
+			LoginInfo.record_bad_login(name, request_origin)
 			render :text => "Invalid user/password combination", :status => :bad_request
 		end
   end
   
-  def logout 
+  def logout
+		LoginInfo.record_logout(session[:user])
     session[:user] = nil 
     redirect_to get_page_to_return_to()
   end
@@ -99,6 +102,7 @@ class LoginController < ApplicationController
   def submit_signup
 		err_msg = verify_signup_params(params)
 		if (err_msg == nil)
+			LoginInfo.record_signup(params[:create_username])
 			render :text => "Creating account..." # since this doesn't set the status, the Ajax handler will request the page again
 		else
 			render :text => err_msg, :status => :bad_request
