@@ -35,6 +35,7 @@ var ForumReplyDlg = Class.create({
 		var ajax_div = params.ajax_div;
 		var logged_in = params.logged_in;
 		var redirect = params.redirect;
+		var addTopicToLoginRedirect = params.addTopicToLoginRedirect;
 		var comment_id = params.comment_id;
 		if (comment_id !== undefined) {
 			var starting_title = params.title;
@@ -49,7 +50,10 @@ var ForumReplyDlg = Class.create({
 		if (!logged_in) {
 			var logdlg = new SignInDlg();
 			logdlg.setInitialMessage("You must be logged in to create a comment.");
-			logdlg.setRedirectPageToCurrentWithParam('script=ForumReplyDlg');
+			var r = 'script=ForumReplyDlg';
+			if (addTopicToLoginRedirect)
+				r += '_' + topic_id;
+			logdlg.setRedirectPageToCurrentWithParam(r);
 			logdlg.show('sign_in');
 			return;
 		}

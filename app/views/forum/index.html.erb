@@ -25,7 +25,6 @@
 
 <% for topic_arr in topics -%>
 	<% topic = topic_arr[:topic_rec] -%>
-	<% last_updated_date = topic_arr[:date] -%>
 	<% threads = topic.discussion_threads -%>
     <% threads = threads.sort {|a,b|
 	      b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
@@ -46,6 +45,7 @@
 							populate_nines_obj_url: '/forum/get_nines_obj_list',
 							progress_img: '<%=PROGRESS_SPINNER_PATH %>',
 							logged_in: <%= is_logged_in? %>,
+							addTopicToLoginRedirect: true,
 							redirect: '/forum/view_topic?topic=<%= topic.id %>&page=1'
 						});
 						return false;
@@ -54,7 +54,7 @@
 					YAHOO.util.Event.onAvailable('<%= new_post_id %>-button', function() {
 						$('<%= new_post_id %>-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
 					}, this);
-				<% if @script == 'ForumReplyDlg' %>
+				<% if @script == "ForumReplyDlg_#{topic.id}" %>
 					onButtonClick();
 				<% end %>
 				});

@@ -51,10 +51,10 @@ class ForumController < ApplicationController
 			if err_msg
 				render :text => err_msg, :status => :bad_request
 			else
-				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title)
-
 				topic_id = params[:topic_id]
 				title = params[:title]
+				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title)
+
 				params[:thread_id] = thread.id
 				create_comment(params)
 
