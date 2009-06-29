@@ -32,16 +32,12 @@ module DiscussionThreadsHelper
     if user.class == Fixnum
       user = User.find(user)
     end
-    if user.link != nil && user.link != ""
-      link_to(user.fullname, user.link, :class => 'ext_link', :target => '_blank')
-    else
-      user.fullname
-    end
+    link_to_function(user.fullname, "showPartialInLightBox('/my9s/show_profile?user=#{user.id}', 'Profile for #{user.fullname}'); return false;", :class => 'nav_link')
   end
   
   def make_ext_link(url)
     str = h(url)
-    if url.index("http") != 0  # if the link doesn't start ith http, then we'll add it.
+    if url.index("http") != 0  # if the link doesn't start with http, then we'll add it.
       url = "http://" + url
     end
     return "<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>"

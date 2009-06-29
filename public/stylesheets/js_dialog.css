@@ -387,3 +387,7 @@ hr.linkdlg_hr {
 	margin-left: 15px;
 	width: 440px;
 }
+
+.profile_paragraph {
+	max-width: 600px;
+}

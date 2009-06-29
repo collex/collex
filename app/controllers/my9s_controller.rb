@@ -140,6 +140,12 @@ class My9sController < ApplicationController
 #    render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
 #  end
 
+	# This is called from AJAX when a user's link has been clicked.
+	def show_profile
+		user_id = params[:user]
+		render :partial => '/my9s/profile', :locals => { :user => User.find(user_id), :can_edit => false }
+	end
+
   # This is called from AJAX when the user has finished filling out the form.
   def update_profile
     user = get_user(session)
@@ -168,7 +174,7 @@ class My9sController < ApplicationController
 
     session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
 
-    render :partial => 'profile', :locals => { :user => user }
+    render :partial => 'profile', :locals => { :user => user, :can_edit => true }
   end
 
   # The file upload is done in a separate call because of ajax limitations.

@@ -28,8 +28,9 @@
 		
 	<div class="inner_content_container">
 		<div class="left_column">
+			<div class="page_header">Profile</div>
 			<div id="profile">
-				<%= render :partial => 'profile', :locals => { :user => curr_user, :edit_mode => false } %>
+				<%= render :partial => 'profile', :locals => { :user => curr_user, :can_edit => true } %>
 			</div>
 			<div id="recently_collected_items">
 				<%= render :partial => 'recently_collected_items', :locals => { :user_id => curr_user.id, :hits => @results, :has_more => @has_more } %>

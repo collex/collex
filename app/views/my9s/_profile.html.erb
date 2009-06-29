@@ -14,8 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # profile: params: ActiveRecord user -%>
-<div class="page_header">Profile</div>
+<% # profile: params: ActiveRecord user, bool can_edit -%>
 <table>
 	<tr valign="top">
 		<td>
@@ -24,12 +23,14 @@
 		<td width="10px"></td>
 		<td> <%# right hand side of profile, with everything but the picture %>
 			<table class="user_profile">
-				<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my9s/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></td></tr>
+				<% if can_edit -%>
+					<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my9s/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></td></tr>
+				<% end -%>
 				<tr><td class="profile_label">Username:</td><td><%=h user.username %></td></tr>
 				<tr><td class="profile_label">Full name:</td><td><%=h user.fullname %></td></tr>
 				<tr><td class="profile_label">Email:</td><td><%=h user.email %></td></tr>
 				<tr><td class="profile_label">Institution:</td><td><%=h user.institution %></td></tr>
-				<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? link_to(user.link, user.link, {:target => '_blank', :class => 'nav_link' } ) : "" %></td></tr>
+				<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? make_ext_link(user.link) : "" %></td></tr>
 				<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%=h user.about_me %></td></tr>
 			</table>
 		</td>
