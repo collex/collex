@@ -38,8 +38,10 @@ var GeneralDialog = Class.create({
 		var dlg_id = this_id;
 		var editors = [];
 		var customList = [];
-		var defaultAction = null;
-		var defaultParam = null;
+
+		var currPage = null;
+		var defaultAction = {};
+		var defaultParam = {};
 		
 		var selectChange = function(event, param)
 		{
@@ -94,13 +96,16 @@ var GeneralDialog = Class.create({
 		};
 
 		this.setFlash = function(msg, is_error) {
-			$(flash_id).update(msg);
-			if (is_error) {
-				$(flash_id).addClassName('flash_notice_error');
-				$(flash_id).removeClassName('flash_notice_ok');
-			} else {
-				$(flash_id).addClassName('flash_notice_ok');
-				$(flash_id).removeClassName('flash_notice_error');
+			var flash = $(flash_id);
+			if (flash) {	// If the user canceled before this message came in, the element may not exist. That's ok, just ignore it.
+				flash.update(msg);
+				if (is_error) {
+					flash.addClassName('flash_notice_error');
+					flash.removeClassName('flash_notice_ok');
+				} else {
+					flash.addClassName('flash_notice_ok');
+					flash.removeClassName('flash_notice_error');
+				}
 			}
 		};
 		
@@ -126,7 +131,10 @@ var GeneralDialog = Class.create({
 				correctScope:true }, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
 
 		var klEnter = new YAHOO.util.KeyListener(document, { keys:13 },
-			{ fn:function() { if (defaultAction) defaultAction(null, defaultParam); },
+			{ fn:function() {
+					if (defaultAction[currPage])
+						defaultAction[currPage](null, defaultParam[currPage]);
+				},
 				scope:panel,
 				correctScope:true }, "keydown" );
 		panel.cfg.queueProperty("keylisteners", [klEsc, klEnter]);
@@ -179,8 +187,8 @@ var GeneralDialog = Class.create({
 						row.appendChild(input);
 						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: subel.klass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 						if (subel.isDefault) {
-							defaultAction = subel.callback;
-							defaultParam = { curr_page: page.page, destination: subel.url, dlg: This };
+							defaultAction[page.page] = subel.callback;
+							defaultParam[page.page] = { curr_page: page.page, destination: subel.url, dlg: This };
 						}
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
@@ -279,7 +287,7 @@ var GeneralDialog = Class.create({
 				cb(event, btn.param);
 			};
 			
-			var ybtn = new YAHOO.widget.Button(btn.id, { onclick: { fn: fn, obj: btn.id, scope: this }});
+			new YAHOO.widget.Button(btn.id, { onclick: { fn: fn, obj: btn.id, scope: this }});
 			if (btn.klass)
 				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass); }); 
 		});
@@ -288,6 +296,7 @@ var GeneralDialog = Class.create({
 		// that matches the value of the view parameter. Then this loop either hides or shows
 		// each element.
 		this.changePage = function(view, focus_el) {
+			currPage = view;
 			var els = $(this_id).select('.switchable_element');
 			els.each(function (el) {
 				if (el.hasClassName(view))
