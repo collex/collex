@@ -31,7 +31,8 @@
 	<tr><td colspan="9" class="FH_cat_info">
 		<p><%= topic.description %></p>
 		<p><%= pluralize(@total, 'discussion') %><%= "• Last updated #{comment_time_format(last_updated_date)}" if @threads.length > 0 %></p>
-		<%= link_to("New Post", "#", :onclick => 'return false;', :id => "new_post_#{topic.id}", :class => 'modify_link') %>
+		<% new_post_id = "new_post_#{topic.id}" -%>
+		<%= link_to("New Post", "#", :onclick => 'return false;', :id => new_post_id, :class => 'modify_link') %>
 		<script type="text/javascript">
 			document.observe('dom:loaded', function() {
 			    var onButtonClick = function (e) {
@@ -45,9 +46,9 @@
 					});
 					return false;
 			    };
-			    var oButton = new YAHOO.widget.Button("new_post_<%= topic.id %>", { onclick: { fn: onButtonClick } });
-				YAHOO.util.Event.onAvailable('"new_post_<%= topic.id %>"-button', function() {
-					$('"new_post_<%= topic.id %>"-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+			    new YAHOO.widget.Button("<%= new_post_id %>", { onclick: { fn: onButtonClick } });
+				YAHOO.util.Event.onAvailable('<%= new_post_id %>-button', function() {
+					$('<%= new_post_id %>-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
 				}, this);
 			<% if @script == 'ForumReplyDlg' %>
 				onButtonClick();
