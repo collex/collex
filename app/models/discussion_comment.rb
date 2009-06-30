@@ -91,4 +91,43 @@ class DiscussionComment < ActiveRecord::Base
     end
   end
 
+	def self.delete_comment(id, session_user, is_admin)
+		# if the comment is the main comment, then it can only be deleted if there are no subsequent comments.
+		# Also, we normally want to stay on the same thread after deleting the comment, but if we just deleted the
+		# main comment, then we need to go back to the index. We return -1 for the thread in that case.
+		discussion_comment = DiscussionComment.find(id)
+		thread_id = discussion_comment.discussion_thread_id
+
+		user = User.find_by_username(session_user[:username])
+		if !is_admin && user.id != discussion_comment.user_id
+			# don't delete it unless the user has the authority.
+		else
+			ok_to_delete = true
+			if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
+				if discussion_comment.discussion_thread.discussion_comments.length == 1 # only delete the first comment if there are no follow up comments
+					discussion_comment.discussion_thread.destroy
+					thread_id = -1
+				else
+					ok_to_delete = false
+				end
+			end
+		end
+		discussion_comment.destroy if ok_to_delete
+		return thread_id
+	end
+
+	def self.remove_abuse_flag(id)
+		discussion_comment = DiscussionComment.find(id)
+		reporter_ids = discussion_comment.reporter_ids
+		discussion_comment.update_attributes({ :reported => nil, :reporter_ids => nil })
+		begin
+			ids = reporter_ids.split(',')
+			ids.each { |reporter_id|
+				user = User.find(reporter_id)
+				LoginMailer.deliver_cancel_abuse_report_to_reporter({ :comment => discussion_comment }, user.email)
+			}
+		rescue Exception => msg
+			logger.error("**** ERROR: Can't send email: " + msg)
+		end
+	end
 end

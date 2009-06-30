@@ -33,4 +33,36 @@ class LoginMailer < ActionMailer::Base
     @from       = 'mailto:technologies@nines.org'
     @headers    = {}
   end
+
+	def report_abuse_to_admin(params, recipient)
+    @subject    = '[NINES] Comment Abuse Reported'
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+	end
+
+	def cancel_abuse_report_to_reporter(params, recipient)
+    @subject    = '[NINES] Abusive Comment Report Canceled'
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+	end
+
+	def accept_abuse_report_to_reporter(params, recipient)
+    @subject    = '[NINES] Abusive Comment Report Accepted'
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+	end
+
+	def accept_abuse_report_to_commenter(params, recipient)
+    @subject    = '[NINES] Abusive Comment Rejected'
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+	end
 end

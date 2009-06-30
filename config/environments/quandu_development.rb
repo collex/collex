@@ -41,3 +41,5 @@ ActionMailer::Base.smtp_settings = {
 
 config.log_level = :info
 #ActiveRecord::Base.verification_timeout=100
+
+ADMINISTRATOR_EMAILS = %w(dw6h@cms.mail.virginia.edu nick@performantsoftware.com paul@performantsoftware.com)

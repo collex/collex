@@ -368,31 +368,14 @@ class ForumController < ApplicationController
   public
   
   def delete_comment
-    discussion_comment = DiscussionComment.find(params[:comment])
-    thread_id = discussion_comment.discussion_thread_id
-    
+    thread_id = -1
     if !is_logged_in?
       flash[:error] = 'You must be signed in to delete a comment.'
     else
-      user = User.find_by_username(session[:user][:username])
-      if !is_admin? && user.id != discussion_comment.user_id
-        flash[:error] = 'You must own the comment to delete it.'
-      else
-        ok_to_delete = true
-        redirect_to_index = false
-        if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
-          if discussion_comment.discussion_thread.discussion_comments.length == 1 # only delete the first comment if there are no follow up comments
-            discussion_comment.discussion_thread.destroy
-            redirect_to_index = true
-          else
-            ok_to_delete = false
-          end
-        end
-      end
-      discussion_comment.destroy if ok_to_delete
+			thread_id = DiscussionComment.delete_comment(params[:comment], session[:user], is_admin?)
     end
     
-    if redirect_to_index
+    if thread_id == -1
       redirect_to :action => :index
     else
       redirect_to :action => :view_thread, :thread => thread_id
@@ -412,7 +395,13 @@ class ForumController < ApplicationController
       comment.reported = 1
       DiscussionComment.add_reporter(comment, user.id)
       comment.save
-      # TODO-PER: actually send email at this point
+			begin
+				ExceptionNotifier.exception_recipients.each { |ad|
+					LoginMailer.deliver_report_abuse_to_admin({ :comment => comment }, ad)
+				}
+			rescue Exception => msg
+				logger.error("**** ERROR: Can't send email: " + msg)
+			end
       render :partial => 'comment', :locals => { :comment => comment, :can_edit => can_edit, :can_delete => can_delete, :is_main => is_main }
       #redirect_to :action => :view_thread, :thread => comment.discussion_thread_id
     end

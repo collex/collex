@@ -40,4 +40,29 @@ class Admin::DefaultController < Admin::BaseController
     exhibit.update_attribute('category', category)
     render :text => category
   end
+
+	def delete_comment
+		id = params[:comment]
+		comment = DiscussionComment.find(id)
+		commenter = comment.user_id
+		reporter_ids = comment.reporter_ids
+		DiscussionComment.delete_comment(id, session[:user], is_admin?)
+		begin
+			ids = reporter_ids.split(',')
+			ids.each { |reporter_id|
+				user = User.find(reporter_id)
+				LoginMailer.deliver_accept_abuse_report_to_reporter({ :comment => comment }, user.email)
+			}
+			LoginMailer.deliver_accept_abuse_report_to_commenter({ :comment => comment }, User.find(commenter).email)
+		rescue Exception => msg
+			logger.error("**** ERROR: Can't send email: " + msg)
+		end
+		redirect_to :action => 'forum_pending_reports'
+	end
+
+	def remove_abuse_flag
+		id = params[:comment]
+		DiscussionComment.remove_abuse_flag(id)
+		redirect_to :action => 'forum_pending_reports'
+	end
 end

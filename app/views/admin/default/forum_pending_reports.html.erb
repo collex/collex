@@ -17,8 +17,8 @@
 				<td><%= spam.get_reported_by_list() %></td>
 				<td><%= spam.comment %></td>
 				<td><%= link_to "[Go to]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
-				<td><%= link_to "[Delete Comment]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
-				<td><%= link_to "[Remove Abuse Flag]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
+				<td><%= link_to_confirm("[Delete Comment]", { :action => 'delete_comment', :comment => spam.id }, "Delete Comment", "Are you sure you want to delete this comment? (An email will be sent to both the author of the comment and the person who reported it.)") %></td>
+				<td><%= link_to_confirm("[Remove Abuse Flag]", { :action => 'remove_abuse_flag', :comment => spam.id }, "Remove Abuse Flag", "Are you sure you want to remove the abuse flag? (An email will be sent to the person who reported the comment saying that the report is being ignored.)") %></td>
 			</tr>
 		<% end -%>
 	</table>

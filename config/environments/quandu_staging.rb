@@ -41,3 +41,5 @@ ActionMailer::Base.smtp_settings = {
 } 
 
 config.log_level = :info
+
+ADMINISTRATOR_EMAILS = %w(dw6h@cms.mail.virginia.edu nick@performantsoftware.com paul@performantsoftware.com)
