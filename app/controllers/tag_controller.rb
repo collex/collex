@@ -141,6 +141,9 @@ class TagController < ApplicationController
    end
    
    def rss
+			if params[:tag] != nil
+				params[:tag] = params[:tag].gsub("&lt;","<").gsub("&gt;", ">").gsub("&amp;", "&").gsub("&quot;", '"')
+			end
      @tag = params[:tag]
      @results = sort_by_date_collected(CachedResource.get_hits_for_tag(params[:tag], nil))
      #@items = [ { :title => 'first', :description => 'this is the first'}, { :title => 'second', :description => 'another entry' } ]

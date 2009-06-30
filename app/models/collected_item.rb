@@ -243,6 +243,7 @@ class CollectedItem < ActiveRecord::Base
   def self.normalize_tag_name(tag)
     tag = tag.strip()
     tag = tag.downcase()
-    return tag.gsub(' ', '_')
+    tag = tag.gsub(' ', '_')
+    return tag.gsub('/', '_')
   end
 end
