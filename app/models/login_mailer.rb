@@ -59,7 +59,7 @@ class LoginMailer < ActionMailer::Base
 	end
 
 	def accept_abuse_report_to_commenter(params, recipient)
-    @subject    = '[NINES] Abusive Comment Rejected'
+    @subject    = '[NINES] Abusive Comment Deleted'
     @body       = params
     @recipients = recipient
     @from       = 'mailto:technologies@nines.org'
