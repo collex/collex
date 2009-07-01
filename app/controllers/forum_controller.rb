@@ -392,15 +392,17 @@ class ForumController < ApplicationController
       can_delete = params['can_delete'] == 'true'
       is_main = params['is_main'] == 'true'
       comment = DiscussionComment.find(comment_id)
-      comment.reported = 1
-      DiscussionComment.add_reporter(comment, user.id)
-      comment.save
-			begin
-				ExceptionNotifier.exception_recipients.each { |ad|
-					LoginMailer.deliver_report_abuse_to_admin({ :comment => comment }, ad)
-				}
-			rescue Exception => msg
-				logger.error("**** ERROR: Can't send email: " + msg)
+			if comment.has_reporter(user.id) == false
+				comment.reported = 1
+				DiscussionComment.add_reporter(comment, user.id)
+				comment.save
+				begin
+					ExceptionNotifier.exception_recipients.each { |ad|
+						LoginMailer.deliver_report_abuse_to_admin({ :comment => comment }, ad)
+					}
+				rescue Exception => msg
+					logger.error("**** ERROR: Can't send email: " + msg)
+				end
 			end
       render :partial => 'comment', :locals => { :comment => comment, :can_edit => can_edit, :can_delete => can_delete, :is_main => is_main }
       #redirect_to :action => :view_thread, :thread => comment.discussion_thread_id

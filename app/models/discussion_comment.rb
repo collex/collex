@@ -50,7 +50,15 @@ class DiscussionComment < ActiveRecord::Base
     }
     return names.join(", ")
   end
-  
+
+	def has_reporter(user_id)
+		return false if reporter_ids == nil
+		
+		ids = reporter_ids.split(',')
+		i = ids.index("#{user_id}")
+		return i != nil
+	end
+
   def self.add_reporter(comment, id)
     ids = "#{id}"
     if comment.reporter_ids != nil && comment.reporter_ids.length > 0
