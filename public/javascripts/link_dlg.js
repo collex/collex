@@ -173,10 +173,6 @@ var CreateListOfObjects = Class.create({
 				if (first_item2)	// this can be null if there are no objects in the list.
 					first_item2.addClassName(selClass);
 			}
-//					actions.each(function(action){
-//						action.el.observe('click', action.action);
-//					});
-			
 		};
 		
 		// privileged functions
@@ -216,7 +212,7 @@ var CreateListOfObjects = Class.create({
 			parent.appendChild(object);
 		};
 		
-		this.popSelection = function(object_uri)
+		this.popSelection = function()
 		{
 			var sel = parent.down("." + selClass);
 			if (sel) {
@@ -252,7 +248,7 @@ var CreateListOfObjects = Class.create({
 ////////////////////////////////////////////////////////////////////////////
 
 var LinkDlgHandler = Class.create({
-	initialize: function () {
+	initialize: function (populate_nines_obj_url, progress_img) {
 	
 		var objRTE = null;
 		var iStartPos = null;
@@ -320,7 +316,7 @@ var LinkDlgHandler = Class.create({
 			return [ iStart, iEnd ];
 		};
 
-		var createLinkDlg = function(element_id, starting_type, starting_selection)
+		var createLinkDlg = function(starting_type, starting_selection)
 		{
 			var linkTypes = [ 'NINES Object', 'External Link' ];
 	
@@ -394,22 +390,20 @@ var LinkDlgHandler = Class.create({
 				params.dlg.cancel();
 			};
 			
-			var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-			var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 			var objlist = new CreateListOfObjects(populate_nines_obj_url, (starting_type === 0 ? starting_selection : null), 'ld_nines_object', progress_img);
 	
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Type of Link:', klass: 'new_exhibit_label' }, { select: 'ld_type', change: selChanged, value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
+						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', change: selChanged, value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
 						[ { page_link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
-						[ { custom: objlist, klass: 'new_exhibit_label ld_nines_only hidden' },
-						  { text: 'Link URL', klass: 'new_exhibit_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'new_exhibit_input_long ld_link_only hidden' } ],
+						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
+						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
 						[ { button: 'Save', callback: saveLink }, { button: 'Cancel', callback: cancel } ]
 					]
 				};
 				
-			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
+			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link" };
 			var dlg = new GeneralDialog(dlgParams);
 			dlg.changePage('layout', null);
 			objlist.populate(dlg, true, 'rte');
@@ -419,13 +413,13 @@ var LinkDlgHandler = Class.create({
 			dlg.center();
 		};
 		
-		this.show = function(objRTE_, id, rawHtmlOfEditor_, iStartPos_, iEndPos_)
+		this.show = function(objRTE_, rawHtmlOfEditor_, iStartPos_, iEndPos_)
 		{
 			objRTE = objRTE_;
 			iStartPos = iStartPos_;
 			iEndPos = iEndPos_;
 			rawHtmlOfEditor = rawHtmlOfEditor_;
-			
+
 			var getInternalLink = function (str)
 			{
 				// This will only find the first link. That's ok, that's what we want.
@@ -466,7 +460,7 @@ var LinkDlgHandler = Class.create({
 			}
 			
 			// Put up the selection dialog
-			createLinkDlg(id, starting_type, starting_selection);
+			createLinkDlg(starting_type, starting_selection);
 		};
 	}
 });

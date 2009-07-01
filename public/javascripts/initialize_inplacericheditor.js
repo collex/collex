@@ -289,7 +289,7 @@ function showIllustrationEditor(event)
 		
 	var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
 	var dlg = new GeneralDialog(dlgParams);
-	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler());
+	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
 	dlg.changePage('layout', null);
 	objlist.populate(dlg, true, 'illust');
 	selChanged(null, values['type']);
@@ -375,7 +375,9 @@ function showRichEditor(event)
 //		onclick : 'showNinesObjectDlg(ed);'
 //	};
 
-	dlg.addTextArea('value', 600, 100, null, [ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler());
+	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+	dlg.addTextArea('value', 600, 100, null, [ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
 
 	// Now populate a hash with all the starting values.	
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with

@@ -402,7 +402,7 @@ var RichTextEditor = Class.create({
 						return false;
 					}
 					
-					linkDlgHandler.show(This, id + "_container", editor.getEditorHTML(), result.startPos, result.endPos);
+					linkDlgHandler.show(This, editor.getEditorHTML(), result.startPos, result.endPos);
 					
 		            //This is important.. Return false here to not fire the rest of the listeners
 		            return false;
@@ -410,34 +410,34 @@ var RichTextEditor = Class.create({
 			}, this, true);
 		};
 
-		var setResize = function(id)
-		{
-			var editor = This.editor;
-
-			editor.on('editorContentLoaded', function() { 
-				var resize = new YAHOO.util.Resize(editor.get('element_cont').get('element'), {
-				    handles: ['b', 'r', 'br'],
-				    autoRatio: true,
-				    status: false,
-				    proxy: true,
-				    setSize: false //This is where the magic happens
-				});
-				resize.on('startResize', function() {
-				    this.hide();
-				    this.set('disabled', true);
-				}, editor, true);
-				resize.on('resize', function(args) {
-				    var h = args.height;
-				    var th = (this.toolbar.get('element').clientHeight + 2); //It has a 1px border..
-				    var dh = 0; //(this.dompath.clientHeight + 1); //It has a 1px top border..
-				    var newH = (h - th - dh);
-				    this.set('width', args.width + 'px');
-				    this.set('height', newH + 'px');
-				    this.set('disabled', false);
-				    this.show();
-				}, editor, true);
-			});
-		};
+//		var setResize = function(id)
+//		{
+//			var editor = This.editor;
+//
+//			editor.on('editorContentLoaded', function() {
+//				var resize = new YAHOO.util.Resize(editor.get('element_cont').get('element'), {
+//				    handles: ['b', 'r', 'br'],
+//				    autoRatio: true,
+//				    status: false,
+//				    proxy: true,
+//				    setSize: false //This is where the magic happens
+//				});
+//				resize.on('startResize', function() {
+//				    this.hide();
+//				    this.set('disabled', true);
+//				}, editor, true);
+//				resize.on('resize', function(args) {
+//				    var h = args.height;
+//				    var th = (this.toolbar.get('element').clientHeight + 2); //It has a 1px border..
+//				    var dh = 0; //(this.dompath.clientHeight + 1); //It has a 1px top border..
+//				    var newH = (h - th - dh);
+//				    this.set('width', args.width + 'px');
+//				    this.set('height', newH + 'px');
+//				    this.set('disabled', false);
+//				    this.show();
+//				}, editor, true);
+//			});
+//		};
 	
 		// privileged methods
 		this.attachToDialog = function(dialog) {
@@ -745,10 +745,13 @@ ModalDialog.prototype = {
 	
 	_setRichTextAreas : function(extraButtons)
 	{
+			var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+			var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+
 		var textAreas = $$('#'+this.formID+' textarea');
 		
 		textAreas.each( function(textArea) { 
-			var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: extraButtons, linkDlgHandler: this._linkDlgHandler });
+			var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: extraButtons, linkDlgHandler: this._linkDlgHandler, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 			editor.attachToDialog(this.dialog);
 			this.editors.push(editor);
 		}, this);

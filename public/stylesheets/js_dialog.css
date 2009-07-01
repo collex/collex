@@ -340,6 +340,23 @@ hr.linkdlg_hr {
 	width: 500px;
 }
 
+.link_dlg {
+	width: 500px;
+}
+
+.link_dlg_row {
+	padding-bottom: 10px;
+}
+
+.link_dlg_label {
+
+}
+
+.link_dlg_input_long {
+	width: 480px;
+}
+
+
 /*****************************************/
 
 .input_dlg_list {

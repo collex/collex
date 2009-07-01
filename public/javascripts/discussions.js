@@ -168,7 +168,7 @@ var ForumReplyDlg = Class.create({
 		var dlg = new GeneralDialog(dlgParams);
 		if (topic_id || (comment_id && starting_title))
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
-		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler());
+		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
 		dlg.changePage('layout', null);
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');
