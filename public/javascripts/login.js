@@ -31,14 +31,13 @@ var SignInDlg = Class.create({
 		// private functions
 		this.changeView = function (event, param)
 		{
-			var curr_page = param.curr_page;
+			//var curr_page = param.curr_page;
 			var view = param.destination;
 			var dlg = param.dlg;
 			
 			var focus_el = null;
 			switch (view)
 			{
-//				case 'my_account': focus_el = 'account_email'; break;
 				case 'sign_in': focus_el = 'signin_username'; break;
 				case 'create_account': focus_el = 'create_username'; break;
 				case 'account_help': focus_el = 'help_username'; break;
@@ -56,23 +55,11 @@ var SignInDlg = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-//			var getForm = function(This) {
-//				if (This.up)
-//					return This.up('form');
-//				var els = $$("." + This);
-//				return els[0].up('form');
-//			};
-			
 			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			var p = dlg.getAllData();
 
-			// Get the parameters from the enclosing form
-			//var form = getForm(this);
-			//var els = form.select('input');
-			//var p = {};
-			//els.each(function(el) { p[el.id] = el.value; });
 			new Ajax.Request(url, {
 				parameters : p,
 				onSuccess : function(resp) {
@@ -114,24 +101,6 @@ var SignInDlg = Class.create({
 		
 		this.show = function (view, username, email) {
 			
-			// TODO-PER: Code to just do a call back instead of this dialog
-//			switch (view)
-//			{
-//				case 'sign_in':
-//					window.location = '/login/login';
-//					break;
-//				case 'my_account':
-//					window.location = '/login/account';
-//					break;
-//				case 'create_account':
-//					window.location = '/login/signup';
-//					break;
-//				case 'account_help':
-//					window.location = '/login/account_help';
-//					break;
-//			}
-//			return;
-
 			var login = {
 					page: 'sign_in',
 					rows: [
@@ -185,22 +154,6 @@ var SignInDlg = Class.create({
 					]
 				};
 				
-//				var my_account = {
-//					page: 'my_account',
-//					rows: [
-//						[ { text: 'Edit Account', klass: 'login_title' } ],
-//						[ { text: 'User name:', klass: 'login_label' },
-//							{ id: 'account_username', klass: 'login_input', text: username } ],
-//						[ { text: 'E-mail address:', klass: 'login_label' } ],
-//						[ { input: 'account_email', klass: 'login_input', value: email } ],
-//						[ { text: 'Password:', klass: 'login_label' } ],
-//						[ { text: '(leave blank if not changing your password)', klass: 'login_instructions' } ],
-//						[ { password: 'account_password', klass: 'login_input' } ],
-//						[ { text: 'Re-type password:', klass: 'login_label' } ],
-//						[ { password: 'account_password2', klass: 'login_input' } ],
-//						[ { button: 'Update', url: '/login/change_account', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
-//					]
-//				};
 			var pages = [ login, account_help, create_account ];
 
 			var params = { this_id: "login_dlg", pages: pages, flash_notice: initialFlashMessage, body_style: "login_div", row_style: "login_row" };

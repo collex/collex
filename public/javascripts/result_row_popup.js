@@ -73,7 +73,7 @@ var ResultRowDlg = Class.create({
 				]
 			};
 		
-		var params = { this_id: "result_row_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Object Details" };
+		var params = { this_id: "result_row_dlg", pages: [ dlgLayout ], body_style: "result_row_dlg", row_style: "result_row_row", title: "Object Details" };
 		dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();

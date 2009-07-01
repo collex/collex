@@ -375,12 +375,12 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(referenceElementId);
-	var viewportWidth = getViewportWidth() + currentScrollPos()[0];
+	var viewportWidth = YAHOO.util.Dom.getViewportWidth() + currentScrollPos()[0];
 	var margin = 25;
 	var left = getX(el);
 	if (left + width + margin > viewportWidth)
 		left = viewportWidth - width - margin;
-	var viewportHeight = getViewportHeight() + currentScrollPos()[1];
+	var viewportHeight = YAHOO.util.Dom.getViewportHeight() + currentScrollPos()[1];
 	var top = getY(el);
 	if (top + height + margin > viewportHeight)
 		top = viewportHeight - height - margin;
@@ -404,78 +404,3 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	}
 }
 
-// Take an image and show it in a modal lightbox.
-//var _lightboxModalDialog = null;	// There is a problem with the object not destroying itself on close, so this is a hack so there is never more than one created.
-function showInLightbox(imageUrl, referenceElementId)
-{
-	var divName = "lightbox";
-	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
-	img.setStyle({display: 'none' });
-	var form = img.wrap('form', { id: divName + "_id"});
-	var progress = new Element('center', { id: 'lightbox_img_spinner'});
-	progress.addClassName('lightbox_img_spinner');
-	progress.appendChild(new Element('div').update("Image Loading..."));
-	progress.appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
-	progress.appendChild(new Element('div').update("Please wait"));
-	form.appendChild(progress);
-	var lightboxModalDialog = new ModalDialog();
-	img.observe('load', _lightboxCenter.bind(lightboxModalDialog));
-	var el = $(referenceElementId);
-	var left = getX(el);
-	var top = getY(el);
-	lightboxModalDialog.showLightbox("Image", divName, form, left, top);
-}
-
-function _lightboxCenter()
-{
-	var img = $('lightbox_img');
-	if (!img)	// The user must have cancelled.
-		return;
-
-	var img_spinner = $('lightbox_img_spinner');
-	if (img_spinner)
-		img_spinner.remove();
-	img.show();
-	var w = parseInt(img.getStyle('width'));
-	var vpWidth = getViewportWidth();
-	if (w > vpWidth)
-		img.width = vpWidth - 40;
-	var h = parseInt(img.getStyle('height'));
-	var vpHeight = getViewportHeight();
-	if (h > vpHeight)
-	{
-		img.removeAttribute('width');
-		img.height = vpHeight - 80;
-	}
-
-	this.center();
-}
-
-
-function showPartialInLightBox(ajax_url, title)
-{
-	var divName = "lightbox";
-	var div = new Element('div', { id: 'lightbox_contents' });
-	div.setStyle({display: 'none' });
-	var form = div.wrap('form', { id: divName + "_id"});
-	var progress = new Element('center', { id: 'lightbox_img_spinner'});
-	progress.addClassName('lightbox_img_spinner');
-	progress.appendChild(new Element('div').update("Loading..."));
-	progress.appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
-	progress.appendChild(new Element('div').update("Please wait"));
-	form.appendChild(progress);
-	var lightboxModalDialog = new ModalDialog();
-	var scroll = currentScrollPos();
-	lightboxModalDialog.showLightbox(title, divName, form, scroll[0]+10, scroll[1]+10);
-	new Ajax.Updater('lightbox_contents', ajax_url, {
-		evalScripts : true,
-		onComplete : function(resp) {
-			var img_spinner = $('lightbox_img_spinner');
-			if (img_spinner)
-				img_spinner.remove();
-			$('lightbox_contents').show();
-			lightboxModalDialog.center();
-		},				
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-	});
-}

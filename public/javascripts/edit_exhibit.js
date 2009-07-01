@@ -404,7 +404,7 @@ function initOutline(div_id)
 	$(div_id).removeClassName('hidden');
 	var width = 320;
 	var top = 180;
-	var height = getViewportHeight() - top - 80;
+	var height = YAHOO.util.Dom.getViewportHeight() - top - 80;
 	//create Dialog:
 	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
 		width: width + "px",

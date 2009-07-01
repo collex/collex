@@ -532,16 +532,6 @@ function toggleAllBulkCollectCheckboxes(link) {
 // functions that handle the AJAX inside a result div
 //
 
-function getViewportWidth()
-{
-    return (document.documentElement.clientWidth || document.body.clientWidth);
-}
-
-function getViewportHeight()
-{
-    return (document.documentElement.clientHeight || document.body.clientHeight);
-}
-
 function getX( oElement )
 {
 	var iReturnValue = 0;
@@ -562,28 +552,6 @@ function getY( oElement )
 	return iReturnValue;
 }
 
-
-function currentScrollPos() {
-	var pos = [
-		f_filterResults (
-			window.pageXOffset ? window.pageXOffset : 0,
-			document.documentElement ? document.documentElement.scrollLeft : 0,
-			document.body ? document.body.scrollLeft : 0
-		),
-		f_filterResults (
-			window.pageYOffset ? window.pageYOffset : 0,
-			document.documentElement ? document.documentElement.scrollTop : 0,
-			document.body ? document.body.scrollTop : 0
-		)];
-		return pos;
-}
-
-function f_filterResults(n_win, n_docel, n_body) {
-	var n_result = n_win ? n_win : 0;
-	if (n_docel && (!n_result || (n_result > n_docel)))
-		n_result = n_docel;
-	return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
-}
 
 function moveObjectToJustBelowItsParent(target_id, parent_id)
 {

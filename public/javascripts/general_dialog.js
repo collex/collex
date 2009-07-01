@@ -170,14 +170,16 @@ var GeneralDialog = Class.create({
 						// INPUT
 					} else if (subel.input !== undefined) {
 						var el1 = new Element('input', { id: subel.input, 'type': 'text' });
-						el1.addClassName(subel.klass);
+						if (subel.klass)
+							el1.addClassName(subel.klass);
 						if (subel.value !== undefined)
 							el1.writeAttribute({value: subel.value });
 						row.appendChild(el1);
 						// PASSWORD
 					} else if (subel.password !== undefined) {
 						var el2 = new Element('input', { id: subel.password, 'type': 'password'});
-						el2.addClassName(subel.klass);
+						if (subel.klass)
+							el2.addClassName(subel.klass);
 						if (subel.value !== undefined)
 							el2.writeAttribute({value: subel.value });
 						row.appendChild(el2);
@@ -369,12 +371,12 @@ var MessageBoxDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: message, klass: 'new_exhibit_label' } ],
+					[ { text: message, klass: 'message_box_label' } ],
 					[ { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 		
-		var params = { this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: title };
+		var params = { this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
@@ -404,12 +406,12 @@ var ConfirmDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: message, klass: 'new_exhibit_label' } ],
+					[ { text: message, klass: 'message_box_label' } ],
 					[ { button: okStr, callback: this.ok }, { button: cancelStr, callback: this.cancel } ]
 				]
 			};
 		
-		var params = { this_id: "confirm_box_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: title };
+		var params = { this_id: "confirm_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
@@ -540,12 +542,12 @@ var TextInputDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: prompt, klass: 'new_exhibit_label' }, { input: id, klass: 'text_input_dlg_input' } ],
+					[ { text: prompt, klass: 'text_input_dlg_label' }, { input: id, klass: 'text_input_dlg_input' } ],
 					[ { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 
-		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: title };
+		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(dlgparams);
 		dlg.changePage('layout', null);
 		dlg.center();

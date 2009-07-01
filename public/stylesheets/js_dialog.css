@@ -405,6 +405,47 @@ hr.linkdlg_hr {
 	width: 440px;
 }
 
+.text_input_dlg_label {
+
+}
+
 .profile_paragraph {
 	max-width: 600px;
 }
+
+.message_box_dlg {
+	width: 500px;
+}
+
+.message_box_row {
+	padding-bottom: 10px;
+}
+
+.message_box_label {
+
+}
+
+.result_row_dlg {
+	width: 500px;
+}
+
+.result_row_row {
+	padding-bottom: 10px;
+}
+
+.forum_reply_label {
+
+}
+
+.forum_reply_input {
+	width: 480px;
+}
+
+.forum_reply_dlg {
+	width: 500px;
+}
+
+.forum_reply_row {
+	padding-bottom: 10px;
+}
+

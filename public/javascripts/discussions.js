@@ -109,7 +109,7 @@ var ForumReplyDlg = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			
@@ -152,19 +152,19 @@ var ForumReplyDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Title', klass: 'new_exhibit_label title hidden' }, { input: 'title', value: starting_title, klass: 'new_exhibit_input_long title hidden' } ],
+					[ { text: 'Title', klass: 'forum_reply_label title hidden' }, { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } ],
 					[ { textarea: 'reply', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
-					[ { text: 'URL', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'new_exhibit_input_long weblink hidden' } ],
-					[ { text: 'Thumbnail for Item', klass: 'new_exhibit_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'new_exhibit_input_long weblink hidden' } ],
+					[ { text: 'URL', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_reply_input weblink hidden' } ],
+					[ { text: 'Thumbnail for Item', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_reply_input weblink hidden' } ],
 					[ { button: 'Post', url: submit_url, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 		
 		var dlgTitle = topic_id ? "New Post" : (thread_id ? "Reply" : "Edit Comment");
-		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: dlgTitle };
+		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "forum_reply_row", title: dlgTitle };
 		var dlg = new GeneralDialog(dlgParams);
 		if (topic_id || (comment_id && starting_title))
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
