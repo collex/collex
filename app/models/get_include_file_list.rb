@@ -16,7 +16,9 @@
 
 class GetIncludeFileList
 	def self.get_js(page)
-		pre_local = [ 'prototype', 'effects', 'controls' ]
+		pre_local = [ 'prototype' ]
+		pre_local_most = [ 'effects', 'controls' ]
+		pre_local = pre_local + pre_local_most if page != :about
 
 		yui_path = "/javascripts/yui_2_7_0"
 		yui = [
@@ -25,18 +27,23 @@ class GetIncludeFileList
 			"#{yui_path}/build/element/element",
 			"#{yui_path}/build/button/button",
 			"#{yui_path}/build/container/container",
+			"#{yui_path}/build/dragdrop/dragdrop"
+		]
+		yui_most = [
 			"#{yui_path}/build/connection/connection",
 			"#{yui_path}/build/menu/menu",
 			"#{yui_path}/build/editor/editor",
-			"#{yui_path}/build/dragdrop/dragdrop",
 			"#{yui_path}/build/resize/resize"
 		]
+		yui = yui + yui_most if page != :about
 
 		if page == :home
 			yui = yui + [ "#{yui_path}/build/animation/animation", "#{yui_path}/build/carousel/carousel" ]
 		end
 
-		global = [ 'rich_text_editor_wrapper', 'link_dlg', 'general_dialog', 'input_dialog', 'modal_dialog', 'login', 'nospam', 'application' ]
+		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
+		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'application' ]
+		global = global + global_most if page != :about
 
 		local = []
 		case page
@@ -60,13 +67,17 @@ class GetIncludeFileList
 		yui = [
 			"#{yui_path}/build/reset-fonts-grids/reset-fonts-grids",
 			"#{yui_path}/build/base/base",
-			"#{yui_path}/build/menu/assets/skins/sam/menu",
 			"#{yui_path}/build/button/assets/skins/sam/button",
 			"#{yui_path}/build/container/assets/skins/sam/container",
-			"#{yui_path}/build/editor/assets/skins/sam/editor",
-			"#{yui_path}/build/resize/assets/skins/sam/resize",
 			"#{yui_path}/build/assets/skins/sam/skin"
 			]
+
+		yui_most = [
+			"#{yui_path}/build/menu/assets/skins/sam/menu",
+			"#{yui_path}/build/editor/assets/skins/sam/editor",
+			"#{yui_path}/build/resize/assets/skins/sam/resize"
+			]
+		yui = yui + yui_most if page != :about
 
 		global = [
 			"main",

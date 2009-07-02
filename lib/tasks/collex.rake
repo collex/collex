@@ -39,6 +39,15 @@ namespace :collex do
 		Rake::Task['collex:compress_css_js'].invoke
 	end
 
+	desc "Compress only the about pages for local use"
+  task :compress_about_css_js => :environment do
+		compress_file('javascripts', '.js')
+		compress_file('stylesheets', '.css')
+
+		concatenate_js(:about)
+		concatenate_css(:about)
+	end
+
   desc "Compress all css and js files"
   task :compress_css_js => :environment do
 		compress_file('javascripts', '.js')
