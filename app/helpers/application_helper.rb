@@ -28,6 +28,34 @@ module ApplicationHelper
     return false
   end
 
+	def get_stylesheets(page, debug)
+		if debug
+			fnames = GetIncludeFileList.get_css(page)
+			html = ""
+			fnames[:yui].each { |f|
+				html += "<link href='#{f}.css' media='all' rel='stylesheet' type='text/css' />\n"
+			}
+			html += stylesheet_link_tag(fnames[:local], :media => "all")
+			return html
+		else
+			html = "<link href='/stylesheets/#{page.to_s()}-min.css' media='all' rel='stylesheet' type='text/css' />\n"
+		end
+	end
+
+	def get_javascripts(page, debug)
+		if debug
+			fnames = GetIncludeFileList.get_js(page)
+			html = javascript_include_tag(fnames[:pre_local]) + "\n"
+			fnames[:yui].each { |f|
+				html += "<script src='#{f}.js' type='text/javascript'></script>\n"
+			}
+			html += javascript_include_tag(fnames[:local]) + "\n"
+			return html
+		else
+			html = "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
+		end
+	end
+
 #  def yahoo_button(text, id, action)
 #    "<a id='#{id}'>#{text}</a>\n" +
 #    "<script type='text/javascript'>\n" +

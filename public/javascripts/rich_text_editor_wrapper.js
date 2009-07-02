@@ -104,7 +104,6 @@ YAHOO.widget.SimpleEditor.prototype.excludeOuterTagsFromSelection = function (va
 	}
 	
 	// Get rid of any tags in the back.
-	var x = val[fOffset-1];
 	while (val[fOffset-1] === '>') {
 		fOffset = val.substring(0, fOffset-1).lastIndexOf('<');
 	}
@@ -210,7 +209,6 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 	var fOffset = -1;
 	
 	var arrLevels = [ -1 ];
-	var ty = "";
 	var charCount = 0;
 	debugStr = "";
 	arr.each(function(i) {
@@ -229,7 +227,6 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 		}
 		
 		// See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
-		var match = "";
 		var levelStr = arrLevels.join(',');
 		if (apos && apos.join(',') === levelStr)
 			aOffset = charCount + aoff;

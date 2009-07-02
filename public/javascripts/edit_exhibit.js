@@ -413,7 +413,7 @@ function initOutline(div_id)
 		draggable: true,
 		constraintoviewport: true,
 		visible: false,
-		xy: [ getViewportWidth()-width-60, 180 ]
+		xy: [ YAHOO.util.Dom.getViewportWidth()-width-60, 180 ]
 	});
 	
    var resize = new YAHOO.util.Resize(div_id, {
