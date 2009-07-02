@@ -39,17 +39,11 @@ namespace :collex do
 		Rake::Task['collex:compress_css_js'].invoke
 	end
 
-	desc "Compress only the about pages for local use"
-  task :compress_about_css_js => :environment do
-		compress_file('javascripts', '.js')
-		compress_file('stylesheets', '.css')
-
-		concatenate_js(:about)
-		concatenate_css(:about)
-	end
-
   desc "Compress all css and js files"
   task :compress_css_js => :environment do
+		# The purpose of this is to roll all our css and js files into one minimized file so that load time on the server is as short as
+		# possible. Using this method allows different pages to have different sets of includes, and allows the developer to create
+		# as many small css and js files as they want. See get_include_file_list.rb for details.
 		compress_file('javascripts', '.js')
 		compress_file('stylesheets', '.css')
 
@@ -92,6 +86,7 @@ namespace :collex do
 			list.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
 		}
 		fnames[:yui].each { |f|
+			#File.copy("#{RAILS_ROOT}/public#{f}-min.js", "#{RAILS_ROOT}/tmp#{f.split('/')[f.split('/').length-1]}-min.js")
 			list.push("#{RAILS_ROOT}/public#{f}-min.js")
 		}
 		fnames[:local].each { |f|

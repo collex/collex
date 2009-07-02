@@ -24,7 +24,7 @@
 	<% run_analytics = (request.host() == DEPLOYMENT_SERVER) -%>
 
 <title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
-<%= get_stylesheets(@site_section, quick_load) %>
+<%= get_stylesheets(@site_section, quick_load) # Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled. %>
 <!--[if lt IE 7]>
 	<%= stylesheet_link_tag "iehacks", :media => "all" %>
 <![endif]-->
