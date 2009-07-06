@@ -827,7 +827,7 @@ class My9sController < ApplicationController
     page_num = params[:page_num].to_i
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
-    if can_edit_exhibit(user, exhibit_id)
+    if user_id.to_i > 0 && can_edit_exhibit(user, exhibit_id)
       exhibit.alias_id = user_id
       exhibit.save
     end
