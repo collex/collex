@@ -13,19 +13,19 @@ module ExhibitElementsHelper
   
   def get_exhibits_username(exhibit)
     user_id = exhibit.user_id
-    user_id = exhibit.alias_id if exhibit.alias_id != nil
+    user_id = exhibit.alias_id if exhibit.alias_id != nil && exhibit.alias_id > 0
     return User.find(user_id).fullname
   end
   
   def get_exhibits_user_institution(exhibit)
     user_id = exhibit.user_id
-    user_id = exhibit.alias_id if exhibit.alias_id != nil
+    user_id = exhibit.alias_id if exhibit.alias_id != nil && exhibit.alias_id > 0
     return User.find(user_id).institution
   end
   
   def get_exhibit_user_link(exhibit)
     user_id = exhibit.user_id
-    user_id = exhibit.alias_id if exhibit.alias_id != nil
+    user_id = exhibit.alias_id if exhibit.alias_id != nil && exhibit.alias_id > 0
     owner = User.find(user_id)
     get_user_link(owner)
   end
