@@ -1229,15 +1229,6 @@ function postToUrl(url, hashParams)
   $w('input').each(function(tag){ Element.addMethods(tag, methods) });
 })();
 
-// This switches the spinner graphic for the real graphic after the real graphic has finished loading.
-function hideSpinner(element_id)
-{
-	var spinnerElement = $("spinner_" + element_id);
-	spinnerElement.addClassName("hidden");
-	var widenableElement = $(element_id);
-	widenableElement.removeClassName("hidden");
-}
-
 // asynchronously load the rss feed and pull out the news items
 function loadLatestNews( targetList, rssFeedURL, maxItems, retry ) {	
 	new Ajax.Request(rssFeedURL, {

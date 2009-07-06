@@ -41,7 +41,7 @@ class GetIncludeFileList
 		end
 
 		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
-		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'application' ]
+		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'application', 'hide_spinner' ]
 		global = global + global_most if page != :about
 
 		local = []
@@ -56,6 +56,8 @@ class GetIncludeFileList
 				local = [ 'discussions', 'result_row_popup' ]
 			when :admin
 				local = [ 'admin' ]
+			when :view_exhibit
+				global = [ 'hide_spinner' ]
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }
