@@ -34,7 +34,7 @@ class GetIncludeFileList
 			"/build/editor/editor",
 			"/build/resize/resize"
 		]
-		yui = yui + yui_most if page != :about
+		yui = yui + yui_most if page != :about && page != :news && page != :view_exhibit
 
 		if page == :home
 			yui = yui + [ "/build/animation/animation", "/build/carousel/carousel" ]
@@ -42,7 +42,7 @@ class GetIncludeFileList
 
 		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
 		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'application', 'hide_spinner' ]
-		global = global + global_most if page != :about
+		global = global + global_most if page != :about && page != :news && page != :view_exhibit
 
 		local = []
 		case page
@@ -58,7 +58,6 @@ class GetIncludeFileList
 				local = [ 'admin' ]
 			when :view_exhibit
 				global = [ 'hide_spinner' ]
-				yui = []
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }
@@ -83,7 +82,7 @@ class GetIncludeFileList
 			"/build/resize/assets/skins/sam/resize",
 			"/build/assets/skins/sam/skin"
 			]
-		yui = yui_most if page != :about
+		yui = yui_most if page != :about && page != :news && page != :view_exhibit
 
 		global = [
 			"main",
