@@ -20,25 +20,24 @@ class GetIncludeFileList
 		pre_local_most = [ 'effects', 'controls' ]
 		pre_local = pre_local + pre_local_most if page != :about
 
-		yui_path = "/javascripts/yui_2_7_0"
 		yui = [
-			"#{yui_path}/build/yahoo-dom-event/yahoo-dom-event",
-			"#{yui_path}/build/json/json",
-			"#{yui_path}/build/element/element",
-			"#{yui_path}/build/button/button",
-			"#{yui_path}/build/container/container",
-			"#{yui_path}/build/dragdrop/dragdrop"
+			"/build/yahoo-dom-event/yahoo-dom-event",
+			"/build/json/json",
+			"/build/element/element",
+			"/build/button/button",
+			"/build/container/container",
+			"/build/dragdrop/dragdrop"
 		]
 		yui_most = [
-			"#{yui_path}/build/connection/connection",
-			"#{yui_path}/build/menu/menu",
-			"#{yui_path}/build/editor/editor",
-			"#{yui_path}/build/resize/resize"
+			"/build/connection/connection",
+			"/build/menu/menu",
+			"/build/editor/editor",
+			"/build/resize/resize"
 		]
 		yui = yui + yui_most if page != :about
 
 		if page == :home
-			yui = yui + [ "#{yui_path}/build/animation/animation", "#{yui_path}/build/carousel/carousel" ]
+			yui = yui + [ "/build/animation/animation", "/build/carousel/carousel" ]
 		end
 
 		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
@@ -63,21 +62,25 @@ class GetIncludeFileList
 	end
 
 	def self.get_css(page)
-		yui_path = "/javascripts/yui_2_7_0"
 		yui = [
-			"#{yui_path}/build/reset-fonts-grids/reset-fonts-grids",
-			"#{yui_path}/build/base/base",
-			"#{yui_path}/build/button/assets/skins/sam/button",
-			"#{yui_path}/build/container/assets/skins/sam/container",
-			"#{yui_path}/build/assets/skins/sam/skin"
+			"/build/reset-fonts-grids/reset-fonts-grids",
+			"/build/base/base",
+			"/build/button/assets/skins/sam/button",
+			"/build/container/assets/skins/sam/container",
+			"/build/assets/skins/sam/skin"
 			]
 
 		yui_most = [
-			"#{yui_path}/build/menu/assets/skins/sam/menu",
-			"#{yui_path}/build/editor/assets/skins/sam/editor",
-			"#{yui_path}/build/resize/assets/skins/sam/resize"
+			"/build/reset-fonts-grids/reset-fonts-grids",
+			"/build/base/base",
+			"/build/menu/assets/skins/sam/menu",
+			"/build/button/assets/skins/sam/button",
+			"/build/container/assets/skins/sam/container",
+			"/build/editor/assets/skins/sam/editor",
+			"/build/resize/assets/skins/sam/resize",
+			"/build/assets/skins/sam/skin"
 			]
-		yui = yui + yui_most if page != :about
+		yui = yui_most if page != :about
 
 		global = [
 			"main",

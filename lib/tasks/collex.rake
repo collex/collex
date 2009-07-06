@@ -85,10 +85,10 @@ namespace :collex do
 		fnames[:pre_local].each { |f|
 			list.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
 		}
-		fnames[:yui].each { |f|
-			#File.copy("#{RAILS_ROOT}/public#{f}-min.js", "#{RAILS_ROOT}/tmp#{f.split('/')[f.split('/').length-1]}-min.js")
-			list.push("#{RAILS_ROOT}/public#{f}-min.js")
-		}
+#		fnames[:yui].each { |f|
+#			#File.copy("#{RAILS_ROOT}/public#{f}-min.js", "#{RAILS_ROOT}/tmp#{f.split('/')[f.split('/').length-1]}-min.js")
+#			list.push("#{RAILS_ROOT}/public#{f}-min.js")
+#		}
 		fnames[:local].each { |f|
 			list.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
 		}
@@ -102,9 +102,9 @@ namespace :collex do
 	def concatenate_css(page)
 		list = []
 		fnames = GetIncludeFileList.get_css(page)
-		fnames[:yui].each { |f|
-			list.push("#{RAILS_ROOT}/public#{f}-min.css")
-		}
+#		fnames[:yui].each { |f|
+#			list.push("#{RAILS_ROOT}/public#{f}-min.css")
+#		}
 		fnames[:local].each { |f|
 			list.push("#{RAILS_ROOT}/tmp/#{f}-min.css")
 		}

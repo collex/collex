@@ -29,30 +29,51 @@ module ApplicationHelper
   end
 
 	def get_stylesheets(page, debug)
+		# We can't roll up the YUI css because all the images are specified on relative paths.
+		fnames = GetIncludeFileList.get_css(page)
 		if debug
-			fnames = GetIncludeFileList.get_css(page)
+			yui_path = "/javascripts/yui_2_7_0"
 			html = ""
 			fnames[:yui].each { |f|
-				html += "<link href='#{f}.css' media='all' rel='stylesheet' type='text/css' />\n"
+				html += "<link href='#{yui_path}#{f}.css' media='all' rel='stylesheet' type='text/css' />\n"
 			}
 			html += stylesheet_link_tag(fnames[:local], :media => "all")
 			return html
 		else
-			html = "<link href='/stylesheets/#{page.to_s()}-min.css' media='all' rel='stylesheet' type='text/css' />\n"
+			yui_path = '2.7.0'
+			yui_list = ""
+			fnames[:yui].each { |f|
+				yui_list += '&' if fnames[:yui][0] != f
+				yui_list += "#{yui_path}#{f}.css"
+			}
+			html = "<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?#{yui_list}' />\n"
+			html += stylesheet_link_tag("#{page.to_s()}-min", :media => "all")
+			#"<link href='/stylesheets/#{page.to_s()}-min.css' media='all' rel='stylesheet' type='text/css' />\n"
+			return html
 		end
 	end
 
 	def get_javascripts(page, debug)
+		fnames = GetIncludeFileList.get_js(page)
 		if debug
-			fnames = GetIncludeFileList.get_js(page)
+			yui_path = "/javascripts/yui_2_7_0"
 			html = javascript_include_tag(fnames[:pre_local]) + "\n"
 			fnames[:yui].each { |f|
-				html += "<script src='#{f}.js' type='text/javascript'></script>\n"
+				html += "<script src='#{yui_path}#{f}.js' type='text/javascript'></script>\n"
 			}
 			html += javascript_include_tag(fnames[:local]) + "\n"
 			return html
 		else
-			html = "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
+			yui_path = '2.7.0'
+			yui_list = ""
+			fnames[:yui].each { |f|
+				yui_list += '&' if fnames[:yui][0] != f
+				yui_list += "#{yui_path}#{f}.js"
+			}
+			html = "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
+			html += javascript_include_tag("#{page.to_s()}-min")
+			#html	+= "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
+			return html
 		end
 	end
 
