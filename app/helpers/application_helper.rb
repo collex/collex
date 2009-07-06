@@ -71,7 +71,9 @@ module ApplicationHelper
 				yui_list += "#{yui_path}#{f}.js"
 			}
 			html = javascript_include_tag("prototype-min") + "\n"
-			html += "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
+			if yui_list.length > 0
+				html += "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
+			end
 			html += javascript_include_tag("#{page.to_s()}-min") + "\n"
 			#html	+= "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
 			return html

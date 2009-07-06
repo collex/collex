@@ -58,6 +58,7 @@ class GetIncludeFileList
 				local = [ 'admin' ]
 			when :view_exhibit
 				global = [ 'hide_spinner' ]
+				yui = []
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }
