@@ -62,7 +62,7 @@ class ExhibitsController < ApplicationController
 				return
 			end
 			if !is_admin?
-				user = User.find_all_by_fullname(user[:fullname])
+				user = User.find_by_username(user[:username])
 				if user.id != @exhibit.user_id
 					redirect_to :action => 'list'
 					return
