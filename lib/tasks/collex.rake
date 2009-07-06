@@ -4,6 +4,11 @@ namespace :collex do
   
   desc "Update the installed NINES Wordpress theme"
   task :update_nines_theme do
+		begin
+	    Dir.mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
+		rescue
+			# It's ok to fail: it probably means the folder already exists.
+		end
     copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" )
   end
   
@@ -18,22 +23,22 @@ namespace :collex do
      puts "Copying the contents of #{start_dir} to #{dest_dir}..."
      Dir.new(start_dir).each { |file|
        unless file =~ /\A\./
-         start_file = "#{start_dir}/#{file}"
-         dest_file = "#{dest_dir}/#{file}"  
+#         start_file = "#{start_dir}/#{file}"
+#         dest_file = "#{dest_dir}/#{file}"
          File.copy("#{start_dir}/#{file}", "#{dest_dir}/#{file}")
        end     
      }    
   end
 
-	desc "Get the latest code from SVN"
-	task :update_repository do
+	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
+	task :total_update_site do
 		puts "Update site from repository..."
 		system("svn up")
+		Rake::Task['collex:update_site'].invoke
 	end
 
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
 	task :update_site do
-		Rake::Task['collex:update_repository'].invoke
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -80,31 +85,26 @@ namespace :collex do
 	end
 
 	def concatenate_js(page)
-		list = []
+		list_proto = []
 		fnames = GetIncludeFileList.get_js(page)
-		fnames[:pre_local].each { |f|
-			list.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
+		fnames[:prototype].each { |f|
+			list_proto.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
 		}
-#		fnames[:yui].each { |f|
-#			#File.copy("#{RAILS_ROOT}/public#{f}-min.js", "#{RAILS_ROOT}/tmp#{f.split('/')[f.split('/').length-1]}-min.js")
-#			list.push("#{RAILS_ROOT}/public#{f}-min.js")
-#		}
+
+		list = []
 		fnames[:local].each { |f|
 			list.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
 		}
 
 		dest ="javascripts/#{page.to_s()}-min.js"
-		list = list.join(' ')
 		puts "Creating #{dest}..."
-		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
+		system("cat #{list_proto.join(' ')} > #{RAILS_ROOT}/public/javascripts/prototype-min.js")
+		system("cat #{list.join(' ')} > #{RAILS_ROOT}/public/#{dest}")
 	end
 
 	def concatenate_css(page)
 		list = []
 		fnames = GetIncludeFileList.get_css(page)
-#		fnames[:yui].each { |f|
-#			list.push("#{RAILS_ROOT}/public#{f}-min.css")
-#		}
 		fnames[:local].each { |f|
 			list.push("#{RAILS_ROOT}/tmp/#{f}-min.css")
 		}

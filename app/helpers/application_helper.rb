@@ -57,7 +57,7 @@ module ApplicationHelper
 		fnames = GetIncludeFileList.get_js(page)
 		if debug
 			yui_path = "/javascripts/yui_2_7_0"
-			html = javascript_include_tag(fnames[:pre_local]) + "\n"
+			html = javascript_include_tag(fnames[:prototype]) + "\n"
 			fnames[:yui].each { |f|
 				html += "<script src='#{yui_path}#{f}.js' type='text/javascript'></script>\n"
 			}
@@ -70,8 +70,9 @@ module ApplicationHelper
 				yui_list += '&' if fnames[:yui][0] != f
 				yui_list += "#{yui_path}#{f}.js"
 			}
-			html = "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
-			html += javascript_include_tag("#{page.to_s()}-min")
+			html = javascript_include_tag("prototype-min") + "\n"
+			html += "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
+			html += javascript_include_tag("#{page.to_s()}-min") + "\n"
 			#html	+= "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
 			return html
 		end

@@ -16,9 +16,9 @@
 
 class GetIncludeFileList
 	def self.get_js(page)
-		pre_local = [ 'prototype' ]
-		pre_local_most = [ 'effects', 'controls' ]
-		pre_local = pre_local + pre_local_most if page != :about
+		prototype = [ 'prototype' ]
+		prototype_most = [ 'effects', 'controls' ]
+		prototype = prototype + prototype_most #if page != :about
 
 		yui = [
 			"/build/yahoo-dom-event/yahoo-dom-event",
@@ -58,7 +58,7 @@ class GetIncludeFileList
 				local = [ 'admin' ]
 		end
 
-		return { :pre_local => pre_local, :yui => yui, :local => global + local }
+		return { :prototype => prototype, :yui => yui, :local => global + local }
 	end
 
 	def self.get_css(page)
