@@ -16,6 +16,8 @@
 
 /*global Class, $, $$, $H, Element, Ajax */
 /*global YAHOO */
+/*global MessageBoxDlg, GeneralDialog */
+/*extern ResultRowDlg */
 
 ///////////////////////////////////////////////////////////////////////////
 

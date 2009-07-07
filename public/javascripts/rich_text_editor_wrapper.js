@@ -16,6 +16,8 @@
 
 /*global YAHOO */
 /*global Class, $, $$, $H, Ajax */
+/*global MessageBoxDlg */
+/*extern RichTextEditor */
 
 //
 // Monkey patch to get the editor to return the real selection.
@@ -497,7 +499,7 @@ var RichTextEditor = Class.create({
 		});
 
 		//create the RTE:
-		var width = params.width != null ? params.width : 702;
+		var width = params.width !== null ? params.width : 702;
 		this.editor = new YAHOO.widget.SimpleEditor(id, {
 			  width: width + 'px',
 				height: '200px',

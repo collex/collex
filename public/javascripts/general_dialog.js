@@ -14,10 +14,12 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element */
+/*global Class, $, $$, $H, Element, Ajax */
 /*global YAHOO */
+/*global document, setTimeout */
 /*global form_authenticity_token */
 /*global RichTextEditor */
+/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax */
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {
@@ -527,7 +529,7 @@ var TextInputDlg = Class.create({
 			params.dlg.cancel();
 
 			// Recursively run through the list of actions we were passed.
-			var data = dlg.getAllData();
+			var data = params.dlg.getAllData();
 			extraParams[id] = data[id];
 			recurseUpdateWithAjax(actions, target_els, onComplete, onFailure, extraParams);
 //			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };

@@ -14,7 +14,11 @@
  *  limitations under the License.
  **/
 
-SidebarTagCloud = Class.create( {
+/*global Class, $, $$, $H, Element, Ajax, Event */
+/*global YAHOO */
+/*extern SidebarTagCloud */
+
+var SidebarTagCloud = Class.create( {
 	
 	initialize: function( ) {				
 		this.instructions = { 'tag': 'tag', 'annotation': 'annotation' };

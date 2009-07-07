@@ -14,9 +14,13 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax */
+/*global Class, $, $$, $H, Element, Ajax, Effect */
 /*global YAHOO */
+/*global MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog */
+/*global document, window */
+/*global supportsFixedPositioning */
 
+/*global imgResized */ // This is just to resolve the following circular reference.
 function initializeElementEditing()
 {
 	// find all the elements marked as widenable and add resize handles to them
@@ -133,7 +137,7 @@ function doAjaxLinkConfirm(div, url, params)
 {
 	var del = function(){
 		doAjaxLink(div, url, params);
-	}
+	};
 	
 	new ConfirmDlg("Delete Section", "You are about to delete this section. Do you want to continue?", "Yes", "No", del);
 }
@@ -143,7 +147,7 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 	// this is called from the outline, so we also need to update the regular page, too.
 	var action = function(){
 		var allElements = $$(".outline_tree_element_selected");
-		if (allElements.length == 1) {
+		if (allElements.length === 1) {
 			var id = allElements[0].id;
 			var arr = id.split("_");
 			var element_id = arr[arr.length - 1];
@@ -183,7 +187,7 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 {
 	var action = function(){
 		var allElements = $$(".outline_tree_element_selected");
-		if (allElements.length == 1) {
+		if (allElements.length === 1) {
 			var id = allElements[0].id;
 			var arr = id.split("_");
 			var element_id = arr[arr.length - 1];
@@ -217,7 +221,7 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 				}
 			});
 		}
-	}
+	};
 	
 	if (verb === 'delete_page')
 		new ConfirmDlg("Delete Page", "You are about to delete page number " + page_num + ". Do you want to continue?", "Yes", "No", action);
@@ -285,9 +289,42 @@ function setPageSelected()
 	if (sel_element.length > 0)
 	{
 		var curr_page = $(sel_element[0]).up('.unselected_page');
-		if (curr_page != undefined)
+		if (curr_page !== undefined)
 			curr_page.addClassName('selected_page');
 	}
+}
+
+function y_distance_that_the_element_is_not_in_view(element_id)
+{
+	// This returns the Y-distance that the window needs to scroll to get the named
+	// element into view.
+	var el = $(element_id);
+	if (el === null)
+		return 0;
+
+	var y_element = getY(el);
+	var viewport_height = window.innerHeight;	// TODO: is this browser independent?
+	var scroll_pos = currentScrollPos()[1];
+
+	// if the element is before the scroll position, we need to scroll up
+	if (scroll_pos > y_element)
+		return y_element - scroll_pos;
+
+	// if the element is after the scroll position and the size of the screen, we need to scroll down.
+	if (scroll_pos + viewport_height < y_element)
+		return y_element - scroll_pos;
+
+	// if it is on the screen at all, return zero so it doesn't move.
+	return 0;
+}
+
+function scroll_to_target(target_el, element_el)
+{
+		var distance = y_distance_that_the_element_is_not_in_view(target_el);
+
+		// move the scroll position the amount needed.
+		window.scrollBy(0, distance);
+		new Effect.Highlight(element_el);
 }
 
 function selectLine(id)
@@ -295,7 +332,7 @@ function selectLine(id)
 	var allElements = $$(".outline_tree_element_selected");
 
 	// We don't have to do anything if the element is already selected. This also keeps the item from flashing too quickly if the user double clicks on the item.
-	if (allElements.length == 1 && allElements[0].id == id)
+	if (allElements.length === 1 && allElements[0].id === id)
 		return;
 
 	allElements.each( function(el) { el.removeClassName( "outline_tree_element_selected" );  });
@@ -309,7 +346,7 @@ function selectLine(id)
 	var el_id = arr[arr.length-1];
 
 	var target_el = 'top-of-' + el_id;
-	if ($(target_el) != null)
+	if ($(target_el) !== null)
 	{
 		scroll_to_target(target_el, "element_" + el_id);
 	}
@@ -323,39 +360,6 @@ function selectLine(id)
 	}
 }
 
-function scroll_to_target(target_el, element_el)
-{
-		var distance = y_distance_that_the_element_is_not_in_view(target_el);
-	
-		// move the scroll position the amount needed.
-		window.scrollBy(0, distance);
-		new Effect.Highlight(element_el);
-}
-
-function y_distance_that_the_element_is_not_in_view(element_id)
-{
-	// This returns the Y-distance that the window needs to scroll to get the named
-	// element into view.
-	var el = $(element_id);
-	if (el == null)
-		return 0;
-	
-	var y_element = getY(el);
-	var viewport_height = window.innerHeight;	// TODO: is this browser independent?
-	var scroll_pos = currentScrollPos()[1];
-
-	// if the element is before the scroll position, we need to scroll up	
-	if (scroll_pos > y_element)
-		return y_element - scroll_pos;
-		
-	// if the element is after the scroll position and the size of the screen, we need to scroll down.
-	if (scroll_pos + viewport_height < y_element)
-		return y_element - scroll_pos;
-		
-	// if it is on the screen at all, return zero so it doesn't move.
-	return 0;
-}
-
 var _exhibit_outline = null;
 var _exhibit_outline_pos = null;
 
@@ -363,7 +367,7 @@ function showExhibitOutline(element_id, page_num)
 {
 	_exhibit_outline.show();
 	
-	if (page_num == -1)
+	if (page_num === -1)
 		return;
 
 	if (element_id > 0)
@@ -380,11 +384,11 @@ function showExhibitOutline(element_id, page_num)
 	{
 		var id = 'outline_p' + count;
 		var curr_page = $('outline_page_' + count);
-		if ($(id) == null)
+		if ($(id) === null)
 			done = true;
 		else
 		{
-			if (page_num == count)
+			if (page_num === count)
 			{
 				curr_page.addClassName('selected_page');
 				open_by_id(id);
@@ -409,7 +413,7 @@ function initOutline(div_id)
 	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
 		width: width + "px",
 		height: height + 'px',
-		fixedcenter: (supportsFixedPositioning == false),
+		fixedcenter: (supportsFixedPositioning === false),
 		draggable: true,
 		constraintoviewport: true,
 		visible: false,
@@ -472,8 +476,8 @@ function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 	data.each(function(fld) {
 		values[fld.id + '_dlg'] = fld.innerHTML.unescapeHTML();
 	});
-	values['exhibit_id'] = exhibit_id;
-	values['element_id'] = update_id;
+	values.exhibit_id = exhibit_id;
+	values.element_id = update_id;
 
 	// First construct the dialog
 	var dlg = new InputDialog(update_id);
@@ -492,6 +496,41 @@ function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 		el.focus();
 		el.select();
 	}
+}
+
+var CreateSharingList = Class.create({
+	list : null,
+	initialize : function(items, initial_selection, value_field)
+	{
+		var This = this;
+		This.list = "<table class='input_dlg_list input_dlg_license_list' cellspacing='0'>";
+		var iCount = 0;
+		items.each(function(obj) {
+			This.list += This.constructItem(obj.text, obj.icon, iCount, iCount === initial_selection, value_field);
+			iCount++;
+		});
+		This.list += "</table>";
+	},
+
+	constructItem: function(text, icon, index, is_selected, value_field)
+	{
+		var str = "";
+		if (is_selected)
+			str = " class='input_dlg_list_item_selected' ";
+		return "<tr " + str + "onclick='CreateSharingList.prototype._select(this,\"" + value_field + "\" );' index='" + index + "' >" +
+		"<td>" + icon + "</td><td>" + text + "</td></tr>\n";
+	}
+});
+
+CreateSharingList.prototype._select = function(item, value_field)
+{
+	var selClass = "input_dlg_list_item_selected";
+	$$("." + selClass).each(function(el)
+	{
+		el.removeClassName(selClass);
+	});
+	$(item).addClassName(selClass);
+	$(value_field).value = $(item).getAttribute('index');
 }
 
 function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callback_url)
@@ -518,41 +557,6 @@ function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callbac
 	// Now, everything is initialized, fire up the dialog.
 	var el = $(update_id);
 	dlg.show("Change Sharing", getX(el), getY(el), 530, 350, values );
-}
-
-var CreateSharingList = Class.create({
-	list : null,
-	initialize : function(items, initial_selection, value_field)
-	{
-		var This = this;
-		This.list = "<table class='input_dlg_list input_dlg_license_list' cellspacing='0'>";
-		var iCount = 0;
-		items.each(function(obj) {
-			This.list += This.constructItem(obj.text, obj.icon, iCount, iCount == initial_selection, value_field);
-			iCount++;
-		});
-		This.list += "</table>";
-	},
-	
-	constructItem: function(text, icon, index, is_selected, value_field)
-	{
-		var str = "";
-		if (is_selected)
-			str = " class='input_dlg_list_item_selected' ";
-		return "<tr " + str + "onclick='CreateSharingList.prototype._select(this,\"" + value_field + "\" );' index='" + index + "' >" +
-		"<td>" + icon + "</td><td>" + text + "</td></tr>\n";
-	}
-});
-
-CreateSharingList.prototype._select = function(item, value_field)
-{
-	var selClass = "input_dlg_list_item_selected";
-	$$("." + selClass).each(function(el)
-	{
-		el.removeClassName(selClass);
-	});
-	$(item).addClassName(selClass);
-	$(value_field).value = $(item).getAttribute('index');
 }
 
 

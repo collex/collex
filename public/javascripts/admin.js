@@ -14,8 +14,10 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax */
+/*global Class, $, $$, $H, Element, Ajax, $A */
 /*global YAHOO */
+/*global MessageBoxDlg, GeneralDialog */
+/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory */
 
 var AddCategoryDlg = Class.create({
 	initialize: function (parent_div, ok_action, get_categories_action) {
@@ -24,6 +26,7 @@ var AddCategoryDlg = Class.create({
 
 		// private variables
 		var This = this;
+		var dlg = null;
 		
 		// private functions
 		var populate = function()
@@ -91,7 +94,7 @@ var AddCategoryDlg = Class.create({
 			};
 		
 		var params = { this_id: "add_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Add Category To Resource Tree" };
-		var dlg = new GeneralDialog(params);
+		dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
 		populate(dlg);
@@ -105,6 +108,7 @@ var AddSiteDlg = Class.create({
 
 		// private variables
 		var This = this;
+		var dlg = null;
 		
 		// private functions
 		var populate = function()
@@ -173,7 +177,7 @@ var AddSiteDlg = Class.create({
 			};
 		
 		var params = { this_id: "add_site_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Add Site To Resource Tree" };
-		var dlg = new GeneralDialog(params);
+		dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
 		populate(dlg);
@@ -304,6 +308,7 @@ var EditFacetDialog = Class.create({
 
 		// private variables
 		var This = this;
+		var dlg = null;
 		
 		// private functions
 		var populate = function()
@@ -315,7 +320,7 @@ var EditFacetDialog = Class.create({
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
 					try {
-						ret = resp.responseText.evalJSON(true);
+						var ret = resp.responseText.evalJSON(true);
 						categories = ret.categories;
 						obj = ret.details;
 					} catch (e) {
@@ -471,7 +476,7 @@ var EditFacetDialog = Class.create({
 			};
 		
 		var params = { this_id: "edit_facet_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Facet" };
-		var dlg = new GeneralDialog(params);
+		dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
 		populate(dlg);

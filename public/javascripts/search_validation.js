@@ -15,6 +15,8 @@
 //----------------------------------------------------------------------------
 
 /*global $, $H */
+/*global MessageBoxDlg */
+/*extern searchValidation */
 
 // Returns true if the form should be submitted.
 // Puts up a message, then returns false if the form shouldn't be submitted.

@@ -14,10 +14,10 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax */
+/*global Class, $, $$, $H, Element, Ajax, Hash */
 /*global YAHOO */
 /*global GeneralDialog, MessageBoxDlg */
-/*extern CreateListOfObjects, LinkDlgHandler, linkdlg_finishedLoadingImage, linkdlg_select */
+/*extern CacheObjects, CreateListOfObjects, LinkDlgHandler, ninesObjCache */
 
 ////////////////////////////////////////////////////////////////////////////
 /// Create the controls that select an object or an exhibit.
@@ -141,7 +141,7 @@ var CreateListOfObjects = Class.create({
 				$(this.id).addClassName(selClass);
 				if (selectionCallBack)
 					selectionCallBack(this.id);
-			}
+			};
 			YAHOO.util.Event.addListener(id, 'click', userSelect); 
 		};
 		

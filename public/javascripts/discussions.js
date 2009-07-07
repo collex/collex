@@ -15,7 +15,10 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, $H, Ajax */
-/*global MessageBoxDlg, CreateListOfObjects, GeneralDialog */
+/*global MessageBoxDlg, CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler */
+/*global YAHOO */
+/*global window, setTimeout, event */
+/*extern ForumReplyDlg */
 
 /////////////////////////////////////////////////////////////
 

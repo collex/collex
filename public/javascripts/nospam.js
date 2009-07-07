@@ -25,6 +25,9 @@
 // The second form is where the visible text is not the email address. For instance, it could be "click here to email us".
 // The encoded_address replaces the @ and the . with spaces. For instance, if this is encoded "me example com", then the address is "me@example.com".
 
+/*global $$ */
+/*global document, setTimeout */
+
 document.observe('dom:loaded', function() {
  	setTimeout(function() {
 		var links = $$("a.nospam");
@@ -33,11 +36,11 @@ document.observe('dom:loaded', function() {
 			// The format of the href is processed by the browser. A site is prepended so we need to ignore everything before the last "/" and the spaces are converted to "%20"
 			var arrParts = raw_addr.split('/');
 			var arr = arrParts[arrParts.length-1].split('%20');
-			if (arr.length == 3)
+			if (arr.length === 3)
 			{
 				var addr = arr[0] + '@' + arr[1] + '.' + arr[2];
 				link.href = "mailto:" + addr;
-				if (link.innerHTML == '$$$$')
+				if (link.innerHTML === '$$$$')
 					link.innerHTML = addr; // "DESPAMMED!" + addr;	// Add some identifying text while debugging. Remove this before checking in.
 			}
 		});

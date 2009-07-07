@@ -14,7 +14,10 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element */// This switches the spinner graphic for the real graphic after the real graphic has finished loading.
+/*global $ */
+/*extern hideSpinner */
+
+// This switches the spinner graphic for the real graphic after the real graphic has finished loading.
 function hideSpinner(element_id)
 {
 	var spinnerElement = $("spinner_" + element_id);

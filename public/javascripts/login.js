@@ -16,6 +16,8 @@
 
 /*global Class, $, $$, $H, Ajax */
 /*global GeneralDialog */
+/*global window */
+/*extern SignInDlg, RedirectIfLoggedIn */
 
 // This contains popup dialogs for signing in, my account info, creating an account, and sign in help
 
