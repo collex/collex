@@ -17,7 +17,7 @@
 /*global Class, $, $$, $H, Ajax */
 /*global MessageBoxDlg, CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler */
 /*global YAHOO */
-/*global window, setTimeout, event */
+/*global window, setTimeout */
 /*extern ForumReplyDlg */
 
 /////////////////////////////////////////////////////////////
@@ -185,7 +185,7 @@ var ForumReplyDlg = Class.create({
 				currSel = 'forum_reply_dlg_btn' + (starting_obj_type-2);
 				currSelClass = params.destination;
 				var fn = This.switch_page.bind($(currSel));
-				fn(event, params);
+				fn(null, params);
 			}, this);
 		}
 	}
