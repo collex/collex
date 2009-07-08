@@ -41,23 +41,28 @@ class GetIncludeFileList
 		end
 
 		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
-		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'application', 'hide_spinner' ]
+		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'hide_spinner' ]
 		global = global + global_most if page != :about && page != :news && page != :view_exhibit
 
 		local = []
 		case page
 			when :search
-				local = [ 'search_validation' ]
+				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup' ]
 			when :tag
-				local = [ 'sidebar_tag_cloud' ]
+				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup' ]
 			when :my9s
-				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup' ]
+				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 
+					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg' ]
 			when :discuss
 				local = [ 'discussions', 'result_row_popup' ]
 			when :admin
-				local = [ 'admin' ]
+				local = [ 'admin', 'resource_tree' ]
 			when :view_exhibit
-				global = [ 'hide_spinner' ]
+				global = [ 'modal_dialog', 'hide_spinner' ]
+			when :home
+				local = [ 'get_news_feed' ]
+			when :exhibits
+				local = [ 'thumbnail_resize' ]
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }

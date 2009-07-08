@@ -296,10 +296,10 @@ private
      pluralize(count, singular, plural).gsub(/ /,'&nbsp;')
   end
   
-  def link_to_popup(label, options, html_options={})
-    html_options[:class] = 'nav_link'
-    link_to_function(label, "popUp('#{url_for(options)}')", html_options)
-  end
+#  def link_to_popup(label, options, html_options={})
+#    html_options[:class] = 'nav_link'
+#    link_to_function(label, "popUp('#{url_for(options)}')", html_options)
+#  end
   
   def link_to_confirm(title, params, confirm_title, confirm_question)
     link_to title, params, { :post => true, :class => 'modify_link', :onclick => "new ConfirmLinkDlg(this, '#{confirm_title}', '#{confirm_question}'); return false;" }

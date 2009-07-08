@@ -59,9 +59,11 @@ var GeneralDialog = Class.create({
 
 		var parent_id = 'modal_dlg_parent';
 		var parent = $(parent_id);
-		if (parent === null)
-			parent = document.getElementsByTagName("body").item(0).appendChild(new Element('div', { id: parent_id, style: 'text-align:left;' }));
-			
+		if (parent === null) {
+			var main = document.getElementsByTagName("body").item(0);
+			$(main).down('div').insert({ before: new Element('div', { id: parent_id, style: 'text-align:left;' }) });
+		}
+
 		this.getAllData = function() {
 			var inputs = $$("#" + dlg_id + " input");
 			var data = {};

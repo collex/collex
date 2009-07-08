@@ -14,9 +14,11 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $H */
-/*global MessageBoxDlg */
-/*extern searchValidation */
+/*global $, $H, $w, Element */
+/*global MessageBoxDlg, doSingleInputPrompt */
+/*global document */
+/*global form_authenticity_token */
+/*extern doSaveSearch, postToUrl, searchValidation */
 
 // Returns true if the form should be submitted.
 // Puts up a message, then returns false if the form shouldn't be submitted.
@@ -107,3 +109,53 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	// if the two validation steps above pass, submit the form
 	return true;
 }
+
+function doSaveSearch(parent_id)
+{
+	doSingleInputPrompt("Save Search", 'Name:', 'saved_search_name', parent_id,
+		"saved_search_name_span",
+		"/search/save_search",
+		$H({ }), 'text', null, null );
+}
+
+function postToUrl(url, hashParams)
+{
+	var myForm = document.createElement("form");
+	myForm.method="post";
+	myForm.action = url;
+	hashParams.authenticity_token = form_authenticity_token;
+	for (var k in hashParams) {
+		if (hashParams.hasOwnProperty(k)) {
+			var myInput = document.createElement("input") ;
+			myInput.setAttribute("name", k);
+			myInput.setAttribute("value", hashParams[k]);
+			myForm.appendChild(myInput);
+		}
+	}
+	document.body.appendChild(myForm);
+	myForm.submit();
+	document.body.removeChild(myForm);
+}
+
+// This is an extension to prototype from http://mir.aculo.us/2009/1/7/using-input-values-as-hints-the-easy-way
+// It allows input fields to have hints
+(function(){
+  var methods = {
+    defaultValueActsAsHint: function(element){
+      element = $(element);
+      element.default_value = element.value;
+
+      return element.observe('focus', function(){
+        if(element.default_value !== element.value) return;
+        element.removeClassName('inputHintStyle').value = '';
+      }).observe('blur', function(){
+        if(element.value.strip() !== '') return;
+        element.addClassName('inputHintStyle').value = element.default_value;
+      }).addClassName('inputHintStyle');
+    }
+  };
+
+  $w('input').each(function(tag){ Element.addMethods(tag, methods); });
+})();
+
+

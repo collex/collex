@@ -153,6 +153,7 @@ module DiscussionThreadsHelper
     abbrev_comment += '...' if abbrev_comment != comment
     abbrev_title = title.slice(0,60)
     abbrev_title = abbrev_title + "..." if title.length > 60
-    "#{abbrev_title}<span><div class='discussion_title_tooltip_title'>#{title}</div>#{abbrev_comment}</span>"
+		# Note: apparently, you can't put any div's in this because Safari will get confused.
+    "#{abbrev_title}<span class='discussion_title_tooltip'><b class='discussion_title_tooltip_title'>#{title}</b><br/><br/>#{abbrev_comment}</span>"
   end
 end

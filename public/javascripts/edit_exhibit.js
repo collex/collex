@@ -16,9 +16,35 @@
 
 /*global Class, $, $$, $H, Element, Ajax, Effect */
 /*global YAHOO */
-/*global MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog */
+/*global BorderDialog, MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt */
 /*global document, window */
 /*global supportsFixedPositioning */
+/*extern CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editGlobalExhibitItems, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
+
+// Used by Exhibit Outline
+function toggle_by_id(node_id) {
+	Element.toggle(node_id + "_opened");
+	Element.toggle(node_id + "_closed");
+	Element.toggle(node_id);
+}
+
+function open_by_id(node_id) {
+	Element.show(node_id + "_opened");
+	Element.hide(node_id + "_closed");
+	Element.show(node_id);
+}
+
+function hide_by_id(node_id) {
+	Element.hide(node_id + "_opened");
+	Element.show(node_id + "_closed");
+	Element.hide(node_id);
+}
+
+function toggleElementsByClass(cls)
+{
+	var els = $$('.'+cls);
+	els.each(function(el){ el.toggle(); });
+}
 
 /*global imgResized */ // This is just to resolve the following circular reference.
 function initializeElementEditing()
@@ -360,12 +386,12 @@ function selectLine(id)
 	}
 }
 
-var _exhibit_outline = null;
-var _exhibit_outline_pos = null;
+var exhibit_outline = null;
+var exhibit_outline_pos = null;
 
 function showExhibitOutline(element_id, page_num)
 {
-	_exhibit_outline.show();
+	exhibit_outline.show();
 	
 	if (page_num === -1)
 		return;
@@ -410,7 +436,7 @@ function initOutline(div_id)
 	var top = 180;
 	var height = YAHOO.util.Dom.getViewportHeight() - top - 80;
 	//create Dialog:
-	_exhibit_outline = new YAHOO.widget.Dialog(div_id, {
+	exhibit_outline = new YAHOO.widget.Dialog(div_id, {
 		width: width + "px",
 		height: height + 'px',
 		fixedcenter: (supportsFixedPositioning === false),
@@ -443,7 +469,7 @@ function initOutline(div_id)
           resize.set("maxWidth", null);
           resize.set("maxHeight", null);
 				}
-   }, _exhibit_outline, true);
+   }, exhibit_outline, true);
 
    // Setup resize handler to update the Panel's 'height' configuration property 
    // whenever the size of the 'resizablepanel' DIV changes.
@@ -455,10 +481,10 @@ function initOutline(div_id)
    resize.on("resize", function(args) {
        var panelHeight = args.height;
        this.cfg.setProperty("height", panelHeight + "px");
-   }, _exhibit_outline, true);
+   }, exhibit_outline, true);
 
-	_exhibit_outline.setHeader("OUTLINE");
-	_exhibit_outline.render();
+	exhibit_outline.setHeader("OUTLINE");
+	exhibit_outline.render();
 	
 	if (supportsFixedPositioning)
 		$(div_id + '_c').setStyle({ position: 'fixed'});
@@ -517,12 +543,12 @@ var CreateSharingList = Class.create({
 		var str = "";
 		if (is_selected)
 			str = " class='input_dlg_list_item_selected' ";
-		return "<tr " + str + "onclick='CreateSharingList.prototype._select(this,\"" + value_field + "\" );' index='" + index + "' >" +
+		return "<tr " + str + "onclick='CreateSharingList.prototype.select(this,\"" + value_field + "\" );' index='" + index + "' >" +
 		"<td>" + icon + "</td><td>" + text + "</td></tr>\n";
 	}
 });
 
-CreateSharingList.prototype._select = function(item, value_field)
+CreateSharingList.prototype.select = function(item, value_field)
 {
 	var selClass = "input_dlg_list_item_selected";
 	$$("." + selClass).each(function(el)
@@ -531,7 +557,7 @@ CreateSharingList.prototype._select = function(item, value_field)
 	});
 	$(item).addClassName(selClass);
 	$(value_field).value = $(item).getAttribute('index');
-}
+};
 
 function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callback_url)
 {
@@ -539,8 +565,8 @@ function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callbac
 	var values = {};
 	var value_field = 'sharing';
 	values[value_field] = iShareStart;
-	values['exhibit_id'] = exhibit_id;
-	values['element_id'] = update_id;
+	values.exhibit_id = exhibit_id;
+	values.element_id = update_id;
 	$(update_id).writeAttribute('action', callback_url);
 	$(update_id).writeAttribute('ajax_action_element_id', update_id);
 
@@ -558,463 +584,6 @@ function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callbac
 	var el = $(update_id);
 	dlg.show("Change Sharing", getX(el), getY(el), 530, 350, values );
 }
-
-
-//////////////////////////////////////////////////////
-/// Create the dialog that manipulates the border in edit exhibits.
-//////////////////////////////////////////////////////
-
-BorderDialog = Class.create();
-
-BorderDialog.prototype = {
-	initialize: function () {
-		this._myPanel = new YAHOO.widget.Dialog("edit_border_dlg", {
-			width:"380px",
-			fixedcenter: true,
-			constraintoviewport: true,
-			underlay:"shadow",
-			close:true,
-			visible:true,
-			modal: true,
-			draggable:true
-		});
-		this._myPanel.setHeader("Edit Border");
-	
-		var myButtons = [ { text:"Submit", handler:this._handleSubmit },
-						  { text:"Cancel", handler:this._handleCancel } ];
-		this._myPanel.cfg.queueProperty("buttons", myButtons);
-		
-		var elOuterContainer = new Element('div', { id: 'border_outer_container' });
-		var elDiv = new Element('div', { id: 'border_dlg_instructions' }).update('First, drag the mouse over some sections and then click "Add Border" or "Remove Border".');
-		elDiv.addClassName('instructions');
-		elOuterContainer.appendChild(elDiv);
-		var elContainer = new Element('div', { id: 'border_container' });
-		elOuterContainer.appendChild(elContainer);
-	
-		// Here's our header
-		var headers = $$('.selected_page .exhibit_outline_text');
-		var page_num = headers[0].innerHTML;
-		var span = new Element('span').update('&nbsp;&nbsp;' + page_num);
-		span.addClassName('exhibit_outline_text');
-		var span2 = span.wrap('div');
-		span2.addClassName('unselected_page');
-		span2.addClassName('selected_page');
-		elContainer.appendChild(span2);
-
-		// First copy all the elements over that we want to use
-		var elements = $$(".selected_page .outline_element");
-		elements.each(function(el) {
-			var par = el.up();
-			var prev = el.previous();
-			var next = el.next();
-			var cls = 'border_dlg_element';
-			if (par.hasClassName('outline_section_with_border'))
-			{
-				cls += " border_sides";
-				if (prev == undefined)
-					cls += " border_top";
-				if (next == undefined)
-					cls += " border_bottom";
-			}
-			var inner = el.innerHTML;
-			var elBorder = new Element('div', {id: "border_" + el.id }).update(inner);
-			elBorder.addClassName(cls);
-			var elBorder2 = elBorder.wrap('div', { id: 'rubberband_' + el.id });
-			elBorder2.addClassName('rubberband_dlg_element');
-			elContainer.appendChild(elBorder2);
-		}, this);
-		
-		this._myPanel.setBody(elOuterContainer);
-		this._myPanel.render(document.body); 
-	
-		elements = $$('#border_container .outline_right_controls');
-		elements.each(function(el) {
-			el.remove();
-		}, this);
-	
-		elements = $$('#border_container .count');
-		elements.each(function(el) {
-			var num = el.down().innerHTML;
-			el.update(num);
-			el.addClassName('count');
-		}, this);
-		
-		elements = $$('#border_container [onclick]');
-		elements.each(function(el) {
-			el.removeAttribute('onclick');
-		}, this);
-		
-		var el = $('border_container');
-		el.observe('mousedown', this._mouseDown.bind(this));
-		el.observe('mousemove', this._mouseMove.bind(this));
-		el.observe('mouseup', this._mouseUp.bind(this));
-		
-//		$('add_border').observe('click', this._addBorder.bind(this));
-//		$('remove_border').observe('click', this._removeBorder.bind(this));
-		
-		//this._enableSubmit(false);
-	},
-	
-	_isDragging: false,
-	_anchor: null,
-	_focus: null,
-	
-//	_enableSubmit: function(enable)
-//	{
-//		var buttons = $$('#edit_border_dlg button');
-//		buttons.each(function(but) {
-//			if (but.innerHTML == 'Submit')
-//			{
-//				if (enable == true)
-//				{
-//					but.disabled = false;
-//					but.up().removeClassName('yui-button-disabled');
-//				}
-//				else
-//				{
-//					but.disabled = true;
-//					but.up().addClassName('yui-button-disabled');
-//				}
-//			}
-//		});
-//		
-//	},
-	
-	_redrawRubberband : function(focus)
-	{
-		var t = (focus > this._anchor) ? this._anchor : focus;
-		var b = (focus < this._anchor) ? this._anchor : focus;
-		
-		this._removeRubberband();
-		
-		var elements = $$('.rubberband_dlg_element');
-		elements.each(function(el) {
-			var count = parseInt(el.down('.count').innerHTML);
-			if (count == t)
-				el.addClassName('selection_border_top');
-			if ((count >= t) && (count <= b))
-				el.addClassName('selection_border_sides');
-			if (count == b)
-				el.addClassName('selection_border_bottom');
-		});
-		
-		this._focus = focus;
-	},
-	
-	_removeRubberband: function()
-	{
-		$$('.selection_border_top').each(function(el) { el.removeClassName('selection_border_top')});
-		$$('.selection_border_sides').each(function(el) { el.removeClassName('selection_border_sides')});
-		$$('.selection_border_bottom').each(function(el) { el.removeClassName('selection_border_bottom')});
-	},
-	
-	_getCurrentElement : function(event)
-	{
-		var tar = this._getTarget(event);
-		var el = (tar.hasClassName('rubberband_dlg_element') ? tar : tar.up('.rubberband_dlg_element'));
-		if (el == undefined)
-			return -1;
-		return parseInt(el.down('.count').innerHTML);
-	},
-	
-	_getTarget : function(event) {
-		var tar = $(event.originalTarget);
-		if (tar == undefined)
-			tar = $(event.srcElement);
-		return tar;
-	},
-	
-	_mouseDown: function(event) {
-
-		this._isDragging = true;
-		this._anchor = this._getCurrentElement(event);
-		this._redrawRubberband(this._anchor);
-		Event.stop(event);
-	},
-	
-	_mouseMove: function(event) {
-		if (this._isDragging)
-		{
-			var focus = this._getCurrentElement(event);
-			if (focus != this._focus)
-			{
-				if (focus >= 0)
-					this._redrawRubberband(focus);
-			}
-		}
-		Event.stop(event);
-	},
-	
-	_selectionMenu : null,
-	
-	_mouseUp: function(event) {
-		if (this._isDragging)
-		{
-			this._isDragging = false;
-			this._selectionMenu = new InputDialog("border_selection");
-			this._selectionMenu.setNoButtons();
-			this._selectionMenu.setNotifyCancel(this._userCanceled, this);
-			this._selectionMenu.addButtons([ 
-				{ text: "Add Border", action: BorderDialog.prototype._addBorder },
-				{ text: "Remove Border", action: BorderDialog.prototype._removeBorder }
-			]);
-//			this._selectionMenu.addLink("[ Add border where dotted line is ]", "#", "BorderDialog.prototype._addBorder(); borderDialog._selectionMenu.cancel();", "modify_link");
-//			this._selectionMenu.addLink("[ Remove any border inside dotted line ]", "#", "BorderDialog.prototype._removeBorder(); borderDialog._selectionMenu.cancel();", "modify_link");
-			this._selectionMenu.show("Border Action", event.clientX, event.clientY, 530, 350, [] );
-		}
-		Event.stop(event);
-	},
-	
-	_userCanceled: function(This)
-	{
-		This._removeRubberband();
-	},
-	
-	_adjustOverlappingBorder: function() {
-		// If the rubberband overlaps a current border, then adjust the edges of that border.
-		var tops = $$('.selection_border_top');
-		var bottoms = $$('.selection_border_bottom');
-		// There should be exactly one of each of these. If not, then just ignore.
-		if (tops.length != 1 || bottoms.length != 1)
-			return;
-		
-		var previous = tops[0].previous();
-		if (previous && previous.down().hasClassName('border_sides'))	// if the top isn't the first item, and the item before has a border
-			previous.down().addClassName('border_bottom');
-			
-		var next = bottoms[0].next();
-		if (next && next.down().hasClassName('border_sides'))	// if the bottom isn't the last item, and the item after has a border
-			next.down().addClassName('border_top');
-	},
-	
-	_addBorder: function(event) {
-		var elements = $$('.rubberband_dlg_element');
-		elements.each(function(el) {
-			// If the item doesn't have sides then it isn't part of this selection
-			if (el.hasClassName('selection_border_sides'))
-			{
-				el.down().addClassName('border_sides');
-				
-				if (el.hasClassName('selection_border_top'))
-					el.down().addClassName('border_top');
-				else
-					el.down().removeClassName('border_top');
-	
-				if (el.hasClassName('selection_border_bottom'))
-					el.down().addClassName('border_bottom');
-				else
-					el.down().removeClassName('border_bottom');
-			}
-		});
-		borderDialog._adjustOverlappingBorder();
-		borderDialog._removeRubberband();
-		borderDialog._selectionMenu.cancel();
-	},
-	
-	_removeBorder: function(event) {
-		var elements = $$('.rubberband_dlg_element');
-		elements.each(function(el) {
-			if (el.hasClassName('selection_border_sides'))
-			{
-				el.down().removeClassName('border_top');
-				el.down().removeClassName('border_sides');
-				el.down().removeClassName('border_bottom');
-			}
-		});
-		borderDialog._adjustOverlappingBorder();
-		borderDialog._removeRubberband();
-		borderDialog._selectionMenu.cancel();
-	},
-	
-	_handleCancel: function() {
-		this.cancel();
-		this.destroy();
-	},
-
-	_handleCancel2: function() {
-		this._myPanel._handleCancel();
-	},
-
-	_handleSubmit: function() {
-		var elements = $$('.border_dlg_element');
-		var str = "";
-		elements.each(function(el) {
-			if (el.hasClassName('border_top'))
-				str += 'start_border' + ',';
-			else if (el.hasClassName('border_sides'))
-				str += 'continue_border' + ',';
-			else
-				str += 'no_border' + ',';
-		});
-
-		var els = $$('.outline_tree_element_selected');
-		if (els.length > 0)
-		{
-			var element_id = els[0].id;
-			element_id = element_id.substring(element_id.lastIndexOf('_')+1);
-			
-			new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_border", {
-				parameters : { borders: str, element_id: element_id },
-				evalScripts : true,
-				onSuccess: function(resp) {
-					new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
-						parameters : { borders: str, element_id: element_id },
-						evalScripts : true,
-						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
-				},
-				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-			});
-		}
-
-		this.cancel();
-		this.destroy();
-		//this.submit();
-	}
-	
-}
-
-var borderDialog = null;
-
-function createBorderDlg()
-{
-	borderDialog = new BorderDialog();
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-var CreateNewExhibitWizard = Class.create({
-	initialize: function (progress_img, url_get_objects) {
-		this.class_type = 'CreateNewExhibitWizard';	// for debugging
-
-		// private variables
-		var This = this;
-		var obj_selector = new ObjectSelector(progress_img, url_get_objects, -1);
-		
-		// private functions
-		
-		this.changeView = function (event, param)
-		{
-			var curr_page = param.curr_page;
-			var view = param.destination;
-			var dlg = param.dlg;
-			
-			// Validation
-			dlg.setFlash("", false);
-			if (curr_page === 'choose_title')	// We are on the first page. The user must enter a title before leaving the page.
-			{
-				var data = dlg.getAllData();
-				if (data.exhibit_title.strip().length === 0) {
-					dlg.setFlash("Please enter a name for this exhibit before continuing.", true);
-					return false;					
-				}
-				dlg.setFlash("Verifying title. Please wait...", false);
-				new Ajax.Request('/my9s/verify_title', { method: 'get', parameters: { title: data.exhibit_title.strip() },
-					onSuccess : function(resp) {
-						dlg.setFlash('', false);
-						$('exhibit_url').value = resp.responseText;
-						dlg.changePage(view, null);
-					},
-					onFailure : function(resp) {
-						dlg.setFlash(resp.responseText, true);
-					}
-				});
-				return false;
-			}
-			
-			var focus_el = null;
-			switch (view)
-			{
-				case 'choose_title': focus_el = 'exhibit_title'; break;
-				case 'choose_other_options': focus_el = 'exhibit_thumbnail'; break;
-				case 'choose_palette': break;
-			}
-			dlg.changePage(view, focus_el);
-
-			return false;
-		};
-		
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
-		this.sendWithAjax = function (event, params)
-		{
-			var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Verifying exhibit parameters...', false);
-			var data = dlg.getAllData();
-			data.objects = obj_selector.getSelectedObjects().join('\t');
-
-			var x = new Ajax.Request(url, {
-				parameters : data,
-				onSuccess : function(resp) {
-					dlg.setFlash('Creating exhibit...', false);
-					window.location = "/my9s/edit_exhibit?id=" + resp.responseText;
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
-
-		// privileged methods
-		this.show = function () {
-			var choose_title = {
-					page: 'choose_title',
-					rows: [
-						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
-						[ { text: 'Step 1: Please choose a title for your new exhibit.', klass: 'new_exhibit_label' } ],
-						[ { input: 'exhibit_title', klass: 'new_exhibit_input_long' } ],
-						[ { text: 'This is the title that will show up in the exhibit list once you decide to share it with other users. You can edit this later by selecting Edit Exhibit Profile at the top of your exhibit editing page.', klass: 'new_exhibit_instructions' } ],
-						[ { button: 'Next', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
-					]
-				};
-
-			var choose_palette = {
-					page: 'choose_palette',
-					rows: [
-						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
-						[ { text: 'Step 2: Add objects to your exhibit.', klass: 'new_exhibit_label' } ],
-						[ { text: 'Choose resources from your collected objects to add to this new exhibit.', klass: 'new_exhibit_instructions' } ],
-						[ { custom: obj_selector } ],
-						[ { text: 'Any object you have collected is available for use in your exhibit. You may add or remove objects from this list at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
-					]
-				};
-			
-			// Get the current server location.
-			var server = window.location;
-			server = 'http://' + server.host;
-
-			var choose_other_options = {
-					page: 'choose_other_options',
-					rows: [
-						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
-						[ { text: 'Step 3: Additional options', klass: 'new_exhibit_label' } ],
-						[ { text: 'Choose a url for your exhibit:', klass: 'new_exhibit_label' } ],
-						[ { text: server + '/exhibits/&nbsp;', klass: 'new_exhibit_label' }, { input: 'exhibit_url', klass: 'new_exhibit_input' } ],
-						[ { text: 'Paste a link to a thumbnail image:', klass: 'new_exhibit_label' } ],
-						[ { input: 'exhibit_thumbnail', klass: 'new_exhibit_input_long' } ],
-						[ { text: 'The thumbnail image will appear next to your exhibit in the exhibit list once you decide to share it with other users. Please use an image that is small, so that the pages doesn\'t take too long to load. These items are optional and can be entered at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
-					]
-				};
-
-			var pages = [ choose_title, choose_palette, choose_other_options ];
-
-			var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "New Exhibit Wizard" };
-			var dlg = new GeneralDialog(params);
-			this.changeView(null, { curr_page: '', destination: 'choose_title', dlg: dlg });
-			dlg.center();
-			obj_selector.populate(dlg);
-			
-			return;
-		};
-	}
-});
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -1095,419 +664,43 @@ function doUnhover(el, edit_bar_id, addClass, removeClass)
 function sectionUnhovered(el, edit_bar_id, addClass, removeClass)
 {
 	unhoverlist.set(el.id, 'waiting');
-	doUnhover.delay(.1, el, edit_bar_id, addClass, removeClass);
+	doUnhover.delay(0.1, el, edit_bar_id, addClass, removeClass);
 	return false;
 }
 
-////////////////////////////////////////////////////////////////////////////
-/// Create the control that adds and subtracts objects from exhibits
-////////////////////////////////////////////////////////////////////////////
-
-//var ObjectList = Class.create({
-//	initialize: function (progress_img, title) {
-//		// This creates a control that contains a list of NINES Objects. When the user clicks on an object, then it is selected.
-//		// The control is populated by a call that either passes an array (that replaces the contents), or is passed an object and that object
-//		// is either added or removed.
-//		// When the control is first created, then an image is displayed instead. This is intended to be a progress spinner.
-//		this.class_type = 'ObjectList';	// for debugging
-//
-//		// private variables
-//		var This = this;
-//		var outer = null;
-//		var div = null;
-//		var objs = null;
-//		var actions = [];
-//		
-//		// private functions
-//		var select = function(event)
-//		{
-//			var sel = $(this);
-//			var parent = sel.up('.object_list_outer');
-//			var els = parent.select('.object_list_row_selected');
-//			els.each(function(el) {
-//				el.removeClassName('object_list_row_selected');
-//			});
-//			sel.addClassName('object_list_row_selected');
-//		};
-//
-//		var isEven = function(num) {
-//		  return !(num % 2);
-//		};
-//		
-//		var formatObj = function(obj, alt)
-//		{
-//			var div = new Element('div');
-//			//div.writeAttribute({ onclick: ObjectList.select });
-//			actions.push({el: div, action: select });
-//			div.writeAttribute({ uri: obj.uri });
-//			div.addClassName('object_list_row');
-//			div.addClassName(alt ? 'object_list_row_even' : 'object_list_row_odd');
-//			var img = new Element('img', { src: obj.thumbnail, alt: obj.thumbnail });
-//			img.addClassName('object_list_img');
-//			div.appendChild(img);
-//			div.appendChild(new Element('span').update(obj.title));
-//			return div;
-//		};
-//		
-//		// privileged functions
-//		this.populate = function (objects)
-//		{
-//			div.update('');
-//			var alt = false;	// For alternate rows
-//			objects.each(function(obj) {
-//				div.appendChild(formatObj(obj, alt));
-//				alt = !alt;
-//			});
-//			actions.each(function(action) {
-//				action.el.observe('click', action.action);
-//			});
-//		};
-//		
-//		this.add = function(object)
-//		{
-//			var els = div.select('.object_list_row');
-//			div.appendChild(formatObj(object, isEven(els.length)));
-//			actions[actions.length-1].el.observe('click', actions[actions.length-1].action);
-//		};
-//		
-//		this.subtract = function(object_uri)
-//		{
-//			var sel = div.select('[uri=' + object_uri + ']');
-//			if (sel.length > 0)
-//				sel[0].remove();
-//		};
-//		
-//		this.getSelection = function()
-//		{
-//			// This returns the object that is currently selected.
-//			var sel = div.select('.object_list_row_selected');
-//			if (sel.length === 0)
-//				return null;
-//			return sel[0].readAttribute('uri');
-//		};
-//		
-//		this.getMarkup =  function()
-//		{
-//			if (outer === null) {
-//				outer = new Element('div');
-//				var header = new Element('div').update(title);
-//				header.addClassName('object_list_title');
-//				outer.appendChild(header);
-//				div = new Element('div');
-//				div.addClassName('object_list_outer');
-//				outer.appendChild(div);
-//				div.appendChild(new Element('img', { src: progress_img, alt: 'progress' }));
-//			}
-//			return outer;
-//		};
-//		
-//		this.getAllObjects = function()
-//		{
-//			var objs = [];
-//			var sel = div.select('.object_list_row');
-//			sel.each(function(el) {
-//				objs.push(el.readAttribute('uri'));
-//			});
-//			return objs;
-//		}
-//	}
-//});
-
-var ObjectSelector = Class.create({
-	initialize: function (progress_img, url_get_objects, exhibit_id) {
-		// This creates 4 controls: the unselected list, the selected list, and the buttons to move items between the two
-		this.class_type = 'ObjectSelector';	// for debugging
-
-		// private variables
-		var This = this;
-		var olUnchosen = new CreateListOfObjects(url_get_objects + '?chosen=false&exhibit_id='+exhibit_id, null, 'unchosen_objects', progress_img);
-		var olChosen = new CreateListOfObjects(url_get_objects + '?chosen=true&exhibit_id='+exhibit_id, null, 'chosen_objects', progress_img);
-
-//		var olChosen = new ObjectList(progress_img, "Objects In Exhibit");
-		var divMarkup = null;
-		var actions = [];
-		var objs = null;
-		
-		// private functions
-		var addSelection = function()
-		{
-			var obj = olUnchosen.popSelection();
-			if (obj)
-				olChosen.add(obj);
-		};
-		
-		var removeSelection = function()
-		{
-			var obj = olChosen.popSelection();
-			if (obj)
-				olUnchosen.add(obj);
-		};
-		
-		// privileged functions
-		this.populate = function(dlg)
-		{
-			// Call the server to get the data, then pass it to the ObjectLists
-			dlg.setFlash('Getting objects...', false);
-			olUnchosen.populate(dlg, false, 'new');
-			olChosen.populate(dlg, false, 'new');
-			actions.each(function(action) {
-				action.el.observe('click', action.action);
-			});
-		};
-		
-		this.getMarkup =  function()
-		{
-			if (divMarkup !== null)
-				return divMarkup;
-				
-			divMarkup = new Element('div');
-			divMarkup.addClassName('object_selector');
-
-			var divLeftText = new Element('div').update('Available Objects:');
-			divLeftText.addClassName('select_objects_label select_objects_label_left');
-			divMarkup.appendChild(divLeftText);
-			var divRightText = new Element('div').update('Objects in Exhibit:');
-			divRightText.addClassName('select_objects_label select_objects_label_right');
-			divMarkup.appendChild(divRightText);
-
-			divMarkup.appendChild(olUnchosen.getMarkup());
-			var mid = new Element('div');
-			mid.addClassName('select_objects_buttons');
-			but2 = new Element('input', { type: 'button', value: 'ADD >>' });
-			mid.appendChild(but2);
-			var but = new Element('input', { type: 'button', value: '<<' });
-			mid.appendChild(but);
-			actions.push({el: but, action: removeSelection });
-			actions.push({el: but2, action: addSelection });
-			divMarkup.appendChild(mid);
-			divMarkup.appendChild(olChosen.getMarkup());
-			return divMarkup;
-		};
-		
-		this.getSelectedObjects = function()
-		{
-			return olChosen.getAllObjects();
-		};
-		
-		this.getSelection = function() {
-			// TODO: This is the new way of getting the selection from custom controls.
-			return "";
-		}
-	}
-});
-
-var EditExhibitObjectListDlg = Class.create({
-	initialize: function (progress_img, url_get_objects, url_update_objects, exhibit_id, palette_el_id) {
-		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
-		this.class_type = 'EditExhibitObjectListDlg';	// for debugging
-
-		// private variables
-		var This = this;
-		var obj_selector = new ObjectSelector(progress_img, url_get_objects, exhibit_id);
-		
-		// private functions
-		
-		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
-		this.sendWithAjax = function (event, params)
-		{
-			var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Updating Exhibit\'s Objects...', false);
-			var data = { exhibit_id: exhibit_id, objects: obj_selector.getSelectedObjects().join('\t') };
-
-			var x = new Ajax.Updater(palette_el_id, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
-		
-		var dlgLayout = {
-				page: 'choose_objects',
-				rows: [
-					[ { text: 'Select object from the list on the left and press the ">>" button to move it to the exhibit.', klass: 'new_exhibit_instructions' } ],
-					[ { custom: obj_selector } ],
-					[ { button: 'Ok', url: url_update_objects, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
-				]
-			};
-		
-		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
-		var dlg = new GeneralDialog(params);
-		dlg.changePage('choose_objects', null);
-		dlg.center();
-		obj_selector.populate(dlg);
-	}
-});
-
 //////////////////////////////////////////////////////////////
 
-var SetExhibitAuthorAlias = Class.create({
-	initialize: function (progress_img, url_get_users, url_update_alias, exhibit_id, page_id, page_num) {
-		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
-		this.class_type = 'SetExhibitAuthorAlias';	// for debugging
-
-		// private variables
-		var This = this;
-		var users = null;
-		
-		// private functions
-		var populate = function()
-		{
-			new Ajax.Request(url_get_users, { method: 'get', parameters: { },
-				onSuccess : function(resp) {
-					dlg.setFlash('', false);
-					try {
-						users = resp.responseText.evalJSON(true);
-					} catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					// We got all the users. Now put it on the dialog
-					var sel_arr = $$('.user_alias_select');
-					var select = sel_arr[0];
-					select.update('');
-					users = users.sortBy(function(user) { return user.text; });
-					users.each(function(user) {
-						select.appendChild(new Element('option', { value: user.value }).update(user.text));
-					});
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});			
-		};
-		
-		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
-		this.sendWithAjax = function (event, params)
-		{
-			var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Updating Exhibit\'s Author...', false);
-			var data = dlg.getAllData();
-			data.exhibit_id = exhibit_id;
-			data.page_num = page_num;
-
-			var x = new Ajax.Updater(page_id, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
-		
-		var dlgLayout = {
-				page: 'choose_objects',
-				rows: [
-					[ { text: 'Select the user that you wish to impersonate', klass: 'new_exhibit_instructions' } ],
-					[ { select: 'user_id', klass: 'user_alias_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
-					[ { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
-				]
-			};
-		
-		var params = { this_id: "set_exhibit_author_alias_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
-		var dlg = new GeneralDialog(params);
-		dlg.changePage('choose_objects', null);
-		dlg.center();
-		populate(dlg);
-	}
-});
-
-///////////////////////////////////////////////////////////////////////////
-
-var editProfileDlg = null; 
-function stopUpload(){
-	editProfileDlg.fileUploadFinished();
-	return true;   
+function doRemoveObjectFromExhibit(exhibit_id, uri)
+{
+	var reference = $("in_exhibit_" + exhibit_id + "_" + uri);
+	if (reference !== null)
+		reference.remove();
+	new Ajax.Updater("exhibited_objects_container", "/my9s/remove_exhibited_object", {
+		parameters : { uri: uri, exhibit_id: exhibit_id },
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+	});
 }
 
-var EditProfileDialog = Class.create({
-	initialize: function (parent_div, ok_action, user_shell, curr_image_src) {
-		// This puts up a modal dialog that allows the administrator to change information about a site or category.
-		this.class_type = 'EditProfileDialog';	// for debugging
+function editTag(parent_id, tag_name)
+{
+	doSingleInputPrompt("Edit Tag", 'Tag:', 'new_name', parent_id,
+		"",
+		"/results/edit_tag",
+		$H({ old_name: tag_name, new_name: tag_name }), 'text', null, null );
+}
 
-		// private variables
-		var This = this;
-		var user = user_shell.user;
-		var dlg = null;
-		
-		// private functions
-		
-		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
-		this.sendWithAjax = function (event, params)
-		{
-			dlg = params.dlg;
-			dlg.setFlash('Updating User Profile...', false);
-			editProfileDlg = This;
+function removeTag(parent_id, tag_name)
+{
+	var remove = function()
+	{
+		var new_form = new Element('form', { id: "remove_tag", method: 'post', onsubmit: "this.submit();", action: "/results/remove_all_tags" });
+		new_form.observe('submit', "this.submit();");
+		document.body.appendChild(new_form);
+		new_form.appendChild(new Element('input', { name: 'tag', value: tag_name, id: 'tag' }));
 
-			// This is complicated by the file upload. That can't be done in Ajax because security doesn't let javascript manipulate file data.
-			// Therefore, we we submit the file with a normal html submit, then when that is completed, we do the ajax update.
-			var thumb = $('image');
-			var form = thumb.up('form');
-			dlg.submitForm('layout', ok_action + "_upload");	// we have to submit the form normally to get the uploaded file to get transmitted.
-		};
-		
-		this.fileUploadFinished = function() {
-			var data = dlg.getAllData();
-			new Ajax.Updater(parent_div, ok_action, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
-		
-		var dlgLayout = {
-				page: 'layout',
-				rows: [
-					[ { text: 'User Name:', klass: 'edit_facet_label' }, { text: user.username, klass: 'new_exhibit_label' } ],
-					[ { text: 'Full Name:', klass: 'edit_facet_label' }, { input: 'fullname', value: user.fullname, klass: 'edit_facet_input' } ],
-					[ { text: 'Email:', klass: 'edit_facet_label' }, { input: 'account_email', value: user.email, klass: 'edit_facet_input' } ],
-					[ { text: 'Institution:', klass: 'edit_facet_label' }, { input: 'institution', value: user.institution, klass: 'edit_facet_input' } ],
-					[ { text: 'Link:', klass: 'edit_facet_label' }, { input: 'link', value: user.link, klass: 'edit_facet_input' } ],
-					[ { text: '(leave blank if not changing your password)', klass: 'login_instructions' } ],
-					[ { text: 'Password:', klass: 'edit_facet_label' }, { password: 'account_password', klass: 'edit_facet_input' } ],
-					[ { text: 'Re-type password:', klass: 'edit_facet_label' }, { password: 'account_password2', klass: 'edit_facet_input' } ],
-					[ { text: 'About me:', klass: 'edit_facet_label' }, { textarea: 'aboutme', value: user.about_me, klass: 'edit_profile_textarea' } ],
-					[ { text: 'Thumbnail:', klass: 'edit_facet_label' }, { image: 'image', klass: 'edit_profile_image', size: 35, value: curr_image_src } ],
-					[ { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
-				]
-			};
-		
-		var params = { this_id: "edit_profile_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Profile" };
-		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
-		dlg.center();
-	}
-});
+		$(parent_id).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+		new_form.submit();
+	};
+	new ConfirmDlg("Remove Tag", "Are you sure you want to remove all instances of the \"" + tag_name + "\" tag that you created?", "Yes", "No", remove);
+}
 

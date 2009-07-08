@@ -260,10 +260,14 @@
 	margin-left:-4px;
 }
 
+.discussion_title_tooltip {
+	text-decoration: none;
+}
+
 .discussion_title_tooltip_title {
 	font-weight: bold;
 	margin-bottom: .5em;
-	border-bottom: 1px solid gray;
+	/*border-bottom: 1px solid gray;*/
 }
 
 a.tooltip{

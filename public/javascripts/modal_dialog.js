@@ -17,18 +17,18 @@
 /*global YAHOO */
 /*global Class, $, $$, $H, Ajax */
 /*global window, document */
-/*extern ModalDialog, showInLightbox, showPartialInLightbox */
+/*extern ModalDialog, showInLightbox, showPartialInLightbox, currentScrollPos, getX, getY */
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function f_filterResults(n_win, n_docel, n_body) {
-	var n_result = n_win ? n_win : 0;
-	if (n_docel && (!n_result || (n_result > n_docel)))
-		n_result = n_docel;
-	return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
-}
-
 function currentScrollPos() {
+	var f_filterResults = function(n_win, n_docel, n_body) {
+		var n_result = n_win ? n_win : 0;
+		if (n_docel && (!n_result || (n_result > n_docel)))
+			n_result = n_docel;
+		return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
+	};
+
 	var pos = [
 		f_filterResults (
 			window.pageXOffset ? window.pageXOffset : 0,
@@ -39,6 +39,26 @@ function currentScrollPos() {
 			document.documentElement ? document.documentElement.scrollTop : 0,
 			document.body ? document.body.scrollTop : 0)];
 		return pos;
+}
+
+function getX( oElement )
+{
+	var iReturnValue = 0;
+	while( oElement !== null ) {
+		iReturnValue += oElement.offsetLeft;
+		oElement = oElement.offsetParent;
+	}
+	return iReturnValue;
+}
+
+function getY( oElement )
+{
+	var iReturnValue = 0;
+	while( oElement !== null ) {
+		iReturnValue += oElement.offsetTop;
+		oElement = oElement.offsetParent;
+	}
+	return iReturnValue;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

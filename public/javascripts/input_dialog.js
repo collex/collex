@@ -18,198 +18,230 @@
 //The user specifies the fields desired and the fields are arranged in a vertical
 //column.
 
+/*global $, $$, Event, Class, Element, $H */
+/*global YAHOO */
+/*global ModalDialog, currentScrollPos, getX, getY */
+/*extern InputDialog, doSingleInputPrompt */
 
 var InputDialog = Class.create();
-InputDialog._win = null;
-InputDialog._form = null;
-InputDialog._table = null;
-InputDialog._extraButton = null;
-InputDialog._linkDlgHandler = null;
-InputDialog._modalDialog = null;
-InputDialog._okFunction = null;
-InputDialog._okObject = null;
-InputDialog._noButtons = false;
-InputDialog._cancelCallback = null;
-InputDialog._cancelThis = null;
-InputDialog._onCompleteCallback = null;
+InputDialog.form = null;
+InputDialog.table = null;
+InputDialog.extraButton = null;
+InputDialog.linkDlgHandler = null;
+InputDialog.modalDialog = null;
+InputDialog.okFunction = null;
+InputDialog.okObject = null;
+InputDialog.noButtons = false;
+InputDialog.cancelCallback = null;
+InputDialog.cancelThis = null;
+InputDialog.onCompleteCallback = null;
 
 InputDialog.prototype = {
 	initialize: function(element_id, submitCode)
 	{
+		var observerSubmit = function(event) {
+			this.modalDialog._handleSave();
+		};
+
 		var form_id = element_id + '_form';
 		// If submitCode is not passed in, then the submit button does an Ajax callback.
 		var inlineSubmitCode = "";
-		if (submitCode == null || submitCode == undefined)
+		if (submitCode === null || submitCode === undefined)
 			inlineSubmitCode = '';
 		else
 			inlineSubmitCode += "; return false;";
-		this._form = new Element('form', { id: form_id, onsubmit:  inlineSubmitCode});
-		this._form.addClassName('modal_dialog_form');
-		if (submitCode == null || submitCode == undefined)
-			this._form.observe('submit', InputDialog.prototype._observerSubmit.bind(this));
-		this._table = new Element('table');
-		this._form.appendChild(this._table);
-		this._table.appendChild(new Element('tbody'));
+		this.form = new Element('form', { id: form_id, onsubmit:  inlineSubmitCode});
+		this.form.addClassName('modal_dialog_form');
+		if (submitCode === null || submitCode === undefined)
+			this.form.observe('submit', observerSubmit.bind(this));
+		this.table = new Element('table');
+		this.form.appendChild(this.table);
+		this.table.appendChild(new Element('tbody'));
 	},
 	
-	_type: "InputDialog",
-	_buttonAction: [],
-	
+	buttonAction: [],
+
+	centerEditor: function()
+	{
+		this.modalDialog.editors[0].editor.on('afterRender', function() {
+			this.center();
+		}, this, true);
+	},
+
 	prepareDomForEditing: function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor)
 	{
+		var editorHover = function(ev) {
+			var el = $(this);
+			var hover = el.readAttribute('hoverClass');
+			var div = el.down();
+			div.addClassName(hover);
+		};
+
+		var editorExitHover = function(ev) {
+			var el = $(this);
+			var hover = el.readAttribute('hoverClass');
+			var div = el.down();
+			div.removeClassName(hover);
+		};
+
 		var el = $(element_id);
 			
 		var elWrapper = el.wrap('a');
 		el.writeAttribute('action', action);
 		el.writeAttribute('ajax_action_element_id', ajax_action_element_id);
-		if (strHoverClass != undefined) {
+		if (strHoverClass !== undefined) {
 			elWrapper.writeAttribute('hoverclass', strHoverClass);
-			elWrapper.observe('mouseover', InputDialog.prototype._editorHover);
-			elWrapper.observe('mouseout', InputDialog.prototype._editorExitHover);
+			elWrapper.observe('mouseover', editorHover);
+			elWrapper.observe('mouseout', editorExitHover);
 		}
-		if (strShowEditor != undefined)
+		if (strShowEditor !== undefined)
 			elWrapper.observe('click', strShowEditor);
 	},
 	
 	show: function(title, left, top, width, height, dataHash)
 	{
-		this._modalDialog = new ModalDialog();
-		if (this._onCompleteCallback)
-			this._modalDialog.setCompleteCallback(this._onCompleteCallback);
-		if (this._saveButtonName)
-			this._modalDialog.setSaveButton(this._saveButtonName);
+		var initData = function(dataHash) {
+			$H(dataHash).each(function(datum) {
+				var el = $(datum.key);
+				if (el)
+					el.value = datum.value;
+			} );
+		};
 
-		if (this._okFunction)
-			this._modalDialog.showPrompt(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._okFunction, this._okObject);
+		this.modalDialog = new ModalDialog();
+		if (this.onCompleteCallback)
+			this.modalDialog.setCompleteCallback(this.onCompleteCallback);
+		if (this._saveButtonName)
+			this.modalDialog.setSaveButton(this._saveButtonName);
+
+		if (this.okFunction)
+			this.modalDialog.showPrompt(title, dataHash.element_id, this.form, left, top, width, height, this.extraButton, this.okFunction, this.okObject);
 		else
-			this._modalDialog.show(title, dataHash.element_id, this._form, left, top, width, height, this._extraButton, this._linkDlgHandler, this._noButtons, this._cancelCallback, this._cancelThis);
-		this._initData(dataHash);
+			this.modalDialog.show(title, dataHash.element_id, this.form, left, top, width, height, this.extraButton, this.linkDlgHandler, this.noButtons, this.cancelCallback, this.cancelThis);
+		initData(dataHash);
 		var buttons = $$("a[clickaction]");
 		buttons.each(function(but) {
 			var count = but.getAttribute('clickaction');
-			if (this._buttonAction[count].context === null || this._buttonAction[count].context === undefined)
-				but.observe('click', this._buttonAction[count].action);
+			if (this.buttonAction[count].context === null || this.buttonAction[count].context === undefined)
+				but.observe('click', this.buttonAction[count].action);
 			else
-				Event.observe(but, 'click', this._buttonAction[count].action.bindAsEventListener(this._buttonAction[count].context));
+				Event.observe(but, 'click', this.buttonAction[count].action.bindAsEventListener(this.buttonAction[count].context));
 		}, this);
 	},
 	
 	center: function() {
-		this._modalDialog.center();
+		this.modalDialog.center();
 	},
 	
 	setSaveButton : function(name) {
 		this._saveButtonName = name;
 	},
 	
-	setOkFunction : function(okFunction, okObject)
+	setOkFunction : function(okFunction_, okObject_)
 	{
-		this._okFunction = okFunction;
-		this._okObject = okObject;
+		this.okFunction = okFunction_;
+		this.okObject = okObject_;
 	},
 	
 	setNoButtons : function()
 	{
-		this._noButtons = true;
+		this.noButtons = true;
 	},
 	
-	setNotifyCancel : function(cancelCallback, cancelThis)
+	setNotifyCancel : function(cancelCallback_, cancelThis_)
 	{
-		this._cancelCallback = cancelCallback;
-		this._cancelThis = cancelThis;
+		this.cancelCallback = cancelCallback_;
+		this.cancelThis = cancelThis_;
 	},
 	
 	setCompleteCallback : function(callBack)
 	{
-		this._onCompleteCallback = callBack;
+		this.onCompleteCallback = callBack;
 	},
 	
 	cancel : function()
 	{
-		this._modalDialog._handleCancel();
-		//this._modalDialog.dialog.cancel();
-		//this._modalDialog.dialog.destroy();
-
+		this.modalDialog._handleCancel();
 	},
 
 	addSelect: function(label, id, options, change, className)
 	{
 		var wrapper = new Element('tr');
-		if (className != undefined)
+		if (className !== undefined)
 			wrapper.addClassName(className);
 		var el_label = new Element('label', { 'for': id} ).update(label);
 		wrapper.appendChild(el_label.wrap('td'));
 		var el = new Element('select', { id: id, name: id, align: 'top' });
-		if (change != null && change != undefined)
+		if (change !==null && change !== undefined)
 			el.observe('change', change);
 		options.each(function(option) {
 			el.appendChild(new Element('option', { value: option}).update(option));
 		});
 		wrapper.appendChild(el.wrap('td'));
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 
 	addList: function(id, tbl, className)
 	{
-		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
+		this.form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 		var wrapper = new Element('tr');
-		if (className != undefined)
+		if (className !== undefined)
 			wrapper.addClassName(className);
 		var wrapper2 = new Element('td', { colspan: 2 });
 		wrapper2.innerHTML = tbl;
 		wrapper.appendChild(wrapper2);
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 	
 	addPrompt: function(label, className)
 	{
 		var wrapper = new Element('tr');
-		if (className != undefined)
+		if (className !== undefined)
 			wrapper.addClassName(className);
 		var el_label = new Element('td', { 'colspan': 2} ).update(label);
 		wrapper.appendChild(el_label.wrap('td'));
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 	
 	addTextInput: function(label, id, size, className)
 	{
 		var wrapper = new Element('tr');
-		if (className != undefined)
+		if (className !== undefined)
 			wrapper.addClassName(className);
 		var el_label = new Element('label', { 'for': id} ).update(label);
 		wrapper.appendChild(el_label.wrap('td'));
 		var el = new Element('input', { type: 'text', id: id, name: id, size: size});
 		wrapper.appendChild(el.wrap('td'));
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 
 	addHr: function(className)
 	{
 		var wrapper = new Element('tr');
-		if (className != undefined)
+		if (className !== undefined)
 			wrapper.addClassName(className);
 		var el = new Element('hr');
 		wrapper.appendChild(el.wrap('td', { colspan: 2 }));
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 	
 	addHidden: function(id)
 	{
-		this._form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
+		this.form.appendChild(new Element('input', { type: 'hidden', id: id, name: id }));
 	},
 	
-	addTextArea: function(id, width, height, className, extraButtons, linkDlgHandler)
+	addTextArea: function(id, width, height, className, extraButton_, linkDlgHandler_)
 	{
 		var wrapper = new Element('tr');
-		if (className != null)
+		if (className !== null)
 			wrapper.addClassName(className);
 		var el = new Element('textarea', { id: id, name: id });
 		el.setStyle({ width: width + 'px', height: height + 'px', display: 'none' });
 		var td = Element.wrap(el, 'td', { colspan: 2, style: 'text-align: center' });
 		wrapper.appendChild(td);
-		this._table.down().appendChild(wrapper);
-		this._extraButton = extraButtons;
-		this._linkDlgHandler = linkDlgHandler;
+		this.table.down().appendChild(wrapper);
+		this.extraButton = extraButton_;
+		this.linkDlgHandler = linkDlgHandler_;
 	},
 	
 	addLink: function(strText, strUrl, clickAction, className)
@@ -219,7 +251,7 @@ InputDialog.prototype = {
 		var el = new Element('a', { href: strUrl, onclick: clickAction }).update(strText);
 		el.addClassName(className);
 		wrapper.appendChild(el.wrap('td'));
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 	
 	addLinkToNewWindow: function(strText, strUrl, clickAction, className)
@@ -229,7 +261,7 @@ InputDialog.prototype = {
 		var el = new Element('a', { target: '_blank', href: strUrl, onclick: clickAction }).update(strText);
 		el.addClassName(className);
 		wrapper.appendChild(el.wrap('td'));
-		this._table.down().appendChild(wrapper);
+		this.table.down().appendChild(wrapper);
 	},
 
 	addButtons: function(arrButtons)
@@ -238,8 +270,8 @@ InputDialog.prototype = {
 		wrapper.appendChild(new Element('td'));
 		var td = new Element('td');
 		arrButtons.each(function(but) {
-			var count = this._buttonAction.length;
-			this._buttonAction[count] = { action: but.action, context: but.context };
+			var count = this.buttonAction.length;
+			this.buttonAction[count] = { action: but.action, context: but.context };
 			var el = new Element('a', { href: "#", clickaction: count }).update(but.text);
 			var el2 = el.wrap('span');
 			el2.addClassName('first-child');
@@ -249,39 +281,7 @@ InputDialog.prototype = {
 			td.appendChild(el3);
 		}, this);
 		wrapper.appendChild(td);
-		this._table.down().appendChild(wrapper);
-	},
-
-	///////////////////////////////// private members //////////////////////////////////
-	_initData: function(dataHash)
-	{
-		$H(dataHash).each(function(datum) {
-			var el = $(datum.key);
-			if (el)
-				el.value = datum.value;
-		} );
-	},
-
-	_observerSubmit: function(event)
-	{
-		//InputDialog._modalDialog._handleSave();
-		this._modalDialog._handleSave();
-	},
-	
-	_editorHover: function(ev)
-	{
-		var el = $(this);
-		var hover = el.readAttribute('hoverClass');
-		var div = el.down();
-		div.addClassName(hover);
-	},
-	
-	_editorExitHover: function(ev)
-	{
-		var el = $(this);
-		var hover = el.readAttribute('hoverClass');
-		var div = el.down();
-		div.removeClassName(hover);
+		this.table.down().appendChild(wrapper);
 	}
 };
 
@@ -327,22 +327,21 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 		// text: null, or width: yy
 		// select: array of strings that become the choices. 
 		// textarea: { height: xx, width: yy, toolbarGroups: [ ' ', ' ' ], linkDlgHandler: new LinkDlgHandler() }
-	saveButtonName	// either a string that appears as the text of the save button, or null to take the default
-	)
+	saveButtonName)	// either a string that appears as the text of the save button, or null to take the default
 {
 	// put up a Prototype window type dialog.
-	if (actionElementIds != null)
+	if (actionElementIds !== null)
 		InputDialog.prototype.prepareDomForEditing(referenceElementId, actionElementIds, actions);
 	
 	// First construct the dialog
 	var dlg = new InputDialog(referenceElementId);
 	hiddenDataHash.each(function(datum) {
-		if (datum.key != promptId)
+		if (datum.key !== promptId)
 			dlg.addHidden(datum.key);
 	});
 	
 	// Store the reference element
-	hiddenDataHash['element_id'] = referenceElementId;
+	hiddenDataHash.element_id = referenceElementId;
 	
 	var width = 400;
 	var height = 100;
@@ -384,7 +383,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 	var top = getY(el);
 	if (top + height + margin > viewportHeight)
 		top = viewportHeight - height - margin;
-	if (actionElementIds == null)
+	if (actionElementIds === null)
 		dlg.setNoButtons();
 	if (saveButtonName)
 		dlg.setSaveButton(saveButtonName);
@@ -398,7 +397,7 @@ function doSingleInputPrompt(titleStr, // The string that appears in the title b
 		prompt.focus();
 	}
 	if (prompt && prompt.tagName === "TEXTAREA") {
-		dlg._modalDialog.editors[0].editor.on('afterRender', function() {
+		dlg.modalDialog.editors[0].editor.on('afterRender', function() {
 			dlg.center();
 		}, this, true);
 	}
