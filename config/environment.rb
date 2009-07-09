@@ -104,4 +104,4 @@ COLLEX_ENGINE_PARAMS = {
   :facet_fields => ['genre','archive','freeculture']
 }
 
-DEPLOYMENT_SERVER = "nines.org"
+DEPLOYMENT_SERVERS = [ "nines.org", "www.nines.org" ]

@@ -21,7 +21,6 @@
 	<% # We only run Google Analytics if we are on the real deployment. -%>
 	<% # We want to load the non-minimized versions of YUI if we are running development -%>
 	<% quick_load = (RAILS_ENV == 'development') && (request.host().index('performantsoftware') == nil) -%>
-	<% run_analytics = (request.host() == DEPLOYMENT_SERVER) -%>
 
 <title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
 <% # Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
@@ -79,7 +78,7 @@
 
  	<div class="clear_both"></div>
 	<%= render :partial => '/common/footer' %>
-	<% if run_analytics -%>
+	<% if DEPLOYMENT_SERVERS.include?(request.host()) -%>
 		<!-- for Google Analytics -->
 		<script type="text/javascript">
 			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -90,6 +89,8 @@
 			var pageTracker = _gat._getTracker("UA-5450014-1");
 			pageTracker._trackPageview();
 			} catch(err) {}
-		</script> 
+		</script>
+	<% else %>
+		<!-- Google analytics is not included on this page because the host is <%= request.host() %>. Usage is only tracked on the servers [<%= DEPLOYMENT_SERVERS.join(', ') %>] -->
 	<% end -%>
 </body></html>
