@@ -17,7 +17,7 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def collex_version
-    return "1.5.3"
+    return "1.5.4"
   end
   
   def is_admin?
@@ -43,7 +43,7 @@ module ApplicationHelper
 			yui_path = '2.7.0'
 			yui_list = ""
 			fnames[:yui].each { |f|
-				yui_list += '&' if fnames[:yui][0] != f
+				yui_list += '&amp;' if fnames[:yui][0] != f
 				yui_list += "#{yui_path}#{f}.css"
 			}
 			html = "<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?#{yui_list}' />\n"
@@ -67,7 +67,7 @@ module ApplicationHelper
 			yui_path = '2.7.0'
 			yui_list = ""
 			fnames[:yui].each { |f|
-				yui_list += '&' if fnames[:yui][0] != f
+				yui_list += '&amp;' if fnames[:yui][0] != f
 				yui_list += "#{yui_path}#{f}.js"
 			}
 			html = javascript_include_tag("prototype-min") + "\n"
