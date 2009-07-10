@@ -297,6 +297,12 @@ var GeneralDialog = Class.create({
 			if (btn.klass)
 				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass); }); 
 		});
+
+		customList.each(function(ctrl) {
+			if (ctrl.delayedSetup)
+				ctrl.delayedSetup();
+		});
+
 		// These are all the elements that can be turned on and off in the dialog.
 		// All elements have switchable_element, and they each then have another class
 		// that matches the value of the view parameter. Then this loop either hides or shows
@@ -557,6 +563,54 @@ var TextInputDlg = Class.create({
 		dlg.center();
 
 		var input = $(id);
+		input.select();
+		input.focus();
+	}
+});
+
+var RteInputDlg = Class.create({
+	initialize: function (params) {
+		var title = params.title;
+		var okCallback = params.okCallback;
+		var value = params.value;
+		var populate_nines_obj_url = params.populate_nines_obj_url;
+		var progress_img = params.progress_img;
+
+		// This puts up a modal dialog that asks for a input from an RTE, then calls the when the user presses ok.
+		this.class_type = 'RteInputDlg';	// for debugging
+
+		// private variables
+		var This = this;
+
+		// privileged functions
+		this.ok = function(event, params)
+		{
+			params.dlg.cancel();
+
+			var data = params.dlg.getAllData();
+			okCallback(data.textareaValue);
+		};
+
+		this.cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { textarea: 'textareaValue', value: value } ],
+					[ { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
+				]
+			};
+
+		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
+		var dlg = new GeneralDialog(dlgparams);
+		dlg.changePage('layout', null);
+		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
+		dlg.center();
+
+		var input = $('textareaValue');
 		input.select();
 		input.focus();
 	}

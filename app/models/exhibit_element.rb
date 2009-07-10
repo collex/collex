@@ -21,9 +21,27 @@ class ExhibitElement < ActiveRecord::Base
   has_many :exhibit_illustrations, :order => :position, :dependent=>:destroy
   
   def self.factory(page)
-    return ExhibitElement.create(:exhibit_page_id => page, :border_type_enum => 0, :exhibit_element_layout_type => 'text', :element_text2 => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>", :exhibit_element_layout_type => 'text', :element_text => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>")
+    return ExhibitElement.create(:exhibit_page_id => page, :border_type_enum => 0, :exhibit_element_layout_type => 'text', :element_text2 => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>", :element_text => "<span style=\"font-family: Times New Roman;\">Enter Your Text Here</span>")
   end
-  
+
+	def set_header_footnote(footnote_str)
+		if footnote_str != nil && footnote_str.length > 0
+			if self.header_footnote_id == nil	# if there didn't used to be a footnote, but there is now
+				footnote_rec = ExhibitFootnote.create({ :footnote => footnote_str })
+				self.header_footnote_id = footnote_rec.id
+			else # if there was a footnote and there still is
+				footnote_rec = ExhibitFootnote.find(self.header_footnote_id)
+				footnote_rec.update_attributes({ :footnote => footnote_str })
+			end
+		else	# There is no footnote specified.
+			if self.header_footnote_id != nil	# there used to be a footnote
+				footnote_rec = ExhibitFootnote.find(self.header_footnote_id)
+				footnote_rec.destroy()
+				self.header_footnote_id = nil
+			end
+		end
+	end
+
   def get_border_type
     case border_type_enum
       when 0: return "no_border"

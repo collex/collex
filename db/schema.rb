@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090626161243) do
+ActiveRecord::Schema.define(:version => 20090709201314) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -86,23 +86,32 @@ ActiveRecord::Schema.define(:version => 20090626161243) do
     t.integer  "exhibit_page_id",             :limit => 10, :precision => 10, :scale => 0
     t.text     "element_text2"
     t.integer  "justify",                     :limit => 10, :precision => 10, :scale => 0
+    t.integer  "header_footnote_id",          :limit => 10, :precision => 10, :scale => 0
+  end
+
+  create_table "exhibit_footnotes", :force => true do |t|
+    t.text     "footnote"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "exhibit_illustrations", :force => true do |t|
-    t.integer  "exhibit_element_id", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "position",           :limit => 10, :precision => 10, :scale => 0
+    t.integer  "exhibit_element_id",   :limit => 10, :precision => 10, :scale => 0
+    t.integer  "position",             :limit => 10, :precision => 10, :scale => 0
     t.string   "illustration_type"
     t.string   "image_url"
     t.text     "illustration_text"
     t.text     "caption1"
     t.text     "caption2"
-    t.integer  "image_width",        :limit => 10, :precision => 10, :scale => 0
+    t.integer  "image_width",          :limit => 10, :precision => 10, :scale => 0
     t.string   "link"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "alt_text"
     t.string   "nines_object_uri"
-    t.integer  "height",             :limit => 10, :precision => 10, :scale => 0
+    t.integer  "height",               :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption1_footnote_id", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption2_footnote_id", :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "exhibit_objects", :force => true do |t|

@@ -23,7 +23,7 @@
 /*global $, $$, Ajax, Class */
 /*global MessageBoxDlg, GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, getX, getY, initializeElementEditing */
 /*global gIllustrationTypes */
-/*extern CreateList, doSelectionChanged, initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor, showIllustrationEditor, showRichEditor */
+/*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor, showIllustrationEditor, showRichEditor */
 
 var inplaceObjects = [];
 var inplaceObjectsAlreadyLoaded = false;
@@ -70,6 +70,10 @@ function showIllustrationEditor(event)
 			values.caption1 = hidden.innerHTML;
 		else if (hidden.hasClassName('ill_illustration_caption2'))
 			values.caption2 = hidden.innerHTML;
+		else if (hidden.hasClassName('ill_illustration_caption1_footnote'))
+			values.caption1_footnote = hidden.innerHTML;
+		else if (hidden.hasClassName('ill_illustration_caption2_footnote'))
+			values.caption2_footnote = hidden.innerHTML;
 		else if (hidden.hasClassName('ill_nines_object_uri'))
 			values.nines_object = hidden.innerHTML;
 	});
@@ -171,7 +175,9 @@ function showIllustrationEditor(event)
 			rows: [
 				[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
 				[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'new_exhibit_input_long' } ],
+				[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
 				[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'new_exhibit_input_long' } ],
+				[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
 
 				[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
 				  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
@@ -182,7 +188,7 @@ function showIllustrationEditor(event)
 			]
 		};
 
-	var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Set Link" };
+	var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 	var dlg = new GeneralDialog(dlgParams);
 	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
 	dlg.changePage('layout', null);
@@ -292,34 +298,82 @@ function initializeInplaceHeaderEditor(element_id, action)
 	var showHeaderEditor = function(event)
 	{
 		var This = $(this).down();
-		var element_id = This.id;
+		var inner_element_id = 'inner_' + This.id;
 
 		// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 		// That is, el = <div id='header_YY'>
 
-		// First construct the dialog
-		var dlg = new InputDialog(element_id);
-		dlg.addHidden("element_id");
+		var cancel = function(event, params)
+		{
+			params.dlg.cancel();
+		};
 
-		dlg.addTextInput('Header:', 'value', 40);
+		// TODO-PER: Make this generic: probably put in general_dialog
+		var ajaxUpdateFromElement = function(el, data, callback) {
+			var action = el.readAttribute('action');
+			var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
 
-		// Now populate a hash with all the starting values.
-		// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+			// If we have a comma separated list, we want to send the request synchronously to each action
+			// (Doing this synchronously eliminates any race condition: The first call can update the data and
+			// the rest of the calls just update the page.
+			var actions = action.split(',');
+			var action_elements = ajax_action_element_id.split(',');
+			if (actions.length === 1)
+			{
+				new Ajax.Updater(ajax_action_element_id, action, {
+					parameters : data,
+					evalScripts : true,
+					onComplete : initializeElementEditing,
+					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+				});
+			}
+			else
+			{
+				new Ajax.Updater(action_elements[0], actions[0], {
+					parameters : data,
+					evalScripts : true,
+					onComplete: function(resp) {
+						new Ajax.Updater(action_elements[1], actions[1], {
+							parameters : data,
+							evalScripts : true,
+							onComplete : initializeElementEditing,
+							onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+						});
+					},
+					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+				});
+			}
+		};
 
-		var values = {};
+		var footnoteDiv = $('footnote_for_' + This.id);
+		var footnoteStr = footnoteDiv ? footnoteDiv.innerHTML : "";
 
-		values.value = $(element_id).down().innerHTML;
+		var okAction = function(event, params) {
+			// Save has been pressed.
+			var el_id = element_id.split(',')[0];
+			var dlg = params.dlg;
+			var data = dlg.getAllData();
+			data.element_id = el_id;
 
-		// We also need to set the hidden fields on our form. This is the mechanism
-		// for passing back the context to the controller.
-		values.element_id = element_id;
+			dlg.setFlash('Updating Header...', false);
+			ajaxUpdateFromElement($(el_id), data, initializeElementEditing);
 
-		// Now, everything is initialized, fire up the dialog.
-		var el = $(element_id);
-		dlg.show("Enter Header", getX(el), getY(el), 380, 100, values );
-		var prompt = $('value');
-		prompt.focus();
-		prompt.select();
+			params.dlg.cancel();
+		};
+
+		var dlgLayout = {
+			page: 'layout',
+			rows: [
+				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'new_exhibit_input_long' } ],
+				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
+				[ { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: cancel } ]
+			]
+		};
+
+		var dlgParams = { this_id: "header_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Enter Header" };
+		var dlg = new GeneralDialog(dlgParams);
+		dlg.changePage('layout', null);
+		dlg.center();
 	};
 
 	if (!inplaceObjectsAlreadyLoaded)
@@ -346,97 +400,97 @@ function initializeInplaceIllustrationEditor(element_id, action)
 // Private functions
 /////////////////////////////////////////////////////////////////////////////////////////
 
-function doSelectionChanged(currSelection)
-{
-	// This is a callback that is fired whenever the user changes the select
-	// box while editing illustrations. It is also fired when the dialog first
-	// is displayed.
-	var image_only = $$('.image_only');
-	var text_only = $$ ('.text_only');
-	var nines_only = $$ ('.nines_only');
-	var not_nines = $$ ('.not_nines');
-	if (currSelection === gIllustrationTypes[1]) {	// image
-		image_only.each(function(el) { el.show(); });
-		not_nines.each(function(el) { el.show(); });
-		nines_only.each(function(el) { el.hide(); });
-		text_only.each(function(el) { el.hide(); });
-	} else if (currSelection === gIllustrationTypes[0]) {	// nines object
-		image_only.each(function(el) { el.hide(); });
-		not_nines.each(function(el) { el.hide(); });
-		nines_only.each(function(el) { el.show(); });
-		text_only.each(function(el) { el.hide(); });
-	} else if (currSelection === gIllustrationTypes[2]) {	// text
-		image_only.each(function(el) { el.hide(); });
-		not_nines.each(function(el) { el.show(); });
-		nines_only.each(function(el) { el.hide(); });
-		text_only.each(function(el) { el.show(); });
-	}
-}
+//function doSelectionChanged(currSelection)
+//{
+//	// This is a callback that is fired whenever the user changes the select
+//	// box while editing illustrations. It is also fired when the dialog first
+//	// is displayed.
+//	var image_only = $$('.image_only');
+//	var text_only = $$ ('.text_only');
+//	var nines_only = $$ ('.nines_only');
+//	var not_nines = $$ ('.not_nines');
+//	if (currSelection === gIllustrationTypes[1]) {	// image
+//		image_only.each(function(el) { el.show(); });
+//		not_nines.each(function(el) { el.show(); });
+//		nines_only.each(function(el) { el.hide(); });
+//		text_only.each(function(el) { el.hide(); });
+//	} else if (currSelection === gIllustrationTypes[0]) {	// nines object
+//		image_only.each(function(el) { el.hide(); });
+//		not_nines.each(function(el) { el.hide(); });
+//		nines_only.each(function(el) { el.show(); });
+//		text_only.each(function(el) { el.hide(); });
+//	} else if (currSelection === gIllustrationTypes[2]) {	// text
+//		image_only.each(function(el) { el.hide(); });
+//		not_nines.each(function(el) { el.show(); });
+//		nines_only.each(function(el) { el.hide(); });
+//		text_only.each(function(el) { el.show(); });
+//	}
+//}
+//
+//function selectionChanged(event)
+//{
+//	var This = $(this);
+//	var currSelection = This.value;
+//	doSelectionChanged(currSelection);
+//}
 
-function selectionChanged(event)
-{
-	var This = $(this);
-	var currSelection = This.value;
-	doSelectionChanged(currSelection);
-}
-
-var CreateList = Class.create({
-	list : null,
-	initialize : function(items, className, initial_selected_uri, value_field)
-	{
-		this.value_field = value_field;
-		items = items.sortBy(function(item) { return item.title; });
-		var This = this;
-		if (items.length > 10)
-			This.list = "<div style='overflow:auto; height: 450px;'>";
-		else
-			This.list = "";
-			
-		if (className !== null && className !== undefined)
-			This.list += "<table class='input_dlg_list " + className + "' >";
-		else
-			This.list += "<table class='input_dlg_list' >";
-		items.each(function(obj) {
-//			if (initial_selected_uri === "")	// If nothing is selected, then automatically select the first one.
-//				initial_selected_uri = obj.uri;
-			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri === initial_selected_uri, value_field);
-		});
-		This.list += "</table>";
-		if (items.length > 10)
-			This.list += "</div>";
-	},
-	
-	constructItem: function(uri, thumbnail, title, is_selected, value_field)
-	{
-		var str = "";
-		if (is_selected)
-			str = " class='input_dlg_list_item_selected' ";
-		return "<tr " + str + "onclick='CreateList.prototype._select(this,\"" + value_field + "\" );' uri='" + uri + "' ><td><img src='" + thumbnail + "' alt='' height='40' /></td><td>" + title + "</td></tr>\n";
-	},
-	
-	makeSureThereIsASelection: function() {
-		var sel = $$('.input_dlg_list .input_dlg_list_item_selected');
-		if (sel.length > 0)
-			return;
-			
-		var el = $$(".input_dlg_list tr");
-		if (el.length > 0)
-			this.select(el[0], this.value_field);
-	}
-});
-
-CreateList.prototype.select = function(item, value_field)
-{
-	var selClass = "input_dlg_list_item_selected";
-	$$("." + selClass).each(function(el)
-	{
-		el.removeClassName(selClass);
-	});
-	$(item).addClassName(selClass);
-	$(value_field).value = $(item).getAttribute('uri');
-	var caption = $('caption1');
-	if (caption !== null)
-		caption.value = $(item).down().next().innerHTML;
-};
+//var CreateList = Class.create({
+//	list : null,
+//	initialize : function(items, className, initial_selected_uri, value_field)
+//	{
+//		this.value_field = value_field;
+//		items = items.sortBy(function(item) { return item.title; });
+//		var This = this;
+//		if (items.length > 10)
+//			This.list = "<div style='overflow:auto; height: 450px;'>";
+//		else
+//			This.list = "";
+//
+//		if (className !== null && className !== undefined)
+//			This.list += "<table class='input_dlg_list " + className + "' >";
+//		else
+//			This.list += "<table class='input_dlg_list' >";
+//		items.each(function(obj) {
+////			if (initial_selected_uri === "")	// If nothing is selected, then automatically select the first one.
+////				initial_selected_uri = obj.uri;
+//			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri === initial_selected_uri, value_field);
+//		});
+//		This.list += "</table>";
+//		if (items.length > 10)
+//			This.list += "</div>";
+//	},
+//
+//	constructItem: function(uri, thumbnail, title, is_selected, value_field)
+//	{
+//		var str = "";
+//		if (is_selected)
+//			str = " class='input_dlg_list_item_selected' ";
+//		return "<tr " + str + "onclick='CreateList.prototype._select(this,\"" + value_field + "\" );' uri='" + uri + "' ><td><img src='" + thumbnail + "' alt='' height='40' /></td><td>" + title + "</td></tr>\n";
+//	},
+//
+//	makeSureThereIsASelection: function() {
+//		var sel = $$('.input_dlg_list .input_dlg_list_item_selected');
+//		if (sel.length > 0)
+//			return;
+//
+//		var el = $$(".input_dlg_list tr");
+//		if (el.length > 0)
+//			this.select(el[0], this.value_field);
+//	}
+//});
+//
+//CreateList.prototype.select = function(item, value_field)
+//{
+//	var selClass = "input_dlg_list_item_selected";
+//	$$("." + selClass).each(function(el)
+//	{
+//		el.removeClassName(selClass);
+//	});
+//	$(item).addClassName(selClass);
+//	$(value_field).value = $(item).getAttribute('uri');
+//	var caption = $('caption1');
+//	if (caption !== null)
+//		caption.value = $(item).down().next().innerHTML;
+//};
 
 

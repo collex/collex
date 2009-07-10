@@ -45,4 +45,14 @@ module ExhibitElementsHelper
     owner = User.find(user_id)
     get_user_link(owner)
   end
+
+	def draw_footnote(footnote_id, parent_id, is_edit_mode)
+		if footnote_id
+			click = is_edit_mode ? "" : "var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\", footnote.innerHTML); "
+			html = "<a href='#' onclick='#{click}return false;' class='superscript'>#{footnote_id}</a>\n"
+			html += "<span id='footnote_for_#{parent_id}' class='hidden'>#{is_edit_mode ? ExhibitFootnote.find(footnote_id).footnote : decode_exhibit_links(ExhibitFootnote.find(footnote_id).footnote)} </span>\n"
+			return html
+		end
+		return ""
+	end
 end

@@ -217,5 +217,18 @@ table, table td, table tr {
 	}
 
 .alignleft {
-	float: left
+	float: left;
 	}
+
+.superscript {
+	position: relative;
+	bottom: 0.5em;
+	color: #AC2E20;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.superscript:hover {
+	text-decoration: underline;
+}

@@ -71,4 +71,23 @@ class ExhibitIllustration < ActiveRecord::Base
     illustration.insert_at(pos)
     return illustration
   end
+
+	def set_caption_footnote(footnote_str, field)
+		if footnote_str != nil && footnote_str.length > 0
+			if self[field.to_sym] == nil	# if there didn't used to be a footnote, but there is now
+				footnote_rec = ExhibitFootnote.create({ :footnote => footnote_str })
+				self[field.to_sym] = footnote_rec.id
+			else # if there was a footnote and there still is
+				footnote_rec = ExhibitFootnote.find(self[field.to_sym])
+				footnote_rec.update_attributes({ :footnote => footnote_str })
+			end
+		else	# There is no footnote specified.
+			if self[field.to_sym] != nil	# there used to be a footnote
+				footnote_rec = ExhibitFootnote.find(self[field.to_sym])
+				footnote_rec.destroy()
+				self[field.to_sym] = nil
+			end
+		end
+	end
+
 end

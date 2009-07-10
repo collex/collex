@@ -526,12 +526,14 @@ class My9sController < ApplicationController
     element = params['element_id']
     arr = element.split('_')
     element_id = arr[arr.length-1].to_i
+		footnote = params['footnote']
 
     value = params['value']
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
     if can_edit_exhibit(user, get_exhibit_id_from_element(element))
       element.element_text = value
+			element.set_header_footnote(footnote)
       element.save
     end
     if element == nil
@@ -575,6 +577,8 @@ class My9sController < ApplicationController
     link = params['link_url']
     caption1 = params['caption1']
     caption2 = params['caption2']
+    caption1_footnote = params['caption1_footnote']
+    caption2_footnote = params['caption2_footnote']
     text = params['ill_text']
     alt_text = params['alt_text']
     nines_object = params['nines_object']
@@ -593,6 +597,8 @@ class My9sController < ApplicationController
         illustration.link = link
         illustration.alt_text = alt_text
         illustration.nines_object_uri = nines_object
+				illustration.set_caption_footnote(caption1_footnote, 'caption1_footnote_id')
+				illustration.set_caption_footnote(caption2_footnote, 'caption2_footnote_id')
         illustration.save
   
         element_id = illustration.exhibit_element_id

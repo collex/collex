@@ -52,13 +52,13 @@ class GetIncludeFileList
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup' ]
 			when :my9s
 				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 
-					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg' ]
+					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes' ]
 			when :discuss
 				local = [ 'discussions', 'result_row_popup' ]
 			when :admin
 				local = [ 'admin', 'resource_tree' ]
 			when :view_exhibit
-				global = [ 'modal_dialog', 'hide_spinner' ]
+				global = [ 'modal_dialog', 'hide_spinner', 'general_dialog' ]
 			when :home
 				local = [ 'get_news_feed' ]
 			when :exhibits

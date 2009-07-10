@@ -30,13 +30,13 @@
 		<% end -%>
 	<% } -%>
 
-<%#
-#	< % if curr_page == -1 -% >
-#		<span class="here"><a title="you are here">&diams;</a></span>
-#	< % else -% >
-#		<span><%= link_to "&diams;", :action => action, :id => id, :page => -1 % ></span>
-#	< % end -% >
--%>
+	<% if Exhibit.has_footnotes(id) -%>
+		<% if curr_page == -1 -%>
+			<span class="here"><a title="you are here">&diams;</a></span>
+		<% else -%>
+			<span><%= link_to "&diams;", :action => action, :id => id, :page => -1 %></span>
+		<% end -%>
+	<% end -%>
 
 	<% if curr_page == num_pages -%>
 		<span class="arrowhere">&raquo;</span>

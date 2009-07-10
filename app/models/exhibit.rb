@@ -264,4 +264,29 @@ class Exhibit < ActiveRecord::Base
 #    page = ExhibitPage.find(section.exhibit_page_id)
 #    return Exhibit.find(page.exhibit_id)
 #  end
+
+	def self.has_footnotes(id)
+		exhibit = Exhibit.find_by_visible_url(id)
+		exhibit = Exhibit.find(id) if exhibit == nil
+		for page in exhibit.exhibit_pages
+			for element in page.exhibit_elements
+				return true if element.header_footnote_id != nil
+			end
+		end
+		return false
+	end
+
+	def get_all_footnotes()
+		footnotes = []
+		for page in self.exhibit_pages
+			for element in page.exhibit_elements
+				footnotes.push(ExhibitFootnote.find(element.header_footnote_id).footnote) if element.header_footnote_id != nil
+				for illustration in element.exhibit_illustrations
+					footnotes.push(ExhibitFootnote.find(illustration.caption1_footnote_id).footnote) if illustration.caption1_footnote_id != nil
+					footnotes.push(ExhibitFootnote.find(illustration.caption2_footnote_id).footnote) if illustration.caption2_footnote_id != nil
+				end
+			end
+		end
+		return footnotes
+	end
 end

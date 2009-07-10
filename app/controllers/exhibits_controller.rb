@@ -46,11 +46,11 @@ class ExhibitsController < ApplicationController
     end
 
     @site_section = :view_exhibit
-    @page = -1
+    @page = -10
     if params[:page]
       @page = params[:page].to_i
     end
-    if @page < 1 || @page > @exhibit.exhibit_pages.length
+    if @page != -1 && (@page < 1 || @page > @exhibit.exhibit_pages.length)
       @page = 1
     end
 

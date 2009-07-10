@@ -18,7 +18,7 @@
 <%= render :partial => '/my9s/edit_bar', :locals => { :element => element, :element_count => element_count } if is_edit_mode %>
 <% if element.exhibit_element_layout_type == 'header' -%>
 	<div id="header_<%= element.id %>" class="header_outer">
-		<%= render :partial => '/exhibits/exhibit_header', :locals => { :text => element.element_text, :id => element.id } %>
+		<%= render :partial => '/exhibits/exhibit_header', :locals => { :text => element.element_text, :is_edit_mode => is_edit_mode, :footnote => element.header_footnote_id ? ExhibitFootnote.find(element.header_footnote_id) : nil, :id => element.id } %>
 	</div>
 	<% if is_edit_mode -%>
 		<script type="text/javascript">
