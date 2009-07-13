@@ -26,4 +26,4 @@
 		<div class="side_bar_exhibit_spacer clear_both"></div>
 	<% end -%>
 <% end # if there are exhibits -%>
-&nbsp;<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects'); dlg.show();", :class => 'modify_link' %>
+&nbsp;<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects', '/forum/get_nines_obj_list'); dlg.show();", :class => 'modify_link' %>

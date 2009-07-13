@@ -16,11 +16,11 @@
 
 /*global $, Class, Ajax */
 /*global window */
-/*global GeneralDialog, ObjectSelector */
+/*global GeneralDialog, ObjectSelector, CreateListOfObjects */
 /*extern CreateNewExhibitWizard */
 
 var CreateNewExhibitWizard = Class.create({
-	initialize: function (progress_img, url_get_objects) {
+	initialize: function (progress_img, url_get_objects, populate_nines_obj_url) {
 		this.class_type = 'CreateNewExhibitWizard';	// for debugging
 
 		// private variables
@@ -135,18 +135,38 @@ var CreateNewExhibitWizard = Class.create({
 						[ { text: server + '/exhibits/&nbsp;', klass: 'new_exhibit_label' }, { input: 'exhibit_url', klass: 'new_exhibit_input' } ],
 						[ { text: 'Paste a link to a thumbnail image:', klass: 'new_exhibit_label' } ],
 						[ { input: 'exhibit_thumbnail', klass: 'new_exhibit_input_long' } ],
+						[ { page_link: '[choose thumbnail from collected objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
 						[ { text: 'The thumbnail image will appear next to your exhibit in the exhibit list once you decide to share it with other users. Please use an image that is small, so that the pages doesn\'t take too long to load. These items are optional and can be entered at any time.', klass: 'new_exhibit_instructions' } ],
 						[ { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
-			var pages = [ choose_title, choose_palette, choose_other_options ];
+			var selectObject = function(id) {
+				// This is a callback that is called when the user selects a NINES Object.
+				var thumbnail = $('exhibit_thumbnail');
+				var selection = $(id + '_img');
+				thumbnail.value = selection.src;
+			};
+
+			var objlist = new CreateListOfObjects(populate_nines_obj_url, null, 'nines_object', progress_img, selectObject);
+
+			var choose_thumbnail = {
+					page: 'choose_thumbnail',
+					rows: [
+						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
+						[ { custom: objlist, klass: 'new_exhibit_label' } ],
+						[ { button: 'Ok', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+					]
+				};
+
+			var pages = [ choose_title, choose_palette, choose_other_options, choose_thumbnail ];
 
 			var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "New Exhibit Wizard" };
 			var dlg = new GeneralDialog(params);
 			this.changeView(null, { curr_page: '', destination: 'choose_title', dlg: dlg });
 			dlg.center();
 			obj_selector.populate(dlg);
+			objlist.populate(dlg, false, 'thumb');
 
 			return;
 		};

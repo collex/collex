@@ -16,7 +16,7 @@
 
 /*global Class, $, $$, $H, Element, Ajax, Effect */
 /*global YAHOO */
-/*global BorderDialog, MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt */
+/*global BorderDialog, MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog */
 /*global document, window */
 /*global supportsFixedPositioning */
 /*extern CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editGlobalExhibitItems, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
@@ -490,10 +490,10 @@ function initOutline(div_id)
 		$(div_id + '_c').setStyle({ position: 'fixed'});
 }
 
-function editGlobalExhibitItems(update_id, exhibit_id, data_class)
+function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_obj_url, progress_img)
 {
-	$(update_id).setAttribute('action', "/my9s/edit_exhibit_overview,/my9s/update_title");
-	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
+//	$(update_id).setAttribute('action', "/my9s/edit_exhibit_overview,/my9s/update_title");
+//	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
 	
 	var data = $$("." + data_class);
 
@@ -505,23 +505,103 @@ function editGlobalExhibitItems(update_id, exhibit_id, data_class)
 	values.exhibit_id = exhibit_id;
 	values.element_id = update_id;
 
+	this.changeView = function (event, param)
+	{
+		var view = param.destination;
+		var dlg = param.dlg;
+
+		dlg.changePage(view, 'overview_title_dlg');
+
+		return false;
+	};
+
+	this.cancel = function(event, params)
+	{
+		params.dlg.cancel();
+	};
+
+	this.sendWithAjax = function (event, params)
+	{
+		//var curr_page = params.curr_page;
+		var dlg = params.dlg;
+		var onComplete = function() {
+			dlg.cancel();
+		};
+
+		var onFailure = function(resp) {
+			dlg.setFlash(resp.responseText, true);
+		};
+
+		var retData = dlg.getAllData();
+		retData.exhibit_id = exhibit_id;
+		retData.element_id = update_id;
+
+		recurseUpdateWithAjax(["/my9s/edit_exhibit_overview", "/my9s/update_title"], ["overview_data", "overview_title"], onComplete, onFailure, retData);
+	};
+
+	this.deleteExhibit = function(event, params)
+	{
+		var del = function(){
+			window.location = "/my9s/delete_exhibit?id="+exhibit_id;
+		};
+
+		new ConfirmDlg('Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?', "Yes", "No", del);
+	};
+
+	var profile = {
+			page: 'profile',
+			rows: [
+				[ { text: 'Exhibit Title:', klass: 'new_exhibit_title' }, { input: 'overview_title_dlg', value: values.overview_title_dlg, klass: 'new_exhibit_input_long' } ],
+				[ { text: 'Visible URL:', klass: 'new_exhibit_title' }, { input: 'overview_visible_url_dlg', value: values.overview_visible_url_dlg, klass: 'new_exhibit_input_long' } ],
+				[ { text: 'Thumbnail:', klass: 'new_exhibit_title' }, { input: 'overview_thumbnail_dlg', value: values.overview_thumbnail_dlg, klass: 'new_exhibit_input_long' } ],
+				[ { page_link: '[Choose Thumbnail from Collected Objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
+				[ { page_link: '[Completely Delete Exhibit]', callback: this.deleteExhibit }],
+				[ { button: 'Save', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+			]
+		};
+
+	var selectObject = function(id) {
+		// This is a callback that is called when the user selects a NINES Object.
+		var thumbnail = $('overview_thumbnail_dlg');
+		var selection = $(id + '_img');
+		thumbnail.value = selection.src;
+	};
+	var objlist = new CreateListOfObjects(populate_nines_obj_url, null, 'nines_object', progress_img, selectObject);
+
+	var choose_thumbnail = {
+			page: 'choose_thumbnail',
+			rows: [
+				[ { text: 'Choose Thumbnail from the list.', klass: 'new_exhibit_title' } ],
+				[ { custom: objlist, klass: 'new_exhibit_label' } ],
+				[ { button: 'Ok', url: 'profile', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+			]
+		};
+
+	var pages = [ profile, choose_thumbnail ];
+
+	var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "New Exhibit Wizard" };
+	var dlg = new GeneralDialog(params);
+	this.changeView(null, { curr_page: '', destination: 'profile', dlg: dlg });
+	dlg.center();
+	objlist.populate(dlg, false, 'thumb');
+
 	// First construct the dialog
-	var dlg = new InputDialog(update_id);
-	var size = 52;
-	dlg.addHidden('exhibit_id');
-	dlg.addTextInput('Exhibit title:', 'overview_title_dlg', size);
-	dlg.addTextInput('Visible URL:', 'overview_visible_url_dlg', size);
-	dlg.addTextInput('Thumbnail:', 'overview_thumbnail_dlg', size);
-	dlg.addLink("[ Completely Delete Exhibit ]", "/my9s/delete_exhibit?id="+exhibit_id, "new ConfirmLinkDlg(this, 'Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?'); return false;", "modify_link");
-	
-	// Now, everything is initialized, fire up the dialog.
-	var el = $(update_id);
-	dlg.show("Edit Exhibit Overview", getX(el), getY(el), 530, 350, values );
-	el = $('overview_title_dlg');
-	if (el !== null) {
-		el.focus();
-		el.select();
-	}
+//	var dlg = new InputDialog(update_id);
+//	var size = 52;
+//	dlg.addHidden('exhibit_id');
+//	dlg.addTextInput('Exhibit title:', 'overview_title_dlg', size);
+//	dlg.addTextInput('Visible URL:', 'overview_visible_url_dlg', size);
+//	dlg.addTextInput('Thumbnail:', 'overview_thumbnail_dlg', size);
+//	dlg.addLink("[ Completely Delete Exhibit ]", "/my9s/delete_exhibit?id="+exhibit_id, "new ConfirmLinkDlg(this, 'Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?'); return false;", "modify_link");
+//
+//	// Now, everything is initialized, fire up the dialog.
+//	var el = $(update_id);
+//	dlg.show("Edit Exhibit Overview", getX(el), getY(el), 530, 350, values );
+//	el = $('overview_title_dlg');
+//	if (el !== null) {
+//		el.focus();
+//		el.select();
+//	}
 }
 
 var CreateSharingList = Class.create({
@@ -572,7 +652,7 @@ function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callbac
 
 	// First construct the dialog
 	var dlg = new InputDialog(update_id);
-	var size = 52;
+	//var size = 52;
 	dlg.addHidden('exhibit_id');
 	dlg.addPrompt("<span class='input_dlg_license_list_header'>Share this exhibit under the following license:</span>");
 	dlg.addLinkToNewWindow("[ Learn more about CC licenses ]", "http://creativecommons.org/about/licenses", null, "nav_link");
@@ -656,7 +736,7 @@ function doUnhover(el, edit_bar_id, addClass, removeClass)
 		unhoverlist.set(el.id, 'cleared');
 		$(el).addClassName(addClass);
 		$(el).removeClassName(removeClass);
-		var edit_bar = $(el).down('.' + edit_bar_id);
+		//var edit_bar = $(el).down('.' + edit_bar_id);
 		$(el).down('.' + edit_bar_id).addClassName('hidden');
 	}
 }
