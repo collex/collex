@@ -40,12 +40,13 @@
 			<div class="left_column">
 				<div class="page_header"><a href='/collex/new_search' class="new_search"></a>Search Query</div>
 				<%= render( :partial => 'constraints' ) %>
+				<div class="no_results_msg">
+					<p>No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
+					<img height="250px" src="/images/brown_harrington.gif" alt="" />
+				</div>
 			</div>
+			<%= render( :partial => 'search_sidebar' ) %>
 			<div class="clear_both"></div>
-			<div class="no_results_msg">
-				<p>No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
-				<img height="250px" src="/images/brown_harrington.gif" alt="" />
-			</div>
 		<% end -%>
 	<% else # this is a new search -%>
 		<div class="left_column">
