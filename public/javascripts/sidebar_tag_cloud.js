@@ -63,7 +63,16 @@ var SidebarTagCloud = Class.create( {
 				else {
 					tag.hide();
 				}
+			} else if (tag.innerHTML === '[show fewer tags]') {
+				if (sidebarFilterString.blank())
+					tag.show();
+				else
+					tag.hide();
+			} else if (tag.innerHTML === '[show entire tag cloud]') {
+				if (!sidebarFilterString.blank())
+					tag.hide();
 			}
+
 		});
 
 		// If some tags are hidden, then show them when the filter is used.
