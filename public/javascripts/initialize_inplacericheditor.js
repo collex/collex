@@ -175,9 +175,9 @@ function showIllustrationEditor(event)
 			rows: [
 				[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
 				[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
+//				[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
 				[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
+//				[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
 
 				[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
 				  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
@@ -306,7 +306,7 @@ function showRichEditor(event)
 			page: 'layout',
 			rows: [
 				[ { textarea: 'value', value: values.value } ],
-				[ { custom: footnoteDivs }],
+//				[ { custom: footnoteDivs }],
 				[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: cancel } ]
 			]
 		};
@@ -317,7 +317,8 @@ function showRichEditor(event)
 
 	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
+//	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
+	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
 	dlg.center();
 
 	var input = $('value');
@@ -409,7 +410,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 			page: 'layout',
 			rows: [
 				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
+//				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
 				[ { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: cancel } ]
 			]
 		};
