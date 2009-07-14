@@ -439,7 +439,7 @@ var ConfirmDlg = Class.create({
 // onFailure: what to call if the operation fails.
 function updateWithAjax(params)
 {
-	new Ajax.Updater(params.el, params.action, {
+	new Ajax.Updater({ success: params.el, failure:'bit_bucket' }, params.action, {
 		parameters : params.params,
 		evalScripts : true,
 		onComplete : function(resp) {
@@ -450,7 +450,7 @@ function updateWithAjax(params)
 			if (params.onFailure)
 				params.onFailure(resp);
 			else
-				new MessageBoxDlg("Error", "Oops, there's been an error.");
+				new MessageBoxDlg("Ajax Error", resp.responseText);
 		}
 	});
 }
