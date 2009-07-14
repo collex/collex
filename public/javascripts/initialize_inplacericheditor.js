@@ -21,7 +21,7 @@
 
 /*global document */
 /*global $, $$, Ajax, Class */
-/*global MessageBoxDlg, GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, getX, getY, initializeElementEditing */
+/*global MessageBoxDlg, GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnoteAbbrevArray, recurseUpdateWithAjax */
 /*global gIllustrationTypes */
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor, showIllustrationEditor, showRichEditor */
 
@@ -35,6 +35,44 @@ function getElementBlock(el)
 		element = el.up('.element_block_hover');
 	return element;
 }
+
+var ajaxUpdateFromElement = function(el, data, callback) {
+	var action = el.readAttribute('action');
+	var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
+
+	// If we have a comma separated list, we want to send the request synchronously to each action
+	// (Doing this synchronously eliminates any race condition: The first call can update the data and
+	// the rest of the calls just update the page.
+	var actions = action.split(',');
+	var action_elements = ajax_action_element_id.split(',');
+	recurseUpdateWithAjax(actions, action_elements, callback, null, data);
+//	if (actions.length === 1)
+//	{
+//		new Ajax.Updater(ajax_action_element_id, action, {
+//			parameters : data,
+//			evalScripts : true,
+//			onComplete : initializeElementEditing,
+//			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+//		});
+//	}
+//	else
+//	{
+//		new Ajax.Updater(action_elements[0], actions[0], {
+//			parameters : data,
+//			evalScripts : true,
+//			onComplete: function(resp) {
+//				new Ajax.Updater(action_elements[1], actions[1], {
+//					parameters : data,
+//					evalScripts : true,
+//					onComplete : initializeElementEditing,
+//					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+//				});
+//			},
+//			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+//		});
+//	}
+};
+
 
 function showIllustrationEditor(event)
 {
@@ -107,43 +145,6 @@ function showIllustrationEditor(event)
 		params.dlg.cancel();
 	};
 
-	// TODO-PER: Make this generic: probably put in general_dialog
-	var ajaxUpdateFromElement = function(el, data, callback) {
-		var action = el.readAttribute('action');
-		var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
-
-		// If we have a comma separated list, we want to send the request synchronously to each action
-		// (Doing this synchronously eliminates any race condition: The first call can update the data and
-		// the rest of the calls just update the page.
-		var actions = action.split(',');
-		var action_elements = ajax_action_element_id.split(',');
-		if (actions.length === 1)
-		{
-			new Ajax.Updater(ajax_action_element_id, action, {
-				parameters : data,
-				evalScripts : true,
-				onComplete : initializeElementEditing,
-				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-			});
-		}
-		else
-		{
-			new Ajax.Updater(action_elements[0], actions[0], {
-				parameters : data,
-				evalScripts : true,
-				onComplete: function(resp) {
-					new Ajax.Updater(action_elements[1], actions[1], {
-						parameters : data,
-						evalScripts : true,
-						onComplete : initializeElementEditing,
-						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-					});
-				},
-				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-			});
-		}
-	};
-
 	var setCaption = function(id) {
 		// This is a callback that is called when the user selects a NINES Object.
 		var caption = $(id).down(".linkdlg_firstline");
@@ -175,9 +176,9 @@ function showIllustrationEditor(event)
 			rows: [
 				[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
 				[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
+//TODO: turn off footnotes				[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
 				[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
+//TODO: turn off footnotes				[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
 
 				[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
 				  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
@@ -294,7 +295,9 @@ function showRichEditor(event)
 
 		var data = params.dlg.getAllData();
 		data.element_id = element_id;
-		okCallback(data.textareaValue);
+		dlg.setFlash('Updating Text...', false);
+		ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+		//okCallback(data.textareaValue);
 	};
 
 	var cancel = function(event, params)
@@ -306,7 +309,7 @@ function showRichEditor(event)
 			page: 'layout',
 			rows: [
 				[ { textarea: 'value', value: values.value } ],
-				[ { custom: footnoteDivs }],
+//TODO: turn off footnotes				[ { custom: footnoteDivs }],
 				[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: cancel } ]
 			]
 		};
@@ -317,7 +320,8 @@ function showRichEditor(event)
 
 	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
+//TODO: turn off footnotes	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
+	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
 	dlg.center();
 
 	var input = $('value');
@@ -409,7 +413,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 			page: 'layout',
 			rows: [
 				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
+//TODO: turn off footnotes				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
 				[ { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: cancel } ]
 			]
 		};
