@@ -245,24 +245,13 @@ function showRichEditor(event)
 	// That is, el = <div id='text_YY'>
 
 	// First construct the dialog
-	var dlg = new InputDialog(element_id);
-    dlg.addHidden("element_id");
-
-//	var extraButton = {
-//		id : 'ninesobj',
-//		insertionPoint : 'redo,|',
-//		title :  'Link to NINES object',
-//		image : '/images/mce_link_to_nines_obj.gif',
-//		onclick : 'showNinesObjectDlg(ed);'
-//	};
-
-	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-	dlg.addTextArea('value', 600, 100, null, [ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
+//	var dlg = new InputDialog(element_id);
+//    dlg.addHidden("element_id");
 
 	// Now populate a hash with all the starting values.
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
 
+	var dlg = null;
 	var values = {};
 
 	var downDiv = $(element_id).down('.exhibit_text');
@@ -276,9 +265,64 @@ function showRichEditor(event)
 	values.element_id = element_id;
 
 	// Now, everything is initialized, fire up the dialog.
-	var el = $(element_id);
-	dlg.show("Enter Text", getX(el), getY(el), 600, 300, values );
-	dlg.centerEditor();
+//	var el = $(element_id);
+//	dlg.show("Enter Text", getX(el), getY(el), 600, 300, values );
+//	dlg.centerEditor();
+
+	var footnoteDivs = new FootnoteAbbrevArray([], 'footnotes');
+
+	var footnoteCallback = function(value) {
+		return footnoteDivs.addFootnote(value);
+	};
+
+	var footnoteDeleteCallback = function(index) {
+		var id = "footnote_index_" + index;
+		var editor = dlg.getEditor(0);
+		var html = editor.editor.getEditorHTML();
+		var left = html.indexOf('<span id="'+id);
+		var mid = html.substr(left);
+		var right = mid.indexOf('</span>');
+		html = html.substr(0, left) + mid.substr(right+7);
+		editor.editor.setEditorHTML(html);
+
+	};
+	footnoteDivs.setFootnoteDeleteCallback(footnoteDeleteCallback);
+
+	var ok = function(event, params)
+	{
+		params.dlg.cancel();
+
+		var data = params.dlg.getAllData();
+		data.element_id = element_id;
+		okCallback(data.textareaValue);
+	};
+
+	var cancel = function(event, params)
+	{
+		params.dlg.cancel();
+	};
+
+	var dlgLayout = {
+			page: 'layout',
+			rows: [
+				[ { textarea: 'value', value: values.value } ],
+				[ { custom: footnoteDivs }],
+				[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: cancel } ]
+			]
+		};
+
+	var dlgparams = { this_id: element_id + "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: 'Enter Text' };
+	dlg = new GeneralDialog(dlgparams);
+	dlg.changePage('layout', null);
+
+	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
+	dlg.center();
+
+	var input = $('value');
+	input.select();
+	input.focus();
 	return false;
 }
 

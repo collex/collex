@@ -51,6 +51,16 @@
 	background-position: 4px 0px; 
 } 
 
+.yui-skin-sam .yui-toolbar-container .yui-toolbar-createfootnote span.yui-toolbar-icon {
+	background-image: url(/images/icon_for_footnote.gif );
+	background-position: 4px 0px;
+}
+
+.yui-skin-sam .yui-toolbar-container .yui-button-createfootnote-selected span.yui-toolbar-icon {
+	background-image: url(/images/icon_for_footnote.gif );
+	background-position: 4px 0px;
+}
+
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-createnineslink span.yui-toolbar-icon { 
 	background-image: url(/images/mce_link_to_nines_obj.gif ); 
 	background-position: 4px 0px; 

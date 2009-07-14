@@ -14,6 +14,11 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
+/*global RteInputDlg */
+/*global $, Element, Class */
+/*global YAHOO */
+/*extern FootnoteAbbrev */
+
 var FootnoteAbbrev = Class.create({
 	initialize: function(footnoteStr, field){
 
@@ -67,15 +72,22 @@ var FootnoteAbbrev = Class.create({
 			new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 		};
 
+		var fnDeleteCallback = null;
+		this.deleteCallback = function(fn) {
+			fnDeleteCallback = fn;
+		};
+
 		var deleteFootnote = function(event, params) {
 			footnoteStr = "";
 			$(field).innerHTML = makeFootnoteAbbrev(footnoteStr);
 			setFootnoteCtrl();
+			if (fnDeleteCallback)
+				fnDeleteCallback(field);
 		};
 
 		this.getMarkup = function() {
 			var parent = new Element("div");
-			//parent.addClassName('linkdlg_list');
+			parent.addClassName('footnote_abbrev_div');
 			parent.appendChild(makeButton('add', 'Add Footnote', footnoteStr.length > 0));
 			parent.appendChild(makeButton('edit', 'Edit Footnote', footnoteStr.length === 0));
 			parent.appendChild(makeButton('remove', 'X', footnoteStr.length === 0));
@@ -93,6 +105,59 @@ var FootnoteAbbrev = Class.create({
 			YAHOO.util.Event.addListener(field + '_' + 'add', 'click', addFootnote, null);
 			YAHOO.util.Event.addListener(field + '_' + 'edit', 'click', editFootnote, null);
 			YAHOO.util.Event.addListener(field + '_' + 'remove', 'click', deleteFootnote, null);
+		};
+	}
+});
+
+var FootnoteAbbrevArray = Class.create({
+	initialize: function(footnoteStrs, field){
+		var footnotes = [];
+
+		var footnoteDeleteCallback = null;
+		this.setFootnoteDeleteCallback = function(fn) {
+			footnoteDeleteCallback = fn;
+		};
+
+		var deleteCallback = function(footnote_field) {
+			var arr = footnote_field.split('_');
+			var index = parseInt(arr[arr.length-1]);
+			var el = $(footnote_field).up();
+			el.hide();
+			footnotes[index] = null;
+			if (footnoteDeleteCallback)
+				footnoteDeleteCallback(index);
+		};
+
+		var parent = new Element("div");
+		footnoteStrs.each(function(str){
+			footnotes.push(new FootnoteAbbrev(str, field+'_'+(footnotes.length+1)));
+			footnotes[footnotes.length-1].deleteCallback(deleteCallback);
+		});
+
+		this.getMarkup = function() {
+			footnotes.each(function(f){
+				parent.appendChild(f.getMarkup());
+			});
+			return parent;
+		};
+
+		this.getSelection = function() {
+			return { field: field, value: 'TODO' };
+		};
+
+		this.delayedSetup = function() {
+			footnotes.each(function(f){
+				f.delayedSetup();
+			});
+		};
+
+		this.addFootnote = function(str) {
+			var newFoot = new FootnoteAbbrev(str, field+'_'+(footnotes.length+1));
+			footnotes.push(newFoot);
+			parent.appendChild(newFoot.getMarkup());
+			newFoot.delayedSetup();
+			newFoot.deleteCallback(deleteCallback);
+			return footnotes.length;
 		};
 	}
 });

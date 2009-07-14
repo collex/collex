@@ -64,6 +64,10 @@ var GeneralDialog = Class.create({
 			$(main).down('div').insert({ before: new Element('div', { id: parent_id, style: 'text-align:left;' }) });
 		}
 
+		this.getEditor = function(index) {
+			return editors[index];
+		};
+
 		this.getAllData = function() {
 			var inputs = $$("#" + dlg_id + " input");
 			var data = {};
@@ -341,7 +345,7 @@ var GeneralDialog = Class.create({
 			el.setStyle({ left: x + 'px', top: y + 'px'});
 		};
 		
-		this.initTextAreas =  function(toolbarGroups, linkDlgHandler) {
+		this.initTextAreas =  function(toolbarGroups, linkDlgHandler, footnoteCallback) {
 			var dlg = $(this_id);
 			var w = parseInt(dlg.getStyle('width'), 10);
 			var inner_el = dlg.down('.bd');
@@ -351,7 +355,7 @@ var GeneralDialog = Class.create({
 			
 			var textAreas = $$("#" + dlg_id + " textarea");
 			textAreas.each( function(textArea) { 
-				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width });
+				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnoteCallback: footnoteCallback });
 				editor.attachToDialog(panel);
 				editors.push(editor);
 			}, this);

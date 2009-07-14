@@ -150,7 +150,7 @@ YAHOO.widget.SimpleEditor.prototype.guessSelectionEnd = function (val, selStart,
 
 // Get the user's selection in offsets into the raw HTML.
 // A hash is returned with the start and end positions, and an error string, if any.
-YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
+YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireRange) {
 	if (this.browser.opera) {
 		return null;
 	}
@@ -173,10 +173,14 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function () {
 		else
 			return { startPos: idx, endPos: idx + selText.length, selection: selText, errorMsg: null };
 	} else {
-		if (!s || (s.toString() === '') || (s === undefined)) {
+		if (!s || (s === undefined))
 			s = null;
-		}
+		if (requireRange && (s.toString() === ''))
+			s = null;
 	}
+
+	if (s === null)
+		return { errorMsg: "Nothing is selected." };
 
 	if (s.rangeCount !== 1)
 		return { errorMsg: "You cannot create a link when more than one area is selected." };
@@ -275,6 +279,7 @@ var RichTextEditor = Class.create({
 		var id = params.id;
 		var toolbarGroups = params.toolbarGroups;
 		var linkDlgHandler = params.linkDlgHandler;
+		var footnoteCallback = params.footnoteCallback;
 
 		var toolgroupFont = {
 			group: 'fontstyle',
@@ -329,9 +334,16 @@ var RichTextEditor = Class.create({
 		var toolgroupLink = {
 			group: 'insertitem',
 			label: 'Insert Item',
-			buttons: [{ 	type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
+			buttons: [{ type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
 		};
 		
+		var toolgroupLinkFootnote = {
+			group: 'insertitem',
+			label: 'Insert Item',
+			buttons: [{ type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true },
+				{ type: 'push', label: 'Insert Footnote', value: 'createfootnote' }]
+		};
+
 		var toolgroupSeparator = {
 			type: 'separator'
 		};
@@ -370,9 +382,35 @@ var RichTextEditor = Class.create({
 						html = html.gsub("drop_cap", "");
 					}
 					this.setEditorHTML(html);
-	//					var _button = this.toolbar.getButtonByValue('firstletter'); 
-	//					_button._selected = true;
-					//this.execCommand('inserthtml', "TEST");
+		        }, this, true);
+
+				this.toolbar.on('createfootnoteClick', function(ev) {	// 'this' is now the editor
+					var footnoteSelPos = null;
+					var setFootnote = function(value) {
+						var index = footnoteCallback(value);
+						var html = This.editor.getEditorHTML();
+						html = html.substr(0, footnoteSelPos) + "<span id='footnote_index_" + index + "' class='superscript'>" + index + "</span>" + html.substr(footnoteSelPos);
+						This.editor.setEditorHTML(html);
+						};
+
+					var result = editor.getRawSelectionPosition(false);
+					if (!result) {
+						new MessageBoxDlg("Error", "IE has not been implemented yet.");
+						return false;
+					}
+
+					if (result.errorMsg) {
+						new MessageBoxDlg("Error", result.errorMsg);
+						return false;
+					}
+
+					footnoteSelPos = result.endPos;
+
+					var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+					var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+
+					return true;
 		        }, this, true);
 		    });
 		};
@@ -389,7 +427,7 @@ var RichTextEditor = Class.create({
 			    editor.toolbar.on('createlinkClick', function() {
 					
 					// Get the selection object. Unfortunately, what is returned varies widely between browsers.
-					var result = editor.getRawSelectionPosition();
+					var result = editor.getRawSelectionPosition(true);
 					if (!result) {
 						new MessageBoxDlg("Error", "IE has not been implemented yet.");
 						//this.formatSelection();
@@ -495,6 +533,9 @@ var RichTextEditor = Class.create({
 				case 'link':
 					toolbar.buttons.push(toolgroupLink);
 					break;
+				case 'link&footnote':
+					toolbar.buttons.push(toolgroupLinkFootnote);
+					break;
 			}
 		});
 
@@ -504,7 +545,7 @@ var RichTextEditor = Class.create({
 			  width: width + 'px',
 				height: '200px',
 				// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;}',
+				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;}',
 				toolbar: toolbar,
 	            //dompath: true,
 	            animate: true
