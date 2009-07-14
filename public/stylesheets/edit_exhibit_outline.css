@@ -55,13 +55,13 @@
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-createfootnote span.yui-toolbar-icon {
 	background-image: url(/images/footnote.jpg );
-	background-position: -2px -3px;
+	background-position: 0px -1px;
 	width: 25px;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-createfootnote-selected span.yui-toolbar-icon {
 	background-image: url(/images/footnote.jpg );
-	background-position: -2px -3px;
+	background-position: 0px -1px;
 	width: 25px;
 }
 
