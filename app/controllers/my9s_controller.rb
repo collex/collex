@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
+require 'json'
 
 class My9sController < ApplicationController
   layout 'nines'
@@ -501,6 +502,7 @@ class My9sController < ApplicationController
     else
       element_id = last_str.to_i
     end
+		footnotes = JSON.parse(params['footnotes'])
 
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
@@ -508,6 +510,7 @@ class My9sController < ApplicationController
       value = params['value']
       value = clean_up_links(value)
       value = remove_empty_spans(value)
+			value = add_footnotes(value, footnotes)
       if first_one
         element.element_text = value
       else
@@ -916,6 +919,34 @@ class My9sController < ApplicationController
     #    }
     return text
   end
+
+	def get_footnote_from_num(footnotes, index)
+		footnotes.each {|f|
+			return f['value'] if f['field'] == "footnotes_#{index}"
+		}
+		return ""
+	end
+
+	def add_footnotes(text, footnotes)
+		# This takes a set of text in the form: "...<span class="superscript" id="footnote_index_1">1</span>..."
+		# and an array where each item is { key: "footnote_index_1", value: "whatever" }
+		# They should match up, but that is not guaranteed. Where they match up, they should be changed to:
+		# <a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">2</a><span class="hidden">contents of the footnote</span>
+		marker_text_start = '<span id="footnote_index_'
+		replacement_text_template = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>'
+		text_arr = text.split(marker_text_start)
+		return text if text_arr.length == 1
+		1.upto(text_arr.length-1) do |i|
+			# each of these starts with 999">999</span>.
+			# The first number is important: it is the index into the footnotes array.
+			index = text_arr[i].to_i
+			arr = text_arr[i].split('</span>', 2)
+			postfix = arr[1]
+			foot = get_footnote_from_num(footnotes, index)
+			text_arr[i] = replacement_text_template.gsub("%NUMBER%", "#{index}").gsub("%FOOTNOTE%", foot) + postfix
+		end
+		return text_arr.join('')
+	end
 
   # Some private convenience functions to make the above routine clearer
   def extract_link_from_encoded_a(str)

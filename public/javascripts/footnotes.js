@@ -142,7 +142,13 @@ var FootnoteAbbrevArray = Class.create({
 		};
 
 		this.getSelection = function() {
-			return { field: field, value: 'TODO' };
+			var value = [];
+			footnotes.each(function(f){
+				if (f) {
+					value.push(f.getSelection());
+				}
+			});
+			return { field: field, value: value.toJSON() };
 		};
 
 		this.delayedSetup = function() {
