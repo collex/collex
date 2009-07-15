@@ -384,13 +384,24 @@ var RichTextEditor = Class.create({
 					this.setEditorHTML(html);
 		        }, this, true);
 
-				this.toolbar.on('createfootnoteClick', function(ev) {	// 'this' is now the editor
+		    });
+		};
+		
+		var initFootnoteDlg = function()
+		{
+			if (footnoteCallback === undefined || footnoteCallback === null)
+				return;
+
+			var editor = This.editor;
+			editor.on('toolbarLoaded', function() {	// 'this' is now the editor
+			    //When the toolbar is loaded, add a listener to the insertimage button
+			    editor.toolbar.on('createfootnoteClick', function() {
 					var footnoteSelPos = null;
 					var setFootnote = function(value) {
 						var index = footnoteCallback(value);
-						var html = This.editor.getEditorHTML();
+						var html = editor.getEditorHTML();
 						html = html.substr(0, footnoteSelPos) + "<span id='footnote_index_" + index + "' class='superscript'>" + index + "</span>" + html.substr(footnoteSelPos);
-						This.editor.setEditorHTML(html);
+						editor.setEditorHTML(html);
 						};
 
 					var result = editor.getRawSelectionPosition(false);
@@ -411,10 +422,10 @@ var RichTextEditor = Class.create({
 					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 
 					return true;
-		        }, this, true);
-		    });
+				}, this, true);
+			}, this, true);
 		};
-		
+
 		var initLinkDlg = function()
 		{
 			if (linkDlgHandler === undefined || linkDlgHandler === null)
@@ -560,6 +571,7 @@ var RichTextEditor = Class.create({
 		
 		// Replace the link dialog with our own.
 		initLinkDlg();
+		initFootnoteDlg();
 		
 		// Add the resizing widgets
 		//setResize();

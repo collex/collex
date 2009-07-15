@@ -23,18 +23,63 @@
 /*global $, $$, Ajax, Class */
 /*global MessageBoxDlg, GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnoteAbbrevArray, recurseUpdateWithAjax */
 /*global gIllustrationTypes */
-/*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor, showIllustrationEditor, showRichEditor */
+/*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
 
-var inplaceObjects = [];
-var inplaceObjectsAlreadyLoaded = false;
+// This is a convenience class with all the common elements needed to initialize any of our inplace types.
+// It is a singleton, and it delays the initialization until the Dom is ready. Just call the initDiv method
+// after an ajax update, and when loading the page for the first time.
+var InplaceObjects = Class.create({
+	initialize: function () {
+		this.class_type = 'InplaceObjects';	// for debugging
 
-function getElementBlock(el)
-{
-	var element = el.up('.element_block');
-	if (element === null || element === undefined)
-		element = el.up('.element_block_hover');
-	return element;
-}
+		var inplaceObjects = [];
+		var inplaceObjectsAlreadyLoaded = false;
+
+		var getElementBlock = function(el)
+		{
+			var element = el.up('.element_block');
+			if (element === null || element === undefined)
+				element = el.up('.element_block_hover');
+			return element;
+		};
+
+		var initializeInplace = function(element_id, action, setupMethod)
+		{
+			// We pass in <div id='text_YY'> as the element_id
+			// We want to use <div id="element_XX" class="element_block"> for the ajax call
+			// The element_block will be a parent of the element_id object
+			var elements = element_id.split(',');
+			var el = $(elements[0]);
+			var ajax_action_element_id = getElementBlock(el).id;
+			if (elements.length > 1)
+				ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
+
+			InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', setupMethod);
+		};
+
+		// Delay modifying the DOM until after the page has loaded because IE 7 gives the "internet explorer cannot open the internet site" message.
+		 document.observe('dom:loaded', function() {
+			inplaceObjects.each(function(obj) {
+				initializeInplace(obj.element_id, obj.action, obj.setupMethod);
+			});
+			inplaceObjectsAlreadyLoaded = true;
+		 });
+
+		this.initDiv = function(element_id, action, setupMethod) {
+			if (!inplaceObjectsAlreadyLoaded)
+			{
+				var obj = { element_id: element_id, action: action, setupMethod: setupMethod };
+				inplaceObjects.push(obj);
+			}
+			else
+				 initializeInplace(element_id, action, setupMethod);
+		};
+	}
+});
+
+var inplaceObjectManager = new InplaceObjects();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var ajaxUpdateFromElement = function(el, data, callback) {
 	var action = el.readAttribute('action');
@@ -48,185 +93,7 @@ var ajaxUpdateFromElement = function(el, data, callback) {
 	recurseUpdateWithAjax(actions, action_elements, callback, null, data);
 };
 
-
-function showIllustrationEditor(event)
-{
-	var This = $(this).down();
-	var element_id = This.id;
-
-	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
-	// That is, el = <div id='illustration_YY' class="illustration_block">
-
-	// Now populate a hash with all the starting values.
-	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
-
-	var values = {};
-
-	// Initialize the controls in the dialog from the hidden fields on the page.
-	// All the hidden fields have a class of "saved_data". They also have a second class
-	// with the name of the variable they represent.
-	var hidden_data = $$('#' + element_id + ' .saved_data');
-	hidden_data.each(function(hidden) {
-		if (hidden.hasClassName('ill_illustration_type'))
-			values.type = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_image_url'))
-			values.image_url = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_link'))
-			values.link_url = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_image_width'))
-			values.ill_width = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_illustration_text'))
-			values.ill_text = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_illustration_alt_text'))
-			values.alt_text = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_illustration_caption1'))
-			values.caption1 = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_illustration_caption2'))
-			values.caption2 = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_illustration_caption1_footnote'))
-			values.caption1_footnote = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_illustration_caption2_footnote'))
-			values.caption2_footnote = hidden.innerHTML;
-		else if (hidden.hasClassName('ill_nines_object_uri'))
-			values.nines_object = hidden.innerHTML;
-	});
-
-	var selChanged = function(id, currSelection) {
-		if (currSelection === gIllustrationTypes[0]) {
-			$$('.image_only').each(function(el) { el.addClassName('hidden'); });
-			$$('.text_only').each(function(el) { el.addClassName('hidden'); });
-			$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
-			$$('.nines_only').each(function(el) { el.removeClassName('hidden'); });
-		} else if (currSelection === gIllustrationTypes[1]) {	// External Link
-			$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
-			$$('.text_only').each(function(el) { el.addClassName('hidden'); });
-			$$('.image_only').each(function(el) { el.removeClassName('hidden'); });
-			$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
-		} else if (currSelection === gIllustrationTypes[2]) {	// Textual Illustration
-			$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
-			$$('.image_only').each(function(el) { el.addClassName('hidden'); });
-			$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
-			$$('.text_only').each(function(el) { el.removeClassName('hidden'); });
-		}
-	};
-
-	var cancel = function(event, params)
-	{
-		params.dlg.cancel();
-	};
-
-	var setCaption = function(id) {
-		// This is a callback that is called when the user selects a NINES Object.
-		var caption = $(id).down(".linkdlg_firstline");
-		$('caption1').writeAttribute('value', caption.innerHTML);
-		caption = $(id).down(".linkdlg_secondline");
-		$('caption2').writeAttribute('value', caption.innerHTML);
-	};
-
-	var okAction = function(event, params) {
-		// Save has been pressed.
-		var url = params.destination;
-		var dlg = params.dlg;
-		var data = dlg.getAllData();
-		data.ill_illustration_id = element_id;
-		data.element_id = element_id;
-
-		dlg.setFlash('Updating Illustration...', false);
-		ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
-
-		params.dlg.cancel();
-	};
-
-	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-	var objlist = new CreateListOfObjects(populate_nines_obj_url, values.nines_object, 'nines_object', progress_img, setCaption);
-
-	var dlgLayout = {
-			page: 'layout',
-			rows: [
-				[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
-				[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
-				[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'new_exhibit_input_long' } ],
-				[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
-
-				[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
-				  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
-				[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
-				[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
-				[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
-				[ { button: 'Save', callback: okAction }, { button: 'Cancel', callback: cancel } ]
-			]
-		};
-
-	var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
-	var dlg = new GeneralDialog(dlgParams);
-	dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
-	dlg.changePage('layout', null);
-	objlist.populate(dlg, true, 'illust');
-	selChanged(null, values.type);
-	dlg.center();
-}
-
-function initializeInplaceIllustrationEditor_(element_id, action)
-{
-	// We pass in <div id='illustration_YY' class="illustration_block"> as the element_id
-	// We want to use <div id="element_XX" class="element_block"> for the ajax call
-	// The element_block will be a parent of the element_id object
-	var elements = element_id.split(',');
-	var el = $(elements[0]);
-	var ajax_action_element_id = getElementBlock(el).id;
-	if (elements.length > 1)
-		ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
-
-	InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', showIllustrationEditor);
-}
-
-function initializeInplace(element_id, action, setupMethod)
-{
-	// We pass in <div id='text_YY'> as the element_id
-	// We want to use <div id="element_XX" class="element_block"> for the ajax call
-	// The element_block will be a parent of the element_id object
-	var elements = element_id.split(',');
-	var el = $(elements[0]);
-	var ajax_action_element_id = getElementBlock(el).id;
-	if (elements.length > 1)
-		ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
-
-	InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', setupMethod);
-}
-
-// Delay modifying the DOM until after the page has loaded because IE 7 gives the "internet explorer cannot open the internet site" message.
- document.observe('dom:loaded', function() {
- 	inplaceObjects.each(function(obj) {
-		if (obj.type === 'illustration')
-			initializeInplaceIllustrationEditor_(obj.element_id, obj.action);
-		else
-			initializeInplace(obj.element_id, obj.action, obj.setupMethod);
-	});
-	inplaceObjectsAlreadyLoaded = true;
- });
-
-function showRichEditor(event)
-{
-	var This = $(this).down();
-	var element_id = This.id;
-
-	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
-	// That is, el = <div id='text_YY'>
-
-	// Now populate a hash with all the starting values.
-	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
-
-	var dlg = null;
-	var values = {};
-
-	var downDiv = $(element_id).down('.exhibit_text');
-	if (downDiv !== null && downDiv !== undefined)
-		values.value = downDiv.innerHTML;
-	else
-		values.value = $(element_id).innerHTML;
-
+var preprocessFootnotes = function(text) {
 	// Preprocess the text to pull out the footnotes.
 	// We will get something in the form: ...<a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>...
 	// We want to change it to: ...<span id="footnote_index_%NUMBER%" class="superscript">%NUMBER%</span>...
@@ -235,28 +102,21 @@ function showRichEditor(event)
 	var footnotePrefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
 	var footnoteMid = '</a><span class="hidden">';
 	var footnoteClose = '</span>';
-	var arr = values.value.split(footnotePrefix);
-	values.value = arr[0];
+	var arr = text.split(footnotePrefix);
+	text = arr[0];
 	for (var i = 1; i < arr.length; i++) {
 		// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
 		var arr2 = arr[i].split(footnoteMid);
 		var footnote = arr2[1];
 		var arr3 = footnote.split(footnoteClose);
 		footnote = arr3[0];
-		values.value += '<span id="footnote_index_' + i + '" class="superscript">' + i + '</span>' + arr3[1];
+		text += '<span id="footnote_index_' + i + '" class="superscript">' + i + '</span>' + arr3[1];
 		existingFootnotes.push(footnote);
 	}
+	return { text: text, existingFootnotes: existingFootnotes };
+};
 
-	// We also need to set the hidden fields on our form. This is the mechanism
-	// for passing back the context to the controller.
-	values.element_id = element_id;
-
-	var footnoteDivs = new FootnoteAbbrevArray(existingFootnotes, 'footnotes');
-
-	var footnoteCallback = function(value) {
-		return footnoteDivs.addFootnote(value);
-	};
-
+var addFootnoteDeleteCallback = function(dlg, footnoteDivs) {
 	var footnoteDeleteCallback = function(index) {
 		var id = "footnote_index_" + index;
 		var editor = dlg.getEditor(0);
@@ -269,56 +129,70 @@ function showRichEditor(event)
 
 	};
 	footnoteDivs.setFootnoteDeleteCallback(footnoteDeleteCallback);
-
-	var ok = function(event, params)
-	{
-		params.dlg.cancel();
-
-		var data = params.dlg.getAllData();
-		data.element_id = element_id;
-		dlg.setFlash('Updating Text...', false);
-		ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
-	};
-
-	var cancel = function(event, params)
-	{
-		params.dlg.cancel();
-	};
-
-	var dlgLayout = {
-			page: 'layout',
-			rows: [
-				[ { textarea: 'value', value: values.value } ],
-				[ { custom: footnoteDivs }],
-				[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: cancel } ]
-			]
-		};
-
-	var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: 'Enter Text' };
-	dlg = new GeneralDialog(dlgparams);
-	dlg.changePage('layout', null);
-
-	var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-	var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
-//TODO: turn off footnotes	dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback);
-	dlg.center();
-
-	var input = $('value');
-	input.select();
-	input.focus();
-	return false;
-}
+};
 
 function initializeInplaceRichEditor(element_id, action)
 {
-	if (!inplaceObjectsAlreadyLoaded)
+	var showRichEditor = function(event)
 	{
-		var obj = { element_id: element_id, action: action, setupMethod: showRichEditor, type: 'inplace' };
-		inplaceObjects.push(obj);
-	}
-	else
-		initializeInplace(element_id, action, showRichEditor);
+		var This = $(this).down();
+		var element_id = This.id;
+
+		// The parameter is the < id="element_id" > tag that was originally passed in during initialization
+		// That is, el = <div id='text_YY'>
+
+		// Now populate a hash with all the starting values.
+		// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+
+		var startingText = "";
+
+		var downDiv = $(element_id).down('.exhibit_text');
+		if (downDiv !== null && downDiv !== undefined)
+			startingText = downDiv.innerHTML;
+		else
+			startingText = $(element_id).innerHTML;
+
+		var ret = preprocessFootnotes(startingText);
+		startingText = ret.text;
+
+		var footnoteDivs = new FootnoteAbbrevArray(ret.existingFootnotes, 'footnotes');
+
+		var ok = function(event, params)
+		{
+			params.dlg.cancel();
+
+			var data = params.dlg.getAllData();
+			data.element_id = element_id;
+			params.dlg.setFlash('Updating Text...', false);
+			ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+		};
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { textarea: 'value', value: startingText } ],
+					[ { custom: footnoteDivs } ],
+					[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				]
+			};
+
+		var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: 'Enter Text' };
+		var dlg = new GeneralDialog(dlgparams);
+		dlg.changePage('layout', null);
+
+		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+		dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteDivs.addFootnote);
+		addFootnoteDeleteCallback(dlg, footnoteDivs);
+		dlg.center();
+
+		var input = $('value');
+		input.select();
+		input.focus();
+		return false;
+	};
+
+	inplaceObjectManager.initDiv(element_id, action, showRichEditor);
 }
 
 function initializeInplaceHeaderEditor(element_id, action)
@@ -330,11 +204,6 @@ function initializeInplaceHeaderEditor(element_id, action)
 
 		// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 		// That is, el = <div id='header_YY'>
-
-		var cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
 
 		var footnoteDiv = $('footnote_for_' + This.id);
 		var footnoteStr = footnoteDiv ? footnoteDiv.innerHTML : "";
@@ -357,7 +226,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 			rows: [
 				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'new_exhibit_input_long' } ],
 				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
-				[ { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: cancel } ]
+				[ { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
@@ -367,22 +236,129 @@ function initializeInplaceHeaderEditor(element_id, action)
 		dlg.center();
 	};
 
-	if (!inplaceObjectsAlreadyLoaded)
-	{
-		var obj = { element_id: element_id, action: action, setupMethod: showHeaderEditor, type: 'inplace' };
-		inplaceObjects.push(obj);
-	}
-	else
-		initializeInplace(element_id, action, showHeaderEditor);
+	inplaceObjectManager.initDiv(element_id, action, showHeaderEditor);
 }
 
 function initializeInplaceIllustrationEditor(element_id, action)
 {
-	if (!inplaceObjectsAlreadyLoaded)
+	var showIllustrationEditor = function(event)
 	{
-		var obj = { element_id: element_id, action: action, type: 'illustration' };
-		inplaceObjects.push(obj);
-	}
-	else
-		 initializeInplaceIllustrationEditor_(element_id, action);
+		var This = $(this).down();
+		var element_id = This.id;
+
+		// The parameter is the < id="element_id" > tag that was originally passed in during initialization
+		// That is, el = <div id='illustration_YY' class="illustration_block">
+
+		// Now populate a hash with all the starting values.
+		// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
+
+		var values = {};
+
+		// Initialize the controls in the dialog from the hidden fields on the page.
+		// All the hidden fields have a class of "saved_data". They also have a second class
+		// with the name of the variable they represent.
+		var hidden_data = $$('#' + element_id + ' .saved_data');
+		hidden_data.each(function(hidden) {
+			if (hidden.hasClassName('ill_illustration_type'))
+				values.type = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_image_url'))
+				values.image_url = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_link'))
+				values.link_url = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_image_width'))
+				values.ill_width = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_text'))
+				values.ill_text = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_alt_text'))
+				values.alt_text = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption1'))
+				values.caption1 = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption2'))
+				values.caption2 = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption1_footnote'))
+				values.caption1_footnote = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption2_footnote'))
+				values.caption2_footnote = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_nines_object_uri'))
+				values.nines_object = hidden.innerHTML;
+		});
+
+		var ret = preprocessFootnotes(values.ill_text);
+		values.ill_text = ret.text;
+
+		var footnoteDivs = new FootnoteAbbrevArray(ret.existingFootnotes, 'footnotes');
+
+		var selChanged = function(id, currSelection) {
+			if (currSelection === gIllustrationTypes[0]) {
+				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
+				$$('.nines_only').each(function(el) { el.removeClassName('hidden'); });
+			} else if (currSelection === gIllustrationTypes[1]) {	// External Link
+				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.image_only').each(function(el) { el.removeClassName('hidden'); });
+				$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
+			} else if (currSelection === gIllustrationTypes[2]) {	// Textual Illustration
+				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
+				$$('.text_only').each(function(el) { el.removeClassName('hidden'); });
+			}
+		};
+
+		var setCaption = function(id) {
+			// This is a callback that is called when the user selects a NINES Object.
+			var caption = $(id).down(".linkdlg_firstline");
+			$('caption1').writeAttribute('value', caption.innerHTML);
+			caption = $(id).down(".linkdlg_secondline");
+			$('caption2').writeAttribute('value', caption.innerHTML);
+		};
+
+		var okAction = function(event, params) {
+			// Save has been pressed.
+			params.dlg.cancel();
+
+			var data = params.dlg.getAllData();
+			data.ill_illustration_id = element_id;
+			data.element_id = element_id;
+
+			params.dlg.setFlash('Updating Illustration...', false);
+			ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+		};
+
+		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+		var objlist = new CreateListOfObjects(populate_nines_obj_url, values.nines_object, 'nines_object', progress_img, setCaption);
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
+					[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'new_exhibit_input_long' } ],
+					[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
+					[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'new_exhibit_input_long' } ],
+					[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
+
+					[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
+					  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
+					[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
+					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
+					[ { custom: footnoteDivs, klass: 'text_only' } ],
+					[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
+					[ { button: 'Save', callback: okAction }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				]
+			};
+
+		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
+		var dlg = new GeneralDialog(dlgParams);
+		dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteDivs.addFootnote);
+		addFootnoteDeleteCallback(dlg, footnoteDivs);
+		dlg.changePage('layout', null);
+		objlist.populate(dlg, true, 'illust');
+		selChanged(null, values.type);
+		dlg.center();
+	};
+
+	inplaceObjectManager.initDiv(element_id, action, showIllustrationEditor);
 }

@@ -127,17 +127,17 @@ end -%>
 		<% if illustration != nil -%>
 			<% if illustration.caption1 && illustration.caption1.length > 0 -%>
 				<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px"><%= illustration.caption1 %>
-				<%= draw_footnote(illustration.caption1_footnote_id, "caption1_#{id}", edit_mode) %>
+				<%= draw_footnote(illustration.caption1_footnote_id, "caption1_#{illustration.id}", edit_mode) %>
 				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
 					<div class="exhibit_caption2"><%= illustration.caption2 %>
-					<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{id}", edit_mode) %>
+					<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{illustration.id}", edit_mode) %>
 					</div>
 				<% end -%>
 				</div>
 			<% else -%>
 				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
 					<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px"><%= illustration.caption2 %>
-						<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{id}", edit_mode) %>
+						<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{illustration.id}", edit_mode) %>
 					</div>
 				<% end -%>
 			<% end -%>

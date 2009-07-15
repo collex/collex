@@ -364,6 +364,10 @@ var GeneralDialog = Class.create({
 	}
 });
 
+GeneralDialog.cancelCallback = function(event, params) {
+	params.dlg.cancel();
+};
+
 /////////////////////////////////////////////////////
 // Here are some generic uses for the the above dialog
 /////////////////////////////////////////////////////

@@ -585,6 +585,7 @@ class My9sController < ApplicationController
     text = params['ill_text']
     alt_text = params['alt_text']
     nines_object = params['nines_object']
+		footnotes = JSON.parse(params['footnotes'])
 
     illustration = ExhibitIllustration.find_by_id(illustration_id)
     if illustration != nil
@@ -594,6 +595,7 @@ class My9sController < ApplicationController
       if can_edit_exhibit(user, get_exhibit_id_from_element(element))
         illustration.illustration_type = type
         illustration.image_url = image_url
+				text = add_footnotes(text, footnotes)
         illustration.illustration_text = text
         illustration.caption1 = caption1
         illustration.caption2 = caption2
