@@ -112,7 +112,7 @@ var FootnoteAbbrev = Class.create({
 var FootnoteAbbrevArray = Class.create({
 	initialize: function(footnoteStrs, field){
 		var footnotes = [];
-
+		
 		var footnoteDeleteCallback = null;
 		this.setFootnoteDeleteCallback = function(fn) {
 			footnoteDeleteCallback = fn;
@@ -129,15 +129,27 @@ var FootnoteAbbrevArray = Class.create({
 		};
 
 		var parent = new Element("div");
+		var isInitializing = true;
+
+		this.addFootnote = function(str) {
+			var newFoot = new FootnoteAbbrev(str, field+'_'+(footnotes.length+1));
+			footnotes.push(newFoot);
+			parent.appendChild(newFoot.getMarkup());
+			if (!isInitializing)
+				newFoot.delayedSetup();
+			newFoot.deleteCallback(deleteCallback);
+			return footnotes.length;
+		};
+
 		footnoteStrs.each(function(str){
-			footnotes.push(new FootnoteAbbrev(str, field+'_'+(footnotes.length+1)));
-			footnotes[footnotes.length-1].deleteCallback(deleteCallback);
-		});
+			this.addFootnote(str);
+		}, this);
+		isInitializing = false;
 
 		this.getMarkup = function() {
-			footnotes.each(function(f){
-				parent.appendChild(f.getMarkup());
-			});
+//			footnotes.each(function(f){
+//				parent.appendChild(f.getMarkup());
+//			});
 			return parent;
 		};
 
@@ -155,15 +167,6 @@ var FootnoteAbbrevArray = Class.create({
 			footnotes.each(function(f){
 				f.delayedSetup();
 			});
-		};
-
-		this.addFootnote = function(str) {
-			var newFoot = new FootnoteAbbrev(str, field+'_'+(footnotes.length+1));
-			footnotes.push(newFoot);
-			parent.appendChild(newFoot.getMarkup());
-			newFoot.delayedSetup();
-			newFoot.deleteCallback(deleteCallback);
-			return footnotes.length;
 		};
 	}
 });

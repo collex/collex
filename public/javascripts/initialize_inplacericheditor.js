@@ -46,31 +46,6 @@ var ajaxUpdateFromElement = function(el, data, callback) {
 	var actions = action.split(',');
 	var action_elements = ajax_action_element_id.split(',');
 	recurseUpdateWithAjax(actions, action_elements, callback, null, data);
-//	if (actions.length === 1)
-//	{
-//		new Ajax.Updater(ajax_action_element_id, action, {
-//			parameters : data,
-//			evalScripts : true,
-//			onComplete : initializeElementEditing,
-//			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-//		});
-//	}
-//	else
-//	{
-//		new Ajax.Updater(action_elements[0], actions[0], {
-//			parameters : data,
-//			evalScripts : true,
-//			onComplete: function(resp) {
-//				new Ajax.Updater(action_elements[1], actions[1], {
-//					parameters : data,
-//					evalScripts : true,
-//					onComplete : initializeElementEditing,
-//					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-//				});
-//			},
-//			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-//		});
-//	}
 };
 
 
@@ -115,11 +90,6 @@ function showIllustrationEditor(event)
 		else if (hidden.hasClassName('ill_nines_object_uri'))
 			values.nines_object = hidden.innerHTML;
 	});
-
-	// We also need to set the hidden fields on our form. This is the mechanism
-	// for passing back the context to the controller.
-	values.ill_illustration_id = element_id;
-	values.element_id = element_id;
 
 	var selChanged = function(id, currSelection) {
 		if (currSelection === gIllustrationTypes[0]) {
@@ -245,10 +215,6 @@ function showRichEditor(event)
 	// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 	// That is, el = <div id='text_YY'>
 
-	// First construct the dialog
-//	var dlg = new InputDialog(element_id);
-//    dlg.addHidden("element_id");
-
 	// Now populate a hash with all the starting values.
 	// directly below element_id are all the hidden fields with the data we want to use to populate the dialog with
 
@@ -261,16 +227,31 @@ function showRichEditor(event)
 	else
 		values.value = $(element_id).innerHTML;
 
+	// Preprocess the text to pull out the footnotes.
+	// We will get something in the form: ...<a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>...
+	// We want to change it to: ...<span id="footnote_index_%NUMBER%" class="superscript">%NUMBER%</span>...
+	// and extract the footnote to put in an array of strings.
+	var existingFootnotes = [];
+	var footnotePrefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
+	var footnoteMid = '</a><span class="hidden">';
+	var footnoteClose = '</span>';
+	var arr = values.value.split(footnotePrefix);
+	values.value = arr[0];
+	for (var i = 1; i < arr.length; i++) {
+		// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
+		var arr2 = arr[i].split(footnoteMid);
+		var footnote = arr2[1];
+		var arr3 = footnote.split(footnoteClose);
+		footnote = arr3[0];
+		values.value += '<span id="footnote_index_' + i + '" class="superscript">' + i + '</span>' + arr3[1];
+		existingFootnotes.push(footnote);
+	}
+
 	// We also need to set the hidden fields on our form. This is the mechanism
 	// for passing back the context to the controller.
 	values.element_id = element_id;
 
-	// Now, everything is initialized, fire up the dialog.
-//	var el = $(element_id);
-//	dlg.show("Enter Text", getX(el), getY(el), 600, 300, values );
-//	dlg.centerEditor();
-
-	var footnoteDivs = new FootnoteAbbrevArray([], 'footnotes');
+	var footnoteDivs = new FootnoteAbbrevArray(existingFootnotes, 'footnotes');
 
 	var footnoteCallback = function(value) {
 		return footnoteDivs.addFootnote(value);
@@ -297,7 +278,6 @@ function showRichEditor(event)
 		data.element_id = element_id;
 		dlg.setFlash('Updating Text...', false);
 		ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
-		//okCallback(data.textareaValue);
 	};
 
 	var cancel = function(event, params)
@@ -314,7 +294,7 @@ function showRichEditor(event)
 			]
 		};
 
-	var dlgparams = { this_id: element_id + "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: 'Enter Text' };
+	var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: 'Enter Text' };
 	dlg = new GeneralDialog(dlgparams);
 	dlg.changePage('layout', null);
 
@@ -354,43 +334,6 @@ function initializeInplaceHeaderEditor(element_id, action)
 		var cancel = function(event, params)
 		{
 			params.dlg.cancel();
-		};
-
-		// TODO-PER: Make this generic: probably put in general_dialog
-		var ajaxUpdateFromElement = function(el, data, callback) {
-			var action = el.readAttribute('action');
-			var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
-
-			// If we have a comma separated list, we want to send the request synchronously to each action
-			// (Doing this synchronously eliminates any race condition: The first call can update the data and
-			// the rest of the calls just update the page.
-			var actions = action.split(',');
-			var action_elements = ajax_action_element_id.split(',');
-			if (actions.length === 1)
-			{
-				new Ajax.Updater(ajax_action_element_id, action, {
-					parameters : data,
-					evalScripts : true,
-					onComplete : initializeElementEditing,
-					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-				});
-			}
-			else
-			{
-				new Ajax.Updater(action_elements[0], actions[0], {
-					parameters : data,
-					evalScripts : true,
-					onComplete: function(resp) {
-						new Ajax.Updater(action_elements[1], actions[1], {
-							parameters : data,
-							evalScripts : true,
-							onComplete : initializeElementEditing,
-							onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-						});
-					},
-					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
-				});
-			}
 		};
 
 		var footnoteDiv = $('footnote_for_' + This.id);
@@ -443,102 +386,3 @@ function initializeInplaceIllustrationEditor(element_id, action)
 	else
 		 initializeInplaceIllustrationEditor_(element_id, action);
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// Private functions
-/////////////////////////////////////////////////////////////////////////////////////////
-
-//function doSelectionChanged(currSelection)
-//{
-//	// This is a callback that is fired whenever the user changes the select
-//	// box while editing illustrations. It is also fired when the dialog first
-//	// is displayed.
-//	var image_only = $$('.image_only');
-//	var text_only = $$ ('.text_only');
-//	var nines_only = $$ ('.nines_only');
-//	var not_nines = $$ ('.not_nines');
-//	if (currSelection === gIllustrationTypes[1]) {	// image
-//		image_only.each(function(el) { el.show(); });
-//		not_nines.each(function(el) { el.show(); });
-//		nines_only.each(function(el) { el.hide(); });
-//		text_only.each(function(el) { el.hide(); });
-//	} else if (currSelection === gIllustrationTypes[0]) {	// nines object
-//		image_only.each(function(el) { el.hide(); });
-//		not_nines.each(function(el) { el.hide(); });
-//		nines_only.each(function(el) { el.show(); });
-//		text_only.each(function(el) { el.hide(); });
-//	} else if (currSelection === gIllustrationTypes[2]) {	// text
-//		image_only.each(function(el) { el.hide(); });
-//		not_nines.each(function(el) { el.show(); });
-//		nines_only.each(function(el) { el.hide(); });
-//		text_only.each(function(el) { el.show(); });
-//	}
-//}
-//
-//function selectionChanged(event)
-//{
-//	var This = $(this);
-//	var currSelection = This.value;
-//	doSelectionChanged(currSelection);
-//}
-
-//var CreateList = Class.create({
-//	list : null,
-//	initialize : function(items, className, initial_selected_uri, value_field)
-//	{
-//		this.value_field = value_field;
-//		items = items.sortBy(function(item) { return item.title; });
-//		var This = this;
-//		if (items.length > 10)
-//			This.list = "<div style='overflow:auto; height: 450px;'>";
-//		else
-//			This.list = "";
-//
-//		if (className !== null && className !== undefined)
-//			This.list += "<table class='input_dlg_list " + className + "' >";
-//		else
-//			This.list += "<table class='input_dlg_list' >";
-//		items.each(function(obj) {
-////			if (initial_selected_uri === "")	// If nothing is selected, then automatically select the first one.
-////				initial_selected_uri = obj.uri;
-//			This.list += This.constructItem(obj.uri, obj.thumbnail, obj.title, obj.uri === initial_selected_uri, value_field);
-//		});
-//		This.list += "</table>";
-//		if (items.length > 10)
-//			This.list += "</div>";
-//	},
-//
-//	constructItem: function(uri, thumbnail, title, is_selected, value_field)
-//	{
-//		var str = "";
-//		if (is_selected)
-//			str = " class='input_dlg_list_item_selected' ";
-//		return "<tr " + str + "onclick='CreateList.prototype._select(this,\"" + value_field + "\" );' uri='" + uri + "' ><td><img src='" + thumbnail + "' alt='' height='40' /></td><td>" + title + "</td></tr>\n";
-//	},
-//
-//	makeSureThereIsASelection: function() {
-//		var sel = $$('.input_dlg_list .input_dlg_list_item_selected');
-//		if (sel.length > 0)
-//			return;
-//
-//		var el = $$(".input_dlg_list tr");
-//		if (el.length > 0)
-//			this.select(el[0], this.value_field);
-//	}
-//});
-//
-//CreateList.prototype.select = function(item, value_field)
-//{
-//	var selClass = "input_dlg_list_item_selected";
-//	$$("." + selClass).each(function(el)
-//	{
-//		el.removeClassName(selClass);
-//	});
-//	$(item).addClassName(selClass);
-//	$(value_field).value = $(item).getAttribute('uri');
-//	var caption = $('caption1');
-//	if (caption !== null)
-//		caption.value = $(item).down().next().innerHTML;
-//};
-
-

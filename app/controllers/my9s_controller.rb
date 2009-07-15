@@ -928,7 +928,7 @@ class My9sController < ApplicationController
 	end
 
 	def add_footnotes(text, footnotes)
-		# This takes a set of text in the form: "...<span class="superscript" id="footnote_index_1">1</span>..."
+		# This takes a set of text in the form: "...<span id="footnote_index_1" class="superscript">1</span>..."
 		# and an array where each item is { key: "footnote_index_1", value: "whatever" }
 		# They should match up, but that is not guaranteed. Where they match up, they should be changed to:
 		# <a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">2</a><span class="hidden">contents of the footnote</span>
