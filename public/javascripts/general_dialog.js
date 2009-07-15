@@ -390,7 +390,7 @@ var MessageBoxDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { button: 'Cancel', callback: this.cancel } ]
+					[ { button: 'Close', callback: this.cancel } ]
 				]
 			};
 		
