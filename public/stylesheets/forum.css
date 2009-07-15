@@ -286,32 +286,6 @@
 	/*border-bottom: 1px solid gray;*/
 }
 
-a.tooltip{
-    position:relative; /*this is the key*/
-}
-
-a.tooltip:hover {
-	z-index:25; 
-}
-
-a.tooltip span { 
-	display: none;
-}
-
-a.tooltip:hover span{ /*the span will display just on :hover state*/
-	display: block;
-    position:absolute;
-    top:2em; 
-	left:2em; 
-	width:20em;
-    border:1px solid #914C29;
-    background-color: #F7ECDB; 
-	color:#000;
-    text-align: left;
-	font-weight: normal;
-	padding: .3em;
-}
-
 .forum_modified_time {
 	font-style: italic;
 	color: #777777;

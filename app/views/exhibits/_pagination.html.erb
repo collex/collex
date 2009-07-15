@@ -24,17 +24,17 @@
 	
 	<% num_pages.times { |page| -%>
 		<% if curr_page == page+1 -%>
-			<span class="here"><a title="you are here">&bull;</a></span>
+			<span class="here"><a class="tooltip">&bull;<span class="page_tooltip">Page <%= "#{page+1}" %><br />You are here</span></a></span>
 		<% else -%>
-			<span><%= link_to "&bull;", :controller => controller, :action => action, :id => id, :page => page+1 %></span>
+			<span><%= link_to "&bull;<span class='page_tooltip'>Page #{page+1}</span>", { :controller => controller, :action => action, :id => id, :page => page+1 }, { :class => 'tooltip' } %></span>
 		<% end -%>
 	<% } -%>
 
 	<% if Exhibit.has_footnotes(id) -%>
 		<% if curr_page == -1 -%>
-			<span class="here"><a title="you are here">&diams;</a></span>
+			<span class="here"><a class="tooltip">&diams;<span class="page_tooltip">Endnotes<br />You are here</span></a></span>
 		<% else -%>
-			<span><%= link_to "&diams;", :action => action, :id => id, :page => -1 %></span>
+			<span><%= link_to "&diams;<span class='page_tooltip'>Endnotes</span>", { :action => action, :id => id, :page => -1 }, { :class => 'tooltip' } %></span>
 		<% end -%>
 	<% end -%>
 

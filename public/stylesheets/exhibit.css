@@ -225,3 +225,12 @@ padding-top: 21px;	/* safari */
 	border: 1px solid white;
 }
 
+.page_tooltip {
+	font-size: 12px;
+}
+
+a.tooltip:hover span{ /*the span will display just on :hover state*/
+    top:3em;
+	left:1em;
+	width:7em;
+}
