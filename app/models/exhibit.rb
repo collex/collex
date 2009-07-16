@@ -276,15 +276,69 @@ class Exhibit < ActiveRecord::Base
 		return false
 	end
 
+	def extract_footnotes_from_illustration(illustration)
+		footnotes = []
+		if illustration.illustration_type == 'Textual Illustration'
+			footnotes = self.extract_footnotes_from_text(illustration.illustration_text)
+		end
+		footnotes.push(ExhibitFootnote.find(illustration.caption1_footnote_id).footnote) if illustration.caption1_footnote_id != nil
+		footnotes.push(ExhibitFootnote.find(illustration.caption2_footnote_id).footnote) if illustration.caption2_footnote_id != nil
+		return footnotes
+	end
+
+	def extract_footnotes_from_text(text)
+		# We are scanning for footnotes that have the following structure:
+		footnote_prefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">'
+		# footnote number
+		footnote_mid = '</a><span class="hidden">'
+		# actual footnote
+		footnote_end = '</span>'
+
+		footnotes = []
+		arr = text.split(footnote_prefix)
+		arr.shift	# the first element won't have a footnote in it.
+		arr.each { |f|
+			arr2 = f.split(footnote_mid)
+			if arr2.length == 2
+				arr3 = arr2[1].split(footnote_end)
+				footnotes.push(arr3[0])
+			end
+		}
+		return footnotes
+	end
+
 	def get_all_footnotes()
 		footnotes = []
 		for page in self.exhibit_pages
 			for element in page.exhibit_elements
-				footnotes.push(ExhibitFootnote.find(element.header_footnote_id).footnote) if element.header_footnote_id != nil
-				for illustration in element.exhibit_illustrations
-					footnotes.push(ExhibitFootnote.find(illustration.caption1_footnote_id).footnote) if illustration.caption1_footnote_id != nil
-					footnotes.push(ExhibitFootnote.find(illustration.caption2_footnote_id).footnote) if illustration.caption2_footnote_id != nil
+				case element.exhibit_element_layout_type
+				when 'header':
+					footnotes.push(ExhibitFootnote.find(element.header_footnote_id).footnote) if element.header_footnote_id != nil
+				when 'pic_text':
+					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
+				when 'pic_text_pic':
+					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
+					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[1]))
+				when 'pics':
+					for illustration in element.exhibit_illustrations
+						footnotes.concat(self.extract_footnotes_from_illustration(illustration))
+					end
+				when 'text':
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
+				when 'text_pic':
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
+					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
+				when 'text_pic_text':
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
+					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text2))
+				else
+					# this will happen if a new type is added but this method is not updated to handle it.
+					footnotes.push("Unknown: #{element.exhibit_element_layout_type}")
 				end
+
 			end
 		end
 		return footnotes
