@@ -63,6 +63,7 @@ function initializeElementEditing()
 			}
 		}
 	});
+	pageRenumberFootnotes();
 }
 
 function imgResized(event, illustrationElement)

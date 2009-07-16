@@ -400,7 +400,7 @@ var RichTextEditor = Class.create({
 					var setFootnote = function(value) {
 						var index = footnoteCallback(value);
 						var html = editor.getEditorHTML();
-						html = html.substr(0, footnoteSelPos) + "<span id='footnote_index_" + index + "' class='superscript'>" + index + "</span>" + html.substr(footnoteSelPos);
+						html = html.substr(0, footnoteSelPos) + "<span id='footnote_index_" + index + "' class='superscript'>@</span>" + html.substr(footnoteSelPos);
 						editor.setEditorHTML(html);
 						};
 

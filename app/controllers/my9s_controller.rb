@@ -935,7 +935,7 @@ class My9sController < ApplicationController
 		# They should match up, but that is not guaranteed. Where they match up, they should be changed to:
 		# <a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">2</a><span class="hidden">contents of the footnote</span>
 		marker_text_start = '<span id="footnote_index_'
-		replacement_text_template = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>'
+		replacement_text_template = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">@</a><span class="hidden">%FOOTNOTE%</span>'
 		text_arr = text.split(marker_text_start)
 		return text if text_arr.length == 1
 		1.upto(text_arr.length-1) do |i|
@@ -945,7 +945,7 @@ class My9sController < ApplicationController
 			arr = text_arr[i].split('</span>', 2)
 			postfix = arr[1]
 			foot = get_footnote_from_num(footnotes, index)
-			text_arr[i] = replacement_text_template.gsub("%NUMBER%", "#{index}").gsub("%FOOTNOTE%", foot) + postfix
+			text_arr[i] = replacement_text_template.gsub("%FOOTNOTE%", foot) + postfix
 		end
 		return text_arr.join('')
 	end

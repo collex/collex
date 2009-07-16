@@ -64,3 +64,13 @@
 	scroll_to_target(target_el, element_el);
 </script>
 <% end -%>
+
+<script type="text/javascript">
+	function pageRenumberFootnotes() {
+		renumberFootnotes(<%= exhibit.get_starting_footnote_per_page()[page_num-1] %>);
+	}
+
+	document.observe('dom:loaded', function() {
+		pageRenumberFootnotes();
+	});
+</script>

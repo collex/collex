@@ -110,7 +110,7 @@ var preprocessFootnotes = function(text) {
 		var footnote = arr2[1];
 		var arr3 = footnote.split(footnoteClose);
 		footnote = arr3[0];
-		text += '<span id="footnote_index_' + i + '" class="superscript">' + i + '</span>' + arr3[1];
+		text += '<span id="footnote_index_' + i + '" class="superscript">@</span>' + arr3[1];
 		existingFootnotes.push(footnote);
 	}
 	return { text: text, existingFootnotes: existingFootnotes };
