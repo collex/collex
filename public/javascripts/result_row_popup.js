@@ -67,7 +67,7 @@ var ResultRowDlg = Class.create({
 		this.class_type = 'ResultRowDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var dlg = null;
 		var obj = '';
 		
@@ -376,7 +376,7 @@ var StartDiscussionWithObject = Class.create({
 		this.class_type = 'StartDiscussionWithObject';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var dlg = null;
 
 		if (!is_logged_in) {
@@ -423,7 +423,7 @@ var StartDiscussionWithObject = Class.create({
 
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 
@@ -436,7 +436,7 @@ var StartDiscussionWithObject = Class.create({
 			data.inet_url = "";
 			data.disc_type = "NINES Object";
 
-			var x = new Ajax.Request(url, {
+			new Ajax.Request(url, {
 				parameters : data,
 				evalScripts : true,
 				onSuccess : function(resp) {

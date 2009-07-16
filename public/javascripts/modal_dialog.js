@@ -15,9 +15,10 @@
 //----------------------------------------------------------------------------
 
 /*global YAHOO */
-/*global Class, $, $$, $H, Ajax */
+/*global Class, $, $$, $H, Ajax, Element */
 /*global window, document */
-/*extern ModalDialog, showInLightbox, showPartialInLightbox, currentScrollPos, getX, getY */
+/*global RichTextEditor, MessageBoxDlg */
+/*extern ModalDialog, showInLightbox, showPartialInLightBox, currentScrollPos, getX, getY */
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -286,7 +287,7 @@ ModalDialog.prototype = {
 		els = $$('#' + form_id + ' select');
 		els.each(function(e) { params[e.id] = e.value.unescapeHTML(); });
 		
-		if (this._okFunction != null)
+		if (this._okFunction !== null)
 		{
 			this._okFunction(	this._okObject, params);	
 		}
@@ -296,11 +297,11 @@ ModalDialog.prototype = {
 			var action = el.readAttribute('action');
 			var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
 			
-			if (ajax_action_element_id == "")
+			if (ajax_action_element_id === "")
 			{
 				// Instead of replacing an element, we want to redraw the entire page. There seems to be some conflict
 				// if the form is resubmitted, so duplicate the form.
-				new_form = new Element('form', { id: form_id + "2", method: 'post', onsubmit: "this.submit();", action: action });
+				var new_form = new Element('form', { id: form_id + "2", method: 'post', onsubmit: "this.submit();", action: action });
 				new_form.observe('submit', "this.submit();");
 				document.body.appendChild(new_form);
 				$H(params).each(function (p) { new_form.appendChild(new Element('input', { name: p.key, value: p.value, id: p.key })); });
@@ -316,7 +317,7 @@ ModalDialog.prototype = {
 			// the rest of the calls just update the page.
 			var actions = action.split(',');
 			var action_elements = ajax_action_element_id.split(',');
-			if (actions.length == 1)
+			if (actions.length === 1)
 			{
 				new Ajax.Updater(ajax_action_element_id, action, {
 					parameters : params,
@@ -343,7 +344,7 @@ ModalDialog.prototype = {
 			}
 		}
 	}
-}
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -351,6 +352,31 @@ ModalDialog.prototype = {
 //var _lightboxModalDialog = null;	// There is a problem with the object not destroying itself on close, so this is a hack so there is never more than one created.
 function showInLightbox(imageUrl, referenceElementId)
 {
+	var lightboxCenter = function()
+	{
+		var img = $('lightbox_img');
+		if (!img)	// The user must have cancelled.
+			return;
+
+		var img_spinner = $('lightbox_img_spinner');
+		if (img_spinner)
+			img_spinner.remove();
+		img.show();
+		var w = parseInt(img.getStyle('width'));
+		var vpWidth = YAHOO.util.Dom.getViewportWidth();
+		if (w > vpWidth)
+			img.width = vpWidth - 40;
+		var h = parseInt(img.getStyle('height'));
+		var vpHeight = YAHOO.util.Dom.getViewportHeight();
+		if (h > vpHeight)
+		{
+			img.removeAttribute('width');
+			img.height = vpHeight - 80;
+		}
+
+		this.center();
+	};
+
 	var divName = "lightbox";
 	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
 	img.setStyle({display: 'none' });
@@ -362,36 +388,11 @@ function showInLightbox(imageUrl, referenceElementId)
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
 	var lightboxModalDialog = new ModalDialog();
-	img.observe('load', _lightboxCenter.bind(lightboxModalDialog));
+	img.observe('load', lightboxCenter.bind(lightboxModalDialog));
 	var el = $(referenceElementId);
 	var left = getX(el);
 	var top = getY(el);
 	lightboxModalDialog.showLightbox("Image", divName, form, left, top);
-}
-
-function _lightboxCenter()
-{
-	var img = $('lightbox_img');
-	if (!img)	// The user must have cancelled.
-		return;
-
-	var img_spinner = $('lightbox_img_spinner');
-	if (img_spinner)
-		img_spinner.remove();
-	img.show();
-	var w = parseInt(img.getStyle('width'));
-	var vpWidth = YAHOO.util.Dom.getViewportWidth();
-	if (w > vpWidth)
-		img.width = vpWidth - 40;
-	var h = parseInt(img.getStyle('height'));
-	var vpHeight = YAHOO.util.Dom.getViewportHeight();
-	if (h > vpHeight)
-	{
-		img.removeAttribute('width');
-		img.height = vpHeight - 80;
-	}
-
-	this.center();
 }
 
 

@@ -24,6 +24,7 @@
 /*global MessageBoxDlg, GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnoteAbbrevArray, recurseUpdateWithAjax */
 /*global gIllustrationTypes */
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
+/*extern InplaceObjects, addFootnoteDeleteCallback, ajaxUpdateFromElement, inplaceObjectManager, preprocessFootnotes */
 
 // This is a convenience class with all the common elements needed to initialize any of our inplace types.
 // It is a singleton, and it delays the initialization until the Dom is ready. Just call the initDiv method

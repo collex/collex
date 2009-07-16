@@ -26,7 +26,7 @@ var SignInDlg = Class.create({
 		this.class_type = 'SignInDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var initialFlashMessage = "";
 		var redirectPage = "";
 		

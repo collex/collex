@@ -24,7 +24,7 @@ var CreateNewExhibitWizard = Class.create({
 		this.class_type = 'CreateNewExhibitWizard';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var obj_selector = new ObjectSelector(progress_img, url_get_objects, -1);
 
 		// private functions

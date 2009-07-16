@@ -25,7 +25,7 @@ var AddCategoryDlg = Class.create({
 		this.class_type = 'AddCategoryDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var dlg = null;
 		
 		// private functions
@@ -64,7 +64,7 @@ var AddCategoryDlg = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			
@@ -107,7 +107,7 @@ var AddSiteDlg = Class.create({
 		this.class_type = 'AddSiteDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var dlg = null;
 		
 		// private functions
@@ -146,7 +146,7 @@ var AddSiteDlg = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			
@@ -190,7 +190,7 @@ var RemoveSiteDlg = Class.create({
 		this.class_type = 'RemoveSiteDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		
 		// private functions
 		
@@ -202,7 +202,7 @@ var RemoveSiteDlg = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			
@@ -243,7 +243,7 @@ var DeleteFacetDialog = Class.create({
 		this.class_type = 'DeleteSiteDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		
 		// private functions
 		
@@ -255,7 +255,7 @@ var DeleteFacetDialog = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			
@@ -307,7 +307,7 @@ var EditFacetDialog = Class.create({
 		this.class_type = 'EditFacetDialog';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var dlg = null;
 		
 		// private functions
@@ -432,7 +432,7 @@ var EditFacetDialog = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			
@@ -489,7 +489,7 @@ var EditExhibitCategory = Class.create({
 		this.class_type = 'EditExhibitCategory';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		
 		// private functions
 		
@@ -501,7 +501,7 @@ var EditExhibitCategory = Class.create({
 		
 		this.sendWithAjax = function (event, params)
 		{
-			var curr_page = params.curr_page;
+			//var curr_page = params.curr_page;
 			var url = params.destination;
 			var dlg = params.dlg;
 			

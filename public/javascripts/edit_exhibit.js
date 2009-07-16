@@ -16,10 +16,10 @@
 
 /*global Class, $, $$, $H, Element, Ajax, Effect */
 /*global YAHOO */
-/*global BorderDialog, MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog */
+/*global BorderDialog, MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, pageRenumberFootnotes */
 /*global document, window */
 /*global supportsFixedPositioning */
-/*extern CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editGlobalExhibitItems, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
+/*extern editExhibitProfile, CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
 
 // Used by Exhibit Outline
 function toggle_by_id(node_id) {
@@ -228,7 +228,7 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 				evalScripts: true,
 				onComplete: function(resp){
 					if (verb === 'delete_page') {
-						var page_id = $('current_page').innerHTML;
+						//var page_id = $('current_page').innerHTML;
 						new Ajax.Updater("exhibit_page", "/my9s/reset_exhibit_page_from_outline", {
 							parameters: {
 								verb: verb,

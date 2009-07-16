@@ -24,7 +24,7 @@ var SetExhibitAuthorAlias = Class.create({
 		this.class_type = 'SetExhibitAuthorAlias';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var users = null;
 		var dlg = null;
 

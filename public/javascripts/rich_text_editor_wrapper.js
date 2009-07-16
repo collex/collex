@@ -16,7 +16,7 @@
 
 /*global YAHOO */
 /*global Class, $, $$, $H, Ajax */
-/*global MessageBoxDlg */
+/*global MessageBoxDlg, RteInputDlg */
 /*extern RichTextEditor */
 
 //

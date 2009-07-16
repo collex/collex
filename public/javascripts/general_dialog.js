@@ -18,7 +18,7 @@
 /*global YAHOO */
 /*global document, setTimeout */
 /*global form_authenticity_token */
-/*global RichTextEditor */
+/*global RichTextEditor, LinkDlgHandler */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax */
 
 var GeneralDialog = Class.create({
@@ -378,7 +378,7 @@ var MessageBoxDlg = Class.create({
 		this.class_type = 'MessageBoxDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		
 		// privileged functions
 		this.cancel = function(event, params)
@@ -407,7 +407,7 @@ var ConfirmDlg = Class.create({
 		this.class_type = 'ConfirmDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		
 		// privileged functions
 		this.ok = function(event, params)
@@ -479,7 +479,7 @@ var ConfirmAjaxDlg = Class.create({
 		this.class_type = 'ConfirmAjaxDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		
 		var ok = function()
 		{
@@ -497,7 +497,7 @@ var ConfirmLinkDlg =  Class.create({
 		this.class_type = 'ConfirmLinkDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var link = el.href;
 		
 		var ok = function(event, params)
@@ -537,7 +537,7 @@ var TextInputDlg = Class.create({
 		this.class_type = 'TextInputDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 
 		// privileged functions
 		this.ok = function(event, params)
@@ -588,7 +588,7 @@ var RteInputDlg = Class.create({
 		this.class_type = 'RteInputDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 
 		// privileged functions
 		this.ok = function(event, params)

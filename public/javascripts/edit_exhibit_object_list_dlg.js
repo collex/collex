@@ -28,14 +28,14 @@ var ObjectSelector = Class.create({
 		this.class_type = 'ObjectSelector';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var olUnchosen = new CreateListOfObjects(url_get_objects + '?chosen=false&exhibit_id='+exhibit_id, null, 'unchosen_objects', progress_img);
 		var olChosen = new CreateListOfObjects(url_get_objects + '?chosen=true&exhibit_id='+exhibit_id, null, 'chosen_objects', progress_img);
 
 //		var olChosen = new ObjectList(progress_img, "Objects In Exhibit");
 		var divMarkup = null;
 		var actions = [];
-		var objs = null;
+		//var objs = null;
 
 		// private functions
 		var addSelection = function()
@@ -111,7 +111,7 @@ var EditExhibitObjectListDlg = Class.create({
 		this.class_type = 'EditExhibitObjectListDlg';	// for debugging
 
 		// private variables
-		var This = this;
+		//var This = this;
 		var obj_selector = new ObjectSelector(progress_img, url_get_objects, exhibit_id);
 
 		// private functions
