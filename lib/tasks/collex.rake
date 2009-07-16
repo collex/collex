@@ -129,5 +129,19 @@ namespace :collex do
 		puts "Creating #{dest}..."
 		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
 	end
+
+  desc "Run JSLint on all js files"
+  task :jslint => :environment do
+		ext = '.js'
+		skip_ext = '-min.js'
+		Dir.foreach("#{RAILS_ROOT}/public/javascripts") { |f|
+			if f.index(ext) == f.length - ext.length && f.index(skip_ext) != f.length - skip_ext.length
+				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js'
+					puts "Linting #{f}..."
+					system("java -jar #{RAILS_ROOT}/lib/tasks/rhino1_7R2_js.jar #{RAILS_ROOT}/lib/tasks/fulljslint.js #{RAILS_ROOT}/public/javascripts/#{f}")
+				end
+			end
+		}
+	end
 end
 
