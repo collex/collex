@@ -14,8 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax, Event */
-/*global YAHOO */
+/*global Class, $, Event */
 /*extern SidebarTagCloud */
 
 var SidebarTagCloud = Class.create( {

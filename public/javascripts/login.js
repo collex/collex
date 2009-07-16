@@ -14,7 +14,7 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Ajax */
+/*global Class, Ajax */
 /*global GeneralDialog */
 /*global window */
 /*extern SignInDlg, RedirectIfLoggedIn */

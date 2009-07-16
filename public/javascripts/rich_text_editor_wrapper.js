@@ -15,14 +15,14 @@
 //----------------------------------------------------------------------------
 
 /*global YAHOO */
-/*global Class, $, $$, $H, Ajax */
+/*global Class */
 /*global MessageBoxDlg, RteInputDlg */
 /*extern RichTextEditor */
 
 //
 // Monkey patch to get the editor to return the real selection.
 //
-var debugStr = "";
+//var debugStr = "";
 
 // This searches the node for the number of previous siblings it has.
 YAHOO.widget.SimpleEditor.prototype.getNumSibs = function (node) {
@@ -216,7 +216,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireR
 	
 	var arrLevels = [ -1 ];
 	var charCount = 0;
-	debugStr = "";
+	//debugStr = "";
 	arr.each(function(i) {
 		if (i === "<br>") { // the item is self-contained.
 			arrLevels[arrLevels.length-1]++;
@@ -240,7 +240,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireR
 			fOffset = charCount + foff;
 		
 		charCount += i.length;
-		debugStr += arrLevels.join(',') + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.escapeHTML() + "<br />";
+		//debugStr += arrLevels.join(',') + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.escapeHTML() + "<br />";
 	});
 	
 	// If either offset is missing, try to figure it out by using the selection string.

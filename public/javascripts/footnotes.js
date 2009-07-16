@@ -17,7 +17,7 @@
 /*global RteInputDlg */
 /*global $, Element, Class */
 /*global YAHOO */
-/*extern FootnoteAbbrev */
+/*extern FootnoteAbbrev, FootnoteAbbrevArray */
 
 var FootnoteAbbrev = Class.create({
 	initialize: function(footnoteStr, field){

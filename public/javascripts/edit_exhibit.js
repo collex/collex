@@ -16,7 +16,7 @@
 
 /*global Class, $, $$, $H, Element, Ajax, Effect */
 /*global YAHOO */
-/*global BorderDialog, MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, pageRenumberFootnotes */
+/*global MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, pageRenumberFootnotes */
 /*global document, window */
 /*global supportsFixedPositioning */
 /*extern editExhibitProfile, CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */

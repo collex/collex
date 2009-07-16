@@ -14,7 +14,7 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax, Hash */
+/*global Class, $, $$, Element, Ajax, Hash */
 /*global YAHOO */
 /*global GeneralDialog, MessageBoxDlg */
 /*extern CacheObjects, CreateListOfObjects, LinkDlgHandler, ninesObjCache */

@@ -15,7 +15,6 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, $H, Element, Ajax, Form */
-/*global YAHOO */
 /*global MessageBoxDlg, GeneralDialog, doSingleInputPrompt, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, LinkDlgHandler */
 /*global document, window */
 /*global exhibit_names */

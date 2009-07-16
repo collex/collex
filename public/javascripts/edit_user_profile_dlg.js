@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, Class, Ajax */
+/*global Class, Ajax */
 /*global GeneralDialog */
 /*extern EditProfileDialog, editProfileDlg, stopUpload */
 

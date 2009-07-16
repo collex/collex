@@ -14,8 +14,8 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Ajax */
-/*global MessageBoxDlg, CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler */
+/*global Class, $, $$, Ajax */
+/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler */
 /*global YAHOO */
 /*global window, setTimeout */
 /*extern ForumReplyDlg */

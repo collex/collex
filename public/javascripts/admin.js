@@ -14,8 +14,7 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax, $A */
-/*global YAHOO */
+/*global Class, $, $$, Element, Ajax, $A */
 /*global MessageBoxDlg, GeneralDialog */
 /*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory */
 

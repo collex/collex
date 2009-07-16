@@ -14,12 +14,12 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax */
+/*global Class, $, $$, Element, Ajax */
 /*global YAHOO */
 /*global document, setTimeout */
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
-/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax */
+/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax */
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {

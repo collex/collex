@@ -20,8 +20,8 @@
 //dialog that should be displayed.
 
 /*global document */
-/*global $, $$, Ajax, Class */
-/*global MessageBoxDlg, GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnoteAbbrevArray, recurseUpdateWithAjax */
+/*global $, $$, Class */
+/*global GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnoteAbbrevArray, recurseUpdateWithAjax */
 /*global gIllustrationTypes */
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
 /*extern InplaceObjects, addFootnoteDeleteCallback, ajaxUpdateFromElement, inplaceObjectManager, preprocessFootnotes */
