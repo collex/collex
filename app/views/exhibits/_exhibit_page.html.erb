@@ -24,11 +24,11 @@
 	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
 	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action } %>
 	<% if page_num == -1 -%>
-		<h1>Endnotes</h1>
+		<h1 class="endnotes">Endnotes</h1>
 		<% footnote_count = 1 -%>
 		<% footnotes = exhibit.get_all_footnotes() -%>
 		<% for footnote in footnotes -%>
-			<%= footnote_count %>. <%= decode_exhibit_links(footnote) %><br />
+			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<%= decode_exhibit_links(footnote) %></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
 	<% else # page_num is greater than 0, so this is a regular page -%>

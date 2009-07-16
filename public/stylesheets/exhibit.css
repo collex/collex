@@ -234,3 +234,15 @@ a.tooltip:hover span{ /*the span will display just on :hover state*/
 	left:1em;
 	width:7em;
 }
+
+.endnotes {
+	text-align: center;
+	clear: both;
+}
+
+.endnote_superscript {
+	position: relative;
+	bottom: 0.5em;
+	font-size: 0.8em;
+	font-weight: bold;
+}
