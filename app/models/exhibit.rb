@@ -270,7 +270,30 @@ class Exhibit < ActiveRecord::Base
 		exhibit = Exhibit.find(id) if exhibit == nil
 		for page in exhibit.exhibit_pages
 			for element in page.exhibit_elements
-				return true if element.header_footnote_id != nil
+				case element.exhibit_element_layout_type
+				when 'header':
+					return true if element.header_footnote_id != nil
+				when 'pic_text':
+					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
+					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
+				when 'pic_text_pic':
+					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
+					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
+					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[1]) > 0
+				when 'pics':
+					for illustration in element.exhibit_illustrations
+						return true if exhibit.count_footnotes_from_illustration(illustration) > 0
+					end
+				when 'text':
+					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
+				when 'text_pic':
+					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
+					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
+				when 'text_pic_text':
+					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
+					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
+					return true if exhibit.count_footnotes_from_text(element.element_text2) > 0
+				end
 			end
 		end
 		return false
