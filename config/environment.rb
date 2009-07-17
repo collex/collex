@@ -93,7 +93,7 @@ PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 
 ExceptionNotifier.exception_recipients = ADMINISTRATOR_EMAILS
 ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
-ExceptionNotifier.email_prefix = "[Collex] "
+ExceptionNotifier.email_prefix = "[Collex-#{RAILS_ENV}] "
 
 $KCODE = 'UTF8'
 
