@@ -870,8 +870,12 @@ class My9sController < ApplicationController
   end
   
   def get_object_details
-    hit = CachedResource.get_hit_from_uri(params[:uri])
-    render :partial => '/results/result_row_for_popup', :locals => { :hit => hit, :extra_button_data => { :partial => params[:partial], :index => params[:index], :target_el  => params[:target_el]} }
+		if params[:uri]
+			hit = CachedResource.get_hit_from_uri(params[:uri])
+			render :partial => '/results/result_row_for_popup', :locals => { :hit => hit, :extra_button_data => { :partial => params[:partial], :index => params[:index], :target_el  => params[:target_el]} }
+		else
+			render :text => 'We\'re sorry! We can\'t find the object that you requested. Reason: internal error (incorrect parameters). Please contain the NINES webmaster using the email at the bottom of the page', :status => :bad_request
+		end
   end
 
   private
