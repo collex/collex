@@ -207,7 +207,7 @@ class ForumController < ApplicationController
     session[:items_per_page] ||= 10
     threads = DiscussionTopic.find(topic_id).discussion_threads
     num_pages = threads.length.quo(session[:items_per_page]).ceil
-    render :text => "/forum/view_topic?page=#{num_pages}&topic=#{topic_id}"
+    render :text => "/forum/view_topic?page=1&topic=#{topic_id}"
   end
   
 #  def post_object_to_existing_thread
