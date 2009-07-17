@@ -18,8 +18,10 @@
 <div class="exhibit_nav">
 	<% if curr_page == 1 -%>
 		<span class="arrowhere">&laquo;</span>
+	<% elsif curr_page == -1 -%>
+		<%= link_to "&laquo;<span class='page_tooltip'>Previous page</span>", { :controller => controller, :action => action, :id => id, :page => num_pages }, { :class => 'tooltip' } %>
 	<% else -%>
-		<%= link_to "&laquo;", :controller => controller, :action => action, :id => id, :page => curr_page - 1 %>
+		<%= link_to "&laquo;<span class='page_tooltip'>Previous page</span>", { :controller => controller, :action => action, :id => id, :page => curr_page - 1 }, { :class => 'tooltip' } %>
 	<% end -%>
 	
 	<% num_pages.times { |page| -%>
@@ -30,7 +32,8 @@
 		<% end -%>
 	<% } -%>
 
-	<% if Exhibit.has_footnotes(id) -%>
+	<% has_footnotes = Exhibit.has_footnotes(id) -%>
+	<% if has_footnotes -%>
 		<% if curr_page == -1 -%>
 			<span class="here"><a class="tooltip">&diams;<span class="page_tooltip">Endnotes<br />You are here</span></a></span>
 		<% else -%>
@@ -38,9 +41,11 @@
 		<% end -%>
 	<% end -%>
 
-	<% if curr_page == num_pages -%>
+	<% if (curr_page == num_pages && !has_footnotes) || curr_page == -1 -%>
 		<span class="arrowhere">&raquo;</span>
+	<% elsif curr_page == num_pages -%>
+		<%= link_to "&raquo;<span class='page_tooltip'>Next page</span>", { :controller => controller, :action => action, :id => id, :page => -1 }, { :class => 'tooltip' } %>
 	<% else -%>
-		<%= link_to "&raquo;", :controller => controller, :action => action, :id => id, :page => curr_page + 1 %>
+		<%= link_to "&raquo;<span class='page_tooltip'>Next page</span>", { :controller => controller, :action => action, :id => id, :page => curr_page + 1 }, { :class => 'tooltip' } %>
 	<% end -%>
 </div>
