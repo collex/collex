@@ -63,7 +63,9 @@ function initializeElementEditing()
 			}
 		}
 	});
-	pageRenumberFootnotes();
+	if (typeof(pageRenumberFootnotes) === 'function') {
+		pageRenumberFootnotes();
+	}
 }
 
 function imgResized(event, illustrationElement)
