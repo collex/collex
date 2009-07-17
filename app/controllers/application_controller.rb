@@ -41,6 +41,7 @@ class ApplicationController < ActionController::Base
   
   private
     def session_create
+			ExceptionNotifier.email_prefix = ExceptionNotifier.email_prefix.gsub('*', ":#{request.host}")
       session[:constraints] ||= []
       session[:num_docs] ||= (CollexEngine.new).num_docs
       session[:num_docs] ||= 1000
