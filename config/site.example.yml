@@ -1,0 +1,30 @@
+# This contains all the site specific information (outside of database.yml) that should not be checked into version control.
+# It is read in by environment.rb.
+
+#
+# It must contain the following fields:
+#
+
+# For getting automatic emails when an error occurs
+exception_notifier:
+ 	# List of all emails that should receive the notification
+  exception_recipients: "first@example.com second@example.com"
+ 	# Who the notification email will be from
+  sender_address: '"Application Error" <admin@example.com>'
+ 	# What each email should be prefixed with
+  email_prefix: "[Project] "
+
+# Where the solr index has been set up
+solr_url: "http://localhost:8983/solr"
+
+# For setting up email - this example uses gmail
+smtp_settings:
+  address: "smtp.gmail.com"
+  port: 587
+  user_name: 'admin@example.com'
+  password: 'super-secret'
+  authentication: :plain
+
+# Should google analytics be used for this site?
+google_analytics: false
+

@@ -33,13 +33,6 @@ config.action_view.debug_rjs                         = true
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = true
 ActionMailer::Base.delivery_method = :smtp
-ActionMailer::Base.smtp_settings = { 
-   :address => "localhost", 
-   :port => 25, 
-   :domain => "ehatchersolutions.com"
-} 
 
 config.log_level = :info
 #ActiveRecord::Base.verification_timeout=100
-
-ADMINISTRATOR_EMAILS = %w(dw6h@cms.mail.virginia.edu nick@performantsoftware.com paul@performantsoftware.com)

@@ -77,11 +77,42 @@ require 'rexml/document'
 require 'collex_engine'
 require 'nines_collection_manager' # require this or get load errors in dev mode
 
-solr_url_for = { "staging" => "http://localhost:8989/solr", "quandu_production" => "http://127.0.0.1:8080/nines-solr1.3", "quandu_staging" => "http://127.0.0.1:8080/nines-solr1.3" }
+# load all the site specific stuff
+config_file = File.join(RAILS_ROOT, "config", "site.yml")
+if File.exists?(config_file)
+	site_specific = YAML.load_file(config_file)
+	SOLR_URL = site_specific['solr_url']
+	ExceptionNotifier.exception_recipients = site_specific['exception_notifier']['exception_recipients'].split(' ')
+	ExceptionNotifier.sender_address = site_specific['exception_notifier']['sender_address']
+	ExceptionNotifier.email_prefix = site_specific['exception_notifier']['email_prefix']
 
-SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || solr_url_for[RAILS_ENV] || "http://localhost:8983/solr"
+	ActionMailer::Base.smtp_settings[:address] = site_specific['smtp_settings']['address']
+	ActionMailer::Base.smtp_settings[:port] = site_specific['smtp_settings']['port']
+	ActionMailer::Base.smtp_settings[:domain] = site_specific['smtp_settings']['domain']
+	ActionMailer::Base.smtp_settings[:user_name] = site_specific['smtp_settings']['user_name']
+	ActionMailer::Base.smtp_settings[:password] = site_specific['smtp_settings']['password']
+	ActionMailer::Base.smtp_settings[:authentication] = site_specific['smtp_settings']['authentication']
+
+	GOOGLE_ANALYTICS = site_specific['google_analytics']
+else
+	puts "Failed to load site configuration. Did you create config/site.yml?"
+end
+
+#solr_url_for = { "staging" => "http://localhost:8989/solr", "quandu_production" => "http://127.0.0.1:8080/nines-solr1.3", "quandu_staging" => "http://127.0.0.1:8080/nines-solr1.3" }
+#
+#SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || solr_url_for[RAILS_ENV] || "http://localhost:8983/solr"
 
 puts "$$ Starting Rails with Solr URL: #{SOLR_URL}"
+#puts ExceptionNotifier.exception_recipients
+#puts ExceptionNotifier.sender_address
+#puts ExceptionNotifier.email_prefix
+#puts ActionMailer::Base.smtp_settings[:address]
+#puts ActionMailer::Base.smtp_settings[:port]
+#puts ActionMailer::Base.smtp_settings[:domain]
+#puts ActionMailer::Base.smtp_settings[:user_name]
+#puts ActionMailer::Base.smtp_settings[:password]
+#puts ActionMailer::Base.smtp_settings[:authentication]
+#puts GOOGLE_ANALYTICS
 
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
@@ -91,17 +122,16 @@ DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
 EXHIBIT_BUILDER_TODO_PATH = "/images/clicktoadd.jpg"
 PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 
-ExceptionNotifier.exception_recipients = ADMINISTRATOR_EMAILS
-ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
-ExceptionNotifier.email_prefix = "[Collex*] "
+#ExceptionNotifier.exception_recipients = ADMINISTRATOR_EMAILS
+#ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
+#ExceptionNotifier.email_prefix = "[Collex*] "
 
 $KCODE = 'UTF8'
 
 # "nines"
 COLLEX_ENGINE_PARAMS = {
-  # TODO: eventually leverage (an as yet undeveloped Solr feature) wildcarded field requests like "role_*"
   :field_list => ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","image","thumbnail","text_url","title","alternative","uri","url", "exhibit_type", "license"],
   :facet_fields => ['genre','archive','freeculture']
 }
 
-DEPLOYMENT_SERVERS = [ "nines.org", "www.nines.org" ]
+#DEPLOYMENT_SERVERS = [ "nines.org", "www.nines.org" ]

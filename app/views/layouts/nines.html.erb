@@ -78,7 +78,7 @@
 
  	<div class="clear_both"></div>
 	<%= render :partial => '/common/footer' %>
-	<% if DEPLOYMENT_SERVERS.include?(request.host()) -%>
+	<% if GOOGLE_ANALYTICS -%>
 		<!-- for Google Analytics -->
 		<script type="text/javascript">
 			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -91,6 +91,6 @@
 			} catch(err) {}
 		</script>
 	<% else %>
-		<!-- Google analytics is not included on this page because the host is <%= request.host() %>. Usage is only tracked on the servers [<%= DEPLOYMENT_SERVERS.join(', ') %>] -->
+		<!-- Google analytics is not included on this page because the site.yml file does not contain "google_analytics: true" %>] -->
 	<% end -%>
 </body></html>

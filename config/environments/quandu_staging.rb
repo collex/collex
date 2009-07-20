@@ -34,12 +34,5 @@ config.action_controller.perform_caching             = true
 # Disable delivery errors if you bad email addresses should just be ignored
 # config.action_mailer.raise_delivery_errors = false
 ActionMailer::Base.delivery_method = :smtp
-ActionMailer::Base.smtp_settings = { 
-   :address => "localhost", 
-   :port => 25, 
-   :domain => "nines.org", 
-} 
 
 config.log_level = :info
-
-ADMINISTRATOR_EMAILS = %w(dw6h@cms.mail.virginia.edu nick@performantsoftware.com paul@performantsoftware.com)

@@ -38,5 +38,3 @@ config.action_mailer.delivery_method = :smtp
 
 config.log_level = :info
 #ActiveRecord::Base.verification_timeout=100
-
-ADMINISTRATOR_EMAILS = %w(edward@performantsoftware.com paul@performantsoftware.com)
