@@ -95,7 +95,9 @@ if File.exists?(config_file)
 
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
 else
-	puts "Failed to load site configuration. Did you create config/site.yml?"
+	puts "***"
+	puts "*** Failed to load site configuration. Did you create config/site.yml?"
+	puts "***"
 end
 
 #solr_url_for = { "staging" => "http://localhost:8989/solr", "quandu_production" => "http://127.0.0.1:8080/nines-solr1.3", "quandu_staging" => "http://127.0.0.1:8080/nines-solr1.3" }
