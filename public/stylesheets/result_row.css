@@ -73,6 +73,10 @@ hr.search_results_hr {
 	vertical-align:top;
 }
 
+.result_row_details .search_result_data td {
+	padding:1px 25px .2em 0px;
+}
+
 .search_result_data_label {
 	width:85px;
 	color: gray;

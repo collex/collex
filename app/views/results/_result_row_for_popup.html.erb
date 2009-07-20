@@ -30,6 +30,7 @@
 		<% end -%>
 		<div class="search_result_image"><%= thumbnail_image_tag(hit) %></div>
     </div>
+	<div class="clear_both"><br /></div>
 
 	<div class="search_result_right">
 	    <%# The middle with the actual search results -%>
@@ -47,7 +48,7 @@
 				<tr>
 				<% if result_is_collected(hit) -%>
 					<td colspan='2'>
-						<%= "<br />" if has_annotation(hit) -%>
+						<%= "<br />Your annotation:<br />" if has_annotation(hit) -%>
 						<span id="annotation_<%=index%>" class='annotation'><%= decode_exhibit_links(get_annotation(hit)) %></span>
 						<%= "<br/><span class='annotation'>#{hit['warning']}</span>" if hit['warning'] %>
 					</td>
