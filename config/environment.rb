@@ -114,7 +114,7 @@ puts "$$ Starting Rails with Solr URL: #{SOLR_URL}"
 #puts ActionMailer::Base.smtp_settings[:user_name]
 #puts ActionMailer::Base.smtp_settings[:password]
 #puts ActionMailer::Base.smtp_settings[:authentication]
-#puts GOOGLE_ANALYTICS
+puts GOOGLE_ANALYTICS
 
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
