@@ -73,7 +73,7 @@
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-createfootnote.yui-button-hover span.yui-toolbar-icon {
     background-image: url(/images/footnotehover.jpg);
-	background-position: 1px 0px;
+	background-position: 0px -1px;
 	width: 25px;
 }
 
@@ -195,9 +195,3 @@
 .outline_tree_element_selected .outline_right_controls {
 	display: block;
 }
-
-/*.rte_footnote {
-	background: url(/images/rte_footnote.jpg) top right no-repeat;
-	padding-right: 9px;
-}
-*/

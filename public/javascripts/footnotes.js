@@ -35,30 +35,30 @@ var FootnoteAbbrev = Class.create({
 			return btn1;
 		};
 
-		var makeFootnoteAbbrev = function(footnote) {
-			var str = footnote.stripTags();
-			if (str.length > 20)
-				str = str.substring(0, 20) + "...";
-			return str;
-		};
+//		var makeFootnoteAbbrev = function(footnote) {
+//			var str = footnote.stripTags();
+//			if (str.length > 20)
+//				str = str.substring(0, 20) + "...";
+//			return str;
+//		};
 
 		var setFootnoteCtrl = function() {
 			if (footnoteStr.length > 0) {
 				$(field + '_add').addClassName('hidden');
 				$(field + '_edit').removeClassName('hidden');
 				$(field + '_remove').removeClassName('hidden');
-				$(field).removeClassName('hidden');
+				//$(field).removeClassName('hidden');
 			} else {
 				$(field + '_add').removeClassName('hidden');
 				$(field + '_edit').addClassName('hidden');
 				$(field + '_remove').addClassName('hidden');
-				$(field).addClassName('hidden');
+				//$(field).addClassName('hidden');
 			}
 		};
 
 		var setFootnote = function(value) {
 			footnoteStr = value;
-			$(field).innerHTML = makeFootnoteAbbrev(footnoteStr);
+			//$(field).innerHTML = makeFootnoteAbbrev(footnoteStr);
 			setFootnoteCtrl();
 		};
 
@@ -79,7 +79,7 @@ var FootnoteAbbrev = Class.create({
 
 		var deleteFootnote = function(event, params) {
 			footnoteStr = "";
-			$(field).innerHTML = makeFootnoteAbbrev(footnoteStr);
+			//$(field).innerHTML = makeFootnoteAbbrev(footnoteStr);
 			setFootnoteCtrl();
 			if (fnDeleteCallback)
 				fnDeleteCallback(field);
@@ -90,10 +90,10 @@ var FootnoteAbbrev = Class.create({
 			parent.addClassName('footnote_abbrev_div');
 			parent.appendChild(makeButton('add', 'Add Footnote', footnoteStr.length > 0));
 			parent.appendChild(makeButton('edit', 'Edit Footnote', footnoteStr.length === 0));
-			parent.appendChild(makeButton('remove', 'X', footnoteStr.length === 0));
-			var span = new Element('span', { id: field} ).update(makeFootnoteAbbrev(footnoteStr));
-			span.addClassName('footnote_abbrev');
-			parent.appendChild(span);
+			parent.appendChild(makeButton('remove', 'Delete Footnote', footnoteStr.length === 0));
+//			var span = new Element('span', { id: field} ).update(makeFootnoteAbbrev(footnoteStr));
+//			span.addClassName('footnote_abbrev');
+//			parent.appendChild(span);
 			return parent;
 		};
 

@@ -314,6 +314,9 @@ hr.linkdlg_hr {
 	color: #777777;
 }
 
+.header_input {
+	width: 455px;
+}
 /*****************************************/
 
 #border_outer_container {
