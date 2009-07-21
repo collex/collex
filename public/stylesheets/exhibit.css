@@ -232,7 +232,7 @@ padding-top: 21px;	/* safari */
 a.tooltip:hover span{ /*the span will display just on :hover state*/
     top:3em;
 	left:-3em;
-	width:8em;
+	width:inherit;
 }
 
 .endnotes {
