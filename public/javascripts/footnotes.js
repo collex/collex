@@ -144,11 +144,40 @@ var FootnotesInRte = Class.create({
 			var footnoteAbbrev = str.substr(0, 15);
 			if (footnoteAbbrev !== str)
 				footnoteAbbrev += "...";
-			return rteFootnotePrefix2 + str + rteFootnoteMid + footnoteAbbrev + rteFootnoteClose2;
+			return rteFootnotePrefix2 + str + rteFootnoteMid + str.stripTags().truncate(20) + rteFootnoteClose2;
 		};
 
 		var formatFootnoteForRte = function(str) {
 			return rteFootnotePrefix1 + formatFootnoteForRteInner(str) + rteFootnoteClose1;
+		};
+
+		var extractUpToMatchingSpan = function(text) {
+			// this takes a string and returns the first part of it up to the </span>. This takes into account extra <span>...</span> pairs that are embedded.
+			var arr = text.split('<');
+			var left = "";
+			var level = 0;
+			for (var i = 0; i < arr.length; i++) {
+				if (arr[i].startsWith('span')) {
+					level++;
+					left += '<' + arr[i];
+				} else if (arr[i].startsWith('/span')) {
+					level--;
+					if (level !== -1)
+						left += '<' + arr[i];
+					else
+						break;
+				} else {
+					left += '<' + arr[i];
+				}
+			}
+			left = left.substr(1);	// because we are placing '<' at the beginning of each concatination, we'll have an extra one at the beginning.
+
+			var right = "";
+			for (var j = i+1; j < arr.length; j++) {
+				right += '<' + arr[j];
+			}
+			
+			return { left: left, right: right };
 		};
 
 		this.preprocessFootnotes = function(text) {
@@ -165,14 +194,11 @@ var FootnotesInRte = Class.create({
 			for (var i = 1; i < arr.length; i++) {
 				// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
 				var arr2 = arr[i].split(footnoteMid);
-				var footnote = arr2[1];
-				var arr3 = footnote.split(footnoteClose);
-				footnote = arr3[0];
-				var restOfLine = "";
-				for (var j = 1; j < arr3.length; j++)
-					restOfLine += "</span>" + arr3[j];
+				var parts = extractUpToMatchingSpan(arr2[1]);
+				var footnote = parts.left;
+				var restOfLine = parts.right;
 
-				text += formatFootnoteForRte(footnote) + restOfLine.substr(7);
+				text += formatFootnoteForRte(footnote) + restOfLine;
 
 		//		text += '<span id="footnote_index_' + i + '" class="superscript">@' + restOfLine;
 			}
@@ -185,11 +211,11 @@ var FootnotesInRte = Class.create({
 			text = arr[0];
 			for (var i = 1; i < arr.length; i++) {
 				// each element of the arr now contains the footnote, then </span><span class="tip">tooltip</span></a>more text.
-				var arr2 = arr[i].split("</span>");	// TODO: this breaks if the footnote contains a span
+				var arr2 = arr[i].split("</span><span class=\"tip\">");
 				var footnote = arr2[0];
-				var more = arr2[2].substr(4);	// To get rid of the </a>
-				for (var j = 3; j < arr2.length; j++)
-					more += "</span>" + arr2[j];
+				// arr2[1] now contains the tooltip, then </a>, then possibly some unrelated text that we need to carry along.
+				var aIndex = arr2[1].indexOf("</a>") + 4;
+				var more = arr2[1].substr(aIndex);
 				text += footnotePrefix + '@' + footnoteMid + footnote + footnoteClose + more;
 			}
 			return text;
