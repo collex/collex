@@ -133,7 +133,7 @@ function initializeInplaceRichEditor(element_id, action)
 				page: 'layout',
 				rows: [
 					[ { textarea: 'value', value: startingText } ],
-					[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
@@ -186,7 +186,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 			rows: [
 				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'new_exhibit_input_long' } ],
 				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
-				[ { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
@@ -305,7 +305,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 					[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
 					[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
-					[ { button: 'Save', callback: okAction }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 

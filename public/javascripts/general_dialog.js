@@ -275,9 +275,14 @@ var GeneralDialog = Class.create({
 						// you can't upload a file through Ajax.
 						form.writeAttribute({ enctype: "multipart/form-data", target: "upload_target", method: 'post' });
 						body.appendChild(new Element('iframe', { id: "upload_target", name: "upload_target", src: "#", style: "width:0;height:0;border:0px solid #fff;" }));
+					} else if (subel.rowClass !== undefined) {
+						row.addClassName(subel.rowClass);
 					}
 				});
 			});
+			var row = new Element('div');
+			row.addClassName('clear_both');
+			form.appendChild(row);
 		});
 
 		panel.setBody(body);
@@ -390,7 +395,7 @@ var MessageBoxDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { button: 'Close', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Close', callback: this.cancel } ]
 				]
 			};
 		
@@ -425,7 +430,7 @@ var ConfirmDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { button: okStr, callback: this.ok }, { button: cancelStr, callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok }, { button: cancelStr, callback: this.cancel } ]
 				]
 			};
 		
@@ -561,7 +566,7 @@ var TextInputDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: prompt, klass: 'text_input_dlg_label' }, { input: id, klass: 'text_input_dlg_input' } ],
-					[ { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 
@@ -608,7 +613,7 @@ var RteInputDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { textarea: 'textareaValue', value: value } ],
-					[ { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 

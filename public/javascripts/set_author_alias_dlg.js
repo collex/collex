@@ -88,7 +88,7 @@ var SetExhibitAuthorAlias = Class.create({
 				rows: [
 					[ { text: 'Select the user that you wish to impersonate', klass: 'new_exhibit_instructions' } ],
 					[ { select: 'user_id', klass: 'user_alias_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
-					[ { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
 

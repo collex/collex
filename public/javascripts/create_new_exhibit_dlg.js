@@ -106,7 +106,7 @@ var CreateNewExhibitWizard = Class.create({
 						[ { text: 'Step 1: Please choose a title for your new exhibit.', klass: 'new_exhibit_label' } ],
 						[ { input: 'exhibit_title', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'This is the title that will show up in the exhibit list once you decide to share it with other users. You can edit this later by selecting Edit Exhibit Profile at the top of your exhibit editing page.', klass: 'new_exhibit_instructions' } ],
-						[ { button: 'Next', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Next', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
@@ -118,7 +118,7 @@ var CreateNewExhibitWizard = Class.create({
 						[ { text: 'Choose resources from your collected objects to add to this new exhibit.', klass: 'new_exhibit_instructions' } ],
 						[ { custom: obj_selector } ],
 						[ { text: 'Any object you have collected is available for use in your exhibit. You may add or remove objects from this list at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
@@ -137,7 +137,7 @@ var CreateNewExhibitWizard = Class.create({
 						[ { input: 'exhibit_thumbnail', klass: 'new_exhibit_input_long' } ],
 						[ { page_link: '[choose thumbnail from collected objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
 						[ { text: 'The thumbnail image will appear next to your exhibit in the exhibit list once you decide to share it with other users. Please use an image that is small, so that the pages doesn\'t take too long to load. These items are optional and can be entered at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
@@ -155,7 +155,7 @@ var CreateNewExhibitWizard = Class.create({
 					rows: [
 						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
 						[ { custom: objlist, klass: 'new_exhibit_label' } ],
-						[ { button: 'Ok', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
