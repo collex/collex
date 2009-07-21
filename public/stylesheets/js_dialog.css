@@ -39,6 +39,11 @@
 	border: none;
 }
 
+.yui-skin-sam .yui-button.default button {
+	background: transparent url(/images/button_default.jpg) repeat-y scroll 0 0;
+	color: white;
+}
+
 .yui-skin-sam .yui-button button, .yui-skin-sam .yui-button a {
 	font-weight:bold;
 	line-height:1.5;
@@ -482,3 +487,4 @@ hr.linkdlg_hr {
 .last_row .yui-button {
 	float: right;
 }
+

@@ -195,11 +195,13 @@ var GeneralDialog = Class.create({
 					} else if (subel.button !== undefined) {
 						var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: subel.button });
 						row.appendChild(input);
-						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: subel.klass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						var buttonClass = subel.klass;
 						if (subel.isDefault) {
 							defaultAction[page.page] = subel.callback;
 							defaultParam[page.page] = { curr_page: page.page, destination: subel.url, dlg: This };
+							buttonClass = (buttonClass === undefined) ? "default" : buttonClass + " default" ;
 						}
+						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
 						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
