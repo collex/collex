@@ -502,7 +502,7 @@ class My9sController < ApplicationController
     else
       element_id = last_str.to_i
     end
-		footnotes = JSON.parse(params['footnotes'])
+		#footnotes = JSON.parse(params['footnotes'])
 
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
@@ -510,13 +510,15 @@ class My9sController < ApplicationController
       value = params['value']
       value = clean_up_links(value)
       value = remove_empty_spans(value)
-			value = add_footnotes(value, footnotes)
+#			value = add_footnotes(value, footnotes)
       if first_one
         element.element_text = value
       else
         element.element_text2 = value
       end
       element.save
+		else
+			element = nil	#the user probably wasn't logged in; this will cause an error to be reported below.
     end
     if element == nil
       render :text =>'Error in editing section. Please refresh your browser page.'
@@ -585,7 +587,7 @@ class My9sController < ApplicationController
     text = params['ill_text']
     alt_text = params['alt_text']
     nines_object = params['nines_object']
-		footnotes = JSON.parse(params['footnotes'])
+		#footnotes = JSON.parse(params['footnotes'])
 
     illustration = ExhibitIllustration.find_by_id(illustration_id)
     if illustration != nil
@@ -595,7 +597,9 @@ class My9sController < ApplicationController
       if can_edit_exhibit(user, get_exhibit_id_from_element(element))
         illustration.illustration_type = type
         illustration.image_url = image_url
-				text = add_footnotes(text, footnotes)
+				text = clean_up_links(text)
+				text = remove_empty_spans(text)
+				#text = add_footnotes(text, footnotes)
         illustration.illustration_text = text
         illustration.caption1 = caption1
         illustration.caption2 = caption2
@@ -894,6 +898,7 @@ class My9sController < ApplicationController
   def clean_up_links(text)
     # This converts any <a href="xxx">yyy</a> to
     #<span class="ext_linklike" real_link="xxx" title="External Link: xxx">yyy</span>
+		#However, it needs to ignore any footnotes, which also look like links.
     # find all the spans
     a_str = '<a'
     arr = text.split(a_str)
@@ -905,10 +910,15 @@ class My9sController < ApplicationController
       if is_first
         is_first = false  # skip the first section since we dealt with it above.
       else
-        url = extract_link_from_encoded_a(a)
-        visible_text = extract_inner_html(a)
-        rest_of_it = extract_trailing_html(a)
-        str += "<span class='ext_linklike' real_link=\"#{url}\" title=\"External Link: #{url}\">#{visible_text}</span>#{rest_of_it}"
+				footnote_sig = "href=\"#\" onclick='var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\""
+				if a.include?(footnote_sig)	# this is a footnote, keep it intact
+					str += a_str + a
+				else
+					url = extract_link_from_encoded_a(a)
+					visible_text = extract_inner_html(a)
+					rest_of_it = extract_trailing_html(a)
+					str += "<span class='ext_linklike' real_link=\"#{url}\" title=\"External Link: #{url}\">#{visible_text}</span>#{rest_of_it}"
+	      end
       end
     end
     return str
@@ -926,33 +936,33 @@ class My9sController < ApplicationController
     return text
   end
 
-	def get_footnote_from_num(footnotes, index)
-		footnotes.each {|f|
-			return f['value'] if f['field'] == "footnotes_#{index}"
-		}
-		return ""
-	end
-
-	def add_footnotes(text, footnotes)
-		# This takes a set of text in the form: "...<span id="footnote_index_1" class="superscript">1</span>..."
-		# and an array where each item is { key: "footnote_index_1", value: "whatever" }
-		# They should match up, but that is not guaranteed. Where they match up, they should be changed to:
-		# <a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">2</a><span class="hidden">contents of the footnote</span>
-		marker_text_start = '<span id="footnote_index_'
-		replacement_text_template = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">@</a><span class="hidden">%FOOTNOTE%</span>'
-		text_arr = text.split(marker_text_start)
-		return text if text_arr.length == 1
-		1.upto(text_arr.length-1) do |i|
-			# each of these starts with 999">999</span>.
-			# The first number is important: it is the index into the footnotes array.
-			index = text_arr[i].to_i
-			arr = text_arr[i].split('</span>', 2)
-			postfix = arr[1]
-			foot = get_footnote_from_num(footnotes, index)
-			text_arr[i] = replacement_text_template.gsub("%FOOTNOTE%", foot) + postfix
-		end
-		return text_arr.join('')
-	end
+#	def get_footnote_from_num(footnotes, index)
+#		footnotes.each {|f|
+#			return f['value'] if f['field'] == "footnotes_#{index}"
+#		}
+#		return ""
+#	end
+#
+#	def add_footnotes(text, footnotes)
+#		# This takes a set of text in the form: "...<span id="footnote_index_1" class="superscript">1</span>..."
+#		# and an array where each item is { key: "footnote_index_1", value: "whatever" }
+#		# They should match up, but that is not guaranteed. Where they match up, they should be changed to:
+#		# <a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">2</a><span class="hidden">contents of the footnote</span>
+#		marker_text_start = '<span id="footnote_index_'
+#		replacement_text_template = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">@</a><span class="hidden">%FOOTNOTE%</span>'
+#		text_arr = text.split(marker_text_start)
+#		return text if text_arr.length == 1
+#		1.upto(text_arr.length-1) do |i|
+#			# each of these starts with 999">999</span>.
+#			# The first number is important: it is the index into the footnotes array.
+#			index = text_arr[i].to_i
+#			arr = text_arr[i].split('</span>', 2)
+#			postfix = arr[1]
+#			foot = get_footnote_from_num(footnotes, index)
+#			text_arr[i] = replacement_text_template.gsub("%FOOTNOTE%", foot) + postfix
+#		end
+#		return text_arr.join('')
+#	end
 
   # Some private convenience functions to make the above routine clearer
   def extract_link_from_encoded_a(str)

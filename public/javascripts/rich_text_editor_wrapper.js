@@ -393,14 +393,17 @@ var RichTextEditor = Class.create({
 				return;
 
 			var editor = This.editor;
+			var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+			var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+
 			editor.on('toolbarLoaded', function() {	// 'this' is now the editor
 			    //When the toolbar is loaded, add a listener to the insertimage button
 			    editor.toolbar.on('createfootnoteClick', function() {
 					var footnoteSelPos = null;
 					var setFootnote = function(value) {
-						var index = footnoteCallback(value);
+						var insertedText = footnoteCallback('add', value);
 						var html = editor.getEditorHTML();
-						html = html.substr(0, footnoteSelPos) + "<span id='footnote_index_" + index + "' class='superscript'>@</span>" + html.substr(footnoteSelPos);
+						html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
 						editor.setEditorHTML(html);
 						};
 
@@ -417,12 +420,30 @@ var RichTextEditor = Class.create({
 
 					footnoteSelPos = result.endPos;
 
-					var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-					var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 
 					return true;
 				}, this, true);
+
+			    editor.on('beforeEditorClick', function(ev) {
+					// for some reason, Prototype's $ isn't defined here.
+					var target = ev.ev.explicitOriginalTarget;
+					var cls = target.className;
+					if (cls === 'rte_footnote') {
+						var setFootnote = function(value) {
+							var insertedText = footnoteCallback('edit', value);
+							target.innerHTML = insertedText;
+//							var html = editor.getEditorHTML();
+//							html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
+//							editor.setEditorHTML(html);
+							};
+						var footnote = target.childNodes[0];	// this is the span that hides the footnote
+						new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+
+					}
+					return true;
+				}, this, true);
+
 			}, this, true);
 		};
 
@@ -556,11 +577,12 @@ var RichTextEditor = Class.create({
 			  width: width + 'px',
 				height: '200px',
 				// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;}',
+				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;} .rte_footnote { background: url(/images/rte_footnote.jpg) center right no-repeat; padding-right: 10px; } a.rte_footnote{ position:relative; } a.rte_footnote:hover { z-index:25; } a.rte_footnote span { display: none; } a.rte_footnote:hover span.tip { display: block; position:absolute; top:1em; left:.2em; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em; }',
 				toolbar: toolbar,
 	            //dompath: true,
 	            animate: true
 		});
+
 
 		if (hasDropCap)
 			processDropCap();

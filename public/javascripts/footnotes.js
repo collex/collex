@@ -17,7 +17,7 @@
 /*global RteInputDlg */
 /*global $, Element, Class */
 /*global YAHOO */
-/*extern FootnoteAbbrev, FootnoteAbbrevArray */
+/*extern FootnoteAbbrev, FootnotesInRte */
 
 var FootnoteAbbrev = Class.create({
 	initialize: function(footnoteStr, field){
@@ -109,65 +109,159 @@ var FootnoteAbbrev = Class.create({
 	}
 });
 
-var FootnoteAbbrevArray = Class.create({
-	initialize: function(footnoteStrs, field){
-		var footnotes = [];
-		
-		var footnoteDeleteCallback = null;
-		this.setFootnoteDeleteCallback = function(fn) {
-			footnoteDeleteCallback = fn;
+
+//var addFootnoteDeleteCallback = function(dlg, footnoteDivs) {
+//	var footnoteDeleteCallback = function(index) {
+//		var id = "footnote_index_" + index;
+//		var editor = dlg.getEditor(0);
+//		var html = editor.editor.getEditorHTML();
+//		var left = html.indexOf('<span id="'+id);
+//		var mid = html.substr(left);
+//		var right = mid.indexOf('</span>');
+//		html = html.substr(0, left) + mid.substr(right+7);
+//		editor.editor.setEditorHTML(html);
+//
+//	};
+//	footnoteDivs.setFootnoteDeleteCallback(footnoteDeleteCallback);
+//};
+
+
+var FootnotesInRte = Class.create({
+	initialize: function(){
+		//var footnotes = [];
+
+		var footnotePrefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
+		var footnoteMid = '</a><span class="hidden">';
+		var footnoteClose = '</span>';
+
+		var rteFootnotePrefix1 = '<a class="rte_footnote">';
+		var rteFootnotePrefix2 = '<span>';
+		var rteFootnoteMid = '</span><span class="tip"><em>Click this footnote to edit</em><br /><br />';
+		var rteFootnoteClose1 = '</a>';
+		var rteFootnoteClose2 = '</span>';
+
+		var formatFootnoteForRteInner = function(str) {
+			var footnoteAbbrev = str.substr(0, 15);
+			if (footnoteAbbrev !== str)
+				footnoteAbbrev += "...";
+			return rteFootnotePrefix2 + str + rteFootnoteMid + footnoteAbbrev + rteFootnoteClose2;
 		};
 
-		var deleteCallback = function(footnote_field) {
-			var arr = footnote_field.split('_');
-			var index = parseInt(arr[arr.length-1]);
-			var el = $(footnote_field).up();
-			el.hide();
-			footnotes[index] = null;
-			if (footnoteDeleteCallback)
-				footnoteDeleteCallback(index);
+		var formatFootnoteForRte = function(str) {
+			return rteFootnotePrefix1 + formatFootnoteForRteInner(str) + rteFootnoteClose1;
 		};
 
-		var parent = new Element("div");
-		var isInitializing = true;
+		this.preprocessFootnotes = function(text) {
+			// Preprocess the text to pull out the footnotes.
+			// We will get something in the form: ...<a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>...
+			// We want to change it to:
+			//	<a class="rte_footnote">
+			//		<span>footnote</span>
+			//		<span class="tip">tooltip</span>
+			//	</a>
+			// and extract the footnote to put in an array of strings.
+			var arr = text.split(footnotePrefix);
+			text = arr[0];
+			for (var i = 1; i < arr.length; i++) {
+				// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
+				var arr2 = arr[i].split(footnoteMid);
+				var footnote = arr2[1];
+				var arr3 = footnote.split(footnoteClose);
+				footnote = arr3[0];
+				var restOfLine = "";
+				for (var j = 1; j < arr3.length; j++)
+					restOfLine += "</span>" + arr3[j];
 
-		this.addFootnote = function(str) {
-			var newFoot = new FootnoteAbbrev(str, field+'_'+(footnotes.length+1));
-			footnotes.push(newFoot);
-			parent.appendChild(newFoot.getMarkup());
-			if (!isInitializing)
-				newFoot.delayedSetup();
-			newFoot.deleteCallback(deleteCallback);
-			return footnotes.length;
+				text += formatFootnoteForRte(footnote) + restOfLine.substr(7);
+
+		//		text += '<span id="footnote_index_' + i + '" class="superscript">@' + restOfLine;
+			}
+			return text;
 		};
 
-		footnoteStrs.each(function(str){
-			this.addFootnote(str);
-		}, this);
-		isInitializing = false;
+		this.postprocessFootnotes = function(text) {
+			// Change the RTE's visual format for footnotes back into the format that is expected in the database.
+			var arr = text.split(rteFootnotePrefix1+rteFootnotePrefix2);
+			text = arr[0];
+			for (var i = 1; i < arr.length; i++) {
+				// each element of the arr now contains the footnote, then </span><span class="tip">tooltip</span></a>more text.
+				var arr2 = arr[i].split("</span>");	// TODO: this breaks if the footnote contains a span
+				var footnote = arr2[0];
+				var more = arr2[2].substr(4);	// To get rid of the </a>
+				for (var j = 3; j < arr2.length; j++)
+					more += "</span>" + arr2[j];
+				text += footnotePrefix + '@' + footnoteMid + footnote + footnoteClose + more;
+			}
+			return text;
+		};
 
-		this.getMarkup = function() {
+//		var footnoteDeleteCallback = null;
+//		this.setFootnoteDeleteCallback = function(fn) {
+//			footnoteDeleteCallback = fn;
+//		};
+//
+//		var deleteCallback = function(footnote_field) {
+//			var arr = footnote_field.split('_');
+//			var index = parseInt(arr[arr.length-1]);
+//			var el = $(footnote_field).up();
+//			el.hide();
+//			footnotes[index] = null;
+//			if (footnoteDeleteCallback)
+//				footnoteDeleteCallback(index);
+//		};
+
+//		var parent = new Element("div");
+//		var isInitializing = true;
+
+		this.addFootnote = function(ty, str) {
+			if (ty === 'add') {
+				return formatFootnoteForRte(str);
+//				var newFoot = new FootnoteAbbrev(str, field+'_'+(footnotes.length+1));
+//				footnotes.push(newFoot);
+//				parent.appendChild(newFoot.getMarkup());
+//				if (!isInitializing)
+//					newFoot.delayedSetup();
+//				newFoot.deleteCallback(deleteCallback);
+//				return footnotes.length;
+			} else if (ty === 'edit') {
+				return formatFootnoteForRteInner(str);
+//				var setFootnote = function(value) {
+//					alert("new footnote value would be: " + value);
+//				};
+//				var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+//				var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+//				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: str, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+			}
+			return 0;
+		};
+
+//		footnoteStrs.each(function(str){
+//			this.addFootnote(str);
+//		}, this);
+//		isInitializing = false;
+
+//		this.getMarkup = function() {
+////			footnotes.each(function(f){
+////				parent.appendChild(f.getMarkup());
+////			});
+//			return parent;
+//		};
+//
+//		this.getSelection = function() {
+//			var value = [];
 //			footnotes.each(function(f){
-//				parent.appendChild(f.getMarkup());
+//				if (f) {
+//					value.push(f.getSelection());
+//				}
 //			});
-			return parent;
-		};
-
-		this.getSelection = function() {
-			var value = [];
-			footnotes.each(function(f){
-				if (f) {
-					value.push(f.getSelection());
-				}
-			});
-			return { field: field, value: value.toJSON() };
-		};
-
-		this.delayedSetup = function() {
-			footnotes.each(function(f){
-				f.delayedSetup();
-			});
-		};
+//			return { field: field, value: value.toJSON() };
+//		};
+//
+//		this.delayedSetup = function() {
+//			footnotes.each(function(f){
+//				f.delayedSetup();
+//			});
+//		};
 	}
 });
 

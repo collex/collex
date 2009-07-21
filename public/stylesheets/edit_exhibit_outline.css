@@ -195,3 +195,8 @@
 .outline_tree_element_selected .outline_right_controls {
 	display: block;
 }
+
+.rte_footnote {
+	background: url(/images/rte_footnote.jpg) center right no-repeat;
+	padding-right: 13px;
+}

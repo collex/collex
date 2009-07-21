@@ -21,10 +21,10 @@
 
 /*global document */
 /*global $, $$, Class */
-/*global GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnoteAbbrevArray, recurseUpdateWithAjax */
+/*global GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnotesInRte, recurseUpdateWithAjax */
 /*global gIllustrationTypes */
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
-/*extern InplaceObjects, addFootnoteDeleteCallback, ajaxUpdateFromElement, inplaceObjectManager, preprocessFootnotes */
+/*extern InplaceObjects, inplaceObjectManager */
 
 // This is a convenience class with all the common elements needed to initialize any of our inplace types.
 // It is a singleton, and it delays the initialization until the Dom is ready. Just call the initDiv method
@@ -75,66 +75,23 @@ var InplaceObjects = Class.create({
 			else
 				 initializeInplace(element_id, action, setupMethod);
 		};
+		this.ajaxUpdateFromElement = function(el, data, callback) {
+			var action = el.readAttribute('action');
+			var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
+
+			// If we have a comma separated list, we want to send the request synchronously to each action
+			// (Doing this synchronously eliminates any race condition: The first call can update the data and
+			// the rest of the calls just update the page.
+			var actions = action.split(',');
+			var action_elements = ajax_action_element_id.split(',');
+			recurseUpdateWithAjax(actions, action_elements, callback, null, data);
+		};
 	}
 });
 
 var inplaceObjectManager = new InplaceObjects();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var ajaxUpdateFromElement = function(el, data, callback) {
-	var action = el.readAttribute('action');
-	var ajax_action_element_id = el.readAttribute('ajax_action_element_id');
-
-	// If we have a comma separated list, we want to send the request synchronously to each action
-	// (Doing this synchronously eliminates any race condition: The first call can update the data and
-	// the rest of the calls just update the page.
-	var actions = action.split(',');
-	var action_elements = ajax_action_element_id.split(',');
-	recurseUpdateWithAjax(actions, action_elements, callback, null, data);
-};
-
-var preprocessFootnotes = function(text) {
-	// Preprocess the text to pull out the footnotes.
-	// We will get something in the form: ...<a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>...
-	// We want to change it to: ...<span id="footnote_index_%NUMBER%" class="superscript">%NUMBER%</span>...
-	// and extract the footnote to put in an array of strings.
-	var existingFootnotes = [];
-	var footnotePrefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
-	var footnoteMid = '</a><span class="hidden">';
-	var footnoteClose = '</span>';
-	var arr = text.split(footnotePrefix);
-	text = arr[0];
-	for (var i = 1; i < arr.length; i++) {
-		// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
-		var arr2 = arr[i].split(footnoteMid);
-		var footnote = arr2[1];
-		var arr3 = footnote.split(footnoteClose);
-		footnote = arr3[0];
-		var restOfLine = "";
-		for (var j = 1; j < arr3.length; j++)
-			restOfLine += "</span>" + arr3[j];
-
-		text += '<span id="footnote_index_' + i + '" class="superscript">@' + restOfLine;
-		existingFootnotes.push(footnote);
-	}
-	return { text: text, existingFootnotes: existingFootnotes };
-};
-
-var addFootnoteDeleteCallback = function(dlg, footnoteDivs) {
-	var footnoteDeleteCallback = function(index) {
-		var id = "footnote_index_" + index;
-		var editor = dlg.getEditor(0);
-		var html = editor.editor.getEditorHTML();
-		var left = html.indexOf('<span id="'+id);
-		var mid = html.substr(left);
-		var right = mid.indexOf('</span>');
-		html = html.substr(0, left) + mid.substr(right+7);
-		editor.editor.setEditorHTML(html);
-
-	};
-	footnoteDivs.setFootnoteDeleteCallback(footnoteDeleteCallback);
-};
 
 function initializeInplaceRichEditor(element_id, action)
 {
@@ -157,10 +114,9 @@ function initializeInplaceRichEditor(element_id, action)
 		else
 			startingText = $(element_id).innerHTML;
 
-		var ret = preprocessFootnotes(startingText);
-		startingText = ret.text;
+		var footnoteHandler = new FootnotesInRte();
 
-		var footnoteDivs = new FootnoteAbbrevArray(ret.existingFootnotes, 'footnotes');
+		startingText = footnoteHandler.preprocessFootnotes(startingText);
 
 		var ok = function(event, params)
 		{
@@ -168,15 +124,15 @@ function initializeInplaceRichEditor(element_id, action)
 
 			var data = params.dlg.getAllData();
 			data.element_id = element_id;
+			data.value = footnoteHandler.postprocessFootnotes(data.value);
 			params.dlg.setFlash('Updating Text...', false);
-			ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};
 
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { textarea: 'value', value: startingText } ],
-					[ { custom: footnoteDivs } ],
 					[ { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
@@ -187,8 +143,7 @@ function initializeInplaceRichEditor(element_id, action)
 
 		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-		dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteDivs.addFootnote);
-		addFootnoteDeleteCallback(dlg, footnoteDivs);
+		dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
 		dlg.center();
 
 		var input = $('value');
@@ -221,7 +176,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 			data.element_id = el_id;
 
 			dlg.setFlash('Updating Header...', false);
-			ajaxUpdateFromElement($(el_id), data, initializeElementEditing);
+			inplaceObjectManager.ajaxUpdateFromElement($(el_id), data, initializeElementEditing);
 
 			params.dlg.cancel();
 		};
@@ -288,10 +243,9 @@ function initializeInplaceIllustrationEditor(element_id, action)
 				values.nines_object = hidden.innerHTML;
 		});
 
-		var ret = preprocessFootnotes(values.ill_text);
-		values.ill_text = ret.text;
+		var footnoteHandler = new FootnotesInRte();
 
-		var footnoteDivs = new FootnoteAbbrevArray(ret.existingFootnotes, 'footnotes');
+		values.ill_text = footnoteHandler.preprocessFootnotes(values.ill_text);
 
 		var selChanged = function(id, currSelection) {
 			if (currSelection === gIllustrationTypes[0]) {
@@ -327,9 +281,10 @@ function initializeInplaceIllustrationEditor(element_id, action)
 			var data = params.dlg.getAllData();
 			data.ill_illustration_id = element_id;
 			data.element_id = element_id;
+			data.ill_text = footnoteHandler.postprocessFootnotes(data.ill_text);
 
 			params.dlg.setFlash('Updating Illustration...', false);
-			ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};
 
 		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
@@ -349,7 +304,6 @@ function initializeInplaceIllustrationEditor(element_id, action)
 					  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
 					[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
-					[ { custom: footnoteDivs, klass: 'text_only' } ],
 					[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
 					[ { button: 'Save', callback: okAction }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
@@ -357,8 +311,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteDivs.addFootnote);
-		addFootnoteDeleteCallback(dlg, footnoteDivs);
+		dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
 		dlg.changePage('layout', null);
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
