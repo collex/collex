@@ -22,7 +22,7 @@
     	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 	<table>
         <tr><td colspan='2'><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword"}, {:min_chars => 2}-%></td><td><input id="search_submit" type="submit" value="Search" /></td></tr>
-        <tr><td colspan='3'><div class="search_entry_instructions">Other search options:</div></td></tr>
+		<tr><td colspan='3'><div class="search_help_icon"><a href="/help.html"><img height="18" src="/images/help_thumb.png" alt="help" /></a></div><div class="search_entry_instructions">Other search options:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" /></td></tr>
         <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" /></td></tr>
         <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" /></td></tr>
