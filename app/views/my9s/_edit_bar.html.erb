@@ -20,6 +20,13 @@
 <% ajax_div_id = "'exhibit_page,exhibit_builder_outline_content'" -%>
 <% ajax_params = "'page=#{page.id}&element=#{element.position}&verb='" -%>
 <div class="edit_bar hidden">
+	<div class="edit_bar_right">
+		<%= link_to_function( up_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'up');", { :title => 'Move Element Up', :class => 'modify_link' }) if element.position > 1 %>
+		<%= link_to_function( down_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'down');", { :title => 'Move Element Down', :class => 'modify_link' }) if element.position < page.exhibit_elements.length %>
+		<% if page.exhibit_elements.length > 1 -%>
+			<span class="close_link"><%= link_to_function del_char(), "doAjaxLinkConfirm(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element', :class => 'modify_link' } %></span>
+		<% end -%>
+	</div>
 	<a id="top-of-<%= element.id %>" name="top-of-<%= element.id %>">
 		<span class="edit_exhibit_element_number"><%= element_count %></span>
 	</a>
@@ -48,9 +55,4 @@
 	</span>
 	<%= link_to_function("[New Section]", "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'insert');", { :title => 'New Section', :class => 'modify_link' }) %>
 	<%= link_to_function( "[outline]", "showExhibitOutline(#{element.id}, #{page.position});", { :title => 'Show Outline', :class => 'nav_link' }) %>
-	<%= link_to_function( up_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'up');", { :title => 'Move Element Up', :class => 'modify_link' }) if element.position > 1 %>
-	<%= link_to_function( down_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'down');", { :title => 'Move Element Down', :class => 'modify_link' }) if element.position < page.exhibit_elements.length %>
-	<% if page.exhibit_elements.length > 1 -%>
-		<span class="close_link"><%= link_to_function del_char(), "doAjaxLinkConfirm(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element', :class => 'modify_link' } %></span>
-	<% end -%>
 </div>

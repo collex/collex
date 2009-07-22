@@ -109,6 +109,11 @@ font-weight:bold;
 /*	vertical-align:super;*/
 }
 
+.edit_bar_right {
+	float: right;
+	padding-right:4px;
+}
+
 .exhibit_sharing {
 	clear: both;
 }
