@@ -49,6 +49,20 @@ class ObjectActivity < ActiveRecord::Base
 		num_users_with_collect = self.get_num_uniq_users('collect')
 		ave_num_collect_per_user = num_users_with_collect > 0 ? self.get_total('collect') / num_users_with_collect : 0
 
+		# TODO-PER: The commented code below will return the tags for the entire history of the site, but it is really slow. Figure out a faster way to do this.
+#		all_collected = CollectedItem.all()
+#		all_tagassigns = Tagassign.all()
+#		user_tags = {}
+#		all_tagassigns.each { |tag|
+#			user_id = tag.collected_item.user_id
+#			user_tags[user_id] = true
+#		}
+#
+#		user_coll = {}
+#		all_collected.each { |coll|
+#			user_coll[coll.user_id] = true
+#		}
+
 		return { :objects_collected_today => objects_collected_today, :objects_collected_this_week => objects_collected_this_week,
 			:objects_collected_this_month => objects_collected_this_month, :objects_collected_this_year => objects_collected_this_year,
 			:objects_tagged_today => objects_tagged_today, :objects_tagged_this_week => objects_tagged_this_week,
@@ -56,6 +70,8 @@ class ObjectActivity < ActiveRecord::Base
 
 			:num_users_with_tags => num_users_with_tags, :ave_num_tags_per_user => ave_num_tags_per_user,
 			:num_users_with_collect => num_users_with_collect, :ave_num_collect_per_user => ave_num_collect_per_user
+#			:num_users_with_tags => user_tags.length, :ave_num_tags_per_user => user_tags.length > 0 ? all_tagassigns.length / user_tags.length : 0,
+#			:num_users_with_collect => user_coll.length, :ave_num_collect_per_user => user_coll.length > 0 ? all_collected.length / user_coll.length : 0
 		}
 	end
 
