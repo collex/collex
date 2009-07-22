@@ -172,7 +172,7 @@ var FootnotesInRte = Class.create({
 			}
 			left = left.substr(1);	// because we are placing '<' at the beginning of each concatination, we'll have an extra one at the beginning.
 
-			var right = "";
+			var right = arr[i].substr(6);	// this is all the stuff after "/span>"
 			for (var j = i+1; j < arr.length; j++) {
 				right += '<' + arr[j];
 			}
