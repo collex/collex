@@ -39,27 +39,47 @@ class LoginInfo < ActiveRecord::Base
 		week = 1.week.ago
 		month = 30.days.ago
 		year = 1.year.ago
-		unique_logins_today = self.unique_recs('login', day)
-		unique_logins_this_week = self.unique_recs('login', week)
-		unique_logins_this_month = self.unique_recs('login', month)
-		unique_logins_this_year = self.unique_recs('login', year)
-		signups_today = self.unique_recs('signup', day)
-		signups_this_week = self.unique_recs('signup', week)
-		signups_this_month = self.unique_recs('signup', month)
-		signups_this_year = self.unique_recs('signup', year)
 
-		return { :unique_logins_today => unique_logins_today, :unique_logins_this_week => unique_logins_this_week,
-			:unique_logins_this_month => unique_logins_this_month, :unique_logins_this_year => unique_logins_this_year,
-			:signups_today => signups_today, :signups_this_week => signups_this_week,
-			:signups_this_month => signups_this_month, :signups_this_year => signups_this_year
+		recs = LoginInfo.all()
+		unique_logins_today = {}
+		unique_logins_this_week = {}
+		unique_logins_this_month = {}
+		unique_logins_this_year = {}
+		signups_today = {}
+		signups_this_week = {}
+		signups_this_month = {}
+		signups_this_year = {}
+		recs.each { |rec|
+			if rec.action == 'login' && rec.updated_at > day
+				unique_logins_today[rec.username] = true
+			end
+			if rec.action == 'login' && rec.updated_at > week
+				unique_logins_this_week[rec.username] = true
+			end
+			if rec.action == 'login' && rec.updated_at > month
+				unique_logins_this_month[rec.username] = true
+			end
+			if rec.action == 'login' && rec.updated_at > year
+				unique_logins_this_year[rec.username] = true
+			end
+			if rec.action == 'signup' && rec.updated_at > day
+				signups_today[rec.username] = true
+			end
+			if rec.action == 'signup' && rec.updated_at > week
+				signups_this_week[rec.username] = true
+			end
+			if rec.action == 'signup' && rec.updated_at > month
+				signups_this_month[rec.username] = true
+			end
+			if rec.action == 'signup' && rec.updated_at > year
+				signups_this_year[rec.username] = true
+			end
 		}
-	end
-	
-	private
-	def self.unique_recs(action, period)
-		recs = LoginInfo.all(:conditions => [ 'action = ? AND updated_at > ?', action,  period])
-		results = {}
-		recs.each { |rec| results[rec.username] = true }
-		return results.length
+
+		return { :all_recs => recs, :unique_logins_today => unique_logins_today.length, :unique_logins_this_week => unique_logins_this_week.length,
+			:unique_logins_this_month => unique_logins_this_month.length, :unique_logins_this_year => unique_logins_this_year.length,
+			:signups_today => signups_today.length, :signups_this_week => signups_this_week.length,
+			:signups_this_month => signups_this_month.length, :signups_this_year => signups_this_year.length
+		}
 	end
 end

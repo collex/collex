@@ -130,7 +130,7 @@
 			<th>action</th>
 			<th>time</th>
 		</tr>
-		<% logins = LoginInfo.all() -%>
+		<% logins = login_stats[:all_recs] -%>
 		<% for login in logins -%>
 		<tr>
 			<td><%= h login.username %></td>
