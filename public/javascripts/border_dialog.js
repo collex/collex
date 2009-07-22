@@ -78,9 +78,9 @@ BorderDialog.prototype = {
 			if (par.hasClassName('outline_section_with_border'))
 			{
 				cls += " border_sides";
-				if (prev === undefined)
+				if (prev === null)
 					cls += " border_top";
-				if (next === undefined)
+				if (next === null)
 					cls += " border_bottom";
 			}
 			var inner = el.innerHTML;
