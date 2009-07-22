@@ -159,6 +159,8 @@ padding-top: 21px;	/* safari */
 }
 
 .edit_bar .close_link {
+	font-size: 1.1em;
+	font-weight: bold;
 }
 
 .exhibit_nextlink {
