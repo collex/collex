@@ -59,7 +59,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	var bFound = false;
 	allInputs.each(function(el) {
 		if (el.value.length > 0)
-		bFound = true;
+			bFound = true;
 	});
 	
 	if (!bFound) {

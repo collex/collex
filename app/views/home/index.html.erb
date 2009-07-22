@@ -17,7 +17,7 @@
 <% current_page "HOME" -%>
     	<div id="search_container">
         	<div id="search_box">
-				<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search' } ) %>
+				<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search', :onsubmit => "return searchValidationHome('search_phrase', 'search_button');"  } ) %>
 	            	<strong>Search NINES:</strong><br />
 	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" /> 
 	                <div id="search_note_container">

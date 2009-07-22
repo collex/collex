@@ -60,7 +60,7 @@ class GetIncludeFileList
 			when :view_exhibit
 				global = [ 'modal_dialog', 'hide_spinner', 'general_dialog', 'renumber_footnotes' ]
 			when :home
-				local = [ 'get_news_feed' ]
+				local = [ 'get_news_feed', 'search_validation_home' ]
 			when :exhibits
 				local = [ 'thumbnail_resize' ]
 		end
