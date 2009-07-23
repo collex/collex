@@ -582,7 +582,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 
 	var pages = [ profile, choose_thumbnail ];
 
-	var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "New Exhibit Wizard" };
+	var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "Edit Exhibit Profile" };
 	var dlg = new GeneralDialog(params);
 	this.changeView(null, { curr_page: '', destination: 'profile', dlg: dlg });
 	dlg.center();
