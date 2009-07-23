@@ -130,7 +130,7 @@ var FootnotesInRte = Class.create({
 	initialize: function(){
 		//var footnotes = [];
 
-		var footnotePrefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
+		var footnotePrefix = '<a href="#" onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
 		var footnoteMid = '</a><span class="hidden">';
 		var footnoteClose = '</span>';
 
@@ -182,7 +182,7 @@ var FootnotesInRte = Class.create({
 
 		this.preprocessFootnotes = function(text) {
 			// Preprocess the text to pull out the footnotes.
-			// We will get something in the form: ...<a href="#" onclick='var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>...
+			// We will get something in the form: ...<a href="#" onclick='return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;' class="superscript">%NUMBER%</a><span class="hidden">%FOOTNOTE%</span>...
 			// We want to change it to:
 			//	<a class="rte_footnote">
 			//		<span>footnote</span>

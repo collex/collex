@@ -369,7 +369,12 @@ private
     str = str.gsub("'", '&apos;')
     return str
   end
-  
+
+	def denature_footnote_links(text)
+		text = text.gsub("onclick=\'var footnote = $(this).next(); new MessageBoxDlg", "onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg")
+		return text
+	end
+
   def decode_exhibit_links(text)
     # This routine turns our special <span> into a standard <a>
     #<span class="ext_linklike" real_link="xxx" title="NINES Object: xxx">yyy</span>

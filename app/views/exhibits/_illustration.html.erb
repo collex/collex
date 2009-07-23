@@ -50,7 +50,7 @@ end -%>
 	<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
 		<% create_resizable = "<script type='text/javascript'>\n\tinitializeResizableTextualElement('illustration_img_#{illustration_id}');\n</script>\n" -%>
 	<% end -%>
-	<% illustration_text = illustration.illustration_text -%>
+	<% illustration_text = denature_footnote_links(illustration.illustration_text) -%>
 <% else -%>
 	<% illustration_text = decode_exhibit_links(illustration.illustration_text) -%>
 	<% element_id = -1 -%>

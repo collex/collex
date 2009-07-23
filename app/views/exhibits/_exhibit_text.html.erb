@@ -19,7 +19,7 @@
 	<% div_id = "text_#{element.id}" -%>
 	<% div_id += "_#{which}" if which != "only" -%>
 	<div id='<%= div_id %>' class="exhibit_text">
-		<%= (which == 'right' ? element.element_text2 : element.element_text) %>
+		<%= (which == 'right' ? denature_footnote_links(element.element_text2) : denature_footnote_links(element.element_text)) %>
 	</div>
 	<script type="text/javascript">
 		if(window.initializeInplaceRichEditor)

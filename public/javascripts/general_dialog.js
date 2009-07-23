@@ -590,8 +590,9 @@ var RteInputDlg = Class.create({
 		var value = params.value;
 		var populate_nines_obj_url = params.populate_nines_obj_url;
 		var progress_img = params.progress_img;
+		var extraButton = params.extraButton;
 
-		// This puts up a modal dialog that asks for a input from an RTE, then calls the when the user presses ok.
+		// This puts up a modal dialog that asks for a input from an RTE, then calls the okCallback when the user presses ok.
 		this.class_type = 'RteInputDlg';	// for debugging
 
 		// private variables
@@ -618,6 +619,9 @@ var RteInputDlg = Class.create({
 					[ { rowClass: 'last_row' }, { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
 				]
 			};
+
+		if (extraButton !== undefined)
+			dlgLayout.rows[1].push({ button: extraButton.label, callback: extraButton.callback });
 
 		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(dlgparams);

@@ -910,9 +910,9 @@ class My9sController < ApplicationController
       if is_first
         is_first = false  # skip the first section since we dealt with it above.
       else
-				footnote_sig = "href=\"#\" onclick='var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\""
+				footnote_sig = "href=\"#\" onclick='return false; var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\""
 				if a.include?(footnote_sig)	# this is a footnote, keep it intact
-					str += a_str + a
+					str += a_str + a.gsub("onclick='return false; var footnote = $(this).next();", "onclick='var footnote = $(this).next();")	# get rid of of the short circuit that keeps the footnote from popping up on the edit view.
 				else
 					url = extract_link_from_encoded_a(a)
 					visible_text = extract_inner_html(a)

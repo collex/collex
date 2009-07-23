@@ -528,8 +528,14 @@ var RichTextEditor = Class.create({
 //							html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
 //							editor.setEditorHTML(html);
 							};
+
+						var deleteFootnote = function(event, params) {
+							params.dlg.cancel();
+							target.parentNode.removeChild(target);
+						};
+
 						var footnote = target.childNodes[0];	// this is the span that hides the footnote
-						new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+						new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
 
 					}
 					return true;
