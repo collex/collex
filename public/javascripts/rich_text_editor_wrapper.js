@@ -148,6 +148,16 @@ YAHOO.widget.SimpleEditor.prototype.guessSelectionEnd = function (val, selStart,
 	return -1;
 };
 
+YAHOO.widget.SimpleEditor.prototype.correctOffsetForSubstitutedText = function(text, offset) {
+	// The text that is input here potentially has & < > chars. If it does, then the offset will be off since the string that is eventually
+	// returned will contain &amp; &lt; and &gt;. This adds to the offset to compensate.
+	// Also, two or more spaces in a row are turned to &nbsp;
+	var str = "" + text;
+	str = str.substr(0, offset);
+	str = str.escapeHTML(str);
+	return str.length;
+};
+
 // Get the user's selection in offsets into the raw HTML.
 // A hash is returned with the start and end positions, and an error string, if any.
 YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireRange) {
@@ -187,9 +197,9 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireR
 	
 	// get what we need out of the selection object
 	var a = s.anchorNode;
-	var aoff = s.anchorOffset;
+	var aoff = this.correctOffsetForSubstitutedText(a.data, s.anchorOffset);
 	var f = s.focusNode;
-	var foff = s.focusOffset;
+	var foff = this.correctOffsetForSubstitutedText(f.data, s.focusOffset);
 	var selStr = s.toString();
 	
 	// In Firefox 3.0.7, at least, we sometimes aren't returned both sides of the selection. If we get at least
@@ -396,6 +406,73 @@ var RichTextEditor = Class.create({
 			var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 			var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 
+//			var old_correctOffsetForSubstitutedText = function(text, offset) {
+//				// The text we get from the RTE has escaped some values, so we need to look for all the & and add to the offset
+//				// In other words, if the user sees the string: "one & two" and attempts to insert after the &, the offset will be 5,
+//				// but the string we get from the editor is "one &amp; two", so we want to change the selection to 9.
+//				var arr = text.split('&');
+//				var currPos = 0;
+//				var is_first = true;
+//				var retValue = null;
+//				arr.each(function(frag) {
+//					if (retValue === null) {
+//						if (is_first) {
+//							currPos = frag.length;
+//							is_first = false;
+//						}
+//						else {
+//							// Offset by the size of the substitution
+//							offset += frag.indexOf(';') + 1;	// increment by the size of the substitution, plus the final ';'
+//							currPos += frag.length + 1;
+//						}
+//						if (offset <= currPos)
+//							retValue = offset;	// We really just want to break out of the loop and return offset here, but the each() doesn't let us
+//					}
+//				});
+//				return retValue === null ? offset : retValue;
+//			};
+//
+//			var correctOffsetForSubstitutedText = function(text, offset) {
+//				// The text we get from the RTE has escaped some values, so we need to look for all the & and add to the offset
+//				// In other words, if the user sees the string: "one & two" and attempts to insert after the &, the offset will be 5,
+//				// but the string we get from the editor is "one &amp; two", so we want to change the selection to 9.
+//				// check to see if the selection is between & and ;, if so increment it. So search backwards for either a & or ; or the beginning.
+//				for (var amp = offset; amp > 0; amp--) {
+//					if (text[amp] === '&') {
+//						// We found the &, so now find the ; so we know how much to add.
+//						for (var semi = offset; semi < text.length; semi++)
+//							if (text[semi] === ';')
+//								return offset + semi - amp;
+//						return offset;	// there was an & but no ;
+//					}
+//					if (text[amp] === ';') {
+//						return offset;
+//					}
+//				}
+//
+//
+//				var arr = text.split('&');
+//				var currPos = 0;
+//				var is_first = true;
+//				var retValue = null;
+//				arr.each(function(frag) {
+//					if (retValue === null) {
+//						if (is_first) {
+//							currPos = frag.length;
+//							is_first = false;
+//						}
+//						else {
+//							// Offset by the size of the substitution
+//							offset += frag.indexOf(';') + 1;	// increment by the size of the substitution, plus the final ';'
+//							currPos += frag.length + 1;
+//						}
+//						if (offset <= currPos)
+//							retValue = offset;	// We really just want to break out of the loop and return offset here, but the each() doesn't let us
+//					}
+//				});
+//				return retValue;
+//			};
+
 			editor.on('toolbarLoaded', function() {	// 'this' is now the editor
 			    //When the toolbar is loaded, add a listener to the insertimage button
 			    editor.toolbar.on('createfootnoteClick', function() {
@@ -403,6 +480,8 @@ var RichTextEditor = Class.create({
 					var setFootnote = function(value) {
 						var insertedText = footnoteCallback('add', value);
 						var html = editor.getEditorHTML();
+						
+						//footnoteSelPos = correctOffsetForSubstitutedText(html, footnoteSelPos);
 						html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
 						editor.setEditorHTML(html);
 						};
@@ -419,6 +498,13 @@ var RichTextEditor = Class.create({
 					}
 
 					footnoteSelPos = result.endPos;
+//						var html = editor.getEditorHTML();
+//						var sel1 = old_correctOffsetForSubstitutedText(html, footnoteSelPos);
+//						var sel2 = correctOffsetForSubstitutedText(html, footnoteSelPos);
+//						var str1 = html.substr(0, footnoteSelPos) + '*' + html.substr(footnoteSelPos);
+//						var str2 = html.substr(0, sel1) + '*' + html.substr(sel1);
+//						var str3 = html.substr(0, sel2) + '*' + html.substr(sel2);
+//						alert("sel: " + footnoteSelPos + ' ' + sel1 + ' ' + sel2 + "\n|" + str1 + '|' + "\n\n|" + str2 + '|' + "\n\n|" + str3 + '|');
 
 					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 
