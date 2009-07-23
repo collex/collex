@@ -240,6 +240,9 @@ var FootnotesInRte = Class.create({
 //		var isInitializing = true;
 
 		this.addFootnote = function(ty, str) {
+			if (str.length === 0)	// let the user create blank footnotes if they want, but change it to a space so that there is actually a footnote there.
+				str = " ";
+
 			if (ty === 'add') {
 				return formatFootnoteForRte(str);
 //				var newFoot = new FootnoteAbbrev(str, field+'_'+(footnotes.length+1));
@@ -258,7 +261,7 @@ var FootnotesInRte = Class.create({
 //				var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 //				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: str, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 			}
-			return 0;
+			return "";
 		};
 
 //		footnoteStrs.each(function(str){
