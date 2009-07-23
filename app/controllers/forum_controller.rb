@@ -263,7 +263,33 @@ class ForumController < ApplicationController
       render :text => "Your session has expired. Please log in again.", :status => :bad_request
     end
   end
-  
+
+	def get_nines_obj_list_with_image
+    ret = []
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user
+      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
+      objs.each {|obj|
+        hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+        if hit != nil
+          image = CachedResource.get_thumbnail_from_hit(hit)
+          if image && image.length > 0
+						obj = {}
+						obj[:id] = hit['uri']
+						obj[:img] = image
+						obj[:title] = CachedResource.fix_char_set(hit['title'][0])
+						obj[:strFirstLine] = CachedResource.fix_char_set(hit['title'][0])
+						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
+						ret.push(obj)
+					end
+        end
+      }
+      render :text => ret.to_json()
+    else
+      render :text => "Your session has expired. Please log in again.", :status => :bad_request
+    end
+	end
+
   private
   def post_object(thread, params)
     disc_type = params[:disc_type]

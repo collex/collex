@@ -20,7 +20,7 @@
 	var gLicenseInfo = <%= Exhibit.getJsonLicenseInfo() %>;
 </script>
 <div id="global_form" class="inside_edit_exhibit_box">
-	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list', '/images/ajax_loader.gif'); return false;", { :class => 'modify_link' }) %></div>
+	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list_with_image', '/images/ajax_loader.gif'); return false;", { :class => 'modify_link' }) %></div>
 	<div class="exhibit_preview_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 	<div class="exhibit_profile_preview">
 		<div><span class="exhibit_profile_label">Visible URL:</span>
