@@ -375,6 +375,13 @@ private
 		return text
 	end
 
+	def clean_header(text)
+		# This removes any tags or footnotes from inside the header text
+		text = text.gsub("<a href=\"#\" onclick='var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\", footnote.innerHTML); return false;' class=\"superscript\">@<\/a>", "")
+		text = text.gsub(/<span class="hidden">.*?<\/span>/, "")
+		return strip_tags(text)
+	end
+
   def decode_exhibit_links(text)
     # This routine turns our special <span> into a standard <a>
     #<span class="ext_linklike" real_link="xxx" title="NINES Object: xxx">yyy</span>

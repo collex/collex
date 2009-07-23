@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # exhibit_header params: int id, string text ,ActiveRecord footnote, bool is_edit_mode -%>
-<h3><span class="exhibit_header" id='inner_header_<%= id %>'><%=h strip_tags(text) %></span>
+<h3><span class="exhibit_header" id='inner_header_<%= id %>'><%=h clean_header(text) %></span>
 	<% footnote_id = ExhibitElement.find(id).header_footnote_id -%>
 	<%= draw_footnote(footnote_id, "header_#{id}", is_edit_mode) %>
 </h3>
