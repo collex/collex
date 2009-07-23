@@ -211,7 +211,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireR
 	// or the end of the selection, so we can figure it out (unless there are two repeated strings on either side of
 	// the selection, like "abc|abc" where the bar is the selection point.)
 	if (a.tagName === 'BODY' && f.tagName === 'BODY')	// Neither side was returned. We have nothing to work with.
-		return { errorMsg: "The selection cannot be determined. Try selecting in a different way." };
+		return { errorMsg: "We're sorry. We can't figure out what you've selected. Try selecting a more than one character." };
 	
 	// if we don't have the info in the selection for one side, we make that object null, and compensate below.
 	var apos = (a.tagName === 'BODY') ? null : this.getXPathPosition(a);
