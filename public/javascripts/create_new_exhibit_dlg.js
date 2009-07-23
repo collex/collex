@@ -118,7 +118,7 @@ var CreateNewExhibitWizard = Class.create({
 						[ { text: 'Choose resources from your collected objects to add to this new exhibit.', klass: 'new_exhibit_instructions' } ],
 						[ { custom: obj_selector } ],
 						[ { text: 'Any object you have collected is available for use in your exhibit. You may add or remove objects from this list at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Next', url: 'choose_other_options', callback: this.changeView }, { button: 'Previous', url: 'choose_title', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
@@ -135,9 +135,9 @@ var CreateNewExhibitWizard = Class.create({
 						[ { text: server + '/exhibits/&nbsp;', klass: 'new_exhibit_label' }, { input: 'exhibit_url', klass: 'new_exhibit_input' } ],
 						[ { text: 'Paste a link to a thumbnail image:', klass: 'new_exhibit_label' } ],
 						[ { input: 'exhibit_thumbnail', klass: 'new_exhibit_input_long' } ],
-						[ { page_link: '[choose thumbnail from collected objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
+						[ { page_link: '[Choose thumbnail from collected objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
 						[ { text: 'The thumbnail image will appear next to your exhibit in the exhibit list once you decide to share it with other users. Please use an image that is small, so that the pages doesn\'t take too long to load. These items are optional and can be entered at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax }, { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
 					]
 				};
 
