@@ -152,6 +152,10 @@ YAHOO.widget.SimpleEditor.prototype.correctOffsetForSubstitutedText = function(t
 	// The text that is input here potentially has & < > chars. If it does, then the offset will be off since the string that is eventually
 	// returned will contain &amp; &lt; and &gt;. This adds to the offset to compensate.
 	// Also, two or more spaces in a row are turned to &nbsp;
+	// Also, if we are called with a node that doesn't have data, "text" will be undefined. You would think that the browser would set
+	// the offset to zero in this case, but it doesn't.
+	if (text === undefined)
+		return 0;
 	var str = "" + text;
 	str = str.substr(0, offset);
 	str = str.escapeHTML(str);
@@ -505,6 +509,7 @@ var RichTextEditor = Class.create({
 //						var str2 = html.substr(0, sel1) + '*' + html.substr(sel1);
 //						var str3 = html.substr(0, sel2) + '*' + html.substr(sel2);
 //						alert("sel: " + footnoteSelPos + ' ' + sel1 + ' ' + sel2 + "\n|" + str1 + '|' + "\n\n|" + str2 + '|' + "\n\n|" + str3 + '|');
+//						alert("sel: " + footnoteSelPos + "\n|" + str1 + '|');
 
 					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 
