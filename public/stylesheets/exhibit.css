@@ -177,6 +177,16 @@ padding-top: 21px;	/* safari */
 	text-decoration:none;
 }
 
+.exhibit_prevlink a {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	clear:both;
+	font-size:1.1em;
+	margin:1em 0;
+	padding:0.2em;
+	text-decoration:none;
+}
+
 .exhibit_header {
 	color:#999999;
 	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;

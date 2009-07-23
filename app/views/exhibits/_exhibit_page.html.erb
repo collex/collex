@@ -22,7 +22,9 @@
 <% if num_pages > 0 -%>
 	<% page_controller = is_edit_mode ? 'my9s' : 'exhibits' -%>
 	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
-	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action } %>
+	<% has_footnotes = Exhibit.has_footnotes(is_edit_mode ? exhibit.id : get_exhibit_id(exhibit)) -%>
+	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
+	<div class="clear_both"></div>
 	<% if page_num == -1 -%>
 		<h1 class="endnotes">Endnotes</h1>
 		<% footnote_count = 1 -%>
@@ -31,6 +33,9 @@
 			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<%= decode_exhibit_links(footnote) %></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
+		<div class="exhibit_prevlink">
+			<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => num_pages}, { :class => 'nav_link' } %>
+		</div>
 	<% else # page_num is greater than 0, so this is a regular page -%>
 		<% page = exhibit.exhibit_pages[page_num-1] -%>
 		<div id="current_page" class="hidden"><%= page.id %></div><% # This makes the current page available to ajax calls. %>
@@ -52,6 +57,16 @@
 		<% if page_num < num_pages -%>
 			<div class="exhibit_nextlink">
 				<%= link_to "next &raquo;", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num + 1}, { :class => 'nav_link' } %>
+			</div>
+		<% end -%>
+		<% if page_num == num_pages && has_footnotes -%>
+			<div class="exhibit_nextlink">
+				<%= link_to "next &raquo;", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => -1}, { :class => 'nav_link' } %>
+			</div>
+		<% end -%>
+		<% if page_num > 1 -%>
+			<div class="exhibit_prevlink">
+				<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num - 1}, { :class => 'nav_link' } %>
 			</div>
 		<% end -%>
 	<% end # page_num is a regular page -%>

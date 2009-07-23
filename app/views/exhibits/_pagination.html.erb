@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # pagination params: int curr_page, string controller, string action, string id, int num_pages -%>
+<% # pagination params: int curr_page, string controller, string action, string id, int num_pages, bool has_footnotes -%>
 <div class="exhibit_nav">
 	<% if curr_page == 1 -%>
 		<span class="arrowhere">&laquo;</span>
@@ -32,7 +32,6 @@
 		<% end -%>
 	<% } -%>
 
-	<% has_footnotes = Exhibit.has_footnotes(id) -%>
 	<% if has_footnotes -%>
 		<% if curr_page == -1 -%>
 			<span class="here"><a class="tooltip">&diams;<span class="page_tooltip">Endnotes<br />You&nbsp;are&nbsp;here</span></a></span>
