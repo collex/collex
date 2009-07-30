@@ -56,11 +56,6 @@ var AddCategoryDlg = Class.create({
 		};
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -88,7 +83,7 @@ var AddCategoryDlg = Class.create({
 					[ { text: 'This is a label that sites and other categories can be attached to.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category Name:', klass: 'new_exhibit_label' }, { input: 'category_name', klass: 'new_exhibit_input' } ],
 					[ { text: 'Parent Category:', klass: 'new_exhibit_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -138,11 +133,6 @@ var AddSiteDlg = Class.create({
 		};
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -171,7 +161,7 @@ var AddSiteDlg = Class.create({
 					[ { text: 'Enter the information for the site labeled \"' + resource + '\" in solr.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Name in Resource Tree:', klass: 'new_exhibit_label' }, { input: 'display_name', klass: 'new_exhibit_input' } ],
 					[ { text: 'Parent Category:', klass: 'new_exhibit_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -194,11 +184,6 @@ var RemoveSiteDlg = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -225,7 +210,7 @@ var RemoveSiteDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: 'You are about to delete the resource "' + resource + '" from the Resource Tree. This is probably ok because the resource doesn\'t appear to be returned by solr. However, this could also happen if the solr index is corrupted.', klass: 'new_exhibit_instructions' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -247,11 +232,6 @@ var DeleteFacetDialog = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -280,7 +260,7 @@ var DeleteFacetDialog = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the category "' + resource + '" from the Resource Tree. All of its children will be moved up to its parent.', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 		} else {
@@ -288,7 +268,7 @@ var DeleteFacetDialog = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the site "' + resource + '" from the Resource Tree. This resource is indexed in solr so results from this resource can be seen in the search page. Are you sure?', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 		}
@@ -424,11 +404,6 @@ var EditFacetDialog = Class.create({
 		};
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -470,7 +445,7 @@ var EditFacetDialog = Class.create({
 					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
 					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'carousel_url', klass: 'hide_if_site edit_facet_input' } ],
 					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail', klass: 'edit_profile_image' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -493,11 +468,6 @@ var EditExhibitCategory = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -525,7 +495,7 @@ var EditExhibitCategory = Class.create({
 				rows: [
 					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'sandbox', text: 'Sandbox' }, { value: 'student', text: 'Student' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		

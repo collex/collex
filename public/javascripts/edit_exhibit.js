@@ -518,11 +518,6 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 		return false;
 	};
 
-	this.cancel = function(event, params)
-	{
-		params.dlg.cancel();
-	};
-
 	this.sendWithAjax = function (event, params)
 	{
 		//var curr_page = params.curr_page;
@@ -559,7 +554,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 				[ { text: 'Thumbnail:', klass: 'new_exhibit_title' }, { input: 'overview_thumbnail_dlg', value: values.overview_thumbnail_dlg, klass: 'new_exhibit_input_long' } ],
 				[ { page_link: '[Choose Thumbnail from Collected Objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
 				[ { page_link: '[Completely Delete Exhibit]', callback: this.deleteExhibit }],
-				[ { rowClass: 'last_row' }, { button: 'Save', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+				[ { rowClass: 'last_row' }, { button: 'Save', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
@@ -576,7 +571,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 			rows: [
 				[ { text: 'Choose Thumbnail from the list.', klass: 'new_exhibit_title' } ],
 				[ { custom: objlist, klass: 'new_exhibit_label' } ],
-				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: this.changeView }, { button: 'Cancel', callback: this.cancel } ]
+				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: this.changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 

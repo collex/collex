@@ -55,11 +55,6 @@ var SetExhibitAuthorAlias = Class.create({
 		};
 
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -88,7 +83,7 @@ var SetExhibitAuthorAlias = Class.create({
 				rows: [
 					[ { text: 'Select the user that you wish to impersonate', klass: 'new_exhibit_instructions' } ],
 					[ { select: 'user_id', klass: 'user_alias_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 

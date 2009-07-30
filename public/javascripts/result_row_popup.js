@@ -101,16 +101,11 @@ var ResultRowDlg = Class.create({
 		};
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: '<img src="' + progress_img + '" alt="" />', klass: 'result_row_details' } ],
-					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -415,11 +410,6 @@ var StartDiscussionWithObject = Class.create({
 		};
 
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -455,7 +445,7 @@ var StartDiscussionWithObject = Class.create({
 					[ { text: 'Title', klass: 'new_exhibit_label' }, { input: 'title', klass: 'new_exhibit_input_long' } ],
 					[ { text: 'Select the topic you want this discussion to appear under', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
 					[ { textarea: 'description' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 

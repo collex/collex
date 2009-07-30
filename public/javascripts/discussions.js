@@ -67,11 +67,6 @@ var ForumReplyDlg = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		var removeAttachItem = function() {
 			var attach_el = $$('.attach_item')[0];
 			attach_el.addClassName('hidden');
@@ -162,7 +157,7 @@ var ForumReplyDlg = Class.create({
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
 					[ { text: 'URL', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_reply_input weblink hidden' } ],
 					[ { text: 'Thumbnail for Item', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_reply_input weblink hidden' } ],
-					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		

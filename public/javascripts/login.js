@@ -50,11 +50,6 @@ var SignInDlg = Class.create({
 			return false;
 		};
 		
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
@@ -111,7 +106,7 @@ var SignInDlg = Class.create({
 						[ { input: 'signin_username', klass: 'login_input' } ],
 						[ { text: 'Password:', klass: 'login_label' } ],
 						[ { password: 'signin_password', klass: 'login_input' } ],
-						[ { button: 'Log in', url: '/login/verify_login', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: this.cancel }],
+						[ { button: 'Log in', url: '/login/verify_login', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }],
 						[ { text: '', klass: 'login_label' } ],
 						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
 						[ { page_link: 'Forgot user name or password?', new_page: 'account_help', callback: this.changeView } ]
@@ -125,14 +120,14 @@ var SignInDlg = Class.create({
 						[ { text: 'Enter your user name and we will email a new password to your email account on file.', klass: 'login_instructions' } ],
 						[ { text: 'User name:', klass: 'login_label' } ],
 						[ { input: 'help_username', klass: 'login_input' } ],
-						[ { button: 'Submit', url: '/login/reset_password', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ],
+						[ { button: 'Submit', url: '/login/reset_password', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
 						[ { text: '', klass: 'login_label' } ],
 						[ { text: '', klass: 'login_label' } ],
 						[ { text: 'I forgot my user name.', klass: 'login_title' } ],
 						[ { text: 'Enter your email address and we will email you your user name.', klass: 'login_instructions' } ],
 						[ { text: 'E-mail address:', klass: 'login_label' } ],
 						[ { input: 'help_email', klass: 'login_input' } ],
-						[ { button: 'Submit', url: '/login/recover_username', callback: this.sendWithAjax }, { button: 'Cancel', callback: this.cancel } ],
+						[ { button: 'Submit', url: '/login/recover_username', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
 						[ { text: '', klass: 'login_label' } ],
 						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
 						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ]
@@ -151,7 +146,7 @@ var SignInDlg = Class.create({
 						[ { password: 'create_password', klass: 'login_input' } ],
 						[ { text: 'Re-type password:', klass: 'login_label' } ],
 						[ { password: 'create_password2', klass: 'login_input' } ],
-						[ { button: 'Sign up', url: '/login/submit_signup', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: this.cancel } ],
+						[ { button: 'Sign up', url: '/login/submit_signup', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
 						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ]
 					]
 				};
