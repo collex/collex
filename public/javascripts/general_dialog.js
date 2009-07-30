@@ -99,7 +99,8 @@ var GeneralDialog = Class.create({
 		
 		this.submitForm = function(id, action) {
 			var form = $(id);
-			form.writeAttribute({ action: action });
+			form.writeAttribute({ action: action, method: 'post' });
+			//form.writeAttribute({ enctype: "multipart/form-data", target: "upload_target", method: 'post' });
 			form.submit();
 		};
 
@@ -155,6 +156,22 @@ var GeneralDialog = Class.create({
 		var flash = new Element('div', { id: flash_id }).update(flash_notice);
 		flash.addClassName("flash_notice_ok");
 		body.appendChild(flash);
+
+		var addButton = function(parent_el, text, klass, callback, page, url) {
+			var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: text });
+			parent_el.appendChild(input);
+			var buttonClass = klass;
+			buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: callback, param: { curr_page: page, destination: url, dlg: This } });
+		};
+
+		var addInput = function(parent_el, text, klass, value) {
+			var el1 = new Element('input', { id: text, 'type': 'text' });
+			if (klass)
+				el1.addClassName(klass);
+			if (value !== undefined)
+				el1.writeAttribute({value: value });
+			parent_el.appendChild(el1);
+		};
 		
 		pages.each(function(page) {
 			var form = new Element('form', { id: page.page });
@@ -177,12 +194,7 @@ var GeneralDialog = Class.create({
 						row.appendChild(elText);
 						// INPUT
 					} else if (subel.input !== undefined) {
-						var el1 = new Element('input', { id: subel.input, 'type': 'text' });
-						if (subel.klass)
-							el1.addClassName(subel.klass);
-						if (subel.value !== undefined)
-							el1.writeAttribute({value: subel.value });
-						row.appendChild(el1);
+						addInput(row, subel.input, subel.klass, subel.value) ;
 						// PASSWORD
 					} else if (subel.password !== undefined) {
 						var el2 = new Element('input', { id: subel.password, 'type': 'password'});
@@ -193,15 +205,16 @@ var GeneralDialog = Class.create({
 						row.appendChild(el2);
 						// BUTTON
 					} else if (subel.button !== undefined) {
-						var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: subel.button });
-						row.appendChild(input);
+//						var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: subel.button });
+//						row.appendChild(input);
 						var buttonClass = subel.klass;
 						if (subel.isDefault) {
 							defaultAction[page.page] = subel.callback;
 							defaultParam[page.page] = { curr_page: page.page, destination: subel.url, dlg: This };
 							buttonClass = (buttonClass === undefined) ? "default" : buttonClass + " default" ;
 						}
-						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						addButton(row, subel.button, subel.klass, subel.callback, page.page, subel.url);
+//						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
 						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
@@ -254,8 +267,11 @@ var GeneralDialog = Class.create({
 							textarea.addClassName(subel.klass);
 							wrapper.addClassName(subel.klass);
 						}
-						if (subel.value !== undefined)
-							textarea.update(subel.value);
+						if (subel.value !== undefined) {
+							// The string probably has some extra stuff at the beginning and end, so we'll get rid of that first
+							var v = subel.value.strip();
+							textarea.update(v);
+						}
 						wrapper.appendChild(textarea);
 						row.appendChild(wrapper);
 						// IMAGE
@@ -263,6 +279,18 @@ var GeneralDialog = Class.create({
 						var image = new Element('div', { id: subel.image + '_div' });
 						var src = subel.value !== undefined ? subel.value : "";
 						image.appendChild(new Element('img', { src: src, id: subel.image + "_img", alt: '' }));
+//						if (subel.allowRemove === true) {
+//							var removeCallback = function() {
+//								// Need to delay hiding this because the Remove button itself will be hidden and that confuses the browser.
+//								var hide_image = function() {
+//									$('image_div').up().addClassName('hidden');
+//								};
+//								hide_image.delay(0.5);
+//								$('removeImage').value = true;
+//							};
+//							addButton(image, "Remove", "image_remove", removeCallback, "", "");
+//							addInput(image, 'removeImage', 'hidden', 'false');
+//						}
 						var file_input = new Element('input', { id: subel.image, type: 'file', name: subel.image });
 						if (subel.size)
 							file_input.writeAttribute({ size: subel.size});
@@ -388,16 +416,12 @@ var MessageBoxDlg = Class.create({
 		//var This = this;
 		
 		// privileged functions
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
 		
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { rowClass: 'last_row' }, { button: 'Close', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -423,16 +447,11 @@ var ConfirmDlg = Class.create({
 			action();
 		};
 		
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-		
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok }, { button: cancelStr, callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok }, { button: cancelStr, callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -559,16 +578,11 @@ var TextInputDlg = Class.create({
 //			updateWithAjax(ajaxparams);
 		};
 
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: prompt, klass: 'text_input_dlg_label' }, { input: id, klass: 'text_input_dlg_input' } ],
-					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
@@ -607,16 +621,11 @@ var RteInputDlg = Class.create({
 			okCallback(data.textareaValue);
 		};
 
-		this.cancel = function(event, params)
-		{
-			params.dlg.cancel();
-		};
-
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { textarea: 'textareaValue', value: value } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: this.cancel } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
