@@ -62,7 +62,7 @@ class GetIncludeFileList
 			when :home
 				local = [ 'get_news_feed', 'search_validation_home' ]
 			when :exhibits
-				local = [ 'thumbnail_resize' ]
+				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg' ]
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }
