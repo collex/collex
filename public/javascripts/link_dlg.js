@@ -356,7 +356,8 @@ var LinkDlgHandler = Class.create({
 			{
 				var html = splitRawHtml();
 				html.selection = removeLinksFromSelection(html.selection);
-				objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
+				objRTE.updateContents(html.prologue + html.selection + html.ending);
+//				objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 				params.dlg.cancel();
 			};
 			
@@ -373,14 +374,16 @@ var LinkDlgHandler = Class.create({
 					//<span title="NINES Object: uri" real_link="uri" class="nines_linklike">target</span>
 					html.selection = '<span title="' + linkTypes[0] + ': ' + data.ld_nines_object + '" real_link="' + 
 						data.ld_nines_object + '" class="nines_linklike">' + html.selection + "</span>";
-					objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
+					objRTE.updateContents(html.prologue + html.selection + html.ending);
+//					objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 				}
 				else
 				{
 					//<span title="External Link: url" real_link="url" class="ext_linklike">target</span>
 					html.selection = '<span title="' + linkTypes[1] + ': ' + data.ld_link_url + '" real_link="' + 
 						data.ld_link_url + '" class="ext_linklike">' + html.selection + "</span>";
-					objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
+					objRTE.updateContents(html.prologue + html.selection + html.ending);
+//					objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 				}
 				params.dlg.cancel();
 			};

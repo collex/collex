@@ -232,7 +232,7 @@ YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireR
 	var charCount = 0;
 	//debugStr = "";
 	arr.each(function(i) {
-		if (i === "<br>") { // the item is self-contained.
+		if (i === "<br>" || i === "<hr>") { // the item is self-contained.
 			arrLevels[arrLevels.length-1]++;
 		} else if (i.substring(0, 2) === "</") {	// this array item is an end tag.
 			arrLevels.pop();
@@ -395,7 +395,8 @@ var RichTextEditor = Class.create({
 						// Remove the drop class whereever it appears.
 						html = html.gsub("drop_cap", "");
 					}
-					this.setEditorHTML(html);
+					This.updateContents(html);
+//					this.setEditorHTML(html);
 		        }, this, true);
 
 		    });
@@ -487,7 +488,8 @@ var RichTextEditor = Class.create({
 						
 						//footnoteSelPos = correctOffsetForSubstitutedText(html, footnoteSelPos);
 						html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
-						editor.setEditorHTML(html);
+						This.updateContents(html);
+//						editor.setEditorHTML(html);
 						};
 
 					var result = editor.getRawSelectionPosition(false);
@@ -542,6 +544,80 @@ var RichTextEditor = Class.create({
 				}, this, true);
 
 			}, this, true);
+
+			editor.on('editorContentLoaded', function() {
+				This.initializeFootnoteEvents();
+
+			}, this, true);
+		};
+
+		this.updateContents = function(html) {
+			This.editor.setEditorHTML(html);
+			This.initializeFootnoteEvents();
+		};
+
+		this.initializeFootnoteEvents = function() {
+			var ifr = $(id + '_editor');
+			var doc = ifr.contentDocument;
+			if (doc == undefined || doc == null)
+				doc = ifr.contentWindow.document;
+			var footnotes = [];
+			var iterateChild = function(node) {
+				$A(node.childNodes).each(function(child) {
+					if (child.nodeName === 'A' && child.className.indexOf('rte_footnote') >= 0)
+						footnotes.push(child);
+					if (child.childNodes.length > 0)
+						iterateChild(child);
+				});
+			};
+			$A(doc.childNodes).each(function(child) {
+				iterateChild(child);
+			});
+
+			var getX = function( oElement )
+			{
+				var iReturnValue = 0;
+				while( oElement !== null ) {
+					iReturnValue += oElement.offsetLeft;
+					oElement = oElement.offsetParent;
+				}
+				return iReturnValue;
+			};
+
+			var getY = function( oElement )
+			{
+				var iReturnValue = 0;
+				while( oElement !== null ) {
+					iReturnValue += oElement.offsetTop;
+					oElement = oElement.offsetParent;
+				}
+				return iReturnValue;
+			};
+
+			var currTooltip = null;
+			var showTooltip = function(ev) {
+				$A(ev.target.childNodes).each(function(child) {
+					if (child.className.indexOf('tip') >= 0) {
+						//var p = document.parentNode;
+						var parent = $('modal_dlg_parent');
+						var x = getX(ev.target) + getX(ifr.offsetParent) + 20;
+						var y = getY(ev.target) + getY(ifr.offsetParent) + 20;
+						currTooltip =new Element('div', { style: 'z-index:500; position: absolute; top:' + y + 'px; left:' + x + 'px; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em;'}).update(child.innerHTML);
+						parent.appendChild(currTooltip);
+					}
+				});
+			};
+			var hideTooltip = function() {
+				if (currTooltip) {
+					currTooltip.remove();
+					currTooltip = null;
+				}
+			};
+
+			footnotes.each(function(foot) {
+				YAHOO.util.Event.addListener(foot, 'mouseover', showTooltip, null);
+				YAHOO.util.Event.addListener(foot, 'mouseout', hideTooltip, null);
+			});
 		};
 
 		var initLinkDlg = function()
@@ -670,11 +746,13 @@ var RichTextEditor = Class.create({
 
 		//create the RTE:
 		var width = params.width !== null ? params.width : 702;
+		//var hoverCss = ".superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;} .rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote{ position:relative; } a.rte_footnote:hover { z-index:25; } a.rte_footnote span { display: none; } a.rte_footnote:hover span.tip { display: block; position:absolute; top:1em; left:.2em; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em; }";
+		var hoverCss = ".rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote span { display: none; }";
 		this.editor = new YAHOO.widget.SimpleEditor(id, {
 			  width: width + 'px',
 				height: '200px',
 				// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;} .rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote{ position:relative; } a.rte_footnote:hover { z-index:25; } a.rte_footnote span { display: none; } a.rte_footnote:hover span.tip { display: block; position:absolute; top:1em; left:.2em; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em; }',
+				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} ' + hoverCss,
 				toolbar: toolbar,
 	            //dompath: true,
 	            animate: true

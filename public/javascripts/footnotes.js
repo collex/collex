@@ -114,7 +114,6 @@ var FootnoteAbbrev = Class.create({
 
 		this.createEditButton = function(klass) {
 			klassEdit = klass;
-			// "TODO", "This will be a graphic image, have a tooltip, and also bring up the edit footnote dlg."
 			if (footnoteStr.length > 0)
 				return { page_link: "*<span class='tip'>" + footnoteStr.stripTags() + "</span>", klass: klass + ' footnote_tip', callback: editFootnote };
 			else
@@ -150,15 +149,12 @@ var FootnotesInRte = Class.create({
 
 		var rteFootnotePrefix1 = '<a class="rte_footnote">';
 		var rteFootnotePrefix2 = '<span>';
-		var rteFootnoteMid = '</span><span class="tip"><em>Click this footnote to edit</em><br /><br />';
+		var rteFootnoteMid = '</span><span class="tip"><em>Click this footnote to edit</em><hr />';
 		var rteFootnoteClose1 = '</a>';
 		var rteFootnoteClose2 = '</span>';
 
 		var formatFootnoteForRteInner = function(str) {
-			var footnoteAbbrev = str.substr(0, 15);
-			if (footnoteAbbrev !== str)
-				footnoteAbbrev += "...";
-			return rteFootnotePrefix2 + str + rteFootnoteMid + str.stripTags().truncate(20) + rteFootnoteClose2;
+			return rteFootnotePrefix2 + str + rteFootnoteMid + str.stripTags().truncate(40) + rteFootnoteClose2;
 		};
 
 		var formatFootnoteForRte = function(str) {
