@@ -274,6 +274,11 @@ hr.linkdlg_hr {
 
 .edit_profile_image img {
 	padding-bottom:5px;
+	padding-right: 5px;
+}
+
+.image_remove {
+	vertical-align: top;
 }
 
 .edit_facet_input {
@@ -315,8 +320,43 @@ hr.linkdlg_hr {
 }
 
 .header_input {
-	width: 455px;
+	width: 480px;
 }
+
+.footnoteEditStar {
+	left: 4px;
+	position: relative;
+	top: -6px;
+}
+
+.footnoteEditStar2 {
+	left: 4px;
+	position: relative;
+	top: -6px;
+}
+
+a.footnote_tip:hover {
+	z-index:25;
+}
+
+a.footnote_tip span {
+	display: none;
+}
+
+a.footnote_tip:hover span.tip {
+	display: block;
+	position:absolute;
+	top:1em;
+	left:.2em;
+	width:10em;
+	border:1px solid #914C29;
+	background-color: #F7ECDB;
+	color:#000;
+	text-align: left;
+	font-weight: normal;
+	padding: .3em;
+}
+
 /*****************************************/
 
 #border_outer_container {

@@ -15,12 +15,13 @@
 // ----------------------------------------------------------------------------
 
 /*global RteInputDlg */
-/*global $, Element, Class */
+/*global $, $$, Element, Class */
 /*global YAHOO */
 /*extern FootnoteAbbrev, FootnotesInRte */
 
 var FootnoteAbbrev = Class.create({
 	initialize: function(footnoteStr, field){
+		var klassEdit = null;
 
 		var makeButton = function(id, text, hide) {
 			var btn1 = new Element('span', { id: field + '_' + id });
@@ -47,11 +48,15 @@ var FootnoteAbbrev = Class.create({
 				$(field + '_add').addClassName('hidden');
 				$(field + '_edit').removeClassName('hidden');
 				$(field + '_remove').removeClassName('hidden');
+				var a = $$('.' + klassEdit)[0];
+				a.removeClassName('hidden');
+				a.down('.tip').innerHTML = footnoteStr.stripTags();
 				//$(field).removeClassName('hidden');
 			} else {
 				$(field + '_add').removeClassName('hidden');
 				$(field + '_edit').addClassName('hidden');
 				$(field + '_remove').addClassName('hidden');
+				$$('.' + klassEdit)[0].addClassName('hidden');
 				//$(field).addClassName('hidden');
 			}
 		};
@@ -105,6 +110,15 @@ var FootnoteAbbrev = Class.create({
 			YAHOO.util.Event.addListener(field + '_' + 'add', 'click', addFootnote, null);
 			YAHOO.util.Event.addListener(field + '_' + 'edit', 'click', editFootnote, null);
 			YAHOO.util.Event.addListener(field + '_' + 'remove', 'click', deleteFootnote, null);
+		};
+
+		this.createEditButton = function(klass) {
+			klassEdit = klass;
+			// "TODO", "This will be a graphic image, have a tooltip, and also bring up the edit footnote dlg."
+			if (footnoteStr.length > 0)
+				return { page_link: "*<span class='tip'>" + footnoteStr.stripTags() + "</span>", klass: klass + ' footnote_tip', callback: editFootnote };
+			else
+				return { page_link: "*<span class='tip'></span>", klass: klass + ' footnote_tip hidden', callback: editFootnote };
 		};
 	}
 });

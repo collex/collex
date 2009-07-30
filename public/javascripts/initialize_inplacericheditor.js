@@ -181,11 +181,13 @@ function initializeInplaceHeaderEditor(element_id, action)
 			params.dlg.cancel();
 		};
 
+		var footnoteAbbrev = new FootnoteAbbrev(footnoteStr, 'footnote');
+
 		var dlgLayout = {
 			page: 'layout',
 			rows: [
-				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'header_input' }, { button: "*", callback: function() { new MessageBoxDlg("TODO", "This will be a graphic image, have a tooltip, and also bring up the edit footnote dlg."); } } ],
-				[ { custom: new FootnoteAbbrev(footnoteStr, 'footnote') }],
+				[ { text: 'Header:', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'header_input' }, footnoteAbbrev.createEditButton('footnoteEditStar') ],
+				[ { custom: footnoteAbbrev }],
 				[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
@@ -290,15 +292,17 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 		var objlist = new CreateListOfObjects(populate_nines_obj_url, values.nines_object, 'nines_object', progress_img, setCaption);
+		var footnoteAbbrev1 = new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote');
+		var footnoteAbbrev2 = new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote');
 
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
-					[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'header_input' }, { button: "*", callback: function() { new MessageBoxDlg("TODO", "This will be a graphic image, have a tooltip, and also bring up the edit footnote dlg."); }} ],
-					[ { custom: new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote') }],
-					[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'header_input' }, { button: "*", callback: function() { new MessageBoxDlg("TODO", "This will be a graphic image, have a tooltip, and also bring up the edit footnote dlg."); }} ],
-					[ { custom: new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote') }],
+					[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'header_input' }, footnoteAbbrev1.createEditButton('footnoteEditStar') ],
+					[ { custom: footnoteAbbrev1 }],
+					[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'header_input' }, footnoteAbbrev2.createEditButton('footnoteEditStar2') ],
+					[ { custom: footnoteAbbrev2 }],
 
 					[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
 					  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
