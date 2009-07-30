@@ -17,7 +17,7 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def collex_version
-    return "1.5.4"
+    return "1.5.5"
   end
   
   def is_admin?
