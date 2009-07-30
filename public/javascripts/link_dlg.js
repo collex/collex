@@ -360,11 +360,6 @@ var LinkDlgHandler = Class.create({
 				params.dlg.cancel();
 			};
 			
-			var cancel = function(event, params)
-			{
-				params.dlg.cancel();
-			};
-			
 			var saveLink = function(event, params) {
 				// Save has been pressed.
 				var dlg = params.dlg;
@@ -399,7 +394,7 @@ var LinkDlgHandler = Class.create({
 						[ { page_link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
 						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
 						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
-						[ { rowClass: 'last_row' }, { button: 'Save', callback: saveLink }, { button: 'Cancel', callback: cancel } ]
+						[ { rowClass: 'last_row' }, { button: 'Save', callback: saveLink }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 				
