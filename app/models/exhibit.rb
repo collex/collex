@@ -319,13 +319,40 @@ class Exhibit < ActiveRecord::Base
 		return count
 	end
 
+	private
+		def extract_up_to_matching_span(text)
+			# this takes a string and returns the first part of it up to the </span>. This takes into account extra <span>...</span> pairs that are embedded.
+			arr = text.split('<')
+			left = ""
+			level = 0
+			arr.each_with_index { |a,i|
+				if a.index('span') == 0
+					level += 1
+					left += '<' + a
+				elsif a.index('/span') == 0
+					level -= 1
+					if level != -1
+						left += '<' + a
+					else
+						break
+					end
+				else
+					left += '<' + a
+				end
+			}
+			left = left.sub('<', '')	# because we are placing '<' at the beginning of each concatination, we'll have an extra one at the beginning.
+
+			return left
+		end
+
+	public
 	def extract_footnotes_from_text(text)
 		# We are scanning for footnotes that have the following structure:
 		footnote_prefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">'
 		# footnote number
 		footnote_mid = '</a><span class="hidden">'
 		# actual footnote
-		footnote_end = '</span>'
+		# '</span>'
 
 		footnotes = []
 		arr = text.split(footnote_prefix)
@@ -333,8 +360,8 @@ class Exhibit < ActiveRecord::Base
 		arr.each { |f|
 			arr2 = f.split(footnote_mid)
 			if arr2.length == 2
-				arr3 = arr2[1].split(footnote_end)
-				footnotes.push(arr3[0])
+				foot = extract_up_to_matching_span(arr2[1])
+				footnotes.push(foot)
 			end
 		}
 		return footnotes
