@@ -270,6 +270,7 @@ var GeneralDialog = Class.create({
 						if (subel.value !== undefined) {
 							// The string probably has some extra stuff at the beginning and end, so we'll get rid of that first
 							var v = subel.value.strip();
+							v = v.escapeHTML();	// Need to escape this to get the tags to be transferred in Safari.
 							textarea.update(v);
 						}
 						wrapper.appendChild(textarea);

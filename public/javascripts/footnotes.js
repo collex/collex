@@ -144,6 +144,7 @@ var FootnotesInRte = Class.create({
 		//var footnotes = [];
 
 		var footnotePrefix = '<a href="#" onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
+		var footnotePrefixSafari = '<a href="#" onclick="return false; var footnote = $(this).next(); new MessageBoxDlg(&quot;Footnote&quot;, footnote.innerHTML); return false;" class="superscript">';
 		var footnoteMid = '</a><span class="hidden">';
 		var footnoteClose = '</span>';
 
@@ -200,6 +201,8 @@ var FootnotesInRte = Class.create({
 			//	</a>
 			// and extract the footnote to put in an array of strings.
 			var arr = text.split(footnotePrefix);
+			if (arr.length === 1)	// Hack for Safari: it preprocesses the string so we need to test for that, also.
+				arr = text.split(footnotePrefixSafari);
 			text = arr[0];
 			for (var i = 1; i < arr.length; i++) {
 				// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
