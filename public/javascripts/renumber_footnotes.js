@@ -22,7 +22,8 @@ function renumberFootnotes(start) {
 	var count = start;
 	footnotes.each(function(footnote) {
 		if (footnote.visible() && footnote.parentNode.visible()) {
-			footnote.update("" + count);
+			var str = "" + count;
+			footnote.innerHTML = str;
 			count += 1;
 		}
 	});

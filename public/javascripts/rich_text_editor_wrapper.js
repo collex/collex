@@ -402,13 +402,8 @@ var RichTextEditor = Class.create({
 		    });
 		};
 		
-		var currTooltip = null;
-		var hideTooltip = function() {
-			if (currTooltip) {
-				currTooltip.remove();
-				currTooltip = null;
-			}
-		};
+		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 
 		var initFootnoteDlg = function()
 		{
@@ -416,8 +411,6 @@ var RichTextEditor = Class.create({
 				return;
 
 			var editor = This.editor;
-			var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-			var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 
 //			var old_correctOffsetForSubstitutedText = function(text, offset) {
 //				// The text we get from the RTE has escaped some values, so we need to look for all the & and add to the offset
@@ -526,35 +519,32 @@ var RichTextEditor = Class.create({
 					return true;
 				}, this, true);
 
-			    editor.on('beforeEditorClick', function(ev) {
-					// for some reason, Prototype's $ isn't defined here.
-					var target = ev.ev.explicitOriginalTarget;
-					if (target === undefined) {
-						// For safari
-						target = ev.ev.target;
-					}
-					var cls = target.className;
-					if (cls === 'rte_footnote') {
-						hideTooltip();	// Safari doesn't give a mouseout at this point, so we need to force it.
-						var setFootnote = function(value) {
-							var insertedText = footnoteCallback('edit', value);
-							target.innerHTML = insertedText;
-//							var html = editor.getEditorHTML();
-//							html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
-//							editor.setEditorHTML(html);
-							};
-
-						var deleteFootnote = function(event, params) {
-							params.dlg.cancel();
-							target.parentNode.removeChild(target);
-						};
-
-						var footnote = target.childNodes[0];	// this is the span that hides the footnote
-						new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
-
-					}
-					return true;
-				}, this, true);
+//			    editor.on('beforeEditorClick', function(ev) {
+//					// for some reason, Prototype's $ isn't defined here.
+//					var target = ev.ev.explicitOriginalTarget;
+//					if (target === undefined) {
+//						// For safari
+//						target = ev.ev.target;
+//					}
+//					var cls = target.className;
+//					if (cls === 'rte_footnote') {
+//						hideTooltip();	// Safari doesn't give a mouseout at this point, so we need to force it.
+//						var setFootnote = function(value) {
+//							var insertedText = footnoteCallback('edit', value);
+//							target.innerHTML = insertedText;
+//							};
+//
+//						var deleteFootnote = function(event, params) {
+//							params.dlg.cancel();
+//							target.parentNode.removeChild(target);
+//						};
+//
+//						var footnote = target.childNodes[0];	// this is the span that hides the footnote
+//						new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
+//
+//					}
+//					return true;
+//				}, this, true);
 
 			}, this, true);
 
@@ -587,6 +577,14 @@ var RichTextEditor = Class.create({
 				iterateChild(child);
 			});
 
+			var currTooltip = null;
+			var hideTooltip = function() {
+				if (currTooltip) {
+					currTooltip.remove();
+					currTooltip = null;
+				}
+			};
+
 			var getX = function( oElement )
 			{
 				var iReturnValue = 0;
@@ -608,21 +606,45 @@ var RichTextEditor = Class.create({
 			};
 
 			var showTooltip = function(ev) {
-				$A(ev.target.childNodes).each(function(child) {
+				var target = ev.target;
+				if (target === undefined)	// Hack for IE
+					target = this;
+				$A(target.childNodes).each(function(child) {
 					if (child.className.indexOf('tip') >= 0) {
 						//var p = document.parentNode;
 						var parent = $('modal_dlg_parent');
-						var x = getX(ev.target) + getX(ifr.offsetParent) + 20;
-						var y = getY(ev.target) + getY(ifr.offsetParent) + 20;
+						var x = getX(target) + getX(ifr.offsetParent) + 20;
+						var y = getY(target) + getY(ifr.offsetParent) + 20;
 						currTooltip =new Element('div', { style: 'z-index:500; position: absolute; top:' + y + 'px; left:' + x + 'px; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em;'}).update(child.innerHTML);
 						parent.appendChild(currTooltip);
 					}
 				});
 			};
 
+			var editTooltip = function(ev) {
+				var target = ev.target;
+				if (target === undefined)	// Hack for IE
+					target = this;
+
+				hideTooltip();	// Safari doesn't give a mouseout at this point, so we need to force it.
+				var setFootnote = function(value) {
+					var insertedText = footnoteCallback('edit', value);
+					target.innerHTML = insertedText;
+					};
+
+				var deleteFootnote = function(event, params) {
+					params.dlg.cancel();
+					target.parentNode.removeChild(target);
+				};
+
+				var footnote = target.childNodes[0];	// this is the span that hides the footnote
+				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
+			};
+
 			footnotes.each(function(foot) {
 				YAHOO.util.Event.addListener(foot, 'mouseover', showTooltip, null);
 				YAHOO.util.Event.addListener(foot, 'mouseout', hideTooltip, null);
+				YAHOO.util.Event.addListener(foot, 'click', editTooltip, null);
 			});
 		};
 

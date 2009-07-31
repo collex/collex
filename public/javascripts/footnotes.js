@@ -145,7 +145,9 @@ var FootnotesInRte = Class.create({
 
 		var footnotePrefix = '<a href="#" onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
 		var footnotePrefixSafari = '<a href="#" onclick="return false; var footnote = $(this).next(); new MessageBoxDlg(&quot;Footnote&quot;, footnote.innerHTML); return false;" class="superscript">';
+		var footnotePrefixIE = '<A class=superscript onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' href="#">';
 		var footnoteMid = '</a><span class="hidden">';
+		var footnoteMidIE = '</A><SPAN class=hidden>';
 		var footnoteClose = '</span>';
 
 		var rteFootnotePrefix1 = '<a class="rte_footnote">';
@@ -168,10 +170,10 @@ var FootnotesInRte = Class.create({
 			var left = "";
 			var level = 0;
 			for (var i = 0; i < arr.length; i++) {
-				if (arr[i].startsWith('span')) {
+				if (arr[i].startsWith('span') || arr[i].startsWith('SPAN')) {
 					level++;
 					left += '<' + arr[i];
-				} else if (arr[i].startsWith('/span')) {
+				} else if (arr[i].startsWith('/span') || arr[i].startsWith('/SPAN')) {
 					level--;
 					if (level !== -1)
 						left += '<' + arr[i];
@@ -203,10 +205,14 @@ var FootnotesInRte = Class.create({
 			var arr = text.split(footnotePrefix);
 			if (arr.length === 1)	// Hack for Safari: it preprocesses the string so we need to test for that, also.
 				arr = text.split(footnotePrefixSafari);
+			if (arr.length === 1)	// Hack for IE: It returns tags with capital letters
+				arr = text.split(footnotePrefixIE);
 			text = arr[0];
 			for (var i = 1; i < arr.length; i++) {
 				// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
 				var arr2 = arr[i].split(footnoteMid);
+				if (arr2.length === 1)	// Hack for IE: It returns tags with capital letters
+					arr2 = arr[i].split(footnoteMidIE);
 				var parts = extractUpToMatchingSpan(arr2[1]);
 				var footnote = parts.left;
 				var restOfLine = parts.right;
