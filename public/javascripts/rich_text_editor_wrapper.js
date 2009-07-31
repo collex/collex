@@ -402,6 +402,14 @@ var RichTextEditor = Class.create({
 		    });
 		};
 		
+		var currTooltip = null;
+		var hideTooltip = function() {
+			if (currTooltip) {
+				currTooltip.remove();
+				currTooltip = null;
+			}
+		};
+
 		var initFootnoteDlg = function()
 		{
 			if (footnoteCallback === undefined || footnoteCallback === null)
@@ -521,8 +529,13 @@ var RichTextEditor = Class.create({
 			    editor.on('beforeEditorClick', function(ev) {
 					// for some reason, Prototype's $ isn't defined here.
 					var target = ev.ev.explicitOriginalTarget;
+					if (target === undefined) {
+						// For safari
+						target = ev.ev.target;
+					}
 					var cls = target.className;
 					if (cls === 'rte_footnote') {
+						hideTooltip();	// Safari doesn't give a mouseout at this point, so we need to force it.
 						var setFootnote = function(value) {
 							var insertedText = footnoteCallback('edit', value);
 							target.innerHTML = insertedText;
@@ -594,7 +607,6 @@ var RichTextEditor = Class.create({
 				return iReturnValue;
 			};
 
-			var currTooltip = null;
 			var showTooltip = function(ev) {
 				$A(ev.target.childNodes).each(function(child) {
 					if (child.className.indexOf('tip') >= 0) {
@@ -606,12 +618,6 @@ var RichTextEditor = Class.create({
 						parent.appendChild(currTooltip);
 					}
 				});
-			};
-			var hideTooltip = function() {
-				if (currTooltip) {
-					currTooltip.remove();
-					currTooltip = null;
-				}
 			};
 
 			footnotes.each(function(foot) {
@@ -747,12 +753,12 @@ var RichTextEditor = Class.create({
 		//create the RTE:
 		var width = params.width !== null ? params.width : 702;
 		//var hoverCss = ".superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;} .rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote{ position:relative; } a.rte_footnote:hover { z-index:25; } a.rte_footnote span { display: none; } a.rte_footnote:hover span.tip { display: block; position:absolute; top:1em; left:.2em; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em; }";
-		var hoverCss = ".rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote span { display: none; }";
+		var hoverCss = " a.rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; cursor: pointer !important; } a.rte_footnote span { display: none; }";
 		this.editor = new YAHOO.widget.SimpleEditor(id, {
 			  width: width + 'px',
 				height: '200px',
 				// TODO-PER: Can the CSS be read from a file, so it doesn't have to be repeated here? (Check out YUI Loader Utility)
-				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} ' + hoverCss,
+				css: YAHOO.widget.SimpleEditor.prototype._defaultCSS + hoverCss + ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; } .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} ',
 				toolbar: toolbar,
 	            //dompath: true,
 	            animate: true
