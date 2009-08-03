@@ -23,7 +23,7 @@
 		<% if @exhibit.category != 'peer-reviewed' -%>
 		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
 		<% end -%>
-		<a href="/exhibit_list" class="nav_link" >[Return to Exhibit List]</a>&nbsp;
+		<a href="/exhibit_list" class="nav_link" >[Return to Exhibit List]</a>&nbsp;<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
 		<%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => @exhibit.id, :page => @page }, :class => 'nav_link' ) if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
 	</div>
 	<div id="exhibit_page clear_both">

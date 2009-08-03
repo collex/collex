@@ -86,6 +86,8 @@ namespace :collex do
 		concatenate_css(:about)
 		concatenate_js(:view_exhibit)
 		concatenate_css(:view_exhibit)
+		concatenate_js(:print_exhibit)
+		concatenate_css(:print_exhibit)
 	end
 
 	def compress_file(folder, ext)

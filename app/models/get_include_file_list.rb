@@ -42,7 +42,7 @@ class GetIncludeFileList
 
 		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
 		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'hide_spinner' ]
-		global = global + global_most if page != :about && page != :news && page != :view_exhibit
+		global = global + global_most if page != :about && page != :news && page != :view_exhibit && page != :print_exhibit
 
 		local = []
 		case page
@@ -59,6 +59,8 @@ class GetIncludeFileList
 				local = [ 'admin', 'resource_tree' ]
 			when :view_exhibit
 				global = [ 'modal_dialog', 'hide_spinner', 'general_dialog', 'renumber_footnotes' ]
+			when :print_exhibit
+				global = [ 'hide_spinner', 'renumber_footnotes' ]
 			when :home
 				local = [ 'get_news_feed', 'search_validation_home' ]
 			when :exhibits
@@ -87,7 +89,7 @@ class GetIncludeFileList
 			"/build/resize/assets/skins/sam/resize",
 			"/build/assets/skins/sam/skin"
 			]
-		yui = yui_most if page != :about && page != :news && page != :view_exhibit
+		yui = yui_most if page != :about && page != :news && page != :view_exhibit && page != :print_exhibit
 
 		global = [
 			"main",
@@ -115,6 +117,8 @@ class GetIncludeFileList
 				local = [ "lvl2", "about" ]
 			when :view_exhibit
 				local = [ "lvl3", "exhibit" ]
+			when :print_exhibit
+				local = [ "lvl4", "exhibit" ]
 		end
 
 		return { :yui => yui, :local => global + local }

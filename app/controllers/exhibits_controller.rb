@@ -72,6 +72,11 @@ class ExhibitsController < ApplicationController
     #render :layout => 'exhibits_view'
   end
 
+	def print_exhibit
+    @site_section = :print_exhibit
+		@exhibit = Exhibit.find(params[:id])
+	end
+
   ##################################################################################
   # GET /exhibits
   # GET /exhibits.xml

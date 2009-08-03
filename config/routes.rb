@@ -145,6 +145,7 @@ ActionController::Routing::Routes.draw do |map|
   #map.login '/login', :controller => 'login', :action => 'login'
   map.my9s '/my9s', :controller => 'my9s', :action => 'index'
   map.forum '/forum', :controller => 'forum', :action => 'index'
+  map.print_exhibit '/print_exhibit/:id', :controller => 'exhibits', :action => 'print_exhibit'
   map.exhibit_list '/exhibit_list', :controller => 'exhibits', :action => 'list'
   map.exhibits_view '/exhibits/view/:id', :controller => 'exhibits', :action => 'view'
 
