@@ -14,8 +14,8 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # exhibit_header params: int id, string text ,ActiveRecord footnote, bool is_edit_mode -%>
-<h3><span class="exhibit_header" id='inner_header_<%= id %>'><%=h clean_header(text) %></span>
+<% # exhibit_header params: int id, string text ,ActiveRecord footnote, bool is_edit_mode, string font, int font_size -%>
+<h3><span class="exhibit_header" style="font-family:<%= font %>; font-size:<%= font_size %>px;" id='inner_header_<%= id %>'><%=h clean_header(text) %></span>
 	<% footnote_id = ExhibitElement.find(id).header_footnote_id -%>
 	<%= draw_footnote(footnote_id, "header_#{id}", is_edit_mode) %>
 </h3>

@@ -15,10 +15,11 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # exhibit_text params:  ExhibitElement element; enum which { left, right, only }, bool is_edit_mode -%>
+<% exhibit = element.exhibit_page.exhibit -%>
 <% if is_edit_mode -%>
 	<% div_id = "text_#{element.id}" -%>
 	<% div_id += "_#{which}" if which != "only" -%>
-	<div id='<%= div_id %>' class="exhibit_text">
+	<div id='<%= div_id %>' style="font-family:<%= exhibit.text_font_name %>; font-size:<%= exhibit.text_font_size %>px;" class="exhibit_text">
 		<%= (which == 'right' ? denature_footnote_links(element.element_text2) : denature_footnote_links(element.element_text)) %>
 	</div>
 	<script type="text/javascript">
@@ -26,7 +27,7 @@
 			initializeInplaceRichEditor('<%= div_id %>,exhibit_builder_outline_content', "/my9s/edit_text,/my9s/refresh_outline");
 	</script>
 <% else -%>
-	<div class="exhibit_text"><%= decode_exhibit_links(element.element_text) %></div>
+	<div class="exhibit_text" style="font-family:<%= exhibit.text_font_name %>; font-size:<%= exhibit.text_font_size %>px;"><%= decode_exhibit_links(element.element_text) %></div>
 <% end -%>
 
 

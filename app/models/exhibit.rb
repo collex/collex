@@ -18,6 +18,23 @@ class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
   has_many :exhibit_objects, :dependent=>:destroy
 
+	def reset_fonts_to_default
+		# set the default values for fields that were added later
+		self.header_font_name = 'Arial'
+		self.header_font_size = '24'
+		self.text_font_name = 'Times New Roman'
+		self.text_font_size = '18'
+		self.illustration_font_name = 'Trebuchet MS'
+		self.illustration_font_size = '14'
+		self.caption1_font_name = 'Trebuchet MS'
+		self.caption1_font_size = '14'
+		self.caption2_font_name = 'Trebuchet MS'
+		self.caption2_font_size = '14'
+		self.endnotes_font_name = 'Times New Roman'
+		self.endnotes_font_size = '16'
+		self.save
+	end
+	
   def self.factory(user_id, url, title, thumbnail)
     thumbnail = thumbnail.strip
     if thumbnail.length > 0 && thumbnail.index('http') != 0
@@ -26,6 +43,7 @@ class Exhibit < ActiveRecord::Base
     exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0)
     exhibit.insert_example_page(1)
     exhibit.insert_example_page(2)
+		exhibit.reset_fonts_to_default()
     return exhibit
   end
   

@@ -32,7 +32,7 @@
 		<% footnote_count = 1 -%>
 		<% footnotes = exhibit.get_all_footnotes() -%>
 		<% for footnote in footnotes -%>
-			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<%= decode_exhibit_links(footnote) %></p>
+			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= decode_exhibit_links(footnote) %></span></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
 		<div class="exhibit_prevlink">

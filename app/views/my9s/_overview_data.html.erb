@@ -23,6 +23,7 @@
 	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list_with_image', '/images/ajax_loader.gif'); return false;", { :class => 'modify_link' }) %></div>
 	<div class="exhibit_preview_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 	<div class="exhibit_profile_preview">
+		<%= link_to_function("[Edit Fonts]", "new EditFontsDlg('/my9s/update_fonts', #{exhibit.id}, #{exhibit.to_json()})", { :class => 'modify_link' }) %>
 		<div><span class="exhibit_profile_label">Visible URL:</span>
 			http://<%= request.host_with_port() %>/exhibits/<%= exhibit.get_id_if_no_visible_url() %><span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></div>
 	<span class="exhibit_profile_label">Thumbnail:</span>

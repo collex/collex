@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090709201314) do
+ActiveRecord::Schema.define(:version => 20090803185318) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -130,17 +130,29 @@ ActiveRecord::Schema.define(:version => 20090709201314) do
 
   create_table "exhibits", :force => true do |t|
     t.string   "title"
-    t.integer  "user_id",      :limit => 10, :precision => 10, :scale => 0
+    t.integer  "user_id",                :limit => 10, :precision => 10, :scale => 0
     t.string   "thumbnail"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "visible_url"
-    t.integer  "is_published", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbleft",    :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbwidth",   :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbtop",     :limit => 10, :precision => 10, :scale => 0
-    t.integer  "alias_id",     :limit => 10, :precision => 10, :scale => 0
+    t.integer  "is_published",           :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbleft",              :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbwidth",             :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbtop",               :limit => 10, :precision => 10, :scale => 0
+    t.integer  "alias_id",               :limit => 10, :precision => 10, :scale => 0
     t.string   "category"
+    t.string   "header_font_name"
+    t.string   "header_font_size"
+    t.string   "illustration_font_name"
+    t.string   "illustration_font_size"
+    t.string   "text_font_name"
+    t.string   "text_font_size"
+    t.string   "caption1_font_name"
+    t.string   "caption1_font_size"
+    t.string   "caption2_font_name"
+    t.string   "caption2_font_size"
+    t.string   "endnotes_font_name"
+    t.string   "endnotes_font_size"
   end
 
   create_table "facet_categories", :force => true do |t|

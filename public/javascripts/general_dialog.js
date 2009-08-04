@@ -45,11 +45,15 @@ var GeneralDialog = Class.create({
 		var defaultAction = {};
 		var defaultParam = {};
 		
+		var makeId = function(str) {
+			// This checks to see if the id is of the form xxx[yyy]. If so, it replaces the first [ with _ and the second with nothing.
+			return str.gsub('[', '_').gsub(']', '');
+		};
 		var selectChange = function(event, param)
 		{
 			var This = $(this);
 			var currSelection = This.value;
-			var id = param.id;
+			var id = makeId(param.id);
 			var el = $(id);
 			el.value = currSelection; 
 			
@@ -100,7 +104,7 @@ var GeneralDialog = Class.create({
 		this.submitForm = function(id, action) {
 			var form = $(id);
 			form.writeAttribute({ action: action, method: 'post' });
-			//form.writeAttribute({ enctype: "multipart/form-data", target: "upload_target", method: 'post' });
+			form.appendChild(new Element('input', { id: 'authenticity_token', type: 'hidden', name: 'authenticity_token', value: form_authenticity_token }));
 			form.submit();
 		};
 
@@ -118,6 +122,9 @@ var GeneralDialog = Class.create({
 			}
 		};
 		
+		this.getTitle = function() {
+			return title;
+		}
 		var handleCancel = function() {
 		    this.cancel();
 		};
@@ -165,7 +172,7 @@ var GeneralDialog = Class.create({
 		};
 
 		var addInput = function(parent_el, text, klass, value) {
-			var el1 = new Element('input', { id: text, 'type': 'text' });
+			var el1 = new Element('input', { id: makeId(text), 'type': 'text', name: text });
 			if (klass)
 				el1.addClassName(klass);
 			if (value !== undefined)
@@ -190,14 +197,22 @@ var GeneralDialog = Class.create({
 						if (subel.klass)
 							elText.addClassName(subel.klass);
 						if (subel.id !== undefined)
-							elText.writeAttribute({ id: subel.id });
+							elText.writeAttribute({ id: makeId(subel.id) });
 						row.appendChild(elText);
 						// INPUT
 					} else if (subel.input !== undefined) {
 						addInput(row, subel.input, subel.klass, subel.value) ;
+						// HIDDEN
+					} else if (subel.hidden !== undefined) {
+						var el0 = new Element('input', { id: makeId(subel.hidden), name: subel.hidden, 'type': 'hidden' });
+						if (subel.klass)
+							el0.addClassName(subel.klass);
+						if (subel.value !== undefined)
+							el0.writeAttribute({value: subel.value });
+						row.appendChild(el0);
 						// PASSWORD
 					} else if (subel.password !== undefined) {
-						var el2 = new Element('input', { id: subel.password, 'type': 'password'});
+						var el2 = new Element('input', { id: makeId(subel.password), 'type': 'password'});
 						if (subel.klass)
 							el2.addClassName(subel.klass);
 						if (subel.value !== undefined)
@@ -225,7 +240,7 @@ var GeneralDialog = Class.create({
 						listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
 						// SELECT
 					} else if (subel.select !== undefined) {
-						var selectValue = new Element('input', { id: subel.select, name: subel.select });
+						var selectValue = new Element('input', { id: makeId(subel.select), name: subel.select });
 						if (subel.options) {
 							var val = subel.value ? subel.value : subel.options[0].value;
 							selectValue.writeAttribute('value', val);
@@ -255,19 +270,21 @@ var GeneralDialog = Class.create({
 						row.appendChild(div);
 						// CHECKBOX
 					} else if (subel.checkbox !== undefined) {
-						var checkbox = new Element('input', { id: subel.checkbox, 'type': "checkbox", value: subel.checkbox, name: subel.checkbox });
+						var checkbox = new Element('input', { id: makeId(subel.checkbox), 'type': "checkbox", value: '1', name: subel.checkbox });
 						if (subel.klass)
 							checkbox.addClassName(subel.klass);
+						if (subel.value === '1')
+							checkbox.checked = true;
 						row.appendChild(checkbox);
 						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
 						var wrapper = new Element('div');
-						var textarea = new Element('textarea', { id: subel.textarea, name: subel.textarea });
+						var textarea = new Element('textarea', { id: makeId(subel.textarea), name: subel.textarea });
 						if (subel.klass) {
 							textarea.addClassName(subel.klass);
 							wrapper.addClassName(subel.klass);
 						}
-						if (subel.value !== undefined) {
+						if (subel.value !== undefined && subel.value !== null) {
 							// The string probably has some extra stuff at the beginning and end, so we'll get rid of that first
 							var v = subel.value.strip();
 							v = v.escapeHTML();	// Need to escape this to get the tags to be transferred in Safari.
@@ -277,9 +294,9 @@ var GeneralDialog = Class.create({
 						row.appendChild(wrapper);
 						// IMAGE
 					} else if (subel.image !== undefined) {
-						var image = new Element('div', { id: subel.image + '_div' });
+						var image = new Element('div', { id: makeId(subel.image) + '_div' });
 						var src = subel.value !== undefined ? subel.value : "";
-						image.appendChild(new Element('img', { src: src, id: subel.image + "_img", alt: '' }));
+						image.appendChild(new Element('img', { src: src, id: makeId(subel.image) + "_img", alt: '' }));
 //						if (subel.allowRemove === true) {
 //							var removeCallback = function() {
 //								// Need to delay hiding this because the Remove button itself will be hidden and that confuses the browser.
@@ -292,7 +309,7 @@ var GeneralDialog = Class.create({
 //							addButton(image, "Remove", "image_remove", removeCallback, "", "");
 //							addInput(image, 'removeImage', 'hidden', 'false');
 //						}
-						var file_input = new Element('input', { id: subel.image, type: 'file', name: subel.image });
+						var file_input = new Element('input', { id: makeId(subel.image), type: 'file', name: subel.image });
 						if (subel.size)
 							file_input.writeAttribute({ size: subel.size});
 						image.appendChild(file_input);

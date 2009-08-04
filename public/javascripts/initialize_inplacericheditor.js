@@ -143,7 +143,7 @@ function initializeInplaceRichEditor(element_id, action)
 
 		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-		dlg.initTextAreas([ 'font', 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
+		dlg.initTextAreas([ 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
 		dlg.center();
 
 		var input = $('value');
@@ -315,7 +315,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.initTextAreas([ 'font', 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
+		dlg.initTextAreas([ 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
 		dlg.changePage('layout', null);
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);

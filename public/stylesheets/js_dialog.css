@@ -531,3 +531,27 @@ a.footnote_tip:hover span.tip {
 	float: right;
 }
 
+
+/*****************************************/
+
+.font_preview {
+	float: right;
+	border: 1px solid black;
+	padding:5px;
+	width:400px;
+}
+
+.edit_font_div {
+	width: 800px;
+}
+
+.edit_font_div input {
+	width: 60px;
+}
+
+.edit_font_label {
+	text-align: right;
+	float:left;
+	padding-right:0.5em;
+	width:9.5em;
+}

@@ -272,6 +272,12 @@ class My9sController < ApplicationController
     end
   end
 
+	def update_fonts
+    exhibit = Exhibit.find(params[:id])
+    exhibit.update_attributes(params[:exhibit])
+		redirect_to :back
+	end
+
   def edit_exhibit
     exhibit_id = params[:id]
     user = get_user(session)
