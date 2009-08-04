@@ -17,7 +17,17 @@
 class Admin::UserRolesController < Admin::BaseController
   def index
 #    @users = User.all(:order => 'username')
-    @users = User.paginate(:page => params[:page], :per_page => 30, :order => 'username')
+#    @users = User.paginate(:page => params[:page], :per_page => 30, :order => 'username')
+		page = params[:page]
+		page = 'A' if page == nil
+		lower_case_page = page.downcase()
+		all_users = User.all(:order => 'username')
+		@users = []
+		all_users.each {|user|
+			if user.username[0] == page[0] || user.username[0] == lower_case_page[0]
+				@users.push(user)
+			end
+		}
   end
 
 #  def list
