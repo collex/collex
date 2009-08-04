@@ -22,7 +22,7 @@ class Branding
   end
 
 	def self.yui_path(is_debug)
-		if debug
+		if is_debug
 			return "/javascripts/yui_2_7_0"
 		else
 			return '2.7.0'
