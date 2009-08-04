@@ -484,8 +484,8 @@ module SearchHelper
       end
       html += " [#{value}]" if !is_category
       html += "</td><td class='num_objects'>#{'Yes' if site.carousel_include == 1}</td><td class='edit_delete_col'>"
+      sanitized_value = value.gsub("'") { |apos| "&apos;" }
       if is_found
-        sanitized_value = value.gsub("'") { |apos| "&apos;" }
         html += "<a href='#' class='modify_link' onclick='new EditFacetDialog(\"edit_site_list\", \"/admin/facet_tree/edit_facet\", \"#{sanitized_value}\", \"/admin/facet_tree/get_categories_and_details\"); return false;'>[edit]</a>"
         html += "<a href='#' class='modify_link' onclick='new DeleteFacetDialog(\"edit_site_list\", \"/admin/facet_tree/delete_facet\", \"#{sanitized_value}\", #{is_category}); return false;'>[delete]</a>"
       else
