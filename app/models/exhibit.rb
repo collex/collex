@@ -364,6 +364,46 @@ class Exhibit < ActiveRecord::Base
 		end
 
 	public
+	def extract_links_from_text(text)
+		# We are scanning for footnotes that have the following structure:
+		#<span title="XXX" real_link="YYY" class="nines_linklike">ZZZ</span>
+		#<span title="XXX" real_link="YYY" class="ext_linklike">ZZZ</span>
+		# We are trying to extract the YYY and the ZZZ
+		link_prefix = "<span title=\""
+		link_mid = "real_link=\""
+		link_signature = "class=\"nines_linklike\">"
+		link_signature2 = "class=\"ext_linklike\">"
+
+		links = []
+		arr = text.split(link_prefix)
+		arr.shift	# the first element won't have a link in it.
+		# this may be a false alarm, so just ignore the item if the rest of it doesn't match
+		arr.each { |f|
+			arr2 = f.split(link_mid)
+			if arr2.length == 2
+				#arr2[1] now contains the url, plus the rest of the unparsed part.
+				arr3 = arr2[1].split('"')
+				url = arr3[0]
+				# look for either link type
+				arr3 = arr2[1].split(link_signature)
+				arr3 = arr2[1].split(link_signature2) if arr3.length == 1
+				if arr3.length == 2
+					text = extract_up_to_matching_span(arr3[1])
+					links.push({ :text => text, :url => url})
+  			end
+			end
+		}
+		return links
+	end
+
+	def extract_links_from_illustration(illustration)
+		links = []
+		if illustration.illustration_type == 'Textual Illustration'
+			links = self.extract_footnotes_from_text(illustration.illustration_text)
+		end
+		return links
+	end
+
 	def extract_footnotes_from_text(text)
 		# We are scanning for footnotes that have the following structure:
 		footnote_prefix = '<a href="#" onclick=\'var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">'
@@ -477,5 +517,38 @@ class Exhibit < ActiveRecord::Base
 		end
 		return footnotes
 	end
+
+		def get_all_links()
+		links = []
+		for page in self.exhibit_pages
+			for element in page.exhibit_elements
+				case element.exhibit_element_layout_type
+				when 'pic_text':
+					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
+					links.concat(self.extract_links_from_text(element.element_text))
+				when 'pic_text_pic':
+					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
+					links.concat(self.extract_links_from_text(element.element_text))
+					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[1]))
+				when 'pics':
+					for illustration in element.exhibit_illustrations
+						links.concat(self.extract_links_from_illustration(illustration))
+					end
+				when 'text':
+					links.concat(self.extract_links_from_text(element.element_text))
+				when 'text_pic':
+					links.concat(self.extract_links_from_text(element.element_text))
+					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
+				when 'text_pic_text':
+					links.concat(self.extract_links_from_text(element.element_text))
+					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
+					links.concat(self.extract_links_from_text(element.element_text2))
+				end
+
+			end
+		end
+		return links
+	end
+
 end
 

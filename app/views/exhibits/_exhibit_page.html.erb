@@ -35,6 +35,11 @@
 			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= decode_exhibit_links(footnote) %></span></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
+		<h1 class="endnotes">Links</h1>
+		<% links = exhibit.get_all_links() -%>
+		<% for link in links -%>
+		<p><span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= link[:text] %><br />&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %></span></p>
+		<% end -%>
 		<div class="exhibit_prevlink">
 			<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => num_pages}, { :class => 'nav_link' } %>
 		</div>
