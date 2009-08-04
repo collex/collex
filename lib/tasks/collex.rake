@@ -46,6 +46,25 @@ namespace :collex do
      }    
   end
 
+	desc "Tag this version in SVN"
+	task :tag_current_version => :environment do
+		# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
+		version = Branding.version()
+		output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}`
+		if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
+			finished = false
+			letter = 'a'
+			while !finished
+				output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}#{letter}`
+				finished = output.index("Path: #{version}#{letter}") != 0
+				letter[0] = letter[0]+1 if !finished
+			end
+			version += letter
+		end
+		puts "Tagging version #{version}..."
+		system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}")
+	end
+
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
 	task :total_update_site do
 		puts "Update site from repository..."

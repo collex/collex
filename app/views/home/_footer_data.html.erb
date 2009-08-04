@@ -14,4 +14,4 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%= { :num_docs => number_with_delimiter(session[:num_docs]), :num_sites => number_with_delimiter(Site.count), :collex_version => collex_version() }.to_json() -%>
+<%= { :num_docs => number_with_delimiter(session[:num_docs]), :num_sites => number_with_delimiter(Site.count), :collex_version => Branding.version() }.to_json() -%>

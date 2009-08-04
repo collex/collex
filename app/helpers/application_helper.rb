@@ -16,10 +16,6 @@
 
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def collex_version
-    return "1.5.6"
-  end
-  
   def is_admin?
     user = session[:user]
     if user and user[:role_names].include? 'admin'
@@ -31,8 +27,8 @@ module ApplicationHelper
 	def get_stylesheets(page, debug)
 		# We can't roll up the YUI css because all the images are specified on relative paths.
 		fnames = GetIncludeFileList.get_css(page)
+		yui_path = Branding.yui_path(debug)
 		if debug
-			yui_path = "/javascripts/yui_2_7_0"
 			html = ""
 			fnames[:yui].each { |f|
 				html += "<link href='#{yui_path}#{f}.css' media='all' rel='stylesheet' type='text/css' />\n"
@@ -40,7 +36,6 @@ module ApplicationHelper
 			html += stylesheet_link_tag(fnames[:local], :media => "all")
 			return html
 		else
-			yui_path = '2.7.0'
 			yui_list = ""
 			fnames[:yui].each { |f|
 				yui_list += '&amp;' if fnames[:yui][0] != f
@@ -55,8 +50,8 @@ module ApplicationHelper
 
 	def get_javascripts(page, debug)
 		fnames = GetIncludeFileList.get_js(page)
+		yui_path = Branding.yui_path(debug)
 		if debug
-			yui_path = "/javascripts/yui_2_7_0"
 			html = javascript_include_tag(fnames[:prototype]) + "\n"
 			fnames[:yui].each { |f|
 				html += "<script src='#{yui_path}#{f}.js' type='text/javascript'></script>\n"
@@ -64,7 +59,6 @@ module ApplicationHelper
 			html += javascript_include_tag(fnames[:local]) + "\n"
 			return html
 		else
-			yui_path = '2.7.0'
 			yui_list = ""
 			fnames[:yui].each { |f|
 				yui_list += '&amp;' if fnames[:yui][0] != f
