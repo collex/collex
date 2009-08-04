@@ -64,6 +64,10 @@ var AddCategoryDlg = Class.create({
 			
 			dlg.setFlash('Adding Category...', false);
 			var data = dlg.getAllData();
+			if (data.category_name.length < 1) {
+				dlg.setFlash("Please enter a name for the Resource Tree.");
+				return;
+			}
 
 			new Ajax.Updater(parent_div, url, {
 				parameters : data,
@@ -81,8 +85,8 @@ var AddCategoryDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: 'This is a label that sites and other categories can be attached to.', klass: 'new_exhibit_instructions' } ],
-					[ { text: 'Category Name:', klass: 'new_exhibit_label' }, { input: 'category_name', klass: 'new_exhibit_input' } ],
-					[ { text: 'Parent Category:', klass: 'new_exhibit_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
+					[ { text: 'Category Name:', klass: 'admin_dlg_label' }, { input: 'category_name', klass: 'new_exhibit_input' } ],
+					[ { text: 'Parent Category:', klass: 'admin_dlg_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
@@ -142,6 +146,10 @@ var AddSiteDlg = Class.create({
 			dlg.setFlash('Adding Site...', false);
 			var data = dlg.getAllData();
 			data.site = resource;
+			if (data.display_name.length < 1) {
+				dlg.setFlash("Please enter a name for the Resource Tree.");
+				return;
+			}
 
 			new Ajax.Updater(parent_div, url, {
 				parameters : data,
@@ -159,8 +167,8 @@ var AddSiteDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: 'Enter the information for the site labeled \"' + resource + '\" in solr.', klass: 'new_exhibit_instructions' } ],
-					[ { text: 'Name in Resource Tree:', klass: 'new_exhibit_label' }, { input: 'display_name', klass: 'new_exhibit_input' } ],
-					[ { text: 'Parent Category:', klass: 'new_exhibit_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
+					[ { text: 'Name in Resource Tree:', klass: 'admin_dlg_label' }, { input: 'display_name', klass: 'new_exhibit_input' } ],
+					[ { text: 'Parent Category:', klass: 'admin_dlg_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};

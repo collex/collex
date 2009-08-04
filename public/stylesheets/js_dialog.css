@@ -319,6 +319,13 @@ hr.linkdlg_hr {
 	color: #777777;
 }
 
+.admin_dlg_label {
+	text-align: right;
+	float:left;
+	padding-right:0.5em;
+	width:10em;
+}
+
 .header_input {
 	width: 480px;
 }
