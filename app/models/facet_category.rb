@@ -22,7 +22,7 @@ class FacetCategory < ActiveRecord::Base
   attr :sorted_children, true
   
   def self.sorted_facet_tree()
-    tree_root = FacetCategory.find_by_value('archive')
+    tree_root = FacetCategory.first(:conditions => "value = 'archive' AND type = 'FacetTree'")
     self.recursively_sort_tree( tree_root )
   end
 

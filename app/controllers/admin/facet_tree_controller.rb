@@ -181,7 +181,8 @@ class Admin::FacetTreeController < Admin::BaseController
     if facet == nil
       FacetValue.create(:value => value, :parent_id => parent)
     else
-      facet.update_attributes
+			render :text => "Site not added. The name #{value} is already used in the resource tree.", :status => :bad_request
+			return
     end
     
     site = Site.find_by_code(value)

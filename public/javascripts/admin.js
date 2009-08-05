@@ -26,11 +26,11 @@ var AddCategoryDlg = Class.create({
 		// private variables
 		//var This = this;
 		var dlg = null;
+		var categories = null;
 		
 		// private functions
 		var populate = function()
 		{
-			var categories = null;
 			new Ajax.Request(get_categories_action, { method: 'get', parameters: { },
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
@@ -64,8 +64,19 @@ var AddCategoryDlg = Class.create({
 			
 			dlg.setFlash('Adding Category...', false);
 			var data = dlg.getAllData();
+			// Be sure that the user entered something
 			if (data.category_name.length < 1) {
 				dlg.setFlash("Please enter a name for the Resource Tree.");
+				return;
+			}
+			// Be sure that the user hasn't entered a duplicate name
+			var found = false;
+			categories.each(function(category) {
+				if (category.text === data.category_name)
+					found = true;
+			});
+			if (found) {
+				dlg.setFlash("That category name has already been used.");
 				return;
 			}
 
@@ -87,13 +98,13 @@ var AddCategoryDlg = Class.create({
 					[ { text: 'This is a label that sites and other categories can be attached to.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category Name:', klass: 'admin_dlg_label' }, { input: 'category_name', klass: 'new_exhibit_input' } ],
 					[ { text: 'Parent Category:', klass: 'admin_dlg_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
 		var params = { this_id: "add_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Add Category To Resource Tree" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'category_name');
 		dlg.center();
 		populate(dlg);
 	}
@@ -151,10 +162,11 @@ var AddSiteDlg = Class.create({
 				return;
 			}
 
-			new Ajax.Updater(parent_div, url, {
+			new Ajax.Request(url, {
 				parameters : data,
 				evalScripts : true,
 				onSuccess : function(resp) {
+					$(parent_div).update(resp.responseText);
 					dlg.cancel();
 				},
 				onFailure : function(resp) {
@@ -169,13 +181,13 @@ var AddSiteDlg = Class.create({
 					[ { text: 'Enter the information for the site labeled \"' + resource + '\" in solr.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Name in Resource Tree:', klass: 'admin_dlg_label' }, { input: 'display_name', klass: 'new_exhibit_input' } ],
 					[ { text: 'Parent Category:', klass: 'admin_dlg_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
 		var params = { this_id: "add_site_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Add Site To Resource Tree" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'display_name');
 		dlg.center();
 		populate(dlg);
 	}
@@ -218,7 +230,7 @@ var RemoveSiteDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: 'You are about to delete the resource "' + resource + '" from the Resource Tree. This is probably ok because the resource doesn\'t appear to be returned by solr. However, this could also happen if the solr index is corrupted.', klass: 'new_exhibit_instructions' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -268,7 +280,7 @@ var DeleteFacetDialog = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the category "' + resource + '" from the Resource Tree. All of its children will be moved up to its parent.', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 					]
 				};
 		} else {
@@ -276,7 +288,7 @@ var DeleteFacetDialog = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the site "' + resource + '" from the Resource Tree. This resource is indexed in solr so results from this resource can be seen in the search page. Are you sure?', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 					]
 				};
 		}
@@ -454,13 +466,13 @@ var EditFacetDialog = Class.create({
 					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
 					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'carousel_url', klass: 'hide_if_site edit_facet_input' } ],
 					[ { text: 'Carousel Thumbnail:', klass: 'edit_facet_label' }, { image: 'carousel_thumbnail', klass: 'edit_profile_image' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
 		var params = { this_id: "edit_facet_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Facet" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'display_name');
 		dlg.center();
 		populate(dlg);
 	}
@@ -504,13 +516,13 @@ var EditExhibitCategory = Class.create({
 				rows: [
 					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'sandbox', text: 'Sandbox' }, { value: 'student', text: 'Student' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
 		var params = { this_id: "change_exhibit_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Change Exhibit Category" };
 		var dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'category_id');
 		dlg.center();
 	}
 });
