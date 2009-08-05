@@ -16,7 +16,47 @@
 
 /*global Class, $, $$, Element, Ajax, $A */
 /*global MessageBoxDlg, GeneralDialog */
-/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory */
+/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory, AjaxUpdate */
+
+var AjaxUpdate = Class.create({
+	initialize: function (parent_div, progressMsg, validationCallback) {
+		var reentrant = false;
+		this.sendWithAjax = function (event, params)
+		{
+			if (!reentrant) {
+				reentrant = true;
+				//var curr_page = params.curr_page;
+				var url = params.destination;
+				var dlg = params.dlg;
+				var data = dlg.getAllData();
+
+				dlg.setFlash(progressMsg, false);
+				if (validationCallback) {
+					var errorMsg = validationCallback(data);
+					if (errorMsg) {
+						dlg.setFlash(errorMsg);
+						reentrant = false;
+						return;
+					}
+				}
+
+				new Ajax.Request(url, {
+					parameters : data,
+					evalScripts : true,
+					onSuccess : function(resp) {
+						dlg.cancel();
+						$(parent_div).update(resp.responseText);
+						reentrant = false;
+					},
+					onFailure : function(resp) {
+						dlg.setFlash(resp.responseText, true);
+						reentrant = false;
+					}
+				});
+			}
+		};
+	}
+});
 
 var AddCategoryDlg = Class.create({
 	initialize: function (parent_div, ok_action, get_categories_action) {
@@ -44,10 +84,16 @@ var AddCategoryDlg = Class.create({
 					var select = sel_arr.pop();
 					select.update('');
 					categories = categories.sortBy(function(category) { return category.text; });
+					var value = 0;
 					categories.each(function(category) {
-						select.appendChild(new Element('option', { value: category.value }).update(category.text));
+						if (category.text === '[root]') {
+							value = category.value;
+							select.appendChild(new Element('option', { value: category.value, selected: 'selected' }).update(category.text));
+						}
+						else
+							select.appendChild(new Element('option', { value: category.value }).update(category.text));
 					});
-					$('parent_category_id').value = categories[0].value;
+					$('parent_category_id').value = value;
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
@@ -56,41 +102,24 @@ var AddCategoryDlg = Class.create({
 		};
 		
 		// privileged functions
-		this.sendWithAjax = function (event, params)
-		{
-			//var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Adding Category...', false);
-			var data = dlg.getAllData();
+		var validation = function(data) {
 			// Be sure that the user entered something
-			if (data.category_name.length < 1) {
-				dlg.setFlash("Please enter a name for the Resource Tree.");
-				return;
-			}
+			if (data.category_name.length < 1)
+				return "Please enter a name for the Resource Tree.";
+			
 			// Be sure that the user hasn't entered a duplicate name
 			var found = false;
 			categories.each(function(category) {
 				if (category.text === data.category_name)
 					found = true;
 			});
-			if (found) {
-				dlg.setFlash("That category name has already been used.");
-				return;
-			}
-
-			new Ajax.Updater(parent_div, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
+			if (found)
+				return "That category name has already been used.";
+			
+			return null;
 		};
+
+		var updater = new AjaxUpdate(parent_div, 'Adding Category...', validation);
 		
 		var dlgLayout = {
 				page: 'layout',
@@ -98,7 +127,7 @@ var AddCategoryDlg = Class.create({
 					[ { text: 'This is a label that sites and other categories can be attached to.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category Name:', klass: 'admin_dlg_label' }, { input: 'category_name', klass: 'new_exhibit_input' } ],
 					[ { text: 'Parent Category:', klass: 'admin_dlg_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -136,10 +165,16 @@ var AddSiteDlg = Class.create({
 					var select = sel_arr.pop();
 					select.update('');
 					categories = categories.sortBy(function(category) { return category.text; });
+					var value = 0;
 					categories.each(function(category) {
-						select.appendChild(new Element('option', { value: category.value }).update(category.text));
+						if (category.text === '[root]') {
+							value = category.value;
+							select.appendChild(new Element('option', { value: category.value, selected: 'selected' }).update(category.text));
+						}
+						else
+							select.appendChild(new Element('option', { value: category.value }).update(category.text));
 					});
-					$('parent_category_id').value = categories[0].value;
+					$('parent_category_id').value = value;
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
@@ -148,32 +183,13 @@ var AddSiteDlg = Class.create({
 		};
 		
 		// privileged functions
-		this.sendWithAjax = function (event, params)
-		{
-			//var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Adding Site...', false);
-			var data = dlg.getAllData();
-			data.site = resource;
-			if (data.display_name.length < 1) {
-				dlg.setFlash("Please enter a name for the Resource Tree.");
-				return;
-			}
-
-			new Ajax.Request(url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					$(parent_div).update(resp.responseText);
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
+		var validation = function(data) {
+			if (data.display_name.length < 1)
+				return "Please enter a name for the Resource Tree.";
+			return null;
 		};
+
+		var updater = new AjaxUpdate(parent_div, 'Adding Site...', validation);
 		
 		var dlgLayout = {
 				page: 'layout',
@@ -181,7 +197,7 @@ var AddSiteDlg = Class.create({
 					[ { text: 'Enter the information for the site labeled \"' + resource + '\" in solr.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Name in Resource Tree:', klass: 'admin_dlg_label' }, { input: 'display_name', klass: 'new_exhibit_input' } ],
 					[ { text: 'Parent Category:', klass: 'admin_dlg_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'site', value: resource } ]
 				]
 			};
 		
@@ -204,33 +220,13 @@ var RemoveSiteDlg = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.sendWithAjax = function (event, params)
-		{
-			//var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Removing the site...', false);
-			var data = dlg.getAllData();
-			data.site = resource;
-
-			new Ajax.Updater(parent_div, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
+		var updater = new AjaxUpdate(parent_div, 'Removing the site...', null);
 		
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: 'You are about to delete the resource "' + resource + '" from the Resource Tree. This is probably ok because the resource doesn\'t appear to be returned by solr. However, this could also happen if the solr index is corrupted.', klass: 'new_exhibit_instructions' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'site', value: resource } ]
 				]
 			};
 		
@@ -252,27 +248,7 @@ var DeleteFacetDialog = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.sendWithAjax = function (event, params)
-		{
-			//var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Deleting the site...', false);
-			var data = dlg.getAllData();
-			data.site = resource;
-
-			new Ajax.Updater(parent_div, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
+		var updater = new AjaxUpdate(parent_div, 'Deleting the site...', null);
 
 		var dlgLayout = null;
 		if (is_category) {
@@ -280,7 +256,7 @@ var DeleteFacetDialog = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the category "' + resource + '" from the Resource Tree. All of its children will be moved up to its parent.', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true }, { hidden: 'site', value: resource } ]
 					]
 				};
 		} else {
@@ -288,7 +264,7 @@ var DeleteFacetDialog = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'You are about to delete the site "' + resource + '" from the Resource Tree. This resource is indexed in solr so results from this resource can be seen in the search page. Are you sure?', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true }, { hidden: 'site', value: resource } ]
 					]
 				};
 		}
@@ -308,12 +284,12 @@ var EditFacetDialog = Class.create({
 		// private variables
 		//var This = this;
 		var dlg = null;
+		var categories = null;
 		
 		// private functions
 		var populate = function()
 		{
 			dlg.setFlash('Loading data, please wait...', false);
-			var categories = null;
 			var obj = null;
 			new Ajax.Request(get_resource_details_action, { method: 'get', parameters: { site: resource },
 				onSuccess : function(resp) {
@@ -362,66 +338,6 @@ var EditFacetDialog = Class.create({
 					dlg.setFlash(resp.responseText, true);
 				}
 			});	
-//			var responseCount = 0;
-//			var categories = null;
-//			new Ajax.Request(get_categories_action, { method: 'get', parameters: { },
-//				onSuccess : function(resp) {
-//					responseCount++;
-//					if (responseCount === 2)
-//						dlg.setFlash('', false);
-//					try {
-//						categories = resp.responseText.evalJSON(true);
-//					} catch (e) {
-//						new MessageBoxDlg("Error", e);
-//					}
-//					// We got all the categories. Now put it on the dialog
-//					var sel_arr = $$('.categories_select');
-//					var select = sel_arr.pop();
-//					select.update('');
-//					categories = categories.sortBy(function(category) { return category.text; });
-//					categories.each(function(category) {
-//						select.appendChild(new Element('option', { value: category.value }).update(category.text));
-//					});
-//				},
-//				onFailure : function(resp) {
-//					dlg.setFlash(resp.responseText, true);
-//				}
-//			});	
-//			var obj = null;
-//			new Ajax.Request(get_resource_details_action, { method: 'get', parameters: { site: resource },
-//				onSuccess : function(resp) {
-//					responseCount++;
-//					if (responseCount === 2)
-//						dlg.setFlash('', false);
-//					try {
-//						obj = resp.responseText.evalJSON(true);
-//					} catch (e) {
-//						new MessageBoxDlg("Error", e);
-//					}
-//					var par = $('sel0');
-//					$A(par.options).each(function(option) {
-//						if (parseInt(option.value) === obj.parent_id)
-//							option.selected = 'selected';
-//					});
-//					$('parent_category_id').value = obj.parent_id;
-//					if (obj.is_category) {
-//						$('display_name').value = resource;
-//						var to_hide = $$('.hide_if_category');
-//						to_hide.each(function(el) { el.hide(); });
-//					} else {
-//						$('display_name').value = obj.display_name;
-//						$('site_url').value = obj.site_url;
-//						$('site_thumbnail').value = obj.site_thumbnail;
-//					}
-//					$('carousel_include').checked = (obj.carousel_include === 1);
-//					$('carousel_description').value = obj.carousel_description;
-//					$('carousel_url').value = obj.carousel_url;
-//					$('carousel_thumbnail_img').src = obj.image;
-//				},
-//				onFailure : function(resp) {
-//					dlg.setFlash(resp.responseText, true);
-//				}
-//			});			
 		};
 		
 		// privileged functions
@@ -435,6 +351,19 @@ var EditFacetDialog = Class.create({
 			var data = dlg.getAllData();
 			data.site = resource;
 
+			// Be sure that the user hasn't entered a duplicate name
+			var found = false;
+			if (data.display_name !== resource) {
+				categories.each(function(category) {
+					if (category.text === data.display_name)
+						found = true;
+				});
+				if (found) {
+					dlg.setFlash("That category name has already been used.");
+					return;
+				}
+			}
+			
 			// This is complicated by the file upload. That can't be done in Ajax because security doesn't let javascript manipulate file data.
 			// Therefore, we do both the normal ajax submit, then we submit the file with a normal html submit afterwards.
 			new Ajax.Updater(parent_div, url, {
@@ -489,34 +418,14 @@ var EditExhibitCategory = Class.create({
 		// private functions
 		
 		// privileged functions
-		this.sendWithAjax = function (event, params)
-		{
-			//var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-			
-			dlg.setFlash('Updating Exhibit Category...', false);
-			var data = dlg.getAllData();
-			data.exhibit_id = exhibit_id;
-
-			new Ajax.Updater(parent_div, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
+		var updater = new AjaxUpdate(parent_div, 'Updating Exhibit Category...', null);
 		
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'sandbox', text: 'Sandbox' }, { value: 'student', text: 'Student' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'exhibit_id', value: exhibit_id } ]
 				]
 			};
 		
