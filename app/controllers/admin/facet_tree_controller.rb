@@ -17,9 +17,10 @@
 class Admin::FacetTreeController < Admin::BaseController
   def index
     @sites_forest = FacetCategory.sorted_facet_tree().sorted_children
-    @facet_tree = FacetTree.find_by_value('archive')
+    #@facet_tree = FacetTree.find_by_value('archive')
     @found_resources = get_all_found_resources()
     search_one_branch(@sites_forest, @found_resources)
+		@inaccessible_sites = get_all_inaccessible_sites()
   end
   
 #  def get_resource_details
@@ -205,6 +206,7 @@ private
     @sites_forest = FacetCategory.sorted_facet_tree().sorted_children
     @found_resources = get_all_found_resources()
     search_one_branch(@sites_forest, @found_resources)
+		@inaccessible_sites = get_all_inaccessible_sites()
     
     render :partial => 'edit_site_list', :locals => { :sites_forest => @sites_forest, :found_resources => @found_resources, :parent_div => 'edit_site_list' }
   end
@@ -230,4 +232,38 @@ private
     found_resources.each {|key,val| resources.push(key)}
     return resources
   end
+
+	def mark_all_children_accessible(site_list, id)
+		site_list.each{ |site|
+			par = site[:parent_id] if site != nil
+			if site != nil && site[:parent_id] == id
+				if site[:is_accessible] == false	# avoid loops by only marking any node once
+					mark_all_children_accessible(site_list, site[:id])
+				end
+				site[:is_accessible] = true
+			end
+		}
+	end
+
+	def get_all_inaccessible_sites
+		all_sites = FacetCategory.all()
+		site_list = []
+		archive_id = 0
+		# first turn the items into an array indexed by id. The returned list isn't because there are gaps in the id's where records have been deleted.
+		all_sites.each { |site|
+			archive_id = site.id if site.value == 'archive'
+			site_list[site.id] = { :id => site.id, :parent_id => site.parent_id, :is_accessible => (site.value == 'archive') }
+		}
+
+		mark_all_children_accessible(site_list, archive_id)
+
+		inaccessible = []
+		site_list.each { |site|
+			if site && site[:is_accessible] == false
+				inaccessible.push(site[:id])
+			end
+		}
+
+		return inaccessible
+	end
 end

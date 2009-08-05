@@ -39,3 +39,12 @@
 		<tr><td class='limit_to_lvl1'><%= site.display_name %> [<%= site.value %>]</td><td><a class="modify_link" href="#" onclick="new RemoveSiteDlg('<%= parent_div %>', '/admin/facet_tree/remove_site', '<%= site.value %>'); return false;">[remove]</a></td></tr>
 	<% end -%>
 </table>
+
+<div class="right_column_header">Inaccessible Sites:</div>
+<table class="limit_to">
+	<% for site_id in @inaccessible_sites -%>
+		<% site = FacetCategory.find(site_id) %>
+		<% sanitized_value = site['value'].gsub("'") { |apos| "&apos;" } -%>
+		<tr><td class='limit_to_lvl1'><%= site.display_name %> [<%= site.value %>]</td><td><a href='#' class='modify_link' onclick='new EditFacetDialog("edit_site_list", "/admin/facet_tree/edit_facet", "<%=sanitized_value%>", "/admin/facet_tree/get_categories_and_details"); return false;'>[edit]</a><a class="modify_link" href="#" onclick="new RemoveSiteDlg('<%= parent_div %>', '/admin/facet_tree/remove_site', '<%= site.value %>'); return false;">[remove]</a></td></tr>
+	<% end -%>
+</table>
