@@ -228,7 +228,7 @@ var GeneralDialog = Class.create({
 							defaultParam[page.page] = { curr_page: page.page, destination: subel.url, dlg: This };
 							buttonClass = (buttonClass === undefined) ? "default" : buttonClass + " default" ;
 						}
-						addButton(row, subel.button, subel.klass, subel.callback, page.page, subel.url);
+						addButton(row, subel.button, buttonClass, subel.callback, page.page, subel.url);
 //						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
