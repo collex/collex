@@ -12,3 +12,11 @@ Requires Wordpress for the News tab
 
 Requires Solr
 
+Note:
+There are a number of new rake tasks under the namespace "collex:" which help with deployment.
+
+In particular, the javascript and css files are compressed and merged into one so that the page loads faster.
+
+To deploy, after getting the source from SVN, run:
+
+	rake collex:update_site
