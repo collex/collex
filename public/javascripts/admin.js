@@ -319,7 +319,8 @@ var EditFacetDialog = Class.create({
 					select.update('');
 					categories = categories.sortBy(function(category) { return category.text; });
 					categories.each(function(category) {
-						select.appendChild(new Element('option', { value: category.value }).update(category.text));
+						if (category.text !== resource)
+							select.appendChild(new Element('option', { value: category.value }).update(category.text));
 					});
 					
 					// Put the details on the dialog.
