@@ -28,7 +28,7 @@
 		<% for thread_id in my_threads -%>
 			<% thread = DiscussionThread.find_by_id(thread_id[0]) -%>
 			<% if thread != nil # this should always be true, but if the database gets a little corrupted, but don't want to crash -%>
-				<li><%= image_tag('/images/notice_thumb.gif', :height => '16', :alt => 'Recent Activity') if thread.get_most_recent_comment_time() > 1.day.ago() %><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread_id[0] }, :class => 'nav_link') %></li>
+				<li><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread_id[0] }, :class => 'nav_link') %>&nbsp;<%= image_tag('/images/notice_thumb.gif', :height => '16', :alt => 'Recent Activity') if !DiscussionVisit.user_has_seen_all_comments(user_id, thread) %></li>
 			<% end -%>
 		<% end -%>
 	</ul>

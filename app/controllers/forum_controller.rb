@@ -183,6 +183,7 @@ class ForumController < ApplicationController
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
         :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
+		DiscussionVisit.visited(thread, session[:user])
   end
   
   public
@@ -316,6 +317,7 @@ class ForumController < ApplicationController
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
         :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
+		DiscussionVisit.visited(thread, session[:user])
   end
   public
   
@@ -373,6 +375,7 @@ class ForumController < ApplicationController
       num_views = 0 if num_views == nil
       num_views += 1
       @thread.update_attribute(:number_of_views, num_views)
+			DiscussionVisit.visited(@thread, session[:user])
 			@subtitle = " : #{@thread.get_title()}"
     end
   end
