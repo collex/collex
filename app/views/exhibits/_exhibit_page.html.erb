@@ -35,11 +35,22 @@
 			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= decode_exhibit_links(footnote) %></span></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
+		<%= "<p>No footnotes</p>" if footnote_count == 1 %>
 		<h1 class="endnotes">Links</h1>
-		<% links = exhibit.get_all_links() -%>
-		<% for link in links -%>
-		<p><span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= link[:text] %><br />&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %></span></p>
+		<% pages_links = exhibit.get_all_links() -%>
+		<% page_num = 1 -%>
+		<% at_least_one = false -%>
+		<% for page in pages_links -%>
+			<% if page.length > 0 -%>
+				<h2>Page <%= page_num %> </h2>
+			<% end -%>
+			<% page_num += 1 -%>
+			<% for link in page -%>
+			<% at_least_one = true -%>
+			<p><span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= link[:text] %><br />&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "<br/>&nbsp;&nbsp;&nbsp;&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
+			<% end -%>
 		<% end -%>
+		<%= "<p>No links</p>" if !at_least_one -%>
 		<div class="exhibit_prevlink">
 			<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => num_pages}, { :class => 'nav_link' } %>
 		</div>

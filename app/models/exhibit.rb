@@ -389,7 +389,15 @@ class Exhibit < ActiveRecord::Base
 				arr3 = arr2[1].split(link_signature2) if arr3.length == 1
 				if arr3.length == 2
 					text = extract_up_to_matching_span(arr3[1])
-					links.push({ :text => text, :url => url})
+					cr = CachedProperty.first(:conditions => [ "name = ? AND value = ?", 'url', url ])
+					name = nil
+					if cr
+						cr2 = CachedProperty.first(:conditions => [ "name = ? AND cached_resource_id = ?", 'title', cr.cached_resource_id ])
+						if cr2
+							name = cr2.value
+						end
+					end
+					links.push({ :text => text, :url => url, :name => name })
   			end
 			end
 		}
@@ -519,8 +527,9 @@ class Exhibit < ActiveRecord::Base
 	end
 
 		def get_all_links()
-		links = []
+		pages = []
 		for page in self.exhibit_pages
+			links = []
 			for element in page.exhibit_elements
 				case element.exhibit_element_layout_type
 				when 'pic_text':
@@ -544,10 +553,10 @@ class Exhibit < ActiveRecord::Base
 					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
 					links.concat(self.extract_links_from_text(element.element_text2))
 				end
-
 			end
+			pages.push(links)
 		end
-		return links
+		return pages
 	end
 
 end
