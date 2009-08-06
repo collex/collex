@@ -38,4 +38,9 @@ class DiscussionThread < ActiveRecord::Base
         return discussion_comments[0].link_url
     end
   end
+
+	def get_most_recent_comment_time
+		return 0 if discussion_comments.length == 0
+		return discussion_comments[discussion_comments.length-1].updated_at
+	end
 end
