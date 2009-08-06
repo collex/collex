@@ -365,6 +365,7 @@ private
   end
 
 	def denature_footnote_links(text)
+    return text if text == nil || text == ''
 		text = text.gsub("onclick=\'var footnote = $(this).next(); new MessageBoxDlg", "onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg")
 		return text
 	end
