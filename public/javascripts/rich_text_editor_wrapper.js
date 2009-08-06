@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global YAHOO */
-/*global Class */
+/*global Class, $, $A, Element */
 /*global MessageBoxDlg, RteInputDlg */
 /*extern RichTextEditor */
 
@@ -562,7 +562,7 @@ var RichTextEditor = Class.create({
 		this.initializeFootnoteEvents = function() {
 			var ifr = $(id + '_editor');
 			var doc = ifr.contentDocument;
-			if (doc == undefined || doc == null)
+			if (doc === undefined || doc === null)
 				doc = ifr.contentWindow.document;
 			var footnotes = [];
 			var iterateChild = function(node) {

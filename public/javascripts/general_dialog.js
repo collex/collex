@@ -124,7 +124,8 @@ var GeneralDialog = Class.create({
 		
 		this.getTitle = function() {
 			return title;
-		}
+		};
+		
 		var handleCancel = function() {
 		    this.cancel();
 		};
