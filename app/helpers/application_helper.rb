@@ -370,6 +370,11 @@ private
 		return text
 	end
 
+	def remove_footnote_links(text)
+		tag = "<a href=\"#\" onclick='var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\", footnote.innerHTML); return false;' class=\"superscript\">@</a>"
+		return text.gsub(tag, "")
+	end
+
 	def clean_header(text)
 		# This removes any tags or footnotes from inside the header text
 		text = text.gsub("<a href=\"#\" onclick='var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\", footnote.innerHTML); return false;' class=\"superscript\">@<\/a>", "")

@@ -47,7 +47,7 @@
 			<% page_num += 1 -%>
 			<% for link in page -%>
 			<% at_least_one = true -%>
-			<p><span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= link[:text] %>&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
+			<p><span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;">"<%= remove_footnote_links(link[:text]) %>"&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
 			<% end -%>
 		<% end -%>
 		<%= "<p>No links</p>" if !at_least_one -%>
@@ -87,6 +87,15 @@
 				<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num - 1}, { :class => 'nav_link' } %>
 			</div>
 		<% end -%>
+<script type="text/javascript">
+	var pageRenumberFootnotes = function() {
+		renumberFootnotes(<%= exhibit.get_starting_footnote_per_page()[page_num-1] %>);
+	}
+
+	document.observe('dom:loaded', function() {
+		pageRenumberFootnotes();
+	});
+</script>
 	<% end # page_num is a regular page -%>
 <% end #if there are pages defined -%>
 
@@ -97,13 +106,3 @@
 	scroll_to_target(target_el, element_el);
 </script>
 <% end -%>
-
-<script type="text/javascript">
-	var pageRenumberFootnotes = function() {
-		renumberFootnotes(<%= exhibit.get_starting_footnote_per_page()[page_num-1] %>);
-	}
-
-	document.observe('dom:loaded', function() {
-		pageRenumberFootnotes();
-	});
-</script>
