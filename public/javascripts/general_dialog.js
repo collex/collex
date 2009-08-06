@@ -207,7 +207,7 @@ var GeneralDialog = Class.create({
 						var el0 = new Element('input', { id: makeId(subel.hidden), name: subel.hidden, 'type': 'hidden' });
 						if (subel.klass)
 							el0.addClassName(subel.klass);
-						if (subel.value !== undefined)
+						if (subel.value !== undefined && subel.value !== null)
 							el0.writeAttribute({value: subel.value });
 						row.appendChild(el0);
 						// PASSWORD
@@ -215,7 +215,7 @@ var GeneralDialog = Class.create({
 						var el2 = new Element('input', { id: makeId(subel.password), 'type': 'password'});
 						if (subel.klass)
 							el2.addClassName(subel.klass);
-						if (subel.value !== undefined)
+						if (subel.value !== undefined && subel.value !== null)
 							el2.writeAttribute({value: subel.value });
 						row.appendChild(el2);
 						// BUTTON
@@ -242,7 +242,7 @@ var GeneralDialog = Class.create({
 					} else if (subel.select !== undefined) {
 						var selectValue = new Element('input', { id: makeId(subel.select), name: subel.select });
 						if (subel.options) {
-							var val = subel.value ? subel.value : subel.options[0].value;
+							var val = (subel.value !== undefined  && subel.value !== null) ? subel.value : subel.options[0].value;
 							selectValue.writeAttribute('value', val);
 						}
 						selectValue.addClassName('hidden');
@@ -295,7 +295,7 @@ var GeneralDialog = Class.create({
 						// IMAGE
 					} else if (subel.image !== undefined) {
 						var image = new Element('div', { id: makeId(subel.image) + '_div' });
-						var src = subel.value !== undefined ? subel.value : "";
+						var src = (subel.value !== undefined  && subel.value !== null) ? subel.value : "";
 						image.appendChild(new Element('img', { src: src, id: makeId(subel.image) + "_img", alt: '' }));
 //						if (subel.allowRemove === true) {
 //							var removeCallback = function() {
