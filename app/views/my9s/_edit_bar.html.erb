@@ -34,6 +34,7 @@
 	<select id="element_<%= element.id %>_select_type" class="select_element_type">
 	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
 	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'blockquote' %> value="blockquote">Block Quote</option>
 	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Illustration then Text</option>
 	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Illustration</option>
 	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Row of Illustrations</option>

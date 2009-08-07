@@ -306,6 +306,8 @@ class Exhibit < ActiveRecord::Base
 					end
 				when 'text':
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
+				when 'blockquote':
+					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
 				when 'text_pic':
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
 					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
@@ -476,6 +478,8 @@ class Exhibit < ActiveRecord::Base
 					end
 				when 'text':
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
+				when 'blockquote':
+					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
 				when 'text_pic':
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
 					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
@@ -515,6 +519,8 @@ class Exhibit < ActiveRecord::Base
 					end
 				when 'text':
 					count += self.count_footnotes_from_text(element.element_text)
+				when 'blockquote':
+					count += self.count_footnotes_from_text(element.element_text)
 				when 'text_pic':
 					count += self.count_footnotes_from_text(element.element_text)
 					count += self.count_footnotes_from_illustration(element.exhibit_illustrations[0])
@@ -546,6 +552,8 @@ class Exhibit < ActiveRecord::Base
 						links.concat(self.extract_links_from_illustration(illustration))
 					end
 				when 'text':
+					links.concat(self.extract_links_from_text(element.element_text))
+				when 'blockquote':
 					links.concat(self.extract_links_from_text(element.element_text))
 				when 'text_pic':
 					links.concat(self.extract_links_from_text(element.element_text))

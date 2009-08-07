@@ -29,6 +29,8 @@
 	<% end -%>
 <% elsif element.exhibit_element_layout_type == 'text' -%>
 	<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'only' } %>
+<% elsif element.exhibit_element_layout_type == 'blockquote' -%>
+	<%= render :partial => '/exhibits/exhibit_text', :locals => { :is_edit_mode => is_edit_mode, :element => element, :which => 'blockquote' } %>
 <% elsif element.exhibit_element_layout_type == 'pic_text' -%>
 	<% illustration = element.exhibit_illustrations.find(:first) -%>
 	<table><tr>

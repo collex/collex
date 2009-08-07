@@ -99,6 +99,11 @@
 	border: 1px solid white;
 }
 
+.blockquote {
+	padding-left: 4em;
+	padding-right: 4em;
+}
+
 .exhibit_caption1 {
 	background:#DCDCDC none repeat scroll 0 0;
 	border:1px solid #999999;

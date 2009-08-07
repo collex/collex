@@ -64,6 +64,8 @@
 				<span onclick="selectLine('outline_element_<%= element.id %>')">
 				<% if element.exhibit_element_layout_type == 'text' -%>
 					<%= element_text_thumbnail(element.element_text) %>
+				<% elsif element.exhibit_element_layout_type == 'blockquote' -%>
+					<%= element_text_thumbnail(element.element_text) %>
 				<% elsif element.exhibit_element_layout_type == 'header' -%>
 					<span class="exhibit_outline_header"><b><big><%=h strip_tags(element.element_text) %></big></b></span>
 				<% elsif element.exhibit_element_layout_type == 'pics' -%>
