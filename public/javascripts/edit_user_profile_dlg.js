@@ -77,13 +77,13 @@ var EditProfileDialog = Class.create({
 					[ { text: 'Re-type password:', klass: 'edit_facet_label' }, { password: 'account_password2', klass: 'edit_facet_input' } ],
 					[ { text: 'About me:', klass: 'edit_facet_label' }, { textarea: 'aboutme', value: user.about_me, klass: 'edit_profile_textarea' } ],
 					[ { text: 'Thumbnail:', klass: 'edit_facet_label' }, { image: 'image', klass: 'edit_profile_image', size: 35, value: curr_image_src } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var params = { this_id: "edit_profile_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Profile" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'fullname');
 		dlg.center();
 	}
 });

@@ -157,7 +157,7 @@ var ForumReplyDlg = Class.create({
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
 					[ { text: 'URL', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_reply_input weblink hidden' } ],
 					[ { text: 'Thumbnail for Item', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_reply_input weblink hidden' } ],
-					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -167,7 +167,7 @@ var ForumReplyDlg = Class.create({
 		if (topic_id || (comment_id && starting_title))
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
 		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'title');
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');
 		dlg.center();

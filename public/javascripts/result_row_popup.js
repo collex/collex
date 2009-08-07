@@ -105,7 +105,7 @@ var ResultRowDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: '<img src="' + progress_img + '" alt="" />', klass: 'result_row_details' } ],
-					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};
 		
@@ -445,14 +445,14 @@ var StartDiscussionWithObject = Class.create({
 					[ { text: 'Title', klass: 'new_exhibit_label' }, { input: 'title', klass: 'new_exhibit_input_long' } ],
 					[ { text: 'Select the topic you want this discussion to appear under', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
 					[ { textarea: 'description' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
 		dlg = new GeneralDialog(params);
 		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
-		dlg.changePage('start_discussion', null);
+		dlg.changePage('start_discussion', 'title');
 		dlg.center();
 		populate(dlg);
 	}

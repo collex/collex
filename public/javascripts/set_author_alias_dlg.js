@@ -83,13 +83,13 @@ var SetExhibitAuthorAlias = Class.create({
 				rows: [
 					[ { text: 'Select the user that you wish to impersonate', klass: 'new_exhibit_instructions' } ],
 					[ { select: 'user_id', klass: 'user_alias_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var params = { this_id: "set_exhibit_author_alias_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('choose_objects', null);
+		dlg.changePage('choose_objects', 'user_id');
 		dlg.center();
 		populate(dlg);
 	}

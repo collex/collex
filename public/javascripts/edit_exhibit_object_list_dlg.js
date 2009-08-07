@@ -143,7 +143,7 @@ var EditExhibitObjectListDlg = Class.create({
 				rows: [
 					[ { text: 'Select object from the list on the left and press the ">>" button to move it to the exhibit.', klass: 'new_exhibit_instructions' } ],
 					[ { custom: obj_selector } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_objects, callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_objects, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 

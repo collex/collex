@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  user_id: 9.99
+  discussion_thread_id: 9.99
+  last_visit: 
+
+two:
+  user_id: 9.99
+  discussion_thread_id: 9.99
+  last_visit: 

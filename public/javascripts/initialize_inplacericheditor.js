@@ -194,7 +194,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 
 		var dlgParams = { this_id: "header_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Enter Header" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'value');
 		dlg.center();
 	};
 
@@ -309,14 +309,14 @@ function initializeInplaceIllustrationEditor(element_id, action)
 					[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
 					[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
-					[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
 		dlg.initTextAreas([ 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', 'type');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
 		dlg.center();

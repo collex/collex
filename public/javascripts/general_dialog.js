@@ -440,7 +440,7 @@ var MessageBoxDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { rowClass: 'last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};
 		
@@ -470,7 +470,7 @@ var ConfirmDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: message, klass: 'message_box_label' } ],
-					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok }, { button: cancelStr, callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: cancelStr, callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 		
@@ -607,7 +607,7 @@ var TextInputDlg = Class.create({
 
 		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(dlgparams);
-		dlg.changePage('layout', null);
+		dlg.changePage('layout', id);
 		dlg.center();
 
 		var input = $(id);

@@ -397,13 +397,13 @@ var LinkDlgHandler = Class.create({
 						[ { page_link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
 						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
 						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
-						[ { rowClass: 'last_row' }, { button: 'Save', callback: saveLink }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Save', callback: saveLink, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 				
 			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link" };
 			var dlg = new GeneralDialog(dlgParams);
-			dlg.changePage('layout', null);
+			dlg.changePage('layout', 'ld_type');
 			objlist.populate(dlg, true, 'rte');
 			if (starting_selection.length > 0)
 				$$(".remove").each(function(el) { el.removeClassName('hidden'); });
