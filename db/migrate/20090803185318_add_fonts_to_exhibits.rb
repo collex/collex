@@ -12,11 +12,6 @@ class AddFontsToExhibits < ActiveRecord::Migration
     add_column :exhibits, :caption2_font_size, :string
     add_column :exhibits, :endnotes_font_name, :string
     add_column :exhibits, :endnotes_font_size, :string
-
-		exhibits = Exhibit.all()
-		for exhibit in exhibits
-			exhibit.reset_fonts_to_default()
-		end
   end
 
   def self.down

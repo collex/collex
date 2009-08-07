@@ -649,6 +649,7 @@ var EditFontsDlg = Class.create({
 					[ { text: 'Illustration:', klass: 'edit_font_label' }, { select: 'exhibit[illustration_font_name]', value: values.illustration_font_name, options: options, change: updatePreview}, { select: 'exhibit[illustration_font_size]', value: values.illustration_font_size, options: sizes, change: updatePreview } ],
 					[ { text: 'First Caption:', klass: 'edit_font_label' }, { select: 'exhibit[caption1_font_name]', value: values.caption1_font_name, options: options, change: updatePreview}, { select: 'exhibit[caption1_font_size]', value: values.caption1_font_size, options: sizes, change: updatePreview } ],
 					[ { text: 'Second Caption:', klass: 'edit_font_label' }, { select: 'exhibit[caption2_font_name]', value: values.caption2_font_name, options: options, change: updatePreview}, { select: 'exhibit[caption2_font_size]', value: values.caption2_font_size, options: sizes, change: updatePreview } ],
+					[ { text: 'Footnote Popup:', klass: 'edit_font_label' }, { select: 'exhibit[footnote_font_name]', value: values.footnote_font_name, options: options, change: updatePreview}, { select: 'exhibit[footnote_font_size]', value: values.footnote_font_size, options: sizes, change: updatePreview } ],
 					[ { text: 'Endnotes:', klass: 'edit_font_label' }, { select: 'exhibit[endnotes_font_name]', value: values.endnotes_font_name, options: options, change: updatePreview}, { select: 'exhibit[endnotes_font_size]', value: values.endnotes_font_size, options: sizes, change: updatePreview } ],
 					[ { rowClass: 'last_row' }, { button: 'Save', callback: ok }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: exhibit_id } ]
 				]
@@ -664,14 +665,41 @@ var EditFontsDlg = Class.create({
 		var preview = new Element('div');
 		preview.addClassName('font_preview');
 		preview.appendChild(new Element('h3', { id: 'preview_header' }).update("Header"));
+
 		var illustration = new Element('div', { style: "float: right;" });
 		illustration.appendChild(new Element('div', { id: 'preview_illustration' }).update("Textual Illustration."));
 		var caption1 = new Element('div', { id: 'preview_caption1' }).update("Caption 1");
 		illustration.appendChild(caption1);
 		caption1.appendChild(new Element('div', { id: 'preview_caption2' }).update("Caption 2"));
 		preview.appendChild(illustration);
+
 		preview.appendChild(new Element('div', { id: 'preview_text' }).update("Paragraph of text."));
 		preview.appendChild(new Element('div', { id: 'preview_endnotes', style: 'clear:both;' }).update("<span class='endnote_superscript'>1</span>Endnote"));
+
+		// A mockup of the footnote dialog
+		var divFootnote = new Element('div', { style: "text-align: left;" });
+		var divFootnote2 = new Element('div', { style: "position:inherit; visibility: visible; z-index: 2;" });
+		divFootnote2.addClassName("yui-panel-container yui-dialog show-scrollbars shadow");
+		divFootnote.appendChild(divFootnote2);
+		var divFootnote3 = new Element('div', { style: "visibility: visible;" });
+		divFootnote3.addClassName("yui-module yui-overlay yui-panel");
+		divFootnote2.appendChild(divFootnote3);
+		var divFootnote4 = new Element('div').update("Footnote");
+		divFootnote4.addClassName("hd");
+		divFootnote3.appendChild(divFootnote4);
+		var divFootnote5 = new Element('div');
+		divFootnote5.addClassName("bd");
+		divFootnote3.appendChild(divFootnote5);
+		var divFootnote6 = new Element('div');
+		divFootnote5.appendChild(divFootnote6);
+		var divFootnote7 = new Element('div');
+		divFootnote7.addClassName("message_box_row");
+		divFootnote6.appendChild(divFootnote7);
+		var divFootnote8 = new Element('span', { id: 'preview_footnote' }).update('Text of footnote.');
+		divFootnote8.addClassName("message_box_label");
+		divFootnote7.appendChild(divFootnote8);
+		preview.appendChild(divFootnote);
+
 		div2.insert({ top: preview });
 		div2.down(".last_row").addClassName('clear_both');
 
@@ -684,6 +712,7 @@ var EditFontsDlg = Class.create({
 		$('preview_caption2').setStyle({ fontFamily: values.caption2_font_name, fontSize: values.caption2_font_size + 'px' });
 		$('preview_caption2').addClassName('exhibit_caption2');
 		$('preview_text').setStyle({ fontFamily: values.text_font_name, fontSize: values.text_font_size + 'px' });
+		$('preview_footnote').setStyle({ fontFamily: values.footnote_font_name, fontSize: values.footnote_font_size + 'px' });
 		$('preview_endnotes').setStyle({ fontFamily: values.endnotes_font_name, fontSize: values.endnotes_font_size + 'px' });
 	}
 });

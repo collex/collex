@@ -55,8 +55,7 @@
 
 		<div class="edit_exhibit_links">
 			<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
-			<% preview_id = @exhibit.visible_url ? (@exhibit.visible_url.length > 0 ? @exhibit.visible_url : @exhibit.id) : @exhibit.id -%>
-			<%= link_to_function "[Preview]", "var el = $('overview_visible_url'); var url = el.innerHTML; if (url.length === 0) url = #{@exhibit.id}; window.open('/exhibits/view/'+url+'?page=#{@page}');", { :class => 'nav_link', :target => '_blank' } %>
+			<%= link_to_function "[Preview]", "var el = $('overview_visible_url'); var url = el.innerHTML; if (url.length === 0) url = #{@exhibit.id}; window.open('/exhibits/view/'+url+'?page=#{@page}');", { :class => 'nav_link' } %>
 			<% if is_admin? -%>
 				<%= link_to_function '[Publish as different user]', "new SetExhibitAuthorAlias('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_users', '/my9s/set_exhibit_author_alias', #{@exhibit.id}, 'exhibit_page', #{@page});",  :class => 'nav_link' %>
 			<% end -%>

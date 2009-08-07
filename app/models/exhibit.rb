@@ -32,6 +32,8 @@ class Exhibit < ActiveRecord::Base
 		self.caption2_font_size = '14'
 		self.endnotes_font_name = 'Times New Roman'
 		self.endnotes_font_size = '16'
+		self.footnote_font_name = 'Times New Roman'
+		self.footnote_font_size = '16'
 		self.save
 	end
 	
