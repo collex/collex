@@ -68,9 +68,15 @@
 			  <ol id="carousel">
 					<% for item in @carousel -%>
 						<li class="item">
-				    		<a href="<%=h item[:url] %>"><img class="carousel_image" src="<%=h item[:image] %>" alt="<%=h item[:title] %>" /></a>
-							<a href="<%=h item[:url] %>" class="carousel_item_title nav_link"><%=h item[:title] %></a>
-							<%= item[:description] %>&nbsp;<a href="<%=h item[:url] %>" class="carousel_item_title nav_link">VISIT SITE</a>
+							<% if item[:url] && item[:url].length > 0 -%>
+								<a href="<%=h item[:url] %>"><img class="carousel_image" src="<%=h item[:image] %>" alt="<%=h item[:title] %>" /></a>
+								<a href="<%=h item[:url] %>" class="carousel_item_title nav_link"><%=h item[:title] %></a>
+								<%= item[:description] %>&nbsp;<a href="<%=h item[:url] %>" class="carousel_item_title nav_link">VISIT SITE</a>
+							<%  else -%>
+								<img class="carousel_image" src="<%=h item[:image] %>" alt="<%=h item[:title] %>" />
+								<em><%=h item[:title] %></em>
+								<%= item[:description] %>
+							<% end -%>
 						</li>
 					<% end -%>
 			  </ol>
