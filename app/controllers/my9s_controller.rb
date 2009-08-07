@@ -934,11 +934,15 @@ class My9sController < ApplicationController
     # we are looking for "<span...></span>"
     return "" if text == nil || text == ""
     text = text.gsub(/<span[^>]*><\/span>/, '')
-    #    text = text.gsub(/<span>.*<\/span>/) { |s|
-    #      str = s[6, s.length-13]
-    #      puts "Replacement: " + str
-    #      return str
-    #    }
+
+		# also, we are controlling the fonts, so we also need to get rid of any spurious font info that the user pasted in.
+    text = text.gsub(/font-family:[^;]*;/, '')
+    text = text.gsub(/font-size:[^;]*;/, '')
+		# now there may be empty style attributes
+		text = text.gsub('style=""', '')
+		# Also, don't allow any preformatting that might have crept in.
+		text = text.gsub('<pre>', '')
+		text = text.gsub('</pre>', '')
     return text
   end
 
