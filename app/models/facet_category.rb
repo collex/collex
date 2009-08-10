@@ -23,7 +23,10 @@ class FacetCategory < ActiveRecord::Base
   
   def self.sorted_facet_tree()
     tree_root = FacetCategory.first(:conditions => "value = 'archive' AND type = 'FacetTree'")
-    self.recursively_sort_tree( tree_root )
+    root = self.recursively_sort_tree( tree_root )
+		# the top level is sorted in reverse order
+		root.sorted_children = root.sorted_children.sort { |a,b| b.display_name.downcase <=> a.display_name.downcase }
+		return root
   end
 
   def self.get_all_categories()
