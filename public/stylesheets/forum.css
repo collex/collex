@@ -164,6 +164,11 @@
 	float:left;
 }
 
+.FP_replies_per_page .results_per_page {
+	float:left;
+	font-size:inherit;
+}
+
 .FP_reply_container {
 	border-bottom: 2px solid #966C54;
 	margin-bottom:10px;
