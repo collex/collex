@@ -1,22 +1,84 @@
 The NINES project
 
-Requires the following Gems:
+-----------------------------------------------------------------------
+** Requires the following Gems:
 
-TODO
+image_science (1.1.3) [ for attachment_fu]
 
-Uses the following Plugins for the specified functionality
+-----------------------------------------------------------------------
+** Requires Wordpress for the News tab
 
-TODO
+There are instructions for integrating Wordpress that you can read by navigating to "/news".
 
-Requires Wordpress for the News tab
+When changing any files in the Wordpress theme, then a rake task must be called to copy them over to the correct production folder.
 
-Requires Solr
+-----------------------------------------------------------------------
+** Requires Solr
 
-Note:
-There are a number of new rake tasks under the namespace "collex:" which help with deployment.
+A connection to solr is needed. Typically this will be on the same computer as the deployment. From a command prompt, you can start
+solr similar to this:
 
-In particular, the javascript and css files are compressed and merged into one so that the page loads faster.
+	~/Documents/workspace/solr_1.3 $  java -jar start.jar
 
-To deploy, after getting the source from SVN, run:
+Note that you will need to index your documents first and put those indexes in the above folder.
 
-	rake collex:update_site
+That process is explained here: TODO
+
+-----------------------------------------------------------------------
+** deploying js and css
+
+JavaScript heavily uses prototype and YUI.
+
+When running in production mode, different js and css files are used. The files are compressed and concatinated.
+
+When running in development mode, the js and css files are not touched.
+
+That means that there is no penalty for creating lots of small js and css files and commenting them copiously, because that will
+be stripped out of the deployed site.
+
+Each page has its own compressed js and css file.
+
+In production, there are two css files on a page:
+- the one for the YUI resources (directed to the Yahoo page so our server doesn't need to handle it)
+- the specific one for the page (this is all of our css files compressed and concatinated.)
+
+In production, there are three js files on a page:
+- the one for the prototype files, compressed and contatinated.
+- the one for the YUI resources (directed to the Yahoo page so our server doesn't need to handle it)
+- the specific one for the page (this is all of our js files compressed and concatinated.)
+
+-----------------------------------------------------------------------
+** Custom rake tasks
+
+In /lib/tasks/collex.rake, there are a number of rake tasks defined. Here are the most important ones:
+
+--- Development side ---
+	rake collex:tag_current_version
+	(uses the version number in the model Branding to tag the trunk.)
+
+	rake collex:jslint
+	(Runs jslint on all non-minimized js files in /public/javascripts.)
+
+--- Server side ---
+	rake RAILS_ENV="production" collex:total_update_site
+	(downloads the latest code from SVN, runs migrate, updates the wordpress theme, and compresses js and css files)
+
+	rake RAILS_ENV="production" collex:update_site
+	(runs migrate, updates the wordpress theme, and compresses js and css files)
+
+-----------------------------------------------------------------------
+** Site specific info
+
+In addition to setting your database.yml file for your specific db settings, there is another file "/config/site.yml" that
+must be present. See the file "/config/site.example.yml" for an example of how that should be set up.
+
+Note that if you use Google Analytics, then you will have to change the code to match your site and credentials. Search
+this project for "google-analytics.com" and change all of the references.
+
+-----------------------------------------------------------------------
+** About files
+
+The "about" files are all plain .html files so that they can be maintained by a web designer. They do not require knowledge of
+ruby, rails, or javascript. There are a couple of pieces of javascript embedded in them that should be kept. One contains the
+code to handle the login area and the other handles the popup dialogs in the footer.
+
