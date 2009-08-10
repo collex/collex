@@ -234,7 +234,8 @@ class ResultsController < ApplicationController
 #      ret[:hit]['title'][0] = '[solr]' + ret[:hit]['title'][0] + bytes
     end
     if params[:full_text] && params[:full_text].length > 0
-      ret[:hit]['text'] = params[:full_text]
+      ret[:hit]['text'] = params[:full_text].strip	# get rid of all the extra characters around the text we want
+			ret[:hit]['text'] = ret[:hit]['text'].gsub("<EM>", "<em>").gsub("</EM>", "</em>")	# correct for IE returning capital tags.
     end
     ret[:uri] = params[:uri]
     ret[:index] = params[:row_num].to_i 
