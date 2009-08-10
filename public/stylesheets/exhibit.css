@@ -100,8 +100,9 @@
 }
 
 .blockquote {
-	padding-left: 4em;
-	padding-right: 4em;
+	/*border:1px solid gray;*/
+	margin-left:5em;
+	margin-right:5em;
 }
 
 .exhibit_caption1 {
