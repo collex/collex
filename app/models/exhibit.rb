@@ -36,6 +36,24 @@ class Exhibit < ActiveRecord::Base
 		self.footnote_font_size = '16'
 		self.save
 	end
+
+	def fonts_match_defaults
+		return false if self.header_font_name != 'Arial'
+		return false if self.header_font_size != '24'
+		return false if self.text_font_name != 'Times New Roman'
+		return false if self.text_font_size != '18'
+		return false if self.illustration_font_name != 'Trebuchet MS'
+		return false if self.illustration_font_size != '14'
+		return false if self.caption1_font_name != 'Trebuchet MS'
+		return false if self.caption1_font_size != '14'
+		return false if self.caption2_font_name != 'Trebuchet MS'
+		return false if self.caption2_font_size != '14'
+		return false if self.endnotes_font_name != 'Times New Roman'
+		return false if self.endnotes_font_size != '16'
+		return false if self.footnote_font_name != 'Times New Roman'
+		return false if self.footnote_font_size != '16'
+		return true
+	end
 	
   def self.factory(user_id, url, title, thumbnail)
     thumbnail = thumbnail.strip

@@ -123,6 +123,7 @@
 
 .exhibit_sharing {
 	clear: both;
+	padding-top: 5px;
 }
 
 .edit_exhibit_box h1 {
@@ -199,7 +200,11 @@ img.resizer:active {
 	border:1px solid gray;
 	margin: 0px 4px 4px 0px;
 	padding: 1em;
-	height:134px;
+}
+
+.exhibit_profile_comment {
+	font-style: italic;
+	color: #777777;
 }
 
 /* For border dialog */

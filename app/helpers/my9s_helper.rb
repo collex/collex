@@ -146,4 +146,12 @@ module My9sHelper
     
     return { :border_active => border_active, :html => html };
   end
+
+	def exhibit_builder_style_name(exhibit)
+		if exhibit.fonts_match_defaults()
+			return "NINES default"
+		else
+			return "Custom style"
+		end
+	end
 end
