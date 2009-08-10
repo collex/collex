@@ -38,7 +38,21 @@ class ForumController < ApplicationController
 #      redirect_to :action => :index
 #    end
 #  end
-#  
+#
+	def object	# called from RSS
+		id = params[:comment]
+		if id != nil
+			comment = DiscussionComment.find_by_id(id)
+			if comment != nil
+				redirect_to :controller => 'forum', :action => 'view_thread', :thread => comment.discussion_thread_id
+			else
+				render :text => "Bad Request", :status => :bad_request
+			end
+		else
+			render :text => "Bad Request", :status => :bad_request
+		end
+	end
+
   def post_comment_to_new_thread
     if !is_logged_in?
       render :text => 'You must be signed in to start a discussion.', :status => :bad_request

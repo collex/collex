@@ -20,7 +20,7 @@
 <% base_url = 'http://' + request.host_with_port() -%>
 
 	<channel>
-		<title>NINES Discussion: <%= thread.id %></title>
+		<title>NINES Discussion: <%= thread.get_title() %></title>
 		<link><%= base_url %>/forum/view_thread?thread=<%= thread.id %></link>
 		<description>nineteenth-century studies online</description>
 		<language>en-us</language>
@@ -34,11 +34,13 @@
 		</image>
 
 <% for comment in thread.discussion_comments -%>
+<% title = comment.comment.gsub(/<\/?[^>]*>/,  "") -%>
+<% title = title.slice(0..30)+'...' if title.length> 30 -%>
 		<item>
-			<title><%= escape_for_xml(comment.id.to_s) %></title>
-			<link><%= base_url %>/forum/object?comment=<%= CGI.escape(escape_for_xml(comment.id.to_s)) %></link>
+			<title><%= escape_for_xml(title) %></title>
+			<link><%= base_url %>/forum/object?comment=<%= comment.id %></link>
 			<description>
-				The comment.
+				<%= escape_for_xml(comment.comment) %>
 			</description>
 		</item>
 <% end -%>
