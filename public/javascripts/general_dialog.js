@@ -293,6 +293,34 @@ var GeneralDialog = Class.create({
 						}
 						wrapper.appendChild(textarea);
 						row.appendChild(wrapper);
+						// DATE
+					}  else if (subel.date !== undefined) {
+						var start_date = (subel.value) ? subel.value.split(' ')[0].split('-') : ['', '', ''];
+						var year = new Element('select', { id: makeId(subel.date.gsub('*', '1i')), name: subel.date.gsub('*', '(1i)') });
+						for (var y = 2005; y < 2015; y++) {
+							if (start_date[0] === '' + y)
+								year.appendChild(new Element('option', { value: "" + y, selected: 'selected' }).update("" + y));
+							else
+								year.appendChild(new Element('option', { value: "" + y }).update("" + y));
+						}
+						var month = new Element('select', { id: makeId(subel.date.gsub('*', '2i')), name: subel.date.gsub('*', '(2i)') });
+						var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+						for (var m = 0; m < months.length; m++) {
+							if (start_date[1] === (m<10?'0':'') + (m+1))
+								month.appendChild(new Element('option', { value: m+1, selected: 'selected' }).update(months[m]));
+							else
+								month.appendChild(new Element('option', { value: m+1 }).update(months[m]));
+						}
+						var day = new Element('select', { id: makeId(subel.date.gsub('*', '3i')), name: subel.date.gsub('*', '(3i)') });
+						for (var d = 1; d <= 31; d++) {
+							if (start_date[2] === (d<10?'0':'') + d)
+								day.appendChild(new Element('option', { value: "" + d, selected: 'selected' }).update("" + d));
+							else
+								day.appendChild(new Element('option', { value: "" + d }).update("" + d));
+						}
+						row.appendChild(year);
+						row.appendChild(month);
+						row.appendChild(day);
 						// IMAGE
 					} else if (subel.image !== undefined) {
 						var image = new Element('div', { id: makeId(subel.image) + '_div' });
