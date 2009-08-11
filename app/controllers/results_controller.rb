@@ -250,7 +250,11 @@ class ResultsController < ApplicationController
   
   def get_from_solr(uri)
     @solr = CollexEngine.new(COLLEX_ENGINE_PARAMS) if @solr == nil
-    objs = @solr.objects_for_uris([ uri ])
+    begin
+			objs = @solr.objects_for_uris([ uri ])
+		rescue  Net::HTTPServerException => e
+			return nil
+		end
     return objs[0] if objs && objs.length > 0
     return nil
   end
