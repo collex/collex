@@ -164,10 +164,13 @@ var ForumReplyDlg = Class.create({
 		var dlgTitle = topic_id ? "New Post" : (thread_id ? "Reply" : "Edit Comment");
 		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "forum_reply_row", title: dlgTitle };
 		var dlg = new GeneralDialog(dlgParams);
-		if (topic_id || (comment_id && starting_title))
+		var focus_id = null;
+		if (topic_id || (comment_id && starting_title)) {
+			focus_id = 'title';
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
+		}
 		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
-		dlg.changePage('layout', 'title');
+		dlg.changePage('layout', focus_id);
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');
 		dlg.center();

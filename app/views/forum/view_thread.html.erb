@@ -41,24 +41,29 @@
 </div>
 
 	<div id="discussion_thread" class="discussion_action_bar">
-		<%= link_to("Reply", "#", :onclick => 'return false;', :id => 'replyButton', :class => 'modify_link') %>
+		<script type="text/javascript">
+			var onButtonClick = function (e) {
+				new ForumReplyDlg({ thread_id: <%= @thread.id %>,
+					ajax_div: 'replies',
+					submit_url: '/forum/post_comment_to_existing_thread',
+					populate_exhibit_url: '/forum/get_exhibit_list',
+					populate_nines_obj_url: '/forum/get_nines_obj_list',
+					progress_img: '<%= PROGRESS_SPINNER_PATH %>',
+					logged_in: <%= is_logged_in? %>
+				});
+				return false;
+			};
+		</script>
+		<%= link_to("Reply", "#", :onclick => 'onButtonClick(event); return false;', :id => 'replyButton', :class => 'modify_link') %>
 		<script type="text/javascript">
 			document.observe('dom:loaded', function() {
-			    var onButtonClick = function (e) {
-			        new ForumReplyDlg({ thread_id: <%= @thread.id %>, 
-						ajax_div: 'replies',
-						submit_url: '/forum/post_comment_to_existing_thread', 
-						populate_exhibit_url: '/forum/get_exhibit_list',
-						populate_nines_obj_url: '/forum/get_nines_obj_list',
-						progress_img: '<%= PROGRESS_SPINNER_PATH %>',
-						logged_in: <%= is_logged_in? %>
-					});
-					return false;
-			    };
-			    var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
-				YAHOO.util.Event.onAvailable('replyButton-button', function() {
-					$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
-				}, this);
+	<% # couldn't get the button to work in IE 6, so we'll just use the link %>
+				if (YAHOO.env.ua.ie !== 6) {
+					var oButton = new YAHOO.widget.Button("replyButton", { onclick: { fn: onButtonClick } });
+					YAHOO.util.Event.onAvailable('replyButton-button', function() {
+						$('replyButton-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+					}, this);
+				}
 			<% if @script == 'ForumReplyDlg' %>
 				onButtonClick();
 			<% end %>
@@ -67,4 +72,4 @@
 			<% end %>
 			});
 		</script>
-	</div>
+ 	</div>
