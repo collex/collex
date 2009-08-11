@@ -16,8 +16,8 @@
     # ---------------------------------------------------------------------------- -%>
 <% # results_with_all_functionality params: string title, array results, int page, int num_pages, string controller, string action -%>
 <% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
-<div class="page_header"><% # = render( :partial => 'results/result_count' ) %>
-	<%= render( :partial => 'results/sort_by', :locals => { :page => action, :curr_selection => (action == 'browse' ? session[:search_sort_by] : session[:collected_sort_by]) }) %>
+<div class="page_header"><%= render( :partial => 'results/result_count' ) if controller == 'tag' %>
+	<%= render( :partial => 'results/sort_by', :locals => { :page => action, :curr_selection => (action == 'browse' ? session[:search_sort_by] : session[:collected_sort_by]) }) if controller != 'tag' %>
 	<%= title %></div>
 <hr class="search_results_hr" />
 <div class="expand_all_link"><%= render( :partial => 'results/bulkcollect' ) %></div>
