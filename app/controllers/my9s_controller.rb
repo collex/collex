@@ -121,9 +121,34 @@ class My9sController < ApplicationController
       @total_hits = @results.length
     end
 
+		case session[:collected_sort_by]
+		when "Date Collected" then
+			@results	#TODO
+		when "Title" then
+			sort_algorithm('title')
+		when "Author" then
+			sort_algorithm('role_AUT')
+		when "Date of Publication" then
+			sort_algorithm('date_label')
+		when "Resource" then
+			sort_algorithm('source')
+		end
     @num_pages = @total_hits.quo(items_per_page).ceil
   end
 
+	private
+	def sort_algorithm(field)
+			@results = @results.sort { |a,b|
+				if a[field] && b[field]
+					a[field][0] <=> b[field][0]
+				elsif a[field]
+					1 <=> 2
+				else
+					2 <=> 1
+				end
+			}
+	end
+	public
   # adjust the number of search results per page
 #  def result_count
 #    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
