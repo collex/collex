@@ -78,7 +78,9 @@ class My9sController < ApplicationController
     session[:tag_zoom] ||= 1
     #do the pagination.
     @page = params[:page] ? params[:page].to_i : 1
-    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			session[:collected_sort_by] ||= 'Date Collected'
+			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			items_per_page = 30
     
     # we save the view type in the session object in case we are called from a place that shouldn't care which type it is.
     # In other words, if we have the param[:view] parameter, we use it and save it. If we don't, then we retrieve it.
@@ -100,17 +102,17 @@ class My9sController < ApplicationController
     # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
     case params[:view]
       when 'all_collected'
-      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, session[:items_per_page])
+      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page)
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'untagged'
-      ret = CachedResource.get_page_of_all_untagged(user, @page-1, session[:items_per_page])
+      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page)
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'tag'
-      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, session[:items_per_page])
+      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page)
       @results = ret[:results]
       @total_hits = ret[:total]
 
@@ -119,16 +121,25 @@ class My9sController < ApplicationController
       @total_hits = @results.length
     end
 
-    @num_pages = @total_hits.quo(session[:items_per_page]).ceil
+    @num_pages = @total_hits.quo(items_per_page).ceil
   end
 
   # adjust the number of search results per page
-  def result_count
-    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-    requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
-    session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-    redirect_to :action => 'results'
-  end
+#  def result_count
+#    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+#    requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page]
+#    session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+#    redirect_to :action => 'results'
+#  end
+
+	 #adjust the sort order
+  def sort_by
+		if params['search'] && params['search']['result_sort']
+      sort_param = params['search']['result_sort']
+			session[:collected_sort_by] = sort_param
+		end
+      redirect_to :action => 'results'
+	end
 
   # This is called from AJAX to display the edit profile form in place.
 #  def enter_edit_profile_mode

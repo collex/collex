@@ -219,7 +219,7 @@ class ForumController < ApplicationController
     end
 
     # now tell the caller where the post landed so they can go there.
-    session[:items_per_page] ||= 10
+    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
     threads = DiscussionTopic.find(topic_id).discussion_threads
     num_pages = threads.length.quo(session[:items_per_page]).ceil
     render :text => "/forum/view_topic?page=1&topic=#{topic_id}"
@@ -345,7 +345,7 @@ class ForumController < ApplicationController
         @script = session[:script]
         session[:script] = nil
       end
-      session[:items_per_page] ||= 10
+      session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
       @page = params[:page] ? params[:page].to_i : 1
       @topic = DiscussionTopic.find(params[:topic])
       @threads = @topic.discussion_threads
@@ -396,7 +396,7 @@ class ForumController < ApplicationController
 
   private
   def retrieve_thread(params)
-    session[:items_per_page] ||= 10
+    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
     thread_id = params[:thread]
     @thread = DiscussionThread.find(thread_id)
     @page = params[:page] ? params[:page].to_i : 1

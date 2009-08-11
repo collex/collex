@@ -100,11 +100,12 @@ class CollexEngine
     retval.sort {|a,b| b[:total] <=> a[:total]}
   end
   
-  def search(constraints, start, max)
+  def search(constraints, start, max, sort_by)
     query, filter_queries = solrize_constraints(constraints)
 
-    # TODO: switch to DisMax    
-    req = Solr::Request::Standard.new(:start => start, :rows => max,
+    # TODO: switch to DisMax
+		sort_param = sort_by ? [ { sort_by.to_sym => :ascending } ] : nil
+    req = Solr::Request::Standard.new(:start => start, :rows => max, :sort => sort_param,
                                       :query => query, :filter_queries => filter_queries,
                                       :field_list => @params[:field_list],
                                       :facets => {:fields => @params[:facet_fields], :mincount => 1, :missing => true, :limit => -1},

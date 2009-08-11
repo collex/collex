@@ -217,14 +217,16 @@ class SearchController < ApplicationController
         session[:row_id] = nil
       end
 			session[:constraints] ||= []
-			session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			session[:search_sort_by] ||= 'Relevancy'
+			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			items_per_page = 30
 			session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
 			#session[:selected_freeculture] ||= false
 
 			@page = params[:page] ? params[:page].to_i : 1
 
 			begin
-			 @results = search_solr(session[:constraints], @page, session[:items_per_page])
+			 @results = search_solr(session[:constraints], @page, items_per_page, session[:search_sort_by])
 			 # Add the highlighting to the hit object so that a result is completely contained inside the hit object
 			 @results['hits'].each { |hit|
 				 if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
@@ -241,14 +243,14 @@ class SearchController < ApplicationController
 				end
 			 }
 			 if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
-				 resourceless_results = search_solr(resourceless_constraints, @page, session[:items_per_page])
+				 resourceless_results = search_solr(resourceless_constraints, @page, items_per_page, session[:search_sort_by])
 				 @results['facets']['archive'] = resourceless_results['facets']['archive']
 			 end
 			rescue  Net::HTTPServerException => e
 			 @results = rescue_search_error(e)
 			end
 
-			@num_pages = @results["total_hits"].to_i.quo(session[:items_per_page]).ceil
+			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil
 			@total_documents = @results["total_documents"]
 			@sites_forest = FacetCategory.sorted_facet_tree().sorted_children
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
@@ -286,12 +288,21 @@ class SearchController < ApplicationController
    end
    
    # adjust the number of search results per page
-   def result_count
-     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
-     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-     redirect_to :action => 'browse'
-   end
+#   def result_count
+#     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+#     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page]
+#     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+#     redirect_to :action => 'browse'
+#   end
+
+	 #adjust the sort order
+  def sort_by
+		if params['search'] && params['search']['result_sort']
+      sort_param = params['search']['result_sort']
+			session[:search_sort_by] = sort_param
+		end
+      redirect_to :action => 'browse'
+	end
    
    # allows queries to be linked in directly, or typed into the browser directly
 #   def search
@@ -533,8 +544,13 @@ class SearchController < ApplicationController
    end
    
    private
-   def search_solr(constraints, page, items_per_page)
-     return @solr.search(constraints, (page - 1) * items_per_page, items_per_page)        
+   def search_solr(constraints, page, items_per_page, sort_by)
+		 sort_param = nil	# in case the sort_by was an unexpected value
+		 sort_param = 'author' if sort_by == 'Author'
+		 sort_param = nil if sort_by == 'Relevancy'
+		 sort_param = 'title' if sort_by == 'Title'
+		 sort_param = 'year' if sort_by == 'Date of Publication'
+     return @solr.search(constraints, (page - 1) * items_per_page, items_per_page, sort_param)
    end
    
   # This chooses which constraints are listed on the results page above the results.
