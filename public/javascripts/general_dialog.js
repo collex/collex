@@ -35,6 +35,7 @@ var GeneralDialog = Class.create({
 		var body_style = params.body_style;
 		var row_style = params.row_style;
 		var title = params.title;
+		var override_width = params.width;
 		
 		var flash_id = this_id + '_flash';
 		var dlg_id = this_id;
@@ -132,6 +133,7 @@ var GeneralDialog = Class.create({
 		
 		var panel = new YAHOO.widget.Dialog(this_id, {
 			constraintoviewport: true,
+			width: override_width,
 			modal: true,
 			close: (title !== undefined),
 			draggable: (title !== undefined),
@@ -427,7 +429,12 @@ var GeneralDialog = Class.create({
 			el.setStyle({ left: x + 'px', top: y + 'px'});
 		};
 		
-		this.initTextAreas =  function(toolbarGroups, linkDlgHandler, footnoteCallback) {
+		this.initTextAreas =  function(params) {
+			var toolbarGroups = params.toolbarGroups;
+			var linkDlgHandler = params.linkDlgHandler;
+			var footnoteCallback = params.footnoteCallback;
+			var bodyStyle = params.bodyStyle;
+
 			var dlg = $(this_id);
 			var w = parseInt(dlg.getStyle('width'), 10);
 			var inner_el = dlg.down('.bd');
@@ -437,7 +444,7 @@ var GeneralDialog = Class.create({
 			
 			var textAreas = $$("#" + dlg_id + " textarea");
 			textAreas.each( function(textArea) { 
-				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnoteCallback: footnoteCallback });
+				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnoteCallback: footnoteCallback, bodyStyle: bodyStyle });
 				editor.attachToDialog(panel);
 				editors.push(editor);
 			}, this);
@@ -682,7 +689,7 @@ var RteInputDlg = Class.create({
 		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(dlgparams);
 		dlg.changePage('layout', null);
-		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
 		dlg.center();
 
 		var input = $('textareaValue');

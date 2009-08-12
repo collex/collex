@@ -451,7 +451,7 @@ var StartDiscussionWithObject = Class.create({
 
 		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
 		dlg = new GeneralDialog(params);
-		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
 		dlg.changePage('start_discussion', 'title');
 		dlg.center();
 		populate(dlg);

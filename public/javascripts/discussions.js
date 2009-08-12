@@ -169,7 +169,7 @@ var ForumReplyDlg = Class.create({
 			focus_id = 'title';
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
 		}
-		dlg.initTextAreas([ 'fontstyle', 'link' ], new LinkDlgHandler(populate_nines_obj_url, progress_img));
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
 		dlg.changePage('layout', focus_id);
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');

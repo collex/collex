@@ -137,13 +137,18 @@ function initializeInplaceRichEditor(element_id, action)
 				]
 			};
 
-		var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: 'Enter Text' };
+		var width = This.getStyle('width');
+		width = parseInt(width) + 10 + 10 + 16;	// This adds room for padding on each side and a scrollbar.
+		var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "exhibit_builder_text_dlg", row_style: "message_box_row", title: 'Enter Text', width: width + 'px' };
 		var dlg = new GeneralDialog(dlgparams);
 		dlg.changePage('layout', null);
 
 		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-		dlg.initTextAreas([ 'dropcap', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
+		var fontStyle = This.getStyle('font-family');
+		var fontSize = This.getStyle('font-size');
+		var style = "html body { font-family: " + fontStyle + "; font-size: " + fontSize + "; }";
+		dlg.initTextAreas({ toolbarGroups: [ 'dropcap', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler: footnoteHandler.addFootnote, bodyStyle: style });
 		dlg.center();
 
 		var input = $('value');
@@ -315,7 +320,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.initTextAreas([ 'fontstyle', 'alignment', 'list', 'link&footnote' ], new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler.addFootnote);
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler: footnoteHandler.addFootnote });
 		dlg.changePage('layout', 'type');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
