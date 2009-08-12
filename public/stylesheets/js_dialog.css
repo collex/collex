@@ -513,7 +513,12 @@ a.footnote_tip:hover span.tip {
 }
 
 .forum_reply_dlg {
-	width: 500px;
+	width: 700px;
+}
+
+.forum_reply_license {
+	float: right;
+	clear: both;
 }
 
 .forum_reply_row {
