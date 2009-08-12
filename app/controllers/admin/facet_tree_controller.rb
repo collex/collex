@@ -227,7 +227,7 @@ private
 
   def get_all_found_resources
     solr = CollexEngine.new(COLLEX_ENGINE_PARAMS)
-    results = solr.search([], 1, 10)
+    results = solr.search([], 1, 10, nil)
     found_resources = results['facets']['archive']
     resources = []
     found_resources.each {|key,val| resources.push(key)}

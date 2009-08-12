@@ -106,7 +106,7 @@ class NinesCollectionManager
     end
     
     # TODO: highlighting not necessary in this context, but still requested
-    @solr.search(constraints, start, max)
+    @solr.search(constraints, start, max, nil)
   end
   
   def object_detail(objid, user)
