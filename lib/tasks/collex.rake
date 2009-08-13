@@ -17,7 +17,12 @@
 require 'ftools'
 
 namespace :collex do
-  
+
+	desc "Start the solr java app (Prerequisite for running NINES)"
+	task :start_solr do
+		`cd ../solr_1.3 && java -jar start.jar &`
+	end
+	
   desc "Update the installed NINES Wordpress theme"
   task :update_nines_theme do
 		begin
