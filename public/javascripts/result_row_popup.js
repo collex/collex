@@ -365,7 +365,7 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id, popul
 }
 
 var StartDiscussionWithObject = Class.create({
-	initialize: function (url_get_topics, url_update, uri, discussion_button, is_logged_in, populate_nines_obj_url, progress_img) {
+	initialize: function (url_get_topics, url_update, uri, title, discussion_button, is_logged_in, populate_nines_obj_url, progress_img) {
 		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
 		this.class_type = 'StartDiscussionWithObject';	// for debugging
 
@@ -442,17 +442,20 @@ var StartDiscussionWithObject = Class.create({
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [
-					[ { text: 'Title', klass: 'new_exhibit_label' }, { input: 'title', klass: 'new_exhibit_input_long' } ],
-					[ { text: 'Select the topic you want this discussion to appear under', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { text: 'Starting a discussion of: ' + title, klass: 'new_exhibit_label' } ],
+					[ { text: 'Select the topic you want this discussion to appear under:', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { text: 'This post will be protected by a', klass: 'forum_reply_license title' } ],
+					[ { text: 'Title', klass: 'forum_reply_label title' }, { text: 'Share-alike non-commerical CC license.', klass: 'forum_reply_license title' } ],
+					[ { input: 'title', klass: 'forum_reply_input title' }, { page_link: 'To choose another, click here.', klass: 'forum_reply_license title', callback: function() {alert("TODO");} } ],
 					[ { textarea: 'description' } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
+		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
 		dlg = new GeneralDialog(params);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
-		dlg.changePage('start_discussion', 'title');
+		dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
 		dlg.center();
 		populate(dlg);
 	}
