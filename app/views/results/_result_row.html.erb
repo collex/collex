@@ -43,7 +43,7 @@
 	    <%# The middle with the actual search results -%>
     	<div class="search_result_header">
             <% if hit["url"] %>
-            	<a class="nines_link" target="_blank" href="<%= hit["url"][0] %>"><%= h CachedResource.fix_char_set(hit["title"][0]) if hit["title"] %></a>
+            	<a class="nines_link" target="_blank" href="<%= hit["url"][0] %>"><%= title %></a>
 			<% else %>
             	<%= title %>
             <% end %>
