@@ -34,7 +34,7 @@
 
 <div class="inner_content_container">
 	<% if !is_logged_in? -%>
-		<%= render :partial => 'my9s_instructions' %>
+		<%= render :partial => 'login_instructions' %>
 	<% else -%>
 		<div class="subpage_nav"> 
 			<%= link_to "My9s", { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
