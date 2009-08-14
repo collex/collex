@@ -128,7 +128,7 @@ class My9sController < ApplicationController
 			sort_algorithm('title')
 		when "Author" then
 			sort_algorithm('role_AUT')
-		when "Date of Publication" then
+		when "Date" then
 			sort_algorithm('date_label')
 		when "Resource" then
 			sort_algorithm('source')

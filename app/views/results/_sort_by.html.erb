@@ -16,7 +16,7 @@
 # ----------------------------------------------------------------------------
 %>
 <% # partial: sort_by (string page('browse' | 'results'), string curr_selection) -%>
-<% options = (page == 'browse') ? ["Relevancy", "Title", "Author", "Date of Publication"] : ["Date Collected", "Title", "Author", "Date of Publication", "Resource"] -%>
+<% options = (page == 'browse') ? ["Relevancy", "Title", "Author", "Date"] : ["Date Collected", "Title", "Author", "Date", "Resource"] -%>
 <% form_for :search, :url => { :action => :sort_by }, :html => { :class => 'result-count-form' }  do |form| %>
 	<span class="results_per_page">Sort by:&nbsp;<%= form.select :result_sort, options, { :selected => curr_selection }, { :onchange => 'submit();' } %></span>
 <% end %>

@@ -549,7 +549,7 @@ class SearchController < ApplicationController
 		 sort_param = 'author' if sort_by == 'Author'
 		 sort_param = nil if sort_by == 'Relevancy'
 		 sort_param = 'title' if sort_by == 'Title'
-		 sort_param = 'year' if sort_by == 'Date of Publication'
+		 sort_param = 'year' if sort_by == 'Date'
      return @solr.search(constraints, (page - 1) * items_per_page, items_per_page, sort_param)
    end
    
