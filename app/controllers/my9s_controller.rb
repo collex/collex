@@ -98,21 +98,35 @@ class My9sController < ApplicationController
     end
 
     set_cloud_list(user, user.username)
-    
+
+		sort_field = nil
+		case session[:collected_sort_by]
+		when "Date Collected" then
+			sort_field = nil
+		when "Title" then
+			sort_field = 'title'
+		when "Author" then
+			sort_field = 'role_AUT'
+		when "Date" then
+			sort_field = 'date_label'	# note: the 'year' field isn't cached, so we can't sort on that. Should we cache it and refresh all objects?
+		when "Resource" then
+			sort_field = 'archive'
+		end
+
     # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
     case params[:view]
       when 'all_collected'
-      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page)
+      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page, sort_field)
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'untagged'
-      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page)
+      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page, sort_field)
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'tag'
-      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page)
+      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page, sort_field)
       @results = ret[:results]
       @total_hits = ret[:total]
 
@@ -121,34 +135,9 @@ class My9sController < ApplicationController
       @total_hits = @results.length
     end
 
-		case session[:collected_sort_by]
-		when "Date Collected" then
-			@results	#TODO
-		when "Title" then
-			sort_algorithm('title')
-		when "Author" then
-			sort_algorithm('role_AUT')
-		when "Date" then
-			sort_algorithm('date_label')
-		when "Resource" then
-			sort_algorithm('source')
-		end
     @num_pages = @total_hits.quo(items_per_page).ceil
   end
 
-	private
-	def sort_algorithm(field)
-			@results = @results.sort { |a,b|
-				if a[field] && b[field]
-					a[field][0] <=> b[field][0]
-				elsif a[field]
-					1 <=> 2
-				else
-					2 <=> 1
-				end
-			}
-	end
-	public
   # adjust the number of search results per page
 #  def result_count
 #    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE

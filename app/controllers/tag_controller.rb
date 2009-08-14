@@ -111,7 +111,7 @@ class TagController < ApplicationController
 			@page = params[:page] ? params[:page].to_i : 1
 			session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
 
-			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, session[:items_per_page])
+			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, session[:items_per_page], nil)
 			@results = ret[:results]
 			@total_hits = ret[:total]
 
