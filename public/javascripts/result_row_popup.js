@@ -446,7 +446,7 @@ var StartDiscussionWithObject = Class.create({
 					[ { text: 'Select the topic you want this discussion to appear under:', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
 					[ { text: 'This post will be protected by a', klass: 'forum_reply_license title' } ],
 					[ { text: 'Title', klass: 'forum_reply_label title' }, { text: 'Share-alike non-commerical CC license.', klass: 'forum_reply_license title' } ],
-					[ { input: 'title', klass: 'forum_reply_input title' }, { page_link: 'To choose another, click here.', klass: 'forum_reply_license title', callback: function() {alert("TODO");} } ],
+					[ { input: 'title', klass: 'forum_reply_input title' } /*, { page_link: 'To choose another, click here.', klass: 'forum_reply_license1 title', callback: function() {alert("TODO");} }*/ ],
 					[ { textarea: 'description' } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
