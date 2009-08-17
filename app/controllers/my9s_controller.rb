@@ -206,10 +206,14 @@ class My9sController < ApplicationController
   # The file upload is done in a separate call because of ajax limitations.
   def update_profile_upload
     user = get_user(session)
-    if params['image'] && params['image'].length > 0
-      user.image = Image.new({ :uploaded_data => params['image'] })
-      user.image.save!
-      user.save
+		if user	# If the session expired while the dlg was on the page, don't go further.
+			if params['image'] && params['image'].length > 0
+				user.image = Image.new({ :uploaded_data => params['image'] })
+				if user.image	# If there were an error in uploading the image, don't go further.
+					user.image.save!
+					user.save
+				end
+		end
     end
 #    old_image = nil
 #    if params['image'] != nil && params['image'].length > 0
