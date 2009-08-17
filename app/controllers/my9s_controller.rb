@@ -116,17 +116,17 @@ class My9sController < ApplicationController
     # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
     case params[:view]
       when 'all_collected'
-      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page, sort_field)
+      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page, sort_field, session[:collected_sort_by_direction])
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'untagged'
-      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page, sort_field)
+      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page, sort_field, session[:collected_sort_by_direction])
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'tag'
-      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page, sort_field)
+      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page, sort_field, session[:collected_sort_by_direction])
       @results = ret[:results]
       @total_hits = ret[:total]
 
@@ -151,6 +151,10 @@ class My9sController < ApplicationController
 		if params['search'] && params['search']['result_sort']
       sort_param = params['search']['result_sort']
 			session[:collected_sort_by] = sort_param
+		end
+		if params['search'] && params['search']['result_sort_direction']
+      sort_param = params['search']['result_sort_direction']
+			session[:collected_sort_by_direction] = sort_param
 		end
       redirect_to :action => 'results'
 	end

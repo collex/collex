@@ -23,9 +23,9 @@ class TagController < ApplicationController
    #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
    
-   # Number of search results to display by default
-   MIN_ITEMS_PER_PAGE = 10
-   MAX_ITEMS_PER_PAGE = 30
+#   # Number of search results to display by default
+#   MIN_ITEMS_PER_PAGE = 10
+#   MAX_ITEMS_PER_PAGE = 30
 
    private
    def init_view_options
@@ -109,23 +109,49 @@ class TagController < ApplicationController
 
 			#do the pagination.
 			@page = params[:page] ? params[:page].to_i : 1
-			session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+			items_per_page = 30
 
-			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, session[:items_per_page], nil)
+			sort_field = 'title'
+			case session[:tag_sort_by]
+			when "Title" then
+				sort_field = 'title'
+			when "Author" then
+				sort_field = 'role_AUT'
+			when "Date" then
+				sort_field = 'date_label'	# note: the 'year' field isn't cached, so we can't sort on that. Should we cache it and refresh all objects?
+			when "Resource" then
+				sort_field = 'archive'
+			end
+
+			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, items_per_page, sort_field, session[:tag_sort_by_direction])
 			@results = ret[:results]
 			@total_hits = ret[:total]
 
-			@num_pages = @total_hits.quo(session[:items_per_page]).ceil
+			@num_pages = @total_hits.quo(items_per_page).ceil
 		end
   end
   
-   # adjust the number of search results per page
-   def result_count
-     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
-     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-     redirect_to :action => 'results'
-   end
+	 #adjust the sort order
+  def sort_by
+		if params['search'] && params['search']['result_sort']
+      sort_param = params['search']['result_sort']
+			session[:tag_sort_by] = sort_param
+		end
+		if params['search'] && params['search']['result_sort_direction']
+      sort_param = params['search']['result_sort_direction']
+			session[:tag_sort_by_direction] = sort_param
+		end
+      redirect_to :action => 'results'
+	end
+
+#	# adjust the number of search results per page
+#   def result_count
+#     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+#     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
+#     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
+#     redirect_to :action => 'results'
+#   end
    
    def update_tag_cloud
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil

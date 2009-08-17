@@ -202,18 +202,19 @@ class CachedResource < ActiveRecord::Base
   end
   
 	# called in my9s when viewing "all collected objects"
-  def self.get_page_of_hits_by_user(user, page_num, items_per_page, sort_field)
+  def self.get_page_of_hits_by_user(user, page_num, items_per_page, sort_field, direction)
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
 		if sort_field
 			items.each { |item|
 				item = add_sort_field(item, sort_field)
 			}
 			items = sort_algorithm(items, sort_field)
+			items = items.reverse() if direction == 'Descending'
 		end
     return self.get_page_of_results(items, page_num, items_per_page)
   end
 
-  def self.get_page_of_hits_for_tag(tag_name, user, page_num, items_per_page, sort_field)
+  def self.get_page_of_hits_for_tag(tag_name, user, page_num, items_per_page, sort_field, direction)
     tag = Tag.find_by_name(tag_name)
     # It's possible for this to return nil if a tag was deleted before this request was made.
     return { :results => [], :total => 0 } if tag == nil
@@ -234,11 +235,12 @@ class CachedResource < ActiveRecord::Base
     }
 		if sort_field
 			items = sort_algorithm(items, sort_field)
+			items = items.reverse() if direction == 'Descending'
 		end
     return self.get_page_of_results(items, page_num, items_per_page)
   end
   
-  def self.get_page_of_all_untagged(user, page_num, items_per_page, sort_field)
+  def self.get_page_of_all_untagged(user, page_num, items_per_page, sort_field, direction)
     return { :results => [], :total => 0 } if user == nil
     all_items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC'  )
     items = []
@@ -253,6 +255,7 @@ class CachedResource < ActiveRecord::Base
     }
 		if sort_field
 			items = sort_algorithm(items, sort_field)
+			items = items.reverse() if direction == 'Descending'
 		end
     return self.get_page_of_results(items, page_num, items_per_page)
   end
@@ -338,7 +341,7 @@ class CachedResource < ActiveRecord::Base
       end
       if property.name == 'title'
         bytes = ""
-        property.value.each_byte { |c| bytes += "#{c} " if c > 127 }
+        #property.value.each_byte { |c| bytes += "#{c} " if c > 127 }
         hit[property.name].insert(-1, property.value + bytes)
       else
         hit[property.name].insert(-1, property.value)

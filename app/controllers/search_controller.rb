@@ -301,6 +301,10 @@ class SearchController < ApplicationController
       sort_param = params['search']['result_sort']
 			session[:search_sort_by] = sort_param
 		end
+		if params['search'] && params['search']['result_sort_direction']
+      sort_param = params['search']['result_sort_direction']
+			session[:search_sort_by_direction] = sort_param
+		end
       redirect_to :action => 'browse'
 	end
    

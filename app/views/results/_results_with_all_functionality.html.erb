@@ -16,8 +16,12 @@
     # ---------------------------------------------------------------------------- -%>
 <% # results_with_all_functionality params: string title, array results, int page, int num_pages, string controller, string action -%>
 <% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
-<div class="page_header"><%= render( :partial => 'results/result_count' ) if controller == 'tag' %>
-	<%= render( :partial => 'results/sort_by', :locals => { :page => action, :curr_selection => (action == 'browse' ? session[:search_sort_by] : session[:collected_sort_by]) }) if controller != 'tag' %>
+<div class="page_header"><% # = render( :partial => 'results/result_count' ) if controller == 'tagXXX' %>
+	<% controller = 'search'  if controller == 'collex' -%>
+	<% curr_selection = (controller == 'search' ? session[:search_sort_by] : (controller == 'tag' ? session[:tag_sort_by] : session[:collected_sort_by])) -%>
+	<% curr_selection_direction = (controller == 'search' ? session[:search_sort_by_direction] : (controller == 'tag' ? session[:tag_sort_by_direction] : session[:collected_sort_by_direction])) -%>
+	<% options = (controller == 'search' ? ["Relevancy", "Title", "Author", "Date"] : (controller == 'tag' ? ["Title", "Author", "Date", "Resource"] : ["Date Collected", "Title", "Author", "Date", "Resource"])) -%>
+	<%= render( :partial => 'results/sort_by', :locals => { :options => options, :curr_selection => curr_selection, :curr_selection_direction => curr_selection_direction }) %>
 	<%= title %></div>
 <hr class="search_results_hr" />
 <div class="expand_all_link"><%= render( :partial => 'results/bulkcollect' ) %></div>
