@@ -152,7 +152,7 @@ var ForumReplyDlg = Class.create({
 				rows: [
 					[ { text: 'This post will be protected by a', klass: 'forum_reply_license title hidden' } ],
 					[ { text: 'Title', klass: 'forum_reply_label title hidden' }, { text: 'Share-alike non-commerical CC license.', klass: 'forum_reply_license title hidden' } ],
-					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' }, { page_link: 'To choose another, click here.', klass: 'forum_reply_license title hidden', callback: function() {alert("TODO");} } ],
+					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' }, { page_link: 'To choose another, click here.', klass: 'forum_reply_license1 title hidden', callback: function() {alert("TODO");} } ],
 					[ { textarea: 'reply', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],

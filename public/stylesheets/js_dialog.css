@@ -521,6 +521,10 @@ a.footnote_tip:hover span.tip {
 	clear: both;
 }
 
+.forum_reply_license1 {
+	padding-left: 5px;
+}
+
 .forum_reply_row {
 	padding-bottom: 10px;
 }
