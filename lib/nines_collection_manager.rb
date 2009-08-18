@@ -113,7 +113,7 @@ class NinesCollectionManager
     @solr.object_detail(objid, user)
   end
       
-  def relators
+  def relators #called on start up to fill the constant RELATORS
     hash = Hash.new {|hash,key| hash[key] = key}
     hash["ART"] = "Artist"
     hash["AUT"] = "Author"
