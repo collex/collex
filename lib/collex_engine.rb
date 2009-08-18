@@ -31,7 +31,7 @@ class CollexEngine
     @solr
   end
   
-  def num_docs
+  def num_docs	# called for each entry point to get the number for the footer.
     if @num_docs == -1
       request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0)
       response = @solr.send(request)
@@ -49,7 +49,7 @@ class CollexEngine
     @solr.send(FacetRequest.new).all_facets
   end
   
-  def facet(facet, constraints, prefix=nil)
+  def facet(facet, constraints, prefix=nil)	# called for autocomplete
     query, filter_queries = solrize_constraints(constraints)
     req = Solr::Request::Standard.new(
             :start => 0, :rows => 0,
@@ -100,7 +100,7 @@ class CollexEngine
     retval.sort {|a,b| b[:total] <=> a[:total]}
   end
   
-  def search(constraints, start, max, sort_by)
+  def search(constraints, start, max, sort_by)	# called when the user requests a search.
     query, filter_queries = solrize_constraints(constraints)
 
     # TODO: switch to DisMax

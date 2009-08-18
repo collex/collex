@@ -27,7 +27,7 @@ class SolrResource < SolrBaseModel
   end
     
   # Find item(s) by uri from the Solr index
-  def self.find_by_uri(*args)
+  def self.find_by_uri(*args) # Called when collecting an object
     valid_options = [:user, :start, :rows]
     raise ArgumentError, "Need at least one argument" if args.blank?
     options = args.last.respond_to?(:to_hash) ? args.pop.symbolize_keys : {}
