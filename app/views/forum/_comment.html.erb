@@ -65,7 +65,7 @@
 	</div>
 <% end -%>
 <% if is_main-%>
-	<div class="forum_license"><%= Exhibit.get_sharing_icon_url(2) %> This post is protected by a Creative Commons License. Learn more <%= link_to 'here', 'http://creativecommons.org/about/licenses', :class => 'nav_link', :target => '_blank' %>.</div>
+	<div class="forum_license"><%= Exhibit.get_sharing_icon_url(DiscussionThread.find(comment.discussion_thread_id).license) %> This post is protected by a <%= Exhibit.get_sharing_static(DiscussionThread.find(comment.discussion_thread_id).license) %> Creative Commons License. Learn more <%= link_to 'here', 'http://creativecommons.org/about/licenses', :class => 'nav_link', :target => '_blank' %>.</div>
 <% end -%>
 
 

@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, Ajax */
-/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler */
+/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler, ForumLicenseDisplay */
 /*global YAHOO */
 /*global window, setTimeout */
 /*extern ForumReplyDlg */
@@ -39,6 +39,7 @@ var ForumReplyDlg = Class.create({
 		var logged_in = params.logged_in;
 		var redirect = params.redirect;
 		var addTopicToLoginRedirect = params.addTopicToLoginRedirect;
+		var starting_license = 5;
 		var comment_id = params.comment_id;
 		if (comment_id !== undefined) {
 			var starting_title = params.title;
@@ -48,6 +49,7 @@ var ForumReplyDlg = Class.create({
 			var starting_exhibit_list = params.exhibit_list;
 			var starting_inet_thumbnail = params.inet_thumbnail;
 			var starting_inet_url = params.inet_url;
+			starting_license = params.license;
 		}
 		
 		if (!logged_in) {
@@ -143,17 +145,17 @@ var ForumReplyDlg = Class.create({
 				});
 			}
 		};
-		
+
 		var objlist = new CreateListOfObjects(populate_nines_obj_url, starting_nines_obj_list, 'nines_obj_list', progress_img);
 		var exlist = new CreateListOfObjects(populate_exhibit_url, starting_exhibit_list, 'exhibit_list', progress_img);
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my9s/get_licenses', currentLicense: starting_license, id: 'license_list' });
 
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'This post will be protected by a', klass: 'forum_reply_license title hidden' } ],
-					[ { text: 'Title', klass: 'forum_reply_label title hidden' }, { text: 'Share-alike non-commerical CC license.', klass: 'forum_reply_license title hidden' } ],
-					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } /*, { page_link: 'To choose another, click here.', klass: 'forum_reply_license1 title hidden', callback: function() {alert("TODO");} }*/ ],
-					[ { textarea: 'reply', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
+					[ { custom: licenseDisplay, klass: 'forum_reply_license title hidden' }, { text: 'Title', klass: 'forum_reply_label title hidden' } ],
+					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } ],
+					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
@@ -173,6 +175,7 @@ var ForumReplyDlg = Class.create({
 		}
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
 		dlg.changePage('layout', focus_id);
+		licenseDisplay.populate(dlg);
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');
 		dlg.center();

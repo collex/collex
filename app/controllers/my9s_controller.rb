@@ -921,6 +921,10 @@ class My9sController < ApplicationController
 		end
   end
 
+	def get_licenses
+		render :text => Exhibit.get_license_info().to_json()
+	end
+
   private
   def cloud_fragment_key( user )
        "/cloud/#{user}_user/tag"

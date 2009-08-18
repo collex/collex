@@ -47,7 +47,9 @@ module DiscussionThreadsHelper
     html = "<a href='#' class='nav_link' onclick=\"new ForumReplyDlg({" +
       "comment_id: #{comment.id},"
     if is_main # only the main comment has a title.
-      html += "title: '#{DiscussionThread.find(comment.discussion_thread_id).get_title()}',"
+			thread = DiscussionThread.find(comment.discussion_thread_id)
+      html += "title: '#{thread.get_title()}'," +
+      "license: #{thread.license ? thread.license : 1},"
     end
     html += "obj_type: #{comment.comment_type}," +
       "reply: 'comment_body_#{comment.id}'," +

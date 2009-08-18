@@ -65,9 +65,10 @@ class ForumController < ApplicationController
 			if err_msg
 				render :text => err_msg, :status => :bad_request
 			else
+				license = params[:license_list]
 				topic_id = params[:topic_id]
 				title = params[:title]
-				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title)
+				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title, :license => license)
 
 				params[:thread_id] = thread.id
 				create_comment(params)
@@ -102,6 +103,7 @@ class ForumController < ApplicationController
     description = params[:reply]
     disc_type = params[:obj_type]
     title = params[:title]
+    license = params[:license_list]
     
     comment = DiscussionComment.find(comment_id)
     # If an attachment was not selected, but the type expected an attachment, just change the type to regular comment
@@ -127,9 +129,10 @@ class ForumController < ApplicationController
       comment.update_attributes(:comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description, :user_modified_at => Time.now)
     end
     
-    if title.length > 0 && comment.position == 1
+    if comment.position == 1
       thread = DiscussionThread.find(comment.discussion_thread_id)
-      thread.update_attributes(:title => title)
+      thread.update_attributes(:license => license.to_i)
+      thread.update_attributes(:title => title) if title.length > 0
     end
     
     render :partial => 'comment', :locals => { :comment => comment, :thread_id => comment.discussion_thread_id, :can_delete => false, :can_edit => true, :is_main => comment.position == 1 }
@@ -208,7 +211,8 @@ class ForumController < ApplicationController
       # There are two records that must be updated to create the new thread. If the second record
       # isn't created, then we need to back off the first one.
       topic_id = params[:topic_id]
-      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => params[:title])
+	    license = params[:license_list]
+      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => params[:title], :license => license)
 
       begin
         post_object(thread, params)

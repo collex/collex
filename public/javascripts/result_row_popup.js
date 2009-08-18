@@ -16,6 +16,7 @@
 
 /*global Class, $, $$, $H, Element, Ajax, Form */
 /*global MessageBoxDlg, GeneralDialog, doSingleInputPrompt, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, LinkDlgHandler */
+/*global ForumLicenseDisplay */
 /*global document, window */
 /*global exhibit_names */
 /*extern ResultRowDlg, StartDiscussionWithObject, bulkCollect, bulkTag, bulk_checked, doAddTag, doAddToExhibit, doAnnotation, doCollect, doRemoveCollect, doRemoveTag, encodeForUri, expandAllItems, getFullText, realLinkToEditorLink, removeHidden, tagFinishedUpdating, toggleAllBulkCollectCheckboxes */
@@ -439,14 +440,15 @@ var StartDiscussionWithObject = Class.create({
 			});
 		};
 
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my9s/get_licenses', currentLicense: 5, id: 'license_list' });
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [
 					[ { text: 'Starting a discussion of: ' + title, klass: 'new_exhibit_label' } ],
-					[ { text: 'Select the topic you want this discussion to appear under:', klass: 'new_exhibit_label' }, { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
-					[ { text: 'This post will be protected by a', klass: 'forum_reply_license title' } ],
-					[ { text: 'Title', klass: 'forum_reply_label title' }, { text: 'Share-alike non-commerical CC license.', klass: 'forum_reply_license title' } ],
-					[ { input: 'title', klass: 'forum_reply_input title' } /*, { page_link: 'To choose another, click here.', klass: 'forum_reply_license1 title', callback: function() {alert("TODO");} }*/ ],
+					[ { custom: licenseDisplay, klass: 'forum_reply_license title' }, { text: 'Select the topic you want this discussion to appear under:', klass: 'new_exhibit_label' } ],
+					[ { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { text: 'Title', klass: 'forum_reply_label title ' } ],
+					[ { input: 'title', klass: 'forum_reply_input title' } ],
 					[ { textarea: 'description' } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
@@ -456,6 +458,7 @@ var StartDiscussionWithObject = Class.create({
 		dlg = new GeneralDialog(params);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
 		dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
+		licenseDisplay.populate(dlg);
 		dlg.center();
 		populate(dlg);
 	}

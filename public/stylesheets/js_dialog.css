@@ -509,7 +509,7 @@ a.footnote_tip:hover span.tip {
 }
 
 .forum_reply_input {
-	width: 480px;
+	width: 430px;
 }
 
 .forum_reply_dlg {
@@ -571,3 +571,49 @@ a.footnote_tip:hover span.tip {
 	padding-right:0.5em;
 	width:9.5em;
 }
+
+/*****************************************/
+
+.license_item_selected {
+	background-color: gray;
+	color: white;
+}
+
+.cc_license_dlg {
+	width: 700px;
+}
+
+.licensedlg_list {
+	overflow: auto;
+	height: 430px;
+	background-color:white;
+}
+
+.licensedisplay {
+	background-color: #976d57;
+	color: white;
+	text-align: center;
+	padding: 5px;
+	margin-top:-10px;
+	margin-bottom:10px;
+	font-size:0.8em;
+}
+
+.licensedisplay span {
+	font-style:italic;
+	display:block;
+}
+
+#forum_dlg_chosen_license_abbrev {
+	font-style:normal;
+}
+
+.licensedisplay a:link, .licensedisplay a:visited {
+	text-decoration:underline;
+	color: white;
+	font-weight:bold;
+}
+
+/*.licensedisplay a:hover {
+	text-decoration:underline;
+}*/
