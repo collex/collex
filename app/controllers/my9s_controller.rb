@@ -102,7 +102,7 @@ class My9sController < ApplicationController
 		sort_field = nil
 		case session[:collected_sort_by]
 		when "Date Collected" then
-			sort_field = nil
+			sort_field = 'date_collected'
 		when "Title" then
 			sort_field = 'title'
 		when "Author" then

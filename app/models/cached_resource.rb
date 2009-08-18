@@ -303,6 +303,11 @@ class CachedResource < ActiveRecord::Base
     end
 
 		def self.add_sort_field(item, sort_field)
+			if sort_field == 'date_collected'
+				item[sort_field] = item['updated_at']
+				return item
+			end
+
 			cp = CachedProperty.first({:conditions => ["cached_resource_id = ? AND name = ?", item.cached_resource_id, sort_field]})
 
 			item[sort_field] = cp ? cp.value : ''
@@ -316,11 +321,19 @@ class CachedResource < ActiveRecord::Base
 			return item
 		end
 
+	def self.field_has_value(field)
+		return false if field == nil
+		if field.class == 'String'
+			return field.length > 0
+		end
+		return true
+	end
+
 	def self.sort_algorithm(results, field)
 			results = results.sort { |a,b|
-				if a[field].length > 0 && b[field].length > 0
+				if field_has_value(a[field]) && field_has_value(b[field])
 					a[field] <=> b[field]
-				elsif a[field].length > 0
+				elsif field_has_value(a[field])
 					1 <=> 2
 				else
 					2 <=> 1
