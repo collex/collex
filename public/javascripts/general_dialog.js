@@ -16,7 +16,7 @@
 
 /*global Class, $, $$, Element, Ajax */
 /*global YAHOO */
-/*global document, setTimeout */
+/*global document, setTimeout, window */
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax */
@@ -455,6 +455,10 @@ var GeneralDialog = Class.create({
 
 GeneralDialog.cancelCallback = function(event, params) {
 	params.dlg.cancel();
+};
+
+GeneralDialog.openInNewWindow = function(event, params) {
+	window.open(params.destination, '_blank');
 };
 
 /////////////////////////////////////////////////////
