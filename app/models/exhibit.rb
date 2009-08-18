@@ -64,6 +64,7 @@ class Exhibit < ActiveRecord::Base
     exhibit.insert_example_page(1)
     exhibit.insert_example_page(2)
 		exhibit.reset_fonts_to_default()
+		exhibit.bump_last_change()
     return exhibit
   end
   
@@ -595,5 +596,9 @@ class Exhibit < ActiveRecord::Base
 		return pages
 	end
 
+		def bump_last_change
+			self.last_change = Time.now()
+			self.save
+		end
 end
 

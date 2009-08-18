@@ -17,18 +17,19 @@
 	
 <% # parameters: current_user_id -%>
 <div class="right_column_header">Exhibited Objects</div>
-<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', current_user_id] ) -%>
+<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', current_user_id], :order => 'last_change DESC' ) -%>
 <% if my_exhibits.length == 0 -%>
 	<div class="empty_list_text" >You have not created any exhibits</div>
 <% else -%>
 	<table> 
 	<% for exhibit in my_exhibits -%>
+		<% start_open = exhibit.id == my_exhibits[0].id -%>
 		<tr class="exhibit_tree_exhibit_row">
 			<td>
-				<span style="display:none" class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
+				<span <%= 'style="display:none"' if start_open %> class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
 					<%= link_to_function("<img src='/images/arrow.gif' />","toggleElementsByClass('exhibit_tree_#{exhibit.id}')") %>
 				</span>
-				<span class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
+				<span <%= 'style="display:none"' if !start_open %>class="exhibit_tree_<%= exhibit.id %> site-category-toggle">
 					<%= link_to_function("<img src='/images/arrow_dn.gif' />", "toggleElementsByClass('exhibit_tree_#{exhibit.id}')") %>
 				</span>
 			</td>
@@ -37,7 +38,7 @@
 		</tr>
 		<% for object in exhibit.exhibit_objects -%>
 			<% hit = CachedResource.get_hit_from_uri(object.uri) -%>
-			<tr class="exhibit_tree_<%= exhibit.id %>" >
+			<tr <%= 'style="display:none"' if !start_open %> class="exhibit_tree_<%= exhibit.id %>" >
 				<td></td>
 				<td>
 					<img src="<%= get_image_url(CachedResource.get_thumbnail_from_hit(hit)) %>" alt="" height="15"/>

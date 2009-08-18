@@ -319,6 +319,7 @@ class My9sController < ApplicationController
       @page = params['page'] == nil ? 1 : params['page'].to_i
       num_pages = @exhibit.exhibit_pages.length
       @page = num_pages if @page > num_pages
+			@exhibit.bump_last_change()
     else
       redirect_to :action => 'index'
     end
@@ -857,6 +858,7 @@ class My9sController < ApplicationController
     if can_edit_exhibit(user, exhibit_id)
       objects = params[:objects].split("\t")
       ExhibitObject.set_objects(exhibit_id, objects)
+			Exhibit.find(exhibit_id).bump_last_change()
     end
     render :partial => 'exhibit_palette', :locals => { :exhibit => Exhibit.find(exhibit_id) }
 

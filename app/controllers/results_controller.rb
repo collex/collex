@@ -193,6 +193,7 @@ class ResultsController < ApplicationController
 #        locals[:hit]['warning'] = str
       end
       ExhibitObject.add(exhibit.id, locals[:uri])
+			exhibit.bump_last_change()
     end
 
     partial = params[:partial]
