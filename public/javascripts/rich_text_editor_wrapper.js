@@ -17,270 +17,281 @@
 /*global YAHOO */
 /*global Class, $, $A, Element */
 /*global MessageBoxDlg, RteInputDlg */
+/*global setTimeout */
 /*extern RichTextEditor */
 
 (function() {
-	//
-	// Monkey patch to get the editor to return the real selection.
-	//
-	//var debugStr = "";
+	var patchSimpleEditor = function() {
+		//
+		// Monkey patch to get the editor to return the real selection.
+		//
+		//var debugStr = "";
 
-	// This searches the node for the number of previous siblings it has.
-	YAHOO.widget.SimpleEditor.prototype.getNumSibs = function (node) {
-		var sibs = 0;
-		var x = node;
-		while (x.previousSibling) {
-			x = x.previousSibling;
-			sibs++;
-		}
-		return sibs;
-	};
+		// This searches the node for the number of previous siblings it has.
+		YAHOO.widget.SimpleEditor.prototype.getNumSibs = function (node) {
+			var sibs = 0;
+			var x = node;
+			while (x.previousSibling) {
+				x = x.previousSibling;
+				sibs++;
+			}
+			return sibs;
+		};
 
-	YAHOO.widget.SimpleEditor.prototype.getXPathPosition = function (node) {
-		// This figures out the xpath of the element in the node.
-		// It traces back through all the parentNodes, and all the previousSiblings.
-		// The position of each level is the number of siblings before it.
-		var siblings = this.getNumSibs(node);
-		var parents = [];
-		var x = node;
-		while (x.parentNode.tagName !== 'BODY') {
-			if (x.parentNode)
-				parents.push(this.getNumSibs(x.parentNode));
-			x = x.parentNode;
-		}
+		YAHOO.widget.SimpleEditor.prototype.getXPathPosition = function (node) {
+			// This figures out the xpath of the element in the node.
+			// It traces back through all the parentNodes, and all the previousSiblings.
+			// The position of each level is the number of siblings before it.
+			var siblings = this.getNumSibs(node);
+			var parents = [];
+			var x = node;
+			while (x.parentNode.tagName !== 'BODY') {
+				if (x.parentNode)
+					parents.push(this.getNumSibs(x.parentNode));
+				x = x.parentNode;
+			}
 
-		// We discovered the parent's positions by working backwards, so we want to reverse the array before returning it.
-		var xpath = [];
-		for (var i = parents.length-1; i >= 0; i-- )
-			xpath.push(parents[i]);
+			// We discovered the parent's positions by working backwards, so we want to reverse the array before returning it.
+			var xpath = [];
+			for (var i = parents.length-1; i >= 0; i-- )
+				xpath.push(parents[i]);
 
-		// And add the current node's position, too.
-		xpath.push(siblings);
+			// And add the current node's position, too.
+			xpath.push(siblings);
 
-		return xpath;
-	};
+			return xpath;
+		};
 
-	YAHOO.widget.SimpleEditor.prototype.checkStringForMatchingTags = function (str) {
-		var level = 0;
-		for (var i = 0; i < str.length-1; i++) {
-			if (str[i] === '<') {
-				if (str[i+1] === '/')
-					level--;
+		YAHOO.widget.SimpleEditor.prototype.checkStringForMatchingTags = function (str) {
+			var level = 0;
+			for (var i = 0; i < str.length-1; i++) {
+				if (str[i] === '<') {
+					if (str[i+1] === '/')
+						level--;
+					else
+						level++;
+				}
+				if (level < 0)	// if there is an end tag before a start tag
+					return false;
+			}
+			return level === 0;
+		};
+
+		YAHOO.widget.SimpleEditor.prototype.splitHtmlIntoArray = function (str) {
+			// Split the string into an array where each element is a string containing either text, a start tag, or an end tag
+			var arr = str.split('<');
+			arr = arr.map(function(i) { return '<' + i; });
+			// We don't want a blank first element, and we don't want the "<" on the first element.
+			if (arr[0] === '<')
+				arr.shift();
+			else
+				arr[0] = arr[0].substring(1);	// Don't want the < on the first element
+
+			// split out the tags from the text that follows.
+			var arr2 = [];
+			for (var i = 0; i < arr.length; i++) {	// move close tags to the element above
+				if (arr[i].indexOf('>') > 0) {
+					var x = arr[i].split('>');
+					arr2.push(x[0] + '>');
+					arr2.push(x[1]);
+				}
 				else
-					level++;
+					arr2.push(arr[i]);
 			}
-			if (level < 0)	// if there is an end tag before a start tag
-				return false;
-		}
-		return level === 0;
-	};
 
-	YAHOO.widget.SimpleEditor.prototype.splitHtmlIntoArray = function (str) {
-		// Split the string into an array where each element is a string containing either text, a start tag, or an end tag
-		var arr = str.split('<');
-		arr = arr.map(function(i) { return '<' + i; });
-		// We don't want a blank first element, and we don't want the "<" on the first element.
-		if (arr[0] === '<')
-			arr.shift();
-		else
-			arr[0] = arr[0].substring(1);	// Don't want the < on the first element
+			return arr2;
+		};
 
-		// split out the tags from the text that follows.
-		var arr2 = [];
-		for (var i = 0; i < arr.length; i++) {	// move close tags to the element above
-			if (arr[i].indexOf('>') > 0) {
-				var x = arr[i].split('>');
-				arr2.push(x[0] + '>');
-				arr2.push(x[1]);
+		YAHOO.widget.SimpleEditor.prototype.excludeOuterTagsFromSelection = function (val, aOffset, fOffset) {
+			// Get rid of any tags in the front.
+			while (val[aOffset] === '<') {
+				aOffset = aOffset + val.substring(aOffset).indexOf('>') + 1;
 			}
-			else
-				arr2.push(arr[i]);
-		}
 
-		return arr2;
-	};
-
-	YAHOO.widget.SimpleEditor.prototype.excludeOuterTagsFromSelection = function (val, aOffset, fOffset) {
-		// Get rid of any tags in the front.
-		while (val[aOffset] === '<') {
-			aOffset = aOffset + val.substring(aOffset).indexOf('>') + 1;
-		}
-
-		// Get rid of any tags in the back.
-		while (val[fOffset-1] === '>') {
-			fOffset = val.substring(0, fOffset-1).lastIndexOf('<');
-		}
-		return { aOffset: aOffset, fOffset: fOffset };
-	};
-
-	YAHOO.widget.SimpleEditor.prototype.canInsertTagsAroundSelection = function (val, aOffset, fOffset) {
-		// Be sure that the two insertion points will make legal HTML code. We do that by making sure that there are the same
-		// number of start and end tags inside the selection.
-		var selection = val.substring(aOffset, fOffset);
-		var match = this.checkStringForMatchingTags(selection);
-
-		if (!match) {
-			// Get rid of the bounding tags and try again.
-			var newSel = this.excludeOuterTagsFromSelection(val, aOffset, fOffset);
-			aOffset = newSel.aOffset;
-			fOffset = newSel.fOffset;
-			selection = val.substring(aOffset, fOffset);
-			match = this.checkStringForMatchingTags(selection);
-		}
-
-		if (!match) {
-			// The user selected in the middle of a couple of different levels of nodes. This would
-			// create illegal HTML if we tried to inject start and end tags there.
-			return { errorMsg: "You cannot create a link when the selection is over different levels. [" + selection + ']' };
-		}
-
-		return { aOffset: aOffset, fOffset: fOffset, selection: selection, errorMsg: null };
-	};
-
-	// This fixes a bug in FF 3.0.7 where sometimes only one side of the selection is returned.
-	YAHOO.widget.SimpleEditor.prototype.guessSelectionEnd = function (val, selStart, selStr) {
-		var ln = (selStr+'').length;	// Without adding an empty string, the length function returns "undefined" on FF 3.0.7
-		var v = val.substring(selStart-ln, selStart);
-		if (v === selStr)
-			return selStart - ln;
-		v = val.substring(selStart, selStart+ln);
-		if (v === selStr)
-			return selStart + ln;
-		return -1;
-	};
-
-	YAHOO.widget.SimpleEditor.prototype.correctOffsetForSubstitutedText = function(text, offset) {
-		// The text that is input here potentially has & < > chars. If it does, then the offset will be off since the string that is eventually
-		// returned will contain &amp; &lt; and &gt;. This adds to the offset to compensate.
-		// Also, two or more spaces in a row are turned to &nbsp;
-		// Also, if we are called with a node that doesn't have data, "text" will be undefined. You would think that the browser would set
-		// the offset to zero in this case, but it doesn't.
-		if (text === undefined)
-			return 0;
-		var str = "" + text;
-		str = str.substr(0, offset);
-		str = str.escapeHTML(str);
-		return str.length;
-	};
-
-	// Get the user's selection in offsets into the raw HTML.
-	// A hash is returned with the start and end positions, and an error string, if any.
-	YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireRange) {
-		if (this.browser.opera) {
-			return null;
-		}
-
-		// Use the editor's routine to get the selection. This will be really different between IE 6/7 and other browsers
-		var val = null;
-		var s = this._getSelection();
-		if (this.browser.webkit) {
-			if (s+'' === '') {
-				s = null;
+			// Get rid of any tags in the back.
+			while (val[fOffset-1] === '>') {
+				fOffset = val.substring(0, fOffset-1).lastIndexOf('<');
 			}
-		} else if (this.browser.ie) {
-			// TODO-PER: This isn't right. It will match the first occurrance of the text selected. It's better than nothing, though.
-			var rng = s.createRange();
-			var selText = rng.htmlText;
+			return { aOffset: aOffset, fOffset: fOffset };
+		};
+
+		YAHOO.widget.SimpleEditor.prototype.canInsertTagsAroundSelection = function (val, aOffset, fOffset) {
+			// Be sure that the two insertion points will make legal HTML code. We do that by making sure that there are the same
+			// number of start and end tags inside the selection.
+			var selection = val.substring(aOffset, fOffset);
+			var match = this.checkStringForMatchingTags(selection);
+
+			if (!match) {
+				// Get rid of the bounding tags and try again.
+				var newSel = this.excludeOuterTagsFromSelection(val, aOffset, fOffset);
+				aOffset = newSel.aOffset;
+				fOffset = newSel.fOffset;
+				selection = val.substring(aOffset, fOffset);
+				match = this.checkStringForMatchingTags(selection);
+			}
+
+			if (!match) {
+				// The user selected in the middle of a couple of different levels of nodes. This would
+				// create illegal HTML if we tried to inject start and end tags there.
+				return { errorMsg: "You cannot create a link when the selection is over different levels. [" + selection + ']' };
+			}
+
+			return { aOffset: aOffset, fOffset: fOffset, selection: selection, errorMsg: null };
+		};
+
+		// This fixes a bug in FF 3.0.7 where sometimes only one side of the selection is returned.
+		YAHOO.widget.SimpleEditor.prototype.guessSelectionEnd = function (val, selStart, selStr) {
+			var ln = (selStr+'').length;	// Without adding an empty string, the length function returns "undefined" on FF 3.0.7
+			var v = val.substring(selStart-ln, selStart);
+			if (v === selStr)
+				return selStart - ln;
+			v = val.substring(selStart, selStart+ln);
+			if (v === selStr)
+				return selStart + ln;
+			return -1;
+		};
+
+		YAHOO.widget.SimpleEditor.prototype.correctOffsetForSubstitutedText = function(text, offset) {
+			// The text that is input here potentially has & < > chars. If it does, then the offset will be off since the string that is eventually
+			// returned will contain &amp; &lt; and &gt;. This adds to the offset to compensate.
+			// Also, two or more spaces in a row are turned to &nbsp;
+			// Also, if we are called with a node that doesn't have data, "text" will be undefined. You would think that the browser would set
+			// the offset to zero in this case, but it doesn't.
+			if (text === undefined)
+				return 0;
+			var str = "" + text;
+			str = str.substr(0, offset);
+			str = str.escapeHTML(str);
+			return str.length;
+		};
+
+		// Get the user's selection in offsets into the raw HTML.
+		// A hash is returned with the start and end positions, and an error string, if any.
+		YAHOO.widget.SimpleEditor.prototype.getRawSelectionPosition = function (requireRange) {
+			if (this.browser.opera) {
+				return null;
+			}
+
+			// Use the editor's routine to get the selection. This will be really different between IE 6/7 and other browsers
+			var val = null;
+			var s = this._getSelection();
+			if (this.browser.webkit) {
+				if (s+'' === '') {
+					s = null;
+				}
+			} else if (this.browser.ie) {
+				// TODO-PER: This isn't right. It will match the first occurrance of the text selected. It's better than nothing, though.
+				var rng = s.createRange();
+				var selText = rng.htmlText;
+				val = this.getEditorHTML();
+				var idx = val.indexOf(selText);
+				if (idx === -1)
+					s.rangeCount = 2;
+				else
+					return { startPos: idx, endPos: idx + selText.length, selection: selText, errorMsg: null };
+			} else {
+				if (!s || (s === undefined))
+					s = null;
+				if (requireRange && (s.toString() === ''))
+					s = null;
+			}
+
+			if (s === null)
+				return { errorMsg: "Nothing is selected." };
+
+			if (s.rangeCount !== 1)
+				return { errorMsg: "You cannot create a link when more than one area is selected." };
+
+			// get what we need out of the selection object
+			var a = s.anchorNode;
+			var aoff = this.correctOffsetForSubstitutedText(a.data, s.anchorOffset);
+			var f = s.focusNode;
+			var foff = this.correctOffsetForSubstitutedText(f.data, s.focusOffset);
+			var selStr = s.toString();
+
+			// In Firefox 3.0.7, at least, we sometimes aren't returned both sides of the selection. If we get at least
+			// one side, we have the workaround that we can get the selection's text, and we have either the start
+			// or the end of the selection, so we can figure it out (unless there are two repeated strings on either side of
+			// the selection, like "abc|abc" where the bar is the selection point.)
+			if (a.tagName === 'BODY' && f.tagName === 'BODY')	// Neither side was returned. We have nothing to work with.
+				return { errorMsg: "We're sorry. We can't figure out what you've selected. Try selecting a more than one character." };
+
+			// if we don't have the info in the selection for one side, we make that object null, and compensate below.
+			var apos = (a.tagName === 'BODY') ? null : this.getXPathPosition(a);
+			var fpos = (f.tagName === 'BODY') ? null : this.getXPathPosition(f);
+
+			// Now parse the raw string to figure out where the xpaths created above (in aoff and foff) fall in the string.
 			val = this.getEditorHTML();
-			var idx = val.indexOf(selText);
-			if (idx === -1)
-				s.rangeCount = 2;
-			else
-				return { startPos: idx, endPos: idx + selText.length, selection: selText, errorMsg: null };
-		} else {
-			if (!s || (s === undefined))
-				s = null;
-			if (requireRange && (s.toString() === ''))
-				s = null;
-		}
+			var arr = this.splitHtmlIntoArray(val);
 
-		if (s === null)
-			return { errorMsg: "Nothing is selected." };
+			// Now we go through the raw html, create xpath levels for each node, and
+			// keep track of the number of characters consumed so that we can get a
+			// character position of where the selection was in relation to the entire
+			// raw html string.
+			var aOffset = -1;
+			var fOffset = -1;
 
-		if (s.rangeCount !== 1)
-			return { errorMsg: "You cannot create a link when more than one area is selected." };
+			var arrLevels = [ -1 ];
+			var charCount = 0;
+			//debugStr = "";
+			arr.each(function(i) {
+				if (i === "<br>" || i === "<hr>") { // the item is self-contained.
+					arrLevels[arrLevels.length-1]++;
+				} else if (i.substring(0, 2) === "</") {	// this array item is an end tag.
+					arrLevels.pop();
+				} else if (i.substring(0, 1) === "<" && i.substring(i.length-3) === "/>") { // the item is self contained
+					arrLevels[arrLevels.length-1]++;
+				} else if (i.substring(0, 1) === "<") {	// this array item is a start tag.
+					arrLevels[arrLevels.length-1]++;
+					arrLevels.push(-1);
+				} else if (i === "" ){	// The item is empty, so don't count it.
+				} else {	// this array item is text.
+					arrLevels[arrLevels.length-1]++;
+				}
 
-		// get what we need out of the selection object
-		var a = s.anchorNode;
-		var aoff = this.correctOffsetForSubstitutedText(a.data, s.anchorOffset);
-		var f = s.focusNode;
-		var foff = this.correctOffsetForSubstitutedText(f.data, s.focusOffset);
-		var selStr = s.toString();
+				// See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
+				var levelStr = arrLevels.join(',');
+				if (apos && apos.join(',') === levelStr)
+					aOffset = charCount + aoff;
+				if (fpos && fpos.join(',') === levelStr)
+					fOffset = charCount + foff;
 
-		// In Firefox 3.0.7, at least, we sometimes aren't returned both sides of the selection. If we get at least
-		// one side, we have the workaround that we can get the selection's text, and we have either the start
-		// or the end of the selection, so we can figure it out (unless there are two repeated strings on either side of
-		// the selection, like "abc|abc" where the bar is the selection point.)
-		if (a.tagName === 'BODY' && f.tagName === 'BODY')	// Neither side was returned. We have nothing to work with.
-			return { errorMsg: "We're sorry. We can't figure out what you've selected. Try selecting a more than one character." };
+				charCount += i.length;
+				//debugStr += arrLevels.join(',') + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.escapeHTML() + "<br />";
+			});
 
-		// if we don't have the info in the selection for one side, we make that object null, and compensate below.
-		var apos = (a.tagName === 'BODY') ? null : this.getXPathPosition(a);
-		var fpos = (f.tagName === 'BODY') ? null : this.getXPathPosition(f);
-
-		// Now parse the raw string to figure out where the xpaths created above (in aoff and foff) fall in the string.
-		val = this.getEditorHTML();
-		var arr = this.splitHtmlIntoArray(val);
-
-		// Now we go through the raw html, create xpath levels for each node, and
-		// keep track of the number of characters consumed so that we can get a
-		// character position of where the selection was in relation to the entire
-		// raw html string.
-		var aOffset = -1;
-		var fOffset = -1;
-
-		var arrLevels = [ -1 ];
-		var charCount = 0;
-		//debugStr = "";
-		arr.each(function(i) {
-			if (i === "<br>" || i === "<hr>") { // the item is self-contained.
-				arrLevels[arrLevels.length-1]++;
-			} else if (i.substring(0, 2) === "</") {	// this array item is an end tag.
-				arrLevels.pop();
-			} else if (i.substring(0, 1) === "<" && i.substring(i.length-3) === "/>") { // the item is self contained
-				arrLevels[arrLevels.length-1]++;
-			} else if (i.substring(0, 1) === "<") {	// this array item is a start tag.
-				arrLevels[arrLevels.length-1]++;
-				arrLevels.push(-1);
-			} else if (i === "" ){	// The item is empty, so don't count it.
-			} else {	// this array item is text.
-				arrLevels[arrLevels.length-1]++;
+			// If either offset is missing, try to figure it out by using the selection string.
+			if (aOffset === -1) {
+				aOffset = this.guessSelectionEnd(val, fOffset, selStr);
+			}
+			if (fOffset === -1) {
+				fOffset = this.guessSelectionEnd(val, aOffset, selStr);
 			}
 
-			// See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
-			var levelStr = arrLevels.join(',');
-			if (apos && apos.join(',') === levelStr)
-				aOffset = charCount + aoff;
-			if (fpos && fpos.join(',') === levelStr)
-				fOffset = charCount + foff;
+			// Switch the anchor and the focus in case the user selected from right to left
+			if (aOffset > fOffset) {
+				var x = aOffset;
+				aOffset = fOffset;
+				fOffset = x;
+			}
 
-			charCount += i.length;
-			//debugStr += arrLevels.join(',') + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.escapeHTML() + "<br />";
-		});
+			var ret = this.canInsertTagsAroundSelection(val, aOffset, fOffset);
+			if (ret.errorMsg) {
+				// The user selected in the middle of a couple of different levels of nodes. This would
+				// create illegal HTML if we tried to inject start and end tags there.
+				return { errorMsg: ret.errorMsg };
+			}
 
-		// If either offset is missing, try to figure it out by using the selection string.
-		if (aOffset === -1) {
-			aOffset = this.guessSelectionEnd(val, fOffset, selStr);
-		}
-		if (fOffset === -1) {
-			fOffset = this.guessSelectionEnd(val, aOffset, selStr);
-		}
+			return { startPos: ret.aOffset, endPos: ret.fOffset, selection: ret.selection, errorMsg: null };
+		};
+	};
 
-		// Switch the anchor and the focus in case the user selected from right to left
-		if (aOffset > fOffset) {
-			var x = aOffset;
-			aOffset = fOffset;
-			fOffset = x;
-		}
-
-		var ret = this.canInsertTagsAroundSelection(val, aOffset, fOffset);
-		if (ret.errorMsg) {
-			// The user selected in the middle of a couple of different levels of nodes. This would
-			// create illegal HTML if we tried to inject start and end tags there.
-			return { errorMsg: ret.errorMsg };
-		}
-
-		return { startPos: ret.aOffset, endPos: ret.fOffset, selection: ret.selection, errorMsg: null };
+	// wait until SimpleEditor is created
+	var waitForSimpleEditor = function() {
+		if (YAHOO.widget.SimpleEditor === undefined)
+			setTimeout(waitForSimpleEditor, 100);
+		else
+			patchSimpleEditor();
 	};
 })();
 
