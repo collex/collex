@@ -127,7 +127,7 @@ var ForumLicenseDisplay = Class.create({
 			parent = new Element("div", { id: parent_id });
 		parent.addClassName('licensedisplay');
 		parent.appendChild(new Element('div', { id: 'forum_dlg_chosen_license_img'}));
-		parent.appendChild(new Element('span', {id: 'forum_dlg_text1' }).update('This post will be protected by a'));
+		parent.appendChild(new Element('span', {id: 'forum_dlg_text1' }).update('This post will be protected by an'));
 		parent.appendChild(new Element('span', { id: 'forum_dlg_chosen_license_abbrev' }).update('(Loading...'));
 		parent.appendChild(new Element('span', {id: 'forum_dlg_text2' }).update('license. Click <a id="forum_dlg_changedlg" href="#" onclick="return false;">here</a> to change.'));
 		YAHOO.util.Event.addListener('forum_dlg_changedlg', 'click', changeDlg);
