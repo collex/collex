@@ -58,7 +58,7 @@ class GetIncludeFileList
 			when :admin
 				local = [ 'admin', 'resource_tree' ]
 			when :view_exhibit
-				global = [ 'modal_dialog', 'hide_spinner', 'general_dialog', 'renumber_footnotes' ]
+				global = [ 'modal_dialog', 'hide_spinner', 'general_dialog', 'renumber_footnotes', 'login' ]
 			when :print_exhibit
 				global = [ 'hide_spinner', 'renumber_footnotes' ]
 			when :home
