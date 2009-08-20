@@ -427,6 +427,10 @@ a.footnote_tip:hover span.tip {
 	width: 480px;
 }
 
+.link_dlg_select {
+	margin-left: 5px;
+	font-size: .85em;
+}
 
 /*****************************************/
 

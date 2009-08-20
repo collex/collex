@@ -47,6 +47,7 @@ var CreateListOfObjects = Class.create({
 	initialize: function(populate_url, initial_selection, parent_id, progress_img, selectionCallBack){
 		var selClass = "linkdlg_item_selected";
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
+		var id_prefix = null;
 		
 		// Handles the user's selection
 		this.getSelection = function(){
@@ -174,11 +175,17 @@ var CreateListOfObjects = Class.create({
 					first_item2.addClassName(selClass);
 			}
 		};
+
+		var clearAllRows = function() {
+			var rows = $(parent).select('.linkdlg_item');
+			rows.each(function(row) { row.remove(); });
+		};
 		
 		// privileged functions
-		this.populate = function(dlg, selectFirst, id_prefix){
+		this.populate = function(dlg, selectFirst, id_prefix_){
 			// See if the item's in the cache first, and if not, call the server for it.
 			var objs = ninesObjCache.get(populate_url);
+			id_prefix = id_prefix_;
 			
 			if (objs)
 				createRows(objs, selectFirst, id_prefix);
@@ -239,6 +246,26 @@ var CreateListOfObjects = Class.create({
 				parent = new Element("div", { id: parent_id });
 			parent.addClassName('linkdlg_list');
 			return parent;
+		};
+
+		this.sortby = function(id, field) {
+			var objs = ninesObjCache.get(populate_url);
+			if (field !== 'date_collected') {	// The objects are already sorted by Date Collected
+				objs = objs.sortBy(function(obj) {
+					if (field === 'title') {
+						if (obj.strFirstLine.length === 0)
+							return 'ZZZZZZ';
+						return obj.strFirstLine.toUpperCase().gsub(/[^A-Z]/, '');
+					} else {
+						if (obj.strSecondLine.length === 0)
+							return 'ZZZZZZ';
+						return obj.strSecondLine.toUpperCase().gsub(/[^A-Z]/, '');
+					}
+				});
+			}
+			clearAllRows();
+			createRows(objs, true, id_prefix);
+
 		};
 	}
 });
@@ -326,7 +353,7 @@ var LinkDlgHandler = Class.create({
 				$$(hideClass).each(function(el) { el.addClassName('hidden'); });
 				$$(showClass).each(function(el) { el.removeClassName('hidden'); });
 			};
-			
+
 			var removeLinksFromSelection = function (strSel)
 			{
 				var str = strSel;
@@ -393,7 +420,8 @@ var LinkDlgHandler = Class.create({
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', change: selChanged, value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
+						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', change: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] },
+							{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Sort by Date Collected', value:  'date_collected' }, { text:  'Sort by Title', value:  'title' }, { text:  'Sort by Author', value:  'author' }] }, ],
 						[ { page_link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
 						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
 						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
