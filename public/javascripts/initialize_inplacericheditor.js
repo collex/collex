@@ -148,7 +148,7 @@ function initializeInplaceRichEditor(element_id, action)
 		var fontStyle = This.getStyle('font-family');
 		var fontSize = This.getStyle('font-size');
 		var style = "html body { font-family: " + fontStyle + "; font-size: " + fontSize + "; }";
-		dlg.initTextAreas({ toolbarGroups: [ 'dropcap', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler: footnoteHandler.addFootnote, bodyStyle: style });
+		dlg.initTextAreas({ toolbarGroups: [ 'dropcap', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback: footnoteHandler.addFootnote, bodyStyle: style });
 		dlg.center();
 
 		var input = $('value');
@@ -320,7 +320,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteHandler: footnoteHandler.addFootnote });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback: footnoteHandler.addFootnote });
 		dlg.changePage('layout', 'type');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
