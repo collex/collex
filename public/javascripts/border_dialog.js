@@ -37,7 +37,7 @@ BorderDialog.prototype = {
 	initialize: function () {
 		this.myPanel = new YAHOO.widget.Dialog("edit_border_dlg", {
 			width:"380px",
-			fixedcenter: true,
+			//fixedcenter: true,
 			constraintoviewport: true,
 			underlay:"shadow",
 			close:true,
