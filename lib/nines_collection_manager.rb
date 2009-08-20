@@ -19,6 +19,7 @@ require 'digest/sha1'
 class UsernameAlreadyExistsException < StandardError
 end
 
+#TODO-PER: This class appears to mix functions that either call solr or call functions in the User model. The User functions are all useful and should probably be in the User model directly. The solr functions don't appear to be used.
 class NinesCollectionManager
   def initialize
     @solr = CollexEngine.new
@@ -78,42 +79,42 @@ class NinesCollectionManager
   end
   
   # Through the nines model, return objects that match the given URL, along with their title and thumbnail URL.
-  def objects_behind_urls(urls, user)
-    @solr.objects_behind_urls(urls,user)
-  end
+#  def objects_behind_urls(urls, user) #TODO-PER: Doesn't appear to be called
+#    @solr.objects_behind_urls(urls,user)
+#  end
   
   # per user or global cloud of collected objects, counts per type
-  def cloud(type, user = nil)
-    if type == "tag" && user != nil
-      # "tag" is a special - don't want to see tags that others have put on _my_ objects (well, not in the cloud at least for now)
-      # so, facet on <username>_tag when tag cloud is requested for a specific user
-      type = "#{user}_tag"
-    end
-    constraint = user ? FacetConstraint.new(:field => "username", :value => user) : ExpressionConstraint.new(:value => "username:[* TO *]")
-    @solr.facet(type, [constraint])
-  end
+#  def cloud(type, user = nil) #TODO-PER: Doesn't appear to be called
+#    if type == "tag" && user != nil
+#      # "tag" is a special - don't want to see tags that others have put on _my_ objects (well, not in the cloud at least for now)
+#      # so, facet on <username>_tag when tag cloud is requested for a specific user
+#      type = "#{user}_tag"
+#    end
+#    constraint = user ? FacetConstraint.new(:field => "username", :value => user) : ExpressionConstraint.new(:value => "username:[* TO *]")
+#    @solr.facet(type, [constraint])
+#  end
   
-  def objects_by_type(type, value, user = nil, start = 0, max = 5)
-    if type == "tag" && user != nil
-      # when asking for a tag list by username, need to use the <username>_tag field instead of just "tag"
-      type = "#{user}_tag"
-    end
-    constraints = [FacetConstraint.new(:field => type, :value => value)]
-    if user
-      constraints << FacetConstraint.new(:field => "username", :value => user)
-    else
-      constraints << ExpressionConstraint.new(:value => "username:[* TO *]")  # these are the collected objects, any with a username value
-    end
-    
-    # TODO: highlighting not necessary in this context, but still requested
-    @solr.search(constraints, start, max, nil)
-  end
+#  def objects_by_type(type, value, user = nil, start = 0, max = 5) #TODO-PER: Doesn't appear to be called
+#    if type == "tag" && user != nil
+#      # when asking for a tag list by username, need to use the <username>_tag field instead of just "tag"
+#      type = "#{user}_tag"
+#    end
+#    constraints = [FacetConstraint.new(:field => type, :value => value)]
+#    if user
+#      constraints << FacetConstraint.new(:field => "username", :value => user)
+#    else
+#      constraints << ExpressionConstraint.new(:value => "username:[* TO *]")  # these are the collected objects, any with a username value
+#    end
+#
+#    # TODO: highlighting not necessary in this context, but still requested
+#    @solr.search(constraints, start, max, nil)
+#  end
   
   def object_detail(objid, user)
     @solr.object_detail(objid, user)
   end
       
-  def relators #called on start up to fill the constant RELATORS
+  def relators #called on start up to fill the constant RELATORS, although RELATORS may be able to get factored out, too.
     hash = Hash.new {|hash,key| hash[key] = key}
     hash["ART"] = "Artist"
     hash["AUT"] = "Author"

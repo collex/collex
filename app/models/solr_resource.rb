@@ -48,7 +48,7 @@ class SolrResource < SolrBaseModel
       result
   end
   
-  def self.initialize_object_detail(object, mlt=[], collection_info=nil)
+  def self.initialize_object_detail(object, mlt=[], collection_info=nil)	#called only in this module.
     return nil if object.nil?
     resource = SolrResource.new(:uri => object["uri"])
     object.each do |name, value|

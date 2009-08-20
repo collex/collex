@@ -42,12 +42,12 @@ class CollexEngine
     @num_docs
   end
   
-  def all_facets
-    # TODO!!!
-    # this is only used from the stats controller.  it needs to be ported to using Solr's Standard request, instead of the
-    # now removed FacetRequest
-    @solr.send(FacetRequest.new).all_facets
-  end
+#  def all_facets
+#    # TODO!!!
+#    # this is only used from the stats controller.  it needs to be ported to using Solr's Standard request, instead of the
+#    # now removed FacetRequest
+#    @solr.send(FacetRequest.new).all_facets
+#  end
   
   def facet(facet, constraints, prefix=nil)	# called for autocomplete
     query, filter_queries = solrize_constraints(constraints)
@@ -60,7 +60,7 @@ class CollexEngine
     facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
   end
   
-  def agent_suggest(constraints, prefix)
+  def agent_suggest(constraints, prefix)	# useful for auto complete on author, etc. fields.
     query, filter_queries = solrize_constraints(constraints)
     
     # case insensitive, replace commas, semicolons, and periods with spaces
@@ -126,14 +126,14 @@ class CollexEngine
     results
   end
   
-  def indexed?(uri)
-    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
-    req = Solr::Request::Standard.new(:start => 0, :rows => 1, :query => query)
-    response = @solr.send(req)
-    response.hits[0] != nil
-  end
+#  def indexed?(uri)
+#    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
+#    req = Solr::Request::Standard.new(:start => 0, :rows => 1, :query => query)
+#    response = @solr.send(req)
+#    response.hits[0] != nil
+#  end
   
-  def object_detail(objid, username=nil)
+  def object_detail(objid, username=nil)	#called by SolrResource.find_by_uri
     query = "uri:#{Solr::Util.query_parser_escape(objid)}"
     # TODO: generalize the field list here
     field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","image","title","alternative","uri","url", "username"]
@@ -158,7 +158,7 @@ class CollexEngine
     [document, mlt, collection_info]
   end
   
-  def objects_for_uris(uris, username=nil)
+  def objects_for_uris(uris, username=nil) #called when "collect" is pressed.
     #TODO allow paging through rows
     
     query = uris.collect {|uri| "uri:#{Solr::Util.query_parser_escape(uri)}"}.join(" OR ")

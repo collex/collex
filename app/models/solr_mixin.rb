@@ -22,7 +22,7 @@ module SolrMixin
 
   module ClassMethods
 
-    def solr
+    def solr # called from SolrResource.find_by_uri
       CollexEngine.new
     end      
 
