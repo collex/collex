@@ -624,6 +624,12 @@ class My9sController < ApplicationController
     caption2 = params['caption2']
     caption1_footnote = params['caption1_footnote']
     caption2_footnote = params['caption2_footnote']
+    caption1_bold = params['caption1_bold']
+    caption1_italic = params['caption1_italic']
+    caption1_underline = params['caption1_underline']
+    caption2_bold = params['caption2_bold']
+    caption2_italic = params['caption2_italic']
+    caption2_underline = params['caption2_underline']
     text = params['ill_text']
     alt_text = params['alt_text']
     nines_object = params['nines_object']
@@ -648,6 +654,12 @@ class My9sController < ApplicationController
         illustration.nines_object_uri = nines_object
 				illustration.set_caption_footnote(caption1_footnote, 'caption1_footnote_id')
 				illustration.set_caption_footnote(caption2_footnote, 'caption2_footnote_id')
+        illustration.caption1_bold = caption1_bold
+        illustration.caption1_italic = caption1_italic
+        illustration.caption1_underline = caption1_underline
+        illustration.caption2_bold = caption2_bold
+        illustration.caption2_italic = caption2_italic
+        illustration.caption2_underline = caption2_underline
         illustration.save
   
         element_id = illustration.exhibit_element_id

@@ -233,6 +233,14 @@ var GeneralDialog = Class.create({
 						}
 						addButton(row, subel.button, buttonClass, subel.callback, page.page, subel.url);
 //						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						// ICON BUTTON
+					} else if (subel.icon_button !== undefined) {
+						var button_id = this_id + '_a' + listenerArray.length;
+						var a = new Element('a', { id: button_id, title: subel.icon_button, onclick: 'return false;', href: '#' });
+						if (subel.klass)
+							a.addClassName(subel.klass);
+						row.appendChild(a);
+						listenerArray.push({ id: button_id, event: 'click', callback: subel.callback, param: { curr_page: page.page, button_id: button_id, context: subel.context, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
 						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);

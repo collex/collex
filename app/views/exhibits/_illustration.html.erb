@@ -97,6 +97,12 @@ end -%>
 				<div class="saved_data ill_illustration_caption2" style="display:none;"><%= illustration.caption2 %></div>
 				<div class="saved_data ill_illustration_caption1_footnote" style="display:none;"><%= illustration.caption1_footnote_id ? ExhibitFootnote.find(illustration.caption1_footnote_id).footnote : "" %></div>
 				<div class="saved_data ill_illustration_caption2_footnote" style="display:none;"><%= illustration.caption2_footnote_id ? ExhibitFootnote.find(illustration.caption2_footnote_id).footnote : ""  %></div>
+				<div class="saved_data ill_illustration_caption1_bold" style="display:none;"><%= illustration.caption1_bold %></div>
+				<div class="saved_data ill_illustration_caption1_italic" style="display:none;"><%= illustration.caption1_italic %></div>
+				<div class="saved_data ill_illustration_caption1_underline" style="display:none;"><%= illustration.caption1_underline %></div>
+				<div class="saved_data ill_illustration_caption2_bold" style="display:none;"><%= illustration.caption2_bold %></div>
+				<div class="saved_data ill_illustration_caption2_italic" style="display:none;"><%= illustration.caption2_italic %></div>
+				<div class="saved_data ill_illustration_caption2_underline" style="display:none;"><%= illustration.caption2_underline %></div>
 				<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
 			<% end -%>
 		
@@ -126,18 +132,26 @@ end -%>
 	
 		<% # draw the caption(s) -%>
 		<% if illustration != nil -%>
+			<% style2 = '' -%>
+			<% style2 += "#{illustration.caption2_bold}" == '1' ? 'font-weight: bold;' : 'font-weight: normal;' -%>
+			<% style2 += "#{illustration.caption2_italic}" == '1' ? 'font-style: italic;' : 'font-style: normal;'  -%>
+			<% style2 += "#{illustration.caption2_underline}" == '1' ? 'text-decoration: underline;' : 'text-decoration: none;'  -%>
 			<% if illustration.caption1 && illustration.caption1.length > 0 -%>
-				<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.caption1_font_name %>; font-size:<%= exhibit.caption1_font_size %>px;"><%= illustration.caption1 %>
+				<% style = '' -%>
+				<% style += 'font-weight: bold;' if "#{illustration.caption1_bold}" == '1' -%>
+				<% style += 'font-style: italic;' if "#{illustration.caption1_italic}" == '1' -%>
+				<% style += 'text-decoration: underline;' if "#{illustration.caption1_underline}" == '1' -%>
+				<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.caption1_font_name %>; font-size:<%= exhibit.caption1_font_size %>px;<%= style %>"><%= illustration.caption1 %>
 				<%= draw_footnote(illustration.caption1_footnote_id, "caption1_#{illustration.id}", edit_mode) %>
 				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
-					<div class="exhibit_caption2" style="font-family:<%= exhibit.caption2_font_name %>; font-size:<%= exhibit.caption2_font_size %>px;"><%= illustration.caption2 %>
+					<div class="exhibit_caption2" style="font-family:<%= exhibit.caption2_font_name %>; font-size:<%= exhibit.caption2_font_size %>px;<%= style2 %>"><%= illustration.caption2 %>
 					<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{illustration.id}", edit_mode) %>
 					</div>
 				<% end -%>
 				</div>
 			<% else -%>
 				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
-					<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.caption2_font_name %>; font-size:<%= exhibit.caption2_font_size %>px;"><%= illustration.caption2 %>
+					<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.caption2_font_name %>; font-size:<%= exhibit.caption2_font_size %>px;<%= style2 %>"><%= illustration.caption2 %>
 						<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{illustration.id}", edit_mode) %>
 					</div>
 				<% end -%>

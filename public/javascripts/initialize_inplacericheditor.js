@@ -246,6 +246,18 @@ function initializeInplaceIllustrationEditor(element_id, action)
 				values.caption1_footnote = hidden.innerHTML;
 			else if (hidden.hasClassName('ill_illustration_caption2_footnote'))
 				values.caption2_footnote = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption1_bold'))
+				values.caption1_bold = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption1_italic'))
+				values.caption1_italic = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption1_underline'))
+				values.caption1_underline = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption2_bold'))
+				values.caption2_bold = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption2_italic'))
+				values.caption2_italic = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_illustration_caption2_underline'))
+				values.caption2_underline = hidden.innerHTML;
 			else if (hidden.hasClassName('ill_nines_object_uri'))
 				values.nines_object = hidden.innerHTML;
 		});
@@ -300,13 +312,41 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var footnoteAbbrev1 = new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote');
 		var footnoteAbbrev2 = new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote');
 
+		var buttonPushed = function(ev, params) {
+			 var el = $(params.button_id);
+			 var context = params.context;
+			 var style = context.style;
+			 var styleHash = {};
+			 var hidden = $(context.dest + '_' + context.value);
+			 if (el.hasClassName('pressed')) {
+				 el.removeClassName('pressed');
+				 styleHash[style] = '';
+				 $(context.dest).setStyle(styleHash);
+				 hidden.value = 0;
+			 }
+			 else {
+				 el.addClassName('pressed');
+				 styleHash[style] = context.value;
+				 $(context.dest).setStyle(styleHash);
+				 hidden.value = 1;
+			 }
+		};
+
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
 					[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
-					[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'header_input' }, footnoteAbbrev1.createEditButton('footnoteEditStar') ],
+					[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { input: 'caption1', value: values.caption1, klass: 'header_input' },
+						{ icon_button: 'Bold', klass: 'bold_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontWeight', value: 'bold' } }, { hidden: 'caption1_bold', value: values.caption1_bold },
+						{ icon_button: 'Italic', klass: 'italic_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontStyle', value: 'italic' } }, { hidden: 'caption1_italic', value: values.caption1_italic },
+						{ icon_button: 'Underline', klass: 'underline_button', callback: buttonPushed, context: { dest: 'caption1', style: 'textDecoration', value: 'underline' } }, { hidden: 'caption1_underline', value: values.caption1_underline },
+						footnoteAbbrev1.createEditButton('footnoteEditStar') ],
 					[ { custom: footnoteAbbrev1 }],
-					[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'header_input' }, footnoteAbbrev2.createEditButton('footnoteEditStar2') ],
+					[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { input: 'caption2', value: values.caption2, klass: 'header_input' },
+						{ icon_button: 'Bold', klass: 'bold_button', callback: buttonPushed, context: { dest: 'caption2', style: 'fontWeight', value: 'bold' } }, { hidden: 'caption2_bold', value: values.caption2_bold },
+						{ icon_button: 'Italic', klass: 'italic_button', callback: buttonPushed, context: { dest: 'caption2', style: 'fontStyle', value: 'italic' } }, { hidden: 'caption2_italic', value: values.caption2_italic },
+						{ icon_button: 'Underline', klass: 'underline_button', callback: buttonPushed, context: { dest: 'caption2', style: 'textDecoration', value: 'underline' } }, { hidden: 'caption2_underline', value: values.caption2_underline },
+						footnoteAbbrev2.createEditButton('footnoteEditStar2') ],
 					[ { custom: footnoteAbbrev2 }],
 
 					[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
@@ -318,13 +358,19 @@ function initializeInplaceIllustrationEditor(element_id, action)
 				]
 			};
 
-		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
+		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_illustration_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback: footnoteHandler.addFootnote });
 		dlg.changePage('layout', 'type');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
 		dlg.center();
+		if (values.caption1_bold === '1') buttonPushed(null, { button_id: 'illustration_dlg_a1', context: { dest: 'caption1', style: 'fontWeight', value: 'bold' }});
+		if (values.caption1_italic === '1') buttonPushed(null, { button_id: 'illustration_dlg_a2', context: { dest: 'caption1', style: 'fontStyle', value: 'italic' }});
+		if (values.caption1_underline === '1') buttonPushed(null, { button_id: 'illustration_dlg_a3', context: { dest: 'caption1', style: 'textDecoration', value: 'underline' }});
+		if (values.caption2_bold === '1') buttonPushed(null, { button_id: 'illustration_dlg_a5', context: { dest: 'caption2', style: 'fontWeight', value: 'bold' }});
+		if (values.caption2_italic === '1') buttonPushed(null, { button_id: 'illustration_dlg_a6', context: { dest: 'caption2', style: 'fontStyle', value: 'italic' }});
+		if (values.caption2_underline === '1') buttonPushed(null, { button_id: 'illustration_dlg_a7', context: { dest: 'caption2', style: 'textDecoration', value: 'underline' }});
 	};
 
 	inplaceObjectManager.initDiv(element_id, action, showIllustrationEditor);

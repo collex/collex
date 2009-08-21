@@ -618,6 +618,50 @@ a.footnote_tip:hover span.tip {
 	font-weight:bold;
 }
 
-/*.licensedisplay a:hover {
-	text-decoration:underline;
-}*/
+/*****************************************/
+
+.bold_button {
+	background-image:url("/images/caption_bold.jpg");
+	margin-left:4px;
+	padding-left:20px;
+}
+
+.bold_button:hover {
+	background-image:url("/images/caption_bold_hover.jpg");
+}
+
+.bold_button.pressed {
+	background-image:url("/images/caption_bold_click.jpg");
+}
+
+.italic_button {
+	background-image:url("/images/caption_italic.jpg");
+	margin-left:4px;
+	padding-left:20px;
+}
+
+.italic_button:hover {
+	background-image:url("/images/caption_italic_hover.jpg");
+}
+
+.italic_button.pressed {
+	background-image:url("/images/caption_italic_click.jpg");
+}
+
+.underline_button {
+	background-image:url("/images/caption_underline.jpg");
+	margin-left:4px;
+	padding-left:20px;
+}
+
+.underline_button:hover {
+	background-image:url("/images/caption_underline_hover.jpg");
+}
+
+.underline_button.pressed {
+	background-image:url("/images/caption_underline_click.jpg");
+}
+
+.edit_illustration_dlg {
+	width: 570px;
+}
