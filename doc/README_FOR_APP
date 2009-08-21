@@ -20,9 +20,16 @@ solr similar to this:
 
 	~/Documents/workspace/solr_1.3 $  java -jar start.jar
 
+If you download the solr_1.3 folder from svn in the same relative place as it appears in svn, you can run the following rake task to
+start solr:
+
+	rake collex:start_solr
+
 Note that you will need to index your documents first and put those indexes in the above folder.
 
-That process is explained here: TODO
+That process is explained here:
+
+	http://www.performantsoftware.com/nines_wiki/index.php/Indexing_Tools
 
 -----------------------------------------------------------------------
 ** deploying js and css
