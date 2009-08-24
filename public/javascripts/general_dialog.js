@@ -174,6 +174,16 @@ var GeneralDialog = Class.create({
 			buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: callback, param: { curr_page: page, destination: url, dlg: This } });
 		};
 
+		var addIconButton = function(parent_el, text, klass, callback, page, context) {
+			var button_id = this_id + '_a' + listenerArray.length;
+			var a = new Element('a', { id: button_id, title: text, onclick: 'return false;', href: '#' });
+			if (klass)
+				a.addClassName(klass);
+			parent_el.appendChild(a);
+			listenerArray.push({ id: button_id, event: 'click', callback: callback, param: { curr_page: page.page, button_id: button_id, context: context, dlg: This } });
+			return button_id;
+		};
+
 		var addInput = function(parent_el, text, klass, value) {
 			var el1 = new Element('input', { id: makeId(text), 'type': 'text', name: text });
 			if (klass)
@@ -181,8 +191,38 @@ var GeneralDialog = Class.create({
 			if (value !== undefined)
 				el1.writeAttribute({value: value });
 			parent_el.appendChild(el1);
+			return el1;
 		};
-		
+
+		var addHidden = function(parent_el, id, klass, value) {
+			var el0 = new Element('input', { id: makeId(id), name: id, 'type': 'hidden' });
+			if (klass)
+				el0.addClassName(klass);
+			if (value !== undefined && value !== null)
+				el0.writeAttribute({value: value });
+			parent_el.appendChild(el0);
+		};
+
+		var styleButtonPushed = function(ev, params) {
+			 var el = $(params.button_id);
+			 var context = params.context;
+			 var style = context.style;
+			 var styleHash = {};
+			 var hidden = $(context.dest + '_' + context.value);
+			 if (el.hasClassName('pressed')) {
+				 el.removeClassName('pressed');
+				 styleHash[style] = '';
+				 $(context.dest).setStyle(styleHash);
+				 hidden.value = 0;
+			 }
+			 else {
+				 el.addClassName('pressed');
+				 styleHash[style] = context.value;
+				 $(context.dest).setStyle(styleHash);
+				 hidden.value = 1;
+			 }
+		};
+
 		pages.each(function(page) {
 			var form = new Element('form', { id: page.page });
 			form.addClassName(page.page);	// IE doesn't seem to like the 'class' attribute in the Element, so we set the classes separately.
@@ -204,15 +244,34 @@ var GeneralDialog = Class.create({
 						row.appendChild(elText);
 						// INPUT
 					} else if (subel.input !== undefined) {
-						addInput(row, subel.input, subel.klass, subel.value) ;
-						// HIDDEN
+						addInput(row, subel.input, subel.klass, subel.value);
+						// INPUT WITH STYLE
+					} else if (subel.inputWithStyle !== undefined) {
+						var el1 = addInput(row, subel.inputWithStyle, subel.klass, subel.value.text);
+						addIconButton(row, 'Bold', 'bold_button' + (subel.value.isBold ? " pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'fontWeight', value: 'bold' });
+						addHidden(row, subel.inputWithStyle + '_bold', '', subel.value.isBold ? '1' : '0');
+						addIconButton(row, 'Italic', 'italic_button' + (subel.value.isItalic ? " pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'fontStyle', value: 'italic' });
+						addHidden(row, subel.inputWithStyle + '_italic', '', subel.value.isItalic ? '1' : '0');
+						addIconButton(row, 'Underline', 'underline_button' + (subel.value.isUnderline ? " pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'textDecoration', value: 'underline' });
+						addHidden(row, subel.inputWithStyle + '_underline', '', subel.value.isUnderline ? '1' : '0');
+						if (subel.value.isBold)
+							el1.setStyle({ fontWeight: 'bold' });
+						if (subel.value.isItalic)
+							el1.setStyle({ fontStyle: 'italic' });
+						if (subel.value.isUnderline)
+							el1.setStyle({ textDecoration: 'underline' });
+//{ input: 'caption1', value: values.caption1, klass: 'header_input' },
+//						{ icon_button: 'Bold', klass: 'bold_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontWeight', value: 'bold' } }, { hidden: 'caption1_bold', value: values.caption1_bold },
+//						{ icon_button: 'Italic', klass: 'italic_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontStyle', value: 'italic' } }, { hidden: 'caption1_italic', value: values.caption1_italic },
+//						{ icon_button: 'Underline', klass: 'underline_button', callback: buttonPushed, context: { dest: 'caption1', style: 'textDecoration', value: 'underline' } }, { hidden: 'caption1_underline', value: values.caption1_underline },						// HIDDEN
 					} else if (subel.hidden !== undefined) {
-						var el0 = new Element('input', { id: makeId(subel.hidden), name: subel.hidden, 'type': 'hidden' });
-						if (subel.klass)
-							el0.addClassName(subel.klass);
-						if (subel.value !== undefined && subel.value !== null)
-							el0.writeAttribute({value: subel.value });
-						row.appendChild(el0);
+						addHidden(row, subel.hidden, subel.klass, subel.value);
+//						var el0 = new Element('input', { id: makeId(subel.hidden), name: subel.hidden, 'type': 'hidden' });
+//						if (subel.klass)
+//							el0.addClassName(subel.klass);
+//						if (subel.value !== undefined && subel.value !== null)
+//							el0.writeAttribute({value: subel.value });
+//						row.appendChild(el0);
 						// PASSWORD
 					} else if (subel.password !== undefined) {
 						var el2 = new Element('input', { id: makeId(subel.password), 'type': 'password'});
@@ -235,12 +294,13 @@ var GeneralDialog = Class.create({
 //						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
 						// ICON BUTTON
 					} else if (subel.icon_button !== undefined) {
-						var button_id = this_id + '_a' + listenerArray.length;
-						var a = new Element('a', { id: button_id, title: subel.icon_button, onclick: 'return false;', href: '#' });
-						if (subel.klass)
-							a.addClassName(subel.klass);
-						row.appendChild(a);
-						listenerArray.push({ id: button_id, event: 'click', callback: subel.callback, param: { curr_page: page.page, button_id: button_id, context: subel.context, dlg: This } });
+						addIconButton(row, subel.icon_button, subel.klass, subel.callback, page, subel.context);
+//						var button_id = this_id + '_a' + listenerArray.length;
+//						var a = new Element('a', { id: button_id, title: subel.icon_button, onclick: 'return false;', href: '#' });
+//						if (subel.klass)
+//							a.addClassName(subel.klass);
+//						row.appendChild(a);
+//						listenerArray.push({ id: button_id, event: 'click', callback: subel.callback, param: { curr_page: page.page, button_id: button_id, context: subel.context, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
 						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
