@@ -48,6 +48,7 @@ var CreateListOfObjects = Class.create({
 		var selClass = "linkdlg_item_selected";
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
 		var id_prefix = null;
+		var noObjMsg = null;
 		
 		// Handles the user's selection
 		this.getSelection = function(){
@@ -150,6 +151,11 @@ var CreateListOfObjects = Class.create({
 			objs.each(function(obj){
 				linkItem(id_prefix + '_' + obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
 			});
+
+			noObjMsg = new Element('div', { id: 'noObjMsg' }).update('There are no objects matching your criteria.');
+			noObjMsg.addClassName('empty_list_text');
+			parent.appendChild(noObjMsg);
+			noObjMsg.hide();
 			
 			if (initial_selection) {
 				var sel = $(id_prefix + "_" + initial_selection);
@@ -179,6 +185,7 @@ var CreateListOfObjects = Class.create({
 		var clearAllRows = function() {
 			var rows = $(parent).select('.linkdlg_item');
 			rows.each(function(row) { row.remove(); });
+			noObjMsg.remove();
 		};
 		
 		// privileged functions
@@ -251,16 +258,22 @@ var CreateListOfObjects = Class.create({
 		var filterString = "";
 		var doFilter = function() {
 			var rows = $(parent).select('.linkdlg_item');
+			var matchedOne = false;
 			rows.each(function(row) {
 				var inner = row.innerHTML;
 				inner = inner.stripTags();
 				if( filterString.blank() || (inner.toLowerCase().indexOf( filterString ) >= 0) ) {
 					row.show();
+					matchedOne = true;
 				}
 				else {
 					row.hide();
 				}
 			});
+			if (!matchedOne && rows.length > 0)	// If we've filtered out all the objects, tell the user that.
+				noObjMsg.show();
+			else
+				noObjMsg.hide();
 		};
 
 		this.filter = function(str) {
