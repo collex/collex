@@ -423,6 +423,12 @@ a.footnote_tip:hover span.tip {
 
 }
 
+.link_dlg_label_and {
+	font-style: italic;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
 .link_dlg_input_long {
 	width: 480px;
 }

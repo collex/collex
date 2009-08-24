@@ -223,6 +223,19 @@ var GeneralDialog = Class.create({
 			 }
 		};
 
+		var filterEvent = function(ev, params) {
+			var filterString = this.value.toLowerCase();
+			if (ev.type === 'blur' && filterString === '') {
+				$(this).addClassName('inputHintStyle');
+				this.value = params.prompt;
+			} else if (ev.type === 'focus'  && filterString === params.prompt) {
+				this.value = '';
+				$(this).removeClassName('inputHintStyle');
+			} else if (ev.type === 'keyup') {
+				params.callback(this.value);
+			}
+		};
+
 		pages.each(function(page) {
 			var form = new Element('form', { id: page.page });
 			form.addClassName(page.page);	// IE doesn't seem to like the 'class' attribute in the Element, so we set the classes separately.
@@ -245,6 +258,16 @@ var GeneralDialog = Class.create({
 						// INPUT
 					} else if (subel.input !== undefined) {
 						addInput(row, subel.input, subel.klass, subel.value);
+						// INPUT FILTER
+					} else if (subel.inputFilter !== undefined) {
+						var klass3 = 'inputHintStyle';
+						if (subel.klass !== undefined)
+							klass3 += " " + subel.klass;
+						var el3 = addInput(row, subel.inputFilter, klass3, subel.value);
+						el3.value = subel.prompt;
+						listenerArray.push({ id: subel.inputFilter, event: 'keyup', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
+						listenerArray.push({ id: subel.inputFilter, event: 'blur', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
+						listenerArray.push({ id: subel.inputFilter, event: 'focus', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
 						// INPUT WITH STYLE
 					} else if (subel.inputWithStyle !== undefined) {
 						var el1 = addInput(row, subel.inputWithStyle, subel.klass, subel.value.text);

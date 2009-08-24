@@ -248,6 +248,26 @@ var CreateListOfObjects = Class.create({
 			return parent;
 		};
 
+		var filterString = "";
+		var doFilter = function() {
+			var rows = $(parent).select('.linkdlg_item');
+			rows.each(function(row) {
+				var inner = row.innerHTML;
+				inner = inner.stripTags();
+				if( filterString.blank() || (inner.toLowerCase().indexOf( filterString ) >= 0) ) {
+					row.show();
+				}
+				else {
+					row.hide();
+				}
+			});
+		};
+
+		this.filter = function(str) {
+			filterString = str.toLowerCase();
+			doFilter();
+		};
+
 		this.sortby = function(id, field) {
 			var objs = ninesObjCache.get(populate_url);
 			if (field !== 'date_collected') {	// The objects are already sorted by Date Collected
@@ -265,7 +285,7 @@ var CreateListOfObjects = Class.create({
 			}
 			clearAllRows();
 			createRows(objs, true, id_prefix);
-
+			doFilter();
 		};
 	}
 });
@@ -420,8 +440,9 @@ var LinkDlgHandler = Class.create({
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', change: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] },
-							{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Sort by Date Collected', value:  'date_collected' }, { text:  'Sort by Title', value:  'title' }, { text:  'Sort by Author', value:  'author' }] }, ],
+						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', change: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
+						[ { text: 'Sort objects by:', klass: 'link_dlg_label' }, { select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+							{ text: 'and', klass: 'link_dlg_label_and' }, { inputFilter: 'filterObjects', prompt: 'type to filter objects', callback: objlist.filter } ],
 						[ { page_link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
 						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
 						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
