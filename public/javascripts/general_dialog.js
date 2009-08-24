@@ -19,7 +19,7 @@
 /*global document, setTimeout, window */
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
-/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax */
+/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {
@@ -664,6 +664,20 @@ var ConfirmAjaxDlg = Class.create({
 		new ConfirmDlg(title, message, "Yes", "No", ok);
 	}
 });
+
+var postLink = function(link) {
+	var f = document.createElement('form');
+	f.style.display = 'none';
+	document.body.appendChild(f);
+	f.method = 'POST';
+	f.action = link;
+	var m = document.createElement('input');
+	m.setAttribute('type', 'hidden');
+	m.setAttribute('name', '_method');
+	m.setAttribute('value', 'post');
+	f.appendChild(m);
+	f.submit();
+};
 
 var ConfirmLinkDlg =  Class.create({
 	initialize: function (el, title, message) {

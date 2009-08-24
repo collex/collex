@@ -1,0 +1,22 @@
+.profile_div {
+	padding-bottom: 5px;
+}
+
+.profile_label {
+	width: 100px;
+	float:left;
+}
+
+.profile_image {
+	float: left;
+	padding-right: 10px;
+	padding-bottom: 5px;
+}
+
+.profile_image img {
+	max-height:180px;
+}
+
+.profile_edit {
+	text-align: right;
+}

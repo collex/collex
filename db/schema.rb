@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090818214000) do
+ActiveRecord::Schema.define(:version => 20090821153330) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -121,6 +121,12 @@ ActiveRecord::Schema.define(:version => 20090818214000) do
     t.integer  "height",               :limit => 10, :precision => 10, :scale => 0
     t.integer  "caption1_footnote_id", :limit => 10, :precision => 10, :scale => 0
     t.integer  "caption2_footnote_id", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption1_bold",        :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption1_italic",      :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption1_underline",   :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption2_bold",        :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption2_italic",      :limit => 10, :precision => 10, :scale => 0
+    t.integer  "caption2_underline",   :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "exhibit_objects", :force => true do |t|

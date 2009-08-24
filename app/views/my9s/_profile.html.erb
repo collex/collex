@@ -15,7 +15,42 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% # profile: params: ActiveRecord user, bool can_edit -%>
-<table>
+<div class="profile_image">
+	<%= image_tag(get_user_picture(user.id, :full), :class => 'profile_image') %>
+<% if can_edit && user.image -%>
+	<br /><div class="profile_remove_picture"><%= link_to "Remove Picture", { :controller => 'my9s', :action => 'remove_profile_picture' }, { :id => 'remove_picture', :method => 'post' } %></div>
+	<script type="text/javascript">
+		var createRemovePictureButton = function() {
+			var onButtonClick = function (e) {
+				postLink($("remove_picture-button").href);
+			};
+
+
+			new YAHOO.widget.Button('remove_picture', { onclick: { fn: onButtonClick } });
+			YAHOO.util.Event.onAvailable('remove_picture-button', function() {
+				$('remove_picture-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+			}, this);
+		};
+		document.observe('dom:loaded', function() {
+			createRemovePictureButton();
+		});
+		try {
+			createRemovePictureButton();
+		} catch(e) {};
+	</script>
+<% end -%>
+</div>
+<% if can_edit -%>
+	<div class="profile_edit"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my9s/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></div>
+<% end -%>
+<div class="profile_div"><span class="profile_label">Username:</span><span><%=h user.username %></span></div>
+<div class="profile_div"><span class="profile_label">Full name:</span><span><%=h user.fullname %></span></div>
+<div class="profile_div"><span class="profile_label">Email:</span><span><%=h user.email %></span></div>
+<div class="profile_div"><span class="profile_label">Institution:</span><span><%=h user.institution %></span></div>
+<div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil ? make_ext_link(user.link) : "" %></span></div>
+<div class="profile_div"><span class="profile_label">About me:</span><span class="profile_paragraph"><%=h user.about_me %></span></div>
+
+<!-- <table>
 	<tr valign="top">
 		<td>
 			<%= image_tag(get_user_picture(user.id, :full), :style => 'max-height:180px') %>
@@ -36,3 +71,4 @@
 		</td>
 	</tr>
 </table>
+-->

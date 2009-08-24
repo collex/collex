@@ -104,9 +104,9 @@ class GetIncludeFileList
 			when :tag
 				local = [ "lvl2", "tag", "result_row" ]
 			when :my9s
-				local = [ "lvl2", "right_column", "tag", "search", "my9s", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline" ]
+				local = [ "lvl2", "right_column", "tag", "search", "my9s", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", "user_profile" ]
 			when :discuss
-				local = [ "lvl2", "search", "result_row", "forum" ]
+				local = [ "lvl2", "search", "result_row", "forum", "user_profile" ]
 			when :home
 				local = [ "index", "featured_exhibit" ]
 			when :exhibits

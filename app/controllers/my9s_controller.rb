@@ -207,6 +207,17 @@ class My9sController < ApplicationController
     render :partial => 'profile', :locals => { :user => user, :can_edit => true }
   end
 
+	def remove_profile_picture
+    user = get_user(session)
+    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
+      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?", :status => :bad_request
+      return
+    end
+		user.image = nil
+		user.save
+    redirect_to :back
+	end
+
   # The file upload is done in a separate call because of ajax limitations.
   def update_profile_upload
     user = get_user(session)
