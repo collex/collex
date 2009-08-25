@@ -94,6 +94,7 @@ if File.exists?(config_file)
 	ActionMailer::Base.smtp_settings[:authentication] = site_specific['smtp_settings']['authentication']
 
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
+	JAVA_PATH = site_specific['java_path']
 else
 	puts "***"
 	puts "*** Failed to load site configuration. Did you create config/site.yml?"
@@ -114,7 +115,10 @@ puts "$$ Starting Rails with Solr URL: #{SOLR_URL}"
 #puts ActionMailer::Base.smtp_settings[:user_name]
 #puts ActionMailer::Base.smtp_settings[:password]
 #puts ActionMailer::Base.smtp_settings[:authentication]
-puts "Using Google Analytics: #{GOOGLE_ANALYTICS}"
+puts "$$ Using Google Analytics: #{GOOGLE_ANALYTICS}"
+if JAVA_PATH.length > 0
+	puts "$$ Java path explicitly set to: #{JAVA_PATH}"
+end
 
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER

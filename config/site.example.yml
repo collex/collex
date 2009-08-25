@@ -28,3 +28,6 @@ smtp_settings:
 # Should google analytics be used for this site?
 google_analytics: false
 
+# java path is normally blank, which allows the OS to search for java in it's normal path, but if there is a different version of java needed, then it can be set.
+#java_path: '/usr/local/jdk/bin/'
+java_path: ''

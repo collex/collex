@@ -19,10 +19,15 @@ require 'ftools'
 namespace :collex do
 
 	desc "Start the solr java app (Prerequisite for running NINES)"
-	task :start_solr do
-		`cd ../solr_1.3 && java -jar start.jar &`
+	task :start_solr  => :environment do
+		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar &`
 	end
 	
+	desc "Stop the solr java app"
+	task :stop_solr  => :environment do
+		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop`
+	end
+
   desc "Update the installed NINES Wordpress theme"
   task :update_nines_theme do
 		begin
@@ -120,7 +125,7 @@ namespace :collex do
 				fname = f.slice(0, f.length - ext.length)
 				if fname.index('-min') != fname.length - 4
 					puts "Compressing #{f}..."
-					system("java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{RAILS_ROOT}/tmp/#{fname}-min#{ext} #{RAILS_ROOT}/public/#{folder}/#{f}")
+					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{RAILS_ROOT}/tmp/#{fname}-min#{ext} #{RAILS_ROOT}/public/#{folder}/#{f}")
 				end
 			end
 		}
@@ -164,7 +169,7 @@ namespace :collex do
 			if f.index(ext) == f.length - ext.length && f.index(skip_ext) != f.length - skip_ext.length
 				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js'
 					puts "Linting #{f}..."
-					system("java -jar #{RAILS_ROOT}/lib/tasks/rhino1_7R2_js.jar #{RAILS_ROOT}/lib/tasks/fulljslint.js #{RAILS_ROOT}/public/javascripts/#{f}")
+					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/rhino1_7R2_js.jar #{RAILS_ROOT}/lib/tasks/fulljslint.js #{RAILS_ROOT}/public/javascripts/#{f}")
 				end
 			end
 		}
