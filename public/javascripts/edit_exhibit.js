@@ -570,6 +570,9 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 			page: 'choose_thumbnail',
 			rows: [
 				[ { text: 'Choose Thumbnail from the list.', klass: 'new_exhibit_title' } ],
+				[ { text: 'Sort objects by:', klass: 'forum_reply_label' },
+					{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+					{ text: 'and', klass: 'link_dlg_label_and' }, { inputFilter: 'filterObjects', klass: '', prompt: 'type to filter objects', callback: objlist.filter } ],
 				[ { custom: objlist, klass: 'new_exhibit_label' } ],
 				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: this.changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]

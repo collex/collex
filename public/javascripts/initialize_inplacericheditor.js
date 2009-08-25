@@ -323,11 +323,14 @@ function initializeInplaceIllustrationEditor(element_id, action)
 						footnoteAbbrev2.createEditButton('footnoteEditStar2') ],
 					[ { custom: footnoteAbbrev2 }],
 
-					[ { text: 'Image URL:', klass: 'new_exhibit_label image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
+					[ { text: 'Sort objects by:', klass: 'forum_reply_label nines_only hidden' },
+						{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+						{ text: 'and', klass: 'link_dlg_label_and nines_only hidden' }, { inputFilter: 'filterObjects', klass: 'nines_only hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
+					[ { text: 'Image URL:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
 					  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
-					[ { text: 'Link URL:', klass: 'new_exhibit_label not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
+					[ { text: 'Link URL:', klass: 'edit_illustration_label_lined_up not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
-					[ { text: 'Alt Text:', klass: 'new_exhibit_label image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
+					[ { text: 'Alt Text:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
 					[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};

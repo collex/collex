@@ -149,6 +149,9 @@ var CreateNewExhibitWizard = Class.create({
 					page: 'choose_thumbnail',
 					rows: [
 						[ { text: 'Creating New Exhibit', klass: 'new_exhibit_title' } ],
+						[ { text: 'Sort objects by:', klass: 'forum_reply_label' },
+							{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+							{ text: 'and', klass: 'link_dlg_label_and' }, { inputFilter: 'filterObjects', klass: '', prompt: 'type to filter objects', callback: objlist.filter } ],
 						[ { custom: objlist, klass: 'new_exhibit_label' } ],
 						[ { rowClass: 'last_row' }, { button: 'Ok', url: 'choose_other_options', callback: this.changeView, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
