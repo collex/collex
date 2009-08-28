@@ -123,7 +123,7 @@ end
 COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
 CACHE_DIR = "#{RAILS_ROOT}/cache"
-RELATORS = COLLEX_MANAGER.relators
+#RELATORS = COLLEX_MANAGER.relators
 DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
 EXHIBIT_BUILDER_TODO_PATH = "/images/clicktoadd.jpg"
 PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
@@ -135,9 +135,9 @@ PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 $KCODE = 'UTF8'
 
 # "nines"
-COLLEX_ENGINE_PARAMS = {
-  :field_list => ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","image","thumbnail","text_url","title","alternative","uri","url", "exhibit_type", "license"],
-  :facet_fields => ['genre','archive','freeculture']
-}
+#COLLEX_ENGINE_PARAMS = {
+#  :field_list => ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","image","thumbnail","text_url","title","alternative","uri","url", "exhibit_type", "license", 'text'],
+#  :facet_fields => ['genre','archive','freeculture']
+#}
 
 #DEPLOYMENT_SERVERS = [ "nines.org", "www.nines.org" ]

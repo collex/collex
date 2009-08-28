@@ -14,24 +14,25 @@
 # limitations under the License.
 ##########################################################################
 
+#TODO-PER: I think this isn't used anymore
 module SolrMixin
-  def self.included(receiver)
-    receiver.extend         ClassMethods
-    receiver.send :include, InstanceMethods
-  end
-
-  module ClassMethods
-
-    def solr # called from SolrResource.find_by_uri
-      CollexEngine.new
-    end      
-
-  end
-
-  module InstanceMethods
-    def solr
-      self.class.solr
-    end
-  end
+#  def self.included(receiver)
+#    receiver.extend         ClassMethods
+#    receiver.send :include, InstanceMethods
+#  end
+#
+#  module ClassMethods
+#
+#    def solr # called from SolrResource.find_by_uri
+#      CollexEngine.new
+#    end
+#
+#  end
+#
+#  module InstanceMethods
+#    def solr
+#      self.class.solr
+#    end
+#  end
 
 end

@@ -241,20 +241,20 @@ private
     in_place_editor(tag_options[:id], in_place_editor_options)
   end
   
-  def facet_label(field)
-    label = case field
-      when "archive"        then "sites"
-      when "roles", "agent","agent_facet" then "names"
-      when "username"       then "peers"
-      when "year"           then "dates"
-      when "tag", "", nil          then "keywords"
-    else field.pluralize
-    end
-
-    label = RELATORS[field].downcase if field =~ /role_[A-Z]{3}/
-  
-    label
-  end
+#  def facet_label(field)
+#    label = case field
+#      when "archive"        then "sites"
+#      when "roles", "agent","agent_facet" then "names"
+#      when "username"       then "peers"
+#      when "year"           then "dates"
+#      when "tag", "", nil          then "keywords"
+#    else field.pluralize
+#    end
+#
+#    label = RELATORS[field].downcase if field =~ /role_[A-Z]{3}/
+#
+#    label
+#  end
   
   def thumbnail_image_tag(hit, options = {})
     thumb = CachedResource.get_thumbnail_from_hit(hit)

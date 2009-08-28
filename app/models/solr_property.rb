@@ -14,19 +14,20 @@
 # limitations under the License.
 ##########################################################################
 
-class SolrProperty < SolrBaseModel
-  belongs_to :solr_resource
-  
-  column :name,  :string
-  column :value, :string
-  
-  def agent_type()
-    self.name =~ /^role_/ ? self.name[-3,3] : nil      
-  end
-    
-  def ==(other)
-    return false if other.nil?
-    self.name == other.name and self.value == other.value
-  end
+#TODO-PER: I think this isn't used anymore
+class SolrProperty #< SolrBaseModel
+#  belongs_to :solr_resource
+#
+#  column :name,  :string
+#  column :value, :string
+#
+#  def agent_type()
+#    self.name =~ /^role_/ ? self.name[-3,3] : nil
+#  end
+#
+#  def ==(other)
+#    return false if other.nil?
+#    self.name == other.name and self.value == other.value
+#  end
   
 end

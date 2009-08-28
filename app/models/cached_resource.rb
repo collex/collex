@@ -23,12 +23,19 @@ class CachedResource < ActiveRecord::Base
   has_many :cached_properties, :dependent => :destroy
   has_one :collected_items
   alias properties cached_properties
-  
+
+	def set_hit(hit)	# This saves a solr call if the object is already in our hands.
+		@resource = hit
+	end
+
   # The actual +SolrResource+ at this instances +uri+. 
   def resource
-    @resource ||= SolrResource.find_by_uri(self.uri)
+    #@resource ||= SolrResource.find_by_uri(self.uri)
+#		return @resource if @resource != nil
+#		@resource = CollexEngine.new.get_object(self.uri)
+		return @resource
   end
-  alias_method :solr_resource, :resource
+  #alias_method :solr_resource, :resource
   
   private
   def self.tag_cloud(user)
@@ -297,9 +304,20 @@ class CachedResource < ActiveRecord::Base
     #TODO filter out tags and annotations and usernames 
     def copy_solr_resource
       return if resource.nil?
-      resource.properties.each do |prop|
-        properties << CachedProperty.new(:name => prop.name, :value => prop.value)
+      resource.each do |name, val|
+				if name != 'uri'
+					if val.kind_of?(Array)
+						val.each { |v|
+							properties << CachedProperty.new(:name => name, :value => v)
+						}
+					else
+						properties << CachedProperty.new(:name => name, :value => val)
+					end
+				end
       end
+#      resource.properties.each do |prop|
+#        properties << CachedProperty.new(:name => prop.name, :value => prop.value)
+#      end
     end
 
 		def self.add_sort_field(item, sort_field)
@@ -346,7 +364,6 @@ class CachedResource < ActiveRecord::Base
   def self.get_hit_from_resource_id(resource_id)
     hit = {}
     uri = CachedResource.find(resource_id)
-    hit['uri'] = uri.uri
     properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
     properties.each do |property|
       if !hit[property.name]
@@ -360,6 +377,7 @@ class CachedResource < ActiveRecord::Base
         hit[property.name].insert(-1, property.value)
       end
     end
+    hit['uri'] = uri.uri
     return hit
   end
 

@@ -29,7 +29,7 @@ class ResultsController < ApplicationController
     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
     locals = setup_ajax_calls(params, false)
     if locals[:is_error] == nil
-      CollectedItem.collect_item(locals[:user], locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+      CollectedItem.collect_item(locals[:user], locals[:uri], locals[:hit]) unless locals[:user] == nil || locals[:uri] == nil
     end
     
     partial = params[:partial]
@@ -250,13 +250,12 @@ class ResultsController < ApplicationController
   end
   
   def get_from_solr(uri)
-    @solr = CollexEngine.new(COLLEX_ENGINE_PARAMS) if @solr == nil
+    @solr = CollexEngine.new() if @solr == nil
     begin
-			objs = @solr.objects_for_uris([ uri ])
+			return @solr.get_object( uri )
 		rescue  Net::HTTPServerException => e
 			return nil
 		end
-    return objs[0] if objs && objs.length > 0
     return nil
   end
 

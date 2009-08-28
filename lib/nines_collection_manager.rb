@@ -15,6 +15,7 @@
 ##########################################################################
 
 require 'digest/sha1'
+include ERB::Util
 
 class UsernameAlreadyExistsException < StandardError
 end
@@ -22,7 +23,7 @@ end
 #TODO-PER: This class appears to mix functions that either call solr or call functions in the User model. The User functions are all useful and should probably be in the User model directly. The solr functions don't appear to be used.
 class NinesCollectionManager
   def initialize
-    @solr = CollexEngine.new
+    #@solr = CollexEngine.new
   end
   
   def logger=(logger)
@@ -110,20 +111,20 @@ class NinesCollectionManager
 #    @solr.search(constraints, start, max, nil)
 #  end
   
-  def object_detail(objid, user)
-    @solr.object_detail(objid, user)
-  end
+#  def object_detail(objid, user)
+#    @solr.object_detail(objid, user)
+#  end
       
-  def relators #called on start up to fill the constant RELATORS, although RELATORS may be able to get factored out, too.
-    hash = Hash.new {|hash,key| hash[key] = key}
-    hash["ART"] = "Artist"
-    hash["AUT"] = "Author"
-    hash["EDT"] = "Editor"
-    hash["PBL"] = "Publisher"
-    hash["TRL"] = "Translator"
-    hash["CTY"] = "City"
-    hash
-  end
+#  def relators #called on start up to fill the constant RELATORS, although RELATORS may be able to get factored out, too.
+#    hash = Hash.new {|hash,key| hash[key] = key}
+#    hash["ART"] = "Artist"
+#    hash["AUT"] = "Author"
+#    hash["EDT"] = "Editor"
+#    hash["PBL"] = "Publisher"
+#    hash["TRL"] = "Translator"
+#    hash["CTY"] = "City"
+#    hash
+#  end
 
   private
   def generate_password

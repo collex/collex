@@ -66,7 +66,7 @@ class CollectedItem < ActiveRecord::Base
     return str.gsub("'", "`") #TODO-PER: get the real syntax for this. We want to replace "single quote" with "backslash single quote"
   end
   
-  def self.collect_item(user, uri)
+  def self.collect_item(user, uri, hit)
     # This collects an item for a particular user. Different users can collect the same item, but a single
     # user can only collect an item once. If the items was collected successfully, then this returns the
     # item. If there is an error, then it throws an exception.
@@ -85,6 +85,7 @@ class CollectedItem < ActiveRecord::Base
     # Create cached_resource item if it hasn't been created
     if (cached_resource == nil)
       cached_resource = CachedResource.new(:uri => uri)
+			cached_resource.set_hit(hit)
     end
     
     # Store the item
