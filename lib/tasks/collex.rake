@@ -18,16 +18,6 @@ require 'ftools'
 
 namespace :collex do
 
-	desc "Start the solr java app (Prerequisite for running NINES)"
-	task :start_solr  => :environment do
-		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar &`
-	end
-	
-	desc "Stop the solr java app"
-	task :stop_solr  => :environment do
-		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop`
-	end
-
   desc "Update the installed NINES Wordpress theme"
   task :update_nines_theme do
 		begin
