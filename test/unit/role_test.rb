@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class RoleTest < Test::Unit::TestCase
+class RoleTest < ActionController::TestCase
   fixtures :users, :roles, :roles_users
 
   def setup

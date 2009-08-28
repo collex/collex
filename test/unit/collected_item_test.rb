@@ -38,7 +38,7 @@ class CollectedItemTest < ActiveSupport::TestCase
   
   def collect_a_text(user_id, uri, wants_nil)
     begin
-      new_item = CollectedItem.collect_item(get_user(user_id), uri)
+      new_item = CollectedItem.collect_item(get_user(user_id), uri, nil)
     rescue Exception => msg
       return if wants_nil
       assert false, msg
@@ -400,8 +400,8 @@ class CollectedItemTest < ActiveSupport::TestCase
     user1 = get_user(1)
     user2 = get_user(2)
     uri = "http://some/fake/uri"
-    CollectedItem.collect_item(user1, uri)
-    CollectedItem.collect_item(user2, uri)
+    CollectedItem.collect_item(user1, uri, nil)
+    CollectedItem.collect_item(user2, uri, nil)
 
     # now there should be two items in the collection
     get_current()
@@ -419,8 +419,8 @@ class CollectedItemTest < ActiveSupport::TestCase
     user2 = get_user(2)
     uri = "http://some/fake/uri"
     tag_str = "interesting"
-    CollectedItem.collect_item(user1, uri)
-    CollectedItem.collect_item(user2, uri)
+    CollectedItem.collect_item(user1, uri, nil)
+    CollectedItem.collect_item(user2, uri, nil)
     CollectedItem.add_tag(user1, uri, tag_str)
     CollectedItem.add_tag(user2, uri, tag_str)
 

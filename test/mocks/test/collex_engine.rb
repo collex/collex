@@ -14,9 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../lib/collex_engine')
+#require File.expand_path(File.dirname(__FILE__) + '/../../../lib/collex_engine')
 class CollexEngine
-  BAD_OBJID = "bad"
   def update_collectables(username, uri, tags, annotation)
   end
 
@@ -31,10 +30,15 @@ class CollexEngine
   end
   
   def object_detail(objid, username)
-    objid == BAD_OBJID ? [nil, nil, nil] : [{"uri" => objid, "username" => username}, [], nil]
+		bad_objid = "bad"
+    objid == bad_objid ? [nil, nil, nil] : [{"uri" => objid, "username" => username}, [], nil]
     
   end
-  
+
+	def num_docs
+		return 100
+	end
+
   def facet(facet, constraints, prefix=nil)
     nil
   end

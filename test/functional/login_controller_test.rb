@@ -21,7 +21,7 @@ require 'login_controller'
 # Re-raise errors caught by the controller.
 class LoginController; def rescue_action(e) raise e end; end
 
-class LoginControllerTest < Test::Unit::TestCase
+class LoginControllerTest < ActionController::TestCase
   fixtures :users
 
   include TestCollexHelper

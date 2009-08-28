@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CachedResourceTest < Test::Unit::TestCase
+class CachedResourceTest < ActionController::TestCase
   fixtures :users, :tags, :tagassigns, :cached_resources, :cached_properties, :collected_items
 
   def setup

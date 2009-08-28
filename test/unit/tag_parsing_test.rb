@@ -42,10 +42,6 @@ class TagParsingTest < Test::Unit::TestCase
     assert_equal ['dashes-already-here'], Tag.parse('dashes-already-here')
   end
   
-  def test_commas
-    assert_equal ['one', 'two'], Tag.parse('one,two')
-  end
-  
   def test_duplicates
     assert_equal ["woolen-mills"], Tag.parse(%q{woolen-mills "woolen mills"})
   end
