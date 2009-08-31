@@ -1,6 +1,6 @@
 ##########################################################################
-# Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-# 
+# Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,32 +14,11 @@
 # limitations under the License.
 ##########################################################################
 
-#require File.expand_path(File.dirname(__FILE__) + '/../../../lib/collex_engine')
-class CollexEngine
-  def update_collectables(username, uri, tags, annotation)
-  end
+require File.dirname(__FILE__) + '/../test_helper'
 
-  def remove_collectables(username, uri)
-  end
-  
-  def commit
-  end
-  
-  def objects_for_uris(uris, username=nil)
-    uris.collect { |uri| {"uri" => uri, "username" => username} }
-  end
-  
-  def object_detail(objid, username)
-		bad_objid = "bad"
-    objid == bad_objid ? [nil, nil, nil] : [{"uri" => objid, "username" => username}, [], nil]
-    
-  end
-
-	def num_docs
-		return 100
-	end
-
-  def facet(facet, constraints, prefix=nil)
-    nil
+class SavedSearchConstraintTest < ActiveSupport::TestCase
+  # Replace this with your real tests.
+  def test_truth
+    assert true
   end
 end

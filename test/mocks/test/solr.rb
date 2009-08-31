@@ -1,6 +1,6 @@
 ##########################################################################
-# Copyright 2009 Applied Research in Patacriticism and the University of Virginia
-#
+# Copyright 2007 Applied Research in Patacriticism and the University of Virginia
+# 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,11 +14,30 @@
 # limitations under the License.
 ##########################################################################
 
-require 'test_helper'
+#require File.expand_path(File.dirname(__FILE__) + '/../../../lib/collex_engine')
+module Solr
+	module Request
+		class Standard
+			def initialize(params)
 
-class ExhibitFootnoteTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
-  end
+			end
+		end
+
+	end
+
+	class Connection
+		def initialize(solr_url)
+
+		end
+	end
+
+	class Utils
+		def query_parser_escape(uri)
+
+		end
+
+		def paired_array_each
+			
+		end
+	end
 end
