@@ -398,8 +398,9 @@ var GeneralDialog = Class.create({
 						}
 						var month = new Element('select', { id: makeId(subel.date.gsub('*', '2i')), name: subel.date.gsub('*', '(2i)') });
 						var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+						var monthNums = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
 						for (var m = 0; m < months.length; m++) {
-							if (start_date[1] === (m<10?'0':'') + (m+1))
+							if (start_date[1] === monthNums[m])
 								month.appendChild(new Element('option', { value: m+1, selected: 'selected' }).update(months[m]));
 							else
 								month.appendChild(new Element('option', { value: m+1 }).update(months[m]));
