@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
 
     def is_admin?
       user = session[:user]
-      if user and user[:role_names].include? 'admin'
+      if user and user[:role_names] and user[:role_names].include? 'admin'
         return true
       end
       return false

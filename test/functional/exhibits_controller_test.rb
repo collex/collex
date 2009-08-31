@@ -17,38 +17,21 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ExhibitsControllerTest < ActionController::TestCase
-  def test_should_get_index
-    get :index
+  fixtures :exhibits
+  def test_should_get_list
+    get :list
     assert_response :success
-    assert_not_nil assigns(:exhibits)
+    #assert_not_nil assigns(:exhibits)
   end
 
-  def test_should_get_new
-    get :new
-    assert_response :success
-  end
-
-  def test_should_create_exhibit
-    assert_difference('Exhibit.count') do
-      post :create, :exhibit => { }
-    end
-
-    assert_redirected_to exhibit_path(assigns(:exhibit))
-  end
-
-  def test_should_show_exhibit
-    get :show, :id => exhibits(:one).id
+  def test_should_get_print_exhibit
+    get :print_exhibit
     assert_response :success
   end
 
-  def test_should_get_edit
-    get :edit, :id => exhibits(:one).id
+  def test_should_get_view
+    get :view
     assert_response :success
-  end
-
-  def test_should_update_exhibit
-    put :update, :id => exhibits(:one).id, :exhibit => { }
-    assert_redirected_to exhibit_path(assigns(:exhibit))
   end
 
   def test_should_destroy_exhibit

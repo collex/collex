@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ExhibitSectionTypeTest < Test::Unit::TestCase
+class ExhibitSectionTypeTest < ActiveSupport::TestCase
 #   fixtures :exhibit_section_types
 
   # Replace this with your real tests.

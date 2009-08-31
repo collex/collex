@@ -31,8 +31,8 @@ class CachedResource < ActiveRecord::Base
   # The actual +SolrResource+ at this instances +uri+. 
   def resource
     #@resource ||= SolrResource.find_by_uri(self.uri)
-#		return @resource if @resource != nil
-#		@resource = CollexEngine.new.get_object(self.uri)
+		return @resource if @resource != nil
+		@resource = CollexEngine.new.get_object(self.uri)
 		return @resource
   end
   #alias_method :solr_resource, :resource

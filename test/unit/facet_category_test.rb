@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FacetCategoriesTest < ActionController::TestCase
+class FacetCategoriesTest < ActiveSupport::TestCase
   fixtures :facet_categories
   
   def setup

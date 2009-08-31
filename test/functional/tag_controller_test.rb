@@ -99,17 +99,25 @@ class TagControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  def test_result_count
-    post :result_count, { :search => { :result_count => "15" } }
+  def test_sort_by
+    post :sort_by #, { :search => { :result_count => "15" } }
     assert_response :redirect 
     assert_redirected_to :action => "results" 
-    assert_equal 15, session[:items_per_page]
+    #assert_equal 15, session[:items_per_page]
   end
 
-  def test_update_sidebar
-    post :update_sidebar, { }, { :tag_view => "untagged" }
+  def test_update_tag_cloud
+    post :update_tag_cloud
     assert_response :success
-    post :update_sidebar, { }, { :tag_view => "tag", :tag_current => "bad tag" }
+  end
+
+  def test_rss
+    post :rss
+    assert_response :success
+  end
+
+  def test_object
+    post :object
     assert_response :success
   end
 end

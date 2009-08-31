@@ -19,45 +19,25 @@
 dang: 
   title: Dang Exhibit Title
   id: 1
-  license_id: 1
   user_id: 21
-  exhibit_type_id: 2
-  annotation: My new exhibit annotation
-  shared: false
-  published: false
+  is_published: 0
 martian: 
   title: Martian Chronicles
   id: 2
-  license_id: 4
   user_id: 21
-  exhibit_type_id: 2
-  annotation: The Exhibit notes for Martian Chronicles. What a cool exhibit this will be.
-  shared: false
-  published: false
+  is_published: 1
 foo: 
   title: Foo Exhibit
   id: 3
-  license_id: 1
   user_id: 21
-  exhibit_type_id: 2
-  annotation: Some sort of note
-  shared: false
-  published: false
+  is_published: 2
 bibliography: 
   title: Annotated Bibliography
   id: 21
-  license_id: 1
   user_id: 21
-  exhibit_type_id: 2
-  annotation: Annotated Bibliography Exhibit
-  shared: false
-  published: false
+  is_published: 3
 illustrated_essay: 
   title: Illustrated Essay
   id: 31
-  license_id: 1
   user_id: 21
-  exhibit_type_id: 3
-  annotation: Illustrated Essay Exhibit
-  shared: false
-  published: false
+  is_published: 4

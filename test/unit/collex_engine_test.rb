@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CollexEngineTest < Test::Unit::TestCase
+class CollexEngineTest < ActiveSupport::TestCase
 
 def test_name_query_string
   @solr = CollexEngine.new()

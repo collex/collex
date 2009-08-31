@@ -17,28 +17,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ExhibitElementsControllerTest < ActionController::TestCase
+  fixtures :exhibit_elements
   def test_should_get_index
     get :index
     assert_response :success
     assert_not_nil assigns(:exhibit_elements)
-  end
-
-  def test_should_get_new
-    get :new
-    assert_response :success
-  end
-
-  def test_should_create_exhibit_element
-    assert_difference('ExhibitElement.count') do
-      post :create, :exhibit_element => { }
-    end
-
-    assert_redirected_to exhibit_element_path(assigns(:exhibit_element))
-  end
-
-  def test_should_show_exhibit_element
-    get :show, :id => exhibit_elements(:one).id
-    assert_response :success
   end
 
   def test_should_get_edit

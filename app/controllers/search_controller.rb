@@ -492,7 +492,7 @@ class SearchController < ApplicationController
    
    def save_search
      name = params[:saved_search_name]
-     if (session[:user] && name.length > 0)  # see if the session has timed out since the last browser action, and the user actually inputted sometime.
+     if (session[:user] && name != nil && name.length > 0)  # see if the session has timed out since the last browser action, and the user actually inputted sometime.
        user = User.find_by_username(session[:user][:username])
        session[:name_of_search] = name
        saved_search = user.searches.find_or_create_by_name(name)

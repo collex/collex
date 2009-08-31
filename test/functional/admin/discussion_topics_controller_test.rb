@@ -14,7 +14,7 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../../test_helper'
 
 class DiscussionTopicsControllerTest < ActionController::TestCase
 

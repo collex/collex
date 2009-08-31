@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CachedResourceTest < ActionController::TestCase
+class CachedResourceTest < ActiveSupport::TestCase
   fixtures :users, :tags, :tagassigns, :cached_resources, :cached_properties, :collected_items
 
   def setup
@@ -112,8 +112,8 @@ class CachedResourceTest < ActionController::TestCase
     assert_equal 5, cached_resources.length
 
     cached_properties = CachedProperty.find(:all)
-    assert_equal 41, cached_properties.length
-    assert_equal 'stale', cached_properties[40]['name']
+    assert_equal 20, cached_properties.length
+    assert_equal 'stale', cached_properties[19]['name']
   end
   
 end

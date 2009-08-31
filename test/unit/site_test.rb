@@ -16,7 +16,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SiteTest < ActionController::TestCase
+class SiteTest < ActiveSupport::TestCase
   fixtures :sites
 
   def test_thumbnails_returns_a_list_of_available_site_thumbnail_urls

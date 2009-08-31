@@ -34,25 +34,14 @@ class LoginControllerTest < ActionController::TestCase
     #@request.session[:user] = {:username => "dave"}
   end
     
-  def test_account_help
-    get :account_help
-    assert_response :success
-    assert_nil session[:user]
-  end
-
-  def test_account
-    get :account  # call without being logged in
-    assert_response :redirect 
-    assert_redirected_to :action => "login" 
-    
-    # call with being logged in
-    do_valid_login()
-    get :account
-    assert_response :success
-  end
-
-  def test_login
-    get :login
+#  def test_account_help
+#    get :account_help
+#    assert_response :success
+#    assert_nil session[:user]
+#  end
+#
+  def test_login_controls
+    get :login_controls
     assert_response :success
     assert_nil session[:user]
   end
@@ -83,22 +72,22 @@ class LoginControllerTest < ActionController::TestCase
     do_valid_login( { :password => new_pswd })
   end
   
-  def test_signup
-    get :signup
+  def test_submit_signup
+    get :submit_signup
     assert_response :success
     assert_nil session[:user]
     assert false
   end
   
-  def test_change_account
-    do_valid_login()
-    session[:current_page] = [ search_path, search_path ]
-
-    post :change_account, { :password2 => "[FILTERED]", :password =>"[FILTERED]", :email =>"paul@performantsoftware.com" }
-    assert_response :redirect
-    assert_redirected_to search_path
-    assert_equal 'paul', session[:user][:username]
-  end
+#  def test_change_account
+#    do_valid_login()
+#    session[:current_page] = [ search_path, search_path ]
+#
+#    post :change_account, { :password2 => "[FILTERED]", :password =>"[FILTERED]", :email =>"paul@performantsoftware.com" }
+#    assert_response :redirect
+#    assert_redirected_to search_path
+#    assert_equal 'paul', session[:user][:username]
+#  end
   
   def test_logout
     do_valid_login()
@@ -111,11 +100,11 @@ class LoginControllerTest < ActionController::TestCase
     assert_nil session[:user]
   end
   
-  def test_signup
-    get :signup    
-    assert_response :success
-    assert_nil session[:user]
-  end
+#  def test_signup
+#    get :signup
+#    assert_response :success
+#    assert_nil session[:user]
+#  end
   
   def test_submit_signup
     post :submit_signup, { :password2 =>"freddy", :username =>"fred", :password => "freddy1", :email =>"fred@fred.com" }
