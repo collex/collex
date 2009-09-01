@@ -47,14 +47,13 @@ class LoginControllerTest < ActionController::TestCase
   end
   
   def test_reset_password
-    post :reset_password, { :username =>"illegal" }
-    assert_response :redirect
-    assert_redirected_to :action => 'account_help', :username => 'illegal'
-    assert_equal "There is no user by that name.", flash[:notice]
+    post :reset_password, { :help_username =>"illegal" }
+    assert_response :bad_request
     assert_nil session[:user]
 
-    post :reset_password, { :username =>"paul" }
-    assert_response :success
+    post :reset_password, { :help_username =>"paul" }
+    assert_response :bad_request
+    assert_equal "A new password has been e-mailed to your registered address.", @response.body
     assert_nil session[:user]
     email_arr = ActionMailer::Base.deliveries
     email = email_arr[email_arr.length-1]
@@ -96,7 +95,7 @@ class LoginControllerTest < ActionController::TestCase
     
     get :logout
     assert_response :redirect 
-    assert_redirected_to search_path
+    assert_redirected_to '/'
     assert_nil session[:user]
   end
   
@@ -107,37 +106,33 @@ class LoginControllerTest < ActionController::TestCase
 #  end
   
   def test_submit_signup
-    post :submit_signup, { :password2 =>"freddy", :username =>"fred", :password => "freddy1", :email =>"fred@fred.com" }
-    assert_response :redirect 
-    assert_redirected_to :action => 'signup'
-    assert_equal "Passwords do not match", flash[:notice]
+    post :submit_signup, { :create_password2 =>"freddy", :create_username =>"fred", :create_password => "freddy1", :create_email =>"fred@fred.com" }
+    assert_response :bad_request
+    assert_equal "Passwords do not match", @response.body
     assert_nil session[:user]
 
-    post :submit_signup, { :password2 =>"freddy", :username =>"fred", :password => "freddy", :email =>"fred@fred.com" }
-    assert_response :redirect 
-    assert_redirected_to "/"
+    post :submit_signup, { :create_password2 =>"freddy", :create_username =>"fred", :create_password => "freddy", :create_email =>"fred@fred.com" }
+    assert_response :success
     assert_equal 'fred', session[:user][:username]
   end
   
   def test_verify_login
-    post :verify_login, { :username => "paul", :password => "illegal" }
-    assert_response :redirect 
-    assert_redirected_to :action => "login" 
+    post :verify_login, { :signin_username => "paul", :signin_password => "illegal" }
+    assert_response :bad_request
     assert_nil session[:user]
-    assert_equal "Invalid user/password combination", flash[:notice]
+    assert_equal "Invalid user/password combination", @response.body
 
     do_valid_login()
   end
   
   def test_recover_username
-    post :recover_username, { :email => "illegal"}
-    assert_response :redirect
-    assert_redirected_to :action => 'account_help', :email => 'illegal'
-    assert_equal "There is no user with that email address.", flash[:notice]
+    post :recover_username, { :help_email => "illegal"}
+    assert_response :bad_request
     assert_nil session[:user]
 
-    post :recover_username, { :email => "dave@whatever.com"}
-    assert_response :success
+    post :recover_username, { :help_email => "dave@whatever.com"}
+    assert_response :bad_request
+    assert_equal "Your user name has been e-mailed to your registered address.", @response.body
     assert_nil session[:user]
   end
   
@@ -148,14 +143,13 @@ class LoginControllerTest < ActionController::TestCase
     password = params[:password] ? params[:password] : "password"
     expect_fail = params[:expect_fail]
 
-    post :verify_login, { :username => "paul", :password => password }
+    post :verify_login, { :signin_username => "paul", :signin_password => password }
     if expect_fail
-      assert_response :redirect
-      assert_redirected_to :action => 'login' 
+      assert_response :bad_request
+	    assert_equal "Invalid user/password combination", @response.body
       assert_nil session[:user]
     else
-      assert_response :redirect
-      assert_redirected_to "/" 
+      assert_response :success
       assert_equal 'paul', session[:user][:username]
     end
     end

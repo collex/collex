@@ -30,6 +30,7 @@ class CollectedItemTest < ActiveSupport::TestCase
 
   def setup
        get_baseline()
+	    @solr = CollexEngine.new()
   end
 
   def get_baseline
@@ -54,7 +55,7 @@ class CollectedItemTest < ActiveSupport::TestCase
   
   def collect_a_text(user_id, uri, wants_nil)
     begin
-      new_item = CollectedItem.collect_item(get_user(user_id), uri, nil)
+      new_item = CollectedItem.collect_item(get_user(user_id), uri, @solr.get_object( uri ))
     rescue Exception => msg
       return if wants_nil
       assert false, msg
@@ -416,8 +417,8 @@ class CollectedItemTest < ActiveSupport::TestCase
     user1 = get_user(1)
     user2 = get_user(2)
     uri = "http://some/fake/uri"
-    CollectedItem.collect_item(user1, uri, nil)
-    CollectedItem.collect_item(user2, uri, nil)
+    CollectedItem.collect_item(user1, uri, @solr.get_object( uri ))
+    CollectedItem.collect_item(user2, uri, @solr.get_object( uri ))
 
     # now there should be two items in the collection
     get_current()
@@ -435,8 +436,8 @@ class CollectedItemTest < ActiveSupport::TestCase
     user2 = get_user(2)
     uri = "http://some/fake/uri"
     tag_str = "interesting"
-    CollectedItem.collect_item(user1, uri, nil)
-    CollectedItem.collect_item(user2, uri, nil)
+    CollectedItem.collect_item(user1, uri, @solr.get_object( uri ))
+    CollectedItem.collect_item(user2, uri, @solr.get_object( uri ))
     CollectedItem.add_tag(user1, uri, tag_str)
     CollectedItem.add_tag(user2, uri, tag_str)
 

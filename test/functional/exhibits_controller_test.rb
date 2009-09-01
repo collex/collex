@@ -25,18 +25,18 @@ class ExhibitsControllerTest < ActionController::TestCase
   end
 
   def test_should_get_print_exhibit
-    get :print_exhibit
+    get :print_exhibit, :id => 1
     assert_response :success
   end
 
   def test_should_get_view
-    get :view
+    get :view, :id => 2
     assert_response :success
   end
 
   def test_should_destroy_exhibit
     assert_difference('Exhibit.count', -1) do
-      delete :destroy, :id => exhibits(:one).id
+      delete :destroy, :id => exhibits(:foo).id
     end
 
     assert_redirected_to exhibits_path
