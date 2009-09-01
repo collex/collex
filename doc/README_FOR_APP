@@ -1,4 +1,4 @@
-The NINES project
+The Collex/NINES project
 
 -----------------------------------------------------------------------
 ** Requires the following Gems:
@@ -11,6 +11,9 @@ image_science (1.1.3) [ for attachment_fu]
 There are instructions for integrating Wordpress that you can read by navigating to "/news".
 
 When changing any files in the Wordpress theme, then a rake task must be called to copy them over to the correct production folder.
+
+For NINES, that task is:
+	rake collex:update_nines_theme
 
 -----------------------------------------------------------------------
 ** Requires Solr
@@ -31,10 +34,16 @@ That process is explained here:
 
 	http://www.performantsoftware.com/nines_wiki/index.php/Indexing_Tools
 
+There are two other relevant projects in this repository to help with indexing:
+
+	collex/trunk/indexer		: This should reside on the computer that will do the indexing. It contains scripts to run the indexing.
+	collex/trunk/rdf-indexer	: This is a java project that builds the utility that is used to read the rdf files into solr. The jar file created
+		here is used by indexer.
+
 -----------------------------------------------------------------------
 ** deploying js and css
 
-JavaScript heavily uses prototype and YUI.
+The JavaScript in Collex heavily uses prototype and YUI.
 
 When running in production mode, different js and css files are used. The files are compressed and concatinated.
 
@@ -72,6 +81,10 @@ In /lib/tasks/collex.rake, there are a number of rake tasks defined. Here are th
 
 	rake RAILS_ENV="production" collex:update_site
 	(runs migrate, updates the wordpress theme, and compresses js and css files)
+
+In /lib/tasks/solr.rake, there are routines to manipulate solr and its index.
+	To run solr:
+	rake solr:start
 
 -----------------------------------------------------------------------
 ** Site specific info
