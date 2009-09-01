@@ -117,18 +117,21 @@ class CachedResource < ActiveRecord::Base
     end
   
   def self.get_hit_from_uri(uri)
+    return nil if uri == nil
     cr = CachedResource.find_by_uri(uri)
     return nil if cr == nil
     return get_hit_from_resource_id(cr.id)
   end
   
   def self.get_image_from_uri(uri)
+    return nil if uri == nil
     hit = CachedResource.get_hit_from_uri(uri)
   	return nil unless hit
     return self.get_image_from_hit(hit)
   end
   
   def self.get_image_from_hit(hit)
+    return nil if hit == nil
     image = self.solr_obj_to_str(hit['image'])
     if image == nil
       image = self.get_thumbnail_from_hit(hit)
@@ -137,12 +140,14 @@ class CachedResource < ActiveRecord::Base
   end
   
   def self.get_thumbnail_from_uri(uri)
+    return nil if uri == nil
    hit = CachedResource.get_hit_from_uri(uri)
     return nil unless hit
     return self.get_thumbnail_from_hit(hit)
   end
   
   def self.get_thumbnail_from_hit(hit)
+    return nil if hit == nil
     image =  self.solr_obj_to_str(hit['thumbnail'])
     return image if image != nil
 
@@ -153,17 +158,20 @@ class CachedResource < ActiveRecord::Base
   end
   
   def self.get_thumbnail_from_hit_no_site(hit)
+    return nil if hit == nil
     image =  self.solr_obj_to_str(hit['thumbnail'])
     return image
   end
   
   def self.get_link_from_uri(uri)
+    return nil if uri == nil
     hit = CachedResource.get_hit_from_uri(uri)
     return nil unless hit
     return self.get_link_from_hit(hit)
   end
   
   def self.get_link_from_hit(hit)
+    return nil if hit == nil
     return self.solr_obj_to_str(hit['url'])
   end
     

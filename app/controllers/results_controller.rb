@@ -41,15 +41,19 @@ class ResultsController < ApplicationController
   end
   
   def uncollect
-    locals = setup_ajax_calls(params, true)
-    CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
-    
     partial = params[:partial]
-    if partial == '/results/result_row'
-      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-    elsif partial == '/forum/attachment'
-      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-    end
+		if partial != '/results/result_row' && partial != '/forum/attachment'
+			render :text => 'Bad parameters in call to uncollect', :status => :bad_request
+		else
+			locals = setup_ajax_calls(params, true)
+			CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+
+			if partial == '/results/result_row'
+				render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+			elsif partial == '/forum/attachment'
+				render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
+			end
+		end
   end
   
   def add_tag
@@ -95,11 +99,11 @@ class ResultsController < ApplicationController
   def bulk_add_tag
     tag = params['tag']
     uris = params['uris']
-    uris = uris.split("\t")
     
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     
-    if user != nil && tag != nil && tag.length > 0
+    if uri != nil && user != nil && tag != nil && tag.length > 0
+	    uris = uris.split("\t")
       uris.each{ |uri|
         CollectedItem.collect_item(user, uri) # this just returns if the object is already collected.
         CollectedItem.add_tag(user, uri, tag)
