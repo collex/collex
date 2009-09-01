@@ -26,6 +26,12 @@ class CachedResource < ActiveRecord::Base
 
 	def set_hit(hit)	# This saves a solr call if the object is already in our hands.
 		@resource = hit
+		# never collect full text
+		if @resource['text']
+			@resource['text'] = nil
+		end
+
+
 	end
 
   # The actual +SolrResource+ at this instances +uri+. 
@@ -381,7 +387,7 @@ class CachedResource < ActiveRecord::Base
         bytes = ""
         #property.value.each_byte { |c| bytes += "#{c} " if c > 127 }
         hit[property.name].insert(-1, property.value + bytes)
-      else
+      elsif property.name != 'text'	# make sure that full text never gets shown, even if it is mistakenly collected.
         hit[property.name].insert(-1, property.value)
       end
     end

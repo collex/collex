@@ -24,7 +24,7 @@ class CollexEngine
     @num_docs = -1
     
     @solr = Solr::Connection.new(SOLR_URL)
-		@field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","image","thumbnail","text_url","title","alternative","uri","url", "exhibit_type", "license", 'text']
+		@field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","image","thumbnail","text_url","title","alternative","uri","url", "exhibit_type", "license"]
 		@facet_fields = ['genre','archive','freeculture']
   end
   
