@@ -149,7 +149,7 @@ module My9sHelper
 
 	def exhibit_builder_style_name(exhibit)
 		if exhibit.fonts_match_defaults()
-			return "NINES default"
+			return "#{SITE_NAME} default"
 		else
 			return "Custom style"
 		end

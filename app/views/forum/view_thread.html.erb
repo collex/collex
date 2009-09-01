@@ -24,7 +24,7 @@
 	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];
 </script>
 
-<div class="page_subheader">Follow and join in this discussion by using your free NINES account.</div>
+<div class="page_subheader">Follow and join in this discussion by using your free <%= SITE_NAME %> account.</div>
 <br /><br />
 <div class="FP_breadcrumb">
 	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).get_title() %>

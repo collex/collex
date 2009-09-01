@@ -16,7 +16,7 @@
 
 namespace :solr do
 
-	desc "Start the solr java app (Prerequisite for running NINES)"
+	desc "Start the solr java app (Prerequisite for running Collex)"
 	task :start  => :environment do
 		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar &`
 	end

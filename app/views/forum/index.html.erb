@@ -20,7 +20,7 @@
 <% topics = DiscussionTopic.get_all_with_date() -%>
 
 	<div class="page_header">Forum</div>
-    <div class="page_subheader">We've set aside this portion of NINES for commentary, discussion and collaboration among the NINES community.
+    <div class="page_subheader">We've set aside this portion of <%= SITE_NAME %> for commentary, discussion and collaboration among the <%= SITE_NAME %> community.
 	Log in to your free account to join in the conversations below and to discuss the objects of your research.</div>
 
 <% for topic_arr in topics -%>

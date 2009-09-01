@@ -17,7 +17,7 @@
 <% # tag_cloud_sidebar params: array cloud_info, enum view { 'tag', 'untagged', 'all_collected' }, string tag -%>
 <div class="page_header">My Tags</div>
 <% if cloud_info[:cloud_freq].length == 0 -%>
-	<div class="empty_list_text">You have not tagged any items (yet!) Use tags to categorize the items you collect and help other NINES users find them. Your tagged items will remain anonymous.</div>
+	<div class="empty_list_text">You have not tagged any items (yet!) Use tags to categorize the items you collect and help other <%= SITE_NAME %> users find them. Your tagged items will remain anonymous.</div>
 <% else -%>
 	<% selected_tag = (view == 'tag') ? 'tag' : '' -%>
 	<div id="tag_cloud_div">

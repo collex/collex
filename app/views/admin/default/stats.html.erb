@@ -17,7 +17,7 @@
 <% current_page "admin" -%>
 <% current_sub_page "Statistics" -%>
 <div class="inner_content_container">
-	<div class="page_header">NINES Statistics</div>
+	<div class="page_header"><%= SITE_NAME %> Statistics</div>
 	[NOTE: These statistics only count activity since June 30, 2009]
 	<% login_stats = LoginInfo.get_stats() -%>
 	<% object_stats = ObjectActivity.get_stats() -%>

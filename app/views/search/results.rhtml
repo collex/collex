@@ -41,7 +41,7 @@
 				<div class="page_header"><a href='/collex/new_search' class="new_search"></a>Search Query</div>
 				<%= render( :partial => 'constraints' ) %>
 				<div class="no_results_msg">
-					<p>No NINES objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
+					<p>No <%= SITE_NAME %> objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
 					<img height="250px" src="/images/brown_harrington.gif" alt="" />
 				</div>
 			</div>

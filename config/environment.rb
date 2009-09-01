@@ -95,6 +95,7 @@ if File.exists?(config_file)
 
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
 	JAVA_PATH = site_specific['java_path']
+	SITE_NAME = 'NINES'	#TODO: move this to site.yml eventually.
 else
 	puts "***"
 	puts "*** Failed to load site configuration. Did you create config/site.yml?"
@@ -105,7 +106,7 @@ end
 #
 #SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || solr_url_for[RAILS_ENV] || "http://localhost:8983/solr"
 
-puts "$$ Starting Rails with Solr URL: #{SOLR_URL}"
+puts "$$ Starting #{SITE_NAME} with Solr URL: #{SOLR_URL}"
 #puts ExceptionNotifier.exception_recipients
 #puts ExceptionNotifier.sender_address
 #puts ExceptionNotifier.email_prefix

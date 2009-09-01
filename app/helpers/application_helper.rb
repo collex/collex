@@ -386,7 +386,7 @@ private
 
   def decode_exhibit_links(text)
     # This routine turns our special <span> into a standard <a>
-    #<span class="ext_linklike" real_link="xxx" title="NINES Object: xxx">yyy</span>
+    #<span class="ext_linklike" real_link="xxx" title="#{SITE_NAME} Object: xxx">yyy</span>
     # becomes:
     #<a href="http://xxx" target="_blank">yyy</a>
 

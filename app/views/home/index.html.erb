@@ -18,7 +18,7 @@
     	<div id="search_container">
         	<div id="search_box">
 				<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search', :onsubmit => "return searchValidationHome('search_phrase', 'search_button');"  } ) %>
-	            	<strong>Search NINES:</strong><br />
+	            	<strong>Search <%= SITE_NAME %>:</strong><br />
 	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" /> 
 	                <div id="search_note_container">
 	               	  <div id="search_note">Searching <%= number_with_delimiter(session[:num_docs]) %> peer-reviewed digital objects from <%=number_with_delimiter(Site.count)%> federated sites  </div>

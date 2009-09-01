@@ -17,9 +17,9 @@
 <% current_page "News" -%>
 
 <div id="installation-instructions">
-	<h2>NINES News Installation</h2>
+	<h2><%= SITE_NAME %> News Installation</h2>
 		
-	<p>NINES News is powered by Wordpress which is integrated with the Ruby on Rails application via Apache mod_rewrite. In order to integrate Wordpress, you must first set up an Apache mod_rewrite rule which will route requests to either Apache for Wordpress URLs or Mongrel for Collex URLs.</p> 
+	<p><%= SITE_NAME %> News is powered by Wordpress which is integrated with the Ruby on Rails application via Apache mod_rewrite. In order to integrate Wordpress, you must first set up an Apache mod_rewrite rule which will route requests to either Apache for Wordpress URLs or Mongrel for Collex URLs.</p>
 
 <h3>System Dependencies</h3>
 
@@ -68,12 +68,12 @@
 
 <p>You can now activate the installed copy of Wordpress, which should replace these instructions when you refresh your browser. Please make note of the admin password and log into the Wordpress control panel.</p>
 
-<h3>Step Four: Install NINES Theme</h3>
-	<p>The style for NINES Collex is provided as a starting point. To use it, run the following rake task in the RAILS_ROOT folder of the Collex installation:</p>
+<h3>Step Four: Install <%= SITE_NAME %> Theme</h3>
+	<p>The style for <%= SITE_NAME %> Collex is provided as a starting point. To use it, run the following rake task in the RAILS_ROOT folder of the Collex installation:</p>
 
 	<blockquote>rake collex:install_nines_theme</blockquote>
 	
-	<p>Now, in the Wordpress control panel, you can select "Design" and then select to install the "NINES" theme. Return to the <a href="/news/">News Page</a> to inspect the results. Wordpress should now match the look and feel of the site and be integrated into the site navigation frame.</p>
+	<p>Now, in the Wordpress control panel, you can select "Design" and then select to install the "<%= SITE_NAME %>" theme. Return to the <a href="/news/">News Page</a> to inspect the results. Wordpress should now match the look and feel of the site and be integrated into the site navigation frame.</p>
 	
 <h3>Step Five: Create Uploads Directory</h3>
 
@@ -81,6 +81,6 @@
 	
 <h3>Step Six: XML Import of Initial Posts</h3>
 
-<p>Finally, in the Wordpress control panel, go to Manage->Import->Wordpress and import the XML file of initial posts provided by NINES Staff.</p>
+<p>Finally, in the Wordpress control panel, go to Manage->Import->Wordpress and import the XML file of initial posts provided by <%= SITE_NAME %> Staff.</p>
 
 </div>

@@ -307,7 +307,7 @@ class My9sController < ApplicationController
     else
       ex = Exhibit.find_by_visible_url(visible_url)
       if ex != nil
-        render :text => "There is already an exhibit in NINES with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
+        render :text => "There is already an exhibit in #{SITE_NAME} with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
       else
         exhibit = Exhibit.factory(user.id, visible_url, exhibit_title, exhibit_thumbnail)
         ExhibitObject.set_objects(exhibit.id, objects)
@@ -942,7 +942,7 @@ class My9sController < ApplicationController
 			hit = CachedResource.get_hit_from_uri(params[:uri])
 			render :partial => '/results/result_row_for_popup', :locals => { :hit => hit, :extra_button_data => { :partial => params[:partial], :index => params[:index], :target_el  => params[:target_el]} }
 		else
-			render :text => 'We\'re sorry! We can\'t find the object that you requested. Reason: internal error (incorrect parameters). Please contain the NINES webmaster using the email at the bottom of the page', :status => :bad_request
+			render :text => 'We\'re sorry! We can\'t find the object that you requested. Reason: internal error (incorrect parameters). Please contain the #{SITE_NAME} webmaster using the email at the bottom of the page', :status => :bad_request
 		end
   end
 
