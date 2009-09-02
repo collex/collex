@@ -74,7 +74,7 @@ end
 #ActiveRecord::Base.colorize_logging = false
 require 'soap/wsdlDriver'
 require 'rexml/document'
-require 'collex_engine'
+#require 'collex_engine'
 require 'nines_collection_manager' # require this or get load errors in dev mode
 
 # load all the site specific stuff

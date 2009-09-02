@@ -88,6 +88,21 @@ class CollexEngine
     return response.hits[0] if response.hits.length > 0
 		return nil
 	end
+
+	def add_object(obj)
+		# this takes a hash that contains a set of fields expressed as symbols, i.e. { :uri => 'something' }
+		#req = Solr::Request::AddDocument.new(obj)
+		#req = Solr::Request::AddDocument.new(obj)
+		@solr.add(obj)
+		#Solr::Request::Commit.new
+		@solr.commit(:wait_searcher => false, :wait_flush => false)
+	end
+
+	def remove_object(uri)
+		@solr.delete(uri)
+		@solr.commit(:wait_searcher => false, :wait_flush => false)
+	end
+
 private
   # splits constraints into a full-text query (for relevancy ranking) and filter queries for constraining
   def solrize_constraints(constraints)

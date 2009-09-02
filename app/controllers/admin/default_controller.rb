@@ -37,7 +37,13 @@ class Admin::DefaultController < Admin::BaseController
     exhibit_id = params[:exhibit_id]
     category = params[:category_id]
     exhibit = Exhibit.find(exhibit_id)
+		old_category = exhibit.category
     exhibit.update_attribute('category', category)
+		if category == 'peer-reviewed'
+			index_exhibit(exhibit_id)
+		elsif old_category == 'peer-reviewed'
+			unindex_exhibit(exhibit_id)
+		end
     render :text => category
   end
 
@@ -64,5 +70,69 @@ class Admin::DefaultController < Admin::BaseController
 		id = params[:comment]
 		DiscussionComment.remove_abuse_flag(id)
 		redirect_to :action => 'forum_pending_reports'
+	end
+
+	private
+
+	def strip_tags(str)
+		ret = ""
+		arr = str.split('<')
+		arr.each {|el|
+			gt = el.index('>')
+			if gt
+				ret += el.slice(gt+1..el.length-1)
+			else
+				ret += el
+			end
+		}
+		return ret
+	end
+
+	def unindex_exhibit(exhibit_id)
+		exhibit = Exhibit.find(exhibit_id)
+		pages = exhibit.exhibit_pages
+		pages.each{|page|
+			CollexEngine.new().remove_object("peer-reviewed-exhibit-#{exhibit_id}-#{page.id}")
+		}
+	end
+
+	def index_exhibit(exhibit_id)
+		exhibit = Exhibit.find(exhibit_id)
+		author_rec = User.find(exhibit.alias_id ? exhibit.alias_id : exhibit.user_id)
+		author = author_rec.fullname ? author_rec.fullname : author_rec.username
+		url = exhibit.visible_url ? "/exhibits/view/#{exhibit.visible_url}" : "/exhibits/view/#{exhibit_id}"
+		pages = exhibit.exhibit_pages
+		pages.each{|page|
+			data = []
+			elements = page.exhibit_elements
+			elements.each {|element|
+				data.push(strip_tags(element.element_text)) if element.element_text
+				data.push(strip_tags(element.element_text2)) if element.element_text2
+				if element.header_footnote_id
+					footnote = ExhibitFootnote.find(element.header_footnote_id)
+					data.push(strip_tags(footnote.footnote)) if footnote.footnote
+				end
+				illustrations = element.exhibit_illustrations
+				illustrations.each {|illustration|
+					data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					data.push(illustration.caption1) if illustration.caption1
+					data.push(illustration.caption2) if illustration.caption2
+					data.push(illustration.alt_text) if illustration.alt_text
+					if illustration.caption1_footnote_id
+						footnote = ExhibitFootnote.find( illustration.caption1_footnote_id)
+						data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					end
+					if illustration.caption2_footnote_id
+						footnote = ExhibitFootnote.find( illustration.caption2_footnote_id)
+						data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					end
+				}
+			}
+
+			doc = { :uri => "peer-reviewed-exhibit-#{exhibit_id}-#{page.id}", :title => "#{exhibit.title} (Page #{page.position})", :thumbnail => exhibit.thumbnail,
+				:genre => "Manuscript", :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{page.position}", :text_url => url, :source => "#{SITE_NAME}",
+				:text => data.join("\r\n") }
+			CollexEngine.new().add_object(doc)
+		}
 	end
 end
