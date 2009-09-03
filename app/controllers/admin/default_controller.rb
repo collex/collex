@@ -94,6 +94,7 @@ class Admin::DefaultController < Admin::BaseController
 		pages.each{|page|
 			CollexEngine.new().remove_object("peer-reviewed-exhibit-#{exhibit_id}-#{page.id}")
 		}
+		CollexEngine.new().commit()
 	end
 
 	def index_exhibit(exhibit_id)
@@ -134,5 +135,6 @@ class Admin::DefaultController < Admin::BaseController
 				:text => data.join("\r\n") }
 			CollexEngine.new().add_object(doc)
 		}
+		CollexEngine.new().commit()
 	end
 end

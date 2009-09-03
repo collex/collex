@@ -95,11 +95,13 @@ class CollexEngine
 		#req = Solr::Request::AddDocument.new(obj)
 		@solr.add(obj)
 		#Solr::Request::Commit.new
-		@solr.commit(:wait_searcher => false, :wait_flush => false)
 	end
 
 	def remove_object(uri)
 		@solr.delete(uri)
+	end
+
+	def commit()
 		@solr.commit(:wait_searcher => false, :wait_flush => false)
 	end
 
