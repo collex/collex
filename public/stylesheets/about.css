@@ -74,3 +74,7 @@
 	float:left;
 	padding:18px;
 }
+
+.about_right p.header {
+    text-decoration:underline;
+}
