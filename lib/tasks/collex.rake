@@ -79,6 +79,12 @@ namespace :collex do
 		Rake::Task['collex:compress_css_js'].invoke
 	end
 
+	desc "Compress the css for the about pages"
+	task :compress_about_css => :environment do
+		compress_file('stylesheets', '.css')
+		concatenate_css(:about)
+	end
+
   desc "Compress all css and js files"
   task :compress_css_js => :environment do
 		# The purpose of this is to roll all our css and js files into one minimized file so that load time on the server is as short as
