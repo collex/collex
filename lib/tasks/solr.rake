@@ -19,13 +19,14 @@ namespace :solr do
 	desc "Start the solr java app (Prerequisite for running Collex)"
 	task :start  => :environment do
 		puts "~~~~~~~~~~~ Starting solr..."
-		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar &`
+		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx1024m -jar start.jar &`
 	end
 	
 	desc "Stop the solr java app"
 	task :stop  => :environment do
 		puts "~~~~~~~~~~~ Stopping solr..."
 		`cd ../solr_1.3 && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop`
+		puts "Finished."
 	end
 
 	desc "Run the solr indexer on the files that are in the rdf folder"
