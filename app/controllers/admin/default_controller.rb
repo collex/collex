@@ -93,7 +93,7 @@ class Admin::DefaultController < Admin::BaseController
 	def unindex_exhibit(exhibit_id)
 		solr = CollexEngine.new()#['exhibits'])
 		#exhibit = Exhibit.find(exhibit_id)
-		0.upto(10) {|i|	# TODO-PER: hack! how do you find the number of sections?
+		0.upto(30) {|i|	# TODO-PER: hack! how do you find the number of sections?
 			solr.remove_object("#{URI_BASE}#{exhibit_id}/#{i}")
 		}
 		solr.remove_object("#{URI_BASE}#{exhibit_id}")
