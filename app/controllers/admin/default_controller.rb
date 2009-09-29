@@ -91,7 +91,7 @@ class Admin::DefaultController < Admin::BaseController
 	end
 
 	def unindex_exhibit(exhibit_id)
-		solr = CollexEngine.new() #CollexEngine.new(['exhibits'])
+		solr = CollexEngine.new()#['exhibits'])
 		#exhibit = Exhibit.find(exhibit_id)
 		0.upto(10) {|i|	# TODO-PER: hack! how do you find the number of sections?
 			solr.remove_object("#{URI_BASE}#{exhibit_id}/#{i}")
@@ -101,7 +101,9 @@ class Admin::DefaultController < Admin::BaseController
 	end
 
 	def index_exhibit(exhibit_id)
-		solr = CollexEngine.new() #CollexEngine.new(['exhibits'])
+		#boost_section = 15.0
+		#boost_exhibit = 12.0
+		solr = CollexEngine.new()#['exhibits'])
 		exhibit = Exhibit.find(exhibit_id)
 		author_rec = User.find(exhibit.alias_id ? exhibit.alias_id : exhibit.user_id)
 		author = author_rec.fullname ? author_rec.fullname : author_rec.username
@@ -111,6 +113,7 @@ class Admin::DefaultController < Admin::BaseController
 		num_sections = 0
 		section_page = 1
 		data = []
+		genres = [ 'Criticism', 'Visual Art', 'Letters' ]
 		pages = exhibit.exhibit_pages
 		pages.each{|page|
 			elements = page.exhibit_elements
@@ -118,9 +121,9 @@ class Admin::DefaultController < Admin::BaseController
 				if element.exhibit_element_layout_type == 'header'
 					if section_name.length > 0
 						doc = { :uri => "#{URI_BASE}#{exhibit_id}/#{num_sections}", :title => "#{exhibit.title} (#{section_name})", :thumbnail => exhibit.thumbnail,
-							:genre => "Manuscript", :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{section_page}", :text_url => url, :source => "#{SITE_NAME}",
+							:genre => genres, :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{section_page}", :text_url => url, :source => "#{SITE_NAME}",
 							:text => data.join("\r\n") }
-						solr.add_object(doc)
+						solr.add_object(doc )#, boost_section)
 					end
 					section_name = element.element_text
 					section_page = page.position
@@ -160,15 +163,15 @@ class Admin::DefaultController < Admin::BaseController
 			}
 			if data.length > 0 && section_name.length > 0
 				doc = { :uri => "#{URI_BASE}#{exhibit_id}/#{num_sections}", :title => "#{exhibit.title} (#{section_name})", :thumbnail => exhibit.thumbnail,
-					:genre => "Manuscript", :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{section_page}", :text_url => url, :source => "#{SITE_NAME}",
+					:genre => genres, :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{section_page}", :text_url => url, :source => "#{SITE_NAME}",
 					:text => data.join("\r\n") }
-				solr.add_object(doc)
+				solr.add_object(doc)#, boost_section)
 			end
 		}
 		doc = { :uri => "#{URI_BASE}#{exhibit_id}", :title => "#{exhibit.title}", :thumbnail => exhibit.thumbnail,
-			:genre => "Manuscript", :archive => "exhibit", :role_AUT => author,	:url => "#{url}", :text_url => url, :source => "#{SITE_NAME}",
+			:genre => genres, :archive => "exhibit", :role_AUT => author,	:url => "#{url}", :text_url => url, :source => "#{SITE_NAME}",
 			:text => full_data.join("\r\n") }
-		solr.add_object(doc)
+		solr.add_object(doc)#, boost_exhibit)
 		solr.commit()
 	end
 end
