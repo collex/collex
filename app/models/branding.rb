@@ -18,7 +18,7 @@ class Branding
 	# This contains the functional differences between Collex and the specific implementation of it.
 	# In this case, this is the NINES specific stuff
   def self.version
-    return "1.5.10"
+    return "1.5.11"
   end
 
 	def self.yui_path(is_debug)
@@ -27,5 +27,21 @@ class Branding
 		else
 			return '2.7.0'
 		end
+	end
+
+	def self.valid_genre_list()
+		return [ "Architecture",
+        "Artifacts", "Bibliography",
+        "Collection", "Criticism", "Drama",
+        "Education", "Ephemera", "Fiction",
+        "History", "Leisure", "Letters",
+        "Life Writing", "Manuscript", "Music",
+        "Nonfiction", "Paratext", "Periodical",
+        "Philosophy", "Photograph", "Poetry",
+        "Religion", "Review",
+        "Translation", "Travel",
+        "Visual Art", "Citation",
+        "Book History", "Family Life", "Folklore",
+        "Humor", "Law", "Reference Works" ]
 	end
 end
