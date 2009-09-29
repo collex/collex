@@ -101,8 +101,8 @@ class Admin::DefaultController < Admin::BaseController
 	end
 
 	def index_exhibit(exhibit_id)
-		#boost_section = 15.0
-		#boost_exhibit = 12.0
+#		boost_section = 15.0
+#		boost_exhibit = 12.0
 		solr = CollexEngine.new()#['exhibits'])
 		exhibit = Exhibit.find(exhibit_id)
 		author_rec = User.find(exhibit.alias_id ? exhibit.alias_id : exhibit.user_id)
@@ -114,6 +114,7 @@ class Admin::DefaultController < Admin::BaseController
 		section_page = 1
 		data = []
 		genres = [ 'Criticism', 'Visual Art', 'Letters' ]
+#		genres = exhibit.genres.split(',')
 		pages = exhibit.exhibit_pages
 		pages.each{|page|
 			elements = page.exhibit_elements
@@ -123,7 +124,7 @@ class Admin::DefaultController < Admin::BaseController
 						doc = { :uri => "#{URI_BASE}#{exhibit_id}/#{num_sections}", :title => "#{exhibit.title} (#{section_name})", :thumbnail => exhibit.thumbnail,
 							:genre => genres, :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{section_page}", :text_url => url, :source => "#{SITE_NAME}",
 							:text => data.join("\r\n") }
-						solr.add_object(doc )#, boost_section)
+#						solr.add_object(doc, boost_section)
 					end
 					section_name = element.element_text
 					section_page = page.position
@@ -165,7 +166,7 @@ class Admin::DefaultController < Admin::BaseController
 				doc = { :uri => "#{URI_BASE}#{exhibit_id}/#{num_sections}", :title => "#{exhibit.title} (#{section_name})", :thumbnail => exhibit.thumbnail,
 					:genre => genres, :archive => "exhibit", :role_AUT => author,	:url => "#{url}?page=#{section_page}", :text_url => url, :source => "#{SITE_NAME}",
 					:text => data.join("\r\n") }
-				solr.add_object(doc)#, boost_section)
+#				solr.add_object(doc, boost_section)
 			end
 		}
 		doc = { :uri => "#{URI_BASE}#{exhibit_id}", :title => "#{exhibit.title}", :thumbnail => exhibit.thumbnail,
