@@ -137,13 +137,24 @@ class MarcIndexer
 					report_record( marc_record, solr_document )
 				else
 					update_progress_meter
+#					if solr_document[:title].length != 0 || solr_document[:date_label].length != 0 || solr_document[:agent].length != 0 || solr_document[:role_PBL].length != 0 || solr_document[:year].length != 0 || solr_document[:text].length != 0 || solr_document[:role_AUT].length != 0
+#						if solr_document[:title].length == 0
+#							puts "~~~~~~~~~~~~~~~~ NO TITLE ~~~~~~~~~~~~~~~~~"
+#							report_record( marc_record, solr_document )
+#						end
+#						if solr_document[:role_AUT].length == 0
+#							puts "~~~~~~~~~~~~~~~~ NO AUTHOR ~~~~~~~~~~~~~~~~~"
+#							report_record( marc_record, solr_document )
+#						end
+#					end
 				end
 
 				# this record should be indexed
 				next true
 			end
-		rescue
+		rescue Exception => e
 			puts "Error indexing: #{this_doc[:uri]}"
+			puts e
 		end
     puts "Indexed #{@file_record_count} MARC records"
   end  
@@ -198,6 +209,8 @@ class MarcIndexer
       :role_AUT => get_proc( :parse_author ), 
       :agent => get_proc( :parse_author ), 
       :archive => @archive_id, 
+      :title_sort => get_proc( :parse_title ),
+      :author_sort => get_proc( :parse_author_sort ),
   #    :type => "A",  # a NINES "archive" object, as opposed to a "collectable" (type "C")
       :batch => @batch_id
 
@@ -207,7 +220,8 @@ class MarcIndexer
   #    :date => 
   #    :source => 
   #    :thumbnail => 
-  #    :image => 
+  #    :image =>
+	#    :role_ART =>
     }
   end
   
@@ -236,9 +250,17 @@ class MarcIndexer
     id = record.extract('001')
     "lib://#{@archive_id}/#{id}"
   end
+
+	def test_for_problem_record(record)
+#		id = record.extract('001')
+#		if id.to_s == "1373"
+#			puts "problem doc"
+#		end
+	end
   
   def parse_title( record )
-    
+    test_for_problem_record(record)
+
     # bancroft stores titles in wierd places sometimes
     if @archive_id == 'bancroft'
       id = record.extract('001')
@@ -248,7 +270,13 @@ class MarcIndexer
     end
     
     unless title 
-      title = record.extract('245a').to_s
+      title = record.extract('245a').to_s.strip
+			if title.length == 0
+	      rec = record.extract('260a')
+				if rec != nil
+					title = rec.to_s.strip
+				end
+			end
       subtitle = record.extract('245b').to_s.strip
     end
     
@@ -299,6 +327,7 @@ class MarcIndexer
   end
 
   def parse_genre( record )
+    test_for_problem_record(record)
     nines_genres = ['Citation']
     SCAN_LIST.each do |genre_field|
       subfield = get_subfield( record, genre_field )
@@ -311,16 +340,19 @@ class MarcIndexer
   end
   
   def parse_year( record )
+    test_for_problem_record(record)
      record.extract('260c').collect {|f| f.scan(/\d\d\d\d/)}.flatten
   end  
       
   def parse_publisher( record )
+    test_for_problem_record(record)
      # 260$b is publisher
      publishers = extract_record_data(record, '260b')
      publishers.map { |publisher| publisher.sub(/[,;:]$/,"") }
   end
   
   def parse_text( record )
+    test_for_problem_record(record)
     s = ""
 
     # go through all the genre related fields and index that text for searching
@@ -333,17 +365,27 @@ class MarcIndexer
   end
   
   def parse_author( record )
+    test_for_problem_record(record)
     authors = AUTHOR_MARC_CODES.map { |code|
       get_subfield( record, code )
     }.compact
     authors.map { |author| author.sub(/[,;:]$/,"") }
   end
   
+  def parse_author_sort( record )
+		authors = parse_author( record )
+		if authors.length > 1
+			authors = [ authors[0] ]
+		end
+  end
+
   def parse_uva_id( record )
+    test_for_problem_record(record)
     record.extract('001')[0].sub(/[u]/,"")
   end
   
   def parse_url( record )    
+    test_for_problem_record(record)
     url_formula = URL_FORMULAE[@archive_id]
     return "" if url_formula.nil?
 
