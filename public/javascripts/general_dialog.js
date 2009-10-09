@@ -78,7 +78,7 @@ var GeneralDialog = Class.create({
 			var data = {};
 			inputs.each(function(el) {
 				if (el.type === 'checkbox') {
-					data[el.id] = el.checked;
+					data[el.name] = el.checked;
 				} else if (el.type !== 'button') {
 					data[el.id] = el.value;
 				}
@@ -370,6 +370,36 @@ var GeneralDialog = Class.create({
 						if (subel.value === '1')
 							checkbox.checked = true;
 						row.appendChild(checkbox);
+						// CHECKBOX LIST
+					} else if (subel.checkboxList !== undefined) {
+						var tb = new Element('table');
+						var tbody = new Element('tbody');
+						tb.appendChild(tbody);
+						var numCols = subel.columns ? subel.columns : 1;
+						if (numCols <= 0) numCols = 1;
+						var numRows = Math.ceil(subel.items.length / numCols);
+						for (var i = 0; i < numRows; i++) {
+							var cbRow = new Element('tr');
+							tb.appendChild(cbRow);
+							for (var j = 0; j < numCols; j++){
+								var itemNum = j*numRows+i;
+								if (itemNum < subel.items.length) {
+									var item = subel.items[itemNum];
+									var cbCol = new Element('td', { style : 'padding: 0 0.5em 0 0.5em;'});
+									var cbId = subel.checkboxList+'['+item+']';
+									var cbox = new Element('input', { id: makeId(cbId), 'type': "checkbox", value: '1', name: cbId });
+									if (subel.klass)
+										cbox.addClassName(subel.klass);
+									if (subel.selections.detect(function(it) { return item === it }))
+										cbox.checked = true;
+									cbCol.appendChild(cbox);
+									var lbl = new Element('span').update(item);
+									cbCol.appendChild(lbl);
+									cbRow.appendChild(cbCol);
+								}
+							}
+							row.appendChild(tb);
+						}
 						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
 						var wrapper = new Element('div');
