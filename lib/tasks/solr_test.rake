@@ -14,7 +14,6 @@
 # limitations under the License.
 ##########################################################################
 
-require 'script/lib/marc_indexer.rb'
 namespace :solr_test do
 
 	desc "Completely reindex and test all RDF and MARC records"
@@ -123,40 +122,43 @@ namespace :solr_test do
 
 	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly])"
 	task :reindex_marc => :environment do
-		archive = ENV['archive']
-		marc_path = '../marc/'
-		puts "~~~~~~~~~~~ Reindexing marc records..."
-		start_time = Time.now
-			args = { :dir => "#{marc_path}Uva",
-                # :output_file => 'extracted.mrc',
-                 :url_log_path => 'link_data.txt',
-                 :tool => :index,
-#                 :solr_url => "#{SOLR_URL}/archive_#{archive}",
-                 :forgiving => true,
-                 :debug => false,
-                 :verbose => false,
-#								 :target_uri_file => 'script/uva_uri.rb'
-#								 :archive => 'uva_library'
-               }
-		#MarcIndexer.run(args) # Don't do the uva library at the moment until we figure out how
-		#args[:target_uri_file] = nil
+		if CAN_INDEX
+			require 'script/lib/marc_indexer.rb'
+			archive = ENV['archive']
+			marc_path = '../marc/'
+			puts "~~~~~~~~~~~ Reindexing marc records..."
+			start_time = Time.now
+				args = { :dir => "#{marc_path}Uva",
+									# :output_file => 'extracted.mrc',
+									 :url_log_path => 'link_data.txt',
+									 :tool => :index,
+	#                 :solr_url => "#{SOLR_URL}/archive_#{archive}",
+									 :forgiving => true,
+									 :debug => false,
+									 :verbose => false,
+	#								 :target_uri_file => 'script/uva_uri.rb'
+	#								 :archive => 'uva_library'
+								 }
+			#MarcIndexer.run(args) # Don't do the uva library at the moment until we figure out how
+			#args[:target_uri_file] = nil
 
-		if archive == nil || archive == 'bancroft'
-			args[:archive] = 'bancroft'
-      args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
-			CollexEngine.create_core("archive_bancroft")
-			args[:dir] = "#{marc_path}Bancroft"
-			MarcIndexer.run(args)
-		end
+			if archive == nil || archive == 'bancroft'
+				args[:archive] = 'bancroft'
+				args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
+				CollexEngine.create_core("archive_bancroft")
+				args[:dir] = "#{marc_path}Bancroft"
+				MarcIndexer.run(args)
+			end
 
-		if archive == nil || archive == 'lilly'
-			args[:archive] = 'lilly'
-      args[:solr_url] = "#{SOLR_URL}/archive_lilly"
-			CollexEngine.create_core("archive_lilly")
-			args[:dir] = "#{marc_path}Lilly"
-			MarcIndexer.run(args)
+			if archive == nil || archive == 'lilly'
+				args[:archive] = 'lilly'
+				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
+				CollexEngine.create_core("archive_lilly")
+				args[:dir] = "#{marc_path}Lilly"
+				MarcIndexer.run(args)
+			end
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
 		end
-		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
 	desc "Creates an RDF with all available information from all objects in the specified archive"
@@ -344,4 +346,3 @@ namespace :solr_test do
 #	end
 
 end
-

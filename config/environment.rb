@@ -96,6 +96,7 @@ if File.exists?(config_file)
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
 	JAVA_PATH = site_specific['java_path']
 	SITE_NAME = 'NINES'	#TODO: move this to site.yml eventually.
+	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
 else
 	puts "***"
 	puts "*** Failed to load site configuration. Did you create config/site.yml?"
