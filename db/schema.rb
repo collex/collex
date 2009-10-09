@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090821153330) do
+ActiveRecord::Schema.define(:version => 20091007200123) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -171,6 +171,8 @@ ActiveRecord::Schema.define(:version => 20090821153330) do
     t.string   "footnote_font_name"
     t.string   "footnote_font_size"
     t.datetime "last_change"
+    t.text     "genres"
+    t.string   "resource_name"
   end
 
   create_table "facet_categories", :force => true do |t|
