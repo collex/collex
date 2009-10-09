@@ -562,6 +562,9 @@ a.footnote_tip:hover span.tip {
 	float: right;
 }
 
+.checkbox_label {
+	margin-right: 6px;
+}
 
 /*****************************************/
 
