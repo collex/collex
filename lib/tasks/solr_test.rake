@@ -24,22 +24,37 @@ namespace :solr_test do
 
 		puts "~~~~~~~~~~~ Completely reindex everything..."
 		start_time = Time.now
+		# clear all the indexes
+		archives = CollexEngine.get_archive_core_list()
+		archives.each{|archive|
+			reindexed = CollexEngine.new([archive])
+			reindexed.clear_index()
+			puts "cleared index #{archive}"
+		}
 		# recreate all the RDF data
-		ENV['index'] = 'reindex_rdf'
-		Rake::Task['solr_test:clear_reindexing_index'].invoke
+		ENV['folder'] = ''
 		Rake::Task['solr_test:reindex_rdf'].invoke
 
 		# recreate all the MARC data
-		ENV['index'] = 'reindex_marc'
-		Rake::Task['solr_test:clear_reindexing_index'].invoke
+		ENV['archive'] = nil
 		Rake::Task['solr_test:reindex_marc'].invoke
 
 		# Now, test the indexes
 		Rake::Task['solr_test:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
+		ENV['start_after'] = nil
 		Rake::Task['solr_test:compare_indexes'].invoke	# list the differences between the objects
+		Rake::Task['solr_test:compare_indexes_text'].invoke	# list the differences between the text in the objects
 		Rake::Task['solr_test:find_duplicate_objects'].invoke	# see if there are any duplicate uri anywhere in the RDF records.
 
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "Compare merged index with original index (optional param: archive=XXX)"
+	task :compare_merged_index_with_original_index => :environment do
+		ENV['use_merged_index'] = "true"
+		Rake::Task['solr_test:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
+		Rake::Task['solr_test:compare_indexes'].invoke	# list the differences between the objects
+		Rake::Task['solr_test:compare_indexes_text'].invoke	# list the differences between the text in the objects
 	end
 
 	desc "Reindex documents from the rdf folder to the reindex core [folder] (solr must be started, and the base folders must be set in site.yml)"
@@ -48,47 +63,96 @@ namespace :solr_test do
 		folder = '' if folder == nil
 		# TODO: set folders in site.yml
 		rdf_path = '../rdf/'
-		indexer_path = '../indexer'
+		indexer_path = '../rdf-indexer'
 
 		path = "#{rdf_path}#{folder}"
 		puts "~~~~~~~~~~~ Reindexing solr documents in #{path}..."
 		puts "(see #{indexer_path}/indexer.log for progress information.)"
-		puts "(see #{indexer_path}/#{folder}_report.txt for error information.)"
+		puts "(see #{indexer_path}/#{folder.length==0?'rdf':folder}_report.txt for error information.)"
 		start_time = Time.now
 
-		`cd #{indexer_path} && java -Xmx1500m -jar rdf-indexer.jar #{path} --reindex`
+		if folder.length==0
+			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path} --reindex --ignore=dont_index.txt`
+		else
+			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path} --reindex`
+		end
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "Do the initial indexing of a folder to the archive_* core (param: folder=XXX)"
+	task :index_rdf_for_debugging  => :environment do
+		folder = ENV['folder']
+		if folder == nil || folder.length == 0
+			puts "Usage: pass folder=XXX to index a folder"
+		else
+			# TODO: set folders in site.yml
+			rdf_path = '../rdf/'
+			indexer_path = '../rdf-indexer'
+
+			path = "#{rdf_path}#{folder}"
+			puts "~~~~~~~~~~~ Reindexing solr documents in #{path}..."
+			puts "(see #{indexer_path}/indexer.log for progress information.)"
+			puts "(see #{indexer_path}/#{folder.length==0?'rdf':folder}_report.txt for error information.)"
+			start_time = Time.now
+
+			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path}`
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+		end
+	end
+
+	desc "Do the full indexing of a folder to the archive_* core. This will spider the archive for the full text. (param: folder=XXX)"
+	task :index_rdf_with_fulltext  => :environment do
+		folder = ENV['folder']
+		if folder == nil || folder.length == 0
+			puts "Usage: pass folder=XXX to index a folder"
+		else
+			# TODO: set folders in site.yml
+			rdf_path = '../rdf/'
+			indexer_path = '../rdf-indexer'
+
+			path = "#{rdf_path}#{folder}"
+			puts "~~~~~~~~~~~ Reindexing solr documents in #{path}..."
+			puts "(see #{indexer_path}/indexer.log for progress information.)"
+			puts "(see #{indexer_path}/#{folder.length==0?'rdf':folder}_report.txt for error information.)"
+			start_time = Time.now
+
+			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path} --fulltext`
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+		end
 	end
 
 	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly])"
 	task :reindex_marc => :environment do
 		archive = ENV['archive']
 		marc_path = '../marc/'
-		indexer_path = '../indexer'
 		puts "~~~~~~~~~~~ Reindexing marc records..."
 		start_time = Time.now
 			args = { :dir => "#{marc_path}Uva",
                 # :output_file => 'extracted.mrc',
                  :url_log_path => 'link_data.txt',
                  :tool => :index,
-                 :solr_url => 'http://localhost:8983/solr/reindex_marc',
+#                 :solr_url => "#{SOLR_URL}/archive_#{archive}",
                  :forgiving => true,
                  :debug => false,
                  :verbose => false,
-								 :target_uri_file => 'script/uva_uri.rb',
-								 :archive => 'uva_library'
+#								 :target_uri_file => 'script/uva_uri.rb'
+#								 :archive => 'uva_library'
                }
 		#MarcIndexer.run(args) # Don't do the uva library at the moment until we figure out how
-		args[:target_uri_file] = nil
+		#args[:target_uri_file] = nil
 
 		if archive == nil || archive == 'bancroft'
 			args[:archive] = 'bancroft'
+      args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
+			CollexEngine.create_core("archive_bancroft")
 			args[:dir] = "#{marc_path}Bancroft"
 			MarcIndexer.run(args)
 		end
 
 		if archive == nil || archive == 'lilly'
 			args[:archive] = 'lilly'
+      args[:solr_url] = "#{SOLR_URL}/archive_lilly"
+			CollexEngine.create_core("archive_lilly")
 			args[:dir] = "#{marc_path}Lilly"
 			MarcIndexer.run(args)
 		end
@@ -112,35 +176,53 @@ namespace :solr_test do
 		end
 	end
 
-	desc "Get list of objects not reindexed"
+	desc "Get list of objects not reindexed (optional param: use_merged_index=true, archive=XXX)"
 	task :scan_for_missed_objects => :environment do
-		puts "~~~~~~~~~~~ Scanning for missed documents..."
+		use_merged_index = ENV['use_merged_index']
+		use_merged_index = (use_merged_index != nil && (use_merged_index == "true" || use_merged_index == true))
+		archive = ENV['archive']
+		puts "~~~~~~~~~~~ Scanning for missed documents #{archive ? "("+archive+" only) " : ""}in #{use_merged_index ? 'merged' : 'archive_*'} index..."
 		start_time = Time.now
-		CollexEngine.get_list_of_skipped_objects()
+		CollexEngine.get_list_of_skipped_objects({ :use_merged_index => use_merged_index, :archive => archive })
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
-	desc "compare the main index with the reindexed one (optional parameter: archive=XXX or start_after=XXX)"
+	desc "compare the main index with the reindexed one (optional parameter: archive=XXX or start_after=XXX or use_merged_index=true)"
 	task :compare_indexes  => :environment do
 		archive = ENV['archive']
 		start_after = ENV['start_after']
-		puts "~~~~~~~~~~~ Comparing documents from the original index with the reindexed indexes..."
+		use_merged_index = ENV['use_merged_index']
+		use_merged_index = (use_merged_index != nil && (use_merged_index == "true" || use_merged_index == true))
+		puts "~~~~~~~~~~~ Comparing documents from the original index with the #{use_merged_index ? 'merged' : 'archive_*'} index..."
 		start_time = Time.now
-		CollexEngine.compare_reindexed_core({ :archive => archive, :start_after => start_after })
+		CollexEngine.compare_reindexed_core({ :archive => archive, :start_after => start_after, :use_merged_index => use_merged_index })
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
-
-		# TODO: have a caching mechanism when we get more than a single archive at a time
-		# Get core documents, sorted by uri
-
-		# Get reindexed documents, sorted by uri
-
-		# Compare documents - left-orphan, right-orphan, and a mismatch fields.
-		# Writes a status to stdout as it goes (can we use \r to stop \n?)
-		# Writes errors to a log file.
-		# Reports error if the number of records is different in each core
 	end
 
-	desc "clear the reindexing index (param: index=[reindex_rdf|reindex_marc]"
+	desc "compare the text in the main index with the reindexed one (optional parameter: archive=XXX or start_after=XXX or use_merged_index=true)"
+	task :compare_indexes_text  => :environment do
+		archive = ENV['archive']
+		start_after = ENV['start_after']
+		use_merged_index = ENV['use_merged_index']
+		use_merged_index = (use_merged_index != nil && (use_merged_index == "true" || use_merged_index == true))
+		#use_merged_index = true	# TODO: temp until I figure out how to pass two params
+		puts "~~~~~~~~~~~ Comparing documents from the original index with the #{use_merged_index ? 'merged' : 'archive_*'} index..."
+		start_time = Time.now
+		CollexEngine.compare_reindexed_core_text({ :archive => archive, :start_after => start_after, :use_merged_index => use_merged_index })
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "examine solr document (param: uri)"
+	task :examine_solr_document  => :environment do
+		uri = ENV['uri']
+		solr = CollexEngine.new()
+		hit = solr.get_object_with_text(uri)
+		hit.each { |key,val|
+			puts "#{key}: #{val}"
+		}
+	end
+
+	desc "clear the reindexing index (param: index=[archive_*]"
 	task :clear_reindexing_index  => :environment do
 		index = ENV['index']
 		if index == nil
@@ -154,35 +236,35 @@ namespace :solr_test do
 		end
 	end
 
-	desc "delete an archive from the RDF reindexing index"
-	task :delete_archive_from_index  => :environment do
-		archive = ENV['archive']
-		if archive == nil || archive.length == 0
-			puts "Pass the archive name to this task"
-		else
-			puts "~~~~~~~~~~~ Deleting archive: #{archive}..."
-			start_time = Time.now
-			reindexed = CollexEngine.new(['reindex_rdf'])
-			reindexed.delete_archive(archive)
-			puts "Finished in #{Time.now-start_time} seconds."
-		end
-	end
+#	desc "delete an archive from the RDF reindexing index"
+#	task :delete_archive_from_index  => :environment do
+#		archive = ENV['archive']
+#		if archive == nil || archive.length == 0
+#			puts "Pass the archive name to this task"
+#		else
+#			puts "~~~~~~~~~~~ Deleting archive: #{archive}..."
+#			start_time = Time.now
+#			reindexed = CollexEngine.new(['reindex_rdf'])
+#			reindexed.delete_archive(archive)
+#			puts "Finished in #{Time.now-start_time} seconds."
+#		end
+#	end
+#
+#	desc "delete an archive from the MARC reindexing index"
+#	task :delete_archive_from_marc_index  => :environment do
+#		archive = ENV['archive']
+#		if archive == nil || archive.length == 0
+#			puts "Pass the archive name to this task"
+#		else
+#			puts "~~~~~~~~~~~ Deleting archive: #{archive}..."
+#			start_time = Time.now
+#			reindexed = CollexEngine.new(['reindex_marc'])
+#			reindexed.delete_archive(archive)
+#			puts "Finished in #{Time.now-start_time} seconds."
+#		end
+#	end
 
-	desc "delete an archive from the MARC reindexing index"
-	task :delete_archive_from_marc_index  => :environment do
-		archive = ENV['archive']
-		if archive == nil || archive.length == 0
-			puts "Pass the archive name to this task"
-		else
-			puts "~~~~~~~~~~~ Deleting archive: #{archive}..."
-			start_time = Time.now
-			reindexed = CollexEngine.new(['reindex_marc'])
-			reindexed.delete_archive(archive)
-			puts "Finished in #{Time.now-start_time} seconds."
-		end
-	end
-
-	desc "Look for duplicate objects in rdf arg: (folder=subfolder under rdf to scan)"
+	desc "Look for duplicate objects in rdf folders. (optional param: folder=subfolder under rdf to scan)"
 	task :find_duplicate_objects => :environment do
 		folder = ENV['folder']
 		folder = '/' + folder if folder
@@ -215,6 +297,25 @@ namespace :solr_test do
 			}
 		}
 		puts "Finished in #{Time.now-start_time} seconds."
+	end
+
+	desc "Replace \"merged\" index with all the archive indexes"
+	task :merge_indexes => :environment do
+		puts "~~~~~~~~~~~ Merging indexes ..."
+		start_time = Time.now
+		CollexEngine.merge_all_reindexed()
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "Tag all RDF and MARC in SVN (param: label=XXX)"
+	task :tag_rdf_and_marc => :environment do
+		version = ENV['label']
+		if version == nil || version.length == 0
+			puts "Usage: pass label=XXX to tag the current set of RDF and MARC records"
+		else
+			puts "Tagging version #{version}..."
+			system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/nines/trunk https://subversion.lib.virginia.edu/repos/patacriticism/nines/tags/#{version}")
+		end
 	end
 
 	def get_folder_tree(starting_dir, directories)

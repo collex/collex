@@ -19,7 +19,7 @@ namespace :solr do
 	desc "Start the solr java app (Prerequisite for running Collex)"
 	task :start  => :environment do
 		puts "~~~~~~~~~~~ Starting solr..."
-		`cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx1024m -jar start.jar &`
+		`cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx1800m -jar start.jar &`
 	end
 	
 	desc "Stop the solr java app"
@@ -38,11 +38,13 @@ namespace :solr do
 	desc "Zip up the current index for backup and replication"
 	task :zip => :environment do
 		# TODO: if there are two indexes made in a day, this will overwrite the first one.
-		path = "../"	#TODO: set this in site.yml
+		path = "~/"	#TODO: set this in site.yml
 		today = Time.now()
-		filename = "#{path}#{today.strftime('%m.%d.%y')}.index.tar"
-	`tar cvf #{filename} #{solr_folder()}/solr/data/index`
-	`gzip #{filename}`
+		filename = "#{path}#{today.strftime('%m.%d.%y')}.index.tar.gz"
+		puts "~~~~~~~~~~~ zipping index to #{filename}..."
+	`cd #{solr_folder()}/solr/data/resources && tar cvzf #{filename} index`
+	#`gzip #{filename}`
+	puts "Finished in #{(Time.now-today)/60} minutes."
 
 	end
 
