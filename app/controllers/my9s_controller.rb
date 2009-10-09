@@ -344,6 +344,15 @@ class My9sController < ApplicationController
       exhibit.title = params[:overview_title_dlg]
       exhibit.thumbnail = params[:overview_thumbnail_dlg]
       exhibit.visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
+      exhibit.resource_name = params[:overview_resource_name_dlg]
+			genres = []
+			genre_list = params[:genre]
+			genre_list.each { |key,val|
+				if val == 'true'
+					genres.push(key)
+				end
+			}
+			exhibit.genres = genres.join(',')
       exhibit.save
     end
     render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
