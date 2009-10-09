@@ -18,17 +18,26 @@
 <% #parameters: Exhibit exhibit; bool show_immediately -%>
 <script type="text/javascript">
 	var gLicenseInfo = <%= Exhibit.getJsonLicenseInfo() %>;
+	var gGenres = <%= Branding.valid_genre_list().sort.to_json() %>;
 </script>
 <div id="global_form" class="inside_edit_exhibit_box">
-	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list_with_image', '/images/ajax_loader.gif'); return false;", { :class => 'modify_link' }) %></div>
+	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list_with_image', '/images/ajax_loader.gif', gGenres); return false;", { :class => 'modify_link' }) %></div>
 	<span class='exhibit_profile_comment'>Use the fields below to change the font styles, thumbnails or Creative Commons License for your exhibit</span>
 	<div class="exhibit_preview_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 	<div class="exhibit_profile_preview">
-		<div><span class="exhibit_profile_label">Style: </span><%= exhibit_builder_style_name(exhibit) %> <%= link_to_function("[change]", "new EditFontsDlg('/my9s/update_fonts', #{exhibit.id}, #{exhibit.to_json()})", { :class => 'modify_link' }) %>
+		<div><span class="exhibit_profile_label">Style: </span><%= exhibit_builder_style_name(exhibit) %> <%= link_to_function("[change]", "new EditFontsDlg('/my9s/update_fonts', #{exhibit.id}, #{exhibit.to_json()})", { :class => 'modify_link' }) %></div>
 		<div><span class="exhibit_profile_label">Visible URL:</span>
 			http://<%= request.host_with_port() %>/exhibits/<%= exhibit.get_id_if_no_visible_url() %><span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></div>
-	<span class="exhibit_profile_label">Thumbnail:</span>
-	<span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail && exhibit.thumbnail.length > 0 ? exhibit.thumbnail : "<span class='exhibit_profile_comment'>You have not added a thumbnail to this exhibit.</span>" %></span>
+		<span class="exhibit_profile_label">Thumbnail:</span>
+		<span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail && exhibit.thumbnail.length > 0 ? exhibit.thumbnail : "<span class='exhibit_profile_comment'>You have not added a thumbnail to this exhibit.</span>" %></span>
+		<div>
+			<span class="exhibit_profile_label">Resource Name:</span>
+			<span id="overview_resource_name" class="overview_field"><%= exhibit.resource_name %></span>
+		</div>
+		<div>
+			<span class="exhibit_profile_label">Genres:</span>
+			<span id="overview_genres" class="overview_field"><%= exhibit.genres %></span>
+		</div>
 	</div>
 	<div class="exhibit_sharing">
 		<span class="exhibit_profile_label">Creative Commons License:</span>
