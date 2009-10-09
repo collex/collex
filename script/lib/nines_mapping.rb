@@ -75,13 +75,13 @@ module NinesMapping
     ]
     
   # concatenate the fields together in the order they are given
-  BANCROFT_URL = [ 
-    "http://pathfinder.berkeley.edu/WebZ/Authorize?sessionid=0:bad=html/authofail.html:next=NEXTCMD%22/WebZ/CheckIndexCombined:next=html/results.html:format=B:numrecs=20:entitytoprecno=1:entitycurrecno=1:tempjds=TRUE:entitycounter=1:entitydbgroup=Glad:entityCurrentPage=SearchRecentAcq:dbname=Glad:entitycountAvail=0:entitycountDisplay=0:entitycountWhere=0:entityCurrentSearchScreen=html/search.html:entityactive=1:indexA=cl%3D:termA=",
-    ['950','a'],['950','b'],
-    ":next=html/Cannedresultsframe.html:bad=error/badsearchframe.html"    
-  ]
-  
-  URL_FORMULA = BANCROFT_URL
+#  BANCROFT_URL = [
+#    "http://pathfinder.berkeley.edu/WebZ/Authorize?sessionid=0:bad=html/authofail.html:next=NEXTCMD%22/WebZ/CheckIndexCombined:next=html/results.html:format=B:numrecs=20:entitytoprecno=1:entitycurrecno=1:tempjds=TRUE:entitycounter=1:entitydbgroup=Glad:entityCurrentPage=SearchRecentAcq:dbname=Glad:entitycountAvail=0:entitycountDisplay=0:entitycountWhere=0:entityCurrentSearchScreen=html/search.html:entityactive=1:indexA=cl%3D:termA=",
+#    ['950','a'],['950','b'],
+#    ":next=html/Cannedresultsframe.html:bad=error/badsearchframe.html"
+#  ]
+#
+#  URL_FORMULA = BANCROFT_URL
 
   AUTHOR_MARC_CODES = [ ['100','a'], ['110','a'], ['111','a'], ['130','a'] ]       
 
