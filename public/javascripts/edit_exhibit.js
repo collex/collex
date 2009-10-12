@@ -569,11 +569,12 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 			page: 'profile',
 			rows: [
 				[ { text: 'Exhibit Title:', klass: 'new_exhibit_title' }, { input: 'overview_title_dlg', value: values.overview_title_dlg, klass: 'new_exhibit_input_long' } ],
-				[ { text: 'Visible URL:', klass: 'new_exhibit_title' }, { input: 'overview_visible_url_dlg', value: values.overview_visible_url_dlg, klass: 'new_exhibit_input_long' } ],
+				[ { text: 'Exhibit Short Title:', klass: 'new_exhibit_title' }, { text: 'Used for display in lists', klass: 'exhibit_profile_comment' }, { input: 'overview_resource_name_dlg', value: values.overview_resource_name_dlg, klass: 'new_exhibit_input_long' } ],
+				[ { text: 'Visible URL:', klass: 'new_exhibit_title' }, { text: "http://nines.org/exhibits/" }, { input: 'overview_visible_url_dlg', value: values.overview_visible_url_dlg, klass: 'new_exhibit_input_long' } ],
 				[ { text: 'Thumbnail:', klass: 'new_exhibit_title' }, { input: 'overview_thumbnail_dlg', value: values.overview_thumbnail_dlg, klass: 'new_exhibit_input_long' } ],
 				[ { page_link: '[Choose Thumbnail from Collected Objects]', callback: changeView, new_page: 'choose_thumbnail' }],
-				[ { text: 'Resource Name:', klass: 'new_exhibit_title' }, { input: 'overview_resource_name_dlg', value: values.overview_resource_name_dlg, klass: 'new_exhibit_input_long' } ],
 				[ { text: 'Genres:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_genres_dlg + '&nbsp;', id: 'genre_list' }, { page_link: '[Select Genres]', callback: changeView, new_page: 'genres' } ],
+				[ { text: "NINES contributors are required to assign at least one genre to their objects. Please choose one or more from this list.", klass: "exhibit_profile_comment" }],
 				[ { page_link: '[Completely Delete Exhibit]', callback: this.deleteExhibit }],
 				[ { rowClass: 'last_row' }, { button: 'Save', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
