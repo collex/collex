@@ -561,7 +561,7 @@ class Exhibit < ActiveRecord::Base
 		return footnotes
 	end
 
-		def get_all_links()
+	def get_all_links()
 		pages = []
 		for page in self.exhibit_pages
 			links = []
@@ -596,9 +596,124 @@ class Exhibit < ActiveRecord::Base
 		return pages
 	end
 
-		def bump_last_change
-			self.last_change = Time.now()
-			self.save
+	def bump_last_change
+		self.last_change = Time.now()
+		self.save
+	end
+
+	def get_apparent_author_name()
+		# This gets the alias if there is one, and the real author if there isn't.
+		author_rec = User.find(self.alias_id ? self.alias_id : self.user_id)
+		author = author_rec.fullname ? author_rec.fullname : author_rec.username
+		return author
+	end
+
+	def get_friendly_url()
+		return self.visible_url ? "/exhibits/view/#{self.visible_url}" : "/exhibits/view/#{exhibit.id}"
+	end
+
+	private
+	URI_BASE = 'http://nines.org/peer-reviewed-exhibit/'
+	ARCHIVE_PREFIX = "exhibit_"
+	
+	def strip_tags(str)
+		ret = ""
+		arr = str.split('<')
+		arr.each {|el|
+			gt = el.index('>')
+			if gt
+				ret += el.slice(gt+1..el.length-1)
+			else
+				ret += el
+			end
+		}
+		return ret
+	end
+
+	def add_object(solr, data, boost, section_params)
+		uri = "#{URI_BASE}#{self.id}"
+		if section_params
+			uri += "/#{section_params[:count]}"
+			title = "#{self.title} (#{section_params[:name]})"
+			page_str = "?page=#{section_params[:page]}"
+		else
+			title = "#{self.title}"
+			page_str = ""
 		end
+		genres = self.genres.split(',')
+		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail,
+			:genre => genres, :archive => ARCHIVE_PREFIX + self.resource_name, :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
+			:text => data.join("\r\n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
+		solr.add_object(doc, boost)
+	end
+
+	public
+
+	def unindex_exhibit()
+		solr = CollexEngine.new()
+		solr.delete_archive(ARCHIVE_PREFIX + self.resource_name)
+		solr.commit()
+	end
+
+	def index_exhibit(should_commit)
+		boost_section = 3.0
+		boost_exhibit = 2.0
+		solr = CollexEngine.new()
+		full_data = []
+		section_name = ""	# The sections are set whenever there is a new header element; it is independent of the page.
+		num_sections = 0
+		section_page = 1
+		data = []
+		pages = self.exhibit_pages
+		pages.each{|page|
+			elements = page.exhibit_elements
+			elements.each {|element|
+				if element.exhibit_element_layout_type == 'header'
+					if section_name.length > 0
+						add_object(solr, data, boost_section, { :count => num_sections, :name => section_name, :page => section_page })
+					end
+					section_name = element.element_text
+					section_page = page.position
+					num_sections += 1
+					data = []
+				end
+				data.push(strip_tags(element.element_text)) if element.element_text
+				data.push(strip_tags(element.element_text2)) if element.element_text2
+				full_data.push(strip_tags(element.element_text)) if element.element_text
+				full_data.push(strip_tags(element.element_text2)) if element.element_text2
+				if element.header_footnote_id
+					footnote = ExhibitFootnote.find(element.header_footnote_id)
+					data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+				end
+				illustrations = element.exhibit_illustrations
+				illustrations.each {|illustration|
+					data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					data.push(illustration.caption1) if illustration.caption1
+					data.push(illustration.caption2) if illustration.caption2
+					data.push(illustration.alt_text) if illustration.alt_text
+					full_data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					full_data.push(illustration.caption1) if illustration.caption1
+					full_data.push(illustration.caption2) if illustration.caption2
+					full_data.push(illustration.alt_text) if illustration.alt_text
+					if illustration.caption1_footnote_id
+						footnote = ExhibitFootnote.find( illustration.caption1_footnote_id)
+						data.push(strip_tags(footnote.footnote)) if footnote.footnote
+						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					end
+					if illustration.caption2_footnote_id
+						footnote = ExhibitFootnote.find( illustration.caption2_footnote_id)
+						data.push(strip_tags(footnote.footnote)) if footnote.footnote
+						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					end
+				}
+			}
+			if data.length > 0 && section_name.length > 0
+				add_object(solr, data, boost_section, { :count => num_sections, :name => section_name, :page => section_page })
+			end
+		}
+		add_object(solr, full_data, boost_exhibit, nil)
+		solr.commit() if should_commit
+	end
 end
 
