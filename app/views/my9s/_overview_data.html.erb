@@ -29,7 +29,7 @@
 		<div><span class="exhibit_profile_label">Visible URL:</span>
 			http://<%= request.host_with_port() %>/exhibits/<%= exhibit.get_id_if_no_visible_url() %><span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></div>
 		<span class="exhibit_profile_label">Thumbnail:</span>
-		<span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail && exhibit.thumbnail.length > 0 ? exhibit.thumbnail : "<span class='exhibit_profile_comment'>You have not added a thumbnail to this exhibit.</span>" %></span>
+		<span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail && exhibit.thumbnail.length > 0 ? exhibit.thumbnail : "</span><span class='exhibit_profile_comment'>You have not added a thumbnail to this exhibit." %></span>
 		<div>
 			<span class="exhibit_profile_label">Resource Name:</span>
 			<span id="overview_resource_name" class="overview_field"><%= exhibit.resource_name %></span>
