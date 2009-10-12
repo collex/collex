@@ -142,6 +142,7 @@ module DiscussionThreadsHelper
       link = nil
       caption = nil
     end
+		thumbnail = nil if thumbnail != nil && thumbnail.length == 0
     thread = DiscussionThread.find(comment.discussion_thread_id)
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
     return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), :link => link, :caption => caption,
