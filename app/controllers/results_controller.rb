@@ -102,10 +102,10 @@ class ResultsController < ApplicationController
     
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     
-    if uri != nil && user != nil && tag != nil && tag.length > 0
+    if uris != nil && user != nil && tag != nil && tag.length > 0
 	    uris = uris.split("\t")
       uris.each{ |uri|
-        CollectedItem.collect_item(user, uri) # this just returns if the object is already collected.
+        CollectedItem.collect_item(user, uri, nil) # this just returns if the object is already collected.
         CollectedItem.add_tag(user, uri, tag)
       }
     end
@@ -117,7 +117,7 @@ class ResultsController < ApplicationController
     if user != nil && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
       uris.each {|key,uri|
-        CollectedItem.collect_item(user, uri)
+        CollectedItem.collect_item(user, uri, nil)
       }
     end
 
