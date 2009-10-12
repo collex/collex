@@ -129,7 +129,7 @@ module DiscussionThreadsHelper
       caption = hit['title'] ? CachedResource.fix_char_set(hit['title'][0]) : ""
     elsif comment.get_type() == "nines_exhibit"
       exhibit = Exhibit.find(comment.exhibit_id)
-      thumbnail = exhibit.thumbnail
+      thumbnail = exhibit.thumbnail == "You have not added a thumbnail to this exhibit." ? nil : exhibit.thumbnail
       link = get_exhibit_url(exhibit)
       caption = exhibit.title
     elsif comment.get_type() == "inet_object"

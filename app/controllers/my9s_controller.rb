@@ -343,6 +343,7 @@ class My9sController < ApplicationController
     if can_edit_exhibit(user, exhibit_id)
       exhibit.title = params[:overview_title_dlg]
       exhibit.thumbnail = params[:overview_thumbnail_dlg]
+			exhibit.thumbnail = nil if exhibit.thumbnail == "You have not added a thumbnail to this exhibit."
       exhibit.visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
       exhibit.resource_name = params[:overview_resource_name_dlg]
 			genres = []
