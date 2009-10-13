@@ -251,7 +251,7 @@ class SearchController < ApplicationController
 			end
 
 			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil
-			@total_documents = @results["total_documents"]
+			@total_documents = session[:num_docs] #@results["total_documents"]
 			@sites_forest = FacetCategory.sorted_facet_tree().sorted_children
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
 			@citation_count = @results['facets']['genre']['Citation'] || 0
