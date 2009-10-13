@@ -35,17 +35,28 @@ namespace :solr do
 		Rake::Task['solr:start'].invoke
 	end
 
-	desc "Zip up the current index for backup and replication"
+	desc "Zip up the current index for backup and replication (parameter: index=resources|merged)"
 	task :zip => :environment do
-		# TODO: if there are two indexes made in a day, this will overwrite the first one.
-		path = "~/"	#TODO: set this in site.yml
-		today = Time.now()
-		filename = "#{path}#{today.strftime('%m.%d.%y')}.index.tar.gz"
-		puts "~~~~~~~~~~~ zipping index to #{filename}..."
-	`cd #{solr_folder()}/solr/data/resources && tar cvzf #{filename} index`
-	#`gzip #{filename}`
-	puts "Finished in #{(Time.now-today)/60} minutes."
+		# NOTE: if there are two indexes made in a day, this will overwrite the first one.
+		index = ENV["index"]
+		if index == nil
+			puts "Usage: call with index=CORE_NAME"
+		else
+			path = "~/"	#TODO: set this in site.yml
+			today = Time.now()
+			filename = "#{path}#{today.strftime('%m.%d.%y')}.index.tar.gz"
+			puts "~~~~~~~~~~~ zipping index \"#{index}\" to #{filename}..."
+			`cd #{solr_folder()}/solr/data/#{index} && tar cvzf #{filename} index`
+			puts "Finished in #{(Time.now-today)/60} minutes."
+		end
+	end
 
+	desc "Index all exhibits into main index (Note: do this only on the production machine. After this step, do not zip up and move this index.)"
+	task :index_exhibits => :environment do
+		puts "~~~~~~~~~~~ Indexing all peer-reviewed exhibits into solr..."
+		today = Time.now()
+		Exhibit.index_all_peer_reviewed()
+		puts "Finished in #{Time.now-today} seconds."
 	end
 
 #	desc "Set aside existing good solr index so that experiments can be run"

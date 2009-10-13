@@ -640,18 +640,31 @@ class Exhibit < ActiveRecord::Base
 			title = "#{self.title}"
 			page_str = ""
 		end
-		genres = self.genres.split(',')
+		genres = self.genres.split(', ')
 		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail,
-			:genre => genres, :archive => ARCHIVE_PREFIX + self.resource_name, :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
+			:genre => genres, :archive => self.make_archive_name(), :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
 			:text => data.join("\r\n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
 		solr.add_object(doc, boost)
 	end
 
 	public
 
+	RESOURCE_CATEGORY = "NINES Exhibits"	# TODO: generalize this, and allow exhibits to come from 18th connect, too.
+
+	def self.index_all_peer_reviewed
+		exhibits = Exhibit.all(:conditions => [ "category = ?", 'peer-reviewed'])
+		exhibits.each{ |exhibit|
+			exhibit.index_exhibit(exhibit.id == exhibits.last.id)
+		}
+	end
+
+	def make_archive_name
+		return "#{ARCHIVE_PREFIX}#{self.resource_name}"
+	end
+
 	def unindex_exhibit()
 		solr = CollexEngine.new()
-		solr.delete_archive(ARCHIVE_PREFIX + self.resource_name)
+		solr.delete_archive(self.make_archive_name())
 		solr.commit()
 	end
 
@@ -659,6 +672,7 @@ class Exhibit < ActiveRecord::Base
 		boost_section = 3.0
 		boost_exhibit = 2.0
 		solr = CollexEngine.new()
+		solr.delete_archive(self.make_archive_name())
 		full_data = []
 		section_name = ""	# The sections are set whenever there is a new header element; it is independent of the page.
 		num_sections = 0
@@ -714,6 +728,20 @@ class Exhibit < ActiveRecord::Base
 		}
 		add_object(solr, full_data, boost_exhibit, nil)
 		solr.commit() if should_commit
+
+		# add to the resource tree
+		value = self.make_archive_name()
+    facet = FacetCategory.find_by_value(value)
+		parent = FacetCategory.find_by_value(RESOURCE_CATEGORY)
+		id = parent ? parent.id : 1
+    if facet == nil
+      FacetValue.create(:value => value, :parent_id => id)
+		end
+    site = Site.find_by_code(value)
+    if site == nil
+      Site.create(:code => value, :description => self.resource_name)
+    end
+
 	end
 end
 
