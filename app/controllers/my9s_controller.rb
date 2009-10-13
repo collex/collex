@@ -353,7 +353,7 @@ class My9sController < ApplicationController
 					genres.push(key)
 				end
 			}
-			exhibit.genres = genres.join(',')
+			exhibit.genres = genres.join(', ')
       exhibit.save
     end
     render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }

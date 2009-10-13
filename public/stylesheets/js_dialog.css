@@ -369,6 +369,11 @@ a.footnote_tip:hover span.tip {
 	padding: .3em;
 }
 
+#genre_list {
+	padding-left: .2em;
+	padding-right: .2em;
+}
+
 /*****************************************/
 
 #border_outer_container {
@@ -441,6 +446,10 @@ a.footnote_tip:hover span.tip {
 .link_dlg_select {
 	margin-left: 5px;
 	font-size: .85em;
+}
+
+.link_prefix_text {
+	padding-right: .3em;
 }
 
 /*****************************************/
