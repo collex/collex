@@ -58,6 +58,7 @@ class HomeController < ApplicationController
     
     # carousel
     facets = FacetCategory.find(:all, :conditions => ['carousel_include = 1'])
+		facets = facets.sort_by {rand}
     @carousel = []
     for facet in facets
       title = facet[:value]
