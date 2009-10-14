@@ -59,6 +59,14 @@ namespace :solr do
 		puts "Finished in #{Time.now-today} seconds."
 	end
 
+	desc "Remove exhibits from the main index (in case the index should be zipped up and moved.)"
+	task :remove_exhibits_from_index => :environment do
+		puts "~~~~~~~~~~~ Removing all peer-reviewed exhibits from solr..."
+		today = Time.now()
+		Exhibit.unindex_all_exhibits()
+		puts "Finished in #{Time.now-today} seconds."
+	end
+
 #	desc "Set aside existing good solr index so that experiments can be run"
 #	task :set_aside_existing_solr_index => :environment do
 #		Rake::Task['solr:stop'].invoke

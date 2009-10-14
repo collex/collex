@@ -668,6 +668,22 @@ class Exhibit < ActiveRecord::Base
 		solr.commit()
 	end
 
+	def self.unindex_all_exhibits()
+		solr = CollexEngine.new()
+		archives = solr.get_all_archives()
+		changed = false
+		archives.each {|archive|
+			if archive.index(ARCHIVE_PREFIX) == 0
+				puts "Removing archive #{archive}"
+				solr.delete_archive(archive)
+				changed = true
+			end
+		}
+		if changed == true
+			solr.commit()
+		end
+	end
+
 	def index_exhibit(should_commit)
 		boost_section = 3.0
 		boost_exhibit = 2.0
