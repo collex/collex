@@ -220,7 +220,7 @@ class CollexEngine
 	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
 		uri = new_obj['uri']
 		first_error = true
-		required_fields = [ 'title_sort', 'title', 'genre', 'archive' ]#, 'url', 'year', 'author_sort' ]	TODO: too many items are missing. Take care of that later.
+		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'year', 'author_sort' ]	#TODO: too many items are missing. Take care of that later.
 		required_fields.each {|field|
 			if new_obj[field] == nil
 				total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} missing in new index")
@@ -467,6 +467,20 @@ class CollexEngine
 				largest_remaining_size = old_objs_hash.length if old_objs_hash.length > largest_remaining_size
 			end
 
+		# These are all the objects that didn't match.
+		if new_obj.length > 0
+			puts " ============================= TEXT ADDED TO ARCHIVE ==========================="
+		end
+		new_obj.each { |obj|
+			puts "---------------------------------------------------------------------------------------------------------------"
+			puts " --- #{ obj['uri']} ---"
+			if obj['text']
+				puts obj['text']
+			else
+				puts " --- No full text for this item"
+			end
+			puts "---------------------------------------------------------------------------------------------------------------"
+		}
 		puts "    largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
 		return total_objects, total_errors
 	end
@@ -488,8 +502,6 @@ class CollexEngine
 				reindexed = CollexEngine.new(["archive_#{core_name}"])
 			end
 			total_docs_scanned, total_errors = compare_text_one_archive(archive_to_scan, reindexed, resources)
-			total_docs_scanned += total_docs_scanned2
-			total_errors += total_errors2
 		else
 			archives = resources.get_all_archives()
 			started = start_after == nil

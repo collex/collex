@@ -14,7 +14,7 @@
 # limitations under the License.
 ##########################################################################
 
-namespace :solr_test do
+namespace :solr_index do
 
 	desc "Completely reindex and test all RDF and MARC records"
 	task :completely_reindex_everything => :environment do
@@ -32,28 +32,37 @@ namespace :solr_test do
 		}
 		# recreate all the RDF data
 		ENV['folder'] = ''
-		Rake::Task['solr_test:reindex_rdf'].invoke
+		Rake::Task['solr_index:reindex_rdf'].invoke
 
 		# recreate all the MARC data
 		ENV['archive'] = nil
-		Rake::Task['solr_test:reindex_marc'].invoke
+		Rake::Task['solr_index:reindex_marc'].invoke
 
 		# Now, test the indexes
-		Rake::Task['solr_test:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
+		Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
 		ENV['start_after'] = nil
-		Rake::Task['solr_test:compare_indexes'].invoke	# list the differences between the objects
-		Rake::Task['solr_test:compare_indexes_text'].invoke	# list the differences between the text in the objects
-		Rake::Task['solr_test:find_duplicate_objects'].invoke	# see if there are any duplicate uri anywhere in the RDF records.
+		Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
+		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
+		Rake::Task['solr_index:find_duplicate_objects'].invoke	# see if there are any duplicate uri anywhere in the RDF records.
 
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "Compare archive_* indexes with original index (optional param: archive=XXX)"
+	task :compare_archive_index_with_original_index => :environment do
+		#Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
+		#ENV['start_after'] = "bancroft" #nil
+		#Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
+		ENV['start_after'] = "chesnutt"
+		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 	end
 
 	desc "Compare merged index with original index (optional param: archive=XXX)"
 	task :compare_merged_index_with_original_index => :environment do
 		ENV['use_merged_index'] = "true"
-		Rake::Task['solr_test:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
-		Rake::Task['solr_test:compare_indexes'].invoke	# list the differences between the objects
-		Rake::Task['solr_test:compare_indexes_text'].invoke	# list the differences between the text in the objects
+		Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
+		Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
+		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 	end
 
 	desc "Reindex documents from the rdf folder to the reindex core [folder] (solr must be started, and the base folders must be set in site.yml)"
@@ -307,6 +316,20 @@ namespace :solr_test do
 		start_time = Time.now
 		CollexEngine.merge_all_reindexed()
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "Merge one archive into the \"merged\" index (param: archive=XXX)"
+	task :merge_archive => :environment do
+		archive = ENV['archive']
+		if archive == nil
+			puts "Usage: call with archive=XXX"
+		else
+			puts "~~~~~~~~~~~ Merging archive #{archive} ..."
+			start_time = Time.now
+			index = CollexEngine.new()
+			index.merge("archive_#{archive}")
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+		end
 	end
 
 	desc "Tag all RDF and MARC in SVN (param: label=XXX)"
