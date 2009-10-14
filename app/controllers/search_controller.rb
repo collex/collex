@@ -226,7 +226,7 @@ class SearchController < ApplicationController
 			@page = params[:page] ? params[:page].to_i : 1
 
 			begin
-			 @results = search_solr(session[:constraints], @page, items_per_page, session[:search_sort_by])
+			 @results = search_solr(session[:constraints], @page, items_per_page, session[:search_sort_by], session[:search_sort_by_direction])
 			 # Add the highlighting to the hit object so that a result is completely contained inside the hit object
 			 @results['hits'].each { |hit|
 				 if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
@@ -243,7 +243,7 @@ class SearchController < ApplicationController
 				end
 			 }
 			 if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
-				 resourceless_results = search_solr(resourceless_constraints, @page, items_per_page, session[:search_sort_by])
+				 resourceless_results = search_solr(resourceless_constraints, @page, items_per_page, session[:search_sort_by], session[:search_sort_by_direction])
 				 @results['facets']['archive'] = resourceless_results['facets']['archive']
 			 end
 			rescue  Net::HTTPServerException => e
@@ -548,13 +548,14 @@ class SearchController < ApplicationController
    end
    
    private
-   def search_solr(constraints, page, items_per_page, sort_by)
+   def search_solr(constraints, page, items_per_page, sort_by, direction)
 		 sort_param = nil	# in case the sort_by was an unexpected value
 		 sort_param = 'author_sort' if sort_by == 'Author'
 		 sort_param = nil if sort_by == 'Relevancy'
 		 sort_param = 'title_sort' if sort_by == 'Title'
 		 sort_param = 'year' if sort_by == 'Date'
-     return @solr.search(constraints, (page - 1) * items_per_page, items_per_page, sort_param)
+		 sort_ascending = direction != 'Descending'
+     return @solr.search(constraints, (page - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
    end
    
   # This chooses which constraints are listed on the results page above the results.

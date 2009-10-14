@@ -61,11 +61,15 @@ class CollexEngine
     facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
   end
   
-  def search(constraints, start, max, sort_by)	# called when the user requests a search.
+  def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
     query, filter_queries = solrize_constraints(constraints)
 
     # TODO: switch to DisMax (DisjunctionMaxQuery)
-		sort_param = sort_by ? [ { sort_by.to_sym => :ascending } ] : nil
+		if sort_ascending
+			sort_param = sort_by ? [ { sort_by.to_sym => :ascending } ] : nil
+		else
+			sort_param = sort_by ? [ { sort_by.to_sym => :descending } ] : nil
+		end
     req = Solr::Request::Standard.new(:start => start, :rows => max, :sort => sort_param,
 					:query => query, :filter_queries => filter_queries,
 					:field_list => @field_list,
@@ -158,7 +162,7 @@ class CollexEngine
 		`curl \"#{url}\"`
 	end
 
-	private
+	public	# these should actually be some sort of private since they are only called inside this file.
 	def get_page_in_archive(archive, page, size, field_list)
     query = "archive:#{Solr::Util.query_parser_escape(archive)}"
 
@@ -171,7 +175,7 @@ class CollexEngine
 	end
 
   def get_all_archives
-    results = search([], 1, 10, nil)
+    results = search([], 1, 10, nil, true)
     found_resources = results['facets']['archive']
     resources = []
     found_resources.each {|key,val| resources.push(key)}
@@ -212,7 +216,7 @@ class CollexEngine
 		@solr.optimize
 	end
 
-	private
+	public	# these should actually be some sort of private since they are only called inside this file.
 	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
 		uri = new_obj['uri']
 		first_error = true
@@ -234,11 +238,11 @@ class CollexEngine
 			new_obj.each {|key,value|
 				if key == 'batch' || key == 'score'
 					old_obj.delete(key)
-				elsif key == 'title_sort' || key == 'author_sort'
-					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-				elsif key == 'url' && new_obj['archive'] == 'bancroft'
-					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-					old_obj.delete(key)
+#				elsif key == 'title_sort' || key == 'author_sort'
+#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+#				elsif key == 'url' && new_obj['archive'] == 'bancroft'
+#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+#					old_obj.delete(key)
 				else
 					old_value = old_obj[key]
 					if old_value.kind_of?(Array)
@@ -389,13 +393,13 @@ class CollexEngine
 		puts "Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}"
 	end
 
-	private
+	public	# these should actually be some sort of private since they are only called inside this file.
 	def self.compare_text_one_archive(archive, reindexed_core, old_core)
 			puts "====== Scanning archive \"#{archive}\"... ====== "
 			start_time = Time.now
 			done = false
 			page = 0
-			size = 100
+			size = 25
 			total_objects = 0
 			total_errors = 0
 			new_obj = []
@@ -490,7 +494,9 @@ class CollexEngine
 			archives = resources.get_all_archives()
 			started = start_after == nil
 			archives.each {|archive|
-				if started
+				if archive.index("exhibit_") == 0
+					puts "====== Skipping #{archive}."
+				elsif started
 					if use_merged_index
 						reindexed = CollexEngine.new(["merged"])
 					else
@@ -510,7 +516,7 @@ class CollexEngine
 		puts "Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}"
 	end
 
-	private
+	public	# these should actually be some sort of private since they are only called inside this file.
 	def self.archive_to_core_name(archive)
 		return archive.gsub(":", "_").gsub(" ", "_").gsub(",", "_").gsub("-", "_")
 	end
