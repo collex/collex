@@ -39,8 +39,9 @@ class My9sController < ApplicationController
   def can_edit_exhibit(user, exhibit_id)
     return false if user == nil
     return false if exhibit_id == nil
-    return true if is_admin?
     exhibit = Exhibit.find(exhibit_id)
+		return false if exhibit.category == "peer-reviewed"
+    return true if is_admin?
     return exhibit.user_id == user.id
   end
 
