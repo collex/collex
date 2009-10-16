@@ -28,9 +28,13 @@ class CollexEngine
 		}
 
     @solr = Solr::Connection.new(SOLR_URL+ '/' + cores[0])
-		@field_list = ["archive", "date_label", "genre", "role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "source", "image", "thumbnail", "text_url", "title", "alternative", "uri", "url", "title_sort", "author_sort" ]
-    @all_fields_except_text = [ "uri", "agent", "agent_facet", "alternative", "archive", "author", "batch", "date_label", "editor", "freeculture", "genre",
-			"image", "publisher", "role_*", "source", "text_url", "thumbnail", "title", "url", "year", "title_sort", "author_sort", "type", "date_updated" ]
+		@field_list = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
+			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE",
+			"is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
+    @all_fields_except_text = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
+			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE",
+			"publisher", "agent", "agent_facet", "author", "batch", "editor", "freeculture", "text_url", "year", "type", "date_updated",
+			"title_sort", "author_sort", "is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
 		@facet_fields = ['genre','archive','freeculture']
   end
 
@@ -96,6 +100,19 @@ class CollexEngine
     req = Solr::Request::Standard.new(
              :start => 0, :rows => 1,
              :query => query, :field_list => @field_list, :shards => @cores)
+
+    response = @solr.send(req)
+    return response.hits[0] if response.hits.length > 0
+		return nil
+	end
+
+	def get_object_with_text(uri)
+		# Returns nil if the object doesn't exist, or the object if it does.
+    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
+
+    req = Solr::Request::Standard.new(
+             :start => 0, :rows => 1,
+             :query => query, :shards => @cores)
 
     response = @solr.send(req)
     return response.hits[0] if response.hits.length > 0
@@ -198,7 +215,7 @@ class CollexEngine
 	end
 
 	def get_text_fields_in_archive(archive, page, size)
-		return get_page_in_archive(archive, page, size, [ 'uri', 'text' ])
+		return get_page_in_archive(archive, page, size, [ 'uri', 'text', 'is_ocr', 'has_full_text' ])
  	end
 
 	def get_all_uris_in_archive(archive)
@@ -220,7 +237,7 @@ class CollexEngine
 	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
 		uri = new_obj['uri']
 		first_error = true
-		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'year', 'author_sort' ]	#TODO: too many items are missing. Take care of that later.
+		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'year', 'author_sort', 'federation' ]	#TODO: too many items are missing. Take care of that later.
 		required_fields.each {|field|
 			if new_obj[field] == nil
 				total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} missing in new index")
@@ -238,26 +255,27 @@ class CollexEngine
 			new_obj.each {|key,value|
 				if key == 'batch' || key == 'score'
 					old_obj.delete(key)
-#				elsif key == 'title_sort' || key == 'author_sort'
-#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-#				elsif key == 'url' && new_obj['archive'] == 'bancroft'
-#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-#					old_obj.delete(key)
+				elsif key == 'federation' && value.to_s == "NINES"
+					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+				elsif key == 'has_full_text' || key == 'is_ocr'
+					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
 				else
 					old_value = old_obj[key]
 					if old_value.kind_of?(Array)
-						x = ""
 						old_value.each{ |v|
-							x += v.strip() + ' | '
+							v = v.strip()
 						}
-						old_value = x
+						old_value = old_value.join(" | ")
+					elsif old_value != nil
+						old_value = "#{old_value}"
 					end
 					if value.kind_of?(Array)
-						x = ""
 						value.each{ |v|
-							x += v.strip() + ' | '
+							v = v.strip()
 						}
-						value = x
+						value = value.join(" | ")
+					else
+						value = "#{value}"
 					end
 					if key == 'text' || key == 'title'
 						old_value = old_value.strip if old_value != nil
@@ -346,10 +364,10 @@ class CollexEngine
 				reindexed = CollexEngine.new(["archive_#{archive_to_core_name(archive_to_scan)}"])
 			end
 			new_obj = reindexed.get_all_objects_in_archive(archive_to_scan)
-			print "retrieved #{new_obj.length} new rdf objects..."
+			print "retrieved #{new_obj.length} new rdf objects;"
 			total_docs_scanned += new_obj.length
 			old_obj = resources.get_all_objects_in_archive(archive_to_scan)
-			print "retrieved #{old_obj.length} old objects..."
+			puts "retrieved #{old_obj.length} old objects;"
 			total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
 		else
 			if use_merged_index
@@ -377,10 +395,10 @@ class CollexEngine
 					end
 
 					new_obj = reindexed.get_all_objects_in_archive(archive)
-					print "retrieved #{new_obj.length} new rdf objects..."
+					print "retrieved #{new_obj.length} new rdf objects;"
 					total_docs_scanned += new_obj.length
 					old_obj = resources.get_all_objects_in_archive(archive)
-					puts "retrieved #{old_obj.length} old objects..."
+					puts "retrieved #{old_obj.length} old objects;"
 					total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
 					
 				else	# is started
@@ -437,11 +455,28 @@ class CollexEngine
 						end
 						if obj['text'] == nil
 							text = ""
+							if obj['has_full_text'] != false
+								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist."
+								total_errors += 1
+							end
+							if obj['is_ocr'] != nil
+								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist."
+								total_errors += 1
+							end
 						elsif obj['text'].length > 1
 							puts "#{uri} new text is an array of size #{obj['text'].length}"
+								total_errors += 1
 							text = obj['text'].join(" | ").strip()
 						else
 							text = obj['text'][0].strip
+							if obj['has_full_text'] != true
+								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
+								total_errors += 1
+							end
+							if obj['is_ocr'] != false
+								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists."
+								total_errors += 1
+							end
 						end
 						if text != old_text
 							total_errors += 1
@@ -457,6 +492,7 @@ class CollexEngine
 								first_mismatch == old_arr.length
 							end
 							puts "#{uri} mismatch at line #{first_mismatch}:\n(new)\"#{new_arr[first_mismatch]}\" vs.\n(old)\"#{old_arr[first_mismatch]}\""
+								total_errors += 1
 						end
 						new_obj[i] = nil	# we've done this one, so get rid of it
 						old_objs_hash.delete(uri)
@@ -476,6 +512,7 @@ class CollexEngine
 			puts " --- #{ obj['uri']} ---"
 			if obj['text']
 				puts obj['text']
+				total_errors += 1
 			else
 				puts " --- No full text for this item"
 			end
