@@ -20,9 +20,9 @@
 <% is_collected =(item != nil) -%>
 
 <% ################### -%>
-<% hit['alternative'].each do %>
+<% hit['alternative'].each do |alt| %>
 <tr>
-<td valign="top" colspan="2"><%= hit['alternative'] %></td>
+<td valign="top" colspan="2"><%= alt %></td>
 </tr>
 <% end if hit['alternative'] %>
 <% ################### -%>
