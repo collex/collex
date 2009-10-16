@@ -226,7 +226,7 @@ private
   end
 
   def get_all_found_resources
-    solr = CollexEngine.new()
+    solr = CollexEngine.factory_create(session[:use_test_index] == "true")
     results = solr.search([], 1, 10, nil)
     found_resources = results['facets']['archive']
     resources = []

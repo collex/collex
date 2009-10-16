@@ -38,6 +38,15 @@ class CollexEngine
 		@facet_fields = ['genre','archive','freeculture']
   end
 
+	def self.factory_create(testing)
+		if testing
+			cores = self.get_archive_core_list()
+			return CollexEngine.new(cores)
+		else
+			return CollexEngine.new()
+		end
+	end
+
 	def self.get_num_docs()	# this always gets just the number of documents in the main index, no matter how many indexes are used.
 		return CollexEngine.new().num_docs
 	end

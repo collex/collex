@@ -254,7 +254,7 @@ class ResultsController < ApplicationController
   end
   
   def get_from_solr(uri)
-    @solr = CollexEngine.new() if @solr == nil
+    @solr = CollexEngine.factory_create(session[:use_test_index] == "true") if @solr == nil
     begin
 			return @solr.get_object( uri )
 		rescue  Net::HTTPServerException => e

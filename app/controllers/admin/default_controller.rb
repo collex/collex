@@ -81,4 +81,14 @@ class Admin::DefaultController < Admin::BaseController
 		exhibit = Exhibit.find(exhibit_id)
 		exhibit.index_exhibit(true)
 	end
+
+	def index
+		@use_test_index = session[:use_test_index]
+	end
+
+	def use_test_index
+		use_test = params[:test]
+		session[:use_test_index] = use_test
+    redirect_to :controller => 'admin/default', :action => 'index'
+	end
 end

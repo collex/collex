@@ -20,6 +20,9 @@
 	# If there are constraints and results, then the Search Results view is shown. -%>
 <% current_page "Search" -%>
 
+<% if session[:use_test_index] == "true" -%>
+<div class="right_column_header">USING TEST INDEX</div>
+<% end -%>
 <div class="inner_content_container">
 	<% if has_constraints? #(@listed_constraints.size > 0) If the user is in the middle of a search. -%>
 		<% if @num_pages > 0 # if there are results -%>
