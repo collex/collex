@@ -551,7 +551,7 @@ class SearchController < ApplicationController
    def search_solr(constraints, page, items_per_page, sort_by, direction)
      @solr = CollexEngine.factory_create(session[:use_test_index] == "true")
 		 sort_param = nil	# in case the sort_by was an unexpected value
-		 sort_param = 'author_sort' if sort_by == 'Author'
+		 sort_param = 'author_sort' if sort_by == 'Name'
 		 sort_param = nil if sort_by == 'Relevancy'
 		 sort_param = 'title_sort' if sort_by == 'Title'
 		 sort_param = 'year' if sort_by == 'Date'
