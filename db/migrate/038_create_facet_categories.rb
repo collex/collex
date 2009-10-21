@@ -22,10 +22,16 @@ class CreateFacetCategories < ActiveRecord::Migration
       t.column :type, :string
     end
 
-#    # Create initial set of archive facet categories
+    # Create initial set of archive facet categories
 #    archive = FacetTree.create(:value => 'archive')
+#		FacetCategory.create(:value => 'archive', :parent_id => nil)
+#		archive = FacetCategory.find_by_value('archive')
 #
 #    # Categories under the archive facet tree
+#		FacetCategory.create(:value => 'Libraries', :parent_id => archive.id)
+#		FacetCategory.create(:value => 'Journals', :parent_id => archive.id)
+#		FacetCategory.create(:value => 'Presses', :parent_id => archive.id)
+#		FacetCategory.create(:value => 'Projects', :parent_id => archive.id)
 #    libraries = FacetCategory.new(:value => 'Libraries')
 #    journals = FacetCategory.new(:value => 'Journals')
 #    presses = FacetCategory.new(:value => 'Presses')
