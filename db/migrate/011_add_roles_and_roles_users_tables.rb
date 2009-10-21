@@ -16,6 +16,8 @@
 
 class AddRolesAndRolesUsersTables < ActiveRecord::Migration
   class Role < ActiveRecord::Base; end
+  class RolesUsers < ActiveRecord::Base; end
+	
   def self.up
     create_table :roles do |t|
       t.column :name, :string
