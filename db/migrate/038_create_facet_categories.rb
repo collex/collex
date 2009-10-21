@@ -16,12 +16,11 @@
 
 class CreateFacetCategories < ActiveRecord::Migration
   def self.up
-    drop_table :facet_categories
-    create_table :facet_categories do |t|
-      t.column :parent_id, :integer
-      t.column :value, :string
-      t.column :type, :string
-    end
+#    create_table :facet_categories do |t|
+#      t.column :parent_id, :integer
+#      t.column :value, :string
+#      t.column :type, :string
+#    end
 
     # Create initial set of archive facet categories    
     archive = FacetTree.create(:value => 'archive')
