@@ -137,7 +137,7 @@ namespace :solr_index do
 			marc_path = '../marc/'
 			puts "~~~~~~~~~~~ Reindexing marc records..."
 			start_time = Time.now
-				args = { :dir => "#{marc_path}Uva",
+				args = { #:dir => "#{marc_path}Uva",
 									# :output_file => 'extracted.mrc',
 									 :url_log_path => 'link_data.txt',
 									 :tool => :index,
@@ -154,6 +154,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'bancroft'
 				args[:archive] = 'bancroft'
 				args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
+				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_bancroft")
 				args[:dir] = "#{marc_path}Bancroft"
 				MarcIndexer.run(args)
@@ -162,6 +163,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'lilly'
 				args[:archive] = 'lilly'
 				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
+				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_lilly")
 				args[:dir] = "#{marc_path}Lilly"
 				MarcIndexer.run(args)
@@ -228,9 +230,19 @@ namespace :solr_index do
 		uri = ENV['uri']
 		solr = CollexEngine.new()
 		hit = solr.get_object_with_text(uri)
-		hit.each { |key,val|
-			puts "#{key}: #{val}"
-		}
+		if hit == nil
+			puts "#{uri}: Can't find this object in the archive."
+		else
+			hit.each { |key,val|
+				if val.kind_of?(Array)
+					val.each{ |v|
+						puts "#{key}: #{v}"
+					}
+				else
+					puts "#{key}: #{val}"
+				end
+			}
+		end
 	end
 
 	desc "clear the reindexing index (param: index=[archive_*]"
