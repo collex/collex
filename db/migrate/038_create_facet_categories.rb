@@ -24,7 +24,7 @@ class CreateFacetCategories < ActiveRecord::Migration
 
     # Create initial set of archive facet categories
 #    archive = FacetTree.create(:value => 'archive')
-		FacetCategory.create(:value => 'archive', :parent_id => nil)
+		FacetCategory.create(:value => 'archive', :parent_id => nil, :type => 'FacetTree')
 #		archive = FacetCategory.find_by_value('archive')
 #
 #    # Categories under the archive facet tree
