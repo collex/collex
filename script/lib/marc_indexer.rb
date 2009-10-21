@@ -55,12 +55,17 @@ class MarcIndexer
       puts "ERROR: No archive code specified, use -a option to specify an archive."
       return
     end
+
+		if args[:federation].nil?
+      puts "ERROR: No federation specified, use -f option to specify a federation."
+      return
+		end
     
     puts "Indexing MARC data..."
     start_time = Time.new ## start the clock
     
     marc_indexer = MarcIndexer.new(args) 
-    marc_indexer.index_directory(args[:dir], args[:archive]) 
+    marc_indexer.index_directory(args[:dir], args[:archive], args[:federation])
    
     end_time = Time.new
     time_lapsed = end_time - start_time
@@ -82,8 +87,9 @@ class MarcIndexer
     end
   end
   
-  def index_directory( dir, archive_id )
+  def index_directory( dir, archive_id, federation )
     @archive_id = archive_id
+		@federation = federation
     @batch_id = "MARC-#{Time.now.xmlschema.gsub(/\:/,'-')}"
     @total_record_count = 0
     
@@ -208,7 +214,9 @@ class MarcIndexer
       :role_PBL => get_proc( :parse_publisher ),
       :role_AUT => get_proc( :parse_author ), 
       :agent => get_proc( :parse_author ), 
-      :archive => @archive_id, 
+      :archive => @archive_id,
+      :federation => @federation,
+			:has_full_text => "F",
       :title_sort => get_proc( :parse_title ),
       :author_sort => get_proc( :parse_author_sort ),
   #    :type => "A",  # a NINES "archive" object, as opposed to a "collectable" (type "C")
