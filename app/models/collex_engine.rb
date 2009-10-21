@@ -429,6 +429,7 @@ class CollexEngine
 			size = 25
 			total_objects = 0
 			total_errors = 0
+			docs_with_text = 0
 			new_obj = []
 			old_objs_hash = {}
 			largest_remaining_size = 0
@@ -455,7 +456,7 @@ class CollexEngine
 					old_obj = old_objs_hash[uri]
 					if old_obj != nil
 						if old_obj['text'] == nil
-							old_text = ""
+							#old_text = ""
 						elsif old_obj['text'].length > 1
 							puts "#{uri} old text is an array of size #{old_obj['text'].length}"
 							old_text = old_obj['text'].join(" | ").strip()
@@ -463,7 +464,7 @@ class CollexEngine
 							old_text = old_obj['text'][0].strip
 						end
 						if obj['text'] == nil
-							text = ""
+							#text = ""
 							if obj['has_full_text'] != false
 								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist."
 								total_errors += 1
@@ -477,6 +478,7 @@ class CollexEngine
 								total_errors += 1
 							text = obj['text'].join(" | ").strip()
 						else
+							docs_with_text += 1
 							text = obj['text'][0].strip
 							if obj['has_full_text'] != true
 								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
@@ -487,21 +489,56 @@ class CollexEngine
 								total_errors += 1
 							end
 						end
-						if text != old_text
+						if text == nil && old_text != nil
+							puts "#{uri} text field has disappeared from the new index."
 							total_errors += 1
-							old_arr = old_text.split("\n")
-							new_arr = text.split("\n")
-							first_mismatch = -1
-							old_arr.each_with_index { |s, j|
-								if first_mismatch == -1 && new_arr[j] != s
-									first_mismatch = j
+						elsif text != nil && old_text == nil
+							puts "#{uri} text field has appeared in the new index."
+							total_errors += 1
+						elsif text != old_text
+							# Get rid of all extra white space and extra lines. We first turn all white space except new lines into one white space.
+							# then we know that all the remaining strings of more than one white space character must contain at least one newline.
+							# so we can turn that into a single new line.
+							text = text.gsub(/[ \t]+/, " ")
+							old_text = old_text.gsub(/[ \t]+/, " ")
+							text = text.gsub(/[\s]{2,}/, "\n")
+							old_text = old_text.gsub(/[\s]{2,}/, "\n")
+							# The old text had some imperfections that should be fixed now. TODO: remove this when the reference index is updated.
+							# turn the old &amp; symbols into &
+							old_text = old_text.gsub("&amp;", "&")
+							old_text = old_text.gsub("&amp;", "&")
+							old_text = old_text.gsub("&mdash", "-")
+							old_text = old_text.gsub("&hyphen", "-")
+							old_text = old_text.gsub("&colon", ":")
+							if text != old_text
+								# TODO: The new text has a strange quirk that should be found: sometimes a particular unicode char appears twice.
+								s = String.new
+								c = 226
+								s << c
+								c = 128
+								s << c
+								c = 148
+								s << c
+								text = text.gsub(s+s, s)
+								old_text = old_text.gsub(s+s, s)
+								if text != old_text
+									old_arr = old_text.split("\n")
+									new_arr = text.split("\n")
+									first_mismatch = -1
+									old_arr.each_with_index { |s, j|
+										if first_mismatch == -1 && new_arr[j] != s
+											first_mismatch = j
+										end
+									}
+									if first_mismatch == -1	# if the new text has more lines than the old text
+										first_mismatch == old_arr.length
+									end
+									puts "#{uri} mismatch at line #{first_mismatch}:\n(new)\"#{new_arr[first_mismatch]}\" vs.\n(old)\"#{old_arr[first_mismatch]}\""
+									#puts "#{text}\n----\n#{old_text}"
+									#puts "#{text}"
+									total_errors += 1
 								end
-							}
-							if first_mismatch == -1	# if the new text has more lines than the old text
-								first_mismatch == old_arr.length
 							end
-							puts "#{uri} mismatch at line #{first_mismatch}:\n(new)\"#{new_arr[first_mismatch]}\" vs.\n(old)\"#{old_arr[first_mismatch]}\""
-								total_errors += 1
 						end
 						new_obj[i] = nil	# we've done this one, so get rid of it
 						old_objs_hash.delete(uri)
@@ -527,7 +564,7 @@ class CollexEngine
 			end
 			puts "---------------------------------------------------------------------------------------------------------------"
 		}
-		puts "    largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
+		puts "    docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
 		return total_objects, total_errors
 	end
 
