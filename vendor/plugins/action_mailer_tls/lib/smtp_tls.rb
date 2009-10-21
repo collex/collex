@@ -5,7 +5,7 @@ Net::SMTP.class_eval do
   private
   def do_start(helodomain, user, secret, authtype)
     raise IOError, 'SMTP session already started' if @started
-    check_auth_args user, secret, authtype if user or secret
+    check_auth_args user, secret if user or secret	#TODO-PER: This fixes a problem where it doesn't work in Ruby 1.8.7
 
     sock = timeout(@open_timeout) { TCPSocket.open(@address, @port) }
     @socket = Net::InternetMessageIO.new(sock)
