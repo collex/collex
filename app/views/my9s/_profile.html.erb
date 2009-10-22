@@ -43,9 +43,9 @@
 <% if can_edit -%>
 	<div class="profile_edit"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my9s/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></div>
 <% end -%>
-<div class="profile_div"><span class="profile_label">Username:</span><span><%=h user.username %></span></div>
-<div class="profile_div"><span class="profile_label">Full name:</span><span><%=h user.fullname %></span></div>
-<div class="profile_div"><span class="profile_label">Email:</span><span><%=h user.email %></span></div>
-<div class="profile_div"><span class="profile_label">Institution:</span><span><%=h user.institution %></span></div>
-<div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil ? make_ext_link(user.link) : "" %></span></div>
-<div class="profile_div"><span class="profile_label">About me:</span><span class="profile_paragraph"><%=h user.about_me %></span></div>
+<div class="profile_div"><span class="profile_label">Username:</span><span><%=h user.username %></span><span>&nbsp;</span></div>
+<div class="profile_div"><span class="profile_label">Full name:</span><span><%=h user.fullname %></span><span>&nbsp;</span></div>
+<div class="profile_div"><span class="profile_label">Email:</span><span><%=h user.email %></span><span>&nbsp;</span></div>
+<div class="profile_div"><span class="profile_label">Institution:</span><span><%=h user.institution %></span><span>&nbsp;</span></div>
+<div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil ? make_ext_link(user.link) : "" %></span><span>&nbsp;</span></div>
+<div class="profile_div"><span class="profile_label">About me:</span><span class="profile_paragraph"><%=h user.about_me %></span><span>&nbsp;</span></div>
