@@ -49,26 +49,3 @@
 <div class="profile_div"><span class="profile_label">Institution:</span><span><%=h user.institution %></span></div>
 <div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil ? make_ext_link(user.link) : "" %></span></div>
 <div class="profile_div"><span class="profile_label">About me:</span><span class="profile_paragraph"><%=h user.about_me %></span></div>
-
-<!-- <table>
-	<tr valign="top">
-		<td>
-			<%= image_tag(get_user_picture(user.id, :full), :style => 'max-height:180px') %>
-		</td>
-		<td width="10px"></td>
-		<td> <%# right hand side of profile, with everything but the picture %>
-			<table class="user_profile">
-				<% if can_edit -%>
-					<tr><td></td><td  align="right"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my9s/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></td></tr>
-				<% end -%>
-				<tr><td class="profile_label">Username:</td><td><%=h user.username %></td></tr>
-				<tr><td class="profile_label">Full name:</td><td><%=h user.fullname %></td></tr>
-				<tr><td class="profile_label">Email:</td><td><%=h user.email %></td></tr>
-				<tr><td class="profile_label">Institution:</td><td><%=h user.institution %></td></tr>
-				<tr><td class="profile_label">Link:</td><td><%= user.link != nil ? make_ext_link(user.link) : "" %></td></tr>
-				<tr><td class="profile_label">About me:</td><td class="profile_paragraph"><%=h user.about_me %></td></tr>
-			</table>
-		</td>
-	</tr>
-</table>
--->
