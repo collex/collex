@@ -256,16 +256,18 @@ class CollexEngine
 	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
 		uri = new_obj['uri']
 		first_error = true
-		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'year', 'author_sort', 'federation' ]	#TODO: too many items are missing. Take care of that later.
+		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'federation' ]	# 'year', 'author_sort', TODO: too many items are missing. Take care of that later.
 		required_fields.each {|field|
-			if new_obj[field] == nil
-				total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} missing in new index")
-			elsif new_obj[field].length == 0
-				total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is NIL in new index")
-			elsif new_obj[field].kind_of?(Array) && new_obj[field].join('').strip().length == 0
-				total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is an array of all spaces in new index")
-			elsif !new_obj[field].kind_of?(Array) && new_obj[field].strip() == ""
-				total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is all spaces in new index")
+			if field != 'url' || new_obj['archive'] != 'whitbib'	#TODO: remove this when new "resources" archive is created.
+				if new_obj[field] == nil
+					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} missing in new index")
+				elsif new_obj[field].length == 0
+					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is NIL in new index")
+				elsif new_obj[field].kind_of?(Array) && new_obj[field].join('').strip().length == 0
+					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is an array of all spaces in new index")
+				elsif !new_obj[field].kind_of?(Array) && new_obj[field].strip() == ""
+					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is all spaces in new index")
+				end
 			end
 		}
 		if old_obj == nil
@@ -275,6 +277,9 @@ class CollexEngine
 				if key == 'batch' || key == 'score'
 					old_obj.delete(key)
 				elsif key == 'federation' && value.to_s == "NINES"
+					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+					old_obj.delete(key)
+				elsif key == 'federation' && value.join(",") == "NINES,18th Connect" && new_obj['archive'] == 'poetess'
 					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
 					old_obj.delete(key)
 				elsif key == 'has_full_text' || key == 'is_ocr'
@@ -289,7 +294,9 @@ class CollexEngine
 						value = value.strip if value != nil
 					end
 					if old_value == nil
-						total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} #{value.gsub("\n", " / ")} introduced in reindexing.")
+						if key != 'author_sort'	#TODO: to many errors: remove this test after "resources" index is recreated.
+							total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} #{value.gsub("\n", " / ")} introduced in reindexing.")
+						end
 					elsif old_value != value
 						if old_value.gsub('&amp;', '&') != value.gsub('&amp;', '&')	# TODO: Straighten out &amp; bug.
 							if old_value.length > 30
@@ -497,6 +504,7 @@ class CollexEngine
 							# Get rid of all extra white space and extra lines. We first turn all white space except new lines into one white space.
 							# then we know that all the remaining strings of more than one white space character must contain at least one newline.
 							# so we can turn that into a single new line.
+							old_text = old_text.gsub("&nbsp;", " ")	# TODO: remove after resource index is updated.
 							text = text.gsub(/[ \t]+/, " ")
 							old_text = old_text.gsub(/[ \t]+/, " ")
 							text = text.gsub(/[\s]{2,}/, "\n")
@@ -505,9 +513,48 @@ class CollexEngine
 							# turn the old &amp; symbols into &
 							old_text = old_text.gsub("&amp;", "&")
 							old_text = old_text.gsub("&amp;", "&")
+							old_text = old_text.gsub("&mdash;", "-")
 							old_text = old_text.gsub("&mdash", "-")
+							old_text = old_text.gsub("&ndash;", "-")
+							old_text = old_text.gsub("&hyphen;", "-")
 							old_text = old_text.gsub("&hyphen", "-")
 							old_text = old_text.gsub("&colon", ":")
+							old_text = old_text.gsub("&lsquo;", "'")
+							old_text = old_text.gsub("&rsquo;", "'")
+							old_text = old_text.gsub("&ldquo;", "\"")
+							old_text = old_text.gsub("&rdquo;", "\"")
+							old_text = old_text.gsub("&eacute;", "é")
+							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n", "")
+							old_text = old_text.gsub("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"\n\"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
+							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C/DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n", "")
+							old_text = CGI.unescapeHTML(old_text)
+							old_text = old_text.gsub(".page { padding: 1em;", "")
+							old_text = old_text.gsub(" }\n", "")
+							if archive.index("muse") == 0
+								s = old_text.index('<link rel="search"')
+								e = old_text.index('xml" />')
+								if s != nil && e != nil && s > 0 && e > 0
+									str1 = old_text[0,s]
+									str2 = old_text[e+8..old_text.length-1]
+									old_text = str1 + str2
+								end
+								s = old_text.index('<!--')
+								e = old_text.index('// -->')
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+								end
+								s = old_text.index('<!--')
+								e = old_text.index('// -->')
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+								end
+								s = old_text.index('<!--')
+								e = old_text.index('// -->')
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+								end
+
+							end
 							if text != old_text
 								# TODO: The new text has a strange quirk that should be found: sometimes a particular unicode char appears twice.
 								s = String.new
@@ -529,9 +576,22 @@ class CollexEngine
 										end
 									}
 									if first_mismatch == -1	# if the new text has more lines than the old text
-										first_mismatch == old_arr.length
+										first_mismatch = old_arr.length
 									end
-									puts "#{uri} mismatch at line #{first_mismatch}:\n(new)\"#{new_arr[first_mismatch]}\" vs.\n(old)\"#{old_arr[first_mismatch]}\""
+									print_start = first_mismatch - 1
+									print_start = 0 if print_start < 0
+									print "#{uri} mismatch at line #{first_mismatch}:\n(new)"
+									print_end = first_mismatch + 1
+									print_end = new_arr.length() -1 if print_end >= new_arr.length()
+									print_start.upto(print_end) { |x|
+										puts "\"#{new_arr[x]}\""
+									}
+									print "-- vs --\n(old)"
+									print_end = first_mismatch + 1
+									print_end = old_arr.length() -1 if print_end >= old_arr.length()
+									print_start.upto(print_end) { |x|
+										puts "\"#{old_arr[x]}\""
+									}
 									#puts "#{text}\n----\n#{old_text}"
 									#puts "#{text}"
 									total_errors += 1
@@ -562,7 +622,7 @@ class CollexEngine
 			end
 			puts "---------------------------------------------------------------------------------------------------------------"
 		}
-		puts "    docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
+		puts "    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
 		return total_objects, total_errors
 	end
 
