@@ -123,7 +123,7 @@ namespace :solr_index do
 		start_time = Time.now
 
 		puts "cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}"
-		`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags} --maxDocs=2`
+		`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}`
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
