@@ -70,6 +70,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		system("svn up")
 		Rake::Task['collex:update_site'].invoke
+		`sudo /sbin/service restart`
 	end
 
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
