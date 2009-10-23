@@ -217,6 +217,7 @@ class MarcIndexer
       :archive => @archive_id,
       :federation => @federation,
 			:has_full_text => "F",
+			:is_ocr => get_proc( :parse_is_ocr ),
       :title_sort => get_proc( :parse_title ),
       :author_sort => get_proc( :parse_author_sort ),
   #    :type => "A",  # a NINES "archive" object, as opposed to a "collectable" (type "C")
@@ -372,6 +373,19 @@ class MarcIndexer
     s
   end
   
+  def parse_is_ocr( record )
+    test_for_problem_record(record)
+    s = ""
+
+    # go through all the genre related fields and index that text for searching
+    SCAN_LIST.each do |code|
+      subfield = get_subfield( record, code )
+      s << ' ' << subfield if subfield
+    end
+
+    return s.length > 0 ? "F" : nil
+  end
+
   def parse_author( record )
     test_for_problem_record(record)
     authors = AUTHOR_MARC_CODES.map { |code|
