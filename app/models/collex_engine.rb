@@ -31,10 +31,8 @@ class CollexEngine
 		@field_list = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
 			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE",
 			"is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
-    @all_fields_except_text = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
-			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE",
-			"publisher", "agent", "agent_facet", "author", "batch", "editor", "freeculture", "text_url", "year", "type", "date_updated",
-			"title_sort", "author_sort", "is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
+    @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor", "freeculture",
+			"text_url", "year", "type", "date_updated", "title_sort", "author_sort" ]
 		@facet_fields = ['genre','archive','freeculture']
   end
 
@@ -242,6 +240,18 @@ class CollexEngine
 		@solr.optimize
 	end
 
+	def self.value_to_string(value)
+		if value.kind_of?(Array)
+			value.each{ |v|
+				v = v.strip()
+			}
+			value = value.join(" | ")
+		elsif value != nil
+			value = "#{value}"
+		end
+		return value
+	end
+
 	public	# these should actually be some sort of private since they are only called inside this file.
 	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
 		uri = new_obj['uri']
@@ -266,26 +276,14 @@ class CollexEngine
 					old_obj.delete(key)
 				elsif key == 'federation' && value.to_s == "NINES"
 					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+					old_obj.delete(key)
 				elsif key == 'has_full_text' || key == 'is_ocr'
 					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+					old_obj.delete(key)
 				else
 					old_value = old_obj[key]
-					if old_value.kind_of?(Array)
-						old_value.each{ |v|
-							v = v.strip()
-						}
-						old_value = old_value.join(" | ")
-					elsif old_value != nil
-						old_value = "#{old_value}"
-					end
-					if value.kind_of?(Array)
-						value.each{ |v|
-							v = v.strip()
-						}
-						value = value.join(" | ")
-					else
-						value = "#{value}"
-					end
+					old_value = value_to_string(old_value)
+					value = value_to_string(value)
 					if key == 'text' || key == 'title'
 						old_value = old_value.strip if old_value != nil
 						value = value.strip if value != nil
@@ -313,7 +311,7 @@ class CollexEngine
 			}
 			old_obj.each {|key,value|
 				if value != nil && key != 'type'	# 'type' is being phased out, so it is ok if it doesn't appear.
-					value = value.join(',') if value.kind_of?(Array)
+					value = value_to_string(value)
 					value = value.slice(0..99) + "..." if value.length > 100
 					value = value.gsub("\n", " / ")
 					if value.length > 0
