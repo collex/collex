@@ -50,10 +50,10 @@ namespace :solr_index do
 
 	desc "Compare archive_* indexes with original index (optional param: archive=XXX)"
 	task :compare_archive_index_with_original_index => :environment do
-		#Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
+		Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
 		#ENV['start_after'] = "bancroft" #nil
-		#Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
-		ENV['start_after'] = "chesnutt"
+		Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
+		#ENV['start_after'] = "chesnutt"
 		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 	end
 
@@ -65,26 +65,32 @@ namespace :solr_index do
 		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 	end
 
-	desc "Reindex documents from the rdf folder to the reindex core [folder] (solr must be started, and the base folders must be set in site.yml)"
+	desc "Reindex documents from the rdf folder to the reindex core (optional params: folder=XXX or start_after=XXX)"
 	task :reindex_rdf  => :environment do
+		total_start_time = Time.now
 		folder = ENV['folder']
-		folder = '' if folder == nil
+		start_after = ENV['start_after']
+
 		# TODO: set folders in site.yml
-		rdf_path = '../rdf/'
-		indexer_path = '../rdf-indexer'
-
-		path = "#{rdf_path}#{folder}"
-		puts "~~~~~~~~~~~ Reindexing solr documents in #{path}..."
-		puts "(see #{indexer_path}/indexer.log for progress information.)"
-		puts "(see #{indexer_path}/#{folder.length==0?'rdf':folder}_report.txt for error information.)"
-		start_time = Time.now
-
-		if folder.length==0
-			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path} --reindex --ignore=dont_index.txt`
+		rdf_path = '../rdf'
+		if folder == nil
+			# if we are reindexing everything, do it folder by folder. That way there is less memory requirements
+			# on the indexer program, and if the indexer fails, then only that one folder will fail.
+			folders = get_folder_tree("#{rdf_path}", [])
 		else
-			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path} --reindex`
+			folders = [ "#{rdf_path}/#{folder}" ]
 		end
-		puts "Finished in #{(Time.now-start_time)/60} minutes."
+
+		indexer_path = 'rdf-indexer'
+		started = start_after == nil
+		folders.each{|path|
+			if started
+				call_rdf_indexer("Reindexing solr documents in", path, "--reindex")
+			else
+				started = folder == start_after
+			end
+		}
+		puts "Finished in #{(Time.now-total_start_time)/60} minutes."
 	end
 
 	desc "Do the initial indexing of a folder to the archive_* core (param: folder=XXX)"
@@ -93,18 +99,7 @@ namespace :solr_index do
 		if folder == nil || folder.length == 0
 			puts "Usage: pass folder=XXX to index a folder"
 		else
-			# TODO: set folders in site.yml
-			rdf_path = '../rdf/'
-			indexer_path = '../rdf-indexer'
-
-			path = "#{rdf_path}#{folder}"
-			puts "~~~~~~~~~~~ Reindexing solr documents in #{path}..."
-			puts "(see #{indexer_path}/indexer.log for progress information.)"
-			puts "(see #{indexer_path}/#{folder.length==0?'rdf':folder}_report.txt for error information.)"
-			start_time = Time.now
-
-			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path}`
-			puts "Finished in #{(Time.now-start_time)/60} minutes."
+			call_rdf_indexer("Initial indexing test for", folder, "")
 		end
 	end
 
@@ -114,19 +109,22 @@ namespace :solr_index do
 		if folder == nil || folder.length == 0
 			puts "Usage: pass folder=XXX to index a folder"
 		else
-			# TODO: set folders in site.yml
-			rdf_path = '../rdf/'
-			indexer_path = '../rdf-indexer'
-
-			path = "#{rdf_path}#{folder}"
-			puts "~~~~~~~~~~~ Reindexing solr documents in #{path}..."
-			puts "(see #{indexer_path}/indexer.log for progress information.)"
-			puts "(see #{indexer_path}/#{folder.length==0?'rdf':folder}_report.txt for error information.)"
-			start_time = Time.now
-
-			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{path} --fulltext`
-			puts "Finished in #{(Time.now-start_time)/60} minutes."
+			call_rdf_indexer("Indexing solr documents in", folder, "--fulltext")
 		end
+	end
+
+	def call_rdf_indexer(msg, path, flags)
+		# TODO: set folders in site.yml
+		rdf_path = "#{RAILS_ROOT}/"
+		indexer_path = "#{RAILS_ROOT}/lib/tasks/rdf-indexer"
+		arr = path.split('/')
+		report_name = arr.last()
+		puts "~~~~~~~~~~~ #{msg} #{path} [see log/#{report_name}_indexer.log and log/#{report_name}_report.txt]"
+		start_time = Time.now
+
+		puts "cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}"
+		`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags} --maxDocs=2`
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
 	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly])"
@@ -259,6 +257,22 @@ namespace :solr_index do
 		end
 	end
 
+	desc "copy rdf-indexer file for packaging (first build it normally before running this!)"
+	task :copy_rdf_indexer => :environment do
+		start_time = Time.now
+		indexer_path = "#{RAILS_ROOT}/../rdf-indexer"
+		src = "#{indexer_path}/dist"
+		dst = "#{RAILS_ROOT}/lib/tasks/rdf-indexer"
+		puts "~~~~~~~~~~~ Copying #{src} to #{dst}..."
+		begin
+	    Dir.mkdir("#{dst}")
+		rescue
+			# It's ok to fail: it probably means the folder already exists.
+		end
+		`cp -R #{src} #{dst}`
+		puts "Finished in #{Time.now-start_time} seconds."
+	end
+
 #	desc "delete an archive from the RDF reindexing index"
 #	task :delete_archive_from_index  => :environment do
 #		archive = ENV['archive']
@@ -330,7 +344,7 @@ namespace :solr_index do
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
-	desc "Merge one archive into the \"merged\" index (param: archive=XXX)"
+	desc "Merge one archive into the \"resources\" index (param: archive=XXX)"
 	task :merge_archive => :environment do
 		archive = ENV['archive']
 		if archive == nil
@@ -372,7 +386,7 @@ namespace :solr_index do
 		rescue
 			# just ignore if it doesn't work.
 		end
-		return directories
+		return directories.sort()
   end
 #	desc "Restart solr"
 #	task :restart => :environment do
