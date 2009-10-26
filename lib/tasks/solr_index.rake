@@ -152,7 +152,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'bancroft'
 				args[:archive] = 'bancroft'
 				args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
-				args[:url_log_path] = '/log/bancroft_link_data.txt',
+				args[:url_log_path] = 'log/bancroft_link_data.txt',
 				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_bancroft")
 				args[:dir] = "#{marc_path}Bancroft"
@@ -162,7 +162,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'lilly'
 				args[:archive] = 'lilly'
 				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
-				args[:url_log_path] = '/log/lilly_link_data.txt',
+				args[:url_log_path] = 'log/lilly_link_data.txt',
 				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_lilly")
 				args[:dir] = "#{marc_path}Lilly"
@@ -225,6 +225,20 @@ namespace :solr_index do
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
+	def trans_str(str)
+		ret = ""
+		str.to_s.each_char(){ |ch|
+			"#{ch}".each_byte { |c|
+				if (c >= 32 && c <= 127) || c == 10
+					ret += ch
+				else
+					ret += "~#{c}~"
+				end
+			}
+		}
+		return ret
+	end
+
 	desc "examine solr document (param: uri)"
 	task :examine_solr_document  => :environment do
 		uri = ENV['uri']
@@ -233,15 +247,36 @@ namespace :solr_index do
 		if hit == nil
 			puts "#{uri}: Can't find this object in the archive."
 		else
+			#conv = Iconv.new("ASCII//TRANSLIT", "UTF-8")
+			puts " ------------------------------------------------ RESOURCES ------------------------------------------------------------------"
 			hit.each { |key,val|
 				if val.kind_of?(Array)
 					val.each{ |v|
-						puts "#{key}: #{v}"
+						puts "#{key}: #{trans_str(v)}"
 					}
 				else
-					puts "#{key}: #{val}"
+					puts "#{key}: #{trans_str(val)}"
 				end
 			}
+
+			archive = "archive_#{CollexEngine.archive_to_core_name(hit['archive'])}"
+			solr = CollexEngine.new([archive])
+			hit = solr.get_object_with_text(uri)
+			if hit == nil
+				puts "#{uri}: Can't find this object in the archive."
+			else
+				#conv = Iconv.new("ASCII//TRANSLIT", "UTF-8")
+				puts " ------------------------------------------------ ARCHIVE ------------------------------------------------------------------"
+				hit.each { |key,val|
+					if val.kind_of?(Array)
+						val.each{ |v|
+							puts "#{key}: #{trans_str(v)}"
+						}
+					else
+						puts "#{key}: #{trans_str(val)}"
+					end
+				}
+			end
 		end
 	end
 
