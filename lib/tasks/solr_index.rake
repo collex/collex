@@ -137,7 +137,7 @@ namespace :solr_index do
 			start_time = Time.now
 				args = { #:dir => "#{marc_path}Uva",
 									# :output_file => 'extracted.mrc',
-									 :url_log_path => 'link_data.txt',
+#									 :url_log_path => 'link_data.txt',
 									 :tool => :index,
 	#                 :solr_url => "#{SOLR_URL}/archive_#{archive}",
 									 :forgiving => true,
@@ -152,6 +152,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'bancroft'
 				args[:archive] = 'bancroft'
 				args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
+				args[:url_log_path] = '/log/bancroft_link_data.txt',
 				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_bancroft")
 				args[:dir] = "#{marc_path}Bancroft"
@@ -161,6 +162,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'lilly'
 				args[:archive] = 'lilly'
 				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
+				args[:url_log_path] = '/log/lilly_link_data.txt',
 				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_lilly")
 				args[:dir] = "#{marc_path}Lilly"
