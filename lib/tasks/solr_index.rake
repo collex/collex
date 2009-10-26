@@ -73,7 +73,7 @@ namespace :solr_index do
 
 		# TODO: set folders in site.yml
 		rdf_path = '../rdf'
-		if folder == nil
+		if folder == nil || folder.length == 0
 			# if we are reindexing everything, do it folder by folder. That way there is less memory requirements
 			# on the indexer program, and if the indexer fails, then only that one folder will fail.
 			folders = get_folder_tree("#{rdf_path}", [])
