@@ -25,9 +25,11 @@
 	<%= link_to_confirm("Refresh cached objects", { :action => 'refresh_cached_objects', :authenticity_token => form_authenticity_token }, "Warning", 'Note: This will take a while! This is only needed if the indexing in Collex changes or a bug is found that has caused the cached objects to be out of date. Do you want to continue?') %>
 	
 	<p><a class='nav_link' href="/news/wp-admin/">Wordpress Admin Panel</a></p>
+	<% if CAN_INDEX -%>
 	<% if @use_test_index == "true" -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=false">Stop using the testing index for searches</a></p>
 	<% else -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=true">Temporarily use the testing index for searches</a></p>
+	<% end -%>
 	<% end -%>
 </div>
