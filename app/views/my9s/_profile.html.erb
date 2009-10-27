@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # profile: params: ActiveRecord user, bool can_edit -%>
+<%# profile: params: ActiveRecord user, bool can_edit -%>
 <div class="profile_image">
 	<%= image_tag(get_user_picture(user.id, :full), :class => 'profile_image') %>
 <% if can_edit && user.image -%>

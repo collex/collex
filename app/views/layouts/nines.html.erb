@@ -17,13 +17,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<% # Figure out how we're running so we know what files to load -%>
-	<% # We only run Google Analytics if we are on the real deployment. -%>
-	<% # We want to load the non-minimized versions of YUI if we are running development -%>
+	<%# Figure out how we're running so we know what files to load -%>
+	<%# We only run Google Analytics if we are on the real deployment. -%>
+	<%# We want to load the non-minimized versions of YUI if we are running development -%>
 	<% quick_load = (RAILS_ENV == 'development') && (request.host().index('performantsoftware') == nil) -%>
 
 <title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
-<% # Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
+<%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
 <%= get_stylesheets(@site_section, quick_load) %>
 <!--[if lt IE 7]>
 	<%= stylesheet_link_tag "iehacks", :media => "all" %>

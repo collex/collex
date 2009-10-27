@@ -14,7 +14,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 #---------------------------------------------------------------------------- -%>
-<% # /common/facet_tree_one_branch params: FacetCategory branch, int indent, bool is_edit_mode, string parent_id, bool start_hidden -%>
+<%# /common/facet_tree_one_branch params: FacetCategory branch, int indent, bool is_edit_mode, string parent_id, bool start_hidden -%>
 <% suppress_empty_nodes = !is_edit_mode -%>
 <% for site in branch -%>
 	<% if !suppress_empty_nodes || site_subtotal(site) != 0 -%>

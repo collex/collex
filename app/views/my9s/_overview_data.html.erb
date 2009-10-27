@@ -14,8 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
-<% #parameters: Exhibit exhibit; bool show_immediately -%>
+<%#parameters: Exhibit exhibit; bool show_immediately -%>
 <script type="text/javascript">
 	var gLicenseInfo = <%= Exhibit.getJsonLicenseInfo() %>;
 	var gGenres = <%= Branding.valid_genre_list().sort.to_json() %>;

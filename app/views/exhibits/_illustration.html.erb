@@ -14,9 +14,9 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # illustration params: bool edit_mode, ActiveRecord illustration, int element_id, bool part_of_row -%>
+<%# illustration params: bool edit_mode, ActiveRecord illustration, int element_id, bool part_of_row -%>
 
-<% # Set up all variables in advance to make the html code cleaner -%>
+<%# Set up all variables in advance to make the html code cleaner -%>
 <% exhibit = illustration.exhibit_element.exhibit_page.exhibit -%>
 <% illustration_id = illustration.id -%>
 <% url = illustration.image_url -%>
@@ -66,11 +66,11 @@ end -%>
 <div id='illustration_<%= illustration_id %>' class="illustration_block">
 	<center>
 	<div class="exhibit_illustration">
-		<% # The wrapper is either nothing, if this is live and there was no link specified, or the link if specified, or a table if we are in edit mode. -%>
+		<%# The wrapper is either nothing, if this is live and there was no link specified, or the link if specified, or a table if we are in edit mode. -%>
 		<% if wrapper_type == 'link' -%>
 			<a class='<%= link_style %>' target="_blank" href="<%= link %>">
 		<% elsif wrapper_type == 'edit' -%>
-			<% # We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
+			<%# We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
 				<table><tr>
 				<% if part_of_row && illustration_position > 1 -%>
 					<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"><img src="/images/left-image-arrow.gif" alt="" /></a></td>
@@ -85,7 +85,7 @@ end -%>
 		<% end -%>
 		
 		<div id='illustration_inner_<%= illustration_id %>' class="illustration_inner">
-			<% #Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
+			<%#Put all the data on the page in hidden divs so that the javascript for the dialog can pick it up %>
 			<% if edit_mode -%>
 				<div class="saved_data ill_illustration_type" style="display:none;"><%= illustration.illustration_type %></div>
 				<div class="saved_data ill_image_url" style="display:none;"><%= illustration.image_url %></div>
@@ -106,7 +106,7 @@ end -%>
 				<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
 			<% end -%>
 		
-			<% # Create the actual content -%>	
+			<%# Create the actual content -%>	
 			<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
 				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='font-family:<%= exhibit.illustration_font_name %>; font-size:<%= exhibit.illustration_font_size %>px;width:<%= width %>px;<%= height %>'><%= illustration_text %></div>
 				<%= create_resizable -%>
@@ -116,13 +116,13 @@ end -%>
 			<% end -%>
 		</div>
 	
-		<% # Close the wrapper created above -%>
+		<%# Close the wrapper created above -%>
 		<% if wrapper_type == 'link' -%>
 			</a>
 		<% elsif wrapper_type == 'edit' -%>
-			<% # </a>	 The link to the edit dialog -%>
-			</div> <% # The illustration control border -%>
-			</td>	<% # The middle column containing the content and the image control stuff -%>
+			<%# </a>	 The link to the edit dialog -%>
+			</div> <%# The illustration control border -%>
+			</td>	<%# The middle column containing the content and the image control stuff -%>
 			
 			<% if part_of_row && illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
 				<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" ><img src="/images/right-image-arrow.gif" alt="" /></a></td>
@@ -130,7 +130,7 @@ end -%>
 			</tr></table>
 		<% end -%>
 	
-		<% # draw the caption(s) -%>
+		<%# draw the caption(s) -%>
 		<% if illustration != nil -%>
 			<% style2 = '' -%>
 			<% style2 += "#{illustration.caption2_bold}" == '1' ? 'font-weight: bold;' : 'font-weight: normal;' -%>

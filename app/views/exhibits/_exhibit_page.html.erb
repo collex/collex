@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # exhibit_page params: ActiveRecord exhibit, int page_num, bool is_edit_mode, int top (nil or the element id that should be scrolled to) -%>
+<%# exhibit_page params: ActiveRecord exhibit, int page_num, bool is_edit_mode, int top (nil or the element id that should be scrolled to) -%>
 <div id="page<%= page_num %>" class="exhibit_heading">
 	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
 	<h4 class="exhibit_author" ><%= get_exhibits_username(exhibit) %></h4>
@@ -56,13 +56,13 @@
 		</div>
 	<% else # page_num is greater than 0, so this is a regular page -%>
 		<% page = exhibit.exhibit_pages[page_num-1] -%>
-		<div id="current_page" class="hidden"><%= page.id %></div><% # This makes the current page available to ajax calls. %>
+		<div id="current_page" class="hidden"><%= page.id %></div><%# This makes the current page available to ajax calls. %>
 		<% @border_active = false -%>
 		<% element_count = 1 -%>
 		<% elements = page.exhibit_elements -%>
 		<% for element in elements -%>
 			<% ret = create_border_div(element, @border_active, "exhibit_section_with_border") %>
-			<%= ret[:html] %><% #this may create a div that contains the visible border, depending on whether the section starts a border, continues a border, ends a border, or isn't in a border %>
+			<%= ret[:html] %><%#this may create a div that contains the visible border, depending on whether the section starts a border, continues a border, ends a border, or isn't in a border %>
 			<% @border_active = ret[:border_active] -%>
 			<% show_edit_controls = "onmouseout=\"return sectionUnhovered(this, 'edit_bar', 'element_block', 'element_block_hover');\" onmouseover=\"return sectionHovered(this, 'edit_bar', 'element_block_hover', 'element_block');\"" -%>
 			<div  id="element_<%= element.id %>" class="clear_both element_block" <%= "#{show_edit_controls}" if is_edit_mode %>>

@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # exhibit_palette params: ActiveRecord exhibit -%>	
+<%# exhibit_palette params: ActiveRecord exhibit -%>	
 <% collected_object_thumbnails = ExhibitObject.get_collected_object_thumbnail_array(exhibit.id) -%>
 <span class="exhibit_profile">Exhibit Palette (<%= pluralize(collected_object_thumbnails.length, "#{SITE_NAME} Object") %>)
 	<%= link_to_function("[Edit Palette]", "new EditExhibitObjectListDlg('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects', '/my9s/update_objects_in_exhibits', #{exhibit.id}, 'exhibit_palette'); return false;", { :class => 'nav_link' }) %>

@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% #cloud: parameters: cloud_info, selected_tag, controller_for_tags, bool hide_some (should only the first few tags be shown with an option to show all?) -%>
+<%#cloud: parameters: cloud_info, selected_tag, controller_for_tags, bool hide_some (should only the first few tags be shown with an option to show all?) -%>
 <center>
   <div class="tag_filter">
 	<form onsubmit="return false;">&nbsp;<input id="sidebar_search" onFocus="this.value=''" type="text" value="filter tags"/>&nbsp;
@@ -31,7 +31,7 @@
   	  <%= tag_cloud(cloud_info, selected_tag, controller_for_tags, hide_some) %>
   </div>
 </div>
-<% #end #cache_timeout block %>
+<%#end #cache_timeout block %>
 </center>
 
 <script type="text/javascript">

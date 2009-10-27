@@ -14,8 +14,8 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # params: ActiveRecord comment, bool can_delete, bool can_edit, bool is_main -%>
-<% # the difference between the main comment and the others is that the main 
+<%# params: ActiveRecord comment, bool can_delete, bool can_edit, bool is_main -%>
+<%# the difference between the main comment and the others is that the main 
 	# comment has a title and a background color. -%>
 <%= "<div class='FP_post_header'>#{DiscussionThread.find(comment.discussion_thread_id).get_title()}&nbsp;<a href='/forum/rss/#{comment.discussion_thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a></div>" if is_main %>
 <div class="FP_user_image">
@@ -31,8 +31,8 @@
 	<% else -%>
 		<% action = "new RedirectIfLoggedIn('', 'You must be signed in to report a comment', false);" -%>
 	<% end -%>
-	<% # We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
-	<% # We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
+	<%# We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
+	<%# We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
 	<% this_user = session[:user] ? User.find_by_username(session[:user][:username]).id : -1 %>
 	<% allow_user_to_report = (this_user > 0) && !comment.has_been_reported_by(this_user) && (this_user != comment.user_id) %>
 	<% if allow_user_to_report -%>

@@ -14,8 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
-<% # parameter: results hits[]; int user_id; -%>
+<%# parameter: results hits[]; int user_id; -%>
 <% has_exhibits = false -%>
 <% if user_id > 0 -%>
 	<% exhibit_list = Exhibit.js_array_of_all_my_exhibits(user_id) -%>

@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # exhibit_section params: ActiveRecord element, bool is_edit_mode, int element_count -%>
+<%# exhibit_section params: ActiveRecord element, bool is_edit_mode, int element_count -%>
 <% exhibit = element.exhibit_page.exhibit -%>
 <%= render :partial => '/my9s/edit_bar', :locals => { :element => element, :element_count => element_count } if is_edit_mode %>
 <% if element.exhibit_element_layout_type == 'header' -%>

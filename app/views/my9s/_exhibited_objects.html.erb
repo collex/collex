@@ -14,8 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-	
-<% # parameters: current_user_id -%>
+<%# parameters: current_user_id -%>
 <div class="right_column_header">Exhibited Objects</div>
 <% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', current_user_id], :order => 'last_change DESC' ) -%>
 <% if my_exhibits.length == 0 -%>

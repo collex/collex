@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% #  result_row parameters: int index; hit hit; bool has_exhibits; bool add_border -%>
+<%#  result_row parameters: int index; hit hit; bool has_exhibits; bool add_border -%>
 <div <%= "class='result_row_collected'" if result_is_collected(hit) %>>
 	<% row_id = "search_result_#{index}" -%>
     <%# The left side that contains the checkbox, graphic and the collect button -%>
@@ -55,8 +55,8 @@
 				<% is_first = true -%>
 				<% user_name = session[:user] ? session[:user][:username] : nil -%>
 				<% for exhibit in exhibits -%>
-					<% # We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public -%>
-					<% # We only want to have the edit link if it is owned by the current user. -%>
+					<%# We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public -%>
+					<%# We only want to have the edit link if it is owned by the current user. -%>
 					<% real_exhibit = Exhibit.find(exhibit.exhibit.id) -%>
 					<% owner = User.find(real_exhibit.user_id) -%>
 					<% if user_name == owner.username || real_exhibit.published? -%>

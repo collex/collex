@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # exhibit_text params:  ExhibitElement element; enum which { left, right, only, blockquote }, bool is_edit_mode -%>
+<%# exhibit_text params:  ExhibitElement element; enum which { left, right, only, blockquote }, bool is_edit_mode -%>
 <% exhibit = element.exhibit_page.exhibit -%>
 <% size = which != 'blockquote' ? exhibit.text_font_size : (exhibit.text_font_size.to_i * 5 / 6).ceil %>
 <% if is_edit_mode -%>

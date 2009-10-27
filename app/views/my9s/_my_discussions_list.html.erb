@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # my_discussions_list : parameters: user_id -%>
+<%# my_discussions_list : parameters: user_id -%>
 <div class="right_column_header">My Discussions</div>
 <% my_comments = DiscussionComment.find_all_by_user_id(user_id) -%>
 <% my_threads = {} -%>

@@ -14,9 +14,9 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # results_with_all_functionality params: string title, array results, int page, int num_pages, string controller, string action -%>
+<%# results_with_all_functionality params: string title, array results, int page, int num_pages, string controller, string action -%>
 <% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
-<div class="page_header"><% # = render( :partial => 'results/result_count' ) if controller == 'tagXXX' %>
+<div class="page_header"><%# = render( :partial => 'results/result_count' ) if controller == 'tagXXX' %>
 	<% controller = 'search'  if controller == 'collex' -%>
 	<% curr_selection = (controller == 'search' ? session[:search_sort_by] : (controller == 'tag' ? session[:tag_sort_by] : session[:collected_sort_by])) -%>
 	<% curr_selection_direction = (controller == 'search' ? session[:search_sort_by_direction] : (controller == 'tag' ? session[:tag_sort_by_direction] : session[:collected_sort_by_direction])) -%>

@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # my_exhibits_list params: int user_id -%>
+<%# my_exhibits_list params: int user_id -%>
 <div class="right_column_header">My Exhibits</div>
 <% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', user_id] ) -%>
 <% if my_exhibits.length == 0 -%>

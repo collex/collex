@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% #parameters: Exhibit exhibit; int height=50; bool show_immediately -%>
+<%#parameters: Exhibit exhibit; int height=50; bool show_immediately -%>
 <% height ||= 50 -%>
 <div class="exhibit_thumbnail" style="overflow: hidden;width:<%= height %>px;height:<%= height %>px"><img id="thumbnail_<%=exhibit.id %>" src="<%= get_image_url(exhibit.thumbnail)%>" style="display:none;" alt=""/></div>
 <script type="text/javascript">

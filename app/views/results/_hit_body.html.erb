@@ -14,22 +14,22 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% # hit_body : parameters: hit, row_id, index, bool no_links -%>
-<% # this needs to be called inside a <table> element -%>
+<%# hit_body : parameters: hit, row_id, index, bool no_links -%>
+<%# this needs to be called inside a <table> element -%>
 <% item = get_collected_item(hit) -%>
 <% is_collected =(item != nil) -%>
 
-<% ################### -%>
+<%################### -%>
 <% hit['alternative'].each do |alt| %>
 <tr>
 <td valign="top" colspan="2"><%= alt %></td>
 </tr>
 <% end if hit['alternative'] %>
-<% ################### -%>
+<%################### -%>
 <%= result_row_item(:separate_lines, hit, 'source', 'Source', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
 <%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
-<% ################### -%>
+<%################### -%>
 <% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
 <%  if is_collected -%>
 	<tr>
@@ -37,7 +37,7 @@
 	<td><%= h(item.updated_at.strftime("%b %d, %Y")) %></td>
 	</tr>
 <% end -%>
-<% ################### -%>
+<%################### -%>
 <% if no_links -%>
 <% if tags.length > 0 -%>
 <tr>
@@ -74,7 +74,7 @@
 </td>
 </tr>
 <% end # if no_links -%>
-<% ################### -%>
+<%################### -%>
 <% if hit['archive'] %>
 	<tr>
 	    <td class="search_result_data_label">Site:</td>
@@ -83,7 +83,7 @@
 	    </td>
 	</tr>
 <% end %>
-<% ################### -%>
+<%################### -%>
 <%= result_row_item(:multiple_item, hit, 'genre', 'Genre', true) %>
 <%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type', true) %>
 <%= result_row_item(:single_item, hit, 'license', 'License', true) %>
@@ -91,13 +91,13 @@
 <%= result_row_item(:multiple_item, hit, 'role_PBL', 'Publisher', true) %>
 <%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator', true) %>
 <%= result_row_item(:multiple_item, hit, 'date_label', 'Date', true) %>
-<% ################### -%>
+<%################### -%>
 <% if hit["text"] != nil -%>
 <tr>
     <td colspan='2'>
     	<div class="search_result_full_text_label">Excerpt from Full Text:</div>
         <div id="<%=row_id%>_full_text" class="snippet">
-        	<% # We want to escape everything except the bolding so that random control chars can't mess up the display -%>
+        	<%# We want to escape everything except the bolding so that random control chars can't mess up the display -%>
             <% text = h hit["text"] -%>
 			<%= text.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>") %>
         </div>
