@@ -484,7 +484,143 @@ class CollexEngine
 							old_text = old_obj['text'][0].strip
 						end
 						if obj['text'] == nil
-							#text = ""
+							if obj['has_full_text'] != false
+								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist."
+								total_errors += 1
+							end
+							if obj['is_ocr'] != nil
+								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist."
+								total_errors += 1
+							end
+						elsif obj['text'].length > 1
+							puts "#{uri} new text is an array of size #{obj['text'].length}"
+								total_errors += 1
+							text = obj['text'].join(" | ").strip()
+						else
+							docs_with_text += 1
+							text = obj['text'][0].strip
+							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft"))	# this should be false for all archives except the specified ones.
+								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
+								total_errors += 1
+							end
+							if obj['is_ocr'] != false
+								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists."
+								total_errors += 1
+							end
+						end
+						if text == nil && old_text != nil
+							puts "#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})"
+							total_errors += 1
+						elsif text != nil && old_text == nil
+							puts "#{uri} text field has appeared in the new index."
+							total_errors += 1
+						elsif text != old_text
+							old_arr = old_text.split("\n")
+							new_arr = text.split("\n")
+							first_mismatch = -1
+							old_arr.each_with_index { |s, j|
+								if first_mismatch == -1 && new_arr[j] != s
+									first_mismatch = j
+								end
+							}
+							if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
+								first_mismatch = old_arr.length
+							end
+							if first_mismatch != -1
+#										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
+#										File.open("#{RAILS_ROOT}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
+#										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
+								print_start = first_mismatch - 1
+								print_start = 0 if print_start < 0
+								print "==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})"
+								print_end = first_mismatch + 1
+								print_end = new_arr.length() -1 if print_end >= new_arr.length()
+								print_start.upto(print_end) { |x|
+									puts "\"#{new_arr[x]}\""
+								}
+								print "-- vs --\n(old #{new_arr.length})"
+								print_end = first_mismatch + 1
+								print_end = old_arr.length() -1 if print_end >= old_arr.length()
+								print_start.upto(print_end) { |x|
+									puts "\"#{old_arr[x]}\""
+								}
+								#puts "#{text}\n----\n#{old_text}"
+								#puts "#{text}"
+								total_errors += 1
+							end
+						end
+						new_obj[i] = nil	# we've done this one, so get rid of it
+						old_objs_hash.delete(uri)
+					end
+				}
+				new_obj = new_obj.compact()
+				largest_remaining_size = new_obj.length if new_obj.length > largest_remaining_size
+				largest_remaining_size = old_objs_hash.length if old_objs_hash.length > largest_remaining_size
+			end
+
+		# These are all the documents that didn't match anything in the old index.
+		if new_obj.length > 0
+			puts " ============================= TEXT ADDED TO ARCHIVE ==========================="
+		end
+		new_obj.each { |obj|
+			puts "---------------------------------------------------------------------------------------------------------------"
+			puts " --- #{ obj['uri']} ---"
+			if obj['text']
+				puts obj['text']
+				total_errors += 1
+			else
+				puts " --- No full text for this item"
+			end
+			puts "---------------------------------------------------------------------------------------------------------------"
+		}
+		puts "    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
+		return total_objects, total_errors
+	end
+
+	def self.old_compare_text_one_archive(archive, reindexed_core, old_core)
+		# this was used to compare the original, dirty text with the cleaned up text
+			puts "====== Scanning archive \"#{archive}\"... ====== "
+			start_time = Time.now
+			done = false
+			page = 0
+			size = 10
+			total_objects = 0
+			total_errors = 0
+			docs_with_text = 0
+			new_obj = []
+			old_objs_hash = {}
+			largest_remaining_size = 0
+			while !done do
+				objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
+				total_objects += objs.length
+				new_obj += objs
+				#puts "new_obj.length=#{objs.length}"
+				old_objs = old_core.get_text_fields_in_archive(archive, page, size)
+				#puts "old_obj.length=#{old_objs.length}"
+				page += 1
+				if objs.length < size
+					done = true
+				end
+				# first turn the old objects into a hash for quicker searching
+				old_objs.each {|obj|
+					uri = obj['uri']
+					old_objs_hash[uri] = obj
+				}
+				# compare all the items in this set. We might not find all the same objects depending on what order we get them
+				# back from solr, but we'll eliminate the ones we find, then get more.
+				new_obj.each_with_index { |obj, i|
+					uri = obj['uri']
+					old_obj = old_objs_hash[uri]
+					if old_obj != nil
+						if old_obj['text'] == nil
+							#old_text = ""
+						elsif old_obj['text'].length > 1
+							puts "#{uri} old text is an array of size #{old_obj['text'].length}"
+							old_text = old_obj['text'].join(" | ").strip()
+						else
+							old_text = old_obj['text'][0].strip
+						end
+						if obj['text'] == nil
 							if obj['has_full_text'] != false
 								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist."
 								total_errors += 1
@@ -528,11 +664,6 @@ class CollexEngine
 							# turn the old &amp; symbols into &
 							old_text = old_text.gsub("&amp;", "&")
 							old_text = old_text.gsub("&amp;", "&")
-#							old_text = old_text.gsub("&mdash;", "—")
-#							old_text = old_text.gsub("&mdash", "—")
-#							old_text = old_text.gsub("&ndash;", "–")
-#							old_text = old_text.gsub("&hyphen;", "‐")
-#							old_text = old_text.gsub("&hyphen", "‐")
 							old_text = old_text.gsub("&mdash;", "-")
 							old_text = old_text.gsub("&copy;", "©")
 

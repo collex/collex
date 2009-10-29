@@ -24,10 +24,10 @@ namespace :solr_index do
 		#ENV['archive'] = "uva_library;cbw"
 		#Rake::Task['solr_index:merge_archive'].invoke
 
-		ENV['archive'] = "bancroft"
-		Rake::Task['solr_index:reindex_marc'].invoke
-		CollexEngine.compare_reindexed_core_text({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
-		CollexEngine.compare_reindexed_core({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
+		#ENV['archive'] = "bancroft"
+		#Rake::Task['solr_index:reindex_marc'].invoke
+		#CollexEngine.compare_reindexed_core_text({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
+		#CollexEngine.compare_reindexed_core({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
