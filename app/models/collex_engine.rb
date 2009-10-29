@@ -139,7 +139,7 @@ class CollexEngine
 
 	def delete_archive(archive) #usually called when un-peer-reviewing an exhibit, but is also used for indexing.
 		# Warning: This will delete all the documents in the archive!
-		@solr.delete_by_query "+archive:#{archive}"
+		@solr.delete_by_query "+archive:#{archive.gsub(":", "\\:")}"
 	end
 
 #
@@ -165,7 +165,7 @@ class CollexEngine
 		begin
 			@solr.optimize()
 		rescue
-		end
+	  end
 		begin
 			@solr.commit()
 		rescue
@@ -426,12 +426,27 @@ class CollexEngine
 	end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
+	def self.trans_str(str)
+		return str
+#		ret = ""
+#		str.to_s.each_char(){ |ch|
+#			"#{ch}".each_byte { |c|
+#				if (c >= 32 && c <= 127) || c == 10
+#					ret += ch
+#				else
+#					ret += "~#{c}~"
+#				end
+#			}
+#		}
+#		return ret
+	end
+
 	def self.compare_text_one_archive(archive, reindexed_core, old_core)
 			puts "====== Scanning archive \"#{archive}\"... ====== "
 			start_time = Time.now
 			done = false
 			page = 0
-			size = 25
+			size = 10
 			total_objects = 0
 			total_errors = 0
 			docs_with_text = 0
@@ -485,7 +500,7 @@ class CollexEngine
 						else
 							docs_with_text += 1
 							text = obj['text'][0].strip
-							if obj['has_full_text'] != true
+							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft"))	# this should be false for all archives except the specified ones.
 								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
 								total_errors += 1
 							end
@@ -495,7 +510,7 @@ class CollexEngine
 							end
 						end
 						if text == nil && old_text != nil
-							puts "#{uri} text field has disappeared from the new index."
+							puts "#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})"
 							total_errors += 1
 						elsif text != nil && old_text == nil
 							puts "#{uri} text field has appeared in the new index."
@@ -513,88 +528,263 @@ class CollexEngine
 							# turn the old &amp; symbols into &
 							old_text = old_text.gsub("&amp;", "&")
 							old_text = old_text.gsub("&amp;", "&")
+#							old_text = old_text.gsub("&mdash;", "—")
+#							old_text = old_text.gsub("&mdash", "—")
+#							old_text = old_text.gsub("&ndash;", "–")
+#							old_text = old_text.gsub("&hyphen;", "‐")
+#							old_text = old_text.gsub("&hyphen", "‐")
 							old_text = old_text.gsub("&mdash;", "-")
+							old_text = old_text.gsub("&copy;", "©")
+
 							old_text = old_text.gsub("&mdash", "-")
 							old_text = old_text.gsub("&ndash;", "-")
 							old_text = old_text.gsub("&hyphen;", "-")
 							old_text = old_text.gsub("&hyphen", "-")
 							old_text = old_text.gsub("&colon", ":")
-							old_text = old_text.gsub("&lsquo;", "'")
-							old_text = old_text.gsub("&rsquo;", "'")
-							old_text = old_text.gsub("&ldquo;", "\"")
-							old_text = old_text.gsub("&rdquo;", "\"")
+							old_text = old_text.gsub("&lsquo;", "‘")
+							old_text = old_text.gsub("&rsquo;", "’")
+							old_text = old_text.gsub("&ldquo;", "“")
+							old_text = old_text.gsub("&rdquo;", "”")
 							old_text = old_text.gsub("&eacute;", "é")
 							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n", "")
 							old_text = old_text.gsub("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"\n\"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
 							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C/DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n", "")
+							old_text = old_text.gsub("<!DOCTYPE html\"\n\"PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
+							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n", "")
+							old_text = old_text.gsub("<!DOCTYPE html\n\"PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n", "")
 							old_text = CGI.unescapeHTML(old_text)
 							old_text = old_text.gsub(".page { padding: 1em;", "")
 							old_text = old_text.gsub(" }\n", "")
+
+							if archive == "PQCh-NCF" || archive == "PQCh-EAF"
+								s = old_text.index('var contextRoot = ')
+								if s
+									e = old_text.index('value=openURL();', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+19..old_text.length-1]
+									end
+								end
+							end
+
 							if archive.index("muse") == 0
+								text = text.gsub("\n0)", "\n")	# TODO: remove after replacing resources index.
+								text = text.gsub("\n;\n", "\n")	# TODO: remove after replacing resources index.
+								text = text.gsub("—", "-")
+								text = text.gsub("–", "-")
+								text = text.gsub("‐", "-")
+								
 								s = old_text.index('<link rel="search"')
-								e = old_text.index('xml" />')
-								if s != nil && e != nil && s > 0 && e > 0
-									str1 = old_text[0,s]
-									str2 = old_text[e+8..old_text.length-1]
-									old_text = str1 + str2
+								if s
+									e = old_text.index('xml" />', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+8..old_text.length-1]
+										old_text = str1 + str2
+									end
 								end
 								s = old_text.index('<!--')
-								e = old_text.index('// -->')
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+								if s
+									e = old_text.index('// -->', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+									end
 								end
 								s = old_text.index('<!--')
-								e = old_text.index('// -->')
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+								if s
+									e = old_text.index('// -->', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+									end
 								end
 								s = old_text.index('<!--')
-								e = old_text.index('// -->')
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+								if s
+									e = old_text.index('// -->', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+									end
+								end
+								s = old_text.index('<BODY')
+								if s
+									e = old_text.index('>', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+2..old_text.length-1]
+									end
+								end
+								s = old_text.index('<IMG')
+								if s
+									e = old_text.index('>', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+1..old_text.length-1]
+									end
+								end
+								s = old_text.index('<img')
+								if s
+									e = old_text.index('>', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										old_text = old_text[0,s] + old_text[e+1..old_text.length-1]
+									end
 								end
 
+							elsif archive == "rc"
+								s = old_text.index('<meta name="generator" content=')
+								if s
+									e = old_text.index('ascii" />', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+10..old_text.length-1]
+										old_text = str1 + str2
+									end
+								end
+								s = old_text.index('<meta name="Description" content=')
+								if s
+									e = old_text.index('/>', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+3..old_text.length-1]
+										old_text = str1 + str2
+									end
+								end
+								s = old_text.index('<meta name="keywords" content=')
+								if s
+									e = old_text.index('/>', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+3..old_text.length-1]
+										old_text = str1 + str2
+									end
+								end
+								s = old_text.index('//<![CDATA[')
+								if s
+									e = old_text.index('"Romantic Circles" />', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+21..old_text.length-1]
+										old_text = str1 + str2
+									end
+								end
+								s = old_text.index('<')
+								if s
+									e = old_text.index('>', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+2..old_text.length-1]
+										old_text = str1 + str2
+									end
+								end
+
+							elsif archive == "swrp"
+								old_text = old_text.gsub("</i> ", " ")
+								s = old_text.index("var Url = {")
+								e = old_text.index("dynamicLayout);")
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+16..old_text.length-1]
+								end
+								s = old_text.index("function ShowStaticURL(urlAddress)")
+								e = old_text.index("window.print();")
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+18..old_text.length-1]
+								end
+								s = old_text.index("function ShowHideDiv(divid)")
+								e = old_text.index("show metadata\";")
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+19..old_text.length-1]
+								end
+								s = old_text.index("var gaJsHost =")
+								e = old_text.index("catch(err) {}")
+								if s != nil && e != nil && s > 0 && e > 0
+									old_text = old_text[0,s] + old_text[e+12..old_text.length-1]
+								end
+								s = old_text.index('.title = "show metadata"')
+								if s
+									e = old_text.index('}', s)
+									if s != nil && e != nil && s > 0 && e > 0
+										str1 = old_text[0,s]
+										str2 = old_text[e+2..old_text.length-1]
+										old_text = str1 + str2
+									end
+								end
+
+								old_text = old_text.sub("&raquo;", "»")
+								old_text = old_text.sub("\n}", "")
+								
+							elsif archive == "victbib"
+								old_text = old_text.gsub("<!-- bib: reslist.tpl\nModified by mdalmau, 10/29/2005-->\n", "")
+							end
+							if text != old_text
+								text = trans_str(text)
+								old_text = trans_str(old_text)
 							end
 							if text != old_text
 								# TODO: The new text has a strange quirk that should be found: sometimes a particular unicode char appears twice.
-								s = String.new
-								c = 226
-								s << c
-								c = 128
-								s << c
-								c = 148
-								s << c
-								text = text.gsub(s+s, s)
-								old_text = old_text.gsub(s+s, s)
+#								s = String.new
+#								c = 226
+#								s << c
+#								c = 128
+#								s << c
+#								c = 148
+#								s << c
+#								text = text.gsub(s+s, s)
+#								old_text = old_text.gsub(s+s, s)
 								if text != old_text
 									old_arr = old_text.split("\n")
 									new_arr = text.split("\n")
 									first_mismatch = -1
 									old_arr.each_with_index { |s, j|
 										if first_mismatch == -1 && new_arr[j] != s
-											first_mismatch = j
+											skip = false
+											if archive == "PQCh-NCF" || archive == "PQCh-EAF"
+												skip = true if s.index("Do not export or print from this database without checking the Copyright Conditions to see what is permitted.") != nil && new_arr[j].index("Do not export or print from this database without checking the Copyright Conditions to see what is permitted.") != nil
+												skip = true if s.index("Early American Fiction 1789-1875") != nil && new_arr[j].index("Early American Fiction 1789") != nil
+
+											end
+
+											if archive.index("muse") == 0
+												skip = true if s.index("&") != nil	#TODO: temp: just ignore lines with char substitutions.
+												if s.length > 9 && new_arr[j].length > 9
+													slast = s[s.length-9..s.length-1]
+													olast = new_arr[j]
+													olast = olast[olast.length-9..olast.length-1]
+													skip = true if s[0..8] == new_arr[j][0..8] || slast == olast
+												end
+											end
+											if archive.index("swrp") == 0
+												skip = true if s.index("All Works") == 0 && new_arr[j].index("All Works") == 0
+												skip = true if s.index("Next ") == 0 && new_arr[j].index("Next ") == 0
+												skip = true if s.index("Copyright") == 0 && new_arr[j].index("Copyright") == 0 && s.index("Terms of Use") != nil && new_arr[j].index("Terms of Use") != nil
+												skip = true if s.index(" Previous") == 2 && new_arr[j].index(" Previous") == 1
+												skip = "true" if s.index("}") != nil && new_arr[j] == nil
+												new_arr.push("}") if s.index("}") != nil && new_arr[j] == nil
+											end
+											if !skip
+												first_mismatch = j
+											end
 										end
 									}
-									if first_mismatch == -1	# if the new text has more lines than the old text
+									if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
 										first_mismatch = old_arr.length
 									end
-									print_start = first_mismatch - 1
-									print_start = 0 if print_start < 0
-									print "#{uri} mismatch at line #{first_mismatch}:\n(new)"
-									print_end = first_mismatch + 1
-									print_end = new_arr.length() -1 if print_end >= new_arr.length()
-									print_start.upto(print_end) { |x|
-										puts "\"#{new_arr[x]}\""
-									}
-									print "-- vs --\n(old)"
-									print_end = first_mismatch + 1
-									print_end = old_arr.length() -1 if print_end >= old_arr.length()
-									print_start.upto(print_end) { |x|
-										puts "\"#{old_arr[x]}\""
-									}
-									#puts "#{text}\n----\n#{old_text}"
-									#puts "#{text}"
-									total_errors += 1
+									if first_mismatch != -1
+										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
+										File.open("#{RAILS_ROOT}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
+										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
+										print_start = first_mismatch - 1
+										print_start = 0 if print_start < 0
+										print "==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})"
+										print_end = first_mismatch + 1
+										print_end = new_arr.length() -1 if print_end >= new_arr.length()
+										print_start.upto(print_end) { |x|
+											puts "\"#{new_arr[x]}\""
+										}
+										print "-- vs --\n(old #{new_arr.length})"
+										print_end = first_mismatch + 1
+										print_end = old_arr.length() -1 if print_end >= old_arr.length()
+										print_start.upto(print_end) { |x|
+											puts "\"#{old_arr[x]}\""
+										}
+										#puts "#{text}\n----\n#{old_text}"
+										#puts "#{text}"
+										total_errors += 1
+									end
 								end
 							end
 						end
