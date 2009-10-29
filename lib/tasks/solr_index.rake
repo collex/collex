@@ -16,6 +16,21 @@
 
 namespace :solr_index do
 
+	desc "Temp task for a batch file"
+	task :temp => :environment do
+		puts "TASK"
+		start_time = Time.now
+		#ENV['archive'] = "JSTOR:American Literary History;JSTOR:American Literature;JSTOR:NOVEL: A Forum on Fiction;JSTOR:Nineteenth-Century Fiction;JSTOR:Nineteenth-Century Literature;JSTOR:Studies in English Literature, 1500-1900;JSTOR:Trollopian"
+		#ENV['archive'] = "uva_library;cbw"
+		#Rake::Task['solr_index:merge_archive'].invoke
+
+		ENV['archive'] = "bancroft"
+		Rake::Task['solr_index:reindex_marc'].invoke
+		CollexEngine.compare_reindexed_core_text({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
+		CollexEngine.compare_reindexed_core({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
 	desc "Completely reindex and test all RDF and MARC records"
 	task :completely_reindex_everything => :environment do
 		# Use this when there is a change to the schema to completely rebuild the index, then print out the differences between the new
@@ -45,6 +60,26 @@ namespace :solr_index do
 		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 		Rake::Task['solr_index:find_duplicate_objects'].invoke	# see if there are any duplicate uri anywhere in the RDF records.
 
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
+	desc "reindex and test one archive (param: archive=archive,folder)"
+	task :reindex_and_test_one_archive => :environment do
+		start_time = Time.now
+		param = ENV['archive']
+		arr = param.split(',')
+		folder = arr[1]
+		archive = arr[0]
+		if folder == nil || folder.length == 0 || archive == nil || archive.length == 0
+			puts "Usage: call with archive=archive,folder"
+		else
+			ENV['folder'] = folder
+			Rake::Task['solr_index:reindex_rdf'].invoke
+			ENV['archive'] = archive
+			Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
+			ENV['archive'] = archive
+			Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
+		end
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
@@ -99,7 +134,7 @@ namespace :solr_index do
 		if folder == nil || folder.length == 0
 			puts "Usage: pass folder=XXX to index a folder"
 		else
-			call_rdf_indexer("Initial indexing test for", folder, "")
+			call_rdf_indexer("Initial indexing test for", "../rdf/#{folder}", "")
 		end
 	end
 
@@ -109,7 +144,7 @@ namespace :solr_index do
 		if folder == nil || folder.length == 0
 			puts "Usage: pass folder=XXX to index a folder"
 		else
-			call_rdf_indexer("Indexing solr documents in", folder, "--fulltext")
+			call_rdf_indexer("Indexing solr documents in", "../rdf/#{folder}", "--fulltext")
 		end
 	end
 
@@ -152,7 +187,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'bancroft'
 				args[:archive] = 'bancroft'
 				args[:solr_url] = "#{SOLR_URL}/archive_bancroft"
-				args[:url_log_path] = 'log/bancroft_link_data.txt',
+				args[:url_log_path] = 'log/bancroft_link_data.txt'
 				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_bancroft")
 				args[:dir] = "#{marc_path}Bancroft"
@@ -162,7 +197,7 @@ namespace :solr_index do
 			if archive == nil || archive == 'lilly'
 				args[:archive] = 'lilly'
 				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
-				args[:url_log_path] = 'log/lilly_link_data.txt',
+				args[:url_log_path] = 'log/lilly_link_data.txt'
 				args[:federation] = 'NINES'
 				CollexEngine.create_core("archive_lilly")
 				args[:dir] = "#{marc_path}Lilly"
@@ -252,10 +287,12 @@ namespace :solr_index do
 			hit.each { |key,val|
 				if val.kind_of?(Array)
 					val.each{ |v|
-						puts "#{key}: #{trans_str(v)}"
+						#puts "#{key}: #{trans_str(v)}"
+						puts "#{key}: #{v}"
 					}
 				else
-					puts "#{key}: #{trans_str(val)}"
+					#puts "#{key}: #{trans_str(val)}"
+					puts "#{key}: #{val}"
 				end
 			}
 
@@ -270,10 +307,12 @@ namespace :solr_index do
 				hit.each { |key,val|
 					if val.kind_of?(Array)
 						val.each{ |v|
-							puts "#{key}: #{trans_str(v)}"
+#							puts "#{key}: #{trans_str(v)}"
+							puts "#{key}: #{v}"
 						}
 					else
-						puts "#{key}: #{trans_str(val)}"
+#						puts "#{key}: #{trans_str(val)}"
+						puts "#{key}: #{val}"
 					end
 				}
 			end
@@ -381,16 +420,23 @@ namespace :solr_index do
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
-	desc "Merge one archive into the \"resources\" index (param: archive=XXX)"
+	desc "Merge one archive into the \"resources\" index (param: archive=XXX;YYY)"
 	task :merge_archive => :environment do
 		archive = ENV['archive']
 		if archive == nil
-			puts "Usage: call with archive=XXX"
+			puts "Usage: call with archive=XXX;YYY"
 		else
-			puts "~~~~~~~~~~~ Merging archive #{archive} ..."
+			puts "~~~~~~~~~~~ Merging archive(s) #{archive} ..."
+			archives = archive.split(';')
 			start_time = Time.now
 			index = CollexEngine.new()
-			index.merge("archive_#{archive}")
+			archive_list = []
+			archives.each{|arch|
+				index_name = CollexEngine.archive_to_core_name(arch)
+				index.delete_archive(arch)
+				archive_list.push("archive_#{index_name}")
+			}
+			index.merge(archive_list)
 			puts "Finished in #{(Time.now-start_time)/60} minutes."
 		end
 	end
