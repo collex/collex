@@ -15,96 +15,92 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
-	  map.redirect ':x', :controller => 'home', :action => 'redirect_to_index'
-	  map.redirect2 ':x/:y', :controller => 'home', :action => 'redirect_to_index'
-	  map.redirect3 ':x/:y/:z', :controller => 'home', :action => 'redirect_to_index'
+  map.discussion_thread_rss '/forum/rss/:thread.xml', :controller => 'forum', :action => 'rss'
 
-#  map.discussion_thread_rss '/forum/rss/:thread.xml', :controller => 'forum', :action => 'rss'
-#
-#  map.resources :exhibit_illustrations
-#
-#  map.resources :exhibit_elements
-#
-#  map.resources :exhibit_pages
-#
-#  map.exhibits_display '/exhibits/:id', :controller => 'exhibits', :action => 'view'
-#  map.resources :exhibits
-#
-#  map.resources :tagassigns
-#
-#
-#  map.resources :collected_items
-#
-#  # Add your own custom routes here.
-#  # The priority is based upon order of creation: first created -> highest priority.
-#
-#  # Here's a sample route:
-#  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-#  # Keep in mind you can assign values other than :controller and :action
-#
-#  # You can have the root of your site routed by hooking up ''
-#  # -- just remember to delete public/index.html.
-#  # map.connect '', :controller => "welcome"
-#
-#  # Allow downloading Web Service WSDL as a file with an extension
-#  # instead of a file named 'wsdl'
-##  map.connect ':controller/service.wsdl', :action => 'wsdl'
-#
-#  map.atom_feed 'atom/:type/:value/:user',
-#                    :controller => 'home',
-#                    :action => 'atom',
-#                    :value => /[^\/]+/,
-#                    :user => nil
-#
-#  # All the old links just go to the main page now.
-#  map.connect 'collex', :controller => 'home', :action => 'redirect_to_index'
-#  map.sidebar_list  "sidebar/list/:type/:value/:user", :controller => "home", :action => "redirect_to_index"
-#  map.sidebar_cloud "sidebar/cloud/:type/:user", :controller => "home", :action => "redirect_to_index"
-#  map.permalink_list 'permalink/list/:type/:value/:user', :controller => "home", :action => "redirect_to_index"
-#  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "redirect_to_tag_cloud_update"
-#  map.permalink_detail 'permalink/detail', :controller => "home", :action => "redirect_to_index"
-#  map.connect 'redirect/ravon-nowviskie1.html', :controller => "search", :action => "saved", :user => "nowviskie", :name => "ravon-article"
-#  map.connect 'redirect/ravon-nowviskie2.html', :controller => "tag", :action => "results", :tag => "collex", :view => 'tag'
-#
-#  # here are some permalinks that got moved
-#  map.cloud1 'permalink/cloud/:type', :controller => "home", :action => "redirect_to_tag_cloud_update"
-#
-#  # All the old about pages
-#  map.about_software '/software/:page.html', :controller => 'about', :action => 'software', :ext => 'html'
-#  map.about_software2 '/software/:page.pdf', :controller => 'about', :action => 'software', :ext => 'pdf'
-#  map.about_software3 '/software/:page.doc', :controller => 'about', :action => 'software', :ext => 'doc'
-#  map.about_software4 '/software/:page', :controller => 'about', :action => 'software', :ext => 'html'
-#  map.about_software5 '/software', :controller => 'about', :action => 'software', :ext => 'html'
-#  map.about_community '/community/:page.html', :controller => 'about', :action => 'community', :ext => 'html'
-#  map.about_community2 '/community/:page.pdf', :controller => 'about', :action => 'community', :ext => 'pdf'
-#  map.about_community3 '/community/:page.doc', :controller => 'about', :action => 'community', :ext => 'doc'
-#  map.about_community4 '/community/:page', :controller => 'about', :action => 'community', :ext => 'html'
-#  map.about_community5 '/community', :controller => 'about', :action => 'community', :ext => 'html'
-#  map.about_scholarship '/scholarship/:page.html', :controller => 'about', :action => 'scholarship', :ext => 'html'
-#  map.about_scholarship2 '/scholarship/:page.pdf', :controller => 'about', :action => 'scholarship', :ext => 'pdf'
-#  map.about_scholarship3 '/scholarship/:page.doc', :controller => 'about', :action => 'scholarship', :ext => 'doc'
-#  map.about_scholarship4 '/scholarship/:page', :controller => 'about', :action => 'scholarship', :ext => 'html'
-#  map.about_scholarship5 '/scholarship', :controller => 'about', :action => 'scholarship', :ext => 'html'
-#
-#  map.connect 'collex/:action', :controller => 'search'
-#  map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
-#  map.connect 'admin', :controller => 'admin/default'
-#
-#  map.tag_rss '/tags/rss/:tag.xml', :controller => 'tag', :action => 'rss'
-#  map.tag_obj '/tags/object', :controller => 'tag', :action => 'object'
-#
-#  map.news '/news', :controller => 'about', :action => 'news'
-#  map.search '/search', :controller => 'search', :action => 'browse'
-#  map.about '/about', :controller => 'about', :action => 'index'
-#  map.tags '/tags', :controller => 'tag', :action => 'list'
-#  map.my9s '/my9s', :controller => 'my9s', :action => 'index'
-#  map.forum '/forum', :controller => 'forum', :action => 'index'
-#  map.print_exhibit '/print_exhibit/:id', :controller => 'exhibits', :action => 'print_exhibit'
-#  map.exhibit_list '/exhibit_list', :controller => 'exhibits', :action => 'list'
-#  map.exhibits_view '/exhibits/view/:id', :controller => 'exhibits', :action => 'view'
-#
+  map.resources :exhibit_illustrations
+
+  map.resources :exhibit_elements
+
+  map.resources :exhibit_pages
+
+  map.exhibits_display '/exhibits/:id', :controller => 'exhibits', :action => 'view'
+  map.resources :exhibits
+
+  map.resources :tagassigns
+
+
+  map.resources :collected_items
+
+  # Add your own custom routes here.
+  # The priority is based upon order of creation: first created -> highest priority.
+
+  # Here's a sample route:
+  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
+  # Keep in mind you can assign values other than :controller and :action
+
+  # You can have the root of your site routed by hooking up ''
+  # -- just remember to delete public/index.html.
+  # map.connect '', :controller => "welcome"
+
+  # Allow downloading Web Service WSDL as a file with an extension
+  # instead of a file named 'wsdl'
+#  map.connect ':controller/service.wsdl', :action => 'wsdl'
+
+  map.atom_feed 'atom/:type/:value/:user',
+                    :controller => 'home',
+                    :action => 'atom',
+                    :value => /[^\/]+/,
+                    :user => nil
+
+  # All the old links just go to the main page now.
+  map.connect 'collex', :controller => 'home', :action => 'redirect_to_index'
+  map.sidebar_list  "sidebar/list/:type/:value/:user", :controller => "home", :action => "redirect_to_index"
+  map.sidebar_cloud "sidebar/cloud/:type/:user", :controller => "home", :action => "redirect_to_index"
+  map.permalink_list 'permalink/list/:type/:value/:user', :controller => "home", :action => "redirect_to_index"
+  map.permalink_cloud 'permalink/cloud/:type/:user', :controller => "home", :action => "redirect_to_tag_cloud_update"
+  map.permalink_detail 'permalink/detail', :controller => "home", :action => "redirect_to_index"
+  map.connect 'redirect/ravon-nowviskie1.html', :controller => "search", :action => "saved", :user => "nowviskie", :name => "ravon-article"
+  map.connect 'redirect/ravon-nowviskie2.html', :controller => "tag", :action => "results", :tag => "collex", :view => 'tag'
+
+  # here are some permalinks that got moved
+  map.cloud1 'permalink/cloud/:type', :controller => "home", :action => "redirect_to_tag_cloud_update"
+
+  # All the old about pages
+  map.about_software '/software/:page.html', :controller => 'about', :action => 'software', :ext => 'html'
+  map.about_software2 '/software/:page.pdf', :controller => 'about', :action => 'software', :ext => 'pdf'
+  map.about_software3 '/software/:page.doc', :controller => 'about', :action => 'software', :ext => 'doc'
+  map.about_software4 '/software/:page', :controller => 'about', :action => 'software', :ext => 'html'
+  map.about_software5 '/software', :controller => 'about', :action => 'software', :ext => 'html'
+  map.about_community '/community/:page.html', :controller => 'about', :action => 'community', :ext => 'html'
+  map.about_community2 '/community/:page.pdf', :controller => 'about', :action => 'community', :ext => 'pdf'
+  map.about_community3 '/community/:page.doc', :controller => 'about', :action => 'community', :ext => 'doc'
+  map.about_community4 '/community/:page', :controller => 'about', :action => 'community', :ext => 'html'
+  map.about_community5 '/community', :controller => 'about', :action => 'community', :ext => 'html'
+  map.about_scholarship '/scholarship/:page.html', :controller => 'about', :action => 'scholarship', :ext => 'html'
+  map.about_scholarship2 '/scholarship/:page.pdf', :controller => 'about', :action => 'scholarship', :ext => 'pdf'
+  map.about_scholarship3 '/scholarship/:page.doc', :controller => 'about', :action => 'scholarship', :ext => 'doc'
+  map.about_scholarship4 '/scholarship/:page', :controller => 'about', :action => 'scholarship', :ext => 'html'
+  map.about_scholarship5 '/scholarship', :controller => 'about', :action => 'scholarship', :ext => 'html'
+
+  map.connect 'collex/:action', :controller => 'search'
+  map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
+  map.connect 'admin', :controller => 'admin/default'
+
+  map.tag_rss '/tags/rss/:tag.xml', :controller => 'tag', :action => 'rss'
+  map.tag_obj '/tags/object', :controller => 'tag', :action => 'object'
+
+  map.news '/news', :controller => 'about', :action => 'news'
+  map.search '/search', :controller => 'search', :action => 'browse'
+  map.about '/about', :controller => 'about', :action => 'index'
+  map.tags '/tags', :controller => 'tag', :action => 'list'
+  map.my9s '/my9s', :controller => 'my9s', :action => 'index'
+  map.forum '/forum', :controller => 'forum', :action => 'index'
+  map.print_exhibit '/print_exhibit/:id', :controller => 'exhibits', :action => 'print_exhibit'
+  map.exhibit_list '/exhibit_list', :controller => 'exhibits', :action => 'list'
+  map.exhibits_view '/exhibits/view/:id', :controller => 'exhibits', :action => 'view'
+
   map.root :controller => "home", :action => "index"
-#
-## Install the default route as the lowest priority.
-#  map.connect ':controller/:action'
+
+# Install the default route as the lowest priority.
+  map.connect ':controller/:action'
 end
