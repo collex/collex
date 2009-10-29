@@ -370,20 +370,16 @@ class MarcIndexer
       s << ' ' << subfield if subfield 
     end
 
-    s
+		# Return nil if there isn't full text.
+		s = s.strip()
+    return s.length > 0 ? s : nil
   end
   
   def parse_is_ocr( record )
     test_for_problem_record(record)
-    s = ""
+		s = parse_text( record )
 
-    # go through all the genre related fields and index that text for searching
-    SCAN_LIST.each do |code|
-      subfield = get_subfield( record, code )
-      s << ' ' << subfield if subfield
-    end
-
-    return s.length > 0 ? "F" : nil
+    return s != nil ? "F" : nil
   end
 
   def parse_author( record )
