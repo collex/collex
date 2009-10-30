@@ -191,7 +191,7 @@ class CollexEngine
     query = "archive:#{Solr::Util.query_parser_escape(archive)}"
 
     req = Solr::Request::Standard.new(
-             :start => page*size, :rows => size,
+             :start => page*size, :rows => size,	:sort => [ { :uri => :ascending } ],
              :query => query, :field_list => field_list)
 
     response = @solr.send(req)
