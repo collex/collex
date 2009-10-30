@@ -5,12 +5,12 @@ The Collex/NINES project
 
 The following steps are explained in detail below:
 
-1) From the Collex repository, download Collex, solr_1.4, and rdf-indexer
+1) From the Collex repository, download Collex, solr_1.4, and (for the development computer only:) rdf-indexer
 2) Install the required gems
 3) create site.yml and database.yml
 4) Start solr
 5) Index some documents
-6) Run: rake RAILS_ENV="production" collex:update_site
+6) Run: rake RAILS_ENV=production collex:update_site
 7) Modify About pages
 8) Install Wordpress
 9) Skin it by changing the css files.
@@ -30,7 +30,7 @@ As soon as the site becomes active,
 
 You may use the administrator account for your daily use of collex, or you may choose to create a separate
 account for using the site. The difference is that the administrator has the "Admin" link that allows maintenance
-of the site, and the administrator has a few more privoledges, like the ability to delete anyone's post in the
+of the site, and the administrator has a few more privileges, like the ability to delete anyone's post in the
 forum and the ability to edit anyone's exhibits.
 
 -----------------------------------------------------------------------
@@ -47,6 +47,7 @@ Linguistics (1.0.5)
 marc (0.3.0)
 
 Note: If you get the message "no such file to load -- rexml/formatters/default" then you need a newer version of Ruby.
+v 1.8.7 is recommended.
 
 -----------------------------------------------------------------------
 ** Requires Wordpress for the News tab
@@ -61,7 +62,8 @@ For NINES, that task is:
 -----------------------------------------------------------------------
 ** Requires Solr
 
-A connection to solr is needed. Typically this will be on the same computer as the deployment.
+A connection to solr is needed. Typically this will be on the same computer as the deployment. There are a
+number of ways to start solr; the following is a suggestion.
 
 If you download the solr_1.4 folder from svn in the same relative place as it appears in svn, you can run the following rake task to
 start solr:
@@ -74,11 +76,10 @@ That process is explained here:
 
 	http://www.performantsoftware.com/nines_wiki/index.php/Indexing_Tools
 
-There are two other relevant projects in this repository to help with indexing:
+There is another relevant project in this repository to help with indexing:
 
-	collex/trunk/indexer		: This should reside on the computer that will do the indexing. It contains scripts to run the indexing.
 	collex/trunk/rdf-indexer	: This is a java project that builds the utility that is used to read the rdf files into solr. The jar file created
-		here is used by indexer.
+		here is used by the rdf indexing rake tasks.
 
 -----------------------------------------------------------------------
 ** deploying js and css
@@ -116,15 +117,28 @@ In /lib/tasks/collex.rake, there are a number of rake tasks defined. Here are th
 	(Runs jslint on all non-minimized js files in /public/javascripts.)
 
 --- Server side ---
-	rake RAILS_ENV="production" collex:total_update_site
+	rake RAILS_ENV=production collex:total_update_site
 	(downloads the latest code from SVN, runs migrate, updates the wordpress theme, and compresses js and css files)
 
-	rake RAILS_ENV="production" collex:update_site
+	rake RAILS_ENV=production collex:update_site
 	(runs migrate, updates the wordpress theme, and compresses js and css files)
 
-In /lib/tasks/solr.rake, there are routines to manipulate solr and its index.
+In /lib/tasks/solr.rake, there are routines to manipulate solr.
 	To run solr:
 	rake solr:start
+	To stop solr:
+	rake solr:stop
+	To zip up the index so that it can be transferred to another computer:
+	rake index=resources solr:zip
+
+In /lib/tasks/solr_index.rake, there are a number of tasks for indexing and testing the index. See the file for complete details.
+Here are a couple of the more common ones:
+	rake folder=XXX solr_index:index_rdf_for_debugging
+	rake folder=XXX solr_index:index_rdf_with_fulltext
+	rake archive=XXX solr_index:compare_indexes
+	rake archive=XXX solr_index:compare_indexes_text
+	rake uri=XXX solr_index:examine_solr_document
+	rake folder=XXX solr_index:find_duplicate_objects
 
 -----------------------------------------------------------------------
 ** Site specific info
