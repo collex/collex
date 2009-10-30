@@ -515,40 +515,54 @@ class CollexEngine
 							puts "#{uri} text field has appeared in the new index."
 							total_errors += 1
 						elsif text != old_text
-							old_arr = old_text.split("\n")
-							old_arr.delete("")	# delete all blank lines
-							new_arr = text.split("\n")
-							new_arr.delete("")	# delete all blank lines
-							first_mismatch = -1
-							old_arr.each_with_index { |s, j|
-								if first_mismatch == -1 && new_arr[j] != s
-									first_mismatch = j
+							# delete extra spaces and blank lines and compare again
+							text = text.gsub(" \n", "\n")
+							old_text = old_text.gsub(" \n", "\n")
+							text = text.gsub("\n ", "\n")
+							old_text = old_text.gsub("\n ", "\n")
+							text = text.gsub(" \n", "\n")
+							old_text = old_text.gsub(" \n", "\n")
+							text = text.gsub("\n ", "\n")
+							old_text = old_text.gsub("\n ", "\n")
+							text = text.gsub("\n\n", "\n")
+							old_text = old_text.gsub("\n\n", "\n")
+							text = text.gsub("\n\n", "\n")
+							old_text = old_text.gsub("\n\n", "\n")
+
+							if text != old_text
+								old_arr = old_text.split("\n")
+								new_arr = text.split("\n")
+								first_mismatch = -1
+								old_arr.each_with_index { |s, j|
+									if first_mismatch == -1 && new_arr[j] != s
+										first_mismatch = j
+									end
+								}
+								if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
+									first_mismatch = old_arr.length
 								end
-							}
-							if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
-								first_mismatch = old_arr.length
-							end
-							if first_mismatch != -1
-#										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
-#										File.open("#{RAILS_ROOT}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
-#										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
-								print_start = first_mismatch - 1
-								print_start = 0 if print_start < 0
-								print "==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})"
-								print_end = first_mismatch + 1
-								print_end = new_arr.length() -1 if print_end >= new_arr.length()
-								print_start.upto(print_end) { |x|
-									puts "\"#{new_arr[x]}\""
-								}
-								print "-- vs --\n(old #{new_arr.length})"
-								print_end = first_mismatch + 1
-								print_end = old_arr.length() -1 if print_end >= old_arr.length()
-								print_start.upto(print_end) { |x|
-									puts "\"#{old_arr[x]}\""
-								}
-								#puts "#{text}\n----\n#{old_text}"
-								#puts "#{text}"
-								total_errors += 1
+								if first_mismatch != -1
+	#										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
+	#										File.open("#{RAILS_ROOT}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
+	#										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
+									print_start = first_mismatch - 1
+									print_start = 0 if print_start < 0
+									print "==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})"
+									print_end = first_mismatch + 1
+									print_end = new_arr.length() -1 if print_end >= new_arr.length()
+									print_start.upto(print_end) { |x|
+										puts "\"#{new_arr[x]}\""
+									}
+									print "-- vs --\n(old #{new_arr.length})"
+									print_end = first_mismatch + 1
+									print_end = old_arr.length() -1 if print_end >= old_arr.length()
+									print_start.upto(print_end) { |x|
+										puts "\"#{old_arr[x]}\""
+									}
+									#puts "#{text}\n----\n#{old_text}"
+									#puts "#{text}"
+									total_errors += 1
+								end
 							end
 						end
 						new_obj[i] = nil	# we've done this one, so get rid of it
