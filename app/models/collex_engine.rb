@@ -33,7 +33,7 @@ class CollexEngine
 			"is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
     @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor", "freeculture",
 			"text_url", "year", "type", "date_updated", "title_sort", "author_sort" ]
-		@facet_fields = ['genre','archive','freeculture']
+		@facet_fields = ['genre','archive','freeculture', 'has_full_text']
   end
 
 	def self.factory_create(testing)

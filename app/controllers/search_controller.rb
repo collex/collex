@@ -255,6 +255,7 @@ class SearchController < ApplicationController
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
+			@fulltext_count = @results['facets']['has_full_text']['true'] || 0
 			@listed_constraints = marshall_listed_constraints()
 
 	#      113.upto(@num_pages) do |i|
@@ -337,6 +338,23 @@ class SearchController < ApplicationController
      redirect_to :action => 'browse'
    end
    
+   # constrain search to only return free culture objects
+   def constrain_fulltext
+     session[:name_of_search] = nil
+     if params[:remove] == 'true'
+       session[:constraints].each {|constraint|
+         if constraint[:type] == 'FullTextConstraint'
+           session[:constraints].delete(constraint)
+           break
+         end
+       }
+     else
+       session[:constraints] << FullTextConstraint.new(:inverted => false )
+     end
+
+     redirect_to :action => 'browse'
+   end
+
    # constrains the search by the specified resources
    def constrain_resource
      session[:name_of_search] = nil
@@ -425,6 +443,9 @@ class SearchController < ApplicationController
     session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
     #session[:selected_freeculture] = false
     session[:constraints] = []
+		session[:search_sort_by] = nil
+		session[:search_sort_by_direction] = nil
+
    end
    
    def auto_complete(keyword)
@@ -522,6 +543,8 @@ class SearchController < ApplicationController
          saved_search.constraints.each do |saved_constraint|
            if saved_constraint.is_a?(FreeCultureConstraint)
              session[:constraints] << FreeCultureConstraint.new(:inverted => true)
+           elsif saved_constraint.is_a?(FullTextConstraint)
+             session[:constraints] << FullTextConstraint.new(:inverted => false)
            elsif saved_constraint.is_a?(ExpressionConstraint)
              add_keyword_constraint(saved_constraint[:value], saved_constraint[:inverted])
            elsif saved_constraint.is_a?(FacetConstraint)

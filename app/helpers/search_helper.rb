@@ -147,26 +147,36 @@ module SearchHelper
   def free_culture_is_in_constraints?
     constraints = session[:constraints]
     constraints.each {|constraint|
-      if constraint[:type] == 'FreeCultureConstraint' 
+      if constraint[:type] == 'FreeCultureConstraint'
         return true
       end
     }
     return false
   end
-  
-  def free_culture_link(count)
-    display_str = "Free Culture Only (#{pluralize(count, 'object')})"
-    if free_culture_is_in_constraints?
-      html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
-      html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post, :class => 'nav_link' } 
-      html += "</li>"
-      return html
-    else
-      link = link_to display_str, {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' }
-      return "<li>#{link}</li>"
-    end
+
+  def full_text_is_in_constraints?
+    constraints = session[:constraints]
+    constraints.each {|constraint|
+      if constraint[:type] == 'FullTextConstraint'
+        return true
+      end
+    }
+    return false
   end
-  
+
+#  def free_culture_link(count)
+#    display_str = "Free Culture Only (#{pluralize(count, 'object')})"
+#    if free_culture_is_in_constraints?
+#      html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
+#      html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post, :class => 'nav_link' }
+#      html += "</li>"
+#      return html
+#    else
+#      link = link_to display_str, {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' }
+#      return "<li>#{link}</li>"
+#    end
+#  end
+#
   def genre_data_link( genre_data )
     if genre_data[:exists]
       html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})</span>&nbsp;"
@@ -355,6 +365,9 @@ module SearchHelper
     if constraint.is_a?(FreeCultureConstraint)
       ret[:title] ="Free Culture"
       ret[:value] = 'Only resources that are freely available in their full form'
+    elsif constraint.is_a?(FullTextConstraint)
+      ret[:title] ="Full Text"
+      ret[:value] = 'Only resources that contain full text'
     elsif constraint.is_a?(ExpressionConstraint)
       ret[:title] ="Search Term"
       ret[:value] = constraint.value
@@ -523,6 +536,16 @@ module SearchHelper
       html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_freeculture', :remove => 'true'}, { :class => 'modify_link' })
     else
       html = "<tr><td class='limit_to_lvl1'>" + link_to("Free Culture Only", {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' })
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+    return html
+  end
+
+  def full_text_selector(count)
+    if full_text_is_in_constraints?
+      html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_fulltext', :remove => 'true'}, { :class => 'modify_link' })
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + link_to("Full Text Only", {:controller=>"search", :action => 'constrain_fulltext' }, { :method => :post, :class => 'nav_link' })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return html
