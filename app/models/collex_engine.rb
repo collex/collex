@@ -531,7 +531,9 @@ class CollexEngine
 
 							if text != old_text
 								old_arr = old_text.split("\n")
+								old_arr.delete("")
 								new_arr = text.split("\n")
+								new_arr.delete("")
 								first_mismatch = -1
 								old_arr.each_with_index { |s, j|
 									if first_mismatch == -1 && new_arr[j] != s
