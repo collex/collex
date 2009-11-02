@@ -499,7 +499,7 @@ class CollexEngine
 						else
 							docs_with_text += 1
 							text = obj['text'][0].strip
-							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft"))	# this should be false for all archives except the specified ones.
+							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft") || (archive == 'UVaPress_VLCS') || (archive == 'cbw') || (archive == 'whitbib') || (archive == 'uva_library'))	# this should be false for all archives except the specified ones.
 								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
 								total_errors += 1
 							end
