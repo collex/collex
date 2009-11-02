@@ -16,10 +16,12 @@
 
 class FullTextConstraint < ExpressionConstraint
   def to_solr_expression
-    "#{operator}has_full_text:[* TO *]"
+    #"#{operator}has_full_text:[* TO *]"
+    "#{operator}has_full_text:true"
   end
 
   def to_s
-    "#{operator}?:has_full_text:[* TO *]"
+    #"#{operator}?:has_full_text:[* TO *]"
+    "#{operator}?:has_full_text:true"
   end
 end
