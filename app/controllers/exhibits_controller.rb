@@ -35,6 +35,10 @@ class ExhibitsController < ApplicationController
   def view
     # First see if we were given an alias
     id = params[:id]
+		if id == nil
+			redirect_to :action => 'list'
+			return
+		end
     @exhibit = Exhibit.find_by_visible_url(id)
     if @exhibit == nil
       if id.to_i > 0
