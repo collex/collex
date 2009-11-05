@@ -46,6 +46,13 @@ class FacetCategory < ActiveRecord::Base
     return missing_sites
   end
 
+	def self.get_display_name(node)
+		if node.display_name == nil
+			return "zzz"
+		end
+		return "#{node.display_name}".downcase
+	end
+
   def self.recursively_sort_tree( node )    
     if node[:type] == 'FacetValue'
       site = Site.find_by_code(node.value)
@@ -55,16 +62,8 @@ class FacetCategory < ActiveRecord::Base
     end
     
     if node.children
-			named_children.each {|c|
-				if c.display_name == nil
-					c.display_name = "ZZZ"
-				end
-				if c.display_name.kind_of?(String) == false
-					c.display_name = "#{c.display_name}"
-				end
-			}
       named_children = node.children.map { |child| self.recursively_sort_tree(child) }
-      node.sorted_children = named_children.sort { |a,b| (a.display_name.downcase != nil ? a.display_name.downcase : "") <=> (b.display_name.downcase != nil ? b.display_name.downcase : "") }
+      node.sorted_children = named_children.sort { |a,b| self.get_display_name(a) <=> self.get_display_name(b) }
     end
     
     node
