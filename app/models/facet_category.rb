@@ -56,7 +56,7 @@ class FacetCategory < ActiveRecord::Base
     
     if node.children
       named_children = node.children.map { |child| self.recursively_sort_tree(child) }      
-      node.sorted_children = named_children.sort { |a,b| a.display_name.downcase <=> b.display_name.downcase }    
+      node.sorted_children = named_children.sort { |a,b| a.display_name.downcase ? a.display_name.downcase : "" <=> b.display_name.downcase ? b.display_name.downcase : "" }
     end
     
     node
