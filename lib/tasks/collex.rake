@@ -66,7 +66,7 @@ namespace :collex do
 	end
 
 	desc "Deploy on production"
-	task :deploy_on_production do
+	task :deploy_on_production => :environment do
 		puts "Deploy latest version on production..."
 		version = Branding.version()
 		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
