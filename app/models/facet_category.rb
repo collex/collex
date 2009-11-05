@@ -49,13 +49,21 @@ class FacetCategory < ActiveRecord::Base
   def self.recursively_sort_tree( node )    
     if node[:type] == 'FacetValue'
       site = Site.find_by_code(node.value)
-      node.display_name = site ? site.description : node.value      
+      node.display_name = site ? "#{site.description}" : "#{node.value}"
     else
-      node.display_name = node.value
+      node.display_name = "#{node.value}"
     end
     
     if node.children
-      named_children = node.children.map { |child| self.recursively_sort_tree(child) }      
+			named_children.each {|c|
+				if c.display_name == nil
+					c.display_name = "ZZZ"
+				end
+				if c.display_name.kind_of?(String) == false
+					c.display_name = "#{c.display_name}"
+				end
+			}
+      named_children = node.children.map { |child| self.recursively_sort_tree(child) }
       node.sorted_children = named_children.sort { |a,b| (a.display_name.downcase != nil ? a.display_name.downcase : "") <=> (b.display_name.downcase != nil ? b.display_name.downcase : "") }
     end
     
