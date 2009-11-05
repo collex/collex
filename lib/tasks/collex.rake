@@ -65,6 +65,17 @@ namespace :collex do
 		system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}")
 	end
 
+	desc "Deploy on production"
+	task :deploy_on_production do
+		puts "Deploy latest version on production..."
+		version = Branding.version()
+		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
+		Rake::Task['collex:tag_current_version'].invoke
+		`svn up`
+		Rake::Task['collex:update_site'].invoke
+		`sudo /sbin/service httpd restart`
+	end
+
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
 	task :total_update_site do
 		puts "Update site from repository..."
