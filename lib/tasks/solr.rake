@@ -35,20 +35,40 @@ namespace :solr do
 		Rake::Task['solr:start'].invoke
 	end
 
+	def path_of_zipped_index
+		path = "~/"	#TODO: set this in site.yml
+		today = Time.now()
+		return "#{path}#{today.strftime('%m.%d.%y')}.index.tar.gz"
+	end
+
 	desc "Zip up the current index for backup and replication (parameter: index=resources|merged)"
 	task :zip => :environment do
 		# NOTE: if there are two indexes made in a day, this will overwrite the first one.
+		today = Time.now()
 		index = ENV["index"]
 		if index == nil
 			puts "Usage: call with index=CORE_NAME"
 		else
-			path = "~/"	#TODO: set this in site.yml
-			today = Time.now()
-			filename = "#{path}#{today.strftime('%m.%d.%y')}.index.tar.gz"
+			filename = path_of_zipped_index()
 			puts "~~~~~~~~~~~ zipping index \"#{index}\" to #{filename}..."
 			`cd #{solr_folder()}/solr/data/#{index} && tar cvzf #{filename} index`
 			puts "Finished in #{(Time.now-today)/60} minutes."
 		end
+	end
+
+	desc "Package and copy index to another machine (param: dest=nines@nines.org)"
+	task :send_index_to_server => :environment do
+		today = Time.now()
+		dest = ENV['dest']
+		if dest == nil
+			puts "Usage: call with dest=the ssh login for the destination machine"
+		else
+			filename = path_of_zipped_index()
+			ENV['index'] = 'resources'
+			Rake::Task['solr:zip'].invoke
+			`scp #{filename} #{dest}:~/#{solr_folder()}/solr/data/resources`
+		end
+			puts "Finished in #{(Time.now-today)/60} minutes."
 	end
 
 	desc "Index all exhibits into main index (Note: do this only on the production machine. After this step, do not zip up and move this index.)"
