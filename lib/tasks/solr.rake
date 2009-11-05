@@ -65,7 +65,7 @@ namespace :solr do
 		else
 			filename = path_of_zipped_index()
 			ENV['index'] = 'resources'
-			#Rake::Task['solr:zip'].invoke
+			Rake::Task['solr:zip'].invoke
 			`scp #{filename} #{dest}:solr_1.4/solr/data/resources`
 		end
 			puts "Finished in #{(Time.now-today)/60} minutes."
