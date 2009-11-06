@@ -642,7 +642,7 @@ class Exhibit < ActiveRecord::Base
 			page_str = ""
 		end
 		genres = self.genres.split(', ')
-		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail,
+		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail, :has_full_text => true,
 			:genre => genres, :archive => self.make_archive_name(), :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
 			:text => data.join(" \n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
 		solr.add_object(doc, boost)
@@ -661,7 +661,7 @@ class Exhibit < ActiveRecord::Base
 
 	def make_resource_name
 		name = self.resource_name
-		if name == nil || name.trim.length == 0
+		if name == nil || name.strip().length == 0
 			name = "#{self.id}"
 		end
 		return name
