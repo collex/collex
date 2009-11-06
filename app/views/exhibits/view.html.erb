@@ -26,6 +26,9 @@
 	<%= @exhibit.get_sharing_icon_with_link() %>
 </div>
 <div class="inner_content_container">
+	<% if @exhibit.category == 'peer-reviewed' -%>
+	<img src="/images/nines_peer_reviewed_badge.jpg" alt="Peer Reviewed" style="position:absolute;" />
+	<% end -%>
 	<div class="subpage_nav">
 		<% if @exhibit.category != 'peer-reviewed' -%>
 		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
