@@ -94,7 +94,11 @@ module DiscussionThreadsHelper
   end
 
   def comment_time_format_relative(tim)
-    return time_ago_in_words(tim) + " ago"
+		if tim > 28.days.ago
+	    return time_ago_in_words(tim) + " ago"
+		else
+			return comment_time_format(tim)
+		end
   end
 
   def sort_topics(by_date, topics)
