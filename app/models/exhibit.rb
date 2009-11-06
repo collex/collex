@@ -622,11 +622,12 @@ class Exhibit < ActiveRecord::Base
 		arr.each {|el|
 			gt = el.index('>')
 			if gt
-				ret += el.slice(gt+1..el.length-1)
+				ret += el.slice(gt+1..el.length-1) + ' '
 			else
 				ret += el
 			end
 		}
+		ret = ret.gsub("&nbsp;", " ")
 		return ret
 	end
 
@@ -643,7 +644,7 @@ class Exhibit < ActiveRecord::Base
 		genres = self.genres.split(', ')
 		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail,
 			:genre => genres, :archive => self.make_archive_name(), :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
-			:text => data.join("\r\n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
+			:text => data.join(" \n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
 		solr.add_object(doc, boost)
 	end
 
@@ -702,7 +703,7 @@ class Exhibit < ActiveRecord::Base
 					if section_name.length > 0
 						add_object(solr, data, boost_section, { :count => num_sections, :name => section_name, :page => section_page })
 					end
-					section_name = element.element_text
+					section_name = strip_tags(element.element_text)
 					section_page = page.position
 					num_sections += 1
 					data = []
