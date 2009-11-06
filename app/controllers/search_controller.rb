@@ -255,7 +255,8 @@ class SearchController < ApplicationController
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
-			@fulltext_count = @results['facets']['has_full_text']['true'] || 0
+			@fulltext_count = 0
+			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
 			@listed_constraints = marshall_listed_constraints()
 
 	#      113.upto(@num_pages) do |i|
