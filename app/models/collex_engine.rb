@@ -29,9 +29,9 @@ class CollexEngine
 
     @solr = Solr::Connection.new(SOLR_URL+ '/' + cores[0])
 		@field_list = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
-			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE",
+			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE", "freeculture",
 			"is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
-    @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor", "freeculture",
+    @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor",
 			"text_url", "year", "type", "date_updated", "title_sort", "author_sort" ]
 		@facet_fields = ['genre','archive','freeculture', 'has_full_text']
   end
@@ -93,7 +93,15 @@ class CollexEngine
   
     results["total_hits"] = response.total_hits
     results["hits"] = response.hits
-  
+
+		# The freeculture field is either returned as nil, or it isn't present. Make the returned object a little more friendly.
+		results["hits"].each { |hit|
+			if hit.has_key?("freeculture")
+				hit['freeculture'] = false
+			else
+				hit['freeculture'] = true
+			end
+		}
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
     results["facets"] = facets_to_hash(response.data['facet_counts']['facet_fields'])
     results["highlighting"] = response.data['highlighting']

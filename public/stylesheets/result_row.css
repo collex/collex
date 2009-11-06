@@ -175,4 +175,7 @@ hr.search_results_hr {
 	font-style: italic;
 }
 
-
+.result_row_icons {
+	padding-top: 3px;
+	clear: both;
+}

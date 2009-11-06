@@ -23,8 +23,21 @@
 		<div class="search_result_left_logged_in">
 			<table><tr>
 				<td><input type="checkbox" id="bulk_collect_<%=index%>" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>" /></td>
-				<td><div class="search_result_image"><%= thumbnail_image_tag(hit) %></div></td>
-			</tr></table>
+				<td><div class="search_result_image"><%= thumbnail_image_tag(hit) %>
+					<% if hit['freeculture'] == true || hit['has_full_text'] == true -%>
+						<div class="result_row_icons">
+					<% if hit['freeculture'] == true -%>
+						<img src="/images/free_culture.gif" alt="Free culture" />
+					<% end -%>
+					<% if hit['has_full_text'] == true -%>
+						<img src="/images/full_text.gif" alt="Full text" />
+					<% end -%>
+						</div>
+					<% end -%>
+				</div></td>
+			</tr>
+
+			</table>
 	    </div>
 	<% else -%>
 		<div class="search_result_left">
