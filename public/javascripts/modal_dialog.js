@@ -84,6 +84,7 @@ ModalDialog.prototype = {
 	_cancelThis: null,
 	_onCompleteCallback:null,
 	_saveButtonName: 'Save',
+	_cancelButtonName: 'Cancel',
 	
 	showPrompt: function(title, targetElement, form, left, top, width, height, extraButtons, okFunction, okObject) {
 		
@@ -162,7 +163,11 @@ ModalDialog.prototype = {
 	setSaveButton: function(name) {
 		this._saveButtonName = name;
 	},
-	
+
+	setCancelButton: function(name) {
+		this._cancelButtonName = name;
+	},
+
 	center: function()
 	{
 		var div = $(this._divId).up();
@@ -230,7 +235,7 @@ ModalDialog.prototype = {
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
 		var myButtons = [ { text: this._saveButtonName, handler: { fn: this._handleSave, obj: null, scope: this }, isDefault:true 	},
-			{ text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this } }];
+			{ text:this._cancelButtonName, handler: { fn: this._handleCancel, obj: null, scope: this } }];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
@@ -238,7 +243,7 @@ ModalDialog.prototype = {
 	{
 		//set up buttons for the Dialog and wire them
 		//up to our handlers:
-		var myButtons = [ { text:"Cancel", handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
+		var myButtons = [ { text:this._cancelButtonName, handler: { fn: this._handleCancel, obj: null, scope: this }, isDefault:true }];
 		this.dialog.cfg.queueProperty("buttons", myButtons);
 	},
 	
@@ -388,6 +393,7 @@ function showInLightbox(imageUrl, referenceElementId)
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
 	var lightboxModalDialog = new ModalDialog();
+	lightboxModalDialog.setCancelButton("Close");
 	img.observe('load', lightboxCenter.bind(lightboxModalDialog));
 	var el = $(referenceElementId);
 	var left = getX(el);
