@@ -21,8 +21,9 @@
 	<%# We only run Google Analytics if we are on the real deployment. -%>
 	<%# We want to load the non-minimized versions of YUI if we are running development -%>
 	<% quick_load = (RAILS_ENV == 'development') && (request.host().index('performantsoftware') == nil) -%>
+	<% is_staging = request.host().index('performantsoftware') != nil -%>
 
-<title><%= "DEV: " if quick_load %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
+<title><%= "DEV: " if quick_load %><%= "STAGING: " if is_staging %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
 <%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
 <%= get_stylesheets(@site_section, quick_load) %>
 <!--[if lt IE 7]>
