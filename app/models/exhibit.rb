@@ -659,8 +659,16 @@ class Exhibit < ActiveRecord::Base
 		}
 	end
 
+	def make_resource_name
+		name = self.resource_name
+		if name == nil || name.trim.length == 0
+			name = "#{self.id}"
+		end
+		return name
+	end
+
 	def make_archive_name
-		return "#{ARCHIVE_PREFIX}#{self.resource_name}"
+		return "#{ARCHIVE_PREFIX}#{make_resource_name()}"
 	end
 
 	def unindex_exhibit()
@@ -756,7 +764,7 @@ class Exhibit < ActiveRecord::Base
 		end
     site = Site.find_by_code(value)
     if site == nil
-      Site.create(:code => value, :description => self.resource_name)
+      Site.create(:code => value, :description => make_resource_name())
     end
 
 	end
