@@ -37,7 +37,19 @@ class HomeController < ApplicationController
 
   def index
     #@sites = Site.find(:all, :order => "description ASC")
-    threads = DiscussionThread.find(:all, :order => 'number_of_views desc', :limit => '5')
+
+		threads = []
+		topics = DiscussionTopic.get_all_with_date()
+		for topic_arr in topics
+			topic = topic_arr[:topic_rec]
+			threads += topic.discussion_threads
+		end
+		threads = threads.sort {|a,b|
+			b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
+		}
+		threads = threads.slice(0..4)
+
+		#threads = DiscussionThread.find(:all, :order => 'number_of_views desc', :limit => '5')
     @discussions = []
     threads.each {|thread|
       @discussions.push({ :title => thread.get_title().length > 0 ? thread.get_title() : "[Untitled]", :id => thread.id })
@@ -69,8 +81,8 @@ class HomeController < ApplicationController
         url = site.url
       end
       @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image ? facet.image.public_filename : '' })
+			end
     end
-  end
   
   def get_footer_data
     render :partial => 'footer_data'
