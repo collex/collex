@@ -81,11 +81,12 @@ class CollexEngine
 		else
 			sort_param = sort_by ? [ { sort_by.to_sym => :descending } ] : nil
 		end
+		#filter_queries.push("genre:\"Citation^.01\"")
     req = Solr::Request::Standard.new(:start => start, :rows => max, :sort => sort_param,
 					:query => query, :filter_queries => filter_queries,
 					:field_list => @field_list,
 					:facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},
-					:highlighting => {:field_list => ['text'], :fragment_size => 600}, :shards => @cores)
+					:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 }, :shards => @cores)
   
     results = {}
   
