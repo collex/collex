@@ -30,6 +30,9 @@
 				<div class="page_header"><a href='/collex/new_search' class="new_search"></a>Search Query
 					<span id="saved_search_name_span"><%= render :partial => 'search/show_saved_search' %></span>
 				</div>
+				<%# for preloading the hover images so there is no flashing. -%>
+				<img style="display:none;" src="/images/lvl2_new_search_rl.jpg" alt="" />
+				<img style="display:none;" src="/images/lvl2_result_row_button_rl.jpg" alt="" />
 				<% if !is_logged_in? -%>
 				    <div>(<%= sign_in_link({ :class => 'nav_link'}) %> or <%= sign_up_link({ :class => 'nav_link' }) %> to save these results)</div>
 				<% end -%>
