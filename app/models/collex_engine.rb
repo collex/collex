@@ -30,9 +30,9 @@ class CollexEngine
     @solr = Solr::Connection.new(SOLR_URL+ '/' + cores[0])
 		@field_list = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
 			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE", "freeculture",
-			"is_ocr", "federation", "has_full_text", "person", "format", "language", "geospacial" ]
+			"is_ocr", "federation", "has_full_text", "source_xml" ]
     @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor",
-			"text_url", "year", "type", "date_updated", "title_sort", "author_sort" ]
+			"text_url", "year", "type", "date_updated", "title_sort", "author_sort", "source_html", "source_sgml", "person", "format", "language", "geospacial" ]
 		@facet_fields = ['genre','archive','freeculture', 'has_full_text']
   end
 
@@ -71,7 +71,11 @@ class CollexEngine
     response = @solr.send(req)
     facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
   end
-  
+
+	def tank_citations(query)
+		return "(#{query}) OR (#{query} -genre:Citation)^5"
+	end
+
   def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
     query, filter_queries = solrize_constraints(constraints)
 
@@ -82,7 +86,8 @@ class CollexEngine
 			sort_param = sort_by ? [ { sort_by.to_sym => :descending } ] : nil
 		end
 		#filter_queries.push("genre:\"Citation^.01\"")
-    req = Solr::Request::Standard.new(:start => start, :rows => max, :sort => sort_param,
+		query = tank_citations(query)
+    req = Solr::Request::Standard.new(:start => start, :rows => max, :sort => sort_param, #:alternate_query => "*:*",
 					:query => query, :filter_queries => filter_queries,
 					:field_list => @field_list,
 					:facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},

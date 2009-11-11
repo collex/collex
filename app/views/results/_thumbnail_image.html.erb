@@ -17,7 +17,7 @@
 %>
 <%# thumbnail_image params: (hash hit) -%>
 <div class="search_result_image"><%= thumbnail_image_tag(hit) %>
-	<% if hit['freeculture'] == true || hit['has_full_text'] == true  || has_xml_source(hit) -%>
+	<% if hit['freeculture'] == true || hit['has_full_text'] == true  || hit['source_xml'] != nil -%>
 		<div class="result_row_icons">
 	<% if hit['freeculture'] == true -%>
 		<span class="tooltip"><img src="/images/free_culture.gif" alt="Free culture" /><span class="discussion_title_tooltip">Free-Culture resource</span></span>
@@ -25,7 +25,7 @@
 	<% if hit['has_full_text'] == true -%>
 		<span class="tooltip"><img src="/images/full_text.gif" alt="Full text" /><span class="discussion_title_tooltip">Full-text provided for this document</span></span>
 	<% end -%>
-	<% if has_xml_source(hit) -%>
+	<% if hit['source_xml'] != nil -%>
 		<span class="tooltip"><img src="/images/has_xml_source.gif" alt="XML Source" /><span class="discussion_title_tooltip">XML source available for this document</span></span>
 	<% end -%>
 		</div>

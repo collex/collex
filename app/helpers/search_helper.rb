@@ -550,8 +550,4 @@ module SearchHelper
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return html
   end
-
-	def has_xml_source(hit)
-		return hit['source'] != nil && hit['source'].length > 4 && hit['source'].downcase().include?('.xml')
-	end
 end
