@@ -302,6 +302,7 @@ namespace :solr_index do
 		if hit == nil
 			puts "#{uri}: Can't find this object in the archive."
 			solr = CollexEngine.factory_create(true)
+			hit = solr.get_object_with_text(uri)
 			dump_hit("ARCHIVE", hit)
 		else
 			dump_hit("RESOURCES", hit)
