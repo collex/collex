@@ -392,6 +392,12 @@ class CachedResource < ActiveRecord::Base
       end
     end
     hit['uri'] = uri.uri
+		if hit['freeculture']
+			hit['freeculture'] = hit['freeculture'][0] == '1'
+		end
+		if hit['has_full_text']
+			hit['has_full_text'] = hit['has_full_text'][0] == '1'
+		end
     return hit
   end
 

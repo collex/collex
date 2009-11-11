@@ -102,17 +102,21 @@ class CollexEngine
 
 		# The freeculture field is either returned as nil, or it isn't present. Make the returned object a little more friendly.
 		results["hits"].each { |hit|
-			if hit.has_key?("freeculture")
-				hit['freeculture'] = false
-			else
-				hit['freeculture'] = true
-			end
+			fix_free_culture(hit)
 		}
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
     results["facets"] = facets_to_hash(response.data['facet_counts']['facet_fields'])
     results["highlighting"] = response.data['highlighting']
     return results
   end
+
+	def fix_free_culture(hit)
+			if hit.has_key?("freeculture")
+				hit['freeculture'] = false
+			else
+				hit['freeculture'] = true
+			end
+	end
 
 	def get_object(uri) #called when "collect" is pressed.
 		# Returns nil if the object doesn't exist, or the object if it does.
@@ -123,7 +127,10 @@ class CollexEngine
              :query => query, :field_list => @field_list, :shards => @cores)
 
     response = @solr.send(req)
-    return response.hits[0] if response.hits.length > 0
+		if response.hits.length > 0
+			fix_free_culture(response.hits[0])
+	    return response.hits[0]
+		end
 		return nil
 	end
 
