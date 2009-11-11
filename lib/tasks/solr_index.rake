@@ -157,9 +157,14 @@ namespace :solr_index do
 		puts "~~~~~~~~~~~ #{msg} #{path} [see log/#{report_name}_indexer.log and log/#{report_name}_report.txt]"
 		start_time = Time.now
 
-		puts "cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}"
-		`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}`
-		puts "Finished in #{(Time.now-start_time)/60} minutes."
+		exist = File.exists?("#{rdf_path}#{path}")
+		if !exist
+			puts "The folder name #{path} does not exist in the RDF folder."
+		else
+			puts "cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}"
+			`cd #{indexer_path} && java -Xmx1500m -jar dist/rdf-indexer.jar #{rdf_path}#{path} #{flags}`
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+		end
 	end
 
 	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly])"
@@ -274,6 +279,21 @@ namespace :solr_index do
 		return ret
 	end
 
+	def dump_hit(label, hit)
+		puts " ------------------------------------------------ #{label} ------------------------------------------------------------------"
+		hit.each { |key,val|
+			if val.kind_of?(Array)
+				val.each{ |v|
+					#puts "#{key}: #{trans_str(v)}"
+					puts "#{key}: #{v}"
+				}
+			else
+				#puts "#{key}: #{trans_str(val)}"
+				puts "#{key}: #{val}"
+			end
+		}
+	end
+
 	desc "examine solr document (param: uri)"
 	task :examine_solr_document  => :environment do
 		uri = ENV['uri']
@@ -281,20 +301,10 @@ namespace :solr_index do
 		hit = solr.get_object_with_text(uri)
 		if hit == nil
 			puts "#{uri}: Can't find this object in the archive."
+			solr = CollexEngine.factory_create(true)
+			dump_hit("ARCHIVE", hit)
 		else
-			#conv = Iconv.new("ASCII//TRANSLIT", "UTF-8")
-			puts " ------------------------------------------------ RESOURCES ------------------------------------------------------------------"
-			hit.each { |key,val|
-				if val.kind_of?(Array)
-					val.each{ |v|
-						#puts "#{key}: #{trans_str(v)}"
-						puts "#{key}: #{v}"
-					}
-				else
-					#puts "#{key}: #{trans_str(val)}"
-					puts "#{key}: #{val}"
-				end
-			}
+			dump_hit("RESOURCES", hit)
 
 			archive = "archive_#{CollexEngine.archive_to_core_name(hit['archive'])}"
 			solr = CollexEngine.new([archive])
@@ -302,19 +312,7 @@ namespace :solr_index do
 			if hit == nil
 				puts "#{uri}: Can't find this object in the archive."
 			else
-				#conv = Iconv.new("ASCII//TRANSLIT", "UTF-8")
-				puts " ------------------------------------------------ ARCHIVE ------------------------------------------------------------------"
-				hit.each { |key,val|
-					if val.kind_of?(Array)
-						val.each{ |v|
-#							puts "#{key}: #{trans_str(v)}"
-							puts "#{key}: #{v}"
-						}
-					else
-#						puts "#{key}: #{trans_str(val)}"
-						puts "#{key}: #{val}"
-					end
-				}
+				dump_hit("ARCHIVE", hit)
 			end
 		end
 	end
