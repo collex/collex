@@ -38,7 +38,7 @@ namespace :solr do
 	def path_of_zipped_index
 		path = "~/"	#TODO: set this in site.yml
 		today = Time.now()
-		return "#{path}#{today.strftime('%m.%d.%y')}.index.tar.gz"
+		return "#{path}#{today.strftime('20%y.%m.%d')}.index.tar.gz"
 	end
 
 	desc "Zip up the current index for backup and replication (parameter: index=resources|merged)"
