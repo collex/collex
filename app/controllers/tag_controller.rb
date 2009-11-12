@@ -14,19 +14,10 @@
 # limitations under the License.
 ##########################################################################
 
-#NUM_VISIBLE_TAGS = 50000
-#TAG_INSTRUCTIONS = 'add tag' # TODO-PER: these may not be relevant but were put in to make it not crash
-#ANNOTATION_INSTRUCTIONS = 'enter annotation' # TODO-PER: these may not be relevant but were put in to make it not crash
-
 class TagController < ApplicationController
    layout 'nines'
-   #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
    
-#   # Number of search results to display by default
-#   MIN_ITEMS_PER_PAGE = 10
-#   MAX_ITEMS_PER_PAGE = 30
-
    private
    def init_view_options
      @use_tabs = true
@@ -43,16 +34,16 @@ class TagController < ApplicationController
     # except to save the zoom level.
     level = params[:level]
     case level
-      when '1' : session[:tag_zoom] = 1
-      when '2' : session[:tag_zoom] = 2
-      when '3' : session[:tag_zoom] = 3
-      when '4' : session[:tag_zoom] = 4
-      when '5' : session[:tag_zoom] = 5
-      when '6' : session[:tag_zoom] = 6
-      when '7' : session[:tag_zoom] = 7
-      when '8' : session[:tag_zoom] = 8
-      when '9' : session[:tag_zoom] = 9
-      when '10' : session[:tag_zoom] = 10
+      when '1' then session[:tag_zoom] = 1
+      when '2' then session[:tag_zoom] = 2
+      when '3' then session[:tag_zoom] = 3
+      when '4' then session[:tag_zoom] = 4
+      when '5' then session[:tag_zoom] = 5
+      when '6' then session[:tag_zoom] = 6
+      when '7' then session[:tag_zoom] = 7
+      when '8' then session[:tag_zoom] = 8
+      when '9' then session[:tag_zoom] = 9
+      when '10' then session[:tag_zoom] = 10
       else session[:tag_zoom] = 10 
     end
     
@@ -145,14 +136,6 @@ class TagController < ApplicationController
       redirect_to :action => 'results'
 	end
 
-#	# adjust the number of search results per page
-#   def result_count
-#     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-#     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page] 
-#     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-#     redirect_to :action => 'results'
-#   end
-   
    def update_tag_cloud
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 
