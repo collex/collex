@@ -104,6 +104,7 @@ class ForumController < ApplicationController
     disc_type = params[:obj_type]
     title = params[:title]
     license = params[:license_list]
+    can_delete = params[:can_delete] == 'true'
     
     comment = DiscussionComment.find(comment_id)
     # If an attachment was not selected, but the type expected an attachment, just change the type to regular comment
@@ -135,7 +136,7 @@ class ForumController < ApplicationController
       thread.update_attributes(:title => title) if title.length > 0
     end
     
-    render :partial => 'comment', :locals => { :comment => comment, :thread_id => comment.discussion_thread_id, :can_delete => false, :can_edit => true, :is_main => comment.position == 1 }
+    render :partial => 'comment', :locals => { :comment => comment, :thread_id => comment.discussion_thread_id, :can_delete => can_delete, :can_edit => true, :is_main => comment.position == 1 }
   end
   
   private

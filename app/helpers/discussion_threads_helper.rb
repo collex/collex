@@ -43,7 +43,7 @@ module DiscussionThreadsHelper
     return "<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>"
   end
   
-  def make_edit_link(comment, is_main)
+  def make_edit_link(comment, is_main, can_delete)
     html = "<a href='#' class='nav_link' onclick=\"new ForumReplyDlg({" +
       "comment_id: #{comment.id},"
     if is_main # only the main comment has a title.
@@ -55,6 +55,7 @@ module DiscussionThreadsHelper
       "reply: 'comment_body_#{comment.id}'," +
       "nines_obj_list: '#{comment.cached_resource_id && comment.cached_resource_id > 0 ? CachedResource.find(comment.cached_resource_id).uri : ''}'," +
       "exhibit_list: 'id_#{comment.exhibit_id}'," +
+			"can_delete: #{can_delete ? 'true' : 'false'}," +
       "inet_thumbnail: '#{comment.image_url}'," +
       "inet_url: '#{comment.link_url}'," +
       "ajax_div: 'comment_id_#{comment.id}'," +

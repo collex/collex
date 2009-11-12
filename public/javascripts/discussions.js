@@ -32,6 +32,7 @@ var ForumReplyDlg = Class.create({
 		var topic_id = params.topic_id;
 		var thread_id = params.thread_id;
 		var submit_url = params.submit_url;
+		var can_delete = params.can_delete;
 		var populate_exhibit_url = params.populate_exhibit_url;
 		var populate_nines_obj_url = params.populate_nines_obj_url;
 		var progress_img = params.progress_img;
@@ -49,7 +50,8 @@ var ForumReplyDlg = Class.create({
 			var starting_exhibit_list = params.exhibit_list;
 			var starting_inet_thumbnail = params.inet_thumbnail;
 			var starting_inet_url = params.inet_url;
-			starting_license = params.license;
+			if (params.license)
+				starting_license = params.license;
 		}
 		
 		if (!logged_in) {
@@ -119,6 +121,7 @@ var ForumReplyDlg = Class.create({
 			data.topic_id = topic_id;
 			data.comment_id = comment_id;
 			data.obj_type = currSelClass;
+			data.can_delete = can_delete;
 
 			if (ajax_div) {
 				new Ajax.Updater(ajax_div, url, {
