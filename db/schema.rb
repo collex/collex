@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091007200123) do
+ActiveRecord::Schema.define(:version => 20091112194104) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -236,6 +236,8 @@ ActiveRecord::Schema.define(:version => 20091007200123) do
   create_table "searches", :force => true do |t|
     t.string  "name"
     t.integer "user_id"
+    t.string  "sort_by"
+    t.string  "sort_dir"
   end
 
   create_table "sessions", :force => true do |t|
