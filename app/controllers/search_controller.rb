@@ -298,6 +298,7 @@ class SearchController < ApplicationController
 
 	 #adjust the sort order
   def sort_by
+    session[:name_of_search] = nil
 		if params['search'] && params['search']['result_sort']
       sort_param = params['search']['result_sort']
 			session[:search_sort_by] = sort_param
@@ -333,7 +334,7 @@ class SearchController < ApplicationController
          end
        }
      else
-       session[:constraints] << FreeCultureConstraint.new(:inverted => true )
+       session[:constraints] << FreeCultureConstraint.new(:inverted => false )
      end
    
      redirect_to :action => 'browse'
@@ -518,7 +519,9 @@ class SearchController < ApplicationController
        user = User.find_by_username(session[:user][:username])
        session[:name_of_search] = name
        saved_search = user.searches.find_or_create_by_name(name)
-  
+
+			 saved_search.sort_by = session[:search_sort_by]
+			 saved_search.sort_dir = session[:search_sort_by_direction]
        # [{:value=>"rossetti", :invert=>false, :field=>"archive"}, {:invert=>true, :expression=>"damsel"}]
        
        saved_search.constraints.clear
@@ -540,6 +543,8 @@ class SearchController < ApplicationController
   
        saved_search = user.searches.find_by_name(params[:name])
        if (saved_search)  # If we found the search that the user requested (normally, will always succeed)
+				session[:search_sort_by] = saved_search.sort_by
+				session[:search_sort_by_direction] = saved_search.sort_dir
          # Recreate the original search instead of adding a constraint of SavedSearchConstraint
          saved_search.constraints.each do |saved_constraint|
            if saved_constraint.is_a?(FreeCultureConstraint)

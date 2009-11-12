@@ -73,7 +73,8 @@ class CollexEngine
   end
 
 	def tank_citations(query)
-		return "(#{query}) OR (#{query} -genre:Citation)^5"
+		return "(*:* AND #{query}) OR (*:* AND #{query} -genre:Citation)^5"
+		#return "(#{query}) OR (#{query} -genre:Citation)^5"
 	end
 
   def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
