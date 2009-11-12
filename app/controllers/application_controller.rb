@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
-  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user, :user_or_guest,
+  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user,
                 :is_admin?
   
   def boom
@@ -100,10 +100,6 @@ class ApplicationController < ActionController::Base
     
     def user
       my_username ? User.find_by_username(my_username) : nil
-    end
-    
-    def user_or_guest
-      user || Guest.new
     end
     
     def rescue_action_in_public(exception)

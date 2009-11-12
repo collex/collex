@@ -15,7 +15,7 @@
 ##########################################################################
 
 class CachedResource < ActiveRecord::Base
-  include PropertyMethods
+  #include PropertyMethods
   validates_uniqueness_of :uri
   after_create :copy_solr_resource
   
