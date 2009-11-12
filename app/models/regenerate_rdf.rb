@@ -14,6 +14,8 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 
+# This is for the case where we have good data in the index, but we don't have the original
+# source RDF that created it. This will reverse engineer it. (Used to create the uva_library records.)
 class RegenerateRdf
   def initialize
     
@@ -25,8 +27,8 @@ class RegenerateRdf
 			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 			xmlns:dc="http://purl.org/dc/elements/1.1/"
 			xmlns:dcterms="http://purl.org/dc/terms/"
-			xmlns:nines="http://www.nines.org/schema#"
-			xmlns:recreate="http://www.nines.org/recreate_schema#">' + "\n"
+			xmlns:collex="http://www.collex.org/schema#"
+			xmlns:recreate="http://www.collex.org/recreate_schema#">' + "\n"
 	end
 
 	def self.footer()
