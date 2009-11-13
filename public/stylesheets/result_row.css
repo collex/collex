@@ -176,6 +176,33 @@ hr.search_results_hr {
 }
 
 .result_row_icons {
-	padding-top: 3px;
+	padding-top: 6px;
 	clear: both;
+}
+
+.free_culture {
+	background-image: url(/images/free_culture.gif);
+	background-repeat:no-repeat;
+}
+
+.full_text {
+	background-image: url(/images/full_text.gif);
+	background-repeat:no-repeat;
+}
+
+.has_xml_source {
+	background-image: url(/images/has_xml_source.gif);
+	background-repeat:no-repeat;
+}
+
+.free_culture:hover {
+	background-image: url(/images/free_culture_hover.gif);
+}
+
+.full_text:hover {
+	background-image: url(/images/full_text_hover.gif);
+}
+
+.has_xml_source:hover {
+	background-image: url(/images/has_xml_source.gif);
 }
