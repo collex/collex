@@ -14,8 +14,7 @@
 # limitations under the License.
 ##########################################################################
 
-#require 'ftools'
-require 'FileUtils'
+require 'ftools'
 
 namespace :collex do
 
