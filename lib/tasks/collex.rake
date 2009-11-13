@@ -15,6 +15,7 @@
 ##########################################################################
 
 #require 'ftools'
+require 'FileUtils'
 
 namespace :collex do
 
