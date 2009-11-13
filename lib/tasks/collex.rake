@@ -14,10 +14,50 @@
 # limitations under the License.
 ##########################################################################
 
-require 'ftools'
+#require 'ftools'
 
 namespace :collex do
 
+  desc "Run JSLint on all js files"
+  task :jslint => :environment do
+		ext = '.js'
+		skip_ext = '-min.js'
+		Dir.foreach("#{RAILS_ROOT}/public/javascripts") { |f|
+			if f.index(ext) == f.length - ext.length && f.index(skip_ext) != f.length - skip_ext.length
+				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js'
+					puts "Linting #{f}..."
+					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/rhino1_7R2_js.jar #{RAILS_ROOT}/lib/tasks/fulljslint.js #{RAILS_ROOT}/public/javascripts/#{f}")
+				end
+			end
+		}
+	end
+
+	desc "Deploy on production (the first password requested is the mysql password; the second is the sudo password)"
+	task :deploy_on_production => :environment do
+		puts "Deploy latest version on production..."
+		version = Branding.version()
+		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
+		Rake::Task['collex:tag_current_version'].invoke
+		`svn up`
+		Rake::Task['collex:update_site'].invoke
+		`sudo /sbin/service httpd restart`
+	end
+
+	desc "Do all tasks that routinely need to be done when anything changes in the source repository (the password requested is the sudo password)"
+	task :update_staging do
+		puts "Update site from repository..."
+		system("svn up")
+		Rake::Task['collex:update_nines_theme'].invoke
+		Rake::Task['db:migrate'].invoke
+		Rake::Task['collex:compress_css_js'].invoke
+		`sudo /sbin/service httpd restart`
+	end
+
+	#
+	# All tasks below here are not normally called separately, but can be if needed. They are called as part of the
+	# tasks defined above.
+	#
+	
   desc "Update the installed NINES Wordpress theme"
   task :update_nines_theme do
 		begin
@@ -27,14 +67,14 @@ namespace :collex do
 		end
     copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" )
   end
-  
+
   desc "Install the NINES Wordpress theme"
-  task :install_nines_theme do    
+  task :install_nines_theme do
     # install php files
     Dir.mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
-    copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" );        
+    copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" );
   end
-    
+
   def copy_dir( start_dir, dest_dir )
      puts "Copying the contents of #{start_dir} to #{dest_dir}..."
      Dir.new(start_dir).each { |file|
@@ -42,8 +82,8 @@ namespace :collex do
 #         start_file = "#{start_dir}/#{file}"
 #         dest_file = "#{dest_dir}/#{file}"
          File.copy("#{start_dir}/#{file}", "#{dest_dir}/#{file}")
-       end     
-     }    
+       end
+     }
   end
 
 	desc "Tag this version in SVN"
@@ -63,32 +103,6 @@ namespace :collex do
 		end
 		puts "Tagging version #{version}..."
 		system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}")
-	end
-
-	desc "Deploy on production"
-	task :deploy_on_production => :environment do
-		puts "Deploy latest version on production..."
-		version = Branding.version()
-		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
-		Rake::Task['collex:tag_current_version'].invoke
-		`svn up`
-		Rake::Task['collex:update_site'].invoke
-		`sudo /sbin/service httpd restart`
-	end
-
-	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
-	task :total_update_site do
-		puts "Update site from repository..."
-		system("svn up")
-		Rake::Task['collex:update_site'].invoke
-		`sudo /sbin/service httpd restart`
-	end
-
-	desc "Do all tasks that routinely need to be done when anything changes in the source repository"
-	task :update_site do
-		Rake::Task['collex:update_nines_theme'].invoke
-		Rake::Task['db:migrate'].invoke
-		Rake::Task['collex:compress_css_js'].invoke
 	end
 
 	desc "Compress the css for the about pages"
@@ -169,23 +183,14 @@ namespace :collex do
 		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
 	end
 
-  desc "Run JSLint on all js files"
-  task :jslint => :environment do
-		ext = '.js'
-		skip_ext = '-min.js'
-		Dir.foreach("#{RAILS_ROOT}/public/javascripts") { |f|
-			if f.index(ext) == f.length - ext.length && f.index(skip_ext) != f.length - skip_ext.length
-				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js'
-					puts "Linting #{f}..."
-					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/rhino1_7R2_js.jar #{RAILS_ROOT}/lib/tasks/fulljslint.js #{RAILS_ROOT}/public/javascripts/#{f}")
-				end
-			end
-		}
-	end
-
 	desc "Fix character set from CP1252 to utf-8"
 	task :fix_char_set => :environment do
-		CharSetAlter.downcase_tag()
+		# This was for a one time fix of the database when the character set was set to latin1 instead of utf8.
+		# It may be useful in the future if that happens again.
+		# downcase_tag changes all tags to just be lower case. This is also a one time fix to the database.
+		# If you set debug=true, you will get the status of the DB with changing anything.
+
+		#CharSetAlter.downcase_tag()
 		debug = false
 		CharSetAlter.cp1252_to_utf8(ExhibitElement, :element_text, debug)
 		CharSetAlter.cp1252_to_utf8(ExhibitElement, :element_text2, debug)
