@@ -248,6 +248,8 @@ class CollectedItem < ActiveRecord::Base
     tag = tag.strip()
     tag = tag.downcase()
     tag = tag.gsub(' ', '_')
+    tag = tag.gsub('.', '_')
+    tag = tag.gsub('?', '_')
     return tag.gsub('/', '_')
   end
 end
