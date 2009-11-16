@@ -347,22 +347,34 @@ class My9sController < ApplicationController
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
     if can_edit_exhibit(user, exhibit_id)
-      exhibit.title = params[:overview_title_dlg]
-      exhibit.thumbnail = params[:overview_thumbnail_dlg]
-			exhibit.thumbnail = nil if exhibit.thumbnail == "You have not added a thumbnail to this exhibit."
-      exhibit.visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
-      exhibit.resource_name = params[:overview_resource_name_dlg]
-			genres = []
-			genre_list = params[:genre]
-			genre_list.each { |key,val|
-				if val == 'true'
-					genres.push(key)
-				end
-			}
-			exhibit.genres = genres.join(', ')
-      exhibit.save
+			visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
+			short_name = params[:overview_resource_name_dlg]
+      ex = Exhibit.find_by_visible_url(visible_url)
+      ex2 = Exhibit.find_by_resource_name(short_name)
+      if ex != nil && ex.id != exhibit_id.to_i
+        render :text => "There is already an exhibit in #{SITE_NAME} with the url \"#{visible_url}\". Please choose another.", :status => :bad_request
+      elsif ex2 != nil && ex2.id != exhibit_id.to_i
+        render :text => "There is already an exhibit in #{SITE_NAME} with the short name \"#{short_name}\". Please choose another.", :status => :bad_request
+      else
+				exhibit.title = params[:overview_title_dlg]
+				exhibit.thumbnail = params[:overview_thumbnail_dlg]
+				exhibit.thumbnail = nil if exhibit.thumbnail == "You have not added a thumbnail to this exhibit."
+				exhibit.visible_url = visible_url
+				exhibit.resource_name = short_name
+				genres = []
+				genre_list = params[:genre]
+				genre_list.each { |key,val|
+					if val == 'true'
+						genres.push(key)
+					end
+				}
+				exhibit.genres = genres.join(', ')
+				exhibit.save
+		    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+			end
+		else
+	    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
     end
-    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
   end
 
   def update_title # ajax call after title changes to display it on the page
