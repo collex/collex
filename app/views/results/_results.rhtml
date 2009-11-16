@@ -15,10 +15,8 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <%# parameter: results hits[]; int user_id; -%>
-<% has_exhibits = false -%>
 <% if user_id > 0 -%>
 	<% exhibit_list = Exhibit.js_array_of_all_my_exhibits(user_id) -%>
-	<% has_exhibits = exhibit_list.length > 0 -%>
 	<script type="text/javascript">
 		var exhibit_names = [ <%= exhibit_list %> ];
 	</script>
@@ -28,7 +26,7 @@
 	<div class="clear_both"></div>
 	<hr class="search_results_hr" />
 	<div id="search_result_<%= index %>">
-		<%= render :partial => 'results/result_row', :locals => { :index => index, :hit => hit, :has_exhibits => has_exhibits, :add_border => true } %>
+		<%= render :partial => 'results/result_row', :locals => { :index => index, :hit => hit } %>
 	</div>
 <% end -%>
 <% if @script == 'doCollect' %>

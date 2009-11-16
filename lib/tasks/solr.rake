@@ -56,7 +56,7 @@ namespace :solr do
 		end
 	end
 
-	desc "Package and copy index to another machine (param: dest=nines@nines.org)"
+	desc "Package and copy index to another machine (param: dest=nines@nines.org). The remote machine's password will be requested."
 	task :send_index_to_server => :environment do
 		today = Time.now()
 		dest = ENV['dest']

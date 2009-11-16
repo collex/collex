@@ -16,7 +16,7 @@
 
 class ResultsController < ApplicationController
   
-  MIN_ITEMS_PER_PAGE = 10
+  MIN_ITEMS_PER_PAGE = 30
   
   #   def details
   #      setup_ajax_calls(params)
@@ -61,7 +61,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
     
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
 #  def add_tag_forum
@@ -77,7 +77,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
     
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
 #  def remove_tag_forum
@@ -93,7 +93,7 @@ class ResultsController < ApplicationController
     note = params[:note]
     CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
     
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
   def bulk_add_tag
@@ -126,7 +126,7 @@ class ResultsController < ApplicationController
   end
   
   private
-  def encodeForUri(str) # TODO-PER: this is in a helper, so it can't be called from a controller, so we are just repeating it.
+  def encode_for_uri(str) # TODO-PER: this is in a helper, so it can't be called from a controller, so we are just repeating it.
     value = str.gsub('%', '%25')
     value = value.gsub('#', '%23')
     value = value.gsub('&', '%26')
@@ -154,7 +154,7 @@ class ResultsController < ApplicationController
       }
     end
     back = request.env["HTTP_REFERER"]
-    back = back.gsub(encodeForUri(old_name), encodeForUri(new_name))
+    back = back.gsub(encode_for_uri(old_name), encode_for_uri(new_name))
     redirect_to back
   end
   
