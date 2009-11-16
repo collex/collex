@@ -33,8 +33,8 @@
 development:
     adapter: mysql
     database: nines_development
-    username: root
-    password: 
+    username: nines
+    password: super-secret
     host: localhost
     
 # Warning: The database defined as "test" will be erased and
@@ -43,23 +43,20 @@ development:
 test:
     adapter: mysql
     database: nines_test
-    username: root
-    password: 
+    username: nines
+    password: super-secret
     host: localhost
 
 production:
   adapter: mysql
-  #encoding: utf8
-  #reconnect: false
   database: nines_production
-  #pool: 5
   username: nines
-  password: n1n3s
+  password: super-secret
   host: localhost
 
 staging:
   adapter: mysql
   database: nines_development
   username: nines
-  password: n1n3s
+  password: super-secret
   host: localhost
