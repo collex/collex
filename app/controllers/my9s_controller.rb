@@ -223,6 +223,7 @@ class My9sController < ApplicationController
   def update_profile_upload
     user = get_user(session)
 		if user	# If the session expired while the dlg was on the page, don't go further.
+			old_image = user.image_id
 			if params['image'] && params['image'].length > 0
 				user.image = Image.new({ :uploaded_data => params['image'] })
 				if user.image	# If there were an error in uploading the image, don't go further.
@@ -425,7 +426,7 @@ class My9sController < ApplicationController
     if page == nil
       render :text =>'Error in editing section. Please refresh your browser page.'
     else
-      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil, :badge_pos => 'none' }
     end
   end
 
@@ -526,7 +527,7 @@ class My9sController < ApplicationController
     if exhibit == nil || page_num == 0
       render :text => "[Empty Exhibit]"
     else
-      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil }
+      render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil, :badge_pos => 'none' }
     end
   end
   
@@ -544,7 +545,7 @@ class My9sController < ApplicationController
       if page == nil
         render :text =>'Error in editing section. Please refresh your browser page.'
       else
-        render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil }
+        render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => nil, :badge_pos => 'none' }
       end
     else
       render :text => 'Your session has timed out due to inactivity. Please login again.'
@@ -811,7 +812,7 @@ class My9sController < ApplicationController
     element = ExhibitElement.find(el_num)
     page = ExhibitPage.find(element.exhibit_page_id)
 
-    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => el_num }
+    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => Exhibit.find(page.exhibit_id), :page_num => page.position, :is_edit_mode => true, :top => el_num, :badge_pos => 'none' }
   end
 
   def resend_exhibited_objects
@@ -921,7 +922,7 @@ class My9sController < ApplicationController
       exhibit.alias_id = user_id
       exhibit.save
     end
-    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil }
+    render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil, :badge_pos => 'none' }
   end
 
   def modify_outline_page

@@ -62,7 +62,7 @@
 		</div>
 		
 		<div id="exhibit_page">
-			<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => true, :top => nil } %>
+			<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => true, :top => nil, :badge_pos => 'none' } %>
 		</div>
 		<div class="clear_both">&nbsp;</div>
 	<% end # is logged in -%>

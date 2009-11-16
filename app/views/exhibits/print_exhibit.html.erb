@@ -15,11 +15,12 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
+<% current_page "Exhibits" -%>
 <% for pages in @exhibit.exhibit_pages -%>
-	<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => pages.position, :is_edit_mode => false, :top => nil } %>
+	<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => pages.position, :is_edit_mode => false, :top => nil, :badge_pos => pages.position == 1 ? 'right' : 'none' } %>
 <% end -%>
 <% has_footnotes = Exhibit.has_footnotes(get_exhibit_id(@exhibit)) -%>
 <% if has_footnotes -%>
-	<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => -1, :is_edit_mode => false, :top => nil } %>
+	<%= render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => @exhibit, :page_num => -1, :is_edit_mode => false, :top => nil, :badge_pos => 'none' } %>
 <% end -%>
 <br />

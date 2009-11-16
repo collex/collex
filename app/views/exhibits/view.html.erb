@@ -34,7 +34,7 @@
 		<%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => @exhibit.id, :page => @page }, :class => 'nav_link', :target => '_parent' ) if is_logged_in? && @exhibit.user_id == User.find_by_username(session[:user][:username]).id  %>
 	</div>
 	<div id="exhibit_page clear_both">
-		<%= render :partial => 'exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => false, :top => nil } %>
+		<%= render :partial => 'exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => false, :top => nil, :badge_pos => 'left' } %>
 	</div>
 </div>
 <div class="exhibit_footer">
