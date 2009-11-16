@@ -249,7 +249,7 @@ function doRemoveTag(uri, row_id, tag_name)
 	new Ajax.Updater(row_id, "/results/remove_tag", {
 		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,
 		evalScripts : true,
-		onComplete : function(resp) {
+		onSuccess : function(resp) {
 			tagFinishedUpdating();
 			if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
 		},
@@ -294,7 +294,7 @@ function doAddTag(parent_id, uri, row_num, row_id)
 		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) },
 		actions: [ '/results/add_tag', '/tag/update_tag_cloud' ],
 		target_els: [ row_id, 'tag_cloud_div' ],
-		onComplete: function(resp) { if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num); }
+		onSuccess: function(resp) { if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num); }
 	};
 
 	new TextInputDlg(params);

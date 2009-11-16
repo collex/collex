@@ -645,16 +645,16 @@ var ConfirmDlg = Class.create({
 // el: the element to update
 // action: the url to call
 // params: the params for the url
-// onComplete: what to call after the operation finishes
+// onSuccess: what to call after the operation successfully finishes
 // onFailure: what to call if the operation fails.
 function updateWithAjax(params)
 {
 	new Ajax.Updater({ success: params.el, failure:'bit_bucket' }, params.action, {
 		parameters : params.params,
 		evalScripts : true,
-		onComplete : function(resp) {
-			if(params.onComplete)
-				params.onComplete(resp);
+		onSuccess : function(resp) {
+			if(params.onSuccess)
+				params.onSuccess(resp);
 		},
 		onFailure : function(resp) {
 			if (params.onFailure)
@@ -665,17 +665,17 @@ function updateWithAjax(params)
 	});
 }
 
-function recurseUpdateWithAjax(actions, els, onComplete, onFailure, params)
+function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
 {
 	if (actions.length === 0) {
-		if (onComplete)
-			onComplete();
+		if (onSuccess)
+			onSuccess();
 		return;
 	}
 
 	var action = actions.shift();
 	var el = els.shift();
-	var ajaxparams = { action: action, el: el, onComplete: function(resp) { recurseUpdateWithAjax(actions, els, onComplete, onFailure, params); }, onFailure: onFailure, params: params };
+	var ajaxparams = { action: action, el: el, onSuccess: function(resp) { recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params); }, onFailure: onFailure, params: params };
 	updateWithAjax(ajaxparams);
 }
 
@@ -748,7 +748,7 @@ var TextInputDlg = Class.create({
 		var id = params.id;
 		var okStr = params.okStr;
 		var actions = params.actions;
-		var onComplete = params.onComplete;
+		var onSuccess = params.onSuccess;
 		var onFailure = params.onFailure;
 		var target_els = params.target_els;
 		var extraParams = params.extraParams;
@@ -767,7 +767,7 @@ var TextInputDlg = Class.create({
 			// Recursively run through the list of actions we were passed.
 			var data = params.dlg.getAllData();
 			extraParams[id] = data[id];
-			recurseUpdateWithAjax(actions, target_els, onComplete, onFailure, extraParams);
+			recurseUpdateWithAjax(actions, target_els, onSuccess, onFailure, extraParams);
 //			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
 //			updateWithAjax(ajaxparams);
 		};

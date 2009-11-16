@@ -83,7 +83,7 @@ function imgResized(event, illustrationElement)
 	{
 		parameters : { illustration_id: illustrationElement.id, width: newWidth, height: newHeight },
 		evalScripts : true,
-		onComplete : initializeElementEditing,
+		onSuccess : initializeElementEditing,
 		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error: "); }
 	});
 }
@@ -117,7 +117,7 @@ function doAjaxLink(div, url, params)
 		new Ajax.Updater(div, url, {
 			parameters : params,
 			evalScripts : true,
-			onComplete : initializeElementEditing,
+			onSuccess : initializeElementEditing,
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 		});
 	}
@@ -126,11 +126,11 @@ function doAjaxLink(div, url, params)
 		new Ajax.Updater(action_elements[0], actions[0], {
 			parameters : params,
 			evalScripts : true,
-			onComplete: function(resp) {
+			onSuccess: function(resp) {
 				new Ajax.Updater(action_elements[1], actions[1], {
 					parameters : params,
 					evalScripts : true,
-					onComplete : initializeElementEditing(),
+					onSuccess : initializeElementEditing(),
 					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 				});
 			},
@@ -228,7 +228,7 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 					element_id: element_id
 				},
 				evalScripts: true,
-				onComplete: function(resp){
+				onSuccess: function(resp){
 					if (verb === 'delete_page') {
 						//var page_id = $('current_page').innerHTML;
 						new Ajax.Updater("exhibit_page", "/my9s/reset_exhibit_page_from_outline", {
@@ -541,7 +541,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 	{
 		//var curr_page = params.curr_page;
 		var dlg = params.dlg;
-		var onComplete = function() {
+		var onSuccess = function() {
 			dlg.cancel();
 		};
 
@@ -553,7 +553,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 		retData.exhibit_id = exhibit_id;
 		retData.element_id = update_id;
 
-		recurseUpdateWithAjax(["/my9s/edit_exhibit_overview", "/my9s/update_title"], ["overview_data", "overview_title"], onComplete, onFailure, retData);
+		recurseUpdateWithAjax(["/my9s/edit_exhibit_overview", "/my9s/update_title"], ["overview_data", "overview_title"], onSuccess, onFailure, retData);
 	};
 
 	this.deleteExhibit = function(event, params)
