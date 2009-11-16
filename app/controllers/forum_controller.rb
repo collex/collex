@@ -98,6 +98,7 @@ class ForumController < ApplicationController
     comment_id = params[:comment_id]
     inet_thumbnail = params[:inet_thumbnail]
     inet_url = params[:inet_url]
+    inet_title = params[:inet_title]
     nines_object = params[:nines_obj_list]
     nines_exhibit = params[:exhibit_list]
     description = params[:reply]
@@ -127,7 +128,7 @@ class ForumController < ApplicationController
       exhibit = Exhibit.find(a[1])
       comment.update_attributes(:comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description, :user_modified_at => Time.now)
     elsif disc_type == 'weblink'
-      comment.update_attributes(:comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description, :user_modified_at => Time.now)
+      comment.update_attributes(:comment_type => 'inet_object', :link_title => inet_title, :link_url => inet_url, :image_url => inet_thumbnail, :comment => description, :user_modified_at => Time.now)
     end
     
     if comment.position == 1
@@ -169,6 +170,7 @@ class ForumController < ApplicationController
     thread_id = params[:thread_id]
     inet_thumbnail = params[:inet_thumbnail]
     inet_url = params[:inet_url]
+    inet_title = params[:inet_title]
     nines_object = params[:nines_obj_list]
     nines_exhibit = params[:exhibit_list]
     description = params[:reply]
@@ -199,7 +201,7 @@ class ForumController < ApplicationController
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif disc_type == 'weblink'
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
-        :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
+        :comment_type => 'inet_object', :link_title => inet_title, :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, session[:user])
   end
@@ -316,6 +318,7 @@ class ForumController < ApplicationController
     nines_object = params[:nines_object]
     inet_thumbnail = params[:inet_thumbnail]
     inet_url = params[:inet_url]
+    inet_title = params[:inet_title]
     description = params[:description]
     nines_exhibit = params[:nines_exhibit]
     user = User.find_by_username(session[:user][:username])
@@ -334,7 +337,7 @@ class ForumController < ApplicationController
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif ExhibitIllustration.get_illustration_type_image() == disc_type
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
-        :comment_type => 'inet_object', :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
+        :comment_type => 'inet_object', :link_url => inet_url, :link_title => inet_title, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, session[:user])
   end

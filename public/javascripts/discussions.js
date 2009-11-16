@@ -27,7 +27,7 @@ var ForumReplyDlg = Class.create({
 		// This puts up a modal dialog that allows the user to reply to a thread.
 		// If the topic_id is passed, then this should start a new thread.
 		// If comment_id is passed, then this will edit an existing comment.
-		// in that case, the following are also passed:  title, obj_type, reply, nines_obj_list, exhibit_list, inet_thumbnail, inet_url
+		// in that case, the following are also passed:  title, obj_type, reply, nines_obj_list, exhibit_list, inet_thumbnail, inet_url, inet_title
 		this.class_type = 'ForumReplyDlg';	// for debugging
 		var topic_id = params.topic_id;
 		var thread_id = params.thread_id;
@@ -48,6 +48,7 @@ var ForumReplyDlg = Class.create({
 			var starting_comment_el = params.reply;
 			var starting_nines_obj_list = params.nines_obj_list;
 			var starting_exhibit_list = params.exhibit_list;
+			var starting_inet_title = params.inet_title;
 			var starting_inet_thumbnail = params.inet_thumbnail;
 			var starting_inet_url = params.inet_url;
 			if (params.license)
@@ -165,8 +166,9 @@ var ForumReplyDlg = Class.create({
 						{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select mycollection hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and mycollection hidden' }, { inputFilter: 'filterObjects', klass: 'mycollection hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
-					[ { text: 'URL', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_reply_input weblink hidden' } ],
-					[ { text: 'Thumbnail for Item', klass: 'forum_reply_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_reply_input weblink hidden' } ],
+					[ { text: 'Title:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_title', value: starting_inet_title, klass: 'forum_web_input weblink hidden' } ],
+					[ { text: 'URL:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_web_input weblink hidden' } ],
+					[ { text: 'Thumbnail for Item:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_web_input weblink hidden' } ],
 					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};

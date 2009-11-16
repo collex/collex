@@ -33,9 +33,6 @@
 		<%= render :partial => '/forum/img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FP_attachment_img", :width => 100, :height => 125 } -%>
 	<% end -%>
 	<p class="FP_attachment_title"><%= title %></p>
-	<% details_id = "nines_object_#{comment.id}" -%>
-	<% details_id_show = "#{details_id}_show" -%>
-	<% details_id_hide = "#{details_id}_hide" -%>
 	<% if comment.get_type() == "nines_object" -%>
 		<p>
 			<a class="nav_link" href="#" onclick="new ResultRowDlg('/my9s/get_object_details', '<%= hit['uri'] %>', '<%= PROGRESS_SPINNER_PATH %>', { partial: '/forum/attachment', index: <%= comment.id %>, target_el: '<%= "attachment_#{comment.id}" %>'}); return false;">[view details...]</a>

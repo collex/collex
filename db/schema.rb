@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091112194104) do
+ActiveRecord::Schema.define(:version => 20091116215822) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20091112194104) do
     t.datetime "updated_at"
     t.text     "reporter_ids"
     t.datetime "user_modified_at"
+    t.string   "link_title"
   end
 
   create_table "discussion_threads", :force => true do |t|

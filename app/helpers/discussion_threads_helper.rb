@@ -57,6 +57,7 @@ module DiscussionThreadsHelper
       "exhibit_list: 'id_#{comment.exhibit_id}'," +
 			"can_delete: #{can_delete ? 'true' : 'false'}," +
       "inet_thumbnail: '#{comment.image_url}'," +
+      "inet_title: '#{comment.link_title}'," +
       "inet_url: '#{comment.link_url}'," +
       "ajax_div: 'comment_id_#{comment.id}'," +
       "submit_url: '/forum/edit_existing_comment'," +
@@ -140,7 +141,7 @@ module DiscussionThreadsHelper
     elsif comment.get_type() == "inet_object"
       thumbnail = comment.image_url
       link = comment.link_url
-      caption = comment.link_url
+      caption = comment.link_title != nil && comment.link_title.length > 0 ? comment.link_title : comment.link_url
     else
       title = "ERROR: ill-formed comment. (Comment type #{ comment.comment_type } is unknown)"
       thumbnail = nil

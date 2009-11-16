@@ -424,6 +424,7 @@ var StartDiscussionWithObject = Class.create({
 			data.nines_exhibit = "";
 			data.nines_object = uri;
 			data.inet_url = "";
+			data.inet_title = "";
 			data.disc_type = "NINES Object";
 
 			new Ajax.Request(url, {
