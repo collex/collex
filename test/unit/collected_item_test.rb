@@ -75,7 +75,7 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     assert_equal(@all_collected_items_start.length + 1, @all_collected_items_current.length, "A new collected item record should have been created")
     assert_equal(@all_cached_resources_start.length + 1, @all_cached_resources_current.length, "The uri should have been cached when collecting")
-    assert_equal(@all_cached_properties_start.length + 11, @all_cached_properties_current.length, "The properties of the uri should have been cached when the uri was cached")
+    assert_equal(@all_cached_properties_start.length + 12, @all_cached_properties_current.length, "The properties of the uri should have been cached when the uri was cached")
     assert_equal(@all_tags_start.length, @all_tags_current.length, "The tags table should not have changed")
     assert_equal(@all_tagassigns_start.length,  @all_tagassigns_current.length, "The tags/collected items jion should not have changed")
   end
@@ -425,7 +425,7 @@ class CollectedItemTest < ActiveSupport::TestCase
     
     assert_equal(@all_collected_items_start.length + 2, @all_collected_items_current.length, "A new collected item record should have been created")
     assert_equal(@all_cached_resources_start.length + 1, @all_cached_resources_current.length, "The uri should have been cached when collecting")
-    assert_equal(@all_cached_properties_start.length + 11, @all_cached_properties_current.length, "The properties of the uri should have been cached when the uri was cached")
+    assert_equal(@all_cached_properties_start.length + 12, @all_cached_properties_current.length, "The properties of the uri should have been cached when the uri was cached")
     assert_equal(@all_tags_start.length, @all_tags_current.length, "The tags table should not have changed")
     assert_equal(@all_tagassigns_start.length,  @all_tagassigns_current.length, "The tags/collected items jion should not have changed")
   end

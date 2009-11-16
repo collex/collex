@@ -66,10 +66,10 @@ module Solr
 		end
 	end
 
-	class Utils
+	class Util
 		def self.query_parser_escape(uri)
 			# backslash prefix everything that isn't a word character
-			string.gsub(/(\W)/,'\\\\\1')
+			return uri.gsub(/(\W)/,'\\\\\1')
 		end
 
 		# paired_array_each([key1,value1,key2,value2]) yields twice:
