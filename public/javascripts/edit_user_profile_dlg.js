@@ -19,8 +19,11 @@
 /*extern EditProfileDialog, editProfileDlg, stopUpload */
 
 var editProfileDlg = null;
-function stopUpload(){
-	editProfileDlg.fileUploadFinished();
+function stopUpload(errMessage){
+	if (errMessage.length > 0)
+		editProfileDlg.fileUploadError(errMessage);
+	else
+		editProfileDlg.fileUploadFinished();
 	return true;
 }
 
@@ -48,6 +51,10 @@ var EditProfileDialog = Class.create({
 			//var thumb = $('image');
 			//var form = thumb.up('form');
 			dlg.submitForm('layout', ok_action + "_upload");	// we have to submit the form normally to get the uploaded file to get transmitted.
+		};
+
+		this.fileUploadError = function(errMessage) {
+			dlg.setFlash(errMessage, true);
 		};
 
 		this.fileUploadFinished = function() {

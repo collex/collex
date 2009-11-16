@@ -222,13 +222,17 @@ class My9sController < ApplicationController
   # The file upload is done in a separate call because of ajax limitations.
   def update_profile_upload
     user = get_user(session)
+		flash = ''
 		if user	# If the session expired while the dlg was on the page, don't go further.
-			old_image = user.image_id
 			if params['image'] && params['image'].length > 0
 				user.image = Image.new({ :uploaded_data => params['image'] })
 				if user.image	# If there were an error in uploading the image, don't go further.
-					user.image.save!
-					user.save
+					begin
+						user.image.save!
+						user.save
+					rescue
+						flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+					end
 				end
 		end
     end
@@ -264,7 +268,7 @@ class My9sController < ApplicationController
     #        Dir.mkdir(folder) unless File.exists?(folder)
     #        File.open(image_path, "wb") { |f| f.write(params['image'].read) }
     #      end
-    render :text => "<script type='text/javascript'>window.top.window.stopUpload();</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+    render :text => "<script type='text/javascript'>window.top.window.stopUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
   def remove_saved_search
