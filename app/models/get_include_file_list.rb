@@ -51,7 +51,7 @@ class GetIncludeFileList
 			when :tag
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'cc_license' ]
 			when :my9s
-				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 
+				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 'cc_license',
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes' ]
 			when :discuss
 				local = [ 'discussions', 'result_row_popup', 'cc_license' ]
