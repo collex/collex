@@ -19,10 +19,6 @@ class My9sController < ApplicationController
   layout 'nines'
   before_filter :init_view_options
 
-  # Number of search results to display by default
-  MIN_ITEMS_PER_PAGE = 10
-  MAX_ITEMS_PER_PAGE = 30
-
   private
   def init_view_options
     @use_tabs = true
@@ -139,14 +135,6 @@ class My9sController < ApplicationController
     @num_pages = @total_hits.quo(items_per_page).ceil
   end
 
-  # adjust the number of search results per page
-#  def result_count
-#    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-#    requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page]
-#    session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-#    redirect_to :action => 'results'
-#  end
-
 	 #adjust the sort order
   def sort_by
 		if params['search'] && params['search']['result_sort']
@@ -159,17 +147,6 @@ class My9sController < ApplicationController
 		end
       redirect_to :action => 'results'
 	end
-
-  # This is called from AJAX to display the edit profile form in place.
-#  def enter_edit_profile_mode
-#    user = get_user(session)
-#    if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
-#      render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?"
-#      return
-#    end
-#
-#    render :partial => 'profile', :locals => { :user => user, :edit_mode => true }
-#  end
 
 	# This is called from AJAX when a user's link has been clicked.
 	def show_profile
@@ -742,6 +719,7 @@ class My9sController < ApplicationController
     element = ExhibitElement.find(element_id)
     page = ExhibitPage.find(element.exhibit_page_id)
     is_editing_border = false
+		sel = element_id
 
     user = get_user(session)
     if can_edit_exhibit(user, exhibit_id)
@@ -750,9 +728,11 @@ class My9sController < ApplicationController
         new_element = page.insert_element(element.position+1)
         element_id = new_element.id
         when "move_element_up"
-        page.move_element_up(element.position)
+        ret = page.move_element_up(element.position)
+				sel = ret if ret
         when "move_element_down"
-        page.move_element_down(element.position)
+        ret = page.move_element_down(element.position)
+				sel = ret if ret
         when "delete_element"
         page.delete_element(element.position)
         element_id = -1
@@ -762,7 +742,7 @@ class My9sController < ApplicationController
       end
     end
 
-    render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => element_id, :is_editing_border => is_editing_border }
+    render :partial => 'exhibit_outline', :locals => { :exhibit => Exhibit.find(exhibit_id), :element_id_selected => sel, :is_editing_border => is_editing_border }
   end
 
   def modify_outline_add_first_element

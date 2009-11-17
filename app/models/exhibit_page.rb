@@ -176,9 +176,10 @@ class ExhibitPage < ActiveRecord::Base
       page_num = self.position
       if page_num > 1
         pages = Exhibit.find(self.exhibit_id).exhibit_pages
-        move_element_to_different_page(element_pos, pages[page_num-2], pages[page_num-2].exhibit_elements.length+1)
+        return move_element_to_different_page(element_pos, pages[page_num-2], pages[page_num-2].exhibit_elements.length+1)
       end
     end
+		return nil
   end
   
   def move_element_down(element_pos)
@@ -191,9 +192,10 @@ class ExhibitPage < ActiveRecord::Base
       pages = Exhibit.find(exhibit_id).exhibit_pages
       if page_num < pages.length
         # There is another page, so add the element to that.
-        move_element_to_different_page(element_pos, pages[page_num], 1)
+        return move_element_to_different_page(element_pos, pages[page_num], 1)
       end
     end
+		return nil
   end
   
   def move_element_to_different_page(element_pos, dst_page, dst_position)
@@ -201,6 +203,7 @@ class ExhibitPage < ActiveRecord::Base
     new_element = dst_page.insert_element(dst_position)
     new_element.copy_data_portion(exhibit_elements[element_pos-1])
     delete_element(element_pos)
+		return new_element.id
   end
   
   def insert_element(element_pos)
