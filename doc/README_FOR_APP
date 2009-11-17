@@ -143,8 +143,10 @@ Here are a couple of the more common ones:
 -----------------------------------------------------------------------
 ** Site specific info
 
-In addition to setting your database.yml file for your specific db settings, there is another file "/config/site.yml" that
-must be present. See the file "/config/site.example.yml" for an example of how that should be set up.
+There are two files missing from this installation that you must supply:
+
+config/database.yml (there is a sample version of this file called config/database.example.yml)
+config/site.yml (there is a sample version of this file called config/site.example.yml)
 
 Note that if you use Google Analytics, then you will have to change the code to match your site and credentials. Search
 this project for "google-analytics.com" and change all of the references.
