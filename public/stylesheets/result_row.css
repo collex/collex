@@ -178,6 +178,16 @@ hr.search_results_hr {
 .result_row_icons {
 	padding-top: 6px;
 	clear: both;
+	font-size: 19px;
+}
+
+.result_row_tooltip {
+	font-size: 14px;
+	text-decoration: none;
+}
+
+span.tooltip:hover span.result_row_tooltip {
+	width:12em;
 }
 
 .free_culture {
@@ -201,8 +211,10 @@ hr.search_results_hr {
 
 .full_text:hover {
 	background-image: url(/images/full_text_hover.gif);
+	width:5em;
 }
 
 .has_xml_source:hover {
 	background-image: url(/images/has_xml_source.gif);
+	width:5em;
 }

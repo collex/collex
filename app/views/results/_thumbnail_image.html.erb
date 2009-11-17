@@ -20,13 +20,13 @@
 	<% if hit['freeculture'] == true || hit['has_full_text'] == true  || hit['source_xml'] != nil -%>
 		<div class="result_row_icons">
 	<% if hit['freeculture'] == true -%>
-		<span class="tooltip free_culture">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="discussion_title_tooltip">Free-Culture resource</span></span>
+		<span class="tooltip free_culture">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">Free Culture resource</span></span>
 	<% end -%>
 	<% if hit['has_full_text'] == true -%>
-		<span class="tooltip full_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="discussion_title_tooltip">Full-text provided for this document</span></span>
+		<span class="tooltip full_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">Full text provided for this document</span></span>
 	<% end -%>
 	<% if hit['source_xml'] != nil -%>
-		<span class="tooltip has_xml_source">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="discussion_title_tooltip">XML source available for this document</span></span>
+		<span class="tooltip has_xml_source">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">XML source available for this document</span></span>
 	<% end -%>
 		</div>
 	<% end -%>
