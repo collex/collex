@@ -129,17 +129,17 @@ td.limit_to_lvl1 {
 }
 
 td.limit_to_lvl2 {
-	padding-left:12px;
+	padding-left:20px;
 	text-align:left;
 }
 
 td.limit_to_lvl3 {
-	padding-left:24px;
+	padding-left:36px;
 	text-align:left;
 }
 
 td.limit_to_lvl4 {
-	padding-left:36px;
+	padding-left:48px;
 	text-align:left;
 }
 
