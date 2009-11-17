@@ -109,20 +109,6 @@ var GeneralDialog = Class.create({
 			form.submit();
 		};
 
-		this.setFlash = function(msg, is_error) {
-			var flash = $(flash_id);
-			if (flash) {	// If the user canceled before this message came in, the element may not exist. That's ok, just ignore it.
-				flash.update(msg);
-				if (is_error) {
-					flash.addClassName('flash_notice_error');
-					flash.removeClassName('flash_notice_ok');
-				} else {
-					flash.addClassName('flash_notice_ok');
-					flash.removeClassName('flash_notice_error');
-				}
-			}
-		};
-		
 		this.getTitle = function() {
 			return title;
 		};
@@ -141,6 +127,22 @@ var GeneralDialog = Class.create({
 			buttons: null
 		});
 		
+		this.setFlash = function(msg, is_error) {
+			var flash = $(flash_id);
+			if (flash) {	// If the user canceled before this message came in, the element may not exist. That's ok, just ignore it.
+				if (panel)
+					panel.show();	// This is because Safari closes the dialog when the user hits enter. We need to bring it back if the user's not finished with it.
+				flash.update(msg);
+				if (is_error) {
+					flash.addClassName('flash_notice_error');
+					flash.removeClassName('flash_notice_ok');
+				} else {
+					flash.addClassName('flash_notice_ok');
+					flash.removeClassName('flash_notice_error');
+				}
+			}
+		};
+
 		if (title !== undefined)
 			panel.setHeader(title);
 
