@@ -14,20 +14,33 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%# save_search_list: params: string header_class -%>
+<%# save_search_list: params: string header_class int max_to_show (-1 means show all) -%>
 <div class="<%= header_class %>">Saved Searches</div>
 <% saved = get_saved_searches() -%>
 <center>
+	<% num_to_display = max_to_show == -1 ? saved.length : (max_to_show < saved.length ? max_to_show : saved.length) -%>
+	<% if num_to_display != saved.length -%>
+	<div class="empty_list_text">Showing the <%= max_to_show %> most recent of your <%= saved.length %> saved searches. <%= link_to_function("[show all]", "showHiddenSavedSearches('saved_search_show_all', 'saved_search_hidden_item' );", :class => 'nav_link saved_search_show_all') %></div>
+	<% end  -%>
 	<table class="query">
 		<% if saved.size == 0 -%>
 			<tr><td class="query_term">No searches saved</td></tr>
 		<% else -%>
-			<% for s in saved -%>
+			<% 0.upto(num_to_display-1) do |x| -%>
+			<% s = saved[x] -%>
 				<tr>
 					<td class="query_term"><%= create_saved_search_link(s) %></td>
 					<td class="query_remove"><%= create_remove_saved_search_link(s) %></td>
 					<td class="saved_search_link"><%= create_saved_search_permalink(s.name) %></td>
 				</tr>	
+			<% end -%>
+			<% num_to_display.upto(saved.size-1) do |x| -%>
+			<% s = saved[x] -%>
+				<tr class="saved_search_hidden_item hidden">
+					<td class="query_term"><%= create_saved_search_link(s) %></td>
+					<td class="query_remove"><%= create_remove_saved_search_link(s) %></td>
+					<td class="saved_search_link"><%= create_saved_search_permalink(s.name) %></td>
+				</tr>
 			<% end -%>
 		<% end -%>
 	</table>

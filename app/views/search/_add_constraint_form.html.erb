@@ -34,7 +34,7 @@
 		
 	<% if is_logged_in? -%>
 		<div id="saved-searches">
-			<%= render :partial => 'save_search_list', :locals => { :header_class => 'page_header' } %>
+			<%= render :partial => 'save_search_list', :locals => { :header_class => 'page_header', :max_to_show => -1 } %>
 		</div>
 	<% end -%>
 </div>

@@ -26,3 +26,20 @@ function showString(parent_id, str)
 		$H( { show_save_name: str } ), 'text', $H( { width: 70 } ), "Ok" );
 }
 
+function showHiddenSavedSearches(class_of_button, class_of_hidden_items)
+{
+	var cntl = $$('.' + class_of_button)[0];
+	var hidden_items = $$('.' + class_of_hidden_items);
+	var expand = (cntl.innerHTML == '[show all]');
+	if (expand) {
+		cntl.innerHTML = '[hide some]';
+		hidden_items.each(function(item) {
+			item.removeClassName('hidden');
+		});
+	} else {
+		cntl.innerHTML = '[show all]';
+		hidden_items.each(function(item) {
+			item.addClassName('hidden');
+		});
+	}
+}

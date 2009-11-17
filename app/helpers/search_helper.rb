@@ -303,10 +303,10 @@ module SearchHelper
   
   def get_saved_searches
     user = User.find_by_username(session[:user][:username])
-    return user.searches.find(:all)
+    return user.searches.find(:all).sort { |a,b| b.id <=> a.id }
   end
   
-  def encodeForUri(str)
+  def encode_for_uri(str)
     value = str.gsub('%', '%25')
     value = value.gsub('#', '%23')
     value = value.gsub('&', '%26')
@@ -321,12 +321,12 @@ module SearchHelper
   end
   
   def create_saved_search_url(user_name, search_name)
-    "/search/saved?user=#{user_name}&name=#{encodeForUri(search_name)}"
+    "/search/saved?user=#{user_name}&name=#{encode_for_uri(search_name)}"
   end
   
   def create_saved_search_permalink(s)
     base_url = 'http://' + request.host_with_port()
-    permalink_id = "permalink_#{encodeForUri(h(s))}"
+    permalink_id = "permalink_#{encode_for_uri(h(s))}"
     return "<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{permalink_id}\", \"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>"
   end
 
