@@ -76,7 +76,7 @@ module TagHelper
 
   def create_total(view_type, total_hits, tag)
     if view_type == 'tag'
-      encoded = encodeForUri(h(tag))
+      encoded = encode_for_uri(h(tag))
       rss = "<a href='/tags/rss/#{encoded}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a>&nbsp;"
       return "#{rss}#{pluralize(total_hits, 'object')} tagged as \"#{h(tag).downcase}\". "
     elsif view_type == 'all_collected'
