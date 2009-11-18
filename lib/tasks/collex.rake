@@ -35,12 +35,11 @@ namespace :collex do
 	desc "Deploy on production (the first password requested is the mysql password; the second is the sudo password)"
 	task :deploy_on_production => :environment do
 		puts "Deploy latest version on production..."
+		puts "You will be asked for your mysql password."
 		version = Branding.version()
 		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
+		Rake::Task['collex:update_staging'].invoke
 		Rake::Task['collex:tag_current_version'].invoke
-		`svn up`
-		Rake::Task['collex:update_site'].invoke
-		`sudo /sbin/service httpd restart`
 	end
 
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository (the password requested is the sudo password)"
@@ -50,6 +49,7 @@ namespace :collex do
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
+		puts "You will be asked for your sudo password."
 		`sudo /sbin/service httpd restart`
 	end
 
