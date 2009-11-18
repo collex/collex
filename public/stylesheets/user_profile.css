@@ -1,6 +1,7 @@
 .profile_div {
 	padding-bottom: 5px;
 	max-width:800px;
+	min-width:400px;
 }
 
 .profile_label {

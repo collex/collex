@@ -110,7 +110,7 @@ class GetIncludeFileList
 			when :home
 				local = [ "index", "featured_exhibit" ]
 			when :exhibits
-				local = [ "lvl2", "featured_exhibit", "exhibit_list" ]
+				local = [ "lvl2", "featured_exhibit", "exhibit_list", "user_profile" ]
 			when :admin
 				local = [ "lvl2", "admin", "search", "right_column" ]
 			when :about
