@@ -280,8 +280,11 @@ class Exhibit < ActiveRecord::Base
     return Exhibit.find(:all, :conditions => [ 'is_published <> 0'])
   end
 
-	def self.get_license_info()
+	def self.get_license_info(non_sharing)
 		ret = []
+		if non_sharing
+			ret.push({ :id => 0, :text => 'Exhibit should be visible to just me', :icon => self.get_sharing_icon_url(0), :abbrev => self.get_sharing_static(0) })
+		end
     1.upto(6) do |i|
 			ret.push({ :id => i, :text => self.get_sharing_text(i), :icon => self.get_sharing_icon_url(i), :abbrev => self.get_sharing_static(i) })
 		end

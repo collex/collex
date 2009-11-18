@@ -955,7 +955,8 @@ class My9sController < ApplicationController
   end
 
 	def get_licenses
-		render :text => Exhibit.get_license_info().to_json()
+		non_sharing = params[:non_sharing] == 'true'
+		render :text => Exhibit.get_license_info(non_sharing).to_json()
 	end
 
   private

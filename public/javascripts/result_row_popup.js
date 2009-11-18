@@ -441,7 +441,7 @@ var StartDiscussionWithObject = Class.create({
 			});
 		};
 
-		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my9s/get_licenses', currentLicense: 5, id: 'license_list' });
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my9s/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [

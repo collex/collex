@@ -17,10 +17,11 @@
 /*global GeneralDialog, MessageBoxDlg */
 /*global YAHOO */
 /*global Class, $, Element, Ajax */
-/*extern ForumLicenseDisplay */
+/*extern ForumLicenseDisplay, CCLicenseDlg */
 
-var ForumLicenseDisplay = Class.create({
-	initialize: function(params){
+var CCLicenseDlg = Class.create({
+	initialize: function (objs, currentLicense, okCallback, title, name) {
+		this.class_type = 'CCLicenseDlg';	// for debugging
 
 		var CreateListOfLicenses = Class.create({
 			initialize: function(objs, initial_selection, parent_id){
@@ -80,27 +81,27 @@ var ForumLicenseDisplay = Class.create({
 			}
 		});
 
-		var CCLicenseDlg = Class.create({
-			initialize: function (objs, currentLicense, okCallback) {
-				this.class_type = 'CCLicenseDlg';	// for debugging
-				var liclist = new CreateListOfLicenses(objs, currentLicense, 'license_list2');
+		var liclist = new CreateListOfLicenses(objs, currentLicense, 'license_list2');
 
-				var dlgLayout = {
-						page: 'layout',
-						rows: [
-							[ { text: 'Share this post under the following license:', klass: 'input_dlg_license_list_header' } ],
-							[ { custom: liclist, klass: '' } ],
-							[ { text: 'Licenses provided courtesy of Creative Commons', klass: '' }, { page_link: 'Learn more about CC licenses', klass: 'ext_link', new_page: "http://creativecommons.org/about/licenses", callback: GeneralDialog.openInNewWindow } ],
-							[ { rowClass: 'last_row' }, { button: 'Save', callback: okCallback, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
-						]
-					};
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: 'Share this ' + name + ' under the following license:', klass: 'input_dlg_license_list_header' } ],
+					[ { custom: liclist, klass: '' } ],
+					[ { text: 'Licenses provided courtesy of Creative Commons&nbsp;&nbsp;', klass: '' }, { page_link: '[ Learn more about CC licenses ]', klass: 'ext_link', new_page: "http://creativecommons.org/about/licenses", callback: GeneralDialog.openInNewWindow } ],
+					[ { rowClass: 'last_row' }, { button: 'Save', callback: okCallback, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				]
+			};
 
-				var dlgParams = { this_id: "cc_license_dlg", pages: [ dlgLayout ], body_style: "cc_license_dlg", row_style: "forum_reply_row", title: 'Select License' };
-				var dlg = new GeneralDialog(dlgParams);
-				dlg.changePage('layout', null);
-				dlg.center();
-			}
-		});
+		var dlgParams = { this_id: "cc_license_dlg", pages: [ dlgLayout ], body_style: "cc_license_dlg", row_style: "forum_reply_row", title: title };
+		var dlg = new GeneralDialog(dlgParams);
+		dlg.changePage('layout', null);
+		dlg.center();
+	}
+});
+
+var ForumLicenseDisplay = Class.create({
+	initialize: function(params){
 
 		var objs = null;
 		var populate_url = params.populateLicenses;
@@ -119,7 +120,7 @@ var ForumLicenseDisplay = Class.create({
 			params.dlg.cancel();
 		};
 		var changeDlg = function() {
-			new CCLicenseDlg(objs, selection, okCallback);
+			new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'post');
 		};
 		var parent_id = params.id;
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
