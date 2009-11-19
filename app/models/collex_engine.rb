@@ -32,7 +32,7 @@ class CollexEngine
 			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE", "freeculture",
 			"is_ocr", "federation", "has_full_text", "source_xml" ]
     @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor",
-			"text_url", "year", "type", "date_updated", "title_sort", "author_sort", "source_html", "source_sgml", "person", "format", "language", "geospacial" ]
+			"text_url", "year", "type", "date_updated", "title_sort", "author_sort", "year_sort", "source_html", "source_sgml", "person", "format", "language", "geospacial" ]
 		@facet_fields = ['genre','archive','freeculture', 'has_full_text']
   end
 

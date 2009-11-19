@@ -220,6 +220,7 @@ class MarcIndexer
 			:is_ocr => get_proc( :parse_is_ocr ),
       :title_sort => get_proc( :parse_title ),
       :author_sort => get_proc( :parse_author_sort ),
+      :year_sort => get_proc( :parse_year_sort ),
   #    :type => "A",  # a NINES "archive" object, as opposed to a "collectable" (type "C")
       :batch => @batch_id
 
@@ -353,6 +354,14 @@ class MarcIndexer
      record.extract('260c').collect {|f| f.scan(/\d\d\d\d/)}.flatten
   end  
       
+  def parse_year_sort( record )
+		years = parse_year( record )
+		if years.length > 1
+			years = [ years[0] ]
+		end
+		return years
+  end
+
   def parse_publisher( record )
     test_for_problem_record(record)
      # 260$b is publisher
