@@ -17,6 +17,8 @@
 %>
 <%# partial: sort_by (string curr_selection, string curr_selection_direction, array options) -%>
 <% form_for :search, :url => { :action => :sort_by, :anchor => "top_of_results" }, :html => { :class => 'result-count-form' }  do |form| %>
+	<% if curr_selection != 'Relevancy' -%>
 	<span class="results_per_page">&nbsp;<%= form.select :result_sort_direction, ['Ascending', 'Descending'], { :selected => curr_selection_direction }, { :onchange => 'submit();' } %></span>
+	<% end -%>
 	<span class="results_per_page">Sort by:&nbsp;<%= form.select :result_sort, options, { :selected => curr_selection }, { :onchange => 'submit();' } %></span>
 <% end %>
