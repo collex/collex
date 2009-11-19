@@ -56,14 +56,14 @@ namespace :solr do
 		end
 	end
 
-	desc "Package and copy index to another machine (param=index;machine -- ex: param=merged;nines@nines.org). The remote machine's password will be requested."
+	desc "Package and copy index to another machine (param=index,machine -- ex: param=merged,nines@nines.org). The remote machine's password will be requested."
 	task :send_index_to_server => :environment do
 		today = Time.now()
 		param = ENV['param']
 		if param == nil
 			puts "Usage: call with param=the index to package;the ssh login for the destination machine"
 		else
-			arr = param.split(';')
+			arr = param.split(',')
 			if arr.length != 2
 				puts "Usage: call with param=the index to package;the ssh login for the destination machine"
 			else
