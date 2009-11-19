@@ -20,7 +20,7 @@
 /*extern ForumLicenseDisplay, CCLicenseDlg */
 
 var CCLicenseDlg = Class.create({
-	initialize: function (objs, currentLicense, okCallback, title, name) {
+	initialize: function (objs, currentLicense, okCallback, title, name, var_name) {
 		this.class_type = 'CCLicenseDlg';	// for debugging
 
 		var CreateListOfLicenses = Class.create({
@@ -35,8 +35,8 @@ var CCLicenseDlg = Class.create({
 				this.getSelection = function(){
 					var el = parent.down("." + selClass);
 					var sel = el ? el.id.substring(el.id.indexOf('_')+1) : "";
-					var abbrev = objs[parseInt(sel)-1].abbrev;
-					return { field: parent_id, value: sel, abbrev: abbrev };
+					//var abbrev = objs[parseInt(sel)-1].abbrev;
+					return { field: parent_id, value: sel };
 				};
 
 				// Creates one line in the list.
@@ -81,7 +81,7 @@ var CCLicenseDlg = Class.create({
 			}
 		});
 
-		var liclist = new CreateListOfLicenses(objs, currentLicense, 'license_list2');
+		var liclist = new CreateListOfLicenses(objs, currentLicense, var_name);
 
 		var dlgLayout = {
 				page: 'layout',
@@ -120,7 +120,7 @@ var ForumLicenseDisplay = Class.create({
 			params.dlg.cancel();
 		};
 		var changeDlg = function() {
-			new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'post');
+			new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'post', 'license_list2');
 		};
 		var parent_id = params.id;
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below

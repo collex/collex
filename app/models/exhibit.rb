@@ -291,16 +291,16 @@ class Exhibit < ActiveRecord::Base
 		return ret
 	end
 
-  def self.getJsonLicenseInfo()
-    str = "[ { text: 'Exhibit should be visible to just me', icon: \"#{self.get_sharing_icon_url(0)}\" },"
-    1.upto(6) do |i|
-      str = str + "{ text: '" + self.get_sharing_text(i) + "', icon: \"" + self.get_sharing_icon_url(i) + "\" }"
-#      str = str + "{ text: '" + "t" + "', icon: \"" + "i" + "\" }"
-      str = str + "," if i != 6
-    end
-    str = str + "]"
-    return str
-  end
+#  def self.getJsonLicenseInfo()
+#    str = "[ { text: 'Exhibit should be visible to just me', icon: \"#{self.get_sharing_icon_url(0)}\" },"
+#    1.upto(6) do |i|
+#      str = str + "{ text: '" + self.get_sharing_text(i) + "', icon: \"" + self.get_sharing_icon_url(i) + "\" }"
+##      str = str + "{ text: '" + "t" + "', icon: \"" + "i" + "\" }"
+#      str = str + "," if i != 6
+#    end
+#    str = str + "]"
+#    return str
+#  end
   
   def get_id_if_no_visible_url()
     if visible_url == nil || visible_url.length == 0

@@ -16,7 +16,6 @@
     # ---------------------------------------------------------------------------- -%>
 <%#parameters: Exhibit exhibit; bool show_immediately -%>
 <script type="text/javascript">
-	var gLicenseInfo = <%= Exhibit.getJsonLicenseInfo() %>;
 	var gGenres = <%= Branding.valid_genre_list().sort.to_json() %>;
 </script>
 <div id="global_form" class="inside_edit_exhibit_box">
@@ -41,10 +40,10 @@
 	<div class="exhibit_sharing">
 		<span class="exhibit_profile_label">Creative Commons License:</span>
 		<div>
-			<div class="exhibit_preview_thumbnail"><%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog(gLicenseInfo, #{exhibit.get_sharing_int()}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;") %></div>
+			<div class="exhibit_preview_thumbnail"><%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=true', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;") %></div>
 			<span id="overview_published" class="overview_field"><%= exhibit.published? ? "Visible to Everyone using Creative Commons' #{exhibit.get_sharing()} License" : "Visible to Just Me" %>
 			</span>
-			<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog(gLicenseInfo, #{exhibit.get_sharing_int()}, #{exhibit.id}, 'overview_data', '/my9s/change_sharing'); return false;", { :class => "modify_link" }) %>
+			<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=true', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;", { :class => "modify_link" }) %>
 		</div>
 	</div>
 	<div class="clear_both"></div>

@@ -787,30 +787,78 @@ CreateSharingList.prototype.select = function(item, value_field)
 	$(value_field).value = $(item).getAttribute('index');
 };
 
-function sharing_dialog(licenseInfo, iShareStart, exhibit_id, update_id, callback_url)
+function sharing_dialog(params)
 {
-	// Now populate a hash with all the starting values.	 The data we are starting with is all on the page with the data_class class.
-	var values = {};
-	var value_field = 'sharing';
-	values[value_field] = iShareStart;
-	values.exhibit_id = exhibit_id;
-	values.element_id = update_id;
-	$(update_id).writeAttribute('action', callback_url);
-	$(update_id).writeAttribute('ajax_action_element_id', update_id);
+	var selection = params.selection;
+	var exhibit_id = params.exhibit_id;
+	var update_id = params.update_id;
+	var callback_url = params.callback_url;
+	var populate_url = params.populateLicenses;
 
-	// First construct the dialog
-	var dlg = new InputDialog(update_id);
-	//var size = 52;
-	dlg.addHidden('exhibit_id');
-	dlg.addPrompt("<span class='input_dlg_license_list_header'>Share this exhibit under the following license:</span>");
-	dlg.addLinkToNewWindow("[ Learn more about CC licenses ]", "http://creativecommons.org/about/licenses", null, "nav_link");
-	var list = new CreateSharingList(licenseInfo, iShareStart, value_field);
-	dlg.addList(value_field, list.list, null);
-	dlg.addPrompt("Licenses provided courtesy of Creative Commons");
-	
-	// Now, everything is initialized, fire up the dialog.
-	var el = $(update_id);
-	dlg.show("Change Sharing", getX(el), getY(el), 530, 350, values );
+	var objs = null;
+
+	var okCallback = function(event, params) {
+		var onSuccess = function(resp) {
+			params.dlg.cancel();
+		};
+		var onFailure = function(resp) {
+			params.dlg.steFlash(resp.responseText);
+		};
+		var ajaxParams = { el: update_id, params: params.dlg.getAllData(), action: callback_url, onSuccess: onSuccess, onFailure: onFailure };
+		ajaxParams.params.exhibit_id = exhibit_id;
+		updateWithAjax(ajaxParams);
+	};
+
+	var createDialog = function() {
+		new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'post', 'sharing');
+	};
+
+	var populate = function(){
+		// Call the server to get the data, then pass it to the ObjectLists
+		//dlg.setFlash('Getting objects...', false);
+		new Ajax.Request(populate_url, {
+			method: 'get',
+			onSuccess: function(resp){
+				//dlg.setFlash('', false);
+				try {
+					objs = resp.responseText.evalJSON(true);
+					createDialog();
+				}
+				catch (e) {
+					new MessageBoxDlg("Error", e);
+				}
+
+			},
+			onFailure: function(resp){
+				//dlg.setFlash(resp.responseText, true);
+			}
+		});
+	};
+
+	populate();
+
+//	// Now populate a hash with all the starting values.	 The data we are starting with is all on the page with the data_class class.
+//	var values = {};
+//	var value_field = 'sharing';
+//	values[value_field] = iShareStart;
+//	values.exhibit_id = exhibit_id;
+//	values.element_id = update_id;
+//	$(update_id).writeAttribute('action', callback_url);
+//	$(update_id).writeAttribute('ajax_action_element_id', update_id);
+//
+//	// First construct the dialog
+//	var dlg = new InputDialog(update_id);
+//	//var size = 52;
+//	dlg.addHidden('exhibit_id');
+//	dlg.addPrompt("<span class='input_dlg_license_list_header'>Share this exhibit under the following license:</span>");
+//	dlg.addLinkToNewWindow("[ Learn more about CC licenses ]", "http://creativecommons.org/about/licenses", null, "nav_link");
+//	var list = new CreateSharingList(licenseInfo, iShareStart, value_field);
+//	dlg.addList(value_field, list.list, null);
+//	dlg.addPrompt("Licenses provided courtesy of Creative Commons");
+//
+//	// Now, everything is initialized, fire up the dialog.
+//	var el = $(update_id);
+//	dlg.show("Change Sharing", getX(el), getY(el), 530, 350, values );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
