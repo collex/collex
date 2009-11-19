@@ -348,6 +348,21 @@ namespace :solr_index do
 		puts "Finished in #{Time.now-start_time} seconds."
 	end
 
+	desc "replace resources index with the merged index"
+	task :replace_resources_with_merged => :environment do
+		start_time = Time.now
+		root = RAILS_ROOT[0..RAILS_ROOT.rindex('/')]
+		solr_data_path = "#{root}solr_1.4/solr/data"
+		src = "#{solr_data_path}/merged/index"
+		dst = "#{solr_data_path}/resources/index"
+		puts "~~~~~~~~~~~ Copying #{src} to #{dst}..."
+		`sudo /sbin/service solr stop`
+		`rm #{dst}/*`
+		`cp #{src}/* #{dst}`
+		`sudo /sbin/service solr start`
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
+	end
+
 #	desc "delete an archive from the RDF reindexing index"
 #	task :delete_archive_from_index  => :environment do
 #		archive = ENV['archive']
