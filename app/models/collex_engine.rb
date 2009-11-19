@@ -278,7 +278,7 @@ class CollexEngine
 	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
 		uri = new_obj['uri']
 		first_error = true
-		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'federation' ]	# 'year', 'author_sort', TODO: too many items are missing. Take care of that later.
+		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'federation', 'year_sort' ]	# 'year', 'author_sort', TODO: too many items are missing. Take care of that later.
 		required_fields.each {|field|
 			if field != 'url' || new_obj['archive'] != 'whitbib'	#TODO: remove this when new "resources" archive is created.
 				if new_obj[field] == nil
@@ -298,15 +298,15 @@ class CollexEngine
 			new_obj.each {|key,value|
 				if key == 'batch' || key == 'score'
 					old_obj.delete(key)
-				elsif key == 'federation' && value.to_s == "NINES"
-					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-					old_obj.delete(key)
-				elsif key == 'federation' && value.join(",") == "NINES,18th Connect" && new_obj['archive'] == 'poetess'
-					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-					old_obj.delete(key)
-				elsif key == 'has_full_text' || key == 'is_ocr'
-					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-					old_obj.delete(key)
+#				elsif key == 'federation' && value.to_s == "NINES"
+#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+#					old_obj.delete(key)
+#				elsif key == 'federation' && value.join(",") == "NINES,18th Connect" && new_obj['archive'] == 'poetess'
+#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+#					old_obj.delete(key)
+#				elsif key == 'has_full_text' || key == 'is_ocr'
+#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
+#					old_obj.delete(key)
 				else
 					old_value = old_obj[key]
 					old_value = value_to_string(old_value)
@@ -316,7 +316,7 @@ class CollexEngine
 						value = value.strip if value != nil
 					end
 					if old_value == nil
-						if key != 'author_sort'	#TODO: to many errors: remove this test after "resources" index is recreated.
+						if key != 'year_sort'	#TODO: to many errors: remove this test after "resources" index is recreated.
 							total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} #{value.gsub("\n", " / ")} introduced in reindexing.")
 						end
 					elsif old_value != value
@@ -339,7 +339,7 @@ class CollexEngine
 				end
 			}
 			old_obj.each {|key,value|
-				if value != nil && key != 'type'	# 'type' is being phased out, so it is ok if it doesn't appear.
+				if value != nil # && key != 'type'	# 'type' is being phased out, so it is ok if it doesn't appear.
 					value = value_to_string(value)
 					value = value.slice(0..99) + "..." if value.length > 100
 					value = value.gsub("\n", " / ")
