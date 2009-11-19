@@ -86,6 +86,15 @@ class Admin::DefaultController < Admin::BaseController
 		@use_test_index = session[:use_test_index]
 	end
 
+	def stats
+		@show_all = session[:show_all_stats]
+	end
+
+	def stats_show_all
+		session[:show_all_stats] = session[:show_all_stats] == 'true' ? 'false' : 'true'
+		redirect_to :action => 'stats'
+	end
+
 	def use_test_index
 		use_test = params[:test]
 		session[:use_test_index] = use_test

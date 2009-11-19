@@ -122,6 +122,8 @@
 			<td><%= str %></td>
 		</tr> -->
 	</table>
+	<%= link_to "[ show all ]", { :action => 'stats_show_all' }, { :class => 'nav_link' } if @show_all != 'true' %>
+	<%= link_to "[ show last 30 days ]", { :action => 'stats_show_all' }, { :class => 'nav_link' } if @show_all == 'true' %>
 	<div class="page_header">Detail Login Information:</div>
 	<table>
 		<tr>
@@ -130,14 +132,16 @@
 			<th>action</th>
 			<th>time</th>
 		</tr>
-		<% logins = login_stats[:all_recs] -%>
+		<% logins = login_stats[:all_recs].sort { |a,b| b.updated_at <=> a.updated_at } -%>
 		<% for login in logins -%>
+		<% if @show_all == 'true' || login.updated_at > 30.days.ago -%>
 		<tr>
 			<td><%= h login.username %></td>
 			<td><%= h login.address %></td>
 			<td><%= h login.action %></td>
 			<td><%= h comment_time_format(login.updated_at) %></td>
 		</tr>
+		<% end -%>
 		<% end -%>
 	</table>
 
@@ -150,8 +154,9 @@
 			<th>tag</th>
 			<th>time</th>
 		</tr>
-		<% objects = ObjectActivity.all() -%>
+		<% objects = ObjectActivity.all().sort { |a,b| b.updated_at <=> a.updated_at } -%>
 		<% for object in objects -%>
+		<% if @show_all == 'true' || object.updated_at > 30.days.ago -%>
 		<tr>
 			<td><%= h object.username %></td>
 			<td><%= h object.action %></td>
@@ -159,6 +164,7 @@
 			<td><%= h object.tagname %></td>
 			<td><%= h comment_time_format(object.updated_at) %></td>
 		</tr>
+		<% end -%>
 		<% end -%>
 	</table>
 </div>
