@@ -56,17 +56,24 @@ namespace :solr do
 		end
 	end
 
-	desc "Package and copy index to another machine (param: dest=nines@nines.org). The remote machine's password will be requested."
+	desc "Package and copy index to another machine (param=index;machine -- ex: param=merged;nines@nines.org). The remote machine's password will be requested."
 	task :send_index_to_server => :environment do
 		today = Time.now()
-		dest = ENV['dest']
-		if dest == nil
-			puts "Usage: call with dest=the ssh login for the destination machine"
+		param = ENV['param']
+		if param == nil
+			puts "Usage: call with param=the index to package;the ssh login for the destination machine"
 		else
-			filename = path_of_zipped_index()
-			ENV['index'] = 'resources'
-			Rake::Task['solr:zip'].invoke
-			`scp #{filename} #{dest}:solr_1.4/solr/data/resources`
+			arr = param.split(';')
+			if arr.length != 2
+				puts "Usage: call with param=the index to package;the ssh login for the destination machine"
+			else
+				index = arr[0]
+				dest = arr[1]
+				filename = path_of_zipped_index()
+				ENV['index'] = index
+				Rake::Task['solr:zip'].invoke
+				`scp #{filename} #{dest}:solr_1.4/solr/data/resources`
+			end
 		end
 			puts "Finished in #{(Time.now-today)/60} minutes."
 	end
