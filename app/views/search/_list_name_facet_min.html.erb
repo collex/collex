@@ -1,0 +1,42 @@
+<%  #
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ---------------------------------------------------------------------------- -%>
+<%# list_name_facet_normal -%>
+<% total_names = 0 -%>
+<% @name_facets.each { |ty, facet| -%>
+<% total_names += facet.length %>
+<%  } -%>
+<div id="search_name_facet_min" class="search_name_facet">
+	There are <%= number_with_delimiter(total_names) %> names associated with this search. <%= link_to_function("Click here to browse", "expandSearchNameFacet();return false;", :class => 'nav_link') %>
+</div>
+<div id="search_name_facet_max" class="search_name_facet hidden">
+	There are <%= number_with_delimiter(total_names) %> names associated with this search. [Showing top 5 hits. <%= link_to_function("Click here to show all", "showAllSearchNameFacet();return false;", :class => 'nav_link') %>.]
+	<%= link_to_function("close X", "minimizeSearchNameFacet();return false;", :class => 'nav_link name_facet_close') %>
+	<table class="name_facet">
+		<tr>
+			<th>Author</th>
+			<th>Editor</th>
+			<th>Publisher</th>
+		</tr>
+		<% 0.upto(4) do |i| -%>
+		<tr>
+			<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %></td>
+			<td><%= format_name_facet(@name_facets['role_EDT'][i], 'Editor') if @name_facets['role_EDT'].length > i %></td>
+			<td><%= format_name_facet(@name_facets['role_PBL'][i], 'Publisher') if @name_facets['role_PBL'].length > i %></td>
+		</tr>
+		<% end -%>
+	</table>
+</div>

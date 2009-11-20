@@ -1,0 +1,37 @@
+<%  #
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ---------------------------------------------------------------------------- -%>
+<%# list_name_facet_all -%>
+
+<div id="show_all_name_facet">
+	<table class="name_facet">
+		<tr>
+			<th>Author</th>
+			<th>Editor</th>
+			<th>Publisher</th>
+		</tr>
+		<% max = @name_facets['role_AUT'].length -%>
+		<% max = @name_facets['role_EDT'].length if @name_facets['role_EDT'].length > max -%>
+		<% max = @name_facets['role_PBL'].length if @name_facets['role_PBL'].length > max -%>
+		<% 0.upto(max-1) do |i| -%>
+		<tr>
+			<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %></td>
+			<td><%= format_name_facet(@name_facets['role_EDT'][i], 'Editor') if @name_facets['role_EDT'].length > i %></td>
+			<td><%= format_name_facet(@name_facets['role_PBL'][i], 'Publisher') if @name_facets['role_PBL'].length > i %></td>
+		</tr>
+		<% end -%>
+	</table>
+</div>

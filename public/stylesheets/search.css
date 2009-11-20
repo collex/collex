@@ -226,3 +226,38 @@ div.auto_complete ul li .frequency {
 	position:relative;
 	top:15px;
 }
+
+.search_name_facet {
+	padding: .5em 1em;
+	background-color: #dddddd;
+}
+
+table.name_facet {
+	width: 100%;
+	padding-top: .5em;
+}
+
+
+table.name_facet th {
+	border: none;
+	text-align: left;
+	padding: .5em 0px;
+}
+
+table.name_facet tr {
+	padding: 0px;
+}
+
+table.name_facet td {
+	padding: 0px;
+}
+
+.name_facet_close {
+	float: right;
+}
+
+#show_all_name_facet {
+	overflow: auto;
+	height: 300px;
+	width: 750px;
+}

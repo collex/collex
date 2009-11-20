@@ -232,6 +232,7 @@ class SearchController < ApplicationController
 					 hit['text'] = @results["highlighting"][hit["uri"]]["text"]
 				 end
 			 }
+	 		 @name_facets = @solr.name_facet(session[:constraints])
 
 			 # Now repeat the search without any resource type constraints, so we can get the resource totals.
 			 # The resource totals should stay the same whether the user has constrained by resources or not.
@@ -438,6 +439,12 @@ class SearchController < ApplicationController
       clear_constraints()
       redirect_to :action => 'browse'      
     end
+
+		def list_name_facet_all
+     @solr = CollexEngine.factory_create(session[:use_test_index] == "true")
+ 		 @name_facets = @solr.name_facet(session[:constraints])
+			render :partial => 'list_name_facet_all'
+		end
    
    private
    def clear_constraints

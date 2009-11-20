@@ -77,6 +77,25 @@ class CollexEngine
 		#return "(#{query}) OR (#{query} -genre:Citation)^5"
 	end
 
+	def name_facet(constraints)
+    query, filter_queries = solrize_constraints(constraints)
+    req = Solr::Request::Standard.new(:start => 0, :rows => 0,
+					:query => query, :filter_queries => filter_queries,
+					:field_list => [ 'role_AUT', 'role_EDT', 'role_PBL'],
+					:facets => {:fields => [ 'role_AUT', 'role_EDT', 'role_PBL'], :mincount => 1, :missing => false, :limit => -1},
+					:shards => @cores)
+    response = @solr.send(req)
+
+		facets = response.data['facet_counts']['facet_fields']
+    facets = facets_to_hash(facets)
+		facets2 = {}
+		facets.each { |ty, facet|
+			facets2[ty] = facet.sort { |a,b| (a[1] == b[1]) ? a[0] <=> b[0] : b[1] <=> a[1] }
+		}
+
+		return facets2
+	end
+
   def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
     query, filter_queries = solrize_constraints(constraints)
 
