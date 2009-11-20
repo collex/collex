@@ -15,28 +15,13 @@
 #     limitations under the License.
 # ---------------------------------------------------------------------------- -%>
 <%# list_name_facet_normal -%>
-<% total_names = 0 -%>
-<% @name_facets.each { |ty, facet| -%>
-<% total_names += facet.length %>
-<%  } -%>
 <div id="search_name_facet_min" class="search_name_facet">
-	There are <%= number_with_delimiter(total_names) %> names associated with this search. <%= link_to_function("Click here to browse", "expandSearchNameFacet();return false;", :class => 'nav_link') %>
+	<div><%= @name_facet_msg %></div>
+	<%= link_to_function("Click here to browse your results by name", "expandSearchNameFacet();return false;", :class => 'nav_link') %>
 </div>
 <div id="search_name_facet_max" class="search_name_facet hidden">
-	There are <%= number_with_delimiter(total_names) %> names associated with this search. [Showing top 5 hits. <%= link_to_function("Click here to show all", "showAllSearchNameFacet();return false;", :class => 'nav_link') %>.]
-	<%= link_to_function("close X", "minimizeSearchNameFacet();return false;", :class => 'nav_link name_facet_close') %>
-	<table class="name_facet">
-		<tr>
-			<th>Author</th>
-			<th>Editor</th>
-			<th>Publisher</th>
-		</tr>
-		<% 0.upto(4) do |i| -%>
-		<tr>
-			<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %></td>
-			<td><%= format_name_facet(@name_facets['role_EDT'][i], 'Editor') if @name_facets['role_EDT'].length > i %></td>
-			<td><%= format_name_facet(@name_facets['role_PBL'][i], 'Publisher') if @name_facets['role_PBL'].length > i %></td>
-		</tr>
-		<% end -%>
-	</table>
+	<div id="search_name_never_requested">
+		<img src="<%= PROGRESS_SPINNER_PATH %>" alt="Please wait..." /><br /><br />
+		Searching for the names...
+	</div>
 </div>

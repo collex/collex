@@ -77,6 +77,7 @@ class SearchController < ApplicationController
         add_date_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Year (YYYY)"
       end
 
+		 session[:name_facet_msg] = "You just added \"#{params[:search][:notphrase]}\" as a constraint." if params[:from_name_facet] == "true"
      redirect_to :action => 'browse'
    end
    
@@ -215,6 +216,9 @@ class SearchController < ApplicationController
         session[:row_num] = nil
         session[:row_id] = nil
       end
+			@name_facet_msg = session[:name_facet_msg]
+			session[:name_facet_msg] = nil
+			
 			session[:constraints] ||= []
 			session[:search_sort_by] ||= 'Relevancy'
 			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
@@ -232,7 +236,6 @@ class SearchController < ApplicationController
 					 hit['text'] = @results["highlighting"][hit["uri"]]["text"]
 				 end
 			 }
-	 		 @name_facets = @solr.name_facet(session[:constraints])
 
 			 # Now repeat the search without any resource type constraints, so we can get the resource totals.
 			 # The resource totals should stay the same whether the user has constrained by resources or not.

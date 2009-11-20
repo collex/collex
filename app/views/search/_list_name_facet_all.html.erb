@@ -17,6 +17,14 @@
 <%# list_name_facet_all -%>
 
 <div id="show_all_name_facet">
+	<% total_names = 0 -%>
+	<% @name_facets.each { |ty, facet| -%>
+	<% total_names += facet.length %>
+	<%  } -%>
+	<div id="name_facet_title">
+		There are <%= number_with_delimiter(total_names) %> names associated with this search. [Showing top 5 hits. <%= link_to_function("Click here to show all", "showAllSearchNameFacet();return false;", :class => 'nav_link') %>.]
+		<%= link_to_function("close X", "minimizeSearchNameFacet();return false;", :class => 'nav_link name_facet_close') %>
+	</div>
 	<table class="name_facet">
 		<tr>
 			<th>Author</th>
@@ -26,6 +34,7 @@
 		<% max = @name_facets['role_AUT'].length -%>
 		<% max = @name_facets['role_EDT'].length if @name_facets['role_EDT'].length > max -%>
 		<% max = @name_facets['role_PBL'].length if @name_facets['role_PBL'].length > max -%>
+		<% max = 5 if max > 5 -%>
 		<% 0.upto(max-1) do |i| -%>
 		<tr>
 			<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %></td>
@@ -34,4 +43,24 @@
 		</tr>
 		<% end -%>
 	</table>
+	<div id="full_name_facet_list" class="hidden">
+		<table class="name_facet">
+			<tbody>
+			<tr>
+				<th>Author</th>
+				<th>Editor</th>
+				<th>Publisher</th>
+			</tr>
+			<% max = @name_facets['role_AUT'].length -%>
+			<% max = @name_facets['role_EDT'].length if @name_facets['role_EDT'].length > max -%>
+			<% max = @name_facets['role_PBL'].length if @name_facets['role_PBL'].length > max -%>
+			<% 0.upto(max-1) do |i| -%>
+			<tr>
+				<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %></td>
+				<td><%= format_name_facet(@name_facets['role_EDT'][i], 'Editor') if @name_facets['role_EDT'].length > i %></td>
+				<td><%= format_name_facet(@name_facets['role_PBL'][i], 'Publisher') if @name_facets['role_PBL'].length > i %></td>
+			</tr>
+			<% end -%>
+		</tbody></table>
+	</div>
 </div>

@@ -256,8 +256,12 @@ table.name_facet td {
 	float: right;
 }
 
-#show_all_name_facet {
+.name_facet_in_lightbox {
 	overflow: auto;
 	height: 300px;
 	width: 750px;
+}
+
+#search_name_never_requested {
+	text-align: center;
 }

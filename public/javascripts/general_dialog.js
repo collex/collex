@@ -18,7 +18,7 @@
 /*global YAHOO */
 /*global document, setTimeout, window */
 /*global form_authenticity_token */
-/*global RichTextEditor, LinkDlgHandler */
+/*global RichTextEditor, LinkDlgHandler, ShowDivInLightbox */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
 
 var GeneralDialog = Class.create({
@@ -609,6 +609,39 @@ var MessageBoxDlg = Class.create({
 		
 		var params = { this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+	}
+});
+
+var ShowDivInLightbox = Class.create({
+	initialize: function (params) {
+		// This puts up a modal dialog that replaces the alert() call.
+		this.class_type = 'ShowDivInLightbox';	// for debugging
+
+		// private variables
+		//var This = this;
+		var Div = Class.create({
+			getMarkup: function() {
+				var str = $(params.id).innerHTML;
+				var div = new Element('div').update(str);
+				//div.addClassName(params.klass);
+				return div;
+			}
+		});
+
+		// privileged functions
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { custom: new Div(), klass: params.klass } ],
+					[ { rowClass: 'last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
+				]
+			};
+
+		var dlgParams = { this_id: "lightbox_dlg", pages: [ dlgLayout ], body_style: "lightbox_dlg", row_style: "lightbox_row", title: params.title };
+		var dlg = new GeneralDialog(dlgParams);
 		dlg.changePage('layout', null);
 		dlg.center();
 	}

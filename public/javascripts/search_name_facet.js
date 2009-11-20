@@ -22,6 +22,13 @@ function expandSearchNameFacet() {
 	var elMax = $('search_name_facet_max');
 	elMin.addClassName('hidden');
 	elMax.removeClassName('hidden');
+	var elProgress = $('search_name_never_requested');
+	if (elProgress) {	// The spinner is on the page, but hidden, until the first time there's an update. So we only need to call the server when the spinner still exists.
+		var onFailure = function(resp) {
+			new MessageBoxDlg("Error in retrieving names", "There was an error getting the list of names from the server. The problem was: " + resp.responseText);
+		};
+		updateWithAjax({ el: 'search_name_facet_max', action: '/search/list_name_facet_all', params: {}, onFailure: onFailure });
+	}
 }
 
 function minimizeSearchNameFacet() {
@@ -32,5 +39,5 @@ function minimizeSearchNameFacet() {
 }
 
 function showAllSearchNameFacet() {
-	showPartialInLightBox("/search/list_name_facet_all", "All Names in Search");
+	new ShowDivInLightbox({ title: "Choose name to add to constraints", id: 'full_name_facet_list', klass: 'name_facet_in_lightbox' });
 }
