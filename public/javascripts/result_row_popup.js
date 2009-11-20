@@ -136,10 +136,21 @@ function bulkTag(event)
 
 	if (has_one)
 	{
-		doSingleInputPrompt("Add Tag To All Checked Objects", 'Tag:', 'tag', 'bulk_tag',
-			"",
-			"/results/bulk_add_tag",
-			$H({ uris: uris }), 'text', null, null );
+		var params = {
+			title: "Add Tag To All Checked Objects",
+			prompt: 'Tag:',
+			id: 'tag',
+			okStr: 'Save',
+			extraParams: { uris: uris },
+			actions: [ '/results/bulk_add_tag' ],
+			target_els: [ null ]
+		};
+
+		new TextInputDlg(params);
+//		doSingleInputPrompt("Add Tag To All Checked Objects", 'Tag:', 'tag', 'bulk_tag',
+//			"",
+//			"/results/bulk_add_tag",
+//			$H({ uris: uris }), 'text', null, null );
 	}
 	else
 	{
@@ -357,6 +368,10 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id, popul
 	existing_note = existing_note.gsub("<br />", "\n");
 	existing_note = existing_note.gsub("<br>", "\n");
 	existing_note = realLinkToEditorLink(existing_note);
+
+// TODO-PER: Need to send the extra data as a parameter (uri, row_num, and full_text)
+// Also, can't set the name of the RTE field when Ajaxing it.
+//	new RteInputDlg({ title: 'Edit Private Annotation', value: existing_note, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
 
 	doSingleInputPrompt("Edit Private Annotation", 'Annotation:', 'note', parent_id,
 		row_id,
