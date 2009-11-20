@@ -651,6 +651,21 @@ var ConfirmDlg = Class.create({
 // onFailure: what to call if the operation fails.
 function updateWithAjax(params)
 {
+	if (params.el === null)	// we want to redraw the entire screen
+	{
+		// Instead of replacing an element, we want to redraw the entire page. There seems to be some conflict
+		// if the form is resubmitted, so duplicate the form.
+		var new_form = new Element('form', { id: "temp_form", method: 'post', onsubmit: "this.submit();", action: params.action });
+		new_form.observe('submit', "this.submit();");
+		document.body.appendChild(new_form);
+		$H(params.params).each(function (p) { new_form.appendChild(new Element('input', { name: p.key, value: p.value, id: p.key })); });
+
+		//$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+		new_form.submit();
+
+		return;
+	}
+
 	new Ajax.Updater({ success: params.el, failure:'bit_bucket' }, params.action, {
 		parameters : params.params,
 		evalScripts : true,
