@@ -242,6 +242,7 @@ table.name_facet th {
 	border: none;
 	text-align: left;
 	padding: .5em 0px;
+	width: 33%;
 }
 
 table.name_facet tr {
