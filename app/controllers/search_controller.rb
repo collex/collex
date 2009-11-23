@@ -585,7 +585,19 @@ class SearchController < ApplicationController
      
      redirect_to :action => 'browse'
    end
-   
+
+	 def remember_resource_toggle
+		 session[:resource_toggle] ||= {}
+		 dir = params[:dir]
+		 id = params[:id]
+		 if dir == 'close' && id != nil
+			 session[:resource_toggle].delete(id)
+		 end
+		 if dir == 'open' && id != nil
+			 session[:resource_toggle][id] = 'open'
+		 end
+	 end
+
    private
    def search_solr(constraints, page, items_per_page, sort_by, direction)
      @solr = CollexEngine.factory_create(session[:use_test_index] == "true")

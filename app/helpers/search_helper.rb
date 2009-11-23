@@ -475,7 +475,7 @@ module SearchHelper
   # Helpers for the facet tree that shows resources
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
-  def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found )
+  def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found, is_open )
     display_name = site.display_name
     id = site.id
     value = site['value']
@@ -483,10 +483,10 @@ module SearchHelper
     # This is one line in the resources.
     # If edit mode: don't show # objects, show value instead.
     # if category, put in arrow for expand/collapse
-    html = "<tr class='#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
+    html = "<tr id='resource_#{site.id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
     if is_category
-      html += "<a id='site_opened_#{id}' #{'class=hidden' if start_hidden} href='#' onclick='open_tree(event, \"#{id}\"); return false;'><img src='/images/arrow.gif' /></a>"
-      html += "<a id='site_closed_#{id}' #{'class=hidden' if !start_hidden} href='#' onclick='close_tree(event, \"#{id}\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
+      html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
+      html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
     end
     
     if is_edit_mode
@@ -507,7 +507,7 @@ module SearchHelper
     else # not edit mode
       total = site_subtotal(site)
       if is_category
-        html += "<a href='#' onclick='toggle_tree(event, \"#{id}\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
+        html += "<a href='#' onclick='new ResourceTree(\"#{id}\",\"toggle\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
         if site_is_in_constraints?(value)
           html += display_name + "&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_resource', :resource => value, :remove => 'true'}, { :class => 'modify_link' }) + "</td><td class='num_objects'>#{number_with_delimiter(total)}"

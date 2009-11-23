@@ -15,36 +15,81 @@
 //----------------------------------------------------------------------------
 
 /*global $, $$ */
-/*extern close_tree, open_tree, toggle_tree */
+/*extern ResourceTree */
+
+var ResourceTree = Class.create({
+	initialize: function (id, action) {
+		if (action === 'toggle') {
+			var open = $("site_opened_" + id);
+			if (open.hasClassName('hidden')) action = 'close';
+			else action = 'open';
+		}
+
+		var getId = function(node) {
+			var arr = node.split('_');
+			id = arr[arr.length-1];
+			return id;
+		};
+
+		var closeChildren = function(node) {
+			// this recursively hides all the children of the specified node.
+			var child_class = "child_of_" + node;
+			var children = $$('.' + child_class);
+			children.each(function(child)
+			{
+				child.addClassName('hidden');
+				if (child.hasClassName('resource_node')) {
+					var cid = getId(child.id);
+					closeChildren(cid);
+				}
+			});
+		};
+
+		var openChildren = function(node) {
+			var child_class = "child_of_" + node;
+			var children = $$('.' + child_class);
+			children.each(function(child) {
+				child.removeClassName('hidden');
+				if (child.hasClassName('resource_node')) {
+					var cid = getId(child.id);
+					var childOpened = $("site_opened_" + cid);
+					if (childOpened.hasClassName('hidden') === true)
+						openChildren(cid);
+				}
+			});
+		};
+
+		var closeNode = function(id) {
+			var This = $("site_closed_" + id);
+			var That = $("site_opened_" + id);
+			This.addClassName('hidden');
+			That.removeClassName('hidden');
+			new Ajax.Request("/search/remember_resource_toggle", {
+				parameters: { dir: 'close', id: id}
+			});
+		};
+
+		var openNode = function(id) {
+			var This = $("site_opened_" + id);
+			var That = $("site_closed_" + id);
+			This.addClassName('hidden');
+			That.removeClassName('hidden');
+			new Ajax.Request("/search/remember_resource_toggle", {
+				parameters: { dir: 'open', id: id}
+			});
+		};
+
+		if (action === 'open') {
+			openNode(id);
+			openChildren(id);
+		} else if (action === 'close') {
+			closeNode(id);
+			closeChildren(id);
+		}
+	}
+});
 
 // For the resources on the search page (also used in the administrator to modify the resources)
-function open_tree(event, id)
+function open_tree(id)
 {
-	var This = $("site_opened_" + id);
-	var That = $("site_closed_" + id);
-	This.addClassName('hidden');
-	That.removeClassName('hidden');
-	var child_class = "child_of_" + id;
-	var children = $$('.' + child_class);
-	children.each(function(child) { child.removeClassName('hidden'); });
-}
-
-function close_tree(event, id)
-{
-	var This = $("site_closed_" + id);
-	var That = $("site_opened_" + id);
-	This.addClassName('hidden');
-	That.removeClassName('hidden');
-	var child_class = "child_of_" + id;
-	var children = $$('.' + child_class);
-	children.each(function(child) { child.addClassName('hidden'); });
-}
-
-function toggle_tree(event, id)
-{
-	var open = $("site_opened_" + id);
-	if (open.hasClassName('hidden'))
-		close_tree(event, id);
-	else
-		open_tree(event, id);
 }
