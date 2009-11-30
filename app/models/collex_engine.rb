@@ -1120,7 +1120,7 @@ class CollexEngine
 	end
 
 	def optimize()
-		@solr.optimize(:wait_searcher => true, :wait_flush => true)
+		@solr.optimize() #(:wait_searcher => true, :wait_flush => true)
   end
 
 private
