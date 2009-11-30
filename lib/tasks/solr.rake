@@ -78,6 +78,20 @@ namespace :solr do
 			puts "Finished in #{(Time.now-today)/60} minutes."
 	end
 
+	desc "This assumes a gzipped archive in the resources folder named like this: YYYY.MM.DD.index.tar.gz"
+	task :install_index => :environment do
+		today = Time.now()
+		puts "You will be asked for your sudo password."
+		`cd #{solr_folder()}/solr/data/resources && sudo rm -R index_old`
+		`sudo /sbin/service solr stop`
+		`cd #{solr_folder()}/solr/data/resources && sudo mv index index_old`
+		`cd #{solr_folder()}/solr/data/resources && tar xvfz #{path_of_zipped_index()}`
+		`sudo /sbin/service solr start`
+		sleep 5
+		Exhibit.index_all_peer_reviewed()
+		puts "Finished in #{(Time.now-today)/60} minutes."
+	end
+
 	desc "Index all exhibits into main index (Note: do this only on the production machine. After this step, do not zip up and move this index.)"
 	task :index_exhibits => :environment do
 		puts "~~~~~~~~~~~ Indexing all peer-reviewed exhibits into solr..."
