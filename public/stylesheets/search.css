@@ -266,3 +266,9 @@ table.name_facet td {
 #search_name_never_requested {
 	text-align: center;
 }
+
+.no_names_msg {
+	color: gray;
+	font-size: .9em;
+	font-style: italic;
+}

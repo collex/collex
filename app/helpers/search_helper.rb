@@ -554,4 +554,12 @@ module SearchHelper
 	def format_name_facet(name, typ)
 		return link_to("#{name[0]} (#{name[1]})", { :controller => 'search', :action => 'add_constraint', :search_type => typ,  :search_not => 'AND', :search => { :phrase => '', :notphrase => name[0]}, :from_name_facet => 'true' }, { :class => 'nav_link' })
 	end
+
+	def format_no_name_message(index, total)
+		if index == 0 && total == 0
+			return "<span class='no_names_msg'>No names were contributed for this category.</span>"
+		end
+		return ""
+	end
+
 end
