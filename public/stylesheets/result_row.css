@@ -218,3 +218,13 @@ span.tooltip:hover span.result_row_tooltip {
 	background-image: url(/images/has_xml_source.gif);
 	width:5em;
 }
+
+.uri_link {
+	font-size: .6em;
+	text-decoration: none;
+	color: #cccccc;
+}
+
+.uri_link:hover {
+	color: black;
+}

@@ -46,11 +46,14 @@
 	    </div>
 	    <%# The middle with the actual search results -%>
     	<div class="search_result_header">
-            <% if hit["url"] %>
+			<% if is_admin? -%>
+			<%= link_to_function("uri", "$('uri_#{index}').toggleClassName('hidden');", :class => 'uri_link') %><span id="uri_<%=index%>" class='hidden'>&nbsp;<%= hit['uri'] %></span>
+            <% end -%>
+            <% if hit["url"] -%>
             	<a class="nines_link" target="_blank" href="<%= hit["url"][0] %>"><%= title %></a>
-			<% else %>
+			<% else -%>
             	<%= title %>
-            <% end %>
+            <% end -%>
 		</div>
     	<div class="search_result_data_container">
 	        <table class="search_result_data">
