@@ -39,5 +39,5 @@ function minimizeSearchNameFacet() {
 }
 
 function showAllSearchNameFacet() {
-	new ShowDivInLightbox({ title: "Choose name to add to constraints", id: 'full_name_facet_list', klass: 'name_facet_in_lightbox' });
+	new ShowDivInLightbox({ title: "Name Browser", id: 'full_name_facet_list', klass: 'name_facet_in_lightbox' });
 }

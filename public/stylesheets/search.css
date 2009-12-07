@@ -251,6 +251,7 @@ table.name_facet tr {
 
 table.name_facet td {
 	padding: 0px;
+	padding-right: 1em;
 }
 
 .name_facet_close {
@@ -271,4 +272,8 @@ table.name_facet td {
 	color: gray;
 	font-size: .9em;
 	font-style: italic;
+}
+
+.search_name_title {
+	width: 85%;
 }
