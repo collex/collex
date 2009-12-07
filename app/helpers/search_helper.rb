@@ -552,6 +552,7 @@ module SearchHelper
   end
 
 	def format_name_facet(name, typ)
+		name[0] = name[0].gsub("\"", "")
 		return link_to("#{name[0]} (#{name[1]})", { :controller => 'search', :action => 'add_constraint', :search_type => typ,  :search_not => 'AND', :search => { :phrase => '', :notphrase => name[0]}, :from_name_facet => 'true' }, { :class => 'nav_link' })
 	end
 
