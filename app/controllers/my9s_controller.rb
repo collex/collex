@@ -301,6 +301,7 @@ class My9sController < ApplicationController
 
 	def update_fonts
     exhibit = Exhibit.find(params[:id])
+		params[:exhibit].delete(:use_styles)
     exhibit.update_attributes(params[:exhibit])
 		redirect_to :back
 	end
