@@ -113,7 +113,7 @@ class DiscussionComment < ActiveRecord::Base
 			ok_to_delete = true
 			if discussion_comment.position == 1 # the first comment is privileged and will delete the thread
 				if discussion_comment.discussion_thread.discussion_comments.length == 1 # only delete the first comment if there are no follow up comments
-					discussion_comment.discussion_thread.destroy
+					discussion_comment.discussion_thread.delete
 					thread_id = -1
 				else
 					ok_to_delete = false
