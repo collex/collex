@@ -14,7 +14,7 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $$ */
+/*global $, $$, Class, Ajax */
 /*extern ResourceTree */
 
 var ResourceTree = Class.create({
@@ -88,8 +88,3 @@ var ResourceTree = Class.create({
 		}
 	}
 });
-
-// For the resources on the search page (also used in the administrator to modify the resources)
-function open_tree(id)
-{
-}

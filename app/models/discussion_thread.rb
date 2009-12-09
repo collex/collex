@@ -16,7 +16,9 @@
 
 class DiscussionThread < ActiveRecord::Base
   belongs_to :discussion_topic
+	belongs_to :group
   has_many :discussion_comments, :order => :position
+	has_and_belongs_to_many :users
   
   def get_title
     if title && title.length > 0

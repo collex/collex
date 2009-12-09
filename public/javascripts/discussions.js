@@ -14,8 +14,9 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, Ajax */
+/*global Class, $, $$, Ajax, Element */
 /*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler, ForumLicenseDisplay */
+/*global MessageBoxDlg */
 /*global YAHOO */
 /*global window, setTimeout */
 /*extern ForumReplyDlg */
@@ -26,15 +27,21 @@ var ForumReplyDlg = Class.create({
 	initialize: function (params) {
 		// This puts up a modal dialog that allows the user to reply to a thread.
 		// If the topic_id is passed, then this should start a new thread.
+		// If  the group_id is passed, then this should start a new thread in the group, and ask for the topic.
 		// If comment_id is passed, then this will edit an existing comment.
 		// in that case, the following are also passed:  title, obj_type, reply, nines_obj_list, exhibit_list, inet_thumbnail, inet_url, inet_title
 		this.class_type = 'ForumReplyDlg';	// for debugging
 		var topic_id = params.topic_id;
+		var group_id = params.group_id;
+		if (group_id)
+			topic_id = -1;
+		var group_name = params.group_name;
 		var thread_id = params.thread_id;
 		var submit_url = params.submit_url;
 		var can_delete = params.can_delete;
 		var populate_exhibit_url = params.populate_exhibit_url;
 		var populate_nines_obj_url = params.populate_nines_obj_url;
+		var populate_topics_url = params.populate_topics_url;
 		var progress_img = params.progress_img;
 		var ajax_div = params.ajax_div;
 		var logged_in = params.logged_in;
@@ -70,6 +77,32 @@ var ForumReplyDlg = Class.create({
 		var This = this;
 		
 		// private functions
+		var populate = function(dlg)
+		{
+			new Ajax.Request(populate_topics_url, { method: 'get', parameters: { },
+				onSuccess : function(resp) {
+					var topics = null;
+					dlg.setFlash('', false);
+					try {
+						topics = resp.responseText.evalJSON(true);
+					} catch (e) {
+						new MessageBoxDlg("Error", e);
+					}
+					// We got all the topics. Now put them on the dialog.
+					var sel_arr = $$('.discussion_topic_select');
+					var select = sel_arr[0];
+					select.update('');
+					topics = topics.sortBy(function(topic) { return topic.text; });
+					topics.each(function(topic) {
+						select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
+					});
+					$('topic_id').writeAttribute('value', topics[0].value);
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
 		
 		// privileged functions
 		var removeAttachItem = function() {
@@ -119,7 +152,9 @@ var ForumReplyDlg = Class.create({
 			dlg.setFlash('Adding Comment...', false);
 			var data = dlg.getAllData();
 			data.thread_id = thread_id;
-			data.topic_id = topic_id;
+			if (topic_id !== -1)
+				data.topic_id = topic_id;
+			data.group_id = group_id;
 			data.comment_id = comment_id;
 			data.obj_type = currSelClass;
 			data.can_delete = can_delete;
@@ -159,6 +194,8 @@ var ForumReplyDlg = Class.create({
 				rows: [
 					[ { custom: licenseDisplay, klass: 'forum_reply_license title hidden' }, { text: 'Title', klass: 'forum_reply_label title hidden' } ],
 					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } ],
+					[ { text: "Group: " + group_name, klass: 'group hidden' } ],
+					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] }],
 					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],
@@ -172,7 +209,7 @@ var ForumReplyDlg = Class.create({
 					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
-		
+
 		var dlgTitle = topic_id ? "New Post" : (thread_id ? "Reply" : "Edit Comment");
 		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "forum_reply_row", title: dlgTitle };
 		var dlg = new GeneralDialog(dlgParams);
@@ -181,12 +218,18 @@ var ForumReplyDlg = Class.create({
 			focus_id = 'title';
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
 		}
+		if (group_id) {
+			$$('.group').each(function(el) { el.removeClassName("hidden"); });
+		}
+
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
 		dlg.changePage('layout', focus_id);
 		licenseDisplay.populate(dlg);
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');
 		dlg.center();
+		if (group_id)
+			populate(dlg);
 		if (starting_obj_type && starting_obj_type !== 1) {
 			YAHOO.util.Event.onAvailable('reply_container', function() {	// We want this to happen after creating the RTE because the user sees that first.
 				removeAttachItem();

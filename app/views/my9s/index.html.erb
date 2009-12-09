@@ -49,6 +49,11 @@
 			<div id="my_exhibits">
 				<%= render :partial => 'my_exhibits_list', :locals => { :user_id => curr_user.id } %>
 			</div>
+			<% if Branding.use_groups() == true %>
+			<div id="groups">
+				<%= render :partial => 'my_groups_list', :locals => { :user_id => curr_user.id } %>
+			</div>
+			<% end -%>
 		</div>
 		<div class="clear_both"></div>
 	</div>

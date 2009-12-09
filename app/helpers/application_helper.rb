@@ -24,6 +24,12 @@ module ApplicationHelper
     return false
   end
 
+	def get_curr_user
+    user = session[:user]
+		return nil if user == nil
+		return User.find_by_username(user[:username])
+	end
+
 	def get_stylesheets(page, debug)
 		# We can't roll up the YUI css because all the images are specified on relative paths.
 		fnames = GetIncludeFileList.get_css(page)

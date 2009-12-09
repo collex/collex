@@ -18,15 +18,19 @@ class Branding
 	# This contains the functional differences between Collex and the specific implementation of it.
 	# In this case, this is the NINES specific stuff
   def self.version
-    return "1.5.19"
+    return "1.5.20"
   end
 
 	def self.yui_path(is_debug)
 		if is_debug
-			return "/javascripts/yui_2_7_0"
+			return "/javascripts/yui_2_8_0"
 		else
-			return '2.7.0'
+			return '2.8.0'
 		end
+	end
+
+	def self.use_groups()
+		return false
 	end
 
 	def self.valid_genre_list()

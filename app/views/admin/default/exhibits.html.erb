@@ -27,7 +27,7 @@
 		</tr>
 		<% exhibits = Exhibit.all(:order => 'title') -%>
 		<% for exhibit in exhibits -%>
-		<% category = exhibit.category ? exhibit.category : 'sandbox' -%>
+		<% category = exhibit.category ? exhibit.category : Group.types()[0] -%>
 		<% not_published = exhibit.is_published == '0' || exhibit.is_published == nil || exhibit.is_published == 0 -%>
 			<tr>
 				<td<%= " class='not_published'" if not_published %>><%= h exhibit.title %></td>

@@ -38,9 +38,10 @@ class ApplicationController < ActionController::Base
   def boom
     raise "boom!"
   end
-  
+
   private
     def session_create
+	    ActionMailer::Base.default_url_options[:host] = request.host_with_port
 			ExceptionNotifier.email_prefix = ExceptionNotifier.email_prefix.gsub('*', ":#{request.host}")
       session[:constraints] ||= []
       session[:num_docs] ||= (CollexEngine.new).num_docs

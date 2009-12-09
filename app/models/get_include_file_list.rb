@@ -52,7 +52,8 @@ class GetIncludeFileList
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'cc_license' ]
 			when :my9s
 				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 'cc_license',
-					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes' ]
+					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
+					'create_new_group_dlg', 'edit_fonts_dlg' ]
 			when :discuss
 				local = [ 'discussions', 'result_row_popup', 'cc_license' ]
 			when :admin
@@ -64,7 +65,8 @@ class GetIncludeFileList
 			when :home
 				local = [ 'get_news_feed', 'search_validation_home' ]
 			when :exhibits
-				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg' ]
+				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg', 'cc_license', 'discussions', 'group_page',
+				'create_new_group_dlg', 'edit_fonts_dlg' ]
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }
@@ -110,7 +112,7 @@ class GetIncludeFileList
 			when :home
 				local = [ "index", "featured_exhibit" ]
 			when :exhibits
-				local = [ "lvl2", "featured_exhibit", "exhibit_list", "user_profile" ]
+				local = [ "lvl2", "featured_exhibit", "exhibit_list", "user_profile", "right_column" ]
 			when :admin
 				local = [ "lvl2", "admin", "search", "right_column" ]
 			when :about

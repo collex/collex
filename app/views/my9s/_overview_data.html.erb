@@ -23,7 +23,13 @@
 	<span class='exhibit_profile_comment'>Use the fields below to change the font styles, thumbnails or Creative Commons License for your exhibit</span>
 	<div class="exhibit_preview_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 	<div class="exhibit_profile_preview">
-		<div><span class="exhibit_profile_label">Style: </span><%= exhibit_builder_style_name(exhibit) %> <%= link_to_function("[change]", "new EditFontsDlg('/my9s/update_fonts', #{exhibit.id}, #{exhibit.to_json()})", { :class => 'modify_link' }) %></div>
+		<div><span class="exhibit_profile_label">Style: </span>
+			<% if Group.can_change_styles(exhibit) -%>
+			<%= exhibit_builder_style_name(exhibit) %> <%= link_to_function("[select style]", "new EditFontsDlg('/my9s/update_fonts', #{exhibit.id}, #{exhibit.to_json()}.exhibit, 'exhibit', false)", { :class => 'modify_link' }) %>
+			<% else -%>
+			Styles are set by the group.
+			<% end -%>
+		</div>
 		<div><span class="exhibit_profile_label">Visible URL:</span>
 			http://<%= request.host_with_port() %>/exhibits/<%= exhibit.get_id_if_no_visible_url() %><span id="overview_visible_url" class="overview_field"><%= exhibit.visible_url %></span></div>
 		<span class="exhibit_profile_label">Thumbnail:</span>
@@ -36,14 +42,34 @@
 			<span class="exhibit_profile_label">Genres:</span>
 			<span id="overview_genres" class="overview_field"><%= exhibit.genres %></span>
 		</div>
+<% if Branding.use_groups() == true %>
+		<% group_name = exhibit.group_id ? Group.find(exhibit.group_id).name : "No Group Selected" -%>
+		<% users_groups = [{ :value => '', :text => 'No Group Selected' }] -%>
+		<% my_groups = Group.get_all_users_groups(exhibit.user_id) -%>
+		<% for group in my_groups -%>
+		<% users_groups.push({ :value => "#{group.id}", :text => group.name }) -%>
+		<% end  -%>
+		<span class="exhibit_profile_label">Group:</span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[select group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) %></span>
+<% end  -%>
+		<div>
+			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : "This exhibit can just be seen by you." %>&nbsp;
+			<%= link_to_function exhibit.is_published == 1 ? "[Unpublish]" : "[Publish]", "doPublish(#{exhibit.id}, #{exhibit.is_published == 1 ? 0 : 1});", :class => 'nav_link' %>
+		</div>
 	</div>
 	<div class="exhibit_sharing">
 		<span class="exhibit_profile_label">Creative Commons License:</span>
 		<div>
+			<% if Group.can_change_license(exhibit) -%>
 			<div class="exhibit_preview_thumbnail"><%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=true', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;") %></div>
-			<span id="overview_published" class="overview_field"><%= exhibit.published? ? "Visible to Everyone using Creative Commons' #{exhibit.get_sharing()} License" : "Visible to Just Me" %>
+			<span id="overview_published" class="overview_field"><%= "Creative Commons' #{exhibit.get_sharing()} License" %>
 			</span>
-			<%= link_to_function(exhibit.published? ? "[change]" : "[share]", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=true', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;", { :class => "modify_link" }) %>
+			<%= link_to_function("[Choose License]", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=false', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;", { :class => "modify_link" }) %>
+			<% else -%>
+			<div class="exhibit_preview_thumbnail"><%= exhibit.get_sharing_image() %></div>
+			<span id="overview_published" class="overview_field"><%= "Creative Commons' #{exhibit.get_sharing()} License" %>
+			</span>
+			<br />[The license is set by the group.]
+			<% end -%>
 		</div>
 	</div>
 	<div class="clear_both"></div>

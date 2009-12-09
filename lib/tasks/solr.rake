@@ -35,10 +35,14 @@ namespace :solr do
 		Rake::Task['solr:start'].invoke
 	end
 
+	def filename_of_zipped_index
+		return "#{today.strftime('20%y.%m.%d')}.index.tar.gz"
+	end
+
 	def path_of_zipped_index
 		path = "~/"	#TODO: set this in site.yml
 		today = Time.now()
-		return "#{path}#{today.strftime('20%y.%m.%d')}.index.tar.gz"
+		return "#{path}#{filename_of_zipped_index}"
 	end
 
 	desc "Zip up the current index for backup and replication (parameter: index=resources|merged)"
@@ -81,11 +85,18 @@ namespace :solr do
 	desc "This assumes a gzipped archive in the resources folder named like this: YYYY.MM.DD.index.tar.gz"
 	task :install_index => :environment do
 		today = Time.now()
+		puts "The following commands will be executed:"
+		puts "cd #{solr_folder()}/solr/data/resources && sudo rm -R index_old"
+		puts "sudo /sbin/service solr stop"
+		puts "cd #{solr_folder()}/solr/data/resources && sudo mv index index_old"
+		puts "cd #{solr_folder()}/solr/data/resources && tar xvfz #{filename_of_zipped_index()}"
+		puts "sudo /sbin/service solr start"
+		puts "rake solr:index_exhibits"
 		puts "You will be asked for your sudo password."
 		`cd #{solr_folder()}/solr/data/resources && sudo rm -R index_old`
 		`sudo /sbin/service solr stop`
 		`cd #{solr_folder()}/solr/data/resources && sudo mv index index_old`
-		`cd #{solr_folder()}/solr/data/resources && tar xvfz #{path_of_zipped_index()}`
+		`cd #{solr_folder()}/solr/data/resources && tar xvfz #{filename_of_zipped_index()}`
 		`sudo /sbin/service solr start`
 		sleep 5
 		Exhibit.index_all_peer_reviewed()

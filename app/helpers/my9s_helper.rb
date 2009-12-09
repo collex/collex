@@ -74,7 +74,16 @@ module My9sHelper
     end
     return url
   end
-  
+
+	def get_url_for_internal_image(image, ty = nil)
+		# image is the item in the database that points to the image.
+		# ty is :micro, :smaller, :thumb
+		return "" if image == nil
+		return "" if image.public_filename == nil
+		return image.public_filename(ty) if ty
+		return image.public_filename()
+	end
+
   def element_pic_thumbnail_illustration(illustration)
     if illustration.illustration_type == ExhibitIllustration.get_illustration_type_image()
       "<img src='#{get_image_url(illustration.image_url)}' height='16px' />"

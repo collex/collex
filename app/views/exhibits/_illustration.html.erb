@@ -108,7 +108,7 @@ end -%>
 		
 			<%# Create the actual content -%>	
 			<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
-				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='font-family:<%= exhibit.illustration_font_name %>; font-size:<%= exhibit.illustration_font_size %>px;width:<%= width %>px;<%= height %>'><%= illustration_text %></div>
+				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='font-family:<%= exhibit.get_font_name('illustration') %>; font-size:<%= exhibit.get_font_size('illustration') %>px;width:<%= width %>px;<%= height %>'><%= illustration_text %></div>
 				<%= create_resizable -%>
 			<% else # nines object or internet image -%>
 				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
@@ -141,17 +141,17 @@ end -%>
 				<% style += 'font-weight: bold;' if "#{illustration.caption1_bold}" == '1' -%>
 				<% style += 'font-style: italic;' if "#{illustration.caption1_italic}" == '1' -%>
 				<% style += 'text-decoration: underline;' if "#{illustration.caption1_underline}" == '1' -%>
-				<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.caption1_font_name %>; font-size:<%= exhibit.caption1_font_size %>px;<%= style %>"><%= illustration.caption1 %>
+				<div class="exhibit_caption1" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.get_font_name('caption1') %>; font-size:<%= exhibit.get_font_size('caption1') %>px;<%= style %>"><%= illustration.caption1 %>
 				<%= draw_footnote(illustration.caption1_footnote_id, "caption1_#{illustration.id}", edit_mode) %>
 				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
-					<div class="exhibit_caption2" style="font-family:<%= exhibit.caption2_font_name %>; font-size:<%= exhibit.caption2_font_size %>px;<%= style2 %>"><%= illustration.caption2 %>
+					<div class="exhibit_caption2" style="font-family:<%= exhibit.get_font_name('caption2') %>; font-size:<%= exhibit.get_font_name('caption2') %>px;<%= style2 %>"><%= illustration.caption2 %>
 					<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{illustration.id}", edit_mode) %>
 					</div>
 				<% end -%>
 				</div>
 			<% else -%>
 				<% if illustration.caption2 && illustration.caption2.length > 0 -%>
-					<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.caption2_font_name %>; font-size:<%= exhibit.caption2_font_size %>px;<%= style2 %>"><%= illustration.caption2 %>
+					<div class="exhibit_caption2" style="width:<%= illustration.image_width + 10 %>px;font-family:<%= exhibit.get_font_name('caption2') %>; font-size:<%= exhibit.get_font_size('caption2') %>px;<%= style2 %>"><%= illustration.caption2 %>
 						<%= draw_footnote(illustration.caption2_footnote_id, "caption2_#{illustration.id}", edit_mode) %>
 					</div>
 				<% end -%>

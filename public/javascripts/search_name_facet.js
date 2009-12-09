@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, MessageBoxDlg */
+/*global $, MessageBoxDlg, updateWithAjax, ShowDivInLightbox */
 /*extern expandSearchNameFacet, showAllSearchNameFacet, minimizeSearchNameFacet */
 
 function expandSearchNameFacet() {

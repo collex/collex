@@ -59,7 +59,7 @@ class ExhibitsController < ApplicationController
     end
 
 		# Be sure the current user is authorized to see this exhibit
-		if @exhibit.is_published == 0	# allows allow published exhibits
+		if @exhibit.is_published == 0	# allow published exhibits
 			user = session[:user]
 			if user == nil	# if the user isn't logged in, then disallow.
 				redirect_to :action => 'list'

@@ -67,8 +67,9 @@ class ForumController < ApplicationController
 			else
 				license = params[:license_list]
 				topic_id = params[:topic_id]
+				group_id = params[:group_id]
 				title = params[:title]
-				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => title, :license => license)
+				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :group_id => group_id, :title => title, :license => license)
 
 				params[:thread_id] = thread.id
 				create_comment(params)

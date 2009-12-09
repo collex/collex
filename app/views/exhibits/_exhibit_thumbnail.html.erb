@@ -14,12 +14,6 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%#parameters: Exhibit exhibit; int height=50; bool show_immediately -%>
+<%# exhibit_thumbnail parameters: int height=50; bool show_immediately -%>
 <% height ||= 50 -%>
-<div class="exhibit_thumbnail" style="overflow: hidden;width:<%= height %>px;height:<%= height %>px"><img id="thumbnail_<%=exhibit.id %>" src="<%= get_image_url(exhibit.thumbnail)%>" style="display:none;" alt=""/></div>
-<script type="text/javascript">
-	$("thumbnail_<%=exhibit.id %>").observe('load', thumbnail_resize);
-	<% if show_immediately -%>
-	setTimeout(thumbnail_resize.bind($("thumbnail_<%=exhibit.id %>")), 500);
-	<% end -%>
-</script>
+<%= render :partial => "common/thumbnail", :locals => { :element_id => exhibit.id, :url => get_image_url(exhibit.thumbnail), :height => height, :show_immediately => show_immediately } %>

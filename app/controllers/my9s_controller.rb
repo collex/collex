@@ -319,6 +319,25 @@ class My9sController < ApplicationController
     end
   end
 
+	def change_exhibits_group
+		id = params[:id]
+		exhibit = Exhibit.find(id)
+		group = params[:group]
+		exhibit.group_id = group
+		exhibit.save
+		redirect_to :back
+		#render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+	end
+
+	def publish_exhibit
+		id = params[:id]
+		exhibit = Exhibit.find(id)
+		state = params[:publish_state]
+		exhibit.is_published = state
+		exhibit.save
+		render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+	end
+
   def edit_exhibit_overview
     exhibit_id = params[:exhibit_id]
     user = get_user(session)

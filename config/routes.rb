@@ -15,6 +15,15 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
+	map.accept_request '/groups/accept_request', :controller => 'groups', :action => 'accept_request'
+  map.decline_request '/groups/decline_request', :controller => 'groups', :action => 'decline_request'
+  map.decline_group '/groups/decline_group', :controller => 'groups', :action => 'decline_group'
+  map.join_group '/groups/join_group', :controller => 'groups', :action => 'join_group'
+	map.acknowledge_notification '/groups/acknowledge_notification', :controller => 'groups', :action => 'acknowledge_notification'
+	map.create_login '/groups/create_login', :controller => 'groups', :action => 'create_login'
+
+  map.resources :groups
+
   map.discussion_thread_rss '/forum/rss/:thread.xml', :controller => 'forum', :action => 'rss'
 
   map.resources :exhibit_illustrations

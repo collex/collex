@@ -27,22 +27,27 @@
 
 /*global $$ */
 /*global document, setTimeout */
+/*extern nospam */
+
+var nospam = function() {
+	var links = $$("a.nospam");
+	links.each(function(link) {
+		var raw_addr = link.href;
+		// The format of the href is processed by the browser. A site is prepended so we need to ignore everything before the last "/" and the spaces are converted to "%20"
+		var arrParts = raw_addr.split('/');
+		var arr = arrParts[arrParts.length-1].split('%20');
+		if (arr.length === 3)
+		{
+			var addr = arr[0] + '@' + arr[1] + '.' + arr[2];
+			link.href = "mailto:" + addr;
+			if (link.innerHTML === '$$$$')
+				link.innerHTML = addr; // "DESPAMMED!" + addr;	// Add some identifying text while debugging. Remove this before checking in.
+		}
+	});
+};
 
 document.observe('dom:loaded', function() {
  	setTimeout(function() {
-		var links = $$("a.nospam");
-		links.each(function(link) {
-			var raw_addr = link.href;
-			// The format of the href is processed by the browser. A site is prepended so we need to ignore everything before the last "/" and the spaces are converted to "%20"
-			var arrParts = raw_addr.split('/');
-			var arr = arrParts[arrParts.length-1].split('%20');
-			if (arr.length === 3)
-			{
-				var addr = arr[0] + '@' + arr[1] + '.' + arr[2];
-				link.href = "mailto:" + addr;
-				if (link.innerHTML === '$$$$')
-					link.innerHTML = addr; // "DESPAMMED!" + addr;	// Add some identifying text while debugging. Remove this before checking in.
-			}
-		});
+		nospam();
 	}, 100);
  });

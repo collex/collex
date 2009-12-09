@@ -21,6 +21,8 @@ class User < ActiveRecord::Base
   has_many :searches
   has_many :collected_items
   belongs_to :image#, :dependent=>:destroy
+	has_many :groups
+	has_and_belongs_to_many :groups
   
   def role_names
     self.roles.collect { |role| role.name }

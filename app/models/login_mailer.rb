@@ -18,6 +18,9 @@ class LoginMailer < ActionMailer::Base
 
   helper ActionView::Helpers::UrlHelper
 
+	#
+	# Login
+	#
   def password_reset(params)
     @subject    = 'Collex Password Reset'
     @body       = params
@@ -34,6 +37,9 @@ class LoginMailer < ActionMailer::Base
     @headers    = {}
   end
 
+	#
+	# Forum
+	#
 	def report_abuse_to_admin(params, recipient)
     @subject    = "[#{SITE_NAME}] Comment Abuse Reported"
     @body       = params
@@ -60,6 +66,25 @@ class LoginMailer < ActionMailer::Base
 
 	def accept_abuse_report_to_commenter(params, recipient)
     @subject    = "[#{SITE_NAME}] Abusive Comment Deleted"
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+	end
+
+	#
+	# Groups
+	#
+	def invite_member_to_group(params, recipient)
+    @subject    = "[#{SITE_NAME}] Invitation to join a group"
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+    @headers    = {}
+	end
+
+	def request_to_join_group(params, recipient)
+    @subject    = "[#{SITE_NAME}] Request to join a group"
     @body       = params
     @recipients = recipient
     @from       = 'mailto:technologies@nines.org'

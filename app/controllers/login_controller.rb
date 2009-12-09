@@ -127,7 +127,7 @@ class LoginController < ApplicationController
           return "Password must not be blank"
         end
         if params[:create_password] == params[:create_password2]
-          session[:user] = COLLEX_MANAGER.create_user(params[:create_username], params[:create_password].strip, params[:create_email])
+							session[:user] = COLLEX_MANAGER.create_user(params[:create_username], params[:create_password].strip, params[:create_email])
           return nil
         else
           return "Passwords do not match"

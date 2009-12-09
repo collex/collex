@@ -17,6 +17,7 @@
 class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
   has_many :exhibit_objects, :dependent=>:destroy
+	belongs_to :group
 
 	def reset_fonts_to_default
 		# set the default values for fields that were added later
@@ -60,7 +61,7 @@ class Exhibit < ActiveRecord::Base
     if thumbnail.length > 0 && thumbnail.index('http') != 0
       thumbnail = "http://" + thumbnail
     end
-    exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0)
+    exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license(), :category => Group.types()[0])
     exhibit.insert_example_page(1)
     exhibit.insert_example_page(2)
 		exhibit.reset_fonts_to_default()
@@ -176,16 +177,23 @@ class Exhibit < ActiveRecord::Base
     return str
   end
 
+	# TODO-PER: All the license stuff can be refactored now that sharing and license have been separated into two variables.
+	# license_type can only be between 1-6 now, so the zero cases aren't ever used.
+	
+	def self.get_default_license()
+		return 4
+	end
+
   def self.get_sharing_text(s)
     case s
-      when nil: return ""
-      when 0: return ""
-      when 1: return "This license lets others distribute, remix, tweak, and build upon your work, even commercially, as long as they credit you for the original creation. This is the most accommodating of licenses offered, in terms of what others can do with your works licensed under Attribution."
-      when 2: return "This license lets others remix, tweak, and build upon your work even for commercial reasons, as long as they credit you and license their new creations under the identical terms. This license is often compared to open source software licenses. All new works based on yours will carry the same license, so any derivatives will also allow commercial use."
-      when 3: return "This license allows for redistribution, commercial and non-commercial, as long as it is passed along unchanged and in whole, with credit to you."
-      when 4: return "This license lets others remix, tweak, and build upon your work non-commercially, and although their new works must also acknowledge you and be non-commercial, they don’t have to license their derivative works on the same terms."
-      when 5: return "This license lets others remix, tweak, and build upon your work non-commercially, as long as they credit you and license their new creations under the identical terms. Others can download and redistribute your work just like the by-nc-nd license, but they can also translate, make remixes, and produce new stories based on your work. All new work based on yours will carry the same license, so any derivatives will also be non-commercial in nature."
-      when 6: return "This license is the most restrictive of our six main licenses, allowing redistribution. This license is often called the “free advertising” license because it allows others to download your works and share them with others as long as they mention you and link back to you, but they can’t change them in any way or use them commercially."
+      when nil then return ""
+      when 0 then return ""
+      when 1 then return "This license lets others distribute, remix, tweak, and build upon your work, even commercially, as long as they credit you for the original creation. This is the most accommodating of licenses offered, in terms of what others can do with your works licensed under Attribution."
+      when 2 then return "This license lets others remix, tweak, and build upon your work even for commercial reasons, as long as they credit you and license their new creations under the identical terms. This license is often compared to open source software licenses. All new works based on yours will carry the same license, so any derivatives will also allow commercial use."
+      when 3 then return "This license allows for redistribution, commercial and non-commercial, as long as it is passed along unchanged and in whole, with credit to you."
+      when 4 then return "This license lets others remix, tweak, and build upon your work non-commercially, and although their new works must also acknowledge you and be non-commercial, they don’t have to license their derivative works on the same terms."
+      when 5 then return "This license lets others remix, tweak, and build upon your work non-commercially, as long as they credit you and license their new creations under the identical terms. Others can download and redistribute your work just like the by-nc-nd license, but they can also translate, make remixes, and produce new stories based on your work. All new work based on yours will carry the same license, so any derivatives will also be non-commercial in nature."
+      when 6 then return "This license is the most restrictive of our six main licenses, allowing redistribution. This license is often called the “free advertising” license because it allows others to download your works and share them with others as long as they mention you and link back to you, but they can’t change them in any way or use them commercially."
       else return ""
     end
   end
@@ -195,85 +203,87 @@ class Exhibit < ActiveRecord::Base
   end
   
   def get_sharing()
-    return Exhibit.get_sharing_static(is_published)
+    return Exhibit.get_sharing_static(get_effective_license_type())
   end
   
   def get_sharing_int()
-    return is_published == nil ? 0 : is_published
+		license = get_effective_license_type()
+    return license == nil || license == 0 ? self.get_default_license() : license
   end
   
   def self.get_sharing_static(s)
     case s
-      when nil: return "Not Shared"
-      when 0: return "Not Shared"
-      when 1: return "Attribution"
-      when 2: return "Attribution Share Alike"
-      when 3: return "Attribution No Derivatives"
-      when 4: return "Attribution Non-Commercial"
-      when 5: return "Attribution Non-Commercial Share Alike"
-      when 6: return "Attribution Non-Commercial No Derivatives"
-      else return "Not Shared"
+      when nil then return ""
+      when 0 then return ""
+      when 1 then return "Attribution"
+      when 2 then return "Attribution Share Alike"
+      when 3 then return "Attribution No Derivatives"
+      when 4 then return "Attribution Non-Commercial"
+      when 5 then return "Attribution Non-Commercial Share Alike"
+      when 6 then return "Attribution Non-Commercial No Derivatives"
+      else return ""
     end
   end
   
   def set_sharing(str)
     case str
-      when "Not Shared": self.is_published = 0
-      when "Attribution": self.is_published = 1
-      when "Attribution Share Alike": self.is_published = 2
-      when "Attribution No Derivatives": self.is_published = 3
-      when "Attribution Non-Commercial": self.is_published = 4
-      when "Attribution Non-Commercial Share Alike": self.is_published = 5
-      when "Attribution Non-Commercial No Derivatives": self.is_published = 6
-      when '0': self.is_published = 0
-      when '1': self.is_published = 1
-      when '2': self.is_published = 2
-      when '3': self.is_published = 3
-      when '4': self.is_published = 4
-      when '5': self.is_published = 5
-      when '6': self.is_published = 6
-      else self.is_published = 0
+      #when "Not Shared": self.is_published = 0
+      when "Attribution" then self.license_type = 1
+      when "Attribution Share Alike" then self.license_type = 2
+      when "Attribution No Derivatives" then self.license_type = 3
+      when "Attribution Non-Commercial" then self.license_type = 4
+      when "Attribution Non-Commercial Share Alike" then self.license_type = 5
+      when "Attribution Non-Commercial No Derivatives" then self.license_type = 6
+      #when '0': self.is_published = 0
+      when '1' then self.license_type = 1
+      when '2' then self.license_type = 2
+      when '3' then self.license_type = 3
+      when '4' then self.license_type = 4
+      when '5' then self.license_type = 5
+      when '6' then self.license_type = 6
+      else self.license_type = self.get_default_license()
     end
   end
 
-  def self.get_sharing_license_type(is_published)
-    case is_published
-      when 1: return "by"
-      when 2: return "by-sa"
-      when 3: return "by-nd"
-      when 4: return "by-nc"
-      when 5: return "by-nc-sa"
-      when 6: return "by-nc-nd"
+  def self.get_sharing_license_type(license_type)
+    case license_type
+      when 1 then return "by"
+      when 2 then return "by-sa"
+      when 3 then return "by-nd"
+      when 4 then return "by-nc"
+      when 5 then return "by-nc-sa"
+      when 6 then return "by-nc-nd"
       else return "ERROR"
     end
   end
 
   def get_sharing_widget()
-    if published?
-      license = Exhibit.get_sharing_license_type(is_published)
+    #if published?
+      license = Exhibit.get_sharing_license_type(get_effective_license_type())
       return "#{get_sharing_icon_with_link()}<p>This work is licensed under a <a rel=\"license\" target='_blank' href=\"http://creativecommons.org/licenses/" +
         license + "/3.0/us/\">Creative Commons " + get_sharing() + " 3.0 United States License</a>.</p>"
-    else
-      return "This exhibit is visible to just me."
-    end
+    #else
+    #  return "This exhibit is visible to just me."
+    #end
   end
   
   def get_sharing_image()
-    return Exhibit.get_sharing_icon_url(is_published)
+    return Exhibit.get_sharing_icon_url(get_effective_license_type())
   end
   
-  def self.get_sharing_icon_url(is_published)
-    if is_published != nil && is_published != 0
-      return "<img alt='Creative Commons License' style='border-width:0' src='http://i.creativecommons.org/l/#{get_sharing_license_type(is_published)}/3.0/us/88x31.png' />"
+  def self.get_sharing_icon_url(license_type)
+    if license_type != nil && license_type != 0
+      return "<img alt='Creative Commons License' style='border-width:0' src='http://i.creativecommons.org/l/#{get_sharing_license_type(license_type)}/3.0/us/88x31.png' />"
     else
       return "<img alt='Creative Commons License' height='31' style='border-width:0' src='/images/not_shared.jpg' />"
     end
   end
   
   def get_sharing_icon_with_link()
-    license = Exhibit.get_sharing_license_type(is_published)
+		effective_license = get_effective_license_type()
+    license = Exhibit.get_sharing_license_type(effective_license)
     return "<a rel=\"license\" target='_blank' href=\"http://creativecommons.org/licenses/" +
-      license + "/3.0/us/\" title='This work is licensed under a Creative Commons #{get_sharing()} 3.0 United States License'>#{Exhibit.get_sharing_icon_url(is_published)}</a>"
+      license + "/3.0/us/\" title='This work is licensed under a Creative Commons #{Exhibit.get_sharing_static(effective_license)} 3.0 United States License'>#{Exhibit.get_sharing_icon_url(effective_license)}</a>"
   end
   
   def self.get_all_published
@@ -362,6 +372,7 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def count_footnotes_from_illustration(illustration)
+		return 0 if illustration == nil
 		count = 0
 		if illustration.illustration_type == 'Textual Illustration'
 			count += self.count_footnotes_from_text(illustration.illustration_text)
@@ -613,6 +624,47 @@ class Exhibit < ActiveRecord::Base
 
 	def get_friendly_url()
 		return self.visible_url ? "/exhibits/view/#{self.visible_url}" : "/exhibits/view/#{exhibit.id}"
+	end
+
+	def get_font_name(type)
+		type = type + '_font_name'
+		if self.group_id == nil || self.group_id == 0
+			return self[type]
+		else
+			group = Group.find(self.group_id)
+			if group[type] == nil || group[type] == ''
+				return self[type]
+			else
+				return group[type]
+			end
+		end
+	end
+
+	def get_font_size(type)
+		type = type + '_font_size'
+		if self.group_id == nil || self.group_id == 0
+			return self[type]
+		else
+			group = Group.find(self.group_id)
+			if group[type] == nil || group[type] == ''
+				return self[type]
+			else
+				return group[type]
+			end
+		end
+	end
+
+	def get_effective_license_type()
+		if self.group_id == nil || self.group_id == 0
+			return self.license_type
+		else
+			group = Group.find(self.group_id)
+			if group.license_type == nil || group.license_type == ''
+				return self.license_type
+			else
+				return group.license_type
+			end
+		end
 	end
 
 	private

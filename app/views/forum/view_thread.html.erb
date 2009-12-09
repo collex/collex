@@ -40,6 +40,7 @@
 	<%= render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread } %>
 </div>
 
+<% if user_can_reply(main_comment) == true -%>
 	<div id="discussion_thread" class="discussion_action_bar">
 		<script type="text/javascript">
 			var onButtonClick = function (e) {
@@ -73,3 +74,4 @@
 			});
 		</script>
  	</div>
+<% end -%>

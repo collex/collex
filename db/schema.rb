@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091116215822) do
+ActiveRecord::Schema.define(:version => 20091204215726) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20091116215822) do
     t.datetime "updated_at"
     t.integer  "number_of_views",     :limit => 10, :precision => 10, :scale => 0
     t.integer  "license",             :limit => 10, :precision => 10, :scale => 0
+    t.integer  "group_id",            :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "discussion_topics", :force => true do |t|
@@ -174,6 +175,8 @@ ActiveRecord::Schema.define(:version => 20091116215822) do
     t.datetime "last_change"
     t.text     "genres"
     t.string   "resource_name"
+    t.integer  "group_id",               :limit => 10, :precision => 10, :scale => 0
+    t.integer  "license_type",           :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "facet_categories", :force => true do |t|
@@ -184,6 +187,44 @@ ActiveRecord::Schema.define(:version => 20091116215822) do
     t.text    "carousel_description"
     t.string  "carousel_url"
     t.integer "image_id",             :limit => 10, :precision => 10, :scale => 0
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.integer  "owner",                  :limit => 10, :precision => 10, :scale => 0
+    t.text     "description"
+    t.string   "group_type"
+    t.integer  "image_id",               :limit => 10, :precision => 10, :scale => 0
+    t.string   "forum_permissions"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "license_type",           :limit => 10, :precision => 10, :scale => 0
+    t.string   "header_font_name"
+    t.string   "header_font_size"
+    t.string   "illustration_font_name"
+    t.string   "illustration_font_size"
+    t.string   "text_font_name"
+    t.string   "text_font_size"
+    t.string   "caption1_font_name"
+    t.string   "caption1_font_size"
+    t.string   "caption2_font_name"
+    t.string   "caption2_font_size"
+    t.string   "endnotes_font_name"
+    t.string   "endnotes_font_size"
+    t.string   "footnote_font_name"
+    t.string   "footnote_font_size"
+    t.integer  "use_styles",             :limit => 10, :precision => 10, :scale => 0
+  end
+
+  create_table "groups_users", :force => true do |t|
+    t.integer  "group_id",        :limit => 10, :precision => 10, :scale => 0
+    t.integer  "user_id",         :limit => 10, :precision => 10, :scale => 0
+    t.string   "email"
+    t.string   "role"
+    t.boolean  "pending_invite"
+    t.boolean  "pending_request"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "images", :force => true do |t|

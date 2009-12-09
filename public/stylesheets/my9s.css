@@ -310,3 +310,14 @@ table.query td {
 	padding-top: .4em;
 	border-bottom:1px solid #966C54;
 }
+
+.my_groups {
+	margin-left: 7px;
+	margin-top: .2em;
+}
+
+.my_groups li {
+	list-style: none;
+	padding-top: .4em;
+	border-bottom:1px solid #966C54;
+}

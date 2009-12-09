@@ -35,7 +35,7 @@
 		<% footnote_count = 1 -%>
 		<% footnotes = exhibit.get_all_footnotes() -%>
 		<% for footnote in footnotes -%>
-			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;"><%= decode_exhibit_links(footnote) %></span></p>
+			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<span style="font-family:<%= exhibit.get_font_name('endnotes') %>; font-size:<%= exhibit.get_font_size('endnotes') %>px;"><%= decode_exhibit_links(footnote) %></span></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
 		<%= "<p>No footnotes</p>" if footnote_count == 1 %>
@@ -50,7 +50,7 @@
 			<% page_num += 1 -%>
 			<% for link in page -%>
 			<% at_least_one = true -%>
-			<p><span style="font-family:<%= exhibit.endnotes_font_name %>; font-size:<%= exhibit.endnotes_font_size %>px;">"<%= remove_footnote_links(link[:text]) %>"&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
+			<p><span style="font-family:<%= exhibit.get_font_name('endnotes') %>; font-size:<%= exhibit.get_font_size('endnotes') %>px;">"<%= remove_footnote_links(link[:text]) %>"&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
 			<% end -%>
 		<% end -%>
 		<%= "<p>No links</p>" if !at_least_one -%>

@@ -52,3 +52,22 @@
 .page_header_parenthetical {
 	font-size: .7em;
 }
+
+.group_image {
+	float: left;
+	padding-right: 10px;
+	padding-bottom: 20px;
+}
+
+.group_image img {
+	max-height:180px;
+}
+
+.group_details_controls {
+	padding-bottom: 20px;
+}
+
+.group_description {
+	font-size: 1.2em;
+	font-weight: bold;
+}

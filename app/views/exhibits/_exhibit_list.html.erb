@@ -14,9 +14,27 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%# exhibit_list params: string title, array exhibit_list -%>
-<div class="exhibit_category"><%= title %></div>
+<%# exhibit_list params: int ty -%>
+<% exhibit_list = Exhibit.find_all_by_category(Group.types()[ty]) -%>
+<% groups = Group.find_all_by_group_type(Group.types()[ty]) -%>
+<div class="exhibit_category"><%=Group.friendly_types()[ty] %><div class='exhibit_list_title_explanation'><%= Group.type_explanation(ty) %></div></div>
+<% if is_logged_in? -%>
+<% if Branding.use_groups() == true %>
+<%= link_to_function("Create Group", "new CreateGroupWizardDlg('#{get_curr_user().id}', '/groups/verify_group_title', '/groups/create', '/groups/', #{Group.types_to_json()}, #{Group.permissions_to_json()}, '#{Group.types()[ty]}'); return false;", :class => 'nav_link' ) %>
+<% end -%>
+<% end -%>
 <table>
+<% if Branding.use_groups() == true %>
+	<% for group in groups -%>
+	<tr>
+		<td><%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image, :thumb)), :show_immediately => false } %></td>
+		<td class="exhibit_link"><%= link_to group.name, { :controller => 'groups', :action => 'show', :id => group.id }, :class => 'nav_link' %></td>
+	</tr>
+	<% end -%>
+	<% if exhibit_list.length > 0 -%>
+	<tr><td colspan="2"><hr /></td></tr>
+	<% end -%>
+<% end -%>
 <% for exhibit in exhibit_list -%>
 	<tr>
 		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>

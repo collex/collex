@@ -150,11 +150,34 @@ module DiscussionThreadsHelper
     end
 		thumbnail = nil if thumbnail != nil && thumbnail.length == 0
     thread = DiscussionThread.find(comment.discussion_thread_id)
+		group_comment = ""
+		if thread.group_id != nil && thread.group_id > 0
+			group = Group.find(thread.group_id)
+			group_comment = case group.forum_permissions
+				when 'hidden' then "A private discussion for members of #{group.name}"
+				when 'readonly' then "A public discussion featuring members of #{group.name}"
+				when 'full' then "An open discussion sponsored by #{group.name}"
+				else ''
+			end
+			readonly = user_can_reply(comment) == false
+			if readonly
+				group_comment += "<br />This thread is read only"
+			end
+		end
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
     return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), :link => link, :caption => caption,
-      :last_comment_author => User.find(last_comment.user_id), :last_comment_time => last_comment.updated_at }
+      :last_comment_author => User.find(last_comment.user_id), :last_comment_time => last_comment.updated_at,
+			:group_comment => group_comment }
   end
-  
+
+	def user_can_reply(comment)
+		thread = DiscussionThread.find(comment.discussion_thread_id)
+		return true if thread.group_id == nil || thread.group_id <= 0
+		group = Group.find(thread.group_id)
+		curr_user = get_curr_user()
+		return curr_user ? group.can_post(curr_user.id) : false
+	end
+
   def forum_title_with_tooltip(title, comment)
     comment = strip_tags(comment) if comment != nil
     abbrev_comment = ""

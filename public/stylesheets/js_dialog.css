@@ -500,6 +500,18 @@ a.footnote_tip:hover span.tip {
 	width: 440px;
 }
 
+.select_dlg_input {
+	margin-left: 15px;
+}
+
+.text_area_dlg_input {
+	margin-left: 15px;
+	margin-bottom: 15px;
+	margin-top: 8px;
+	width: 440px;
+	height: 100px;
+}
+
 .text_input_dlg_label {
 
 }
@@ -695,4 +707,24 @@ a.footnote_tip:hover span.tip {
 
 .edit_illustration_dlg {
 	width: 570px;
+}
+
+.groups_label {
+	float:left;
+	width:5.5em;
+}
+
+textarea.groups_textarea {
+	width: 481px;
+	height: 5em;
+}
+
+.edit_member_name {
+	float:left;
+	width:8em;
+}
+
+.edit_member_label {
+	padding-right: 1em;
+	padding-left: .5em;
 }

@@ -424,7 +424,7 @@ var EditExhibitCategory = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
-					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'sandbox', text: 'Sandbox' }, { value: 'student', text: 'Student' } ] } ],
+					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'community', text: 'Community' }, { value: 'classroom', text: 'Classroom' } ] } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'exhibit_id', value: exhibit_id } ]
 				]
 			};

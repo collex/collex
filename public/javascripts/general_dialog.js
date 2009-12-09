@@ -14,12 +14,13 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, Element, Ajax */
+/*global $H, Class, $, $$, Element, Ajax */
 /*global YAHOO */
 /*global document, setTimeout, window */
 /*global form_authenticity_token */
-/*global RichTextEditor, LinkDlgHandler, ShowDivInLightbox */
+/*global RichTextEditor, LinkDlgHandler */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
+/*extern SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg */
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {
@@ -49,6 +50,9 @@ var GeneralDialog = Class.create({
 		var makeId = function(str) {
 			// This checks to see if the id is of the form xxx[yyy]. If so, it replaces the first [ with _ and the second with nothing.
 			return str.gsub('[', '_').gsub(']', '');
+		};
+		this.makeId = function(str) {
+			return makeId(str);
 		};
 		var selectChange = function(event, param)
 		{
@@ -80,7 +84,7 @@ var GeneralDialog = Class.create({
 				if (el.type === 'checkbox') {
 					data[el.name] = el.checked;
 				} else if (el.type !== 'button') {
-					data[el.id] = el.value;
+					data[el.name] = el.value;
 				}
 			});
 			
@@ -95,7 +99,7 @@ var GeneralDialog = Class.create({
 	
 			var textareas = $$("#" + dlg_id + " textarea");
 			textareas.each(function(el) {
-				var id = el.id;
+				var id = el.name;
 				var value = el.value;
 				data[id] = value;
 			});
@@ -288,7 +292,8 @@ var GeneralDialog = Class.create({
 //{ input: 'caption1', value: values.caption1, klass: 'header_input' },
 //						{ icon_button: 'Bold', klass: 'bold_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontWeight', value: 'bold' } }, { hidden: 'caption1_bold', value: values.caption1_bold },
 //						{ icon_button: 'Italic', klass: 'italic_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontStyle', value: 'italic' } }, { hidden: 'caption1_italic', value: values.caption1_italic },
-//						{ icon_button: 'Underline', klass: 'underline_button', callback: buttonPushed, context: { dest: 'caption1', style: 'textDecoration', value: 'underline' } }, { hidden: 'caption1_underline', value: values.caption1_underline },						// HIDDEN
+//						{ icon_button: 'Underline', klass: 'underline_button', callback: buttonPushed, context: { dest: 'caption1', style: 'textDecoration', value: 'underline' } }, { hidden: 'caption1_underline', value: values.caption1_underline },
+						// HIDDEN
 					} else if (subel.hidden !== undefined) {
 						addHidden(row, subel.hidden, subel.klass, subel.value);
 //						var el0 = new Element('input', { id: makeId(subel.hidden), name: subel.hidden, 'type': 'hidden' });
@@ -299,7 +304,7 @@ var GeneralDialog = Class.create({
 //						row.appendChild(el0);
 						// PASSWORD
 					} else if (subel.password !== undefined) {
-						var el2 = new Element('input', { id: makeId(subel.password), 'type': 'password'});
+						var el2 = new Element('input', { id: makeId(subel.password), name: subel.password, 'type': 'password'});
 						if (subel.klass)
 							el2.addClassName(subel.klass);
 						if (subel.value !== undefined && subel.value !== null)
@@ -380,19 +385,21 @@ var GeneralDialog = Class.create({
 						var numCols = subel.columns ? subel.columns : 1;
 						if (numCols <= 0) numCols = 1;
 						var numRows = Math.ceil(subel.items.length / numCols);
+						var item = null;
+						var fnDetect = function(it)  { return item === it; };
 						for (var i = 0; i < numRows; i++) {
 							var cbRow = new Element('tr');
 							tb.appendChild(cbRow);
 							for (var j = 0; j < numCols; j++){
 								var itemNum = j*numRows+i;
 								if (itemNum < subel.items.length) {
-									var item = subel.items[itemNum];
+									item = subel.items[itemNum];
 									var cbCol = new Element('td', { style : 'padding: 0 0.5em 0 0.5em;'});
 									var cbId = subel.checkboxList+'['+item+']';
 									var cbox = new Element('input', { id: makeId(cbId), 'type': "checkbox", value: '1', name: cbId });
 									if (subel.klass)
 										cbox.addClassName(subel.klass);
-									if (subel.selections.detect(function(it) { return item === it }))
+									if (subel.selections.detect(fnDetect))
 										cbox.checked = true;
 									cbCol.appendChild(cbox);
 									var lbl = new Element('span').update(item);
@@ -791,53 +798,80 @@ var ConfirmLinkDlg =  Class.create({
 	}
 });
 
-var TextInputDlg = Class.create({
-	initialize: function (params) {
-		var title = params.title;
-		var prompt = params.prompt;
-		var id = params.id;
-		var okStr = params.okStr;
-		var actions = params.actions;
-		var onSuccess = params.onSuccess;
-		var onFailure = params.onFailure;
-		var target_els = params.target_els;
-		var extraParams = params.extraParams;
+var singleInputDlg = function(params, input) {
+	var title = params.title;
+	var prompt = params.prompt;
+	var id = params.id;
+	var okStr = params.okStr;
+	var actions = params.actions;
+	var onSuccess = params.onSuccess;
+	var onFailure = params.onFailure;
+	var target_els = params.target_els;
+	var extraParams = params.extraParams ? params.extraParams : {};
+	var noDefault = params.noDefault;
 
-		// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
-		this.class_type = 'TextInputDlg';	// for debugging
+	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
+	this.class_type = 'TextInputDlg';	// for debugging
 
-		// private variables
-		//var This = this;
+	// private variables
+	//var This = this;
 
-		// privileged functions
-		this.ok = function(event, params)
-		{
-			params.dlg.cancel();
+	// privileged functions
+	this.ok = function(event, params2)
+	{
+		params2.dlg.cancel();
 
-			// Recursively run through the list of actions we were passed.
-			var data = params.dlg.getAllData();
-			extraParams[id] = data[id];
-			recurseUpdateWithAjax(actions, target_els, onSuccess, onFailure, extraParams);
+		// Recursively run through the list of actions we were passed.
+		var data = params2.dlg.getAllData();
+		extraParams[id] = data[id];
+		recurseUpdateWithAjax(actions, target_els, onSuccess, onFailure, extraParams);
 //			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
 //			updateWithAjax(ajaxparams);
+	};
+
+	var dlgLayout = {
+			page: 'layout',
+			rows: [
+				[ { text: prompt, klass: 'text_input_dlg_label' }, input ],
+				[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+			]
 		};
+	if (noDefault)
+		dlgLayout.rows[1][1].isDefault = null;
 
-		var dlgLayout = {
-				page: 'layout',
-				rows: [
-					[ { text: prompt, klass: 'text_input_dlg_label' }, { input: id, klass: 'text_input_dlg_input' } ],
-					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
-				]
-			};
+	var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
+	var dlg = new GeneralDialog(dlgparams);
+	dlg.changePage('layout', dlg.makeId(id));
+	dlg.center();
+};
 
-		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
-		var dlg = new GeneralDialog(dlgparams);
-		dlg.changePage('layout', id);
-		dlg.center();
+var TextInputDlg = Class.create({
+	initialize: function (params) {
+		var id = params.id;
+		var value = params.value;
+		var input = { input: id, klass: 'text_input_dlg_input', value: value };
+		singleInputDlg(params, input);
+	}
+});
 
-		var input = $(id);
-		input.select();
-		input.focus();
+var SelectInputDlg = Class.create({
+	initialize: function (params) {
+		var id = params.id;
+		var options = params.options;
+		var value = params.value;
+		var input = { select: id, klass: 'select_dlg_input', options: options, value: value };
+		singleInputDlg(params, input);
+	}
+});
+
+var TextAreaInputDlg = Class.create({
+	initialize: function (params) {
+		var id = params.id;
+		var options = params.options;
+		var value = params.value;
+		var input = { textarea: id, klass: 'text_area_dlg_input', options: options, value: value };
+		params.noDefault = true;
+		singleInputDlg(params, input);
 	}
 });
 
