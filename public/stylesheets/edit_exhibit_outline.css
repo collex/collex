@@ -43,6 +43,7 @@
 */
 #exhibit_outline_pages {
   overflow:auto;
+  margin-top: 1em;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-firstletter span.yui-toolbar-icon { 
@@ -97,7 +98,8 @@
 
 .outline_tree {
 	padding-left: 0px;
-	margin-left:0px;
+	margin-left: 0px;
+	margin-top: -1em;
 }
 
 .outline_tree > li {

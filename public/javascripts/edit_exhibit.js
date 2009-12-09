@@ -497,7 +497,6 @@ function initOutline(div_id)
 			var scrollable_section = $('exhibit_outline_pages');
 			outline_page_height = panelHeight - scrollable_section.offsetTop - 15;	// the 15 is a margin
 			setOutlineHeight();
-			var el = $("outline_element_1651").down('span').update(""+panelHeight);
    }, exhibit_outline, true);
 
 	exhibit_outline.setHeader("OUTLINE");
