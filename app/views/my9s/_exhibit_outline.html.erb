@@ -32,7 +32,7 @@
 	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_bottom_of_border_down', #{exhibit.id} );", { :title => 'Move Bottom of Border Down', :class => 'modify_link' }) %>
 </div>
 
-<div id="exhibit_outline_pages">
+<div id="exhibit_outline_pages" class="hidden">
 <ul id="exhibit_outline" class="outline_tree">
 	<% is_first = true -%>
 <% for page in exhibit.exhibit_pages -%>
@@ -104,4 +104,6 @@
 
 <script type="text/javascript">
 	setPageSelected();
+	setOutlineHeight();
+	$("exhibit_outline_pages").removeClassName("hidden");
 </script>

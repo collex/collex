@@ -21,6 +21,7 @@
 /*global supportsFixedPositioning, CCLicenseDlg */
 /*extern editExhibitProfile, CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
 /*extern doPublish, selectGroup */
+/*extern outline_page_height, setOutlineHeight */
 
 // Used by Exhibit Outline
 function toggle_by_id(node_id) {
@@ -45,6 +46,14 @@ function toggleElementsByClass(cls)
 {
 	var els = $$('.'+cls);
 	els.each(function(el){ el.toggle(); });
+}
+
+var outline_page_height = 0;	// This is initialized in initOutline
+function setOutlineHeight() {
+	if (outline_page_height > 0) {
+		var scrollable_section = $('exhibit_outline_pages');
+		scrollable_section.setStyle({height: outline_page_height + 'px'});
+	}
 }
 
 /*global imgResized */ // This is just to resolve the following circular reference.
@@ -131,7 +140,7 @@ function doAjaxLink(div, url, params)
 				new Ajax.Updater(action_elements[1], actions[1], {
 					parameters : params,
 					evalScripts : true,
-					onSuccess : initializeElementEditing(),
+					onSuccess : initializeElementEditing,
 					onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
 				});
 			},
@@ -485,14 +494,18 @@ function initOutline(div_id)
    resize.on("resize", function(args) {
        var panelHeight = args.height;
        this.cfg.setProperty("height", panelHeight + "px");
+			var scrollable_section = $('exhibit_outline_pages');
+			outline_page_height = panelHeight - scrollable_section.offsetTop - 15;	// the 15 is a margin
+			setOutlineHeight();
+			var el = $("outline_element_1651").down('span').update(""+panelHeight);
    }, exhibit_outline, true);
 
 	exhibit_outline.setHeader("OUTLINE");
 	exhibit_outline.render();
 
 	var scrollable_section = $('exhibit_outline_pages');
-	height = height - scrollable_section.offsetTop - 15;	// the 15 is a margin
-	scrollable_section.setStyle({height: height + 'px'});
+	outline_page_height = height - scrollable_section.offsetTop - 15;	// the 15 is a margin
+	setOutlineHeight();
 	
 	if (supportsFixedPositioning)
 		$(div_id + '_c').setStyle({ position: 'fixed'});
