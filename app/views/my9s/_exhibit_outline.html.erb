@@ -31,7 +31,8 @@
 	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_bottom_of_border_up', #{exhibit.id} );", { :title => 'Move Bottom of Border Up', :class => 'modify_link' }) %>
 	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_bottom_of_border_down', #{exhibit.id} );", { :title => 'Move Bottom of Border Down', :class => 'modify_link' }) %>
 </div>
-	
+
+<div id="exhibit_outline_pages">
 <ul id="exhibit_outline" class="outline_tree">
 	<% is_first = true -%>
 <% for page in exhibit.exhibit_pages -%>
@@ -99,6 +100,7 @@
 	</li>
 <% end # each page -%>
 </ul>
+</div>
 
 <script type="text/javascript">
 	setPageSelected();

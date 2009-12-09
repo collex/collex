@@ -16,10 +16,11 @@
 
 /*global Class, $, $$, $H, Element, Ajax, Effect */
 /*global YAHOO */
-/*global MessageBoxDlg, hideSpinner, ConfirmDlg, InputDialog, getX, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, pageRenumberFootnotes */
+/*global MessageBoxDlg, hideSpinner, ConfirmDlg, getY, currentScrollPos, doSingleInputPrompt, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, pageRenumberFootnotes, SelectInputDlg, updateWithAjax */
 /*global document, window */
-/*global supportsFixedPositioning */
-/*extern EditFontsDlg, editExhibitProfile, CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
+/*global supportsFixedPositioning, CCLicenseDlg */
+/*extern editExhibitProfile, CreateSharingList, doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, doRemoveObjectFromExhibit, doUnhover, editTag, elementTypeChanged, exhibit_outline, exhibit_outline_pos, hide_by_id, illustrationJustificationChanged, imgResized, initOutline, initSelectCtrl, initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement, open_by_id, removeTag, scroll_to_target, sectionHovered, sectionUnhovered, selectLine, setPageSelected, sharing_dialog, showExhibitOutline, toggleElementsByClass, toggle_by_id, unhoverlist, y_distance_that_the_element_is_not_in_view */
+/*extern doPublish, selectGroup */
 
 // Used by Exhibit Outline
 function toggle_by_id(node_id) {
@@ -488,9 +489,30 @@ function initOutline(div_id)
 
 	exhibit_outline.setHeader("OUTLINE");
 	exhibit_outline.render();
+
+	var scrollable_section = $('exhibit_outline_pages');
+	height = height - scrollable_section.offsetTop - 15;	// the 15 is a margin
+	scrollable_section.setStyle({height: height + 'px'});
 	
 	if (supportsFixedPositioning)
 		$(div_id + '_c').setStyle({ position: 'fixed'});
+}
+
+var selectGroup = function(id, options, value) {
+	new SelectInputDlg({
+		title: 'Select Group',
+		prompt: 'Group',
+		id: 'group',
+		options: options,
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/my9s/change_exhibits_group' ],
+		target_els: [ null ] });
+};
+
+function doPublish(exhibit_id, publish_state) {
+	recurseUpdateWithAjax(["/my9s/publish_exhibit"], ["overview_data"], null, null, { id: exhibit_id, publish_state: publish_state });
 }
 
 function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_obj_url, progress_img, genreList)
@@ -521,7 +543,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 	var updateGenres = function(event, param)
 	{
 		var list = $('genre_list');
-		var retData = dlg.getAllData();
+		var retData = param.dlg.getAllData();
 		var str = "";
 		for (var el in retData) {
 			if (el.startsWith('genre[')) {

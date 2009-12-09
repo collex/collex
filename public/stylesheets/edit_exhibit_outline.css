@@ -37,7 +37,11 @@
 }
 
 
-#edit_exhibit_outline .bd {
+/*#edit_exhibit_outline .bd {
+  overflow:auto;
+}
+*/
+#exhibit_outline_pages {
   overflow:auto;
 }
 
