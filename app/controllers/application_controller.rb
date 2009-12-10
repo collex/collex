@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   before_filter :session_create
   
   helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user,
-                :is_admin?
+                :is_admin?, :get_curr_user_id
   
   def boom
     raise "boom!"
@@ -103,6 +103,13 @@ class ApplicationController < ActionController::Base
       my_username ? User.find_by_username(my_username) : nil
     end
     
+		def get_curr_user_id
+			user = session[:user]
+			return nil if user == nil
+			user = User.find_by_username(user[:username])
+			return user.id
+		end
+
     def rescue_action_in_public(exception)
       case exception
         when ::ActiveRecord::RecordNotFound, ::ActionController::UnknownController, ::ActionController::UnknownAction, ::ActionController::RoutingError

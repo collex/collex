@@ -23,6 +23,12 @@ class Group < ActiveRecord::Base
 		return is_editor(user_id)
 	end
 
+	def self.can_read(thread, user_id)
+		return true if thread.group_id == nil
+		group = Group.find(thread.group_id)
+		return group.can_read_forum(user_id)
+	end
+
 	def can_read_forum(user_id)
 		return true if self.forum_permissions != 'hidden'
 		return is_member(user_id)
@@ -189,7 +195,7 @@ class Group < ActiveRecord::Base
 	end
 
 	def self.friendly_permissions()
-		return [ 'Hidden', 'Read Only', 'Full']
+		return [ 'Private Discussion', 'Public Discussion', 'Open Discussion']
 	end
 	def self.permission_to_friendly(permissions)
 		return self.friendly_permissions[0] if self.permissions()[0] == permissions

@@ -361,6 +361,9 @@ class ForumController < ApplicationController
       @threads = @threads.sort {|a,b|
         b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
       }
+			user_id = get_curr_user_id()
+			@threads = @threads.delete_if { |thread| !Group.can_read(thread, user_id) }
+
       @total = @threads.length
       @num_pages = @total.quo(session[:items_per_page]).ceil
       @page = @num_pages if @page == -1
