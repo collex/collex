@@ -18,7 +18,7 @@
 <div id="outline_toolbar">
 <%= link_to_function("[New Section]", "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'New Section', :class => 'modify_link' }) %>
 <%= link_to_function("[New Page]", "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'New Page', :class => 'modify_link' }) %>
-<%= link_to_function("[Edit Border]", "createBorderDlg(#{exhibit.id} );", { :title => 'Edit the border on the current page', :id => 'edit_border', :class => 'modify_link' }) %>
+<%= link_to_function("[Edit Border]", "new BorderDialog();", { :title => 'Edit the border on the current page', :id => 'edit_border', :class => 'modify_link' }) %>
 </div>
 
 <div id="border_controls" class="border_controls" style="display: none; text-align:right;" >

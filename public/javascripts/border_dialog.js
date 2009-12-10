@@ -21,20 +21,15 @@
 /*global $, $$, Class, Element, Event, Ajax */
 /*global YAHOO */
 /*global document */
-/*global InputDialog, MessageBoxDlg */
-/*extern BorderDialog, borderDialog, createBorderDlg */
-
-var borderDialog = null;
-
-function createBorderDlg()
-{
-	borderDialog = new BorderDialog();
-}
+/*global GeneralDialog, MessageBoxDlg */
+/*extern BorderDialog */
 
 var BorderDialog = Class.create();
 
 BorderDialog.prototype = {
 	initialize: function () {
+		var This = this;
+
 		this.myPanel = new YAHOO.widget.Dialog("edit_border_dlg", {
 			width:"380px",
 			//fixedcenter: true,
@@ -115,6 +110,45 @@ BorderDialog.prototype = {
 		el.observe('mousedown', this.mouseDown.bind(this));
 		el.observe('mousemove', this.mouseMove.bind(this));
 		el.observe('mouseup', this.mouseUp.bind(this));
+
+		this.addBorder = function(event) {
+			var elements = $$('.rubberband_dlg_element');
+			elements.each(function(el) {
+				// If the item doesn't have sides then it isn't part of this selection
+				if (el.hasClassName('selection_border_sides'))
+				{
+					el.down().addClassName('border_sides');
+
+					if (el.hasClassName('selection_border_top'))
+						el.down().addClassName('border_top');
+					else
+						el.down().removeClassName('border_top');
+
+					if (el.hasClassName('selection_border_bottom'))
+						el.down().addClassName('border_bottom');
+					else
+						el.down().removeClassName('border_bottom');
+				}
+			});
+			This.adjustOverlappingBorder();
+			This.removeRubberband();
+			This.selectionMenu.cancel();
+		};
+
+		this.removeBorder = function(event) {
+			var elements = $$('.rubberband_dlg_element');
+			elements.each(function(el) {
+				if (el.hasClassName('selection_border_sides'))
+				{
+					el.down().removeClassName('border_top');
+					el.down().removeClassName('border_sides');
+					el.down().removeClassName('border_bottom');
+				}
+			});
+			This.adjustOverlappingBorder();
+			This.removeRubberband();
+			This.selectionMenu.cancel();
+		};
 	},
 
 	isDragging: false,
@@ -192,14 +226,17 @@ BorderDialog.prototype = {
 		if (this.isDragging)
 		{
 			this.isDragging = false;
-			this.selectionMenu = new InputDialog("border_selection");
-			this.selectionMenu.setNoButtons();
-			this.selectionMenu.setNotifyCancel(this.userCanceled, this);
-			this.selectionMenu.addButtons([
-				{ text: "Add Border", action: BorderDialog.prototype.addBorder },
-				{ text: "Remove Border", action: BorderDialog.prototype.removeBorder }
-			]);
-			this.selectionMenu.show("Border Action", event.clientX, event.clientY, 530, 350, [] );
+			var dlgLayout = {
+					page: 'layout',
+					rows: [
+						[ { button: 'Add Border', callback: this.addBorder }, { button: 'Remove Border', callback: this.removeBorder } ]
+					]
+				};
+
+			var dlgParams = { this_id: "border_selection_dlg", pages: [ dlgLayout ], body_style: "border_selection_dlg", row_style: "forum_reply_row", title: "Add Border" };
+			this.selectionMenu = new GeneralDialog(dlgParams);
+			this.selectionMenu.changePage('layout', null);
+			this.selectionMenu.center();
 		}
 		Event.stop(event);
 	},
@@ -226,53 +263,10 @@ BorderDialog.prototype = {
 			next.down().addClassName('border_top');
 	},
 
-	addBorder: function(event) {
-		var elements = $$('.rubberband_dlg_element');
-		elements.each(function(el) {
-			// If the item doesn't have sides then it isn't part of this selection
-			if (el.hasClassName('selection_border_sides'))
-			{
-				el.down().addClassName('border_sides');
-
-				if (el.hasClassName('selection_border_top'))
-					el.down().addClassName('border_top');
-				else
-					el.down().removeClassName('border_top');
-
-				if (el.hasClassName('selection_border_bottom'))
-					el.down().addClassName('border_bottom');
-				else
-					el.down().removeClassName('border_bottom');
-			}
-		});
-		borderDialog.adjustOverlappingBorder();
-		borderDialog.removeRubberband();
-		borderDialog.selectionMenu.cancel();
-	},
-
-	removeBorder: function(event) {
-		var elements = $$('.rubberband_dlg_element');
-		elements.each(function(el) {
-			if (el.hasClassName('selection_border_sides'))
-			{
-				el.down().removeClassName('border_top');
-				el.down().removeClassName('border_sides');
-				el.down().removeClassName('border_bottom');
-			}
-		});
-		borderDialog.adjustOverlappingBorder();
-		borderDialog.removeRubberband();
-		borderDialog.selectionMenu.cancel();
-	},
-
 	handleCancel: function() {
 		this.cancel();
 		this.destroy();
 	},
-
-//	_handleCancel2: function() {
-//		this.myPanel._handleCancel();
-//	},
 
 	handleSubmit: function() {
 		var elements = $$('.border_dlg_element');
@@ -307,7 +301,6 @@ BorderDialog.prototype = {
 
 		this.cancel();
 		this.destroy();
-		//this.submit();
 	}
 
 };
