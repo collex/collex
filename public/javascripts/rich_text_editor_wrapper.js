@@ -221,7 +221,7 @@
 			var fpos = (f.tagName === 'BODY') ? null : this.getXPathPosition(f);
 
 			// Now parse the raw string to figure out where the xpaths created above (in aoff and foff) fall in the string.
-			val = this.getEditorHTML();
+			val = this.getEditorHTML().gsub('&nbsp;', ' ');
 			var arr = this.splitHtmlIntoArray(val);
 
 			// Now we go through the raw html, create xpath levels for each node, and
@@ -235,7 +235,7 @@
 			var charCount = 0;
 			//debugStr = "";
 			arr.each(function(i) {
-				if (i === "<br>" || i === "<hr>") { // the item is self-contained.
+				if (i === "<br>" || i === "<hr>" || (i.startsWith('<!--') && i.endsWith('-->'))) { // the item is self-contained.
 					arrLevels[arrLevels.length-1]++;
 				} else if (i.substring(0, 2) === "</") {	// this array item is an end tag.
 					arrLevels.pop();
@@ -500,7 +500,7 @@ var RichTextEditor = Class.create({
 					var footnoteSelPos = null;
 					var setFootnote = function(value) {
 						var insertedText = footnoteCallback('add', value);
-						var html = editor.getEditorHTML();
+						var html = editor.getEditorHTML().gsub('&nbsp;', ' ');
 						
 						//footnoteSelPos = correctOffsetForSubstitutedText(html, footnoteSelPos);
 						html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
