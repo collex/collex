@@ -26,9 +26,21 @@
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
 /*extern InplaceObjects, inplaceObjectManager */
 
+// Refactoring notes:
+// InplaceObjects could become private
+// inplaceObjectManager could become private
+// initializeInplaceHeaderEditor called in edit_section.html.erb
+// initializeInplaceIllustrationEditor called in illustration.html.erb
+// initializeInplaceRichEditor called in exhibit_text.html.erb
+// gIllustrationTypes should be passed in, instead
+// study initializeElementEditing
+// find cleaner alternative to prepareDomForEditing that doesn't write weird stuff to the DOM
+// see if the initialization is done at the right time with no timeouts
+
 // This is a convenience class with all the common elements needed to initialize any of our inplace types.
 // It is a singleton, and it delays the initialization until the Dom is ready. Just call the initDiv method
 // after an ajax update, and when loading the page for the first time.
+
 var InplaceObjects = Class.create({
 	initialize: function () {
 		this.class_type = 'InplaceObjects';	// for debugging
@@ -120,13 +132,12 @@ function initializeInplaceRichEditor(element_id, action)
 
 		var ok = function(event, params)
 		{
-			params.dlg.cancel();
-
 			var data = params.dlg.getAllData();
 			data.element_id = element_id;
 			data.value = footnoteHandler.postprocessFootnotes(data.value);
 			params.dlg.setFlash('Updating Text...', false);
 			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+			params.dlg.cancel();
 		};
 
 		var dlgLayout = {

@@ -23,6 +23,10 @@
 /*global ModalDialog, currentScrollPos, getX, getY */
 /*extern InputDialog, doSingleInputPrompt */
 
+// Refactoring notes:
+// InputDialog is only used by initialize_inplacericheditor and doSingleInputPrompt
+// doSingleInputPrompt is used by doSaveSearch, editTag, showString [for showing the saved search URL], doAddToExhibit, doAnnotation
+
 var InputDialog = Class.create();
 InputDialog.form = null;
 InputDialog.table = null;

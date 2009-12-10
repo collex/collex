@@ -63,7 +63,6 @@ function removeHidden(more_id, target_id)
 
 var ResultRowDlg = Class.create({
 	initialize: function (populate_action, uri, progress_img, extra_button_data) {
-		// This puts up a modal dialog that allows the administrator to change information about a site or category.
 		this.class_type = 'ResultRowDlg';	// for debugging
 
 		// private variables

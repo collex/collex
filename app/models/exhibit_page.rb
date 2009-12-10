@@ -176,7 +176,7 @@ class ExhibitPage < ActiveRecord::Base
       page_num = self.position
       if page_num > 1
         pages = Exhibit.find(self.exhibit_id).exhibit_pages
-        return move_element_to_different_page(element_pos, pages[page_num-2], pages[page_num-2].exhibit_elements.length+1)
+        return move_element_to_different_page(exhibit_elements[element_pos-1], pages[page_num-2], pages[page_num-2].exhibit_elements.length+1)
       end
     end
 		return nil
@@ -192,18 +192,27 @@ class ExhibitPage < ActiveRecord::Base
       pages = Exhibit.find(exhibit_id).exhibit_pages
       if page_num < pages.length
         # There is another page, so add the element to that.
-        return move_element_to_different_page(element_pos, pages[page_num], 1)
+        return move_element_to_different_page(exhibit_elements[element_pos-1], pages[page_num], 1)
       end
     end
 		return nil
   end
   
-  def move_element_to_different_page(element_pos, dst_page, dst_position)
-    # insert an element, then copy the current element onto it.
-    new_element = dst_page.insert_element(dst_position)
-    new_element.copy_data_portion(exhibit_elements[element_pos-1])
-    delete_element(element_pos)
-		return new_element.id
+  def move_element_to_different_page(element, dst_page, dst_position)
+		# To move to a different page, we have to change the exhibit_page_id and the position
+		# The trick is that all the other elements on the two pages affected may have their positions changed.
+
+		element.remove_from_list()
+		element.exhibit_page_id = dst_page.id
+		element.save!
+		element.insert_at(dst_position)
+		return element.id	# TODO-PER: refactor - we don't need to return this anymore because the id doesn't change
+
+#    # insert an element, then copy the current element onto it.
+#    new_element = dst_page.insert_element(dst_position)
+#    new_element.copy_data_portion(exhibit_elements[element_pos-1])
+#    delete_element(element_pos)
+#		return new_element.id
   end
   
   def insert_element(element_pos)

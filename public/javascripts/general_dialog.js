@@ -746,7 +746,10 @@ var ConfirmAjaxDlg = Class.create({
 		
 		var ok = function()
 		{
-			updateWithAjax(params);
+			if (params.action !== undefined)
+				updateWithAjax(params);
+			else
+				recurseUpdateWithAjax(params.actions, params.els, null, null, params.params);
 		};
 		
 		new ConfirmDlg(title, message, "Yes", "No", ok);

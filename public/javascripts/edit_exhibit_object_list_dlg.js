@@ -14,9 +14,9 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, Element, Ajax */
-/*global GeneralDialog, CreateListOfObjects */
-/*extern EditExhibitObjectListDlg, ObjectSelector */
+/*global Class, Element, Ajax, $ */
+/*global GeneralDialog, CreateListOfObjects, MessageBoxDlg */
+/*extern EditExhibitObjectListDlg, ObjectSelector, doRemoveObjectFromExhibit */
 
 ////////////////////////////////////////////////////////////////////////////
 /// Create the control that adds and subtracts objects from exhibits
@@ -154,4 +154,15 @@ var EditExhibitObjectListDlg = Class.create({
 		obj_selector.populate(dlg);
 	}
 });
+
+function doRemoveObjectFromExhibit(exhibit_id, uri)
+{
+	var reference = $("in_exhibit_" + exhibit_id + "_" + uri);
+	if (reference !== null)
+		reference.remove();
+	new Ajax.Updater("exhibited_objects_container", "/my9s/remove_exhibited_object", {
+		parameters : { uri: uri, exhibit_id: exhibit_id },
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+	});
+}
 
