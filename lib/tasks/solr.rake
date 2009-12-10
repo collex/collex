@@ -36,12 +36,12 @@ namespace :solr do
 	end
 
 	def filename_of_zipped_index
+		today = Time.now()
 		return "#{today.strftime('20%y.%m.%d')}.index.tar.gz"
 	end
 
 	def path_of_zipped_index
 		path = "~/"	#TODO: set this in site.yml
-		today = Time.now()
 		return "#{path}#{filename_of_zipped_index}"
 	end
 
