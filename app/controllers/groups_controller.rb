@@ -188,25 +188,38 @@ class GroupsController < ApplicationController
   # POST /groups
   # POST /groups.xml
   def create
-		if params['image'] && params['image'].length > 0
-			image = Image.new({ :uploaded_data => params['image'] })
-#			if image	# If there were an error in uploading the image, don't go further.
-#				begin
-#					user.image.save!
-#					user.save
-#				rescue
-#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-#				end
+		begin
+			if params['image'] && params['image'].length > 0
+				image = Image.new({ :uploaded_data => params['image'] })
+	#			if image	# If there were an error in uploading the image, don't go further.
+	#				begin
+	#					user.image.save!
+	#					user.save
+	#				rescue
+	#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+	#				end
+				end
+			@group = Group.new(params[:group])
+			@group.use_styles = 0
+			@group.image = image
+			err = false
+			if @group.save
+				begin
+					@group.image.save! if @group.image
+				rescue
+					err = true
+					@group.delete
+					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+				end
+				if err == false
+					flash = "OK:#{@group.id}"
+					@group.invite_members(params[:emails])
+				end
+			else
+				flash = "Error creating group"
 			end
-    @group = Group.new(params[:group])
-		@group.use_styles = 0
-		@group.image = image
-		if @group.save
-			@group.image.save! if @group.image
-			flash = "OK:#{@group.id}"
-			@group.invite_members(params[:emails])
-		else
-			flash = "Error creating group"
+		rescue
+			flash = "Server error when creating group."
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 
