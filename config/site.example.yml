@@ -6,12 +6,12 @@
 #
 
 # For getting automatic emails when an error occurs
+ 	# exception_recipients: List of all emails that should receive the notification
+ 	# sender_address: Who the notification email will be from
+ 	# email_prefix: What each email should be prefixed with
 exception_notifier:
- 	# List of all emails that should receive the notification
   exception_recipients: "first@example.com second@example.com"
- 	# Who the notification email will be from
   sender_address: '"Application Error" <admin@example.com>'
- 	# What each email should be prefixed with
   email_prefix: "[Project] "
 
 # Where the solr index has been set up
