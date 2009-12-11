@@ -212,6 +212,44 @@ namespace :solr_index do
 		end
 	end
 
+	desc "Analyze MARC records (optional param: archive=[bancroft|lilly|estc])"
+	task :analyze_marc => :environment do
+		if CAN_INDEX
+			require 'script/lib/marc_genre_scanner.rb'
+			require 'script/lib/marc_indexer.rb'
+			archive = ENV['archive']
+			marc_path = '../marc/'
+			puts "~~~~~~~~~~~ Scanning marc records..."
+			start_time = Time.now
+			#MarcGenreScanner.run("#{marc_path}#{archive}", true)
+				args = { :tool => :index,
+									 :forgiving => true,
+									 :debug => true,
+									 :verbose => true
+								 }
+
+				args[:archive] = archive
+				args[:solr_url] = "#{SOLR_URL}/archive_#{archive}"
+				args[:url_log_path] = "log/#{archive}_link_data.txt"
+				args[:federation] = 'NINES'
+#				CollexEngine.create_core("archive_#{archive}")
+				args[:dir] = "#{marc_path}#{archive}"
+				args[:max_records] = 100
+				MarcIndexer.run(args)
+#
+#			if archive == nil || archive == 'lilly'
+#				args[:archive] = 'lilly'
+#				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
+#				args[:url_log_path] = 'log/lilly_link_data.txt'
+#				args[:federation] = 'NINES'
+#				CollexEngine.create_core("archive_lilly")
+#				args[:dir] = "#{marc_path}Lilly"
+#				MarcIndexer.run(args)
+#			end
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+		end
+	end
+
 	desc "Creates an RDF with all available information from all objects in the specified archive"
 	task :recreate_rdf_from_index  => :environment do
 		# This was created to get the UVA MARC records out of the index when we couldn't recreate the uva MARC records.
