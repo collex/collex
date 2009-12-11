@@ -122,6 +122,41 @@
 			<td><%= str %></td>
 		</tr> -->
 	</table>
+		<div class="page_header"><%= SITE_NAME %> Statistics by Resource</div>
+		<% tagassigns = Tagassign.all
+			objs = {}
+			tagassigns.each { |rec| objs[rec.collected_item_id] = true }
+			archives = {}
+			objs.each { |key, val|
+				ci = CollectedItem.find(key)
+				cr = CachedResource.find(ci.cached_resource_id)
+				cp = CachedProperty.find_by_cached_resource_id_and_name(cr.id, 'archive')
+				archive = cp['value']
+				if archives[archive]
+					archives[archive] = archives[archive] + 1
+				else
+					archives[archive] = 1
+				end
+			}
+		-%>
+		<table>
+			<tr>
+				<th>Resource</th>
+				<th># objects collected</th>
+				<th># objects tagged</th>
+			</tr>
+			<% sites = Site.all -%>
+			<% for site in sites -%>
+				<% if site.code.index("exhibit_") != 0 -%>
+			<tr>
+				<td><%= site.description %></td>
+				<td><%= CachedProperty.find_all_by_name_and_value("archive",  site.code).length %></td>
+				<td><%= archives[site.code] if archives[site.code] %></td>
+			</tr>
+				<% end -%>
+			<% end -%>
+		</table>
+
 	<%= link_to "[ show all ]", { :action => 'stats_show_all' }, { :class => 'nav_link' } if @show_all != 'true' %>
 	<%= link_to "[ show last 30 days ]", { :action => 'stats_show_all' }, { :class => 'nav_link' } if @show_all == 'true' %>
 	<div class="page_header">Detail Login Information:</div>
