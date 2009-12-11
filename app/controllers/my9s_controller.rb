@@ -545,12 +545,12 @@ class My9sController < ApplicationController
   end
   
   def redraw_exhibit_page  # This is called for a number of different ajax actions to update the view.
-    page_id = params[:page]
+    page_id = params[:page_id]
     if page_id == nil
       id = params[:element_id]
       if id != nil  # something probably timed out if this happens
-        element = ExhibitElement.find(id)
-        page_id = element.exhibit_page_id
+        element = ExhibitElement.find_by_id(id)	# This is ok to fail: for instance, if the element was just deleted.
+        page_id = element.exhibit_page_id if element != nil
       end
     end
     if page_id != nil

@@ -43,7 +43,7 @@
 	<% if page.exhibit_elements.length == 0 -%>
 		<% ajax_actions = "/my9s/modify_outline_add_first_element,/my9s/redraw_exhibit_page" -%>
 		<% ajax_div = "exhibit_builder_outline_content,exhibit_page" -%>
-		<%= link_to_function("[New Section]", "doAjaxLink('#{ajax_div}', '#{ajax_actions}', { page: #{page.id} } );", { :title => 'New Section', :class => 'modify_link' }) %>
+		<%= link_to_function("[New Section]", "doAjaxLink('#{ajax_div}', '#{ajax_actions}', { page_id: #{page.id} } );", { :title => 'New Section', :class => 'modify_link' }) %>
 	<% end #if there are no elements on this page -%>
 	<% for element in page.exhibit_elements -%>
 		<% ret = create_border_div(element, border_active, "outline_section_with_border") %>
