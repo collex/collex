@@ -57,14 +57,22 @@ namespace :collex do
 	# All tasks below here are not normally called separately, but can be if needed. They are called as part of the
 	# tasks defined above.
 	#
-	
-  desc "Update the installed NINES Wordpress theme"
-  task :update_nines_theme do
+
+	def safe_mkdir(folder)
 		begin
-	    Dir.mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
+	    Dir.mkdir(folder)
 		rescue
 			# It's ok to fail: it probably means the folder already exists.
 		end
+	end
+	
+  desc "Update the installed NINES Wordpress theme"
+  task :update_nines_theme do
+		puts "Updating wordpress files..."
+		safe_mkdir("#{RAILS_ROOT}/public/wp")
+		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content")
+		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes")
+		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
     copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" )
   end
 
@@ -89,20 +97,38 @@ namespace :collex do
 	desc "Tag this version in SVN"
 	task :tag_current_version => :environment do
 		# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
-		version = Branding.version()
-		output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}`
-		if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
-			finished = false
-			letter = 'a'
-			while !finished
-				output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}#{letter}`
-				finished = output.index("Path: #{version}#{letter}") != 0
-				letter[0] = letter[0]+1 if !finished
+		# version = Branding.version() -- may report one version behind if we just updated.
+		# Read the version directly because we might have just done an "svn up" and so we are actually running one version behind.
+		version = ""
+		File.open("#{RAILS_ROOT}/app/models/branding.rb", "r") do |file|
+			wants_this = false
+			while line = file.gets
+				if wants_this && version.length == 0
+					arr = line.split("\"")
+					version = arr[1]
+				elsif line.index("self.version") != nil
+					wants_this = true
+				end
 			end
-			version += letter
 		end
-		puts "Tagging version #{version}..."
-		system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}")
+
+		if version.length == 0
+			puts "Can't tag version because the format of branding.rb"
+		else
+			output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}`
+			if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
+				finished = false
+				letter = 'a'
+				while !finished
+					output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}#{letter}`
+					finished = output.index("Path: #{version}#{letter}") != 0
+					letter[0] = letter[0]+1 if !finished
+				end
+				version += letter
+			end
+			puts "Tagging version #{version}..."
+			system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}")
+		end
 	end
 
 	desc "Compress the css for the about pages"
