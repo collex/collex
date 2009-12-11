@@ -43,13 +43,15 @@
 			<span id="overview_genres" class="overview_field"><%= exhibit.genres %></span>
 		</div>
 <% if Branding.use_groups() == true %>
-		<% group_name = exhibit.group_id ? Group.find(exhibit.group_id).name : "No Group Selected" -%>
-		<% users_groups = [{ :value => '', :text => 'No Group Selected' }] -%>
+		<% has_groups = Group.user_is_in_group(get_curr_user_id()) -%>
+		<% none_text = has_groups ? 'No Group Selected' : 'You are not in any groups' -%>
+		<% group_name = exhibit.group_id ? Group.find(exhibit.group_id).name : none_text -%>
+		<% users_groups = [{ :value => '', :text => none_text }] -%>
 		<% my_groups = Group.get_all_users_groups(exhibit.user_id) -%>
 		<% for group in my_groups -%>
 		<% users_groups.push({ :value => "#{group.id}", :text => group.name }) -%>
 		<% end  -%>
-		<span class="exhibit_profile_label">Group:</span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[select group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) %></span>
+		<span class="exhibit_profile_label">Group:</span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[select group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) if has_groups %></span>
 <% end  -%>
 		<div>
 			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : "This exhibit can just be seen by you." %>&nbsp;

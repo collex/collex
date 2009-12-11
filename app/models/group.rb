@@ -19,6 +19,11 @@ class Group < ActiveRecord::Base
 	#
 	# User's capabilities
 	#
+	def self.user_is_in_group(user_id)
+		# Does this user belong to at least one group?
+		return self.get_all_users_groups(user_id).length > 0
+	end
+
 	def can_edit(user_id)
 		return is_editor(user_id)
 	end
