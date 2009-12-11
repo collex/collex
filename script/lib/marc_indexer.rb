@@ -78,6 +78,7 @@ class MarcIndexer
     @forgiving_marc_decoding = args[:forgiving]
     @indexer_config = {:debug => args[:debug], :timeout => 1200, :solr_url => args[:solr_url], :buffer_docs => 500 }     
     @archive_id = args[:archive]
+		@max_records = args[:max_records]
     
     unless args[:target_uri_file].nil?
       # load a ruby file which defines the @target_uris hash
@@ -141,6 +142,7 @@ class MarcIndexer
 				log_url( solr_document[:uri], marc_file, solr_document[:url] )
 				if @verbose
 					report_record( marc_record, solr_document )
+					update_progress_meter if @max_records
 				else
 					update_progress_meter
 #					if solr_document[:title].length != 0 || solr_document[:date_label].length != 0 || solr_document[:agent].length != 0 || solr_document[:role_PBL].length != 0 || solr_document[:year].length != 0 || solr_document[:text].length != 0 || solr_document[:role_AUT].length != 0
@@ -155,6 +157,10 @@ class MarcIndexer
 #					end
 				end
 
+				if  @max_records && @file_record_count >= @max_records
+					puts "#\n# Stopped indexing by request after #{@file_record_count} records\n#"
+					return
+				end
 				# this record should be indexed
 				next true
 			end
