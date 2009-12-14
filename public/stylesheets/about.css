@@ -78,3 +78,8 @@
 .about_right p.header {
     text-decoration:underline;
 }
+
+p.highlight {
+background-color:#EAE0D6;
+padding: 4px;
+}
