@@ -131,8 +131,9 @@
 				<th># objects tagged</th>
 			</tr>
 			<% for site in archive_stats -%>
+			<% s = Site.find_by_code(site[0]) -%>
 			<tr>
-				<td><%= Site.find_by_code(site[0]).description %></td>
+				<td><%= s == nil ? "#{site[0]} (not in DB!)" : s.description %></td>
 				<td><%= site[1][:collect] %></td>
 				<td><%= site[1][:tag] %></td>
 			</tr>
