@@ -76,6 +76,7 @@ namespace :solr do
 				filename = path_of_zipped_index()
 				ENV['index'] = index
 				Rake::Task['solr:zip'].invoke
+				puts "scp #{filename} #{dest}:solr_1.4/solr/data/resources"
 				`scp #{filename} #{dest}:solr_1.4/solr/data/resources`
 			end
 		end
