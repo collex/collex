@@ -122,38 +122,20 @@
 			<td><%= str %></td>
 		</tr> -->
 	</table>
-		<div class="page_header"><%= SITE_NAME %> Statistics by Resource</div>
-		<% tagassigns = Tagassign.all
-			objs = {}
-			tagassigns.each { |rec| objs[rec.collected_item_id] = true }
-			archives = {}
-			objs.each { |key, val|
-				ci = CollectedItem.find(key)
-				cr = CachedResource.find(ci.cached_resource_id)
-				cp = CachedProperty.find_by_cached_resource_id_and_name(cr.id, 'archive')
-				archive = cp['value']
-				if archives[archive]
-					archives[archive] = archives[archive] + 1
-				else
-					archives[archive] = 1
-				end
-			}
-		-%>
+		<div class="page_header"><%= SITE_NAME %> Statistics by Resource (last 365 days)</div>
+		<% archive_stats = ObjectActivity.get_archive_stats() -%>
 		<table>
 			<tr>
 				<th>Resource</th>
 				<th># objects collected</th>
 				<th># objects tagged</th>
 			</tr>
-			<% sites = Site.all -%>
-			<% for site in sites -%>
-				<% if site.code.index("exhibit_") != 0 -%>
+			<% for site in archive_stats -%>
 			<tr>
-				<td><%= site.description %></td>
-				<td><%= CachedProperty.find_all_by_name_and_value("archive",  site.code).length %></td>
-				<td><%= archives[site.code] if archives[site.code] %></td>
+				<td><%= Site.find_by_code(site[0]).description %></td>
+				<td><%= site[1][:collect] %></td>
+				<td><%= site[1][:tag] %></td>
 			</tr>
-				<% end -%>
 			<% end -%>
 		</table>
 

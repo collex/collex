@@ -75,6 +75,21 @@ class ObjectActivity < ActiveRecord::Base
 		}
 	end
 
+	def self.get_archive_stats()
+		# this returns the number of tags and collects broken down by archive
+		recs = ObjectActivity.all(:conditions => [ 'updated_at > ?', 1.year.ago])
+		stats = { }
+		recs.each { |rec|
+			cr = CachedResource.find_by_uri(rec.uri)
+			cp = CachedProperty.find_by_cached_resource_id_and_name(cr.id, 'archive')
+			archive = cp['value']
+			stats[archive] = { :collect => 0, :tag => 0 } if stats[archive] == nil
+			stats[archive][:collect] += 1 if rec['action'] == 'collect'
+			stats[archive][:tag] += 1 if rec['action'] == 'tag'
+		}
+		return stats
+	end
+
 	private
 	def self.num_recs(action, period)
 		recs = ObjectActivity.all(:conditions => [ 'action = ? AND updated_at > ?', action,  period])
