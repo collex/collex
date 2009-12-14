@@ -213,8 +213,10 @@ class CollexEngine
 		end
 	end
 
-	def self.merge_all_reindexed()
+	def self.merge_all_reindexed(exceptions)
 		archives = get_archive_core_list()
+		exceptions.collect! { |ex| "archive_#{ex}"}
+		archives = archives - exceptions
 		merged = CollexEngine.new(['merged'])
 		merged.clear_index()
 		merged.merge(archives)

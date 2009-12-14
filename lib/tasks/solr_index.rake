@@ -464,11 +464,12 @@ namespace :solr_index do
 		puts "Finished in #{Time.now-start_time} seconds."
 	end
 
-	desc "Replace \"merged\" index with all the archive indexes"
+	desc "Replace \"merged\" index with all the archive indexes (param: except=archive;archive)"
 	task :merge_indexes => :environment do
-		puts "~~~~~~~~~~~ Merging indexes ..."
+		archive = ENV['except']
+		puts "~~~~~~~~~~~ Merging indexes #{ '(except '+archive+')' if archive != nil}..."
 		start_time = Time.now
-		CollexEngine.merge_all_reindexed()
+		CollexEngine.merge_all_reindexed(archive==nil ? [] : archive.split(';'))
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
