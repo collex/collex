@@ -16,71 +16,72 @@
     # ---------------------------------------------------------------------------- -%>
 <%# group_details : parameters: ActiveRecord group, int user_id -%>
 <script type="text/javascript">
-	var gMembership = <%= group.get_membership_list().to_json() %>;
+	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
+	gMembership = <%= group.get_membership_list().to_json() %>;
+	gGroupData = <%= group.to_json() %>.group;
 </script>
-<h2><%= group.name %></h2>
-<div class="group_details_controls">
-<%= link_to('[ delete group ]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete) if group.can_delete(user_id) %>
-<%= link_to_function('[ change membership ]', "new EditMembershipDlg(#{group.id}, gMembership);", :class => 'nav_link') if group.can_edit(user_id) %>
-<%= link_to_function('[ invite users to join ]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link') if group.can_edit(user_id) %>
-<% if user_id -%>
-	<% pending_id = group.get_pending_id(user_id) -%>
-	<%= link_to('[ accept invitation to join ]', { :controller => 'groups', :action => 'join_group', :id => pending_id }, { :method => :post, :class => 'nav_link' }) if pending_id %>
-	<%= link_to('[ join ]', { :controller => 'groups', :action => 'request_join', :group_id => group.id, :user_id => user_id }, { :method => :post, :class => 'nav_link' }) if group.can_request_to_join(user_id) %>
-	<%= link_to_confirm("[ leave this group ]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?") if group.can_leave_group(user_id) %>
-	<%= "[ a request to join this group is pending acceptance by the moderator ]" if group.is_request_pending(user_id) -%>
-<% end -%>
-</div>
-<div class ="group_image">
-<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image)), :show_immediately => true } %>
-<% if group.can_edit(user_id) -%>
-	<br /><%= link_to_function("[#{group.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{group.id}, '#{get_url_for_internal_image(group.image)}');", :class => 'nav_link') %>
-	<% if group.image != nil -%>
-	<div class="profile_remove_picture"><%= link_to "Remove Thumbnail", { :controller => 'groups', :action => 'remove_profile_picture', :id => group.id }, { :id => 'remove_picture', :method => 'post' } %></div>
-	<script type="text/javascript">
-		var createRemovePictureButton = function() {
-			var onButtonClick = function (e) {
-				postLink($("remove_picture-button").href);
+<div class="group_details_left">
+	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image)), :show_immediately => true, :height => 120 } %>
+	<% if group.can_edit(user_id) -%>
+		<br /><%= link_to_function("[#{group.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{group.id}, '#{get_url_for_internal_image(group.image)}');", :class => 'nav_link') %>
+		<% if group.image != nil -%>
+		<div class="profile_remove_picture"><%= link_to "Remove Thumbnail", { :controller => 'groups', :action => 'remove_profile_picture', :id => group.id }, { :id => 'remove_picture', :method => 'post' } %></div>
+		<script type="text/javascript">
+			var createRemovePictureButton = function() {
+				var onButtonClick = function (e) {
+					postLink($("remove_picture-button").href);
+				};
+
+
+				new YAHOO.widget.Button('remove_picture', { onclick: { fn: onButtonClick } });
+				YAHOO.util.Event.onAvailable('remove_picture-button', function() {
+					$('remove_picture-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+				}, this);
 			};
-
-
-			new YAHOO.widget.Button('remove_picture', { onclick: { fn: onButtonClick } });
-			YAHOO.util.Event.onAvailable('remove_picture-button', function() {
-				$('remove_picture-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
-			}, this);
-		};
-		document.observe('dom:loaded', function() {
-			createRemovePictureButton();
-		});
-		try {
-			createRemovePictureButton();
-		} catch(e) {};
-	</script>
+			document.observe('dom:loaded', function() {
+				createRemovePictureButton();
+			});
+			try {
+				createRemovePictureButton();
+			} catch(e) {};
+		</script>
+		<% end -%>
 	<% end -%>
-<% end -%>
 </div>
-<div class="group_description"><%= group.description %>&nbsp;<%= link_to_function('[ edit ]', "editDescription(#{group.id}, '#{group.description.gsub('\'') { |apos| '\\\'' }}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
-<div>Owned by: <%= get_user_link(User.find(group.owner)) %></div>
-<div id="group_license">License: <%= "Each exhibit can specify a license." if !Exhibit.is_license_specified(group.license_type) %>&nbsp;
-	<%= link_to_function("[Choose License]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: #{group.license_type}, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" }) if group.can_edit(user_id) %>
-<% if Exhibit.is_license_specified(group.license_type) %>
-	<div><%= Exhibit.get_sharing_icon_url(group.license_type) %></div>
-	<span><%= "Creative Commons' #{Exhibit.get_sharing_static(group.license_type)} License" %></span>
-<% end -%>
-</div>
-<% if group.can_edit(user_id) -%>
-<div>Non-member Permissions: <%= Group.permission_to_friendly(group.forum_permissions) %>&nbsp;<%= link_to_function('[ edit ]', "editPermissions(#{group.id}, '#{group.forum_permissions}', #{Group.permissions_to_json()});", :class => 'nav_link') %></div>
-<div>Type: <%= Group.type_to_friendly(group.group_type) %>&nbsp;<%= link_to_function('[ edit ]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link') %></div>
-<%= group.use_styles == 1 ? 'Use the same styles in all exhibits' : 'Allow exhibits to use their own styles' %>
-<%= link_to_function("[select style]", "new EditFontsDlg('/groups/update', #{group.id}, #{group.to_json()}.group, 'group', true, 'group_details')", { :class => 'modify_link' }) %>
-<br /><br />
-<% gus = GroupsUser.get_all_pending_requests(group.id) -%>
-<% if gus.length > 0 -%>
-<div>The following people have requested to join this group:</div>
-<ul>
-	<% gus.each { |gu| -%>
-	<li><%= User.find(gu.user_id).fullname %>&nbsp;<%= link_to("[accept]", { :controller => 'groups', :action => 'accept_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %>&nbsp;<%= link_to("[deny]", { :controller => 'groups', :action => 'decline_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %></li>
-	<% } -%>
+<div class="group_details_right">
+	<ul class="group_link_list">
+		<li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li>
+		<%= "<li>#{link_to_function('[invite users to join]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
+		<%= "<li>#{link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership);", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
+	<% if user_id -%>
+		<% pending_id = group.get_pending_id(user_id) -%>
+		<%= "<li>#{link_to('[accept invitation to join]', { :controller => 'groups', :action => 'join_group', :id => pending_id }, { :method => :post, :class => 'nav_link' })}</li>" if pending_id %>
+		<%= "<li>#{link_to('[join]', { :controller => 'groups', :action => 'request_join', :group_id => group.id, :user_id => user_id }, { :method => :post, :class => 'nav_link' })}</li>" if group.can_request_to_join(user_id) %>
+		<%= "<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>" if group.can_leave_group(user_id) %>
+		<%= "<li>[a request to join this group is pending acceptance by the moderator]</li>" if group.is_request_pending(user_id) -%>
+		<%= "<li>#{link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: #{group.license_type}, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" })}</li>" if group.can_edit(user_id) %>
+		<%= "<li>#{link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
+		<%= "<li>#{link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete)}</li>" if group.can_delete(user_id) %>
+		<% if group.can_edit(user_id) -%>
+			<% gus = GroupsUser.get_all_pending_requests(group.id) -%>
+			<% if gus.length > 0 -%>
+			<div>The following people have requested to join this group:</div>
+			<ul>
+				<% gus.each { |gu| -%>
+				<li><%= User.find(gu.user_id).fullname %>&nbsp;<%= link_to("[accept]", { :controller => 'groups', :action => 'accept_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %>&nbsp;<%= link_to("[deny]", { :controller => 'groups', :action => 'decline_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %></li>
+				<% } -%>
+			</ul>
+			<% end -%>
+		<% end -%>
 	<% end -%>
-</ul>
-<% end -%>
+	</ul>
+</div>
+<div class="group_details_center">
+	<h1><%=h group.name %></h1>
+	<div class="group_description"><%=h group.description %></div>
+	<div class="group_edit_title">
+		<%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}');", :class => 'nav_link') if group.can_edit(user_id) %>
+		<%= link_to_function('[edit description]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}');", :class => 'nav_link') if group.can_edit(user_id) %>
+	</div>
+</div>
+<div class="clear_both"></div>

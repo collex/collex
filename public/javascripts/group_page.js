@@ -189,6 +189,18 @@ var editType = function(id, value, groupTypeOptions) {
 		target_els: [ 'group_details' ] });
 };
 
+var editTitle = function(id, value) {
+	new TextInputDlg({
+		title: 'Edit Title',
+		prompt: 'Group Title',
+		id: 'group[name]',
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/groups/update' ],
+		target_els: [ 'group_details' ] });
+};
+
 //var editLicense = function(id, value) {
 //	var groupLicenseOptions = [ { value: '', text: '(inherit)' },
 //		{ value: '1', text: 'Attribution' }, { value: '2', text: 'Attribution Share Alike' } , { value: '3', text: 'Attribution No Derivatives' },

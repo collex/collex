@@ -14,8 +14,9 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%# group_exhibits_list : parameters: ActiveRecord group -%>
-<div class="right_column_header">Exhibits</div>
+<%# group_exhibits_list : parameters: ActiveRecord group, int user_id -%>
+<div class="group_header">Exhibits</div>
+<div class="set_exhibit_style"><%= link_to_function("[set exhibit style]", "new EditFontsDlg('/groups/update', #{group.id}, gGroupData, 'group', true, 'group_details')", { :class => 'modify_link' }) if group.can_edit(user_id) %></div>
 <% exhibits = Exhibit.find_all_by_group_id(group.id) -%>
 <% if exhibits.length == 0 -%>
 	<div class="empty_list_text" >There have been no exhibits published in this group.</div>

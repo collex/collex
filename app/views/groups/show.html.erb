@@ -17,20 +17,18 @@
 <% current_page "Exhibits" -%>
 <% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id -%>
 <div class="inner_content_container">
-	<div class="left_column">
-		<%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %>
-		<div id="group_details">
-			<%= render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user_id } %>
-		</div>
-		<div class="clear_both"></div>
-		<div id="exhibits">
-			<%= render :partial => 'group_exhibits_list', :locals => { :group => @group } %>
-		</div>
-	</div>
-	<div class="right_column">
-		<div id="discussions">
-			<%= render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => curr_user_id } %>
-		</div>
+	<div id="group_details">
+		<%= render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user_id } %>
 	</div>
 	<div class="clear_both"></div>
+	<div id="group_discussions">
+		<%= render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => curr_user_id } %>
+	</div>
+	<div id="exhibits">
+		<%= render :partial => 'group_exhibits_list', :locals => { :group => @group, :user_id => curr_user_id } %>
+	</div>
+	<div class="clear_both"></div>
+	<div id="group_license">
+		<%= render :partial => 'group_license', :locals => { :group => @group } %>
+	</div>
 </div>

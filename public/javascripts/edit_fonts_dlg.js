@@ -71,7 +71,7 @@ var EditFontsDlg = Class.create({
 					[ { text: 'Second Caption:', klass: 'edit_font_label' }, { select: table_name +'[caption2_font_name]', value: values.caption2_font_name, options: options, change: updatePreview}, { select: table_name +'[caption2_font_size]', value: values.caption2_font_size, options: sizes, change: updatePreview } ],
 					[ { text: 'Footnote Popup:', klass: 'edit_font_label' }, { select: table_name +'[footnote_font_name]', value: values.footnote_font_name, options: options, change: updatePreview}, { select: table_name +'[footnote_font_size]', value: values.footnote_font_size, options: sizes, change: updatePreview } ],
 					[ { text: 'Endnotes:', klass: 'edit_font_label' }, { select: table_name +'[endnotes_font_name]', value: values.endnotes_font_name, options: options, change: updatePreview}, { select: table_name +'[endnotes_font_size]', value: values.endnotes_font_size, options: sizes, change: updatePreview } ],
-					[ { rowClass: 'last_row' }, { button: 'Save', callback: ok }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: active_record_id } ]
+					[ { rowClass: 'last_row' }, { button: 'Save', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: active_record_id } ]
 				]
 			};
 
