@@ -86,7 +86,7 @@ var CCLicenseDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Share this ' + name + ' under the following license:', klass: 'input_dlg_license_list_header' } ],
+					[ { text: name, klass: 'input_dlg_license_list_header' } ],
 					[ { custom: liclist, klass: '' } ],
 					[ { text: 'Licenses provided courtesy of Creative Commons&nbsp;&nbsp;', klass: '' }, { page_link: '[ Learn more about CC licenses ]', klass: 'ext_link', new_page: "http://creativecommons.org/about/licenses", callback: GeneralDialog.openInNewWindow } ],
 					[ { rowClass: 'last_row' }, { button: 'Save', callback: okCallback, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
@@ -120,7 +120,7 @@ var ForumLicenseDisplay = Class.create({
 			params.dlg.cancel();
 		};
 		var changeDlg = function() {
-			new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'post', 'license_list2');
+			new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'Share this post under the following license:', 'license_list2');
 		};
 		var parent_id = params.id;
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
@@ -167,3 +167,57 @@ var ForumLicenseDisplay = Class.create({
 		};
 	}
 });
+
+function license_dialog(params)
+{
+	var selection = params.selection;
+	var id = params.id;
+	var update_id = params.update_id;
+	var callback_url = params.callback_url;
+	var populate_url = params.populateLicenses;
+	var id_name = params.id_name;
+	var sub_title = params.sub_title;
+
+	var objs = null;
+
+	var okCallback = function(event, params) {
+		var onSuccess = function(resp) {
+			params.dlg.cancel();
+		};
+		var onFailure = function(resp) {
+			params.dlg.setFlash(resp.responseText);
+		};
+		var ajaxParams = { el: update_id, params: { id: id }, action: callback_url, onSuccess: onSuccess, onFailure: onFailure };
+		var data = params.dlg.getAllData();
+		ajaxParams.params[id_name] = data.sharing;
+		updateWithAjax(ajaxParams);
+	};
+
+	var createDialog = function() {
+		new CCLicenseDlg(objs, selection, okCallback, 'Select License', sub_title, 'sharing');
+	};
+
+	var populate = function(){
+		// Call the server to get the data, then pass it to the ObjectLists
+		//dlg.setFlash('Getting objects...', false);
+		new Ajax.Request(populate_url, {
+			method: 'get',
+			onSuccess: function(resp){
+				//dlg.setFlash('', false);
+				try {
+					objs = resp.responseText.evalJSON(true);
+					createDialog();
+				}
+				catch (e) {
+					new MessageBoxDlg("Error", e);
+				}
+
+			},
+			onFailure: function(resp){
+				//dlg.setFlash(resp.responseText, true);
+			}
+		});
+	};
+
+	populate();
+}

@@ -62,7 +62,7 @@ class Group < ActiveRecord::Base
 	def self.can_change_license(exhibit)
 		return true if exhibit.group_id == nil || exhibit.group_id == 0
 		group = Group.find(exhibit.group_id)
-		return group.license_type == nil
+		return group.license_type == nil || group.license_type == 0
 	end
 
 	def self.can_change_styles(exhibit)

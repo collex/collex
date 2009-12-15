@@ -62,10 +62,10 @@
 		<span class="exhibit_profile_label">Creative Commons License:</span>
 		<div>
 			<% if Group.can_change_license(exhibit) -%>
-			<div class="exhibit_preview_thumbnail"><%= link_to_function("#{exhibit.get_sharing_image()}", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=true', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;") %></div>
+			<div class="exhibit_preview_thumbnail"><%= link_to_function("#{exhibit.get_sharing_image()}", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=false', selection: #{exhibit.get_sharing_int()}, id_name: 'sharing', id: #{exhibit.id}, update_id: 'overview_data', sub_title: 'Share this exhibit under the following license:', callback_url: '/my9s/change_sharing' }); return false;") %></div>
 			<span id="overview_published" class="overview_field"><%= "Creative Commons' #{exhibit.get_sharing()} License" %>
 			</span>
-			<%= link_to_function("[Choose License]", "sharing_dialog({ populateLicenses: '/my9s/get_licenses?non_sharing=false', selection: #{exhibit.get_sharing_int()}, exhibit_id: #{exhibit.id}, update_id: 'overview_data', callback_url: '/my9s/change_sharing' }); return false;", { :class => "modify_link" }) %>
+			<%= link_to_function("[Choose License]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=false', selection: #{exhibit.get_sharing_int()}, id_name: 'sharing', id: #{exhibit.id}, update_id: 'overview_data', sub_title: 'Share this exhibit under the following license:', callback_url: '/my9s/change_sharing' }); return false;", { :class => "modify_link" }) %>
 			<% else -%>
 			<div class="exhibit_preview_thumbnail"><%= exhibit.get_sharing_image() %></div>
 			<span id="overview_published" class="overview_field"><%= "Creative Commons' #{exhibit.get_sharing()} License" %>

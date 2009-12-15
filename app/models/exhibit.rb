@@ -208,7 +208,7 @@ class Exhibit < ActiveRecord::Base
   
   def get_sharing_int()
 		license = get_effective_license_type()
-    return license == nil || license == 0 ? self.get_default_license() : license
+    return Exhibit.is_license_specified(license) ? license : Exhibit.get_default_license()
   end
   
   def self.get_sharing_static(s)
@@ -290,10 +290,14 @@ class Exhibit < ActiveRecord::Base
     return Exhibit.find(:all, :conditions => [ 'is_published <> 0'])
   end
 
-	def self.get_license_info(non_sharing)
+	def self.is_license_specified(license_type)
+		return license_type != nil && license_type != '' && license_type.to_i > 0
+	end
+
+	def self.get_license_info(add_inherit)
 		ret = []
-		if non_sharing
-			ret.push({ :id => 0, :text => 'Exhibit should be visible to just me', :icon => self.get_sharing_icon_url(0), :abbrev => self.get_sharing_static(0) })
+		if add_inherit
+			ret.push({ :id => 0, :text => 'Each exhibit can specify a license.', :icon => self.get_sharing_icon_url(0), :abbrev => self.get_sharing_static(0) })
 		end
     1.upto(6) do |i|
 			ret.push({ :id => i, :text => self.get_sharing_text(i), :icon => self.get_sharing_icon_url(i), :abbrev => self.get_sharing_static(i) })
@@ -659,10 +663,10 @@ class Exhibit < ActiveRecord::Base
 			return self.license_type
 		else
 			group = Group.find(self.group_id)
-			if group.license_type == nil || group.license_type == ''
-				return self.license_type
-			else
+			if Exhibit.is_license_specified(group.license_type)
 				return group.license_type
+			else
+				return self.license_type
 			end
 		end
 	end

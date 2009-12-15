@@ -189,19 +189,19 @@ var editType = function(id, value, groupTypeOptions) {
 		target_els: [ 'group_details' ] });
 };
 
-var editLicense = function(id, value) {
-	var groupLicenseOptions = [ { value: '', text: '(inherit)' }, 
-		{ value: '1', text: 'Attribution' }, { value: '2', text: 'Attribution Share Alike' } , { value: '3', text: 'Attribution No Derivatives' }, 
-		{ value: '4', text: 'Attribution Non-Commercial' }, { value: '5', text: 'Attribution Non-Commercial Share Alike' } , { value: '6', text: 'Attribution Non-Commercial No Derivatives' } ];
-	new SelectInputDlg({
-		title: 'Edit License',
-		prompt: 'License',
-		id: 'group[license_type]',
-		options: groupLicenseOptions,
-		okStr: 'Save',
-		value: value,
-		extraParams: { id: id },
-		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
-};
-
+//var editLicense = function(id, value) {
+//	var groupLicenseOptions = [ { value: '', text: '(inherit)' },
+//		{ value: '1', text: 'Attribution' }, { value: '2', text: 'Attribution Share Alike' } , { value: '3', text: 'Attribution No Derivatives' },
+//		{ value: '4', text: 'Attribution Non-Commercial' }, { value: '5', text: 'Attribution Non-Commercial Share Alike' } , { value: '6', text: 'Attribution Non-Commercial No Derivatives' } ];
+//	new SelectInputDlg({
+//		title: 'Edit License',
+//		prompt: 'License',
+//		id: 'group[license_type]',
+//		options: groupLicenseOptions,
+//		okStr: 'Save',
+//		value: value,
+//		extraParams: { id: id },
+//		actions: [ '/groups/update' ],
+//		target_els: [ 'group_details' ] });
+//};
+//

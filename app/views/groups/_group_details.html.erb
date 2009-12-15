@@ -61,7 +61,13 @@
 </div>
 <div class="group_description"><%= group.description %>&nbsp;<%= link_to_function('[ edit ]', "editDescription(#{group.id}, '#{group.description.gsub('\'') { |apos| '\\\'' }}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
 <div>Owned by: <%= get_user_link(User.find(group.owner)) %></div>
-<div>License: <%= group.license_type == nil ? "Not specified" : Exhibit.get_sharing_static(group.license_type.to_i) %>&nbsp;<%= link_to_function('[ edit ]', "editLicense(#{group.id}, '#{group.license_type}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+<div id="group_license">License: <%= "Each exhibit can specify a license." if !Exhibit.is_license_specified(group.license_type) %>&nbsp;
+	<%= link_to_function("[Choose License]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: #{group.license_type}, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" }) if group.can_edit(user_id) %>
+<% if Exhibit.is_license_specified(group.license_type) %>
+	<div><%= Exhibit.get_sharing_icon_url(group.license_type) %></div>
+	<span><%= "Creative Commons' #{Exhibit.get_sharing_static(group.license_type)} License" %></span>
+<% end -%>
+</div>
 <% if group.can_edit(user_id) -%>
 <div>Non-member Permissions: <%= Group.permission_to_friendly(group.forum_permissions) %>&nbsp;<%= link_to_function('[ edit ]', "editPermissions(#{group.id}, '#{group.forum_permissions}', #{Group.permissions_to_json()});", :class => 'nav_link') %></div>
 <div>Type: <%= Group.type_to_friendly(group.group_type) %>&nbsp;<%= link_to_function('[ edit ]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link') %></div>

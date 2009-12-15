@@ -379,7 +379,7 @@ class My9sController < ApplicationController
   end
 
   def change_sharing
-    exhibit_id = params[:exhibit_id]
+    exhibit_id = params[:id]
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
     if can_edit_exhibit(user, exhibit_id)
@@ -975,8 +975,8 @@ class My9sController < ApplicationController
   end
 
 	def get_licenses
-		non_sharing = params[:non_sharing] == 'true'
-		render :text => Exhibit.get_license_info(non_sharing).to_json()
+		add_inherit = params[:add_inherit] == 'true'
+		render :text => Exhibit.get_license_info(add_inherit).to_json()
 	end
 
   private

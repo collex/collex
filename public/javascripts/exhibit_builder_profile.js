@@ -17,7 +17,6 @@
 /*global Class, $, $$, Ajax */
 /*global MessageBoxDlg, ConfirmDlg, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, SelectInputDlg, updateWithAjax */
 /*global window */
-/*global CCLicenseDlg */
 /*extern editExhibitProfile, CreateSharingList, sharing_dialog */
 /*extern doPublish, selectGroup */
 
@@ -198,57 +197,4 @@ CreateSharingList.prototype.select = function(item, value_field)
 	$(item).addClassName(selClass);
 	$(value_field).value = $(item).getAttribute('index');
 };
-
-function sharing_dialog(params)
-{
-	var selection = params.selection;
-	var exhibit_id = params.exhibit_id;
-	var update_id = params.update_id;
-	var callback_url = params.callback_url;
-	var populate_url = params.populateLicenses;
-
-	var objs = null;
-
-	var okCallback = function(event, params) {
-		var onSuccess = function(resp) {
-			params.dlg.cancel();
-		};
-		var onFailure = function(resp) {
-			params.dlg.steFlash(resp.responseText);
-		};
-		var ajaxParams = { el: update_id, params: params.dlg.getAllData(), action: callback_url, onSuccess: onSuccess, onFailure: onFailure };
-		ajaxParams.params.exhibit_id = exhibit_id;
-		updateWithAjax(ajaxParams);
-	};
-
-	var createDialog = function() {
-		new CCLicenseDlg(objs, selection, okCallback, 'Select License', 'post', 'sharing');
-	};
-
-	var populate = function(){
-		// Call the server to get the data, then pass it to the ObjectLists
-		//dlg.setFlash('Getting objects...', false);
-		new Ajax.Request(populate_url, {
-			method: 'get',
-			onSuccess: function(resp){
-				//dlg.setFlash('', false);
-				try {
-					objs = resp.responseText.evalJSON(true);
-					createDialog();
-				}
-				catch (e) {
-					new MessageBoxDlg("Error", e);
-				}
-
-			},
-			onFailure: function(resp){
-				//dlg.setFlash(resp.responseText, true);
-			}
-		});
-	};
-
-	populate();
-}
-
-
 
