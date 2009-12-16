@@ -70,6 +70,10 @@
 .group_description {
 }
 
+.group_editors {
+	padding-top: 1em;
+}
+
 #group_details {
 	background: url("/images/groups_header_background.jpg") repeat-x bottom;
 	margin-left:-20px;
