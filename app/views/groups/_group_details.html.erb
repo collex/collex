@@ -61,16 +61,14 @@
 		<%= "<li>[a request to join this group is pending acceptance by the moderator]</li>" if group.is_request_pending(user_id) -%>
 		<%= "<li>#{link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: #{group.license_type}, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" })}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
-		<%= "<li>#{link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete)}</li>" if group.can_delete(user_id) %>
+		<%= "<li>#{link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link')}</li>" if group.can_delete(user_id) %>
 		<% if group.can_edit(user_id) -%>
 			<% gus = GroupsUser.get_all_pending_requests(group.id) -%>
 			<% if gus.length > 0 -%>
-			<div>The following people have requested to join this group:</div>
-			<ul>
+			<li>The following people have requested to join this group:</li>
 				<% gus.each { |gu| -%>
 				<li><%= User.find(gu.user_id).fullname %>&nbsp;<%= link_to("[accept]", { :controller => 'groups', :action => 'accept_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %>&nbsp;<%= link_to("[deny]", { :controller => 'groups', :action => 'decline_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %></li>
 				<% } -%>
-			</ul>
 			<% end -%>
 		<% end -%>
 	<% end -%>

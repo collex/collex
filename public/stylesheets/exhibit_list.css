@@ -72,13 +72,15 @@
 
 #group_details {
 	background: url("/images/groups_header_background.jpg") repeat-x bottom;
+	margin-left:-20px;
+	margin-right:-10px;
 }
 
 .group_details_left {
 	float: left;
 	padding-right:1em;
 	width:160px;
-	height: 200px;
+	min-height: 200px;
 	text-align: center;
 }
 
@@ -97,7 +99,7 @@
 .group_details_right {
 	float: right;
 	padding-left:1em;
-	height: 200px;
+	min-height: 200px;
 }
 
 .group_link_list {
@@ -139,9 +141,16 @@
 .group_header {
 	color:black;
 	background:#B99A86;
-	width:90%;
 	padding:4px 6px 4px 6px;
-	font-weight: bold;
+	font-size: 1.3em;
+}
+
+#exhibits .group_header {
+	margin-left: -20px;
+}
+
+#group_discussions .group_header {
+	margin-right: -10px;
 }
 
 .change_forum_permissions {
@@ -154,4 +163,5 @@
 
 .set_exhibit_style {
 	padding-top: .5em;
+	padding-bottom:0.7em;
 }
