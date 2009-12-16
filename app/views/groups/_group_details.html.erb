@@ -21,7 +21,7 @@
 	gGroupData = <%= group.to_json() %>.group;
 </script>
 <div class="group_details_left">
-	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image)), :show_immediately => true, :height => 120 } %>
+	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image)), :show_immediately => true, :height => 120, :border => true } %>
 	<% if group.can_edit(user_id) -%>
 		<br /><%= link_to_function("[#{group.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{group.id}, '#{get_url_for_internal_image(group.image)}');", :class => 'nav_link') %>
 		<% if group.image != nil -%>
@@ -76,7 +76,7 @@
 </div>
 <div class="group_details_center">
 	<h1><%=h group.name %></h1>
-	<div class="group_description"><%=h group.description %></div>
+	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
 	<div class="group_editors">
 		Group Editors: <% editors = group.get_all_editors() -%>
 		<% for editor in editors -%>
