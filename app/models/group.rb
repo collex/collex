@@ -254,5 +254,11 @@ class Group < ActiveRecord::Base
 		}
 		return ret.to_json()
 	end
+	def self.permission_explanations_to_json
+		explanations = [ "Only group members may read and respond to private discussions.",
+			"Anyone can read, but only group members may respond.",
+			"Anyone can read and any NINES user can respond."  ]
+		return explanations.to_json()
+	end
 
 end

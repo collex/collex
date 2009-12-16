@@ -116,7 +116,7 @@ var EditMembershipDlg = Class.create({
 			var layout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Editing Group Membership', klass: 'new_exhibit_title' }, { hidden: 'id', value: group_id } ]
+						[ { text: 'Change Membership', klass: 'new_exhibit_title' }, { hidden: 'id', value: group_id } ]
 					]
 				};
 
@@ -147,7 +147,7 @@ var InviteMembersDlg = Class.create({
 		};
 
 		new TextAreaInputDlg({
-			title: 'Invite People to Join This Group',
+			title: 'Invite Users to Join',
 			prompt: 'Invite new people to join this group.<br />(Enter a list of email addresses, one per line.)',
 			pleaseWaitMsg: 'Sending email to invitees. Please wait...',
 			id: 'emails',
@@ -170,12 +170,13 @@ var editDescription = function(id, value) {
 		target_els: [ 'group_details' ] });
 };
 
-var editPermissions = function(id, value, groupForumPermissionsOptions) {
+var editPermissions = function(id, value, groupForumPermissionsOptions, groupForumPermissionsExplanations) {
 	new SelectInputDlg({
-		title: 'Edit Permissions',
+		title: 'Change Forum Permissions',
 		prompt: 'Permissions',
 		id: 'group[forum_permissions]',
 		options: groupForumPermissionsOptions,
+		explanation: groupForumPermissionsExplanations,
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
@@ -185,7 +186,7 @@ var editPermissions = function(id, value, groupForumPermissionsOptions) {
 
 var editType = function(id, value, groupTypeOptions) {
 	new SelectInputDlg({
-		title: 'Edit Type',
+		title: 'Edit Group Type',
 		prompt: 'Type',
 		id: 'group[group_type]',
 		options: groupTypeOptions,

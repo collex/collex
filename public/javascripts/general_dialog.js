@@ -841,10 +841,13 @@ var singleInputDlg = function(params, input) {
 	var dlgLayout = {
 			page: 'layout',
 			rows: [
-				[ { text: prompt, klass: 'text_input_dlg_label' }, input ],
-				[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { text: prompt, klass: 'text_input_dlg_label' }, input ]
 			]
 		};
+
+	if (params.explanation_text)
+		dlgLayout.rows.push([ { text: params.explanation_text, id: "postExplanation" }]);
+	dlgLayout.rows.push([{ rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]);
 	if (noDefault)
 		dlgLayout.rows[1][1].isDefault = null;
 
@@ -867,8 +870,26 @@ var SelectInputDlg = Class.create({
 	initialize: function (params) {
 		var id = params.id;
 		var options = params.options;
+		var explanation = params.explanation;
 		var value = params.value;
 		var input = { select: id, klass: 'select_dlg_input', options: options, value: value };
+
+		if (explanation) {
+			var valToExpl = function(value) {
+				for (var i = 0; i < options.length; i++) {
+					if (options[i].value === value)
+						return explanation[i];
+				}
+				return explanation[0];
+			};
+
+			var select_changed = function(field, new_value) {
+				$('postExplanation').update(valToExpl(new_value));
+			};
+
+			input.change = select_changed;
+			params.explanation_text = valToExpl(value);
+		}
 		singleInputDlg(params, input);
 	}
 });

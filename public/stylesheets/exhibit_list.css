@@ -88,6 +88,10 @@
 	text-align: center;
 }
 
+.group_details_left .profile_remove_picture {
+	padding-top: 8px;
+}
+
 .group_details_left .exhibit_thumbnail {
 	margin-left: 16px;
 }

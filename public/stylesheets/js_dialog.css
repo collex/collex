@@ -505,11 +505,10 @@ a.footnote_tip:hover span.tip {
 }
 
 .text_area_dlg_input {
-	margin-left: 15px;
 	margin-bottom: 15px;
 	margin-top: 8px;
-	width: 440px;
-	height: 100px;
+	width: 495px;
+	height: 250px;
 }
 
 .text_input_dlg_label {

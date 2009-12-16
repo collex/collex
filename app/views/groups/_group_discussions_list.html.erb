@@ -21,7 +21,7 @@
 <% if !group.can_read_forum(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its discussions.</div>
 <% else -%>
-	<%= "<li class='change_forum_permissions'>#{link_to_function('[change forum permissions]', "editPermissions(#{group.id}, gGroupData.forum_permissions, #{Group.permissions_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
+	<%= "<li class='change_forum_permissions'>#{link_to_function('[change forum permissions]', "editPermissions(#{group.id}, gGroupData.forum_permissions, #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 	<% if threads.length == 0 -%>
 			<div class="empty_list_text" >There have been no discussions started in this group.</div>
 		<% else -%>
