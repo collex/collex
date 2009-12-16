@@ -812,22 +812,28 @@ var singleInputDlg = function(params, input) {
 	var target_els = params.target_els;
 	var extraParams = params.extraParams ? params.extraParams : {};
 	var noDefault = params.noDefault;
+	var pleaseWaitMsg = params.pleaseWaitMsg ? params.pleaseWaitMsg : "Please wait...";
+	var dlg = null;
 
 	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
 	this.class_type = 'TextInputDlg';	// for debugging
 
 	// private variables
 	//var This = this;
+	var addCancelToSuccess = function(resp) {
+		dlg.cancel();
+		if(onSuccess)
+			onSuccess(resp);
+	};
 
 	// privileged functions
 	this.ok = function(event, params2)
 	{
-		params2.dlg.cancel();
-
+		params2.dlg.setFlash(pleaseWaitMsg, false);
 		// Recursively run through the list of actions we were passed.
 		var data = params2.dlg.getAllData();
 		extraParams[id] = data[id];
-		recurseUpdateWithAjax(actions, target_els, onSuccess, onFailure, extraParams);
+		recurseUpdateWithAjax(actions, target_els, addCancelToSuccess, onFailure, extraParams);
 //			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
 //			updateWithAjax(ajaxparams);
 	};
@@ -843,7 +849,7 @@ var singleInputDlg = function(params, input) {
 		dlgLayout.rows[1][1].isDefault = null;
 
 	var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
-	var dlg = new GeneralDialog(dlgparams);
+	dlg = new GeneralDialog(dlgparams);
 	dlg.changePage('layout', dlg.makeId(id));
 	dlg.center();
 };
