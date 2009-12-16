@@ -138,26 +138,57 @@ class Group < ActiveRecord::Base
 	#
 	# Actions
 	#
-	def invite_members(emails)
+	def split_by_all_delimiters(emails)
+		ret = []
 		arr = emails.split("\n")
+		arr.each { |email|
+			arr2 = email.split(' ')
+			arr2.each { |email2|
+				arr3 = email2.split(',')
+				arr3.each { |email3|
+					arr4 = email3.split(';')
+					arr4.each { |email4|
+						ret.push(email4)
+					}
+				}
+			}
+		}
+		return ret
+	end
+
+	def invite_members(emails)
+		msgs = ""
+		arr = split_by_all_delimiters(emails)
 		arr.each { |email|
 			email = email.strip()
 			if email.length > 0
 				user = COLLEX_MANAGER.find_by_email(email)
-				if (user == nil)	# inviting a user who doesn't have a login
+				if (user == nil)	# either inviting a user who doesn't have a login, or using the login id
 					user_id = nil
+					user = User.find_by_username(email)
+					if user != nil
+						user_id = user.id
+						email = user.email
+					end
 				else
 					user_id = user.id
 				end
 
 				gu = GroupsUser.find_by_group_id_and_email(self.id, email)
 				if gu == nil	# don't invite someone twice
-					gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
-					gu.save!
-					LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :request_id => gu.id, :has_joined => user_id != nil }, email)
+					begin
+						gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
+						gu.save!
+						LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :request_id => gu.id, :has_joined => user_id != nil }, email)
+					rescue Net::SMTPFatalError
+						msgs += "Error sending email to address \"#{email}\".<br />"
+						gu.delete
+					end
 				end
 			end
 		}
+		return nil if msgs.length == 0
+		return msgs
 	end
 
 	#

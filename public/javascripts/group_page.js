@@ -141,12 +141,19 @@ var InviteMembersDlg = Class.create({
 	initialize: function (group_id) {
 		this.class_type = 'InviteMembersDlg';	// for debugging
 
+		var failureMsg = function(resp) {
+			var str = "Some or all of your invitees have not been invited. Please check their email address and try again.<br />" + resp.responseText;
+			new MessageBoxDlg("Members Not Invited", str);
+		};
+
 		new TextAreaInputDlg({
-			title: 'Invite Members',
-			prompt: 'Invite new people to join this group',
+			title: 'Invite People to Join This Group',
+			prompt: 'Invite new people to join this group.<br />(Enter a list of email addresses, one per line.)',
+			pleaseWaitMsg: 'Sending email to invitees. Please wait...',
 			id: 'emails',
 			okStr: 'Save',
 			extraParams: { id: group_id },
+			onFailure: failureMsg,
 			actions: [ '/groups/update' ],
 			target_els: [ 'group_details' ] });	}
 });

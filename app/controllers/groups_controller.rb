@@ -242,8 +242,9 @@ class GroupsController < ApplicationController
     @group = Group.find(params[:id])
 		@group.update_attributes(params[:group])
 
+		err_msg = nil
 		if params[:emails]
-			@group.invite_members(params[:emails])
+			err_msg = @group.invite_members(params[:emails])
 		end
 #    respond_to do |format|
 #      if @group.update_attributes(params[:group])
@@ -256,7 +257,11 @@ class GroupsController < ApplicationController
 #      end
 #    end
 		curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
-		render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+		if err_msg == nil
+			render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+		else
+			render :text => err_msg, :status => :bad_request
+		end
   end
 
   # DELETE /groups/1
