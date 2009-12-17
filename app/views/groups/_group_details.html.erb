@@ -55,11 +55,12 @@
 		<%= "<li>#{link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership);", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 	<% if user_id -%>
 		<% pending_id = group.get_pending_id(user_id) -%>
-		<%= "<li>#{link_to('[accept invitation to join]', { :controller => 'groups', :action => 'join_group', :id => pending_id }, { :method => :post, :class => 'nav_link' })}</li>" if pending_id %>
-		<%= "<li>#{link_to('[join]', { :controller => 'groups', :action => 'request_join', :group_id => group.id, :user_id => user_id }, { :method => :post, :class => 'nav_link' })}</li>" if group.can_request_to_join(user_id) %>
+		<%= "<li>#{link_to_function('[accept invitation to join]', "accept_invitation(#{pending_id});", :class => 'nav_link');}</li>" if pending_id %>
+		<%= "<li>#{link_to_function('[ignore invitation to join]', "decline_invitation(#{pending_id});", :class => 'nav_link');}</li>" if pending_id %>
+		<%= "<li>#{link_to_function('[join]', "request_to_join(#{group.id}, #{user_id});", :class => 'nav_link' )}</li>" if !pending_id && group.can_request_to_join(user_id) %>
 		<%= "<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>" if group.can_leave_group(user_id) %>
 		<%= "<li>[a request to join this group is pending acceptance by the moderator]</li>" if group.is_request_pending(user_id) -%>
-		<%= "<li>#{link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: #{group.license_type}, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" })}</li>" if group.can_edit(user_id) %>
+		<%= "<li>#{link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" })}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link')}</li>" if group.can_delete(user_id) %>
 		<% if group.can_edit(user_id) -%>
@@ -67,7 +68,7 @@
 			<% if gus.length > 0 -%>
 			<li>The following people have requested to join this group:</li>
 				<% gus.each { |gu| -%>
-				<li><%= User.find(gu.user_id).fullname %>&nbsp;<%= link_to("[accept]", { :controller => 'groups', :action => 'accept_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %>&nbsp;<%= link_to("[deny]", { :controller => 'groups', :action => 'decline_request', :id => Group.id_obfuscator(gu.id) }, { :class => 'nav_link', :method => :post }) %></li>
+				<li><%= get_user_link(gu.user_id) %>&nbsp;<%= link_to_function("[accept]", "accept_request(#{Group.id_obfuscator(gu.id)});", :class => 'nav_link') %>&nbsp;<%= link_to_function("[deny]", "decline_request(#{Group.id_obfuscator(gu.id)});", :class => 'nav_link') %></li>
 				<% } -%>
 			<% end -%>
 		<% end -%>

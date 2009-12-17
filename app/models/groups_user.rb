@@ -101,7 +101,8 @@ class GroupsUser < ActiveRecord::Base
 
 	def self.get_group_from_obfuscated_id(obf)
 		id = Group.id_retriever(obf)
-		gu = self.find(id)
+		gu = self.find_by_id(id)
+		return nil if gu == nil
 		return gu.group_id
 	end
 end

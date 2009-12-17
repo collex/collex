@@ -190,6 +190,8 @@ var editType = function(id, value, groupTypeOptions) {
 		prompt: 'Type',
 		id: 'group[group_type]',
 		options: groupTypeOptions,
+		explanation: [ 'This group is being used for scholarly collaboration. File this group under the "Community" section.',
+			'This group is being used to teach. File this group under the "Classroom" section.' ],
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
@@ -209,19 +211,32 @@ var editTitle = function(id, value) {
 		target_els: [ 'group_details' ] });
 };
 
-//var editLicense = function(id, value) {
-//	var groupLicenseOptions = [ { value: '', text: '(inherit)' },
-//		{ value: '1', text: 'Attribution' }, { value: '2', text: 'Attribution Share Alike' } , { value: '3', text: 'Attribution No Derivatives' },
-//		{ value: '4', text: 'Attribution Non-Commercial' }, { value: '5', text: 'Attribution Non-Commercial Share Alike' } , { value: '6', text: 'Attribution Non-Commercial No Derivatives' } ];
-//	new SelectInputDlg({
-//		title: 'Edit License',
-//		prompt: 'License',
-//		id: 'group[license_type]',
-//		options: groupLicenseOptions,
-//		okStr: 'Save',
-//		value: value,
-//		extraParams: { id: id },
-//		actions: [ '/groups/update' ],
-//		target_els: [ 'group_details' ] });
-//};
-//
+var request_to_join = function(group_id, user_id) {
+	ajaxWithProgressDlg(['/groups/request_join'], ['group_details'],
+		{ title: "Request To Join Group", waitMessage: "Please wait...", completeMessage: 'A request to join this group is pending acceptance by the moderator.' },
+		{group_id: group_id, user_id: user_id });
+};
+
+var accept_request = function(id) {
+	ajaxWithProgressDlg(['/groups/accept_request'], ['group_details'],
+		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user is now a member of the group.' },
+		{id: id });
+};
+
+var decline_request = function(id) {
+	ajaxWithProgressDlg(['/groups/decline_request'], ['group_details'],
+		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user\'s request to join the group has been denied.' },
+		{id: id });
+};
+
+var accept_invitation = function(pending_id) {
+	ajaxWithProgressDlg(['/groups/accept_invitation'], ['group_details'],
+		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'You are now a member of this group.' },
+		{id: pending_id });
+};
+
+var decline_invitation = function(pending_id) {
+	ajaxWithProgressDlg(['/groups/decline_invitation'], ['group_details'],
+		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'You have been removed from this group.' },
+		{id: pending_id });
+};

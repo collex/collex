@@ -502,6 +502,7 @@ a.footnote_tip:hover span.tip {
 
 .select_dlg_input {
 	margin-left: 15px;
+	padding-right:10px;
 }
 
 .text_area_dlg_input {

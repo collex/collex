@@ -17,8 +17,8 @@
 ActionController::Routing::Routes.draw do |map|
 	map.accept_request '/groups/accept_request', :controller => 'groups', :action => 'accept_request'
   map.decline_request '/groups/decline_request', :controller => 'groups', :action => 'decline_request'
-  map.decline_group '/groups/decline_group', :controller => 'groups', :action => 'decline_group'
-  map.join_group '/groups/join_group', :controller => 'groups', :action => 'join_group'
+  map.decline_invitaion '/groups/decline_invitation', :controller => 'groups', :action => 'decline_invitation'
+  map.accept_invitation '/groups/accept_invitation', :controller => 'groups', :action => 'accept_invitation'
 	map.acknowledge_notification '/groups/acknowledge_notification', :controller => 'groups', :action => 'acknowledge_notification'
 	map.create_login '/groups/create_login', :controller => 'groups', :action => 'create_login'
 

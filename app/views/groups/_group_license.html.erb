@@ -16,6 +16,10 @@
 # ----------------------------------------------------------------------------
 %>
 <%# group_license: params: ActiveRecord group -%>
+<script type="text/javascript">
+	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
+	gLicenseType = <%= group.license_type == nil ? 0 : group.license_type %>;
+</script>
 <%= "Each exhibit can specify a license." if !Exhibit.is_license_specified(group.license_type) %>
 <% if Exhibit.is_license_specified(group.license_type) %>
 	<div><%= Exhibit.get_sharing_icon_url(group.license_type) %></div>

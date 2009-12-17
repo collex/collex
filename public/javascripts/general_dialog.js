@@ -736,6 +736,21 @@ function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
 	updateWithAjax(ajaxparams);
 }
 
+var ajaxWithProgressDlg = function(actions, els, params, ajaxParams)
+{
+	var title = params.title;
+	var waitMessage = params.waitMessage;
+	var completeMessage = params.completeMessage;
+
+	var onSuccess = function(resp) {
+		var el = $$(".message_box_label");
+		if (el.length > 0)
+			el[0].update(completeMessage);
+	};
+	new MessageBoxDlg(title, waitMessage);
+	recurseUpdateWithAjax(actions, els, onSuccess, null, ajaxParams);
+};
+
 var ConfirmAjaxDlg = Class.create({
 	initialize: function (title, message, params) {
 		// This puts up a confirmation dialog before doing an ajax update.

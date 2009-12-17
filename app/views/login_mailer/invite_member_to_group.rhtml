@@ -16,10 +16,11 @@
 
 You have been invited to join the group <%= @group_name -%>.
 
-If you do not wish to join this group, click here: <%= url_for :controller => 'groups', :action => 'decline_group', :id => Group.id_obfuscator(@request_id), :only_path => false %>
-
 <% if !@has_joined -%>
 To join this group, you must first create a login ID on <%= SITE_NAME %>.
 <% end %>
 
-If you wish to join this group, click here: <%= url_for :controller => 'groups', :action => 'join_group', :id => Group.id_obfuscator(@request_id), :only_path => false %>
+If you wish to join this group, click here: <%= url_for :controller => 'groups', :action => 'accept_invitation', :id => Group.id_obfuscator(@request_id), :only_path => false %>
+
+If you do not wish to join this group, click here: <%= url_for :controller => 'groups', :action => 'decline_invitation', :id => Group.id_obfuscator(@request_id), :only_path => false %>
+

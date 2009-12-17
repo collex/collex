@@ -12,19 +12,36 @@ class GroupsController < ApplicationController
   end
   public
 
+	# The following 4 calls can come from either the web or the email link. We have to go to
+	# different pages in the two cases. The way to tell is the email link is GET and the web is POST.
 	def accept_request
+		from_web = request.request_method == :post
+
 		success = GroupsUser.accept_request(params[:id])
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-		redirect_to :action => 'acknowledge_notification', :type => 'accept_request', :success => success, :group_id => group_id
+		if from_web
+			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+		else
+			redirect_to :action => 'acknowledge_notification', :type => 'accept_request', :success => success, :group_id => group_id
+		end
 	end
 
 	def decline_request
-		success = GroupsUser.decline_request(params[:id])
+		from_web = request.request_method == :post
+
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-		redirect_to :action => 'acknowledge_notification', :type => 'decline_request', :success => success, :group_id => group_id
+		success = GroupsUser.decline_request(params[:id])
+		if from_web
+			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+		else
+			redirect_to :action => 'acknowledge_notification', :type => 'decline_request', :success => success, :group_id => group_id
+		end
 	end
 
-	def join_group
+	def accept_invitation
+		from_web = request.request_method == :post
+		from_web = false if params[:from_create]	# we can also be redirected here from the create user id page.
+
 		has_login = GroupsUser.has_login(params[:id])
 		if has_login
 			success = GroupsUser.join_group(params[:id])
@@ -32,16 +49,33 @@ class GroupsController < ApplicationController
 			user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
 			user = User.find(user_id)
 			session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
-			redirect_to :action => 'acknowledge_notification', :type => 'join_group', :success => success, :group_id => group_id
+			if from_web
+				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+			else
+				redirect_to :action => 'acknowledge_notification', :type => 'join_group', :success => success, :group_id => group_id
+			end
 		else
 			redirect_to :action => 'create_login', :id => Group.id_retriever(params[:id]), :message => ''
+		end
+	end
+
+	def decline_invitation
+		from_web = request.request_method == :post
+
+		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
+		success = GroupsUser.decline_group(params[:id])
+		if from_web
+			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+		else
+			redirect_to :action => 'acknowledge_notification', :type => 'decline_group', :success => success, :group_id => group_id
 		end
 	end
 
 	def create_login_create
 		gu_id = params[:id]
 		user_name = params[:user_name]
-		email = params[:email]
+		gu = GroupsUser.find(gu_id)
+		email = gu.email
 		password = params[:password]
 		password2 = params[:password2]
 		if user_name.length == 0
@@ -62,15 +96,10 @@ class GroupsController < ApplicationController
 			return
 		end
 
-		session[:user] = COLLEX_MANAGER.create_user(username, password.strip, email)
+		session[:user] = COLLEX_MANAGER.create_user(user_name, password.strip, email)
 		params[:id] = Group.id_obfuscator(gu_id)
-		join_group()
-	end
-
-	def decline_group
-		success = GroupsUser.decline_group(params[:id])
-		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-		redirect_to :action => 'acknowledge_notification', :type => 'decline_group', :success => success, :group_id => group_id
+		params[:from_create] = true
+		accept_invitation()
 	end
 
 	 def leave_group
@@ -84,7 +113,7 @@ class GroupsController < ApplicationController
 		 group_id = params[:group_id]
 		 user_id = params[:user_id]
 		 GroupsUser.request_join(group_id, user_id)
-		 redirect_to :back
+		 render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => user_id }
 	 end
 
 	def edit_membership
@@ -258,7 +287,11 @@ class GroupsController < ApplicationController
 #    end
 		curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil
-			render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+			if params[:group] != nil && params[:group].length == 1 && params[:group][:license_type] != nil
+				render :partial => 'group_license', :locals => { :group => @group }
+			else
+				render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+			end
 		else
 			render :text => err_msg, :status => :bad_request
 		end
