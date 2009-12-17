@@ -95,39 +95,89 @@ var EditMembershipDlg = Class.create({
 	initialize: function (group_id, membership) {
 		this.class_type = 'EditMembershipDlg';	// for debugging
 
+		var initDataGrid = function(params) {
+			var element_id = params.element_id;
+			var parent = $(element_id).up();
+			$(element_id).remove();
+			parent.appendChild(new Element('div', { id: element_id }));
+
+			var fields = params.fields;
+			var data = params.data;
+			var paginator_id = params.paginator_id;
+			parent = $(paginator_id).up();
+			$(paginator_id).remove();
+			parent.appendChild(new Element('div', { id: paginator_id }));
+			var highlight = params.highlight;
+			var initialPage = parseInt("" + (highlight/10+1));
+
+			var columnDefs = [];
+			fields.each(function(field) {
+				columnDefs.push({ key: field, sortable: false, resizable: true });
+			});
+
+			var dataSource = new YAHOO.util.DataSource(data);
+			dataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+			dataSource.responseSchema = { fields: fields };
+			var oConfigs = {  };
+			if (data.length > 10) {
+				oConfigs.paginator = new YAHOO.widget.Paginator({
+					rowsPerPage: 10,
+					containers: paginator_id,
+					template : "{PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink}"
+				});
+			}
+			var dataTable = new YAHOO.widget.DataTable(element_id,
+					columnDefs, dataSource, oConfigs);
+			if (oConfigs.paginator && highlight)
+				oConfigs.paginator.setPage(initialPage, false);
+			if (highlight)
+				dataTable.selectRow(highlight);
+
+			return {
+				oDS: dataSource,
+				oDT: dataTable
+			};
+		};
+
 		var dlg = null;
-		
+
 		var sendWithAjax = function (event, params)
 		{
+			var onSuccess = function(resp) {
+					dlg.cancel();
+			};
+			var onFailure = function(resp) {
+				dlg.setFlash(resp.responseText, true);
+			};
 			var data = dlg.getAllData();
 			var url = params.destination;
-			new Ajax.Request(url, {
-				parameters : data,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
+			recurseUpdateWithAjax([url], ['group_details'], onSuccess, onFailure, data);
 		};
 
 		var show = function () {
 			var layout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Change Membership', klass: 'new_exhibit_title' }, { hidden: 'id', value: group_id } ]
+						[ { text: "paginator", id: "membership_pagination", klass: "pagination"} ],
+						[ { text: 'grid', id: 'membership_data_grid' }, { hidden: 'id', value: group_id } ]
 					]
 				};
 
+			var membership2 = [];
+
 			membership.each(function(member) {
-				layout.rows.push([{ text: member.name, klass: 'edit_member_name', value: member.role === 'editor' ? '1' : '0' }, { checkbox: 'group[' + member.id + '[editor]]', value: member.role === 'editor' ? '1' : '0' }, { text: "editor?", klass: 'edit_member_label' }, { checkbox: 'group[' + member.id + '[delete]]' }, { text: "delete?", klass: 'edit_member_label' }]);
+				var checked = member.role === 'editor' ? ' checked="true"' : '';
+				membership2.push({ Name: member.name,
+					"Editor?": '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[editor]]"'+checked+'/>',
+					Delete: '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[delete]]"/>'
+				});
 			});
 			layout.rows.push([{ rowClass: 'last_row' }, { button: 'Save', url: 'edit_membership', callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }]);
 
-			var params = { this_id: "new_group_wizard", pages: [ layout ], body_style: "edit_group_membership_div", row_style: "new_exhibit_row", title: "Edit Group Membership" };
+			var params = { this_id: "new_group_wizard", pages: [ layout ], body_style: "edit_group_membership_div", row_style: "new_exhibit_row", title: "Change Membership" };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', null);
+			initDataGrid({ element_id: "membership_data_grid", paginator_id: "membership_pagination", fields: ["Name","Editor?", "Delete"], data: membership2 });
 			dlg.center();
 
 			return;

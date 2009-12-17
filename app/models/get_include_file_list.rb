@@ -32,7 +32,10 @@ class GetIncludeFileList
 			"/build/connection/connection",
 			"/build/menu/menu",
 			"/build/editor/editor",
-			"/build/resize/resize"
+			"/build/resize/resize",
+			"/build/paginator/paginator",
+			"/build/datasource/datasource",
+			"/build/datatable/datatable"
 		]
 		yui = yui + yui_most if page != :about && page != :news && page != :view_exhibit
 
@@ -89,7 +92,9 @@ class GetIncludeFileList
 			"/build/container/assets/skins/sam/container",
 			"/build/editor/assets/skins/sam/editor",
 			"/build/resize/assets/skins/sam/resize",
-			"/build/assets/skins/sam/skin"
+			"/build/assets/skins/sam/skin",
+			"/build/paginator/assets/skins/sam/paginator",
+			"/build/datatable/assets/skins/sam/datatable"
 			]
 		yui = yui_most if page != :about && page != :news && page != :view_exhibit && page != :print_exhibit
 

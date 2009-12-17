@@ -118,8 +118,10 @@ class GroupsController < ApplicationController
 
 	def edit_membership
 		group = params[:group]
+		group_id = nil
 		group.each {|id,value|
 			gu = GroupsUser.find(id)
+			group_id = gu.group_id
 			if value['delete'] == 'true'
 				gu.destroy
 			else
@@ -131,7 +133,7 @@ class GroupsController < ApplicationController
 			end
 		}
 
-		render :text => "ok"
+		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 	end
 
 	def remove_profile_picture
