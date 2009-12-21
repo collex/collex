@@ -111,6 +111,7 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37' } ],
 						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType } ],
 						[ { text: 'Permissions:', klass: 'groups_label' }, { select: 'group[forum_permissions]', options: permissions } ],
+						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};

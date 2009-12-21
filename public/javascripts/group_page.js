@@ -234,6 +234,20 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		target_els: [ 'group_details' ] });
 };
 
+var editShowMembership = function(id, value) {
+	new SelectInputDlg({
+		title: 'Change Member\'s Visibility',
+		prompt: 'Visibility',
+		id: 'group[show_membership]',
+		options:  [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}],
+		explanation: [ "The profiles of members of this group will be visible to other members of this group", "The profiles of members of this group will only be visible to the editors of this group"],
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/groups/update' ],
+		target_els: [ 'group_details' ] });
+};
+
 var editType = function(id, value, groupTypeOptions) {
 	new SelectInputDlg({
 		title: 'Edit Group Type',

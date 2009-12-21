@@ -156,7 +156,7 @@ class Group < ActiveRecord::Base
 		return ret
 	end
 
-	def invite_members(emails)
+	def invite_members(editor_email, emails)
 		msgs = ""
 		arr = split_by_all_delimiters(emails)
 		arr.each { |email|
@@ -179,7 +179,7 @@ class Group < ActiveRecord::Base
 					begin
 						gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
 						gu.save!
-						LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :request_id => gu.id, :has_joined => user_id != nil }, email)
+						LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :request_id => gu.id, :has_joined => user_id != nil }, email, editor_email)
 					rescue Net::SMTPFatalError
 						msgs += "Error sending email to address \"#{email}\".<br />"
 						gu.delete

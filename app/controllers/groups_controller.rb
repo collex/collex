@@ -230,6 +230,8 @@ class GroupsController < ApplicationController
 	#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 	#				end
 				end
+			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
+			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
 			@group = Group.new(params[:group])
 			@group.use_styles = 0
 			@group.image = image
@@ -244,7 +246,7 @@ class GroupsController < ApplicationController
 				end
 				if err == false
 					flash = "OK:#{@group.id}"
-					@group.invite_members(params[:emails])
+					@group.invite_members(User.find(get_curr_user_id()).email, params[:emails])
 				end
 			else
 				flash = "Error creating group"
@@ -271,11 +273,13 @@ class GroupsController < ApplicationController
   # PUT /groups/1.xml
   def update
     @group = Group.find(params[:id])
+		params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
+		params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
 		@group.update_attributes(params[:group])
 
 		err_msg = nil
 		if params[:emails]
-			err_msg = @group.invite_members(params[:emails])
+			err_msg = @group.invite_members(User.find(get_curr_user_id()).email, params[:emails])
 		end
 #    respond_to do |format|
 #      if @group.update_attributes(params[:group])
@@ -290,7 +294,7 @@ class GroupsController < ApplicationController
 		curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil
 			if params[:group] != nil && params[:group].length == 1 && params[:group][:license_type] != nil
-				render :partial => 'group_license', :locals => { :group => @group }
+				render :partial => 'group_license', :locals => { :group => @group, :user_id => curr_user.id }
 			else
 				render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
 			end

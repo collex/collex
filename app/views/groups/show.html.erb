@@ -29,6 +29,6 @@
 	</div>
 	<div class="clear_both"></div>
 	<div id="group_license">
-		<%= render :partial => 'group_license', :locals => { :group => @group } %>
+		<%= render :partial => 'group_license', :locals => { :group => @group, :user_id => curr_user_id } %>
 	</div>
 </div>

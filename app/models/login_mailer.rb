@@ -75,12 +75,14 @@ class LoginMailer < ActionMailer::Base
 	#
 	# Groups
 	#
-	def invite_member_to_group(params, recipient)
+	def invite_member_to_group(params, recipient, editor_email)
+		ActionMailer::Base.smtp_settings[:user_name] = 'scott@performantsoftware.com'
     @subject    = "[#{SITE_NAME}] Invitation to join a group"
     @body       = params
     @recipients = recipient
     @from       = 'mailto:technologies@nines.org'
-    @headers    = {}
+		@reply_to = editor_email
+    @headers    = { "return-path" => editor_email }
 	end
 
 	def request_to_join_group(params, recipient)
@@ -88,6 +90,7 @@ class LoginMailer < ActionMailer::Base
     @body       = params
     @recipients = recipient
     @from       = 'mailto:technologies@nines.org'
-    @headers    = {}
+		@reply_to = params[:email]
+    @headers    = { "return-path" => params[:email] }
 	end
 end

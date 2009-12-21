@@ -153,10 +153,11 @@ module DiscussionThreadsHelper
 		group_comment = ""
 		if thread.group_id != nil && thread.group_id > 0
 			group = Group.find(thread.group_id)
+			group_link = link_to(group.name, { :controller => 'groups', :action => group.id }, {:class => 'nav_link'} )
 			group_comment = case group.forum_permissions
-				when 'hidden' then "A private discussion for members of #{group.name}"
-				when 'readonly' then "A public discussion featuring members of #{group.name}"
-				when 'full' then "An open discussion sponsored by #{group.name}"
+				when 'hidden' then "A private discussion for members of #{group_link}"
+				when 'readonly' then "A public discussion featuring members of #{group_link}"
+				when 'full' then "An open discussion sponsored by #{group.link}"
 				else ''
 			end
 			readonly = user_can_reply(comment) == false

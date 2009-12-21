@@ -71,7 +71,7 @@
 }
 
 .group_editors {
-	padding-top: 1em;
+
 }
 
 #group_details {
@@ -104,7 +104,7 @@
 .group_details_center h1 {
 	font-size: 2em;
 	margin-top: 0px;
-	margin-bottom: .6em;
+	margin-bottom: .2em;
 }
 
 .group_details_right {
@@ -182,4 +182,19 @@
 	padding-top: .9em;
 	padding-bottom:0.7em;
 	margin-left:-6px;
+}
+
+.group_edit_title_link {
+	font-size: 14px;
+	font-weight: normal;
+	padding-left: 2em;
+}
+
+.group_details_label {
+	font-weight: bold;
+}
+
+.group_description_label {
+	padding-top: .6em;
+	padding-bottom: .6em;
 }
