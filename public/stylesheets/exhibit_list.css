@@ -68,6 +68,9 @@
 }
 
 .group_description {
+	padding-left: 1em;
+	padding-bottom: 1em;
+	font-style: italic;
 }
 
 .group_editors {
@@ -98,7 +101,7 @@
 
 .group_details_center {
 	padding-left:174px;
-	padding-right:170px;
+	padding-right:370px;
 }
 
 .group_details_center h1 {
@@ -111,7 +114,7 @@
 	float: right;
 	padding-left:1em;
 	min-height: 200px;
-	width:180px;
+	width:380px;
 }
 
 .group_link_list {
@@ -197,4 +200,14 @@
 .group_description_label {
 	padding-top: .6em;
 	padding-bottom: .6em;
+}
+
+.group_member_palette_items {
+	overflow:auto;
+	height:120px;
+	/*width:338px;*/
+}
+
+.group_member_palette_items td {
+	padding: 0.3em;
 }

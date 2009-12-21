@@ -129,7 +129,8 @@ class Group < ActiveRecord::Base
 		ret = []
 		gus.each { |gu|
 			if gu.pending_invite == false && gu.pending_request == false
-				ret.push({ :name => User.find(gu.user_id).fullname, :id => gu.id, :role => gu.role })
+				user = User.find(gu.user_id)
+				ret.push({ :name => user.fullname, :user_id => user.id, :id => gu.id, :role => gu.role })
 			end
 		}
 		return ret

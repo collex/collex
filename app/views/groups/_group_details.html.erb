@@ -17,7 +17,8 @@
 <%# group_details : parameters: ActiveRecord group, int user_id -%>
 <script type="text/javascript">
 	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
-	gMembership = <%= group.get_membership_list().to_json() %>;
+	<% membership = group.get_membership_list() -%>
+	gMembership = <%= membership.to_json() %>;
 	gGroupData = <%= group.to_json() %>.group;
 </script>
 <div class="group_details_left">
@@ -51,6 +52,31 @@
 <div class="group_details_right">
 	<ul class="group_link_list">
 		<!-- <li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li> -->
+		<% if group.can_edit(user_id) || group.show_membership %>
+		<% membership.insert(0, { :user_id => group.owner}) -%>
+		<%# 0.upto(5) do membership = membership + membership end -%>
+		<li><span class="group_details_label">Group Membership</span>
+		<div class="group_member_palette_items">
+		<table>
+			<% count = 0 -%>
+			<% 0.upto((membership.length/11.0).ceil()) do -%>
+				<tr>
+					<% 0.upto(6) do -%>
+						<td>
+							<% if count < membership.length -%>
+								<%= get_user_link_with_thumbnail(membership[count][:user_id], 25) %>
+								<% count = count + 1 -%>
+							<% else -%>
+								<div style="width:25px;height:25px;"></div>
+							<% end -%>
+						</td>
+					<% end -%>
+				</tr>
+			<% end -%>
+		</table>
+		</div>
+		</li>
+		<% end -%>
 		<%= "<li>#{link_to_function('[invite users to join]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership);", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to_function("[change member's visibility]", "editShowMembership(#{group.id}, '#{group.show_membership == true ? 'Yes' : 'No' }'); return false;", { :class => "nav_link" })}</li>" if group.can_edit(user_id) %>

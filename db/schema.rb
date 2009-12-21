@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091204215726) do
+ActiveRecord::Schema.define(:version => 20091221192635) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -214,6 +214,7 @@ ActiveRecord::Schema.define(:version => 20091204215726) do
     t.string   "footnote_font_name"
     t.string   "footnote_font_size"
     t.integer  "use_styles",             :limit => 10, :precision => 10, :scale => 0
+    t.boolean  "show_membership"
   end
 
   create_table "groups_users", :force => true do |t|
