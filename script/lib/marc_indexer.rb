@@ -26,6 +26,39 @@ class MARC::Record
   include MARCEXT::Record
 end
 
+# Monkey patch so that it can take a record count
+class Solr::Indexer
+	def set_max(max)
+		@max_records = max
+	end
+  def index()
+    buffer = []
+		count = 0
+    @data_source.each do |record|
+			count += 1
+			if @max_records == nil || count <= @max_records
+				document = @mapper.map(record)
+
+				# TODO: check arrity of block, if 3, pass counter as 3rd argument
+				yield(record, document) if block_given? # TODO check return of block, if not true then don't index, or perhaps if document.empty?
+
+				buffer << document
+
+				if !@buffer_docs || buffer.size == @buffer_docs
+					add_docs(buffer)
+					buffer.clear
+				end
+			else
+				break
+			end
+    end
+    add_docs(buffer) if !buffer.empty?
+
+    @solr.commit unless @debug
+  end
+end
+
+
 # # IS THIS ACTUALLY USED ANYWHERE???
 $KCODE = 'UTF8'
 
@@ -42,8 +75,15 @@ class MarcIndexer
 #                  ['950','a'],['950','b'],
 #                  ":next=html/Cannedresultsframe.html:bad=error/badsearchframe.html" ],
     'lilly' => [ "http://www.iucat.iu.edu/uhtbin/cgisirsi/x/0/0/5?library=ALL&searchdata1=^C", ['001'] ],
-    'uva_library' => [ "http://virgo.lib.virginia.edu/uhtbin/cgisirsi/uva/0/0/5?searchdata1=", :parse_uva_id, "{CKEY}"  ]        
+    'uva_library' => [ "http://virgo.lib.virginia.edu/uhtbin/cgisirsi/uva/0/0/5?searchdata1=", :parse_uva_id, "{CKEY}"  ],
+		'estc' => [ "http:/estc.com?search="]
   }
+
+	NEEDS_FEDERATION = {
+		'bancroft' => true,
+		'lilly' => true,
+		'estc' => false
+	}
   
   def self.run( args )
     
@@ -56,7 +96,7 @@ class MarcIndexer
       return
     end
 
-		if args[:federation].nil?
+		if args[:federation].nil? && NEEDS_FEDERATION[args[:archive]]
       puts "ERROR: No federation specified, use -f option to specify a federation."
       return
 		end
@@ -78,7 +118,7 @@ class MarcIndexer
     @forgiving_marc_decoding = args[:forgiving]
     @indexer_config = {:debug => args[:debug], :timeout => 1200, :solr_url => args[:solr_url], :buffer_docs => 500 }     
     @archive_id = args[:archive]
-		@max_records = args[:max_records]
+		@max_records = args[:max_records].to_i
     
     unless args[:target_uri_file].nil?
       # load a ruby file which defines the @target_uris hash
@@ -126,6 +166,7 @@ class MarcIndexer
     marc_data_source = MARC::ForgivingReader.new(marc_file) #, {:forgiving => @forgiving_marc_decoding})
     reset_progress_meter
     indexer = Solr::Indexer.new(marc_data_source, mapping, @indexer_config)
+		indexer.set_max(@max_records) if @max_records
 		this_doc = nil
 		begin
 			indexer.index do |marc_record, solr_document|
@@ -157,10 +198,10 @@ class MarcIndexer
 #					end
 				end
 
-				if  @max_records && @file_record_count >= @max_records
-					puts "#\n# Stopped indexing by request after #{@file_record_count} records\n#"
-					return
-				end
+#				if  @max_records && @file_record_count >= @max_records
+#					puts "#\n# Stopped indexing by request after #{@file_record_count} records\n#"
+#					return
+#				end
 				# this record should be indexed
 				next true
 			end
@@ -221,7 +262,7 @@ class MarcIndexer
       :role_AUT => get_proc( :parse_author ), 
       :agent => get_proc( :parse_author ), 
       :archive => @archive_id,
-      :federation => @federation,
+      :federation => get_proc( :parse_federation ),
 			:has_full_text => "F",
 			:is_ocr => get_proc( :parse_is_ocr ),
       :title_sort => get_proc( :parse_title ),
@@ -261,7 +302,27 @@ class MarcIndexer
 
     extracted_data.compact.uniq
   end
-  
+
+	def parse_federation( record )
+		return @federation if @federation != nil
+		years = parse_year( record )
+		nines = false
+		eighteen = false
+		years.each { |year|
+			y = year.to_i
+			eighteen = true if y > 1680 && y < 1820
+			nines = true if y > 1780 && y < 1920
+		}
+		if nines && eighteen
+			return "NINES;18th Connect"
+		elsif nines && !eighteen
+			return "NINES"
+		elsif !nines && eighteen
+			return "18th Connect"
+		end
+		return nil
+	end
+
   def parse_uri( record )
     id = record.extract('001')
     "lib://#{@archive_id}/#{id}"

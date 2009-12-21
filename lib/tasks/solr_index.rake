@@ -167,26 +167,26 @@ namespace :solr_index do
 		end
 	end
 
-	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly])"
+	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly|estc][;max_records])"
 	task :reindex_marc => :environment do
 		if CAN_INDEX
 			require 'script/lib/marc_indexer.rb'
 			archive = ENV['archive']
+			max_records = nil
+			if archive
+				arr = archive.split(';')
+				archive = arr[0]
+				max_records = arr[1] if arr.length > 1
+			end
 			marc_path = '../marc/'
 			puts "~~~~~~~~~~~ Reindexing marc records..."
 			start_time = Time.now
-				args = { #:dir => "#{marc_path}Uva",
-									# :output_file => 'extracted.mrc',
-#									 :url_log_path => 'link_data.txt',
-									 :tool => :index,
-	#                 :solr_url => "#{SOLR_URL}/archive_#{archive}",
+				args = { :tool => :index,
 									 :forgiving => true,
 									 :debug => false,
 									 :verbose => false,
-	#								 :target_uri_file => 'script/uva_uri.rb'
-	#								 :archive => 'uva_library'
+									 :max_records => max_records
 								 }
-			#MarcIndexer.run(args) # Don't do the uva library at the moment until we figure out how
 			#args[:target_uri_file] = nil
 
 			if archive == nil || archive == 'bancroft'
@@ -208,45 +208,70 @@ namespace :solr_index do
 				args[:dir] = "#{marc_path}Lilly"
 				MarcIndexer.run(args)
 			end
+
+			if archive == nil || archive == 'estc'
+				arc = 'estc'
+				args[:archive] = arc
+				args[:solr_url] = "#{SOLR_URL}/archive_#{arc}"
+				args[:url_log_path] = "log/#{arc}_link_data.txt"
+				args[:federation] = nil	# this is calculated for each record
+				CollexEngine.create_core("archive_#{arc}")
+				args[:dir] = "#{marc_path}#{arc}"
+				MarcIndexer.run(args)
+			end
 			puts "Finished in #{(Time.now-start_time)/60} minutes."
 		end
 	end
 
-	desc "Analyze MARC records (optional param: archive=[bancroft|lilly|estc])"
+	desc "Analyze MARC records (param: archive=[bancroft|lilly|estc][;max_records])"
 	task :analyze_marc => :environment do
 		if CAN_INDEX
-			require 'script/lib/marc_genre_scanner.rb'
 			require 'script/lib/marc_indexer.rb'
 			archive = ENV['archive']
+			max_records = nil
+			if archive
+				arr = archive.split(';')
+				archive = arr[0]
+				max_records = arr[1] if arr.length > 1
+			end
 			marc_path = '../marc/'
-			puts "~~~~~~~~~~~ Scanning marc records..."
-			start_time = Time.now
-			#MarcGenreScanner.run("#{marc_path}#{archive}", true)
-				args = { :tool => :index,
-									 :forgiving => true,
-									 :debug => true,
-									 :verbose => true
-								 }
-
-				args[:archive] = archive
-				args[:solr_url] = "#{SOLR_URL}/archive_#{archive}"
-				args[:url_log_path] = "log/#{archive}_link_data.txt"
-				args[:federation] = 'NINES'
-#				CollexEngine.create_core("archive_#{archive}")
-				args[:dir] = "#{marc_path}#{archive}"
-				args[:max_records] = 100
+			if archive == nil
+				puts "Usage: Pass in an archive name with archive=XXX; there should be a folder of the same name under #{marc_path}"
+			else
+				puts "~~~~~~~~~~~ Scanning #{"the first #{max_records} " if max_records != nil}marc records in #{archive}..."
+				start_time = Time.now
+					args = { :tool => :index,
+										:forgiving => true,
+										:debug => true,
+										:verbose => true,
+										:archive => archive,
+										:solr_url => "#{SOLR_URL}/archive_#{archive}",
+										:url_log_path => "log/#{archive}_link_data.txt",
+										:federation => nil,	# this is calculated for each record
+										:dir => "#{marc_path}#{archive}",
+										:max_records => max_records
+										}
 				MarcIndexer.run(args)
-#
-#			if archive == nil || archive == 'lilly'
-#				args[:archive] = 'lilly'
-#				args[:solr_url] = "#{SOLR_URL}/archive_lilly"
-#				args[:url_log_path] = 'log/lilly_link_data.txt'
-#				args[:federation] = 'NINES'
-#				CollexEngine.create_core("archive_lilly")
-#				args[:dir] = "#{marc_path}Lilly"
-#				MarcIndexer.run(args)
-#			end
-			puts "Finished in #{(Time.now-start_time)/60} minutes."
+
+				puts "Finished in #{(Time.now-start_time)/60} minutes."
+			end
+		end
+	end
+
+	desc "Scan MARC records for genres (param: archive=[bancroft|lilly|estc])"
+	task :marc_genre_scanner => :environment do
+		if CAN_INDEX
+			require 'script/lib/marc_genre_scanner.rb'
+			marc_path = '../marc/'
+			archive = ENV['archive']
+			if archive == nil
+				puts "Usage: Pass in an archive name with archive=XXX; there should be a folder of the same name under #{marc_path}"
+			else
+				puts "~~~~~~~~~~~ Scanning for genres in #{archive}..."
+				start_time = Time.now
+				MarcGenreScanner.run("#{marc_path}#{archive}", true)
+				puts "Finished in #{(Time.now-start_time)/60} minutes."
+			end
 		end
 	end
 
