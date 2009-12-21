@@ -25,6 +25,6 @@
 	<% elsif params[:type] == 'decline_group' -%>
 	You have declined to be in the group.
 	<% end -%>
-	<%= link_to "[ return to group ]", { :controller => 'groups', :action => 'show', :id => params[:group_id] } %>
+	<%= link_to "[ return to group ]", { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' } %>
 	<div class="clear_both"></div>
 </div>

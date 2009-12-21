@@ -50,9 +50,10 @@
 </div>
 <div class="group_details_right">
 	<ul class="group_link_list">
-		<li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li>
+		<!-- <li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li> -->
 		<%= "<li>#{link_to_function('[invite users to join]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership);", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
+		<%= "<li>#{link_to_function("[change member's visibility]", "editShowMembership(#{group.id}, '#{group.show_membership == true ? 'Yes' : 'No' }'); return false;", { :class => "nav_link" })}</li>" if group.can_edit(user_id) %>
 	<% if user_id -%>
 		<% pending_id = group.get_pending_id(user_id) -%>
 		<%= "<li>#{link_to_function('[accept invitation to join]', "accept_invitation(#{pending_id});", :class => 'nav_link');}</li>" if pending_id %>
@@ -60,7 +61,7 @@
 		<%= "<li>#{link_to_function('[join]', "request_to_join(#{group.id}, #{user_id});", :class => 'nav_link' )}</li>" if !pending_id && group.can_request_to_join(user_id) %>
 		<%= "<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>" if group.can_leave_group(user_id) %>
 		<%= "<li>[a request to join this group is pending acceptance by the moderator]</li>" if group.is_request_pending(user_id) -%>
-		<%= "<li>#{link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "modify_link" })}</li>" if group.can_edit(user_id) %>
+		<%= "<li>#{link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" })}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
 		<%= "<li>#{link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link')}</li>" if group.can_delete(user_id) %>
 		<% if group.can_edit(user_id) -%>
@@ -76,17 +77,14 @@
 	</ul>
 </div>
 <div class="group_details_center">
-	<h1><%=h group.name %></h1>
-	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
-	<div class="group_editors">
-		Group Editors: <% editors = group.get_all_editors() -%>
+	<h1><%=h group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
+	<div class="group_editors"><% editors = group.get_all_editors() -%>
+		<span class="group_details_label">Group Editor<%= 's' if editors.length > 1 %>:</span>
 		<% for editor in editors -%>
 			<%= get_user_link(editor) %>&nbsp;
 		<% end -%>
 	</div>
-	<div class="group_edit_title">
-		<%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}');", :class => 'nav_link') if group.can_edit(user_id) %>
-		<%= link_to_function('[edit description]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}');", :class => 'nav_link') if group.can_edit(user_id) %>
-	</div>
+	<div class="group_description_label"><span class="group_details_label">Group Description</span> <%= link_to_function('[edit]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
 </div>
 <div class="clear_both"></div>
