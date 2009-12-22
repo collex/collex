@@ -56,6 +56,7 @@
 		<% membership.insert(0, { :user_id => group.owner}) -%>
 		<%# 0.upto(5) do membership = membership + membership end -%>
 		<li><span class="group_details_label">Group Membership</span>
+			<div class="group_member_explanation">This group has <%= pluralize(membership.length, "member")  %>. (hover over each thumbnail to see the user's name)</div>
 		<div class="group_member_palette_items">
 		<table>
 			<% count = 0 -%>

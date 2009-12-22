@@ -40,7 +40,7 @@ module DiscussionThreadsHelper
       user = User.find(user)
     end
 		img = "<img height=\"#{height}\" title=\"#{user.fullname}\" alt=\"#{user.fullname}\" src=\"#{get_user_picture(user.id, :micro)}\"/>"
-		link_to_function(img+user.fullname, "showPartialInLightBox('/my9s/show_profile?user=#{user.id}', 'Profile for #{user.fullname}'); return false;", :class => 'nav_link')
+		link_to_function(img, "showPartialInLightBox('/my9s/show_profile?user=#{user.id}', 'Profile for #{user.fullname}'); return false;", :class => 'nav_link')
   end
 
   def make_ext_link(url)
