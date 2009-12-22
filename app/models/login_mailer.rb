@@ -76,7 +76,7 @@ class LoginMailer < ActionMailer::Base
 	# Groups
 	#
 	def invite_member_to_group(params, recipient, editor_email)
-		ActionMailer::Base.smtp_settings[:user_name] = 'scott@performantsoftware.com'
+		#ActionMailer::Base.smtp_settings[:user_name] = 'scott@performantsoftware.com'
     @subject    = "[#{SITE_NAME}] Invitation to join a group"
     @body       = params
     @recipients = recipient
