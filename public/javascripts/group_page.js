@@ -304,3 +304,77 @@ var decline_invitation = function(pending_id) {
 		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'You have been removed from this group.' },
 		{id: pending_id });
 };
+
+
+var newClusterDlg = null;
+function stopNewClusterUpload(errMessage){
+	if (errMessage.startsWith('OK:'))
+		newClusterDlg.fileUploadFinished(errMessage.substring(3));
+	else
+		newClusterDlg.fileUploadError(errMessage);
+	return true;
+}
+
+var CreateNewClusterDlg = Class.create({
+	initialize: function (create_url, group_id, group_name, update_url, update_el) {
+		this.class_type = 'CreateNewClusterDlg';	// for debugging
+
+		// private variables
+		var This = this;
+		var dlg = null;
+
+		// private functions
+
+		var sendWithAjax = function (event, param)
+		{
+			// Validation
+			dlg.setFlash("", false);
+			var data = dlg.getAllData();
+			if (data['cluster[name]'].strip().length === 0) {
+				dlg.setFlash("Please enter a name for this cluster before continuing.", true);
+				return;
+			}
+
+			newClusterDlg = This;
+			dlg.setFlash('Verifying cluster creation...', false);
+			dlg.getAllData();
+			
+			dlg.submitForm('layout', create_url);	// we have to submit the form normally to get the uploaded file transmitted.
+		};
+
+		this.fileUploadError = function(errMessage) {
+			dlg.setFlash(errMessage, true);
+		};
+
+		this.fileUploadFinished = function(id) {
+			dlg.setFlash('Cluster created...', false);
+			var onSuccess = function(resp) {
+				dlg.cancel();
+			};
+			updateWithAjax({ el: update_el, action: update_url, params: { id: id }, onSuccess: onSuccess });
+		};
+
+		// privileged methods
+		var show = function () {
+			var layout = {
+					page: 'layout',
+					rows: [
+						[ { text: 'Creating New Cluster in the Group \"'+ group_name + "\"", klass: 'new_exhibit_title' }, { hidden: 'cluster[group_id]', value: group_id } ],
+						[ { text: 'Title:', klass: 'groups_label' }, { input: 'cluster[name]', klass: 'new_exhibit_input_long' } ],
+						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
+						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37' } ],
+						[ { rowClass: 'last_row' }, { button: 'Create Cluster', url: create_url, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					]
+				};
+
+			var params = { this_id: "new_cluster_wizard", pages: [ layout ], body_style: "new_cluster_div", row_style: "new_exhibit_row", title: "Create New Cluster" };
+			dlg = new GeneralDialog(params);
+			dlg.changePage('layout', "cluster_name");
+			dlg.center();
+
+			return;
+		};
+		
+		show();
+	}
+});

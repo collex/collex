@@ -216,6 +216,42 @@ class GroupsController < ApplicationController
 #    @group = Group.find(params[:id])
 #  end
 
+	def show_cluster
+		render :text => "got here"
+	end
+
+	def create_cluster
+		begin
+			if params['image'] && params['image'].length > 0
+				image = Image.new({ :uploaded_data => params['image'] })
+			end
+			cluster = Cluster.new(params[:cluster])
+			cluster.image = image
+			err = false
+			if cluster.save
+				begin
+					cluster.image.save! if cluster.image
+				rescue
+					err = true
+					cluster.delete
+					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+				end
+				if err == false
+					flash = "OK:#{cluster.group_id}"
+				end
+			else
+				flash = "Error creating cluster"
+			end
+		rescue
+			flash = "Server error when creating cluster."
+		end
+    render :text => "<script type='text/javascript'>window.top.window.stopNewClusterUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+	end
+
+	def group_exhibits_list
+		render :partial => 'group_exhibits_list', :locals => { :group => Group.find(params[:id]), :user_id => get_curr_user_id() }
+	end
+
   # POST /groups
   # POST /groups.xml
   def create

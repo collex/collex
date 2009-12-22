@@ -16,15 +16,27 @@
     # ---------------------------------------------------------------------------- -%>
 <%# group_exhibits_list : parameters: ActiveRecord group, int user_id -%>
 <div class="group_header">Exhibits</div>
-<div class="set_exhibit_style"><%= link_to_function("[set exhibit style]", "new EditFontsDlg('/groups/update', #{group.id}, gGroupData, 'group', true, 'group_details')", { :class => 'modify_link' }) if group.can_edit(user_id) %></div>
-<% exhibits = Exhibit.find_all_by_group_id(group.id) -%>
+<% if group.can_edit(user_id) -%>
+<div class="set_exhibit_style">
+	<%= link_to_function("[set exhibit style]", "new EditFontsDlg('/groups/update', #{group.id}, gGroupData, 'group', true, 'group_details')", { :class => 'modify_link' }) %>
+	<%= link_to_function("[create new cluster]", "new CreateNewClusterDlg('/groups/create_cluster', #{group.id}, '#{group.name}', 'group_exhibits_list', 'group_exhibits')", { :class => 'modify_link' }) %>
+</div>
+<% end -%>
+<% exhibits = Exhibit.find_all_by_group_id_and_is_published(group.id, 1) -%>
 <% if exhibits.length == 0 -%>
 	<div class="empty_list_text" >There have been no exhibits published in this group.</div>
 <% else -%>
 	<table>
+<% clusters = Cluster.find_all_by_group_id(group.id) -%>
+<% for cluster in clusters -%>
+	<tr>
+		<td><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_image_url(get_url_for_internal_image(cluster.image, :thumb)), :show_immediately => true } %></td>
+		<td class="exhibit_link"><%= link_to cluster.name, { :controller => 'groups', :action => 'show_cluster', :id => cluster.id }, :class => 'nav_link' %></td>
+	</tr>
+<% end -%>
 <% for exhibit in exhibits -%>
 	<tr>
-		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
+		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
 		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if is_logged_in? && exhibit.user_id == User.find_by_username(session[:user][:username]).id -%>

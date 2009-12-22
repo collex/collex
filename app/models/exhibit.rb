@@ -18,6 +18,7 @@ class Exhibit < ActiveRecord::Base
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
   has_many :exhibit_objects, :dependent=>:destroy
 	belongs_to :group
+	belongs_to :cluster
 
 	def reset_fonts_to_default
 		# set the default values for fields that were added later

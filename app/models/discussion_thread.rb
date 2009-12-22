@@ -17,6 +17,7 @@
 class DiscussionThread < ActiveRecord::Base
   belongs_to :discussion_topic
 	belongs_to :group
+	belongs_to :cluster
   has_many :discussion_comments, :order => :position
 	has_and_belongs_to_many :users
   

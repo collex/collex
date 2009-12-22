@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  description: MyText
+  group_id: 9.99
+  image_id: 9.99
+
+two:
+  name: MyString
+  description: MyText
+  group_id: 9.99
+  image_id: 9.99

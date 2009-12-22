@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091221192635) do
+ActiveRecord::Schema.define(:version => 20091222202012) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -25,6 +25,15 @@ ActiveRecord::Schema.define(:version => 20091221192635) do
   end
 
   add_index "cached_resources", ["uri"], :name => "index_cached_resources_on_uri"
+
+  create_table "clusters", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "group_id",    :limit => 10, :precision => 10, :scale => 0
+    t.integer  "image_id",    :limit => 10, :precision => 10, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "collected_items", :force => true do |t|
     t.integer  "user_id",            :limit => 10, :precision => 10, :scale => 0
@@ -68,6 +77,7 @@ ActiveRecord::Schema.define(:version => 20091221192635) do
     t.integer  "number_of_views",     :limit => 10, :precision => 10, :scale => 0
     t.integer  "license",             :limit => 10, :precision => 10, :scale => 0
     t.integer  "group_id",            :limit => 10, :precision => 10, :scale => 0
+    t.integer  "cluster_id",          :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "discussion_topics", :force => true do |t|
@@ -177,6 +187,7 @@ ActiveRecord::Schema.define(:version => 20091221192635) do
     t.string   "resource_name"
     t.integer  "group_id",               :limit => 10, :precision => 10, :scale => 0
     t.integer  "license_type",           :limit => 10, :precision => 10, :scale => 0
+    t.integer  "cluster_id",             :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "facet_categories", :force => true do |t|
