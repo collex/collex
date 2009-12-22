@@ -74,7 +74,7 @@
 }
 
 .group_editors {
-
+	padding-bottom: .6em;
 }
 
 #group_details {
@@ -198,7 +198,6 @@
 }
 
 .group_description_label {
-	padding-top: .6em;
 	padding-bottom: .6em;
 }
 
@@ -210,4 +209,5 @@
 
 .group_member_palette_items td {
 	padding: 0.3em;
+	max-width:28px;
 }

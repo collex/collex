@@ -236,7 +236,7 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 
 var editShowMembership = function(id, value) {
 	new SelectInputDlg({
-		title: 'Change Member\'s Visibility',
+		title: 'Change Membership Visibility',
 		prompt: 'Visibility',
 		id: 'group[show_membership]',
 		options:  [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}],
