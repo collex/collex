@@ -24,7 +24,7 @@
 <div class="group_details_left">
 	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image)), :show_immediately => true, :height => 120, :border => true } %>
 	<% if group.can_edit(user_id) -%>
-		<br /><%= link_to_function("[#{group.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{group.id}, '#{get_url_for_internal_image(group.image)}');", :class => 'nav_link') %>
+		<br /><%= link_to_function("[#{group.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{group.id}, '#{get_url_for_internal_image(group.image)}', 'Group');", :class => 'nav_link') %>
 		<% if group.image != nil -%>
 		<div class="profile_remove_picture"><%= link_to "Remove Thumbnail", { :controller => 'groups', :action => 'remove_profile_picture', :id => group.id }, { :id => 'remove_picture', :method => 'post' } %></div>
 		<script type="text/javascript">
@@ -109,14 +109,14 @@
 	</ul>
 </div>
 <div class="group_details_center">
-	<h1><%=h group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
+	<h1><%=h group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}', 'group');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
 	<div class="group_editors"><% editors = group.get_all_editors() -%>
 		<span class="group_details_label">Group Editor<%= 's' if editors.length > 1 %>:</span>
 		<% for editor in editors -%>
 			<%= get_user_link(editor) %>&nbsp;
 		<% end -%>
 	</div>
-	<div class="group_description_label"><span class="group_details_label">Group Description</span> <%= link_to_function('[edit]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_description_label"><span class="group_details_label">Group Description</span> <%= link_to_function('[edit]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'group');", :class => 'nav_link') if group.can_edit(user_id) %></div>
 	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
 	<div class="group_editors"><span class="group_details_label">Group Type: </span><%= Group.type_to_friendly(group.group_type) %> <%= link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json()});", :class => 'nav_link') if group.can_edit(user_id) %></div>
 	<% if group.can_edit(user_id) -%>

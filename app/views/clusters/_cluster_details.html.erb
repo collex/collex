@@ -1,0 +1,65 @@
+<% # 
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<%# cluster_details : parameters: ActiveRecord group, ActiveRecord cluster, int user_id -%>
+<script type="text/javascript">
+	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
+	<% membership = group.get_membership_list() -%>
+	gMembership = <%= membership.to_json() %>;
+	gGroupData = <%= group.to_json() %>.group;
+	gNonClusteredExhibits = <%= group.non_clustered_exhibits().to_json() %>;
+</script>
+<div class="group_details_left">
+	<% image_class = cluster.image ? cluster : group -%>
+	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_image_url(get_url_for_internal_image(image_class.image)), :show_immediately => true, :height => 120, :border => true } %>
+	<% if group.can_edit(user_id) -%>
+		<br /><%= link_to_function("[#{cluster.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{cluster.id}, '#{get_url_for_internal_image(cluster.image)}', 'Cluster');", :class => 'nav_link') %>
+		<% if cluster.image != nil -%>
+		<div class="profile_remove_picture"><%= link_to "Remove Thumbnail", { :controller => 'clusters', :action => 'remove_profile_picture', :id => cluster.id }, { :id => 'remove_picture', :method => 'post' } %></div>
+		<script type="text/javascript">
+			var createRemovePictureButton = function() {
+				var onButtonClick = function (e) {
+					postLink($("remove_picture-button").href);
+				};
+
+
+				new YAHOO.widget.Button('remove_picture', { onclick: { fn: onButtonClick } });
+				YAHOO.util.Event.onAvailable('remove_picture-button', function() {
+					$('remove_picture-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+				}, this);
+			};
+			document.observe('dom:loaded', function() {
+				createRemovePictureButton();
+			});
+			try {
+				createRemovePictureButton();
+			} catch(e) {};
+		</script>
+		<% end -%>
+	<% end -%>
+</div>
+<div class="group_details_right">
+	<ul class="group_link_list">
+		<li class="group_back_to_exhibits_link"><%= link_to "[ Back to Group Page ]", "/groups/#{group.id}", :class => 'nav_link' %></li>
+	</ul>
+</div>
+<div class="group_details_center">
+	<h1><%=h cluster.name %><%= link_to_function('[edit title]', "editTitle(#{cluster.id}, '#{cluster.name}', 'cluster');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
+	<div class="group_description_label"><span class="group_details_label">Cluster Description</span> <%= link_to_function('[edit]', "editDescription(#{cluster.id}, '#{cluster.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'cluster');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_description"><%=h(cluster.description).gsub("\n", "<br />") %></div>
+	<div class="group_editors"><%= link_to('[delete cluster]', cluster, :confirm => 'Are you sure you wish to permanently delete this cluster?', :method => :delete, :class => 'nav_link')  if group.can_edit(user_id) %></div>
+</div>
+<div class="clear_both"></div>

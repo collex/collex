@@ -342,7 +342,7 @@ var GeneralDialog = Class.create({
 						// SELECT
 					} else if (subel.select !== undefined) {
 						var selectValue = new Element('input', { id: makeId(subel.select), name: subel.select });
-						if (subel.options) {
+						if (subel.options && subel.options.length > 0) {
 							var val = (subel.value !== undefined  && subel.value !== null) ? subel.value : subel.options[0].value;
 							selectValue.writeAttribute('value', val);
 						}

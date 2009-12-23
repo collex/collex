@@ -30,7 +30,7 @@ function stopEditGroupThumbnailUpload(errMessage){
 }
 
 var EditGroupThumbnailDlg = Class.create({
-	initialize: function (group_id, current_url) {
+	initialize: function (group_id, current_url, controller) {
 		this.class_type = 'EditGroupThumbnailDlg';	// for debugging
 		var This = this;
 		var dlg = null;
@@ -41,7 +41,7 @@ var EditGroupThumbnailDlg = Class.create({
 			//var curr_page = params.curr_page;
 			var url = params.destination;
 
-			dlg.setFlash('Editing group thumbnail...', false);
+			dlg.setFlash('Editing ' + controller.toLowerCase() + ' thumbnail...', false);
 
 			dlg.submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
 		};
@@ -51,7 +51,7 @@ var EditGroupThumbnailDlg = Class.create({
 		};
 
 		this.fileUploadFinished = function(id) {
-			dlg.setFlash('Group thumbnail updated...', false);
+			dlg.setFlash(controller + ' thumbnail updated...', false);
 			window.location.reload(true);
 		};
 		var show = function () {
@@ -59,11 +59,11 @@ var EditGroupThumbnailDlg = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', value: current_url }, { hidden: 'id', value: group_id } ],
-						[ { rowClass: 'last_row' }, { button: 'Update Thumbnail', url: "/groups/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Update Thumbnail', url: "/" + controller.toLowerCase() + "s/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 
-			var params = { this_id: "edit_group_thumbnail", pages: [ layout ], body_style: "new_group_div", row_style: "new_exhibit_row", title: "Edit Group Thumbnail" };
+			var params = { this_id: "edit_group_thumbnail", pages: [ layout ], body_style: "new_group_div", row_style: "new_exhibit_row", title: "Edit " + controller + " Thumbnail" };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', null);
 			dlg.center();
@@ -208,16 +208,16 @@ var InviteMembersDlg = Class.create({
 			target_els: [ 'group_details' ] });	}
 });
 
-var editDescription = function(id, value) {
+var editDescription = function(id, value, controller) {
 	new TextAreaInputDlg({
 		title: 'Edit Description',
 		prompt: 'Description',
-		id: 'group[description]',
+		id: controller + '[description]',
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
-		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
+		actions: [ '/' + controller + 's/update' ],
+		target_els: [ controller + '_details' ] });
 };
 
 var editPermissions = function(id, value, groupForumPermissionsOptions, groupForumPermissionsExplanations) {
@@ -263,16 +263,34 @@ var editType = function(id, value, groupTypeOptions) {
 		target_els: [ 'group_details' ] });
 };
 
-var editTitle = function(id, value) {
+var editTitle = function(id, value, controller) {
 	new TextInputDlg({
 		title: 'Edit Title',
-		prompt: 'Group Title',
-		id: 'group[name]',
+		prompt: 'Title',
+		id: controller + '[name]',
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
-		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
+		actions: [ '/' + controller + 's/update' ],
+		target_els: [ controller + '_details' ] });
+};
+
+var moveExhibitToCluster = function(update_url, cluster_id, exhibitOptions, update_el) {
+	new SelectInputDlg({
+		title: 'Move Exhibit to Cluster',
+		prompt: 'Exhibit',
+		id: 'exhibit_id',
+		options: exhibitOptions,
+		okStr: 'Move',
+		extraParams: { cluster_id: cluster_id },
+		actions: [ update_url, '/groups/group_exhibits_list' ],
+		target_els: [ update_el, 'group_exhibits' ] });
+};
+
+var removeFromCluster = function(group_id, cluster_id, exhibit_id) {
+	ajaxWithProgressDlg(['/clusters/remove_from_cluster', '/groups/group_exhibits_list'], ['cluster_details', 'group_exhibits'],
+		{ title: "Removing Exhibit From Cluster", waitMessage: "Please wait...", completeMessage: 'The exhibit is now back in the group\'s list.' },
+		{group_id: group_id, cluster_id: cluster_id, exhibit_id: exhibit_id });
 };
 
 var request_to_join = function(group_id, user_id) {
@@ -351,7 +369,7 @@ var CreateNewClusterDlg = Class.create({
 			var onSuccess = function(resp) {
 				dlg.cancel();
 			};
-			updateWithAjax({ el: update_el, action: update_url, params: { id: id }, onSuccess: onSuccess });
+			updateWithAjax({ el: update_el, action: update_url, params: { id: group_id }, onSuccess: onSuccess });
 		};
 
 		// privileged methods
