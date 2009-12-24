@@ -110,4 +110,9 @@
 .exhibit_category td {
 	padding: 3px;
 	border: 1px solid #dddddd;
+	max-width: 500px;
+}
+
+.exhibit_category th {
+	border: 1px solid #dddddd;
 }

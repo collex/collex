@@ -47,6 +47,21 @@ class Admin::DefaultController < Admin::BaseController
     render :text => category
   end
 
+	def change_group_type
+    group_id = params[:group_id]
+    group_type = params[:group_type]
+    group = Group.find(group_id)
+		old_type = group.group_type
+    group.update_attribute('group_type', group_type)
+		if group_type == 'peer-reviewed'
+			# TODO-PER: index exhibits
+			#index_exhibit(exhibit_id)
+		elsif old_type == 'peer-reviewed'
+			#unindex_exhibit(exhibit_id)
+		end
+    render :text => Group.type_to_friendly(group_type)
+	end
+
 	def delete_comment
 		id = params[:comment]
 		comment = DiscussionComment.find(id)

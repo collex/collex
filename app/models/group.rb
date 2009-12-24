@@ -133,8 +133,19 @@ class Group < ActiveRecord::Base
 
 	def self.get_all_users_groups(user_id)
 		groups = Group.find_all_by_owner(user_id)
-		groups += User.find(user_id).groups
+		gu = GroupsUser.find_all_by_user_id(user_id)
+		gu.each { |rec|
+			if !rec.pending_invite & !rec.pending_request
+				groups.push(Group.find(rec.group_id))
+			end
+		}
 		return groups
+	end
+
+	def self.is_peer_reviewed_group(exhibit)
+		return false if exhibit.group_id == nil
+		group = Group.find(exhibit.group_id)
+		return group.group_type == 'peer-reviewed'
 	end
 
 	def get_pending_id(user_id)
@@ -223,27 +234,30 @@ class Group < ActiveRecord::Base
 	# enumerations
 	#
 	def self.types()
-		return [ 'community', 'classroom']
+		return [ 'community', 'classroom', 'peer-reviewed']
 	end
 
 	def self.friendly_types()
-		return [ 'Community', 'Classroom']
+		return [ 'Community', 'Classroom', 'Peer Reviewed']
 	end
 	def self.type_to_friendly(type)
-		return self.friendly_types[0] if self.types()[0] == type
-		return self.friendly_types[1] if self.types()[1] == type
+		0.upto(self.types.length) { |i|
+			return self.friendly_types[i] if self.types()[i] == type
+		}
 		return ""
 	end
 	def self.friendly_to_type(type)
-		return self.types[0] if self.friendly_types()[0] == type
-		return self.types[1] if self.friendly_types()[1] == type
+		0.upto(self.types.length) { |i|
+			return self.types[i] if self.friendly_types()[i] == type
+		}
 		return ""
 	end
-	def self.types_to_json()
+	def self.types_to_json(show_all)
 		vals = self.types()
 		texts = self.friendly_types()
 		ret = []
-		0.upto(1) { |i|
+		top = show_all ? 2 : 1
+		0.upto(top) { |i|
 			ret.push({ :value => vals[i], :text =>	texts[i] })
 		}
 		return ret.to_json()
@@ -251,6 +265,7 @@ class Group < ActiveRecord::Base
 	def self.type_explanation(type_pos)
 		return "Exhibits that have been shared but are not peer-reviewed." if type_pos == 0
 		return "Student work that has been shared." if type_pos == 1
+		return "Peer Reviewed work." if type_pos == 2
 		return ""
 	end
 

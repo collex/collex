@@ -1,4 +1,4 @@
-<% # 
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -7,29 +7,34 @@
     # You may obtain a copy of the License at
     #
     #    http://www.apache.org/licenses/LICENSE-2.0
-  
+
     # Unless required by applicable law or agreed to in writing, software
     # distributed under the License is distributed on an "AS IS" BASIS,
     # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page "Exhibits" -%>
-
+<% current_page "admin" -%>
+<% current_sub_page "Groups" -%>
+<script type="text/javascript">
+var gGroupTypes = <%= Group.types_to_json(true) %>;
+</script>
 <div class="inner_content_container">
-	<%= render :partial => 'home/featured_exhibit' %>
-	
-	<div class="exhibit_list">
-		<div class="page_header">Choose an exhibit to view <%= link_to_function( "(or create one of your own)", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects', '/forum/get_nines_obj_list_with_image'); dlg.show();", :class => 'modify_link page_header_parenthetical') if is_logged_in? %></div>
-		<div class="exhibit_left_column">
-<% if Branding.use_groups() == true %>
-			<%= render :partial => 'exhibit_list', :locals => { :ty => 2 } %>
-<% end -%>
-			<%= render :partial => 'exhibit_list', :locals => { :ty => 0 } %>
-		</div>
-		<div class="exhibit_right_column">
-			<%= render :partial => 'exhibit_list', :locals => { :ty => 1 } %>
-		</div>
-	</div>
-	<div class="clear_both"></div>
+	<div class="page_header">Groups Categories</div>
+	<table class="exhibit_category">
+		<tr>
+			<th>Group</th>
+			<th>Owner</th>
+			<th>Type</th>
+		</tr>
+		<% groups = Group.all(:order => 'name') -%>
+		<% for group in groups -%>
+		<% ty = Group.type_to_friendly(group.group_type) -%>
+			<tr>
+				<td><%= h group.name %></td>
+				<td><%= h User.find(group.owner).fullname %></td>
+				<td><span id="<%= "group_#{group.id}" %>"><%= ty %></span>&nbsp;<%= link_to_function "[edit]", "new EditGroupType('group_#{group.id}', '/admin/default/change_group_type', '#{group.id}', $('group_#{group.id}').innerHTML, gGroupTypes);", :class => 'nav_link'  %></td>
+			</tr>
+		<% end -%>
+	</table>
 </div>

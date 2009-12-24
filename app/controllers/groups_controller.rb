@@ -132,6 +132,24 @@ class GroupsController < ApplicationController
 		 render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => user_id }
 	 end
 
+	 def accept_as_peer_reviewed
+		 exhibit_id = params[:exhibit_id]
+		 exhibit = Exhibit.find(exhibit_id)
+		 exhibit.is_published = 1
+		 exhibit.save!
+		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+	 end
+
+	 def reject_as_peer_reviewed
+		 exhibit_id = params[:exhibit_id]
+		 exhibit = Exhibit.find(exhibit_id)
+		 exhibit.is_published = 0
+		 exhibit.save!
+		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+	 end
+
 	def edit_membership
 		group = params[:group]
 		group_id = nil

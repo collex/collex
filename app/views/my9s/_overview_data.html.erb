@@ -45,17 +45,22 @@
 <% if Branding.use_groups() == true %>
 		<% has_groups = Group.user_is_in_group(get_curr_user_id()) -%>
 		<% none_text = has_groups ? 'No Group Selected' : 'You are not in any groups' -%>
-		<% group_name = exhibit.group_id ? Group.find(exhibit.group_id).name : none_text -%>
+		<% group_name = exhibit.group_id ? link_to(Group.find(exhibit.group_id).name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, { :class => 'nav_link'}) : none_text -%>
 		<% users_groups = [{ :value => '', :text => none_text }] -%>
 		<% my_groups = Group.get_all_users_groups(exhibit.user_id) -%>
 		<% for group in my_groups -%>
 		<% users_groups.push({ :value => "#{group.id}", :text => group.name }) -%>
 		<% end  -%>
-		<span class="exhibit_profile_label">Group:</span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[select group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) if has_groups %></span>
+		<span class="exhibit_profile_label">Group: </span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[select group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) if has_groups %></span>
 <% end  -%>
 		<div>
+<% if Branding.use_groups() == true && Group.is_peer_reviewed_group(exhibit) -%>
+			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : exhibit.is_published == 2 ? "Submitted for peer-review" : "This exhibit can just be seen by you." %>&nbsp;
+			<%= link_to_function exhibit.is_published != 0 ? "[Unpublish]" : "[Submit for peer review]", "doPublish(#{exhibit.id}, #{exhibit.is_published != 0 ? 0 : 2});", :class => 'nav_link' %>
+<% else  -%>
 			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : "This exhibit can just be seen by you." %>&nbsp;
 			<%= link_to_function exhibit.is_published == 1 ? "[Unpublish]" : "[Publish]", "doPublish(#{exhibit.id}, #{exhibit.is_published == 1 ? 0 : 1});", :class => 'nav_link' %>
+<% end  -%>
 		</div>
 	</div>
 	<div class="exhibit_sharing">

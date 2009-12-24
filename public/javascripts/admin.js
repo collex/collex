@@ -435,3 +435,36 @@ var EditExhibitCategory = Class.create({
 		dlg.center();
 	}
 });
+
+var EditGroupType = Class.create({
+	initialize: function (parent_div, ok_action, group_id, starting_selection, options) {
+		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
+		this.class_type = 'EditGroupType';	// for debugging
+
+		// private variables
+		//var This = this;
+
+		// private functions
+		options.each(function(option) {
+			if (option.text === starting_selection)
+				starting_selection = option.value;
+		});
+
+		// privileged functions
+		var updater = new AjaxUpdate(parent_div, 'Updating Group Type...', null);
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: 'Choose the type that this group will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
+					[ { text: 'Type:', klass: 'edit_facet_label' }, { select: 'group_type', value: starting_selection, klass: 'categories_select', options: options } ],
+					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'group_id', value: group_id } ]
+				]
+			};
+
+		var params = { this_id: "change_exhibit_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Group Type" };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', 'category_id');
+		dlg.center();
+	}
+});

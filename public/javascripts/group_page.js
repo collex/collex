@@ -340,6 +340,17 @@ var decline_invitation = function(pending_id) {
 		{id: pending_id });
 };
 
+var acceptAsPeerReviewed = function(exhibit_id) {
+	ajaxWithProgressDlg(['/groups/accept_as_peer_reviewed'], ['group_exhibits'],
+		{ title: "Accept As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been accepted.' },
+		{exhibit_id: exhibit_id });
+};
+
+var rejectAsPeerReviewed = function(exhibit_id) {
+	ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],
+		{ title: "Reject As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been rejected.' },
+		{exhibit_id: exhibit_id });
+};
 
 var newClusterDlg = null;
 function stopNewClusterUpload(errMessage){

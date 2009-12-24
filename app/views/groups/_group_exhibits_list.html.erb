@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%# group_exhibits_list : parameters: ActiveRecord group, ActiveRecord, cluster, int user_id -%>
+<%# group_exhibits_list : parameters: ActiveRecord group, ActiveRecord cluster, int user_id -%>
 <%# if cluster is nil, then this is the group page, otherwise it is the cluster page -%>
 <% cluster ||= nil -%>
 <div class="group_header">Exhibits</div>
@@ -28,20 +28,23 @@
 <% end -%>
 </div>
 <% end -%>
-<% exhibits = Exhibit.find_all_by_group_id_and_is_published(group.id, 1) if cluster == nil -%>
+<% exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND cluster_id IS NULL", group.id]) if cluster == nil -%>
 <% exhibits = Exhibit.find_all_by_cluster_id_and_is_published(cluster.id, 1) if cluster != nil -%>
-<% if exhibits.length == 0 -%>
-	<div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
-<% else -%>
 	<table>
 <% if cluster == nil -%>
 <% clusters = Cluster.find_all_by_group_id(group.id) -%>
-<% for cluster in clusters -%>
+<% if clusters.length > 0 %>
+		<tr><td><span class="group_details_label">Clusters:</span></td></tr>
+<% end -%>
+<% for clus in clusters -%>
 	<tr>
-		<td><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_image_url(get_url_for_internal_image(cluster.image, :thumb)), :show_immediately => true } %></td>
-		<td class="exhibit_link"><%= link_to cluster.name, { :controller => 'clusters', :action => 'show', :id => cluster.id }, :class => 'nav_link' %></td>
+		<td><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{clus.id}", :url => get_image_url(get_url_for_internal_image(clus.image, :thumb)), :show_immediately => true } %></td>
+		<td class="exhibit_link"><%= link_to clus.name, { :controller => 'clusters', :action => 'show', :id => clus.id }, :class => 'nav_link' %></td>
 	</tr>
 <% end -%>
+<% end -%>
+<% if exhibits.length > 0 %>
+		<tr><td><span class="group_details_label">Exhibits:</span></td></tr>
 <% end -%>
 <% for exhibit in exhibits -%>
 	<tr>
@@ -55,5 +58,39 @@
 		</td>
 	</tr>
 <% end -%>
+<%
+	if group.can_edit(user_id)
+		if cluster == nil
+			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id IS NULL AND is_published = 2", group.id])
+		else
+			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id = ? AND is_published = 2", group.id, cluster.id])
+		end
+	else
+		if cluster == nil
+			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id IS NULL AND is_published = 2 AND user_id = ?", group.id, user_id])
+		else
+			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id = ? AND is_published = 2 AND user_id = ?", group.id, cluster.id, user_id])
+		end
+	end
+-%>
+<% if pending_exhibits.length > 0 -%>
+		<tr><td><span class="group_details_label">Pending Exhibits:</span></td></tr>
+<% for exhibit in pending_exhibits -%>
+	<tr>
+		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
+		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+			<%= get_exhibit_user_link(exhibit) %>
+			<% if is_logged_in? && exhibit.user_id == User.find_by_username(session[:user][:username]).id -%>
+				| <%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+			<% end -%>
+			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
+			<%= link_to_function("[accept as peer reviewed]", "acceptAsPeerReviewed(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[reject]", "rejectAsPeerReviewed(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+		</td>
+	</tr>
+<% end -%>
+<% end -%>
 	</table>
+<% if exhibits.length == 0 -%>
+	<div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end -%>
