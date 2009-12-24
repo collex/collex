@@ -91,6 +91,23 @@ var GroupNewPost = Class.create({
 	}
 });
 
+var ClusterNewPost = Class.create({
+	initialize: function (progress_img, group_id, group_name, cluster_id, cluster_name, is_logged_in) {
+
+		new ForumReplyDlg({ group_id: group_id, group_name: group_name,
+			cluster_id: cluster_id, cluster_name: cluster_name,
+			submit_url: '/forum/post_comment_to_new_thread',
+			populate_exhibit_url: '/forum/get_exhibit_list',
+			populate_nines_obj_url: '/forum/get_nines_obj_list',
+			populate_topics_url: '/forum/get_all_topics',
+			progress_img: progress_img,
+			logged_in: is_logged_in,
+			addTopicToLoginRedirect: false,
+			redirect: '/clusters/' + cluster_id
+		});
+	}
+});
+
 var EditMembershipDlg = Class.create({
 	initialize: function (group_id, membership) {
 		this.class_type = 'EditMembershipDlg';	// for debugging

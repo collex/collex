@@ -737,3 +737,10 @@ textarea.groups_textarea {
 #membership_data_grid .yui-dt-col-Delete .yui-dt-liner {
 	text-align: center;
 }
+
+.empty_list_text {
+	color: gray;
+	font-style: italic;
+	padding: 1em;
+}
+

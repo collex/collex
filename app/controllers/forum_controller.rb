@@ -65,11 +65,10 @@ class ForumController < ApplicationController
 			if err_msg
 				render :text => err_msg, :status => :bad_request
 			else
-				license = params[:license_list]
-				topic_id = params[:topic_id]
-				group_id = params[:group_id]
-				title = params[:title]
-				thread = DiscussionThread.create(:discussion_topic_id => topic_id, :group_id => group_id, :title => title, :license => license)
+				rec = { :title => params[:title], :license => params[:license_list], :discussion_topic_id => params[:topic_id] }
+				rec[:group_id] = params[:group_id] if params[:group_id]
+				rec[:cluster_id] = params[:cluster_id] if params[:cluster_id]
+				thread = DiscussionThread.create(rec)
 
 				params[:thread_id] = thread.id
 				create_comment(params)

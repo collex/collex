@@ -51,12 +51,6 @@
 	margin-top: 1em;
 }
 
-.empty_list_text {
-	color: gray;
-	font-style: italic;
-	padding: 1em;
-}
-
 .edit_tag_link {
 	font-size: .7em;
 	font-weight: normal;

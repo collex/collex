@@ -28,6 +28,7 @@ var ForumReplyDlg = Class.create({
 		// This puts up a modal dialog that allows the user to reply to a thread.
 		// If the topic_id is passed, then this should start a new thread.
 		// If  the group_id is passed, then this should start a new thread in the group, and ask for the topic.
+		// If cluster_id is passed, then that should be added to the dialog, and it should be passed back to the controller.
 		// If comment_id is passed, then this will edit an existing comment.
 		// in that case, the following are also passed:  title, obj_type, reply, nines_obj_list, exhibit_list, inet_thumbnail, inet_url, inet_title
 		this.class_type = 'ForumReplyDlg';	// for debugging
@@ -35,7 +36,9 @@ var ForumReplyDlg = Class.create({
 		var group_id = params.group_id;
 		if (group_id)
 			topic_id = -1;
+		var cluster_id = params.cluster_id;
 		var group_name = params.group_name;
+		var cluster_name = params.cluster_name;
 		var thread_id = params.thread_id;
 		var submit_url = params.submit_url;
 		var can_delete = params.can_delete;
@@ -154,7 +157,10 @@ var ForumReplyDlg = Class.create({
 			data.thread_id = thread_id;
 			if (topic_id !== -1)
 				data.topic_id = topic_id;
-			data.group_id = group_id;
+			if (group_id)
+				data.group_id = group_id;
+			if (cluster_id)
+				data.cluster_id = cluster_id;
 			data.comment_id = comment_id;
 			data.obj_type = currSelClass;
 			data.can_delete = can_delete;
@@ -195,6 +201,7 @@ var ForumReplyDlg = Class.create({
 					[ { custom: licenseDisplay, klass: 'forum_reply_license title hidden' }, { text: 'Title', klass: 'forum_reply_label title hidden' } ],
 					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } ],
 					[ { text: "Group: " + group_name, klass: 'group hidden' } ],
+					[ { text: "Cluster: " + cluster_name, klass: 'cluster hidden' } ],
 					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] }],
 					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
@@ -220,6 +227,9 @@ var ForumReplyDlg = Class.create({
 		}
 		if (group_id) {
 			$$('.group').each(function(el) { el.removeClassName("hidden"); });
+		}
+		if (cluster_id) {
+			$$('.cluster').each(function(el) { el.removeClassName("hidden"); });
 		}
 
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });

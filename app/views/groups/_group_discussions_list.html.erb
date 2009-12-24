@@ -20,18 +20,25 @@
 <div class="group_header">Discussions</div>
 <% threads = DiscussionThread.find_all_by_group_id(group.id) if cluster == nil -%>
 <% threads = DiscussionThread.find_all_by_cluster_id(cluster.id) if cluster != nil -%>
-	<ul class="group_link_list">
 <% if !group.can_read_forum(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its discussions.</div>
-<% else -%>
-	<%= "<li class='change_forum_permissions'>#{link_to_function('[change forum permissions]', "editPermissions(#{group.id}, gGroupData.forum_permissions, #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
-	<% if threads.length == 0 -%>
-			<div class="empty_list_text" >There have been no discussions started in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
-		<% else -%>
-		<% for thread in threads -%>
-			<li><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread.id }, :class => 'nav_link') %></li>
-		<% end -%>
-	<% end -%>
-	<%= "<li class='group_new_post'>#{link_to_function("[ New Post ]", "new GroupNewPost('#{PROGRESS_SPINNER_PATH}',#{group.id}, gGroupData.name,  #{is_logged_in?}); return false;", :class => "nav_link" )}</li>" if group.can_post(user_id) %>
+<% elsif threads.length == 0 -%>
+	<div class="empty_list_text" >There have been no discussions started in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end -%>
+<% if group.can_post(user_id) || (group.can_read_forum(user_id) && threads.length > 0) %>
+	<ul class="group_link_list">
+	<%= "<li class='change_forum_permissions'>#{link_to_function('[change forum permissions]', "editPermissions(#{group.id}, gGroupData.forum_permissions, #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link')}</li>" if group.can_edit(user_id) %>
+	<% for thread in threads -%>
+		<li><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread.id }, :class => 'nav_link') %></li>
+	<% end -%>
+	<% if group.can_post(user_id) -%>
+		<li class='group_new_post'>
+		<% if cluster == nil -%>
+			<%= link_to_function("[ New Post ]", "new GroupNewPost('#{PROGRESS_SPINNER_PATH}',#{group.id}, gGroupData.name,  #{is_logged_in?}); return false;", :class => "nav_link" ) %>
+		<% else -%>
+			<%= link_to_function("[ New Post ]", "new ClusterNewPost('#{PROGRESS_SPINNER_PATH}',#{group.id}, gGroupData.name,  #{cluster.id}, '#{cluster.name}',  #{is_logged_in?}); return false;", :class => "nav_link" ) %>
+		<% end -%>
+		</li>
+	<% end -%>
 	</ul>
+<% end -%>
