@@ -65,6 +65,9 @@ class Group < ActiveRecord::Base
 	end
 
 	def can_request_to_join(user_id)
+		return false if user_id == nil
+		pending_id = get_pending_id(user_id)
+		return false if pending_id
 		return !is_member(user_id) && !is_request_pending(user_id)
 	end
 
@@ -95,6 +98,7 @@ class Group < ActiveRecord::Base
 	end
 
 	def is_editor(user_id)
+		return false if user_id == nil
 		return true if is_owner(user_id)
 		rec = GroupsUser.find_by_group_id_and_user_id(self.id, user_id)
 		return false if rec == nil
@@ -156,6 +160,7 @@ class Group < ActiveRecord::Base
 	end
 
 	def is_request_pending(user_id)
+		return false if user_id == nil
 		user = User.find(user_id)
 		gu = GroupsUser.find_by_group_id_and_email(self.id, user.email)
 		return false if gu == nil
