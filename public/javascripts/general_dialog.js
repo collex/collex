@@ -83,6 +83,9 @@ var GeneralDialog = Class.create({
 			inputs.each(function(el) {
 				if (el.type === 'checkbox') {
 					data[el.name] = el.checked;
+				} else if (el.type === 'radio') {
+					if (el.checked)
+						data[el.name] = el.value;
 				} else if (el.type !== 'button') {
 					data[el.name] = el.value;
 				}
