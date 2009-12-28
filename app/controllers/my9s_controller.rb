@@ -323,8 +323,13 @@ class My9sController < ApplicationController
 	def change_exhibits_group
 		id = params[:id]
 		exhibit = Exhibit.find(id)
-		group = params[:group]
-		exhibit.group_id = group
+		group_id = params[:group]
+		exhibit.group_id = group_id
+		group = Group.find(group_id)
+		if group.group_type == 'peer-reviewed'
+			exhibit.is_published = 0
+		end
+
 		exhibit.save
 		redirect_to :back
 		#render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }

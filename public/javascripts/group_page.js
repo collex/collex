@@ -108,9 +108,17 @@ var ClusterNewPost = Class.create({
 	}
 });
 
-var EditMembershipDlg = Class.create({
-	initialize: function (group_id, membership) {
-		this.class_type = 'EditMembershipDlg';	// for debugging
+var GridDlg = Class.create({
+	initialize: function (params) {
+		this.class_type = 'GridDlg';	// for debugging
+
+		var title = params.title;
+		var hidden_id = params.hidden_id;
+		var hidden_value = params.hidden_value;
+		var url = params.url;
+		var fields = params.fields;
+		var data = params.data;
+		var extraCtrl = params.extraCtrl;
 
 		var initDataGrid = function(params) {
 			var element_id = params.element_id;
@@ -176,31 +184,65 @@ var EditMembershipDlg = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: "paginator", id: "membership_pagination", klass: "pagination"} ],
-						[ { text: 'grid', id: 'membership_data_grid' }, { hidden: 'id', value: group_id } ]
+						[ { text: 'grid', id: 'membership_data_grid' } ]
 					]
 				};
+				if (hidden_id !== undefined) {
+					layout.rows[0].push({ hidden: hidden_id, value: hidden_value });
+				}
+				if (extraCtrl !== undefined) {
+					layout.rows.push(extraCtrl);
+				}
 
-			var membership2 = [];
+			layout.rows.push([{ rowClass: 'last_row' }, { button: 'Save', url: url, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }]);
 
-			membership.each(function(member) {
-				var checked = member.role === 'editor' ? ' checked="true"' : '';
-				membership2.push({ Name: member.name,
-					"Editor?": '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[editor]]"'+checked+'/>',
-					Delete: '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[delete]]"/>'
-				});
-			});
-			layout.rows.push([{ rowClass: 'last_row' }, { button: 'Save', url: 'edit_membership', callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }]);
-
-			var params = { this_id: "new_group_wizard", pages: [ layout ], body_style: "edit_group_membership_div", row_style: "new_exhibit_row", title: "Change Membership" };
+			var params = { this_id: "new_group_wizard", pages: [ layout ], body_style: "edit_group_membership_div", row_style: "new_exhibit_row", title: title };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', null);
-			initDataGrid({ element_id: "membership_data_grid", paginator_id: "membership_pagination", fields: ["Name","Editor?", "Delete"], data: membership2 });
+			initDataGrid({ element_id: "membership_data_grid", paginator_id: "membership_pagination", fields: fields, data: data });
 			dlg.center();
 
 			return;
 		};
 
 		show();
+	}
+});
+
+var EditMembershipDlg = Class.create({
+	initialize: function (group_id, membership, show_membership) {
+		this.class_type = 'EditMembershipDlg';	// for debugging
+
+		var membership2 = [];
+
+		membership.each(function(member) {
+			var checked = member.role === 'editor' ? ' checked="true"' : '';
+			membership2.push({ Name: member.name,
+				"Editor?": '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[editor]]"'+checked+'/>',
+				Delete: '<input id="group_'+member.id+'_delete" type="checkbox" value="1" name="group['+member.id+'[delete]]"/>'
+			});
+		});
+
+		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}], value: show_membership }];
+		new GridDlg({ title: "Change Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Editor?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl })
+	}
+});
+
+var RespondToRequestDlg = Class.create({
+	initialize: function (group_id, pendingRequests) {
+		this.class_type = 'RespondToRequestDlg';	// for debugging
+
+		var membership2 = [];
+
+		pendingRequests.each(function(member) {
+			membership2.push({ Name: member.user_name,
+				"No Action": '<input id="group_'+member.group_id+'_noaction" type="radio" value="no_action" checked="checked" name="group['+member.group_id+']"'+'/>',
+				"Accept": '<input id="group_'+member.group_id+'_accept" type="radio" value="accept" name="group['+member.group_id+']"'+'/>',
+				"Deny": '<input id="group_'+member.group_id+'_deny" type="radio" value="deny" name="group['+member.group_id+']"/>'
+			});
+		});
+
+		new GridDlg({ title: "Respond", hidden_id: 'id', hidden_value: group_id, url: 'pending_requests', fields: ["Name","No Action", "Accept", "Deny"], data: membership2 })
 	}
 });
 
@@ -251,19 +293,19 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		target_els: [ 'group_details' ] });
 };
 
-var editShowMembership = function(id, value) {
-	new SelectInputDlg({
-		title: 'Change Membership Visibility',
-		prompt: 'Visibility',
-		id: 'group[show_membership]',
-		options:  [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}],
-		explanation: [ "The profiles of members of this group will be visible to other members of this group", "The profiles of members of this group will only be visible to the editors of this group"],
-		okStr: 'Save',
-		value: value,
-		extraParams: { id: id },
-		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
-};
+//var editShowMembership = function(id, value) {
+//	new SelectInputDlg({
+//		title: 'Change Membership Visibility',
+//		prompt: 'Visibility',
+//		id: 'group[show_membership]',
+//		options:  [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}],
+//		explanation: [ "The profiles of members of this group will be visible to other members of this group", "The profiles of members of this group will only be visible to the editors of this group"],
+//		okStr: 'Save',
+//		value: value,
+//		extraParams: { id: id },
+//		actions: [ '/groups/update' ],
+//		target_els: [ 'group_details' ] });
+//};
 
 var editType = function(id, value, groupTypeOptions) {
 	new SelectInputDlg({
@@ -316,17 +358,17 @@ var request_to_join = function(group_id, user_id) {
 		{group_id: group_id, user_id: user_id });
 };
 
-var accept_request = function(id) {
-	ajaxWithProgressDlg(['/groups/accept_request'], ['group_details'],
-		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user is now a member of the group.' },
-		{id: id });
-};
-
-var decline_request = function(id) {
-	ajaxWithProgressDlg(['/groups/decline_request'], ['group_details'],
-		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user\'s request to join the group has been denied.' },
-		{id: id });
-};
+//var accept_request = function(id) {
+//	ajaxWithProgressDlg(['/groups/accept_request'], ['group_details'],
+//		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user is now a member of the group.' },
+//		{id: id });
+//};
+//
+//var decline_request = function(id) {
+//	ajaxWithProgressDlg(['/groups/decline_request'], ['group_details'],
+//		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user\'s request to join the group has been denied.' },
+//		{id: id });
+//};
 
 var accept_invitation = function(pending_id) {
 	ajaxWithProgressDlg(['/groups/accept_invitation'], ['group_details'],

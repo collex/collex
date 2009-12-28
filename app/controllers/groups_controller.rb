@@ -28,6 +28,19 @@ class GroupsController < ApplicationController
   end
   public
 
+	def pending_requests
+		items = params[:group]
+		group_id = params[:id]
+		items.each { |key, val|
+			if val == 'accept'
+				GroupsUser.accept_request(key)
+			elsif val == 'deny'
+				GroupsUser.decline_request(key)
+			end
+		}
+		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+	end
+	
 	# The following 4 calls can come from either the web or the email link. We have to go to
 	# different pages in the two cases. The way to tell is the email link is GET and the web is POST.
 	def accept_request
@@ -151,6 +164,7 @@ class GroupsController < ApplicationController
 	 end
 
 	def edit_membership
+		show_membership = params[:show_membership]
 		group = params[:group]
 		group_id = nil
 		group.each {|id,value|
@@ -166,6 +180,9 @@ class GroupsController < ApplicationController
 				end
 			end
 		}
+		group = Group.find(group_id)
+		group.show_membership = show_membership == 'Yes'
+		group.save!
 
 		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 	end
@@ -350,9 +367,11 @@ class GroupsController < ApplicationController
   # PUT /groups/1.xml
   def update
     @group = Group.find(params[:id])
-		params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
-		params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
-		@group.update_attributes(params[:group])
+		if params[:group]
+			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
+			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
+			@group.update_attributes(params[:group])
+		end
 
 		err_msg = nil
 		if params[:emails]

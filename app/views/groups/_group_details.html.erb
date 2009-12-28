@@ -54,15 +54,15 @@
 		<!-- <li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li> -->
 		<% if group.can_edit(user_id) || group.show_membership %>
 		<% membership.insert(0, { :user_id => group.owner}) -%>
-		<%# 0.upto(5) do membership = membership + membership end -%>
+		<%# membership = membership + membership + membership +membership +membership -%>
 		<li><span class="group_details_label">Group Membership</span>
 			<div class="group_member_explanation">This group has <%= pluralize(membership.length, "member")  %>. (hover over each thumbnail to see the user's name)</div>
 		<div class="group_member_palette_items">
 		<table>
 			<% count = 0 -%>
-			<% 0.upto((membership.length/11.0).ceil()) do -%>
+			<% while count < membership.length do -%>
 				<tr>
-					<% 0.upto(6) do -%>
+					<% 0.upto(8) do -%>
 						<td>
 							<% if count < membership.length -%>
 								<%= get_user_link_with_thumbnail(membership[count][:user_id], 25) %>
@@ -77,40 +77,41 @@
 		</table>
 		</div>
 		</li>
-		<% if group.can_edit(user_id) -%>
-		<li><%= link_to_function('[invite users to join]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link')  %></li>
-		<li><%= link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership);", :class => 'nav_link')  %></li>
-		<li><%= link_to_function("[change membership visibility]", "editShowMembership(#{group.id}, '#{group.show_membership == true ? 'Yes' : 'No' }'); return false;", { :class => "nav_link" }) %></li>
-		<% end -%>
 	<% end -%>
 	<% if user_id -%>
-		<% pending_id = group.get_pending_id(user_id) -%>
-		<% if pending_id -%>
-		You have been invited to join this group.
-		<%= "<li>#{link_to_function('[accept invitation to join]', "accept_invitation(#{pending_id});", :class => 'nav_link');}</li>" %>
-		<%= "<li>#{link_to_function('[ignore invitation to join]', "decline_invitation(#{pending_id});", :class => 'nav_link');}</li>" %>
-		<% elsif group.can_request_to_join(user_id) -%>
-		<%= "<li>#{link_to_function('[join]', "request_to_join(#{group.id}, #{user_id});", :class => 'nav_link' )}</li>" %>
-		<% elsif group.can_leave_group(user_id) -%>
-		<%= "<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>" %>
-		<% elsif group.is_request_pending(user_id) -%>
-		<%= "<li>[a request to join this group is pending acceptance by the moderator]</li>" -%>
-		<% end -%>
 		<% if group.can_edit(user_id) -%>
 			<% gus = GroupsUser.get_all_pending_requests(group.id) -%>
+<script type="text/javascript">
+	gPendingRequests =
+	<%= reqs = []
+		gus.each { |gu|
+			reqs.push({ :user_name => "#{User.find(gu.user_id).fullname}", :group_id => "#{Group.id_obfuscator(gu.id)}" })
+		}
+		reqs.to_json();
+	-%>;
+</script>
 			<% if gus.length > 0 -%>
-			<li>The following people have requested to join this group:</li>
-				<% gus.each { |gu| -%>
-				<li><%= get_user_link(gu.user_id) %>&nbsp;<%= link_to_function("[accept]", "accept_request(#{Group.id_obfuscator(gu.id)});", :class => 'nav_link') %>&nbsp;<%= link_to_function("[deny]", "decline_request(#{Group.id_obfuscator(gu.id)});", :class => 'nav_link') %></li>
-				<% } -%>
+			<li><%= "#{gus.length} #{gus.length == 1 ? 'person has' : 'people have'}" %> requested to join this group. <%= link_to_function('[respond]', "new RespondToRequestDlg(#{group.id}, gPendingRequests);", :class => 'nav_link')  %></li>
 			<% end -%>
 		<% end -%>
+		<%= "<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>" if group.can_leave_group(user_id) %>
 	<% end -%>
 	</ul>
 </div>
 <div class="group_details_center">
-	<h1><%=h group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}', 'group');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
-	<div class="group_editors"><% editors = group.get_all_editors() -%>
+	<h1><%=h group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{group.name}', 'group');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %><%= "#{link_to_function('[join]', "request_to_join(#{group.id}, #{user_id});", :class => 'group_edit_title_link nav_link' )}" if group.can_request_to_join(user_id) %></h1>
+	<% if user_id -%>
+		<% pending_id = group.get_pending_id(user_id) -%>
+		<% if pending_id -%>
+	<div class="group_editors">You have been invited to join this group.
+		<%= "#{link_to_function('[accept invitation to join]', "accept_invitation(#{pending_id});", :class => 'nav_link');}" %>
+		<%= "#{link_to_function('[ignore invitation to join]', "decline_invitation(#{pending_id});", :class => 'nav_link');}" %>
+	</div>
+		<% elsif group.is_request_pending(user_id) -%>
+		<div class="group_editors">[a request to join this group is pending acceptance by the moderator]</div>
+		<% end -%>
+	<% end -%>
+		<div class="group_editors"><% editors = group.get_all_editors() -%>
 		<span class="group_details_label">Group Editor<%= 's' if editors.length > 1 %>:</span>
 		<% for editor in editors -%>
 			<%= get_user_link(editor) %>&nbsp;
@@ -120,7 +121,10 @@
 	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
 	<div class="group_editors"><span class="group_details_label">Group Type: </span><%= Group.type_to_friendly(group.group_type) %> <%= link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json(false)});", :class => 'nav_link') if group.can_edit(user_id) && group.group_type != 'peer-reviewed' %></div>
 	<% if group.can_edit(user_id) -%>
-	<div class="group_editors"><span class="group_details_label">License: </span><%= link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" }) %></div>
+	<div class="group_editors"><%= link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" }) %>
+		<%= link_to_function('[invite users to join]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link')  %>
+		<%= link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership, '#{group.show_membership == true ? 'Yes' : 'No' }');", :class => 'nav_link')  %>
+	</div>
 	<% end -%>
 	<div class="group_editors"><%= link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link') if group.can_delete(user_id)  && group.group_type != 'peer-reviewed' %></div>
 </div>

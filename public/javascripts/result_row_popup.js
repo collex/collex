@@ -104,7 +104,7 @@ var ResultRowDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: '<img src="' + progress_img + '" alt="" />', klass: 'result_row_details' } ],
+					[ { text: '<img src="' + progress_img + '" alt="Please wait..." />', klass: 'result_row_details' } ],
 					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};

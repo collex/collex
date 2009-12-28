@@ -24,7 +24,7 @@
 }
 
 .exhibit_thumbnail {
-	padding: 2px;
+	/*padding: 2px;*/
 }
 
 .exhibit_left_column {
@@ -202,9 +202,9 @@
 }
 
 .group_member_palette_items {
-	overflow:auto;
+	/*overflow:auto;
 	height:120px;
-	/*width:338px;*/
+	width:338px;*/
 }
 
 .group_member_palette_items td {

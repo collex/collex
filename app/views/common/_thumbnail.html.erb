@@ -19,7 +19,7 @@
 <% klass ||= '' -%>
 <% border ||= false -%>
 
-<div class="exhibit_thumbnail<%= " #{klass}" if klass.length > 0 %>" style="overflow: hidden;width:<%= height %>px;height:<%= height %>px;<%= " border: 2px solid gray;" if border == true -%>"><img id="thumbnail_<%=element_id%>" src="<%= url %>"  style="display:none;" alt=""/></div>
+<div class="exhibit_thumbnail<%= " #{klass}" if klass.length > 0 %>" style="overflow: hidden;width:<%= height %>px;height:<%= height %>px;<%= " border: 4px solid gray;" if border == true -%>"><img id="thumbnail_<%=element_id%>" src="<%= url %>"  style="display:none;" alt=""/></div>
 <script type="text/javascript">
 	$("thumbnail_<%=element_id %>").observe('load', thumbnail_resize);
 	<% if show_immediately -%>
