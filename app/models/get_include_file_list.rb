@@ -107,23 +107,23 @@ class GetIncludeFileList
 		local = []
 		case page
 			when :search
-				local = [ "lvl2", "search", "right_column", "result_row" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "search", "right_column", "result_row" ]
 			when :tag
-				local = [ "lvl2", "tag", "result_row" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "tag", "result_row" ]
 			when :my_collex
-				local = [ "lvl2", "right_column", "tag", "search", "my_collex", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", "user_profile" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "right_column", "tag", "search", "my_collex", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", "user_profile" ]
 			when :discuss
-				local = [ "lvl2", "search", "result_row", "forum", "user_profile" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "search", "result_row", "forum", "user_profile" ]
 			when :home
-				local = [ "index", "featured_exhibit" ]
+				local = [ "#{SKIN}/lvl1_skin", "index", "featured_exhibit" ]
 			when :exhibits
-				local = [ "lvl2", "featured_exhibit", "exhibit_list", "user_profile", "right_column" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "featured_exhibit", "exhibit_list", "user_profile", "right_column" ]
 			when :admin
-				local = [ "lvl2", "admin", "search", "right_column" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "admin", "search", "right_column" ]
 			when :about
-				local = [ "lvl2", "about" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "about" ]
 			when :view_exhibit
-				local = [ "lvl3", "exhibit" ]
+				local = [ "#{SKIN}/lvl3_skin", "lvl3", "exhibit" ]
 			when :print_exhibit
 				local = [ "lvl4", "exhibit" ]
 		end

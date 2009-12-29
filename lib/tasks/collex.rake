@@ -133,7 +133,8 @@ namespace :collex do
 
 	desc "Compress the css for the about pages"
 	task :compress_about_css => :environment do
-		compress_file('stylesheets', '.css')
+		compress_file('stylesheets', '.css', "")
+		compress_file("stylesheets/#{SKIN}", '.css', "#{SKIN}__")
 		concatenate_css(:about)
 	end
 
@@ -142,8 +143,10 @@ namespace :collex do
 		# The purpose of this is to roll all our css and js files into one minimized file so that load time on the server is as short as
 		# possible. Using this method allows different pages to have different sets of includes, and allows the developer to create
 		# as many small css and js files as they want. See get_include_file_list.rb for details.
-		compress_file('javascripts', '.js')
-		compress_file('stylesheets', '.css')
+		compress_file('javascripts', '.js', "")
+		#compress_file("javascripts/#{SKIN}", '.js', "#{SKIN}__")
+		compress_file('stylesheets', '.css', "")
+		compress_file("stylesheets/#{SKIN}", '.css', "#{SKIN}__")
 
 		concatenate_js(:my_collex)
 		concatenate_css(:my_collex)
@@ -167,13 +170,13 @@ namespace :collex do
 		concatenate_css(:print_exhibit)
 	end
 
-	def compress_file(folder, ext)
+	def compress_file(folder, ext, prefix)
 		Dir.foreach("#{RAILS_ROOT}/public/#{folder}") { |f|
 			if f.index(ext) == f.length - ext.length
 				fname = f.slice(0, f.length - ext.length)
 				if fname.index('-min') != fname.length - 4
 					puts "Compressing #{f}..."
-					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{RAILS_ROOT}/tmp/#{fname}-min#{ext} #{RAILS_ROOT}/public/#{folder}/#{f}")
+					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{RAILS_ROOT}/tmp/#{prefix}#{fname}-min#{ext} #{RAILS_ROOT}/public/#{folder}/#{f}")
 				end
 			end
 		}
@@ -188,7 +191,8 @@ namespace :collex do
 
 		list = []
 		fnames[:local].each { |f|
-			list.push("#{RAILS_ROOT}/tmp/#{f}-min.js")
+			f =
+			list.push("#{RAILS_ROOT}/tmp/#{f.gsub('/','__')}-min.js")
 		}
 
 		dest ="javascripts/#{page.to_s()}-min.js"
@@ -201,7 +205,7 @@ namespace :collex do
 		list = []
 		fnames = GetIncludeFileList.get_css(page)
 		fnames[:local].each { |f|
-			list.push("#{RAILS_ROOT}/tmp/#{f}-min.css")
+			list.push("#{RAILS_ROOT}/tmp/#{f.gsub('/','__')}-min.css")
 		}
 		dest ="stylesheets/#{page.to_s()}-min.css"
 		list = list.join(' ')

@@ -99,7 +99,7 @@ if File.exists?(config_file)
 	SITE_NAME_TITLE = site_specific['site_name_title']
 	MY_COLLEX = site_specific['my_collex']
 	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
-  SKIN = site_specific['collex']
+  SKIN = site_specific['skin']
 
 else
 	puts "***"
