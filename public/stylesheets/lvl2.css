@@ -14,24 +14,14 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
-/*@charset "UTF-8";*/
-/* CSS Document */
-
 #header_container {
 	width:100%;
 	height:121px;
 	background:url(/images/index_header_stretch.jpg) bottom left repeat-x;
 }
 
-#header_left {
+/*#header_left {
 	width:755px;
-	height:89px;
-	float:left;
-	background:url(/images/lvl2_header.jpg) top left no-repeat;
-}
-
-/*#header_left a {
-	width:400px;
 	height:89px;
 	float:left;
 	background:url(/images/lvl2_header.jpg) top left no-repeat;

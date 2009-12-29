@@ -24,19 +24,13 @@
 	/*background:url(/images/index_header_stretch.jpg) bottom left repeat-x;*/
 }
 
-#header_left {
+/*#header_left {
 	width:735px;
 	height:33px;
 	float:left;
 	background:url(/images/lvl3_header.jpg) top left no-repeat;
 }
-
-/*#header_left a {
-	width:200px;
-	height:33px;
-	float:left;
-	background:url(/images/lvl3_header.jpg) top left no-repeat;
-}*/
+*/
 
 #header_right {
 	float:right;
