@@ -99,6 +99,7 @@ if File.exists?(config_file)
 	SITE_NAME_TITLE = site_specific['site_name_title']
 	MY_COLLEX = site_specific['my_collex']
 	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
+  SKIN = site_specific['collex']
 
 else
 	puts "***"
@@ -125,7 +126,7 @@ COLLEX_MANAGER = NinesCollectionManager.new
 COLLEX_MANAGER.logger = RAILS_DEFAULT_LOGGER
 CACHE_DIR = "#{RAILS_ROOT}/cache"
 #RELATORS = COLLEX_MANAGER.relators
-DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
+DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/#{SKIN}/sm_site_image.gif"
 EXHIBIT_BUILDER_TODO_PATH = "/images/clicktoadd.jpg"
 PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 
