@@ -29,17 +29,17 @@ var selectGroup = function(id, options, value) {
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
-		actions: [ '/my9s/change_exhibits_group' ],
+		actions: [ '/my_collex/change_exhibits_group' ],
 		target_els: [ null ] });
 };
 
 function doPublish(exhibit_id, publish_state) {
-	recurseUpdateWithAjax(["/my9s/publish_exhibit"], ["overview_data"], null, null, { id: exhibit_id, publish_state: publish_state });
+	recurseUpdateWithAjax(["/my_collex/publish_exhibit"], ["overview_data"], null, null, { id: exhibit_id, publish_state: publish_state });
 }
 
 function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_obj_url, progress_img, genreList)
 {
-//	$(update_id).setAttribute('action', "/my9s/edit_exhibit_overview,/my9s/update_title");
+//	$(update_id).setAttribute('action', "/my_collex/edit_exhibit_overview,/my_collex/update_title");
 //	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
 
 	var data = $$("." + data_class);
@@ -97,13 +97,13 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 		retData.exhibit_id = exhibit_id;
 		retData.element_id = update_id;
 
-		recurseUpdateWithAjax(["/my9s/edit_exhibit_overview", "/my9s/update_title"], ["overview_data", "overview_title"], onSuccess, onFailure, retData);
+		recurseUpdateWithAjax(["/my_collex/edit_exhibit_overview", "/my_collex/update_title"], ["overview_data", "overview_title"], onSuccess, onFailure, retData);
 	};
 
 	this.deleteExhibit = function(event, params)
 	{
 		var del = function(){
-			window.location = "/my9s/delete_exhibit?id="+exhibit_id;
+			window.location = "/my_collex/delete_exhibit?id="+exhibit_id;
 		};
 
 		new ConfirmDlg('Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?', "Yes", "No", del);

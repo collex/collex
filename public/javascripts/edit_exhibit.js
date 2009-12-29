@@ -69,7 +69,7 @@ function imgResized(event, illustrationElement)
 	var newHeight = illustrationElement.height;	// This is the height if it is a textual illustration
 	if (newHeight === undefined || newHeight === null)
 		newHeight = parseInt(illustrationElement.getStyle('height'));
-	updateWithAjax({ el: element.id, action: "/my9s/change_img_width", onSuccess: initializeElementEditing, params: {illustration_id: illustrationElement.id, width: newWidth, height: newHeight} });
+	updateWithAjax({ el: element.id, action: "/my_collex/change_img_width", onSuccess: initializeElementEditing, params: {illustration_id: illustrationElement.id, width: newWidth, height: newHeight} });
 }
 
 document.observe('dom:loaded', function() {
@@ -112,13 +112,13 @@ function elementTypeChanged(div, element_id, newType)
 	}
 
 	var params = { element_id: element_id, type: newType };
-	doAjaxLink(div+",exhibit_builder_outline_content", "/my9s/change_element_type,/my9s/refresh_outline", params);
+	doAjaxLink(div+",exhibit_builder_outline_content", "/my_collex/change_element_type,/my_collex/refresh_outline", params);
  }
 
 function illustrationJustificationChanged(div, element_id, newJustification)
 {
 	var params = { element_id: element_id, justify: newJustification };
-	doAjaxLink(div, "/my9s/change_illustration_justification", params);
+	doAjaxLink(div, "/my_collex/change_illustration_justification", params);
  }
 
 function doAjaxLinkConfirm(div, url, params)
@@ -140,7 +140,7 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 	var page_id = $('current_page').innerHTML;
 	var params = { verb: verb, exhibit_id: exhibit_id, element_id: element_id, page_id: page_id };
 	var els = [ "exhibit_builder_outline_content", "exhibit_page" ];
-	var actions = [ "/my9s/modify_outline", "/my9s/redraw_exhibit_page" ];
+	var actions = [ "/my_collex/modify_outline", "/my_collex/redraw_exhibit_page" ];
 
 	if (verb === 'delete_element')
 		new ConfirmAjaxDlg("Delete Section", "You are about to delete this section. Do you want to continue?", { actions: actions, els: els, params: params });
@@ -162,9 +162,9 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 	var params = { verb: verb, exhibit_id: exhibit_id, element_id: element_id, page_num: page_num };
 
 	if (verb === 'delete_page')
-		new ConfirmAjaxDlg("Delete Page", "You are about to delete page number " + page_num + ". Do you want to continue?", { els: [ "exhibit_builder_outline_content", "exhibit_page" ], actions: [ "/my9s/modify_outline_page",  "/my9s/reset_exhibit_page_from_outline" ], params: params });
+		new ConfirmAjaxDlg("Delete Page", "You are about to delete page number " + page_num + ". Do you want to continue?", { els: [ "exhibit_builder_outline_content", "exhibit_page" ], actions: [ "/my_collex/modify_outline_page",  "/my_collex/reset_exhibit_page_from_outline" ], params: params });
 	else
-		updateWithAjax({ el: "exhibit_builder_outline_content", action: "/my9s/modify_outline_page", params: params });
+		updateWithAjax({ el: "exhibit_builder_outline_content", action: "/my_collex/modify_outline_page", params: params });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

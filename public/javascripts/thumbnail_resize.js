@@ -18,7 +18,7 @@
 /*global setTimeout */
 /*extern thumbnail_resize */
 
-// Used in my9s and the exhibit list page. Potentially also in Forum and Search in the future.
+// Used in my_collex and the exhibit list page. Potentially also in Forum and Search in the future.
 function thumbnail_resize()
 {
 	var img = $(this);

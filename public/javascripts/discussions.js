@@ -193,7 +193,7 @@ var ForumReplyDlg = Class.create({
 
 		var objlist = new CreateListOfObjects(populate_nines_obj_url, starting_nines_obj_list, 'nines_obj_list', progress_img);
 		var exlist = new CreateListOfObjects(populate_exhibit_url, starting_exhibit_list, 'exhibit_list', progress_img);
-		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my9s/get_licenses?non_sharing=false', currentLicense: starting_license, id: 'license_list' });
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my_collex/get_licenses?non_sharing=false', currentLicense: starting_license, id: 'license_list' });
 
 		var dlgLayout = {
 				page: 'layout',

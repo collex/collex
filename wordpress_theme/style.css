@@ -247,20 +247,20 @@ a.tab_link:hover {
 	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
 }
 
-a.mynines_link {
+a.my_collex_link {
 	color:#55220F;
-	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
+	background:transparent url(/images/lvl2_tab_my_collex.gif) no-repeat scroll left top;
 }
 
-a.mynines_link:visited {
+a.my_collex_link:visited {
 	color:#55220F;
-	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
+	background:transparent url(/images/lvl2_tab_my_collex.gif) no-repeat scroll left top;
 }
 
-a.mynines_link:hover {
+a.my_collex_link:hover {
 	text-decoration:underline;
 	color:#55220F;
-	background:transparent url(/images/lvl2_tab_mynines.gif) no-repeat scroll left top;
+	background:transparent url(/images/lvl2_tab_my_collex.gif) no-repeat scroll left top;
 }
 
 a.tab_link_current {

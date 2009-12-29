@@ -122,7 +122,7 @@ function selectLine(id)
 	else
 	{
 		// The element must be on another page. Go get that.
-		new Ajax.Updater("exhibit_page", "/my9s/find_page_containing_element", {
+		new Ajax.Updater("exhibit_page", "/my_collex/find_page_containing_element", {
 			parameters : { element: target_el },
 			evalScripts : true,
 			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});

@@ -57,39 +57,39 @@
 	top:89px;
 }
 
-.mynines_link {
+.my_collex_link {
 	position:absolute;
 	left:40px;
 	top:89px;
 	height:23px;
 	width:71px;
 	float:left;
-	background:url(/images/lvl2_tab_mynines.gif) top left no-repeat;
+	background:url(/images/lvl2_tab_my_collex.gif) top left no-repeat;
 	color:#55220F;
 	font-weight:bold;
 	text-decoration:none;
 	padding-top:9px;
 }
 
-.mynines_link:hover {
+.my_collex_link:hover {
 	text-decoration:underline;
 }
 
-.mynines_link_current {
+.my_collex_link_current {
 	position:absolute;
 	left:40px;
 	top:89px;
 	height:23px;
 	width:71px;
 	float:left;
-	background:url(/images/lvl2_tab_mynines_dn.gif) top left no-repeat;
+	background:url(/images/lvl2_tab_my_collex_dn.gif) top left no-repeat;
 	color:#55220F;
 	font-weight:bold;
 	text-decoration:none;
 	padding-top:9px;
 }
 
-.mynines_link_current:hover {
+.my_collex_link_current:hover {
 	text-decoration:underline;
 }
 

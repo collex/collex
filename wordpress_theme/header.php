@@ -56,7 +56,7 @@ if ( !empty($withcomments) && !is_single() ) {
 			<a href="/" id="header_left">&nbsp;</a>
 			<div id="header_right"></div>
 		</div>
-		<a href="/my9s" class="mynines_link">My 9s</a>
+		<a id="my_collex_tab" href="/my_collex" class="my_collex_link">.....</a>
 
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
@@ -72,6 +72,7 @@ if ( !empty($withcomments) && !is_single() ) {
 				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
+					new Ajax.Updater('my_collex_tab', '/my_collex/get_tab_name');
 					});
 				</script>
             </div>

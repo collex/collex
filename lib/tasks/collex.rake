@@ -66,7 +66,7 @@ namespace :collex do
 		end
 	end
 	
-  desc "Update the installed NINES Wordpress theme"
+  desc "Update the installed Collex Wordpress theme"
   task :update_nines_theme do
 		puts "Updating wordpress files..."
 		safe_mkdir("#{RAILS_ROOT}/public/wp")
@@ -76,7 +76,7 @@ namespace :collex do
     copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" )
   end
 
-  desc "Install the NINES Wordpress theme"
+  desc "Install the Collex Wordpress theme"
   task :install_nines_theme do
     # install php files
     Dir.mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
@@ -145,8 +145,8 @@ namespace :collex do
 		compress_file('javascripts', '.js')
 		compress_file('stylesheets', '.css')
 
-		concatenate_js(:my9s)
-		concatenate_css(:my9s)
+		concatenate_js(:my_collex)
+		concatenate_css(:my_collex)
 		concatenate_js(:search)
 		concatenate_css(:search)
 		concatenate_js(:tag)

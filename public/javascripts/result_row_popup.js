@@ -455,7 +455,7 @@ var StartDiscussionWithObject = Class.create({
 			});
 		};
 
-		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my9s/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my_collex/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [
@@ -483,7 +483,7 @@ function doAddToExhibit(partial, uri, index, row_id)
 {
 	if (exhibit_names.length === 0) {
 		new MessageBoxDlg('Exhibits',
-			'You have not yet created any exhibits. <a href="/my9s" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
+			'You have not yet created any exhibits. <a href="/my_collex" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
 	} else {
 		//var arr = row_id.split('-');
 		//var row_num = arr[arr.length-1];
@@ -493,7 +493,7 @@ function doAddToExhibit(partial, uri, index, row_id)
 			'exhibit',
 			"exhibit_" + index,
 			row_id + ",exhibited_objects_container",
-			"/results/add_object_to_exhibit,/my9s/resend_exhibited_objects",
+			"/results/add_object_to_exhibit,/my_collex/resend_exhibited_objects",
 			$H({ partial: partial, uri: uri, row_num: index }), 'select',
 			exhibit_names, null);
 	}

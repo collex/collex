@@ -82,21 +82,21 @@
 	top:123px;
 }
 
-.mynines_link {
+.my_collex_link {
 	position:absolute;
 	left:40px;
 	top:123px;
 	height:23px;
 	width:71px;
 	float:left;
-	background:url(/images/index_tab_mynines.gif) top left no-repeat;
+	background:url(/images/index_tab_my_collex.gif) top left no-repeat;
 	color:#55220F;
 	font-weight:bold;
 	text-decoration:none;
 	padding-top:9px;
 }
 
-.mynines_link:hover {
+.my_collex_link:hover {
 	text-decoration:underline;
 }
 

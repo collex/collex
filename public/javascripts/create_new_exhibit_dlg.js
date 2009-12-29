@@ -45,7 +45,7 @@ var CreateNewExhibitWizard = Class.create({
 					return false;
 				}
 				dlg.setFlash("Verifying title. Please wait...", false);
-				new Ajax.Request('/my9s/verify_title', { method: 'get', parameters: { title: data.exhibit_title.strip() },
+				new Ajax.Request('/my_collex/verify_title', { method: 'get', parameters: { title: data.exhibit_title.strip() },
 					onSuccess : function(resp) {
 						dlg.setFlash('', false);
 						$('exhibit_url').value = resp.responseText;
@@ -84,7 +84,7 @@ var CreateNewExhibitWizard = Class.create({
 				parameters : data,
 				onSuccess : function(resp) {
 					dlg.setFlash('Creating exhibit...', false);
-					window.location = "/my9s/edit_exhibit?id=" + resp.responseText;
+					window.location = "/my_collex/edit_exhibit?id=" + resp.responseText;
 				},
 				onFailure : function(resp) {
 					dlg.setFlash(resp.responseText, true);
@@ -132,7 +132,7 @@ var CreateNewExhibitWizard = Class.create({
 						[ { input: 'exhibit_thumbnail', klass: 'new_exhibit_input_long' } ],
 						[ { page_link: '[Choose thumbnail from collected objects]', callback: this.changeView, new_page: 'choose_thumbnail' }],
 						[ { text: 'The thumbnail image will appear next to your exhibit in the exhibit list once you decide to share it with other users. Please use an image that is small, so that the pages doesn\'t take too long to load. These items are optional and can be entered at any time.', klass: 'new_exhibit_instructions' } ],
-						[ { rowClass: 'last_row' }, { button: 'Create Exhibit', url: '/my9s/create_exhibit', callback: this.sendWithAjax, isDefault: true }, { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Create Exhibit', url: '/my_collex/create_exhibit', callback: this.sendWithAjax, isDefault: true }, { button: 'Previous', url: 'choose_palette', callback: this.changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 

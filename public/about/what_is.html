@@ -38,7 +38,7 @@
 			<a href="/" id="header_left">&nbsp;</a>
 			<div id="header_right"></div>
 		</div>
-		<a href="/my9s" class="mynines_link">My 9s</a>
+		<a id="my_collex_tab" href="/my_collex" class="my_collex_link">.....</a>
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
 			<a href="/news/" class="tab_link">News</a>
@@ -51,6 +51,7 @@
 				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater('login_container', '/login/login_controls');
+					new Ajax.Updater('my_collex_tab', '/my_collex/get_tab_name');
 					});
 				</script></div><div id="subnav_links_container"><a href="/about/what_is.html" class="nav_link">What is NINES?</a>  | <a href="/about/scholarship/index.html" class="nav_link">Scholarship</a>  | <a href="/about/software/index.html" class="nav_link">Software</a>  |  <a href="/about/community/index.html" class="nav_link">Community</a></div>
           	<div class="clear_both"></div>
@@ -99,7 +100,7 @@
 <p class="highlight">NINES is currently accepting applications for the <strong>July 2010</strong> workshop in Dublin, Ireland. Please see our <a class="nav_link" href="community/workshop.html">workshops page</a> for more information.</p>
    	  
    	  <p class="header">THE COLLEX INTERFACE</p>
-   	  <p>Use the tabs above to search peer-reviewed <a class="nav_link" href="scholarship/scholarlyProjects.html">scholarly projects</a> online and other <a class="nav_link" href="scholarship/resources.html">contextual information</a>, browse the NINES <a class="nav_link" href="/tags">tag cloud</a>, and read essays, or Exhibits, written by members of the NINES <a class="nav_link" href="community/index.html">community</a>. With a <a class="nav_link" href="#" onclick="var dlg = new SignInDlg(); dlg.show('create_account'); return false;">free account</a>, you can save useful searches, collect objects of interest, tag them and even create your own exhibits to share with other users. The new <a class="nav_link" href="/my9s">My 9s</a> page provides your very own workspace within NINES, so that you can manage your online research in one central location.</p>
+   	  <p>Use the tabs above to search peer-reviewed <a class="nav_link" href="scholarship/scholarlyProjects.html">scholarly projects</a> online and other <a class="nav_link" href="scholarship/resources.html">contextual information</a>, browse the NINES <a class="nav_link" href="/tags">tag cloud</a>, and read essays, or Exhibits, written by members of the NINES <a class="nav_link" href="community/index.html">community</a>. With a <a class="nav_link" href="#" onclick="var dlg = new SignInDlg(); dlg.show('create_account'); return false;">free account</a>, you can save useful searches, collect objects of interest, tag them and even create your own exhibits to share with other users. The new <a class="nav_link" href="/my_collex">My 9s</a> page provides your very own workspace within NINES, so that you can manage your online research in one central location.</p>
    	  <p><br />
    	    <strong>We are always working to make the NINES site better. Please contact us at <a class="nav_link nospam" href="technologies nines org">$$$$</a> with your feedback.</strong>
 

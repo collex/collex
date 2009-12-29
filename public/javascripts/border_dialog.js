@@ -286,11 +286,11 @@ BorderDialog.prototype = {
 			var element_id = els[0].id;
 			element_id = element_id.substring(element_id.lastIndexOf('_')+1);
 
-			new Ajax.Updater("exhibit_builder_outline_content", "/my9s/modify_border", {
+			new Ajax.Updater("exhibit_builder_outline_content", "/my_collex/modify_border", {
 				parameters : { borders: str, element_id: element_id },
 				evalScripts : true,
 				onSuccess: function(resp) {
-					new Ajax.Updater("exhibit_page", "/my9s/redraw_exhibit_page", {
+					new Ajax.Updater("exhibit_page", "/my_collex/redraw_exhibit_page", {
 						parameters : { borders: str, element_id: element_id },
 						evalScripts : true,
 						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
