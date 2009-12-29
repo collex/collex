@@ -32,14 +32,18 @@ class My9sController < ApplicationController
     return session[:user] ? User.find_by_username(session[:user][:username]) : nil
   end
 
-  def can_edit_exhibit(user, exhibit_id)
-    return false if user == nil
-    return false if exhibit_id == nil
-    exhibit = Exhibit.find(exhibit_id)
-		return false if exhibit.category == "peer-reviewed"
-    return true if is_admin?
-    return exhibit.user_id == user.id
-  end
+#  def can_edit_exhibit(user, exhibit_id)
+#    return false if user == nil
+#    return false if exhibit_id == nil
+#    exhibit = Exhibit.find(exhibit_id)
+#		return false if exhibit.category == "peer-reviewed"
+#		if exhibit.group_id
+#			group = Group.find(exhibit.group_id)
+#			return false if group.group_type == 'peer-reviewed'
+#		end
+#    return true if is_admin?
+#    return exhibit.user_id == user.id
+#  end
 
   def get_exhibit_id_from_element(element)
     return nil if element == nil || element == 0
@@ -309,7 +313,7 @@ class My9sController < ApplicationController
   def edit_exhibit
     exhibit_id = params[:id]
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       @exhibit = Exhibit.find(exhibit_id)
       @page = params['page'] == nil ? 1 : params['page'].to_i
       num_pages = @exhibit.exhibit_pages.length
@@ -348,7 +352,7 @@ class My9sController < ApplicationController
     exhibit_id = params[:exhibit_id]
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
 			visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
 			short_name = params[:overview_resource_name_dlg]
       ex = Exhibit.find_by_visible_url(visible_url)
@@ -387,7 +391,7 @@ class My9sController < ApplicationController
     exhibit_id = params[:id]
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       sharing_level = params[:sharing]
       exhibit.set_sharing(sharing_level)
       exhibit.save
@@ -400,7 +404,7 @@ class My9sController < ApplicationController
     exhibit_id = params[:id]
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       Exhibit.destroy(exhibit_id)
     end
 
@@ -410,7 +414,7 @@ class My9sController < ApplicationController
   def change_page
     exhibit_id = params[:id]
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       redirect_to :action => 'edit_exhibit', :id => params['id'], :page => params['page']
     else
       redirect_to :action => 'index'
@@ -425,7 +429,7 @@ class My9sController < ApplicationController
     page = ExhibitPage.find_by_id(page_id)
     exhibit_id = page ? page.exhibit_id : nil
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       case verb
         when "up"
         page.move_element_up(element_pos)
@@ -454,7 +458,7 @@ class My9sController < ApplicationController
     element = ExhibitElement.find_by_id(element_id)
     verb = params[:verb]
     user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+    if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       case verb
         when "left"
         element.exhibit_illustrations[pos-1].move_higher()
@@ -480,7 +484,7 @@ class My9sController < ApplicationController
     pos = params[:position].to_i
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+    if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       if pos == -1
         pos = element.exhibit_illustrations.length+1
       end
@@ -502,7 +506,7 @@ class My9sController < ApplicationController
     type = params[:type]
     element = ExhibitElement.find(element_id)
     user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+    if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       element.exhibit_element_layout_type = type
       element.save
       # if we are just creating an element that takes an illustration, then create the illustration, too.
@@ -523,7 +527,7 @@ class My9sController < ApplicationController
     justify = params[:justify]
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+    if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       element.set_justification(justify)
       element.save
     end
@@ -587,7 +591,7 @@ class My9sController < ApplicationController
 
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+    if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       value = params['value']
       value = clean_up_links(value)
       value = remove_empty_spans(value)
@@ -617,7 +621,7 @@ class My9sController < ApplicationController
     value = params['value']
     element = ExhibitElement.find_by_id(element_id)
     user = get_user(session)
-    if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+    if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       element.element_text = value
 			element.set_header_footnote(footnote)
       element.save
@@ -640,7 +644,7 @@ class My9sController < ApplicationController
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
       user = get_user(session)
-      if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+      if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
         illustration.image_width = width
         illustration.height = height if illustration.illustration_type == ExhibitIllustration.get_illustration_type_text()
         illustration.save
@@ -681,7 +685,7 @@ class My9sController < ApplicationController
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
       user = get_user(session)
-      if can_edit_exhibit(user, get_exhibit_id_from_element(element))
+      if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
         illustration.illustration_type = type
         illustration.image_url = image_url
 				text = clean_up_links(text)
@@ -723,7 +727,7 @@ class My9sController < ApplicationController
     exhibit_id = page.exhibit_id
 
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       arr = borders.split(',')
       if arr.length == page.exhibit_elements.length
         0.upto(arr.length-1) do |i|
@@ -747,7 +751,7 @@ class My9sController < ApplicationController
 		sel = element_id
 
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       case verb
         when "insert_element"
         new_element = page.insert_element(element.position+1)
@@ -777,7 +781,7 @@ class My9sController < ApplicationController
     is_editing_border = false
 
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       new_element = page.insert_element(1)
       element_id = new_element.id
     end
@@ -845,7 +849,7 @@ class My9sController < ApplicationController
     user = get_user(session)
     uri = params[:uri]
     exhibit_id = params[:exhibit_id]
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       obj = ExhibitObject.find(:first, :conditions => ["uri = ? AND exhibit_id = ?", uri, exhibit_id ] )
       obj.destroy if obj
     end
@@ -911,7 +915,7 @@ class My9sController < ApplicationController
   def update_objects_in_exhibits
     exhibit_id = params[:exhibit_id]
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       objects = params[:objects].split("\t")
       ExhibitObject.set_objects(exhibit_id, objects)
 			Exhibit.find(exhibit_id).bump_last_change()
@@ -939,7 +943,7 @@ class My9sController < ApplicationController
     page_num = params[:page_num].to_i
     user = get_user(session)
     exhibit = Exhibit.find(exhibit_id)
-    if user_id.to_i > 0 && can_edit_exhibit(user, exhibit_id)
+    if user_id.to_i > 0 && Exhibit.can_edit(user, exhibit_id)
       exhibit.alias_id = user_id
       exhibit.save
     end
@@ -955,7 +959,7 @@ class My9sController < ApplicationController
     exhibit = Exhibit.find(exhibit_id)
 
     user = get_user(session)
-    if can_edit_exhibit(user, exhibit_id)
+    if Exhibit.can_edit(user, exhibit_id)
       case verb
         when "move_page_up"
         exhibit.move_page_up(page_num)

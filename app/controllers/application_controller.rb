@@ -103,6 +103,13 @@ class ApplicationController < ActionController::Base
       my_username ? User.find_by_username(my_username) : nil
     end
     
+		def get_curr_user
+			user = session[:user]
+			return nil if user == nil
+			user = User.find_by_username(user[:username])
+			return user
+		end
+
 		def get_curr_user_id
 			user = session[:user]
 			return nil if user == nil

@@ -23,10 +23,10 @@
 	<% for exhibit in my_exhibits -%>
 		<div class="side_bar_exhibit_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></div>
 		<div class="side_bar_exhibit_text exhibit_link"><%=h exhibit.title %> <a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a> 
-			<% if exhibit.category == "peer-reviewed" -%>
-			<div>Peer Reviewed</div>
-			<% else -%>
+			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 			<a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a>
+			<% else -%>
+			<div>Peer Reviewed</div>
 			<% end -%>
 		</div>
 		<div class="side_bar_exhibit_spacer clear_both"></div>

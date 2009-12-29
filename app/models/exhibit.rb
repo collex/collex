@@ -20,6 +20,19 @@ class Exhibit < ActiveRecord::Base
 	belongs_to :group
 	belongs_to :cluster
 
+	 def self.can_edit(user, exhibit_id)
+    return false if user == nil
+    return false if exhibit_id == nil
+    exhibit = Exhibit.find(exhibit_id)
+		return false if exhibit.category == "peer-reviewed"
+		if exhibit.group_id
+			group = Group.find(exhibit.group_id)
+			return false if group.group_type == 'peer-reviewed'
+		end
+    return true if user.role_names.include?('admin')
+    return exhibit.user_id == user.id
+  end
+
 	def reset_fonts_to_default
 		# set the default values for fields that were added later
 		self.header_font_name = 'Arial'
