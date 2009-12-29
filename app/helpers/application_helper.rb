@@ -169,9 +169,9 @@ private
       { :name => 'Search', :link => search_path }
     ]
     
-    # the my9s tab is separate, and is rendered first
-    cls = (curr_page == 'My 9s') ? 'mynines_link_current' : 'mynines_link'
-    html = "\t" + link_to('My 9s', my9s_path, { :class => cls }) + "\n"
+    # the my_collex tab is separate, and is rendered first
+    cls = (curr_page == MY_COLLEX) ? 'my_collex_link_current' : 'my_collex_link'
+    html = "\t" + link_to(MY_COLLEX, my_collex_path, { :class => cls }) + "\n"
     html += "\t" + "<div id='nav_container'>\n"
     tabs.each { |tab|
       if tab[:dont_show_yourself] && curr_page == tab[:name]
@@ -188,33 +188,6 @@ private
     html += "\t" + "</div>\n"
   end
 
-#Drawing the Tab control
-#  def draw_tabs(curr_page)
-#    # the items in the array are: [0]=displayed name, [1]=path, [2]=enabled?
-#    tabs_arr = [ ['Home', "/", true],
-#      ['My&nbsp;9s', my9s_path, true],
-#      ['Search', search_path, true],
-#      ['Tags', tags_path, true],
-#      #['Discuss', forum_path, true],
-#      ['Exhibits', exhibit_list_path, true],
-#      ['News', news_path + '/', true],
-#      ['About', tab_about_path, true]
-#   ]
-#  
-#    html = ""
-#    tabs_arr.each {|tab|
-#      if (tab[2] == false)
-#        html += make_disabled_tab(tab[0])
-#      elsif (curr_page == tab[0])
-#        html += make_curr_tab(tab[0])
-#        session[:current_page] = params
-#      else
-#        html += make_link_tab(tab[0], tab[1])
-#      end
-#    }
-#    return html
-#  end
-  
   # helper for adding default text if the property is blank
   def default_text(item, text)
     item.blank? ? text : item

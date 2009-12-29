@@ -41,7 +41,7 @@
 	<div id='outline_<%= "p#{page.position}" %>' class="outline_tree_elements">
 	<% border_active = false -%>
 	<% if page.exhibit_elements.length == 0 -%>
-		<% ajax_actions = "/my9s/modify_outline_add_first_element,/my9s/redraw_exhibit_page" -%>
+		<% ajax_actions = "/my_collex/modify_outline_add_first_element,/my_collex/redraw_exhibit_page" -%>
 		<% ajax_div = "exhibit_builder_outline_content,exhibit_page" -%>
 		<%= link_to_function("[New Section]", "doAjaxLink('#{ajax_div}', '#{ajax_actions}', { page_id: #{page.id} } );", { :title => 'New Section', :class => 'modify_link' }) %>
 	<% end #if there are no elements on this page -%>

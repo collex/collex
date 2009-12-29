@@ -20,7 +20,7 @@
 	<%= render :partial => 'home/featured_exhibit' %>
 	
 	<div class="exhibit_list">
-		<div class="page_header">Choose an exhibit to view <%= link_to_function( "(or create one of your own)", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects', '/forum/get_nines_obj_list_with_image'); dlg.show();", :class => 'modify_link page_header_parenthetical') if is_logged_in? %></div>
+		<div class="page_header">Choose an exhibit to view <%= link_to_function( "(or create one of your own)", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my_collex/get_all_collected_objects', '/forum/get_nines_obj_list_with_image'); dlg.show();", :class => 'modify_link page_header_parenthetical') if is_logged_in? %></div>
 		<div class="exhibit_left_column">
 <% if Branding.use_groups() == true %>
 			<%= render :partial => 'exhibit_list', :locals => { :ty => 2 } %>

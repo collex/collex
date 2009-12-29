@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page "My 9s" -%>
+<% current_page MY_COLLEX -%>
 <script type="text/javascript">
 	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
 
@@ -37,7 +37,7 @@
 		<%= render :partial => 'login_instructions' %>
 	<% else -%>
 		<div class="subpage_nav"> 
-			<%= link_to "My9s", { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
+			<%= link_to MY_COLLEX, { :action => 'index'}, :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
 		<table class="edit_exhibit_heading"><tr>
@@ -57,7 +57,7 @@
 			<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
 			<%= link_to_function "[Preview]", "var el = $('overview_visible_url'); var url = el.innerHTML; if (url.length === 0) url = #{@exhibit.id}; window.location = '/exhibits/view/'+url+'?page=#{@page}';", { :class => 'nav_link' } %>
 			<% if is_admin? -%>
-				<%= link_to_function '[Publish as different user]', "new SetExhibitAuthorAlias('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_users', '/my9s/set_exhibit_author_alias', #{@exhibit.id}, 'exhibit_page', #{@page});",  :class => 'nav_link' %>
+				<%= link_to_function '[Publish as different user]', "new SetExhibitAuthorAlias('#{PROGRESS_SPINNER_PATH}', '/my_collex/get_all_users', '/my_collex/set_exhibit_author_alias', #{@exhibit.id}, 'exhibit_page', #{@page});",  :class => 'nav_link' %>
 			<% end -%>
 		</div>
 		

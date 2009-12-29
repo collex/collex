@@ -319,15 +319,6 @@ class CollexEngine
 			new_obj.each {|key,value|
 				if key == 'batch' || key == 'score'
 					old_obj.delete(key)
-#				elsif key == 'federation' && value.to_s == "NINES"
-#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-#					old_obj.delete(key)
-#				elsif key == 'federation' && value.join(",") == "NINES,18th Connect" && new_obj['archive'] == 'poetess'
-#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-#					old_obj.delete(key)
-#				elsif key == 'has_full_text' || key == 'is_ocr'
-#					# TODO: just ignore these for now. When the new index becomes the standard one, then remove this test.
-#					old_obj.delete(key)
 				else
 					old_value = old_obj[key]
 					old_value = value_to_string(old_value)

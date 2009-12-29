@@ -15,7 +15,7 @@
 ##########################################################################
 require 'json'
 
-class My9sController < ApplicationController
+class MyCollexController < ApplicationController
   layout 'nines'
   before_filter :init_view_options
 
@@ -23,7 +23,7 @@ class My9sController < ApplicationController
   def init_view_options
     @use_tabs = true
     @use_signin= true
-    @site_section = :my9s
+    @site_section = :my_collex
     @uses_yui = true
     return true
   end
@@ -52,6 +52,10 @@ class My9sController < ApplicationController
   end
 
   public
+
+	def get_tab_name
+		render :text => MY_COLLEX
+	end
 
   def index
     user = get_user(session)
@@ -155,7 +159,7 @@ class My9sController < ApplicationController
 	# This is called from AJAX when a user's link has been clicked.
 	def show_profile
 		user_id = params[:user]
-		render :partial => '/my9s/profile', :locals => { :user => User.find(user_id), :can_edit => false }
+		render :partial => '/my_collex/profile', :locals => { :user => User.find(user_id), :can_edit => false }
 	end
 
   # This is called from AJAX when the user has finished filling out the form.

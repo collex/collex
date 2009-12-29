@@ -27,7 +27,7 @@
 <div class="page_subheader">Follow and join in this discussion by using your free <%= SITE_NAME %> account.</div>
 <br /><br />
 <div class="FP_breadcrumb">
-	<%= link_to "Nines Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).get_title() %>
+	<%= link_to "#{SITE_NAME}  Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).get_title() %>
 </div>
 <% main_comment = @thread.discussion_comments[0] -%>
 <%# the thread itself can be deleted if the current user is an administrator, or the current user created the thread and there are no comments, yet. -%>

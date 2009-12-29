@@ -222,7 +222,7 @@ class CachedResource < ActiveRecord::Base
     return results
   end
   
-	# called in my9s when viewing "all collected objects"
+	# called in my_collex when viewing "all collected objects"
   def self.get_page_of_hits_by_user(user, page_num, items_per_page, sort_field, direction)
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
 		if sort_field

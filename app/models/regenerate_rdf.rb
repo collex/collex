@@ -79,15 +79,15 @@ class RegenerateRdf
 				val = "#{val}".gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
 				case key
 				when 'archive'
-					str += self.format_item("nines:archive", val)
+					str += self.format_item("collex:archive", val)
 				when 'title'
 					str += self.format_item("dc:title", val)
 				when 'text'
-					str += self.format_item("nines:text", val)
+					str += self.format_item("collex:text", val)
 				when 'date_label'
 					# year and date_label are put in at the same time, so we'll look for year here and ignore it when it naturally comes up.
 					year = obj['year']
-					str += "\t<dc:date><nines:date>\n\t#{self.format_item("rdfs:label", val)}\t#{self.format_item("rdf:value", year[i]) if year[i]}\t</nines:date></dc:date>\n"
+					str += "\t<dc:date><collex:date>\n\t#{self.format_item("rdfs:label", val)}\t#{self.format_item("rdf:value", year[i]) if year[i]}\t</collex:date></dc:date>\n"
 				when 'year'
 					#nothing here: handled above
 	#			when 'url'
@@ -105,7 +105,7 @@ class RegenerateRdf
 				when 'role_PBL'
 					str += self.format_item("role:PBL", val)
 				when 'genre'
-					str += self.format_item("nines:genre", val)
+					str += self.format_item("collex:genre", val)
 				when 'url'
 					 str += "\t<rdfs:seeAlso rdf:resource=\"#{val}\"/>\n"
 				else
@@ -118,12 +118,12 @@ class RegenerateRdf
 #      <dc:source>The Collected Letters of the Wordsworths. Electronic edition.</dc:source>
 #      <dc:source>The Letters of William and Dorothy Wordsworth. Volume 11</dc:source>
 #      <role:EDT>Burton, Mary E.</role:EDT>
-#      <nines:freeculture>FALSE</nines:freeculture>
+#      <collex:freeculture>FALSE</collex:freeculture>
 #      <dc:date>
-#         <nines:date>
+#         <collex:date>
 #            <rdfs:label>1800's</rdfs:label>
 #            <rdf:value>18uu</rdf:value>
-#         </nines:date>
+#         </collex:date>
 #      </dc:date>
 #      <dcterms:isPartOf rdf:resource="http://pm.nlx.com/xtf/view?docId=wordsworths_c/wordsworths_c.11.xml"/>
 		str += "</#{main_node}>\n"

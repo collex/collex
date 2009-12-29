@@ -44,7 +44,7 @@ end -%>
 
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
-	<% ajax_action = "'/my9s/edit_row_of_illustrations,/my9s/refresh_outline'" -%>
+	<% ajax_action = "'/my_collex/edit_row_of_illustrations,/my_collex/refresh_outline'" -%>
 	<% ajax_div_id = "'element_#{element_id},exhibit_builder_outline_content'" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 	<% onload_text = "onload=\"initializeResizableImageElement('illustration_img_#{illustration_id}');\"" -%>
@@ -163,6 +163,6 @@ end -%>
 <% if edit_mode -%>
 	<script type="text/javascript">
 		if(window.initializeInplaceIllustrationEditor)
-			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},exhibit_builder_outline_content'"%>, "/my9s/edit_illustration,/my9s/refresh_outline");
+			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},exhibit_builder_outline_content'"%>, "/my_collex/edit_illustration,/my_collex/refresh_outline");
 	</script>
 <% end -%>

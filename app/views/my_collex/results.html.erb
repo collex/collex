@@ -15,14 +15,14 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% current_page "My 9s" -%>
+<% current_page MY_COLLEX -%>
 <% if !is_logged_in? -%>
 	<div class="inner_content_container">
 		<%= render :partial => 'login_instructions' %>
 	</div>
 <% else -%>
 	<div class="subpage_nav"> 
-		<%= link_to "My 9s", { :action => 'index' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;My objects&nbsp;<br />
+		<%= link_to MY_COLLEX, { :action => 'index' }, :class => 'nav_link' %><%= link_separator() %>&nbsp;My objects&nbsp;<br />
 	</div> 
 	
 	<div class="inner_content_container">
@@ -43,7 +43,7 @@
 					<% else -%>
 						<% extra = "" -%>
 					<% end -%>
-					<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'my9s', :action => 'results' } %>
+					<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'my_collex', :action => 'results' } %>
 				<% end -%>
 			</div>
 		</div>

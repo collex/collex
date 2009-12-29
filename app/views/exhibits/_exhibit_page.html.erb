@@ -25,7 +25,7 @@
 </div>
 <% num_pages = exhibit.exhibit_pages.length -%>
 <% if num_pages > 0 -%>
-	<% page_controller = is_edit_mode ? 'my9s' : 'exhibits' -%>
+	<% page_controller = is_edit_mode ? 'my_collex' : 'exhibits' -%>
 	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
 	<% has_footnotes = Exhibit.has_footnotes(is_edit_mode ? exhibit.id : get_exhibit_id(exhibit)) -%>
 	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>

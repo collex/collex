@@ -121,7 +121,7 @@
 	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
 	<div class="group_editors"><span class="group_details_label">Group Type: </span><%= Group.type_to_friendly(group.group_type) %> <%= link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json(false)});", :class => 'nav_link') if group.can_edit(user_id) && group.group_type != 'peer-reviewed' %></div>
 	<% if group.can_edit(user_id) -%>
-	<div class="group_editors"><%= link_to_function("[change license]", "license_dialog({ populateLicenses: '/my9s/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" }) %>
+	<div class="group_editors"><%= link_to_function("[change license]", "license_dialog({ populateLicenses: '/my_collex/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" }) %>
 		<%= link_to_function('[invite users to join]', "new InviteMembersDlg(#{group.id});", :class => 'nav_link')  %>
 		<%= link_to_function('[change membership]', "new EditMembershipDlg(#{group.id}, gMembership, '#{group.show_membership == true ? 'Yes' : 'No' }');", :class => 'nav_link')  %>
 	</div>

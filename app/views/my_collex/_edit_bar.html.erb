@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# edit_bar params: ActiveRecord element, int element_count -%>	
 <% page = ExhibitPage.find(element.exhibit_page_id) %>
-<% ajax_action = "'/my9s/edit_element,/my9s/refresh_outline'" -%>
+<% ajax_action = "'/my_collex/edit_element,/my_collex/refresh_outline'" -%>
 <% ajax_div_id = "'exhibit_page,exhibit_builder_outline_content'" -%>
 <% ajax_params = "'page=#{page.id}&element=#{element.position}&verb='" -%>
 <div class="edit_bar hidden">
@@ -42,7 +42,7 @@
 	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic_text' %> value="text_pic_text">Text, Illustration, Text</option>
 	</select>
 	</span>
-	<% ill_ajax_action = "'/my9s/insert_illustration,/my9s/refresh_outline'" -%>
+	<% ill_ajax_action = "'/my_collex/insert_illustration,/my_collex/refresh_outline'" -%>
 	<% ill_ajax_div_id = "'element_#{element.id},exhibit_builder_outline_content'" -%>
 	<% illustration_pos = element.exhibit_illustrations.length+1 -%>
 	<% ill_ajax_params = "'element_id=#{element.id}&position=-1'" -%>

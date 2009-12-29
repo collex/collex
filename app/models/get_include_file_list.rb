@@ -53,7 +53,7 @@ class GetIncludeFileList
 				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'cc_license', 'search_name_facet' ]
 			when :tag
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'cc_license' ]
-			when :my9s
+			when :my_collex
 				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 'cc_license',
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
 					'create_new_group_dlg', 'edit_fonts_dlg', 'exhibit_builder_outline', 'my_collex', 'exhibit_builder_profile' ]
@@ -110,8 +110,8 @@ class GetIncludeFileList
 				local = [ "lvl2", "search", "right_column", "result_row" ]
 			when :tag
 				local = [ "lvl2", "tag", "result_row" ]
-			when :my9s
-				local = [ "lvl2", "right_column", "tag", "search", "my9s", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", "user_profile" ]
+			when :my_collex
+				local = [ "lvl2", "right_column", "tag", "search", "my_collex", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", "user_profile" ]
 			when :discuss
 				local = [ "lvl2", "search", "result_row", "forum", "user_profile" ]
 			when :home

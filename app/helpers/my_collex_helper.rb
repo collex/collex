@@ -14,7 +14,7 @@
 # limitations under the License.
 ##########################################################################
 
-module My9sHelper
+module MyCollexHelper
   def down_char
     "&darr;"
   end

@@ -76,7 +76,7 @@
 								<%=h real_exhibit.title -%>
 								<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
 								<% if Exhibit.can_edit(get_curr_user(), real_exhibit.id) -%>
-									<%= link_to("[edit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
+									<%= link_to("[edit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
 								 <% end -%>
 							</td>
 						</tr>

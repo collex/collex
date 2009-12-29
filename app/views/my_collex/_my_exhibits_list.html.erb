@@ -24,7 +24,7 @@
 		<div class="side_bar_exhibit_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></div>
 		<div class="side_bar_exhibit_text exhibit_link"><%=h exhibit.title %> <a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a> 
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-			<a class="nav_link" href="/my9s/edit_exhibit?id=<%= exhibit.id %>">[edit]</a>
+			<a class="nav_link" href="/my_collex/edit_exhibit?id=<%= exhibit.id %>">[edit]</a>
 			<% else -%>
 			<div>Peer Reviewed</div>
 			<% end -%>
@@ -32,4 +32,4 @@
 		<div class="side_bar_exhibit_spacer clear_both"></div>
 	<% end -%>
 <% end # if there are exhibits -%>
-&nbsp;<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my9s/get_all_collected_objects', '/forum/get_nines_obj_list_with_image'); dlg.show();", :class => 'modify_link' %>
+&nbsp;<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard('#{PROGRESS_SPINNER_PATH}', '/my_collex/get_all_collected_objects', '/forum/get_nines_obj_list_with_image'); dlg.show();", :class => 'modify_link' %>

@@ -25,7 +25,7 @@
 	<% title_prefix = "STAGING: " if request.host().index('performantsoftware') != nil -%>
 	<% title_prefix = "EXP: " if request.host().index('performantsoftware') != nil && (RAILS_ENV == 'development') -%>
 
-<title><%= title_prefix %>N I N E S<%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
+<title><%= title_prefix %><%= SITE_NAME_TITLE %><%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
 <%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
 <%= get_stylesheets(@site_section, quick_load) %>
 <!--[if lt IE 7]>

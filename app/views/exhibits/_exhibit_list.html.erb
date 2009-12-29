@@ -43,7 +43,7 @@
 		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-				| <%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 		</td>
 	</tr>

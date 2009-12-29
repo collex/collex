@@ -143,7 +143,7 @@ class TagController < ApplicationController
       set_cloud_list(user, user.username)
 
       selected_tag = (session[:tag_view] == 'tag') ? session[:tag_current] : ""
-      render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => selected_tag, :controller_for_tags => 'my9s', :hide_some => false }
+      render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => selected_tag, :controller_for_tags => 'my_collex', :hide_some => false }
     else
       render :text => 'Session expired. Please log in again.'
     end

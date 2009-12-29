@@ -95,17 +95,16 @@ if File.exists?(config_file)
 
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
 	JAVA_PATH = site_specific['java_path']
-	SITE_NAME = 'NINES'	#TODO: move this to site.yml eventually.
+	SITE_NAME = site_specific['site_name']
+	SITE_NAME_TITLE = site_specific['site_name_title']
+	MY_COLLEX = site_specific['my_collex']
 	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
+
 else
 	puts "***"
 	puts "*** Failed to load site configuration. Did you create config/site.yml?"
 	puts "***"
 end
-
-#solr_url_for = { "staging" => "http://localhost:8989/solr", "quandu_production" => "http://127.0.0.1:8080/nines-solr1.3", "quandu_staging" => "http://127.0.0.1:8080/nines-solr1.3" }
-#
-#SOLR_URL = ENV["SOLR_URL_#{RAILS_ENV.upcase}"] || solr_url_for[RAILS_ENV] || "http://localhost:8983/solr"
 
 puts "$$ Starting #{SITE_NAME} with Solr URL: #{SOLR_URL}"
 #puts ExceptionNotifier.exception_recipients
@@ -130,16 +129,5 @@ DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/harrington.gif"
 EXHIBIT_BUILDER_TODO_PATH = "/images/clicktoadd.jpg"
 PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 
-#ExceptionNotifier.exception_recipients = ADMINISTRATOR_EMAILS
-#ExceptionNotifier.sender_address = %("Application Error" <technologies@nines.org>)
-#ExceptionNotifier.email_prefix = "[Collex*] "
-
 $KCODE = 'UTF8'
 
-# "nines"
-#COLLEX_ENGINE_PARAMS = {
-#  :field_list => ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","image","thumbnail","text_url","title","alternative","uri","url", "exhibit_type", "license", 'text'],
-#  :facet_fields => ['genre','archive','freeculture']
-#}
-
-#DEPLOYMENT_SERVERS = [ "nines.org", "www.nines.org" ]

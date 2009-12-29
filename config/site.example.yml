@@ -34,3 +34,6 @@ java_path: ''
 
 # There is no need to set up indexing on all installations, and setting this to false causes less gems to be required.
 can_index: false
+site_name: 'COLLEX'
+site_name_title: 'C O L L E X'
+my_collex: 'My Collex'

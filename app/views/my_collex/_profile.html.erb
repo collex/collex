@@ -18,7 +18,7 @@
 <div class="profile_image">
 	<%= image_tag(get_user_picture(user.id, :full), :class => 'profile_image') %>
 <% if can_edit && user.image -%>
-	<br /><div class="profile_remove_picture"><%= link_to "Remove Picture", { :controller => 'my9s', :action => 'remove_profile_picture' }, { :id => 'remove_picture', :method => 'post' } %></div>
+	<br /><div class="profile_remove_picture"><%= link_to "Remove Picture", { :controller => 'my_collex', :action => 'remove_profile_picture' }, { :id => 'remove_picture', :method => 'post' } %></div>
 	<script type="text/javascript">
 		var createRemovePictureButton = function() {
 			var onButtonClick = function (e) {
@@ -41,7 +41,7 @@
 <% end -%>
 </div>
 <% if can_edit -%>
-	<div class="profile_edit"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my9s/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></div>
+	<div class="profile_edit"><%= link_to_function "Edit Profile", "new EditProfileDialog('profile', '/my_collex/update_profile', #{user.to_json()}, '#{get_user_picture(user.id, :full)}');", :class => 'nav_link' %></div>
 <% end -%>
 <div class="profile_div"><span class="profile_label">Username:</span><span><%=h user.username %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">Full name:</span><span><%=h user.fullname %></span><span>&nbsp;</span></div>
