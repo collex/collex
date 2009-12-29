@@ -148,10 +148,9 @@ class GroupsController < ApplicationController
 	 def accept_as_peer_reviewed
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
-		 exhibit.is_published = 1
-		 exhibit.save!
-		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
-		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+		 exhibit.update_attributes(params[:exhibit])
+		 #cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => nil, :user_id => get_curr_user_id() }
 	 end
 
 	def unpublish_exhibit

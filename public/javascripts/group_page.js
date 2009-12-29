@@ -382,10 +382,20 @@ var decline_invitation = function(pending_id) {
 		{id: pending_id });
 };
 
-var acceptAsPeerReviewed = function(exhibit_id) {
-	ajaxWithProgressDlg(['/groups/accept_as_peer_reviewed'], ['group_exhibits'],
-		{ title: "Accept As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been accepted.' },
-		{exhibit_id: exhibit_id });
+var acceptAsPeerReviewed = function(exhibit_id, clusterOptions) {
+	clusterOptions.unshift({text: "(None)", value: "0" });
+	new SelectInputDlg({
+		title: 'Accept As Peer Reviewed',
+		prompt: 'Choose a cluster that this exhibit should appear under:',
+		id: 'exhibit[cluster_id]',
+		options: clusterOptions,
+		okStr: 'Save',
+		extraParams: { exhibit_id: exhibit_id, "exhibit[is_published]": '1' },
+		actions: [ '/groups/accept_as_peer_reviewed' ],
+		target_els: [ 'group_exhibits' ] });
+//	ajaxWithProgressDlg(['/groups/accept_as_peer_reviewed'], ['group_exhibits'],
+//		{ title: "Accept As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been accepted.' },
+//		{exhibit_id: exhibit_id });
 };
 
 var unpublishExhibit = function(exhibit_id) {

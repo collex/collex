@@ -17,6 +17,17 @@
 <%# group_exhibits_list : parameters: ActiveRecord group, ActiveRecord cluster, int user_id -%>
 <%# if cluster is nil, then this is the group page, otherwise it is the cluster page -%>
 <% cluster ||= nil -%>
+<% if cluster == nil -%>
+<script type="text/javascript">
+<% clusters = Cluster.find_all_by_group_id(group.id)
+	cluster_options = []
+	for clus in clusters
+		cluster_options.push({ :text => clus.name, :value => clus.id })
+	end
+-%>
+	gClusterOptions = <%= cluster_options.to_json()  %>;
+</script>
+<% end -%>
 <div class="group_header">Exhibits</div>
 <% if group.can_edit(user_id) -%>
 <div class="set_exhibit_style">
@@ -32,7 +43,6 @@
 <% exhibits = Exhibit.find_all_by_cluster_id_and_is_published(cluster.id, 1) if cluster != nil -%>
 	<table>
 <% if cluster == nil -%>
-<% clusters = Cluster.find_all_by_group_id(group.id) -%>
 <% if clusters.length > 0 %>
 		<tr><td><span class="group_details_label">Clusters:</span></td></tr>
 <% end -%>
@@ -87,7 +97,7 @@
 				| <%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
-			<%= link_to_function("[accept as peer reviewed]", "acceptAsPeerReviewed(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[accept as peer reviewed]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions);", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 			<%= link_to_function("[reject]", "rejectAsPeerReviewed(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</td>
 	</tr>
