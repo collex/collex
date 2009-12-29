@@ -40,7 +40,7 @@ class GroupsController < ApplicationController
 		}
 		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 	end
-	
+
 	# The following 4 calls can come from either the web or the email link. We have to go to
 	# different pages in the two cases. The way to tell is the email link is GET and the web is POST.
 	def accept_request
@@ -154,6 +154,16 @@ class GroupsController < ApplicationController
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	 end
 
+	def unpublish_exhibit
+		 exhibit_id = params[:exhibit_id]
+		 exhibit = Exhibit.find(exhibit_id)
+		 exhibit.is_published = 0
+		 exhibit.save!
+		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+	end
+
+	# Note: This is the same as unpublish_exhibit. Perhaps it should be the same call, even if it is semantically different.
 	 def reject_as_peer_reviewed
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)

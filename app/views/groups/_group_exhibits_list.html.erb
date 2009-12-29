@@ -55,8 +55,9 @@
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 				| <%= link_to("[Edit this exhibit]", { :controller => 'my9s', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
-			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
 			<% end -%>
+			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
+			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</td>
 	</tr>
 <% end -%>

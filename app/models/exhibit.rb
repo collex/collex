@@ -25,7 +25,7 @@ class Exhibit < ActiveRecord::Base
     return false if exhibit_id == nil
     exhibit = Exhibit.find(exhibit_id)
 		return false if exhibit.category == "peer-reviewed"
-		if exhibit.group_id
+		if exhibit.is_published == 1 && exhibit.group_id
 			group = Group.find(exhibit.group_id)
 			return false if group.group_type == 'peer-reviewed'
 		end

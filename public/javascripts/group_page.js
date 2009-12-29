@@ -388,6 +388,12 @@ var acceptAsPeerReviewed = function(exhibit_id) {
 		{exhibit_id: exhibit_id });
 };
 
+var unpublishExhibit = function(exhibit_id) {
+	ajaxWithProgressDlg(['/groups/unpublish_exhibit'], ['group_exhibits'],
+		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This exhibit has be set to "Private".' },
+		{exhibit_id: exhibit_id });
+};
+
 var rejectAsPeerReviewed = function(exhibit_id) {
 	ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],
 		{ title: "Reject As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been rejected.' },
