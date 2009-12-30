@@ -361,7 +361,7 @@ function realLinkToEditorLink(str) {
 	return realLinkToEditorLink(prologue + link + ending);	// call recursively to get all the links
 }
 
-function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id, populate_nines_obj_url, progress_img)
+function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id, populate_collex_obj_url, progress_img)
 {
 	var existing_note = $(curr_annotation_id).innerHTML;
 	existing_note = existing_note.gsub("<br />", "\n");
@@ -376,11 +376,11 @@ function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id, popul
 		row_id,
 		"/results/set_annotation",
 		$H({ uri: uri, row_num: row_num, full_text: getFullText(row_id), note: existing_note }), 'textarea',
-		$H({ width: 370, height: 100, linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) }), null );
+		$H({ width: 370, height: 100, linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img) }), null );
 }
 
 var StartDiscussionWithObject = Class.create({
-	initialize: function (url_get_topics, url_update, uri, title, discussion_button, is_logged_in, populate_nines_obj_url, progress_img) {
+	initialize: function (url_get_topics, url_update, uri, title, discussion_button, is_logged_in, populate_collex_obj_url, progress_img) {
 		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
 		this.class_type = 'StartDiscussionWithObject';	// for debugging
 
@@ -471,7 +471,7 @@ var StartDiscussionWithObject = Class.create({
 
 		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
 		dlg = new GeneralDialog(params);
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img) });
 		dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
 		licenseDisplay.populate(dlg);
 		dlg.center();

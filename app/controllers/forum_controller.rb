@@ -265,36 +265,46 @@ class ForumController < ApplicationController
     ret = []
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user
-      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
-      objs.each {|obj|
-        hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
-        if hit != nil
-          image = CachedResource.get_thumbnail_from_hit(hit)
-          image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
-          obj = {}
-          obj[:id] = hit['uri']
-          obj[:img] = image
-          obj[:title] = CachedResource.fix_char_set(hit['title'][0])
-          obj[:strFirstLine] = CachedResource.fix_char_set(hit['title'][0])
-          obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
-          ret.push(obj)
-        end
-      }
-      render :text => ret.to_json()
-    else
-      render :text => "Your session has expired. Please log in again.", :status => :bad_request
-    end
-  end
+			# if an element id is passed, then only the objects that are in that exhibit are returned.
+			illustration_id = params[:illustration_id]
+			if illustration_id
+				illustration = ExhibitIllustration.find_by_id(illustration_id)
+				if illustration
+					element_id = illustration.exhibit_element_id
+				end
+			else
+				element_id = params[:element_id]
+			end
+			if element_id
+				element = ExhibitElement.find_by_id(element_id)
+				if element
+					page = ExhibitPage.find(element.exhibit_page_id)
+					exhibit_id = page.exhibit_id
+				end
+			else
+				exhibit_id = params[:exhibit_id]
+			end
+			if exhibit_id
+				exhibits_objects = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+				# TODO-PER: There is probably a cleaner way to do this, just convert a list of URI to cached_resource_id
+				objs = []
+				exhibits_objects.each { |eo|
+					cr = CachedResource.find_by_uri(eo[:uri])
+					o = CollectedItem.new
+					o.cached_resource_id = cr.id
+					objs.push(o)
+				}
+			else
+	      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
+			end
 
-	def get_nines_obj_list_with_image
-    ret = []
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if user
-      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
       objs.each {|obj|
         hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
         if hit != nil
           image = CachedResource.get_thumbnail_from_hit(hit)
+					if params[:only_images] != true
+	          image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+					end
           if image && image.length > 0
 						obj = {}
 						obj[:id] = hit['uri']
@@ -310,6 +320,34 @@ class ForumController < ApplicationController
     else
       render :text => "Your session has expired. Please log in again.", :status => :bad_request
     end
+  end
+
+	def get_nines_obj_list_with_image
+		params[:only_images] = true
+		get_nines_obj_list()
+#    ret = []
+#    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+#    if user
+#      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
+#      objs.each {|obj|
+#        hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+#        if hit != nil
+#          image = CachedResource.get_thumbnail_from_hit(hit)
+#          if image && image.length > 0
+#						obj = {}
+#						obj[:id] = hit['uri']
+#						obj[:img] = image
+#						obj[:title] = CachedResource.fix_char_set(hit['title'][0])
+#						obj[:strFirstLine] = CachedResource.fix_char_set(hit['title'][0])
+#						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
+#						ret.push(obj)
+#					end
+#        end
+#      }
+#      render :text => ret.to_json()
+#    else
+#      render :text => "Your session has expired. Please log in again.", :status => :bad_request
+#    end
 	end
 
   private

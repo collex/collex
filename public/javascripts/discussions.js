@@ -43,7 +43,7 @@ var ForumReplyDlg = Class.create({
 		var submit_url = params.submit_url;
 		var can_delete = params.can_delete;
 		var populate_exhibit_url = params.populate_exhibit_url;
-		var populate_nines_obj_url = params.populate_nines_obj_url;
+		var populate_collex_obj_url = params.populate_collex_obj_url;
 		var populate_topics_url = params.populate_topics_url;
 		var progress_img = params.progress_img;
 		var ajax_div = params.ajax_div;
@@ -191,7 +191,7 @@ var ForumReplyDlg = Class.create({
 			}
 		};
 
-		var objlist = new CreateListOfObjects(populate_nines_obj_url, starting_nines_obj_list, 'nines_obj_list', progress_img);
+		var objlist = new CreateListOfObjects(populate_collex_obj_url, starting_nines_obj_list, 'nines_obj_list', progress_img);
 		var exlist = new CreateListOfObjects(populate_exhibit_url, starting_exhibit_list, 'exhibit_list', progress_img);
 		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my_collex/get_licenses?non_sharing=false', currentLicense: starting_license, id: 'license_list' });
 
@@ -232,7 +232,7 @@ var ForumReplyDlg = Class.create({
 			$$('.cluster').each(function(el) { el.removeClassName("hidden"); });
 		}
 
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img) });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img) });
 		dlg.changePage('layout', focus_id);
 		licenseDisplay.populate(dlg);
 		objlist.populate(dlg, false, 'forum');

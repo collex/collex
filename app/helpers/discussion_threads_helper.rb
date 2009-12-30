@@ -70,7 +70,7 @@ module DiscussionThreadsHelper
       "ajax_div: 'comment_id_#{comment.id}'," +
       "submit_url: '/forum/edit_existing_comment'," +
       "populate_exhibit_url: '/forum/get_exhibit_list'," +
-      "populate_nines_obj_url: '/forum/get_nines_obj_list'," +
+      "populate_collex_obj_url: '/forum/get_nines_obj_list'," +
       "progress_img: '#{PROGRESS_SPINNER_PATH}'," +
       "logged_in: true }); return false;\">[edit]</a>"
     return html

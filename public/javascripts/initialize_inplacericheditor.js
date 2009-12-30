@@ -154,12 +154,15 @@ function initializeInplaceRichEditor(element_id, action)
 		var dlg = new GeneralDialog(dlgparams);
 		dlg.changePage('layout', null);
 
-		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+		var idArr = element_id.split('_');
+		var id = idArr[idArr.length-1];
+		var populate_collex_obj_url = '/forum/get_nines_obj_list?element_id=' + id;	// TODO-PER: pass this in
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 		var fontStyle = This.getStyle('font-family');
 		var fontSize = This.getStyle('font-size');
 		var style = "html body { font-family: " + fontStyle + "; font-size: " + fontSize + "; }";
-		dlg.initTextAreas({ toolbarGroups: [ 'dropcap', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback: footnoteHandler.addFootnote, bodyStyle: style });
+		dlg.initTextAreas({ toolbarGroups: [ 'dropcap', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img),
+			footnote: {callback: footnoteHandler.addFootnote, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img }, bodyStyle: style });
 		dlg.center();
 
 		var input = $('value');
@@ -197,7 +200,11 @@ function initializeInplaceHeaderEditor(element_id, action)
 			params.dlg.cancel();
 		};
 
-		var footnoteAbbrev = new FootnoteAbbrev(footnoteStr, 'footnote');
+		var idArr = element_id.split(',')[0].split('_');
+		var id = idArr[idArr.length-1];
+		var populate_collex_obj_url = '/forum/get_nines_obj_list?element_id=' + id;	// TODO-PER: pass this in
+		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+		var footnoteAbbrev = new FootnoteAbbrev({ startingValue: footnoteStr, field: 'footnote', populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
 
 		var dlgLayout = {
 			page: 'layout',
@@ -317,11 +324,13 @@ function initializeInplaceIllustrationEditor(element_id, action)
 			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};
 
-		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+		var idArr = element_id.split('_');
+		var id = idArr[idArr.length-1];
+		var populate_collex_obj_url = '/forum/get_nines_obj_list?illustration_id=' + id;	// TODO-PER: pass this in
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-		var objlist = new CreateListOfObjects(populate_nines_obj_url, values.nines_object, 'nines_object', progress_img, setCaption);
-		var footnoteAbbrev1 = new FootnoteAbbrev(values.caption1_footnote, 'caption1_footnote');
-		var footnoteAbbrev2 = new FootnoteAbbrev(values.caption2_footnote, 'caption2_footnote');
+		var objlist = new CreateListOfObjects(populate_collex_obj_url, values.nines_object, 'nines_object', progress_img, setCaption);
+		var footnoteAbbrev1 = new FootnoteAbbrev({ startingValue: values.caption1_footnote, field: 'caption1_footnote', populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
+		var footnoteAbbrev2 = new FootnoteAbbrev({ startingValue: values.caption2_footnote, field: 'caption2_footnote', populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
 
 		var dlgLayout = {
 				page: 'layout',
@@ -348,7 +357,8 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_illustration_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_nines_obj_url, progress_img), footnoteCallback: footnoteHandler.addFootnote });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img),
+			footnote: {callback: footnoteHandler.addFootnote, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img } });
 		dlg.changePage('layout', 'type');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);

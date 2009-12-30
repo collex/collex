@@ -44,7 +44,7 @@ var CacheObjects = Class.create({
 var ninesObjCache = new CacheObjects();
 
 var CreateListOfObjects = Class.create({
-	initialize: function(populate_url, initial_selection, parent_id, progress_img, selectionCallBack){
+	initialize: function(populate_collex_obj_url, initial_selection, parent_id, progress_img, selectionCallBack){
 		var selClass = "linkdlg_item_selected";
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
 		var id_prefix = null;
@@ -191,7 +191,7 @@ var CreateListOfObjects = Class.create({
 		// privileged functions
 		this.populate = function(dlg, selectFirst, id_prefix_){
 			// See if the item's in the cache first, and if not, call the server for it.
-			var objs = ninesObjCache.get(populate_url);
+			var objs = ninesObjCache.get(populate_collex_obj_url);
 			id_prefix = id_prefix_;
 			
 			if (objs)
@@ -199,13 +199,13 @@ var CreateListOfObjects = Class.create({
 			else {
 				// Call the server to get the data, then pass it to the ObjectLists
 				dlg.setFlash('Getting objects...', false);
-				new Ajax.Request(populate_url, {
+				new Ajax.Request(populate_collex_obj_url, {
 					method: 'get',
 					onSuccess: function(resp){
 						dlg.setFlash('', false);
 						try {
 							objs = resp.responseText.evalJSON(true);
-							ninesObjCache.set(populate_url, objs);
+							ninesObjCache.set(populate_collex_obj_url, objs);
 							createRows(objs, selectFirst, id_prefix);
 						} 
 						catch (e) {
@@ -282,7 +282,7 @@ var CreateListOfObjects = Class.create({
 		};
 
 		this.sortby = function(id, field) {
-			var objs = ninesObjCache.get(populate_url);
+			var objs = ninesObjCache.get(populate_collex_obj_url);
 			if (field !== 'date_collected') {	// The objects are already sorted by Date Collected
 				objs = objs.sortBy(function(obj) {
 					if (field === 'title') {
@@ -308,7 +308,7 @@ var CreateListOfObjects = Class.create({
 ////////////////////////////////////////////////////////////////////////////
 
 var LinkDlgHandler = Class.create({
-	initialize: function (populate_nines_obj_url, progress_img) {
+	initialize: function (populate_collex_obj_url, progress_img) {
 	
 		var objRTE = null;
 		var iStartPos = null;
@@ -448,7 +448,7 @@ var LinkDlgHandler = Class.create({
 				params.dlg.cancel();
 			};
 			
-			var objlist = new CreateListOfObjects(populate_nines_obj_url, (starting_type === 0 ? starting_selection : null), 'ld_nines_object', progress_img);
+			var objlist = new CreateListOfObjects(populate_collex_obj_url, (starting_type === 0 ? starting_selection : null), 'ld_nines_object', progress_img);
 	
 			var dlgLayout = {
 					page: 'layout',

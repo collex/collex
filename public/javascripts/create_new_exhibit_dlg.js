@@ -20,7 +20,7 @@
 /*extern CreateNewExhibitWizard */
 
 var CreateNewExhibitWizard = Class.create({
-	initialize: function (progress_img, url_get_objects, populate_nines_obj_url) {
+	initialize: function (progress_img, url_get_objects, populate_collex_obj_url) {
 		this.class_type = 'CreateNewExhibitWizard';	// for debugging
 
 		// private variables
@@ -143,7 +143,7 @@ var CreateNewExhibitWizard = Class.create({
 				thumbnail.value = selection.src;
 			};
 
-			var objlist = new CreateListOfObjects(populate_nines_obj_url, null, 'nines_object', progress_img, selectObject);
+			var objlist = new CreateListOfObjects(populate_collex_obj_url, null, 'nines_object', progress_img, selectObject);
 
 			var choose_thumbnail = {
 					page: 'choose_thumbnail',

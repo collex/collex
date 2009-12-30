@@ -37,7 +37,7 @@ function doPublish(exhibit_id, publish_state) {
 	recurseUpdateWithAjax(["/my_collex/publish_exhibit"], ["overview_data"], null, null, { id: exhibit_id, publish_state: publish_state });
 }
 
-function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_obj_url, progress_img, genreList)
+function editExhibitProfile(update_id, exhibit_id, data_class, populate_collex_obj_url, progress_img, genreList)
 {
 //	$(update_id).setAttribute('action', "/my_collex/edit_exhibit_overview,/my_collex/update_title");
 //	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
@@ -131,7 +131,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_nines_ob
 		var selection = $(id + '_img');
 		thumbnail.value = selection.src;
 	};
-	var objlist = new CreateListOfObjects(populate_nines_obj_url, null, 'nines_object', progress_img, selectObject);
+	var objlist = new CreateListOfObjects(populate_collex_obj_url, null, 'nines_object', progress_img, selectObject);
 
 	var choose_thumbnail = {
 			page: 'choose_thumbnail',

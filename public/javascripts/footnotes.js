@@ -20,7 +20,12 @@
 /*extern FootnoteAbbrev, FootnotesInRte */
 
 var FootnoteAbbrev = Class.create({
-	initialize: function(footnoteStr, field){
+	initialize: function(params){
+		var footnoteStr = params.startingValue;
+		var field = params.field;
+		var populate_collex_obj_url = params.populate_collex_obj_url;
+		var progress_img = params.progress_img;
+
 		var klassEdit = null;
 
 		var makeButton = function(id, text, hide) {
@@ -67,14 +72,12 @@ var FootnoteAbbrev = Class.create({
 			setFootnoteCtrl();
 		};
 
-		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 		var addFootnote = function(event, params) {
-			new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+			new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
 		};
 
 		var editFootnote = function(event, params) {
-			new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+			new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
 		};
 
 		var fnDeleteCallback = null;

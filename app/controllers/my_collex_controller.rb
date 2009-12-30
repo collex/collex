@@ -407,7 +407,7 @@ class MyCollexController < ApplicationController
     # for security reasons, make sure that the exhibit belongs to the person who is trying to delete it.
     exhibit_id = params[:id]
     user = get_user(session)
-    exhibit = Exhibit.find(exhibit_id)
+    #exhibit = Exhibit.find(exhibit_id)
     if Exhibit.can_edit(user, exhibit_id)
       Exhibit.destroy(exhibit_id)
     end

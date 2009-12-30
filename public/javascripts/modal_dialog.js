@@ -257,13 +257,10 @@ ModalDialog.prototype = {
 	
 	_setRichTextAreas : function(extraButtons)
 	{
-			var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-			var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-
 		var textAreas = $$('#'+this.formID+' textarea');
 		
 		textAreas.each( function(textArea) { 
-			var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: extraButtons, linkDlgHandler: this._linkDlgHandler, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+			var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: extraButtons, linkDlgHandler: this._linkDlgHandler });
 			editor.attachToDialog(this.dialog);
 			this.editors.push(editor);
 		}, this);

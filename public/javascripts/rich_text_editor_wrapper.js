@@ -307,7 +307,12 @@ var RichTextEditor = Class.create({
 		var id = params.id;
 		var toolbarGroups = params.toolbarGroups;
 		var linkDlgHandler = params.linkDlgHandler;
-		var footnoteCallback = params.footnoteCallback;
+		var footnote = params.footnote;
+		if (footnote) {
+			var footnoteCallback = footnote.callback;
+			var populate_collex_obj_url = footnote.populate_collex_obj_url;
+			var progress_img = footnote.progress_img;
+		}
 		var bodyStyle = params.bodyStyle ? params.bodyStyle : '';
 
 		var toolgroupFont = {
@@ -417,12 +422,9 @@ var RichTextEditor = Class.create({
 		    });
 		};
 		
-		var populate_nines_obj_url = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
-		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-
 		var initFootnoteDlg = function()
 		{
-			if (footnoteCallback === undefined || footnoteCallback === null)
+			if (footnote === undefined || footnote === null)
 				return;
 
 			var editor = This.editor;
@@ -529,7 +531,7 @@ var RichTextEditor = Class.create({
 //						alert("sel: " + footnoteSelPos + ' ' + sel1 + ' ' + sel2 + "\n|" + str1 + '|' + "\n\n|" + str2 + '|' + "\n\n|" + str3 + '|');
 //						alert("sel: " + footnoteSelPos + "\n|" + str1 + '|');
 
-					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
 
 					return true;
 				}, this, true);
@@ -653,7 +655,7 @@ var RichTextEditor = Class.create({
 				};
 
 				var footnote = target.childNodes[0];	// this is the span that hides the footnote
-				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
+				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
 			};
 
 			footnotes.each(function(foot) {
