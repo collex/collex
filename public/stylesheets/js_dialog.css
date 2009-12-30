@@ -744,3 +744,9 @@ textarea.groups_textarea {
 	padding: 1em;
 }
 
+.edit_group_thumbnail{
+	width: 600px;
+}
+.edit_group_thumbnail img {
+	padding-bottom: 1em;
+}

@@ -58,7 +58,8 @@ var EditGroupThumbnailDlg = Class.create({
 			var layout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', value: current_url }, { hidden: 'id', value: group_id } ],
+						[ { text: 'Choose Thumbnail:' } ],
+						[ { image: 'image', size: '47', klass: 'edit_group_thumbnail' }, { hidden: 'id', value: group_id } ],
 						[ { rowClass: 'last_row' }, { button: 'Update Thumbnail', url: "/" + controller.toLowerCase() + "s/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
