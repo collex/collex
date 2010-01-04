@@ -196,6 +196,11 @@ class GroupsController < ApplicationController
 		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 	end
 
+	def render_license
+		@group = Group.find(params[:id])
+		render :partial => 'group_license', :locals => { :group => @group, :user_id => get_curr_user_id() }
+	end
+	
 	def remove_profile_picture
 		id = params[:id]
     group = Group.find(id)
@@ -398,11 +403,7 @@ class GroupsController < ApplicationController
 #    end
 		curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil
-			if params[:group] != nil && params[:group].length == 1 && params[:group][:license_type] != nil
-				render :partial => 'group_license', :locals => { :group => @group, :user_id => curr_user.id }
-			else
-				render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
-			end
+			render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
 		else
 			render :text => err_msg, :status => :bad_request
 		end

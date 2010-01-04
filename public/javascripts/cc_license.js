@@ -187,10 +187,10 @@ function license_dialog(params)
 		var onFailure = function(resp) {
 			params.dlg.setFlash(resp.responseText);
 		};
-		var ajaxParams = { el: update_id, params: { id: id }, action: callback_url, onSuccess: onSuccess, onFailure: onFailure };
+		var ajaxParams = { id: id };
 		var data = params.dlg.getAllData();
-		ajaxParams.params[id_name] = data.sharing;
-		updateWithAjax(ajaxParams);
+		ajaxParams[id_name] = data.sharing;
+		recurseUpdateWithAjax(callback_url, update_id, onSuccess, onFailure, ajaxParams);
 	};
 
 	var createDialog = function() {

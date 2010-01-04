@@ -727,6 +727,13 @@ function updateWithAjax(params)
 
 function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
 {
+	if (typeof actions === 'string') {
+		actions = actions.split(',');
+	}
+	if (typeof els === 'string') {
+		els = els.split(',');
+	}
+
 	if (actions.length === 0) {
 		if (onSuccess)
 			onSuccess();
