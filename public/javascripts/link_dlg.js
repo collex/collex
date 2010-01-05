@@ -56,7 +56,13 @@ var CreateListOfObjects = Class.create({
 			var sel = el ? el.id.substring(el.id.indexOf('_')+1) : "";
 			return { field: parent_id, value: sel };
 		};
-		
+
+		this.clearSelection = function() {
+			var el = parent.down("." + selClass);
+			if (el)
+				el.removeClassName(selClass);
+		};
+
 		// Creates one line in the list.
 		var linkItem = function(id, img, alt, strFirstLine, strSecondLine){
 			// Create all the elements we're going to need.

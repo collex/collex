@@ -24,7 +24,7 @@ var CreateNewExhibitWizard = Class.create({
 		this.class_type = 'CreateNewExhibitWizard';	// for debugging
 
 		// private variables
-		//var This = this;
+		var This = this;
 		var obj_selector = new ObjectSelector(progress_img, url_get_objects, -1);
 
 		// private functions
@@ -136,14 +136,23 @@ var CreateNewExhibitWizard = Class.create({
 					]
 				};
 
+			var origValue = "";
 			var selectObject = function(id) {
 				// This is a callback that is called when the user selects a NINES Object.
 				var thumbnail = $('exhibit_thumbnail');
 				var selection = $(id + '_img');
+				origValue = thumbnail.value;
 				thumbnail.value = selection.src;
 			};
 
 			var objlist = new CreateListOfObjects(populate_collex_obj_url, null, 'nines_object', progress_img, selectObject);
+
+			var cancelThumbnail = function(event, params) {
+				objlist.clearSelection();
+				var thumbnail = $('exhibit_thumbnail');
+				thumbnail.value = origValue;
+				This.changeView(event, params);
+			};
 
 			var choose_thumbnail = {
 					page: 'choose_thumbnail',
@@ -153,7 +162,7 @@ var CreateNewExhibitWizard = Class.create({
 							{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 							{ text: 'and', klass: 'link_dlg_label_and' }, { inputFilter: 'filterObjects', klass: '', prompt: 'type to filter objects', callback: objlist.filter } ],
 						[ { custom: objlist, klass: 'new_exhibit_label' } ],
-						[ { rowClass: 'last_row' }, { button: 'Ok', url: 'choose_other_options', callback: this.changeView, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Ok', url: 'choose_other_options', callback: this.changeView, isDefault: true }, { button: 'Cancel', url: 'choose_other_options', callback: cancelThumbnail } ]
 					]
 				};
 
