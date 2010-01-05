@@ -215,3 +215,11 @@
 .group_member_explanation {
 	font-style: italic;
 }
+
+.group_acknowledge {
+	text-align: center;
+	font-size: 1.5em;
+	padding-top: 100px;
+	padding-bottom:100px;
+}
+

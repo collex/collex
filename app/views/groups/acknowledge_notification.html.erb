@@ -16,15 +16,20 @@
     # ---------------------------------------------------------------------------- -%>
 <% current_page "Exhibits" -%>
 <div class="inner_content_container">
-	<% if params[:type] == 'accept_request' -%>
-	The user is now in the group.
-	<% elsif params[:type] == 'decline_request' -%>
-	The user is NOT accepted into the group.
-	<% elsif params[:type] == 'join_group' -%>
-	You are now accepted into the group.
-	<% elsif params[:type] == 'decline_group' -%>
-	You have declined to be in the group.
-	<% end -%>
-	<%= link_to "[ return to group ]", { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' } %>
+	<div class="group_acknowledge">
+		<p>
+		<% if params[:type] == 'accept_request' -%>
+		The user is now in the group.
+		<% elsif params[:type] == 'decline_request' -%>
+		The user is NOT accepted into the group.
+		<% elsif params[:type] == 'join_group' -%>
+		You are now accepted into the group.
+		<% elsif params[:type] == 'decline_group' -%>
+		You have declined to be in the group.
+		<% end -%>
+		<%= link_to "[ return to group ]", { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' } %>
+		</p>
+		<img height="250px" src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
+	</div>
 	<div class="clear_both"></div>
 </div>
