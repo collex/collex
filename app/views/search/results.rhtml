@@ -52,7 +52,7 @@
 				<%= render( :partial => 'constraints' ) %>
 				<div class="no_results_msg">
 					<p>No <%= SITE_NAME %> objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
-					<img height="250px" src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
+					<img src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
 				</div>
 			</div>
 			<%= render( :partial => 'search_sidebar' ) %>
