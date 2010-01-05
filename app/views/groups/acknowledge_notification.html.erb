@@ -19,15 +19,14 @@
 	<div class="group_acknowledge">
 		<p>
 		<% if params[:type] == 'accept_request' -%>
-		The user is now in the group.
+		The user is now in the group <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% elsif params[:type] == 'decline_request' -%>
-		The user is NOT accepted into the group.
+		The user is NOT accepted into the group <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% elsif params[:type] == 'join_group' -%>
-		You are now accepted into the group.
+		Welcome! You are now a member of <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% elsif params[:type] == 'decline_group' -%>
-		You have declined to be in the group.
+		You have declined to be in the group <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% end -%>
-		<%= link_to "[ return to group ]", { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' } %>
 		</p>
 		<img height="250px" src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
 	</div>
