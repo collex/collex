@@ -147,8 +147,10 @@ var ForumLicenseDisplay = Class.create({
 				onSuccess: function(resp){
 					dlg.setFlash('', false);
 					try {
-						objs = resp.responseText.evalJSON(true);
-						setInitialSelection();
+						if (resp.responseText.length > 0) {
+							objs = resp.responseText.evalJSON(true);
+							setInitialSelection();
+						}
 					}
 					catch (e) {
 						new MessageBoxDlg("Error", e);
@@ -205,8 +207,10 @@ function license_dialog(params)
 			onSuccess: function(resp){
 				//dlg.setFlash('', false);
 				try {
-					objs = resp.responseText.evalJSON(true);
-					createDialog();
+					if (resp.responseText.length > 0) {
+						objs = resp.responseText.evalJSON(true);
+						createDialog();
+					}
 				}
 				catch (e) {
 					new MessageBoxDlg("Error", e);

@@ -84,10 +84,11 @@ var ForumReplyDlg = Class.create({
 		{
 			new Ajax.Request(populate_topics_url, { method: 'get', parameters: { },
 				onSuccess : function(resp) {
-					var topics = null;
+					var topics = [];
 					dlg.setFlash('', false);
 					try {
-						topics = resp.responseText.evalJSON(true);
+						if (resp.responseText.length > 0)
+							topics = resp.responseText.evalJSON(true);
 					} catch (e) {
 						new MessageBoxDlg("Error", e);
 					}

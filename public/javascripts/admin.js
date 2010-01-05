@@ -66,7 +66,7 @@ var AddCategoryDlg = Class.create({
 		// private variables
 		//var This = this;
 		var dlg = null;
-		var categories = null;
+		var categories = [];
 		
 		// private functions
 		var populate = function()
@@ -75,7 +75,8 @@ var AddCategoryDlg = Class.create({
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
 					try {
-						categories = resp.responseText.evalJSON(true);
+						if (resp.responseText.length > 0)
+							categories = resp.responseText.evalJSON(true);
 					} catch (e) {
 						new MessageBoxDlg("Error", e);
 					}
@@ -151,12 +152,13 @@ var AddSiteDlg = Class.create({
 		// private functions
 		var populate = function()
 		{
-			var categories = null;
+			var categories = [];
 			new Ajax.Request(get_categories_action, { method: 'get', parameters: { },
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
 					try {
-						categories = resp.responseText.evalJSON(true);
+						if (resp.responseText.length > 0)
+							categories = resp.responseText.evalJSON(true);
 					} catch (e) {
 						new MessageBoxDlg("Error", e);
 					}
@@ -284,7 +286,7 @@ var EditFacetDialog = Class.create({
 		// private variables
 		//var This = this;
 		var dlg = null;
-		var categories = null;
+		var categories = [];
 		
 		// private functions
 		var populate = function()
@@ -295,9 +297,11 @@ var EditFacetDialog = Class.create({
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
 					try {
-						var ret = resp.responseText.evalJSON(true);
-						categories = ret.categories;
-						obj = ret.details;
+						if (resp.responseText.length > 0) {
+							var ret = resp.responseText.evalJSON(true);
+							categories = ret.categories;
+							obj = ret.details;
+						}
 					} catch (e) {
 						new MessageBoxDlg("Error", e);
 					}

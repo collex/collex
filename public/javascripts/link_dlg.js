@@ -204,9 +204,11 @@ var CreateListOfObjects = Class.create({
 					onSuccess: function(resp){
 						dlg.setFlash('', false);
 						try {
-							objs = resp.responseText.evalJSON(true);
-							ninesObjCache.set(populate_collex_obj_url, objs);
-							createRows(objs, selectFirst, id_prefix);
+							if (resp.responseText.length > 0) {
+								objs = resp.responseText.evalJSON(true);
+								ninesObjCache.set(populate_collex_obj_url, objs);
+								createRows(objs, selectFirst, id_prefix);
+							}
 						} 
 						catch (e) {
 							new MessageBoxDlg("Error", e);

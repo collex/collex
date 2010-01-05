@@ -25,7 +25,7 @@ var SetExhibitAuthorAlias = Class.create({
 
 		// private variables
 		//var This = this;
-		var users = null;
+		var users = [];
 		var dlg = null;
 
 		// private functions
@@ -35,7 +35,8 @@ var SetExhibitAuthorAlias = Class.create({
 				onSuccess : function(resp) {
 					dlg.setFlash('', false);
 					try {
-						users = resp.responseText.evalJSON(true);
+						if (resp.responseText.length > 0)
+							users = resp.responseText.evalJSON(true);
 					} catch (e) {
 						new MessageBoxDlg("Error", e);
 					}
