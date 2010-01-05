@@ -14,10 +14,10 @@
     limitations under the License.
 ---------------------------------------------------------------------------- %>
 
-You have been invited to join the group <%= @group_name -%>.
+<%= @editor_name %> has invited you to join the group "<%= @group_name -%>."
 
 <% if !@has_joined -%>
-To join this group, you must first create a login ID on <%= SITE_NAME %>.
+To join this group, you will be prompted to create a login ID on <%= SITE_NAME %>.
 <% end %>
 
 If you wish to join this group, click here: <%= url_for :controller => 'groups', :action => 'accept_invitation', :id => Group.id_obfuscator(@request_id), :only_path => false %>

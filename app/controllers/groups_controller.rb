@@ -354,7 +354,8 @@ class GroupsController < ApplicationController
 				end
 				if err == false
 					flash = "OK:#{@group.id}"
-					@group.invite_members(User.find(get_curr_user_id()).email, params[:emails])
+					invitor = get_curr_user()
+					@group.invite_members(invitor.fullname, invitor.email, params[:emails])
 				end
 			else
 				flash = "Error creating group"
@@ -389,7 +390,8 @@ class GroupsController < ApplicationController
 
 		err_msg = nil
 		if params[:emails]
-			err_msg = @group.invite_members(User.find(get_curr_user_id()).email, params[:emails])
+			invitor = get_curr_user()
+			err_msg = @group.invite_members(invitor.fullname, invitor.email, params[:emails])
 		end
 #    respond_to do |format|
 #      if @group.update_attributes(params[:group])
