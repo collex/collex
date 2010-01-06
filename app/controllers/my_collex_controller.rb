@@ -291,6 +291,8 @@ class MyCollexController < ApplicationController
     visible_url = Exhibit.transform_url(exhibit_url)
     exhibit_title = params[:exhibit_title]
     exhibit_thumbnail = params[:exhibit_thumbnail]
+		group_id = params[:group_id]
+		cluster_id = params[:cluster_id]
     objects = params[:objects].split("\t")
     user = get_user(session)
     if user == nil
@@ -300,7 +302,7 @@ class MyCollexController < ApplicationController
       if ex != nil
         render :text => "There is already an exhibit in #{SITE_NAME} with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
       else
-        exhibit = Exhibit.factory(user.id, visible_url, exhibit_title, exhibit_thumbnail)
+        exhibit = Exhibit.factory(user.id, visible_url, exhibit_title, exhibit_thumbnail, group_id, cluster_id)
         ExhibitObject.set_objects(exhibit.id, objects)
         render :text => "#{exhibit.id}"
       end
@@ -333,10 +335,24 @@ class MyCollexController < ApplicationController
 		exhibit = Exhibit.find(id)
 		group_id = params[:group]
 		exhibit.group_id = group_id
-		group = Group.find(group_id)
-		if group.group_type == 'peer-reviewed'
-			exhibit.is_published = 0
+		exhibit.cluster_id = nil
+		if group_id.length > 0
+			group = Group.find(group_id)
+			if group.group_type == 'peer-reviewed'
+				exhibit.is_published = 0
+			end
 		end
+
+		exhibit.save
+		redirect_to :back
+		#render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
+	end
+
+	def change_exhibits_cluster
+		id = params[:id]
+		exhibit = Exhibit.find(id)
+		cluster_id = params[:cluster]
+		exhibit.cluster_id = cluster_id
 
 		exhibit.save
 		redirect_to :back

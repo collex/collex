@@ -37,6 +37,9 @@
 <% else -%>
 	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
 <% end -%>
+<% if group.can_create_exhibit(user_id) -%>
+	<%= link_to_function "[create new exhibit]", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/my_collex/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %>
+<% end -%>
 </div>
 <% end -%>
 <% exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND cluster_id IS NULL", group.id]) if cluster == nil -%>

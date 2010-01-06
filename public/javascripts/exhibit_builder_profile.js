@@ -18,7 +18,7 @@
 /*global MessageBoxDlg, ConfirmDlg, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, SelectInputDlg, updateWithAjax */
 /*global window */
 /*extern editExhibitProfile, CreateSharingList, sharing_dialog */
-/*extern doPublish, selectGroup */
+/*extern doPublish, selectGroup, selectCluster */
 
 var selectGroup = function(id, options, value) {
 	new SelectInputDlg({
@@ -30,6 +30,19 @@ var selectGroup = function(id, options, value) {
 		value: value,
 		extraParams: { id: id },
 		actions: [ '/my_collex/change_exhibits_group' ],
+		target_els: [ null ] });
+};
+
+var selectCluster = function(id, options, value) {
+	new SelectInputDlg({
+		title: 'Select Cluster',
+		prompt: 'Cluster',
+		id: 'cluster',
+		options: options,
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/my_collex/change_exhibits_cluster' ],
 		target_els: [ null ] });
 };
 

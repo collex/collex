@@ -19,7 +19,7 @@
 	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
 	<% membership = group.get_membership_list() -%>
 	gMembership = <%= membership.to_json() %>;
-	gGroupData = <%= group.to_json() %>.group;
+	gGroupData = <%= group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;') %>.group;
 	gNonClusteredExhibits = <%= group.non_clustered_exhibits().to_json() %>;
 </script>
 <div class="group_details_left">

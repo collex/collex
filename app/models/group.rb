@@ -60,6 +60,10 @@ class Group < ActiveRecord::Base
 		return is_member(user_id)
 	end
 
+	def can_create_exhibit(user_id)
+		return is_member(user_id)
+	end
+
 	def can_delete(user_id)
 		return is_owner(user_id)
 	end

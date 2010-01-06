@@ -70,12 +70,15 @@ class Exhibit < ActiveRecord::Base
 		return true
 	end
 	
-  def self.factory(user_id, url, title, thumbnail)
+  def self.factory(user_id, url, title, thumbnail, group_id, cluster_id)
     thumbnail = thumbnail.strip
     if thumbnail.length > 0 && thumbnail.index('http') != 0
       thumbnail = "http://" + thumbnail
     end
-    exhibit = Exhibit.create(:title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license(), :category => Group.types()[0])
+		params = { :title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license(), :category => Group.types()[0] }
+		params[:group_id] = group_id if group_id != nil
+		params[:cluster_id] = cluster_id if cluster_id != nil
+    exhibit = Exhibit.create(params)
     exhibit.insert_example_page(1)
     exhibit.insert_example_page(2)
 		exhibit.reset_fonts_to_default()

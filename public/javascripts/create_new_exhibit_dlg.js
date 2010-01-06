@@ -20,8 +20,13 @@
 /*extern CreateNewExhibitWizard */
 
 var CreateNewExhibitWizard = Class.create({
-	initialize: function (progress_img, url_get_objects, populate_collex_obj_url) {
+	initialize: function (params) {
 		this.class_type = 'CreateNewExhibitWizard';	// for debugging
+		var progress_img = params.progress_img;
+		var url_get_objects = params.url_get_objects;
+		var populate_collex_obj_url = params.populate_collex_obj_url;
+		var group_id = params.group_id;
+		var cluster_id = params.cluster_id;
 
 		// private variables
 		var This = this;
@@ -79,6 +84,8 @@ var CreateNewExhibitWizard = Class.create({
 			dlg.setFlash('Verifying exhibit parameters...', false);
 			var data = dlg.getAllData();
 			data.objects = obj_selector.getSelectedObjects().join('\t');
+			data.group_id = group_id;
+			data.cluster_id = cluster_id;
 
 			new Ajax.Request(url, {
 				parameters : data,
