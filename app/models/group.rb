@@ -219,7 +219,7 @@ class Group < ActiveRecord::Base
 				end
 
 				gu = GroupsUser.find_by_group_id_and_email(self.id, email)
-				if gu == nil	# don't invite someone twice
+				if gu == nil && self.owner != user_id	# don't invite someone twice
 					begin
 						gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
 						gu.save!
