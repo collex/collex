@@ -56,7 +56,7 @@ class GetIncludeFileList
 			when :my_collex
 				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 'cc_license',
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
-					'create_new_group_dlg', 'edit_fonts_dlg', 'exhibit_builder_outline', 'my_collex', 'exhibit_builder_profile' ]
+					'create_new_group_dlg', 'edit_fonts_dlg', 'exhibit_builder_outline', 'my_collex', 'exhibit_builder_profile', 'browse_groups' ]
 			when :discuss
 				local = [ 'discussions', 'result_row_popup', 'cc_license' ]
 			when :admin
