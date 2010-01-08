@@ -183,6 +183,11 @@ class Group < ActiveRecord::Base
 		return ret
 	end
 
+	def get_number_of_members()
+		list = get_membership_list()
+		return list.length + 1 # the regular members plus the owner
+	end
+
 	#
 	# Actions
 	#

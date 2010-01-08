@@ -938,11 +938,16 @@ class MyCollexController < ApplicationController
 		groups.each { |group|
 			obj = {}
 			obj[:id] = group.id
-			obj[:img] = group.image ? group.image.public_filename(:thumb) : nil
-			obj[:img] = DEFAULT_THUMBNAIL_IMAGE_PATH if obj[:img] == nil || obj[:img].length == 0
+			obj[:img] = group.image ? group.image.public_filename(:thumb) : DEFAULT_THUMBNAIL_IMAGE_PATH
 			obj[:title] = group.id
 			obj[:strFirstLine] = group.name
-			obj[:strSecondLine] = 'Owner: ' + User.find(group.owner).fullname + '<br />Created: ' + group.created_at.strftime("%b %d, %Y %I:%M%p")
+			editors = group.get_all_editors()
+			editor_label = "Editor#{'s' if editors.length > 1}: "
+			for editor in editors
+				editor_label += User.find(editor).fullname + ' '
+			end
+
+			obj[:strSecondLine] = "#{editor_label}<br />Established: #{group.created_at.strftime("%b %d, %Y")}<br/>#{Group.type_to_friendly(group.group_type)} -- #{@template.pluralize(group.get_number_of_members(), 'member')}"
 			ret.push(obj)
 		}
     render :text => ret.to_json()

@@ -14,8 +14,9 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, Element, Ajax, $ */
-/*global GeneralDialog, CreateListOfObjects, MessageBoxDlg */
+/*global window */
+/*global Class */
+/*global GeneralDialog, CreateListOfObjects */
 /*extern BrowseGroupsDlg */
 
 
@@ -25,17 +26,20 @@ var BrowseGroupsDlg = Class.create({
 		this.class_type = 'BrowseGroupsDlg';	// for debugging
 
 		var dlg = null;
-		var selectionCallBack = function(selection) {
-			dlg.setFlash("Fetching group. Please wait...", false);
-			var arr = selection.split('_');
-			window.location = '/groups/'+arr[1];
-		};
 
 		// private variables
 		//var This = this;
-		var oGroups = new CreateListOfObjects(url_get_objects, null, 'all_groups', progress_img, selectionCallBack);
+		var oGroups = new CreateListOfObjects(url_get_objects, null, 'all_groups', progress_img);
 
 		// private functions
+		var gotoGroup = function() {
+			var selection = oGroups.getSelection().value;
+			if (selection.length > 0) {
+				dlg.setFlash("Fetching group. Please wait...", false);
+				window.location = '/groups/'+selection;
+			} else
+				dlg.setFlash("Please click on one of the groups to select it then try again.", true);
+		};
 
 		// privileged functions
 
@@ -44,11 +48,11 @@ var BrowseGroupsDlg = Class.create({
 				rows: [
 					[ { text: 'Select a group to get more information.', klass: 'new_exhibit_instructions' } ],
 					[ { custom: oGroups } ],
-					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'last_row' }, { button: 'Go To Group', callback: gotoGroup, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var params = { this_id: "group_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Go To Group" };
+		var params = { this_id: "group_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Browse Groups" };
 		dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
