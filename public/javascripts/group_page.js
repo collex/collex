@@ -467,7 +467,7 @@ var CreateNewClusterDlg = Class.create({
 						[ { text: 'Creating New Cluster in the Group \"'+ group_name + "\"", klass: 'new_exhibit_title' }, { hidden: 'cluster[group_id]', value: group_id } ],
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'cluster[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
-						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37' } ],
+						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
 						[ { rowClass: 'last_row' }, { button: 'Create Cluster', url: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};

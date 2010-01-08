@@ -108,7 +108,7 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Step 1: Group Information', klass: 'new_exhibit_label' } ],
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'group[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'group[description]', klass: 'groups_textarea' } ],
-						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37' } ],
+						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
 						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType } ],
 						[ { text: 'Permissions:', klass: 'groups_label' }, { select: 'group[forum_permissions]', options: permissions } ],
 						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],

@@ -71,12 +71,16 @@ class ClustersController < ApplicationController
 #					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 #				end
 			end
-		cluster.image = image
-		if cluster.save
-			cluster.image.save! if cluster.image
-			flash = "OK:Thumbnail updated"
-		else
-			flash = "Error updating thumbnail"
+		begin
+			cluster.image = image
+			if cluster.save
+				cluster.image.save! if cluster.image
+				flash = "OK:Thumbnail updated"
+			else
+				flash = "Error updating thumbnail"
+			end
+		rescue
+			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopEditGroupThumbnailUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end

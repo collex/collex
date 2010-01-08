@@ -212,6 +212,15 @@ var GeneralDialog = Class.create({
 			parent_el.appendChild(el0);
 		};
 
+		var addLink = function(parent_el, id, klass, text, callback, callback_params) {
+			var a = new Element('a', { id: id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(text);
+			a.addClassName('nav_link');
+			if (klass)
+				a.addClassName(klass);
+			parent_el.appendChild(a);
+			listenerArray.push({ id: id + '_a' + listenerArray.length, event: 'click', callback: callback, param: callback_params });
+		};
+
 		var styleButtonPushed = function(ev, params) {
 			 var el = $(params.button_id);
 			 var context = params.context;
@@ -336,12 +345,14 @@ var GeneralDialog = Class.create({
 //						listenerArray.push({ id: button_id, event: 'click', callback: subel.callback, param: { curr_page: page.page, button_id: button_id, context: subel.context, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
-						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
-						a.addClassName('nav_link');
-						if (subel.klass)
-							a.addClassName(subel.klass);
-						row.appendChild(a);
-						listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+						addLink(row, this_id, subel.klass, subel.page_link,  subel.callback, { curr_page: page.page, destination: subel.new_page, dlg: This });
+
+//						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
+//						a.addClassName('nav_link');
+//						if (subel.klass)
+//							a.addClassName(subel.klass);
+//						row.appendChild(a);
+//						listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
 						// SELECT
 					} else if (subel.select !== undefined) {
 						var selectValue = new Element('input', { id: makeId(subel.select), name: subel.select });
@@ -461,7 +472,9 @@ var GeneralDialog = Class.create({
 					} else if (subel.image !== undefined) {
 						var image = new Element('div', { id: makeId(subel.image) + '_div' });
 						var src = (subel.value !== undefined  && subel.value !== null) ? subel.value : "";
-						image.appendChild(new Element('img', { src: src, id: makeId(subel.image) + "_img", alt: '' }));
+						if (src.length > 0) {
+							image.appendChild(new Element('img', { src: src, id: makeId(subel.image) + "_img", alt: '' }));
+						}
 //						if (subel.allowRemove === true) {
 //							var removeCallback = function() {
 //								// Need to delay hiding this because the Remove button itself will be hidden and that confuses the browser.
@@ -474,15 +487,28 @@ var GeneralDialog = Class.create({
 //							addButton(image, "Remove", "image_remove", removeCallback, "", "");
 //							addInput(image, 'removeImage', 'hidden', 'false');
 //						}
-						var file_input = new Element('input', { id: makeId(subel.image), type: 'file', name: subel.image });
-						if (subel.size)
-							file_input.writeAttribute({ size: subel.size});
+						var createFileInput = function() {
+							var file_input = new Element('input', { id: makeId(subel.image), type: 'file', name: subel.image });
+							if (subel.size)
+								file_input.writeAttribute({ size: subel.size});
+							return file_input;
+						};
+						var file_input = createFileInput();
 						image.appendChild(file_input);
 						if (subel.klass)
 							image.addClassName(subel.klass);
 						row.appendChild(image);
 						var inputEl = new Element('input', { id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token });
 						row.appendChild(inputEl);
+						if (subel.removeButton !== undefined) {
+							var remove = function() {
+								var el = $(makeId(subel.image));
+								el.remove();
+								var file_input = createFileInput();
+								image.appendChild(file_input);
+							};
+							addLink(row, this_id, subel.klass, subel.removeButton,  remove, { });
+						}
 						
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.
