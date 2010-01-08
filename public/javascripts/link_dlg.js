@@ -191,13 +191,20 @@ var CreateListOfObjects = Class.create({
 		var clearAllRows = function() {
 			var rows = $(parent).select('.linkdlg_item');
 			rows.each(function(row) { row.remove(); });
-			noObjMsg.remove();
+			if (noObjMsg.parent)
+				noObjMsg.remove();
 		};
 		
 		// privileged functions
+		var populate_url = populate_collex_obj_url;
+		this.repopulate = function(dlg, new_url) {
+			populate_url = new_url;
+			clearAllRows();
+			this.populate(dlg, false, id_prefix);
+		};
 		this.populate = function(dlg, selectFirst, id_prefix_){
 			// See if the item's in the cache first, and if not, call the server for it.
-			var objs = ninesObjCache.get(populate_collex_obj_url);
+			var objs = ninesObjCache.get(populate_url);
 			id_prefix = id_prefix_;
 			
 			if (objs)
@@ -205,14 +212,14 @@ var CreateListOfObjects = Class.create({
 			else {
 				// Call the server to get the data, then pass it to the ObjectLists
 				dlg.setFlash('Getting objects...', false);
-				new Ajax.Request(populate_collex_obj_url, {
+				new Ajax.Request(populate_url, {
 					method: 'get',
 					onSuccess: function(resp){
 						dlg.setFlash('', false);
 						try {
 							if (resp.responseText.length > 0) {
 								objs = resp.responseText.evalJSON(true);
-								ninesObjCache.set(populate_collex_obj_url, objs);
+								ninesObjCache.set(populate_url, objs);
 								createRows(objs, selectFirst, id_prefix);
 							}
 						} 

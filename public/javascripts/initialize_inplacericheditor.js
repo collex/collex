@@ -311,6 +311,13 @@ function initializeInplaceIllustrationEditor(element_id, action)
 			$('caption2').writeAttribute('value', caption.innerHTML);
 		};
 
+		var idArr = element_id.split('_');
+		var id = idArr[idArr.length-1];
+		var populate_all = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
+		var populate_exhibit_only = '/forum/get_nines_obj_list?illustration_id=' + id;	// TODO-PER: pass this in
+		var curr_populate = populate_exhibit_only;
+		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
+
 		var okAction = function(event, params) {
 			// Save has been pressed.
 			params.dlg.cancel();
@@ -321,25 +328,39 @@ function initializeInplaceIllustrationEditor(element_id, action)
 			data.ill_text = footnoteHandler.postprocessFootnotes(data.ill_text);
 
 			params.dlg.setFlash('Updating Illustration...', false);
+			if (curr_populate !== populate_exhibit_only)
+				ninesObjCache.reset(populate_exhibit_only);
 			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};
 
-		var idArr = element_id.split('_');
-		var id = idArr[idArr.length-1];
-		var populate_collex_obj_url = '/forum/get_nines_obj_list?illustration_id=' + id;	// TODO-PER: pass this in
-		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
-		var objlist = new CreateListOfObjects(populate_collex_obj_url, values.nines_object, 'nines_object', progress_img, setCaption);
-		var footnoteAbbrev1 = new FootnoteAbbrev({ startingValue: values.caption1_footnote, field: 'caption1_footnote', populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
-		var footnoteAbbrev2 = new FootnoteAbbrev({ startingValue: values.caption2_footnote, field: 'caption2_footnote', populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
+		var ninesObjView = function(event, params) {
+			var scope;
+			if (params.destination === 'all') scope = populate_all;
+			else scope = populate_exhibit_only;
+			if (scope !== curr_populate) {
+				objlist.repopulate(dlg, scope);
+				curr_populate = scope;
+				var el = $('illustration_dlg').select('.dlg_tab_link');
+				var elSel = $('illustration_dlg').select('.dlg_tab_link_current');
+				el[0].addClassName("dlg_tab_link_current");
+				el[0].removeClassName("dlg_tab_link");
+				elSel[0].addClassName("dlg_tab_link");
+				elSel[0].removeClassName("dlg_tab_link_current");
+			}
+		};
+
+		var objlist = new CreateListOfObjects(curr_populate, values.nines_object, 'nines_object', progress_img, setCaption);
+		var footnoteAbbrev1 = new FootnoteAbbrev({ startingValue: values.caption1_footnote, field: 'caption1_footnote', populate_collex_obj_url: curr_populate, progress_img: progress_img });
+		var footnoteAbbrev2 = new FootnoteAbbrev({ startingValue: values.caption2_footnote, field: 'caption2_footnote', populate_collex_obj_url: curr_populate, progress_img: progress_img });
 
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Type of Illustration:', klass: 'new_exhibit_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
-					[ { text: 'First Caption:', klass: 'new_exhibit_label' }, { inputWithStyle: 'caption1', value: { text: values.caption1, isBold: values.caption1_bold === '1', isItalic: values.caption1_italic === '1', isUnderline: values.caption1_underline === '1' }, klass: 'header_input' },
+					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
+					[ { text: 'First Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption1', value: { text: values.caption1, isBold: values.caption1_bold === '1', isItalic: values.caption1_italic === '1', isUnderline: values.caption1_underline === '1' }, klass: 'header_input' },
 						footnoteAbbrev1.createEditButton('footnoteEditStar') ],
 					[ { custom: footnoteAbbrev1 }],
-					[ { text: 'Second Caption:', klass: 'new_exhibit_label' }, { inputWithStyle: 'caption2', value: { text: values.caption2, isBold: values.caption2_bold === '1', isItalic: values.caption2_italic === '1', isUnderline: values.caption2_underline === '1' }, klass: 'header_input' },
+					[ { text: 'Second Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption2', value: { text: values.caption2, isBold: values.caption2_bold === '1', isItalic: values.caption2_italic === '1', isUnderline: values.caption2_underline === '1' }, klass: 'header_input' },
 						footnoteAbbrev2.createEditButton('footnoteEditStar2') ],
 					[ { custom: footnoteAbbrev2 }],
 
@@ -347,8 +368,8 @@ function initializeInplaceIllustrationEditor(element_id, action)
 						{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and nines_only hidden' }, { inputFilter: 'filterObjects', klass: 'nines_only hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
 					[ { text: 'Image URL:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
-					  { custom: objlist, klass: 'new_exhibit_label nines_only hidden' } ],
-					[ { text: 'Link URL:', klass: 'edit_illustration_label_lined_up not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' } ],
+					  { page_link: "Exhibit Palette", klass: 'dlg_tab_link_current nines_only hidden', callback: ninesObjView, new_page: 'exhibit' }, { page_link: "All My Objects", klass: 'dlg_tab_link nines_only hidden', callback: ninesObjView, new_page: 'all' } ],
+					[ { text: 'Link URL:', klass: 'edit_illustration_label_lined_up not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' }, { custom: objlist, klass: 'dlg_tab_contents nines_only hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
 					[ { text: 'Alt Text:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
 					[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
@@ -357,8 +378,8 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_illustration_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img),
-			footnote: {callback: footnoteHandler.addFootnote, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img } });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler(curr_populate, progress_img),
+			footnote: {callback: footnoteHandler.addFootnote, populate_collex_obj_url: curr_populate, progress_img: progress_img } });
 		dlg.changePage('layout', 'type');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);

@@ -298,6 +298,34 @@ hr.linkdlg_hr {
 	
 }
 
+.edit_illustration_caption_label {
+	float:left;
+	width:140px;
+}
+
+.dlg_tab_link {
+	background:transparent url(/images/index_tab_dlg.gif) no-repeat scroll left bottom;
+	color:#FDDFAB !important;
+	text-decoration:none;
+	padding-top:5px;
+	padding-right:15px;
+	padding-left: 8px;
+}
+
+.dlg_tab_link_current {
+	background:transparent url(/images/index_tab_dlg_dn.gif) no-repeat scroll left bottom;
+	color:black !important;
+	text-decoration:none;
+	padding-top:5px;
+	padding-right:15px;
+	padding-left: 8px;
+}
+
+.dlg_tab_contents {
+	border: 1px solid gray;
+	margin-top: -10px;
+}
+
 .edit_illustration_label_lined_up {
 	float:left;
 	width:63pt;

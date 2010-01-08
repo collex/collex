@@ -727,6 +727,10 @@ class MyCollexController < ApplicationController
         illustration.caption2_underline = caption2_underline
         illustration.save
   
+				if (type == 'NINES Object' && nines_object)
+					 ExhibitObject.add(get_exhibit_id_from_element(element), nines_object)
+				end
+
         element_id = illustration.exhibit_element_id
         element = ExhibitElement.find(element_id)
       end
