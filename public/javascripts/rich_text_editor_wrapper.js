@@ -213,8 +213,14 @@
 			// one side, we have the workaround that we can get the selection's text, and we have either the start
 			// or the end of the selection, so we can figure it out (unless there are two repeated strings on either side of
 			// the selection, like "abc|abc" where the bar is the selection point.)
-			if (a.tagName === 'BODY' && f.tagName === 'BODY')	// Neither side was returned. We have nothing to work with.
+			if (a.tagName === 'BODY' && f.tagName === 'BODY') {	// Neither side was returned. We have nothing to work with.
+				// Unless the user had clicked the entire area, for instance with ctrl-A.
+				if (f.textContent === selStr) {
+					var contents = this.getEditorHTML();
+					return { startPos: 0, endPos: contents.length, selection: contents, errorMsg: null};
+				}
 				return { errorMsg: "We're sorry. We can't figure out what you've selected. Try selecting a more than one character." };
+			}
 
 			// if we don't have the info in the selection for one side, we make that object null, and compensate below.
 			var apos = (a.tagName === 'BODY') ? null : this.getXPathPosition(a);
@@ -671,6 +677,39 @@ var RichTextEditor = Class.create({
 				return;
 				
 			var editor = This.editor;
+
+//			editor.on('beforeEditorMouseDown', function(ev) {
+//				var ctrl = ev.ev.ctrlKey;
+//				var btn = ev.ev.button;
+//				if (ctrl && btn === 0)
+//					return false;
+//				if (btn === 2)
+//					return false;
+//				return true;
+//			}, this, true);
+
+//		var oContextMenu = new YAHOO.widget.ContextMenu('contextMenu', {trigger: 'note_toolbar'});
+//		oContextMenu.subscribe("beforeShow", function() {} );
+
+			editor.on('editorKeyDown', function(ev) {
+				var ctrl = ev.ev.ctrlKey;
+				var meta = ev.ev.metaKey;
+				var key = ev.ev.keyCode;
+				if (key === 86 && (ctrl || meta)) {
+					var sel = editor.getRawSelectionPosition(false);
+					if (sel) {
+						var tempContents = editor.getEditorHTML();
+						var startText = tempContents.substring(0, sel.startPos);
+						var endText = tempContents.substring(sel.endPos);
+						setTimeout(function(){
+							var contents = editor.getEditorHTML();
+							var pasted = contents.substring(sel.startPos, contents.length-endText.length);
+							This.updateContents(startText + pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML() + endText);
+						}, 10);
+					}
+				}
+				return true;
+			}, this, true);
 
 			editor.on('toolbarLoaded', function() {
 			    //When the toolbar is loaded, add a listener to the insertimage button
