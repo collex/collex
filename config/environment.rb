@@ -100,6 +100,8 @@ if File.exists?(config_file)
 	MY_COLLEX = site_specific['my_collex']
 	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
   SKIN = site_specific['skin']
+	UPDATE_TASK = site_specific['update'] == nil ? '' : site_specific['update']
+	BLEEDING_EDGE = site_specific['bleeding_edge']
 
 else
 	puts "***"

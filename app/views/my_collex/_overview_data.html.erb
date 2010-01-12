@@ -42,7 +42,7 @@
 			<span class="exhibit_profile_label">Genres:</span>
 			<span id="overview_genres" class="overview_field"><%= exhibit.genres %></span>
 		</div>
-<% if Branding.use_groups() == true -%>
+<% if BLEEDING_EDGE == true -%>
 		<% has_groups = Group.user_is_in_group(get_curr_user_id()) -%>
 		<% none_text = has_groups ? 'No Group Selected' : 'You are not in any groups' -%>
 		<% group_name = exhibit.group_id ? link_to(Group.find(exhibit.group_id).name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, { :class => 'nav_link'}) : none_text -%>
@@ -65,7 +65,7 @@
 	<% end  -%>
 <% end  -%>
 		<div>
-<% if Branding.use_groups() == true && Group.is_peer_reviewed_group(exhibit) -%>
+<% if BLEEDING_EDGE == true && Group.is_peer_reviewed_group(exhibit) -%>
 			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : exhibit.is_published == 2 ? "Submitted for peer-review" : "This exhibit can just be seen by you." %>&nbsp;
 			<%= link_to_function exhibit.is_published != 0 ? "[Unpublish]" : "[Submit for peer review]", "doPublish(#{exhibit.id}, #{exhibit.is_published != 0 ? 0 : 2});", :class => 'nav_link' %>
 <% else  -%>

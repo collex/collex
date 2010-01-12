@@ -32,8 +32,7 @@ namespace :collex do
 		}
 	end
 
-	desc "Deploy on production (the first password requested is the mysql password; the second is the sudo password)"
-	task :deploy_on_production => :environment do
+	def deploy_on_production
 		puts "Deploy latest version on production..."
 		puts "You will be asked for your mysql password."
 		version = Branding.version()
@@ -42,8 +41,7 @@ namespace :collex do
 		Rake::Task['collex:tag_current_version'].invoke
 	end
 
-	desc "Do all tasks that routinely need to be done when anything changes in the source repository (the password requested is the sudo password)"
-	task :update_staging do
+	def update_staging
 		puts "Update site from repository..."
 		system("svn up")
 		Rake::Task['collex:update_nines_theme'].invoke
@@ -51,6 +49,39 @@ namespace :collex do
 		Rake::Task['collex:compress_css_js'].invoke
 		puts "You will be asked for your sudo password."
 		`sudo /sbin/service httpd restart`
+	end
+
+	def update_indexing
+		puts "Update site from repository..."
+		system("svn up")
+		Rake::Task['collex:update_nines_theme'].invoke
+		Rake::Task['db:migrate'].invoke
+		Rake::Task['collex:compress_css_js'].invoke
+		`mongrel_rails restart`
+	end
+
+	def update_development
+		puts "Update site from repository..."
+		system("svn up")
+		Rake::Task['db:migrate'].invoke
+		Rake::Task['collex:compress_about_css'].invoke
+		`mongrel_rails restart`
+	end
+
+	desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"
+	task :update => :environment do
+		puts "Update type: #{UPDATE_TASK}"
+		if UPDATE_TASK == 'production'
+			deploy_on_production()
+		elsif UPDATE_TASK == 'indexing'
+			update_indexing()
+		elsif UPDATE_TASK == 'staging'
+			update_staging()
+		elsif UPDATE_TASK == 'development'
+			update_development()
+		else
+			puts "Unknown updating type. Compare the value in config/site.yml and the list in the collex:update rake task (file: collex.rake)."
+		end
 	end
 
 	#
@@ -74,13 +105,6 @@ namespace :collex do
 		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes")
 		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
     copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" )
-  end
-
-  desc "Install the Collex Wordpress theme"
-  task :install_nines_theme do
-    # install php files
-    Dir.mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
-    copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" );
   end
 
   def copy_dir( start_dir, dest_dir )
@@ -213,32 +237,32 @@ namespace :collex do
 		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
 	end
 
-	desc "Fix character set from CP1252 to utf-8"
-	task :fix_char_set => :environment do
-		# This was for a one time fix of the database when the character set was set to latin1 instead of utf8.
-		# It may be useful in the future if that happens again.
-		# downcase_tag changes all tags to just be lower case. This is also a one time fix to the database.
-		# If you set debug=true, you will get the status of the DB with changing anything.
-
-		#CharSetAlter.downcase_tag()
-		debug = false
-		CharSetAlter.cp1252_to_utf8(ExhibitElement, :element_text, debug)
-		CharSetAlter.cp1252_to_utf8(ExhibitElement, :element_text2, debug)
-		CharSetAlter.cp1252_to_utf8(ExhibitFootnote, :footnote, debug)
-		CharSetAlter.cp1252_to_utf8(ExhibitIllustration, :illustration_text, debug)
-		CharSetAlter.cp1252_to_utf8(ExhibitIllustration, :caption1, debug)
-		CharSetAlter.cp1252_to_utf8(ExhibitIllustration, :caption2, debug)
-		CharSetAlter.cp1252_to_utf8(CachedProperty, :value, debug)
-		CharSetAlter.cp1252_to_utf8(CollectedItem, :annotation, debug)
-		CharSetAlter.cp1252_to_utf8(DiscussionComment, :comment, debug)
-		CharSetAlter.cp1252_to_utf8(DiscussionThread, :title, debug)
-		CharSetAlter.cp1252_to_utf8(DiscussionTopic, :description, debug)
-		CharSetAlter.cp1252_to_utf8(Search, :name, debug)
-		CharSetAlter.cp1252_to_utf8(FacetCategory, :carousel_description, debug)
-		CharSetAlter.cp1252_to_utf8(Tag, :name, debug)
-		CharSetAlter.cp1252_to_utf8(User, :username, debug)
-		CharSetAlter.cp1252_to_utf8(User, :fullname, debug)
-		CharSetAlter.cp1252_to_utf8(User, :about_me, debug)
-	end
+#	desc "Fix character set from CP1252 to utf-8"
+#	task :fix_char_set => :environment do
+#		# This was for a one time fix of the database when the character set was set to latin1 instead of utf8.
+#		# It may be useful in the future if that happens again.
+#		# downcase_tag changes all tags to just be lower case. This is also a one time fix to the database.
+#		# If you set debug=true, you will get the status of the DB with changing anything.
+#
+#		#CharSetAlter.downcase_tag()
+#		debug = false
+#		CharSetAlter.cp1252_to_utf8(ExhibitElement, :element_text, debug)
+#		CharSetAlter.cp1252_to_utf8(ExhibitElement, :element_text2, debug)
+#		CharSetAlter.cp1252_to_utf8(ExhibitFootnote, :footnote, debug)
+#		CharSetAlter.cp1252_to_utf8(ExhibitIllustration, :illustration_text, debug)
+#		CharSetAlter.cp1252_to_utf8(ExhibitIllustration, :caption1, debug)
+#		CharSetAlter.cp1252_to_utf8(ExhibitIllustration, :caption2, debug)
+#		CharSetAlter.cp1252_to_utf8(CachedProperty, :value, debug)
+#		CharSetAlter.cp1252_to_utf8(CollectedItem, :annotation, debug)
+#		CharSetAlter.cp1252_to_utf8(DiscussionComment, :comment, debug)
+#		CharSetAlter.cp1252_to_utf8(DiscussionThread, :title, debug)
+#		CharSetAlter.cp1252_to_utf8(DiscussionTopic, :description, debug)
+#		CharSetAlter.cp1252_to_utf8(Search, :name, debug)
+#		CharSetAlter.cp1252_to_utf8(FacetCategory, :carousel_description, debug)
+#		CharSetAlter.cp1252_to_utf8(Tag, :name, debug)
+#		CharSetAlter.cp1252_to_utf8(User, :username, debug)
+#		CharSetAlter.cp1252_to_utf8(User, :fullname, debug)
+#		CharSetAlter.cp1252_to_utf8(User, :about_me, debug)
+#	end
 end
 
