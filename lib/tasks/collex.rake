@@ -41,7 +41,7 @@ namespace :collex do
 		Rake::Task['collex:tag_current_version'].invoke
 	end
 
-	def update_staging
+	def update_ninesperf
 		puts "Update site from repository..."
 		system("svn up")
 		Rake::Task['collex:update_nines_theme'].invoke
@@ -75,8 +75,8 @@ namespace :collex do
 			deploy_on_production()
 		elsif UPDATE_TASK == 'indexing'
 			update_indexing()
-		elsif UPDATE_TASK == 'staging'
-			update_staging()
+		elsif UPDATE_TASK == 'nines.perf'
+			update_ninesperf()
 		elsif UPDATE_TASK == 'development'
 			update_development()
 		else
