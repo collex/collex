@@ -92,7 +92,7 @@
 <%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator', true) %>
 <%= result_row_item(:multiple_item, hit, 'date_label', 'Date', true) %>
 <%################### -%>
-<% if hit["text"] != nil && hit["text"].strip().length > 0 -%>
+<% if hit["text"] != nil && hit["text"].to_s.strip().length > 0 -%>
 <tr>
     <td colspan='2'>
     	<div class="search_result_full_text_label">Excerpt from Full Text:</div>
