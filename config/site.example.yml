@@ -6,9 +6,9 @@
 #
 
 # For getting automatic emails when an error occurs
- 	# exception_recipients: List of all emails that should receive the notification
- 	# sender_address: Who the notification email will be from
- 	# email_prefix: What each email should be prefixed with
+# exception_recipients: List of all emails that should receive the notification
+# sender_address: Who the notification email will be from
+# email_prefix: What each email should be prefixed with
 exception_notifier:
   exception_recipients: "first@example.com second@example.com"
   sender_address: '"Application Error" <admin@example.com>'
