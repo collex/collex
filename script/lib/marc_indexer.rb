@@ -118,7 +118,7 @@ class MarcIndexer
     @forgiving_marc_decoding = args[:forgiving]
     @indexer_config = {:debug => args[:debug], :timeout => 1200, :solr_url => args[:solr_url], :buffer_docs => 500 }     
     @archive_id = args[:archive]
-		@max_records = args[:max_records].to_i
+		@max_records = args[:max_records] ? args[:max_records].to_i : nil
     
     unless args[:target_uri_file].nil?
       # load a ruby file which defines the @target_uris hash
