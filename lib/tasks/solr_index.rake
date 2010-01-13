@@ -57,8 +57,8 @@ namespace :solr_index do
 		Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
 		ENV['start_after'] = nil
 		Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
-		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 		Rake::Task['solr_index:find_duplicate_objects'].invoke	# see if there are any duplicate uri anywhere in the RDF records.
+		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
 
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
@@ -420,8 +420,8 @@ namespace :solr_index do
 		dst = "#{solr_data_path}/resources/index"
 		puts "~~~~~~~~~~~ Copying #{src} to #{dst}..."
 		`sudo /sbin/service solr stop`
-		`rm #{dst}/*`
-		`cp #{src}/* #{dst}`
+		`sudo rm #{dst}/*`
+		`sudo cp #{src}/* #{dst}`
 		`sudo /sbin/service solr start`
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
@@ -469,7 +469,7 @@ namespace :solr_index do
 			#tim = Time.now
 			#all_objects_raw = `grep "rdf:about" #{dir}/*`	# just do one folder at a time so that grep isn't overwhelmed.
 			#all_objects_raw = `cd #{dir} && ls * | xargs grep "rdf:about"`	# just do one folder at a time so that grep isn't overwhelmed.
-			all_objects_raw = `find #{dir}/* -print0 -maxdepth 0 | xargs -0 grep "rdf:about"`	# just do one folder at a time so that grep isn't overwhelmed.
+			all_objects_raw = `find #{dir}/* -maxdepth 0 -print0 | xargs -0 grep "rdf:about"`	# just do one folder at a time so that grep isn't overwhelmed.
 			#puts "finished grep in #{Time.now-tim} seconds..."
 			all_objects = {}
 			all_objects_raw.each { | obj|
