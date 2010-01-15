@@ -28,17 +28,24 @@ var FootnoteAbbrev = Class.create({
 
 		var klassEdit = null;
 
-		var makeButton = function(id, text, hide) {
-			var btn1 = new Element('span', { id: field + '_' + id });
-			var btn2 = new Element('span');
-			var btn3 = new Element('button', { type: 'button', tabindex: '0', id: field + '_' + id + '-button' }).update(text);
-			btn1.appendChild(btn2);
-			btn2.appendChild(btn3);
-			btn1.addClassName("yui-button yui-push-button");
+		var makeButton = function(id, text, hide, klass) {
+			//<a id="illustration_dlg_a4" class="footnote_button" title="Add/Edit Footnote" onclick="return false;" href="#"/>
+			var a = new Element('a', {id: field + '_' + id, title: text, onclick: 'return false;', href: '#'});
+			a.addClassName(klass);
 			if (hide)
-				btn1.addClassName("hidden");
-			btn2.addClassName("first-child");
-			return btn1;
+				a.addClassName("hidden");
+			return a;
+
+//			var btn1 = new Element('span', { id: field + '_' + id });
+//			var btn2 = new Element('span');
+//			var btn3 = new Element('button', { type: 'button', tabindex: '0', id: field + '_' + id + '-button' }).update(text);
+//			btn1.appendChild(btn2);
+//			btn2.appendChild(btn3);
+//			btn1.addClassName("yui-button yui-push-button");
+//			if (hide)
+//				btn1.addClassName("hidden");
+//			btn2.addClassName("first-child");
+//			return btn1;
 		};
 
 //		var makeFootnoteAbbrev = function(footnote) {
@@ -73,11 +80,13 @@ var FootnoteAbbrev = Class.create({
 		};
 
 		var addFootnote = function(event, params) {
-			new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
+			new RteInputDlg({title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img});
+			return false;
 		};
 
 		var editFootnote = function(event, params) {
-			new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img });
+			new RteInputDlg({title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img});
+			return false;
 		};
 
 		var fnDeleteCallback = null;
@@ -91,14 +100,15 @@ var FootnoteAbbrev = Class.create({
 			setFootnoteCtrl();
 			if (fnDeleteCallback)
 				fnDeleteCallback(field);
+			return false;
 		};
 
 		this.getMarkup = function() {
 			var parent = new Element("div");
 			parent.addClassName('footnote_abbrev_div');
-			parent.appendChild(makeButton('add', 'Add Footnote', footnoteStr.length > 0));
-			parent.appendChild(makeButton('edit', 'Edit Footnote', footnoteStr.length === 0));
-			parent.appendChild(makeButton('remove', 'Delete Footnote', footnoteStr.length === 0));
+			parent.appendChild(makeButton('add', 'Add Footnote', footnoteStr.length > 0, 'footnote_button'));
+			parent.appendChild(makeButton('edit', 'Edit Footnote', footnoteStr.length === 0, 'footnote_button'));
+			parent.appendChild(makeButton('remove', 'Delete Footnote', footnoteStr.length === 0, 'footnote_delete_button'));
 //			var span = new Element('span', { id: field} ).update(makeFootnoteAbbrev(footnoteStr));
 //			span.addClassName('footnote_abbrev');
 //			parent.appendChild(span);
@@ -106,7 +116,7 @@ var FootnoteAbbrev = Class.create({
 		};
 
 		this.getSelection = function() {
-			return { field: field, value: footnoteStr };
+			return {field: field, value: footnoteStr};
 		};
 
 		this.delayedSetup = function() {
@@ -118,9 +128,9 @@ var FootnoteAbbrev = Class.create({
 		this.createEditButton = function(klass) {
 			klassEdit = klass;
 			if (footnoteStr.length > 0)
-				return { page_link: "*<span class='tip'>" + footnoteStr.stripTags() + "</span>", klass: klass + ' footnote_tip', callback: editFootnote };
+				return {page_link: "*<span class='tip'>" + footnoteStr.stripTags() + "</span>", klass: klass + ' footnote_tip', callback: editFootnote};
 			else
-				return { page_link: "*<span class='tip'></span>", klass: klass + ' footnote_tip hidden', callback: editFootnote };
+				return {page_link: "*<span class='tip'></span>", klass: klass + ' footnote_tip hidden', callback: editFootnote};
 		};
 	}
 });
@@ -193,7 +203,7 @@ var FootnotesInRte = Class.create({
 				right += '<' + arr[j];
 			}
 			
-			return { left: left, right: right };
+			return {left: left, right: right};
 		};
 
 		this.preprocessFootnotes = function(text) {

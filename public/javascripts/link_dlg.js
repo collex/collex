@@ -49,6 +49,7 @@ var CreateListOfObjects = Class.create({
 		var parent = $(parent_id);	// If the element exists already, then use it, otherwise we'll create it below
 		var id_prefix = null;
 		var noObjMsg = null;
+		var This = this;
 		
 		// Handles the user's selection
 		this.getSelection = function(){
@@ -62,6 +63,37 @@ var CreateListOfObjects = Class.create({
 			if (el)
 				el.removeClassName(selClass);
 		};
+
+		var populate_all;
+		var populate_exhibit_only;
+		var curr_populate;
+		this.useTabs = function(populate_all_, populate_exhibit_only_) {
+			populate_all = populate_all_;
+			curr_populate = populate_exhibit_only = populate_exhibit_only_;
+		};
+
+		this.ninesObjView = function(event, params) {
+			var scope;
+			if (params.destination === 'all') scope = populate_all;
+			else scope = populate_exhibit_only;
+			if (scope !== curr_populate) {
+				This.repopulate(params.dlg, scope);
+				curr_populate = scope;
+				var parent = params.dlg.getOuterDomElement();
+				var el = parent.select('.dlg_tab_link');
+				var elSel = parent.select('.dlg_tab_link_current');
+				el[0].addClassName("dlg_tab_link_current");
+				el[0].removeClassName("dlg_tab_link");
+				elSel[0].addClassName("dlg_tab_link");
+				elSel[0].removeClassName("dlg_tab_link_current");
+			}
+		};
+
+		this.resetCacheIfNecessary = function() {
+			if (curr_populate !== populate_exhibit_only)
+				ninesObjCache.reset(populate_exhibit_only);
+		}
+
 
 		// Creates one line in the list.
 		var linkItem = function(id, img, alt, strFirstLine, strSecondLine){
@@ -119,25 +151,25 @@ var CreateListOfObjects = Class.create({
 				// larger size fits in the outer div. We do this by only setting one of the height or width, whichever is bigger.
 				// Then we want to center the image. Centering horizontally is easy and can be done with CSS. Centering vertically,
 				// however, requires us to figure out how much blank space is around the image, and using padding to move the image down.
-				var This = $(this);
-				This.previous().addClassName('hidden');
-				var targetSize = parseInt(This.getStyle('height'));
-				This.removeClassName('linkdlg_img');
-				var height = This.height;
-				var width = This.width;
+				var elThis = $(this);
+				elThis.previous().addClassName('hidden');
+				var targetSize = parseInt(elThis.getStyle('height'));
+				elThis.removeClassName('linkdlg_img');
+				var height = elThis.height;
+				var width = elThis.width;
 				if (height === 0 && width === 0) {
 					// This happens in IE
-					This.height = targetSize;
-					This.width = targetSize;
+					elThis.height = targetSize;
+					elThis.width = targetSize;
 				} else if (height >= width) {
-					This.height = targetSize;
+					elThis.height = targetSize;
 				} else {
-					This.width = targetSize;
+					elThis.width = targetSize;
 					var newHeight = targetSize * height / width; // ratio of x/height = target/width
 					var pad = parseInt((targetSize - newHeight) / 2);
-					This.style.paddingTop = pad + 'px';
+					elThis.style.paddingTop = pad + 'px';
 				}
-				This.removeClassName('hidden');
+				elThis.removeClassName('hidden');
 			};
 			YAHOO.util.Event.addListener(id + "_img", 'load', finishedLoadingImage); 
 

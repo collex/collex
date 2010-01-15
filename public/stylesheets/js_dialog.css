@@ -305,11 +305,12 @@ hr.linkdlg_hr {
 
 .dlg_tab_link {
 	background:transparent url(/images/index_tab_dlg.gif) no-repeat scroll left bottom;
-	color:#FDDFAB !important;
+	color:white !important;
 	text-decoration:none;
 	padding-top:5px;
 	padding-right:15px;
 	padding-left: 8px;
+	font-family: arial,helvetica,clean,sans-serif;
 }
 
 .dlg_tab_link_current {
@@ -319,6 +320,7 @@ hr.linkdlg_hr {
 	padding-top:5px;
 	padding-right:15px;
 	padding-left: 8px;
+	font-family: arial,helvetica,clean,sans-serif;
 }
 
 .dlg_tab_contents {
@@ -360,7 +362,7 @@ hr.linkdlg_hr {
 }
 
 .header_input {
-	width: 480px;
+	width: 430px;
 }
 
 .footnoteEditStar {
@@ -447,6 +449,10 @@ a.footnote_tip:hover span.tip {
 
 .edit_palette_dlg {
 	width: 500px;
+}
+
+.edit_header_dlg {
+	width: 560px;
 }
 
 .link_dlg {
@@ -607,6 +613,7 @@ a.footnote_tip:hover span.tip {
 
 .footnote_abbrev_div {
 	padding-bottom: 2px;
+	display:inline;
 }
 
 .last_row {
@@ -731,6 +738,26 @@ a.footnote_tip:hover span.tip {
 
 .underline_button.pressed {
 	background-image:url("/images/caption_underline_click.jpg");
+}
+
+.footnote_button {
+	background-image:url("/images/caption_footnote.jpg");
+	margin-left:4px;
+	padding-left:20px;
+}
+
+.footnote_button:hover {
+	background-image:url("/images/caption_footnote_hover.jpg");
+}
+
+.footnote_delete_button {
+	background-image:url("/images/caption_footnote_delete.jpg");
+	margin-left:4px;
+	padding-left:20px;
+}
+
+.footnote_delete_button:hover {
+	background-image:url("/images/caption_footnote_delete_hover.jpg");
 }
 
 .edit_illustration_dlg {

@@ -73,6 +73,10 @@ var GeneralDialog = Class.create({
 			$(main).down('div').insert({ before: new Element('div', { id: parent_id, style: 'text-align:left;' }) });
 		}
 
+		this.getOuterDomElement = function() {
+			return $(this_id);
+		};
+
 		this.getEditor = function(index) {
 			return editors[index];
 		};
