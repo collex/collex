@@ -66,10 +66,10 @@
 <% end  -%>
 		<div>
 <% if BLEEDING_EDGE == true && Group.is_peer_reviewed_group(exhibit) -%>
-			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : exhibit.is_published == 2 ? "Submitted for peer-review" : "This exhibit can just be seen by you." %>&nbsp;
+			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : exhibit.is_published == 2 ? "Submitted for peer-review" : "Access to this exhibit is restricted to you." %>&nbsp;
 			<%= link_to_function exhibit.is_published != 0 ? "[Unpublish]" : "[Submit for peer review]", "doPublish(#{exhibit.id}, #{exhibit.is_published != 0 ? 0 : 2});", :class => 'nav_link' %>
 <% else  -%>
-			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : "This exhibit can just be seen by you." %>&nbsp;
+			<%= exhibit.is_published == 1 ? "This exhibit is visible to everyone." : "Access to this exhibit is restricted to you." %>&nbsp;
 			<%= link_to_function exhibit.is_published == 1 ? "[Unpublish]" : "[Publish]", "doPublish(#{exhibit.id}, #{exhibit.is_published == 1 ? 0 : 1});", :class => 'nav_link' %>
 <% end  -%>
 		</div>
