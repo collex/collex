@@ -345,6 +345,20 @@ class GroupsController < ApplicationController
 			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
 			@group = Group.new(params[:group])
+			@group.header_font_name = 'Arial'
+			@group.header_font_size = '24'
+			@group.text_font_name = 'Times New Roman'
+			@group.text_font_size = '18'
+			@group.illustration_font_name = 'Trebuchet MS'
+			@group.illustration_font_size = '14'
+			@group.caption1_font_name = 'Trebuchet MS'
+			@group.caption1_font_size = '14'
+			@group.caption2_font_name = 'Trebuchet MS'
+			@group.caption2_font_size = '14'
+			@group.endnotes_font_name = 'Times New Roman'
+			@group.endnotes_font_size = '16'
+			@group.footnote_font_name = 'Times New Roman'
+			@group.footnote_font_size = '16'
 			@group.use_styles = 0
 			@group.image = image
 			err = false
