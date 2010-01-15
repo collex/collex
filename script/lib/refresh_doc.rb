@@ -46,17 +46,17 @@ class RefreshDoc
   end
   
   def initialize( args )
-		@verbose = args[:verbose]
-		@core = CollexEngine.new([args[:core]])
-		doc = @core.get_object(args[:uri])
+		verbose = args[:verbose]
+		core = CollexEngine.new([args[:core]])
+		doc = core.get_object(args[:uri])
 		if doc == nil
 			puts "Error: Could not find object in the archive."
 		else
-			url = @doc['url']
+			url = doc['url']
 			fulltext = `curl #{url}`
 			doc['fulltext'] = clean_text(fulltext)
-			@core.add_object(doc)
-			report_record(doc)
+			core.add_object(doc)
+			report_record(doc) if verbose
 		end
   end
   
