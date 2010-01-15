@@ -165,7 +165,7 @@ module DiscussionThreadsHelper
 			group_comment = case group.forum_permissions
 				when 'hidden' then "A private discussion for members of #{group_link}"
 				when 'readonly' then "A public discussion featuring members of #{group_link}"
-				when 'full' then "An open discussion sponsored by #{group.link}"
+				when 'full' then "An open discussion sponsored by #{group_link}"
 				else ''
 			end
 			readonly = user_can_reply(comment) == false
