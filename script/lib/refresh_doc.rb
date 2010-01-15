@@ -35,7 +35,7 @@ class RefreshDoc
       return
     end
 
-    puts "Refreshing text for #{args[:uri]}..."
+    puts "Refreshing text for #{args[:uri]} in the archive #{args[:core]}..."
     start_time = Time.new ## start the clock
     
     RefreshDoc.new(args)
@@ -49,11 +49,15 @@ class RefreshDoc
 		@verbose = args[:verbose]
 		@core = CollexEngine.new([args[:core]])
 		doc = @core.get_object(args[:uri])
-		url = @doc['url']
-		fulltext = `curl #{url}`
-		doc['fulltext'] = clean_text(fulltext)
-		@core.add_object(doc)
-		report_record(doc)
+		if doc == nil
+			puts "Error: Could not find object in the archive."
+		else
+			url = @doc['url']
+			fulltext = `curl #{url}`
+			doc['fulltext'] = clean_text(fulltext)
+			@core.add_object(doc)
+			report_record(doc)
+		end
   end
   
   def report_record( solr_document )
