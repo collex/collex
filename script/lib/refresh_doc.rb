@@ -54,7 +54,7 @@ class RefreshDoc
 		else
 			url = doc['url']
 			fulltext = `curl #{url}`
-			doc['fulltext'] = clean_text(fulltext)
+			doc['text'] = clean_text(fulltext)
 			core.add_object(doc)
 			report_record(doc) if verbose
 		end
