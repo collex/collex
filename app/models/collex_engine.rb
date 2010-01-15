@@ -238,9 +238,9 @@ class CollexEngine
              :query => query, :field_list => field_list)
 
     response = @solr.send(req)
-		response.hits.each { |hit|
-			hit['uri'] = hit['uri'].gsub('http://foo', 'http://alex_st')
-		}
+#		response.hits.each { |hit|
+#			hit['uri'] = hit['uri'].gsub('http://foo', 'http://alex_st')
+#		}
     return response.hits
 	end
 

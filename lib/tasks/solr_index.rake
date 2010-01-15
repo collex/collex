@@ -67,6 +67,10 @@ namespace :solr_index do
 	task :reindex_and_test_one_archive => :environment do
 		start_time = Time.now
 		param = ENV['archive']
+		if param == nil
+			puts "Usage: call with archive=archive,folder"
+			return
+		end
 		arr = param.split(',')
 		folder = arr[1]
 		archive = arr[0]
@@ -147,6 +151,33 @@ namespace :solr_index do
 			call_rdf_indexer("Indexing solr documents in", "../rdf/#{folder}", "--fulltext")
 		end
 	end
+
+	desc "Uses the current record and goes to the web site to refresh the fulltext field (param: p=core,uri)"
+	task :refresh_text  => :environment do
+		start_time = Time.now
+		p = ENV['p']
+		p2 = p.split(',')
+		if p2.length != 2
+			puts "Usage: pass p=core,uri to refresh the text of that uri in that index"
+		else
+			require 'script/lib/refresh_doc.rb'
+			RefreshDoc.run({ :uri => p2[1], :verbose => true, :core => p2[0] })
+		end
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+end
+
+	desc "Commits all pending writes on a particular archive (param: archive=XXX)"
+	task :commit  => :environment do
+		start_time = Time.now
+		archive = ENV['archive']
+		if archive == nil
+			puts "Usage: pass archive=core to to commit pending changes"
+		else
+			core = CollexEngine.new([archive])
+			core.commit()
+		end
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
+end
 
 	def call_rdf_indexer(msg, path, flags)
 		# TODO: set folders in site.yml
