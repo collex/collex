@@ -34,6 +34,7 @@ class ResultsController < ApplicationController
     
     partial = params[:partial]
     if partial == '/results/result_row'
+			locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
       render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
     elsif partial == '/forum/attachment'
       render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
@@ -49,6 +50,7 @@ class ResultsController < ApplicationController
 			CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
 
 			if partial == '/results/result_row'
+				locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
 				render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
 			elsif partial == '/forum/attachment'
 				render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
@@ -61,6 +63,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
     
+		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
@@ -77,6 +80,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
     
+		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
@@ -93,6 +97,7 @@ class ResultsController < ApplicationController
     note = params[:note]
     CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
     
+		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
@@ -202,6 +207,7 @@ class ResultsController < ApplicationController
 
     partial = params[:partial]
     if partial == 'result_row'
+			locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
       render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
     elsif partial == '/forum/attachment'
       render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
@@ -240,7 +246,9 @@ class ResultsController < ApplicationController
     end
     if params[:full_text] && params[:full_text].length > 0
       ret[:hit]['text'] = params[:full_text].strip	# get rid of all the extra characters around the text we want
+			ret[:hit]['text'] = ret[:hit]['text'].gsub('%3f', '?').gsub('%25', '%')
 			ret[:hit]['text'] = ret[:hit]['text'].gsub("<EM>", "<em>").gsub("</EM>", "</em>")	# correct for IE returning capital tags.
+			ret[:full_text] = ret[:hit]['text']
     end
     ret[:uri] = params[:uri]
     ret[:index] = params[:row_num].to_i 

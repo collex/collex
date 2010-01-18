@@ -27,9 +27,9 @@ class CachedResource < ActiveRecord::Base
 	def set_hit(hit)	# This saves a solr call if the object is already in our hands.
 		@resource = hit
 		# never collect full text
-		if @resource['text']
-			@resource['text'] = nil
-		end
+#		if @resource['text']
+#			@resource['text'] = nil
+#		end
 
 
 	end

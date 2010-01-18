@@ -68,7 +68,7 @@ class CollectedItem < ActiveRecord::Base
   
   def self.collect_item(user, uri, hit)
     # This collects an item for a particular user. Different users can collect the same item, but a single
-    # user can only collect an item once. If the items was collected successfully, then this returns the
+    # user can only collect an item once. If the item was collected successfully, then this returns the
     # item. If there is an error, then it throws an exception.
 
     # Has it been collected before?
