@@ -233,7 +233,7 @@ var ForumReplyDlg = Class.create({
 			$$('.cluster').each(function(el) { el.removeClassName("hidden"); });
 		}
 
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img) });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_collex_obj_url], progress_img) });
 		dlg.changePage('layout', focus_id);
 		licenseDisplay.populate(dlg);
 		objlist.populate(dlg, false, 'forum');

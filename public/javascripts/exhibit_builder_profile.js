@@ -50,7 +50,7 @@ function doPublish(exhibit_id, publish_state) {
 	recurseUpdateWithAjax(["/my_collex/publish_exhibit"], ["overview_data"], null, null, { id: exhibit_id, publish_state: publish_state });
 }
 
-function editExhibitProfile(update_id, exhibit_id, data_class, populate_collex_obj_url, progress_img, genreList)
+function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, populate_exhibit_only, progress_img, genreList)
 {
 //	$(update_id).setAttribute('action', "/my_collex/edit_exhibit_overview,/my_collex/update_title");
 //	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
@@ -144,7 +144,8 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_collex_o
 		var selection = $(id + '_img');
 		thumbnail.value = selection.src;
 	};
-	var objlist = new CreateListOfObjects(populate_collex_obj_url, null, 'nines_object', progress_img, selectObject);
+	var objlist = new CreateListOfObjects(populate_exhibit_only, null, 'nines_object', progress_img, selectObject);
+	objlist.useTabs(populate_all, populate_exhibit_only);
 
 	var choose_thumbnail = {
 			page: 'choose_thumbnail',
@@ -153,8 +154,9 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_collex_o
 				[ { text: 'Sort objects by:', klass: 'forum_reply_label' },
 					{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 					{ text: 'and', klass: 'link_dlg_label_and' }, { inputFilter: 'filterObjects', klass: '', prompt: 'type to filter objects', callback: objlist.filter } ],
-				[ { custom: objlist, klass: 'new_exhibit_label' } ],
-				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { page_link: "Exhibit Palette", klass: 'dlg_tab_link_current', callback: objlist.ninesObjView, new_page: 'exhibit' }, { page_link: "All My Objects", klass: 'dlg_tab_link', callback: objlist.ninesObjView, new_page: 'all' } ],
+				[ { custom: objlist, klass: 'dlg_tab_contents new_exhibit_label' } ],
+				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: changeView }, { button: 'Cancel', url: 'profile', callback: updateGenres } ]
 			]
 		};
 

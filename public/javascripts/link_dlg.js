@@ -355,13 +355,14 @@ var CreateListOfObjects = Class.create({
 ////////////////////////////////////////////////////////////////////////////
 
 var LinkDlgHandler = Class.create({
-	initialize: function (populate_collex_obj_url, progress_img) {
+	initialize: function (populate_urls, progress_img) {
 	
 		var objRTE = null;
 		var iStartPos = null;
 		var iEndPos = null;
 		var rawHtmlOfEditor = null;
-	
+
+		this.getPopulateUrls = function() { return populate_urls; };
 		var getEncompassingLink = function ( rawHtmlOfEditor, iPos ) {
 			// The html passed may have multiple levels of spans and other tags. We only care about spans, though.
 			// We know if we got this far that the selection completely is encompassed by legal html, so we only need
@@ -495,8 +496,10 @@ var LinkDlgHandler = Class.create({
 				params.dlg.cancel();
 			};
 			
-			var objlist = new CreateListOfObjects(populate_collex_obj_url, (starting_type === 0 ? starting_selection : null), 'ld_nines_object', progress_img);
-	
+			var objlist = new CreateListOfObjects(populate_urls[0], (starting_type === 0 ? starting_selection : null), 'ld_nines_object', progress_img);
+			if (populate_urls.length === 2)
+				objlist.useTabs(populate_urls[1], populate_urls[0]);
+
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
@@ -509,6 +512,10 @@ var LinkDlgHandler = Class.create({
 						[ { rowClass: 'last_row' }, { button: 'Save', callback: saveLink, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
+			if (populate_urls.length === 2) {
+				dlgLayout.rows[2].push( { page_link: "Exhibit Palette", klass: 'dlg_tab_link_current ld_nines_only hidden', callback: objlist.ninesObjView, new_page: 'exhibit' });
+				dlgLayout.rows[2].push( { page_link: "All My Objects", klass: 'dlg_tab_link ld_nines_only hidden', callback: objlist.ninesObjView, new_page: 'all' });
+			}
 				
 			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link" };
 			var dlg = new GeneralDialog(dlgParams);

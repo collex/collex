@@ -608,7 +608,7 @@ var GeneralDialog = Class.create({
 			
 			var textAreas = $$("#" + dlg_id + " textarea");
 			textAreas.each( function(textArea) { 
-				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnote: footnote, bodyStyle: bodyStyle });
+				var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnote: footnote, populate_exhibit_only: linkDlgHandler.getPopulateUrls()[0], populate_all: linkDlgHandler.getPopulateUrls()[1],  bodyStyle: bodyStyle });
 				editor.attachToDialog(panel);
 				editors.push(editor);
 			}, this);
@@ -965,7 +965,9 @@ var RteInputDlg = Class.create({
 		var title = params.title;
 		var okCallback = params.okCallback;
 		var value = params.value;
-		var populate_collex_obj_url = params.populate_collex_obj_url;
+		var populate_all = params.populate_all;
+		var populate_exhibit_only = params.populate_exhibit_only;
+
 		var progress_img = params.progress_img;
 		var extraButton = params.extraButton;
 
@@ -998,7 +1000,7 @@ var RteInputDlg = Class.create({
 		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
 		var dlg = new GeneralDialog(dlgparams);
 		dlg.changePage('layout', null);
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_collex_obj_url, progress_img) });
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([ populate_exhibit_only, populate_all ], progress_img) });
 		dlg.center();
 
 		var input = $('textareaValue');

@@ -23,7 +23,8 @@ var FootnoteAbbrev = Class.create({
 	initialize: function(params){
 		var footnoteStr = params.startingValue;
 		var field = params.field;
-		var populate_collex_obj_url = params.populate_collex_obj_url;
+		var populate_all = params.populate_all;
+		var populate_exhibit_only = params.populate_exhibit_only;
 		var progress_img = params.progress_img;
 
 		var klassEdit = null;
@@ -80,12 +81,12 @@ var FootnoteAbbrev = Class.create({
 		};
 
 		var addFootnote = function(event, params) {
-			new RteInputDlg({title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img});
+			new RteInputDlg({title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img});
 			return false;
 		};
 
 		var editFootnote = function(event, params) {
-			new RteInputDlg({title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_collex_obj_url: populate_collex_obj_url, progress_img: progress_img});
+			new RteInputDlg({title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img});
 			return false;
 		};
 
