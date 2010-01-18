@@ -15,6 +15,7 @@
 ##########################################################################
 
 ActionController::Routing::Routes.draw do |map|
+	map.stale_request '/groups/stale_request', :controller => 'groups', :action => 'stale_request'
 	map.accept_request '/groups/accept_request', :controller => 'groups', :action => 'accept_request'
   map.decline_request '/groups/decline_request', :controller => 'groups', :action => 'decline_request'
   map.decline_invitaion '/groups/decline_invitation', :controller => 'groups', :action => 'decline_invitation'

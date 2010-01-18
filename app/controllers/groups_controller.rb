@@ -47,11 +47,15 @@ class GroupsController < ApplicationController
 		from_web = request.request_method == :post
 
 		success = GroupsUser.accept_request(params[:id])
-		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-		if from_web
-			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+		if !success
+			redirect_to :action => 'stale_request'
 		else
-			redirect_to :action => 'acknowledge_notification', :type => 'accept_request', :success => success, :group_id => group_id
+			group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
+			if from_web
+				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+			else
+				redirect_to :action => 'acknowledge_notification', :type => 'accept_request', :success => success, :group_id => group_id
+			end
 		end
 	end
 
@@ -60,10 +64,14 @@ class GroupsController < ApplicationController
 
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
 		success = GroupsUser.decline_request(params[:id])
-		if from_web
-			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+		if !success
+			redirect_to :action => 'stale_request'
 		else
-			redirect_to :action => 'acknowledge_notification', :type => 'decline_request', :success => success, :group_id => group_id
+			if from_web
+				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+			else
+				redirect_to :action => 'acknowledge_notification', :type => 'decline_request', :success => success, :group_id => group_id
+			end
 		end
 	end
 
@@ -71,28 +79,38 @@ class GroupsController < ApplicationController
 		from_web = request.request_method == :post
 		from_web = false if params[:from_create]	# we can also be redirected here from the create user id page.
 
-		has_login = GroupsUser.has_login(params[:id])
-		if has_login
-			success = GroupsUser.join_group(params[:id])
-			group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-			user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
-			user = User.find(user_id)
-			session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
-			if from_web
-				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
-			else
-				redirect_to :action => 'acknowledge_notification', :type => 'join_group', :success => success, :group_id => group_id
-			end
-		else
-			redirect_to :action => 'create_login', :id => Group.id_retriever(params[:id]), :message => ''
+		begin
+			has_login = GroupsUser.has_login(params[:id])
+		rescue
+			redirect_to :action => 'stale_request'
+			return
 		end
+			if has_login
+				success = GroupsUser.join_group(params[:id])
+				group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
+				user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
+				user = User.find(user_id)
+				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
+				if from_web
+					render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+				else
+					redirect_to :action => 'acknowledge_notification', :type => 'join_group', :success => success, :group_id => group_id
+				end
+			else
+				redirect_to :action => 'create_login', :id => Group.id_retriever(params[:id]), :message => ''
+			end
 	end
 
 	def decline_invitation
 		from_web = request.request_method == :post
 
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-		success = GroupsUser.decline_group(params[:id])
+		begin
+			success = GroupsUser.decline_group(params[:id])
+		rescue
+			redirect_to :action => 'stale_request'
+			return
+		end
 		if from_web
 			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 		else

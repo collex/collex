@@ -62,7 +62,7 @@ class GroupsUser < ActiveRecord::Base
 				return user != nil
 			end
 		end
-		return false
+		throw "Not found"
 	end
 
 	def self.join_group(id)
@@ -85,7 +85,7 @@ class GroupsUser < ActiveRecord::Base
 			gu.destroy
 			return true
 		end
-		return false
+		throw "Not found"
 	end
 
 	def self.leave_group(group_id, user_id)
