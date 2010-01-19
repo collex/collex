@@ -14,6 +14,7 @@ The following steps are explained in detail below:
 7) Modify About pages
 8) Install Wordpress
 9) Skin it by changing the css files.
+10) add robots file.
 
 -----------------------------------------------------------------------
 ** Initial username
@@ -151,6 +152,18 @@ config/site.yml (there is a sample version of this file called config/site.examp
 
 Note that if you use Google Analytics, then you will have to change the code to match your site and credentials. Search
 this project for "google-analytics.com" and change all of the references.
+
+Add a robots.txt file to the /public folder. This should contain
+
+User-agent: *
+Disallow:
+
+if you want search engines to find it, and
+
+User-agent: *
+Disallow: /
+
+if you don't.
 
 -----------------------------------------------------------------------
 ** About files
