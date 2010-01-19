@@ -46,7 +46,8 @@ class ApplicationController < ActionController::Base
       session[:constraints] ||= []
       session[:num_docs] ||= (CollexEngine.new).num_docs
       session[:num_docs] ||= 1000
-      Log.append_record(session, request.env, params)
+			# This will write the log to the database. That is useful in deployments where you can't easily get to the log files.
+      #Log.append_record(session, request.env, params)
     end
   
     def set_charset

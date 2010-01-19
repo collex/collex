@@ -127,6 +127,7 @@ end -%>
 <%= link_to 'New exhibit_element', new_exhibit_element_path, :class => 'nav_link' %>
 <br />
 
+<!--
 <table border='1px solid black' cellspacing=0>
   <tr>
   	<th>ID</th>
@@ -138,8 +139,8 @@ end -%>
     <th>Time</th>
   </tr>
 
-<% logs = Log.find(:all, :order => 'updated_at DESC', :limit => 700 ) -%>
-<% logs = logs.sort { |a,b|
+<%# logs = Log.find(:all, :order => 'updated_at DESC', :limit => 700 ) -%>
+<%# logs = logs.sort { |a,b|
 	if a.user == b.user
 		b.updated_at <=> a.updated_at
 	else
@@ -148,15 +149,16 @@ end -%>
 		bu <=> au
 	end
 } -%>
-<% for log in logs %>
+<%# for log in logs %>
   <tr>
-    <td><%= log.id %></td>
-    <td><%= log.user %></td>
-    <td><%= log.request_method %></td>
-    <td><%= log.request_uri %></td>
-    <td><%=h log.params %></td>
-    <td><%= log.http_referer %></td>
-    <td><%= log.updated_at %></td>
+    <td><%#= log.id %></td>
+    <td><%#= log.user %></td>
+    <td><%#= log.request_method %></td>
+    <td><%#= log.request_uri %></td>
+    <td><%#=h log.params %></td>
+    <td><%#= log.http_referer %></td>
+    <td><%#= log.updated_at %></td>
   </tr>
-<% end %>
+<%# end %>
 </table>
+-->
