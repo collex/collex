@@ -124,7 +124,9 @@
 	<div class="group_editors"><span class="group_details_label">Administrative Options:</span><ul>
 		<li><%= link_to_function('Invite Members', "new InviteMembersDlg(#{group.id}, '#{SITE_NAME}');", :class => 'nav_link')  %></li>
 		<li><%= link_to_function('Change Membership', "new EditMembershipDlg(#{group.id}, gMembership, '#{group.show_membership == true ? 'Yes' : 'No' }');", :class => 'nav_link')  %></li>
-		<li><%= link_to_function("Change License", "license_dialog({ populateLicenses: '/my_collex/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details,group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update,/groups/render_license' }); return false;", { :class => "nav_link" }) %>
+<% license_prompt = group.license_type == 0 ? "Set Content License" : "Change License" -%>
+		<li><%= link_to_function(license_prompt, "license_dialog({ populateLicenses: '/my_collex/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details,group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update,/groups/render_license' }); return false;", { :class => "nav_link" }) %>
+			<%= Exhibit.get_sharing_icon_url(group.license_type) %>
 			<span class="group_member_explanation"> (current license: <%= Exhibit.is_license_specified(group.license_type) ? Exhibit.get_sharing_static(group.license_type) : 'No license specified' %>)</span>
 		</li>
 	</ul></div>

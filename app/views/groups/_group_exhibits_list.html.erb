@@ -34,11 +34,11 @@
 <% if cluster == nil -%>
 	<span class="group_member_explanation">As an administrator for this group, you have the option to create a custom style for all exhibits associated with your group. </span>
 	<%= link_to_function("Click here to set a new style.", "new EditFontsDlg('/groups/update', #{group.id}, gGroupData, 'group', true, 'group_details')", { :class => 'modify_link' }) %>
-	<ul class="group_link_list">
+	<ul>
 <% if group.can_create_exhibit(user_id) -%>
-		<li><%= link_to_function "[Create an Exhibit]", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/my_collex/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
+		<li><%= link_to_function "Create an Exhibit", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/my_collex/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
 <% end -%>
-		<li><%= link_to_function("[Create a Cluster of Exhibits]", "new CreateNewClusterDlg('/clusters/create', #{group.id}, '#{group.name}', 'group_exhibits_list', 'group_exhibits')", { :class => 'modify_link' }) %>
+		<li><%= link_to_function("Create a Cluster of Exhibits", "new CreateNewClusterDlg('/clusters/create', #{group.id}, '#{group.name}', 'group_exhibits_list', 'group_exhibits')", { :class => 'modify_link' }) %>&nbsp;-&nbsp;
 			<%= link_to_function("what is this?", "$('cluster_explanation').removeClassName('hidden'); $('cluster_what_is_this').addClassName('hidden');", { :class => 'modify_link', :id => 'cluster_what_is_this' }) %>
 			<span id="cluster_explanation" class="group_member_explanation hidden" >Clusters are a way to manage multiple exhibits on similar topics. For example, the administrators of a Byron group might want to create clusters for Poetry and Prose, or those using their accounts for teaching purposes might want to create separate clusters for each class.
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
