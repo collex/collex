@@ -232,51 +232,51 @@ acronym, abbr, span.caps
 
 a.tab_link {
 	color:#FDDFAB;
-	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
+	background:transparent url(/images/nines/index_tab.gif) no-repeat scroll left top;
 }
 
 
 a.tab_link:visited {
 	color:#FDDFAB;
-	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
+	background:transparent url(/images/nines/index_tab.gif) no-repeat scroll left top;
 }
 
 a.tab_link:hover {
 	text-decoration:underline;
 	color:#FDDFAB;
-	background:transparent url(/images/index_tab.gif) no-repeat scroll left top;
+	background:transparent url(/images/nines/index_tab.gif) no-repeat scroll left top;
 }
 
 a.my_collex_link {
 	color:#55220F;
-	background:transparent url(/images/lvl2_tab_my_collex.gif) no-repeat scroll left top;
+	background:transparent url(/images/nines/lvl2_tab_my_collex.gif) no-repeat scroll left top;
 }
 
 a.my_collex_link:visited {
 	color:#55220F;
-	background:transparent url(/images/lvl2_tab_my_collex.gif) no-repeat scroll left top;
+	background:transparent url(/images/nines/lvl2_tab_my_collex.gif) no-repeat scroll left top;
 }
 
 a.my_collex_link:hover {
 	text-decoration:underline;
 	color:#55220F;
-	background:transparent url(/images/lvl2_tab_my_collex.gif) no-repeat scroll left top;
+	background:transparent url(/images/nines/lvl2_tab_my_collex.gif) no-repeat scroll left top;
 }
 
 a.tab_link_current {
 	color:black;
-	background:url(/images/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/nines/index_tab_dn.gif) top left no-repeat;
 }
 
 a.tab_link_current:visited {
 	color:black;
-	background:url(/images/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/nines/index_tab_dn.gif) top left no-repeat;
 }
 
 a.tab_link_current:hover {
 	text-decoration:underline;
 	color:black;
-	background:url(/images/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/nines/index_tab_dn.gif) top left no-repeat;
 }
 
 a.nav_link {
