@@ -502,6 +502,10 @@ class ForumController < ApplicationController
   end
   
   def rss
+		 if DISALLOW_RSS
+			 render :text => 'RSS disabled for this installation'
+			 return
+		 end
      thread_id = params[:thread]
      thread = DiscussionThread.find(thread_id)
      

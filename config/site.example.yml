@@ -42,3 +42,4 @@ my_collex: 'My Collex'
 skin: 'collex'
 
 bleeding_edge: false
+disallow_rss: false

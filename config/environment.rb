@@ -102,6 +102,7 @@ if File.exists?(config_file)
   SKIN = site_specific['skin']
 	UPDATE_TASK = site_specific['update'] == nil ? '' : site_specific['update']
 	BLEEDING_EDGE = site_specific['bleeding_edge']
+	DISALLOW_RSS  = site_specific['disallow_rss'] == nil ? false : site_specific['disallow_rss']
 
 else
 	puts "***"

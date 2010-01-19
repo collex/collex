@@ -150,6 +150,11 @@ class TagController < ApplicationController
    end
    
    def rss
+		 if DISALLOW_RSS
+			 render :text => 'RSS disabled for this installation'
+			 return
+		 end
+
 			if params[:tag] != nil
 				params[:tag] = params[:tag].gsub("&lt;","<").gsub("&gt;", ">").gsub("&amp;", "&").gsub("&quot;", '"')
 			end
