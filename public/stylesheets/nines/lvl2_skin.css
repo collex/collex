@@ -20,3 +20,15 @@
 	float:left;
 	background:url(/images/nines/lvl2_header.jpg) top left no-repeat;
 }
+
+#header_container {
+	background:url(/images/nines/index_header_stretch.jpg) bottom left repeat-x;
+}
+
+.my_collex_link {
+	background:url(/images/nines/lvl2_tab_my_collex.gif) top left no-repeat;
+}
+
+.my_collex_link_current {
+	background:url(/images/nines/lvl2_tab_my_collex_dn.gif) top left no-repeat;
+}

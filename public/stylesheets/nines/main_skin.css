@@ -17,51 +17,37 @@
 /*@charset "UTF-8";*/
 /* CSS Document */
 
+body {
+	background:#000000;
+}
+
 #header_container {
-	width:100%;
-	height:33px;
+	background-color: black;
 }
 
-#header_right {
-	float:right;
-	margin-right:20px;
-	margin-top:10px;
-}
-
-#header_right a {
-	color:#b06e41;
-}
-
-#header_right a:visited {
-	color:#b06e41;
-}
-
-.my_collex_link {
-	display: none;
-}
-
-#nav_container {
-	display:none;
-}
-
-#login_container {
-	display: none;
-}
-
-#subnav_links_container {
-	display: none;
+#main_container {
+	border-left:10px #371911 solid;
+	border-right:10px #371911 solid;
+	border-bottom:10px #371911 solid;
 }
 
 #content_container {
-	/*height:1200px;*/
-	text-align:left;
+	background:url(/images/nines/index_scroll.gif) top center no-repeat;
 }
-.page_header {
-	font-size:1.5em;
-	padding:10px 0px 0px 0px;
-	margin:0px;
-	font-weight:bold;
+
+.tab_link {
+	background:url(/images/nines/index_tab.gif) top left no-repeat;
 }
-.page_subheader {
-	padding: 0px 0px 0px 0px;
+
+.tab_link_current {
+	background:url(/images/nines/index_tab_dn.gif) top left no-repeat;
 }
+
+.my_collex_link {
+	background:url(/images/nines/index_tab_my_collex.gif) top left no-repeat;
+}
+
+.tab_link_logo{
+	background:url(/images/nines/index_tab_logo.gif) top left no-repeat;
+}
+

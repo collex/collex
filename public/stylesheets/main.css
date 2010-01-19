@@ -18,7 +18,6 @@
 /* CSS Document */
 
 body {
-	background:#000000;
 	position:absolute;
 	width:100%;
 	min-width:880px;
@@ -121,12 +120,8 @@ table, table td, table tr {
 }
 
 #main_container {
-	border-left:10px #371911 solid;
-	border-right:10px #371911 solid;
-	border-bottom:10px #371911 solid;
 	margin:0px 30px 10px 30px;
 	background:#FFFFFF;
-
 }
 
 #footer_container {

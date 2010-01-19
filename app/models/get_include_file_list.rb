@@ -101,6 +101,7 @@ class GetIncludeFileList
 		global = [
 			"main",
 			"nav",
+			"#{SKIN}/main_skin",
 			"js_dialog"
 		]
 

@@ -17,15 +17,7 @@
 #header_container {
 	width:100%;
 	height:121px;
-	background:url(/images/index_header_stretch.jpg) bottom left repeat-x;
 }
-
-/*#header_left {
-	width:755px;
-	height:89px;
-	float:left;
-	background:url(/images/lvl2_header.jpg) top left no-repeat;
-}*/
 
 #header_right {
 	float:right;
@@ -54,7 +46,6 @@
 	height:23px;
 	width:71px;
 	float:left;
-	background:url(/images/lvl2_tab_my_collex.gif) top left no-repeat;
 	color:#55220F;
 	font-weight:bold;
 	text-decoration:none;
@@ -72,7 +63,6 @@
 	height:23px;
 	width:71px;
 	float:left;
-	background:url(/images/lvl2_tab_my_collex_dn.gif) top left no-repeat;
 	color:#55220F;
 	font-weight:bold;
 	text-decoration:none;
