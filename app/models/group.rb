@@ -209,34 +209,42 @@ class Group < ActiveRecord::Base
 		return ret
 	end
 
-	def invite_members(editor_name, editor_email, emails)
+	def invite_members(editor_name, editor_email, emails, usernames)
 		msgs = ""
+		list = []
+		arr = split_by_all_delimiters(usernames)
+		arr.each { |username|
+			username = username.strip()
+			if username.length > 0
+				user = User.find_by_username(username)
+				if user == nil
+					msgs += "User not found: #{username}<br />"
+				else
+					list.push(user.email)
+				end
+			end
+		}
+
 		arr = split_by_all_delimiters(emails)
 		arr.each { |email|
 			email = email.strip()
 			if email.length > 0
-				user = COLLEX_MANAGER.find_by_email(email)
-				if (user == nil)	# either inviting a user who doesn't have a login, or using the login id
-					user_id = nil
-					user = User.find_by_username(email)
-					if user != nil
-						user_id = user.id
-						email = user.email
-					end
-				else
-					user_id = user.id
-				end
+				list.push(email)
+			end
+		}
 
-				gu = GroupsUser.find_by_group_id_and_email(self.id, email)
-				if gu == nil && self.owner != user_id	# don't invite someone twice
-					begin
-						gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
-						gu.save!
-						LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :editor_name => editor_name, :request_id => gu.id, :has_joined => user_id != nil }, email, editor_email)
-					rescue Net::SMTPFatalError
-						msgs += "Error sending email to address \"#{email}\".<br />"
-						gu.delete
-					end
+		list.each { |email|
+			gu = GroupsUser.find_by_group_id_and_email(self.id, email)
+			user = User.find_by_email(email)
+			user_id = user ? user.id : nil
+			if gu == nil && self.owner != user_id	# don't invite someone twice
+				begin
+					gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
+					gu.save!
+					LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :editor_name => editor_name, :request_id => gu.id, :has_joined => user_id != nil }, email, editor_email)
+				rescue Net::SMTPFatalError
+					msgs += "Error sending email to address \"#{email}\".<br />"
+					gu.delete
 				end
 			end
 		}

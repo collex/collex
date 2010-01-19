@@ -626,6 +626,15 @@ a.footnote_tip:hover span.tip {
 	float: right;
 }
 
+.button_row {
+	padding-top:8px;
+	height:20px;
+}
+
+.button_row .yui-button {
+	float: right;
+}
+
 .checkbox_label {
 	margin-right: 6px;
 }
@@ -804,4 +813,17 @@ textarea.groups_textarea {
 }
 .edit_group_thumbnail img {
 	padding-bottom: 1em;
+}
+
+.invite_users_div {
+	width: 500px;
+}
+
+.invite_users_instructions {
+	font-weight: bold;
+}
+
+.invite_users_label {
+	font-family: sans-serif;
+	color: gray;
 }

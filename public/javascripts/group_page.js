@@ -248,24 +248,53 @@ var RespondToRequestDlg = Class.create({
 });
 
 var InviteMembersDlg = Class.create({
-	initialize: function (group_id) {
+	initialize: function (group_id, siteName) {
 		this.class_type = 'InviteMembersDlg';	// for debugging
 
-		var failureMsg = function(resp) {
-			var str = "Some or all of your invitees have not been invited. Please check their email address and try again.<br />" + resp.responseText;
-			new MessageBoxDlg("Members Not Invited", str);
+		// private variables
+		var dlg = null;
+
+		var sendWithAjax = function (event, params)
+		{
+			dlg.setFlash('Sending email to invitees. Please wait...', false);
+			var onSuccess = function(resp) {
+					dlg.cancel();
+			};
+			var onFailure = function(resp) {
+				var str = "Some or all of your invitees have not been invited. Please check their email address and try again.<br />" + resp.responseText;
+				new MessageBoxDlg("Members Not Invited", str);
+				dlg.setFlash("Error: Please try again.", true);
+			};
+			var data = dlg.getAllData();
+			var url = params.destination;
+			recurseUpdateWithAjax([url], ['group_details'], onSuccess, onFailure, data);
 		};
 
-		new TextAreaInputDlg({
-			title: 'Invite Users to Join',
-			prompt: 'Invite new people to join this group.<br />(Enter a list of email addresses, one per line.)',
-			pleaseWaitMsg: 'Sending email to invitees. Please wait...',
-			id: 'emails',
-			okStr: 'Save',
-			extraParams: { id: group_id },
-			onFailure: failureMsg,
-			actions: [ '/groups/update' ],
-			target_els: [ 'group_details' ] });	}
+		// privileged methods
+		var show = function () {
+			var layout = {
+					page: 'layout',
+					rows: [
+						[ { text: 'There are two ways to invite people to join you group in ' + siteName + 
+							': email address or username. If you know the participants\' usernames, list them in the blank below, one per line.', klass: 'invite_users_instructions' }, { hidden: 'id', value: group_id } ],
+						[ { text: 'By Username:', klass: 'invite_users_label' }, { textarea: 'usernames', klass: 'groups_textarea' } ],
+						[ { rowClass: 'button_row' }, { button: 'Submit', url: '/groups/update', callback: sendWithAjax } ],
+						[ { text: "Don't know any usernames? Add email addresses of users you want to invite in the blank below, one per line.", klass: 'invite_users_instructions' } ],
+						[ { text: 'By Email Address:', klass: 'invite_users_label' }, { textarea: 'emails', klass: 'groups_textarea' } ],
+						[ { rowClass: 'last_row' }, { button: 'Submit', url: '/groups/update', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					]
+				};
+
+			var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Invite Users to Join" };
+			dlg = new GeneralDialog(params);
+			dlg.changePage('layout', "username");
+			dlg.center();
+
+			return;
+		};
+		
+		show();
+	}
 });
 
 var editDescription = function(id, value, controller) {
