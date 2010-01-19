@@ -489,6 +489,7 @@ function doAddToExhibit(partial, uri, index, row_id)
 		//var arr = row_id.split('-');
 		//var row_num = arr[arr.length-1];
 		var elFullText = $('search_result_' + index + '_full_text');
+		var ft = elFullText ? elFullText.innerHTML : '';
 
 		doSingleInputPrompt("Choose exhibit",
 			'Exhibit:',
@@ -496,7 +497,7 @@ function doAddToExhibit(partial, uri, index, row_id)
 			"exhibit_" + index,
 			row_id + ",exhibited_objects_container",
 			"/results/add_object_to_exhibit,/my_collex/resend_exhibited_objects",
-			$H({ partial: partial, uri: uri, row_num: index, full_text: elFullText.innerHTML }), 'select',
+			$H({ partial: partial, uri: uri, row_num: index, full_text: ft }), 'select',
 			exhibit_names, null);
 	}
 }
