@@ -35,6 +35,14 @@ body {
 	background:url(/images/collex/index_scroll.gif) top center no-repeat;
 }
 
+#footer_container {
+	background:#81b4ac;
+}
+
+.exhibit_footer {
+	background-color: #34645c;
+}
+
 .tab_link {
 	background:url(/images/collex/index_tab.gif) top left no-repeat;
 }

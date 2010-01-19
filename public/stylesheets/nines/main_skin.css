@@ -35,6 +35,14 @@ body {
 	background:url(/images/nines/index_scroll.gif) top center no-repeat;
 }
 
+#footer_container {
+	background:#000000;
+}
+
+.exhibit_footer {
+	background-color: #371911;
+}
+
 .tab_link {
 	background:url(/images/nines/index_tab.gif) top left no-repeat;
 }
