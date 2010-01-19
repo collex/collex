@@ -188,6 +188,8 @@ namespace :collex do
 		concatenate_css(:admin)
 		concatenate_js(:about)
 		concatenate_css(:about)
+		concatenate_js(:news)
+		concatenate_css(:news)
 		concatenate_js(:view_exhibit)
 		concatenate_css(:view_exhibit)
 		concatenate_js(:print_exhibit)
