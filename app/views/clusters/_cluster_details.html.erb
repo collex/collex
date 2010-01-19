@@ -51,13 +51,8 @@
 		<% end -%>
 	<% end -%>
 </div>
-<div class="group_details_right">
-	<ul class="group_link_list">
-		<li class="group_back_to_exhibits_link"><%= link_to "[ Back to Group Page ]", "/groups/#{group.id}", :class => 'nav_link' %></li>
-	</ul>
-</div>
 <div class="group_details_center">
-	<h1><%=h cluster.name %><%= link_to_function('[edit title]', "editTitle(#{cluster.id}, '#{cluster.name}', 'cluster');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
+	<h1><%=link_to( h(group.name), "/groups/#{group.id}", :class => 'nav_link') %> > <%=h cluster.name %><%= link_to_function('[edit title]', "editTitle(#{cluster.id}, '#{cluster.name}', 'cluster');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
 	<div class="group_description_label"><span class="group_details_label">Cluster Description</span> <%= link_to_function('[edit]', "editDescription(#{cluster.id}, '#{cluster.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'cluster');", :class => 'nav_link') if group.can_edit(user_id) %></div>
 	<div class="group_description"><%=h(cluster.description).gsub("\n", "<br />") %></div>
 	<div class="group_editors"><%= link_to('[delete cluster]', cluster, :confirm => 'Are you sure you wish to permanently delete this cluster?', :method => :delete, :class => 'nav_link')  if group.can_edit(user_id) %></div>
