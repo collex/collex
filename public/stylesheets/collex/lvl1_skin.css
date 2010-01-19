@@ -62,3 +62,8 @@
 	float:left;
 	background:url(/images/collex/index_header_left5.jpg) top left no-repeat;
 }
+
+#content_container {
+	background:url(/images/collex/index_scroll.gif) top center no-repeat;
+}
+

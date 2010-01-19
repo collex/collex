@@ -31,10 +31,6 @@ body {
 	border-bottom:10px #371911 solid;
 }
 
-#content_container {
-	background:url(/images/nines/index_scroll.gif) top center no-repeat;
-}
-
 #footer_container {
 	background:#000000;
 }
