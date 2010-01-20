@@ -346,6 +346,10 @@ class GroupsController < ApplicationController
 		end
 	end
 
+	# TODO-PER: What is the real rails way of doing this?
+	class RolesUser < ActiveRecord::Base
+	end
+	
   # POST /groups
   # POST /groups.xml
   def create
@@ -364,6 +368,11 @@ class GroupsController < ApplicationController
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
 			params[:group][:exhibit_visibility] = 'open'
 			params[:group][:forum_permissions] = 'full'
+			send_email = false
+			if params[:group][:group_type] == 'peer-reviewed'
+				params[:group][:group_type] = 'community'
+				send_email = true
+			end
 			@group = Group.new(params[:group])
 			@group.header_font_name = 'Arial'
 			@group.header_font_size = '24'
@@ -400,6 +409,22 @@ class GroupsController < ApplicationController
 			end
 		rescue
 			flash = "Server error when creating group."
+		end
+		if send_email
+			roles = RolesUser.find_all_by_role_id(1)
+			admins = []
+			roles.each { |role|
+				user = User.find(role.user_id)
+				admins.push(user.email)
+			}
+			begin
+				curr_user = get_curr_user()
+				admins.each { |ad|
+					LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
+				}
+			rescue Exception => msg
+				logger.error("**** ERROR: Can't send email: " + msg)
+			end
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 

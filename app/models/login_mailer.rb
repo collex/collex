@@ -93,4 +93,13 @@ class LoginMailer < ActionMailer::Base
 		@reply_to = params[:email]
     @headers    = { "return-path" => params[:email] }
 	end
+
+	def request_peer_review(params, recipient)
+    @subject    = "[#{SITE_NAME}] Request to create peer-reviewed group"
+    @body       = params
+    @recipients = recipient
+    @from       = 'mailto:technologies@nines.org'
+		@reply_to = params[:email]
+    @headers    = { "return-path" => params[:email] }
+	end
 end

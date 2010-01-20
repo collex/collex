@@ -77,6 +77,21 @@ var CreateGroupWizardDlg = Class.create({
 			return false;
 		};
 
+		var toggle = function(els, show) {
+			if (show) {
+				els.each(function(el) { el.removeClassName('hidden')});
+			} else {
+				els.each(function(el) { el.addClassName('hidden')});
+			}
+		};
+
+		var typeSelect = function(id, currSelection) {
+			var els = $$('.community_only');
+			toggle(els, currSelection === 'community');
+			els = $$('.publication_only');
+			toggle(els, currSelection === 'peer-reviewed');
+		};
+
 		var sendWithAjax = function (event, params)
 		{
 			newGroupDlg = This;
@@ -109,9 +124,11 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Step 1: Group Information', klass: 'new_exhibit_label' } ],
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'group[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'group[description]', klass: 'groups_textarea' } ],
-						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
-						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType } ],
 						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],
+						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType, change: typeSelect } ],
+						[ { text: 'Thumbnail:', klass: 'groups_label community_only' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'community_only' },
+							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'empty_list_text publication_only hidden'}
+						],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
