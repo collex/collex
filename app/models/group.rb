@@ -64,6 +64,11 @@ class Group < ActiveRecord::Base
 		return is_member(user_id)
 	end
 
+	def can_view_exhibits(user_id)
+		return true if self.exhibit_visibility == 'open'
+		return is_member(user_id)
+	end
+
 	def can_delete(user_id)
 		return is_owner(user_id)
 	end
@@ -326,4 +331,35 @@ class Group < ActiveRecord::Base
 		return explanations.to_json()
 	end
 
+	def self.visibility()
+		return [ 'closed', 'open' ]
+	end
+
+	def self.friendly_visibility()
+		return [ 'Closed Exhibit', 'Open Exhibit']
+	end
+	def self.visibility_to_friendly(visibility)
+		return self.friendly_visibility[0] if self.visibility()[0] == visibility
+		return self.friendly_visibility[1] if self.visibility()[1] == visibility
+		return ""
+	end
+	def self.friendly_to_visibility(visibility)
+		return self.visibility[0] if self.friendly_visibility()[0] == visibility
+		return self.visibility[1] if self.friendly_visibility()[1] == visibility
+		return ""
+	end
+	def self.visibility_to_json()
+		vals = self.visibility()
+		texts = self.friendly_visibility()
+		ret = []
+		0.upto(1) { |i|
+			ret.push({ :value => vals[i], :text =>	texts[i] })
+		}
+		return ret.to_json()
+	end
+	def self.visibility_explanations_to_json
+		explanations = [ "Only group members may view exhibits.",
+			"Anyone can view exhibits." ]
+		return explanations.to_json()
+	end
 end

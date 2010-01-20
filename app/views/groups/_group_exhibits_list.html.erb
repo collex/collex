@@ -44,6 +44,7 @@
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
 			</span>
 		</li>
+		<li><%= link_to_function('Change Exhibit Visibility', "editVisibility(#{group.id}, gGroupData.exhibit_visibility, #{Group.visibility_to_json()}, #{Group.visibility_explanations_to_json()});", :class => 'nav_link') %></li>
 	</ul>
 <% else -%>
 	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
@@ -66,6 +67,7 @@
 	</tr>
 <% end -%>
 <% end -%>
+<% if group.can_view_exhibits(user_id) -%>
 <% if exhibits.length > 0 %>
 		<tr><td><span class="group_details_label">Exhibits:</span></td></tr>
 <% end -%>
@@ -81,7 +83,7 @@
 			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</td>
 	</tr>
-<% end -%>
+<% end # for exhibit in exhibits -%>
 <%
 	if group.can_edit(user_id)
 		if cluster == nil
@@ -112,9 +114,12 @@
 			<%= link_to_function("[reject]", "rejectAsPeerReviewed(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</td>
 	</tr>
+<% end # for exhibit in pending_exhibits -%>
+<% end # if pending_exhibits.length > 0 -%>
+<% if (cluster != nil && exhibits.length == 0) || Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1", group.id]).length == 0 -%>
+	<tr><td><div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div></td></tr>
 <% end -%>
-<% end -%>
+<% else # if group.can_view_exhibits(user_id) -%>
+	<div class="empty_list_text" >You must be a member of this group to see its exhibits.</div>
+<% end # if group.can_view_exhibits(user_id) -%>
 	</table>
-<% if exhibits.length == 0 -%>
-	<div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
-<% end -%>

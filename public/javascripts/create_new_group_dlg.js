@@ -29,7 +29,7 @@ function stopNewGroupUpload(errMessage){
 }
 
 var CreateGroupWizardDlg = Class.create({
-	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, defaultType) {
+	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType) {
 		this.class_type = 'CreateGroupWizardDlg';	// for debugging
 
 		// private variables
@@ -110,7 +110,8 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'group[description]', klass: 'groups_textarea' } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
 						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType } ],
-						[ { text: 'Permissions:', klass: 'groups_label' }, { select: 'group[forum_permissions]', options: permissions } ],
+						[ { text: 'Forum Permissions:', klass: 'groups_label' }, { select: 'group[forum_permissions]', options: permissions } ],
+						[ { text: 'Exhibit Visibility:', klass: 'groups_label' }, { select: 'group[exhibit_visibility]', options: visibility } ],
 						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]

@@ -323,6 +323,20 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		target_els: [ 'group_details' ] });
 };
 
+var editVisibility = function(id, value, groupExhibitVisibilityOptions, groupExhibitVisibilityExplanations) {
+	new SelectInputDlg({
+		title: 'Change Exhibit Visibility',
+		prompt: 'Visibility',
+		id: 'group[exhibit_visibility]',
+		options: groupExhibitVisibilityOptions,
+		explanation: groupExhibitVisibilityExplanations,
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/groups/update' ],
+		target_els: [ 'group_details' ] });
+};
+
 //var editShowMembership = function(id, value) {
 //	new SelectInputDlg({
 //		title: 'Change Membership Visibility',
