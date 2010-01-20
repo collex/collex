@@ -225,7 +225,7 @@ var EditMembershipDlg = Class.create({
 		});
 
 		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}], value: show_membership }];
-		new GridDlg({ title: "Change Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Editor?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl })
+		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Editor?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl })
 	}
 });
 
@@ -275,7 +275,7 @@ var InviteMembersDlg = Class.create({
 			var layout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'There are two ways to invite people to join you group in ' + siteName + 
+						[ { text: 'There are two ways to invite people to join your group in ' + siteName +
 							': email address or username. If you know the participants\' usernames, list them in the blank below, one per line.', klass: 'invite_users_instructions' }, { hidden: 'id', value: group_id } ],
 						[ { text: 'By Username:', klass: 'invite_users_label' }, { textarea: 'usernames', klass: 'groups_textarea' } ],
 						[ { rowClass: 'button_row' }, { button: 'Submit', url: '/groups/update', callback: sendWithAjax } ],

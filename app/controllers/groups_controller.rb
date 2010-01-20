@@ -362,6 +362,8 @@ class GroupsController < ApplicationController
 				end
 			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
+			params[:group][:exhibit_visibility] = 'open'
+			params[:group][:forum_permissions] = 'full'
 			@group = Group.new(params[:group])
 			@group.header_font_name = 'Arial'
 			@group.header_font_size = '24'

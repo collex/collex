@@ -111,8 +111,6 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'group[description]', klass: 'groups_textarea' } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
 						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType } ],
-						[ { text: 'Forum Permissions:', klass: 'groups_label' }, { select: 'group[forum_permissions]', options: permissions } ],
-						[ { text: 'Exhibit Visibility:', klass: 'groups_label' }, { select: 'group[exhibit_visibility]', options: visibility } ],
 						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
@@ -123,7 +121,7 @@ var CreateGroupWizardDlg = Class.create({
 					rows: [
 						[ { text: 'Creating New Group', klass: 'new_exhibit_title' } ],
 						[ { text: 'Step 2: Invite people to your group.', klass: 'new_exhibit_label' } ],
-						[ { text: 'There are two ways to invite people to join you group in ' + siteName +
+						[ { text: 'There are two ways to invite people to join your group in ' + siteName +
 							': email address or username. If you know the participants\' usernames, list them in the blank below, one per line.', klass: 'invite_users_instructions' } ],
 						[ { text: 'By Username:', klass: 'invite_users_label' }, { textarea: 'usernames_entry', klass: 'groups_textarea' } ],
 						[ { text: "Don't know any usernames? Add email addresses of users you want to invite in the blank below, one per line.", klass: 'invite_users_instructions' } ],
