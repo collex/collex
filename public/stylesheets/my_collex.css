@@ -18,26 +18,22 @@
 /* CSS Document */
 
 .my_collex_instructions {
-	margin: 150px 200px 150px 200px;
-	border: gray 1px dotted;
-	background: #D3D3D3;
+	margin: 80px 200px 150px 200px;
 	padding-right: 20px;
 }
 
-.my_collex_instructions span {
-	display: block;
-	font-weight:bold;
-	padding-top: 30px;
-	padding-bottom: 1em;
+.my_collex_instructions h2 {
+	font-size: 1.5em;
 }
 
 .my_collex_instructions p{
-    font-style: italic;
+    font-size: 1.2em;
+	width: 700px;
 }
 
 .my_collex_instructions img {
 	float: left;
-	padding:20px;
+	padding-right:20px;
 }
 
 .narrow_tag_cloud .tagcloud {
