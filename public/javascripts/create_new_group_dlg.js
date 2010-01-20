@@ -29,7 +29,7 @@ function stopNewGroupUpload(errMessage){
 }
 
 var CreateGroupWizardDlg = Class.create({
-	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType) {
+	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName) {
 		this.class_type = 'CreateGroupWizardDlg';	// for debugging
 
 		// private variables
@@ -86,6 +86,7 @@ var CreateGroupWizardDlg = Class.create({
 			dlg.setFlash('Verifying group creation...', false);
 			var data = dlg.getAllData();
 			$('emails').value = data.emails_entry;
+			$('usernames').value = data.usernames_entry;
 			
 			dlg.submitForm('group_properties', url);	// we have to submit the form normally to get the uploaded file transmitted.
 		};
@@ -104,7 +105,7 @@ var CreateGroupWizardDlg = Class.create({
 			var group_properties = {
 					page: 'group_properties',
 					rows: [
-						[ { text: 'Creating New Group', klass: 'new_exhibit_title' }, { hidden: 'group[owner]', value: owner_id }, { hidden: 'emails', value: '' } ],
+						[ { text: 'Creating New Group', klass: 'new_exhibit_title' }, { hidden: 'group[owner]', value: owner_id }, { hidden: 'emails', value: '' }, { hidden: 'usernames', value: '' } ],
 						[ { text: 'Step 1: Group Information', klass: 'new_exhibit_label' } ],
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'group[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'group[description]', klass: 'groups_textarea' } ],
@@ -122,14 +123,17 @@ var CreateGroupWizardDlg = Class.create({
 					rows: [
 						[ { text: 'Creating New Group', klass: 'new_exhibit_title' } ],
 						[ { text: 'Step 2: Invite people to your group.', klass: 'new_exhibit_label' } ],
-						[ { text: 'Users:', klass: 'groups_label' }, { textarea: 'emails_entry', klass: 'groups_textarea' } ],
+						[ { text: 'There are two ways to invite people to join you group in ' + siteName +
+							': email address or username. If you know the participants\' usernames, list them in the blank below, one per line.', klass: 'invite_users_instructions' } ],
+						[ { text: 'By Username:', klass: 'invite_users_label' }, { textarea: 'usernames_entry', klass: 'groups_textarea' } ],
+						[ { text: "Don't know any usernames? Add email addresses of users you want to invite in the blank below, one per line.", klass: 'invite_users_instructions' } ],
+						[ { text: 'By Email Address:', klass: 'invite_users_label' }, { textarea: 'emails_entry', klass: 'groups_textarea' } ],
 						[ { rowClass: 'last_row' }, { button: 'Create Group', url: create_url, callback: sendWithAjax }, { button: 'Previous', url: 'group_properties', callback: changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
-
 			var pages = [ group_properties, invite_members ];
 
-			var params = { this_id: "new_group_wizard", pages: pages, body_style: "new_group_div", row_style: "new_exhibit_row", title: "New Group Wizard" };
+			var params = { this_id: "invite_users_dlg", pages: pages, body_style: "invite_users_div", row_style: "new_exhibit_row", title: "New Group Wizard" };
 			dlg = new GeneralDialog(params);
 			changeView(null, { curr_page: '', destination: 'group_properties', dlg: dlg });
 			dlg.center();
