@@ -234,8 +234,8 @@ namespace :collex do
 			list.push("#{RAILS_ROOT}/tmp/#{f.gsub('/','__')}-min.css")
 		}
 		dest ="stylesheets/#{page.to_s()}-min.css"
+		puts "Creating #{dest}... [#{list.join(',')}]"
 		list = list.join(' ')
-		puts "Creating #{dest}..."
 		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
 	end
 

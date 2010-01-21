@@ -122,6 +122,7 @@ class GetIncludeFileList
 			when :admin
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "admin", "search", "right_column" ]
 			when :about
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "about" ]
 			when :news
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "about" ]
 			when :view_exhibit
