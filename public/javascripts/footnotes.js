@@ -81,12 +81,12 @@ var FootnoteAbbrev = Class.create({
 		};
 
 		var addFootnote = function(event, params) {
-			new RteInputDlg({title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img});
+			new RteInputDlg({title: 'Add Footnote', okCallback: setFootnote, value: footnoteStr, populate_urls: [ populate_exhibit_only, populate_all ], progress_img: progress_img});
 			return false;
 		};
 
 		var editFootnote = function(event, params) {
-			new RteInputDlg({title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img});
+			new RteInputDlg({title: 'Edit Footnote', okCallback: setFootnote, value: footnoteStr, populate_urls: [ populate_exhibit_only, populate_all ], progress_img: progress_img});
 			return false;
 		};
 

@@ -117,8 +117,8 @@
 			<%= get_user_link(editor) %>&nbsp;
 		<% end -%>
 	</div>
-	<div class="group_description_label"><span class="group_details_label">Group Description:</span> <%= link_to_function('[edit]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'group');", :class => 'nav_link') if group.can_edit(user_id) %></div>
-	<div class="group_description"><%=h(group.description).gsub("\n", "<br />") %></div>
+	<div class="group_description_label"><span class="group_details_label">Group Description:</span> <%= link_to_function('[edit]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'group', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_description"><%= decode_exhibit_links(group.description.gsub("\n", "<br />")) %></div>
 	<div class="group_editors"><span class="group_details_label">Group Type: </span><%= Group.type_to_friendly(group.group_type) %> <%= link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json(true)});", :class => 'nav_link') if group.can_edit(user_id) && group.group_type != 'peer-reviewed' %></div>
 	<% if group.can_edit(user_id) -%>
 	<div class="group_editors"><span class="group_details_label">Administrative Options:</span><ul>

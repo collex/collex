@@ -297,16 +297,19 @@ var InviteMembersDlg = Class.create({
 	}
 });
 
-var editDescription = function(id, value, controller) {
-	new TextAreaInputDlg({
+var editDescription = function(id, value, controller, populate_url, progress_img) {
+	var okCallback = function(value) {
+		var params = { id: id };
+		params[controller + '[description]'] = value;
+		recurseUpdateWithAjax([ '/' + controller + 's/update' ], [ controller + '_details' ], null, null, params);
+
+	};
+	new RteInputDlg({
 		title: 'Edit Description',
-		prompt: 'Description',
-		id: controller + '[description]',
-		okStr: 'Save',
+		okCallback: okCallback,
 		value: value,
-		extraParams: { id: id },
-		actions: [ '/' + controller + 's/update' ],
-		target_els: [ controller + '_details' ] });
+		populate_urls: [ populate_url ],
+		progress_img: progress_img });
 };
 
 var editPermissions = function(id, value, groupForumPermissionsOptions, groupForumPermissionsExplanations) {
@@ -465,7 +468,7 @@ function stopNewClusterUpload(errMessage){
 }
 
 var CreateNewClusterDlg = Class.create({
-	initialize: function (create_url, group_id, group_name, update_url, update_el) {
+	initialize: function (create_url, group_id, group_name, update_url, update_el, populate_urls, progress_img) {
 		this.class_type = 'CreateNewClusterDlg';	// for debugging
 
 		// private variables
@@ -510,7 +513,8 @@ var CreateNewClusterDlg = Class.create({
 					rows: [
 						[ { text: 'Creating New Cluster in the Group \"'+ group_name + "\"", klass: 'new_exhibit_title' }, { hidden: 'cluster[group_id]', value: group_id } ],
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'cluster[name]', klass: 'new_exhibit_input_long' } ],
-						[ { text: 'Description:', klass: 'groups_label' }, { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
+						[ { text: 'Description:', klass: '' } ],
+						[ { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
 						[ { rowClass: 'last_row' }, { button: 'Create Cluster', url: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
@@ -519,6 +523,7 @@ var CreateNewClusterDlg = Class.create({
 			var params = { this_id: "new_cluster_wizard", pages: [ layout ], body_style: "new_cluster_div", row_style: "new_exhibit_row", title: "Create New Cluster" };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', "cluster_name");
+			dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_urls], progress_img) });
 			dlg.center();
 
 			return;

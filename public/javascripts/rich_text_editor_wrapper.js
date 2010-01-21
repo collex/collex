@@ -538,7 +538,7 @@ var RichTextEditor = Class.create({
 //						alert("sel: " + footnoteSelPos + ' ' + sel1 + ' ' + sel2 + "\n|" + str1 + '|' + "\n\n|" + str2 + '|' + "\n\n|" + str3 + '|');
 //						alert("sel: " + footnoteSelPos + "\n|" + str1 + '|');
 
-					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img });
+					new RteInputDlg({ title: 'Add Footnote', okCallback: setFootnote, value: '', populate_urls: [ populate_exhibit_only, populate_all ], progress_img: progress_img });
 
 					return true;
 				}, this, true);
@@ -662,7 +662,7 @@ var RichTextEditor = Class.create({
 				};
 
 				var footnote = target.childNodes[0];	// this is the span that hides the footnote
-				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
+				new RteInputDlg({ title: 'Edit Footnote', okCallback: setFootnote, value: footnote.innerHTML, populate_urls: [ populate_exhibit_only, populate_all ], progress_img: progress_img, extraButton: { label: "Delete Footnote", callback: deleteFootnote } });
 			};
 
 			footnotes.each(function(foot) {
