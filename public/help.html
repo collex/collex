@@ -77,8 +77,8 @@
         	<div id="login_container">
 				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
-					new Ajax.Updater('login_container', '/login/login_controls');
-					new Ajax.Updater('my_collex_tab', '/my_collex/get_tab_name');
+					new Ajax.Updater({ success: 'login_container', failure: 'bit_bucket' }, '/login/login_controls');
+					new Ajax.Updater({ success: 'my_collex_tab', failure: 'bit_bucket' }, '/my_collex/get_tab_name');
 					});
 				</script>
             </div>
