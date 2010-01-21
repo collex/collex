@@ -647,6 +647,12 @@ class Exhibit < ActiveRecord::Base
 		return author
 	end
 
+	def get_apparent_author_email()
+		# This gets the alias if there is one, and the real author if there isn't.
+		author_rec = User.find(self.alias_id ? self.alias_id : self.user_id)
+		return author_rec.email
+	end
+
 	def get_friendly_url()
 		return self.visible_url ? "/exhibits/view/#{self.visible_url}" : "/exhibits/view/#{exhibit.id}"
 	end

@@ -110,8 +110,8 @@
 				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
-			<%= link_to_function("[accept as peer reviewed]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions);", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-			<%= link_to_function("[reject]", "rejectAsPeerReviewed(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions);", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</td>
 	</tr>
 <% end # for exhibit in pending_exhibits -%>

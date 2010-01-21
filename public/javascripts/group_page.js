@@ -452,10 +452,14 @@ var unpublishExhibit = function(exhibit_id) {
 		{exhibit_id: exhibit_id });
 };
 
-var rejectAsPeerReviewed = function(exhibit_id) {
-	ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],
-		{ title: "Reject As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been rejected.' },
-		{exhibit_id: exhibit_id });
+var rejectAsPeerReviewed = function(exhibit_id, name, email) {
+	var action = function() {
+		ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],
+			{ title: "Return Exhibit For Revisions", waitMessage: "Please wait...", completeMessage: 'The exhibit has been sent back for revisions.' },
+			{exhibit_id: exhibit_id });
+	};
+	new ConfirmDlg("Return Exhibit For Revisions",
+		"This option returns the exhibit to its original contributor for revision. If this exhibit requires changes by the author, please contact " + name + " at " + email + " with a short message notifying them of your request.", "Ok", "Cancel", action);
 };
 
 var newClusterDlg = null;
