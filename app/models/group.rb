@@ -131,6 +131,12 @@ class Group < ActiveRecord::Base
 				ret.push({ :text => exhibit.title, :value => exhibit.id })
 			end
 		}
+		exhibits = Exhibit.find_all_by_group_id_and_is_published(self.id, '2')
+		exhibits.each { |exhibit|
+			if exhibit.cluster_id == nil
+				ret.push({ :text => exhibit.title, :value => exhibit.id })
+			end
+		}
 		return ret
 	end
 	
