@@ -411,20 +411,7 @@ class GroupsController < ApplicationController
 			flash = "Server error when creating group."
 		end
 		if send_email
-			roles = RolesUser.find_all_by_role_id(1)
-			admins = []
-			roles.each { |role|
-				user = User.find(role.user_id)
-				admins.push(user.email)
-			}
-			begin
-				curr_user = get_curr_user()
-				admins.each { |ad|
-					LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
-				}
-			rescue Exception => msg
-				logger.error("**** ERROR: Can't send email: " + msg)
-			end
+			peer_review_request()
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 
@@ -448,6 +435,10 @@ class GroupsController < ApplicationController
 		if params[:group]
 			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
+			if params[:group][:group_type] == 'peer-reviewed'
+				params[:group][:group_type] = 'community'
+				peer_review_request()
+			end
 			@group.update_attributes(params[:group])
 		end
 
@@ -501,4 +492,22 @@ class GroupsController < ApplicationController
 #      format.xml  { head :ok }
 #    end
   end
+
+	private
+	def peer_review_request
+		roles = RolesUser.find_all_by_role_id(1)
+		admins = []
+		roles.each { |role|
+			user = User.find(role.user_id)
+			admins.push(user.email)
+		}
+		begin
+			curr_user = get_curr_user()
+			admins.each { |ad|
+				LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
+			}
+		rescue Exception => msg
+			logger.error("**** ERROR: Can't send email: " + msg)
+		end
+	end
 end
