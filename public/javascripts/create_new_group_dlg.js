@@ -29,7 +29,7 @@ function stopNewGroupUpload(errMessage){
 }
 
 var CreateGroupWizardDlg = Class.create({
-	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName, populate_urls, progress_img) {
+	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName, populate_urls, progress_img, start_university, start_name) {
 		this.class_type = 'CreateGroupWizardDlg';	// for debugging
 
 		// private variables
@@ -88,6 +88,8 @@ var CreateGroupWizardDlg = Class.create({
 		var typeSelect = function(id, currSelection) {
 			var els = $$('.community_only');
 			toggle(els, currSelection === 'community');
+			els = $$('.classroom_only');
+			toggle(els, currSelection === 'classroom');
 			els = $$('.publication_only');
 			toggle(els, currSelection === 'peer-reviewed');
 		};
@@ -128,8 +130,12 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],
 						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType, change: typeSelect } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label community_only' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'community_only' },
-							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'empty_list_text publication_only hidden'}
+							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'empty_list_text publication_only hidden'},
+							{ text: 'University:', klass: 'groups_label classroom_only hidden' }, { input: 'group[university]', value: start_university, klass: 'new_exhibit_input_long classroom_only hidden' }
 						],
+						[ { text: 'Faculty:', klass: 'groups_label classroom_only hidden' }, { input: 'group[faculty_names]', value: start_name, klass: 'new_exhibit_input_long classroom_only hidden' } ],
+						[ { text: 'Course Name:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_name]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
+						[ { text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};

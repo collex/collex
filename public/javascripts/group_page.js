@@ -370,6 +370,18 @@ var editType = function(id, value, groupTypeOptions) {
 		target_els: [ 'group_details' ] });
 };
 
+var editGroupTextField = function(id, value, name, field) {
+	new TextInputDlg({
+		title: 'Edit ' + name,
+		prompt: name,
+		id: 'group[' + field + ']',
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/groups/update' ],
+		target_els: [ 'group_details' ] });
+};
+
 var editTitle = function(id, value, controller) {
 	new TextInputDlg({
 		title: 'Edit Title',

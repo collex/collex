@@ -21,6 +21,7 @@
 	gMembership = <%= membership.to_json() %>;
 	gGroupData = <%= group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;') %>.group;
 </script>
+<% if group.group_type != 'classroom' -%>
 <div class="group_details_left">
 	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_image_url(get_url_for_internal_image(group.image)), :show_immediately => true, :height => 120, :border => true } %>
 	<% if group.can_edit(user_id) -%>
@@ -32,7 +33,6 @@
 				var onButtonClick = function (e) {
 					postLink($("remove_picture-button").href);
 				};
-
 
 				new YAHOO.widget.Button('remove_picture', { onclick: { fn: onButtonClick } });
 				YAHOO.util.Event.onAvailable('remove_picture-button', function() {
@@ -49,6 +49,7 @@
 		<% end -%>
 	<% end -%>
 </div>
+<% end -%>
 <div class="group_details_right">
 	<ul class="group_link_list">
 		<!-- <li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li> -->
@@ -120,6 +121,12 @@
 	<div class="group_description_label"><span class="group_details_label">Group Description:</span> <%= link_to_function('[edit]', "editDescription(#{group.id}, '#{group.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'group', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
 	<div class="group_description"><%= decode_exhibit_links(group.description.gsub("\n", "<br />")) %></div>
 	<div class="group_editors"><span class="group_details_label">Group Type: </span><%= Group.type_to_friendly(group.group_type) %> <%= link_to_function('[edit group type]', "editType(#{group.id}, '#{group.group_type}', #{Group.types_to_json(true)});", :class => 'nav_link') if group.can_edit(user_id) && group.group_type != 'peer-reviewed' %></div>
+	<% if group.group_type == 'classroom' -%>
+	<div class="group_editors"><span class="group_details_label">University: </span><%= group.university %> <%= link_to_function('[edit]', "editGroupTextField(#{group.id}, '#{group.university}', 'University', 'university');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_editors"><span class="group_details_label">Faculty: </span><%= group.faculty_names %> <%= link_to_function('[edit]', "editGroupTextField(#{group.id}, '#{group.faculty_names}', 'Faculty', 'faculty_names');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_editors"><span class="group_details_label">Course Name: </span><%= group.course_name %> <%= link_to_function('[edit]', "editGroupTextField(#{group.id}, '#{group.course_name}', 'Course Name', 'course_name');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_editors"><span class="group_details_label">Course Mnemonic: </span><%= group.course_mnemonic %> <%= link_to_function('[edit]', "editGroupTextField(#{group.id}, '#{group.course_mnemonic}', 'Course Mnemonic', 'course_mnemonic');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<% end -%>
 	<% if group.can_edit(user_id) -%>
 	<div class="group_editors"><span class="group_details_label">Administrative Options:</span><ul>
 		<li><%= link_to_function('Invite Members', "new InviteMembersDlg(#{group.id}, '#{SITE_NAME}');", :class => 'nav_link')  %></li>

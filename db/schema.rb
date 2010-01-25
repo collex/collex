@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100120174700) do
+ActiveRecord::Schema.define(:version => 20100125192202) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -227,6 +227,10 @@ ActiveRecord::Schema.define(:version => 20100120174700) do
     t.integer  "use_styles",             :limit => 10, :precision => 10, :scale => 0
     t.boolean  "show_membership"
     t.string   "exhibit_visibility"
+    t.string   "university"
+    t.text     "faculty_names"
+    t.string   "course_name"
+    t.string   "course_mnemonic"
   end
 
   create_table "groups_users", :force => true do |t|
