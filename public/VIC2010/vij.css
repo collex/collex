@@ -70,8 +70,15 @@ margin-top:35px;
 margin-bottom:35px;
 }
 
+#nineslogo {
+background-repeat:no-repeat;
+margin-top: -50px;
+margin-left: 920px;
+margin-bottom:20px;
+}
+
 #main {
-    margin-top:60px;
+    margin-top:-30px;
     margin-left:350px;
     width:600px;
     text-align:left;
