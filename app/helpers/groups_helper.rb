@@ -15,13 +15,17 @@
 ##########################################################################
 
 module GroupsHelper
+	def get_group_default_url(url)
+    return "/images/#{SKIN}/glossy_swirly.jpg" if url == nil || url.length == 0
+    return url
+	end
 	def get_group_image_url(group)
-		return group.group_type == 'classroom' ? '/images/classroom_icon.sm.jpg' : get_image_url(get_url_for_internal_image(group.image, :thumb))
+		return group.group_type == 'classroom' ? '/images/classroom_icon.sm.jpg' : get_group_default_url(get_url_for_internal_image(group.image, :thumb))
 	end
 
 	def get_cluster_image_url(group, cluster)
 		return '/images/classroom_icon.sm.jpg' if group.group_type == 'classroom'
 		image_class = cluster.image ? cluster : group
-		return get_image_url(get_url_for_internal_image(image_class.image))
+		return get_group_default_url(get_url_for_internal_image(image_class.image))
 	end
 end
