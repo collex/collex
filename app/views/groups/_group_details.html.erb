@@ -134,8 +134,10 @@
 			<%= link_to_function(license_prompt, "license_dialog({ populateLicenses: '/my_collex/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details,group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update,/groups/render_license' }); return false;", { :class => "nav_link" }) %>
 			<span class="group_member_explanation"> (current license: <%= Exhibit.is_license_specified(group.license_type) ? Exhibit.get_sharing_static(group.license_type) : 'No license specified' %>)</span>
 		</li>
+<% if group.can_delete(user_id)  && group.group_type != 'peer-reviewed' -%>
+		<li><%= link_to('Delete Group', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link') %></li>
+<% end -%>
 	</ul></div>
 	<% end -%>
-	<div class="group_editors"><%= link_to('[delete group]', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link') if group.can_delete(user_id)  && group.group_type != 'peer-reviewed' %></div>
 </div>
 <div class="clear_both"></div>
