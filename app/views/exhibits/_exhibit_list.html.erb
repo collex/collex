@@ -26,7 +26,7 @@
 <%#
 	< % for group in groups -% >
 	<tr>
-		<td>< %= render :partial => 'common/thumbnail', :locals => { :element_id => "group_# {group.id}", :url => get_image_url(get_url_for_internal_image(group.image, :thumb)), :show_immediately => false } % ></td>
+		<td>< %= render :partial => 'common/thumbnail', :locals => { :element_id => "group_# {group.id}", :url => get_group_image_url(group), :show_immediately => false } % ></td>
 		<td class="exhibit_link"><%= link_to group.name, { :controller => 'groups', :action => 'show', :id => group.id }, :class => 'nav_link' % ><br />
 			< %= pluralize(Exhibit.find_all_by_group_id_and_is_published(group.id, 1).length, "Exhibit")  % >&nbsp;<%= pluralize(DiscussionThread.find_all_by_group_id(group.id).length, "Discussion") % >
 		</td>

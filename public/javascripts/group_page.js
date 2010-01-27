@@ -484,7 +484,7 @@ function stopNewClusterUpload(errMessage){
 }
 
 var CreateNewClusterDlg = Class.create({
-	initialize: function (create_url, group_id, group_name, update_url, update_el, populate_urls, progress_img) {
+	initialize: function (create_url, group_id, group_name, can_set_thumbnail, update_url, update_el, populate_urls, progress_img) {
 		this.class_type = 'CreateNewClusterDlg';	// for debugging
 
 		// private variables
@@ -531,7 +531,7 @@ var CreateNewClusterDlg = Class.create({
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'cluster[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: '' } ],
 						[ { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
-						[ { text: 'Thumbnail:', klass: 'groups_label' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail' } ],
+						[ { text: 'Thumbnail:', klass: 'groups_label thumbnail hidden' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'thumbnail hidden' } ],
 						[ { rowClass: 'last_row' }, { button: 'Create Cluster', url: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
@@ -540,6 +540,8 @@ var CreateNewClusterDlg = Class.create({
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', "cluster_name");
 			dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_urls], progress_img) });
+			if (can_set_thumbnail)
+				$$('.thumbnail').each(function(el) { el.removeClassName('hidden'); });
 			dlg.center();
 
 			return;

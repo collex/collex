@@ -23,9 +23,8 @@
 	gNonClusteredExhibits = <%= group.non_clustered_exhibits().to_json() %>;
 </script>
 <div class="group_details_left">
-	<% image_class = cluster.image ? cluster : group -%>
-	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_image_url(get_url_for_internal_image(image_class.image)), :show_immediately => true, :height => 120, :border => true } %>
-	<% if group.can_edit(user_id) -%>
+	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_cluster_image_url(group, cluster), :show_immediately => true, :height => 120, :border => true } %>
+	<% if group.group_type != 'classroom' && group.can_edit(user_id) -%>
 		<br /><%= link_to_function("[#{cluster.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{cluster.id}, '#{get_url_for_internal_image(cluster.image)}', 'Cluster');", :class => 'nav_link') %>
 		<% if cluster.image != nil -%>
 		<div class="profile_remove_picture"><%= link_to "Remove Thumbnail", { :controller => 'clusters', :action => 'remove_profile_picture', :id => cluster.id }, { :id => 'remove_picture', :method => 'post' } %></div>

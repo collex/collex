@@ -942,7 +942,7 @@ class MyCollexController < ApplicationController
 		groups.each { |group|
 			obj = {}
 			obj[:id] = group.id
-			obj[:img] = group.image ? group.image.public_filename(:thumb) : DEFAULT_THUMBNAIL_IMAGE_PATH
+			obj[:img] = @template.get_group_image_url(group)
 			obj[:title] = group.id
 			obj[:strFirstLine] = group.name
 			editors = group.get_all_editors()
