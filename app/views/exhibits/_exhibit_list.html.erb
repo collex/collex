@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_list params: int ty -%>
-<% exhibit_list = Exhibit.all(:conditions => [ "category = ? AND is_published = 1", Group.types()[ty]]) -%>
+<% exhibit_list = Exhibit.all(:conditions => [ "category = ? AND is_published <> 0", Group.types()[ty]]) -%>
 <%# < % groups = Group.find_all_by_group_type(Group.types()[ty]) -% >
 <div class="exhibit_category"><%=Group.friendly_types()[ty] % ><div class='exhibit_list_title_explanation'><%= Group.type_explanation(ty) % ></div></div>
 < % if is_logged_in? -% >
@@ -37,10 +37,10 @@
 	< % end -% >
 -%>
 <% for exhibit in exhibit_list -%>
-<% if exhibit.group_id == nil || Group.find(exhibit.group_id).can_view_exhibits(get_curr_user_id()) -%>
+<% if exhibit.group_id == nil || Group.find(exhibit.group_id).can_view_exhibit(exhibit, get_curr_user_id()) -%>
 	<tr>
 		<td><%= render :partial => 'exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></td>
-		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by 
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>

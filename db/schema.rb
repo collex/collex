@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100125192202) do
+ActiveRecord::Schema.define(:version => 20100128170821) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -157,16 +157,16 @@ ActiveRecord::Schema.define(:version => 20100125192202) do
 
   create_table "exhibits", :force => true do |t|
     t.string   "title"
-    t.integer  "user_id",                :limit => 10, :precision => 10, :scale => 0
+    t.integer  "user_id",                 :limit => 10, :precision => 10, :scale => 0
     t.string   "thumbnail"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "visible_url"
-    t.integer  "is_published",           :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbleft",              :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbwidth",             :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbtop",               :limit => 10, :precision => 10, :scale => 0
-    t.integer  "alias_id",               :limit => 10, :precision => 10, :scale => 0
+    t.integer  "is_published",            :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbleft",               :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbwidth",              :limit => 10, :precision => 10, :scale => 0
+    t.integer  "thumbtop",                :limit => 10, :precision => 10, :scale => 0
+    t.integer  "alias_id",                :limit => 10, :precision => 10, :scale => 0
     t.string   "category"
     t.string   "header_font_name"
     t.string   "header_font_size"
@@ -185,9 +185,10 @@ ActiveRecord::Schema.define(:version => 20100125192202) do
     t.datetime "last_change"
     t.text     "genres"
     t.string   "resource_name"
-    t.integer  "group_id",               :limit => 10, :precision => 10, :scale => 0
-    t.integer  "license_type",           :limit => 10, :precision => 10, :scale => 0
-    t.integer  "cluster_id",             :limit => 10, :precision => 10, :scale => 0
+    t.integer  "group_id",                :limit => 10, :precision => 10, :scale => 0
+    t.integer  "license_type",            :limit => 10, :precision => 10, :scale => 0
+    t.integer  "cluster_id",              :limit => 10, :precision => 10, :scale => 0
+    t.string   "editor_limit_visibility"
   end
 
   create_table "facet_categories", :force => true do |t|

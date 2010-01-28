@@ -65,8 +65,15 @@ class Group < ActiveRecord::Base
 	end
 
 	def can_view_exhibits(user_id)
-		return true if self.exhibit_visibility == 'open'
+		return true if self.exhibit_visibility == 'www'
 		return is_member(user_id)
+	end
+
+	def can_view_exhibit(exhibit, user_id)
+		# the exhibit is visible if the user is a member of the group, or if the exhibit is shared to the web and not limited by the editor
+		return true if is_member(user_id)
+		return true if exhibit.is_published == 1 && (exhibit.editor_limit_visibility == nil || exhibit.editor_limit_visibility != 'group')
+		return false
 	end
 
 	def can_delete(user_id)
@@ -114,6 +121,7 @@ class Group < ActiveRecord::Base
 		return rec.role == 'editor'
 	end
 
+	public
 	def is_member(user_id)
 		return true if is_owner(user_id)
 		rec = GroupsUser.find_by_group_id_and_user_id(self.id, user_id)
@@ -122,16 +130,9 @@ class Group < ActiveRecord::Base
 		return true
 	end
 	
-	public
 	def non_clustered_exhibits()
 		ret = []
-		exhibits = Exhibit.find_all_by_group_id_and_is_published(self.id, '1')
-		exhibits.each { |exhibit|
-			if exhibit.cluster_id == nil
-				ret.push({ :text => exhibit.title, :value => exhibit.id })
-			end
-		}
-		exhibits = Exhibit.find_all_by_group_id_and_is_published(self.id, '2')
+		exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", self.id])
 		exhibits.each { |exhibit|
 			if exhibit.cluster_id == nil
 				ret.push({ :text => exhibit.title, :value => exhibit.id })
@@ -338,11 +339,11 @@ class Group < ActiveRecord::Base
 	end
 
 	def self.visibility()
-		return [ 'closed', 'open' ]
+		return [ 'group', 'www' ]
 	end
 
 	def self.friendly_visibility()
-		return [ 'Closed Exhibit', 'Open Exhibit']
+		return [ 'Visible to Group', 'Visible to WWW']
 	end
 	def self.visibility_to_friendly(visibility)
 		return self.friendly_visibility[0] if self.visibility()[0] == visibility

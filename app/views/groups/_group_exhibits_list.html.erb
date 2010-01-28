@@ -44,15 +44,13 @@
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
 			</span>
 		</li>
-		<li><%= link_to_function('Change Exhibit Visibility', "editVisibility(#{group.id}, gGroupData.exhibit_visibility, #{Group.visibility_to_json()}, #{Group.visibility_explanations_to_json()});", :class => 'nav_link') %></li>
 	</ul>
 <% else -%>
 	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
 <% end -%>
 </div>
 <% end -%>
-<% exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND cluster_id IS NULL", group.id]) if cluster == nil -%>
-<% exhibits = Exhibit.find_all_by_cluster_id_and_is_published(cluster.id, 1) if cluster != nil -%>
+<% exhibits = Exhibit.get_exhibits_in_group(group, cluster, user_id) -%>
 	<table>
 <% if cluster == nil -%>
 <% if clusters.length > 0 %>
@@ -68,7 +66,7 @@
 <% end -%>
 <% end -%>
 <% if group.can_view_exhibits(user_id) -%>
-<% if exhibits.length > 0 %>
+<% if exhibits.length > 0 -%>
 		<tr><td><span class="group_details_label">Exhibits:</span></td></tr>
 <% end -%>
 <% for exhibit in exhibits -%>
@@ -81,6 +79,8 @@
 			<% end -%>
 			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
 			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility != 'group' -%>
+			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility == 'group' -%>
 		</td>
 	</tr>
 <% end # for exhibit in exhibits -%>

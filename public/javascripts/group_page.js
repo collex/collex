@@ -329,7 +329,7 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 var editVisibility = function(id, value, groupExhibitVisibilityOptions, groupExhibitVisibilityExplanations) {
 	new SelectInputDlg({
 		title: 'Change Exhibit Visibility',
-		prompt: 'Visibility',
+		prompt: 'Exhibits are ',
 		id: 'group[exhibit_visibility]',
 		options: groupExhibitVisibilityOptions,
 		explanation: groupExhibitVisibilityExplanations,
@@ -461,6 +461,18 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions) {
 var unpublishExhibit = function(exhibit_id) {
 	ajaxWithProgressDlg(['/groups/unpublish_exhibit'], ['group_exhibits'],
 		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This exhibit has be set to "Private".' },
+		{exhibit_id: exhibit_id });
+};
+
+var limitExhibit = function(exhibit_id) {
+	ajaxWithProgressDlg(['/groups/limit_exhibit'], ['group_exhibits'],
+		{ title: "Limit Exhibit", waitMessage: "Please wait...", completeMessage: 'This exhibit can only be viewed by group members.' },
+		{exhibit_id: exhibit_id });
+};
+
+var unlimitExhibit = function(exhibit_id) {
+	ajaxWithProgressDlg(['/groups/unlimit_exhibit'], ['group_exhibits'],
+		{ title: "Allow Publishing", waitMessage: "Please wait...", completeMessage: 'This exhibit can be viewed by everyone.' },
 		{exhibit_id: exhibit_id });
 };
 

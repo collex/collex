@@ -134,6 +134,7 @@
 			<%= link_to_function(license_prompt, "license_dialog({ populateLicenses: '/my_collex/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details,group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update,/groups/render_license' }); return false;", { :class => "nav_link" }) %>
 			<span class="group_member_explanation"> (current license: <%= Exhibit.is_license_specified(group.license_type) ? Exhibit.get_sharing_static(group.license_type) : 'No license specified' %>)</span>
 		</li>
+		<li>Exhibits are <%= Group.visibility_to_friendly(group.exhibit_visibility) %>&nbsp;<%= link_to_function('Change Exhibit Visibility', "editVisibility(#{group.id}, gGroupData.exhibit_visibility, #{Group.visibility_to_json()}, #{Group.visibility_explanations_to_json()});", :class => 'nav_link') %></li>
 <% if group.can_delete(user_id)  && group.group_type != 'peer-reviewed' -%>
 		<li><%= link_to('Delete Group', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link') %></li>
 <% end -%>

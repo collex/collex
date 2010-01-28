@@ -854,5 +854,68 @@ class Exhibit < ActiveRecord::Base
     end
 
 	end
+
+	def get_visibility_friendly_text()
+		return "Access to this exhibit is restricted to you." if self.is_published == 0	# if it is not published, that's the same in all cases
+		return "This exhibit is visible to everyone." if self.group_id == 0	# if it is not in a group, then all the special cases don't apply
+		if Group.is_peer_reviewed_group(self)
+			return "This exhibit is visible to everyone." if self.is_published == 1
+			return "Submitted for peer-review" if self.is_published == 2
+			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
+		else
+			return "This exhibit is visible to everyone." if self.is_published == 1
+			return "This exhibit is visible to members of the group." if self.is_published == 3
+			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
+		end
+	end
+
+	def get_publish_links()
+		if Group.is_peer_reviewed_group(self)
+			text = self.is_published != 0 ? "[Unpublish]" : "[Submit for peer review]"
+			param = self.is_published != 0 ? 0 : 2
+			return [ { :text => text, :param => param } ]
+		elsif self.group_id != nil
+			ret = []
+			case self.is_published
+			when 0 then
+				ret.push( { :text=> "[Share with group]", :param => 3 })
+				ret.push( { :text=> "[Publish to web]", :param => 1 })
+			when 1 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Share with group]", :param => 3 })
+			when 2 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Share with group]", :param => 3 })
+			when 3 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Publish to web]", :param => 1 })
+			end
+			return ret
+		else
+			text = self.is_published == 1 ? "[Unpublish]" : "[Publish to web]"
+			param = self.is_published == 1 ? 0 : 1
+			return [ { :text => text, :param => param } ]
+		end
+	end
+
+	def self.get_exhibits_in_group(group, cluster, user_id)
+		# if the cluster exists, we want all exhibits in that cluster; if it does not, we want all exhibits that aren't in a cluster.
+		# We want all public exhibits, and if the user is a member of the group, also the exhibits just visible to the group.
+		is_member = group.is_member(user_id)
+		if cluster == nil
+			if is_member
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", group.id])
+			else
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id IS NULL", group.id])
+			end
+		else
+			if is_member
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id = ?", group.id, cluster.id])
+			else
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
+			end
+		end
+		return exhibits
+	end
 end
 

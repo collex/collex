@@ -180,6 +180,24 @@ class GroupsController < ApplicationController
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
 
+	def limit_exhibit
+		 exhibit_id = params[:exhibit_id]
+		 exhibit = Exhibit.find(exhibit_id)
+		 exhibit.editor_limit_visibility = 'group'
+		 exhibit.save!
+		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+	end
+
+	def unlimit_exhibit
+		 exhibit_id = params[:exhibit_id]
+		 exhibit = Exhibit.find(exhibit_id)
+		 exhibit.editor_limit_visibility = 'www'
+		 exhibit.save!
+		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+	end
+
 	# Note: This is the same as unpublish_exhibit. Perhaps it should be the same call, even if it is semantically different.
 	 def reject_as_peer_reviewed
 		 exhibit_id = params[:exhibit_id]
@@ -366,7 +384,7 @@ class GroupsController < ApplicationController
 				end
 			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
-			params[:group][:exhibit_visibility] = 'open'
+			params[:group][:exhibit_visibility] = 'www'
 			params[:group][:forum_permissions] = 'full'
 			send_email = false
 			if params[:group][:group_type] == 'peer-reviewed'
