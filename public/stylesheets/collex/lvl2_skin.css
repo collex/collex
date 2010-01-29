@@ -35,5 +35,10 @@
 
 .right_column_header {
 	color:#1e312d;
+	background:#1e312d;
+}
+
+.limit_to th {
 	background:#88b72d;
+	color:#4d7f74;
 }
