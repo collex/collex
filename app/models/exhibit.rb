@@ -904,18 +904,51 @@ class Exhibit < ActiveRecord::Base
 		is_member = group.is_member(user_id)
 		if cluster == nil
 			if is_member
-				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", group.id])
+				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", group.id])
+				exhibits = { :group => [], :all => [] }
+				for ex in exes
+					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
+						exhibits[:group].push(ex)
+					else
+						exhibits[:all].push(ex)
+					end
+				end
 			else
-				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id IS NULL", group.id])
+				exhibits = { :all => Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id IS NULL", group.id]) }
 			end
 		else
 			if is_member
-				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id = ?", group.id, cluster.id])
+				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id = ?", group.id, cluster.id])
+				exhibits = { :group => [], :all => [] }
+				for ex in exes
+					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
+						exhibits[:group].push(ex)
+					else
+						exhibits[:all].push(ex)
+					end
+				end
 			else
-				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
+				exhibits = { :all => Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id]) }
 			end
 		end
 		return exhibits
+	end
+
+	def self.get_pending_exhibits_in_group(group, cluster, user_id)
+		if group.can_edit(user_id)
+			if cluster == nil
+				pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id IS NULL AND is_published = 2", group.id])
+			else
+				pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id = ? AND is_published = 2", group.id, cluster.id])
+			end
+		else
+			if cluster == nil
+				pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id IS NULL AND is_published = 2 AND user_id = ?", group.id, user_id])
+			else
+				pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id = ? AND is_published = 2 AND user_id = ?", group.id, cluster.id, user_id])
+			end
+		end
+		return pending_exhibits
 	end
 end
 

@@ -50,7 +50,6 @@
 <% end -%>
 </div>
 <% end -%>
-<% exhibits = Exhibit.get_exhibits_in_group(group, cluster, user_id) -%>
 	<table>
 <% if cluster == nil -%>
 <% if clusters.length > 0 %>
@@ -63,13 +62,15 @@
 			<%= pluralize(Exhibit.find_all_by_cluster_id(clus.id).length, "Exhibit")  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(clus.id).length, "Discussion") %>
 		</td>
 	</tr>
-<% end -%>
-<% end -%>
+<% end # for clus in clusters -%>
+<% end # if cluster == nil -%>
 <% if group.can_view_exhibits(user_id) -%>
-<% if exhibits.length > 0 -%>
-		<tr><td><span class="group_details_label">Exhibits:</span></td></tr>
+<% exhibits = Exhibit.get_exhibits_in_group(group, cluster, user_id) -%>
+
+<% if exhibits[:group].length > 0 -%>
+		<tr><td><span class="group_details_label">Exhibits shared with group:</span></td></tr>
 <% end -%>
-<% for exhibit in exhibits -%>
+<% for exhibit in exhibits[:group] -%>
 	<tr>
 		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
 		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
@@ -84,21 +85,27 @@
 		</td>
 	</tr>
 <% end # for exhibit in exhibits -%>
-<%
-	if group.can_edit(user_id)
-		if cluster == nil
-			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id IS NULL AND is_published = 2", group.id])
-		else
-			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id = ? AND is_published = 2", group.id, cluster.id])
-		end
-	else
-		if cluster == nil
-			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id IS NULL AND is_published = 2 AND user_id = ?", group.id, user_id])
-		else
-			pending_exhibits = Exhibit.all(:conditions => ["group_id = ? AND cluster_id = ? AND is_published = 2 AND user_id = ?", group.id, cluster.id, user_id])
-		end
-	end
--%>
+
+<% if exhibits[:all].length > 0 -%>
+		<tr><td><span class="group_details_label">Exhibits shared with everyone:</span></td></tr>
+<% end -%>
+<% for exhibit in exhibits[:all] -%>
+	<tr>
+		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
+		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+			<%= get_exhibit_user_link(exhibit) %>
+			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
+				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+			<% end -%>
+			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
+			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility != 'group' -%>
+			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility == 'group' -%>
+		</td>
+	</tr>
+<% end # for exhibit in exhibits -%>
+
+<% pending_exhibits = Exhibit.get_pending_exhibits_in_group(group, cluster, user_id) -%>
 <% if pending_exhibits.length > 0 -%>
 		<tr><td><span class="group_details_label">Pending Exhibits:</span></td></tr>
 <% for exhibit in pending_exhibits -%>
@@ -116,7 +123,7 @@
 	</tr>
 <% end # for exhibit in pending_exhibits -%>
 <% end # if pending_exhibits.length > 0 -%>
-<% if (cluster != nil && exhibits.length == 0) || Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1", group.id]).length == 0 -%>
+<% if exhibits[:group].length == 0 && exhibits[:all].length == 0 -%>
 	<tr><td><div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div></td></tr>
 <% end -%>
 <% else # if group.can_view_exhibits(user_id) -%>
