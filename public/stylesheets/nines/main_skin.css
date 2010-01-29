@@ -52,3 +52,14 @@ body {
 	background:url(/images/nines/index_tab_logo.gif) top left no-repeat;
 }
 
+.tab_link {
+	color:#FDDFAB;
+}
+
+#footer_container {
+	color:#FDDFAB;
+}
+
+.right_column {
+	background:#F7F4EA;
+}

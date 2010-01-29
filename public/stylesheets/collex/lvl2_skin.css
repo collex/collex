@@ -32,3 +32,8 @@
 .my_collex_link_current {
 	background:url(/images/collex/lvl2_tab_my_collex_dn.gif) top left no-repeat;
 }
+
+.right_column_header {
+	color:#1e312d;
+	background:#88b72d;
+}

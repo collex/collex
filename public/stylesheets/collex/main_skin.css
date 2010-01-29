@@ -52,3 +52,14 @@ body {
 	background:url(/images/collex/index_tab.gif) top left no-repeat;
 }
 
+.tab_link {
+	color:#ffffff;
+}
+
+#footer_container {
+	color:#ffffff;
+}
+
+.right_column {
+	background:#edf4f2;
+}
