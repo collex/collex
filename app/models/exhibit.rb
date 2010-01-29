@@ -75,7 +75,15 @@ class Exhibit < ActiveRecord::Base
     if thumbnail.length > 0 && thumbnail.index('http') != 0
       thumbnail = "http://" + thumbnail
     end
-		params = { :title => title, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license(), :category => Group.types()[0] }
+		resource_name = self.transform_url(title)
+		found = Exhibit.find_by_resource_name(resource_name)
+		suffix = 1
+		while found do
+			resource_name += "#{suffix}"
+			found = Exhibit.find_by_resource_name(resource_name)
+			suffix += 1
+		end
+		params = { :title => title, :resource_name => resource_name, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license(), :category => Group.types()[0] }
 		params[:group_id] = group_id if group_id != nil
 		params[:cluster_id] = cluster_id if cluster_id != nil
     exhibit = Exhibit.create(params)
