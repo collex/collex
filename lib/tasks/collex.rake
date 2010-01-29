@@ -37,7 +37,7 @@ namespace :collex do
 		puts "You will be asked for your mysql password."
 		version = Branding.version()
 		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
-		Rake::Task['collex:update_staging'].invoke
+		update_ninesperf()
 		Rake::Task['collex:tag_current_version'].invoke
 	end
 
