@@ -82,7 +82,7 @@
 			<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
 			<td class="FC_post_title">
 				<p><%= link_to forum_title_with_tooltip(comment_info[:title], thread.discussion_comments[0].comment), "/forum/view_thread?thread=#{thread.id}", :class => 'FH_post_title nav_link tooltip' %><br />
-				<%= "#{comment_info[:group_comment]}<br />" if comment_info[:group_comment].length > 0 -%>
+				<%= "<span class='group_comment'>#{comment_info[:group_comment]}</span><br />" if comment_info[:group_comment].length > 0 -%>
 				By <%= get_user_link(comment_info[:author]) %><br />
 				<% num_pages = (thread.discussion_comments.length-1).quo(session[:items_per_page]).ceil -%>
 				<% if num_pages > 1 -%>

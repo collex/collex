@@ -27,7 +27,7 @@
 <div class="FP_post_body">
 	<% if is_main -%>
 		<% comment_info = get_comment_header_info(comment) -%>
-		<%= "#{comment_info[:group_comment]}" if comment_info[:group_comment].length > 0 -%>
+		<%= "<span class='group_comment'>#{comment_info[:group_comment]}</span>" if comment_info[:group_comment].length > 0 -%>
 	<% end -%>
 	<p>Posted by <%= get_user_link(comment.user_id) %> on <%= comment_time_format(comment.created_at) %>
 	<% if is_logged_in? -%>
