@@ -405,13 +405,13 @@ var RichTextEditor = Class.create({
 						if (!html.include("drop_cap"))
 						{
 							if (!html.startsWith("<p"))
-								html = "<p class='drop_cap'>" + html + "</p>";
+								html = "<div class='drop_cap'>" + html + "</div>";
 							else
 							{
 								var firstp = html.substring(0, html.indexOf('>'));
 								var classPos = firstp.indexOf('class=');
 								if (classPos === -1)
-									html = "<p class='drop_cap'" + html.substring(2);
+									html = "<div class='drop_cap'" + html.substring(2);
 								else
 									html = html.substring(0, classPos+7) + "drop_cap " + html.substring(classPos+7);
 							}
