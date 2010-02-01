@@ -182,8 +182,8 @@
 
 .set_exhibit_style {
 	padding-top: .9em;
-	padding-bottom:0.7em;
 	margin-left:-6px;
+	border-bottom: 2px solid gray;
 }
 
 .group_edit_title_link {
@@ -194,6 +194,8 @@
 
 .group_details_label {
 	font-weight: bold;
+	padding-top: 10px;
+	clear: both;
 }
 
 .group_description_label {
@@ -227,4 +229,34 @@
 
 .what_is_this {
 	font-style: italic;
+}
+
+.thumbnail_item {
+	clear: both;
+	padding-top: 10px;
+}
+
+.left_thumbnail {
+	float: left;
+}
+
+.right_of_thumbnail {
+	margin-left: 90px;
+}
+
+.group_only {
+	border-top: 1px solid #b7bdb3;
+	border-bottom: 1px solid #b7bdb3;
+	background-color: #e4e6e5;
+	height: 85px;
+	margin-left:-20px;
+	padding-left:20px;
+	margin-top:5px;
+	padding-top:5px;
+}
+
+.group_only_text {
+	color: #b5b5b5;
+	font-size: .8em;
+	padding-bottom:4px;
 }

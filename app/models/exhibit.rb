@@ -20,6 +20,8 @@ class Exhibit < ActiveRecord::Base
 	belongs_to :group
 	belongs_to :cluster
 
+	attr_accessor :group_only
+	
 	 def self.can_edit(user, exhibit_id)
     return false if user == nil
     return false if exhibit_id == nil
@@ -913,30 +915,34 @@ class Exhibit < ActiveRecord::Base
 		if cluster == nil
 			if is_member
 				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", group.id])
-				exhibits = { :group => [], :all => [] }
+				exhibits = []
 				for ex in exes
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
-						exhibits[:group].push(ex)
+						ex.group_only = true
+						exhibits.push(ex)	# TODO-PER: mark as group only
 					else
-						exhibits[:all].push(ex)
+						ex.group_only = false
+						exhibits.push(ex)
 					end
 				end
 			else
-				exhibits = { :all => Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id IS NULL", group.id]) }
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id IS NULL", group.id])
 			end
 		else
 			if is_member
 				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id = ?", group.id, cluster.id])
-				exhibits = { :group => [], :all => [] }
+				exhibits = []
 				for ex in exes
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
-						exhibits[:group].push(ex)
+						ex.group_only = true
+						exhibits.push(ex)	# TODO-PER: mark as group only
 					else
-						exhibits[:all].push(ex)
+						ex.group_only = false
+						exhibits.push(ex)
 					end
 				end
 			else
-				exhibits = { :all => Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id]) }
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
 			end
 		end
 		return exhibits

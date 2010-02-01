@@ -50,68 +50,56 @@
 <% end -%>
 </div>
 <% end -%>
-	<table>
+	<div>
 <% if cluster == nil -%>
 <% if clusters.length > 0 %>
-		<tr><td><span class="group_details_label">Clusters:</span></td></tr>
+		<div class="group_details_label">Clusters: (<%= clusters.length %>)</div>
 <% end -%>
 <% for clus in clusters -%>
-	<tr>
-		<td><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{clus.id}", :url => get_cluster_image_url(group, clus), :show_immediately => true } %></td>
-		<td class="exhibit_link"><%= link_to clus.name, { :controller => 'clusters', :action => 'show', :id => clus.id }, :class => 'nav_link' %><br />
+	<div class="thumbnail_item">
+		<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{clus.id}", :url => get_cluster_image_url(group, clus), :show_immediately => true } %></div>
+		<div class="right_of_thumbnail exhibit_link"><%= link_to clus.name, { :controller => 'clusters', :action => 'show', :id => clus.id }, :class => 'nav_link' %><br />
 			<%= pluralize(Exhibit.find_all_by_cluster_id(clus.id).length, "Exhibit")  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(clus.id).length, "Discussion") %>
-		</td>
-	</tr>
+		</div>
+	</div>
 <% end # for clus in clusters -%>
 <% end # if cluster == nil -%>
 <% if group.can_view_exhibits(user_id) -%>
 <% exhibits = Exhibit.get_exhibits_in_group(group, cluster, user_id) -%>
 
-<% if exhibits[:group].length > 0 -%>
-		<tr><td><span class="group_details_label">Exhibits shared with group:</span></td></tr>
+<% if exhibits.length > 0 -%>
+	<div class="group_details_label">Exhibits: (<%= exhibits.length %>)</div>
 <% end -%>
-<% for exhibit in exhibits[:group] -%>
-	<tr>
-		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
-		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+<% author_options_label = group.can_edit(user_id) ? 'Author options:' : '' -%>
+<% for exhibit in exhibits -%>
+	<div class="thumbnail_item<%= ' group_only' if exhibit.group_only %>">
+<% if exhibit.group_only -%>
+		<div class="group_only_text">Exhibit Shared to Group Only</div>
+<% end -%>
+		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
+		<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+				<br /><%= author_options_label %> <%= link_to("[edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
-			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
-			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility != 'group' -%>
-			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility == 'group' -%>
-		</td>
-	</tr>
-<% end # for exhibit in exhibits -%>
-
-<% if exhibits[:all].length > 0 -%>
-		<tr><td><span class="group_details_label">Exhibits shared with everyone:</span></td></tr>
+<% if group.can_edit(user_id) -%>
+				<br />Group Editor options: 
+			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if cluster != nil %>
+			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) %>
+			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility != 'group' -%>
+			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility == 'group' -%>
 <% end -%>
-<% for exhibit in exhibits[:all] -%>
-	<tr>
-		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
-		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
-			<%= get_exhibit_user_link(exhibit) %>
-			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
-			<% end -%>
-			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
-			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility != 'group' -%>
-			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www');", { :class => 'nav_link' }) if group.can_edit(user_id) && exhibit.editor_limit_visibility == 'group' -%>
-		</td>
-	</tr>
+		</div>
+	</div>
 <% end # for exhibit in exhibits -%>
 
 <% pending_exhibits = Exhibit.get_pending_exhibits_in_group(group, cluster, user_id) -%>
 <% if pending_exhibits.length > 0 -%>
-		<tr><td><span class="group_details_label">Pending Exhibits:</span></td></tr>
+	<div class="group_details_label">Pending Exhibits:</div>
 <% for exhibit in pending_exhibits -%>
-	<tr>
-		<td><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></td>
-		<td class="exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+	<div class="thumbnail_item">
+		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
+		<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
@@ -119,14 +107,17 @@
 			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
 			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions);", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-		</td>
-	</tr>
+		</div>
+	</div>
 <% end # for exhibit in pending_exhibits -%>
 <% end # if pending_exhibits.length > 0 -%>
-<% if exhibits[:group].length == 0 && exhibits[:all].length == 0 -%>
-	<tr><td><div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div></td></tr>
+<% if exhibits.length == 0 -%>
+	<div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end -%>
 <% else # if group.can_view_exhibits(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its exhibits.</div>
 <% end # if group.can_view_exhibits(user_id) -%>
-	</table>
+	</div>
+<div class="clear_both">
+	&nbsp;
+</div>
