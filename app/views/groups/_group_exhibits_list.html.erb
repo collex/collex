@@ -44,6 +44,7 @@
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
 			</span>
 		</li>
+		<li><%= link_to_function("Change which exhibits are shown", "changeWhichExhibitsAreShown(#{group.show_exhibits});") %></li>
 	</ul>
 <% else -%>
 	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
