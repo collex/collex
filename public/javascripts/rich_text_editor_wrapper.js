@@ -698,13 +698,33 @@ var RichTextEditor = Class.create({
 				var key = ev.ev.keyCode;
 				if (key === 86 && (ctrl || meta)) {
 					var sel = editor.getRawSelectionPosition(false);
-					if (sel) {
-						var tempContents = editor.getEditorHTML();
+					var tempContents = editor.getEditorHTML();
+					if (sel.errorMsg === undefined) {
 						var startText = tempContents.substring(0, sel.startPos);
 						var endText = tempContents.substring(sel.endPos);
 						setTimeout(function(){
 							var contents = editor.getEditorHTML();
 							var pasted = contents.substring(sel.startPos, contents.length-endText.length);
+							This.updateContents(startText + pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML() + endText);
+						}, 10);
+					} else {
+						// The selection wasn't retrievable, so we have to compare the two strings to find the first difference and the last difference.
+						setTimeout(function(){
+							var contents = editor.getEditorHTML();
+							for (var startPos = 0; startPos < tempContents.length; startPos++) {
+								if (tempContents[startPos] !== contents[startPos]) break;
+							}
+							var oldEnd = tempContents.length-1;
+							var newEnd = contents.length-1;
+							while (1) {
+								if (oldEnd < 0 || newEnd < 0) break;
+								if (tempContents[oldEnd] !== contents[newEnd]) break;
+								oldEnd--;
+								newEnd--;
+							}
+							var startText = contents.substring(0, startPos);
+							var pasted = contents.substring(startPos, newEnd);
+							var endText = contents.substring(newEnd);
 							This.updateContents(startText + pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML() + endText);
 						}, 10);
 					}
