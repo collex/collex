@@ -132,7 +132,7 @@
 <% end # for exhibit in pending_exhibits -%>
 <% end # if pending_exhibits.length > 0 -%>
 <% if group.show_exhibits != 'show_clusters_only' -%>
-<% if exhibits && exhibits.length == 0 -%>
+<% if !exhibits || exhibits.length == 0 -%>
 	<div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end -%>
 <% else # if group.can_view_exhibits(user_id) -%>
