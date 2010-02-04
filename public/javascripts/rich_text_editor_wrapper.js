@@ -133,7 +133,7 @@
 			if (!match) {
 				// The user selected in the middle of a couple of different levels of nodes. This would
 				// create illegal HTML if we tried to inject start and end tags there.
-				return { errorMsg: "You cannot create a link when the selection is over different levels. [" + selection + ']' };
+				return { errorMsg: "Please try to select something different and attempt the operation again. [Problem: You cannot create a link when the selection is over different tags.]" };
 			}
 
 			return { aOffset: aOffset, fOffset: fOffset, selection: selection, errorMsg: null };
