@@ -104,7 +104,7 @@
 }
 
 .group_details_center h1 {
-	font-size: 2em;
+	font-size: 1.6em;
 	margin-top: 0px;
 	margin-bottom: .2em;
 }
@@ -195,7 +195,7 @@
 .group_details_label {
 	font-weight: bold;
 	padding-top: 10px;
-	clear: both;
+	clear: left;
 }
 
 .group_description_label {
@@ -232,7 +232,7 @@
 }
 
 .thumbnail_item {
-	clear: both;
+	clear: left;
 	padding-top: 10px;
 }
 

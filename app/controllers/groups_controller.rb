@@ -28,6 +28,16 @@ class GroupsController < ApplicationController
   end
   public
 
+	def sort_cluster
+		session[:sort_cluster] = params[:sort]
+		group_exhibits_list()
+	end
+
+	def sort_exhibits
+		session[:sort_exhibit] = params[:sort]
+		group_exhibits_list()
+	end
+
 	def pending_requests
 		items = params[:group]
 		group_id = params[:id]
@@ -356,7 +366,7 @@ class GroupsController < ApplicationController
 	end
 
 	def group_exhibits_list
-		if params[:cluster_id]
+		if params[:cluster_id] && params[:cluster_id].length > 0
 			cluster = Cluster.find(params[:cluster_id])
 			render :partial => '/groups/group_exhibits_list', :locals => { :group => Group.find(cluster.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 		else

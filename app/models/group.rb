@@ -369,4 +369,39 @@ class Group < ActiveRecord::Base
 			"Anyone can view exhibits." ]
 		return explanations.to_json()
 	end
+
+	def self.show_exhibits()
+		return [ 'show_all', 'show_clusters_only', 'show_exhibits_only']
+	end
+
+	def self.friendly_show_exhibits()
+		return [ 'Show all', 'Show clusters only', 'Show exhibits only' ]
+	end
+	def self.show_exhibits_to_friendly(show_exhibits)
+		return self.friendly_show_exhibits[0] if self.show_exhibits()[0] == show_exhibits
+		return self.friendly_show_exhibits[1] if self.show_exhibits()[1] == show_exhibits
+		return self.friendly_show_exhibits[2] if self.show_exhibits()[2] == show_exhibits
+		return ""
+	end
+	def self.friendly_to_show_exhibits(permissions)
+		return self.show_exhibits[0] if self.friendly_show_exhibits()[0] == show_exhibits
+		return self.show_exhibits[1] if self.friendly_show_exhibits()[1] == show_exhibits
+		return self.show_exhibits[2] if self.friendly_show_exhibits()[2] == show_exhibits
+		return ""
+	end
+	def self.show_exhibits_to_json()
+		vals = self.show_exhibits()
+		texts = self.friendly_show_exhibits()
+		ret = []
+		0.upto(2) { |i|
+			ret.push({ :value => vals[i], :text =>	texts[i] })
+		}
+		return ret.to_json()
+	end
+	def self.show_exhibits_explanations_to_json
+		explanations = [ "List both clusters and exhibits in the exhibits list.",
+			"List only clusters and exhibits that belong to clusters in the exhibits list.",
+			"List only exhibits and not clusters in the exhibits list."  ]
+		return explanations.to_json()
+	end
 end

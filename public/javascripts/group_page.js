@@ -326,6 +326,20 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		target_els: [ 'group_details' ] });
 };
 
+var changeWhichExhibitsAreShown = function(id, value, groupShowExhibitsOptions, groupShowExhibitsExplanations) {
+	new SelectInputDlg({
+		title: 'Change Which Exhibits Are Shown',
+		prompt: 'Show Exhibits',
+		id: 'group[show_exhibits]',
+		options: groupShowExhibitsOptions,
+		explanation: groupShowExhibitsExplanations,
+		okStr: 'Save',
+		value: value,
+		extraParams: { id: id },
+		actions: [ '/groups/update', '/groups/group_exhibits_list' ],
+		target_els: [ 'group_details', 'group_exhibits' ] });
+};
+
 var editVisibility = function(id, value, groupExhibitVisibilityOptions, groupExhibitVisibilityExplanations) {
 	new SelectInputDlg({
 		title: 'Change Exhibit Visibility',

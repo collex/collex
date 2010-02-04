@@ -437,4 +437,21 @@ private
     
     return el[1]
   end
+
+	def make_select_control(id, options, curr_sel, callback)
+		start = ""
+		for option in options
+			start = option[:name] if curr_sel == option[:value]
+		end
+		html = "<input type='button' class='hidden' id='#{id}' name='#{id}' value='#{start}'><select id='#{id}select' class='hidden'>\n"
+		for option in options
+			html += "<option value='#{option[:value]}'>#{option[:name]}</option>\n"
+		end
+		html += "</select></span>\n"
+		html += "<script type=\"text/javascript\">\n"
+		html += "var callback_#{id} = function(sel) { #{callback} };\n"
+		html += "initializeSelectCtrl('#{id}', '#{curr_sel}', callback_#{id});\n"
+		html += "</script>\n"
+		return html
+	end
 end

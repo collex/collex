@@ -20,7 +20,46 @@
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
-/*extern SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg */
+/*extern SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl */
+
+var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
+{
+	var oMenuButton1 = new YAHOO.widget.Button(select_el_id, {
+		type: "menu",
+		menu: select_el_id + "select" });
+
+	// Pass this the id of a working select element, with its current selection already set.
+//	var sel = $(select_el_id);
+//	if (sel) {	// Initializing the select wipes out the original select id, so it if it there, then we haven't initialized.
+//	var opt = sel.down('option', sel.selectedIndex);	// Get the currently selected item: that is set in the original HTML as the selection.
+//	var start_text = opt.innerHTML;
+//		var oMenuButton1 = new YAHOO.widget.Button({
+//			id: "menu" + select_el_id,
+//			name: "menu" + select_el_id,
+//			label: "<span class=\"yui-button-label\">" + start_text + "</span>",
+//			type: "menu",
+//			menu: select_el_id,
+//			container: select_el_id + "_wrapper"
+//		});
+
+		//	"selectedMenuItemChange" event handler for a Button that will set
+		//	the Button's "label" attribute to the value of the "text"
+		//	configuration property of the MenuItem that was clicked.
+		var onSelectedMenuItemChange = function (event) {
+			var oMenuItem = event.newValue;
+			var new_text = oMenuItem.cfg.getProperty("text");
+			this.set("label", ("<span class=\"yui-button-label\">" +
+				new_text + "</span>"));
+			if (curr_sel !== new_text) {
+				onchange_callback(oMenuItem.value);
+			}
+		};
+
+		//	Register a "selectedMenuItemChange" event handler that will sync the
+		//	Button's "label" attribute to the MenuItem that was clicked.
+		oMenuButton1.on("selectedMenuItemChange", onSelectedMenuItemChange);
+//	}
+};
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {

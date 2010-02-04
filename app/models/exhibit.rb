@@ -21,6 +21,7 @@ class Exhibit < ActiveRecord::Base
 	belongs_to :cluster
 
 	attr_accessor :group_only
+	attr_accessor :author
 	
 	 def self.can_edit(user, exhibit_id)
     return false if user == nil
@@ -908,7 +909,7 @@ class Exhibit < ActiveRecord::Base
 		end
 	end
 
-	def self.get_exhibits_in_group(group, cluster, user_id)
+	def self.get_exhibits_in_group(group, cluster, user_id, sort_by)
 		# if the cluster exists, we want all exhibits in that cluster; if it does not, we want all exhibits that aren't in a cluster.
 		# We want all public exhibits, and if the user is a member of the group, also the exhibits just visible to the group.
 		is_member = group.is_member(user_id)
@@ -917,33 +918,46 @@ class Exhibit < ActiveRecord::Base
 				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", group.id])
 				exhibits = []
 				for ex in exes
+					ex.author = ex.get_apparent_author_name()
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
 						ex.group_only = true
 						exhibits.push(ex)	# TODO-PER: mark as group only
-					else
+					elsif ex.is_published != 2
 						ex.group_only = false
 						exhibits.push(ex)
 					end
 				end
 			else
 				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id IS NULL", group.id])
+				exhibits.each { |ex|
+					ex.author = ex.get_apparent_author_name()
+				}
 			end
 		else
 			if is_member
 				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id = ?", group.id, cluster.id])
 				exhibits = []
 				for ex in exes
+					ex.author = @template.get_exhibits_username(ex)
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
 						ex.group_only = true
 						exhibits.push(ex)	# TODO-PER: mark as group only
-					else
+					elsif ex.is_published != 2
 						ex.group_only = false
 						exhibits.push(ex)
 					end
 				end
 			else
 				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
+				exhibits.each { |ex|
+					ex.author = @template.get_exhibits_username(ex)
+				}
 			end
+		end
+		case sort_by
+		when 'last_change' then exhibits = exhibits.sort { |a,b| b.last_change <=> a.last_change }
+		when 'title' then exhibits = exhibits.sort { |a,b| a.title <=> b.title }
+		when 'author' then exhibits = exhibits.sort { |a,b| a.author <=> b.author }
 		end
 		return exhibits
 	end

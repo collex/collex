@@ -19,10 +19,21 @@
 <% cluster ||= nil -%>
 <% if cluster == nil -%>
 <script type="text/javascript">
-<% clusters = Cluster.find_all_by_group_id(group.id)
-	cluster_options = []
-	for clus in clusters
-		cluster_options.push({ :text => clus.name, :value => clus.id })
+<%
+	curr_cluster_sort = session[:sort_cluster] ? session[:sort_cluster] : 'name'
+	if group.show_exhibits != 'show_exhibits_only'
+		clusters = Cluster.find_all_by_group_id(group.id)
+		if curr_cluster_sort == 'name'
+			clusters = clusters.sort { |a,b| a.name <=> b.name }
+		else
+			clusters = clusters.sort { |a,b| a.created_at <=> b.created_at }
+		end
+		cluster_options = []
+		for clus in clusters
+			cluster_options.push({ :text => clus.name, :value => clus.id })
+		end
+	else
+		clusters = []
 	end
 -%>
 	gClusterOptions = <%= cluster_options.to_json()  %>;
@@ -44,17 +55,20 @@
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
 			</span>
 		</li>
-		<li><%= link_to_function("Change which exhibits are shown", "changeWhichExhibitsAreShown(#{group.show_exhibits});") %></li>
+		<li><%= link_to_function("Change which exhibits are shown", "changeWhichExhibitsAreShown(#{group.id}, gGroupData.show_exhibits, #{Group.show_exhibits_to_json()}, #{Group.show_exhibits_explanations_to_json()});", { :class => 'modify_link' }) %></li>
 	</ul>
 <% else -%>
 	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
 <% end -%>
 </div>
+<br />
 <% end -%>
 	<div>
 <% if cluster == nil -%>
 <% if clusters.length > 0 %>
-		<div class="group_details_label">Clusters: (<%= clusters.length %>)</div>
+		<div><span class="group_details_label">Clusters: (<%= clusters.length %>)</span> | sort by:
+			<%= make_select_control("cluster_sort", [ { :name => 'Date', :value => 'created_at'}, { :name => 'Title', :value => 'name'}], curr_cluster_sort, "recurseUpdateWithAjax([ '/groups/sort_cluster' ], [ 'group_exhibits' ], null, null, { id: #{group.id}, sort: sel })") %>
+		</div>
 <% end -%>
 <% for clus in clusters -%>
 	<div class="thumbnail_item">
@@ -65,11 +79,15 @@
 	</div>
 <% end # for clus in clusters -%>
 <% end # if cluster == nil -%>
+<% if group.show_exhibits != 'show_clusters_only' -%>
 <% if group.can_view_exhibits(user_id) -%>
-<% exhibits = Exhibit.get_exhibits_in_group(group, cluster, user_id) -%>
+<% curr_exhibit_sort = session[:sort_exhibit] ? session[:sort_exhibit] : 'title' -%>
+<% exhibits = Exhibit.get_exhibits_in_group(group, cluster, user_id, curr_exhibit_sort) -%>
 
 <% if exhibits.length > 0 -%>
-	<div class="group_details_label">Exhibits: (<%= exhibits.length %>)</div>
+	<div class="group_details_label">Exhibits: (<%= exhibits.length %>) | sort by:
+		<%= make_select_control("exhibit_sort", [ { :name => 'Date', :value => 'last_change'}, { :name => 'Title', :value => 'title'}, { :name => 'Author', :value => 'author'}], curr_exhibit_sort, "recurseUpdateWithAjax([ '/groups/sort_exhibits' ], [ 'group_exhibits' ], null, null, { id: #{group.id}, cluster_id: #{cluster ? cluster.id : 'null' }, sort: sel })") %>
+	</div>
 <% end -%>
 <% author_options_label = group.can_edit(user_id) ? 'Author options:' : '' -%>
 <% for exhibit in exhibits -%>
@@ -93,6 +111,7 @@
 		</div>
 	</div>
 <% end # for exhibit in exhibits -%>
+<% end # if group.show_exhibits != 'show_clusters_only' -%>
 
 <% pending_exhibits = Exhibit.get_pending_exhibits_in_group(group, cluster, user_id) -%>
 <% if pending_exhibits.length > 0 -%>
@@ -112,12 +131,14 @@
 	</div>
 <% end # for exhibit in pending_exhibits -%>
 <% end # if pending_exhibits.length > 0 -%>
+<% if group.show_exhibits != 'show_clusters_only' -%>
 <% if exhibits.length == 0 -%>
 	<div class="empty_list_text" >There have been no exhibits published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end -%>
 <% else # if group.can_view_exhibits(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its exhibits.</div>
 <% end # if group.can_view_exhibits(user_id) -%>
+<% end # if group.show_exhibits != 'show_clusters_only' -%>
 	</div>
 <div class="clear_both">
 	&nbsp;
