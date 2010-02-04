@@ -693,6 +693,12 @@ var RichTextEditor = Class.create({
 //		oContextMenu.subscribe("beforeShow", function() {} );
 
 			editor.on('editorKeyDown', function(ev) {
+				var cleanPasted = function(pasted) {
+					pasted = pasted.gsub("<br>", "\x02").gsub("<br/>", "\x02").gsub("<br />", "\x02");
+					pasted = pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML();
+					pasted = pasted.gsub("\x02", "<br/>");
+					return pasted;
+				};
 				var ctrl = ev.ev.ctrlKey;
 				var meta = ev.ev.metaKey;
 				var key = ev.ev.keyCode;
@@ -704,8 +710,8 @@ var RichTextEditor = Class.create({
 						var endText = tempContents.substring(sel.endPos);
 						setTimeout(function(){
 							var contents = editor.getEditorHTML();
-							var pasted = contents.substring(sel.startPos, contents.length-endText.length);
-							This.updateContents(startText + pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML() + endText);
+							var pasted = cleanPasted(contents.substring(sel.startPos, contents.length-endText.length));
+							This.updateContents(startText + pasted + endText);
 						}, 10);
 					} else {
 						// The selection wasn't retrievable, so we have to compare the two strings to find the first difference and the last difference.
@@ -723,9 +729,9 @@ var RichTextEditor = Class.create({
 								newEnd--;
 							}
 							var startText = contents.substring(0, startPos);
-							var pasted = contents.substring(startPos, newEnd);
+							var pasted = cleanPasted(contents.substring(startPos, newEnd));
 							var endText = contents.substring(newEnd);
-							This.updateContents(startText + pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML() + endText);
+							This.updateContents(startText + pasted + endText);
 						}, 10);
 					}
 				}
