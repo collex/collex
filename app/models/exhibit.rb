@@ -20,6 +20,7 @@ class Exhibit < ActiveRecord::Base
 	belongs_to :group
 	belongs_to :cluster
 
+	attr_accessor :editors_only
 	attr_accessor :group_only
 	attr_accessor :author
 	
@@ -35,6 +36,21 @@ class Exhibit < ActiveRecord::Base
     return true if user.role_names.include?('admin')
     return exhibit.user_id == user.id
   end
+
+	def can_view(user)
+		# The user can view the exhibit if:
+		# - they are the author or an admin
+		# - the exhibit is not in a group and is published
+		# - the exhibit is in a group and the group allows it
+		return true if user != nil && user.role_names.include?('admin')
+		return true if user != nil && (user.id == self.user_id || user.id == self.alias_id)
+		return true if self.group_id == nil && self.is_published == 1
+		if self.group_id != nil
+			group = Group.find(self.group_id)
+			return group.can_view_exhibit(self, user.id)
+		end
+		return false
+	end
 
 	def reset_fonts_to_default
 		# set the default values for fields that were added later
@@ -872,34 +888,53 @@ class Exhibit < ActiveRecord::Base
 		if Group.is_peer_reviewed_group(self)
 			return "This exhibit is visible to everyone." if self.is_published == 1
 			return "Submitted for peer-review" if self.is_published == 2
+			return "This exhibit is visible to the group's editors." if self.is_published == 4
 			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
 		else
 			return "This exhibit is visible to everyone." if self.is_published == 1
 			return "This exhibit is visible to members of the group." if self.is_published == 3
+			return "This exhibit is visible to the group's editors." if self.is_published == 4
 			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
 		end
 	end
 
 	def get_publish_links()
+		ret = []
 		if Group.is_peer_reviewed_group(self)
-			text = self.is_published != 0 ? "[Unpublish]" : "[Submit for peer review]"
-			param = self.is_published != 0 ? 0 : 2
-			return [ { :text => text, :param => param } ]
+			case self.is_published
+			when 0 then
+				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
+				ret.push( { :text=> "[Share with editors]", :param => 4 })
+			when 2 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Share with editors]", :param => 4 })
+			when 4 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
+			end
+			return ret
 		elsif self.group_id != nil
-			ret = []
 			case self.is_published
 			when 0 then
 				ret.push( { :text=> "[Share with group]", :param => 3 })
 				ret.push( { :text=> "[Publish to web]", :param => 1 })
+				ret.push( { :text=> "[Share with editors]", :param => 4 })
 			when 1 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Share with group]", :param => 3 })
+				ret.push( { :text=> "[Share with editors]", :param => 4 })
 			when 2 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Share with group]", :param => 3 })
+				ret.push( { :text=> "[Share with editors]", :param => 4 })
 			when 3 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Publish to web]", :param => 1 })
+				ret.push( { :text=> "[Share with editors]", :param => 4 })
+			when 4 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Publish to web]", :param => 1 })
+				ret.push( { :text=> "[Share with group]", :param => 3 })
 			end
 			return ret
 		else
@@ -913,6 +948,7 @@ class Exhibit < ActiveRecord::Base
 		# if the cluster exists, we want all exhibits in that cluster; if it does not, we want all exhibits that aren't in a cluster.
 		# We want all public exhibits, and if the user is a member of the group, also the exhibits just visible to the group.
 		is_member = group.is_member(user_id)
+		is_editor = group.can_edit(user_id)
 		if cluster == nil
 			if is_member
 				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id IS NULL", group.id])
@@ -921,9 +957,15 @@ class Exhibit < ActiveRecord::Base
 					ex.author = ex.get_apparent_author_name()
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
 						ex.group_only = true
-						exhibits.push(ex)	# TODO-PER: mark as group only
-					elsif ex.is_published != 2
+						ex.editors_only = false
+						exhibits.push(ex)
+					elsif is_editor && ex.is_published == 4
 						ex.group_only = false
+						ex.editors_only = true
+						exhibits.push(ex)
+					elsif ex.is_published != 2 && ex.is_published != 4
+						ex.group_only = false
+						ex.editors_only = false
 						exhibits.push(ex)
 					end
 				end
@@ -941,9 +983,15 @@ class Exhibit < ActiveRecord::Base
 					ex.author = @template.get_exhibits_username(ex)
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
 						ex.group_only = true
-						exhibits.push(ex)	# TODO-PER: mark as group only
-					elsif ex.is_published != 2
+						ex.editors_only = false
+						exhibits.push(ex)
+					elsif is_editor && ex.is_published == 4
 						ex.group_only = false
+						ex.editors_only = true
+						exhibits.push(ex)
+					elsif ex.is_published != 2 && ex.is_published != 4
+						ex.group_only = false
+						ex.editors_only = false
 						exhibits.push(ex)
 					end
 				end

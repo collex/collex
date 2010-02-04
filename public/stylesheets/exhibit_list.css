@@ -248,7 +248,7 @@
 	border-top: 1px solid #b7bdb3;
 	border-bottom: 1px solid #b7bdb3;
 	background-color: #e4e6e5;
-	height: 85px;
+	min-height: 85px;
 	margin-left:-20px;
 	padding-left:20px;
 	margin-top:5px;

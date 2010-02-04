@@ -91,9 +91,12 @@
 <% end -%>
 <% author_options_label = group.can_edit(user_id) ? 'Author options:' : '' -%>
 <% for exhibit in exhibits -%>
-	<div class="thumbnail_item<%= ' group_only' if exhibit.group_only %>">
+	<div class="thumbnail_item<%= ' group_only' if exhibit.group_only || exhibit.editors_only %>">
 <% if exhibit.group_only -%>
 		<div class="group_only_text">Exhibit Shared to Group Only</div>
+<% end -%>
+<% if exhibit.editors_only -%>
+		<div class="group_only_text">Exhibit Shared to Editors Only</div>
 <% end -%>
 		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
 		<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by

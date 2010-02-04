@@ -71,6 +71,10 @@ class Group < ActiveRecord::Base
 
 	def can_view_exhibit(exhibit, user_id)
 		# the exhibit is visible if the user is a member of the group, or if the exhibit is shared to the web and not limited by the editor
+		# and the exhibit is not limited to editors, unless the user is an editor
+		if exhibit.is_published == 4
+			return is_editor(user_id)
+		end
 		return true if is_member(user_id)
 		return true if exhibit.is_published == 1 && (exhibit.editor_limit_visibility == nil || exhibit.editor_limit_visibility != 'group')
 		return false
