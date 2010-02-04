@@ -47,5 +47,5 @@
 <div class="profile_div"><span class="profile_label">Full name:</span><span><%=h user.fullname %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">Email:</span><span><%=h user.email %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">Institution:</span><span><%=h user.institution %></span><span>&nbsp;</span></div>
-<div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil ? make_ext_link(user.link) : "" %></span><span>&nbsp;</span></div>
+<div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil && user.link.length > 0 ? make_ext_link(user.link) : "" %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">About me:</span><span class="profile_paragraph"><%=h user.about_me %></span><span>&nbsp;</span></div>
