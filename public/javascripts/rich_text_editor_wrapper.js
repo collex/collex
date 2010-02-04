@@ -697,7 +697,7 @@ var RichTextEditor = Class.create({
 					pasted = pasted.gsub("<br>", "\x02").gsub("<br/>", "\x02").gsub("<br />", "\x02");
 					pasted = pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML();
 					pasted = pasted.gsub("\x02", "<br/>");
-					return pasted;
+					return pasted + ' ';
 				};
 				var ctrl = ev.ev.ctrlKey;
 				var meta = ev.ev.metaKey;
@@ -728,6 +728,17 @@ var RichTextEditor = Class.create({
 								oldEnd--;
 								newEnd--;
 							}
+							// If there is an open tag, we want to grab a few more chars until the close tag.
+							var i = newEnd;
+							while (i > 0 && contents[i] !== '>') {
+								if (contents[i] === '<') {
+									while (newEnd < contents.length && contents[newEnd] !== '>')
+										newEnd++;
+									break;
+								}
+								i--;
+							}
+							newEnd++;	// this is now set the first character that doesn't match, add one to put it at the last char that does.
 							var startText = contents.substring(0, startPos);
 							var pasted = cleanPasted(contents.substring(startPos, newEnd));
 							var endText = contents.substring(newEnd);
