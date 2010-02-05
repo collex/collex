@@ -133,7 +133,6 @@ var CreateGroupWizardDlg = Class.create({
 							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'empty_list_text publication_only hidden'},
 							{ text: 'University:', klass: 'groups_label classroom_only hidden' }, { input: 'group[university]', value: start_university, klass: 'new_exhibit_input_long classroom_only hidden' }
 						],
-						[ { text: 'Faculty:', klass: 'groups_label classroom_only hidden' }, { input: 'group[faculty_names]', value: start_name, klass: 'new_exhibit_input_long classroom_only hidden' } ],
 						[ { text: 'Course Name:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_name]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
 						[ { text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
