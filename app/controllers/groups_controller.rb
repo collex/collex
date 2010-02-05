@@ -435,7 +435,8 @@ class GroupsController < ApplicationController
 			else
 				flash = "Error creating group"
 			end
-		rescue
+		rescue Exception => msg
+			logger.error("**** ERROR: Can't create group: " + msg)
 			flash = "Server error when creating group."
 		end
 		if send_email
@@ -473,7 +474,9 @@ class GroupsController < ApplicationController
 		err_msg = nil
 		if params[:emails] || params[:usernames]
 			invitor = get_curr_user()
-			err_msg = @group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames])
+			if invitor != nil
+				err_msg = @group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames])
+			end
 		end
 #    respond_to do |format|
 #      if @group.update_attributes(params[:group])
