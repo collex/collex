@@ -28,6 +28,17 @@ class GroupsController < ApplicationController
   end
   public
 
+	def check_url
+		url = params[:group]['visible_url']
+		id = params[:id]
+		group = Group.find_by_visible_url(url)
+		if group != nil && group.id != id.to_i
+			render :text => 'The URL matches another group. Choose a different one.', :status => :bad_request
+		else
+			render :text => 'The URL is accepted. Please wait.'
+		end
+	end
+
 	def sort_cluster
 		session[:sort_cluster] = params[:sort]
 		group_exhibits_list()
@@ -306,8 +317,15 @@ class GroupsController < ApplicationController
 				render :text => "There is already a group with this title.", :status => :bad_request
 			end
 		else
-			@group = Group.find(params[:id])
-
+			@group = Group.find_by_visible_url(params[:id])
+			if @group == nil
+				@group = Group.find_by_id(params[:id])
+			end
+			if @group == nil
+				redirect_to "/"
+				return
+			end
+			
 			respond_to do |format|
 				format.html # show.html.erb
 				format.xml  { render :xml => @group }

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100201223950) do
+ActiveRecord::Schema.define(:version => 20100205211651) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20100201223950) do
     t.integer  "image_id",    :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "visible_url"
   end
 
   create_table "collected_items", :force => true do |t|
@@ -232,6 +233,7 @@ ActiveRecord::Schema.define(:version => 20100201223950) do
     t.string   "course_name"
     t.string   "course_mnemonic"
     t.string   "show_exhibits"
+    t.string   "visible_url"
   end
 
   create_table "groups_users", :force => true do |t|

@@ -55,7 +55,7 @@
 		<% membership.insert(0, { :user_id => group.owner}) -%>
 		<%# membership = membership + membership + membership +membership +membership -%>
 		<li><span class="group_details_label">Group Membership</span>
-			<div class="group_member_explanation">This group has <%= pluralize(membership.length, "member")  %>. (hover over each thumbnail to see the user's name)</div>
+			<div class="group_member_explanation">This group has <%= pluralize(membership.length, "member")  %>. (hover over each thumbnail to see the member's name)</div>
 		<div class="group_member_palette_items">
 		<table>
 			<% count = 0 -%>
@@ -138,6 +138,7 @@
 			<span class="group_member_explanation"> (current license: <%= Exhibit.is_license_specified(group.license_type) ? Exhibit.get_sharing_static(group.license_type) : 'No license specified' %>)</span>
 		</li>
 		<li>Exhibits are <%= Group.visibility_to_friendly(group.exhibit_visibility) %>&nbsp;<%= link_to_function('Change Exhibit Visibility', "editVisibility(#{group.id}, gGroupData.exhibit_visibility, #{Group.visibility_to_json()}, #{Group.visibility_explanations_to_json()});", :class => 'nav_link') %></li>
+		<li>URL is <%= group.visible_url && group.visible_url.length > 0 ? url_for( :controller => 'groups', :action => group.visible_url, :only_path => false) : "not set" %> <%= link_to_function('Change URL', "editURL(#{group.id}, '#{group.visible_url}', 'group', '#{url_for( :controller => 'groups', :action => '', :only_path => false)}');", :class => 'nav_link') %></li>
 <% if group.can_delete(user_id)  && group.group_type != 'peer-reviewed' -%>
 		<li><%= link_to('Delete Group', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link') %></li>
 <% end -%>

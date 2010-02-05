@@ -408,6 +408,20 @@ var editTitle = function(id, value, controller) {
 		target_els: [ controller + '_details' ] });
 };
 
+var editURL = function(id, value, controller, prompt) {
+	new TextInputDlg({
+		title: 'Edit URL',
+		prompt: prompt,
+		id: controller + '[visible_url]',
+		okStr: 'Save',
+		value: value,
+		inputKlass: 'edit_url_input',
+		extraParams: { id: id },
+		verify: '/' + controller + 's/check_url',
+		actions: [ '/' + controller + 's/update' ],
+		target_els: [ controller + '_details' ] });
+};
+
 var moveExhibitToCluster = function(update_url, cluster_id, exhibitOptions, update_el) {
 	new SelectInputDlg({
 		title: 'Move Exhibit to Cluster',

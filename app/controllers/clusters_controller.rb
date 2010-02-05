@@ -28,6 +28,17 @@ class ClustersController < ApplicationController
   end
   public
 
+	def check_url
+		url = params[:cluster]['visible_url']
+		id = params[:id]
+		cluster = Cluster.find_by_visible_url(url)
+		if cluster != nil && cluster.id != id.to_i
+			render :text => 'The URL matches another cluster. Choose a different one.', :status => :bad_request
+		else
+			render :text => 'The URL is accepted. Please wait.'
+		end
+	end
+
 	def move_exhibit
 		exhibit_id = params[:exhibit_id]
 		cluster_id = params[:cluster_id]
@@ -97,7 +108,14 @@ class ClustersController < ApplicationController
 				render :text => "There is already a cluster with this title.", :status => :bad_request
 			end
 		else
-			@cluster = Cluster.find(params[:id])
+			@cluster = Cluster.find_by_visible_url(params[:id])
+			if @cluster == nil
+				@cluster = Cluster.find_by_id(params[:id])
+			end
+			if @cluster == nil
+				redirect_to "/"
+				return
+			end
 			@group = Group.find(@cluster.group_id)
 
 			respond_to do |format|

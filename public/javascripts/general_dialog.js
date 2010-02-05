@@ -808,7 +808,7 @@ function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
 
 	if (actions.length === 0) {
 		if (onSuccess)
-			onSuccess();
+			onSuccess(params);
 		return;
 	}
 
@@ -911,9 +911,10 @@ var singleInputDlg = function(params, input) {
 	var noDefault = params.noDefault;
 	var pleaseWaitMsg = params.pleaseWaitMsg ? params.pleaseWaitMsg : "Please wait...";
 	var dlg = null;
+	var verifyUrl = params.verify;
 
 	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
-	this.class_type = 'TextInputDlg';	// for debugging
+	this.class_type = 'singleInputDlg';	// for debugging
 
 	// private variables
 	//var This = this;
@@ -923,6 +924,12 @@ var singleInputDlg = function(params, input) {
 			onSuccess(resp);
 	};
 
+	var onVerified = function(params) {
+		recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
+	};
+	var onNotVerified = function(resp) {
+		dlg.setFlash(resp.responseText, true);
+	};
 	// privileged functions
 	this.ok = function(event, params2)
 	{
@@ -930,7 +937,10 @@ var singleInputDlg = function(params, input) {
 		// Recursively run through the list of actions we were passed.
 		var data = params2.dlg.getAllData();
 		extraParams[id] = data[id];
-		recurseUpdateWithAjax(actions, target_els, addCancelToSuccess, onFailure, extraParams);
+		if (verifyUrl)
+			recurseUpdateWithAjax([ verifyUrl ], [ 'bit_bucket' ], onVerified, onNotVerified, extraParams);
+		else
+			recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
 //			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
 //			updateWithAjax(ajaxparams);
 	};
@@ -958,7 +968,8 @@ var TextInputDlg = Class.create({
 	initialize: function (params) {
 		var id = params.id;
 		var value = params.value;
-		var input = { input: id, klass: 'text_input_dlg_input', value: value };
+		var klass = params.inputKlass === undefined ? 'text_input_dlg_input' : params.inputKlass;
+		var input = { input: id, klass: klass, value: value };
 		singleInputDlg(params, input);
 	}
 });
