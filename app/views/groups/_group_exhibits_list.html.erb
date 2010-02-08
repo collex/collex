@@ -99,7 +99,11 @@
 		<div class="group_only_text">Exhibit Shared to Editors Only</div>
 <% end -%>
 		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
-		<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+		<div class="right_of_thumbnail exhibit_link">
+			<div class="search_result_buttons">
+				<%= result_button("Discuss", "discuss_#{exhibit.id}", "new StartDiscussionWithExhibit('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{exhibit.id}', '#{exhibit.title.gsub("'", "\\==APOS==").gsub("==APOS==", "'")}', 'discuss_#{exhibit.id}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '/images/ajax_loader.gif', #{group.id}, #{cluster ? cluster.id : 'null'});", true) %>
+			</div>
+			<%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 				<br /><%= author_options_label %> <%= link_to("[edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>

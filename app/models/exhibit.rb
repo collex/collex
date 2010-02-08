@@ -980,7 +980,7 @@ class Exhibit < ActiveRecord::Base
 				exes = Exhibit.all(:conditions => [ "group_id = ? AND is_published <> 0 AND cluster_id = ?", group.id, cluster.id])
 				exhibits = []
 				for ex in exes
-					ex.author = @template.get_exhibits_username(ex)
+					ex.author = ex.get_apparent_author_name()
 					if ex.is_published == 3 || ex.editor_limit_visibility == 'group'
 						ex.group_only = true
 						ex.editors_only = false
@@ -998,7 +998,7 @@ class Exhibit < ActiveRecord::Base
 			else
 				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
 				exhibits.each { |ex|
-					ex.author = @template.get_exhibits_username(ex)
+					ex.author = ex.get_apparent_author_name()
 				}
 			end
 		end

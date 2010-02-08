@@ -215,7 +215,10 @@ class ForumController < ApplicationController
       # isn't created, then we need to back off the first one.
       topic_id = params[:topic_id]
 	    license = params[:license_list]
-      thread = DiscussionThread.create(:discussion_topic_id => topic_id, :title => params[:title], :license => license)
+			rec = { :title => params[:title], :license => license, :discussion_topic_id => topic_id }
+			rec[:group_id] = params[:group_id] if params[:group_id]
+			rec[:cluster_id] = params[:cluster_id] if params[:cluster_id]
+      thread = DiscussionThread.create(rec)
 
       begin
         post_object(thread, params)
@@ -371,6 +374,7 @@ class ForumController < ApplicationController
         :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif ExhibitIllustration.get_exhibit_type_text() == disc_type
       exhibit = Exhibit.find_by_title(nines_exhibit)
+			exhibit = Exhibit.find_by_id(nines_exhibit) if exhibit == nil
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif ExhibitIllustration.get_illustration_type_image() == disc_type
