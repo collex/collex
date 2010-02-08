@@ -52,7 +52,6 @@
 	height:29px;
 	width:71px;
 	float:right;
-	color:#FDDFAB;
 	font-weight:bold;
 	text-decoration:none;
 	padding-top:9px;
@@ -170,7 +169,6 @@
 /******************************/
 
 #carousel_container {
-	background:url(/images/index_flash_background.jpg) top center repeat-x;
 	height:445px;
 }
 
@@ -257,7 +255,6 @@
 }
 
 .carousel_background {
-	background:transparent url(/images/index_flash_background.jpg) repeat-x scroll center top;
 	height:445px;
 }
 

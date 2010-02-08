@@ -67,3 +67,10 @@
 	background:url(/images/nines/index_scroll.gif) top center no-repeat;
 }
 
+#carousel_container {
+	background:url(/images/nines/index_flash_background.jpg) top center repeat-x;
+}
+
+.carousel_background {
+	background:transparent url(/images/nines/index_flash_background.jpg) repeat-x scroll center top;
+}
