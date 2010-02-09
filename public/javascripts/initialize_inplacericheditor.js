@@ -125,6 +125,16 @@ function initializeInplaceRichEditor(element_id, action)
 			startingText = downDiv.innerHTML;
 		else
 			startingText = $(element_id).innerHTML;
+		// There is extra spaces all around
+		startingText = startingText.strip();
+		while (startingText.startsWith('<div>') && startingText.endsWith('</div>')) {
+			startingText = startingText.substring(5);
+			startingText = startingText.substring(0, startingText.length-6);
+			startingText = startingText.strip();
+		}
+		if (startingText === 'Welcome to your new exhibit. Click here to enter text, or select another layout from the section editing toolbar above.' ||
+			startingText === 'Enter your text here.')
+			startingText = '';
 
 		var footnoteHandler = new FootnotesInRte();
 
