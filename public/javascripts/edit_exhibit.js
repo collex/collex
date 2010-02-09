@@ -189,6 +189,14 @@ function sectionHovered(el, edit_bar_id, addClass, removeClass)	// called as a m
 				menu: select_el_id, 
 				container: select_el_id + "_wrapper"
 			});
+			var onInitDropDown = function() {
+				var container = $(select_el_id + "_wrapper");
+				setTimeout(function() {
+					var menuEl = container.down('div');
+					menuEl.setStyle({ zIndex: 50 });
+				}, 50);
+			};
+			oMenuButton1.on("focus", onInitDropDown);
 
 			//	"selectedMenuItemChange" event handler for a Button that will set 
 			//	the Button's "label" attribute to the value of the "text" 
