@@ -219,13 +219,13 @@ var EditMembershipDlg = Class.create({
 		membership.each(function(member) {
 			var checked = member.role === 'editor' ? ' checked="true"' : '';
 			membership2.push({ Name: member.name,
-				"Editor?": '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[editor]]"'+checked+'/>',
+				"Administrator?": '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[editor]]"'+checked+'/>',
 				Delete: '<input id="group_'+member.id+'_delete" type="checkbox" value="1" name="group['+member.id+'[delete]]"/>'
 			});
 		});
 
 		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}], value: show_membership }];
-		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Editor?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl })
+		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Administrator?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl })
 	}
 });
 
