@@ -290,6 +290,55 @@
 
 			return { startPos: ret.aOffset, endPos: ret.fOffset, selection: ret.selection, errorMsg: null };
 		};
+
+		YAHOO.widget.SimpleEditor.prototype.filter_safari = function (html) {
+            if (this.browser.webkit) {
+                //<span class="Apple-tab-span" style="white-space:pre">	</span>
+                html = html.replace(/<span class="Apple-tab-span" style="white-space:pre">([^>])<\/span>/gi, '&nbsp;&nbsp;&nbsp;&nbsp;');
+                html = html.replace(/Apple-style-span/gi, '');
+                html = html.replace(/style="line-height: normal;"/gi, '');
+                html = html.replace(/yui-wk-div/gi, '');
+                html = html.replace(/yui-wk-p/gi, '');
+
+
+                //Remove bogus LI's
+                html = html.replace(/<li><\/li>/gi, '');
+                html = html.replace(/<li> <\/li>/gi, '');
+                html = html.replace(/<li>  <\/li>/gi, '');
+
+				// HACK-PER: This is needed because the following code is incorrect in YUI 2.8.0. It will strip out the drop cap div, too.
+				// We will assume that the drop cap is the most outer div, so we see if it starts with a div, then preserve it.
+				var firstDiv = html.startsWith("<div");
+				var needToReplace = false;
+				var tempText1 = "<DROPCAPDIV>";
+				var tempText2 = "</DROPCAPDIV>";
+				if (firstDiv) {
+					var lastDiv = html.lastIndexOf("</div>");
+					if (lastDiv !== -1) {
+						html = tempText1 + html.substring(4, lastDiv) + tempText2 + html.substring(lastDiv);
+						needToReplace = true;
+					}
+				} else
+					html = html.replace("<div class=\" \">", "");	//In case there was a drop cap, and the user deleted it.
+
+				// The following code may remove
+                //Remove bogus DIV's - updated from just removing the div's to replacing /div with a break
+                if (this.get('ptags')) {
+		            html = html.replace(/<div([^>]*)>/g, '<p$1>');
+				    html = html.replace(/<\/div>/gi, '</p>');
+                } else {
+                    //html = html.replace(/<div>/gi, '<br>');
+                    html = html.replace(/<div([^>]*)>([ tnr]*)<\/div>/gi, '<br>');
+				    html = html.replace(/<\/div>/gi, '');
+                }
+
+				if (needToReplace) {
+					html = html.replace(tempText1, "<div");
+					html = html.replace(tempText2, "</div>");
+				}
+            }
+            return html;
+        };
 	};
 
 	// wait until SimpleEditor is created
@@ -401,21 +450,39 @@ var RichTextEditor = Class.create({
 					var sel = !html.include("drop_cap"); // !ev.button.isSelected
 					if (sel)
 					{
-						// If there is a <p> that starts everything, then add the drop class to it, if it is not already there. If not, then add the p element.
-						if (!html.include("drop_cap"))
-						{
-							if (!html.startsWith("<p"))
-								html = "<div class='drop_cap'>" + html + "</div>";
-							else
-							{
-								var firstp = html.substring(0, html.indexOf('>'));
-								var classPos = firstp.indexOf('class=');
-								if (classPos === -1)
-									html = "<div class='drop_cap'" + html.substring(2);
-								else
-									html = html.substring(0, classPos+7) + "drop_cap " + html.substring(classPos+7);
+						// We want to add the drop_cap class to the outer most div. Unfortunately, there may not be an outermost div.
+						// If not, we just add one. If there is, we look for a class attribute. If that exists, add to it, if it doesn't then add the class attribute.
+						if (!html.startsWith('<div')) {
+							// There isn't an outer div, so just add it.
+							html = "<div class='drop_cap'>" + html + "</div>";
+						} else {
+							// There is an outer div, so add the drop_cap class to it.
+							var firstDiv = html.substring(0, html.indexOf('>'));
+							var classPos = firstDiv.indexOf('class=');
+							if (classPos === -1) {
+								// There is no class attribute, so add one.
+								html = '<div class="drop_cap" ' + html.substring(4) + '</div>';
+							} else {
+								// there is a class attribute, so add drop_cap to it
+								html = html.substring(0, classPos+7) + 'drop_cap ' + html.substring(classPos+7);
 							}
 						}
+
+// old way: probably can delete
+//						if (!html.include("drop_cap"))
+//						{
+//							if (!html.startsWith("<p"))
+//								html = "<div class='drop_cap'>" + html + "</div>";
+//							else
+//							{
+//								var firstp = html.substring(0, html.indexOf('>'));
+//								var classPos = firstp.indexOf('class=');
+//								if (classPos === -1)
+//									html = "<div class='drop_cap'" + html.substring(2);
+//								else
+//									html = html.substring(0, classPos+7) + "drop_cap " + html.substring(classPos+7);
+//							}
+//						}
 					}
 					else
 					{
@@ -717,9 +784,15 @@ var RichTextEditor = Class.create({
 						// The selection wasn't retrievable, so we have to compare the two strings to find the first difference and the last difference.
 						setTimeout(function(){
 							var contents = editor.getEditorHTML();
+							var tagStart = null;
 							for (var startPos = 0; startPos < tempContents.length; startPos++) {
+								// We don't want to split tags, though, so keep track of whether we are in a tag and back up if so.
 								if (tempContents[startPos] !== contents[startPos]) break;
+								if (tempContents[startPos] === '<') tagStart = startPos;
+								if (tempContents[startPos] === '>') tagStart = null;
 							}
+							if (tagStart !== null)
+								startPos = tagStart;
 							var oldEnd = tempContents.length-1;
 							var newEnd = contents.length-1;
 							while (1) {
