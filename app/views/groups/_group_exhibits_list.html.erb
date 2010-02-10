@@ -96,7 +96,7 @@
 		<div class="group_only_text">Exhibit Shared to Group Only</div>
 <% end -%>
 <% if exhibit.editors_only -%>
-		<div class="group_only_text">Exhibit Shared to Editors Only</div>
+		<div class="group_only_text">Exhibit Shared with Administrators Only</div>
 <% end -%>
 		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
 		<div class="right_of_thumbnail exhibit_link">
@@ -109,7 +109,7 @@
 				<br /><%= author_options_label %> <%= link_to("[edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 <% if group.can_edit(user_id) -%>
-				<br />Group Editor options:
+				<br />Group Administrator options:
 			<%= link_to_function("[remove from cluster]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if cluster != nil %>
 			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) %>
 			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility != 'group' && exhibit.is_published != 3 -%>
