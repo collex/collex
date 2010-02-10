@@ -941,12 +941,12 @@ class MyCollexController < ApplicationController
     ret = []
 		groups.each { |group|
 			obj = {}
-			obj[:id] = group.id
+			obj[:id] = group.get_visible_id()
 			obj[:img] = @template.get_group_image_url(group)
 			obj[:title] = group.id
 			obj[:strFirstLine] = group.name
 			editors = group.get_all_editors()
-			editor_label = "Editor#{'s' if editors.length > 1}: "
+			editor_label = "Administrator#{'s' if editors.length > 1}: "
 			for editor in editors
 				editor_label += User.find(editor).fullname + ' '
 			end

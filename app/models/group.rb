@@ -268,6 +268,11 @@ class Group < ActiveRecord::Base
 		return msgs
 	end
 
+	def get_visible_id
+		return self.visible_url if self.visible_url && self.visible_url.length > 0
+		return self.id
+	end
+
 	#
 	# enumerations
 	#
