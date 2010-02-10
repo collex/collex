@@ -888,12 +888,12 @@ class Exhibit < ActiveRecord::Base
 		if Group.is_peer_reviewed_group(self)
 			return "This exhibit is visible to everyone." if self.is_published == 1
 			return "Submitted for peer-review" if self.is_published == 2
-			return "This exhibit is visible to the group's editors." if self.is_published == 4
+			return "This exhibit is visible to the group's administrators." if self.is_published == 4
 			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
 		else
 			return "This exhibit is visible to everyone." if self.is_published == 1
 			return "This exhibit is visible to members of the group." if self.is_published == 3
-			return "This exhibit is visible to the group's editors." if self.is_published == 4
+			return "This exhibit is visible to the group's administrators." if self.is_published == 4
 			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
 		end
 	end
@@ -904,10 +904,10 @@ class Exhibit < ActiveRecord::Base
 			case self.is_published
 			when 0 then
 				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
-				ret.push( { :text=> "[Share with editors]", :param => 4 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 2 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
-				ret.push( { :text=> "[Share with editors]", :param => 4 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 4 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
@@ -918,19 +918,19 @@ class Exhibit < ActiveRecord::Base
 			when 0 then
 				ret.push( { :text=> "[Share with group]", :param => 3 })
 				ret.push( { :text=> "[Publish to web]", :param => 1 })
-				ret.push( { :text=> "[Share with editors]", :param => 4 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 1 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Share with group]", :param => 3 })
-				ret.push( { :text=> "[Share with editors]", :param => 4 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 2 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Share with group]", :param => 3 })
-				ret.push( { :text=> "[Share with editors]", :param => 4 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 3 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Publish to web]", :param => 1 })
-				ret.push( { :text=> "[Share with editors]", :param => 4 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 4 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Publish to web]", :param => 1 })

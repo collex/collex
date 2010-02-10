@@ -17,7 +17,7 @@
 <%# group_discussions_list : parameters: ActiveRecord group, ActiveRecord cluster, int user_id -%>
 <%# if cluster is nil, then this is the group page, otherwise it is the cluster page -%>
 <% cluster ||= nil -%>
-<div class="group_header">Discussions</div>
+<div class="group_header">DISCUSSIONS</div>
 <% threads = DiscussionThread.all(:conditions => ["group_id = ? AND cluster_id IS NULL", group.id]) if cluster == nil -%>
 <% threads = DiscussionThread.find_all_by_cluster_id(cluster.id) if cluster != nil -%>
 <% if !group.can_read_forum(user_id) -%>

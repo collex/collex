@@ -161,7 +161,8 @@
 	color:black;
 	background:#B99A86;
 	padding:4px 14px 4px 14px;
-	font-size: 1.3em;
+	font-size: 1.2em;
+	font-weight: bold;
 }
 
 #group_exhibits .group_header {
