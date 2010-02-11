@@ -133,12 +133,12 @@
 #group_discussions {
 	float: right;
 	border-left:2px solid gray;
-	width:242px;
+	width:350px;
 }
 
 #group_exhibits {
 	border-right:2px solid gray;
-	margin-right: 242px;
+	margin-right: 350px;
 	padding-top:0.5em;
 }
 
@@ -169,17 +169,8 @@
 .header_right {
 	float: right;
 	margin-right:-10px;
-	width:230px;
+	width:330px;
 }
-
-/*#group_exhibits .group_header {
-	margin-left: -20px;
-	padding-right:8px;
-}
-
-#group_discussions .group_header {
-	margin-right: -10px;
-}*/
 
 .change_forum_permissions {
 	padding-bottom:  1em;
@@ -268,4 +259,8 @@
 	color: #b5b5b5;
 	font-size: .8em;
 	padding-bottom:4px;
+}
+
+.group_thread_title {
+	font-size: 1.3em;
 }
