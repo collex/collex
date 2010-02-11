@@ -144,6 +144,7 @@ class ClustersController < ApplicationController
 	#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 	#				end
 				end
+				params[:cluster]['visibility'] = 'everyone'
 			@cluster = Cluster.new(params[:cluster])
 			@cluster.image = image
 			err = false
