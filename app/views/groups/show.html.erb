@@ -21,6 +21,8 @@
 		<%= render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user_id } %>
 	</div>
 	<div class="clear_both"></div>
+	<div class="group_header header_right">DISCUSSIONS</div>
+	<div class="group_header">CONTENT</div>
 	<div id="group_discussions">
 		<%= render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => curr_user_id } %>
 	</div>
