@@ -70,11 +70,18 @@ class Group < ActiveRecord::Base
 	end
 
 	def can_view_exhibit(exhibit, user_id)
-		# the exhibit is visible if the user is a member of the group, or if the exhibit is shared to the web and not limited by the editor
-		# and the exhibit is not limited to editors, unless the user is an editor
-		if exhibit.is_published == 4
-			return is_editor(user_id)
-		end
+		# The exhibit is visible if the user is an admin of the group.
+		# Then check to see if it is in a restricted cluster, or it is a restricted exhibit. If so, then it is not visible.
+		# Then see if the user is a member. If so, then it is visible.
+		# Then see if it is restricted to the group.
+		
+		# see if only an editor can see it.
+		return true if is_editor(user_id)
+		return false if exhibit.is_published == 4
+		cluster = Cluster.find_by_id(exhibit.cluster_id)	# this can fail if the cluster was deleted with exhibits in it.
+		return false if cluster && cluster.visibility != 'everyone'
+
+		# see if only a member can see it
 		return true if is_member(user_id)
 		return true if exhibit.is_published == 1 && (exhibit.editor_limit_visibility == nil || exhibit.editor_limit_visibility != 'group')
 		return false

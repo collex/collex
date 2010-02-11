@@ -19,4 +19,21 @@ class Cluster < ActiveRecord::Base
 	has_many :discussion_threads
 	belongs_to :group
   belongs_to :image#, :dependent=>:destroy
+
+	def get_visibility()
+		return self.visibility
+	end
+
+	def get_friendly_visibility_string()
+		list = get_friendly_visibility_list()
+		vis = get_visibility()
+		list.each { |item|
+			return item[:text] if item[:value] == vis
+		}
+		return ""	# this should never happen
+	end
+
+	def get_friendly_visibility_list()
+		return [ { :value => 'everyone', :text =>	'Everyone' }, { :value => 'administrators', :text =>	'Administrators only' }]
+	end
 end
