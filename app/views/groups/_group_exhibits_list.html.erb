@@ -61,12 +61,20 @@
 		</li>
 		<li><%= link_to_function("Change which #{group.exhibits_label}s are shown", "changeWhichExhibitsAreShown(#{group.id}, gGroupData.show_exhibits, #{Group.show_exhibits_to_json()}, #{Group.show_exhibits_explanations_to_json()});", { :class => 'modify_link' }) %></li>
 	</ul>
-<% else -%>
+<% else #if cluster == nil -%>
 	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
-<% end -%>
+<% end #if cluster == nil -%>
 </div>
-<br />
+<% else # if group.can_edit(user_id) -%>
+<% if group.can_create_exhibit(user_id) -%>
+<div class="set_exhibit_style">
+	<ul>
+		<li><%= link_to_function "Create an #{group.exhibits_label}", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/my_collex/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
+	</ul>
+</div>
 <% end -%>
+<% end # if group.can_edit(user_id) -%>
+<br />
 	<div>
 <% if cluster == nil -%>
 <% if clusters.length > 0 %>
