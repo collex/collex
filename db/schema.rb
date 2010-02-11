@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100211145811) do
+ActiveRecord::Schema.define(:version => 20100211161418) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -235,6 +235,8 @@ ActiveRecord::Schema.define(:version => 20100211145811) do
     t.string   "course_mnemonic"
     t.string   "show_exhibits"
     t.string   "visible_url"
+    t.string   "exhibits_label"
+    t.string   "clusters_label"
   end
 
   create_table "groups_users", :force => true do |t|

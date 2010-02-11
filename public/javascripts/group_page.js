@@ -447,6 +447,33 @@ var changeClusterVisibility = function(update_url, cluster_id, value, visibility
 		target_els: [ update_el ] });
 };
 
+var changeExhibitLabel = function(update_url, cluster_id, value, options, update_el) {
+	new SelectInputDlg({
+		title: 'Change Exhibit Label',
+		prompt: 'Label',
+		id: 'group[exhibits_label]',
+		options: options,
+		value: value,
+		okStr: 'Save',
+		extraParams: { id: cluster_id },
+		actions: [ update_url, '/groups/group_exhibits_list' ],
+		target_els: [ update_el, 'group_exhibits' ] });
+};
+
+var changeClusterLabel = function(update_url, cluster_id, value, options, update_el) {
+	new SelectInputDlg({
+		title: 'Change Cluster Label',
+		prompt: 'Label',
+		id: 'group[clusters_label]',
+		options: options,
+		value: value,
+		okStr: 'Save',
+		extraParams: { id: cluster_id },
+		actions: [ update_url, '/groups/group_exhibits_list' ],
+		target_els: [ update_el, 'group_exhibits' ] });
+};
+
+
 var removeFromCluster = function(group_id, cluster_id, exhibit_id) {
 	ajaxWithProgressDlg(['/clusters/remove_from_cluster', '/groups/group_exhibits_list'], ['cluster_details', 'group_exhibits'],
 		{ title: "Removing Exhibit From Cluster", waitMessage: "Please wait...", completeMessage: 'The exhibit is now back in the group\'s list.' },

@@ -420,4 +420,12 @@ class Group < ActiveRecord::Base
 			"List only exhibits and not clusters in the exhibits list."  ]
 		return explanations.to_json()
 	end
+
+	def get_exhibit_label_list
+		return [ { :value => 'Exhibit', :text => 'Exhibit'}, { :value => 'Article', :text => 'Article' }]
+	end
+
+	def get_cluster_label_list
+		return [ { :value => 'Cluster', :text => 'Cluster'}, { :value => 'Issue', :text => 'Issue' }, { :value => 'Volume', :text => 'Volume' }]
+	end
 end
