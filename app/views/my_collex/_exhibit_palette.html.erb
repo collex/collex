@@ -17,7 +17,7 @@
 <%# exhibit_palette params: ActiveRecord exhibit -%>	
 <% collected_object_thumbnails = ExhibitObject.get_collected_object_thumbnail_array(exhibit.id) -%>
 <span class="exhibit_profile">Exhibit Palette (<%= pluralize(collected_object_thumbnails.length, "#{SITE_NAME} Object") %>)
-	<%= link_to_function("[Edit Palette]", "new EditExhibitObjectListDlg('#{PROGRESS_SPINNER_PATH}', '/my_collex/get_all_collected_objects', '/my_collex/update_objects_in_exhibits', #{exhibit.id}, 'exhibit_palette'); return false;", { :class => 'nav_link' }) %>
+	<%= link_to_function("[Edit Palette]", "new EditExhibitObjectListDlg('#{PROGRESS_SPINNER_PATH}', '/#{MY_COLLEX_URL}/get_all_collected_objects', '/#{MY_COLLEX_URL}/update_objects_in_exhibits', #{exhibit.id}, 'exhibit_palette'); return false;", { :class => 'nav_link' }) %>
 </span>
 <div class="exhibit_palette_items">
 <table>
@@ -27,7 +27,7 @@
 			<% 0.upto(9) do -%>
 				<td>
 					<% if count < collected_object_thumbnails.length -%>
-						<a href="#" onclick="new ResultRowDlg('/my_collex/get_object_details', '<%= collected_object_thumbnails[count][:uri] %>', '<%= PROGRESS_SPINNER_PATH %>', {}); return false;">
+						<a href="#" onclick="new ResultRowDlg('/<%= MY_COLLEX_URL %>/get_object_details', '<%= collected_object_thumbnails[count][:uri] %>', '<%= PROGRESS_SPINNER_PATH %>', {}); return false;">
 							<%= render :partial => 'forum/img_with_progress_spinner', :locals => { :src => collected_object_thumbnails[count][:image], :alt => collected_object_thumbnails[count][:title], :title => collected_object_thumbnails[count][:title] + " (click for details)", :width => "25", :height => "25" } %>
 						</a>
 						<% count = count + 1 -%>

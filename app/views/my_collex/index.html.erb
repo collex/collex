@@ -23,7 +23,7 @@
 <% else -%>
 	<% curr_user = User.find_by_username(session[:user][:username]) -%>
 	<div class="subpage_nav"> 
-		<%= MY_COLLEX %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>&nbsp;<br />
+		<%= MY_COLLEX %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :controller => MY_COLLEX_URL, :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>&nbsp;<br />
 	</div>
 		
 	<div class="inner_content_container">

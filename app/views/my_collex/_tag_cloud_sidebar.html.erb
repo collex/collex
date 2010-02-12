@@ -22,7 +22,7 @@
 	<% else -%>
 		<center>
 			<div id="tag_cloud_div">
-				<%= render :partial => '/tag/cloud', :locals => { :cloud_info => cloud_info, :selected_tag => "", :controller_for_tags => 'my_collex', :hide_some => true } %>
+				<%= render :partial => '/tag/cloud', :locals => { :cloud_info => cloud_info, :selected_tag => "", :controller_for_tags => MY_COLLEX_URL, :hide_some => true } %>
 			</div>
 		</center>
 	<% end -%>

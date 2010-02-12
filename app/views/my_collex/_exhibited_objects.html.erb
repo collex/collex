@@ -35,7 +35,7 @@
 			<td><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :height => 15, :show_immediately => false } %></td>
 			<td class="exhibit_link" colspan="3">
 				<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-				<%= link_to h(exhibit.title), "/my_collex/edit_exhibit?id=#{exhibit.id}", { :title => 'Edit Exhibit', :class => 'nav_link' } %>
+				<%= link_to h(exhibit.title), "/#{MY_COLLEX_URL}/edit_exhibit?id=#{exhibit.id}", { :title => 'Edit Exhibit', :class => 'nav_link' } %>
 				<% else -%>
 				<%= exhibit.title %>
 				<% end -%>

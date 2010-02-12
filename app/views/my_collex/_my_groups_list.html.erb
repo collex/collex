@@ -27,4 +27,4 @@
 <% end -%>
 <% end -%>
 	<%= link_to_function("Create Group", "new CreateGroupWizardDlg('#{user_id}', '/groups/verify_group_title', '/groups/create', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[0]}', '#{SITE_NAME}', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', '#{User.find(user_id).institution}', '#{User.find(user_id).fullname}'); return false;", :class => 'nav_link' ) %>
-	<%= link_to_function("[Browse Groups]", "new BrowseGroupsDlg('#{PROGRESS_SPINNER_PATH}', '/my_collex/get_all_groups', 'browse_groups'); return false;", { :class => 'nav_link' }) %>
+	<%= link_to_function("[Browse Groups]", "new BrowseGroupsDlg('#{PROGRESS_SPINNER_PATH}', '/#{MY_COLLEX_URL}/get_all_groups', 'browse_groups'); return false;", { :class => 'nav_link' }) %>

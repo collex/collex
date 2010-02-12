@@ -35,7 +35,7 @@
 	<p class="FP_attachment_title"><%= title %></p>
 	<% if comment.get_type() == "nines_object" -%>
 		<p>
-			<a class="nav_link" href="#" onclick="new ResultRowDlg('/my_collex/get_object_details', '<%= hit['uri'] %>', '<%= PROGRESS_SPINNER_PATH %>', { partial: '/forum/attachment', index: <%= comment.id %>, target_el: '<%= "attachment_#{comment.id}" %>'}); return false;">[view details...]</a>
+			<a class="nav_link" href="#" onclick="new ResultRowDlg('/<%=MY_COLLEX_URL%>/get_object_details', '<%= hit['uri'] %>', '<%= PROGRESS_SPINNER_PATH %>', { partial: '/forum/attachment', index: <%= comment.id %>, target_el: '<%= "attachment_#{comment.id}" %>'}); return false;">[view details...]</a>
 		</p>
 	<% end -%>
 </div>		

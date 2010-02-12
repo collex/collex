@@ -50,7 +50,7 @@
 	<%= link_to_function("Click here to set a new style.", "new EditFontsDlg('/groups/update', #{group.id}, gGroupData, 'group', true, 'group_details')", { :class => 'modify_link' }) %>
 	<ul>
 <% if group.can_create_exhibit(user_id) -%>
-		<li><%= link_to_function "Create an #{group.exhibits_label}", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/my_collex/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
+		<li><%= link_to_function "Create an #{group.exhibits_label}", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/#{MY_COLLEX_URL}/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
 <% end -%>
 		<li><%= link_to_function("Create a #{group.clusters_label} of #{group.exhibits_label}s", "new CreateNewClusterDlg('/clusters/create', #{group.id}, '#{group.name}', #{group.group_type != 'classroom'}, 'group_exhibits_list', 'group_exhibits', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}')", { :class => 'modify_link' }) %>&nbsp;
 			<%= link_to_function("( what is this? )", "$('cluster_explanation').removeClassName('hidden'); $('cluster_what_is_this').addClassName('hidden');", { :class => 'modify_link what_is_this', :id => 'cluster_what_is_this' }) %>
@@ -68,7 +68,7 @@
 <% if group.can_create_exhibit(user_id) -%>
 <div class="set_exhibit_style">
 	<ul>
-		<li><%= link_to_function "Create an #{group.exhibits_label}", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/my_collex/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
+		<li><%= link_to_function "Create an #{group.exhibits_label}", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/#{MY_COLLEX_URL}/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
 	</ul>
 </div>
 <% end -%>
@@ -117,7 +117,7 @@
 			<%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-				<br /><%= author_options_label %> <%= link_to("[edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+				<br /><%= author_options_label %> <%= link_to("[edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 <% if group.can_edit(user_id) -%>
 				<br />Group Administrator options:
@@ -140,7 +140,7 @@
 		<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-				| <%= link_to("[Edit this exhibit]", { :controller => 'my_collex', :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+				| <%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 			<%= link_to_function("[remove from #{group.clusters_label}]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
 			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions);", { :class => 'nav_link' }) if group.can_edit(user_id) %>

@@ -57,7 +57,7 @@
 			<%= link_to_function "[Show Outline]", "showExhibitOutline(-1,  -1);", :class => 'nav_link' %>
 			<%= link_to_function "[Preview]", "var el = $('overview_visible_url'); var url = el.innerHTML; if (url.length === 0) url = #{@exhibit.id}; window.location = '/exhibits/view/'+url+'?page=#{@page}';", { :class => 'nav_link' } %>
 			<% if is_admin? -%>
-				<%= link_to_function '[Publish as different user]', "new SetExhibitAuthorAlias('#{PROGRESS_SPINNER_PATH}', '/my_collex/get_all_users', '/my_collex/set_exhibit_author_alias', #{@exhibit.id}, 'exhibit_page', #{@page});",  :class => 'nav_link' %>
+				<%= link_to_function '[Publish as different user]', "new SetExhibitAuthorAlias('#{PROGRESS_SPINNER_PATH}', '/#{MY_COLLEX_URL}/get_all_users', '/#{MY_COLLEX_URL}/set_exhibit_author_alias', #{@exhibit.id}, 'exhibit_page', #{@page});",  :class => 'nav_link' %>
 			<% end -%>
 		</div>
 		

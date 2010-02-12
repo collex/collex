@@ -43,7 +43,7 @@
 					<% else -%>
 						<% extra = "" -%>
 					<% end -%>
-					<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'my_collex', :action => 'results' } %>
+					<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => MY_COLLEX_URL, :action => 'results' } %>
 				<% end -%>
 			</div>
 		</div>

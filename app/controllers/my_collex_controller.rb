@@ -159,7 +159,7 @@ class MyCollexController < ApplicationController
 	# This is called from AJAX when a user's link has been clicked.
 	def show_profile
 		user_id = params[:user]
-		render :partial => '/my_collex/profile', :locals => { :user => User.find(user_id), :can_edit => false }
+		render :partial => "/#{MY_COLLEX_URL}/profile", :locals => { :user => User.find(user_id), :can_edit => false }
 	end
 
   # This is called from AJAX when the user has finished filling out the form.

@@ -191,6 +191,11 @@ function initializeInplaceHeaderEditor(element_id, action)
 	{
 		var This = $(this).down();
 		var inner_element_id = 'inner_' + This.id;
+		var startingText = $(inner_element_id).innerHTML;
+		if (startingText === 'Welcome to your new exhibit. Click here to enter text, or select another layout from the section editing toolbar above.' ||
+			startingText === 'Enter your text here.')
+			startingText = '';
+
 
 		// The parameter is the < id="element_id" > tag that was originally passed in during initialization
 		// That is, el = <div id='header_YY'>
@@ -221,7 +226,7 @@ function initializeInplaceHeaderEditor(element_id, action)
 		var dlgLayout = {
 			page: 'layout',
 			rows: [
-				[ { text: 'Header: ', klass: 'new_exhibit_label' }, { input: 'value', value: $(inner_element_id).innerHTML, klass: 'header_input' }, { custom: footnoteAbbrev }, footnoteAbbrev.createEditButton('footnoteEditStar') ],
+				[ { text: 'Header: ', klass: 'new_exhibit_label' }, { input: 'value', value: startingText, klass: 'header_input' }, { custom: footnoteAbbrev }, footnoteAbbrev.createEditButton('footnoteEditStar') ],
 				[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
