@@ -436,6 +436,8 @@ class GroupsController < ApplicationController
 			@group.footnote_font_size = '16'
 			@group.use_styles = 0
 			@group.image = image
+			@group.exhibits_label = "Exhibit"
+			@group.clusters_label = "Cluster"
 			err = false
 			if @group.save
 				begin
