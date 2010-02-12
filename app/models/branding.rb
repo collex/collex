@@ -18,7 +18,7 @@ class Branding
 	# This contains the functional differences between Collex and the specific implementation of it.
 	# In this case, this is the NINES specific stuff
   def self.version	# Don't change the format of this call because collex.rake depends on it!
-    return "1.5.24"
+    return "1.5.25"
   end
 
 	def self.yui_path(is_debug)
