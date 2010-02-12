@@ -17,7 +17,6 @@
 <%# group_exhibits_list : parameters: ActiveRecord group, ActiveRecord cluster, int user_id -%>
 <%# if cluster is nil, then this is the group page, otherwise it is the cluster page -%>
 <% cluster ||= nil -%>
-<% if cluster == nil -%>
 <script type="text/javascript">
 <%
 	curr_cluster_sort = session[:sort_cluster] ? session[:sort_cluster] : 'name'
@@ -40,9 +39,9 @@
 		clusters = []
 	end
 -%>
-	gClusterOptions = <%= cluster_options.to_json()  %>;
+	gClusterOptions = <%= cluster_options.to_json() %>;
+	gNonClusteredExhibits = <%= group.non_clustered_exhibits().to_json() %>;
 </script>
-<% end -%>
 <% if group.can_edit(user_id) -%>
 <div class="set_exhibit_style">
 <% if cluster == nil -%>
@@ -52,16 +51,16 @@
 <% if group.can_create_exhibit(user_id) -%>
 		<li><%= link_to_function "Create an #{group.exhibits_label}", "var dlg = new CreateNewExhibitWizard({ group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/#{MY_COLLEX_URL}/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
 <% end -%>
-		<li><%= link_to_function("Create a #{group.clusters_label} of #{group.exhibits_label}s", "new CreateNewClusterDlg('/clusters/create', #{group.id}, '#{group.name}', #{group.group_type != 'classroom'}, 'group_exhibits_list', 'group_exhibits', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}')", { :class => 'modify_link' }) %>&nbsp;
+		<li><%= link_to_function("Create a #{group.clusters_label} of #{group.exhibits_label}s", "new CreateNewClusterDlg('/clusters/create', #{group.id}, '#{group.name}', #{group.group_type != 'classroom'}, 'group_exhibits_list', 'group_exhibits', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', '#{group.clusters_label}')", { :class => 'modify_link' }) %>&nbsp;
 			<%= link_to_function("( what is this? )", "$('cluster_explanation').removeClassName('hidden'); $('cluster_what_is_this').addClassName('hidden');", { :class => 'modify_link what_is_this', :id => 'cluster_what_is_this' }) %>
 			<span id="cluster_explanation" class="group_member_explanation hidden" ><%= group.clusters_label%>s are a way to manage multiple exhibits on similar topics. For example, the administrators of a Byron group might want to create <%= group.clusters_label%>s for Poetry and Prose, or those using their accounts for teaching purposes might want to create separate <%= group.clusters_label%>s for each class.
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
 			</span>
 		</li>
-		<li><%= link_to_function("Change which #{group.exhibits_label}s are shown", "changeWhichExhibitsAreShown(#{group.id}, gGroupData.show_exhibits, #{Group.show_exhibits_to_json()}, #{Group.show_exhibits_explanations_to_json()});", { :class => 'modify_link' }) %></li>
+		<li><%= link_to_function("Change which #{group.exhibits_label}s are shown", "changeWhichExhibitsAreShown(#{group.id}, gGroupData.show_exhibits, #{Group.show_exhibits_to_json()}, #{Group.show_exhibits_explanations_to_json()}, '#{group.exhibits_label}');", { :class => 'modify_link' }) %></li>
 	</ul>
 <% else #if cluster == nil -%>
-	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{cluster.id}, gNonClusteredExhibits, 'cluster_details')", { :class => 'modify_link' }) %>
+	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{group.id}, #{cluster.id}, gNonClusteredExhibits, 'group_exhibits', '#{group.exhibits_label}', '#{group.clusters_label}')", { :class => 'modify_link' }) %>
 <% end #if cluster == nil -%>
 </div>
 <% else # if group.can_edit(user_id) -%>
@@ -121,10 +120,10 @@
 			<% end -%>
 <% if group.can_edit(user_id) -%>
 				<br />Group Administrator options:
-			<%= link_to_function("[remove from #{group.clusters_label}]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if cluster != nil %>
-			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id});", { :class => 'nav_link' }) %>
-			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility != 'group' && exhibit.is_published != 3 -%>
-			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility == 'group' -%>
+			<%= link_to_function("[move #{group.exhibits_label}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.exhibits_label}');", { :class => 'nav_link' }) %>
+			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id}, '#{group.exhibits_label}');", { :class => 'nav_link' }) %>
+			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group', '#{group.exhibits_label}');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility != 'group' && exhibit.is_published != 3 -%>
+			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www', '#{group.exhibits_label}');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility == 'group' -%>
 <% end -%>
 		</div>
 	</div>
@@ -142,15 +141,15 @@
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 				| <%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
-			<%= link_to_function("[remove from #{group.clusters_label}]", "removeFromCluster(#{group.id}, #{cluster.id}, #{exhibit.id});", { :class => 'nav_link' }) if group.can_edit(user_id) && cluster != nil %>
-			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions);", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[move #{group.exhibits_label}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.exhibits_label}', '#{group.clusters_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}', '#{group.exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</div>
 	</div>
 <% end # for exhibit in pending_exhibits -%>
 <% end # if pending_exhibits.length > 0 -%>
 <% if group.show_exhibits != 'show_clusters_only' -%>
-<% if !exhibits || exhibits.length == 0 -%>
+<% if (!exhibits || exhibits.length == 0) && pending_exhibits.length == 0 -%>
 	<div class="empty_list_text" >There have been no <%= group.exhibits_label %>s published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end -%>
 <% else # if group.can_view_exhibits(user_id) -%>

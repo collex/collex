@@ -41,24 +41,15 @@ class ClustersController < ApplicationController
 
 	def move_exhibit
 		exhibit_id = params[:exhibit_id]
-		cluster_id = params[:cluster_id]
-		exhibit = Exhibit.find(exhibit_id)
-		exhibit.cluster_id = cluster_id
-		exhibit.save!
-		cluster = Cluster.find(cluster_id)
-		render :partial => 'cluster_details', :locals => { :group => Group.find(cluster.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
-	end
-
-	def remove_from_cluster
-		exhibit_id = params[:exhibit_id]
-		cluster_id = params[:cluster_id]
 		group_id = params[:group_id]
+		cluster_id = params[:cluster_id]
+		dest_cluster = params[:dest_cluster]
 		exhibit = Exhibit.find(exhibit_id)
-		exhibit.cluster_id = nil
+		exhibit.cluster_id = dest_cluster == '0' ? nil : dest_cluster
 		exhibit.save!
-		cluster = Cluster.find(cluster_id)
-		render :partial => 'cluster_details', :locals => { :group => Group.find(cluster.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
-	end
+		cluster = cluster_id == '0' ? nil : Cluster.find(cluster_id)
+		render :partial => '/groups/group_exhibits_list', :locals => { :group => Group.find(group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+end
 
 	def remove_profile_picture
 		id = params[:id]

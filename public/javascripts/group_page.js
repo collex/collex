@@ -326,10 +326,10 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		target_els: [ 'group_details' ] });
 };
 
-var changeWhichExhibitsAreShown = function(id, value, groupShowExhibitsOptions, groupShowExhibitsExplanations) {
+var changeWhichExhibitsAreShown = function(id, value, groupShowExhibitsOptions, groupShowExhibitsExplanations, exhibitLabel) {
 	new SelectInputDlg({
-		title: 'Change Which Exhibits Are Shown',
-		prompt: 'Show Exhibits',
+		title: 'Change Which ' + exhibitLabel + 's Are Shown',
+		prompt: 'Show ' + exhibitLabel + 's',
 		id: 'group[show_exhibits]',
 		options: groupShowExhibitsOptions,
 		explanation: groupShowExhibitsExplanations,
@@ -340,10 +340,10 @@ var changeWhichExhibitsAreShown = function(id, value, groupShowExhibitsOptions, 
 		target_els: [ 'group_details', 'group_exhibits' ] });
 };
 
-var editVisibility = function(id, value, groupExhibitVisibilityOptions, groupExhibitVisibilityExplanations) {
+var editVisibility = function(id, value, groupExhibitVisibilityOptions, groupExhibitVisibilityExplanations, exhibitLabel) {
 	new SelectInputDlg({
-		title: 'Change Exhibit Visibility',
-		prompt: 'Exhibits are ',
+		title: 'Change ' + exhibitLabel + ' Visibility',
+		prompt: exhibitLabel + 's are ',
 		id: 'group[exhibit_visibility]',
 		options: groupExhibitVisibilityOptions,
 		explanation: groupExhibitVisibilityExplanations,
@@ -422,21 +422,21 @@ var editURL = function(id, value, controller, prompt) {
 		target_els: [ controller + '_details' ] });
 };
 
-var moveExhibitToCluster = function(update_url, cluster_id, exhibitOptions, update_el) {
+var moveExhibitToCluster = function(update_url, group_id, cluster_id, exhibitOptions, update_el, exhibitLabel, clusterLabel) {
 	new SelectInputDlg({
-		title: 'Move Exhibit to Cluster',
-		prompt: 'Exhibit',
+		title: 'Move ' + exhibitLabel + ' to ' + clusterLabel,
+		prompt: exhibitLabel,
 		id: 'exhibit_id',
 		options: exhibitOptions,
 		okStr: 'Move',
-		extraParams: { cluster_id: cluster_id },
-		actions: [ update_url, '/groups/group_exhibits_list' ],
-		target_els: [ update_el, 'group_exhibits' ] });
+		extraParams: { dest_cluster: cluster_id, cluster_id: cluster_id, group_id: group_id },
+		actions: [ update_url],
+		target_els: [ update_el ] });
 };
 
-var changeClusterVisibility = function(update_url, cluster_id, value, visibilityOptions, update_el) {
+var changeClusterVisibility = function(update_url, cluster_id, value, visibilityOptions, update_el, clusterLabel) {
 	new SelectInputDlg({
-		title: 'Change Cluster Visibility',
+		title: 'Change ' + clusterLabel + ' Visibility',
 		prompt: 'Visibility',
 		id: 'cluster[visibility]',
 		options: visibilityOptions,
@@ -473,11 +473,18 @@ var changeClusterLabel = function(update_url, cluster_id, value, options, update
 		target_els: [ update_el, 'group_exhibits' ] });
 };
 
-
-var removeFromCluster = function(group_id, cluster_id, exhibit_id) {
-	ajaxWithProgressDlg(['/clusters/remove_from_cluster', '/groups/group_exhibits_list'], ['cluster_details', 'group_exhibits'],
-		{ title: "Removing Exhibit From Cluster", waitMessage: "Please wait...", completeMessage: 'The exhibit is now back in the group\'s list.' },
-		{group_id: group_id, cluster_id: cluster_id, exhibit_id: exhibit_id });
+var moveExhibit = function(exhibit_id, clusterOptions, group_id, cluster_id, exhibitLabel) {
+	clusterOptions.unshift({text: "(None)", value: "0" });
+	new SelectInputDlg({
+		title: 'Move ' + exhibitLabel,
+		prompt: 'To:',
+		id: 'dest_cluster',
+		value: cluster_id,
+		options: clusterOptions,
+		okStr: 'Save',
+		extraParams: { group_id: group_id, cluster_id: cluster_id, exhibit_id: exhibit_id },
+		actions: [ '/clusters/move_exhibit' ],
+		target_els: [ 'group_exhibits' ] });
 };
 
 var request_to_join = function(group_id, user_id) {
@@ -485,18 +492,6 @@ var request_to_join = function(group_id, user_id) {
 		{ title: "Request To Join Group", waitMessage: "Please wait...", completeMessage: 'A request to join this group is pending acceptance by the moderator.' },
 		{group_id: group_id, user_id: user_id });
 };
-
-//var accept_request = function(id) {
-//	ajaxWithProgressDlg(['/groups/accept_request'], ['group_details'],
-//		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user is now a member of the group.' },
-//		{id: id });
-//};
-//
-//var decline_request = function(id) {
-//	ajaxWithProgressDlg(['/groups/decline_request'], ['group_details'],
-//		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'The user\'s request to join the group has been denied.' },
-//		{id: id });
-//};
 
 var accept_invitation = function(pending_id) {
 	ajaxWithProgressDlg(['/groups/accept_invitation'], ['group_details'],
@@ -510,48 +505,45 @@ var decline_invitation = function(pending_id) {
 		{id: pending_id });
 };
 
-var acceptAsPeerReviewed = function(exhibit_id, clusterOptions) {
+var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, clusterLabel) {
 	clusterOptions.unshift({text: "(None)", value: "0" });
 	new SelectInputDlg({
 		title: 'Accept As Peer Reviewed',
-		prompt: 'Choose a cluster that this exhibit should appear under:',
+		prompt: 'Choose a ' + clusterLabel + ' that this ' + exhibitLabel + ' should appear under:',
 		id: 'exhibit[cluster_id]',
 		options: clusterOptions,
 		okStr: 'Save',
 		extraParams: { exhibit_id: exhibit_id, "exhibit[is_published]": '1' },
 		actions: [ '/groups/accept_as_peer_reviewed' ],
 		target_els: [ 'group_exhibits' ] });
-//	ajaxWithProgressDlg(['/groups/accept_as_peer_reviewed'], ['group_exhibits'],
-//		{ title: "Accept As Peer Reviewed", waitMessage: "Please wait...", completeMessage: 'The exhibit has been accepted.' },
-//		{exhibit_id: exhibit_id });
 };
 
-var unpublishExhibit = function(exhibit_id) {
+var unpublishExhibit = function(exhibit_id, exhibitLabel) {
 	ajaxWithProgressDlg(['/groups/unpublish_exhibit'], ['group_exhibits'],
-		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This exhibit has be set to "Private".' },
+		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' has be set to "Private".' },
 		{exhibit_id: exhibit_id });
 };
 
-var limitExhibit = function(exhibit_id) {
+var limitExhibit = function(exhibit_id, exhibitLabel) {
 	ajaxWithProgressDlg(['/groups/limit_exhibit'], ['group_exhibits'],
-		{ title: "Limit Exhibit", waitMessage: "Please wait...", completeMessage: 'This exhibit can only be viewed by group members.' },
+		{ title: "Limit Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' can only be viewed by group members.' },
 		{exhibit_id: exhibit_id });
 };
 
-var unlimitExhibit = function(exhibit_id) {
+var unlimitExhibit = function(exhibit_id, exhibitLabel) {
 	ajaxWithProgressDlg(['/groups/unlimit_exhibit'], ['group_exhibits'],
-		{ title: "Allow Publishing", waitMessage: "Please wait...", completeMessage: 'This exhibit can be viewed by everyone.' },
+		{ title: "Allow Publishing", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' can be viewed by everyone.' },
 		{exhibit_id: exhibit_id });
 };
 
-var rejectAsPeerReviewed = function(exhibit_id, name, email) {
+var rejectAsPeerReviewed = function(exhibit_id, name, email, exhibitLabel) {
 	var action = function() {
 		ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],
-			{ title: "Return Exhibit For Revisions", waitMessage: "Please wait...", completeMessage: 'The exhibit has been sent back for revisions.' },
+			{ title: "Return Exhibit For Revisions", waitMessage: "Please wait...", completeMessage: 'The ' + exhibitLabel + ' has been sent back for revisions.' },
 			{exhibit_id: exhibit_id });
 	};
 	new ConfirmDlg("Return Exhibit For Revisions",
-		"This option returns the exhibit to its original contributor for revision. If this exhibit requires changes by the author, please contact " + name + " at " + email + " with a short message notifying them of your request.", "Ok", "Cancel", action);
+		'This option returns the ' + exhibitLabel + ' to its original contributor for revision. If this ' + exhibitLabel + ' requires changes by the author, please contact ' + name + " at " + email + " with a short message notifying them of your request.", "Ok", "Cancel", action);
 };
 
 var newClusterDlg = null;
@@ -564,7 +556,7 @@ function stopNewClusterUpload(errMessage){
 }
 
 var CreateNewClusterDlg = Class.create({
-	initialize: function (create_url, group_id, group_name, can_set_thumbnail, update_url, update_el, populate_urls, progress_img) {
+	initialize: function (create_url, group_id, group_name, can_set_thumbnail, update_url, update_el, populate_urls, progress_img, clusterLabel) {
 		this.class_type = 'CreateNewClusterDlg';	// for debugging
 
 		// private variables
@@ -579,12 +571,12 @@ var CreateNewClusterDlg = Class.create({
 			dlg.setFlash("", false);
 			var data = dlg.getAllData();
 			if (data['cluster[name]'].strip().length === 0) {
-				dlg.setFlash("Please enter a name for this cluster before continuing.", true);
+				dlg.setFlash('Please enter a name for this ' + clusterLabel + ' before continuing.', true);
 				return;
 			}
 
 			newClusterDlg = This;
-			dlg.setFlash('Verifying cluster creation...', false);
+			dlg.setFlash('Verifying ' + clusterLabel + ' creation...', false);
 			dlg.getAllData();
 			
 			dlg.submitForm('layout', create_url);	// we have to submit the form normally to get the uploaded file transmitted.
@@ -595,7 +587,7 @@ var CreateNewClusterDlg = Class.create({
 		};
 
 		this.fileUploadFinished = function(id) {
-			dlg.setFlash('Cluster created...', false);
+			dlg.setFlash(clusterLabel + ' created...', false);
 			var onSuccess = function(resp) {
 				dlg.cancel();
 			};
@@ -607,16 +599,16 @@ var CreateNewClusterDlg = Class.create({
 			var layout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Creating New Cluster in the Group \"'+ group_name + "\"", klass: 'new_exhibit_title' }, { hidden: 'cluster[group_id]', value: group_id } ],
+						[ { text: 'Creating New ' + clusterLabel + ' in the Group \"'+ group_name + "\"", klass: 'new_exhibit_title' }, { hidden: 'cluster[group_id]', value: group_id } ],
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'cluster[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: '' } ],
 						[ { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label thumbnail hidden' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'thumbnail hidden' } ],
-						[ { rowClass: 'last_row' }, { button: 'Create Cluster', url: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Create ' + clusterLabel, url: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 
-			var params = { this_id: "new_cluster_wizard", pages: [ layout ], body_style: "new_cluster_div", row_style: "new_exhibit_row", title: "Create New Cluster" };
+			var params = { this_id: "new_cluster_wizard", pages: [ layout ], body_style: "new_cluster_div", row_style: "new_exhibit_row", title: "Create New " + clusterLabel };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', "cluster_name");
 			dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_urls], progress_img) });
