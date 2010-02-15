@@ -60,7 +60,31 @@ namespace :solr do
 		end
 	end
 
-	desc "Package and copy index to another machine (param=index,machine -- ex: param=merged,nines@nines.org). The remote machine's password will be requested."
+	desc "Package an individual archive and send it to a server. (param=index,machine -- ex: param=rossetti,nines@nines.org) This gets it ready to be installed on the other server with the sister script: install_archive"
+	task :package_archive => :environment do
+		today = Time.now()
+		param = ENV['param']
+		if param == nil
+			puts "Usage: call with param=the archive to package;the ssh login for the destination machine"
+		else
+			arr = param.split(',')
+			if arr.length != 2
+				puts "Usage: call with param=the archive to package;the ssh login for the destination machine"
+			else
+				index = arr[0]
+				dest = arr[1]
+				index = "archive_#{index}"
+				filename = "#{index}.tar.gz"
+				puts "zipping index \"#{index}\"..."
+				`cd #{solr_folder()}/solr/data/#{index} && tar cvzf #{filename} index`
+				puts "scp #{filename} #{dest}:uploaded_data"
+				`scp #{filename} #{dest}:uploaded_data`
+			end
+		end
+			puts "Finished in #{Time.now-today} seconds."
+	end
+
+	desc "Package and copy index to another machine (param=index,machine -- ex: param=merged,nines@nines.org). The remote machine's password will be requested. This is designed for sending the entire resource index."
 	task :send_index_to_server => :environment do
 		today = Time.now()
 		param = ENV['param']
