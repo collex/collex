@@ -74,7 +74,7 @@ namespace :solr do
 				index = arr[0]
 				dest = arr[1]
 				index = "archive_#{index}"
-				filename = "#{index}.tar.gz"
+				filename = "~/#{index}.tar.gz"
 				puts "zipping index \"#{index}\"..."
 				`cd #{solr_folder()}/solr/data/#{index} && tar cvzf #{filename} index`
 				puts "scp #{filename} #{dest}:uploaded_data"
