@@ -191,6 +191,20 @@ class CollexEngine
 #		@solr.delete(uri)
 #	end
 
+	def replace_archive(archive)
+		arr = @cores[0].split('/')
+		core = arr[arr.length-1]
+		url = "#{SOLR_URL}/admin/cores?action=mergeindexes&core=#{core}"
+		url += "&indexDir=#{archive}"
+		puts "curl \"#{url}\""
+		`curl \"#{url}\"`
+			# this will timeout. Don't crash when that happens.
+		begin
+			@solr.optimize()
+		rescue
+	  end
+	end
+
 	# this merges the indexes passed into the current index
 	def merge(indexes)
 		arr = @cores[0].split('/')

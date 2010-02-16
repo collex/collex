@@ -84,6 +84,27 @@ namespace :solr do
 			puts "Finished in #{Time.now-today} seconds."
 	end
 
+	desc "This assumes a gzipped archive in the ~/uploaded_data folder named like this: archive_XXX.tar.gz. (params: archive=XXX) It will add that archive to the resources index."
+	task :install_archive => :environment do
+		today = Time.now()
+		archive = ENV['archive']
+		if archive == nil
+			puts "Usage: call with archive=the archive to install"
+		else
+			folder = "#{ENV['HOME']}/uploaded_data"
+			index = "archive_#{archive}"
+			zipfile = "#{index}.tar.gz"
+			index_path = "#{folder}/#{index}"
+			`cd #{folder} && tar xvfz #{zipfile}`
+			`rm -r #{index_path}`
+			`mv #{folder}/index #{index_path}`
+			solr = CollexEngine.new()
+			solr.delete_archive(archive)
+			solr.replace_archive("#{index_path}")
+			puts "Finished in #{(Time.now-today)/60} minutes."
+		end
+	end
+
 	desc "Package and copy index to another machine (param=index,machine -- ex: param=merged,nines@nines.org). The remote machine's password will be requested. This is designed for sending the entire resource index."
 	task :send_index_to_server => :environment do
 		today = Time.now()
