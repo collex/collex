@@ -30,17 +30,12 @@ table, table td, table tr {
 }
 
 .nav_link:link, .nav_link:visited {
-	color:#AC2E20;
 	text-decoration:none;
 }
 
 .nav_link:hover {
 	text-decoration:underline;
 }
-
-.tag_link:link { color: #A60000; }
-.tag_link:visited { color: #A60000; }
-.tag_link:hover { color: #fff; background: #A60000; }
 
 .remove_tag {
 	color: gray !important;
@@ -51,25 +46,10 @@ table, table td, table tr {
 	color: black !important;
 }
 
-/* This is used for all links that change, or potentially change, the database */
-.modify_link:link { color: #A60000; text-decoration: none; }
-.modify_link:visited { color: #A60000; text-decoration: none; }
-.modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
-
-/* This is used for all links that go to the NINES sites. */
-.nines_link:link { color: #A60000; }
-.nines_link:visited { color: #A60000; }
-.nines_link:hover { color: #fff; background: #A60000; }
-
 .nines_link {
 	background: url(/images/nines_link.jpg) center right no-repeat;
 	padding-right: 13px;
 }
-
-/* This is used for all links that go to external websites */
-.ext_link:link { color: #A60000; text-decoration: none; }
-.ext_link:visited { color: #A60000; text-decoration: none; }
-.ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
 
 .ext_link {
 	background: url(/images/external_link.jpg) center right no-repeat;
@@ -88,13 +68,11 @@ table, table td, table tr {
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
-	color: #A60000;
 	background: url(/images/nines_link.jpg) center right no-repeat;
 	padding-right: 13px;
 } /* should match nines_link:link */
 
 .ext_linklike {
-	color: #A60000;
 	background: url(/images/external_link.jpg) center right no-repeat;
 	padding-right: 13px;
 } /* should match ext_link:link */
@@ -129,7 +107,6 @@ table, table td, table tr {
 }
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
-	color:#9D1E16;
 	font-weight:bold;
 }
 
