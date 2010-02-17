@@ -18,27 +18,27 @@
 	width:755px;
 	height:89px;
 	float:left;
-	background:url(/images/18th/lvl2_header.jpg) top left no-repeat;
+	background:url(/images/18th/lvl2_header.png) top left no-repeat;
 }
 
 #header_container {
-	background:url(/images/18th/index_header_stretch.jpg) bottom left repeat-x;
+	background:url(/images/18th/index_header_stretch.png) bottom left repeat-x;
 }
 
 .my_collex_link {
-	background:url(/images/18th/lvl2_tab_my_collex.gif) top left no-repeat;
+	background:url(/images/18th/index_tab.jpg) top left no-repeat;
 }
 
 .my_collex_link_current {
-	background:url(/images/18th/lvl2_tab_my_collex_dn.gif) top left no-repeat;
+	background:url(/images/18th/index_tab_dn.jpg) top left no-repeat;
 }
 
 .right_column_header {
-	color:#1e312d;
-	background:#1e312d;
+	color:#ffffff;
+	background:#252d3a;
 }
 
 .limit_to th {
-	background:#88b72d;
-	color:#4d7f74;
+	background:#edb046;
+	color:#ffffff;
 }

@@ -19,7 +19,7 @@ body {
 }
 
 #header_container {
-	background-color: #34436c;
+	background-color: #1D253C;
 }
 
 #main_container {
@@ -42,7 +42,7 @@ body {
 }
 
 .tab_link_current {
-	background:url(/images/18th/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/18th/index_tab_dn.jpg) top left no-repeat;
 }
 
 .my_collex_link {
