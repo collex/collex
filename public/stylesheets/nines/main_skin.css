@@ -103,3 +103,10 @@ body {
 	color:#9D1E16;
 }
 
+.login_div {
+	background-image:url("/images/nines/login_header.jpg");
+	background-repeat:no-repeat;
+	border-left: 8px solid #5f3119;
+	border-right: 8px solid #5f3119;
+	border-bottom: 8px solid #5f3119;
+}

@@ -102,3 +102,11 @@ body {
 #footer_container a, #footer_container a.link, #footer_container a.visited{
 	color:#445a93;
 }
+
+.login_div {
+	background-image:url("/images/18th/login_header.jpg");
+	background-repeat:no-repeat;
+	border-left: 8px solid #34436C;
+	border-right: 8px solid #34436C;
+	border-bottom: 8px solid #34436C;
+}
