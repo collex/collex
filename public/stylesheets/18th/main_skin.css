@@ -1,0 +1,104 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body {
+	background:#1d253c;
+}
+
+#header_container {
+	background-color: #34436c;
+}
+
+#main_container {
+	border-left:10px #34436c solid;
+	border-right:10px #34436c solid;
+	border-bottom:10px #34436c solid;
+}
+
+#footer_container {
+	background:#1d253c;
+}
+
+.exhibit_footer {
+	background-color: #34436c;
+}
+
+.tab_link {
+	background:url(/images/18th/index_tab.gif) top left no-repeat;
+	color:#ffffff;
+}
+
+.tab_link_current {
+	background:url(/images/18th/index_tab_dn.gif) top left no-repeat;
+}
+
+.my_collex_link {
+	color:#ffffff;
+	background:url(/images/18th/index_tab.gif) top left no-repeat;
+}
+
+.tab_link_logo{
+	background:url(/images/18th/index_tab.gif) top left no-repeat;
+	color:#ffffff;
+}
+
+#footer_container {
+	color: #d2d9ea;
+}
+
+.right_column {
+	background:#edf4f2;
+}
+
+.nav_link:link, .nav_link:visited {
+	color:#445a93;
+}
+
+.tag_link:link { color: #445a93; }
+.tag_link:visited { color: #445a93; }
+.tag_link:hover { color: #fff; background: #445a93; }
+
+/* This is used for all links that change, or potentially change, the database */
+.modify_link:link { color: #445a93; text-decoration: none; }
+.modify_link:visited { color: #445a93; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #445a93; text-decoration: none; }
+
+/* This is used for all links that go to the NINES sites. */
+.nines_link:link { color: #445a93; }
+.nines_link:visited { color: #445a93; }
+.nines_link:hover { color: #fff; background: #445a93; }
+
+/* This is used for all links that go to external websites */
+.ext_link:link { color: #445a93; text-decoration: none; }
+.ext_link:visited { color: #445a93; text-decoration: none; }
+.ext_link:hover { color: #fff; background: #445a93; text-decoration: none; }
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike {
+	color: #445a93;
+} /* should match nines_link:link */
+
+.ext_linklike {
+	color: #445a93;
+} /* should match ext_link:link */
+
+.carousel_title {
+	color: #ffffff;
+}
+
+#footer_container a, #footer_container a.link, #footer_container a.visited{
+	color:#445a93;
+}
