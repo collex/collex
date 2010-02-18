@@ -39,7 +39,9 @@ can_index: false
 site_name: 'COLLEX'
 site_name_title: 'C O L L E X'
 my_collex: 'My Collex'
+my_collex_url: 'my_collex'
 skin: 'collex'
 
+update: 'development'
 bleeding_edge: false
 disallow_rss: false
