@@ -20,11 +20,11 @@ module GroupsHelper
     return url
 	end
 	def get_group_image_url(group)
-		return group.group_type == 'classroom' ? '/images/classroom_icon.sm.jpg' : get_group_default_url(get_url_for_internal_image(group.image, :thumb))
+		return group.group_type == 'classroom' ? "/images/#{SKIN}/classroom_icon.sm.jpg" : get_group_default_url(get_url_for_internal_image(group.image, :thumb))
 	end
 
 	def get_cluster_image_url(group, cluster)
-		return '/images/classroom_icon.sm.jpg' if group.group_type == 'classroom'
+		return "/images/#{SKIN}/classroom_icon.sm.jpg" if group.group_type == 'classroom'
 		image_class = cluster.image ? cluster : group
 		return get_group_default_url(get_url_for_internal_image(image_class.image))
 	end
