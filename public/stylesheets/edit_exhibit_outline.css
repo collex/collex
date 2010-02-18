@@ -79,7 +79,7 @@
 	width: 25px;
 }
 
-.yui-skin-sam .yui-toolbar-container .yui-toolbar-createnineslink span.yui-toolbar-icon { 
+/*.yui-skin-sam .yui-toolbar-container .yui-toolbar-createnineslink span.yui-toolbar-icon {
 	background-image: url(/images/mce_link_to_nines_obj.gif ); 
 	background-position: 4px 0px; 
 } 
@@ -87,7 +87,7 @@
 .yui-skin-sam .yui-toolbar-container .yui-button-createnineslink-selected span.yui-toolbar-icon { 
 	background-image: url(/images/mce_link_to_nines_obj.gif ); 
 	background-position: 4px 0px; 
-} 
+} */
 
 .border_controls {
 	background-color: #dddddd;

@@ -84,7 +84,6 @@ hr.search_results_hr {
 }
 
 .result_row_collected {
-	background:transparent url(/images/search_collected_gradient.jpg) repeat-y;
 	padding-left: 10px;
 	padding-top: 5px;
 }
@@ -161,17 +160,14 @@ span.tooltip:hover span.result_row_tooltip {
 }
 
 .free_culture {
-	background-image: url(/images/free_culture.gif);
 	background-repeat:no-repeat;
 }
 
 .full_text {
-	background-image: url(/images/full_text.gif);
 	background-repeat:no-repeat;
 }
 
 .has_xml_source {
-	background-image: url(/images/has_xml_source.gif);
 	background-repeat:no-repeat;
 }
 

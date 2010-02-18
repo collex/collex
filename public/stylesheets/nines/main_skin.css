@@ -118,3 +118,40 @@ body {
 .search_result_buttons a:hover {
 	background:url(/images/nines/lvl2_result_row_button_rl.jpg) no-repeat scroll left top;
 }
+
+/*********************************/
+/* styles for all javascript-created dialogs */
+/*********************************/
+
+.yui-skin-sam .container-close {
+	background:transparent url(/images/nines/popup_box_x.gif) no-repeat scroll 0 0;
+}
+
+.yui-skin-sam .container-close:hover {
+	background:transparent url(/images/nines/popup_box_x_rl.gif) no-repeat scroll 0 0;
+}
+
+.yui-skin-sam .yui-panel .hd {
+	background: transparent url(/images/nines/popup_box_header.jpg) repeat-y scroll 0 0;
+	color: white;
+	font-family: Verdana, sans-serif;
+	font-weight: bold;
+}
+
+.yui-skin-sam .yui-button {
+	background: transparent url(/images/nines/button.jpg) repeat-y scroll 0 0;
+}
+
+.yui-skin-sam .yui-button.default button {
+	background: transparent url(/images/nines/button_default.jpg) repeat-y scroll 0 0;
+	color: white;
+}
+
+.yui-skin-sam .button_tab_selected {
+	background: transparent url(/images/nines/attachment_button_down.jpg) repeat-y scroll 0 0;
+}
+
+.yui-button-hover a {
+	background: transparent url(/images/nines/attachment_button_down.jpg) repeat-y scroll 0 0;
+}
+

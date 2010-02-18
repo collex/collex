@@ -42,3 +42,35 @@
 	background:#B99A86;
 	color:#FFFFFF;
 }
+
+.new_search {
+	background:url(/images/nines/lvl2_new_search.jpg) top left no-repeat;
+}
+
+.new_search:hover {
+	background:url(/images/nines/lvl2_new_search_rl.jpg) top left no-repeat;
+}
+
+.result_row_collected {
+	background:transparent url(/images/nines/search_collected_gradient.jpg) repeat-y;
+}
+
+.FP_attachment_collected {
+	background:transparent url(/images/nines/forum_collected_gradient.jpg) repeat-x scroll 0 0;
+}
+
+#group_details {
+	background: url("/images/nines/groups_header_background.jpg") repeat-x bottom;
+}
+
+.free_culture {
+	background-image: url(/images/nines/free_culture.gif);
+}
+
+.full_text {
+	background-image: url(/images/nines/full_text.gif);
+}
+
+.has_xml_source {
+	background-image: url(/images/nines/has_xml_source.gif);
+}

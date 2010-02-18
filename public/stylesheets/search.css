@@ -29,14 +29,12 @@
 }
 
 .new_search {
-	background:url(/images/lvl2_new_search.jpg) top left no-repeat;
 	width:97px;
 	height:39px;
 	float:right;
 }
 
 .new_search:hover {
-	background:url(/images/lvl2_new_search_rl.jpg) top left no-repeat;
 	width:97px;
 	height:39px;
 	float:right;

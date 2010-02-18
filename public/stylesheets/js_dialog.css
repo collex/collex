@@ -19,29 +19,11 @@
 /*********************************/
 
 .yui-skin-sam .container-close {
-	background:transparent url(/images/popup_box_x.gif) no-repeat scroll 0 0;
 	height: 19px;
 }
 
-.yui-skin-sam .container-close:hover {
-	background:transparent url(/images/popup_box_x_rl.gif) no-repeat scroll 0 0;
-}
-
-.yui-skin-sam .yui-panel .hd {
-	background: transparent url(/images/popup_box_header.jpg) repeat-y scroll 0 0;
-	color: white;
-	font-family: Verdana, sans-serif;
-	font-weight: bold;
-}
-
 .yui-skin-sam .yui-button {
-	background: transparent url(/images/button.jpg) repeat-y scroll 0 0;
 	border: none;
-}
-
-.yui-skin-sam .yui-button.default button {
-	background: transparent url(/images/button_default.jpg) repeat-y scroll 0 0;
-	color: white;
 }
 
 .yui-skin-sam .yui-button button, .yui-skin-sam .yui-button a {
@@ -64,14 +46,6 @@
 
 .yui-skin-sam .button_tab .first-child {
 	border: none;
-}
-
-.yui-skin-sam .button_tab_selected {
-	background: transparent url(/images/attachment_button_down.jpg) repeat-y scroll 0 0;
-}
-
-.yui-button-hover a {
-	background: transparent url(/images/attachment_button_down.jpg) repeat-y scroll 0 0;
 }
 
 .yui-toolbar-container .yui-button-hover a {
