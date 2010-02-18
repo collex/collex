@@ -110,3 +110,11 @@ body {
 	border-right: 8px solid #5f3119;
 	border-bottom: 8px solid #5f3119;
 }
+
+.search_result_buttons a {
+	background:transparent url(/images/nines/lvl2_result_row_button.jpg) no-repeat scroll left top;
+}
+
+.search_result_buttons a:hover {
+	background:url(/images/nines/lvl2_result_row_button_rl.jpg) no-repeat scroll left top;
+}

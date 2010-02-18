@@ -75,7 +75,6 @@
 }
 
 .search_result_buttons a {
-	background:transparent url(/images/lvl2_result_row_button.jpg) no-repeat scroll left top;
 	height: 23px;
 	width:80px;
 	float: right;
@@ -89,9 +88,5 @@
 
 .search_result_buttons a.hidden {
 	display: none;
-}
-
-.search_result_buttons a:hover {
-	background:url(/images/lvl2_result_row_button_rl.jpg) no-repeat scroll left top;
 }
 
