@@ -71,7 +71,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	var hint_text_id = null;
 	if (!input_type)
 		hint_text_id = year_input_id;
-	else if ($(input_type).value === 'Search Term')
+	else if ($(input_type).selectedIndex === 0)	// If this is the "Search Term" item
 		hint_text_id = phrase_input_id;
 	else hint_text_id = year_input_id;
 	
