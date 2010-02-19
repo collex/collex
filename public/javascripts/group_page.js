@@ -536,6 +536,18 @@ var unlimitExhibit = function(exhibit_id, exhibitLabel) {
 		{exhibit_id: exhibit_id });
 };
 
+var hideAdmins = function(group_id, url) {
+	ajaxWithProgressDlg([url], ['group_details'],
+		{ title: "Hide Admins", waitMessage: "Please wait...", completeMessage: 'The administators are hidden to non-members.' },
+		{id: group_id, 'group[show_admins]': 'members' });
+}
+
+var showAdmins = function(group_id, url) {
+	ajaxWithProgressDlg([url], ['group_details'],
+		{ title: "Show Admins", waitMessage: "Please wait...", completeMessage: 'The administators are visible to non-members.' },
+		{id: group_id, 'group[show_admins]': 'all' });
+}
+
 var rejectAsPeerReviewed = function(exhibit_id, name, email, exhibitLabel) {
 	var action = function() {
 		ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],

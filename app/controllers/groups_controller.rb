@@ -438,6 +438,7 @@ class GroupsController < ApplicationController
 			@group.image = image
 			@group.exhibits_label = "Exhibit"
 			@group.clusters_label = "Cluster"
+			@group.show_admins = 'all'
 			err = false
 			if @group.save
 				begin

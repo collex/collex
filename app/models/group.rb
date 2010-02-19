@@ -64,6 +64,11 @@ class Group < ActiveRecord::Base
 		return is_member(user_id)
 	end
 
+	def can_see_admins(user_id)
+		return true if self.show_admins == 'all'
+		return is_member(user_id)
+	end
+
 	def can_view_exhibits(user_id)
 		return true if self.exhibit_visibility == 'www'
 		return is_member(user_id)
