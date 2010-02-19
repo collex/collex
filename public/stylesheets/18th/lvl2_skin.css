@@ -74,3 +74,7 @@
 .has_xml_source {
 	background-image: url(/images/18th/has_xml_source.gif);
 }
+
+#group_license {
+	background: #1d253c;
+}
