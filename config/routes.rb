@@ -22,6 +22,7 @@ ActionController::Routing::Routes.draw do |map|
   map.accept_invitation '/groups/accept_invitation', :controller => 'groups', :action => 'accept_invitation'
 	map.acknowledge_notification '/groups/acknowledge_notification', :controller => 'groups', :action => 'acknowledge_notification'
 	map.create_login '/groups/create_login', :controller => 'groups', :action => 'create_login'
+	map.show_clusters '/groups/:group/:cluster', :controller => 'clusters', :action => 'show'
 
   map.resources :clusters
   map.resources :groups

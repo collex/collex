@@ -31,8 +31,10 @@ class ClustersController < ApplicationController
 	def check_url
 		url = params[:cluster]['visible_url']
 		id = params[:id]
-		cluster = Cluster.find_by_visible_url(url)
-		if cluster != nil && cluster.id != id.to_i
+		cluster = Cluster.find(id)
+		group_id = cluster.group_id
+		cluster = Cluster.find_by_group_id_and_visible_url(group_id, url)
+		if cluster != nil
 			render :text => 'The URL matches another cluster. Choose a different one.', :status => :bad_request
 		else
 			render :text => 'The URL is accepted. Please wait.'
@@ -90,29 +92,40 @@ end
   # GET /clusters/1
   # GET /clusters/1.xml
   def show
-		if params[:id] == 'verify_cluster_title'
-			title = params[:name]
-			cluster = Cluster.find_by_name(title)
-			if cluster == nil
-				render :text => "ok"
-			else
-				render :text => "There is already a cluster with this title.", :status => :bad_request
-			end
-		else
-			@cluster = Cluster.find_by_visible_url(params[:id])
-			if @cluster == nil
-				@cluster = Cluster.find_by_id(params[:id])
-			end
-			if @cluster == nil
-				redirect_to "/"
+		# This can be called the conventional way with an id, or it can be called with a group/cluster path.
+		if params[:id] == nil
+			# we were given a group and cluster name instead
+			group_name = params[:group]
+			cluster_name = params[:cluster]
+			group = Cluster.find_by_visible_url(group_name)
+			group = Cluster.find_by_id(group_name) if group == nil
+			if group == nil
+				render :text => "Group not found: #{group_name}"
 				return
 			end
-			@group = Group.find(@cluster.group_id)
 
-			respond_to do |format|
-				format.html # show.html.erb
-				format.xml  { render :xml => @cluster }
+			cluster = Cluster.find_by_group_id_and_visible_url(group.id, cluster_name)
+			if cluster
+				params[:id] = cluster.id
+			else
+				render :text => "There is no cluster named #{cluster_name} in the group #{group_name}."
+				return
 			end
+		end
+
+		@cluster = Cluster.find_by_visible_url(params[:id])
+		if @cluster == nil
+			@cluster = Cluster.find_by_id(params[:id])
+		end
+		if @cluster == nil
+			redirect_to "/"
+			return
+		end
+		@group = Group.find(@cluster.group_id)
+
+		respond_to do |format|
+			format.html # show.html.erb
+			format.xml  { render :xml => @cluster }
 		end
   end
 
@@ -127,31 +140,31 @@ end
 		begin
 			if params['image'] && params['image'].length > 0
 				image = Image.new({ :uploaded_data => params['image'] })
-	#			if image	# If there were an error in uploading the image, don't go further.
-	#				begin
-	#					user.image.save!
-	#					user.save
-	#				rescue
-	#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-	#				end
-				end
-				params[:cluster]['visibility'] = 'everyone'
-			@cluster = Cluster.new(params[:cluster])
-			@cluster.image = image
-			err = false
-			if @cluster.save
-				begin
-					@cluster.image.save! if @cluster.image
-				rescue
-					err = true
-					@cluster.delete
-					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-				end
-				if err == false
-					flash = "OK:#{@cluster.id}"
-				end
+			end
+			params[:cluster]['visibility'] = 'everyone'
+			group_id = params[:cluster][:group_id]
+			name = params[:cluster][:name]
+			cluster = Cluster.find_by_group_id_and_name(group_id, name)
+			if cluster != nil
+				flash = "Duplicate cluster name. Please choose another."
 			else
-				flash = "Error creating cluster"
+				@cluster = Cluster.new(params[:cluster])
+				@cluster.image = image
+				err = false
+				if @cluster.save
+					begin
+						@cluster.image.save! if @cluster.image
+					rescue
+						err = true
+						@cluster.delete
+						flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+					end
+					if err == false
+						flash = "OK:#{@cluster.id}"
+					end
+				else
+					flash = "Error creating cluster"
+				end
 			end
 		rescue
 			flash = "Server error when creating cluster."

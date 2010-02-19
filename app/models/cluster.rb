@@ -36,4 +36,11 @@ class Cluster < ActiveRecord::Base
 	def get_friendly_visibility_list()
 		return [ { :value => 'everyone', :text =>	'Everyone' }, { :value => 'administrators', :text =>	'Administrators only' }]
 	end
+
+	def get_visible_url
+		return "/clusters/#{self.id}" if self.visible_url == nil || self.visible_url.length == 0
+		group = Group.find(self.group_id)
+		group_url = group.get_visible_id()
+		return "/groups/#{group_url}/#{self.visible_url}"
+	end
 end

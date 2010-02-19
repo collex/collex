@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100211161418) do
+ActiveRecord::Schema.define(:version => 20100215171554) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -94,6 +94,14 @@ ActiveRecord::Schema.define(:version => 20100211161418) do
     t.integer  "user_id"
     t.integer  "discussion_thread_id"
     t.datetime "last_visit"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "email_waitings", :force => true do |t|
+    t.string   "to_email"
+    t.string   "subject"
+    t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -237,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20100211161418) do
     t.string   "visible_url"
     t.string   "exhibits_label"
     t.string   "clusters_label"
+    t.string   "show_admins"
   end
 
   create_table "groups_users", :force => true do |t|
