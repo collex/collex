@@ -322,7 +322,7 @@ class GroupsController < ApplicationController
 				@group = Group.find_by_id(params[:id])
 			end
 			if @group == nil
-				redirect_to "/"
+				redirect_to "/404.html"
 				return
 			end
 			

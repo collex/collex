@@ -83,7 +83,7 @@
 <% for clus in clusters -%>
 	<div class="thumbnail_item">
 		<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{clus.id}", :url => get_cluster_image_url(group, clus), :show_immediately => true } %></div>
-		<div class="right_of_thumbnail exhibit_link"><%= link_to clus.name, { :controller => 'clusters', :action => 'show', :id => clus.id }, :class => 'nav_link' %><br />
+		<div class="right_of_thumbnail exhibit_link"><%= link_to clus.name, clus.get_visible_url(), :class => 'nav_link' %><br />
 			<%= pluralize(Exhibit.find_all_by_cluster_id(clus.id).length, group.exhibits_label)  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(clus.id).length, "Discussion") %>
 		</div>
 	</div>

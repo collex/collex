@@ -97,10 +97,10 @@ end
 			# we were given a group and cluster name instead
 			group_name = params[:group]
 			cluster_name = params[:cluster]
-			group = Cluster.find_by_visible_url(group_name)
-			group = Cluster.find_by_id(group_name) if group == nil
+			group = Group.find_by_visible_url(group_name)
+			group = Group.find_by_id(group_name) if group == nil
 			if group == nil
-				render :text => "Group not found: #{group_name}"
+				redirect_to "/404.html"
 				return
 			end
 
@@ -108,7 +108,7 @@ end
 			if cluster
 				params[:id] = cluster.id
 			else
-				render :text => "There is no cluster named #{cluster_name} in the group #{group_name}."
+				redirect_to "/404.html"
 				return
 			end
 		end
