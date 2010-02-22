@@ -22,7 +22,7 @@
 
 var selectGroup = function(id, options, value) {
 	new SelectInputDlg({
-		title: 'Select Group',
+		title: 'Change Group',
 		prompt: 'Group',
 		id: 'group',
 		options: options,

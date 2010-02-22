@@ -1028,21 +1028,24 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def get_badge()
+		# if the exhibit is in a group, then we will use that group's badge, if it exists
 		if self.group_id
 			group = Group.find(self.group_id)
-			return "" if group.group_type != 'peer-reviewed'
-			return PeerReview.get_badge(group.badge_id)
-		else
-			return "" if self.category != 'peer-reviewed'
-			return PeerReview.get_badge(self.badge_id)
+			if group.group_type == 'peer-reviewed'
+				return PeerReview.get_badge(group.badge_id)
+			end
 		end
+		# either the group wasn't peer-reviewed, or the exhibit isn't in a group, so use the exhibit's badge
+		return "" if self.category != 'peer-reviewed'
+		return PeerReview.get_badge(self.badge_id)
 	end
 
 	def is_peer_reviewed()
-		return true if self.category == 'peer-reviewed'
-		return false if self.group_id == nil
+		return true if self.category == 'peer-reviewed'	# an exhibit can always be peer-reviewed by itself
+		return false if self.group_id == nil	# and if it isn't in a group, it can't be peer-reviewed any other way
+		return false if self.is_published != 1	# even if it is in a peer-reviewed group, it must be published to be peer-reviewed
 		group = Group.find(self.group_id)
-		return group.group_type == 'peer-reviewed'
+		return group.group_type != 'peer-reviewed'	# so it is in a peer-reviewed group and it is published.
 	end
 end
 

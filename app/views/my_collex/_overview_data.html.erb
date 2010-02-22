@@ -50,7 +50,7 @@
 		<% for group in my_groups -%>
 		<% users_groups.push({ :value => "#{group.id}", :text => group.name }) -%>
 		<% end  -%>
-		<span class="exhibit_profile_label">Group: </span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[select group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) if has_groups %></span>
+		<span class="exhibit_profile_label">Group: </span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[change group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) if has_groups %></span>
 	<% if exhibit.group_id && Cluster.find_by_group_id(exhibit.group_id) != nil -%>
 		<div>
 		<% cluster_name = exhibit.cluster_id ? link_to(Cluster.find(exhibit.cluster_id).name, { :controller => 'clusters', :action => 'show', :id => exhibit.cluster_id }, { :class => 'nav_link'}) : "No Cluster Selected" -%>
