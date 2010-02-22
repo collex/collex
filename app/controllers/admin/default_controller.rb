@@ -36,15 +36,17 @@ class Admin::DefaultController < Admin::BaseController
   def change_category
     exhibit_id = params[:exhibit_id]
     category = params[:category_id]
+    badge = params[:badge_id]
     exhibit = Exhibit.find(exhibit_id)
 		old_category = exhibit.category
     exhibit.update_attribute('category', category)
+    exhibit.update_attribute('badge_id', badge)
 		if category == 'peer-reviewed'
 			index_exhibit(exhibit_id)
 		elsif old_category == 'peer-reviewed'
 			unindex_exhibit(exhibit_id)
 		end
-    render :text => category
+    render :partial => 'exhibit_tr', :locals => { :exhibit => exhibit }
   end
 
 	def change_group_type
@@ -114,5 +116,25 @@ class Admin::DefaultController < Admin::BaseController
 		use_test = params[:test]
 		session[:use_test_index] = use_test
     redirect_to :controller => 'admin/default', :action => 'index'
+	end
+
+	def add_badge
+		badge = PeerReview.create({})
+		image = params['image']
+		if image && image
+			image = Image.new({ :uploaded_data => image })
+		end
+		begin
+			badge.image = image
+			if badge.save
+				badge.image.save! if badge.image
+				flash = "OK:Badge updated"
+			else
+				flash = "Error updating badge"
+			end
+		rescue
+			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+		end
+    render :text => "<script type='text/javascript'>window.top.window.stopAddBadgeUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 end

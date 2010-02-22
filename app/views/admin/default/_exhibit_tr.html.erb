@@ -1,0 +1,28 @@
+<% #
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# exhibit_tr: params= ActiveRecord: exhibit, %>
+
+<% category = exhibit.category ? exhibit.category : Group.types()[0] -%>
+<% not_published = exhibit.is_published == '0' || exhibit.is_published == nil || exhibit.is_published == 0 -%>
+<td<%= " class='not_published'" if not_published %>><%= h exhibit.title %></td>
+<td<%= " class='not_published'" if not_published %>><%= h User.find(exhibit.user_id).fullname %></td>
+<td<%= " class='not_published'" if not_published %>><%= not_published ? "No" : "Yes" %></td>
+<td><%= category %>&nbsp;<%= link_to_function "[edit]", "new EditExhibitCategory('exhibit_#{exhibit.id}', '/admin/default/change_category', '#{exhibit.id}', '#{category}', #{exhibit.badge_id ? exhibit.badge_id : 0 }, badges); return false;", :class => 'nav_link'  %></td>
+<% if category == 'peer-reviewed' -%>
+	<td><%= PeerReview.get_badge(exhibit.badge_id) %></td>
+<% end -%>

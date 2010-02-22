@@ -17,6 +17,11 @@
 <% current_page "admin" -%>
 <% current_sub_page "Exhibits" -%>
 <div class="inner_content_container">
+	<%= link_to_function("Add Badge", "new AddBadgeDlg('/admin/default/add_badge');", :class => 'nav_link' ) %>
+	<script type="text/javascript">
+		var badges = <%= PeerReview.get_list().to_json() %>;
+		badges.unshift({value: 0, text: "&lt;none&gt;"});
+	</script>
 	<div class="page_header">Exhibits Categories</div>
 	<table class="exhibit_category">
 		<tr>
@@ -24,16 +29,12 @@
 			<th>Author</th>
 			<th>Published?</th>
 			<th>Category</th>
+			<th>Badge</th>
 		</tr>
 		<% exhibits = Exhibit.find_all_by_group_id(nil, { :order => 'title' }) -%>
 		<% for exhibit in exhibits -%>
-		<% category = exhibit.category ? exhibit.category : Group.types()[0] -%>
-		<% not_published = exhibit.is_published == '0' || exhibit.is_published == nil || exhibit.is_published == 0 -%>
-			<tr>
-				<td<%= " class='not_published'" if not_published %>><%= h exhibit.title %></td>
-				<td<%= " class='not_published'" if not_published %>><%= h User.find(exhibit.user_id).fullname %></td>
-				<td<%= " class='not_published'" if not_published %>><%= not_published ? "No" : "Yes" %></td>
-				<td><span id="<%= "exhibit_#{exhibit.id}" %>"><%= category %></span>&nbsp;<%= link_to_function "[edit]", "new EditExhibitCategory('exhibit_#{exhibit.id}', '/admin/default/change_category', '#{exhibit.id}', '#{category}'); return false;", :class => 'nav_link'  %></td>
+			<tr id="<%= "exhibit_#{exhibit.id}" %>">
+				<%= render :partial => 'exhibit_tr', :locals => { :exhibit => exhibit } %>
 			</tr>
 		<% end -%>
 	</table>

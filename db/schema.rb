@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100215171554) do
+ActiveRecord::Schema.define(:version => 20100222193306) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -199,6 +199,7 @@ ActiveRecord::Schema.define(:version => 20100215171554) do
     t.integer  "license_type",            :limit => 10, :precision => 10, :scale => 0
     t.integer  "cluster_id",              :limit => 10, :precision => 10, :scale => 0
     t.string   "editor_limit_visibility"
+    t.integer  "badge_id",                :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "facet_categories", :force => true do |t|
@@ -246,6 +247,7 @@ ActiveRecord::Schema.define(:version => 20100215171554) do
     t.string   "exhibits_label"
     t.string   "clusters_label"
     t.string   "show_admins"
+    t.integer  "badge_id",               :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "groups_users", :force => true do |t|
@@ -294,6 +296,12 @@ ActiveRecord::Schema.define(:version => 20100215171554) do
     t.string   "action"
     t.string   "uri"
     t.string   "tagname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "peer_reviews", :force => true do |t|
+    t.integer  "image_id",   :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

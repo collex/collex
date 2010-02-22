@@ -16,7 +16,7 @@
 
 /*global Class, $, $$, Element, Ajax, $A */
 /*global MessageBoxDlg, GeneralDialog */
-/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory, AjaxUpdate */
+/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory, AjaxUpdate, addBadgeDlg, AddBadge, stopAddBadgeUpload */
 
 var AjaxUpdate = Class.create({
 	initialize: function (parent_div, progressMsg, validationCallback) {
@@ -412,7 +412,7 @@ var EditFacetDialog = Class.create({
 });
 
 var EditExhibitCategory = Class.create({
-	initialize: function (parent_div, ok_action, exhibit_id, starting_selection) {
+	initialize: function (parent_div, ok_action, exhibit_id, starting_selection, badge_id, badges) {
 		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
 		this.class_type = 'EditExhibitCategory';	// for debugging
 
@@ -429,6 +429,7 @@ var EditExhibitCategory = Class.create({
 				rows: [
 					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'community', text: 'Community' }, { value: 'classroom', text: 'Classroom' } ] } ],
+					[ { text: 'Badge:', klass: 'edit_facet_label' }, { select: 'badge_id', value: badge_id, options: badges } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'exhibit_id', value: exhibit_id } ]
 				]
 			};
@@ -470,5 +471,57 @@ var EditGroupType = Class.create({
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', 'category_id');
 		dlg.center();
+	}
+});
+
+var addBadgeDlg = null;
+function stopAddBadgeUpload(errMessage){
+	if (errMessage.startsWith('OK:'))
+		addBadgeDlg.fileUploadFinished(errMessage.substring(3));
+	else
+		addBadgeDlg.fileUploadError(errMessage);
+	return true;
+}
+
+var AddBadgeDlg = Class.create({
+	initialize: function (url) {
+		this.class_type = 'AddBadgeDlg';	// for debugging
+		var This = this;
+		var dlg = null;
+
+		var sendWithAjax = function (event, params)
+		{
+			addBadgeDlg = This;
+			dlg.setFlash('Adding badge thumbnail...', false);
+			dlg.submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
+		};
+
+		this.fileUploadError = function(errMessage) {
+			dlg.setFlash(errMessage, true);
+		};
+
+		this.fileUploadFinished = function(id) {
+			dlg.setFlash('Badge updated...', false);
+			window.location.reload(true);
+		};
+		var show = function () {
+			var layout = {
+					page: 'layout',
+					rows: [
+						[ { text: 'Choose Badge:' } ],
+						[ { image: 'image', size: '47', klass: 'edit_group_thumbnail' } ],
+						[ { rowClass: 'last_row' }, { button: 'Upload Badge', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					]
+				};
+
+			var params = { this_id: "add_badge", pages: [ layout ], body_style: "add_badge_div", row_style: "new_exhibit_row", title: "Add Badge" };
+			dlg = new GeneralDialog(params);
+			dlg.changePage('layout', null);
+			dlg.center();
+
+			return;
+		};
+
+		show();
 	}
 });
