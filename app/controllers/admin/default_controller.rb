@@ -52,16 +52,18 @@ class Admin::DefaultController < Admin::BaseController
 	def change_group_type
     group_id = params[:group_id]
     group_type = params[:group_type]
+    badge = params[:badge_id]
     group = Group.find(group_id)
 		old_type = group.group_type
     group.update_attribute('group_type', group_type)
+    group.update_attribute('badge_id', badge)
 		if group_type == 'peer-reviewed'
 			# TODO-PER: index exhibits
 			#index_exhibit(exhibit_id)
 		elsif old_type == 'peer-reviewed'
 			#unindex_exhibit(exhibit_id)
 		end
-    render :text => Group.type_to_friendly(group_type)
+   render :partial => 'group_tr', :locals => { :group => group }
 	end
 
 	def delete_comment

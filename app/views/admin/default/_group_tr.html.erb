@@ -1,0 +1,25 @@
+<%  #
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# group_tr params= ActiveRecord group -%>
+<% ty = Group.type_to_friendly(group.group_type) -%>
+<td><%= h group.name %></td>
+<td><%= h User.find(group.owner).fullname %></td>
+<td><%= ty %>&nbsp;<%= link_to_function "[edit]", "new EditGroupType('group_#{group.id}', '/admin/default/change_group_type', '#{group.id}', '#{ty}', gGroupTypes, #{group.badge_id ? group.badge_id : 0 }, badges);", :class => 'nav_link'  %></td>
+<% if ty == 'Peer Reviewed' -%>
+	<td><%= PeerReview.get_badge(group.badge_id) %></td>
+<% end -%>

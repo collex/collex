@@ -442,7 +442,7 @@ var EditExhibitCategory = Class.create({
 });
 
 var EditGroupType = Class.create({
-	initialize: function (parent_div, ok_action, group_id, starting_selection, options) {
+	initialize: function (parent_div, ok_action, group_id, starting_selection, options, badge_id, badges) {
 		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
 		this.class_type = 'EditGroupType';	// for debugging
 
@@ -463,6 +463,7 @@ var EditGroupType = Class.create({
 				rows: [
 					[ { text: 'Choose the type that this group will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Type:', klass: 'edit_facet_label' }, { select: 'group_type', value: starting_selection, klass: 'categories_select', options: options } ],
+					[ { text: 'Badge:', klass: 'edit_facet_label' }, { select: 'badge_id', value: badge_id, options: badges } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'group_id', value: group_id } ]
 				]
 			};

@@ -18,22 +18,23 @@
 <% current_sub_page "Groups" -%>
 <script type="text/javascript">
 var gGroupTypes = <%= Group.types_to_json(true) %>;
+var badges = <%= PeerReview.get_list().to_json() %>;
+badges.unshift({value: 0, text: "&lt;none&gt;"});
 </script>
 <div class="inner_content_container">
+	<%= link_to_function("Add Badge", "new AddBadgeDlg('/admin/default/add_badge');", :class => 'nav_link' ) %>
 	<div class="page_header">Groups Categories</div>
 	<table class="exhibit_category">
 		<tr>
 			<th>Group</th>
 			<th>Owner</th>
 			<th>Type</th>
+			<th>Badge</th>
 		</tr>
 		<% groups = Group.all(:order => 'name') -%>
 		<% for group in groups -%>
-		<% ty = Group.type_to_friendly(group.group_type) -%>
-			<tr>
-				<td><%= h group.name %></td>
-				<td><%= h User.find(group.owner).fullname %></td>
-				<td><span id="<%= "group_#{group.id}" %>"><%= ty %></span>&nbsp;<%= link_to_function "[edit]", "new EditGroupType('group_#{group.id}', '/admin/default/change_group_type', '#{group.id}', $('group_#{group.id}').innerHTML, gGroupTypes);", :class => 'nav_link'  %></td>
+			<tr id="<%= "group_#{group.id}" %>">
+<%= render :partial => 'group_tr', :locals => { :group => group } %>
 			</tr>
 		<% end -%>
 	</table>

@@ -15,7 +15,7 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# exhibit_tr: params= ActiveRecord: exhibit, %>
+<%# exhibit_tr: params= ActiveRecord: exhibit %>
 
 <% category = exhibit.category ? exhibit.category : Group.types()[0] -%>
 <% not_published = exhibit.is_published == '0' || exhibit.is_published == nil || exhibit.is_published == 0 -%>
