@@ -1026,5 +1026,23 @@ class Exhibit < ActiveRecord::Base
 		end
 		return pending_exhibits
 	end
+
+	def get_badge()
+		if self.group_id
+			group = Group.find(self.group_id)
+			return "" if group.group_type != 'peer-reviewed'
+			return PeerReview.get_badge(group.badge_id)
+		else
+			return "" if self.category != 'peer-reviewed'
+			return PeerReview.get_badge(self.badge_id)
+		end
+	end
+
+	def is_peer_reviewed()
+		return true if self.category == 'peer-reviewed'
+		return false if self.group_id == nil
+		group = Group.find(self.group_id)
+		return group.group_type == 'peer-reviewed'
+	end
 end
 

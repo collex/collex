@@ -16,8 +16,9 @@
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_page params: ActiveRecord exhibit, int page_num, bool is_edit_mode, int top (nil or the element id that should be scrolled to), badge_pos = none|left|right -%>
 <div id="page<%= page_num %>" class="exhibit_heading">
-	<% if exhibit.category == 'peer-reviewed' && badge_pos != 'none' && PeerReview.get_badge(exhibit.badge_id).length > 0 -%>
-	<img src="<%= PeerReview.get_badge(exhibit.badge_id) %>" alt="Peer Reviewed" style="position:absolute;<%= 'right:40px;' if badge_pos == 'right' %>" />
+	<% badge_path = badge_pos != 'none' ? exhibit.get_badge() : "" -%>
+	<% if badge_path.length > 0 -%>
+	<img src="<%= badge_path %>" alt="Peer Reviewed" style="position:absolute;<%= 'right:40px;' if badge_pos == 'right' %>" />
 	<% end -%>
 	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
 	<h4 class="exhibit_author" ><%= get_exhibits_username(exhibit) %></h4>

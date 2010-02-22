@@ -27,7 +27,7 @@
 </div>
 <div class="inner_content_container">
 	<div class="subpage_nav">
-		<% if @exhibit.category != 'peer-reviewed' -%>
+		<% if !@exhibit.is_peer_reviewed() -%>
 		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
 		<% end -%>
 		<a href="/exhibit_list" class="nav_link" >[Return to Exhibit List]</a>&nbsp;<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
