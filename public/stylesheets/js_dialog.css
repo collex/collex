@@ -754,6 +754,10 @@ a.footnote_tip:hover span.tip {
 	font-size: .8em;
 }
 
+.accept_peer_review_label {
+
+}
+
 textarea.groups_textarea {
 	width: 481px;
 	height: 5em;

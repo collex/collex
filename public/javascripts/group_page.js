@@ -505,22 +505,51 @@ var decline_invitation = function(pending_id) {
 		{id: pending_id });
 };
 
-var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, clusterLabel) {
+var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, clusterLabel, exhibitTitle, exhibitAuthor, siteName, currentCluster, groupName, groupPermissions) {
 	clusterOptions.unshift({text: "(None)", value: "0" });
-	new SelectInputDlg({
-		title: 'Accept As Peer Reviewed',
-		prompt: 'Choose a ' + clusterLabel + ' that this ' + exhibitLabel + ' should appear under:',
-		id: 'exhibit[cluster_id]',
-		options: clusterOptions,
-		okStr: 'Save',
-		extraParams: { exhibit_id: exhibit_id, "exhibit[is_published]": '1' },
-		actions: [ '/groups/accept_as_peer_reviewed' ],
-		target_els: [ 'group_exhibits' ] });
+	var dlg = null;
+
+	var sendWithAjax = function (event, params)
+	{
+		var onSuccess = function(resp) {
+			dlg.cancel();
+		};
+		var onFailure = function(resp) {
+			dlg.setFlash("Error: " + resp.responseText, true);
+		};
+		var data = dlg.getAllData();
+		data.exhibit_id = exhibit_id;
+		data["exhibit[is_published]"] = '1';
+		if (data.typ === 'cluster' && data['exhibit[cluster_id]'] === '0')
+			dlg.setFlash("Please choose a " + clusterLabel + " from the list.", true);
+		else {
+			var url = params.destination;
+			dlg.setFlash('Accepting ' + exhibitLabel + '. Please wait...', false);
+			recurseUpdateWithAjax([url], ['group_exhibits'], onSuccess, onFailure, data);
+		}
+	};
+
+	var layout = {
+			page: 'layout',
+			rows: [
+				[ { text: 'You are about to set ' + exhibitTitle + ' by ' + exhibitAuthor + ' as a peer-reviewed object. This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval.', klass: 'accept_peer_review_label' } ],
+				[ { text: 'If you wish to continue, please select a method for sharing this work below. Otherwise, please select "Cancel."', klass: 'accept_peer_review_label' } ],
+				[ { radioList: 'typ', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), buttons: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer-reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer-reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
+				[ { text: 'Choose a ' + clusterLabel + ':', klass: 'groups_label' }, { select: 'exhibit[cluster_id]', options: clusterOptions, value: currentCluster } ],
+				[ { text: 'Note: Objects in ' + groupName + ' have a default sharing option of "' + groupPermissions + '".', klass: 'accept_peer_review_label' } ],
+				[ { rowClass: 'last_row' }, { button: 'Save', url: '/groups/accept_as_peer_reviewed', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+			]
+		};
+
+	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Accept As Peer Reviewed" };
+	dlg = new GeneralDialog(params);
+	dlg.changePage('layout', "username");
+	dlg.center();
 };
 
 var unpublishExhibit = function(exhibit_id, exhibitLabel) {
 	ajaxWithProgressDlg(['/groups/unpublish_exhibit'], ['group_exhibits'],
-		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' has be set to "Private".' },
+		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' has been set to "Private".' },
 		{exhibit_id: exhibit_id });
 };
 

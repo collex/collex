@@ -466,6 +466,18 @@ var GeneralDialog = Class.create({
 							}
 							row.appendChild(tb);
 						}
+						// RADIO LIST
+					} else if (subel.radioList !== undefined) {
+						var radioList = subel.buttons;
+						var radioId = subel.radioList;
+						var radioValue = subel.value;
+						radioList.each(function(radio) {
+							var elRadio = new Element('input', { id: makeId(radioId+'_'+radio.value), type: 'radio', value: radio.value, name: radioId });
+							if (radioValue === radio.value)
+								elRadio.writeAttribute('checked', 'true');
+							row.appendChild(elRadio);
+							row.appendChild(new Element('span').update(' ' + radio.text + '<br />'));
+						});
 						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
 						var wrapper = new Element('div');
