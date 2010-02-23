@@ -86,6 +86,16 @@ var CreateGroupWizardDlg = Class.create({
 		};
 
 		var typeSelect = function(id, currSelection) {
+			// Automatically set the class name to the group name if this is a classroom group.
+			// But don't overwrite the user's typing, so be sure it's empty first.
+			if (currSelection === 'classroom') {
+				var elGroup = $('group_course_name');
+				if (elGroup.value.length === 0) {
+					var elTitle = $('group_name');
+					var title = elTitle.value;
+					elGroup.value = title;
+				}
+			}
 			var els = $$('.community_only');
 			toggle(els, currSelection === 'community');
 			els = $$('.classroom_only');
@@ -131,10 +141,11 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType, change: typeSelect } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label community_only' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'community_only' },
 							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'empty_list_text publication_only hidden'},
-							{ text: 'University:', klass: 'groups_label classroom_only hidden' }, { input: 'group[university]', value: start_university, klass: 'new_exhibit_input_long classroom_only hidden' }
+							{ text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { text: 'For easy browsing, use this field to share the course number or mnemonic associated with this class (e.g. ENNC 448)', klass: 'groups_explanation classroom_only hidden' },
+							{ input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' }
 						],
 						[ { text: 'Course Name:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_name]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
-						[ { text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
+						[ { text: 'University:', klass: 'groups_label classroom_only hidden' }, { input: 'group[university]', value: start_university, klass: 'new_exhibit_input_long classroom_only hidden' } ],
 						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};

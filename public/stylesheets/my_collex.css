@@ -38,6 +38,7 @@
 	margin-right: 0em;
 	margin-bottom: 1em;
 	margin-top: 1em;
+	overflow: auto;
 }
 
 .narrow_tag_cloud .tag_filter {

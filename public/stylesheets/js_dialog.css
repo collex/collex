@@ -749,6 +749,11 @@ a.footnote_tip:hover span.tip {
 	width:8.5em;
 }
 
+.groups_explanation {
+	color: gray;
+	font-size: .8em;
+}
+
 textarea.groups_textarea {
 	width: 481px;
 	height: 5em;
