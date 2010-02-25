@@ -1,0 +1,55 @@
+.header_right {
+}
+
+.shared_header {
+	color:white;
+	background:#371911;
+	padding:4px 14px 4px 14px;
+}
+
+.shared_explanation {
+	color: gray;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+.shared_view_all_tags {
+	padding-top: 1em;
+}
+
+.shared_right_body {
+	padding: 1em;
+}
+
+#shared_tags {
+	text-align:center;
+}
+
+#shared_discussions ul {
+	margin: 0 0 0 1em;
+}
+
+.shared_search_results {
+	font-size: 1.5em;
+	padding-top: .5em;
+	padding-bottom: .5em;
+}
+
+.thumbnail_item {
+	clear: left;
+	padding-top: 10px;
+}
+
+.left_thumbnail {
+	float: left;
+}
+
+.right_of_thumbnail {
+	margin-left: 90px;
+	margin-right:20px;
+}
+
+.tag_lvl1 {
+	font-weight:bold;
+	font-size:1.05em;
+}

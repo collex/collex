@@ -1,0 +1,30 @@
+<%#
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# exhibit_summary: params: ActiveRecord exhibit %>
+<div class="thumbnail_item">
+<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></div>
+<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
+	<%= get_exhibit_user_link(exhibit) %>
+	<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
+		| <%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
+	<% end -%>
+	<% if exhibit.group_id %>
+		<br />in <%= link_to Group.find(exhibit.group_id).name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, :class => 'nav_link' %>
+	<% end -%>
+</div>
+</div>
