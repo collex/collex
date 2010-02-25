@@ -19,6 +19,6 @@
 <div class="thumbnail_item">
 	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_group_image_url(group), :show_immediately => true } %></div>
 	<div class="right_of_thumbnail exhibit_link"><%= link_to group.name, group.get_visible_url(), :class => 'nav_link' %><br />
-		<%= pluralize(Exhibit.find_all_by_group_id(group.id).length, group.exhibits_label)  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_group_id(group.id).length, "Discussion") %>
+		<%= pluralize(Exhibit.find_all_by_group_id(group.id).length, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_group_id(group.id).length, "Discussion") %>
 	</div>
 </div>

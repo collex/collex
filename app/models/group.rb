@@ -289,6 +289,15 @@ class Group < ActiveRecord::Base
 		return "/groups/#{get_visible_id()}"
 	end
 
+	def get_exhibits_label()
+		return 'Exhibit' if self.exhibits_label == nil
+		return self.exhibits_label
+	end
+
+	def get_clusters_label()
+		return 'Cluster' if self.clusters_label == nil
+		return self.cluster_label
+	end
 	#
 	# enumerations
 	#

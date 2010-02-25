@@ -55,7 +55,7 @@
 	<div class="group_description"><%= decode_exhibit_links(cluster.description.gsub("\n", "<br />")) %></div>
 <% if group.can_edit(user_id) -%>
 	<div class="group_editors">URL is <%= url_for( :controller => cluster.get_visible_url, :only_path => false) %> <%= link_to_function('[Change URL]', "editURL(#{cluster.id}, '#{cluster.visible_url}', 'cluster', '#{url_for( :controller => 'groups', :action => group.get_visible_id(), :only_path => false)}/');", :class => 'nav_link') %></div>
-	<div class="group_editors">Cluster is visible to <%= cluster.get_friendly_visibility_string() %> <%= link_to_function('[Change Visibility]', "changeClusterVisibility('/clusters/update', #{cluster.id}, '#{cluster.get_visibility()}', #{cluster.get_friendly_visibility_list().to_json()}, 'cluster_details', '#{group.clusters_label}');", :class => 'nav_link') %></div>
+	<div class="group_editors">Cluster is visible to <%= cluster.get_friendly_visibility_string() %> <%= link_to_function('[Change Visibility]', "changeClusterVisibility('/clusters/update', #{cluster.id}, '#{cluster.get_visibility()}', #{cluster.get_friendly_visibility_list().to_json()}, 'cluster_details', '#{group.get_clusters_label()}');", :class => 'nav_link') %></div>
 <% end -%>
 	<div class="group_editors"><%= link_to('[delete cluster]', cluster, :confirm => 'Are you sure you wish to permanently delete this cluster?', :method => :delete, :class => 'nav_link') if group.can_edit(user_id) %></div>
 </div>
