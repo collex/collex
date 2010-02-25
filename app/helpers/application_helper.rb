@@ -460,4 +460,16 @@ private
 		html += "</script>\n"
 		return html
 	end
+
+	def create_breadcrumbs(crumbs, here)
+		links = []
+		crumbs.each {|crumb|
+			links.push(link_to(crumb[:text], crumb[:url], { :class => 'nav_link' }))
+		}
+		links.push(here)
+		html = "<div class=\"breadcrumbs\">\n"
+		html += links.join(' &gt; ')
+		html += "</div>\n"
+		return html
+	end
 end

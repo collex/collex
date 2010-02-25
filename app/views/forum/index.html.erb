@@ -15,9 +15,10 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page "Forum" -%>
+<% current_page BLEEDING_EDGE ? "Community" : "Forum" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topics = DiscussionTopic.get_all_with_date() -%>
+<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], "#{SITE_NAME}  Forum") if BLEEDING_EDGE %>
 
 	<div class="page_header">Forum</div>
     <div class="page_subheader">We've set aside this portion of <%= SITE_NAME %> for commentary, discussion and collaboration among the <%= SITE_NAME %> community.

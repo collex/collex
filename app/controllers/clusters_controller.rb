@@ -20,7 +20,7 @@ class ClustersController < ApplicationController
 
   private
   def init_view_options
-    @site_section = :exhibits
+    @site_section = BLEEDING_EDGE ? :shared : :exhibits
     return true
   end
   public

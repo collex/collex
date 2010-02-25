@@ -14,8 +14,9 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page "Exhibits" -%>
+<% current_page BLEEDING_EDGE ? "Community" : "Exhibits" -%>
 <% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id -%>
+<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], h(group.name)) if BLEEDING_EDGE %>
 <div class="inner_content_container">
 	<div id="group_details">
 		<%= render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user_id } %>

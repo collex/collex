@@ -15,10 +15,11 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page "Forum" -%>
+<% current_page BLEEDING_EDGE ? "Community" : "Forum" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
+<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) if BLEEDING_EDGE %>
 
 <script type="text/javascript">
 	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];

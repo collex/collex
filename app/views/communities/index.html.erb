@@ -28,14 +28,14 @@
 		</div>
 	</div>
 	<div class="right_column">
-		<div class="shared_header header_right">Popular Discussions</div>
+		<div class="shared_header">Popular Discussions</div>
 		<div id="shared_discussions" class="shared_right_body">
 			<%= render :partial => "/home/popular_discussions", :locals => { :discussions => @discussions, :show_more => false } %>
 		</div>
 		<div id="shared_view_all_tags" class="shared_right_body">
 			<%= link_to "[view all discussions]", "/forum", { :class => 'nav_link' } %>
 		</div>
-		<div class="shared_header header_right">Popular Tags</div>
+		<div class="shared_header">Popular Tags</div>
 		<div id="shared_tags" class="shared_right_body">
 			<%= render :partial => "/home/popular_tags", :locals => { :tags => @tags } %>
 		</div>
