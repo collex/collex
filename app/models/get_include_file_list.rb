@@ -67,6 +67,9 @@ class GetIncludeFileList
 				global = [ 'hide_spinner', 'renumber_footnotes' ]
 			when :home
 				local = [ 'get_news_feed', 'search_validation_home' ]
+			when :shared
+				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg', 'cc_license', 'discussions', 'group_page',
+				'create_new_group_dlg', 'edit_fonts_dlg', 'start_discussion_with_exhibit' ]
 			when :exhibits
 				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg', 'cc_license', 'discussions', 'group_page',
 				'create_new_group_dlg', 'edit_fonts_dlg', 'start_discussion_with_exhibit' ]
@@ -119,6 +122,8 @@ class GetIncludeFileList
 				local = [ "#{SKIN}/lvl1_skin", "index", "featured_exhibit" ]
 			when :exhibits
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "featured_exhibit", "exhibit_list", "user_profile", "right_column" ]
+			when :shared
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "featured_exhibit", "community", "result_row", "user_profile", "right_column" ]
 			when :admin
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "admin", "search", "right_column" ]
 			when :about

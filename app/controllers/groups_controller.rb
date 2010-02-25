@@ -20,10 +20,7 @@ class GroupsController < ApplicationController
 
   private
   def init_view_options
-    @use_tabs = true
-    @use_signin= true
     @site_section = :exhibits
-    @uses_yui = true
     return true
   end
   public
@@ -538,6 +535,10 @@ class GroupsController < ApplicationController
 		groupsusers = GroupsUser.find_all_by_group_id(params[:id])
 		groupsusers.each { |gu|
 			gu.destroy
+		}
+		clusters = Cluster.find_all_by_group_id(params[:id])
+		clusters.each { |cluster|
+			cluster.destroy
 		}
 		redirect_to :controller => 'exhibits', :action => "index"
 #    respond_to do |format|

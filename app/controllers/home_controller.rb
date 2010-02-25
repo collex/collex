@@ -20,10 +20,7 @@ class HomeController < ApplicationController
   before_filter :init_view_options
   
   def init_view_options
-    @use_tabs = true
-    @use_signin= true
     @site_section = :home
-     @uses_yui = true
     return true
   end
   
@@ -36,37 +33,10 @@ class HomeController < ApplicationController
   end
 
   def index
-    #@sites = Site.find(:all, :order => "description ASC")
 
-		threads = []
-		topics = DiscussionTopic.get_all_with_date()
-		for topic_arr in topics
-			topic = topic_arr[:topic_rec]
-			threads += topic.discussion_threads
-		end
-		threads = threads.sort {|a,b|
-			b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
-		}
-		threads = threads.slice(0..4)
-
-		#threads = DiscussionThread.find(:all, :order => 'number_of_views desc', :limit => '5')
-    @discussions = []
-    threads.each {|thread|
-      @discussions.push({ :title => thread.get_title().length > 0 ? thread.get_title() : "[Untitled]", :id => thread.id })
-    }
+    @discussions = DiscussionTopic.get_most_popular(5)
     
-    cloud_info = CachedResource.get_tag_cloud_info(nil) # get all tags and their frequencies
-    @tags = cloud_info[:cloud_freq].sort {|a,b| b[1] <=> a[1]} # sort by frequency
-    total_tags_wanted = @tags.length > 40 ? 40 : @tags.length
-    total_bigger_tags = total_tags_wanted / 5
-    @tags = @tags.slice(0, total_tags_wanted)  # we just want the top 40 tags.
-    0.upto(total_bigger_tags-1) { |i| # now make a few of the tags larger
-      @tags[i][2] = true
-    }
-    total_bigger_tags.upto(total_tags_wanted-1) { |i| # now make a few of the tags larger
-      @tags[i][2] = false
-    }
-    @tags = @tags.sort {|a,b| a[0] <=> b[0]}  # now sort by tag name for display
+	@tags = CachedResource.get_most_popular_tags(40)
     
     # carousel
     facets = FacetCategory.find(:all, :conditions => ['carousel_include = 1'])

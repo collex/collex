@@ -19,8 +19,6 @@ class LoginController < ApplicationController
    before_filter :init_view_options
    
    def init_view_options # This controls how the layout portion of the page looks.
-     @use_tabs = false
-     @use_signin= false
      @site_section = :login
      return true
    end

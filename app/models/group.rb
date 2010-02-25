@@ -282,7 +282,11 @@ class Group < ActiveRecord::Base
 
 	def get_visible_id
 		return self.visible_url if self.visible_url && self.visible_url.length > 0
-		return self.id
+		return "#{self.id}"
+	end
+
+	def get_visible_url
+		return "/groups/#{get_visible_id()}"
 	end
 
 	#

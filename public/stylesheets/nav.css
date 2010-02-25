@@ -44,6 +44,33 @@
 	text-decoration:underline;
 }
 
+.tab_link_long {
+	height:29px;
+	width:100px;
+	float:right;
+	font-weight:bold;
+	text-decoration:none;
+	padding-top:9px;
+}
+
+.tab_link_long:hover {
+	text-decoration:underline;
+}
+
+.tab_link_long_current {
+	height:29px;
+	width:100px;
+	float:right;
+	color:black;
+	font-weight:bold;
+	text-decoration:none;
+	padding-top:9px;
+}
+
+.tab_link_long_current:hover {
+	text-decoration:underline;
+}
+
 #subnav_container{
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:0.90em;
