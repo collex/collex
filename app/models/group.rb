@@ -296,7 +296,7 @@ class Group < ActiveRecord::Base
 
 	def get_clusters_label()
 		return 'Cluster' if self.clusters_label == nil
-		return self.cluster_label
+		return self.clusters_label
 	end
 	#
 	# enumerations
