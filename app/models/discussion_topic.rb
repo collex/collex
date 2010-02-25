@@ -39,4 +39,23 @@ class DiscussionTopic < ActiveRecord::Base
     end
     return newest_date
   end
+
+	def self.get_most_popular(num)
+		threads = []
+		topics = DiscussionTopic.get_all_with_date()
+		for topic_arr in topics
+			topic = topic_arr[:topic_rec]
+			threads += topic.discussion_threads
+		end
+		threads = threads.sort {|a,b|
+			b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
+		}
+		threads = threads.slice(0..(num-1))
+
+		discussions = []
+		threads.each {|thread|
+			discussions.push({ :title => thread.get_title().length > 0 ? thread.get_title() : "[Untitled]", :id => thread.id })
+		}
+		return discussions
+	end
 end

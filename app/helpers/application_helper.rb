@@ -174,6 +174,10 @@ private
       { :name => 'Tags', :link => tags_path },
       { :name => 'Search', :link => search_path }
     ]
+
+		if BLEEDING_EDGE
+			tabs = tabs.insert(2, { :name => 'Classroom', :link => '/classroom', :use_long => true }, { :name => 'Community', :link => '/communities', :use_long => true }, { :name => 'Publications', :link => '/publications', :use_long => true } )
+		end
     
     # the my_collex tab is separate, and is rendered first
     cls = (curr_page == MY_COLLEX) ? 'my_collex_link_current' : 'my_collex_link'
@@ -185,7 +189,9 @@ private
       else
         if tab[:use_logo_style] && curr_page == 'HOME'
           cls = 'tab_link_logo'
-        else
+		elsif tab[:use_long]
+          cls = (curr_page == tab[:name]) ? 'tab_link_long_current' : 'tab_link_long'
+		else
           cls = (curr_page == tab[:name]) ? 'tab_link_current' : 'tab_link'
         end
         html += "\t\t" + link_to(tab[:name], tab[:link], { :class => cls }) + "\n"

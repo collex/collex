@@ -24,10 +24,7 @@ class ForumController < ApplicationController
 
     private
   def init_view_options
-    @use_tabs = true
-    @use_signin= true
     @site_section = :discuss
-    @uses_yui = true
     return true
   end
   public

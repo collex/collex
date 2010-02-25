@@ -24,10 +24,7 @@ class Admin::BaseController < ApplicationController
   before_filter :init_view_options
   
   def init_view_options
-    @use_tabs = true
-    @use_signin= true
     @site_section = :admin
-     @uses_yui = true
     return true
   end
 

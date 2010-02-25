@@ -62,7 +62,23 @@ class CachedResource < ActiveRecord::Base
     end
   end
   public
-  
+
+	def self.get_most_popular_tags(num)
+		cloud_info = CachedResource.get_tag_cloud_info(nil) # get all tags and their frequencies
+		tags = cloud_info[:cloud_freq].sort {|a,b| b[1] <=> a[1]} # sort by frequency
+		total_tags_wanted = tags.length > num ? num : tags.length
+		total_bigger_tags = total_tags_wanted / 5
+		tags = tags.slice(0, total_tags_wanted)  # we just want the top num tags.
+		0.upto(total_bigger_tags-1) { |i| # now make a few of the tags larger
+			tags[i][2] = true
+		}
+		total_bigger_tags.upto(total_tags_wanted-1) { |i| # now make a few of the tags larger
+			tags[i][2] = false
+		}
+		tags = tags.sort {|a,b| a[0] <=> b[0]}  # now sort by tag name for display
+		return tags
+	end
+
   def self.get_tag_cloud_info(user)
     # This gets all the tags, the number of times they've been used, and their relative sizes in the cloud.
     # The return value is a list of all tag names and their frequency, also a hash of all frequencies and their bucket size.

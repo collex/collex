@@ -184,6 +184,8 @@ namespace :collex do
 		concatenate_css(:home)
 		concatenate_js(:exhibits)
 		concatenate_css(:exhibits)
+		concatenate_js(:shared)
+		concatenate_css(:shared)
 		concatenate_js(:admin)
 		concatenate_css(:admin)
 		concatenate_js(:about)
