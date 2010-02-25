@@ -169,14 +169,13 @@ private
   def draw_tabs(curr_page)
     tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true },
       { :name => 'News', :link => news_path + '/', :use_logo_style => true },
-      { :name => 'Forum', :link => forum_path },
-      { :name => 'Exhibits', :link => exhibit_list_path },
-      { :name => 'Tags', :link => tags_path },
       { :name => 'Search', :link => search_path }
     ]
 
 		if BLEEDING_EDGE
 			tabs = tabs.insert(2, { :name => 'Classroom', :link => '/classroom', :use_long => true }, { :name => 'Community', :link => '/communities', :use_long => true }, { :name => 'Publications', :link => '/publications', :use_long => true } )
+		else
+			tabs = tabs.insert(2, { :name => 'Tags', :link => tags_path }, { :name => 'Exhibits', :link => exhibit_list_path }, { :name => 'Forum', :link => forum_path } )
 		end
     
     # the my_collex tab is separate, and is rendered first
