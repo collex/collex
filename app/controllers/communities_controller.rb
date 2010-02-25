@@ -38,9 +38,10 @@ class CommunitiesController < ApplicationController
 	private
 	def get_results()
 		case session[:shared_view_by]
-		when 'Groups' then results = Group.all + Cluster.all
+		when 'Groups' then results = Group.all
+		when 'Clusters' then results = Cluster.all
 		when 'Exhibits' then results = Exhibit.all
-		when 'Both' then results = Group.all + Cluster.all + Exhibit.all
+		when 'All' then results = Group.all + Cluster.all + Exhibit.all
 		else results = []
 		end
 		return results

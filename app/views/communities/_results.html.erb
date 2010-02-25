@@ -18,10 +18,10 @@
 
 <hr class="search_results_hr" />
 <div class="shared_results_heading">
+	<span class="shared_results_label">Show:</span>
+	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Clusters', :value => 'Clusters'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'All', :value => 'All'} ], session[:shared_view_by], "recurseUpdateWithAjax([ '/communities/view_by' ], [ 'shared_results_objects' ], null, null, { view: sel })") %>
 	<span class="shared_results_label">Sort by:</span>
 	<%= make_select_control("sort_by", [ { :name => 'Title', :value => 'Title'}, { :name => 'Most Recent', :value => 'Most Recent'}], session[:shared_sort_by], "recurseUpdateWithAjax([ '/communities/sort_by' ], [ 'shared_results_objects' ], null, null, { sort: sel })") %>
-	<span class="shared_results_label">View by:</span>
-	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'Both', :value => 'Both'} ], session[:shared_view_by], "recurseUpdateWithAjax([ '/communities/view_by' ], [ 'shared_results_objects' ], null, null, { view: sel })") %>
 </div>
 <hr class="search_results_hr" />
 <div id="shared_results_objects">
