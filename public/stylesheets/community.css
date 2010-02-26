@@ -1,7 +1,13 @@
+.shared_left_column {
+	float: left;
+	width: 70.8%;
+}
+
 .shared_header {
 	color:white;
 	background:#371911;
 	padding:4px 14px 4px 14px;
+	font-size:1.3em;
 }
 
 .shared_explanation {
@@ -29,7 +35,7 @@
 .shared_search_results {
 	font-size: 1.5em;
 	padding-top: .5em;
-	padding-bottom: .5em;
+	margin-bottom: -4px;
 }
 
 .thumbnail_item {
