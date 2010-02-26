@@ -15,17 +15,9 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% current_page "Community" -%>
-<% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id -%>
 <div class="inner_content_container">
-	<div class="left_column">
-		<div class="shared_header">Groups and Exhibits</div>
-		<div class="shared_explanation">Groups and exhibits created by <%= SITE_NAME %> users for scholarship and research.</div>
-		<div id="shared_search">
-			<%= render :partial => '/communities/search', :locals => { :user => curr_user_id } %>
-		</div>
-		<div id="shared_results">
-			<%= render :partial => '/communities/results', :locals => { :user => curr_user_id } %>
-		</div>
+	<div id="shared_objects" class="left_column">
+		<%= render :partial => '/communities/shared_objects', :locals => { :results => @results } %>
 	</div>
 	<div class="right_column">
 		<div class="shared_header">Popular Discussions</div>

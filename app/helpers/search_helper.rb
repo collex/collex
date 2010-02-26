@@ -96,6 +96,65 @@ module SearchHelper
     return html
   end
 
+  def draw_ajax_pagination(curr_page, num_pages, action, el)
+    html = ""
+
+    # If there's only one page, don't show any pagination
+    if num_pages == 1
+      return ""
+    end
+
+    # Show only a maximum of 11 items, with the current item centered if possible.
+    # First figure out the start and end points we want to display.
+    if num_pages < 11
+      first = 1
+      last = num_pages
+    else
+      first = curr_page - 5
+      last = curr_page + 5
+      if first < 1
+        first = 1
+        last = first + 10
+      end
+      if last > num_pages
+        last = num_pages
+        first = last - 10
+      end
+    end
+
+    if first > 1
+      html += link_to_function("first", "ajax_pagination('#{action}', '#{el}', 1)", :class => 'nav_link') + "&nbsp;&nbsp;"
+    end
+
+    if curr_page > 1
+      html += link_to_function("<<", "ajax_pagination('#{action}', '#{el}', #{ curr_page - 1 })", :class => 'nav_link') + "&nbsp;&nbsp;"
+    end
+
+    for pg in first..last do
+      if pg == curr_page
+        html += "<span class='current_serp'>#{pg}</span>"
+      else
+        html += link_to_function("#{pg}", "ajax_pagination('#{action}', '#{el}', #{ pg })", :class => 'nav_link' )
+      end
+      html += "&nbsp;&nbsp;"
+    end
+
+    if last < num_pages
+      html += "...&nbsp;&nbsp;" if num_pages > 12
+      html += link_to_function(num_pages, "ajax_pagination('#{action}', '#{el}', #{ num_pages })", :class => 'nav_link') + "&nbsp;&nbsp;"
+    end
+
+    if curr_page < num_pages
+      html += link_to_function( ">>", "ajax_pagination('#{action}', '#{el}', #{ curr_page + 1 })", :class => 'nav_link') + "&nbsp;&nbsp;"
+    end
+
+    if last < num_pages
+      html += link_to_function("last", "ajax_pagination('#{action}', '#{el}', #{ num_pages })", :class => 'nav_link') + "&nbsp;&nbsp;"
+    end
+
+    return html
+  end
+
   def resource_is_in_constraints?(resource)
     constraints = session[:constraints]
     constraints.each {|constraint|

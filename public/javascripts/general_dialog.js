@@ -705,6 +705,8 @@ var MessageBoxDlg = Class.create({
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
+
+		this.cancel = function() { dlg.cancel();};
 	}
 });
 
@@ -835,13 +837,18 @@ var ajaxWithProgressDlg = function(actions, els, params, ajaxParams)
 	var title = params.title;
 	var waitMessage = params.waitMessage;
 	var completeMessage = params.completeMessage;
+	var dlg = null;
 
 	var onSuccess = function(resp) {
-		var el = $$(".message_box_label");
-		if (el.length > 0)
-			el[0].update(completeMessage);
+		if (completeMessage === undefined)
+			dlg.cancel();
+		else {
+			var el = $$(".message_box_label");
+			if (el.length > 0)
+				el[0].update(completeMessage);
+		}
 	};
-	new MessageBoxDlg(title, waitMessage);
+	dlg = new MessageBoxDlg(title, waitMessage);
 	recurseUpdateWithAjax(actions, els, onSuccess, null, ajaxParams);
 };
 

@@ -50,3 +50,7 @@
 	font-weight:bold;
 	font-size:1.05em;
 }
+
+.pagination {
+	float: right;
+}

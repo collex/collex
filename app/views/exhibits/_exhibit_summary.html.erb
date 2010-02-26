@@ -15,9 +15,10 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# exhibit_summary: params: ActiveRecord exhibit %>
+<%# exhibit_summary: params: ActiveRecord exhibit, bool show_immediately (optional) %>
+<% show_immediately ||= false -%>
 <div class="thumbnail_item">
-<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></div>
+<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 <div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 	<%= get_exhibit_user_link(exhibit) %>
 	<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>

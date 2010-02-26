@@ -1,4 +1,3 @@
-<%#
 # ------------------------------------------------------------------------
 #     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
 # 
@@ -14,17 +13,12 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 # ----------------------------------------------------------------------------
-%>
-<%# objects params: hash results { :total_hits, :num_pages, :hits (array: the elements are either an Exhibit/Group/Cluster) } -%>
-<% results[:hits].each { |result| -%>
-<% if result.kind_of? Exhibit -%>
-<%= render :partial => '/exhibits/exhibit_summary', :locals => { :exhibit => result, :show_immediately => true } %>
-<% elsif result.kind_of? Group -%>
-<%= render :partial => '/groups/group_summary', :locals => { :group => result } %>
-<% elsif result.kind_of? Cluster -%>
-<%= render :partial => '/clusters/cluster_summary', :locals => { :group => Group.find(result.group_id), :cluster => result } %>
-<% else -%>
-Unknown type.
-<% end -%>
-<br />
-<% } %>
+
+require 'test_helper'
+
+class SearchUserContentTest < ActiveSupport::TestCase
+  # Replace this with your real tests.
+  test "the truth" do
+    assert true
+  end
+end
