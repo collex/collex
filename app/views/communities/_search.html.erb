@@ -47,6 +47,6 @@
 or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 <% if session[:community_search_term] -%>
 <div class="shared_search_results">Found <%= results[:total_hits] %> items searching for "<%= session[:community_search_term] %>".
-	<a method="post" href="/communities/search?term="><img src="/images/lvl2_trash.gif" alt="Clear Search" /></a>
+	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Search" />', "ajaxWithProgressDlg([ '/communities/search' ], [ 'shared_objects' ], { title: 'Removing Search', waitMessage: 'Please wait...' }, { term: '' })" %>
 </div>
 <% end -%>
