@@ -74,6 +74,16 @@ class Group < ActiveRecord::Base
 		return is_member(user_id)
 	end
 
+	def self.get_exhibit_visibility(exhibit)
+		return "admin" if exhibit.is_published == 4
+		cluster = Cluster.find_by_id(exhibit.cluster_id)	# this can fail if the cluster was deleted with exhibits in it.
+		return 'admin' if cluster && cluster.visibility == 'administrators'
+		return 'admin' if exhibit.is_published == 2
+		return 'members' if exhibit.editor_limit_visibility == 'group'
+		return 'members' if exhibit.is_published == 3
+		return 'everyone'
+	end
+
 	def can_view_exhibit(exhibit, user_id)
 		# The exhibit is visible if the user is an admin of the group.
 		# Then check to see if it is in a restricted cluster, or it is a restricted exhibit. If so, then it is not visible.
@@ -129,6 +139,7 @@ class Group < ActiveRecord::Base
 		return user_id == self.owner
 	end
 
+	public
 	def is_editor(user_id)
 		return false if user_id == nil
 		return true if is_owner(user_id)
@@ -137,7 +148,6 @@ class Group < ActiveRecord::Base
 		return rec.role == 'editor'
 	end
 
-	public
 	def is_member(user_id)
 		return true if is_owner(user_id)
 		rec = GroupsUser.find_by_group_id_and_user_id(self.id, user_id)
@@ -176,6 +186,14 @@ class Group < ActiveRecord::Base
 			end
 		}
 		return groups
+	end
+
+	def self.get_all_users_admins(groups, user_id)
+		admin_groups = []
+		groups.each {|group|
+			admin_groups.push(group) if group.is_editor(user_id)
+		}
+		return admin_groups
 	end
 
 	def self.is_peer_reviewed_group(exhibit)

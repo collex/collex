@@ -670,8 +670,8 @@ class Exhibit < ActiveRecord::Base
 	def get_apparent_author_name()
 		# This gets the alias if there is one, and the real author if there isn't.
 		author_rec = User.find(self.alias_id ? self.alias_id : self.user_id)
-		author = author_rec.fullname ? author_rec.fullname : author_rec.username
-		return author
+		auth = author_rec.fullname ? author_rec.fullname : author_rec.username
+		return auth
 	end
 
 	def get_apparent_author_email()
@@ -804,6 +804,38 @@ class Exhibit < ActiveRecord::Base
 		if changed == true
 			solr.commit()
 		end
+	end
+
+	def get_all_text()
+		full_data = []
+		pages = self.exhibit_pages
+		pages.each{|page|
+			elements = page.exhibit_elements
+			elements.each {|element|
+				full_data.push(strip_tags(element.element_text)) if element.element_text
+				full_data.push(strip_tags(element.element_text2)) if element.element_text2
+				if element.header_footnote_id
+					footnote = ExhibitFootnote.find(element.header_footnote_id)
+					full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+				end
+				illustrations = element.exhibit_illustrations
+				illustrations.each {|illustration|
+					full_data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					full_data.push(illustration.caption1) if illustration.caption1
+					full_data.push(illustration.caption2) if illustration.caption2
+					full_data.push(illustration.alt_text) if illustration.alt_text
+					if illustration.caption1_footnote_id
+						footnote = ExhibitFootnote.find( illustration.caption1_footnote_id)
+						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					end
+					if illustration.caption2_footnote_id
+						footnote = ExhibitFootnote.find( illustration.caption2_footnote_id)
+						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					end
+				}
+			}
+		}
+		return full_data.join(" \n")
 	end
 
 	def index_exhibit(should_commit)

@@ -16,6 +16,12 @@
 
 namespace :solr_index do
 
+	desc "Reindex all user content"
+	task :reindex_all_user_content => :environment do
+		solr = SearchUserContent.new
+		solr.reindex_all()
+	end
+
 	desc "Temp task for a batch file"
 	task :temp => :environment do
 		puts "TASK"

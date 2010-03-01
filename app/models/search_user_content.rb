@@ -16,7 +16,7 @@
 
 class SearchUserContent
 	def initialize
-
+		@solr = CollexEngine.new([ 'UserContent' ])
 	end
 
 	# The results depend on what is visible to the user. We want hits where:
@@ -45,53 +45,84 @@ class SearchUserContent
 
 	def find_objects(options)
 		# returns: { total_hits => int, num_pages => int, hits => [ ActiveRecord: Exhibit,Cluster,Group ] }
-		# input parameters:
-		facet_exhibit = options[:facet][:exhibit]	# bool
-		facet_cluster = options[:facet][:cluster]	# bool
-		facet_group = options[:facet][:group]	# bool
-		facet_federation = options[:facet][:federation]	#bool
-		facet_section = options[:facet][:section]	# symbol -- enum: classroom|community|peer-reviewed
+
 		user_id = options[:user_id]	# int
-		search_terms = options[:terms]	# array of strings, they are ANDed
-		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title|most_recent
-		page = options[:page]	# int
+		member = Group.get_all_users_groups(user_id)
+		admin = Group.get_all_users_admins(member, user_id)
+		options[:member] = member
+		options[:admin] = admin
+
+		ret = @solr.search_user_content(options)
+		hits = []
+		ret[:hits].each {|hit|
+			case hit['object_type']
+			when 'Exhibit' then hits.push(Exhibit.find(hit['object_id']))
+			when 'Group' then hits.push(Group.find(hit['object_id']))
+			when 'Cluster' then hits.push(Cluster.find(hit['object_id']))
+			end
+		}
 		page_size = options[:page_size]	#int
 
-		# TODO-PER: stub
-		# getting hits
-		hits = []
-		if facet_exhibit
-			hits += Exhibit.all
-		end
-		if facet_cluster
-			hits += Cluster.all
-		end
-		if facet_group
-			hits += Group.all
-		end
+		total_hits = ret[:total_hits]
+		num_pages = ((0.0 + total_hits) / page_size).ceil
 
-		# sorting hits
-		if sort_by != :relevancy
-			hits.sort! { |a,b|
-				if sort_by == :title
-					get_title(a).downcase <=> get_title(b).downcase
-				else
-					a.updated_at <=> b.updated_at
-				end
-			}
-		end
-
-		# paginating hits
-		total_hits = hits.length
-		num_pages = (total_hits / page_size).ceil
-		hits = hits.slice(page*page_size, page_size)
-
-		# return
-		{ :total_hits => total_hits, :num_pages => num_pages, :hits => hits }
+		return { :total_hits => total_hits, :num_pages => num_pages, :hits => hits }
 	end
 
 	def index_object(object)
 		# object is an ActiveRecord of type Group, Cluster, or Exhibit
+	end
+
+	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, visibility_id)
+		doc = { :key => "#{object_type}_#{id}", :object_type => object_type, :object_id => id, :federation => federation,
+			:section => section, :title => title, :text => text, :last_modified => last_modified
+		}
+		if visibility_type == 'everyone'
+			doc[:visible_to_everyone] = true
+		else
+			doc[:visible_to_everyone] = false
+			if visibility_type == 'member'
+				doc[:visible_to_group_member] = visibility_id
+			else
+				doc[:visible_to_group_admin] = visibility_id
+			end
+		end
+		@solr.add_object(doc)
+	end
+
+	def reindex_all()
+		`curl http://localhost:8983/solr/admin/cores?action=CREATE&name=UserContent&instanceDir=./&schema=schema_user.xml`
+		@solr = CollexEngine.new([ 'UserContent' ])
+
+		exhibits = Exhibit.all
+		exhibits.each {|exhibit|
+			if exhibit.is_published != 0
+				if exhibit.group_id == nil
+					section = exhibit.category
+					visibility_type = 'everyone'
+					visibility_id = 0
+				else
+					group = Group.find(exhibit.group_id)
+					section = group.group_type
+					visibility_type = Group.get_exhibit_visibility(exhibit)
+					visibility_id = group.id
+				end
+				add_object("Exhibit", exhibit.id, SITE_NAME, section, exhibit.title, exhibit.get_all_text(), exhibit.last_change, visibility_type, visibility_id)
+			end
+		}
+
+		groups = Group.all
+		groups.each {|group|
+			add_object("Group", group.id, SITE_NAME, group.group_type, group.name, group.description, group.updated_at, 'everyone', group.id)
+		}
+
+		clusters = Cluster.all
+		clusters.each {|cluster|
+			group = Group.find(cluster.group_id)
+			add_object("Cluster", cluster.id, SITE_NAME, group.group_type, cluster.name, cluster.description, cluster.updated_at, cluster.visibility, group.id)
+		}
+
+		@solr.commit()
 	end
 
 	private

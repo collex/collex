@@ -96,6 +96,68 @@ class CollexEngine
 		return facets2
 	end
 
+	def search_user_content(options)
+		# input parameters:
+		facet_exhibit = options[:facet][:exhibit]	# bool
+		facet_cluster = options[:facet][:cluster]	# bool
+		facet_group = options[:facet][:group]	# bool
+		facet_federation = options[:facet][:federation]	#bool
+		facet_section = options[:facet][:section]	# symbol -- enum: classroom|community|peer-reviewed
+		member = options[:member]	# array of group
+		admin = options[:admin]	# array of group
+		search_terms = options[:terms]	# array of strings, they are ANDed
+		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title|most_recent
+		page = options[:page]	# int
+		page_size = options[:page_size]	#int
+
+		query = "federation:#{facet_federation} AND section:#{facet_section}"
+		if search_terms != nil
+			arr = search_terms.split(' ')
+			arr.each {|term|
+				query += " AND content:#{term}"
+			}
+		end
+
+		arr = []
+		arr.push("object_type:Exhibit") if facet_exhibit
+		arr.push("object_type:Cluster") if facet_cluster
+		arr.push("object_type:Group") if facet_group
+		query += " AND ( #{arr.join(' OR ')})"
+
+		group_members = ""
+		member.each {|ar|
+			group_members += " OR visible_to_group_member:#{ar.id}"
+		}
+
+		group_admins = ""
+		admin.each {|ar|
+			group_admins += " OR visible_to_group_admin:#{ar.id}"
+		}
+		query += " AND (visible_to_everyone:true #{group_members} #{group_admins})"
+
+		puts "QUERY: #{query}"
+		case sort_by
+		when :relevancy then sort = nil
+		when :title then sort = [ {sort_by => :ascending }]
+		when :last_modified then sort = [ {sort_by => :descending }]
+		end
+
+		#facet_fields = ['object_type','federation','section']
+		req = Solr::Request::Standard.new(:start => page*page_size, :rows => page_size, :sort => sort,
+						:query => query, #:filter_queries => filter_queries,
+						:field_list => [ 'object_type', 'object_id' ],
+						#:facets => {:fields => facet_fields, :mincount => 1, :missing => true, :limit => -1},
+						:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 })
+
+		results = {}
+
+		response = @solr.send(req)
+
+		results[:total_hits] = response.total_hits
+		results[:hits] = response.hits
+		return results
+	end
+
   def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
     query, filter_queries = solrize_constraints(constraints)
 
