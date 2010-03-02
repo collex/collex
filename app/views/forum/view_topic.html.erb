@@ -21,13 +21,11 @@
 <% last_updated_date = topic.get_last_updated_date -%>
 <%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }], topic.topic) if BLEEDING_EDGE %>
 
+<div class="content_container2">
 <div class="page_header"><%= topic.topic %></div>
 <div class="page_subheader">We've set aside this portion of <%= SITE_NAME %> for commentary, discussion and collaboration among the <%= SITE_NAME %> community.
 	Log in to your free account to join in the conversations below and to discuss the objects of your research at <%= SITE_NAME %>.</div>
 
-<div class="FP_breadcrumb">
-	<%= link_to "#{SITE_NAME} Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= topic.topic %>
-</div>
 <table class="FH_cat_table" border="0" cellpadding="0" cellspacing="0">
 	<tr><td colspan="9" class="FH_cat_info">
 		<p><%= topic.description %></p>
@@ -114,3 +112,4 @@
 		</td>
 	</tr>
 </table>
+</div>

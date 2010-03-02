@@ -20,16 +20,13 @@
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
 <%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) if BLEEDING_EDGE %>
-
+<div class="content_container2">
 <script type="text/javascript">
 	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];
 </script>
 
 <div class="page_subheader">Follow and join in this discussion by using your free <%= SITE_NAME %> account.</div>
-<br /><br />
-<div class="FP_breadcrumb">
-	<%= link_to "#{SITE_NAME}  Forum", { :action => 'index' }, :class => 'nav_link' %> > <%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'nav_link' %> > <%= DiscussionThread.find(thread_id).get_title() %>
-</div>
+<br />
 <% main_comment = @thread.discussion_comments[0] -%>
 <%# the thread itself can be deleted if the current user is an administrator, or the current user created the thread and there are no comments, yet. -%>
 <% can_delete = is_admin? || (main_comment.user_id == user_id && @replies.length == 0) -%>
@@ -76,3 +73,4 @@
 		</script>
  	</div>
 <% end -%>
+</div>
