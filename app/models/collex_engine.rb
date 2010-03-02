@@ -106,7 +106,7 @@ class CollexEngine
 		member = options[:member]	# array of group
 		admin = options[:admin]	# array of group
 		search_terms = options[:terms]	# array of strings, they are ANDed
-		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title|most_recent
+		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title_sort|most_recent
 		page = options[:page]	# int
 		page_size = options[:page_size]	#int
 

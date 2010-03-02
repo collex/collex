@@ -69,7 +69,7 @@ class CommunitiesController < ApplicationController
 		end
 		case session[:community_sort_by]
 		when 'Relevancy' then options[:sort_by] = :relevancy
-		when 'Title' then options[:sort_by] = :title
+		when 'Title' then options[:sort_by] = :title_sort
 		when 'Most Recent' then options[:sort_by] = :most_recent
 		end
 		results = @searcher.find_objects(options)
