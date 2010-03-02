@@ -15,8 +15,9 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# exhibit_summary: params: ActiveRecord exhibit, bool show_immediately (optional) %>
+<%# exhibit_summary: params: ActiveRecord exhibit, string text (optional), bool show_immediately (optional) %>
 <% show_immediately ||= false -%>
+<% text ||= '' -%>
 <div class="thumbnail_item">
 <div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 <div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
@@ -26,6 +27,9 @@
 	<% end -%>
 	<% if exhibit.group_id %>
 		<br />in <%= link_to Group.find(exhibit.group_id).name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, :class => 'nav_link' %>
+	<% end -%>
+	<% if text.length > 0 %>
+		<div class="snippet"><%= text %></div>
 	<% end -%>
 </div>
 </div>

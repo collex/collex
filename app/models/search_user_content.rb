@@ -56,9 +56,9 @@ class SearchUserContent
 		hits = []
 		ret[:hits].each {|hit|
 			case hit['object_type']
-			when 'Exhibit' then hits.push(Exhibit.find(hit['object_id']))
-			when 'Group' then hits.push(Group.find(hit['object_id']))
-			when 'Cluster' then hits.push(Cluster.find(hit['object_id']))
+			when 'Exhibit' then hits.push({ :obj => Exhibit.find(hit['object_id']), :text => hit['text'] })
+			when 'Group' then hits.push({ :obj => Group.find(hit['object_id']), :text => hit['text'] })
+			when 'Cluster' then hits.push({ :obj => Cluster.find(hit['object_id']), :text => hit['text'] })
 			end
 		}
 		page_size = options[:page_size]	#int
@@ -67,10 +67,6 @@ class SearchUserContent
 		num_pages = ((0.0 + total_hits) / page_size).ceil
 
 		return { :total_hits => total_hits, :num_pages => num_pages, :hits => hits }
-	end
-
-	def index_object(object)
-		# object is an ActiveRecord of type Group, Cluster, or Exhibit
 	end
 
 	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, visibility_id)
@@ -91,8 +87,9 @@ class SearchUserContent
 	end
 
 	def reindex_all()
-		`curl http://localhost:8983/solr/admin/cores?action=CREATE&name=UserContent&instanceDir=./&schema=schema_user.xml`
+		# `curl http://localhost:8983/solr/admin/cores?action=CREATE&name=UserContent&instanceDir=./&schema=schema_user.xml`
 		@solr = CollexEngine.new([ 'UserContent' ])
+		@solr.start_reindex()
 
 		exhibits = Exhibit.all
 		exhibits.each {|exhibit|

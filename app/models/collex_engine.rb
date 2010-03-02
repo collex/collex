@@ -145,7 +145,7 @@ class CollexEngine
 		#facet_fields = ['object_type','federation','section']
 		req = Solr::Request::Standard.new(:start => page*page_size, :rows => page_size, :sort => sort,
 						:query => query, #:filter_queries => filter_queries,
-						:field_list => [ 'object_type', 'object_id' ],
+						:field_list => [ 'key', 'object_type', 'object_id' ],
 						#:facets => {:fields => facet_fields, :mincount => 1, :missing => true, :limit => -1},
 						:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 })
 
@@ -155,6 +155,14 @@ class CollexEngine
 
 		results[:total_hits] = response.total_hits
 		results[:hits] = response.hits
+		# add the highlighting to the object
+		if response.data['highlighting']
+			highlight = response.data['highlighting']
+			results[:hits].each  {|hit|
+				this_highlight = highlight[hit['key']]
+				hit['text'] = this_highlight['text'].join("\n") if this_highlight['text']
+			}
+		end
 		return results
 	end
 
@@ -357,6 +365,10 @@ class CollexEngine
 
 	public
 	# Warning: This will completely wipe out the index. Just do this on the reindexing resource!
+	def start_reindex
+		@solr.delete_by_query "*:*"
+	end
+
 	def clear_index
 		@solr.delete_by_query "*:*"
 		@solr.optimize
