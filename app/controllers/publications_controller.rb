@@ -10,6 +10,7 @@ class PublicationsController < ApplicationController
 	public
 
 	def index
+		@publications = Group.find_all_by_group_type('peer-reviewed')
 	end
 
 end

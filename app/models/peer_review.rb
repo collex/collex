@@ -1,5 +1,5 @@
 class PeerReview < ActiveRecord::Base
-  belongs_to :image#, :dependent=>:destroy
+	belongs_to :image#, :dependent=>:destroy
 
 	def self.get_list()
 		badges = PeerReview.all

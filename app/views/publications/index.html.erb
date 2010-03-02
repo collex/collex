@@ -16,4 +16,10 @@
     # ---------------------------------------------------------------------------- -%>
 <% current_page "Publications" -%>
 
-Blah blah
+<div class="publications_images">
+<% for item in @publications -%>
+	<%= link_to "<img src='#{PublicationImage.get_image(item.publication_image_id)}' alt='#{item.name}' />", item.get_visible_url() %>
+<% end -%>
+</div>
+
+<hr class="search_results_hr" />

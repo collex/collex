@@ -20,9 +20,12 @@
 var gGroupTypes = <%= Group.types_to_json(true) %>;
 var badges = <%= PeerReview.get_list().to_json() %>;
 badges.unshift({value: 0, text: "&lt;none&gt;"});
+var publication_images = <%= PublicationImage.get_list().to_json() %>;
+publication_images.unshift({value: 0, text: "&lt;none&gt;"});
 </script>
 <div class="inner_content_container">
-	<%= link_to_function("Add Badge", "new AddBadgeDlg('/admin/default/add_badge');", :class => 'nav_link' ) %>
+	<%= link_to_function("Add Badge", "new AddBadgeDlg('/admin/default/add_badge');", :class => 'nav_link' ) %> | 
+	<%= link_to_function("Add Publication Image", "new AddPublicationImageDlg('/admin/default/add_publication_image');", :class => 'nav_link' ) %>
 	<div class="page_header">Groups Categories</div>
 	<table class="exhibit_category">
 		<tr>
@@ -30,6 +33,7 @@ badges.unshift({value: 0, text: "&lt;none&gt;"});
 			<th>Owner</th>
 			<th>Type</th>
 			<th>Badge</th>
+			<th>Publication Image</th>
 		</tr>
 		<% groups = Group.all(:order => 'name') -%>
 		<% for group in groups -%>

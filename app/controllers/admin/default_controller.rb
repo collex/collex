@@ -53,10 +53,12 @@ class Admin::DefaultController < Admin::BaseController
     group_id = params[:group_id]
     group_type = params[:group_type]
     badge = params[:badge_id]
+    publication_image = params[:publication_image_id]
     group = Group.find(group_id)
 		old_type = group.group_type
     group.update_attribute('group_type', group_type)
     group.update_attribute('badge_id', badge)
+    group.update_attribute('publication_image_id', publication_image)
 		if group_type == 'peer-reviewed'
 			# TODO-PER: index exhibits
 			#index_exhibit(exhibit_id)
@@ -138,5 +140,25 @@ class Admin::DefaultController < Admin::BaseController
 			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopAddBadgeUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+	end
+
+	def add_publication_image
+		publication_image = PublicationImage.create({})
+		image = params['image']
+		if image && image
+			image = Image.new({ :uploaded_data => image })
+		end
+		begin
+			publication_image.image = image
+			if publication_image.save
+				publication_image.image.save! if publication_image.image
+				flash = "OK:Publication image updated"
+			else
+				flash = "Error updating publication image"
+			end
+		rescue
+			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+		end
+    render :text => "<script type='text/javascript'>window.top.window.stopAddPublicationImageUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 end

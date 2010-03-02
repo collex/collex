@@ -442,7 +442,7 @@ var EditExhibitCategory = Class.create({
 });
 
 var EditGroupType = Class.create({
-	initialize: function (parent_div, ok_action, group_id, starting_selection, options, badge_id, badges) {
+	initialize: function (parent_div, ok_action, group_id, starting_selection, options, badge_id, badges, publication_image_id, publication_images) {
 		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
 		this.class_type = 'EditGroupType';	// for debugging
 
@@ -464,6 +464,7 @@ var EditGroupType = Class.create({
 					[ { text: 'Choose the type that this group will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
 					[ { text: 'Type:', klass: 'edit_facet_label' }, { select: 'group_type', value: starting_selection, klass: 'categories_select', options: options } ],
 					[ { text: 'Badge:', klass: 'edit_facet_label' }, { select: 'badge_id', value: badge_id, options: badges } ],
+					[ { text: 'Publication Image:', klass: 'edit_facet_label' }, { select: 'publication_image_id', value: publication_image_id, options: publication_images } ],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'group_id', value: group_id } ]
 				]
 			};
@@ -516,6 +517,57 @@ var AddBadgeDlg = Class.create({
 				};
 
 			var params = { this_id: "add_badge", pages: [ layout ], body_style: "add_badge_div", row_style: "new_exhibit_row", title: "Add Badge" };
+			dlg = new GeneralDialog(params);
+			dlg.changePage('layout', null);
+			dlg.center();
+
+			return;
+		};
+
+		show();
+	}
+});
+
+var addPublicationImageDlg = null;
+function stopAddPublicationImageUpload(errMessage){
+	if (errMessage.startsWith('OK:'))
+		addPublicationImageDlg.fileUploadFinished(errMessage.substring(3));
+	else
+		addPublicationImageDlg.fileUploadError(errMessage);
+	return true;
+}
+
+var AddPublicationImageDlg = Class.create({
+	initialize: function (url) {
+		var This = this;
+		var dlg = null;
+
+		var sendWithAjax = function (event, params)
+		{
+			addPublicationImageDlg = This;
+			dlg.setFlash('Adding publication image...', false);
+			dlg.submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
+		};
+
+		this.fileUploadError = function(errMessage) {
+			dlg.setFlash(errMessage, true);
+		};
+
+		this.fileUploadFinished = function(id) {
+			dlg.setFlash('Publication Image updated...', false);
+			window.location.reload(true);
+		};
+		var show = function () {
+			var layout = {
+					page: 'layout',
+					rows: [
+						[ { text: 'Choose Publication Image:' } ],
+						[ { image: 'image', size: '47', klass: 'edit_group_thumbnail' } ],
+						[ { rowClass: 'last_row' }, { button: 'Upload Image', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					]
+				};
+
+			var params = { this_id: "add_badge", pages: [ layout ], body_style: "add_badge_div", row_style: "new_exhibit_row", title: "Add Publication Image" };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', null);
 			dlg.center();
