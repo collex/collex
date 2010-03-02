@@ -54,18 +54,27 @@ class CommunitiesController < ApplicationController
 			options[:facet][:group] = true
 			options[:facet][:cluster] = false
 			options[:facet][:exhibit] = false
+			options[:facet][:comment] = false
 		when 'Clusters' then
 			options[:facet][:group] = false
 			options[:facet][:cluster] = true
 			options[:facet][:exhibit] = false
+			options[:facet][:comment] = false
 		when 'Exhibits' then
 			options[:facet][:group] = false
 			options[:facet][:cluster] = false
 			options[:facet][:exhibit] = true
+			options[:facet][:comment] = false
+		when 'Discussions' then
+			options[:facet][:group] = false
+			options[:facet][:cluster] = false
+			options[:facet][:exhibit] = false
+			options[:facet][:comment] = true
 		when 'All' then
 			options[:facet][:group] = true
 			options[:facet][:cluster] = true
 			options[:facet][:exhibit] = true
+			options[:facet][:comment] = true
 		end
 		case session[:community_sort_by]
 		when 'Relevancy' then options[:sort_by] = :relevancy

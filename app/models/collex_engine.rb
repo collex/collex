@@ -101,6 +101,7 @@ class CollexEngine
 		facet_exhibit = options[:facet][:exhibit]	# bool
 		facet_cluster = options[:facet][:cluster]	# bool
 		facet_group = options[:facet][:group]	# bool
+		facet_comment = options[:facet][:comment]	# bool
 		facet_federation = options[:facet][:federation]	#bool
 		facet_section = options[:facet][:section]	# symbol -- enum: classroom|community|peer-reviewed
 		member = options[:member]	# array of group
@@ -122,6 +123,7 @@ class CollexEngine
 		arr.push("object_type:Exhibit") if facet_exhibit
 		arr.push("object_type:Cluster") if facet_cluster
 		arr.push("object_type:Group") if facet_group
+		arr.push("object_type:DiscussionComment") if facet_comment
 		query += " AND ( #{arr.join(' OR ')})"
 
 		group_members = ""

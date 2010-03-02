@@ -20,7 +20,7 @@
 <div class="shared_results_heading">
 	<div class="pagination"><%= draw_ajax_pagination(session[:community_page_num]+1, results[:num_pages], '/communities/page', 'shared_objects' ) %></div>
 	<span class="shared_results_label">Show:</span>
-	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Clusters', :value => 'Clusters'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'All', :value => 'All'} ], session[:community_view_by], "ajaxWithProgressSpinner([ '/communities/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: sel })") %>
+	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Clusters', :value => 'Clusters'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'Discussions', :value => 'Discussions'}, { :name => 'All', :value => 'All'} ], session[:community_view_by], "ajaxWithProgressSpinner([ '/communities/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: sel })") %>
 	<span class="shared_results_label">Sort by:</span>
 	<%= make_select_control("sort_by", [ { :name => 'Relevancy', :value => 'Relevancy'}, { :name => 'Title', :value => 'Title'}, { :name => 'Most Recent', :value => 'Most Recent'}], session[:community_sort_by], "ajaxWithProgressSpinner([ '/communities/sort_by' ], [ 'shared_objects' ], { waitMessage: 'Sorting...' }, { sort: sel })") %>
 </div>

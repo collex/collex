@@ -59,6 +59,7 @@ class SearchUserContent
 			when 'Exhibit' then hits.push({ :obj => Exhibit.find(hit['object_id']), :text => hit['text'] })
 			when 'Group' then hits.push({ :obj => Group.find(hit['object_id']), :text => hit['text'] })
 			when 'Cluster' then hits.push({ :obj => Cluster.find(hit['object_id']), :text => hit['text'] })
+			when 'DiscussionComment' then hits.push({ :obj => DiscussionComment.find(hit['object_id']), :text => hit['text'] })
 			end
 		}
 		page_size = options[:page_size]	#int
@@ -119,6 +120,25 @@ class SearchUserContent
 			add_object("Cluster", cluster.id, SITE_NAME, group.group_type, cluster.name, cluster.description, cluster.updated_at, cluster.visibility, group.id)
 		}
 
+		# TODO-PER: there are different rules for how visibility is done for forums
+		comments = DiscussionComment.all
+		comments.each {|comment|
+			thread = DiscussionThread.find_by_id(comment.discussion_thread_id)
+			if thread
+				group_id = thread.group_id
+				if group_id == nil || group_id == 0
+					section = 'community'
+					visibility = 'everyone'
+				else
+					group = Group.find(group_id)
+					section = group.group_type
+					visibility = 'everyone'
+				end
+				add_object("DiscussionComment", comment.id, SITE_NAME, section, thread.title, comment.comment, comment.updated_at, visibility, group_id)
+			end
+		}
+
+
 		@solr.commit()
 	end
 
@@ -130,6 +150,9 @@ class SearchUserContent
 			return object.name
 		elsif object.kind_of? Cluster
 			return object.name
+		elsif object.kind_of? DiscussionComment
+			thread = DiscussionThread.find(object.discussion_thread_id)
+			return thread.title
 		else
 			return ''
 		end
