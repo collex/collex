@@ -452,7 +452,7 @@ class ForumController < ApplicationController
     @page = params[:page] ? params[:page].to_i : 1
     @replies = @thread.discussion_comments
     @total = @replies.length-1
-    @num_pages = @total.quo(session[:items_per_page]).ceil
+    @num_pages = session[:items_per_page] != 0 ? @total.quo(session[:items_per_page]).ceil : 0
     @page = @num_pages if @page == -1
     @page = 1 if @page == 0
     start = (@page-1) * session[:items_per_page]
