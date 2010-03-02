@@ -18,6 +18,6 @@
 /*extern ajax_pagination */
 
 function ajax_pagination(actions, els, page) {
-	var params = {title: 'Loading page', waitMessage: 'Please wait...' };
-	ajaxWithProgressDlg(actions, els, params, { page: page });
+	var params = {waitMessage: 'Loading page...' };
+	ajaxWithProgressSpinner(actions, els, params, { page: page });
 }

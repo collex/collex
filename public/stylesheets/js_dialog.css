@@ -807,3 +807,41 @@ textarea.groups_textarea {
 	font-family: sans-serif;
 	color: gray;
 }
+
+.lg_progress_spinner {
+	background-image: url(/images/lg_progress.gif);
+	background-repeat: no-repeat;
+	display:block;
+	height:120px;
+	width:120px;
+	margin-left: 190px;
+	margin-left:190px;
+	margin-top:60px;
+}
+
+.lg_progress_label {
+	font-family:sans-serif;
+	font-size:2em;
+}
+
+#progress_spinner_dlg {
+	background:none repeat scroll 0 0 transparent;
+	text-align: center;
+}
+
+#progress_spinner_dlg .bd {
+	background:none repeat scroll 0 0 transparent;
+	text-align: center;
+}
+
+.progress_spinner_div {
+	width:500px;
+}
+
+.progress_spinner_row {
+
+}
+
+.progress_label_row {
+	background-color: white;
+}

@@ -22,7 +22,7 @@
 	var createSubmitButton = function() {
 		var onButtonClick = function (e) {
 			var term = $('search').value;
-			ajaxWithProgressDlg([ $("search_exhibits-button").href ], [ 'shared_objects' ], { title: 'Searching', waitMessage: 'Please wait...' }, { term: term })
+			ajaxWithProgressSpinner([ $("search_exhibits-button").href ], [ 'shared_objects' ], { waitMessage: 'Searching...' }, { term: term })
 		};
 
 		new YAHOO.widget.Button('search_exhibits', { onclick: { fn: onButtonClick } });
@@ -30,23 +30,24 @@
 			$('search_exhibits-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
 		}, this);
 	};
+	function searchKeyPress(e) {
+		if (e.keyCode === 13) {
+			var term = $('search').value;
+			ajaxWithProgressSpinner([ $("search_exhibits-button").href ], [ 'shared_objects' ], { waitMessage: 'Searching...' }, { term: term })
+		}
+	}
 	document.observe('dom:loaded', function() {
 		createSubmitButton();
-		function searchKeyPress(e) {
-			if (e.keyCode === 13) {
-				var term = $('search').value;
-				ajaxWithProgressDlg([ $("search_exhibits-button").href ], [ 'shared_objects' ], { title: 'Searching', waitMessage: 'Please wait...' }, { term: term })
-			}
-		}
 		YAHOO.util.Event.addListener($('search'), "keyup", searchKeyPress);
 	});
 	try {
 		createSubmitButton();
+		YAHOO.util.Event.addListener($('search'), "keyup", searchKeyPress);
 	} catch(e) {};
 </script>
 or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 <% if session[:community_search_term] -%>
 <div class="shared_search_results">Found <%= results[:total_hits] %> items searching for "<%= session[:community_search_term] %>".
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Search" />', "ajaxWithProgressDlg([ '/communities/search' ], [ 'shared_objects' ], { title: 'Removing Search', waitMessage: 'Please wait...' }, { term: '' })" %>
+	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/communities/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
 </div>
 <% end -%>

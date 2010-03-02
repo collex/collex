@@ -710,6 +710,27 @@ var MessageBoxDlg = Class.create({
 	}
 });
 
+var ProgressSpinnerDlg = Class.create({
+	initialize: function (message) {
+		// This puts up a large spinner that can only be canceled through the ajax return status
+
+		var dlgLayout = {
+				page: 'layout',
+				rows: [
+					[ { text: ' ', klass: 'lg_progress_spinner' } ],
+					[ { rowClass: 'progress_label_row' }, { text: message, klass: 'lg_progress_label' } ],
+				]
+			};
+
+		var params = { this_id: "progress_spinner_dlg", pages: [ dlgLayout ], body_style: "progress_spinner_div", row_style: "progress_spinner_row" };
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+
+		this.cancel = function() { dlg.cancel();};
+	}
+});
+
 var ShowDivInLightbox = Class.create({
 	initialize: function (params) {
 		// This puts up a modal dialog that replaces the alert() call.
@@ -849,6 +870,25 @@ var ajaxWithProgressDlg = function(actions, els, params, ajaxParams)
 		}
 	};
 	dlg = new MessageBoxDlg(title, waitMessage);
+	recurseUpdateWithAjax(actions, els, onSuccess, null, ajaxParams);
+};
+
+var ajaxWithProgressSpinner = function(actions, els, params, ajaxParams)
+{
+	var waitMessage = params.waitMessage;
+	var completeMessage = params.completeMessage;
+	var dlg = null;
+
+	var onSuccess = function(resp) {
+		if (completeMessage === undefined)
+			dlg.cancel();
+		else {
+			var el = $$(".message_box_label");
+			if (el.length > 0)
+				el[0].update(completeMessage);
+		}
+	};
+	dlg = new ProgressSpinnerDlg(waitMessage);
 	recurseUpdateWithAjax(actions, els, onSuccess, null, ajaxParams);
 };
 
