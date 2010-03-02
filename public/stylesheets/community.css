@@ -64,3 +64,15 @@
 .publications_images {
 	text-align:center;
 }
+
+.publications_image {
+	border: 4px solid gray;
+	margin-left:20px;
+	margin-right:20px;
+}
+
+.publications_explanation {
+	padding-left: 2em;
+	padding-bottom: 2em;
+	padding-right: 2em;
+}

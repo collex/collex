@@ -18,8 +18,12 @@
 
 <div class="publications_images">
 <% for item in @publications -%>
-	<%= link_to "<img src='#{PublicationImage.get_image(item.publication_image_id)}' alt='#{item.name}' />", item.get_visible_url() %>
+	<%= link_to "<img class='publications_image' src='#{PublicationImage.get_image(item.publication_image_id)}' alt='#{item.name}' />", item.get_visible_url() %>
 <% end -%>
 </div>
 
 <hr class="search_results_hr" />
+
+<div class="publications_explanation">
+	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</div>
