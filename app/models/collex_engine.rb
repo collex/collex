@@ -138,7 +138,7 @@ class CollexEngine
 		puts "QUERY: #{query}"
 		case sort_by
 		when :relevancy then sort = nil
-		when :title then sort = [ {sort_by => :ascending }]
+		when :title_sort then sort = [ {sort_by => :ascending }]
 		when :last_modified then sort = [ {sort_by => :descending }]
 		end
 

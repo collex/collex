@@ -75,7 +75,7 @@ class SearchUserContent
 
 	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, visibility_id)
 		doc = { :key => "#{object_type}_#{id}", :object_type => object_type, :object_id => id, :federation => federation,
-			:section => section, :title => title, :text => text, :last_modified => last_modified
+			:section => section, :title => title, :title_sort => title, :text => text, :last_modified => last_modified
 		}
 		if visibility_type == 'everyone'
 			doc[:visible_to_everyone] = true
