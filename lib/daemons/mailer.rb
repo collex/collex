@@ -10,11 +10,17 @@ Signal.trap("TERM") do
   $running = false
 end
 
+loop_size = MAILER_INTERVAL_SECS / 5
+
 ActiveRecord::Base.logger.info "----- START mailer #{Time.now}.\n"
 
 while($running) do
 	ActiveRecord::Base.logger.info "Daemon mailer is still running at #{Time.now}.\n"
-	sleep MAILER_INTERVAL_SECS
+
+	loop_size.times {
+		sleep 5
+		break if !$running
+	}
 end
 
 ActiveRecord::Base.logger.info "----- STOP mailer #{Time.now}.\n"

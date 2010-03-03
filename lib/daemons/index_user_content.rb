@@ -10,13 +10,18 @@ Signal.trap("TERM") do
 	$running = false
 end
 
+loop_size = USER_CONTENT_INTERVAL_SECS / 5
+
 ActiveRecord::Base.logger.info "----- START index_user_content #{Time.now}.\n"
 
 while($running) do
 	status = SearchUserContent.periodic_update()
 	ActiveRecord::Base.logger.info "Daemon index_user_content is still running at #{Time.now}. #{status}\n"
   
-	sleep USER_CONTENT_INTERVAL_SECS
+	loop_size.times {
+		sleep 5
+		break if !$running
+	}
 end
 
 ActiveRecord::Base.logger.info "----- STOP index_user_content #{Time.now}.\n"

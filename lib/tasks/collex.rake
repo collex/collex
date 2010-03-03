@@ -43,29 +43,51 @@ namespace :collex do
 
 	def update_ninesperf
 		puts "Update site from repository..."
-		system("svn up")
+		`script/daemons stop`
+		sleep(8)
+		`svn up`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
 		puts "You will be asked for your sudo password."
 		`sudo /sbin/service httpd restart`
+		`script/daemons start`
 	end
 
-	def update_indexing
+	def update_experimental
 		puts "Update site from repository..."
-		system("svn up")
+		`RAILS_ENV=development script/daemons stop`
+		sleep(8)
+		`svn up`
+		ENV['RAILS_ENV'] = 'development '
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
 		`mongrel_rails restart`
+		`RAILS_ENV=development script/daemons start`
+	end
+
+	def update_indexing
+		puts "Update site from repository..."
+		`script/daemons stop`
+		sleep(8)
+		`svn up`
+		Rake::Task['collex:update_nines_theme'].invoke
+		Rake::Task['db:migrate'].invoke
+		Rake::Task['collex:compress_css_js'].invoke
+		`mongrel_rails restart`
+		`script/daemons start`
 	end
 
 	def update_development
 		puts "Update site from repository..."
-		system("svn up")
+		`RAILS_ENV=development script/daemons stop`
+		sleep(8)
+		`svn up`
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_about_css'].invoke
 		`mongrel_rails restart`
+		`RAILS_ENV=development script/daemons start`
 	end
 
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"
