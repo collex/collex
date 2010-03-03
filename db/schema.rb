@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100302182537) do
+ActiveRecord::Schema.define(:version => 20100303191520) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -320,6 +320,14 @@ ActiveRecord::Schema.define(:version => 20100302182537) do
   create_table "roles_users", :id => false, :force => true do |t|
     t.integer "role_id"
     t.integer "user_id"
+  end
+
+  create_table "search_user_contents", :force => true do |t|
+    t.datetime "last_indexed"
+    t.integer  "seconds_spent_indexing", :limit => 10, :precision => 10, :scale => 0
+    t.integer  "objects_indexed",        :limit => 10, :precision => 10, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "searches", :force => true do |t|

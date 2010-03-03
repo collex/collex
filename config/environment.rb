@@ -93,6 +93,9 @@ if File.exists?(config_file)
 	ActionMailer::Base.smtp_settings[:password] = site_specific['smtp_settings']['password']
 	ActionMailer::Base.smtp_settings[:authentication] = site_specific['smtp_settings']['authentication']
 
+	MAILER_INTERVAL_SECS = site_specific['daemons']['mailer_interval_secs']
+	USER_CONTENT_INTERVAL_SECS = site_specific['daemons']['user_content_interval_secs']
+
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
 	JAVA_PATH = site_specific['java_path']
 	SITE_NAME = site_specific['site_name']

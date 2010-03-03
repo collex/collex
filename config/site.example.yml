@@ -45,3 +45,7 @@ skin: 'collex'
 update: 'development'
 bleeding_edge: false
 disallow_rss: false
+
+daemons:
+  mailer_interval_secs: 20
+  user_content_interval_secs: 600

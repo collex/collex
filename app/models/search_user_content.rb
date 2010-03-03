@@ -14,10 +14,7 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 
-class SearchUserContent
-	def initialize
-		@solr = CollexEngine.new([ 'UserContent' ])
-	end
+class SearchUserContent < ActiveRecord::Base
 
 	# The results depend on what is visible to the user. We want hits where:
 	#Exhibits/Groups/Clusters are only visible on one of the three page types, depending on whether it is peer-reviewed, community, or classroom.
@@ -52,6 +49,7 @@ class SearchUserContent
 		options[:member] = member
 		options[:admin] = admin
 
+		@solr = CollexEngine.new([ 'UserContent' ]) if @solr == nil
 		ret = @solr.search_user_content(options)
 		hits = []
 		ret[:hits].each {|hit|
@@ -84,11 +82,12 @@ class SearchUserContent
 				doc[:visible_to_group_admin] = visibility_id
 			end
 		end
+		@solr = CollexEngine.new([ 'UserContent' ]) if @solr == nil
 		@solr.add_object(doc)
 	end
 
 	def reindex_all()
-		# `curl http://localhost:8983/solr/admin/cores?action=CREATE&name=UserContent&instanceDir=./&schema=schema_user.xml`
+		start_time = Time.now
 		@solr = CollexEngine.new([ 'UserContent' ])
 		@solr.start_reindex()
 
@@ -140,6 +139,57 @@ class SearchUserContent
 
 
 		@solr.commit()
+		duration = Time.now - start_time
+		return duration
+	end
+
+	def self.last_update()
+		last_update = nil
+
+		# now see if any tables were updated since then
+		recs = Group.find(:all, :limit => 1, :order => "updated_at DESC")
+		if recs.length != 0
+			t = recs[0].updated_at
+			last_update = t if last_update == nil || last_update < t
+		end
+
+		recs = Cluster.find(:all, :limit => 1, :order => "updated_at DESC")
+		if recs.length != 0
+			t = recs[0].updated_at
+			last_update = t if last_update < t
+		end
+
+		recs = Exhibit.find(:all, :limit => 1, :order => "updated_at DESC")
+		if recs.length != 0
+			t = recs[0].updated_at
+			last_update = t if last_update < t
+		end
+
+		recs = DiscussionComment.find(:all, :limit => 1, :order => "updated_at DESC")
+		if recs.length != 0
+			t = recs[0].updated_at
+			last_update = t if last_update < t
+		end
+		return last_update
+	end
+
+	def self.periodic_update
+		recs = SearchUserContent.find(:all, :limit => 1, :order => "last_indexed DESC")
+		last_change = SearchUserContent.last_update()
+		if recs.length == 0
+			is_dirty = true
+		else
+			last_index = recs[0].last_indexed
+			is_dirty = last_change > last_index
+		end
+		if is_dirty
+			suc = SearchUserContent.new
+			duration = suc.reindex_all()
+			num_objs = CollexEngine.new([ 'UserContent' ]).num_docs
+			SearchUserContent.create({ :last_indexed => last_change, :seconds_spent_indexing => duration, :objects_indexed => num_objs })
+			return "User Content reindexed on #{last_change}. Time spent indexing: #{duration} seconds, Number of objects: #{num_objs}"
+		end
+		return "User Content is up to date, so it was not reindexed. Last index: #{last_index}, last user content change: #{last_change}"
 	end
 
 	private

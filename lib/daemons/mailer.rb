@@ -1,27 +1,20 @@
 #!/usr/bin/env ruby
-open('/Users/paulrosen/temp.log', 'a') { |f|
-  f.puts "----- STARTING #{Time.now} -----\n"
-}
-#sleep 10
-#Debugger::start_server("localhost", 7001)
-#sleep 10
 
 # You might want to change this
-ENV["RAILS_ENV"] ||= "development"
+ENV["RAILS_ENV"] ||= "production"
 
-puts "here: mailer.rb"
 require File.dirname(__FILE__) + "/../../config/environment"
-puts "here: 2 mailer.rb"
 
 $running = true
 Signal.trap("TERM") do 
   $running = false
 end
 
+ActiveRecord::Base.logger.info "----- START mailer #{Time.now}.\n"
+
 while($running) do
-  #puts "This daemon is still running at #{Time.now}.\n"
-open('/Users/paulrosen/temp.log', 'a') { |f|
-  f.puts "!! I'm still running at #{Time.now}.\n"
-}
-  sleep 10
+	ActiveRecord::Base.logger.info "Daemon mailer is still running at #{Time.now}.\n"
+	sleep MAILER_INTERVAL_SECS
 end
+
+ActiveRecord::Base.logger.info "----- STOP mailer #{Time.now}.\n"
