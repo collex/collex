@@ -101,6 +101,8 @@ namespace :collex do
 			update_ninesperf()
 		elsif UPDATE_TASK == 'development'
 			update_development()
+		elsif UPDATE_TASK == 'experimental'
+			update_experimental()
 		else
 			puts "Unknown updating type. Compare the value in config/site.yml and the list in the collex:update rake task (file: collex.rake)."
 		end
