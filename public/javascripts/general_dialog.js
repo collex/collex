@@ -26,7 +26,7 @@ var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
 {
 	var oMenuButton1 = new YAHOO.widget.Button(select_el_id, {
 		type: "menu",
-		menu: select_el_id + "select" });
+		menu: select_el_id + "select"});
 
 	// Pass this the id of a working select element, with its current selection already set.
 //	var sel = $(select_el_id);
@@ -109,7 +109,7 @@ var GeneralDialog = Class.create({
 		var parent = $(parent_id);
 		if (parent === null) {
 			var main = document.getElementsByTagName("body").item(0);
-			$(main).down('div').insert({ before: new Element('div', { id: parent_id, style: 'text-align:left;' }) });
+			$(main).down('div').insert({before: new Element('div', {id: parent_id, style: 'text-align:left;'})});
 		}
 
 		this.getOuterDomElement = function() {
@@ -154,8 +154,8 @@ var GeneralDialog = Class.create({
 		
 		this.submitForm = function(id, action) {
 			var form = $(id);
-			form.writeAttribute({ action: action, method: 'post' });
-			form.appendChild(new Element('input', { id: 'authenticity_token', type: 'hidden', name: 'authenticity_token', value: form_authenticity_token }));
+			form.writeAttribute({action: action, method: 'post'});
+			form.appendChild(new Element('input', {id: 'authenticity_token', type: 'hidden', name: 'authenticity_token', value: form_authenticity_token}));
 			form.submit();
 		};
 
@@ -196,72 +196,72 @@ var GeneralDialog = Class.create({
 		if (title !== undefined)
 			panel.setHeader(title);
 
-		var klEsc = new YAHOO.util.KeyListener(document, { keys:27 },  							
-			{ fn:handleCancel,
+		var klEsc = new YAHOO.util.KeyListener(document, {keys:27},  							
+			{fn:handleCancel,
 				scope:panel,
-				correctScope:true }, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
+				correctScope:true}, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
 
-		var klEnter = new YAHOO.util.KeyListener(document, { keys:13 },
-			{ fn:function() {
+		var klEnter = new YAHOO.util.KeyListener(document, {keys:13},
+			{fn:function() {
 					if (defaultAction[currPage])
 						defaultAction[currPage](null, defaultParam[currPage]);
 				},
 				scope:panel,
-				correctScope:true }, "keydown" );
+				correctScope:true}, "keydown" );
 		panel.cfg.queueProperty("keylisteners", [klEsc, klEnter]);
 
 		// Create all the html for the dialog
 		var listenerArray = [];
 		var buttonArray = [];
-		var body = new Element('div', { id: this_id + '_' + body_style });
+		var body = new Element('div', {id: this_id + '_' + body_style});
 		body.addClassName(body_style);
-		var flash = new Element('div', { id: flash_id }).update(flash_notice);
+		var flash = new Element('div', {id: flash_id}).update(flash_notice);
 		flash.addClassName("flash_notice_ok");
 		body.appendChild(flash);
 
 		var addButton = function(parent_el, text, klass, callback, page, url) {
-			var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: text });
+			var input = new Element('input', {id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: text});
 			parent_el.appendChild(input);
 			var buttonClass = klass;
-			buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: callback, param: { curr_page: page, destination: url, dlg: This } });
+			buttonArray.push({id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: callback, param: {curr_page: page, destination: url, dlg: This}});
 		};
 
 		var addIconButton = function(parent_el, text, klass, callback, page, context) {
 			var button_id = this_id + '_a' + listenerArray.length;
-			var a = new Element('a', { id: button_id, title: text, onclick: 'return false;', href: '#' });
+			var a = new Element('a', {id: button_id, title: text, onclick: 'return false;', href: '#'});
 			if (klass)
 				a.addClassName(klass);
 			parent_el.appendChild(a);
-			listenerArray.push({ id: button_id, event: 'click', callback: callback, param: { curr_page: page.page, button_id: button_id, context: context, dlg: This } });
+			listenerArray.push({id: button_id, event: 'click', callback: callback, param: {curr_page: page.page, button_id: button_id, context: context, dlg: This}});
 			return button_id;
 		};
 
 		var addInput = function(parent_el, text, klass, value) {
-			var el1 = new Element('input', { id: makeId(text), 'type': 'text', name: text });
+			var el1 = new Element('input', {id: makeId(text), 'type': 'text', name: text});
 			if (klass)
 				el1.addClassName(klass);
 			if (value !== undefined)
-				el1.writeAttribute({value: value });
+				el1.writeAttribute({value: value});
 			parent_el.appendChild(el1);
 			return el1;
 		};
 
 		var addHidden = function(parent_el, id, klass, value) {
-			var el0 = new Element('input', { id: makeId(id), name: id, 'type': 'hidden' });
+			var el0 = new Element('input', {id: makeId(id), name: id, 'type': 'hidden'});
 			if (klass)
 				el0.addClassName(klass);
 			if (value !== undefined && value !== null)
-				el0.writeAttribute({value: value });
+				el0.writeAttribute({value: value});
 			parent_el.appendChild(el0);
 		};
 
 		var addLink = function(parent_el, id, klass, text, callback, callback_params) {
-			var a = new Element('a', { id: id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(text);
+			var a = new Element('a', {id: id + '_a' + listenerArray.length, onclick: 'return false;', href: '#'}).update(text);
 			a.addClassName('nav_link');
 			if (klass)
 				a.addClassName(klass);
 			parent_el.appendChild(a);
-			listenerArray.push({ id: id + '_a' + listenerArray.length, event: 'click', callback: callback, param: callback_params });
+			listenerArray.push({id: id + '_a' + listenerArray.length, event: 'click', callback: callback, param: callback_params});
 		};
 
 		var styleButtonPushed = function(ev, params) {
@@ -298,7 +298,7 @@ var GeneralDialog = Class.create({
 		};
 
 		pages.each(function(page) {
-			var form = new Element('form', { id: page.page });
+			var form = new Element('form', {id: page.page});
 			form.addClassName(page.page);	// IE doesn't seem to like the 'class' attribute in the Element, so we set the classes separately.
 			form.addClassName("switchable_element");
 			form.addClassName("hidden");
@@ -314,15 +314,15 @@ var GeneralDialog = Class.create({
 						if (subel.klass)
 							elText.addClassName(subel.klass);
 						if (subel.id !== undefined)
-							elText.writeAttribute({ id: makeId(subel.id) });
+							elText.writeAttribute({id: makeId(subel.id)});
 						row.appendChild(elText);
 						// PICTURE
 					} else if (subel.picture !== undefined) {
-						var elPic = new Element('img', { src: subel.picture, alt: subel.picture });
+						var elPic = new Element('img', {src: subel.picture, alt: subel.picture});
 						if (subel.klass)
 							elPic.addClassName(subel.klass);
 						if (subel.id !== undefined)
-							elPic.writeAttribute({ id: makeId(subel.id) });
+							elPic.writeAttribute({id: makeId(subel.id)});
 						row.appendChild(elPic);
 						// INPUT
 					} else if (subel.input !== undefined) {
@@ -334,24 +334,24 @@ var GeneralDialog = Class.create({
 							klass3 += " " + subel.klass;
 						var el3 = addInput(row, subel.inputFilter, klass3, subel.value);
 						el3.value = subel.prompt;
-						listenerArray.push({ id: subel.inputFilter, event: 'keyup', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
-						listenerArray.push({ id: subel.inputFilter, event: 'blur', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
-						listenerArray.push({ id: subel.inputFilter, event: 'focus', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
+						listenerArray.push({id: subel.inputFilter, event: 'keyup', callback: filterEvent, param: {prompt: subel.prompt, callback: subel.callback}});
+						listenerArray.push({id: subel.inputFilter, event: 'blur', callback: filterEvent, param: {prompt: subel.prompt, callback: subel.callback}});
+						listenerArray.push({id: subel.inputFilter, event: 'focus', callback: filterEvent, param: {prompt: subel.prompt, callback: subel.callback}});
 						// INPUT WITH STYLE
 					} else if (subel.inputWithStyle !== undefined) {
 						var el1 = addInput(row, subel.inputWithStyle, subel.klass, subel.value.text);
-						addIconButton(row, 'Bold', 'bold_button' + (subel.value.isBold ? " pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'fontWeight', value: 'bold' });
+						addIconButton(row, 'Bold', 'bold_button' + (subel.value.isBold ? " pressed" : ""), styleButtonPushed, page, {dest: subel.inputWithStyle, style: 'fontWeight', value: 'bold'});
 						addHidden(row, subel.inputWithStyle + '_bold', '', subel.value.isBold ? '1' : '0');
-						addIconButton(row, 'Italic', 'italic_button' + (subel.value.isItalic ? " pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'fontStyle', value: 'italic' });
+						addIconButton(row, 'Italic', 'italic_button' + (subel.value.isItalic ? " pressed" : ""), styleButtonPushed, page, {dest: subel.inputWithStyle, style: 'fontStyle', value: 'italic'});
 						addHidden(row, subel.inputWithStyle + '_italic', '', subel.value.isItalic ? '1' : '0');
-						addIconButton(row, 'Underline', 'underline_button' + (subel.value.isUnderline ? " pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'textDecoration', value: 'underline' });
+						addIconButton(row, 'Underline', 'underline_button' + (subel.value.isUnderline ? " pressed" : ""), styleButtonPushed, page, {dest: subel.inputWithStyle, style: 'textDecoration', value: 'underline'});
 						addHidden(row, subel.inputWithStyle + '_underline', '', subel.value.isUnderline ? '1' : '0');
 						if (subel.value.isBold)
-							el1.setStyle({ fontWeight: 'bold' });
+							el1.setStyle({fontWeight: 'bold'});
 						if (subel.value.isItalic)
-							el1.setStyle({ fontStyle: 'italic' });
+							el1.setStyle({fontStyle: 'italic'});
 						if (subel.value.isUnderline)
-							el1.setStyle({ textDecoration: 'underline' });
+							el1.setStyle({textDecoration: 'underline'});
 //{ input: 'caption1', value: values.caption1, klass: 'header_input' },
 //						{ icon_button: 'Bold', klass: 'bold_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontWeight', value: 'bold' } }, { hidden: 'caption1_bold', value: values.caption1_bold },
 //						{ icon_button: 'Italic', klass: 'italic_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontStyle', value: 'italic' } }, { hidden: 'caption1_italic', value: values.caption1_italic },
@@ -367,11 +367,11 @@ var GeneralDialog = Class.create({
 //						row.appendChild(el0);
 						// PASSWORD
 					} else if (subel.password !== undefined) {
-						var el2 = new Element('input', { id: makeId(subel.password), name: subel.password, 'type': 'password'});
+						var el2 = new Element('input', {id: makeId(subel.password), name: subel.password, 'type': 'password'});
 						if (subel.klass)
 							el2.addClassName(subel.klass);
 						if (subel.value !== undefined && subel.value !== null)
-							el2.writeAttribute({value: subel.value });
+							el2.writeAttribute({value: subel.value});
 						row.appendChild(el2);
 						// BUTTON
 					} else if (subel.button !== undefined) {
@@ -380,7 +380,7 @@ var GeneralDialog = Class.create({
 						var buttonClass = subel.klass;
 						if (subel.isDefault) {
 							defaultAction[page.page] = subel.callback;
-							defaultParam[page.page] = { curr_page: page.page, destination: subel.url, dlg: This };
+							defaultParam[page.page] = {curr_page: page.page, destination: subel.url, dlg: This};
 							buttonClass = (buttonClass === undefined) ? "default" : buttonClass + " default" ;
 						}
 						addButton(row, subel.button, buttonClass, subel.callback, page.page, subel.url);
@@ -396,7 +396,7 @@ var GeneralDialog = Class.create({
 //						listenerArray.push({ id: button_id, event: 'click', callback: subel.callback, param: { curr_page: page.page, button_id: button_id, context: subel.context, dlg: This } });
 						// PAGE LINK
 					} else if (subel.page_link !== undefined) {
-						addLink(row, this_id, subel.klass, subel.page_link,  subel.callback, { curr_page: page.page, destination: subel.new_page, dlg: This });
+						addLink(row, this_id, subel.klass, subel.page_link,  subel.callback, {curr_page: page.page, destination: subel.new_page, dlg: This});
 
 //						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
 //						a.addClassName('nav_link');
@@ -406,21 +406,21 @@ var GeneralDialog = Class.create({
 //						listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
 						// SELECT
 					} else if (subel.select !== undefined) {
-						var selectValue = new Element('input', { id: makeId(subel.select), name: subel.select });
+						var selectValue = new Element('input', {id: makeId(subel.select), name: subel.select});
 						if (subel.options && subel.options.length > 0) {
 							var val = (subel.value !== undefined  && subel.value !== null) ? subel.value : subel.options[0].value;
 							selectValue.writeAttribute('value', val);
 						}
 						selectValue.addClassName('hidden');
 						row.appendChild(selectValue);
-						var select = new Element('select', { id: this_id + '_sel' + listenerArray.length });
+						var select = new Element('select', {id: this_id + '_sel' + listenerArray.length});
 						if (subel.klass)
 							select.addClassName(subel.klass);
 						row.appendChild(select);
-						listenerArray.push({ id: this_id + '_sel' + listenerArray.length, event: 'change', callback: selectChange, param: { id: subel.select, callback: subel.change } });
+						listenerArray.push({id: this_id + '_sel' + listenerArray.length, event: 'change', callback: selectChange, param: {id: subel.select, callback: subel.change}});
 						if (subel.options) {
 							subel.options.each(function(opt) {
-								var opt2 = new Element('option', { value: opt.value}).update(opt.text);
+								var opt2 = new Element('option', {value: opt.value}).update(opt.text);
 								if (subel.value === opt.value)
 									opt2.writeAttribute('selected', 'selected');
 								select.appendChild(opt2);
@@ -436,7 +436,7 @@ var GeneralDialog = Class.create({
 						row.appendChild(div);
 						// CHECKBOX
 					} else if (subel.checkbox !== undefined) {
-						var checkbox = new Element('input', { id: makeId(subel.checkbox), 'type': "checkbox", value: '1', name: subel.checkbox });
+						var checkbox = new Element('input', {id: makeId(subel.checkbox), 'type': "checkbox", value: '1', name: subel.checkbox});
 						if (subel.klass)
 							checkbox.addClassName(subel.klass);
 						if (subel.value === '1')
@@ -451,7 +451,7 @@ var GeneralDialog = Class.create({
 						if (numCols <= 0) numCols = 1;
 						var numRows = Math.ceil(subel.items.length / numCols);
 						var item = null;
-						var fnDetect = function(it)  { return item === it; };
+						var fnDetect = function(it)  {return item === it;};
 						for (var i = 0; i < numRows; i++) {
 							var cbRow = new Element('tr');
 							tb.appendChild(cbRow);
@@ -459,9 +459,9 @@ var GeneralDialog = Class.create({
 								var itemNum = j*numRows+i;
 								if (itemNum < subel.items.length) {
 									item = subel.items[itemNum];
-									var cbCol = new Element('td', { style : 'padding: 0 0.5em 0 0.5em;'});
+									var cbCol = new Element('td', {style : 'padding: 0 0.5em 0 0.5em;'});
 									var cbId = subel.checkboxList+'['+item+']';
-									var cbox = new Element('input', { id: makeId(cbId), 'type': "checkbox", value: '1', name: cbId });
+									var cbox = new Element('input', {id: makeId(cbId), 'type': "checkbox", value: '1', name: cbId});
 									if (subel.klass)
 										cbox.addClassName(subel.klass);
 									if (subel.selections.detect(fnDetect))
@@ -479,17 +479,30 @@ var GeneralDialog = Class.create({
 						var radioList = subel.buttons;
 						var radioId = subel.radioList;
 						var radioValue = subel.value;
+						var radioKlass = subel.klass;
+						var radioTable = new Element('table');
+						if (radioKlass)
+							radioTable.addClassName(radioKlass);
+						row.appendChild(radioTable);
+						var radioBody = new Element('tbody');
+						radioTable.appendChild(radioBody);
 						radioList.each(function(radio) {
-							var elRadio = new Element('input', { id: makeId(radioId+'_'+radio.value), type: 'radio', value: radio.value, name: radioId });
+							var radioRow = new Element('tr');
+							radioBody.appendChild(radioRow);
+							var radioCol = new Element('td');
+							radioRow.appendChild(radioCol);
+							var elRadio = new Element('input', {id: makeId(radioId+'_'+radio.value), type: 'radio', value: radio.value, name: radioId});
 							if (radioValue === radio.value)
 								elRadio.writeAttribute('checked', 'true');
-							row.appendChild(elRadio);
-							row.appendChild(new Element('span').update(' ' + radio.text + '<br />'));
+							radioCol.appendChild(elRadio);
+							radioCol = new Element('td');
+							radioRow.appendChild(radioCol);
+							radioCol.appendChild(new Element('span').update(' ' + radio.text + '<br />'));
 						});
 						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
 						var wrapper = new Element('div');
-						var textarea = new Element('textarea', { id: makeId(subel.textarea), name: subel.textarea });
+						var textarea = new Element('textarea', {id: makeId(subel.textarea), name: subel.textarea});
 						if (subel.klass) {
 							textarea.addClassName(subel.klass);
 							wrapper.addClassName(subel.klass);
@@ -503,40 +516,40 @@ var GeneralDialog = Class.create({
 						wrapper.appendChild(textarea);
 						row.appendChild(wrapper);
 						// DATE
-					}  else if (subel.date !== undefined) {
+					} else if (subel.date !== undefined) {
 						var start_date = (subel.value) ? subel.value.split(' ')[0].split('-') : ['', '', ''];
-						var year = new Element('select', { id: makeId(subel.date.gsub('*', '1i')), name: subel.date.gsub('*', '(1i)') });
+						var year = new Element('select', {id: makeId(subel.date.gsub('*', '1i')), name: subel.date.gsub('*', '(1i)')});
 						for (var y = 2005; y < 2015; y++) {
 							if (start_date[0] === '' + y)
-								year.appendChild(new Element('option', { value: "" + y, selected: 'selected' }).update("" + y));
+								year.appendChild(new Element('option', {value: "" + y, selected: 'selected'}).update("" + y));
 							else
-								year.appendChild(new Element('option', { value: "" + y }).update("" + y));
+								year.appendChild(new Element('option', {value: "" + y}).update("" + y));
 						}
-						var month = new Element('select', { id: makeId(subel.date.gsub('*', '2i')), name: subel.date.gsub('*', '(2i)') });
+						var month = new Element('select', {id: makeId(subel.date.gsub('*', '2i')), name: subel.date.gsub('*', '(2i)')});
 						var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 						var monthNums = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
 						for (var m = 0; m < months.length; m++) {
 							if (start_date[1] === monthNums[m])
-								month.appendChild(new Element('option', { value: m+1, selected: 'selected' }).update(months[m]));
+								month.appendChild(new Element('option', {value: m+1, selected: 'selected'}).update(months[m]));
 							else
-								month.appendChild(new Element('option', { value: m+1 }).update(months[m]));
+								month.appendChild(new Element('option', {value: m+1}).update(months[m]));
 						}
-						var day = new Element('select', { id: makeId(subel.date.gsub('*', '3i')), name: subel.date.gsub('*', '(3i)') });
+						var day = new Element('select', {id: makeId(subel.date.gsub('*', '3i')), name: subel.date.gsub('*', '(3i)')});
 						for (var d = 1; d <= 31; d++) {
 							if (start_date[2] === (d<10?'0':'') + d)
-								day.appendChild(new Element('option', { value: "" + d, selected: 'selected' }).update("" + d));
+								day.appendChild(new Element('option', {value: "" + d, selected: 'selected'}).update("" + d));
 							else
-								day.appendChild(new Element('option', { value: "" + d }).update("" + d));
+								day.appendChild(new Element('option', {value: "" + d}).update("" + d));
 						}
 						row.appendChild(year);
 						row.appendChild(month);
 						row.appendChild(day);
 						// IMAGE
 					} else if (subel.image !== undefined) {
-						var image = new Element('div', { id: makeId(subel.image) + '_div' });
+						var image = new Element('div', {id: makeId(subel.image) + '_div'});
 						var src = (subel.value !== undefined  && subel.value !== null) ? subel.value : "";
 						if (src.length > 0) {
-							image.appendChild(new Element('img', { src: src, id: makeId(subel.image) + "_img", alt: '' }));
+							image.appendChild(new Element('img', {src: src, id: makeId(subel.image) + "_img", alt: ''}));
 						}
 //						if (subel.allowRemove === true) {
 //							var removeCallback = function() {
@@ -551,9 +564,9 @@ var GeneralDialog = Class.create({
 //							addInput(image, 'removeImage', 'hidden', 'false');
 //						}
 						var createFileInput = function() {
-							var file_input = new Element('input', { id: makeId(subel.image), type: 'file', name: subel.image });
+							var file_input = new Element('input', {id: makeId(subel.image), type: 'file', name: subel.image});
 							if (subel.size)
-								file_input.writeAttribute({ size: subel.size});
+								file_input.writeAttribute({size: subel.size});
 							return file_input;
 						};
 						var file_input = createFileInput();
@@ -561,7 +574,7 @@ var GeneralDialog = Class.create({
 						if (subel.klass)
 							image.addClassName(subel.klass);
 						row.appendChild(image);
-						var inputEl = new Element('input', { id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token });
+						var inputEl = new Element('input', {id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token});
 						row.appendChild(inputEl);
 						if (subel.removeButton !== undefined) {
 							var remove = function() {
@@ -575,8 +588,8 @@ var GeneralDialog = Class.create({
 						
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.
-						form.writeAttribute({ enctype: "multipart/form-data", target: "upload_target", method: 'post' });
-						body.appendChild(new Element('iframe', { id: "upload_target", name: "upload_target", src: "#", style: "width:0;height:0;border:0px solid #fff;" }));
+						form.writeAttribute({enctype: "multipart/form-data", target: "upload_target", method: 'post'});
+						body.appendChild(new Element('iframe', {id: "upload_target", name: "upload_target", src: "#", style: "width:0;height:0;border:0px solid #fff;"}));
 					} else if (subel.rowClass !== undefined) {
 						row.addClassName(subel.rowClass);
 					}
@@ -591,7 +604,7 @@ var GeneralDialog = Class.create({
 		panel.render(parent_id);
 		
 		panel.cancelEvent.subscribe(function(e, a, o){
-			setTimeout(function() { panel.destroy(); }, 500);
+			setTimeout(function() {panel.destroy();}, 500);
 		});
 		
 		listenerArray.each(function (listen) {
@@ -604,9 +617,9 @@ var GeneralDialog = Class.create({
 				cb(event, btn.param);
 			};
 			
-			new YAHOO.widget.Button(btn.id, { onclick: { fn: fn, obj: btn.id, scope: this }});
+			new YAHOO.widget.Button(btn.id, {onclick: {fn: fn, obj: btn.id, scope: this}});
 			if (btn.klass)
-				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass); }); 
+				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass);}); 
 		});
 
 		customList.each(function(ctrl) {
@@ -649,7 +662,7 @@ var GeneralDialog = Class.create({
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
 			var el = dlg.up();
-			el.setStyle({ left: x + 'px', top: y + 'px'});
+			el.setStyle({left: x + 'px', top: y + 'px'});
 		};
 		
 		this.initTextAreas =  function(params) {
@@ -669,7 +682,7 @@ var GeneralDialog = Class.create({
 			var textAreas = $$("#" + dlg_id + " textarea");
 			textAreas.each( function(textArea) {
 				if (onlyClass === undefined || textArea.hasClassName(onlyClass)) {
-					var editor = new RichTextEditor({ id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnote: footnote, populate_exhibit_only: linkDlgHandler.getPopulateUrls()[0], populate_all: linkDlgHandler.getPopulateUrls()[1],  bodyStyle: bodyStyle });
+					var editor = new RichTextEditor({id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnote: footnote, populate_exhibit_only: linkDlgHandler.getPopulateUrls()[0], populate_all: linkDlgHandler.getPopulateUrls()[1],  bodyStyle: bodyStyle});
 					editor.attachToDialog(panel);
 					editors.push(editor);
 				}
@@ -704,17 +717,17 @@ var MessageBoxDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: message, klass: 'message_box_label' } ],
-					[ { rowClass: 'last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
+					[ {text: message, klass: 'message_box_label'} ],
+					[ {rowClass: 'last_row'}, {button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true} ]
 				]
 			};
 		
-		var params = { this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
+		var params = {this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
 
-		this.cancel = function() { dlg.cancel();};
+		this.cancel = function() {dlg.cancel();};
 	}
 });
 
@@ -725,17 +738,17 @@ var ProgressSpinnerDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: ' ', klass: 'lg_progress_spinner' } ],
-					[ { rowClass: 'progress_label_row' }, { text: message, klass: 'lg_progress_label' } ],
+					[ {text: ' ', klass: 'lg_progress_spinner'} ],
+					[ {rowClass: 'progress_label_row'}, {text: message, klass: 'lg_progress_label'} ],
 				]
 			};
 
-		var params = { this_id: "progress_spinner_dlg", pages: [ dlgLayout ], body_style: "progress_spinner_div", row_style: "progress_spinner_row" };
+		var params = {this_id: "progress_spinner_dlg", pages: [ dlgLayout ], body_style: "progress_spinner_div", row_style: "progress_spinner_row"};
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
 
-		this.cancel = function() { dlg.cancel();};
+		this.cancel = function() {dlg.cancel();};
 	}
 });
 
@@ -760,12 +773,12 @@ var ShowDivInLightbox = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { custom: new Div(), klass: params.klass } ],
-					[ { rowClass: 'last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
+					[ {custom: new Div(), klass: params.klass} ],
+					[ {rowClass: 'last_row'}, {button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true} ]
 				]
 			};
 
-		var dlgParams = { this_id: "lightbox_dlg", pages: [ dlgLayout ], body_style: "lightbox_dlg", row_style: "lightbox_row", title: params.title };
+		var dlgParams = {this_id: "lightbox_dlg", pages: [ dlgLayout ], body_style: "lightbox_dlg", row_style: "lightbox_row", title: params.title};
 		var dlg = new GeneralDialog(dlgParams);
 		dlg.changePage('layout', null);
 		dlg.center();
@@ -790,12 +803,12 @@ var ConfirmDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: message, klass: 'message_box_label' } ],
-					[ { rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: cancelStr, callback: GeneralDialog.cancelCallback } ]
+					[ {text: message, klass: 'message_box_label'} ],
+					[ {rowClass: 'last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: cancelStr, callback: GeneralDialog.cancelCallback} ]
 				]
 			};
 		
-		var params = { this_id: "confirm_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
+		var params = {this_id: "confirm_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
 		var dlg = new GeneralDialog(params);
 		dlg.changePage('layout', null);
 		dlg.center();
@@ -813,10 +826,10 @@ function updateWithAjax(params)
 	{
 		// Instead of replacing an element, we want to redraw the entire page. There seems to be some conflict
 		// if the form is resubmitted, so duplicate the form.
-		var new_form = new Element('form', { id: "temp_form", method: 'post', onsubmit: "this.submit();", action: params.action });
+		var new_form = new Element('form', {id: "temp_form", method: 'post', onsubmit: "this.submit();", action: params.action});
 		new_form.observe('submit', "this.submit();");
 		document.body.appendChild(new_form);
-		$H(params.params).each(function (p) { new_form.appendChild(new Element('input', { name: p.key, value: p.value, id: p.key })); });
+		$H(params.params).each(function (p) {new_form.appendChild(new Element('input', {name: p.key, value: p.value, id: p.key}));});
 
 		//$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 		new_form.submit();
@@ -824,7 +837,7 @@ function updateWithAjax(params)
 		return;
 	}
 
-	new Ajax.Updater({ success: params.el, failure:'bit_bucket' }, params.action, {
+	new Ajax.Updater({success: params.el, failure:'bit_bucket'}, params.action, {
 		parameters : params.params,
 		evalScripts : true,
 		onSuccess : function(resp) {
@@ -857,7 +870,7 @@ function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
 
 	var action = actions.shift();
 	var el = els.shift();
-	var ajaxparams = { action: action, el: el, onSuccess: function(resp) { recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params); }, onFailure: onFailure, params: params };
+	var ajaxparams = {action: action, el: el, onSuccess: function(resp) {recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params);}, onFailure: onFailure, params: params};
 	updateWithAjax(ajaxparams);
 }
 
@@ -1015,17 +1028,17 @@ var singleInputDlg = function(params, input) {
 	var dlgLayout = {
 			page: 'layout',
 			rows: [
-				[ { text: prompt, klass: 'text_input_dlg_label' }, input ]
+				[ {text: prompt, klass: 'text_input_dlg_label'}, input ]
 			]
 		};
 
 	if (params.explanation_text)
-		dlgLayout.rows.push([ { text: params.explanation_text, id: "postExplanation" }]);
-	dlgLayout.rows.push([{ rowClass: 'last_row' }, { button: okStr, callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]);
+		dlgLayout.rows.push([ {text: params.explanation_text, id: "postExplanation"}]);
+	dlgLayout.rows.push([{rowClass: 'last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]);
 	if (noDefault)
 		dlgLayout.rows[1][1].isDefault = null;
 
-	var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
+	var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
 	dlg = new GeneralDialog(dlgparams);
 	dlg.changePage('layout', dlg.makeId(id));
 	dlg.center();
@@ -1036,7 +1049,7 @@ var TextInputDlg = Class.create({
 		var id = params.id;
 		var value = params.value;
 		var klass = params.inputKlass === undefined ? 'text_input_dlg_input' : params.inputKlass;
-		var input = { input: id, klass: klass, value: value };
+		var input = {input: id, klass: klass, value: value};
 		singleInputDlg(params, input);
 	}
 });
@@ -1047,7 +1060,7 @@ var SelectInputDlg = Class.create({
 		var options = params.options;
 		var explanation = params.explanation;
 		var value = params.value;
-		var input = { select: id, klass: 'select_dlg_input', options: options, value: value };
+		var input = {select: id, klass: 'select_dlg_input', options: options, value: value};
 
 		if (explanation) {
 			var valToExpl = function(value) {
@@ -1074,7 +1087,7 @@ var TextAreaInputDlg = Class.create({
 		var id = params.id;
 		var options = params.options;
 		var value = params.value;
-		var input = { textarea: id, klass: 'text_area_dlg_input', options: options, value: value };
+		var input = {textarea: id, klass: 'text_area_dlg_input', options: options, value: value};
 		params.noDefault = true;
 		singleInputDlg(params, input);
 	}
@@ -1108,18 +1121,18 @@ var RteInputDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { textarea: 'textareaValue', value: value } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', callback: this.ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ {textarea: 'textareaValue', value: value} ],
+					[ {rowClass: 'last_row'}, {button: 'Ok', callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]
 				]
 			};
 
 		if (extraButton !== undefined)
-			dlgLayout.rows[1].push({ button: extraButton.label, callback: extraButton.callback });
+			dlgLayout.rows[1].push({button: extraButton.label, callback: extraButton.callback});
 
-		var dlgparams = { this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title };
+		var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
 		var dlg = new GeneralDialog(dlgparams);
 		dlg.changePage('layout', null);
-		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_urls, progress_img) });
+		dlg.initTextAreas({toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_urls, progress_img)});
 		dlg.center();
 
 		var input = $('textareaValue');

@@ -755,7 +755,37 @@ a.footnote_tip:hover span.tip {
 }
 
 .accept_peer_review_label {
+	font-size: .9em;
+}
 
+.accept_peer_review_header {
+	font-weight: bold;
+	text-align: center;
+	font-size: 1.3em;
+}
+
+.accept_peer_review_radio {
+	font-weight: bold;
+	margin-bottom: 0em;
+}
+
+.accept_peer_review_radio input {
+	margin-bottom:16px;
+	margin-right:12px;
+}
+
+.accept_peer_review_permissions {
+	color: gray;
+}
+
+.accept_peer_review_group_name {
+	font-weight: bold;
+}
+
+.accept_peer_review_label2  {
+	float:left;
+	margin-left:50px;
+	width:8.5em;
 }
 
 textarea.groups_textarea {

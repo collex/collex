@@ -144,7 +144,7 @@ var CreateGroupWizardDlg = Class.create({
 							{ text: 'Groups for using ' + siteName + ' in the classroom.', klass: 'new_group_membership_explanation hidden classroom_only'},
 							{ text: '&nbsp;', klass: 'new_group_membership_explanation hidden publication_only'}
 						],
-						[ { rowClass: 'clear_both' }, { text: 'Thumbnail:', klass: 'groups_label community_only' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'community_only' },
+						[ { rowClass: 'clear_both' }, { text: 'Thumbnail:', klass: 'groups_label hidden xcommunity_only' },  { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'hidden xcommunity_only' },
 							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'new_group_membership_explanation publication_only hidden'},
 							{ text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { text: 'For easy browsing, use this field to share the course number or mnemonic associated with this class (e.g. ENNC 448).', klass: 'groups_explanation classroom_only hidden' },
 							{ input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' }
