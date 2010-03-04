@@ -22,7 +22,7 @@
 		<th>In carousel?</th>
 		<th></th>
 	</tr>
-	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => sites_forest, :indent => 1, :is_edit_mode => true, :parent_id => '', :start_hidden => false } %>
+	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => sites_forest, :indent => 1, :is_edit_mode => true, :parent_id => '', :start_hidden => false, :site_count => nil } %>
 	<tr><td class='limit_to_lvl1'><a class="modify_link" href='#' onclick='new AddCategoryDlg("<%= parent_div %>", "/admin/facet_tree/add_category", "/admin/facet_tree/get_categories"); return false;'>[Add Category]</a></td><td></td><td></td></tr>
 </table>
 <div class="right_column_header">Sites not in the resource tree:</div>

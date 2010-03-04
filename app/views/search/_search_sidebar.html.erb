@@ -23,7 +23,7 @@
 			<th>Resource</th>
 			<th class="num_objects"># of Objects</th>
 		</tr>
-		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false } %>
+		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false, :site_count => @results['facets']['archive'] } %>
 	</table>
    
     <table class="limit_to">

@@ -14,16 +14,16 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 #---------------------------------------------------------------------------- -%>
-<%# /common/facet_tree_one_branch params: FacetCategory branch, int indent, bool is_edit_mode, string parent_id, bool start_hidden -%>
+<%# /common/facet_tree_one_branch params: FacetCategory branch, int indent, bool is_edit_mode, string parent_id, bool start_hidden, hash (str2int) site_count -%>
 <% suppress_empty_nodes = !is_edit_mode -%>
 <% for site in branch -%>
-	<% if !suppress_empty_nodes || site_subtotal(site) != 0 -%>
+	<% if !suppress_empty_nodes || site_subtotal(site_count, site) != 0 -%>
 		<% if site['type'] == nil # is category -%>
 			<% hidden = session[:resource_toggle] ? (session[:resource_toggle]["#{site.id}"] == 'open' ? false : true) : true  -%>
-			<%= site_selector(site, indent, is_edit_mode, true, parent_id, start_hidden, true, hidden ) %>
-			<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => site.sorted_children, :indent => indent + 1, :is_edit_mode => is_edit_mode, :parent_id => "child_of_#{site.id}", :start_hidden => hidden || start_hidden } %>
+			<%= site_selector(site, indent, is_edit_mode, true, parent_id, start_hidden, true, hidden, site_count ) %>
+			<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => site.sorted_children, :indent => indent + 1, :is_edit_mode => is_edit_mode, :parent_id => "child_of_#{site.id}", :start_hidden => hidden || start_hidden, :site_count => site_count } %>
 		<% else # is site -%>
-			<%= site_selector(site, indent, is_edit_mode, false, parent_id, start_hidden, site['found'], false ) %>
+			<%= site_selector(site, indent, is_edit_mode, false, parent_id, start_hidden, site['found'], false, site_count ) %>
 		<% end # if it is a category or site -%>
 	<% end # if the site isn't suppressed -%>
 <% end # each site -%>

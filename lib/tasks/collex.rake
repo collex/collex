@@ -55,17 +55,16 @@ namespace :collex do
 	end
 
 	def update_experimental
-		# TODO-PER: This doesn't actually run in development mode. Why not?
+		# TODO-PER: Can we force this to run in development mode?
 		puts "Update site from repository..."
-		`RAILS_ENV=development script/daemons stop`
+		`script/daemons stop`
 		sleep(8)
 		`svn up`
-		ENV['RAILS_ENV'] = 'development '
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
 		`mongrel_rails restart`
-		`RAILS_ENV=development script/daemons start`
+		`script/daemons start`
 	end
 
 	def update_indexing
@@ -82,13 +81,13 @@ namespace :collex do
 
 	def update_development
 		puts "Update site from repository..."
-		`RAILS_ENV=development script/daemons stop`
+		`script/daemons stop`
 		sleep(8)
 		`svn up`
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_about_css'].invoke
 		`mongrel_rails restart`
-		`RAILS_ENV=development script/daemons start`
+		`script/daemons start`
 	end
 
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"

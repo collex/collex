@@ -175,23 +175,23 @@ module SearchHelper
     return false
   end
   
-  def resource_data_link( resource )
-    #     <form id="add-constraint" method="post" action="/search/constrain_resources">
-    object_count = site_object_count(resource.value)
-    if object_count != 0
-      display_str = "#{h(resource.display_name)} (#{pluralize( object_count, 'object' )})"
-      if resource_is_in_constraints?(resource)
-        html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
-        html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post, :class => 'nav_link' } 
-        html += "</li>"
-        return html
-      else
-        link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post, :class => 'nav_link' }
-        return "<li>#{link}</li>"
-      end
-    else
-      return ""
-    end
+#  def resource_data_link( resource )
+#    #     <form id="add-constraint" method="post" action="/search/constrain_resources">
+#    object_count = site_object_count(resource.value)
+#    if object_count != 0
+#      display_str = "#{h(resource.display_name)} (#{pluralize( object_count, 'object' )})"
+#      if resource_is_in_constraints?(resource)
+#        html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
+#        html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post, :class => 'nav_link' }
+#        html += "</li>"
+#        return html
+#      else
+#        link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post, :class => 'nav_link' }
+#        return "<li>#{link}</li>"
+#      end
+#    else
+#      return ""
+#    end
   
 #    if resource_data[:exists]
 #      html = "&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})&nbsp;"
@@ -201,7 +201,7 @@ module SearchHelper
 #      link_to "#{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post } 
 #    end
 
-  end
+#  end
   
   def free_culture_is_in_constraints?
     constraints = session[:constraints]
@@ -247,18 +247,18 @@ module SearchHelper
 
   end
   
-  def site_subtotal(facet_category)    
+  def site_subtotal(site_count, facet_category)
     count = 0
     if facet_category['type'] == nil
       facet_category.sorted_children.each { |child| 
         if child.children.size > 0 
-          count = count + site_subtotal(child)
+          count = count + site_subtotal(site_count, child)
         else
-          count = count + site_object_count(child.value)
+          count = count + site_object_count(site_count, child.value)
         end    
       }
     else
-      count = site_object_count(facet_category.value)
+      count = site_object_count(site_count, facet_category.value)
     end
     return count
   end
@@ -292,8 +292,9 @@ module SearchHelper
     count==0 ? 'class="grayed-out-resource"' : ''
   end
     
-  def site_object_count(code)
-    @results['facets']['archive'][code].to_i
+  def site_object_count(site_count, code)
+	  return 0 if site_count[code] == nil
+    site_count[code].to_i
   end
   
 #  def site_category_heading( category_name, category_id, initial_state = :closed )
@@ -534,7 +535,7 @@ module SearchHelper
   # Helpers for the facet tree that shows resources
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
-  def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found, is_open )
+  def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found, is_open, site_count )
     display_name = site.display_name
     id = site.id
     value = site['value']
@@ -564,7 +565,7 @@ module SearchHelper
         html += "<a class='modify_link' href='#' onclick='new RemoveSiteDlg(\"edit_site_list\", \"/admin/facet_tree/remove_site\", \"#{sanitized_value}\"); return false;'>[remove]</a>"
       end
     else # not edit mode
-      total = site_subtotal(site)
+      total = site_subtotal(site_count, site)
       if is_category
         html += "<a href='#' onclick='new ResourceTree(\"#{id}\",\"toggle\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
