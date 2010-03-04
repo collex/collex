@@ -55,6 +55,7 @@ namespace :collex do
 	end
 
 	def update_experimental
+		# TODO-PER: This doesn't actually run in development mode. Why not?
 		puts "Update site from repository..."
 		`RAILS_ENV=development script/daemons stop`
 		sleep(8)
@@ -75,7 +76,7 @@ namespace :collex do
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
-		`mongrel_rails restart`
+		`mongrel_rails restart`	#TODO-PER: See if this machine is actually using the service instead of mongrel!
 		`script/daemons start`
 	end
 
