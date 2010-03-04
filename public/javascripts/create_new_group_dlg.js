@@ -29,7 +29,7 @@ function stopNewGroupUpload(errMessage){
 }
 
 var CreateGroupWizardDlg = Class.create({
-	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName, populate_urls, progress_img, start_university, start_name) {
+	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName, populate_urls, progress_img, start_university, start_name, membershipExample) {
 		this.class_type = 'CreateGroupWizardDlg';	// for debugging
 
 		// private variables
@@ -137,10 +137,15 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'Title:', klass: 'groups_label' }, { input: 'group[name]', klass: 'new_exhibit_input_long' } ],
 						[ { text: 'Description:', klass: '' } ],
 						[ { textarea: 'group[description]', klass: 'description groups_textarea' } ],
-						[ { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "Yes", value: 'Yes'}, { text: "No", value: 'No'}] } ],
-						[ { text: 'Type:', klass: 'groups_label' }, { select: 'group[group_type]', options: types, value: defaultType, change: typeSelect } ],
-						[ { text: 'Thumbnail:', klass: 'groups_label community_only' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'community_only' },
-							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'empty_list_text publication_only hidden'},
+						[ { picture: membershipExample, klass: 'new_group_membership_pic' }, { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "To All", value: 'Yes'}, { text: "To Admins", value: 'No'}] },
+							{ text: "Choose whether visitors to your group will be able to see the membership list displayed at the upper-right of your group page.", klass: 'new_group_membership_explanation'}],
+						[ { rowClass: 'clear_both' }, { text: 'Type:', klass: 'new_group_type_label' }, { select: 'group[group_type]', klass: 'new_group_type', options: types, value: defaultType, change: typeSelect },
+							{ text: 'The ' + siteName + ' default group type, useful for sharing objects and forum threads.', klass: 'new_group_membership_explanation community_only'},
+							{ text: 'Groups for using ' + siteName + ' in the classroom.', klass: 'new_group_membership_explanation hidden classroom_only'},
+							{ text: '&nbsp;', klass: 'new_group_membership_explanation hidden publication_only'}
+						],
+						[ { rowClass: 'clear_both' }, { text: 'Thumbnail:', klass: 'groups_label community_only' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'community_only' },
+							{ text: 'Publication groups work closely with the ' + siteName + ' staff to vet their content. If you select this option a notification will be sent to the ' + siteName + ' staff, and someone will be in contact with you soon.', klass: 'new_group_membership_explanation publication_only hidden'},
 							{ text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { text: 'For easy browsing, use this field to share the course number or mnemonic associated with this class (e.g. ENNC 448)', klass: 'groups_explanation classroom_only hidden' },
 							{ input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' }
 						],

@@ -845,3 +845,24 @@ textarea.groups_textarea {
 .progress_label_row {
 	background-color: white;
 }
+
+.new_group_membership_pic {
+	float:left;
+	padding-right:10px;
+	padding-bottom:10px;
+}
+
+.new_group_membership_explanation {
+	color: gray;
+	font-style: italic;
+}
+
+.new_group_type_label {
+	float:left;
+	width:3.5em;
+}
+
+.new_group_type {
+	float: left;
+	margin-right: 28px;
+}

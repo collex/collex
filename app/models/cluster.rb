@@ -34,7 +34,7 @@ class Cluster < ActiveRecord::Base
 	end
 
 	def get_friendly_visibility_list()
-		return [ { :value => 'everyone', :text =>	'Everyone' }, { :value => 'administrators', :text =>	'Administrators only' }]
+		return [ { :value => 'everyone', :text => 'Everyone' }, { :value => 'members', :text => 'Members only' }, { :value => 'administrators', :text => 'Administrators only' }]
 	end
 
 	def get_visible_url

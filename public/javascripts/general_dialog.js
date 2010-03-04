@@ -316,6 +316,14 @@ var GeneralDialog = Class.create({
 						if (subel.id !== undefined)
 							elText.writeAttribute({ id: makeId(subel.id) });
 						row.appendChild(elText);
+						// PICTURE
+					} else if (subel.picture !== undefined) {
+						var elPic = new Element('img', { src: subel.picture, alt: subel.picture });
+						if (subel.klass)
+							elPic.addClassName(subel.klass);
+						if (subel.id !== undefined)
+							elPic.writeAttribute({ id: makeId(subel.id) });
+						row.appendChild(elPic);
 						// INPUT
 					} else if (subel.input !== undefined) {
 						addInput(row, subel.input, subel.klass, subel.value);
