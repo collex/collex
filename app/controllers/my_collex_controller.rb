@@ -29,19 +29,6 @@ class MyCollexController < ApplicationController
     return session[:user] ? User.find_by_username(session[:user][:username]) : nil
   end
 
-#  def can_edit_exhibit(user, exhibit_id)
-#    return false if user == nil
-#    return false if exhibit_id == nil
-#    exhibit = Exhibit.find(exhibit_id)
-#		return false if exhibit.category == "peer-reviewed"
-#		if exhibit.group_id
-#			group = Group.find(exhibit.group_id)
-#			return false if group.group_type == 'peer-reviewed'
-#		end
-#    return true if is_admin?
-#    return exhibit.user_id == user.id
-#  end
-
   def get_exhibit_id_from_element(element)
     return nil if element == nil || element == 0
     page = ExhibitPage.find(element.exhibit_page_id)

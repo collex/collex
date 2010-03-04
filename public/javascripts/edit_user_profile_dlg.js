@@ -29,7 +29,6 @@ function stopUpload(errMessage){
 
 var EditProfileDialog = Class.create({
 	initialize: function (parent_div, ok_action, user_shell, curr_image_src) {
-		// This puts up a modal dialog that allows the administrator to change information about a site or category.
 		this.class_type = 'EditProfileDialog';	// for debugging
 
 		// private variables

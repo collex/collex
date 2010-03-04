@@ -33,21 +33,21 @@ class Admin::DefaultController < Admin::BaseController
     redirect_to :controller => 'admin/default', :action => 'index'
   end
   
-  def change_category
-    exhibit_id = params[:exhibit_id]
-    category = params[:category_id]
-    badge = params[:badge_id]
-    exhibit = Exhibit.find(exhibit_id)
-		old_category = exhibit.category
-    exhibit.update_attribute('category', category)
-    exhibit.update_attribute('badge_id', badge)
-		if category == 'peer-reviewed'
-			index_exhibit(exhibit_id)
-		elsif old_category == 'peer-reviewed'
-			unindex_exhibit(exhibit_id)
-		end
-    render :partial => 'exhibit_tr', :locals => { :exhibit => exhibit }
-  end
+#  def change_category
+#    exhibit_id = params[:exhibit_id]
+#    category = params[:category_id]
+#    badge = params[:badge_id]
+#    exhibit = Exhibit.find(exhibit_id)
+#		old_category = exhibit.category
+#    exhibit.update_attribute('category', category)
+#    exhibit.update_attribute('badge_id', badge)
+#		if category == 'peer-reviewed'
+#			index_exhibit(exhibit_id)
+#		elsif old_category == 'peer-reviewed'
+#			unindex_exhibit(exhibit_id)
+#		end
+#    render :partial => 'exhibit_tr', :locals => { :exhibit => exhibit }
+#  end
 
 	def change_group_type
     group_id = params[:group_id]

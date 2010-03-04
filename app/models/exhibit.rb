@@ -24,18 +24,17 @@ class Exhibit < ActiveRecord::Base
 	attr_accessor :group_only
 	attr_accessor :author
 	
-	 def self.can_edit(user, exhibit_id)
-    return false if user == nil
-    return false if exhibit_id == nil
-    exhibit = Exhibit.find(exhibit_id)
-		return false if exhibit.category == "peer-reviewed"
+	def self.can_edit(user, exhibit_id)
+		return false if user == nil
+		return false if exhibit_id == nil
+		exhibit = Exhibit.find(exhibit_id)
 		if exhibit.is_published == 1 && exhibit.group_id
 			group = Group.find(exhibit.group_id)
 			return false if group.group_type == 'peer-reviewed'
 		end
-    return true if user.role_names.include?('admin')
-    return exhibit.user_id == user.id
-  end
+		return true if user.role_names.include?('admin')
+		return exhibit.user_id == user.id
+	end
 
 	def can_view(user)
 		# The user can view the exhibit if:
@@ -102,7 +101,7 @@ class Exhibit < ActiveRecord::Base
 			found = Exhibit.find_by_resource_name(resource_name)
 			suffix += 1
 		end
-		params = { :title => title, :resource_name => resource_name, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license(), :category => Group.types()[0] }
+		params = { :title => title, :resource_name => resource_name, :user_id => user_id, :thumbnail => thumbnail, :visible_url => transform_url(url), :is_published => 0, :license_type => self.get_default_license() }
 		params[:group_id] = group_id if group_id != nil
 		params[:cluster_id] = cluster_id if cluster_id != nil
     exhibit = Exhibit.create(params)
@@ -725,6 +724,11 @@ class Exhibit < ActiveRecord::Base
 		end
 	end
 
+	def get_category()
+		return "community" if self.group_id == nil || self.group_id == 0
+		return Group.find(self.group_id).group_type
+	end
+
 	private
 	URI_BASE = 'http://nines.org/peer-reviewed-exhibit/'
 	ARCHIVE_PREFIX = "exhibit_"
@@ -765,12 +769,12 @@ class Exhibit < ActiveRecord::Base
 
 	RESOURCE_CATEGORY = "NINES Exhibits"	# TODO: generalize this, and allow exhibits to come from 18th connect, too.
 
-	def self.index_all_peer_reviewed
-		exhibits = Exhibit.all(:conditions => [ "category = ?", 'peer-reviewed'])
-		exhibits.each{ |exhibit|
-			exhibit.index_exhibit(exhibit.id == exhibits.last.id)
-		}
-	end
+#	def self.index_all_peer_reviewed
+#		exhibits = Exhibit.all(:conditions => [ "category = ?", 'peer-reviewed'])
+#		exhibits.each{ |exhibit|
+#			exhibit.index_exhibit(exhibit.id == exhibits.last.id)
+#		}
+#	end
 
 	def make_resource_name
 		name = self.resource_name
@@ -1067,13 +1071,11 @@ class Exhibit < ActiveRecord::Base
 				return PeerReview.get_badge(group.badge_id)
 			end
 		end
-		# either the group wasn't peer-reviewed, or the exhibit isn't in a group, so use the exhibit's badge
-		return "" if self.category != 'peer-reviewed'
-		return PeerReview.get_badge(self.badge_id)
+		# either the group wasn't peer-reviewed, or the exhibit isn't in a group
+		return ""
 	end
 
 	def is_peer_reviewed()
-		return true if self.category == 'peer-reviewed'	# an exhibit can always be peer-reviewed by itself
 		return false if self.group_id == nil	# and if it isn't in a group, it can't be peer-reviewed any other way
 		return false if self.is_published != 1	# even if it is in a peer-reviewed group, it must be published to be peer-reviewed
 		group = Group.find(self.group_id)

@@ -95,7 +95,7 @@ class SearchUserContent < ActiveRecord::Base
 		exhibits.each {|exhibit|
 			if exhibit.is_published != 0
 				if exhibit.group_id == nil
-					section = exhibit.category
+					section = 'community'
 					visibility_type = 'everyone'
 					visibility_id = 0
 				else

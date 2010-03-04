@@ -10,6 +10,8 @@ class ClassroomController < ApplicationController
 	public
 
 	def index
+		@forest = FacetCategory.sorted_facet_tree().sorted_children
+		@results = { :total_hits => 7, :num_pages => 1, :hits => [ ] }
 	end
 
 end

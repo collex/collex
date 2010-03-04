@@ -30,7 +30,7 @@
 		<% if !@exhibit.is_peer_reviewed() -%>
 		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
 		<% end -%>
-		<a href="/exhibit_list" class="nav_link" >[Return to Exhibit List]</a>&nbsp;<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
+		<a href="<%= make_exhibit_home_link(@exhibit.get_category()) %>" class="nav_link" >[Return to Exhibit List]</a>&nbsp;<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
 		<%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => @exhibit.id, :page => @page }, :class => 'nav_link', :target => '_parent' ) if Exhibit.can_edit(get_curr_user(), @exhibit.id)  %>
 	</div>
 	<div id="exhibit_page clear_both">

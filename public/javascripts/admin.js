@@ -411,35 +411,35 @@ var EditFacetDialog = Class.create({
 	}
 });
 
-var EditExhibitCategory = Class.create({
-	initialize: function (parent_div, ok_action, exhibit_id, starting_selection, badge_id, badges) {
-		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
-		this.class_type = 'EditExhibitCategory';	// for debugging
-
-		// private variables
-		//var This = this;
-		
-		// private functions
-		
-		// privileged functions
-		var updater = new AjaxUpdate(parent_div, 'Updating Exhibit Category...', null);
-		
-		var dlgLayout = {
-				page: 'layout',
-				rows: [
-					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
-					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'community', text: 'Community' }, { value: 'classroom', text: 'Classroom' } ] } ],
-					[ { text: 'Badge:', klass: 'edit_facet_label' }, { select: 'badge_id', value: badge_id, options: badges } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'exhibit_id', value: exhibit_id } ]
-				]
-			};
-		
-		var params = { this_id: "change_exhibit_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Change Exhibit Category" };
-		var dlg = new GeneralDialog(params);
-		dlg.changePage('layout', 'category_id');
-		dlg.center();
-	}
-});
+//var EditExhibitCategory = Class.create({
+//	initialize: function (parent_div, ok_action, exhibit_id, starting_selection, badge_id, badges) {
+//		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
+//		this.class_type = 'EditExhibitCategory';	// for debugging
+//
+//		// private variables
+//		//var This = this;
+//
+//		// private functions
+//
+//		// privileged functions
+//		var updater = new AjaxUpdate(parent_div, 'Updating Exhibit Category...', null);
+//
+//		var dlgLayout = {
+//				page: 'layout',
+//				rows: [
+//					[ { text: 'Choose the category that this exhibit will appear under in the Exhibit List.', klass: 'new_exhibit_instructions' } ],
+//					[ { text: 'Category:', klass: 'edit_facet_label' }, { select: 'category_id', value: starting_selection, klass: 'categories_select', options: [ { value: 'peer-reviewed', text: 'Peer Reviewed' }, { value: 'community', text: 'Community' }, { value: 'classroom', text: 'Classroom' } ] } ],
+//					[ { text: 'Badge:', klass: 'edit_facet_label' }, { select: 'badge_id', value: badge_id, options: badges } ],
+//					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'exhibit_id', value: exhibit_id } ]
+//				]
+//			};
+//
+//		var params = { this_id: "change_exhibit_category_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Change Exhibit Category" };
+//		var dlg = new GeneralDialog(params);
+//		dlg.changePage('layout', 'category_id');
+//		dlg.center();
+//	}
+//});
 
 var EditGroupType = Class.create({
 	initialize: function (parent_div, ok_action, group_id, starting_selection, options, badge_id, badges, publication_image_id, publication_images) {

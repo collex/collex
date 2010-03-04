@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100303191520) do
+ActiveRecord::Schema.define(:version => 20100304175433) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -177,7 +177,6 @@ ActiveRecord::Schema.define(:version => 20100303191520) do
     t.integer  "thumbwidth",              :limit => 10, :precision => 10, :scale => 0
     t.integer  "thumbtop",                :limit => 10, :precision => 10, :scale => 0
     t.integer  "alias_id",                :limit => 10, :precision => 10, :scale => 0
-    t.string   "category"
     t.string   "header_font_name"
     t.string   "header_font_size"
     t.string   "illustration_font_name"
@@ -199,7 +198,6 @@ ActiveRecord::Schema.define(:version => 20100303191520) do
     t.integer  "license_type",            :limit => 10, :precision => 10, :scale => 0
     t.integer  "cluster_id",              :limit => 10, :precision => 10, :scale => 0
     t.string   "editor_limit_visibility"
-    t.integer  "badge_id",                :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "facet_categories", :force => true do |t|
