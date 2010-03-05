@@ -528,7 +528,7 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 			recurseUpdateWithAjax([url], ['group_exhibits'], onSuccess, onFailure, data);
 		}
 	};
-//showPartialInLightBox('/my9s/show_profile?user=409', 'Profile for Paul E. Rosen'); return false;; return false;
+
 	var layout = {
 			page: 'layout',
 			rows: [
@@ -663,3 +663,37 @@ var CreateNewClusterDlg = Class.create({
 		show();
 	}
 });
+
+var setNotificationLevel = function(group_id, groupName, currentNotifications) {
+	var dlg = null;
+
+	var sendWithAjax = function (event, params)
+	{
+		var onSuccess = function(resp) {
+			dlg.cancel();
+		};
+		var onFailure = function(resp) {
+			dlg.setFlash("Error: " + resp.responseText, true);
+		};
+		var data = dlg.getAllData();
+		data.group_id = group_id;
+		var url = params.destination;
+		dlg.setFlash('Setting Notifications for ' + groupName + '. Please wait...', false);
+		recurseUpdateWithAjax([url], ['group_details'], onSuccess, onFailure, data);
+	};
+
+	var layout = {
+			page: 'layout',
+			rows: [
+				[ { text: 'Set the email notifications you want to receive when activity occurs in ' + groupName + ':' } ],
+				[ { checkboxList: 'notifications', klass: 'notifications_checkbox_label', selections: currentNotifications, items: [ "<span class='notifications_item'>Exhibit changes</span>: added or removed from group or cluster, sharing level changed", "<span class='notifications_item'>Membership changes</span>: member invited, member added, member declined, member removed, member becomes admin", "<span class='notifications_item'>Discussion changes</span>: new thread or new comment posted in this group", "<span class='notifications_item'>Group changes</span>: changed name, description, add clusters, remove clusters, changed visibility" ] }],
+				[ { rowClass: 'last_row' }, { button: 'Save', url: '/groups/notifications', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+			]
+		};
+
+	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Set Notifications" };
+	dlg = new GeneralDialog(params);
+	dlg.changePage('layout', "username");
+	dlg.center();
+};
+

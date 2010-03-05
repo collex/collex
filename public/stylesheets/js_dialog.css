@@ -900,3 +900,13 @@ textarea.groups_textarea {
 	float: left;
 	margin-right: 28px;
 }
+
+.notifications_checkbox_label {
+	float:left;
+	margin-bottom:32px;
+	margin-right:10px;
+}
+
+.notifications_item {
+	font-weight: bold;
+}
