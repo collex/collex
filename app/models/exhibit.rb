@@ -666,16 +666,20 @@ class Exhibit < ActiveRecord::Base
 		self.save
 	end
 
+	def get_apparent_author()
+		return User.find((self.alias_id != nil && self.alias_id > 0) ? self.alias_id : self.user_id)
+	end
+
 	def get_apparent_author_name()
 		# This gets the alias if there is one, and the real author if there isn't.
-		author_rec = User.find(self.alias_id ? self.alias_id : self.user_id)
+		author_rec = get_apparent_author()
 		auth = author_rec.fullname ? author_rec.fullname : author_rec.username
 		return auth
 	end
 
 	def get_apparent_author_email()
 		# This gets the alias if there is one, and the real author if there isn't.
-		author_rec = User.find(self.alias_id ? self.alias_id : self.user_id)
+		author_rec = get_apparent_author()
 		return author_rec.email
 	end
 

@@ -137,7 +137,7 @@
 				| <%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 			<%= link_to_function("[move #{group.get_exhibits_label}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.get_exhibits_label}', '#{group.get_clusters_label}', '#{exhibit.title}', '#{get_exhibits_username(exhibit)}', '#{SITE_NAME}', #{cluster ? cluster.id : 0}, '#{group.name}', '#{Group.visibility_to_friendly(group.exhibit_visibility)}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.get_exhibits_label}', '#{group.get_clusters_label}', '#{exhibit.title}', '#{get_exhibits_username(exhibit)}', '#{SITE_NAME}', #{cluster ? cluster.id : 0}, '#{group.name}', '#{Group.visibility_to_friendly(group.exhibit_visibility)}', '#{get_exhibit_url(exhibit)}', '#{get_user_info_url(exhibit.get_apparent_author())}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</div>
 	</div>

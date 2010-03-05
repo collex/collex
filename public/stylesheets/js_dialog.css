@@ -18,6 +18,10 @@
 /* styles for all javascript-created dialogs */
 /*********************************/
 
+.bd {
+	font-family: sans-serif;
+}
+
 .yui-skin-sam .container-close {
 	height: 19px;
 }

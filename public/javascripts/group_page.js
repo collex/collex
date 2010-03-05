@@ -505,7 +505,7 @@ var decline_invitation = function(pending_id) {
 		{id: pending_id });
 };
 
-var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, clusterLabel, exhibitTitle, exhibitAuthor, siteName, currentCluster, groupName, groupPermissions) {
+var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, clusterLabel, exhibitTitle, exhibitAuthor, siteName, currentCluster, groupName, groupPermissions, exhibitLink, userInfoUrl) {
 	clusterOptions.unshift({text: "(None)", value: "0" });
 	var dlg = null;
 
@@ -528,13 +528,13 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 			recurseUpdateWithAjax([url], ['group_exhibits'], onSuccess, onFailure, data);
 		}
 	};
-
+//showPartialInLightBox('/my9s/show_profile?user=409', 'Profile for Paul E. Rosen'); return false;; return false;
 	var layout = {
 			page: 'layout',
 			rows: [
-				[ { rowClass: 'accept_peer_review_header' }, { text: 'You are about to set <a href="/" target="_blank" class="nav_link">' + exhibitTitle + '</a> by <a href="/" target="_blank" class="nav_link">' + exhibitAuthor + '</a> as a peer-reviewed object.' } ],
+				[ { rowClass: 'accept_peer_review_header' }, { text: 'You are about to set <a href="' + exhibitLink + '" target="_blank" class="nav_link">' + exhibitTitle + '</a> by <a class="nav_link" href="#" onclick="showPartialInLightBox(\'' + userInfoUrl + '\', \'Profile for ' + exhibitAuthor + '\'); return false;">' + exhibitAuthor + '</a> as a peer-reviewed object.' } ],
 				[ { text: 'This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval. If you wish to continue, please select a method for sharing this work below. Otherwise, please select "Cancel."', klass: 'accept_peer_review_label' } ],
-				[ { radioList: 'typ', klass: 'accept_peer_review_radio', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), buttons: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer-reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer-reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
+				[ { radioList: 'typ', klass: 'accept_peer_review_radio', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), buttons: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
 				[ { text: 'Choose a ' + clusterLabel + ':', klass: 'accept_peer_review_label2' }, { select: 'exhibit[cluster_id]', options: clusterOptions, value: currentCluster } ],
 				[ { text: 'Note: Objects in <span class="accept_peer_review_group_name">' + groupName + '</span> have a default sharing option of "<span class="accept_peer_review_permissions">' + groupPermissions + '</span>".', klass: 'accept_peer_review_label' } ],
 				[ { rowClass: 'last_row' }, { button: 'Accept', url: '/groups/accept_as_peer_reviewed', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
