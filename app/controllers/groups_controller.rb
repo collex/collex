@@ -518,8 +518,9 @@ class GroupsController < ApplicationController
   # DELETE /groups/1
   # DELETE /groups/1.xml
   def destroy
-    @group = Group.find(params[:id])
-    @group.destroy
+		@group = Group.find(params[:id])
+		typ = @group.group_type
+		@group.destroy
 
 		# Also remove the exhibits and discussions from being in the group.
 		exhibits = Exhibit.find_all_by_group_id(params[:id])
@@ -540,7 +541,7 @@ class GroupsController < ApplicationController
 		clusters.each { |cluster|
 			cluster.destroy
 		}
-		redirect_to :controller => 'exhibits', :action => "index"
+		redirect_to @template.make_exhibit_home_link(typ)
 #    respond_to do |format|
 #      format.html { redirect_to(groups_url) }
 #      format.xml  { head :ok }

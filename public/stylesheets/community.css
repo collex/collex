@@ -63,7 +63,7 @@
 
 .publications_images {
 	text-align:center;
-	padding-bottom:20px;
+	padding-bottom:60px;
 	padding-top:60px;
 }
 
@@ -77,9 +77,17 @@
 	padding-left: 2em;
 	padding-bottom: 2em;
 	padding-right: 2em;
-	font-size: 1.2em;
+	padding-top: 20px;
+	font-family: sans-serif;
 }
 
 .publication_emphasis {
 	font-style: italic;
+}
+
+.publication_footing {
+	font-style: italic;
+	color: gray;
+	text-align: center;
+	padding-top:16px;
 }
