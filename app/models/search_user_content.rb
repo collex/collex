@@ -187,9 +187,9 @@ class SearchUserContent < ActiveRecord::Base
 			duration = suc.reindex_all()
 			num_objs = CollexEngine.new([ 'UserContent' ]).num_docs
 			SearchUserContent.create({ :last_indexed => last_change, :seconds_spent_indexing => duration, :objects_indexed => num_objs })
-			return "User Content reindexed on #{last_change}. Time spent indexing: #{duration} seconds, Number of objects: #{num_objs}"
+			return { :activity => true, :message => "User Content reindexed on #{last_change}. Time spent indexing: #{duration} seconds, Number of objects: #{num_objs}" }
 		end
-		return "User Content is up to date, so it was not reindexed. Last index: #{last_index}, last user content change: #{last_change}"
+		return { :activity => false }
 	end
 
 	private

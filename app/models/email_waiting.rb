@@ -1,5 +1,5 @@
 class EmailWaiting < ActiveRecord::Base
-	def deliver
-		logger.info("background task: #{Time.now}")
+	def self.periodic_update
+		return { :activity => false }
 	end
 end

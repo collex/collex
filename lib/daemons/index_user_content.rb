@@ -12,11 +12,11 @@ end
 
 loop_size = USER_CONTENT_INTERVAL_SECS / 5
 
-ActiveRecord::Base.logger.info "----- START index_user_content #{Time.now}.\n"
+DaemonActivity.started('index_user_content')
 
 while($running) do
 	status = SearchUserContent.periodic_update()
-	ActiveRecord::Base.logger.info "Daemon index_user_content is still running at #{Time.now}. #{status}\n"
+	DaemonActivity.log_activity('index_user_content', status)
   
 	loop_size.times {
 		sleep 5
@@ -24,4 +24,4 @@ while($running) do
 	}
 end
 
-ActiveRecord::Base.logger.info "----- STOP index_user_content #{Time.now}.\n"
+DaemonActivity.ended('index_user_content')

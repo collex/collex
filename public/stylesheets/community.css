@@ -77,4 +77,9 @@
 	padding-left: 2em;
 	padding-bottom: 2em;
 	padding-right: 2em;
+	font-size: 1.2em;
+}
+
+.publication_emphasis {
+	font-style: italic;
 }

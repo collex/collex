@@ -103,10 +103,11 @@ if File.exists?(config_file)
 	MY_COLLEX = site_specific['my_collex']
 	MY_COLLEX_URL = site_specific['my_collex_url']
 	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
-  SKIN = site_specific['skin']
+	SKIN = site_specific['skin']
 	UPDATE_TASK = site_specific['update'] == nil ? '' : site_specific['update']
 	BLEEDING_EDGE = site_specific['bleeding_edge']
 	DISALLOW_RSS  = site_specific['disallow_rss'] == nil ? false : site_specific['disallow_rss']
+	PROJECT_MANAGER_EMAIL = site_specific['project_manager_email']
 
 else
 	puts "***"

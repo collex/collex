@@ -41,6 +41,7 @@ site_name_title: 'C O L L E X'
 my_collex: 'My Collex'
 my_collex_url: 'my_collex'
 skin: 'collex'
+project_manager_email: 'manager example com'
 
 update: 'development'
 bleeding_edge: false

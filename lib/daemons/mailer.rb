@@ -12,10 +12,11 @@ end
 
 loop_size = MAILER_INTERVAL_SECS / 5
 
-ActiveRecord::Base.logger.info "----- START mailer #{Time.now}.\n"
+DaemonActivity.started('mailer')
 
 while($running) do
-	ActiveRecord::Base.logger.info "Daemon mailer is still running at #{Time.now}.\n"
+	status = EmailWaiting.periodic_update()
+	DaemonActivity.log_activity('mailer', status)
 
 	loop_size.times {
 		sleep 5
@@ -23,4 +24,4 @@ while($running) do
 	}
 end
 
-ActiveRecord::Base.logger.info "----- STOP mailer #{Time.now}.\n"
+DaemonActivity.ended('mailer')

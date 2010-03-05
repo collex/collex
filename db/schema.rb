@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100304175433) do
+ActiveRecord::Schema.define(:version => 20100305175128) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -51,6 +51,17 @@ ActiveRecord::Schema.define(:version => 20100304175433) do
     t.string  "type"
     t.string  "field"
     t.string  "value"
+  end
+
+  create_table "daemon_activities", :force => true do |t|
+    t.string   "name"
+    t.datetime "last_wake_up"
+    t.datetime "last_activity"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.text     "last_message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "discussion_comments", :force => true do |t|
