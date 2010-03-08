@@ -232,7 +232,7 @@ var EditMembershipDlg = Class.create({
 			}
 		});
 
-		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}], value: show_membership }];
+		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "To All", value: "Yes"}, { text: "To Admins", value: "No"}], value: show_membership }];
 		var changeOwnerCtrl = undefined;
 		if (is_owner && ownerOptions.length > 1)
 			changeOwnerCtrl = [{ text: 'Change Owner: '}, { select: 'change_owner', klass: 'select_dlg_input', options: ownerOptions, value: 0 }];
