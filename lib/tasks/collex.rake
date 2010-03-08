@@ -265,6 +265,132 @@ namespace :collex do
 		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
 	end
 
+	desc "Automatically put users in a group"
+	task :join_users_to_group => :environment do
+		group_name = "ENGL 227"
+		group = Group.find_by_name(group_name)
+		if group == nil
+			puts "Can't find the group: #{group_name}"
+		else
+
+			exhibit_names = [
+				"Broxterman ENGL 227 Project",
+				"Langwell ENGL 227 Project",
+				"Rafferty ENGL227 Project",
+				"Slaughter ENGL 227 PROJECT",
+				"Stockton ENGL 227 Project",
+				"Culp ENGL 227 Project",
+				"Ince ENGL 227 Project",
+				"Waggoner ENGL 227 Project",
+				"Wolfshohl ENGL 227 Project",
+				"Carney ENGL 227 Project- The Hypocrisy of Christianity in Slavery",
+				"Sanders ENGL 227 Project",
+				"Brock ENGL 227 Project",
+				"Tarver ENGL 227 Project",
+				"Felix ENGL 227 Project",
+				"Valenta ENGL 227 Project",
+				"Wise, ENGL 227 Project",
+				"Thornton ENGL 227 Project",
+				"Jones English 227",
+				"Martensson english 227 Project",
+				"Cardenas ENGL 227",
+				"O'Connor ENGL 227",
+				"Herron English 227",
+				"AStewart engl227",
+				"Brown ENGL 227",
+				"Horn English 227",
+				"skrla english 227",
+				"Glaesmann, Clint English 227",
+				"Gerlach English 227",
+				"Godsey English 227",
+				"Rogers ENGL 227",
+				"Mitchell english 227",
+				"Venegas english 227",
+				"Lisle english 227",
+				"McClure ENGL 227",
+				"DeLeon English 227",
+				"Swanson English 227",
+				"weber english 227",
+				"Wells English 227",
+				"Orth Engl 227",
+				"Luza English 227",
+				"Willis ENG 227 Project",
+				"Potts Engl 227 Project",
+				"Baker English 227 Project",
+				"Davenport - Development and Understanding of the Native American Through Early American Literature",
+				"A Woman's Place By Ashley Arevalo ENGL 227",
+				"Welsh ENGL 227",
+				"marroquin ENGL 227 Project",
+				"Pearson English 227",
+				"Tollett English 227",
+				"Turner English 227",
+				"Pratt ENGL 227",
+				"Coryanne ENGL 227",
+				"Violence in Slavery",
+				"Stephenson English 227 Project",
+				"ENGL 227-Cooper",
+				"Spotts ENGL 227",
+				"Engl 227 project",
+				"Rekoff ENGL 227",
+				"Allen Class Project ENGL 227",
+				"American Independence ENGL 227",
+				"Brown ENGL 227",
+				"Ridley ENGL 227 Project",
+				"Buehler Eng 227",
+				"Earhart, Collex Project",
+				"Garrett ENGL 227 Project",
+				"Stuberfield, Class Project ENG 227",
+				"Domains and Domesticity - Class Project ENG 227",
+				"Brady Wright ENGL 227 project",
+				"jthompson227F09",
+				"ABell ENGL 227F09",
+				"M Torres 227F09",
+				"tayer 227F09",
+				"rbounds 227f09",
+				"V Goussen 227F09",
+				"astephens227F09",
+				"mlaman_227F09",
+				"tmoore227F09",
+				"MKasper227F09",
+				"Jroznos227F09",
+				"Koontz ENGL 227 Project",
+				"jreardon227F09",
+				"ABuitron227F09",
+				"SFraleigh227F09",
+				"MAdams227F09",
+				"pgarrett227F09",
+				"B. Holder 227F09",
+				"jhuff227F09",
+				"bfulmer227F09",
+				"APatton227F09",
+				"Early American Magazines AElder 227F09",
+				"EHuey ENGL 227 Project F09",
+				"ASwanberg227F09",
+				"MWalston227F09",
+				"MFelts ENGL227F09",
+				"MBrewster 227 F09",
+				"Risher ENGL 227 Project",
+				"btnguyen227F09",
+				"TSepe-22F09",
+				"K.McClainENG227",
+				"kpurgatorio227F09",
+				"BContreras 227F09"
+			]
+
+			exhibit_names.each{ |name|
+				exhibit = Exhibit.find_by_title(name)
+				if exhibit == nil
+					puts "Can't find the exhibit: #{name}"
+				else
+					user_id = exhibit.user_id
+					GroupsUser.auto_join(group.id, user_id)
+					exhibit.group_id = group.id
+					exhibit.save
+				end
+			}
+		end
+	end
+
 #	desc "Fix character set from CP1252 to utf-8"
 #	task :fix_char_set => :environment do
 #		# This was for a one time fix of the database when the character set was set to latin1 instead of utf8.

@@ -30,6 +30,16 @@ class GroupsUser < ActiveRecord::Base
 		end
 	end
 
+	def self.auto_join(group_id, user_id)
+		# this is not called from the UI, but by a rake task that automatically joins members that should be joined.
+		gu = self.find_by_group_id_and_user_id(group_id, user_id)
+		if gu == nil	# guard against multiple requests coming in.
+			user = User.find(user_id)
+			gu = GroupsUser.new(:group_id => group_id, :user_id => user_id, :email => user.email, :role => 'member', :pending_invite => false, :pending_request => false)
+			gu.save!
+		end
+	end
+
 	def self.accept_request(id)
 		id = Group.id_retriever(id)
 		gu = self.find_by_id(id)
