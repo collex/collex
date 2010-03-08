@@ -146,19 +146,19 @@ class Admin::DefaultController < Admin::BaseController
 		publication_image = PublicationImage.create({})
 		image = params['image']
 		if image && image
-			image = Image.new({ :uploaded_data => image })
+			image = ImageFull.new({ :uploaded_data => image })
 		end
 		begin
-			publication_image.image = image
+			publication_image.image_full = image
 			if publication_image.save
-				publication_image.image.save! if publication_image.image
+				publication_image.image_full.save! if publication_image.image_full
 				flash = "OK:Publication image updated"
 			else
 				flash = "Error updating publication image"
 			end
-		rescue
+		rescue Exception => msg
 			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 		end
-    render :text => "<script type='text/javascript'>window.top.window.stopAddPublicationImageUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+		render :text => "<script type='text/javascript'>window.top.window.stopAddPublicationImageUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 end

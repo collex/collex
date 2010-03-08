@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100305175128) do
+ActiveRecord::Schema.define(:version => 20100308183553) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -271,6 +271,18 @@ ActiveRecord::Schema.define(:version => 20100305175128) do
     t.datetime "updated_at"
   end
 
+  create_table "image_fulls", :force => true do |t|
+    t.integer  "parent_id"
+    t.string   "content_type"
+    t.string   "filename"
+    t.string   "thumbnail"
+    t.integer  "size"
+    t.integer  "width"
+    t.integer  "height"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "images", :force => true do |t|
     t.integer  "parent_id"
     t.string   "content_type"
@@ -317,9 +329,9 @@ ActiveRecord::Schema.define(:version => 20100305175128) do
   end
 
   create_table "publication_images", :force => true do |t|
-    t.integer  "image_id",   :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "image_full_id", :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "roles", :force => true do |t|

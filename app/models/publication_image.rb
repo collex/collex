@@ -1,11 +1,11 @@
 class PublicationImage < ActiveRecord::Base
-  belongs_to :image#, :dependent=>:destroy
+  belongs_to :image_full #, :dependent=>:destroy
 
 	def self.get_list()
 		images = PublicationImage.all
 		list = []
 		images.each {|image|
-			list.push({ :value => image.id, :text => image.image.public_filename }) if image.image
+			list.push({ :value => image.id, :text => image.image_full.public_filename }) if image.image_full
 		}
 		return list
 	end
@@ -13,7 +13,7 @@ class PublicationImage < ActiveRecord::Base
 	def self.get_image(id)
 		return "" if id == nil || id == 0
 		image = PublicationImage.find(id)
-		return "" if !image.image
-		return image.image.public_filename
+		return "" if !image.image_full
+		return image.image_full.public_filename
 	end
 end
