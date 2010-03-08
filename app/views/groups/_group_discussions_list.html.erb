@@ -21,28 +21,12 @@
 <% threads = DiscussionThread.find_all_by_cluster_id(cluster.id) if cluster != nil -%>
 <% if !group.can_read_forum(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its discussions.</div>
-<% elsif threads.length == 0 -%>
-	<div class="empty_list_text" >There have been no discussions started in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
-<% end -%>
-<% if group.can_post(user_id) || (group.can_read_forum(user_id) && threads.length > 0) %>
+<% else -%>
 	<ul class="group_link_list">
-		<li class='change_forum_permissions'>Forum Permissions: <%= Group.permission_to_friendly(group.forum_permissions) %> <%= "#{link_to_function('[change]', "editPermissions(#{group.id}, gGroupData.forum_permissions, #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link')}" if group.can_edit(user_id) %></li>
-		<li>
-	<% for thread in threads -%>
-<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
-	<div class="thumbnail_item">
-		<div class="left_thumbnail">
-<% if comment_info[:thumbnail] != nil -%>
-			<%= render :partial => '/forum/img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FH_post_image", :width => 100, :height => 125 } %>
-<% end -%>
-		</div>
-		<div class="right_of_thumbnail exhibit_link">
-			<div class="group_thread_title"><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread.id }, :class => 'nav_link') %></div>
-			Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format_relative(comment_info[:last_comment_time]) %>
-		</div>
-	</div>
+		<li class='change_forum_permissions'>Forum Permissions: <%= Group.permission_to_friendly(group.forum_permissions) %> <%= "#{link_to_function('[change]', "editPermissions(#{group.id}, '#{group.forum_permissions}', #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link')}" if group.can_edit(user_id) %></li>
+	<% if threads.length == 0 -%>
+		<li class="empty_list_text" >There have been no discussions started in this <%= cluster == nil ? "group" : "cluster"  %>.</li>
 	<% end -%>
-	</li>
 	<% if group.can_post(user_id) -%>
 		<li class='group_new_post'>
 		<% if cluster == nil -%>
@@ -51,6 +35,22 @@
 			<%= link_to_function("[ New Post ]", "new ClusterNewPost('#{PROGRESS_SPINNER_PATH}',#{group.id}, gGroupData.name,  #{cluster.id}, '#{cluster.name}',  #{is_logged_in?}); return false;", :class => "nav_link" ) %>
 		<% end -%>
 		</li>
-	<% end -%>
+	<% end #if can post -%>
+	<% for thread in threads -%>
+		<li>
+		<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
+		<div class="thumbnail_item">
+			<div class="left_thumbnail">
+		<% if comment_info[:thumbnail] != nil -%>
+			<%= render :partial => '/forum/img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FH_post_image", :width => 100, :height => 125 } %>
+		<% end -%>
+			</div>
+			<div class="right_of_thumbnail exhibit_link">
+				<div class="group_thread_title"><%= link_to(thread.get_title(), { :controller => 'forum', :action => 'view_thread', :thread => thread.id }, :class => 'nav_link') %></div>
+				Last updated by <%= get_user_link(comment_info[:last_comment_author]) %><br /><%= comment_time_format_relative(comment_info[:last_comment_time]) %>
+			</div>
+		</div>
+		</li>
+		<% end # for each thread -%>
 	</ul>
-<% end -%>
+<% end # can read forum -%>

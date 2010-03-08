@@ -509,7 +509,11 @@ class GroupsController < ApplicationController
 #    end
 		curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil
-			render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+			if params[:group] && params[:group][:forum_permissions] != nil
+				render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => curr_user.id }
+			else
+				render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+			end
 		else
 			render :text => err_msg, :status => :bad_request
 		end

@@ -323,7 +323,7 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		value: value,
 		extraParams: { id: id },
 		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
+		target_els: [ 'group_discussions' ] });
 };
 
 var changeWhichExhibitsAreShown = function(id, value, groupShowExhibitsOptions, groupShowExhibitsExplanations, exhibitLabel) {
@@ -533,9 +533,10 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 			page: 'layout',
 			rows: [
 				[ { rowClass: 'accept_peer_review_header' }, { text: 'You are about to set <a href="' + exhibitLink + '" target="_blank" class="nav_link">' + exhibitTitle + '</a> by <a class="nav_link" href="#" onclick="showPartialInLightBox(\'' + userInfoUrl + '\', \'Profile for ' + exhibitAuthor + '\'); return false;">' + exhibitAuthor + '</a> as a peer-reviewed object.' } ],
-				[ { text: 'This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval. If you wish to continue, please select a method for sharing this work below. Otherwise, please select "Cancel."', klass: 'accept_peer_review_label' } ],
-				[ { radioList: 'typ', klass: 'accept_peer_review_radio', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), buttons: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
-				[ { text: 'Choose a ' + clusterLabel + ':', klass: 'accept_peer_review_label2' }, { select: 'exhibit[cluster_id]', options: clusterOptions, value: currentCluster } ],
+				[ { text: 'This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval. If you wish to continue, please select "Accept". Otherwise, please select "Cancel."', klass: 'accept_peer_review_label non_cluster_options' },
+					{ text: 'This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval. If you wish to continue, please select a method for sharing this work below. Otherwise, please select "Cancel."', klass: 'accept_peer_review_label hidden cluster_options' } ],
+				[ { radioList: 'typ', klass: 'accept_peer_review_radio hidden cluster_options', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), buttons: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
+				[ { text: 'Choose a ' + clusterLabel + ':', klass: 'accept_peer_review_label2 hidden cluster_options' }, { select: 'exhibit[cluster_id]', options: clusterOptions, value: currentCluster, klass: 'hidden cluster_options' } ],
 				[ { text: 'Note: Objects in <span class="accept_peer_review_group_name">' + groupName + '</span> have a default sharing option of "<span class="accept_peer_review_permissions">' + groupPermissions + '</span>".', klass: 'accept_peer_review_label' } ],
 				[ { rowClass: 'last_row' }, { button: 'Accept', url: '/groups/accept_as_peer_reviewed', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
@@ -544,6 +545,10 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Accept As Peer Reviewed" };
 	dlg = new GeneralDialog(params);
 	dlg.changePage('layout', "username");
+	if (clusterOptions.length > 1) {
+		$$('.cluster_options').each(function(el) { el.removeClassName('hidden'); });
+		$$('.non_cluster_options').each(function(el) { el.addClassName('hidden'); });
+	}
 	dlg.center();
 };
 
