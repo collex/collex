@@ -847,10 +847,9 @@ textarea.groups_textarea {
 	background-image: url(/images/lg_progress.gif);
 	background-repeat: no-repeat;
 	display:block;
-	height:120px;
-	width:120px;
-	margin-left: 190px;
-	margin-left:190px;
+	height:64px;
+	margin-left: 215px;
+	margin-bottom:60px;
 	margin-top:60px;
 }
 
