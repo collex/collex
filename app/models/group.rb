@@ -134,12 +134,10 @@ class Group < ActiveRecord::Base
 	#
 	# User's Roles
 	#
-	private
 	def is_owner(user_id)
 		return user_id == self.owner
 	end
 
-	public
 	def is_editor(user_id)
 		return false if user_id == nil
 		return true if is_owner(user_id)

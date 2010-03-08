@@ -229,6 +229,7 @@ class GroupsController < ApplicationController
 
 	def edit_membership
 		show_membership = params[:show_membership]
+		change_owner = params[:change_owner]
 		group = params[:group]
 		group_id = nil
 		group.each {|id,value|
@@ -246,6 +247,14 @@ class GroupsController < ApplicationController
 		}
 		group = Group.find(group_id)
 		group.show_membership = show_membership == 'Yes'
+		if change_owner
+			gu = GroupsUser.find_by_group_id_and_user_id(group.id, change_owner)
+			gu.user_id = group.owner
+			gu.email = User.find(group.owner).email
+			gu.save
+			
+			group.owner = change_owner
+		end
 		group.save!
 
 		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }

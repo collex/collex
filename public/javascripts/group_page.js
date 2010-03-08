@@ -120,6 +120,7 @@ var GridDlg = Class.create({
 		var fields = params.fields;
 		var data = params.data;
 		var extraCtrl = params.extraCtrl;
+		var extraCtrl2 = params.extraCtrl2;
 
 		var initDataGrid = function(params) {
 			var element_id = params.element_id;
@@ -194,6 +195,9 @@ var GridDlg = Class.create({
 				if (extraCtrl !== undefined) {
 					layout.rows.push(extraCtrl);
 				}
+				if (extraCtrl2 !== undefined) {
+					layout.rows.push(extraCtrl2);
+				}
 
 			layout.rows.push([{ rowClass: 'last_row' }, { button: 'Save', url: url, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }]);
 
@@ -211,21 +215,28 @@ var GridDlg = Class.create({
 });
 
 var EditMembershipDlg = Class.create({
-	initialize: function (group_id, membership, show_membership) {
+	initialize: function (group_id, membership, show_membership, owner_name, is_owner) {
 		this.class_type = 'EditMembershipDlg';	// for debugging
 
-		var membership2 = [];
+		var membership2 = [ { Name: owner_name, "Administrator?": 'owner' } ];
 
+		var ownerOptions = [ { text: "No change", value: 0 }];
 		membership.each(function(member) {
 			var checked = member.role === 'editor' ? ' checked="true"' : '';
 			membership2.push({ Name: member.name,
 				"Administrator?": '<input id="group_'+member.id+'_editor" type="checkbox" value="1" name="group['+member.id+'[editor]]"'+checked+'/>',
 				Delete: '<input id="group_'+member.id+'_delete" type="checkbox" value="1" name="group['+member.id+'[delete]]"/>'
 			});
+			if (member.role === 'editor') {
+				ownerOptions.push({ text: member.name, value: member.user_id });
+			}
 		});
 
 		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}], value: show_membership }];
-		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Administrator?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl })
+		var changeOwnerCtrl = undefined;
+		if (is_owner && ownerOptions.length > 1)
+			changeOwnerCtrl = [{ text: 'Change Owner: '}, { select: 'change_owner', klass: 'select_dlg_input', options: ownerOptions, value: 0 }];
+		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Administrator?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl, extraCtrl2: changeOwnerCtrl })
 	}
 });
 
