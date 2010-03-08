@@ -203,7 +203,7 @@ var ForumReplyDlg = Class.create({
 					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } ],
 					[ { text: "Group: " + group_name, klass: 'group hidden' } ],
 					[ { text: "Cluster: " + cluster_name, klass: 'cluster hidden' } ],
-					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] }],
+					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading discussion topics. Please Wait...' } ] }],
 					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
 					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],

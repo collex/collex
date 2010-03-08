@@ -467,7 +467,7 @@ private
 		}
 		links.push(here)
 		html = "<div class=\"breadcrumbs\">\n"
-		html += links.join(' &gt; ')
+		html += links.join('&nbsp;&nbsp;&gt;&nbsp;&nbsp;')
 		html += "</div>\n"
 		return html
 	end

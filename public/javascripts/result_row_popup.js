@@ -462,7 +462,7 @@ var StartDiscussionWithObject = Class.create({
 				rows: [
 					[ { text: 'Starting a discussion of: ' + title, klass: 'new_exhibit_label' } ],
 					[ { custom: licenseDisplay, klass: 'forum_reply_license title' }, { text: 'Select the topic you want this discussion to appear under:', klass: 'new_exhibit_label' } ],
-					[ { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
+					[ { select: 'topic_id', klass: 'discussion_topic_select', options: [ { value: -1, text: 'Loading discussion topics. Please Wait...' } ] } ],
 					[ { text: 'Title', klass: 'forum_reply_label title ' } ],
 					[ { input: 'title', klass: 'forum_reply_input title' } ],
 					[ { textarea: 'description' } ],

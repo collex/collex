@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  last_wake_up: 2010-03-05 12:51:28
+  last_activity: 2010-03-05 12:51:28
+  last_message: MyText
+
+two:
+  name: MyString
+  last_wake_up: 2010-03-05 12:51:28
+  last_activity: 2010-03-05 12:51:28
+  last_message: MyText

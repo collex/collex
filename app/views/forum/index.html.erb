@@ -19,7 +19,7 @@
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topics = DiscussionTopic.get_all_with_date() -%>
 <%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], "#{SITE_NAME}  Forum") if BLEEDING_EDGE %>
-
+<div class="content_container2">
 	<div class="page_header">Forum</div>
     <div class="page_subheader">We've set aside this portion of <%= SITE_NAME %> for commentary, discussion and collaboration among the <%= SITE_NAME %> community.
 	Log in to your free account to join in the conversations below and to discuss the objects of your research.</div>
@@ -88,3 +88,4 @@
         </tr>    
     </table>
  <% end -%>   
+</div>

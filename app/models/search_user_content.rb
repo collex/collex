@@ -52,12 +52,21 @@ class SearchUserContent < ActiveRecord::Base
 		@solr = CollexEngine.new([ 'UserContent' ]) if @solr == nil
 		ret = @solr.search_user_content(options)
 		hits = []
+		# We have to be careful: an object can be deleted and still be in the index until the next reindexing
 		ret[:hits].each {|hit|
 			case hit['object_type']
-			when 'Exhibit' then hits.push({ :obj => Exhibit.find(hit['object_id']), :text => hit['text'] })
-			when 'Group' then hits.push({ :obj => Group.find(hit['object_id']), :text => hit['text'] })
-			when 'Cluster' then hits.push({ :obj => Cluster.find(hit['object_id']), :text => hit['text'] })
-			when 'DiscussionComment' then hits.push({ :obj => DiscussionComment.find(hit['object_id']), :text => hit['text'] })
+			when 'Exhibit' then
+				rec = Exhibit.find_by_id(hit['object_id'])
+				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+			when 'Group' then
+				rec = Group.find_by_id(hit['object_id'])
+				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+			when 'Cluster' then
+				rec = Cluster.find_by_id(hit['object_id'])
+				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+			when 'DiscussionComment' then
+				rec = DiscussionComment.find_by_id(hit['object_id'])
+				hits.push({ :obj => rec, :text => hit['text'] }) if rec
 			end
 		}
 		page_size = options[:page_size]	#int
