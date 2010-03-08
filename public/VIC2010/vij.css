@@ -93,15 +93,20 @@ text-align:left;
 #list {
 width: 400px;
 border: 2px solid black;
-margin-top:-475px;
+margin-top:-450px;
 margin-left:-95px;
 padding:3px;
 }
 
 #sponsors {
 margin-top: -150px;
-margin-left: 355px;
+margin-left: 340px;
 text-align:center;
+}
+
+#moreinfo {
+margin-left: 340px;
+text-align:left;    
 }
 
 p {
