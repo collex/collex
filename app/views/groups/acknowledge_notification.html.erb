@@ -14,18 +14,26 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page "Exhibits" -%>
+<%
+	group = Group.find(params[:group_id])
+	case group.group_type
+	when 'community' then tab_name = "Community"
+	when 'classroom' then tab_name = "Classroom"
+	when 'peer-reviewed' then tab_name = "Publications"
+	end
+-%>
+<% current_page tab_name -%>
 <div class="inner_content_container">
 	<div class="group_acknowledge">
 		<p>
 		<% if params[:type] == 'accept_request' -%>
-		The user is now in the group <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
+		The user is now in the group <%= link_to(group.name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% elsif params[:type] == 'decline_request' -%>
-		The user is NOT accepted into the group <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
+		The user is NOT accepted into the group <%= link_to(group.name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% elsif params[:type] == 'join_group' -%>
-		Welcome! You are now a member of <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
+		Welcome! You are now a member of <%= link_to(group.name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% elsif params[:type] == 'decline_group' -%>
-		You have declined to be in the group <%= link_to(Group.find(params[:group_id]).name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
+		You have declined to be in the group <%= link_to(group.name, { :controller => 'groups', :action => 'show', :id => params[:group_id] }, { :class => 'nav_link' }) %>.
 		<% end -%>
 		</p>
 		<img src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
