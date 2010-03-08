@@ -938,6 +938,9 @@ class MyCollexController < ApplicationController
 			obj[:strSecondLine] = "#{editor_label}<br />Established: #{group.created_at.strftime("%b %d, %Y")}<br/>#{Group.type_to_friendly(group.group_type)} -- #{@template.pluralize(group.get_number_of_members(), 'member')}"
 			ret.push(obj)
 		}
+	ret = ret.sort { |a,b|
+		a[:strFirstLine].downcase <=> b[:strFirstLine].downcase
+	}
     render :text => ret.to_json()
 	end
 
