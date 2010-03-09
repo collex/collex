@@ -191,12 +191,18 @@ class GroupsController < ApplicationController
 	 end
 
 	def unpublish_exhibit
-		 exhibit_id = params[:exhibit_id]
-		 exhibit = Exhibit.find(exhibit_id)
-		 exhibit.is_published = 0
-		 exhibit.save!
-		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
-		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+		comment = params[:comment]
+		exhibit_id = params[:exhibit_id]
+		exhibit = Exhibit.find(exhibit_id)
+		exhibit.is_published = 0
+#		exhibit.save!
+	
+		user = exhibit.get_apparent_author()
+		editor = get_curr_user()
+		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit Unpublished", "Your exhibit was unpublished by the editor.\nReason:\n#{comment}")
+
+		cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
+		render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
 
 	def limit_exhibit
@@ -217,12 +223,17 @@ class GroupsController < ApplicationController
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
 
-	# Note: This is the same as unpublish_exhibit. Perhaps it should be the same call, even if it is semantically different.
 	 def reject_as_peer_reviewed
+		 comment = params[:comment]
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
 		 exhibit.is_published = 0
-		 exhibit.save!
+#		 exhibit.save!
+
+		 user = exhibit.get_apparent_author()
+		 editor = get_curr_user()
+		 EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit Rejected", "Your exhibit was rejected\nReason:\n#{comment}")
+
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	 end

@@ -116,7 +116,7 @@
 <% if group.can_edit(user_id) -%>
 				<br />Group Administrator options:
 			<%= link_to_function("[move #{group.get_exhibits_label()}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.get_exhibits_label}');", { :class => 'nav_link' }) %>
-			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id}, '#{group.get_exhibits_label}');", { :class => 'nav_link' }) %>
+			<%= link_to_function("[unpublish]", "unpublishExhibit(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) %>
 			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility != 'group' && exhibit.is_published != 3 -%>
 			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility == 'group' -%>
 <% end # if group.can_edit(user_id) -%>

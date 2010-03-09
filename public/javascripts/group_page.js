@@ -563,12 +563,6 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 	dlg.center();
 };
 
-var unpublishExhibit = function(exhibit_id, exhibitLabel) {
-	ajaxWithProgressDlg(['/groups/unpublish_exhibit'], ['group_exhibits'],
-		{ title: "Unpublish Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' has been set to "Private".' },
-		{exhibit_id: exhibit_id });
-};
-
 var limitExhibit = function(exhibit_id, exhibitLabel) {
 	ajaxWithProgressDlg(['/groups/limit_exhibit'], ['group_exhibits'],
 		{ title: "Limit Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' can only be viewed by group members.' },
@@ -593,14 +587,44 @@ var showAdmins = function(group_id, url) {
 		{id: group_id, 'group[show_admins]': 'all' });
 }
 
-var rejectAsPeerReviewed = function(exhibit_id, name, email, exhibitLabel) {
-	var action = function() {
-		ajaxWithProgressDlg(['/groups/reject_as_peer_reviewed'], ['group_exhibits'],
-			{ title: "Return Exhibit For Revisions", waitMessage: "Please wait...", completeMessage: 'The ' + exhibitLabel + ' has been sent back for revisions.' },
-			{exhibit_id: exhibit_id });
+var confirmDlgWithTextArea = function(urls, els, title, completeMsg, confirmMsg, commentLabel, extraData) {
+	var action = function(event, params) {
+		var data = params.dlg.getAllData();
+		extraData.comment = data.comment;
+		params.dlg.cancel();
+		ajaxWithProgressDlg(urls, els,
+			{ title: title, waitMessage: "Please wait...", completeMessage: completeMsg },
+			extraData);
 	};
-	new ConfirmDlg("Return Exhibit For Revisions",
-		'This option returns the ' + exhibitLabel + ' to its original contributor for revision. If this ' + exhibitLabel + ' requires changes by the author, please contact ' + name + " at " + email + " with a short message notifying them of your request.", "Ok", "Cancel", action);
+
+	var dlgLayout = {
+			page: 'layout',
+			rows: [
+				[ {text: confirmMsg, klass: 'message_box_label'} ],
+				[ { text: commentLabel },
+					{ textarea: 'comment', klass: 'confirmdlg_comment' }],
+				[ {rowClass: 'last_row'}, {button: "Ok", callback: action, isDefault: true}, {button: "Cancel", callback: GeneralDialog.cancelCallback} ]
+			]
+		};
+
+		var params = {this_id: "confirm_comment_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
+		var dlg = new GeneralDialog(params);
+		dlg.changePage('layout', null);
+		dlg.center();
+};
+
+var unpublishExhibit = function(exhibit_id, name, email, exhibitLabel) {
+	confirmDlgWithTextArea(['/groups/unpublish_exhibit'], ['group_exhibits'], "Unpublish Exhibit",
+		'This ' + exhibitLabel + ' has been set to "Private".',
+		'This option unpublishes the ' + exhibitLabel + '. A message will be sent to ' + name + " at " + email + " with a short message notifying them of your action.",
+		'Add a comment to this email:', { exhibit_id: exhibit_id });
+};
+
+var rejectAsPeerReviewed = function(exhibit_id, name, email, exhibitLabel) {
+	confirmDlgWithTextArea(['/groups/reject_as_peer_reviewed'], ['group_exhibits'], "Return Exhibit For Revisions",
+		'The ' + exhibitLabel + ' has been sent back for revisions.',
+		'This option returns the ' + exhibitLabel + ' to its original contributor for revision. A message will be sent to ' + name + " at " + email + " with a short message notifying them of your request.",
+		'Add a comment to this email:', { exhibit_id: exhibit_id });
 };
 
 var newClusterDlg = null;

@@ -793,6 +793,11 @@ a.footnote_tip:hover span.tip {
 	width:8.5em;
 }
 
+.confirmdlg_comment {
+	width: 481px;
+	height: 5em;
+}
+
 textarea.groups_textarea {
 	width: 481px;
 	height: 5em;
