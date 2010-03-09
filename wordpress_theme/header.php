@@ -61,9 +61,9 @@ if ( !empty($withcomments) && !is_single() ) {
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
 			<a href="/news/" class="tab_link_current">News</a>
-			<a href="/forum" class="tab_link">Forum</a>
-			<a href="/exhibit_list" class="tab_link">Exhibits</a>
-			<a href="/tags" class="tab_link">Tags</a>
+			<a href="/classroom" class="tab_link_long">Classroom</a>
+			<a href="/communities" class="tab_link_long">Community</a>
+			<a href="/publications" class="tab_link_long">Publications</a>
 			<a href="/search" class="tab_link">Search</a>
 		</div>
 
@@ -77,7 +77,7 @@ if ( !empty($withcomments) && !is_single() ) {
 				</script>
             </div>
             <div id="subnav_links_container">
-            	<a href="/about/what_is.html" class="nav_link">What is NINES?</a>  |  <a href="/about/scholarship/index.html" class="nav_link">Scholarship</a>  |  <a href="/about/software/index.html" class="nav_link">Software</a>  |  <a href="/about/community/index.html" class="nav_link">Community</a> 
+            	<a href="/about/what_is.html" class="nav_link">What is NINES?</a> 
             </div>
            	<div class="clear_both"></div>
 		</div>
