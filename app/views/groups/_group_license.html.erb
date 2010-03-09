@@ -24,5 +24,5 @@
 	<div><%= Exhibit.get_sharing_icon_url(group.license_type) %></div>
 	<span>Content is this group is protected by a <%= "Creative Commons' #{Exhibit.get_sharing_static(group.license_type)} License" %></span>
 <% elsif group.can_edit(user_id) -%>
-	Each exhibit can specify a license. <%= link_to_function("[change license]", "license_dialog({ populateLicenses: '/#{MY_COLLEX_URL}/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" }) %>
+	Each exhibit can specify a license. <%# = link_to_function("[change license]", "license_dialog({ populateLicenses: '/#{MY_COLLEX_URL}/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update' }); return false;", { :class => "nav_link" }) %>
 <% end -%>
