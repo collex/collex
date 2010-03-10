@@ -195,11 +195,13 @@ class GroupsController < ApplicationController
 		exhibit_id = params[:exhibit_id]
 		exhibit = Exhibit.find(exhibit_id)
 		exhibit.is_published = 0
-#		exhibit.save!
+		exhibit.save!
 	
 		user = exhibit.get_apparent_author()
 		editor = get_curr_user()
-		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit Unpublished", "Your exhibit was unpublished by the editor.\nReason:\n#{comment}")
+		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit \"#{exhibit.title}\"Unpublished",
+			"The editors of #{group.name} have unpublished your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
+			 url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
@@ -228,14 +230,17 @@ class GroupsController < ApplicationController
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
 		 exhibit.is_published = 0
-#		 exhibit.save!
+		 exhibit.save!
 
 		 user = exhibit.get_apparent_author()
 		 editor = get_curr_user()
-		 EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit Rejected", "Your exhibit was rejected\nReason:\n#{comment}")
+		 group = Group.find(exhibit.group_id)
+		 EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Revisions Needed to Exhibit \"#{exhibit.title}\"",
+			 "The editors of #{group.name} have returned your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
+			 url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
-		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+		 render :partial => 'group_exhibits_list', :locals => { :group => group, :cluster => cluster, :user_id => get_curr_user_id() }
 	 end
 
 	def edit_membership

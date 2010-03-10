@@ -102,4 +102,16 @@ class LoginMailer < ActionMailer::Base
 		@reply_to = params[:email]
     @headers    = { "return-path" => params[:email] }
 	end
+
+	#
+	# Generic email
+	#
+	def generic(from_name, from_email, to_name, to_email, subject, body, return_url)
+		@subject    = "[#{SITE_NAME}] #{subject}"
+		@body       = "#{body}\n\nThis message was sent to you by #{SITE_NAME}  (#{return_url}).\n"
+		@recipients = "#{to_name} <#{to_email}>"
+		@from       =  "#{from_name} <#{from_email}>"
+		@reply_to = "#{from_name} <#{from_email}>"
+		@headers    = { "return-path" =>  "#{from_name} <#{from_email}>" }
+	end
 end
