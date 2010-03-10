@@ -199,12 +199,13 @@ class GroupsController < ApplicationController
 	
 		user = exhibit.get_apparent_author()
 		editor = get_curr_user()
+		group = Group.find(exhibit.group_id)
 		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit \"#{exhibit.title}\"Unpublished",
 			"The editors of #{group.name} have unpublished your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
 			 url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
-		render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
+		render :partial => 'group_exhibits_list', :locals => { :group => group, :cluster => cluster, :user_id => get_curr_user_id() }
 	end
 
 	def limit_exhibit
