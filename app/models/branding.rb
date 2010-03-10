@@ -42,6 +42,6 @@ class Branding
         "Translation", "Travel",
         "Visual Art", "Citation",
         "Book History", "Family Life", "Folklore",
-        "Humor", "Law", "Reference Works" ]
+        "Humor", "Law", "Reference Works", "Sermon" ]
 	end
 end
