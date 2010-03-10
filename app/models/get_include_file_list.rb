@@ -123,7 +123,7 @@ class GetIncludeFileList
 			when :exhibits
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "featured_exhibit", "exhibit_list", "user_profile", "right_column" ]
 			when :shared
-				local = [ "#{SKIN}/lvl2_skin", "lvl2", "featured_exhibit", "community", "tag", "result_row", "user_profile", "right_column", "groups" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "search", "featured_exhibit", "community", "tag", "result_row", "user_profile", "right_column", "groups" ]
 			when :admin
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "admin", "search", "right_column" ]
 			when :about

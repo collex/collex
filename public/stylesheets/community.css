@@ -91,3 +91,21 @@
 	text-align: center;
 	padding-top:16px;
 }
+
+#classroom_welcome {
+	padding-bottom: 3em;
+	margin-left:130px;
+}
+
+#classroom_welcome .title {
+	font-size: 1.4em;
+	padding-bottom:12px;
+}
+
+#classroom_welcome .label {
+	font-weight: bold;
+}
+
+#classroom_welcome .instructions {
+
+}

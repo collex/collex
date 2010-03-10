@@ -16,8 +16,6 @@
 # ----------------------------------------------------------------------------
 %>
 <%# shared_objects params: hash results -%>
-<div class="shared_header">Groups and Exhibits</div>
-<div class="shared_explanation">Groups and exhibits created by <%= SITE_NAME %> users for scholarship and research.</div>
 <div id="shared_search">
 	<%= render :partial => '/communities/search', :locals => { :user => get_curr_user_id, :results => results } %>
 </div>

@@ -1,0 +1,38 @@
+<%#
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# welcome: params: none -%>
+<div class="thumbnail_item">
+	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "classroom_welcome", :url => "/images/#{SKIN}/classroom_icon.sm.jpg", :height => 100, :show_immediately => true } %></div>
+	<div id="classroom_welcome" class="right_of_thumbnail exhibit_link">
+		<div class="title">Welcome to the <%= SITE_NAME %> Classroom!</div>
+		<div>
+			<span class="label">For Teachers: </span>
+			<span class="instructions">Log into your <%= sign_in_link({ :class => 'nav_link', :text => MY_COLLEX }) %> account or
+<% if get_curr_user_id() -%>
+		<%= link_to_function("click here", "new CreateGroupWizardDlg('#{get_curr_user_id()}', '/groups/verify_group_title', '/groups/create', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[0]}', '#{SITE_NAME}', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', '#{get_curr_user().institution}', '#{get_curr_user().fullname}', '/images/#{SKIN}/new_group_show_membership_example.jpg'); return false;", :class => 'nav_link' ) %>
+<% else -%>
+		<%= sign_in_link({ :class => 'nav_link', :text => 'click here' }) %>
+<% end -%>
+				to start a new classroom group.</span>
+		</div>
+		<div>
+			<span class="label">For Students: </span>
+			<span class="instructions">Browse the sidebar on the right to find your class, or search for it in the blank below. To join a group you will need to <%= sign_up_link({ :class => 'nav_link', :text => 'create an account' }) %>, or <%= sign_in_link({ :class => 'nav_link', :text => 'log in' }) %> if you already have one.</span>
+		</div>
+	</div>
+</div>
