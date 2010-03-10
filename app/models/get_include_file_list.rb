@@ -69,7 +69,7 @@ class GetIncludeFileList
 				local = [ 'get_news_feed', 'search_validation_home' ]
 			when :shared
 				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg', 'cc_license', 'discussions', 'group_page',
-				'create_new_group_dlg', 'edit_fonts_dlg', 'start_discussion_with_exhibit', 'ajax_pagination' ]
+				'create_new_group_dlg', 'edit_fonts_dlg', 'start_discussion_with_exhibit', 'ajax_pagination', 'resource_tree' ]
 			when :exhibits
 				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg', 'cc_license', 'discussions', 'group_page',
 				'create_new_group_dlg', 'edit_fonts_dlg', 'start_discussion_with_exhibit' ]

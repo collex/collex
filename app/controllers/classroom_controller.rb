@@ -13,8 +13,39 @@ class ClassroomController < ApplicationController
 	end
 	public
 
+	def facet_on_group
+		@facetted_group_id = params[:id]
+		redirect_to :action => 'index'
+	end
+
 	def index
-		@forest = FacetCategory.sorted_facet_tree().sorted_children
+		groups = Group.find_all_by_group_type('classroom')
+		@institutions = [ { :label => 'UNIVERSITIES', :children => {} }]
+		@people = [ { :label => 'FACULTY', :children => {} }]
+		@classes = [ { :label => 'CLASSES', :children => {} }]
+		groups.each{|group|
+			university = group.university
+			if @institutions[0][:children][university]
+				@institutions[0][:children][university].push(group)
+			else
+				@institutions[0][:children][university] = [ group ]
+			end
+			people = group.get_all_editors()
+			people.each{|person|
+				name = User.find(person).fullname
+				if @people[0][:children][name]
+					@people[0][:children][name].push(group)
+				else
+					@people[0][:children][name] = [ group ]
+				end
+			}
+			classname = group.name
+			if @classes[0][:children][classname]
+				@classes[0][:children][classname].push(group)
+			else
+				@classes[0][:children][classname] = [ group ]
+			end
+		}
 		@results = { :total_hits => 0, :num_pages => 1, :hits => [ ] }
 	end
 

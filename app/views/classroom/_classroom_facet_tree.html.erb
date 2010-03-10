@@ -18,25 +18,24 @@
 <%# classroom_facet_tree params: forest %>
 <div class="right_column_header">Limit Results to...</div>
 <p>Browse classroom content in <%= SITE_NAME %> using the categories below.</p>
-
 <table class="limit_to">
 	<tr>
 		<th>INSTITUTION</th>
 		<th class="num_objects"># of Groups</th>
 	</tr>
-	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false, :site_count => {} } %>
+	<%= create_facet_tree(@institutions, 'univ', '/classroom/facet_on_group?id=') %>
 </table>
 <table class="limit_to">
 	<tr>
 		<th>PEOPLE</th>
 		<th class="num_objects"># of Groups</th>
 	</tr>
-	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false, :site_count => {} } %>
+	<%= create_facet_tree(@people, 'fac', '/classroom/facet_on_group?id=') %>
 </table>
 <table class="limit_to">
 	<tr>
 		<th>CLASSES</th>
 		<th class="num_objects"># of Groups</th>
 	</tr>
-	<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false, :site_count => {} } %>
+	<%= create_facet_tree(@classes, 'cls', '/classroom/facet_on_group?id=') %>
 </table>

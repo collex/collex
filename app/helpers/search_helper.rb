@@ -623,4 +623,40 @@ module SearchHelper
 		return ""
 	end
 
+	# TODO-PER: These are generic routines for creating facet tree rows. We can probably refactor a lot of the stuff above to use them.
+	def facet_tree_node_row(id, parent_id, indent_level, start_shown, label, num_objects, start_open)
+		html = "<tr id='resource_#{id}' class='resource_node#{" child_of_#{parent_id}" if parent_id != 0}#{' hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
+		html += "<a id='site_opened_#{id}' #{'class="hidden" ' if start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
+		html += "<a id='site_closed_#{id}' #{'class="hidden" ' if !start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>"
+		html += "<a href='#' onclick='new ResourceTree(#{id}, \"toggle\"); return false;' class='nav_link  limit_to_category' >#{label}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
+		return html
+	end
+
+	def facet_tree_selection_row(id, parent_id, indent_level, start_shown, label, num_objects, url)
+		html = "<tr id='resource_#{id}' class='child_of_#{parent_id}#{' hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
+		html += "<a href='#{url}' class='nav_link' onclick='postLink(this.href); return false;'>#{label}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
+		return html
+	end
+
+	def create_facet_tree(tree, id_base, url_base)
+		html = ''
+		tree.each{|node|
+			label = node[:label]
+			children = node[:children]
+			total = 0
+			children.each{|child_label, child_arr|
+				total += child_arr.length
+			}
+			html += facet_tree_node_row("#{id_base}-1", 0, 1, true, label, total, false)
+			i = -2
+			children.each{|child_label, child_arr|
+				html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, child_arr.length, false)
+				child_arr.each{|item|
+					html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{i}", 3, false, item.name, 1, "#{url_base}#{item.id}")
+				}
+				i -= 1
+			}
+		}
+		return html
+	end
 end
