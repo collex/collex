@@ -46,7 +46,7 @@ class Exhibit < ActiveRecord::Base
 		return true if self.group_id == nil && self.is_published == 1
 		if self.group_id != nil
 			group = Group.find(self.group_id)
-			return group.can_view_exhibit(self, user.id)
+			return group.can_view_exhibit(self, user != nil ? user.id : nil)
 		end
 		return false
 	end
