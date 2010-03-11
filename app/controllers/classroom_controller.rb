@@ -20,9 +20,10 @@ class ClassroomController < ApplicationController
 
 	def index
 		groups = Group.find_all_by_group_type('classroom')
-		@institutions = [ { :label => 'UNIVERSITIES', :children => {} }]
-		@people = [ { :label => 'FACULTY', :children => {} }]
-		@classes = [ { :label => 'CLASSES', :children => {} }]
+		@institutions = [ { :label => 'Universities', :children => {} }]
+		@people = [ { :label => 'Faculty', :children => {} }]
+		@course_title = [ { :label => 'Course Title', :children => {} }]
+		@course_number = [ { :label => 'Course Number', :children => {} }]
 		groups.each{|group|
 			university = group.university
 			if @institutions[0][:children][university]
@@ -39,11 +40,17 @@ class ClassroomController < ApplicationController
 					@people[0][:children][name] = [ group ]
 				end
 			}
-			classname = group.name
-			if @classes[0][:children][classname]
-				@classes[0][:children][classname].push(group)
+			classname = group.course_name
+			if @course_title[0][:children][classname]
+				@course_title[0][:children][classname].push(group)
 			else
-				@classes[0][:children][classname] = [ group ]
+				@course_title[0][:children][classname] = [ group ]
+			end
+			classnumber = group.course_mnemonic
+			if @course_number[0][:children][classnumber]
+				@course_number[0][:children][classnumber].push(group)
+			else
+				@course_number[0][:children][classnumber] = [ group ]
 			end
 		}
 		@results = { :total_hits => 0, :num_pages => 1, :hits => [ ] }
