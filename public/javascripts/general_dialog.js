@@ -738,8 +738,8 @@ var ProgressSpinnerDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ {text: ' ', klass: 'lg_progress_spinner'} ],
-					[ {rowClass: 'progress_label_row'}, {text: message, klass: 'lg_progress_label'} ],
+					[ {text: ' ', klass: 'transparent_progress_spinner'} ],
+					[ {rowClass: 'progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ],
 				]
 			};
 
