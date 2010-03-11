@@ -17,7 +17,7 @@
 %>
 <%# welcome: params: none -%>
 <div class="thumbnail_item">
-	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "classroom_welcome", :url => "/images/#{SKIN}/classroom_icon.sm.jpg", :height => 100, :show_immediately => true } %></div>
+	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "classroom_welcome", :url => "/images/#{SKIN}/classroom_icon.sm.jpg", :height => 200, :show_immediately => true } %></div>
 	<div id="classroom_welcome" class="right_of_thumbnail exhibit_link">
 		<div class="title">Welcome to the <%= SITE_NAME %> Classroom!</div>
 		<div>
@@ -36,3 +36,4 @@
 		</div>
 	</div>
 </div>
+<div class="classroom_welcome_spacer"></div>

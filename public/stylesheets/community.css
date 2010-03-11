@@ -94,7 +94,11 @@
 
 #classroom_welcome {
 	padding-bottom: 3em;
-	margin-left:130px;
+	margin-left:230px;
+}
+
+#classroom_welcome div {
+	padding-bottom: 8px;
 }
 
 #classroom_welcome .title {
@@ -108,4 +112,9 @@
 
 #classroom_welcome .instructions {
 
+}
+
+.classroom_welcome_spacer {
+	clear: both;
+	padding-bottom: 20px;
 }
