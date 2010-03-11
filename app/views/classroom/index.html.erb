@@ -17,8 +17,7 @@
 <% current_page "Classroom" -%>
 <div class="inner_content_container">
 	<div id="shared_objects" class="shared_left_column">
-		<%= render :partial => '/classroom/welcome' %>
-		<%= render :partial => '/communities/shared_objects', :locals => { :results => @results } %>
+		<%= render :partial => '/classroom/shared_objects', :locals => { :results => @results } %>
 	</div>
 	<div class="right_column">
 		<%= render :partial => 'classroom_facet_tree', :locals => { :forest => @forest } %>

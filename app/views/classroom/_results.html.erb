@@ -1,0 +1,30 @@
+<%#
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# results params: hash results -%>
+<hr class="search_results_hr" />
+<div class="shared_results_heading">
+	<div class="pagination"><%= draw_ajax_pagination(session[:community_page_num]+1, results[:num_pages], '/classroom/page', 'shared_objects' ) %></div>
+	<span class="shared_results_label">Show:</span>
+	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Clusters', :value => 'Clusters'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'Discussions', :value => 'Discussions'}, { :name => 'All', :value => 'All'} ], session[:classroom_view_by], "ajaxWithProgressSpinner([ '/classroom/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: sel })") %>
+	<span class="shared_results_label">Sort by:</span>
+	<%= make_select_control("sort_by", [ { :name => 'Relevancy', :value => 'Relevancy'}, { :name => 'Title', :value => 'Title'}, { :name => 'Most Recent', :value => 'Most Recent'}], session[:classroom_sort_by], "ajaxWithProgressSpinner([ '/classroom/sort_by' ], [ 'shared_objects' ], { waitMessage: 'Sorting...' }, { sort: sel })") %>
+</div>
+<hr class="search_results_hr" />
+<div id="shared_results_objects">
+	<%= render :partial => '/communities/objects', :locals => { :results => results } %>
+</div>

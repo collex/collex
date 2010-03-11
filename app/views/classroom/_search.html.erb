@@ -1,0 +1,30 @@
+<%#
+# ------------------------------------------------------------------------
+#     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+# 
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+# 
+#         http://www.apache.org/licenses/LICENSE-2.0
+# 
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# search params: hash results -%>
+<%= render :partial => '/common/input_and_submit_button', :locals => { :input_id => "search", :input_class => "shared_search_box", :submit_text => "Search Classroom", :submit_id => 'search_exhibits', :submit_url => "/classroom/search", :update_el => 'shared_objects', :wait_msg => 'Searching...' } %>
+or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
+<% if session[:classroom_group_facet] -%>
+<div class="shared_search_results">Found <%= results[:total_hits] %> items in group "<%= Group.find(session[:classroom_group_facet]).name %>".
+	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'shared_objects' ], { waitMessage: 'Removing Facet...' }, { })" %>
+</div>
+<% end -%>
+<% if session[:classroom_search_term] -%>
+<div class="shared_search_results">Found <%= results[:total_hits] %> items searching for "<%= session[:classroom_search_term] %>".
+	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/classroom/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
+</div>
+<% end -%>

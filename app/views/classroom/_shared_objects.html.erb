@@ -15,11 +15,11 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# search params: hash results -%>
-<%= render :partial => '/common/input_and_submit_button', :locals => { :input_id => "search", :input_class => "shared_search_box", :submit_text => "Search Exhibits", :submit_id => 'search_exhibits', :submit_url => "/communities/search", :update_el => 'shared_objects', :wait_msg => 'Searching...' } %>
-or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
-<% if session[:community_search_term] -%>
-<div class="shared_search_results">Found <%= results[:total_hits] %> items searching for "<%= session[:community_search_term] %>".
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/communities/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
+<%# shared_objects params: hash results -%>
+<%= render :partial => '/classroom/welcome' %>
+<div id="shared_search">
+	<%= render :partial => '/classroom/search', :locals => { :user => get_curr_user_id, :results => results } %>
 </div>
-<% end -%>
+<div id="shared_results">
+	<%= render :partial => '/classroom/results', :locals => { :user => get_curr_user_id, :results => results } %>
+</div>
