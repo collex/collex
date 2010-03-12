@@ -149,7 +149,7 @@
 <% if group.show_exhibits != 'show_clusters_only' -%>
 <% if !group.can_view_exhibits(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its <%= group.get_exhibits_label %>s.</div>
-<% elsif (!exhibits || exhibits.length == 0) && pending_exhibits.length == 0 -%>
+<% elsif (!exhibits || exhibits.length == 0) && pending_exhibits.length == 0 && clusters.length == 0 -%>
 	<div class="empty_list_text" >There have been no <%= group.get_exhibits_label %>s published in this <%= cluster == nil ? "group" : "cluster"  %>.</div>
 <% end # if group.can_view_exhibits(user_id) -%>
 <% end # if group.show_exhibits != 'show_clusters_only' -%>
