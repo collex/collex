@@ -26,45 +26,53 @@ class ClassroomController < ApplicationController
 		@course_title = [ { :label => 'Course Title', :children => {} }]
 		@course_number = [ { :label => 'Course Number', :children => {} }]
 		groups.each{|group|
+			total = Exhibit.count(:all, :conditions => "group_id = #{group.id}")
+			total += Cluster.count(:all, :conditions => "group_id = #{group.id}")
+			total += DiscussionThread.count(:all, :conditions => "group_id = #{group.id}")
+			total += 1	# for the group itself
+			item = { :id => group.id, :name => group.name, :count => total }
 			university = group.university
 			if @institutions[0][:children][university]
-				@institutions[0][:children][university].push(group)
+				@institutions[0][:children][university].push(item)
 			else
-				@institutions[0][:children][university] = [ group ]
+				@institutions[0][:children][university] = [ item ]
 			end
 			people = group.get_all_editors()
 			people.each{|person|
+				item = { :id => group.id, :name => group.name, :count => total }
 				name = User.find(person).fullname
 				if @people[0][:children][name]
-					@people[0][:children][name].push(group)
+					@people[0][:children][name].push(item)
 				else
-					@people[0][:children][name] = [ group ]
+					@people[0][:children][name] = [ item ]
 				end
 			}
 			classname = group.course_name
+			item = { :id => group.id, :name => group.name, :count => total }
 			if @course_title[0][:children][classname]
-				@course_title[0][:children][classname].push(group)
+				@course_title[0][:children][classname].push(item)
 			else
-				@course_title[0][:children][classname] = [ group ]
+				@course_title[0][:children][classname] = [ item ]
 			end
+			item = { :id => group.id, :name => group.name, :count => total }
 			classnumber = group.course_mnemonic
 			if @course_number[0][:children][classnumber]
-				@course_number[0][:children][classnumber].push(group)
+				@course_number[0][:children][classnumber].push(item)
 			else
-				@course_number[0][:children][classnumber] = [ group ]
+				@course_number[0][:children][classnumber] = [ item ]
 			end
 		}
 		# if there is only one item in the node, then don't have a node, just use the item as an end point
 		for obj in @course_title[0][:children]
 			if obj[1].length == 1
 				@course_title[0][:children][obj[0]] = obj[1][0]
-				obj[1][0].name = obj[0]
+				obj[1][0][:name] = obj[0]
 			end
 		end
 		for obj in @course_number[0][:children]
 			if obj[1].length == 1
 				@course_number[0][:children][obj[0]] = obj[1][0]
-				obj[1][0].name = obj[0]
+				obj[1][0][:name] = obj[0]
 			end
 		end
 		@results = get_results()

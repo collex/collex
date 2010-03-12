@@ -640,6 +640,22 @@ module SearchHelper
 		return html
 	end
 
+	def count_children(arr)
+		total = 0
+		if arr.kind_of?(Array)
+			arr.each{|ch|
+				if ch.kind_of?(Array)
+					total += count_children(ch)
+				else
+					total += ch[:count]
+				end
+			}
+		else
+			total = arr[:count]
+		end
+		return total
+	end
+
 	def create_facet_tree(tree, id_base, url_base, update_div)
 		html = ''
 		tree.each{|node|
@@ -647,24 +663,21 @@ module SearchHelper
 			children = node[:children]
 			total = 0
 			children.each{|child_label, child_arr|
-				if child_arr.kind_of?(Array)
-					total += child_arr.length
-				else
-					total += 1
-				end
+				total += count_children(child_arr)
 			}
+
 			html += facet_tree_node_row("#{id_base}-1", 0, 1, true, label, total, false)
 			i = -2
 			children.each{|child_label, child_arr|
 				if child_arr.kind_of?(Array)
-					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, child_arr.length, false)
+					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, count_children(child_arr), false)
 					child_arr.each{|item|
-						html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{i}", 3, false, item.name, 1, "#{url_base}#{item.id}", update_div)
+						html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{i}", 3, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div)
 					}
 					i -= 1
 				else
 					item = child_arr
-					html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{-1}", 2, false, item.name, 1, "#{url_base}#{item.id}", update_div)
+					html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{-1}", 2, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div)
 				end
 			}
 		}
