@@ -58,11 +58,13 @@ class ClassroomController < ApplicationController
 		for obj in @course_title[0][:children]
 			if obj[1].length == 1
 				@course_title[0][:children][obj[0]] = obj[1][0]
+				obj[1][0].name = obj[0]
 			end
 		end
 		for obj in @course_number[0][:children]
 			if obj[1].length == 1
 				@course_number[0][:children][obj[0]] = obj[1][0]
+				obj[1][0].name = obj[0]
 			end
 		end
 		@results = get_results()
