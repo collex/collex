@@ -20,17 +20,11 @@
 <p>Browse classroom content in <%= SITE_NAME %> using the categories below.</p>
 <table class="limit_to">
 	<tr>
-		<th>Browse by Group</th>
-		<th class="num_objects"># of Groups</th>
+		<th>Category</th>
+		<th class="num_objects"># of Objects</th>
 	</tr>
 	<%= create_facet_tree(@institutions, 'univ', '/classroom/facet_on_group?id=', 'shared_objects') %>
 	<%= create_facet_tree(@people, 'fac', '/classroom/facet_on_group?id=', 'shared_objects') %>
-</table>
-<table class="limit_to">
-	<tr>
-		<th>Browse by Exhibit</th>
-		<th class="num_objects"># of Exhibits</th>
-	</tr>
 	<%= create_facet_tree(@course_title, 'clstitle', '/classroom/facet_on_group?id=', 'shared_objects') %>
 	<%= create_facet_tree(@course_number, 'clsnumber', '/classroom/facet_on_group?id=', 'shared_objects') %>
 </table>

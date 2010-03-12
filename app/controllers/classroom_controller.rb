@@ -54,6 +54,17 @@ class ClassroomController < ApplicationController
 				@course_number[0][:children][classnumber] = [ group ]
 			end
 		}
+		# if there is only one item in the node, then don't have a node, just use the item as an end point
+		for obj in @course_title[0][:children]
+			if obj[1].length == 1
+				@course_title[0][:children][obj[0]] = obj[1][0]
+			end
+		end
+		for obj in @course_number[0][:children]
+			if obj[1].length == 1
+				@course_number[0][:children][obj[0]] = obj[1][0]
+			end
+		end
 		@results = get_results()
 	end
 

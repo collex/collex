@@ -647,16 +647,25 @@ module SearchHelper
 			children = node[:children]
 			total = 0
 			children.each{|child_label, child_arr|
-				total += child_arr.length
+				if child_arr.kind_of?(Array)
+					total += child_arr.length
+				else
+					total += 1
+				end
 			}
 			html += facet_tree_node_row("#{id_base}-1", 0, 1, true, label, total, false)
 			i = -2
 			children.each{|child_label, child_arr|
-				html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, child_arr.length, false)
-				child_arr.each{|item|
-					html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{i}", 3, false, item.name, 1, "#{url_base}#{item.id}", update_div)
-				}
-				i -= 1
+				if child_arr.kind_of?(Array)
+					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, child_arr.length, false)
+					child_arr.each{|item|
+						html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{i}", 3, false, item.name, 1, "#{url_base}#{item.id}", update_div)
+					}
+					i -= 1
+				else
+					item = child_arr
+					html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{-1}", 3, false, item.name, 1, "#{url_base}#{item.id}", update_div)
+				end
 			}
 		}
 		return html
