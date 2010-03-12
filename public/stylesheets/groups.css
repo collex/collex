@@ -59,6 +59,17 @@
 	margin-bottom: .2em;
 }
 
+.cluster_details_center {
+	padding-left:174px;
+	padding-right:16px;
+}
+
+.cluster_details_center h1 {
+	font-size: 1.6em;
+	margin-top: 0px;
+	margin-bottom: .2em;
+}
+
 .group_details_right {
 	float: right;
 	padding-left:1em;
