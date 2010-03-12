@@ -15,66 +15,17 @@ class ClassroomController < ApplicationController
 	public
 
 	def facet_on_group
-		session[:classroom_group_facet] = params[:id]
-		render :partial => 'shared_objects', :locals => { :results => get_results() }
+		if params[:id] == nil || params[:id] > "0"
+			session[:classroom_group_facet] = params[:id]
+		else
+			session[:classroom_group_facet] = nil
+		end
+		make_facet_tree()
+		render :partial => 'content', :locals => { :results => get_results(), :institutions => @institutions, :people => @people, :course_title => @course_title, :course_number => @course_number }
 	end
 
 	def index
-		groups = Group.find_all_by_group_type('classroom')
-		@institutions = [ { :label => 'Universities', :children => {} }]
-		@people = [ { :label => 'Faculty', :children => {} }]
-		@course_title = [ { :label => 'Course Title', :children => {} }]
-		@course_number = [ { :label => 'Course Number', :children => {} }]
-		groups.each{|group|
-			total = Exhibit.count(:all, :conditions => "group_id = #{group.id}")
-			total += Cluster.count(:all, :conditions => "group_id = #{group.id}")
-			total += DiscussionThread.count(:all, :conditions => "group_id = #{group.id}")
-			total += 1	# for the group itself
-			item = { :id => group.id, :name => group.name, :count => total }
-			university = group.university
-			if @institutions[0][:children][university]
-				@institutions[0][:children][university].push(item)
-			else
-				@institutions[0][:children][university] = [ item ]
-			end
-			people = group.get_all_editors()
-			people.each{|person|
-				item = { :id => group.id, :name => group.name, :count => total }
-				name = User.find(person).fullname
-				if @people[0][:children][name]
-					@people[0][:children][name].push(item)
-				else
-					@people[0][:children][name] = [ item ]
-				end
-			}
-			classname = group.course_name
-			item = { :id => group.id, :name => group.name, :count => total }
-			if @course_title[0][:children][classname]
-				@course_title[0][:children][classname].push(item)
-			else
-				@course_title[0][:children][classname] = [ item ]
-			end
-			item = { :id => group.id, :name => group.name, :count => total }
-			classnumber = group.course_mnemonic
-			if @course_number[0][:children][classnumber]
-				@course_number[0][:children][classnumber].push(item)
-			else
-				@course_number[0][:children][classnumber] = [ item ]
-			end
-		}
-		# if there is only one item in the node, then don't have a node, just use the item as an end point
-		for obj in @course_title[0][:children]
-			if obj[1].length == 1
-				@course_title[0][:children][obj[0]] = obj[1][0]
-				obj[1][0][:name] = obj[0]
-			end
-		end
-		for obj in @course_number[0][:children]
-			if obj[1].length == 1
-				@course_number[0][:children][obj[0]] = obj[1][0]
-				obj[1][0][:name] = obj[0]
-			end
-		end
+		make_facet_tree()
 		@results = get_results()
 	end
 
@@ -143,5 +94,65 @@ class ClassroomController < ApplicationController
 		results = @searcher.find_objects(options)
 		# returns: { total_hits => int, num_pages => int, hits => [ ActiveRecord: Exhibit,Cluster,Group ] }
 		return results
+	end
+
+	def make_facet_tree
+		groups = Group.find_all_by_group_type('classroom')
+		@institutions = [ { :label => 'Universities', :children => {} }]
+		@people = [ { :label => 'Faculty', :children => {} }]
+		@course_title = [ { :label => 'Course Title', :children => {} }]
+		@course_number = [ { :label => 'Course Number', :children => {} }]
+		groups.each{|group|
+			total = Exhibit.count(:all, :conditions => "group_id = #{group.id}")
+			total += Cluster.count(:all, :conditions => "group_id = #{group.id}")
+			total += DiscussionThread.count(:all, :conditions => "group_id = #{group.id}")
+			total += 1	# for the group itself
+			selected = session[:classroom_group_facet] == "#{group.id}"
+			item_id = selected ? 0 : group.id
+			item = { :id => item_id, :name => group.name, :count => total, :selected => selected }
+			university = group.university
+			if @institutions[0][:children][university]
+				@institutions[0][:children][university].push(item)
+			else
+				@institutions[0][:children][university] = [ item ]
+			end
+			people = group.get_all_editors()
+			people.each{|person|
+				item = { :id => item_id, :name => group.name, :count => total, :selected => selected }
+				name = User.find(person).fullname
+				if @people[0][:children][name]
+					@people[0][:children][name].push(item)
+				else
+					@people[0][:children][name] = [ item ]
+				end
+			}
+			classname = group.course_name
+			item = { :id => item_id, :name => group.name, :count => total, :selected => selected }
+			if @course_title[0][:children][classname]
+				@course_title[0][:children][classname].push(item)
+			else
+				@course_title[0][:children][classname] = [ item ]
+			end
+			item = { :id => item_id, :name => group.name, :count => total, :selected => selected }
+			classnumber = group.course_mnemonic
+			if @course_number[0][:children][classnumber]
+				@course_number[0][:children][classnumber].push(item)
+			else
+				@course_number[0][:children][classnumber] = [ item ]
+			end
+		}
+		# if there is only one item in the node, then don't have a node, just use the item as an end point
+		for obj in @course_title[0][:children]
+			if obj[1].length == 1
+				@course_title[0][:children][obj[0]] = obj[1][0]
+				obj[1][0][:name] = obj[0]
+			end
+		end
+		for obj in @course_number[0][:children]
+			if obj[1].length == 1
+				@course_number[0][:children][obj[0]] = obj[1][0]
+				obj[1][0][:name] = obj[0]
+			end
+		end
 	end
 end

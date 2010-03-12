@@ -633,10 +633,15 @@ module SearchHelper
 		return html
 	end
 
-	def facet_tree_selection_row(id, parent_id, indent_level, start_shown, label, num_objects, url, update_div)
-		html = "<tr id='resource_#{id}' class='child_of_#{parent_id}#{' hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
-		# use postLink(this.href) to POST instead of doing an ajax update.
-		html += "<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Adding Facet...' }, { }); return false;\">#{label}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
+	def facet_tree_selection_row(id, parent_id, indent_level, start_shown, label, num_objects, url, update_div, selected)
+		html = "<tr id='resource_#{id}' class='child_of_#{parent_id}#{' hidden' if !start_shown}#{' limit_to_selected' if selected}'><td class='limit_to_lvl#{indent_level}'>"
+		# If you want to post, use postLink(this.href) to POST instead of doing an ajax update.
+		if selected
+			html += "#{label}&nbsp;<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Removing Facet...' }, { }); return false;\">[X]</a>"
+		else
+			html += "<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Adding Facet...' }, { }); return false;\">#{label}</a>"
+		end
+		html += "</td><td class='num_objects'>#{num_objects}</td></tr>\n"
 		return html
 	end
 
@@ -672,12 +677,12 @@ module SearchHelper
 				if child_arr.kind_of?(Array)
 					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, count_children(child_arr), false)
 					child_arr.each{|item|
-						html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{i}", 3, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div)
+						html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{i}", 3, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
 					}
 					i -= 1
 				else
 					item = child_arr
-					html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{-1}", 2, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div)
+					html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{-1}", 2, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
 				end
 			}
 		}

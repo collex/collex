@@ -15,12 +15,6 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% current_page "Classroom" -%>
-<div class="inner_content_container">
-	<div id="shared_objects" class="shared_left_column">
-		<%= render :partial => '/classroom/shared_objects', :locals => { :results => @results } %>
-	</div>
-	<div class="right_column">
-		<%= render :partial => 'classroom_facet_tree', :locals => { :forest => @forest } %>
-	</div>
-	<div class="clear_both"></div>
+<div id="facet_redraw" class="inner_content_container">
+	<%= render :partial => 'content', :locals => { :results => @results, :institutions => @institutions, :people => @people, :course_title => @course_title, :course_number => @course_number } %>
 </div>

@@ -20,7 +20,7 @@
 or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 <% if session[:classroom_group_facet] -%>
 <div class="shared_search_results">Found <%= results[:total_hits] %> items in group "<%= Group.find(session[:classroom_group_facet]).name %>".
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'shared_objects' ], { waitMessage: 'Removing Facet...' }, { })" %>
+	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
 </div>
 <% end -%>
 <% if session[:classroom_search_term] -%>

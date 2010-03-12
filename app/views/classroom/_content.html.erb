@@ -15,16 +15,11 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# classroom_facet_tree params: institutions, people, course_title, course_number } %>
-<div class="right_column_header">Limit Results to...</div>
-<p>Browse classroom content in <%= SITE_NAME %> using the categories below.</p>
-<table class="limit_to">
-	<tr>
-		<th>Category</th>
-		<th class="num_objects"># of Objects</th>
-	</tr>
-	<%= create_facet_tree(institutions, 'univ', '/classroom/facet_on_group?id=', 'facet_redraw') %>
-	<%= create_facet_tree(people, 'fac', '/classroom/facet_on_group?id=', 'facet_redraw') %>
-	<%= create_facet_tree(course_title, 'clstitle', '/classroom/facet_on_group?id=', 'facet_redraw') %>
-	<%= create_facet_tree(course_number, 'clsnumber', '/classroom/facet_on_group?id=', 'facet_redraw') %>
-</table>
+<%# _content params: results, institutions, people, course_title, course_number %>
+<div id="shared_objects" class="shared_left_column">
+	<%= render :partial => '/classroom/shared_objects', :locals => { :results => results } %>
+</div>
+<div class="right_column">
+	<%= render :partial => 'classroom_facet_tree', :locals => { :institutions => institutions, :people => people, :course_title => course_title, :course_number => course_number } %>
+</div>
+<div class="clear_both"></div>
