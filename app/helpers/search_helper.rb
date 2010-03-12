@@ -664,7 +664,7 @@ module SearchHelper
 					i -= 1
 				else
 					item = child_arr
-					html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{-1}", 3, false, item.name, 1, "#{url_base}#{item.id}", update_div)
+					html += facet_tree_selection_row("#{id_base}#{item.id}", "#{id_base}#{-1}", 2, false, item.name, 1, "#{url_base}#{item.id}", update_div)
 				end
 			}
 		}
