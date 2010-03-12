@@ -992,6 +992,7 @@ var singleInputDlg = function(params, input) {
 	var pleaseWaitMsg = params.pleaseWaitMsg ? params.pleaseWaitMsg : "Please wait...";
 	var dlg = null;
 	var verifyUrl = params.verify;
+	var verifyFxn = params.verifyFxn;
 
 	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
 	this.class_type = 'singleInputDlg';	// for debugging
@@ -1017,6 +1018,13 @@ var singleInputDlg = function(params, input) {
 		// Recursively run through the list of actions we were passed.
 		var data = params2.dlg.getAllData();
 		extraParams[id] = data[id];
+		if (verifyFxn) {
+			var errMsg = verifyFxn(extraParams);
+			if (errMsg) {
+				params2.dlg.setFlash(errMsg, true);
+				return;
+			}
+		}
 		if (verifyUrl)
 			recurseUpdateWithAjax([ verifyUrl ], [ 'bit_bucket' ], onVerified, onNotVerified, extraParams);
 		else

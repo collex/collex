@@ -52,6 +52,21 @@ var CreateGroupWizardDlg = Class.create({
 					dlg.setFlash("Please enter a name for this group before continuing.", true);
 					return false;
 				}
+				if (data['group[group_type]'] === 'classroom') {
+					// There are required fields for classroom groups
+					if (data['group[university]'].strip().length === 0) {
+						dlg.setFlash("Please enter a university for this classroom group before continuing.", true);
+						return false;
+					}
+					if (data['group[course_name]'].strip().length === 0) {
+						dlg.setFlash("Please enter a course name for this classroom group before continuing.", true);
+						return false;
+					}
+					if (data['group[course_mnemonic]'].strip().length === 0) {
+						dlg.setFlash("Please enter a course mnemonic for this classroom group before continuing.", true);
+						return false;
+					}
+				}
 				data['group[owner]'] = owner_id;
 				dlg.setFlash("Verifying title. Please wait...", false);
 				new Ajax.Request(url_verify_group, { method: 'get', parameters: { name: data['group[name]'].strip() },

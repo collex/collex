@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global Class, Ajax */
-/*global GeneralDialog, TextAreaInputDlg, SelectInputDlg */
+/*global GeneralDialog, SelectInputDlg */
 /*global window */
 /*global ForumReplyDlg */
 /*extern EditGroupThumbnailDlg, EditMembershipDlg, GroupNewPost, InviteMembersDlg, editDescription, editGroupThumbnailDlg, editLicense, editPermissions, editType, stopEditGroupThumbnailUpload */
@@ -396,12 +396,20 @@ var editType = function(id, value, groupTypeOptions) {
 };
 
 var editGroupTextField = function(id, value, name, field) {
+	var verifyFxn = function(data) {
+		var val = data['group[' + field + ']'];
+		if (val.length === 0)
+			return "This entry cannot be blank. Please enter a value.";
+		return null;
+	};
+
 	new TextInputDlg({
 		title: 'Edit ' + name,
 		prompt: name,
 		id: 'group[' + field + ']',
 		okStr: 'Save',
 		value: value,
+		verifyFxn: verifyFxn,
 		extraParams: { id: id },
 		actions: [ '/groups/update' ],
 		target_els: [ 'group_details' ] });

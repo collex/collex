@@ -512,6 +512,10 @@ class GroupsController < ApplicationController
 			if params[:group][:group_type] == 'peer-reviewed'
 				params[:group][:group_type] = 'community'
 				peer_review_request()
+			elsif params[:group][:group_type] == 'classroom'
+				@group.university = @group.name if (@group.university.length == 0)
+				@group.course_name = @group.name if (@group.course_name.length == 0)
+				@group.course_mnemonic = @group.name if (@group.course_mnemonic.length == 0)
 			end
 			@group.update_attributes(params[:group])
 		end
