@@ -19,7 +19,7 @@
 <% text ||= '' -%>
 <div class="thumbnail_item">
 	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_cluster_image_url(group, cluster), :show_immediately => true } %></div>
-	<div class="right_of_thumbnail exhibit_link"><%= link_to cluster.name, cluster.get_visible_url(), :class => 'nav_link' %><br />
+	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label">Cluster: </span><%= link_to cluster.name, cluster.get_visible_url(), :class => 'nav_link' %><br />
 		<%= pluralize(Exhibit.find_all_by_cluster_id(cluster.id).length, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(cluster.id).length, "Discussion") %>
 		<% if text.length > 0 %>
 			<div class="snippet"><%= text %></div>

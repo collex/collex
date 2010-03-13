@@ -118,3 +118,7 @@
 	clear: both;
 	padding-bottom: 20px;
 }
+
+.obj_summary_label {
+	font-style: italic;
+}

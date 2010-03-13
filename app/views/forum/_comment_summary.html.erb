@@ -18,9 +18,13 @@
 <%# comment_summary params: ActiveRecord comment, string text (optional) -%>
 <% text ||= '' -%>
 <% thread = DiscussionThread.find(comment.discussion_thread_id) -%>
+<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
+<% if comment_info[:thumbnail] == nil -%>
+		<% comment_info[:thumbnail] = '/images/group_forum_default_thumb.jpg' %>
+<% end -%>
 <div class="thumbnail_item">
-	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "comment_#{comment.id}", :url => "/images/nines/sm_site_image.gif", :show_immediately => true } %></div>
-	<div class="right_of_thumbnail exhibit_link"><%= link_to thread.title, "/forum/view_thread?thread=#{thread.id}", :class => 'nav_link' %><br />
+	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "comment_#{comment.id}", :url => comment_info[:thumbnail], :show_immediately => true } %></div>
+	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label">Discussion: </span><%= link_to thread.get_title(), "/forum/view_thread?thread=#{thread.id}", :class => 'nav_link' %><br />
 		<% if text.length > 0 %>
 			<div class="snippet"><%= text %></div>
 		<% end -%>
