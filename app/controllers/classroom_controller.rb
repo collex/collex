@@ -86,6 +86,9 @@ class ClassroomController < ApplicationController
 			options[:facet][:exhibit] = true
 			options[:facet][:comment] = true
 		end
+		if session[:classroom_group_facet] != nil && session[:classroom_group_facet].to_i > 0
+			options[:facet][:group_id] = session[:classroom_group_facet]
+		end
 		case session[:classroom_sort_by]
 		when 'Relevancy' then options[:sort_by] = :relevancy
 		when 'Title' then options[:sort_by] = :title_sort

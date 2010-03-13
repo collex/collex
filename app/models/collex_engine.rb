@@ -110,6 +110,7 @@ class CollexEngine
 		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title_sort|most_recent
 		page = options[:page]	# int
 		page_size = options[:page_size]	#int
+		facet_group_id = options[:facet][:group_id]	# int
 
 		query = "federation:#{facet_federation} AND section:#{facet_section}"
 		if search_terms != nil
@@ -136,6 +137,9 @@ class CollexEngine
 			group_admins += " OR visible_to_group_admin:#{ar.id}"
 		}
 		query += " AND (visible_to_everyone:true #{group_members} #{group_admins})"
+		if facet_group_id
+			query += " AND group_id:#{facet_group_id}"
+		end
 
 		puts "QUERY: #{query}"
 		case sort_by
@@ -158,7 +162,7 @@ class CollexEngine
 		results[:total_hits] = response.total_hits
 		results[:hits] = response.hits
 		# add the highlighting to the object
-		if response.data['highlighting']
+		if response.data['highlighting'] && search_terms != nil
 			highlight = response.data['highlighting']
 			results[:hits].each  {|hit|
 				this_highlight = highlight[hit['key']]

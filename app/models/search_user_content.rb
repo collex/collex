@@ -77,18 +77,22 @@ class SearchUserContent < ActiveRecord::Base
 		return { :total_hits => total_hits, :num_pages => num_pages, :hits => hits }
 	end
 
-	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, visibility_id)
+	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, group_id)
 		doc = { :key => "#{object_type}_#{id}", :object_type => object_type, :object_id => id, :federation => federation,
 			:section => section, :title => title, :title_sort => title, :text => text, :last_modified => last_modified
 		}
+		if group_id != nil && group_id.to_i > 0
+			doc[:group_id] = group_id
+		end
+		
 		if visibility_type == 'everyone'
 			doc[:visible_to_everyone] = true
 		else
 			doc[:visible_to_everyone] = false
 			if visibility_type == 'member'
-				doc[:visible_to_group_member] = visibility_id
+				doc[:visible_to_group_member] = group_id
 			else
-				doc[:visible_to_group_admin] = visibility_id
+				doc[:visible_to_group_admin] = group_id
 			end
 		end
 		@solr = CollexEngine.new([ 'UserContent' ]) if @solr == nil
