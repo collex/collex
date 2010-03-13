@@ -211,6 +211,7 @@ class ForumController < ApplicationController
       # There are two records that must be updated to create the new thread. If the second record
       # isn't created, then we need to back off the first one.
       topic_id = params[:topic_id]
+	  topic_id = DiscussionTopic.first().id if params[:topic_id] == nil || params[:topic_id].to_i <= 0
 	    license = params[:license_list]
 			rec = { :title => params[:title], :license => license, :discussion_topic_id => topic_id }
 			rec[:group_id] = params[:group_id] if params[:group_id]
