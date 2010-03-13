@@ -172,9 +172,15 @@ module DiscussionThreadsHelper
 				when 'full' then "An open discussion sponsored by #{group_link}. All #{SITE_NAME} users can read and comment."
 				else ''
 			end
-			readonly = user_can_reply(comment) == false
-			if readonly
-				group_comment += "<br />This thread is read only"
+			if get_curr_user()
+				readonly = user_can_reply(comment) == false
+				if readonly
+					group_comment += "<br />This thread is read only."
+				end
+			else
+				if group.forum_permissions == 'full'
+					group_comment += "<br />#{sign_in_link({ :class => 'nav_link', :text => 'Log in' })} or #{sign_up_link({ :class => 'nav_link', :text => 'create an account' })} to participate."
+				end
 			end
 		end
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
