@@ -22,7 +22,7 @@
 <% elsif result[:obj].kind_of? Group -%>
 <%= render :partial => '/groups/group_summary', :locals => { :group => result[:obj], :text => result[:text] } %>
 <% elsif result[:obj].kind_of? Cluster -%>
-<%= render :partial => '/clusters/cluster_summary', :locals => { :group => Group.find(result[:obj].group_id), :cluster => result[:obj], :text => result[:text] } %>
+<%= render :partial => '/clusters/cluster_summary', :locals => { :group => Group.find(result[:obj].group_id), :cluster => result[:obj], :text => result[:text], :show_label => true } %>
 <% elsif result[:obj].kind_of? DiscussionComment -%>
 <%= render :partial => '/forum/comment_summary', :locals => { :comment => result[:obj], :text => result[:text] } %>
 <% else -%>

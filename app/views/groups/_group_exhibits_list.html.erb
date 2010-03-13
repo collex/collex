@@ -81,7 +81,7 @@
 		</div>
 <% end # if clusters.length > 0 -%>
 <% for clus in clusters -%>
-	<%= render :partial => '/clusters/cluster_summary', :locals => { :group => group, :cluster => clus } %>
+	<%= render :partial => '/clusters/cluster_summary', :locals => { :group => group, :cluster => clus, :show_label => false } %>
 <% end # for clus in clusters -%>
 <% end # if cluster == nil -%>
 <% if group.show_exhibits != 'show_clusters_only' -%>
@@ -96,13 +96,8 @@
 <% end # if exhibits.length > 0 -%>
 <% author_options_label = group.can_edit(user_id) ? 'Author options:' : '' -%>
 <% for exhibit in exhibits -%>
-	<div class="thumbnail_item<%= ' group_only' if exhibit.group_only || exhibit.editors_only %>">
-<% if exhibit.group_only -%>
-		<div class="group_only_text"><%= group.get_exhibits_label() %> Shared to Group Only</div>
-<% end # if exhibit.group_only -%>
-<% if exhibit.editors_only -%>
-		<div class="group_only_text"><%= group.get_exhibits_label() %> Shared with Administrators Only</div>
-<% end # if exhibit.editors_only -%>
+		<div class='thumbnail_item<%= get_summary_header_class(exhibit) %>'>
+		<%= get_summary_header_div(group, exhibit) %>
 		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
 		<div class="right_of_thumbnail exhibit_link">
 			<% if Group.get_exhibit_visibility(exhibit) == 'everyone' -%>

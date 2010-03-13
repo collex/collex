@@ -18,7 +18,9 @@
 <%# exhibit_summary: params: ActiveRecord exhibit, string text (optional), bool show_immediately (optional) %>
 <% show_immediately ||= false -%>
 <% text ||= '' -%>
-<div class="thumbnail_item">
+<div class="thumbnail_item<%= get_summary_header_class(exhibit) %>">
+<% group = exhibit.group_id ? Group.find(exhibit.group_id) : nil %>
+<%= get_summary_header_div(group, exhibit) %>
 <div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 <div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label">Exhibit: </span><%= get_exhibit_link(exhibit) %>&nbsp;by
 	<%= get_exhibit_user_link(exhibit) %>
@@ -26,7 +28,7 @@
 		| <%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 	<% end -%>
 	<% if exhibit.group_id %>
-		<br />in <%= link_to Group.find(exhibit.group_id).name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, :class => 'nav_link' %>
+		<br />in <%= link_to group.name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, :class => 'nav_link' %>
 	<% end -%>
 	<% if text.length > 0 %>
 		<div class="snippet"><%= text %></div>

@@ -28,4 +28,38 @@ module GroupsHelper
 		image_class = cluster.image ? cluster : group
 		return get_group_default_url(get_url_for_internal_image(image_class.image))
 	end
+
+	def get_summary_header_class(obj)
+		if obj.kind_of?(Exhibit)
+			return ' group_only' if Group.get_exhibit_visibility(obj) != 'everyone'
+		elsif obj.kind_of?(Cluster)
+			return ' group_only' if obj.visibility != 'everyone'
+		elsif obj.kind_of?(DiscussionThread)
+			return ' group_only' if Group.get_discussion_visibility(obj) != 'everyone'
+		end
+		return ""
+	end
+
+	def get_summary_header_div(group, obj)
+		html = ""
+		if obj.kind_of?(Exhibit)
+			return html if group == nil
+			visibility = Group.get_exhibit_visibility(obj)
+			if visibility == 'members'
+				html += "<div class='group_only_text'>#{group.get_exhibits_label()} Shared to Group Only</div>"
+			end
+			if visibility == 'admin'
+				html += "<div class='group_only_text'>#{group.get_exhibits_label()} Shared with Administrators Only</div>"
+			end
+		elsif obj.kind_of?(Cluster)
+			if obj.visibility == 'members'
+				html += "<div class='group_only_text'>#{group.get_clusters_label()} Shared to Group Only</div>"
+			end
+		elsif obj.kind_of?(DiscussionThread)
+			if Group.get_discussion_visibility(obj) == 'members'
+				html += "<div class='group_only_text'>Discussion Shared to Group Only</div>"
+			end
+		end
+		return html
+	end
 end

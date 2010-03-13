@@ -60,6 +60,12 @@ class Group < ActiveRecord::Base
 		return is_member(user_id)
 	end
 
+	def self.get_discussion_visibility(thread)
+		return 'everyone' if thread.group_id == nil
+		group = Group.find(thread.group_id)
+		return group.forum_permissions == 'hidden' ? 'members' : 'everyone'
+	end
+
 	def can_create_exhibit(user_id)
 		return is_member(user_id)
 	end
