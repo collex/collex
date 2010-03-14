@@ -137,14 +137,13 @@ class SearchUserContent < ActiveRecord::Base
 		comments.each {|comment|
 			thread = DiscussionThread.find_by_id(comment.discussion_thread_id)
 			if thread
+				visibility = Group.get_discussion_visibility(thread)
 				group_id = thread.group_id
 				if group_id == nil || group_id == 0
 					section = 'community'
-					visibility = 'everyone'
 				else
 					group = Group.find(group_id)
 					section = group.group_type
-					visibility = 'everyone'
 				end
 				add_object("DiscussionComment", comment.id, SITE_NAME, section, thread.title, comment.comment, comment.updated_at, visibility, group_id)
 			end
