@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100310215622) do
+ActiveRecord::Schema.define(:version => 20100314185852) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -262,6 +262,7 @@ ActiveRecord::Schema.define(:version => 20100310215622) do
     t.string   "show_admins"
     t.integer  "badge_id",               :limit => 10, :precision => 10, :scale => 0
     t.integer  "publication_image_id",   :limit => 10, :precision => 10, :scale => 0
+    t.string   "notifications"
   end
 
   create_table "groups_users", :force => true do |t|
@@ -273,6 +274,7 @@ ActiveRecord::Schema.define(:version => 20100310215622) do
     t.boolean  "pending_request"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "notifications"
   end
 
   create_table "image_fulls", :force => true do |t|

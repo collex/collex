@@ -734,7 +734,11 @@ var setNotificationLevel = function(group_id, groupName, currentNotifications) {
 			page: 'layout',
 			rows: [
 				[ { text: 'Set the email notifications you want to receive when activity occurs in ' + groupName + ':' } ],
-				[ { checkboxList: 'notifications', klass: 'notifications_checkbox_label', selections: currentNotifications, items: [ "<span class='notifications_item'>Exhibit changes</span>: added or removed from group or cluster, sharing level changed", "<span class='notifications_item'>Membership changes</span>: member invited, member added, member declined, member removed, member becomes admin", "<span class='notifications_item'>Discussion changes</span>: new thread or new comment posted in this group", "<span class='notifications_item'>Group changes</span>: changed name, description, add clusters, remove clusters, changed visibility" ] }],
+				[ { checkboxList: 'notifications', klass: 'notifications_checkbox_label', selections: currentNotifications, items:
+					[ ["exhibit", "<span class='notifications_item'>Exhibit changes</span>: added or removed from group or cluster, sharing level changed"],
+					["membership", "<span class='notifications_item'>Membership changes</span>: member invited, member added, member declined, member removed, member becomes admin"],
+					["discussion", "<span class='notifications_item'>Discussion changes</span>: new thread or new comment posted in this group"],
+					["group", "<span class='notifications_item'>Group changes</span>: changed name, description, add clusters, remove clusters, changed visibility"] ] }],
 				[ { rowClass: 'last_row' }, { button: 'Save', url: '/groups/notifications', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};

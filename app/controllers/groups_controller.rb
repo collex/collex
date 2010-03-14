@@ -244,6 +244,18 @@ class GroupsController < ApplicationController
 		 render :partial => 'group_exhibits_list', :locals => { :group => group, :cluster => cluster, :user_id => get_curr_user_id() }
 	 end
 
+	def notifications
+		levels = params[:notifications]
+		group_id = params[:group_id]
+		notes = []
+		levels.each {|key, val|
+			notes.push(key) if val == "true"
+		}
+		user_id = get_curr_user_id()
+		GroupsUser.set_notifications(group_id, user_id, notes)
+		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => user_id }
+	end
+
 	def edit_membership
 		show_membership = params[:show_membership]
 		change_owner = params[:change_owner]
@@ -268,6 +280,10 @@ class GroupsController < ApplicationController
 			gu = GroupsUser.find_by_group_id_and_user_id(group.id, change_owner)
 			gu.user_id = group.owner
 			gu.email = User.find(group.owner).email
+
+			notifications = group.notifications
+			group.notifications = gu.notifications
+			gu.notifications = notifications
 			gu.save
 			
 			group.owner = change_owner
@@ -416,10 +432,6 @@ class GroupsController < ApplicationController
 		end
 	end
 
-	# TODO-PER: What is the real rails way of doing this?
-	class RolesUser < ActiveRecord::Base
-	end
-	
   # POST /groups
   # POST /groups.xml
   def create
@@ -581,6 +593,10 @@ class GroupsController < ApplicationController
 #      format.xml  { head :ok }
 #    end
   end
+
+	# TODO-PER: What is the real rails way of doing this?
+	class RolesUser < ActiveRecord::Base
+	end
 
 	private
 	def peer_review_request

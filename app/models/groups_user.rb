@@ -115,4 +115,49 @@ class GroupsUser < ActiveRecord::Base
 		return nil if gu == nil
 		return gu.group_id
 	end
+
+	def self.get_list_of_users_to_notify(group_id, notification_type)
+		return "" if group_id == nil || group_id == 0 || group_id == "" || group_id == "0"
+		group = Group.find(group_id)
+		user_ids = []
+		notes = group.notifications.split(';')
+		user_ids.push(group.owner) if notes.include?(notification_type)
+		members = self.find_all_by_group_id(group_id)
+		members.each {|member|
+			notes = group.notifications.split(';')
+			user_ids.push(member.user_id) if notes.include?(notification_type)
+		}
+		return user_ids
+	end
+	
+	def self.set_notifications(group_id, user_id, notes)
+		return "" if group_id == nil || group_id == 0 || group_id == "" || group_id == "0"
+		return "" if user_id == nil || user_id == 0 || user_id == "" || user_id == "0"
+		group_id = group_id.to_i
+		user_id = user_id.to_i
+		notification = notes.join(';')
+		group = Group.find(group_id)
+		if (group.owner == user_id)
+			group.notifications = notification
+			group.save
+			return
+		end
+		gu = self.find_by_group_id_and_user_id(group_id, user_id)
+		if gu
+			gu.notifications = notification
+			gu.save
+		end
+	end
+
+	def self.get_notifications(group_id, user_id)
+		return "" if group_id == nil || group_id == 0 || group_id == "" || group_id == "0"
+		return "" if user_id == nil || user_id == 0 || user_id == "" || user_id == "0"
+		group_id = group_id.to_i
+		user_id = user_id.to_i
+		group = Group.find(group_id)
+		return group.notifications.split(';') if (group.owner == user_id)
+
+		gu = self.find_by_group_id_and_user_id(group_id, user_id)
+		return gu.notifications.split(';') if gu
+	end
 end

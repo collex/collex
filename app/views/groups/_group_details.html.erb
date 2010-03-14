@@ -137,7 +137,7 @@
 	<% end -%>
 	<% if group.can_edit(user_id) -%>
 	<div class="group_editors"><span class="group_details_label">Administrative Options:</span><ul>
-		<li><%= link_to_function('Set Email Notification Level', "setNotificationLevel(#{group.id}, '#{group.name}', [])", :class => 'nav_link')  %></li>
+		<li><%= link_to_function('Set Email Notification Level', "setNotificationLevel(#{group.id}, '#{group.name}', #{GroupsUser.get_notifications(group.id, user_id).to_json()})", :class => 'nav_link')  %></li>
 		<li><%= link_to_function('Invite Members', "new InviteMembersDlg(#{group.id}, '#{SITE_NAME}');", :class => 'nav_link')  %></li>
 		<li><%= link_to_function('Edit Membership', "new EditMembershipDlg(#{group.id}, gMembership, '#{group.show_membership == true ? 'Yes' : 'No' }', '#{User.find(group.owner).fullname}', #{group.is_owner(user_id)});", :class => 'nav_link')  %></li>
 <% license_prompt = group.license_type == 0 ? "Set Content License" : "Change License" -%>

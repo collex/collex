@@ -450,24 +450,30 @@ var GeneralDialog = Class.create({
 						var numCols = subel.columns ? subel.columns : 1;
 						if (numCols <= 0) numCols = 1;
 						var numRows = Math.ceil(subel.items.length / numCols);
-						var item = null;
-						var fnDetect = function(it)  {return item === it;};
+						var checkbox_id = null;
+						var fnDetect = function(it)  {return checkbox_id === it;};
 						for (var i = 0; i < numRows; i++) {
 							var cbRow = new Element('tr');
 							tb.appendChild(cbRow);
 							for (var j = 0; j < numCols; j++){
 								var itemNum = j*numRows+i;
 								if (itemNum < subel.items.length) {
-									item = subel.items[itemNum];
+									var item = subel.items[itemNum];
+									checkbox_id = item;
+									var checkbox_text = item;
+									if (typeof item !== 'string') {
+										checkbox_id = item[0];
+										checkbox_text = item[1];
+									}
 									var cbCol = new Element('td', {style : 'padding: 0 0.5em 0 0.5em;'});
-									var cbId = subel.checkboxList+'['+item+']';
+									var cbId = subel.checkboxList+'['+checkbox_id+']';
 									var cbox = new Element('input', {id: makeId(cbId), 'type': "checkbox", value: '1', name: cbId});
 									if (subel.klass)
 										cbox.addClassName(subel.klass);
 									if (subel.selections.detect(fnDetect))
 										cbox.checked = true;
 									cbCol.appendChild(cbox);
-									var lbl = new Element('span').update(item);
+									var lbl = new Element('span').update(checkbox_text);
 									cbCol.appendChild(lbl);
 									cbRow.appendChild(cbCol);
 								}
