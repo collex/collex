@@ -47,6 +47,7 @@ class ClustersController < ApplicationController
 		exhibit.cluster_id = dest_cluster == '0' ? nil : dest_cluster
 		exhibit.save!
 		cluster = cluster_id == '0' ? nil : Cluster.find(cluster_id)
+		GroupsUser.email_hook("exhibit", group_id, "An exhibit in #{Group.find(group_id).name} was moved", "The exhibit #{exhibit.title} was moved to cluster #{cluster ? cluster.name : 'no cluster' }.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		render :partial => '/groups/group_exhibits_list', :locals => { :group => Group.find(group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 end
 
@@ -55,6 +56,7 @@ end
     cluster = Cluster.find(id)
 		cluster.image = nil
 		cluster.save
+		GroupsUser.email_hook("group", cluster.group_id, "Profile picture changed in cluster in #{Group.find(cluster.group_id).name}", "The cluster #{cluster.name} has a new profile picture.", url_for(:controller => 'home', :action => 'index', :only_path => false))
     redirect_to :back
 	end
 
@@ -64,19 +66,13 @@ end
 		image = params['image']
 		if image && image
 			image = Image.new({ :uploaded_data => image })
-#			if image	# If there were an error in uploading the image, don't go further.
-#				begin
-#					user.image.save!
-#					user.save
-#				rescue
-#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-#				end
 			end
 		begin
 			cluster.image = image
 			if cluster.save
 				cluster.image.save! if cluster.image
 				flash = "OK:Thumbnail updated"
+				GroupsUser.email_hook("group", cluster.group_id, "Profile picture changed in cluster in #{Group.find(cluster.group_id).name}", "The cluster #{cluster.name} has a new profile picture.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			else
 				flash = "Error updating thumbnail"
 			end
@@ -157,6 +153,7 @@ end
 						flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 					end
 					if err == false
+						GroupsUser.email_hook("group", group_id, "Cluster created in #{Group.find(group_id).name}", "The cluster #{@cluster.name} was created.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 						flash = "OK:#{@cluster.id}"
 					end
 				else
@@ -174,6 +171,7 @@ end
   def update
     @cluster = Cluster.find(params[:id])
 		@cluster.update_attributes(params[:cluster])
+	GroupsUser.email_hook("group", @cluster.group_id, "Cluster changed in #{Group.find(@cluster.group_id).name}", "The cluster #{@cluster.name} was changed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		render :partial => 'cluster_details', :locals => { :group => Group.find(@cluster.group_id), :cluster => @cluster, :user_id => get_curr_user_id() }
   end
@@ -183,6 +181,7 @@ end
   def destroy
     @cluster = Cluster.find(params[:id])
 		group_id = @cluster.group_id
+		GroupsUser.email_hook("group", group_id, "Cluster deleted in #{Group.find(@cluster.group_id).name}", "The cluster #{@cluster.name} was deleted.", url_for(:controller => 'home', :action => 'index', :only_path => false))
     @cluster.destroy
 
 		# Also remove the exhibits and discussions from being in the cluster.

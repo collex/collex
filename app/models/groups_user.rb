@@ -124,10 +124,23 @@ class GroupsUser < ActiveRecord::Base
 		user_ids.push(group.owner) if notes.include?(notification_type)
 		members = self.find_all_by_group_id(group_id)
 		members.each {|member|
-			notes = group.notifications.split(';')
-			user_ids.push(member.user_id) if notes.include?(notification_type)
+			if member.notifications != nil
+				notes = member.notifications.split(';')
+				user_ids.push(member.user_id) if notes.include?(notification_type)
+			end
 		}
 		return user_ids
+	end
+
+	def self.email_hook(notification_type, group_id, subject, body, return_url)
+		return if group_id == nil
+		group_id = group_id.to_i
+		return if group_id == 0
+		user_ids = self.get_list_of_users_to_notify(group_id, notification_type)
+		user_ids.each {|user_id|
+			user = User.find(user_id)
+			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, subject, body, return_url)
+		}
 	end
 	
 	def self.set_notifications(group_id, user_id, notes)

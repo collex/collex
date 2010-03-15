@@ -69,6 +69,7 @@ class GroupsController < ApplicationController
 			redirect_to :action => 'stale_request'
 		else
 			group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
+			GroupsUser.email_hook("membership", group_id, "Member joined #{Group.find(cluster.group_id).name}", "The user #{get_curr_user().fullname} was accepted.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			if from_web
 				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 			else
@@ -85,6 +86,7 @@ class GroupsController < ApplicationController
 		if !success
 			redirect_to :action => 'stale_request'
 		else
+			GroupsUser.email_hook("membership", group_id, "Member denied #{Group.find(cluster.group_id).name}", "The member #{get_curr_user().fullname} was not allowed to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			if from_web
 				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 			else
@@ -109,6 +111,7 @@ class GroupsController < ApplicationController
 				user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
 				user = User.find(user_id)
 				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
+				GroupsUser.email_hook("membership", group_id, "Member accepted #{Group.find(group_id).name}", "The member #{user.fullname} joined.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				if from_web
 					render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 				else
@@ -129,6 +132,7 @@ class GroupsController < ApplicationController
 			redirect_to :action => 'stale_request'
 			return
 		end
+		GroupsUser.email_hook("membership", group_id, "User declined membership to #{Group.find(group_id).name}", "The member declined to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		if from_web
 			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 		else
@@ -171,6 +175,7 @@ class GroupsController < ApplicationController
 		 group_id = params[:group_id]
 		 user_id = params[:user_id]
 		 GroupsUser.leave_group(group_id, user_id)
+		GroupsUser.email_hook("membership", group_id, "User left #{Group.find(group_id).name}", "The member #{User.find(user_id).fullname} left the group.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 redirect_to :back
 	 end
 
@@ -203,6 +208,7 @@ class GroupsController < ApplicationController
 		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit \"#{exhibit.title}\"Unpublished",
 			"The editors of #{group.name} have unpublished your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
 			 url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit unpublished in #{group.name}", "The exhibit #{exhibit.title} was unpublished.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		render :partial => 'group_exhibits_list', :locals => { :group => group, :cluster => cluster, :user_id => get_curr_user_id() }
@@ -213,6 +219,7 @@ class GroupsController < ApplicationController
 		 exhibit = Exhibit.find(exhibit_id)
 		 exhibit.editor_limit_visibility = 'group'
 		 exhibit.save!
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit limited in #{group.name}", "The exhibit #{exhibit.title} was limited to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -222,6 +229,7 @@ class GroupsController < ApplicationController
 		 exhibit = Exhibit.find(exhibit_id)
 		 exhibit.editor_limit_visibility = 'www'
 		 exhibit.save!
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit unlimited in #{group.name}", "The exhibit #{exhibit.title} was set to unlimited.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -232,6 +240,7 @@ class GroupsController < ApplicationController
 		 exhibit = Exhibit.find(exhibit_id)
 		 exhibit.is_published = 0
 		 exhibit.save!
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit in #{group.name} rejected", "The exhibit #{exhibit.title} was rejected from being peer-reviewed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 user = exhibit.get_apparent_author()
 		 editor = get_curr_user()
@@ -289,6 +298,7 @@ class GroupsController < ApplicationController
 			group.owner = change_owner
 		end
 		group.save!
+		GroupsUser.email_hook("membership", group.id, "The membership in #{group.name} was changed", "The membership in #{group.name} was changed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 	end
@@ -300,10 +310,11 @@ class GroupsController < ApplicationController
 	
 	def remove_profile_picture
 		id = params[:id]
-    group = Group.find(id)
+		group = Group.find(id)
 		group.image = nil
 		group.save
-    redirect_to :back
+		GroupsUser.email_hook("group", group.id, "Group updated: #{ group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		redirect_to :back
 	end
 
 	def edit_thumbnail
@@ -312,18 +323,12 @@ class GroupsController < ApplicationController
 		image = params['image']
 		if image && image
 			image = Image.new({ :uploaded_data => image })
-#			if image	# If there were an error in uploading the image, don't go further.
-#				begin
-#					user.image.save!
-#					user.save
-#				rescue
-#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-#				end
 		end
 		begin
 			group.image = image
 			if group.save
 				group.image.save! if group.image
+				GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				flash = "OK:Thumbnail updated"
 			else
 				flash = "Error updating thumbnail"
@@ -395,33 +400,35 @@ class GroupsController < ApplicationController
 #
 #	end
 
-	def create_cluster
-		begin
-			if params['image'] && params['image'].length > 0
-				image = Image.new({ :uploaded_data => params['image'] })
-			end
-			cluster = Cluster.new(params[:cluster])
-			cluster.image = image
-			err = false
-			if cluster.save
-				begin
-					cluster.image.save! if cluster.image
-				rescue
-					err = true
-					cluster.delete
-					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-				end
-				if err == false
-					flash = "OK:#{cluster.group_id}"
-				end
-			else
-				flash = "Error creating cluster"
-			end
-		rescue
-			flash = "Server error when creating cluster."
-		end
-    render :text => "<script type='text/javascript'>window.top.window.stopNewClusterUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
-	end
+# TODO-PER: I think this is not called.
+#	def create_cluster
+#		begin
+#			if params['image'] && params['image'].length > 0
+#				image = Image.new({ :uploaded_data => params['image'] })
+#			end
+#			cluster = Cluster.new(params[:cluster])
+#			cluster.image = image
+#			err = false
+#			if cluster.save
+#				begin
+#					cluster.image.save! if cluster.image
+#				rescue
+#					err = true
+#					cluster.delete
+#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#				end
+#				if err == false
+#					GroupsUser.email_hook("group", cluster.group.id, "Group updated: #{Group.find(cluster.group_id).name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+#					flash = "OK:#{cluster.group_id}"
+#				end
+#			else
+#				flash = "Error creating cluster"
+#			end
+#		rescue
+#			flash = "Server error when creating cluster."
+#		end
+#    render :text => "<script type='text/javascript'>window.top.window.stopNewClusterUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#	end
 
 	def group_exhibits_list
 		if params[:cluster_id] && params[:cluster_id].length > 0
@@ -438,13 +445,6 @@ class GroupsController < ApplicationController
 		begin
 			if params['image'] && params['image'].length > 0
 				image = Image.new({ :uploaded_data => params['image'] })
-	#			if image	# If there were an error in uploading the image, don't go further.
-	#				begin
-	#					user.image.save!
-	#					user.save
-	#				rescue
-	#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-	#				end
 				end
 			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
@@ -500,18 +500,6 @@ class GroupsController < ApplicationController
 			peer_review_request()
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
-
-#    respond_to do |format|
-#      if @group.save
-#        flash[:notice] = 'Group was successfully created.'
-#        format.html { redirect_to(@group) }
-#        format.html { redirect_to(@group) }
-#        format.xml  { render :xml => @group, :status => :created, :location => @group }
-#      else
-#        format.html { render :action => "new" }
-#        format.xml  { render :xml => @group.errors, :status => :unprocessable_entity }
-#      end
-#    end
   end
 
   # PUT /groups/1
@@ -539,17 +527,10 @@ class GroupsController < ApplicationController
 				err_msg = @group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames])
 			end
 		end
-#    respond_to do |format|
-#      if @group.update_attributes(params[:group])
-#        flash[:notice] = 'Group was successfully updated.'
-#        format.html { redirect_to(@group) }
-#        format.xml  { head :ok }
-#      else
-#        format.html { render :action => "edit" }
-#        format.xml  { render :xml => @group.errors, :status => :unprocessable_entity }
-#      end
-#    end
-		curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
+
+		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "The group was updated.\n#{params[:group].to_a().join("\n")}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+
+	  curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil
 			if params[:group] && params[:group][:forum_permissions] != nil
 				render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => curr_user.id }
@@ -565,6 +546,7 @@ class GroupsController < ApplicationController
   # DELETE /groups/1.xml
   def destroy
 		@group = Group.find(params[:id])
+		GroupsUser.email_hook("group", @group.id, "Group deleted: #{@group.name}", "The group was deleted.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		typ = @group.group_type
 		@group.destroy
 
@@ -588,10 +570,6 @@ class GroupsController < ApplicationController
 			cluster.destroy
 		}
 		redirect_to @template.make_exhibit_home_link(typ)
-#    respond_to do |format|
-#      format.html { redirect_to(groups_url) }
-#      format.xml  { head :ok }
-#    end
   end
 
 	# TODO-PER: What is the real rails way of doing this?

@@ -201,6 +201,7 @@ class ForumController < ApplicationController
         :comment_type => 'inet_object', :link_title => inet_title, :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, session[:user])
+		GroupsUser.email_hook("discussion", thread.group_id, "Discussion updated: #{thread.get_title()}", "The discussion was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
   end
   
   public
@@ -380,6 +381,7 @@ class ForumController < ApplicationController
         :comment_type => 'inet_object', :link_url => inet_url, :link_title => inet_title, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, session[:user])
+		GroupsUser.email_hook("discussion", thread.group_id, "Discussion updated: #{thread.get_title()}", "The discussion was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
   end
   public
   

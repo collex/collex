@@ -380,6 +380,7 @@ class MyCollexController < ApplicationController
 				}
 				exhibit.genres = genres.join(', ')
 				exhibit.save
+			GroupsUser.email_hook("exhibit", exhibit.group_id, "Exhibit changed #{exhibit.title}", "The overview data of the exhibit has changed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
 			end
 		else
