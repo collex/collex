@@ -494,7 +494,12 @@ class ForumController < ApplicationController
 				comment.save
 				begin
 					ExceptionNotifier.exception_recipients.each { |ad|
-						LoginMailer.deliver_report_abuse_to_admin({ :comment => comment }, ad)
+						#LoginMailer.deliver_report_abuse_to_admin({ :comment => comment }, ad)
+						reporters = comment.reporter_ids.split(',')
+						last_reporter = reporters[0]
+						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{User.find(last_reporter).fullname}. The text of the message is:\n\n"
+						body += "#{@template.strip_tags(comment.comment)}\n"
+						EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], "", ad, "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
 					}
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg)

@@ -259,7 +259,7 @@ class Group < ActiveRecord::Base
 		return ret
 	end
 
-	def invite_members(editor_name, editor_email, emails, usernames)
+	def invite_members(editor_name, editor_email, emails, usernames, url_accept, url_decline, url_home)
 		msgs = ""
 		list = []
 		arr = split_by_all_delimiters(usernames)
@@ -287,11 +287,21 @@ class Group < ActiveRecord::Base
 			gu = GroupsUser.find_by_group_id_and_email(self.id, email)
 			user = User.find_by_email(email)
 			user_id = user ? user.id : nil
+			user_name = user ? user.fullname : ""
 			if gu == nil && self.owner != user_id	# don't invite someone twice
 				begin
 					gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
 					gu.save!
-					LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :editor_name => editor_name, :request_id => gu.id, :has_joined => user_id != nil }, email, editor_email)
+					#LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :editor_name => editor_name, :request_id => gu.id, :has_joined => user_id != nil }, email, editor_email)
+					body = "#{editor_name} has invited you to join the group \"#{self.name}.\"\n\n"
+					if user_id == nil
+						body += "To join this group, you will be prompted to create a login ID on #{SITE_NAME}.\n\n"
+					end
+					url_accept = url_accept.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
+					url_decline = url_decline.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
+					body += "If you wish to join this group, click here: #{url_accept}\n\n"
+					body += "If you do not wish to join this group, click here: #{url_decline}\n\n"
+					EmailWaiting.cue_email(editor_name, editor_email, user_name, email, "Invitation to join a group", body, url_home)
 				rescue Net::SMTPFatalError
 					msgs += "Error sending email to address \"#{email}\".<br />"
 					gu.delete

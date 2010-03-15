@@ -332,6 +332,10 @@ private
       link_to "RESEARCH", {:controller => "search"}, :title => "header=[research] body=[locate, collect, and annotate digital resources]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"
     end
   end
+
+  def escape_apos(str)
+	  return str.gsub('\'') { |apos| '\\\'' }
+  end
   
   def escape_for_xml(obj)
     # This either gets a string passed to it or an array of strings

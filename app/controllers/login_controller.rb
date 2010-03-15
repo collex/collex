@@ -64,7 +64,13 @@ class LoginController < ApplicationController
 			@user = COLLEX_MANAGER.reset_password(params[:help_username])
 			if @user
 				begin
-					LoginMailer.deliver_password_reset(:controller => self, :user => @user)
+					#LoginMailer.deliver_password_reset(:controller => self, :user => @user)
+					body = "Your #{SITE_NAME} password has been reset.\n\n"
+					body += "To log in, visit this link:\n\n"
+					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
+					body += "Click \"sign in\" at the top right corner of the page and enter your username and new password.\n\n"
+					body += "Your password is:\n\n#{@user[:new_password]}\n\nAfter logging in, we strongly recommend you change this generated password.\n\n"
+					EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Password Reset", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
 					render :text => "A new password has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg)
@@ -83,7 +89,13 @@ class LoginController < ApplicationController
 			@user = COLLEX_MANAGER.find_by_email(params[:help_email])
 			if @user != nil
 				begin
-					LoginMailer.deliver_recover_username(:controller => self, :user => @user)
+					#LoginMailer.deliver_recover_username(:controller => self, :user => @user)
+					body = "Here is your #{SITE_NAME} user name:\n\n"
+					body += "	#{@user[:username]}\n\n"
+					body += "To log in, visit this link:\n\n"
+					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
+					body += "Click \"sign in\" at the top right corner of the page and enter your username and password.\n\n"
+					EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Recover User Name", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
 					render :text => "Your user name has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg)

@@ -15,17 +15,23 @@
 # ----------------------------------------------------------------------------
 
 class GroupsUser < ActiveRecord::Base
-	def self.request_join(group_id, user_id)
+	def self.request_join(group_id, user_id, url_accept, url_decline, url_home)
 		gu = self.find_by_group_id_and_user_id(group_id, user_id)
 		if gu == nil	# guard against multiple requests coming in.
 			user = User.find(user_id)
 			gu = GroupsUser.new(:group_id => group_id, :user_id => user_id, :email => user.email, :role => 'member', :pending_invite => false, :pending_request => true)
 			gu.save!
+			url_accept = url_accept.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
+			url_decline = url_decline.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
 			group = Group.find(group_id)
 			editors = group.get_all_editors()
 			editors.each { |editor|
 				ed = User.find(editor)
-				LoginMailer.deliver_request_to_join_group({ :name => user.fullname, :email => user.email, :institution => user.institution, :group_name => group.name, :request_id => gu.id, :has_joined => user_id != nil }, ed.email)
+				#LoginMailer.deliver_request_to_join_group({ :name => user.fullname, :email => user.email, :institution => user.institution, :group_name => group.name, :request_id => gu.id, :has_joined => user_id != nil }, ed.email)
+				body = "#{user.fullname} mailto:#{user.email} #{"from #{user.institution}" if user.institution && user.institution.length > 0 } has requested to join the group #{ group.name }.\n\n"
+				body += "To allow, click here: #{ url_accept }\n\n"
+				body += "To deny, click here: #{ url_decline }\n\n"
+				EmailWaiting.cue_email(user.fullname, user.email, ed.fullname, ed.email, "Request to join a group", body, url_home)
 			}
 		end
 	end
@@ -120,12 +126,12 @@ class GroupsUser < ActiveRecord::Base
 		return "" if group_id == nil || group_id == 0 || group_id == "" || group_id == "0"
 		group = Group.find(group_id)
 		user_ids = []
-		notes = group.notifications.split(';')
+		notes = group.notifications == nil ? [] : group.notifications.split(';')
 		user_ids.push(group.owner) if notes.include?(notification_type)
 		members = self.find_all_by_group_id(group_id)
 		members.each {|member|
 			if member.notifications != nil
-				notes = member.notifications.split(';')
+				notes = member.notifications == nil ? [] : member.notifications.split(';')
 				user_ids.push(member.user_id) if notes.include?(notification_type)
 			end
 		}

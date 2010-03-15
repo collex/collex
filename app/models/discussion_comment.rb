@@ -124,7 +124,7 @@ class DiscussionComment < ActiveRecord::Base
 		return thread_id
 	end
 
-	def self.remove_abuse_flag(id)
+	def self.remove_abuse_flag(id, url)
 		discussion_comment = DiscussionComment.find(id)
 		reporter_ids = discussion_comment.reporter_ids
 		discussion_comment.update_attributes({ :reported => nil, :reporter_ids => nil })
@@ -132,10 +132,30 @@ class DiscussionComment < ActiveRecord::Base
 			ids = reporter_ids.split(',')
 			ids.each { |reporter_id|
 				user = User.find(reporter_id)
-				LoginMailer.deliver_cancel_abuse_report_to_reporter({ :comment => discussion_comment }, user.email)
+				#LoginMailer.deliver_cancel_abuse_report_to_reporter({ :comment => discussion_comment }, user.email)
+				body = "The administrator rejected your report of the comment by #{User.find(discussion_comment.user_id).fullname} with the text:\n\n"
+				body += "#{self.strip_tags(discussion_comment.comment)}\n\n"
+				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Canceled", body, url)
 			}
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't send email: " + msg)
 		end
 	end
+
+	private
+	def self.strip_tags(str)
+		ret = ""
+		arr = str.split('<')
+		arr.each {|el|
+			gt = el.index('>')
+			if gt
+				ret += el.slice(gt+1..el.length-1) + ' '
+			else
+				ret += el
+			end
+		}
+		ret = ret.gsub("&nbsp;", " ")
+		return ret
+	end
+
 end

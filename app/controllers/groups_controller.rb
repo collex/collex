@@ -182,7 +182,10 @@ class GroupsController < ApplicationController
 	 def request_join
 		 group_id = params[:group_id]
 		 user_id = params[:user_id]
-		 GroupsUser.request_join(group_id, user_id)
+		 url_accept = url_for(:controller => 'groups', :action => 'accept_request', :id => "PUT_ID_HERE", :only_path => false)
+		 url_decline = url_for(:controller => 'groups', :action => 'decline_request', :id => "PUT_ID_HERE", :only_path => false)
+		 url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
+		 GroupsUser.request_join(group_id, user_id, url_accept, url_decline, url_home)
 		 render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => user_id }
 	 end
 
@@ -279,6 +282,11 @@ class GroupsController < ApplicationController
 				role = value['editor'] == 'true' ? 'editor' : 'member'
 				if gu.role != role
 					gu.role = role
+					if role == 'editor'
+						gu.notifications = "editor;membership"
+					else
+						gu.notifications = ""
+					end
 					gu.save!
 				end
 			end
@@ -475,6 +483,7 @@ class GroupsController < ApplicationController
 			@group.exhibits_label = "Exhibit"
 			@group.clusters_label = "Cluster"
 			@group.show_admins = 'all'
+			@group.notifications = "exhibit;membership"
 			err = false
 			if @group.save
 				begin
@@ -487,7 +496,10 @@ class GroupsController < ApplicationController
 				if err == false
 					flash = "OK:#{@group.id}"
 					invitor = get_curr_user()
-					@group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames])
+					url_accept = url_for(:controller => 'groups', :action => 'accept_invitation', :id => "PUT_ID_HERE", :only_path => false)
+					url_decline = url_for(:controller => 'groups', :action => 'decline_invitation', :id => "PUT_ID_HERE", :only_path => false)
+					url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
+					@group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames], url_accept, url_decline, url_home)
 				end
 			else
 				flash = "Error creating group"
@@ -524,7 +536,10 @@ class GroupsController < ApplicationController
 		if params[:emails] || params[:usernames]
 			invitor = get_curr_user()
 			if invitor != nil
-				err_msg = @group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames])
+				url_accept = url_for(:controller => 'groups', :action => 'accept_invitation', :id => "PUT_ID_HERE", :only_path => false)
+				url_decline = url_for(:controller => 'groups', :action => 'decline_invitation', :id => "PUT_ID_HERE", :only_path => false)
+				url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
+				err_msg = @group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames], url_accept, url_decline, url_home)
 			end
 		end
 
@@ -582,12 +597,15 @@ class GroupsController < ApplicationController
 		admins = []
 		roles.each { |role|
 			user = User.find(role.user_id)
-			admins.push(user.email)
+			admins.push({ :name => user.fullname, :email => user.email })
 		}
 		begin
 			curr_user = get_curr_user()
 			admins.each { |ad|
-				LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
+				#LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
+				body = "#{curr_user.fullname} mailto:#{curr_user.email} #{ "from #{curr_user.institution}" if curr_user.institution && curr_user.institution.length > 0 } has requested to make the group #{ @group.name } into a peer-reviewed group.\n\n"
+				body += "Please log in as administrator to #{SITE_NAME} to change the group.\n\n"
+				EmailWaiting.cue_email(curr_user.fullname, curr_user.email, ad[:name], ad[:email], "Request to create peer-reviewed group", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
 			}
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't send email: " + msg)
