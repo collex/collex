@@ -168,11 +168,11 @@ class GroupsUser < ActiveRecord::Base
 		group_id = group_id.to_i
 		user_id = user_id.to_i
 		group = Group.find(group_id)
-		return "" if group.owner == user_id && group.notifications == nil
+		return [] if group.owner == user_id && group.notifications == nil
 		return group.notifications.split(';') if group.owner == user_id
 
 		gu = self.find_by_group_id_and_user_id(group_id, user_id)
 		return gu.notifications.split(';') if gu && gu.notifications != nil
-		return ""
+		return []
 	end
 end
