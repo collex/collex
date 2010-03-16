@@ -107,7 +107,7 @@ class CollexEngine
 		member = options[:member]	# array of group
 		admin = options[:admin]	# array of group
 		search_terms = options[:terms]	# array of strings, they are ANDed
-		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title_sort|most_recent
+		sort_by = options[:sort_by]	# symbol -- enum: relevancy|title_sort|last_modified
 		page = options[:page]	# int
 		page_size = options[:page_size]	#int
 		facet_group_id = options[:facet][:group_id]	# int
@@ -151,7 +151,7 @@ class CollexEngine
 		#facet_fields = ['object_type','federation','section']
 		req = Solr::Request::Standard.new(:start => page*page_size, :rows => page_size, :sort => sort,
 						:query => query, #:filter_queries => filter_queries,
-						:field_list => [ 'key', 'object_type', 'object_id' ],
+						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ],
 						#:facets => {:fields => facet_fields, :mincount => 1, :missing => true, :limit => -1},
 						:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 })
 
@@ -169,7 +169,20 @@ class CollexEngine
 				hit['text'] = this_highlight['text'].join("\n") if this_highlight['text']
 			}
 		end
-		return results
+		# the time is a string formatted as: 1995-12-31T23:59:59Z or 1995-12-31T23:59:59.999Z
+		results[:hits].each  {|hit|
+			dt = hit['last_modified'].split('T')
+			hit['last_modified'] = nil	# in case it wasn't a valid time below.
+			if dt.length == 2
+				dat = dt[0].split('-')
+				tim = dt[1].split(':')
+				if dat.length == 3 && tim.length > 2
+					t = Time.gm(dat[0], dat[1], dat[2], tim[0], tim[1])
+					hit['last_modified'] = t
+				end
+			end
+		}
+return results
 	end
 
   def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.

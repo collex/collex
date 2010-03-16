@@ -79,7 +79,7 @@ class CommunitiesController < ApplicationController
 		case session[:community_sort_by]
 		when 'Relevancy' then options[:sort_by] = :relevancy
 		when 'Title' then options[:sort_by] = :title_sort
-		when 'Most Recent' then options[:sort_by] = :most_recent
+		when 'Most Recent' then options[:sort_by] = :last_modified
 		end
 		results = @searcher.find_objects(options)
 		# returns: { total_hits => int, num_pages => int, hits => [ ActiveRecord: Exhibit,Cluster,Group ] }

@@ -18,13 +18,13 @@
 <%# objects params: hash results { :total_hits, :num_pages, :hits (array of hash: :obj => the elements are either an Exhibit/Group/Cluster, :text => the highlighted text) } -%>
 <% results[:hits].each { |result| -%>
 <% if result[:obj].kind_of? Exhibit -%>
-<%= render :partial => '/exhibits/exhibit_summary', :locals => { :exhibit => result[:obj], :text => result[:text], :show_immediately => true } %>
+<%= render :partial => '/exhibits/exhibit_summary', :locals => { :exhibit => result[:obj], :last_modified => result[:last_modified], :text => result[:text], :show_immediately => true } %>
 <% elsif result[:obj].kind_of? Group -%>
-<%= render :partial => '/groups/group_summary', :locals => { :group => result[:obj], :text => result[:text] } %>
+<%= render :partial => '/groups/group_summary', :locals => { :group => result[:obj], :last_modified => result[:last_modified], :text => result[:text] } %>
 <% elsif result[:obj].kind_of? Cluster -%>
-<%= render :partial => '/clusters/cluster_summary', :locals => { :group => Group.find(result[:obj].group_id), :cluster => result[:obj], :text => result[:text], :show_label => true } %>
+<%= render :partial => '/clusters/cluster_summary', :locals => { :group => Group.find(result[:obj].group_id), :cluster => result[:obj], :last_modified => result[:last_modified], :text => result[:text], :show_label => true } %>
 <% elsif result[:obj].kind_of? DiscussionComment -%>
-<%= render :partial => '/forum/comment_summary', :locals => { :comment => result[:obj], :text => result[:text] } %>
+<%= render :partial => '/forum/comment_summary', :locals => { :comment => result[:obj], :last_modified => result[:last_modified], :text => result[:text] } %>
 <% else -%>
 Unknown type.
 <% end -%>

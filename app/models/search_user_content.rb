@@ -57,16 +57,16 @@ class SearchUserContent < ActiveRecord::Base
 			case hit['object_type']
 			when 'Exhibit' then
 				rec = Exhibit.find_by_id(hit['object_id'])
-				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+				hits.push({ :obj => rec, :last_modified => hit['last_modified'], :text => hit['text'] }) if rec
 			when 'Group' then
 				rec = Group.find_by_id(hit['object_id'])
-				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+				hits.push({ :obj => rec, :last_modified => hit['last_modified'], :text => hit['text'] }) if rec
 			when 'Cluster' then
 				rec = Cluster.find_by_id(hit['object_id'])
-				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+				hits.push({ :obj => rec, :last_modified => hit['last_modified'], :text => hit['text'] }) if rec
 			when 'DiscussionComment' then
 				rec = DiscussionComment.find_by_id(hit['object_id'])
-				hits.push({ :obj => rec, :text => hit['text'] }) if rec
+				hits.push({ :obj => rec, :last_modified => hit['last_modified'], :text => hit['text'] }) if rec
 			end
 		}
 		page_size = options[:page_size]	#int
