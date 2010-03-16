@@ -111,7 +111,7 @@ class GroupsController < ApplicationController
 				user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
 				user = User.find(user_id)
 				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
-				GroupsUser.email_hook("membership", group_id, "Member accepted #{Group.find(group_id).name}", "The member #{user.fullname} joined.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+				GroupsUser.email_hook("membership", group_id, "New member, #{Group.find(group_id).name}", "#{user.fullname} has joined the group #{Group.find(group_id).name}. Visit the group at #{url_for(:controller => 'groups', :action => get_visible_id(), :only_path => false)}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				if from_web
 					render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 				else
@@ -208,9 +208,9 @@ class GroupsController < ApplicationController
 		user = exhibit.get_apparent_author()
 		editor = get_curr_user()
 		group = Group.find(exhibit.group_id)
-		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit \"#{exhibit.title}\"Unpublished",
+		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit \"#{exhibit.title}\" Unpublished",
 			"The editors of #{group.name} have unpublished your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
-			 url_for(:controller => 'home', :action => 'index', :only_path => false))
+			 url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 		GroupsUser.email_hook("exhibit", group.id, "Exhibit unpublished in #{group.name}", "The exhibit #{exhibit.title} was unpublished.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
@@ -250,7 +250,7 @@ class GroupsController < ApplicationController
 		 group = Group.find(exhibit.group_id)
 		 EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Revisions Needed to Exhibit \"#{exhibit.title}\"",
 			 "The editors of #{group.name} have returned your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
-			 url_for(:controller => 'home', :action => 'index', :only_path => false))
+			 url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => group, :cluster => cluster, :user_id => get_curr_user_id() }
@@ -605,7 +605,7 @@ class GroupsController < ApplicationController
 				#LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
 				body = "#{curr_user.fullname} mailto:#{curr_user.email} #{ "from #{curr_user.institution}" if curr_user.institution && curr_user.institution.length > 0 } has requested to make the group #{ @group.name } into a peer-reviewed group.\n\n"
 				body += "Please log in as administrator to #{SITE_NAME} to change the group.\n\n"
-				EmailWaiting.cue_email(curr_user.fullname, curr_user.email, ad[:name], ad[:email], "Request to create peer-reviewed group", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
+				EmailWaiting.cue_email(curr_user.fullname, curr_user.email, ad[:name], ad[:email], "Request to create peer-reviewed group", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 			}
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't send email: " + msg)

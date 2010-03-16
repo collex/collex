@@ -31,7 +31,7 @@ class GroupsUser < ActiveRecord::Base
 				body = "#{user.fullname} mailto:#{user.email} #{"from #{user.institution}" if user.institution && user.institution.length > 0 } has requested to join the group #{ group.name }.\n\n"
 				body += "To allow, click here: #{ url_accept }\n\n"
 				body += "To deny, click here: #{ url_decline }\n\n"
-				EmailWaiting.cue_email(user.fullname, user.email, ed.fullname, ed.email, "Request to join a group", body, url_home)
+				EmailWaiting.cue_email(user.fullname, user.email, ed.fullname, ed.email, "Request to join a group", body, url_home, "")
 			}
 		end
 	end
@@ -142,10 +142,13 @@ class GroupsUser < ActiveRecord::Base
 		return if group_id == nil
 		group_id = group_id.to_i
 		return if group_id == 0
+		group = Group.find_by_id(group_id)
+		return if group == nil
 		user_ids = self.get_list_of_users_to_notify(group_id, notification_type)
 		user_ids.each {|user_id|
 			user = User.find(user_id)
-			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, subject, body, return_url)
+			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, subject, body, return_url,
+				"You can manage the amount of notifications you receive from #{group.name} by logging into your #{SITE_NAME} account from the group page and changing your Notification Level.")
 		}
 	end
 	

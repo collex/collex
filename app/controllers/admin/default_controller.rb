@@ -80,12 +80,12 @@ class Admin::DefaultController < Admin::BaseController
 				user = User.find(reporter_id)
 				#LoginMailer.deliver_accept_abuse_report_to_reporter({ :comment => comment }, user.email)
 				body = "Thanks for reporting the comment by #{User.find(comment.user_id).fullname}. It has been removed.\n\n"
-				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Accepted", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
+				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Accepted", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 			}
 			#LoginMailer.deliver_accept_abuse_report_to_commenter({ :comment => comment }, User.find(commenter).email)
 			body = "Your comment on #{comment.created_at } was considered inappropriate and has been removed by the administrator. The text of your comment was:\n\n"
 			body += "#{@template.strip_tags(comment.comment)}\n\n"
-			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], User.find(commenter).fullname, User.find(commenter).email, "Abusive Comment Deleted", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
+			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], User.find(commenter).fullname, User.find(commenter).email, "Abusive Comment Deleted", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't send email: " + msg)
 		end

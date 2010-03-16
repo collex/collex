@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100314185852) do
+ActiveRecord::Schema.define(:version => 20100316162128) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(:version => 20100314185852) do
     t.string   "from_email"
     t.string   "to_name"
     t.string   "return_url"
+    t.string   "suffix"
   end
 
   create_table "exhibit_elements", :force => true do |t|

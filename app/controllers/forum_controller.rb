@@ -68,7 +68,7 @@ class ForumController < ApplicationController
 				thread = DiscussionThread.create(rec)
 
 				params[:thread_id] = thread.id
-				create_comment(params)
+				create_comment(params, :new)
 
 		    redirect_to :action => :index
 			end
@@ -84,7 +84,7 @@ class ForumController < ApplicationController
 			if err_msg
 				render :text => err_msg, :status => :bad_request
 			else
-				create_comment(params)
+				create_comment(params, :existing)
 				retrieve_thread({ :thread => params[:thread_id], :page => '-1' })
 				render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread }
 			end
@@ -163,7 +163,7 @@ class ForumController < ApplicationController
 		return nil
 	end
 
-  def create_comment(params)
+  def create_comment(params, typ)
     thread_id = params[:thread_id]
     inet_thumbnail = params[:inet_thumbnail]
     inet_url = params[:inet_url]
@@ -201,7 +201,18 @@ class ForumController < ApplicationController
         :comment_type => 'inet_object', :link_title => inet_title, :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, session[:user])
-		GroupsUser.email_hook("discussion", thread.group_id, "Discussion updated: #{thread.get_title()}", "The discussion was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		send_notification(thread.id, thread.group_id, thread.get_title(), user.fullname, typ)
+  end
+
+	def send_notification(thread_id, group_id, title, username, typ)
+		return if group_id == nil || group_id.to_i <= 0
+		group = Group.find_by_id(group_id)
+		return if group == nil
+		verb = typ == :new ? "started" : "replied to"
+		verb2 = typ == :new ? "New" : "Reply to"
+		GroupsUser.email_hook("discussion", group_id, "#{verb2} Forum Post: #{title}",
+			"#{username} has #{verb} the thread \"#{title}\" in the group #{group.name}.\n\nTo read the full thread, click here: #{url_for(:controller => 'forum', :action => 'view_thread', :thread => thread_id, :only_path => false)}",
+			url_for(:controller => 'home', :action => 'index', :only_path => false))
   end
   
   public
@@ -220,7 +231,7 @@ class ForumController < ApplicationController
       thread = DiscussionThread.create(rec)
 
       begin
-        post_object(thread, params)
+        post_object(thread, params, :new)
       rescue
         thread.destroy()
         flash[:error] = "We're sorry. An error occurred when attempting to start the discussion thread."
@@ -353,7 +364,7 @@ class ForumController < ApplicationController
 	end
 
   private
-  def post_object(thread, params)
+  def post_object(thread, params, typ)
     disc_type = params[:disc_type]
     nines_object = params[:nines_object]
     inet_thumbnail = params[:inet_thumbnail]
@@ -381,7 +392,7 @@ class ForumController < ApplicationController
         :comment_type => 'inet_object', :link_url => inet_url, :link_title => inet_title, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, session[:user])
-		GroupsUser.email_hook("discussion", thread.group_id, "Discussion updated: #{thread.get_title()}", "The discussion was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		send_notification(thread.id, thread.group_id, thread.get_title(), user.fullname, typ)
   end
   public
   
@@ -499,7 +510,7 @@ class ForumController < ApplicationController
 						last_reporter = reporters[0]
 						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{User.find(last_reporter).fullname}. The text of the message is:\n\n"
 						body += "#{@template.strip_tags(comment.comment)}\n"
-						EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], "", ad, "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
+						EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], "", ad, "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					}
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg)

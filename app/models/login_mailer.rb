@@ -21,9 +21,9 @@ class LoginMailer < ActionMailer::Base
 	#
 	# Generic email
 	#
-	def generic(from_name, from_email, to_name, to_email, subject, body, return_url)
+	def generic(from_name, from_email, to_name, to_email, subject, body, return_url, suffix)
 		@subject    = "[#{SITE_NAME}] #{subject}"
-		@body       = "#{body}\n\nThis message was sent to you by #{SITE_NAME}  (#{return_url}).\n"
+		@body       = "#{body}\n\nThis message was sent to you by #{SITE_NAME}  (#{return_url}). #{suffix}\n"
 		@recipients = "#{to_name} <#{to_email}>"
 		@from       =  "#{from_name} <#{from_email}>"
 		@reply_to = "#{from_name} <#{from_email}>"
