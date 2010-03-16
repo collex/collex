@@ -30,7 +30,6 @@
 		end
 	end
 -%>
-end
 <% current_page tab_name -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% thread_id = @thread.id -%>
