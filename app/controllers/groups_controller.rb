@@ -20,7 +20,7 @@ class GroupsController < ApplicationController
 
   private
   def init_view_options
-    @site_section = BLEEDING_EDGE ? :shared : :exhibits
+    @site_section = :shared
     return true
   end
   public

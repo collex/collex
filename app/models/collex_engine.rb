@@ -153,7 +153,7 @@ class CollexEngine
 						:query => query, #:filter_queries => filter_queries,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ],
 						#:facets => {:fields => facet_fields, :mincount => 1, :missing => true, :limit => -1},
-						:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 })
+						:highlighting => {:field_list => ['text'], :fragment_size => 200, :max_analyzed_chars => 512000 })
 
 		results = {}
 

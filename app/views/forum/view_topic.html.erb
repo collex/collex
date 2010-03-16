@@ -15,11 +15,11 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page BLEEDING_EDGE ? "Community" : "Forum" -%>
+<% current_page "Community" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topic = @topic -%>
 <% last_updated_date = topic.get_last_updated_date -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }], topic.topic) if BLEEDING_EDGE %>
+<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }], topic.topic) %>
 
 <div class="content_container2">
 <div class="page_header"><%= topic.topic %></div>

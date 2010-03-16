@@ -14,12 +14,28 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-
-<% current_page BLEEDING_EDGE ? "Community" : "Forum" -%>
+<%	tab_name = "Community"
+	return_url = "/communities"
+	if @thread.group_id
+		group = Group.find_by_id(@thread.group_id)
+		if group
+			case group.group_type
+			when "classroom" then
+				tab_name = "Classroom"
+				return_url = "/classroom"
+			when "peer-reviewed"
+				tab_name = "Publications"
+				return_url = "/publications"
+			end
+		end
+	end
+-%>
+end
+<% current_page tab_name -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) if BLEEDING_EDGE %>
+<%= create_breadcrumbs([{ :text => tab_name, :url => return_url }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) %>
 <div class="content_container2">
 <script type="text/javascript">
 	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];

@@ -20,7 +20,7 @@ class ClustersController < ApplicationController
 
   private
   def init_view_options
-    @site_section = BLEEDING_EDGE ? :shared : :exhibits
+    @site_section = :shared
     return true
   end
   public
@@ -47,7 +47,9 @@ class ClustersController < ApplicationController
 		exhibit.cluster_id = dest_cluster == '0' ? nil : dest_cluster
 		exhibit.save!
 		cluster = cluster_id == '0' ? nil : Cluster.find(cluster_id)
-		GroupsUser.email_hook("exhibit", group_id, "An exhibit in #{Group.find(group_id).name} was moved", "The exhibit #{exhibit.title} was moved to cluster #{cluster ? cluster.name : 'no cluster' }.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+#		username has moved exhibittitle [from clustername] to cluster clustername
+#						removed exhibittitle from clustername
+		GroupsUser.email_hook("exhibit", group_id, "An exhibit in #{Group.find(group_id).name} has been moved", "The exhibit #{exhibit.title} was moved to cluster #{cluster ? cluster.name : 'no cluster' }.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		render :partial => '/groups/group_exhibits_list', :locals => { :group => Group.find(group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 end
 
@@ -56,7 +58,7 @@ end
     cluster = Cluster.find(id)
 		cluster.image = nil
 		cluster.save
-		GroupsUser.email_hook("group", cluster.group_id, "Profile picture changed in cluster in #{Group.find(cluster.group_id).name}", "The cluster #{cluster.name} has a new profile picture.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("group", cluster.group_id, "Profile picture updated in #{Group.find(cluster.group_id).name}", "#{cluster.name} has a new profile picture.", url_for(:controller => 'home', :action => 'index', :only_path => false))
     redirect_to :back
 	end
 

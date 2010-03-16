@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% if BLEEDING_EDGE
+<%
 	case @group.group_type
 	when 'community' then tab_name = "Community"
 	when 'classroom' then tab_name = "Classroom"
@@ -25,13 +25,10 @@
 	when 'classroom' then return_path = "/classroom"
 	when 'peer-reviewed' then return_path = "/publications"
 	end
-else
-	tab_name = "Exhibits"
-end
 -%>
 <% current_page tab_name -%>
 <% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id -%>
-<%= create_breadcrumbs([{ :text => tab_name, :url => return_path }], h(@group.name)) if BLEEDING_EDGE %>
+<%= create_breadcrumbs([{ :text => tab_name, :url => return_path }], h(@group.name)) %>
 <div class="inner_content_container">
 	<div id="cluster_details">
 		<%= render :partial => 'cluster_details', :locals => { :group => @group, :cluster => @cluster, :user_id => curr_user_id } %>
