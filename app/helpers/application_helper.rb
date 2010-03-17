@@ -101,7 +101,7 @@ module ApplicationHelper
   
   def result_button(text, id, action, visible)
     cls = visible ? "" : "class='hidden' "
-    "<a id='#{id}' #{cls}onclick='#{action.gsub('\'', '"')}; return false;' >#{text}</a>"
+    "<a id='#{id}' #{cls}onclick=\"#{action.gsub("\"", "&quot;")}; return false;\" >#{text}</a>"
     # "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
   
@@ -331,7 +331,8 @@ private
   end
 
   def escape_apos(str)
-	  return str.gsub('\'') { |apos| '\\\'' }
+	  str = str.gsub("\'") { |apos| "\\\'" }
+	  return str.gsub("\"") { |apos| "\\\"" }
   end
   
   def escape_for_xml(obj)

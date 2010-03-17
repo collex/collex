@@ -41,7 +41,7 @@
 	    <div class="search_result_buttons">
 			<%= result_button("Collect", "collect_#{index}", "doCollect('/results/result_row', '#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});", true) if !result_is_collected(hit) %>
 			<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('/results/result_row', '#{hit['uri']}', #{index}, '#{row_id}');", true) if result_is_collected(hit) %>
-			<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{hit['uri']}', '#{title.gsub("'", "\\==APOS==").gsub("==APOS==", "'")}', 'discuss_#{index}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '/images/ajax_loader.gif');", true) %>
+			<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{hit['uri']}', '#{escape_apos(title)}', 'discuss_#{index}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '/images/ajax_loader.gif');", true) %>
 			<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('result_row', '#{hit['uri']}', #{index}, '#{row_id}');", true) if result_is_collected(hit) %>
 	    </div>
 	    <%# The middle with the actual search results -%>

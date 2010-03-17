@@ -111,9 +111,10 @@ class GroupsController < ApplicationController
 				user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
 				user = User.find(user_id)
 				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
-				GroupsUser.email_hook("membership", group_id, "New member, #{Group.find(group_id).name}", "#{user.fullname} has joined the group #{Group.find(group_id).name}. Visit the group at #{url_for(:controller => 'groups', :action => get_visible_id(), :only_path => false)}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+				group = Group.find(group_id)
+				GroupsUser.email_hook("membership", group_id, "New member, #{group.name}", "#{user.fullname} has joined the group #{group.name}. Visit the group at #{url_for(:controller => 'groups', :action => group.get_visible_id(), :only_path => false)}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				if from_web
-					render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
+					render :partial => 'group_details', :locals => { :group => group, :user_id => get_curr_user_id() }
 				else
 					redirect_to :action => 'acknowledge_notification', :type => 'join_group', :success => success, :group_id => group_id
 				end
@@ -336,7 +337,7 @@ class GroupsController < ApplicationController
 			group.image = image
 			if group.save
 				group.image.save! if group.image
-				GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+				GroupsUser.email_hook("group", group.id, "Group updated: #{group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				flash = "OK:Thumbnail updated"
 			else
 				flash = "Error updating thumbnail"
