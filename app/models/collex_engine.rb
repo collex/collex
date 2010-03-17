@@ -120,13 +120,6 @@ class CollexEngine
 			}
 		end
 
-		arr = []
-		arr.push("object_type:Exhibit") if facet_exhibit
-		arr.push("object_type:Cluster") if facet_cluster
-		arr.push("object_type:Group") if facet_group
-		arr.push("object_type:DiscussionComment") if facet_comment
-		query += " AND ( #{arr.join(' OR ')})"
-
 		group_members = ""
 		member.each {|ar|
 			group_members += " OR visible_to_group_member:#{ar.id}"
@@ -141,6 +134,14 @@ class CollexEngine
 			query += " AND group_id:#{facet_group_id}"
 		end
 
+		arr = []
+		arr.push("object_type:Exhibit") if facet_exhibit
+		arr.push("object_type:Cluster") if facet_cluster
+		arr.push("object_type:Group") if facet_group
+		arr.push("object_type:DiscussionComment") if facet_comment
+		all_query = query
+		query += " AND ( #{arr.join(' OR ')})"
+
 		puts "QUERY: #{query}"
 		case sort_by
 		when :relevancy then sort = nil
@@ -148,19 +149,19 @@ class CollexEngine
 		when :last_modified then sort = [ {sort_by => :descending }]
 		end
 
-		#facet_fields = ['object_type','federation','section']
 		req = Solr::Request::Standard.new(:start => page*page_size, :rows => page_size, :sort => sort,
-						:query => query, #:filter_queries => filter_queries,
+						:query => query,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ],
-						#:facets => {:fields => facet_fields, :mincount => 1, :missing => true, :limit => -1},
 						:highlighting => {:field_list => ['text'], :fragment_size => 200, :max_analyzed_chars => 512000 })
-
-		results = {}
 
 		response = @solr.send(req)
 
-		results[:total_hits] = response.total_hits
-		results[:hits] = response.hits
+		req_total = Solr::Request::Standard.new(:start => 1, :rows => 1, :query => all_query,
+						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ])
+
+		response_total = @solr.send(req_total)
+
+		results = { :total => response_total.total_hits, :total_hits => response.total_hits, :hits => response.hits }
 		# add the highlighting to the object
 		if response.data['highlighting'] && search_terms != nil
 			highlight = response.data['highlighting']

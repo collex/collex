@@ -74,7 +74,7 @@ class SearchUserContent < ActiveRecord::Base
 		total_hits = ret[:total_hits]
 		num_pages = ((0.0 + total_hits) / page_size).ceil
 
-		return { :total_hits => total_hits, :num_pages => num_pages, :hits => hits }
+		return { :total_hits => total_hits, :total => ret[:total], :num_pages => num_pages, :hits => hits }
 	end
 
 	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, group_id)

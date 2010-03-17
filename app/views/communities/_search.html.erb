@@ -16,10 +16,21 @@
 # ----------------------------------------------------------------------------
 %>
 <%# search params: hash results -%>
-<%= render :partial => '/common/input_and_submit_button', :locals => { :input_id => "search", :input_class => "shared_search_box", :submit_text => "Search Exhibits", :submit_id => 'search_exhibits', :submit_url => "/communities/search", :update_el => 'shared_objects', :wait_msg => 'Searching...' } %>
+<%= render :partial => '/common/input_and_submit_button', :locals => { :input_id => "search", :input_class => "shared_search_box", :submit_text => "Search Community", :submit_id => 'search_exhibits', :submit_url => "/communities/search", :update_el => 'shared_objects', :wait_msg => 'Searching...' } %>
 or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
-<% if session[:community_search_term] -%>
-<div class="shared_search_results">Found <%= results[:total_hits] %> items searching for "<%= session[:community_search_term] %>".
+<div class="shared_search_results">
+<% if session[:community_search_term] && session[:community_view_by] == 'All' -%>
+	Found <%= results[:total_hits] %> items matching "<%= session[:community_search_term] %>".
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/communities/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
-</div>
+<% elsif session[:community_search_term] -%>
+	Found <%= results[:total_hits] %> <%= session[:community_view_by] %> with <%= results[:total] %>
+	<%= link_to_function("total items", "ajaxWithProgressSpinner([ '/communities/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: 'All' })", { :class => 'nav_link' }) %>
+	matching "<%= session[:community_search_term] %>".
+	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/communities/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
+<% elsif session[:community_view_by] == 'All' -%>
+	There are <%= results[:total_hits] %> total items.
+<% else -%>
+	There are <%= results[:total_hits] %> <%= session[:community_view_by] %> with <%= results[:total] %>
+	<%= link_to_function("total items", "ajaxWithProgressSpinner([ '/communities/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: 'All' })", { :class => 'nav_link' }) %>.
 <% end -%>
+</div>
