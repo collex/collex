@@ -47,6 +47,7 @@ class DiscussionTopic < ActiveRecord::Base
 			topic = topic_arr[:topic_rec]
 			threads += topic.discussion_threads
 		end
+		threads = threads.delete_if {|thread| Group.get_discussion_visibility(thread) == 'hidden' }
 		threads = threads.sort {|a,b|
 			b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
 		}
