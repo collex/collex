@@ -267,3 +267,13 @@ table.name_facet td {
 .search_name_title {
 	width: 85%;
 }
+
+.search_help_tooltip {
+	font-size: 14px;
+	text-decoration: none;
+}
+
+a.tooltip:hover span.search_help_tooltip {
+	width:22em;
+	left:-11em;
+}
