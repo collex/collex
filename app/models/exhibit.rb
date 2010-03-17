@@ -1083,7 +1083,7 @@ class Exhibit < ActiveRecord::Base
 		return false if self.group_id == nil	# and if it isn't in a group, it can't be peer-reviewed any other way
 		return false if self.is_published != 1	# even if it is in a peer-reviewed group, it must be published to be peer-reviewed
 		group = Group.find(self.group_id)
-		return group.group_type != 'peer-reviewed'	# so it is in a peer-reviewed group and it is published.
+		return group.group_type == 'peer-reviewed'	# so it is in a peer-reviewed group and it is published.
 	end
 end
 

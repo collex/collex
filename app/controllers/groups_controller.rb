@@ -585,7 +585,7 @@ class GroupsController < ApplicationController
 		clusters.each { |cluster|
 			cluster.destroy
 		}
-		redirect_to @template.make_exhibit_home_link(typ)
+		redirect_to @template.make_group_home_link(typ)
   end
 
 	# TODO-PER: What is the real rails way of doing this?

@@ -29,7 +29,7 @@ class ExhibitsController < ApplicationController
     # First see if we were given an alias
     id = params[:id]
 		if id == nil
-			redirect_to :controller => 'communities', :action => 'index'
+			redirect_to '/communities'
 			return
 		end
     @exhibit = Exhibit.find_by_visible_url(id)
@@ -37,7 +37,7 @@ class ExhibitsController < ApplicationController
       if id.to_i > 0
         @exhibit = Exhibit.find(id)
       else
-		redirect_to :controller => 'communities', :action => 'index'
+		redirect_to '/communities'
         return
       end
     end
@@ -53,7 +53,7 @@ class ExhibitsController < ApplicationController
 
 		# Be sure the current user is authorized to see this exhibit
 		if !@exhibit.can_view(@template.get_curr_user())
-			redirect_to :controller => 'communities', :action => 'index'
+			redirect_to '/communities'
 			return
 		end
   end
