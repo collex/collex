@@ -23,8 +23,8 @@
 <%= render :partial => '/groups/group_summary', :locals => { :group => result[:obj], :last_modified => result[:last_modified], :text => result[:text] } %>
 <% elsif result[:obj].kind_of? Cluster -%>
 <%= render :partial => '/clusters/cluster_summary', :locals => { :group => Group.find(result[:obj].group_id), :cluster => result[:obj], :last_modified => result[:last_modified], :text => result[:text], :show_label => true } %>
-<% elsif result[:obj].kind_of? DiscussionComment -%>
-<%= render :partial => '/forum/comment_summary', :locals => { :comment => result[:obj], :last_modified => result[:last_modified], :text => result[:text] } %>
+<% elsif result[:obj].kind_of? DiscussionThread -%>
+<%= render :partial => '/forum/comment_summary', :locals => { :thread => result[:obj], :last_modified => result[:last_modified], :text => result[:text] } %>
 <% else -%>
 Unknown type.
 <% end -%>

@@ -15,16 +15,15 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# comment_summary params: ActiveRecord comment, time last_modified, string text (optional) -%>
+<%# comment_summary params: ActiveRecord thread, time last_modified, string text (optional) -%>
 <% text ||= '' -%>
-<% thread = DiscussionThread.find(comment.discussion_thread_id) -%>
 <% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
 <% if comment_info[:thumbnail] == nil -%>
 		<% comment_info[:thumbnail] = '/images/group_forum_default_thumb.jpg' %>
 <% end -%>
 <div class="thumbnail_item<%= get_summary_header_class(thread) %>">
 <%= get_summary_header_div(nil, thread) %>
-	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "comment_#{comment.id}", :url => comment_info[:thumbnail], :show_immediately => true } %></div>
+	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "comment_#{thread.id}", :url => comment_info[:thumbnail], :show_immediately => true } %></div>
 	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label">Discussion: </span><%= link_to thread.get_title(), "/forum/view_thread?thread=#{thread.id}", :class => 'nav_link' %><br />
 		Last Modified: <%= comment_time_format_relative(last_modified) %><br />
 		<% if text.length > 0 %>

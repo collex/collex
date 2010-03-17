@@ -138,7 +138,7 @@ class CollexEngine
 		arr.push("object_type:Exhibit") if facet_exhibit
 		arr.push("object_type:Cluster") if facet_cluster
 		arr.push("object_type:Group") if facet_group
-		arr.push("object_type:DiscussionComment") if facet_comment
+		arr.push("object_type:DiscussionThread") if facet_comment
 		all_query = query
 		query += " AND ( #{arr.join(' OR ')})"
 

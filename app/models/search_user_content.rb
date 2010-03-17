@@ -64,8 +64,8 @@ class SearchUserContent < ActiveRecord::Base
 			when 'Cluster' then
 				rec = Cluster.find_by_id(hit['object_id'])
 				hits.push({ :obj => rec, :last_modified => hit['last_modified'], :text => hit['text'] }) if rec
-			when 'DiscussionComment' then
-				rec = DiscussionComment.find_by_id(hit['object_id'])
+			when 'DiscussionThread' then
+				rec = DiscussionThread.find_by_id(hit['object_id'])
 				hits.push({ :obj => rec, :last_modified => hit['last_modified'], :text => hit['text'] }) if rec
 			end
 		}
@@ -133,22 +133,39 @@ class SearchUserContent < ActiveRecord::Base
 		}
 
 		# TODO-PER: there are different rules for how visibility is done for forums
-		comments = DiscussionComment.all
-		comments.each {|comment|
-			thread = DiscussionThread.find_by_id(comment.discussion_thread_id)
-			if thread
-				visibility = Group.get_discussion_visibility(thread)
-				group_id = thread.group_id
-				if group_id == nil || group_id == 0
-					section = 'community'
-				else
-					group = Group.find(group_id)
-					section = group.group_type
-				end
-				add_object("DiscussionComment", comment.id, SITE_NAME, section, thread.title, comment.comment, comment.updated_at, visibility, group_id)
+		threads = DiscussionThread.all
+		threads.each {|thread|
+			visibility = Group.get_discussion_visibility(thread)
+			group_id = thread.group_id
+			if group_id == nil || group_id == 0
+				section = 'community'
+			else
+				group = Group.find(group_id)
+				section = group.group_type
 			end
+			text = ""
+			comments = thread.discussion_comments
+			comments.each {|comment|
+				text += comment.comment + "\n"
+			}
+			add_object("DiscussionThread", thread.id, SITE_NAME, section, thread.title, text, thread.updated_at, visibility, group_id)
 		}
 
+#		comments = DiscussionComment.all
+#		comments.each {|comment|
+#			thread = DiscussionThread.find_by_id(comment.discussion_thread_id)
+#			if thread
+#				visibility = Group.get_discussion_visibility(thread)
+#				group_id = thread.group_id
+#				if group_id == nil || group_id == 0
+#					section = 'community'
+#				else
+#					group = Group.find(group_id)
+#					section = group.group_type
+#				end
+#				add_object("DiscussionComment", comment.id, SITE_NAME, section, thread.title, comment.comment, comment.updated_at, visibility, group_id)
+#			end
+#		}
 
 		@solr.commit()
 		duration = Time.now - start_time
@@ -212,9 +229,8 @@ class SearchUserContent < ActiveRecord::Base
 			return object.name
 		elsif object.kind_of? Cluster
 			return object.name
-		elsif object.kind_of? DiscussionComment
-			thread = DiscussionThread.find(object.discussion_thread_id)
-			return thread.title
+		elsif object.kind_of? DiscussionThread
+			return object.get_title()
 		else
 			return ''
 		end
