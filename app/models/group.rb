@@ -81,6 +81,12 @@ class Group < ActiveRecord::Base
 	end
 
 	def self.get_exhibit_visibility(exhibit)
+		# if the exhibit isn't in a group, the only two levels should be 0 or 1. However, if the exhibit was removed from a group,
+		# then the visibility may be more complicated. In that case, anything but 0 means published.
+		if exhibit.group_id == nil
+			return 'everyone' if exhibit.is_published != 0
+			return 'noone'
+		end
 		return "admin" if exhibit.is_published == 4
 		cluster = Cluster.find_by_id(exhibit.cluster_id)	# this can fail if the cluster was deleted with exhibits in it.
 		return 'admin' if cluster && cluster.visibility == 'administrators'
