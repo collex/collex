@@ -195,6 +195,9 @@ class GroupsController < ApplicationController
 		 exhibit = Exhibit.find(exhibit_id)
 		 params[:exhibit][:cluster_id] = nil if params[:exhibit][:cluster_id] == '0'
 		 exhibit.update_attributes(params[:exhibit])
+		 if exhibit.is_published == 1
+			 exhibit.adjust_indexing(:publishing)
+		 end
 		 #cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => nil, :user_id => get_curr_user_id() }
 	 end
@@ -203,6 +206,7 @@ class GroupsController < ApplicationController
 		comment = params[:comment]
 		exhibit_id = params[:exhibit_id]
 		exhibit = Exhibit.find(exhibit_id)
+		exhibit.adjust_indexing(:unpublishing)
 		exhibit.is_published = 0
 		exhibit.save!
 	
@@ -221,8 +225,10 @@ class GroupsController < ApplicationController
 	def limit_exhibit
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
+		exhibit.adjust_indexing(:limit_to_group)
 		 exhibit.editor_limit_visibility = 'group'
 		 exhibit.save!
+		group = Group.find(exhibit.group_id)
 		GroupsUser.email_hook("exhibit", group.id, "Exhibit limited in #{group.name}", "The exhibit #{exhibit.title} was limited to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
@@ -231,8 +237,10 @@ class GroupsController < ApplicationController
 	def unlimit_exhibit
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
+		exhibit.adjust_indexing(:limit_to_everyone)
 		 exhibit.editor_limit_visibility = 'www'
 		 exhibit.save!
+		group = Group.find(exhibit.group_id)
 		GroupsUser.email_hook("exhibit", group.id, "Exhibit unlimited in #{group.name}", "The exhibit #{exhibit.title} was set to unlimited.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
@@ -244,6 +252,7 @@ class GroupsController < ApplicationController
 		 exhibit = Exhibit.find(exhibit_id)
 		 exhibit.is_published = 0
 		 exhibit.save!
+		group = Group.find(exhibit.group_id)
 		GroupsUser.email_hook("exhibit", group.id, "Exhibit in #{group.name} rejected", "The exhibit #{exhibit.title} was rejected from being peer-reviewed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 user = exhibit.get_apparent_author()
@@ -569,6 +578,7 @@ class GroupsController < ApplicationController
 		# Also remove the exhibits and discussions from being in the group.
 		exhibits = Exhibit.find_all_by_group_id(params[:id])
 		exhibits.each { |exhibit|
+			exhibit.adjust_indexing(:leave_group)
 			exhibit.group_id = nil
 			exhibit.save!
 		}

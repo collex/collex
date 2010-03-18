@@ -792,10 +792,10 @@ class Exhibit < ActiveRecord::Base
 		return "#{ARCHIVE_PREFIX}#{make_resource_name()}"
 	end
 
-	def unindex_exhibit()
+	def unindex_exhibit(should_commit)
 		solr = CollexEngine.new()
 		solr.delete_archive(self.make_archive_name())
-		solr.commit()
+		solr.commit() if should_commit
 	end
 
 	def self.unindex_all_exhibits()
@@ -920,6 +920,25 @@ class Exhibit < ActiveRecord::Base
       Site.create(:code => value, :description => make_resource_name())
     end
 
+	end
+
+	def adjust_indexing(action)
+		case action
+		when :group_becomes_peer_reviewed then
+			index_exhibit(false) if self.is_published == 1
+		when :group_leaves_peer_reviewed then
+			unindex_exhibit(false) if self.is_published == 1
+		when :publishing then
+			index_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+		when :unpublishing then
+			unindex_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+		when :limit_to_group then
+			unindex_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+		when :limit_to_everyone then
+			index_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+		when :leave_group then
+			unindex_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+		end
 	end
 
 	def get_visibility_friendly_text()

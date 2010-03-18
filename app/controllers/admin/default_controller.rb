@@ -60,10 +60,17 @@ class Admin::DefaultController < Admin::BaseController
     group.update_attribute('badge_id', badge)
     group.update_attribute('publication_image_id', publication_image)
 		if group_type == 'peer-reviewed'
-			# TODO-PER: index exhibits
-			#index_exhibit(exhibit_id)
+			exhibits = Exhibit.all()
+			exhibits.each {|exhibit|
+				exhibit.adjust_indexing(:group_becomes_peer_reviewed)
+			}
+			(CollexEngine.new).commit()
 		elsif old_type == 'peer-reviewed'
-			#unindex_exhibit(exhibit_id)
+			exhibits = Exhibit.all()
+			exhibits.each {|exhibit|
+				exhibit.adjust_indexing(:group_leaves_peer_reviewed)
+			}
+			(CollexEngine.new).commit()
 		end
    render :partial => 'group_tr', :locals => { :group => group }
 	end
@@ -98,15 +105,15 @@ class Admin::DefaultController < Admin::BaseController
 		redirect_to :action => 'forum_pending_reports'
 	end
 
-	def unindex_exhibit(exhibit_id)
-		exhibit = Exhibit.find(exhibit_id)
-		exhibit.unindex_exhibit()
-	end
+#	def unindex_exhibit(exhibit_id)
+#		exhibit = Exhibit.find(exhibit_id)
+#		exhibit.unindex_exhibit()
+#	end
 
-	def index_exhibit(exhibit_id)
-		exhibit = Exhibit.find(exhibit_id)
-		exhibit.index_exhibit(true)
-	end
+#	def index_exhibit(exhibit_id)
+#		exhibit = Exhibit.find(exhibit_id)
+#		exhibit.index_exhibit(true)
+#	end
 
 	def index
 		@use_test_index = session[:use_test_index]

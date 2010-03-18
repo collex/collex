@@ -123,13 +123,13 @@ class SearchUserContent < ActiveRecord::Base
 
 		groups = Group.all
 		groups.each {|group|
-			add_object("Group", group.id, SITE_NAME, group.group_type, group.name, group.description, group.updated_at, 'everyone', group.id)
+			add_object("Group", group.id, SITE_NAME, group.group_type, group.name, @template.strip_tags(group.description), group.updated_at, 'everyone', group.id)
 		}
 
 		clusters = Cluster.all
 		clusters.each {|cluster|
 			group = Group.find(cluster.group_id)
-			add_object("Cluster", cluster.id, SITE_NAME, group.group_type, cluster.name, cluster.description, cluster.updated_at, cluster.visibility, group.id)
+			add_object("Cluster", cluster.id, SITE_NAME, group.group_type, cluster.name, @template.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
 		}
 
 		# TODO-PER: there are different rules for how visibility is done for forums
@@ -146,26 +146,10 @@ class SearchUserContent < ActiveRecord::Base
 			text = ""
 			comments = thread.discussion_comments
 			comments.each {|comment|
-				text += comment.comment + "\n"
+				text += @template.strip_tags(comment.comment) + "\n"
 			}
 			add_object("DiscussionThread", thread.id, SITE_NAME, section, thread.title, text, thread.updated_at, visibility, group_id)
 		}
-
-#		comments = DiscussionComment.all
-#		comments.each {|comment|
-#			thread = DiscussionThread.find_by_id(comment.discussion_thread_id)
-#			if thread
-#				visibility = Group.get_discussion_visibility(thread)
-#				group_id = thread.group_id
-#				if group_id == nil || group_id == 0
-#					section = 'community'
-#				else
-#					group = Group.find(group_id)
-#					section = group.group_type
-#				end
-#				add_object("DiscussionComment", comment.id, SITE_NAME, section, thread.title, comment.comment, comment.updated_at, visibility, group_id)
-#			end
-#		}
 
 		@solr.commit()
 		duration = Time.now - start_time
