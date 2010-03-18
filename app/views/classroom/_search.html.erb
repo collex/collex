@@ -35,7 +35,7 @@ or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
 <% end -%>
-	matching "<%= session[:community_search_term] %>".
+	matching "<%= session[:classroom_search_term] %>".
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/classroom/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
 <% elsif session[:classroom_view_by] == 'All' -%>
 	There are <%= results[:total_hits] %> total items
