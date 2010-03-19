@@ -25,16 +25,16 @@
 <% alt = "" -%>
 <% if illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
 	url = CachedResource.get_image_from_uri(illustration.nines_object_uri)
-	url = get_image_url("") if url == "" && illustration.nines_object_uri != nil && illustration.nines_object_uri != ""
+	url = get_image_url("") if (url == "" || url == nil) && illustration.nines_object_uri != nil && illustration.nines_object_uri != ""
 	link = CachedResource.get_link_from_uri(illustration.nines_object_uri)
 	link = "" if link == nil
 	link_style = 'nines_pic_link'
 	ht = CachedResource.get_hit_from_uri(illustration.nines_object_uri) if illustration.nines_object_uri
 	alt = ht['title'] if ht
 end -%>
-<% alt = illustration.alt_text if illustration.alt_text && illustration.alt_text.length > 0 %>
+<% alt = illustration.alt_text if illustration.alt_text && illustration.alt_text.length > 0 -%>
 <% alt = "Picture" if alt.length == 0 -%>
-<% url = EXHIBIT_BUILDER_TODO_PATH if url == nil || url == "" %>
+<% url = EXHIBIT_BUILDER_TODO_PATH if url == nil || url == "" -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
 <% height = illustration.height != nil ? "min-height:#{illustration.height}px;" : "" -%>
