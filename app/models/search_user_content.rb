@@ -123,13 +123,15 @@ class SearchUserContent < ActiveRecord::Base
 
 		groups = Group.all
 		groups.each {|group|
-			add_object("Group", group.id, SITE_NAME, group.group_type, group.name, @template.strip_tags(group.description), group.updated_at, 'everyone', group.id)
+			section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
+			add_object("Group", group.id, SITE_NAME, section, group.name, Exhibit.strip_tags(group.description), group.updated_at, 'everyone', group.id)
 		}
 
 		clusters = Cluster.all
 		clusters.each {|cluster|
 			group = Group.find(cluster.group_id)
-			add_object("Cluster", cluster.id, SITE_NAME, group.group_type, cluster.name, @template.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
+			section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
+			add_object("Cluster", cluster.id, SITE_NAME, section, cluster.name, Exhibit.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
 		}
 
 		# TODO-PER: there are different rules for how visibility is done for forums
@@ -146,8 +148,9 @@ class SearchUserContent < ActiveRecord::Base
 			text = ""
 			comments = thread.discussion_comments
 			comments.each {|comment|
-				text += @template.strip_tags(comment.comment) + "\n"
+				text += Exhibit.strip_tags(comment.comment) + "\n"
 			}
+			section = section == 'peer-reviewed' ? 'community' : section
 			add_object("DiscussionThread", thread.id, SITE_NAME, section, thread.title, text, thread.updated_at, visibility, group_id)
 		}
 

@@ -737,7 +737,7 @@ class Exhibit < ActiveRecord::Base
 	URI_BASE = 'http://nines.org/peer-reviewed-exhibit/'
 	ARCHIVE_PREFIX = "exhibit_"
 	
-	def strip_tags(str)
+	def self.strip_tags(str)
 		ret = ""
 		arr = str.split('<')
 		arr.each {|el|
@@ -820,25 +820,25 @@ class Exhibit < ActiveRecord::Base
 		pages.each{|page|
 			elements = page.exhibit_elements
 			elements.each {|element|
-				full_data.push(strip_tags(element.element_text)) if element.element_text
-				full_data.push(strip_tags(element.element_text2)) if element.element_text2
+				full_data.push(Exhibit.strip_tags(element.element_text)) if element.element_text
+				full_data.push(Exhibit.strip_tags(element.element_text2)) if element.element_text2
 				if element.header_footnote_id
 					footnote = ExhibitFootnote.find(element.header_footnote_id)
-					full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					full_data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
 				end
 				illustrations = element.exhibit_illustrations
 				illustrations.each {|illustration|
-					full_data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					full_data.push(Exhibit.strip_tags(illustration.illustration_text)) if illustration.illustration_text
 					full_data.push(illustration.caption1) if illustration.caption1
 					full_data.push(illustration.caption2) if illustration.caption2
 					full_data.push(illustration.alt_text) if illustration.alt_text
 					if illustration.caption1_footnote_id
 						footnote = ExhibitFootnote.find( illustration.caption1_footnote_id)
-						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+						full_data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
 					end
 					if illustration.caption2_footnote_id
 						footnote = ExhibitFootnote.find( illustration.caption2_footnote_id)
-						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+						full_data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
 					end
 				}
 			}
@@ -864,39 +864,39 @@ class Exhibit < ActiveRecord::Base
 					if section_name.length > 0
 						add_object(solr, data, boost_section, { :count => num_sections, :name => section_name, :page => section_page })
 					end
-					section_name = strip_tags(element.element_text)
+					section_name = Exhibit.strip_tags(element.element_text)
 					section_page = page.position
 					num_sections += 1
 					data = []
 				end
-				data.push(strip_tags(element.element_text)) if element.element_text
-				data.push(strip_tags(element.element_text2)) if element.element_text2
-				full_data.push(strip_tags(element.element_text)) if element.element_text
-				full_data.push(strip_tags(element.element_text2)) if element.element_text2
+				data.push(Exhibit.strip_tags(element.element_text)) if element.element_text
+				data.push(Exhibit.strip_tags(element.element_text2)) if element.element_text2
+				full_data.push(Exhibit.strip_tags(element.element_text)) if element.element_text
+				full_data.push(Exhibit.strip_tags(element.element_text2)) if element.element_text2
 				if element.header_footnote_id
 					footnote = ExhibitFootnote.find(element.header_footnote_id)
-					data.push(strip_tags(footnote.footnote)) if footnote.footnote
-					full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+					data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
+					full_data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
 				end
 				illustrations = element.exhibit_illustrations
 				illustrations.each {|illustration|
-					data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					data.push(Exhibit.strip_tags(illustration.illustration_text)) if illustration.illustration_text
 					data.push(illustration.caption1) if illustration.caption1
 					data.push(illustration.caption2) if illustration.caption2
 					data.push(illustration.alt_text) if illustration.alt_text
-					full_data.push(strip_tags(illustration.illustration_text)) if illustration.illustration_text
+					full_data.push(Exhibit.strip_tags(illustration.illustration_text)) if illustration.illustration_text
 					full_data.push(illustration.caption1) if illustration.caption1
 					full_data.push(illustration.caption2) if illustration.caption2
 					full_data.push(illustration.alt_text) if illustration.alt_text
 					if illustration.caption1_footnote_id
 						footnote = ExhibitFootnote.find( illustration.caption1_footnote_id)
-						data.push(strip_tags(footnote.footnote)) if footnote.footnote
-						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+						data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
+						full_data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
 					end
 					if illustration.caption2_footnote_id
 						footnote = ExhibitFootnote.find( illustration.caption2_footnote_id)
-						data.push(strip_tags(footnote.footnote)) if footnote.footnote
-						full_data.push(strip_tags(footnote.footnote)) if footnote.footnote
+						data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
+						full_data.push(Exhibit.strip_tags(footnote.footnote)) if footnote.footnote
 					end
 				}
 			}
