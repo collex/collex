@@ -32,6 +32,17 @@ namespace :collex do
 		}
 	end
 
+	def stop_daemons
+		puts "Stopping all daemons..."
+		`script/daemons stop`
+		sleep(8)
+	end
+
+	def start_daemons
+		puts "Starting all daemons..."
+		`script/daemons start`
+	end
+
 	def deploy_on_production
 		puts "Deploy latest version on production..."
 		puts "You will be asked for your mysql password."
@@ -43,51 +54,47 @@ namespace :collex do
 
 	def update_ninesperf
 		puts "Update site from repository..."
-		`script/daemons stop`
-		sleep(8)
+		stop_daemons()
 		`svn up`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
 		puts "You will be asked for your sudo password."
 		`sudo /sbin/service httpd restart`
-		`script/daemons start`
+		start_daemons()
 	end
 
 	def update_experimental
 		# TODO-PER: Can we force this to run in development mode?
 		puts "Update site from repository..."
-		`script/daemons stop`
-		sleep(8)
+		stop_daemons()
 		`svn up`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
 		`mongrel_rails restart`
-		`script/daemons start`
+		start_daemons()
 	end
 
 	def update_indexing
 		puts "Update site from repository..."
-		`script/daemons stop`
-		sleep(8)
+		stop_daemons()
 		`svn up`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
 		`mongrel_rails restart`	#TODO-PER: See if this machine is actually using the service instead of mongrel!
-		`script/daemons start`
+		start_daemons()
 	end
 
 	def update_development
 		puts "Update site from repository..."
-		`script/daemons stop`
-		sleep(8)
+		stop_daemons()
 		`svn up`
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_about_css'].invoke
 		`mongrel_rails restart`
-		`script/daemons start`
+		start_daemons()
 	end
 
 	desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"
@@ -248,7 +255,7 @@ namespace :collex do
 		}
 
 		dest ="javascripts/#{page.to_s()}-min.js"
-		puts "Creating #{dest}... [\n\t#{list.join("\n\t")}]"
+		puts "Creating #{dest}..." # [\n\t#{list.join("\n\t")}]"
 		system("cat #{list_proto.join(' ')} > #{RAILS_ROOT}/public/javascripts/prototype-min.js")
 		system("cat #{list.join(' ')} > #{RAILS_ROOT}/public/#{dest}")
 	end
