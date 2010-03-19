@@ -267,7 +267,7 @@ namespace :collex do
 			list.push("#{RAILS_ROOT}/tmp/#{f.gsub('/','__')}-min.css")
 		}
 		dest ="stylesheets/#{page.to_s()}-min.css"
-		puts "Creating #{dest}... [\n\t#{list.join("\n\t")}]"
+		puts "Creating #{dest}..." # [\n\t#{list.join("\n\t")}]"
 		list = list.join(' ')
 		system("cat #{list} > #{RAILS_ROOT}/public/#{dest}")
 	end
