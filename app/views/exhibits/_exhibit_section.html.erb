@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_section params: ActiveRecord element, bool is_edit_mode, int element_count -%>
 <% exhibit = element.exhibit_page.exhibit -%>
-<%= render :partial => '/my_collex/edit_bar', :locals => { :element => element, :element_count => element_count } if is_edit_mode %>
+<%= render :partial => "/#{MY_COLLEX_URL}/edit_bar", :locals => { :element => element, :element_count => element_count } if is_edit_mode %>
 <% if element.exhibit_element_layout_type == 'header' -%>
 	<div id="header_<%= element.id %>" class="header_outer">
 		<%= render :partial => '/exhibits/exhibit_header', :locals => { :text => element.element_text, :is_edit_mode => is_edit_mode, :footnote => element.header_footnote_id ? ExhibitFootnote.find(element.header_footnote_id) : nil, :id => element.id, :font => exhibit.get_font_name('header'), :font_size => exhibit.get_font_size('header') } %>
