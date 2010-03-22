@@ -272,7 +272,7 @@ return results
 
 	def delete_archive(archive) #usually called when un-peer-reviewing an exhibit, but is also used for indexing.
 		# Warning: This will delete all the documents in the archive!
-		@solr.delete_by_query "+archive:#{archive.gsub(":", "\\:")}"
+		@solr.delete_by_query "+archive:#{archive.gsub(":", "\\:").gsub(' ', '\ ')}"
 	end
 
 #
