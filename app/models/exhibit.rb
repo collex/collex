@@ -773,12 +773,17 @@ class Exhibit < ActiveRecord::Base
 
 	RESOURCE_CATEGORY = "NINES Exhibits"	# TODO: generalize this, and allow exhibits to come from 18th connect, too.
 
-#	def self.index_all_peer_reviewed
-#		exhibits = Exhibit.all(:conditions => [ "category = ?", 'peer-reviewed'])
-#		exhibits.each{ |exhibit|
-#			exhibit.index_exhibit(exhibit.id == exhibits.last.id)
-#		}
-#	end
+	def self.index_all_peer_reviewed
+		groups = Group.find_all_by_group_type('peer-reviewed')
+		exhibits = []
+		groups.each {|group|
+			exhibits += Exhibit.find_all_by_group_id_and_is_published(group.id, 1)
+		}
+		exhibits.each{ |exhibit|
+			puts "Indexing: #{exhibit.title}"
+			exhibit.index_exhibit(exhibit.id == exhibits.last.id)
+		}
+	end
 
 	def make_resource_name
 		name = self.resource_name
