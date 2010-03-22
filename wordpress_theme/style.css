@@ -235,6 +235,16 @@ a.tab_link {
 	background:transparent url(/images/nines/index_tab.gif) no-repeat scroll left top;
 }
 
+a.tab_link_long:visited {
+	color:#FDDFAB;
+	background:transparent url(/images/nines/index_tab_long.gif) no-repeat scroll left top;
+}
+
+a.tab_link_long:hover {
+	text-decoration:underline;
+	color:#FDDFAB;
+	background:transparent url(/images/nines/index_tab_long.gif) no-repeat scroll left top;
+}
 
 a.tab_link:visited {
 	color:#FDDFAB;
