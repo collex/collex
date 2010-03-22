@@ -331,6 +331,7 @@ private
   end
 
   def escape_apos(str)
+	  return "" if str == nil || str.length == 0
 	  str = str.gsub("\'") { |apos| "\\\'" }
 	  return str.gsub("\"") { |apos| "\\\"" }
   end
