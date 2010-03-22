@@ -46,10 +46,12 @@ namespace :collex do
 	def deploy_on_production
 		puts "Deploy latest version on production..."
 		puts "You will be asked for your mysql password."
+		stop_daemons()
 		version = Branding.version()
 		`mysqldump nines_production -u nines -p > ~/backup_#{version}.sql`
 		update_ninesperf()
 		Rake::Task['collex:tag_current_version'].invoke
+		start_daemons()
 	end
 
 	def update_ninesperf
