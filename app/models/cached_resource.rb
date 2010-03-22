@@ -213,8 +213,8 @@ class CachedResource < ActiveRecord::Base
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC', :limit => count )
     results = []
     items.each { |item|
-      hit = get_hit_from_resource_id(item.cached_resource_id) if hit != nil
-      results.insert(-1, hit)
+      hit = get_hit_from_resource_id(item.cached_resource_id)
+      results.insert(-1, hit) if hit != nil
     }
     return results
   end
