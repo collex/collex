@@ -102,7 +102,7 @@ class SearchUserContent < ActiveRecord::Base
 	def reindex_all()
 		start_time = Time.now
 		@solr = CollexEngine.new([ 'UserContent' ])
-		#@solr.start_reindex()
+		@solr.start_reindex()
 
 		exhibits = Exhibit.all
 		exhibits.each {|exhibit|
