@@ -140,7 +140,9 @@ class CollexEngine
 		arr.push("object_type:Group") if facet_group
 		arr.push("object_type:DiscussionThread") if facet_comment
 		all_query = query
-		query += " AND ( #{arr.join(' OR ')})"
+		if arr.length > 0
+			query += " AND ( #{arr.join(' OR ')})"
+		end
 
 		puts "QUERY: #{query}"
 		case sort_by
