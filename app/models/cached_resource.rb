@@ -213,7 +213,7 @@ class CachedResource < ActiveRecord::Base
     items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC', :limit => count )
     results = []
     items.each { |item|
-      hit = get_hit_from_resource_id(item.cached_resource_id)
+      hit = get_hit_from_resource_id(item.cached_resource_id) if hit != nil
       results.insert(-1, hit)
     }
     return results
@@ -232,7 +232,7 @@ class CachedResource < ActiveRecord::Base
       coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
       if coll_item != nil && (user == nil || coll_item.user_id == user.id)
         hit = get_hit_from_resource_id(coll_item.cached_resource_id)
-        results.insert(-1, hit) if !results.detect {|item| item['uri'] == hit['uri']} 
+        results.insert(-1, hit) if hit != nil && !results.detect {|item| item['uri'] == hit['uri']}
       end
     }
     return results
@@ -326,7 +326,7 @@ class CachedResource < ActiveRecord::Base
     results = []
     first.upto(last) { |i|
       hit = get_hit_from_resource_id(items[i].cached_resource_id)
-      results.insert(-1, hit)
+      results.insert(-1, hit) if hit != nil
     }
     return { :results => results, :total => items.length }
   end
@@ -393,7 +393,8 @@ class CachedResource < ActiveRecord::Base
 
   def self.get_hit_from_resource_id(resource_id)
     hit = {}
-    uri = CachedResource.find(resource_id)
+    uri = CachedResource.find_by_id(resource_id)
+	return nil if uri == nil
     properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
     properties.each do |property|
       if !hit[property.name]
