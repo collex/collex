@@ -762,7 +762,7 @@ class Exhibit < ActiveRecord::Base
 			title = "#{self.title}"
 			page_str = ""
 		end
-		genres = self.genres.split(', ')
+		genres = self.genres == nil ? [] : self.genres.split(', ')
 		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail, :has_full_text => true,
 			:genre => genres, :archive => self.make_archive_name(), :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
 			:text => data.join(" \n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
