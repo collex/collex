@@ -69,7 +69,8 @@ class GroupsController < ApplicationController
 			redirect_to :action => 'stale_request'
 		else
 			group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
-			GroupsUser.email_hook("membership", group_id, "Member joined #{Group.find(group_id).name}", "The user #{get_curr_user().fullname} was accepted.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+			user_id = GroupsUser.get_user_from_obfuscated_id(params[:id])
+			GroupsUser.email_hook("membership", group_id, "Member joined #{Group.find(group_id).name}", "The user #{User.find(user_id).fullname} was accepted.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			if from_web
 				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 			else
@@ -82,11 +83,12 @@ class GroupsController < ApplicationController
 		from_web = request.request_method == :post
 
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
+		user_id = GroupsUser.get_user_from_obfuscated_id(params[:id])
 		success = GroupsUser.decline_request(params[:id])
 		if !success
 			redirect_to :action => 'stale_request'
 		else
-			GroupsUser.email_hook("membership", group_id, "Member denied #{Group.find(group_id).name}", "The member #{get_curr_user().fullname} was not allowed to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+			GroupsUser.email_hook("membership", group_id, "Member denied #{Group.find(group_id).name}", "The member #{User.find(user_id).fullname} was not allowed to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			if from_web
 				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 			else

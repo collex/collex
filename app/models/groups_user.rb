@@ -122,6 +122,13 @@ class GroupsUser < ActiveRecord::Base
 		return gu.group_id
 	end
 
+	def self.get_user_from_obfuscated_id(obf)
+		id = Group.id_retriever(obf)
+		gu = self.find_by_id(id)
+		return nil if gu == nil
+		return gu.user_id
+	end
+
 	def self.get_list_of_users_to_notify(group_id, notification_type)
 		return "" if group_id == nil || group_id == 0 || group_id == "" || group_id == "0"
 		group = Group.find(group_id)
