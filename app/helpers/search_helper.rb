@@ -17,7 +17,7 @@
 module SearchHelper
   private
   def get_collected_item(hit)
-    return nil if session[:user] == nil
+    return nil if session[:user] == nil || hit == nil
     if @cached_collected_item
       if @cached_collected_item[:user] == session[:user][:username] && @cached_collected_item[:uri] == hit['uri']
         return @cached_collected_item[:item]
