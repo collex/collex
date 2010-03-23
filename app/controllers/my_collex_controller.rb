@@ -355,7 +355,7 @@ class MyCollexController < ApplicationController
 			if group && user
 				body = "#{user.fullname} has shared an exhibit \"#{exhibit.title}\" to the group #{group.name}.\n\n"
 				body += "Visit the group at #{url_for(:controller => 'group', :action => group.get_visible_id())}, or read the exhibit here: #{url_for(:controller => '', :action => exhibit.get_friendly_url())}\n\n"
-				GroupsUser.email_hook("exhibit", exhibit.group_id, "Exhibit shared: #{exhibit.title}", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
+				GroupsUser.email_hook("exhibit", exhibit.group_id, "Exhibit #{exhibit.title} shared in group #{group.name}", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
 			end
 		end
 		render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }

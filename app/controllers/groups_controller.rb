@@ -88,7 +88,7 @@ class GroupsController < ApplicationController
 		if !success
 			redirect_to :action => 'stale_request'
 		else
-			GroupsUser.email_hook("membership", group_id, "Member denied #{Group.find(group_id).name}", "The member #{User.find(user_id).fullname} was not allowed to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+			GroupsUser.email_hook("membership", group_id, "Member #{User.find(user_id).fullname} rejected from joining #{Group.find(group_id).name}", "The member #{User.find(user_id).fullname} was not allowed to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			if from_web
 				render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 			else
@@ -114,7 +114,7 @@ class GroupsController < ApplicationController
 				user = User.find(user_id)
 				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
 				group = Group.find(group_id)
-				GroupsUser.email_hook("membership", group_id, "New member, #{group.name}", "#{user.fullname} has joined the group #{group.name}. Visit the group at #{url_for(:controller => 'groups', :action => group.get_visible_id(), :only_path => false)}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+				GroupsUser.email_hook("membership", group_id, "New member, #{user.fullname}, in #{group.name}", "#{user.fullname} has joined the group #{group.name}. Visit the group at #{url_for(:controller => 'groups', :action => group.get_visible_id(), :only_path => false)}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				if from_web
 					render :partial => 'group_details', :locals => { :group => group, :user_id => get_curr_user_id() }
 				else
@@ -135,7 +135,7 @@ class GroupsController < ApplicationController
 			redirect_to :action => 'stale_request'
 			return
 		end
-		GroupsUser.email_hook("membership", group_id, "User declined membership to #{Group.find(group_id).name}", "The member declined to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("membership", group_id, "#{user.fullname} declined membership to #{Group.find(group_id).name}", "The user, #{user.fullname}, declined to join.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		if from_web
 			render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 		else
@@ -178,7 +178,7 @@ class GroupsController < ApplicationController
 		 group_id = params[:group_id]
 		 user_id = params[:user_id]
 		 GroupsUser.leave_group(group_id, user_id)
-		GroupsUser.email_hook("membership", group_id, "User left #{Group.find(group_id).name}", "The member #{User.find(user_id).fullname} left the group.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("membership", group_id, "#{User.find(user_id).fullname} left #{Group.find(group_id).name}", "The member #{User.find(user_id).fullname} left the group.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 redirect_to :back
 	 end
 
@@ -218,7 +218,7 @@ class GroupsController < ApplicationController
 		EmailWaiting.cue_email(editor.fullname, editor.email, user.fullname, user.email, "Exhibit \"#{exhibit.title}\" Unpublished",
 			"The editors of #{group.name} have unpublished your exhibit with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
 			 url_for(:controller => 'home', :action => 'index', :only_path => false), "")
-		GroupsUser.email_hook("exhibit", group.id, "Exhibit unpublished in #{group.name}", "The exhibit #{exhibit.title} was unpublished.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit unpublished in #{group.name}", "#{editor.fullname} has unpublished the exhibit #{exhibit.title}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		render :partial => 'group_exhibits_list', :locals => { :group => group, :cluster => cluster, :user_id => get_curr_user_id() }
@@ -231,7 +231,7 @@ class GroupsController < ApplicationController
 		 exhibit.editor_limit_visibility = 'group'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "Exhibit limited in #{group.name}", "The exhibit #{exhibit.title} was limited to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit visibility limited in #{group.name}", "#{get_curr_user().fullname} limited the exhibit #{exhibit.title} to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -243,7 +243,7 @@ class GroupsController < ApplicationController
 		 exhibit.editor_limit_visibility = 'www'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "Exhibit unlimited in #{group.name}", "The exhibit #{exhibit.title} was set to unlimited.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit visibility not limited in #{group.name}", "#{get_curr_user().fullname} removed the visibility limitation on the exhibit #{exhibit.title}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -255,7 +255,7 @@ class GroupsController < ApplicationController
 		 exhibit.is_published = 0
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "Exhibit in #{group.name} rejected", "The exhibit #{exhibit.title} was rejected from being peer-reviewed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "Exhibit #{exhibit.title} in #{group.name} rejected", "#{get_curr_user().fullname} rejected the exhibit #{exhibit.title} from being peer-reviewed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 user = exhibit.get_apparent_author()
 		 editor = get_curr_user()
@@ -318,7 +318,7 @@ class GroupsController < ApplicationController
 			group.owner = change_owner
 		end
 		group.save!
-		GroupsUser.email_hook("membership", group.id, "The membership in #{group.name} was changed", "The membership in #{group.name} was changed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("membership", group.id, "The membership in #{group.name} has changed", "The membership in #{group.name} has changed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		render :partial => 'group_details', :locals => { :group => Group.find(group_id), :user_id => get_curr_user_id() }
 	end
@@ -333,7 +333,7 @@ class GroupsController < ApplicationController
 		group = Group.find(id)
 		group.image = nil
 		group.save
-		GroupsUser.email_hook("group", group.id, "Group updated: #{ group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("group", group.id, "Thumbnail removed from #{group.name}", "#{get_curr_user().fullname} has removed the thumbnail image from #{group.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		redirect_to :back
 	end
 

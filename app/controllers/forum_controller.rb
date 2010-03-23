@@ -210,7 +210,7 @@ class ForumController < ApplicationController
 		return if group == nil
 		verb = typ == :new ? "started" : "replied to"
 		verb2 = typ == :new ? "New" : "Reply to"
-		GroupsUser.email_hook("discussion", group_id, "#{verb2} Forum Post: #{title}",
+		GroupsUser.email_hook("discussion", group_id, "#{verb2} Forum Post \"#{title}\" in the group #{group.name}.",
 			"#{username} has #{verb} the thread \"#{title}\" in the group #{group.name}.\n\nTo read the full thread, click here: #{url_for(:controller => 'forum', :action => 'view_thread', :thread => thread_id, :only_path => false)}",
 			url_for(:controller => 'home', :action => 'index', :only_path => false))
   end
