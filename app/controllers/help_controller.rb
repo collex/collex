@@ -19,6 +19,7 @@ class HelpController < ApplicationController
   
   def sites
     @sites = Site.find(:all, :order => "description ASC")
+	@sites = @sites.delete_if {|site| site['code'].index('exhibit_') == 0 }
     render :partial => '/help/sites'
   end
   
