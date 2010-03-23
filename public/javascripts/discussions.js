@@ -61,9 +61,9 @@ var ForumReplyDlg = Class.create({
 			var starting_inet_title = params.inet_title;
 			var starting_inet_thumbnail = params.inet_thumbnail;
 			var starting_inet_url = params.inet_url;
-			if (params.license)
-				starting_license = params.license;
 		}
+		if (params.license)
+			starting_license = params.license;
 		
 		if (!logged_in) {
 			var logdlg = new SignInDlg();

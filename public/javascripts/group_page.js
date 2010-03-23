@@ -79,7 +79,7 @@ var EditGroupThumbnailDlg = Class.create({
 });
 
 var GroupNewPost = Class.create({
-	initialize: function (progress_img, group_id, group_name, is_logged_in) {
+	initialize: function (progress_img, group_id, group_name, is_logged_in, license) {
 
 		new ForumReplyDlg({ group_id: group_id, group_name: group_name,
 			submit_url: '/forum/post_comment_to_new_thread',
@@ -89,13 +89,14 @@ var GroupNewPost = Class.create({
 			progress_img: progress_img,
 			logged_in: is_logged_in,
 			addTopicToLoginRedirect: false,
-			redirect: '/groups/' + group_id
+			redirect: '/groups/' + group_id,
+			license: license
 		});
 	}
 });
 
 var ClusterNewPost = Class.create({
-	initialize: function (progress_img, group_id, group_name, cluster_id, cluster_name, is_logged_in) {
+	initialize: function (progress_img, group_id, group_name, cluster_id, cluster_name, is_logged_in, license) {
 
 		new ForumReplyDlg({ group_id: group_id, group_name: group_name,
 			cluster_id: cluster_id, cluster_name: cluster_name,
@@ -106,7 +107,8 @@ var ClusterNewPost = Class.create({
 			progress_img: progress_img,
 			logged_in: is_logged_in,
 			addTopicToLoginRedirect: false,
-			redirect: '/clusters/' + cluster_id
+			redirect: '/clusters/' + cluster_id,
+			license: license
 		});
 	}
 });
