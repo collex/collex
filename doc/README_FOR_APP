@@ -85,6 +85,11 @@ There is another relevant project in this repository to help with indexing:
 	collex/trunk/rdf-indexer	: This is a java project that builds the utility that is used to read the rdf files into solr. The jar file created
 		here is used by the rdf indexing rake tasks.
 
+There are two indexes used: "resources" and "UserContent"
+In the solr.xml file, you will need the following:
+  <core name="resources" instanceDir="./"/>
+  <core name="UserContent" instanceDir="./" schema="schema_user.xml"/>
+
 -----------------------------------------------------------------------
 ** deploying js and css
 
