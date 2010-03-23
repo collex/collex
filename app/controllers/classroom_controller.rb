@@ -31,7 +31,7 @@ class ClassroomController < ApplicationController
 
 	def search
 		term = params[:term]
-		term = nil if term.length == 0
+		term = nil if term && term.length == 0
 		session[:classroom_page_num] = 0
 		session[:classroom_search_term] = term
 		session[:classroom_sort_by] = 'Most Recent'
