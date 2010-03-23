@@ -19,4 +19,8 @@ module CommunitiesHelper
 			return link_to("[Return to Community]", '/communities', { :class => 'nav_link' })
 		end
 	end
+
+	def singularize_and_downcase(word)
+		return word.downcase.chomp('s')
+	end
 end

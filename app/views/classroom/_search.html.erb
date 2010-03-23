@@ -21,7 +21,7 @@ or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 
 <div class="shared_search_results">
 <% if session[:classroom_search_term] && session[:classroom_view_by] == 'All' -%>
-	Found <%= results[:total_hits] %> items
+	Found <%= pluralize(results[:total_hits], 'item') %>
 <% if session[:classroom_group_facet] -%>
 	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
@@ -29,7 +29,7 @@ or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 	matching "<%= session[:classroom_search_term] %>".
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/classroom/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
 <% elsif session[:classroom_search_term] -%>
-	Found <%= results[:total_hits] %> <%= session[:classroom_view_by] %> with <%= results[:total] %>
+	Found <%= pluralize(results[:total_hits], singularize_and_downcase(session[:classroom_view_by])) %> with <%= results[:total] %>
 	<%= link_to_function("total items", "ajaxWithProgressSpinner([ '/classroom/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: 'All' })", { :class => 'nav_link' }) %>
 <% if session[:classroom_group_facet] -%>
 	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
@@ -38,13 +38,13 @@ or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 	matching "<%= session[:classroom_search_term] %>".
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/classroom/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
 <% elsif session[:classroom_view_by] == 'All' -%>
-	There are <%= results[:total_hits] %> total items
+	There are <%= pluralize(results[:total_hits], 'total item') %>
 <% if session[:classroom_group_facet] -%>
 	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
 	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
 <% end -%>
 <% else -%>
-	There are <%= results[:total_hits] %> <%= session[:classroom_view_by] %> with <%= results[:total] %>
+	There are <%= pluralize(results[:total_hits], singularize_and_downcase(session[:classroom_view_by])) %> with <%= results[:total] %>
 	<%= link_to_function("total items", "ajaxWithProgressSpinner([ '/classroom/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: 'All' })", { :class => 'nav_link' }) %>
 <% if session[:classroom_group_facet] -%>
 	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
