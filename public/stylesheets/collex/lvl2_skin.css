@@ -78,3 +78,18 @@
 #group_license {
 	background: #371911;
 }
+
+.free_culture:hover {
+	background-image: url(/images/collex/free_culture_hover.gif);
+}
+
+.full_text:hover {
+	background-image: url(/images/collex/full_text_hover.gif);
+	width:5em;
+}
+
+.has_xml_source:hover {
+	background-image: url(/images/collex/has_xml_source.gif);
+	width:5em;
+}
+

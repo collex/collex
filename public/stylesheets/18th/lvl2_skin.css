@@ -75,6 +75,20 @@
 	background-image: url(/images/18th/has_xml_source.gif);
 }
 
+.free_culture:hover {
+	background-image: url(/images/18th/free_culture_hover.gif);
+}
+
+.full_text:hover {
+	background-image: url(/images/18th/full_text_hover.gif);
+	width:5em;
+}
+
+.has_xml_source:hover {
+	background-image: url(/images/18th/has_xml_source.gif);
+	width:5em;
+}
+
 #group_license {
 	background: #1d253c;
 }
