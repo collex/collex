@@ -114,6 +114,8 @@ class CollexEngine
 
 		query = "federation:#{facet_federation} AND section:#{facet_section}"
 		if search_terms != nil
+			# get rid of special symbols
+			search_terms = search_terms.gsub(/\W/, ' ')
 			arr = search_terms.split(' ')
 			arr.each {|term|
 				query += " AND content:#{term}"
