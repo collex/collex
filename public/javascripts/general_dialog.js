@@ -999,6 +999,7 @@ var singleInputDlg = function(params, input) {
 	var dlg = null;
 	var verifyUrl = params.verify;
 	var verifyFxn = params.verifyFxn;
+	var body_style = params.body_style === undefined ? "message_box_dlg": params.body_style;
 
 	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
 	this.class_type = 'singleInputDlg';	// for debugging
@@ -1052,7 +1053,7 @@ var singleInputDlg = function(params, input) {
 	if (noDefault)
 		dlgLayout.rows[1][1].isDefault = null;
 
-	var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
+	var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: body_style, row_style: "message_box_row", title: title};
 	dlg = new GeneralDialog(dlgparams);
 	dlg.changePage('layout', dlg.makeId(id));
 	dlg.center();

@@ -450,6 +450,7 @@ var moveExhibitToCluster = function(update_url, group_id, cluster_id, exhibitOpt
 		id: 'exhibit_id',
 		options: exhibitOptions,
 		okStr: 'Move',
+		body_style: "",
 		extraParams: { dest_cluster: cluster_id, cluster_id: cluster_id, group_id: group_id },
 		actions: [ update_url],
 		target_els: [ update_el ] });
@@ -503,6 +504,7 @@ var moveExhibit = function(exhibit_id, clusterOptions, group_id, cluster_id, exh
 		value: cluster_id,
 		options: clusterOptions,
 		okStr: 'Save',
+		body_style: "",
 		extraParams: { group_id: group_id, cluster_id: cluster_id, exhibit_id: exhibit_id },
 		actions: [ '/clusters/move_exhibit' ],
 		target_els: [ 'group_exhibits' ] });
