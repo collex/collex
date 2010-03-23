@@ -147,6 +147,7 @@ class CollexEngine
 		end
 
 		puts "QUERY: #{query}"
+		ActiveRecord::Base.logger.info("*** USER QUERY: #{query}")
 		case sort_by
 		when :relevancy then sort = nil
 		when :title_sort then sort = [ {sort_by => :ascending }]
