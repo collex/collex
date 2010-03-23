@@ -15,6 +15,7 @@ The following steps are explained in detail below:
 8) Install Wordpress
 9) Skin it by changing the css files.
 10) add robots file.
+11) Start the daemons.
 
 -----------------------------------------------------------------------
 ** Initial username
@@ -120,11 +121,15 @@ In /lib/tasks/collex.rake, there are a number of rake tasks defined. Here are th
 	(Runs jslint on all non-minimized js files in /public/javascripts.)
 
 --- Server side ---
-	rake RAILS_ENV=production collex:total_update_site
-	(downloads the latest code from SVN, runs migrate, updates the wordpress theme, and compresses js and css files)
-
-	rake RAILS_ENV=production collex:update_site
-	(runs migrate, updates the wordpress theme, and compresses js and css files)
+	rake collex:update
+	This does various things depending on what is defined in site.yml. See the file collex.rake for details about what is
+	updated for each type. The various things that are done are:
+	- download latest code
+	- tag current version
+	- backup database
+	- run migrations
+	- load the wordpress styles
+	- compress js and css files
 
 In /lib/tasks/solr.rake, there are routines to manipulate solr.
 	To run solr:
@@ -173,3 +178,10 @@ The "about" files are all plain .html files so that they can be maintained by a 
 ruby, rails, or javascript. There are a couple of pieces of javascript embedded in them that should be kept. One contains the
 code to handle the login area and the other handles the popup dialogs in the footer.
 
+-----------------------------------------------------------------------
+** Daemons
+
+There are daemons that have to be running in the background all the time. To run them, type:
+	RAILS_ENV=development script/daemons start|stop|restart
+
+The default is production, so you can leave off the RAILS_ENV on your deployed sites.
