@@ -190,3 +190,12 @@ There are daemons that have to be running in the background all the time. To run
 	RAILS_ENV=development script/daemons start|stop|restart
 
 The default is production, so you can leave off the RAILS_ENV on your deployed sites.
+
+At least in Rails 2.3.2, there is a bug in the daemons if you have rails frozen, so don't freeze rails without testing whether
+the daemons start up.
+
+Also, the daemons are running a different process, and won't see code changes unless they are restarted, so while
+developing them, be aware of when you've changed code that a daemon will execute, and restart the daemons then.
+
+For responsiveness, the daemons wake up every 5 seconds, but then have a second timer that can be set in site.yml,
+so they don't actually do much when they wake up except see if they need to end.
