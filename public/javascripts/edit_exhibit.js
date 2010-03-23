@@ -14,10 +14,10 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $$, $H, Ajax */
+/*global $, $$, $H */
 /*global YAHOO */
-/*global MessageBoxDlg, hideSpinner, ConfirmDlg, pageRenumberFootnotes, updateWithAjax, recurseUpdateWithAjax */
-/*global document */
+/*global MessageBoxDlg, hideSpinner, pageRenumberFootnotes, updateWithAjax, recurseUpdateWithAjax, ConfirmAjaxDlg */
+/*global document, setTimeout */
 /*extern doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, elementTypeChanged, illustrationJustificationChanged, imgResized */
 /*extern initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement,  sectionHovered, sectionUnhovered, unhoverlist */
 
@@ -78,7 +78,7 @@ document.observe('dom:loaded', function() {
 
 function initializeResizableImageElement( element_id ) {
 	if (YAHOO.util.Resize === undefined) {
-		initializeResizableImageElement.delay(.5, element_id );
+		initializeResizableImageElement.delay(0.5, element_id );
 		return;
 	}
 	hideSpinner(element_id);

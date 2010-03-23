@@ -14,11 +14,13 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, Ajax */
-/*global GeneralDialog, SelectInputDlg */
+/*global $, $$, Class, Element */
+/*global YAHOO */
+/*global GeneralDialog, SelectInputDlg, recurseUpdateWithAjax, MessageBoxDlg, RteInputDlg, TextInputDlg, ajaxWithProgressDlg, updateWithAjax */
 /*global window */
-/*global ForumReplyDlg */
-/*extern EditGroupThumbnailDlg, EditMembershipDlg, GroupNewPost, InviteMembersDlg, editDescription, editGroupThumbnailDlg, editLicense, editPermissions, editType, stopEditGroupThumbnailUpload */
+/*global ForumReplyDlg, LinkDlgHandler */
+/*extern EditGroupThumbnailDlg, EditMembershipDlg, GroupNewPost, InviteMembersDlg, editDescription, editGroupThumbnailDlg, editPermissions, editType, stopEditGroupThumbnailUpload */
+/*extern ClusterNewPost, CreateNewClusterDlg, GridDlg, RespondToRequestDlg, acceptAsPeerReviewed, accept_invitation, changeClusterLabel, changeClusterVisibility, changeExhibitLabel, changeWhichExhibitsAreShown, confirmDlgWithTextArea, decline_invitation, editGroupTextField, editTitle, editURL, editVisibility, hideAdmins, limitExhibit, moveExhibit, moveExhibitToCluster, newClusterDlg, rejectAsPeerReviewed, request_to_join, setNotificationLevel, showAdmins, stopNewClusterUpload, unlimitExhibit, unpublishExhibit */
 
 var editGroupThumbnailDlg = null;
 function stopEditGroupThumbnailUpload(errMessage){
@@ -236,7 +238,7 @@ var EditMembershipDlg = Class.create({
 		var changeOwnerCtrl = undefined;
 		if (is_owner && ownerOptions.length > 1)
 			changeOwnerCtrl = [{ text: 'Change Owner: '}, { select: 'change_owner', klass: 'select_dlg_input', options: ownerOptions, value: 0 }];
-		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Administrator?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl, extraCtrl2: changeOwnerCtrl })
+		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Administrator?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl, extraCtrl2: changeOwnerCtrl });
 	}
 });
 
@@ -254,7 +256,7 @@ var RespondToRequestDlg = Class.create({
 			});
 		});
 
-		new GridDlg({ title: "Respond", hidden_id: 'id', hidden_value: group_id, url: 'pending_requests', fields: ["Name","No Action", "Accept", "Deny"], data: membership2 })
+		new GridDlg({ title: "Respond", hidden_id: 'id', hidden_value: group_id, url: 'pending_requests', fields: ["Name","No Action", "Accept", "Deny"], data: membership2 });
 	}
 });
 
@@ -587,13 +589,13 @@ var hideAdmins = function(group_id, url) {
 	ajaxWithProgressDlg([url], ['group_details'],
 		{ title: "Hide Admins", waitMessage: "Please wait...", completeMessage: 'The administators are hidden to non-members.' },
 		{id: group_id, 'group[show_admins]': 'members' });
-}
+};
 
 var showAdmins = function(group_id, url) {
 	ajaxWithProgressDlg([url], ['group_details'],
 		{ title: "Show Admins", waitMessage: "Please wait...", completeMessage: 'The administators are visible to non-members.' },
 		{id: group_id, 'group[show_admins]': 'all' });
-}
+};
 
 var confirmDlgWithTextArea = function(urls, els, title, completeMsg, confirmMsg, commentLabel, extraData) {
 	var action = function(event, params) {

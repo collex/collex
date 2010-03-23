@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global ajaxWithProgressDlg */
+/*global ajaxWithProgressSpinner */
 /*extern ajax_pagination */
 
 function ajax_pagination(actions, els, page) {

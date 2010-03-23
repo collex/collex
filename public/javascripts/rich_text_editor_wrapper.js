@@ -304,7 +304,7 @@
                 //Remove bogus LI's
                 html = html.replace(/<li><\/li>/gi, '');
                 html = html.replace(/<li> <\/li>/gi, '');
-                html = html.replace(/<li>  <\/li>/gi, '');
+                html = html.replace(/<li>\s+<\/li>/gi, '');
 
 				// HACK-PER: This is needed because the following code is incorrect in YUI 2.8.0. It will strip out the drop cap div, too.
 				// We will assume that the drop cap is the most outer div, so we see if it starts with a div, then preserve it.

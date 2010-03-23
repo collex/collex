@@ -331,9 +331,12 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var id = idArr[idArr.length-1];
 		var populate_all = '/forum/get_nines_obj_list';	// TODO-PER: pass this in
 		var populate_exhibit_only = '/forum/get_nines_obj_list?illustration_id=' + id;	// TODO-PER: pass this in
-		var curr_populate = populate_exhibit_only;
+		//var curr_populate = populate_exhibit_only;
 		var progress_img = '/images/ajax_loader.gif';	// TODO-PER: pass this in
 
+		var objlist = new CreateListOfObjects(populate_exhibit_only, values.nines_object, 'nines_object', progress_img, setCaption);
+		objlist.useTabs(populate_all, populate_exhibit_only);
+		
 		var okAction = function(event, params) {
 			// Save has been pressed.
 			params.dlg.cancel();
@@ -348,8 +351,6 @@ function initializeInplaceIllustrationEditor(element_id, action)
 			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};
 
-		var objlist = new CreateListOfObjects(populate_exhibit_only, values.nines_object, 'nines_object', progress_img, setCaption);
-		objlist.useTabs(populate_all, populate_exhibit_only);
 		var footnoteAbbrev1 = new FootnoteAbbrev({ startingValue: values.caption1_footnote, field: 'caption1_footnote', populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img });
 		var footnoteAbbrev2 = new FootnoteAbbrev({ startingValue: values.caption2_footnote, field: 'caption2_footnote', populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img });
 

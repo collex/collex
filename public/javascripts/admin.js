@@ -16,7 +16,9 @@
 
 /*global Class, $, $$, Element, Ajax, $A */
 /*global MessageBoxDlg, GeneralDialog */
-/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, EditExhibitCategory, AjaxUpdate, addBadgeDlg, AddBadge, stopAddBadgeUpload */
+/*global window */
+/*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, AjaxUpdate, addBadgeDlg, stopAddBadgeUpload */
+/*extern AddBadgeDlg, AddPublicationImageDlg, EditGroupType, addPublicationImageDlg, stopAddPublicationImageUpload */
 
 var AjaxUpdate = Class.create({
 	initialize: function (parent_div, progressMsg, validationCallback) {

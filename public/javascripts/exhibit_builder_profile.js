@@ -14,10 +14,10 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, $, $$, Ajax */
-/*global MessageBoxDlg, ConfirmDlg, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, SelectInputDlg, updateWithAjax */
+/*global Class, $, $$ */
+/*global ConfirmDlg, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, SelectInputDlg */
 /*global window */
-/*extern editExhibitProfile, CreateSharingList, sharing_dialog */
+/*extern editExhibitProfile, CreateSharingList */
 /*extern doPublish, selectGroup, selectCluster */
 
 var selectGroup = function(id, options, value) {

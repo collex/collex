@@ -14,10 +14,10 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global GeneralDialog, MessageBoxDlg */
+/*global GeneralDialog, MessageBoxDlg, recurseUpdateWithAjax */
 /*global YAHOO */
 /*global Class, $, Element, Ajax */
-/*extern ForumLicenseDisplay, CCLicenseDlg */
+/*extern ForumLicenseDisplay, CCLicenseDlg, license_dialog */
 
 var CCLicenseDlg = Class.create({
 	initialize: function (objs, currentLicense, okCallback, title, name, var_name) {

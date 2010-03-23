@@ -14,9 +14,10 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, Class, Ajax */
+/*global $, $$, Class, Ajax */
 /*global GeneralDialog */
 /*global window */
+/*global LinkDlgHandler */
 /*extern CreateGroupWizardDlg, newGroupDlg, stopNewGroupUpload */
 
 var newGroupDlg = null;
@@ -94,9 +95,9 @@ var CreateGroupWizardDlg = Class.create({
 
 		var toggle = function(els, show) {
 			if (show) {
-				els.each(function(el) { el.removeClassName('hidden')});
+				els.each(function(el) { el.removeClassName('hidden'); });
 			} else {
-				els.each(function(el) { el.addClassName('hidden')});
+				els.each(function(el) { el.addClassName('hidden'); });
 			}
 		};
 

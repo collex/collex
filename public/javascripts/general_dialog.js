@@ -20,7 +20,7 @@
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
-/*extern SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl */
+/*extern SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl, ProgressSpinnerDlg, ajaxWithProgressDlg, ajaxWithProgressSpinner */
 
 var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
 {
@@ -745,7 +745,7 @@ var ProgressSpinnerDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ {text: ' ', klass: 'transparent_progress_spinner'} ],
-					[ {rowClass: 'progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ],
+					[ {rowClass: 'progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ]
 				]
 			};
 

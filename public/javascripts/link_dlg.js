@@ -92,7 +92,7 @@ var CreateListOfObjects = Class.create({
 		this.resetCacheIfNecessary = function() {
 			if (curr_populate !== populate_exhibit_only)
 				ninesObjCache.reset(populate_exhibit_only);
-		}
+		};
 
 
 		// Creates one line in the list.

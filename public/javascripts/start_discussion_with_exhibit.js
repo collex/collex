@@ -14,11 +14,10 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax, Form */
-/*global MessageBoxDlg, GeneralDialog, doSingleInputPrompt, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, LinkDlgHandler */
+/*global Class, $, $$, Element, Ajax */
+/*global MessageBoxDlg, GeneralDialog, SignInDlg, LinkDlgHandler */
 /*global ForumLicenseDisplay */
-/*global document, window */
-/*global exhibit_names */
+/*global window */
 /*extern StartDiscussionWithExhibit */
 
 ///////////////////////////////////////////////////////////////////////////

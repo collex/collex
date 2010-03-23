@@ -175,7 +175,7 @@ function showExhibitOutline(element_id, page_num)
 function initOutline(div_id)
 {
 	if (YAHOO.util.Resize === undefined) {
-		initOutline.delay(.5, div_id);
+		initOutline.delay(0.5, div_id);
 		return;
 	}
 
