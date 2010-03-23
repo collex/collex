@@ -24,8 +24,11 @@
 <div class="thumbnail_item<%= get_summary_header_class(thread) %>">
 <%= get_summary_header_div(nil, thread) %>
 	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "comment_#{thread.id}", :url => comment_info[:thumbnail], :show_immediately => true } %></div>
-	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label">Discussion: </span><%= link_to thread.get_title(), "/forum/view_thread?thread=#{thread.id}", :class => 'nav_link' %><br />
-		Last Modified: <%= comment_time_format_relative(last_modified) %><br />
+	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label">Discussion: </span><%= link_to thread.get_title(), "/forum/view_thread?thread=#{thread.id}", :class => 'nav_link' %>
+	<% if thread.group_id -%><% group = Group.find_by_id(thread.group_id) -%>
+		<br />in <%= link_to(group == nil ? "group" : group.name, { :controller => 'groups', :action => 'show', :id => thread.group_id }, :class => 'nav_link') %>
+	<% end -%>
+		<br />Last Modified: <%= comment_time_format_relative(last_modified) %><br />
 		<% if text.length > 0 %>
 			<div class="snippet"><%= text %></div>
 		<% end -%>

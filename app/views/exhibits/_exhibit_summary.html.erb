@@ -27,7 +27,7 @@
 	<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
 		| <%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => exhibit.id }, :class => 'nav_link' ) %>
 	<% end -%>
-	<% if exhibit.group_id %>
+	<% if exhibit.group_id -%>
 		<br />in <%= link_to group.name, { :controller => 'groups', :action => 'show', :id => exhibit.group_id }, :class => 'nav_link' %>
 	<% end -%>
 	<br />Last Modified: <%= comment_time_format_relative(last_modified) %>
