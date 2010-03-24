@@ -32,7 +32,7 @@ function stopEditGroupThumbnailUpload(errMessage){
 }
 
 var EditGroupThumbnailDlg = Class.create({
-	initialize: function (group_id, current_url, controller) {
+	initialize: function (group_id, label, controller) {
 		this.class_type = 'EditGroupThumbnailDlg';	// for debugging
 		var This = this;
 		var dlg = null;
@@ -43,7 +43,7 @@ var EditGroupThumbnailDlg = Class.create({
 			//var curr_page = params.curr_page;
 			var url = params.destination;
 
-			dlg.setFlash('Editing ' + controller.toLowerCase() + ' thumbnail...', false);
+			dlg.setFlash('Editing ' + label.toLowerCase() + ' thumbnail...', false);
 
 			dlg.submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
 		};
@@ -53,7 +53,7 @@ var EditGroupThumbnailDlg = Class.create({
 		};
 
 		this.fileUploadFinished = function(id) {
-			dlg.setFlash(controller + ' thumbnail updated...', false);
+			dlg.setFlash(label + ' thumbnail updated...', false);
 			window.location.reload(true);
 		};
 		var show = function () {
@@ -62,11 +62,11 @@ var EditGroupThumbnailDlg = Class.create({
 					rows: [
 						[ { text: 'Choose Thumbnail:' } ],
 						[ { image: 'image', size: '47', klass: 'edit_group_thumbnail' }, { hidden: 'id', value: group_id } ],
-						[ { rowClass: 'last_row' }, { button: 'Update Thumbnail', url: "/" + controller.toLowerCase() + "s/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'last_row' }, { button: 'Update Thumbnail', url: "/" + controller + "/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 
-			var params = { this_id: "edit_group_thumbnail", pages: [ layout ], body_style: "new_group_div", row_style: "new_exhibit_row", title: "Edit " + controller + " Thumbnail" };
+			var params = { this_id: "edit_group_thumbnail", pages: [ layout ], body_style: "new_group_div", row_style: "new_exhibit_row", title: "Edit " + label + " Thumbnail" };
 			dlg = new GeneralDialog(params);
 			dlg.changePage('layout', null);
 			dlg.center();
@@ -96,10 +96,10 @@ var GroupNewPost = Class.create({
 });
 
 var ClusterNewPost = Class.create({
-	initialize: function (progress_img, group_id, group_name, cluster_id, cluster_name, is_logged_in, license) {
+	initialize: function (progress_img, group_id, group_name, cluster_id, cluster_name, cluster_label, is_logged_in, license) {
 
 		new ForumReplyDlg({ group_id: group_id, group_name: group_name,
-			cluster_id: cluster_id, cluster_name: cluster_name,
+			cluster_id: cluster_id, cluster_name: cluster_name, cluster_label: cluster_label,
 			submit_url: '/forum/post_comment_to_new_thread',
 			populate_exhibit_url: '/forum/get_exhibit_list',
 			populate_collex_obj_url: '/forum/get_nines_obj_list',

@@ -33,10 +33,10 @@ var selectGroup = function(id, options, value) {
 		target_els: [ null ] });
 };
 
-var selectCluster = function(id, options, value) {
+var selectCluster = function(id, options, value, clusterLabel) {
 	new SelectInputDlg({
-		title: 'Select Cluster',
-		prompt: 'Cluster',
+		title: 'Select ' + clusterLabel,
+		prompt: clusterLabel,
 		id: 'cluster',
 		options: options,
 		okStr: 'Save',

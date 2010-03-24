@@ -38,6 +38,7 @@ var ForumReplyDlg = Class.create({
 			topic_id = -1;
 		var cluster_id = params.cluster_id;
 		var group_name = params.group_name;
+		var cluster_label = params.cluster_label;
 		var cluster_name = params.cluster_name;
 		var thread_id = params.thread_id;
 		var submit_url = params.submit_url;
@@ -202,7 +203,7 @@ var ForumReplyDlg = Class.create({
 					[ { custom: licenseDisplay, klass: 'forum_reply_license title hidden' }, { text: 'Title', klass: 'forum_reply_label title hidden' } ],
 					[ { input: 'title', value: starting_title, klass: 'forum_reply_input title hidden' } ],
 					[ { text: "Group: " + group_name, klass: 'group hidden' } ],
-					[ { text: "Cluster: " + cluster_name, klass: 'cluster hidden' } ],
+					[ { text: cluster_label + ": " + cluster_name, klass: 'cluster hidden' } ],
 					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading discussion topics. Please Wait...' } ] }],
 					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],

@@ -24,7 +24,7 @@
 <div class="group_details_left">
 	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "cluster_#{cluster.id}", :url => get_cluster_image_url(group, cluster), :show_immediately => true, :height => 120, :border => true } %>
 	<% if group.group_type != 'classroom' && group.can_edit(user_id) -%>
-		<br /><%= link_to_function("[#{cluster.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{cluster.id}, '#{get_url_for_internal_image(cluster.image)}', 'Cluster');", :class => 'nav_link') %>
+		<br /><%= link_to_function("[#{cluster.image == nil ? 'add' : 'edit'} thumbnail]", "new EditGroupThumbnailDlg(#{cluster.id}, '#{group.get_clusters_label()}', 'clusters');", :class => 'nav_link') %>
 		<% if cluster.image != nil -%>
 		<div class="profile_remove_picture"><%= link_to "Remove Thumbnail", { :controller => 'clusters', :action => 'remove_profile_picture', :id => cluster.id }, { :id => 'remove_picture', :method => 'post' } %></div>
 		<script type="text/javascript">
@@ -51,12 +51,12 @@
 </div>
 <div class="cluster_details_center">
 	<h1><%=link_to( h(group.name), { :controller => 'groups', :action => 'show', :id => group.get_visible_id() }, { :class => 'nav_link' }) %> > <%=h cluster.name %><%= link_to_function('[edit title]', "editTitle(#{cluster.id}, '#{cluster.name}', 'cluster');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
-	<div class="group_description_label"><span class="group_details_label">Cluster Description</span> <%= link_to_function('[edit]', "editDescription(#{cluster.id}, '#{cluster.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'cluster', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_description_label"><span class="group_details_label"><%= group.get_clusters_label() %> Description</span> <%= link_to_function('[edit]', "editDescription(#{cluster.id}, '#{cluster.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'cluster', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
 	<div class="group_description"><%= decode_exhibit_links(cluster.description.gsub("\n", "<br />")) %></div>
 <% if group.can_edit(user_id) -%>
 	<div class="group_editors">URL is <%= url_for( :controller => cluster.get_visible_url, :only_path => false) %> <%= link_to_function('[Change URL]', "editURL(#{cluster.id}, '#{cluster.visible_url}', 'cluster', '#{url_for( :controller => 'groups', :action => group.get_visible_id(), :only_path => false)}/');", :class => 'nav_link') %></div>
-	<div class="group_editors">Cluster is visible to <%= cluster.get_friendly_visibility_string() %> <%= link_to_function('[Change Visibility]', "changeClusterVisibility('/clusters/update', #{cluster.id}, '#{cluster.get_visibility()}', #{cluster.get_friendly_visibility_list().to_json()}, 'cluster_details', '#{group.get_clusters_label()}');", :class => 'nav_link') %></div>
+	<div class="group_editors"><%= group.get_clusters_label() %> is visible to <%= cluster.get_friendly_visibility_string() %> <%= link_to_function('[Change Visibility]', "changeClusterVisibility('/clusters/update', #{cluster.id}, '#{cluster.get_visibility()}', #{cluster.get_friendly_visibility_list().to_json()}, 'cluster_details', '#{group.get_clusters_label()}');", :class => 'nav_link') %></div>
 <% end -%>
-	<div class="group_editors"><%= link_to('[delete cluster]', cluster, :confirm => 'Are you sure you wish to permanently delete this cluster?', :method => :delete, :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_editors"><%= link_to("[delete #{group.get_clusters_label()}]", cluster, :confirm => "Are you sure you wish to permanently delete this #{group.get_clusters_label()}?", :method => :delete, :class => 'nav_link') if group.can_edit(user_id) %></div>
 </div>
 <div class="clear_both"></div>

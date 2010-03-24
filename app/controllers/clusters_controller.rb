@@ -32,7 +32,7 @@ class ClustersController < ApplicationController
 		group_id = cluster.group_id
 		cluster = Cluster.find_by_group_id_and_visible_url(group_id, url)
 		if cluster != nil
-			render :text => 'The URL matches another cluster. Choose a different one.', :status => :bad_request
+			render :text => "The URL matches another #{Group.get_clusters_label(group_id)}. Choose a different one.", :status => :bad_request
 		else
 			render :text => 'The URL is accepted. Please wait.'
 		end
@@ -47,7 +47,7 @@ class ClustersController < ApplicationController
 		exhibit.cluster_id = dest_cluster == '0' ? nil : dest_cluster
 		exhibit.save!
 		cluster = cluster_id == '0' ? nil : Cluster.find(cluster_id)
-		GroupsUser.email_hook("exhibit", group_id, "An exhibit in #{Group.find(group_id).name} has been moved", "#{get_curr_user().fullname} has moved the exhibit #{exhibit.title} to cluster #{cluster ? cluster.name : 'no cluster' }.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group_id, "An exhibit in #{Group.find(group_id).name} has been moved", "#{get_curr_user().fullname} has moved the exhibit \"#{exhibit.title}\" to #{Group.get_clusters_label(group_id)} \"#{cluster ? cluster.name : "no #{Group.get_clusters_label(group_id)}" }\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		render :partial => '/groups/group_exhibits_list', :locals => { :group => Group.find(group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 end
 
@@ -56,7 +56,7 @@ end
     cluster = Cluster.find(id)
 		cluster.image = nil
 		cluster.save
-		GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail removed in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has removed the separate thumbnail from #{cluster.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail removed in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has removed the separate thumbnail from the #{Group.get_clusters_label(cluster.group_id)} \"#{cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
     redirect_to :back
 	end
 
@@ -72,7 +72,7 @@ end
 			if cluster.save
 				cluster.image.save! if cluster.image
 				flash = "OK:Thumbnail updated"
-				GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail changed in cluster in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has uploaded a new thumbnail picture to the cluster #{cluster.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+				GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail changed in #{Group.get_clusters_label(cluster.group_id)} in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has uploaded a new thumbnail picture to the #{Group.get_clusters_label(cluster.group_id)} \"#{cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
 			else
 				flash = "Error updating thumbnail"
 			end
@@ -139,7 +139,7 @@ end
 			name = params[:cluster][:name]
 			cluster = Cluster.find_by_group_id_and_name(group_id, name)
 			if cluster != nil
-				flash = "Duplicate cluster name. Please choose another."
+				flash = "Duplicate #{Group.get_clusters_label(group_id)} name. Please choose another."
 			else
 				@cluster = Cluster.new(params[:cluster])
 				@cluster.image = image
@@ -153,35 +153,36 @@ end
 						flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 					end
 					if err == false
-						GroupsUser.email_hook("group", group_id, "New cluster in #{Group.find(group_id).name}", "#{get_curr_user().fullname} has created the cluster #{@cluster.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+						GroupsUser.email_hook("group", group_id, "New #{Group.get_clusters_label(group_id)} in #{Group.find(group_id).name}", "#{get_curr_user().fullname} has created the #{Group.get_clusters_label(group_id)} \"#{@cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
 						flash = "OK:#{@cluster.id}"
 					end
 				else
-					flash = "Error creating cluster"
+					flash = "Error creating #{Group.get_clusters_label(group_id)}"
 				end
 			end
 		rescue
-			flash = "Server error when creating cluster."
+			flash = "Server error when creating #{Group.get_clusters_label(group_id)}."
 		end
     render :text => "<script type='text/javascript'>window.top.window.stopNewClusterUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
   # PUT /clusters/1
   # PUT /clusters/1.xml
-  def update
-    @cluster = Cluster.find(params[:id])
+	def update
+		@cluster = Cluster.find(params[:id])
 		@cluster.update_attributes(params[:cluster])
-	GroupsUser.email_hook("group", @cluster.group_id, "Cluster changed in #{Group.find(@cluster.group_id).name}", "#{get_curr_user().fullname} has updated the cluster #{@cluster.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		which = params[:cluster].keys.join(" and ")
+		GroupsUser.email_hook("group", @cluster.group_id, "#{Group.get_clusters_label(@cluster.group_id)} changed in #{Group.find(@cluster.group_id).name}", "#{get_curr_user().fullname} has updated the field \"#{which}\" in #{Group.get_clusters_label(@cluster.group_id)} \"#{@cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		render :partial => 'cluster_details', :locals => { :group => Group.find(@cluster.group_id), :cluster => @cluster, :user_id => get_curr_user_id() }
-  end
+	end
 
   # DELETE /clusters/1
   # DELETE /clusters/1.xml
   def destroy
     @cluster = Cluster.find(params[:id])
 		group_id = @cluster.group_id
-		GroupsUser.email_hook("group", group_id, "Cluster deleted in #{Group.find(@cluster.group_id).name}", "#{get_curr_user().fullname} has deleted the cluster #{@cluster.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("group", group_id, "#{Group.get_clusters_label(@cluster.group_id)} deleted in #{Group.find(@cluster.group_id).name}", "#{get_curr_user().fullname} has deleted the #{Group.get_clusters_label(@cluster.group_id)} \"#{@cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
     @cluster.destroy
 
 		# Also remove the exhibits and discussions from being in the cluster.

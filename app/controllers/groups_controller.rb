@@ -555,7 +555,8 @@ class GroupsController < ApplicationController
 			end
 		end
 
-		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "The group was updated.\n#{params[:group].to_a().join("\n")}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		which = params[:group].keys.join(" and ")
+		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{get_curr_user().fullname} has updated the field \"#{which}\" in #{@group.name}.\n#{params[:group].to_a().join("\n")}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 	  curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil

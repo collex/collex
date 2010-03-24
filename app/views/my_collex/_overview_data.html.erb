@@ -53,13 +53,13 @@
 		<span class="exhibit_profile_label">Group: </span><span id="overview_group" class="overview_field"><%= group_name %>&nbsp;<%= link_to_function("[change group]", "selectGroup(#{exhibit.id}, #{users_groups.to_json()}, '#{exhibit.group_id}');", { :class => 'modify_link' }) if has_groups %></span>
 	<% if exhibit.group_id && Cluster.find_by_group_id(exhibit.group_id) != nil -%>
 		<div>
-		<% cluster_name = exhibit.cluster_id ? link_to(Cluster.find(exhibit.cluster_id).name, { :controller => 'clusters', :action => 'show', :id => exhibit.cluster_id }, { :class => 'nav_link'}) : "No Cluster Selected" -%>
-		<% groups_clusters = [{ :value => '', :text => "No Cluster Selected" }] -%>
+			<% cluster_name = exhibit.cluster_id ? link_to(Cluster.find(exhibit.cluster_id).name, { :controller => 'clusters', :action => 'show', :id => exhibit.cluster_id }, { :class => 'nav_link'}) : "No #{Group.get_clusters_label(exhibit.group_id)} Selected" -%>
+		<% groups_clusters = [{ :value => '', :text => "No #{Group.get_clusters_label(exhibit.group_id)} Selected" }] -%>
 		<% clusters = Cluster.find_all_by_group_id(exhibit.group_id) -%>
 		<% for cluster in clusters -%>
 		<% groups_clusters.push({ :value => "#{cluster.id}", :text => cluster.name }) -%>
 		<% end  -%>
-		<span class="exhibit_profile_label">Cluster: </span><span id="overview_cluster" class="overview_field"><%= cluster_name %>&nbsp;<%= link_to_function("[select cluster]", "selectCluster(#{exhibit.id}, #{groups_clusters.to_json()}, '#{exhibit.cluster_id}');", { :class => 'modify_link' }) %></span>
+		<span class="exhibit_profile_label"><%= Group.get_clusters_label(exhibit.group_id) %>: </span><span id="overview_cluster" class="overview_field"><%= cluster_name %>&nbsp;<%= link_to_function("[select #{Group.get_clusters_label(exhibit.group_id)}]", "selectCluster(#{exhibit.id}, #{groups_clusters.to_json()}, '#{exhibit.cluster_id}', '#{Group.get_clusters_label(exhibit.group_id)}');", { :class => 'modify_link' }) %></span>
 		</div>
 	<% end  -%>
 		<div>

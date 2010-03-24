@@ -60,7 +60,7 @@
 		<li><%= link_to_function("Change which #{group.get_exhibits_label()}s are shown", "changeWhichExhibitsAreShown(#{group.id}, gGroupData.show_exhibits, #{Group.show_exhibits_to_json()}, #{Group.show_exhibits_explanations_to_json()}, '#{group.get_exhibits_label()}');", { :class => 'modify_link' }) %></li>
 	</ul>
 <% else #if cluster == nil -%>
-	<%= link_to_function("[move exhibit to cluster]", "moveExhibitToCluster('/clusters/move_exhibit', #{group.id}, #{cluster.id}, gNonClusteredExhibits, 'group_exhibits', '#{group.get_exhibits_label()}', '#{group.get_clusters_label()}')", { :class => 'modify_link' }) %>
+	<%= link_to_function("[move exhibit to #{group.get_clusters_label()}]", "moveExhibitToCluster('/clusters/move_exhibit', #{group.id}, #{cluster.id}, gNonClusteredExhibits, 'group_exhibits', '#{group.get_exhibits_label()}', '#{group.get_clusters_label()}')", { :class => 'modify_link' }) %>
 <% end #if cluster == nil -%>
 </div>
 <% else # if group.can_edit(user_id) -%>

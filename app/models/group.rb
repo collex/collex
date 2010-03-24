@@ -344,6 +344,20 @@ class Group < ActiveRecord::Base
 		return 'Cluster' if self.clusters_label == nil
 		return self.clusters_label
 	end
+
+	def self.get_exhibits_label(group_id)
+		return 'Exhibit' if group_id == nil
+		group = Group.find_by_id(group_id)
+		return 'Exhibit' if group == nil
+		return group.get_exhibits_label()
+	end
+
+	def self.get_clusters_label(group_id)
+		return 'Cluster' if group_id == nil
+		group = Group.find_by_id(group_id)
+		return 'Cluster' if group == nil
+		return group.get_clusters_label()
+	end
 	#
 	# enumerations
 	#
