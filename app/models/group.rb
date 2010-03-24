@@ -239,6 +239,14 @@ class Group < ActiveRecord::Base
 		return ret
 	end
 
+	def get_membership_list_truncated(max)
+		mems = get_membership_list()
+		return mems if mems.length <= max
+
+		mems = mems.sort_by { rand }
+		return mems.slice(0, max)
+	end
+
 	def get_number_of_members()
 		list = get_membership_list()
 		return list.length + 1 # the regular members plus the owner

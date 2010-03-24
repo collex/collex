@@ -18,6 +18,7 @@
 <script type="text/javascript">
 	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
 	<% membership = group.get_membership_list() -%>
+	<% membership_truncated = group.get_membership_list_truncated(44) -%>
 	gMembership = <%= membership.to_json() %>;
 	gGroupData = <%= group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;') %>.group;
 </script>
@@ -53,18 +54,19 @@
 		<!-- <li class="group_back_to_exhibits_link"><%= link_to "[ Back to Exhibits List ]", "/exhibits", :class => 'nav_link' %></li> -->
 		<% if group.can_edit(user_id) || group.show_membership %>
 		<% membership.insert(0, { :user_id => group.owner}) -%>
+		<% membership_truncated.insert(0, { :user_id => group.owner}) -%>
 		<%# membership = membership + membership + membership +membership +membership -%>
 		<li><span class="group_details_label">Group Membership</span>
 			<div class="group_member_explanation">This group has <%= pluralize(membership.length, "member")  %>. (hover over each thumbnail to see the member's name)</div>
 		<div class="group_member_palette_items">
 		<table>
 			<% count = 0 -%>
-			<% while count < membership.length do -%>
+			<% while count < membership_truncated.length do -%>
 				<tr>
 					<% 0.upto(8) do -%>
 						<td>
-							<% if count < membership.length -%>
-								<%= get_user_link_with_thumbnail(membership[count][:user_id], 25) %>
+							<% if count < membership_truncated.length -%>
+								<%= get_user_link_with_thumbnail(membership_truncated[count][:user_id], 25) %>
 								<% count = count + 1 -%>
 							<% else -%>
 								<div style="width:25px;height:25px;"></div>
