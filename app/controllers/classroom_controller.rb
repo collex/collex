@@ -51,7 +51,9 @@ class ClassroomController < ApplicationController
 	end
 
 	def page
-		session[:classroom_page_num] = params[:page].to_i - 1
+		pg = params[:page]
+		pg = pg.to_i if pg != nil
+		session[:classroom_page_num] = pg - 1 if pg != nil && pg > 0
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 
