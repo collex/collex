@@ -100,6 +100,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.tag_rss '/tags/rss/:tag.xml', :controller => 'tag', :action => 'rss'
   map.tag_obj '/tags/object', :controller => 'tag', :action => 'object'
+  map.tag_res '/tags/results', :controller => 'tag', :action => 'results'
 
   map.news '/news', :controller => 'about', :action => 'news'
   map.search '/search', :controller => 'search', :action => 'browse'
