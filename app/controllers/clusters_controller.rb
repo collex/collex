@@ -47,7 +47,7 @@ class ClustersController < ApplicationController
 		exhibit.cluster_id = dest_cluster == '0' ? nil : dest_cluster
 		exhibit.save!
 		cluster = cluster_id == '0' ? nil : Cluster.find(cluster_id)
-		GroupsUser.email_hook("exhibit", group_id, "An exhibit in #{Group.find(group_id).name} has been moved", "#{get_curr_user().fullname} has moved the exhibit \"#{exhibit.title}\" to #{Group.get_clusters_label(group_id)} \"#{cluster ? cluster.name : "no #{Group.get_clusters_label(group_id)}" }\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group_id, "An #{group.get_exhibits_label()} in #{Group.find(group_id).name} has been moved", "#{get_curr_user().fullname} has moved the #{group.get_exhibits_label()} \"#{exhibit.title}\" to #{Group.get_clusters_label(group_id)} \"#{cluster ? cluster.name : "no #{Group.get_clusters_label(group_id)}" }\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		render :partial => '/groups/group_exhibits_list', :locals => { :group => Group.find(group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 end
 

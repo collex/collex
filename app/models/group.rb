@@ -478,9 +478,9 @@ class Group < ActiveRecord::Base
 		return ""
 	end
 	def self.friendly_to_show_exhibits(permissions)
-		return self.show_exhibits[0] if self.friendly_show_exhibits()[0] == show_exhibits
-		return self.show_exhibits[1] if self.friendly_show_exhibits()[1] == show_exhibits
-		return self.show_exhibits[2] if self.friendly_show_exhibits()[2] == show_exhibits
+		return self.show_exhibits[0] if self.friendly_show_exhibits()[0] == permissions
+		return self.show_exhibits[1] if self.friendly_show_exhibits()[1] == permissions
+		return self.show_exhibits[2] if self.friendly_show_exhibits()[2] == permissions
 		return ""
 	end
 	def self.show_exhibits_to_json()
