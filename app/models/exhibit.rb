@@ -670,6 +670,20 @@ class Exhibit < ActiveRecord::Base
 		return User.find((self.alias_id != nil && self.alias_id > 0) ? self.alias_id : self.user_id)
 	end
 
+	def get_authors()
+		users = [ get_apparent_author() ]
+		if self.additional_authors
+			ids = self.additional_authors.split(',')
+			ids.each {|id|
+				user = User.find_by_id(id)
+				if user
+					users.push(user)
+				end
+			}
+		end
+		return users
+	end
+
 	def get_apparent_author_name()
 		# This gets the alias if there is one, and the real author if there isn't.
 		author_rec = get_apparent_author()

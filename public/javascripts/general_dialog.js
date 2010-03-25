@@ -984,11 +984,28 @@ var ConfirmLinkDlg =  Class.create({
 	}
 });
 
+// Parameters:
+//	title: The title of the dialog.
+//	prompt: Text that appears just above or to the left of the input control.
+//	id: The id that is sent to the server with the value the user enters.
+//	okStr: The text on the button that sends the data to the server. (Default: 'Ok')
+//	actions: An array of the URLs that will AJAXed, or a string containing a URL to be AJAXed, or a comma separated string of the URLs to be AJAXed.
+//	onSuccess: A function to call with one parameter: the response object from Ajax, after the operation was successful and the dlg is dismissed. (optional)
+//	onFailure: A function to call with one parameter: the response object from Ajax, if the operation was unsuccessfull the dlg is not dismissed. (optional)
+//	target_els: null, if this should not be Ajax, but should PUT the form instead, or the same format as the actions parameters. This is a list of ids to <div> that will be updated by the ajax calls.
+//	extraParams: This is a hash that is passed directly through the Ajax call to the server. (optional)
+//	noDefault: if this is true, then there is no default button; that is, the enter key will do nothing. (default: false)
+//	pleaseWaitMsg: This is the flash message that appears when the Ajax call is in progress. (default: "Please wait...")
+//	verify: This is a URL to call to verify the user's parameters. If the response comes back with a status of 200, then the actions are performed, otherwise the text that is returned is displayed as a flash message. (optional)
+//	verifyFxn: A function that is called when the user hits ok and before any Ajax call is made. The data that will be Ajaxed is passed as a hash. It returns null if the parameters are ok, or a string that should be displayed if there is a problem (optional)
+//	body_style: The css style of the dialog. (default: message_box_dlg)
+//	populate: This is a function that is called after the dlg appears. The dlg object is passed to it. (optional)
+//
 var singleInputDlg = function(params, input) {
 	var title = params.title;
 	var prompt = params.prompt;
 	var id = params.id;
-	var okStr = params.okStr;
+	var okStr = params.okStr ? params.okStr : 'Ok';
 	var actions = params.actions;
 	var onSuccess = params.onSuccess;
 	var onFailure = params.onFailure;
@@ -1000,6 +1017,7 @@ var singleInputDlg = function(params, input) {
 	var verifyUrl = params.verify;
 	var verifyFxn = params.verifyFxn;
 	var body_style = params.body_style === undefined ? "message_box_dlg": params.body_style;
+	var populate = params.populate;
 
 	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
 	this.class_type = 'singleInputDlg';	// for debugging
@@ -1035,6 +1053,10 @@ var singleInputDlg = function(params, input) {
 		if (verifyUrl)
 			recurseUpdateWithAjax([ verifyUrl ], [ 'bit_bucket' ], onVerified, onNotVerified, extraParams);
 		else
+			if (typeof actions === 'string')
+				actions = [ actions ];
+			if (typeof target_els === 'string')
+				target_els = [ target_els ];
 			recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
 //			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
 //			updateWithAjax(ajaxparams);
@@ -1057,6 +1079,8 @@ var singleInputDlg = function(params, input) {
 	dlg = new GeneralDialog(dlgparams);
 	dlg.changePage('layout', dlg.makeId(id));
 	dlg.center();
+	if (populate)
+		populate(dlg);
 };
 
 var TextInputDlg = Class.create({
@@ -1069,13 +1093,48 @@ var TextInputDlg = Class.create({
 	}
 });
 
+// Parameters:
+// options: Array of hash values: { text: 'the displayed value', value: 'the value returned to the server' }
+// value: The initial value when the dlg first appears (optional)
+// explanation: An array of strings that corresponds to the options above. When the user changes the selection, then the value automatically appears.
+// populateUrl: If you want to make an Ajax call to fill the select box, pass a url here. The options parameter will generally just contain a placeholder in this case.
+// + plus all the parameters for singleInputDlg.
+//
 var SelectInputDlg = Class.create({
 	initialize: function (params) {
 		var id = params.id;
 		var options = params.options;
 		var explanation = params.explanation;
 		var value = params.value;
+		var populateUrl = params.populateUrl;
 		var input = {select: id, klass: 'select_dlg_input', options: options, value: value};
+
+		var populate = function(dlg)
+		{
+			new Ajax.Request(populateUrl, { method: 'get', parameters: { },
+				onSuccess : function(resp) {
+					var vals = [];
+					dlg.setFlash('', false);
+					try {
+						if (resp.responseText.length > 0)
+							vals = resp.responseText.evalJSON(true);
+					} catch (e) {
+						new MessageBoxDlg("Error", e);
+					}
+					// We got all the users. Now put it on the dialog
+					var sel_arr = $$('.select_dlg_input');
+					var select = sel_arr[0];
+					select.update('');
+					vals = vals.sortBy(function(user) { return user.text; });
+					vals.each(function(user) {
+						select.appendChild(new Element('option', { value: user.value }).update(user.text));
+					});
+				},
+				onFailure : function(resp) {
+					dlg.setFlash(resp.responseText, true);
+				}
+			});
+		};
 
 		if (explanation) {
 			var valToExpl = function(value) {
@@ -1093,6 +1152,8 @@ var SelectInputDlg = Class.create({
 			input.change = select_changed;
 			params.explanation_text = valToExpl(value);
 		}
+		if (populateUrl)
+			params.populate = populate;
 		singleInputDlg(params, input);
 	}
 });

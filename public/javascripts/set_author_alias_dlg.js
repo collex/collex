@@ -16,84 +16,34 @@
 
 /*global $$, Element, Class, Ajax */
 /*global GeneralDialog, MessageBoxDlg */
-/*extern SetExhibitAuthorAlias */
+/*extern setExhibitAuthorAlias, addAdditionalAuthor */
 
-var SetExhibitAuthorAlias = Class.create({
-	initialize: function (progress_img, url_get_users, url_update_alias, exhibit_id, page_id, page_num) {
-		// This puts up a modal dialog that allows the user to select the objects to be in this exhibit.
-		this.class_type = 'SetExhibitAuthorAlias';	// for debugging
+function setExhibitAuthorAlias(url_get_users, url_update_alias, exhibit_id, page_id, page_num) {
+	new SelectInputDlg({
+		title: "Choose User to Publish As",
+		prompt: 'Select the user that you wish to impersonate',
+		id: 'user_id',
+		actions: url_update_alias,
+		target_els: page_id,
+		extraParams: { exhibit_id: exhibit_id, page_num: page_num },
+		pleaseWaitMsg: 'Updating Exhibit\'s Author...',
+		body_style: "edit_palette_dlg",
+		options: [ { value: -1, text: 'Loading user names. Please Wait...' } ],
+		populateUrl: url_get_users
+	});
+}
 
-		// private variables
-		//var This = this;
-		var users = [];
-		var dlg = null;
-
-		// private functions
-		var populate = function()
-		{
-			new Ajax.Request(url_get_users, { method: 'get', parameters: { },
-				onSuccess : function(resp) {
-					dlg.setFlash('', false);
-					try {
-						if (resp.responseText.length > 0)
-							users = resp.responseText.evalJSON(true);
-					} catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					// We got all the users. Now put it on the dialog
-					var sel_arr = $$('.user_alias_select');
-					var select = sel_arr[0];
-					select.update('');
-					users = users.sortBy(function(user) { return user.text; });
-					users.each(function(user) {
-						select.appendChild(new Element('option', { value: user.value }).update(user.text));
-					});
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
-
-		// privileged functions
-		this.sendWithAjax = function (event, params)
-		{
-			//var curr_page = params.curr_page;
-			var url = params.destination;
-			var dlg = params.dlg;
-
-			dlg.setFlash('Updating Exhibit\'s Author...', false);
-			var data = dlg.getAllData();
-			data.exhibit_id = exhibit_id;
-			data.page_num = page_num;
-
-			new Ajax.Updater(page_id, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
-				}
-			});
-		};
-
-		var dlgLayout = {
-				page: 'choose_objects',
-				rows: [
-					[ { text: 'Select the user that you wish to impersonate', klass: 'new_exhibit_instructions' } ],
-					[ { select: 'user_id', klass: 'user_alias_select', options: [ { value: -1, text: 'Loading user names. Please Wait...' } ] } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_alias, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
-				]
-			};
-
-		var params = { this_id: "set_exhibit_author_alias_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
-		dlg = new GeneralDialog(params);
-		dlg.changePage('choose_objects', 'user_id');
-		dlg.center();
-		populate(dlg);
-	}
-});
-
-
+function addAdditionalAuthor(url_get_users, url_add_author, exhibit_id, page_id, page_num) {
+	new SelectInputDlg({
+		title: "Add Additional Author",
+		prompt: 'Select the user that you wish to add to the author line',
+		id: 'user_id',
+		actions: url_add_author,
+		target_els: page_id,
+		extraParams: { exhibit_id: exhibit_id, page_num: page_num },
+		pleaseWaitMsg: 'Adding Author to Exhibit...',
+		body_style: "edit_palette_dlg",
+		options: [ { value: -1, text: 'Loading user names. Please Wait...' } ],
+		populateUrl: url_get_users
+	});
+}

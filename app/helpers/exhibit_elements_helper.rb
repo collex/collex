@@ -32,14 +32,41 @@ module ExhibitElementsHelper
     return user.fullname
   end
   
+  def get_exhibits_username_list(exhibit)
+    users = exhibit.get_authors()
+	names = ""
+	users.each {|user|
+		if names.length > 0
+			if user.id == users.last.id
+				names += ' and '
+			else
+				names += ', '
+			end
+		end
+		names += user.fullname
+	}
+    return names
+  end
+
   def get_exhibits_user_institution(exhibit)
     user = exhibit.get_apparent_author()
     return user.institution
   end
   
   def get_exhibit_user_link(exhibit)
-    owner = exhibit.get_apparent_author()
-    get_user_link(owner)
+    users = exhibit.get_authors()
+	names = ""
+	users.each {|user|
+		if names.length > 0
+			if user.id == users.last.id
+				names += ' and '
+			else
+				names += ', '
+			end
+		end
+		names += get_user_link(user)
+	}
+    return names
   end
 
 	def draw_footnote(footnote_id, parent_id, is_edit_mode)
