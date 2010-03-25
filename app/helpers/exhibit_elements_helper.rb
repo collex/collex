@@ -32,18 +32,23 @@ module ExhibitElementsHelper
     return user.fullname
   end
   
-  def get_exhibits_username_list(exhibit)
+  def get_exhibits_username_list(exhibit, is_edit_mode)
     users = exhibit.get_authors()
 	names = ""
 	users.each {|user|
+		del_link = ''
 		if names.length > 0
 			if user.id == users.last.id
 				names += ' and '
 			else
 				names += ', '
 			end
+			del_link = link_to_function("[X]", "ajaxWithProgressDlg('/my_collex/remove_additional_author', 'exhibit_page', { title: 'Removing Author' }, { exhibit_id: #{exhibit.id}, user_id: #{user.id}} )", :class => 'nav_link')
 		end
 		names += user.fullname
+		if names.length > 0 && is_edit_mode
+			names += del_link
+		end
 	}
     return names
   end

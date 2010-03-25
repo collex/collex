@@ -1006,6 +1006,20 @@ class MyCollexController < ApplicationController
 		render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => page_num, :is_edit_mode => true, :top => nil, :badge_pos => 'none' }
 	end
 
+	def remove_additional_author
+		exhibit_id = params[:exhibit_id]
+		user_id = params[:user_id]
+		user = get_user(session)
+		exhibit = Exhibit.find(exhibit_id)
+		if user_id.to_i > 0 && Exhibit.can_edit(user, exhibit_id)
+			authors = exhibit.additional_authors == nil ? [] : exhibit.additional_authors.split(',')
+			authors.delete(user_id)
+			exhibit.additional_authors = authors.join(',')
+			exhibit.save
+		end
+		render :partial => '/exhibits/exhibit_page', :locals => { :exhibit => exhibit, :page_num => 1, :is_edit_mode => true, :top => nil, :badge_pos => 'none' }
+	end
+
   def modify_outline_page
     exhibit_id = params['exhibit_id']
     page_num = params['page_num'].to_i

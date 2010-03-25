@@ -21,7 +21,7 @@
 	<img src="<%= badge_path %>" alt="Peer Reviewed" style="position:absolute;<%= 'right:40px;' if badge_pos == 'right' %>" />
 	<% end -%>
 	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
-	<h4 class="exhibit_author" ><%= get_exhibits_username_list(exhibit) %></h4>
+	<h4 class="exhibit_author" ><%= get_exhibits_username_list(exhibit, is_edit_mode) %></h4>
 	<h4 class="exhibit_institution" ><%= get_exhibits_user_institution(exhibit) %></h4>
 </div>
 <% num_pages = exhibit.exhibit_pages.length -%>
