@@ -38,9 +38,10 @@ class Cluster < ActiveRecord::Base
 	end
 
 	def get_visible_url
-		return "/clusters/#{self.id}" if self.visible_url == nil || self.visible_url.length == 0
+		#return "/clusters/#{self.id}" if self.visible_url == nil || self.visible_url.length == 0
 		group = Group.find(self.group_id)
 		group_url = group.get_visible_id()
-		return "/groups/#{group_url}/#{self.visible_url}"
+		cluster_url = self.visible_url && self.visible_url.length > 0 ? self.visible_url : self.id
+		return "/groups/#{group_url}/#{cluster_url}"
 	end
 end

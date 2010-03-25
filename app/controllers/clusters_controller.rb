@@ -27,6 +27,20 @@ class ClustersController < ApplicationController
 
 	def check_url
 		url = params[:cluster]['visible_url']
+		if url == nil || url.length == 0
+			render :text => "No URL given. Please enter one.", :status => :bad_request
+			return
+		end
+		url_int = url.to_i
+		if url_int > 0
+			render :text => "Numbers are not allowed as URLs.", :status => :bad_request
+			return
+		end
+		if url.index(/\W/) != nil
+			render :text => "Only letters, numbers, and underscores are allowed as URLs.", :status => :bad_request
+			return
+		end
+
 		id = params[:id]
 		cluster = Cluster.find(id)
 		group_id = cluster.group_id
@@ -98,6 +112,7 @@ end
 			end
 
 			cluster = Cluster.find_by_group_id_and_visible_url(group.id, cluster_name)
+			cluster = Cluster.find_by_id(cluster_name) if cluster == nil
 			if cluster
 				params[:id] = cluster.id
 			else

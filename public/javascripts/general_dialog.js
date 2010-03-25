@@ -1052,14 +1052,13 @@ var singleInputDlg = function(params, input) {
 		}
 		if (verifyUrl)
 			recurseUpdateWithAjax([ verifyUrl ], [ 'bit_bucket' ], onVerified, onNotVerified, extraParams);
-		else
+		else {
 			if (typeof actions === 'string')
 				actions = [ actions ];
 			if (typeof target_els === 'string')
 				target_els = [ target_els ];
 			recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
-//			var ajaxparams = { action: url, el: el, onComplete: onComplete, onFailure: onFailure, params: { } };
-//			updateWithAjax(ajaxparams);
+		}
 	};
 
 	var dlgLayout = {

@@ -27,6 +27,20 @@ class GroupsController < ApplicationController
 
 	def check_url
 		url = params[:group]['visible_url']
+		if url == nil || url.length == 0
+			render :text => "No URL given. Please enter one.", :status => :bad_request
+			return
+		end
+		url_int = url.to_i
+		if url_int > 0
+			render :text => "Numbers are not allowed as URLs.", :status => :bad_request
+			return
+		end
+		if url.index(/\W/) != nil
+			render :text => "Only letters, numbers, and underscores are allowed as URLs.", :status => :bad_request
+			return
+		end
+
 		id = params[:id]
 		group = Group.find_by_visible_url(url)
 		if group != nil && group.id != id.to_i
