@@ -38,7 +38,7 @@
 					<% total_link = "<a id='top_of_results'>#{create_total(params[:view], @total_hits, params[:tag])}</a>" -%>
 					<% if params[:view] == 'tag' -%>
 						<% edit_tag_link = link_to_function('[Edit Tag]', "editTag('#{create_javascript_friendly_tag_name(params[:tag])}')", { :id => 'edit_tag', :class => 'modify_link' }) -%>
-						<% remove_tag_link = link_to_function('[Remove Tag]', "removeTag('edit_tag', '#{create_javascript_friendly_tag_name(params[:tag])}')", { :class => 'modify_link' }) -%>
+						<% remove_tag_link = link_to_function('[Remove Tag]', "removeTag('edit_tag', '#{create_javascript_friendly_tag_name(params[:tag])}', '#{PROGRESS_SPINNER_PATH}')", { :class => 'modify_link' }) -%>
 						<% extra = "<br /><span class='edit_tag_link'>#{edit_tag_link} #{remove_tag_link}</span>" -%>
 					<% else -%>
 						<% extra = "" -%>

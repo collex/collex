@@ -40,7 +40,7 @@ function editTag(tag_name)
 	});
 }
 
-function removeTag(parent_id, tag_name)
+function removeTag(parent_id, tag_name, progress_img)
 {
 	var remove = function()
 	{
@@ -49,7 +49,7 @@ function removeTag(parent_id, tag_name)
 		document.body.appendChild(new_form);
 		new_form.appendChild(new Element('input', { name: 'tag', value: tag_name, id: 'tag' }));
 
-		$(parent_id).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
+		$(parent_id).appendChild(new Element('img', { src: progress_img, alt: ''}));
 		new_form.submit();
 	};
 	new ConfirmDlg("Remove Tag", "Are you sure you want to remove all instances of the \"" + tag_name + "\" tag that you created?", "Yes", "No", remove);
