@@ -859,6 +859,13 @@ function updateWithAjax(params)
 	});
 }
 
+// Parameters:
+//	actions: An array of the URLs that will AJAXed, or a string containing a URL to be AJAXed, or a comma separated string of the URLs to be AJAXed.
+//	els: An array of divs to update
+//	onSuccess: A function to call if the ajax succeeds (optional)
+//	onFailure: A function to call if the ajax fails (optional)
+//	params: The hash that is sent back with the ajax call
+//
 function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
 {
 	if (typeof actions === 'string') {
@@ -1057,6 +1064,8 @@ var singleInputDlg = function(params, input) {
 				actions = [ actions ];
 			if (typeof target_els === 'string')
 				target_els = [ target_els ];
+			else if (target_els === null || target_els === undefined)
+				target_els = [ null ];
 			recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
 		}
 	};
@@ -1070,10 +1079,12 @@ var singleInputDlg = function(params, input) {
 
 	if (params.explanation_text)
 		dlgLayout.rows.push([ {text: params.explanation_text, id: "postExplanation"}]);
-	dlgLayout.rows.push([{rowClass: 'last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]);
-	if (noDefault)
-		dlgLayout.rows[1][1].isDefault = null;
-
+	if (!params.noOk) {
+		dlgLayout.rows.push([{rowClass: 'last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]);
+		if (noDefault)
+			dlgLayout.rows[1][1].isDefault = null;
+	}
+	
 	var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: body_style, row_style: "message_box_row", title: title};
 	dlg = new GeneralDialog(dlgparams);
 	dlg.changePage('layout', dlg.makeId(id));
@@ -1082,6 +1093,11 @@ var singleInputDlg = function(params, input) {
 		populate(dlg);
 };
 
+// Parameters:
+// value: The initial value when the dlg first appears (optional)
+// inputKlass: The class for the input element
+// + plus all the parameters for singleInputDlg.
+//
 var TextInputDlg = Class.create({
 	initialize: function (params) {
 		var id = params.id;
@@ -1168,6 +1184,14 @@ var TextAreaInputDlg = Class.create({
 	}
 });
 
+// Parameters:
+// title: The title of the dialog.
+// okCallback: A function that is called after the user presses ok and after the dialog has been dismissed.
+// value: The starting value when the dialog is first shown.
+// populate_urls: What to call to get the objects for the Link toolbar button.
+// progress_img: The progress image to show while populating the Link dialog.
+// extraButton: { label: the name of the button, callback: a function that is called when the user pushes the button }.
+//
 var RteInputDlg = Class.create({
 	initialize: function (params) {
 		var title = params.title;

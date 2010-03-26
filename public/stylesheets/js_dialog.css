@@ -914,3 +914,11 @@ textarea.groups_textarea {
 .notifications_item {
 	font-weight: bold;
 }
+
+.saved_search_copy_el {
+	width: 580px;
+}
+
+.saved_search_copy_body {
+	width: 600px;
+}

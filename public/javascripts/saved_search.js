@@ -15,15 +15,19 @@
 // ----------------------------------------------------------------------------
 
 /*global $$, $H */
-/*global doSingleInputPrompt */
+/*global TextInputDlg */
 /*extern showString, showHiddenSavedSearches */
 
-function showString(parent_id, str)
+function showString(str)
 {
-	doSingleInputPrompt("Copy and Paste link into E-mail or IM", 'Link:', 'show_save_name', parent_id,
-		null,
-		null,
-		$H( { show_save_name: str } ), 'text', $H( { width: 70 } ), "Ok" );
+	new TextInputDlg({
+		title: "Copy and Paste link into E-mail or IM",
+		prompt: 'Link:',
+		id: 'show_save_name',
+		value: str,
+		inputKlass: "saved_search_copy_el",
+		body_style: "saved_search_copy_body"
+	});
 }
 
 function showHiddenSavedSearches(class_of_button, class_of_hidden_items)

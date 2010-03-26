@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global $, $$, $H, Element */
-/*global ConfirmDlg, doSingleInputPrompt */
+/*global ConfirmDlg, TextInputDlg */
 /*global document */
 /*extern editTag, removeTag, toggleElementsByClass */
 
@@ -26,12 +26,18 @@ function toggleElementsByClass(cls)
 	els.each(function(el){ el.toggle(); });
 }
 
-function editTag(parent_id, tag_name)
+function editTag(tag_name)
 {
-	doSingleInputPrompt("Edit Tag", 'Tag:', 'new_name', parent_id,
-		"",
-		"/results/edit_tag",
-		$H({ old_name: tag_name, new_name: tag_name }), 'text', null, null );
+	new TextInputDlg({
+		title: "Edit Tag",
+		prompt: "Tag",
+		id: "new_name",
+		actions: "/results/edit_tag",
+		extraParams: { old_name: tag_name },
+		value: tag_name,
+		target_els: null,
+		pleaseWaitMsg: "Editing all objects with this tag..."
+	});
 }
 
 function removeTag(parent_id, tag_name)

@@ -24,7 +24,7 @@
 // ModalDialog is only used once by InputDialog
 // showInLightbox is only used once by thumbnail_image_tag(), in application_helper.
 // showPartialInLightBox is used in all the help html pages and in discussion_threads_helper.
-// currentScrollPos is used in doSingleInputPrompt and y_distance_that_the_element_is_not_in_view (a function in edit_exhibit)
+// currentScrollPos is used in y_distance_that_the_element_is_not_in_view (a function in edit_exhibit)
 // getX [possibly can replace with YAHOO.util.Dom.getX(oItemEl)] / used in input_dialog / duplicated in rich_text_editor_wrapper
 // getY [see getX] / also y_distance_that_the_element_is_not_in_view (a function in edit_exhibit)
 

@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, $H, Element, Ajax, Form */
-/*global MessageBoxDlg, GeneralDialog, doSingleInputPrompt, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, LinkDlgHandler */
+/*global MessageBoxDlg, GeneralDialog, SelectInputDlg, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, LinkDlgHandler */
 /*global ForumLicenseDisplay */
 /*global document, window */
 /*global exhibit_names */
@@ -146,10 +146,6 @@ function bulkTag(event)
 		};
 
 		new TextInputDlg(params);
-//		doSingleInputPrompt("Add Tag To All Checked Objects", 'Tag:', 'tag', 'bulk_tag',
-//			"",
-//			"/results/bulk_add_tag",
-//			$H({ uris: uris }), 'text', null, null );
 	}
 	else
 	{
@@ -157,7 +153,7 @@ function bulkTag(event)
 	}
 }
 
-function bulkCollect(event)
+function bulkCollect()
 {
 	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
 
@@ -361,22 +357,24 @@ function realLinkToEditorLink(str) {
 	return realLinkToEditorLink(prologue + link + ending);	// call recursively to get all the links
 }
 
-function doAnnotation(parent_id, uri, row_num, row_id, curr_annotation_id, populate_collex_obj_url, progress_img)
+function doAnnotation(uri, row_num, row_id, curr_annotation_id, populate_collex_obj_url, progress_img)
 {
 	var existing_note = $(curr_annotation_id).innerHTML;
 	existing_note = existing_note.gsub("<br />", "\n");
 	existing_note = existing_note.gsub("<br>", "\n");
 	existing_note = realLinkToEditorLink(existing_note);
 
-// TODO-PER: Need to send the extra data as a parameter (uri, row_num, and full_text)
-// Also, can't set the name of the RTE field when Ajaxing it.
-//	new RteInputDlg({ title: 'Edit Private Annotation', value: existing_note, populate_nines_obj_url: populate_nines_obj_url, progress_img: progress_img });
+	var okCallback = function(value) {
+		recurseUpdateWithAjax("/results/set_annotation", row_id, null, null, { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) });
+	};
 
-	doSingleInputPrompt("Edit Private Annotation", 'Annotation:', 'note', parent_id,
-		row_id,
-		"/results/set_annotation",
-		$H({ uri: uri, row_num: row_num, full_text: getFullText(row_id), note: existing_note }), 'textarea',
-		$H({ width: 370, height: 100, linkDlgHandler: new LinkDlgHandler([populate_collex_obj_url], progress_img) }), null );
+	new RteInputDlg({
+		title: "Edit Private Annotation",
+		value: existing_note,
+		populate_urls: [populate_collex_obj_url],
+		progress_img: progress_img,
+		okCallback: okCallback
+	});
 }
 
 var StartDiscussionWithObject = Class.create({
@@ -490,15 +488,21 @@ function doAddToExhibit(partial, uri, index, row_id)
 		//var row_num = arr[arr.length-1];
 		var elFullText = $('search_result_' + index + '_full_text');
 		var ft = elFullText ? elFullText.innerHTML : '';
+		var options = [];
+		exhibit_names.each(function(name) {
+			options.push({ text: name, value: name });
+		});
 
-		doSingleInputPrompt("Choose exhibit",
-			'Exhibit:',
-			'exhibit',
-			"exhibit_" + index,
-			row_id + ",exhibited_objects_container",
-			"/results/add_object_to_exhibit,/my_collex/resend_exhibited_objects",
-			$H({ partial: partial, uri: uri, row_num: index, full_text: ft }), 'select',
-			exhibit_names, null);
+		new SelectInputDlg({
+			title: "Choose exhibit",
+			prompt: 'Exhibit:',
+			id: 'exhibit',
+			actions: [ "/results/add_object_to_exhibit", "/my_collex/resend_exhibited_objects" ],
+			target_els: [ row_id, "exhibited_objects_container" ],
+			okStr: "Save",
+			options: options,
+			extraParams: { partial: partial, uri: uri, row_num: index, full_text: ft }
+		});
 	}
 }
 

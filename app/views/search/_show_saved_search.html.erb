@@ -25,7 +25,7 @@
 		<%= create_saved_search_permalink(session[:name_of_search]) %>
 	<% else # if there is no name for this search -%>
 		<% if has_constraints? -%>
-		<%= link_to_function "[save search]", "doSaveSearch('savesearch_link')", {:id => "savesearch_link", :class => 'modify_link'} -%>
+		<%= link_to_function "[save search]", "doSaveSearch()", {:id => "savesearch_link", :class => 'modify_link'} -%>
 		<% end # has constraints -%>
 	<% end # if there is a name for this search -%>
 <% elsif session[:constraints].length > 0 # not logged in, and there's a search -%>

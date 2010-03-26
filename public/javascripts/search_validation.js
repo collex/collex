@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global $, $H, $w, Element */
-/*global MessageBoxDlg, doSingleInputPrompt */
+/*global MessageBoxDlg, TextInputDlg */
 /*global document */
 /*global form_authenticity_token */
 /*extern doSaveSearch, postToUrl, searchValidation */
@@ -110,12 +110,17 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	return true;
 }
 
-function doSaveSearch(parent_id)
+function doSaveSearch()
 {
-	doSingleInputPrompt("Save Search", 'Name:', 'saved_search_name', parent_id,
-		"saved_search_name_span",
-		"/search/save_search",
-		$H({ }), 'text', null, null );
+	new TextInputDlg({
+		title: "Save Search",
+		prompt: 'Name:',
+		id: 'saved_search_name',
+		okStr: 'Save',
+		actions: "/search/save_search",
+		target_els: "saved_search_name_span",
+		pleaseWaitMsg: "Storing the current search..."
+	});
 }
 
 function postToUrl(url, hashParams)

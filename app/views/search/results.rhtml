@@ -33,9 +33,9 @@
 				<%# for preloading the hover images so there is no flashing. -%>
 				<img style="display:none;" src="/images/<%= SKIN %>/lvl2_new_search_rl.jpg" alt="" />
 				<img style="display:none;" src="/images/<%= SKIN %>/lvl2_result_row_button_rl.jpg" alt="" />
-				<img style="display:none;" src="/images/free_culture_hover.gif" alt="" />
-				<img style="display:none;" src="/images/full_text_hover.gif" alt="" />
-				<img style="display:none;" src="/images/has_xml_source_hover.gif" alt="" />
+				<img style="display:none;" src="/images/<%= SKIN %>/free_culture_hover.gif" alt="" />
+				<img style="display:none;" src="/images/<%= SKIN %>/full_text_hover.gif" alt="" />
+				<img style="display:none;" src="/images/<%= SKIN %>/has_xml_source_hover.gif" alt="" />
 				<% if !is_logged_in? -%>
 				    <div>(<%= sign_in_link({ :class => 'nav_link'}) %> or <%= sign_up_link({ :class => 'nav_link' }) %> to save these results)</div>
 				<% end -%>
