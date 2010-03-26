@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global Class, Element, Ajax, $ */
-/*global GeneralDialog, CreateListOfObjects, MessageBoxDlg */
+/*global GeneralDialog, CreateListOfObjects, genericAjaxFail */
 /*extern EditExhibitObjectListDlg, ObjectSelector, doRemoveObjectFromExhibit */
 
 ////////////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ var EditExhibitObjectListDlg = Class.create({
 					dlg.cancel();
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};
@@ -162,7 +162,7 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 		reference.remove();
 	new Ajax.Updater("exhibited_objects_container", "/my_collex/remove_exhibited_object", {
 		parameters : { uri: uri, exhibit_id: exhibit_id },
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+		onFailure : function(resp) { genericAjaxFail(null, resp); }
 	});
 }
 

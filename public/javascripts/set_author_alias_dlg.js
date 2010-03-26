@@ -14,8 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $$, Element, Class, Ajax */
-/*global GeneralDialog, MessageBoxDlg */
+/*global SelectInputDlg */
 /*extern setExhibitAuthorAlias, addAdditionalAuthor */
 
 function setExhibitAuthorAlias(url_get_users, url_update_alias, exhibit_id, page_id, page_num) {

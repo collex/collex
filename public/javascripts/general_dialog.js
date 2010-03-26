@@ -19,7 +19,7 @@
 /*global document, setTimeout, window */
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
-/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
+/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink, genericAjaxFail */
 /*extern showInLightbox, showPartialInLightBox, SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl, ProgressSpinnerDlg, ajaxWithProgressDlg, ajaxWithProgressSpinner */
 
 var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
@@ -737,6 +737,13 @@ var MessageBoxDlg = Class.create({
 	}
 });
 
+function genericAjaxFail(dlg, resp) {
+	if (dlg)
+		dlg.setFlash(resp.responseText, true);
+	else
+		new MessageBoxDlg("Ajax Error", resp.responseText);
+}
+
 var ProgressSpinnerDlg = Class.create({
 	initialize: function (message) {
 		// This puts up a large spinner that can only be canceled through the ajax return status
@@ -824,12 +831,13 @@ function showPartialInLightBox(ajax_url, title, progress_img)
 			$('lightbox_contents').show();
 			lightbox.dlg.center();
 		},
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+		onFailure : function(resp) { genericAjaxFail(lightbox.dlg, resp); }
 	});
 }
 
 function showInLightbox(title, imageUrl, progress_img)
 {
+	var lightbox = null;
 	var loaded = function() {
 		var img_spinner = $('lightbox_img_spinner');
 		if (img_spinner)
@@ -848,7 +856,7 @@ function showInLightbox(title, imageUrl, progress_img)
 	progress.appendChild(new Element('img', { src: progress_img, alt: ''}));
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
-	var lightbox = new ShowDivInLightbox({ title: title, div: form });
+	lightbox = new ShowDivInLightbox({ title: title, div: form });
 	img.observe('load', loaded);
 }
 
@@ -915,7 +923,7 @@ function updateWithAjax(params)
 			if (params.onFailure)
 				params.onFailure(resp);
 			else
-				new MessageBoxDlg("Ajax Error", resp.responseText);
+				genericAjaxFail(null, resp);
 		}
 	});
 }
@@ -1102,7 +1110,7 @@ var singleInputDlg = function(params, input) {
 		recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
 	};
 	var onNotVerified = function(resp) {
-		dlg.setFlash(resp.responseText, true);
+		genericAjaxFail(dlg, resp);
 	};
 	// privileged functions
 	this.ok = function(event, params2)
@@ -1207,7 +1215,7 @@ var SelectInputDlg = Class.create({
 					});
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

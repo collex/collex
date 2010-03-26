@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, Ajax, Element */
-/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler, ForumLicenseDisplay */
+/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler, ForumLicenseDisplay, genericAjaxFail */
 /*global MessageBoxDlg */
 /*global YAHOO */
 /*global window, setTimeout */
@@ -104,7 +104,7 @@ var ForumReplyDlg = Class.create({
 					$('topic_id').writeAttribute('value', topics[0].value);
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};
@@ -175,7 +175,7 @@ var ForumReplyDlg = Class.create({
 						dlg.cancel();
 					},
 					onFailure: function(resp){
-						dlg.setFlash(resp.responseText, true);
+						genericAjaxFail(dlg, resp);
 					}
 				});
 			} else {
@@ -187,7 +187,7 @@ var ForumReplyDlg = Class.create({
 						window.location = redirect;
 					},
 					onFailure: function(resp){
-						dlg.setFlash(resp.responseText, true);
+						genericAjaxFail(dlg, resp);
 					}
 				});
 			}

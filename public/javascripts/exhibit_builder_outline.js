@@ -16,9 +16,8 @@
 
 /*global $, $$, Element, Ajax, Effect */
 /*global YAHOO */
-/*global window */
-/*global MessageBoxDlg */
-/*global supportsFixedPositioning, currentScrollPos */
+/*global window, document */
+/*global supportsFixedPositioning */
 /*extern exhibit_outline, exhibit_outline_pos, initOutline, selectLine, setPageSelected, showExhibitOutline,toggle_by_id */
 /*extern outline_page_height, setOutlineHeight, scroll_to_target, hide_by_id, open_by_id */
 
@@ -138,8 +137,7 @@ function selectLine(id)
 		// The element must be on another page. Go get that.
 		new Ajax.Updater("exhibit_page", "/my_collex/find_page_containing_element", {
 			parameters : { element: target_el },
-			evalScripts : true,
-			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
+			evalScripts : true });
 	}
 }
 

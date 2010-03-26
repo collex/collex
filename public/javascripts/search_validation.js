@@ -14,7 +14,7 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $H, $w, Element */
+/*global $, $w, Element */
 /*global MessageBoxDlg, TextInputDlg */
 /*global document */
 /*global form_authenticity_token */

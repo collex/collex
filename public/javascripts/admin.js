@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, Element, Ajax, $A */
-/*global MessageBoxDlg, GeneralDialog */
+/*global MessageBoxDlg, GeneralDialog, genericAjaxFail */
 /*global window */
 /*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, AjaxUpdate, addBadgeDlg, stopAddBadgeUpload */
 /*extern AddBadgeDlg, AddPublicationImageDlg, EditGroupType, addPublicationImageDlg, stopAddPublicationImageUpload */
@@ -36,7 +36,7 @@ var AjaxUpdate = Class.create({
 				if (validationCallback) {
 					var errorMsg = validationCallback(data);
 					if (errorMsg) {
-						dlg.setFlash(errorMsg);
+						dlg.setFlash(errorMsg, true);
 						reentrant = false;
 						return;
 					}
@@ -51,7 +51,7 @@ var AjaxUpdate = Class.create({
 						reentrant = false;
 					},
 					onFailure : function(resp) {
-						dlg.setFlash(resp.responseText, true);
+						genericAjaxFail(dlg, resp);
 						reentrant = false;
 					}
 				});
@@ -99,7 +99,7 @@ var AddCategoryDlg = Class.create({
 					$('parent_category_id').value = value;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});			
 		};
@@ -181,7 +181,7 @@ var AddSiteDlg = Class.create({
 					$('parent_category_id').value = value;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});			
 		};
@@ -341,7 +341,7 @@ var EditFacetDialog = Class.create({
 					$('carousel_thumbnail_img').src = obj.image;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});	
 		};
@@ -365,7 +365,7 @@ var EditFacetDialog = Class.create({
 						found = true;
 				});
 				if (found) {
-					dlg.setFlash("That category name has already been used.");
+					dlg.setFlash("That category name has already been used.", true);
 					return;
 				}
 			}
@@ -384,7 +384,7 @@ var EditFacetDialog = Class.create({
 					dlg.cancel();
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

@@ -177,12 +177,9 @@ var GridDlg = Class.create({
 			var onSuccess = function(resp) {
 					dlg.cancel();
 			};
-			var onFailure = function(resp) {
-				dlg.setFlash(resp.responseText, true);
-			};
 			var data = dlg.getAllData();
 			var url = params.destination;
-			recurseUpdateWithAjax([url], ['group_details'], onSuccess, onFailure, data);
+			recurseUpdateWithAjax([url], ['group_details'], onSuccess, null, data);
 		};
 
 		var show = function () {
@@ -726,14 +723,11 @@ var setNotificationLevel = function(group_id, groupName, currentNotifications, e
 		var onSuccess = function(resp) {
 			dlg.cancel();
 		};
-		var onFailure = function(resp) {
-			dlg.setFlash("Error: " + resp.responseText, true);
-		};
 		var data = dlg.getAllData();
 		data.group_id = group_id;
 		var url = params.destination;
 		dlg.setFlash('Setting Notifications for ' + groupName + '. Please wait...', false);
-		recurseUpdateWithAjax([url], ['group_details'], onSuccess, onFailure, data);
+		recurseUpdateWithAjax([url], ['group_details'], onSuccess, null, data);
 	};
 
 	var layout = {

@@ -102,15 +102,11 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 			dlg.cancel();
 		};
 
-		var onFailure = function(resp) {
-			dlg.setFlash(resp.responseText, true);
-		};
-
 		var retData = dlg.getAllData();
 		retData.exhibit_id = exhibit_id;
 		retData.element_id = update_id;
 
-		recurseUpdateWithAjax(["/my_collex/edit_exhibit_overview", "/my_collex/update_title"], ["overview_data", "overview_title"], onSuccess, onFailure, retData);
+		recurseUpdateWithAjax(["/my_collex/edit_exhibit_overview", "/my_collex/update_title"], ["overview_data", "overview_title"], onSuccess, null, retData);
 	};
 
 	this.deleteExhibit = function(event, params)

@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $$, $H */
+/*global $$ */
 /*global TextInputDlg */
 /*extern showString, showHiddenSavedSearches */
 

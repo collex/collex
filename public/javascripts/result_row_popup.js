@@ -14,8 +14,8 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, $H, Element, Ajax, Form */
-/*global MessageBoxDlg, GeneralDialog, SelectInputDlg, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, LinkDlgHandler */
+/*global Class, $, $$, Element, Ajax, Form */
+/*global MessageBoxDlg, GeneralDialog, SelectInputDlg, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, RteInputDlg, LinkDlgHandler, recurseUpdateWithAjax, genericAjaxFail */
 /*global ForumLicenseDisplay */
 /*global document, window */
 /*global exhibit_names */
@@ -81,7 +81,7 @@ var ResultRowDlg = Class.create({
 					try {
 						obj = resp.responseText; //.evalJSON(true);
 					} catch (e) {
-						new MessageBoxDlg("Error", e);
+						genericAjaxFail(dlg, e);
 					}
 					
 					
@@ -95,7 +95,7 @@ var ResultRowDlg = Class.create({
 					});
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});			
 		};
@@ -227,7 +227,7 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 			if (successCallback) successCallback(resp);
 			if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
 		},
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+		onFailure : function(resp) { genericAjaxFail(null, resp); }
 	});
 
 	// This operation changes the set of collected objects, so we need to request them again next time.
@@ -241,7 +241,7 @@ function tagFinishedUpdating()
 	if (el_sidebar)
 	{
 		new Ajax.Updater('tag_cloud_div', "/tag/update_tag_cloud", {
-			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+			onFailure : function(resp) { genericAjaxFail(null, resp); }
 		});
 	}
 }
@@ -259,7 +259,7 @@ function doRemoveTag(uri, row_id, tag_name)
 			tagFinishedUpdating();
 			if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
 		},
-		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+		onFailure : function(resp) { genericAjaxFail(null, resp); }
 	});
 }
 
@@ -279,7 +279,7 @@ function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 				if (successCallback) successCallback(resp);
 				if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
 			},
-			onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+			onFailure : function(resp) { genericAjaxFail(null, resp); }
 		});
 
 		// This operation changes the set of collected objects, so we need to request them again next time.
@@ -418,7 +418,7 @@ var StartDiscussionWithObject = Class.create({
 					$('topic_id').writeAttribute('value', topics[0].value);
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};
@@ -449,7 +449,7 @@ var StartDiscussionWithObject = Class.create({
 					window.location = resp.responseText;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

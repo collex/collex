@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global Class, Ajax */
-/*global GeneralDialog */
+/*global GeneralDialog, genericAjaxFail */
 /*extern EditProfileDialog, editProfileDlg, stopUpload */
 
 var editProfileDlg = null;
@@ -65,7 +65,7 @@ var EditProfileDialog = Class.create({
 					dlg.cancel();
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

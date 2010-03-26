@@ -24,14 +24,11 @@
 // This contains functions for the Exhibit Builder page that are not the outline or the profile.
 
 // Refactoring notes:
-// * Combine with initialitze_inplacericheditor
-// * study the Ajax calls. Are they duplicated?
+// * Combine with initialize_inplacericheditor
 //
 // Edit Element: edit bar
 //
 // Edit Element: inplace
-//
-// Generic Ajax
 //
 // sync outline with page
 //

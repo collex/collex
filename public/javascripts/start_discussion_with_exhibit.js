@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, Element, Ajax */
-/*global MessageBoxDlg, GeneralDialog, SignInDlg, LinkDlgHandler */
+/*global MessageBoxDlg, GeneralDialog, SignInDlg, LinkDlgHandler, genericAjaxFail */
 /*global ForumLicenseDisplay */
 /*global window */
 /*extern StartDiscussionWithExhibit */
@@ -63,7 +63,7 @@ var StartDiscussionWithExhibit = Class.create({
 					$('topic_id').writeAttribute('value', topics[0].value);
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};
@@ -96,7 +96,7 @@ var StartDiscussionWithExhibit = Class.create({
 					window.location = resp.responseText;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

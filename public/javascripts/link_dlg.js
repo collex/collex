@@ -16,7 +16,7 @@
 
 /*global Class, $, $$, Element, Ajax, Hash */
 /*global YAHOO */
-/*global GeneralDialog, MessageBoxDlg */
+/*global GeneralDialog, MessageBoxDlg, genericAjaxFail */
 /*extern CacheObjects, CreateListOfObjects, LinkDlgHandler, ninesObjCache */
 
 ////////////////////////////////////////////////////////////////////////////
@@ -261,7 +261,7 @@ var CreateListOfObjects = Class.create({
 						
 					},
 					onFailure: function(resp){
-						dlg.setFlash(resp.responseText, true);
+						genericAjaxFail(dlg, resp);
 					}
 				});
 			}

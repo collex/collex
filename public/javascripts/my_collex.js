@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, $$, $H, Element */
+/*global $, $$, Element */
 /*global ConfirmDlg, TextInputDlg */
 /*global document */
 /*extern editTag, removeTag, toggleElementsByClass */

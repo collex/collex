@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global $, $$, Class, Ajax */
-/*global GeneralDialog */
+/*global GeneralDialog, genericAjaxFail */
 /*global window */
 /*global LinkDlgHandler */
 /*extern CreateGroupWizardDlg, newGroupDlg, stopNewGroupUpload */
@@ -76,7 +76,7 @@ var CreateGroupWizardDlg = Class.create({
 						dlg.changePage(view, null);
 					},
 					onFailure : function(resp) {
-						dlg.setFlash(resp.responseText, true);
+						genericAjaxFail(dlg, resp);
 					}
 				});
 				return false;

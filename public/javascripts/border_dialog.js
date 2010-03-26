@@ -21,7 +21,7 @@
 /*global $, $$, Class, Element, Event, Ajax */
 /*global YAHOO */
 /*global document */
-/*global GeneralDialog, MessageBoxDlg */
+/*global GeneralDialog, genericAjaxFail */
 /*extern BorderDialog */
 
 var BorderDialog = Class.create();
@@ -293,15 +293,14 @@ BorderDialog.prototype = {
 					new Ajax.Updater("exhibit_page", "/my_collex/redraw_exhibit_page", {
 						parameters : { borders: str, element_id: element_id },
 						evalScripts : true,
-						onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }});
+						onFailure : function(resp) { genericAjaxFail(null, resp); }});
 				},
-				onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+				onFailure : function(resp) { genericAjaxFail(null, resp); }
 			});
 		}
 
 		this.cancel();
 		this.destroy();
 	}
-
 };
 

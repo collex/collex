@@ -16,7 +16,7 @@
 
 /*global $, Class, Ajax */
 /*global window */
-/*global GeneralDialog, ObjectSelector, CreateListOfObjects */
+/*global GeneralDialog, ObjectSelector, CreateListOfObjects, genericAjaxFail */
 /*extern CreateNewExhibitWizard */
 
 var CreateNewExhibitWizard = Class.create({
@@ -57,7 +57,7 @@ var CreateNewExhibitWizard = Class.create({
 						dlg.changePage(view, null);
 					},
 					onFailure : function(resp) {
-						dlg.setFlash(resp.responseText, true);
+						genericAjaxFail(dlg, resp);
 					}
 				});
 				return false;
@@ -94,7 +94,7 @@ var CreateNewExhibitWizard = Class.create({
 					window.location = "/my_collex/edit_exhibit?id=" + resp.responseText;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

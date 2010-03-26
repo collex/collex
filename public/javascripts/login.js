@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, Ajax */
-/*global GeneralDialog */
+/*global GeneralDialog, genericAjaxFail */
 /*global window */
 /*extern SignInDlg, RedirectIfLoggedIn */
 
@@ -67,7 +67,7 @@ var SignInDlg = Class.create({
 						window.location = redirectPage;
 				},
 				onFailure : function(resp) {
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 		};

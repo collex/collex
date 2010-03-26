@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global GeneralDialog, MessageBoxDlg, recurseUpdateWithAjax */
+/*global GeneralDialog, MessageBoxDlg, recurseUpdateWithAjax, genericAjaxFail */
 /*global YAHOO */
 /*global Class, $, Element, Ajax */
 /*extern ForumLicenseDisplay, CCLicenseDlg, license_dialog */
@@ -158,7 +158,7 @@ var ForumLicenseDisplay = Class.create({
 
 				},
 				onFailure: function(resp){
-					dlg.setFlash(resp.responseText, true);
+					genericAjaxFail(dlg, resp);
 				}
 			});
 
@@ -186,13 +186,10 @@ function license_dialog(params)
 		var onSuccess = function(resp) {
 			params.dlg.cancel();
 		};
-		var onFailure = function(resp) {
-			params.dlg.setFlash(resp.responseText);
-		};
 		var ajaxParams = { id: id };
 		var data = params.dlg.getAllData();
 		ajaxParams[id_name] = data.sharing;
-		recurseUpdateWithAjax(callback_url, update_id, onSuccess, onFailure, ajaxParams);
+		recurseUpdateWithAjax(callback_url, update_id, onSuccess, null, ajaxParams);
 	};
 
 	var createDialog = function() {
@@ -215,10 +212,6 @@ function license_dialog(params)
 				catch (e) {
 					new MessageBoxDlg("Error", e);
 				}
-
-			},
-			onFailure: function(resp){
-				//dlg.setFlash(resp.responseText, true);
 			}
 		});
 	};
