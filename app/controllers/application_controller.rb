@@ -32,13 +32,9 @@ class ApplicationController < ActionController::Base
   before_filter :set_charset
   before_filter :session_create
   
-  helper_method :me?, :all_users?, :other_user?, :is_logged_in?, :username, :my_username, :other_username, :user,
+  helper_method :is_logged_in?, :username, :user,
                 :is_admin?, :get_curr_user_id
   
-  def boom
-    raise "boom!"
-  end
-
   private
     def session_create
 	    ActionMailer::Base.default_url_options[:host] = request.host_with_port
@@ -52,21 +48,10 @@ class ApplicationController < ActionController::Base
   
     def set_charset
       headers['Content-Type'] = 'text/html; charset=utf-8'
-      headers['Pragma'] = 'no-cache'
-      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+#      headers['Pragma'] = 'no-cache'
+#      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     end
       
-#TODO:PER_DEBUGGING     def authorize
-#TODO:PER_DEBUGGING       unless session[:user] 
-#TODO:PER_DEBUGGING         flash[:notice] = "please log in" 
-#TODO:PER_DEBUGGING       
-#TODO:PER_DEBUGGING         # save the URL the user requested so we can hop back to it after login
-#TODO:PER_DEBUGGING         session[:jumpto] = request.request_uri if not request.xhr?
-#TODO:PER_DEBUGGING       
-#TODO:PER_DEBUGGING         redirect_to(:controller => "login", :action => "login") and return false
-#TODO:PER_DEBUGGING       end 
-#TODO:PER_DEBUGGING     end 
-
     def is_logged_in?
       session[:user] ? true : false
     end
@@ -79,29 +64,12 @@ class ApplicationController < ActionController::Base
       return false
     end
   
-    def me?
-      session[:user] ? (params[:user] == username) : false
-    end
-    
-    def all_users?
-      !params[:user]
-    end
-    
-    def other_user?
-      !me? and !all_users?
-    end
-    
-    def other_username
-      other_user? ? params[:user] : nil
-    end
-
     def username
       session[:user] ? session[:user][:username] : nil
     end
-    alias_method :my_username, :username
     
     def user
-      my_username ? User.find_by_username(my_username) : nil
+      username ? User.find_by_username(username) : nil
     end
     
 		def get_curr_user
