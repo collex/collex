@@ -18,7 +18,7 @@
 /*global YAHOO */
 /*global window */
 /*global MessageBoxDlg */
-/*global supportsFixedPositioning, currentScrollPos, getY */
+/*global supportsFixedPositioning, currentScrollPos */
 /*extern exhibit_outline, exhibit_outline_pos, initOutline, selectLine, setPageSelected, showExhibitOutline,toggle_by_id */
 /*extern outline_page_height, setOutlineHeight, scroll_to_target, hide_by_id, open_by_id */
 
@@ -65,6 +65,20 @@ function setOutlineHeight() {
 // Called in exhibit/exhibit_page - TODO-PER: seems like this could have been done with # in the URL
 function scroll_to_target(target_el, element_el)
 {
+	var currentScrollY = function() {
+		var f_filterResults = function(n_win, n_docel, n_body) {
+			var n_result = n_win ? n_win : 0;
+			if (n_docel && (!n_result || (n_result > n_docel)))
+				n_result = n_docel;
+			return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
+		};
+
+		return f_filterResults (
+			window.pageYOffset ? window.pageYOffset : 0,
+			document.documentElement ? document.documentElement.scrollTop : 0,
+			document.body ? document.body.scrollTop : 0);
+	};
+
 	var y_distance_that_the_element_is_not_in_view = function(element_id)
 	{
 		// This returns the Y-distance that the window needs to scroll to get the named
@@ -73,9 +87,9 @@ function scroll_to_target(target_el, element_el)
 		if (el === null)
 			return 0;
 
-		var y_element = getY(el);
+		var y_element = YAHOO.util.Dom.getY(el);
 		var viewport_height = window.innerHeight;	// TODO: is this browser independent?
-		var scroll_pos = currentScrollPos()[1];
+		var scroll_pos = currentScrollY();
 
 		// if the element is before the scroll position, we need to scroll up
 		if (scroll_pos > y_element)
@@ -114,7 +128,7 @@ function selectLine(id)
 	var arr = id.split('_');
 	var el_id = arr[arr.length-1];
 
-	var target_el = 'top-of-' + el_id;
+	var target_el = 'element_' + el_id;
 	if ($(target_el) !== null)
 	{
 		scroll_to_target(target_el, "element_" + el_id);

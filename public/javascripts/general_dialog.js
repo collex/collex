@@ -20,7 +20,7 @@
 /*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
 /*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink */
-/*extern SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl, ProgressSpinnerDlg, ajaxWithProgressDlg, ajaxWithProgressSpinner */
+/*extern showInLightbox, showPartialInLightBox, SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl, ProgressSpinnerDlg, ajaxWithProgressDlg, ajaxWithProgressSpinner */
 
 var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
 {
@@ -758,16 +758,26 @@ var ProgressSpinnerDlg = Class.create({
 	}
 });
 
+// Parameters:
+// id: the element's id that should be shown in the light box
+// div: a Prototype structure of the dom elements that should be shown.
+// klass: the css class that should be applied to that element
+// title: the title of the lightbox
+//
 var ShowDivInLightbox = Class.create({
 	initialize: function (params) {
-		// This puts up a modal dialog that replaces the alert() call.
 		this.class_type = 'ShowDivInLightbox';	// for debugging
 
 		// private variables
 		//var This = this;
 		var Div = Class.create({
+			id: params.id,
+			div: params.div,
 			getMarkup: function() {
-				var str = $(params.id).innerHTML;
+				if (this.div)
+					return this.div;
+				
+				var str = $(this.id).innerHTML;
 				var div = new Element('div').update(str);
 				//div.addClassName(params.klass);
 				return div;
@@ -788,8 +798,59 @@ var ShowDivInLightbox = Class.create({
 		var dlg = new GeneralDialog(dlgParams);
 		dlg.changePage('layout', null);
 		dlg.center();
+		this.dlg = dlg;
 	}
 });
+
+function showPartialInLightBox(ajax_url, title, progress_img)
+{
+	var divName = "lightbox";
+	var div = new Element('div', { id: 'lightbox_contents' });
+	div.setStyle({display: 'none' });
+	var form = div.wrap('form', { id: divName + "_id"});
+	var progress = new Element('center', { id: 'lightbox_img_spinner'});
+	progress.addClassName('lightbox_img_spinner');
+	progress.appendChild(new Element('div').update("Loading..."));
+	progress.appendChild(new Element('img', { src: progress_img, alt: ''}));
+	progress.appendChild(new Element('div').update("Please wait"));
+	form.appendChild(progress);
+	var lightbox = new ShowDivInLightbox({ title: title, div: form });
+	new Ajax.Updater('lightbox_contents', ajax_url, {
+		evalScripts : true,
+		onComplete : function(resp) {
+			var img_spinner = $('lightbox_img_spinner');
+			if (img_spinner)
+				img_spinner.remove();
+			$('lightbox_contents').show();
+			lightbox.dlg.center();
+		},
+		onFailure : function(resp) { new MessageBoxDlg("Error", "Oops, there's been an error."); }
+	});
+}
+
+function showInLightbox(title, imageUrl, progress_img)
+{
+	var loaded = function() {
+		var img_spinner = $('lightbox_img_spinner');
+		if (img_spinner)
+			img_spinner.remove();
+		$('lightbox_img').show();
+		lightbox.dlg.center();
+	};
+
+	var divName = "lightbox";
+	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
+	img.setStyle({display: 'none' });
+	var form = img.wrap('form', { id: divName + "_id"});
+	var progress = new Element('center', { id: 'lightbox_img_spinner'});
+	progress.addClassName('lightbox_img_spinner');
+	progress.appendChild(new Element('div').update("Image Loading..."));
+	progress.appendChild(new Element('img', { src: progress_img, alt: ''}));
+	progress.appendChild(new Element('div').update("Please wait"));
+	form.appendChild(progress);
+	var lightbox = new ShowDivInLightbox({ title: title, div: form });
+	img.observe('load', loaded);
+}
 
 var ConfirmDlg = Class.create({
 	initialize: function (title, message, okStr, cancelStr, action) {

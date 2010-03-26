@@ -43,8 +43,8 @@ class GetIncludeFileList
 			yui = yui + [ "/build/animation/animation", "/build/carousel/carousel" ]
 		end
 
-		global = [ 'general_dialog', 'modal_dialog', 'login', 'nospam' ]
-		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'input_dialog', 'hide_spinner' ]
+		global = [ 'general_dialog', 'login', 'nospam' ]
+		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'hide_spinner' ]
 		global = global + global_most if page != :about && page != :news && page != :view_exhibit && page != :print_exhibit
 
 		local = []

@@ -36,7 +36,7 @@ module DiscussionThreadsHelper
     if user.class == Fixnum
       user = User.find(user)
     end
-    link_to_function(user.fullname, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}')", :class => 'nav_link')
+    link_to_function(user.fullname, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '/images/ajax_loader.gif')", :class => 'nav_link')
   end
 
   def get_user_link_with_thumbnail(user, height)
@@ -44,7 +44,7 @@ module DiscussionThreadsHelper
       user = User.find(user)
     end
 		img = "<img height=\"#{height}\" title=\"#{user.fullname}\" alt=\"#{user.fullname}\" src=\"#{get_user_picture(user.id, :micro)}\"/>"
-		link_to_function(img, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}')", :class => 'nav_link')
+		link_to_function(img, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '/images/ajax_loader.gif')", :class => 'nav_link')
   end
 
   def make_ext_link(url)

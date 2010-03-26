@@ -21,7 +21,7 @@
 
 /*global document */
 /*global $, $$, Class */
-/*global GeneralDialog, CreateListOfObjects, InputDialog, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnotesInRte, recurseUpdateWithAjax */
+/*global GeneralDialog, CreateListOfObjects, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnotesInRte, recurseUpdateWithAjax */
 /*global gIllustrationTypes */
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
 /*extern InplaceObjects, inplaceObjectManager */
@@ -48,16 +48,45 @@ var InplaceObjects = Class.create({
 		var inplaceObjects = [];
 		var inplaceObjectsAlreadyLoaded = false;
 
-		var getElementBlock = function(el)
-		{
-			var element = el.up('.element_block');
-			if (element === null || element === undefined)
-				element = el.up('.element_block_hover');
-			return element;
-		};
-
 		var initializeInplace = function(element_id, action, setupMethod)
 		{
+			var getElementBlock = function(el)
+			{
+				var element = el.up('.element_block');
+				if (element === null || element === undefined)
+					element = el.up('.element_block_hover');
+				return element;
+			};
+
+			var prepareDomForEditing = function(element_id, ajax_action_element_id, action, strHoverClass, strShowEditor) {
+				var editorHover = function(ev) {
+					var el = $(this);
+					var hover = el.readAttribute('hoverClass');
+					var div = el.down();
+					div.addClassName(hover);
+				};
+
+				var editorExitHover = function(ev) {
+					var el = $(this);
+					var hover = el.readAttribute('hoverClass');
+					var div = el.down();
+					div.removeClassName(hover);
+				};
+
+				var el = $(element_id);
+
+				var elWrapper = el.wrap('a');
+				el.writeAttribute('action', action);
+				el.writeAttribute('ajax_action_element_id', ajax_action_element_id);
+				if (strHoverClass !== undefined) {
+					elWrapper.writeAttribute('hoverclass', strHoverClass);
+					elWrapper.observe('mouseover', editorHover);
+					elWrapper.observe('mouseout', editorExitHover);
+				}
+				if (strShowEditor !== undefined)
+					elWrapper.observe('click', strShowEditor);
+			};
+
 			// We pass in <div id='text_YY'> as the element_id
 			// We want to use <div id="element_XX" class="element_block"> for the ajax call
 			// The element_block will be a parent of the element_id object
@@ -67,7 +96,7 @@ var InplaceObjects = Class.create({
 			if (elements.length > 1)
 				ajax_action_element_id = ajax_action_element_id + ',' + elements[1];
 
-			InputDialog.prototype.prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', setupMethod);
+			prepareDomForEditing(elements[0], ajax_action_element_id, action, 'richEditorHover', setupMethod);
 		};
 
 		// Delay modifying the DOM until after the page has loaded because IE 7 gives the "internet explorer cannot open the internet site" message.
