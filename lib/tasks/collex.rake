@@ -231,13 +231,25 @@ namespace :collex do
 		concatenate_css(:print_exhibit)
 	end
 
+	def time_format(tim)
+		return tim.getlocal().strftime("%b %d, %Y %I:%M%p")
+	end
+
 	def compress_file(folder, ext, prefix)
 		Dir.foreach("#{RAILS_ROOT}/public/#{folder}") { |f|
 			if f.index(ext) == f.length - ext.length
 				fname = f.slice(0, f.length - ext.length)
 				if fname.index('-min') != fname.length - 4
-					puts "Compressing #{f}..."
-					system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{RAILS_ROOT}/tmp/#{prefix}#{fname}-min#{ext} #{RAILS_ROOT}/public/#{folder}/#{f}")
+					src_path = "#{RAILS_ROOT}/public/#{folder}/#{f}"
+					dst_path = "#{RAILS_ROOT}/tmp/#{prefix}#{fname}-min#{ext}"
+					src_time = File.stat(src_path).mtime
+					dst_time = File.stat(dst_path).mtime
+					if src_time > dst_time
+						puts "Compressing #{f}..."
+						system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{dst_path} #{src_path}")
+					else
+						puts "Skipping #{f}. Source time=#{time_format(src_time)}; Dest time=#{time_format(dst_time)}"
+					end
 				end
 			end
 		}
