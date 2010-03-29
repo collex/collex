@@ -79,7 +79,7 @@
 	<tr>
 	    <td class="search_result_data_label">Site:</td>
 	    <td>
-	        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
+	        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=h site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
 	    </td>
 	</tr>
 <% end %>

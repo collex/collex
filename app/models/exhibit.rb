@@ -808,7 +808,7 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def make_archive_name
-		return "#{ARCHIVE_PREFIX}#{make_resource_name()}"
+		return "#{ARCHIVE_PREFIX}#{self.id}"
 	end
 
 	def unindex_exhibit(should_commit)

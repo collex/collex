@@ -36,7 +36,7 @@
 		<span id="overview_thumbnail" class="overview_field"><%= exhibit.thumbnail && exhibit.thumbnail.length > 0 ? exhibit.thumbnail : "</span><span class='exhibit_profile_comment'>You have not added a thumbnail to this exhibit." %></span>
 		<div>
 			<span class="exhibit_profile_label">Short Title:</span>
-			<span id="overview_resource_name" class="overview_field"><%= exhibit.resource_name %></span>
+			<span id="overview_resource_name" class="overview_field"><%=h exhibit.resource_name %></span>
 		</div>
 		<div>
 			<span class="exhibit_profile_label">Genres:</span>

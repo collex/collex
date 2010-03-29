@@ -48,8 +48,8 @@ class ApplicationController < ActionController::Base
   
     def set_charset
       headers['Content-Type'] = 'text/html; charset=utf-8'
-#      headers['Pragma'] = 'no-cache'
-#      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+      headers['Pragma'] = 'no-cache'
+      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     end
       
     def is_logged_in?

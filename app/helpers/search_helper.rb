@@ -536,7 +536,7 @@ module SearchHelper
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
   def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found, is_open, site_count )
-    display_name = site.display_name
+    display_name = h(site.display_name)
     id = site.id
     value = site['value']
     
@@ -629,7 +629,7 @@ module SearchHelper
 		html = "<tr id='resource_#{id}' class='resource_node#{" child_of_#{parent_id}" if parent_id != 0}#{' hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
 		html += "<a id='site_opened_#{id}' #{'class="hidden" ' if start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
 		html += "<a id='site_closed_#{id}' #{'class="hidden" ' if !start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>"
-		html += "<a href='#' onclick='new ResourceTree(\"#{id}\", \"toggle\"); return false;' class='nav_link  limit_to_category' >#{label}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
+		html += "<a href='#' onclick='new ResourceTree(\"#{id}\", \"toggle\"); return false;' class='nav_link  limit_to_category' >#{h(label)}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
 		return html
 	end
 
@@ -637,9 +637,9 @@ module SearchHelper
 		html = "<tr id='resource_#{id}' class='child_of_#{parent_id}#{' hidden' if !start_shown}#{' limit_to_selected' if selected}'><td class='limit_to_lvl#{indent_level}'>"
 		# If you want to post, use postLink(this.href) to POST instead of doing an ajax update.
 		if selected
-			html += "#{label}&nbsp;<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Removing Facet...' }, { }); return false;\">[X]</a>"
+			html += "#{h(label)}&nbsp;<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Removing Facet...' }, { }); return false;\">[X]</a>"
 		else
-			html += "<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Adding Facet...' }, { }); return false;\">#{label}</a>"
+			html += "<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Adding Facet...' }, { }); return false;\">#{h(label)}</a>"
 		end
 		html += "</td><td class='num_objects'>#{num_objects}</td></tr>\n"
 		return html
