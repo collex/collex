@@ -30,7 +30,17 @@ module SearchHelper
   end
   
   public
-  
+	def format_tag_for_output(tag)
+		# we want this escaped, so the user can't inject anything, and lower case, and we want invisible breaks so that a long tag won't break the spacing
+		tag = h(tag).downcase()
+		len = tag.length-10
+		while len > 0
+			tag = tag.insert(len, '&#x200B;')
+			len -= 10
+		end
+		return tag
+	end
+
   def draw_pagination(curr_page, num_pages, destination_hash)
     html = ""
 

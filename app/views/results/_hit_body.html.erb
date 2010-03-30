@@ -57,10 +57,10 @@
 		<% is_mine = is_in_tag_array(my_tags, tag) -%>
 		<%= " | " if tag != tags[0] %>
 		<% if is_mine -%>
-			<%= link_to h(tag).downcase, { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
+			<%= link_to format_tag_for_output(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
         	<%= link_to_function "X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag}\"" %>
 		<% else -%>
-			<%= link_to h(tag).downcase, { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link', :title => "view all objects tagged \"#{tag}\"" } %>
+			<%= link_to format_tag_for_output(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link', :title => "view all objects tagged \"#{tag}\"" } %>
 		<% end #if this tag was created by the current user -%>
 	<% } #the tag loop -%>
 	<% if !no_links -%>
