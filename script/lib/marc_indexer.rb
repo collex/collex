@@ -76,7 +76,7 @@ class MarcIndexer
 #                  ":next=html/Cannedresultsframe.html:bad=error/badsearchframe.html" ],
     'lilly' => [ "http://www.iucat.iu.edu/uhtbin/cgisirsi/x/0/0/5?library=ALL&searchdata1=^C", ['001'] ],
     'uva_library' => [ "http://virgo.lib.virginia.edu/uhtbin/cgisirsi/uva/0/0/5?searchdata1=", :parse_uva_id, "{CKEY}"  ],
-		'estc' => [ "http:/estc.com?search="]
+		'estc' => [ "http://estc.bl.uk/", ['009'] ]
   }
 
 	NEEDS_FEDERATION = {

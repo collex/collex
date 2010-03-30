@@ -15,7 +15,8 @@ class CommunitiesController < ApplicationController
 
 	def index
 		@discussions = DiscussionTopic.get_most_popular(5)
-		@tags = CachedResource.get_most_popular_tags(40)
+		#@tags = CachedResource.get_most_popular_tags(40)
+		@tags = CachedResource.get_most_recent_tags(40)
 		@results = get_results()
 	end
 
