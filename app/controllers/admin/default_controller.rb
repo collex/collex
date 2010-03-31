@@ -138,12 +138,12 @@ class Admin::DefaultController < Admin::BaseController
 		badge = PeerReview.create({})
 		image = params['image']
 		if image && image
-			image = Image.new({ :uploaded_data => image })
+			image = ImageFull.new({ :uploaded_data => image })
 		end
 		begin
-			badge.image = image
+			badge.image_full = image
 			if badge.save
-				badge.image.save! if badge.image
+				badge.image_full.save! if badge.image_full
 				flash = "OK:Badge updated"
 			else
 				flash = "Error updating badge"

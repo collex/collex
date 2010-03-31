@@ -18,7 +18,7 @@
 <div id="page<%= page_num %>" class="exhibit_heading">
 	<% badge_path = badge_pos != 'none' ? exhibit.get_badge() : "" -%>
 	<% if badge_path.length > 0 -%>
-	<img src="<%= badge_path %>" alt="Peer Reviewed" style="position:absolute;<%= 'right:40px;' if badge_pos == 'right' %>" />
+	<img src="<%= badge_path %>" alt="Peer Reviewed" style="max-width:150px;position:absolute;<%= 'right:40px;' if badge_pos == 'right' %>" />
 	<% end -%>
 	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
 	<h4 class="exhibit_author" ><%= get_exhibits_username_list(exhibit, is_edit_mode) %></h4>
