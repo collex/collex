@@ -247,7 +247,7 @@ namespace :collex do
 						dst_time = File.stat(dst_path).mtime
 					rescue
 						# It's ok if the file doesn't exist; that means that we should definitely recreate it.
-						dst_time = 0
+						dst_time = 10.years.ago
 					end
 					if src_time > dst_time
 						puts "Compressing #{f}..."
