@@ -243,7 +243,12 @@ namespace :collex do
 					src_path = "#{RAILS_ROOT}/public/#{folder}/#{f}"
 					dst_path = "#{RAILS_ROOT}/tmp/#{prefix}#{fname}-min#{ext}"
 					src_time = File.stat(src_path).mtime
-					dst_time = File.stat(dst_path).mtime
+					begin
+						dst_time = File.stat(dst_path).mtime
+					rescue
+						# It's ok if the file doesn't exist; that means that we should definitely recreate it.
+						dst_time = 0
+					end
 					if src_time > dst_time
 						puts "Compressing #{f}..."
 						system("#{JAVA_PATH}java -jar #{RAILS_ROOT}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{dst_path} #{src_path}")
