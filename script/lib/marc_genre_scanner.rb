@@ -20,16 +20,17 @@ require 'script/lib/nines_mapping.rb'
 
 # # IS THIS ACTUALLY USED ANYWHERE???
 $KCODE = 'UTF8'
+END_OF_RECORD = 0x1D.chr
 
 class MarcGenreScanner
   
   include NinesMapping
   
-  def self.run( files_to_index_dir, forgiving )
+  def self.run( files_to_index_dir, forgiving, max_records )
     puts "Scanning for genre keywords..."
     start_time = Time.new ## start the clock
 
-    scanner = MarcGenreScanner.new( forgiving )
+    scanner = MarcGenreScanner.new( forgiving, max_records )
     scanner.scan_directory(files_to_index_dir)
     scanner.generate_report()
 
@@ -42,13 +43,15 @@ class MarcGenreScanner
   
   MAPPINGS = (GENRE_MAPPING.values + GEOGRAPHIC_MAPPING.values + FORMAT_MAPPING.values).flatten
 
-  def initialize( forgiving )
+  def initialize( forgiving, max_records )
     @field_data = {}
     @record_count = 0
     @no_genre_found = 0
     @mapping_found = 0
     @mapped_records_count = 0
     @forgiving = forgiving
+	@max_records = max_records
+	@max_records = @max_records.to_i if @max_records
   end
   
   def scan_directory( dir )
@@ -97,15 +100,31 @@ class MarcGenreScanner
     
   end
   
-  def scan_file( marc_file )
-    puts "Scanning #{marc_file}..."
-    reader = MARC::ForgivingReader.new(marc_file) #, { :forgiving => @forgiving })
-    for record in reader
-      scan_record( record )  
-#      break if @record_count >= 1000
-    end   
-  end
-  
+#  def scan_file( marc_file )
+#    puts "Scanning #{marc_file}..."
+#    reader = MARC::ForgivingReader.new(marc_file) #, { :forgiving => @forgiving })
+#    for record in reader
+#	   scan_record( record )
+#    end
+#  end
+
+	def scan_file( marc_file )
+		puts "Scanning #{marc_file}..."
+		record_this_file = 0
+		handle = File.new(marc_file)
+		handle.each_line(END_OF_RECORD) do |raw|
+			begin
+				record = MARC::Reader.decode(raw, :forgiving => true)
+				scan_record( record )
+				record_this_file = record_this_file + 1
+				return if @max_records && record_this_file >= @max_records
+			rescue StandardError => e
+				# caught exception just keep barrelling along
+				# TODO add logging
+			end
+		end
+	end
+
   def scan_record( record )
     found = false
     mapped = false
@@ -118,7 +137,7 @@ class MarcGenreScanner
           found = true
         end
       end
-    end    
+    end
     @record_count = @record_count + 1
     @no_genre_found = @no_genre_found + 1 if not found
     @mapped_records_count = @mapped_records_count + 1 if mapped

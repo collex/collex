@@ -40,9 +40,10 @@ class Solr::Indexer
 				document = @mapper.map(record)
 
 				# TODO: check arrity of block, if 3, pass counter as 3rd argument
-				yield(record, document) if block_given? # TODO check return of block, if not true then don't index, or perhaps if document.empty?
+				add = true
+				add = yield(record, document) if block_given? # TODO check return of block, if not true then don't index, or perhaps if document.empty?
 
-				buffer << document
+				buffer << document if add
 
 				if !@buffer_docs || buffer.size == @buffer_docs
 					add_docs(buffer)
@@ -76,13 +77,19 @@ class MarcIndexer
 #                  ":next=html/Cannedresultsframe.html:bad=error/badsearchframe.html" ],
     'lilly' => [ "http://www.iucat.iu.edu/uhtbin/cgisirsi/x/0/0/5?library=ALL&searchdata1=^C", ['001'] ],
     'uva_library' => [ "http://virgo.lib.virginia.edu/uhtbin/cgisirsi/uva/0/0/5?searchdata1=", :parse_uva_id, "{CKEY}"  ],
-		'estc' => [ "http://estc.bl.uk/", ['009'] ]
+		'estc' => [ "http://estc.bl.uk/", :parse_estc_record ]
   }
 
 	NEEDS_FEDERATION = {
 		'bancroft' => true,
 		'lilly' => true,
 		'estc' => false
+	}
+
+	URI_FIELD = {
+		'bancroft' => [  "lib://bancroft/", [ '001'] ],
+		'lilly' => [  "lib://lilly/", [ '001'] ],
+		'estc' => [  "lib://estc/", :parse_estc_record ]
 	}
   
   def self.run( args )
@@ -179,6 +186,10 @@ class MarcIndexer
 						next false
 					end
 				end
+
+			  if solr_document[:federation] == nil
+				  next false
+			  end
 
 				log_url( solr_document[:uri], marc_file, solr_document[:url] )
 				if @verbose
@@ -310,8 +321,8 @@ class MarcIndexer
 		eighteen = false
 		years.each { |year|
 			y = year.to_i
-			eighteen = true if y > 1680 && y < 1820
-			nines = true if y > 1780 && y < 1920
+			eighteen = true if y > 1660 && y < 1820
+			nines = true if y > 1780 && y < 1930
 		}
 		if nines && eighteen
 			return "NINES;18th Connect"
@@ -324,8 +335,10 @@ class MarcIndexer
 	end
 
   def parse_uri( record )
-    id = record.extract('001')
-    "lib://#{@archive_id}/#{id}"
+    uri_formula = URI_FIELD[@archive_id]
+    return parse_formula(uri_formula, record)
+#    id = record.extract(URI_FIELD[@archive_id])
+#    "lib://#{@archive_id}/#{id}"
   end
 
 	def test_for_problem_record(record)
@@ -338,7 +351,7 @@ class MarcIndexer
   def parse_title( record )
     test_for_problem_record(record)
 
-    # bancroft stores titles in wierd places sometimes
+    # bancroft stores titles in weird places sometimes
     if @archive_id == 'bancroft'
       id = record.extract('001')
       title_location = TITLE_CODE_EXCEPTIONS[id.to_s]
@@ -477,32 +490,40 @@ class MarcIndexer
     test_for_problem_record(record)
     record.extract('001')[0].sub(/[u]/,"")
   end
-  
-  def parse_url( record )    
-    test_for_problem_record(record)
-    url_formula = URL_FORMULAE[@archive_id]
-    return "" if url_formula.nil?
 
-    url = ""    
-    url_formula.each do |formula_element|
+  def parse_estc_record( record )
+	  record.extract('035a')[0].sub("(CU-RivES)","")
+  end
+
+  def parse_formula(formula, record)
+    return "" if formula.nil?
+
+    url = ""
+    formula.each do |formula_element|
       case formula_element
         when Symbol
           url << get_proc( formula_element ).call(record)
         when String
           url << formula_element
         when Array
-          if formula_element.length == 1 
+          if formula_element.length == 1
             value = record.extract( formula_element[0] )
             value = value.to_s if value
           else
-            value = get_subfield( record, formula_element )  
-          end  
+            value = get_subfield( record, formula_element )
+          end
           unless value.nil?
             url << CGI.escape(value)
           end
       end
     end
     url
+  end
+
+  def parse_url( record )    
+    test_for_problem_record(record)
+    url_formula = URL_FORMULAE[@archive_id]
+    return parse_formula(url_formula, record)
   end
   
 end

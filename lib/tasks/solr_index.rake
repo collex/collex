@@ -295,18 +295,24 @@ end
 		end
 	end
 
-	desc "Scan MARC records for genres (param: archive=[bancroft|lilly|estc])"
+	desc "Scan MARC records for genres (param: archive=[bancroft|lilly|estc][;max_records])"
 	task :marc_genre_scanner => :environment do
 		if CAN_INDEX
 			require 'script/lib/marc_genre_scanner.rb'
 			marc_path = '../marc/'
 			archive = ENV['archive']
+			max_records = nil
+			if archive
+				arr = archive.split(';')
+				archive = arr[0]
+				max_records = arr[1] if arr.length > 1
+			end
 			if archive == nil
 				puts "Usage: Pass in an archive name with archive=XXX; there should be a folder of the same name under #{marc_path}"
 			else
 				puts "~~~~~~~~~~~ Scanning for genres in #{archive}..."
 				start_time = Time.now
-				MarcGenreScanner.run("#{marc_path}#{archive}", true)
+				MarcGenreScanner.run("#{marc_path}#{archive}", true, max_records)
 				puts "Finished in #{(Time.now-start_time)/60} minutes."
 			end
 		end
