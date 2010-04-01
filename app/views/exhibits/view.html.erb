@@ -21,19 +21,68 @@
 		font-size: <%= @exhibit.get_font_size('footnote') %>px;
 	}
 </style>
+<% if @exhibit.is_peer_reviewed() -%>
+<% group = Group.find(@exhibit.group_id) -%>
+<style type="text/css">
+<% if group.link_color.length > 0 -%>
+	.nav_link:link, .nav_link:visited {
+		color:#<%= group.link_color %>;
+	}
+<% end -%>
 
-<div class="exhibit_sharing_notice">
-	<%= @exhibit.get_sharing_icon_with_link() %>
-</div>
+<% if group.header_color.length > 0 -%>
+	.publication_header {
+		color: #<%= group.header_color %>;
+	}
+	.publication_header .nav_link:link, .publication_header .nav_link:visited {
+		color: #<%= group.header_color %>;
+	}
+<% end -%>
+<% if group.header_background_color.length > 0 -%>
+	.publication_header {
+		background-color: #<%= group.header_background_color %>;
+	}
+<% end -%>
+</style>
+<% end -%>
+
 <div class="inner_content_container">
-	<div class="subpage_nav">
-		<% if !@exhibit.is_peer_reviewed() -%>
-		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
+<% if @exhibit.is_peer_reviewed() -%>
+	<div class="publication_header">
+		<div class="exhibit_sharing_notice">
+			<%= @exhibit.get_sharing_icon_with_link() %>
+		</div>
+		<div class="exhibit_sharing_text">
+			<%= group.name %> content in <%= SITE_NAME %> is protected by a Creative Commons License.
+		</div>
+		<% badge_pos = 'left' -%>
+		<% badge_path = badge_pos != 'none' ? @exhibit.get_badge() : "" -%>
+		<% if badge_path.length > 0 -%>
+		<div class="exhibit_badge">
+			<img src="<%= badge_path %>" height="60" alt="Peer Reviewed" />
+		</div>
 		<% end -%>
+		<center>
+			<div class="publication_header_links">
+				<table><tr>
+						<td class="publication_header_left"><%= link_to(group.name, group.get_visible_url(), { :class => 'nav_link' }) %></td>
+						<td class="publication_header_right"><%= get_cluster_link(@exhibit.cluster_id) %></td>
+						<td class="publication_header_right"><a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >Printer-friendly Page</a></td>
+				</tr></table>
+			</div>
+		</center>
+	</div>
+<% else -%>
+	<div class="exhibit_sharing_notice">
+		<%= @exhibit.get_sharing_icon_with_link() %>
+	</div>
+	<div class="subpage_nav">
+		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
 		<%= make_exhibit_home_link(@exhibit) %>&nbsp;
 		<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
 		<%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => @exhibit.id, :page => @page }, :class => 'nav_link', :target => '_parent' ) if Exhibit.can_edit(get_curr_user(), @exhibit.id)  %>
 	</div>
+<% end -%>
 	<div id="exhibit_page clear_both">
 		<%= render :partial => 'exhibit_page', :locals => { :exhibit => @exhibit, :page_num => @page, :is_edit_mode => false, :top => nil, :badge_pos => 'left' } %>
 	</div>

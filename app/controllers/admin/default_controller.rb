@@ -53,12 +53,18 @@ class Admin::DefaultController < Admin::BaseController
     group_id = params[:group_id]
     group_type = params[:group_type]
     badge = params[:badge_id]
+    header_text_color = params[:header_text_color]
+    header_background_color = params[:header_background_color]
+    link_color = params[:link_color]
     publication_image = params[:publication_image_id]
     group = Group.find(group_id)
 		old_type = group.group_type
     group.update_attribute('group_type', group_type)
     group.update_attribute('badge_id', badge)
     group.update_attribute('publication_image_id', publication_image)
+    group.update_attribute('header_color', header_text_color)
+    group.update_attribute('header_background_color', header_background_color)
+    group.update_attribute('link_color', link_color)
 		if group_type == 'peer-reviewed'
 			exhibits = Exhibit.all()
 			exhibits.each {|exhibit|

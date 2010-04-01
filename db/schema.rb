@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100331184506) do
+ActiveRecord::Schema.define(:version => 20100401194634) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -229,14 +229,14 @@ ActiveRecord::Schema.define(:version => 20100331184506) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
-    t.integer  "owner",                  :limit => 10, :precision => 10, :scale => 0
+    t.integer  "owner",                   :limit => 10, :precision => 10, :scale => 0
     t.text     "description"
     t.string   "group_type"
-    t.integer  "image_id",               :limit => 10, :precision => 10, :scale => 0
+    t.integer  "image_id",                :limit => 10, :precision => 10, :scale => 0
     t.string   "forum_permissions"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "license_type",           :limit => 10, :precision => 10, :scale => 0
+    t.integer  "license_type",            :limit => 10, :precision => 10, :scale => 0
     t.string   "header_font_name"
     t.string   "header_font_size"
     t.string   "illustration_font_name"
@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(:version => 20100331184506) do
     t.string   "endnotes_font_size"
     t.string   "footnote_font_name"
     t.string   "footnote_font_size"
-    t.integer  "use_styles",             :limit => 10, :precision => 10, :scale => 0
+    t.integer  "use_styles",              :limit => 10, :precision => 10, :scale => 0
     t.boolean  "show_membership"
     t.string   "exhibit_visibility"
     t.string   "university"
@@ -262,9 +262,12 @@ ActiveRecord::Schema.define(:version => 20100331184506) do
     t.string   "exhibits_label"
     t.string   "clusters_label"
     t.string   "show_admins"
-    t.integer  "badge_id",               :limit => 10, :precision => 10, :scale => 0
-    t.integer  "publication_image_id",   :limit => 10, :precision => 10, :scale => 0
+    t.integer  "badge_id",                :limit => 10, :precision => 10, :scale => 0
+    t.integer  "publication_image_id",    :limit => 10, :precision => 10, :scale => 0
     t.string   "notifications"
+    t.string   "header_color"
+    t.string   "header_background_color"
+    t.string   "link_color"
   end
 
   create_table "groups_users", :force => true do |t|

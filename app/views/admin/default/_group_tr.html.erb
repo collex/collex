@@ -19,7 +19,7 @@
 <% ty = Group.type_to_friendly(group.group_type) -%>
 <td><%= h group.name %></td>
 <td><%= h User.find(group.owner).fullname %></td>
-<td><%= ty %>&nbsp;<%= link_to_function "[edit]", "new EditGroupType('group_#{group.id}', '/admin/default/change_group_type', '#{group.id}', '#{ty}', gGroupTypes, #{group.badge_id ? group.badge_id : 0 }, badges, #{group.publication_image_id ? group.publication_image_id : 0 }, publication_images);", :class => 'nav_link'  %></td>
+<td><%= ty %>&nbsp;<%= link_to_function "[edit]", "new EditGroupType('group_#{group.id}', '/admin/default/change_group_type', '#{group.id}', '#{ty}', gGroupTypes, #{group.badge_id ? group.badge_id : 0 }, badges, #{group.publication_image_id ? group.publication_image_id : 0 }, publication_images, '#{group.header_color}', '#{group.header_background_color}', '#{group.link_color}');", :class => 'nav_link'  %></td>
 <% if ty == 'Peer Reviewed' -%>
 	<td><%= PeerReview.get_badge(group.badge_id) %></td>
 	<td><%= PublicationImage.get_image(group.publication_image_id) %></td>

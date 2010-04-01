@@ -26,7 +26,14 @@ module ExhibitElementsHelper
   def get_exhibit_link(exhibit)
     return "<a class='nav_link' href='#{get_exhibit_url(exhibit)}'>#{h exhibit.title}</a>"
   end
-  
+
+	def get_cluster_link(cluster_id)
+		return nil if cluster_id == nil
+		cluster = Cluster.find_by_id(cluster_id)
+		return nil if cluster == nil
+		return link_to(h(cluster.name), cluster.get_visible_url(), { :class => 'nav_link' })
+	end
+
   def get_exhibits_username(exhibit)
     user = exhibit.get_apparent_author()
     return user.fullname

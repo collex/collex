@@ -16,20 +16,27 @@
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_page params: ActiveRecord exhibit, int page_num, bool is_edit_mode, int top (nil or the element id that should be scrolled to), badge_pos = none|left|right -%>
 <div id="page<%= page_num %>" class="exhibit_heading">
-	<% badge_path = badge_pos != 'none' ? exhibit.get_badge() : "" -%>
-	<% if badge_path.length > 0 -%>
-	<img src="<%= badge_path %>" alt="Peer Reviewed" style="max-width:150px;position:absolute;<%= 'right:40px;' if badge_pos == 'right' %>" />
-	<% end -%>
+<% if exhibit.is_peer_reviewed() -%>
+	<center>
+	<p class="publication_title"><%=h exhibit.title %></p>
+	<p class="publication_author"><%= get_exhibits_username_list(exhibit, is_edit_mode) %><%= ", #{get_exhibits_user_institution(exhibit)}" if get_exhibits_user_institution(exhibit).length > 0 %></p>
+	</center>
+<% else -%>
 	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
 	<h4 class="exhibit_author" ><%= get_exhibits_username_list(exhibit, is_edit_mode) %></h4>
 	<h4 class="exhibit_institution" ><%= get_exhibits_user_institution(exhibit) %></h4>
+<% end -%>
 </div>
 <% num_pages = exhibit.exhibit_pages.length -%>
 <% if num_pages > 0 -%>
 	<% page_controller = is_edit_mode ? MY_COLLEX_URL : 'exhibits' -%>
 	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
 	<% has_footnotes = Exhibit.has_footnotes(is_edit_mode ? exhibit.id : get_exhibit_id(exhibit)) -%>
+<% if exhibit.is_peer_reviewed() -%>
+	<%= render :partial => '/exhibits/publication_pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
+<% else -%>
 	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
+<% end -%>
 	<div class="clear_both"></div>
 	<% if page_num == -1 -%>
 		<h1 class="endnotes">Endnotes</h1>

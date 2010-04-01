@@ -444,7 +444,7 @@ var EditFacetDialog = Class.create({
 //});
 
 var EditGroupType = Class.create({
-	initialize: function (parent_div, ok_action, group_id, starting_selection, options, badge_id, badges, publication_image_id, publication_images) {
+	initialize: function (parent_div, ok_action, group_id, starting_selection, options, badge_id, badges, publication_image_id, publication_images, header_text_color, header_background_color, link_color) {
 		// This puts up a modal dialog that allows the administrator to change the category of an exhibit.
 		this.class_type = 'EditGroupType';	// for debugging
 
@@ -467,6 +467,9 @@ var EditGroupType = Class.create({
 					[ { text: 'Type:', klass: 'edit_facet_label' }, { select: 'group_type', value: starting_selection, klass: 'categories_select', options: options } ],
 					[ { text: 'Badge:', klass: 'edit_facet_label' }, { select: 'badge_id', value: badge_id, options: badges } ],
 					[ { text: 'Publication Image:', klass: 'edit_facet_label' }, { select: 'publication_image_id', value: publication_image_id, options: publication_images } ],
+					[ { text: 'Header Text Color:', klass: 'edit_facet_label' }, { input: 'header_text_color', value: header_text_color }],
+					[ { text: 'Header Bkgd Color:', klass: 'edit_facet_label' }, { input: 'header_background_color', value: header_background_color }],
+					[ { text: 'Link Color:', klass: 'edit_facet_label' }, { input: 'link_color', value: link_color }],
 					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: updater.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'group_id', value: group_id } ]
 				]
 			};
