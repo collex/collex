@@ -51,7 +51,9 @@ class CollexEngine
 
   def num_docs	# called for each entry point to get the number for the footer.
     if @num_docs == -1
-      request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0, :shards => @cores)
+      #request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0, :shards => @cores)
+      # TODO: PER temporary hack to just see the NINES objects.
+      request = Solr::Request::Standard.new(:query=>"federation:NINES", :rows=>0, :shards => @cores)
       response = @solr.send(request)
       
       @num_docs = response.total_hits
