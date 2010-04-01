@@ -1253,6 +1253,9 @@ private
         filter_queries << constraint.to_solr_expression
       end
     end
+	# TODO: PER temporary hack to just see the NINES objects.
+	queries << "federation:NINES"
+
     queries << "*:*" if queries.empty?
 
     [queries.join(" AND "), filter_queries]
