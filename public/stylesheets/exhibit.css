@@ -20,7 +20,7 @@
 }
 
 .publication_header {
-	height: 60px;
+	height: 85px;
 }
 
 .publication_header .exhibit_sharing_notice {
@@ -38,11 +38,11 @@
 	text-align:right;
 	display: table-cell;
 	vertical-align: middle;
-	height: 60px;
+	height: 85px;
 }
 
 .publication_header table {
-	margin-left: 150px;
+	margin-left: 180px;
 	font-size: 1.3em;
 	margin-bottom: 0px;
 }
@@ -50,7 +50,7 @@
 .publication_header_links {
 	display: table-cell;
 	vertical-align: middle;
-	height: 60px;
+	height: 85px;
 }
 
 .publication_header_left {

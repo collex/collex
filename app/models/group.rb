@@ -360,8 +360,8 @@ class Group < ActiveRecord::Base
 	end
 
 	def get_truncated_name()
-		return self.name if self.name.length < 50
-		return self.name.slice(0..50) + "..."
+		return self.name if self.name.length < 70
+		return self.name.slice(0..70) + "..."
 	end
 	#
 	# enumerations
