@@ -358,6 +358,11 @@ class Group < ActiveRecord::Base
 		return 'Cluster' if group == nil
 		return group.get_clusters_label()
 	end
+
+	def get_truncated_name()
+		return self.name if self.name.length < 50
+		return self.name.slice(0..50) + "..."
+	end
 	#
 	# enumerations
 	#

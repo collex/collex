@@ -31,7 +31,7 @@ module ExhibitElementsHelper
 		return nil if cluster_id == nil
 		cluster = Cluster.find_by_id(cluster_id)
 		return nil if cluster == nil
-		return link_to(h(cluster.name), cluster.get_visible_url(), { :class => 'nav_link' })
+		return link_to(h(cluster.get_truncated_name()), cluster.get_visible_url(), { :class => 'nav_link' })
 	end
 
   def get_exhibits_username(exhibit)

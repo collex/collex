@@ -29,11 +29,16 @@
 
 .exhibit_sharing_text {
 	float:right;
-	font-size:0.7em;
 	padding-right:10px;
-	padding-top:15px;
-	text-align:right;
 	width:150px;
+}
+
+.exhibit_sharing_text2 {
+	font-size:0.7em;
+	text-align:right;
+	display: table-cell;
+	vertical-align: middle;
+	height: 60px;
 }
 
 .publication_header table {

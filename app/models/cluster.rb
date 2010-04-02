@@ -44,4 +44,9 @@ class Cluster < ActiveRecord::Base
 		cluster_url = self.visible_url && self.visible_url.length > 0 ? self.visible_url : self.id
 		return "/groups/#{group_url}/#{cluster_url}"
 	end
+	
+	def get_truncated_name()
+		return self.name if self.name.length < 50
+		return self.name.slice(0..50) + "..."
+	end
 end

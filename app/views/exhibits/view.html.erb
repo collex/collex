@@ -37,9 +37,18 @@
 	.publication_header .nav_link:link, .publication_header .nav_link:visited {
 		color: #<%= group.header_color %>;
 	}
+	.exhibit_footer {
+		color: #<%= group.header_color %>;
+	}
+	.exhibit_footer a:link, .exhibit_footer a:visited {
+		color: #<%= group.header_color %>;
+	}
 <% end -%>
 <% if group.header_background_color.length > 0 -%>
 	.publication_header {
+		background-color: #<%= group.header_background_color %>;
+	}
+	.exhibit_footer {
 		background-color: #<%= group.header_background_color %>;
 	}
 <% end -%>
@@ -52,9 +61,9 @@
 		<div class="exhibit_sharing_notice">
 			<%= @exhibit.get_sharing_icon_with_link() %>
 		</div>
-		<div class="exhibit_sharing_text">
-			<%= group.name %> content in <%= SITE_NAME %> is protected by a Creative Commons License.
-		</div>
+		<div class="exhibit_sharing_text"><div class="exhibit_sharing_text2">
+			<%=h group.get_truncated_name() %> content in <%= SITE_NAME %> is protected by a Creative Commons License.
+		</div></div>
 		<% badge_pos = 'left' -%>
 		<% badge_path = badge_pos != 'none' ? @exhibit.get_badge() : "" -%>
 		<% if badge_path.length > 0 -%>
@@ -65,8 +74,11 @@
 		<center>
 			<div class="publication_header_links">
 				<table><tr>
-						<td class="publication_header_left"><%= link_to(group.name, group.get_visible_url(), { :class => 'nav_link' }) %></td>
+						<td class="publication_header_left"><%= link_to(h(group.get_truncated_name()), group.get_visible_url(), { :class => 'nav_link' }) %></td>
+<% cluster_link = get_cluster_link(@exhibit.cluster_id) -%>
+<% if cluster_link && cluster_link.length > 0 -%>
 						<td class="publication_header_right"><%= get_cluster_link(@exhibit.cluster_id) %></td>
+<% end -%>
 						<td class="publication_header_right"><a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >Printer-friendly Page</a></td>
 				</tr></table>
 			</div>

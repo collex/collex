@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_text params:  ExhibitElement element; enum which { left, right, only, blockquote }, bool is_edit_mode -%>
 <% exhibit = element.exhibit_page.exhibit -%>
-<% size = which != 'blockquote' ? exhibit.get_font_size('text') : (exhibit.get_font_size('text').to_i * 5 / 6).ceil %>
+<% size = which != 'blockquote' ? exhibit.get_font_size('text') : (exhibit.get_font_size('text').to_i * 5 / 6).ceil -%>
 <% if is_edit_mode -%>
 	<% div_id = "text_#{element.id}" -%>
 	<% div_id += "_#{which}" if which != "only" && which != 'blockquote' -%>
@@ -30,5 +30,3 @@
 <% else -%>
 	<div class="exhibit_text<%=" blockquote" if which == 'blockquote' %>" style="font-family:<%= exhibit.get_font_name('text') %>; font-size:<%= size %>px;"><%= decode_exhibit_links(element.element_text) %></div>
 <% end -%>
-
-
