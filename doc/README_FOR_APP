@@ -1,6 +1,14 @@
 The Collex/NINES project
 
 -----------------------------------------------------------------------
+** Prerequisite
+
+Most of the pain of getting collex running is in getting Ruby on Rails running on your machine. Before attempting the
+instructions below, be sure that you can create a simple Rails application.
+
+Collex currently runs under Rails 2.3.2, so it is best to create a Rails application with that version.
+
+-----------------------------------------------------------------------
 ** Steps for creating a collex installation from scratch.
 
 The following steps are explained in detail below:
