@@ -23,6 +23,10 @@
 # On Mac OS X Leopard:
 #   sudo env ARCHFLAGS="-arch i386" gem install mysql -- --with-mysql-config=/usr/local/mysql/bin/mysql_config
 #       This sets the ARCHFLAGS environment variable to your native architecture
+# On Mac OS X Snow Leopard:
+# export ARCHFLAGS="-arch i386 -arch x86_64" ; gem install --no-rdoc --
+# no-ri mysql -- --with-mysql-dir=/usr/local/mysql --with-mysql-config=/usr/
+# local/mysql/bin/mysql_config
 # On Windows:
 #   gem install mysql
 #       Choose the win32 build.
