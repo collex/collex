@@ -17,10 +17,12 @@
 %>
 <%# popular_discussions param: array discussions, bool show_more -%>
 <ul>
+	<% if discussions -%>
 	<% discussions.each {|discussion| -%>
 	<li><%= link_to(discussion[:title], "/forum/view_thread?thread=#{discussion[:id]}", { :class => 'nav_link' }) %></li>
 	<% } -%>
 	<% if show_more -%>
 	<li><%= link_to("MORE", forum_path, { :class => 'nav_link' }) %></li>
+	<% end -%>
 	<% end -%>
 </ul>

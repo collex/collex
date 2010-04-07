@@ -83,12 +83,14 @@ class CachedResource < ActiveRecord::Base
 		sql_recent = "SELECT DISTINCT tags.name, count(tag_id) as freq FROM tagassigns join tags on tags.id = tagassigns.tag_id GROUP BY tag_id ORDER BY MAX(updated_at) DESC limit #{num}"
 		cloud = find_by_sql([ sql_recent ]) 
 		# convert active record objects to [name,freq] pairs
-		cloud = cloud.map { |entry| [ entry.name, entry.freq.to_i ] } if cloud != nil
-		freqs = cloud.sort {|a,b| b[1] <=> a[1] }
-		third = freqs[freqs.length*2/3][1]
-		cloud = cloud.map {|tag|
-			[ tag[0], tag[1], tag[1] > third ]
-		}
+		if cloud != nil
+			cloud = cloud.map { |entry| [ entry.name, entry.freq.to_i ] }
+			freqs = cloud.sort {|a,b| b[1] <=> a[1] }
+			third = freqs[freqs.length*2/3][1]
+			cloud = cloud.map {|tag|
+				[ tag[0], tag[1], tag[1] > third ]
+			}
+		end
 		return cloud
 	end
 
