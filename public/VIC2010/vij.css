@@ -23,7 +23,7 @@ body {
 
 #navbar {
 margin-top: 10px; margin-left: 210px;
-font-size: 16px;
+font-size: 14px;
 font-weight:bold;
 width:800px;
 }
@@ -78,7 +78,7 @@ margin-bottom:20px;
 }
 
 #main {
-    margin-top:-35px;
+    margin-top:-20px;
     margin-left:350px;
     width:600px;
     text-align:left;
@@ -93,20 +93,33 @@ text-align:left;
 #list {
 width: 400px;
 border: 2px solid black;
-margin-top:-450px;
+margin-top:-495px;
 margin-left:-95px;
 padding:3px;
 }
 
 #sponsors {
-margin-top: -150px;
+margin-top: -205px;
 margin-left: 340px;
 text-align:center;
 }
 
 #moreinfo {
 margin-left: 20px;
-text-align:left;    
+text-align:left;
+
+}
+
+#moreinfo ol {
+padding: 4px;
+margin-top: 5px;
+margin-left: 15px;
+
+}
+
+#moreinfo ol li{
+padding: 2px;    
+
 }
 
 p {
