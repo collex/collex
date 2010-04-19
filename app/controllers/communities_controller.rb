@@ -31,13 +31,13 @@ class CommunitiesController < ApplicationController
 
 	def sort_by
 		session[:community_page_num] = 0
-		session[:community_sort_by] = params[:sort]
+		session[:community_sort_by] = params[:sort] if params[:sort]
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 
 	def view_by
 		session[:community_page_num] = 0
-		session[:community_view_by] = params[:view]
+		session[:community_view_by] = params[:view] if params[:view]
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 

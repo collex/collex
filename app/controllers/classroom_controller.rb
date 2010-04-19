@@ -40,13 +40,13 @@ class ClassroomController < ApplicationController
 
 	def sort_by
 		session[:classroom_page_num] = 0
-		session[:classroom_sort_by] = params[:sort]
+		session[:classroom_sort_by] = params[:sort] if params[:sort]
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 
 	def view_by
 		session[:classroom_page_num] = 0
-		session[:classroom_view_by] = params[:view]
+		session[:classroom_view_by] = params[:view] if params[:view]
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 
