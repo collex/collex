@@ -43,6 +43,7 @@
 		</tr>
 		<% for object in exhibit.exhibit_objects -%>
 			<% hit = CachedResource.get_hit_from_uri(object.uri) -%>
+		<% if hit != nil -%>
 			<tr <%= 'style="display:none"' if !start_open %> class="exhibit_tree_<%= exhibit.id %>" >
 				<td></td>
 				<td>
@@ -53,6 +54,7 @@
 				</td>
 				<td><%= link_to_function "x", "doRemoveObjectFromExhibit('#{exhibit.id}', '#{object.uri}');", :class => 'modify_link' %></td>
 			</tr>
+		<% end # if the object was not nil -%>
 		<% end # for each object -%>
 	<% end # for each exhibit -%>
 	</table>
