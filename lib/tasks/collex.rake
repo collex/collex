@@ -73,7 +73,8 @@ namespace :collex do
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
-		`mongrel_rails restart`
+		puts "You will be asked for your sudo password."
+		`sudo /sbin/service httpd restart`
 		start_daemons()
 	end
 
