@@ -86,7 +86,7 @@ class CachedResource < ActiveRecord::Base
 		if cloud != nil
 			cloud = cloud.map { |entry| [ entry.name, entry.freq.to_i ] }
 			freqs = cloud.sort {|a,b| b[1] <=> a[1] }
-			return nil if freqs == nil
+			return nil if freqs == nil || freqs.length == 0
 			third = freqs[freqs.length*2/3][1]
 			cloud = cloud.map {|tag|
 				[ tag[0], tag[1], tag[1] > third ]
