@@ -51,7 +51,7 @@ class CommunitiesController < ApplicationController
 	private
 	def get_results()
 		@searcher ||= SearchUserContent.new
-		options = { :facet => { :federation => SITE_NAME, :section => 'community' }, :user_id => get_curr_user_id(), :terms => session[:community_search_term], :page_size => 10, :page => session[:community_page_num] }
+		options = { :facet => { :federation => DEFAULT_FEDERATION, :section => 'community' }, :user_id => get_curr_user_id(), :terms => session[:community_search_term], :page_size => 10, :page => session[:community_page_num] }
 		case session[:community_view_by]
 		when 'Groups' then
 			options[:facet][:group] = true

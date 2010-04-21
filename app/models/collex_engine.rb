@@ -53,7 +53,7 @@ class CollexEngine
     if @num_docs == -1
       #request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0, :shards => @cores)
       # TODO: PER temporary hack to just see the NINES objects.
-      request = Solr::Request::Standard.new(:query=>"federation:NINES", :rows=>0, :shards => @cores)
+      request = Solr::Request::Standard.new(:query=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
       response = @solr.send(request)
       
       @num_docs = response.total_hits
@@ -1255,8 +1255,7 @@ private
         filter_queries << constraint.to_solr_expression
       end
     end
-	# TODO: PER temporary hack to just see the NINES objects.
-	queries << "federation:NINES"
+	queries << "federation:#{DEFAULT_FEDERATION}"
 
     queries << "*:*" if queries.empty?
 

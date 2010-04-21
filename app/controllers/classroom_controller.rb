@@ -60,7 +60,7 @@ class ClassroomController < ApplicationController
 	private
 	def get_results()
 		@searcher ||= SearchUserContent.new
-		options = { :facet => { :federation => SITE_NAME, :section => 'classroom' }, :user_id => get_curr_user_id(), :terms => session[:classroom_search_term], :page_size => 10, :page => session[:classroom_page_num] }
+		options = { :facet => { :federation => DEFAULT_FEDERATION, :section => 'classroom' }, :user_id => get_curr_user_id(), :terms => session[:classroom_search_term], :page_size => 10, :page => session[:classroom_page_num] }
 		case session[:classroom_view_by]
 		when 'Groups' then
 			options[:facet][:group] = true
