@@ -66,6 +66,17 @@ namespace :collex do
 		start_daemons()
 	end
 
+	def update_18th
+		puts "Update site from repository..."
+		stop_daemons()
+		`svn up`
+		Rake::Task['collex:update_nines_theme'].invoke
+		Rake::Task['db:migrate'].invoke
+		Rake::Task['collex:compress_css_js'].invoke
+		`mongrel_rails restart`
+		start_daemons()
+	end
+
 	def update_experimental
 		# TODO-PER: Can we force this to run in development mode?
 		puts "Update site from repository..."
@@ -112,6 +123,8 @@ namespace :collex do
 			update_development()
 		elsif UPDATE_TASK == 'experimental'
 			update_experimental()
+		elsif UPDATE_TASK == '18th'
+			update_18th()
 		else
 			puts "Unknown updating type. Compare the value in config/site.yml and the list in the collex:update rake task (file: collex.rake)."
 		end
