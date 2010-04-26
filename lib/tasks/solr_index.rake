@@ -204,6 +204,42 @@ end
 		end
 	end
 
+	desc "Create the Gale objects from ESTC"
+	task :process_gale_objects => :environment do
+		if CAN_INDEX
+			require 'script/lib/process_gale_objects.rb'
+			include ProcessGaleObjects
+			CollexEngine.create_core("archive_ECCO")
+			src = CollexEngine.new(["archive_estc"])
+			puts "Number of objects: #{src.num_docs()}"
+			dst = CollexEngine.new(["archive_ECCO"])
+			path = "/Users/paulrosen/TCP_texts/plainText/"
+			count = 0
+			GALE_OBJECTS.each {|arr|
+				filename = arr[0]
+				text = ''
+				File.open("#{path}#{filename}.txt", "r") { |f|
+					text = f.read
+				}
+				uri = arr[1]
+				obj = src.get_object(uri)
+				if obj == nil
+					puts "Can't find object: #{uri}"
+				else
+					obj['text'] = text
+					obj['archive'] = "ECCO"
+					obj['url'] = []
+					obj['uri'] = obj['url'].sub("lib://estc", "lib://ECCO")
+					dst.add_object(obj, nil)
+				end
+				count += 1
+				puts "Processed: #{count}" if count % 100 == 0
+			}
+			dst.commit()
+			dst.optimize()
+		end
+	end
+
 	desc "Reindex all MARC records (optional param: archive=[bancroft|lilly|estc][;max_records])"
 	task :reindex_marc => :environment do
 		if CAN_INDEX
