@@ -790,8 +790,6 @@ class Exhibit < ActiveRecord::Base
 
 	public
 
-	RESOURCE_CATEGORY = "#{SITE_NAME} Exhibits"
-
 	def self.index_all_peer_reviewed
 		groups = Group.find_all_by_group_type('peer-reviewed')
 		exhibits = []
@@ -934,7 +932,7 @@ class Exhibit < ActiveRecord::Base
 		# add to the resource tree
 		value = self.make_archive_name()
     facet = FacetCategory.find_by_value(value)
-		parent = FacetCategory.find_by_value(RESOURCE_CATEGORY)
+		parent = FacetCategory.find_by_value("#{SITE_NAME} Exhibits")
 		id = parent ? parent.id : 1
     if facet == nil
       FacetValue.create(:value => value, :parent_id => id)
