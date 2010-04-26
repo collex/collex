@@ -790,7 +790,7 @@ class Exhibit < ActiveRecord::Base
 
 	public
 
-	RESOURCE_CATEGORY = "NINES Exhibits"	# TODO: generalize this, and allow exhibits to come from 18th connect, too.
+	RESOURCE_CATEGORY = "#{SITE_NAME} Exhibits"
 
 	def self.index_all_peer_reviewed
 		groups = Group.find_all_by_group_type('peer-reviewed')

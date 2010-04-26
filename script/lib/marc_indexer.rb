@@ -325,11 +325,11 @@ class MarcIndexer
 			nines = true if y > 1780 && y < 1930
 		}
 		if nines && eighteen
-			return [ "NINES", "18th Connect" ]
+			return [ "NINES", "18thConnect" ]
 		elsif nines && !eighteen
 			return "NINES"
 		elsif !nines && eighteen
-			return "18th Connect"
+			return "18thConnect"
 		end
 		return nil
 	end
