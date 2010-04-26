@@ -213,7 +213,7 @@ end
 			src = CollexEngine.new(["archive_estc"])
 			puts "Number of objects: #{src.num_docs()}"
 			dst = CollexEngine.new(["archive_ECCO"])
-			path = "/Users/paulrosen/TCP_texts/plainText/"
+			path = "../ecco/"
 			count = 0
 			GALE_OBJECTS.each {|arr|
 				filename = arr[0]
