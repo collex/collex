@@ -393,7 +393,8 @@ var RichTextEditor = Class.create({
 			group: 'textstyle', label: 'Font Style',
 			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
 				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' }]
+				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+				{ type: 'push', label: 'Strike Through', value: 'strikethrough' }]
 		};
 		
 		var toolgroupFontStyleDropCap = {
@@ -401,6 +402,7 @@ var RichTextEditor = Class.create({
 			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
 				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
 				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+				{ type: 'push', label: 'Strike Through', value: 'strikethrough' },
 				{ type: 'push', label: 'First Letter', value: 'firstletter' 	}]
 		};
 
