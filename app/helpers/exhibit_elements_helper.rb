@@ -60,10 +60,12 @@ module ExhibitElementsHelper
     return names
   end
 
-  def get_exhibits_user_institution(exhibit)
-    user = exhibit.get_apparent_author()
-    return user.institution
-  end
+	def get_exhibits_user_institution(exhibit)
+		users = exhibit.get_authors()
+		return "" if users.length > 1
+		user = exhibit.get_apparent_author()
+		return user.institution
+	end
   
   def get_exhibit_user_link(exhibit)
     users = exhibit.get_authors()
