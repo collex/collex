@@ -229,7 +229,8 @@ end
 					obj['text'] = text
 					obj['archive'] = "ECCO"
 					obj['url'] = []
-					obj['uri'][0] = obj['url'][0].sub("lib://estc", "lib://ECCO")
+					uri = obj['uri']
+					obj['uri'] = uri.sub("lib://estc", "lib://ECCO")
 					dst.add_object(obj, nil)
 				end
 				count += 1
