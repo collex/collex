@@ -21,7 +21,7 @@
 		font-size: <%= @exhibit.get_font_size('footnote') %>px;
 	}
 </style>
-<% if @exhibit.is_peer_reviewed() -%>
+<% if Group.is_peer_reviewed_group(@exhibit) -%>
 <% group = Group.find(@exhibit.group_id) -%>
 <style type="text/css">
 <% if group.link_color.length > 0 -%>
@@ -73,7 +73,7 @@
 <% end -%>
 
 <div class="inner_content_container">
-<% if @exhibit.is_peer_reviewed() -%>
+<% if Group.is_peer_reviewed_group(@exhibit) -%>
 	<div class="publication_header">
 		<div class="exhibit_sharing_notice">
 			<%= @exhibit.get_sharing_icon_with_link() %>

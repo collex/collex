@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_page params: ActiveRecord exhibit, int page_num, bool is_edit_mode, int top (nil or the element id that should be scrolled to), badge_pos = none|left|right -%>
 <div id="page<%= page_num %>" class="exhibit_heading">
-<% if exhibit.is_peer_reviewed() -%>
+<% if Group.is_peer_reviewed_group(exhibit) -%>
 	<center>
 	<p class="publication_title"><%=h exhibit.title %></p>
 	<p class="publication_author"><%= get_exhibits_username_list(exhibit, is_edit_mode) %><%= ", #{get_exhibits_user_institution(exhibit)}" if get_exhibits_user_institution(exhibit).length > 0 %></p>
@@ -32,7 +32,7 @@
 	<% page_controller = is_edit_mode ? MY_COLLEX_URL : 'exhibits' -%>
 	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
 	<% has_footnotes = Exhibit.has_footnotes(is_edit_mode ? exhibit.id : get_exhibit_id(exhibit)) -%>
-<% if exhibit.is_peer_reviewed() -%>
+<% if Group.is_peer_reviewed_group(exhibit) -%>
 	<%= render :partial => '/exhibits/publication_pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
 <% else -%>
 	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
