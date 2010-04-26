@@ -28,6 +28,7 @@ function showString(str)
 		inputKlass: "saved_search_copy_el",
 		body_style: "saved_search_copy_body"
 	});
+	$('show_save_name').select();
 }
 
 function showHiddenSavedSearches(class_of_button, class_of_hidden_items)
