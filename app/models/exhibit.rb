@@ -778,8 +778,13 @@ class Exhibit < ActiveRecord::Base
 		end
 		genres = self.genres == nil ? [] : self.genres.split(', ')
 		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail, :has_full_text => true, :federation => DEFAULT_FEDERATION,
-			:genre => genres, :archive => self.make_archive_name(), :role_AUT => self.get_apparent_author_name(),	:url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
+			:genre => genres, :archive => self.make_archive_name(), :url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
 			:text => data.join(" \n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
+		authors = self.get_authors()
+		doc[:role_AUT] = []
+		authors.each {|author|
+			doc[:role_AUT].push(author.fullname)
+		}
 		solr.add_object(doc, boost)
 	end
 
