@@ -97,7 +97,11 @@ namespace :collex do
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
-		`mongrel_rails restart`	#TODO-PER: See if this machine is actually using the service instead of mongrel!
+		# staging has two mongrels in a cluster. They were started like this:
+		# mongrel_rails start -e production -p 8000 -d
+		# mongrel_rails start -e production -p 8001 -P log/mongrel8001.pid -d
+		`mongrel_rails restart`
+		`mongrel_rails restart -P log/mongrel8001.pid`
 		start_daemons()
 	end
 
