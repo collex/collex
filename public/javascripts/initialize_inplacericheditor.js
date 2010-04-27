@@ -408,7 +408,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var dlg = new GeneralDialog(dlgParams);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler([ populate_exhibit_only, populate_all ], progress_img),
 			footnote: {callback: footnoteHandler.addFootnote, populate_url: [ populate_exhibit_only, populate_all ], progress_img: progress_img } });
-		dlg.changePage('layout', 'type');
+		dlg.changePage('layout', 'illustration_dlg_sel0');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
 		dlg.center();

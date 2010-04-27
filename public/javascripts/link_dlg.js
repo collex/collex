@@ -519,7 +519,7 @@ var LinkDlgHandler = Class.create({
 				
 			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link" };
 			var dlg = new GeneralDialog(dlgParams);
-			dlg.changePage('layout', 'ld_type');
+			dlg.changePage('layout', 'link_dlg_sel0');
 			objlist.populate(dlg, true, 'rte');
 			if (starting_selection.length > 0)
 				$$(".remove").each(function(el) { el.removeClassName('hidden'); });
