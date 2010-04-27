@@ -53,6 +53,10 @@ class ClustersController < ApplicationController
 	end
 
 	def move_exhibit
+		if get_curr_user() == nil
+			render :text => "You are not logged in. Has your session expired?"
+			return
+		end
 		exhibit_id = params[:exhibit_id]
 		group_id = params[:group_id]
 		cluster_id = params[:cluster_id]
@@ -67,8 +71,12 @@ class ClustersController < ApplicationController
 end
 
 	def remove_profile_picture
+		if get_curr_user() == nil
+			render :text => "You are not logged in. Has your session expired?"
+			return
+		end
 		id = params[:id]
-    cluster = Cluster.find(id)
+		cluster = Cluster.find(id)
 		cluster.image = nil
 		cluster.save
 		GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail removed in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has removed the separate thumbnail from the #{Group.get_clusters_label(cluster.group_id)} \"#{cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
@@ -76,6 +84,11 @@ end
 	end
 
 	def edit_thumbnail
+		if get_curr_user() == nil
+			flash = "You are not logged in. Has your session expired?"
+			render :text => "<script type='text/javascript'>window.top.window.stopEditGroupThumbnailUpload('#{flash}');</script>"
+			return
+		end
 		cluster_id = params[:id]
 		cluster = Cluster.find(cluster_id)
 		image = params['image']
