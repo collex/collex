@@ -98,6 +98,8 @@ namespace :solr do
 			`cd #{folder} && tar xvfz #{zipfile}`
 			`rm -r #{index_path}`
 			`mv #{folder}/index #{index_path}`
+			File.open("#{RAILS_ROOT}/log/archive_installations.log", 'w') {|f| f.write("#{today} #{archive}") }
+
 			solr = CollexEngine.new()
 			solr.delete_archive(archive)
 			solr.replace_archive("#{index_path}")
