@@ -98,7 +98,7 @@ namespace :solr do
 			`cd #{folder} && tar xvfz #{zipfile}`
 			`rm -r -f #{index_path}`
 			`mv #{folder}/index #{index_path}`
-			File.open("#{RAILS_ROOT}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created:#{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
+			File.open("#{RAILS_ROOT}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
 
 			solr = CollexEngine.new()
 			solr.delete_archive(archive)
