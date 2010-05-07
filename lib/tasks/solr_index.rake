@@ -321,7 +321,7 @@ end
 										:archive => archive,
 										:solr_url => "#{SOLR_URL}/archive_#{archive}",
 										:url_log_path => "log/#{archive}_link_data.txt",
-										:federation => nil,	# this is calculated for each record
+										:federation => 'NINES',	# this is calculated for each record
 										:dir => "#{marc_path}#{archive}",
 										:max_records => max_records
 										}

@@ -85,7 +85,7 @@ class MarcIndexer
 		'bancroft' => true,
 		'lilly' => true,
 		'estc' => false,
-		'galeDLB' => false
+		'galeDLB' => true
 	}
 
 	URI_FIELD = {
