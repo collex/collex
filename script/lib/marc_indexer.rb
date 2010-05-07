@@ -77,19 +77,22 @@ class MarcIndexer
 #                  ":next=html/Cannedresultsframe.html:bad=error/badsearchframe.html" ],
     'lilly' => [ "http://www.iucat.iu.edu/uhtbin/cgisirsi/x/0/0/5?library=ALL&searchdata1=^C", ['001'] ],
     'uva_library' => [ "http://virgo.lib.virginia.edu/uhtbin/cgisirsi/uva/0/0/5?searchdata1=", :parse_uva_id, "{CKEY}"  ],
-		'estc' => [ "http://estc.bl.uk/", :parse_estc_record ]
+		'estc' => [ "http://estc.bl.uk/", :parse_estc_record ],
+		'galeDLB' => [ "http://galeDLB", ['001'] ]
   }
 
 	NEEDS_FEDERATION = {
 		'bancroft' => true,
 		'lilly' => true,
-		'estc' => false
+		'estc' => false,
+		'galeDLB' => false
 	}
 
 	URI_FIELD = {
 		'bancroft' => [  "lib://bancroft/", [ '001'] ],
 		'lilly' => [  "lib://lilly/", [ '001'] ],
-		'estc' => [  "lib://estc/", :parse_estc_record ]
+		'estc' => [  "lib://estc/", :parse_estc_record ],
+		'galeDLB' => [ 'lib://galeDLB/', ['001']]
 	}
   
   def self.run( args )
