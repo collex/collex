@@ -304,6 +304,17 @@ end
 				args[:dir] = "#{marc_path}#{arc}"
 				MarcIndexer.run(args)
 			end
+
+			if archive == nil || archive == 'flBaldwin'
+				arc = 'flBaldwin'
+				args[:archive] = arc
+				args[:solr_url] = "#{SOLR_URL}/archive_#{arc}"
+				args[:url_log_path] = "log/#{arc}_link_data.txt"
+				args[:federation] = 'NINES'
+				CollexEngine.create_core("archive_#{arc}")
+				args[:dir] = "#{marc_path}#{arc}"
+				MarcIndexer.run(args)
+			end
 			puts "Finished in #{(Time.now-start_time)/60} minutes."
 		end
 	end

@@ -78,14 +78,16 @@ class MarcIndexer
     'lilly' => [ "http://www.iucat.iu.edu/uhtbin/cgisirsi/x/0/0/5?library=ALL&searchdata1=^C", ['001'] ],
     'uva_library' => [ "http://virgo.lib.virginia.edu/uhtbin/cgisirsi/uva/0/0/5?searchdata1=", :parse_uva_id, "{CKEY}"  ],
 		'estc' => [ "http://estc.bl.uk/", :parse_estc_record ],
-		'galeDLB' => [ "http://galeDLB", ['001'] ]
+		'galeDLB' => [ "http://galeDLB", ['001'] ],
+		'flBaldwin' => [ "http://flBaldwin", ['001'] ]
   }
 
 	NEEDS_FEDERATION = {
 		'bancroft' => true,
 		'lilly' => true,
 		'estc' => false,
-		'galeDLB' => true
+		'galeDLB' => true,
+		'flBaldwin' => true
 	}
 
 	URI_FIELD = {
@@ -93,6 +95,7 @@ class MarcIndexer
 		'lilly' => [  "lib://lilly/", [ '001'] ],
 		'estc' => [  "lib://estc/", :parse_estc_record ],
 		'galeDLB' => [ 'lib://galeDLB/', ['001']]
+		'flBaldwin' => [ 'lib://flBaldwin/', ['001']]
 	}
   
   def self.run( args )
