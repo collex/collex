@@ -94,7 +94,7 @@ class MarcIndexer
 		'bancroft' => [  "lib://bancroft/", [ '001'] ],
 		'lilly' => [  "lib://lilly/", [ '001'] ],
 		'estc' => [  "lib://estc/", :parse_estc_record ],
-		'galeDLB' => [ 'lib://galeDLB/', ['001']]
+		'galeDLB' => [ 'lib://galeDLB/', ['001']],
 		'flBaldwin' => [ 'lib://flBaldwin/', ['001']]
 	}
   
