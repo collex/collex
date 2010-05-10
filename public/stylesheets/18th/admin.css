@@ -1,0 +1,115 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+.admin_active {
+	font-weight: bold;
+	color: black;
+}
+
+#admin_menu {
+	padding-top: 1px;
+	margin: 10px;
+	background-color: #566fb1;
+}
+
+#admin_menu li {
+	list-style: none;
+	margin: 0;
+	display: inline;
+	padding-right: 10px;
+	border-right: 1px solid white;
+}
+
+#admin_menu li a {
+	border-left: .8em solid #B99A86;
+	text-decoration: none;
+}
+#admin_menu li a.active {
+	border-left: .8em solid #730000;
+	background: #A60000;
+	color: #fff;
+	text-decoration: none;
+}
+#admin_menu li a:link { color: #fff; }
+#admin_menu li a:visited { color: #fff; }
+
+#admin_menu li a.active:link { color: #fff; }
+#admin_menu li a.active:visited { color: #fff; }
+
+
+#admin_menu li a:hover {
+	color: #fff;
+	text-decoration:underline;
+}
+
+.admin_menu_current {
+	background-color: white;
+	color: black !important;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.site_list {
+	width:700px;
+	background:#F7F4EA;
+	padding:0px 0px 10px 0px;
+}
+
+.user_roles {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.user_roles th {
+	border: none;
+}
+
+.user_roles td {
+	text-align: left;
+}
+
+.pagination a:link, .pagination a:visited {
+	color:#AC2E20;
+	text-decoration:none;
+}
+
+.pagination a:hover {
+	text-decoration:underline;
+}
+
+.reported_abuse {
+	border: 1px solid gray;
+}
+
+.reported_abuse td {
+	border: 1px solid gray;
+}
+
+.not_published {
+	color: gray;
+	font-style: italic;
+}
+
+.exhibit_category td {
+	padding: 3px;
+	border: 1px solid #dddddd;
+	max-width: 500px;
+}
+
+.exhibit_category th {
+	border: 1px solid #dddddd;
+}
