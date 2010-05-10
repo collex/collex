@@ -86,6 +86,7 @@ body {
 .modify_link:hover { color: #fff; background: #445a93; text-decoration: none; }
 
 /* This is used for all links that go to the NINES sites. */
+.nines_link { background: url(/images/18th/18th_link.jpg) center right no-repeat; }
 .nines_link:link { color: #445a93; }
 .nines_link:visited { color: #445a93; }
 .nines_link:hover { color: #fff; background: #445a93; }
@@ -97,6 +98,7 @@ body {
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
+	background: url(/images/18th/18th_link.jpg) center right no-repeat;
 	color: #445a93;
 } /* should match nines_link:link */
 

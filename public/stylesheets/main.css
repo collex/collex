@@ -47,7 +47,6 @@ table, table td, table tr {
 }
 
 .nines_link {
-	background: url(/images/nines_link.jpg) center right no-repeat;
 	padding-right: 13px;
 }
 
@@ -68,7 +67,6 @@ table, table td, table tr {
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
-	background: url(/images/nines_link.jpg) center right no-repeat;
 	padding-right: 13px;
 } /* should match nines_link:link */
 
