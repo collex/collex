@@ -18,7 +18,7 @@ The following steps are explained in detail below:
 3) create site.yml and database.yml
 4) Start solr
 5) Index some documents
-6) Run: rake RAILS_ENV=production collex:update_site
+6) Run: rake RAILS_ENV=production collex:update
 7) Modify About pages
 8) Install Wordpress
 9) Skin it by changing the css files.
