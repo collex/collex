@@ -14,63 +14,29 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
-.about_left {
-	width:200px;
-	float:left;
-	padding:18px;
-}
-
 .about_nav_container {
-	width:180px;
-	padding: 5px 10px 5px 5px;
-	font-family:Verdana, Arial, Helvetica, sans-serif;
-}
-
-.about_nav_container p {
-	margin:8px 0px 0px 0px;
-	padding:0px;
+	background:#EAE0D6;
+	border:1px solid #BEBDBB;
 }
 
 .a_nav_1 {
-	font-size:0.8em;
-	line-height:1.8em;
-	padding:2px 5px 2px 5px;
-	margin:0px;
+	color:#000000;
 }
 
 .a_nav_2 {
-	font-size:0.7em;
-	line-height:1.8em;
-	padding:2px 5px 2px 12px;
-	margin:0px;
+	color:#000000;
 }
 
 .a_nav_1_dn {
-	font-size:0.8em;
-	line-height:1.8em;
-	padding:2px 5px 2px 5px;
-	margin:0px;
+	color:#FFFFFF;
+	background:#A98064;
 }
 
 .a_nav_2_dn {
-	font-size:0.7em;
-	line-height:1.8em;
-	padding-left:7px;	
-	padding:2px 5px 2px 12px;
-	margin:0px;
-}
-
-
-.about_right {
-	width:66%;
-	float:left;
-	padding:18px;
-}
-
-.about_right p.header {
-    text-decoration:underline;
+	color:#FFFFFF;
+	background:#A98064;
 }
 
 p.highlight {
-	padding: 4px;
+	background-color:#EAE0D6;
 }
