@@ -57,6 +57,11 @@ class TagController < ApplicationController
     end
 
     set_cloud_list(nil, "")
+
+    respond_to do |format|
+      format.xml { render }
+      format.html
+    end    
   end
 
   def results

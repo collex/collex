@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<tagcloud>
+	<% for tag in @cloud_info[:cloud_freq] -%>
+	<tag frequency="<%= tag[1] %>" url="<%= "http://#{request.env['HTTP_HOST']}/tags/rss/#{tag[0]}.xml" %>"><%= tag[0] %></tag>
+	<% end -%>
+</tagcloud>

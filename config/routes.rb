@@ -98,6 +98,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'browse/saved/:username/:name', :controller => 'search', :action => 'saved_permalink'
   map.connect 'admin', :controller => 'admin/default'
 
+  map.tag_xml '/tags.xml', :controller => 'tag', :action => 'list', :format => 'xml'
   map.tag_rss '/tags/rss/:tag.xml', :controller => 'tag', :action => 'rss'
   map.tag_obj '/tags/object', :controller => 'tag', :action => 'object'
   map.tag_res '/tags/results', :controller => 'tag', :action => 'results'
@@ -106,6 +107,7 @@ ActionController::Routing::Routes.draw do |map|
   map.search '/search', :controller => 'search', :action => 'browse'
   map.about '/about', :controller => 'about', :action => 'index'
   map.tags '/tags', :controller => 'tag', :action => 'list'
+
 	# This gets called before environment.rb, so the constant we need isn't loaded yet. We'll load it here.
   config_file = File.join(RAILS_ROOT, "config", "site.yml")
   if File.exists?(config_file)
