@@ -109,7 +109,8 @@ if File.exists?(config_file)
 	BLEEDING_EDGE = site_specific['bleeding_edge']
 	DISALLOW_RSS  = site_specific['disallow_rss'] == nil ? false : site_specific['disallow_rss']
 	PROJECT_MANAGER_EMAIL = site_specific['project_manager_email']
-
+	ABOUT = { :link => site_specific['about']['link'], :label => site_specific['about']['label'] }
+	
 else
 	puts "***"
 	puts "*** Failed to load site configuration. Did you create config/site.yml?"

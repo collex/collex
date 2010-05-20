@@ -51,3 +51,7 @@ disallow_rss: false
 daemons:
   mailer_interval_secs: 20
   user_content_interval_secs: 600
+
+about:
+  link: '/about/what_is.html'
+  label: 'What is NINES>'
