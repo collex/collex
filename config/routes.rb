@@ -16,6 +16,7 @@
 
 ActionController::Routing::Routes.draw do |map|
 	map.vic_conference '/vic_conference/create', :controller => 'vic_conference', :action => 'create'
+	map.vic_conference_confirm '/vic_conference/confirm', :controller => 'vic_conference', :action => 'confirm'
 
 	map.stale_request '/groups/stale_request', :controller => 'groups', :action => 'stale_request'
 	map.accept_request '/groups/accept_request', :controller => 'groups', :action => 'accept_request'
