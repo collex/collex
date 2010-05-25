@@ -14,6 +14,47 @@
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>The Victorians Institute Conference: Registration</title>
+<script type="text/javascript">
+	function validate_required(field,alerttxt)
+	{
+		if (field.value === null || field.value === "")
+		{
+			alert(alerttxt + " cannot be blank.");
+			return false;
+		}
+		else
+			return true;
+	}
+
+	function validate_form(This)
+	{
+		if (validate_required(This.first_name,"First name") === false)
+		{
+			This.first_name.focus();
+			return false;
+		}
+		if (validate_required(This.last_name,"Last name") === false)
+		{
+			This.last_name.focus();
+			return false;
+		}
+		if (validate_required(This.university,"University") === false)
+		{
+			This.university.focus();
+			return false;
+		}
+		if (validate_required(This.email,"Email address") === false)
+		{
+			This.email.focus();
+			return false;
+		}
+		if (validate_required(This.phone,"Phone number") === false)
+		{
+			This.phone.focus();
+			return false;
+		}
+	}
+</script>
  </head>
  <body>
 
@@ -41,7 +82,7 @@
 				<div class="ss-required-asterisk">* Required</div>
 			</div>
 			<div class="ss-form">
-				<form action="/vic_conference/create" method="POST" id="ss-form">
+				<form action="/vic_conference/create" method="POST" id="ss-form" onsubmit="return validate_form(this);" >
 				<div class="errorbox-good">
 					<div class="ss-item  ss-checkbox">
 						<div class="ss-form-entry">
