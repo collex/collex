@@ -16,7 +16,7 @@ class VicConferenceController < ApplicationController
 	end
 
 	def make_confirm_line(label, value)
-		return "<div>#{label}: #{value}</div>\n"
+		return "<div><span class='confirm_label'>#{label}:</span> <span class='confirm_value'>#{value}</span></div>\n"
 	end
 
 	def create
