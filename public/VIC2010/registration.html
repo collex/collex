@@ -64,9 +64,19 @@
 				<div class="errorbox-good">
 					<div class="ss-item ss-item-required ss-text">
 						<div class="ss-form-entry">
-							<label class="ss-q-title" for="name">Name<span class="ss-required-asterisk">*</span></label>
-							<label class="ss-q-help" for="name"></label>
-							<input name="registration[name]" value="" class="ss-q-short" id="name" type="text" />
+							<label class="ss-q-title" for="first_name">First Name<span class="ss-required-asterisk">*</span></label>
+							<label class="ss-q-help" for="first_name"></label>
+							<input name="registration[first_name]" value="" class="ss-q-short" id="first_name" type="text" />
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="errorbox-good">
+					<div class="ss-item ss-item-required ss-text">
+						<div class="ss-form-entry">
+							<label class="ss-q-title" for="last_name">Last Name<span class="ss-required-asterisk">*</span></label>
+							<label class="ss-q-help" for="last_name"></label>
+							<input name="registration[last_name]" value="" class="ss-q-short" id="last_name" type="text" />
 						</div>
 					</div>
 				</div>
@@ -137,11 +147,11 @@
 							<label class="ss-q-title" for="rare_book_school_1">Rare Book School seminar registration (OPTIONAL)</label>
 							<label class="ss-q-help" for="rare_book_school_1">Please select your first and second choices for an hour-long seminar at UVA’s Rare Book School during the conference</label>
 							<select name="registration[rare_book_school_1]" id="rare_book_school_1">
+								<option value="None">None</option>
 								<option value="Victorian Book Illustration - Barbara Heritage">Victorian Book Illustration - Barbara Heritage</option>
 								<option value="Victorian Bindings - Barbara Heritage">Victorian Bindings - Barbara Heritage</option>
 								<option value="Editing Hopkins - Michael Suarez">Editing Hopkins - Michael Suarez</option>
 								<option value="Teaching Victorian Book History - Michael Suarez">Teaching Victorian Book History - Michael Suarez</option>
-								<option value="None">None</option>
 							</select>
 						</div>
 					</div>
@@ -153,11 +163,11 @@
 							<label class="ss-q-title" for="rare_book_school_2">Seminar Registration: Second choice</label>
 							<label class="ss-q-help" for="rare_book_school_2"></label>
 							<select name="registration[rare_book_school_2]" id="rare_book_school_2">
+								<option value="None">None</option>
 								<option value="Victorian Book Illustration - Barbara Heritage">Victorian Book Illustration - Barbara Heritage</option>
 								<option value="Victorian Bindings - Barbara Heritage">Victorian Bindings - Barbara Heritage</option>
 								<option value="Editing Hopkins - Michael Suarez">Editing Hopkins - Michael Suarez</option>
 								<option value="Teaching Victorian Book History - Michael Suarez">Teaching Victorian Book History - Michael Suarez</option>
-								<option value="None">None</option>
 							</select>
 						</div>
 					</div>
