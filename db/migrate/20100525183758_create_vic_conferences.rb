@@ -15,6 +15,7 @@ class CreateVicConferences < ActiveRecord::Migration
       t.string :lunch_friday
       t.string :lunch_saturday
       t.string :lunch_vegetarian
+      t.string :parking
       t.string :transaction_id
       t.string :amt_paid
       t.string :auth_status

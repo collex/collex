@@ -64,7 +64,7 @@ class VicConferenceController < ApplicationController
 				<input  type="hidden" value="551915" name="merchant" />
 				<input  type="hidden" value="$AMOUNT.00" name="amount" />
 				<input  type="hidden" value="$ORDERNUMBER" name="orderNumber" />
-				<input  type="hidden" value="http://nines.performantsoftware.com/VIC2010/confirmation.html" name="backURL" />
+				<input  type="hidden" value="http://nines.performantsoftware.com/VIC2010" name="backURL" />
 				<input  type="hidden" value="Victorians Institute Conference 2010" name="description" />
 				<input  type="hidden" value="$FIRSTNAME" name="firstName" />
 				<input  type="hidden" value="$LASTNAME" name="otherName" />
@@ -104,10 +104,11 @@ END_OF_STRING
 			str += make_confirm_line("Accessibility Needs", values[:accessibility]) if values[:accessibility] && values[:accessibility].length > 0
 			str += make_confirm_line("Audio/Visual Needs", values[:audio_visual]) if values[:audio_visual] && values[:audio_visual].length > 0
 			str += make_confirm_line("Rare Book School seminar registration", values[:rare_book_school_1])
-			str += make_confirm_line("Seminar Registration: Second choice", values[:rare_book_school_2])
+			str += make_confirm_line("Seminar Registration Second choice", values[:rare_book_school_2])
 			str += make_confirm_line("Lunch Friday", values[:lunch_friday] ? "Yes" : "No")
 			str += make_confirm_line("Lunch Saturday", values[:lunch_saturday] ? "Yes" : "No")
 			str += make_confirm_line("Vegetarian", values[:lunch_vegetarian] ? "Yes" : "No")
+			str += make_confirm_line("Parking", values[:parking] ? "Yes" : "No")
 			html = html.sub("$REPLACE_ME", str)
 
 			html = html.sub("$AMOUNT", amt)
