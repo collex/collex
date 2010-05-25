@@ -30,6 +30,20 @@ class VicConferenceController < ApplicationController
 @import "//themes.googleusercontent.com/fonts/css?kit=75iFw6DSXGGp56YRAJl-Dl7am2uOAgh5xRFulfZHPqxnhV2whvSe3L0PRVRfs8A5";
 .ss-form-body { background-color: #563708; padding: 1px 20px; }
   h1,h2,h3,h4,h5,h6,p,ul,ol,li,div,td,label{line-height:20px;margin:0;padding:0}br{display:none}input,select,textarea{font-family:Tahoma,Arial,serif;font-size:13px}div.ss-form-container{background:#fffefa url('//lh3.googleusercontent.com/tIv9r1cf6jJs5juc9-ctA4gQoOvEq_D0N4qtQBZKq4_Ak6tmEMxiO2mYpDl_6rXbRnLhxim8Xu4pdJzDG9zp8hQ=s0');border:1px solid #d4c7b4;font-size:14px;line-height:1.6em;margin:20px auto;max-width:800px;padding:20px 40px 20px 20px;width:auto}div.ss-form-heading{text-align:center}.ss-required-asterisk{color:#c00}h1,h2{font-family:Tangerine}h1.ss-form-title{background:url('//lh3.googleusercontent.com/Kqrh8GmHf75HRBU_0qjZ63vuCwGOyUBTVyn26V6wI7ghhe3odT1ENOWbzG9Bpw1uKXgt2yHpcxzA2IuchbgkApA=s0') bottom center no-repeat;font-size:48px;font-weight:normal;line-height:52px;margin:0 0 10px;padding:0 0 25px}div.errorbox-bad{background:none;border:none;padding:0}div.errorheader,div.errorbox-bad div.ss-form-entry{background:#fee;border:1px solid #ebb;color:#c00;padding:5px}div.ss-form-entry{margin:0 0 20px}div.ss-section-header div.ss-form-entry,div.ss-navigate div.ss-form-entry{background:none;padding:0;margin:0}div.ss-section-header,div.ss-page-break{background:url('//lh3.googleusercontent.com/Kqrh8GmHf75HRBU_0qjZ63vuCwGOyUBTVyn26V6wI7ghhe3odT1ENOWbzG9Bpw1uKXgt2yHpcxzA2IuchbgkApA=s0') bottom center no-repeat;margin:10px 0;padding:0 0 25px;text-align:center}h2.ss-section-title,h2.ss-page-title{background:none;font-size:36px;font-weight:normal;line-height:42px;margin:0;padding:0}div.ss-section-description{margin:0}label.ss-q-help{font-style:italic;margin:0}.ss-required-asterisk{color:#c00}input.ss-q-short,textarea.ss-q-long,select,input.ss-q-other,input.ss-q-checkbox{border:1px solid #ddd0cc}label.ss-scalenumber{padding:0}td.ss-scalenumbers,td.ss-scalerow,td.ss-gridnumbers,td.ss-gridrow{border-color:#ddd0cc}tr.ss-grid-row-odd{background:url('//lh3.googleusercontent.com/4t24Vmm0aqZMjMWOgYUuhYbrfdcsJRI9ezsVZHR56MoVby8L80m8cCsusuQjDeNrIemSj6vXz7Fsf1IBq4iOwaQ=s0')}tr.ss-grid-row-even{background:none}
+.confirm_label {
+    font-weight: bold;
+    float: left;
+    position: absolute;
+}
+
+.confirm_value {
+    padding-left: 250px;
+}
+
+.ss-form div {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
   </style>
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
