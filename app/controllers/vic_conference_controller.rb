@@ -111,7 +111,9 @@ END_OF_STRING
 			str += make_confirm_line("Parking", values[:parking] ? "Yes" : "No")
 			html = html.sub("$REPLACE_ME", str)
 
-			html = html.sub("$AMOUNT", amt)
+			test_num = (rec.id % 3) + 1	# test mode only accepts a 1 2 or 3 as the first digit.
+
+			html = html.sub("$AMOUNT", "#{test_num}#{amt}")
 			str = "vic-#{rec.id*53}"
 			html = html.sub("$ORDERNUMBER", str)
 			html = html.sub("$FIRSTNAME", values[:first_name])
