@@ -67,7 +67,7 @@ class VicConferenceController < ApplicationController
 				<input  type="hidden" value="http://nines.performantsoftware.com/VIC2010/confirmation.html" name="backURL" />
 				<input  type="hidden" value="Victorians Institute Conference 2010" name="description" />
 				<input  type="hidden" value="$FIRSTNAME" name="firstName" />
-				<input  type="hidden" value="$LASTNAME" name="lastName" />
+				<input  type="hidden" value="$LASTNAME" name="otherName" />
 				<input  type="hidden" value="$EMAILADDR" name="emailAddr" />
 				$REPLACE_ME
 				<div class="ss-item ss-navigate">
