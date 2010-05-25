@@ -1,0 +1,70 @@
+<% #
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<% current_page "admin" -%>
+<% current_sub_page "VIC Conference" -%>
+<div class="inner_content_container">
+	<div class="page_header">VIC 2010 Conference</div>
+	<table class="exhibit_category">
+		<tr>
+			<th>type</th>
+			<th>first name</th>
+			<th>last name</th>
+			<th>univ.</th>
+			<th>phone</th>
+			<th>email</th>
+			<th>title</th>
+			<th>access.</th>
+			<th>A/V</th>
+			<th>rare book 1</th>
+			<th>rare book 2</th>
+			<th>lunch fri</th>
+			<th>lunch sat</th>
+			<th>lunch veggie</th>
+			<th>trans. id</th>
+			<th>amt paid</th>
+			<th>auth status</th>
+			<th>auth code</th>
+			<th>avs code</th>
+			<th>error txt</th>
+		</tr>
+		<% recs = VicConference.all -%>
+		<% for rec in recs -%>
+			<tr>
+				<td><%= rec.price%></td>
+				<td><%= rec.first_name%></td>
+				<td><%= rec.last_name%></td>
+				<td><%= rec.university%></td>
+				<td><%= rec.phone%></td>
+				<td><%= rec.email%></td>
+				<td><%= rec.title%></td>
+				<td><%= rec.accessibility%></td>
+				<td><%= rec.audio_visual%></td>
+				<td><%= rec.rare_book_school_1%></td>
+				<td><%= rec.rare_book_school_2%></td>
+				<td><%= rec.lunch_friday%></td>
+				<td><%= rec.lunch_saturday%></td>
+				<td><%= rec.lunch_vegetarian%></td>
+				<td><%= rec.transaction_id%></td>
+				<td><%= rec.amt_paid%></td>
+				<td><%= rec.auth_status%></td>
+				<td><%= rec.auth_code%></td>
+				<td><%= rec.avs_code%></td>
+				<td><%= rec.error_txt%></td>
+			</tr>
+		<% end -%>
+	</table>
+</div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100401194634) do
+ActiveRecord::Schema.define(:version => 20100525183758) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -408,6 +408,31 @@ ActiveRecord::Schema.define(:version => 20100401194634) do
     t.string  "link"
     t.text    "about_me"
     t.integer "image_id",      :limit => 10, :precision => 10, :scale => 0
+  end
+
+  create_table "vic_conferences", :force => true do |t|
+    t.string   "price"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "university"
+    t.string   "phone"
+    t.string   "email"
+    t.string   "title"
+    t.text     "accessibility"
+    t.text     "audio_visual"
+    t.string   "rare_book_school_1"
+    t.string   "rare_book_school_2"
+    t.string   "lunch_friday"
+    t.string   "lunch_saturday"
+    t.string   "lunch_vegetarian"
+    t.string   "transaction_id"
+    t.string   "amt_paid"
+    t.string   "auth_status"
+    t.string   "auth_code"
+    t.string   "avs_code"
+    t.text     "error_txt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

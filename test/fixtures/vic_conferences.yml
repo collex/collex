@@ -1,0 +1,31 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  first_name: MyString
+  last_name: MyString
+  university: MyString
+  phone: MyString
+  title: MyString
+  accessibility: MyText
+  audio_visual: MyText
+  rare_book_1: MyString
+  rare_book_2: MyString
+  lunch_friday: MyString
+  lunch_saturday: MyString
+  lunch_vegetarian: MyString
+  paid: MyString
+
+two:
+  first_name: MyString
+  last_name: MyString
+  university: MyString
+  phone: MyString
+  title: MyString
+  accessibility: MyText
+  audio_visual: MyText
+  rare_book_1: MyString
+  rare_book_2: MyString
+  lunch_friday: MyString
+  lunch_saturday: MyString
+  lunch_vegetarian: MyString
+  paid: MyString

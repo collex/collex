@@ -1,18 +1,15 @@
 class VicConferenceController < ApplicationController
-	def confirm
-		redirect_to "/VIC2010/confirmation.html"
-		#redirect_to "https://roth.itc.virginia.edu/ccgate/servlet/CCControl"
-#merchant
-#Charge Amount
-#Numerical, with two decimal places, i.e. 999.99
-#amount
-#Order Number
-#alphanumeric, 10 characters max, should be unique for merchant
-#orderNumber
-#Return URL for return-to-dept button
-#legal URL
-#backURL
-		#render :text => "VicConferenceController#create<br />#{str}"
+	def auth
+		order = params[:orderNumber]
+		order = order.split('-')
+		id = order[1].to_i / 53
+		rec = VicConference.find(id)
+		rec.update_attributes(:amt_paid => params[:amount], :auth_status => params[:authStatus], :auth_code => params[:avsCode], :error_txt => params[:errorTxt])
+		params.each { |k,v|
+			puts "#{k}: #{v}"
+		}
+
+		render :text => "ok"
 	end
 
 	def make_confirm_line(label, value)
@@ -63,10 +60,16 @@ class VicConferenceController < ApplicationController
 				<hr class="ss-email-break" style="display: none;"/>
 			</div>
 			<div class="ss-form">
-				<form action="/vic_conference/confirm" method="POST" id="ss-form">
-
-				REPLACE_ME
-
+				<form action="https://roth.itc.virginia.edu/ccgate/servlet/CCControl" method="POST" id="ss-form">
+				<input  type="hidden" value="551915" name="merchant" />
+				<input  type="hidden" value="$AMOUNT.00" name="amount" />
+				<input  type="hidden" value="$ORDERNUMBER" name="orderNumber" />
+				<input  type="hidden" value="http://nines.performantsoftware.com/VIC2010/confirmation.html" name="backURL" />
+				<input  type="hidden" value="Victorians Institute Conference 2010" name="description" />
+				<input  type="hidden" value="$FIRSTNAME" name="firstName" />
+				<input  type="hidden" value="$LASTNAME" name="lastName" />
+				<input  type="hidden" value="$EMAILADDR" name="emailAddr" />
+				$REPLACE_ME
 				<div class="ss-item ss-navigate">
 					<div class="ss-form-entry">
 						<input name="submit" value="Pay Now" type="submit" />
@@ -82,14 +85,18 @@ class VicConferenceController < ApplicationController
 </html>
 END_OF_STRING
 		values = params[:registration]
+		rec = VicConference.create(values)
 		if values
 			str = ""
 			if values[:price] == 'faculty'
+				amt = "70"
 				str += make_confirm_line("Registration Type", "Faculty ($70)")
 			else
+				amt = "40"
 				str += make_confirm_line("Registration Type", "Student ($40)")
 			end
-			str += make_confirm_line("Name", values[:name])
+			str += make_confirm_line("First Name", values[:first_name])
+			str += make_confirm_line("Last Name", values[:last_name])
 			str += make_confirm_line("University", values[:university])
 			str += make_confirm_line("Email", values[:email])
 			str += make_confirm_line("Phone", values[:phone])
@@ -100,8 +107,15 @@ END_OF_STRING
 			str += make_confirm_line("Seminar Registration: Second choice", values[:rare_book_school_2])
 			str += make_confirm_line("Lunch Friday", values[:lunch_friday] ? "Yes" : "No")
 			str += make_confirm_line("Lunch Saturday", values[:lunch_saturday] ? "Yes" : "No")
-			str += make_confirm_line("Vegitarian", values[:lunch_vegetarian] ? "Yes" : "No")
-			html = html.sub("REPLACE_ME", str)
+			str += make_confirm_line("Vegetarian", values[:lunch_vegetarian] ? "Yes" : "No")
+			html = html.sub("$REPLACE_ME", str)
+
+			html = html.sub("$AMOUNT", amt)
+			str = "vic-#{rec.id*53}"
+			html = html.sub("$ORDERNUMBER", str)
+			html = html.sub("$FIRSTNAME", values[:first_name])
+			html = html.sub("$LASTNAME", values[:last_name])
+			html = html.sub("$EMAILADDR", values[:email])
 		end
 		render :text => html
 	end
