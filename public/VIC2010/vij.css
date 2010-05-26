@@ -7,7 +7,7 @@ body {
     font-family: garamond, times, sans-serif;
     font-size: medium;  
     color: black;
-	background-color: #E6D0AA;
+	background-color: #d3bf9e;
 	margin-left: 10%; margin-right: 10%; margin-top: -1%;
 	}
 
@@ -124,6 +124,28 @@ padding: 2px;
 
 #form {
 margin-left: 150px;    
+}
+
+#textHeavy {
+margin-left: 100px;    
+
+}
+
+#textHeavy h3 {
+text-align: left; 
+margin-left:10px;
+padding:.3em;
+text-decoration:underline;
+
+}
+
+#textHeavy p {
+padding:.3em;    
+}
+
+#textHeavy span {
+margin-left:15px;   
+margin-top:-20px;
 }
 
 p {
