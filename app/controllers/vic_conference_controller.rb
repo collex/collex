@@ -47,7 +47,7 @@ class VicConferenceController < ApplicationController
   </style>
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>The Victorians Institute Conference: Registration</title>
+  <title>The Victorians Institute Conference: Review Registration</title>
  </head>
  <body>
 
