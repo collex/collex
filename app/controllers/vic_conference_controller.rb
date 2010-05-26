@@ -75,7 +75,7 @@ class VicConferenceController < ApplicationController
 			</div>
 			<div class="ss-form">
 				<form action="https://roth.itc.virginia.edu/ccgate/servlet/CCControl" method="POST" id="ss-form">
-				<input  type="hidden" value="551915" name="merchant" />
+				<input  type="hidden" value="nines-conference" name="merchant" />
 				<input  type="hidden" value="$AMOUNT.00" name="amount" />
 				<input  type="hidden" value="$ORDERNUMBER" name="orderNumber" />
 				<input  type="hidden" value="http://nines.performantsoftware.com/VIC2010" name="backURL" />
