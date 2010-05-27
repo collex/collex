@@ -354,7 +354,9 @@ class MyCollexController < ApplicationController
 			user = get_user(session)
 			if group && user
 				body = "#{user.fullname} has shared an exhibit \"#{exhibit.title}\" to the group #{group.name}.\n\n"
-				body += "Visit the group at #{url_for(:controller => 'group', :action => group.get_visible_id())}, or read the exhibit here: #{url_for(:controller => '', :action => exhibit.get_friendly_url())}\n\n"
+				exhibit_url = "#{url_for(:controller => 'exhibits', :action => 'view')}#{exhibit.get_friendly_url()}"
+				exhibit_url = exhibit_url.sub("exhibits/", "")
+				body += "Visit the group at #{url_for(:controller => 'groups', :action => group.get_visible_id())}, or read the exhibit here: #{exhibit_url}\n\n"
 				GroupsUser.email_hook("exhibit", exhibit.group_id, "Exhibit #{exhibit.title} shared in group #{group.name}", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
 			end
 		end
