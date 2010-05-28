@@ -100,6 +100,12 @@ namespace :solr do
 			`mv #{folder}/index #{index_path}`
 			File.open("#{RAILS_ROOT}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
 
+			# delete the cache
+			begin
+				File.delete("#{RAILS_ROOT}/cache/num_docs.txt")
+			rescue
+			end
+			
 			solr = CollexEngine.new()
 			solr.delete_archive(archive)
 			solr.replace_archive("#{index_path}")
