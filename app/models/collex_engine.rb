@@ -33,7 +33,7 @@ class CollexEngine
 			"is_ocr", "federation", "has_full_text", "source_xml" ]
     @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor",
 			"text_url", "year", "type", "date_updated", "title_sort", "author_sort", "year_sort", "source_html", "source_sgml", "person", "format", "language", "geospacial" ]
-		@facet_fields = ['genre','archive','freeculture', 'has_full_text']
+		@facet_fields = ['genre','archive','freeculture', 'has_full_text', 'federation']
   end
 
 	def self.factory_create(testing)
@@ -51,12 +51,20 @@ class CollexEngine
 
   def num_docs	# called for each entry point to get the number for the footer.
     if @num_docs == -1
-      #request = Solr::Request::Standard.new(:query=>"*:*", :rows=>0, :shards => @cores)
-      # TODO: PER temporary hack to just see the NINES objects.
-      request = Solr::Request::Standard.new(:query=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
-      response = @solr.send(request)
-      
-      @num_docs = response.total_hits
+		begin
+			File.open("#{RAILS_ROOT}/cache/num_docs.txt", "r") { |f|
+				str = f.read
+				@num_docs = str.to_i
+			}
+		rescue
+		end
+		if @num_docs <= 0
+		  request = Solr::Request::Standard.new(:query=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
+		  response = @solr.send(request)
+
+		  @num_docs = response.total_hits
+		  File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs}") }
+		end
     end
     
     @num_docs
