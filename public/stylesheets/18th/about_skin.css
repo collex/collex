@@ -15,8 +15,8 @@
 // ---------------------------------------------------------------------------- */
 
 .about_nav_container {
-	background:#EAE0D6;
-	border:1px solid #BEBDBB;
+	background:#EDF4F2;
+	border:1px solid #eae5d6;
 }
 
 .a_nav_1 {
@@ -29,7 +29,7 @@
 
 .a_nav_1_dn {
 	color:#FFFFFF;
-	background:#A98064;
+	background:#1D253C;
 }
 
 .a_nav_2_dn {
@@ -38,5 +38,5 @@
 }
 
 p.highlight {
-	background-color:#EAE0D6;
+	background-color:#eae5d6;
 }
