@@ -78,7 +78,7 @@ class VicConferenceController < ApplicationController
 				<input  type="hidden" value="nines-conference" name="merchant" />
 				<input  type="hidden" value="$AMOUNT.00" name="amount" />
 				<input  type="hidden" value="$ORDERNUMBER" name="orderNumber" />
-				<input  type="hidden" value="http://nines.performantsoftware.com/VIC2010" name="backURL" />
+				<input  type="hidden" value="http://nines.org/VIC2010" name="backURL" />
 				<input  type="hidden" value="Victorians Institute Conference 2010" name="description" />
 				<input  type="hidden" value="$FIRSTNAME" name="firstName" />
 				<input  type="hidden" value="$LASTNAME" name="otherName" />
