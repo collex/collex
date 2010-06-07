@@ -54,4 +54,6 @@ daemons:
 
 about:
   link: '/about/what_is.html'
-  label: 'What is NINES>'
+  label: 'What is NINES?'
+  link2: '/about/scholarship/peerReview.html'
+  label2: 'Peer Review'

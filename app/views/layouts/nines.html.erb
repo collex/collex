@@ -65,8 +65,8 @@
             </div>
             <div id="subnav_links_container">
 				<%= link_to(ABOUT[:label], ABOUT[:link], { :class => 'nav_link' } ) %>
-<% if SKIN == 'nines' -%>
-	| <%=  link_to("Peer Review", "/about/scholarship/peerReview.html", { :class => 'nav_link' } ) %>
+<% if ABOUT2 -%>
+	| <%=  link_to(ABOUT2[:label], ABOUT2[:link], { :class => 'nav_link' } ) %>
 <% end -%>
             </div>
            	<div class="clear_both"></div>

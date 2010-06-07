@@ -110,6 +110,7 @@ if File.exists?(config_file)
 	DISALLOW_RSS  = site_specific['disallow_rss'] == nil ? false : site_specific['disallow_rss']
 	PROJECT_MANAGER_EMAIL = site_specific['project_manager_email']
 	ABOUT = { :link => site_specific['about']['link'], :label => site_specific['about']['label'] }
+	ABOUT2 = { :link => site_specific['about']['link2'], :label => site_specific['about']['label2'] } if site_specific['about']['link2']
 	
 else
 	puts "***"
