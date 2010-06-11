@@ -48,6 +48,7 @@ class SearchController < ApplicationController
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
+        add_federation_constraint(DEFAULT_FEDERATION, false) # always search by default with the default federation
 #        add_title_constraint(params[:search_phrase], false) if params[:search_type] == "Title"
 #        add_author_constraint(params[:search_phrase], false) if params[:search_type] == "Author"
 #        add_editor_constraint(params[:search_phrase], false) if params[:search_type] == "Editor"
@@ -172,6 +173,13 @@ class SearchController < ApplicationController
     end
   end
 
+  def add_federation_constraint(phrase_str, invert)
+    if phrase_str and phrase_str.strip.size > 0
+      puts "HERE"
+      session[:constraints] << FacetConstraint.new(:field => 'federation', :value => phrase_str, :inverted => invert)
+    end
+  end
+
   def rescue_search_error(e)
      error_message = e.message
      if (match = error_message.match( /Query_parsing_error_/ ))
@@ -258,6 +266,8 @@ class SearchController < ApplicationController
 			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
 			@fulltext_count = 0
 			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
+      @nines_count = @results['facets']['federation']['NINES'] if @results && @results['facets'] && @results['facets']['federation'] && @results['facets']['federation']['NINES']
+      @ec_count = @results['facets']['federation']['18thConnect'] if @results && @results['facets'] && @results['facets']['federation'] && @results['facets']['federation']['18thConnect']
 			@listed_constraints = marshall_listed_constraints()
 
 	#      113.upto(@num_pages) do |i|
@@ -389,6 +399,16 @@ class SearchController < ApplicationController
        session[:constraints] << FacetConstraint.new(:field => params[:field], :value => params[:value], :inverted => params[:invert] ? true : false)
      end
      redirect_to :action => 'browse'
+   end
+
+   def remove_facet
+     session[:name_of_search] = nil
+     for item in session[:constraints]
+       if item[:field] == params[:field] && item[:value] == params[:value]
+         session[:constraints].delete(item)
+       end
+      end
+    redirect_to :action => 'browse'
    end
 
   def remove_genre

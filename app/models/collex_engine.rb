@@ -1263,7 +1263,7 @@ private
         filter_queries << constraint.to_solr_expression
       end
     end
-	queries << "federation:#{DEFAULT_FEDERATION}"
+  	#queries << "federation:#{DEFAULT_FEDERATION}"
 
     queries << "*:*" if queries.empty?
 

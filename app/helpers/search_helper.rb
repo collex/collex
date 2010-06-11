@@ -233,6 +233,16 @@ module SearchHelper
     return false
   end
 
+  def federation_is_in_constraints?(value)
+    constraints = session[:constraints]
+    constraints.each {|constraint|
+      if constraint[:type] == 'FacetConstraint' && constraint[:field] == 'federation' && constraint[:value] == value
+        return true
+      end
+    }
+    return false
+  end
+
 #  def free_culture_link(count)
 #    display_str = "Free Culture Only (#{pluralize(count, 'object')})"
 #    if free_culture_is_in_constraints?
@@ -459,6 +469,9 @@ module SearchHelper
     elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'publisher'
       ret[:title] ="Publisher"
       ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'federation'
+      ret[:title] = "Federation"
+      ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint)
       ret[:title] ="Resource"
       ret[:value] = value_display
@@ -616,6 +629,26 @@ module SearchHelper
       html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_fulltext', :remove => 'true'}, { :class => 'modify_link' })
     else
       html = "<tr><td class='limit_to_lvl1'>" + link_to("Full Text Only", {:controller=>"search", :action => 'constrain_fulltext' }, { :method => :post, :class => 'nav_link' })
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+    return html
+  end
+
+  def nines_selector(count)
+    if federation_is_in_constraints?('NINES')
+      html = "<tr class='limit_to_selected'><td>NINES&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'remove_facet', :field => 'federation', :value => 'NINES'}, { :class => 'modify_link' })
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + link_to("NINES", {:controller=>"search", :action => 'add_facet', :field => 'federation', :value => 'NINES' }, { :method => :post, :class => 'nav_link' })
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+    return html
+  end
+
+  def eighteenth_connect_selector(count)
+    if federation_is_in_constraints?('18thConnect')
+      html = "<tr class='limit_to_selected'><td>18th Connect&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'remove_facet', :field => 'federation', :value => '18thConnect'}, { :class => 'modify_link' })
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + link_to("18th Connect", {:controller=>"search", :action => 'add_facet', :field => 'federation', :value => '18thConnect' }, { :method => :post, :class => 'nav_link' })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return html

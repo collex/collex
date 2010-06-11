@@ -37,5 +37,11 @@
 	    <tr><th>Access</th><th class="num_objects"># of Objects</th></tr>
 		<%= free_culture_selector( @freeculture_count ) %>
 		<%= full_text_selector( @fulltext_count ) %>
-    </table>    
+    </table>
+
+    <table class="limit_to">
+      <tr><th>Federation</th><th class="num_objects"># of Objects</th></tr>
+        <%= nines_selector(@nines_count) %>
+        <%= eighteenth_connect_selector(@ec_count) %>
+    </table>
 </div>
