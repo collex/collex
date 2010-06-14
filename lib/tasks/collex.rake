@@ -175,7 +175,8 @@ namespace :collex do
 		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content")
 		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes")
 		safe_mkdir("#{RAILS_ROOT}/public/wp/wp-content/themes/nines")
-		copy_dir( "#{RAILS_ROOT}/wordpress_theme", "#{RAILS_ROOT}/public/wp/wp-content/themes" )
+		copy_dir( "#{RAILS_ROOT}/wordpress_theme/nines", "#{RAILS_ROOT}/public/wp/wp-content/themes/nines" )
+		copy_dir( "#{RAILS_ROOT}/wordpress_theme/18th", "#{RAILS_ROOT}/public/wp/wp-content/themes/18th" )
   end
 
   def copy_dir( start_dir, dest_dir )
