@@ -58,7 +58,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
-		`cp #{RAILS_ROOT}/public/9s_favicon.ico #{RAILS_ROOT}/public/favicon.ico`
+		copy_dir( "#{RAILS_ROOT}/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -71,7 +71,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
-		`cp #{RAILS_ROOT}/public/18th_favicon.ico #{RAILS_ROOT}/public/favicon.ico`
+		copy_dir( "#{RAILS_ROOT}/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -84,7 +84,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
-		`cp #{RAILS_ROOT}/public/18th_favicon.ico #{RAILS_ROOT}/public/favicon.ico`
+		copy_dir( "#{RAILS_ROOT}/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -98,7 +98,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
-		`cp #{RAILS_ROOT}/public/9s_favicon.ico #{RAILS_ROOT}/public/favicon.ico`
+		copy_dir( "#{RAILS_ROOT}/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -110,7 +110,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
-		`cp #{RAILS_ROOT}/public/9s_favicon.ico #{RAILS_ROOT}/public/favicon.ico`
+		copy_dir( "#{RAILS_ROOT}/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -126,7 +126,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
-		`cp #{RAILS_ROOT}/public/9s_favicon.ico #{RAILS_ROOT}/public/favicon.ico`
+		copy_dir( "#{RAILS_ROOT}/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_about_css'].invoke
 		`mongrel_rails restart`
