@@ -58,6 +58,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
+		`cp 9s_favicon.ico favicon.ico`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -70,6 +71,20 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
+		`cp 18th_favicon.ico favicon.ico`
+		Rake::Task['collex:update_nines_theme'].invoke
+		Rake::Task['db:migrate'].invoke
+		Rake::Task['collex:compress_css_js'].invoke
+		puts "You will be asked for your sudo password."
+		`sudo /sbin/service httpd restart`
+		start_daemons()
+	end
+
+	def update_18th_production
+		puts "Update site from repository..."
+		stop_daemons()
+		`svn up`
+		`cp 18th_favicon.ico favicon.ico`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -83,6 +98,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
+		`cp 9s_favicon.ico favicon.ico`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -94,6 +110,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
+		`cp 9s_favicon.ico favicon.ico`
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
@@ -109,6 +126,7 @@ namespace :collex do
 		puts "Update site from repository..."
 		stop_daemons()
 		`svn up`
+		`cp 9s_favicon.ico favicon.ico`
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_about_css'].invoke
 		`mongrel_rails restart`
@@ -130,6 +148,8 @@ namespace :collex do
 			update_experimental()
 		elsif UPDATE_TASK == '18th'
 			update_18th()
+		elsif UPDATE_TASK == '18thConnect.org'
+			update_18th_production()
 		else
 			puts "Unknown updating type. Compare the value in config/site.yml and the list in the collex:update rake task (file: collex.rake)."
 		end
