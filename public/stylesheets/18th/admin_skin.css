@@ -18,3 +18,7 @@
 	background-color: #566fb1;
 }
 
+#admin_menu li a {
+border-left:0.8em solid #566fb1;
+text-decoration:none;
+}
