@@ -28,6 +28,6 @@
 		<%= link_to_function "[save search]", "doSaveSearch()", {:id => "savesearch_link", :class => 'modify_link'} -%>
 		<% end # has constraints -%>
 	<% end # if there is a name for this search -%>
-<% elsif session[:constraints].length > 0 # not logged in, and there's a search -%>
+<% elsif has_constraints? # not logged in, and there's a search -%>
 	<span class="save_search_instruction">&nbsp;&nbsp;(<%= sign_in_link({ :class => 'nav_link' }) %> to save this search)</span>
 <% end # if the user is logged in -%>

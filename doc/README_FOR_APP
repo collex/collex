@@ -99,6 +99,8 @@ In the solr.xml file, you will need the following:
   <core name="resources" instanceDir="./"/>
   <core name="UserContent" instanceDir="./" schema="schema_user.xml"/>
 
+Note that the name UserContent comes from the site.yml file. That allows more than one installation on a single computer.
+
 -----------------------------------------------------------------------
 ** deploying js and css
 

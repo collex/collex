@@ -22,6 +22,7 @@
 		<% constraint = constraint_data[:constraint] -%>
 		<% index = constraint_data[:id] -%>
 		<% ret = format_constraint(constraint) -%>
+		<% if ret != nil %>
 		<tr>
 			<td class="query_type"><%= ret[:title] %></td>
 			<td class="query_term"><%=h ret[:value] %></td>
@@ -33,6 +34,7 @@
 			</td>
 			<td class="query_remove"><a method="post" href="/search/remove_constraint?index=<%= index %>"><img src="/images/lvl2_trash.gif" alt="Remove Term" /></a></td>
 		</tr>
+	<% end -%>
 	<% end -%>
 
 	<tr>

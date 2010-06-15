@@ -36,10 +36,14 @@ class ApplicationController < ActionController::Base
                 :is_admin?, :get_curr_user_id
   
   private
+	def new_constraints_obj()
+		return [ FederationConstraint.new(:field => 'federation', :value => DEFAULT_FEDERATION, :inverted => false) ]
+	end
+
     def session_create
 	    ActionMailer::Base.default_url_options[:host] = request.host_with_port
 			ExceptionNotifier.email_prefix = ExceptionNotifier.email_prefix.gsub('*', ":#{request.host}")
-      session[:constraints] ||= []
+      session[:constraints] ||= new_constraints_obj()
       session[:num_docs] ||= (CollexEngine.new).num_docs
       session[:num_docs] ||= 1000
 			# This will write the log to the database. That is useful in deployments where you can't easily get to the log files.

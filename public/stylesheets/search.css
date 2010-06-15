@@ -28,6 +28,16 @@
 	padding-top: 18px;
 }
 
+.search_federation_checkbox {
+	float: right;
+	padding-right:53px;
+	padding-top:14px;
+}
+
+.search_federation_checkbox input {
+	margin-right: 5px;
+}
+
 .new_search {
 	width:97px;
 	height:39px;

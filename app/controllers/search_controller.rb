@@ -48,7 +48,7 @@ class SearchController < ApplicationController
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
-        add_federation_constraint(DEFAULT_FEDERATION, false) # always search by default with the default federation
+#        add_federation_constraint(DEFAULT_FEDERATION, false) # always search by default with the default federation
 #        add_title_constraint(params[:search_phrase], false) if params[:search_type] == "Title"
 #        add_author_constraint(params[:search_phrase], false) if params[:search_type] == "Author"
 #        add_editor_constraint(params[:search_phrase], false) if params[:search_type] == "Editor"
@@ -57,6 +57,7 @@ class SearchController < ApplicationController
         
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
+		add_federation_constraint(params[:search_federation])
         parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
         add_title_constraint(params[:search_title], false) if params[:search_title] != ""
         add_author_constraint(params[:search_author], false) if params[:search_author] != ""
@@ -173,10 +174,21 @@ class SearchController < ApplicationController
     end
   end
 
-  def add_federation_constraint(phrase_str, invert)
-    if phrase_str and phrase_str.strip.size > 0
-      puts "HERE"
-      session[:constraints] << FacetConstraint.new(:field => 'federation', :value => phrase_str, :inverted => invert)
+  def add_federation_constraint(all)
+    if all != nil
+		idx = -1
+		session[:constraints].each_with_index { |constraint, i|
+			idx = i if constraint.is_a?(FederationConstraint)
+		}
+		if idx >= 0
+			session[:constraints].delete_at(idx)
+		end
+	else
+		# Don't add it a second time if it exists
+		session[:constraints].each { |constraint, i|
+			return if constraint.is_a?(FederationConstraint)
+		}
+      session[:constraints] << FederationConstraint.new(:field => 'federation', :value => DEFAULT_FEDERATION, :inverted => false)
     end
   end
 
@@ -224,7 +236,7 @@ class SearchController < ApplicationController
 			@name_facet_msg = session[:name_facet_msg]
 			session[:name_facet_msg] = nil
 			
-			session[:constraints] ||= []
+			session[:constraints] ||= new_constraints_obj()
 			session[:search_sort_by] ||= 'Relevancy'
 			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
 			items_per_page = 30
@@ -266,8 +278,14 @@ class SearchController < ApplicationController
 			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
 			@fulltext_count = 0
 			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
-      @nines_count = @results['facets']['federation']['NINES'] if @results && @results['facets'] && @results['facets']['federation'] && @results['facets']['federation']['NINES']
-      @ec_count = @results['facets']['federation']['18thConnect'] if @results && @results['facets'] && @results['facets']['federation'] && @results['facets']['federation']['18thConnect']
+			@all_federations = 'Search all federations'
+			if @results['facets']['federation']
+				@results['facets']['federation'].each { |key, val|
+					if key != DEFAULT_FEDERATION && key != '<unspecified>'
+						@all_federations = "Search #{key} too!"
+					end
+				}
+			end
 			@listed_constraints = marshall_listed_constraints()
 
 	#      113.upto(@num_pages) do |i|
@@ -467,15 +485,18 @@ class SearchController < ApplicationController
 		end
    
    private
-   def clear_constraints
-    session[:name_of_search] = nil
-    session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-    #session[:selected_freeculture] = false
-    session[:constraints] = []
+	def clear_constraints
+		session[:name_of_search] = nil
+		session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
+		fed_constraint = nil	# don't clear the current setting of the federation constraint, so first search for it.
+		session[:constraints].each { |constraint|
+			fed_constraint = constraint if constraint.is_a?(FederationConstraint)
+		}
+		session[:constraints] = []
+		session[:constraints] << fed_constraint if fed_constraint
 		session[:search_sort_by] = nil
 		session[:search_sort_by_direction] = nil
-
-   end
+	end
    
    def auto_complete(keyword)
      @solr = CollexEngine.factory_create(session[:use_test_index] == "true")

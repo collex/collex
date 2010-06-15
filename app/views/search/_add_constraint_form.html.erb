@@ -17,8 +17,9 @@
 <%# add_constraint_form : no parameters -%>
 <center>
 <div class="add_constraint_form">
-	<div class="page_header">Search <%= SITE_NAME %>:</div>
     <form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" >
+		<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" value="search_all_federations" <%= "checked='checked'" if !has_federation_constraint?() %> ><%= @all_federations %></input></div>
+		<div class="page_header">Search <%= SITE_NAME %>:</div>
     	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 	<table>
         <tr><td colspan='2'><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword"}, {:min_chars => 2}-%></td><td><input id="search_submit" type="submit" value="Search" /></td></tr>

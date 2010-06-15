@@ -104,6 +104,7 @@ if File.exists?(config_file)
 	MY_COLLEX_URL = site_specific['my_collex_url']
 	DEFAULT_FEDERATION = site_specific['default_federation']
 	CAN_INDEX = site_specific['can_index'] == nil ? false : site_specific['can_index']
+	USER_CONTENT_CORE = site_specific['user_content_core']
 	SKIN = site_specific['skin']
 	UPDATE_TASK = site_specific['update'] == nil ? '' : site_specific['update']
 	BLEEDING_EDGE = site_specific['bleeding_edge']

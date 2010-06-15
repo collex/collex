@@ -43,6 +43,7 @@ my_collex_url: 'my_collex'
 default_federation: 'COLLEX'
 skin: 'collex'
 project_manager_email: 'manager example com'
+user_content_core: 'UserContent'
 
 update: 'development'
 bleeding_edge: false
