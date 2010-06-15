@@ -31,26 +31,18 @@
 	width:100%;
 	text-align:left;
 	font-weight:bold;
-	background:#914C29;
-	color:#FFFFFF;
 	padding:4px 12px 4px 12px;	
-}
-
-.FH_cat_header a {
-	color:#FFFFFF;
 }
 
 .FH_cat_info {
 	width:100%;
 	text-align:left;
-	background:#F7ECDB;
 	padding:12px 12px 12px 12px;	
 
 }
 
 .FH_post {
 	width:32%;
-	border-bottom: 2px solid #C7C8CB;
 	text-align:left;
 	padding:12px 12px 8px 12px;
 	vertical-align:top;
@@ -75,7 +67,6 @@
 }
 
 .FP_original_post {
-	background: #F7ECDB;
 	margin:10px 0px 10px 0px;
 	padding:20px 15px 20px 15px;
 }
@@ -94,7 +85,6 @@
 }
 
 .FP_user_img {
-	border: 2px solid #7F5C52;
 	margin:0px 0px 5px 0px;
 }
 
@@ -136,14 +126,11 @@
 }
 
 .FP_reply_header {
-	border-top: 2px solid #966C54;
-	border-bottom: 2px solid #966C54;
 	padding:10px 0px 10px 0px;
 	margin:10px 0px 10px 0px;
 }
 
 .FP_reply_footer {
-	border-bottom: 2px solid #966C54;
 	padding:5px 0px 10px 0px;
 	margin:10px 0px 10px 0px;
 }
@@ -170,7 +157,6 @@
 }
 
 .FP_reply_container {
-	border-bottom: 2px solid #966C54;
 	margin-bottom:10px;
 }
 
@@ -181,12 +167,10 @@
 
 .FC_pages {
 	padding:10px;
-	border-bottom: 2px solid #C7C8CB;
 }
 
 .FC_pages_bottom {
 	padding:10px;
-	border-top: 2px solid #C7C8CB;
 }
 
 .FC_post_title{
@@ -194,7 +178,6 @@
 	vertical-align:top;
 	width:50%;
 	padding:10px;
-	border-bottom: 2px solid #C7C8CB;
 }
 
 .FC_last_comment{
@@ -202,7 +185,6 @@
 	vertical-align:top;
 	width:300px;
 	padding:10px;
-	border-bottom: 2px solid #C7C8CB;
 }
 
 .FC_replies{
@@ -210,8 +192,6 @@
 	vertical-align:top;
 	width:100px;
 	padding:10px;
-	border-bottom: 2px solid #C7C8CB;
-
 }
 
 .FC_views{
@@ -219,8 +199,6 @@
 	vertical-align:top;
 	width:100px;
 	padding:10px;
-	border-bottom: 2px solid #C7C8CB;
-
 }
 
 .FC_object {
@@ -228,7 +206,6 @@
 	vertical-align:middle;
 	width:80px;
 	padding:5px;
-	border-bottom: 2px solid #C7C8CB;
 }
 
 .FC_post_image {
@@ -237,29 +214,17 @@
 
 .FC_header {
 	font-weight: bold;
-	border-bottom: 2px solid #C7C8CB;
 }
 
 .FP_original_post .FC_report_link {
-	background:url(/images/abuse_brown.gif) top left no-repeat;
 	text-decoration: none;
-}
-
-.FP_original_post .FC_report_link:hover {
-	background:url(/images/abuse_brown_rl.gif) top left no-repeat;
 }
 
 .FP_reply_container .FC_report_link {
-	background:url(/images/abuse_white.gif) top left no-repeat;
 	text-decoration: none;
 }
 
-.FP_reply_container .FC_report_link:hover {
-	background:url(/images/abuse_white_rl.gif) top left no-repeat;
-}
-
 .reported_comment {
-	color: red;
 	font-weight: bold;
 	padding: 5px;
 }
@@ -293,7 +258,6 @@
 
 .forum_modified_time {
 	font-style: italic;
-	color: #777777;
 }
 
 .forum_license {

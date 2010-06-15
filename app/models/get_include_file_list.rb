@@ -117,7 +117,7 @@ class GetIncludeFileList
 			when :my_collex
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "right_column", "tag", "search", "my_collex", "exhibit_list", "result_row", "exhibit", "edit_exhibit_outline", "user_profile" ]
 			when :discuss
-				local = [ "#{SKIN}/lvl2_skin", "lvl2", "search", "result_row", "forum", "user_profile" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "search", "result_row", "forum", "#{SKIN}/forum_skin", "user_profile" ]
 			when :home
 				local = [ "#{SKIN}/lvl1_skin", "index", "featured_exhibit" ]
 			when :exhibits
