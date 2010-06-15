@@ -10,7 +10,7 @@
 <head profile="http://gmpg.org/xfn/11">
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
 
-<title>N I N E S - News</title>
+<title>18thConnect - News</title>
 
 	<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?2.7.0/build/reset-fonts-grids/reset-fonts-grids.css&2.7.0/build/base/base.css&2.7.0/build/button/assets/skins/sam/button.css&2.7.0/build/container/assets/skins/sam/container.css&2.7.0/build/assets/skins/sam/skin.css' />
 	<link href="/stylesheets/about-min.css" media="all" rel="stylesheet" type="text/css" />
