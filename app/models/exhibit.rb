@@ -748,7 +748,7 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	private
-	URI_BASE = 'http://nines.org/peer-reviewed-exhibit/'
+	URI_BASE = "http://#{SKIN}.org/peer-reviewed-exhibit/"
 	ARCHIVE_PREFIX = "exhibit_"
 	
 	def self.strip_tags(str)
