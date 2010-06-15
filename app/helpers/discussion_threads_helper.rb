@@ -104,6 +104,7 @@ module DiscussionThreadsHelper
   end
   
   def comment_time_format(tim)
+	  return "NONE" if tim == nil
     return tim.getlocal().strftime("%b %d, %Y %I:%M%p")
   end
 

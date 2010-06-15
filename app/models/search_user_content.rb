@@ -49,7 +49,7 @@ class SearchUserContent < ActiveRecord::Base
 		options[:member] = member
 		options[:admin] = admin
 
-		@solr = CollexEngine.new([ 'UserContent' ]) if @solr == nil
+		@solr = CollexEngine.new([ USER_CONTENT_CORE ]) if @solr == nil
 		ret = @solr.search_user_content(options)
 		hits = []
 		# We have to be careful: an object can be deleted and still be in the index until the next reindexing
@@ -95,13 +95,13 @@ class SearchUserContent < ActiveRecord::Base
 				doc[:visible_to_group_admin] = group_id
 			end
 		end
-		@solr = CollexEngine.new([ 'UserContent' ]) if @solr == nil
+		@solr = CollexEngine.new([ USER_CONTENT_CORE ]) if @solr == nil
 		@solr.add_object(doc)
 	end
 
 	def reindex_all()
 		start_time = Time.now
-		@solr = CollexEngine.new([ 'UserContent' ])
+		@solr = CollexEngine.new([ USER_CONTENT_CORE ])
 		@solr.start_reindex()
 
 		exhibits = Exhibit.all
@@ -192,16 +192,16 @@ class SearchUserContent < ActiveRecord::Base
 	def self.periodic_update
 		recs = SearchUserContent.find(:all, :limit => 1, :order => "last_indexed DESC")
 		last_change = SearchUserContent.last_update()
-		if recs.length == 0
+		if recs.length == 0 || last_change == nil
 			is_dirty = true
 		else
 			last_index = recs[0].last_indexed
-			is_dirty = last_change > last_index
+			is_dirty = last_index == nil ? false : last_change > last_index
 		end
 		if is_dirty
 			suc = SearchUserContent.new
 			duration = suc.reindex_all()
-			num_objs = CollexEngine.new([ 'UserContent' ]).num_docs
+			num_objs = CollexEngine.new([ USER_CONTENT_CORE ]).num_docs
 			SearchUserContent.create({ :last_indexed => last_change, :seconds_spent_indexing => duration, :objects_indexed => num_objs })
 			return { :activity => true, :message => "User Content reindexed on #{last_change}. Time spent indexing: #{duration} seconds, Number of objects: #{num_objs}" }
 		end

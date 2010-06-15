@@ -44,6 +44,9 @@ default_federation: 'COLLEX'
 skin: 'collex'
 project_manager_email: 'manager example com'
 user_content_core: 'UserContent'
+federation_url:
+  NINES: 'http://www.nines.org'
+  18thConnect: 'http://www.18thConnect.org'
 
 update: 'development'
 bleeding_edge: false

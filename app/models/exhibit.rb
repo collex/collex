@@ -748,7 +748,6 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	private
-	URI_BASE = "http://#{SKIN}.org/peer-reviewed-exhibit/"
 	ARCHIVE_PREFIX = "exhibit_"
 	
 	def self.strip_tags(str)
@@ -767,7 +766,8 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def add_object(solr, data, boost, section_params)
-		uri = "#{URI_BASE}#{self.id}"
+		uri_base = "http://#{SKIN}.org/peer-reviewed-exhibit/"
+		uri = "#{uri_base}#{self.id}"
 		if section_params
 			uri += "/#{section_params[:count]}"
 			title = "#{self.title} (#{section_params[:name]})"

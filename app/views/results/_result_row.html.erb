@@ -49,8 +49,15 @@
 			<% if is_admin? -%>
 			<%= link_to_function("uri", "$('uri_#{index}').toggleClassName('hidden');", :class => 'uri_link') %><span id="uri_<%=index%>" class='hidden'>&nbsp;<%= hit['uri'] %></span>
             <% end -%>
-            <% if hit["url"] -%>
-            	<a class="nines_link" target="_blank" href="<%= hit["url"][0] %>"><%= title %></a>
+            <% if hit["url"] && hit["url"].length > 0 -%>
+				<% url = hit["url"][0] -%>
+				<% if url[0] == 47 # does the link start with a forward slash? -%>
+					<% if hit['federation'] && hit['federation'].length > 0 %>
+						<% base_url = FEDERATION_URLS[hit['federation'][0]] -%>
+						<% url = base_url + url -%>
+					<% end %>
+				<% end %>
+            	<a class="nines_link" target="_blank" href="<%= url %>"><%= title %></a>
 			<% else -%>
             	<%= title %>
             <% end -%>

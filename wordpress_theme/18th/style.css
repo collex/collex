@@ -231,93 +231,93 @@ acronym, abbr, span.caps
 .nav_link:hover { color: #fff; background: #A60000; text-decoration: none; }*/
 
 a.tab_link {
-	color:#FDDFAB;
-	background:transparent url(/images/18th/index_tab.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab.jpg) no-repeat scroll left top;
 }
 
 a.tab_link_long:visited {
-	color:#FDDFAB;
-	background:transparent url(/images/18th/index_tab_long.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab_long.jpg) no-repeat scroll left top;
 }
 
 a.tab_link_long:hover {
 	text-decoration:underline;
-	color:#FDDFAB;
-	background:transparent url(/images/18th/index_tab_long.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab_long.jpg) no-repeat scroll left top;
 }
 
 a.tab_link:visited {
-	color:#FDDFAB;
-	background:transparent url(/images/18th/index_tab.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab.jpg) no-repeat scroll left top;
 }
 
 a.tab_link:hover {
 	text-decoration:underline;
-	color:#FDDFAB;
-	background:transparent url(/images/18th/index_tab.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab.jpg) no-repeat scroll left top;
 }
 
 a.my_collex_link {
-	color:#55220F;
-	background:transparent url(/images/18th/lvl2_tab_my_collex.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab.jpg) no-repeat scroll left top;
 }
 
 a.my_collex_link:visited {
-	color:#55220F;
-	background:transparent url(/images/18th/lvl2_tab_my_collex.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab.jpg) no-repeat scroll left top;
 }
 
 a.my_collex_link:hover {
 	text-decoration:underline;
-	color:#55220F;
-	background:transparent url(/images/18th/lvl2_tab_my_collex.gif) no-repeat scroll left top;
+	color:#FFFFFF;
+	background:transparent url(/images/18th/index_tab.jpg) no-repeat scroll left top;
 }
 
 a.tab_link_current {
 	color:black;
-	background:url(/images/18th/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/18th/index_tab_dn.jpg) top left no-repeat;
 }
 
 a.tab_link_current:visited {
 	color:black;
-	background:url(/images/18th/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/18th/index_tab_dn.jpg) top left no-repeat;
 }
 
 a.tab_link_current:hover {
 	text-decoration:underline;
 	color:black;
-	background:url(/images/18th/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/18th/index_tab_dn.jpg) top left no-repeat;
 }
 
 a.nav_link {
-	color: #A60000;
+	color: #445A93;
 	background: white;
 }
 
 a.nav_link:visited {
-	color: #A60000;
+	color: #445A93;
 	background: white;
 }
 
 a.nav_link:hover {
 	text-decoration:underline;
 	color: white;
-	background: #A60000;
+	background: #445A93;
 }
 
 a {
-	color: #A60000;
+	color: #445A93;
 	text-decoration: none;
 	}
 
 a:visited {
-	color: #A60000;
+	color: #445A93;
 	text-decoration: none;
 	}
 
 a:hover {
 	color: #fff; 
-	background: #A60000;
+	background: #445A93;
 	text-decoration: none;
 	}
 
