@@ -93,18 +93,15 @@
 
 #group_discussions {
 	float: right;
-	border-left:2px solid gray;
 	width:350px;
 }
 
 #group_exhibits {
-	border-right:2px solid gray;
 	margin-right: 350px;
 	padding-top:0.5em;
 }
 
 #group_license {
-	color: white;
 	text-align: center;
 	padding-top: 1em;
 	padding-bottom: 1em;
@@ -119,8 +116,6 @@
 }
 
 .group_header {
-	color:black;
-	background:#B99A86;
 	padding:4px 14px 4px 14px;
 	font-weight: bold;
 	margin-left:-20px;
@@ -136,7 +131,6 @@
 
 .set_exhibit_style {
 	margin-left:-6px;
-	border-bottom: 2px solid gray;
 }
 
 .group_edit_title_link {
@@ -168,7 +162,6 @@
 
 .group_member_explanation {
 	font-style: italic;
-	color: #777777;
 }
 
 .group_acknowledge {
@@ -185,9 +178,6 @@
 }
 
 .group_only {
-	border-top: 1px solid #b7bdb3;
-	border-bottom: 1px solid #b7bdb3;
-	background-color: #e4e6e5;
 	min-height: 85px;
 	margin-left:-20px;
 	padding-left:20px;
@@ -197,7 +187,6 @@
 }
 
 .group_only_text {
-	color: #b5b5b5;
 	font-size: .8em;
 	padding-bottom:4px;
 }
