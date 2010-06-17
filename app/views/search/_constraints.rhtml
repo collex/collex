@@ -15,6 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
+<div class="search_federation_checkbox2"><input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_federation_constraint?(@other_federation) %> ><%= @all_federations %></input></div>
 <div class="page_subheader">Add new search criteria or select limiters to refine your search.</div>
 <form id="add-search-constraint" onsubmit="return searchValidation('search_notphrase', 'search_phrase', 'search_type', 'search_submit', null);" action="/collex/add_constraint" method="post">
 <table class="query">

@@ -28,6 +28,14 @@
 	padding-top: 18px;
 }
 
+.search_federation_checkbox2 {
+	float: right;
+}
+
+.search_federation_checkbox2 input {
+	margin-right: 5px;
+}
+
 .search_federation_checkbox {
 	float: right;
 	padding-right:53px;
@@ -181,6 +189,15 @@ tr.limit_to_selected {
 
 .limit_to td {
 	border-bottom:solid 1px #966C54;
+}
+
+.limit_to.limit_to_federation td {
+	border-bottom:solid 0px black;
+}
+
+.limit_to_federation img {
+	height: 40px;
+	vertical-align: middle;
 }
 
 div.auto_complete {

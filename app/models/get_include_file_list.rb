@@ -50,7 +50,7 @@ class GetIncludeFileList
 		local = []
 		case page
 			when :search
-				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'cc_license', 'search_name_facet' ]
+				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'cc_license', 'search_name_facet', 'change_federation' ]
 			when :tag
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'cc_license' ]
 			when :my_collex

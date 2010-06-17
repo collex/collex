@@ -1257,9 +1257,7 @@ private
     filter_queries = []
 		#filter_queries << 'title_sort:t*'
     constraints.each do |constraint|
-      if constraint.is_a?(FederationConstraint)
-        queries << constraint.to_solr_expression
-      elsif constraint.is_a?(ExpressionConstraint)
+      if constraint.is_a?(FederationConstraint) || constraint.is_a?(ExpressionConstraint)
         queries << constraint.to_solr_expression
       else
         filter_queries << constraint.to_solr_expression

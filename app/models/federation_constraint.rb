@@ -16,12 +16,12 @@
 
 class FederationConstraint < Constraint
 	def to_solr_expression
-		"federation:#{DEFAULT_FEDERATION}"
+		"federation:#{value}"
 	end
 
 	# used for creating fragment cache keys
-	def to_s
-		identifier = "#{field}_#{value}".downcase.gsub(/\W/,'_')
-		"#{operator}#{identifier}"
-	end
+#	def to_s
+#		identifier = "#{field}_#{value}".downcase.gsub(/\W/,'_')
+#		"#{operator}#{identifier}"
+#	end
 end

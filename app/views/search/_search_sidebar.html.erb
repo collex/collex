@@ -15,6 +15,12 @@
 ---------------------------------------------------------------------------- %>
 
 <div class="right_column">
+	<div class="right_column_header">Currently Searching...</div>
+	<table class="limit_to limit_to_federation">
+		<%= federation_selector(DEFAULT_FEDERATION) %>
+		<%= federation_selector(@other_federation) %>
+	</table>
+
 	<div class="right_column_header">Limit Results to...</div>
     <p>Select a resource and genre below to limit your search results</p>
     

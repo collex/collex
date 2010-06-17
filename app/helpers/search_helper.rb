@@ -436,11 +436,13 @@ module SearchHelper
 	return false
   end
 
-  def has_federation_constraint?()
+  def has_federation_constraint?(value)
+	  # we have a federation constraint as long as a different federation constraint hasn't been defined.
+	  # That is, if no federation constraint has been defined, we return true. If this one specifically has been defined, we return true.
     session[:constraints].each { |constraint|
-		return true if constraint.is_a?(FederationConstraint)
+		return false if constraint.is_a?(FederationConstraint) && constraint.value != value
 	}
-	return false
+	return true
   end
   
   def format_constraint(constraint)
@@ -614,6 +616,14 @@ module SearchHelper
     html += "</td></tr>\n"
     return html
   end
+
+	def federation_selector(federation)
+		html = "<tr><td>"
+		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
+		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection}><img src='/images/#{SKIN}/federation_#{federation}_thumb.jpg' alt='#{federation}' /></input>"
+		html += "</td></tr>"
+		return html
+	end
   
   def genre_selector( genre_data )
     if genre_data[:exists]

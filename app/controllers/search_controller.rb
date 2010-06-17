@@ -48,7 +48,6 @@ class SearchController < ApplicationController
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
-#        add_federation_constraint(DEFAULT_FEDERATION, false) # always search by default with the default federation
 #        add_title_constraint(params[:search_phrase], false) if params[:search_type] == "Title"
 #        add_author_constraint(params[:search_phrase], false) if params[:search_type] == "Author"
 #        add_editor_constraint(params[:search_phrase], false) if params[:search_type] == "Editor"
@@ -57,7 +56,6 @@ class SearchController < ApplicationController
         
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
-		add_federation_constraint(params[:search_federation])
         parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
         add_title_constraint(params[:search_title], false) if params[:search_title] != ""
         add_author_constraint(params[:search_author], false) if params[:search_author] != ""
@@ -80,6 +78,23 @@ class SearchController < ApplicationController
      redirect_to :action => 'browse'
    end
    
+	def add_federation_constraint
+		constraints = params[:federation]
+		# first get rid of any current federation constraint so there will never be more than one
+		idx = -1
+		session[:constraints].each_with_index { |constraint, i|
+			idx = i if constraint.is_a?(FederationConstraint)
+		}
+		if idx >= 0
+			session[:constraints].delete_at(idx)
+		end
+
+		if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
+			session[:constraints] << FederationConstraint.new(:field => 'federation', :value => constraints, :inverted => false)
+		end
+		redirect_to :action => 'browse'
+	end
+
    private
    def parse_keyword_phrase(phrase_str, invert)
      # This breaks the keyword phrase that the user entered into separate searches and adds each constraint separately.
@@ -174,24 +189,6 @@ class SearchController < ApplicationController
     end
   end
 
-  def add_federation_constraint(all)
-    if all != nil
-		idx = -1
-		session[:constraints].each_with_index { |constraint, i|
-			idx = i if constraint.is_a?(FederationConstraint)
-		}
-		if idx >= 0
-			session[:constraints].delete_at(idx)
-		end
-	else
-		# Don't add it a second time if it exists
-		session[:constraints].each { |constraint, i|
-			return if constraint.is_a?(FederationConstraint)
-		}
-      session[:constraints] << FederationConstraint.new(:field => 'federation', :value => DEFAULT_FEDERATION, :inverted => false)
-    end
-  end
-
   def rescue_search_error(e)
      error_message = e.message
      if (match = error_message.match( /Query_parsing_error_/ ))
@@ -279,10 +276,12 @@ class SearchController < ApplicationController
 			@fulltext_count = 0
 			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
 			@all_federations = 'Search all federations'
+			@other_federation = nil
 			if @results['facets']['federation']
 				@results['facets']['federation'].each { |key, val|
 					if key != DEFAULT_FEDERATION && key != '<unspecified>'
 						@all_federations = "Search #{key} too!"
+						@other_federation = key
 					end
 				}
 			end
