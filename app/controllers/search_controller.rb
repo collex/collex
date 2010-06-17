@@ -275,15 +275,22 @@ class SearchController < ApplicationController
 			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
 			@fulltext_count = 0
 			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
-			@all_federations = 'Search all federations'
-			@other_federation = nil
-			if @results['facets']['federation']
-				@results['facets']['federation'].each { |key, val|
-					if key != DEFAULT_FEDERATION && key != '<unspecified>'
-						@all_federations = "Search #{key} too!"
-						@other_federation = key
-					end
-				}
+			if session[:all_federations] == nil
+				@all_federations = 'Search all federations'
+				@other_federation = nil
+				if @results['facets']['federation']
+					@results['facets']['federation'].each { |key, val|
+						if key != DEFAULT_FEDERATION && key != '<unspecified>'
+							@all_federations = "Search #{key} too!"
+							@other_federation = key
+						end
+					}
+				end
+				session[:all_federations] = @all_federations
+				session[:other_federation] = @other_federation
+			else
+				@all_federations = session[:all_federations]
+				@other_federation = session[:other_federation]
 			end
 			@listed_constraints = marshall_listed_constraints()
 
