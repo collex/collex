@@ -114,7 +114,7 @@ namespace :solr do
 			rescue
 			end
 			
-			solr.replace_archive(indexes)
+			solr.replace_archives(indexes)
 			puts "Finished in #{(Time.now-today)/60} minutes."
 		end
 	end
