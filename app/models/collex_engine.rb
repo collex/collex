@@ -310,6 +310,27 @@ return results
 	  end
 	end
 
+	def replace_archives(archives)
+		arr = @cores[0].split('/')
+		core = arr[arr.length-1]
+		url = "#{SOLR_URL}/admin/cores?action=mergeindexes&core=#{core}"
+		archives.each {|archive|
+			url += "&indexDir=#{archive}"
+		}
+		puts "curl \"#{url}\""
+		begin
+			# this will timeout. Don't crash when that happens.
+			`curl \"#{url}\"`
+		rescue Exception => e
+			puts "Continuing after exception: #{e}"
+		end
+		begin
+			@solr.optimize()
+		rescue
+			puts "Continuing after exception: #{e}"
+		end
+	end
+
 	# this merges the indexes passed into the current index
 	def merge(indexes)
 		arr = @cores[0].split('/')

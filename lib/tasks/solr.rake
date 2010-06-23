@@ -84,21 +84,29 @@ namespace :solr do
 			puts "Finished in #{Time.now-today} seconds."
 	end
 
-	desc "This assumes a gzipped archive in the ~/uploaded_data folder named like this: archive_XXX.tar.gz. (params: archive=XXX) It will add that archive to the resources index."
+	desc "This assumes a gzipped archive in the ~/uploaded_data folder named like this: archive_XXX.tar.gz. (params: archive=XXX,YYY) It will add those archives to the resources index."
 	task :install_archive => :environment do
 		today = Time.now()
-		archive = ENV['archive']
-		if archive == nil
+		param = ENV['archive']
+		if param == nil
 			puts "Usage: call with archive=the archive to install"
 		else
+			solr = CollexEngine.new()
 			folder = "#{ENV['HOME']}/uploaded_data"
-			index = "archive_#{archive}"
-			zipfile = "#{index}.tar.gz"
-			index_path = "#{folder}/#{index}"
-			`cd #{folder} && tar xvfz #{zipfile}`
-			`rm -r -f #{index_path}`
-			`mv #{folder}/index #{index_path}`
-			File.open("#{RAILS_ROOT}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
+			archives = param.split(',')
+
+			indexes = []
+			archives.each {|archive|
+				index = "archive_#{archive}"
+				zipfile = "#{index}.tar.gz"
+				index_path = "#{folder}/#{index}"
+				indexes.push(index_path)
+				`cd #{folder} && tar xvfz #{zipfile}`
+				`rm -r -f #{index_path}`
+				`mv #{folder}/index #{index_path}`
+				File.open("#{RAILS_ROOT}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
+				solr.delete_archive(archive)
+			}
 
 			# delete the cache
 			begin
@@ -106,9 +114,7 @@ namespace :solr do
 			rescue
 			end
 			
-			solr = CollexEngine.new()
-			solr.delete_archive(archive)
-			solr.replace_archive("#{index_path}")
+			solr.replace_archive(indexes)
 			puts "Finished in #{(Time.now-today)/60} minutes."
 		end
 	end
