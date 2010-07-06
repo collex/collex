@@ -617,11 +617,11 @@ module SearchHelper
     return html
   end
 
-	def federation_selector(federation)
+	def federation_selector(federation, num_objects)
 		html = "<tr><td>"
 		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
 		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection}><img src='/images/#{SKIN}/federation_#{federation}_thumb.jpg' alt='#{federation}' /></input>"
-		html += "</td></tr>"
+		html += "</td><td class='num_objects'>#{number_with_delimiter(num_objects)}</td></tr>"
 		return html
 	end
   
