@@ -24,19 +24,22 @@ function changeFederation(checkbox) {
 	// The two items in the federation list cannot both be unchecked at the same time, but they can both be checked at the same time.
 	var too = $('search_federation');
 	var federationChecks = $$('.limit_to_federation input[type="checkbox"]');
-	if (too !== null && federationChecks.length >= 2) {
+	if (federationChecks.length >= 2) {
 		if (checkbox.name === federationChecks[1].name) {
-			too.checked = checkbox.checked;
+			if (too !== null)
+				too.checked = checkbox.checked;
 			if (checkbox.checked === false && federationChecks[0].checked === false)
 				federationChecks[0].checked = true;
 		}
 		if (checkbox.name === federationChecks[0].name) {
 			if (checkbox.checked === false && federationChecks[1].checked === false) {
 				federationChecks[1].checked = true;
-				too.checked = true;
+				if (too !== null)
+					too.checked = true;
 			}
 		}
-		if (checkbox.name === too.name) {
+
+		if (too !== null && checkbox.name === too.name) {
 			federationChecks[1].checked = checkbox.checked;
 			if (checkbox.checked === false && federationChecks[0].checked === false)
 				federationChecks[0].checked = true;
@@ -44,11 +47,14 @@ function changeFederation(checkbox) {
 	}
 
 	// Now that the checkboxes are set, tell the server. If both are set, then we don't want to send a federation parameter
-	var param = '';
+	var param = {};
 	if (federationChecks[0].checked === true && federationChecks[1].checked === false)
-		param = "?federation=" + federationChecks[0].name;
+		param.federation = federationChecks[0].name;
+//		param = "?federation=" + federationChecks[0].name;
 	else if (federationChecks[0].checked === false && federationChecks[1].checked === true)
-		param = "?federation=" + federationChecks[1].name;
-	window.location = "/search/add_federation_constraint" + param;
+		param.federation = federationChecks[1].name;
+//		param = "?federation=" + federationChecks[1].name;
+	ajaxWithProgressSpinner([ "/search/add_federation_constraint" ], [ null ], { waitMessage: 'Changing federation...' }, param);
+//	window.location = "/search/add_federation_constraint" + param;
 }
 

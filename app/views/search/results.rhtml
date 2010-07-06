@@ -51,7 +51,7 @@
 				<div class="page_header"><a href='/collex/new_search' class="new_search"></a>Search Query</div>
 				<%= render( :partial => 'constraints' ) %>
 				<div class="no_results_msg">
-					<p>No <%= SITE_NAME %> objects fit your constraints. <%= link_to "Remove Last Constraint.", {:controller=>'search', :action => 'remove_constraint', :index => session[:constraints].size-1}, { :class => 'nav_link' } %></p>
+					<p>No <%= SITE_NAME %> objects fit your constraints. <%= create_facet_link('Remove Last Constraint.', '/search/remove_constraint', { :index => "#{session[:constraints].size-1}" }) %></p>
 					<img src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
 				</div>
 			</div>

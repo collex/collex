@@ -17,8 +17,9 @@
 %>
 <%# partial: sort_by (string curr_selection, string curr_selection_direction, array options) -%>
 <% form_for :search, :url => { :action => :sort_by, :anchor => "top_of_results" }, :html => { :class => 'result-count-form' }  do |form| %>
+	<% do_sort = "var dir = $('sort_dir'); var by = $('sort_by'); ajaxWithProgressSpinner([ '/search/sort_by' ], [ null ], { waitMessage: 'Sorting...' }, { 'search': { 'result_sort_direction': dir ? dir.options[dir.selectedIndex].value : null, 'result_sort': by.options[by.selectedIndex].value } })" %>
 	<% if curr_selection != 'Relevancy' -%>
-	<span class="results_per_page">&nbsp;<%= form.select :result_sort_direction, ['Ascending', 'Descending'], { :selected => curr_selection_direction }, { :onchange => 'submit();' } %></span>
+	<span class="results_per_page">&nbsp;<%= form.select :result_sort_direction, ['Ascending', 'Descending'], { :selected => curr_selection_direction }, { :onchange => do_sort, :onkeyup => do_sort, :id => 'sort_dir' } %></span>
 	<% end -%>
-	<span class="results_per_page">Sort by:&nbsp;<%= form.select :result_sort, options, { :selected => curr_selection }, { :onchange => 'submit();' } %></span>
+	<span class="results_per_page">Sort by:&nbsp;<%= form.select :result_sort, options, { :selected => curr_selection }, { :onchange => do_sort, :onkeyup => do_sort, :id => 'sort_by' } %></span>
 <% end %>

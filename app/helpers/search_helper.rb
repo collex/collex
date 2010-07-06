@@ -66,41 +66,45 @@ module SearchHelper
         first = last - 10
       end
     end
+
+	link = "/#{destination_hash[:controller]}/#{destination_hash[:action]}"
+	destination_hash.delete(:controller)
+	destination_hash.delete(:action)
     
     if first > 1
-      destination_hash[:page] = 1
-      html += link_to("first", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
+      destination_hash[:page] = "#{1}"
+      html += create_facet_link('first', link, destination_hash) + "&nbsp;&nbsp;"
     end
 
     if curr_page > 1
-      destination_hash[:page] = (curr_page - 1)
-      html += link_to("<<", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
+      destination_hash[:page] = "#{(curr_page - 1)}"
+      html += create_facet_link('<<', link, destination_hash) + "&nbsp;&nbsp;"
     end
 
     for pg in first..last do
       if pg == curr_page
         html += "<span class='current_serp'>#{pg}</span>"
       else
-        destination_hash[:page] = pg
-        html += link_to("#{pg}", destination_hash, :class => 'nav_link' )
+        destination_hash[:page] = "#{pg}"
+        html += create_facet_link("#{pg}", link, destination_hash)
       end
       html += "&nbsp;&nbsp;"
     end 
     
     if last < num_pages
       html += "...&nbsp;&nbsp;" if num_pages > 12
-      destination_hash[:page] = num_pages
-      html += link_to(num_pages, destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
+      destination_hash[:page] = "#{num_pages}"
+      html += create_facet_link(num_pages, link, destination_hash) + "&nbsp;&nbsp;"
     end
     
     if curr_page < num_pages
-      destination_hash[:page] = (curr_page + 1)
-      html += link_to( ">>", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
+      destination_hash[:page] = "#{(curr_page + 1)}"
+      html += create_facet_link(">>", link, destination_hash) + "&nbsp;&nbsp;"
     end
     
     if last < num_pages
-      destination_hash[:page] = num_pages
-      html += link_to("last", destination_hash, :class => 'nav_link') + "&nbsp;&nbsp;"
+      destination_hash[:page] = "#{num_pages}"
+      html += create_facet_link("last", link, destination_hash) + "&nbsp;&nbsp;"
     end
 
     return html
@@ -185,34 +189,6 @@ module SearchHelper
     return false
   end
   
-#  def resource_data_link( resource )
-#    #     <form id="add-constraint" method="post" action="/search/constrain_resources">
-#    object_count = site_object_count(resource.value)
-#    if object_count != 0
-#      display_str = "#{h(resource.display_name)} (#{pluralize( object_count, 'object' )})"
-#      if resource_is_in_constraints?(resource)
-#        html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
-#        html += link_to "[remove]", { :controller => 'search', :action => "constrain_resources", :resource => resource.value, :remove => true }, { :method => :post, :class => 'nav_link' }
-#        html += "</li>"
-#        return html
-#      else
-#        link = link_to display_str, {:controller=>"search", :action => 'constrain_resources', :resource => resource.value }, { :method => :post, :class => 'nav_link' }
-#        return "<li>#{link}</li>"
-#      end
-#    else
-#      return ""
-#    end
-  
-#    if resource_data[:exists]
-#      html = "&rarr; #{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})&nbsp;"
-#      html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post } 
-#      return html
-#    else
-#      link_to "#{h genre_data[:value]} (#{number_with_delimiter(genre_data[:count])})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post } 
-#    end
-
-#  end
-  
   def free_culture_is_in_constraints?
     constraints = session[:constraints]
     constraints.each {|constraint|
@@ -233,36 +209,13 @@ module SearchHelper
     return false
   end
 
-#  def federation_is_in_constraints?(value)
-#    constraints = session[:constraints]
-#    constraints.each {|constraint|
-#      if constraint[:type] == 'FacetConstraint' && constraint[:field] == 'federation' && constraint[:value] == value
-#        return true
-#      end
-#    }
-#    return false
-#  end
-
-#  def free_culture_link(count)
-#    display_str = "Free Culture Only (#{pluralize(count, 'object')})"
-#    if free_culture_is_in_constraints?
-#      html = "<li><span class='resource_list_selected'>&rarr; #{display_str}</span>&nbsp;"
-#      html += link_to "[remove]", { :controller => 'search', :action => "constrain_freeculture", :remove => true }, { :method => :post, :class => 'nav_link' }
-#      html += "</li>"
-#      return html
-#    else
-#      link = link_to display_str, {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' }
-#      return "<li>#{link}</li>"
-#    end
-#  end
-#
   def genre_data_link( genre_data )
     if genre_data[:exists]
       html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})</span>&nbsp;"
-      html += link_to "[remove]", { :controller => 'search', :action => "remove_genre", :value => genre_data[:value] }, { :method => :post, :class => 'nav_link' } 
+      html += create_facet_link("[remove]", "/search/remove_genre", { :value => genre_data[:value]})
       return html
     else
-      link_to "#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post, :class => 'nav_link' } 
+		create_facet_link("#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", "/search/add_facet", { :field => 'genre', :value => genre_data[:value]})
     end
 
   end
@@ -316,17 +269,6 @@ module SearchHelper
 	  return 0 if site_count[code] == nil
     site_count[code].to_i
   end
-  
-#  def site_category_heading( category_name, category_id, initial_state = :closed )
-#    display_none = 'style="display:none"'
-#    label = "<span id=\"cat_#{category_id}_closed\" #{initial_state == :open ? display_none : ''} class=\"site-category-toggle\">"
-#    label << link_to_function('&#x25BA; ' + category_name,"toggleCategory('#{category_id}')", { :class => 'nav_link'})
-#    label << "</span>"
-#    label << "<span id=\"cat_#{category_id}_opened\" #{initial_state == :closed ? display_none : ''} class=\"site-category-toggle\">"
-#    label << link_to_function('&#x25BC; ' + category_name, "toggleCategory('#{category_id}')", { :class => 'nav_link' })
-#    label << "</span>"
-#  '<tr><td><img src="images/arrow_dn.gif" /> Collections</td><td class="num_objects">1,131</td></tr>'
-#  end
   
   def result_is_collected(hit)
     return get_collected_item(hit) != nil
@@ -606,9 +548,9 @@ module SearchHelper
         html += "<a href='#' onclick='new ResourceTree(\"#{id}\",\"toggle\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
         if site_is_in_constraints?(value)
-          html += display_name + "&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_resource', :resource => value, :remove => 'true'}, { :class => 'modify_link' }) + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
+          html += display_name + "&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_resource', { :resource => value, :remove => 'true' }) + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
         else
-          link = link_to(display_name, {:controller=>"search", :action => 'constrain_resource', :resource => value }, { :method => :post, :class => 'nav_link' })
+          link = create_facet_link(display_name, '/search/constrain_resource', { :resource => value })
           html += "#{link}</td><td class='num_objects'>#{number_with_delimiter(total)}"
         end
       end
@@ -625,11 +567,16 @@ module SearchHelper
 		return html
 	end
   
+	def create_facet_link(label, link, params)
+		json = params.to_json()
+		return link_to_function(label, "ajaxWithProgressSpinner([ '#{link}' ], [ null ], { waitMessage: 'Searching...' }, #{json})", { :class => 'nav_link' })
+	end
+	
   def genre_selector( genre_data )
     if genre_data[:exists]
-      html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'remove_genre', :value => genre_data[:value]}, { :class => 'modify_link' })
+      html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_genre', {:value => genre_data[:value]})
     else
-      html = "<tr><td class='limit_to_lvl1'>" + link_to("#{h genre_data[:value]}", {:controller=>"search", :action => 'add_facet', :field => 'genre', :value => genre_data[:value]}, { :method => :post, :class => 'nav_link' })
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h genre_data[:value]}", "/search/add_facet", { :field => 'genre', :value => genre_data[:value]})
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(genre_data[:count])}</td></tr>"
     return html
@@ -637,9 +584,9 @@ module SearchHelper
 
   def free_culture_selector(count)
     if free_culture_is_in_constraints?
-      html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_freeculture', :remove => 'true'}, { :class => 'modify_link' })
+      html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_freeculture', { :remove => 'true' })
     else
-      html = "<tr><td class='limit_to_lvl1'>" + link_to("Free Culture Only", {:controller=>"search", :action => 'constrain_freeculture' }, { :method => :post, :class => 'nav_link' })
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Free Culture Only", '/search/constrain_freeculture', { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return html
@@ -647,37 +594,17 @@ module SearchHelper
 
   def full_text_selector(count)
     if full_text_is_in_constraints?
-      html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'constrain_fulltext', :remove => 'true'}, { :class => 'modify_link' })
+      html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_fulltext', { :remove => 'true' })
     else
-      html = "<tr><td class='limit_to_lvl1'>" + link_to("Full Text Only", {:controller=>"search", :action => 'constrain_fulltext' }, { :method => :post, :class => 'nav_link' })
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Full Text Only", '/search/constrain_fulltext', { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return html
   end
 
-#  def nines_selector(count)
-#    if federation_is_in_constraints?('NINES')
-#      html = "<tr class='limit_to_selected'><td>NINES&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'remove_facet', :field => 'federation', :value => 'NINES'}, { :class => 'modify_link' })
-#    else
-#      html = "<tr><td class='limit_to_lvl1'>" + link_to("NINES", {:controller=>"search", :action => 'add_facet', :field => 'federation', :value => 'NINES' }, { :method => :post, :class => 'nav_link' })
-#    end
-#    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-#    return html
-#  end
-#
-#  def eighteenth_connect_selector(count)
-#    if federation_is_in_constraints?('18thConnect')
-#      html = "<tr class='limit_to_selected'><td>18th Connect&nbsp;&nbsp;" + link_to('[X]', { :controller => 'search', :action =>'remove_facet', :field => 'federation', :value => '18thConnect'}, { :class => 'modify_link' })
-#    else
-#      html = "<tr><td class='limit_to_lvl1'>" + link_to("18th Connect", {:controller=>"search", :action => 'add_facet', :field => 'federation', :value => '18thConnect' }, { :method => :post, :class => 'nav_link' })
-#    end
-#    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-#    return html
-#  end
-
 	def format_name_facet(name, typ)
 		name[0] = name[0].gsub("\"", "")
-		return link_to("#{name[0]} (#{name[1]})", { :controller => 'search', :action => 'add_constraint', :search_type => typ,  :search_not => 'AND', :search => { :phrase => '', :notphrase => name[0]}, :from_name_facet => 'true' }, { :class => 'nav_link' })
+		return create_facet_link("#{name[0]} (#{name[1]})", '/search/add_constraint', { :search_type => typ,  :search_not => 'AND', :search => { :phrase => '', :notphrase => name[0]}, :from_name_facet => 'true' })
 	end
 
 	def format_no_name_message(index, total)

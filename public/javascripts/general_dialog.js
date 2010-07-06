@@ -904,7 +904,17 @@ function updateWithAjax(params)
 		var new_form = new Element('form', {id: "temp_form", method: 'post', onsubmit: "this.submit();", action: params.action});
 		new_form.observe('submit', "this.submit();");
 		document.body.appendChild(new_form);
-		$H(params.params).each(function (p) {new_form.appendChild(new Element('input', {name: p.key, value: p.value, id: p.key}));});
+		$H(params.params).each(function (p) {
+			// Usually we are passed a hash of strings, but sometimes we get a value that is a hash itself. That should set up an input
+			// for each value, and name it p.key[p.value.key]
+			if (typeof p.value === 'string')
+				new_form.appendChild(new Element('input', {type: 'hidden', name: p.key, value: p.value, id: p.key}));
+			else {
+				$H(p.value).each(function (pp) {
+					new_form.appendChild(new Element('input', {type: 'hidden', name: p.key + '[' + pp.key + ']', value: pp.value, id: pp.key}));
+				});
+			}
+		});
 
 		//$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
 		new_form.submit();
