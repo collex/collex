@@ -121,7 +121,7 @@ end
 			group = Group.find_by_visible_url(group_name)
 			group = Group.find_by_id(group_name) if group == nil
 			if group == nil
-				redirect_to "/404.html"
+				render_404
 				return
 			end
 
@@ -130,7 +130,7 @@ end
 			if cluster
 				params[:id] = cluster.id
 			else
-				redirect_to "/404.html"
+				render_404
 				return
 			end
 		end

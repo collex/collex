@@ -17,23 +17,19 @@
 require 'test_helper'
 
 class GroupsControllerTest < ActionController::TestCase
-  test "should get index" do
-    get :index
-    assert_response :success
-    assert_not_nil assigns(:groups)
-  end
+  fixtures :groups
+  fixtures :users
 
-  test "should get new" do
-    get :new
-    assert_response :success
-  end
-
-  test "should create group" do
+	def login
+		session[:user] = { :username => 'dave' }
+	end
+	
+   test "should create group" do
     assert_difference('Group.count') do
       post :create, :group => { }
     end
 
-    assert_redirected_to group_path(assigns(:group))
+    assert_response :success
   end
 
   test "should show group" do
@@ -41,14 +37,10 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get edit" do
-    get :edit, :id => groups(:one).to_param
-    assert_response :success
-  end
-
   test "should update group" do
+	  login()
     put :update, :id => groups(:one).to_param, :group => { }
-    assert_redirected_to group_path(assigns(:group))
+     assert_response :success
   end
 
   test "should destroy group" do
@@ -56,6 +48,53 @@ class GroupsControllerTest < ActionController::TestCase
       delete :destroy, :id => groups(:one).to_param
     end
 
-    assert_redirected_to groups_path
+    assert_redirected_to "/communities"
   end
+
+	test "stale_request" do
+		get :stale_request
+		assert_response :success
+	end
+
+	test "accept_request" do
+		get :accept_request
+		assert_response :redirect
+		assert_redirected_to :action => "stale_request"
+	end
+
+	test "decline_request" do
+		get :decline_request
+		assert_response :redirect
+		assert_redirected_to :action => "stale_request"
+	end
+
+	test "decline_invitation" do
+		get :decline_invitation
+		assert_response :redirect
+		assert_redirected_to :action => "stale_request"
+	end
+
+	test "accept_invitation" do
+		get :accept_invitation
+		assert_response :redirect
+		assert_redirected_to :action => "stale_request"
+	end
+
+	test "acknowledge_notification" do
+		get :acknowledge_notification
+		assert_response :redirect
+		assert_redirected_to '/static/nines/422.html'
+	end
+
+	test "create_login" do
+		get :create_login
+		assert_response :redirect
+		assert_redirected_to '/static/nines/422.html'
+	end
+
+	test "create_login_create" do
+		post :create_login_create
+		assert_response :redirect
+		assert_redirected_to '/groups/create_login?message=Illegal+call.'
+	end
 end

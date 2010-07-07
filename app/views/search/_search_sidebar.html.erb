@@ -17,8 +17,10 @@
 <div class="right_column">
 	<div class="right_column_header">Currently Searching...</div>
 	<table class="limit_to limit_to_federation">
-		<%= federation_selector(DEFAULT_FEDERATION, @results['facets']['federation'][DEFAULT_FEDERATION]) %>
-		<%= federation_selector(@other_federation, @results['facets']['federation'][@other_federation]) %>
+		<% fed_count = @results['facets']['federation'] ? @results['facets']['federation'][DEFAULT_FEDERATION] : 0 -%>
+		<% other_count = @results['facets']['federation'] ? @results['facets']['federation'][@other_federation] : 0 -%>
+		<%= federation_selector(DEFAULT_FEDERATION, fed_count) %>
+		<%= federation_selector(@other_federation, other_count) %>
 	</table>
 
 	<div class="right_column_header">Limit Results to...</div>

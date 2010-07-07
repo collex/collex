@@ -157,9 +157,25 @@ class GroupsController < ApplicationController
 		end
 	end
 
+	def acknowledge_notification
+		if params == nil || params[:group_id] == nil || params[:type] == nil
+			redirect_to "/static/#{SKIN}/422.html"
+		end
+	end
+
+	def create_login
+		if params == nil || params[:id] == nil
+			redirect_to "/static/#{SKIN}/422.html"
+		end
+	end
+
 	def create_login_create
 		gu_id = params[:id]
 		user_name = params[:user_name]
+		if params[:id] == nil || params[:user_name] == nil # this call was made without parameters. That is an error, probably made by a bot.
+			redirect_to :action => 'create_login', :id => params[:id], :message => 'Illegal call.'
+			return
+		end
 		gu = GroupsUser.find(gu_id)
 		email = gu.email
 		password = params[:password]
@@ -401,7 +417,8 @@ class GroupsController < ApplicationController
 				@group = Group.find_by_id(params[:id])
 			end
 			if @group == nil
-				redirect_to "/404.html"
+				#redirect_to "/404.html"
+				render_404
 				return
 			end
 			

@@ -4,7 +4,7 @@ one:
   name: MyString
   owner: 9.99
   description: MyText
-  group_type: MyString
+  group_type: community
   image_id: 9.99
   forum_permissions: MyString
 
@@ -12,6 +12,6 @@ two:
   name: MyString
   owner: 9.99
   description: MyText
-  group_type: MyString
+  group_type: community
   image_id: 9.99
   forum_permissions: MyString

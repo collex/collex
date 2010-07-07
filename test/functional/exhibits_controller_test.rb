@@ -18,11 +18,6 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class ExhibitsControllerTest < ActionController::TestCase
   fixtures :exhibits
-  def test_should_get_list
-    get :list
-    assert_response :success
-    #assert_not_nil assigns(:exhibits)
-  end
 
   def test_should_get_print_exhibit
     get :print_exhibit, :id => 1

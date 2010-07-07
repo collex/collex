@@ -52,7 +52,7 @@ class SearchControllerTest < ActionController::TestCase
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
     assert_nil session[:name_of_search]
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
 
     # Called from the new search on the Search page.
 #    post :add_constraint, { :search => { :keyword => user_search_string }, :search_year => "1877", :search_author => "poe", :search_editor => "poe", :search_publisher => "pocketbook" }, { :name_of_search => "old_name" }
@@ -128,8 +128,9 @@ class SearchControllerTest < ActionController::TestCase
     post :constrain_freeculture, { :freeculture => 'on' }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 1, session[:constraints].length
-    assert_equal 'FreeCultureConstraint', session[:constraints][0]['type']
+    assert_equal 2, session[:constraints].length
+    assert_equal 'FederationConstraint', session[:constraints][0]['type']
+    assert_equal 'FreeCultureConstraint', session[:constraints][1]['type']
 
 #    post :constrain_freeculture
 #    assert_response :redirect
@@ -141,57 +142,57 @@ class SearchControllerTest < ActionController::TestCase
     post :constrain_resource, { "resource"=> "whitman" }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
   end
   
   def test_invert_constraint
     user_search_string = "dance"
     post :add_constraint, { :search_phrase => user_search_string }
-    post :invert_constraint, { :index => 0 }, session
+    post :invert_constraint, { :index => 1 }, session
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 1, session[:constraints].length
-    assert_equal true, session[:constraints][0][:inverted]
+    assert_equal 2, session[:constraints].length
+    assert_equal true, session[:constraints][1][:inverted]
     
-    post :invert_constraint, { :index => 0 }, session
+    post :invert_constraint, { :index => 1 }, session
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 1, session[:constraints].length
-    assert_equal false, session[:constraints][0][:inverted]
+    assert_equal 2, session[:constraints].length
+    assert_equal false, session[:constraints][1][:inverted]
   end
 
   def test_remove_constraint
     user_search_string = "dance"
     post :add_constraint, { :search_phrase => user_search_string }
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
 
-    post :remove_constraint, { :index => 0 }, session
+    post :remove_constraint, { :index => 1 }, session
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 0, session[:constraints].length
+    assert_equal 1, session[:constraints].length
   end
   
   def test_new_search
     user_search_string = "dance"
     post :add_constraint, { :search_phrase => user_search_string }
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
     
     post :new_search, { }, session
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 0, session[:constraints].length
+    assert_equal 1, session[:constraints].length
   end
   
   def test_add_and_remove_genre
     post :add_facet, { :field => 'genre', :value => 'Criticism' }
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
     
     post :remove_genre, { :value =>"Criticism" }, session
     assert_response :redirect 
     assert_redirected_to :action => "browse" 
-    assert_equal 0, session[:constraints].length
+    assert_equal 1, session[:constraints].length
   end
 
 #  def test_details
@@ -263,7 +264,7 @@ class SearchControllerTest < ActionController::TestCase
       searches = user.searches.find(:all)
       assert_equal 0, searches.length
     end
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
 
     # save that search and see that it is saved and that the name that will appear on the web site is set.
     post :save_search, { :saved_search_name => name }, session
@@ -274,7 +275,7 @@ class SearchControllerTest < ActionController::TestCase
       assert_equal 1, searches.length
       assert_equal name, searches[0].name
     end
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
     
     # do another search and see that the saved search is still there, but the name that appears on the web site is not.
     # also note that there are now two constraints
@@ -287,7 +288,7 @@ class SearchControllerTest < ActionController::TestCase
       searches = user.searches.find(:all)
       assert_equal 1, searches.length
     end
-    assert_equal 1, session[:constraints].length
+    assert_equal 2, session[:constraints].length
     
     # apply the original search and see that there is now one constraint and the search name is back.
     post :saved, { :name => name, :user => 'paul' }, session
