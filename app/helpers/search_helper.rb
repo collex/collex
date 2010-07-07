@@ -568,7 +568,10 @@ module SearchHelper
 	end
   
 	def create_facet_link(label, link, params)
+		# add the dynamic adding of the search phrase to the params first. We have to thwart the json function because we don't want it quoted.
+		params[:phrs] = "$(phrase)"
 		json = params.to_json()
+		json = json.gsub("\"$(phrase)\"", "$('search_phrase') ? $('search_phrase').getRealValue() : null")
 		return link_to_function(label, "ajaxWithProgressSpinner([ '#{link}' ], [ null ], { waitMessage: 'Searching...' }, #{json})", { :class => 'nav_link' })
 	end
 	
@@ -604,7 +607,7 @@ module SearchHelper
 
 	def format_name_facet(name, typ)
 		name[0] = name[0].gsub("\"", "")
-		return create_facet_link("#{name[0]} (#{name[1]})", '/search/add_constraint', { :search_type => typ,  :search_not => 'AND', :search => { :phrase => '', :notphrase => name[0]}, :from_name_facet => 'true' })
+		return create_facet_link("#{name[0]} (#{name[1]})", '/search/add_constraint', { :search_type => typ,  :search_not => 'AND', :search => { :phrase => name[0]}, :from_name_facet => 'true' })
 	end
 
 	def format_no_name_message(index, total)

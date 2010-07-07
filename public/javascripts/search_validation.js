@@ -146,9 +146,12 @@ function doSaveSearch()
 // It allows input fields to have hints
 (function(){
   var methods = {
-    defaultValueActsAsHint: function(element){
+    defaultValueActsAsHint: function(element, default_value){
       element = $(element);
-      element.default_value = element.value;
+      element.default_value = default_value;
+
+	  if (element.value === default_value)
+		  element.addClassName('inputHintStyle');
 
       return element.observe('focus', function(){
         if(element.default_value !== element.value) return;
@@ -156,8 +159,14 @@ function doSaveSearch()
       }).observe('blur', function(){
         if(element.value.strip() !== '') return;
         element.addClassName('inputHintStyle').value = element.default_value;
-      }).addClassName('inputHintStyle');
-    }
+      });
+    },
+
+	getRealValue: function(element) {
+	  if (element.value === element.default_value)
+		  return null;
+	  return element.value;
+	}
   };
 
   $w('input').each(function(tag){ Element.addMethods(tag, methods); });

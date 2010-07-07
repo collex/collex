@@ -16,7 +16,8 @@
     # ---------------------------------------------------------------------------- -%>
 
 <div class="page_subheader">Add new search criteria or select limiters to refine your search.</div>
-<form id="add-search-constraint" onsubmit="return searchValidation('search_notphrase', 'search_phrase', 'search_type', 'search_submit', null);" action="/collex/add_constraint" method="post">
+<form id="add-search-constraint" onsubmit="return searchValidation('search_phrase', 'search_phrase', 'search_type', 'search_submit', null);" action="/collex/add_constraint" method="post">
+<% default_search_phrase = 'click here to add new search term' -%>
 <table class="query">
 	<% @listed_constraints.each do |constraint_data| -%>
 		<% constraint = constraint_data[:constraint] -%>
@@ -29,7 +30,7 @@
 			<td class="query_and-not">
 					<%# we want to post back to the server if the user changed the selection by either a mouse click or keypress. We need to make sure that there really was a change, so only post back if the current value doesn't equal the starting value (starting value is ret[:not]) -%>
 					<% is_not = ret[:not]?'true':'false' # make sure that a string value is used for the following script -%>
-					<% and_not = "ajaxWithProgressSpinner([ '/search/invert_constraint' ], [ null ], { waitMessage: 'Searching...' }, { index: '#{index}' })" %>
+					<% and_not = "ajaxWithProgressSpinner([ '/search/invert_constraint' ], [ null ], { waitMessage: 'Searching...' }, { index: '#{index}', 'phrs': $('search_phrase').getRealValue() })" %>
 					<select class="query_and-not_select" onkeyup="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT')) <%=  and_not %>;" onchange="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT'))  <%=  and_not %>;">
 					<option value="AND">AND</option><option value="NOT" <%= "selected='selected'" if ret[:not] %>>NOT</option></select>
 			</td>
@@ -42,7 +43,7 @@
 		<td class="query_type">
     		<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
-		<td class="query_term"><input name="search[notphrase]" id="search_notphrase" type="text" value='click here to add new search term' class='hidden'/><%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>'click here to add new search term'}, {:min_chars => 2} -%></td>
+		<td class="query_term"><!--<input name="search[notphrase]" id="search_notphrase" type="text" value='<%= @incomplete_notphrase ? @incomplete_notphrase : default_search_phrase %>' class='hidden'/> --><%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%></td>
 		<td class="query_and-not"><select id='search_not' name='search_not' class="query_and-not_select"><option>AND</option><option>NOT</option></select>
 		</td>
 		<td class="query_remove"><input id="search_submit" type="submit" value="Add" /></td>
@@ -50,16 +51,20 @@
 </table>
 </form>
 <script type="text/javascript" charset="utf-8">
-    $('search_phrase').defaultValueActsAsHint();
-    $('search_notphrase').defaultValueActsAsHint();
+    $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
+//    $('search_notphrase').defaultValueActsAsHint('<%= default_search_phrase %>');
 	
 	function searchTypeChanged(This) {
-		if (This.value === 'Search Term') {
-			$('search_notphrase').addClassName('hidden')
-			$('search_phrase').removeClassName('hidden')
-		} else {
-			$('search_phrase').addClassName('hidden')
-			$('search_notphrase').removeClassName('hidden')
-		}
+		var type = This.value.toLowerCase();
+		type = type.gsub(" (yyyy)", '');
+		type = type.gsub(' ', '_');
+		search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
+//		if (This.value === 'Search Term') {
+//			$('search_notphrase').addClassName('hidden');
+//			$('search_phrase').removeClassName('hidden');
+//		} else {
+//			$('search_phrase').addClassName('hidden');
+//			$('search_notphrase').removeClassName('hidden');
+//		}
 	}
   </script>

@@ -67,14 +67,14 @@ class SearchController < ApplicationController
         # single input box
         invert = (params[:search_not] == "NOT")
         parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
-        add_title_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Title"
-        add_author_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Author"
-        add_editor_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Editor"
-        add_publisher_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Publisher"
-        add_date_constraint(params[:search][:notphrase], invert) if params[:search_type] == "Year (YYYY)"
+        add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
+        add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
+        add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
+        add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
+        add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
       end
 
-		 session[:name_facet_msg] = "You just added \"#{params[:search][:notphrase]}\" as a constraint." if params[:from_name_facet] == "true"
+		 session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
      redirect_to :action => 'browse'
    end
    
@@ -92,7 +92,7 @@ class SearchController < ApplicationController
 		if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
 			session[:constraints] << FederationConstraint.new(:field => 'federation', :value => constraints, :inverted => false)
 		end
-		redirect_to :action => 'browse'
+		redirect_to :action => 'browse', :phrs => params[:phrs]
 	end
 
    private
@@ -230,6 +230,7 @@ class SearchController < ApplicationController
         session[:row_num] = nil
         session[:row_id] = nil
       end
+	  @phrs = params[:phrs]
 			@name_facet_msg = session[:name_facet_msg]
 			session[:name_facet_msg] = nil
 			
@@ -342,7 +343,7 @@ class SearchController < ApplicationController
       sort_param = params['search']['result_sort_direction']
 			session[:search_sort_by_direction] = sort_param
 		end
-      redirect_to :action => 'browse'
+      redirect_to :action => 'browse', :phrs => params[:phrs]
 	end
    
    # allows queries to be linked in directly, or typed into the browser directly
@@ -372,7 +373,7 @@ class SearchController < ApplicationController
        session[:constraints] << FreeCultureConstraint.new(:inverted => false )
      end
    
-     redirect_to :action => 'browse'
+     redirect_to :action => 'browse', :phrs => params[:phrs]
    end
    
    # constrain search to only return free culture objects
@@ -389,7 +390,7 @@ class SearchController < ApplicationController
        session[:constraints] << FullTextConstraint.new(:inverted => false )
      end
 
-     redirect_to :action => 'browse'
+     redirect_to :action => 'browse', :phrs => params[:phrs]
    end
 
    # constrains the search by the specified resources
@@ -414,7 +415,7 @@ class SearchController < ApplicationController
        session[:constraints] << FacetConstraint.new( :field => 'archive', :value => resource, :inverted => false )
      end
      
-     redirect_to :action => 'browse'
+     redirect_to :action => 'browse', :phrs => params[:phrs]
    end
    
    def add_facet
@@ -422,7 +423,7 @@ class SearchController < ApplicationController
      if params[:field] and params[:value]
        session[:constraints] << FacetConstraint.new(:field => params[:field], :value => params[:value], :inverted => params[:invert] ? true : false)
      end
-     redirect_to :action => 'browse'
+     redirect_to :action => 'browse', :phrs => params[:phrs]
    end
 
    def remove_facet
@@ -432,7 +433,7 @@ class SearchController < ApplicationController
          session[:constraints].delete(item)
        end
       end
-    redirect_to :action => 'browse'
+    redirect_to :action => 'browse', :phrs => params[:phrs]
    end
 
   def remove_genre
@@ -442,7 +443,7 @@ class SearchController < ApplicationController
         session[:constraints].delete(item)
       end
     end
-    redirect_to :action => 'browse'
+    redirect_to :action => 'browse', :phrs => params[:phrs]
   end
   
    def remove_constraint
@@ -451,7 +452,7 @@ class SearchController < ApplicationController
       if idx < session[:constraints].size
         session[:constraints].delete_at idx
       end
-      redirect_to :action => 'browse'
+      redirect_to :action => 'browse', :phrs => params[:phrs]
    end
    
    def invert_constraint
@@ -461,7 +462,7 @@ class SearchController < ApplicationController
         constraint = session[:constraints][idx]
         constraint.inverted = !constraint.inverted
       end
-      redirect_to :action => 'browse'
+      redirect_to :action => 'browse', :phrs => params[:phrs]
    end
 
 #   def new_expression
@@ -504,9 +505,9 @@ class SearchController < ApplicationController
 		session[:search_sort_by_direction] = nil
 	end
    
-   def auto_complete(keyword)
+   def auto_complete(keyword, field = 'content')
      @solr = CollexEngine.factory_create(session[:use_test_index] == "true")
-     @field = 'content'
+     @field = field
      @values = []
      if params['search']
        begin
@@ -537,6 +538,48 @@ class SearchController < ApplicationController
 
    def auto_complete_for_search_phrase
     auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
+   end
+
+   def auto_complete_for_search_term
+    auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
+   end
+
+   def auto_complete_for_title
+    auto_complete(params['search']['phrase'], 'title') if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
+   end
+
+   def auto_complete_for_author
+    auto_complete(params['search']['phrase'], 'author') if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
+   end
+
+   def auto_complete_for_editor
+    auto_complete(params['search']['phrase'], 'editor') if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
+   end
+
+   def auto_complete_for_publisher
+    auto_complete(params['search']['phrase'], 'publisher') if params['search']  # google bot will hit this without parameters, so check for that
+    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+      render :text => ''
+    end
+   end
+
+   def auto_complete_for_year
+    auto_complete(params['search']['phrase'], 'year') if params['search']  # google bot will hit this without parameters, so check for that
     if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
       render :text => ''
     end

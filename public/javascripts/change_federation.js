@@ -54,6 +54,7 @@ function changeFederation(checkbox) {
 	else if (federationChecks[0].checked === false && federationChecks[1].checked === true)
 		param.federation = federationChecks[1].name;
 //		param = "?federation=" + federationChecks[1].name;
+	param.phrs = $('search_phrase') ? $('search_phrase').getRealValue() : null;
 	ajaxWithProgressSpinner([ "/search/add_federation_constraint" ], [ null ], { waitMessage: 'Changing federation...' }, param);
 //	window.location = "/search/add_federation_constraint" + param;
 }
