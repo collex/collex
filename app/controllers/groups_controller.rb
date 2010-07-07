@@ -159,13 +159,13 @@ class GroupsController < ApplicationController
 
 	def acknowledge_notification
 		if params == nil || params[:group_id] == nil || params[:type] == nil
-			redirect_to "/static/#{SKIN}/422.html"
+			render_422
 		end
 	end
 
 	def create_login
 		if params == nil || params[:id] == nil
-			redirect_to "/static/#{SKIN}/422.html"
+			render_422
 		end
 	end
 

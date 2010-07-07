@@ -217,8 +217,9 @@ class ForumController < ApplicationController
   
   public
   def post_object_to_new_thread
-    if !is_logged_in?
+    if !is_logged_in? || params[:topic_id] == nil || request.request_method != :post
       flash[:error] = 'You must be signed in to start a discussion.'
+	  redirect_to :back
     else
       # There are two records that must be updated to create the new thread. If the second record
       # isn't created, then we need to back off the first one.
@@ -233,16 +234,16 @@ class ForumController < ApplicationController
       begin
         post_object(thread, params, :new)
       rescue
-        thread.destroy()
+        thread.destroy() if thread
         flash[:error] = "We're sorry. An error occurred when attempting to start the discussion thread."
       end
-    end
 
-    # now tell the caller where the post landed so they can go there.
-    session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-    threads = DiscussionTopic.find(topic_id).discussion_threads
-    num_pages = threads.length.quo(session[:items_per_page]).ceil
-    render :text => "/forum/view_topic?page=1&topic=#{topic_id}"
+		# now tell the caller where the post landed so they can go there.
+		session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
+		threads = DiscussionTopic.find(topic_id).discussion_threads
+		num_pages = threads.length.quo(session[:items_per_page]).ceil
+		render :text => "/forum/view_topic?page=1&topic=#{topic_id}"
+    end
   end
   
 #  def post_object_to_existing_thread

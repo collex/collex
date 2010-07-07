@@ -25,6 +25,10 @@ class ResultsController < ApplicationController
   #  end
   
   def collect
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     # Only collect if the item isn't already collected and if there is a user logged in.
     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
     locals = setup_ajax_calls(params, false)
@@ -42,6 +46,10 @@ class ResultsController < ApplicationController
   end
   
   def uncollect
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     partial = params[:partial]
 		if partial != '/results/result_row' && partial != '/forum/attachment'
 			render :text => 'Bad parameters in call to uncollect', :status => :bad_request
@@ -59,6 +67,10 @@ class ResultsController < ApplicationController
   end
   
   def add_tag
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
     CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
@@ -76,6 +88,10 @@ class ResultsController < ApplicationController
 #  end
   
   def remove_tag
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
     CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
@@ -93,6 +109,10 @@ class ResultsController < ApplicationController
 #  end
   
   def set_annotation
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     locals = setup_ajax_calls(params, true)
     note = params[:note]
     CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
@@ -102,6 +122,10 @@ class ResultsController < ApplicationController
   end
   
   def bulk_add_tag
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     tag = params['tag']
     uris = params['uris']
     
@@ -118,6 +142,10 @@ class ResultsController < ApplicationController
   end
   
   def bulk_collect
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
@@ -147,6 +175,10 @@ class ResultsController < ApplicationController
   public
 
   def edit_tag
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil
       old_name = params[:old_name]
@@ -164,6 +196,10 @@ class ResultsController < ApplicationController
   end
   
   def remove_all_tags
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil
       tag = params[:tag]
@@ -181,6 +217,10 @@ class ResultsController < ApplicationController
   end
 
   def add_object_to_exhibit
+	  if request.request_method != :post
+		  render_422
+		  return
+	  end
     locals = setup_ajax_calls(params, true)
     exhibit_name = params[:exhibit]
     if locals[:user] != nil
