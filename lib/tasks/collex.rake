@@ -456,6 +456,38 @@ namespace :collex do
 		end
 	end
 
+	def convert_user_field(field)
+		if "#{field}" == "NULL"
+			return nil
+		end
+		return "#{field}"
+	end
+
+	desc "Import users (file: filename)"
+	task :import_users => :environment do
+		contents = ""
+		File.open(RAILS_ROOT + ENV['file'], "r") { |f|
+			contents = f.read
+		}
+		lines = contents.split("\n")
+		lines.each {|line|
+			result = line.scan(/'()'|'(.*?[^\\])'|(NULL)/)
+			user = User.find_by_username(result[0])
+			if user == nil
+				puts "create user: #{result[0]}"
+				user = User.create(:username => convert_user_field(result[0]), :password_hash => convert_user_field(result[1]), :fullname => convert_user_field(result[2]), :email => convert_user_field(result[3]), :institution => convert_user_field(result[4]), :link => convert_user_field(result[5]), :about_me => convert_user_field(result[6]))
+			end
+#			result.each_with_index { |r, x|
+#				if r
+#					puts "#{x}: #{r}"
+#				end
+#			}
+#			puts "-----"
+		}
+
+	end
+
+
 #	desc "Fix character set from CP1252 to utf-8"
 #	task :fix_char_set => :environment do
 #		# This was for a one time fix of the database when the character set was set to latin1 instead of utf8.
