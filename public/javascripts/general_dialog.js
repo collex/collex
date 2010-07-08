@@ -835,21 +835,49 @@ function showPartialInLightBox(ajax_url, title, progress_img)
 	});
 }
 
-function showInLightbox(title, imageUrl, progress_img)
+function showInLightbox(params)
 {
+	var title = params.title;
+	var imageUrl = params.img;
+	var progress_img = params.spinner;
+	var size = params.size; // width (optional): the max width for the div. Anything larger will have scrollbars.
+	// If the size is set, then the div wrapping the img is set to the size initially. There is a margin between that div and
+	// the outer dialog, which has the resize controls.
+
 	var lightbox = null;
 	var loaded = function() {
 		var img_spinner = $('lightbox_img_spinner');
 		if (img_spinner)
 			img_spinner.remove();
-		$('lightbox_img').show();
+		var image = $('lightbox_img');
+		image.show();
 		lightbox.dlg.center();
+		if (size && (image.width > size || image.height > size)) {
+			var resizeDiv = $('lightbox_dlg');
+			var marginX = parseInt(resizeDiv.getStyle('width')) - size;
+			var marginY = parseInt(resizeDiv.getStyle('height')) - size;
+			var constrainX = (image.width > image.height);	// Constrain by the larger size
+			var onResize = function(e) {
+				var resizeDiv = image.up();
+				resizeDiv.setStyle({ maxWidth: (e.width - marginX) + "px", maxHeight: (e.height - marginY) + "px" });
+			};
+			var resize = null;
+			if (constrainX)
+				resize = new YAHOO.util.Resize('lightbox_dlg', { maxWidth: image.width+marginX, ratio: true, handles: [ 'br' ] });
+			else
+				resize = new YAHOO.util.Resize('lightbox_dlg', { maxHeight: image.height+marginY+16, ratio: true, handles: [ 'br' ] });	// add a little extra for the grabber bar height.
+			resize.on('resize', onResize);
+			$('lightbox_dlg_h').setStyle({ whiteSpace: 'nowrap' });
+		}
 	};
 
 	var divName = "lightbox";
 	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
 	img.setStyle({display: 'none' });
-	var form = img.wrap('form', { id: divName + "_id"});
+	var form = img.wrap('div', { id: divName + "_id"});
+	if (size)
+		form.setStyle({ maxWidth: size + 'px', maxHeight: size + 'px', overflow: 'auto' });
+
 	var progress = new Element('center', { id: 'lightbox_img_spinner'});
 	progress.addClassName('lightbox_img_spinner');
 	progress.appendChild(new Element('div').update("Image Loading..."));
