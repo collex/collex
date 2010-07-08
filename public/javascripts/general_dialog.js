@@ -851,7 +851,6 @@ function showInLightbox(params)
 			img_spinner.remove();
 		var image = $('lightbox_img');
 		image.show();
-		lightbox.dlg.center();
 		if (size && (image.width > size || image.height > size)) {
 			var resizeDiv = $('lightbox_dlg');
 			var marginX = parseInt(resizeDiv.getStyle('width')) - image.width;
@@ -877,6 +876,7 @@ function showInLightbox(params)
 			resize.on('resize', onResize);
 			$('lightbox_dlg_h').setStyle({ whiteSpace: 'nowrap', overflow: 'hidden' });
 		}
+		lightbox.dlg.center();
 	};
 
 	var divName = "lightbox";
