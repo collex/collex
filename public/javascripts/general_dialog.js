@@ -854,20 +854,28 @@ function showInLightbox(params)
 		lightbox.dlg.center();
 		if (size && (image.width > size || image.height > size)) {
 			var resizeDiv = $('lightbox_dlg');
-			var marginX = parseInt(resizeDiv.getStyle('width')) - size;
-			var marginY = parseInt(resizeDiv.getStyle('height')) - size;
+			var marginX = parseInt(resizeDiv.getStyle('width')) - image.width;
+			var marginY = parseInt(resizeDiv.getStyle('height')) - image.height;
 			var constrainX = (image.width > image.height);	// Constrain by the larger size
+			var origWidth = image.width;
+			var origHeight = image.height;
+			if (constrainX)
+				image.width = size;
+			else
+				image.height = size;
 			var onResize = function(e) {
-				var resizeDiv = image.up();
-				resizeDiv.setStyle({ maxWidth: (e.width - marginX) + "px", maxHeight: (e.height - marginY) + "px" });
+				if (constrainX)
+					image.width = e.width - marginX;
+				else
+					image.height = e.height - marginY;
 			};
 			var resize = null;
 			if (constrainX)
-				resize = new YAHOO.util.Resize('lightbox_dlg', { maxWidth: image.width+marginX, ratio: true, handles: [ 'br' ] });
+				resize = new YAHOO.util.Resize('lightbox_dlg', { maxWidth: origWidth+marginX, minWidth: 140, ratio: true, handles: [ 'br' ] });
 			else
-				resize = new YAHOO.util.Resize('lightbox_dlg', { maxHeight: image.height+marginY+16, ratio: true, handles: [ 'br' ] });	// add a little extra for the grabber bar height.
+				resize = new YAHOO.util.Resize('lightbox_dlg', { maxHeight: origHeight+marginY+16, minHeight: 140, ratio: true, handles: [ 'br' ] });	// add a little extra for the grabber bar height.
 			resize.on('resize', onResize);
-			$('lightbox_dlg_h').setStyle({ whiteSpace: 'nowrap' });
+			$('lightbox_dlg_h').setStyle({ whiteSpace: 'nowrap', overflow: 'hidden' });
 		}
 	};
 
@@ -875,8 +883,6 @@ function showInLightbox(params)
 	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
 	img.setStyle({display: 'none' });
 	var form = img.wrap('div', { id: divName + "_id"});
-	if (size)
-		form.setStyle({ maxWidth: size + 'px', maxHeight: size + 'px', overflow: 'auto' });
 
 	var progress = new Element('center', { id: 'lightbox_img_spinner'});
 	progress.addClassName('lightbox_img_spinner');
