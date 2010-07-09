@@ -35,6 +35,12 @@ class HomeController < ApplicationController
   def index
 
     @discussions = DiscussionTopic.get_most_popular(5)
+
+	  features = FeaturedObject.find_all_by_disabled('0')
+	  if features.length > 0
+		  features = features.sort_by {rand}
+		  @feature = features[0]
+	  end
     
 	#@tags = CachedResource.get_most_popular_tags(40)
 	@tags = CachedResource.get_most_recent_tags(40)

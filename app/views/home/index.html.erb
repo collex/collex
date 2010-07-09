@@ -33,8 +33,13 @@
             	<tbody><tr><td colspan="5" class="spacer_cell"></td></tr>
             	<tr>
                 	<td id="discussions" valign="top">
+					<% if @feature -%>
+                    <div class="popular_title">Featured Resource</div>
+					<%= render :partial => "/home/featured_resource", :locals => { :feature => @feature } %>
+					<% else -%>
                     <div class="popular_title">Popular Discussions</div>
 					<%= render :partial => "/home/popular_discussions", :locals => { :discussions => @discussions, :show_more => true } %>
+					<% end -%>
                     </td>
                    	<td class="spacer_cell"></td>
                     <td id="tags" valign="top">

@@ -60,7 +60,7 @@ class GetIncludeFileList
 			when :discuss
 				local = [ 'discussions', 'result_row_popup', 'cc_license' ]
 			when :admin
-				local = [ 'admin', 'resource_tree' ]
+				local = [ 'admin', 'resource_tree', 'features' ]
 			when :view_exhibit
 				global = [ 'hide_spinner', 'general_dialog', 'renumber_footnotes', 'login' ]
 			when :print_exhibit

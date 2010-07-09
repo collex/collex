@@ -250,3 +250,30 @@ span.tooltip:hover span{ /*the span will display just on :hover state*/
 	font-weight: normal;
 	padding: .3em;
 }
+
+.feature_image {
+	float:left;
+}
+
+.feature_text {
+	margin-left: 125px;
+}
+
+.feature_text_header {
+	font-size:1.3em;
+	font-weight:bold;
+	text-align:left;
+}
+
+.feature_text_data_label {
+	color:gray;
+	float:left;
+}
+
+.feature_text_data_value {
+	margin-left:40px;
+}
+
+.feature_text_saved_search {
+	padding-top: 1em;
+}

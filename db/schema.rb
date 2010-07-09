@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100525183758) do
+ActiveRecord::Schema.define(:version => 20100708180251) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -225,6 +225,21 @@ ActiveRecord::Schema.define(:version => 20100525183758) do
     t.text    "carousel_description"
     t.string  "carousel_url"
     t.integer "image_id",             :limit => 10, :precision => 10, :scale => 0
+  end
+
+  create_table "featured_objects", :force => true do |t|
+    t.string   "object_uri"
+    t.string   "title"
+    t.string   "object_url"
+    t.string   "date"
+    t.string   "site"
+    t.string   "site_url"
+    t.string   "saved_search_name"
+    t.string   "saved_search_url"
+    t.integer  "image_id",          :limit => 10, :precision => 10, :scale => 0
+    t.string   "disabled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "groups", :force => true do |t|

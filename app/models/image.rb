@@ -17,13 +17,14 @@
 class Image < ActiveRecord::Base
 
   has_one :user
+  has_one :featured_object
   has_one :facet_category
   
   has_attachment :content_type => :image, 
                  :storage => :file_system,
                  :path_prefix=>'public/uploads',
                  :resize_to => '300x300',
-                 :thumbnails => { :thumb => '60x60', :smaller => '35x35', :micro => '25x25' }
+                 :thumbnails => { :feature => '100x100', :thumb => '60x60', :smaller => '35x35', :micro => '25x25' }
 
   validates_as_attachment
 end
