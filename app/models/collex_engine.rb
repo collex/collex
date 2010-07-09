@@ -232,6 +232,15 @@ return results
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
     results["facets"] = facets_to_hash(response.data['facet_counts']['facet_fields'])
     results["highlighting"] = response.data['highlighting']
+
+	  #now get the total for the other federation by repeating the search.
+	  constraints2 = []
+	  constraints.each {|constraint| constraints2.push(constraint) }
+	  constraints2.delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+	  if constraints2.length != constraints.length
+		  results2 = search(constraints2, start, max, sort_by, sort_ascending)
+		  results['facets']['federation'] = results2['facets']['federation']
+	  end
     return results
   end
 
