@@ -14,9 +14,9 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, $, $$, Element, Ajax, $A */
-/*global MessageBoxDlg, GeneralDialog, genericAjaxFail */
-/*extern featureDlg */
+/*global window */
+/*global GeneralDialog */
+/*extern featureDlg, varFeatureDlg, stopFeatureUpload */
 
 var varFeatureDlg = null;
 
@@ -31,6 +31,7 @@ function stopFeatureUpload(errMessage){
 var featureDlg = function(saved_searches, ok_action, params, img_url) {
 	var This = this;
 
+	var dlg = null;
 	var sendWithAjax = function (event, params)
 	{
 		varFeatureDlg = This;
@@ -64,7 +65,7 @@ var featureDlg = function(saved_searches, ok_action, params, img_url) {
 	};
 
 	var dlgParams = { this_id: "features_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Features" };
-	var dlg = new GeneralDialog(dlgParams);
+	dlg = new GeneralDialog(dlgParams);
 	dlg.changePage('layout', 'features_object_uri');
 	dlg.center();
 };

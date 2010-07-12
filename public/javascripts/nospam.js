@@ -47,7 +47,7 @@ var nospam = function() {
 };
 
 document.observe('dom:loaded', function() {
- 	setTimeout(function() {
+	setTimeout(function() {
 		nospam();
 	}, 100);
  });

@@ -363,11 +363,15 @@ var RichTextEditor = Class.create({
 		var toolbarGroups = params.toolbarGroups;
 		var linkDlgHandler = params.linkDlgHandler;
 		var footnote = params.footnote;
+		var footnoteCallback = undefined;
+		var populate_all = undefined;
+		var populate_exhibit_only = undefined;
+		var progress_img = undefined;
 		if (footnote) {
-			var footnoteCallback = footnote.callback;
-			var populate_all = params.populate_all;
-			var populate_exhibit_only = params.populate_exhibit_only;
-			var progress_img = footnote.progress_img;
+			footnoteCallback = footnote.callback;
+			populate_all = params.populate_all;
+			populate_exhibit_only = params.populate_exhibit_only;
+			progress_img = footnote.progress_img;
 		}
 		var bodyStyle = params.bodyStyle ? params.bodyStyle : '';
 
@@ -391,19 +395,19 @@ var RichTextEditor = Class.create({
 		
 		var toolgroupFontStyle = {
 			group: 'textstyle', label: 'Font Style',
-			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+			buttons: [{ type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+				{ type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+				{ type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
 				{ type: 'push', label: 'Strike Through', value: 'strikethrough' }]
 		};
 		
 		var toolgroupFontStyleDropCap = {
 			group: 'textstyle', label: 'Font Style',
-			buttons: [{ 	type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
-				{ type: 'push', 	label: 'Italic CTRL + SHIFT + I', value: 'italic' },
-				{ type: 'push', 	label: 'Underline CTRL + SHIFT + U', value: 'underline' },
+			buttons: [{ type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
+				{ type: 'push', label: 'Italic CTRL + SHIFT + I', value: 'italic' },
+				{ type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
 				{ type: 'push', label: 'Strike Through', value: 'strikethrough' },
-				{ type: 'push', label: 'First Letter', value: 'firstletter' 	}]
+				{ type: 'push', label: 'First Letter', value: 'firstletter' }]
 		};
 
 		var toolgroupAlignment = {
@@ -945,7 +949,7 @@ var RichTextEditor = Class.create({
 		var width = params.width !== null ? params.width : 702;
 		//var hoverCss = ".superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;} .rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote{ position:relative; } a.rte_footnote:hover { z-index:25; } a.rte_footnote span { display: none; } a.rte_footnote:hover span.tip { display: block; position:absolute; top:1em; left:.2em; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em; }";
 		var hoverCss = " a.rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; cursor: pointer !important; } a.rte_footnote span { display: none; }";
-		var linkCss = ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { 	color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; }';
+		var linkCss = ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; }';
 		var firstLetterCss = ' .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} ';
 
 		this.editor = new YAHOO.widget.SimpleEditor(id, {

@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global $, $$ */
-/*global window */
+/*global ajaxWithProgressSpinner */
 /*extern changeFederation */
 
 function changeFederation(checkbox) {

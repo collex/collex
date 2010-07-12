@@ -196,7 +196,7 @@ var GeneralDialog = Class.create({
 		if (title !== undefined)
 			panel.setHeader(title);
 
-		var klEsc = new YAHOO.util.KeyListener(document, {keys:27},  							
+		var klEsc = new YAHOO.util.KeyListener(document, {keys:27},
 			{fn:handleCancel,
 				scope:panel,
 				correctScope:true}, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default

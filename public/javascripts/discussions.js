@@ -53,15 +53,23 @@ var ForumReplyDlg = Class.create({
 		var addTopicToLoginRedirect = params.addTopicToLoginRedirect;
 		var starting_license = 5;
 		var comment_id = params.comment_id;
+		var starting_title = null;
+		var starting_obj_type = null;
+		var starting_comment_el = null;
+		var starting_nines_obj_list = null;
+		var starting_exhibit_list = null;
+		var starting_inet_title = null;
+		var starting_inet_thumbnail = null;
+		var starting_inet_url = null;
 		if (comment_id !== undefined) {
-			var starting_title = params.title;
-			var starting_obj_type = params.obj_type;
-			var starting_comment_el = params.reply;
-			var starting_nines_obj_list = params.nines_obj_list;
-			var starting_exhibit_list = params.exhibit_list;
-			var starting_inet_title = params.inet_title;
-			var starting_inet_thumbnail = params.inet_thumbnail;
-			var starting_inet_url = params.inet_url;
+			starting_title = params.title;
+			starting_obj_type = params.obj_type;
+			starting_comment_el = params.reply;
+			starting_nines_obj_list = params.nines_obj_list;
+			starting_exhibit_list = params.exhibit_list;
+			starting_inet_title = params.inet_title;
+			starting_inet_thumbnail = params.inet_thumbnail;
+			starting_inet_url = params.inet_url;
 		}
 		if (params.license)
 			starting_license = params.license;

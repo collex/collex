@@ -104,17 +104,19 @@ var CreateListOfObjects = Class.create({
 			div.addClassName('linkdlg_item');
 			var imgdiv = new Element('div');
 			imgdiv.addClassName('linkdlg_img_wrapper');
+			var spinner;
+			var imgEl;
 			if (img && img.length > 0) {
-				var spinner = new Element('img', {
+				spinner = new Element('img', {
 					src: progress_img,
 					alt: alt,
 					title: alt
 				});
 				spinner.addClassName('linkdlg_img');
 				
-				var imgEl = new Element('img', {
+				imgEl = new Element('img', {
 					id: id + "_img",
- 					src: img,
+					src: img,
 					alt: alt,
 					title: alt
 				});
@@ -416,7 +418,7 @@ var LinkDlgHandler = Class.create({
 					iEnd = ret2.index + 7;	// add the length of the tag itself
 					done = true;
 				} else if (ret2.found === "<span") {
-					iEnd = rawHtmlOfEditor.substring(ret.index).lastIndexOf("</span>");	// skip this span, so set the index to just before it.
+					iEnd = rawHtmlOfEditor.substring(ret2.index).lastIndexOf("</span>");	// skip this span, so set the index to just before it.
 				} else
 					return null;
 			}
