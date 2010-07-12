@@ -28,7 +28,7 @@
 			<div class="feature_text_data_value"><%= feature.date %></div>
 			<div class="feature_text_data_label">Site:</div>
 			<div class="feature_text_data_value"><%= link_to feature.site, feature.site_url, { :class => 'ext_link' } %></div>
-			<div class="feature_text_saved_search">Click to browse more objects like <%= link_to feature.saved_search_name, feature.saved_search_url, { :class => 'nav_link' } %></div>
+			<div class="feature_text_saved_search">Click to browse more objects like <%= link_to feature.title, feature.saved_search_url, { :class => 'nav_link' } %></div>
 		</div>
 	</div>
 </td>

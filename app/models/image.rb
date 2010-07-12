@@ -24,7 +24,7 @@ class Image < ActiveRecord::Base
                  :storage => :file_system,
                  :path_prefix=>'public/uploads',
                  :resize_to => '300x300',
-                 :thumbnails => { :feature => '100x100', :thumb => '60x60', :smaller => '35x35', :micro => '25x25' }
+                 :thumbnails => { :feature => '125x125', :thumb => '60x60', :smaller => '35x35', :micro => '25x25' }
 
   validates_as_attachment
 end
