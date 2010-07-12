@@ -54,8 +54,13 @@ class Admin::FeaturesController < Admin::BaseController
 	def get_hit_item(hit, label)
 		arr = hit[label]
 		return "" if arr == nil || arr.length == 0
-		return arr[0]
+		if arr.kind_of?(Array)
+			return arr[0]
+		else
+			return arr
+		end
 	end
+
 	def set_object(id, p_image, p_obj)
 		begin
 			type = 'creating'
@@ -67,6 +72,10 @@ class Admin::FeaturesController < Admin::BaseController
 			p_obj[:disabled] = '0' if p_obj[:disabled] == nil
 			uri = p_obj[:object_uri]
 			hit = CachedResource.get_hit_from_uri(uri)
+			if hit == nil
+				solr = CollexEngine.factory_create(false)
+				hit = solr.get_object(uri)
+			end
 			raise "Can't find URI" if hit == nil
 			p_obj[:title] = get_hit_item(hit, 'title')
 			p_obj[:object_url] = get_hit_item(hit, 'url')
