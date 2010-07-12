@@ -16,10 +16,11 @@
 # ----------------------------------------------------------------------------
 %>
 <%# featured_resource param: ActiveRecord feature -%>
-<div class="feature_image">
+<table class="feature_resource"><tr>
+<td class="feature_image">
 	<img src="<%= feature.image.public_filename(:feature) %>" alt="Featured Resource" />
-</div>
-<div class="feature_text">
+</td>
+<td class="feature_text">
 	<div class="feature_text_header"><%= link_to feature.title, feature.object_url, { :class => 'nines_link' } %></div>
 	<div class="search_result_data_container">
 		 <div class="feature_text_data">
@@ -27,7 +28,8 @@
 			<div class="feature_text_data_value"><%= feature.date %></div>
 			<div class="feature_text_data_label">Site:</div>
 			<div class="feature_text_data_value"><%= link_to feature.site, feature.site_url, { :class => 'ext_link' } %></div>
-			<div class="feature_text_saved_search"><%= link_to feature.saved_search_name, feature.saved_search_url, { :class => 'nav_link' } %></div>
+			<div class="feature_text_saved_search">Click to browse more objects like <%= link_to feature.saved_search_name, feature.saved_search_url, { :class => 'nav_link' } %></div>
 		</div>
 	</div>
-</div>
+</td>
+</tr></table>

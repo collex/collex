@@ -251,12 +251,15 @@ span.tooltip:hover span{ /*the span will display just on :hover state*/
 	padding: .3em;
 }
 
+#popular_container table .feature_resource {
+	border: 0px;
+}
+
 .feature_image {
-	float:left;
+	padding-left: 12px;
 }
 
 .feature_text {
-	margin-left: 125px;
 }
 
 .feature_text_header {
