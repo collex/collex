@@ -66,7 +66,7 @@ module ApplicationHelper
 		if debug
 			html = javascript_include_tag(fnames[:prototype]) + "\n"
 			fnames[:yui].each { |f|
-				html += "<script src='#{yui_path}#{f}.js' type='text/javascript'></script>\n"
+				html += raw("<script src='#{yui_path}#{f}.js' type='text/javascript'></script>\n")
 			}
 			html += javascript_include_tag(fnames[:local]) + "\n"
 			return html
@@ -78,7 +78,7 @@ module ApplicationHelper
 			}
 			html = javascript_include_tag("prototype-min") + "\n"
 			if yui_list.length > 0
-				html += "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
+				html += raw("<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n")
 			end
 			html += javascript_include_tag("#{page.to_s()}-min") + "\n"
 			#html	+= "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
