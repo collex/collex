@@ -163,6 +163,8 @@ function doSaveSearch()
 	getRealValue: function(element) {
 	  if (element.value === element.default_value)
 		  return null;
+	  if (element.value.length === 0)
+		  return null;
 	  return element.value;
 	}
   };

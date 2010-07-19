@@ -55,6 +55,12 @@ function changeFederation(checkbox) {
 		param.federation = federationChecks[1].name;
 //		param = "?federation=" + federationChecks[1].name;
 	param.phrs = $('search_phrase') ? $('search_phrase').getRealValue() : null;
+	param.kphrs = $('search_keyword') ? $('search_keyword').getRealValue() : null;
+	param.tphrs = $('search_title') ? $('search_title').getRealValue() : null;
+	param.aphrs = $('search_author') ? $('search_author').getRealValue() : null;
+	param.ephrs = $('search_editor') ? $('search_editor').getRealValue() : null;
+	param.pphrs = $('search_publisher') ? $('search_publisher').getRealValue() : null;
+	param.yphrs = $('search_year') ? $('search_year').getRealValue() : null;
 	ajaxWithProgressSpinner([ "/search/add_federation_constraint" ], [ null ], { waitMessage: 'Changing federation...' }, param);
 //	window.location = "/search/add_federation_constraint" + param;
 }
