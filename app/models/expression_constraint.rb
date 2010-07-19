@@ -16,7 +16,7 @@
 
 class ExpressionConstraint < Constraint
   def to_solr_expression
-    "#{operator}(#{value})"
+    "#{operator=='-' ? '-' : '+'}(#{value})"
   end
   
   def to_s
