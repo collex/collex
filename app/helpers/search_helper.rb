@@ -73,12 +73,14 @@ module SearchHelper
     
     if first > 1
       destination_hash[:page] = "#{1}"
-      html += create_facet_link('first', link, destination_hash) + "&nbsp;&nbsp;"
+      html += create_facet_link('first', link, destination_hash)
+      html += "&nbsp;&nbsp;"
     end
 
     if curr_page > 1
       destination_hash[:page] = "#{(curr_page - 1)}"
-      html += create_facet_link('<<', link, destination_hash) + "&nbsp;&nbsp;"
+      html += create_facet_link('<<', link, destination_hash)
+      html += "&nbsp;&nbsp;"
     end
 
     for pg in first..last do
@@ -94,17 +96,20 @@ module SearchHelper
     if last < num_pages
       html += "...&nbsp;&nbsp;" if num_pages > 12
       destination_hash[:page] = "#{num_pages}"
-      html += create_facet_link(num_pages, link, destination_hash) + "&nbsp;&nbsp;"
+      html += create_facet_link(num_pages, link, destination_hash)
+      html += "&nbsp;&nbsp;"
     end
     
     if curr_page < num_pages
       destination_hash[:page] = "#{(curr_page + 1)}"
-      html += create_facet_link(">>", link, destination_hash) + "&nbsp;&nbsp;"
+      html += create_facet_link(">>", link, destination_hash)
+      html += "&nbsp;&nbsp;"
     end
     
     if last < num_pages
       destination_hash[:page] = "#{num_pages}"
-      html += create_facet_link("last", link, destination_hash) + "&nbsp;&nbsp;"
+      html += create_facet_link("last", link, destination_hash)
+      html += "&nbsp;&nbsp;"
     end
 
     return html
