@@ -14,7 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
-require 'solr'
+require 'rsolr'
+# documentation at: http://github.com/mwmitchell/rsolr
 
 class CollexEngine
 	CORE = [ "resources" ]
@@ -27,7 +28,7 @@ class CollexEngine
 			@cores.push("#{prefix}/#{core}")
 		}
 
-    @solr = Solr::Connection.new(SOLR_URL+ '/' + cores[0])
+	@solr = RSolr.connect( :url=>"#{SOLR_URL}/#{cores[0]}" )
 		@field_list = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
 			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE", "freeculture",
 			"is_ocr", "federation", "has_full_text", "source_xml" ]
@@ -49,6 +50,27 @@ class CollexEngine
 		return CollexEngine.new().num_docs
 	end
 
+	def solr_select(options)
+		if options[:facets]
+			options[:facet] = true
+			options["facet.field"] = options[:facets][:fields]
+			options["facet.prefix"] = options[:facets][:prefix]
+			options["facet.missing"] = options[:facets][:missing]
+			options["facet.method"] = options[:facets][:method]
+			options["facet.mincount"] = 1
+			options["facet.limit"] = -1
+			options[:facets] = nil
+		end
+		if options[:highlighting]
+			options['hl.fl'] = options[:highlighting][:field_list]
+			options['hl.fragsize'] = options[:highlighting][:fragment_size]
+			options['hl.maxAnalyzedChars'] = options[:highlighting][:max_analyzed_chars]
+			options['hl'] = true
+			options[:highlighting] = nil
+		end
+		return @solr.select(options)
+	end
+
   def num_docs	# called for each entry point to get the number for the footer.
     if @num_docs == -1
 		begin
@@ -59,45 +81,43 @@ class CollexEngine
 		rescue
 		end
 		if @num_docs <= 0
-		  request = Solr::Request::Standard.new(:query=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
-		  response = @solr.send(request)
+			response = solr_select(:q=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
 
-		  @num_docs = response.total_hits
-		  File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs}") }
+			@num_docs = response['response']['numFound']
+			File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs}") }
 		end
     end
     
     @num_docs
   end
 
-	# TODO-PER: rename this to autocomplete
-  def facet(facet, constraints, prefix=nil)	# called for autocomplete
+  def auto_complete(facet, constraints, prefix)	# called for autocomplete
     query, filter_queries = solrize_constraints(constraints)
-    req = Solr::Request::Standard.new(
-            :start => 0, :rows => 0, :shards => @cores,
-            :query => query, :filter_queries => filter_queries,
-            :facets => {:fields => [facet], :mincount => 1, :missing => (prefix ? false : true), :limit => -1, :prefix => prefix, :method => 'enum'})
-
-    response = @solr.send(req)
-    facets_to_hash(response.data['facet_counts']['facet_fields'])[facet]
+	response = solr_select(:start => 0, :rows => 0, :shards => @cores,
+            :q => query, :fq => filter_queries,
+            :facets => {:fields => [facet], :mincount => 1, :missing => false, :limit => -1, :prefix => prefix, :method => 'enum'})
+    facets_to_hash(response['facet_counts']['facet_fields'])[facet]
   end
 
 	def tank_citations(query)
-		return "(*:* AND #{query}) OR (*:* AND #{query} -genre:Citation)^5"
-		#return "(#{query}) OR (#{query} -genre:Citation)^5"
+		#return "(*:* AND #{query}) OR (*:* AND #{query} -genre:Citation)^5"
+		if query.length > 0
+			return "(#{query}) OR (#{query} -genre:Citation)^5"
+		else
+			return "(*:*) OR (*:* -genre:Citation)^5"
+		end
 	end
 
-	def name_facet(constraints)
-    query, filter_queries = solrize_constraints(constraints)
-    req = Solr::Request::Standard.new(:start => 0, :rows => 0,
-					:query => query, :filter_queries => filter_queries,
+	def name_facet(constraints)	# called when the "Click here to see the top authors..." is clicked
+		query, filter_queries = solrize_constraints(constraints)
+		response = solr_select(:start => 0, :rows => 0,
+					:q => query, :fq => filter_queries,
 					:field_list => [ 'role_AUT', 'role_EDT', 'role_PBL'],
 					:facets => {:fields => [ 'role_AUT', 'role_EDT', 'role_PBL'], :mincount => 1, :missing => false, :limit => -1},
 					:shards => @cores)
-    response = @solr.send(req)
 
-		facets = response.data['facet_counts']['facet_fields']
-    facets = facets_to_hash(facets)
+		facets = response['facet_counts']['facet_fields']
+		facets = facets_to_hash(facets)
 		facets2 = {}
 		facets.each { |ty, facet|
 			facets2[ty] = facet.sort { |a,b| (a[1] == b[1]) ? a[0] <=> b[0] : b[1] <=> a[1] }
@@ -160,26 +180,22 @@ class CollexEngine
 		ActiveRecord::Base.logger.info("*** USER QUERY: #{query}")
 		case sort_by
 		when :relevancy then sort = nil
-		when :title_sort then sort = [ {sort_by => :ascending }]
-		when :last_modified then sort = [ {sort_by => :descending }]
+		when :title_sort then sort = "#{sort_by.to_s} asc"
+		when :last_modified then sort = "#{sort_by.to_s} desc"
 		end
 
-		req = Solr::Request::Standard.new(:start => page*page_size, :rows => page_size, :sort => sort,
-						:query => query,
+		response = solr_select(:start => page*page_size, :rows => page_size, :sort => sort,
+						:q => query,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ],
 						:highlighting => {:field_list => ['text'], :fragment_size => 200, :max_analyzed_chars => 512000 })
 
-		response = @solr.send(req)
-
-		req_total = Solr::Request::Standard.new(:start => 1, :rows => 1, :query => all_query,
+		response_total = solr_select(:start => 1, :rows => 1, :q => all_query,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ])
 
-		response_total = @solr.send(req_total)
-
-		results = { :total => response_total.total_hits, :total_hits => response.total_hits, :hits => response.hits }
+		results = { :total => response_total['response']['numFound'], :total_hits => response['response']['numFound'], :hits => response['response']['docs'] }
 		# add the highlighting to the object
-		if response.data['highlighting'] && search_terms != nil
-			highlight = response.data['highlighting']
+		if response['highlighting'] && search_terms != nil
+			highlight = response['highlighting']
 			results[:hits].each  {|hit|
 				this_highlight = highlight[hit['key']]
 				hit['text'] = this_highlight['text'].join("\n") if this_highlight['text']
@@ -204,34 +220,30 @@ return results
   def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
     query, filter_queries = solrize_constraints(constraints)
 
-    # TODO: switch to DisMax (DisjunctionMaxQuery)
 		if sort_ascending
-			sort_param = sort_by ? [ { sort_by.to_sym => :ascending } ] : nil
+			sort_param = sort_by ? "#{sort_by} asc" : nil
 		else
-			sort_param = sort_by ? [ { sort_by.to_sym => :descending } ] : nil
+			sort_param = sort_by ? "#{sort_by} desc" : nil
 		end
 		#filter_queries.push("genre:\"Citation^.01\"")
 		query = tank_citations(query)
-    req = Solr::Request::Standard.new(:start => start, :rows => max, :sort => sort_param, #:alternate_query => "*:*",
-					:query => query, :filter_queries => filter_queries,
+	response = solr_select(:start => start, :rows => max, :sort => sort_param, #:alternate_query => "*:*",
+					:q => query, :fq => filter_queries,
 					:field_list => @field_list,
 					:facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},
 					:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 }, :shards => @cores)
   
     results = {}
-  
-    response = @solr.send(req)
-  
-    results["total_hits"] = response.total_hits
-    results["hits"] = response.hits
+    results["total_hits"] = response['response']['numFound']
+    results["hits"] = response['response']['docs']
 
 		# The freeculture field is either returned as nil, or it isn't present. Make the returned object a little more friendly.
 		results["hits"].each { |hit|
 			fix_free_culture(hit)
 		}
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
-    results["facets"] = facets_to_hash(response.data['facet_counts']['facet_fields'])
-    results["highlighting"] = response.data['highlighting']
+    results["facets"] = facets_to_hash(response['facet_counts']['facet_fields'])
+    results["highlighting"] = response['highlighting']
 
 	  #now get the total for the other federation by repeating the search.
 	  constraints2 = []
@@ -254,38 +266,40 @@ return results
 
 	def get_object(uri) #called when "collect" is pressed.
 		# Returns nil if the object doesn't exist, or the object if it does.
-    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
+		query = "uri:#{CollexEngine.query_parser_escape(uri)}"
 
-    req = Solr::Request::Standard.new(
-             :start => 0, :rows => 1,
-             :query => query, :field_list => @field_list, :shards => @cores)
-
-    response = @solr.send(req)
-		if response.hits.length > 0
-			fix_free_culture(response.hits[0])
-	    return response.hits[0]
+		response = solr_select(:start => 0, :rows => 1,
+             :q => query, :field_list => @field_list, :shards => @cores)
+		if response['response']['docs'].length > 0
+			fix_free_culture(response['response']['docs'][0])
+	    return response['response']['docs'][0]
 		end
 		return nil
 	end
 
 	def get_object_with_text(uri)
 		# Returns nil if the object doesn't exist, or the object if it does.
-    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
+    query = "uri:#{CollexEngine.query_parser_escape(uri)}"
 
-    req = Solr::Request::Standard.new(
-             :start => 0, :rows => 1,
-             :query => query, :shards => @cores)
-
-    response = @solr.send(req)
-    return response.hits[0] if response.hits.length > 0
+	response = solr_select(:start => 0, :rows => 1,
+             :q => query, :shards => @cores)
+    return response['response']['docs'][0] if response['response']['docs'].length > 0
 		return nil
 	end
 
 	def add_object(fields, relevancy = nil) # called by Exhibit to index exhibits
 		# this takes a hash that contains a set of fields expressed as symbols, i.e. { :uri => 'something' }
-		doc = Solr::Document.new(fields)
-		doc.boost = relevancy if relevancy != nil
-		@solr.add(doc)
+#		doc = Solr::Document.new(fields)
+#		doc.boost = relevancy if relevancy != nil
+#		@solr.add(doc)
+		if relevancy
+			add_xml = @solr.xml.add(fields, {}) do |doc|
+				doc.attrs[:boost] = relevancy
+			end
+			@solr.update(:data => add_xml)
+		else
+			@solr.add(fields)
+		end
 	end
 
 	def commit()	# called by Exhibit at the end of indexing exhibits
@@ -297,6 +311,23 @@ return results
 		@solr.delete_by_query "+archive:#{archive.gsub(":", "\\:").gsub(' ', '\ ')}"
 	end
 
+	#
+	# Simple utils from solr-ruby
+	#
+
+	# paired_array_each([key1,value1,key2,value2]) yields twice:
+	#     |key1,value1|  and |key2,value2|
+	def self.paired_array_each(a, &block)
+		0.upto(a.size / 2 - 1) do |i|
+			n = i * 2
+			yield(a[n], a[n+1])
+		end
+	end
+
+	def self.query_parser_escape(string)
+		# backslash prefix everything that isn't a word character
+		string.gsub(/(\W)/,'\\\\\1')
+	end
 #
 # Everything below this point is for indexing and testing indexes.
 #
@@ -380,17 +411,14 @@ return results
 
 	public	# these should actually be some sort of private since they are only called inside this file.
 	def get_page_in_archive(archive, page, size, field_list)
-    query = "archive:#{Solr::Util.query_parser_escape(archive)}"
+    query = "archive:#{CollexEngine.query_parser_escape(archive)}"
 
-    req = Solr::Request::Standard.new(
-             :start => page*size, :rows => size,	:sort => [ { :uri => :ascending } ],
-             :query => query, :field_list => field_list)
-
-    response = @solr.send(req)
+	response = solr_select(:start => page*size, :rows => size,	:sort => "uri asc",
+             :q => query, :field_list => field_list)
 #		response.hits.each { |hit|
 #			hit['uri'] = hit['uri'].gsub('http://foo', 'http://alex_st')
 #		}
-    return response.hits
+    return response['response']['docs']
 	end
 
   def get_all_archives
@@ -1287,7 +1315,7 @@ private
     filter_queries = []
 		#filter_queries << 'title_sort:t*'
     constraints.each do |constraint|
-      if constraint.is_a?(FederationConstraint) || constraint.is_a?(ExpressionConstraint)
+      if constraint.is_a?(ExpressionConstraint)
         queries << constraint.to_solr_expression
       else
         filter_queries << constraint.to_solr_expression
@@ -1297,7 +1325,7 @@ private
 
     queries << "*:*" if queries.empty?
 
-    [queries.join(" AND "), filter_queries]
+    [queries.join(" "), filter_queries]
   end
 
   def facets_to_hash(facet_data)
@@ -1306,181 +1334,11 @@ private
     facets = {}
     facet_data.each do |facet,values|
       facets[facet] = {}
-      Solr::Util.paired_array_each(values) do |key, value|
+      CollexEngine.paired_array_each(values) do |key, value|
         # despite requesting mincount => 1, nil (aka "<unspecified>") items can be returned with zero count anyway
         facets[facet][key || "<unspecified>"] = value if value > 0
       end
     end
     facets
   end
-
-#  def objects_for_uris(uris, username=nil)
-#    #TODO allow paging through rows
-#
-#    query = uris.collect {|uri| "uri:#{Solr::Util.query_parser_escape(uri)}"}.join(" OR ")
-#    # TODO: generalize the field list here
-#    field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
-#    if username
-#      field_list << "#{username}_tag"
-#      field_list << "#{username}_annotation"
-#    end
-#    req = Solr::Request::Standard.new(
-#             :start => 0, :rows => 500,
-#             :query => query, :field_list => field_list)
-#
-#    response = @solr.send(req)
-#    response.hits
-#  end
-#
-#  def connection
-#    @solr
-#  end
-
-#  def all_facets
-#    # TODO!!!
-#    # this is only used from the stats controller.  it needs to be ported to using Solr's Standard request, instead of the
-#    # now removed FacetRequest
-#    @solr.send(FacetRequest.new).all_facets
-#  end
-
-#  def agent_suggest(constraints, prefix)	# useful for auto complete on author, etc. fields.
-#    query, filter_queries = solrize_constraints(constraints)
-#
-#    # case insensitive, replace commas, semicolons, and periods with spaces
-#    raw_query_string = prefix.downcase.sub(/[,;.]/," ")
-#
-#    # each word in the query is a seperate name
-#    names = raw_query_string.split(" ")
-#
-#    req = Solr::Request::Standard.new(
-#            :start => 0, :rows => 0,
-#            :query => "#{query} AND (#{name_query_string(names)})", :filter_queries => filter_queries,
-#            :facets => {:fields => ["role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL"], :mincount => 1, :limit => -1})
-#
-#    response = @solr.send(req)
-#    facets = facets_to_hash(response.data['facet_counts']['facet_fields'])
-#    agents = {}
-#    hits = []
-#    facets.each do |role_with_prefix, role_data|
-#      role = role_with_prefix[-3,3]
-#      role_data.each do |name,freq|
-#        names.each_index do |i|
-#
-#         if name.downcase.starts_with?(names[i])
-#           # count this as a match
-#           role_counts = agents[name] ||= {}
-#           role_counts[role] ||= 0
-#           role_counts[role] = role_counts[role] + freq
-#         end
-#        end
-#      end
-#    end
-#
-#    retval = []
-#    agents.each do |name, roles|
-#      retval << {:name => name, :roles => roles, :total => roles.values.inject(0) {|total,val| total + val}}
-#    end
-#    retval.sort {|a,b| b[:total] <=> a[:total]}
-#  end
-
-#  def indexed?(uri)
-#    query = "uri:#{Solr::Util.query_parser_escape(uri)}"
-#    req = Solr::Request::Standard.new(:start => 0, :rows => 1, :query => query)
-#    response = @solr.send(req)
-#    response.hits[0] != nil
-#  end
-  
-#  def object_detail(objid, username=nil)	#called by SolrResource.find_by_uri
-#    query = "uri:#{Solr::Util.query_parser_escape(objid)}"
-#    # TODO: generalize the field list here
-#    field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","image","title","alternative","uri","url", "username"]
-#    # TODO: tag is not currently stored, but to store it requires some strange contortions in #add_collectables currently
-#    # however, to get tags, you could facet on the tag field
-#    # field_list << 'tag'
-#    if username
-#      field_list << "#{username}_tag"
-#      field_list << "#{username}_annotation"
-#    end
-#    req = Solr::Request::Standard.new(
-#             :start => 0, :rows => 1,
-#             :query => query, :field_list => field_list,
-#             :mlt => {:count => 3, :field_list => ["title", "genre", "agent", "year", "text","tag"], :min_term_freq => 1})
-#
-#    response = @solr.send(req)
-#
-#    document = response.hits[0]
-#    mlt = response.data['moreLikeThis'][objid]['docs'] rescue []
-#    collection_info = username ? {'users' => document['username'] || []} : nil  rescue nil
-#
-#    [document, mlt, collection_info]
-#  end
-  
-#  def objects_behind_urls(urls, username=nil)
-#    #TODO allow paging through rows
-#    query = urls.collect {|url| "url:#{Solr::Util.query_parser_escape(url)}"}.join(" OR ")
-#    # TODO: generalize the field list here
-#    field_list = ["archive","date_label","genre","role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL","source","thumbnail","title","alternative","uri","url", "username"]
-#    if username
-#      field_list << "#{username}_tag"
-#      field_list << "#{username}_annotation"
-#    end
-#    req = Solr::Request::Standard.new(
-#             :start => 0, :rows => 500,
-#             :query => query, :field_list => field_list)
-#
-#    response = @solr.send(req)
-#    response.hits
-#  end
-  
-  # Modifies or adds a document to Solr index. Currently only handles uri/tags/comments
-#  def add_collectables(username, collectables)
-#    collectables.each do |uri, info|
-#      tags = info[:tags]
-#      annotation = info[:annotation]
-#
-#      req = Solr::Request::ModifyDocument.new(
-#          :uri => uri,
-#          :overwrite => {"#{username}_annotation" => annotation,
-#                         "#{username}_tag" => tags,
-#                        },
-#          :distinct => {:username => username})
-#      @solr.send(req)
-#    end
-#  end
-#
-#  def update_collectables(username, uri, tags, annotation)
-#    add_collectables(username, {uri => {:tags => tags, :annotation => annotation}})
-#  end
-#
-#  def remove_collectables(username, uri)
-#    req = Solr::Request::ModifyDocument.new(
-#        :uri => uri,
-#        :overwrite => {"#{username}_annotation" => nil,
-#                       "#{username}_tag" => nil,
-#                      },
-#        :delete => {:username => username})
-#    @solr.send(req)
-#  end
-  
-#  def optimize
-#    @solr.optimize
-#  end
-#
-#  def commit
-#    @solr.commit(:wait_searcher => false, :wait_flush => false)
-#  end
-#
-#  def name_query_string( names )
-#    # search on each name in the query
-#    query_string = ""
-#    names.each_index { |i|
-#      last = (names.size-1 == i)
-#      and_string = last ? "" : " AND "
-#      # example: agent:gabriel* AND agent:dante* AND agent:rossetti*
-#      query_string << "agent:#{names[i]}*#{and_string}"
-#    }
-#
-#    # return the accumulated query string and the names in it
-#    return query_string
-#  end
 end
