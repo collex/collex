@@ -92,7 +92,15 @@ class SearchController < ApplicationController
 		if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
 			session[:constraints] << FederationConstraint.new(:field => 'federation', :value => constraints, :inverted => false)
 		end
-		redirect_to :action => 'browse', :phrs => params[:phrs]
+		red_hash = { :action => 'browse' }
+		red_hash[:phrs] = params[:phrs] if params[:phrs]
+		red_hash[:kphrs] = params[:kphrs] if params[:kphrs]
+		red_hash[:tphrs] = params[:tphrs] if params[:tphrs]
+		red_hash[:aphrs] = params[:aphrs] if params[:aphrs]
+		red_hash[:ephrs] = params[:ephrs] if params[:ephrs]
+		red_hash[:pphrs] = params[:pphrs] if params[:pphrs]
+		red_hash[:yphrs] = params[:yphrs] if params[:yphrs]
+		redirect_to red_hash
 	end
 
    private
@@ -231,6 +239,12 @@ class SearchController < ApplicationController
         session[:row_id] = nil
       end
 	  @phrs = params[:phrs]
+	  @kphrs = params[:kphrs]
+	  @tphrs = params[:tphrs]
+	  @aphrs = params[:aphrs]
+	  @ephrs = params[:ephrs]
+	  @pphrs = params[:pphrs]
+	  @yphrs = params[:yphrs]
 			@name_facet_msg = session[:name_facet_msg]
 			session[:name_facet_msg] = nil
 			
@@ -511,7 +525,7 @@ class SearchController < ApplicationController
      @values = []
      if params['search']
        begin
-         result = @solr.facet(@field, session[:constraints], keyword)
+         result = @solr.auto_complete(@field, session[:constraints], keyword)
          # Because the indexing isn't perfect, we will receive entries that contain numbers and punctuation.
          # The user can't search by that so we'll filter them out.
          result.each { |value|
