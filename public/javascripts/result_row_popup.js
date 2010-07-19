@@ -490,7 +490,8 @@ function doAddToExhibit(partial, uri, index, row_id)
 		var ft = elFullText ? elFullText.innerHTML : '';
 		var options = [];
 		exhibit_names.each(function(name) {
-			options.push({ text: name, value: name });
+			var trunct_name = name.length > 60 ? name.substring(0, 60) + '...' : name;
+			options.push({ text: trunct_name, value: name });
 		});
 
 		new SelectInputDlg({
