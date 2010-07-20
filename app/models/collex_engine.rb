@@ -51,6 +51,10 @@ class CollexEngine
 	end
 
 	def solr_select(options)
+		if options[:field_list]
+			options[:fl] = options[:field_list].join(' ')
+			options[:field_list] = nil
+		end
 		if options[:facets]
 			options[:facet] = true
 			options["facet.field"] = options[:facets][:fields]
