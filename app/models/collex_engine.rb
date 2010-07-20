@@ -68,6 +68,10 @@ class CollexEngine
 			options['hl'] = true
 			options[:highlighting] = nil
 		end
+		# We don't need to use shards if there is only one index
+		if options[:shards].length == 1
+			options[:shards] = nil
+		end
 		return @solr.select(options)
 	end
 
