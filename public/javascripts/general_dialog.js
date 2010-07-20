@@ -943,7 +943,9 @@ function updateWithAjax(params)
 			// for each value, and name it p.key[p.value.key]
 			if (typeof p.value === 'string')
 				new_form.appendChild(new Element('input', {type: 'hidden', name: p.key, value: p.value, id: p.key}));
-			else {
+			else if (typeof p.value === 'number') {
+				new_form.appendChild(new Element('input', {type: 'hidden', name: p.key, value: "" + p.value, id: p.key}));
+			} else {
 				$H(p.value).each(function (pp) {
 					new_form.appendChild(new Element('input', {type: 'hidden', name: p.key + '[' + pp.key + ']', value: pp.value, id: pp.key}));
 				});
