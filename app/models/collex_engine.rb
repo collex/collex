@@ -297,17 +297,20 @@ return results
 #		doc.boost = relevancy if relevancy != nil
 #		@solr.add(doc)
 		if relevancy
-			add_xml = @solr.xml.add(fields, {}) do |doc|
-				doc.attrs[:boost] = relevancy
+			@solr.add(fields) do |doc|
+				doc.attrs[:boost] = relevancy # boost the document
 			end
-			@solr.update(:data => add_xml)
+#			add_xml = @solr.xml.add(fields, {}) do |doc|
+#				doc.attrs[:boost] = relevancy
+#			end
+#			@solr.update(:data => add_xml)
 		else
 			@solr.add(fields)
 		end
 	end
 
 	def commit()	# called by Exhibit at the end of indexing exhibits
-		@solr.commit(:wait_searcher => false, :wait_flush => false, :shards => @cores)
+		@solr.commit() # :wait_searcher => false, :wait_flush => false, :shards => @cores)
 	end
 
 	def delete_archive(archive) #usually called when un-peer-reviewing an exhibit, but is also used for indexing.
