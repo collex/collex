@@ -197,19 +197,19 @@ namespace :collex do
 		if version.length == 0
 			puts "Can't tag version because the format of branding.rb"
 		else
-			output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}`
+			output = `svn info svn://nines.performantsoftware.com/collex/tags/#{version}`
 			if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
 				finished = false
 				letter = 'a'
 				while !finished
-					output = `svn info https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}#{letter}`
+					output = `svn info svn://nines.performantsoftware.com/collex/tags/#{version}#{letter}`
 					finished = output.index("Path: #{version}#{letter}") != 0
 					letter[0] = letter[0]+1 if !finished
 				end
 				version += letter
 			end
 			puts "Tagging version #{version}..."
-			system("svn copy -rHEAD -m tag https://subversion.lib.virginia.edu/repos/patacriticism/collex/trunk/web https://subversion.lib.virginia.edu/repos/patacriticism/collex/tags/#{version}")
+			system("svn copy -rHEAD -m tag svn://nines.performantsoftware.com/collex/trunk/web svn://nines.performantsoftware.com/collex/tags/#{version}")
 		end
 	end
 
