@@ -80,7 +80,7 @@ class SearchUserContent < ActiveRecord::Base
 	def format_date(d)
 		str = "#{d}"
 		str = str.gsub(" UTC", "Z")
-		str = str.gsub("  ", "T")
+		str = str.gsub(" ", "T")
 
 		return str
 	end
