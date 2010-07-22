@@ -46,7 +46,7 @@
 			<th>Duration (secs)</th>
 			<th>Number of Objects</th>
 		</tr>
-		<% recs = SearchUserContent.all -%>
+		<% recs = SearchUserContent.all.reverse -%>
 		<% for rec in recs -%>
 			<tr>
 				<td><%= comment_time_format(rec.last_indexed) %></td>
