@@ -43,7 +43,7 @@ namespace :collex do
 	def update_ninesperf
 		puts "Update site from repository..."
 		stop_daemons()
-		`svn up`
+		puts `svn up`
 		copy_dir( "#{RAILS_ROOT}/public/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
@@ -56,7 +56,7 @@ namespace :collex do
 	def update_18th
 		puts "Update site from repository..."
 		stop_daemons()
-		`svn up`
+		puts `svn up`
 		copy_dir( "#{RAILS_ROOT}/public/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
@@ -69,7 +69,7 @@ namespace :collex do
 	def update_18th_production
 		puts "Update site from repository..."
 		stop_daemons()
-		`svn up`
+		puts `svn up`
 		copy_dir( "#{RAILS_ROOT}/public/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
@@ -83,7 +83,7 @@ namespace :collex do
 		# TODO-PER: Can we force this to run in development mode?
 		puts "Update site from repository..."
 		stop_daemons()
-		`svn up`
+		puts `svn up`
 		copy_dir( "#{RAILS_ROOT}/public/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
@@ -111,7 +111,7 @@ namespace :collex do
 	def update_development
 		puts "Update site from repository..."
 		stop_daemons()
-		`svn up`
+		puts `svn up`
 		copy_dir( "#{RAILS_ROOT}/public/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_about_css'].invoke
