@@ -77,9 +77,17 @@ class SearchUserContent < ActiveRecord::Base
 		return { :total_hits => total_hits, :total => ret[:total], :num_pages => num_pages, :hits => hits }
 	end
 
+	def format_date(d)
+		str = "#{d}"
+		str = str.gsub(" UTC", "Z")
+		str = str.gsub("  ", "T")
+
+		return str
+	end
+	
 	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, group_id)
 		doc = { :key => "#{object_type}_#{id}", :object_type => object_type, :object_id => id, :federation => federation,
-			:section => section, :title => title, :title_sort => title, :text => text, :last_modified => last_modified
+			:section => section, :title => title, :title_sort => title, :text => text, :last_modified => format_date(last_modified)
 		}
 		if group_id != nil && group_id.to_i > 0
 			doc[:group_id] = group_id
