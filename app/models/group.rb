@@ -311,10 +311,10 @@ class Group < ActiveRecord::Base
 					if user_id == nil
 						body += "To join this group, you will be prompted to create a login ID on #{SITE_NAME}.\n\n"
 					end
-					url_accept = url_accept.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
-					url_decline = url_decline.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
-					body += "If you wish to join this group, click here: #{url_accept}\n\n"
-					body += "If you do not wish to join this group, click here: #{url_decline}\n\n"
+					accept = url_accept.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
+					decline = url_decline.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
+					body += "If you wish to join this group, click here: #{accept}\n\n"
+					body += "If you do not wish to join this group, click here: #{decline}\n\n"
 					EmailWaiting.cue_email(editor_name, editor_email, user_name, email, "Invitation to join a group", body, url_home, "")
 				rescue Net::SMTPFatalError
 					msgs += "Error sending email to address \"#{email}\".<br />"
