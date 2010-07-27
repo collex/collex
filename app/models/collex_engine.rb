@@ -76,7 +76,12 @@ class CollexEngine
 		if options[:shards] && options[:shards].length == 1
 			options[:shards] = nil
 		end
-		return @solr.select(options)
+		return @solr.select(:params => options)
+	end
+
+	def query_num_docs()
+		response = solr_select(:q=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
+		return response['response']['numFound']
 	end
 
   def num_docs	# called for each entry point to get the number for the footer.
@@ -89,9 +94,7 @@ class CollexEngine
 		rescue
 		end
 		if @num_docs <= 0
-			response = solr_select(:q=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
-
-			@num_docs = response['response']['numFound']
+			@num_docs = query_num_docs()
 			File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs}") }
 		end
     end
@@ -304,10 +307,10 @@ return results
 			@solr.add(fields) do |doc|
 				doc.attrs[:boost] = relevancy # boost the document
 			end
-#			add_xml = @solr.xml.add(fields, {}) do |doc|
-#				doc.attrs[:boost] = relevancy
-#			end
-#			@solr.update(:data => add_xml)
+			add_xml = @solr.xml.add(fields, {}) do |doc|
+				doc.attrs[:boost] = relevancy
+			end
+			@solr.update(:data => add_xml)
 		else
 			@solr.add(fields)
 		end
