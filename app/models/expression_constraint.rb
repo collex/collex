@@ -15,8 +15,12 @@
 ##########################################################################
 
 class ExpressionConstraint < Constraint
+	def clean_search_term(str)
+		return str.gsub(/[^\w']/, '')
+	end
+
   def to_solr_expression
-    "#{operator=='-' ? '-' : '+'}(#{value})"
+    "#{operator=='-' ? '-' : '+'}(#{clean_search_term(value)})"
   end
   
   def to_s
