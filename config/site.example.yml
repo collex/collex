@@ -41,6 +41,7 @@ site_name_title: 'C O L L E X'
 my_collex: 'My Collex'
 my_collex_url: 'my_collex'
 default_federation: 'COLLEX'
+other_federations: [ 'Other' ]
 skin: 'collex'
 project_manager_email: 'manager example com'
 user_content_core: 'UserContent'
