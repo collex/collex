@@ -95,16 +95,18 @@ namespace :collex do
 	def update_indexing
 		puts "Update site from repository..."
 		stop_daemons()
-		`svn up`
+		puts `svn up`
 		copy_dir( "#{RAILS_ROOT}/public/static/#{SKIN}", "#{RAILS_ROOT}/public" )
 		Rake::Task['collex:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 		Rake::Task['collex:compress_css_js'].invoke
-		# staging has two mongrels in a cluster. They were started like this:
+		# staging has two mongrels in a cluster. They were started like this: (old info: now using Passenger)
 		# mongrel_rails start -e production -p 8000 -d
 		# mongrel_rails start -e production -p 8001 -P log/mongrel8001.pid -d
-		`mongrel_rails restart`
-		`mongrel_rails restart -P log/mongrel8001.pid`
+		#`mongrel_rails restart`
+		#`mongrel_rails restart -P log/mongrel8001.pid`
+		puts "You will be asked for your sudo password."
+		puts `sudo /sbin/service httpd restart`
 		start_daemons()
 	end
 
