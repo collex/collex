@@ -80,26 +80,49 @@ class CollexEngine
 	end
 
 	def query_num_docs()
-		response = solr_select(:q=>"federation:#{DEFAULT_FEDERATION}", :rows=>0, :shards => @cores)
-		return response['response']['numFound']
+		response = solr_select(:q=>"federation:#{DEFAULT_FEDERATION}", :rows => 1, :facets => {:fields => 'archive', :mincount => 1, :missing => true, :limit => -1}, :shards => @cores)
+		archive_num = 0
+		if response && response['facet_counts'] && response['facet_counts']['facet_fields'] && response['facet_counts']['facet_fields']['archive']
+			facets = response['facet_counts']['facet_fields']['archive']
+			facets.each {|f|
+				if f.kind_of?(Fixnum) && f.to_i > 0
+					archive_num = archive_num + 1
+				end
+			}
+		end
+		return { :total => response['response']['numFound'], :sites => archive_num }
+	end
+
+	def warm_num_doc_cache()
+		if @num_docs == -1 || @num_sites == -1
+			begin
+				File.open("#{RAILS_ROOT}/cache/num_docs.txt", "r") { |f|
+					str = f.read
+					arr = str.split(',')
+					if arr == 2
+						@num_docs = arr[0].to_i
+						@num_sites = arr[1].to_i
+					end
+				}
+			rescue
+			end
+			if @num_docs <= 0
+				ret = query_num_docs()
+				@num_docs = ret[:total]
+				@num_sites = ret[:sites]
+				File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs},#{@num_sites}") }
+			end
+		end
 	end
 
   def num_docs	# called for each entry point to get the number for the footer.
-    if @num_docs == -1
-		begin
-			File.open("#{RAILS_ROOT}/cache/num_docs.txt", "r") { |f|
-				str = f.read
-				@num_docs = str.to_i
-			}
-		rescue
-		end
-		if @num_docs <= 0
-			@num_docs = query_num_docs()
-			File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs}") }
-		end
-    end
-    
-    @num_docs
+    warm_num_doc_cache()
+    return @num_docs
+  end
+
+  def num_sites	# called for each entry point to get the number for the footer.
+    warm_num_doc_cache()
+    return @num_sites
   end
 
   def auto_complete(facet, constraints, prefix)	# called for autocomplete

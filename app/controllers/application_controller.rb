@@ -44,8 +44,11 @@ class ApplicationController < ActionController::Base
 	    ActionMailer::Base.default_url_options[:host] = request.host_with_port
 			ExceptionNotifier.email_prefix = ExceptionNotifier.email_prefix.gsub('*', ":#{request.host}")
       session[:constraints] ||= new_constraints_obj()
-      session[:num_docs] ||= (CollexEngine.new).num_docs
-      session[:num_docs] ||= 1000
+	  solr = CollexEngine.new()
+      session[:num_docs] ||= solr.num_docs()
+	  session[:num_sites] ||= solr.num_sites()
+      session[:num_docs] ||= 0
+      session[:num_sites] ||= 0
 			# This will write the log to the database. That is useful in deployments where you can't easily get to the log files.
       #Log.append_record(session, request.env, params)
     end

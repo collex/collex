@@ -209,7 +209,7 @@ class SearchUserContent < ActiveRecord::Base
 		if is_dirty
 			suc = SearchUserContent.new
 			duration = suc.reindex_all()
-			num_objs = CollexEngine.new([ USER_CONTENT_CORE ]).query_num_docs
+			num_objs = CollexEngine.new([ USER_CONTENT_CORE ]).query_num_docs()[:total]
 			SearchUserContent.create({ :last_indexed => last_change, :seconds_spent_indexing => duration, :objects_indexed => num_objs })
 			return { :activity => true, :message => "User Content reindexed on #{last_change}. Time spent indexing: #{duration} seconds, Number of objects: #{num_objs}" }
 		end

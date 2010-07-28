@@ -21,7 +21,7 @@
 	            	<strong>Search <%= SITE_NAME %>:</strong><br />
 	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" /> 
 	                <div id="search_note_container">
-	               	  <div id="search_note">Searching <%= number_with_delimiter(session[:num_docs]) %> peer-reviewed digital objects from <%=number_with_delimiter(Site.count)%> federated sites  </div>
+	               	  <div id="search_note">Searching <%= number_with_delimiter(session[:num_docs]) %> peer-reviewed digital objects from <%=number_with_delimiter(session[:num_sites])%> federated sites  </div>
 	                    <div id="advanced_link"><%= link_to("Advanced Search", '/collex/new_search', { :class => 'nav_link' } ) %></div>
 	                    <div class="clear_both"></div>
 	                </div>
