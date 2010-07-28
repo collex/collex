@@ -84,9 +84,14 @@ class CollexEngine
 		archive_num = 0
 		if response && response['facet_counts'] && response['facet_counts']['facet_fields'] && response['facet_counts']['facet_fields']['archive']
 			facets = response['facet_counts']['facet_fields']['archive']
+			skip_next = false
 			facets.each {|f|
-				if f.kind_of?(Fixnum) && f.to_i > 0
+				if f.kind_of?(Fixnum) && f.to_i > 0 && skip_next == false
 					archive_num = archive_num + 1
+				elsif f.kind_of?(String) && f.include?('exhibit_')
+					skip_next = true
+				else
+					skip_next = false
 				end
 			}
 		end
