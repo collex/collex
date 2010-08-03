@@ -93,7 +93,7 @@ class Exhibit < ActiveRecord::Base
     if thumbnail.length > 0 && thumbnail.index('http') != 0
       thumbnail = "http://" + thumbnail
     end
-		resource_name = self.transform_url(title)
+		resource_name = title
 		found = Exhibit.find_by_resource_name(resource_name)
 		suffix = 1
 		while found do
@@ -196,7 +196,7 @@ class Exhibit < ActiveRecord::Base
     return nil if page == nil
     return Exhibit.find(page.exhibit_id)
   end
-  
+
   def self.js_array_of_all_my_exhibits(user_id)
     my_exhibits = find(:all, :conditions => ['user_id = ?', user_id] )
     return "" if my_exhibits.length == 0
@@ -206,7 +206,7 @@ class Exhibit < ActiveRecord::Base
       if str != ""
         str += ","
       end
-      str += '"' + h(exhibit.title) + '"'
+      str += '"' + CGI.escapeHTML(exhibit.title) + '"'
       #str += '"' + exhibit.title.gsub('"', "\\\"") + '"'
     end
     return str
@@ -219,7 +219,7 @@ class Exhibit < ActiveRecord::Base
       if str != ""
         str += ",\n"
       end
-      str += "{ title: \"#{h(exhibit.title)}\", thumbnail: \"#{exhibit.thumbnail}\" }";
+      str += "{ title: \"#{CGI.escapeHTML(exhibit.title)}\", thumbnail: \"#{exhibit.thumbnail}\" }";
     end
     return str
   end

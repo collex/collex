@@ -32,11 +32,11 @@ class DiscussionThread < ActiveRecord::Base
         return title
       when "nines_object":
         hit = CachedResource.get_hit_from_resource_id(discussion_comments[0].cached_resource_id)
-        return h(CachedResource.fix_char_set(hit["title"][0])) if hit != nil && hit["title"]
+        return CGI.escapeHTML(CachedResource.fix_char_set(hit["title"][0])) if hit != nil && hit["title"]
         return "object" # If the object isn't found in the cache or is somehow not complete.
       when "nines_exhibit":
         exhibit = Exhibit.find(discussion_comments[0].exhibit_id)
-        return h(exhibit.title)
+        return CGI.escapeHTML(exhibit.title)
       when "inet_object":
         return discussion_comments[0].link_url
     end
