@@ -71,34 +71,6 @@
     	<div class="search_result_data_container">
 	        <table class="search_result_data">
 				<%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id, :index => index, :no_links => false } %>
-				<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
-				<% is_first = true -%>
-				<% user_name = session[:user] ? session[:user][:username] : nil -%>
-				<% for exhibit in exhibits -%>
-					<%# We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public -%>
-					<%# We only want to have the edit link if it is owned by the current user. -%>
-					<% real_exhibit = Exhibit.find(exhibit.exhibit.id) -%>
-					<% owner = User.find(real_exhibit.user_id) -%>
-					<% if user_name == owner.username || real_exhibit.published? -%>
-						<tr class="hidden" id="in_exhibit_<%= exhibit.exhibit.id %>_<%= hit['uri'] %>">
-							<td class='search_result_data_label' valign='top'>
-								<%= "Exhibits:" if is_first == true -%>
-								<% is_first = false -%>
-							</td>
-							<td valign='top' width='100%'>
-								<%=h real_exhibit.title -%>
-								<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
-								<% if Exhibit.can_edit(get_curr_user(), real_exhibit.id) -%>
-									<%= link_to("[edit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
-								 <% end -%>
-							</td>
-						</tr>
-					<% end -%>
-				<% end # each exhibit -%>
-	
-				<tr id='more-<%= row_id %>' class="more">
-					<td><%= link_to_function("[more...]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
-				</tr>
 				<% if result_is_collected(hit) -%>
 				<tr>
 					<td colspan='2'>
