@@ -130,7 +130,7 @@
         <div id="<%=row_id%>_full_text" class="snippet">
         	<%# We want to escape everything except the bolding so that random control chars can't mess up the display -%>
             <% text = h hit["text"] -%>
-			<%= text.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>") %>
+			<%= text.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>") %>...
         </div>
 	</td>
 </tr>
