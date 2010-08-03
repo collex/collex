@@ -45,7 +45,12 @@
 <% end -%>
 <div class="profile_div"><span class="profile_label">Username:</span><span><%=h user.username %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">Full name:</span><span><%=h user.fullname %></span><span>&nbsp;</span></div>
+<% if can_edit || user.hide_email != 'true' %>
 <div class="profile_div"><span class="profile_label">Email:</span><span><%=h user.email %></span><span>&nbsp;</span></div>
+<% end %>
+<% if can_edit %>
+<div class="profile_div"><span class="profile_label">&nbsp;</span><span><%=h user.hide_email == 'true' ? '(Email address is hidden from other users)' : '(Email address is visible)' %></span><span>&nbsp;</span></div>
+<% end %>
 <div class="profile_div"><span class="profile_label">Institution:</span><span><%=h user.institution %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">Link:</span><span><%= user.link != nil && user.link.length > 0 ? make_ext_link(user.link) : "" %></span><span>&nbsp;</span></div>
 <div class="profile_div"><span class="profile_label">About me:</span><span class="profile_paragraph"><%=h user.about_me %></span><span>&nbsp;</span></div>

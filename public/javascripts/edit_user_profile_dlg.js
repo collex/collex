@@ -76,6 +76,7 @@ var EditProfileDialog = Class.create({
 					[ { text: 'User Name:', klass: 'edit_facet_label' }, { text: user.username, klass: 'new_exhibit_label' } ],
 					[ { text: 'Full Name:', klass: 'edit_facet_label' }, { input: 'fullname', value: user.fullname, klass: 'edit_facet_input' } ],
 					[ { text: 'Email:', klass: 'edit_facet_label' }, { input: 'account_email', value: user.email, klass: 'edit_facet_input' } ],
+					[ { text: 'Hide email:', klass: 'edit_facet_label' }, { select: 'hide_email', value: user.hide_email, options: [ { value: 'false', text: 'false' }, { value: 'true', text: 'true' } ], klass: 'edit_facet_input' } ],
 					[ { text: 'Institution:', klass: 'edit_facet_label' }, { input: 'institution', value: user.institution, klass: 'edit_facet_input' } ],
 					[ { text: 'Link:', klass: 'edit_facet_label' }, { input: 'link', value: user.link, klass: 'edit_facet_input' } ],
 					[ { text: '(leave blank if not changing your password)', klass: 'login_instructions' } ],

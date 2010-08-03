@@ -164,6 +164,8 @@ class MyCollexController < ApplicationController
     end
     user.institution = params['institution']
     user.fullname = params['fullname']
+    user.email = params['account_email']
+    user.hide_email = params['hide_email']
     user.link = params['link']
     user.about_me = params['aboutme']
     #check the link for a javascript attack
