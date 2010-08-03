@@ -15,7 +15,7 @@
 ##########################################################################
 
 require 'digest/sha1'
-include ERB::Util
+#include ERB::Util
 
 class UsernameAlreadyExistsException < StandardError
 end
