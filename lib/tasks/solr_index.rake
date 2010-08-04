@@ -230,7 +230,7 @@ end
 				else
 					obj['text'] = text
 					obj['archive'] = "ECCO"
-					obj['url'] = url
+					obj['url'] = [ url ]
 					uri = obj['uri']
 					obj['uri'] = uri.sub("lib://estc", "lib://ECCO")
 					dst.add_object(obj, nil)
@@ -240,6 +240,20 @@ end
 			}
 			dst.commit()
 			dst.optimize()
+		end
+	end
+
+	desc "Test that all ECCO objects have a 856 field (param: max_recs=XXX)"
+	task :test_ecco_856 => :environment do
+		if CAN_INDEX
+			marc_path = '../marc/'
+			max_records = ENV['max_recs']
+
+			puts "~~~~~~~~~~~ Scanning for genres in #{archive}..."
+			start_time = Time.now
+			require 'script/lib/estc_856_scanner.rb'
+			Estc856Scanner.run("#{marc_path}estc", max_records)
+			puts "Finished in #{(Time.now-start_time)/60} minutes."
 		end
 	end
 
