@@ -125,6 +125,29 @@ class MarcGenreScanner
 		end
 	end
 
+	# This is for analysis of the estc records to see what their 856 values are.
+#	def scan_record(record)
+#		uri = "NOT FOUND"
+#		match = []
+#		record.each { |rec|
+#			if rec.tag.include?('035')
+#				uri = rec.subfields[0].value.sub("(CU-RivES)", "")
+#			end
+#			if rec.tag.include?('856')
+#				rec.subfields.each {|sf|
+#					match.push({ :key => sf.code, :value => sf.value})
+#				}
+#			end
+#		}
+#
+#		if match.length > 0
+#			puts "#{uri}:"
+#			match.each {|m|
+#				puts "    #{m[:key]} = #{m[:value]}"
+#			}
+#		end
+#	end
+
   def scan_record( record )
     found = false
     mapped = false

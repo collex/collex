@@ -211,24 +211,26 @@ end
 			include ProcessGaleObjects
 			CollexEngine.create_core("archive_ECCO")
 			src = CollexEngine.new(["archive_estc"])
-			puts "Number of objects: #{src.num_docs()}"
+			puts "Number of objects in estc: #{src.num_docs()}"
 			dst = CollexEngine.new(["archive_ECCO"])
+			dst.start_reindex()
 			path = "../ecco/"
 			count = 0
 			GALE_OBJECTS.each {|arr|
 				filename = arr[0]
+				estc_uri = arr[1]
+				url = arr[3]
 				text = ''
 				File.open("#{path}#{filename}.txt", "r") { |f|
 					text = f.read
 				}
-				uri = arr[1]
-				obj = src.get_object(uri)
+				obj = src.get_object(estc_uri)
 				if obj == nil
-					puts "Can't find object: #{uri}"
+					puts "Can't find object: #{estc_uri}"
 				else
 					obj['text'] = text
 					obj['archive'] = "ECCO"
-					obj['url'] = []
+					obj['url'] = url
 					uri = obj['uri']
 					obj['uri'] = uri.sub("lib://estc", "lib://ECCO")
 					dst.add_object(obj, nil)
