@@ -229,6 +229,7 @@ end
 					puts "Can't find object: #{estc_uri}"
 				else
 					obj['text'] = text
+					obj['has_full_text'] = true
 					obj['archive'] = "ECCO"
 					obj['url'] = [ url ]
 					uri = obj['uri']
@@ -249,7 +250,7 @@ end
 			marc_path = '../marc/'
 			max_records = ENV['max_recs']
 
-			puts "~~~~~~~~~~~ Scanning for genres in #{archive}..."
+			puts "~~~~~~~~~~~ Scanning for 856 fields in estc..."
 			start_time = Time.now
 			require 'script/lib/estc_856_scanner.rb'
 			Estc856Scanner.run("#{marc_path}estc", max_records)
