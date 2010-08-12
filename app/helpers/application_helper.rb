@@ -252,7 +252,10 @@ private
 	title = hit['title'] ? CachedResource.fix_char_set(hit['title'][0]) : "Image"
     str = tag "img", options.merge({:alt => title, :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
     if image != thumb
-      str = "<a class='nines_pic_link' onclick='showInLightbox({ title: \"#{title.gsub("'", "&apos;")}\", img: \"#{image}\", spinner: \"#{PROGRESS_SPINNER_PATH}\", size: 500 }); return false;' href='#'>#{str}</a>"
+		title = title[0,60]+'...' if title.length > 62
+		title = title.gsub("'", "&apos;")
+		title = title.gsub('"', "\\\"")
+      str = "<a class='nines_pic_link' onclick='showInLightbox({ title: \"#{title}\", img: \"#{image}\", spinner: \"#{PROGRESS_SPINNER_PATH}\", size: 500 }); return false;' href='#'>#{str}</a>"
     end
     str = "<img id='#{progress_id}' class='result_row_img_progress' src='#{PROGRESS_SPINNER_PATH}' alt='loading...' />\n" + str
     return str
