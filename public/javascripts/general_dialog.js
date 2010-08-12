@@ -1083,23 +1083,25 @@ var ConfirmLinkDlg =  Class.create({
 
 		// private variables
 		//var This = this;
-		var link = el.href;
-		
+		var link = (typeof el  === 'string') ? el : el.href;
+
 		var ok = function(event, params)
 		{
-			//window.location = link;
-			// Post the link by creating a fake form.
-			var f = document.createElement('form');
-			f.style.display = 'none';
-			$(el).parentNode.appendChild(f);
-			f.method = 'POST';
-			f.action = link;
-			var m = document.createElement('input');
-			m.setAttribute('type', 'hidden');
-			m.setAttribute('name', '_method');
-			m.setAttribute('value', 'post');
-			f.appendChild(m);
-			f.submit();
+			new ProgressSpinnerDlg(title);
+			postLink(link);
+//			//window.location = link;
+//			// Post the link by creating a fake form.
+//			var f = document.createElement('form');
+//			f.style.display = 'none';
+//			$(el).parentNode.appendChild(f);
+//			f.method = 'POST';
+//			f.action = link;
+//			var m = document.createElement('input');
+//			m.setAttribute('type', 'hidden');
+//			m.setAttribute('name', '_method');
+//			m.setAttribute('value', 'post');
+//			f.appendChild(m);
+//			f.submit();
 		};
 		
 		new ConfirmDlg(title, message, "Yes", "No", ok);

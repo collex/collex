@@ -111,11 +111,12 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 
 	this.deleteExhibit = function(event, params)
 	{
-		var del = function(){
-			window.location = "/my_collex/delete_exhibit?id="+exhibit_id;
-		};
-
-		new ConfirmDlg('Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?', "Yes", "No", del);
+		new ConfirmLinkDlg("/my_collex/delete_exhibit?id="+exhibit_id, 'Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?');
+//		var del = function(){
+//			window.location = "/my_collex/delete_exhibit?id="+exhibit_id;
+//		};
+//
+//		new ConfirmDlg('Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?', "Yes", "No", del);
 	};
 
 	var profile = {
