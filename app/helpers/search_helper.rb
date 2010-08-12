@@ -28,17 +28,35 @@ module SearchHelper
     @cached_collected_item = { :user => session[:user][:username], :uri => hit['uri'], :item => item }
     return item
   end
+
+  # TODO-PER: remove this when upgrading rails.
+  def raw(str)
+	  return str
+  end
   
   public
 	def format_tag_for_output(tag)
 		# we want this escaped, so the user can't inject anything, and lower case, and we want invisible breaks so that a long tag won't break the spacing
 		tag = h(tag).downcase()
-		len = tag.length-10
-		while len > 0
-			tag = tag.insert(len, '&#x200B;')
-			len -= 10
-		end
-		return tag
+		# any dashes and underscores can be split
+		words = tag.split('_')
+		arr_outer = []
+		words.each {|word|
+			words2 = word.split('-')
+			arr_inner = []
+			words2.each {|word2|
+				# now we have an expanse that contains neither dashes nor underscores. Split this arbitrarily if it is too long,
+				# then put the entire piece back together, with splits after the dashes and underscores.
+				len = word2.length-16
+				while len > 0
+					word2 = word2.insert(len, '&#x200B;')
+					len -= 16
+				end
+				arr_inner.push(word2)
+			}
+			arr_outer.push(arr_inner.join('-&#x200B;'))
+		}
+		return arr_outer.join('_&#x200B;')
 	end
 
   def draw_pagination(curr_page, num_pages, destination_hash)
@@ -553,7 +571,7 @@ module SearchHelper
         html += "<a href='#' onclick='new ResourceTree(\"#{id}\",\"toggle\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
       else
         if site_is_in_constraints?(value)
-          html += display_name + "&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_resource', { :resource => value, :remove => 'true' }) + "</td><td class='num_objects'>#{number_with_delimiter(total)}"
+          html += display_name + raw("&nbsp;&nbsp;") + create_facet_link("[X]", '/search/constrain_resource', { :resource => value, :remove => 'true' }) + raw("</td><td class='num_objects'>#{number_with_delimiter(total)}")
         else
           link = create_facet_link(display_name, '/search/constrain_resource', { :resource => value })
           html += "#{link}</td><td class='num_objects'>#{number_with_delimiter(total)}"
@@ -561,7 +579,7 @@ module SearchHelper
       end
     end
     html += "</td></tr>\n"
-    return html
+    return raw(html)
   end
 
 	def federation_selector(federation, num_objects)
@@ -569,7 +587,7 @@ module SearchHelper
 		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
 		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection}><img src='/images/#{SKIN}/federation_#{federation}_thumb.jpg' alt='#{federation}' /></input>"
 		html += "</td><td class='num_objects'>#{number_with_delimiter(num_objects)}</td></tr>"
-		return html
+		return raw(html)
 	end
   
 	def create_facet_link(label, link, params)
@@ -587,7 +605,7 @@ module SearchHelper
       html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h genre_data[:value]}", "/search/add_facet", { :field => 'genre', :value => genre_data[:value]})
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(genre_data[:count])}</td></tr>"
-    return html
+    return raw(html)
   end
 
   def free_culture_selector(count)
@@ -597,7 +615,7 @@ module SearchHelper
       html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Free Culture Only", '/search/constrain_freeculture', { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-    return html
+    return raw(html)
   end
 
   def full_text_selector(count)
@@ -607,7 +625,7 @@ module SearchHelper
       html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Full Text Only", '/search/constrain_fulltext', { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-    return html
+    return raw(html)
   end
 
 	def format_name_facet(name, typ)
@@ -629,7 +647,7 @@ module SearchHelper
 		html += "<a id='site_opened_#{id}' #{'class="hidden" ' if start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
 		html += "<a id='site_closed_#{id}' #{'class="hidden" ' if !start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>"
 		html += "<a href='#' onclick='new ResourceTree(\"#{id}\", \"toggle\"); return false;' class='nav_link  limit_to_category' >#{h(label)}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
-		return html
+		return raw(html)
 	end
 
 	def facet_tree_selection_row(id, parent_id, indent_level, start_shown, label, num_objects, url, update_div, selected)
@@ -641,7 +659,7 @@ module SearchHelper
 			html += "<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Adding Facet...' }, { }); return false;\">#{h(label)}</a>"
 		end
 		html += "</td><td class='num_objects'>#{num_objects}</td></tr>\n"
-		return html
+		return raw(html)
 	end
 
 	def count_children(arr)
@@ -685,6 +703,6 @@ module SearchHelper
 				end
 			}
 		}
-		return html
+		return raw(html)
 	end
-end
+	end
