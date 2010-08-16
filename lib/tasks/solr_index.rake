@@ -232,9 +232,14 @@ end
 					obj['has_full_text'] = true
 					obj['archive'] = "ECCO"
 					obj['url'] = [ url ]
-					uri = obj['uri']
-					obj['uri'] = uri.sub("lib://estc", "lib://ECCO")
-					dst.add_object(obj, nil)
+					arr = url.split('bookId=')
+					if arr.length == 1
+						puts "Unusual URL encountered: #{url}"
+					else
+						arr2 = arr[1].split('&')
+						obj['uri'] = "lib://ECCO/#{arr2[0]}"
+						dst.add_object(obj, nil)
+					end
 				end
 				count += 1
 				puts "Processed: #{count}" if count % 100 == 0
