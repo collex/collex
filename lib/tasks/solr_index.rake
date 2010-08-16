@@ -204,6 +204,57 @@ end
 		end
 	end
 
+	desc "Read ECCO records from csv files"
+	task :process_ecco_spreadsheets => :environment do
+		start_time = Time.now
+		src = CollexEngine.new(["archive_estc"])
+		dst = CollexEngine.new(["archive_ECCO"])
+		total_recs = 0
+		total_added = 0
+		total_already_found = 0
+		Dir["#{RAILS_ROOT}/../marc/ecco/*.csv"].each {|f|
+			File.open(f, 'r') { |f2|
+				text = f2.read
+				lines = text.split("\n")
+				lines.each {|line|
+					total_recs += 1
+					line = line.gsub('"', '')
+					rec = line.split(',', 2)
+					estc_id = "lib:/estc/#{rec[0]}"
+					obj = src.get_object(estc_id)
+					if obj == nil
+						puts "Can't find object: #{estc_id}"
+					else
+						arr = rec[1].split('bookId=')
+						if arr.length == 1
+							puts "Unusual URL encountered: #{rec[1]}"
+						else
+							arr2 = arr[1].split('&')
+							obj['archive'] = "ECCO"
+							obj['url'] = [ rec[1] ]
+							ecco_id = "lib://ECCO/#{arr2[0]}"
+							obj['uri'] = ecco_id
+							exists = src.get_object(ecco_id)
+							if exists == nil
+								dst.add_object(obj, nil)
+								total_added += 1
+							else
+								total_already_found +=1
+							end
+							puts "estc: #{estc_id} ecco: #{ecco_id}"
+						end
+					end
+					puts "Total: #{total_recs} Added: #{total_added} Found: #{total_already_found}" if total_recs % 50 == 0
+				}
+			}
+		}
+		puts "Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found}"
+		puts "Finished in #{(Time.now-start_time)/60} minutes."
+		dst.commit()
+		dst.optimize()
+		puts "Optimized in #{(Time.now-start_time)/60} minutes."
+	end
+
 	desc "Create the Gale objects from ESTC"
 	task :process_gale_objects => :environment do
 		if CAN_INDEX
