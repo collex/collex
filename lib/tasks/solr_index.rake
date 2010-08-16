@@ -212,6 +212,7 @@ end
 		total_recs = 0
 		total_added = 0
 		total_already_found = 0
+		total_cant_find = 0
 		Dir["#{RAILS_ROOT}/../marc/ecco/*.csv"].each {|f|
 			File.open(f, 'r') { |f2|
 				text = f2.read
@@ -224,6 +225,7 @@ end
 					obj = src.get_object(estc_id)
 					if obj == nil
 						puts "Can't find object: #{estc_id}"
+						total_cant_find += 1
 					else
 						arr = rec[1].split('bookId=')
 						if arr.length == 1
@@ -241,14 +243,14 @@ end
 							else
 								total_already_found +=1
 							end
-							puts "estc: #{estc_id} ecco: #{ecco_id}"
+							#puts "estc: #{estc_id} ecco: #{ecco_id}"
 						end
 					end
-					puts "Total: #{total_recs} Added: #{total_added} Found: #{total_already_found}" if total_recs % 50 == 0
+					puts "Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}" if total_recs % 50 == 0
 				}
 			}
 		}
-		puts "Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found}"
+		puts "Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}"
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 		dst.commit()
 		dst.optimize()
