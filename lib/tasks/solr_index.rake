@@ -220,7 +220,7 @@ end
 					total_recs += 1
 					line = line.gsub('"', '')
 					rec = line.split(',', 2)
-					estc_id = "lib:/estc/#{rec[0]}"
+					estc_id = "lib://estc/#{rec[0]}"
 					obj = src.get_object(estc_id)
 					if obj == nil
 						puts "Can't find object: #{estc_id}"
