@@ -204,9 +204,7 @@ end
 		end
 	end
 
-	desc "Read ECCO records from csv files"
-	task :process_ecco_spreadsheets => :environment do
-		start_time = Time.now
+	def process_ecco_spreadsheets
 		src = CollexEngine.new(["archive_estc"])
 		dst = CollexEngine.new(["archive_ECCO"])
 		total_recs = 0
@@ -236,13 +234,8 @@ end
 							obj['url'] = [ rec[1] ]
 							ecco_id = "lib://ECCO/#{arr2[0]}"
 							obj['uri'] = ecco_id
-							exists = src.get_object(ecco_id)
-							if exists == nil
-								dst.add_object(obj, nil)
-								total_added += 1
-							else
-								total_already_found +=1
-							end
+							dst.add_object(obj, nil)
+							total_added += 1
 							#puts "estc: #{estc_id} ecco: #{ecco_id}"
 						end
 					end
@@ -251,56 +244,101 @@ end
 			}
 		}
 		puts "Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}"
+	end
+
+	def process_ecco_fulltext()
+		require 'script/lib/process_gale_objects.rb'
+		include ProcessGaleObjects
+		src = CollexEngine.new(["archive_estc"])
+		dst = CollexEngine.new(["archive_ECCO"])
+		path = "../ecco/"
+		count = 0
+		GALE_OBJECTS.each {|arr|
+			filename = arr[0]
+			estc_uri = arr[1]
+			url = arr[3]
+			text = ''
+			File.open("#{path}#{filename}.txt", "r") { |f|
+				text = f.read
+			}
+			obj = src.get_object(estc_uri)
+			if obj == nil
+				puts "Can't find object: #{estc_uri}"
+			else
+				obj['text'] = text
+				obj['has_full_text'] = true
+				obj['archive'] = "ECCO"
+				obj['url'] = [ url ]
+				arr = url.split('bookId=')
+				if arr.length == 1
+					puts "Unusual URL encountered: #{url}"
+				else
+					arr2 = arr[1].split('&')
+					obj['uri'] = "lib://ECCO/#{arr2[0]}"
+					dst.add_object(obj, nil)
+				end
+			end
+			count += 1
+			puts "Processed: #{count}" if count % 100 == 0
+		}
+	end
+
+	desc "Completely index ecco docs, using estc records."
+	task :index_ecco => :environment do
+		start_time = Time.now
+		CollexEngine.create_core("archive_ECCO")
+		dst = CollexEngine.new(["archive_ECCO"])
+		dst.start_reindex()
+		process_ecco_spreadsheets()
+		process_ecco_fulltext()
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 		dst.commit()
 		dst.optimize()
 		puts "Optimized in #{(Time.now-start_time)/60} minutes."
 	end
 
-	desc "Create the Gale objects from ESTC"
-	task :process_gale_objects => :environment do
-		if CAN_INDEX
-			require 'script/lib/process_gale_objects.rb'
-			include ProcessGaleObjects
-			CollexEngine.create_core("archive_ECCO")
-			src = CollexEngine.new(["archive_estc"])
-			puts "Number of objects in estc: #{src.num_docs()}"
-			dst = CollexEngine.new(["archive_ECCO"])
-			dst.start_reindex()
-			path = "../ecco/"
-			count = 0
-			GALE_OBJECTS.each {|arr|
-				filename = arr[0]
-				estc_uri = arr[1]
-				url = arr[3]
-				text = ''
-				File.open("#{path}#{filename}.txt", "r") { |f|
-					text = f.read
-				}
-				obj = src.get_object(estc_uri)
-				if obj == nil
-					puts "Can't find object: #{estc_uri}"
-				else
-					obj['text'] = text
-					obj['has_full_text'] = true
-					obj['archive'] = "ECCO"
-					obj['url'] = [ url ]
-					arr = url.split('bookId=')
-					if arr.length == 1
-						puts "Unusual URL encountered: #{url}"
-					else
-						arr2 = arr[1].split('&')
-						obj['uri'] = "lib://ECCO/#{arr2[0]}"
-						dst.add_object(obj, nil)
-					end
-				end
-				count += 1
-				puts "Processed: #{count}" if count % 100 == 0
-			}
-			dst.commit()
-			dst.optimize()
-		end
-	end
+#	desc "Create the Gale objects from ESTC"
+#	task :process_gale_objects => :environment do
+#		require 'script/lib/process_gale_objects.rb'
+#		include ProcessGaleObjects
+#		CollexEngine.create_core("archive_ECCO")
+#		src = CollexEngine.new(["archive_estc"])
+#		puts "Number of objects in estc: #{src.num_docs()}"
+#		dst = CollexEngine.new(["archive_ECCO"])
+#		dst.start_reindex()
+#		path = "../ecco/"
+#		count = 0
+#		GALE_OBJECTS.each {|arr|
+#			filename = arr[0]
+#			estc_uri = arr[1]
+#			url = arr[3]
+#			text = ''
+#			File.open("#{path}#{filename}.txt", "r") { |f|
+#				text = f.read
+#			}
+#			obj = src.get_object(estc_uri)
+#			if obj == nil
+#				puts "Can't find object: #{estc_uri}"
+#			else
+#				obj['text'] = text
+#				obj['has_full_text'] = true
+#				obj['archive'] = "ECCO"
+#				obj['url'] = [ url ]
+#				arr = url.split('bookId=')
+#				if arr.length == 1
+#					puts "Unusual URL encountered: #{url}"
+#				else
+#					arr2 = arr[1].split('&')
+#					obj['uri'] = "lib://ECCO/#{arr2[0]}"
+#					dst.add_object(obj, nil)
+#				end
+#			end
+#			count += 1
+#			puts "Processed: #{count}" if count % 100 == 0
+#		}
+#		dst.commit()
+#		dst.optimize()
+#	end
 
 	desc "Test that all ECCO objects have a 856 field (param: max_recs=XXX)"
 	task :test_ecco_856 => :environment do
