@@ -219,10 +219,13 @@ end
 					total_recs += 1
 					line = line.gsub('"', '')
 					rec = line.split(',', 2)
-					estc_id = "lib://estc/#{rec[0]}"
-					obj = src.get_object(estc_id)
+					# remove zeroes from between the letter and the non-zero part of the number
+					reg_ex = /(.)0*(.+)/.match(rec[0])
+					estc_id = reg_ex[1] + reg_ex[2]
+					estc_uri = "lib://estc/#{estc_id}"
+					obj = src.get_object(estc_uri)
 					if obj == nil
-						puts "Can't find object: #{estc_id}"
+						puts "Can't find object: #{estc_uri}"
 						total_cant_find += 1
 					else
 						arr = rec[1].split('bookId=')
