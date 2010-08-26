@@ -488,7 +488,7 @@ end
 				puts "~~~~~~~~~~~ Scanning #{"the first #{max_records} " if max_records != nil}marc records in #{archive}..."
 				start_time = Time.now
 				args = { :tool => :index,
-					:forgiving => true,
+					:forgiving => false,
 					:debug => true,
 #					:verbose => true,
 					:dates_only => true,

@@ -175,6 +175,34 @@ class MarcIndexer
     puts "Indexed #{@total_record_count} MARC records"
   end
 
+  def recognized_date(str)
+	  #arr = year.scan(/(1[6789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
+	  year = "\\[?1[6789]\\d[\\dO]\\??\\]?"
+	  year_ie = "\\[?i\\.e\\.\\s?1[6789]\\d[\\dO]\\??\\]?"
+	  range2 = "#{year}[-\\/]\\[?\\d\\d\\??\\]?"
+	  range4 = "#{year}\\s?-\\s?#{year}"
+	  range1 = "#{year}\/\\d"
+	  roman = "M[DCLXVI]+[.,:]?"
+	  roman2 = "M[., ]\\s?DCC[., ]?\\s?[CLXVI]+[.,:]?"
+	  printed = "(([Rr]e-?)|(Im))?[Pp]rinted [Ii]n [Tt]he [Yy]ear,?"
+	  return true if str.match(/^#{year}$/)
+	  return true if str.match(/^#{year} #{year}$/)
+	  return true if str.match(/^#{year},? ?#{year_ie}$/)
+	  return true if str.match(/^#{range1} #{year_ie}$/)
+	  return true if str.match(/^#{range4}$/)
+	  return true if str.match(/^ca. #{year}$/)
+	  return true if str.match(/^#{range2}$/)
+	  return true if str.match(/^#{range2} #{year_ie}$/)
+	  return true if str.match(/^(#{roman})|(#{roman2}) #{year}$/)
+	  return true if str.match(/^(#{roman})|(#{roman2}) #{year} #{year}$/)
+	  return true if str.match(/^(#{roman})|(#{roman2}) ?#{range2}$/)
+	  return true if str.match(/^#{printed} #{year}$/)
+	  return true if str.match(/^#{printed} (#{roman})|(#{roman2}) #{year}$/)
+	  return true if str.match(/^(#{roman})|(#{roman2}) #{printed} #{year}$/)
+	  return true if str.match(/^between #{year} and #{year}$/)
+	  return false
+  end
+
   def index_file( marc_file )
     puts "Indexing #{marc_file}"
     marc_data_source = MARC::ForgivingReader.new(marc_file) #, {:forgiving => @forgiving_marc_decoding})
@@ -203,12 +231,12 @@ class MarcIndexer
 					report_record( marc_record, solr_document )
 					update_progress_meter if @max_records
 				elsif @dates_only
-#					date = marc_record.extract('260c')
-#					date.each { |d|
-#						if recognized_date(d) == false
-#							puts d
-#						end
-#					}
+					date = marc_record.extract('260c')
+					date.each { |d|
+						if recognized_date(d) == false
+							puts d
+						end
+					}
 				else
 					update_progress_meter
 #					if solr_document[:title].length != 0 || solr_document[:date_label].length != 0 || solr_document[:agent].length != 0 || solr_document[:role_PBL].length != 0 || solr_document[:year].length != 0 || solr_document[:text].length != 0 || solr_document[:role_AUT].length != 0
@@ -515,6 +543,9 @@ class MarcIndexer
 
   def parse_date_label( record )
 		years = extract_year( record )
+		if recognized_date(years[:date_label]) == false
+			puts years[:date_label]
+		end
 		return years[:date_label]
   end
 
