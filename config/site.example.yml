@@ -27,6 +27,7 @@ smtp_settings:
 
 # Should google analytics be used for this site?
 google_analytics: false
+analytics_id: 'UA-5450014-1'
 
 # java path is normally blank, which allows the OS to search for java in it's normal path, but if there is a different version of java needed, then it can be set.
 #java_path: '/usr/local/jdk/bin/'
@@ -62,3 +63,38 @@ about:
   label: 'What is NINES?'
   link2: '/about/scholarship/peerReview.html'
   label2: 'Peer Review'
+
+zotero_genre:
+  'Photograph': 'artwork'
+  'Visual Art': 'artwork'
+  'Periodical': 'article'
+  'Letters': 'letter'
+  'Manuscript': 'manuscript'
+  'Fiction': 'book'
+  'Nonfiction': 'book'
+  'Criticism': 'book'
+  'Philosophy': 'book'
+  'Paratext': 'book_section'
+  'Bibliography': 'book_section'
+  'Architecture': 'document'
+  'Artifacts': 'document'
+  'Collection': 'document'
+  'Drama': 'document'
+  'Education': 'document'
+  'Politics': 'document'
+  'Ephemera': 'document'
+  'History': 'document'
+  'Leisure': 'document'
+  'Life Writing': 'document'
+  'Reference': 'document'
+  'Humor': 'document'
+  'Music': 'document'
+  'Citation': 'document'
+  'Family Life': 'document'
+  'Poetry': 'document'
+  'Religion': 'document'
+  'Translation': 'document'
+  'Travel': 'document'
+  'Book History': 'document'
+  'Folklore': 'document'
+  'Review': 'document'
