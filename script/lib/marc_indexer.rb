@@ -128,6 +128,7 @@ class MarcIndexer
   def initialize( args )
     @url_log_path = args[:url_log_path]
     @verbose = args[:verbose]
+    @dates_only = args[:dates_only]
     @forgiving_marc_decoding = args[:forgiving]
     @indexer_config = {:debug => args[:debug], :timeout => 1200, :solr_url => args[:solr_url], :buffer_docs => 500 }     
     @archive_id = args[:archive]
@@ -173,7 +174,7 @@ class MarcIndexer
     
     puts "Indexed #{@total_record_count} MARC records"
   end
-  
+
   def index_file( marc_file )
     puts "Indexing #{marc_file}"
     marc_data_source = MARC::ForgivingReader.new(marc_file) #, {:forgiving => @forgiving_marc_decoding})
@@ -201,6 +202,13 @@ class MarcIndexer
 				if @verbose
 					report_record( marc_record, solr_document )
 					update_progress_meter if @max_records
+				elsif @dates_only
+#					date = marc_record.extract('260c')
+#					date.each { |d|
+#						if recognized_date(d) == false
+#							puts d
+#						end
+#					}
 				else
 					update_progress_meter
 #					if solr_document[:title].length != 0 || solr_document[:date_label].length != 0 || solr_document[:agent].length != 0 || solr_document[:role_PBL].length != 0 || solr_document[:year].length != 0 || solr_document[:text].length != 0 || solr_document[:role_AUT].length != 0
@@ -272,7 +280,7 @@ class MarcIndexer
       :url => get_proc( :parse_url ),
       :title => get_proc( :parse_title ),
       :genre => get_proc( :parse_genre ),
-      :date_label => get_proc( :parse_year ),
+      :date_label => get_proc( :parse_date_label ),
       :year => get_proc( :parse_year ),
       :text => get_proc( :parse_text ),
       :role_PBL => get_proc( :parse_publisher ),
@@ -435,17 +443,79 @@ class MarcIndexer
     nines_genres
   end
   
-  def parse_year( record )
-    test_for_problem_record(record)
-     record.extract('260c').collect {|f| f.scan(/\d\d\d\d/)}.flatten
+	def extract_year( record )
+		test_for_problem_record(record)
+		#record.extract('260c').collect {|f| f.scan(/\d\d\d\d/)}.flatten
+		years = record.extract('260c')
+		result = []
+		years.each {|year|
+			arr = year.scan(/(1[6789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
+			# The tokens pulled out are 4- 2- and 1-digit numbers, the hyphen, the slash, and the word 'and'.
+			# We don't want anything before the first 4-digit number, then if the next token is hyphen, slash or 'and',
+			# then we want to create a range with the first and the next number (that can be 1,2, or 4 digits). If a 4-digit number
+			# follows another, then it is not a range, it is just added normally. If an unexpected sequence occurs, then just ignore it.
+			# The reason unknown sequences should be ignored is that they may be part of a month and day or extra comments, so
+			# it doesn't necessarily indicate an error.
+			state = :start
+			start_range = nil
+			arr.each {|match|
+				puts "MATCH NOT ONE ELEMENT: #{match.join(',')}" if match.length != 1
+				match = match[0]
+				case state
+				when :start then
+					# only accept a full date here
+					if match.length == 4
+						result.push(match.to_i)
+						state = :divider
+						start_range = match.to_i
+					end
+
+				when :divider then
+					# accept another full date, or a divider
+					if match.length == 4
+						result.push(match.to_i)
+						state = :divider
+						start_range = match.to_i
+					elsif match == ' and ' || match == '/' || match == '-'
+						state = :range
+					else
+						state = :start
+					end
+
+				when :range then
+					# this can be a 1-, 2-, or 4-digit number to complete the range
+					num = match.to_i	# normalize the date to 4 digits
+					if num > 1000
+						# nothing to do
+					elsif num > 9
+						num = "#{start_range}"[0..1].to_i * 100 + num
+					elsif num > 0
+						num = "#{start_range}"[0..2].to_i * 10 + num
+					end
+					start_range.upto(num) {|y|
+						result.push(y)
+					}
+					state = :start
+				end
+			}
+		}
+		return { :years => result.uniq, :year_sort => result.length > 0 ? [ result[0] ] : [], :date_label => years.join(' ') }
   end  
       
+  def parse_year( record )
+		years = extract_year( record )
+		return years[:years]
+  end
+
   def parse_year_sort( record )
-		years = parse_year( record )
-		if years.length > 1
-			years = [ years[0] ]
-		end
-		return years
+		years = extract_year( record )
+		#puts "SORT: #{years[:year_sort]} LABEL: #{years[:date_label]} YEARS: #{years[:years].join(',')}"
+		return years[:year_sort]
+  end
+
+  def parse_date_label( record )
+		years = extract_year( record )
+		return years[:date_label]
   end
 
   def parse_publisher( record )

@@ -372,7 +372,7 @@ end
 			puts "~~~~~~~~~~~ Reindexing marc records..."
 			start_time = Time.now
 				args = { :tool => :index,
-									 :forgiving => true,
+									 :forgiving => false,
 									 :debug => false,
 									 :verbose => false,
 									 :max_records => max_records
@@ -463,6 +463,42 @@ end
 										:dir => "#{marc_path}#{archive}",
 										:max_records => max_records
 										}
+				MarcIndexer.run(args)
+
+				puts "Finished in #{(Time.now-start_time)/60} minutes."
+			end
+		end
+	end
+
+	desc "Analyze date fields in MARC records (param: archive=[bancroft|lilly|estc][;max_records])"
+	task :analyze_marc_dates => :environment do
+		if CAN_INDEX
+			require 'script/lib/marc_indexer.rb'
+			archive = ENV['archive']
+			max_records = nil
+			if archive
+				arr = archive.split(';')
+				archive = arr[0]
+				max_records = arr[1] if arr.length > 1
+			end
+			marc_path = '../marc/'
+			if archive == nil
+				puts "Usage: Pass in an archive name with archive=XXX; there should be a folder of the same name under #{marc_path}"
+			else
+				puts "~~~~~~~~~~~ Scanning #{"the first #{max_records} " if max_records != nil}marc records in #{archive}..."
+				start_time = Time.now
+				args = { :tool => :index,
+					:forgiving => true,
+					:debug => true,
+#					:verbose => true,
+					:dates_only => true,
+					:archive => archive,
+					:solr_url => "#{SOLR_URL}/archive_#{archive}",
+					:url_log_path => "log/#{archive}_link_data.txt",
+					:federation => 'NINES',	# this is calculated for each record
+					:dir => "#{marc_path}#{archive}",
+					:max_records => max_records
+				}
 				MarcIndexer.run(args)
 
 				puts "Finished in #{(Time.now-start_time)/60} minutes."
