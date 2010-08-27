@@ -553,7 +553,7 @@ end
 		archive = ENV['archive']
 		puts "~~~~~~~~~~~ Scanning for missed documents #{archive ? "("+archive+" only) " : ""}in #{use_merged_index ? 'merged' : 'archive_*'} index..."
 		start_time = Time.now
-		CollexEngine.get_list_of_skipped_objects({ :use_merged_index => use_merged_index, :archive => archive })
+		CollexEngine.get_list_of_skipped_objects({ :use_merged_index => use_merged_index, :archive => archive, :log => "#{Rails.root}/log/#{archive}_skipped.log" })
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
@@ -565,7 +565,7 @@ end
 		use_merged_index = (use_merged_index != nil && (use_merged_index == "true" || use_merged_index == true))
 		puts "~~~~~~~~~~~ Comparing documents from the original index with the #{use_merged_index ? 'merged' : 'archive_*'} index..."
 		start_time = Time.now
-		CollexEngine.compare_reindexed_core({ :archive => archive, :start_after => start_after, :use_merged_index => use_merged_index })
+		CollexEngine.compare_reindexed_core({ :archive => archive, :start_after => start_after, :use_merged_index => use_merged_index, :log => "#{Rails.root}/log/#{archive}_compare.log" })
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 
@@ -578,7 +578,7 @@ end
 		#use_merged_index = true	# TODO: temp until I figure out how to pass two params
 		puts "~~~~~~~~~~~ Comparing documents from the original index with the #{use_merged_index ? 'merged' : 'archive_*'} index..."
 		start_time = Time.now
-		CollexEngine.compare_reindexed_core_text({ :archive => archive, :start_after => start_after, :use_merged_index => use_merged_index })
+		CollexEngine.compare_reindexed_core_text({ :archive => archive, :start_after => start_after, :use_merged_index => use_merged_index, :log => "#{Rails.root}/log/#{archive}_compare_text.log" })
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 	end
 

@@ -377,14 +377,31 @@ return results
 #	def remove_object(uri)
 #		@solr.delete(uri)
 #	end
+	def self.set_report_file(fname)
+		@@report_file = fname
+		begin
+			File.delete(fname)
+			CollexEngine.report_line("Started: #{Time.now}")
+		rescue
+		end
+	end
+
+	def self.report_line(str)
+		if @@report_file
+			open(@@report_file, 'a') { |f|
+				f.puts str
+			}
+		end
+		puts str
+	end
 
 	def replace_archive(archive)
 		arr = @cores[0].split('/')
 		core = arr[arr.length-1]
 		url = "#{SOLR_URL}/admin/cores?action=mergeindexes&core=#{core}"
 		url += "&indexDir=#{archive}"
-		puts "curl \"#{url}\""
-		`curl \"#{url}\"`
+		CollexEngine.report_line("curl \"#{url}\"\n")
+		CollexEngine.report_line(`curl \"#{url}\"`)
 			# this will timeout. Don't crash when that happens.
 		begin
 			@solr.optimize()
@@ -399,17 +416,17 @@ return results
 		archives.each {|archive|
 			url += "&indexDir=#{archive}"
 		}
-		puts "curl \"#{url}\""
+		CollexEngine.report_line("curl \"#{url}\"\n")
 		begin
 			# this will timeout. Don't crash when that happens.
-			`curl \"#{url}\"`
+			CollexEngine.report_line(`curl \"#{url}\"`)
 		rescue Exception => e
-			puts "Continuing after exception: #{e}"
+			CollexEngine.report_line("Continuing after exception: #{e}\n")
 		end
 		begin
 			@solr.optimize()
 		rescue
-			puts "Continuing after exception: #{e}"
+			CollexEngine.report_line("Continuing after exception: #{e}\n")
 		end
 	end
 
@@ -421,8 +438,8 @@ return results
 		indexes.each{|index|
 				url += "&indexDir=solr/data/#{index}/index"
 		}
-		puts "curl \"#{url}\""
-		`curl \"#{url}\"`
+		CollexEngine.report_line("curl \"#{url}\"\n")
+		CollexEngine.report_line(`curl \"#{url}\"`)
 
 		# this will timeout. Don't crash when that happens.
 		begin
@@ -447,8 +464,8 @@ return results
 	def self.create_core(name)
 		url = "#{SOLR_URL}/admin/cores?action=CREATE&name=#{name}&instanceDir=."
 
-		puts "curl \"#{url}\""
-		`curl \"#{url}\"`
+		CollexEngine.report_line("curl \"#{url}\"\n")
+		CollexEngine.report_line(`curl \"#{url}\"`)
 	end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
@@ -567,7 +584,7 @@ return results
 								old_arr.each_with_index { |s, i|
 									first_mismatch = i if first_mismatch == -1 && new_arr[i] != s
 								}
-								puts "        at line #{first_mismatch}:\n\"#{new_arr[first_mismatch].gsub("\n", " / ")}\" vs.\n\"#{old_arr[first_mismatch].gsub("\n", " / ")}\""
+								CollexEngine.report_line("        at line #{first_mismatch}:\n\"#{new_arr[first_mismatch].gsub("\n", " / ")}\" vs.\n\"#{old_arr[first_mismatch].gsub("\n", " / ")}\"\n")
 							else
 								total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} mismatched: \"#{value.gsub("\n", " / ")}\" (new) vs. \"#{old_value.gsub("\n", " / ")}\" (old)")
 							end
@@ -626,22 +643,23 @@ return results
 		archive_to_scan = params[:archive]
 		start_after = params[:start_after]
 		use_merged_index = params[:use_merged_index]
+		CollexEngine.set_report_file(params[:log])
 		resources = CollexEngine.new(['resources'])
 		total_docs_scanned = 0
 		total_errors = 0
 
 		if archive_to_scan
-			print "====== Scanning archive \"#{archive_to_scan}\"... ====== "
+			CollexEngine.report_line("====== Scanning archive \"#{archive_to_scan}\"... ====== ")
 			if use_merged_index
 				reindexed = CollexEngine.new(["merged"])
 			else
 				reindexed = CollexEngine.new(["archive_#{archive_to_core_name(archive_to_scan)}"])
 			end
 			new_obj = reindexed.get_all_objects_in_archive(archive_to_scan)
-			print "retrieved #{new_obj.length} new rdf objects;"
+			CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
 			total_docs_scanned += new_obj.length
 			old_obj = resources.get_all_objects_in_archive(archive_to_scan)
-			puts "retrieved #{old_obj.length} old objects;"
+			CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
 			total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
 		else
 			if use_merged_index
@@ -652,7 +670,7 @@ return results
 			started = start_after == nil
 			archives.each {|archive|
 				if started
-					print "====== Scanning archive \"#{archive}\"... ====== "
+					CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
 					if use_merged_index
 						reindexed = CollexEngine.new(["merged"])
 					else
@@ -660,19 +678,19 @@ return results
 						actual_archive_names = reindexed.get_all_archives()
 						# theoretically there should be exactly one archive in each index. We'll make sure of that here.
 						if actual_archive_names.length > 1
-							puts "More than one archive in index: #{actual_archive_names.join(',')}"
+							CollexEngine.report_line("More than one archive in index: #{actual_archive_names.join(',')}\n")
 						elsif actual_archive_names.length == 0
-							puts "No archives present in the index. Is it empty?"
+							CollexEngine.report_line("No archives present in the index. Is it empty?\n")
 						else
 							archive = actual_archive_names[0]
 						end
 					end
 
 					new_obj = reindexed.get_all_objects_in_archive(archive)
-					print "retrieved #{new_obj.length} new rdf objects;"
+					CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
 					total_docs_scanned += new_obj.length
 					old_obj = resources.get_all_objects_in_archive(archive)
-					puts "retrieved #{old_obj.length} old objects;"
+					CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
 					total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
 					
 				else	# is started
@@ -682,7 +700,7 @@ return results
 				end
 			}
 		end
-		puts "Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}"
+		CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
 	end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
@@ -702,7 +720,7 @@ return results
 	end
 
 	def self.compare_text_one_archive(archive, reindexed_core, old_core)
-			puts "====== Scanning archive \"#{archive}\"... ====== "
+			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
 			start_time = Time.now
 			done = false
 			page = 0
@@ -717,9 +735,9 @@ return results
 				objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
 				total_objects += objs.length
 				new_obj += objs
-				#puts "new_obj.length=#{objs.length}"
+				#CollexEngine.report_line("new_obj.length=#{objs.length}\n")
 				old_objs = old_core.get_text_fields_in_archive(archive, page, size)
-				#puts "old_obj.length=#{old_objs.length}"
+				#CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
 				page += 1
 				if objs.length < size
 					done = true
@@ -738,41 +756,41 @@ return results
 						if old_obj['text'] == nil
 							#old_text = ""
 						elsif old_obj['text'].length > 1
-							puts "#{uri} old text is an array of size #{old_obj['text'].length}"
+							CollexEngine.report_line("#{uri} old text is an array of size #{old_obj['text'].length}\n")
 							old_text = old_obj['text'].join(" | ").strip()
 						else
 							old_text = old_obj['text'][0].strip
 						end
 						if obj['text'] == nil
 							if obj['has_full_text'] != false
-								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist."
+								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist.\n")
 								total_errors += 1
 							end
 							if obj['is_ocr'] != nil
-								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist."
+								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist.\n")
 								total_errors += 1
 							end
 						elsif obj['text'].length > 1
-							puts "#{uri} new text is an array of size #{obj['text'].length}"
+							CollexEngine.report_line("#{uri} new text is an array of size #{obj['text'].length}\n")
 								total_errors += 1
 							text = obj['text'].join(" | ").strip()
 						else
 							docs_with_text += 1
 							text = obj['text'][0].strip
 							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft") || (archive == 'UVaPress_VLCS') || (archive == 'cbw') || (archive == 'whitbib') || (archive == 'uva_library'))	# this should be false for all archives except the specified ones.
-								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
+								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text exists.\n")
 								total_errors += 1
 							end
 							if obj['is_ocr'] != false
-								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists."
+								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists.\n")
 								total_errors += 1
 							end
 						end
 						if text == nil && old_text != nil
-							puts "#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})"
+							CollexEngine.report_line("#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})\n")
 							total_errors += 1
 						elsif text != nil && old_text == nil
-							puts "#{uri} text field has appeared in the new index."
+							CollexEngine.report_line("#{uri} text field has appeared in the new index.\n")
 							total_errors += 1
 						elsif text != old_text
 							# delete extra spaces and blank lines and compare again
@@ -809,20 +827,20 @@ return results
 	#										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
 									print_start = first_mismatch - 1
 									print_start = 0 if print_start < 0
-									print "==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})"
+									CollexEngine.report_line("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})")
 									print_end = first_mismatch + 1
 									print_end = new_arr.length() -1 if print_end >= new_arr.length()
 									print_start.upto(print_end) { |x|
-										puts "\"#{new_arr[x]}\""
+										CollexEngine.report_line("\"#{new_arr[x]}\"\n")
 									}
-									print "-- vs --\n(old #{new_arr.length})"
+									CollexEngine.report_line("-- vs --\n(old #{new_arr.length})")
 									print_end = first_mismatch + 1
 									print_end = old_arr.length() -1 if print_end >= old_arr.length()
 									print_start.upto(print_end) { |x|
-										puts "\"#{old_arr[x]}\""
+										CollexEngine.report_line("\"#{old_arr[x]}\"\n")
 									}
-									#puts "#{text}\n----\n#{old_text}"
-									#puts "#{text}"
+									#CollexEngine.report_line("#{text}\n----\n#{old_text}\n")
+									#CollexEngine.report_line("#{text}\n")
 									total_errors += 1
 								end
 							end
@@ -838,26 +856,26 @@ return results
 
 		# These are all the documents that didn't match anything in the old index.
 		if new_obj.length > 0
-			puts " ============================= TEXT ADDED TO ARCHIVE ==========================="
+			CollexEngine.report_line(" ============================= TEXT ADDED TO ARCHIVE ===========================\n")
 		end
 		new_obj.each { |obj|
-			puts "---------------------------------------------------------------------------------------------------------------"
-			puts " --- #{ obj['uri']} ---"
+			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
+			CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
 			if obj['text']
-				puts obj['text']
+				CollexEngine.report_line("obj['text']\n")
 				total_errors += 1
 			else
-				puts " --- No full text for this item"
+				CollexEngine.report_line(" --- No full text for this item\n")
 			end
-			puts "---------------------------------------------------------------------------------------------------------------"
+			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
 		}
-		puts "    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
+		CollexEngine.report_line("    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds.\n")
 		return total_objects, total_errors
 	end
 
 	def self.old_compare_text_one_archive(archive, reindexed_core, old_core)
 		# this was used to compare the original, dirty text with the cleaned up text
-			puts "====== Scanning archive \"#{archive}\"... ====== "
+			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
 			start_time = Time.now
 			done = false
 			page = 0
@@ -872,9 +890,9 @@ return results
 				objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
 				total_objects += objs.length
 				new_obj += objs
-				#puts "new_obj.length=#{objs.length}"
+				#CollexEngine.report_line("new_obj.length=#{objs.length}\n")
 				old_objs = old_core.get_text_fields_in_archive(archive, page, size)
-				#puts "old_obj.length=#{old_objs.length}"
+				#CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
 				page += 1
 				if objs.length < size
 					done = true
@@ -893,41 +911,41 @@ return results
 						if old_obj['text'] == nil
 							#old_text = ""
 						elsif old_obj['text'].length > 1
-							puts "#{uri} old text is an array of size #{old_obj['text'].length}"
+							CollexEngine.report_line("#{uri} old text is an array of size #{old_obj['text'].length}\n")
 							old_text = old_obj['text'].join(" | ").strip()
 						else
 							old_text = old_obj['text'][0].strip
 						end
 						if obj['text'] == nil
 							if obj['has_full_text'] != false
-								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist."
+								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist.\n")
 								total_errors += 1
 							end
 							if obj['is_ocr'] != nil
-								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist."
+								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist.\n")
 								total_errors += 1
 							end
 						elsif obj['text'].length > 1
-							puts "#{uri} new text is an array of size #{obj['text'].length}"
+							CollexEngine.report_line("#{uri} new text is an array of size #{obj['text'].length}\n")
 								total_errors += 1
 							text = obj['text'].join(" | ").strip()
 						else
 							docs_with_text += 1
 							text = obj['text'][0].strip
 							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft"))	# this should be false for all archives except the specified ones.
-								puts "#{uri} field has_full_text is #{obj['has_full_text']} but full text exists."
+								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text exists.\n")
 								total_errors += 1
 							end
 							if obj['is_ocr'] != false
-								puts "#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists."
+								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists.\n")
 								total_errors += 1
 							end
 						end
 						if text == nil && old_text != nil
-							puts "#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})"
+							CollexEngine.report_line("#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})\n")
 							total_errors += 1
 						elsif text != nil && old_text == nil
-							puts "#{uri} text field has appeared in the new index."
+							CollexEngine.report_line("#{uri} text field has appeared in the new index.\n")
 							total_errors += 1
 						elsif text != old_text
 							# Get rid of all extra white space and extra lines. We first turn all white space except new lines into one white space.
@@ -1178,20 +1196,20 @@ return results
 										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
 										print_start = first_mismatch - 1
 										print_start = 0 if print_start < 0
-										print "==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})"
+										CollexEngine.report_line("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})")
 										print_end = first_mismatch + 1
 										print_end = new_arr.length() -1 if print_end >= new_arr.length()
 										print_start.upto(print_end) { |x|
-											puts "\"#{new_arr[x]}\""
+											CollexEngine.report_line("\"#{new_arr[x]}\"\n")
 										}
-										print "-- vs --\n(old #{new_arr.length})"
+										CollexEngine.report_line("-- vs --\n(old #{new_arr.length})")
 										print_end = first_mismatch + 1
 										print_end = old_arr.length() -1 if print_end >= old_arr.length()
 										print_start.upto(print_end) { |x|
-											puts "\"#{old_arr[x]}\""
+											CollexEngine.report_line("\"#{old_arr[x]}\"\n")
 										}
-										#puts "#{text}\n----\n#{old_text}"
-										#puts "#{text}"
+										#CollexEngine.report_line("#{text}\n----\n#{old_text}\n")
+										#CollexEngine.report_line("#{text}\n")
 										total_errors += 1
 									end
 								end
@@ -1208,20 +1226,20 @@ return results
 
 		# These are all the objects that didn't match.
 		if new_obj.length > 0
-			puts " ============================= TEXT ADDED TO ARCHIVE ==========================="
+			CollexEngine.report_line(" ============================= TEXT ADDED TO ARCHIVE ===========================\n")
 		end
 		new_obj.each { |obj|
-			puts "---------------------------------------------------------------------------------------------------------------"
-			puts " --- #{ obj['uri']} ---"
+			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
+			CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
 			if obj['text']
-				puts obj['text']
+				CollexEngine.report_line("obj['text']\n")
 				total_errors += 1
 			else
-				puts " --- No full text for this item"
+				CollexEngine.report_line(" --- No full text for this item\n")
 			end
-			puts "---------------------------------------------------------------------------------------------------------------"
+			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
 		}
-		puts "    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds."
+		CollexEngine.report_line("    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds.\n")
 		return total_objects, total_errors
 	end
 
@@ -1230,6 +1248,7 @@ return results
 		archive_to_scan = params[:archive]
 		start_after = params[:start_after]
 		use_merged_index = params[:use_merged_index]
+		CollexEngine.set_report_file(params[:log])
 		resources = CollexEngine.new(['resources'])
 		total_docs_scanned = 0
 		total_errors = 0
@@ -1247,7 +1266,7 @@ return results
 			started = start_after == nil
 			archives.each {|archive|
 				if archive.index("exhibit_") == 0
-					puts "====== Skipping #{archive}."
+					CollexEngine.report_line("====== Skipping #{archive}.\n")
 				elsif started
 					if use_merged_index
 						reindexed = CollexEngine.new(["merged"])
@@ -1265,7 +1284,7 @@ return results
 				end
 			}
 		end
-		puts "Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}"
+		CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
 	end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
@@ -1279,12 +1298,13 @@ return results
 		use_merged_index = params[:use_merged_index]
 		archive_to_scan = params[:archive]
 		resources = CollexEngine.new(['resources'])
+		CollexEngine.set_report_file(params[:log])
 		archives = resources.get_all_archives()
 		num_not_indexed = 0
 		num_new = 0
 		archives.each {|archive|
 			if (archive_to_scan == nil || archive_to_scan == archive)
-				print "====== Scanning archive \"#{archive}\"... ====== "
+				CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== ")
 				if use_merged_index
 					reindexed = CollexEngine.new(["merged"])
 				else
@@ -1296,9 +1316,9 @@ return results
 				rescue
 					new_obj = []
 				end
-				print "retrieved #{new_obj.length} new objects..."
+				CollexEngine.report_line("retrieved #{new_obj.length} new objects...")
 				old_obj = resources.get_all_uris_in_archive(archive)
-				puts "retrieved #{old_obj.length} old objects..."
+				CollexEngine.report_line("retrieved #{old_obj.length} old objects...\n")
 				uris = {}
 				new_obj.each{|obj|
 					uris[obj['uri']] = 'new'
@@ -1325,17 +1345,17 @@ return results
 
 				num_not_indexed += old_only.length
 				old_only.each { |uri|
-					puts "    Old: #{uri}"
+					CollexEngine.report_line("    Old: #{uri}\n")
 				}
 				num_new += new_only.length
 				new_only.each { |uri|
-					puts "    New: #{uri}"
+					CollexEngine.report_line("    New: #{uri}\n")
 				}
 			end
 		}	# each archive
 
 
-		puts "Total not indexed: #{num_not_indexed}. Total new: #{num_new}. Total Docs in index: #{resources.num_docs()}"
+		CollexEngine.report_line("Total not indexed: #{num_not_indexed}. Total new: #{num_new}. Total Docs in index: #{resources.num_docs()}\n")
 	end
 
 	def optimize()
@@ -1344,10 +1364,10 @@ return results
 
 private
 	def self.print_error(uri, total_errors, first_error, msg)
-		puts "---#{uri}---" if first_error
+		CollexEngine.report_line("---#{uri}---\n") if first_error
 		total_errors += 1
 		first_error = false
-		puts "    " + msg
+		CollexEngine.report_line("    #{msg}\n")
 		return total_errors, first_error
 	end
 
