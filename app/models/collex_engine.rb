@@ -19,6 +19,7 @@ require 'rsolr'
 
 class CollexEngine
 	CORE = [ "resources" ]
+	@@report_file = nil
 	
   def initialize(cores=CORE)
     @num_docs = -1
