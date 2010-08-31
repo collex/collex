@@ -175,31 +175,26 @@ class MarcIndexer
     puts "Indexed #{@total_record_count} MARC records"
   end
 
-  def recognized_date(str)
+  def recognized_date(date)
 	  #arr = year.scan(/(1[6789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
+	  str = date.gsub(/\[/, '').gsub(/[\]?]/, ' ')
+	  str = str.gsub(/([Rr]e-?[Pp]rinted)|([Pp]rinted)|(Imprinted)|([Tt]he\s)|([Yy]ear)|(i.e.)|([Aa]nno)|([Dd]omini)|( [Dd]om)|([Aa]uthor)|(of)|(our)|(Lord)|([Ii]n )|(ca\.)|( or )|(present)/, ' ')
+	  str = str.gsub(/[.,]/, '')
 	  year = "\\[?1[6789]\\d[\\dO]\\??\\]?"
-	  year_ie = "\\[?i\\.e\\.\\s?1[6789]\\d[\\dO]\\??\\]?"
 	  range2 = "#{year}[-\\/]\\[?\\d\\d\\??\\]?"
 	  range4 = "#{year}\\s?-\\s?#{year}"
 	  range1 = "#{year}\/\\d"
-	  roman = "M[DCLXVI]+[.,:]?"
-	  roman2 = "M[., ]\\s?DCC[., ]?\\s?[CLXVI]+[.,:]?"
-	  printed = "(([Rr]e-?)|(Im))?[Pp]rinted [Ii]n [Tt]he [Yy]ear,?"
-	  return true if str.match(/^#{year}$/)
-	  return true if str.match(/^#{year} #{year}$/)
-	  return true if str.match(/^#{year},? ?#{year_ie}$/)
-	  return true if str.match(/^#{range1} #{year_ie}$/)
-	  return true if str.match(/^#{range4}$/)
-	  return true if str.match(/^ca. #{year}$/)
-	  return true if str.match(/^#{range2}$/)
-	  return true if str.match(/^#{range2} #{year_ie}$/)
-	  return true if str.match(/^(#{roman})|(#{roman2}) #{year}$/)
-	  return true if str.match(/^(#{roman})|(#{roman2}) #{year} #{year}$/)
-	  return true if str.match(/^(#{roman})|(#{roman2}) ?#{range2}$/)
-	  return true if str.match(/^#{printed} #{year}$/)
-	  return true if str.match(/^#{printed} (#{roman})|(#{roman2}) #{year}$/)
-	  return true if str.match(/^(#{roman})|(#{roman2}) #{printed} #{year}$/)
-	  return true if str.match(/^between #{year} and #{year}$/)
+	  roman = "M[DCLXVI]+:?"
+	  return true if str.match(/^\s*#{year}\s*$/)
+	  return true if str.match(/^\s*#{year}\s*#{year}\s*$/)
+	  return true if str.match(/^\s*#{range4}\s*$/)
+	  return true if str.match(/^\s*#{range2}\s*$/)
+	  return true if str.match(/^\s*#{range1}\s*$/)
+	  return true if str.match(/^\s*#{roman}\s*#{year}\s*$/)
+	  return true if str.match(/^\s*#{roman}\s*#{year} #{year}\s*$/)
+	  return true if str.match(/^\s*#{roman}\s*?#{range2}\s*$/)
+	  return true if str.match(/^\s*between #{year} and #{year}\s*$/)
+	  puts "<#{date}|#{str}>"
 	  return false
   end
 
@@ -477,6 +472,7 @@ class MarcIndexer
 		years = record.extract('260c')
 		result = []
 		years.each {|year|
+			year = year.gsub(/\[/, '').gsub(/[\]?]/, ' ')
 			arr = year.scan(/(1[6789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
 			# The tokens pulled out are 4- 2- and 1-digit numbers, the hyphen, the slash, and the word 'and'.
 			# We don't want anything before the first 4-digit number, then if the next token is hyphen, slash or 'and',
@@ -541,12 +537,38 @@ class MarcIndexer
 		return years[:year_sort]
   end
 
+	def reconstruct_date_label(years)
+	# years is an array of 4-digit dates. We want to sort them, and combine the ones that are near each other with a hyphen.
+		recs = years.sort
+		yrs = []
+		recs.each {|rec|
+			rec = rec.to_i
+			if yrs.length == 0
+				yrs.push({ :start => rec, :end => rec })
+			else
+				if yrs[yrs.length-1][:end] == rec-1
+					yrs[yrs.length-1][:end] = rec
+				else
+					yrs.push({ :start => rec, :end => rec })
+				end
+			end
+		}
+		yrs.collect! { |yr|
+			if yr[:start] == yr[:end]
+				yr[:start]
+			else
+				"#{yr[:start]}-#{yr[:end]}"
+			end
+		}
+		#puts "=#{yrs.join(', ')}=" if recs.length > 1
+		return yrs.join(', ')
+	end
+
   def parse_date_label( record )
 		years = extract_year( record )
-		if recognized_date(years[:date_label]) == false
-			puts years[:date_label]
-		end
-		return years[:date_label]
+		recognized_date(years[:date_label])	# for debugging the date formats that are in the marc field
+		return reconstruct_date_label(years[:years])
+		#return years[:date_label]
   end
 
   def parse_publisher( record )
