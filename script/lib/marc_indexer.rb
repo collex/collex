@@ -176,7 +176,7 @@ class MarcIndexer
   end
 
   def recognized_date(date)
-	  #arr = year.scan(/(1[6789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
+	  #arr = year.scan(/(1[56789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
 	  str = date.gsub(/\[/, '').gsub(/[\]?]/, ' ')
 	  str = str.gsub(/([Rr]e-?[Pp]rinted)|([Pp]rinted)|(Imprinted)|([Tt]he\s)|([Yy]ear)|(i.e.)|([Aa]nno)|([Dd]omini)|( [Dd]om)|([Aa]uthor)|(of)|(our)|(Lord)|([Ii]n )|(ca\.)|( or )|(present)/, ' ')
 	  str = str.gsub(/[.,]/, '')
@@ -193,7 +193,7 @@ class MarcIndexer
 	  return true if str.match(/^\s*#{roman}\s*#{year}\s*$/)
 	  return true if str.match(/^\s*#{roman}\s*#{year} #{year}\s*$/)
 	  return true if str.match(/^\s*#{roman}\s*?#{range2}\s*$/)
-	  return true if str.match(/^\s*between #{year} and #{year}\s*$/)
+	  return true if str.match(/^\s*[Bb]etween #{year}( and )|(\s*-\s*)#{year}\s*$/)
 	  puts "<#{date}|#{str}>"
 	  return false
   end
@@ -473,7 +473,7 @@ class MarcIndexer
 		result = []
 		years.each {|year|
 			year = year.gsub(/\[/, '').gsub(/[\]?]/, ' ')
-			arr = year.scan(/(1[6789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
+			arr = year.scan(/(1[56789]\d[\dO]|-|\/|\sand\s|\d\d|\d)/)
 			# The tokens pulled out are 4- 2- and 1-digit numbers, the hyphen, the slash, and the word 'and'.
 			# We don't want anything before the first 4-digit number, then if the next token is hyphen, slash or 'and',
 			# then we want to create a range with the first and the next number (that can be 1,2, or 4 digits). If a 4-digit number
