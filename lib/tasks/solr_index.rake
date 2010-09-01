@@ -264,7 +264,7 @@ end
 			File.open("#{path}#{filename}.txt", "r") { |f|
 				text = f.read
 			}
-			obj = src.get_object(estc_uri)
+			obj = src.get_object_with_text(estc_uri)
 			if obj == nil
 				puts "Can't find object: #{estc_uri}"
 			else
