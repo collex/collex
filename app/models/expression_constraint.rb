@@ -19,9 +19,12 @@ class ExpressionConstraint < Constraint
 		return str.gsub(/[^\w']/, '')
 	end
 
-  def to_solr_expression
-    "#{operator=='-' ? '-' : '+'}(#{clean_search_term(value)})"
-  end
+	def to_solr_expression
+		term = clean_search_term(value)
+		return "" if term.length == 0
+		return "#{operator=='-' ? '-' : '+'}(#{term})"
+		#"#{operator=='-' ? '-' : '+'}(#{clean_search_term(value)})"
+	end
   
   def to_s
      identifier = value.downcase.gsub(/\W/,'_')
