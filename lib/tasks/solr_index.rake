@@ -223,7 +223,7 @@ end
 					reg_ex = /(.)0*(.+)/.match(rec[0])
 					estc_id = reg_ex[1] + reg_ex[2]
 					estc_uri = "lib://estc/#{estc_id}"
-					obj = src.get_object(estc_uri)
+					obj = src.get_object_with_text(estc_uri)
 					if obj == nil
 						puts "Can't find object: #{estc_uri}"
 						total_cant_find += 1
