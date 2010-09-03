@@ -237,6 +237,8 @@ end
 							obj['url'] = [ rec[1] ]
 							ecco_id = "lib://ECCO/#{arr2[0]}"
 							obj['uri'] = ecco_id
+							puts "No year_sort: #{estc_uri} #{obj['uri']}" if obj['year_sort'] == nil
+							puts "No title_sort: #{estc_uri} #{obj['uri']}" if obj['title_sort'] == nil
 							dst.add_object(obj, nil)
 							total_added += 1
 							#puts "estc: #{estc_id} ecco: #{ecco_id}"
