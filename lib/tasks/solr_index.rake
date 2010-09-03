@@ -244,7 +244,7 @@ end
 							#puts "estc: #{estc_id} ecco: #{ecco_id}"
 						end
 					end
-					puts "Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}" if total_recs % 50 == 0
+					puts "Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}" if total_recs % 100 == 0
 				}
 			}
 		}
