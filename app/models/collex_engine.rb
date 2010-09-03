@@ -304,12 +304,17 @@ return results
 			end
 	end
 
-	def get_object(uri) #called when "collect" is pressed.
+	def get_object(uri, all_fields = false) #called when "collect" is pressed.
 		# Returns nil if the object doesn't exist, or the object if it does.
 		query = "uri:#{CollexEngine.query_parser_escape(uri)}"
+		if all_fields == true
+			field_list == @all_fields_except_text
+		else
+			field_list == @field_list
+		end
 
 		response = solr_select(:start => 0, :rows => 1,
-             :q => query, :field_list => @field_list, :shards => @cores)
+             :q => query, :field_list => field_list, :shards => @cores)
 		if response['response']['docs'].length > 0
 			fix_free_culture(response['response']['docs'][0])
 	    return response['response']['docs'][0]

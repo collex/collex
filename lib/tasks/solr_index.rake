@@ -223,7 +223,7 @@ end
 					reg_ex = /(.)0*(.+)/.match(rec[0])
 					estc_id = reg_ex[1] + reg_ex[2]
 					estc_uri = "lib://estc/#{estc_id}"
-					obj = src.get_object_with_text(estc_uri)
+					obj = src.get_object(estc_uri, true)
 					if obj == nil
 						puts "Can't find object: #{estc_uri}"
 						total_cant_find += 1
@@ -264,7 +264,7 @@ end
 			File.open("#{path}#{filename}.txt", "r") { |f|
 				text = f.read
 			}
-			obj = src.get_object_with_text(estc_uri)
+			obj = src.get_object(estc_uri, true)
 			if obj == nil
 				puts "Can't find object: #{estc_uri}"
 			else
@@ -278,6 +278,8 @@ end
 				else
 					arr2 = arr[1].split('&')
 					obj['uri'] = "lib://ECCO/#{arr2[0]}"
+					puts "No year_sort: #{estc_uri} #{obj['uri']}" if obj['year_sort'] == nil
+					puts "No title_sort: #{estc_uri} #{obj['uri']}" if obj['title_sort'] == nil
 					dst.add_object(obj, nil)
 				end
 			end
