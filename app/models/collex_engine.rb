@@ -308,9 +308,9 @@ return results
 		# Returns nil if the object doesn't exist, or the object if it does.
 		query = "uri:#{CollexEngine.query_parser_escape(uri)}"
 		if all_fields == true
-			field_list == @all_fields_except_text
+			field_list = @all_fields_except_text
 		else
-			field_list == @field_list
+			field_list = @field_list
 		end
 
 		response = solr_select(:start => 0, :rows => 1,
