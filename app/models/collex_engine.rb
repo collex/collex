@@ -332,21 +332,28 @@ return results
 		return nil
 	end
 
-	def add_object(fields, relevancy = nil) # called by Exhibit to index exhibits
+	def add_object(fields, relevancy = nil, is_retry = false) # called by Exhibit to index exhibits
 		# this takes a hash that contains a set of fields expressed as symbols, i.e. { :uri => 'something' }
 #		doc = Solr::Document.new(fields)
 #		doc.boost = relevancy if relevancy != nil
 #		@solr.add(doc)
-		if relevancy
-			@solr.add(fields) do |doc|
-				doc.attrs[:boost] = relevancy # boost the document
+		begin
+			if relevancy
+				@solr.add(fields) do |doc|
+					doc.attrs[:boost] = relevancy # boost the document
+				end
+				add_xml = @solr.xml.add(fields, {}) do |doc|
+					doc.attrs[:boost] = relevancy
+				end
+				@solr.update(:data => add_xml)
+			else
+				@solr.add(fields)
 			end
-			add_xml = @solr.xml.add(fields, {}) do |doc|
-				doc.attrs[:boost] = relevancy
-			end
-			@solr.update(:data => add_xml)
-		else
-			@solr.add(fields)
+		rescue Exception => e
+			CollexEngine.report_line("ADD OBJECT: Continuing after exception: #{e}\n")
+			CollexEngine.report_line("URI: #{fields['uri']}\n")
+			CollexEngine.report_line("#{fields.to_s}\n")
+			add_object(fields, relevancy, true)
 		end
 	end
 
