@@ -225,30 +225,30 @@ end
 					estc_uri = "lib://estc/#{estc_id}"
 					obj = src.get_object(estc_uri, true)
 					if obj == nil
-						puts "Can't find object: #{estc_uri}"
+						CollexEngine.report_line("Can't find object: #{estc_uri}")
 						total_cant_find += 1
 					else
 						arr = rec[1].split('bookId=')
 						if arr.length == 1
-							puts "Unusual URL encountered: #{rec[1]}"
+							CollexEngine.report_line("Unusual URL encountered: #{rec[1]}")
 						else
 							arr2 = arr[1].split('&')
 							obj['archive'] = "ECCO"
 							obj['url'] = [ rec[1] ]
 							ecco_id = "lib://ECCO/#{arr2[0]}"
 							obj['uri'] = ecco_id
-							puts "No year_sort: #{estc_uri} #{obj['uri']}" if obj['year_sort'] == nil
-							puts "No title_sort: #{estc_uri} #{obj['uri']}" if obj['title_sort'] == nil
+							CollexEngine.report_line("No year_sort: #{estc_uri} #{obj['uri']}") if obj['year_sort'] == nil
+							CollexEngine.report_line("No title_sort: #{estc_uri} #{obj['uri']}") if obj['title_sort'] == nil
 							dst.add_object(obj, nil)
 							total_added += 1
 							#puts "estc: #{estc_id} ecco: #{ecco_id}"
 						end
 					end
-					puts "Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}" if total_recs % 100 == 0
+					CollexEngine.report_line("Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}") if total_recs % 500 == 0
 				}
 			}
 		}
-		puts "Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}"
+		CollexEngine.report_line("Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}")
 	end
 
 	def process_ecco_fulltext()
@@ -268,7 +268,7 @@ end
 			}
 			obj = src.get_object(estc_uri, true)
 			if obj == nil
-				puts "Can't find object: #{estc_uri}"
+				CollexEngine.report_line("Can't find object: #{estc_uri}")
 			else
 				obj['text'] = text
 				obj['has_full_text'] = true
@@ -276,17 +276,17 @@ end
 				obj['url'] = [ url ]
 				arr = url.split('bookId=')
 				if arr.length == 1
-					puts "Unusual URL encountered: #{url}"
+					CollexEngine.report_line("Unusual URL encountered: #{url}")
 				else
 					arr2 = arr[1].split('&')
 					obj['uri'] = "lib://ECCO/#{arr2[0]}"
-					puts "No year_sort: #{estc_uri} #{obj['uri']}" if obj['year_sort'] == nil
-					puts "No title_sort: #{estc_uri} #{obj['uri']}" if obj['title_sort'] == nil
+					CollexEngine.report_line("No year_sort: #{estc_uri} #{obj['uri']}") if obj['year_sort'] == nil
+					CollexEngine.report_line("No title_sort: #{estc_uri} #{obj['uri']}") if obj['title_sort'] == nil
 					dst.add_object(obj, nil)
 				end
 			end
 			count += 1
-			puts "Processed: #{count}" if count % 100 == 0
+			CollexEngine.report_line("Processed: #{count}") if count % 500 == 0
 		}
 	end
 
@@ -296,7 +296,10 @@ end
 		CollexEngine.create_core("archive_ECCO")
 		dst = CollexEngine.new(["archive_ECCO"])
 		dst.start_reindex()
+		CollexEngine.set_report_file("#{Rails.root}/log/process_ecco_spreadsheets.log")
+		CollexEngine.report_line("Processing spreadsheets...")
 		process_ecco_spreadsheets()
+		CollexEngine.report_line("Processing fulltext...")
 		process_ecco_fulltext()
 		puts "Finished in #{(Time.now-start_time)/60} minutes."
 		dst.commit()
