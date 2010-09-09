@@ -353,7 +353,7 @@ return results
 			CollexEngine.report_line("ADD OBJECT: Continuing after exception: #{e}\n")
 			CollexEngine.report_line("URI: #{fields['uri']}\n")
 			CollexEngine.report_line("#{fields.to_s}\n")
-			add_object(fields, relevancy, true)
+			add_object(fields, relevancy, true) if is_retry == false
 		end
 	end
 
