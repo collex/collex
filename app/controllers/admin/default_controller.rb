@@ -66,13 +66,13 @@ class Admin::DefaultController < Admin::BaseController
     group.update_attribute('header_background_color', header_background_color)
     group.update_attribute('link_color', link_color)
 		if group_type == 'peer-reviewed'
-			exhibits = Exhibit.all()
+			exhibits = Exhibit.find_all_by_group_id(group_id)
 			exhibits.each {|exhibit|
 				exhibit.adjust_indexing(:group_becomes_peer_reviewed)
 			}
 			(CollexEngine.new).commit()
 		elsif old_type == 'peer-reviewed'
-			exhibits = Exhibit.all()
+			exhibits = Exhibit.find_all_by_group_id(group_id)
 			exhibits.each {|exhibit|
 				exhibit.adjust_indexing(:group_leaves_peer_reviewed)
 			}
