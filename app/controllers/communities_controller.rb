@@ -26,6 +26,7 @@ class CommunitiesController < ApplicationController
 		session[:community_page_num] = 0
 		session[:community_search_term] = term
 		session[:community_sort_by] = 'Most Recent'
+		session[:community_view_by] = "All" if term != nil && term.length > 0
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 

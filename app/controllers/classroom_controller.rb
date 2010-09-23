@@ -35,6 +35,7 @@ class ClassroomController < ApplicationController
 		session[:classroom_page_num] = 0
 		session[:classroom_search_term] = term
 		session[:classroom_sort_by] = 'Most Recent'
+		session[:classroom_view_by] = "All" if term != nil && term.length > 0
 		render :partial => 'shared_objects', :locals => { :results => get_results() }
 	end
 
