@@ -77,7 +77,7 @@ if ( !empty($withcomments) && !is_single() ) {
 				</script>
             </div>
             <div id="subnav_links_container">
-				<a href="/about/what_is.html" class="nav_link">What is NINES?</a> | <a href="/about/peerReview.html" class="nav_link">Peer Review</a>
+				<a href="/about/what_is.html" class="nav_link">What is NINES?</a> | <a href="/about/scholarship/peerReview.html" class="nav_link">Peer Review</a>
              </div>
            	<div class="clear_both"></div>
 		</div>
