@@ -272,6 +272,7 @@ end
 			else
 				obj['text'] = text
 				obj['has_full_text'] = true
+				obj['source'] = "Full text provided by the Text Creation Partnership."
 				obj['archive'] = "ECCO"
 				obj['url'] = [ url ]
 				arr = url.split('bookId=')
