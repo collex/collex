@@ -335,17 +335,19 @@ class GroupsController < ApplicationController
 		}
 		group = Group.find(group_id)
 		group.show_membership = show_membership == 'Yes'
-		if change_owner
+		if change_owner && change_owner != '0'
 			gu = GroupsUser.find_by_group_id_and_user_id(group.id, change_owner)
-			gu.user_id = group.owner
-			gu.email = User.find(group.owner).email
+			if gu
+				gu.user_id = group.owner
+				gu.email = User.find(group.owner).email
 
-			notifications = group.notifications
-			group.notifications = gu.notifications
-			gu.notifications = notifications
-			gu.save
-			
-			group.owner = change_owner
+				notifications = group.notifications
+				group.notifications = gu.notifications
+				gu.notifications = notifications
+				gu.save
+
+				group.owner = change_owner
+			end
 		end
 		group.save!
 		GroupsUser.email_hook("membership", group.id, "The membership in #{group.name} has changed", "The membership in #{group.name} has changed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
