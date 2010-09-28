@@ -237,6 +237,7 @@ end
 							obj['url'] = [ rec[1] ]
 							ecco_id = "lib://ECCO/#{arr2[0]}"
 							obj['uri'] = ecco_id
+							obj.delete('is_ocr')
 							CollexEngine.report_line("No year_sort: #{estc_uri} #{obj['uri']}") if obj['year_sort'] == nil
 							CollexEngine.report_line("No title_sort: #{estc_uri} #{obj['uri']}") if obj['title_sort'] == nil
 							dst.add_object(obj, nil)
