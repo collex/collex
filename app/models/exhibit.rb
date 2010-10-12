@@ -117,6 +117,7 @@ class Exhibit < ActiveRecord::Base
     # All other characters are replaced by underscores, then multiple underscores are replaced by one underscore.
     # This never returns more than 30 characters.
 
+	return url if url == nil
     url = url.tr('^A-Za-z0-9\-\~', '_')
     # remove more than one underline in a row
     url = url.gsub(/_+/, '_')
