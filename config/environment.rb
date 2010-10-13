@@ -97,6 +97,7 @@ if File.exists?(config_file)
 	USER_CONTENT_INTERVAL_SECS = site_specific['daemons']['user_content_interval_secs']
 
 	GOOGLE_ANALYTICS = site_specific['google_analytics']
+	ANALYTICS_ID = site_specific['analytics_id']
 	JAVA_PATH = site_specific['java_path']
 	SITE_NAME = site_specific['site_name']
 	SITE_NAME_TITLE = site_specific['site_name_title']
@@ -114,6 +115,7 @@ if File.exists?(config_file)
 	ABOUT = { :link => site_specific['about']['link'], :label => site_specific['about']['label'] }
 	ABOUT2 = { :link => site_specific['about']['link2'], :label => site_specific['about']['label2'] } if site_specific['about']['link2']
 	FEDERATION_URLS = site_specific['federation_url']
+	#ZOTERO_GENRES = site_specific['zotero_genre']
 
 else
 	puts "***"
