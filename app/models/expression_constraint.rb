@@ -16,7 +16,11 @@
 
 class ExpressionConstraint < Constraint
 	def clean_search_term(str)
-		return str.gsub(/[^\w']/, '')
+		str = str.gsub(/[^\w ']/, '')
+		if str.index(' ')
+			str = "\"#{str}\""
+		end
+		return str
 	end
 
 	def to_solr_expression
