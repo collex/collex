@@ -732,16 +732,16 @@ return results
 	public
 	def self.create_old_archive_name(archive)
 		old_archive = archive
-		old_archive = 'rc' if old_archive == 'rc_praxis'
-		old_archive = 'rc-resources' if old_archive == 'rc_resources'
-		old_archive = 'rc-editions' if old_archive == 'rc_editions'
-		old_archive = 'JSTOR:American Literature' if old_archive == 'jstorAmerLit'
-		old_archive = 'JSTOR:American Literary History' if old_archive == 'jstorAmerLitHist'
-		old_archive = 'JSTOR:NOVEL: A Forum on Fiction' if old_archive == 'jstorFOF'
-		old_archive = 'JSTOR:Nineteenth-Century Fiction' if old_archive == 'jstorNCF'
-		old_archive = 'JSTOR:Nineteenth-Century Literature' if old_archive == 'jstorNCL'
-		old_archive = 'JSTOR:Studies in English Literature, 1500-1900' if old_archive == 'jstorSEL'
-		old_archive = 'JSTOR:Trollopian' if old_archive == 'jstorTrollopian'
+#		old_archive = 'rc' if old_archive == 'rc_praxis'
+#		old_archive = 'rc-resources' if old_archive == 'rc_resources'
+#		old_archive = 'rc-editions' if old_archive == 'rc_editions'
+#		old_archive = 'JSTOR:American Literature' if old_archive == 'jstorAmerLit'
+#		old_archive = 'JSTOR:American Literary History' if old_archive == 'jstorAmerLitHist'
+#		old_archive = 'JSTOR:NOVEL: A Forum on Fiction' if old_archive == 'jstorFOF'
+#		old_archive = 'JSTOR:Nineteenth-Century Fiction' if old_archive == 'jstorNCF'
+#		old_archive = 'JSTOR:Nineteenth-Century Literature' if old_archive == 'jstorNCL'
+#		old_archive = 'JSTOR:Studies in English Literature, 1500-1900' if old_archive == 'jstorSEL'
+#		old_archive = 'JSTOR:Trollopian' if old_archive == 'jstorTrollopian'
 		return old_archive
 	end
 
