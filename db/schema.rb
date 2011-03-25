@@ -1,15 +1,16 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100803183219) do
+ActiveRecord::Schema.define(:version => 20110310191542) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -29,8 +30,8 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   create_table "clusters", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "group_id",    :limit => 10, :precision => 10, :scale => 0
-    t.integer  "image_id",    :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "group_id",    :precision => 10, :scale => 0
+    t.decimal  "image_id",    :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "visible_url"
@@ -38,18 +39,25 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   end
 
   create_table "collected_items", :force => true do |t|
-    t.integer  "user_id",            :limit => 10, :precision => 10, :scale => 0
-    t.integer  "cached_resource_id", :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "user_id",            :precision => 10, :scale => 0
+    t.decimal  "cached_resource_id", :precision => 10, :scale => 0
     t.text     "annotation"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "comment_reports", :force => true do |t|
+    t.integer  "discussion_comment_id"
+    t.string   "reason"
+    t.integer  "reporter_id"
+    t.datetime "reported_on"
   end
 
   create_table "constraints", :force => true do |t|
     t.integer "search_id"
     t.boolean "inverted"
     t.string  "type"
-    t.string  "field"
+    t.string  "fieldx"
     t.string  "value"
   end
 
@@ -74,10 +82,8 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.string   "link_url"
     t.string   "image_url"
     t.text     "comment"
-    t.integer  "reported"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "reporter_ids"
     t.datetime "user_modified_at"
     t.string   "link_title"
   end
@@ -87,17 +93,17 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "number_of_views",     :limit => 10, :precision => 10, :scale => 0
-    t.integer  "license",             :limit => 10, :precision => 10, :scale => 0
-    t.integer  "group_id",            :limit => 10, :precision => 10, :scale => 0
-    t.integer  "cluster_id",          :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "number_of_views",     :precision => 10, :scale => 0
+    t.decimal  "license",             :precision => 10, :scale => 0
+    t.decimal  "group_id",            :precision => 10, :scale => 0
+    t.decimal  "cluster_id",          :precision => 10, :scale => 0
   end
 
   create_table "discussion_topics", :force => true do |t|
     t.string   "topic"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "position",    :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "position",    :precision => 10, :scale => 0
     t.text     "description"
   end
 
@@ -123,17 +129,17 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   end
 
   create_table "exhibit_elements", :force => true do |t|
-    t.integer  "exhibit_section_id",          :limit => 10, :precision => 10, :scale => 0
-    t.integer  "position",                    :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "exhibit_section_id",          :precision => 10, :scale => 0
+    t.decimal  "position",                    :precision => 10, :scale => 0
     t.string   "exhibit_element_layout_type"
     t.text     "element_text"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "border_type_enum",            :limit => 10, :precision => 10, :scale => 0
-    t.integer  "exhibit_page_id",             :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "border_type_enum",            :precision => 10, :scale => 0
+    t.decimal  "exhibit_page_id",             :precision => 10, :scale => 0
     t.text     "element_text2"
-    t.integer  "justify",                     :limit => 10, :precision => 10, :scale => 0
-    t.integer  "header_footnote_id",          :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "justify",                     :precision => 10, :scale => 0
+    t.decimal  "header_footnote_id",          :precision => 10, :scale => 0
   end
 
   create_table "exhibit_footnotes", :force => true do |t|
@@ -143,28 +149,28 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   end
 
   create_table "exhibit_illustrations", :force => true do |t|
-    t.integer  "exhibit_element_id",   :limit => 10, :precision => 10, :scale => 0
-    t.integer  "position",             :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "exhibit_element_id",   :precision => 10, :scale => 0
+    t.decimal  "position",             :precision => 10, :scale => 0
     t.string   "illustration_type"
     t.string   "image_url"
     t.text     "illustration_text"
     t.text     "caption1"
     t.text     "caption2"
-    t.integer  "image_width",          :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "image_width",          :precision => 10, :scale => 0
     t.string   "link"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "alt_text"
     t.string   "nines_object_uri"
-    t.integer  "height",               :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption1_footnote_id", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption2_footnote_id", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption1_bold",        :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption1_italic",      :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption1_underline",   :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption2_bold",        :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption2_italic",      :limit => 10, :precision => 10, :scale => 0
-    t.integer  "caption2_underline",   :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "height",               :precision => 10, :scale => 0
+    t.decimal  "caption1_footnote_id", :precision => 10, :scale => 0
+    t.decimal  "caption2_footnote_id", :precision => 10, :scale => 0
+    t.decimal  "caption1_bold",        :precision => 10, :scale => 0
+    t.decimal  "caption1_italic",      :precision => 10, :scale => 0
+    t.decimal  "caption1_underline",   :precision => 10, :scale => 0
+    t.decimal  "caption2_bold",        :precision => 10, :scale => 0
+    t.decimal  "caption2_italic",      :precision => 10, :scale => 0
+    t.decimal  "caption2_underline",   :precision => 10, :scale => 0
   end
 
   create_table "exhibit_objects", :force => true do |t|
@@ -175,24 +181,24 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   end
 
   create_table "exhibit_pages", :force => true do |t|
-    t.integer  "exhibit_id", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "position",   :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "exhibit_id", :precision => 10, :scale => 0
+    t.decimal  "position",   :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "exhibits", :force => true do |t|
     t.string   "title"
-    t.integer  "user_id",                 :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "user_id",                 :precision => 10, :scale => 0
     t.string   "thumbnail"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "visible_url"
-    t.integer  "is_published",            :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbleft",               :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbwidth",              :limit => 10, :precision => 10, :scale => 0
-    t.integer  "thumbtop",                :limit => 10, :precision => 10, :scale => 0
-    t.integer  "alias_id",                :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "is_published",            :precision => 10, :scale => 0
+    t.decimal  "thumbleft",               :precision => 10, :scale => 0
+    t.decimal  "thumbwidth",              :precision => 10, :scale => 0
+    t.decimal  "thumbtop",                :precision => 10, :scale => 0
+    t.decimal  "alias_id",                :precision => 10, :scale => 0
     t.string   "header_font_name"
     t.string   "header_font_size"
     t.string   "illustration_font_name"
@@ -210,9 +216,9 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.datetime "last_change"
     t.text     "genres"
     t.string   "resource_name"
-    t.integer  "group_id",                :limit => 10, :precision => 10, :scale => 0
-    t.integer  "license_type",            :limit => 10, :precision => 10, :scale => 0
-    t.integer  "cluster_id",              :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "group_id",                :precision => 10, :scale => 0
+    t.decimal  "license_type",            :precision => 10, :scale => 0
+    t.decimal  "cluster_id",              :precision => 10, :scale => 0
     t.string   "editor_limit_visibility"
     t.string   "additional_authors"
   end
@@ -221,10 +227,10 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.integer "parent_id"
     t.string  "value"
     t.string  "type"
-    t.integer "carousel_include",     :limit => 10, :precision => 10, :scale => 0
+    t.decimal "carousel_include",     :precision => 10, :scale => 0
     t.text    "carousel_description"
     t.string  "carousel_url"
-    t.integer "image_id",             :limit => 10, :precision => 10, :scale => 0
+    t.decimal "image_id",             :precision => 10, :scale => 0
   end
 
   create_table "featured_objects", :force => true do |t|
@@ -236,7 +242,7 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.string   "site_url"
     t.string   "saved_search_name"
     t.string   "saved_search_url"
-    t.integer  "image_id",          :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "image_id",          :precision => 10, :scale => 0
     t.string   "disabled"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -244,14 +250,14 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
-    t.integer  "owner",                   :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "owner",                   :precision => 10, :scale => 0
     t.text     "description"
     t.string   "group_type"
-    t.integer  "image_id",                :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "image_id",                :precision => 10, :scale => 0
     t.string   "forum_permissions"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "license_type",            :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "license_type",            :precision => 10, :scale => 0
     t.string   "header_font_name"
     t.string   "header_font_size"
     t.string   "illustration_font_name"
@@ -266,7 +272,7 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.string   "endnotes_font_size"
     t.string   "footnote_font_name"
     t.string   "footnote_font_size"
-    t.integer  "use_styles",              :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "use_styles",              :precision => 10, :scale => 0
     t.boolean  "show_membership"
     t.string   "exhibit_visibility"
     t.string   "university"
@@ -277,8 +283,8 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.string   "exhibits_label"
     t.string   "clusters_label"
     t.string   "show_admins"
-    t.integer  "badge_id",                :limit => 10, :precision => 10, :scale => 0
-    t.integer  "publication_image_id",    :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "badge_id",                :precision => 10, :scale => 0
+    t.decimal  "publication_image_id",    :precision => 10, :scale => 0
     t.string   "notifications"
     t.string   "header_color"
     t.string   "header_background_color"
@@ -286,8 +292,8 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   end
 
   create_table "groups_users", :force => true do |t|
-    t.integer  "group_id",        :limit => 10, :precision => 10, :scale => 0
-    t.integer  "user_id",         :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "group_id",        :precision => 10, :scale => 0
+    t.decimal  "user_id",         :precision => 10, :scale => 0
     t.string   "email"
     t.string   "role"
     t.boolean  "pending_invite"
@@ -307,6 +313,10 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.integer  "height"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.string   "photo_file_size"
+    t.string   "photo_updated_at"
   end
 
   create_table "images", :force => true do |t|
@@ -319,6 +329,10 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.integer  "height"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.string   "photo_file_size"
+    t.string   "photo_updated_at"
   end
 
   create_table "login_infos", :force => true do |t|
@@ -351,13 +365,13 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   create_table "peer_reviews", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "image_full_id", :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "image_full_id", :precision => 10, :scale => 0
   end
 
   create_table "publication_images", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "image_full_id", :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "image_full_id", :precision => 10, :scale => 0
   end
 
   create_table "roles", :force => true do |t|
@@ -371,8 +385,8 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
 
   create_table "search_user_contents", :force => true do |t|
     t.datetime "last_indexed"
-    t.integer  "seconds_spent_indexing", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "objects_indexed",        :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "seconds_spent_indexing", :precision => 10, :scale => 0
+    t.decimal  "objects_indexed",        :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -401,10 +415,11 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
   end
 
   create_table "tagassigns", :force => true do |t|
-    t.integer  "collected_item_id", :limit => 10, :precision => 10, :scale => 0
-    t.integer  "tag_id",            :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "tag_id",             :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cached_resource_id"
+    t.integer  "user_id"
   end
 
   create_table "tags", :force => true do |t|
@@ -414,6 +429,14 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
 
   add_index "tags", ["name"], :name => "tags_name", :unique => true
 
+  create_table "tw_featured_objects", :force => true do |t|
+    t.string   "uri"
+    t.boolean  "primary"
+    t.boolean  "disabled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "users", :force => true do |t|
     t.string  "username"
     t.string  "password_hash"
@@ -422,7 +445,7 @@ ActiveRecord::Schema.define(:version => 20100803183219) do
     t.string  "institution"
     t.string  "link"
     t.text    "about_me"
-    t.integer "image_id",      :limit => 10, :precision => 10, :scale => 0
+    t.decimal "image_id",      :precision => 10, :scale => 0
     t.string  "hide_email"
   end
 

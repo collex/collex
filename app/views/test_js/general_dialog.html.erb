@@ -1,0 +1,85 @@
+<%= javascript_include_tag 'test_general_dialog' %>
+<h1>Test General Dialog</h1>
+<p>This runs the tests for general_dialog.</p>
+<style type="text/css">
+.lightbox_test {
+	border: 2px solid green;
+	width: 300px;
+	text-align: left;
+}
+.lightbox_test_colorful {
+	background-color: pink;
+}
+.test_list {
+	text-align: left;
+	border: 1px solid black;
+	list-style-type: none;
+	padding: 1em;
+	width: 300px;
+	float:left;
+}
+.test_list li {
+	list-style-type: none;
+}
+.succeeded {
+	background-color: green;
+	color: white;
+}
+.succeeded a {
+	color: white;
+}
+.failed {
+	background-color: red;
+	color: white;
+}
+.failed a {
+	color: white;
+}
+.ignored {
+	background-color: gray;
+	color: white;
+}
+.ignored a {
+	color: white;
+}
+.running {
+	background-color: yellow;
+	color: black;
+}
+.running a {
+	color: black;
+}
+.ghastly_dialog {
+	background-color:blue;
+	color:green;
+	padding:3em;
+}
+.short_box {
+	width: 30px;
+}
+.ugly_text {
+	color: hotpink;
+	background-color: sandybrown;
+}
+.small_pic {
+	width: 40px;
+}
+</style>
+<div id="tests"></div>
+<div class="clear_both"></div>
+<div id="selectCallback"></div>
+<%= make_select_control("select_control", [ { :name => 'Date', :value => 'created_at'}, { :name => 'Title', :value => 'name'}, { :name => 'Test', :value => 'testing'}], 'name', "Y.one('selectCallback')._node.innerHTML = 'callback happened: '+sel;") %>
+<div id="area1"></div>
+<div id="area2"></div>
+<div id="lightbox_stuff">
+	<div class="lightbox_test">
+		<p>This div will be shown in a lightbox</p>
+		<ul>
+			<li>First</li>
+			<li>Second</li>
+			<li>Third</li>
+			<li>Fourth</li>
+		</ul>
+		<p>Four score and seven years ago, our forefathers brought into this land...</p>
+	</div>
+</div>

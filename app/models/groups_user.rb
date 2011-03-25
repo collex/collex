@@ -27,7 +27,6 @@ class GroupsUser < ActiveRecord::Base
 			editors = group.get_all_editors()
 			editors.each { |editor|
 				ed = User.find(editor)
-				#LoginMailer.deliver_request_to_join_group({ :name => user.fullname, :email => user.email, :institution => user.institution, :group_name => group.name, :request_id => gu.id, :has_joined => user_id != nil }, ed.email)
 				body = "#{user.fullname} mailto:#{user.email} #{"from #{user.institution}" if user.institution && user.institution.length > 0 } has requested to join the group #{ group.name }.\n\n"
 				body += "To allow, click here: #{ url_accept }\n\n"
 				body += "To deny, click here: #{ url_decline }\n\n"

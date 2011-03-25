@@ -23,7 +23,7 @@
 <% else -%>
 	<% curr_user = User.find_by_username(session[:user][:username]) -%>
 	<div class="subpage_nav"> 
-		<%= MY_COLLEX %><%= link_separator() %>&nbsp;<%= link_to "My objects", { :controller => MY_COLLEX_URL, :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>&nbsp;<br />
+		<%= MY_COLLEX %><%= link_separator() %>&nbsp;<%= link_to "My objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %>&nbsp;<br />
 	</div>
 		
 	<div class="inner_content_container">
@@ -37,6 +37,11 @@
 			</div>
 		</div>
 		<div class="right_column">
+          <% if COLLEX_PLUGINS['typewright'] %>
+          <div id="typewright">
+              <%= render :partial => 'typewright/widgets/my_documents', :locals => { :document_list => @my_typewright_documents } %>
+          </div>
+           <% end %>
 			<div id="saved_searches">
 				<%= render :partial => 'search/save_search_list', :locals => { :header_class => 'right_column_header', :max_to_show => 10 } %>
 			</div>

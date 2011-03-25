@@ -43,8 +43,11 @@
    
     <table class="limit_to">
 	    <tr><th>Access</th><th class="num_objects"># of Objects</th></tr>
-		<%= free_culture_selector( @freeculture_count ) %>
-		<%= full_text_selector( @fulltext_count ) %>
+		<%= access_selector(@freeculture_count, access_is_in_constraints?('FreeCultureConstraint'), "Free Culture Only", '/search/constrain_freeculture') %>
+      <%= access_selector(@fulltext_count, access_is_in_constraints?('FullTextConstraint'), "Full Text Only", '/search/constrain_fulltext') %>
+      <% if COLLEX_PLUGINS['typewright'] %>
+      <%= access_selector(@typewright_count, access_is_in_constraints?('TypeWrightConstraint'), "TypeWright Enabled Only", '/search/constrain_typewright') %>
+      <% end -%>
     </table>
 
 <!--    <table class="limit_to">

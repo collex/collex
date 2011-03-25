@@ -12,7 +12,7 @@
 
 <title>18thConnect - News</title>
 
-	<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?2.7.0/build/reset-fonts-grids/reset-fonts-grids.css&2.7.0/build/base/base.css&2.7.0/build/button/assets/skins/sam/button.css&2.7.0/build/container/assets/skins/sam/container.css&2.7.0/build/assets/skins/sam/skin.css' />
+	<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?2.8.2/build/reset-fonts-grids/reset-fonts-grids.css&2.8.2/build/base/base.css&2.8.2/build/button/assets/skins/sam/button.css&2.8.2/build/container/assets/skins/sam/container.css&2.8.2/build/assets/skins/sam/skin.css' />
 	<link href="/stylesheets/about-min.css" media="all" rel="stylesheet" type="text/css" />
 	<!-- section styles -->
 
@@ -24,7 +24,7 @@
 <![endif]-->
 
 	<script src="/javascripts/prototype-min.js" type="text/javascript"></script>
-	<script src='http://yui.yahooapis.com/combo?2.7.0/build/yahoo-dom-event/yahoo-dom-event.js&2.7.0/build/json/json.js&2.7.0/build/element/element.js&2.7.0/build/button/button.js&2.7.0/build/container/container.js&2.7.0/build/dragdrop/dragdrop.js' type='text/javascript' ></script>
+	<script src='http://yui.yahooapis.com/combo?2.8.2/build/yahoo-dom-event/yahoo-dom-event.js&2.8.2/build/json/json.js&2.8.2/build/element/element.js&2.8.2/build/button/button.js&2.8.2/build/container/container.js&2.8.2/build/dragdrop/dragdrop.js' type='text/javascript' ></script>
 	<script src="/javascripts/about-min.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" type="text/css" media="screen" />
@@ -56,7 +56,7 @@ if ( !empty($withcomments) && !is_single() ) {
 			<a href="/" id="header_left">&nbsp;</a>
 			<div id="header_right"></div>
 		</div>
-		<a id="my_collex_tab" href="/my_collex" class="my_collex_link">.....</a>
+		<a id="my_collex_tab" href="/my18th" class="my_collex_link">My 18th</a>
 
 		<div id='nav_container'>
 			<a href="/" class="tab_link">HOME</a>
@@ -64,6 +64,7 @@ if ( !empty($withcomments) && !is_single() ) {
 			<a href="/classroom" class="tab_link_long">Classroom</a>
 			<a href="/communities" class="tab_link_long">Community</a>
 			<a href="/publications" class="tab_link_long">Publications</a>
+			<a href="/typewright/documents" class="tab_link_long">TypeWright</a>
 			<a href="/search" class="tab_link">Search</a>
 		</div>
 
@@ -72,7 +73,6 @@ if ( !empty($withcomments) && !is_single() ) {
 				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
 					new Ajax.Updater({ success: 'login_container', failure: 'bit_bucket' }, '/login/login_controls');
-					new Ajax.Updater({ success: 'my_collex_tab', failure: 'bit_bucket' }, '/my_collex/get_tab_name');
 					});
 				</script>
             </div>

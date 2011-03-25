@@ -21,7 +21,7 @@
 
 /*global document */
 /*global $, $$, Class */
-/*global GeneralDialog, CreateListOfObjects, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnotesInRte, recurseUpdateWithAjax */
+/*global GeneralDialog, CreateListOfObjects, LinkDlgHandler, initializeElementEditing, FootnoteAbbrev, FootnotesInRte, serverAction */
 /*global gIllustrationTypes */
 /*extern initializeInplaceHeaderEditor, initializeInplaceIllustrationEditor, initializeInplaceRichEditor */
 /*extern InplaceObjects, inplaceObjectManager */
@@ -125,7 +125,7 @@ var InplaceObjects = Class.create({
 			// the rest of the calls just update the page.
 			var actions = action.split(',');
 			var action_elements = ajax_action_element_id.split(',');
-			recurseUpdateWithAjax(actions, action_elements, callback, null, data);
+			serverAction({action:{actions: actions, els: action_elements, onSuccess: callback, params: data}});
 		};
 	}
 });
@@ -183,15 +183,15 @@ function initializeInplaceRichEditor(element_id, action)
 				page: 'layout',
 				rows: [
 					[ { textarea: 'value', value: startingText } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Ok', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var width = This.getStyle('width');
 		width = parseInt(width) + 10 + 10 + 16;	// This adds room for padding on each side and a scrollbar.
-		var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "exhibit_builder_text_dlg", row_style: "message_box_row", title: 'Enter Text', width: width + 'px' };
+		var dlgparams = { this_id: element_id + "builder_text_input_dlg", pages: [ dlgLayout ], body_style: "exhibit_builder_text_dlg", row_style: "gd_message_box_row", title: 'Enter Text', width: width + 'px' };
 		var dlg = new GeneralDialog(dlgparams);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 
 		var idArr = element_id.split('_');
 		var id = idArr[idArr.length-1];
@@ -256,13 +256,13 @@ function initializeInplaceHeaderEditor(element_id, action)
 			page: 'layout',
 			rows: [
 				[ { text: 'Header: ', klass: 'new_exhibit_label' }, { input: 'value', value: startingText, klass: 'header_input' }, { custom: footnoteAbbrev }, footnoteAbbrev.createEditButton('footnoteEditStar') ],
-				[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
-		var dlgParams = { this_id: "header_dlg", pages: [ dlgLayout ], body_style: "edit_header_dlg", row_style: "new_exhibit_row", title: "Enter Header" };
+		var dlgParams = { this_id: "header_dlg", pages: [ dlgLayout ], body_style: "edit_header_dlg", row_style: "new_exhibit_row", title: "Enter Header", focus: 'value' };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.changePage('layout', 'value');
+		//dlg.changePage('layout', 'value');
 		dlg.center();
 	};
 
@@ -386,29 +386,29 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', change: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
+					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', callback: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
 					[ { text: 'First Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption1', value: { text: values.caption1, isBold: values.caption1_bold === '1', isItalic: values.caption1_italic === '1', isUnderline: values.caption1_underline === '1' }, klass: 'header_input' },
 						{ custom: footnoteAbbrev1 }, footnoteAbbrev1.createEditButton('footnoteEditStar') ],
 					[ { text: 'Second Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption2', value: { text: values.caption2, isBold: values.caption2_bold === '1', isItalic: values.caption2_italic === '1', isUnderline: values.caption2_underline === '1' }, klass: 'header_input' },
 						{ custom: footnoteAbbrev2 }, footnoteAbbrev2.createEditButton('footnoteEditStar2') ],
 
 					[ { text: 'Sort objects by:', klass: 'forum_reply_label nines_only hidden' },
-						{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+						{ select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and nines_only hidden' }, { inputFilter: 'filterObjects', klass: 'nines_only hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
 					[ { text: 'Image URL:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
-					  { page_link: "Exhibit Palette", klass: 'dlg_tab_link_current nines_only hidden', callback: objlist.ninesObjView, new_page: 'exhibit' }, { page_link: "All My Objects", klass: 'dlg_tab_link nines_only hidden', callback: objlist.ninesObjView, new_page: 'all' } ],
+					  { link: "Exhibit Palette", klass: 'dlg_tab_link_current nines_only hidden', callback: objlist.ninesObjView, arg0: 'exhibit' }, { link: "All My Objects", klass: 'dlg_tab_link nines_only hidden', callback: objlist.ninesObjView, arg0: 'all' } ],
 					[ { text: 'Link URL:', klass: 'edit_illustration_label_lined_up not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' }, { custom: objlist, klass: 'dlg_tab_contents nines_only hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
 					[ { text: 'Alt Text:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],
-					[ { rowClass: 'last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: okAction, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_illustration_dlg", row_style: "new_exhibit_row", title: "Edit Illustration" };
+		var dlgParams = { this_id: "illustration_dlg", pages: [ dlgLayout ], body_style: "edit_illustration_dlg", row_style: "new_exhibit_row", title: "Edit Illustration", focus: 'illustration_dlg_sel0' };
 		var dlg = new GeneralDialog(dlgParams);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'alignment', 'list', 'link&footnote' ], linkDlgHandler: new LinkDlgHandler([ populate_exhibit_only, populate_all ], progress_img),
 			footnote: {callback: footnoteHandler.addFootnote, populate_url: [ populate_exhibit_only, populate_all ], progress_img: progress_img } });
-		dlg.changePage('layout', 'illustration_dlg_sel0');
+		//dlg.changePage('layout', 'illustration_dlg_sel0');
 		objlist.populate(dlg, true, 'illust');
 		selChanged(null, values.type);
 		dlg.center();

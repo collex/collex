@@ -15,17 +15,35 @@
 ##########################################################################
 
 namespace :solr do
+	def get_solr_port
+		arr = SOLR_URL.split('/')
+		arr.each { |str|
+			if str.index('localhost:')
+				arr2 = str.split(':')
+				return arr2[1]
+			end
+		}
+		return '0000'
+	end
 
-	desc "Start the solr java app (Prerequisite for running Collex)"
+	desc "Start the solr java app (Prerequisite for running Collex) [param: size=big if indexing something large]"
 	task :start  => :environment do
-		puts "~~~~~~~~~~~ Starting solr..."
-		`cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx1800m -jar start.jar &`
+		sz = ENV["size"]
+		if sz && sz == 'big'
+			sz = "5120"
+		else
+			sz = "2560"
+		end
+		port = get_solr_port()
+		puts "~~~~~~~~~~~ Starting solr on #{port}..."
+		system("cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=#{port} -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx#{sz}m -jar start.jar 2> #{Rails.root}/log/solr.log &")
 	end
 	
 	desc "Stop the solr java app"
 	task :stop  => :environment do
 		puts "~~~~~~~~~~~ Stopping solr..."
-		`cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=8983 -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop`
+		port = get_solr_port()
+		`cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=#{port} -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop`
 		puts "Finished."
 	end
 
@@ -104,13 +122,13 @@ namespace :solr do
 				`cd #{folder} && tar xvfz #{zipfile}`
 				`rm -r -f #{index_path}`
 				`mv #{folder}/index #{index_path}`
-				File.open("#{RAILS_ROOT}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
+				File.open("#{Rails.root}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
 				solr.delete_archive(archive)
 			}
 
 			# delete the cache
 			begin
-				File.delete("#{RAILS_ROOT}/cache/num_docs.txt")
+				File.delete("#{Rails.root}/cache/num_docs.txt")
 			rescue
 			end
 			
@@ -119,7 +137,7 @@ namespace :solr do
 		end
 	end
 
-	desc "Package and copy index to another machine (param=index,machine -- ex: param=merged,nines@nines.org). The remote machine's password will be requested. This is designed for sending the entire resource index."
+	desc "Package and copy index to another machine (param=index,machine -- ex: param=resources,nines@nines.org). The remote machine's password will be requested. This is designed for sending the entire resource index."
 	task :send_index_to_server => :environment do
 		today = Time.now()
 		param = ENV['param']
@@ -135,8 +153,8 @@ namespace :solr do
 				filename = path_of_zipped_index()
 				ENV['index'] = index
 				Rake::Task['solr:zip'].invoke
-				puts "scp #{filename} #{dest}:solr_1.4/solr/data/resources"
-				`scp #{filename} #{dest}:solr_1.4/solr/data/resources`
+				puts "scp #{filename} #{dest}:www/solr_1.4/solr/data/#{index}"
+				`scp #{filename} #{dest}:www/solr_1.4/solr/data/#{index}`
 			end
 		end
 			puts "Finished in #{(Time.now-today)/60} minutes."
@@ -177,6 +195,51 @@ namespace :solr do
 		today = Time.now()
 		Exhibit.unindex_all_exhibits()
 		puts "Finished in #{Time.now-today} seconds."
+	end
+
+	def dump_hit(label, hit)
+		puts " ------------------------------------------------ #{label} ------------------------------------------------------------------"
+		hit.each { |key,val|
+			if val.kind_of?(Array)
+				val.each{ |v|
+					#puts "#{key}: #{trans_str(v)}"
+					if key == 'text'
+						v = v.force_encoding("UTF-8")
+					end
+					puts "#{key}: #{v}"
+				}
+			else
+				#puts "#{key}: #{trans_str(val)}"
+				if key == 'text'
+					val = val.force_encoding("UTF-8")
+				end
+				puts "#{key}: #{val}"
+			end
+		}
+	end
+
+	desc "examine solr document, both in the regular index and the reindexing index (param: uri)"
+	task :examine  => :environment do
+		uri = ENV['uri']
+		solr = CollexEngine.new()
+		hit = solr.get_object_with_text(uri)
+		if hit == nil
+			puts "#{uri}: Can't find this object in the resources."
+			solr = CollexEngine.factory_create(true)
+			hit = solr.get_object_with_text(uri)
+			dump_hit("ARCHIVE", hit)
+		else
+			dump_hit("RESOURCES", hit)
+
+			archive = "archive_#{CollexEngine.archive_to_core_name(hit['archive'])}"
+			solr = CollexEngine.new([archive])
+			hit = solr.get_object_with_text(uri)
+			if hit == nil
+				puts "#{uri}: Can't find this object in the archive."
+			else
+				dump_hit("ARCHIVE", hit)
+			end
+		end
 	end
 
 #	desc "Set aside existing good solr index so that experiments can be run"

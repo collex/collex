@@ -14,8 +14,8 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, Ajax */
-/*global GeneralDialog, genericAjaxFail */
+/*global Class */
+/*global GeneralDialog, serverAction, submitForm */
 /*extern EditProfileDialog, editProfileDlg, stopUpload */
 
 var editProfileDlg = null;
@@ -49,7 +49,7 @@ var EditProfileDialog = Class.create({
 			// Therefore, we we submit the file with a normal html submit, then when that is completed, we do the ajax update.
 			//var thumb = $('image');
 			//var form = thumb.up('form');
-			dlg.submitForm('layout', ok_action + "_upload");	// we have to submit the form normally to get the uploaded file to get transmitted.
+			submitForm('layout', ok_action + "_upload");	// we have to submit the form normally to get the uploaded file to get transmitted.
 		};
 
 		this.fileUploadError = function(errMessage) {
@@ -58,16 +58,10 @@ var EditProfileDialog = Class.create({
 
 		this.fileUploadFinished = function() {
 			var data = dlg.getAllData();
-			new Ajax.Updater(parent_div, ok_action, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
-				}
-			});
+			var onSuccess = function(resp) {
+				dlg.cancel();
+			};
+			serverAction({ action: { actions: ok_action, els: parent_div, params: data, onSuccess:onSuccess }});
 		};
 
 		var dlgLayout = {
@@ -84,13 +78,13 @@ var EditProfileDialog = Class.create({
 					[ { text: 'Re-type password:', klass: 'edit_facet_label' }, { password: 'account_password2', klass: 'edit_facet_input' } ],
 					[ { text: 'About me:', klass: 'edit_facet_label' }, { textarea: 'aboutme', value: user.about_me, klass: 'edit_profile_textarea' } ],
 					[ { text: 'Thumbnail:', klass: 'edit_facet_label' }, { image: 'image', klass: 'edit_profile_image', size: 35, value: curr_image_src, removeButton: 'Remove Thumbnail' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: ok_action, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var params = { this_id: "edit_profile_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Profile" };
+		var params = { this_id: "edit_profile_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Edit Profile", focus: 'fullname' };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', 'fullname');
+		//dlg.changePage('layout', 'fullname');
 		dlg.center();
 	}
 });

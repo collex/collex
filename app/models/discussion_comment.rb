@@ -19,55 +19,66 @@ class DiscussionComment < ActiveRecord::Base
   belongs_to :cached_resource
   belongs_to :exhibit
   acts_as_list :scope => :discussion_thread
+  before_save :b4_save
+  has_many :comment_reports, :dependent => :destroy
   
-  def self.clear_all_report_flags
-    comments = DiscussionComment.all
-    comments.each { |comment|
-      if comment.reported != nil || comment.reported != 0
-        comment.update_attribute(:reported, 0)
-      end
-    }
+  # Return true if this comment has been reported as abusive by anyone
+  #
+  def reported
+    return comment_reports.length > 0
   end
   
+  # Return true if user_id has already reported this comment as abusive
+  #
   def has_been_reported_by(user_id)
-    # This returns true if the user has reported this comment
-    return false if reporter_ids == nil
+    return false if comment_reports.length == 0
     
-    ids = reporter_ids.split(',')
-    ids.each { |id|
-      if id == "#{user_id}"
+    comment_reports.each { |report|
+      if report.reporter_id == user_id
         return true
       end
     }
     return false
   end
   
+  # Get a list of users that have reported this comment as abusive
+  #
+  def get_reporters()
+    reporters = []
+    comment_reports.each do |report|
+      reporters.push( User.find(report.reporter_id) )
+    end  
+    return reporters
+  end
+  
+  # Get a comma separated list of usernames that have reported this comment
+  # as abusive
+  #
   def get_reported_by_list()
-    ids = reporter_ids.split(',')
     names = []
-    ids.each { |id|
-      names.push(User.find(id).fullname)
-    }
+    comment_reports.each do |report|
+  		user = User.find_by_id(report.reporter_id)
+  		if user
+  			names.push(user.fullname)
+  		else
+  			names.push("User not found: #{report.reporter_id}")
+  		end
+    end
     return names.join(", ")
   end
 
-	def has_reporter(user_id)
-		return false if reporter_ids == nil
-		
-		ids = reporter_ids.split(',')
-		i = ids.index("#{user_id}")
-		return i != nil
-	end
-
-  def self.add_reporter(comment, id)
-    ids = "#{id}"
-    if comment.reporter_ids != nil && comment.reporter_ids.length > 0
-      ids = ids + "," + comment.reporter_ids
-    end
-    comment.reporter_ids = ids
+  # reporter_id finds this comment abusive for the specified reason. Mark it as such
+  # in the database
+  #
+  def add_reporter( reporter_id, reason )
+    comment_reports.create(
+      :discussion_comment_id => id, 
+      :reason => reason, 
+      :reporter_id => reporter_id, 
+      :reported_on => Time.now)
   end
   
-  def before_save
+  def b4_save
     a = @attributes
     c = a['comment_type']
     if c == 'comment'
@@ -91,10 +102,10 @@ class DiscussionComment < ActiveRecord::Base
 
   def get_type
     case comment_type
-      when 1: return "comment"
-      when 2: return "nines_object"
-      when 3: return "nines_exhibit"
-      when 4: return "inet_object"
+      when 1 then return "comment"
+      when 2 then return "nines_object"
+      when 3 then return "nines_exhibit"
+      when 4 then return "inet_object"
       else return nil
     end
   end
@@ -124,25 +135,26 @@ class DiscussionComment < ActiveRecord::Base
 		return thread_id
 	end
 
-	def self.remove_abuse_flag(id, url)
-		discussion_comment = DiscussionComment.find(id)
-		reporter_ids = discussion_comment.reporter_ids
-		discussion_comment.update_attributes({ :reported => nil, :reporter_ids => nil })
-		begin
-			ids = reporter_ids.split(',')
-			ids.each { |reporter_id|
-				user = User.find(reporter_id)
-				#LoginMailer.deliver_cancel_abuse_report_to_reporter({ :comment => discussion_comment }, user.email)
-				body = "The administrator rejected your report of the comment by #{User.find(discussion_comment.user_id).fullname} with the text:\n\n"
-				body += "#{self.strip_tags(discussion_comment.comment)}\n\n"
-				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Canceled", body, url, "")
-			}
-		rescue Exception => msg
-			logger.error("**** ERROR: Can't send email: " + msg)
-		end
+	def self.remove_abuse_report(comment_id, report_id, url)
+		discussion_comment = DiscussionComment.find(comment_id)
+	  discussion_comment.comment_reports.each { | report |
+		  if report.id == report_id.to_i()
+    		begin
+  				user = User.find(report.reporter_id)
+  				body = "The administrator rejected your report of the comment by #{User.find(discussion_comment.user_id).fullname} with the text:\n\n"
+  				body += "#{self.strip_tags(discussion_comment.comment)}\n\n"
+  				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Canceled", body, url, "")
+    		rescue Exception => msg
+    			logger.error("**** ERROR: Can't send email: " + msg.message)
+    		end
+    		
+    		discussion_comment.comment_reports.delete report
+    		discussion_comment.save
+    		break
+    	end
+  	}
 	end
 
-	private
 	def self.strip_tags(str)
 		ret = ""
 		arr = str.split('<')

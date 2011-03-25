@@ -18,7 +18,7 @@
 <%# featured_resource param: ActiveRecord feature -%>
 <table class="feature_resource"><tr>
 <td class="feature_image">
-	<img src="<%= feature.image.public_filename(:feature) %>" alt="Featured Resource" />
+	<img src="/<%= feature.image.photo.url(:feature) %>" alt="Featured Resource" />
 </td>
 <td class="feature_text">
 	<div class="feature_text_header"><%= link_to feature.title, feature.object_url, { :class => 'nines_link' } %></div>

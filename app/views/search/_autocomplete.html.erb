@@ -1,0 +1,10 @@
+<% # NOTES: Autocomplete requires a span class 'informal' with a &nbsp; before
+   #        the actual value. If this format is not used, the selected item
+   #        will not be shown in the input box. 
+%>
+
+<ul class="cookies">
+<% @values.each do |value| %>
+   <li class="cookie"><span class="informal">&nbsp;</span><%=value%></li>
+<% end %>
+</ul>

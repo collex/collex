@@ -14,8 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
-require 'rubygems'
-require 'marc'
+#require 'rubygems'
+#require 'marc'
 
 require 'script/lib/marc_ext/lib/marc_ext.rb'
 require 'marc_ext/record'

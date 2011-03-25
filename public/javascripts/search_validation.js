@@ -73,7 +73,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		hint_text_id = phrase_input_id;
 	else hint_text_id = year_input_id;
 	
-	if ($(hint_text_id).hasClassName('inputHintStyle'))
+	if ($(hint_text_id).hasClassName('gd_input_hint_style'))
 	{
 		errorDlg("Please enter some text before searching.");
 	    return false;
@@ -149,14 +149,14 @@ function doSaveSearch()
       element.default_value = default_value;
 
 	  if (element.value === default_value)
-		  element.addClassName('inputHintStyle');
+		  element.addClassName('gd_input_hint_style');
 
       return element.observe('focus', function(){
         if(element.default_value !== element.value) return;
-        element.removeClassName('inputHintStyle').value = '';
+        element.removeClassName('gd_input_hint_style').value = '';
       }).observe('blur', function(){
         if(element.value.strip() !== '') return;
-        element.addClassName('inputHintStyle').value = element.default_value;
+        element.addClassName('gd_input_hint_style').value = element.default_value;
       });
     },
 

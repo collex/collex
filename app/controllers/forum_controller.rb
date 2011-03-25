@@ -63,8 +63,8 @@ class ForumController < ApplicationController
 				render :text => err_msg, :status => :bad_request
 			else
 				rec = { :title => params[:title], :license => params[:license_list], :discussion_topic_id => params[:topic_id] }
-				rec[:group_id] = params[:group_id] if params[:group_id]
-				rec[:cluster_id] = params[:cluster_id] if params[:cluster_id]
+				rec[:group_id] = params[:group_id] if params[:group_id] && params[:group_id].to_i > 0
+				rec[:cluster_id] = params[:cluster_id] if params[:cluster_id] && params[:cluster_id].to_i > 0
 				thread = DiscussionThread.create(rec)
 
 				params[:thread_id] = thread.id
@@ -86,7 +86,11 @@ class ForumController < ApplicationController
 			else
 				create_comment(params, :existing)
 				retrieve_thread({ :thread => params[:thread_id], :page => '-1' })
-				render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread }
+				if @thread
+					render :partial => 'replies', :locals => { :total => @total, :page => @page, :replies => @replies, :num_pages => @num_pages, :thread => @thread }
+				else
+					render :text => 'Sorry! This thread no longer exists.', :status => :bad_request
+				end
 			end
     end
   end
@@ -217,7 +221,7 @@ class ForumController < ApplicationController
   
   public
   def post_object_to_new_thread
-    if !is_logged_in? || params[:topic_id] == nil || request.request_method != :post
+    if !is_logged_in? || params[:topic_id] == nil || request.request_method != 'POST'
       flash[:error] = 'You must be signed in to start a discussion.'
 	  redirect_to :back
     else
@@ -227,8 +231,8 @@ class ForumController < ApplicationController
 	  topic_id = DiscussionTopic.first().id if params[:topic_id] == nil || params[:topic_id].to_i <= 0
 	    license = params[:license_list]
 			rec = { :title => params[:title], :license => license, :discussion_topic_id => topic_id }
-			rec[:group_id] = params[:group_id] if params[:group_id]
-			rec[:cluster_id] = params[:cluster_id] if params[:cluster_id]
+			rec[:group_id] = params[:group_id] if params[:group_id] && params[:group_id].to_i > 0
+			rec[:cluster_id] = params[:cluster_id] if params[:cluster_id] && params[:cluster_id].to_i > 0
       thread = DiscussionThread.create(rec)
 
       begin
@@ -275,6 +279,15 @@ class ForumController < ApplicationController
     render :text => ret.to_json()
   end
   
+  def get_object_details
+		if params[:uri]
+			hit = CachedResource.get_hit_from_uri(params[:uri])
+			render :partial => '/results/result_row_for_popup', :locals => { :hit => hit, :extra_button_data => { :partial => params[:partial], :index => params[:index], :target_el  => params[:target_el]} }
+		else
+			render :text => 'We\'re sorry! We can\'t find the object that you requested. Reason: internal error (incorrect parameters). Please contact the #{SITE_NAME} webmaster using the email at the bottom of the page', :status => :bad_request
+		end
+  end
+
   def get_nines_obj_list
     ret = []
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
@@ -323,8 +336,8 @@ class ForumController < ApplicationController
 						obj = {}
 						obj[:id] = hit['uri']
 						obj[:img] = image
-						obj[:title] = CachedResource.fix_char_set(hit['title'][0])
-						obj[:strFirstLine] = CachedResource.fix_char_set(hit['title'][0])
+						obj[:title] = hit['title'][0]
+						obj[:strFirstLine] = hit['title'][0]
 						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
 						ret.push(obj)
 					end
@@ -351,8 +364,8 @@ class ForumController < ApplicationController
 #						obj = {}
 #						obj[:id] = hit['uri']
 #						obj[:img] = image
-#						obj[:title] = CachedResource.fix_char_set(hit['title'][0])
-#						obj[:strFirstLine] = CachedResource.fix_char_set(hit['title'][0])
+#						obj[:title] = hit['title'][0]
+#						obj[:strFirstLine] = hit['title'][0]
 #						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
 #						ret.push(obj)
 #					end
@@ -450,12 +463,17 @@ class ForumController < ApplicationController
         session[:row_id] = nil
       end
       retrieve_thread(params)
-      num_views = @thread.number_of_views
-      num_views = 0 if num_views == nil
-      num_views += 1
-      @thread.update_attribute(:number_of_views, num_views)
-			DiscussionVisit.visited(@thread, session[:user])
-			@subtitle = " : #{@thread.get_title()}"
+	  if @thread
+		  num_views = @thread.number_of_views
+		  num_views = 0 if num_views == nil
+		  num_views += 1
+		  @thread.update_attribute(:number_of_views, num_views)
+				DiscussionVisit.visited(@thread, session[:user])
+				@subtitle = " : #{@thread.get_title()}"
+	  else
+		  # the thread has disappeared
+		  redirect_to :controller => 'forum', :action => 'index'
+	  end
     end
   end
 
@@ -463,15 +481,17 @@ class ForumController < ApplicationController
   def retrieve_thread(params)
     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
     thread_id = params[:thread]
-    @thread = DiscussionThread.find(thread_id)
-    @page = params[:page] ? params[:page].to_i : 1
-    @replies = @thread.discussion_comments
-    @total = @replies.length-1
-    @num_pages = session[:items_per_page] != 0 ? @total.quo(session[:items_per_page]).ceil : 0
-    @page = @num_pages if @page == -1
-    @page = 1 if @page == 0
-    start = (@page-1) * session[:items_per_page]
-    @replies = @replies.slice(start+1,session[:items_per_page])
+    @thread = DiscussionThread.find_by_id(thread_id)
+	if @thread
+		@page = params[:page] ? params[:page].to_i : 1
+		@replies = @thread.discussion_comments
+		@total = @replies.length-1
+		@num_pages = session[:items_per_page] != 0 ? @total.quo(session[:items_per_page]).ceil : 0
+		@page = @num_pages if @page == -1
+		@page = 1 if @page == 0
+		start = (@page-1) * session[:items_per_page]
+		@replies = @replies.slice(start+1,session[:items_per_page])
+	end
   end
   public
   
@@ -492,33 +512,32 @@ class ForumController < ApplicationController
   
   def report_comment
     if !is_logged_in?
-      flash[:error] = 'You must be signed in to delete a comment.'
+      flash[:error] = 'You must be signed in to report a comment.'
     else
       user = User.find_by_username(session[:user][:username])
       comment_id = params["comment_id"]
+      reason = params['reason']
       can_edit = params['can_edit'] == 'true'
       can_delete = params['can_delete'] == 'true'
       is_main = params['is_main'] == 'true'
       comment = DiscussionComment.find(comment_id)
-			if comment.has_reporter(user.id) == false
-				comment.reported = 1
-				DiscussionComment.add_reporter(comment, user.id)
+			if comment.has_been_reported_by(user.id) == false
+				comment.add_reporter(user.id, reason)
 				comment.save
 				begin
-					ExceptionNotifier.exception_recipients.each { |ad|
-						#LoginMailer.deliver_report_abuse_to_admin({ :comment => comment }, ad)
-						reporters = comment.reporter_ids.split(',')
-						last_reporter = reporters[0]
-						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{User.find(last_reporter).fullname}. The text of the message is:\n\n"
-						body += "#{@template.strip_tags(comment.comment)}\n"
-						EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], "", ad, "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
-					}
+				  admins = User.get_administrators
+				  admins.each do | admin |
+						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{user.fullname}. The text of the message is:\n\n"
+						body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
+						body += "The reason for this report is:\n\n#{reason}"
+						EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], "", admin, 
+						  "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
+					end
 				rescue Exception => msg
-					logger.error("**** ERROR: Can't send email: " + msg)
+					logger.error("**** ERROR: Can't send email: " + msg.message)
 				end
 			end
       render :partial => 'comment', :locals => { :comment => comment, :can_edit => can_edit, :can_delete => can_delete, :is_main => is_main }
-      #redirect_to :action => :view_thread, :thread => comment.discussion_thread_id
     end
   end
   

@@ -89,6 +89,15 @@
 	width:5em;
 }
 
+.can_typewright {
+	background-image: url(/images/type_wright/nines/typewright_icon.png);
+}
+
+.can_typewright:hover {
+	background-image: url(/images/type_wright/nines/typewright_icon_hover.png);
+}
+
+
 #group_license {
 	background: #371911;
 }

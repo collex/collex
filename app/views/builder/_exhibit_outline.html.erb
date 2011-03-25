@@ -1,0 +1,109 @@
+<% #
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+
+<div id="outline_toolbar">
+<%= link_to_function("[New Section]", "doAjaxLinkOnSelection('insert_element', #{exhibit.id} );", { :title => 'New Section', :class => 'modify_link' }) %>
+<%= link_to_function("[New Page]", "doAjaxLinkOnSelection('insert_page', #{exhibit.id} );", { :title => 'New Page', :class => 'modify_link' }) %>
+<%= link_to_function("[Edit Border]", "new BorderDialog();", { :title => 'Edit the border on the current page', :id => 'edit_border', :class => 'modify_link' }) %>
+</div>
+
+<div id="border_controls" class="border_controls" style="display: none; text-align:right;" >
+	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_top_of_border_up', #{exhibit.id} );", { :title => 'Move Top of Border Up', :class => 'modify_link' }) %>
+	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_top_of_border_down', #{exhibit.id} );", { :title => 'Move Top of Border Down', :class => 'modify_link' }) %>
+	<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_border', #{exhibit.id} );", { :title => 'Delete Border', :class => 'modify_link' }) %></span>
+</div>
+
+<div id="border_controls_bottom" class="border_controls" style="display: none; text-align:right;" >
+	<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_bottom_of_border_up', #{exhibit.id} );", { :title => 'Move Bottom of Border Up', :class => 'modify_link' }) %>
+	<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_bottom_of_border_down', #{exhibit.id} );", { :title => 'Move Bottom of Border Down', :class => 'modify_link' }) %>
+</div>
+
+<div id="exhibit_outline_pages" class="hidden">
+<ul id="exhibit_outline" class="outline_tree">
+	<% is_first = true -%>
+<% for page in exhibit.exhibit_pages -%>
+	<% element_count = 1 -%>
+	<li id='outline_page_<%= "#{page.position}" %>' class="unselected_page"><%= tree_node( "#{page.position}", "outline", "exhibit_outline_text", "toggle_by_id", exhibit.id, exhibit.exhibit_pages.length, :open ) %>
+	<div id='outline_<%= "p#{page.position}" %>' class="outline_tree_elements">
+	<% border_active = false -%>
+	<% if page.exhibit_elements.length == 0 -%>
+		<% ajax_actions = "/builder/modify_outline_add_first_element,/builder/redraw_exhibit_page" -%>
+		<% ajax_div = "exhibit_builder_outline_content,exhibit_page" -%>
+		<%= link_to_function("[New Section]", "doAjaxLink('#{ajax_div}', '#{ajax_actions}', { page_id: #{page.id} } );", { :title => 'New Section', :class => 'modify_link' }) %>
+	<% end #if there are no elements on this page -%>
+	<% for element in page.exhibit_elements -%>
+		<% ret = create_border_div(element, border_active, "outline_section_with_border") %>
+		<%= ret[:html] %>
+		<% border_active = ret[:border_active] -%>
+			<div class="outline_element<%= " outline_tree_element_selected" if (is_first == true && element_id_selected.to_i == -1) || (element_id_selected.to_i == element.id.to_i) %>" id='outline_element_<%= element.id %>'>
+					<div class="outline_right_controls">
+						<% if page.position > 1 || element.position > 1 -%>
+							<%= link_to_function(up_char(), "doAjaxLinkOnSelection('move_element_up', #{exhibit.id} );", { :title => 'Move Element Up', :class => 'modify_link' }) %>
+						<% end -%>
+						<% if page.position < exhibit.exhibit_pages.length || element.position < page.exhibit_elements.length -%>
+							<%= link_to_function(down_char(), "doAjaxLinkOnSelection('move_element_down', #{exhibit.id} );", { :title => 'Move Element Down', :class => 'modify_link' }) %>
+						<% end -%>
+						&nbsp;<span class="close_link"><%= link_to_function(del_char(), "doAjaxLinkOnSelection('delete_element', #{exhibit.id} );", { :title => 'Delete Element', :class => 'modify_link' }) %></span>
+					</div>
+				<span class="count"><%= link_to_function "#{element_count}", "selectLine('outline_element_#{element.id}')" %></span>
+				<% element_count = element_count + 1 -%>
+				<% is_first = false -%>
+				<span onclick="selectLine('outline_element_<%= element.id %>')">
+				<% if element.exhibit_element_layout_type == 'text' -%>
+					<%= element_text_thumbnail(element.element_text) %>
+				<% elsif element.exhibit_element_layout_type == 'blockquote' -%>
+					<%= element_text_thumbnail(element.element_text) %>
+				<% elsif element.exhibit_element_layout_type == 'header' -%>
+					<span class="exhibit_outline_header"><b><big><%= strip_tags(element.element_text) %></big></b></span>
+				<% elsif element.exhibit_element_layout_type == 'pics' -%>
+					<% illustrations = element.exhibit_illustrations -%>
+					<%= "[Illustrations: none specified]" if illustrations.length == 0 %>
+					<% for illustration in illustrations -%>
+					<%= element_pic_thumbnail_illustration(illustration) %>
+					<% end -%>
+				<% elsif element.exhibit_element_layout_type == 'pic_text' -%>
+					<%= element_pic_thumbnail(element, 0) %>
+					<%= element_text_thumbnail(element.element_text) %>
+				<% elsif element.exhibit_element_layout_type == 'text_pic' -%>
+					<%= element_text_thumbnail(element.element_text) %>
+					<%= element_pic_thumbnail(element, 0) %>
+				<% elsif element.exhibit_element_layout_type == 'pic_text_pic' -%>
+					<%= element_pic_thumbnail(element, 0) %>
+					<%= element_text_thumbnail(element.element_text) %>
+					<%= element_pic_thumbnail(element, 1) %>
+				<% elsif element.exhibit_element_layout_type == 'text_pic_text' -%>
+					<%= element_text_thumbnail(element.element_text) %>
+					<%= element_pic_thumbnail(element, 0) %>
+					<%= element_text_thumbnail(element.element_text2) %>
+				<% else -%>
+					Error: unknown type
+				<% end # type of element -%>
+				</span>
+			</div>
+	<% end # each element -%>
+	<%= raw('</div>') if @border_active %>
+	</div>
+	</li>
+<% end # each page -%>
+</ul>
+</div>
+
+<script type="text/javascript">
+	setPageSelected();
+	setOutlineHeight();
+	$("exhibit_outline_pages").removeClassName("hidden");
+</script>

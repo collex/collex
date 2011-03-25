@@ -18,8 +18,11 @@ class ExhibitObject < ActiveRecord::Base
   belongs_to :exhibit
   
   def self.add(exhibit_id, uri)
+	  # Don't add a nil or blank object
+	  return nil if uri == nil || uri.length == 0
+
     # Don't add a duplicate
-    obj = self.find(:first, :conditions => [ "exhibit_id = ? AND uri = ?", exhibit_id, uri ])
+    obj = self.find_by_exhibit_id_and_uri(exhibit_id, uri)
     return obj if obj != nil
     
     return self.create(:exhibit_id => exhibit_id, :uri => uri)
@@ -44,7 +47,7 @@ class ExhibitObject < ActiveRecord::Base
         if str != ""
           str += ",\n"
         end
-        str += "{ uri: '#{obj.uri}', thumbnail: '#{image}', title: '#{CachedResource.fix_char_set(self.escape_quote(hit['title']))}'}"
+        str += "{ uri: '#{obj.uri}', thumbnail: '#{image}', title: '#{self.escape_quote(hit['title'])}'}"
       end
     }
     
@@ -59,7 +62,7 @@ class ExhibitObject < ActiveRecord::Base
       if hit != nil
         image = CachedResource.get_thumbnail_from_hit(hit)
         image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
-        arr.insert(-1, { :image => image, :title => CachedResource.fix_char_set(self.escape_quote(hit['title'])), :uri => obj.uri } )
+        arr.insert(-1, { :image => image, :title => self.escape_quote(hit['title']), :uri => obj.uri } )
       end
     }
     

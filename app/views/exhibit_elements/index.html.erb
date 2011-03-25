@@ -84,14 +84,14 @@ end -%>
 
 <% for record in records %>
   <tr>
-    <td><%=h record[:exhibit_element_id] %></td>
-    <td><%=h record[:exhibit] %></td>
-    <td><%=h record[:new_page] %>/<%= record[:page] %></td>
-    <td><%=h record[:position] %></td>
-    <td><%=h record[:layout_type] %></td>
-    <td><%=h record[:thumbnail] %></td>
-    <td><%=h record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
-    <td><%=h record[:border] %></td>
+    <td><%= record[:exhibit_element_id] %></td>
+    <td><%= record[:exhibit] %></td>
+    <td><%= record[:new_page] %>/<%= record[:page] %></td>
+    <td><%= record[:position] %></td>
+    <td><%= record[:layout_type] %></td>
+    <td><%= record[:thumbnail] %></td>
+    <td><%= record[:illustration_list].each { |ill| "#{ill['id']}," } %></td>
+    <td><%= record[:border] %></td>
     <td><%= link_to 'Edit', edit_exhibit_element_path(record[:exhibit_element]), :class => 'nav_link' %></td>
     <td><%= link_to 'Destroy', record[:exhibit_element], :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %></td>
   </tr>
@@ -155,7 +155,7 @@ end -%>
     <td><%#= log.user %></td>
     <td><%#= log.request_method %></td>
     <td><%#= log.request_uri %></td>
-    <td><%#=h log.params %></td>
+    <td><%#= log.params %></td>
     <td><%#= log.http_referer %></td>
     <td><%#= log.updated_at %></td>
   </tr>

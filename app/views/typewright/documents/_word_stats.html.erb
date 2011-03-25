@@ -1,0 +1,44 @@
+<%# partial word_stats -- params: array word_stats, array doc_word_stats %>
+<% if word_stats != nil %>
+	<table class="tw_word_stats">
+		<caption>DEBUGGING INFO: Word statistics by occurrence</caption>
+		<tr>
+			<th></th>
+			<th>Odd punctuation</th><th>1 occurrence</th>
+			<th>2 occurrences</th><th>3 occurrences</th>
+			<th>Many occurrences</th>
+		</tr>
+		<tr>
+			<td>This page:</td>
+			<% 5.times { |x| %>
+				<td><%= word_stats[x].length %>:
+					<select>
+						<% word_stats[x].each { |w| %>
+							<% begin %>
+							<option><%= w %></option>
+							<% rescue %>
+								<option>Error: NON-UTF8</option>
+							<% end %>
+						<% } %>
+					</select>
+				</td>
+			<% } %>
+		</tr>
+		<tr>
+			<td>First 100 pages:</td>
+			<% 5.times { |x| %>
+				<td><%= doc_word_stats[x].length %>:
+					<select>
+						<% doc_word_stats[x].each { |w| %>
+							<% begin %>
+							<option><%= w %></option>
+							<% rescue %>
+								<option>Error: NON-UTF8</option>
+							<% end %>
+						<% } %>
+					</select>
+				</td>
+			<% } %>
+		</tr>
+	</table>
+<% end %>

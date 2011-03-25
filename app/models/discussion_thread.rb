@@ -19,25 +19,28 @@ class DiscussionThread < ActiveRecord::Base
 	belongs_to :group
 	belongs_to :cluster
   has_many :discussion_comments, :order => :position
-	has_and_belongs_to_many :users
+#	has_and_belongs_to_many :users
   
   def get_title
     if title && title.length > 0
       return title
     end
-    
+
+	if discussion_comments.length == 0
+		return "No title"
+	end
     ty = discussion_comments[0].get_type()
     case ty
-      when "comment":
+      when "comment" then
         return title
-      when "nines_object":
+      when "nines_object" then
         hit = CachedResource.get_hit_from_resource_id(discussion_comments[0].cached_resource_id)
-        return CGI.escapeHTML(CachedResource.fix_char_set(hit["title"][0])) if hit != nil && hit["title"]
+        return CGI.escapeHTML(hit["title"][0]) if hit != nil && hit["title"]
         return "object" # If the object isn't found in the cache or is somehow not complete.
-      when "nines_exhibit":
+      when "nines_exhibit" then
         exhibit = Exhibit.find(discussion_comments[0].exhibit_id)
         return CGI.escapeHTML(exhibit.title)
-      when "inet_object":
+      when "inet_object" then
         return discussion_comments[0].link_url
     end
   end

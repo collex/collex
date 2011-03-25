@@ -14,12 +14,13 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, Element, Ajax, Form */
-/*global MessageBoxDlg, GeneralDialog, SelectInputDlg, SignInDlg, ninesObjCache, ConfirmDlg, TextInputDlg, RteInputDlg, LinkDlgHandler, recurseUpdateWithAjax, genericAjaxFail */
+/*global Class, $, $$, Element, Form */
+/*global MessageBoxDlg, GeneralDialog, SelectInputDlg, SignInDlg, ninesObjCache, serverAction, TextInputDlg, RteInputDlg, LinkDlgHandler, serverAction, serverRequest, genericAjaxFail, gotoPage */
 /*global ForumLicenseDisplay */
-/*global document, window */
+/*global document */
+/*global submitForm, submitFormWithConfirmation */
 /*global exhibit_names */
-/*extern ResultRowDlg, StartDiscussionWithObject, bulkCollect, bulkTag, bulk_checked, doAddTag, doAddToExhibit, doAnnotation, doCollect, doRemoveCollect, doRemoveTag, encodeForUri, expandAllItems, getFullText, realLinkToEditorLink, removeHidden, tagFinishedUpdating, toggleAllBulkCollectCheckboxes */
+/*extern collapseAllItems, toggleItemExpand, ResultRowDlg, StartDiscussionWithObject, bulkCollect, bulkUncollect, bulkTag, bulk_checked, doAddTag, doAddToExhibit, doAnnotation, doCollect, doRemoveCollect, doRemoveTag, encodeForUri, expandAllItems, getFullText, realLinkToEditorLink, removeHidden, tagFinishedUpdating, toggleAllBulkCollectCheckboxes */
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -74,30 +75,25 @@ var ResultRowDlg = Class.create({
 		var ajax_params = extra_button_data;
 		ajax_params.uri = uri;
 		var populate = function() {
-			new Ajax.Request(populate_action, { method: 'get', parameters: ajax_params,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.setFlash('', false);
-					try {
-						obj = resp.responseText; //.evalJSON(true);
-					} catch (e) {
-						genericAjaxFail(dlg, e);
-					}
-					
-					
-					// We got the details. Now put it on the dialog.
-					var details_arr = $$('.result_row_details');
-					var details = details_arr[0];
-					details.update(obj);
-					var hidden_els = details.select(".search_result_data .hidden");
-					hidden_els.each(function(el) {
-						el.removeClassName('hidden');
-					});
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
+			var onSuccess = function(resp) {
+				dlg.setFlash('', false);
+				try {
+					obj = resp.responseText; //.evalJSON(true);
+				} catch (e) {
+					genericAjaxFail(dlg, e, populate_action);
 				}
-			});			
+
+
+				// We got the details. Now put it on the dialog.
+				var details_arr = $$('.result_row_details');
+				var details = details_arr[0];
+				details.update(obj);
+				var hidden_els = details.select(".search_result_data .hidden");
+				hidden_els.each(function(el) {
+					el.removeClassName('hidden');
+				});
+			};
+			serverRequest({ url: populate_action, params: ajax_params, onSuccess: onSuccess});
 		};
 		
 		// privileged functions
@@ -105,13 +101,13 @@ var ResultRowDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { text: '<img src="' + progress_img + '" alt="Please wait..." />', klass: 'result_row_details' } ],
-					[ { rowClass: 'last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};
 		
 		var params = { this_id: "result_row_dlg", pages: [ dlgLayout ], body_style: "result_row_dlg", row_style: "result_row_row", title: "Object Details" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 		populate();
 	}
@@ -119,7 +115,7 @@ var ResultRowDlg = Class.create({
 
 // -----
 
-function bulkTag(event)
+function bulkTag(autocomplete_url)
 {
 	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
 
@@ -138,9 +134,13 @@ function bulkTag(event)
 		var params = {
 			title: "Add Tag To All Checked Objects",
 			prompt: 'Tag:',
-			id: 'tag',
+			id: 'tag[name]',
 			okStr: 'Save',
+			explanation_text: 'Add multiple tags by separating them with a comma (e.g. painting, visual_art)',
+         explanation_klass: 'gd_text_input_help',
 			extraParams: { uris: uris },
+			autocompleteParams: { url: autocomplete_url, token: ','},
+      inputKlass: 'new_exhibit_autocomplete',
 			actions: [ '/results/bulk_add_tag' ],
 			target_els: [ null ]
 		};
@@ -153,10 +153,59 @@ function bulkTag(event)
 	}
 }
 
-function bulkCollect()
+function bulkCollect(autocompleteUrl)
 {
+   var BulkTagDlg = Class.create({
+      initialize: function ( params ) {
+         var title = params.title;
+         var addAction = params.addAction;
+         var skipAction = params.skipAction; 
+         var dlg = null;
+         var id='tag[name]';
+         var msg = 'Your objects have been collected. Would you like to add a tag to the batch?';
+         var prompt = 'Tag:';
+         var hint = 'Add multiple tags by separating them with a comma (e.g. painting, visual_art)';
+         
+         // privileged functions
+         this.add = function(event, addParams)
+         {
+            addParams.dlg.cancel();
+            var data = addParams.dlg.getAllData();
+            var tag = data[id];
+            addAction(tag);
+         };
+         this.skip = function(event, skipParams)
+         {
+            skipParams.dlg.cancel();
+            skipAction();
+         };  
+  
+         var dlgLayout = {
+            page: 'layout',
+            rows: 
+            [
+               [{text: msg, klass: 'gd_text_input_dlg_label'}],
+               [ { text: prompt, klass: 'gd_text_input_dlg_label' }, 
+                 { autocomplete: id, klass: 'new_exhibit_autocomplete', url: autocompleteUrl, token: ','} ],
+               [ {text: hint, id: "gd_postExplanation", klass: 'gd_text_input_help'}], 
+               [ { rowClass: 'gd_last_row'}, 
+                 {button: "Add Tags", callback: this.add, isDefault: true}, 
+                 {button: 'Skip Tags', callback: this.skip} ]
+            ]
+         };
+         dlgLayout.rows.push();
+         
+         var dlgparams = {this_id: "gd_text_input_dlg", pages: [ dlgLayout ], body_style: "gd_message_box_dlg", row_style: "gd_message_box_row", 
+            title: title, focus: GeneralDialog.makeId(id)};
+         dlg = new GeneralDialog(dlgparams);
+         dlg.center();
+      }
+   });
+
+   // get all of the checkboxes on the bulk form
 	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
 
+   // see if any are checked
 	var has_one = false;
 	for (var i = 0; i < checkboxes.length; i++) {
 		var checkbox = checkboxes[i];
@@ -166,9 +215,45 @@ function bulkCollect()
 	}
 
 	if (has_one)
+	{  
+	   var tagAction = function(tagName)
+      {   
+         var ele = $('bulk_tag_text');
+         ele.value = tagName;
+         submitForm("bulk_collect_form", "/results/bulk_collect", "post");
+      };
+      var noTagAction = function()
+      {
+         submitForm("bulk_collect_form", "/results/bulk_collect", "post");
+      };
+      
+      new BulkTagDlg({title:"Tag Selections", addAction: tagAction, skipAction:noTagAction});
+	}
+	else
 	{
-		var form = document.getElementById('bulk_collect_form');
-		form.submit();
+		new MessageBoxDlg("Error", "You must select one or more objects before clicking this button.");
+	}
+}
+
+function bulkUncollect()
+{
+	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
+	var has_one = false;
+	for (var i = 0; i < checkboxes.length; i++) 
+	{
+		var checkbox = checkboxes[i];
+		if (checkbox.checked) 
+		{
+			has_one = true;
+			break;
+		}
+	}
+	
+	if (has_one)
+	{
+			submitFormWithConfirmation({id:"bulk_collect_form", action:"/results/bulk_uncollect",
+        title:"Remove Selected Objects from Collection?", 
+        message:"Are you sure you wish to remove the selected objects from your collection?"});
 	}
 	else
 	{
@@ -203,6 +288,31 @@ function expandAllItems()
 	$$('.more').each(function (el) { el.update(el.innerHTML.gsub("more", "less")); });
 }
 
+function collapseAllItems()
+{
+   $$('.search_result_data .was_hidden').each(function (el) { el.removeClassName('was_hidden'); el.addClassName('hidden'); });
+   $$('.more').each(function (el) { el.update(el.innerHTML.gsub("less", "more")); });
+}
+
+function toggleItemExpand()
+{
+   var exp = document.getElementById("expand_all");
+   var col = document.getElementById("collapse_all");
+   if (col.style.display === 'none')
+   {
+      exp.style.display = 'none';
+      col.style.display = '';
+      expandAllItems();
+   }
+   else
+   {
+      exp.style.display = '';
+      col.style.display = 'none';
+      collapseAllItems();
+   }
+   
+}
+
 function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 {
 	if (!is_logged_in) {
@@ -220,15 +330,11 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 
 	var less = $('less-search_result_'+row_num);
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
-	new Ajax.Updater(row_id, "/results/collect", {
-		parameters : params,
-		evalScripts : true,
-		onSuccess: function(resp) {
-			if (successCallback) successCallback(resp);
-			if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
-		},
-		onFailure : function(resp) { genericAjaxFail(null, resp); }
-	});
+	var onSuccess = function(resp) {
+		if (successCallback) successCallback(resp);
+		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+	};
+	serverAction({ action: { actions: "/results/collect", els: row_id, params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
 
 	// This operation changes the set of collected objects, so we need to request them again next time.
 	if (ninesObjCache)
@@ -240,9 +346,7 @@ function tagFinishedUpdating()
 	var el_sidebar = document.getElementById('tag_cloud_div');
 	if (el_sidebar)
 	{
-		new Ajax.Updater('tag_cloud_div', "/tag/update_tag_cloud", {
-			onFailure : function(resp) { genericAjaxFail(null, resp); }
-		});
+		serverAction({ action: { actions: "/tag/update_tag_cloud", els: 'tag_cloud_div' }});
 	}
 }
 
@@ -252,52 +356,46 @@ function doRemoveTag(uri, row_id, tag_name)
 	var row_num = row_id.substring(row_id.lastIndexOf('_')+1);
 
 	var less = $('less-search_result_'+row_num);
-	new Ajax.Updater(row_id, "/results/remove_tag", {
-		parameters : "uri="+ encodeForUri(uri) + "&row_num=" + row_num + "&tag=" + encodeForUri(tag_name) + "&full_text=" + full_text,
-		evalScripts : true,
-		onSuccess : function(resp) {
-			tagFinishedUpdating();
-			if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
-		},
-		onFailure : function(resp) { genericAjaxFail(null, resp); }
-	});
+	var onSuccess = function(resp) {
+		tagFinishedUpdating();
+		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+	};
+	serverAction({ action: { actions: "/results/remove_tag", els: row_id, params: { uri: uri, row_num: row_num, tag: tag_name, full_text: full_text }, onSuccess:onSuccess }});
 }
 
 function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 {
-	var uncollect = function() {
-		var tr = document.getElementById(row_id);
-		tr.className = 'result_without_tag';
-		var full_text = getFullText(row_id);
-		var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
+	var tr = document.getElementById(row_id);
+	tr.className = 'result_without_tag';
+	var full_text = getFullText(row_id);
+	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 
-		var less = $('less-search_result_'+row_num);
-		new Ajax.Updater(row_id, "/results/uncollect", {
-			parameters : params,
-			evalScripts : true,
-			onSuccess: function(resp) {
-				if (successCallback) successCallback(resp);
-				if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
-			},
-			onFailure : function(resp) { genericAjaxFail(null, resp); }
-		});
+	var less = $('less-search_result_'+row_num);
 
+	var onSuccess = function(resp) {
+		if (successCallback) successCallback(resp);
+		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
 		// This operation changes the set of collected objects, so we need to request them again next time.
 		if (ninesObjCache)
 			ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
 	};
-	new ConfirmDlg("Remove Object from Collection?", "Are you sure you wish to remove this object from your collection?", "Yes", "No", uncollect);
+
+	serverAction({confirm: { title: "Remove Object from Collection?", message: "Are you sure you wish to remove this object from your collection?"}, action: { actions: "/results/uncollect", els: row_id, onSuccess: onSuccess, params: params }, progress: { waitMessage: 'Removing collected object...' }});
 }
 
-function doAddTag(parent_id, uri, row_num, row_id)
+function doAddTag(autocomplete_url, parent_id, uri, row_num, row_id)
 {
 	var less = $('less-search_result_'+row_num);
 	var params = {
 		title: "Add Tag",
 		prompt: 'Tag:',
-		id: 'tag',
+		explanation_text: 'Add multiple tags by separating them with a comma (e.g. painting, visual_art)',
+		explanation_klass: 'gd_text_input_help',
+		id: 'tag[name]',
 		okStr: 'Save',
 		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) },
+		autocompleteParams: { url: autocomplete_url, token: ','},
+		inputKlass: 'new_exhibit_autocomplete',
 		actions: [ '/results/add_tag', '/tag/update_tag_cloud' ],
 		target_els: [ row_id, 'tag_cloud_div' ],
 		onSuccess: function(resp) { if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num); }
@@ -365,7 +463,7 @@ function doAnnotation(uri, row_num, row_id, curr_annotation_id, populate_collex_
 	existing_note = realLinkToEditorLink(existing_note);
 
 	var okCallback = function(value) {
-		recurseUpdateWithAjax("/results/set_annotation", row_id, null, null, { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) });
+		serverAction({action:{actions: "/results/set_annotation", els: row_id, params: { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) }}});
 	};
 
 	new RteInputDlg({
@@ -397,8 +495,7 @@ var StartDiscussionWithObject = Class.create({
 		// private functions
 		var populate = function()
 		{
-			new Ajax.Request(url_get_topics, { method: 'get', parameters: { },
-				onSuccess : function(resp) {
+			var onSuccess = function(resp) {
 					var topics = [];
 					dlg.setFlash('', false);
 					try {
@@ -416,18 +513,15 @@ var StartDiscussionWithObject = Class.create({
 						select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
 					});
 					$('topic_id').writeAttribute('value', topics[0].value);
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
-				}
-			});
+				};
+			serverRequest({ url: url_get_topics, onSuccess: onSuccess});
 		};
 
 		// privileged functions
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 			var dlg = params.dlg;
 
 			dlg.setFlash('Updating Discussion Topics...', false);
@@ -440,21 +534,15 @@ var StartDiscussionWithObject = Class.create({
 			data.inet_title = "";
 			data.disc_type = "NINES Object";
 
-			new Ajax.Request(url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					$(discussion_button).hide();
-					dlg.cancel();
-					window.location = resp.responseText;
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
-				}
-			});
+			var onSuccess = function(resp) {
+				$(discussion_button).hide();
+				dlg.cancel();
+				gotoPage(resp.responseText);
+			};
+			serverRequest({ url: url, params: data, onSuccess: onSuccess});
 		};
 
-		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my_collex/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/exhibits/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [
@@ -464,14 +552,14 @@ var StartDiscussionWithObject = Class.create({
 					[ { text: 'Title', klass: 'forum_reply_label title ' } ],
 					[ { input: 'title', klass: 'forum_reply_input title' } ],
 					[ { textarea: 'description' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic" };
+		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Choose Discussion Topic", focus: 'start_discussion_with_object_dlg_sel0' };
 		dlg = new GeneralDialog(params);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_collex_obj_url], progress_img) });
-		dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
+		//dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
 		licenseDisplay.populate(dlg);
 		dlg.center();
 		populate(dlg);
@@ -498,7 +586,7 @@ function doAddToExhibit(partial, uri, index, row_id)
 			title: "Choose exhibit",
 			prompt: 'Exhibit:',
 			id: 'exhibit',
-			actions: [ "/results/add_object_to_exhibit", "/my_collex/resend_exhibited_objects" ],
+			actions: [ "/results/add_object_to_exhibit", "/results/resend_exhibited_objects" ],
 			target_els: [ row_id, "exhibited_objects_container" ],
 			okStr: "Save",
 			options: options,

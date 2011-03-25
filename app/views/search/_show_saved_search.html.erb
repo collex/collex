@@ -21,7 +21,7 @@
 
 <% if is_logged_in? -%>
 	<% if session[:name_of_search] -%>
-		: <%= h(session[:name_of_search]) %>
+		: <%= session[:name_of_search] %>
 		<%= create_saved_search_permalink(session[:name_of_search]) %>
 	<% else # if there is no name for this search -%>
 		<% if has_constraints? -%>

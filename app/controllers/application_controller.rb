@@ -13,44 +13,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-
-# Filters added to this controller apply to all controllers in the application.
-# Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
-  include ExceptionNotifiable
-  
-  #session :session_key => "_nines_user_session"
   session_times_out_in 4.hours
-  
-  helper :all # include all helpers, all the time
-  #protect_from_forgery # See ActionController::RequestForgeryProtection for details
-  # Scrub sensitive parameters from your log
-  filter_parameter_logging "password"
-  
-#  local_addresses.clear  #uncomment to test e-mails locally in development mode
-  
   before_filter :set_charset
   before_filter :session_create
   
   helper_method :is_logged_in?, :username, :user,
-                :is_admin?, :get_curr_user_id
-  
-  private
-	def new_constraints_obj()
-		return [ FederationConstraint.new(:field => 'federation', :value => DEFAULT_FEDERATION, :inverted => false) ]
+                :is_admin?, :get_curr_user_id, :respond_to_file_upload
+
+	def test_exception_notifier
+		raise "This is only a test of the automatic notification system."
 	end
 
-    def session_create
-	    ActionMailer::Base.default_url_options[:host] = request.host_with_port
-			ExceptionNotifier.email_prefix = ExceptionNotifier.email_prefix.gsub('*', ":#{request.host}")
-      session[:constraints] ||= new_constraints_obj()
-	  solr = CollexEngine.new()
-      session[:num_docs] ||= solr.num_docs()
-	  session[:num_sites] ||= solr.num_sites()
-      session[:num_docs] ||= 0
-      session[:num_sites] ||= 0
-			# This will write the log to the database. That is useful in deployments where you can't easily get to the log files.
-      #Log.append_record(session, request.env, params)
+	def test_error_response
+		render :text => 'This is a test message from the server.', :status => :bad_request
+	end
+
+  private
+	def new_constraints_obj()
+		return [ FederationConstraint.new(:fieldx => 'federation', :value => DEFAULT_FEDERATION, :inverted => false) ]
+	end
+
+	def session_create
+		ActionMailer::Base.default_url_options[:host] = request.host_with_port
+		if !self.kind_of?(TestJsController)
+			session[:constraints] ||= new_constraints_obj()
+			solr = CollexEngine.new()
+			session[:num_docs] ||= solr.num_docs()
+			session[:num_sites] ||= solr.num_sites()
+			session[:num_docs] ||= 0
+			session[:num_sites] ||= 0
+		end
     end
   
     def set_charset
@@ -70,7 +63,6 @@ class ApplicationController < ActionController::Base
       end
       return false
     end
-  
     def username
       session[:user] ? session[:user][:username] : nil
     end
@@ -85,7 +77,7 @@ class ApplicationController < ActionController::Base
 			user = User.find_by_username(user[:username])
 			return user
 		end
-
+  protect_from_forgery
 		def get_curr_user_id
 			user = session[:user]
 			return nil if user == nil
@@ -95,21 +87,21 @@ class ApplicationController < ActionController::Base
 
     def render_404
       respond_to do |type|
-        type.html { render :file => "#{RAILS_ROOT}/public/static/#{SKIN}/404.html", :status => "404 Not Found" }
+        type.html { render :file => "#{Rails.root}/public/static/#{SKIN}/404.html", :status => "404 Not Found", :layout => false }
         type.all  { render :nothing => true, :status => "404 Not Found" }
       end
     end
 
     def render_422
       respond_to do |type|
-        type.html { render :file => "#{RAILS_ROOT}/public/static/#{SKIN}/422.html", :status => "422 Error" }
+        type.html { render :file => "#{Rails.root}/public/static/#{SKIN}/422.html", :status => "422 Error", :layout => false }
         type.all  { render :nothing => true, :status => "422 Error" }
       end
     end
 
     def render_500
       respond_to do |type|
-        type.html { render :file => "#{RAILS_ROOT}/public/static/#{SKIN}/500.html", :status => "500 Error" }
+        type.html { render :file => "#{Rails.root}/public/static/#{SKIN}/500.html", :status => "500 Error", :layout => false }
         type.all  { render :nothing => true, :status => "500 Error" }
       end
     end
@@ -133,5 +125,9 @@ class ApplicationController < ActionController::Base
             request, data)
       end
     end
+
+	def respond_to_file_upload(callback, message)
+	  return "<script type='text/javascript'>window.top.window.#{callback}('#{message}');</script>"
+	end
 
 end

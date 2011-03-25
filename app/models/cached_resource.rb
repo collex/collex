@@ -19,7 +19,10 @@ class CachedResource < ActiveRecord::Base
   validates_uniqueness_of :uri
   after_create :copy_solr_resource
   
-  has_and_belongs_to_many :tags
+  has_many :tagassigns 
+  has_many :tags, :through => :tagassigns 
+  
+  #has_and_belongs_to_many :tags
   has_many :cached_properties, :dependent => :destroy
   has_one :collected_items
   alias properties cached_properties
@@ -46,7 +49,7 @@ class CachedResource < ActiveRecord::Base
   private
   def self.tag_cloud(user)
     sql_no_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name"
-    sql_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id join collected_items as i on tagassigns.collected_item_id=i.id where user_id=? group by name order by name"
+    sql_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id where user_id=? group by name order by name"
           
     cloud_of_ar_objects = if user.nil? 
       find_by_sql([ sql_no_user ]) 
@@ -62,6 +65,31 @@ class CachedResource < ActiveRecord::Base
     end
   end
   public
+  
+  # Add the resource at the specified URI to the cache
+  #
+  def self.add( uri )
+	  # just get it from the cache if it were already added.
+	  hit = self.get_hit_from_uri(uri)
+	  return hit if hit
+
+	  # The object isn't in the cache, so put it there
+      cached_resource = CachedResource.new(:uri => uri)
+      hit = CollexEngine.new().get_object(uri)
+      cached_resource.set_hit(hit)
+      cached_resource.save!
+
+	  # Retrieve it from the cache instead of returning it directly, because the cache may filter some fields.
+	  # This way we know for sure that we will get the same results every time we call it.
+	  hit = self.get_hit_from_uri(uri)
+	  return hit
+  end
+  
+  # check if the specified URI exists as a cached resource
+  #
+  def self.exists(uri)
+    return ( CachedResource.where(:uri => uri ).count > 0)
+  end
 
 	def self.get_most_popular_tags(num)
 		cloud_info = CachedResource.get_tag_cloud_info(nil) # get all tags and their frequencies
@@ -119,39 +147,73 @@ class CachedResource < ActiveRecord::Base
     cloud_freq = self.tag_cloud(user) # cloud_freq is an array of arrays, with the inner array containing 0=tag_name, 1=frequency
 
     if cloud_freq.empty?
-      return { :cloud_freq => cloud_freq, :bucket_size => {} }
+      return { :cloud_freq => cloud_freq, :zoom_levels => {} }
     end
   
-    # create a hash of buckets so we can see each frequency.
-    # the key is a frequency, and the value is the number of tags with that frequency.
-    buckets = {}
+    # create a hash so we can see the frequency totals
+    # the key is tag frequency, and the value is the number of tags with that frequency.
+    freq_totals = {}
     cloud_freq.each do |item|
-      size = item.last
-      if buckets[size]
-        buckets[size] = buckets[size] + 1
+      tag_freq = item.last
+      if freq_totals[tag_freq]
+        freq_totals[tag_freq] = freq_totals[tag_freq] + 1
       else
-        buckets[size] = 1
+        freq_totals[tag_freq] = 1
       end
     end # for each item in cloud_freq
-    buckets = buckets.sort
     
-    bucket_size = {}
-    bucket = 1
-    total_tags_left = cloud_freq.length
-    ideal_tags_per_bucket = total_tags_left / (11 - bucket)
-    num_in_this_bucket = 0
-    buckets.each do |key,value|
-      bucket_size[key] = bucket
-      num_in_this_bucket = num_in_this_bucket + value
-      total_tags_left = total_tags_left - value
-      if num_in_this_bucket > ideal_tags_per_bucket && bucket < 10
-        bucket += 1
-        num_in_this_bucket = 0
-        ideal_tags_per_bucket = total_tags_left / (11 - bucket)
-      end # if we're starting a new bucket
-    end # for each item in the bucket hash
-
-    return { :cloud_freq => cloud_freq, :bucket_size => bucket_size }
+    
+    # order the freq_totals from lowest frequency to highest
+    freq_totals = freq_totals.sort
+    
+    # there are 10 zoom levels. Each level has a set of 10 buckets
+    # containing tags of increasing frequency (ie bucket 1 contains tags
+    # that occur least frequenly and bucket 10 contains tags that occur most frequently
+    zoom_levels = []
+    for zoom_level in 1..10 do
+       bucket_size = {}
+       bucket = 1
+       curr_zoom = 1
+       
+       # one entry in coud_freq for each unique tag, so total tags is length of array
+       total_tags_left = cloud_freq.length   
+       
+       # even distrib of tags per bucket
+       ideal_tags_per_bucket = total_tags_left / 10 
+       num_in_this_bucket = 0
+        
+       freq_totals.each do |freq, tag_count|
+         # throw away tags that are less than the current zoom level
+         if curr_zoom < zoom_level
+            num_in_this_bucket = num_in_this_bucket + tag_count
+            total_tags_left = total_tags_left - tag_count
+            if num_in_this_bucket > ideal_tags_per_bucket
+               curr_zoom += 1
+               num_in_this_bucket = 0
+               ideal_tags_per_bucket = total_tags_left / (11 - bucket)
+            end
+         else
+            # once curr zoom level is greater or equal to target zoom,
+            # start throwing them into buckets
+            bucket_size[freq] = bucket
+            num_in_this_bucket = num_in_this_bucket + tag_count
+            total_tags_left = total_tags_left - tag_count
+            if num_in_this_bucket > ideal_tags_per_bucket && bucket < 10
+              bucket += 1
+              curr_zoom += 1
+              num_in_this_bucket = 0
+              ideal_tags_per_bucket = total_tags_left / (11 - bucket)
+            end # if we're starting a new bucket
+         end # if  frequency skipped
+       end # for each item in the freq_totals hash
+       
+       # at the end of this loop, bucket_size hash is:
+       # key: frequency, value: bucket number
+       # So, it tells that tags of frequency(key) go into bucket(value)
+       zoom_levels.push(bucket_size)
+    end
+    
+    return { :cloud_freq => cloud_freq, :zoom_levels => zoom_levels }
     end
   
   def self.get_hit_from_uri(uri)
@@ -226,7 +288,7 @@ class CachedResource < ActiveRecord::Base
   public
 
   def self.get_newest_collections(user, count) # Pass in the actual user object (not just the user name), and get back an array of results. Each result is a hash of all the properties that were cached.
-    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC', :limit => count )
+    items = CollectedItem.all(:conditions => ["user_id = ?", user.id], :order => 'updated_at DESC', :limit => count )
     results = []
     items.each { |item|
       hit = get_hit_from_resource_id(item.cached_resource_id)
@@ -234,29 +296,30 @@ class CachedResource < ActiveRecord::Base
     }
     return results
   end
-   
-  # if a user is passed, then only the objects for that user are returned. Otherwise all matching objects are returned.
+ 
+  # Get all hits for a given tag. 
+  # If a user is passed, then only the objects for that user are returned. Otherwise all matching objects are returned.
+  #
   def self.get_hits_for_tag(tag_name, user)
     results = []
     tag = Tag.find_by_name(tag_name)
     # It's possible for this to return nil if a tag was deleted before this request was made.
     return results if tag == nil
     
-    item_ids = Tagassign.find(:all, :conditions => [ "tag_id = ?", tag.id ] )
-    # item_ids are ids into the collected_items table.
-    item_ids.each { |item_id|
-      coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
-      if coll_item != nil && (user == nil || coll_item.user_id == user.id)
-        hit = get_hit_from_resource_id(coll_item.cached_resource_id)
+    assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
+    assigns.each do | assign |
+      if user == nil || assign.user_id == user.id
+        hit = get_hit_from_resource_id(assign.cached_resource_id)
         results.insert(-1, hit) if hit != nil && !results.detect {|item| item['uri'] == hit['uri']}
       end
-    }
+    end
+    
     return results
   end
   
 	# called in my_collex when viewing "all collected objects"
   def self.get_page_of_hits_by_user(user, page_num, items_per_page, sort_field, direction)
-    items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
+    items = CollectedItem.all(:conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
 		if sort_field
 			items.each { |item|
 				item = add_sort_field(item, sort_field)
@@ -267,38 +330,39 @@ class CachedResource < ActiveRecord::Base
     return self.get_page_of_results(items, page_num, items_per_page)
   end
 
+  # Get a list of al of the items that have been tagged with the specified string
+  #
   def self.get_page_of_hits_for_tag(tag_name, user, page_num, items_per_page, sort_field, direction)
     tag = Tag.find_by_name(tag_name)
     # It's possible for this to return nil if a tag was deleted before this request was made.
     return { :results => [], :total => 0 } if tag == nil
     
+    # walk through all assignments that match this tag ID
     items = []
-    item_ids = Tagassign.find(:all, :conditions => [ "tag_id = ?", tag.id ] )
-    # item_ids are ids into the collected_items table.
-    item_ids.each { |item_id|
-      coll_item = CollectedItem.find_by_id(item_id.collected_item_id)
-      if coll_item != nil && (user == nil || coll_item.user_id == user.id)
-				if !items.detect {|item| item.cached_resource_id == coll_item.cached_resource_id}
-					if sort_field
-						coll_item = add_sort_field(coll_item, sort_field)
-					end
-	        items.insert(-1, coll_item)
-				end
-      end
-    }
-		if sort_field
-			items = sort_algorithm(items, sort_field)
-			items = items.reverse() if direction == 'Descending'
-		end
-    return self.get_page_of_results(items, page_num, items_per_page)
+    assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
+    assigns.each do | assign |
+        hit = get_hit_from_resource_id( assign.cached_resource_id )
+        items.insert(-1, hit) if hit != nil
+    end
+		
+		page_results = {}
+		page_results[:results] = items
+    page_results[:total] = items.length 
+    
+    if sort_field
+      page_results[:results] = sort_algorithm(page_results[:results], sort_field)
+      page_results[:results] = page_results[:results].reverse() if direction == 'Descending'
+    end
+
+    return page_results
   end
   
   def self.get_page_of_all_untagged(user, page_num, items_per_page, sort_field, direction)
     return { :results => [], :total => 0 } if user == nil
-    all_items = CollectedItem.find(:all, :conditions => ["user_id = ?", user.id], :order => 'updated_at DESC'  )
+    all_items = CollectedItem.all(:conditions => ["user_id = ?", user.id], :order => 'updated_at DESC'  )
     items = []
     all_items.each { |item|
-      first_tag = Tagassign.find(:first, :conditions => ["collected_item_id = ?", item.id])
+      first_tag = Tagassign.find_by_collected_item_id(item.id)
       if !first_tag
 				if sort_field
 					item = add_sort_field(item, sort_field)
@@ -411,7 +475,7 @@ class CachedResource < ActiveRecord::Base
     hit = {}
     uri = CachedResource.find_by_id(resource_id)
 	return nil if uri == nil
-    properties = CachedProperty.find(:all, {:conditions => ["cached_resource_id = ?", resource_id]})
+    properties = CachedProperty.find_all_by_cached_resource_id(resource_id)
     properties.each do |property|
       if !hit[property.name]
         hit[property.name] = []
@@ -432,17 +496,6 @@ class CachedResource < ActiveRecord::Base
 			hit['has_full_text'] = hit['has_full_text'][0] == '1'
 		end
     return hit
-  end
-
-  # This takes either a UTF-8 encoded string or an ISO-8859-1 encoded string and
-  # outputs a UTF-8 encoded string.
-  def self.fix_char_set(str)
-    begin
-      arr = str.unpack('U*')  # This will fail if it is not a UTF-8 encoded string
-    rescue
-      arr = str.unpack('C*')  # Therefore it was an ISO-8859-1 encoded string
-    end
-    return arr.pack('U*') # Turn it back into a string
   end
   
 end

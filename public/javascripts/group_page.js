@@ -16,8 +16,7 @@
 
 /*global $, $$, Class, Element */
 /*global YAHOO */
-/*global GeneralDialog, SelectInputDlg, recurseUpdateWithAjax, MessageBoxDlg, RteInputDlg, TextInputDlg, ajaxWithProgressDlg, updateWithAjax */
-/*global window */
+/*global GeneralDialog, SelectInputDlg, MessageBoxDlg, RteInputDlg, TextInputDlg, serverAction, submitForm, reloadPage */
 /*global ForumReplyDlg, LinkDlgHandler */
 /*extern EditGroupThumbnailDlg, EditMembershipDlg, GroupNewPost, InviteMembersDlg, editDescription, editGroupThumbnailDlg, editPermissions, editType, stopEditGroupThumbnailUpload */
 /*extern ClusterNewPost, CreateNewClusterDlg, GridDlg, RespondToRequestDlg, acceptAsPeerReviewed, accept_invitation, changeClusterLabel, changeClusterVisibility, changeExhibitLabel, changeWhichExhibitsAreShown, confirmDlgWithTextArea, decline_invitation, editGroupTextField, editTitle, editURL, editVisibility, hideAdmins, limitExhibit, moveExhibit, moveExhibitToCluster, newClusterDlg, rejectAsPeerReviewed, request_to_join, setNotificationLevel, showAdmins, stopNewClusterUpload, unlimitExhibit, unpublishExhibit */
@@ -41,11 +40,11 @@ var EditGroupThumbnailDlg = Class.create({
 		{
 			editGroupThumbnailDlg = This;
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 
 			dlg.setFlash('Editing ' + label.toLowerCase() + ' thumbnail...', false);
 
-			dlg.submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
+			submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
 		};
 
 		this.fileUploadError = function(errMessage) {
@@ -54,7 +53,7 @@ var EditGroupThumbnailDlg = Class.create({
 
 		this.fileUploadFinished = function(id) {
 			dlg.setFlash(label + ' thumbnail updated...', false);
-			window.location.reload(true);
+			reloadPage();
 		};
 		var show = function () {
 			var layout = {
@@ -62,13 +61,13 @@ var EditGroupThumbnailDlg = Class.create({
 					rows: [
 						[ { text: 'Choose Thumbnail:' } ],
 						[ { image: 'image', size: '47', klass: 'edit_group_thumbnail' }, { hidden: 'id', value: group_id } ],
-						[ { rowClass: 'last_row' }, { button: 'Update Thumbnail', url: "/" + controller + "/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'gd_last_row' }, { button: 'Update Thumbnail', arg0: "/" + controller + "/edit_thumbnail", callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 
 			var params = { this_id: "edit_group_thumbnail", pages: [ layout ], body_style: "new_group_div", row_style: "new_exhibit_row", title: "Edit " + label + " Thumbnail" };
 			dlg = new GeneralDialog(params);
-			dlg.changePage('layout', null);
+			//dlg.changePage('layout', null);
 			dlg.center();
 
 			return;
@@ -174,12 +173,13 @@ var GridDlg = Class.create({
 
 		var sendWithAjax = function (event, params)
 		{
+			dlg.setFlash('Updating. Please wait...', false);
 			var onSuccess = function(resp) {
 					dlg.cancel();
 			};
 			var data = dlg.getAllData();
-			var url = params.destination;
-			recurseUpdateWithAjax([url], ['group_details'], onSuccess, null, data);
+			var url = params.arg0;
+			serverAction({action:{actions: url, els: 'group_details', onSuccess: onSuccess, params: data}});
 		};
 
 		var show = function () {
@@ -200,11 +200,11 @@ var GridDlg = Class.create({
 					layout.rows.push(extraCtrl2);
 				}
 
-			layout.rows.push([{ rowClass: 'last_row' }, { button: 'Save', url: url, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }]);
+			layout.rows.push([{ rowClass: 'gd_last_row' }, { button: 'Save', arg0: url, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }]);
 
 			var params = { this_id: "new_group_wizard", pages: [ layout ], body_style: "edit_group_membership_div", row_style: "new_exhibit_row", title: title };
 			dlg = new GeneralDialog(params);
-			dlg.changePage('layout', null);
+			//dlg.changePage('layout', null);
 			initDataGrid({ element_id: "membership_data_grid", paginator_id: "membership_pagination", fields: fields, data: data });
 			dlg.center();
 
@@ -233,10 +233,10 @@ var EditMembershipDlg = Class.create({
 			}
 		});
 
-		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'select_dlg_input', options: [ { text: "To All", value: "Yes"}, { text: "To Admins", value: "No"}], value: show_membership }];
+		var showMembershipCtrl = [{ text: 'Show Membership List: '}, { select: 'show_membership', klass: 'gd_select_dlg_input', options: [ { text: "To All", value: "Yes"}, { text: "To Admins", value: "No"}], value: show_membership }];
 		var changeOwnerCtrl = undefined;
 		if (is_owner && ownerOptions.length > 1)
-			changeOwnerCtrl = [{ text: 'Change Owner: '}, { select: 'change_owner', klass: 'select_dlg_input', options: ownerOptions, value: 0 }];
+			changeOwnerCtrl = [{ text: 'Change Owner: '}, { select: 'change_owner', klass: 'gd_select_dlg_input', options: ownerOptions, value: 0 }];
 		new GridDlg({ title: "Edit Membership", hidden_id: 'id', hidden_value: group_id, url: 'edit_membership', fields: ["Name","Administrator?", "Delete"], data: membership2, extraCtrl: showMembershipCtrl, extraCtrl2: changeOwnerCtrl });
 	}
 });
@@ -278,8 +278,8 @@ var InviteMembersDlg = Class.create({
 				dlg.setFlash("Error: Please try again.", true);
 			};
 			var data = dlg.getAllData();
-			var url = params.destination;
-			recurseUpdateWithAjax([url], ['group_details'], onSuccess, onFailure, data);
+			var url = params.arg0;
+			serverAction({action:{actions: url, els: 'group_details', onSuccess: onSuccess, onFailure: onFailure, params: data}});
 		};
 
 		// privileged methods
@@ -288,18 +288,18 @@ var InviteMembersDlg = Class.create({
 					page: 'layout',
 					rows: [
 						[ { text: 'There are two ways to invite people to join your group in ' + siteName +
-							': email address or username. If you know the participants\' usernames, list them in the blank below, one per line.', klass: 'invite_users_instructions' }, { hidden: 'id', value: group_id } ],
+							': email address or username. If you know the participants\' usernames, list them in the blank below, one per line.', klass: 'invite_users_instructions' } ],
 						[ { text: 'By Username:', klass: 'invite_users_label' }, { textarea: 'usernames', klass: 'groups_textarea' } ],
-						[ { rowClass: 'button_row' }, { button: 'Submit', url: '/groups/update', callback: sendWithAjax } ],
+						[ { rowClass: 'button_row' }, { button: 'Submit', arg0: { method: 'PUT', url: '/groups/'+group_id }, callback: sendWithAjax } ],
 						[ { text: "Don't know any usernames? Add email addresses of users you want to invite in the blank below, one per line.", klass: 'invite_users_instructions' } ],
 						[ { text: 'By Email Address:', klass: 'invite_users_label' }, { textarea: 'emails', klass: 'groups_textarea' } ],
-						[ { rowClass: 'last_row' }, { button: 'Submit', url: '/groups/update', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'gd_last_row' }, { button: 'Submit', arg0: { method: 'PUT', url: '/groups/'+group_id }, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 
-			var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Invite Users to Join" };
+			var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Invite Users to Join", focus: "username" };
 			dlg = new GeneralDialog(params);
-			dlg.changePage('layout', "username");
+			//dlg.changePage('layout', "username");
 			dlg.center();
 
 			return;
@@ -311,9 +311,9 @@ var InviteMembersDlg = Class.create({
 
 var editDescription = function(id, value, controller, populate_url, progress_img) {
 	var okCallback = function(value) {
-		var params = { id: id };
+		var params = { };
 		params[controller + '[description]'] = value;
-		recurseUpdateWithAjax([ '/' + controller + 's/update' ], [ controller + '_details' ], null, null, params);
+		serverAction({action:{actions: { method: 'PUT', url: '/' + controller + 's/'+id }, els: controller + '_details', params: params}});
 
 	};
 	new RteInputDlg({
@@ -333,8 +333,7 @@ var editPermissions = function(id, value, groupForumPermissionsOptions, groupFor
 		explanation: groupForumPermissionsExplanations,
 		okStr: 'Save',
 		value: value,
-		extraParams: { id: id },
-		actions: [ '/groups/update' ],
+		actions: [ { method: 'PUT', url: '/groups/'+id } ],
 		target_els: [ 'group_discussions' ] });
 };
 
@@ -348,7 +347,7 @@ var changeWhichExhibitsAreShown = function(id, value, groupShowExhibitsOptions, 
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
-		actions: [ '/groups/update', '/groups/group_exhibits_list' ],
+		actions: [ { method: 'PUT', url: '/groups/'+id }, '/groups/group_exhibits_list' ],
 		target_els: [ 'group_details', 'group_exhibits' ] });
 };
 
@@ -361,24 +360,9 @@ var editVisibility = function(id, value, groupExhibitVisibilityOptions, groupExh
 		explanation: groupExhibitVisibilityExplanations,
 		okStr: 'Save',
 		value: value,
-		extraParams: { id: id },
-		actions: [ '/groups/update' ],
+		actions: [ { method: 'PUT', url: '/groups/'+id } ],
 		target_els: [ 'group_details' ] });
 };
-
-//var editShowMembership = function(id, value) {
-//	new SelectInputDlg({
-//		title: 'Change Membership Visibility',
-//		prompt: 'Visibility',
-//		id: 'group[show_membership]',
-//		options:  [ { text: "Yes", value: "Yes"}, { text: "No", value: "No"}],
-//		explanation: [ "The profiles of members of this group will be visible to other members of this group", "The profiles of members of this group will only be visible to the editors of this group"],
-//		okStr: 'Save',
-//		value: value,
-//		extraParams: { id: id },
-//		actions: [ '/groups/update' ],
-//		target_els: [ 'group_details' ] });
-//};
 
 var editType = function(id, value, groupTypeOptions) {
 	new SelectInputDlg({
@@ -391,9 +375,8 @@ var editType = function(id, value, groupTypeOptions) {
 			'Publication groups work closely with the NINES staff to vet their content. If you select this option a notification will be sent to the NINES staff, and someone will be in contact with you soon.' ],
 		okStr: 'Save',
 		value: value,
-		extraParams: { id: id },
-		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
+		actions: { method: 'PUT', url: '/groups/'+id },
+		target_els: 'group_details' });
 };
 
 var editGroupTextField = function(id, value, name, field) {
@@ -411,9 +394,8 @@ var editGroupTextField = function(id, value, name, field) {
 		okStr: 'Save',
 		value: value,
 		verifyFxn: verifyFxn,
-		extraParams: { id: id },
-		actions: [ '/groups/update' ],
-		target_els: [ 'group_details' ] });
+		actions: { method: 'PUT', url: '/groups/'+id },
+		target_els: 'group_details' });
 };
 
 var editTitle = function(id, value, controller) {
@@ -423,9 +405,8 @@ var editTitle = function(id, value, controller) {
 		id: controller + '[name]',
 		okStr: 'Save',
 		value: value,
-		extraParams: { id: id },
-		actions: [ '/' + controller + 's/update' ],
-		target_els: [ controller + '_details' ] });
+		actions: { method: 'PUT', url: '/' + controller + 's/'+id },
+		target_els: controller + '_details' });
 };
 
 var editURL = function(id, value, controller, prompt) {
@@ -436,10 +417,10 @@ var editURL = function(id, value, controller, prompt) {
 		okStr: 'Save',
 		value: value,
 		inputKlass: 'edit_url_input',
-		extraParams: { id: id },
 		verify: '/' + controller + 's/check_url',
-		actions: [ '/' + controller + 's/update' ],
-		target_els: [ controller + '_details' ] });
+		extraParams: { id: id },
+		actions: { method: 'PUT', url: '/' + controller + 's/'+id },
+		target_els: controller + '_details' });
 };
 
 var moveExhibitToCluster = function(update_url, group_id, cluster_id, exhibitOptions, update_el, exhibitLabel, clusterLabel) {
@@ -451,11 +432,11 @@ var moveExhibitToCluster = function(update_url, group_id, cluster_id, exhibitOpt
 		okStr: 'Move',
 		body_style: "",
 		extraParams: { dest_cluster: cluster_id, cluster_id: cluster_id, group_id: group_id },
-		actions: [ update_url],
-		target_els: [ update_el ] });
+		actions: update_url,
+		target_els: update_el });
 };
 
-var changeClusterVisibility = function(update_url, cluster_id, value, visibilityOptions, update_el, clusterLabel) {
+var changeClusterVisibility = function(update_url, value, visibilityOptions, update_el, clusterLabel) {
 	new SelectInputDlg({
 		title: 'Change ' + clusterLabel + ' Visibility',
 		prompt: 'Visibility',
@@ -463,12 +444,11 @@ var changeClusterVisibility = function(update_url, cluster_id, value, visibility
 		options: visibilityOptions,
 		value: value,
 		okStr: 'Save',
-		extraParams: { id: cluster_id },
-		actions: [ update_url ],
-		target_els: [ update_el ] });
+		actions: update_url,
+		target_els: update_el });
 };
 
-var changeExhibitLabel = function(update_url, cluster_id, value, options, update_el) {
+var changeExhibitLabel = function(update_url, value, options, update_el, extraParams) {
 	new SelectInputDlg({
 		title: 'Change Exhibit Label',
 		prompt: 'Label',
@@ -476,12 +456,12 @@ var changeExhibitLabel = function(update_url, cluster_id, value, options, update
 		options: options,
 		value: value,
 		okStr: 'Save',
-		extraParams: { id: cluster_id },
+		extraParams: extraParams,
 		actions: [ update_url, '/groups/group_exhibits_list' ],
 		target_els: [ update_el, 'group_exhibits' ] });
 };
 
-var changeClusterLabel = function(update_url, cluster_id, value, options, update_el) {
+var changeClusterLabel = function(update_url, value, options, update_el, extraParams) {
 	new SelectInputDlg({
 		title: 'Change Cluster Label',
 		prompt: 'Label',
@@ -489,7 +469,7 @@ var changeClusterLabel = function(update_url, cluster_id, value, options, update
 		options: options,
 		value: value,
 		okStr: 'Save',
-		extraParams: { id: cluster_id },
+      extraParams: extraParams,
 		actions: [ update_url, '/groups/group_exhibits_list' ],
 		target_els: [ update_el, 'group_exhibits' ] });
 };
@@ -510,21 +490,16 @@ var moveExhibit = function(exhibit_id, clusterOptions, group_id, cluster_id, exh
 };
 
 var request_to_join = function(group_id, user_id) {
-	ajaxWithProgressDlg(['/groups/request_join'], ['group_details'],
-		{ title: "Request To Join Group", waitMessage: "Please wait...", completeMessage: 'A request to join this group is pending acceptance by the moderator.' },
-		{group_id: group_id, user_id: user_id });
+	serverAction({action: { actions: '/groups/request_join', els: 'group_details', params: {group_id: group_id, user_id: user_id }}, 
+		progress: { waitMessage: "Request To Join Group...", completeMessage: 'A request to join this group is pending acceptance by the moderator.'}});
 };
 
 var accept_invitation = function(pending_id) {
-	ajaxWithProgressDlg(['/groups/accept_invitation'], ['group_details'],
-		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'You are now a member of this group.' },
-		{id: pending_id });
+	serverAction({action: { actions: '/groups/accept_invitation', els: 'group_details', params: {id: pending_id }}, progress: { waitMessage: "Updating Group Membership...", completeMessage: 'You are now a member of this group.'}});
 };
 
 var decline_invitation = function(pending_id) {
-	ajaxWithProgressDlg(['/groups/decline_invitation'], ['group_details'],
-		{ title: "Updating Group Membership", waitMessage: "Please wait...", completeMessage: 'You have been removed from this group.' },
-		{id: pending_id });
+	serverAction({action: { actions: '/groups/decline_invitation', els: 'group_details', params: {id: pending_id }}, progress: { waitMessage: "Updating Group Membership...", completeMessage: 'You have been removed from this group.'}});
 };
 
 var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, clusterLabel, exhibitTitle, exhibitAuthor, siteName, currentCluster, groupName, groupPermissions, exhibitLink, userInfoUrl, progress_img) {
@@ -545,9 +520,9 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 		if (data.typ === 'cluster' && data['exhibit[cluster_id]'] === '0')
 			dlg.setFlash("Please choose a " + clusterLabel + " from the list.", true);
 		else {
-			var url = params.destination;
+			var url = params.arg0;
 			dlg.setFlash('Accepting ' + exhibitLabel + '. Please wait...', false);
-			recurseUpdateWithAjax([url], ['group_exhibits'], onSuccess, onFailure, data);
+			serverAction({action:{actions: url, els: 'group_exhibits', onSuccess: onSuccess, onFailure: onFailure, params: data}});
 		}
 	};
 
@@ -557,16 +532,16 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 				[ { rowClass: 'accept_peer_review_header' }, { text: 'You are about to set <a href="' + exhibitLink + '" target="_blank" class="nav_link">' + exhibitTitle + '</a> by <a class="nav_link" href="#" onclick="showPartialInLightBox(\'' + userInfoUrl + '\', \'Profile for ' + exhibitAuthor + '\', \'' + progress_img + '\'); return false;">' + exhibitAuthor + '</a> as a peer-reviewed object.' } ],
 				[ { text: 'This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval. If you wish to continue, please select "Accept". Otherwise, please select "Cancel."', klass: 'accept_peer_review_label non_cluster_options' },
 					{ text: 'This means that the work will be indexed into ' + siteName + ' and stamped with a badge of approval. If you wish to continue, please select a method for sharing this work below. Otherwise, please select "Cancel."', klass: 'accept_peer_review_label hidden cluster_options' } ],
-				[ { radioList: 'typ', klass: 'accept_peer_review_radio hidden cluster_options', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), buttons: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
+				[ { radioList: 'typ', klass: 'accept_peer_review_radio hidden cluster_options', value: (currentCluster === 0 ? 'noncluster' : 'cluster'), options: [ { value: 'noncluster', text: 'I certify this ' + exhibitLabel + ' has been peer reviewed as a stand-alone object.' }, { value: 'cluster', text: 'I certify that this ' + exhibitLabel + ' has been peer reviewed as part of a ' + clusterLabel + ' of objects.' } ]}],
 				[ { text: 'Choose a ' + clusterLabel + ':', klass: 'accept_peer_review_label2 hidden cluster_options' }, { select: 'exhibit[cluster_id]', options: clusterOptions, value: currentCluster, klass: 'hidden cluster_options' } ],
 				[ { text: 'Note: Objects in <span class="accept_peer_review_group_name">' + groupName + '</span> have a default sharing option of "<span class="accept_peer_review_permissions">' + groupPermissions + '</span>".', klass: 'accept_peer_review_label' } ],
-				[ { rowClass: 'last_row' }, { button: 'Accept', url: '/groups/accept_as_peer_reviewed', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { rowClass: 'gd_last_row' }, { button: 'Accept', arg0: '/groups/accept_as_peer_reviewed', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
-	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Accept As Peer Reviewed" };
+	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Accept As Peer Reviewed", focus: "username" };
 	dlg = new GeneralDialog(params);
-	dlg.changePage('layout', "username");
+	//dlg.changePage('layout', "username");
 	if (clusterOptions.length > 1) {
 		$$('.cluster_options').each(function(el) { el.removeClassName('hidden'); });
 		$$('.non_cluster_options').each(function(el) { el.addClassName('hidden'); });
@@ -575,27 +550,19 @@ var acceptAsPeerReviewed = function(exhibit_id, clusterOptions, exhibitLabel, cl
 };
 
 var limitExhibit = function(exhibit_id, exhibitLabel) {
-	ajaxWithProgressDlg(['/groups/limit_exhibit'], ['group_exhibits'],
-		{ title: "Limit Exhibit", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' can only be viewed by group members.' },
-		{exhibit_id: exhibit_id });
+	serverAction({action: { actions: '/groups/limit_exhibit', els: 'group_exhibits', params: {exhibit_id: exhibit_id }}, progress: { waitMessage: "Limiting Exhibit...", completeMessage: 'This ' + exhibitLabel + ' can only be viewed by group members.' }});
 };
 
 var unlimitExhibit = function(exhibit_id, exhibitLabel) {
-	ajaxWithProgressDlg(['/groups/unlimit_exhibit'], ['group_exhibits'],
-		{ title: "Allow Publishing", waitMessage: "Please wait...", completeMessage: 'This ' + exhibitLabel + ' can be viewed by everyone.' },
-		{exhibit_id: exhibit_id });
+	serverAction({action: { actions: '/groups/unlimit_exhibit', els: 'group_exhibits', params: {exhibit_id: exhibit_id }}, progress: { waitMessage: "Allowing Publishing...", completeMessage: 'This ' + exhibitLabel + ' can be viewed by everyone.'}});
 };
 
-var hideAdmins = function(group_id, url) {
-	ajaxWithProgressDlg([url], ['group_details'],
-		{ title: "Hide Admins", waitMessage: "Please wait...", completeMessage: 'The administators are hidden to non-members.' },
-		{id: group_id, 'group[show_admins]': 'members' });
+var hideAdmins = function(url) {
+	serverAction({action: { actions: url, els: 'group_details', params: {'group[show_admins]': 'members' }}, progress: { waitMessage: "Hiding Admins...", completeMessage: 'The administators are hidden to non-members.' }});
 };
 
-var showAdmins = function(group_id, url) {
-	ajaxWithProgressDlg([url], ['group_details'],
-		{ title: "Show Admins", waitMessage: "Please wait...", completeMessage: 'The administators are visible to non-members.' },
-		{id: group_id, 'group[show_admins]': 'all' });
+var showAdmins = function(url) {
+	serverAction({action: { actions: url, els: 'group_details', params: {'group[show_admins]': 'all' }}, progress: { waitMessage: "Showing Admins...", completeMessage: 'The administators are visible to non-members.'}});
 };
 
 var confirmDlgWithTextArea = function(urls, els, title, completeMsg, confirmMsg, commentLabel, extraData) {
@@ -603,24 +570,22 @@ var confirmDlgWithTextArea = function(urls, els, title, completeMsg, confirmMsg,
 		var data = params.dlg.getAllData();
 		extraData.comment = data.comment;
 		params.dlg.cancel();
-		ajaxWithProgressDlg(urls, els,
-			{ title: title, waitMessage: "Please wait...", completeMessage: completeMsg },
-			extraData);
+		serverAction({action: { actions: urls, els: els, params: extraData}, progress: { waitMessage: title + "...", completeMessage: completeMsg}});
 	};
 
 	var dlgLayout = {
 			page: 'layout',
 			rows: [
-				[ {text: confirmMsg, klass: 'message_box_label'} ],
+				[ {text: confirmMsg, klass: 'gd_message_box_label'} ],
 				[ { text: commentLabel },
 					{ textarea: 'comment', klass: 'confirmdlg_comment' }],
-				[ {rowClass: 'last_row'}, {button: "Ok", callback: action, isDefault: true}, {button: "Cancel", callback: GeneralDialog.cancelCallback} ]
+				[ {rowClass: 'gd_last_row'}, {button: "Ok", callback: action, isDefault: true}, {button: "Cancel", callback: GeneralDialog.cancelCallback} ]
 			]
 		};
 
-		var params = {this_id: "confirm_comment_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
+		var params = {this_id: "confirm_comment_dlg", pages: [ dlgLayout ], body_style: "gd_message_box_dlg", row_style: "gd_message_box_row", title: title};
 		var dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 };
 
@@ -632,7 +597,7 @@ var unpublishExhibit = function(exhibit_id, name, email, exhibitLabel) {
 };
 
 var rejectAsPeerReviewed = function(exhibit_id, name, email, exhibitLabel) {
-	confirmDlgWithTextArea(['/groups/reject_as_peer_reviewed'], ['group_exhibits'], "Return ' + exhibitLabel + ' For Revisions",
+	confirmDlgWithTextArea(['/groups/reject_as_peer_reviewed'], ['group_exhibits'], "Return " + exhibitLabel + " For Revisions",
 		'The ' + exhibitLabel + ' has been sent back for revisions.',
 		'This option returns the ' + exhibitLabel + ' to its original contributor for revision. A message will be sent to ' + name + " at " + email + " with a short message notifying them of your request.",
 		'Add a comment to this email:', { exhibit_id: exhibit_id });
@@ -671,7 +636,7 @@ var CreateNewClusterDlg = Class.create({
 			dlg.setFlash('Verifying ' + clusterLabel + ' creation...', false);
 			dlg.getAllData();
 			
-			dlg.submitForm('layout', create_url);	// we have to submit the form normally to get the uploaded file transmitted.
+			submitForm('layout', create_url);	// we have to submit the form normally to get the uploaded file transmitted.
 		};
 
 		this.fileUploadError = function(errMessage) {
@@ -683,7 +648,7 @@ var CreateNewClusterDlg = Class.create({
 			var onSuccess = function(resp) {
 				dlg.cancel();
 			};
-			updateWithAjax({ el: update_el, action: update_url, params: { id: group_id }, onSuccess: onSuccess });
+			serverAction({action:{ els: update_el, actions: update_url, params: { id: group_id }, onSuccess: onSuccess }});
 		};
 
 		// privileged methods
@@ -696,13 +661,15 @@ var CreateNewClusterDlg = Class.create({
 						[ { text: 'Description:', klass: '' } ],
 						[ { textarea: 'cluster[description]', klass: 'groups_textarea' } ],
 						[ { text: 'Thumbnail:', klass: 'groups_label thumbnail hidden' }, { image: 'image', size: '37', removeButton: 'Remove Thumbnail', klass: 'thumbnail hidden' } ],
-						[ { rowClass: 'last_row' }, { button: 'Create ' + clusterLabel, url: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'new_cluster_radio_title' }, { text: 'This ' + clusterLabel + ' should be' }],
+						[ { radioList: 'cluster[visibility]', klass: 'new_cluster_radio', options: [ { text: 'visible to everyone', value: 'everyone' }, { text: 'visible to group members only', value: 'members' }, { text: 'visible to group administrators only', value: 'administrators' }], value: 'members' } ],
+						[ { rowClass: 'gd_last_row' }, { button: 'Create ' + clusterLabel, arg0: create_url, callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 
-			var params = { this_id: "new_cluster_wizard", pages: [ layout ], body_style: "new_cluster_div", row_style: "new_exhibit_row", title: "Create New " + clusterLabel };
+			var params = { this_id: "new_cluster_wizard", pages: [ layout ], body_style: "new_cluster_div", row_style: "new_exhibit_row", title: "Create New " + clusterLabel, focus: "cluster_name" };
 			dlg = new GeneralDialog(params);
-			dlg.changePage('layout', "cluster_name");
+			//dlg.changePage('layout', "cluster_name");
 			dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_urls], progress_img) });
 			if (can_set_thumbnail)
 				$$('.thumbnail').each(function(el) { el.removeClassName('hidden'); });
@@ -725,9 +692,9 @@ var setNotificationLevel = function(group_id, groupName, currentNotifications, e
 		};
 		var data = dlg.getAllData();
 		data.group_id = group_id;
-		var url = params.destination;
+		var url = params.arg0;
 		dlg.setFlash('Setting Notifications for ' + groupName + '. Please wait...', false);
-		recurseUpdateWithAjax([url], ['group_details'], onSuccess, null, data);
+		serverAction({action:{actions: url, els: 'group_details', onSuccess: onSuccess, params: data}});
 	};
 
 	var layout = {
@@ -739,13 +706,13 @@ var setNotificationLevel = function(group_id, groupName, currentNotifications, e
 					["membership", "<span class='notifications_item'>Membership changes</span>: member invited, member added, member declined, member removed, member becomes admin"],
 					["discussion", "<span class='notifications_item'>Discussion changes</span>: new thread or new comment posted in this group"],
 					["group", "<span class='notifications_item'>Group changes</span>: changed name, description, add " + clusterLabel + "s, remove " + clusterLabel + "s, changed visibility"] ] }],
-				[ { rowClass: 'last_row' }, { button: 'Save', url: '/groups/notifications', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { rowClass: 'gd_last_row' }, { button: 'Save', arg0: '/groups/notifications', callback: sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
-	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Set Notifications" };
+	var params = { this_id: "invite_users_dlg", pages: [ layout ], body_style: "invite_users_div", row_style: "new_exhibit_row", title: "Set Notifications", focus: "username" };
 	dlg = new GeneralDialog(params);
-	dlg.changePage('layout', "username");
+	//dlg.changePage('layout', "username");
 	dlg.center();
 };
 

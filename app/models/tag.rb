@@ -15,12 +15,137 @@
 ##########################################################################
 
 class Tag < ActiveRecord::Base
-  #has_many :taggings, :dependent => :destroy
-  #has_many :interpretations, :through => :taggings
-  #has_and_belongs_to_many :cached_documents
   has_many :tagassigns 
-  has_many :collected_items, :through => :tagassigns 
+  has_many :cached_resources, :through => :tagassigns 
 
   validates_uniqueness_of :name
+  
+  # Add a new tag to an item. Collected/Uncollected is irrelevant; tags are associated 
+  # directly with the cached resource id. If the item is not yet cached, it will be.
+  #
+  def self.add(user, uri, tag_info)
+    
+    # See if the resource has been cached - cache it if not
+    cached_resource = CachedResource.find_by_uri(uri)
+    if cached_resource.nil?
+      CachedResource.add( uri )
+      cached_resource = CachedResource.find_by_uri(uri)
+    end
 
+    # find or create the tag record.
+    tag_info['name'].split(",").each do | tag |
+       tag = tag.strip
+       tag = self.normalize_tag_name(tag)
+       tag_rec = Tag.find_by_name(tag)
+       if tag_rec == nil
+         tag_rec = Tag.new(:name => tag)
+         tag_rec.save!
+       end
+   
+       # see if this item has already been tagged
+       tagassign = Tagassign.find_by_tag_id_and_cached_resource_id(tag_rec.id, cached_resource.id)
+       
+       # create a new tag assign for this type of tag
+       if tagassign.nil?
+         tagassign = Tagassign.new(:tag_id => tag_rec.id, :user_id => user.id, :cached_resource_id => cached_resource.id) 
+         tagassign.save!
+       else
+         tagassign.update_attribute(:updated_at, Time.now)
+       end
+   
+       ObjectActivity.record_tag(user, uri, tag)
+    end
+  end
+  
+  # Get a list of tags associated with the specified URI. This list is an
+  # array of arrays. Format: [tagname][ usser_id] 
+  #
+  def self.get_tags_for_uri(uri)
+    
+    # find the cached item. If it isn't cached, we know there aren't any tags for it.
+    cached_resource = CachedResource.find_by_uri(uri)
+    if (cached_resource == nil)
+      return []
+    end
+
+    tags = {}
+
+    # find any times this was tagged when not collected
+    assignments = Tagassign.find_all_by_cached_resource_id(cached_resource.id)
+    assignments.each do | assignment |
+      tag = Tag.find(assignment.tag_id)
+      if tags.has_key?(tag) == false
+        tags[tag.name] = assignment.user_id 
+      end
+    end
+    
+    # clear out duplicates and sort. This will return a sorted array of arrays.
+    # secondary array is [tagname][owner]
+    return tags.sort
+  end
+  
+  # Delete specified tag
+  #
+  def self.remove(user, uri, tag_str)
+
+    # Grab the resource associated with the URI
+    cached_resource = CachedResource.find_by_uri(uri)
+    if cached_resource.nil?
+      logger.info("Can't delete the tag because uri #{uri} is not cached")
+    end
+
+    # find the tag record.
+    tag_rec = Tag.find_by_name(tag_str)
+    if tag_rec.nil?
+      # For some reason the tag was already deleted. Don't worry about it, 
+      # it was probably a race condition or stale session.
+      return
+    end
+
+    # do the delete
+    tagassign = Tagassign.find_by_user_id_and_tag_id_and_cached_resource_id( user.id, tag_rec.id, cached_resource.id )
+    if tagassign == nil
+      logger.info("Can't delete the tag because the tag #{tag_rec.name} was not assigned to the uri #{uri} by user #{user.username}")
+      return
+    else
+      
+      # kill the assignment
+      tagassign.destroy
+      
+      # if there are no assignments for the tag, remove it too
+      resources = tag_rec.cached_resources
+      tag_rec.destroy if resources.length == 0 
+      
+      ObjectActivity.record_untag(user, uri, tag_rec.name)
+    end     
+
+  end
+  
+  # Rename a tag from old_tag_str to new_tag_str. If these string are equal 
+  # or the new string is empty, do nothing
+  #  
+  def self.rename(user, uri, old_tag_str, new_tag_str)
+    
+    # cleanup both names
+    old_tag_str = self.normalize_tag_name(old_tag_str)
+    new_tag_str = self.normalize_tag_name(new_tag_str)
+    
+    # if the tag name hasn't changed, then we have nothing to do
+    return if old_tag_str == new_tag_str  || new_tag_str.length== 0 
+
+    self.add(user, uri, {'name' => new_tag_str})
+    self.remove(user, uri, old_tag_str)
+  end
+  
+  # clean up tag name
+  #
+  def self.normalize_tag_name(tag)
+    tag = tag.strip()
+    tag = tag.downcase()
+    tag = tag.gsub(' ', '_')
+    tag = tag.gsub('.', '_')
+    tag = tag.gsub('?', '_')
+    return tag.gsub('/', '_')
+  end
+  
 end

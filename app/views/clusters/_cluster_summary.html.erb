@@ -23,9 +23,16 @@
 	<div class="right_of_thumbnail exhibit_link">
 <% if show_label -%>
 		<span class="obj_summary_label"><%= "Peer-Reviewed " if group.group_type == 'peer-reviewed' %><%= group.get_clusters_label() %>: </span>
-<% end -%>
+<% end -%>  
 		<%= link_to cluster.name, cluster.get_visible_url(), :class => 'nav_link' %><br />
-		<%= pluralize(Exhibit.find_all_by_cluster_id(cluster.id).length, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(cluster.id).length, "Discussion") %><br />
+		<% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id
+		   count = 0
+		   exhibits = Exhibit.where("cluster_id = ? and is_published != ?", cluster.id, 0)
+		   exhibits.each do | exhibit | 
+		   	count=count+1 if group.can_view_exhibit(exhibit, curr_user_id) 
+		   end
+		%>
+		<%= pluralize(count, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(cluster.id).length, "Discussion") %><br />
 <% if show_label -%>
 		Last Modified: <%= comment_time_format_relative(last_modified) %>
 <% end -%>

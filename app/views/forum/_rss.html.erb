@@ -40,7 +40,7 @@
 			<title><%= escape_for_xml(title) %></title>
 			<link><%= base_url %>/forum/object?comment=<%= comment.id %></link>
 			<description>
-				<%= escape_for_xml(comment.comment) %>
+				<%= raw(escape_for_xml(comment.comment)) %>
 			</description>
 		</item>
 <% end -%>

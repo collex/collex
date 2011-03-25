@@ -20,10 +20,17 @@
 <div class="thumbnail_item">
 	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_group_image_url(group), :show_immediately => true } %></div>
 	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label"><%= "Peer-Reviewed " if group.group_type == 'peer-reviewed' %>Group: </span><%= link_to group.name, group.get_visible_url(), :class => 'nav_link' %><br />
-		<%= pluralize(Exhibit.find_all_by_group_id(group.id).length, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_group_id(group.id).length, "Discussion") %><br />
+		<% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id
+		   count = 0
+		   exhibits = Exhibit.where("group_id = ? and is_published != ?", group.id, 0)
+		   exhibits.each do | exhibit | 
+		   	count=count+1 if group.can_view_exhibit(exhibit, curr_user_id) 
+		   end
+		%>
+		<%= pluralize(count, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_group_id(group.id).length, "Discussion") %><br />
 		Last Modified: <%= comment_time_format_relative(last_modified) %>
 		<% if text.length > 0 %>
-			<div class="snippet"><%= text %></div>
+			<div class="snippet"><%= raw(text) %></div>
 		<% end -%>
 	</div>
 </div>

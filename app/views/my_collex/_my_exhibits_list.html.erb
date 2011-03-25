@@ -16,15 +16,17 @@
     # ---------------------------------------------------------------------------- -%>
 <%# my_exhibits_list params: int user_id -%>
 <div class="right_column_header">My Exhibits</div>
-<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ?', user_id] ) -%>
+<div class="new_exhibit_link"><%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard({ progress_img: '#{PROGRESS_SPINNER_PATH}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %>
+</div>
+<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ? or alias_id = ?', user_id, user_id] ) -%>
 <% if my_exhibits.length == 0 -%>
 	<div class="empty_list_text" >You have not created any exhibits</div>
 <% else -%>
 	<% for exhibit in my_exhibits -%>
 		<div class="side_bar_exhibit_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => false } %></div>
-		<div class="side_bar_exhibit_text exhibit_link"><%=h exhibit.title %> <a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a> 
+		<div class="side_bar_exhibit_text exhibit_link"><%= exhibit.title %> <a class="nav_link" href="/exhibits/view/<%= exhibit.id %>">[view]</a> 
 			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
-			<a class="nav_link" href="/<%= MY_COLLEX_URL %>/edit_exhibit?id=<%= exhibit.id %>">[edit]</a>
+			<%= link_to "[edit]", { :controller => 'builder', :action => 'show', :id => exhibit.id }, { :class => 'nav_link' } %>
 			<% else -%>
 			<div>Peer Reviewed</div>
 			<% end -%>
@@ -32,4 +34,3 @@
 		<div class="side_bar_exhibit_spacer clear_both"></div>
 	<% end -%>
 <% end # if there are exhibits -%>
-&nbsp;<%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard({ progress_img: '#{PROGRESS_SPINNER_PATH}', url_get_objects: '/#{MY_COLLEX_URL}/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %>

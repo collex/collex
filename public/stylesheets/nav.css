@@ -118,6 +118,7 @@
 	cursor: pointer;
 	padding-top: 2px;
 	display: block;
+	text-decoration: none;
 }
 
 .search_result_buttons a.hidden {

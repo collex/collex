@@ -14,8 +14,9 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $$, Class, Ajax */
+/*global $, $$, Class */
 /*extern ResourceTree */
+/*global serverNotify */
 
 var ResourceTree = Class.create({
 	initialize: function (id, action) {
@@ -64,9 +65,7 @@ var ResourceTree = Class.create({
 			var That = $("site_opened_" + id);
 			This.addClassName('hidden');
 			That.removeClassName('hidden');
-			new Ajax.Request("/search/remember_resource_toggle", {
-				parameters: { dir: 'close', id: id}
-			});
+			serverNotify("/search/remember_resource_toggle", { dir: 'close', id: id });
 		};
 
 		var openNode = function(id) {
@@ -74,9 +73,7 @@ var ResourceTree = Class.create({
 			var That = $("site_closed_" + id);
 			This.addClassName('hidden');
 			That.removeClassName('hidden');
-			new Ajax.Request("/search/remember_resource_toggle", {
-				parameters: { dir: 'open', id: id}
-			});
+			serverNotify("/search/remember_resource_toggle", { dir: 'open', id: id });
 		};
 
 		if (action === 'open') {

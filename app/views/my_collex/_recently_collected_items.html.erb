@@ -19,12 +19,20 @@
 <% if hits.length == 0 -%>
 	<div class="empty_list_text">You have not collected any items (yet)! Collect items directly from your search results to save and tag them.</div>
 <% else -%>
-	<%= render( :partial => 'results/results', :locals => { :user_id => user_id, :hits => hits } ) %>
+
+	<hr class="search_results_hr" />
+	
+	<div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => :uncollect} ) %></div>
+	
+	<form name="bulk_collect_form" id="bulk_collect_form">
+		<%= render( :partial => 'results/results', :locals => { :user_id => user_id, :hits => hits } ) %>
+	</form>
+	
 <% end -%>
 <div class="clear_both bottom_nav"> 
 </div>
 <% if has_more == true -%>
 	<div class="subpage_nav"> 
-		<%= link_to "See more collected objects", { :controller => MY_COLLEX_URL, :action => 'results', :view => 'all_collected' }, :class => 'nav_link' %>
+		<%= link_to "See more collected objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %>
 	</div>
 <% end -%>

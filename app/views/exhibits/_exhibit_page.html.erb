@@ -18,24 +18,31 @@
 <div id="page<%= page_num %>" class="exhibit_heading">
 <% if Group.is_peer_reviewed_group(exhibit) -%>
 	<center>
-	<p class="publication_title"><%=h exhibit.title %></p>
+	<p class="publication_title"><%= exhibit.title %></p>
 	<p class="publication_author"><%= get_exhibits_username_list(exhibit, is_edit_mode) %><%= ", #{get_exhibits_user_institution(exhibit)}" if get_exhibits_user_institution(exhibit).length > 0 %></p>
 	</center>
 <% else -%>
-	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%=h exhibit.title %></span></h2>
+	<h2 class="exhibit_title" ><span id="overview_title" class="overview_field"><%= exhibit.title %></span></h2>
 	<h4 class="exhibit_author" ><%= get_exhibits_username_list(exhibit, is_edit_mode) %></h4>
 	<h4 class="exhibit_institution" ><%= get_exhibits_user_institution(exhibit) %></h4>
 <% end -%>
 </div>
 <% num_pages = exhibit.exhibit_pages.length -%>
 <% if num_pages > 0 -%>
-	<% page_controller = is_edit_mode ? MY_COLLEX_URL : 'exhibits' -%>
+	<% page_controller = is_edit_mode ? 'builder' : 'exhibits' -%>
 	<% page_action = is_edit_mode ? 'change_page' : 'view' -%>
-	<% has_footnotes = Exhibit.has_footnotes(is_edit_mode ? exhibit.id : get_exhibit_id(exhibit)) -%>
+	<% exhibit_id = is_edit_mode ? exhibit.id : get_exhibit_id(exhibit) -%>
+	<% if is_edit_mode
+			page_url = "/#{page_controller}/#{page_action}?id=#{exhibit.id}&page="
+		else
+			page_url = "/#{page_controller}/#{exhibit_id}?page="
+		end
+	%>
+	<% has_footnotes = Exhibit.has_footnotes(exhibit_id) -%>
 <% if Group.is_peer_reviewed_group(exhibit) -%>
-	<%= render :partial => '/exhibits/publication_pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
+	<%= render :partial => '/exhibits/publication_pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => exhibit_id, :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
 <% else -%>
-	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => is_edit_mode ? exhibit.id : get_exhibit_id(exhibit), :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
+	<%= render :partial => '/exhibits/pagination', :locals => { :curr_page => page_num, :num_pages => num_pages, :id => exhibit_id, :controller => page_controller, :action => page_action, :has_footnotes => has_footnotes } %>
 <% end -%>
 	<div class="clear_both"></div>
 	<% if page_num == -1 -%>
@@ -46,7 +53,7 @@
 			<p><span class='endnote_superscript'><%= footnote_count %></span>&nbsp;<span style="font-family:<%= exhibit.get_font_name('endnotes') %>; font-size:<%= exhibit.get_font_size('endnotes') %>px;"><%= decode_exhibit_links(footnote) %></span></p>
 			<% footnote_count = footnote_count + 1 -%>
 		<% end -%>
-		<%= "<p>No footnotes</p>" if footnote_count == 1 %>
+		<%= raw("<p>No footnotes</p>") if footnote_count == 1 %>
 		<h1 class="endnotes">Links</h1>
 		<% pages_links = exhibit.get_all_links() -%>
 		<% page_num = 1 -%>
@@ -61,9 +68,9 @@
 			<p><span style="font-family:<%= exhibit.get_font_name('endnotes') %>; font-size:<%= exhibit.get_font_size('endnotes') %>px;">"<%= remove_footnote_links(link[:text]) %>"&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
 			<% end -%>
 		<% end -%>
-		<%= "<p>No links</p>" if !at_least_one -%>
+		<%= raw("<p>No links</p>") if !at_least_one -%>
 		<div class="exhibit_prevlink">
-			<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => num_pages}, { :class => 'nav_link' } %>
+			<%= link_to raw("&laquo; prev"), "#{page_url}#{num_pages}", { :class => 'nav_link' } %>
 		</div>
 	<% else # page_num is greater than 0, so this is a regular page -%>
 		<% page = exhibit.exhibit_pages[page_num-1] -%>
@@ -75,27 +82,27 @@
 			<% ret = create_border_div(element, @border_active, "exhibit_section_with_border") %>
 			<%= ret[:html] %><%#this may create a div that contains the visible border, depending on whether the section starts a border, continues a border, ends a border, or isn't in a border %>
 			<% @border_active = ret[:border_active] -%>
-			<% show_edit_controls = "onmouseout=\"return sectionUnhovered(this, 'edit_bar', 'element_block', 'element_block_hover');\" onmouseover=\"return sectionHovered(this, 'edit_bar', 'element_block_hover', 'element_block');\"" -%>
-			<div  id="element_<%= element.id %>" class="clear_both element_block" <%= "#{show_edit_controls}" if is_edit_mode %>>
+			<% show_edit_controls = raw("onmouseout=\"return sectionUnhovered(this, 'edit_bar', 'element_block', 'element_block_hover');\" onmouseover=\"return sectionHovered(this, 'edit_bar', 'element_block_hover', 'element_block');\"") -%>
+			<div  id="element_<%= element.id %>" class="clear_both element_block" <%= show_edit_controls if is_edit_mode %>>
 				<%= render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => is_edit_mode, :element_count => element_count} %>
 			</div>
 			<% element_count = element_count + 1 -%>
 		<% end # for element in elements -%>
-		<%= '</div>' if @border_active %>
+		<%= raw('</div>') if @border_active %>
 		<br />
 		<% if page_num < num_pages -%>
 			<div class="exhibit_nextlink">
-				<%= link_to "next &raquo;", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num + 1}, { :class => 'nav_link' } %>
+				<%= link_to raw("next &raquo;"), "#{page_url}#{page_num + 1}", { :class => 'nav_link' } %>
 			</div>
 		<% end -%>
 		<% if page_num == num_pages && has_footnotes -%>
 			<div class="exhibit_nextlink">
-				<%= link_to "next &raquo;", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => -1}, { :class => 'nav_link' } %>
+				<%= link_to raw("next &raquo;"), "#{page_url}#{-1}", { :class => 'nav_link' } %>
 			</div>
 		<% end -%>
 		<% if page_num > 1 -%>
 			<div class="exhibit_prevlink">
-				<%= link_to "&laquo; prev", { :controller => page_controller, :action => page_action, :id => exhibit.id, :page => page_num - 1}, { :class => 'nav_link' } %>
+				<%= link_to raw("&laquo; prev"), "#{page_url}#{page_num - 1}", { :class => 'nav_link' } %>
 			</div>
 		<% end -%>
 <script type="text/javascript">

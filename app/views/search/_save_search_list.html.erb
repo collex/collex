@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# save_search_list: params: string header_class int max_to_show (-1 means show all) -%>
 <div class="<%= header_class %>">Saved Searches</div>
-<% saved = get_saved_searches() -%>
+<% saved = get_saved_searches(session[:user][:username]) -%>
 <center>
 	<% num_to_display = max_to_show == -1 ? saved.length : (max_to_show < saved.length ? max_to_show : saved.length) -%>
 	<% if num_to_display != saved.length -%>

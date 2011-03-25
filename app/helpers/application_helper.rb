@@ -39,52 +39,44 @@ module ApplicationHelper
 	def get_stylesheets(page, debug)
 		# We can't roll up the YUI css because all the images are specified on relative paths.
 		fnames = GetIncludeFileList.get_css(page)
-		yui_path = Branding.yui_path(debug)
+		yui_path = Branding.yui_path()
+		yui_list = ""
+		fnames[:yui].each { |f|
+			yui_list += '&amp;' if fnames[:yui][0] != f
+			yui_list += "#{yui_path}#{f}.css"
+		}
+		html = "<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?#{yui_list}' />\n"
 		if debug
-			html = ""
-			fnames[:yui].each { |f|
-				html += "<link href='#{yui_path}#{f}.css' media='all' rel='stylesheet' type='text/css' />\n"
-			}
 			html += stylesheet_link_tag(fnames[:local], :media => "all")
-			return html
+			return raw(html)
 		else
-			yui_list = ""
-			fnames[:yui].each { |f|
-				yui_list += '&amp;' if fnames[:yui][0] != f
-				yui_list += "#{yui_path}#{f}.css"
-			}
-			html = "<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?#{yui_list}' />\n"
 			html += stylesheet_link_tag("#{page.to_s()}-min", :media => "all")
-			#"<link href='/stylesheets/#{page.to_s()}-min.css' media='all' rel='stylesheet' type='text/css' />\n"
-			return html
+			return raw(html)
 		end
 	end
 
 	def get_javascripts(page, debug)
 		fnames = GetIncludeFileList.get_js(page)
-		yui_path = Branding.yui_path(debug)
+		yui_path = Branding.yui_path()
+		yui_list = ""
+		fnames[:yui].each { |f|
+			yui_list += '&' if fnames[:yui][0] != f
+			yui_list += "#{yui_path}#{f}.js"
+		}
 		if debug
 			html = javascript_include_tag(fnames[:prototype]) + "\n"
-			fnames[:yui].each { |f|
-				html +=  javascript_include_tag("#{yui_path}#{f}") + "\n"
-#				html += "<script src='#{yui_path}#{f}.js' type='text/javascript'></script>\n"
-			}
+			if yui_list.length > 0
+				html += javascript_include_tag("http://yui.yahooapis.com/combo?#{raw(yui_list)}") + "\n"
+			end
 			html += javascript_include_tag(fnames[:local]) + "\n"
-			return html
+			return raw(html)
 		else
-			yui_list = ""
-			fnames[:yui].each { |f|
-				yui_list += '&amp;' if fnames[:yui][0] != f
-				yui_list += "#{yui_path}#{f}.js"
-			}
 			html = javascript_include_tag("prototype-min") + "\n"
 			if yui_list.length > 0
-				html += javascript_include_tag("http://yui.yahooapis.com/combo?#{yui_list}") + "\n"
-#				html += "<script src='http://yui.yahooapis.com/combo?#{yui_list}' type='text/javascript' ></script>\n"
+				html += javascript_include_tag("http://yui.yahooapis.com/combo?#{raw(yui_list)}") + "\n"
 			end
 			html += javascript_include_tag("#{page.to_s()}-min") + "\n"
-			#html	+= "<script src='/javascripts/#{page.to_s()}-min.js' type='text/javascript'></script>\n"
-			return html
+			return raw(html)
 		end
 	end
 
@@ -103,10 +95,20 @@ module ApplicationHelper
   
   def result_button(text, id, action, visible)
     cls = visible ? "" : "class='hidden' "
-    "<a id='#{id}' #{cls}onclick=\"#{action.gsub("\"", "&quot;")}; return false;\" >#{text}</a>"
+    return raw("<a id='#{id}' #{cls}onclick=\"#{action.gsub("\"", "&quot;")}; return false;\" >#{text}</a>")
     # "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
   
+	def unobtrusive_result_button(text, id, klass, attributes, visible)
+		klass += " hidden" if !visible
+		attr = ""
+		attributes.each {|key, val|
+			val = val.to_s
+			attr += " #{key}=\"#{val.gsub("\"", "&quot;")}\""
+		}
+		return raw("<a id='#{id}' class=\"#{klass}\" #{attr}>#{text}</a>")
+	end
+
   def rounded_button(text, id, action, color)
 #    return yahoo_button(text, id, action)
     enter_hover = switch_classes_on_element("$(this).down()", "#{color}_rounded_button_left_hover", "#{color}_rounded_button_left") +
@@ -116,22 +118,25 @@ module ApplicationHelper
       switch_classes_on_element("$(this).down().down()", "#{color}_rounded_button_middle", "#{color}_rounded_button_middle_hover") +
       switch_classes_on_element("$(this).down().next()", "#{color}_rounded_button_right", "#{color}_rounded_button_right_hover")
 
-    "<!--[if IE 6]>\n<div id='#{id}' class='ie6_rounded_button' onclick='#{action.gsub('\'', '"')}; return false;'>#{text}</div><![endif]-->\n" +
+    html = "<!--[if IE 6]>\n<div id='#{id}' class='ie6_rounded_button' onclick='#{action.gsub('\'', '"')}; return false;'>#{text}</div><![endif]-->\n" +
     "<!--[if gte IE 7]><!-->\n" +
     "<div id='#{id}' class='rounded_button_container' onmouseover='#{enter_hover}' onmouseout='#{leave_hover}' onclick='#{action.gsub('\'', '"')}; return false;'><div class='#{color}_rounded_button_left'><div class='#{color}_rounded_button_middle'>\n" +
     "  <div class='rounded_button_top_spacing' ></div><span class='rounded_button_link'>#{text}</span>\n" +
     "</div></div><div class='#{color}_rounded_button_right'></div></div>" +
     "<!--<![endif]-->\n"
+	return raw(html)
   end
 
   def rounded_h1(text)
-    "<div class='rounded_left'><div class='rounded_middle'><div class='rounded_right'>\n" +
+    html = "<div class='rounded_left'><div class='rounded_middle'><div class='rounded_right'>\n" +
     "  <h1 class='rounded_h1'>#{text}</h1>\n" +
     "</div></div></div>"
+	return raw(html)
   end
 
   def gradient_h1(text)
-    "<div class='rounded_middle'><h1 class='rounded_h1'>#{text}</h1></div>"
+    html = "<div class='rounded_middle'><h1 class='rounded_h1'>#{text}</h1></div>"
+	return raw(html)
   end
 # looks like this was added into environments/development.rb
 #   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
@@ -165,7 +170,7 @@ private
 
   public
   def link_separator
-    return "&nbsp;|"
+    return raw("&nbsp;|")
   end
   
   def draw_tabs(curr_page)
@@ -176,10 +181,15 @@ private
 		{ :name => 'Publications', :link => '/publications', :use_long => true },
       { :name => 'Search', :link => search_path }
     ]
+    if COLLEX_PLUGINS['typewright']
+		search = tabs.pop()
+      tabs.push({ :name => 'TypeWright', :link => '/typewright/documents', :use_long => true })
+		tabs.push(search)
+    end
 
     # the my_collex tab is separate, and is rendered first
     cls = (curr_page == MY_COLLEX) ? 'my_collex_link_current' : 'my_collex_link'
-    html = "\t" + link_to(MY_COLLEX, my_collex_path, { :class => cls }) + "\n"
+    html = "\t" + link_to(MY_COLLEX, '/' + MY_COLLEX_URL, { :class => cls }) + "\n"
     html += "\t" + "<div id='nav_container'>\n"
     tabs.each { |tab|
       if tab[:dont_show_yourself] && curr_page == tab[:name]
@@ -196,6 +206,7 @@ private
       end
     }
     html += "\t" + "</div>\n"
+	return raw(html)
   end
 
   # helper for adding default text if the property is blank
@@ -249,7 +260,7 @@ private
     thumb = CachedResource.get_thumbnail_from_hit(hit)
     image = CachedResource.get_image_from_hit(hit)
     progress_id = "progress_#{hit['uri']}"
-	title = hit['title'] ? CachedResource.fix_char_set(hit['title'][0]) : "Image"
+	  title = hit['title'] ? hit['title'][0] : "Image"
     str = tag "img", options.merge({:alt => title, :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
     if image != thumb
 		title = title[0,60]+'...' if title.length > 62
@@ -257,8 +268,8 @@ private
 		title = title.gsub('"', "\\\"")
       str = "<a class='nines_pic_link' onclick='showInLightbox({ title: \"#{title}\", img: \"#{image}\", spinner: \"#{PROGRESS_SPINNER_PATH}\", size: 500 }); return false;' href='#'>#{str}</a>"
     end
-    str = "<img id='#{progress_id}' class='result_row_img_progress' src='#{PROGRESS_SPINNER_PATH}' alt='loading...' />\n" + str
-    return str
+    str = "<img id='#{progress_id}' class='progress_timeout result_row_img_progress' src='#{PROGRESS_SPINNER_PATH}' alt='loading...' data-noimage='#{SPINNER_TIMEOUT_PATH}' />\n" + str
+    return raw(str)
   end
 
   # +value+ has any ampersands changed to +&amp;+
@@ -288,15 +299,23 @@ private
 #    link_to_function(label, "popUp('#{url_for(options)}')", html_options)
 #  end
   
-  def link_to_confirm(title, params, confirm_title, confirm_question)
-    link_to title, params, { :post => true, :class => 'modify_link', :onclick => "new ConfirmLinkDlg(this, '#{confirm_title}', '#{confirm_question}'); return false;" }
+  def link_to_confirm(title, params, confirm_title, confirm_question, method = nil)
+	  if method
+		  act_str = "{ method: '#{method}', url: this.href }"
+	  else
+		  act_str = "this.href"
+	  end
+    link_to title, params, { :post => true, :class => 'modify_link',
+		:onclick => "serverAction({confirm: { title: '#{confirm_title}', message: '#{confirm_question}' }, action: { actions: #{act_str} }, progress: { waitMessage: 'Please Wait...' }}); return false;" }
   end
   
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
-     (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
+     result = (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
      text_field(object, method, tag_options) +
      content_tag("div", "", :id => "#{object}_#{method}_auto_complete", :class => "auto_complete") +
      auto_complete_field("#{object}_#{method}", { :url => { :controller=>"search", :action => "auto_complete_for_#{object}_#{method}" } }.update(completion_options))
+     #result = result.gsub('paramName:', 'parameters:')
+     return result
   end
   
   def comma_separate(array)
@@ -366,7 +385,7 @@ private
 	def denature_footnote_links(text)
     return text if text == nil || text == ''
 		text = text.gsub("onclick=\'var footnote = $(this).next(); new MessageBoxDlg", "onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg")
-		return text
+		return raw(text)
 	end
 
 	def remove_footnote_links(text)
@@ -394,7 +413,7 @@ private
     # find all the spans
     span_str = '<span'
     arr = text.split(span_str)
-    return text if arr.length == 1
+    return raw(text) if arr.length == 1
     
     str = arr[0]  # the first element has everything before the first span, so we just start with that.
     is_first = true
@@ -423,7 +442,7 @@ private
         end
       end
     end
-    return str
+    return raw(str)
   end
   
   # Some private convenience functions to make the above routine clearer
@@ -466,7 +485,7 @@ private
 		html += "var callback_#{id} = function(sel) { #{callback} };\n"
 		html += "initializeSelectCtrl('#{id}', '#{curr_sel}', callback_#{id});\n"
 		html += "</script>\n"
-		return html
+		return raw(html)
 	end
 
 	def create_breadcrumbs(crumbs, here)
@@ -478,6 +497,6 @@ private
 		html = "<div class=\"breadcrumbs\">\n"
 		html += links.join('&nbsp;&nbsp;&gt;&nbsp;&nbsp;')
 		html += "</div>\n"
-		return html
+		return raw(html)
 	end
 end

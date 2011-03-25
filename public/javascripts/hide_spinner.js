@@ -14,7 +14,8 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $ */
+/*global $, $$, Event */
+/*global window, setTimeout */
 /*extern finishedLoadingImage, hideSpinner */
 
 // This switches the spinner graphic for the real graphic after the real graphic has finished loading.
@@ -81,3 +82,12 @@ function finishedLoadingImage(progress_el, img_el, max_width, max_height)
 	$(img_el).removeClassName('hidden');
 }
 
+Event.observe(window, 'load', function() {
+	setTimeout(function() {
+		var spinners = $$('.progress_timeout');
+		spinners.each(function(spinner) {
+			var noimage = spinner.readAttribute('data-noimage');
+			spinner.src = noimage;
+		});
+	}, 8000);
+});

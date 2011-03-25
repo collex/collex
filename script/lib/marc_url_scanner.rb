@@ -14,8 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
-require 'rubygems'
-require 'marc'
+#require 'rubygems'
+#require 'marc'
 require 'script/lib/nines_mapping.rb'
 
 require 'script/lib/marc_ext/lib/marc_ext.rb'
@@ -24,7 +24,6 @@ class MARC::Record
   include MARCEXT::Record
 end
 
-# # IS THIS ACTUALLY USED ANYWHERE???
 $KCODE = 'UTF8'
 
 class MarcUrlScanner

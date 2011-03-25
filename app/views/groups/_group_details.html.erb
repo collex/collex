@@ -19,8 +19,8 @@
 	// These have to be global variables to be picked up after an ajax call (this partial is redrawn after every update.)
 	<% membership = group.get_membership_list() -%>
 	<% membership_truncated = group.get_membership_list_truncated(44) -%>
-	gMembership = <%= membership.to_json() %>;
-	gGroupData = <%= group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;') %>.group;
+	gMembership = <%= raw(membership.to_json()) %>;
+	gGroupData = <%= raw(group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')) %>.group;
 </script>
 <div class="group_details_left">
 	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_group_image_url(group), :show_immediately => true, :height => 120, :border => true } %>
@@ -88,25 +88,25 @@
 		gus.each { |gu|
 			reqs.push({ :user_name => "#{escape_apos(User.find(gu.user_id).fullname)}", :group_id => "#{Group.id_obfuscator(gu.id)}" })
 		}
-		reqs.to_json();
+		raw(reqs.to_json());
 	-%>;
 </script>
 			<% if gus.length > 0 -%>
 			<li><%= "#{gus.length} #{gus.length == 1 ? 'person has' : 'people have'}" %> requested to join this group. <%= link_to_function('[respond]', "new RespondToRequestDlg(#{group.id}, gPendingRequests);", :class => 'nav_link')  %></li>
 			<% end -%>
 		<% end -%>
-		<%= "<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>" if group.can_leave_group(user_id) %>
+		<%= raw("<li>#{link_to_confirm("[leave this group]", { :controller => 'groups', :action => 'leave_group', :group_id => group.id, :user_id => user_id }, "Leave Group", "Are you sure you want to leave this group?")}</li>") if group.can_leave_group(user_id) %>
 	<% end -%>
 	</ul>
 </div>
 <div class="group_details_center">
-	<h1><%=h group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{escape_apos(group.name)}', 'group');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %><%= "#{link_to_function('[join]', "request_to_join(#{group.id}, #{user_id});", :class => 'group_edit_title_link nav_link' )}" if group.can_request_to_join(user_id) %></h1>
+	<h1><%= group.name %><%= link_to_function('[edit title]', "editTitle(#{group.id}, '#{escape_apos(group.name)}', 'group');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %><%= raw("#{link_to_function('[join]', "request_to_join(#{group.id}, #{user_id});", :class => 'group_edit_title_link nav_link' )}") if group.can_request_to_join(user_id) %></h1>
 	<% if user_id -%>
 		<% pending_id = group.get_pending_id(user_id) -%>
 		<% if pending_id -%>
 	<div class="group_editors">You have been invited to join this group.
-		<%= "#{link_to_function('[accept invitation to join]', "accept_invitation(#{pending_id});", :class => 'nav_link');}" %>
-		<%= "#{link_to_function('[ignore invitation to join]', "decline_invitation(#{pending_id});", :class => 'nav_link');}" %>
+		<%= link_to_function('[accept invitation to join]', "accept_invitation(#{pending_id});", :class => 'nav_link'); %>
+		<%= link_to_function('[ignore invitation to join]', "decline_invitation(#{pending_id});", :class => 'nav_link'); %>
 	</div>
 		<% elsif group.is_request_pending(user_id) -%>
 		<div class="group_editors">[a request to join this group is pending acceptance by the moderator]</div>
@@ -124,8 +124,8 @@
 			<%= get_user_link(editor) %>&nbsp;
 		<% end -%>
 		<% if group.can_edit(user_id) && group.group_type == 'peer-reviewed' -%>
-		<%= link_to_function "[hide admins from non members]", "hideAdmins(#{group.id}, '/groups/update');", :class => 'nav_link' if group.show_admins == 'all' -%>
-		<%= link_to_function "[show admins to non members]", "showAdmins(#{group.id}, '/groups/update');", :class => 'nav_link' if group.show_admins != 'all' -%>
+		<%= link_to_function "[hide admins from non members]", "hideAdmins({ method: 'PUT', url: '/groups/#{group.id}' });", :class => 'nav_link' if group.show_admins == 'all' -%>
+		<%= link_to_function "[show admins to non members]", "showAdmins({ method: 'PUT', url: '/groups/#{group.id}' });", :class => 'nav_link' if group.show_admins != 'all' -%>
 		<% end -%>
 	</div>
 <% end -%>
@@ -143,15 +143,16 @@
 		<li><%= link_to_function('Invite Members', "new InviteMembersDlg(#{group.id}, '#{SITE_NAME}');", :class => 'nav_link')  %></li>
 		<li><%= link_to_function('Edit Membership', "new EditMembershipDlg(#{group.id}, gMembership, '#{group.show_membership == true ? 'Yes' : 'No' }', '#{escape_apos(User.find(group.owner).fullname)}', #{group.is_owner(user_id)});", :class => 'nav_link')  %></li>
 <% license_prompt = group.license_type == 0 ? "Set Content License" : "Change License" -%>
-		<li><span class="small_license"><%= Exhibit.get_sharing_icon_url(group.license_type) %></span>
-			<%= link_to_function(license_prompt, "license_dialog({ populateLicenses: '/#{MY_COLLEX_URL}/get_licenses?add_inherit=true', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details,group_license', sub_title: 'All exhibits in this group use the following license:', callback_url: '/groups/update,/groups/render_license' }); return false;", { :class => "nav_link" }) %>
+		<li><span class="small_license"><%= raw(Exhibit.get_sharing_icon_url(group.license_type)) %></span>
+			<%= link_to_function(license_prompt, "license_dialog({ populateLicenses: '/exhibits/get_licenses?add_inherit=true&group_id=#{group.id}', selection: gLicenseType, id_name: 'group[license_type]', id: #{group.id}, update_id: 'group_details,group_license', sub_title: 'All #{group.get_exhibits_label().pluralize().downcase()} in this group use the following license:', callback_url: [{ method: 'PUT', url: '/groups/#{group.id}' }, '/groups/render_license'] }); return false;", { :class => "nav_link" }) %>
 			<span class="group_member_explanation"> (current license: <%= Exhibit.is_license_specified(group.license_type) ? Exhibit.get_sharing_static(group.license_type) : 'No license specified' %>)</span>
 		</li>
 		<li><%= group.get_exhibits_label() %>s are <%= Group.visibility_to_friendly(group.exhibit_visibility) %>&nbsp;<%= link_to_function("Change #{group.get_exhibits_label()} Visibility", "editVisibility(#{group.id}, gGroupData.exhibit_visibility, #{Group.visibility_to_json()}, #{Group.visibility_explanations_to_json()}, '#{group.get_exhibits_label()}');", :class => 'nav_link') %></li>
-		<li>URL is <%= group.visible_url && group.visible_url.length > 0 ? url_for( :controller => 'groups', :action => group.visible_url, :only_path => false) : "not set" %> <%= link_to_function('Change URL', "editURL(#{group.id}, '#{group.visible_url}', 'group', '#{url_for( :controller => 'groups', :action => '', :only_path => false)}');", :class => 'nav_link') %></li>
+		<%# TODO-PER: for Rails 3, we removed url_for( :controller => 'groups', :action => group.visible_url, :only_path => false) %>
+		<li>URL is <%= group.visible_url && group.visible_url.length > 0 ? "/groups/#{group.visible_url}" : "not set" %> <%= link_to_function('Change URL', "editURL(#{group.id}, '#{group.visible_url}', 'group', '/groups/');", :class => 'nav_link') %></li>
 <% if group.group_type =='peer-reviewed' %>
-		<li>Exhibits are called: <%= group.get_exhibits_label() %>s <%= link_to_function('[Change]', "changeExhibitLabel('/groups/update', #{group.id}, '#{group.get_exhibits_label()}', #{group.get_exhibit_label_list().to_json()}, 'group_details');", :class => 'nav_link') %></li>
-		<li>Clusters are called: <%= group.get_clusters_label() %>s <%= link_to_function('[Change]', "changeClusterLabel('/groups/update', #{group.id}, '#{group.get_clusters_label()}', #{group.get_cluster_label_list().to_json()}, 'group_details');", :class => 'nav_link') %></li>
+		<li>Exhibits are called: <%= group.get_exhibits_label() %>s <%= link_to_function('[Change]', "changeExhibitLabel({ method: 'PUT', url: '/groups/#{group.id}' }, '#{group.get_exhibits_label()}', #{group.get_exhibit_label_list().to_json()}, 'group_details', {id: #{group.id}});", :class => 'nav_link') %></li>
+		<li>Clusters are called: <%= group.get_clusters_label() %>s <%= link_to_function('[Change]', "changeClusterLabel({ method: 'PUT', url: '/groups/#{group.id}' }, '#{group.get_clusters_label()}', #{group.get_cluster_label_list().to_json()}, 'group_details', {id: #{group.id}});", :class => 'nav_link') %></li>
 <% end -%>
 <% if group.can_delete(user_id)  && group.group_type != 'peer-reviewed' -%>
 		<li><%= link_to('Delete Group', group, :confirm => 'Are you sure you wish to permanently delete this group?', :method => :delete, :class => 'nav_link') %></li>

@@ -22,33 +22,35 @@ or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 <div class="shared_search_results">
 <% if session[:classroom_search_term] && session[:classroom_view_by] == 'All' -%>
 	Found <%= pluralize(results[:total_hits], 'item') %>
-<% if session[:classroom_group_facet] -%>
-	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
-<% end -%>
+	<% if session[:classroom_group_facet] -%>
+		in group "<%= Group.find(session[:classroom_group_facet]).name %>"
+		<%= link_to_trashcan("Clear Facet", '/classroom/facet_on_group', 'facet_redraw', '{ view: sel }', 'Removing Facet') %>
+	<% end -%>
 	matching "<%= session[:classroom_search_term] %>".
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/classroom/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
+	<%= link_to_trashcan("Clear Search", '/classroom/search', 'shared_objects', '{ term: '' }', 'Removing Search') %>
 <% elsif session[:classroom_search_term] -%>
 	Found <%= pluralize(results[:total_hits], singularize_and_downcase(session[:classroom_view_by])) %> with <%= results[:total] %>
-	<%= link_to_function("total items", "ajaxWithProgressSpinner([ '/classroom/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: 'All' })", { :class => 'nav_link' }) %>
-<% if session[:classroom_group_facet] -%>
-	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
-<% end -%>
+	<%= link_to_function("total items",
+		"serverAction({action: { actions: '/classroom/view_by', els: 'shared_objects', params: { view: 'All' }}, progress: { waitMessage: 'Changing view...' }})", { :class => 'nav_link' }) %>
+	<% if session[:classroom_group_facet] -%>
+		in group "<%= Group.find(session[:classroom_group_facet]).name %>"
+			<%= link_to_trashcan("Clear Facet", '/classroom/facet_on_group', 'facet_redraw', '{ view: "All" }', 'Removing Facet') %>
+	<% end -%>
 	matching "<%= session[:classroom_search_term] %>".
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />', "ajaxWithProgressSpinner([ '/classroom/search' ], [ 'shared_objects' ], { waitMessage: 'Removing Search...' }, { term: '' })" %>
+	<%= link_to_trashcan("Clear Search", '/classroom/search', 'shared_objects', '{ view: "All" }', 'Removing Search') %>
 <% elsif session[:classroom_view_by] == 'All' -%>
 	There are <%= pluralize(results[:total_hits], 'total item') %>
-<% if session[:classroom_group_facet] -%>
-	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
-<% end -%>
+	<% if session[:classroom_group_facet] -%>
+		in group "<%= Group.find(session[:classroom_group_facet]).name %>"
+		<%= link_to_trashcan("Clear Facet", '/classroom/facet_on_group', 'facet_redraw', '{ view: "All" }', 'Removing Facet') %>
+	<% end -%>
 <% else -%>
 	There are <%= pluralize(results[:total_hits], singularize_and_downcase(session[:classroom_view_by])) %> with <%= results[:total] %>
-	<%= link_to_function("total items", "ajaxWithProgressSpinner([ '/classroom/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: 'All' })", { :class => 'nav_link' }) %>
-<% if session[:classroom_group_facet] -%>
-	in group "<%= Group.find(session[:classroom_group_facet]).name %>"
-	<%= link_to_function '<img src="/images/lvl2_trash.gif" alt="Clear Facet" />', "ajaxWithProgressSpinner([ '/classroom/facet_on_group' ], [ 'facet_redraw' ], { waitMessage: 'Removing Facet...' }, { })" %>
-<% end -%>
+	<%= link_to_function("total items",
+		"serverAction({action: { actions: '/classroom/view_by', els: 'shared_objects', params: { view: 'All' }}, progress: { waitMessage: 'Changing view...' }})", { :class => 'nav_link' }) %>
+	<% if session[:classroom_group_facet] -%>
+		in group "<%= Group.find(session[:classroom_group_facet]).name %>"
+		<%= link_to_trashcan("Clear Facet", '/classroom/facet_on_group', 'facet_redraw', '{ view: "All" }', 'Removing Facet') %>
+	<% end -%>
 <% end -%>
 </div>

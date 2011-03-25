@@ -24,7 +24,7 @@
 			<span class="label">For Teachers: </span>
 			<span class="instructions">Log into your <%= sign_in_link({ :class => 'nav_link', :text => MY_COLLEX }) %> account or
 <% if get_curr_user_id() -%>
-		<%= link_to_function("click here", "new CreateGroupWizardDlg('#{get_curr_user_id()}', '/groups/verify_group_title', '/groups/create', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[0]}', '#{SITE_NAME}', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', '#{get_curr_user().institution}', '#{get_curr_user().fullname}', '/images/#{SKIN}/new_group_show_membership_example.jpg'); return false;", :class => 'nav_link' ) %>
+		<%= link_to_function("click here", "new CreateGroupWizardDlg('/search/auto_complete_for_search_university', '#{get_curr_user_id()}', '/groups/verify_group_title', '/groups', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[1]}', '#{SITE_NAME}', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', '#{get_curr_user().institution}', '#{get_curr_user().fullname}', '/images/#{SKIN}/new_group_show_membership_example.jpg'); return false;", :class => 'nav_link' ) %>
 <% else -%>
 		<%= sign_in_link({ :class => 'nav_link', :text => 'click here' }) %>
 <% end -%>

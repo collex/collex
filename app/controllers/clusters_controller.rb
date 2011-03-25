@@ -86,28 +86,39 @@ end
 	def edit_thumbnail
 		if get_curr_user() == nil
 			flash = "You are not logged in. Has your session expired?"
-			render :text => "<script type='text/javascript'>window.top.window.stopEditGroupThumbnailUpload('#{flash}');</script>"
+			render :text => respond_to_file_upload("stopEditGroupThumbnailUpload", flash)
 			return
 		end
 		cluster_id = params[:id]
 		cluster = Cluster.find(cluster_id)
-		image = params['image']
-		if image && image
-			image = Image.new({ :uploaded_data => image })
-			end
-		begin
-			cluster.image = image
-			if cluster.save
-				cluster.image.save! if cluster.image
-				flash = "OK:Thumbnail updated"
-				GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail changed in #{Group.get_clusters_label(cluster.group_id)} in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has uploaded a new thumbnail picture to the #{Group.get_clusters_label(cluster.group_id)} \"#{cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
-			else
-				flash = "Error updating thumbnail"
-			end
-		rescue
-			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+		err = Image.save_image(params['image'], cluster)
+		case err[:status]
+		when :error then
+			flash = err[:user_error]
+			logger.error(err[:log_error])
+		when :saved then
+			flash = "OK:Thumbnail updated"
+			GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail changed in #{Group.get_clusters_label(cluster.group_id)} in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has uploaded a new thumbnail picture to the #{Group.get_clusters_label(cluster.group_id)} \"#{cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		when :no_image then
+			flash = "ERROR: No image specified"
 		end
-    render :text => "<script type='text/javascript'>window.top.window.stopEditGroupThumbnailUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#		image = params['image']
+#		if image && image
+#			image = Image.new({ :uploaded_data => image })
+#			end
+#		begin
+#			cluster.image = image
+#			if cluster.save
+#				cluster.image.save! if cluster.image
+#				flash = "OK:Thumbnail updated"
+#				GroupsUser.email_hook("group", cluster.group_id, "Profile thumbnail changed in #{Group.get_clusters_label(cluster.group_id)} in #{Group.find(cluster.group_id).name}", "#{get_curr_user().fullname} has uploaded a new thumbnail picture to the #{Group.get_clusters_label(cluster.group_id)} \"#{cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
+#			else
+#				flash = "Error updating thumbnail"
+#			end
+#		rescue
+#			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#		end
+    render :text => respond_to_file_upload("stopEditGroupThumbnailUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 
   # GET /clusters/1
@@ -158,12 +169,23 @@ end
 
   # POST /clusters
   # POST /clusters.xml
-  def create
-		begin
-			if params['image'] && params['image'].length > 0
-				image = Image.new({ :uploaded_data => params['image'] })
-			end
-			params[:cluster]['visibility'] = 'everyone'
+	def create
+		# TODO-PER: the error processing can probably be simplified now that the image handling is in save_image.
+		err = Image.save_image(params['image'], nil)
+		img_id = nil
+		case err[:status]
+			when :error then
+				logger.error(err[:log_error])
+				render :text => respond_to_file_upload("stopNewClusterUpload", err[:user_error])  # This is loaded in the iframe and tells the dialog that the upload is complete.
+				return
+			when :saved
+				img_id = err[:id]
+		end
+#		begin
+#			if params['image'] && params['image'].length > 0
+#				image = Image.new({ :uploaded_data => params['image'] })
+#			end
+			#params[:cluster]['visibility'] = 'everyone'
 			group_id = params[:cluster][:group_id]
 			name = params[:cluster][:name]
 			cluster = Cluster.find_by_group_id_and_name(group_id, name)
@@ -171,28 +193,28 @@ end
 				flash = "Duplicate #{Group.get_clusters_label(group_id)} name. Please choose another."
 			else
 				@cluster = Cluster.new(params[:cluster])
-				@cluster.image = image
+				@cluster.image_id = img_id
 				err = false
 				if @cluster.save
-					begin
-						@cluster.image.save! if @cluster.image
-					rescue
-						err = true
-						@cluster.delete
-						flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-					end
-					if err == false
+#					begin
+#						@cluster.image.save! if @cluster.image
+#					rescue
+#						err = true
+#						@cluster.delete
+#						flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#					end
+#					if err == false
 						GroupsUser.email_hook("group", group_id, "New #{Group.get_clusters_label(group_id)} in #{Group.find(group_id).name}", "#{get_curr_user().fullname} has created the #{Group.get_clusters_label(group_id)} \"#{@cluster.name}\".", url_for(:controller => 'home', :action => 'index', :only_path => false))
 						flash = "OK:#{@cluster.id}"
-					end
+#					end
 				else
 					flash = "Error creating #{Group.get_clusters_label(group_id)}"
 				end
 			end
-		rescue
-			flash = "Server error when creating #{Group.get_clusters_label(group_id)}."
-		end
-    render :text => "<script type='text/javascript'>window.top.window.stopNewClusterUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#		rescue
+#			flash = "Server error when creating #{Group.get_clusters_label(group_id)}."
+#		end
+    render :text => respond_to_file_upload("stopNewClusterUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
   # PUT /clusters/1

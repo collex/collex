@@ -18,7 +18,7 @@ class Group < ActiveRecord::Base
 	belongs_to :user, :foreign_key => "owner"
 	has_many :exhibits
 	has_many :discussion_threads
-	has_and_belongs_to_many :users
+	#TODO-PER: commented for Rails 3: has_and_belongs_to_many :users
   belongs_to :image#, :dependent=>:destroy
 
 	#
@@ -62,7 +62,8 @@ class Group < ActiveRecord::Base
 
 	def self.get_discussion_visibility(thread)
 		return 'everyone' if thread.group_id == nil
-		group = Group.find(thread.group_id)
+		group = Group.find_by_id(thread.group_id)
+		return "" if group == nil
 		return group.forum_permissions == 'hidden' ? 'members' : 'everyone'
 	end
 
@@ -306,7 +307,6 @@ class Group < ActiveRecord::Base
 				begin
 					gu = GroupsUser.new({ :group_id => self.id, :user_id => user_id, :email => email, :role => 'member', :pending_invite => true, :pending_request => false })
 					gu.save!
-					#LoginMailer.deliver_invite_member_to_group({ :group_name => self.name, :editor_name => editor_name, :request_id => gu.id, :has_joined => user_id != nil }, email, editor_email)
 					body = "#{editor_name} has invited you to join the group \"#{self.name}.\"\n\n"
 					if user_id == nil
 						body += "To join this group, you will be prompted to create a login ID on #{SITE_NAME}.\n\n"
@@ -488,19 +488,28 @@ class Group < ActiveRecord::Base
 		return self.show_exhibits[2] if self.friendly_show_exhibits()[2] == permissions
 		return ""
 	end
-	def self.show_exhibits_to_json()
-		vals = self.show_exhibits()
-		texts = self.friendly_show_exhibits()
+	
+	def show_exhibits_to_json()
+		vals = Group.show_exhibits()
+		texts = Group.friendly_show_exhibits()
+		exhibit_label = get_exhibits_label().pluralize().downcase()
+		clusters_label = get_clusters_label().pluralize().downcase()
+		texts.each do | txt |
+   		txt.gsub!("clusters", clusters_label)
+         txt.gsub!("exhibits", exhibit_label)   
+		end
+		
 		ret = []
 		0.upto(2) { |i|
 			ret.push({ :value => vals[i], :text =>	texts[i] })
 		}
 		return ret.to_json()
 	end
-	def self.show_exhibits_explanations_to_json
-		explanations = [ "List both clusters and exhibits in the exhibits list.",
-			"List only clusters and exhibits that belong to clusters in the exhibits list.",
-			"List only exhibits and not clusters in the exhibits list."  ]
+	
+	def show_exhibits_explanations_to_json
+		explanations = [ "List both #{get_clusters_label().pluralize().downcase()} and #{get_exhibits_label().pluralize().downcase()} in the #{get_exhibits_label().pluralize().downcase()} list.",
+			"List only #{get_clusters_label().pluralize().downcase()} and #{get_exhibits_label().pluralize().downcase()} that belong to #{get_clusters_label().pluralize().downcase()} in the #{get_exhibits_label().pluralize().downcase()} list.",
+			"List only #{get_exhibits_label().pluralize().downcase()} and not #{get_clusters_label().pluralize().downcase()} in the #{get_exhibits_label().pluralize().downcase()} list."  ]
 		return explanations.to_json()
 	end
 

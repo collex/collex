@@ -18,10 +18,10 @@
 /// Create the dialog that manipulates the border in edit exhibits.
 //////////////////////////////////////////////////////
 
-/*global $, $$, Class, Element, Event, Ajax */
+/*global $, $$, Class, Element, Event */
 /*global YAHOO */
 /*global document */
-/*global GeneralDialog, genericAjaxFail */
+/*global GeneralDialog, serverAction */
 /*extern BorderDialog */
 
 var BorderDialog = Class.create();
@@ -286,17 +286,7 @@ BorderDialog.prototype = {
 			var element_id = els[0].id;
 			element_id = element_id.substring(element_id.lastIndexOf('_')+1);
 
-			new Ajax.Updater("exhibit_builder_outline_content", "/my_collex/modify_border", {
-				parameters : { borders: str, element_id: element_id },
-				evalScripts : true,
-				onSuccess: function(resp) {
-					new Ajax.Updater("exhibit_page", "/my_collex/redraw_exhibit_page", {
-						parameters : { borders: str, element_id: element_id },
-						evalScripts : true,
-						onFailure : function(resp) { genericAjaxFail(null, resp); }});
-				},
-				onFailure : function(resp) { genericAjaxFail(null, resp); }
-			});
+			serverAction({ action: { actions: [ "/builder/modify_border", "/builder/redraw_exhibit_page" ], els: [ "exhibit_builder_outline_content", "exhibit_page" ], params: { borders: str, element_id: element_id } }});
 		}
 
 		this.cancel();

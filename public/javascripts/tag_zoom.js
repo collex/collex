@@ -14,13 +14,14 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $$, Ajax */
+/*global $, $$ */
 /*global window, document */
+/*global serverNotify */
 /*extern tagZoom */
 
 // Create a singleton object so we don't pollute the global namespace too much.
 var tagZoom = {
-	zoom_level: 10,
+	zoom_level: 1,   // default zoom level 
 	startY: 0,  // mouse starting positions
 	offsetY: 0,  // current element offset
 	dragElement: null, // needs to be passed from OnMouseDown to OnMouseMove
@@ -29,14 +30,22 @@ var tagZoom = {
 
 	doZoom: function(level)
 	{
-		var setTagVisibility = function(zoom_level2)
+		var setTagVisibility = function(new_zoom_level)
 		{
+		  // get all of the span elements under the tagcloud. These are the tags
 			var spans = $$('#tagcloud span');
 			for (var i = 0; i < spans.length; i++)
 			{
-				var classname = spans[i].className;
-				var level = parseInt(classname.substring(5));
-				spans[i].style.display = (level >= zoom_level2) ? 'inline' : 'none';
+			  // remove all cloud# class info
+			  for ( var s=0; s<=10; s++)
+			  {
+			     spans[i].removeClassName("cloud"+s);
+			  }
+				
+				// read in the zoom attribute
+				var zooms = spans[i].readAttribute('zoom').split(",");
+				var newClass = "cloud"+zooms[new_zoom_level-1];
+				spans[i].addClassName(newClass);
 			}
 		};
 
@@ -55,13 +64,15 @@ var tagZoom = {
 			case "9": tagZoom.zoom_level = 9; break;
 			case "10": tagZoom.zoom_level = 10; break;
 		}
+		
+		// pass along the prior level so the delta can be calculated
 		setTagVisibility(tagZoom.zoom_level);
 
 		var thumb = $('tag_zoom_thumb');
-		thumb.style.top = "" + (306 - tagZoom.zoom_level*8) + "px";
+		thumb.style.top = "" + (306 - tagZoom.zoom_level*9) + "px";
 
 		if (tagZoom.dragElement === null)
-			new Ajax.Updater("", "/tag/set_zoom", { parameters : "level="+ tagZoom.zoom_level } );
+			serverNotify("/tag/set_zoom", { level: tagZoom.zoom_level } );
 	},
 
 	zoomThumbMouseDown: function(e)

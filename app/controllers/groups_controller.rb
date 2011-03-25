@@ -25,6 +25,30 @@ class GroupsController < ApplicationController
   end
   public
 
+	def get_all_groups
+		groups = Group.all()
+    ret = []
+		groups.each { |group|
+			obj = {}
+			obj[:id] = group.get_visible_id()
+			obj[:img] = self.class.helpers.get_group_image_url(group)
+			obj[:title] = group.id
+			obj[:strFirstLine] = group.name
+			editors = group.get_all_editors()
+			editor_label = "Administrator#{'s' if editors.length > 1}: "
+			for editor in editors
+				editor_label += User.find(editor).fullname + ' '
+			end
+
+			obj[:strSecondLine] = "#{editor_label}<br />Established: #{group.created_at.strftime("%b %d, %Y")}<br/>#{Group.type_to_friendly(group.group_type)} -- #{self.class.helpers.pluralize(group.get_number_of_members(), 'member')}"
+			ret.push(obj)
+		}
+	ret = ret.sort { |a,b|
+		a[:strFirstLine].downcase <=> b[:strFirstLine].downcase
+	}
+    render :text => ret.to_json()
+	end
+
 	def check_url
 		url = params[:group]['visible_url']
 		if url == nil || url.length == 0
@@ -76,7 +100,7 @@ class GroupsController < ApplicationController
 	# The following 4 calls can come from either the web or the email link. We have to go to
 	# different pages in the two cases. The way to tell is the email link is GET and the web is POST.
 	def accept_request
-		from_web = request.request_method == :post
+		from_web = request.request_method == :'POST'
 
 		success = GroupsUser.accept_request(params[:id])
 		if !success
@@ -94,7 +118,7 @@ class GroupsController < ApplicationController
 	end
 
 	def decline_request
-		from_web = request.request_method == :post
+		from_web = request.request_method == 'POST'
 
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
 		user_id = GroupsUser.get_user_from_obfuscated_id(params[:id])
@@ -112,7 +136,7 @@ class GroupsController < ApplicationController
 	end
 
 	def accept_invitation
-		from_web = request.request_method == :post
+		from_web = request.request_method == 'POST'
 		from_web = false if params[:from_create]	# we can also be redirected here from the create user id page.
 
 		begin
@@ -128,7 +152,7 @@ class GroupsController < ApplicationController
 				user = User.find(user_id)
 				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
 				group = Group.find(group_id)
-				GroupsUser.email_hook("membership", group_id, "New member, #{user.fullname}, in #{group.name}", "#{user.fullname} has joined the group #{group.name}. Visit the group at #{url_for(:controller => 'groups', :action => group.get_visible_id(), :only_path => false)}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+				GroupsUser.email_hook("membership", group_id, "New member, #{user.fullname}, in #{group.name}", "#{user.fullname} has joined the group #{group.name}. Visit the group at #{ActionMailer::Base.default_url_options[:host]}/groups/#{group.get_visible_id()}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				if from_web
 					render :partial => 'group_details', :locals => { :group => group, :user_id => get_curr_user_id() }
 				else
@@ -140,7 +164,7 @@ class GroupsController < ApplicationController
 	end
 
 	def decline_invitation
-		from_web = request.request_method == :post
+		from_web = request.request_method == 'POST'
 
 		group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
 		begin
@@ -313,26 +337,27 @@ class GroupsController < ApplicationController
 	def edit_membership
 		show_membership = params[:show_membership]
 		change_owner = params[:change_owner]
-		group = params[:group]
-		group_id = nil
-		group.each {|id,value|
-			gu = GroupsUser.find(id)
-			group_id = gu.group_id
-			if value['delete'] == 'true'
-				gu.destroy
-			else
-				role = value['editor'] == 'true' ? 'editor' : 'member'
-				if gu.role != role
-					gu.role = role
-					if role == 'editor'
-						gu.notifications = "editor;membership"
-					else
-						gu.notifications = ""
+		member_list = params[:group]
+		group_id = params[:id]
+		if member_list
+			member_list.each {|id,value|
+				gu = GroupsUser.find(id)
+				if value['delete'] == 'true'
+					gu.destroy
+				else
+					role = value['editor'] == 'true' ? 'editor' : 'member'
+					if gu.role != role
+						gu.role = role
+						if role == 'editor'
+							gu.notifications = "editor;membership"
+						else
+							gu.notifications = ""
+						end
+						gu.save!
 					end
-					gu.save!
 				end
-			end
-		}
+			}
+		end
 		group = Group.find(group_id)
 		group.show_membership = show_membership == 'Yes'
 		if change_owner && change_owner != '0'
@@ -372,23 +397,49 @@ class GroupsController < ApplicationController
 	def edit_thumbnail
 		group_id = params[:id]
 		group = Group.find(group_id)
-		image = params['image']
-		if image && image
-			image = Image.new({ :uploaded_data => image })
+		err = Image.save_image(params['image'], group)
+		case err[:status]
+		when :error then
+			flash = err[:user_error]
+			logger.error(err[:log_error])
+		when :saved then
+			flash = "OK:Thumbnail updated"
+			GroupsUser.email_hook("group", group.id, "Group updated: #{group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		when :no_image then
+			flash = "ERROR: No image specified"
 		end
-		begin
-			group.image = image
-			if group.save
-				group.image.save! if group.image
-				GroupsUser.email_hook("group", group.id, "Group updated: #{group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
-				flash = "OK:Thumbnail updated"
-			else
-				flash = "Error updating thumbnail"
-			end
-		rescue
-			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-		end
-    render :text => "<script type='text/javascript'>window.top.window.stopEditGroupThumbnailUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#		image = params['image']
+#		if image && image
+#			image = Image.new({ :uploaded_data => image })
+#		end
+#		begin
+#			group.image = image
+#			if group.save
+#				group.image.save! if group.image
+#				GroupsUser.email_hook("group", group.id, "Group updated: #{group.name}", "The group was updated.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+#				flash = "OK:Thumbnail updated"
+#			else
+#				flash = "Error updating thumbnail"
+#			end
+#		rescue
+#			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#		end
+    render :text => respond_to_file_upload("stopEditGroupThumbnailUpload", flash) # This is loaded in the iframe and tells the dialog that the upload is complete.
+	end
+
+	def verify_group_title
+    creator = get_curr_user()
+    if creator.nil?
+      render :text => "Your session has expired. Please log in and try again.", :status => :bad_request
+    else
+      title = params[:name]
+      group = Group.find_by_name(title)
+      if group == nil
+        render :text => "ok"
+      else
+        render :text => "There is already a group with this title.", :status => :bad_request
+      end
+    end
 	end
 
   # GET /groups
@@ -405,31 +456,21 @@ class GroupsController < ApplicationController
   # GET /groups/1
   # GET /groups/1.xml
   def show
-		if params[:id] == 'verify_group_title'
-			title = params[:name]
-			group = Group.find_by_name(title)
-			if group == nil
-				render :text => "ok"
-			else
-				render :text => "There is already a group with this title.", :status => :bad_request
-			end
-		else
-			@group = Group.find_by_visible_url(params[:id])
-			if @group == nil
-				@group = Group.find_by_id(params[:id])
-			end
-			if @group == nil
-				#redirect_to "/404.html"
-				render_404
-				return
-			end
-			
-			respond_to do |format|
-				format.html # show.html.erb
-				format.xml  { render :xml => @group }
-			end
+		@group = Group.find_by_visible_url(params[:id])
+		if @group == nil
+			@group = Group.find_by_id(params[:id])
 		end
-  end
+		if @group == nil
+			#redirect_to "/404.html"
+			render_404
+			return
+		end
+
+		respond_to do |format|
+			format.html # show.html.erb
+			format.xml  { render :xml => @group }
+		end
+	end
 
   # GET /groups/new
   # GET /groups/new.xml
@@ -495,10 +536,21 @@ class GroupsController < ApplicationController
   # POST /groups
   # POST /groups.xml
   def create
+	  # TODO-PER: it looks like the user can't specify an image when creating a group, so this error processing can probably be simplified.
 		begin
-			if params['image'] && params['image'].length > 0
-				image = Image.new({ :uploaded_data => params['image'] })
-				end
+#			err = Image.save_image(params['image'], nil)
+#			img_id = nil
+#			case err[:status]
+#				when :error then
+#					logger.error(err[:log_error])
+#					render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{err[:user_error]}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#					return
+#				when :saved
+#					img_id = err[:id]
+#			end
+#			if params['image'] && params['image'].length > 0
+#				image = Image.new({ :uploaded_data => params['image'] })
+#			end
 			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
 			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
 			params[:group][:exhibit_visibility] = 'www'
@@ -524,7 +576,7 @@ class GroupsController < ApplicationController
 			@group.footnote_font_name = 'Times New Roman'
 			@group.footnote_font_size = '16'
 			@group.use_styles = 0
-			@group.image = image
+			@group.image_id = nil
 			@group.exhibits_label = "Exhibit"
 			@group.clusters_label = "Cluster"
 			@group.show_admins = 'all'
@@ -550,13 +602,13 @@ class GroupsController < ApplicationController
 				flash = "Error creating group"
 			end
 		rescue Exception => msg
-			logger.error("**** ERROR: Can't create group: " + msg)
+			logger.error("**** ERROR: Can't create group: " + msg.message)
 			flash = "Server error when creating group."
 		end
 		if send_email
 			peer_review_request()
 		end
-    render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+    render :text => respond_to_file_upload("stopNewGroupUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
   # PUT /groups/1
@@ -590,7 +642,7 @@ class GroupsController < ApplicationController
 
 	  if params[:group] # this may be nil if we are just inviting people.
 		which = params[:group].keys.join(" and ")
-		values = @template.strip_tags(params[:group].values.to_a().join("\n\n"))
+		values = self.class.helpers.strip_tags(params[:group].values.to_a().join("\n\n"))
 		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{get_curr_user().fullname} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 	  end
 
@@ -634,7 +686,7 @@ class GroupsController < ApplicationController
 		clusters.each { |cluster|
 			cluster.destroy
 		}
-		redirect_to @template.make_group_home_link(typ)
+		redirect_to self.class.helpers.make_group_home_link(typ)
   end
 
 	# TODO-PER: What is the real rails way of doing this?
@@ -652,13 +704,12 @@ class GroupsController < ApplicationController
 		begin
 			curr_user = get_curr_user()
 			admins.each { |ad|
-				#LoginMailer.deliver_request_peer_review({ :group_id => @group.id, :name => curr_user.fullname, :institution => curr_user.institution, :group_name => @group.name, :email => curr_user.email }, ad)
 				body = "#{curr_user.fullname} mailto:#{curr_user.email} #{ "from #{curr_user.institution}" if curr_user.institution && curr_user.institution.length > 0 } has requested to make the group #{ @group.name } into a peer-reviewed group.\n\n"
 				body += "Please log in as administrator to #{SITE_NAME} to change the group.\n\n"
 				EmailWaiting.cue_email(curr_user.fullname, curr_user.email, ad[:name], ad[:email], "Request to create peer-reviewed group", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 			}
 		rescue Exception => msg
-			logger.error("**** ERROR: Can't send email: " + msg)
+			logger.error("**** ERROR: Can't send email: " + msg.message)
 		end
 	end
 end

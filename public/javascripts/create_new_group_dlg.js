@@ -14,9 +14,8 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, $$, Class, Ajax */
-/*global GeneralDialog, genericAjaxFail */
-/*global window */
+/*global $, $$, Class */
+/*global GeneralDialog, serverRequest, submitForm, gotoPage */
 /*global LinkDlgHandler */
 /*extern CreateGroupWizardDlg, newGroupDlg, stopNewGroupUpload */
 
@@ -30,9 +29,9 @@ function stopNewGroupUpload(errMessage){
 }
 
 var CreateGroupWizardDlg = Class.create({
-	initialize: function (owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName, populate_urls, progress_img, start_university, start_name, membershipExample) {
+	initialize: function (auto_complete_url, owner_id, url_verify_group, create_url, destination_url, types, permissions, visibility, defaultType, siteName, populate_urls, progress_img, start_university, start_name, membershipExample) {
 		this.class_type = 'CreateGroupWizardDlg';	// for debugging
-
+		
 		// private variables
 		var This = this;
 		var dlg = null;
@@ -42,7 +41,7 @@ var CreateGroupWizardDlg = Class.create({
 		var changeView = function (event, param)
 		{
 			var curr_page = param.curr_page;
-			var view = param.destination;
+			var view = param.arg0;
 
 			// Validation
 			dlg.setFlash("", false);
@@ -70,15 +69,11 @@ var CreateGroupWizardDlg = Class.create({
 				}
 				data['group[owner]'] = owner_id;
 				dlg.setFlash("Verifying title. Please wait...", false);
-				new Ajax.Request(url_verify_group, { method: 'get', parameters: { name: data['group[name]'].strip() },
-					onSuccess : function(resp) {
+				var onSuccess = function(resp) {
 						dlg.setFlash('', false);
 						dlg.changePage(view, null);
-					},
-					onFailure : function(resp) {
-						genericAjaxFail(dlg, resp);
-					}
-				});
+					};
+				serverRequest({ url: url_verify_group, params: { name: data['group[name]'].strip() }, onSuccess: onSuccess});
 				return false;
 			}
 
@@ -124,14 +119,14 @@ var CreateGroupWizardDlg = Class.create({
 		{
 			newGroupDlg = This;
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 
 			dlg.setFlash('Verifying group creation...', false);
 			var data = dlg.getAllData();
 			$('emails').value = data.emails_entry;
 			$('usernames').value = data.usernames_entry;
 			
-			dlg.submitForm('group_properties', url);	// we have to submit the form normally to get the uploaded file transmitted.
+			submitForm('group_properties', url);	// we have to submit the form normally to get the uploaded file transmitted.
 		};
 
 		this.fileUploadError = function(errMessage) {
@@ -140,11 +135,12 @@ var CreateGroupWizardDlg = Class.create({
 
 		this.fileUploadFinished = function(id) {
 			dlg.setFlash('Group created...', false);
-			window.location = destination_url + id;
+			gotoPage(destination_url + id);
 		};
 
 		// privileged methods
 		var show = function () {
+		   
 			var group_properties = {
 					page: 'group_properties',
 					rows: [
@@ -155,7 +151,7 @@ var CreateGroupWizardDlg = Class.create({
 						[ { textarea: 'group[description]', klass: 'description groups_textarea' } ],
 						[ { picture: membershipExample, klass: 'new_group_membership_pic' }, { text: 'Show Membership:', klass: 'groups_label' }, { select: 'group[show_membership]', options: [ { text: "To All", value: 'Yes'}, { text: "To Admins", value: 'No'}] },
 							{ text: "Choose whether visitors to your group will be able to see the membership list displayed at the upper-right of your group page.", klass: 'new_group_membership_explanation'}],
-						[ { rowClass: 'clear_both' }, { text: 'Type:', klass: 'new_group_type_label' }, { select: 'group[group_type]', klass: 'new_group_type', options: types, value: defaultType, change: typeSelect },
+						[ { rowClass: 'clear_both' }, { text: 'Type:', klass: 'new_group_type_label' }, { select: 'group[group_type]', klass: 'new_group_type', options: types, value: defaultType, callback: typeSelect },
 							{ text: 'The ' + siteName + ' default group type, useful for sharing objects and forum threads.', klass: 'new_group_membership_explanation community_only'},
 							{ text: 'Groups for using ' + siteName + ' in the classroom.', klass: 'new_group_membership_explanation hidden classroom_only'},
 							{ text: '&nbsp;', klass: 'new_group_membership_explanation hidden publication_only'}
@@ -165,10 +161,10 @@ var CreateGroupWizardDlg = Class.create({
 							{ text: 'Course Mnemonic:', klass: 'groups_label classroom_only hidden' }, { text: 'For easy browsing, use this field to share the course number or mnemonic associated with this class (e.g. ENNC 448).', klass: 'groups_explanation classroom_only hidden' },
 							{ input: 'group[course_mnemonic]', klass: 'new_exhibit_input_long classroom_only hidden' }
 						],
-						[ { text: 'Course Name:', klass: 'groups_label classroom_only hidden' }, { input: 'group[course_name]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
-						[ { text: 'University:', klass: 'groups_label classroom_only hidden' }, { input: 'group[university]', value: start_university, klass: 'new_exhibit_input_long classroom_only hidden' } ],
-						[ { rowClass: 'last_row' }, { button: 'Next', url: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
-					]
+						[ { text: 'Course Name (if different from Group Title):', klass: 'classroom_only hidden' }, { input: 'group[course_name]', klass: 'new_exhibit_input_long classroom_only hidden' } ],
+						[ { text: 'University:', klass: 'groups_label classroom_only hidden' }, { autocomplete: 'group[university]', klass: 'new_exhibit_autocomplete classroom_only hidden', url: auto_complete_url } ],
+						[ { rowClass: 'gd_last_row' }, { button: 'Next', arg0: 'invite_members', callback: changeView}, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					] 
 				};
 
 			var invite_members = {
@@ -181,15 +177,16 @@ var CreateGroupWizardDlg = Class.create({
 						[ { text: 'By Username:', klass: 'invite_users_label' }, { textarea: 'usernames_entry', klass: 'groups_textarea' } ],
 						[ { text: "Don't know any usernames? Add email addresses of users you want to invite in the blank below, one per line.", klass: 'invite_users_instructions' } ],
 						[ { text: 'By Email Address:', klass: 'invite_users_label' }, { textarea: 'emails_entry', klass: 'groups_textarea' } ],
-						[ { rowClass: 'last_row' }, { button: 'Create Group', url: create_url, callback: sendWithAjax }, { button: 'Previous', url: 'group_properties', callback: changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'gd_last_row' }, { button: 'Create Group', arg0: create_url, callback: sendWithAjax }, { button: 'Previous', arg0: 'group_properties', callback: changeView }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 			var pages = [ group_properties, invite_members ];
 
 			var params = { this_id: "invite_users_dlg", pages: pages, body_style: "invite_users_div", row_style: "new_exhibit_row", title: "New Group Wizard" };
 			dlg = new GeneralDialog(params);
-			changeView(null, { curr_page: '', destination: 'group_properties', dlg: dlg });
+			changeView(null, { curr_page: '', arg0: 'group_properties', dlg: dlg });
 			dlg.initTextAreas({ onlyClass: 'description', toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_urls], progress_img) });
+			typeSelect('group[group_type]', defaultType);
 			dlg.center();
 
 			return;

@@ -14,11 +14,11 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, Ajax, Element */
-/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler, ForumLicenseDisplay, genericAjaxFail */
+/*global Class, $, $$, Element */
+/*global CreateListOfObjects, GeneralDialog, SignInDlg, LinkDlgHandler, ForumLicenseDisplay, serverAction, serverRequest, gotoPage */
 /*global MessageBoxDlg */
 /*global YAHOO */
-/*global window, setTimeout */
+/*global setTimeout */
 /*extern ForumReplyDlg */
 
 /////////////////////////////////////////////////////////////
@@ -91,30 +91,26 @@ var ForumReplyDlg = Class.create({
 		// private functions
 		var populate = function(dlg)
 		{
-			new Ajax.Request(populate_topics_url, { method: 'get', parameters: { },
-				onSuccess : function(resp) {
-					var topics = [];
-					dlg.setFlash('', false);
-					try {
-						if (resp.responseText.length > 0)
-							topics = resp.responseText.evalJSON(true);
-					} catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					// We got all the topics. Now put them on the dialog.
-					var sel_arr = $$('.discussion_topic_select');
-					var select = sel_arr[0];
-					select.update('');
-					topics = topics.sortBy(function(topic) { return topic.text; });
-					topics.each(function(topic) {
-						select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
-					});
-					$('topic_id').writeAttribute('value', topics[0].value);
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
+			var onSuccess = function(resp) {
+				var topics = [];
+				dlg.setFlash('', false);
+				try {
+					if (resp.responseText.length > 0)
+						topics = resp.responseText.evalJSON(true);
+				} catch (e) {
+					new MessageBoxDlg("Error", e);
 				}
-			});
+				// We got all the topics. Now put them on the dialog.
+				var sel_arr = $$('.discussion_topic_select');
+				var select = sel_arr[0];
+				select.update('');
+				topics = topics.sortBy(function(topic) { return topic.text; });
+				topics.each(function(topic) {
+					select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
+				});
+				$('topic_id').writeAttribute('value', topics[0].value);
+			};
+			serverRequest({ url: populate_topics_url, onSuccess: onSuccess});
 		};
 		
 		// privileged functions
@@ -134,9 +130,9 @@ var ForumReplyDlg = Class.create({
 			removeAttachItem();
 			
 			// Now select the first tab, which is the My Collection.
-			params.destination = "mycollection";
+			params.arg0 = "mycollection";
 			currSel = 'forum_reply_dlg_btn0';
-			currSelClass = params.destination;
+			currSelClass = params.arg0;
 			var fn = This.switch_page.bind($(currSel));
 			fn(event, params);
 			//$(currSel).addClassName('button_tab_selected');
@@ -150,16 +146,16 @@ var ForumReplyDlg = Class.create({
 				sel.each(function(s) { s.addClassName('hidden'); });
 			}
 			currSel = this.id;
-			currSelClass = params.destination;
+			currSelClass = params.arg0;
 			$(this.id).addClassName('button_tab_selected');
-			var sel2 = $$('.' + params.destination);
+			var sel2 = $$('.' + params.arg0);
 			sel2.each(function(s) { s.removeClassName('hidden'); });
 		};
 		
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 			var dlg = params.dlg;
 			
 			dlg.setFlash('Adding Comment...', false);
@@ -176,34 +172,22 @@ var ForumReplyDlg = Class.create({
 			data.can_delete = can_delete;
 
 			if (ajax_div) {
-				new Ajax.Updater(ajax_div, url, {
-					parameters: data,
-					evalScripts: true,
-					onSuccess: function(resp){
-						dlg.cancel();
-					},
-					onFailure: function(resp){
-						genericAjaxFail(dlg, resp);
-					}
-				});
+				var onSuccess = function(resp){
+					dlg.cancel();
+				};
+				serverAction({ action: { actions: url, els: ajax_div, params: data, onSuccess:onSuccess, dlg: dlg }});
 			} else {
-				new Ajax.Request(url, {
-					parameters: data,
-					evalScripts: true,
-					onSuccess: function(resp){
-						dlg.cancel();
-						window.location = redirect;
-					},
-					onFailure: function(resp){
-						genericAjaxFail(dlg, resp);
-					}
-				});
+				var onSuccess2 = function(resp){
+					dlg.cancel();
+					gotoPage(redirect);
+				};
+				serverRequest({ url: url, params: data, onSuccess: onSuccess2, dlg: dlg});
 			}
 		};
 
 		var objlist = new CreateListOfObjects(populate_collex_obj_url, starting_nines_obj_list, 'nines_obj_list', progress_img);
 		var exlist = new CreateListOfObjects(populate_exhibit_url, starting_exhibit_list, 'exhibit_list', progress_img);
-		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my_collex/get_licenses?non_sharing=false', currentLicense: starting_license, id: 'license_list' });
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/exhibits/get_licenses?non_sharing=false', currentLicense: starting_license, id: 'license_list' });
 
 		var dlgLayout = {
 				page: 'layout',
@@ -214,25 +198,27 @@ var ForumReplyDlg = Class.create({
 					[ { text: cluster_label + ": " + cluster_name, klass: 'cluster hidden' } ],
 					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading discussion topics. Please Wait...' } ] }],
 					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
-					[ { page_link: 'Attach an Item...', klass: 'attach_item', new_page: "", callback: this.attachItem }],
-					[ { button: 'My Collection', url: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', url: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', url: 'weblink', callback: this.switch_page } ],
+					[ { link: 'Attach an Item...', klass: 'attach_item nav_link', arg0: "", callback: this.attachItem }],
+					[ { button: 'My Collection', arg0: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', arg0: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', arg0: 'weblink', callback: this.switch_page } ],
 					[ { text: 'Sort objects by:', klass: 'forum_reply_label mycollection hidden' },
-						{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select mycollection hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+						{ select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select mycollection hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and mycollection hidden' }, { inputFilter: 'filterObjects', klass: 'mycollection hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
 					[ { text: 'Title:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_title', value: starting_inet_title, klass: 'forum_web_input weblink hidden' } ],
 					[ { text: 'URL:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_web_input weblink hidden' } ],
 					[ { text: 'Thumbnail for Item:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_web_input weblink hidden' } ],
-					[ { rowClass: 'last_row' }, { button: 'Post', url: submit_url, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Post', arg0: submit_url, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var dlgTitle = topic_id ? "New Post" : (thread_id ? "Reply" : "Edit Comment");
-		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "forum_reply_row", title: dlgTitle };
-		var dlg = new GeneralDialog(dlgParams);
 		var focus_id = null;
 		if (topic_id || (comment_id && starting_title)) {
 			focus_id = 'title';
+		}
+ 		var dlgTitle = topic_id ? "New Post" : (thread_id ? "Reply" : "Edit Comment");
+		var dlgParams = { this_id: "forum_reply_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "forum_reply_row", title: dlgTitle, focus: focus_id };
+		var dlg = new GeneralDialog(dlgParams);
+		if (topic_id || (comment_id && starting_title)) {
 			$$(".title").each(function(el) { el.removeClassName('hidden'); });
 		}
 		if (group_id) {
@@ -243,7 +229,7 @@ var ForumReplyDlg = Class.create({
 		}
 
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_collex_obj_url], progress_img) });
-		dlg.changePage('layout', focus_id);
+		//dlg.changePage('layout', focus_id);
 		licenseDisplay.populate(dlg);
 		objlist.populate(dlg, false, 'forum');
 		exlist.populate(dlg, false, 'forum');
@@ -255,9 +241,9 @@ var ForumReplyDlg = Class.create({
 				removeAttachItem();
 				
 				var pages = [ 'mycollection', 'exhibit', 'weblink' ];
-				var params = { destination: pages[starting_obj_type-2] };
+				var params = { arg0: pages[starting_obj_type-2] };
 				currSel = 'forum_reply_dlg_btn' + (starting_obj_type-2);
-				currSelClass = params.destination;
+				currSelClass = params.arg0;
 				var fn = This.switch_page.bind($(currSel));
 				fn(null, params);
 			}, this);

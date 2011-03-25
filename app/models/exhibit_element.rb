@@ -44,17 +44,17 @@ class ExhibitElement < ActiveRecord::Base
 
   def get_border_type
     case border_type_enum
-      when 0: return "no_border"
-      when 1: return "start_border"
-      when 2: return "continue_border"
+      when 0 then return "no_border"
+      when 1 then return "start_border"
+      when 2 then return "continue_border"
     end
   end
   
   def set_border_type(border_type)
     case border_type
-      when "no_border": self.border_type_enum = 0
-      when "start_border": self.border_type_enum = 1
-      when "continue_border": self.border_type_enum = 2
+      when "no_border" then self.border_type_enum = 0
+      when "start_border" then self.border_type_enum = 1
+      when "continue_border" then self.border_type_enum = 2
     end
     save()
   end
@@ -79,18 +79,18 @@ class ExhibitElement < ActiveRecord::Base
   
   def get_justification
     case justify
-      when 0: return "left"
-      when 1: return "center"
-      when 2: return "right"
+      when 0 then return "left"
+      when 1 then return "center"
+      when 2 then return "right"
       else return "left"
     end
   end
   
   def set_justification(j)
     case j
-      when "left" : self.justify = 0
-      when "center" : self.justify = 1
-      when "right" : self.justify = 2
+      when "left"  then self.justify = 0
+      when "center"  then self.justify = 1
+      when "right"  then self.justify = 2
     end
   end
 end

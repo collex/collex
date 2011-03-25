@@ -16,16 +16,19 @@
 
 class FacetConstraint < Constraint
   def to_solr_expression
-    if value == '<unspecified>'
-      "#{inverted ? '' : '-'}#{field}:[* TO *]"
-    else 
-      "#{operator}#{field}:\"#{value}\""
+    if self.value == '<unspecified>'
+      "#{inverted ? '' : '-'}#{fieldx}:[* TO *]"
+    else
+      # no need to quote the value here. In fact,
+      # adding additional quotes can mess up the search
+      # if the user already quoted it
+      "#{operator}#{fieldx}:\"#{self.value}\""
     end
   end
       
   # used for creating fragment cache keys
   def to_s
-    identifier = "#{field}_#{value}".downcase.gsub(/\W/,'_')
+    identifier = "#{fieldx}_#{value}".downcase.gsub(/\W/,'_')
     "#{operator}#{identifier}"
   end
 end

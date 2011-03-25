@@ -17,11 +17,15 @@
 class FullTextConstraint < ExpressionConstraint
   def to_solr_expression
     #"#{operator}has_full_text:[* TO *]"
-    "#{operator}has_full_text:true"
+#    "#{operator}?:has_full_text:true"
+	b = operator == '-' ? 'false' : 'true'
+    "has_full_text:#{b}"
   end
 
   def to_s
     #"#{operator}?:has_full_text:[* TO *]"
-    "#{operator}?:has_full_text:true"
+#    "#{operator}?:has_full_text:true"
+	  b = operator == '-' ? 'false' : 'true'
+	  "has_full_text:#{b}"
   end
 end

@@ -15,6 +15,6 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% form_for :search, :url => { :action => :result_count }, :html => { :class => 'result-count-form' }  do |form| %> 
+<%= form_for :search, :url => { :action => :result_count }, :html => { :class => 'result-count-form' }  do |form| %>
 	<span class="results_per_page">Displaying <%= form.select :result_count, [10,20,30], { :selected => session[:items_per_page] }, { :onchange => 'submit();' } %> objects per page.</span>
 <% end %>

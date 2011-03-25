@@ -14,11 +14,10 @@
 # limitations under the License.
 ##########################################################################
 
-require 'rubygems'
-require 'solr'
-require 'cgi'
+#require 'rubygems'
+#require 'solr'
+#require 'cgi'
 
-# # IS THIS ACTUALLY USED ANYWHERE???
 $KCODE = 'UTF8'
 
 class RefreshDoc

@@ -44,7 +44,7 @@ end -%>
 
 <% if edit_mode -%>
 	<% wrapper_type = 'edit' -%>
-	<% ajax_action = "'/#{MY_COLLEX_URL}/edit_row_of_illustrations,/#{MY_COLLEX_URL}/refresh_outline'" -%>
+	<% ajax_action = "'/builder/edit_row_of_illustrations,/builder/refresh_outline'" -%>
 	<% ajax_div_id = "'element_#{element_id},exhibit_builder_outline_content'" -%>
 	<% ajax_params = "'element_id=#{element_id}&position=#{illustration_position}&verb='" -%>
 	<% onload_text = "onload=\"initializeResizableImageElement('illustration_img_#{illustration_id}');\"" -%>
@@ -112,7 +112,7 @@ end -%>
 				<%= create_resizable -%>
 			<% else # nines object or internet image -%>
 				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
-				<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= onload_text %> />
+				<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= raw(onload_text) %> />
 			<% end -%>
 		</div>
 	
@@ -163,6 +163,6 @@ end -%>
 <% if edit_mode -%>
 	<script type="text/javascript">
 		if(window.initializeInplaceIllustrationEditor)
-			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},exhibit_builder_outline_content'"%>, "<%= "/#{MY_COLLEX_URL}/edit_illustration,/#{MY_COLLEX_URL}/refresh_outline"%>");
+			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},exhibit_builder_outline_content'"%>, "<%= "/builder/edit_illustration,/builder/refresh_outline"%>");
 	</script>
 <% end -%>

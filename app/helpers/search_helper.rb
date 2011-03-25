@@ -29,10 +29,10 @@ module SearchHelper
     return item
   end
 
-  # TODO-PER: remove this when upgrading rails.
-  def raw(str)
-	  return str
-  end
+#  # TODO-PER: remove this when upgrading rails.
+#  def raw(str)
+#	  return str
+#  end
   
   public
 	def format_tag_for_output(tag)
@@ -56,7 +56,7 @@ module SearchHelper
 			}
 			arr_outer.push(arr_inner.join('-&#x200B;'))
 		}
-		return arr_outer.join('_&#x200B;')
+		return raw(arr_outer.join('_&#x200B;'))
 	end
 
   def draw_pagination(curr_page, num_pages, destination_hash)
@@ -130,7 +130,7 @@ module SearchHelper
       html += "&nbsp;&nbsp;"
     end
 
-    return html
+    return raw(html)
   end
 
   def draw_ajax_pagination(curr_page, num_pages, action, el)
@@ -158,13 +158,14 @@ module SearchHelper
         first = last - 10
       end
     end
+	spacing = raw("&nbsp;&nbsp;")
 
     if first > 1
-      html += link_to_function("first", "ajax_pagination('#{action}', '#{el}', 1)", :class => 'nav_link') + "&nbsp;&nbsp;"
+      html += link_to_function("first", "ajax_pagination('#{action}', '#{el}', 1)", :class => 'nav_link') + spacing
     end
 
     if curr_page > 1
-      html += link_to_function("<<", "ajax_pagination('#{action}', '#{el}', #{ curr_page - 1 })", :class => 'nav_link') + "&nbsp;&nbsp;"
+      html += link_to_function("<<", "ajax_pagination('#{action}', '#{el}', #{ curr_page - 1 })", :class => 'nav_link') + spacing
     end
 
     for pg in first..last do
@@ -177,25 +178,25 @@ module SearchHelper
     end
 
     if last < num_pages
-      html += "...&nbsp;&nbsp;" if num_pages > 12
-      html += link_to_function(num_pages, "ajax_pagination('#{action}', '#{el}', #{ num_pages })", :class => 'nav_link') + "&nbsp;&nbsp;"
+      html += "..."+spacing if num_pages > 12
+      html += link_to_function(num_pages, "ajax_pagination('#{action}', '#{el}', #{ num_pages })", :class => 'nav_link') + spacing
     end
 
     if curr_page < num_pages
-      html += link_to_function( ">>", "ajax_pagination('#{action}', '#{el}', #{ curr_page + 1 })", :class => 'nav_link') + "&nbsp;&nbsp;"
+      html += link_to_function( ">>", "ajax_pagination('#{action}', '#{el}', #{ curr_page + 1 })", :class => 'nav_link') + spacing
     end
 
     if last < num_pages
-      html += link_to_function("last", "ajax_pagination('#{action}', '#{el}', #{ num_pages })", :class => 'nav_link') + "&nbsp;&nbsp;"
+      html += link_to_function("last", "ajax_pagination('#{action}', '#{el}', #{ num_pages })", :class => 'nav_link') + spacing
     end
 
-    return html
+    return raw(html)
   end
 
   def resource_is_in_constraints?(resource)
     constraints = session[:constraints]
     constraints.each {|constraint|
-      if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
+      if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
         return true
       end
     }
@@ -204,14 +205,25 @@ module SearchHelper
   
   def site_is_in_constraints?(site_value)
     constraints = session[:constraints]
+	return false if constraints == nil
     constraints.each {|constraint|
-      if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == site_value
+      if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == site_value
         return true
       end
     }
     return false
   end
   
+  def access_is_in_constraints?(type)
+    constraints = session[:constraints]
+    constraints.each {|constraint|
+      if constraint[:type] == type
+        return true
+      end
+    }
+    return false
+  end
+
   def free_culture_is_in_constraints?
     constraints = session[:constraints]
     constraints.each {|constraint|
@@ -238,7 +250,7 @@ module SearchHelper
       html += create_facet_link("[remove]", "/search/remove_genre", { :value => genre_data[:value]})
       return html
     else
-		create_facet_link("#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", "/search/add_facet", { :field => 'genre', :value => genre_data[:value]})
+		create_facet_link("#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", "/search/add_facet", { :fieldx => 'genre', :value => genre_data[:value]})
     end
 
   end
@@ -263,7 +275,7 @@ module SearchHelper
     constraints = session[:constraints]
     resource_constraint = ""
     constraints.each {|constraint|
-      if constraint[:field] == 'archive' && constraint[:type] == 'FacetConstraint'
+      if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint'
         resource_constraint = constraint[:value]
       end
     }
@@ -306,12 +318,12 @@ module SearchHelper
     if tags != nil
       str = "<ul style='list-style-type: none;'><li>Collected On: #{item.updated_at}</li>\n"
       tags.each {|t|
-        str += "<li>x&nbsp;#{tags.name}</li>\n"
+        str += "<li>x&nbsp;#{h tags.name}</li>\n"
       }
       str += "<a class='modify_link' href='#'>Add a tag</a>\n"
       str += "</ul>\n"
     end
-    return str
+    return raw(str)
   end
 
   def has_annotation(hit)
@@ -346,8 +358,8 @@ module SearchHelper
     
   end
   
-  def get_saved_searches
-    user = User.find_by_username(session[:user][:username])
+  def get_saved_searches(username)
+    user = User.find_by_username(username)
     return user.searches.find(:all).sort { |a,b| b.id <=> a.id }
   end
   
@@ -372,25 +384,16 @@ module SearchHelper
   def create_saved_search_permalink(s)
     base_url = 'http://' + request.host_with_port()
     permalink_id = "permalink_#{encode_for_uri(h(s))}"
-    return "<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>"
+    return raw("<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>")
   end
 
   def create_saved_search_link(s)
-    return "<a class='nav_link' href='#{create_saved_search_url(session[:user][:username], s.name)}'>#{h(s.name)}</a>"
+    return raw("<a class='nav_link' href='#{create_saved_search_url(session[:user][:username], s.name)}'>#{h(s.name)}</a>")
     #link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name }, :class => 'nav_link'
   end
 
   def create_remove_saved_search_link(s)
-    link_to_confirm("[remove]", { :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, 'Saved Search', 'Are you sure you want to remove this saved search?')
-  end
-  
-  def is_in_tag_array(arr, str)
-    for item in arr
-      if str == item['name']
-        return true
-      end
-    end
-    return false
+    link_to_confirm("[remove]", { :controller => 'search', :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, 'Saved Search', 'Are you sure you want to remove this saved search?')
   end
   
   def has_constraints?
@@ -413,7 +416,7 @@ module SearchHelper
   def format_constraint(constraint)
     ret = {}
     value_display = constraint.value
-    if constraint.field=="archive"
+    if constraint.fieldx =="archive"
       if site(constraint.value)
         value_display = site(constraint.value)['description']
       end
@@ -426,28 +429,31 @@ module SearchHelper
     elsif constraint.is_a?(FullTextConstraint)
       ret[:title] ="Full Text"
       ret[:value] = 'Only resources that contain full text'
+    elsif constraint.is_a?(TypeWrightConstraint)
+      ret[:title] ="TypeWright"
+      ret[:value] = 'Only resources that can be edited'
     elsif constraint.is_a?(ExpressionConstraint)
       ret[:title] ="Search Term"
       ret[:value] = constraint.value
-    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'genre'
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'genre'
       ret[:title] ="Genre"
       ret[:value] = value_display
-    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'title'
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'title'
       ret[:title] ="Title"
       ret[:value] = value_display
-    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'year'
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'year'
       ret[:title] ="Year"
       ret[:value] = value_display
-    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'author'
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'author'
       ret[:title] ="Author"
       ret[:value] = value_display
-    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'editor'
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'editor'
       ret[:title] ="Editor"
       ret[:value] = value_display
-    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'publisher'
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'publisher'
       ret[:title] ="Publisher"
       ret[:value] = value_display
-#    elsif constraint.is_a?(FacetConstraint) && constraint[:field] == 'federation'
+#    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'federation'
 #      ret[:title] = "Federation"
 #      ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint)
@@ -485,51 +491,122 @@ module SearchHelper
       return forum_result_row_item_format(label, h(hit[key].join('; ')))
     end
   end
-  
-  def result_row_item(type, hit, key, label, is_hidden)
-    if !hit[key]
-      return ""
-    end
-    
-    cls = is_hidden ? "class='hidden'" : ""
+
+	def result_row_collected(rows, is_collected, item)
+		return if !is_collected
+		rows.push({:hidden => false, :label => "Collected&nbsp;on:", :value => item.updated_at.strftime("%b %d, %Y")})
+	end
+
+	def result_row_tags_no_links(rows, label, tags)
+		return if tags.length == 0
+		
+		# tags is an array returned by the call Tag.get_tags_for_uri.
+		# each item in the array is also and array of size 2. 
+		# first element sis tag name, second is tag ownership flag
+		tag_names = ""
+		tags.each do | tag |
+		  tag_names += "; " if tag_names.length > 0
+		  tag_names += tag[0]  
+		end
+		rows.push({:hidden => false, :label => label, :value => tag_names})  
+	end
+
+	def result_row_tags_links(rows, index, row_id, hit, label, tags, item, signed_in, is_collected)
+		my_tags = []
+		tag_str = ""
+		return false if session[:user].nil?
+    user = nil
+    user = User.find_by_username(session[:user][:username]) if session[:user]
+		
+		tags.each {|tag|
+			tag_str += " | " if tag != tags[0]
+			tag_str += link_to format_tag_for_output(tag[0]), { :controller => 'tag', :action => 'results', :tag => tag[0], :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\"" }
+			if user && user.id == tag[1]	
+				tag_str += ' ' + link_to_function("X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag[0])}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag[0]}\"")
+			end #if this tag was created by the current user
+		} #the tag loop
+		
+		if !signed_in
+			tag_str += "<span class='tags_instructions'>#{" [#{sign_in_link({:class => 'nav_link'})} to add tags]"}</span>"
+		else
+			tag_str += ' ' + link_to_function(raw("[add&nbsp;tag]"), "doAddTag('/tag/tag_name_autocomplete', 'add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}", :class => 'modify_link')
+		end #if the user is logged in.
+		rows.push({:hidden => false, :label => label, :value => tag_str})
+	end
+
+	def result_row_site(rows, label, hit, key)
+		return if !hit['archive']
+		if site(hit[key])
+			str = "<a class='nines_link' target='_blank' href='#{site(hit[key])['url']}'>#{site(hit[key])['description']}</a>"
+		else
+			str = hit[key]
+		end
+		rows.push({:hidden => false, :label => label, :value => str})
+	end
+
+	def result_row_exhibits(rows, hit, curr_user)
+		exhibits = ExhibitObject.find_all_by_uri(hit['uri'])
+		is_first = true
+		user_name = curr_user ? curr_user.fullname : ''
+		for exhibit in exhibits
+			# We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public
+			# We only want to have the edit link if it is owned by the current user.
+			real_exhibit = Exhibit.find(exhibit.exhibit.id)
+			owner = User.find(real_exhibit.user_id)
+			if user_name == owner.username || real_exhibit.published?
+				label = is_first ? "Exhibits:" : ""
+				is_first = false
+				value = "#{real_exhibit.title} <a class='nav_link' href='/exhibits/#{real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id}' >[view]</a>"
+				if Exhibit.can_edit(curr_user, real_exhibit.id)
+					value += link_to("[edit]", { :controller => 'builder', :action => 'show', :id => real_exhibit.id }, :class => 'nav_link' )
+				end
+				rows.push({:hidden => true, :id => "in_exhibit_#{exhibit.exhibit.id}_#{hit['uri']}", :label => label, :value => value})
+			end
+		end # each exhibit
+	end
+	
+	def should_show_more_link(no_links, rows)
+		# show more if we aren't in a special mode and if there are more than 1 hidden items
+		return false if no_links
+		count = 0
+		rows.each {|row| count += 1 if row[:hidden] }
+		return count > 1
+	end
+	
+	def format_result_rows(rows, hide_some)
+		html = ""
+		rows.each { |row|
+			if row[:one_col]
+				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' colspan='2'>#{row[:value]}</td></tr>\n"
+			else
+				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' class='search_result_data_label'>#{row[:label]}</td><td valign='top' width='100%'>#{row[:value]}</td></tr>\n"
+			end
+		}
+		return raw(html)
+	end
+
+  def result_row_item(rows, type, hit, key, label, is_hidden)
+    return if !hit[key]
     
     if type == :separate_lines
       # multiple items on separate lines
-      str = ""
       hit[key].each_with_index do |item, i|
-        str += "<tr #{cls}>\n"
-        str += "\t<td class='search_result_data_label' valign='top'>"
-        str += label + ":" if i < 1
-        str += "</td>\n"
-        str += "\t<td valign='top' width='100%'>"
-        str += h(item)
-        str += "</td>\n"
-        str += "</tr>\n"
+		  rows.push({:hidden => is_hidden, :label => (i < 1) ? label+':' : '', :value => h(item)})
       end
 
     elsif type == :single_item
       # single item
-      str = "<tr #{cls}>\n"
-      str += "\t<td class='search_result_data_label' valign='top'>"
-      str += label + ":"
-      str += "</td>\n"
-      str += "\t<td valign='top' width='100%'>"
-      str += h(hit[key])
-      str += "</td>\n"
-      str += "</tr>\n"
+	  rows.push({:hidden => is_hidden, :label => label+':', :value => h(hit[key])})
 
     elsif type == :multiple_item
       # multiple item, one line
-      str = "<tr #{cls}>\n"
-      str += "\t<td class='search_result_data_label' valign='top'>"
-      str += label + ":"
-      str += "</td>\n"
-      str += "\t<td valign='top' width='100%'>"
-      str += h(hit[key].join('; '))
-      str += "</td>\n"
-      str += "</tr>\n"
+	  rows.push({:hidden => is_hidden, :label => label+':', :value => h(hit[key].join('; '))})
+
+	elsif type == :alternative
+		hit[key].each do |alt|
+			rows.push({:hidden => is_hidden, :one_col => true, :value => h(alt)})
+		end
     end
-    return str
   end
   
   ##############################
@@ -595,47 +672,57 @@ module SearchHelper
 		params[:phrs] = "$(phrase)"
 		json = params.to_json()
 		json = json.gsub("\"$(phrase)\"", "$('search_phrase') ? $('search_phrase').getRealValue() : null")
-		return link_to_function(label, "ajaxWithProgressSpinner([ '#{link}' ], [ null ], { waitMessage: 'Searching...' }, #{json})", { :class => 'nav_link' })
+		return link_to_function(label, "serverAction({action: { actions: '#{link}', params: #{json}}, progress: { waitMessage: 'Searching...' }})", { :class => 'nav_link' })
 	end
 	
   def genre_selector( genre_data )
     if genre_data[:exists]
       html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_genre', {:value => genre_data[:value]})
     else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h genre_data[:value]}", "/search/add_facet", { :field => 'genre', :value => genre_data[:value]})
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h genre_data[:value]}", "/search/add_facet", { :fieldx => 'genre', :value => genre_data[:value]})
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(genre_data[:count])}</td></tr>"
     return raw(html)
   end
 
-  def free_culture_selector(count)
-    if free_culture_is_in_constraints?
-      html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_freeculture', { :remove => 'true' })
+  def access_selector(count, in_constraints, label, action)
+    if in_constraints
+      html = "<tr class='limit_to_selected'><td>#{label}&nbsp;&nbsp;" + create_facet_link("[X]", action, { :remove => 'true' })
     else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Free Culture Only", '/search/constrain_freeculture', { })
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link(label, action, { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return raw(html)
   end
 
-  def full_text_selector(count)
-    if full_text_is_in_constraints?
-      html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_fulltext', { :remove => 'true' })
-    else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Full Text Only", '/search/constrain_fulltext', { })
-    end
-    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-    return raw(html)
-  end
+#  def free_culture_selector(count)
+#    if free_culture_is_in_constraints?
+#      html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_freeculture', { :remove => 'true' })
+#    else
+#      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Free Culture Only", '/search/constrain_freeculture', { })
+#    end
+#    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+#    return raw(html)
+#  end
+#
+#  def full_text_selector(count)
+#    if full_text_is_in_constraints?
+#      html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_fulltext', { :remove => 'true' })
+#    else
+#      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Full Text Only", '/search/constrain_fulltext', { })
+#    end
+#    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+#    return raw(html)
+#  end
 
 	def format_name_facet(name, typ)
 		name[0] = name[0].gsub("\"", "")
-		return create_facet_link("#{name[0]} (#{name[1]})", '/search/add_constraint', { :search_type => typ,  :search_not => 'AND', :search => { :phrase => name[0]}, :from_name_facet => 'true' })
+		return create_facet_link("#{name[0]} (#{name[1]})", '/collex/add_constraint', { :search_type => typ,  :search_not => 'AND', :search => { :phrase => name[0]}, :from_name_facet => 'true' })
 	end
 
 	def format_no_name_message(index, total)
 		if index == 0 && total == 0
-			return "<span class='no_names_msg'>No names were contributed for this category.</span>"
+			return raw("<span class='no_names_msg'>No names were contributed for this category.</span>")
 		end
 		return ""
 	end
@@ -654,9 +741,9 @@ module SearchHelper
 		html = "<tr id='resource_#{id}' class='child_of_#{parent_id}#{' hidden' if !start_shown}#{' limit_to_selected' if selected}'><td class='limit_to_lvl#{indent_level}'>"
 		# If you want to post, use postLink(this.href) to POST instead of doing an ajax update.
 		if selected
-			html += "#{h(label)}&nbsp;<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Removing Facet...' }, { }); return false;\">[X]</a>"
+			html += "#{h(label)}&nbsp;<a href='#{url}' class='nav_link' onclick=\"serverAction({action: { actions: this.href, els: '#{update_div}'}, progress: { waitMessage: 'Removing Facet...' }}); return false;\">[X]</a>"
 		else
-			html += "<a href='#{url}' class='nav_link' onclick=\"ajaxWithProgressSpinner([ this.href ], [ '#{update_div}' ], { waitMessage: 'Adding Facet...' }, { }); return false;\">#{h(label)}</a>"
+			html += "<a href='#{url}' class='nav_link' onclick=\"serverAction({action: { actions: this.href, els: '#{update_div}'}, progress: { waitMessage: 'Adding Facet...' }}); return false;\">#{h(label)}</a>"
 		end
 		html += "</td><td class='num_objects'>#{num_objects}</td></tr>\n"
 		return raw(html)
@@ -680,6 +767,7 @@ module SearchHelper
 
 	def create_facet_tree(tree, id_base, url_base, update_div)
 		html = ''
+		parent_open = {}
 		tree.each{|node|
 			label = node[:label]
 			children = node[:children]
@@ -688,18 +776,32 @@ module SearchHelper
 				total += count_children(child_arr)
 			}
 
-			html += facet_tree_node_row("#{id_base}-1", 0, 1, true, label, total, false)
+			start_open = id_base == 'univ' ? true : false
+			if session[:resource_toggle]
+				start_open = true if session[:resource_toggle]["#{id_base}-1"] == 'open'
+				start_open = false if session[:resource_toggle]["#{id_base}-1"] == 'close'
+			end
+			parent_open["#{id_base}-1"] = start_open
+			html += facet_tree_node_row("#{id_base}-1", 0, 1, true, label, total, start_open)
 			i = -2
 			children.each{|child_label, child_arr|
 				if child_arr.kind_of?(Array)
-					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, false, child_label, count_children(child_arr), false)
+#					start_open = id_base == 'univ' ? true : false
+					start_open = false
+					if session[:resource_toggle]
+						start_open = true if session[:resource_toggle]["#{id_base}#{i}"] == 'open'
+						start_open = false if session[:resource_toggle]["#{id_base}#{i}"] == 'close'
+					end
+					parent_open["#{id_base}#{i}"] = parent_open["#{id_base}-1"] ? start_open : false
+					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, parent_open["#{id_base}-1"], child_label, count_children(child_arr), start_open)
 					child_arr.each{|item|
-						html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{i}", 3, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
+						#start_shown = start_open	# we start shown if the parent starts open
+						html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{i}", 3, parent_open["#{id_base}#{i}"], item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
 					}
 					i -= 1
 				else
 					item = child_arr
-					html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{-1}", 2, false, item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
+					html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{-1}", 2, parent_open["#{id_base}-1"], item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
 				end
 			}
 		}

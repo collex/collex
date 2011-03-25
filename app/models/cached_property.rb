@@ -19,9 +19,10 @@ class CachedProperty < ActiveRecord::Base
   def agent_type()
     self.name =~ /^role_/ ? self.name[-3,3] : nil      
   end
-  
-  def ==(other)
-    return false if other.nil?
-    self.name == other.name and self.value == other.value
-  end
+
+  # TODO-PER: This was failing in a weird way, but it seems like it is not needed, so I'm just commenting it out for now.
+#  def ==(other)
+#    return false if other.nil?
+#    self.name == other.name and self.value == other.value
+#  end
 end

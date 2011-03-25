@@ -14,10 +14,9 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, Element, Ajax */
-/*global MessageBoxDlg, GeneralDialog, SignInDlg, LinkDlgHandler, genericAjaxFail */
+/*global Class, $, $$, Element */
+/*global MessageBoxDlg, GeneralDialog, SignInDlg, LinkDlgHandler, serverRequest, gotoPage */
 /*global ForumLicenseDisplay */
-/*global window */
 /*extern StartDiscussionWithExhibit */
 
 ///////////////////////////////////////////////////////////////////////////
@@ -42,37 +41,33 @@ var StartDiscussionWithExhibit = Class.create({
 		// private functions
 		var populate = function()
 		{
-			new Ajax.Request(url_get_topics, { method: 'get', parameters: { },
-				onSuccess : function(resp) {
-					var topics = [];
-					dlg.setFlash('', false);
-					try {
-						if (resp.responseText.length > 0)
-							topics = resp.responseText.evalJSON(true);
-					} catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					// We got all the topics. Now put them on the dialog.
-					var sel_arr = $$('.discussion_topic_select');
-					var select = sel_arr[0];
-					select.update('');
-					topics = topics.sortBy(function(topic) { return topic.text; });
-					topics.each(function(topic) {
-						select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
-					});
-					$('topic_id').writeAttribute('value', topics[0].value);
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
+			var onSuccess = function(resp) {
+				var topics = [];
+				dlg.setFlash('', false);
+				try {
+					if (resp.responseText.length > 0)
+						topics = resp.responseText.evalJSON(true);
+				} catch (e) {
+					new MessageBoxDlg("Error", e);
 				}
-			});
+				// We got all the topics. Now put them on the dialog.
+				var sel_arr = $$('.discussion_topic_select');
+				var select = sel_arr[0];
+				select.update('');
+				topics = topics.sortBy(function(topic) { return topic.text; });
+				topics.each(function(topic) {
+					select.appendChild(new Element('option', { value: topic.value }).update(topic.text));
+				});
+				$('topic_id').writeAttribute('value', topics[0].value);
+			};
+			serverRequest({ url: url_get_topics, onSuccess: onSuccess});
 		};
 
 		// privileged functions
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 			var dlg = params.dlg;
 
 			dlg.setFlash('Updating Discussion Topics...', false);
@@ -87,21 +82,15 @@ var StartDiscussionWithExhibit = Class.create({
 			data.inet_title = "";
 			data.disc_type = "NINES Exhibit";
 
-			new Ajax.Request(url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					$(discussion_button).hide();
-					dlg.cancel();
-					window.location = resp.responseText;
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
-				}
-			});
+			var onSuccess = function(resp) {
+				$(discussion_button).hide();
+				dlg.cancel();
+				gotoPage(resp.responseText);
+			};
+			serverRequest({ url: url, params: data, onSuccess: onSuccess});
 		};
 
-		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/my_collex/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
+		var licenseDisplay = new ForumLicenseDisplay({ populateLicenses: '/exhibits/get_licenses?non_sharing=false', currentLicense: 5, id: 'license_list' });
 		var dlgLayout = {
 				page: 'start_discussion',
 				rows: [
@@ -111,14 +100,14 @@ var StartDiscussionWithExhibit = Class.create({
 					[ { text: 'Title', klass: 'forum_reply_label title ' } ],
 					[ { input: 'title', klass: 'forum_reply_input title' } ],
 					[ { textarea: 'description' } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: url_update, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
-		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Start Discussion" };
+		var params = { this_id: "start_discussion_with_object_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Start Discussion", focus: 'start_discussion_with_object_dlg_sel0' };
 		dlg = new GeneralDialog(params);
 		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_collex_obj_url], progress_img) });
-		dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
+		//dlg.changePage('start_discussion', 'start_discussion_with_object_dlg_sel0');
 		licenseDisplay.populate(dlg);
 		dlg.center();
 		populate(dlg);

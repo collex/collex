@@ -172,6 +172,10 @@ span.tooltip:hover span.result_row_tooltip {
 	background-repeat:no-repeat;
 }
 
+.can_typewright {
+	background-repeat:no-repeat;
+}
+
 .uri_link {
 	font-size: .6em;
 	text-decoration: none;

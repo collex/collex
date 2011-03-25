@@ -14,10 +14,9 @@
 # limitations under the License.
 ##########################################################################
 
-require 'rubygems'
-require 'marc'
+#require 'rubygems'
+#require 'marc'
 
-# # IS THIS ACTUALLY USED ANYWHERE???
 $KCODE = 'UTF8'
 END_OF_RECORD = 0x1D.chr
 

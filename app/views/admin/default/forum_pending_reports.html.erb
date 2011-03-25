@@ -19,23 +19,29 @@
 <div class="inner_content_container">
 	<div class="page_header">Pending Reported Comments in the Forum</div>
 	<br />
-	<% spams = DiscussionComment.find_all_by_reported(1) -%>
+	<% spams = DiscussionComment.find(:all, :joins => :comment_reports, :group => :id) -%>
 	<table class="reported_abuse">
 		<tr>
 			<th>Commenter</th>
-			<th>Reporter(s)</th>
+			<th>Reporter</th>
 			<th>Comment</th>
+			<th>Reason</th>
 			<th colspan=3>Actions</th>
 		</tr>
 		<% for spam in spams -%>
-			<tr>
-				<td><%= User.find(spam.user_id).fullname -%></td>
-				<td><%= spam.get_reported_by_list() %></td>
-				<td><%= spam.comment %></td>
-				<td><%= link_to "[Go to]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
-				<td><%= link_to_confirm("[Delete Comment]", { :action => 'delete_comment', :comment => spam.id }, "Delete Comment", "Are you sure you want to delete this comment? (An email will be sent to both the author of the comment and the person who reported it.)") %></td>
-				<td><%= link_to_confirm("[Remove Abuse Flag]", { :action => 'remove_abuse_flag', :comment => spam.id }, "Remove Abuse Flag", "Are you sure you want to remove the abuse flag? (An email will be sent to the person who reported the comment saying that the report is being ignored.)") %></td>
-			</tr>
+		  <% for report in spam.comment_reports -%>
+  			<tr>
+  				<td><%= User.find(spam.user_id).fullname -%></td>
+  				<td><%= User.find(report.reporter_id).fullname %></td>
+  				<% comment = DiscussionComment.strip_tags(spam.comment) %>
+  				<% comment = [0..30] + '...' if comment.length > 30 %>
+  				<td><%= comment %></td>
+          <td><%= report.reason %></td>
+  				<td><%= link_to "[Go to]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>
+  				<td><%= link_to_confirm("[Delete Comment]", { :action => 'delete_comment', :comment => spam.id }, "Delete Comment", "Are you sure you want to delete this comment? (An email will be sent to both the author of the comment and the person who reported it.)") %></td>
+  				<td><%= link_to_confirm("[Remove Report]", { :action => 'remove_abuse_report', :comment => spam.id, :report => report.id }, "Remove Report", "Are you sure you want to remove this report? (An email will be sent to the person who reported the comment saying that the report is being ignored.)") %></td>
+  			</tr>
+  	 <% end -%>
 		<% end -%>
 	</table>
 </div>

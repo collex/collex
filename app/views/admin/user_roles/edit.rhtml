@@ -17,13 +17,13 @@
 <% current_sub_page "User Roles" -%>
 
 <div class="inner_content_container">
-	<div class="page_header">Editing User Roles for Username <%= @user.username %></div>
+	<div class="page_header">Editing User Roles for <%= @user.username %></div>
 
 	<p>
 	  Email: <%= content_tag "b", @user.email %>
 	</p>
 	
-	<% form_tag :action => 'update', :id => @user do %>
+	<%= form_tag("/admin/user_roles/#{@user.id}", :method => :put) do %>
 	  <%= render :partial => 'form' %>
 	  <input type='hidden' name='page' id='page' value='<%=@page%>'/>
 	  <%= submit_tag 'Edit' %>

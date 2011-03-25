@@ -4,9 +4,9 @@ namespace :jslint do
 	task :all do
 		ext = '.js'
 		skip_ext = '-min.js'
-		Dir.foreach("#{RAILS_ROOT}/public/javascripts") { |f|
+		Dir.foreach("#{Rails.root}/public/javascripts") { |f|
 			if f.index(ext) == f.length - ext.length && f.index(skip_ext) != f.length - skip_ext.length
-				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js'
+				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js' && f != 'dragdrop.js' && f != 'rails.js'
 					lint_one(f)
 				end
 			end
@@ -27,7 +27,7 @@ namespace :jslint do
 	task :dependencies do
 		ext = '.js'
 		skip_ext = '-min.js'
-		Dir.foreach("#{RAILS_ROOT}/public/javascripts") { |f|
+		Dir.foreach("#{Rails.root}/public/javascripts") { |f|
 			if f.index(ext) == f.length - ext.length && f.index(skip_ext) != f.length - skip_ext.length
 				if f != 'prototype.js' && f != 'controls.js' && f != 'effects.js'
 					globals, externs = get_dependency_info(f)
@@ -41,8 +41,8 @@ namespace :jslint do
 	end
 
 	def lint_one(fname)
-		full_path = "#{RAILS_ROOT}/public/javascripts/#{fname}"
+		full_path = "#{Rails.root}/public/javascripts/#{fname}"
 		puts "Linting #{fname} (#{full_path})..."
-		system("java -jar #{RAILS_ROOT}/lib/tasks/rhino1_7R2_js.jar #{RAILS_ROOT}/lib/tasks/fulljslint.js #{full_path}")
+		system("java -jar #{Rails.root}/lib/tasks/rhino1_7R2_js.jar #{Rails.root}/lib/tasks/fulljslint.js #{full_path}")
 	end
 end

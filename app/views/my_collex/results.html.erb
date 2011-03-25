@@ -43,13 +43,21 @@
 					<% else -%>
 						<% extra = "" -%>
 					<% end -%>
-					<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => "#{total_link}#{extra}", :results => @results, :page => @page, :num_pages => @num_pages, :controller => MY_COLLEX_URL, :action => 'results' } %>
+					<%= render :partial => 'results/results_with_all_functionality', 
+					           :locals => { :title => raw("#{total_link}#{extra}"),
+					                        :mode => :uncollect, 
+					                        :results => @results, 
+					                        :page => @page, 
+					                        :num_pages => @num_pages, 
+					                        :controller => 'my_collex', 
+					                        :action => 'results' 
+					                      } %>
 				<% end -%>
 			</div>
 		</div>
 		<div class="right_column">
 			<div id="exhibited_objects_container">
-				<%= render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id } %>
+				<%= render :partial => '/results/exhibited_objects', :locals => { :current_user_id => user.id } %>
 			</div>
 		</div>
 		<div class="clear_both"></div>

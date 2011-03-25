@@ -1,0 +1,73 @@
+<%#
+# ------------------------------------------------------------------------
+#     Copyright 2011 Applied Research in Patacriticism and the University of Virginia
+#
+#     Licensed under the Apache License, Version 2.0 (the "License");
+#     you may not use this file except in compliance with the License.
+#     You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+# ----------------------------------------------------------------------------
+%>
+<%# featured: params: id, uri, revision_page, num_revision_pages, edits) %>
+<%# Each edit has the following structure: %>
+<%#    {date, federation(18thConnect or NINES), user_id, text, status, page, line} %>
+
+<div class="tw_history_div">
+
+  <div class="tw_pager">
+    <%= draw_revision_pager(uri, revision_page, num_revision_pages) %>
+  </div>
+  
+  <table class="tw_history_table">
+    
+    <tr>
+      <th>Date/Time Edited</th>
+      <th>User</th>
+      <th>Text</th>
+      <th>Status</th>
+    </tr>
+    
+    <% row_style = 'odd_row' %>
+    <% edits.each do | edit | %>
+      <tr class="<%= row_style %>" >
+        <td><%= tw_date_format(edit.updated_at) %></td>
+        
+        <%# Edit USER with link user profile if from this federation %>
+        <%# For external users, no link, just default name %>
+        <% if edit.federation == DEFAULT_FEDERATION %>
+          <td><%= get_user_link(edit.orig_id) %></td>
+        <% else %>
+          <td>External User</td>
+        <% end %>
+        
+        <%# Edit TEXT with link to edit the specific line %>
+        <td><%= link_to( Typewright::Line.words_to_text(Typewright::Line.db_to_words(edit.words)), "#{id}/edit?page=#{edit.page}&line=#{edit.line.to_i}" )%></td>
+        
+        <%# Edit STATUS icon %>
+        <% img_src = nil %>
+        <% img_src = '/images/type_wright/icon_checkmark.png' if edit.status == 'correct' %>
+        <% img_src = '/images/type_wright/icon_x.png' if edit.status == 'delete' %>
+        <% img_src = '/images/type_wright/icon_edit.png' if edit.status == 'change' %>
+        <% if img_src.nil? %>
+          <td>&nbsp;</td>
+        <% else %>
+          <td width=><img class="tw_edit_icon" src="<%= img_src %>"></td>
+        <% end %>
+      </tr>
+      
+      <%# Toggle row style to get alternating colors on page %>
+      <% if row_style == 'odd_row' %>
+      <%    row_style = 'even_row' %>
+      <% else %>
+      <%    row_style = 'odd_row' %>
+      <% end %>
+    <% end %>
+  </table>
+</div>

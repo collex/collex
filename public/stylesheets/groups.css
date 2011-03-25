@@ -96,6 +96,11 @@
 	width:350px;
 }
 
+.group_left_col {
+	margin-right: 350px;
+	padding-top:0.5em;
+}
+
 #group_exhibits {
 	margin-right: 350px;
 	padding-top:0.5em;

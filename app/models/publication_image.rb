@@ -5,7 +5,7 @@ class PublicationImage < ActiveRecord::Base
 		images = PublicationImage.all
 		list = []
 		images.each {|image|
-			list.push({ :value => image.id, :text => image.image_full.public_filename }) if image.image_full
+			list.push({ :value => image.id, :text => "/#{image.image_full.photo.url}" }) if image.image_full
 		}
 		return list
 	end
@@ -14,6 +14,6 @@ class PublicationImage < ActiveRecord::Base
 		return "" if id == nil || id == 0
 		image = PublicationImage.find(id)
 		return "" if !image.image_full
-		return image.image_full.public_filename
+		return "/#{image.image_full.photo.url}"
 	end
 end

@@ -14,8 +14,8 @@
 # limitations under the License.
 ##########################################################################
 
-require 'rubygems'
-require 'marc'
+#require 'rubygems'
+#require 'marc'
 require 'script/lib/nines_mapping.rb'
 
 # # IS THIS ACTUALLY USED ANYWHERE???

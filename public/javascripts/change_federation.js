@@ -15,7 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global $, $$ */
-/*global ajaxWithProgressSpinner */
+/*global serverAction */
 /*extern changeFederation */
 
 function changeFederation(checkbox) {
@@ -61,7 +61,7 @@ function changeFederation(checkbox) {
 	param.ephrs = $('search_editor') ? $('search_editor').getRealValue() : null;
 	param.pphrs = $('search_publisher') ? $('search_publisher').getRealValue() : null;
 	param.yphrs = $('search_year') ? $('search_year').getRealValue() : null;
-	ajaxWithProgressSpinner([ "/search/add_federation_constraint" ], [ null ], { waitMessage: 'Changing federation...' }, param);
+	serverAction({action: { actions: "/search/add_federation_constraint", params: param}, progress: { waitMessage: 'Changing federation...' }});
 //	window.location = "/search/add_federation_constraint" + param;
 }
 

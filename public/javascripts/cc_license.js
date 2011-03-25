@@ -14,9 +14,9 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global GeneralDialog, MessageBoxDlg, recurseUpdateWithAjax, genericAjaxFail */
+/*global GeneralDialog, MessageBoxDlg, serverAction, serverRequest, openInNewWindow */
 /*global YAHOO */
-/*global Class, $, Element, Ajax */
+/*global Class, $, Element */
 /*extern ForumLicenseDisplay, CCLicenseDlg, license_dialog */
 
 var CCLicenseDlg = Class.create({
@@ -88,14 +88,14 @@ var CCLicenseDlg = Class.create({
 				rows: [
 					[ { text: name, klass: 'input_dlg_license_list_header' } ],
 					[ { custom: liclist, klass: '' } ],
-					[ { text: 'Licenses provided courtesy of Creative Commons&nbsp;&nbsp;', klass: '' }, { page_link: '[ Learn more about CC licenses ]', klass: 'ext_link', new_page: "http://creativecommons.org/about/licenses", callback: GeneralDialog.openInNewWindow } ],
-					[ { rowClass: 'last_row' }, { button: 'Save', callback: okCallback, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { text: 'Licenses provided courtesy of Creative Commons&nbsp;&nbsp;', klass: '' }, { link: '[ Learn more about CC licenses ]', klass: 'ext_link', arg0: "http://creativecommons.org/about/licenses", callback: openInNewWindow } ],
+					[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: okCallback, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var dlgParams = { this_id: "cc_license_dlg", pages: [ dlgLayout ], body_style: "cc_license_dlg", row_style: "forum_reply_row", title: title };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 	}
 });
@@ -142,25 +142,20 @@ var ForumLicenseDisplay = Class.create({
 		this.populate = function(dlg){
 			// Call the server to get the data, then pass it to the ObjectLists
 			dlg.setFlash('Getting objects...', false);
-			new Ajax.Request(populate_url, {
-				method: 'get',
-				onSuccess: function(resp){
-					dlg.setFlash('', false);
-					try {
-						if (resp.responseText.length > 0) {
-							objs = resp.responseText.evalJSON(true);
-							setInitialSelection();
-						}
+			var onSuccess = function(resp){
+				dlg.setFlash('', false);
+				try {
+					if (resp.responseText.length > 0) {
+						objs = resp.responseText.evalJSON(true);
+						setInitialSelection();
 					}
-					catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-
-				},
-				onFailure: function(resp){
-					genericAjaxFail(dlg, resp);
 				}
-			});
+				catch (e) {
+					new MessageBoxDlg("Error", e);
+				}
+
+			};
+			serverRequest({ url: populate_url, onSuccess: onSuccess});
 
 		};
 
@@ -189,7 +184,7 @@ function license_dialog(params)
 		var ajaxParams = { id: id };
 		var data = params.dlg.getAllData();
 		ajaxParams[id_name] = data.sharing;
-		recurseUpdateWithAjax(callback_url, update_id, onSuccess, null, ajaxParams);
+		serverAction({action:{actions: callback_url, els: update_id, onSuccess: onSuccess, params: ajaxParams}});
 	};
 
 	var createDialog = function() {
@@ -199,21 +194,19 @@ function license_dialog(params)
 	var populate = function(){
 		// Call the server to get the data, then pass it to the ObjectLists
 		//dlg.setFlash('Getting objects...', false);
-		new Ajax.Request(populate_url, {
-			method: 'get',
-			onSuccess: function(resp){
-				//dlg.setFlash('', false);
-				try {
-					if (resp.responseText.length > 0) {
-						objs = resp.responseText.evalJSON(true);
-						createDialog();
-					}
-				}
-				catch (e) {
-					new MessageBoxDlg("Error", e);
+		var onSuccess = function(resp){
+			//dlg.setFlash('', false);
+			try {
+				if (resp.responseText.length > 0) {
+					objs = resp.responseText.evalJSON(true);
+					createDialog();
 				}
 			}
-		});
+			catch (e) {
+				new MessageBoxDlg("Error", e);
+			}
+		};
+		serverRequest({ url: populate_url, onSuccess: onSuccess});
 	};
 
 	populate();

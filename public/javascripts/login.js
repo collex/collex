@@ -14,8 +14,8 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, Ajax */
-/*global GeneralDialog, genericAjaxFail */
+/*global Class */
+/*global GeneralDialog, serverRequest, reloadPage, gotoPage */
 /*global window */
 /*extern SignInDlg, RedirectIfLoggedIn */
 
@@ -34,7 +34,7 @@ var SignInDlg = Class.create({
 		this.changeView = function (event, param)
 		{
 			//var curr_page = param.curr_page;
-			var view = param.destination;
+			var view = param.arg0;
 			var dlg = param.dlg;
 			
 			var focus_el = null;
@@ -53,23 +53,18 @@ var SignInDlg = Class.create({
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 			var dlg = params.dlg;
 			var p = dlg.getAllData();
 
-			new Ajax.Request(url, {
-				parameters : p,
-				onSuccess : function(resp) {
-					dlg.setFlash(resp.responseText, false);
-					if (redirectPage === "")
-						window.location.reload(true);
-					else
-						window.location = redirectPage;
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
-				}
-			});
+			var onSuccess = function(resp) {
+				dlg.setFlash(resp.responseText, false);
+				if (redirectPage === "")
+					reloadPage();
+				else
+					gotoPage(redirectPage);
+			};
+			serverRequest({ url: url, params: p, onSuccess: onSuccess, dlg: dlg});
 		};
 
 		// privileged methods
@@ -106,10 +101,10 @@ var SignInDlg = Class.create({
 						[ { input: 'signin_username', klass: 'login_input' } ],
 						[ { text: 'Password:', klass: 'login_label' } ],
 						[ { password: 'signin_password', klass: 'login_input' } ],
-						[ { button: 'Log in', url: '/login/verify_login', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }],
+						[ { button: 'Log in', arg0: '/login/verify_login', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }],
 						[ { text: '', klass: 'login_label' } ],
-						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
-						[ { page_link: 'Forgot user name or password?', new_page: 'account_help', callback: this.changeView } ]
+						[ { link: 'Create a new account', klass: 'nav_link', arg0: 'create_account', callback: this.changeView } ],
+						[ { link: 'Forgot user name or password?', klass: 'nav_link', arg0: 'account_help', callback: this.changeView } ]
 					]
 				};
 
@@ -120,17 +115,17 @@ var SignInDlg = Class.create({
 						[ { text: 'Enter your user name and we will email a new password to your email account on file.', klass: 'login_instructions' } ],
 						[ { text: 'User name:', klass: 'login_label' } ],
 						[ { input: 'help_username', klass: 'login_input' } ],
-						[ { button: 'Submit', url: '/login/reset_password', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
+						[ { button: 'Submit', arg0: '/login/reset_password', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
 						[ { text: '', klass: 'login_label' } ],
 						[ { text: '', klass: 'login_label' } ],
 						[ { text: 'I forgot my user name.', klass: 'login_title' } ],
 						[ { text: 'Enter your email address and we will email you your user name.', klass: 'login_instructions' } ],
 						[ { text: 'E-mail address:', klass: 'login_label' } ],
 						[ { input: 'help_email', klass: 'login_input' } ],
-						[ { button: 'Submit', url: '/login/recover_username', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
+						[ { button: 'Submit', arg0: '/login/recover_username', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
 						[ { text: '', klass: 'login_label' } ],
-						[ { page_link: 'Create a new account', new_page: 'create_account', callback: this.changeView } ],
-						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ]
+						[ { link: 'Create a new account', klass: 'nav_link', arg0: 'create_account', callback: this.changeView } ],
+						[ { link: 'Log in', klass: 'nav_link', arg0: 'sign_in', callback: this.changeView } ]
 					]
 				};
 
@@ -146,8 +141,8 @@ var SignInDlg = Class.create({
 						[ { password: 'create_password', klass: 'login_input' } ],
 						[ { text: 'Re-type password:', klass: 'login_label' } ],
 						[ { password: 'create_password2', klass: 'login_input' } ],
-						[ { button: 'Sign up', url: '/login/submit_signup', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
-						[ { page_link: 'Log in', new_page: 'sign_in', callback: this.changeView } ]
+						[ { button: 'Sign up', arg0: '/login/submit_signup', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ],
+						[ { link: 'Log in', klass: 'nav_link', arg0: 'sign_in', callback: this.changeView } ]
 					]
 				};
 				
@@ -155,7 +150,7 @@ var SignInDlg = Class.create({
 
 			var params = { this_id: "login_dlg", pages: pages, flash_notice: initialFlashMessage, body_style: "login_div", row_style: "login_row" };
 			var dlg = new GeneralDialog(params);
-			this.changeView(null, { curr_page: '', destination: view, dlg: dlg });
+			this.changeView(null, { curr_page: '', arg0: view, dlg: dlg });
 			dlg.center();
 			
 			return;
@@ -168,7 +163,7 @@ var RedirectIfLoggedIn = Class.create({
 		this.class_type = 'RedirectIfLoggedIn';	// for debugging
 		
 		if (isLoggedIn)
-			window.location = url;
+			gotoPage(url);
 		else {
 			var dlg = new SignInDlg();
 			dlg.setInitialMessage(message);

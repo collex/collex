@@ -23,5 +23,5 @@
 	<% size_str = "width='#{width}px'" %>
 <% end -%>
 <% title_str = title == '' ? '' : "title='#{title}'" %>
-<img class='<%= klass %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" <%= title_str %> <%= size_str %> />
+<img class='progress_timeout <%= klass %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" <%= title_str %> <%= size_str %> data-noimage="<%=SPINNER_TIMEOUT_PATH %>" />
 <img class="<%= klass %> hidden" src="<%= src %>" alt="<%= alt %>" <%= title_str %> onload="finishedLoadingImage($(this).previous(), $(this), <%= width %>, <%= height %>);" />

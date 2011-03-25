@@ -50,7 +50,21 @@ class RegenerateRdf
 	end
 	
 	public
+	def self.safe_mkdir(folder)
+		folders = folder.split('/')
+		folder = ''
+		folders.each {|sub|
+			folder += '/' + sub
+			begin
+				Dir.mkdir(folder)
+			rescue
+				# It's ok to fail: it probably means the folder already exists.
+			end
+		}
+	end
+
 	def self.regenerate_all(hits, output_folder, file_prefix)
+		self.safe_mkdir(output_folder)
 		size = 0
 		file_number = 1000
 		file_number, file = self.start_file(output_folder, file_prefix, file_number)
@@ -70,69 +84,115 @@ class RegenerateRdf
 
 	def self.regenerate_obj(obj)
 		main_node = "recreate:collections"
-		str = "<#{main_node} rdf:about=\"#{obj['uri']}\">\n"
-		obj.each { |key, value_arr|
-			if !value_arr.kind_of?(Array)
-				value_arr = [ value_arr ]
+		uri = obj['uri']
+		uri = obj[:uri] if uri == nil
+		str = "<#{main_node} rdf:about=\"#{uri}\">\n"
+		items = self.format_items(obj)
+		# list them in the same order each time
+		keys = [ 'archive', 'freeculture', 'has_full_text', 'is_ocr', 'genre', 'text', 'title', 'role_AUT', 'federation', 'role_PBL', 'date_label', 'url' ]
+		keys.each {|key|
+			if items[key]
+				items[key].each {|it|
+					str += it
+				}
 			end
-			value_arr.each_with_index { |val,i|
-				val = "#{val}".gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
-				case key
-				when 'archive'
-					str += self.format_item("collex:archive", val)
-				when 'title'
-					str += self.format_item("dc:title", val)
-				when 'text'
-					str += self.format_item("collex:text", val)
-				when 'date_label'
-					# year and date_label are put in at the same time, so we'll look for year here and ignore it when it naturally comes up.
-					year = obj['year']
-					str += "\t<dc:date><collex:date>\n\t#{self.format_item("rdfs:label", val)}\t#{self.format_item("rdf:value", year[i]) if year[i]}\t</collex:date></dc:date>\n"
-				when 'year'
-					#nothing here: handled above
-	#			when 'url'
-	#				str += self.format_item("dc:title", val)
-				when 'uri'
-					# just ignore the uri: we've used it already
-				when 'score'
-					# just ignore the score
-				when 'type'
-					# just ignore the type; it is always 'A'
-				when 'batch'
-					# just ignore the batch code
-				when 'role_AUT'
-					str += self.format_item("role:AUT", val)
-				when 'role_PBL'
-					str += self.format_item("role:PBL", val)
-				when 'genre'
-					str += self.format_item("collex:genre", val)
-				when 'url'
-					 str += "\t<rdfs:seeAlso rdf:resource=\"#{val}\"/>\n"
-				else
-					puts "Unhandled key: #{key}=#{val.to_s}"
-				end
-			}
 		}
 
-#      <rdfs:seeAlso rdf:resource="http://pm.nlx.com/xtf/view?docId=wordsworths_c/wordsworths_c.11.xml;chunk.id=div.el.mary.wordsworth.101"/>
-#      <dc:source>The Collected Letters of the Wordsworths. Electronic edition.</dc:source>
-#      <dc:source>The Letters of William and Dorothy Wordsworth. Volume 11</dc:source>
-#      <role:EDT>Burton, Mary E.</role:EDT>
-#      <collex:freeculture>FALSE</collex:freeculture>
-#      <dc:date>
-#         <collex:date>
-#            <rdfs:label>1800's</rdfs:label>
-#            <rdf:value>18uu</rdf:value>
-#         </collex:date>
-#      </dc:date>
-#      <dcterms:isPartOf rdf:resource="http://pm.nlx.com/xtf/view?docId=wordsworths_c/wordsworths_c.11.xml"/>
 		str += "</#{main_node}>\n"
 		return str
 	end
 
+	def self.gen_item(hash, key, val)
+		hash[key.to_s] = [] if hash[key.to_s] == nil
+		hash[key.to_s].push(val)
+	end
+
+	def self.format_items(obj)
+		ret = {}
+	  obj.each { |key, value_arr|
+		  if !value_arr.kind_of?(Array)
+			  value_arr = [ value_arr ]
+		  end
+		  value_arr.each_with_index { |val,i|
+			  val = "#{val}".gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
+			  case key.to_s
+			  when 'archive'
+				  self.gen_item(ret, key, self.format_item("collex:archive", val))
+			  when 'title'
+				  self.gen_item(ret, key, self.format_item("dc:title", val))
+			  when 'text'
+				 self.gen_item(ret, key, self.format_item("collex:text", val))
+			  when 'date_label'
+				  # year and date_label are put in at the same time, so we'll look for year here and ignore it when it naturally comes up.
+				  year = obj['year']
+				  year = obj[:year] if year == nil
+				  self.gen_item(ret, key, "\t<dc:date><collex:date>\n\t#{self.format_item("rdfs:label", val)}\t#{self.format_item("rdf:value", year[i]) if year[i]}\t</collex:date></dc:date>\n")
+			  when 'year'
+				  #nothing here: handled above
+			  when 'uri'
+				  # just ignore the uri: we've used it already
+			  when 'score'
+				  # just ignore the score
+			  when 'type'
+				  # just ignore the type; it is always 'A'
+			  when 'batch'
+				  # just ignore the batch code
+			  when 'agent'
+				  # just ignore the batch code
+			  when 'title_sort'
+				  # just ignore this -- it will be recreated
+			  when 'author_sort'
+				  # just ignore this -- it will be recreated
+			  when 'year_sort'
+				  # just ignore this -- it will be recreated
+			  when 'role_AUT'
+				  self.gen_item(ret, key, self.format_item("role:AUT", val))
+			  when 'role_PBL'
+				  self.gen_item(ret, key, self.format_item("role:PBL", val))
+			  when 'genre'
+				  self.gen_item(ret, key, self.format_item("collex:genre", val))
+			  when 'url'
+				   self.gen_item(ret, key, "\t<rdfs:seeAlso rdf:resource=\"#{val}\"/>\n")
+			  when 'federation'
+				  self.gen_item(ret, key, self.format_item("collex:federation", val))
+			  when 'is_ocr'
+				  val = 'false' if val == 'F'
+				  val = 'true' if val == 'T'
+				  self.gen_item(ret, key, self.format_item("collex:ocr", val))
+			  when 'has_full_text'
+				  val = 'false' if val == 'F'
+				  val = 'true' if val == 'T'
+				  self.gen_item(ret, key, self.format_item("collex:fulltext", val))
+			  when 'freeculture'
+				  val = 'false' if val == 'F'
+				  val = 'true' if val == 'T'
+				  self.gen_item(ret, key, self.format_item("collex:freeculture", val))
+			  else
+				  puts "Unhandled key: #{key}=#{val.to_s}"
+			  end
+		  }
+	  }
+	return ret
+  end
+
 	private
 	def self.format_item(key, val)
-		return "\t<#{key}>#{val}</#{key}>\n"
+		str = "#{val}"
+		if !str.valid_encoding?
+			converter = Iconv.new('UTF-8','CP1252')
+			begin
+				puts "converting..."
+				str = converter.iconv(str)
+			rescue
+				puts "Invalid: #{key}"
+				str.each_byte { |b|
+					bytes += "#{b} "
+				}
+				puts bytes
+			end
+		end
+
+		return "\t<#{key}>#{str}</#{key}>\n"
 	end
 
 	def self.format_item_array(key, val)

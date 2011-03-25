@@ -14,33 +14,27 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $H, Class, $, $$, Element, Ajax */
+/*global Class, $, $$, Element */
 /*global YAHOO */
+/*global Ajax */
 /*global document, setTimeout, window */
-/*global form_authenticity_token */
 /*global RichTextEditor, LinkDlgHandler */
-/*extern ConfirmAjaxDlg, ConfirmDlg, ConfirmLinkDlg, GeneralDialog, MessageBoxDlg, RteInputDlg, TextInputDlg, recurseUpdateWithAjax, updateWithAjax, postLink, genericAjaxFail */
-/*extern showInLightbox, showPartialInLightBox, SelectInputDlg, ShowDivInLightbox, TextAreaInputDlg, singleInputDlg, initializeSelectCtrl, ProgressSpinnerDlg, ajaxWithProgressDlg, ajaxWithProgressSpinner */
+/*global formatFailureMsg, serverAction */
+/*extern GeneralDialog, genericAjaxFail, initializeSelectCtrl, dlgAjax, ConfirmDlg3 */
+/*extern MessageBoxDlg, RteInputDlg, TextInputDlg, SelectInputDlg, singleInputDlg */
+/*extern showInLightbox, showPartialInLightBox, ShowDivInLightbox */
+
+// TODO-PER: temporary entry points until I can figure out what is wrong with simulate()
+window.escFxn = null;
+window.dlgThis = null;
+window.enterFxn = null;
 
 var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
 {
 	var oMenuButton1 = new YAHOO.widget.Button(select_el_id, {
 		type: "menu",
-		menu: select_el_id + "select"});
-
-	// Pass this the id of a working select element, with its current selection already set.
-//	var sel = $(select_el_id);
-//	if (sel) {	// Initializing the select wipes out the original select id, so it if it there, then we haven't initialized.
-//	var opt = sel.down('option', sel.selectedIndex);	// Get the currently selected item: that is set in the original HTML as the selection.
-//	var start_text = opt.innerHTML;
-//		var oMenuButton1 = new YAHOO.widget.Button({
-//			id: "menu" + select_el_id,
-//			name: "menu" + select_el_id,
-//			label: "<span class=\"yui-button-label\">" + start_text + "</span>",
-//			type: "menu",
-//			menu: select_el_id,
-//			container: select_el_id + "_wrapper"
-//		});
+		menu: select_el_id + "select",
+		selectedMenuItem: new YAHOO.widget.MenuItem(curr_sel)});
 
 		//	"selectedMenuItemChange" event handler for a Button that will set
 		//	the Button's "label" attribute to the value of the "text"
@@ -50,16 +44,134 @@ var initializeSelectCtrl = function(select_el_id, curr_sel, onchange_callback)
 			var new_text = oMenuItem.cfg.getProperty("text");
 			this.set("label", ("<span class=\"yui-button-label\">" +
 				new_text + "</span>"));
-			if (curr_sel !== new_text) {
+			oMenuButton1.currSelectedValue = oMenuItem.value;	// TODO-PER: Don't know how to set this consistently in the control. There's probably an easier way.
+//			if (curr_sel !== new_text) {
 				onchange_callback(oMenuItem.value);
-			}
+//			}
+		};
+
+		oMenuButton1.setSelection = function(id) {
+			oMenuButton1.currSelectedValue = id;	// TODO-PER: Don't know how to set this consistently in the control. There's probably an easier way.
+			oMenuButton1.get("selectedMenuItem").value = id;
 		};
 
 		//	Register a "selectedMenuItemChange" event handler that will sync the
 		//	Button's "label" attribute to the MenuItem that was clicked.
 		oMenuButton1.on("selectedMenuItemChange", onSelectedMenuItemChange);
-//	}
+		oMenuButton1.currSelectedValue = curr_sel;	// TODO-PER: Don't know how to set this consistently in the control. There's probably an easier way.
+		return oMenuButton1;
 };
+
+// GeneralDialog params:
+//	this_id: the id of this dialog
+//	title (opt): the title; if blank, then no title bar appears.
+//	width (opt): the width
+//	flash_notice (opt): the initial message to put in the flash message
+//	body_style (opt):	class to attach to the body
+//	row_style (opt): class to attach to each row
+//	focus (opt): the id to initially have focused
+//	pages: array of pages
+//
+//	the page represents one form and only one is displayed at a time.
+//	page: the id, name, and class to apply to the form.
+//	rows: array describing each row.
+//
+//	row: array of elements to place in the row
+//
+//	element:
+//
+// text: whatToDisplay, klass (opt): classToAttach, id (opt): idOfElement [creates <span>]
+// picture: src and alt, alt (opt): alt, klass (opt): classToAttach, id (opt): idOfElement [creates <img>]
+// input: id and name, klass (opt): classToAttach, value (opt): initial value [creates <input type='text'>]
+// inputFilter: id and name, klass (opt): classToAttach, value (opt): initial value, prompt: text when not focused, callback: function for each event [creates <input type='text'>]
+// inputWithStyle: id and name, klass (opt): classToAttach, value (opt): { text: initial value, isBold: bool, isItalic: bool, isUnderline: bool }  [creates <input type='text'><button><button><button>]
+// autocomplete: id and name, klass (opt): classToAttach, token (opt): character used to tokenize inout string, value (opt): initial value, url: callback
+// hidden: id and name, klass (opt): classToAttach, value: initial value [creates <input type='hidden'>]
+// password: id and name, klass (opt): classToAttach, value (opt): initial value [creates <input type='password'>]
+// button: text on button, klass (opt): classToAttach, isDefault (opt): bool, isSubmit** (opt): bool, url** (opt): parameter passed to callback, callback: function to call when pressed [creates:<button>]
+// colorpick: id and name, klass (opt), value (opt): initial color value displayed
+// link: text on link, klass (opt): classToAttach, arg0 (opt): parameter passed to callback, callback: function to call when pressed, title (opt): tooltip [creates:<a>]
+// select: id and name, klass (opt): classToAttach, callback (opt): function to call when selection changes, arg0: argument passed to callback, options (opt): array of { text: , value: }, value (opt): the initial selection [creates: <select>]
+// custom: object that contains the control [defines functions: getMarkup(), getSelection()], klass (opt): classToAttach [creates: whatever the object wants]
+// checkbox: id or name, klass (opt): classToAttach, value (opt): '1' if initially selected [creates: <input type=checkbox><span>]
+// checkboxList: prefix of id and name, klass (opt): classToAttach, columns (opt): number of columns, items: array of either text, or [ id, text ], selections: array of initially selected items [creates: <table><tbody><tr><td><input type=checkbox><span>]
+// radioList: id and name, klass (opt): classToAttach, options: array of { text: value: }, value (opt): initial selection [creates:<table><tbody><tr><td><input type=radio><span>]
+// textarea: id and name, klass (opt): classToAttach, value (opt): initial value [creates:<textarea>]
+// date: template for id and name, value (opt): initial value (expressed as 'yyyy-mm-dd .*') [creates: <select><select><select>]
+// image: id and name, value (opt): src for current image, alt (opt): alt, size (opt): size of input box, klass(opt): class for encompassing div, removeButton (opt): link for button to remove current image. [creates: <div><img><input type=file><a></div>]
+// file: id and name, size (opt): size of input box, klass(opt): class for encompassing div, no_iframe (opt): true if no iframe should be created
+// rowClass: adds a class name to the current row
+// TODO: button(does isSubmit work?),
+//
+// Member functions:
+//	getOuterDomElement(): gets the outer wrapper div
+//	getEditor(index): gets the index'th textarea
+//	getAllData(): returns an array of all values that the user have filled in as [ {id: value:}].
+//	getTitle(): returns the title of this dialog
+//	setFlash(msg, is_error): sets the flash message at the top of the dialog.
+//	changePage(view, focus_el): sets one page visible and the others hidden, and focuses a particular element
+//	cancel(): cancels the dialog
+//	center(): centers the dialog
+//	initTextAreas({ toolbarGroups: linkDlgHandler: footnote: bodyStyle: onlyClass: only change textareas with this class}): changes textareas to RTE
+//
+//	Static functions:
+//	makeId(name): removes brackets so that it is a legal html id
+//	cancelCallback(event, params)
+//	openInNewWindow(event, params)
+//
+// classes used:
+//	hidden
+//	clear_both
+//	gd_flash_notice_error
+//	gd_flash_notice_ok
+//	gd_bold_button
+//	gd_italic_button
+//	gd_underline_button
+//	gd_pressed
+//	gd_input_hint_style
+//	gd_switchable_element
+//	gd_upload_target
+//	gd_year
+//	gd_month
+//	gd_day
+//
+//	gd_message_box_label
+//	gd_message_box_dlg
+//	gd_message_box_row
+//	gd_last_row
+//
+//	gd_lightbox_dlg
+//	gd_lightbox_row
+//	gd_lightbox_img_spinner
+//
+//	gd_transparent_progress_spinner
+//	gd_transparent_progress_label
+//	gd_progress_label_row
+//	gd_progress_spinner_div
+//	gd_progress_spinner_row
+//
+//	gd_text_input_dlg_label
+//	gd_text_input_dlg_input
+//	gd_select_dlg_input
+//
+//	ids used:
+//		gd_modal_dlg_parent
+//		gd_upload_target
+//		all ids that begin with this_id
+//
+//		gd_message_box_dlg
+//		gd_lightbox_dlg
+//		gd_lightbox_contents
+//		gd_lightbox_img_spinner
+//		gd_lightbox_img
+//		gd_lightbox_id
+//		gd_progress_spinner_dlg
+//		gd_bit_bucket
+//		gd_postExplanation
+//		gd_text_input_dlg
+//		gd_select_dlg_input
+//		gd_textareaValue
+//
 
 var GeneralDialog = Class.create({
 	initialize: function (params) {
@@ -69,16 +181,16 @@ var GeneralDialog = Class.create({
 		var This = this;
 		var this_id = params.this_id;
 		var pages = params.pages;
+		var initial_focus = params.focus;
 		var flash_notice = params.flash_notice;
 		if (flash_notice === undefined)
 			flash_notice = "";
-		var body_style = params.body_style;
+		var body_style = params.body_style ? params.body_style : '';
 		var row_style = params.row_style;
 		var title = params.title;
 		var override_width = params.width;
 		
 		var flash_id = this_id + '_flash';
-		var dlg_id = this_id;
 		var editors = [];
 		var customList = [];
 
@@ -86,30 +198,85 @@ var GeneralDialog = Class.create({
 		var defaultAction = {};
 		var defaultParam = {};
 		
-		var makeId = function(str) {
-			// This checks to see if the id is of the form xxx[yyy]. If so, it replaces the first [ with _ and the second with nothing.
-			return str.gsub('[', '_').gsub(']', '');
+		// A list of calls that should be made after the dialog is rendered
+		var deferredCalls = [];
+		
+		// A wrapper class used to schedule a call with params in
+		// the deferred call list. All objects in the list will
+		/// get the executed() method called after the dialog is rendered
+		var DeferredCall = Class.create({
+         initialize: function (params) {
+            var fn_call = params.fn_call;
+            var call_params = params.call_params;
+            
+             this.execute = function() {
+                fn_call(call_params);
+             };
+         }
+      });
+
+		var createAuthenticityInput = function(form) {
+			var csrf_param = $$('meta[name=csrf-param]')[0].content;
+			var csrf_token = $$('meta[name=csrf-token]')[0].content;
+			form.appendChild(new Element('input', { id: csrf_param, type: 'hidden', name: csrf_param, value: csrf_token }));
 		};
-		this.makeId = function(str) {
-			return makeId(str);
-		};
+		
 		var selectChange = function(event, param)
 		{
 			var This = $(this);
 			var currSelection = This.value;
-			var id = makeId(param.id);
+			var id = GeneralDialog.makeId(param.id);
 			var el = $(id);
-			el.value = currSelection; 
-			
+			el.value = currSelection;
+
 			if (param.callback)
-				param.callback(id, currSelection);
+				param.callback(id, currSelection, param.arg0);
 		};
 
-		var parent_id = 'modal_dlg_parent';
+		var initSelectCtrl = function(id, options, curr_sel, onchange_callback, arg0, container)
+		{
+			var selectValue = new Element('input', {id: GeneralDialog.makeId(id), name: id});
+			if (options && options.length > 0) {
+				var val = (curr_sel !== undefined  && curr_sel !== null) ? curr_sel : options[0].value;
+				selectValue.writeAttribute('value', val);
+			}
+			selectValue.addClassName('hidden');
+			container.appendChild(selectValue);
+			var oMenuButton5 = null;
+
+			//	"click" event handler for each item in the Button's menu
+			var onMenuItemClick = function (p_sType, p_aArgs, p_oItem) {
+				var sText = p_oItem.cfg.getProperty("text");
+				//YAHOO.log("[MenuItem Properties] text: " + sText + ", value: " + p_oItem.value);
+				oMenuButton5.set("label", sText);
+				selectValue.writeAttribute('value', p_oItem.value);
+				if (onchange_callback)
+					onchange_callback(id, p_oItem.value, arg0);
+			};
+
+			//	Create an array of YAHOO.widget.MenuItem configuration properties
+			var aMenuButton5Menu = [];
+			var label = "";
+			if (options) {
+				for (var i = 0; i < options.length; i++) {
+					aMenuButton5Menu.push({ text: options[i].text, value: options[i].value, onclick: { fn: onMenuItemClick }});
+					if (options[i].value === curr_sel)
+						label = options[i].text;
+				}
+			}
+
+			//	Instantiate a Menu Button using the array of YAHOO.widget.MenuItem
+			//	configuration properties as the value for the "menu"
+			//	configuration attribute.
+			oMenuButton5 = new YAHOO.widget.Button({ type: "menu", label: label, name: id, menu: aMenuButton5Menu, container: container, lazyloadmenu: false });
+			return oMenuButton5;
+		};
+
+		var parent_id = 'gd_modal_dlg_parent';
 		var parent = $(parent_id);
 		if (parent === null) {
 			var main = document.getElementsByTagName("body").item(0);
-			$(main).down('div').insert({before: new Element('div', {id: parent_id, style: 'text-align:left;'})});
+			$(main).down('div').insert({ before: new Element('div', { id: parent_id, style: 'text-align:left;' }) });
 		}
 
 		this.getOuterDomElement = function() {
@@ -121,8 +288,12 @@ var GeneralDialog = Class.create({
 		};
 
 		this.getAllData = function() {
-			var inputs = $$("#" + dlg_id + " input");
-			var data = {};
+			var inputs = $$("#" + this_id + " input");
+			var csrf_param = $$('meta[name=csrf-param]')[0].content;
+			var csrf_token = $$('meta[name=csrf-token]')[0].content;
+
+			var data = { };
+			data[csrf_param] = csrf_token;
 			inputs.each(function(el) {
 				if (el.type === 'checkbox') {
 					data[el.name] = el.checked;
@@ -140,10 +311,11 @@ var GeneralDialog = Class.create({
 			
 			customList.each(function(ctrl) {
 				var cl = ctrl.getSelection();
-				data[cl.field] = cl.value;
+				if (cl.field)
+					data[cl.field] = cl.value;
 			});
 	
-			var textareas = $$("#" + dlg_id + " textarea");
+			var textareas = $$("#" + this_id + " textarea");
 			textareas.each(function(el) {
 				var id = el.name;
 				var value = el.value;
@@ -152,13 +324,6 @@ var GeneralDialog = Class.create({
 			return data;
 		};
 		
-		this.submitForm = function(id, action) {
-			var form = $(id);
-			form.writeAttribute({action: action, method: 'post'});
-			form.appendChild(new Element('input', {id: 'authenticity_token', type: 'hidden', name: 'authenticity_token', value: form_authenticity_token}));
-			form.submit();
-		};
-
 		this.getTitle = function() {
 			return title;
 		};
@@ -184,11 +349,11 @@ var GeneralDialog = Class.create({
 					panel.show();	// This is because Safari closes the dialog when the user hits enter. We need to bring it back if the user's not finished with it.
 				flash.update(msg);
 				if (is_error) {
-					flash.addClassName('flash_notice_error');
-					flash.removeClassName('flash_notice_ok');
+					flash.addClassName('gd_flash_notice_error');
+					flash.removeClassName('gd_flash_notice_ok');
 				} else {
-					flash.addClassName('flash_notice_ok');
-					flash.removeClassName('flash_notice_error');
+					flash.addClassName('gd_flash_notice_ok');
+					flash.removeClassName('gd_flash_notice_error');
 				}
 			}
 		};
@@ -196,72 +361,111 @@ var GeneralDialog = Class.create({
 		if (title !== undefined)
 			panel.setHeader(title);
 
-		var klEsc = new YAHOO.util.KeyListener(document, {keys:27},
-			{fn:handleCancel,
+		var klEsc = new YAHOO.util.KeyListener(document, { keys:27 },
+			{ fn:handleCancel,
 				scope:panel,
-				correctScope:true}, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
+				correctScope:true }, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
+
+		var defaultFxn = function() {
+			if (defaultAction[currPage])
+				defaultAction[currPage](null, defaultParam[currPage]);
+		};
 
 		var klEnter = new YAHOO.util.KeyListener(document, {keys:13},
-			{fn:function() {
-					if (defaultAction[currPage])
-						defaultAction[currPage](null, defaultParam[currPage]);
-				},
+			{fn:defaultFxn,
 				scope:panel,
 				correctScope:true}, "keydown" );
+		window.escFxn = handleCancel;
+		window.enterFxn = defaultFxn;
+		window.dlgThis = panel;
 		panel.cfg.queueProperty("keylisteners", [klEsc, klEnter]);
 
 		// Create all the html for the dialog
 		var listenerArray = [];
 		var buttonArray = [];
-		var body = new Element('div', {id: this_id + '_' + body_style});
+		var body = new Element('div', { id: this_id + '_' + body_style });
 		body.addClassName(body_style);
-		var flash = new Element('div', {id: flash_id}).update(flash_notice);
-		flash.addClassName("flash_notice_ok");
+		var flash = new Element('div', { id: flash_id }).update(flash_notice);
+		flash.addClassName("gd_flash_notice_ok");
 		body.appendChild(flash);
 
-		var addButton = function(parent_el, text, klass, callback, page, url) {
-			var input = new Element('input', {id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: text});
+		var addButton = function(parent_el, text, klass, callback, page, url, typ) {
+			var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': typ, value: text });
 			parent_el.appendChild(input);
 			var buttonClass = klass;
-			buttonArray.push({id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: callback, param: {curr_page: page, destination: url, dlg: This}});
-		};
-
-		var addIconButton = function(parent_el, text, klass, callback, page, context) {
-			var button_id = this_id + '_a' + listenerArray.length;
-			var a = new Element('a', {id: button_id, title: text, onclick: 'return false;', href: '#'});
-			if (klass)
-				a.addClassName(klass);
-			parent_el.appendChild(a);
-			listenerArray.push({id: button_id, event: 'click', callback: callback, param: {curr_page: page.page, button_id: button_id, context: context, dlg: This}});
-			return button_id;
+			buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: callback, param: { curr_page: page, arg0: url, dlg: This } });
 		};
 
 		var addInput = function(parent_el, text, klass, value) {
-			var el1 = new Element('input', {id: makeId(text), 'type': 'text', name: text});
+			var el1 = new Element('input', { id: GeneralDialog.makeId(text), 'type': 'text', name: text });
 			if (klass)
 				el1.addClassName(klass);
 			if (value !== undefined)
-				el1.writeAttribute({value: value});
+				el1.writeAttribute({value: value });
 			parent_el.appendChild(el1);
 			return el1;
 		};
 
+		var initAutoComplete = function( params ) {
+           new Ajax.Autocompleter(params.input_id, params.results_id, params.url, {minChars:1});
+        };
+		
+		var addAutocomplete = function(parent_el, id, klass, url, token, value) {
+
+         var ac_id = GeneralDialog.makeId(id);
+         var ac_div_id = ac_id+"_wrapper";
+         var ac_div = new Element('div', { id: ac_div_id} );
+         if (klass !== undefined)
+             ac_div.addClassName(klass);
+            
+         // add the input box
+         var ac_input = new Element('input', { id: ac_id, 'type': 'text', name:  id});
+         if (value !== undefined)
+            ac_input.writeAttribute({value: value });
+         ac_div.appendChild(ac_input);
+         
+         // add the dropdown autocomplete matches list
+         var ac_dd_id = ac_id+"_dd";
+         var ac_dd_div = new Element('div', { id: ac_dd_id });
+         ac_dd_div.addClassName("gd_autocomplete");
+         ac_div.appendChild(ac_dd_div);
+         
+         // add the whole autocomplete div to the parent
+         parent_el.appendChild(ac_div);
+         
+         //add a new call to init the autocomplete ajax after the dialog is rendered
+         deferredCalls.push( new DeferredCall( {fn_call: initAutoComplete, call_params: {input_id: ac_id, results_id: ac_dd_id, url: url, token: token} }) );
+		};
+		
+		// Add a colorpicker button to the dialog
+		var addColorPick = function(parent_el, id, klass, callback, value) {
+		   // TODO
+      }
+   
 		var addHidden = function(parent_el, id, klass, value) {
-			var el0 = new Element('input', {id: makeId(id), name: id, 'type': 'hidden'});
+			var el0 = new Element('input', { id: GeneralDialog.makeId(id), name: id, 'type': 'hidden' });
 			if (klass)
 				el0.addClassName(klass);
 			if (value !== undefined && value !== null)
-				el0.writeAttribute({value: value});
+				el0.writeAttribute({value: value });
 			parent_el.appendChild(el0);
 		};
 
-		var addLink = function(parent_el, id, klass, text, callback, callback_params) {
-			var a = new Element('a', {id: id + '_a' + listenerArray.length, onclick: 'return false;', href: '#'}).update(text);
-			a.addClassName('nav_link');
+		var addLink = function(parent_el, klass, text, callback, callback_params, title) {
+			var p = { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' };
+			if (title)
+				p.title = title;
+			var a = new Element('a', p).update(text);
+			//a.addClassName('nav_link');
 			if (klass)
 				a.addClassName(klass);
 			parent_el.appendChild(a);
-			listenerArray.push({id: id + '_a' + listenerArray.length, event: 'click', callback: callback, param: callback_params});
+			listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: callback, param: callback_params });
+		};
+
+		var addIconButton = function(parent_el, text, klass, callback, page, context) {
+			var button_id = this_id + '_a' + listenerArray.length;
+			addLink(parent_el, klass, '', callback, { curr_page: page.page, button_id: button_id, context: context, dlg: This }, text);
 		};
 
 		var styleButtonPushed = function(ev, params) {
@@ -270,14 +474,14 @@ var GeneralDialog = Class.create({
 			 var style = context.style;
 			 var styleHash = {};
 			 var hidden = $(context.dest + '_' + context.value);
-			 if (el.hasClassName('pressed')) {
-				 el.removeClassName('pressed');
+			 if (el.hasClassName('gd_pressed')) {
+				 el.removeClassName('gd_pressed');
 				 styleHash[style] = '';
 				 $(context.dest).setStyle(styleHash);
 				 hidden.value = 0;
 			 }
 			 else {
-				 el.addClassName('pressed');
+				 el.addClassName('gd_pressed');
 				 styleHash[style] = context.value;
 				 $(context.dest).setStyle(styleHash);
 				 hidden.value = 1;
@@ -285,146 +489,136 @@ var GeneralDialog = Class.create({
 		};
 
 		var filterEvent = function(ev, params) {
-			var filterString = this.value.toLowerCase();
+			var filterString = this.value;	//TODO-PER: why was this lowercased? .toLowerCase();
 			if (ev.type === 'blur' && filterString === '') {
-				$(this).addClassName('inputHintStyle');
+				$(this).addClassName('gd_input_hint_style');
 				this.value = params.prompt;
 			} else if (ev.type === 'focus'  && filterString === params.prompt) {
 				this.value = '';
-				$(this).removeClassName('inputHintStyle');
+				$(this).removeClassName('gd_input_hint_style');
 			} else if (ev.type === 'keyup') {
 				params.callback(this.value);
 			}
 		};
 
 		pages.each(function(page) {
-			var form = new Element('form', {id: page.page});
+			var form = new Element('form', { id: page.page, name: page.page });
 			form.addClassName(page.page);	// IE doesn't seem to like the 'class' attribute in the Element, so we set the classes separately.
-			form.addClassName("switchable_element");
-			form.addClassName("hidden");
+			form.addClassName("gd_switchable_element");
+			if (pages.length > 1)
+				form.addClassName("hidden");
+			else
+				currPage = page.page;
 			body.appendChild(form);
 			page.rows.each(function (el){
 				var row = new Element('div');
-				row.addClassName(row_style);
+				if (row_style)
+					row.addClassName(row_style);
 				form.appendChild(row);
 				el.each(function (subel) {
-					// TEXT
+						// TEXT
 					if (subel.text !== undefined) {
 						var elText = new Element('span').update(subel.text);
 						if (subel.klass)
 							elText.addClassName(subel.klass);
 						if (subel.id !== undefined)
-							elText.writeAttribute({id: makeId(subel.id)});
+							elText.writeAttribute({ id: GeneralDialog.makeId(subel.id) });
 						row.appendChild(elText);
 						// PICTURE
 					} else if (subel.picture !== undefined) {
-						var elPic = new Element('img', {src: subel.picture, alt: subel.picture});
+						var picAlt = subel.alt ? subel.alt : subel.picture;
+						var elPic = new Element('img', {src: subel.picture, alt: picAlt});
 						if (subel.klass)
 							elPic.addClassName(subel.klass);
 						if (subel.id !== undefined)
-							elPic.writeAttribute({id: makeId(subel.id)});
+							elPic.writeAttribute({id: GeneralDialog.makeId(subel.id)});
 						row.appendChild(elPic);
 						// INPUT
 					} else if (subel.input !== undefined) {
 						addInput(row, subel.input, subel.klass, subel.value);
 						// INPUT FILTER
 					} else if (subel.inputFilter !== undefined) {
-						var klass3 = 'inputHintStyle';
+						var klass3 = 'gd_input_hint_style';
 						if (subel.klass !== undefined)
 							klass3 += " " + subel.klass;
 						var el3 = addInput(row, subel.inputFilter, klass3, subel.value);
 						el3.value = subel.prompt;
-						listenerArray.push({id: subel.inputFilter, event: 'keyup', callback: filterEvent, param: {prompt: subel.prompt, callback: subel.callback}});
-						listenerArray.push({id: subel.inputFilter, event: 'blur', callback: filterEvent, param: {prompt: subel.prompt, callback: subel.callback}});
-						listenerArray.push({id: subel.inputFilter, event: 'focus', callback: filterEvent, param: {prompt: subel.prompt, callback: subel.callback}});
+						listenerArray.push({ id: subel.inputFilter, event: 'keyup', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
+						listenerArray.push({ id: subel.inputFilter, event: 'blur', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
+						listenerArray.push({ id: subel.inputFilter, event: 'focus', callback: filterEvent, param: { prompt: subel.prompt, callback: subel.callback } });
 						// INPUT WITH STYLE
 					} else if (subel.inputWithStyle !== undefined) {
-						var el1 = addInput(row, subel.inputWithStyle, subel.klass, subel.value.text);
-						addIconButton(row, 'Bold', 'bold_button' + (subel.value.isBold ? " pressed" : ""), styleButtonPushed, page, {dest: subel.inputWithStyle, style: 'fontWeight', value: 'bold'});
-						addHidden(row, subel.inputWithStyle + '_bold', '', subel.value.isBold ? '1' : '0');
-						addIconButton(row, 'Italic', 'italic_button' + (subel.value.isItalic ? " pressed" : ""), styleButtonPushed, page, {dest: subel.inputWithStyle, style: 'fontStyle', value: 'italic'});
-						addHidden(row, subel.inputWithStyle + '_italic', '', subel.value.isItalic ? '1' : '0');
-						addIconButton(row, 'Underline', 'underline_button' + (subel.value.isUnderline ? " pressed" : ""), styleButtonPushed, page, {dest: subel.inputWithStyle, style: 'textDecoration', value: 'underline'});
-						addHidden(row, subel.inputWithStyle + '_underline', '', subel.value.isUnderline ? '1' : '0');
-						if (subel.value.isBold)
-							el1.setStyle({fontWeight: 'bold'});
-						if (subel.value.isItalic)
-							el1.setStyle({fontStyle: 'italic'});
-						if (subel.value.isUnderline)
-							el1.setStyle({textDecoration: 'underline'});
-//{ input: 'caption1', value: values.caption1, klass: 'header_input' },
-//						{ icon_button: 'Bold', klass: 'bold_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontWeight', value: 'bold' } }, { hidden: 'caption1_bold', value: values.caption1_bold },
-//						{ icon_button: 'Italic', klass: 'italic_button', callback: buttonPushed, context: { dest: 'caption1', style: 'fontStyle', value: 'italic' } }, { hidden: 'caption1_italic', value: values.caption1_italic },
-//						{ icon_button: 'Underline', klass: 'underline_button', callback: buttonPushed, context: { dest: 'caption1', style: 'textDecoration', value: 'underline' } }, { hidden: 'caption1_underline', value: values.caption1_underline },
-						// HIDDEN
+						var iwsValue = subel.value ? subel.value : { text: '', isBold: false, isItalic: false, isUnderline: false };
+						var el1 = addInput(row, subel.inputWithStyle, subel.klass, iwsValue.text);
+						addIconButton(row, 'Bold', 'gd_bold_button' + (iwsValue.isBold ? " gd_pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'fontWeight', value: 'bold' });
+						addHidden(row, subel.inputWithStyle + '_bold', '', iwsValue.isBold ? '1' : '0');
+						addIconButton(row, 'Italic', 'gd_italic_button' + (iwsValue.isItalic ? " gd_pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'fontStyle', value: 'italic' });
+						addHidden(row, subel.inputWithStyle + '_italic', '', iwsValue.isItalic ? '1' : '0');
+						addIconButton(row, 'Underline', 'gd_underline_button' + (iwsValue.isUnderline ? " gd_pressed" : ""), styleButtonPushed, page, { dest: subel.inputWithStyle, style: 'textDecoration', value: 'underline' });
+						addHidden(row, subel.inputWithStyle + '_underline', '', iwsValue.isUnderline ? '1' : '0');
+						if (iwsValue.isBold)
+							el1.setStyle({ fontWeight: 'bold' });
+						if (iwsValue.isItalic)
+							el1.setStyle({ fontStyle: 'italic' });
+						if (iwsValue.isUnderline)
+							el1.setStyle({ textDecoration: 'underline' });
+						// AUTOCOMPLETE
+					} else if ( subel.autocomplete !== undefined ) {
+					    addAutocomplete(row, subel.autocomplete, subel.klass, subel.url, subel.token, subel.value);
+					    // HIDDEN
 					} else if (subel.hidden !== undefined) {
 						addHidden(row, subel.hidden, subel.klass, subel.value);
-//						var el0 = new Element('input', { id: makeId(subel.hidden), name: subel.hidden, 'type': 'hidden' });
-//						if (subel.klass)
-//							el0.addClassName(subel.klass);
-//						if (subel.value !== undefined && subel.value !== null)
-//							el0.writeAttribute({value: subel.value });
-//						row.appendChild(el0);
 						// PASSWORD
 					} else if (subel.password !== undefined) {
-						var el2 = new Element('input', {id: makeId(subel.password), name: subel.password, 'type': 'password'});
+						var el2 = new Element('input', { id: GeneralDialog.makeId(subel.password), name: subel.password, 'type': 'password'});
 						if (subel.klass)
 							el2.addClassName(subel.klass);
 						if (subel.value !== undefined && subel.value !== null)
-							el2.writeAttribute({value: subel.value});
+							el2.writeAttribute({value: subel.value });
 						row.appendChild(el2);
+						// COLORPICK
+               } else if ( subel.colorpick !== undefined ) {
+                   addColorPick(row, subel.colorpick, subel.klass, subel.callback, subel.value);
 						// BUTTON
 					} else if (subel.button !== undefined) {
-//						var input = new Element('input', { id: this_id + '_btn' + buttonArray.length, 'type': 'button', value: subel.button });
-//						row.appendChild(input);
 						var buttonClass = subel.klass;
 						if (subel.isDefault) {
 							defaultAction[page.page] = subel.callback;
-							defaultParam[page.page] = {curr_page: page.page, destination: subel.url, dlg: This};
+							defaultParam[page.page] = { curr_page: page.page, arg0: subel.arg0, dlg: This };
 							buttonClass = (buttonClass === undefined) ? "default" : buttonClass + " default" ;
 						}
-						addButton(row, subel.button, buttonClass, subel.callback, page.page, subel.url);
-//						buttonArray.push({ id: this_id + '_btn' + buttonArray.length, event: 'click', klass: buttonClass, callback: subel.callback, param: { curr_page: page.page, destination: subel.url, dlg: This } });
+						addButton(row, subel.button, buttonClass, subel.callback, page.page, subel.arg0, subel.isSubmit === true ? 'submit' : 'button');
 						// ICON BUTTON
 					} else if (subel.icon_button !== undefined) {
 						addIconButton(row, subel.icon_button, subel.klass, subel.callback, page, subel.context);
-//						var button_id = this_id + '_a' + listenerArray.length;
-//						var a = new Element('a', { id: button_id, title: subel.icon_button, onclick: 'return false;', href: '#' });
-//						if (subel.klass)
-//							a.addClassName(subel.klass);
-//						row.appendChild(a);
-//						listenerArray.push({ id: button_id, event: 'click', callback: subel.callback, param: { curr_page: page.page, button_id: button_id, context: subel.context, dlg: This } });
-						// PAGE LINK
-					} else if (subel.page_link !== undefined) {
-						addLink(row, this_id, subel.klass, subel.page_link,  subel.callback, {curr_page: page.page, destination: subel.new_page, dlg: This});
-
-//						var a = new Element('a', { id: this_id + '_a' + listenerArray.length, onclick: 'return false;', href: '#' }).update(subel.page_link);
-//						a.addClassName('nav_link');
-//						if (subel.klass)
-//							a.addClassName(subel.klass);
-//						row.appendChild(a);
-//						listenerArray.push({ id: this_id + '_a' + listenerArray.length, event: 'click', callback: subel.callback, param: { curr_page: page.page, destination: subel.new_page, dlg: This } });
+						// LINK
+					} else if (subel.link !== undefined) {
+						addLink(row, subel.klass, subel.link,  subel.callback, { curr_page: page.page, arg0: subel.arg0, dlg: This }, subel.title);
 						// SELECT
 					} else if (subel.select !== undefined) {
-						var selectValue = new Element('input', {id: makeId(subel.select), name: subel.select});
-						if (subel.options && subel.options.length > 0) {
-							var val = (subel.value !== undefined  && subel.value !== null) ? subel.value : subel.options[0].value;
-							selectValue.writeAttribute('value', val);
-						}
-						selectValue.addClassName('hidden');
-						row.appendChild(selectValue);
-						var select = new Element('select', {id: this_id + '_sel' + listenerArray.length});
-						if (subel.klass)
-							select.addClassName(subel.klass);
-						row.appendChild(select);
-						listenerArray.push({id: this_id + '_sel' + listenerArray.length, event: 'change', callback: selectChange, param: {id: subel.select, callback: subel.change}});
-						if (subel.options) {
-							subel.options.each(function(opt) {
-								var opt2 = new Element('option', {value: opt.value}).update(opt.text);
-								if (subel.value === opt.value)
-									opt2.writeAttribute('selected', 'selected');
-								select.appendChild(opt2);
-							});
+						if (window.mockAjax)	// TODO-PER: Consolidate these two -- eventually style the select control instead of using the default.
+							initSelectCtrl(subel.select, subel.options, subel.value, subel.callback, subel.arg0, row);
+						else {
+							var selectValue = new Element('input', {id: GeneralDialog.makeId(subel.select), name: subel.select});
+							if (subel.options && subel.options.length > 0) {
+								var val = (subel.value !== undefined  && subel.value !== null) ? subel.value : subel.options[0].value;
+								selectValue.writeAttribute('value', val);
+							}
+							selectValue.addClassName('hidden');
+							row.appendChild(selectValue);
+							var select = new Element('select', {id: this_id + '_sel' + listenerArray.length});
+							if (subel.klass)
+								select.addClassName(subel.klass);
+							row.appendChild(select);
+							listenerArray.push({id: this_id + '_sel' + listenerArray.length, event: 'change', callback: selectChange, param: {id: subel.select, callback: subel.callback, arg0: subel.arg0}});
+							if (subel.options) {
+								subel.options.each(function(opt) {
+									var opt2 = new Element('option', {value: opt.value}).update(opt.text);
+									if (subel.value === opt.value)
+										opt2.writeAttribute('selected', 'selected');
+									select.appendChild(opt2);
+								});
+							}
 						}
 						// CUSTOM
 					} else if (subel.custom !== undefined) {
@@ -436,10 +630,10 @@ var GeneralDialog = Class.create({
 						row.appendChild(div);
 						// CHECKBOX
 					} else if (subel.checkbox !== undefined) {
-						var checkbox = new Element('input', {id: makeId(subel.checkbox), 'type': "checkbox", value: '1', name: subel.checkbox});
+						var checkbox = new Element('input', { id: GeneralDialog.makeId(subel.checkbox), 'type': "checkbox", value: '1', name: subel.checkbox });
 						if (subel.klass)
 							checkbox.addClassName(subel.klass);
-						if (subel.value === '1')
+						if (subel.value === '1' || subel.value === true)
 							checkbox.checked = true;
 						row.appendChild(checkbox);
 						// CHECKBOX LIST
@@ -467,10 +661,10 @@ var GeneralDialog = Class.create({
 									}
 									var cbCol = new Element('td', {style : 'padding: 0 0.5em 0 0.5em;'});
 									var cbId = subel.checkboxList+'['+checkbox_id+']';
-									var cbox = new Element('input', {id: makeId(cbId), 'type': "checkbox", value: '1', name: cbId});
+									var cbox = new Element('input', {id: GeneralDialog.makeId(cbId), 'type': "checkbox", value: '1', name: cbId});
 									if (subel.klass)
 										cbox.addClassName(subel.klass);
-									if (subel.selections.detect(fnDetect))
+									if (subel.selections && subel.selections.detect(fnDetect))
 										cbox.checked = true;
 									cbCol.appendChild(cbox);
 									var lbl = new Element('span').update(checkbox_text);
@@ -482,7 +676,7 @@ var GeneralDialog = Class.create({
 						}
 						// RADIO LIST
 					} else if (subel.radioList !== undefined) {
-						var radioList = subel.buttons;
+						var radioList = subel.options;
 						var radioId = subel.radioList;
 						var radioValue = subel.value;
 						var radioKlass = subel.klass;
@@ -493,22 +687,28 @@ var GeneralDialog = Class.create({
 						var radioBody = new Element('tbody');
 						radioTable.appendChild(radioBody);
 						radioList.each(function(radio) {
+							var rlText = radio;
+							var rlValue = radio;
+							if (typeof radio !== 'string') {
+								rlText = radio.text;
+								rlValue = radio.value;
+							}
 							var radioRow = new Element('tr');
 							radioBody.appendChild(radioRow);
 							var radioCol = new Element('td');
 							radioRow.appendChild(radioCol);
-							var elRadio = new Element('input', {id: makeId(radioId+'_'+radio.value), type: 'radio', value: radio.value, name: radioId});
-							if (radioValue === radio.value)
+							var elRadio = new Element('input', {id: GeneralDialog.makeId(radioId+'_'+rlValue), type: 'radio', value: rlValue, name: radioId});
+							if (radioValue === rlValue)
 								elRadio.writeAttribute('checked', 'true');
 							radioCol.appendChild(elRadio);
 							radioCol = new Element('td');
 							radioRow.appendChild(radioCol);
-							radioCol.appendChild(new Element('span').update(' ' + radio.text + '<br />'));
+							radioCol.appendChild(new Element('span').update(' ' + rlText + '<br />'));
 						});
 						// TEXTAREA
 					} else if (subel.textarea !== undefined) {
 						var wrapper = new Element('div');
-						var textarea = new Element('textarea', {id: makeId(subel.textarea), name: subel.textarea});
+						var textarea = new Element('textarea', { id: GeneralDialog.makeId(subel.textarea), name: subel.textarea });
 						if (subel.klass) {
 							textarea.addClassName(subel.klass);
 							wrapper.addClassName(subel.klass);
@@ -524,55 +724,48 @@ var GeneralDialog = Class.create({
 						// DATE
 					} else if (subel.date !== undefined) {
 						var start_date = (subel.value) ? subel.value.split(' ')[0].split('-') : ['', '', ''];
-						var year = new Element('select', {id: makeId(subel.date.gsub('*', '1i')), name: subel.date.gsub('*', '(1i)')});
+						var year = new Element('select', { id: GeneralDialog.makeId(subel.date.gsub('*', '1i')), name: subel.date.gsub('*', '(1i)') });
 						for (var y = 2005; y < 2015; y++) {
 							if (start_date[0] === '' + y)
-								year.appendChild(new Element('option', {value: "" + y, selected: 'selected'}).update("" + y));
+								year.appendChild(new Element('option', { value: "" + y, selected: 'selected' }).update("" + y));
 							else
-								year.appendChild(new Element('option', {value: "" + y}).update("" + y));
+								year.appendChild(new Element('option', { value: "" + y }).update("" + y));
 						}
-						var month = new Element('select', {id: makeId(subel.date.gsub('*', '2i')), name: subel.date.gsub('*', '(2i)')});
+						var month = new Element('select', { id: GeneralDialog.makeId(subel.date.gsub('*', '2i')), name: subel.date.gsub('*', '(2i)') });
 						var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 						var monthNums = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
 						for (var m = 0; m < months.length; m++) {
 							if (start_date[1] === monthNums[m])
-								month.appendChild(new Element('option', {value: m+1, selected: 'selected'}).update(months[m]));
+								month.appendChild(new Element('option', { value: m+1, selected: 'selected' }).update(months[m]));
 							else
-								month.appendChild(new Element('option', {value: m+1}).update(months[m]));
+								month.appendChild(new Element('option', { value: m+1 }).update(months[m]));
 						}
-						var day = new Element('select', {id: makeId(subel.date.gsub('*', '3i')), name: subel.date.gsub('*', '(3i)')});
+						var day = new Element('select', { id: GeneralDialog.makeId(subel.date.gsub('*', '3i')), name: subel.date.gsub('*', '(3i)') });
 						for (var d = 1; d <= 31; d++) {
 							if (start_date[2] === (d<10?'0':'') + d)
-								day.appendChild(new Element('option', {value: "" + d, selected: 'selected'}).update("" + d));
+								day.appendChild(new Element('option', { value: "" + d, selected: 'selected' }).update("" + d));
 							else
-								day.appendChild(new Element('option', {value: "" + d}).update("" + d));
+								day.appendChild(new Element('option', { value: "" + d }).update("" + d));
 						}
+						var dateClass = subel.klass ? subel.klass + ' ' : '';
+						year.addClassName(dateClass + 'gd_year');
+						month.addClassName(dateClass + 'gd_month');
+						day.addClassName(dateClass + 'gd_day');
 						row.appendChild(year);
 						row.appendChild(month);
 						row.appendChild(day);
 						// IMAGE
 					} else if (subel.image !== undefined) {
-						var image = new Element('div', {id: makeId(subel.image) + '_div'});
+						var image = new Element('div', { id: GeneralDialog.makeId(subel.image) + '_div' });
 						var src = (subel.value !== undefined  && subel.value !== null) ? subel.value : "";
 						if (src.length > 0) {
-							image.appendChild(new Element('img', {src: src, id: makeId(subel.image) + "_img", alt: ''}));
+							var imgAlt = subel.alt ? subel.alt : src;
+							image.appendChild(new Element('img', { src: src, id: GeneralDialog.makeId(subel.image) + "_img", alt: imgAlt }));
 						}
-//						if (subel.allowRemove === true) {
-//							var removeCallback = function() {
-//								// Need to delay hiding this because the Remove button itself will be hidden and that confuses the browser.
-//								var hide_image = function() {
-//									$('image_div').up().addClassName('hidden');
-//								};
-//								hide_image.delay(0.5);
-//								$('removeImage').value = true;
-//							};
-//							addButton(image, "Remove", "image_remove", removeCallback, "", "");
-//							addInput(image, 'removeImage', 'hidden', 'false');
-//						}
 						var createFileInput = function() {
-							var file_input = new Element('input', {id: makeId(subel.image), type: 'file', name: subel.image});
+							var file_input = new Element('input', { id: GeneralDialog.makeId(subel.image), type: 'file', name: subel.image });
 							if (subel.size)
-								file_input.writeAttribute({size: subel.size});
+								file_input.writeAttribute({ size: subel.size});
 							return file_input;
 						};
 						var file_input = createFileInput();
@@ -580,22 +773,44 @@ var GeneralDialog = Class.create({
 						if (subel.klass)
 							image.addClassName(subel.klass);
 						row.appendChild(image);
-						var inputEl = new Element('input', {id: 'authenticity_token', name: 'authenticity_token', type: 'hidden', value: form_authenticity_token});
-						row.appendChild(inputEl);
+						createAuthenticityInput(row);
 						if (subel.removeButton !== undefined) {
 							var remove = function() {
-								var el = $(makeId(subel.image));
+								var el = $(GeneralDialog.makeId(subel.image));
 								el.remove();
+								el = $(GeneralDialog.makeId(subel.image) + "_img");
+								if (el)
+									el.src = '';
 								var file_input = createFileInput();
 								image.appendChild(file_input);
 							};
-							addLink(row, this_id, subel.klass, subel.removeButton,  remove, { });
+							addLink(row, this_id, null, subel.removeButton,  remove, { });
 						}
 						
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.
-						form.writeAttribute({enctype: "multipart/form-data", target: "upload_target", method: 'post'});
-						body.appendChild(new Element('iframe', {id: "upload_target", name: "upload_target", src: "#", style: "width:0;height:0;border:0px solid #fff;"}));
+						form.writeAttribute({ enctype: "multipart/form-data", target: "gd_upload_target", method: 'post' });
+						$(parent_id).appendChild(new Element('iframe', { id: "gd_upload_target", name: "gd_upload_target", src: "", style: "display:none;width:0;height:0;border:0px solid #fff;" }));
+						// FILE INPUT
+					} else if (subel.file !== undefined) {
+						var file_input2 = new Element('input', { id: GeneralDialog.makeId(subel.file), type: 'file', name: subel.file });
+							if (subel.size)
+								file_input2.writeAttribute({ size: subel.size});
+						row.appendChild(file_input2);
+						if (subel.klass)
+							file_input2.addClassName(subel.klass);
+						row.appendChild(file_input2);
+						createAuthenticityInput(row);
+
+						// We have to go through a bunch of hoops to get the file uploaded, since
+						// you can't upload a file through Ajax.
+						if (subel.no_iframe)
+							form.writeAttribute({ enctype: "multipart/form-data", method: 'post' });
+						else {
+							form.writeAttribute({ enctype: "multipart/form-data", target: "gd_upload_target", method: 'post' });
+							$(parent_id).appendChild(new Element('iframe', { id: "gd_upload_target", name: "gd_upload_target", src: "#", style: "display:none;width:0;height:0;border:0px solid #fff;" }));
+						}
+						// ROW CLASS
 					} else if (subel.rowClass !== undefined) {
 						row.addClassName(subel.rowClass);
 					}
@@ -610,7 +825,7 @@ var GeneralDialog = Class.create({
 		panel.render(parent_id);
 		
 		panel.cancelEvent.subscribe(function(e, a, o){
-			setTimeout(function() {panel.destroy();}, 500);
+			setTimeout(function() { panel.destroy(); }, 500);
 		});
 		
 		listenerArray.each(function (listen) {
@@ -622,24 +837,34 @@ var GeneralDialog = Class.create({
 				var cb = btn.callback.bind($(id));
 				cb(event, btn.param);
 			};
-			
-			new YAHOO.widget.Button(btn.id, {onclick: {fn: fn, obj: btn.id, scope: this}});
+
+			var typ = $(btn.id).type;
+			new YAHOO.widget.Button(btn.id, { onclick: { fn: fn, obj: btn.id, scope: this }});
 			if (btn.klass)
-				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass);}); 
+				YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id).addClassName(btn.klass); });
+			YAHOO.util.Event.onContentReady(btn.id, function() {$(btn.id+'-button').type = typ; });
 		});
 
 		customList.each(function(ctrl) {
 			if (ctrl.delayedSetup)
 				ctrl.delayedSetup();
 		});
+		
+		// execute all deferred calls now
+		deferredCalls.each( function(fn_call) {
+		    fn_call.execute();
+		});
+
+		if (initial_focus && $(initial_focus))
+			$(initial_focus).focus();
 
 		// These are all the elements that can be turned on and off in the dialog.
-		// All elements have switchable_element, and they each then have another class
+		// All elements have gd_switchable_element, and they each then have another class
 		// that matches the value of the view parameter. Then this loop either hides or shows
 		// each element.
 		this.changePage = function(view, focus_el) {
 			currPage = view;
-			var els = $(this_id).select('.switchable_element');
+			var els = $(this_id).select('.gd_switchable_element');
 			els.each(function (el) {
 				if (el.hasClassName(view))
 					el.removeClassName('hidden');
@@ -668,7 +893,7 @@ var GeneralDialog = Class.create({
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
 			var el = dlg.up();
-			el.setStyle({left: x + 'px', top: y + 'px'});
+			el.setStyle({ left: x + 'px', top: y + 'px'});
 		};
 		
 		this.initTextAreas =  function(params) {
@@ -685,7 +910,7 @@ var GeneralDialog = Class.create({
 			var padR = parseInt(inner_el.getStyle('padding-right'));
 			var width = w - padL - padR;
 			
-			var textAreas = $$("#" + dlg_id + " textarea");
+			var textAreas = $$("#" + this_id + " textarea");
 			textAreas.each( function(textArea) {
 				if (onlyClass === undefined || textArea.hasClassName(onlyClass)) {
 					var editor = new RichTextEditor({id: textArea.id, toolbarGroups: toolbarGroups, linkDlgHandler: linkDlgHandler, width: width, footnote: footnote, populate_exhibit_only: linkDlgHandler.getPopulateUrls()[0], populate_all: linkDlgHandler.getPopulateUrls()[1],  bodyStyle: bodyStyle});
@@ -702,8 +927,9 @@ GeneralDialog.cancelCallback = function(event, params) {
 	params.dlg.cancel();
 };
 
-GeneralDialog.openInNewWindow = function(event, params) {
-	window.open(params.destination, '_blank');
+GeneralDialog.makeId = function(str) {
+	// This checks to see if the id is of the form xxx[yyy]. If so, it replaces the first [ with _ and the second with nothing.
+	return str.gsub(/\[/, '_').gsub(']', '');
 };
 
 /////////////////////////////////////////////////////
@@ -723,42 +949,14 @@ var MessageBoxDlg = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ {text: message, klass: 'message_box_label'} ],
-					[ {rowClass: 'last_row'}, {button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true} ]
+					[ { text: message, klass: 'gd_message_box_label' } ],
+					[ { rowClass: 'gd_last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};
 		
-		var params = {this_id: "message_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
+		var params = { this_id: "gd_message_box_dlg", pages: [ dlgLayout ], body_style: "gd_message_box_dlg", row_style: "gd_message_box_row", title: title };
 		var dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
-		dlg.center();
-
-		this.cancel = function() {dlg.cancel();};
-	}
-});
-
-function genericAjaxFail(dlg, resp) {
-	if (dlg)
-		dlg.setFlash(resp.responseText, true);
-	else
-		new MessageBoxDlg("Ajax Error", resp.responseText);
-}
-
-var ProgressSpinnerDlg = Class.create({
-	initialize: function (message) {
-		// This puts up a large spinner that can only be canceled through the ajax return status
-
-		var dlgLayout = {
-				page: 'layout',
-				rows: [
-					[ {text: ' ', klass: 'transparent_progress_spinner'} ],
-					[ {rowClass: 'progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ]
-				]
-			};
-
-		var params = {this_id: "progress_spinner_dlg", pages: [ dlgLayout ], body_style: "progress_spinner_div", row_style: "progress_spinner_row"};
-		var dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 
 		this.cancel = function() {dlg.cancel();};
@@ -796,14 +994,14 @@ var ShowDivInLightbox = Class.create({
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ {custom: new Div(), klass: params.klass} ],
-					[ {rowClass: 'last_row'}, {button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true} ]
+					[ { custom: new Div(), klass: params.klass } ],
+					[ { rowClass: 'gd_last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};
 
-		var dlgParams = {this_id: "lightbox_dlg", pages: [ dlgLayout ], body_style: "lightbox_dlg", row_style: "lightbox_row", title: params.title};
+		var dlgParams = { this_id: "gd_lightbox_dlg", pages: [ dlgLayout ], body_style: "gd_lightbox_dlg", row_style: "gd_lightbox_row", title: params.title };
 		var dlg = new GeneralDialog(dlgParams);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 		this.dlg = dlg;
 	}
@@ -811,28 +1009,34 @@ var ShowDivInLightbox = Class.create({
 
 function showPartialInLightBox(ajax_url, title, progress_img)
 {
-	var divName = "lightbox";
-	var div = new Element('div', { id: 'lightbox_contents' });
-	div.setStyle({display: 'none' });
-	var form = div.wrap('form', { id: divName + "_id"});
-	var progress = new Element('center', { id: 'lightbox_img_spinner'});
-	progress.addClassName('lightbox_img_spinner');
+	var div = new Element('div', { id: 'gd_lightbox_contents' });
+	//div.setStyle({display: 'none' });
+	var form = div.wrap('div', { id: "gd_lightbox_id"});
+	var progress = new Element('center', { id: 'gd_lightbox_img_spinner'});
+	progress.addClassName('gd_lightbox_img_spinner');
 	progress.appendChild(new Element('div').update("Loading..."));
 	progress.appendChild(new Element('img', { src: progress_img, alt: ''}));
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
 	var lightbox = new ShowDivInLightbox({ title: title, div: form });
-	new Ajax.Updater('lightbox_contents', ajax_url, {
-		evalScripts : true,
-		onComplete : function(resp) {
-			var img_spinner = $('lightbox_img_spinner');
+	var onComplete = function(resp) {
+			var img_spinner = $('gd_lightbox_img_spinner');
 			if (img_spinner)
 				img_spinner.remove();
-			$('lightbox_contents').show();
+			$('gd_lightbox_contents').show();
 			lightbox.dlg.center();
-		},
-		onFailure : function(resp) { genericAjaxFail(lightbox.dlg, resp); }
-	});
+	};
+	var onFailure = function(resp) {
+			var img_spinner = $('gd_lightbox_img_spinner');
+			if (img_spinner)
+				img_spinner.remove();
+			$('gd_lightbox_contents').update(formatFailureMsg(resp, ajax_url));
+			$('gd_lightbox_contents').setStyle({ width: '450px', color: 'red' });
+			$('gd_lightbox_contents').show();
+			lightbox.dlg.center();
+	};
+	serverAction({ action: { actions: ajax_url, els: 'gd_lightbox_contents', params: {}, onSuccess: onComplete, onFailure: onFailure } });
+	//ajaxCall({action: ajax_url, params: {}, el: 'gd_lightbox_contents', onSuccess: onComplete, onFailure: onFailure });
 }
 
 function showInLightbox(params)
@@ -846,13 +1050,13 @@ function showInLightbox(params)
 
 	var lightbox = null;
 	var loaded = function() {
-		var img_spinner = $('lightbox_img_spinner');
+		var img_spinner = $('gd_lightbox_img_spinner');
 		if (img_spinner)
 			img_spinner.remove();
-		var image = $('lightbox_img');
+		var image = $('gd_lightbox_img');
 		image.show();
 		if (size && (image.width > size || image.height > size)) {
-			var resizeDiv = $('lightbox_dlg');
+			var resizeDiv = $('gd_lightbox_dlg');
 			var marginX = parseInt(resizeDiv.getStyle('width')) - image.width;
 			var marginY = parseInt(resizeDiv.getStyle('height')) - image.height;
 			var constrainX = (image.width > image.height);	// Constrain by the larger size
@@ -870,244 +1074,63 @@ function showInLightbox(params)
 			};
 			var resize = null;
 			if (constrainX)
-				resize = new YAHOO.util.Resize('lightbox_dlg', { maxWidth: origWidth+marginX, minWidth: 140, ratio: true, handles: [ 'br' ] });
+				resize = new YAHOO.util.Resize('gd_lightbox_dlg', { maxWidth: origWidth+marginX, minWidth: 140, ratio: true, handles: [ 'br' ] });
 			else
-				resize = new YAHOO.util.Resize('lightbox_dlg', { maxHeight: origHeight+marginY+16, minHeight: 140, ratio: true, handles: [ 'br' ] });	// add a little extra for the grabber bar height.
+				resize = new YAHOO.util.Resize('gd_lightbox_dlg', { maxHeight: origHeight+marginY+16, minHeight: 140, ratio: true, handles: [ 'br' ] });	// add a little extra for the grabber bar height.
 			resize.on('resize', onResize);
-			$('lightbox_dlg_h').setStyle({ whiteSpace: 'nowrap', overflow: 'hidden' });
+			$('gd_lightbox_dlg_h').setStyle({ whiteSpace: 'nowrap', overflow: 'hidden' });
 		}
 		lightbox.dlg.center();
 	};
 
 	var divName = "lightbox";
-	var img = new Element('img', { id: 'lightbox_img', src: imageUrl, alt: ""});
+	var img = new Element('img', { id: 'gd_lightbox_img', alt: ""});
 	img.setStyle({display: 'none' });
 	var form = img.wrap('div', { id: divName + "_id"});
 
-	var progress = new Element('center', { id: 'lightbox_img_spinner'});
-	progress.addClassName('lightbox_img_spinner');
+	var progress = new Element('center', { id: 'gd_lightbox_img_spinner'});
+	progress.addClassName('gd_lightbox_img_spinner');
 	progress.appendChild(new Element('div').update("Image Loading..."));
 	progress.appendChild(new Element('img', { src: progress_img, alt: ''}));
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
 	lightbox = new ShowDivInLightbox({ title: title, div: form });
 	img.observe('load', loaded);
+	img.setAttribute('src', imageUrl);
 }
 
-var ConfirmDlg = Class.create({
-	initialize: function (title, message, okStr, cancelStr, action) {
+var ConfirmDlg3 = Class.create({
+	initialize: function (title, message, yesStr, noStr, cancelStr, yesAction, noAction) {
 		// This puts up a modal dialog that replaces the confirm() call.
-		this.class_type = 'ConfirmDlg';	// for debugging
 
-		// private variables
-		//var This = this;
-		
-		// privileged functions
-		this.ok = function(event, params)
+		this.yes = function(event, params)
 		{
 			params.dlg.cancel();
-			action();
+			yesAction();
 		};
-		
+
+		this.no = function(event, params)
+		{
+			params.dlg.cancel();
+			noAction();
+		};
+
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ {text: message, klass: 'message_box_label'} ],
-					[ {rowClass: 'last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: cancelStr, callback: GeneralDialog.cancelCallback} ]
+					[ {rowClass: 'gd_confirm_msg_row'}, {text: message, klass: 'gd_confirm_label'} ],
+					[ {rowClass: 'gd_last_row'}, {button: yesStr, callback: this.yes, isDefault: true}, {button: noStr, callback: this.no}, {button: cancelStr, callback: GeneralDialog.cancelCallback} ]
 				]
 			};
-		
-		var params = {this_id: "confirm_box_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
+
+		var params = {this_id: "gd_confirm_dlg", pages: [ dlgLayout ], body_style: "gd_confirm_dlg", row_style: "gd_confirm_row", title: title};
 		var dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 	}
 });
 
-// el: the element to update
-// action: the url to call
-// params: the params for the url
-// onSuccess: what to call after the operation successfully finishes
-// onFailure: what to call if the operation fails.
-function updateWithAjax(params)
-{
-	if (params.el === null)	// we want to redraw the entire screen
-	{
-		// Instead of replacing an element, we want to redraw the entire page. There seems to be some conflict
-		// if the form is resubmitted, so duplicate the form.
-		var new_form = new Element('form', {id: "temp_form", method: 'post', onsubmit: "this.submit();", action: params.action});
-		new_form.observe('submit', "this.submit();");
-		document.body.appendChild(new_form);
-		$H(params.params).each(function (p) {
-			// Usually we are passed a hash of strings, but sometimes we get a value that is a hash itself. That should set up an input
-			// for each value, and name it p.key[p.value.key]
-			if (typeof p.value === 'string')
-				new_form.appendChild(new Element('input', {type: 'hidden', name: p.key, value: p.value, id: p.key}));
-			else if (typeof p.value === 'number') {
-				new_form.appendChild(new Element('input', {type: 'hidden', name: p.key, value: "" + p.value, id: p.key}));
-			} else {
-				$H(p.value).each(function (pp) {
-					new_form.appendChild(new Element('input', {type: 'hidden', name: p.key + '[' + pp.key + ']', value: pp.value, id: pp.key}));
-				});
-			}
-		});
-
-		//$(this.targetElement).appendChild(new Element('img', { src: "/images/ajax_loader.gif", alt: ''}));
-		new_form.submit();
-
-		return;
-	}
-
-	new Ajax.Updater({success: params.el, failure:'bit_bucket'}, params.action, {
-		parameters : params.params,
-		evalScripts : true,
-		onSuccess : function(resp) {
-			if(params.onSuccess)
-				params.onSuccess(resp);
-		},
-		onFailure : function(resp) {
-			if (params.onFailure)
-				params.onFailure(resp);
-			else
-				genericAjaxFail(null, resp);
-		}
-	});
-}
-
-// Parameters:
-//	actions: An array of the URLs that will AJAXed, or a string containing a URL to be AJAXed, or a comma separated string of the URLs to be AJAXed.
-//	els: An array of divs to update
-//	onSuccess: A function to call if the ajax succeeds (optional)
-//	onFailure: A function to call if the ajax fails (optional)
-//	params: The hash that is sent back with the ajax call
-//
-function recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params)
-{
-	if (typeof actions === 'string') {
-		actions = actions.split(',');
-	}
-	if (typeof els === 'string') {
-		els = els.split(',');
-	}
-
-	if (actions.length === 0) {
-		if (onSuccess)
-			onSuccess(params);
-		return;
-	}
-
-	var action = actions.shift();
-	var el = els.shift();
-	var ajaxparams = {action: action, el: el, onSuccess: function(resp) {recurseUpdateWithAjax(actions, els, onSuccess, onFailure, params);}, onFailure: onFailure, params: params};
-	updateWithAjax(ajaxparams);
-}
-
-var ajaxWithProgressDlg = function(actions, els, params, ajaxParams)
-{
-	var title = params.title;
-	var waitMessage = params.waitMessage;
-	var completeMessage = params.completeMessage;
-	var dlg = null;
-
-	var onSuccess = function(resp) {
-		if (completeMessage === undefined)
-			dlg.cancel();
-		else {
-			var el = $$(".message_box_label");
-			if (el.length > 0)
-				el[0].update(completeMessage);
-		}
-	};
-	dlg = new MessageBoxDlg(title, waitMessage);
-	recurseUpdateWithAjax(actions, els, onSuccess, null, ajaxParams);
-};
-
-var ajaxWithProgressSpinner = function(actions, els, params, ajaxParams)
-{
-	var waitMessage = params.waitMessage;
-	var completeMessage = params.completeMessage;
-	var dlg = null;
-
-	var onSuccess = function(resp) {
-		if (completeMessage === undefined)
-			dlg.cancel();
-		else {
-			var el = $$(".message_box_label");
-			if (el.length > 0)
-				el[0].update(completeMessage);
-		}
-	};
-	dlg = new ProgressSpinnerDlg(waitMessage);
-	recurseUpdateWithAjax(actions, els, onSuccess, null, ajaxParams);
-};
-
-var ConfirmAjaxDlg = Class.create({
-	initialize: function (title, message, params) {
-		// This puts up a confirmation dialog before doing an ajax update.
-		this.class_type = 'ConfirmAjaxDlg';	// for debugging
-
-		// private variables
-		//var This = this;
-		
-		var ok = function()
-		{
-			if (params.action !== undefined)
-				updateWithAjax(params);
-			else
-				recurseUpdateWithAjax(params.actions, params.els, null, null, params.params);
-		};
-		
-		new ConfirmDlg(title, message, "Yes", "No", ok);
-	}
-});
-
-var postLink = function(link) {
-	var f = document.createElement('form');
-	f.style.display = 'none';
-	document.body.appendChild(f);
-	f.method = 'POST';
-	f.action = link;
-	var m = document.createElement('input');
-	m.setAttribute('type', 'hidden');
-	m.setAttribute('name', '_method');
-	m.setAttribute('value', 'post');
-	f.appendChild(m);
-	f.submit();
-};
-
-var ConfirmLinkDlg =  Class.create({
-	initialize: function (el, title, message) {
-		// This puts up a confirmation dialog before following a link. It is intended to be used as the onclick handler in a <a> tag.
-		// Put the link you want to follow in the href property of the a-tag.
-		this.class_type = 'ConfirmLinkDlg';	// for debugging
-
-		// private variables
-		//var This = this;
-		var link = (typeof el  === 'string') ? el : el.href;
-
-		var ok = function(event, params)
-		{
-			new ProgressSpinnerDlg(title);
-			postLink(link);
-//			//window.location = link;
-//			// Post the link by creating a fake form.
-//			var f = document.createElement('form');
-//			f.style.display = 'none';
-//			$(el).parentNode.appendChild(f);
-//			f.method = 'POST';
-//			f.action = link;
-//			var m = document.createElement('input');
-//			m.setAttribute('type', 'hidden');
-//			m.setAttribute('name', '_method');
-//			m.setAttribute('value', 'post');
-//			f.appendChild(m);
-//			f.submit();
-		};
-		
-		new ConfirmDlg(title, message, "Yes", "No", ok);
-	}
-});
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Parameters:
 //	title: The title of the dialog.
 //	prompt: Text that appears just above or to the left of the input control.
@@ -1122,7 +1145,7 @@ var ConfirmLinkDlg =  Class.create({
 //	pleaseWaitMsg: This is the flash message that appears when the Ajax call is in progress. (default: "Please wait...")
 //	verify: This is a URL to call to verify the user's parameters. If the response comes back with a status of 200, then the actions are performed, otherwise the text that is returned is displayed as a flash message. (optional)
 //	verifyFxn: A function that is called when the user hits ok and before any Ajax call is made. The data that will be Ajaxed is passed as a hash. It returns null if the parameters are ok, or a string that should be displayed if there is a problem (optional)
-//	body_style: The css style of the dialog. (default: message_box_dlg)
+//	body_style: The css style of the dialog. (default: gd_message_box_dlg)
 //	populate: This is a function that is called after the dlg appears. The dlg object is passed to it. (optional)
 //
 var singleInputDlg = function(params, input) {
@@ -1140,8 +1163,9 @@ var singleInputDlg = function(params, input) {
 	var dlg = null;
 	var verifyUrl = params.verify;
 	var verifyFxn = params.verifyFxn;
-	var body_style = params.body_style === undefined ? "message_box_dlg": params.body_style;
+	var body_style = params.body_style === undefined ? "gd_message_box_dlg": params.body_style;
 	var populate = params.populate;
+	var explanation_klass = params.explanation_klass;
 
 	// This puts up a modal dialog that asks for a single line of input, then Ajax's that to the server.
 	this.class_type = 'singleInputDlg';	// for debugging
@@ -1155,10 +1179,14 @@ var singleInputDlg = function(params, input) {
 	};
 
 	var onVerified = function(params) {
-		recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
-	};
-	var onNotVerified = function(resp) {
-		genericAjaxFail(dlg, resp);
+		var vact = actions;
+		if (!Object.isArray(vact))
+			vact = [ vact ];
+		var vels = target_els;
+		if (!Object.isArray(vels))
+			vels = [ vels ];
+
+		serverAction({action:{actions: vact.clone(), els: vels.clone(), onSuccess: addCancelToSuccess, dlg: dlg, onFailure: onFailure, params: extraParams}});
 	};
 	// privileged functions
 	this.ok = function(event, params2)
@@ -1175,53 +1203,69 @@ var singleInputDlg = function(params, input) {
 			}
 		}
 		if (verifyUrl)
-			recurseUpdateWithAjax([ verifyUrl ], [ 'bit_bucket' ], onVerified, onNotVerified, extraParams);
+			serverAction({action:{actions: verifyUrl, els: 'gd_bit_bucket', onSuccess: onVerified, dlg: dlg, params: extraParams}});
 		else {
-			if (typeof actions === 'string')
+			if (!Object.isArray(actions))
 				actions = [ actions ];
 			if (typeof target_els === 'string')
 				target_els = [ target_els ];
 			else if (target_els === null || target_els === undefined)
 				target_els = [ null ];
-			recurseUpdateWithAjax(actions.clone(), target_els.clone(), addCancelToSuccess, onFailure, extraParams);
+			serverAction({action:{actions: actions.clone(), els: target_els.clone(), onSuccess: addCancelToSuccess, dlg: dlg, onFailure: onFailure, params: extraParams}});
 		}
 	};
 
 	var dlgLayout = {
 			page: 'layout',
 			rows: [
-				[ {text: prompt, klass: 'text_input_dlg_label'}, input ]
+				[ { text: prompt, klass: 'gd_text_input_dlg_label' }, input ]
 			]
 		};
 
 	if (params.explanation_text)
-		dlgLayout.rows.push([ {text: params.explanation_text, id: "postExplanation"}]);
+	   dlgLayout.rows.push([ {text: params.explanation_text, id: "gd_postExplanation", klass: explanation_klass}]);
 	if (!params.noOk) {
-		dlgLayout.rows.push([{rowClass: 'last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]);
+		dlgLayout.rows.push([{rowClass: 'gd_last_row'}, {button: okStr, callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]);
 		if (noDefault)
 			dlgLayout.rows[1][1].isDefault = null;
+	} else {
+		dlgLayout.rows.push([{rowClass: 'gd_last_row'}, {button: 'Cancel', callback: GeneralDialog.cancelCallback, isDefault: true} ]);
+		if (noDefault)
+			dlgLayout.rows[1][0].isDefault = null;
 	}
 	
-	var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: body_style, row_style: "message_box_row", title: title};
+	var dlgparams = {this_id: "gd_text_input_dlg", pages: [ dlgLayout ], body_style: body_style, row_style: "gd_message_box_row", title: title, focus: GeneralDialog.makeId(id)};
 	dlg = new GeneralDialog(dlgparams);
-	dlg.changePage('layout', dlg.makeId(id));
+	//dlg.changePage('layout', dlg.makeId(id));
 	dlg.center();
 	if (populate)
 		populate(dlg);
 };
 
 // Parameters:
+// id: The name that is passed to the server with the data.
 // value: The initial value when the dlg first appears (optional)
 // inputKlass: The class for the input element
+// autocompleteParams (opt): autocomplete params - url: callback url, token (opt): char used to tokenize input
 // + plus all the parameters for singleInputDlg.
 //
 var TextInputDlg = Class.create({
 	initialize: function (params) {
 		var id = params.id;
 		var value = params.value;
-		var klass = params.inputKlass === undefined ? 'text_input_dlg_input' : params.inputKlass;
-		var input = {input: id, klass: klass, value: value};
-		singleInputDlg(params, input);
+		var klass = params.inputKlass === undefined ? 'gd_text_input_dlg_input' : params.inputKlass;
+		var autocompleteParams = params.autocompleteParams;
+		
+		if ( autocompleteParams )
+		{
+      var ac_input = {autocomplete: id, klass: klass, url: autocompleteParams.url, token: autocompleteParams.token};
+      singleInputDlg(params, ac_input);   
+		}
+		else
+		{
+		  var input = {input: id, klass: klass, value: value};
+      singleInputDlg(params, input);  
+		}
 	}
 });
 
@@ -1239,33 +1283,33 @@ var SelectInputDlg = Class.create({
 		var explanation = params.explanation;
 		var value = params.value;
 		var populateUrl = params.populateUrl;
-		var input = {select: id, klass: 'select_dlg_input', options: options, value: value};
+		var input = {select: id, klass: 'gd_select_dlg_input', options: options, value: value};
 
 		var populate = function(dlg)
 		{
-			new Ajax.Request(populateUrl, { method: 'get', parameters: { },
-				onSuccess : function(resp) {
-					var vals = [];
-					dlg.setFlash('', false);
-					try {
-						if (resp.responseText.length > 0)
-							vals = resp.responseText.evalJSON(true);
-					} catch (e) {
-						new MessageBoxDlg("Error", e);
-					}
-					// We got all the users. Now put it on the dialog
-					var sel_arr = $$('.select_dlg_input');
-					var select = sel_arr[0];
-					select.update('');
-					vals = vals.sortBy(function(user) { return user.text; });
-					vals.each(function(user) {
-						select.appendChild(new Element('option', { value: user.value }).update(user.text));
-					});
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
+			var onSuccess = function(resp) {
+				var vals = [];
+				dlg.setFlash('', false);
+				try {
+					if (resp.responseText.length > 0)
+						vals = resp.responseText.evalJSON(true);
+				} catch (e) {
+					dlg.setFlash(e, true);
+					return;
 				}
-			});
+				// We got all options. Now put them on the dialog
+				var sel_arr = $$('.gd_select_dlg_input');
+				var select = sel_arr[0];
+				select.update('');
+				vals = vals.sortBy(function(user) { return user.text; });
+				vals.each(function(user) {
+					select.appendChild(new Element('option', { value: user.value }).update(user.text));
+				});
+			};
+			var onFailure = function(resp) {
+				genericAjaxFail(dlg, resp, populateUrl);
+			};
+			serverAction({ action: { actions: populateUrl, els: 'gd_bit_bucket', onSuccess: onSuccess, onFailure: onFailure, params: params.extraParams } });
 		};
 
 		if (explanation) {
@@ -1278,10 +1322,10 @@ var SelectInputDlg = Class.create({
 			};
 
 			var select_changed = function(field, new_value) {
-				$('postExplanation').update(valToExpl(new_value));
+				$('gd_postExplanation').update(valToExpl(new_value));
 			};
 
-			input.change = select_changed;
+			input.callback = select_changed;
 			params.explanation_text = valToExpl(value);
 		}
 		if (populateUrl)
@@ -1290,16 +1334,17 @@ var SelectInputDlg = Class.create({
 	}
 });
 
-var TextAreaInputDlg = Class.create({
-	initialize: function (params) {
-		var id = params.id;
-		var options = params.options;
-		var value = params.value;
-		var input = {textarea: id, klass: 'text_area_dlg_input', options: options, value: value};
-		params.noDefault = true;
-		singleInputDlg(params, input);
-	}
-});
+// TODO-PER: This isn't used anywhere
+//var TextAreaInputDlg = Class.create({
+//	initialize: function (params) {
+//		var id = params.id;
+//		var options = params.options;
+//		var value = params.value;
+//		var input = {textarea: id, klass: 'text_area_dlg_input', options: options, value: value};
+//		params.noDefault = true;
+//		singleInputDlg(params, input);
+//	}
+//});
 
 // Parameters:
 // title: The title of the dialog.
@@ -1331,28 +1376,46 @@ var RteInputDlg = Class.create({
 			params.dlg.cancel();
 
 			var data = params.dlg.getAllData();
-			okCallback(data.textareaValue);
+			okCallback(data.gd_textareaValue);
 		};
 
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ {textarea: 'textareaValue', value: value} ],
-					[ {rowClass: 'last_row'}, {button: 'Ok', callback: this.ok, isDefault: true}, {button: 'Cancel', callback: GeneralDialog.cancelCallback} ]
+					[ { textarea: 'gd_textareaValue', value: value } ],
+					[ { rowClass: 'gd_last_row' }, { button: 'Ok', callback: this.ok }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		if (extraButton !== undefined)
-			dlgLayout.rows[1].push({button: extraButton.label, callback: extraButton.callback});
+			dlgLayout.rows[1].push({ button: extraButton.label, callback: extraButton.callback });
 
-		var dlgparams = {this_id: "text_input_dlg", pages: [ dlgLayout ], body_style: "message_box_dlg", row_style: "message_box_row", title: title};
+		var dlgparams = { this_id: "gd_text_input_dlg", pages: [ dlgLayout ], body_style: "gd_message_box_dlg", row_style: "gd_message_box_row", title: title };
 		var dlg = new GeneralDialog(dlgparams);
-		dlg.changePage('layout', null);
-		dlg.initTextAreas({toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_urls, progress_img)});
+		//dlg.changePage('layout', null);
+		dlg.initTextAreas({ toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler(populate_urls, progress_img) });
 		dlg.center();
 
-		var input = $('textareaValue');
+		var input = $('gd_textareaValue');
 		input.select();
 		input.focus();
 	}
 });
+
+function dlgAjax(dlg, actions, els, params) {
+	var onSuccess = function(resp) {
+		dlg.cancel();
+	};
+	var onFailure = function(resp) {
+		dlg.setFlash(resp.responseText, true);
+	};
+	serverAction({ action: { actions: actions, els: els, params: params, onSuccess: onSuccess, onFailure: onFailure }});
+}
+
+function genericAjaxFail(dlg, resp, action) {
+	var text = formatFailureMsg(resp, action);
+	if (dlg)
+		dlg.setFlash(text, true);
+	else
+		new MessageBoxDlg("Communication Error", text);
+}

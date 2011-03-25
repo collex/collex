@@ -24,14 +24,14 @@ module ExhibitElementsHelper
   end
   
   def get_exhibit_link(exhibit)
-    return "<a class='nav_link' href='#{get_exhibit_url(exhibit)}'>#{h exhibit.title}</a>"
+    return raw("<a class='nav_link' href='#{get_exhibit_url(exhibit)}'>#{exhibit.title}</a>")
   end
 
 	def get_cluster_link(cluster_id)
 		return nil if cluster_id == nil
 		cluster = Cluster.find_by_id(cluster_id)
 		return nil if cluster == nil
-		return link_to(h(cluster.get_truncated_name()), cluster.get_visible_url(), { :class => 'nav_link' })
+		return link_to(cluster.get_truncated_name(), cluster.get_visible_url(), { :class => 'nav_link' })
 	end
 
   def get_exhibits_username(exhibit)
@@ -50,21 +50,21 @@ module ExhibitElementsHelper
 			else
 				names += ', '
 			end
-			del_link = link_to_function("[X]", "ajaxWithProgressDlg('/my_collex/remove_additional_author', 'exhibit_page', { title: 'Removing Author' }, { exhibit_id: #{exhibit.id}, user_id: #{user.id}} )", :class => 'nav_link')
+			del_link = link_to_function("[X]", "serverAction({action: { actions: '/builder/remove_additional_author', els: 'exhibit_page', params: { exhibit_id: #{exhibit.id}, user_id: #{user.id}} }, progress: { waitMessage: 'Removing Author...' })", :class => 'nav_link')
 		end
 		names += user.fullname
 		if names.length > 0 && is_edit_mode
 			names += del_link
 		end
 	}
-    return names
+    return raw(names)
   end
 
 	def get_exhibits_user_institution(exhibit)
 		users = exhibit.get_authors()
 		return "" if users.length > 1
 		user = exhibit.get_apparent_author()
-		return user.institution
+		return user.institution ? user.institution : ''
 	end
   
   def get_exhibit_user_link(exhibit)
@@ -80,7 +80,7 @@ module ExhibitElementsHelper
 		end
 		names += get_user_link(user)
 	}
-    return names
+    return raw(names)
   end
 
 	def draw_footnote(footnote_id, parent_id, is_edit_mode)
@@ -88,7 +88,7 @@ module ExhibitElementsHelper
 			click = is_edit_mode ? "" : "var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\", footnote.innerHTML); "
 			html = "<a href='#' onclick='#{click}return false;' class='superscript'>@</a>\n"
 			html += "<span id='footnote_for_#{parent_id}' class='hidden'>#{is_edit_mode ? ExhibitFootnote.find(footnote_id).footnote : decode_exhibit_links(ExhibitFootnote.find(footnote_id).footnote)} </span>\n"
-			return html
+			return raw(html)
 		end
 		return ""
 	end

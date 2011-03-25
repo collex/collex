@@ -19,14 +19,14 @@ module Admin::DefaultHelper
   end
   def get_user_login_info
     ret = []
-    fname = "#{RAILS_ROOT}/log/#{RAILS_ENV}.log"
+    fname = "#{Rails.root}/log/#{Rails.env}.log"
     f = File.new(fname)
     tim = "TIME"
     name = "NAME"
     f.each_line do |line|
-        if line.index('LoginController#verify_login') != nil
+        if line.index('POST "/login/verify_login"') != nil
           s = line.index(' at ') + 4
-          e = line.index(')') - 1
+          e = line.length
           tim = line[s..e]
         elsif line.index('login/verify_login]') != nil
           status = line.index('302 Found') ? "OK" : line.index('200 OK') ? "OK" : "Illegal"

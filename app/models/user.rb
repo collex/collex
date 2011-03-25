@@ -22,10 +22,16 @@ class User < ActiveRecord::Base
   has_many :collected_items
   belongs_to :image#, :dependent=>:destroy
 	has_many :groups
-	has_and_belongs_to_many :groups
+	#TODO-PER: commented for Rails 3: has_and_belongs_to_many :groups
   
   def role_names
     self.roles.collect { |role| role.name }
+  end
+  
+  # Class helper method to get a list of all ADMIN users
+  #
+  def self.get_administrators
+    return User.find(:all, :joins => :roles, :group => :id, :conditions=>"roles.id = 1")
   end
   
   # Added boolean convenience attribute for role names

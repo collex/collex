@@ -1,0 +1,112 @@
+Indexing is a complicated task, mainly because of the amount of data and the amount of RAM required.
+
+There are two different indexes: "resources" is the main index that is deployed and contains all the records. It is large,
+and it is the definitive index.
+
+There are a series of cores that all begin with "archive_*". These are the cores that you actually create. When you are satisfied with
+a core, then you merge it into the main indexed and also send that core to the depployment machine. That is much
+smaller than the whole index, so it will transmit in a reasonable amount of time.
+
+All info to recreate an index except the full text is in the rdf, marc, and ecco branches of SVN. The full text is pointed to by links in the RDF.
+After downloading everything from SVN, the folder that you downloaded it to must be put in site.yml.
+
+There are three types of archives that are indexed, RDF files, MARC records, and the ECCO database.
+
+-- RDF files --
+
+There is a file called sitemap.yml that is in the root of the RDF folders. That contains all the archive names and the folders
+that contain the RDF. Archives will not be indexed without an entry in this file. Mostly, one folder can be specified for an
+archive, but if the indexer crashes, then an archive can be split among different folders.
+
+(Do not mix archives in the same folder, though!)
+
+There are three types of indexing.
+
+1) When you first get a batch of RDF records, there will probably be errors that need to be fixed.
+The fastest way to index is the debugging run. That is called like this:
+
+rake archive=XXX solr_index:debug_rdf
+
+This processes all the RDF files, but doesn't get the full text and doesn't save the results to solr.
+After running this, see #{Rails.root}/log/XXX_*.log for errors.
+
+2) After you are satisfied that the RDF is correct, then run:
+
+rake solr_index:index_fulltext_rdf
+
+This will scrape the external website for the full text of each object and will create the index "archive_XXX".
+It will take a long time to run if there are a lot of objects.
+
+If you have a question about a particular object, you can use:
+
+rake uri=XXX solr:examine
+
+To see what solr has in both its regular index and in it's staging index.
+
+When you are satisfied with an archive, move it into the main index with:
+
+rake archive=XXX solr_index:merge_archive
+
+It is faster to move multiple indexes at once. Separate the index names with a semicolon.
+
+To install this archive on the deployment server, call:
+
+./send XXX
+
+Then log into the deployment server and call:
+
+./index XXX
+
+3) If an error was discovered in an index after it was deployed, or there was a schema change in solr, then
+all records may need to be reindexed. This is a difficult and long process because it requires a lot of RAM and
+some large archives are prone to crash. To reindex one archive:
+
+rake archive=XXX solr_index:reindex_rdf
+
+This leaves the results in the archive core, so it can be compared with the original archive with this:
+
+rake archive=XXX solr_index:test_archive
+
+both of those operations can be done in one step:
+
+rake archive=XXX solr_index:reindex_and_test_rdf
+
+The testing can be broken into it's component steps:
+
+rake archive=XXX solr_index:scan_for_missed_objects
+rake archive=XXX solr_index:find_duplicate_objects
+rake archive=XXX solr_index:compare_indexes
+rake archive=XXX solr_index:compare_indexes_text
+
+To create a set of scripts to reindex everything, run:
+
+rake solr_index:create_reindexing_task_list
+
+This leave a set of scripts in tmp/
+
+-- MARC records --
+
+Marc records are all individual and need to be dealt with in custom ways. See the source code for details.
+
+The method of indexing marc records is changing. Now the mrc files need to be converted to txt files with
+the format:
+=LDR etc
+=001 etc
+etc
+
+A possible utility for creating that format is here:
+
+http://people.oregonstate.edu/~reeset/marcedit/html/downloads.html
+
+Then the rake task "marc:marc_text_to_rdf" will create a set of rdf. After the rdf is created, then the
+indexing is the same as the rdf indexing.
+
+The genres and dates will probably need some adjustment for each new set of marc records.
+
+-- ECCO database --
+
+This is a combination of the estc records and some files from ecco that create the documents.
+
+It is recreated like this:
+
+rake ecco:index_ecco

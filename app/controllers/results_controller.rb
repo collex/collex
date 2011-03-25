@@ -25,7 +25,7 @@ class ResultsController < ApplicationController
   #  end
   
   def collect
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
@@ -46,7 +46,7 @@ class ResultsController < ApplicationController
   end
   
   def uncollect
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
@@ -66,50 +66,50 @@ class ResultsController < ApplicationController
 		end
   end
   
-  def add_tag
-	  if request.request_method != :post
+  # Add tags to an item. Multiple tags can be added by using a comma to separate them. The item
+  # need not be collected. Several pieces of data must be in the call params: tag_info, user and uri
+  #
+  def add_tag( should_render = true)
+	  
+	  # only accept this call from a POST action
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
-    locals = setup_ajax_calls(params, true)
-    tag = params[:tag]
-    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
+	  
+	  # grab call params
+	  is_cached = CachedResource.exists( params[:uri] ) 
+    locals = setup_ajax_calls(params, is_cached)
+    tag_info = params[:tag]
+    user = locals[:user]
+    uri = locals[:uri]
     
-		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
+    # pass them along to the tag model for addition
+    Tag.add(user, uri, tag_info)
+   
+    if should_render
+  		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+      render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
+    end
   end
   
-#  def add_tag_forum
-#    locals = setup_ajax_calls(params, true)
-#    tag = params[:tag]
-#    CollectedItem.add_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil || tag == ""
-#    
-#    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
-#  end
-  
+  # Remove a tag from the uri specified resource
+  #
   def remove_tag
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
-    CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
+    Tag.remove(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
     
 		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
-  
-#  def remove_tag_forum
-#    locals = setup_ajax_calls(params, true)
-#    tag = params[:tag]
-#    CollectedItem.delete_tag(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
-#    
-#    render :partial => 'forum/nines_object_details', :locals => { :hit => locals[:hit], :details_id => params[:row_id] }
-#  end
   
   def set_annotation
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
@@ -122,7 +122,7 @@ class ResultsController < ApplicationController
   end
   
   def bulk_add_tag
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
@@ -131,33 +131,64 @@ class ResultsController < ApplicationController
     
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     
-    if uris != nil && user != nil && tag != nil && tag.length > 0
+    if uris != nil && user != nil && tag != nil && tag['name'].length > 0
 	    uris = uris.split("\t")
       uris.each{ |uri|
-        CollectedItem.collect_item(user, uri, nil) # this just returns if the object is already collected.
-        CollectedItem.add_tag(user, uri, tag)
+        params['uri'] = uri
+        add_tag false # false so this call will not attempt to render
       }
     end
     redirect_to :back
   end
   
   def bulk_collect
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
+	  
+	 bulk_tag = params[:bulk_tag_text]
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
-      uris.each {|key,uri|
+      uris.each do | key,uri |
         CollectedItem.collect_item(user, uri, nil)
-      }
+        if bulk_tag != nil && bulk_tag.length > 0
+            Tag.add(user, uri, {'name' => bulk_tag} ) 
+        end
+      end
     end
 
     redirect_to :back
-    #redirect_to params[:return]
   end
   
+  # uncollect a set of items in bulk. The items to be uncollected
+  # are contained in the bulk_collect form post
+  def bulk_uncollect
+    
+    # Only allow this to be called from a POST action
+    if request.request_method != 'POST'
+      render_422
+      return
+    end
+    
+    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    if user != nil && params[:bulk_collect] != nil
+      uris = params[:bulk_collect]
+      uris.each do |key,uri|
+        CollectedItem.remove_collected_item(user, uri)
+      end
+    end
+
+	# refresh the posed page with the new collection
+	redirect_to :back
+  end
+	
+  def resend_exhibited_objects
+    # This is to update the section after a change elsewhere on the page
+    render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
+  end
+
   private
   def encode_for_uri(str) # TODO-PER: this is in a helper, so it can't be called from a controller, so we are just repeating it.
     value = str.gsub('%', '%25')
@@ -174,11 +205,14 @@ class ResultsController < ApplicationController
   end
   public
 
+  # edit the name of an existing tag
+  #
   def edit_tag
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
+	  
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     if user != nil
       old_name = params[:old_name]
@@ -186,17 +220,18 @@ class ResultsController < ApplicationController
       
       tagged_items = CachedResource.get_hits_for_tag(old_name, user)
       
-      tagged_items.each { |item|
-        CollectedItem.rename_tag(user, item['uri'], old_name, new_name)
-      }
+      tagged_items.each do |item|
+        Tag.rename(user, item['uri'], old_name, new_name)
+      end
     end
+    
     back = request.env["HTTP_REFERER"]
-    back = back.gsub(encode_for_uri(old_name), encode_for_uri(new_name))
+    back = back.gsub(encode_for_uri(old_name), Tag.normalize_tag_name(encode_for_uri(new_name)) )
     redirect_to back
   end
   
   def remove_all_tags
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
@@ -207,7 +242,7 @@ class ResultsController < ApplicationController
       tagged_items = CachedResource.get_hits_for_tag(tag, user)
       
       tagged_items.each { |item|
-        CollectedItem.delete_tag(user, item['uri'], tag)
+        Tag.remove(user, item['uri'], tag)
       }
   
     end
@@ -217,19 +252,19 @@ class ResultsController < ApplicationController
   end
 
   def add_object_to_exhibit
-	  if request.request_method != :post
+	  if request.request_method != 'POST'
 		  render_422
 		  return
 	  end
     locals = setup_ajax_calls(params, true)
     exhibit_name = params[:exhibit]
     if locals[:user] != nil
-      exhibit = Exhibit.find(:first, :conditions => [ "title = ? AND user_id = ?", exhibit_name, locals[:user].id ] )
+      exhibit = Exhibit.find_by_user_id_and_title(locals[:user].id, exhibit_name)
       if exhibit == nil
         # TODO-PER: HACK! I don't know why, but sometimes the exhibit name comes back with quotes encrypted. If we can't find the exhibit
         # with this name, then try unencrypting it and trying again. (It is possible that this was just a cached file in the user's browser.)
         name = exhibit_name.gsub("&quot;", '"')
-        exhibit = Exhibit.find(:first, :conditions => [ "title = ? AND user_id = ?", name, locals[:user].id ] )
+        exhibit = Exhibit.find_by_title_and_user_id(name, locals[:user].id)
 #        arr = exhibit_name.split("")
 #        str = '/' + h(arr.join('.')) + "/<br />"
 #        arr = name.split("")

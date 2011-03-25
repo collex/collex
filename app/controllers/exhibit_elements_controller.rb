@@ -18,7 +18,7 @@ class ExhibitElementsController < Admin::BaseController
   # GET /exhibit_elements
   # GET /exhibit_elements.xml
   def index
-    @exhibit_elements = ExhibitElement.find(:all)
+    @exhibit_elements = ExhibitElement.all()
 
     respond_to do |format|
       format.html # index.html.erb

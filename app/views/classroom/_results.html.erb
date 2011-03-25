@@ -20,9 +20,11 @@
 <div class="shared_results_heading">
 	<div class="pagination"><%= draw_ajax_pagination(session[:classroom_page_num]+1, results[:num_pages], '/classroom/page', 'shared_objects' ) %></div>
 	<span class="shared_results_label">Show:</span>
-	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Clusters', :value => 'Clusters'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'Discussions', :value => 'Discussions'}, { :name => 'All', :value => 'All'} ], session[:classroom_view_by], "ajaxWithProgressSpinner([ '/classroom/view_by' ], [ 'shared_objects' ], { waitMessage: 'Changing view...' }, { view: sel })") %>
+	<%= make_select_control("view_by", [ { :name => 'Groups', :value => 'Groups'}, { :name => 'Clusters', :value => 'Clusters'}, { :name => 'Exhibits', :value => 'Exhibits'}, { :name => 'Discussions', :value => 'Discussions'}, { :name => 'All', :value => 'All'} ], session[:classroom_view_by],
+		"serverAction({action: { actions: '/classroom/view_by', els: 'shared_objects', params: { view: sel }}, progress: { waitMessage: 'Changing view...' }})") %>
 	<span class="shared_results_label">Sort by:</span>
-	<%= make_select_control("sort_by", [ { :name => 'Relevancy', :value => 'Relevancy'}, { :name => 'Title', :value => 'Title'}, { :name => 'Most Recent', :value => 'Most Recent'}], session[:classroom_sort_by], "ajaxWithProgressSpinner([ '/classroom/sort_by' ], [ 'shared_objects' ], { waitMessage: 'Sorting...' }, { sort: sel })") %>
+	<%= make_select_control("sort_by", [ { :name => 'Relevancy', :value => 'Relevancy'}, { :name => 'Title', :value => 'Title'}, { :name => 'Most Recent', :value => 'Most Recent'}], session[:classroom_sort_by],
+		"serverAction({action: { actions: '/classroom/sort_by', els: 'shared_objects', params: { sort: sel }}, progress: { waitMessage: 'Sorting...' }})") %>
 </div>
 <hr class="search_results_hr" />
 <div id="shared_results_objects">

@@ -25,7 +25,7 @@
 	</div>
 	<script type="text/javascript">
 		if(window.initializeInplaceRichEditor)
-			initializeInplaceRichEditor('<%= div_id %>,exhibit_builder_outline_content', "<%= "/#{MY_COLLEX_URL}/edit_text,/#{MY_COLLEX_URL}/refresh_outline" %>");
+			initializeInplaceRichEditor('<%= div_id %>,exhibit_builder_outline_content', "<%= "/builder/edit_text,/builder/refresh_outline" %>");
 	</script>
 <% else -%>
 	<div class="exhibit_text<%=" blockquote" if which == 'blockquote' %>" style="font-family:<%= exhibit.get_font_name('text') %>; font-size:<%= size %>px;"><%= decode_exhibit_links(element.element_text) %></div>

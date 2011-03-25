@@ -26,7 +26,8 @@ function showString(str)
 		id: 'show_save_name',
 		value: str,
 		inputKlass: "saved_search_copy_el",
-		body_style: "saved_search_copy_body"
+		body_style: "saved_search_copy_body",
+		noOk: true
 	});
 	$('show_save_name').select();
 }

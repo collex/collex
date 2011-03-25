@@ -21,8 +21,8 @@
 	If you are registered using a different email address, then login and request to join the group directly.<br />
 	If you are not a user of <%= SITE_NAME %>, then you can join by creating a username below.
 
-	<div class="flash_notice_error"><%= params[:message] if params[:message].length > 0 %></div>
-	<% form_tag :controller => 'groups', :action => 'create_login_create', :id => gu do %>
+	<div class="gd_flash_notice_error"><%= params[:message] if params[:message].length > 0 %></div>
+	<%= form_tag :controller => 'groups', :action => 'create_login_create', :id => gu do %>
 	<table>
 		<tr><td>Create your user name:</td><td><input type='text' name='user_name' id='user_name' value=''/></td></tr>
 		<tr><td>Password:</td><td><input type='password' name='password' id='password' value=''/></td></tr>

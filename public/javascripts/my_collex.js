@@ -14,9 +14,8 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, $$, Element */
-/*global ConfirmDlg, TextInputDlg */
-/*global document */
+/*global $$ */
+/*global serverAction, TextInputDlg */
 /*extern editTag, removeTag, toggleElementsByClass */
 
 // Used by Exhibited Objects
@@ -42,17 +41,10 @@ function editTag(tag_name)
 
 function removeTag(parent_id, tag_name, progress_img)
 {
-	var remove = function()
-	{
-		var new_form = new Element('form', { id: "remove_tag", method: 'post', onsubmit: "this.submit();", action: "/results/remove_all_tags" });
-		new_form.observe('submit', "this.submit();");
-		document.body.appendChild(new_form);
-		new_form.appendChild(new Element('input', { name: 'tag', value: tag_name, id: 'tag' }));
-
-		$(parent_id).appendChild(new Element('img', { src: progress_img, alt: ''}));
-		new_form.submit();
-	};
-	new ConfirmDlg("Remove Tag", "Are you sure you want to remove all instances of the \"" + tag_name + "\" tag that you created?", "Yes", "No", remove);
+  var msg = "Are you sure you want to remove all instances of the \"" + tag_name + "\" tag that you created?";
+	serverAction({confirm: { title: "Remove Tag", message: msg }, 
+	              action: { actions: "/results/remove_all_tags", params: { tag: tag_name }}, 
+	              progress: { waitMessage: "Removing tag \"" + tag_name + "\". Please wait..." }});
 }
 
 

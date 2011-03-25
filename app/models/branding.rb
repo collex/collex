@@ -18,15 +18,11 @@ class Branding
 	# This contains the functional differences between Collex and the specific implementation of it.
 	# In this case, this is the NINES specific stuff
   def self.version	# Don't change the format of this call because collex.rake depends on it!
-    return "1.5.34"
+    return "1.6.0"
   end
 
-	def self.yui_path(is_debug)
-		if is_debug
-			return "/javascripts/yui_2_8_0"
-		else
-			return '2.8.0'
-		end
+	def self.yui_path()
+		return '2.8.2r1'
 	end
 
 	def self.valid_genre_list()
@@ -38,7 +34,7 @@ class Branding
         "Life Writing", "Manuscript", "Music",
         "Nonfiction", "Paratext", "Periodical",
         "Philosophy", "Photograph", "Poetry",
-        "Religion", "Review",
+        "Religion", "Review", "Science",
         "Translation", "Travel",
         "Visual Art", "Citation",
         "Book History", "Family Life", "Folklore",

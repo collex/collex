@@ -26,7 +26,7 @@ module SessionTimeout
         initialize_session_expiry(time)
       end
     else
-      "::: Session expiry not initialized"
+      logger.info "::: Session expiry not initialized"
       initialize_session_expiry(time)
     end
   end

@@ -16,7 +16,7 @@
 
 /*global $, $$, $H */
 /*global YAHOO */
-/*global MessageBoxDlg, hideSpinner, pageRenumberFootnotes, updateWithAjax, recurseUpdateWithAjax, ConfirmAjaxDlg */
+/*global MessageBoxDlg, hideSpinner, pageRenumberFootnotes, serverAction */
 /*global document, setTimeout */
 /*extern doAjaxLink, doAjaxLinkConfirm, doAjaxLinkOnPage, doAjaxLinkOnSelection, elementTypeChanged, illustrationJustificationChanged, imgResized */
 /*extern initializeElementEditing, initializeResizableImageElement, initializeResizableTextualElement,  sectionHovered, sectionUnhovered, unhoverlist */
@@ -66,7 +66,7 @@ function imgResized(event, illustrationElement)
 	var newHeight = illustrationElement.height;	// This is the height if it is a textual illustration
 	if (newHeight === undefined || newHeight === null)
 		newHeight = parseInt(illustrationElement.getStyle('height'));
-	updateWithAjax({ el: element.id, action: "/my_collex/change_img_width", onSuccess: initializeElementEditing, params: {illustration_id: illustrationElement.id, width: newWidth, height: newHeight} });
+	serverAction({action:{ els: element.id, actions: "/builder/change_img_width", onSuccess: initializeElementEditing, params: {illustration_id: illustrationElement.id, width: newWidth, height: newHeight} }});
 }
 
 document.observe('dom:loaded', function() {
@@ -92,7 +92,7 @@ function initializeResizableTextualElement( element_id ) {
 
 function doAjaxLink(div, url, params)
 {
-	recurseUpdateWithAjax(url.split(','), div.split(','), initializeElementEditing, null, params);
+	serverAction({action:{actions: url, els: div, onSuccess: initializeElementEditing, params: params}});
 }
 
 function elementTypeChanged(div, element_id, newType)
@@ -109,18 +109,18 @@ function elementTypeChanged(div, element_id, newType)
 	}
 
 	var params = { element_id: element_id, type: newType };
-	doAjaxLink(div+",exhibit_builder_outline_content", "/my_collex/change_element_type,/my_collex/refresh_outline", params);
+	doAjaxLink(div+",exhibit_builder_outline_content", "/builder/change_element_type,/builder/refresh_outline", params);
  }
 
 function illustrationJustificationChanged(div, element_id, newJustification)
 {
 	var params = { element_id: element_id, justify: newJustification };
-	doAjaxLink(div, "/my_collex/change_illustration_justification", params);
+	doAjaxLink(div, "/builder/change_illustration_justification", params);
  }
 
 function doAjaxLinkConfirm(div, url, params)
 {
-	new ConfirmAjaxDlg("Delete Section", "You are about to delete this section. Do you want to continue?", { els: div.split(','), actions: url.split(','), params: params });
+	serverAction({confirm: { title: "Delete Section", message: "You are about to delete this section. Do you want to continue?"}, action: { actions: url, els: div, params: params}, progress: { waitMessage: 'Please Wait...'}});
 }
 
 function doAjaxLinkOnSelection(verb, exhibit_id)
@@ -137,12 +137,12 @@ function doAjaxLinkOnSelection(verb, exhibit_id)
 	var page_id = $('current_page').innerHTML;
 	var params = { verb: verb, exhibit_id: exhibit_id, element_id: element_id, page_id: page_id };
 	var els = [ "exhibit_builder_outline_content", "exhibit_page" ];
-	var actions = [ "/my_collex/modify_outline", "/my_collex/redraw_exhibit_page" ];
+	var actions = [ "/builder/modify_outline", "/builder/redraw_exhibit_page" ];
 
 	if (verb === 'delete_element')
-		new ConfirmAjaxDlg("Delete Section", "You are about to delete this section. Do you want to continue?", { actions: actions, els: els, params: params });
+		serverAction({confirm: { title: "Delete Section", message: "You are about to delete this section. Do you want to continue?"}, action: { actions: actions, els: els, params: params }, progress: { waitMessage: 'Please Wait...' }});
 	else
-		recurseUpdateWithAjax(actions, els, null, null, params);
+		serverAction({action:{actions: actions, els: els, params: params}});
 }
 
 // This is called for the controls on the Page line in the Outline 
@@ -159,9 +159,9 @@ function doAjaxLinkOnPage(verb, exhibit_id, page_num)
 	var params = { verb: verb, exhibit_id: exhibit_id, element_id: element_id, page_num: page_num };
 
 	if (verb === 'delete_page')
-		new ConfirmAjaxDlg("Delete Page", "You are about to delete page number " + page_num + ". Do you want to continue?", { els: [ "exhibit_builder_outline_content", "exhibit_page" ], actions: [ "/my_collex/modify_outline_page",  "/my_collex/reset_exhibit_page_from_outline" ], params: params });
+		serverAction({confirm: { title: "Delete Page", message: "You are about to delete page number " + page_num + ". Do you want to continue?"}, action: { els: [ "exhibit_builder_outline_content", "exhibit_page" ], actions: [ "/builder/modify_outline_page",  "/builder/reset_exhibit_page_from_outline" ], params: params}, progress: { waitMessage: 'Please Wait...' }});
 	else
-		updateWithAjax({ el: "exhibit_builder_outline_content", action: "/my_collex/modify_outline_page", params: params });
+		serverAction({action:{ els: "exhibit_builder_outline_content", actions: "/builder/modify_outline_page", params: params }});
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

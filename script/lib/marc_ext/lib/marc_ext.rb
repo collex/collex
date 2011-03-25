@@ -1,5 +1,5 @@
-require 'rubygems'
-require 'marc'
+#require 'rubygems'
+#require 'marc'
 
 #
 # MARC (ruby) Extension Library

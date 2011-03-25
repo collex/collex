@@ -18,7 +18,7 @@
 <% current_page "admin" -%>
 <% current_sub_page "Features" -%>
 <script type="text/javascript">
-	var saved_searches = <%= @saved_searches.to_json %>;
+	var saved_searches = <%= raw(@saved_searches.to_json) %>;
 </script>
 <div class="inner_content_container">
 	<div class="page_header">Features</div>
@@ -32,17 +32,17 @@
 	  </tr>
 	<% @features.each do |rec| %>
 	  <tr>
-	    <td><%=h rec.object_uri %></td>
-	    <td><%=h rec.saved_search_name %></td>
-	    <td><%=h rec.saved_search_url %></td>
-	    <td><% if rec.image %><img height="25" src="<%=rec.image.public_filename(:feature) %>" alt="Feature image" /><% end %></td>
-	    <td><%=h rec.disabled == '1' ? 'Yes' : 'No' %></td>
+	    <td><%= rec.object_uri %></td>
+	    <td><%= rec.saved_search_name %></td>
+	    <td><%= rec.saved_search_url %></td>
+	    <td><% if rec.image %><img height="25" src="/<%=rec.image.photo.url(:feature) %>" alt="Feature image" /><% end %></td>
+	    <td><%= rec.disabled == '1' ? 'Yes' : 'No' %></td>
 
-	    <td><%= link_to_function 'Edit', "featureDlg(saved_searches, '/admin/features/update', #{rec.to_json()}.featured_object, '#{rec.image ? rec.image.public_filename(:feature) : 'null'}')", { :class => 'nav_link' } %></td>
+	    <td><%= link_to_function 'Edit', "featureDlg(saved_searches, { method: 'PUT', url: '/admin/features/#{rec.id}' }, #{rec.to_json()}.featured_object, '#{rec.image ? "/#{rec.image.photo.url(:feature)}" : 'null'}')", { :class => 'nav_link' } %></td>
 	    <td><%= link_to_confirm 'Delete', { :action => 'destroy', :id => rec.id }, "Delete Feature", "This will delete the feature \"#{rec.object_uri}\". Are you sure you want to continue?" %></td>
 	  </tr>
 	<% end %>
 	</table>
 
-	<%= link_to_function "New Feature", "featureDlg(saved_searches, '/admin/features/create', {}, null)", { :class => 'nav_link' } %>
+	<%= link_to_function "New Feature", "featureDlg(saved_searches, { method: 'POST', url: '/admin/features' }, {}, null)", { :class => 'nav_link' } %>
 </div>

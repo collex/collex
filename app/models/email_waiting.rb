@@ -4,7 +4,7 @@ class EmailWaiting < ActiveRecord::Base
 		return { :activity => false } if emails.length == 0
 
 		emails.each{|email|
-			LoginMailer.deliver_generic(email.from_name, email.from_email, email.to_name, email.to_email, email.subject, email.body, email.return_url, email.suffix)
+			GenericMailer.generic(email.from_name, email.from_email, email.to_name, email.to_email, email.subject, email.body, email.return_url, email.suffix).deliver
 			email.destroy
 		}
 		return { :activity => true, :message => "Number of emails sent: #{emails.length}" }

@@ -21,9 +21,17 @@ class FacetCategory < ActiveRecord::Base
   attr :display_name, true
   attr :sorted_children, true
   
-  def self.sorted_facet_tree()
+	def self.sorted_facet_tree()
+		# We are going to need all the facets and all the sites, so warm the cache by getting them all at once here.
+		all_sites = Site.all
+		sites = {}
+		all_sites.each{ |rec|
+			sites[rec.code] = rec
+		}
+		#all_facets = FacetCategory.all <--- That's not enough to get them from sql. Is there a way to use these results in acts_as_tree?
+
     tree_root = FacetCategory.first(:conditions => "value = 'archive' AND type = 'FacetTree'")
-    root = self.recursively_sort_tree( tree_root )
+    root = self.recursively_sort_tree( tree_root, sites )
 		# the top level is sorted in reverse order
 		root.sorted_children = root.sorted_children.sort { |a,b| b.display_name.downcase <=> a.display_name.downcase }
 		return root
@@ -53,21 +61,22 @@ class FacetCategory < ActiveRecord::Base
 		return "#{node.display_name}".downcase
 	end
 
-  def self.recursively_sort_tree( node )    
-    if node[:type] == 'FacetValue'
-      site = Site.find_by_code(node.value)
-      node.display_name = site ? "#{site.description}" : "#{node.value}"
-    else
-      node.display_name = "#{node.value}"
-    end
-    
-    if node.children
-      named_children = node.children.map { |child| self.recursively_sort_tree(child) }
-      node.sorted_children = named_children.sort { |a,b| self.get_display_name(a) <=> self.get_display_name(b) }
-    end
-    
-    node
-  end
+	def self.recursively_sort_tree( node, sites)
+		if node[:type] == 'FacetValue'
+			#site = Site.find_by_code(node.value)
+			site = sites[node.value]
+			node.display_name = site ? "#{site.description}" : "#{node.value}"
+		else
+			node.display_name = "#{node.value}"
+		end
+
+		if node.children
+			named_children = node.children.map { |child| self.recursively_sort_tree(child, sites) }
+			node.sorted_children = named_children.sort { |a,b| self.get_display_name(a) <=> self.get_display_name(b) }
+		end
+
+		return node
+	end
   
   
 end

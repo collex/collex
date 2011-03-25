@@ -48,7 +48,8 @@ class LoginController < ApplicationController
 			LoginInfo.record_login(logged_in_user)
 			render :text => "Logging in..." # since this doesn't set the status, the Ajax handler will request the page again
 		else
-			LoginInfo.record_bad_login(name, request_origin)
+			ip = request.env['REMOTE_ADDR']
+			LoginInfo.record_bad_login(name, ip)
 			render :text => "Invalid user/password combination", :status => :bad_request
 		end
   end
@@ -64,7 +65,6 @@ class LoginController < ApplicationController
 			@user = COLLEX_MANAGER.reset_password(params[:help_username])
 			if @user
 				begin
-					#LoginMailer.deliver_password_reset(:controller => self, :user => @user)
 					body = "Your #{SITE_NAME} password has been reset.\n\n"
 					body += "To log in, visit this link:\n\n"
 					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
@@ -73,7 +73,7 @@ class LoginController < ApplicationController
 					EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Password Reset", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					render :text => "A new password has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
-					logger.error("**** ERROR: Can't send email: " + msg)
+					logger.error("**** ERROR: Can't send email: " + msg.message)
 					render :text => "There was a problem sending email. If this persists, report the problem to the administrator.", :status => :bad_request
 				end
 			else
@@ -89,7 +89,6 @@ class LoginController < ApplicationController
 			@user = COLLEX_MANAGER.find_by_email(params[:help_email])
 			if @user != nil
 				begin
-					#LoginMailer.deliver_recover_username(:controller => self, :user => @user)
 					body = "Here is your #{SITE_NAME} user name:\n\n"
 					body += "	#{@user[:username]}\n\n"
 					body += "To log in, visit this link:\n\n"
@@ -98,7 +97,7 @@ class LoginController < ApplicationController
 					EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Recover User Name", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					render :text => "Your user name has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
-					logger.error("**** ERROR: Can't send email: " + msg)
+					logger.error("**** ERROR: Can't send email: " + msg.message)
 					render :text => "There was a problem sending email. If this persists, report the problem to the administrator.", :status => :bad_request
 				end
 			else

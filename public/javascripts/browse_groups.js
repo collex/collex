@@ -14,9 +14,8 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global window */
 /*global Class */
-/*global GeneralDialog, CreateListOfObjects */
+/*global GeneralDialog, CreateListOfObjects, gotoPage */
 /*extern BrowseGroupsDlg */
 
 
@@ -36,7 +35,7 @@ var BrowseGroupsDlg = Class.create({
 			var selection = oGroups.getSelection().value;
 			if (selection.length > 0) {
 				dlg.setFlash("Fetching group. Please wait...", false);
-				window.location = '/groups/'+selection;
+				gotoPage('/groups/'+selection);
 			} else
 				dlg.setFlash("Please click on one of the groups to select it then try again.", true);
 		};
@@ -48,13 +47,13 @@ var BrowseGroupsDlg = Class.create({
 				rows: [
 					[ { text: 'Select a group to get more information.', klass: 'new_exhibit_instructions' } ],
 					[ { custom: oGroups } ],
-					[ { rowClass: 'last_row' }, { button: 'Go To Group', callback: gotoGroup, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Go To Group', callback: gotoGroup, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var params = { this_id: "group_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Browse Groups" };
 		dlg = new GeneralDialog(params);
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 		oGroups.populate(dlg);
 	}

@@ -1,0 +1,75 @@
+<% current_page "TypeWright" -%>
+<script type="text/javascript">
+	var lines = <%= raw(@params[:lines].to_json()) %>;
+	var currLine = 0;
+	var doc_id = <%= @params[:doc_id] %>;
+	var page = <%= @params[:page] %>;
+	var showDebugItems = <%= @debugging ? 'true' : 'false' %>;
+	var updateUrl = "/typewright/lines/"+doc_id;
+	var imgWidth = <%= @params[:img_size][:width] %>;
+	var imgHeight = <%= @params[:img_size][:height] %>;
+</script>
+
+
+<div class="tw_editing_title"><a title='<%= @params[:title].gsub("'", "&apos;") %>'>"<%= @params[:title_abbrev] %>"</a></div>
+
+<div class="tw_toolbar">
+	<!-- <span class="tw_button2 tw_find_button">&nbsp;</span> -->
+	<span class="tw_button2 tw_insert_above_button">&nbsp;</span>
+	<span class="tw_button2 tw_insert_below_button">&nbsp;</span>
+	 
+	<!-- <span class="tw_button2 tw_review_history_button">&nbsp;</span> -->
+	<%= render :partial => 'pagination', :locals => { :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
+</div>
+<div class="tw_edit_text">
+	<table>
+		<tr>
+			<td class="tw_left_row">
+				<img id="tw_img_thumb" src="<%= @params[:img_thumb] %>" alt="original image" /></td>
+			<td class="tw_middle_row">
+				<div id="tw_img_full">
+					<div style="background-image: url(<%= @params[:img_full].gsub('*', '001') %>);"></div>
+					<div style="background-image: url(<%= @params[:img_full].gsub('*', '002') %>);"></div>
+					<div style="background-image: url(<%= @params[:img_full].gsub('*', '003') %>);"></div>
+				</div>
+			</td>
+			<td class="tw_right_row">
+				<div class="tw_button3 tw_change_line tw_up_arrow_top" data-amount="-1" title="Previous line">&nbsp;</div>
+				<div class="tw_button3 tw_change_line tw_down_arrow_top" data-amount="1" title="Next line">&nbsp;</div>
+			</td>
+		</tr>
+	</table>
+	<table class="tw_editing">
+		<tr id="tw_text_0">
+			<td class="tw_history_icon"></td>
+			<td class="tw_change_icon"></td>
+			<td class="tw_line_num">&nbsp;</td>
+			<td class="tw_text">&nbsp;</td>
+			<td><div class="tw_button3 tw_change_line tw_up_arrow_bottom" data-amount="-1" title="Previous line">&nbsp;</div></td>
+		</tr>
+		<tr id="tw_text_1">
+			<td class="tw_history_icon"></td>
+			<td class="tw_change_icon"></td>
+			<td class="tw_line_num">&nbsp;</td>
+			<td><span id="tw_editing_line"></span>
+			<span class="tw_button tw_correct" title="Correct">&nbsp;</span><span class="tw_button tw_delete_line" title="Delete line">&nbsp;</span><span class="tw_button tw_undo_button hidden" title="Undo">&nbsp;</span><span class="tw_button tw_redo_button hidden" title="Redo">&nbsp;</span></td>
+		<td></td>
+		</tr>
+		<tr id="tw_text_2">
+			<td class="tw_history_icon"></td>
+			<td class="tw_change_icon"></td>
+			<td class="tw_line_num">&nbsp;</td>
+			<td class="tw_text">&nbsp;</td>
+			<td><div class="tw_button3 tw_change_line tw_down_arrow_bottom" data-amount="1" title="Next line">&nbsp;</div></td>
+		</tr>
+	</table>
+	<%= render :partial => 'edit_instructions' %>
+	<div class="clear_both"></div>
+	
+</div>
+<div id="tw_pointer_thumb" style="position:absolute;border:1px solid red;"></div>
+<div id="tw_pointer_doc" style="position:absolute;border:2px solid red;"></div>
+<% 20.times {|x|  %>
+<div id="tw_pointer_word_1_<%= x %>" style="position:absolute;display:none;border:2px dotted #3333ff;"></div>
+<% } %>
+<%= render :partial => 'word_stats', :locals => { :word_stats => @params[:word_stats], :doc_word_stats => @params[:doc_word_stats]} %>

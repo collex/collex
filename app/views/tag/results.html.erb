@@ -19,7 +19,7 @@
 <% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
 <%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => 'Tags', :url => '/tags' }], params[:tag]) %>
 <div class="inner_content_container">
-	<% total_link = "<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>" -%>
-	<%= render :partial => 'results/results_with_all_functionality', :locals => { :title => total_link, :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'tag', :action => 'results' } %>
+	<% total_link = raw("<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>") -%>
+	<%= render :partial => 'results/results_with_all_functionality', :locals => {  :mode => :both, :title => total_link, :results => @results, :page => @page, :num_pages => @num_pages, :controller => 'tag', :action => 'results' } %>
 </div>
 <div class="clear_both">&nbsp;</div>

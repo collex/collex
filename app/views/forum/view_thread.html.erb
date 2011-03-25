@@ -37,7 +37,7 @@
 <%= create_breadcrumbs([{ :text => tab_name, :url => return_url }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) %>
 <div class="content_container2">
 <script type="text/javascript">
-	var exhibit_names = [ <%= user_id && user_id > 0 ? Exhibit.js_array_of_all_my_exhibits(user_id) : '' %> ];
+	var exhibit_names = [ <%= user_id && user_id > 0 ? raw(Exhibit.js_array_of_all_my_exhibits(user_id)) : '' %> ];
 </script>
 
 <div class="page_subheader">Follow and join in this discussion by using your free <%= SITE_NAME %> account.</div>

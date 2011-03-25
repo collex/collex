@@ -6,7 +6,7 @@ The Collex/NINES project
 Most of the pain of getting collex running is in getting Ruby on Rails running on your machine. Before attempting the
 instructions below, be sure that you can create a simple Rails application.
 
-Collex currently runs under Rails 2.3.2, so it is best to create a Rails application with that version.
+Collex currently runs under Rails 3.0.3 and Ruby 1.9.2, so it is best to create a Rails application with that version.
 
 -----------------------------------------------------------------------
 ** Steps for creating a collex installation from scratch.
@@ -46,21 +46,17 @@ forum and the ability to edit anyone's exhibits.
 -----------------------------------------------------------------------
 ** Requires the following Gems:
 
-image_science (1.1.3) [ for attachment_fu ]
-solr-ruby (0.0.8) [ for the connection to solr ]
-RubyInline (3.8.4) [ for image_science ]
-daemons (1.0.10) [for sending emails in background]
-json_pure (1.2.0)
+See Gemfile for current list.
 
-Note that a version newer than that listed should be fine, but has not been tested.
-
-For indexing MARC records, the following are also needed:
+For indexing MARC records, the following are needed:
 
 Linguistics (1.0.5)
 marc (0.3.0)
 
-Note: If you get the message "no such file to load -- rexml/formatters/default" then you need a newer version of Ruby.
-v 1.8.7 is recommended.
+As of this writing, Linguistics fails to load in Ruby 1.9.2 because of character encoding problems, if that is still the
+case, just delete the line that fails in the gem.
+
+It is in PATH/.rvm/gems/ruby-1.9.2-p136/gems/Linguistics-1.0.5/lib/linguistics/iso639.rb
 
 -----------------------------------------------------------------------
 ** Requires Wordpress for the News tab
@@ -70,7 +66,7 @@ There are instructions for integrating Wordpress that you can read by navigating
 When changing any files in the Wordpress theme, then a rake task must be called to copy them over to the correct production folder.
 
 For NINES, that task is:
-	rake collex:update_nines_theme
+	rake deploy:update_nines_theme
 
 -----------------------------------------------------------------------
 ** Requires Solr
@@ -82,6 +78,45 @@ If you download the solr_1.4 folder from svn in the same relative place as it ap
 start solr:
 
 	rake solr:start
+
+Typically on the server, though, you would create a service so that solr starts up when the machine is started. A sample file to start
+the service follows. It needs to be placed in /etc/init.d:
+
+-----------------------------------------------------------------------
+#!/bin/sh
+
+# Starts, stops, and restarts Apache Solr.
+#
+# chkconfig: 35 92 08
+# description: Starts and stops Apache Solr
+
+SOLR_DIR="PATH/solr_1.4"
+JAVA_OPTIONS="-Xmx6144m -Xms6144m -DSTOP.PORT=8079 -DSTOP.KEY=mustard -jar start.jar"
+LOG_FILE="PATH/logs/solr.log"
+JAVA="/usr/bin/java"
+
+case $1 in
+    start)
+        echo "Starting Solr"
+        cd $SOLR_DIR
+        $JAVA $JAVA_OPTIONS 2> $LOG_FILE &
+        ;;
+    stop)
+        echo "Stopping Solr"
+        cd $SOLR_DIR
+        $JAVA $JAVA_OPTIONS --stop
+        ;;
+    restart)
+        $0 stop
+        sleep 1
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}" >&2
+        exit 1
+        ;;
+esac
+-----------------------------------------------------------------------
 
 Note that you will need to index your documents first and put those indexes in the above folder.
 
@@ -106,7 +141,7 @@ Note that the name UserContent comes from the site.yml file. That allows more th
 
 The JavaScript in Collex heavily uses prototype and YUI.
 
-When running in production mode, different js and css files are used. The files are compressed and concatinated.
+When running in production mode, different js and css files are used. The files are compressed and concatenated.
 
 When running in development mode, the js and css files are not touched.
 
@@ -127,17 +162,26 @@ In production, there are three js files on a page:
 -----------------------------------------------------------------------
 ** Custom rake tasks
 
-In /lib/tasks/collex.rake, there are a number of rake tasks defined. Here are the most important ones:
+In /lib/tasks/*.rake, there are a number of rake tasks defined. Here are the most important ones:
 
 --- Development side ---
-	rake collex:tag_current_version
+	rake deploy:tag_current_version
 	(uses the version number in the model Branding to tag the trunk.)
 
-	rake collex:jslint
+	rake deploy:compress_about_css
+	Compress the css for the about pages - this is done when deploying, but needs to be done manually on your development machine.
+
+	rake jslint:all
 	(Runs jslint on all non-minimized js files in /public/javascripts.)
 
+	rake jslint:file
+	(Runs jslint on one file.)
+
 --- Server side ---
-	rake collex:update
+	rake deploy:archive
+	Tag the current collex version; make a backup of the production site
+
+	rake deploy
 	This does various things depending on what is defined in site.yml. See the file collex.rake for details about what is
 	updated for each type. The various things that are done are:
 	- download latest code
@@ -155,14 +199,7 @@ In /lib/tasks/solr.rake, there are routines to manipulate solr.
 	To zip up the index so that it can be transferred to another computer:
 	rake index=resources solr:zip
 
-In /lib/tasks/solr_index.rake, there are a number of tasks for indexing and testing the index. See the file for complete details.
-Here are a couple of the more common ones:
-	rake folder=XXX solr_index:index_rdf_for_debugging
-	rake folder=XXX solr_index:index_rdf_with_fulltext
-	rake archive=XXX solr_index:compare_indexes
-	rake archive=XXX solr_index:compare_indexes_text
-	rake uri=XXX solr_index:examine_solr_document
-	rake folder=XXX solr_index:find_duplicate_objects
+There are also a number of rake tasks that are useful for indexing. See the file "indexing.txt" for details.
 
 -----------------------------------------------------------------------
 ** Site specific info
@@ -201,9 +238,6 @@ There are daemons that have to be running in the background all the time. To run
 	RAILS_ENV=development script/daemons start|stop|restart
 
 The default is production, so you can leave off the RAILS_ENV on your deployed sites.
-
-At least in Rails 2.3.2, there is a bug in the daemons if you have rails frozen, so don't freeze rails without testing whether
-the daemons start up.
 
 Also, the daemons are running a different process, and won't see code changes unless they are restarted, so while
 developing them, be aware of when you've changed code that a daemon will execute, and restart the daemons then.

@@ -16,34 +16,34 @@
 
 module MyCollexHelper
   def down_char
-    "&darr;"
+    raw("&darr;")
   end
   def up_char
-    "&uarr;"
+    raw("&uarr;")
   end
   def del_char
-    "&times;"
+    raw("&times;")
   end
   def ins_char
-    "&crarr;"
+    raw("&crarr;")
   end
   def change_char
-    "&Delta;"
+    raw("&Delta;")
   end
   def left_char
-    "&larr;"
+    raw("&larr;")
   end
   def right_char
-    "&rarr;"
+    raw("&rarr;")
   end
   def element_bullet
-    "&para;"
+    raw("&para;")
   end
   def opened_char
-    '&#x25BC;'
+    raw('&#x25BC;')
   end
   def closed_char
-    '&#x25B2;'
+    raw('&#x25B2;')
   end
   
   def element_text_thumbnail(text)
@@ -64,7 +64,7 @@ module MyCollexHelper
     if illustrations.length > pos
       element_pic_thumbnail_illustration(illustrations[pos])
     else
-      "<img src='#{get_image_url(nil)}' height='16px' />"
+      raw("<img src='#{get_image_url(nil)}' height='16px' />")
     end
   end
   
@@ -79,17 +79,17 @@ module MyCollexHelper
 		# image is the item in the database that points to the image.
 		# ty is :micro, :smaller, :thumb
 		return "" if image == nil
-		return "" if image.public_filename == nil
-		return image.public_filename(ty) if ty
-		return image.public_filename()
+		return "" if image.photo.url == nil
+		return "/#{image.photo.url(ty)}" if ty
+		return "/#{image.photo.url()}"
 	end
 
   def element_pic_thumbnail_illustration(illustration)
     if illustration.illustration_type == ExhibitIllustration.get_illustration_type_image()
-      "<img src='#{get_image_url(illustration.image_url)}' height='16px' />"
+      raw("<img src='#{get_image_url(illustration.image_url)}' height='16px' />")
     elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_nines_obj()
       thumb = CachedResource.get_thumbnail_from_uri(illustration.nines_object_uri)
-      "<img src='#{get_image_url(thumb)}' height='16px' />"
+      raw("<img src='#{get_image_url(thumb)}' height='16px' />")
     elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_text()
       "..."
     end
@@ -119,6 +119,7 @@ module MyCollexHelper
     label << link_to_function(opened_char(), "#{toggle_function}('#{item_id_prefix}_p#{page_num}')", { :class => 'modify_link'})
     label << "</span>\n"
     label << "<span class='#{class_name}'>" + "Page " + page_num + "</span>\n"
+	return raw(label)
   end  
   
   def create_border_div(element, border_active, border_class)
@@ -153,7 +154,7 @@ module MyCollexHelper
       #is_first = true
     end
     
-    return { :border_active => border_active, :html => html };
+    return { :border_active => border_active, :html => raw(html) };
   end
 
 	def exhibit_builder_style_name(exhibit)

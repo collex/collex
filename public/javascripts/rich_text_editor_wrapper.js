@@ -31,10 +31,25 @@
 		YAHOO.widget.SimpleEditor.prototype.getNumSibs = function (node) {
 			var sibs = 0;
 			var x = node;
-			while (x.previousSibling) {
-				x = x.previousSibling;
-				sibs++;
-			}
+			
+      while (x.previousSibling) {
+        x = x.previousSibling;
+        
+        // Trim out space txt nodes that some browsers treat differently
+        // firefox treats them as nodes, ie skips them
+        if  (x.nodeType == 3 && x.wholeText.trim().length == 0) {
+          continue;
+        }
+        
+        // Don't count comment nodes as siblings. They are not counted in other places
+        if  (x.nodeType == 8 ) {
+          continue;
+        }
+
+        // if we got here, its a valid sibling. count it
+        sibs++;
+      }
+
 			return sibs;
 		};
 
@@ -237,34 +252,68 @@
 			var aOffset = -1;
 			var fOffset = -1;
 
-			var arrLevels = [ -1 ];
-			var charCount = 0;
-			//debugStr = "";
-			arr.each(function(i) {
-				if (i === "<br>" || i === "<hr>" || (i.startsWith('<!--') && i.endsWith('-->'))) { // the item is self-contained.
-					arrLevels[arrLevels.length-1]++;
-				} else if (i.substring(0, 2) === "</") {	// this array item is an end tag.
-					arrLevels.pop();
-				} else if (i.substring(0, 1) === "<" && i.substring(i.length-3) === "/>") { // the item is self contained
-					arrLevels[arrLevels.length-1]++;
-				} else if (i.substring(0, 1) === "<") {	// this array item is a start tag.
-					arrLevels[arrLevels.length-1]++;
-					arrLevels.push(-1);
-				} else if (i === "" ){	// The item is empty, so don't count it.
-				} else {	// this array item is text.
-					arrLevels[arrLevels.length-1]++;
-				}
+			var arrLevels = [-1];
+      var charCount = 0;
+      var inComment = false;
+      
+      arr.each(function(i) {
 
-				// See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
-				var levelStr = arrLevels.join(',');
-				if (apos && apos.join(',') === levelStr)
-					aOffset = charCount + aoff;
-				if (fpos && fpos.join(',') === levelStr)
-					fOffset = charCount + foff;
+        // skip blank entries
+        if (i === "" ) {
+          return;
+        } 
+        
+        // When in comments, check for end and accumulate txt length
+        if ( inComment ) {
+          if ( i.endsWith('-->')  ) {
+            inComment = false;
+          }
+          charCount += i.length;
+          return;
+        }
+        
+        // If we find a comment flag it. accumulate len and skip the rest
+        if ( i.startsWith('<!--') && i.endsWith('-->') == false ) {
+          inComment = true;
+          charCount += i.length;
+          return;
+        }
+        
+        // process remaining choices for this line
+        if (i === "<br>" || i === "<hr>" || i.startsWith('<meta') || (i.startsWith('<!--') && i.endsWith('-->'))) { // the item is self-contained.
+          arrLevels[arrLevels.length-1]++;
+        } else if (i.substring(0, 2) === "</") {  // this array item is an end tag.
+          arrLevels.pop();
+        } else if (i.substring(0, 1) === "<" && i.substring(i.length-3) === "/>") { // the item is self contained
+          arrLevels[arrLevels.length-1]++;
+        } else if (i.substring(0, 1) === "<") { // this array item is a start tag.
+          arrLevels[arrLevels.length-1]++;
+          arrLevels.push(-1);
+        } else {  // this array item is text. text is considered a node in the dom
+          if ( i.trim().length > 0)  {
+            arrLevels[arrLevels.length-1]++;
+          }
+        }
+  
+        // See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
+        var levelStr = arrLevels.join(',');
+        if (apos && apos.join(',') === levelStr) {
+          aOffset = charCount + aoff;
+        }
+        
+        if (fpos && fpos.join(',') === levelStr) {
+          fOffset = charCount + foff;
+        }
+        
+        // if we found an offset we are done. break out
+        if ( aOffset > -1 || fOffset > -1) {
+          throw $break;
+        }
 
-				charCount += i.length;
-				//debugStr += arrLevels.join(',') + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.escapeHTML() + "<br />";
-			});
+        // lastly, accumulate total position in doc
+        charCount += i.length;
+
+      });
 
 			// If either offset is missing, try to figure it out by using the selection string.
 			if (aOffset === -1) {
@@ -653,6 +702,8 @@ var RichTextEditor = Class.create({
 
 		this.updateContents = function(html) {
 			This.editor.setEditorHTML(html);
+			//This.editor._getDoc().body.innerHTML = html;
+      //This.editor.nodeChange();
 			This.initializeFootnoteEvents();
 		};
 
@@ -709,7 +760,7 @@ var RichTextEditor = Class.create({
 				$A(target.childNodes).each(function(child) {
 					if (child.className.indexOf('tip') >= 0) {
 						//var p = document.parentNode;
-						var parent = $('modal_dlg_parent');
+						var parent = $('gd_modal_dlg_parent');
 						var x = getX(target) + getX(ifr.offsetParent) + 20;
 						var y = getY(target) + getY(ifr.offsetParent) + 20;
 						currTooltip =new Element('div', { style: 'z-index:500; position: absolute; top:' + y + 'px; left:' + x + 'px; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em;'}).update(child.innerHTML);
@@ -768,8 +819,20 @@ var RichTextEditor = Class.create({
 			editor.on('editorKeyDown', function(ev) {
 				var cleanPasted = function(pasted) {
 					pasted = pasted.gsub("<br>", "\x02").gsub("<br/>", "\x02").gsub("<br />", "\x02");
+					pasted = pasted.gsub(/<a(.*?)href="(.*?)"(.*?)>(.*?)<\/a>/, "\x03#{2}\x04#{4}\x05");
+					pasted = pasted.gsub(/<span (.*?)class="ext_linklike" real_link="(.*?)"(.*?)>(.*?)<\/span>/, "\x03#{2}\x04#{4}\x05");
+					pasted = pasted.gsub(/<span (.*?)class="nines_linklike" real_link="(.*?)"(.*?)>(.*?)<\/span>/, "\x06#{2}\x07#{4}\x08");
+					pasted = pasted.gsub(/<span (.*?)real_link="(.*?)" class="ext_linklike"(.*?)>(.*?)<\/span>/, "\x03#{2}\x04#{4}\x05");
+					pasted = pasted.gsub(/<span (.*?)real_link="(.*?)" class="nines_linklike"(.*?)>(.*?)<\/span>/, "\x06#{2}\x07#{4}\x08");
 					pasted = pasted.stripTags().stripScripts().gsub('&nbsp;', '').escapeHTML();
 					pasted = pasted.gsub("\x02", "<br/>");
+					pasted = pasted.gsub(/\x03(.*?)\x04(.*?)\x05/, "<span class=\"ext_linklike\" real_link=\"#{1}\" title=\"External Link: #{1}\">#{2}</span>");
+					pasted = pasted.gsub(/\x06(.*?)\x07(.*?)\x08/, "<span class=\"nines_linklike\" real_link=\"#{1}\" title=\"NINES Link: #{1}\">#{2}</span>");
+					// links can come in three forms. If they are pasted from a web page, they will have the <a> tag. If they are pasted from the exhibit builder,
+					// they will be one of two <span> types.
+					// <a ... href="HREF" ...>DISPLAY</a>
+					// <span class="ext_linklike" real_link="HREF" title="External Link: HREF">DISPLAY</span>
+					// <span class="nines_linklike" real_link="HREF" title="NINES Object: HREF">DISPLAY</span>
 					return pasted + ' ';
 				};
 				var ctrl = ev.ev.ctrlKey;
@@ -949,7 +1012,17 @@ var RichTextEditor = Class.create({
 		var width = params.width !== null ? params.width : 702;
 		//var hoverCss = ".superscript { position: relative; bottom: 0.5em; color: #AC2E20; font-size: 0.8em; font-weight: bold; text-decoration: none;} .rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; } a.rte_footnote{ position:relative; } a.rte_footnote:hover { z-index:25; } a.rte_footnote span { display: none; } a.rte_footnote:hover span.tip { display: block; position:absolute; top:1em; left:.2em; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em; }";
 		var hoverCss = " a.rte_footnote { background: url(/images/rte_footnote.jpg) top right no-repeat; padding-right: 9px; cursor: pointer !important; } a.rte_footnote span { display: none; }";
-		var linkCss = ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; }';
+		/*hoverCss += '  a.rte_footnote:hover span.tip { display: block; position:absolute;'
+    hoverCss += '  top:1em;'
+    hoverCss += '  left:.2em;'
+    hoverCss += '  width:10em;'
+    hoverCss += '  border:1px solid #914C29;'
+    hoverCss += '  background-color: #F7ECDB;'
+    hoverCss += '  color:#FF0000;'
+    hoverCss += '  text-align: left;'
+    hoverCss += '  font-weight: normal;'
+    hoverCss += '  padding: .3em; }';*/
+		var linkCss = ' a:link { color: #A60000 !important; text-decoration: none !important; } a:visited { color: #A60000 !important; text-decoration: none !important; } a:hover { color: #A60000 !important; text-decoration: none !important; } .nines_linklike { color: #A60000; background: url(../images/nines/nines_link.jpg) center right no-repeat; padding-right: 13px; } .ext_linklike { color: #A60000; background: url(../images/external_link.jpg) center right no-repeat; padding-right: 13px; }';
 		var firstLetterCss = ' .drop_cap:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} .drop_cap p:first-letter {	color:#999999;	float:left;	font-family:"Bell MT","Old English",Georgia,Times,serif;	font-size:420%;	line-height:0.85em;	margin-bottom:-0.15em;	margin-right:0.08em;} ';
 
 		this.editor = new YAHOO.widget.SimpleEditor(id, {

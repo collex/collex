@@ -5,7 +5,7 @@ class PeerReview < ActiveRecord::Base
 		badges = PeerReview.all
 		list = []
 		badges.each {|badge|
-			list.push({ :value => badge.id, :text => badge.image_full.public_filename }) if badge.image_full
+			list.push({ :value => badge.id, :text => "/#{ImageFull.find(badge.image_full_id).photo.url}" }) if badge.image_full_id
 		}
 		return list
 	end
@@ -13,7 +13,7 @@ class PeerReview < ActiveRecord::Base
 	def self.get_badge(id)
 		return "" if id == nil || id == 0
 		badge = PeerReview.find(id)
-		return "" if !badge.image_full
-		return badge.image_full.public_filename
+		return "" if !badge.image_full_id
+		return "/#{badge.image_full.photo.url}"
 	end
 end

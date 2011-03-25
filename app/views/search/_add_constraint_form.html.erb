@@ -18,11 +18,18 @@
 <center>
 <div class="add_constraint_form">
     	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_federation_constraint?(@other_federation) %> ><%= @all_federations %></input></div>
-	<form id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" >
+	<form accept-charset='UTF-8' id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" >
 		<div class="page_header">Search <%= SITE_NAME %>:</div>
     	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 	<table>
-        <tr><td colspan='2'><%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword", :value=>@kphrs ? @kphrs : '' }, {:min_chars => 2}-%></td><td><input id="search_submit" type="submit" value="Search" /></td></tr>
+        <tr>
+          <td colspan='2'>
+            <%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword", :value=>@kphrs ? @kphrs : '' }, {:min_chars => 2}-%>
+          </td>
+          <td>
+            <input id="search_submit" type="submit" value="Search" />
+          </td>
+        </tr>
 		<tr><td colspan='3'><div class="search_help_icon">
 					<a href="/help.html" class="tooltip"><img height="18" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" /><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= SITE_NAME %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>

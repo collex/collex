@@ -18,7 +18,7 @@
 
 <div class="publications_images">
 <% for item in @publications -%>
-	<%= link_to "<img class='publications_image' src='#{PublicationImage.get_image(item.publication_image_id)}' alt='#{item.name}' />", item.get_visible_url() %>
+	<%= link_to raw("<img class='publications_image' src='#{PublicationImage.get_image(item.publication_image_id)}' alt='#{item.name}' />"), item.get_visible_url() %>
 <% end -%>
 </div>
 

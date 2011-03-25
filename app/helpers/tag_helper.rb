@@ -18,14 +18,31 @@ module TagHelper
   def tag_cloud(cloud_info, selection, controller, hide_some)
     str = ""
     is_hiding = false
+    
+    # get the buckets for the current zoom level
+    zooms = cloud_info[:zoom_levels];
+    zoom_level = 0
+    if session[:tag_zoom]
+       zoom_level = session[:tag_zoom] - 1
+       zoom_level = 0 if zoom_level < 0 || zoom_level > 9
+    end
+    bucket_size = zooms[zoom_level]
+    
+    # generate a span tag for every item in the cloud. This tag will include a 
+    # custom attribute 'zoom' that lists the zoom bucket that each tag should appear
+    # in as zoom lvel changes. ex zoom='1,0,0,0,0,0,0,0,0,0' means that the tag 
+    # appears in zoom level one but no others
     cloud_info[:cloud_freq].each_with_index do |item, i|
+      tag_zoom_attribute = get_zoom_attribute(zooms,item.last)
       html = {}
-      size = cloud_info[:bucket_size][item.last]
+      size = bucket_size[item.last]
+      size = 0 if size.nil?
       if selection == item.first
-        str += "<span class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first.downcase)}</span>\n"
+        str += "<span #{tag_zoom_attribute} class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first.downcase)}</span>\n"
       else
-        str += "<span class='cloud#{size}'>#{link_to_tag(item.first, item.last, false, controller, html)}</span>\n"
+        str += "<span #{tag_zoom_attribute} class='cloud#{size}'>#{link_to_tag(item.first, item.last, false, controller, html)}</span>\n"
       end
+      
       if hide_some && i == 25
         is_hiding = true
         str += "<div>#{link_to_function('[show entire tag cloud]', '$(\'more_tags\').show(); $(this).hide();', :id => 'more_tag_link', :class => 'nav_link dont_filter')}</div>\n"
@@ -36,44 +53,9 @@ module TagHelper
     if is_hiding
       str += "<br />#{link_to_function('[show fewer tags]', '$(\'more_tags\').hide(); $(\'more_tag_link\').show();', :class => 'nav_link dont_filter')}</div>\n"
     end
-   return str
-#    xm = Builder::XmlMarkup.new(:indent => 2)
-#    list.each do |item|
-#      html = {}
-#      size = item.last.quo(bucket_size).ceil
-#      if selection == item.first
-#        xm.span :class => "cloud#{size} sidebar_tag_link_selected" do
-#          xm << "#{h(item.first)}"
-#        end
-#      else
-#        xm.span :class => "cloud#{size}" do
-#          xm << link_to_tag(item.first, item.last, false, controller, html)
-#        end
-#      end
-#    end
-#    return xm
+   return raw(str)
   end
   
-#  def tag_list(list, selection)
-#    xm = Builder::XmlMarkup.new(:indent => 2)
-#    if list == nil
-#      return xm
-#    end
-#    list.each do |item|
-#      html = {}
-#      if selection == item.first
-#        xm.div :class => "sidebar_tag_link_selected" do
-#          xm << "#{h(item.first)}&nbsp;(#{item.last})"
-#        end
-#      else
-#        xm.div :class => "sidebar_tag_link" do
-#          xm << link_to_tag(item.first, item.last, true, html)
-#        end
-#      end
-#    end
-#    return xm
-#  end
-
   def create_total(view_type, total_hits, tag)
     if view_type == 'tag'
       encoded = encode_for_uri(h(tag))
@@ -84,7 +66,7 @@ module TagHelper
     elsif view_type == 'untagged'
       return "#{pluralize(total_hits, 'object does', 'objects do')} not have tags."
     end
-end
+  end
 
   def create_javascript_friendly_tag_name(tag_name)
     # This creates a string that can be passed to a javascript routine between single quotes.
@@ -112,6 +94,24 @@ end
        visible = escaped_value
      end
      html_options[:class] = 'nav_link'
-     link_to visible.downcase, { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value, :anchor => "top_of_results" }, html_options
+	 #link = { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value, :anchor => "top_of_results" }
+	 link = "/#{controller}/results?view=tag&tag=#{escaped_value}#top_of_results"
+     raw(link_to(visible.downcase, link, html_options))
+  end
+  
+  # given a tag frequency and an zoom_data array containing [frequency][zoom_level]
+  # return the attribute string containing all of the zoom levels for the freq
+  def get_zoom_attribute(zoom_data, tag_frequency)
+    attribute = "zoom='"
+    zoom_data.each do | zoom |
+      lvl = zoom[tag_frequency]
+      lvl = 0 if lvl.nil?
+      if attribute.length > 6
+        attribute = attribute + ","
+      end
+      attribute = attribute + lvl.to_s()
+    end  
+    attribute = attribute + "'"
+    return attribute
   end
 end

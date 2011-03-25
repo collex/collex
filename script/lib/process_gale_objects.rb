@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # ------------------------------------------------------------------------
 #     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
 # 

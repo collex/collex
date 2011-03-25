@@ -23,18 +23,32 @@
 .profile_label {
 	width: 100px;
 	float:left;
+	font-weight: bold;
 }
 
 .profile_image {
 	float: left;
 	padding-right: 10px;
 	padding-bottom: 5px;
+	
+}
+
+.profile_paragraph {
+	max-width: 600px;
 }
 
 .profile_image img {
 	max-height:180px;
+	max-width: 130px;
 }
 
 .profile_edit {
 	text-align: right;
+}
+
+.profile_hint {
+	color: gray;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	font-style: italic;
 }

@@ -129,9 +129,9 @@ var FootnoteAbbrev = Class.create({
 		this.createEditButton = function(klass) {
 			klassEdit = klass;
 			if (footnoteStr.length > 0)
-				return {page_link: "*<span class='tip'>" + footnoteStr.stripTags() + "</span>", klass: klass + ' footnote_tip', callback: editFootnote};
+				return {link: "*<span class='tip'>" + footnoteStr.stripTags() + "</span>", klass: klass + ' footnote_tip', callback: editFootnote};
 			else
-				return {page_link: "*<span class='tip'></span>", klass: klass + ' footnote_tip hidden', callback: editFootnote};
+				return {link: "*<span class='tip'></span>", klass: klass + ' footnote_tip hidden', callback: editFootnote};
 		};
 	}
 });
@@ -166,7 +166,7 @@ var FootnotesInRte = Class.create({
 
 		var rteFootnotePrefix1 = '<a class="rte_footnote">';
 		var rteFootnotePrefix2 = '<span>';
-		var rteFootnoteMid = '</span><span class="tip"><em>Click this footnote to edit</em><hr />';
+		var rteFootnoteMid = '</span><span class="tip"><span class="footnote_edit_hover">Click this footnote to edit</span>';
 		var rteFootnoteClose1 = '</a>';
 		var rteFootnoteClose2 = '</span>';
 

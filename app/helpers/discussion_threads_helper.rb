@@ -29,7 +29,7 @@ module DiscussionThreadsHelper
   end
 
   def get_user_info_url(user)
-	  return "/#{MY_COLLEX_URL}/show_profile?user=#{user.id}"
+	  return "/my_collex/show_profile?user=#{user.id}"
   end
 
   def get_user_link(user)
@@ -44,7 +44,7 @@ module DiscussionThreadsHelper
       user = User.find(user)
     end
 		img = "<img height=\"#{height}\" title=\"#{user.fullname}\" alt=\"#{user.fullname}\" src=\"#{get_user_picture(user.id, :micro)}\"/>"
-		link_to_function(img, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
+		link_to_function(raw(img), "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
   end
 
   def make_ext_link(url)
@@ -52,7 +52,7 @@ module DiscussionThreadsHelper
     if url.index("http") != 0  # if the link doesn't start with http, then we'll add it.
       url = "http://" + url
     end
-    return "<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>"
+    return raw("<a class='ext_link' target='_blank' href='#{url}'>#{str}</a>")
   end
   
   def make_edit_link(comment, is_main, can_delete)
@@ -77,23 +77,24 @@ module DiscussionThreadsHelper
       "populate_collex_obj_url: '/forum/get_nines_obj_list'," +
       "progress_img: '#{PROGRESS_SPINNER_PATH}'," +
       "logged_in: true }); return false;\">[edit]</a>"
-    return html
+    return raw(html)
   end
   
   def get_user_picture(user_id, type)
     placeholder = "/images/#{SKIN}/forum_generic_user.gif"
     user = User.find_by_id(user_id)
     return placeholder if user == nil
-    return placeholder if user.image == nil
-    return placeholder if user.image.public_filename == nil
+    return placeholder if user.image_id == nil
+	image = Image.find_by_id(user.image_id)
+    return placeholder if image == nil || image.photo_file_name == nil
 
-    full_size_path = user.image.public_filename
-    file_path = user.image.public_filename(type)
+    full_size_path = image.photo.url.split('?')[0]
+    file_path = image.photo.url(type).split('?')[0]
   
-    if File.exists?("#{RAILS_ROOT}/public/#{file_path}")
-      return file_path
-    elsif File.exists?("#{RAILS_ROOT}/public/#{full_size_path}")
-      return full_size_path
+    if File.exists?("#{Rails.root}/public/#{file_path}")
+      return "/#{file_path}"
+    elsif File.exists?("#{Rails.root}/public/#{full_size_path}")
+      return "/#{full_size_path}"
     else
       return placeholder
     end
@@ -145,7 +146,7 @@ module DiscussionThreadsHelper
       hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id)
       thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit_no_site(hit))
       link = hit["url"] ? hit["url"][0] : nil
-      caption = hit['title'] ? CachedResource.fix_char_set(hit['title'][0]) : ""
+      caption = hit['title'] ? hit['title'][0] : ""
     elsif comment.get_type() == "nines_exhibit"
       exhibit = Exhibit.find(comment.exhibit_id)
       thumbnail = exhibit.thumbnail == "You have not added a thumbnail to this exhibit." ? nil : exhibit.thumbnail
@@ -166,7 +167,7 @@ module DiscussionThreadsHelper
 		group_comment = ""
 		if thread.group_id != nil && thread.group_id > 0
 			group = Group.find(thread.group_id)
-			group_link = link_to(group.name, { :controller => 'groups', :action => group.id }, {:class => 'nav_link'} )
+			group_link = link_to(group.name, { :controller => 'groups', :action => 'show', :id => group.id }, {:class => 'nav_link'} )
 			group_comment = case group.forum_permissions
 				when 'hidden' then "A private discussion for members of #{group_link}. Only members can read and comment."
 				when 'readonly' then "A public discussion featuring members of #{group_link}. Only members may comment."
@@ -187,7 +188,7 @@ module DiscussionThreadsHelper
     last_comment = thread.discussion_comments[thread.discussion_comments.length-1]
     return { :title => title, :thumbnail => thumbnail, :author => User.find(comment.user_id), :link => link, :caption => caption,
       :last_comment_author => User.find(last_comment.user_id), :last_comment_time => last_comment.updated_at,
-			:group_comment => group_comment }
+			:group_comment => raw(group_comment) }
   end
 
 	def user_can_reply(comment)
@@ -206,6 +207,6 @@ module DiscussionThreadsHelper
     abbrev_title = title.slice(0,60)
     abbrev_title = abbrev_title + "..." if title.length > 60
 		# Note: apparently, you can't put any div's in this because Safari will get confused.
-    "#{abbrev_title}<span class='discussion_title_tooltip'><b class='discussion_title_tooltip_title'>#{title}</b><br/><br/>#{abbrev_comment}</span>"
+    return raw("#{abbrev_title}<span class='discussion_title_tooltip'><b class='discussion_title_tooltip_title'>#{title}</b><br/><br/>#{abbrev_comment}</span>")
   end
 end

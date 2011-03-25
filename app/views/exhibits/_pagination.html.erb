@@ -16,20 +16,26 @@
     # ---------------------------------------------------------------------------- -%>
 <%# pagination params: int curr_page, string controller, string action, string id, int num_pages, bool has_footnotes -%>
 <% has_footnotes = true #force the footnotes to appear so that the links show up. TODO-PER: refactor this out. -%>
+<% if action == 'view'
+			link_prefix = "/#{controller}/#{id}?page="
+		else
+			link_prefix = "/#{controller}/#{action}?id=#{id}&page="
+		end
+%>
 <div class="exhibit_nav">
 	<% if curr_page == 1 -%>
 		<span class="arrowhere">&laquo;</span>
 	<% elsif curr_page == -1 -%>
-		<%= link_to "&laquo;<span class='page_tooltip'>Previous&nbsp;page</span>", { :controller => controller, :action => action, :id => id, :page => num_pages }, { :class => 'tooltip' } %>
+		<%= link_to raw("&laquo;<span class='page_tooltip'>Previous&nbsp;page</span>"), "#{link_prefix}#{num_pages}", { :class => 'tooltip' } %>
 	<% else -%>
-		<%= link_to "&laquo;<span class='page_tooltip'>Previous&nbsp;page</span>", { :controller => controller, :action => action, :id => id, :page => curr_page - 1 }, { :class => 'tooltip' } %>
+		<%= link_to raw("&laquo;<span class='page_tooltip'>Previous&nbsp;page</span>"), "#{link_prefix}#{curr_page - 1}", { :class => 'tooltip' } %>
 	<% end -%>
 	
 	<% num_pages.times { |page| -%>
 		<% if curr_page == page+1 -%>
 			<span class="here"><a class="tooltip">&bull;<span class="page_tooltip">Page <%= "#{page+1}" %><br />You&nbsp;are&nbsp;here</span></a></span>
 		<% else -%>
-			<span><%= link_to "&bull;<span class='page_tooltip'>Page&nbsp;#{page+1}</span>", { :controller => controller, :action => action, :id => id, :page => page+1 }, { :class => 'tooltip' } %></span>
+			<span><%= link_to raw("&bull;<span class='page_tooltip'>Page&nbsp;#{page+1}</span>"), "#{link_prefix}#{page+1}", { :class => 'tooltip' } %></span>
 		<% end -%>
 	<% } -%>
 
@@ -37,15 +43,14 @@
 		<% if curr_page == -1 -%>
 			<span class="here"><a class="tooltip">&diams;<span class="page_tooltip">Endnotes<br />You&nbsp;are&nbsp;here</span></a></span>
 		<% else -%>
-			<span><%= link_to "&diams;<span class='page_tooltip'>Endnotes</span>", { :action => action, :id => id, :page => -1 }, { :class => 'tooltip' } %></span>
+			<span><%= link_to raw("&diams;<span class='page_tooltip'>Endnotes</span>"), "#{link_prefix}#{-1}", { :class => 'tooltip' } %></span>
 		<% end -%>
 	<% end -%>
 
 	<% if (curr_page == num_pages && !has_footnotes) || curr_page == -1 -%>
 		<span class="arrowhere">&raquo;</span>
 	<% elsif curr_page == num_pages -%>
-		<%= link_to "&raquo;<span class='page_tooltip'>Next&nbsp;page</span>", { :controller => controller, :action => action, :id => id, :page => -1 }, { :class => 'tooltip' } %>
-	<% else -%>
-		<%= link_to "&raquo;<span class='page_tooltip'>Next&nbsp;page</span>", { :controller => controller, :action => action, :id => id, :page => curr_page + 1 }, { :class => 'tooltip' } %>
+		<%= link_to raw("&raquo;<span class='page_tooltip'>Next&nbsp;page</span>"), "#{link_prefix}#{-1}", { :class => 'tooltip' } %>	<% else -%>
+		<%= link_to raw("&raquo;<span class='page_tooltip'>Next&nbsp;page</span>"), "#{link_prefix}#{curr_page + 1}", { :class => 'tooltip' } %>
 	<% end -%>
 </div>

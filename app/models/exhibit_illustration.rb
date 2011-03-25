@@ -17,8 +17,10 @@
 class ExhibitIllustration < ActiveRecord::Base
   belongs_to :exhibit_element
   acts_as_list :scope => :exhibit_element
+  before_save :b4_save
+  after_find :aft_find
   
-  def before_save
+  def b4_save
     if illustration_type == 'Internet Image'
       illustration_type = 0
     elsif illustration_type == 'Textual Illustration'
@@ -30,7 +32,7 @@ class ExhibitIllustration < ActiveRecord::Base
     end
   end
   
-  def after_ﬁnd
+  def aft_find
     if illustration_type == 0
       illustration_type = 'Internet Image'
     elsif illustration_type == 1

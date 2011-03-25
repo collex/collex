@@ -14,8 +14,8 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global Class, Element, Ajax, $ */
-/*global GeneralDialog, CreateListOfObjects, genericAjaxFail */
+/*global Class, Element, $ */
+/*global GeneralDialog, CreateListOfObjects, serverAction */
 /*extern EditExhibitObjectListDlg, ObjectSelector, doRemoveObjectFromExhibit */
 
 ////////////////////////////////////////////////////////////////////////////
@@ -23,9 +23,14 @@
 ////////////////////////////////////////////////////////////////////////////
 
 var ObjectSelector = Class.create({
-	initialize: function (progress_img, url_get_objects, exhibit_id) {
+	initialize: function (progress_img, url_get_objects, exhibit_id, exhibit_label) {
 		// This creates 4 controls: the unselected list, the selected list, and the buttons to move items between the two
 		this.class_type = 'ObjectSelector';	// for debugging
+		
+		if (exhibit_label == null) 
+		{
+		  exhibit_label = "Exhibit";
+		}
 
 		// private variables
 		//var This = this;
@@ -75,7 +80,7 @@ var ObjectSelector = Class.create({
 			var divLeftText = new Element('div').update('Available Objects:');
 			divLeftText.addClassName('select_objects_label select_objects_label_left');
 			divMarkup.appendChild(divLeftText);
-			var divRightText = new Element('div').update('Objects in Exhibit:');
+			var divRightText = new Element('div').update('Objects in '+exhibit_label+':');
 			divRightText.addClassName('select_objects_label select_objects_label_right');
 			divMarkup.appendChild(divRightText);
 
@@ -120,22 +125,16 @@ var EditExhibitObjectListDlg = Class.create({
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
-			var url = params.destination;
+			var url = params.arg0;
 			var dlg = params.dlg;
 
 			dlg.setFlash('Updating Exhibit\'s Objects...', false);
 			var data = { exhibit_id: exhibit_id, objects: obj_selector.getSelectedObjects().join('\t') };
 
-			new Ajax.Updater(palette_el_id, url, {
-				parameters : data,
-				evalScripts : true,
-				onSuccess : function(resp) {
-					dlg.cancel();
-				},
-				onFailure : function(resp) {
-					genericAjaxFail(dlg, resp);
-				}
-			});
+			var onSuccess = function(resp) {
+				dlg.cancel();
+			};
+			serverAction({ action: { actions: url, els: palette_el_id, params: data, onSuccess:onSuccess }});
 		};
 
 		var dlgLayout = {
@@ -143,13 +142,13 @@ var EditExhibitObjectListDlg = Class.create({
 				rows: [
 					[ { text: 'Select object from the list on the left and press the ">>" button to move it to the exhibit.', klass: 'new_exhibit_instructions' } ],
 					[ { custom: obj_selector } ],
-					[ { rowClass: 'last_row' }, { button: 'Ok', url: url_update_objects, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+					[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: url_update_objects, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 				]
 			};
 
 		var params = { this_id: "edit_exhibit_object_list_dlg", pages: [ dlgLayout ], body_style: "edit_palette_dlg", row_style: "new_exhibit_row", title: "Choose Objects for Exhibit" };
 		var dlg = new GeneralDialog(params);
-		dlg.changePage('choose_objects', null);
+		//dlg.changePage('choose_objects', null);
 		dlg.center();
 		obj_selector.populate(dlg);
 	}
@@ -160,9 +159,6 @@ function doRemoveObjectFromExhibit(exhibit_id, uri)
 	var reference = $("in_exhibit_" + exhibit_id + "_" + uri);
 	if (reference !== null)
 		reference.remove();
-	new Ajax.Updater("exhibited_objects_container", "/my_collex/remove_exhibited_object", {
-		parameters : { uri: uri, exhibit_id: exhibit_id },
-		onFailure : function(resp) { genericAjaxFail(null, resp); }
-	});
+	serverAction({ action: { actions: "/builder/remove_exhibited_object", els: "exhibited_objects_container", params: { uri: uri, exhibit_id: exhibit_id } }});
 }
 

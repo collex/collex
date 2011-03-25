@@ -14,7 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, MessageBoxDlg, updateWithAjax, ShowDivInLightbox */
+/*global $, MessageBoxDlg, serverAction, ShowDivInLightbox */
 /*extern expandSearchNameFacet, showAllSearchNameFacet, minimizeSearchNameFacet */
 
 function expandSearchNameFacet() {
@@ -27,7 +27,7 @@ function expandSearchNameFacet() {
 		var onFailure = function(resp) {
 			new MessageBoxDlg("Error in retrieving names", "There was an error getting the list of names from the server. The problem was: " + resp.responseText);
 		};
-		updateWithAjax({ el: 'search_name_facet_max', action: '/search/list_name_facet_all', params: {}, onFailure: onFailure });
+		serverAction({action:{ els: 'search_name_facet_max', actions: '/search/list_name_facet_all', params: {}, onFailure: onFailure }});
 	}
 }
 

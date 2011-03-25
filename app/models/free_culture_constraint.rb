@@ -17,13 +17,17 @@
 class FreeCultureConstraint < ExpressionConstraint
   def to_solr_expression
     #"#{operator}freeculture:[* TO *]"
-		op = operator == '-' ? '' : '-'
-    "#{op}freeculture:false"
+#		op = operator == '-' ? '' : '-'
+#    "#{operator}freeculture:true"
+	b = operator == '-' ? 'false' : 'true'
+    "freeculture:#{b}"
   end
   
   def to_s
     #"#{operator}?:freeculture:[* TO *]"
-		op = operator == '-' ? '' : '-'
-    "#{op}?:freeculture:false"
+#		op = operator == '-' ? '' : '-'
+#    "#{operator}?:freeculture:true"
+	  b = operator == '-' ? 'false' : 'true'
+	  "freeculture:#{b}"
   end
 end

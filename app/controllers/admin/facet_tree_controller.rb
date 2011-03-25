@@ -80,7 +80,7 @@ class Admin::FacetTreeController < Admin::BaseController
     ret[:carousel_description] = rec[:carousel_description]
     ret[:carousel_url] = rec[:carousel_url]
     ret[:image] = ''  #'/uploads/0000/0057/rossetti_painting_thumb.jpg'
-    ret[:image] = rec.image.public_filename if rec && rec.image
+    ret[:image] = "/#{rec.image.photo.url}" if rec && rec.image_id
     if rec != nil && rec[:type] != nil
       desc_rec = Site.find_by_code(site)
       if desc_rec
@@ -108,11 +108,16 @@ class Admin::FacetTreeController < Admin::BaseController
   def edit_facet_upload
     value = params[:value]
     facet = FacetCategory.find_by_value(value)
-    if params['carousel_thumbnail'] != nil && params['carousel_thumbnail'].length > 0
-      facet.image = Image.new({ :uploaded_data => params['carousel_thumbnail'] })
-      facet.image.save!
-      facet.save
-    end
+	err = Image.save_image(params['carousel_thumbnail'], facet)
+	if err[:status] == :error
+		flash = err[:user_error]
+		logger.error(err[:log_error])
+	end
+#    if params['carousel_thumbnail'] != nil && params['carousel_thumbnail'].length > 0
+#      facet.image = Image.new({ :uploaded_data => params['carousel_thumbnail'] })
+#      facet.image.save!
+#      facet.save
+#    end
     render :text => ""  # just need to return anything. This isn't displayed anyway.
   end
   
@@ -159,7 +164,7 @@ class Admin::FacetTreeController < Admin::BaseController
     if facet[:type] == nil
       # category
       parent_id = facet.parent_id
-      children = FacetCategory.find(:all, :conditions => [ 'parent_id = ?', facet.id])
+      children = FacetCategory.all(:conditions => [ 'parent_id = ?', facet.id])
       children.each { |child|
         child.parent_id = parent_id
         child.save
@@ -231,6 +236,11 @@ private
     found_resources = results['facets']['archive']
     resources = []
     found_resources.each {|key,val| resources.push(key)}
+    
+    # throw away any exhibits that do not match this site namespace
+    my_exhibits = "exhibit_#{SITE_NAME}_";
+    resources.reject!{ |val| val.index( "exhibit_") == 0 && val.index(my_exhibits).nil? }
+    
     return resources
   end
 

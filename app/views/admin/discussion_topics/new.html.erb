@@ -19,9 +19,9 @@
 <div class="inner_content_container">
 	<div class="page_header">New Forum Topic</div>
 
-	<%= error_messages_for :discussion_topic %>
+	<%# = error_messages_for :discussion_topic %>
 	
-	<% form_tag :action => 'create' do %>
+	<%= form_tag :action => 'create' do %>
 	<p><label for="topic">Topic</label><br/>
 	<%= text_field 'discussion_topic', 'topic'  %></p>
 	<%= submit_tag "Create" %>

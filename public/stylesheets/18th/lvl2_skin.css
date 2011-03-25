@@ -85,8 +85,16 @@
 }
 
 .has_xml_source:hover {
-	background-image: url(/images/18th/has_xml_source.gif);
+	background-image: url(/images/18th/has_xml_source_hover.gif);
 	width:5em;
+}
+
+.can_typewright {
+  background-image: url(/images/type_wright/18th/typewright_icon.png);
+}
+
+.can_typewright:hover {
+  background-image: url(/images/type_wright/18th/typewright_icon_hover.png);
 }
 
 #group_license {

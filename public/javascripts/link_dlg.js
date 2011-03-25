@@ -14,9 +14,9 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global Class, $, $$, Element, Ajax, Hash */
+/*global Class, $, $$, Element, Hash */
 /*global YAHOO */
-/*global GeneralDialog, MessageBoxDlg, genericAjaxFail */
+/*global GeneralDialog, MessageBoxDlg, serverRequest */
 /*extern CacheObjects, CreateListOfObjects, LinkDlgHandler, ninesObjCache */
 
 ////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ var CreateListOfObjects = Class.create({
 
 		this.ninesObjView = function(event, params) {
 			var scope;
-			if (params.destination === 'all') scope = populate_all;
+			if (params.arg0 === 'all') scope = populate_all;
 			else scope = populate_exhibit_only;
 			if (scope !== curr_populate) {
 				This.repopulate(params.dlg, scope);
@@ -246,26 +246,21 @@ var CreateListOfObjects = Class.create({
 			else {
 				// Call the server to get the data, then pass it to the ObjectLists
 				dlg.setFlash('Getting objects...', false);
-				new Ajax.Request(populate_url, {
-					method: 'get',
-					onSuccess: function(resp){
-						dlg.setFlash('', false);
-						try {
-							if (resp.responseText.length > 0) {
-								objs = resp.responseText.evalJSON(true);
-								ninesObjCache.set(populate_url, objs);
-								createRows(objs, selectFirst, id_prefix);
-							}
-						} 
-						catch (e) {
-							new MessageBoxDlg("Error", e);
+				var onSuccess = function(resp){
+					dlg.setFlash('', false);
+					try {
+						if (resp.responseText.length > 0) {
+							objs = resp.responseText.evalJSON(true);
+							ninesObjCache.set(populate_url, objs);
+							createRows(objs, selectFirst, id_prefix);
 						}
-						
-					},
-					onFailure: function(resp){
-						genericAjaxFail(dlg, resp);
 					}
-				});
+					catch (e) {
+						new MessageBoxDlg("Error", e);
+					}
+
+				};
+				serverRequest({ url: populate_url, onSuccess: onSuccess});
 			}
 			
 		};
@@ -505,23 +500,23 @@ var LinkDlgHandler = Class.create({
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', change: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
-						[ { text: 'Sort objects by:', klass: 'link_dlg_label ld_nines_only hidden' }, { select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select ld_nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', callback: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
+						[ { text: 'Sort objects by:', klass: 'link_dlg_label ld_nines_only hidden' }, { select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select ld_nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 							{ text: 'and', klass: 'link_dlg_label_and ld_nines_only hidden' }, { inputFilter: 'filterObjectsLnk', prompt: 'type to filter objects', callback: objlist.filter, klass: 'ld_nines_only hidden' } ],
-						[ { page_link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
+						[ { link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
 						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
 						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
-						[ { rowClass: 'last_row' }, { button: 'Save', callback: saveLink, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+						[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: saveLink, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 					]
 				};
 			if (populate_urls.length === 2) {
-				dlgLayout.rows[2].push( { page_link: "Exhibit Palette", klass: 'dlg_tab_link_current ld_nines_only hidden', callback: objlist.ninesObjView, new_page: 'exhibit' });
-				dlgLayout.rows[2].push( { page_link: "All My Objects", klass: 'dlg_tab_link ld_nines_only hidden', callback: objlist.ninesObjView, new_page: 'all' });
+				dlgLayout.rows[2].push( { link: "Exhibit Palette", klass: 'dlg_tab_link_current ld_nines_only hidden', callback: objlist.ninesObjView, arg0: 'exhibit' });
+				dlgLayout.rows[2].push( { link: "All My Objects", klass: 'dlg_tab_link ld_nines_only hidden', callback: objlist.ninesObjView, arg0: 'all' });
 			}
 				
-			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link" };
+			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link", focus: 'link_dlg_sel0' };
 			var dlg = new GeneralDialog(dlgParams);
-			dlg.changePage('layout', 'link_dlg_sel0');
+			//dlg.changePage('layout', 'link_dlg_sel0');
 			objlist.populate(dlg, true, 'rte');
 			if (starting_selection.length > 0)
 				$$(".remove").each(function(el) { el.removeClassName('hidden'); });

@@ -46,7 +46,7 @@ class HomeController < ApplicationController
 	@tags = CachedResource.get_most_recent_tags(40)
     
     # carousel
-    facets = FacetCategory.find(:all, :conditions => ['carousel_include = 1'])
+    facets = FacetCategory.find_all_by_carousel_include(1)
 		facets = facets.sort_by {rand}
     @carousel = []
     for facet in facets
@@ -54,10 +54,14 @@ class HomeController < ApplicationController
       url = facet[:carousel_url]
       if facet[:type] == 'FacetValue'
         site = Site.find_by_code(title)
-        title = site.description
-        url = site.url
+		if site
+			title = site.description
+			url = site.url
+		else
+			title = "ERR: site not found:#{title}"
+		end
       end
-      @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image ? facet.image.public_filename : '' })
+      @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image_id ? "/#{facet.image.photo.url}" : '' })
 			end
     end
   

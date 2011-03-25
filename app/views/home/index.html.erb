@@ -34,7 +34,7 @@
             	<tr>
                 	<td id="discussions" valign="top">
 					<% if @feature -%>
-                    <div class="popular_title">Featured Resource</div>
+                    <div class="popular_title">Featured Object</div>
 					<%= render :partial => "/home/featured_resource", :locals => { :feature => @feature } %>
 					<% else -%>
                     <div class="popular_title">Popular Discussions</div>
@@ -43,7 +43,7 @@
                     </td>
                    	<td class="spacer_cell"></td>
                     <td id="tags" valign="top">
-                    <div class="popular_title">Popular Tags</div>
+                    <div class="popular_title">Browse Recent Tags</div>
 					<%= render :partial => "/home/popular_tags", :locals => { :tags => @tags } %>
 					</td>
                     <td class="spacer_cell"></td>
@@ -67,12 +67,12 @@
 					<% for item in @carousel -%>
 						<li class="item">
 							<% if item[:url] && item[:url].length > 0 -%>
-								<a href="<%=h item[:url] %>"><img class="carousel_image" src="<%=h item[:image] %>" alt="<%=h item[:title] %>" /></a>
-								<a href="<%=h item[:url] %>" class="carousel_item_title nav_link"><%=h item[:title] %></a>
-								<%= item[:description] %>&nbsp;<a href="<%=h item[:url] %>" class="carousel_item_title nav_link">VISIT SITE</a>
+								<a href="<%= item[:url] %>"><img class="carousel_image" src="<%= item[:image] %>" alt="<%= item[:title] %>" /></a>
+								<a href="<%= item[:url] %>" class="carousel_item_title nav_link"><%= item[:title] %></a>
+								<%= item[:description] %>&nbsp;<a href="<%= item[:url] %>" class="carousel_item_title nav_link">VISIT SITE</a>
 							<%  else -%>
-								<img class="carousel_image" src="<%=h item[:image] %>" alt="<%=h item[:title] %>" />
-								<em><%=h item[:title] %></em>
+								<img class="carousel_image" src="<%= item[:image] %>" alt="<%= item[:title] %>" />
+								<em><%= item[:title] %></em>
 								<%= item[:description] %>
 							<% end -%>
 						</li>

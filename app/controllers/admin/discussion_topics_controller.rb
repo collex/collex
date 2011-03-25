@@ -18,7 +18,7 @@ class Admin::DiscussionTopicsController < Admin::BaseController
   # GET /discussion_topics
   # GET /discussion_topics.xml
   def index
-    @discussion_topics = DiscussionTopic.find(:all, :order => 'position')
+    @discussion_topics = DiscussionTopic.all(:order => 'position')
   end
 
 #  # GET /discussion_topics/1
@@ -115,7 +115,7 @@ class Admin::DiscussionTopicsController < Admin::BaseController
     pos = @discussion_topic.position
     @discussion_topic.destroy
     
-    topics = DiscussionTopic.find(:all)
+    topics = DiscussionTopic.all()
     topics.each do |topic|
       if topic.position > pos
         topic.position = topic.position - 1

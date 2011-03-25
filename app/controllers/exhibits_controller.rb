@@ -25,6 +25,12 @@ class ExhibitsController < ApplicationController
   end
   public
 
+	def get_licenses
+		add_inherit = params[:add_inherit] == 'true'
+		group_id = params[:group_id]
+		render :text => Exhibit.get_license_info(add_inherit, group_id).to_json()
+	end
+
   def view
     # First see if we were given an alias
     id = params[:id]
@@ -52,7 +58,7 @@ class ExhibitsController < ApplicationController
     end
 
 		# Be sure the current user is authorized to see this exhibit
-		if !@exhibit.can_view(@template.get_curr_user())
+		if !@exhibit.can_view(get_curr_user())
 			redirect_to '/communities'
 			return
 		end

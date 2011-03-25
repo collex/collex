@@ -25,7 +25,7 @@ class Admin::DefaultController < Admin::BaseController
     # TODO: The tagassigns table has collected_item_ids. If we weed out collected_items, then we need to update that table, too.
     # TODO: The cached_properties table may contain properties that are orphaned and don't have a valid cached resource id
 
-    cached_resources = CachedResource.find(:all)
+    cached_resources = CachedResource.all()
     cached_resources.each do |cr|
       cr.recache_properties()
     end
@@ -81,33 +81,35 @@ class Admin::DefaultController < Admin::BaseController
    render :partial => 'group_tr', :locals => { :group => group }
 	end
 
+  # Delete a comment that has been flagged as abusive and notify all reporters and 
+  # the original commenter of the action
+  #
 	def delete_comment
 		id = params[:comment]
 		comment = DiscussionComment.find(id)
-		commenter = comment.user_id
-		reporter_ids = comment.reporter_ids
+		commenter = User.find(comment.user_id)
+		reporters = comment.get_reporters
 		DiscussionComment.delete_comment(id, session[:user], is_admin?)
 		begin
-			ids = reporter_ids.split(',')
-			ids.each { |reporter_id|
-				user = User.find(reporter_id)
-				#LoginMailer.deliver_accept_abuse_report_to_reporter({ :comment => comment }, user.email)
-				body = "Thanks for reporting the comment by #{User.find(comment.user_id).fullname}. It has been removed.\n\n"
-				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Accepted", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
-			}
-			#LoginMailer.deliver_accept_abuse_report_to_commenter({ :comment => comment }, User.find(commenter).email)
+			reporters.each do | reporter |
+				body = "Thanks for reporting the comment by #{commenter.fullname}. It has been removed.\n\n"
+				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], reporter.fullname, reporter.email, "Abusive Comment Report Accepted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
+			end
 			body = "Your comment on #{comment.created_at } was considered inappropriate and has been removed by the administrator. The text of your comment was:\n\n"
-			body += "#{@template.strip_tags(comment.comment)}\n\n"
-			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], User.find(commenter).fullname, User.find(commenter).email, "Abusive Comment Deleted", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
+			body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
+			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], commenter.fullname, commenter.email, "Abusive Comment Deleted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
 		rescue Exception => msg
-			logger.error("**** ERROR: Can't send email: " + msg)
+			logger.error("**** ERROR: Can't send email: " + msg.message)
 		end
 		redirect_to :action => 'forum_pending_reports'
 	end
 
-	def remove_abuse_flag
-		id = params[:comment]
-		DiscussionComment.remove_abuse_flag(id, url_for(:controller => 'home', :action => 'index', :only_path => false))
+  # Remove a specific abuse report from a comment. Notify reporter that their report was canceled
+  #
+	def remove_abuse_report
+		comment_id = params[:comment]
+		report_id = params[:report]
+		DiscussionComment.remove_abuse_report(comment_id, report_id, url_for(:controller => '/home', :action => 'index', :only_path => false))
 		redirect_to :action => 'forum_pending_reports'
 	end
 
@@ -142,41 +144,61 @@ class Admin::DefaultController < Admin::BaseController
 
 	def add_badge
 		badge = PeerReview.create({})
-		image = params['image']
-		if image && image
-			image = ImageFull.new({ :uploaded_data => image })
+		err = ImageFull.save_image(params['image'], badge)
+		case err[:status]
+		when :error then
+			logger.error(err[:log_error])
+			flash = err[:user_error]
+		when :saved then
+			flash = "OK:Badge updated"
+		when :no_image then
+			flash = "No image uploaded"
 		end
-		begin
-			badge.image_full = image
-			if badge.save
-				badge.image_full.save! if badge.image_full
-				flash = "OK:Badge updated"
-			else
-				flash = "Error updating badge"
-			end
-		rescue
-			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-		end
-    render :text => "<script type='text/javascript'>window.top.window.stopAddBadgeUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#		image = params['image']
+#		if image && image
+#			image = ImageFull.new({ :uploaded_data => image })
+#		end
+#		begin
+#			badge.image_full = image
+#			if badge.save
+#				badge.image_full.save! if badge.image_full
+#				flash = "OK:Badge updated"
+#			else
+#				flash = "Error updating badge"
+#			end
+#		rescue
+#			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#		end
+    render :text => respond_to_file_upload("stopAddBadgeUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 
 	def add_publication_image
 		publication_image = PublicationImage.create({})
-		image = params['image']
-		if image && image
-			image = ImageFull.new({ :uploaded_data => image })
+		err = ImageFull.save_image(params['image'], publication_image)
+		case err[:status]
+		when :error then
+			logger.error(err[:log_error])
+			flash = err[:user_error]
+		when :saved then
+			flash = "OK:Publication image updated"
+		when :no_image then
+			flash = "No image uploaded"
 		end
-		begin
-			publication_image.image_full = image
-			if publication_image.save
-				publication_image.image_full.save! if publication_image.image_full
-				flash = "OK:Publication image updated"
-			else
-				flash = "Error updating publication image"
-			end
-		rescue Exception => msg
-			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-		end
-		render :text => "<script type='text/javascript'>window.top.window.stopAddPublicationImageUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+#		image = params['image']
+#		if image && image
+#			image = ImageFull.new({ :uploaded_data => image })
+#		end
+#		begin
+#			publication_image.image_full = image
+#			if publication_image.save
+#				publication_image.image_full.save! if publication_image.image_full
+#				flash = "OK:Publication image updated"
+#			else
+#				flash = "Error updating publication image"
+#			end
+#		rescue Exception => msg
+#			flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#		end
+		render :text => respond_to_file_upload("stopAddPublicationImageUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 end

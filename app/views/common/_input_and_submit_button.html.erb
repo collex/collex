@@ -15,7 +15,8 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 -%>
-<%# input_and_submit_button params: string input_id, input_class, submit_text, submit_id, submit_url, update_el, wait_msg -%>
+<%# input_and_submit_button params: string input_id, input_class, submit_text, submit_id, submit_url, update_el, wait_msg, method (opt) -%>
+<% method ||= 'POST' %>
 <input type="text" id="<%= input_id %>" class="<%= input_class %>"></input>
 <%= link_to submit_text, submit_url, { :id => submit_id } %>
 <script type="text/javascript">
@@ -23,7 +24,11 @@
 		var createSubmitButton = function() {
 			var execute = function() {
 				var term = $('<%= input_id %>').value;
-				ajaxWithProgressSpinner([ $("<%= submit_id %>-button").href ], [ '<%= update_el %>' ], { waitMessage: '<%= wait_msg %>' }, { term: term })
+				<% if method == 'GET' %>
+				  serverAction({action: { actions: {url: $("<%= submit_id %>-button").href, method: '<%= method %>'}, els: '<%= update_el %>', params: { term: term }}, progress: { waitMessage: '<%= wait_msg %>' }})
+			  <% else %>
+			    serverAction({action: { actions: $("<%= submit_id %>-button").href, els: '<%= update_el %>', params: { term: term }}, progress: { waitMessage: '<%= wait_msg %>' }})
+			  <% end %> 
 			};
 
 			new YAHOO.widget.Button('<%= submit_id %>', { onclick: { fn: execute } });

@@ -18,7 +18,7 @@
 <% if user_id > 0 -%>
 	<% exhibit_list = Exhibit.js_array_of_all_my_exhibits(user_id) -%>
 	<script type="text/javascript">
-		var exhibit_names = [ <%= exhibit_list %> ];
+		var exhibit_names = [ <%= raw(exhibit_list) %> ];
 	</script>
 <% end # if user_id -%>
 
@@ -32,5 +32,9 @@
 <% if @script == 'doCollect' %>
 	<script type="text/javascript">
 		doCollect("/results/result_row", '<%= @uri %>' , <%= @row_num %> , '<%= @row_id %>', true);
+	</script>
+<% elsif @script == 'doTypewright' %>
+	<script type="text/javascript">
+		gotoPage("<%= @uri %>");
 	</script>
 <% end %>

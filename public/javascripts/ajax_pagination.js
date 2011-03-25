@@ -14,10 +14,10 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global ajaxWithProgressSpinner */
+/*global serverAction */
 /*extern ajax_pagination */
 
 function ajax_pagination(actions, els, page) {
 	var params = {waitMessage: 'Loading page...' };
-	ajaxWithProgressSpinner(actions, els, params, { page: page });
+	serverAction({action: { actions: actions, els: els, params: {  page: page }}, progress: { waitMessage: 'Loading page...' }});
 }

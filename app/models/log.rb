@@ -25,7 +25,7 @@ class Log < ActiveRecord::Base
     
     count = Log.count
     if count >= 10000
-      log = Log.find(:first, :order => 'updated_at')
+      log = Log.first(:order => 'updated_at')
       log.user = user
       log.request_method = env['REQUEST_METHOD']
       log.request_uri = env['REQUEST_URI']

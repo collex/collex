@@ -20,13 +20,13 @@ module GroupsHelper
     return url
 	end
 	def get_group_image_url(group)
-		return group.group_type == 'classroom' ? "/images/#{SKIN}/classroom_icon.sm.jpg" : get_group_default_url(get_url_for_internal_image(group.image))
+		return group.group_type == 'classroom' ? "/images/#{SKIN}/classroom_icon.sm.jpg" : get_group_default_url(get_url_for_internal_image(Image.find_by_id(group.image_id)))
 	end
 
 	def get_cluster_image_url(group, cluster)
 		return "/images/#{SKIN}/classroom_icon.sm.jpg" if group.group_type == 'classroom'
 		image_class = cluster.image ? cluster : group
-		return get_group_default_url(get_url_for_internal_image(image_class.image))
+		return get_group_default_url(get_url_for_internal_image(Image.find_by_id(image_class.image_id)))
 	end
 
 	def get_summary_header_class(obj)
@@ -60,6 +60,6 @@ module GroupsHelper
 				html += "<div class='group_only_text'>Discussion Shared to Group Only</div>"
 			end
 		end
-		return html
+		return raw(html)
 	end
 end

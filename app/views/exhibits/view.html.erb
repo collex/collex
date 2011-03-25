@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <% current_page "View Exhibit" -%>
 <style type="text/css">
-	.message_box_label {
+	.gd_message_box_label {
 		font-family: <%= @exhibit.get_font_name('footnote') %>;
 		font-size: <%= @exhibit.get_font_size('footnote') %>px;
 	}
@@ -80,10 +80,10 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 <% if Group.is_peer_reviewed_group(@exhibit) -%>
 	<div class="publication_header">
 		<div class="exhibit_sharing_notice">
-			<%= @exhibit.get_sharing_icon_with_link() %>
+			<%= raw(@exhibit.get_sharing_icon_with_link()) %>
 		</div>
 		<div class="exhibit_sharing_text"><div class="exhibit_sharing_text2">
-			<%=h group.get_truncated_name() %> content in <%= SITE_NAME %> is protected by a Creative Commons License.
+			<%= group.get_truncated_name() %> content in <%= SITE_NAME %> is protected by a Creative Commons License.
 		</div></div>
 		<% badge_pos = 'left' -%>
 		<% badge_path = badge_pos != 'none' ? @exhibit.get_badge() : "" -%>
@@ -95,7 +95,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 		<center>
 			<div class="publication_header_links">
 				<table><tr>
-						<td class="publication_header_left"><%= link_to(h(group.get_truncated_name()), group.get_visible_url(), { :class => 'nav_link' }) %></td>
+						<td class="publication_header_left"><%= link_to(group.get_truncated_name(), group.get_visible_url(), { :class => 'nav_link' }) %></td>
 <% cluster_link = get_cluster_link(@exhibit.cluster_id) -%>
 <% if cluster_link && cluster_link.length > 0 -%>
 						<td class="publication_header_right"><%= get_cluster_link(@exhibit.cluster_id) %></td>
@@ -107,13 +107,13 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 	</div>
 <% else -%>
 	<div class="exhibit_sharing_notice">
-		<%= @exhibit.get_sharing_icon_with_link() %>
+		<%= raw(@exhibit.get_sharing_icon_with_link()) %>
 	</div>
 	<div class="subpage_nav">
 		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
 		<%= make_exhibit_home_link(@exhibit) %>&nbsp;
 		<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
-		<%= link_to("[Edit this exhibit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => @exhibit.id, :page => @page }, :class => 'nav_link', :target => '_parent' ) if Exhibit.can_edit(get_curr_user(), @exhibit.id)  %>
+		<%= link_to("[Edit this exhibit]", { :controller => 'builder', :action => 'show', :id => @exhibit.id, :page => @page }, { :class => 'nav_link', :target => '_parent' }) if Exhibit.can_edit(get_curr_user(), @exhibit.id)  %>
 	</div>
 <% end -%>
 	<div id="exhibit_page clear_both">
@@ -121,5 +121,5 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 	</div>
 </div>
 <div class="exhibit_footer">
-	<%= @exhibit.get_sharing_widget() %>
+	<%= raw(@exhibit.get_sharing_widget()) %>
 </div>

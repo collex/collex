@@ -154,10 +154,10 @@
 		<% for login in logins -%>
 		<% if @show_all == 'true' || login.updated_at > 30.days.ago -%>
 		<tr>
-			<td><%= h login.username %></td>
-			<td><%= h login.address %></td>
-			<td><%= h login.action %></td>
-			<td><%= h comment_time_format(login.updated_at) %></td>
+			<td><%= login.username %></td>
+			<td><%= login.address %></td>
+			<td><%= login.action %></td>
+			<td><%= comment_time_format(login.updated_at) %></td>
 		</tr>
 		<% end -%>
 		<% end -%>
@@ -176,11 +176,11 @@
 		<% for object in objects -%>
 		<% if @show_all == 'true' || object.updated_at > 30.days.ago -%>
 		<tr>
-			<td><%= h object.username %></td>
-			<td><%= h object.action %></td>
-			<td><%= h object.uri %></td>
-			<td><%= h object.tagname %></td>
-			<td><%= h comment_time_format(object.updated_at) %></td>
+			<td><%= object.username %></td>
+			<td><%= object.action %></td>
+			<td><%= object.uri %></td>
+			<td><%= object.tagname %></td>
+			<td><%= comment_time_format(object.updated_at) %></td>
 		</tr>
 		<% end -%>
 		<% end -%>

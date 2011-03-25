@@ -14,8 +14,7 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global window */
-/*global GeneralDialog */
+/*global GeneralDialog, submitForm, reloadPage */
 /*extern featureDlg, varFeatureDlg, stopFeatureUpload */
 
 var varFeatureDlg = null;
@@ -36,12 +35,12 @@ var featureDlg = function(saved_searches, ok_action, params, img_url) {
 	{
 		varFeatureDlg = This;
 		//var curr_page = params.curr_page;
-		var url = params.destination;
+		var url = params.arg0;
 
 		dlg.setFlash('Verifying feature update...', false);
 		//var data = dlg.getAllData();
 
-		dlg.submitForm('layout', url);	// we have to submit the form normally to get the uploaded file transmitted.
+		submitForm('layout', url.url, url.method);	// we have to submit the form normally to get the uploaded file transmitted.
 	};
 
 	this.fileUploadError = function(errMessage) {
@@ -50,7 +49,7 @@ var featureDlg = function(saved_searches, ok_action, params, img_url) {
 
 	this.fileUploadFinished = function() {
 		dlg.setFlash('Feature updated successfully. Please wait...', false);
-		window.location.reload();
+		reloadPage();
 	};
 
 	var dlgLayout = {
@@ -60,12 +59,12 @@ var featureDlg = function(saved_searches, ok_action, params, img_url) {
 			[ { text: 'Saved Search Name:', klass: 'admin_dlg_label' }, { select: 'features[saved_search_name]', value: params.saved_search_name, klass: 'new_exhibit_input_long', options: saved_searches } ],
 			[ { text: 'Disabled:', klass: 'admin_dlg_label' }, { checkbox: 'features[disabled]', klass: 'new_exhibit_input_long', value: params.disabled } ],
 			[ { rowClass: 'clear_both' }, { text: 'Thumbnail:', klass: '' },  { image: 'image', size: '37', value: img_url, removeButton: 'Remove Thumbnail', klass: '' } ],
-			[ { rowClass: 'last_row' }, { button: 'Ok', url: ok_action, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: params.id } ]
+			[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: ok_action, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 		]
 	};
 
-	var dlgParams = { this_id: "features_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Features" };
+	var dlgParams = { this_id: "features_dlg", pages: [ dlgLayout ], body_style: "forum_reply_dlg", row_style: "new_exhibit_row", title: "Features", focus: 'features_object_uri' };
 	dlg = new GeneralDialog(dlgParams);
-	dlg.changePage('layout', 'features_object_uri');
+	//dlg.changePage('layout', 'features_object_uri');
 	dlg.center();
 };

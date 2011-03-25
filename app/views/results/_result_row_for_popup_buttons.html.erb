@@ -17,10 +17,8 @@
 <%#  result_row_for_popup_buttons parameters: hit hit, index, partial, target_el  -%>
 <script type="text/javascript">
 	redrawResultRowForPopupButtons = function() {
-		new Ajax.Updater('search_result_buttons', 
-			'/results/redraw_result_row_for_popup_buttons', 
-			{ parameters: { uri: '<%=hit['uri']%>', index: <%=index%>, partial: '<%=partial%>', target_el: '<%=target_el%>' } }
-		)};
+		serverAction({ action: { actions: '/results/redraw_result_row_for_popup_buttons', els: 'search_result_buttons', params: { uri: '<%=hit['uri']%>', index: <%=index%>, partial: '<%=partial%>', target_el: '<%=target_el%>' } }});
+	}
 </script>
 <% is_collected = result_is_collected(hit) -%>
 <%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', redrawResultRowForPopupButtons);", is_collected) %>

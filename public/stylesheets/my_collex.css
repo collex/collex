@@ -270,6 +270,15 @@ img.resizer:active {
 	margin-left:50px;
 }
 
+.group_admin_img {
+	vertical-align: text-top;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	margin-left: 1px;
+	margin-right: 1px;
+	border: none;
+}
+
 .side_bar_exhibit_spacer {
 	border-bottom:1px solid #966C54;
 }
@@ -308,4 +317,11 @@ table.query td {
 	list-style: none;
 	padding-top: .4em;
 	border-bottom:1px solid #966C54;
+}
+
+.new_exhibit_link {
+    border-bottom: 1px solid #966C54;
+    margin-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 7px;
 }

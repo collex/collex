@@ -20,7 +20,7 @@
 	<%# Figure out how we're running so we know what files to load -%>
 	<%# We only run Google Analytics if we are on the real deployment. -%>
 	<%# We want to load the non-minimized versions of YUI if we are running development -%>
-	<% quick_load = (RAILS_ENV == 'development') && (request.host().index('performantsoftware') == nil) -%>
+	<% quick_load = (Rails.env == 'development') && (request.host().index('performantsoftware') == nil) -%>
 
 <title><%= SITE_NAME_TITLE %><%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
 <%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
@@ -32,7 +32,9 @@
 	<%= stylesheet_link_tag "ie7hacks", :media => "all" %>
 <![endif]-->
 
-<%= get_javascripts(@site_section, quick_load) %>
+<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
+<%= raw(get_javascripts(@site_section, quick_load)) %>
+<%= csrf_meta_tag %>
 
 	<script type="text/javascript">
 		var supportsFixedPositioning = true;
@@ -42,9 +44,6 @@
 		supportsFixedPositioning = false;
 	</script>
 	<![endif]-->
-	<script type="text/javascript">
-		var form_authenticity_token = '<%= form_authenticity_token %>';
-	</script>
 
 </head>
 <body class="yui-skin-sam">

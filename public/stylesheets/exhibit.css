@@ -42,7 +42,7 @@
 }
 
 .publication_header table {
-	margin-left: 180px;
+	margin-left: 0px;
 	font-size: 1.3em;
 	margin-bottom: 0px;
 }
@@ -65,7 +65,7 @@
 }
 
 .exhibit_badge {
-	position:absolute;
+	float: left;
 }
 
 .publication_title {

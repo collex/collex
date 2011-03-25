@@ -38,6 +38,10 @@ padding: 2px;
 	margin-bottom: 1em;
 }
 
+.cloud0 {
+  display: none;
+}
+
 .cloud1 {
 	font-size: 1em;
 	line-height: 1.2em;

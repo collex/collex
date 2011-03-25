@@ -47,6 +47,18 @@ class TagController < ApplicationController
     render :nothing => true
   end
 
+  # autocomplete tag name based on partial input
+  #
+  def tag_name_autocomplete 
+    str = params['tag']['name']+"%"
+    matches = Group.find_by_sql ["select distinct name from tags where name like ?", str]
+    @values = []
+    matches.each do |match|
+       @values.push( match.name )
+    end
+    render :partial => 'tag_autocomplete'
+  end
+  
   def list
     session[:tag_zoom] ||= 1
 
@@ -179,7 +191,9 @@ class TagController < ApplicationController
      results.each {|result|
       cr = CachedResource.find_by_uri(result['uri'])
       collects = CollectedItem.find(:all, :conditions => [ "cached_resource_id = ?", cr.id])
-      sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
+      if collects.length > 0
+        sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
+      end
       str = result.to_s
      }
     sorted_results.sort! {|a,b| 

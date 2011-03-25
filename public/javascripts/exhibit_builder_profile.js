@@ -15,8 +15,7 @@
 // ----------------------------------------------------------------------------
 
 /*global Class, $, $$ */
-/*global ConfirmDlg, recurseUpdateWithAjax, CreateListOfObjects, GeneralDialog, SelectInputDlg */
-/*global window */
+/*global CreateListOfObjects, GeneralDialog, SelectInputDlg, serverAction */
 /*extern editExhibitProfile, CreateSharingList */
 /*extern doPublish, selectGroup, selectCluster */
 
@@ -29,7 +28,7 @@ var selectGroup = function(id, options, value) {
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
-		actions: [ '/my_collex/change_exhibits_group' ],
+		actions: [ '/builder/change_exhibits_group' ],
 		target_els: [ null ] });
 };
 
@@ -42,17 +41,17 @@ var selectCluster = function(id, options, value, clusterLabel) {
 		okStr: 'Save',
 		value: value,
 		extraParams: { id: id },
-		actions: [ '/my_collex/change_exhibits_cluster' ],
+		actions: [ '/builder/change_exhibits_cluster' ],
 		target_els: [ null ] });
 };
 
 function doPublish(exhibit_id, publish_state) {
-	recurseUpdateWithAjax(["/my_collex/publish_exhibit"], ["overview_data"], null, null, { id: exhibit_id, publish_state: publish_state });
+	serverAction({action:{actions: ["/builder/publish_exhibit"], els: ["overview_data"], params: { id: exhibit_id, publish_state: publish_state }}, progress: { waitMessage: 'Updating...' }});
 }
 
 function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, populate_exhibit_only, progress_img, genreList)
 {
-//	$(update_id).setAttribute('action', "/my_collex/edit_exhibit_overview,/my_collex/update_title");
+//	$(update_id).setAttribute('action', "/builder/edit_exhibit_overview,/builder/update_title");
 //	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
 
 	var data = $$("." + data_class);
@@ -67,7 +66,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 
 	var changeView = function (event, param)
 	{
-		var view = param.destination;
+		var view = param.arg0;
 		var dlg = param.dlg;
 
 		dlg.changePage(view, 'overview_title_dlg');
@@ -98,25 +97,26 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 	{
 		//var curr_page = params.curr_page;
 		var dlg = params.dlg;
+		dlg.setFlash("Updating exhibit...", false);
 		var onSuccess = function() {
 			dlg.cancel();
+		};
+		var onFailure = function(resp) {
+			dlg.setFlash(resp.responseText, true);
 		};
 
 		var retData = dlg.getAllData();
 		retData.exhibit_id = exhibit_id;
 		retData.element_id = update_id;
 
-		recurseUpdateWithAjax(["/my_collex/edit_exhibit_overview", "/my_collex/update_title"], ["overview_data", "overview_title"], onSuccess, null, retData);
+		serverAction({action:{actions: ["/builder/edit_exhibit_overview", "/builder/update_title"], els: ["overview_data", "overview_title"], onSuccess: onSuccess, onFailure: onFailure, params: retData}});
 	};
 
 	this.deleteExhibit = function(event, params)
 	{
-		new ConfirmLinkDlg("/my_collex/delete_exhibit?id="+exhibit_id, 'Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?');
-//		var del = function(){
-//			window.location = "/my_collex/delete_exhibit?id="+exhibit_id;
-//		};
-//
-//		new ConfirmDlg('Delete Exhibit', 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?', "Yes", "No", del);
+		serverAction({confirm: { title: 'Delete Exhibit', message: 'Warning: This will permanently remove this exhibit. Are you sure you want to continue?' },
+			action: { actions: { method: 'DELETE', url: "/builder/"+exhibit_id } },
+			progress: { waitMessage: "Deleting exhibit..." }});
 	};
 
 	var profile = {
@@ -127,11 +127,11 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 				[ { text: 'Visible URL:', klass: 'new_exhibit_title' } ],
 				[ { text: "http://nines.org/exhibits/", klass: "link_prefix_text" }, { input: 'overview_visible_url_dlg', value: values.overview_visible_url_dlg, klass: 'new_exhibit_input' } ],
 				[ { text: 'Thumbnail:', klass: 'new_exhibit_title' }, { input: 'overview_thumbnail_dlg', value: values.overview_thumbnail_dlg, klass: 'new_exhibit_input_long' } ],
-				[ { page_link: '[Choose Thumbnail from Collected Objects]', callback: changeView, new_page: 'choose_thumbnail' }],
-				[ { text: 'Genres:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_genres_dlg + '&nbsp;', id: 'genre_list' }, { page_link: '[Select Genres]', callback: changeView, new_page: 'genres' } ],
+				[ { link: '[Choose Thumbnail from Collected Objects]', klass: 'nav_link', callback: changeView, arg0: 'choose_thumbnail' }],
+				[ { text: 'Genres:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_genres_dlg + '&nbsp;', id: 'genre_list' }, { link: '[Select Genres]', klass: 'nav_link', callback: changeView, arg0: 'genres' } ],
 				[ { text: "(NINES contributors are required to assign at least one genre to their objects. Please choose one or more from this list.)", klass: "link_dlg_label_and" }],
-				[ { page_link: '[Completely Delete Exhibit]', callback: this.deleteExhibit }],
-				[ { rowClass: 'last_row' }, { button: 'Save', callback: this.sendWithAjax }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
+				[ { link: '[Completely Delete Exhibit]', klass: 'nav_link', callback: this.deleteExhibit }],
+				[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]
 		};
 
@@ -149,11 +149,11 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 			rows: [
 				[ { text: 'Choose Thumbnail from the list.', klass: 'new_exhibit_title' } ],
 				[ { text: 'Sort objects by:', klass: 'forum_reply_label' },
-					{ select: 'sort_by', change: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
+					{ select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 					{ text: 'and', klass: 'link_dlg_label_and' }, { inputFilter: 'filterObjects', klass: '', prompt: 'type to filter objects', callback: objlist.filter } ],
-				[ { page_link: "Exhibit Palette", klass: 'dlg_tab_link_current', callback: objlist.ninesObjView, new_page: 'exhibit' }, { page_link: "All My Objects", klass: 'dlg_tab_link', callback: objlist.ninesObjView, new_page: 'all' } ],
+				[ { link: "Exhibit Palette", klass: 'dlg_tab_link_current', callback: objlist.ninesObjView, arg0: 'exhibit' }, { link: "All My Objects", klass: 'dlg_tab_link', callback: objlist.ninesObjView, arg0: 'all' } ],
 				[ { custom: objlist, klass: 'dlg_tab_contents new_exhibit_label' } ],
-				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: changeView }, { button: 'Cancel', url: 'profile', callback: updateGenres } ]
+				[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: 'profile', callback: changeView }, { button: 'Cancel', arg0: 'profile', callback: updateGenres } ]
 			]
 		};
 
@@ -162,7 +162,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 			rows: [
 				[ { text: 'Select all the genres that apply:', klass: 'new_exhibit_title' } ],
 				[ { checkboxList: 'genre', klass: 'checkbox_label', columns: 3, items: genreList, selections: values.overview_genres_dlg.split(', ') }  ],
-				[ { rowClass: 'last_row' }, { button: 'Ok', url: 'profile', callback: updateGenres }, { button: 'Cancel', url: 'profile', callback: updateGenres } ]	// TODO-PER: Cancel should undo any user's changes
+				[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: 'profile', callback: updateGenres }, { button: 'Cancel', arg0: 'profile', callback: updateGenres } ]	// TODO-PER: Cancel should undo any user's changes
 			]
 		};
 
@@ -170,7 +170,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 
 	var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "Edit Exhibit Profile" };
 	var dlg = new GeneralDialog(params);
-	changeView(null, { curr_page: '', destination: 'profile', dlg: dlg });
+	changeView(null, { curr_page: '', arg0: 'profile', dlg: dlg });
 	dlg.center();
 	objlist.populate(dlg, false, 'thumb');
 }

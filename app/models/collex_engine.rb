@@ -1,3 +1,4 @@
+# encoding: UTF-8
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
 # 
@@ -20,6 +21,7 @@ require 'rsolr'
 class CollexEngine
 	CORE = [ "resources" ]
 	@@report_file = nil
+	@@report_file_prefix = nil
 	
   def initialize(cores=CORE)
     @num_docs = -1
@@ -32,10 +34,10 @@ class CollexEngine
 	@solr = RSolr.connect( :url=>"#{SOLR_URL}/#{cores[0]}" )
 		@field_list = [ "uri", "archive", "date_label", "genre", "source", "image", "thumbnail", "title", "alternative", "url",
 			"role_ART", "role_AUT", "role_EDT", "role_PBL", "role_TRL", "role_EGR", "role_ETR", "role_CRE", "freeculture",
-			"is_ocr", "federation", "has_full_text", "source_xml" ]
+			"is_ocr", "federation", "has_full_text", "source_xml", 'typewright' ]
     @all_fields_except_text = @field_list + [ "publisher", "agent", "agent_facet", "author", "batch", "editor",
 			"text_url", "year", "type", "date_updated", "title_sort", "author_sort", "year_sort", "source_html", "source_sgml", "person", "format", "language", "geospacial" ]
-		@facet_fields = ['genre','archive','freeculture', 'has_full_text', 'federation']
+		@facet_fields = ['genre','archive','freeculture', 'has_full_text', 'federation', 'typewright']
   end
 
 	def self.factory_create(testing)
@@ -74,10 +76,45 @@ class CollexEngine
 			options[:highlighting] = nil
 		end
 		# We don't need to use shards if there is only one index
-		if options[:shards] && options[:shards].length == 1
-			options[:shards] = nil
+		if options[:shards]
+			if options[:shards].length == 1
+				options[:shards] = nil
+			else
+				options[:shards] = options[:shards].join(',') 
+			end
 		end
-		return @solr.select(:params => options)
+#		return @solr.select(:params => options)
+		ret = @solr.post( 'select', :data => options )
+
+		# correct the character set for all fields
+		if ret && ret['response'] && ret['response']['docs']
+			ret['response']['docs'].each { |doc|
+				doc.each { |k,v|
+					if v.kind_of?(String)
+						doc[k] = v.force_encoding("UTF-8")
+					elsif v.kind_of?(Array)
+						v.each_with_index { |str, i|
+							if str.kind_of?(String)
+								v[i] = str.force_encoding("UTF-8")
+							end
+						}
+					end
+				}
+			}
+		end
+		# highlighting is returned as a hash of uri to a hash that is either empty or contains 'text' => Array of one string element.
+		# simplify this to return either nil or a string.
+		if ret && ret['highlighting']
+			ret['highlighting'].each { |uri,hsh|
+				if hsh.length == 0 || hsh['text'] == nil || hsh['text'].length == 0
+					ret['highlighting'][uri] = nil
+				else
+					str = hsh['text'].join("\n") # This should always return an array of size 1, but just in case, we won't throw away any items.
+					ret['highlighting'][uri] = str.force_encoding("UTF-8")
+				end
+			}
+		end
+		return ret
 	end
 
 	def query_num_docs()
@@ -102,7 +139,7 @@ class CollexEngine
 	def warm_num_doc_cache()
 		if @num_docs == -1 || @num_sites == -1
 			begin
-				File.open("#{RAILS_ROOT}/cache/num_docs.txt", "r") { |f|
+				File.open("#{Rails.root}/cache/num_docs.txt", "r") { |f|
 					str = f.read
 					arr = str.split(',')
 					if arr == 2
@@ -116,7 +153,7 @@ class CollexEngine
 				ret = query_num_docs()
 				@num_docs = ret[:total]
 				@num_sites = ret[:sites]
-				File.open("#{RAILS_ROOT}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs},#{@num_sites}") }
+				File.open("#{Rails.root}/cache/num_docs.txt", 'w') {|f| f.write("#{@num_docs},#{@num_sites}") }
 			end
 		end
 	end
@@ -227,7 +264,7 @@ class CollexEngine
 		response = solr_select(:start => page*page_size, :rows => page_size, :sort => sort,
 						:q => query,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ],
-						:highlighting => {:field_list => ['text'], :fragment_size => 200, :max_analyzed_chars => 512000 })
+						:highlighting => {:field_list => ['text'], :fragment_size => 200, :max_analyzed_chars => 100 })
 
 		response_total = solr_select(:start => 1, :rows => 1, :q => all_query,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ])
@@ -238,7 +275,7 @@ class CollexEngine
 			highlight = response['highlighting']
 			results[:hits].each  {|hit|
 				this_highlight = highlight[hit['key']]
-				hit['text'] = this_highlight['text'].join("\n") if this_highlight['text']
+				hit['text'] = this_highlight if this_highlight && this_highlight['text']
 			}
 		end
 		# the time is a string formatted as: 1995-12-31T23:59:59Z or 1995-12-31T23:59:59.999Z
@@ -257,17 +294,21 @@ class CollexEngine
 return results
 	end
 
-  def search(constraints, start, max, sort_by, sort_ascending)	# called when the user requests a search.
+  # Search SOLR for douments matching the constraints.
+  #
+  def search(constraints, start, max, sort_by, sort_ascending)	
+    
+    # turn map of constraint data into solr quert strings
     query, filter_queries = solrize_constraints(constraints)
-
-		if sort_ascending
-			sort_param = sort_by ? "#{sort_by} asc" : nil
-		else
-			sort_param = sort_by ? "#{sort_by} desc" : nil
-		end
-		#filter_queries.push("genre:\"Citation^.01\"")
-		query = tank_citations(query)
-	response = solr_select(:start => start, :rows => max, :sort => sort_param, #:alternate_query => "*:*",
+		
+	  # this is the full search. We want sorting, highlighting and non-citation links preferred
+	  if sort_ascending
+      sort_param = sort_by ? "#{sort_by} asc" : nil
+    else
+      sort_param = sort_by ? "#{sort_by} desc" : nil
+    end
+	  query = tank_citations(query)
+		response = solr_select(:start => start, :rows => max, :sort => sort_param,
 					:q => query, :fq => filter_queries,
 					:field_list => @field_list,
 					:facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},
@@ -277,33 +318,44 @@ return results
     results["total_hits"] = response['response']['numFound']
     results["hits"] = response['response']['docs']
 
-		# The freeculture field is either returned as nil, or it isn't present. Make the returned object a little more friendly.
-		results["hits"].each { |hit|
-			fix_free_culture(hit)
-		}
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
     results["facets"] = facets_to_hash(response['facet_counts']['facet_fields'])
     results["highlighting"] = response['highlighting']
 
-	  #now get the total for the other federation by repeating the search.
-	  constraints2 = []
-	  constraints.each {|constraint| constraints2.push(constraint) }
-	  constraints2.delete_if { |constraint| constraint.is_a?(FederationConstraint) }
-	  if constraints2.length != constraints.length
-		  results2 = search(constraints2, start, max, sort_by, sort_ascending)
-		  results['facets']['federation'] = results2['facets']['federation']
-	  end
-    return results
+    # append the total for the other federation 
+  	return append_federation_counts(constraints, results)
+
   end
+  
+  private 
+  def append_federation_counts(src_constraints, prior_results)  
+    
+    # trim out any feeration constrains. TO get counts, we want them all
+    constraints = []
+    src_constraints.each { |constraint| constraints.push(constraint) }
+    constraints.delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+    if constraints.length == src_constraints.length
+      return prior_results
+    end
+    
+    # turn map of constraint data into solr quert strings
+    query, filter_queries = solrize_constraints(constraints)
+    
+    # do a very basic search and return minimal info
+    response = solr_select(:q => query, :fq => filter_queries,
+      :field_list => ['uri'],
+      :facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1}, 
+      :shards => @cores )
 
-	def fix_free_culture(hit)
-			if hit.has_key?("freeculture")
-				hit['freeculture'] = false
-			else
-				hit['freeculture'] = true
-			end
-	end
-
+    # Reformat the facets into what the UI wants, so as to leave that code as-is for now
+    # tack the new federaton info into the orignal results map
+    results = {}
+    results["facets"] = facets_to_hash(response['facet_counts']['facet_fields'])
+    prior_results['facets']['federation'] = results['facets']['federation']
+    return prior_results
+  end
+  
+  public 
 	def get_object(uri, all_fields = false) #called when "collect" is pressed.
 		# Returns nil if the object doesn't exist, or the object if it does.
 		query = "uri:#{CollexEngine.query_parser_escape(uri)}"
@@ -316,7 +368,7 @@ return results
 		response = solr_select(:start => 0, :rows => 1,
              :q => query, :field_list => field_list, :shards => @cores)
 		if response['response']['docs'].length > 0
-			fix_free_culture(response['response']['docs'][0])
+#			fix_free_culture(response['response']['docs'][0])
 	    return response['response']['docs'][0]
 		end
 		return nil
@@ -324,11 +376,11 @@ return results
 
 	def get_object_with_text(uri)
 		# Returns nil if the object doesn't exist, or the object if it does.
-    query = "uri:#{CollexEngine.query_parser_escape(uri)}"
+		query = "uri:#{CollexEngine.query_parser_escape(uri)}"
 
-	response = solr_select(:start => 0, :rows => 1,
-             :q => query, :shards => @cores)
-    return response['response']['docs'][0] if response['response']['docs'].length > 0
+		response = solr_select(:start => 0, :rows => 1,
+			:q => query, :shards => @cores)
+		return response['response']['docs'][0] if response['response']['docs'].length > 0
 		return nil
 	end
 
@@ -394,18 +446,50 @@ return results
 		@@report_file = fname
 		begin
 			File.delete(fname)
-			CollexEngine.report_line("Started: #{Time.now}")
 		rescue
+		end
+		@@report_file_prefix = "Started: #{Time.now}"	# We want the file to be empty unless something important is reported, so delay writing this until the first log message
+	end
+
+	def self.report_line_if(str)
+		# This only prints the line if the file is empty
+		if @@report_file_prefix == nil
+			self.report_line(str)
+		else
+			puts str
 		end
 	end
 
 	def self.report_line(str)
 		if @@report_file
 			open(@@report_file, 'a') { |f|
-				f.puts str
+				if @@report_file_prefix
+					f.puts @@report_file_prefix
+					@@report_file_prefix = nil
+				end
+				begin
+					#f.puts str.encoding.name
+					f.puts str
+				rescue Exception => e
+					f.puts("Continuing after exception: #{e}\n")
+					bytes = ''
+					str.each_byte { |b|
+						bytes += "#{b} "
+					}
+					f.puts bytes
+				end
 			}
 		end
-		puts str
+		begin
+			puts str
+		rescue Exception => e
+			f.puts("Continuing after exception: #{e}\n")
+			bytes = ''
+			str.each_byte { |b|
+				bytes += "#{b} "
+			}
+			f.puts bytes
+		end
 	end
 
 	def replace_archive(archive)
@@ -419,7 +503,7 @@ return results
 		begin
 			@solr.optimize()
 		rescue
-	  end
+		end
 	end
 
 	def replace_archives(archives)
@@ -458,7 +542,7 @@ return results
 		begin
 			@solr.optimize()
 		rescue
-	  end
+		end
 		begin
 			@solr.commit()
 		rescue
@@ -528,6 +612,11 @@ return results
 		return get_all_in_archive(archive, @all_fields_except_text)
 	end
 
+	def get_all_objects_in_archive_with_text(archive)
+		fields = @all_fields_except_text + [ 'text' ]
+		return get_all_in_archive(archive, fields)
+	end
+
 	public
 	# Warning: This will completely wipe out the index. Just do this on the reindexing resource!
 	def start_reindex
@@ -539,87 +628,75 @@ return results
 		@solr.optimize
 	end
 
-	def self.value_to_string(value)
-		if value.kind_of?(Array)
-			value.each{ |v|
-				v = v.strip()
-			}
-			value = value.join(" | ")
-		elsif value != nil
-			value = "#{value}"
-		end
-		return value
-	end
-
 	public	# these should actually be some sort of private since they are only called inside this file.
-	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
-		uri = new_obj['uri']
-		first_error = true
-		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'federation', 'year_sort' ]	# 'year', 'author_sort', TODO: too many items are missing. Take care of that later.
-		required_fields.each {|field|
-			if field != 'url' || new_obj['archive'] != 'whitbib'	#TODO: remove this when new "resources" archive is created.
-				if new_obj[field] == nil
-					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} missing in new index")
-				elsif new_obj[field].length == 0
-					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is NIL in new index")
-				elsif new_obj[field].kind_of?(Array) && new_obj[field].join('').strip().length == 0
-					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is an array of all spaces in new index")
-				elsif !new_obj[field].kind_of?(Array) && new_obj[field].strip() == ""
-					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is all spaces in new index")
-				end
-			end
-		}
-		if old_obj == nil
-			# total_errors, first_error = print_error(uri, total_errors, first_error, "Document #{uri} introduced in reindexing.")
-		else
-			new_obj.each {|key,value|
-				if key == 'batch' || key == 'score'
-					old_obj.delete(key)
-				else
-					old_value = old_obj[key]
-					old_value = value_to_string(old_value)
-					value = value_to_string(value)
-					if key == 'text' || key == 'title'
-						old_value = old_value.strip if old_value != nil
-						value = value.strip if value != nil
-					end
-					if old_value == nil
-						if key != 'year_sort'	#TODO: to many errors: remove this test after "resources" index is recreated.
-							total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} #{value.gsub("\n", " / ")} introduced in reindexing.")
-						end
-					elsif old_value != value
-						if old_value.gsub('&amp;', '&') != value.gsub('&amp;', '&')	# TODO: Straighten out &amp; bug.
-							if old_value.length > 30
-								total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} mismatched: length= #{value.length} (new) vs. #{old_value.length} (old)")
-								old_arr = old_value.split("\n")
-								new_arr = value.split("\n")
-								first_mismatch = -1
-								old_arr.each_with_index { |s, i|
-									first_mismatch = i if first_mismatch == -1 && new_arr[i] != s
-								}
-								CollexEngine.report_line("        at line #{first_mismatch}:\n\"#{new_arr[first_mismatch].gsub("\n", " / ")}\" vs.\n\"#{old_arr[first_mismatch].gsub("\n", " / ")}\"\n")
-							else
-								total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} mismatched: \"#{value.gsub("\n", " / ")}\" (new) vs. \"#{old_value.gsub("\n", " / ")}\" (old)")
-							end
-						end
-					end
-					old_obj.delete(key)
-				end
-			}
-			old_obj.each {|key,value|
-				if value != nil # && key != 'type'	# 'type' is being phased out, so it is ok if it doesn't appear.
-					value = value_to_string(value)
-					value = value.slice(0..99) + "..." if value.length > 100
-					value = value.gsub("\n", " / ")
-					if value.length > 0
-						total_errors, first_error = print_error(uri, total_errors, first_error, "Key not reindexed: #{key}=#{value}")
-					end
-				end
-			}
-		end
-		return total_errors
-	end
-
+#	def self.compare_objs(new_obj, old_obj, total_errors)	# this compares one object from the old and new indexes
+#		uri = new_obj['uri']
+#		first_error = true
+#		required_fields = [ 'title_sort', 'title', 'genre', 'archive', 'url', 'federation', 'year_sort', 'freeculture', 'is_ocr' ]	# 'year', 'author_sort', TODO: too many items are missing. Take care of that later.
+#		required_fields.each {|field|
+#			if field != 'url' || new_obj['archive'] != 'whitbib'	#TODO: remove this when new "resources" archive is created.
+#				if new_obj[field] == nil
+#					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} missing in new index")
+#				elsif new_obj[field].kind_of?(Array) && new_obj[field].length == 0
+#					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is NIL in new index")
+#				elsif new_obj[field].kind_of?(Array) && new_obj[field].join('').strip().length == 0
+#					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is an array of all spaces in new index")
+#				elsif new_obj[field].kind_of?(String) && new_obj[field].strip() == ""
+#					total_errors, first_error = print_error(uri, total_errors, first_error, "required field: #{field} is all spaces in new index")
+#				end
+#			end
+#		}
+#		if old_obj == nil
+#			# total_errors, first_error = print_error(uri, total_errors, first_error, "Document #{uri} introduced in reindexing.")
+#		else
+#			new_obj.each {|key,value|
+#				if key == 'batch' || key == 'score'
+#					old_obj.delete(key)
+#				else
+#					old_value = old_obj[key]
+#					old_value = value_to_string(old_value)
+#					value = value_to_string(value)
+#					if key == 'text' || key == 'title'
+#						old_value = old_value.strip if old_value != nil
+#						value = value.strip if value != nil
+#					end
+#					if old_value == nil
+#						if key != 'year_sort' && key != 'freeculture' && key != 'is_ocr' #TODO: too many errors: remove this test after "resources" index is recreated.
+#							total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} #{value.gsub("\n", " / ")} introduced in reindexing.")
+#						end
+#					elsif old_value != value
+#						if old_value.gsub('&amp;', '&') != value.gsub('&amp;', '&')	# TODO: Straighten out &amp; bug.
+#							if old_value.length > 30
+#								total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} mismatched: length= #{value.length} (new) vs. #{old_value.length} (old)")
+#								old_arr = old_value.split("\n")
+#								new_arr = value.split("\n")
+#								first_mismatch = -1
+#								old_arr.each_with_index { |s, i|
+#									first_mismatch = i if first_mismatch == -1 && new_arr[i] != s
+#								}
+#								CollexEngine.report_line("        at line #{first_mismatch}:\n\"#{new_arr[first_mismatch].gsub("\n", " / ")}\" vs.\n\"#{old_arr[first_mismatch].gsub("\n", " / ")}\"\n")
+#							else
+#								total_errors, first_error = print_error(uri, total_errors, first_error, "#{key} mismatched: \"#{value.gsub("\n", " / ")}\" (new) vs. \"#{old_value.gsub("\n", " / ")}\" (old)")
+#							end
+#						end
+#					end
+#					old_obj.delete(key)
+#				end
+#			}
+#			old_obj.each {|key,value|
+#				if value != nil # && key != 'type'	# 'type' is being phased out, so it is ok if it doesn't appear.
+#					value = value_to_string(value)
+#					value = value.slice(0..99) + "..." if value.length > 100
+#					value = value.gsub("\n", " / ")
+#					if value.length > 0
+#						total_errors, first_error = print_error(uri, total_errors, first_error, "Key not reindexed: #{key}=#{value}")
+#					end
+#				end
+#			}
+#		end
+#		return total_errors
+#	end
+#
 	def self.compare_object_arrays(new_objs, old_objs, total_errors)
 		# first turn the old objects into a hash for quicker searching
 		old_hash = {}
@@ -632,7 +709,8 @@ return results
 		new_objs.each {|new_obj|
 			uri = new_obj['uri']
 			old_obj = old_hash[uri]
-			total_errors = self.compare_objs(new_obj, old_obj, total_errors)
+			total_errors, err_arr = CompareSolrObject.compare_objs(new_obj, old_obj, total_errors)
+			err_arr.each { |err| CollexEngine.report_line(err) }
 		}
 
 		return total_errors
@@ -652,67 +730,42 @@ return results
 	end
 
 	public
+	def self.create_old_archive_name(archive)
+		old_archive = archive
+		old_archive = 'rc' if old_archive == 'rc_praxis'
+		old_archive = 'rc-resources' if old_archive == 'rc_resources'
+		old_archive = 'rc-editions' if old_archive == 'rc_editions'
+		old_archive = 'JSTOR:American Literature' if old_archive == 'jstorAmerLit'
+		old_archive = 'JSTOR:American Literary History' if old_archive == 'jstorAmerLitHist'
+		old_archive = 'JSTOR:NOVEL: A Forum on Fiction' if old_archive == 'jstorFOF'
+		old_archive = 'JSTOR:Nineteenth-Century Fiction' if old_archive == 'jstorNCF'
+		old_archive = 'JSTOR:Nineteenth-Century Literature' if old_archive == 'jstorNCL'
+		old_archive = 'JSTOR:Studies in English Literature, 1500-1900' if old_archive == 'jstorSEL'
+		old_archive = 'JSTOR:Trollopian' if old_archive == 'jstorTrollopian'
+		return old_archive
+	end
+
 	def self.compare_reindexed_core(params)
 		archive_to_scan = params[:archive]
-		start_after = params[:start_after]
-		use_merged_index = params[:use_merged_index]
 		CollexEngine.set_report_file(params[:log])
 		resources = CollexEngine.new(['resources'])
 		total_docs_scanned = 0
 		total_errors = 0
 
-		if archive_to_scan
-			CollexEngine.report_line("====== Scanning archive \"#{archive_to_scan}\"... ====== ")
-			if use_merged_index
-				reindexed = CollexEngine.new(["merged"])
-			else
-				reindexed = CollexEngine.new(["archive_#{archive_to_core_name(archive_to_scan)}"])
-			end
-			new_obj = reindexed.get_all_objects_in_archive(archive_to_scan)
-			CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
-			total_docs_scanned += new_obj.length
-			old_obj = resources.get_all_objects_in_archive(archive_to_scan)
-			CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
-			total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
-		else
-			if use_merged_index
-				archives = resources.get_all_archives()
-			else
-				archives = get_archive_core_list()
-			end
-			started = start_after == nil
-			archives.each {|archive|
-				if started
-					CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
-					if use_merged_index
-						reindexed = CollexEngine.new(["merged"])
-					else
-						reindexed = CollexEngine.new(["#{archive}"])
-						actual_archive_names = reindexed.get_all_archives()
-						# theoretically there should be exactly one archive in each index. We'll make sure of that here.
-						if actual_archive_names.length > 1
-							CollexEngine.report_line("More than one archive in index: #{actual_archive_names.join(',')}\n")
-						elsif actual_archive_names.length == 0
-							CollexEngine.report_line("No archives present in the index. Is it empty?\n")
-						else
-							archive = actual_archive_names[0]
-						end
-					end
+		old_archive = self.create_old_archive_name(archive_to_scan)
+		str = archive_to_scan
+		str += '/' + old_archive if old_archive != archive_to_scan
+		CollexEngine.report_line("====== Scanning archive \"#{str}\"... ====== ")
+		reindexed = CollexEngine.new(["archive_#{archive_to_core_name(archive_to_scan)}"])
 
-					new_obj = reindexed.get_all_objects_in_archive(archive)
-					CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
-					total_docs_scanned += new_obj.length
-					old_obj = resources.get_all_objects_in_archive(archive)
-					CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
-					total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
-					
-				else	# is started
-					if archive == "archive_#{start_after}"
-						started = true
-					end
-				end
-			}
-		end
+		new_obj = reindexed.get_all_objects_in_archive(archive_to_scan)
+		CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
+		total_docs_scanned += new_obj.length
+
+		old_obj = resources.get_all_objects_in_archive(old_archive)
+		CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
+		total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
+
 		CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
 	end
 
@@ -732,24 +785,33 @@ return results
 #		return ret
 	end
 
-	def self.compare_text_one_archive(archive, reindexed_core, old_core)
+	def self.compare_text_one_archive(archive, reindexed_core, old_core, size)
 			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
 			start_time = Time.now
 			done = false
 			page = 0
-			size = 10
+			#size = 10
 			total_objects = 0
 			total_errors = 0
 			docs_with_text = 0
 			new_obj = []
 			old_objs_hash = {}
 			largest_remaining_size = 0
+			old_archive = self.create_old_archive_name(archive)
+
 			while !done do
-				objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
+				begin
+					objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
+				rescue Exception => e
+					CollexEngine.report_line("COMPARE TEXT: Continuing after exception: #{e}\n")
+					objs = []
+				end
 				total_objects += objs.length
 				new_obj += objs
 				#CollexEngine.report_line("new_obj.length=#{objs.length}\n")
-				old_objs = old_core.get_text_fields_in_archive(archive, page, size)
+				old_objs = old_core.get_text_fields_in_archive(old_archive, page, size)
+				print "."
+				puts "" if total_objects % (150*size) == 0
 				#CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
 				page += 1
 				if objs.length < size
@@ -765,102 +827,170 @@ return results
 				new_obj.each_with_index { |obj, i|
 					uri = obj['uri']
 					old_obj = old_objs_hash[uri]
-					if old_obj != nil
-						if old_obj['text'] == nil
-							#old_text = ""
-						elsif old_obj['text'].length > 1
-							CollexEngine.report_line("#{uri} old text is an array of size #{old_obj['text'].length}\n")
-							old_text = old_obj['text'].join(" | ").strip()
-						else
-							old_text = old_obj['text'][0].strip
-						end
-						if obj['text'] == nil
-							if obj['has_full_text'] != false
-								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist.\n")
-								total_errors += 1
-							end
-							if obj['is_ocr'] != nil
-								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist.\n")
-								total_errors += 1
-							end
-						elsif obj['text'].length > 1
-							CollexEngine.report_line("#{uri} new text is an array of size #{obj['text'].length}\n")
-								total_errors += 1
-							text = obj['text'].join(" | ").strip()
-						else
-							docs_with_text += 1
-							text = obj['text'][0].strip
-							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft") || (archive == 'UVaPress_VLCS') || (archive == 'cbw') || (archive == 'whitbib') || (archive == 'uva_library'))	# this should be false for all archives except the specified ones.
-								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text exists.\n")
-								total_errors += 1
-							end
-							if obj['is_ocr'] != false
-								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists.\n")
-								total_errors += 1
-							end
-						end
-						if text == nil && old_text != nil
-							CollexEngine.report_line("#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})\n")
-							total_errors += 1
-						elsif text != nil && old_text == nil
-							CollexEngine.report_line("#{uri} text field has appeared in the new index.\n")
-							total_errors += 1
-						elsif text != old_text
-							# delete extra spaces and blank lines and compare again
-							text = text.gsub(" \n", "\n")
-							old_text = old_text.gsub(" \n", "\n")
-							text = text.gsub("\n ", "\n")
-							old_text = old_text.gsub("\n ", "\n")
-							text = text.gsub(" \n", "\n")
-							old_text = old_text.gsub(" \n", "\n")
-							text = text.gsub("\n ", "\n")
-							old_text = old_text.gsub("\n ", "\n")
-							text = text.gsub("\n\n", "\n")
-							old_text = old_text.gsub("\n\n", "\n")
-							text = text.gsub("\n\n", "\n")
-							old_text = old_text.gsub("\n\n", "\n")
-
-							if text != old_text
-								old_arr = old_text.split("\n")
-								old_arr.delete("")
-								new_arr = text.split("\n")
-								new_arr.delete("")
-								first_mismatch = -1
-								old_arr.each_with_index { |s, j|
-									if first_mismatch == -1 && new_arr[j] != s
-										first_mismatch = j
-									end
-								}
-								if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
-									first_mismatch = old_arr.length
-								end
-								if first_mismatch != -1
-	#										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
-	#										File.open("#{RAILS_ROOT}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
-	#										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
-									print_start = first_mismatch - 1
-									print_start = 0 if print_start < 0
-									CollexEngine.report_line("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})")
-									print_end = first_mismatch + 1
-									print_end = new_arr.length() -1 if print_end >= new_arr.length()
-									print_start.upto(print_end) { |x|
-										CollexEngine.report_line("\"#{new_arr[x]}\"\n")
-									}
-									CollexEngine.report_line("-- vs --\n(old #{new_arr.length})")
-									print_end = first_mismatch + 1
-									print_end = old_arr.length() -1 if print_end >= old_arr.length()
-									print_start.upto(print_end) { |x|
-										CollexEngine.report_line("\"#{old_arr[x]}\"\n")
-									}
-									#CollexEngine.report_line("#{text}\n----\n#{old_text}\n")
-									#CollexEngine.report_line("#{text}\n")
-									total_errors += 1
-								end
-							end
-						end
+					if old_obj
+						total_errors, err_arr, docs_with_text = CompareSolrObject.compare_text(obj, old_obj, total_errors, docs_with_text)
+						err_arr.each { |err| CollexEngine.report_line(err) }
 						new_obj[i] = nil	# we've done this one, so get rid of it
 						old_objs_hash.delete(uri)
 					end
+					
+#					obj['text'][0] = obj['text'][0].force_encoding("UTF-8") if obj['text'] != nil && obj['text'].length > 0
+#					if old_obj != nil
+#						old_obj['text'][0] = old_obj['text'][0].force_encoding("UTF-8") if old_obj['text'] != nil && old_obj['text'].length > 0
+#						if old_obj['text'] == nil
+#							#old_text = ""
+#						elsif old_obj['text'].length > 1
+#							CollexEngine.report_line("#{uri} old text is an array of size #{old_obj['text'].length}\n")
+#							old_text = old_obj['text'].join(" | ").strip()
+#						else
+#							old_text = old_obj['text'][0].strip
+#						end
+#						if obj['text'] == nil
+#							if obj['has_full_text'] != false
+#								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist.\n")
+#								total_errors += 1
+#							end
+#							if obj['is_ocr'] == true
+#								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist.\n")
+#								total_errors += 1
+#							end
+#						elsif obj['text'].length > 1
+#							CollexEngine.report_line("#{uri} new text is an array of size #{obj['text'].length}\n")
+#								total_errors += 1
+#							text = obj['text'].join(" | ").strip()
+#						else
+#							docs_with_text += 1
+#							text = obj['text'][0].strip
+##							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft") || (archive == 'UVaPress_VLCS') || (archive == 'cbw') || (archive == 'whitbib') || (archive == 'uva_library'))	# this should be false for all archives except the specified ones.
+##								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text exists.\n")
+##								total_errors += 1
+##							end
+#							if obj['is_ocr'] == true
+#								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists.\n")
+#								total_errors += 1
+#							end
+#						end
+#						if text == nil && old_text != nil
+#							CollexEngine.report_line("#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})\n")
+#							total_errors += 1
+#						elsif text != nil && old_text == nil
+#							CollexEngine.report_line("#{uri} text field has appeared in the new index.\n")
+#							total_errors += 1
+#						elsif text != old_text
+#							# delete extra spaces and blank lines and compare again
+#							text = text.gsub(" \n", "\n")
+#							old_text = old_text.gsub(" \n", "\n")
+#							text = text.gsub("\n ", "\n")
+#							old_text = old_text.gsub("\n ", "\n")
+#							text = text.gsub(" \n", "\n")
+#							old_text = old_text.gsub(" \n", "\n")
+#							text = text.gsub("\n ", "\n")
+#							old_text = old_text.gsub("\n ", "\n")
+#							text = text.gsub("\n\n", "\n")
+#							old_text = old_text.gsub("\n\n", "\n")
+#							text = text.gsub("\n\n", "\n")
+#							old_text = old_text.gsub("\n\n", "\n")
+#
+#							# TODO-PER: There is a weird bug where certain unicode characters appear twice. This is probably a bug in rdf-indexer,
+#							# but count those differences as unimportant for now.
+#							text = text.gsub("““", "“")
+#							old_text = old_text.gsub("““", "“")
+#							text = text.gsub("””", "””")
+#							old_text = old_text.gsub("””", "”")
+#							text = text.gsub("——", "—")
+#							old_text = old_text.gsub("——", "—")
+#							text = text.gsub("††", "†")
+#							old_text = old_text.gsub("††", "†")
+#							text = text.gsub("——", "—")
+#							old_text = old_text.gsub("——", "—")
+#							text = text.gsub("††", "†")
+#							old_text = old_text.gsub("††", "†")
+#							text = text.gsub("——", "—")
+#							old_text = old_text.gsub("——", "—")
+#							text = text.gsub("††", "†")
+#							old_text = old_text.gsub("††", "†")
+#							text = text.gsub("’’", "’")
+#							old_text = old_text.gsub("’’", "’")
+#
+#							if text != old_text
+#								old_arr = old_text.split("\n")
+#								old_arr.delete("")
+#								new_arr = text.split("\n")
+#								new_arr.delete("")
+#								first_mismatch = -1
+#								old_arr.each_with_index { |s, j|
+#									if first_mismatch == -1 && new_arr[j] != s
+#										first_mismatch = j
+#									end
+#								}
+#								if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
+#									first_mismatch = old_arr.length
+#								end
+#								if first_mismatch != -1
+#	#										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
+#	#										File.open("#{Rails.root}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
+#	#										File.open("#{Rails.root}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
+#									print_start = first_mismatch - 1
+#									print_start = 0 if print_start < 0
+#									CollexEngine.report_line("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{text.length})")
+#									print_end = first_mismatch + 1
+#									print_end = new_arr.length() -1 if print_end >= new_arr.length()
+#									print_start.upto(print_end) { |x|
+#										CollexEngine.report_line("\"#{new_arr[x]}\"\n")
+#									}
+#									CollexEngine.report_line("-- vs --\n(old #{old_text.length})")
+#									print_end = first_mismatch + 1
+#									print_end = old_arr.length() -1 if print_end >= old_arr.length()
+#									print_start.upto(print_end) { |x|
+#										CollexEngine.report_line("\"#{old_arr[x]}\"\n")
+#									}
+#									str_n = new_arr[first_mismatch]
+#									str_o = old_arr[first_mismatch]
+#									len = str_n.length > str_o.length ? str_n.length : str_o.length
+#									miss_index = -1
+#									len.times { |x|
+#										if str_n[x] != str_o[x]
+#											miss_index = x
+#											break
+#										end
+#									}
+#									miss_index -= 4
+#									miss_index = 0 if miss_index < 0
+#									bytes_n = ""
+#									bytes_o = ""
+#									str_n = str_n[miss_index..str_n.length]
+#									str_o = str_o[miss_index..str_o.length]
+#									str_n.each_byte { |x|
+#										bytes_n += "#{x} "
+#										break if bytes_n.length > 45
+#									}
+#									str_o.each_byte { |x|
+#										bytes_o += "#{x} "
+#										break if bytes_o.length > 45
+#									}
+#									CollexEngine.report_line("NEW: #{bytes_n}")
+#									CollexEngine.report_line("OLD: #{bytes_o}")
+#									#CollexEngine.report_line("#{text}\n----\n#{old_text}\n")
+#									#CollexEngine.report_line("#{text}\n")
+#									total_errors += 1
+#								end
+#							end
+#						else
+#							# check the character sets
+##							text.each_byte { |by|
+##								if by > 127
+##									puts "N:#{by} "
+##								end
+##							}
+##							old_text.each_byte { |by|
+##								if by > 127
+##									puts "O:#{by} "
+##								end
+##							}
+#						end
+#						new_obj[i] = nil	# we've done this one, so get rid of it
+#						old_objs_hash.delete(uri)
+#					end
 				}
 				new_obj = new_obj.compact()
 				largest_remaining_size = new_obj.length if new_obj.length > largest_remaining_size
@@ -875,10 +1005,10 @@ return results
 			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
 			CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
 			if obj['text']
-				CollexEngine.report_line("obj['text']\n")
+				CollexEngine.report_line("#{obj['text']}\n")
 				total_errors += 1
-			else
-				CollexEngine.report_line(" --- No full text for this item\n")
+#			else
+#				CollexEngine.report_line(" --- No full text for this item\n")
 			end
 			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
 		}
@@ -886,381 +1016,382 @@ return results
 		return total_objects, total_errors
 	end
 
-	def self.old_compare_text_one_archive(archive, reindexed_core, old_core)
-		# this was used to compare the original, dirty text with the cleaned up text
-			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
-			start_time = Time.now
-			done = false
-			page = 0
-			size = 10
-			total_objects = 0
-			total_errors = 0
-			docs_with_text = 0
-			new_obj = []
-			old_objs_hash = {}
-			largest_remaining_size = 0
-			while !done do
-				objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
-				total_objects += objs.length
-				new_obj += objs
-				#CollexEngine.report_line("new_obj.length=#{objs.length}\n")
-				old_objs = old_core.get_text_fields_in_archive(archive, page, size)
-				#CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
-				page += 1
-				if objs.length < size
-					done = true
-				end
-				# first turn the old objects into a hash for quicker searching
-				old_objs.each {|obj|
-					uri = obj['uri']
-					old_objs_hash[uri] = obj
-				}
-				# compare all the items in this set. We might not find all the same objects depending on what order we get them
-				# back from solr, but we'll eliminate the ones we find, then get more.
-				new_obj.each_with_index { |obj, i|
-					uri = obj['uri']
-					old_obj = old_objs_hash[uri]
-					if old_obj != nil
-						if old_obj['text'] == nil
-							#old_text = ""
-						elsif old_obj['text'].length > 1
-							CollexEngine.report_line("#{uri} old text is an array of size #{old_obj['text'].length}\n")
-							old_text = old_obj['text'].join(" | ").strip()
-						else
-							old_text = old_obj['text'][0].strip
-						end
-						if obj['text'] == nil
-							if obj['has_full_text'] != false
-								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist.\n")
-								total_errors += 1
-							end
-							if obj['is_ocr'] != nil
-								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist.\n")
-								total_errors += 1
-							end
-						elsif obj['text'].length > 1
-							CollexEngine.report_line("#{uri} new text is an array of size #{obj['text'].length}\n")
-								total_errors += 1
-							text = obj['text'].join(" | ").strip()
-						else
-							docs_with_text += 1
-							text = obj['text'][0].strip
-							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft"))	# this should be false for all archives except the specified ones.
-								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text exists.\n")
-								total_errors += 1
-							end
-							if obj['is_ocr'] != false
-								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists.\n")
-								total_errors += 1
-							end
-						end
-						if text == nil && old_text != nil
-							CollexEngine.report_line("#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})\n")
-							total_errors += 1
-						elsif text != nil && old_text == nil
-							CollexEngine.report_line("#{uri} text field has appeared in the new index.\n")
-							total_errors += 1
-						elsif text != old_text
-							# Get rid of all extra white space and extra lines. We first turn all white space except new lines into one white space.
-							# then we know that all the remaining strings of more than one white space character must contain at least one newline.
-							# so we can turn that into a single new line.
-							old_text = old_text.gsub("&nbsp;", " ")	# TODO: remove after resource index is updated.
-							text = text.gsub(/[ \t]+/, " ")
-							old_text = old_text.gsub(/[ \t]+/, " ")
-							text = text.gsub(/[\s]{2,}/, "\n")
-							old_text = old_text.gsub(/[\s]{2,}/, "\n")
-							# The old text had some imperfections that should be fixed now. TODO: remove this when the reference index is updated.
-							# turn the old &amp; symbols into &
-							old_text = old_text.gsub("&amp;", "&")
-							old_text = old_text.gsub("&amp;", "&")
-							old_text = old_text.gsub("&mdash;", "-")
-							old_text = old_text.gsub("&copy;", "©")
-
-							old_text = old_text.gsub("&mdash", "-")
-							old_text = old_text.gsub("&ndash;", "-")
-							old_text = old_text.gsub("&hyphen;", "-")
-							old_text = old_text.gsub("&hyphen", "-")
-							old_text = old_text.gsub("&colon", ":")
-							old_text = old_text.gsub("&lsquo;", "‘")
-							old_text = old_text.gsub("&rsquo;", "’")
-							old_text = old_text.gsub("&ldquo;", "“")
-							old_text = old_text.gsub("&rdquo;", "”")
-							old_text = old_text.gsub("&eacute;", "é")
-							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n", "")
-							old_text = old_text.gsub("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"\n\"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
-							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C/DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n", "")
-							old_text = old_text.gsub("<!DOCTYPE html\"\n\"PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
-							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n", "")
-							old_text = old_text.gsub("<!DOCTYPE html\n\"PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n", "")
-							old_text = CGI.unescapeHTML(old_text)
-							old_text = old_text.gsub(".page { padding: 1em;", "")
-							old_text = old_text.gsub(" }\n", "")
-
-							if archive == "PQCh-NCF" || archive == "PQCh-EAF"
-								s = old_text.index('var contextRoot = ')
-								if s
-									e = old_text.index('value=openURL();', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+19..old_text.length-1]
-									end
-								end
-							end
-
-							if archive.index("muse") == 0
-								text = text.gsub("\n0)", "\n")	# TODO: remove after replacing resources index.
-								text = text.gsub("\n;\n", "\n")	# TODO: remove after replacing resources index.
-								text = text.gsub("—", "-")
-								text = text.gsub("–", "-")
-								text = text.gsub("‐", "-")
-								
-								s = old_text.index('<link rel="search"')
-								if s
-									e = old_text.index('xml" />', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+8..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-								s = old_text.index('<!--')
-								if s
-									e = old_text.index('// -->', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
-									end
-								end
-								s = old_text.index('<!--')
-								if s
-									e = old_text.index('// -->', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
-									end
-								end
-								s = old_text.index('<!--')
-								if s
-									e = old_text.index('// -->', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
-									end
-								end
-								s = old_text.index('<BODY')
-								if s
-									e = old_text.index('>', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+2..old_text.length-1]
-									end
-								end
-								s = old_text.index('<IMG')
-								if s
-									e = old_text.index('>', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+1..old_text.length-1]
-									end
-								end
-								s = old_text.index('<img')
-								if s
-									e = old_text.index('>', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										old_text = old_text[0,s] + old_text[e+1..old_text.length-1]
-									end
-								end
-
-							elsif archive == "rc"
-								s = old_text.index('<meta name="generator" content=')
-								if s
-									e = old_text.index('ascii" />', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+10..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-								s = old_text.index('<meta name="Description" content=')
-								if s
-									e = old_text.index('/>', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+3..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-								s = old_text.index('<meta name="keywords" content=')
-								if s
-									e = old_text.index('/>', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+3..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-								s = old_text.index('//<![CDATA[')
-								if s
-									e = old_text.index('"Romantic Circles" />', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+21..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-								s = old_text.index('<')
-								if s
-									e = old_text.index('>', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+2..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-
-							elsif archive == "swrp"
-								old_text = old_text.gsub("</i> ", " ")
-								s = old_text.index("var Url = {")
-								e = old_text.index("dynamicLayout);")
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+16..old_text.length-1]
-								end
-								s = old_text.index("function ShowStaticURL(urlAddress)")
-								e = old_text.index("window.print();")
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+18..old_text.length-1]
-								end
-								s = old_text.index("function ShowHideDiv(divid)")
-								e = old_text.index("show metadata\";")
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+19..old_text.length-1]
-								end
-								s = old_text.index("var gaJsHost =")
-								e = old_text.index("catch(err) {}")
-								if s != nil && e != nil && s > 0 && e > 0
-									old_text = old_text[0,s] + old_text[e+12..old_text.length-1]
-								end
-								s = old_text.index('.title = "show metadata"')
-								if s
-									e = old_text.index('}', s)
-									if s != nil && e != nil && s > 0 && e > 0
-										str1 = old_text[0,s]
-										str2 = old_text[e+2..old_text.length-1]
-										old_text = str1 + str2
-									end
-								end
-
-								old_text = old_text.sub("&raquo;", "»")
-								old_text = old_text.sub("\n}", "")
-								
-							elsif archive == "victbib"
-								old_text = old_text.gsub("<!-- bib: reslist.tpl\nModified by mdalmau, 10/29/2005-->\n", "")
-							end
-							if text != old_text
-								text = trans_str(text)
-								old_text = trans_str(old_text)
-							end
-							if text != old_text
-								# TODO: The new text has a strange quirk that should be found: sometimes a particular unicode char appears twice.
-#								s = String.new
-#								c = 226
-#								s << c
-#								c = 128
-#								s << c
-#								c = 148
-#								s << c
-#								text = text.gsub(s+s, s)
-#								old_text = old_text.gsub(s+s, s)
-								if text != old_text
-									old_arr = old_text.split("\n")
-									new_arr = text.split("\n")
-									first_mismatch = -1
-									old_arr.each_with_index { |s, j|
-										if first_mismatch == -1 && new_arr[j] != s
-											skip = false
-											if archive == "PQCh-NCF" || archive == "PQCh-EAF"
-												skip = true if s.index("Do not export or print from this database without checking the Copyright Conditions to see what is permitted.") != nil && new_arr[j].index("Do not export or print from this database without checking the Copyright Conditions to see what is permitted.") != nil
-												skip = true if s.index("Early American Fiction 1789-1875") != nil && new_arr[j].index("Early American Fiction 1789") != nil
-
-											end
-
-											if archive.index("muse") == 0
-												skip = true if s.index("&") != nil	#TODO: temp: just ignore lines with char substitutions.
-												if s.length > 9 && new_arr[j].length > 9
-													slast = s[s.length-9..s.length-1]
-													olast = new_arr[j]
-													olast = olast[olast.length-9..olast.length-1]
-													skip = true if s[0..8] == new_arr[j][0..8] || slast == olast
-												end
-											end
-											if archive.index("swrp") == 0
-												skip = true if s.index("All Works") == 0 && new_arr[j].index("All Works") == 0
-												skip = true if s.index("Next ") == 0 && new_arr[j].index("Next ") == 0
-												skip = true if s.index("Copyright") == 0 && new_arr[j].index("Copyright") == 0 && s.index("Terms of Use") != nil && new_arr[j].index("Terms of Use") != nil
-												skip = true if s.index(" Previous") == 2 && new_arr[j].index(" Previous") == 1
-												skip = "true" if s.index("}") != nil && new_arr[j] == nil
-												new_arr.push("}") if s.index("}") != nil && new_arr[j] == nil
-											end
-											if !skip
-												first_mismatch = j
-											end
-										end
-									}
-									if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
-										first_mismatch = old_arr.length
-									end
-									if first_mismatch != -1
-										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
-										File.open("#{RAILS_ROOT}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
-										File.open("#{RAILS_ROOT}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
-										print_start = first_mismatch - 1
-										print_start = 0 if print_start < 0
-										CollexEngine.report_line("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})")
-										print_end = first_mismatch + 1
-										print_end = new_arr.length() -1 if print_end >= new_arr.length()
-										print_start.upto(print_end) { |x|
-											CollexEngine.report_line("\"#{new_arr[x]}\"\n")
-										}
-										CollexEngine.report_line("-- vs --\n(old #{new_arr.length})")
-										print_end = first_mismatch + 1
-										print_end = old_arr.length() -1 if print_end >= old_arr.length()
-										print_start.upto(print_end) { |x|
-											CollexEngine.report_line("\"#{old_arr[x]}\"\n")
-										}
-										#CollexEngine.report_line("#{text}\n----\n#{old_text}\n")
-										#CollexEngine.report_line("#{text}\n")
-										total_errors += 1
-									end
-								end
-							end
-						end
-						new_obj[i] = nil	# we've done this one, so get rid of it
-						old_objs_hash.delete(uri)
-					end
-				}
-				new_obj = new_obj.compact()
-				largest_remaining_size = new_obj.length if new_obj.length > largest_remaining_size
-				largest_remaining_size = old_objs_hash.length if old_objs_hash.length > largest_remaining_size
-			end
-
-		# These are all the objects that didn't match.
-		if new_obj.length > 0
-			CollexEngine.report_line(" ============================= TEXT ADDED TO ARCHIVE ===========================\n")
-		end
-		new_obj.each { |obj|
-			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
-			CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
-			if obj['text']
-				CollexEngine.report_line("obj['text']\n")
-				total_errors += 1
-			else
-				CollexEngine.report_line(" --- No full text for this item\n")
-			end
-			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
-		}
-		CollexEngine.report_line("    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds.\n")
-		return total_objects, total_errors
-	end
+#	def self.old_compare_text_one_archive(archive, reindexed_core, old_core)
+#		# this was used to compare the original, dirty text with the cleaned up text
+#			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
+#			start_time = Time.now
+#			done = false
+#			page = 0
+#			size = 10
+#			total_objects = 0
+#			total_errors = 0
+#			docs_with_text = 0
+#			new_obj = []
+#			old_objs_hash = {}
+#			largest_remaining_size = 0
+#			while !done do
+#				objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
+#				total_objects += objs.length
+#				new_obj += objs
+#				#CollexEngine.report_line("new_obj.length=#{objs.length}\n")
+#				old_objs = old_core.get_text_fields_in_archive(archive, page, size)
+#				#CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
+#				page += 1
+#				if objs.length < size
+#					done = true
+#				end
+#				# first turn the old objects into a hash for quicker searching
+#				old_objs.each {|obj|
+#					uri = obj['uri']
+#					old_objs_hash[uri] = obj
+#				}
+#				# compare all the items in this set. We might not find all the same objects depending on what order we get them
+#				# back from solr, but we'll eliminate the ones we find, then get more.
+#				new_obj.each_with_index { |obj, i|
+#					uri = obj['uri']
+#					old_obj = old_objs_hash[uri]
+#					if old_obj != nil
+#						if old_obj['text'] == nil
+#							#old_text = ""
+#						elsif old_obj['text'].length > 1
+#							CollexEngine.report_line("#{uri} old text is an array of size #{old_obj['text'].length}\n")
+#							old_text = old_obj['text'].join(" | ").strip()
+#						else
+#							old_text = old_obj['text'][0].strip
+#						end
+#						if obj['text'] == nil
+#							if obj['has_full_text'] != false
+#								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text does not exist.\n")
+#								total_errors += 1
+#							end
+#							if obj['is_ocr'] != nil
+#								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text does not exist.\n")
+#								total_errors += 1
+#							end
+#						elsif obj['text'].length > 1
+#							CollexEngine.report_line("#{uri} new text is an array of size #{obj['text'].length}\n")
+#								total_errors += 1
+#							text = obj['text'].join(" | ").strip()
+##						else
+##							docs_with_text += 1
+##							text = obj['text'][0].strip
+##							if obj['has_full_text'] == ((archive == "victbib") || (archive == "lilly") || (archive == "bancroft"))	# this should be false for all archives except the specified ones.
+##								CollexEngine.report_line("#{uri} field has_full_text is #{obj['has_full_text']} but full text exists.\n")
+##								total_errors += 1
+##							end
+##							if obj['is_ocr'] != false
+##								CollexEngine.report_line("#{uri} field is_ocr exists and is #{obj['is_ocr']} but full text exists.\n")
+##								total_errors += 1
+##							end
+#						end
+#						if text == nil && old_text != nil
+#							CollexEngine.report_line("#{uri} text field has disappeared from the new index. (old text size = #{old_text.length})\n")
+#							total_errors += 1
+#						elsif text != nil && old_text == nil
+#							CollexEngine.report_line("#{uri} text field has appeared in the new index.\n")
+#							total_errors += 1
+#						elsif text != old_text
+#							# Get rid of all extra white space and extra lines. We first turn all white space except new lines into one white space.
+#							# then we know that all the remaining strings of more than one white space character must contain at least one newline.
+#							# so we can turn that into a single new line.
+#							old_text = old_text.gsub("&nbsp;", " ")	# TODO: remove after resource index is updated.
+#							text = text.gsub(/[ \t]+/, " ")
+#							old_text = old_text.gsub(/[ \t]+/, " ")
+#							text = text.gsub(/[\s]{2,}/, "\n")
+#							old_text = old_text.gsub(/[\s]{2,}/, "\n")
+#							# The old text had some imperfections that should be fixed now. TODO: remove this when the reference index is updated.
+#							# turn the old &amp; symbols into &
+#							old_text = old_text.gsub("&amp;", "&")
+#							old_text = old_text.gsub("&amp;", "&")
+#							old_text = old_text.gsub("&mdash;", "-")
+#							old_text = old_text.gsub("&copy;", "©")
+#
+#							old_text = old_text.gsub("&mdash", "-")
+#							old_text = old_text.gsub("&ndash;", "-")
+#							old_text = old_text.gsub("&hyphen;", "-")
+#							old_text = old_text.gsub("&hyphen", "-")
+#							old_text = old_text.gsub("&colon", ":")
+#							old_text = old_text.gsub("&lsquo;", "‘")
+#							old_text = old_text.gsub("&rsquo;", "’")
+#							old_text = old_text.gsub("&ldquo;", "“")
+#							old_text = old_text.gsub("&rdquo;", "”")
+#							old_text = old_text.gsub("&eacute;", "é")
+#							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n", "")
+#							old_text = old_text.gsub("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"\n\"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
+#							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C/DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n", "")
+#							old_text = old_text.gsub("<!DOCTYPE html\"\n\"PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n", "")
+#							old_text = old_text.gsub("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n", "")
+#							old_text = old_text.gsub("<!DOCTYPE html\n\"PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n", "")
+#							old_text = CGI.unescapeHTML(old_text)
+#							old_text = old_text.gsub(".page { padding: 1em;", "")
+#							old_text = old_text.gsub(" }\n", "")
+#
+#							if archive == "PQCh-NCF" || archive == "PQCh-EAF"
+#								s = old_text.index('var contextRoot = ')
+#								if s
+#									e = old_text.index('value=openURL();', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+19..old_text.length-1]
+#									end
+#								end
+#							end
+#
+#							if archive.index("muse") == 0
+#								text = text.gsub("\n0)", "\n")	# TODO: remove after replacing resources index.
+#								text = text.gsub("\n;\n", "\n")	# TODO: remove after replacing resources index.
+#								text = text.gsub("—", "-")
+#								text = text.gsub("–", "-")
+#								text = text.gsub("‐", "-")
+#
+#								s = old_text.index('<link rel="search"')
+#								if s
+#									e = old_text.index('xml" />', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+8..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#								s = old_text.index('<!--')
+#								if s
+#									e = old_text.index('// -->', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+#									end
+#								end
+#								s = old_text.index('<!--')
+#								if s
+#									e = old_text.index('// -->', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+#									end
+#								end
+#								s = old_text.index('<!--')
+#								if s
+#									e = old_text.index('// -->', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+7..old_text.length-1]
+#									end
+#								end
+#								s = old_text.index('<BODY')
+#								if s
+#									e = old_text.index('>', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+2..old_text.length-1]
+#									end
+#								end
+#								s = old_text.index('<IMG')
+#								if s
+#									e = old_text.index('>', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+1..old_text.length-1]
+#									end
+#								end
+#								s = old_text.index('<img')
+#								if s
+#									e = old_text.index('>', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										old_text = old_text[0,s] + old_text[e+1..old_text.length-1]
+#									end
+#								end
+#
+#							elsif archive == "rc"
+#								s = old_text.index('<meta name="generator" content=')
+#								if s
+#									e = old_text.index('ascii" />', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+10..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#								s = old_text.index('<meta name="Description" content=')
+#								if s
+#									e = old_text.index('/>', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+3..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#								s = old_text.index('<meta name="keywords" content=')
+#								if s
+#									e = old_text.index('/>', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+3..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#								s = old_text.index('//<![CDATA[')
+#								if s
+#									e = old_text.index('"Romantic Circles" />', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+21..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#								s = old_text.index('<')
+#								if s
+#									e = old_text.index('>', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+2..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#
+#							elsif archive == "swrp"
+#								old_text = old_text.gsub("</i> ", " ")
+#								s = old_text.index("var Url = {")
+#								e = old_text.index("dynamicLayout);")
+#								if s != nil && e != nil && s > 0 && e > 0
+#									old_text = old_text[0,s] + old_text[e+16..old_text.length-1]
+#								end
+#								s = old_text.index("function ShowStaticURL(urlAddress)")
+#								e = old_text.index("window.print();")
+#								if s != nil && e != nil && s > 0 && e > 0
+#									old_text = old_text[0,s] + old_text[e+18..old_text.length-1]
+#								end
+#								s = old_text.index("function ShowHideDiv(divid)")
+#								e = old_text.index("show metadata\";")
+#								if s != nil && e != nil && s > 0 && e > 0
+#									old_text = old_text[0,s] + old_text[e+19..old_text.length-1]
+#								end
+#								s = old_text.index("var gaJsHost =")
+#								e = old_text.index("catch(err) {}")
+#								if s != nil && e != nil && s > 0 && e > 0
+#									old_text = old_text[0,s] + old_text[e+12..old_text.length-1]
+#								end
+#								s = old_text.index('.title = "show metadata"')
+#								if s
+#									e = old_text.index('}', s)
+#									if s != nil && e != nil && s > 0 && e > 0
+#										str1 = old_text[0,s]
+#										str2 = old_text[e+2..old_text.length-1]
+#										old_text = str1 + str2
+#									end
+#								end
+#
+#								old_text = old_text.sub("&raquo;", "»")
+#								old_text = old_text.sub("\n}", "")
+#
+#							elsif archive == "victbib"
+#								old_text = old_text.gsub("<!-- bib: reslist.tpl\nModified by mdalmau, 10/29/2005-->\n", "")
+#							end
+#							if text != old_text
+#								text = trans_str(text)
+#								old_text = trans_str(old_text)
+#							end
+#							if text != old_text
+#								# TODO: The new text has a strange quirk that should be found: sometimes a particular unicode char appears twice.
+##								s = String.new
+##								c = 226
+##								s << c
+##								c = 128
+##								s << c
+##								c = 148
+##								s << c
+##								text = text.gsub(s+s, s)
+##								old_text = old_text.gsub(s+s, s)
+#								if text != old_text
+#									old_arr = old_text.split("\n")
+#									new_arr = text.split("\n")
+#									first_mismatch = -1
+#									old_arr.each_with_index { |s, j|
+#										if first_mismatch == -1 && new_arr[j] != s
+#											skip = false
+#											if archive == "PQCh-NCF" || archive == "PQCh-EAF"
+#												skip = true if s.index("Do not export or print from this database without checking the Copyright Conditions to see what is permitted.") != nil && new_arr[j].index("Do not export or print from this database without checking the Copyright Conditions to see what is permitted.") != nil
+#												skip = true if s.index("Early American Fiction 1789-1875") != nil && new_arr[j].index("Early American Fiction 1789") != nil
+#
+#											end
+#
+#											if archive.index("muse") == 0
+#												skip = true if s.index("&") != nil	#TODO: temp: just ignore lines with char substitutions.
+#												if s.length > 9 && new_arr[j].length > 9
+#													slast = s[s.length-9..s.length-1]
+#													olast = new_arr[j]
+#													olast = olast[olast.length-9..olast.length-1]
+#													skip = true if s[0..8] == new_arr[j][0..8] || slast == olast
+#												end
+#											end
+#											if archive.index("swrp") == 0
+#												skip = true if s.index("All Works") == 0 && new_arr[j].index("All Works") == 0
+#												skip = true if s.index("Next ") == 0 && new_arr[j].index("Next ") == 0
+#												skip = true if s.index("Copyright") == 0 && new_arr[j].index("Copyright") == 0 && s.index("Terms of Use") != nil && new_arr[j].index("Terms of Use") != nil
+#												skip = true if s.index(" Previous") == 2 && new_arr[j].index(" Previous") == 1
+#												skip = "true" if s.index("}") != nil && new_arr[j] == nil
+#												new_arr.push("}") if s.index("}") != nil && new_arr[j] == nil
+#											end
+#											if !skip
+#												first_mismatch = j
+#											end
+#										end
+#									}
+#									if first_mismatch == -1	&& new_arr.length != old_arr.length # if the new text has more lines than the old text
+#										first_mismatch = old_arr.length
+#									end
+#									if first_mismatch != -1
+#										name = "#{CollexEngine.archive_to_core_name(archive)}_#{total_errors}"
+#										File.open("#{Rails.root}/tmp/new/#{name}.txt", 'w') {|f| f.write(text) }
+#										File.open("#{Rails.root}/tmp/old/#{name}.txt", 'w') {|f| f.write(old_text) }
+#										print_start = first_mismatch - 1
+#										print_start = 0 if print_start < 0
+#										CollexEngine.report_line("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{new_arr.length})")
+#										print_end = first_mismatch + 1
+#										print_end = new_arr.length() -1 if print_end >= new_arr.length()
+#										print_start.upto(print_end) { |x|
+#											CollexEngine.report_line("\"#{new_arr[x]}\"\n")
+#										}
+#										CollexEngine.report_line("-- vs --\n(old #{new_arr.length})")
+#										print_end = first_mismatch + 1
+#										print_end = old_arr.length() -1 if print_end >= old_arr.length()
+#										print_start.upto(print_end) { |x|
+#											CollexEngine.report_line("\"#{old_arr[x]}\"\n")
+#										}
+#										#CollexEngine.report_line("#{text}\n----\n#{old_text}\n")
+#										#CollexEngine.report_line("#{text}\n")
+#										total_errors += 1
+#									end
+#								end
+#							end
+#						end
+#						new_obj[i] = nil	# we've done this one, so get rid of it
+#						old_objs_hash.delete(uri)
+#					end
+#				}
+#				new_obj = new_obj.compact()
+#				largest_remaining_size = new_obj.length if new_obj.length > largest_remaining_size
+#				largest_remaining_size = old_objs_hash.length if old_objs_hash.length > largest_remaining_size
+#			end
+#
+#		# These are all the objects that didn't match.
+#		if new_obj.length > 0
+#			CollexEngine.report_line(" ============================= TEXT ADDED TO ARCHIVE ===========================\n")
+#		end
+#		new_obj.each { |obj|
+#			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
+#			CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
+#			if obj['text']
+#				CollexEngine.report_line("obj['text']\n")
+#				total_errors += 1
+#			else
+#				CollexEngine.report_line(" --- No full text for this item\n")
+#			end
+#			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
+#		}
+#		CollexEngine.report_line("    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds.\n")
+#		return total_objects, total_errors
+#	end
 
 	public
 	def self.compare_reindexed_core_text(params)
 		archive_to_scan = params[:archive]
 		start_after = params[:start_after]
 		use_merged_index = params[:use_merged_index]
+		size = params[:size]
 		CollexEngine.set_report_file(params[:log])
 		resources = CollexEngine.new(['resources'])
 		total_docs_scanned = 0
@@ -1273,36 +1404,16 @@ return results
 				core_name = archive_to_core_name(archive_to_scan)
 				reindexed = CollexEngine.new(["archive_#{core_name}"])
 			end
-			total_docs_scanned, total_errors = compare_text_one_archive(archive_to_scan, reindexed, resources)
+			total_docs_scanned, total_errors = compare_text_one_archive(archive_to_scan, reindexed, resources, size)
 		else
-			archives = resources.get_all_archives()
-			started = start_after == nil
-			archives.each {|archive|
-				if archive.index("exhibit_") == 0
-					CollexEngine.report_line("====== Skipping #{archive}.\n")
-				elsif started
-					if use_merged_index
-						reindexed = CollexEngine.new(["merged"])
-					else
-						core_name = archive_to_core_name(archive)
-						reindexed = CollexEngine.new(["archive_#{core_name}"])
-					end
-					scanned, errors = compare_text_one_archive(archive, reindexed, resources)
-					total_docs_scanned += scanned
-					total_errors += errors
-				else
-					if archive == start_after
-						started = true
-					end
-				end
-			}
+			CollexEngine.report_line("compare_reindexed_core_text needs an archive parameter.\n")
 		end
 		CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
 	end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
 	def self.archive_to_core_name(archive)
-		return archive.gsub(":", "_").gsub(" ", "_").gsub(",", "_").gsub("-", "_")
+		return archive.gsub(":", "_").gsub(" ", "_").gsub(",", "_")
 	end
 
 	public

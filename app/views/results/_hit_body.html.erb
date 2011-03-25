@@ -17,107 +17,40 @@
 <%# hit_body : parameters: hit, row_id, index, bool no_links -%>
 <%# this needs to be called inside a <table> element -%>
 <% item = get_collected_item(hit) -%>
-<% is_collected =(item != nil) -%>
+<% is_collected = !item.nil?  -%>
+<% tags = Tag.get_tags_for_uri(hit['uri']) -%>
 
 <%################### -%>
-<% hit['alternative'].each do |alt| %>
-<tr>
-<td valign="top" colspan="2"><%= alt %></td>
-</tr>
-<% end if hit['alternative'] %>
+<% rows = [] -%>
+<% result_row_item(rows, :alternative, hit, 'alternative', '', false) %>
+<% result_row_item(rows, :separate_lines, hit, 'source', 'Source', false) %>
+<% result_row_item(rows, :multiple_item, hit, 'role_AUT', 'By', false) %>
+<% result_row_item(rows, :multiple_item, hit, 'role_ART', 'Artist', false) %>
 <%################### -%>
-<%= result_row_item(:separate_lines, hit, 'source', 'Source', false) %>
-<%= result_row_item(:multiple_item, hit, 'role_AUT', 'By', false) %>
-<%= result_row_item(:multiple_item, hit, 'role_ART', 'Artist', false) %>
-<%################### -%>
-<% tags = CollectedItem.get_tags_for_uri(hit['uri']) -%>
-<%  if is_collected -%>
-	<tr>
-	<td valign="top" class="search_result_data_label">Collected&nbsp;on:</td>
-	<td><%= h(item.updated_at.strftime("%b %d, %Y")) %></td>
-	</tr>
-<% end -%>
+<%  result_row_collected(rows, is_collected, item) %>
 <%################### -%>
 <% if no_links -%>
-<% if tags.length > 0 -%>
-<tr>
-<td valign="top" class="search_result_data_label">Tags:</td>
-<td><%= h(tags.join('; ')) %></td>
-</tr>
-<% end # if there are tags -%>
+<% result_row_tags_no_links(rows, "Tags:", tags) -%>
 <% else # if we want links on the tags -%>
-<tr>
-<td valign="top" class="search_result_data_label">Tags:</td>
-<td>
-	<% my_tags = [] -%>
-	<% if is_collected -%>
-		<% my_tags = item.tags -%>
-	<% end #if the item is collected by the user. -%>
-   	<% tags.each {|tag| -%>
-		<% is_mine = is_in_tag_array(my_tags, tag) -%>
-		<%= " | " if tag != tags[0] %>
-		<% if is_mine -%>
-			<%= link_to format_tag_for_output(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag}\"" } %>
-        	<%= link_to_function "X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag)}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag}\"" %>
-		<% else -%>
-			<%= link_to format_tag_for_output(tag), { :controller => 'tag', :action => 'results', :tag => tag, :view => 'tag' }, { :class => 'tag_link', :title => "view all objects tagged \"#{tag}\"" } %>
-		<% end #if this tag was created by the current user -%>
-	<% } #the tag loop -%>
-	<% if !no_links -%>
-		<% if session[:user] == nil -%>
-			<span class="tags_instructions"><%= "[#{sign_in_link({:class => 'nav_link'})} to add tags]" %></span>
-		<% else -%>
-			<%= link_to_function "[add&nbsp;tag]", "doAddTag('add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}", :class => 'modify_link' if is_collected %>
-			<%= "<span class='tags_instructions'>Collect this item to add tags</span>" if !is_collected %>
-		<% end #if the user is logged in. -%>
-	<% end #if !no_links -%>
-</td>
-</tr>
+<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, session[:user] != nil, is_collected) %>
 <% end # if no_links -%>
 <%################### -%>
-<% if hit['archive'] %>
-	<tr>
-	    <td class="search_result_data_label">Site:</td>
-	    <td>
-	        <% if site(hit['archive']) %><a class="nines_link" target="_blank" href="<%= site(hit['archive'])['url'] %>"><%=h site(hit['archive'])['description'] %></a><% else %><%= hit['archive'] %><% end %>
-	    </td>
-	</tr>
-<% end %>
+<% result_row_site(rows, "Site:", hit, 'archive') %>
 <%################### -%>
-<%= result_row_item(:multiple_item, hit, 'genre', 'Genre', true) %>
-<%= result_row_item(:single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type', true) %>
-<%= result_row_item(:single_item, hit, 'license', 'License', true) %>
-<%= result_row_item(:multiple_item, hit, 'role_EDT', 'Editor', true) %>
-<%= result_row_item(:multiple_item, hit, 'role_PBL', 'Publisher', true) %>
-<%= result_row_item(:multiple_item, hit, 'role_TRL', 'Translator', true) %>
-<%= result_row_item(:multiple_item, hit, 'date_label', 'Date', true) %>
+<% result_row_item(rows, :multiple_item, hit, 'genre', 'Genre', true) %>
+<% result_row_item(rows, :single_item, hit, 'exhibit_type', 'Exhibit&nbsp;type', true) %>
+<% result_row_item(rows, :single_item, hit, 'license', 'License', true) %>
+<% result_row_item(rows, :multiple_item, hit, 'role_EDT', 'Editor', true) %>
+<% result_row_item(rows, :multiple_item, hit, 'role_PBL', 'Publisher', true) %>
+<% result_row_item(rows, :multiple_item, hit, 'role_TRL', 'Translator', true) %>
+<% result_row_item(rows, :multiple_item, hit, 'date_label', 'Date', true) %>
 <%################### -%>
 <% if !no_links -%>
-	<% exhibits = ExhibitObject.find_all_by_uri(hit['uri']) -%>
-	<% is_first = true -%>
-	<% user_name = session[:user] ? session[:user][:username] : nil -%>
-	<% for exhibit in exhibits -%>
-		<%# We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public -%>
-		<%# We only want to have the edit link if it is owned by the current user. -%>
-		<% real_exhibit = Exhibit.find(exhibit.exhibit.id) -%>
-		<% owner = User.find(real_exhibit.user_id) -%>
-		<% if user_name == owner.username || real_exhibit.published? -%>
-			<tr class="hidden" id="in_exhibit_<%= exhibit.exhibit.id %>_<%= hit['uri'] %>">
-				<td class='search_result_data_label' valign='top'>
-					<%= "Exhibits:" if is_first == true -%>
-					<% is_first = false -%>
-				</td>
-				<td valign='top' width='100%'>
-					<%=h real_exhibit.title -%>
-					<a class="nav_link" href="/exhibits/<%= real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id %>" >[view]</a>
-					<% if Exhibit.can_edit(get_curr_user(), real_exhibit.id) -%>
-						<%= link_to("[edit]", { :controller => MY_COLLEX_URL, :action => 'edit_exhibit', :id => real_exhibit.id }, :class => 'nav_link' ) %>
-					 <% end -%>
-				</td>
-			</tr>
-		<% end -%>
-	<% end # each exhibit -%>
-
+	<% result_row_exhibits(rows, hit, get_curr_user()) %>
+<% end %>
+<% should_show_more = should_show_more_link(no_links, rows) %>
+<%= format_result_rows(rows, should_show_more) %>
+<% if should_show_more -%>
 	<tr id='more-<%= row_id %>' class="more">
 		<td><%= link_to_function("[more...]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
 	</tr>
@@ -129,8 +62,12 @@
     	<div class="search_result_full_text_label">Excerpt from Full Text:</div>
         <div id="<%=row_id%>_full_text" class="snippet">
         	<%# We want to escape everything except the bolding so that random control chars can't mess up the display -%>
-            <% text = h hit["text"] -%>
-			<%= text.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>") %>...
+			<% t1 = hit["text"].to_s %>
+			<% t2 = t1 %>
+			<% t3 = t2.gsub('&', 'AmPeRsAnD') %>
+			<% t4 = h(t3) %>
+			<% t5 = t4.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&') %>
+			<%= raw(t5) %>...
         </div>
 	</td>
 </tr>

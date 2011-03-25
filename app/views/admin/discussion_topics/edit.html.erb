@@ -19,9 +19,9 @@
 <div class="inner_content_container">
 	<div class="page_header">Editing Forum Topic</div>
 
-	<%= error_messages_for :discussion_topic %>
+	<%# = error_messages_for :discussion_topic %>
 	
-	<% form_tag :action => 'update', :id => @discussion_topic do %>
+	<%= form_tag :action => 'update', :id => @discussion_topic do %>
 	<p><label for="topic">Topic</label><br/>
 	<%= text_field 'discussion_topic', 'topic'  %></p>
 	<p><label for="description">Description</label><br/>

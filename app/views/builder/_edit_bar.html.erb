@@ -1,0 +1,59 @@
+<% # 
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<%# edit_bar params: ActiveRecord element, int element_count -%>	
+<% page = ExhibitPage.find(element.exhibit_page_id) %>
+<% ajax_action = "'/builder/edit_element,/builder/refresh_outline'" -%>
+<% ajax_div_id = "'exhibit_page,exhibit_builder_outline_content'" -%>
+<% ajax_params = "'page=#{page.id}&element=#{element.position}&verb='" -%>
+<div class="edit_bar hidden">
+	<div class="edit_bar_right">
+		<%= link_to_function( up_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'up');", { :title => 'Move Element Up', :class => 'modify_link' }) if element.position > 1 %>
+		<%= link_to_function( down_char(), "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'down');", { :title => 'Move Element Down', :class => 'modify_link' }) if element.position < page.exhibit_elements.length %>
+		<% if page.exhibit_elements.length > 1 -%>
+			<span class="close_link"><%= link_to_function del_char(), "doAjaxLinkConfirm(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'delete');", { :title => 'Delete Element', :class => 'modify_link' } %></span>
+		<% end -%>
+	</div>
+	<a id="top-of-<%= element.id %>" name="top-of-<%= element.id %>">
+		<span class="edit_exhibit_element_number"><%= element_count %></span>
+	</a>
+	<span id="element_<%= element.id %>_select_type_wrapper" >
+	<select id="element_<%= element.id %>_select_type" class="select_element_type">
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'header' %> value="header">Header</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text' %> value="text">Text</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'blockquote' %> value="blockquote">Block Quote</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text' %> value="pic_text">Illustration then Text</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic' %> value="text_pic">Text then Illustration</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pics' %> value="pics">Illustration (one or multiple)</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'pic_text_pic' %> value="pic_text_pic">Illustration, Text, Illustration</option>
+	<option <%= "selected='selected'" if element.exhibit_element_layout_type == 'text_pic_text' %> value="text_pic_text">Text, Illustration, Text</option>
+	</select>
+	</span>
+	<% ill_ajax_action = "'/builder/insert_illustration,/builder/refresh_outline'" -%>
+	<% ill_ajax_div_id = "'element_#{element.id},exhibit_builder_outline_content'" -%>
+	<% illustration_pos = element.exhibit_illustrations.length+1 -%>
+	<% ill_ajax_params = "'element_id=#{element.id}&position=-1'" -%>
+	<%= link_to_function("[add resource]", "doAjaxLink(#{ill_ajax_div_id}, #{ill_ajax_action}, #{ill_ajax_params});", { :id => "add_image_#{element.id}", :title => 'Append New Illustration To End', :class => "modify_link #{ "hidden" if element.exhibit_element_layout_type != 'pics' }" }) %>
+	<span id="justify_<%= element.id %>_wrapper" class="<%= "hidden" if element.exhibit_element_layout_type != 'pics' %>" >
+	<select id="justify_<%=element.id%>" class="select_illustration_justification">
+	<option <%= "selected='selected'" if element.get_justification() == 'left' %> value="left">Left Justification</option>
+	<option <%= "selected='selected'" if element.get_justification() == 'center' %> value="center">Center Justification</option>
+	<option <%= "selected='selected'" if element.get_justification() == 'right' %> value="right">Right Justification</option>
+	</select>
+	</span>
+	<%= link_to_function("[New Section]", "doAjaxLink(#{ajax_div_id}, #{ajax_action}, #{ajax_params}+'insert');", { :title => 'New Section', :class => 'modify_link' }) %>
+	<%= link_to_function( "[outline]", "showExhibitOutline(#{element.id}, #{page.position});", { :title => 'Show Outline', :class => 'nav_link' }) %>
+</div>

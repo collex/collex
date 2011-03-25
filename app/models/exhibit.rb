@@ -1,3 +1,4 @@
+# encoding: UTF-8
 ##########################################################################
 # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
 # 
@@ -13,8 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
+require 'nokogiri'
 
 class Exhibit < ActiveRecord::Base
+	#require 'rexml/document'
   has_many :exhibit_pages, :order => :position, :dependent=>:destroy
   has_many :exhibit_objects, :dependent=>:destroy
 	belongs_to :group
@@ -342,10 +345,12 @@ class Exhibit < ActiveRecord::Base
 		return license_type != nil && license_type != '' && license_type.to_i > 0
 	end
 
-	def self.get_license_info(add_inherit)
+	def self.get_license_info(add_inherit, group_id)
 		ret = []
 		if add_inherit
-			ret.push({ :id => 0, :text => 'Each exhibit can specify a license.', :icon => self.get_sharing_icon_url(0), :abbrev => self.get_sharing_static(0) })
+		   group = Group.find(group_id)
+		   group_label = group.get_exhibits_label().downcase()
+			ret.push({ :id => 0, :text => "Each #{group_label} can specify a license.", :icon => self.get_sharing_icon_url(0), :abbrev => self.get_sharing_static(0) })
 		end
     1.upto(6) do |i|
 			ret.push({ :id => i, :text => self.get_sharing_text(i), :icon => self.get_sharing_icon_url(i), :abbrev => self.get_sharing_static(i) })
@@ -383,27 +388,27 @@ class Exhibit < ActiveRecord::Base
 		for page in exhibit.exhibit_pages
 			for element in page.exhibit_elements
 				case element.exhibit_element_layout_type
-				when 'header':
+				when 'header' then
 					return true if element.header_footnote_id != nil
-				when 'pic_text':
+				when 'pic_text' then
 					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
-				when 'pic_text_pic':
+				when 'pic_text_pic' then
 					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
 					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[1]) > 0
-				when 'pics':
+				when 'pics' then
 					for illustration in element.exhibit_illustrations
 						return true if exhibit.count_footnotes_from_illustration(illustration) > 0
 					end
-				when 'text':
+				when 'text' then
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
-				when 'blockquote':
+				when 'blockquote' then
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
-				when 'text_pic':
+				when 'text_pic' then
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
 					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
-				when 'text_pic_text':
+				when 'text_pic_text' then
 					return true if exhibit.count_footnotes_from_text(element.element_text) > 0
 					return true if exhibit.count_footnotes_from_illustration(element.exhibit_illustrations[0]) > 0
 					return true if exhibit.count_footnotes_from_text(element.element_text2) > 0
@@ -556,27 +561,27 @@ class Exhibit < ActiveRecord::Base
 		for page in self.exhibit_pages
 			for element in page.exhibit_elements
 				case element.exhibit_element_layout_type
-				when 'header':
+				when 'header' then
 					footnotes.push(ExhibitFootnote.find(element.header_footnote_id).footnote) if element.header_footnote_id != nil
-				when 'pic_text':
+				when 'pic_text' then
 					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
-				when 'pic_text_pic':
+				when 'pic_text_pic' then
 					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
 					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[1]))
-				when 'pics':
+				when 'pics' then
 					for illustration in element.exhibit_illustrations
 						footnotes.concat(self.extract_footnotes_from_illustration(illustration))
 					end
-				when 'text':
+				when 'text' then
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
-				when 'blockquote':
+				when 'blockquote' then
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
-				when 'text_pic':
+				when 'text_pic' then
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
 					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
-				when 'text_pic_text':
+				when 'text_pic_text' then
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text))
 					footnotes.concat(self.extract_footnotes_from_illustration(element.exhibit_illustrations[0]))
 					footnotes.concat(self.extract_footnotes_from_text(element.element_text2))
@@ -597,27 +602,27 @@ class Exhibit < ActiveRecord::Base
 			footnotes.push(count)
 			for element in page.exhibit_elements
 				case element.exhibit_element_layout_type
-				when 'header':
+				when 'header' then
 					count += 1 if element.header_footnote_id != nil
-				when 'pic_text':
+				when 'pic_text' then
 					count += self.count_footnotes_from_illustration(element.exhibit_illustrations[0])
 					count += self.count_footnotes_from_text(element.element_text)
-				when 'pic_text_pic':
+				when 'pic_text_pic' then
 					count += self.count_footnotes_from_illustration(element.exhibit_illustrations[0])
 					count += self.count_footnotes_from_text(element.element_text)
 					count += self.count_footnotes_from_illustration(element.exhibit_illustrations[1])
-				when 'pics':
+				when 'pics' then
 					for illustration in element.exhibit_illustrations
 						count += self.count_footnotes_from_illustration(illustration)
 					end
-				when 'text':
+				when 'text' then
 					count += self.count_footnotes_from_text(element.element_text)
-				when 'blockquote':
+				when 'blockquote' then
 					count += self.count_footnotes_from_text(element.element_text)
-				when 'text_pic':
+				when 'text_pic' then
 					count += self.count_footnotes_from_text(element.element_text)
 					count += self.count_footnotes_from_illustration(element.exhibit_illustrations[0])
-				when 'text_pic_text':
+				when 'text_pic_text' then
 					count += self.count_footnotes_from_text(element.element_text)
 					count += self.count_footnotes_from_illustration(element.exhibit_illustrations[0])
 					count += self.count_footnotes_from_text(element.element_text2)
@@ -633,25 +638,25 @@ class Exhibit < ActiveRecord::Base
 			links = []
 			for element in page.exhibit_elements
 				case element.exhibit_element_layout_type
-				when 'pic_text':
+				when 'pic_text' then
 					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
 					links.concat(self.extract_links_from_text(element.element_text))
-				when 'pic_text_pic':
+				when 'pic_text_pic' then
 					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
 					links.concat(self.extract_links_from_text(element.element_text))
 					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[1]))
-				when 'pics':
+				when 'pics' then
 					for illustration in element.exhibit_illustrations
 						links.concat(self.extract_links_from_illustration(illustration))
 					end
-				when 'text':
+				when 'text' then
 					links.concat(self.extract_links_from_text(element.element_text))
-				when 'blockquote':
+				when 'blockquote' then
 					links.concat(self.extract_links_from_text(element.element_text))
-				when 'text_pic':
+				when 'text_pic' then
 					links.concat(self.extract_links_from_text(element.element_text))
 					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
-				when 'text_pic_text':
+				when 'text_pic_text' then
 					links.concat(self.extract_links_from_text(element.element_text))
 					links.concat(self.extract_links_from_illustration(element.exhibit_illustrations[0]))
 					links.concat(self.extract_links_from_text(element.element_text2))
@@ -699,7 +704,8 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def get_friendly_url()
-		return self.visible_url ? "/exhibits/view/#{self.visible_url}" : "/exhibits/view/#{exhibit.id}"
+		url = (self.visible_url && self.visible_url.length > 0)  ? "/exhibits/#{self.visible_url}" : "/exhibits/#{self.id}"
+		return url
 	end
 
 	def get_font_name(type)
@@ -811,9 +817,17 @@ class Exhibit < ActiveRecord::Base
 		return name
 	end
 
-	def make_archive_name
+  # generate the old-style archive name for an exhibit... like: exhibit_152
+  #
+	def make_old_archive_name
 		return "#{ARCHIVE_PREFIX}#{self.id}"
 	end
+	
+	# Generate a namespaced archive name for an exhibit. Example exhibit_NINES_152
+	#
+	def make_archive_name
+    return "#{ARCHIVE_PREFIX}#{SITE_NAME}_#{self.id}"
+  end
 
 	def unindex_exhibit(should_commit)
 		solr = CollexEngine.new()
@@ -873,7 +887,11 @@ class Exhibit < ActiveRecord::Base
 		boost_section = 3.0
 		boost_exhibit = 2.0
 		solr = CollexEngine.new()
+		
+		puts "Delete old index #{make_archive_name()}"
+		#solr.delete_archive(self.make_old_archive_name())
 		solr.delete_archive(self.make_archive_name())
+		
 		full_data = []
 		section_name = ""	# The sections are set whenever there is a new header element; it is independent of the page.
 		num_sections = 0
@@ -932,6 +950,7 @@ class Exhibit < ActiveRecord::Base
 
 		# add to the resource tree
 		value = self.make_archive_name()
+		puts "Add #{value} to resource tree"
     facet = FacetCategory.find_by_value(value)
 		parent = FacetCategory.find_by_value("#{SITE_NAME} Exhibits")
 		id = parent ? parent.id : 1
@@ -960,7 +979,12 @@ class Exhibit < ActiveRecord::Base
 		when :limit_to_everyone then
 			index_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
 		when :leave_group then
-			unindex_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+			if self.group_id
+				group = Group.find_by_id(self.group_id)
+				if group && group.group_type == 'peer-reviewed'
+					unindex_exhibit(true)
+				end
+			end
 		end
 	end
 
@@ -1127,5 +1151,123 @@ class Exhibit < ActiveRecord::Base
 		group = Group.find(self.group_id)
 		return group.group_type == 'peer-reviewed'	# so it is in a peer-reviewed group and it is published.
 	end
+
+	def self.clean_up_word_file(this_folder)
+		`rm -R #{this_folder}`
+	end
+
+	def self.process_word_paragraph(para, footnotes)
+		str = ''
+		type = 'text'
+		para.xpath('w:pPr').each { |r|
+			r.xpath('w:ind').each { |x| type = 'blockquote' if x.attribute('left') && x.attribute('left').to_s.to_i > 200 }
+			r.xpath('w:framePr').each { |x| type = 'dropcap' if x.attribute('dropCap') && x.attribute('dropCap').to_s == "drop" }
+		}
+		para.children.each { |r|
+			name = r.name()
+			hyperlink = false
+			if name == 'hyperlink'
+				hyperlink = true
+				ns = r.xpath('w:r')
+				if ns && ns.length > 0
+					r = ns[0]
+				end
+			end
+			if r.name() == 'r'
+				has_underline = false
+				r.xpath('w:rPr/w:u').each { |x| has_underline = true if x.attribute('val').to_s != 'none' && x.attribute('val').to_s != 'off' }
+				has_italics = false
+				r.xpath('w:rPr/w:i').each { |x| has_italics = true if x.attribute('val').to_s != 'none' && x.attribute('val').to_s != 'off' }
+				has_bold = false
+				r.xpath('w:rPr/w:b').each { |x| has_bold = true if x.attribute('val').to_s != 'none' && x.attribute('val').to_s != 'off' }
+				footnote_id = nil
+				r.xpath('w:footnoteReference').each { |x| footnote_id = x.attribute('id').to_s }
+				r.xpath('w:t').each { |t|
+					str << "<span title=\"External Link: #{t.text}\" real_link=\"#{t.text}\" class=\"ext_linklike\">" if hyperlink
+					str << "<span style=\"text-decoration: underline;\">" if has_underline
+					str << "<strong>" if has_bold
+					str << "<em>" if has_italics
+					str << t.text
+					str << "</em>" if has_italics
+					str << "</strong>" if has_bold
+					str << "</span>" if has_underline
+					str << "</span>" if hyperlink
+				}
+				if footnote_id && footnotes && footnotes[footnote_id]
+					footnote_template = "<a href=\"#\" onclick='var footnote = $(this).next(); new MessageBoxDlg(\"Footnote\", footnote.innerHTML); return false;' class=\"superscript\">@</a><span class=\"hidden\">$$$$</span>"
+					str << footnote_template.sub('$$$$', footnotes[footnote_id])
+				end
+			end
+		}
+		return { :type => type, :text => str }
+	end
+
+	def self.process_input_file(file)
+		root_folder = "#{Rails.root}/tmp/exhibit_import"
+		puts `mkdir #{root_folder}`
+		this_folder = "#{root_folder}/#{Time.now.to_s.gsub(/\W/, '_')}"
+		puts `mkdir #{this_folder}`
+		filename = "#{file.original_filename.gsub(' ','_')}.gz"
+		File.open("#{this_folder}/#{filename}", "wb") { |f| f.write(file.read) }
+#		puts `cd #{this_folder} && tar xvfz #{filename}`
+		puts `cd #{this_folder} && unzip #{filename}`
+
+		footnotes = {}
+		begin
+			footnotes_doc = Nokogiri::XML(File.new("#{this_folder}/word/footnotes.xml"))
+			#footnotes_doc = REXML::Document.new( File.new("#{this_folder}/word/footnotes.xml") )
+			footnotes_doc.xpath('//w:p').each { |para|
+			#REXML::XPath.each( footnotes_doc, "//w:p" ){ |para|
+				par = para.parent
+				index = par.attribute('id').to_s
+				str = footnotes[index] ? footnotes[index] : ''
+				str += self.process_word_paragraph(para, nil)[:text]
+				footnotes[index] = str if str.length > 0
+			}
+		rescue
+			# It's ok for the footnotes file doesn't exist.
+		end
+
+		begin
+			# If this file doesn't exist, the uploaded file was probably not a word file.
+			doc = Nokogiri::XML(File.new("#{this_folder}/word/document.xml"))
+		rescue
+			raise "The uploaded file is not in docx format."
+		end
+
+		paragraphs = []
+		in_blockquote = false
+		in_dropcap = false
+		doc.xpath('//w:p').each { |para|
+		#REXML::XPath.each( doc, "//w:p" ){ |para|
+			p = self.process_word_paragraph(para, footnotes)
+			if p[:type] == 'dropcap'
+				in_dropcap = true
+				in_blockquote = false
+				paragraphs.push({ :type => 'text', :text => p[:text] })
+			elsif p[:type] == 'blockquote'
+				if in_blockquote
+					paragraphs[paragraphs.length-1][:text] = paragraphs[paragraphs.length-1][:text] + "<br />" + p[:text]
+				else
+					if p[:text].length > 0
+						paragraphs.push(p)
+						in_blockquote = true
+					end
+				end
+				in_dropcap = false
+			else
+				if in_dropcap
+					paragraphs[paragraphs.length-1][:text] = "<div class=\"drop_cap\">" + paragraphs[paragraphs.length-1][:text] + p[:text] + "</div>"
+				else
+					paragraphs.push(p) if p[:text].length > 0
+				end
+				in_blockquote = false
+				in_dropcap = false
+			end
+		}
+		self.clean_up_word_file(this_folder)
+		return paragraphs
+	end
+
 end
 

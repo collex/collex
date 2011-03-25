@@ -17,10 +17,10 @@
 <% current_page "admin" -%>
 <% current_sub_page "Groups" -%>
 <script type="text/javascript">
-var gGroupTypes = <%= Group.types_to_json(true) %>;
-var badges = <%= PeerReview.get_list().to_json() %>;
+var gGroupTypes = <%= raw(Group.types_to_json(true)) %>;
+var badges = <%= raw(PeerReview.get_list().to_json()) %>;
 badges.unshift({value: 0, text: "&lt;none&gt;"});
-var publication_images = <%= PublicationImage.get_list().to_json() %>;
+var publication_images = <%= raw(PublicationImage.get_list().to_json()) %>;
 publication_images.unshift({value: 0, text: "&lt;none&gt;"});
 </script>
 <div class="inner_content_container">

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
 # 
@@ -16,18 +17,14 @@
 
 class ExpressionConstraint < Constraint
 	def clean_search_term(str)
-		str = str.gsub(/[^\w ']/, '')
-		if str.index(' ')
-			str = "\"#{str}\""
-		end
-		return str
-	end
+		str = str.gsub(/[\(\):\}\{\^\]\[]/u, '')
+    return str
+  end
 
 	def to_solr_expression
 		term = clean_search_term(value)
 		return "" if term.length == 0
-		return "#{operator=='-' ? '-' : '+'}(#{term})"
-		#"#{operator=='-' ? '-' : '+'}(#{clean_search_term(value)})"
+		return "#{operator=='-' ? '-' : '+'}#{term}"
 	end
   
   def to_s

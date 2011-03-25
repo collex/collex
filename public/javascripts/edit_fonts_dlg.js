@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------------
 
 /*global Class, $, $$, Element */
-/*global GeneralDialog, updateWithAjax */
+/*global GeneralDialog, serverAction, submitForm */
 /*extern EditFontsDlg */
 
 var EditFontsDlg = Class.create({
@@ -46,9 +46,9 @@ var EditFontsDlg = Class.create({
 
 			dlg.setFlash("Updating Fonts...", false);
 			if (update_div)
-				updateWithAjax({ el: update_div, params: dlg.getAllData(), action: url, onSuccess: function() { dlg.cancel(); } });
+				serverAction({action:{ els: update_div, params: dlg.getAllData(), actions: url, onSuccess: function() { dlg.cancel(); } }});
 			else
-				dlg.submitForm(page, url);
+				submitForm(page, url);
 		};
 
 		var updatePreview = function(field, new_value) {
@@ -64,14 +64,14 @@ var EditFontsDlg = Class.create({
 				page: 'layout',
 				rows: [
 					[ { select: table_name +'[use_styles]', value: values.use_styles, klass: 'not_specified hidden', options: [ { text: 'Use these styles in all exhibits', value: 1 }, { text: 'Allow exhibits to use their own styles', value: 0 } ]} ],
-					[ { text: 'Header:', klass: 'edit_font_label' }, { select: table_name +'[header_font_name]', value: values.header_font_name, options: options, change: updatePreview}, { select: table_name +'[header_font_size]', value: values.header_font_size, options: sizes, change: updatePreview } ],
-					[ { text: 'Body Text:', klass: 'edit_font_label' }, { select: table_name +'[text_font_name]', value: values.text_font_name, options: options, change: updatePreview}, { select: table_name +'[text_font_size]', value: values.text_font_size, options: sizes, change: updatePreview } ],
-					[ { text: 'Illustration:', klass: 'edit_font_label' }, { select: table_name +'[illustration_font_name]', value: values.illustration_font_name, options: options, change: updatePreview}, { select: table_name +'[illustration_font_size]', value: values.illustration_font_size, options: sizes, change: updatePreview } ],
-					[ { text: 'First Caption:', klass: 'edit_font_label' }, { select: table_name +'[caption1_font_name]', value: values.caption1_font_name, options: options, change: updatePreview}, { select: table_name +'[caption1_font_size]', value: values.caption1_font_size, options: sizes, change: updatePreview } ],
-					[ { text: 'Second Caption:', klass: 'edit_font_label' }, { select: table_name +'[caption2_font_name]', value: values.caption2_font_name, options: options, change: updatePreview}, { select: table_name +'[caption2_font_size]', value: values.caption2_font_size, options: sizes, change: updatePreview } ],
-					[ { text: 'Footnote Popup:', klass: 'edit_font_label' }, { select: table_name +'[footnote_font_name]', value: values.footnote_font_name, options: options, change: updatePreview}, { select: table_name +'[footnote_font_size]', value: values.footnote_font_size, options: sizes, change: updatePreview } ],
-					[ { text: 'Endnotes:', klass: 'edit_font_label' }, { select: table_name +'[endnotes_font_name]', value: values.endnotes_font_name, options: options, change: updatePreview}, { select: table_name +'[endnotes_font_size]', value: values.endnotes_font_size, options: sizes, change: updatePreview } ],
-					[ { rowClass: 'last_row' }, { button: 'Save', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: active_record_id } ]
+					[ { text: 'Header:', klass: 'edit_font_label' }, { select: table_name +'[header_font_name]', value: values.header_font_name, options: options, callback: updatePreview}, { select: table_name +'[header_font_size]', value: values.header_font_size, options: sizes, callback: updatePreview } ],
+					[ { text: 'Body Text:', klass: 'edit_font_label' }, { select: table_name +'[text_font_name]', value: values.text_font_name, options: options, callback: updatePreview}, { select: table_name +'[text_font_size]', value: values.text_font_size, options: sizes, callback: updatePreview } ],
+					[ { text: 'Illustration:', klass: 'edit_font_label' }, { select: table_name +'[illustration_font_name]', value: values.illustration_font_name, options: options, callback: updatePreview}, { select: table_name +'[illustration_font_size]', value: values.illustration_font_size, options: sizes, callback: updatePreview } ],
+					[ { text: 'First Caption:', klass: 'edit_font_label' }, { select: table_name +'[caption1_font_name]', value: values.caption1_font_name, options: options, callback: updatePreview}, { select: table_name +'[caption1_font_size]', value: values.caption1_font_size, options: sizes, callback: updatePreview } ],
+					[ { text: 'Second Caption:', klass: 'edit_font_label' }, { select: table_name +'[caption2_font_name]', value: values.caption2_font_name, options: options, callback: updatePreview}, { select: table_name +'[caption2_font_size]', value: values.caption2_font_size, options: sizes, callback: updatePreview } ],
+					[ { text: 'Footnote Popup:', klass: 'edit_font_label' }, { select: table_name +'[footnote_font_name]', value: values.footnote_font_name, options: options, callback: updatePreview}, { select: table_name +'[footnote_font_size]', value: values.footnote_font_size, options: sizes, callback: updatePreview } ],
+					[ { text: 'Endnotes:', klass: 'edit_font_label' }, { select: table_name +'[endnotes_font_name]', value: values.endnotes_font_name, options: options, callback: updatePreview}, { select: table_name +'[endnotes_font_size]', value: values.endnotes_font_size, options: sizes, callback: updatePreview } ],
+					[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: active_record_id } ]
 				]
 			};
 
@@ -80,7 +80,7 @@ var EditFontsDlg = Class.create({
 		if (show_not_specified) {
 			$$('.not_specified').each(function(el){ el.removeClassName('hidden'); });
 		}
-		dlg.changePage('layout', null);
+		//dlg.changePage('layout', null);
 		dlg.center();
 
 		var div = $('edit_font_dlg');
@@ -116,15 +116,15 @@ var EditFontsDlg = Class.create({
 		var divFootnote6 = new Element('div');
 		divFootnote5.appendChild(divFootnote6);
 		var divFootnote7 = new Element('div');
-		divFootnote7.addClassName("message_box_row");
+		divFootnote7.addClassName("gd_message_box_row");
 		divFootnote6.appendChild(divFootnote7);
 		var divFootnote8 = new Element('span', { id: 'preview_footnote' }).update('Text of footnote.');
-		divFootnote8.addClassName("message_box_label");
+		divFootnote8.addClassName("gd_message_box_label");
 		divFootnote7.appendChild(divFootnote8);
 		preview.appendChild(divFootnote);
 
 		div2.insert({ top: preview });
-		div2.down(".last_row").addClassName('clear_both');
+		div2.down(".gd_last_row").addClassName('clear_both');
 
 		$('preview_header').setStyle({ fontFamily: values.header_font_name, fontSize: values.header_font_size + 'px', marginTop: '1px', marginBottom: '5px' });
 		$('preview_header').addClassName('exhibit_header');

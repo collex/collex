@@ -19,7 +19,7 @@ class Admin::FeaturesController < Admin::BaseController
 	# GET /features.xml
 	def index
 		@features = FeaturedObject.all
-		ss = @template.get_saved_searches()
+		ss = self.class.helpers.get_saved_searches(session[:user][:username])
 		@saved_searches = []
 		ss.each {|rec|
 			@saved_searches.push({ :value => rec.name, :text => rec.name })
@@ -83,7 +83,7 @@ class Admin::FeaturesController < Admin::BaseController
 			site = Site.find_by_code(get_hit_item(hit, 'archive'))
 			p_obj[:site] = site.description
 			p_obj[:site_url] = site.url
-			p_obj[:saved_search_url] = @template.create_saved_search_url(session[:user][:username], p_obj[:saved_search_name])
+			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(session[:user][:username], p_obj[:saved_search_name])
 
 			if type == 'modifying'
 				feature = FeaturedObject.find(id)
@@ -92,32 +92,42 @@ class Admin::FeaturesController < Admin::BaseController
 				feature = FeaturedObject.new(p_obj)
 			end
 
-			image = nil
-			if p_image && p_image.length > 0
-				image = Image.new({ :uploaded_data => p_image })
-				feature.image = image
-			end
-			err = false
-			if feature.save
-				begin
-					feature.image.save! if image	# don't resave if there wasn't a change.
-				rescue
-					err = true
-					feature.delete if type == 'creating'
-					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-				end
-				if err == false
+			err = Image.save_image(p_image, feature)
+			case err[:status]
+				when :error then
+					flash = err[:user_error]
+					logger.error(err[:log_error])
+				when :saved then
 					flash = "OK:#{feature.id}"
-				end
-			else
-				flash = "Error #{type} feature"
+				when :no_image then
+					flash = "OK:#{feature.id}"
 			end
+#			image = nil
+#			if p_image && p_image.length > 0
+#				image = Image.new({ :uploaded_data => p_image })
+#				feature.image = image
+#			end
+#			err = false
+#			if feature.save
+#				begin
+#					feature.image.save! if image	# don't resave if there wasn't a change.
+#				rescue
+#					err = true
+#					feature.delete if type == 'creating'
+#					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+#				end
+#				if err == false
+#					flash = "OK:#{feature.id}"
+#				end
+#			else
+#				flash = "Error #{type} feature"
+#			end
 		rescue Exception => msg
-			logger.error("**** ERROR: Can't #{type} feature: " + msg)
-			flash = "Server error when #{type} feature: #{msg}"
+			logger.error("**** ERROR: Can't #{type} feature: " + msg.message)
+			flash = "Server error when #{type} feature: #{msg.message}"
 		end
 		flash = flash.gsub("\n", '<br />')
 		flash = flash.gsub("'") { |apos| "&apos;" }
-	    render :text => "<script type='text/javascript'>window.top.window.stopFeatureUpload('#{flash}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
+	    render :text => respond_to_file_upload("stopFeatureUpload", flash) # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
 end

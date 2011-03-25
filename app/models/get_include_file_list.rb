@@ -17,7 +17,7 @@
 class GetIncludeFileList
 	def self.get_js(page)
 		prototype = [ 'prototype' ]
-		prototype_most = [ 'effects', 'controls' ]
+		prototype_most = [ 'effects', 'controls', 'rails' ]
 		prototype = prototype + prototype_most #if page != :about
 
 		yui = [
@@ -43,14 +43,23 @@ class GetIncludeFileList
 			yui = yui + [ "/build/animation/animation", "/build/carousel/carousel" ]
 		end
 
-		global = [ 'general_dialog', 'login', 'nospam' ]
-		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'hide_spinner' ]
+		global = [ 'general_dialog', 'server_wrapper', 'login', 'nospam' ]
+		global_most = [ 'rich_text_editor_wrapper', 'link_dlg', 'hide_spinner', 'typewright' ]
 		global = global + global_most if page != :about && page != :news && page != :view_exhibit && page != :print_exhibit
 
 		local = []
 		case page
+		  when :typewright
+		    local = [ "search_validation_home", "result_row_popup", "typewright/features"]
+			when :typewright_edit
+				local = [ "typewright/diff_match_patch_uncompressed", "typewright/reparse_words", "typewright/line",
+					"typewright/img_cursor", "typewright/change_line", "typewright/find_dlg", "typewright/select_page",
+					"typewright/detailed_instructions"]
 			when :search
 				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'cc_license', 'search_name_facet', 'change_federation' ]
+				if COLLEX_PLUGINS['typewright']
+				  local.push("typewright/features")
+				end
 			when :tag
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'cc_license' ]
 			when :my_collex
@@ -58,11 +67,11 @@ class GetIncludeFileList
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
 					'create_new_group_dlg', 'edit_fonts_dlg', 'exhibit_builder_outline', 'my_collex', 'exhibit_builder_profile', 'browse_groups' ]
 			when :discuss
-				local = [ 'discussions', 'result_row_popup', 'cc_license' ]
+				local = [ 'discussions', 'result_row_popup', 'cc_license', 'flag_comment' ]
 			when :admin
-				local = [ 'admin', 'resource_tree', 'features' ]
+				local = [ 'admin', 'resource_tree', 'features', 'typewright/features' ]
 			when :view_exhibit
-				global = [ 'hide_spinner', 'general_dialog', 'renumber_footnotes', 'login' ]
+				global = [ 'hide_spinner', 'general_dialog', 'server_wrapper', 'renumber_footnotes', 'login', 'nospam' ]
 			when :print_exhibit
 				global = [ 'hide_spinner', 'renumber_footnotes' ]
 			when :home
@@ -105,11 +114,16 @@ class GetIncludeFileList
 			"main",
 			"nav",
 			"#{SKIN}/main_skin",
-			"js_dialog"
+			"js_dialog",
+			"autocomplete"
 		]
 
 		local = []
 		case page
+			when :typewright
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "typewright/typewright", "community", "#{SKIN}/community_skin", "result_row" ]
+			when :typewright_edit
+				local =  [ "#{SKIN}/lvl3_skin", "lvl3", "typewright/typewright_edit" ]
 			when :search
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "search", "right_column", "result_row" ]
 			when :tag

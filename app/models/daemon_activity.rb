@@ -32,7 +32,7 @@ class DaemonActivity < ActiveRecord::Base
 	private
 	def self.update_wakeup(name)
 		now = Time.now
-		ActiveRecord::Base.logger.info "Daemon #{name} woke up at #{Time.now}.\n"
+		#ActiveRecord::Base.logger.info "Daemon #{name} woke up at #{Time.now}.\n"
 		rec = DaemonActivity.find_by_name(name)
 		if rec
 			rec.update_attributes({ :last_wake_up => now })

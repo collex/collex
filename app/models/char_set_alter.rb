@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # ------------------------------------------------------------------------
 #     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
 # 
@@ -52,6 +53,158 @@ class CharSetAlter
 #CP1252 = CP_MAP.keys.join
 #UTF = CP_MAP.values.join
 require 'iconv'
+
+	def self.translate(text)
+		# this is being done by hand instead of using iconv because the data in the DB seems to be mixed: some is already utf-8 and some appears to be garbage.
+		new_text = text.gsub("â€™", '’')
+		new_text = new_text.gsub("â€”", '—')
+		new_text = new_text.gsub("â€œ", '“')
+		new_text = new_text.gsub("â€•", '―')
+		new_text = new_text.gsub("â€“", '–')
+		new_text = new_text.gsub("â€˜", '‘')
+		new_text = new_text.gsub("â€¦", '…')
+		new_text = new_text.gsub("â†’", '→')
+		new_text = new_text.gsub("â€¡", '‡')
+		new_text = new_text.gsub("â€ ", '†')
+		new_text = new_text.gsub("â€", '”')
+		new_text = new_text.gsub("â€¢", '•')
+
+		new_text = new_text.gsub("Ã ", 'à')
+		new_text = new_text.gsub("Ã¡", 'á')
+		new_text = new_text.gsub("Ã¢", 'â')
+		new_text = new_text.gsub("Ã¤", 'ä')
+		new_text = new_text.gsub("Ã", 'Á')
+		new_text = new_text.gsub("Ã¦", 'æ')
+		new_text = new_text.gsub("Ã†", 'Æ')
+
+		new_text = new_text.gsub("ÃŸ", 'ß')
+		new_text = new_text.gsub("Ã§", 'ç')
+
+		new_text = new_text.gsub("Ã‰", 'É')
+		new_text = new_text.gsub("Ãˆ", 'È')
+		new_text = new_text.gsub("Ã«", 'ë')
+		new_text = new_text.gsub("Ã¨", 'è')
+		new_text = new_text.gsub("Ã©", 'é')
+		new_text = new_text.gsub("Ãª", 'ê')
+
+		new_text = new_text.gsub("ÃŒ", 'Ì')
+		new_text = new_text.gsub("Ã­", 'í')
+		new_text = new_text.gsub("Ã¯", 'ï')
+		new_text = new_text.gsub("Ã¬", 'ì')
+
+		new_text = new_text.gsub("Ã³", 'ó')
+		new_text = new_text.gsub("Ã¶", 'ö')
+		new_text = new_text.gsub("Ã²", 'ò')
+		new_text = new_text.gsub("Ãµ", 'õ')
+
+		new_text = new_text.gsub("Ãº", 'ú')
+		new_text = new_text.gsub("Ã¹", 'ù')
+		new_text = new_text.gsub("Ã¼", 'ü')
+
+		new_text = new_text.gsub("Ã±", 'ñ')
+		return new_text
+	end
+
+	def self.fix_cp1252(table, column, debug)
+		ActiveRecord::Base.record_timestamps = false if debug == false
+		table.record_timestamps = false if debug == false
+		# This reads all the columns in the table, attempts to apply the conversion, and reports the results
+		ic = Iconv.new('CP1252', 'UTF-8')
+		recs = table.all()
+		num_changes = 0
+		num_failed_changes = 0
+		failures = []
+		puts "=============================================="
+		puts "#{table.to_s}:#{column.to_s} (#{recs.length})"
+		recs.each {|rec|
+			text = rec[column]
+			if text != nil
+				# this is being done by hand instead of using iconv because the data in the DB seems to be mixed: some is already utf-8 and some appears to be garbage.
+				new_text = text.gsub("â€™", '’')
+				new_text = new_text.gsub("â€”", '—')
+				new_text = new_text.gsub("â€œ", '“')
+				new_text = new_text.gsub("â€•", '―')
+				new_text = new_text.gsub("â€“", '–')
+				new_text = new_text.gsub("â€˜", '‘')
+				new_text = new_text.gsub("â€¦", '…')
+				new_text = new_text.gsub("â†’", '→')
+				new_text = new_text.gsub("â€¡", '‡')
+				new_text = new_text.gsub("â€ ", '†')
+				new_text = new_text.gsub("â€", '”')
+				new_text = new_text.gsub("â€¢", '•')
+
+				new_text = new_text.gsub("Ã ", 'à')
+				new_text = new_text.gsub("Ã¡", 'á')
+				new_text = new_text.gsub("Ã¢", 'â')
+				new_text = new_text.gsub("Ã¤", 'ä')
+				new_text = new_text.gsub("Ã", 'Á')
+				new_text = new_text.gsub("Ã¦", 'æ')
+				new_text = new_text.gsub("Ã†", 'Æ')
+
+				new_text = new_text.gsub("ÃŸ", 'ß')
+				new_text = new_text.gsub("Ã§", 'ç')
+
+				new_text = new_text.gsub("Ã‰", 'É')
+				new_text = new_text.gsub("Ãˆ", 'È')
+				new_text = new_text.gsub("Ã«", 'ë')
+				new_text = new_text.gsub("Ã¨", 'è')
+				new_text = new_text.gsub("Ã©", 'é')
+				new_text = new_text.gsub("Ãª", 'ê')
+
+				new_text = new_text.gsub("ÃŒ", 'Ì')
+				new_text = new_text.gsub("Ã­", 'í')
+				new_text = new_text.gsub("Ã¯", 'ï')
+				new_text = new_text.gsub("Ã¬", 'ì')
+
+				new_text = new_text.gsub("Ã³", 'ó')
+				new_text = new_text.gsub("Ã¶", 'ö')
+				new_text = new_text.gsub("Ã²", 'ò')
+				new_text = new_text.gsub("Ãµ", 'õ')
+
+				new_text = new_text.gsub("Ãº", 'ú')
+				new_text = new_text.gsub("Ã¹", 'ù')
+				new_text = new_text.gsub("Ã¼", 'ü')
+
+				new_text = new_text.gsub("Ã±", 'ñ')
+
+				i1 = new_text.index('â')
+				i2 = new_text.index('Ã')
+				if i1 || i2
+					if i1 == nil
+						i = i2
+					elsif i2 == nil
+						i = i1
+					else
+						i = i1 > i2 ? i2 : i1
+					end
+#					str = new_text[i..new_text.length]
+					str = new_text[i..(i+10)]
+					arr = str.split("\n")
+					str = arr[0]
+					begin
+						new_text2 = ic.iconv(str)
+						puts "#{rec.id}: #{str}"
+						puts "#{rec.id}: #{new_text2}"
+					rescue
+						print "#{rec.id}: "
+						failures.push(rec.id)
+						str.each_byte {|c| print c, ' ' }
+						puts "FAILED: #{str}"
+						num_failed_changes += 1
+					end
+				end
+				if (text != new_text)
+					rec[column] = new_text
+					# update the field without changing the timestamp
+					rec.update_attribute(column, new_text) if debug == false
+					num_changes += 1
+				end
+			end
+		}
+		table.record_timestamps = true if debug == false
+		ActiveRecord::Base.record_timestamps = true if debug == false
+		puts "Num of changes: #{num_changes}; failures (#{num_failed_changes}): [#{failures.join(" ")}]"
+	end
 
 	def self.cp1252_to_utf8(table, column, debug)
 		ActiveRecord::Base.record_timestamps = false if debug == false
