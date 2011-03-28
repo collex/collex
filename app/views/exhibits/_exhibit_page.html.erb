@@ -18,7 +18,7 @@
 <div id="page<%= page_num %>" class="exhibit_heading">
 <% if Group.is_peer_reviewed_group(exhibit) -%>
 	<center>
-	<p class="publication_title"><%= exhibit.title %></p>
+	<p id="overview_title" class="publication_title overview_field"><%= exhibit.title %></p>
 	<p class="publication_author"><%= get_exhibits_username_list(exhibit, is_edit_mode) %><%= ", #{get_exhibits_user_institution(exhibit)}" if get_exhibits_user_institution(exhibit).length > 0 %></p>
 	</center>
 <% else -%>
