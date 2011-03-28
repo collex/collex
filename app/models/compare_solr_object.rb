@@ -288,21 +288,11 @@ class CompareSolrObject
 				if first_mismatch != -1
 					print_start = first_mismatch - 1
 					print_start = 0 if print_start < 0
-					err_arr.push("==== #{uri} mismatch at line #{first_mismatch}:\n(new #{text.length})")
-					print_end = first_mismatch + 1
-					print_end = new_arr.length() -1 if print_end >= new_arr.length()
-					print_start.upto(print_end) { |x|
-						err_arr.push("\"#{new_arr[x]}\"\n")
-					}
-					err_arr.push("-- vs --\n(old #{old_text.length})")
-					print_end = first_mismatch + 1
-					print_end = old_arr.length() -1 if print_end >= old_arr.length()
-					print_start.upto(print_end) { |x|
-						err_arr.push("\"#{old_arr[x]}\"\n")
-					}
+
 					str_n = new_arr[first_mismatch]
 					str_o = old_arr[first_mismatch]
 					len = str_n.length > str_o.length ? str_n.length : str_o.length
+
 					miss_index = -1
 					len.times { |x|
 						if str_n[x] != str_o[x]
@@ -312,6 +302,22 @@ class CompareSolrObject
 					}
 					miss_index -= 4
 					miss_index = 0 if miss_index < 0
+
+					err_arr.push("==== #{uri} mismatch at line #{first_mismatch}:col #{miss_index}:\n(new #{text.length})")
+					err_arr.push(str_n[miss_index..30])
+#					print_end = first_mismatch + 1
+#					print_end = new_arr.length() -1 if print_end >= new_arr.length()
+#					print_start.upto(print_end) { |x|
+#						err_arr.push("\"#{new_arr[x]}\"\n")
+#					}
+					err_arr.push("-- vs --\n(old #{old_text.length})")
+					err_arr.push(str_o[miss_index..30])
+#					print_end = first_mismatch + 1
+#					print_end = old_arr.length() -1 if print_end >= old_arr.length()
+#					print_start.upto(print_end) { |x|
+#						err_arr.push("\"#{old_arr[x]}\"\n")
+#					}
+
 					bytes_n = ""
 					bytes_o = ""
 					str_n = str_n[miss_index..str_n.length]
