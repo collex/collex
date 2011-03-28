@@ -492,6 +492,11 @@ span.footnote_edit_hover {
 	padding-right: .3em;
 }
 
+.link_dlg_object_progress {
+	margin-left: 35%;
+	margin-top: 15%;
+}
+
 /*****************************************/
 
 .input_dlg_list {

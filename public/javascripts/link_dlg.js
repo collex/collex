@@ -188,6 +188,7 @@ var CreateListOfObjects = Class.create({
 		};
 		
 		var createRows = function(objs, selectFirst, id_prefix) {
+			parent.innerHTML = "";
 			objs.each(function(obj){
 				linkItem(id_prefix + '_' + obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
 			});
@@ -293,8 +294,14 @@ var CreateListOfObjects = Class.create({
 		};
 
 		this.getMarkup = function() {
-			if (!parent)
+			if (!parent) {
 				parent = new Element("div", { id: parent_id });
+				var spinner = new Element('img', {
+					src: progress_img
+				});
+				spinner.addClassName('link_dlg_object_progress');
+				parent.appendChild(spinner);
+			}
 			parent.addClassName('linkdlg_list');
 			return parent;
 		};
