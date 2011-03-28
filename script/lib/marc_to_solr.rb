@@ -29,7 +29,7 @@ class MarcToSolr
 		text = self.parse_text(rec)
 		hit[:text] = text if text
 		years = ParseDate.extract_year(self.all_field(rec,'260','c'), year_ignore)
-		hit[:date_label] = years[:date_label] #ParseDate.reconstruct_date_label(years[:years])
+		hit[:date_label] = ParseDate.reconstruct_date_label(years[:years]) #years[:date_label] 
 		hit[:year] =  years[:years]
 		hit[:year_sort] = years[:year_sort]
 
