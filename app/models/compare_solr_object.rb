@@ -67,6 +67,8 @@ class CompareSolrObject
 		# This is a hack to make the output more manageable in the cases where we know there are lots of errors in our index.
 		# All of these should eventually go away.
 #		return str
+		str = str.gsub("\n", ' ')
+		str = self.remove_extra_white_space(str)
 		return replace_unicode(str).gsub('&amp;', '&').gsub("&#38;", '&').chomp(' ');
 	end
 
@@ -90,6 +92,7 @@ class CompareSolrObject
 		# This is a hack to make the output more manageable in the cases where we know there are lots of errors in our index.
 		# All of these should eventually go away.
 
+		text = text.gsub("\n", ' ')
 		text = self.remove_extra_white_space(text)
 
 		text = text.gsub("““", "“")
