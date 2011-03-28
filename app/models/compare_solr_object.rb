@@ -304,14 +304,14 @@ class CompareSolrObject
 					miss_index = 0 if miss_index < 0
 
 					err_arr.push("==== #{uri} mismatch at line #{first_mismatch}:col #{miss_index}:\n(new #{text.length})")
-					err_arr.push(str_n[miss_index..30])
+					err_arr.push(str_n[miss_index..miss_index+50])
 #					print_end = first_mismatch + 1
 #					print_end = new_arr.length() -1 if print_end >= new_arr.length()
 #					print_start.upto(print_end) { |x|
 #						err_arr.push("\"#{new_arr[x]}\"\n")
 #					}
 					err_arr.push("-- vs --\n(old #{old_text.length})")
-					err_arr.push(str_o[miss_index..30])
+					err_arr.push(str_o[miss_index..miss_index+50])
 #					print_end = first_mismatch + 1
 #					print_end = old_arr.length() -1 if print_end >= old_arr.length()
 #					print_start.upto(print_end) { |x|
