@@ -61,6 +61,9 @@ RewriteRule ^([^.]+)$ $1.html [QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]
 
+RewriteRule ^/about/9swhitepaper.pdf$ /about/scholarship/9swhitepaper.pdf [QSA]
+RewriteRule ^/about/Nowviskie-Collex.pdf$ /about/software/Nowviskie-Collex.pdf [QSA]
+
 # In case Rails experiences terminal errors
 # Instead of displaying this message you can supply a file here which will be rendered instead
 # 
