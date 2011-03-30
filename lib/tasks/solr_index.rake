@@ -196,8 +196,8 @@ namespace :solr_index do
 		start_time = Time.now
 		flags = nil
 		case type
-			when :reindex then flags = "--reindex"
-			when :fulltext then flags = "--fulltext"
+			when :reindex then flags = "-reindex"
+			when :fulltext then flags = "-fulltext"
 			when :debug then flags = ""
 		end
 		if flags == nil
@@ -213,7 +213,7 @@ namespace :solr_index do
 				delete_file("#{Rails.root}/log/#{archive}_duplicates.log")
 
 				folders[:folders].each {|folder|
-					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar #{RDF_PATH}/#{folder} \"#{archive}\" #{flags}")
+					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive #{archive} #{flags}")
 				}
 			end
 		end
@@ -383,6 +383,27 @@ namespace :solr_index do
 			finish_line(start_time)
 		end
 	end
+	
+	desc "compare the main index with the reindexed one (parameter: archive=XXX)"
+  task :compare_indexes_java  => :environment do
+    archive = ENV['archive']
+    mode = ENV['mode']
+    mode ||="compare"
+    folders = get_folders(RDF_PATH, archive)
+    if folders[:error]
+      puts folders[:error]
+    else
+    
+      delete_file("#{Rails.root}/log/#{archive}_compare_fast.log")
+      delete_file("#{Rails.root}/log/#{archive}_compare_full.log")
+      delete_file("#{Rails.root}/log/#{archive}_compare_text.log")
+      
+      folders[:folders].each {|folder|
+        cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive #{archive} -#{mode}")
+      }
+    end
+      
+  end
 
 	desc "compare the text in the main index with the reindexed one (parameter: archive=XXX)"
 	task :compare_indexes_text  => :environment do
