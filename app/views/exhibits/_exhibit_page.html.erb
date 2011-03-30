@@ -65,7 +65,7 @@
 			<% page_num += 1 -%>
 			<% for link in page -%>
 			<% at_least_one = true -%>
-			<p><span style="font-family:<%= exhibit.get_font_name('endnotes') %>; font-size:<%= exhibit.get_font_size('endnotes') %>px;">"<%= remove_footnote_links(link[:text]) %>"&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
+			<p><span style="font-family:<%= exhibit.get_font_name('endnotes') %>; font-size:<%= exhibit.get_font_size('endnotes') %>px;">"<%= remove_footnote_links(strip_tags(link[:text])) %>"&nbsp;<%= link_to link[:url], link[:url], :class => 'nav_link' %><%= "&nbsp;[#{link[:name]}]" if link[:name] %> </span></p>
 			<% end -%>
 		<% end -%>
 		<%= raw("<p>No links</p>") if !at_least_one -%>
