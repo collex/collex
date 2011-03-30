@@ -389,19 +389,12 @@ namespace :solr_index do
     archive = ENV['archive']
     mode = ENV['mode']
     mode ||="compare"
-    folders = get_folders(RDF_PATH, archive)
-    if folders[:error]
-      puts folders[:error]
-    else
     
-      delete_file("#{Rails.root}/log/#{archive}_compare_fast.log")
-      delete_file("#{Rails.root}/log/#{archive}_compare_full.log")
-      delete_file("#{Rails.root}/log/#{archive}_compare_text.log")
+    delete_file("#{Rails.root}/log/#{archive}_compare_fast.log")
+    delete_file("#{Rails.root}/log/#{archive}_compare_full.log")
+    delete_file("#{Rails.root}/log/#{archive}_compare_text.log")
       
-      folders[:folders].each {|folder|
-        cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive #{archive} -#{mode}")
-      }
-    end
+    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source none -archive #{archive} -#{mode}")
       
   end
 
