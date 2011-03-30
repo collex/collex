@@ -46,7 +46,7 @@
 <div class="set_exhibit_style">
 <% if cluster == nil -%>
 	<span class="group_member_explanation">As an administrator for this group, you have the option to create a custom style for all <%= group.get_exhibits_label().pluralize().downcase() %> associated with your group. </span>
-	<%= link_to_function("Click here to set a new style.", "new EditFontsDlg({ method: 'PUT', url: '/groups/#{group.id}' }, #{group.id}, gGroupData, 'group', true, 'group_details')", { :class => 'modify_link' }) %>
+	<%= link_to_function("Click here to set a new style.", "new EditFontsDlg({ method: 'PUT', url: '/groups/#{group.id}' }, #{group.id}, gGroupData, 'group', true, 'group_details', #{group.group_type === 'peer-reviewed'})", { :class => 'modify_link' }) %>
 	<ul>
 <% if group.can_create_exhibit(user_id) -%>
 		<li><%= link_to_function "Create an #{group.get_exhibits_label()}", "var dlg = new CreateNewExhibitWizard({ exhibit_label: '#{group.get_exhibits_label()}', group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>

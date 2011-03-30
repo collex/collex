@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110310191542) do
+ActiveRecord::Schema.define(:version => 20110329212642) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -250,14 +250,14 @@ ActiveRecord::Schema.define(:version => 20110310191542) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
-    t.decimal  "owner",                   :precision => 10, :scale => 0
+    t.decimal  "owner",                       :precision => 10, :scale => 0
     t.text     "description"
     t.string   "group_type"
-    t.decimal  "image_id",                :precision => 10, :scale => 0
+    t.decimal  "image_id",                    :precision => 10, :scale => 0
     t.string   "forum_permissions"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "license_type",            :precision => 10, :scale => 0
+    t.decimal  "license_type",                :precision => 10, :scale => 0
     t.string   "header_font_name"
     t.string   "header_font_size"
     t.string   "illustration_font_name"
@@ -272,7 +272,7 @@ ActiveRecord::Schema.define(:version => 20110310191542) do
     t.string   "endnotes_font_size"
     t.string   "footnote_font_name"
     t.string   "footnote_font_size"
-    t.decimal  "use_styles",              :precision => 10, :scale => 0
+    t.decimal  "use_styles",                  :precision => 10, :scale => 0
     t.boolean  "show_membership"
     t.string   "exhibit_visibility"
     t.string   "university"
@@ -283,12 +283,18 @@ ActiveRecord::Schema.define(:version => 20110310191542) do
     t.string   "exhibits_label"
     t.string   "clusters_label"
     t.string   "show_admins"
-    t.decimal  "badge_id",                :precision => 10, :scale => 0
-    t.decimal  "publication_image_id",    :precision => 10, :scale => 0
+    t.decimal  "badge_id",                    :precision => 10, :scale => 0
+    t.decimal  "publication_image_id",        :precision => 10, :scale => 0
     t.string   "notifications"
     t.string   "header_color"
     t.string   "header_background_color"
     t.string   "link_color"
+    t.string   "exhibit_header_color"
+    t.string   "exhibit_text_color"
+    t.string   "exhibit_caption1_color"
+    t.string   "exhibit_caption1_background"
+    t.string   "exhibit_caption2_color"
+    t.string   "exhibit_caption2_background"
   end
 
   create_table "groups_users", :force => true do |t|

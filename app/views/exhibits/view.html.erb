@@ -73,6 +73,36 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 		background-color: #<%= group.header_background_color %>;
 	}
 <% end -%>
+<% if group.exhibit_header_color.length == 6 -%>
+	.exhibit_header {
+		color: #<%= group.exhibit_header_color %>;
+	}
+<% end -%>
+<% if group.exhibit_text_color.length == 6 -%>
+	.exhibit_text {
+		color: #<%= group.exhibit_text_color %>;
+	}
+<% end -%>
+<% if group.exhibit_caption1_color.length == 6 -%>
+	.exhibit_caption1 {
+		color: #<%= group.exhibit_caption1_color %>;
+	}
+<% end -%>
+<% if group.exhibit_caption1_background.length == 6 -%>
+	.exhibit_caption1 {
+		background-color: #<%= group.exhibit_caption1_background %>;
+	}
+<% end -%>
+<% if group.exhibit_caption2_color.length == 6 -%>
+	.exhibit_caption2 {
+		color: #<%= group.exhibit_caption2_color %>;
+	}
+<% end -%>
+<% if group.exhibit_caption2_background.length == 6 -%>
+	.exhibit_caption2 {
+		background-color: #<%= group.exhibit_caption2_background %>;
+	}
+<% end -%>
 </style>
 <% end -%>
 

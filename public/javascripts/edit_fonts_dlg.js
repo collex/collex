@@ -19,7 +19,7 @@
 /*extern EditFontsDlg */
 
 var EditFontsDlg = Class.create({
-	initialize : function(url, active_record_id, rec_data, table_name, show_not_specified, update_div)
+	initialize : function(url, active_record_id, rec_data, table_name, show_not_specified, update_div, set_colors)
 	{
 		var values = rec_data;
 		var options = [ { text: 'Arial', value: 'Arial'},
@@ -74,6 +74,18 @@ var EditFontsDlg = Class.create({
 					[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: ok, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback }, { hidden: 'id', value: active_record_id } ]
 				]
 			};
+
+		if (set_colors) {
+			var last = layout.rows.pop();
+			layout.rows.push([ { text: 'Edit the colors below by using the 6 character RGB code', klass: 'edit_color_instructions' } ]);
+			layout.rows.push([ { text: 'Header Color:', klass: 'edit_font_label' }, { input: table_name + '[exhibit_header_color]', value: values.exhibit_header_color } ]);
+			layout.rows.push([ { text: 'Body Text Color:', klass: 'edit_font_label' }, { input: table_name + '[exhibit_text_color]', value: values.exhibit_text_color } ]);
+			layout.rows.push([ { text: 'Caption1 Color:', klass: 'edit_font_label' }, { input: table_name + '[exhibit_caption1_color]', value: values.exhibit_caption1_color } ]);
+			layout.rows.push([ { text: 'Caption1 Bkgrd:', klass: 'edit_font_label' }, { input: table_name + '[exhibit_caption1_background]', value: values.exhibit_caption1_background } ]);
+			layout.rows.push([ { text: 'Caption2 Color:', klass: 'edit_font_label' }, { input: table_name + '[exhibit_caption2_color]', value: values.exhibit_caption2_color } ]);
+			layout.rows.push([ { text: 'Caption2 Bkgrd:', klass: 'edit_font_label' }, { input: table_name + '[exhibit_caption2_background]', value: values.exhibit_caption2_background } ]);
+			layout.rows.push(last);
+		}
 
 		var params = { this_id: "edit_font_dlg", pages: [ layout ], body_style: "edit_font_div", row_style: "new_exhibit_row", title: "Edit Exhibit Fonts" };
 		var dlg = new GeneralDialog(params);

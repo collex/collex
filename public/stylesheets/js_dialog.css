@@ -680,6 +680,11 @@ span.footnote_edit_hover {
 	width:9.5em;
 }
 
+.edit_color_instructions {
+	font-weight: bold;
+	line-height: 40px;
+}
+
 /*****************************************/
 
 .license_item_selected {
