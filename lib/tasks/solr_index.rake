@@ -207,16 +207,17 @@ namespace :solr_index do
 			if folders[:error]
 				puts folders[:error]
 			else
-				delete_file("#{Rails.root}/log/#{archive}_progress.log")
-				delete_file("#{Rails.root}/log/#{archive}_error.log")
-				delete_file("#{Rails.root}/log/#{archive}_link_data.log")
-				delete_file("#{Rails.root}/log/#{archive}_duplicates.log")
+			  log_dir = "#{Rails.root}/log"
+				delete_file("#{log_dir}/#{archive}_progress.log")
+				delete_file("#{log_dir}/#{archive}_error.log")
+				delete_file("#{log_dir}/#{archive}_link_data.log")
+				delete_file("#{log_dir}/#{archive}_duplicates.log")
 				
 				ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
         Rake::Task['solr_index:clear_reindexing_index'].invoke
 
 				folders[:folders].each {|folder|
-					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
+					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
 				}
 			end
 		end
@@ -393,12 +394,13 @@ namespace :solr_index do
     mode = ENV['mode']
     mode ||="compare"
     
-    delete_file("#{Rails.root}/log/#{archive}_compare_fast.log")
-    delete_file("#{Rails.root}/log/#{archive}_compare_full.log")
-    delete_file("#{Rails.root}/log/#{archive}_compare_text.log")
-    delete_file("#{Rails.root}/log/#{archive}_skipped.log")
+    log_dir = "#{Rails.root}/log"
+    delete_file("#{log_dir}/#{archive}_compare_fast.log")
+    delete_file("#{log_dir}/#{archive}_compare_full.log")
+    delete_file("#{log_dir}/#{archive}_compare_text.log")
+    delete_file("#{log_dir}/#{archive}_skipped.log")
       
-    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source none -archive \"#{archive}\" -#{mode}")
+    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source none -archive \"#{archive}\" -#{mode}")
       
   end
 
@@ -517,6 +519,7 @@ namespace :solr_index do
 		cmd_line("cd #{indexer_path} && ant clean dist")
 		cmd_line("rm #{dst}/dist/lib/*")
 		cmd_line("rm #{dst}/dist/rdf-indexer.jar")
+		cmd_line("rm #{dst}/dist/log4j.xml")
 		cmd_line("cp -R #{src} #{dst}")
 		finish_line(start_time)
 	end
