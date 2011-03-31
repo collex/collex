@@ -211,6 +211,9 @@ namespace :solr_index do
 				delete_file("#{Rails.root}/log/#{archive}_error.log")
 				delete_file("#{Rails.root}/log/#{archive}_link_data.log")
 				delete_file("#{Rails.root}/log/#{archive}_duplicates.log")
+				
+				ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
+        Rake::Task['solr_index:clear_reindexing_index'].invoke
 
 				folders[:folders].each {|folder|
 					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
@@ -393,6 +396,7 @@ namespace :solr_index do
     delete_file("#{Rails.root}/log/#{archive}_compare_fast.log")
     delete_file("#{Rails.root}/log/#{archive}_compare_full.log")
     delete_file("#{Rails.root}/log/#{archive}_compare_text.log")
+    delete_file("#{Rails.root}/log/#{archive}_skipped.log")
       
     cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source none -archive \"#{archive}\" -#{mode}")
       
