@@ -207,11 +207,12 @@ namespace :solr_index do
 			if folders[:error]
 				puts folders[:error]
 			else
+			  safe_name = CollexEngine::archive_to_core_name(archive)
 			  log_dir = "#{Rails.root}/log"
-				delete_file("#{log_dir}/#{archive}_progress.log")
-				delete_file("#{log_dir}/#{archive}_error.log")
-				delete_file("#{log_dir}/#{archive}_link_data.log")
-				delete_file("#{log_dir}/#{archive}_duplicates.log")
+				delete_file("#{log_dir}/#{safe_name}_progress.log")
+				delete_file("#{log_dir}/#{safe_name}_error.log")
+				delete_file("#{log_dir}/#{safe_name}_link_data.log")
+				delete_file("#{log_dir}/#{safe_name}_duplicates.log")
 				
 				ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
         Rake::Task['solr_index:clear_reindexing_index'].invoke
@@ -394,11 +395,12 @@ namespace :solr_index do
     mode = ENV['mode']
     mode ||="compare"
     
+    safe_name = CollexEngine::archive_to_core_name(archive)
     log_dir = "#{Rails.root}/log"
-    delete_file("#{log_dir}/#{archive}_compare_fast.log")
-    delete_file("#{log_dir}/#{archive}_compare_full.log")
-    delete_file("#{log_dir}/#{archive}_compare_text.log")
-    delete_file("#{log_dir}/#{archive}_skipped.log")
+    delete_file("#{log_dir}/#{safe_name}_compare_fast.log")
+    delete_file("#{log_dir}/#{safe_name}_compare_full.log")
+    delete_file("#{log_dir}/#{safe_name}_compare_text.log")
+    delete_file("#{log_dir}/#{safe_name}_skipped.log")
       
     cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source none -archive \"#{archive}\" -#{mode}")
       
