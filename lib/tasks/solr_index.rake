@@ -213,7 +213,7 @@ namespace :solr_index do
 				delete_file("#{Rails.root}/log/#{archive}_duplicates.log")
 
 				folders[:folders].each {|folder|
-					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive #{archive} #{flags}")
+					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
 				}
 			end
 		end
@@ -394,7 +394,7 @@ namespace :solr_index do
     delete_file("#{Rails.root}/log/#{archive}_compare_full.log")
     delete_file("#{Rails.root}/log/#{archive}_compare_text.log")
       
-    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source none -archive #{archive} -#{mode}")
+    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer && java -Xmx3584m -jar dist/rdf-indexer.jar -source none -archive \"#{archive}\" -#{mode}")
       
   end
 
