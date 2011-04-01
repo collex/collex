@@ -399,8 +399,8 @@ namespace :solr_index do
     
     safe_name = CollexEngine::archive_to_core_name(archive)
     log_dir = "#{Rails.root}/log"
-    delete_file("#{log_dir}/#{safe_name}_compare.log")
-    delete_file("#{log_dir}/#{safe_name}_compare_text.log")
+    delete_file("#{log_dir}/#{safe_name}_compare.log") if mode == 'compare'
+    delete_file("#{log_dir}/#{safe_name}_compare_text.log") if mode == 'compareTxt'
     delete_file("#{log_dir}/#{safe_name}_skipped.log")
       
     cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags}")
