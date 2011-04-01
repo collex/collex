@@ -624,8 +624,13 @@ return results
 	end
 
 	def clear_index
-		@solr.delete_by_query "*:*"
-		@solr.optimize
+	  begin
+  		@solr.delete_by_query "*:*"
+  		@solr.optimize
+  		ok = true
+  	 rescue Exception => e
+      raise e if e.message.index("404 Not Found").nil?
+    end
 	end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
