@@ -393,16 +393,33 @@ namespace :solr_index do
   task :compare_indexes_java  => :environment do
     archive = ENV['archive']
     mode = ENV['mode']
-    mode ||="compare"
     flags = "";
-    flags = "-include text" if mode == "compareTxt"
-    
     safe_name = CollexEngine::archive_to_core_name(archive)
     log_dir = "#{Rails.root}/log"
-    delete_file("#{log_dir}/#{safe_name}_compare.log") if mode == 'compare'
-    delete_file("#{log_dir}/#{safe_name}_compare_text.log") if mode == 'compareTxt'
+    
+    # no mode specified = full compare on al fields.
+    # delete all log files
+    if mode.nil?
+      delete_file("#{log_dir}/#{safe_name}_compare.log")
+      delete_file("#{log_dir}/#{safe_name}_compare_text.log")  
+    else
+      # if just txt compare is reauested, ony delete txt log
+      if mode == "compareTxt"
+        flags = "-include text"  
+        delete_file("#{log_dir}/#{safe_name}_compare_text.log")
+      end
+      
+      # if non-txt compare is requested, only delete the compare log
+      if mode == "compare"
+        flags = "-ignore text"  
+        delete_file("#{log_dir}/#{safe_name}_compare.log") 
+      end
+    end
+
+    # skipped is always deleted
     delete_file("#{log_dir}/#{safe_name}_skipped.log")
       
+    # launch the tool
     cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags}")
       
   end

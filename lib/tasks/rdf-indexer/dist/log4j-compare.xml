@@ -3,19 +3,19 @@
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
 
-  <appender name="indexFileAppender" class="org.apache.log4j.FileAppender">
-    <param name="Threshold" value="INFO" />
-    <param name="Encoding" value="UTF-8" />
-    <param name="File" value="${index.log.file}" />
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{E MMM dd, HH:mm:ss} [%p] - %m\n" />
-    </layout>
-  </appender>
-  
   <appender name="compareFileAppender" class="org.apache.log4j.FileAppender">
     <param name="Threshold" value="INFO" />
     <param name="Encoding" value="UTF-8" />
     <param name="File" value="${compare.log.file}" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m\n" />
+    </layout>
+  </appender>
+  
+  <appender name="compareTxtFileAppender" class="org.apache.log4j.FileAppender">
+    <param name="Threshold" value="INFO" />
+    <param name="Encoding" value="UTF-8" />
+    <param name="File" value="${compare.text.log.file}" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%m\n" />
     </layout>
@@ -30,18 +30,23 @@
     </layout>
   </appender>
   
-  <logger name="compare" additivity="false" >
-    <level value="INFO" />
-    <appender-ref ref="compareFileAppender"/>
-  </logger>
-  
   <logger name="skipped" additivity="false" >
     <level value="INFO" />
     <appender-ref ref="skippedFileAppender"/>
   </logger>
   
+  <logger name="compare" additivity="false" >
+      <level value="INFO" />
+      <appender-ref ref="compareFileAppender"/>
+  </logger>
+  
+  <logger name="compareTxt" additivity="false" >
+      <level value="INFO" />
+      <appender-ref ref="compareTxtFileAppender"/>
+  </logger>
+  
   <root>
     <priority value ="INFO" />
-    <appender-ref ref="indexFileAppender" />
+    <appender-ref ref="compareTxtFileAppender" />
   </root>
 </log4j:configuration>
