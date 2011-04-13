@@ -204,7 +204,7 @@ var ForumReplyDlg = Class.create({
 						{ select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select mycollection hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and mycollection hidden' }, { inputFilter: 'filterObjects', klass: 'mycollection hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
 					[ { custom: objlist, klass: 'mycollection hidden' }, { custom: exlist, klass: 'exhibit hidden' } ],
-					[ { text: 'Title:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_title', value: starting_inet_title, klass: 'forum_web_input weblink hidden' } ],
+					[ { text: 'Caption:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_title', value: starting_inet_title, klass: 'forum_web_input weblink hidden' } ],
 					[ { text: 'URL:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_url', value: starting_inet_url, klass: 'forum_web_input weblink hidden' } ],
 					[ { text: 'Thumbnail for Item:', klass: 'forum_web_label weblink hidden' }, { input: 'inet_thumbnail', value: starting_inet_thumbnail, klass: 'forum_web_input weblink hidden' } ],
 					[ { rowClass: 'gd_last_row' }, { button: 'Post', arg0: submit_url, callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
