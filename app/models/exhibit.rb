@@ -109,7 +109,7 @@ class Exhibit < ActiveRecord::Base
 		params[:cluster_id] = cluster_id if cluster_id != nil
     exhibit = Exhibit.create(params)
     exhibit.insert_example_page(1)
-    exhibit.insert_example_page(2)
+    #exhibit.insert_example_page(2)
 		exhibit.reset_fonts_to_default()
 		exhibit.bump_last_change()
     return exhibit
