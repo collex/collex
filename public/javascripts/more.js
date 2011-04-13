@@ -34,6 +34,10 @@ document.observe('dom:loaded', function() {
 		if (!lessText || lessText.length === 0)
 			YAHOO.util.Dom.setAttribute(el, 'data--less', 'Less');
 		YAHOO.util.Dom.setAttribute(el, 'data--more', el.innerHTML);
+		var targ = YAHOO.util.Dom.getAttribute(el, 'data-div');
+		var targEl = $(targ);
+		if (targEl)
+			targEl.addClassName('hidden');
 
 		var fnCallback = function(e) {
 			var text = this.innerHTML;

@@ -82,6 +82,8 @@ class GetIncludeFileList
 			when :exhibits
 				local = [ 'thumbnail_resize', 'edit_exhibit_object_list_dlg', 'create_new_exhibit_dlg', 'cc_license', 'discussions', 'group_page',
 				'create_new_group_dlg', 'edit_fonts_dlg', 'start_discussion_with_exhibit' ]
+			when :about
+				local = [ 'more' ]
 		end
 
 		return { :prototype => prototype, :yui => yui, :local => global + local }
