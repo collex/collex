@@ -393,7 +393,7 @@ class BuilderController < ApplicationController
       element.exhibit_element_layout_type = type
       element.save
       # if we are just creating an element that takes an illustration, then create the illustration, too.
-      if (type == 'pic_text' || type == 'text_pic' || type == 'text_pic_text' || type == 'pic_text_pic') && element.exhibit_illustrations.length == 0
+      if (type == 'pic_text' || type == 'text_pic' || type == 'text_pic_text' || type == 'pic_text_pic' || type == 'pics') && element.exhibit_illustrations.length == 0
         ExhibitIllustration.factory(element_id, 1)
       end
       if (type == 'pic_text_pic') && element.exhibit_illustrations.length < 2
