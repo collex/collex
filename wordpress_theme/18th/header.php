@@ -64,7 +64,7 @@ if ( !empty($withcomments) && !is_single() ) {
 			<a href="/classroom" class="tab_link_long">Classroom</a>
 			<a href="/communities" class="tab_link_long">Community</a>
 			<a href="/publications" class="tab_link_long">Publications</a>
-			<a href="/typewright/documents" class="tab_link_long">TypeWright</a>
+			<!--<a href="/typewright/documents" class="tab_link_long">TypeWright</a>-->
 			<a href="/search" class="tab_link">Search</a>
 		</div>
 
