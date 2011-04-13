@@ -18,6 +18,9 @@
 class ExpressionConstraint < Constraint
 	def clean_search_term(str)
 		str = str.gsub(/[\(\):\}\{\^\]\[]/u, '')
+		# solr complains if the first char is a wild card
+		str = str.sub('*', '') if str[0] == '*'
+		str = str.sub('?', '') if str[0] == '?'
     return str
   end
 
