@@ -138,7 +138,7 @@ var CreateNewExhibitWizard = Class.create({
 					page: 'choose_palette',
 					rows: [
 						[ { text: 'Creating New '+exhibit_label, klass: 'new_exhibit_title' } ],
-						[ { text: 'Step 2: Add objects to your '+exhibit_label.toLowerCase()+'.', klass: 'new_exhibit_label' } ],
+						[ { text: 'Step 2: Add objects to your '+exhibit_label.toLowerCase()+'.  (optional)', klass: 'new_exhibit_label' } ],
 						[ { text: 'Choose resources from your collected objects to add to this new '+exhibit_label.toLowerCase()+'.', klass: 'new_exhibit_instructions' } ],
 						[ { custom: obj_selector } ],
 						[ { text: 'Any object you have collected is available for use in your '+exhibit_label.toLowerCase()+'. You may add or remove objects from this list at any time.', klass: 'new_exhibit_instructions' } ],

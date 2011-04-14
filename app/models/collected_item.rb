@@ -41,6 +41,67 @@ class CollectedItem < ActiveRecord::Base
     return '[' + str + ']'
   end
 
+	def self.get_collected_objects_for_thumbnails(user_id, exhibit_id, is_chosen)
+		# This was really slow going through ActiveRecord, so here's a quicker query.
+		if is_chosen == 'true'
+			sql = "select cached_resources.id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id inner join exhibit_objects on exhibit_objects.uri = cached_resources.uri where collected_items.user_id = #{user_id} and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'role_ART') and exhibit_objects.id = #{exhibit_id}"
+		else
+			sql = "select cached_resources.id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id left outer join exhibit_objects on exhibit_objects.uri = cached_resources.uri where collected_items.user_id = #{user_id} and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'role_ART') and (exhibit_objects.id is null or exhibit_objects.id <> #{exhibit_id})"
+		end
+		recs = {}
+		match = ActiveRecord::Base.connection.execute(sql)
+		match.each { |rec|
+			if recs[rec[0]] == nil
+				recs[rec[0]] = { 'uri' => rec[1] }
+			end
+			if recs[rec[0]][rec[2]]
+				recs[rec[0]][rec[2]] += ", #{rec[3]}" if recs[rec[0]][rec[2]].include?(rec[3]) == nil
+			else
+				recs[rec[0]][rec[2]] = rec[3]
+			end
+		}
+		return recs
+	end
+
+	def self.get_collected_objects(user_id)
+#		sql1 = "select uri,archive,title,author,thumbnail FROM "
+#		sql2 = "(select exhibit_objects.id AS exhibit_objects_id,cached_resources.id AS cached_resources_id,cached_resources.uri, "
+#		sql3 = "CASE WHEN cp1.name = 'archive' THEN cp1.value END AS archive, "
+#		sql4 = "CASE WHEN cp1.name = 'title' THEN cp1.value END AS title, "
+#		sql5 = "CASE WHEN cp1.name = 'role_AUT' or cp1.name = 'role_ART' THEN cp1.value END AS author, "
+#		sql6 = "CASE WHEN cp1.name = 'thumbnail' THEN cp1.value END AS thumbnail "
+#		sql7 = "from collected_items "
+#		sql8 = "inner join cached_resources on cached_resources.id = collected_items.cached_resource_id "
+#		sql9 = "inner join cached_properties AS cp1 on cp1.cached_resource_id = collected_items.cached_resource_id "
+#		sql10 = "left outer join exhibit_objects on exhibit_objects.uri = cached_resources.uri "
+#		sql11 = "where collected_items.user_id = #{user_id} and (cp1.name = 'archive' || cp1.name = 'title' || cp1.name = 'role_AUT' || cp1.name = 'role_ART' || cp1.name = 'thumbnail') ) as tbl1"
+#		sql = "#{sql1}#{sql2}#{sql3}#{sql4}#{sql5}#{sql6}#{sql7}#{sql8}#{sql9}#{sql10}#{sql11}"
+
+		sql = "select cached_resources.id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id inner join exhibit_objects on exhibit_objects.uri = cached_resources.uri where collected_items.user_id = #{user_id} and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'role_ART' || cached_properties.name = 'thumbnail')"
+
+		recs = {}
+		match = ActiveRecord::Base.connection.execute(sql)
+		match.each { |rec|
+#			if recs[rec[0]] == nil
+#				recs[rec[0]] = { 'uri' => rec[0] }
+#			end
+#			recs[rec[0]]['archive'] = rec[1] if rec[1]
+#			recs[rec[0]]['title'] = rec[2] if rec[2]
+#			recs[rec[0]]['author'] = rec[3] if rec[3]
+#			recs[rec[0]]['thumbnail'] = rec[4] if rec[4]
+			if recs[rec[0]] == nil
+				recs[rec[0]] = { 'uri' => rec[1] }
+			end
+			if recs[rec[0]][rec[2]]
+				recs[rec[0]][rec[2]] += ", #{rec[3]}" if !recs[rec[0]][rec[2]].include?(rec[3])
+			else
+				recs[rec[0]][rec[2]] = rec[3]
+			end
+		}
+		return recs
+
+	end
+
   # this returns the collected objects as a ruby array
   def self.get_collected_object_ruby_array(user_id)
     objs = CollectedItem.find_all_by_user_id(user_id)

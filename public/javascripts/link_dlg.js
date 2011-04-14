@@ -301,6 +301,10 @@ var CreateListOfObjects = Class.create({
 				});
 				spinner.addClassName('link_dlg_object_progress');
 				parent.appendChild(spinner);
+				var msg = new Element('div');
+				$(msg).setStyle({'padding': '8px', 'text-align': 'center'});
+				msg.innerHTML = "Please wait while your collected objects are being loaded";
+				parent.appendChild(msg);
 			}
 			parent.addClassName('linkdlg_list');
 			return parent;

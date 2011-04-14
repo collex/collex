@@ -125,27 +125,38 @@ class BuilderController < ApplicationController
 		ret = []
 		user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 		if user
-			selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
-			objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
-			objs.each {|obj|
-				hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
-				if hit != nil
-					uri = hit['uri']
-					i = selected.detect {|sel|
-						sel[:uri] == uri
-					}
-					if (i == nil && chosen == 'false') || (i != nil && chosen == 'true')  # i is nil if the object is not chosen
-						image = CachedResource.get_thumbnail_from_hit(hit)
-						image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
-						obj = {}
-						obj[:id] = hit['uri']
-						obj[:img] = image
-						obj[:title] = hit['title'][0]
-						obj[:strFirstLine] = hit['title'][0]
-						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
-						ret.push(obj)
-					end # should we include this?
-				end # does the hit exist?
+			objs = CollectedItem.get_collected_objects_for_thumbnails(user.id, exhibit_id, chosen)
+			objs.each {|key,hit|
+				obj = {}
+				obj[:id] = hit['uri']
+				image = CachedResource.get_thumbnail_from_hit(hit)
+				image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+				obj[:img] = image
+				obj[:title] = hit['title']
+				obj[:strFirstLine] = hit['title']
+				obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'] : hit['role_ART'] ? hit['role_ART'] : ''
+				ret.push(obj)
+#			selected = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+#			objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
+#			objs.each {|obj|
+#				hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+#				if hit != nil
+#					uri = hit['uri']
+#					i = selected.detect {|sel|
+#						sel[:uri] == uri
+#					}
+#					if (i == nil && chosen == 'false') || (i != nil && chosen == 'true')  # i is nil if the object is not chosen
+#						image = CachedResource.get_thumbnail_from_hit(hit)
+#						image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+#						obj = {}
+#						obj[:id] = hit['uri']
+#						obj[:img] = image
+#						obj[:title] = hit['title'][0]
+#						obj[:strFirstLine] = hit['title'][0]
+#						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
+#						ret.push(obj)
+#					end # should we include this?
+#				end # does the hit exist?
 			} # for each object
 			render :text => ret.to_json()
 		else # not logged in

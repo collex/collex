@@ -47,6 +47,8 @@ class CachedResource < ActiveRecord::Base
   #alias_method :solr_resource, :resource
   
   private
+  @@site_thumbnails = {}
+
   def self.tag_cloud(user)
     sql_no_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id group by name order by name"
     sql_user = "select name, count(name) as freq from tags join tagassigns on tags.id=tagassigns.tag_id where user_id=? group by name order by name"
@@ -251,10 +253,16 @@ class CachedResource < ActiveRecord::Base
     image =  self.solr_obj_to_str(hit['thumbnail'])
     return image if image != nil
 
+	if @@site_thumbnails.has_key?(hit['archive'])
+		return @@site_thumbnails[hit['archive']]
+	end
+
     site = Site.find_by_code(hit['archive'])
     return nil if site == nil
     
-    return self.solr_obj_to_str(site.thumbnail)
+    thumb = self.solr_obj_to_str(site.thumbnail)
+	  @@site_thumbnails[hit['archive']] = thumb
+	  return thumb
   end
   
   def self.get_thumbnail_from_hit_no_site(hit)
