@@ -22,7 +22,7 @@ class Branding
   end
 
 	def self.yui_path()
-		return '2.8.2r1'
+		return '2.9.0'
 	end
 
 	def self.valid_genre_list()
