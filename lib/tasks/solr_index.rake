@@ -537,9 +537,9 @@ namespace :solr_index do
 			# It's ok to fail: it probably means the folder already exists.
 		end
 		cmd_line("cd #{indexer_path} && mvn clean package")
-		cmd_line("rm #{dst}/lib/*")
+		cmd_line("rm -R #{dst}/lib/*")
 		cmd_line("rm #{dst}/rdf-indexer.jar")
-		cmd_line("cp -R #{src}/lib #{dst}/lib")
+		cmd_line("cp -R #{src}/lib #{dst}")
 		cmd_line("cp #{src}/rdf-indexer.jar #{dst}/rdf-indexer.jar")
 		finish_line(start_time)
 	end
