@@ -352,7 +352,9 @@ class ForumController < ApplicationController
 				all_collected = CollectedItem.get_collected_objects(user.id)
 				all_collected.each  { |uri,col|
 					if !only_images || col['thumbnail']
-						ret.push({ :id => uri, :img => col['thumbnail'], :title => col['title'], :strFirstLine => col['title'], :strSecondLine => col['author'] })
+						image = CachedResource.get_thumbnail_from_hit(col)
+						image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+						ret.push({ :id => uri, :img => image, :title => col['title'], :strFirstLine => col['title'], :strSecondLine => col['author'] })
 					end
 				}
 			end
