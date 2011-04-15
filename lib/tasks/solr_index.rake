@@ -123,9 +123,9 @@ namespace :solr_index do
 		folder_file = File.join(RDF_PATH, "sitemap.yml")
 		site_map = YAML.load_file(folder_file)
 		rdf_folders = site_map['archives']
-		folder_file = File.join(MARC_PATH, "sitemap.yml")
-		site_map = YAML.load_file(folder_file)
-		marc_folders = site_map['archives']
+#		folder_file = File.join(MARC_PATH, "sitemap.yml")
+#		site_map = YAML.load_file(folder_file)
+#		marc_folders = site_map['archives']
 		sh_all = create_sh_file("batch_all")
 
 		# the archives found need to exactly match the archives in the site maps.
@@ -133,7 +133,7 @@ namespace :solr_index do
 		rdf_folders.each { |k,f|
 			all_enum_archives.merge!(f)
 		}
-		all_enum_archives.merge!(marc_folders)
+		#all_enum_archives.merge!(marc_folders)
 		archives.each {|archive|
 			if archive.index("exhibit_") != 0 && archive != "ECCO" && all_enum_archives[archive] == nil
 				puts "Missing archive #{archive} from the sitemap.yml files"
@@ -218,7 +218,7 @@ namespace :solr_index do
         Rake::Task['solr_index:clear_reindexing_index'].invoke
 
 				folders[:folders].each {|folder|
-					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
+					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
 				}
 			end
 		end
@@ -420,7 +420,7 @@ namespace :solr_index do
     delete_file("#{log_dir}/#{safe_name}_skipped.log")
       
     # launch the tool
-    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/dist && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags}")
+    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags}")
       
   end
 
@@ -528,19 +528,19 @@ namespace :solr_index do
 	task :copy_rdf_indexer => :environment do
 		start_time = Time.now
 		indexer_path = INDEXER_PATH
-		src = "#{indexer_path}/dist"
-		dst = "#{Rails.root}/lib/tasks/rdf-indexer"
+		src = "#{indexer_path}/target"
+		dst = "#{Rails.root}/lib/tasks/rdf-indexer/target"
 		puts "~~~~~~~~~~~ Copying #{src} to #{dst}..."
 		begin
 	    Dir.mkdir("#{dst}")
 		rescue
 			# It's ok to fail: it probably means the folder already exists.
 		end
-		cmd_line("cd #{indexer_path} && ant clean dist")
-		cmd_line("rm #{dst}/dist/lib/*")
-		cmd_line("rm #{dst}/dist/rdf-indexer.jar")
-		cmd_line("rm #{dst}/dist/log4j.xml")
-		cmd_line("cp -R #{src} #{dst}")
+		cmd_line("cd #{indexer_path} && mvn clean package")
+		cmd_line("rm #{dst}/lib/*")
+		cmd_line("rm #{dst}/rdf-indexer.jar")
+		cmd_line("cp -R #{src}/lib #{dst}/lib")
+		cmd_line("cp #{src}/rdf-indexer.jar #{dst}/rdf-indexer.jar")
 		finish_line(start_time)
 	end
 
