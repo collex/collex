@@ -572,6 +572,11 @@ class BuilderController < ApplicationController
     text = params['ill_text']
     alt_text = params['alt_text']
     nines_object = params['nines_object']
+	nines_obj_id = nines_object.to_i
+	test_id = "#{nines_obj_id}"
+	if test_id == nines_object
+		nines_object = CachedResource.find(nines_obj_id).uri
+	end
 		#footnotes = JSON.parse(params['footnotes'])
 
     illustration = ExhibitIllustration.find_by_id(illustration_id)

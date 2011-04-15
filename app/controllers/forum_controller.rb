@@ -326,11 +326,11 @@ class ForumController < ApplicationController
 				objs = []
 				exhibits_objects.each { |eo|
 					cr = CachedResource.find_by_uri(eo[:uri])
-					o = CollectedItem.new
-					o.cached_resource_id = cr.id
-					objs.push(o)
-					objs.each {|obj|
-						hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
+#					o = CollectedItem.new
+#					o.cached_resource_id = cr.id
+#					objs.push(o)
+#					objs.each {|obj|
+						hit = CachedResource.get_hit_from_resource_id(cr.id)
 						if hit != nil
 							image = CachedResource.get_thumbnail_from_hit(hit)
 							if only_images != true
@@ -346,7 +346,7 @@ class ForumController < ApplicationController
 								ret.push(obj)
 							end
 						end
-					}
+#					}
 				}
 			else
 				all_collected = CollectedItem.get_collected_objects(user.id)
