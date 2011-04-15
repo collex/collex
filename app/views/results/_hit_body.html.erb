@@ -56,7 +56,7 @@
 	</tr>
 <% end %>
 <%################### -%>
-<% if hit["text"] != nil && hit["text"].to_s.strip().length > 0 -%>
+<% if hit["text"] != nil && hit["text"].to_s.strip().length > 0 && !hit['is_ocr'] -%>
 <tr>
     <td colspan='2'>
     	<div class="search_result_full_text_label">Excerpt from Full Text:</div>
