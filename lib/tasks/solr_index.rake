@@ -24,58 +24,6 @@ namespace :solr_index do
 		solr.reindex_all()
 	end
 
-#	desc "Temp task for a batch file"
-#	task :temp => :environment do
-#		puts "TASK"
-#		start_time = Time.now
-#		#ENV['archive'] = "JSTOR:American Literary History;JSTOR:American Literature;JSTOR:NOVEL: A Forum on Fiction;JSTOR:Nineteenth-Century Fiction;JSTOR:Nineteenth-Century Literature;JSTOR:Studies in English Literature, 1500-1900;JSTOR:Trollopian"
-#		#ENV['archive'] = "uva_library;cbw"
-#		#Rake::Task['solr_index:merge_archive'].invoke
-#
-#		#ENV['archive'] = "bancroft"
-#		#Rake::Task['solr_index:reindex_marc'].invoke
-#		#CollexEngine.compare_reindexed_core_text({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
-#		#CollexEngine.compare_reindexed_core({ :archive => "bancroft", :start_after => nil, :use_merged_index => false })
-#		finish_line(start_time)
-#	end
-
-#	desc "Completely reindex and test all RDF and MARC records"
-#	task :completely_reindex_everything => :environment do
-#		# Use this when there is a change to the schema to completely rebuild the index, then print out the differences between the new
-#		# and old indexes.
-#
-#		puts "~~~~~~~~~~~ Completely reindex everything..."
-#		start_time = Time.now
-#		# clear all the indexes
-#		archives = CollexEngine.get_archive_core_list()
-#		archives.each{|archive|
-#			reindexed = CollexEngine.new([archive])
-#			reindexed.clear_index()
-#			puts "cleared index #{archive}"
-#		}
-#		# recreate all the RDF data
-#		ENV['folder'] = ''
-#		#ENV['start_after'] = "../rdf/uva_library"
-#		Rake::Task['solr_index:reindex_rdf'].invoke
-#
-#		# recreate all the MARC data
-#		ENV['archive'] = nil
-#		Rake::Task['solr_index:reindex_marc'].invoke
-#
-#		# recreate the ECCO documents - this has to be done after the estc documents are created
-#		Rake::Task['solr_index:index_ecco'].invoke
-#
-#		# Now, test the indexes
-#		Rake::Task['solr_index:scan_for_missed_objects'].invoke	# see if there are different objects in the two indexes
-#		ENV['start_after'] = nil #'intelexShelleyWorks'
-#		Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
-#		Rake::Task['solr_index:find_duplicate_objects'].invoke	# see if there are any duplicate uri anywhere in the RDF records.
-#		ENV['start_after'] = nil #'lewisandclark'
-#		Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
-#
-#		puts "Finished in #{(Time.now-start_time)/60} minutes."
-#	end
-
 	def cmd_line(str)
 		puts str
 		puts `#{str}`
@@ -215,7 +163,7 @@ namespace :solr_index do
 				delete_file("#{log_dir}/#{safe_name}_duplicates.log")
 				
 				ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
-        Rake::Task['solr_index:clear_reindexing_index'].invoke
+				Rake::Task['solr_index:clear_reindexing_index'].invoke
 
 				folders[:folders].each {|folder|
 					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
@@ -244,11 +192,12 @@ namespace :solr_index do
 				}
 			end
 			ENV['archive'] = archive
-			Rake::Task['solr_index:scan_for_missed_objects'].invoke
-			ENV['archive'] = archive
-			Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
-			ENV['archive'] = archive
-			Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
+#			Rake::Task['solr_index:scan_for_missed_objects'].invoke
+#			ENV['archive'] = archive
+#			Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
+#			ENV['archive'] = archive
+#			Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
+			Rake::Task['solr_index:compare_indexes_java'].invoke
 		end
 		finish_line(start_time)
 	end
