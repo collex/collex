@@ -28,6 +28,13 @@ class MarcToSolr
 		hit[:role_PBL] = pub if pub.length > 0
 		text = self.parse_text(rec)
 		hit[:text] = text if text
+
+		#TODO-PER:debug
+#		fld = self.first_field(rec,'035','a')
+#		if fld.include?('R35432')
+#			puts fld
+#		end
+
 		years = ParseDate.extract_year(self.all_field(rec,'260','c'), year_ignore)
 		hit[:date_label] = ParseDate.reconstruct_date_label(years[:years]) #years[:date_label] 
 		hit[:year] =  years[:years]
@@ -59,7 +66,7 @@ class MarcToSolr
 			hit[:uri] = "lib://estc/" + uri
 			hit[:federation] = self.estc_federation(years[:years])
 			if hit[:federation] == nil
-				MarcTextReader.log_error("No federation selected for: #{hit[:uri]}: \"#{self.combined_field(rec, '260', 'c')}\"")
+				MarcTextReader.log_error("No federation selected for: #{hit[:uri]}: \"#{self.combined_field(rec, '260', 'c')}\" [#{years[:years].join(';')}]")
 				return nil
 			end
 		end
