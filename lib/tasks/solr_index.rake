@@ -473,7 +473,7 @@ namespace :solr_index do
 
 	end
 
-	desc "copy rdf-indexer file for packaging (first build it normally before running this!)"
+	desc "copy rdf-indexer file for packaging (this cleans and builds it also)"
 	task :copy_rdf_indexer => :environment do
 		start_time = Time.now
 		indexer_path = INDEXER_PATH
