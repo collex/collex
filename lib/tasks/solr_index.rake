@@ -60,7 +60,7 @@ namespace :solr_index do
 		if folders == nil
 			return { :error => "The archive \"#{archive}\" was not found in #{folder_file}" }
 		end
-		return { :folders => folders.split(';') }
+		return { :folders => folders[0].split(';'), :pagesize => folders[1] }
 	end
 
 	desc "create complete reindexing task list"
@@ -176,22 +176,23 @@ namespace :solr_index do
 	def test_archive(archive)
 		puts "~~~~~~~~~~~ testing \"#{archive}\" [see log/#{archive}_*.log]"
 		start_time = Time.now
-		do_dups = true
+#		do_dups = true
 		folders = get_folders(RDF_PATH, archive)
-		if folders[:error]
-			folders = get_folders(MARC_PATH, archive)
-			do_dups = false
-		end
+#		if folders[:error]
+#			folders = get_folders(MARC_PATH, archive)
+#			do_dups = false
+#		end
 		if folders[:error]
 			puts "The archive entry for \"#{archive}\" was not found in any sitemap.yml file."
 		else
-			if do_dups
+#			if do_dups
 				folders[:folders].each {|folder|
 					ENV['folder'] = "#{folder},#{archive}"
 					Rake::Task['solr_index:find_duplicate_objects'].invoke
 				}
-			end
+#			end
 			ENV['archive'] = archive
+			ENV['pageSize'] = folders[:pagesize].to_s
 #			Rake::Task['solr_index:scan_for_missed_objects'].invoke
 #			ENV['archive'] = archive
 #			Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
@@ -338,10 +339,12 @@ namespace :solr_index do
 		end
 	end
 	
-	desc "compare the main index with the reindexed one (parameter: archive=XXX)"
+	desc "compare the main index with the reindexed one (parameter: archive=XXX mode=compare|compareTxt|<nil> pageSize=xxx)"
   task :compare_indexes_java  => :environment do
     archive = ENV['archive']
-    mode = ENV['mode']
+	mode = ENV['mode']
+	pagesize = ENV['pagesize']
+	pagesize ||= 500
     flags = "";
     safe_name = CollexEngine::archive_to_core_name(archive)
     log_dir = "#{Rails.root}/log"
@@ -369,7 +372,7 @@ namespace :solr_index do
     delete_file("#{log_dir}/#{safe_name}_skipped.log")
       
     # launch the tool
-    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags}")
+    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags} -pageSize #{pagesize}")
       
   end
 
