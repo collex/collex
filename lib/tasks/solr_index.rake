@@ -343,7 +343,7 @@ namespace :solr_index do
   task :compare_indexes_java  => :environment do
     archive = ENV['archive']
 	mode = ENV['mode']
-	pagesize = ENV['pagesize']
+	pagesize = ENV['pageSize']
 	pagesize ||= 500
     flags = "";
     safe_name = CollexEngine::archive_to_core_name(archive)
