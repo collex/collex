@@ -276,3 +276,12 @@ span.tooltip:hover span{ /*the span will display just on :hover state*/
 .feature_text_saved_search {
 	padding-top: 1em;
 }
+
+.feature_news {
+	padding-left: 12px;
+}
+
+.feature_news ul {
+	margin-left: 12px;
+	margin-right: 0px;
+}

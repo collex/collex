@@ -33,8 +33,11 @@
             	<tbody><tr><td colspan="5" class="spacer_cell"></td></tr>
             	<tr>
                 	<td id="discussions" valign="top">
-					<% if @feature -%>
-                    <div class="popular_title">Featured Object</div>
+					<% if @featured_news -%>
+                    <div class="popular_title">News Flash</div>
+					<%= render :partial => "/home/featured_news" %>
+					<% elsif @feature -%>
+					<div class="popular_title">Featured Object</div>
 					<%= render :partial => "/home/featured_resource", :locals => { :feature => @feature } %>
 					<% else -%>
                     <div class="popular_title">Popular Discussions</div>
