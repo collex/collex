@@ -128,6 +128,23 @@ namespace :ecco do
 		CollexEngine.report_line("Optimized in #{(Time.now-start_time)/60} minutes.")
 	end
 
+	desc "Just add full text to ecco docs, using estc records."
+	task :index_ecco_text_only => :environment do
+		start_time = Time.now
+#		CollexEngine.create_core("archive_ECCO")
+#		dst = CollexEngine.new(["archive_ECCO"])
+#		dst.start_reindex()
+		CollexEngine.set_report_file("#{Rails.root}/log/ecco_error.log")	# just setting this first to delete it if it exists.
+		CollexEngine.set_report_file("#{Rails.root}/log/ecco_progress.log")
+#		CollexEngine.report_line("Processing spreadsheets...")
+#		process_ecco_spreadsheets()
+		CollexEngine.report_line("Processing fulltext...")
+		process_ecco_fulltext()
+		CollexEngine.report_line("Finished in #{(Time.now-start_time)/60} minutes.")
+		dst.commit()
+		dst.optimize()
+		CollexEngine.report_line("Optimized in #{(Time.now-start_time)/60} minutes.")
+	end
 #	desc "Create the Gale objects from ESTC"
 #	task :process_gale_objects => :environment do
 #		require 'script/lib/process_gale_objects.rb'
