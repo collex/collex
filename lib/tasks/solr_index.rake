@@ -146,7 +146,7 @@ namespace :solr_index do
 		case type
 			when :reindex then flags = "-reindex"
 			when :fulltext then flags = "-fulltext"
-			when :debug then flags = ""
+			when :debug then flags = "-test"
 		end
 		if flags == nil
 			puts "Call with either :reindex, :fulltext, or :debug"
@@ -488,10 +488,10 @@ namespace :solr_index do
 		rescue
 			# It's ok to fail: it probably means the folder already exists.
 		end
-		cmd_line("cd #{indexer_path} && mvn clean package")
-		cmd_line("rm -R #{dst}/lib/*")
+		cmd_line("cd #{indexer_path} && mvn -DskipTests=true clean package")
+		cmd_line("rm #{dst}/lib/*.jar")
 		cmd_line("rm #{dst}/rdf-indexer.jar")
-		cmd_line("cp -R #{src}/lib #{dst}")
+		cmd_line("cp #{src}/lib/*.jar #{dst}/lib/")
 		cmd_line("cp #{src}/rdf-indexer.jar #{dst}/rdf-indexer.jar")
 		finish_line(start_time)
 	end
