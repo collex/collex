@@ -132,7 +132,7 @@ namespace :ecco do
 	task :index_ecco_text_only => :environment do
 		start_time = Time.now
 #		CollexEngine.create_core("archive_ECCO")
-#		dst = CollexEngine.new(["archive_ECCO"])
+		dst = CollexEngine.new(["archive_ECCO"])
 #		dst.start_reindex()
 		CollexEngine.set_report_file("#{Rails.root}/log/ecco_error.log")	# just setting this first to delete it if it exists.
 		CollexEngine.set_report_file("#{Rails.root}/log/ecco_progress.log")
