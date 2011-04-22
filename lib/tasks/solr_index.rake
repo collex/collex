@@ -347,6 +347,7 @@ namespace :solr_index do
   task :compare_indexes_java  => :environment do
     archive = ENV['archive']
 	mode = ENV['mode']
+	fromUrl = ENV['from']
 	pagesize = ENV['pageSize']
 	pagesize ||= 500
     flags = "";
@@ -370,6 +371,10 @@ namespace :solr_index do
         flags = "-ignore text"  
         delete_file("#{log_dir}/#{safe_name}_compare.log") 
       end
+    end
+    
+    if fromUrl != nil
+      flags += " -from #{fromUrl}"
     end
 
     # skipped is always deleted
