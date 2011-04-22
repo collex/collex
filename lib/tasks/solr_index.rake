@@ -139,7 +139,7 @@ namespace :solr_index do
 		CollexEngine.report_line_if(str)
 	end
 
-	def index_archive(msg, archive, type)
+	def index_archive(msg, archive, type, fromUrl=nil)
 		puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
 		start_time = Time.now
 		flags = nil
@@ -151,6 +151,9 @@ namespace :solr_index do
 		if flags == nil
 			puts "Call with either :reindex, :fulltext, or :debug"
 		else
+		  if fromUrl != nil
+		    flags += " -from #{fromUrl}"
+		  end
 			folders = get_folders(RDF_PATH, archive)
 			if folders[:error]
 				puts folders[:error]
@@ -229,14 +232,15 @@ namespace :solr_index do
 		finish_line(start_time)
 	end
 
-	desc "Reindex documents from the rdf folder to the reindex core (param: archive=XXX)"
+	desc "Reindex documents from the rdf folder to the reindex core (param: archive=XXX,from=URL {opt) )"
 	task :reindex_rdf  => :environment do
 		archive = ENV['archive']
+		fromUrl = ENV['from']
 		if archive == nil
 			puts "Usage: call with archive=XXX"
 		else
-			index_archive("Reindex", archive, :reindex)
-		end
+		  index_archive("Reindex", archive, :reindex, fromUrl)		
+	  end
 	end
 
 	desc "Test one archive of any type (param: archive=XXX)"
