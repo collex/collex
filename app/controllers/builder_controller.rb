@@ -788,7 +788,7 @@ class BuilderController < ApplicationController
 				exhibit = Exhibit.find(exhibit_id)	#create({ :title => exhibit_title, :user_id => user.id })
 				#exhibit.reset_fonts_to_default()
 				#exhibit.bump_last_change()
-				exhibit.delete_page(2)
+				#exhibit.delete_page(2)
 				exhibit.delete_page(1)
 				new_page = ExhibitPage.create(:exhibit_id => exhibit.id)
 				new_page.insert_at(1)
