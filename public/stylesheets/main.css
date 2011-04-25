@@ -285,3 +285,11 @@ span.tooltip:hover span{ /*the span will display just on :hover state*/
 	margin-left: 12px;
 	margin-right: 0px;
 }
+
+#recent_news li {
+	list-style: disc;
+}
+
+#shared_discussions li {
+	list-style: disc;
+}
