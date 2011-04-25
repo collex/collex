@@ -100,7 +100,9 @@ function submitForm(id, action, method) {
 }
 
 function reloadPage() {
-	window.location.reload(true);
+	//window.location.reload(true);
+	// This seems to defeat caching when the page is html.
+	window.location.href = window.location.href;
 }
 
 function gotoPage(url) {

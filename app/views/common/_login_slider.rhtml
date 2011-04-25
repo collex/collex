@@ -15,6 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <%# login_slider params: string current_page -%>
+<%= csrf_meta_tag if current_page == 'about' %>
 <% if is_logged_in? %>
 	signed in as <%= session[:user][:username] %><%= link_separator %>
     <%#= my_account_link({ :class => 'nav_link' }) %>

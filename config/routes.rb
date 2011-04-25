@@ -134,7 +134,7 @@ Collex::Application.routes.draw do
 	post "/login/submit_signup" => "login#submit_signup"
 	post "/login/recover_username" => "login#recover_username"
 	post "/login/reset_password" => "login#reset_password"
-	post "/login/login_controls" => "login#login_controls"
+	get "/login/login_controls" => "login#login_controls"
 
 	match "/forum/view_thread" => "forum#view_thread"
 	match "/forum/view_topic" => "forum#view_topic"
@@ -224,7 +224,7 @@ Collex::Application.routes.draw do
 
 	post '/exhibits/get_licenses' => 'exhibits#get_licenses'
 
-	post '/home/get_footer_data' => 'home#get_footer_data'
+	get '/home/get_footer_data' => 'home#get_footer_data'
 
 	post '/tag/set_zoom' => 'tag#set_zoom'
 

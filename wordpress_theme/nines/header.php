@@ -12,7 +12,7 @@
 
 <title>N I N E S - News</title>
 
-	<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?2.8.2/build/reset-fonts-grids/reset-fonts-grids.css&2.8.2/build/base/base.css&2.8.2/build/button/assets/skins/sam/button.css&2.8.2/build/container/assets/skins/sam/container.css&2.8.2/build/assets/skins/sam/skin.css' />
+	<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?2.9.0/build/reset-fonts-grids/reset-fonts-grids.css&2.9.0/build/base/base.css&2.9.0/build/button/assets/skins/sam/button.css&2.9.0/build/container/assets/skins/sam/container.css&2.9.0/build/assets/skins/sam/skin.css' />
 	<link href="/stylesheets/about-min.css" media="all" rel="stylesheet" type="text/css" />
 	<!-- section styles -->
 
@@ -24,7 +24,8 @@
 <![endif]-->
 
 	<script src="/javascripts/prototype-min.js" type="text/javascript"></script>
-	<script src='http://yui.yahooapis.com/combo?2.8.2/build/yahoo-dom-event/yahoo-dom-event.js&2.8.2/build/json/json.js&2.8.2/build/element/element.js&2.8.2/build/button/button.js&2.8.2/build/container/container.js&2.8.2/build/dragdrop/dragdrop.js' type='text/javascript' ></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
+	<script src='http://yui.yahooapis.com/combo?2.9.0/build/yahoo-dom-event/yahoo-dom-event.js&2.9.0/build/json/json.js&2.9.0/build/element/element.js&2.9.0/build/button/button.js&2.9.0/build/container/container.js&2.9.0/build/dragdrop/dragdrop.js' type='text/javascript' ></script>
 	<script src="/javascripts/about-min.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" type="text/css" media="screen" />
@@ -71,7 +72,7 @@ if ( !empty($withcomments) && !is_single() ) {
         	<div id="login_container">
 				<script type="text/javascript">
 				document.observe('dom:loaded', function() {
-					new Ajax.Updater({ success: 'login_container', failure: 'bit_bucket' }, '/login/login_controls');
+					new Ajax.Updater({ success: 'login_container', failure: 'bit_bucket' }, '/login/login_controls', { method: 'get' });
 					});
 				</script>
             </div>
