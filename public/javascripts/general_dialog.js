@@ -823,7 +823,7 @@ var GeneralDialog = Class.create({
 
 		panel.setBody(body);
 		panel.render(parent_id);
-		
+
 		panel.cancelEvent.subscribe(function(e, a, o){
 			setTimeout(function() { panel.destroy(); }, 500);
 		});

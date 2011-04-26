@@ -86,8 +86,28 @@ BorderDialog.prototype = {
 			elContainer.appendChild(elBorder2);
 		}, this);
 
+		this.center = function(scrollX, scrollY) {
+			var dlg = $("edit_border_dlg");
+			var w = parseInt(dlg.getStyle('width'), 10);
+			var h = parseInt(dlg.getStyle('height'), 10);
+			var vw = YAHOO.util.Dom.getViewportWidth();
+			var vh = YAHOO.util.Dom.getViewportHeight();
+			var x = (vw - w) / 2;
+			var y = (vh - h) / 2;
+			x += scrollX;
+			y += scrollY;
+			if (x < 0) x = 0;
+			if (y < 0) y = 0;
+			var el = dlg.up();
+			el.setStyle({ left: x + 'px', top: y + 'px'});
+			window.scroll(scrollX, scrollY);
+		};
+
 		this.myPanel.setBody(elOuterContainer);
+		var scrollX = YAHOO.util.Dom.getDocumentScrollLeft();
+		var scrollY = YAHOO.util.Dom.getDocumentScrollTop();
 		this.myPanel.render(document.body);
+		this.center(scrollX, scrollY);
 
 		elements = $$('#border_container .outline_right_controls');
 		elements.each(function(el) {
