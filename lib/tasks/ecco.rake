@@ -23,7 +23,7 @@ namespace :ecco do
 		}
 	end
 
-	def process_ecco_spreadsheets(hits)
+	def process_ecco_spreadsheets(hits, max_recs = 9999999)
 		src = CollexEngine.new(["archive_estc"])
 		total_recs = 0
 		total_added = 0
@@ -63,6 +63,7 @@ namespace :ecco do
 						end
 					end
 					CollexEngine.report_line("Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}") if total_recs % 500 == 0
+					return if total_recs >= max_recs
 				}
 			}
 		}
