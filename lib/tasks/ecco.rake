@@ -23,9 +23,8 @@ namespace :ecco do
 		}
 	end
 
-	def process_ecco_spreadsheets
+	def process_ecco_spreadsheets(hits)
 		src = CollexEngine.new(["archive_estc"])
-		dst = CollexEngine.new(["archive_ECCO"])
 		total_recs = 0
 		total_added = 0
 		total_already_found = 0
@@ -58,7 +57,7 @@ namespace :ecco do
 							obj['uri'] = ecco_id
 							writelog("#{Rails.root}/log/ecco_error.log", "No year_sort: #{estc_uri} #{obj['uri']}") if obj['year_sort'] == nil
 							writelog("#{Rails.root}/log/ecco_error.log", "No title_sort: #{estc_uri} #{obj['uri']}") if obj['title_sort'] == nil
-							dst.add_object(obj, nil)
+							hits.push(obj)
 							total_added += 1
 							#puts "estc: #{estc_id} ecco: #{ecco_id}"
 						end
@@ -70,11 +69,18 @@ namespace :ecco do
 		CollexEngine.report_line("Finished: Total: #{total_recs} Added: #{total_added} Found: #{total_already_found} Can't find: #{total_cant_find}")
 	end
 
-	def process_ecco_fulltext()
+	def find_hit(hits, target)
+		hits.each_with_index { |hit, i|
+			return i if hit['uri'] == target['uri']
+			return -1 if hit['uri'] > target['uri']
+		}
+		return -1
+	end
+
+	def process_ecco_fulltext(hits)
 		require "#{Rails.root}/script/lib/process_gale_objects.rb"
 		include ProcessGaleObjects
 		src = CollexEngine.new(["archive_estc"])
-		dst = CollexEngine.new(["archive_ECCO"])
 		count = 0
 		GALE_OBJECTS.each {|arr|
 			filename = arr[0]
@@ -102,7 +108,12 @@ namespace :ecco do
 					obj['uri'] = "lib://ECCO/#{arr2[0]}"
 					writelog("#{Rails.root}/log/ecco_error.log", "No year_sort: #{estc_uri} #{obj['uri']}") if obj['year_sort'] == nil
 					writelog("#{Rails.root}/log/ecco_error.log", "No title_sort: #{estc_uri} #{obj['uri']}") if obj['title_sort'] == nil
-					dst.add_object(obj, nil)
+					index = find_hit(hits, obj)
+					if index == -1
+						hits.push(obj)
+					else
+						hits[index] = obj
+					end
 				end
 			end
 			count += 1
@@ -110,41 +121,57 @@ namespace :ecco do
 		}
 	end
 
-	desc "Completely index ecco docs, using estc records."
-	task :index_ecco => :environment do
+	desc "Create all the RDF files for ECCO documents, using estc records and the spreadsheets and texts."
+	task :create_rdf => :environment do
 		start_time = Time.now
-		CollexEngine.create_core("archive_ECCO")
-		dst = CollexEngine.new(["archive_ECCO"])
-		dst.start_reindex()
 		CollexEngine.set_report_file("#{Rails.root}/log/ecco_error.log")	# just setting this first to delete it if it exists.
 		CollexEngine.set_report_file("#{Rails.root}/log/ecco_progress.log")
 		CollexEngine.report_line("Processing spreadsheets...")
-		process_ecco_spreadsheets()
+		hits = []
+		process_ecco_spreadsheets(hits)
+		CollexEngine.report_line("Sorting...")
+		hits.sort! { |a,b| a['uri'] <=> b['uri'] }
 		CollexEngine.report_line("Processing fulltext...")
-		process_ecco_fulltext()
+		process_ecco_fulltext(hits)
+		RegenerateRdf.regenerate_all(hits, "#{RDF_PATH}/marc/ECCO", "ECCO", 500000)
 		CollexEngine.report_line("Finished in #{(Time.now-start_time)/60} minutes.")
-		dst.commit()
-		dst.optimize()
-		CollexEngine.report_line("Optimized in #{(Time.now-start_time)/60} minutes.")
 	end
 
-	desc "Just add full text to ecco docs, using estc records."
-	task :index_ecco_text_only => :environment do
-		start_time = Time.now
+#	desc "Completely index ecco docs, using estc records."
+#	task :index_ecco => :environment do
+#		start_time = Time.now
 #		CollexEngine.create_core("archive_ECCO")
-		dst = CollexEngine.new(["archive_ECCO"])
+#		dst = CollexEngine.new(["archive_ECCO"])
 #		dst.start_reindex()
-		CollexEngine.set_report_file("#{Rails.root}/log/ecco_error.log")	# just setting this first to delete it if it exists.
-		CollexEngine.set_report_file("#{Rails.root}/log/ecco_progress.log")
+#		CollexEngine.set_report_file("#{Rails.root}/log/ecco_error.log")	# just setting this first to delete it if it exists.
+#		CollexEngine.set_report_file("#{Rails.root}/log/ecco_progress.log")
 #		CollexEngine.report_line("Processing spreadsheets...")
 #		process_ecco_spreadsheets()
-		CollexEngine.report_line("Processing fulltext...")
-		process_ecco_fulltext()
-		CollexEngine.report_line("Finished in #{(Time.now-start_time)/60} minutes.")
-		dst.commit()
-		dst.optimize()
-		CollexEngine.report_line("Optimized in #{(Time.now-start_time)/60} minutes.")
-	end
+#		CollexEngine.report_line("Processing fulltext...")
+#		process_ecco_fulltext()
+#		CollexEngine.report_line("Finished in #{(Time.now-start_time)/60} minutes.")
+#		dst.commit()
+#		dst.optimize()
+#		CollexEngine.report_line("Optimized in #{(Time.now-start_time)/60} minutes.")
+#	end
+#
+#	desc "Just add full text to ecco docs, using estc records."
+#	task :index_ecco_text_only => :environment do
+#		start_time = Time.now
+##		CollexEngine.create_core("archive_ECCO")
+#		dst = CollexEngine.new(["archive_ECCO"])
+##		dst.start_reindex()
+#		CollexEngine.set_report_file("#{Rails.root}/log/ecco_error.log")	# just setting this first to delete it if it exists.
+#		CollexEngine.set_report_file("#{Rails.root}/log/ecco_progress.log")
+##		CollexEngine.report_line("Processing spreadsheets...")
+##		process_ecco_spreadsheets()
+#		CollexEngine.report_line("Processing fulltext...")
+#		process_ecco_fulltext()
+#		CollexEngine.report_line("Finished in #{(Time.now-start_time)/60} minutes.")
+#		dst.commit()
+#		dst.optimize()
+#		CollexEngine.report_line("Optimized in #{(Time.now-start_time)/60} minutes.")
+#	end
 #	desc "Create the Gale objects from ESTC"
 #	task :process_gale_objects => :environment do
 #		require 'script/lib/process_gale_objects.rb'

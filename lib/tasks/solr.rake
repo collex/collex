@@ -63,7 +63,7 @@ namespace :solr do
 		return "#{path}#{filename_of_zipped_index}"
 	end
 
-	desc "Zip up the current index for backup and replication (parameter: index=resources|merged)"
+	desc "Zip up the current index for backup and replication (parameter: index=resources|archive_*)"
 	task :zip => :environment do
 		# NOTE: if there are two indexes made in a day, this will overwrite the first one.
 		today = Time.now()
@@ -83,11 +83,11 @@ namespace :solr do
 		today = Time.now()
 		param = ENV['param']
 		if param == nil
-			puts "Usage: call with param=the archive to package;the ssh login for the destination machine"
+			puts "Usage: call with param=the archive to package,the ssh login for the destination machine"
 		else
 			arr = param.split(',')
 			if arr.length != 2
-				puts "Usage: call with param=the archive to package;the ssh login for the destination machine"
+				puts "Usage: call with param=the archive to package,the ssh login for the destination machine"
 			else
 				index = arr[0]
 				dest = arr[1]

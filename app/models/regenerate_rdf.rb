@@ -63,7 +63,7 @@ class RegenerateRdf
 		}
 	end
 
-	def self.regenerate_all(hits, output_folder, file_prefix)
+	def self.regenerate_all(hits, output_folder, file_prefix, target_size = 250000)
 		self.safe_mkdir(output_folder)
 		size = 0
 		file_number = 1000
@@ -73,7 +73,7 @@ class RegenerateRdf
 			str = self.regenerate_obj(hit)
 			file << str
 			size += str.length
-			if size > 250000
+			if size > target_size
 				self.stop_file(file)
 				file_number, file = self.start_file(output_folder, file_prefix, file_number)
 				size = 0
@@ -89,7 +89,7 @@ class RegenerateRdf
 		str = "<#{main_node} rdf:about=\"#{uri}\">\n"
 		items = self.format_items(obj)
 		# list them in the same order each time
-		keys = [ 'archive', 'freeculture', 'has_full_text', 'is_ocr', 'genre', 'text', 'title', 'role_AUT', 'federation', 'role_PBL', 'date_label', 'url' ]
+		keys = [ 'archive', 'freeculture', 'has_full_text', 'is_ocr', 'genre', 'text', 'title', 'role_AUT', 'federation', 'role_PBL', 'date_label', 'url', 'source' ]
 		keys.each {|key|
 			if items[key]
 				items[key].each {|it|
@@ -126,7 +126,9 @@ class RegenerateRdf
 				  # year and date_label are put in at the same time, so we'll look for year here and ignore it when it naturally comes up.
 				  year = obj['year']
 				  year = obj[:year] if year == nil
-				  self.gen_item(ret, key, "\t<dc:date><collex:date>\n\t#{self.format_item("rdfs:label", val)}\t#{self.format_item("rdf:value", year[i]) if year[i]}\t</collex:date></dc:date>\n")
+				  year = obj['date_label'] if year == nil
+				  year = obj[:date_label] if year == nil
+				  self.gen_item(ret, key, "\t<dc:date><collex:date>\n\t#{self.format_item("rdfs:label", val)}\t#{self.format_item("rdf:value", year[i]) if year[i]}\t</collex:date></dc:date>\n") if year != nil
 			  when 'year'
 				  #nothing here: handled above
 			  when 'uri'
@@ -167,6 +169,8 @@ class RegenerateRdf
 				  val = 'false' if val == 'F'
 				  val = 'true' if val == 'T'
 				  self.gen_item(ret, key, self.format_item("collex:freeculture", val))
+			  when 'source'
+				  self.gen_item(ret, key, self.format_item("dc:source", val))
 			  else
 				  puts "Unhandled key: #{key}=#{val.to_s}"
 			  end
