@@ -36,9 +36,9 @@ class HomeController < ApplicationController
 
     @discussions = DiscussionTopic.get_most_popular(5)
 
-#	if SITE_NAME == '18thConnect'
-#		@featured_news = true
-#	end
+	if SITE_NAME == '18thConnect'
+		@featured_news = true
+	end
 	  features = FeaturedObject.find_all_by_disabled('0')
 	  if features.length > 0
 		  features = features.sort_by {rand}
