@@ -294,7 +294,7 @@ class CollexEngine
 return results
 	end
 
-  # Search SOLR for douments matching the constraints.
+  # Search SOLR for documents matching the constraints.
   #
   def search(constraints, start, max, sort_by, sort_ascending)	
     
@@ -790,6 +790,31 @@ return results
 #		return ret
 	end
 
+	def enumerate_all_recs_in_archive(archive, is_text, page_size)
+		done = false
+		page = 0
+		while !done do
+			begin
+				if is_text
+					objs = get_text_fields_in_archive(archive, page, page_size)
+				else
+					objs = get_all_objects_in_archive(archive)
+					done = true
+				end
+			rescue Exception => e
+				CollexEngine.report_line("ENUMERATE RECS: Continuing after exception: #{e}\n")
+				objs = []
+			end
+			page += 1
+			if objs.length < page_size
+				done = true
+			end
+			objs.each {|obj|
+				yield obj
+			}
+		end
+	end
+	
 	def self.compare_text_one_archive(archive, reindexed_core, old_core, size)
 			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
 			start_time = Time.now

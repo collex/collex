@@ -656,4 +656,52 @@ namespace :solr_index do
 #		Rake::Task['solr:start'].invoke
 #	end
 
+	def safe_mkdir(folder)
+		begin
+	    Dir.mkdir(folder)
+		rescue
+			# It's ok to fail: it probably means the folder already exists.
+		end
+	end
+
+	def safe_mkpath(folder)
+		# this makes all the folders in the hierarchy
+		arr = folder.split('/')
+		path = ""
+		arr.each { |level|
+			path += "/#{level}"
+			safe_mkdir(path)
+		}
+	end
+
+	desc "Get all the text from a particular archive and dump it in a series of text files"
+	task :get_text_from_archive => :environment do
+		archive = ENV['archive']
+		if archive == nil || archive.length == 0
+			puts "Usage: pass archive=XXX"
+		else
+			folders = get_folders(RDF_PATH, archive)
+			if folders[:error]
+				puts "The archive entry for \"#{archive}\" was not found in any sitemap.yml file."
+			else
+				page_size = folders[:pagesize].to_i
+				arr = RDF_PATH.split('/')
+				arr.pop()
+				arr.push('fulltext')
+				base_path = arr.join('/')
+				folder = "#{base_path}/#{CollexEngine.archive_to_core_name(archive)}"
+				puts "Dumping all text from archive #{archive} to #{folder}, page=#{page_size}..."
+				safe_mkpath(folder)
+				# TODO-PER: first remove all existing files from that folder
+				index = CollexEngine.new()
+				index.enumerate_all_recs_in_archive(archive, true, page_size) { |hit|
+					if hit['text'] && hit['text'].length > 0
+						fname = hit['uri'].gsub('/', 'SL').gsub(':', 'CL').gsub('?', 'QU').gsub('=', 'EQ').gsub('&', 'AMP')
+						File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'].join("\n")) }
+					end
+				}
+			end
+		end
+
+	end
 end
