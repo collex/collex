@@ -124,6 +124,27 @@ class SearchController < ApplicationController
      # keep the word before and after OR.
      # Also, keep quoted substrings together.
      
+     # first, rip out quoted sections
+     quoted = []
+     while true
+       p1 = phrase_str.index("\"")
+       if p1.nil?
+         break
+       else
+         p2 = phrase_str.index("\"", p1+1)
+         if p2.nil?
+           break
+         else
+           str = phrase_str[p1..p2]
+           quoted << str
+           phrase_str = phrase_str[0...p1] + phrase_str[p2+1..-1] 
+         end
+       end
+     end
+           
+     # if there are any quotes left, they are bad. remove them
+     phrase_str.gsub!("\"", "")
+     
      # To parse, we want to first divide the string non-destructively on both spaces and quotes (leaving both in the resulting array)
      #words_arr = phrase_str.split(/ |\"/)
      words_arr = phrase_str.scan %r{"[^"]*"|\S+}
@@ -162,8 +183,13 @@ class SearchController < ApplicationController
        words_arr[index+1] = ""
      }
      words_arr = words_arr.select { |word| word != "" }
+     
+     # add in the quoted sections that were strtipped out first
+     quoted.each do | quoted_str |
+       words_arr << quoted_str  
+     end
 
-      # Finally, create each constraint
+     # Finally, create each constraint
      words_arr.each { |word|
         add_keyword_constraint(word, invert)
     }
