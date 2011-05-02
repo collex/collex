@@ -139,7 +139,7 @@ namespace :solr_index do
 		CollexEngine.report_line_if(str)
 	end
 
-	def index_archive(msg, archive, type, fromUrl=nil)
+	def index_archive(msg, archive, type)
 		puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
 		start_time = Time.now
 		flags = nil
@@ -151,9 +151,6 @@ namespace :solr_index do
 		if flags == nil
 			puts "Call with either :reindex, :fulltext, or :debug"
 		else
-		  if fromUrl != nil
-		    flags += " -from #{fromUrl}"
-		  end
 			folders = get_folders(RDF_PATH, archive)
 			if folders[:error]
 				puts folders[:error]
@@ -232,14 +229,13 @@ namespace :solr_index do
 		finish_line(start_time)
 	end
 
-	desc "Reindex documents from the rdf folder to the reindex core (param: archive=XXX,from=URL {opt) )"
+	desc "Reindex documents from the rdf folder to the reindex core (param: archive=XXX)"
 	task :reindex_rdf  => :environment do
 		archive = ENV['archive']
-		fromUrl = ENV['from']
 		if archive == nil
 			puts "Usage: call with archive=XXX"
 		else
-		  index_archive("Reindex", archive, :reindex, fromUrl)		
+		  index_archive("Reindex", archive, :reindex)		
 	  end
 	end
 
@@ -347,7 +343,6 @@ namespace :solr_index do
   task :compare_indexes_java  => :environment do
     archive = ENV['archive']
 	mode = ENV['mode']
-	fromUrl = ENV['from']
 	pagesize = ENV['pageSize']
 	pagesize ||= 500
     flags = "";
@@ -371,10 +366,6 @@ namespace :solr_index do
         flags = "-ignore text"  
         delete_file("#{log_dir}/#{safe_name}_compare.log") 
       end
-    end
-    
-    if fromUrl != nil
-      flags += " -from #{fromUrl}"
     end
 
     # skipped is always deleted
