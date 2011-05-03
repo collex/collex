@@ -688,7 +688,11 @@ namespace :solr_index do
 				index.enumerate_all_recs_in_archive(archive, true, page_size) { |hit|
 					if hit['text'] && hit['text'].length > 0
 						fname = hit['uri'].gsub('/', 'SL').gsub(':', 'CL').gsub('?', 'QU').gsub('=', 'EQ').gsub('&', 'AMP')
-						File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'].join("\n")) }
+						if hit['text'].kind_of? String
+              File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'] ) }
+						else
+              File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'].join("\n")) }
+						end
 					end
 				}
 			end
