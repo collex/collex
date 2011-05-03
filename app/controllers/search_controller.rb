@@ -118,16 +118,11 @@ class SearchController < ApplicationController
    def parse_keyword_phrase(phrase_str, invert)
      # This breaks the keyword phrase that the user entered into separate searches and adds each constraint separately.
 
-     # look for "and" and throw it away. 
-     # Take each separate word and create separate constraints, except:
-     # keep NOT with next word and 
-     # keep the word before and after OR.
-     # Also, keep quoted substrings together.
-     
-     # first, rip out quoted sections
-     quoted = []
+     # first, find quoted sections and replace spaces within them
+     # with an '_' so they wont get split by regex
+     start_pos = 0
      while true
-       p1 = phrase_str.index("\"")
+       p1 = phrase_str.index("\"", start_pos)
        if p1.nil?
          break
        else
@@ -136,63 +131,64 @@ class SearchController < ApplicationController
            break
          else
            str = phrase_str[p1..p2]
-           quoted << str
-           phrase_str = phrase_str[0...p1] + phrase_str[p2+1..-1] 
+           str.gsub!(/\s+/, "_")
+           phrase_str = phrase_str[0...p1] + str + phrase_str[p2+1..-1] 
+           start_pos = p2+1
+           if start_pos >= phrase_str.length
+             break
+           end
          end
        end
      end
-           
-     # if there are any quotes left, they are bad. remove them
-     phrase_str.gsub!("\"", "")
      
-     # To parse, we want to first divide the string non-destructively on both spaces and quotes (leaving both in the resulting array)
-     #words_arr = phrase_str.split(/ |\"/)
-     words_arr = phrase_str.scan %r{"[^"]*"|\S+}
-
+     # now, split the string on spaces
+     words_arr = phrase_str.split
+  
      # find AND and get rid of it
-     words_arr.each_with_index { |word, index|
-       if word.upcase == "AND"
+     words_arr.delete_if { |word| word.upcase == "AND" }
+     
+     # NOT/OR cleanup pass through words:
+     inverted = {}
+     invert_next = false
+     words_arr.each_with_index do |word, index|
+       
+       if word.upcase == "NOT"
+         # set a flag so the next word found will be inverted
+         invert_next = true  
          words_arr[index] = ""
+       elsif word.upcase == "OR"
+         # when OR is found at non-terminal position stitch words
+         if index > 0 && index < words_arr.length - 1
+           # find the invert state of the current start of the OR
+           prior_invert = inverted[ words_arr[index-1] ]
+           
+           # stitch and clear words 
+           words_arr[index] = words_arr[index-1] + " OR " + words_arr[index+1]
+           words_arr[index-1] = ""
+           words_arr[index+1] = ""
+           
+           # carry prior invert state on to the stitched result
+           inverted[ words_arr[index] ] = prior_invert
+         else
+           words_arr[index] = ""
+         end  
+       else
+         # a preceeding OR may have blanked this word out. skip it if so
+         if word != ""
+           inverted[word] = !invert if invert_next == true
+           inverted[word] = invert if invert_next == false
+           invert_next = false  
+         end
        end
-     }
-     words_arr = words_arr.select { |word| word != "" }
-     
-     # find OR and stitch them together. Ignore the ones at the beginning and ends of the array, though.
-     or_indexes = []
-     words_arr.each_with_index { |word, i|
-       if i > 0 && i < words_arr.length - 1 && word.upcase == 'OR'
-         or_indexes.insert(-1, i)
-       end
-     }
-     or_indexes.each { |index|
-       words_arr[index-1] = words_arr[index-1] + " OR " + words_arr[index+1]
-       words_arr[index] = ""
-       words_arr[index+1] = ""
-     }
-     words_arr = words_arr.select { |word| word != "" }
-     
-     # find NOT and put it with the next word
-     not_indexes = []
-     words_arr.each_with_index { |word, i|
-       if i < words_arr.length - 1 && word.upcase == 'NOT'
-         not_indexes.insert(-1, i)
-       end
-     }
-     not_indexes.each { |index|
-       words_arr[index] = "NOT " + words_arr[index+1]
-       words_arr[index+1] = ""
-     }
-     words_arr = words_arr.select { |word| word != "" }
-     
-     # add in the quoted sections that were strtipped out first
-     quoted.each do | quoted_str |
-       words_arr << quoted_str  
      end
 
-     # Finally, create each constraint
-     words_arr.each { |word|
-        add_keyword_constraint(word, invert)
-    }
+     # Finally, create each constraint for non-empty strings
+     words_arr.each do |word|
+       if word != ""
+         word.gsub!("_", " ")
+         add_keyword_constraint(word, inverted[word] )
+       end
+     end
 
    end
    
