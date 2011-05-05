@@ -15,6 +15,11 @@
 ##########################################################################
 
 namespace :solr do
+	def cmd_line(str)
+		puts str
+		puts `#{str}`
+	end
+
 	def get_solr_port
 		arr = SOLR_URL.split('/')
 		arr.each { |str|
@@ -36,14 +41,14 @@ namespace :solr do
 		end
 		port = get_solr_port()
 		puts "~~~~~~~~~~~ Starting solr on #{port}..."
-		system("cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=#{port} -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx#{sz}m -jar start.jar 2> #{Rails.root}/log/solr.log &")
+		system("cd #{SOLR_PATH} && #{JAVA_PATH}java -Djetty.port=#{port} -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -Xmx#{sz}m -jar start.jar 2> #{Rails.root}/log/solr.log &")
 	end
 	
 	desc "Stop the solr java app"
 	task :stop  => :environment do
 		puts "~~~~~~~~~~~ Stopping solr..."
 		port = get_solr_port()
-		`cd #{solr_folder()} && #{JAVA_PATH}java -Djetty.port=#{port} -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop`
+		cmd_line("cd #{SOLR_PATH} && #{JAVA_PATH}java -Djetty.port=#{port} -DSTOP.PORT=8079 -DSTOP.KEY=c0113x -jar start.jar --stop")
 		puts "Finished."
 	end
 
@@ -73,7 +78,7 @@ namespace :solr do
 		else
 			filename = path_of_zipped_index()
 			puts "~~~~~~~~~~~ zipping index \"#{index}\" to #{filename}..."
-			`cd #{solr_folder()}/solr/data/#{index} && tar cvzf #{filename} index`
+			cmd_line("cd #{SOLR_PATH}/solr/data/#{index} && tar cvzf #{filename} index")
 			puts "Finished in #{(Time.now-today)/60} minutes."
 		end
 	end
@@ -94,9 +99,8 @@ namespace :solr do
 				index = "archive_#{index}"
 				filename = "~/#{index}.tar.gz"
 				puts "zipping index \"#{index}\"..."
-				`cd #{solr_folder()}/solr/data/#{index} && tar cvzf #{filename} index`
-				puts "scp #{filename} #{dest}:uploaded_data"
-				`scp #{filename} #{dest}:uploaded_data`
+				cmd_line("cd #{SOLR_PATH}/solr/data/#{index} && tar cvzf #{filename} index")
+				cmd_line("scp #{filename} #{dest}:uploaded_data")
 			end
 		end
 			puts "Finished in #{Time.now-today} seconds."
@@ -119,9 +123,9 @@ namespace :solr do
 				zipfile = "#{index}.tar.gz"
 				index_path = "#{folder}/#{index}"
 				indexes.push(index_path)
-				`cd #{folder} && tar xvfz #{zipfile}`
-				`rm -r -f #{index_path}`
-				`mv #{folder}/index #{index_path}`
+				cmd_line("cd #{folder} && tar xvfz #{zipfile}")
+				cmd_line("rm -r -f #{index_path}")
+				cmd_line("mv #{folder}/index #{index_path}")
 				File.open("#{Rails.root}/log/archive_installations.log", 'a') {|f| f.write("Installed: #{today.getlocal().strftime("%b %d, %Y %I:%M%p")} Created: #{File.mtime(index_path).getlocal().strftime("%b %d, %Y %I:%M%p")} #{archive}\n") }
 				solr.delete_archive(archive)
 			}
@@ -153,8 +157,7 @@ namespace :solr do
 				filename = path_of_zipped_index()
 				ENV['index'] = index
 				Rake::Task['solr:zip'].invoke
-				puts "scp #{filename} #{dest}:www/solr_1.4/solr/data/#{index}"
-				`scp #{filename} #{dest}:www/solr_1.4/solr/data/#{index}`
+				cmd_line("scp #{filename} #{dest}:#{SOLR_PATH}/solr/data/#{index}")
 			end
 		end
 			puts "Finished in #{(Time.now-today)/60} minutes."
@@ -164,18 +167,18 @@ namespace :solr do
 	task :install_index => :environment do
 		today = Time.now()
 		puts "The following commands will be executed:"
-		puts "cd #{solr_folder()}/solr/data/resources && sudo rm -R index_old"
+		puts "cd #{SOLR_PATH}/solr/data/resources && sudo rm -R index_old"
 		puts "sudo /sbin/service solr stop"
-		puts "cd #{solr_folder()}/solr/data/resources && sudo mv index index_old"
-		puts "cd #{solr_folder()}/solr/data/resources && tar xvfz #{filename_of_zipped_index()}"
+		puts "cd #{SOLR_PATH}/solr/data/resources && sudo mv index index_old"
+		puts "cd #{SOLR_PATH}/solr/data/resources && tar xvfz #{filename_of_zipped_index()}"
 		puts "sudo /sbin/service solr start"
 		puts "rake solr:index_exhibits"
 		puts "You will be asked for your sudo password."
-		`cd #{solr_folder()}/solr/data/resources && sudo rm -R index_old`
-		`sudo /sbin/service solr stop`
-		`cd #{solr_folder()}/solr/data/resources && sudo mv index index_old`
-		`cd #{solr_folder()}/solr/data/resources && tar xvfz #{filename_of_zipped_index()}`
-		`sudo /sbin/service solr start`
+		cmd_line("cd #{SOLR_PATH}/solr/data/resources && sudo rm -R index_old")
+		cmd_line("sudo /sbin/service solr stop")
+		cmd_line("cd #{SOLR_PATH}/solr/data/resources && sudo mv index index_old")
+		cmd_line("cd #{SOLR_PATH}/solr/data/resources && tar xvfz #{filename_of_zipped_index()}")
+		cmd_line("sudo /sbin/service solr start")
 		sleep 5
 		Exhibit.index_all_peer_reviewed()
 		puts "Finished in #{(Time.now-today)/60} minutes."
@@ -279,10 +282,6 @@ namespace :solr do
 			index.optimize()
 			puts "Finished in #{(Time.now-start_time)/60} minutes."
 		end
-	end
-
-	def solr_folder()
-		return "../solr_1.4"
 	end
 end
 

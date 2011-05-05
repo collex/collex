@@ -12,6 +12,7 @@ if File.exists?(config_file)
 		MARC_PATH = folders['marc']
 		ECCO_PATH = folders['ecco']
 		INDEXER_PATH = folders['rdf_indexer']
+		SOLR_PATH = folders['solr']
 	end
 else
 	puts "***"

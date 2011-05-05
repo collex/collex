@@ -150,3 +150,4 @@ folders:
   marc: /path/marc
   ecco: /path/ecco
   rdf_indexer: /path/to/rdf-indexer
+  solr: /path/to/solr/installation
