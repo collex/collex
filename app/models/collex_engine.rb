@@ -73,6 +73,7 @@ class CollexEngine
 			options['hl.fragsize'] = options[:highlighting][:fragment_size]
 			options['hl.maxAnalyzedChars'] = options[:highlighting][:max_analyzed_chars]
 			options['hl'] = true
+			options['hl.useFastVectorHighlighter'] = true
 			options[:highlighting] = nil
 		end
 		# We don't need to use shards if there is only one index
@@ -307,7 +308,7 @@ return results
     else
       sort_param = sort_by ? "#{sort_by} desc" : nil
     end
-	  query = tank_citations(query)
+    query = tank_citations(query)
 		response = solr_select(:start => start, :rows => max, :sort => sort_param,
 					:q => query, :fq => filter_queries,
 					:field_list => @field_list,
