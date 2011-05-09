@@ -71,11 +71,12 @@ class CollexEngine
 		if options[:highlighting]
 			options['hl.fl'] = options[:highlighting][:field_list]
 			options['hl.fragsize'] = options[:highlighting][:fragment_size]
-			options['hl.maxAnalyzedChars'] = options[:highlighting][:max_analyzed_chars]
 			options['hl'] = true
 			options['hl.useFastVectorHighlighter'] = true
 			options[:highlighting] = nil
 		end
+		options['version'] = '2.2'
+		
 		# We don't need to use shards if there is only one index
 		if options[:shards]
 			if options[:shards].length == 1
