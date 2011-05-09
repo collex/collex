@@ -139,77 +139,68 @@ namespace :solr_index do
 		CollexEngine.report_line_if(str)
 	end
 
-	def index_archive(msg, archive, type)
-		puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
-		start_time = Time.now
-		flags = nil
-		case type
-			when :reindex then flags = "-reindex"
-			when :fulltext then flags = "-fulltext"
-			when :debug then flags = "-test"
-		end
-		if flags == nil
-			puts "Call with either :reindex, :fulltext, or :debug"
-		else
-			folders = get_folders(RDF_PATH, archive)
-			if folders[:error]
-				puts folders[:error]
-			else
-			  safe_name = CollexEngine::archive_to_core_name(archive)
-			  log_dir = "#{Rails.root}/log"
-				delete_file("#{log_dir}/#{safe_name}_progress.log")
-				delete_file("#{log_dir}/#{safe_name}_error.log")
-				delete_file("#{log_dir}/#{safe_name}_link_data.log")
-				delete_file("#{log_dir}/#{safe_name}_duplicates.log")
-				
-				ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
-				Rake::Task['solr_index:clear_reindexing_index'].invoke
+	 def index_archive(msg, archive, type)
+    puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
+    start_time = Time.now
+    flags = nil
+    case type
+    when :spider then flags = "-mode spider"
+    when :clean then flags = "-mode clean"
+    when :index then flags = "-mode index"
+    when :debug then flags = "-mode test"
+    end
+    if flags == nil
+      puts "Call with either :spider, :clean, :index or :debug"
+    else
+      folders = get_folders(RDF_PATH, archive)
+      if folders[:error]
+        puts folders[:error]
+      else
+        safe_name = CollexEngine::archive_to_core_name(archive)
+        log_dir = "#{Rails.root}/log"
+        delete_file("#{log_dir}/#{safe_name}_progress.log")
+        delete_file("#{log_dir}/#{safe_name}_error.log")
+        delete_file("#{log_dir}/#{safe_name}_link_data.log")
+        delete_file("#{log_dir}/#{safe_name}_duplicates.log")
 
-				folders[:folders].each {|folder|
-					cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
-				}
-			end
-		end
-		finish_line(start_time)
-	end
+        if type == :index
+          ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
+          Rake::Task['solr_index:clear_reindexing_index'].invoke
+        end
+
+        folders[:folders].each {|folder|
+          cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
+        }
+      end
+    end
+    finish_line(start_time)
+  end
 
 	def test_archive(archive)
 		puts "~~~~~~~~~~~ testing \"#{archive}\" [see log/#{archive}_*.log]"
 		start_time = Time.now
-#		do_dups = true
 		folders = get_folders(RDF_PATH, archive)
-#		if folders[:error]
-#			folders = get_folders(MARC_PATH, archive)
-#			do_dups = false
-#		end
 		if folders[:error]
 			puts "The archive entry for \"#{archive}\" was not found in any sitemap.yml file."
 		else
-#			if do_dups
 				folders[:folders].each {|folder|
 					ENV['folder'] = "#{folder},#{archive}"
 					Rake::Task['solr_index:find_duplicate_objects'].invoke
 				}
-#			end
-			ENV['archive'] = archive
-			ENV['pageSize'] = folders[:pagesize].to_s
-#			Rake::Task['solr_index:scan_for_missed_objects'].invoke
-#			ENV['archive'] = archive
-#			Rake::Task['solr_index:compare_indexes'].invoke	# list the differences between the objects
-#			ENV['archive'] = archive
-#			Rake::Task['solr_index:compare_indexes_text'].invoke	# list the differences between the text in the objects
-			Rake::Task['solr_index:compare_indexes_java'].invoke
+				
+			pagesize = folders[:pagesize].to_s
+			compare_indexes_java(archive, pagesize)
 		end
 		finish_line(start_time)
 	end
 
-	desc "Reindex and test one rdf archive (param: archive=XXX)"
-	task :reindex_and_test_rdf => :environment do
+	desc "Index and test one rdf archive (param: archive=XXX)"
+	task :index_and_test_rdf => :environment do
 		archive = ENV['archive']
 		if archive == nil
 			puts "Usage: call with archive=XXX"
 		else
-			index_archive("reindex", archive, :reindex)
+			index_archive("Index", archive, :index)
 			test_archive(archive)
 		end
 	end
@@ -229,18 +220,18 @@ namespace :solr_index do
 		finish_line(start_time)
 	end
 
-	desc "Reindex documents from the rdf folder to the reindex core (param: archive=XXX)"
-	task :reindex_rdf  => :environment do
+	desc "Index documents from the rdf folder to the reindex core (param: archive=XXX)"
+	task :index_rdf  => :environment do
 		archive = ENV['archive']
 		if archive == nil
 			puts "Usage: call with archive=XXX"
 		else
-		  index_archive("Reindex", archive, :reindex)		
+		  index_archive("Index", archive, :index)		
 	  end
 	end
 
-	desc "Test one archive of any type (param: archive=XXX)"
-	task :test_archive => :environment do
+	desc "Test one RDF archive (param: archive=XXX)"
+	task :test_rdf => :environment do
 		archive = ENV['archive']
 		if archive == nil
 			puts "Usage: call with archive=XXX"
@@ -259,15 +250,25 @@ namespace :solr_index do
 		end
 	end
 
-	desc "Do the full indexing of a folder to the archive_* core. This will spider the archive for the full text. (param: archive=XXX)"
-	task :index_fulltext_rdf  => :environment do
+	desc "Spider the archive for the full text and place results in rawtext. No indexing performed. (param: archive=XXX)"
+	task :spider_rdf_text => :environment do
 		archive = ENV['archive']
 		if archive == nil
 			puts "Usage: call with archive=archive"
 		else
-			index_archive("Full text", archive, :fulltext)
+			index_archive("Spider text", archive, :spider)
 		end
 	end
+	
+	desc "Clean archive raw text and place results in fulltext, ready for indexing. No indexing performed. (param: archive=XXX)"
+  task :clean_rdf_text => :environment do
+    archive = ENV['archive']
+    if archive == nil
+      puts "Usage: call with archive=archive"
+    else
+      index_archive("Clean text", archive, :clean)
+    end
+  end
 
 	desc "Uses the current record and goes to the web site to refresh the fulltext field (param: p=core,uri)"
 	task :refresh_text  => :environment do
@@ -325,72 +326,39 @@ namespace :solr_index do
 		CollexEngine.get_list_of_skipped_objects({ :use_merged_index => use_merged_index, :archive => archive, :log => "#{Rails.root}/log/#{CollexEngine.archive_to_core_name(archive)}_skipped.log" })
 		finish_line(start_time)
 	end
-
-	desc "compare the main index with the reindexed one (parameter: archive=XXX)"
-	task :compare_indexes  => :environment do
-		archive = ENV['archive']
-		if archive == nil
-			puts "Usage: Pass in an archive name with archive=XXX; this should match an entry in #{RDF_PATH}/sitemap.yml"
-		else
-			puts "~~~~~~~~~~~ Comparing documents from the \"resources\" index with the \"archive_#{archive}\" index..."
-			start_time = Time.now
-			CollexEngine.compare_reindexed_core({ :archive => archive, :log => "#{Rails.root}/log/#{CollexEngine.archive_to_core_name(archive)}_compare.log" })
-			finish_line(start_time)
-		end
-	end
 	
-	desc "compare the main index with the reindexed one (parameter: archive=XXX mode=compare|compareTxt|<nil> pageSize=xxx)"
-  task :compare_indexes_java  => :environment do
-    archive = ENV['archive']
-	mode = ENV['mode']
-	pagesize = ENV['pageSize']
-	pagesize ||= 500
+  def compare_indexes_java ( archive, pagesize = 500, mode = nil)
+  
     flags = "";
     safe_name = CollexEngine::archive_to_core_name(archive)
     log_dir = "#{Rails.root}/log"
-    
+
     # no mode specified = full compare on al fields.
     # delete all log files
     if mode.nil?
       delete_file("#{log_dir}/#{safe_name}_compare.log")
-      delete_file("#{log_dir}/#{safe_name}_compare_text.log")  
+      delete_file("#{log_dir}/#{safe_name}_compare_text.log")
     else
-      # if just txt compare is reauested, ony delete txt log
+    # if just txt compare is reauested, ony delete txt log
       if mode == "compareTxt"
-        flags = "-include text"  
+        flags = "-include text"
         delete_file("#{log_dir}/#{safe_name}_compare_text.log")
       end
-      
+
       # if non-txt compare is requested, only delete the compare log
       if mode == "compare"
-        flags = "-ignore text"  
-        delete_file("#{log_dir}/#{safe_name}_compare.log") 
+        flags = "-ignore text"
+        delete_file("#{log_dir}/#{safe_name}_compare.log")
       end
     end
 
     # skipped is always deleted
     delete_file("#{log_dir}/#{safe_name}_skipped.log")
-      
-    # launch the tool
-    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -compare #{flags} -pageSize #{pagesize}")
-      
-  end
 
-	desc "compare the text in the main index with the reindexed one (parameter: archive=XXX)"
-	task :compare_indexes_text  => :environment do
-		archive = ENV['archive']
-		if archive == nil
-			puts "Usage: Pass in an archive name with archive=XXX; this should match an entry in #{RDF_PATH}/sitemap.yml"
-		else
-			puts "~~~~~~~~~~~ Comparing TEXT from the \"resources\" index with the \"archive_#{archive}\" index..."
-			start_time = Time.now
-			size = 10
-			# if one of the archives with a huge amount of text is requested, only read one record at a time.
-			size = 1 if [ 'PQCh-EAF', 'amdeveryday', 'oldBailey' ].include?(archive)
-			CollexEngine.compare_reindexed_core_text({ :archive => archive, :size => size,  :log => "#{Rails.root}/log/#{CollexEngine.archive_to_core_name(archive)}_compare_text.log" })
-			finish_line(start_time)
-		end
-	end
+    # launch the tool
+    cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -archive \"#{archive}\" -mode compare #{flags} -pageSize #{pagesize}")
+
+  end
 
 	def trans_str(str)
 		ret = ""
