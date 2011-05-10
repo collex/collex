@@ -323,16 +323,45 @@ return results
     # Reformat the facets into what the UI wants, so as to leave that code as-is for now
     results["facets"] = facets_to_hash(response['facet_counts']['facet_fields'])
     results["highlighting"] = response['highlighting']
-
+    
     # append the total for the other federation 
+    results = append_archive_counts(constraints, results)
   	return append_federation_counts(constraints, results)
 
   end
   
   private 
+  def append_archive_counts(src_constraints, prior_results)  
+    
+    # trim out any archive constraints. TO get counts, we want them all
+    constraints = []
+    src_constraints.each { |constraint| constraints.push(constraint) }
+    constraints.delete_if { |constraint| constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'archive' }
+    if constraints.length == src_constraints.length
+      return prior_results
+    end
+    
+    # turn map of constraint data into solr quert strings
+    query, filter_queries = solrize_constraints(constraints)
+    
+    # do a very basic search and return minimal info
+    response = solr_select(:q => query, :fq => filter_queries,
+      :field_list => ['uri'],
+      :facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1}, 
+      :shards => @cores )
+
+    # Reformat the facets into what the UI wants, so as to leave that code as-is for now
+    # tack the new federaton info into the orignal results map
+    results = {}
+    results["facets"] = facets_to_hash(response['facet_counts']['facet_fields'])
+    prior_results['facets']['archive'] = results['facets']['archive']
+    return prior_results
+  end
+  
+  private 
   def append_federation_counts(src_constraints, prior_results)  
     
-    # trim out any feeration constrains. TO get counts, we want them all
+    # trim out any federation constraints. TO get counts, we want them all
     constraints = []
     src_constraints.each { |constraint| constraints.push(constraint) }
     constraints.delete_if { |constraint| constraint.is_a?(FederationConstraint) }

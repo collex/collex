@@ -296,19 +296,6 @@ class SearchController < ApplicationController
 						hit['text'] = @results["highlighting"][hit["uri"]]
 					end
 				}
-
-				# Now repeat the search without any resource type constraints, so we can get the resource totals.
-				# The resource totals should stay the same whether the user has constrained by resources or not.
-				resourceless_constraints = []
-				session[:constraints].each {|constraint|
-					if constraint[:fieldx] != 'archive' || constraint[:type] != 'FacetConstraint'
-						resourceless_constraints.insert(-1, constraint)
-					end
-				}
-				if session[:constraints].length != resourceless_constraints.length # don't bother with the second search unless there was something filtered out above.
-					resourceless_results = search_solr(resourceless_constraints, @page, items_per_page, session[:search_sort_by], session[:search_sort_by_direction])
-					@results['facets']['archive'] = resourceless_results['facets']['archive']
-				end
 			rescue  Net::HTTPServerException => e
 				@results = rescue_search_error(e)
 			end
