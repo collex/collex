@@ -542,10 +542,6 @@ return results
 
 		# this will timeout. Don't crash when that happens.
 		begin
-			@solr.optimize()
-		rescue
-		end
-		begin
 			@solr.commit()
 		rescue
 		end
