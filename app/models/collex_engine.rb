@@ -178,16 +178,7 @@ class CollexEngine
             :facets => {:fields => [facet], :mincount => 1, :missing => false, :limit => -1, :prefix => prefix, :method => 'enum'})
     facets_to_hash(response['facet_counts']['facet_fields'])[facet]
   end
-
-	def tank_citations(query)
-		#return "(*:* AND #{query}) OR (*:* AND #{query} -genre:Citation)^5"
-		if query.length > 0
-			return "(#{query}) OR (#{query} -genre:Citation)^5"
-		else
-			return "(*:*) OR (*:* -genre:Citation)^5"
-		end
-	end
-
+  
 	def name_facet(constraints)	# called when the "Click here to see the top authors..." is clicked
 		query, filter_queries = solrize_constraints(constraints)
 		response = solr_select(:start => 0, :rows => 0,
@@ -310,9 +301,10 @@ return results
     else
       sort_param = sort_by ? "#{sort_by} desc" : nil
     end
-    query = tank_citations(query)
+    		
 		response = solr_select(:start => start, :rows => max, :sort => sort_param,
 					:q => query, :fq => filter_queries,
+					:bq => '-genre:Citation^5',
 					:field_list => @field_list,
 					:facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},
 					:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 }, :shards => @cores)
