@@ -152,6 +152,8 @@ class SearchController < ApplicationController
      invert_next = false
      words_arr.each_with_index do |word, index|
        
+       word.gsub!(/[^\w\s\"]/, "")
+       
        if word.upcase == "NOT"
          # set a flag so the next word found will be inverted
          invert_next = true  

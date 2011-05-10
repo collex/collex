@@ -76,6 +76,7 @@ class CollexEngine
 			options[:highlighting] = nil
 		end
 		options['version'] = '2.2'
+		options['defType'] = 'dismax'
 		
 		# We don't need to use shards if there is only one index
 		if options[:shards]
