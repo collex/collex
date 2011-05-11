@@ -134,7 +134,7 @@ class CollexEngine
 	end
 
 	def query_num_docs()
-		response = solr_select(:q=>"federation:#{DEFAULT_FEDERATION}", :rows => 1, :facets => {:fields => 'archive', :mincount => 1, :missing => true, :limit => -1}, :shards => @cores)
+		response = solr_select(:q=>"*:*", :fq=>"federation:#{DEFAULT_FEDERATION}", :rows => 1, :facets => {:fields => 'archive', :mincount => 1, :missing => true, :limit => -1}, :shards => @cores)
 		archive_num = 0
 		if response && response['facet_counts'] && response['facet_counts']['facet_fields'] && response['facet_counts']['facet_fields']['archive']
 			facets = response['facet_counts']['facet_fields']['archive']
