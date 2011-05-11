@@ -152,7 +152,10 @@ class SearchController < ApplicationController
      invert_next = false
      words_arr.each_with_index do |word, index|
        
-       word.gsub!(/[^\w\s\"]/, "")
+       # strip punctuation and other troublesome chars
+       # NOTE: for some reason, the escaped brackets only work in ruby regex if
+       # they are in the middle of the expression. 
+       word.gsub!(/[.\^\|,\[\]!}{?+-]/, "")
        
        if word.upcase == "NOT"
          # set a flag so the next word found will be inverted
