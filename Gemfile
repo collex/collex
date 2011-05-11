@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+# NOTE: when rails is upgraded to version 3.1, then I think it is safe to remove the version number from mysql2
 gem 'rails', '3.0.7'
 
 # Bundle edge Rails instead:
