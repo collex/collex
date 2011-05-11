@@ -72,12 +72,24 @@ class CollexEngine
 			options['hl.fl'] = options[:highlighting][:field_list]
 			options['hl.fragsize'] = options[:highlighting][:fragment_size]
 			options['hl'] = true
-			#options['hl.snippets'] = 20
+			# Increase this value to allow multiple snippets to 
+			# be returned from the same document
+			options['f.text.hl.snippets'] = 1
 			options['hl.useFastVectorHighlighter'] = true
 			options[:highlighting] = nil
 		end
 		options['version'] = '2.2'
-		options['defType'] = 'edismax'
+		options['defType'] = 'dismax'
+		
+		# dismax parser does not understand wildacrd syntax!
+		# when encountered, clear out the q opt and push
+		# it to the q.alt opt. this string will be parsed
+		# by the standard query parser which does handle wildcards.
+		# Source: http://wiki.apache.org/solr/DisMaxQParserPlugin#q.alt.
+		if options[:q] == "*:*"
+		  options[:q] = ""
+		  options['q.alt'] = "*:*" 
+		end
 		
 		# We don't need to use shards if there is only one index
 		if options[:shards]
