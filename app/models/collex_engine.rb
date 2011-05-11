@@ -314,13 +314,20 @@ return results
     else
       sort_param = sort_by ? "#{sort_by} desc" : nil
     end
-    		
+    
+    hl_opts = nil
+    bq_opts = nil
+    if query != '*:*'
+      hl_opts = {:field_list => ['text'], :fragment_size => 600 }
+      bq_opts = '-genre:Citation^5'
+    end
+      		
 		response = solr_select(:start => start, :rows => max, :sort => sort_param,
 					:q => query, :fq => filter_queries,
-					:bq => '-genre:Citation^5',
+					:bq => bq_opts,
 					:field_list => @field_list,
 					:facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},
-					:highlighting => {:field_list => ['text'], :fragment_size => 600, :max_analyzed_chars => 512000 }, :shards => @cores)
+					:highlighting => hl_opts, :shards => @cores)
   
     results = {}
     results["total_hits"] = response['response']['numFound']
