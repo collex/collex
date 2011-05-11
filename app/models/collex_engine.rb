@@ -336,6 +336,21 @@ return results
 
   end
   
+  # get a list of all availble resources in solr
+  #
+  def get_resource_list()  
+   
+    response = solr_select(:start => 1, :rows => 10, 
+          :q => "*:*", 
+          :field_list => @field_list,
+          :facets => {:fields => @facet_fields, :mincount => 1, :missing => true, :limit => -1},
+          :shards => @cores)
+  
+    results = {}
+    results["facets"] = facets_to_hash(response['facet_counts']['facet_fields'])
+    return results['facets']['archive']
+  end
+  
   private 
   def append_archive_counts(src_constraints, prior_results)  
     
