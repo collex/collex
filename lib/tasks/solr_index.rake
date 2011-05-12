@@ -140,17 +140,28 @@ namespace :solr_index do
 	end
 
 	 def index_archive(msg, archive, type)
-    puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
     start_time = Time.now
     flags = nil
     case type
-    when :spider then flags = "-mode spider"
-    when :clean then flags = "-mode clean"
-    when :index then flags = "-mode index"
-    when :debug then flags = "-mode test"
+      when :spider 
+        flags = "-mode spider"
+        puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_spider_error.log]"
+      when :clean_raw 
+        flags = "-mode clean_raw"
+        puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_clean_raw_error.log]"
+      when :clean_full 
+        flags = "-mode clean_full"
+        puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_clean_full_error.log]"
+      when :index 
+        flags = "-mode index -delete"
+        puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
+      when :debug 
+        flags = "-mode test"
+        puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_error.log]"
     end
+    
     if flags == nil
-      puts "Call with either :spider, :clean, :index or :debug"
+      puts "Call with either :spider, :clean_raw, :clean_full, :index or :debug"
     else
       folders = get_folders(RDF_PATH, archive)
       if folders[:error]
@@ -158,15 +169,20 @@ namespace :solr_index do
       else
         safe_name = CollexEngine::archive_to_core_name(archive)
         log_dir = "#{Rails.root}/log"
+        case type
+          when :spider 
+            delete_file("#{log_dir}/#{safe_name}_spider_error.log")
+          when :clean_raw
+            delete_file("#{log_dir}/#{safe_name}_clean_raw_error.log")
+          when :clean_full 
+            delete_file("#{log_dir}/#{safe_name}_clean_full_error.log")
+          when :index, :debug 
+            delete_file("#{log_dir}/#{safe_name}_error.log")
+        end
         delete_file("#{log_dir}/#{safe_name}_progress.log")
         delete_file("#{log_dir}/#{safe_name}_error.log")
         delete_file("#{log_dir}/#{safe_name}_link_data.log")
         delete_file("#{log_dir}/#{safe_name}_duplicates.log")
-
-        if type == :index
-          ENV['index'] = "archive_#{CollexEngine::archive_to_core_name(archive)}"
-          Rake::Task['solr_index:clear_reindexing_index'].invoke
-        end
 
         folders[:folders].each {|folder|
           cmd_line("cd #{Rails.root}/lib/tasks/rdf-indexer/target && java -Xmx3584m -jar rdf-indexer.jar -logDir \"#{log_dir}\" -source #{RDF_PATH}/#{folder} -archive \"#{archive}\" #{flags}")
@@ -261,12 +277,22 @@ namespace :solr_index do
 	end
 	
 	desc "Clean archive raw text and place results in fulltext, ready for indexing. No indexing performed. (param: archive=XXX)"
-  task :clean_rdf_text => :environment do
+  task :clean_raw_text => :environment do
     archive = ENV['archive']
     if archive == nil
       puts "Usage: call with archive=archive"
     else
-      index_archive("Clean text", archive, :clean)
+      index_archive("Clean raw text", archive, :clean_raw)
+    end
+  end
+  
+  desc "Clean archive full text. No indexing performed. (param: archive=XXX)"
+  task :clean_full_text => :environment do
+    archive = ENV['archive']
+    if archive == nil
+      puts "Usage: call with archive=archive"
+    else
+      index_archive("Clean full text", archive, :clean_full)
     end
   end
 
