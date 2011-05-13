@@ -79,17 +79,7 @@ class CollexEngine
 			options[:highlighting] = nil
 		end
 		options['version'] = '2.2'
-		options['defType'] = 'dismax'
-		
-		# dismax parser does not understand wildacrd syntax!
-		# when encountered, clear out the q opt and push
-		# it to the q.alt opt. this string will be parsed
-		# by the standard query parser which does handle wildcards.
-		# Source: http://wiki.apache.org/solr/DisMaxQParserPlugin#q.alt.
-		if options[:q] == "*:*"
-		  options[:q] = ""
-		  options['q.alt'] = "*:*" 
-		end
+		options['defType'] = 'edismax'
 		
 		# We don't need to use shards if there is only one index
 		if options[:shards]
@@ -268,7 +258,7 @@ class CollexEngine
 		end
 
 		response = solr_select(:start => page*page_size, :rows => page_size, :sort => sort,
-						'q.alt' => query,
+						:q => query,
 						:field_list => [ 'key', 'object_type', 'object_id', 'last_modified' ],
 						:highlighting => {:field_list => ['text'], :fragment_size => 200, :max_analyzed_chars => 100 })
 
@@ -424,7 +414,7 @@ return results
 		end
 
 		response = solr_select(:start => 0, :rows => 1,
-             'q.alt' => query, :field_list => field_list, :shards => @cores)
+             :q => query, :field_list => field_list, :shards => @cores)
 		if response['response']['docs'].length > 0
 #			fix_free_culture(response['response']['docs'][0])
 	    return response['response']['docs'][0]
@@ -437,7 +427,7 @@ return results
 		query = "uri:#{CollexEngine.query_parser_escape(uri)}"
 
 		response = solr_select(:start => 0, :rows => 1,
-			'q.alt' => query, :shards => @cores)
+			:q => query, :shards => @cores)
 		return response['response']['docs'][0] if response['response']['docs'].length > 0
 		return nil
 	end
