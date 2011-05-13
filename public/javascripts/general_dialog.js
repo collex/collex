@@ -366,9 +366,11 @@ var GeneralDialog = Class.create({
 				scope:panel,
 				correctScope:true }, "keyup" ); // keyup is used here because Safari won't recognize the ESC keydown event, which would normally be used by default
 
-		var defaultFxn = function() {
-			if (defaultAction[currPage])
+		var defaultFxn = function(typ, e) {
+			if (defaultAction[currPage]) {
 				defaultAction[currPage](null, defaultParam[currPage]);
+				e[1].preventDefault();
+			}
 		};
 
 		var klEnter = new YAHOO.util.KeyListener(document, {keys:13},
