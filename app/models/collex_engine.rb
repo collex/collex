@@ -619,18 +619,16 @@ return results
 		CollexEngine.report_line(`curl \"#{url}\"`)
 	end
 
-	public	# these should actually be some sort of private since they are only called inside this file.
+	private
 	def get_page_in_archive(archive, page, size, field_list)
     query = "archive:#{CollexEngine.query_parser_escape(archive)}"
 
-	response = solr_select(:start => page*size, :rows => size,	:sort => "uri asc",
+	  response = solr_select(:start => page*size, :rows => size,	:sort => "uri asc",
              :q => query, :field_list => field_list)
-#		response.hits.each { |hit|
-#			hit['uri'] = hit['uri'].gsub('http://foo', 'http://alex_st')
-#		}
     return response['response']['docs']
 	end
 
+  public
   def get_all_archives
     results = search([], 1, 10, nil, true)
     found_resources = results['facets']['archive']
@@ -639,6 +637,7 @@ return results
     return resources.sort()
   end
 
+  private
 	def get_all_in_archive(archive, field_list)
 		hits = []
 		done = false
@@ -654,18 +653,22 @@ return results
 		return hits
 	end
 
+  private
 	def get_text_fields_in_archive(archive, page, size)
 		return get_page_in_archive(archive, page, size, [ 'uri', 'text', 'is_ocr', 'has_full_text' ])
  	end
 
+  private
 	def get_all_uris_in_archive(archive)
 		return get_all_in_archive(archive, [ "uri" ])
 	end
 
+  public
 	def get_all_objects_in_archive(archive)
 		return get_all_in_archive(archive, @all_fields_except_text)
 	end
 
+  public
 	def get_all_objects_in_archive_with_text(archive)
 		fields = @all_fields_except_text + [ 'text' ]
 		return get_all_in_archive(archive, fields)
@@ -687,25 +690,25 @@ return results
     end
 	end
 
-	public	# these should actually be some sort of private since they are only called inside this file.
-	def self.compare_object_arrays(new_objs, old_objs, total_errors)
-		# first turn the old objects into a hash for quicker searching
-		old_hash = {}
-		old_objs.each {|obj|
-			uri = obj['uri']
-			old_hash[uri] = obj
-		}
-
-		# now go through each item one by one and compare them.
-		new_objs.each {|new_obj|
-			uri = new_obj['uri']
-			old_obj = old_hash[uri]
-			total_errors, err_arr = CompareSolrObject.compare_objs(new_obj, old_obj, total_errors)
-			err_arr.each { |err| CollexEngine.report_line(err) }
-		}
-
-		return total_errors
-	end
+	# public	# these should actually be some sort of private since they are only called inside this file.
+	# def self.compare_object_arrays(new_objs, old_objs, total_errors)
+		# # first turn the old objects into a hash for quicker searching
+		# old_hash = {}
+		# old_objs.each {|obj|
+			# uri = obj['uri']
+			# old_hash[uri] = obj
+		# }
+# 
+		# # now go through each item one by one and compare them.
+		# new_objs.each {|new_obj|
+			# uri = new_obj['uri']
+			# old_obj = old_hash[uri]
+			# total_errors, err_arr = CompareSolrObject.compare_objs(new_obj, old_obj, total_errors)
+			# err_arr.each { |err| CollexEngine.report_line(err) }
+		# }
+# 
+		# return total_errors
+	# end
 
 	def self.get_archive_core_list()
 		url = "#{SOLR_URL}/admin/cores?action=STATUS"
@@ -720,51 +723,35 @@ return results
 		return archives.sort()
 	end
 
-	public
-	def self.create_old_archive_name(archive)
-		old_archive = archive
-		return old_archive
-	end
+	# public
+	# def self.create_old_archive_name(archive)
+		# old_archive = archive
+		# return old_archive
+	# end
 
-	def self.compare_reindexed_core(params)
-		archive_to_scan = params[:archive]
-		CollexEngine.set_report_file(params[:log])
-		resources = CollexEngine.new(['resources'])
-		total_docs_scanned = 0
-		total_errors = 0
-
-		old_archive = self.create_old_archive_name(archive_to_scan)
-		str = archive_to_scan
-		str += '/' + old_archive if old_archive != archive_to_scan
-		CollexEngine.report_line("====== Scanning archive \"#{str}\"... ====== ")
-		reindexed = CollexEngine.new(["archive_#{archive_to_core_name(archive_to_scan)}"])
-
-		new_obj = reindexed.get_all_objects_in_archive(archive_to_scan)
-		CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
-		total_docs_scanned += new_obj.length
-
-		old_obj = resources.get_all_objects_in_archive(old_archive)
-		CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
-		total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
-
-		CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
-	end
-
-	public	# these should actually be some sort of private since they are only called inside this file.
-	def self.trans_str(str)
-		return str
-#		ret = ""
-#		str.to_s.each_char(){ |ch|
-#			"#{ch}".each_byte { |c|
-#				if (c >= 32 && c <= 127) || c == 10
-#					ret += ch
-#				else
-#					ret += "~#{c}~"
-#				end
-#			}
-#		}
-#		return ret
-	end
+	# def self.compare_reindexed_core(params)
+		# archive_to_scan = params[:archive]
+		# CollexEngine.set_report_file(params[:log])
+		# resources = CollexEngine.new(['resources'])
+		# total_docs_scanned = 0
+		# total_errors = 0
+# 
+		# old_archive = self.create_old_archive_name(archive_to_scan)
+		# str = archive_to_scan
+		# str += '/' + old_archive if old_archive != archive_to_scan
+		# CollexEngine.report_line("====== Scanning archive \"#{str}\"... ====== ")
+		# reindexed = CollexEngine.new(["archive_#{archive_to_core_name(archive_to_scan)}"])
+# 
+		# new_obj = reindexed.get_all_objects_in_archive(archive_to_scan)
+		# CollexEngine.report_line("retrieved #{new_obj.length} new rdf objects;")
+		# total_docs_scanned += new_obj.length
+# 
+		# old_obj = resources.get_all_objects_in_archive(old_archive)
+		# CollexEngine.report_line("retrieved #{old_obj.length} old objects;\n")
+		# total_errors = self.compare_object_arrays(new_obj, old_obj, total_errors)
+# 
+		# CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
+	# end
 
 	def enumerate_all_recs_in_archive(archive, is_text, page_size)
 		done = false
@@ -791,105 +778,105 @@ return results
 		end
 	end
 	
-	def self.compare_text_one_archive(archive, reindexed_core, old_core, size)
-			CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
-			start_time = Time.now
-			done = false
-			page = 0
-			#size = 10
-			total_objects = 0
-			total_errors = 0
-			docs_with_text = 0
-			new_obj = []
-			old_objs_hash = {}
-			largest_remaining_size = 0
-			old_archive = self.create_old_archive_name(archive)
+	# def self.compare_text_one_archive(archive, reindexed_core, old_core, size)
+			# CollexEngine.report_line("====== Scanning archive \"#{archive}\"... ====== \n")
+			# start_time = Time.now
+			# done = false
+			# page = 0
+			# #size = 10
+			# total_objects = 0
+			# total_errors = 0
+			# docs_with_text = 0
+			# new_obj = []
+			# old_objs_hash = {}
+			# largest_remaining_size = 0
+			# old_archive = self.create_old_archive_name(archive)
+# 
+			# while !done do
+				# begin
+					# objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
+				# rescue Exception => e
+					# CollexEngine.report_line("COMPARE TEXT: Continuing after exception: #{e}\n")
+					# objs = []
+				# end
+				# total_objects += objs.length
+				# new_obj += objs
+				# #CollexEngine.report_line("new_obj.length=#{objs.length}\n")
+				# old_objs = old_core.get_text_fields_in_archive(old_archive, page, size)
+				# print "."
+				# puts "" if total_objects % (150*size) == 0
+				# #CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
+				# page += 1
+				# if objs.length < size
+					# done = true
+				# end
+				# # first turn the old objects into a hash for quicker searching
+				# old_objs.each {|obj|
+					# uri = obj['uri']
+					# old_objs_hash[uri] = obj
+				# }
+				# # compare all the items in this set. We might not find all the same objects depending on what order we get them
+				# # back from solr, but we'll eliminate the ones we find, then get more.
+				# new_obj.each_with_index { |obj, i|
+					# uri = obj['uri']
+					# old_obj = old_objs_hash[uri]
+					# if old_obj
+						# total_errors, err_arr, docs_with_text = CompareSolrObject.compare_text(obj, old_obj, total_errors, docs_with_text)
+						# err_arr.each { |err| CollexEngine.report_line(err) }
+						# new_obj[i] = nil	# we've done this one, so get rid of it
+						# old_objs_hash.delete(uri)
+					# end
+# 					
+				# }
+				# new_obj = new_obj.compact()
+				# largest_remaining_size = new_obj.length if new_obj.length > largest_remaining_size
+				# largest_remaining_size = old_objs_hash.length if old_objs_hash.length > largest_remaining_size
+			# end
+# 
+		# # These are all the documents that didn't match anything in the old index.
+		# if new_obj.length > 0
+			# CollexEngine.report_line(" ============================= TEXT ADDED TO ARCHIVE ===========================\n")
+		# end
+		# new_obj.each { |obj|
+			# CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
+			# CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
+			# if obj['text']
+				# CollexEngine.report_line("#{obj['text']}\n")
+				# total_errors += 1
+# #			else
+# #				CollexEngine.report_line(" --- No full text for this item\n")
+			# end
+			# CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
+		# }
+		# CollexEngine.report_line("    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds.\n")
+		# return total_objects, total_errors
+	# end
+# 
 
-			while !done do
-				begin
-					objs = reindexed_core.get_text_fields_in_archive(archive, page, size)
-				rescue Exception => e
-					CollexEngine.report_line("COMPARE TEXT: Continuing after exception: #{e}\n")
-					objs = []
-				end
-				total_objects += objs.length
-				new_obj += objs
-				#CollexEngine.report_line("new_obj.length=#{objs.length}\n")
-				old_objs = old_core.get_text_fields_in_archive(old_archive, page, size)
-				print "."
-				puts "" if total_objects % (150*size) == 0
-				#CollexEngine.report_line("old_obj.length=#{old_objs.length}\n")
-				page += 1
-				if objs.length < size
-					done = true
-				end
-				# first turn the old objects into a hash for quicker searching
-				old_objs.each {|obj|
-					uri = obj['uri']
-					old_objs_hash[uri] = obj
-				}
-				# compare all the items in this set. We might not find all the same objects depending on what order we get them
-				# back from solr, but we'll eliminate the ones we find, then get more.
-				new_obj.each_with_index { |obj, i|
-					uri = obj['uri']
-					old_obj = old_objs_hash[uri]
-					if old_obj
-						total_errors, err_arr, docs_with_text = CompareSolrObject.compare_text(obj, old_obj, total_errors, docs_with_text)
-						err_arr.each { |err| CollexEngine.report_line(err) }
-						new_obj[i] = nil	# we've done this one, so get rid of it
-						old_objs_hash.delete(uri)
-					end
-					
-				}
-				new_obj = new_obj.compact()
-				largest_remaining_size = new_obj.length if new_obj.length > largest_remaining_size
-				largest_remaining_size = old_objs_hash.length if old_objs_hash.length > largest_remaining_size
-			end
-
-		# These are all the documents that didn't match anything in the old index.
-		if new_obj.length > 0
-			CollexEngine.report_line(" ============================= TEXT ADDED TO ARCHIVE ===========================\n")
-		end
-		new_obj.each { |obj|
-			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
-			CollexEngine.report_line(" --- #{ obj['uri']} ---\n")
-			if obj['text']
-				CollexEngine.report_line("#{obj['text']}\n")
-				total_errors += 1
-#			else
-#				CollexEngine.report_line(" --- No full text for this item\n")
-			end
-			CollexEngine.report_line("---------------------------------------------------------------------------------------------------------------\n")
-		}
-		CollexEngine.report_line("    error: #{total_errors}; docs in archive: #{total_objects}; docs with text: #{docs_with_text}; largest remaining size: #{largest_remaining_size}; duration: #{Time.now-start_time} seconds.\n")
-		return total_objects, total_errors
-	end
-
-
-	public
-	def self.compare_reindexed_core_text(params)
-		archive_to_scan = params[:archive]
-		start_after = params[:start_after]
-		use_merged_index = params[:use_merged_index]
-		size = params[:size]
-		CollexEngine.set_report_file(params[:log])
-		resources = CollexEngine.new(['resources'])
-		total_docs_scanned = 0
-		total_errors = 0
-
-		if archive_to_scan
-			if use_merged_index
-				reindexed = CollexEngine.new(["merged"])
-			else
-				core_name = archive_to_core_name(archive_to_scan)
-				reindexed = CollexEngine.new(["archive_#{core_name}"])
-			end
-			total_docs_scanned, total_errors = compare_text_one_archive(archive_to_scan, reindexed, resources, size)
-		else
-			CollexEngine.report_line("compare_reindexed_core_text needs an archive parameter.\n")
-		end
-		CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
-	end
+	# public
+	# def self.compare_reindexed_core_text(params)
+		# archive_to_scan = params[:archive]
+		# start_after = params[:start_after]
+		# use_merged_index = params[:use_merged_index]
+		# size = params[:size]
+		# CollexEngine.set_report_file(params[:log])
+		# resources = CollexEngine.new(['resources'])
+		# total_docs_scanned = 0
+		# total_errors = 0
+# 
+		# if archive_to_scan
+			# if use_merged_index
+				# reindexed = CollexEngine.new(["merged"])
+			# else
+				# core_name = archive_to_core_name(archive_to_scan)
+				# reindexed = CollexEngine.new(["archive_#{core_name}"])
+			# end
+			# total_docs_scanned, total_errors = compare_text_one_archive(archive_to_scan, reindexed, resources, size)
+		# else
+			# CollexEngine.report_line("compare_reindexed_core_text needs an archive parameter.\n")
+		# end
+		# CollexEngine.report_line("Total Docs Scanned: #{total_docs_scanned}. Total Errors: #{total_errors}. Total Docs in index: #{resources.num_docs()}\n")
+	# end
 
 	public	# these should actually be some sort of private since they are only called inside this file.
 	def self.archive_to_core_name(archive)
@@ -967,13 +954,13 @@ return results
   end
 
 private
-	def self.print_error(uri, total_errors, first_error, msg)
-		CollexEngine.report_line("---#{uri}---\n") if first_error
-		total_errors += 1
-		first_error = false
-		CollexEngine.report_line("    #{msg}\n")
-		return total_errors, first_error
-	end
+	# def self.print_error(uri, total_errors, first_error, msg)
+		# CollexEngine.report_line("---#{uri}---\n") if first_error
+		# total_errors += 1
+		# first_error = false
+		# CollexEngine.report_line("    #{msg}\n")
+		# return total_errors, first_error
+	# end
 
   # splits constraints into a full-text query (for relevancy ranking) and filter queries for constraining
   def solrize_constraints(constraints)
