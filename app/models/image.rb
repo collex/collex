@@ -35,7 +35,7 @@ class Image < ActiveRecord::Base
 	  :path => ":rails_root/public/#{path}"
 
 	def self.save_image(uploaded_file, target_active_record)
-		if uploaded_file && uploaded_file.original_filename.length > 0
+		if uploaded_file && !uploaded_file.kind_of?(String) && uploaded_file.original_filename.length > 0
 			user_error = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
 			begin
 				img = Image.new
