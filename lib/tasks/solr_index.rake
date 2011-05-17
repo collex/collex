@@ -680,6 +680,7 @@ namespace :solr_index do
 				# TODO-PER: first remove all existing files from that folder
 				index = CollexEngine.new()
 				index.enumerate_all_recs_in_archive(archive, true, page_size) { |hit|
+					hit['text_url'] = hit['text_url'][0] if hit['text_url'] && hit['text_url'].length > 0
 					if hit['text'] && hit['text'].length > 0 && hit['text_url'] && hit['text_url'].length > 0
 						fname = hit['text_url'].gsub('/', 'SL').gsub(':', 'CL').gsub('?', 'QU').gsub('=', 'EQ').gsub('&', 'AMP')
 						if hit['text'].kind_of? String
