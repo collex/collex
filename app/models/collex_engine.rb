@@ -749,7 +749,7 @@ return results
 		while !done do
 			begin
 				if is_text
-					objs = get_text_fields_in_archive(archive, page, page_size)
+					objs = get_page_in_archive(archive, page, page_size, [ 'uri', 'text', 'is_ocr', 'has_full_text', 'text_url' ])
 				else
 					objs = get_all_objects_in_archive(archive)
 					done = true
