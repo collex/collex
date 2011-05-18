@@ -166,10 +166,6 @@ namespace :solr_index do
         case type
         when :spider
           delete_file("#{log_dir}/#{safe_name}_spider_error.log")
-        when :clean_raw
-          delete_file("#{log_dir}/#{safe_name}_clean_raw_error.log")
-        when :clean_full
-          delete_file("#{log_dir}/#{safe_name}_clean_full_error.log")
         when :index, :debug
           delete_file("#{log_dir}/#{safe_name}_error.log")
         end
@@ -186,13 +182,13 @@ namespace :solr_index do
     finish_line(start_time)
   end
   
-  def clean_text(msg, archive, type)
+  def clean_text(msg, archive, type, encoding)
     start_time = Time.now
     flags = nil
     dir_name = nil
     case type
     when :clean_raw
-      flags = "-mode clean_raw"
+      flags = "-mode clean_raw -encoding #{encoding}"
       dir_name = "rawtext"
       puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_clean_raw_error.log]"
     when :clean_full
@@ -313,13 +309,15 @@ namespace :solr_index do
 		end
 	end
 	
-	desc "Clean archive raw text and place results in fulltext, ready for indexing. No indexing performed. (param: archive=XXX)"
+	desc "Clean archive raw text and place results in fulltext, ready for indexing. No indexing performed. (param: archive=XXX, encoding=XXX)"
   task :clean_raw_text => :environment do
     archive = ENV['archive']
+    encoding = ENV['encoding']
+    encoding = "UTF-8" if encoding == nil
     if archive == nil
       puts "Usage: call with archive=archive"
     else
-      clean_text("Clean raw text", archive, :clean_raw)
+      clean_text("Clean raw text", archive, :clean_raw, encoding)
     end
   end
   
@@ -329,7 +327,7 @@ namespace :solr_index do
     if archive == nil
       puts "Usage: call with archive=archive"
     else
-      clean_text("Clean full text", archive, :clean_full)
+      clean_text("Clean full text", archive, :clean_full, nil)
     end
   end
 
