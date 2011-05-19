@@ -104,13 +104,13 @@ namespace :solr_index do
 		rdf_folders.each { |i, rdfs|
 			sh_rdf = create_sh_file("batch#{i+1}")
 			rdfs.each {|archive,f|
-				sh_rdf.puts("rake \"archive=#{archive}\" solr_index:reindex_and_test_rdf\n")
-				sh_all.puts("rake \"archive=#{archive}\" solr_index:reindex_and_test_rdf\n")
+				sh_rdf.puts("rake \"archive=#{archive}\" solr_index:index_and_test_rdf\n")
+				sh_all.puts("rake \"archive=#{archive}\" solr_index:index_and_test_rdf\n")
 			}
 			sh_rdf.close()
 		}
 
-		sh_ecco = create_sh_file("batch_ecco")
+#		sh_ecco = create_sh_file("batch_ecco")
 #		marc_folders.each {|archive,folder|
 #			sh_marc.puts("rake archive=#{archive} marc:reindex_marc\n")
 #			sh_marc.puts("rake archive=#{archive} solr_index:test_archive\n")
@@ -118,13 +118,13 @@ namespace :solr_index do
 #			sh_all.puts("rake archive=#{archive} solr_index:test_archive\n")
 #		}
 
-		sh_ecco.puts("rake ecco:index_ecco\n")
-		sh_ecco.puts("rake archive=ECCO solr_index:test_archive\n")
-		sh_ecco.puts("rake ecco:mark_for_textwright\n")
-		sh_all.puts("rake ecco:index_ecco\n")
-		sh_all.puts("rake archive=ECCO solr_index:test_archive\n")
+#		sh_ecco.puts("rake ecco:index_ecco\n")
+#		sh_ecco.puts("rake archive=ECCO solr_index:test_archive\n")
+#		sh_ecco.puts("rake ecco:mark_for_textwright\n")
+#		sh_all.puts("rake ecco:index_ecco\n")
+#		sh_all.puts("rake archive=ECCO solr_index:test_archive\n")
 		sh_all.puts("rake ecco:mark_for_textwright\n")
-		sh_ecco.close()
+#		sh_ecco.close()
 
 		sh_all.close()
 	end
@@ -717,9 +717,9 @@ namespace :solr_index do
 					if hit['text'] && hit['text'].length > 0 && hit['text_url'] && hit['text_url'].length > 0
 						fname = hit['text_url'].gsub('/', 'SL').gsub(':', 'CL').gsub('?', 'QU').gsub('=', 'EQ').gsub('&', 'AMP')
 						if hit['text'].kind_of? String
-              File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'] ) }
+							File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'] ) }
 						else
-              File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'].join("\n")) }
+							File.open("#{folder}/#{fname}.txt", 'w') {|f| f.write(hit['text'].join("\n")) }
 						end
 					end
 				}
