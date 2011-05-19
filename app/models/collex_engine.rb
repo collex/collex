@@ -45,7 +45,11 @@ class CollexEngine
 			cores = self.get_archive_core_list()
 			return CollexEngine.new(cores)
 		else
-			return CollexEngine.new()
+			if SOLR_CATALOG
+				return Catalog.new()
+			else
+				return CollexEngine.new()
+			end
 		end
 	end
 
@@ -332,7 +336,7 @@ return results
 
   end
   
-  # get a list of all availble resources in solr
+  # get a list of all available resources in solr
   #
   def get_resource_list()  
    

@@ -305,3 +305,14 @@ a.tooltip:hover span.search_help_tooltip {
 	width:22em;
 	left:-11em;
 }
+
+.search_error_message {
+	color: red;
+	width: 800px;
+	margin-left: 100px;
+	margin-bottom: 16px;
+	border: 1px solid red;
+	background-color: #f8f8f8;
+	padding: 4px;
+	overflow: auto;
+}

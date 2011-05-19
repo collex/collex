@@ -24,6 +24,9 @@
 <div class="right_column_header">USING TEST INDEX</div>
 <% end -%>
 <div class="inner_content_container">
+	<% if Rails.env == 'development' && @message != nil -%>
+		<div class="search_error_message"><%= raw(h(@message).gsub("\n", "<br .>")) %></div>
+	<% end # if development -%>
 	<% if has_constraints? #(@listed_constraints.size > 0) If the user is in the middle of a search. -%>
 		<% if @num_pages > 0 # if there are results -%>
 			<div class="left_column">

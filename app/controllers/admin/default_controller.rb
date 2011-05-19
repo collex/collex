@@ -70,13 +70,15 @@ class Admin::DefaultController < Admin::BaseController
 			exhibits.each {|exhibit|
 				exhibit.adjust_indexing(:group_becomes_peer_reviewed)
 			}
-			(CollexEngine.new).commit()
+			solr = CollexEngine.factory_create(false)
+			solr.commit()
 		elsif old_type == 'peer-reviewed'
 			exhibits = Exhibit.find_all_by_group_id(group_id)
 			exhibits.each {|exhibit|
 				exhibit.adjust_indexing(:group_leaves_peer_reviewed)
 			}
-			(CollexEngine.new).commit()
+			solr = CollexEngine.factory_create(false)
+			solr.commit()
 		end
    render :partial => 'group_tr', :locals => { :group => group }
 	end

@@ -172,7 +172,7 @@ class CollectedItem < ActiveRecord::Base
     if (cached_resource == nil)
       cached_resource = CachedResource.new(:uri => uri)
 			if hit == nil
-				hit = CollexEngine.new().get_object(uri)
+				hit = CollexEngine.factory_create(false).get_object(uri)
 			end
 			cached_resource.set_hit(hit)
     end

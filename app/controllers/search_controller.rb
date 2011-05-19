@@ -246,7 +246,7 @@ class SearchController < ApplicationController
        flash[:error] = render_to_string(:inline => "The search string \"#{session[:constraints][0]['value']}\" contains invalid characters. Try another search.")
      else
        flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', { :action => 'new_search' }, { :class => 'nav_link' } %> or remove the offending search string below.")
-     end 
+     end
      return {"facets" => {"archive" => {}, "freeculture" => {}, "genre" => {}}, "total_hits" => 0, "hits" => [], "total_documents" => 0}
   end
   
@@ -303,6 +303,9 @@ class SearchController < ApplicationController
 				}
 			rescue  Net::HTTPServerException => e
 				@results = rescue_search_error(e)
+			rescue Catalog::Error => e
+				@results = rescue_search_error(e)
+				@message = e.message
 			end
 
 			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil

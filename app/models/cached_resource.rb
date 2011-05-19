@@ -41,7 +41,7 @@ class CachedResource < ActiveRecord::Base
   def resource
     #@resource ||= SolrResource.find_by_uri(self.uri)
 		return @resource if @resource != nil
-		@resource = CollexEngine.new.get_object(self.uri)
+		@resource = CollexEngine.factory_create(false).get_object(self.uri)
 		return @resource
   end
   #alias_method :solr_resource, :resource
@@ -77,7 +77,7 @@ class CachedResource < ActiveRecord::Base
 
 	  # The object isn't in the cache, so put it there
       cached_resource = CachedResource.new(:uri => uri)
-      hit = CollexEngine.new().get_object(uri)
+      hit = CollexEngine.factory_create(false).get_object(uri)
       cached_resource.set_hit(hit)
       cached_resource.save!
 

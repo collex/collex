@@ -830,13 +830,13 @@ class Exhibit < ActiveRecord::Base
   end
 
 	def unindex_exhibit(should_commit)
-		solr = CollexEngine.new()
+		solr = CollexEngine.factory_create(false)
 		solr.delete_archive(self.make_archive_name())
 		solr.commit() if should_commit
 	end
 
 	def self.unindex_all_exhibits()
-		solr = CollexEngine.new()
+		solr = CollexEngine.factory_create(false)
 		archives = solr.get_all_archives()
 		changed = false
 		archives.each {|archive|
@@ -886,7 +886,7 @@ class Exhibit < ActiveRecord::Base
 	def index_exhibit(should_commit)
 		boost_section = 3.0
 		boost_exhibit = 2.0
-		solr = CollexEngine.new()
+		solr = CollexEngine.factory_create(false)
 		
 		puts "Delete old index #{make_archive_name()}"
 		#solr.delete_archive(self.make_old_archive_name())

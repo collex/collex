@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
 		ActionMailer::Base.default_url_options[:host] = request.host_with_port
 		if !self.kind_of?(TestJsController)
 			session[:constraints] ||= new_constraints_obj()
-			solr = CollexEngine.new()
+			solr = CollexEngine.factory_create(session[:use_test_index] == "true")
 			session[:num_docs] ||= solr.num_docs()
 			session[:num_sites] ||= solr.num_sites()
 			session[:num_docs] ||= 0

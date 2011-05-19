@@ -9,8 +9,9 @@
   config_file = File.join(Rails.root, "config", "site.yml")
   if File.exists?(config_file)
   	site_specific = YAML.load_file(config_file)
-  	SOLR_URL = site_specific['solr_url']
-  
+	  SOLR_URL = site_specific['solr_url']
+	  SOLR_CATALOG = site_specific['solr_catalog']
+
   	MAILER_INTERVAL_SECS = site_specific['daemons']['mailer_interval_secs']
   	USER_CONTENT_INTERVAL_SECS = site_specific['daemons']['user_content_interval_secs']
   	SESSION_CLEANER_INTERVAL_SECS = site_specific['daemons']['session_cleaner_interval_secs']
