@@ -314,9 +314,9 @@ namespace :solr_index do
   task :clean_raw_text => :environment do
     archive = ENV['archive']
     encoding = ENV['encoding']
-    encoding = "auto" if encoding == nil
+    encoding = "UTF-8" if encoding == nil
     if archive == nil
-      puts "Usage: call with archive=archive, (opt)encoding=encoding|auto"
+      puts "Usage: call with archive=archive, (opt)encoding=encoding"
     else
       clean_text("Clean raw text", archive, :clean_raw, encoding)
     end
