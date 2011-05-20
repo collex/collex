@@ -188,7 +188,8 @@ namespace :solr_index do
     dir_name = nil
     case type
     when :clean_raw
-      flags = "-mode clean_raw -encoding #{encoding}"
+      flags = "-mode clean_raw -encoding #{encoding}" if encoding != nil
+      flags = "-mode clean_raw" if encoding == nil
       dir_name = "rawtext"
       puts "~~~~~~~~~~~ #{msg} \"#{archive}\" [see log/#{archive}_progress.log and log/#{archive}_clean_raw_error.log]"
     when :clean_full
@@ -309,13 +310,13 @@ namespace :solr_index do
 		end
 	end
 	
-	desc "Clean archive raw text and place results in fulltext, ready for indexing. No indexing performed. (param: archive=XXX, encoding=XXX)"
+	desc "Clean archive raw text and place results in fulltext, ready for indexing. No indexing performed. (param: archive=XXX, (opt)encoding=XXX)"
   task :clean_raw_text => :environment do
     archive = ENV['archive']
     encoding = ENV['encoding']
-    encoding = "UTF-8" if encoding == nil
+    encoding = "auto" if encoding == nil
     if archive == nil
-      puts "Usage: call with archive=archive"
+      puts "Usage: call with archive=archive, (opt)encoding=encoding|auto"
     else
       clean_text("Clean raw text", archive, :clean_raw, encoding)
     end
