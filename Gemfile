@@ -7,6 +7,7 @@ gem 'rails', '3.0.7'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 # gem 'sqlite3-ruby', :require => 'sqlite3'
+# NOTE: when rails is upgraded to version 3.1, then I think it is safe to remove the version number from mysql2
 gem 'mysql2', '0.2.6'
 
 gem "rsolr"

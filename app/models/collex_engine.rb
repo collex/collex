@@ -963,7 +963,8 @@ private
 		#filter_queries << 'title_sort:t*'
     constraints.each do |constraint|
       if constraint.is_a?(ExpressionConstraint)
-        queries << constraint.to_solr_expression
+		  str = constraint.to_solr_expression
+        queries << str if str.length > 0
       else
         filter_queries << constraint.to_solr_expression
       end
