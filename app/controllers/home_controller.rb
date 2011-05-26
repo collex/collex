@@ -65,7 +65,10 @@ class HomeController < ApplicationController
 		end
       end
       @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image_id ? "/#{facet.image.photo.url}" : '' })
-			end
+	end
+	respond_to do |format|
+		format.html # index.html.erb
+	end
     end
   
   def get_footer_data
