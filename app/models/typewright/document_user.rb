@@ -37,7 +37,7 @@ class Typewright::DocumentUser < ActiveResource::Base
 		ret = []
 		docs.each { |ud|
 			doc = Typewright::Document.find_by_id(ud.document_id)
-			ret.push({ :id => ud.id, :uri => doc.uri, :thumbnail => doc.thumb(), :title => Typewright::XmlReader.read_metadata(doc.book_id()) })
+			ret.push({ :id => ud.id, :uri => doc.uri, :thumbnail => doc.thumb(), :title => doc.get_title() }) unless doc.nil?
 		}
 		return ret
 	end

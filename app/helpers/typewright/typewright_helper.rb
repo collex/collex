@@ -3,8 +3,9 @@ module Typewright::TypewrightHelper
 		return "/typewright/documents/#{doc_id}/edit?src=#{@src}&page=#{page}"
 	end
 
-	def tw_create_show_url(uri)
-		return "/typewright/documents/0?uri=#{uri}\&src=#{@src}"
+	def tw_create_show_url(uri, src = @src)
+    		src ||= :gale
+		return "/typewright/documents/0?uri=#{uri}\&src=#{src}"
 	end
 
 	def tw_abbrev(str)

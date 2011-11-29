@@ -58,6 +58,13 @@ class Typewright::Document < ActiveResource::Base
 		return self.uri.split('/').last
 	end
 
+	def thumb()
+	  thumb = COLLEX_PLUGINS['typewright']['web_service_url'] + self.img_thumb
+	  return thumb
+	end
 
+	def get_title()
+	  return self.title
+	end
 
 end
