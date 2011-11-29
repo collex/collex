@@ -224,6 +224,16 @@ ActiveRecord::Schema.define(:version => 20111026171152) do
     t.string   "additional_authors"
   end
 
+  create_table "facet_categories", :force => true do |t|
+    t.integer "parent_id"
+    t.string  "value"
+    t.string  "type"
+    t.decimal "carousel_include",     :precision => 10, :scale => 0
+    t.text    "carousel_description"
+    t.string  "carousel_url"
+    t.decimal "image_id",             :precision => 10, :scale => 0
+  end
+
   create_table "featured_objects", :force => true do |t|
     t.string   "object_uri"
     t.string   "title"
@@ -336,6 +346,16 @@ ActiveRecord::Schema.define(:version => 20111026171152) do
     t.string   "username"
     t.string   "address"
     t.string   "action"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "logs", :force => true do |t|
+    t.string   "user"
+    t.string   "request_method"
+    t.text     "request_uri"
+    t.text     "http_referer"
+    t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
