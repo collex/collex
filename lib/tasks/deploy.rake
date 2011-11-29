@@ -78,19 +78,21 @@ namespace :deploy do
 		puts "Update site from repository..."
 		basic_update()
 		Rake::Task['deploy:compress_css_js'].invoke
-		puts "\e[0;31mRun this to restart passenger:"
-		puts "~/scripts/restart_passenger.sh #{Setup.site_name()} \e[m"
+		puts "You will be asked for your sudo password."
+		`sudo /sbin/service httpd restart`
+		#puts "\e[0;31mRun this to restart passenger:"
+		#puts "~/scripts/restart_passenger.sh #{Setup.site_name()} \e[m"
 		start_daemons()
 	end
 
-	def update_ninesperf
-		puts "Update site from repository..."
-		basic_update()
-		Rake::Task['deploy:compress_css_js'].invoke
-		puts "You will be asked for your sudo password."
-		`sudo /sbin/service httpd restart`
-		start_daemons()
-	end
+	#def update_ninesperf
+	#	puts "Update site from repository..."
+	#	basic_update()
+	#	Rake::Task['deploy:compress_css_js'].invoke
+	#	puts "You will be asked for your sudo password."
+	#	`sudo /sbin/service httpd restart`
+	#	start_daemons()
+	#end
 
 	def update_18th
 		puts "Update site from repository..."
@@ -148,8 +150,8 @@ namespace :deploy do
 			deploy_on_production()
 		elsif UPDATE_TASK == 'indexing'
 			update_indexing()
-		elsif UPDATE_TASK == 'nines.perf'
-			update_ninesperf()
+		#elsif UPDATE_TASK == 'nines.perf'
+		#	update_ninesperf()
 		elsif UPDATE_TASK == 'development'
 			update_development()
 		elsif UPDATE_TASK == 'experimental'
