@@ -14,14 +14,14 @@
 # limitations under the License.
 ##########################################################################
 
-class Site < ActiveRecord::Base
-  # Returns a list of +String+s representing the available +thumbnail+ URLs of all sites
-  def self.thumbnails
-    find(:all, :select => "thumbnail").collect{|v| v.thumbnail unless v.thumbnail.blank?}.compact.uniq
-  end
-  
-  # Returns a list of +String+s representing the available +thumbnail+ URLs for the site +code+s (+archive+ in the solr index)
-  def self.thumbnails_for_codes(codes = [])
-    find_all_by_code(codes, :select => "thumbnail").collect{|v| v.thumbnail unless v.thumbnail.blank?}.compact.uniq
-  end
-end
+#class Site < ActiveRecord::Base
+#  # Returns a list of +String+s representing the available +thumbnail+ URLs of all sites
+#  def self.thumbnails
+#    find(:all, :select => "thumbnail").collect{|v| v.thumbnail unless v.thumbnail.blank?}.compact.uniq
+#  end
+#
+#  # Returns a list of +String+s representing the available +thumbnail+ URLs for the site +code+s (+archive+ in the solr index)
+#  def self.thumbnails_for_codes(codes = [])
+#    find_all_by_code(codes, :select => "thumbnail").collect{|v| v.thumbnail unless v.thumbnail.blank?}.compact.uniq
+#  end
+#end

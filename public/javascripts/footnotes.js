@@ -158,7 +158,7 @@ var FootnotesInRte = Class.create({
 		//var footnotes = [];
 
 		var footnotePrefix = '<a href="#" onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
-		var footnotePrefixSafari = '<a href="#" onclick="return false; var footnote = $(this).next(); new MessageBoxDlg(&quot;Footnote&quot;, footnote.innerHTML); return false;" class="superscript">';
+		var footnotePrefixSafari = '<a href="#" onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' class="superscript">';
 		var footnotePrefixIE = '<A class=superscript onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' href="#">';
 		var footnoteMid = '</a><span class="hidden">';
 		var footnoteMidIE = '</A><SPAN class=hidden>';

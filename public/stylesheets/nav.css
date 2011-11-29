@@ -40,6 +40,10 @@
 	padding-top:9px;
 }
 
+.tab_link_current:active, .tab_link_current:visited, .tab_link_current:hover {
+	color:#55220F;
+}
+
 .tab_link_current:hover {
 	text-decoration:underline;
 }

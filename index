@@ -1,2 +1,0 @@
-#!/bin/sh
-rake archive=$1 solr:install_archive

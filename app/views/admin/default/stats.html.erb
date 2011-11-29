@@ -17,7 +17,7 @@
 <% current_page "admin" -%>
 <% current_sub_page "Statistics" -%>
 <div class="inner_content_container">
-	<div class="page_header"><%= SITE_NAME %> Statistics</div>
+	<div class="page_header"><%= Setup.site_name() %> Statistics</div>
 	[NOTE: These statistics only count activity since June 30, 2009]
 	<% login_stats = LoginInfo.get_stats() -%>
 	<% object_stats = ObjectActivity.get_stats() -%>
@@ -122,7 +122,7 @@
 			<td><%= str %></td>
 		</tr> -->
 	</table>
-		<div class="page_header"><%= SITE_NAME %> Statistics by Resource (last 365 days)</div>
+		<div class="page_header"><%= Setup.site_name() %> Statistics by Resource (last 365 days)</div>
 		<% archive_stats = ObjectActivity.get_archive_stats() -%>
 		<table>
 			<tr>
@@ -131,9 +131,9 @@
 				<th># objects tagged</th>
 			</tr>
 			<% for site in archive_stats -%>
-			<% s = Site.find_by_code(site[0]) -%>
+			<% s = Catalog.factory_create(false).get_archive(site[0]) #Site.find_by_code(site[0]) -%>
 			<tr>
-				<td><%= s == nil ? "#{site[0]} (not in DB!)" : s.description %></td>
+				<td><%= s == nil ? raw("<b>#{site[0]} (not in DB!)</b>") : s['name'] %></td>
 				<td><%= site[1][:collect] %></td>
 				<td><%= site[1][:tag] %></td>
 			</tr>

@@ -28,7 +28,7 @@ function doEditDocument(is_logged_in, edit_url)
   if ( !is_logged_in ) 
   {
     var dlg = new SignInDlg();
-    dlg.setInitialMessage("Please log in to edit TextWright texts");
+    dlg.setInitialMessage("Please log in to edit TypeWright texts");
     dlg.setRedirectPage( edit_url );
     dlg.show('sign_in');
   } 

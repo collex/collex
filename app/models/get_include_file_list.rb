@@ -50,26 +50,26 @@ class GetIncludeFileList
 		local = []
 		case page
 		  when :typewright
-		    local = [ "search_validation_home", "result_row_popup", "typewright/features"]
+		    local = [ "search_validation_home", "result_row_popup", 'more', "typewright/features"]
 			when :typewright_edit
 				local = [ "typewright/diff_match_patch_uncompressed", "typewright/reparse_words", "typewright/line",
 					"typewright/img_cursor", "typewright/change_line", "typewright/find_dlg", "typewright/select_page",
-					"typewright/detailed_instructions"]
+					"typewright/detailed_instructions", "typewright/report_this_page"]
 			when :search
-				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'cc_license', 'search_name_facet', 'change_federation' ]
+				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'more', 'cc_license', 'search_name_facet', 'change_federation' ]
 				if COLLEX_PLUGINS['typewright']
 				  local.push("typewright/features")
 				end
 			when :tag
-				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'cc_license' ]
+				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'more', 'cc_license' ]
 			when :my_collex
-				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'thumbnail_resize', 'saved_search', 'cc_license',
+				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'more', 'thumbnail_resize', 'saved_search', 'cc_license',
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
 					'create_new_group_dlg', 'edit_fonts_dlg', 'exhibit_builder_outline', 'my_collex', 'exhibit_builder_profile', 'browse_groups' ]
 			when :discuss
-				local = [ 'discussions', 'result_row_popup', 'cc_license', 'flag_comment' ]
+				local = [ 'discussions', 'result_row_popup', 'more', 'cc_license', 'flag_comment' ]
 			when :admin
-				local = [ 'admin', 'resource_tree', 'features', 'typewright/features' ]
+				local = [ 'admin', 'resource_tree', 'features', 'typewright/features', 'tree_control' ]
 			when :view_exhibit
 				global = [ 'hide_spinner', 'general_dialog', 'server_wrapper', 'renumber_footnotes', 'login', 'nospam' ]
 			when :print_exhibit

@@ -66,4 +66,24 @@
 	<% end %>
 	</table>
 	
+	<table class='user_roles'>
+	  <tr>
+	    <th>Administrators</th>
+	    <th>Email</th>
+	    <th>Roles</th>
+	  </tr>
+
+	<% @admins.each do |user| %>
+	  <tr>
+	    <td><%= user.username %></td>
+	     <td><%= user.email %></td>
+	    <td>
+	      <%= user.role_names.join(", ") %>
+	    </td>
+
+	    <td><%= link_to 'Edit', { :action => 'edit', :id => user,  :page => params[:page] }, :class => 'nav_link' %></td>
+	  </tr>
+	<% end %>
+	</table>
+
 </div>

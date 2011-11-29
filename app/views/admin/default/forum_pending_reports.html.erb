@@ -34,7 +34,7 @@
   				<td><%= User.find(spam.user_id).fullname -%></td>
   				<td><%= User.find(report.reporter_id).fullname %></td>
   				<% comment = DiscussionComment.strip_tags(spam.comment) %>
-  				<% comment = [0..30] + '...' if comment.length > 30 %>
+  				<% comment = comment[0..30] + '...' if comment.length > 30 %>
   				<td><%= comment %></td>
           <td><%= report.reason %></td>
   				<td><%= link_to "[Go to]", { :controller => '/forum', :action => 'view_thread', :thread => spam.discussion_thread_id }, :class => 'nav_link' %></td>

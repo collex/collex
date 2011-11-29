@@ -18,18 +18,17 @@
 
 <div class="inner_content_container">
 
-	<div class="page_header">Welcome to the 'admin' area of <%= SITE_NAME %>.</div>
+	<div class="page_header">Welcome to the 'admin' area of <%= Setup.site_name() %>.</div>
 	
 	<p>From here, you can make adjustments to user roles, the hierarchies or 'trees' that control how facets display, and to the appearance (descriptions, default thumbnails, etc.) of contributing projects in Collex.</p>
 	
+	<p><a class='nav_link' href="/admin/default/reload_facet_tree">Reload Facet Tree</a></p>
 	<%= link_to_confirm("Refresh cached objects", { :action => 'refresh_cached_objects', :authenticity_token => form_authenticity_token }, "Warning", 'Note: This will take a while! This is only needed if the indexing in Collex changes or a bug is found that has caused the cached objects to be out of date. Do you want to continue?') %>
 	
 	<p><a class='nav_link' href="/news/wp-admin/">Wordpress Admin Panel</a></p>
-	<% if CAN_INDEX -%>
 	<% if @use_test_index == "true" -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=false">Stop using the testing index for searches</a></p>
 	<% else -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=true">Temporarily use the testing index for searches</a></p>
-	<% end -%>
 	<% end -%>
 </div>

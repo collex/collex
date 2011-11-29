@@ -15,6 +15,9 @@
 ##########################################################################
 
 Collex::Application.routes.draw do
+	# for transmitting the theme to wordpress
+	get "/wrapper" => "home#wrapper"
+
 	get "typewright/edit"
 	post "typewright/remove_doc"
 
@@ -122,6 +125,7 @@ Collex::Application.routes.draw do
 			get 'documents/not_available'
 			get 'documents/not_signed_in'
 			post 'documents/instructions'
+      post 'documents/:id/report' => 'documents#report'
 			resources :admin
 			resources :documents
 			resources :lines
@@ -168,6 +172,7 @@ Collex::Application.routes.draw do
 	match '/groups/accept_invitation' => 'groups#accept_invitation', :as => :accept_invitation
 	get '/groups/acknowledge_notification' => 'groups#acknowledge_notification', :as => :acknowledge_notification
 	match '/groups/create_login' => 'groups#create_login', :as => :create_login
+	match 'groups/create_login_create' => 'groups#create_login_create'
 	get '/groups/:group/:cluster' => 'clusters#show'
 	post "/groups/limit_exhibit" => "groups#limit_exhibit"
 	post "/groups/unlimit_exhibit" => "groups#unlimit_exhibit"
@@ -204,6 +209,7 @@ Collex::Application.routes.draw do
 	get "/admin/default/user_content" => "admin/default#user_content"
 	get "/admin/default/vic_conference" => "admin/default#vic_conference"
 	get "/admin/default/use_test_index" => "admin/default#use_test_index"
+	get "/admin/default/reload_facet_tree" => "admin/default#reload_facet_tree"
 	get "/admin/default/stats_show_all" => "admin/default#stats_show_all"
 
 	post "/admin/default/change_group_type" => "admin/default#change_group_type"
@@ -239,6 +245,7 @@ Collex::Application.routes.draw do
 		resources :features
 		resources :user_roles
 		resources :discussion_topics
+		resources :setups, :only => [ :index, :update ]
 	end
 
   match '/forum/rss/:thread.xml' => 'forum#rss', :as => :discussion_thread_rss

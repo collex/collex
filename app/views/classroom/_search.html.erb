@@ -16,6 +16,9 @@
 # ----------------------------------------------------------------------------
 %>
 <%# search params: hash results -%>
+<% if Rails.env == 'development' && @message != nil -%>
+	<div class="search_error_message"><%= raw(h(@message).gsub("\n", "<br .>")) %></div>
+<% end # if development -%>
 <%= render :partial => '/common/input_and_submit_button', :locals => { :input_id => "search", :input_class => "shared_search_box", :submit_text => "Search Classroom", :submit_id => 'search_exhibits', :submit_url => "/classroom/search", :update_el => 'shared_objects', :wait_msg => 'Searching...' } %>
 or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 

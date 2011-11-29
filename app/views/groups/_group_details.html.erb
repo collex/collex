@@ -88,7 +88,7 @@
 		gus.each { |gu|
 			reqs.push({ :user_name => "#{escape_apos(User.find(gu.user_id).fullname)}", :group_id => "#{Group.id_obfuscator(gu.id)}" })
 		}
-		raw(reqs.to_json());
+		raw(reqs.to_json())
 	-%>;
 </script>
 			<% if gus.length > 0 -%>
@@ -140,7 +140,7 @@
 	<% if group.can_edit(user_id) -%>
 	<div class="group_editors"><span class="group_details_label">Administrative Options:</span><ul>
 		<li><%= link_to_function('Set Email Notification Level', "setNotificationLevel(#{group.id}, '#{escape_apos(group.name)}', #{GroupsUser.get_notifications(group.id, user_id).to_json()}, '#{group.get_exhibits_label()}', '#{group.get_clusters_label()}')", :class => 'nav_link')  %></li>
-		<li><%= link_to_function('Invite Members', "new InviteMembersDlg(#{group.id}, '#{SITE_NAME}');", :class => 'nav_link')  %></li>
+		<li><%= link_to_function('Invite Members', "new InviteMembersDlg(#{group.id}, '#{Setup.site_name()}');", :class => 'nav_link')  %></li>
 		<li><%= link_to_function('Edit Membership', "new EditMembershipDlg(#{group.id}, gMembership, '#{group.show_membership == true ? 'Yes' : 'No' }', '#{escape_apos(User.find(group.owner).fullname)}', #{group.is_owner(user_id)});", :class => 'nav_link')  %></li>
 <% license_prompt = group.license_type == 0 ? "Set Content License" : "Change License" -%>
 		<li><span class="small_license"><%= raw(Exhibit.get_sharing_icon_url(group.license_type)) %></span>

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class CommunitiesController < ApplicationController
 	layout 'nines'
 	before_filter :init_view_options
@@ -17,12 +18,22 @@ class CommunitiesController < ApplicationController
 		@discussions = DiscussionTopic.get_most_popular(5)
 		#@tags = CachedResource.get_most_popular_tags(40)
 		@tags = CachedResource.get_most_recent_tags(40)
-		@results = get_results()
+		begin
+			@results = get_results()
+		rescue Catalog::Error => e
+			flash[:error] = e.to_s
+			@message = e.to_s
+			@results = { total_hits: 0, total: 0, num_pages: 1, hits: [] }
+		end
 	end
 
 	def search
 		term = params[:term]
 		term = nil if term && term.length == 0
+		if term
+			term = term.gsub(/[^ \p{Word}]/,' ').gsub(/\s+/, ' ').strip()
+			#term = "\"#{term}\"" if term.include?(' ')
+		end
 		session[:community_page_num] = 0
 		session[:community_search_term] = term
 		session[:community_sort_by] = 'Most Recent'
@@ -52,34 +63,7 @@ class CommunitiesController < ApplicationController
 	private
 	def get_results()
 		@searcher ||= SearchUserContent.new
-		options = { :facet => { :federation => DEFAULT_FEDERATION, :section => 'community' }, :user_id => get_curr_user_id(), :terms => session[:community_search_term], :page_size => 10, :page => session[:community_page_num] }
-		case session[:community_view_by]
-		when 'Groups' then
-			options[:facet][:group] = true
-			options[:facet][:cluster] = false
-			options[:facet][:exhibit] = false
-			options[:facet][:comment] = false
-		when 'Clusters' then
-			options[:facet][:group] = false
-			options[:facet][:cluster] = true
-			options[:facet][:exhibit] = false
-			options[:facet][:comment] = false
-		when 'Exhibits' then
-			options[:facet][:group] = false
-			options[:facet][:cluster] = false
-			options[:facet][:exhibit] = true
-			options[:facet][:comment] = false
-		when 'Discussions' then
-			options[:facet][:group] = false
-			options[:facet][:cluster] = false
-			options[:facet][:exhibit] = false
-			options[:facet][:comment] = true
-		when 'All' then
-			options[:facet][:group] = true
-			options[:facet][:cluster] = true
-			options[:facet][:exhibit] = true
-			options[:facet][:comment] = true
-		end
+		options = { :facet => { :federation => Setup.default_federation(), :section => 'community', :object_type => session[:community_view_by] }, :user_id => get_curr_user_id(), :terms => session[:community_search_term], :page_size => 10, :page => session[:community_page_num] }
 		case session[:community_sort_by]
 		when 'Relevancy' then options[:sort_by] = :relevancy
 		when 'Title' then options[:sort_by] = :title_sort

@@ -1,0 +1,26 @@
+<%# Figure out how we're running so we know what files to load -%>
+<%# We only run Google Analytics if we are on the real deployment. -%>
+<%# We want to load the non-minimized versions of YUI if we are running development -%>
+<% quick_load = (Rails.env == 'development') && (request.host().index('performantsoftware') == nil) -%>
+
+<%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
+<%= get_stylesheets(@site_section, quick_load) %>
+<!--[if lt IE 7]>
+<%= stylesheet_link_tag "iehacks", :media => "all" %>
+<![endif]-->
+<!--[if IE 7]>
+<%= stylesheet_link_tag "ie7hacks", :media => "all" %>
+<![endif]-->
+
+<script type="text/javascript" src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<%= raw(get_javascripts(@site_section, quick_load)) %>
+<%= csrf_meta_tag %>
+
+<script type="text/javascript">
+	var supportsFixedPositioning = true;
+</script>
+<!--[if IE]>
+<script type="text/javascript">
+	supportsFixedPositioning = false;
+</script>
+<![endif]-->

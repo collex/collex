@@ -189,10 +189,10 @@ class ForumController < ApplicationController
     if disc_type == ''
       DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
     elsif disc_type == 'mycollection'
-      cr = CachedResource.find_by_uri(nines_object)
-      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
-        cr = CollectedItem.collect_item(user, nines_object, nil)
-      end
+      cr = CachedResource.find_by_id(nines_object)
+#      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
+#        cr = CollectedItem.collect_item(user, nines_object, nil)
+#      end
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
         :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif disc_type == 'exhibit'
@@ -245,7 +245,7 @@ class ForumController < ApplicationController
 		# now tell the caller where the post landed so they can go there.
 		session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
 		threads = DiscussionTopic.find(topic_id).discussion_threads
-		num_pages = threads.length.quo(session[:items_per_page]).ceil
+		#num_pages = threads.length.quo(session[:items_per_page]).ceil
 		render :text => "/forum/view_topic?page=1&topic=#{topic_id}"
     end
   end
@@ -284,7 +284,7 @@ class ForumController < ApplicationController
 			hit = CachedResource.get_hit_from_uri(params[:uri])
 			render :partial => '/results/result_row_for_popup', :locals => { :hit => hit, :extra_button_data => { :partial => params[:partial], :index => params[:index], :target_el  => params[:target_el]} }
 		else
-			render :text => 'We\'re sorry! We can\'t find the object that you requested. Reason: internal error (incorrect parameters). Please contact the #{SITE_NAME} webmaster using the email at the bottom of the page', :status => :bad_request
+			render :text => 'We\'re sorry! We can\'t find the object that you requested. Reason: internal error (incorrect parameters). Please contact the #{Setup.site_name()} webmaster using the email at the bottom of the page', :status => :bad_request
 		end
   end
 
@@ -323,7 +323,7 @@ class ForumController < ApplicationController
 			if exhibit_id
 				exhibits_objects = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
 				# TODO-PER: There is probably a cleaner way to do this, just convert a list of URI to cached_resource_id
-				objs = []
+				#objs = []
 				exhibits_objects.each { |eo|
 					cr = CachedResource.find_by_uri(eo[:uri])
 #					o = CollectedItem.new
@@ -340,8 +340,8 @@ class ForumController < ApplicationController
 								obj = {}
 								obj[:id] = hit['uri']
 								obj[:img] = image
-								obj[:title] = hit['title'][0]
-								obj[:strFirstLine] = hit['title'][0]
+								obj[:title] = hit['title']
+								obj[:strFirstLine] = hit['title']
 								obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
 								ret.push(obj)
 							end
@@ -546,7 +546,7 @@ class ForumController < ApplicationController
 						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{user.fullname}. The text of the message is:\n\n"
 						body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
 						body += "The reason for this report is:\n\n#{reason}"
-						EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], "", admin, 
+						EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], admin.fullname, admin.email,
 						  "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					end
 				rescue Exception => msg

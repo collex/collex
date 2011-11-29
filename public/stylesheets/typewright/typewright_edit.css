@@ -395,7 +395,16 @@ table.tw_editing td {
 .tw_word_stats {
 	font-family: 'Verdana', sans-serif;
 	font-size: 12px;
-	display: none;
+/*	display: none; */
+}
+
+.tw_report_page {
+    font-family: 'Verdana', sans-serif;
+    font-size: 11px;
+}
+
+.tw_report_page:link, .tw_report_page:visited {
+  color: #AC2E20;
 }
 
 .tw_word_stats caption {
@@ -409,6 +418,9 @@ table.tw_editing td {
 	border:1px solid gray;
 }
 
+.tw_instruction_list li {
+    list-style-position: inside;
+}
 /* Overlay Look/Feel */
 .yui3-overlay-content {
     padding:2px;
@@ -462,14 +474,61 @@ table.tw_editing td {
 
 /* instructions */
 
+#tw_walkthrough {
+}
+
+#tw_survey {
+    margin-left: 100px;
+}
+
+#tw_detailed_instructions {
+  position: relative;
+  left: 100px;
+}
+
 .tw_edit_instructions_popup {
 	width: 800px;
 	height: 600px;
 	overflow: auto;
 }
 
+.tw_report_page_popup {
+	width: 400px;
+	height: 300px;
+	overflow: hidden;
+}
+
+.tw_report_page_iframe {
+    border: none;
+    width: 400px;
+    height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .tw_edit_instructions_popup p {
     padding-bottom: 12px;
     padding-right: 40px;
     padding-top: 20px;
+}
+
+.tw_pagination_source {
+    font-family: 'Verdana', sans-serif;
+    font-size: .7em;
+    display: inline;
+    margin-left: 20px;
+    vertical-align: text-top;
+}
+.tw_source_link {
+    color: #AC2E20;
+    text-decoration: none;
+ }
+.tw_source_link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.tw_selected_source {
+    font-weight: bolder;
+    font-size: 1.2em;
+    cursor: default;
 }

@@ -40,7 +40,7 @@ class MyCollexController < ApplicationController
     @has_more = @results.length < more_results.length
 
 	if COLLEX_PLUGINS['typewright']
-		@my_typewright_documents = Typewright::DocumentUser.document_list(DEFAULT_FEDERATION, user.id)
+		@my_typewright_documents = Typewright::DocumentUser.document_list(Setup.default_federation(), user.id)
 	end
 
   end
@@ -165,7 +165,7 @@ class MyCollexController < ApplicationController
     end
     user.save
 
-    session[:user] = COLLEX_MANAGER.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
+    session[:user] = User.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
 
     render :partial => 'profile', :locals => { :user => user, :can_edit => true }
   end
@@ -186,10 +186,12 @@ class MyCollexController < ApplicationController
     user = get_curr_user
 		flash = ''
 		if user	# If the session expired while the dlg was on the page, don't go further.
-			err = Image.save_image(params['image'], user)
-			if err[:status] == :error
-				flash = err[:user_error]
-				logger.error(err[:log_error])
+			if  !params['image'].blank?
+				err = Image.save_image(params['image'], user)
+				if err[:status] == :error
+					flash = err[:user_error]
+					logger.error(err[:log_error])
+				end
 			end
 #			if params['image'] && params['image'].original_filename.length > 0
 #				begin

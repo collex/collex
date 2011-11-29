@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<%# bulkcollect params: string mode -%>
+<%# bulkcollect params: string mode, int page -%>
 <div class="bulkcollect">
 <% if is_logged_in? -%>
   <a class="modify_link" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">[Select All]</span><span class="bulk_unselect_all" style="display: none;">[Unselect All]</span></a>
@@ -25,10 +25,10 @@
   <% end %>
   
   <% if mode == :uncollect or mode == :both %>
-      <a class="modify_link" href="#" onclick="bulkUncollect(event); return false;">[Uncollect Selected]</a>
+      <a class="modify_link" href="#" onclick="bulkUncollect(); return false;">[Uncollect Selected]</a>
   <% end %>
   
-  <a id="bulk_tag" class="modify_link" href="#" onclick="bulkTag('/tag/tag_name_autocomplete'); return false;">[Tag Selected]</a>
+  <a id="bulk_tag" class="modify_link" href="#" onclick="bulkTag('/tag/tag_name_autocomplete', <%= page %>); return false;">[Tag Selected]</a>
 <% end -%>
 	
 	<a class="nav_link" href="#" onclick="toggleItemExpand(); return false;">

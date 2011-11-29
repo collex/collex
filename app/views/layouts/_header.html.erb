@@ -1,0 +1,27 @@
+<div id="main_container">
+	<div id="header_container">
+		<% if @current_page != "HOME" -%>
+		<a href="/" id="header_left">&nbsp;</a>
+		<% else -%>
+			<div id="header_left<%= rand(5) + 1 %>"></div>
+		<% end -%>
+		<div id="header_right"><%= sign_in_link({ :class => 'nav_link' }) if !is_logged_in? %></div>
+	</div>
+	<%= @current_page.blank? ? draw_tabs(@current_page) : draw_tabs(@current_page) %>
+
+	<div id="subnav_container">
+		<div id="login_container">
+			<%= render :partial => '/common/login_slider', :locals => { :current_page => @current_page } %>
+		</div>
+		<div id="subnav_links_container">
+			<%= link_to(Setup.about()[:left][:label], Setup.about()[:left][:link], { :class => 'nav_link' } ) %>
+<% if Setup.about()[:right] -%>
+| <%=  link_to(Setup.about()[:right][:label], Setup.about()[:right][:link], { :class => 'nav_link' } ) %>
+<% end -%>
+		</div>
+		   <div class="clear_both"></div>
+		<% if @current_page == "admin" -%>
+			<%= render :partial => '/admin/default/menu', :locals => { :current_page => yield(:current_sub_page) } %>
+		<% end -%>
+	</div>
+	<div id="content_container">

@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% current_page "Community" -%>
-<% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
+<% #curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
 <%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => 'Tags', :url => '/tags' }], params[:tag]) %>
 <div class="inner_content_container">
 	<% total_link = raw("<a id='top_of_results'>#{create_total('tag', @total_hits, params[:tag])}</a>") -%>

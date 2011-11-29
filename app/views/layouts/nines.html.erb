@@ -17,85 +17,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<%# Figure out how we're running so we know what files to load -%>
-	<%# We only run Google Analytics if we are on the real deployment. -%>
-	<%# We want to load the non-minimized versions of YUI if we are running development -%>
-	<% quick_load = (Rails.env == 'development') && (request.host().index('performantsoftware') == nil) -%>
-
-<title><%= SITE_NAME_TITLE %><%= " - #{yield(:current_page)}" if @site_section != :home %><%= @subtitle %></title>
-<%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
-<%= get_stylesheets(@site_section, quick_load) %>
-<!--[if lt IE 7]>
-	<%= stylesheet_link_tag "iehacks", :media => "all" %>
-<![endif]-->
-<!--[if IE 7]>
-	<%= stylesheet_link_tag "ie7hacks", :media => "all" %>
-<![endif]-->
-
-<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
-<%= raw(get_javascripts(@site_section, quick_load)) %>
-<%= csrf_meta_tag %>
-
-	<script type="text/javascript">
-		var supportsFixedPositioning = true;
-	</script>
-	<!--[if IE]>
-	<script type="text/javascript">
-		supportsFixedPositioning = false;
-	</script>
-	<![endif]-->
-
+	<% @current_page ||= yield(:current_page) %>
+	<%= render :partial => '/layouts/dependencies' %>
+	<title><%= Setup.site_title() %><%= " - #{@current_page}" if @site_section != :home %><%= @subtitle %></title>
 </head>
 <body class="yui-skin-sam">
-	<div id="main_container">
-		<div id="header_container">
-			<% if yield(:current_page) != "HOME" -%>
-			<a href="/" id="header_left">&nbsp;</a>
-			<% else -%>
-				<div id="header_left<%= rand(5) + 1 %>"></div>
-			<% end -%>
-			<div id="header_right"><%= sign_in_link({ :class => 'nav_link' }) if !is_logged_in? %></div>
-		</div>
-		<%= draw_tabs(yield(:current_page)) %>
-
-    	<div id="subnav_container">
-        	<div id="login_container">
-				<%= render :partial => '/common/login_slider', :locals => { :current_page => yield(:current_page) } %>
-            </div>
-            <div id="subnav_links_container">
-				<%= link_to(ABOUT[:label], ABOUT[:link], { :class => 'nav_link' } ) %>
-<% if ABOUT2 -%>
-	| <%=  link_to(ABOUT2[:label], ABOUT2[:link], { :class => 'nav_link' } ) %>
-<% end -%>
-            </div>
-           	<div class="clear_both"></div>
-			<% if yield(:current_page) == "admin" -%>
-				<%= render :partial => '/admin/default/menu', :locals => { :current_page => yield(:current_sub_page) } %>
-			<% end -%>
-        </div>
-		<div id="content_container">
+<%= render :partial => '/layouts/header' %>
 			<%= yield %>
-		</div>        
-	</div>
-
- 	<div class="clear_both"></div>
-	<%= render :partial => '/common/footer' %>
-	<% if GOOGLE_ANALYTICS -%>
-		<!-- for Google Analytics -->
-		<script type="text/javascript">
-
-		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', '<%= ANALYTICS_ID %>']);
-		  _gaq.push(['_trackPageview']);
-
-		  (function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
-
-		</script>
-	<% else %>
-		<!-- Google analytics is not included on this page because the site.yml file does not contain "google_analytics: true" -->
-	<% end -%>
+<%= render :partial => '/layouts/footer' %>
 </body></html>

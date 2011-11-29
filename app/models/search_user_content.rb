@@ -49,7 +49,7 @@ class SearchUserContent < ActiveRecord::Base
 		options[:member] = member
 		options[:admin] = admin
 
-		@solr = CollexEngine.new([ USER_CONTENT_CORE ]) if @solr == nil
+		@solr = Catalog.factory_create_user() if @solr == nil
 		ret = @solr.search_user_content(options)
 		hits = []
 		# We have to be careful: an object can be deleted and still be in the index until the next reindexing
@@ -77,92 +77,152 @@ class SearchUserContent < ActiveRecord::Base
 		return { :total_hits => total_hits, :total => ret[:total], :num_pages => num_pages, :hits => hits }
 	end
 
-	def format_date(d)
-		str = "#{d}"
-		str = str.gsub(" UTC", "Z")
-		str = str.gsub(" ", "T")
-
-		return str
-	end
-	
-	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, group_id)
-		doc = { :key => "#{object_type}_#{id}", :object_type => object_type, :object_id => id, :federation => federation,
-			:section => section, :title => title, :title_sort => title, :text => text, :last_modified => format_date(last_modified)
-		}
-		if group_id != nil && group_id.to_i > 0
-			doc[:group_id] = group_id
-		end
-		
-		if visibility_type == 'everyone'
-			doc[:visible_to_everyone] = true
-		else
-			doc[:visible_to_everyone] = false
-			if visibility_type == 'member'
-				doc[:visible_to_group_member] = group_id
+#	def format_date(d)
+#		str = "#{d}"
+#		str = str.gsub(" UTC", "Z")
+#		str = str.gsub(" ", "T")
+#
+#		return str
+#	end
+#
+#	def add_object(object_type, id, federation, section, title, text, last_modified, visibility_type, group_id)
+#		doc = { :key => "#{object_type}_#{id}", :object_type => object_type, :object_id => id, :federation => federation,
+#			:section => section, :title => title, :title_sort => title, :text => text, :last_modified => format_date(last_modified)
+#		}
+#		if group_id != nil && group_id.to_i > 0
+#			doc[:group_id] = group_id
+#		end
+#
+#		if visibility_type == 'everyone'
+#			doc[:visible_to_everyone] = true
+#		else
+#			doc[:visible_to_everyone] = false
+#			if visibility_type == 'member'
+#				doc[:visible_to_group_member] = group_id
+#			else
+#				doc[:visible_to_group_admin] = group_id
+#			end
+#		end
+#		@solr = factory_create_user() if @solr == nil
+#		@solr.add_object(doc)
+#	end
+	def reindex_exhibit(exhibit)
+		if exhibit.is_published != 0
+			if exhibit.group_id == nil
+				section = 'community'
+				visibility_type = 'everyone'
+				visibility_id = 0
 			else
-				doc[:visible_to_group_admin] = group_id
+				group = Group.find(exhibit.group_id)
+				section = group.group_type
+				visibility_type = Group.get_exhibit_visibility(exhibit)
+				visibility_id = group.id
 			end
+			@solr.add_local_object("Exhibit", exhibit.id, Setup.site_name(), section, exhibit.title, exhibit.get_all_text(), exhibit.last_change, visibility_type, visibility_id)
 		end
-		@solr = CollexEngine.new([ USER_CONTENT_CORE ]) if @solr == nil
-		@solr.add_object(doc)
+	end
+
+	def reindex_group(group)
+		section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
+		@solr.add_local_object("Group", group.id, Setup.site_name(), section, group.name, Exhibit.strip_tags(group.description), group.updated_at, 'everyone', group.id)
+	end
+
+	def reindex_cluster(cluster)
+		group = Group.find(cluster.group_id)
+		section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
+		@solr.add_local_object("Cluster", cluster.id, Setup.site_name(), section, cluster.name, Exhibit.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
+	end
+
+	def reindex_thread(thread)
+		# TODO-PER: there are different rules for how visibility is done for forums
+		visibility = Group.get_discussion_visibility(thread)
+		group_id = thread.group_id
+		if group_id == nil || group_id == 0
+			section = 'community'
+		else
+			group = Group.find(group_id)
+			section = group.group_type
+		end
+		text = ""
+		comments = thread.discussion_comments
+		comments.each {|comment|
+			text += Exhibit.strip_tags(comment.comment) + "\n"
+		}
+		section = section == 'peer-reviewed' ? 'community' : section
+		@solr.add_local_object("DiscussionThread", thread.id, Setup.site_name(), section, thread.title, text, thread.updated_at, visibility, group_id)
 	end
 
 	def reindex_all()
 		start_time = Time.now
-		@solr = CollexEngine.new([ USER_CONTENT_CORE ])
+		@solr = Catalog.factory_create_user()
 		@solr.start_reindex()
 
 		exhibits = Exhibit.all
 		exhibits.each {|exhibit|
-			if exhibit.is_published != 0
-				if exhibit.group_id == nil
-					section = 'community'
-					visibility_type = 'everyone'
-					visibility_id = 0
-				else
-					group = Group.find(exhibit.group_id)
-					section = group.group_type
-					visibility_type = Group.get_exhibit_visibility(exhibit)
-					visibility_id = group.id
-				end
-				add_object("Exhibit", exhibit.id, SITE_NAME, section, exhibit.title, exhibit.get_all_text(), exhibit.last_change, visibility_type, visibility_id)
-			end
+			reindex_exhibit(exhibit)
 		}
 
 		groups = Group.all
 		groups.each {|group|
-			section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
-			add_object("Group", group.id, SITE_NAME, section, group.name, Exhibit.strip_tags(group.description), group.updated_at, 'everyone', group.id)
+			reindex_group(group)
 		}
 
 		clusters = Cluster.all
 		clusters.each {|cluster|
-			group = Group.find(cluster.group_id)
-			section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
-			add_object("Cluster", cluster.id, SITE_NAME, section, cluster.name, Exhibit.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
+			reindex_cluster(cluster)
 		}
 
-		# TODO-PER: there are different rules for how visibility is done for forums
 		threads = DiscussionThread.all
 		threads.each {|thread|
-			visibility = Group.get_discussion_visibility(thread)
-			group_id = thread.group_id
-			if group_id == nil || group_id == 0
-				section = 'community'
-			else
-				group = Group.find(group_id)
-				section = group.group_type
-			end
-			text = ""
-			comments = thread.discussion_comments
-			comments.each {|comment|
-				text += Exhibit.strip_tags(comment.comment) + "\n"
-			}
-			section = section == 'peer-reviewed' ? 'community' : section
-			add_object("DiscussionThread", thread.id, SITE_NAME, section, thread.title, text, thread.updated_at, visibility, group_id)
+			reindex_thread(thread)
 		}
 
-		@solr.commit()
+		@solr.local_commit()
+		duration = Time.now - start_time
+		return duration
+	end
+
+	def reindex_new(tim)
+		start_time = Time.now
+		@solr = Catalog.factory_create_user()
+
+		exhibits = Exhibit.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		exhibits.each {|exhibit|
+			begin
+				reindex_exhibit(exhibit)
+			rescue Exception => e
+				puts "Error indexing Exhibit #{exhibit.id}: #{e.to_s}"
+			end
+		}
+
+		groups = Group.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		groups.each {|group|
+			begin
+				reindex_group(group)
+			rescue Exception => e
+				puts "Error indexing Group #{group.id}: #{e.to_s}"
+			end
+		}
+
+		clusters = Cluster.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		clusters.each {|cluster|
+			begin
+				reindex_cluster(cluster)
+			rescue Exception => e
+				puts "Error indexing Cluster #{cluster.id}: #{e.to_s}"
+			end
+		}
+
+		threads = DiscussionThread.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		threads.each {|thread|
+			begin
+				reindex_thread(thread)
+			rescue Exception => e
+				puts "Error indexing Discussion #{thread.id}: #{e.to_s}"
+			end
+		}
+
+		@solr.local_commit()
 		duration = Time.now - start_time
 		return duration
 	end
@@ -200,7 +260,7 @@ class SearchUserContent < ActiveRecord::Base
 	def self.periodic_update
 		recs = SearchUserContent.find(:all, :limit => 1, :order => "last_indexed DESC")
 		last_change = SearchUserContent.last_update()
-		if recs.length == 0 || last_change == nil
+		if recs.blank? || recs.length == 0 || last_change.blank?
 			is_dirty = true
 		else
 			last_index = recs[0].last_indexed
@@ -208,9 +268,17 @@ class SearchUserContent < ActiveRecord::Base
 		end
 		if is_dirty
 			suc = SearchUserContent.new
-			duration = suc.reindex_all()
-			num_objs = CollexEngine.new([ USER_CONTENT_CORE ]).query_num_docs()[:total]
-			SearchUserContent.create({ :last_indexed => last_change, :seconds_spent_indexing => duration, :objects_indexed => num_objs })
+			if recs.blank? || recs.length == 0
+				duration = suc.reindex_all()
+			else
+				duration = suc.reindex_new(recs[0].last_indexed)
+			end
+			begin
+				num_objs = Catalog.factory_create_user().total_user_content()
+				SearchUserContent.create({ :last_indexed => last_change, :seconds_spent_indexing => duration, :objects_indexed => num_objs })
+			rescue Catalog::Error => e
+				num_objs = e.message
+			end
 			return { :activity => true, :message => "User Content reindexed on #{last_change}. Time spent indexing: #{duration} seconds, Number of objects: #{num_objs}" }
 		end
 		return { :activity => false }

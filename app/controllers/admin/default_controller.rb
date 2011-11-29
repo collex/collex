@@ -50,40 +50,30 @@ class Admin::DefaultController < Admin::BaseController
 #  end
 
 	def change_group_type
-    group_id = params[:group_id]
-    group_type = params[:group_type]
-    badge = params[:badge_id]
-    header_text_color = params[:header_text_color]
-    header_background_color = params[:header_background_color]
-    link_color = params[:link_color]
-    publication_image = params[:publication_image_id]
-    group = Group.find(group_id)
+		group_id = params[:group_id]
+		group_type = params[:group_type]
+		badge = params[:badge_id]
+		header_text_color = params[:header_text_color]
+		header_background_color = params[:header_background_color]
+		link_color = params[:link_color]
+		publication_image = params[:publication_image_id]
+		group = Group.find(group_id)
 		old_type = group.group_type
-    group.update_attribute('group_type', group_type)
-    group.update_attribute('badge_id', badge)
-    group.update_attribute('publication_image_id', publication_image)
-    group.update_attribute('header_color', header_text_color)
-    group.update_attribute('header_background_color', header_background_color)
-    group.update_attribute('link_color', link_color)
+		group.update_attribute('group_type', group_type)
+		group.update_attribute('badge_id', badge)
+		group.update_attribute('publication_image_id', publication_image)
+		group.update_attribute('header_color', header_text_color)
+		group.update_attribute('header_background_color', header_background_color)
+		group.update_attribute('link_color', link_color)
 		if group_type == 'peer-reviewed'
-			exhibits = Exhibit.find_all_by_group_id(group_id)
-			exhibits.each {|exhibit|
-				exhibit.adjust_indexing(:group_becomes_peer_reviewed)
-			}
-			solr = CollexEngine.factory_create(false)
-			solr.commit()
+			Exhibit.adjust_indexing_all(group_id, :group_becomes_peer_reviewed)
 		elsif old_type == 'peer-reviewed'
-			exhibits = Exhibit.find_all_by_group_id(group_id)
-			exhibits.each {|exhibit|
-				exhibit.adjust_indexing(:group_leaves_peer_reviewed)
-			}
-			solr = CollexEngine.factory_create(false)
-			solr.commit()
+			Exhibit.adjust_indexing_all(group_id, :group_leaves_peer_reviewed)
 		end
-   render :partial => 'group_tr', :locals => { :group => group }
+		render :partial => 'group_tr', :locals => {:group => group}
 	end
 
-  # Delete a comment that has been flagged as abusive and notify all reporters and 
+	# Delete a comment that has been flagged as abusive and notify all reporters and
   # the original commenter of the action
   #
 	def delete_comment
@@ -95,11 +85,11 @@ class Admin::DefaultController < Admin::BaseController
 		begin
 			reporters.each do | reporter |
 				body = "Thanks for reporting the comment by #{commenter.fullname}. It has been removed.\n\n"
-				EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], reporter.fullname, reporter.email, "Abusive Comment Report Accepted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
+				EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], reporter.fullname, reporter.email, "Abusive Comment Report Accepted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
 			end
 			body = "Your comment on #{comment.created_at } was considered inappropriate and has been removed by the administrator. The text of your comment was:\n\n"
 			body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
-			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], commenter.fullname, commenter.email, "Abusive Comment Deleted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
+			EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], commenter.fullname, commenter.email, "Abusive Comment Deleted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't send email: " + msg.message)
 		end
@@ -142,6 +132,11 @@ class Admin::DefaultController < Admin::BaseController
 		use_test = params[:test]
 		session[:use_test_index] = use_test
     redirect_to :controller => 'admin/default', :action => 'index'
+	end
+
+	def reload_facet_tree()
+		refill_session_cache()
+		redirect_to :back
 	end
 
 	def add_badge

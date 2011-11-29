@@ -23,20 +23,22 @@ class Typewright::LinesController < ApplicationController
 			render :text => 'You must be signed in to correct lines. Did your session expire?', :status => :bad_request
 		else
 			doc_id = params[:id]
+      src = params[:src]
 			page = params[:page]
 			line = params[:line] ? params[:line].to_f : nil
-			user_id = Typewright::User.get_or_create_user(DEFAULT_FEDERATION, user_id)
+			user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id)
+			user_id = user_id.id if user_id
 			status = params[:status]
 			words = params[:words]
-			if doc_id == nil || page == nil || line == nil || user_id == nil || status == nil
+			if doc_id == nil || page == nil || line == nil || user_id == nil || status == nil || src == nil
 				render :text => 'Illegal parameters.', :status => :bad_request
 			else
-				rec = Typewright::Line.get_undoable_record(doc_id, page, line, user_id)
+				rec = Typewright::Line.get_undoable_record(doc_id, page, line, user_id, src)
 				if rec
 					rec.destroy()
 				end
 				if status != 'undo'
-					Typewright::Line.create({ :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words) })
+					Typewright::Line.create({ :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src })
 				end
 
 				render :text => ""

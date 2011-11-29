@@ -17,11 +17,12 @@
 -%>
 <%# input_and_submit_button params: string input_id, input_class, submit_text, submit_id, submit_url, update_el, wait_msg, method (opt) -%>
 <% method ||= 'POST' %>
-<input type="text" id="<%= input_id %>" class="<%= input_class %>"></input>
+<input type="text" id="<%= input_id %>" class="<%= input_class %>" />
 <%= link_to submit_text, submit_url, { :id => submit_id } %>
 <script type="text/javascript">
 	(function() {
 		var createSubmitButton = function() {
+			var firstTime = true;
 			var execute = function() {
 				var term = $('<%= input_id %>').value;
 				<% if method == 'GET' %>
@@ -31,16 +32,19 @@
 			  <% end %> 
 			};
 
-			new YAHOO.widget.Button('<%= submit_id %>', { onclick: { fn: execute } });
-			YAHOO.util.Event.onAvailable('<%= submit_id %>-button', function() {
-				$('<%= submit_id %>-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
-			}, this);
-			var keyPress = function(e) {
-				if (e.keyCode === 13) {
-					execute();
-				}
-			};
-			YAHOO.util.Event.addListener($('<%= input_id %>'), "keyup", keyPress);
+			if (firstTime) {
+				firstTime = false;
+				new YAHOO.widget.Button('<%= submit_id %>', { onclick: { fn: execute } });
+				YAHOO.util.Event.onAvailable('<%= submit_id %>-button', function() {
+					$('<%= submit_id %>-button').writeAttribute('onclick', 'return false;');	// This keeps the '#' out of the address bar
+				}, this);
+				var keyPress = function(e) {
+					if (e.keyCode === 13) {
+						execute();
+					}
+				};
+				YAHOO.util.Event.addListener($('<%= input_id %>'), "keyup", keyPress);
+			}
 		};
 		document.observe('dom:loaded', function() {
 			createSubmitButton();

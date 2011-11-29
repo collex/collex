@@ -53,19 +53,19 @@ class ExhibitIllustration < ActiveRecord::Base
   end
   
   def self.get_illustration_type_image
-    return 'Internet Image';
+    return 'Internet Image'
   end
   
   def self.get_illustration_type_nines_obj
-    return 'NINES Object';
+    return 'NINES Object'
   end
   
   def self.get_illustration_type_text
-    return 'Textual Illustration';
+    return 'Textual Illustration'
   end
   
   def self.get_exhibit_type_text
-    return 'NINES Exhibit';
+    return 'NINES Exhibit'
   end
   
   def self.factory(element_id, pos)

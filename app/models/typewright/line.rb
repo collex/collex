@@ -19,26 +19,26 @@ class Typewright::Line < ActiveResource::Base
 		self.site = COLLEX_PLUGINS['typewright']['web_service_url']
 	end
 
-	def self.find_all_by_document_id_and_page(document_id, page)
-		self.find(:all, :params => { :document_id => document_id, :page => page })
+	#def self.find_all_by_document_id_and_page_and_src(document_id, page, src)
+	#	self.find(:all, :params => { :document_id => document_id, :page => page, :src => src })
+	#end
+
+	def self.find_all_by_document_id_and_page_and_line_and_src(document_id, page, line, src)
+		self.find(:all, :params => { :document_id => document_id, :page => page, :line => line, :src => src })
 	end
 
-	def self.find_all_by_document_id_and_page_and_line(document_id, page, line)
-		self.find(:all, :params => { :document_id => document_id, :page => page, :line => line })
+	def self.revisions(uri, start, size, src)
+		self.find(:all, :params => { :uri => uri, :src => src, :revisions => true, :start => start, :size => size})
 	end
 
-	def self.revisions(uri, start, size)
-		self.find(:all, :params => { :uri => uri, :revisions => true, :start => start, :size => size})
-	end
-
-	def self.words_to_db(words)
-		return nil if words == nil
-		w = ""
-		words.each {|word|
-			w += "#{word[:l]}\t#{word[:t]}\t#{word[:r]}\t#{word[:b]}\t#{word[:line]}\t#{word[:word]}\n"
-		}
-		return w
-	end
+  def self.words_to_db(words)
+  	return nil if words == nil
+  	w = ""
+  	words.each {|word|
+  		w += "#{word[:l]}\t#{word[:t]}\t#{word[:r]}\t#{word[:b]}\t#{word[:line]}\t#{word[:word]}\n"
+  	}
+  	return w
+  end
 
 	def self.db_to_words(db)
 		w = []
@@ -59,39 +59,18 @@ class Typewright::Line < ActiveResource::Base
 		return str
 	end
 
-	def self.get_undoable_record(book, page, line, user)
-		corrections = self.find_all_by_document_id_and_page_and_line(book, page, line)
-		return nil if corrections.length == 0
-		return nil if corrections.last.federation != user.federation || corrections.last.orig_id != user.orig_id
-		return corrections.last
+	def self.get_undoable_record(book, page, line, user, src)
+    begin
+      corrections = self.find_all_by_document_id_and_page_and_line_and_src(book, page, line, src)
+      return nil if corrections.length == 0
+      return nil if corrections.last.federation != user.federation || corrections.last.orig_id != user.orig_id
+      return corrections.last
+    rescue
+      # TODO: Log error here
+      return nil
+    end
 	end
 
-	def self.merge_changes(lines, changes)
-		lines.each {|line|
-			line_num = "#{0.0 + line[:num]}"
-			if changes[line_num]
-				line[:authors] = [ 'Original' ]
-				line[:dates] = [ '' ]
-				line[:actions] = [ '' ]
-				changes[line_num].each { |lin|
-					orig_id = lin.orig_id
-					# TODO-PER: this won't work unless the user was in the same federation
-					author = ::User.find_by_id(orig_id).fullname
 
-					words = self.db_to_words(lin.words)
-					line[:authors].push(author)
-					line[:dates].push(lin.updated_at.getlocal.strftime("%b %e, %Y %I:%M%P"))
-					line[:words].push(words)
-					line[:actions].push(lin.status)
-					if lin.status == 'correct'
-						line[:text].push(line[:text].last)
-					else
-						line[:text].push(self.words_to_text(words))
-					end
-				}
-				changes.delete(line_num)
-			end
-		}
-	end
 end
 

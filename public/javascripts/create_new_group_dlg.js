@@ -188,8 +188,6 @@ var CreateGroupWizardDlg = Class.create({
 			dlg.initTextAreas({ onlyClass: 'description', toolbarGroups: [ 'fontstyle', 'link' ], linkDlgHandler: new LinkDlgHandler([populate_urls], progress_img) });
 			typeSelect('group[group_type]', defaultType);
 			dlg.center();
-
-			return;
 		};
 		
 		show();

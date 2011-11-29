@@ -16,15 +16,15 @@
     # ---------------------------------------------------------------------------- -%>
 
 <% current_page "Community" -%>
-<% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
+<% # user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topic = @topic -%>
 <% last_updated_date = topic.get_last_updated_date -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }], topic.topic) %>
+<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{Setup.site_name()}  Forum", :url => '/forum' }], topic.topic) %>
 
 <div class="content_container2">
 <div class="page_header"><%= topic.topic %></div>
-<div class="page_subheader">We've set aside this portion of <%= SITE_NAME %> for commentary, discussion and collaboration among the <%= SITE_NAME %> community.
-	Log in to your free account to join in the conversations below and to discuss the objects of your research at <%= SITE_NAME %>.</div>
+<div class="page_subheader">We've set aside this portion of <%= Setup.site_name() %> for commentary, discussion and collaboration among the <%= Setup.site_name() %> community.
+	Log in to your free account to join in the conversations below and to discuss the objects of your research at <%= Setup.site_name() %>.</div>
 
 <table class="FH_cat_table" border="0" cellpadding="0" cellspacing="0">
 	<tr><td colspan="9" class="FH_cat_info">

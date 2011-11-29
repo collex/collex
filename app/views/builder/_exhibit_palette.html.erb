@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# exhibit_palette params: ActiveRecord exhibit -%>	
 <% collected_object_thumbnails = ExhibitObject.get_collected_object_thumbnail_array(exhibit.id) -%>
-<span class="exhibit_profile">Exhibit Palette (<%= pluralize(collected_object_thumbnails.length, "#{SITE_NAME} Object") %>)
+<span class="exhibit_profile">Exhibit Palette (<%= pluralize(collected_object_thumbnails.length, "#{Setup.site_name()} Object") %>)
 	<%= link_to_function("[Edit Palette]", "new EditExhibitObjectListDlg('#{PROGRESS_SPINNER_PATH}', '/builder/get_all_collected_objects', '/builder/update_objects_in_exhibits', #{exhibit.id}, 'exhibit_palette'); return false;", { :class => 'nav_link' }) %>
 </span>
 <div class="exhibit_palette_items">

@@ -199,9 +199,9 @@ class BuilderController < ApplicationController
 			ex = visible_url.length == 0 ? nil : Exhibit.find_by_visible_url(visible_url)
 			ex2 = short_name.length == 0 ? nil : Exhibit.find_by_resource_name(short_name)
 			if ex != nil && ex.id != exhibit_id.to_i
-				render :text => "There is already an exhibit in #{SITE_NAME} with the url \"#{visible_url}\". Please choose another.", :status => :bad_request
+				render :text => "There is already an exhibit in #{Setup.site_name()} with the url \"#{visible_url}\". Please choose another.", :status => :bad_request
 			elsif ex2 != nil && ex2.id != exhibit_id.to_i
-				render :text => "There is already an exhibit in #{SITE_NAME} with the short name \"#{short_name}\". Please choose another.", :status => :bad_request
+				render :text => "There is already an exhibit in #{Setup.site_name()} with the short name \"#{short_name}\". Please choose another.", :status => :bad_request
 			else
 				exhibit.title = params[:overview_title_dlg]
 				exhibit.thumbnail = params[:overview_thumbnail_dlg]
@@ -272,7 +272,7 @@ class BuilderController < ApplicationController
 				if exhibit.visible_url && exhibit.visible_url.length > 0
 				  exhibit_url += exhibit.visible_url
 				else
-				  exhibit_url += exhibit.id.to_s();
+				  exhibit_url += exhibit.id.to_s()
 				end
 				body += "Visit the group at #{url_for(:controller => 'groups', :action => 'show', :id => group.get_visible_id())}, or read the exhibit here: #{exhibit_url}\n\n"
 				GroupsUser.email_hook("exhibit", exhibit.group_id, "Exhibit #{exhibit.title} shared in group #{group.name}", body, url_for(:controller => 'home', :action => 'index', :only_path => false))
@@ -759,7 +759,7 @@ class BuilderController < ApplicationController
 		else
 			ex = Exhibit.find_by_visible_url(visible_url)
 			if ex != nil
-				render :text => "There is already an exhibit in #{SITE_NAME} with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
+				render :text => "There is already an exhibit in #{Setup.site_name()} with the url \"#{exhibit_url}\". Please choose another.", :status => :bad_request
 			else
 				exhibit = Exhibit.factory(user.id, visible_url, exhibit_title, exhibit_thumbnail, group_id, cluster_id)
 				ExhibitObject.set_objects(exhibit.id, objects)
@@ -860,7 +860,7 @@ class BuilderController < ApplicationController
     exhibit_id = params[:exhibit_id]
     user_id = params[:user_id]
     page_num = params[:page_num].to_i
-    user = get_curr_user
+    #user = get_curr_user
     exhibit = Exhibit.find(exhibit_id)
     
     puts "ALIAS of EXHIBIT #{exhibit.title} is USER_ID: #{user_id}"

@@ -18,8 +18,8 @@ class HelpController < ApplicationController
   #layout 'popup'
   
   def sites
-    @sites = Site.find(:all, :order => "description ASC")
-	@sites = @sites.delete_if {|site| site['code'].index('exhibit_') == 0 }
+    @sites = Catalog.factory_create(false).get_archives() #Site.find(:all, :order => "description ASC")
+	@sites = @sites.delete_if {|site| site['handle'].index('exhibit_') == 0 }
     render :partial => '/help/sites'
   end
   

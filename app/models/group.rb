@@ -309,7 +309,7 @@ class Group < ActiveRecord::Base
 					gu.save!
 					body = "#{editor_name} has invited you to join the group \"#{self.name}.\"\n\n"
 					if user_id == nil
-						body += "To join this group, you will be prompted to create a login ID on #{SITE_NAME}.\n\n"
+						body += "To join this group, you will be prompted to create a login ID on #{Setup.site_name()}.\n\n"
 					end
 					accept = url_accept.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
 					decline = url_decline.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
@@ -433,7 +433,7 @@ class Group < ActiveRecord::Base
 	def self.permission_explanations_to_json
 		explanations = [ "Only group members may read and respond to private discussions.",
 			"Anyone can read, but only group members may respond.",
-			"Anyone can read and any #{SITE_NAME} user can respond."  ]
+			"Anyone can read and any #{Setup.site_name()} user can respond."  ]
 		return explanations.to_json()
 	end
 

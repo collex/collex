@@ -1,10 +1,10 @@
 module Typewright::TypewrightHelper
 	def tw_create_url(doc_id, page)
-		return "/typewright/documents/#{doc_id}/edit?page=#{page}"
+		return "/typewright/documents/#{doc_id}/edit?src=#{@src}&page=#{page}"
 	end
 
 	def tw_create_show_url(uri)
-		return "/typewright/documents/0?uri=#{uri}"
+		return "/typewright/documents/0?uri=#{uri}\&src=#{@src}"
 	end
 
 	def tw_abbrev(str)
@@ -14,7 +14,33 @@ module Typewright::TypewrightHelper
 	def tw_date_format(date)
 		return date.getlocal.strftime("%m/%d/%Y %I:%M%P")
 	end
-	
+
+  def tw_source_popup(possible_sources, curr_src = :gale)
+    html = "OCR Source: "
+    base_url = request.url.split('?')[0]
+    params = request.url.split('?')[1]
+    param_str = ''
+    params.split('&').each { |param|
+      pname = param.split('=')[0]
+      unless pname == 'src'
+        param_str += '&' + param
+      end
+    }
+    possible_sources.each { |src|
+      new_params = param_str + "&src=#{src}"
+      new_params[0] = '?'
+      target_url = base_url + new_params
+      if (src == "#{curr_src}")
+        # this is the current source, don't need a link, just a highlighted item
+        html += "<span class=\"tw_selected_source\">#{src}</span> "
+      else
+        # not the current source, need a link to make it be the current source
+        html += "<a href=\"#{target_url}\" class = \"tw_source_link\">#{src}</a> "
+      end
+    }
+    return html
+  end
+
 	def draw_revision_pager( uri, curr_page, total_pages )
 	  html = ""
 

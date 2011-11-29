@@ -24,7 +24,7 @@ class CachedResource < ActiveRecord::Base
   
   #has_and_belongs_to_many :tags
   has_many :cached_properties, :dependent => :destroy
-  has_one :collected_items
+  has_one :collected_item
   alias properties cached_properties
 
 	def set_hit(hit)	# This saves a solr call if the object is already in our hands.
@@ -41,7 +41,7 @@ class CachedResource < ActiveRecord::Base
   def resource
     #@resource ||= SolrResource.find_by_uri(self.uri)
 		return @resource if @resource != nil
-		@resource = CollexEngine.factory_create(false).get_object(self.uri)
+		@resource = Catalog.factory_create(false).get_object(self.uri)
 		return @resource
   end
   #alias_method :solr_resource, :resource
@@ -70,21 +70,25 @@ class CachedResource < ActiveRecord::Base
   
   # Add the resource at the specified URI to the cache
   #
-  def self.add( uri )
-	  # just get it from the cache if it were already added.
-	  hit = self.get_hit_from_uri(uri)
-	  return hit if hit
+  def self.add( uri, check_if_exists = true)
+	  if check_if_exists
+		  # just get it from the cache if it were already added.
+		  hit = self.get_hit_from_uri(uri)
+		  return hit if hit
+		end
 
 	  # The object isn't in the cache, so put it there
       cached_resource = CachedResource.new(:uri => uri)
-      hit = CollexEngine.factory_create(false).get_object(uri)
+      hit = Catalog.factory_create(false).get_object(uri)
       cached_resource.set_hit(hit)
       cached_resource.save!
 
-	  # Retrieve it from the cache instead of returning it directly, because the cache may filter some fields.
-	  # This way we know for sure that we will get the same results every time we call it.
-	  hit = self.get_hit_from_uri(uri)
-	  return hit
+	  if check_if_exists
+		  # Retrieve it from the cache instead of returning it directly, because the cache may filter some fields.
+		  # This way we know for sure that we will get the same results every time we call it.
+		  hit = self.get_hit_from_uri(uri)
+		  return hit
+		end
   end
   
   # check if the specified URI exists as a cached resource
@@ -221,6 +225,10 @@ class CachedResource < ActiveRecord::Base
   def self.get_hit_from_uri(uri)
     return nil if uri == nil
     cr = CachedResource.find_by_uri(uri)
+	if cr == nil
+		self.add(uri, false)
+		cr = CachedResource.find_by_uri(uri)
+	end
     return nil if cr == nil
     return get_hit_from_resource_id(cr.id)
   end
@@ -253,15 +261,16 @@ class CachedResource < ActiveRecord::Base
     image =  self.solr_obj_to_str(hit['thumbnail'])
     return image if image != nil
 
-	if @@site_thumbnails.has_key?(hit['archive'])
-		return @@site_thumbnails[hit['archive']]
+	arch = hit['archive'].kind_of?(Array) ? hit['archive'][0] : hit['archive']
+	if @@site_thumbnails.has_key?(arch)
+		return @@site_thumbnails[arch]
 	end
 
-    site = Site.find_by_code(hit['archive'])
+    site = Catalog.factory_create(false).get_archive(arch) #Site.find_by_code(hit['archive'])
     return nil if site == nil
     
-    thumb = self.solr_obj_to_str(site.thumbnail)
-	  @@site_thumbnails[hit['archive']] = thumb
+    thumb = self.solr_obj_to_str(site['thumbnail'])
+	  @@site_thumbnails[arch] = thumb
 	  return thumb
   end
   
@@ -346,11 +355,15 @@ class CachedResource < ActiveRecord::Base
     return { :results => [], :total => 0 } if tag == nil
     
     # walk through all assignments that match this tag ID
+	retrieved_list = {}
     items = []
     assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
     assigns.each do | assign |
-        hit = get_hit_from_resource_id( assign.cached_resource_id )
-        items.insert(-1, hit) if hit != nil
+		if retrieved_list[assign.cached_resource_id].blank?
+			hit = get_hit_from_resource_id( assign.cached_resource_id )
+			retrieved_list[assign.cached_resource_id] = true
+			items.insert(-1, hit) if hit != nil
+		end
     end
 		
 		page_results = {}
@@ -448,9 +461,9 @@ class CachedResource < ActiveRecord::Base
 
 			item[sort_field] = cp ? cp.value : ''
 			if sort_field == 'archive'
-				site = Site.find_by_code(item[sort_field])
+				site = Catalog.factory_create(false).get_archive(item[sort_field]) #Site.find_by_code(item[sort_field])
 				if site
-					item[sort_field] = site['description']
+					item[sort_field] = site['name']
 				end
 			end
 			item[sort_field] = item[sort_field].downcase().gsub(/\W/, '')
@@ -479,31 +492,31 @@ class CachedResource < ActiveRecord::Base
 	end
 	public
 
-  def self.get_hit_from_resource_id(resource_id)
-    hit = {}
-    uri = CachedResource.find_by_id(resource_id)
-	return nil if uri == nil
-    properties = CachedProperty.find_all_by_cached_resource_id(resource_id)
-    properties.each do |property|
-      if !hit[property.name]
-        hit[property.name] = []
-      end
-      if property.name == 'title'
-        bytes = ""
-        #property.value.each_byte { |c| bytes += "#{c} " if c > 127 }
-        hit[property.name].insert(-1, property.value + bytes)
-      elsif property.name != 'text'	# make sure that full text never gets shown, even if it is mistakenly collected.
-        hit[property.name].insert(-1, property.value)
-      end
-    end
-    hit['uri'] = uri.uri
-		if hit['freeculture']
-			hit['freeculture'] = hit['freeculture'][0] == '1'
-		end
-		if hit['has_full_text']
-			hit['has_full_text'] = hit['has_full_text'][0] == '1'
-		end
-    return hit
-  end
-  
+	def self.get_hit_from_resource_id(resource_id)
+		hit = {}
+		uri = CachedResource.find_by_id(resource_id)
+		return nil if uri == nil
+		properties = CachedProperty.find_all_by_cached_resource_id(resource_id)
+		properties.each { |property|
+
+			hit[property.name] = [] if !hit[property.name]
+
+			if property.name != 'text' # make sure that full text never gets shown, even if it is mistakenly collected.
+				hit[property.name].insert(-1, property.value)
+			end
+		}
+		hit['uri'] = uri.uri
+		# some fields are not multivalued, so they shouldn't be arrays
+		hit['archive'] = hit['archive'][0] if hit['archive']
+		hit['freeculture'] = hit['freeculture'][0] if hit['freeculture']
+		hit['image'] = hit['image'][0] if hit['image']
+		hit['thumbnail'] = hit['thumbnail'][0] if hit['thumbnail']
+		hit['title'] = hit['title'][0] if hit['title']
+		hit['url'] = hit['url'][0] if hit['url']
+		hit['has_full_text'] = hit['has_full_text'][0] if hit['has_full_text']
+		hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr']
+		hit['typewright'] = hit['typewright'][0] if hit['typewright']
+		return hit
+	end
+
 end

@@ -59,7 +59,7 @@
       <%= format_result_rows(rows, false) %>
     </table>
         
-    <% edit_url = "/typewright/documents/#{id}/edit" %>
+    <% edit_url = "/typewright/documents/#{id}/edit?src=#{@src}" %>
     <% logged_in = get_curr_user() != nil %>
     <%= link_to_function raw("&nbsp;"), "doEditDocument( #{logged_in}, '#{edit_url}' ); ", 
                 { :class => "tw_button4 tw_start_editing_button" } %>

@@ -21,6 +21,9 @@
 
 <div class="tw_history_div">
 
+  <div class="tw_src">
+    <%=raw tw_source_popup(@sources, @src) %>
+  </div>
   <div class="tw_pager">
     <%= draw_revision_pager(uri, revision_page, num_revision_pages) %>
   </div>
@@ -41,14 +44,14 @@
         
         <%# Edit USER with link user profile if from this federation %>
         <%# For external users, no link, just default name %>
-        <% if edit.federation == DEFAULT_FEDERATION %>
+        <% if edit.federation == Setup.default_federation() %>
           <td><%= get_user_link(edit.orig_id) %></td>
         <% else %>
-          <td>External User</td>
+          <td><%= edit.federation %> User</td>
         <% end %>
         
         <%# Edit TEXT with link to edit the specific line %>
-        <td><%= link_to( Typewright::Line.words_to_text(Typewright::Line.db_to_words(edit.words)), "#{id}/edit?page=#{edit.page}&line=#{edit.line.to_i}" )%></td>
+        <td><%= "#{@src}" == "#{edit.src}" ? '' : "#{edit.src}: "%><%= link_to( Typewright::Line.words_to_text(Typewright::Line.db_to_words(edit.words)), "#{id}/edit?page=#{edit.page}&line=#{edit.line.to_i}" )%></td>
         
         <%# Edit STATUS icon %>
         <% img_src = nil %>

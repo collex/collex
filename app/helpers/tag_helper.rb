@@ -20,7 +20,7 @@ module TagHelper
     is_hiding = false
     
     # get the buckets for the current zoom level
-    zooms = cloud_info[:zoom_levels];
+    zooms = cloud_info[:zoom_levels]
     zoom_level = 0
     if session[:tag_zoom]
        zoom_level = session[:tag_zoom] - 1

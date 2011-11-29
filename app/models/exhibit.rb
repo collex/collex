@@ -223,7 +223,7 @@ class Exhibit < ActiveRecord::Base
       if str != ""
         str += ",\n"
       end
-      str += "{ title: \"#{CGI.escapeHTML(exhibit.title)}\", thumbnail: \"#{exhibit.thumbnail}\" }";
+      str += "{ title: \"#{CGI.escapeHTML(exhibit.title)}\", thumbnail: \"#{exhibit.thumbnail}\" }"
     end
     return str
   end
@@ -445,7 +445,7 @@ class Exhibit < ActiveRecord::Base
 			arr = text.split('<')
 			left = ""
 			level = 0
-			arr.each_with_index { |a,i|
+			arr.each { |a|
 				if a.index('span') == 0
 					level += 1
 					left += '<' + a
@@ -772,27 +772,34 @@ class Exhibit < ActiveRecord::Base
 		return ret
 	end
 
-	def add_object(solr, data, boost, section_params)
-		uri_base = "http://#{SKIN}.org/peer-reviewed-exhibit/"
-		uri = "#{uri_base}#{self.id}"
+	@@solr = nil
+	def add_object(data, type, section_params, should_commit)
 		if section_params
-			uri += "/#{section_params[:count]}"
-			title = "#{self.title} (#{section_params[:name]})"
+			title = "#{section_params[:name]}: #{self.title}"
 			page_str = "?page=#{section_params[:page]}"
+			page = section_params[:page]
 		else
 			title = "#{self.title}"
 			page_str = ""
+			page = 0
 		end
-		genres = self.genres == nil ? [] : self.genres.split(', ')
-		doc = { :uri => uri, :title => title, :thumbnail => self.thumbnail, :has_full_text => true, :federation => DEFAULT_FEDERATION,
-			:genre => genres, :archive => self.make_archive_name(), :url => "#{self.get_friendly_url()}#{page_str}", :text_url => self.get_friendly_url(), :source => "#{SITE_NAME}",
-			:text => data.join(" \n"), :title_sort => title, :author_sort => self.get_apparent_author_name() }
+		year = self.updated_at.year
+		archive = Group.find(self.group_id)
+		doc = { id: self.id, page: page, title: title, federation: Setup.default_federation(), archive: archive.id, archive_name: archive.name, archive_url: archive.get_visible_url,
+			url: "#{self.get_friendly_url()}#{page_str}", text_url: self.get_friendly_url(), source: Setup.site_name(),
+			role_PBL: archive.name, text: data.join(" \n"), title_sort: title, author_sort: self.get_apparent_author_name(), type: type, year: year }
+		archive_thumbnail = PublicationImage.get_image(archive.publication_image_id)
+		doc[:archive_thumbnail] = archive_thumbnail if !archive_thumbnail.blank?
 		authors = self.get_authors()
 		doc[:role_AUT] = []
 		authors.each {|author|
 			doc[:role_AUT].push(author.fullname)
 		}
-		solr.add_object(doc, boost)
+		genres = self.genres == nil ? [] : self.genres.split(', ')
+		doc[:genre] = genres if genres.length > 0
+		doc[:thumbnail] = self.thumbnail if !self.thumbnail.blank?
+		@@solr = Catalog.factory_create(false) if @@solr == nil
+		@@solr.add_object(doc, should_commit)
 	end
 
 	public
@@ -804,8 +811,9 @@ class Exhibit < ActiveRecord::Base
 			exhibits += Exhibit.find_all_by_group_id_and_is_published(group.id, 1)
 		}
 		exhibits.each{ |exhibit|
-			puts "Indexing: #{exhibit.title}"
-			exhibit.index_exhibit(exhibit.id == exhibits.last.id)
+			should_commit = exhibit.id == exhibits.last.id
+			puts "Indexing: #{exhibit.title}#{' (commit)' if should_commit }"
+			exhibit.index_exhibit(should_commit)
 		}
 	end
 
@@ -826,29 +834,22 @@ class Exhibit < ActiveRecord::Base
 	# Generate a namespaced archive name for an exhibit. Example exhibit_NINES_152
 	#
 	def make_archive_name
-    return "#{ARCHIVE_PREFIX}#{SITE_NAME}_#{self.id}"
+    return "#{ARCHIVE_PREFIX}#{Setup.site_name()}_#{self.id}"
   end
 
 	def unindex_exhibit(should_commit)
-		solr = CollexEngine.factory_create(false)
-		solr.delete_archive(self.make_archive_name())
-		solr.commit() if should_commit
+		@@solr = Catalog.factory_create(false) if @@solr == nil
+		@@solr.delete_exhibit(self.id, should_commit)
 	end
 
 	def self.unindex_all_exhibits()
-		solr = CollexEngine.factory_create(false)
-		archives = solr.get_all_archives()
-		changed = false
-		archives.each {|archive|
-			if archive.index(ARCHIVE_PREFIX) == 0
-				puts "Removing archive #{archive}"
-				solr.delete_archive(archive)
-				changed = true
-			end
+		@@solr = Catalog.factory_create(false) if @@solr == nil
+		exhibits = @@solr.get_exhibits()
+		exhibits.each {|exhibit|
+			id = exhibit.split('/').last
+			puts "Removing exhibit #{id}: #{exhibit}"
+			@@solr.delete_exhibit(id, exhibit == exhibits.last)	# just commit on the last one
 		}
-		if changed == true
-			solr.commit()
-		end
 	end
 
 	def get_all_text()
@@ -884,13 +885,10 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def index_exhibit(should_commit)
-		boost_section = 3.0
-		boost_exhibit = 2.0
-		solr = CollexEngine.factory_create(false)
+		solr = Catalog.factory_create(false)
 		
-		puts "Delete old index #{make_archive_name()}"
-		#solr.delete_archive(self.make_old_archive_name())
-		solr.delete_archive(self.make_archive_name())
+		puts "Delete old index #{self.id}"
+		solr.delete_exhibit(self.id, false)
 		
 		full_data = []
 		section_name = ""	# The sections are set whenever there is a new header element; it is independent of the page.
@@ -903,7 +901,7 @@ class Exhibit < ActiveRecord::Base
 			elements.each {|element|
 				if element.exhibit_element_layout_type == 'header'
 					if section_name.length > 0
-						add_object(solr, data, boost_section, { :count => num_sections, :name => section_name, :page => section_page })
+						add_object(data, :partial, { :count => num_sections, :name => section_name, :page => section_page }, false)
 					end
 					section_name = Exhibit.strip_tags(element.element_text)
 					section_page = page.position
@@ -942,47 +940,53 @@ class Exhibit < ActiveRecord::Base
 				}
 			}
 			if data.length > 0 && section_name.length > 0
-				add_object(solr, data, boost_section, { :count => num_sections, :name => section_name, :page => section_page })
+				add_object(data, :partial, { :count => num_sections, :name => section_name, :page => section_page }, false)
 			end
 		}
-		add_object(solr, full_data, boost_exhibit, nil)
-		solr.commit() if should_commit
+		add_object(full_data, :whole, nil, should_commit)
 
 		# add to the resource tree
-		value = self.make_archive_name()
-		puts "Add #{value} to resource tree"
-    facet = FacetCategory.find_by_value(value)
-		parent = FacetCategory.find_by_value("#{SITE_NAME} Exhibits")
-		id = parent ? parent.id : 1
-    if facet == nil
-      FacetValue.create(:value => value, :parent_id => id)
-		end
-    site = Site.find_by_code(value)
-    if site == nil
-      Site.create(:code => value, :description => make_resource_name())
-    end
+		#value = self.make_archive_name()
+		#puts "Add #{value} to resource tree"
+		#facet = FacetCategory.find_by_value(value)
+		#parent = FacetCategory.find_by_value("#{Setup.site_name()} Exhibits")
+		#id = parent ? parent.id : 1
+		#if facet == nil
+		#	FacetValue.create(:value => value, :parent_id => id)
+		#end
+		#site = Catalog.factory_create(false).get_archive(value) #Site.find_by_code(value)
+		#if site == nil
+		#	Site.create(:code => value, :description => make_resource_name())
+		#end
 
 	end
 
-	def adjust_indexing(action)
+	def self.adjust_indexing_all(group_id, typ)
+		exhibits = self.find_all_by_group_id(group_id)
+		exhibits.each { |exhibit|
+			exhibit.adjust_indexing(typ, exhibit == exhibits.last)
+		}
+	end
+
+	def adjust_indexing(action, should_commit)
 		case action
 		when :group_becomes_peer_reviewed then
-			index_exhibit(false) if self.is_published == 1
+			index_exhibit(should_commit) if self.is_published == 1
 		when :group_leaves_peer_reviewed then
-			unindex_exhibit(false) if self.is_published == 1
+			unindex_exhibit(should_commit) if self.is_published == 1
 		when :publishing then
-			index_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+			index_exhibit(should_commit) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
 		when :unpublishing then
-			unindex_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+			unindex_exhibit(should_commit) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
 		when :limit_to_group then
-			unindex_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+			unindex_exhibit(should_commit) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
 		when :limit_to_everyone then
-			index_exhibit(true) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
+			index_exhibit(should_commit) if self.group_id && Group.find(self.group_id).group_type == 'peer-reviewed'
 		when :leave_group then
 			if self.group_id
 				group = Group.find_by_id(self.group_id)
 				if group && group.group_type == 'peer-reviewed'
-					unindex_exhibit(true)
+					unindex_exhibit(should_commit)
 				end
 			end
 		end
@@ -1013,6 +1017,10 @@ class Exhibit < ActiveRecord::Base
 				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 2 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
+			when 3 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
 				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 4 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })

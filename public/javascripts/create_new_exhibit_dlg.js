@@ -203,8 +203,6 @@ var CreateNewExhibitWizard = Class.create({
 			dlg.center();
 			obj_selector.populate(dlg);
 			objlist.populate(dlg, false, 'thumb');
-
-			return;
 		};
 	}
 });

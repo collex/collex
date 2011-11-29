@@ -115,7 +115,7 @@ var ResultRowDlg = Class.create({
 
 // -----
 
-function bulkTag(autocomplete_url)
+function bulkTag(autocomplete_url, page)
 {
 	var checkboxes = Form.getInputs('bulk_collect_form', 'checkbox');
 
@@ -138,7 +138,7 @@ function bulkTag(autocomplete_url)
 			okStr: 'Save',
 			explanation_text: 'Add multiple tags by separating them with a comma (e.g. painting, visual_art)',
          explanation_klass: 'gd_text_input_help',
-			extraParams: { uris: uris },
+			extraParams: { uris: uris, page: page },
 			autocompleteParams: { url: autocomplete_url, token: ','},
       inputKlass: 'new_exhibit_autocomplete',
 			actions: [ '/results/bulk_add_tag' ],
@@ -566,11 +566,11 @@ var StartDiscussionWithObject = Class.create({
 	}
 });
 
-function doAddToExhibit(partial, uri, index, row_id)
+function doAddToExhibit(partial, uri, index, row_id, my_collex_url)
 {
 	if (exhibit_names.length === 0) {
 		new MessageBoxDlg('Exhibits',
-			'You have not yet created any exhibits. <a href="/my_collex" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
+			'You have not yet created any exhibits. <a href="' + my_collex_url + '" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
 	} else {
 		//var arr = row_id.split('-');
 		//var row_num = arr[arr.length-1];

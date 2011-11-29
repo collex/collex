@@ -34,13 +34,13 @@
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
-<%= create_breadcrumbs([{ :text => tab_name, :url => return_url }, { :text => "#{SITE_NAME}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) %>
+<%= create_breadcrumbs([{ :text => tab_name, :url => return_url }, { :text => "#{Setup.site_name()}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) %>
 <div class="content_container2">
 <script type="text/javascript">
 	var exhibit_names = [ <%= user_id && user_id > 0 ? raw(Exhibit.js_array_of_all_my_exhibits(user_id)) : '' %> ];
 </script>
 
-<div class="page_subheader">Follow and join in this discussion by using your free <%= SITE_NAME %> account.</div>
+<div class="page_subheader">Follow and join in this discussion by using your free <%= Setup.site_name() %> account.</div>
 <br />
 <% main_comment = @thread.discussion_comments[0] -%>
 <%# the thread itself can be deleted if the current user is an administrator, or the current user created the thread and there are no comments, yet. -%>

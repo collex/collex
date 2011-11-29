@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class ClassroomController < ApplicationController
 	layout 'nines'
 	before_filter :init_view_options
@@ -26,12 +27,22 @@ class ClassroomController < ApplicationController
 
 	def index
 		make_facet_tree()
-		@results = get_results()
+		begin
+			@results = get_results()
+		rescue Catalog::Error => e
+			flash[:error] = e.to_s
+			@message = e.to_s
+			@results = { total_hits: 0, total: 0, num_pages: 1, hits: [] }
+		end
 	end
 
 	def search
 		term = params[:term]
 		term = nil if term && term.length == 0
+		if term
+			term = term.gsub(/[^ \p{Word}]/,' ').gsub(/\s+/, ' ').strip()
+			#term = "\"#{term}\"" if term.include?(' ')
+		end
 		session[:classroom_page_num] = 0
 		session[:classroom_search_term] = term
 		session[:classroom_sort_by] = 'Most Recent'
@@ -61,34 +72,7 @@ class ClassroomController < ApplicationController
 	private
 	def get_results()
 		@searcher ||= SearchUserContent.new
-		options = { :facet => { :federation => DEFAULT_FEDERATION, :section => 'classroom' }, :user_id => get_curr_user_id(), :terms => session[:classroom_search_term], :page_size => 10, :page => session[:classroom_page_num] }
-		case session[:classroom_view_by]
-		when 'Groups' then
-			options[:facet][:group] = true
-			options[:facet][:cluster] = false
-			options[:facet][:exhibit] = false
-			options[:facet][:comment] = false
-		when 'Clusters' then
-			options[:facet][:group] = false
-			options[:facet][:cluster] = true
-			options[:facet][:exhibit] = false
-			options[:facet][:comment] = false
-		when 'Exhibits' then
-			options[:facet][:group] = false
-			options[:facet][:cluster] = false
-			options[:facet][:exhibit] = true
-			options[:facet][:comment] = false
-		when 'Discussions' then
-			options[:facet][:group] = false
-			options[:facet][:cluster] = false
-			options[:facet][:exhibit] = false
-			options[:facet][:comment] = true
-		when 'All' then
-			options[:facet][:group] = true
-			options[:facet][:cluster] = true
-			options[:facet][:exhibit] = true
-			options[:facet][:comment] = true
-		end
+		options = { :facet => { :federation => Setup.default_federation(), :section => 'classroom', :object_type => session[:classroom_view_by] }, :user_id => get_curr_user_id(), :terms => session[:classroom_search_term], :page_size => 10, :page => session[:classroom_page_num] }
 		if session[:classroom_group_facet] != nil && session[:classroom_group_facet].to_i > 0
 			options[:facet][:group_id] = session[:classroom_group_facet]
 		end

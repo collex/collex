@@ -1,7 +1,7 @@
 <%# pagination -- params: int doc_id, string doc_uri, int page, int num_pages %>
 <div class="tw_edit_page_nav">
-	
-	<%= link_to raw("Document Home"), "/typewright/documents/0?uri=#{doc_uri}", {:class => "nav_link"} %>
+
+	<%= link_to raw("Document Home"), "/typewright/documents/0?uri=#{doc_uri}\&src=#{@src}", {:class => "nav_link"} %>
 	
 	<%= link_to "first", tw_create_url(doc_id, 1), { :class => 'nav_link tw_button_left tw_first_page' } if page > 1 %>&nbsp;
 	<%= link_to "prev", tw_create_url(doc_id, page-1), { :class => 'nav_link tw_button_left tw_prev_page' } if page > 1 %>&nbsp;&nbsp;&nbsp;
@@ -14,3 +14,4 @@
 	<%= link_to "next", tw_create_url(doc_id, page+1), { :class => 'nav_link tw_button_right tw_next_page' } if page < num_pages %>&nbsp;
 	<%= link_to "last", tw_create_url(doc_id, num_pages), { :class => 'nav_link tw_button_right tw_last_page' } if page < num_pages %>
 </div>
+<div class="tw_pagination_source"><%=raw tw_source_popup(@sources, @src) %></div>

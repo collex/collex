@@ -73,7 +73,7 @@ class GroupsUser < ActiveRecord::Base
 			if gu.user_id != nil
 				return true
 			else
-				user = COLLEX_MANAGER.find_by_email(gu.email)
+				user = User.find_by_email(gu.email)
 				return user != nil
 			end
 		end
@@ -84,7 +84,7 @@ class GroupsUser < ActiveRecord::Base
 		id = Group.id_retriever(id)
 		gu = self.find_by_id(id)
 		if gu != nil
-			user = COLLEX_MANAGER.find_by_email(gu.email)
+			user = User.find_by_email(gu.email)
 			gu.user_id = user.id if user != nil
 			gu.pending_invite = false
 			gu.save!
@@ -153,8 +153,8 @@ class GroupsUser < ActiveRecord::Base
 		user_ids = self.get_list_of_users_to_notify(group_id, notification_type)
 		user_ids.each {|user_id|
 			user = User.find(user_id)
-			EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, subject, body, return_url,
-				"You can manage the amount of notifications you receive from #{group.name} by logging into your #{SITE_NAME} account from the group page and changing your Notification Level.")
+			EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, subject, body, return_url,
+				"You can manage the amount of notifications you receive from #{group.name} by logging into your #{Setup.site_name()} account from the group page and changing your Notification Level.")
 		}
 	end
 	

@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% current_page MY_COLLEX -%>
+<% current_page Setup.my_collex() -%>
 <% if !is_logged_in? -%>
 	<div class="inner_content_container">
 		<%= render :partial => 'login_instructions' %>
@@ -23,7 +23,7 @@
 <% else -%>
 	<% curr_user = User.find_by_username(session[:user][:username]) -%>
 	<div class="subpage_nav"> 
-		<%= MY_COLLEX %><%= link_separator() %>&nbsp;<%= link_to "My objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %>&nbsp;<br />
+		<%= Setup.my_collex() %><%= link_separator() %>&nbsp;<%= link_to "My objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %>&nbsp;<br />
 	</div>
 		
 	<div class="inner_content_container">

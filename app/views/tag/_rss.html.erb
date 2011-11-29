@@ -19,13 +19,13 @@
 <% base_url = 'http://' + request.host_with_port() -%>
 
 	<channel>
-		<title><%= SITE_NAME %> Tag: <%= escape_for_xml(@tag) %></title>
+		<title><%= Setup.site_name() %> Tag: <%= escape_for_xml(@tag) %></title>
 		<link><%= base_url %>/tags/results?tag=<%= escape_for_xml(@tag) %>&amp;view=tag</link>
 		<description>nineteenth-century studies online</description>
 		<language>en-us</language>
 
 		<image>
-			<title><%= SITE_NAME %></title>
+			<title><%= Setup.site_name() %></title>
 			<url><%= base_url %><%= DEFAULT_THUMBNAIL_IMAGE_PATH %></url>
 			<link><%= base_url %></link>
 			<width>83</width>

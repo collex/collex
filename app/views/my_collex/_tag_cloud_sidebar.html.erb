@@ -18,7 +18,7 @@
 <div class="right_column_header">My Tags</div>
 <div class="narrow_tag_cloud">
 	<% if cloud_info[:cloud_freq].length == 0 -%>
-		<div class="empty_list_text">You have not tagged any items (yet!) Use tags to categorize the items you collect and help other <%= SITE_NAME %> users find them. Your tagged items will remain anonymous.</div>
+		<div class="empty_list_text">You have not tagged any items (yet!) Use tags to categorize the items you collect and help other <%= Setup.site_name() %> users find them. Your tagged items will remain anonymous.</div>
 	<% else -%>
 		<center>
 			<div id="tag_cloud_div">

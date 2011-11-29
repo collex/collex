@@ -24,7 +24,7 @@
 <% else -%>
 	<ul class="group_link_list">
 		<li class='change_forum_permissions'>Forum Permissions: <%= Group.permission_to_friendly(group.forum_permissions) %>
-			<span class="tooltip"><img src="/images/help_thumb.sm.gif" alt="help" /><span class="group_help_tooltip">Open: Anyone can read and any <%= SITE_NAME %> user can respond. <br />
+			<span class="tooltip"><img src="/images/help_thumb.sm.gif" alt="help" /><span class="group_help_tooltip">Open: Anyone can read and any <%= Setup.site_name() %> user can respond. <br />
 Public: Anyone can read, but only group members may respond. <br />
 Private: Only group members may read and respond to private discussions.</span></span>
 			<%= link_to_function('[change]', "editPermissions(#{group.id}, '#{group.forum_permissions}', #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link') if group.can_edit(user_id) %>

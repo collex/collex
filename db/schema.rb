@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110329212642) do
+ActiveRecord::Schema.define(:version => 20111026171152) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -223,16 +224,6 @@ ActiveRecord::Schema.define(:version => 20110329212642) do
     t.string   "additional_authors"
   end
 
-  create_table "facet_categories", :force => true do |t|
-    t.integer "parent_id"
-    t.string  "value"
-    t.string  "type"
-    t.decimal "carousel_include",     :precision => 10, :scale => 0
-    t.text    "carousel_description"
-    t.string  "carousel_url"
-    t.decimal "image_id",             :precision => 10, :scale => 0
-  end
-
   create_table "featured_objects", :force => true do |t|
     t.string   "object_uri"
     t.string   "title"
@@ -349,16 +340,6 @@ ActiveRecord::Schema.define(:version => 20110329212642) do
     t.datetime "updated_at"
   end
 
-  create_table "logs", :force => true do |t|
-    t.string   "user"
-    t.string   "request_method"
-    t.text     "request_uri"
-    t.text     "http_referer"
-    t.text     "params"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "object_activities", :force => true do |t|
     t.string   "username"
     t.string   "action"
@@ -406,12 +387,19 @@ ActiveRecord::Schema.define(:version => 20110329212642) do
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
-    t.text     "data"
+    t.text     "data",       :limit => 16777215
     t.datetime "updated_at"
   end
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "setups", :force => true do |t|
+    t.string   "key"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "sites", :force => true do |t|
     t.string "code"
@@ -429,7 +417,7 @@ ActiveRecord::Schema.define(:version => 20110329212642) do
   end
 
   create_table "tags", :force => true do |t|
-    t.string   "name",       :default => "", :null => false
+    t.string   "name",       :null => false
     t.datetime "created_on"
   end
 

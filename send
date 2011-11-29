@@ -1,2 +1,0 @@
-#!/bin/sh
-rake param=$1,nines@nines.org solr:package_archive

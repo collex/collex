@@ -20,13 +20,13 @@
 <% base_url = 'http://' + request.host_with_port() -%>
 
 	<channel>
-		<title><%= SITE_NAME %> Discussion: <%= thread.get_title() %></title>
+		<title><%= Setup.site_name() %> Discussion: <%= thread.get_title() %></title>
 		<link><%= base_url %>/forum/view_thread?thread=<%= thread.id %></link>
 		<description>nineteenth-century studies online</description>
 		<language>en-us</language>
 
 		<image>
-			<title><%= SITE_NAME %></title>
+			<title><%= Setup.site_name() %></title>
 			<url><%= base_url %><%= DEFAULT_THUMBNAIL_IMAGE_PATH %></url>
 			<link><%= base_url %></link>
 			<width>83</width>

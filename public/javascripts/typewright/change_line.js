@@ -43,9 +43,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
 		var correct = Y.one('.tw_correct');
 		if (correct) {
-			if (line.hasChanged(currLine))
-				correct.addClass('disabled');
-			else
+//			if (line.hasChanged(currLine))
+//				correct.addClass('disabled');
+//			else
 				correct.removeClass('disabled');
 		}
 
@@ -106,7 +106,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		elHist._node.innerHTML = createHistory(currLine);
 		elNum._node.innerHTML = create_display_line(line.getLineNum(currLine));
 		var displayLine = line.getCurrentText(currLine);
-		displayLine = displayLine.replace(/\'/g, '&apos;');
+        if (displayLine) {
+		    displayLine = displayLine.replace(/\'/g, '&apos;');
+        }
 		var editingLine = Y.one("#tw_editing_line");
 		if (line.isDeleted(currLine))
 			editingLine._node.innerHTML = "<input id='tw_input_focus' class='tw_deleted_line' readonly='readonly' type='text' value='" + displayLine + "' />";
@@ -164,7 +166,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 			elHist._node.innerHTML = createHistory(currLine+1);
 			elChg._node.innerHTML = createIcon(currLine+1);
 			elNum._node.innerHTML = create_display_line(line.getLineNum(currLine+1));
-			elText._node.innerHTML = create_jump_link(line.getCurrentText(currLine+1), -1, line.isDeleted(currLine+1));
+			elText._node.innerHTML = create_jump_link(line.getCurrentText(currLine+1), 1, line.isDeleted(currLine+1));
 		} else {
 			elHist._node.innerHTML = '';
 			elChg._node.innerHTML = '';
@@ -302,8 +304,12 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	//
 
 	Y.on("click", function(e) {
-		line.doConfirm(currLine);
-		lineModified();
+        if (line.hasChanged(currLine)) {
+            change_line_rel(1);
+        } else {
+		    line.doConfirm(currLine);
+            lineModified();
+        }
 	 }, ".tw_correct");
 
 	//

@@ -68,6 +68,7 @@
 .publications_image {
 	margin-left:20px;
 	margin-right:20px;
+	max-height: 400px;
 }
 
 .publications_explanation {

@@ -15,7 +15,7 @@
 ##########################################################################
 class ApplicationController < ActionController::Base
   session_times_out_in 4.hours
-  before_filter :set_charset
+  #before_filter :set_charset
   before_filter :session_create
   
   helper_method :is_logged_in?, :username, :user,
@@ -31,26 +31,59 @@ class ApplicationController < ActionController::Base
 
   private
 	def new_constraints_obj()
-		return [ FederationConstraint.new(:fieldx => 'federation', :value => DEFAULT_FEDERATION, :inverted => false) ]
+		return [ FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false) ]
+	end
+
+  	def refill_session_cache()
+		session[:num_docs] = nil
+		session[:num_sites] = nil
+		session[:federations] = nil
+		session[:archives] = nil
+		session[:carousel] = nil
+		session[:resource_tree] = nil
+		Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives])
+		session_create()
 	end
 
 	def session_create
-		ActionMailer::Base.default_url_options[:host] = request.host_with_port
-		if !self.kind_of?(TestJsController)
-			session[:constraints] ||= new_constraints_obj()
-			solr = CollexEngine.factory_create(session[:use_test_index] == "true")
-			session[:num_docs] ||= solr.num_docs()
-			session[:num_sites] ||= solr.num_sites()
+		begin
+			ActionMailer::Base.default_url_options[:host] = request.host_with_port
+			if !self.kind_of?(TestJsController)
+				session[:constraints] ||= new_constraints_obj()
+				solr = Catalog.factory_create(session[:use_test_index] == "true")
+				session[:num_docs] ||= solr.num_docs()
+				session[:num_sites] ||= solr.num_sites()
+				session[:num_docs] ||= 0
+				session[:num_sites] ||= 0
+			end
+			if session[:federations] == nil
+				solr ||= Catalog.factory_create(session[:use_test_index] == "true")
+				session[:federations] = solr.get_federations()
+			end
+			if session[:archives] == nil
+				solr ||= Catalog.factory_create(session[:use_test_index] == "true")
+				session[:archives] = solr.get_archives()
+				session[:carousel] = solr.get_carousel()
+				session[:resource_tree] = solr.get_resource_tree()
+			else
+				Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives])
+			end
+		rescue Catalog::Error => e
+			puts "Catalog Error: #{e.to_s}"
 			session[:num_docs] ||= 0
 			session[:num_sites] ||= 0
+			session[:federations] ||= {}
+			session[:archives] ||= []
+			session[:carousel] ||= []
+			session[:resource_tree] ||= []
 		end
     end
   
-    def set_charset
-      headers['Content-Type'] = 'text/html; charset=utf-8'
-      headers['Pragma'] = 'no-cache'
-      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    end
+#    def set_charset
+#      headers['Content-Type'] = 'text/html; charset=utf-8'
+#      headers['Pragma'] = 'no-cache'
+#      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+#    end
       
     def is_logged_in?
       session[:user] ? true : false
@@ -98,33 +131,33 @@ class ApplicationController < ActionController::Base
         type.all  { render :nothing => true, :status => "422 Error" }
       end
     end
-
-    def render_500
-      respond_to do |type|
-        type.html { render :file => "#{Rails.root}/public/static/#{SKIN}/500.html", :status => "500 Error", :layout => false }
-        type.all  { render :nothing => true, :status => "500 Error" }
-      end
-    end
-
-    def rescue_action_in_public(exception)
-      case exception
-        when ::ActiveRecord::RecordNotFound, ::ActionController::UnknownController, ::ActionController::UnknownAction, ::ActionController::RoutingError
-          render_404
-
-        else          
-          render_500
-
-          deliverer = self.class.exception_data
-          data = case deliverer
-            when nil then {}
-            when Symbol then send(deliverer)
-            when Proc then deliverer.call(self)
-          end
-
-          ExceptionNotifier.deliver_exception_notification(exception, self,
-            request, data)
-      end
-    end
+	#
+    #def render_500
+    #  respond_to do |type|
+    #    type.html { render :file => "#{Rails.root}/public/static/#{SKIN}/500.html", :status => "500 Error", :layout => false }
+    #    type.all  { render :nothing => true, :status => "500 Error" }
+    #  end
+    #end
+	#
+    #def rescue_action_in_public(exception)
+    #  case exception
+    #    when ::ActiveRecord::RecordNotFound, ::ActionController::UnknownController, ::ActionController::UnknownAction, ::ActionController::RoutingError
+    #      render_404
+	#
+    #    else
+    #      render_500
+	#
+    #      deliverer = self.class.exception_data
+    #      data = case deliverer
+    #        when nil then {}
+    #        when Symbol then send(deliverer)
+    #        when Proc then deliverer.call(self)
+    #      end
+	#
+    #      ExceptionNotifier.deliver_exception_notification(exception, self,
+    #        request, data)
+    #  end
+    #end
 
 	def respond_to_file_upload(callback, message)
 	  return "<script type='text/javascript'>window.top.window.#{callback}('#{message}');</script>"

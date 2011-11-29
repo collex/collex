@@ -188,8 +188,8 @@ private
     end
 
     # the my_collex tab is separate, and is rendered first
-    cls = (curr_page == MY_COLLEX) ? 'my_collex_link_current' : 'my_collex_link'
-    html = "\t" + link_to(MY_COLLEX, '/' + MY_COLLEX_URL, { :class => cls }) + "\n"
+    cls = (curr_page == Setup.my_collex()) ? 'my_collex_link_current' : 'my_collex_link'
+    html = "\t" + link_to(Setup.my_collex(), '/' + MY_COLLEX_URL, { :class => cls }) + "\n"
     html += "\t" + "<div id='nav_container'>\n"
     tabs.each { |tab|
       if tab[:dont_show_yourself] && curr_page == tab[:name]
@@ -260,7 +260,7 @@ private
     thumb = CachedResource.get_thumbnail_from_hit(hit)
     image = CachedResource.get_image_from_hit(hit)
     progress_id = "progress_#{hit['uri']}"
-	  title = hit['title'] ? hit['title'][0] : "Image"
+	  title = hit['title'] ? hit['title'] : "Image"
     str = tag "img", options.merge({:alt => title, :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
     if image != thumb
 		title = title[0,60]+'...' if title.length > 62
@@ -327,7 +327,7 @@ private
   end
   
   def site(code)
-    Site.find_by_code(code) || { 'description' => code }
+    return Catalog.factory_create(false).get_archive(code) #Site.find_by_code(code) || { 'description' => code }
   end
   
   def pie_by_percent(percentage)

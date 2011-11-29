@@ -30,7 +30,7 @@ class AddRolesAndRolesUsersTables < ActiveRecord::Migration
     Role.create :name => "editor", :id => 2
 
 		# now, create one user as an administrator, so they can bootstrap the system.
-		COLLEX_MANAGER.create_user('admin', 'password', '')
+		User.create_user('admin', 'password', '')
 		admin = User.find_by_username('admin')
 		RolesUsers.create(:role_id => 1, :user_id => admin.id)
   end

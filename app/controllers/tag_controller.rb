@@ -110,7 +110,7 @@ class TagController < ApplicationController
 				params[:tag] = session[:tag_current]
 			end
 
-			user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+			#user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
 
 			#do the pagination.
 			@page = params[:page] ? params[:page].to_i : 1
@@ -194,7 +194,7 @@ class TagController < ApplicationController
       if collects.length > 0
         sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
       end
-      str = result.to_s
+      #str = result.to_s
      }
     sorted_results.sort! {|a,b| 
         b[0] <=> a[0]

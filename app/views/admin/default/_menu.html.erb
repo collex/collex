@@ -18,7 +18,6 @@
 <div id="admin_menu">
 	<ul>
 	  <li><%= make_sub_menu_link("Home", "admin/default", "index", current_page) %></li>
-	  <li><%= make_sub_menu_link("Resources", "admin/facet_tree", "index", current_page) %></li>
 	  <li><%= make_sub_menu_link("Features", "admin/features", "index", current_page) %></li>
 	  <% if COLLEX_PLUGINS['typewright'] %>
 	   <li><%= make_sub_menu_link("TypeWright Features", "typewright/admin", "index", current_page) %></li>
@@ -30,5 +29,6 @@
 	  <li><%= make_sub_menu_link("Groups", "admin/default", "groups", current_page) %></li>
 	  <li><%= make_sub_menu_link("User Content", "admin/default", "user_content", current_page) %></li>
 <!--	  <li><%= make_sub_menu_link("VIC Conference", "admin/default", "vic_conference", current_page) %></li> -->
+		<li><%= make_sub_menu_link("Setup", "admin/setups", "index", current_page) %></li>
 	</ul>
 </div>

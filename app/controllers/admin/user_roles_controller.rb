@@ -24,10 +24,12 @@ class Admin::UserRolesController < Admin::BaseController
 		all_users = User.all(:order => 'username')
 		@users = []
 		all_users.each {|user|
-			if user.username[0] == page[0] || user.username[0] == lower_case_page[0]
+			if user.username[0] == page[0] || user.username[0] == lower_case_page[0] ||
+				user.username[0] < 'A' || user.username[0] > 'z' || (user.username[0] > 'Z' && user.username[0] < 'a')
 				@users.push(user)
 			end
 		}
+		@admins = User.get_administrators()
   end
 
 #  def list

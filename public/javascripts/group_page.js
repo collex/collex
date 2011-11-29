@@ -69,8 +69,6 @@ var EditGroupThumbnailDlg = Class.create({
 			dlg = new GeneralDialog(params);
 			//dlg.changePage('layout', null);
 			dlg.center();
-
-			return;
 		};
 
 		show();
@@ -207,8 +205,6 @@ var GridDlg = Class.create({
 			//dlg.changePage('layout', null);
 			initDataGrid({ element_id: "membership_data_grid", paginator_id: "membership_pagination", fields: fields, data: data });
 			dlg.center();
-
-			return;
 		};
 
 		show();
@@ -301,8 +297,6 @@ var InviteMembersDlg = Class.create({
 			dlg = new GeneralDialog(params);
 			//dlg.changePage('layout', "username");
 			dlg.center();
-
-			return;
 		};
 		
 		show();
@@ -674,8 +668,6 @@ var CreateNewClusterDlg = Class.create({
 			if (can_set_thumbnail)
 				$$('.thumbnail').each(function(el) { el.removeClassName('hidden'); });
 			dlg.center();
-
-			return;
 		};
 		
 		show();

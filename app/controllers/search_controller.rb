@@ -19,10 +19,6 @@ class SearchController < ApplicationController
    #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
    
-   # Number of search results to display by default
-   MIN_ITEMS_PER_PAGE = 10
-   MAX_ITEMS_PER_PAGE = 30
-   
    def initialize
    end
    
@@ -47,7 +43,7 @@ class SearchController < ApplicationController
     end
     redirect_to :action => 'browse'
    end
-   
+
    def add_constraint
      session[:name_of_search] = nil
       # There are two types of input we can receive here, depending on whether the search form was expanded.
@@ -58,12 +54,7 @@ class SearchController < ApplicationController
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
-#        add_title_constraint(params[:search_phrase], false) if params[:search_type] == "Title"
-#        add_author_constraint(params[:search_phrase], false) if params[:search_type] == "Author"
-#        add_editor_constraint(params[:search_phrase], false) if params[:search_type] == "Editor"
-#        add_publisher_constraint(params[:search_phrase], false) if params[:search_type] == "Publisher"
-#        add_date_constraint(params[:search_phrase], false) if params[:search_type] == "Year"
-        
+
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
         parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
@@ -131,7 +122,7 @@ class SearchController < ApplicationController
            break
          else
            str = phrase_str[p1..p2]
-           str.gsub!(/\s+/, "_")
+           str.gsub!(/[\s\-]+/, "_")
            phrase_str = phrase_str[0...p1] + str + phrase_str[p2+1..-1] 
            start_pos = p2+1
            if start_pos >= phrase_str.length
@@ -142,7 +133,7 @@ class SearchController < ApplicationController
      end
      
      # now, split the string on spaces
-     words_arr = phrase_str.split
+     words_arr = phrase_str.split(/[\s\-]+/)
   
      # find AND and get rid of it
      words_arr.delete_if { |word| word.upcase == "AND" }
@@ -178,7 +169,7 @@ class SearchController < ApplicationController
            words_arr[index] = ""
          end  
        else
-         # a preceeding OR may have blanked this word out. skip it if so
+         # a preceding OR may have blanked this word out. skip it if so
          if word != ""
            inverted[word] = !invert if invert_next == true
            inverted[word] = invert if invert_next == false
@@ -190,8 +181,9 @@ class SearchController < ApplicationController
      # Finally, create each constraint for non-empty strings
      words_arr.each do |word|
        if word != ""
+		   inv = inverted[word]
          word.gsub!("_", " ")
-         add_keyword_constraint(word, inverted[word] )
+         add_keyword_constraint(word, inv )
        end
      end
 
@@ -241,7 +233,8 @@ class SearchController < ApplicationController
        error_message = match.post_match
      else
        error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
-     end
+	 end
+	 logger.error("SEARCH ERROR: #{error_message}")
      if session[:constraints].length == 1 && session[:constraints][0]['type'] == "ExpressionConstraint"
        flash[:error] = render_to_string(:inline => "The search string \"#{session[:constraints][0]['value']}\" contains invalid characters. Try another search.")
      else
@@ -289,7 +282,7 @@ class SearchController < ApplicationController
 			session[:constraints] ||= new_constraints_obj()
 			session[:search_sort_by] ||= 'Relevancy'
 			items_per_page = 30
-			session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
+			#session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
 
 			@page = params[:page] ? params[:page].to_i : 1
 
@@ -301,8 +294,8 @@ class SearchController < ApplicationController
 						hit['text'] = @results["highlighting"][hit["uri"]]
 					end
 				}
-			rescue  Net::HTTPServerException => e
-				@results = rescue_search_error(e)
+#			rescue  Net::HTTPServerException => e
+#				@results = rescue_search_error(e)
 			rescue Catalog::Error => e
 				@results = rescue_search_error(e)
 				@message = e.message
@@ -310,7 +303,9 @@ class SearchController < ApplicationController
 
 			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil
 			@total_documents = session[:num_docs] #@results["total_documents"]
-			@sites_forest = FacetCategory.sorted_facet_tree().sorted_children
+			@sites_forest = session[:resource_tree] #@solr.get_resource_tree() #FacetCategory.sorted_facet_tree().sorted_children
+			# We are sorting by reverse order so that "Peer-Reviewed" comes out on top. This will probably need to get more sophisticated.
+			@sites_forest = @sites_forest.sort { |a,b| b['name'] <=> a['name'] }
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = 0
@@ -318,10 +313,10 @@ class SearchController < ApplicationController
 #			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
 			@fulltext_count = 0
 			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
-      @typewright_count = 0
-      @typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
+			@typewright_count = 0
+			@typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
 			@all_federations = 'Search all federations'
-			@other_federation = OTHER_FEDERATIONS[0]
+			session[:federations].each { |key,val| @other_federation = key if key != Setup.default_federation() }
 			@listed_constraints = marshall_listed_constraints()
 
 		      render :layout => 'nines'	#TODO-PER: Why is the layout not working unless it is defined explicitly here?
@@ -329,14 +324,6 @@ class SearchController < ApplicationController
 		end
 	end
    
-   # adjust the number of search results per page
-#   def result_count
-#     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-#     requested_items_per_page = params['search'] ? params['search']['result_count'].to_i : session[:items_per_page]
-#     session[:items_per_page] = (requested_items_per_page <= MAX_ITEMS_PER_PAGE) ? requested_items_per_page : MAX_ITEMS_PER_PAGE
-#     redirect_to :action => 'browse'
-#   end
-
 	 #adjust the sort order
   def sort_by
     session[:name_of_search] = nil
@@ -351,20 +338,7 @@ class SearchController < ApplicationController
       redirect_to :action => 'browse', :phrs => params[:phrs]
 	end
    
-   # allows queries to be linked in directly, or typed into the browser directly
-#   def search
-#     session[:constraints] = [ExpressionConstraint.new(:value => params[:q])]
-#     browse
-#   end
-   
-   # The following entry points don't have any controller work needed, but are included so that all legal entry points are represented by a controller method.
-#   def news #TODO: This will move when we implement the feature
-#   end
-#
-#   def results  # TODO: This should only be called by an internal redirect. Is there a danger in having this exposed to someone typing it in their browser?
-#   end
-   
-   # constrain search to only return free culture objects 
+   # constrain search to only return free culture objects
    def constrain_freeculture
      session[:name_of_search] = nil
      if params[:remove] == 'true'
@@ -487,21 +461,6 @@ class SearchController < ApplicationController
       redirect_to :action => 'browse', :phrs => params[:phrs]
    end
 
-#   def new_expression
-#     session[:constraints] = []
-#     add_expression
-#   end
-   
-#   def add_expression
-#     if params['field'] and params['field']['content']
-#       expression = params['field']['content']
-#       if expression and expression.strip.size > 0
-#         session[:constraints] << ExpressionConstraint.new(:value => expression)
-#       end
-#     end
-#     redirect_to :action => 'browse'
-#   end
-
     def new_search
       clear_constraints()
       if params[:mode] == 'typewright'
@@ -511,7 +470,7 @@ class SearchController < ApplicationController
     end
 
 		def list_name_facet_all
-     @solr = CollexEngine.factory_create(session[:use_test_index] == "true")
+     @solr = Catalog.factory_create(session[:use_test_index] == "true")
  		 @name_facets = @solr.name_facet(session[:constraints])
 			render :partial => 'list_name_facet_all'
 		end
@@ -519,7 +478,7 @@ class SearchController < ApplicationController
    private
 	def clear_constraints
 		session[:name_of_search] = nil
-		session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
+		#session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
 		fed_constraint = nil	# don't clear the current setting of the federation constraint, so first search for it.
 		if session[:constraints]
 			session[:constraints].each { |constraint|
@@ -533,24 +492,18 @@ class SearchController < ApplicationController
 	end
    
    def auto_complete(keyword, field = 'content')
-     @solr = CollexEngine.factory_create(session[:use_test_index] == "true")
+     @solr = Catalog.factory_create(session[:use_test_index] == "true")
      @field = field
      @values = []
      if params['search'] && session[:constraints]
        begin
-         result = @solr.auto_complete(@field, session[:constraints], keyword)
-         # Because the indexing isn't perfect, we will receive entries that contain numbers and punctuation.
-         # The user can't search by that so we'll filter them out.
-         result.each { |value|
-           @values.push(value) if value[0].index(/[^A-Za-z]/) == nil
-         }
-         # Sort by how many hits they get.
-         @values = @values.sort {|a,b| b[1] <=> a[1]}
-         #only return a reasonable number
-         @values = @values.slice(0..14)
-       rescue  Net::HTTPServerException => e
-         # don't do anything if this fails.
-       end
+         results = @solr.auto_complete(@field, session[:constraints], keyword)
+		results.each { |result|
+			@values.push([result['item'], result['occurrences']])
+		}
+	   rescue  #Net::HTTPServerException => e
+		 # don't do anything if this fails.
+	   end
      end
 
      render :partial => 'suggest'
@@ -623,28 +576,7 @@ class SearchController < ApplicationController
       render :text => ''
     end
    end
-#   def auto_complete_for_field_year
-#     # TODO
-#     @field = 'year'
-#     @values = []
-#     if params['field']
-#       result = @solr.facet(@field, session[:constraints], params['field']['year'])
-#       @values = result.sort {|a,b| b[1] <=> a[1]}
-#     end
-#     
-#     render :partial => 'suggest'
-#   end
-   
-#   def auto_complete_for_agent_name
-#     # TODO
-#     @values = []
-#     if params['agent']
-#       @values = @solr.agent_suggest(session[:constraints], params['agent']['name'])
-#     end
-#
-#     render :partial => 'agents'
-#   end   
-   
+
    def save_search
      name = params[:saved_search_name]
      if (session[:user] && name != nil && name.length > 0)  # see if the session has timed out since the last browser action, and the user actually inputted sometime.
@@ -704,8 +636,6 @@ class SearchController < ApplicationController
        searches = user.searches
        saved_search = searches.find(params[:id])
   
-       #session[:constraints].delete_if {|item| item.is_a?(SavedSearchConstraint) && item.field == session[:user][:username] && item.value == saved_search.name }
-       
        saved_search.destroy
      end
      
@@ -727,7 +657,7 @@ class SearchController < ApplicationController
 
    private
    def search_solr(constraints, page, items_per_page, sort_by, direction)
-     @solr = CollexEngine.factory_create(session[:use_test_index] == "true")
+     @solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
 		 sort_param = nil	# in case the sort_by was an unexpected value
 		 sort_param = 'author_sort' if sort_by == 'Name'
 		 sort_param = nil if sort_by == 'Relevancy'
@@ -747,13 +677,6 @@ class SearchController < ApplicationController
       idx = idx + 1
     end
 
-    # We only want to display expressions and genres.
-    # FreeCultureConstraint is derived from ExpressionConstraint, so we have to filter that out explicitly
-#    constraints_with_ids.select { |constraint| 
-#      !constraint[:constraint].is_a?(FreeCultureConstraint) and
-#      (constraint[:constraint].is_a?(ExpressionConstraint) or 
-#      (constraint[:constraint].is_a?(FacetConstraint) and constraint[:constraint][:fieldx] == 'genre') )
-#    }
     return constraints_with_ids # at the moment, we are showing all constraints.
   end
   

@@ -38,7 +38,7 @@ class ResultsController < ApplicationController
     
     partial = params[:partial]
     if partial == '/results/result_row'
-			locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+			locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
       render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
     elsif partial == '/forum/attachment'
       render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
@@ -58,7 +58,7 @@ class ResultsController < ApplicationController
 			CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
 
 			if partial == '/results/result_row'
-				locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+				locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
 				render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
 			elsif partial == '/forum/attachment'
 				render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
@@ -88,7 +88,7 @@ class ResultsController < ApplicationController
     Tag.add(user, uri, tag_info)
    
     if should_render
-  		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+  		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
       render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
     end
   end
@@ -104,7 +104,7 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     Tag.remove(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
     
-		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
@@ -117,7 +117,7 @@ class ResultsController < ApplicationController
     note = params[:note]
     CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
     
-		locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
     render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
   end
   
@@ -137,8 +137,8 @@ class ResultsController < ApplicationController
         params['uri'] = uri
         add_tag false # false so this call will not attempt to render
       }
-    end
-    redirect_to :back
+	end
+	  redirect_with_page(request, params)
   end
   
   def bulk_collect
@@ -159,7 +159,7 @@ class ResultsController < ApplicationController
       end
     end
 
-    redirect_to :back
+		redirect_with_page(request, params)
   end
   
   # uncollect a set of items in bulk. The items to be uncollected
@@ -181,7 +181,7 @@ class ResultsController < ApplicationController
     end
 
 	# refresh the posed page with the new collection
-	redirect_to :back
+	redirect_with_page(request, params)
   end
 	
   def resend_exhibited_objects
@@ -190,6 +190,15 @@ class ResultsController < ApplicationController
   end
 
   private
+	def redirect_with_page(request, params)
+		target = request.env["HTTP_REFERER"]
+		if params['page']
+			target += target.include?('?') ? '&' : '?'
+			target += "page=#{params['page']}"
+		end
+		redirect_to(target)
+	end
+
   def encode_for_uri(str) # TODO-PER: this is in a helper, so it can't be called from a controller, so we are just repeating it.
     value = str.gsub('%', '%25')
     value = value.gsub('#', '%23')
@@ -282,7 +291,7 @@ class ResultsController < ApplicationController
 
     partial = params[:partial]
     if partial == 'result_row'
-			locals[:hit][:text] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+			locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
       render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
     elsif partial == '/forum/attachment'
       render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
@@ -321,7 +330,7 @@ class ResultsController < ApplicationController
     end
     if params[:full_text] && params[:full_text].length > 0
       ret[:hit]['text'] = params[:full_text].strip	# get rid of all the extra characters around the text we want
-			ret[:hit]['text'] = ret[:hit]['text'].gsub('%3f', '?').gsub('%25', '%')
+			ret[:hit]['text'] = ret[:hit]['text'].gsub('%3f', '?').gsub('%25', '%').gsub('%26', '&')
 			ret[:hit]['text'] = ret[:hit]['text'].gsub("<EM>", "<em>").gsub("</EM>", "</em>")	# correct for IE returning capital tags.
 			ret[:full_text] = ret[:hit]['text']
     end
@@ -337,13 +346,13 @@ class ResultsController < ApplicationController
   end
   
   def get_from_solr(uri)
-    @solr = CollexEngine.factory_create(session[:use_test_index] == "true") if @solr == nil
-    begin
+    @solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
+#    begin
 			return @solr.get_object( uri )
-		rescue  Net::HTTPServerException => e
-			return nil
-		end
-    return nil
+#		rescue  Net::HTTPServerException => e
+#			return nil
+#		end
+#    return nil
   end
 
   def get_from_cache(uri)

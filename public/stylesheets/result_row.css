@@ -95,6 +95,11 @@ hr.search_results_hr {
 	text-align: left;
 }
 
+.search_result_header a.more_link {
+	font-size: 14px;
+	font-weight: normal;
+}
+
 .results_per_page {
 	float:right;
 	font-size:0.6em;

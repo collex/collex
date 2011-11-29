@@ -20,6 +20,17 @@ desc "Do all tasks that routinely need to be done when anything changes in the s
 task :deploy => [ 'deploy:update' ] do
 end
 
+def finish_line(start_time)
+	duration = Time.now-start_time
+	if duration >= 60
+		str = "Finished in #{"%.2f" % (duration/60)} minutes."
+	else
+		str = "Finished in #{"%.2f" % duration} seconds."
+	end
+	#CollexEngine.report_line_if(str)
+	puts str
+end
+
 namespace :deploy do
 
 	def stop_daemons
@@ -61,6 +72,15 @@ namespace :deploy do
 		copy_dir( "#{Rails.root}/public/static/#{SKIN}", "#{Rails.root}/public" )
 		Rake::Task['deploy:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
+	end
+
+	def update_edge
+		puts "Update site from repository..."
+		basic_update()
+		Rake::Task['deploy:compress_css_js'].invoke
+		puts "\e[0;31mRun this to restart passenger:"
+		puts "~/scripts/restart_passenger.sh #{Setup.site_name()} \e[m"
+		start_daemons()
 	end
 
 	def update_ninesperf
@@ -134,6 +154,8 @@ namespace :deploy do
 			update_development()
 		elsif UPDATE_TASK == 'experimental'
 			update_experimental()
+		elsif UPDATE_TASK == 'edge'
+			update_edge()
 		elsif UPDATE_TASK == '18th'
 			update_18th()
 		elsif UPDATE_TASK == '18thConnect.org'
@@ -305,7 +327,7 @@ namespace :deploy do
 					end
 					if src_time > dst_time
 						puts "Compressing #{f}..."
-						system("#{JAVA_PATH}java -jar #{Rails.root}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{dst_path} #{src_path}")
+						system("java -jar #{Rails.root}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{dst_path} #{src_path}")
 					#else
 						#puts "Skipping #{f}. Source time=#{time_format(src_time)}; Dest time=#{time_format(dst_time)}"
 					end
@@ -522,7 +544,7 @@ namespace :deploy do
 		CharSetAlter.fix_cp1252(ExhibitIllustration, :caption1, debug)
 		CharSetAlter.fix_cp1252(ExhibitIllustration, :caption2, debug)
 		CharSetAlter.fix_cp1252(Exhibit, :title, debug)
-		CharSetAlter.fix_cp1252(FacetCategory, :carousel_description, debug)
+		#CharSetAlter.fix_cp1252(FacetCategory, :carousel_description, debug)
 		CharSetAlter.fix_cp1252(FeaturedObject, :title, debug)
 		CharSetAlter.fix_cp1252(FeaturedObject, :saved_search_name, debug)
 		CharSetAlter.fix_cp1252(Group, :name, debug)
@@ -532,7 +554,7 @@ namespace :deploy do
 		CharSetAlter.fix_cp1252(Group, :course_mnemonic, debug)
 		CharSetAlter.fix_cp1252(ObjectActivity, :tagname, debug)
 		CharSetAlter.fix_cp1252(Search, :name, debug)
-		CharSetAlter.fix_cp1252(Site, :description, debug)
+		#CharSetAlter.fix_cp1252(Site, :description, debug)
 		CharSetAlter.fix_cp1252(Tag, :name, debug)
 		CharSetAlter.fix_cp1252(User, :username, debug)
 		CharSetAlter.fix_cp1252(User, :fullname, debug)

@@ -1,0 +1,103 @@
+<% current_page "admin" -%>
+<% current_sub_page "Setup" -%>
+
+<div class="setup_container">
+	<p id="notice"class="notice"><%= notice %></p>
+	<p>
+		The following settings control how this version of Collex will run and what it looks like. You will most likely
+		only need to modify these settings once when you first install Collex.
+	</p>
+	<%= form_tag("/admin/setups/1", :method => "PUT") do %>
+	<h1 class="expander" data-target="email_table">Email</h1>
+	<table id="email_table" class="hidden">
+		<%= setup_table_header("Email settings (SMTP)") %>
+		<%= setup_line("Address:", "smtp_address", @setups,
+			"The address of the SMTP server.",
+			"smtp.gmail.com") %>
+		<%= setup_line("Port:", "smtp_port", @setups,
+			"The port on the SMTP server.",
+			"587") %>
+		<%= setup_line("Email:", "smtp_user_name", @setups,
+			"The email account on the SMTP server.",
+			"notifications@institution.edu") %>
+		<%= setup_line("Password:", "smtp_password", @setups,
+			"The password to access the SMTP server.",
+			"super-secret") %>
+		<%= setup_line("Authentication method:", "smtp_authentication", @setups,
+			"The authentication method for the SMTP server.",
+			"plain") %>
+		<%= setup_table_button("Send Me A Test Email") %>
+
+		<%= setup_table_header("Project Settings") %>
+		<%= setup_line("Project manager email:", "project_manager_email", @setups,
+			"The email that is published throughout the site for contacting the project manager.",
+			"manager@institution.edu") %>
+		<%= setup_line("Webmaster email:", "webmaster_email", @setups,
+			"The email that is published throughout the site for contacting the webmaster.",
+			"manager@institution.edu") %>
+
+		<%= setup_table_header("Exception Reporting") %>
+		<%= setup_line("Exception recipients:", "exception_recipients", @setups,
+			"Comma separated list of email addresses for the people who should be notified if an error occurs.",
+			"john@institution.edu,mary@institution.edu") %>
+		<%= setup_line("Sender name:", "sender_name", @setups,
+			"The name that exception errors appear to be from.",
+			"Application Error") %>
+		<%= setup_line("Subject prefix:", "subject_prefix", @setups,
+			"The prefix in the subject line that is used on error emails.",
+			"[Collex:Production] ") %>
+		<%= setup_table_button("Simulate Error Email") %>
+	</table>
+
+	<h1 class="expander" data-target="skin_table">Skin</h1>
+	<table id="skin_table" class="hidden">
+		<%= setup_table_header("Site Labels") %>
+		<%= setup_line("Site Name:", "site_name", @setups,
+			"The name of this installation.",
+			"COLLEX") %>
+		<%= setup_line("Site Title:", "site_title", @setups,
+			"The title that appears in the browser title.",
+			"C O L L E X") %>
+		<%= setup_line("My Tab Title:", "site_my_collex", @setups,
+			"The label that appears on the leftmost tab.",
+			"MyCollex") %>
+
+		<%= setup_table_header("About") %>
+		<%= setup_line("Left About Link Label:", "site_about_label_1", @setups,
+			"The label that will appear on each page for the main about page.",
+			"What is Collex?") %>
+		<%= setup_line("Left About Link:", "site_about_url_1", @setups,
+			"The link that will appear on each page for the main about page.",
+			"/about/what_is.html") %>
+		<%= setup_line("Right About Link Label:", "site_about_label_2", @setups,
+			"The label that will appear on each page for the main about page.",
+			"Peer Review") %>
+		<%= setup_line("Right About Link:", "site_about_url_2", @setups,
+			"The link that will appear on each page for the main about page.",
+			"/about/peer_review.html") %>
+	</table>
+
+	<h1 class="expander" data-target="solr_table">Solr</h1>
+	<table id="solr_table" class="hidden">
+		<%= setup_line("ARC Catalog location:", "site_solr_url", @setups,
+			"The URL of the ARC Catalog web service.",
+			"http://catalog.arc.com") %>
+		<%= setup_line("Default federation:", "site_default_federation", @setups,
+			"The main federation of the site that will appear if the user hasn't selected another one.",
+			"NINES") %>
+		<%= setup_table_button("Test Catalog Connection") %>
+	</table>
+
+	<h1 class="expander" data-target="analytics_table">Analytics</h1>
+	<table id="analytics_table" class="hidden">
+		<%= setup_line("Use Google Analytics:", "google_analytics", @setups,
+			"Either true or false if Analytics should be turned on",
+			"true/false") %>
+		<%= setup_line("Analytics ID:", "analytics_id", @setups,
+			"The ID that was given to you by Google when you signed up for Analytics.",
+			"AA-99999999-9") %>
+	</table>
+		<%= submit_tag("Apply Changes") %>
+
+	<% end %>
+</div>

@@ -194,7 +194,7 @@ end
 			else
 				@cluster = Cluster.new(params[:cluster])
 				@cluster.image_id = img_id
-				err = false
+				#err = false
 				if @cluster.save
 #					begin
 #						@cluster.image.save! if @cluster.image

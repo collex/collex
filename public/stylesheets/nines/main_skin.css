@@ -54,9 +54,17 @@ body {
 	background:url(/images/nines/index_tab_long_dn.gif) top left no-repeat;
 }
 
+.tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
+	color:#FDDFAB;
+}
+
 .my_collex_link {
 	color:#55220F;
 	background:url(/images/nines/index_tab_my_collex.gif) top left no-repeat;
+}
+
+.my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
+	color:#55220F;
 }
 
 .tab_link_logo{
@@ -92,9 +100,9 @@ body {
 .nines_link:hover { color: #fff; background: #A60000; }
 
 /* This is used for all links that go to external websites */
-.ext_link:link { color: #A60000; text-decoration: none; }
-.ext_link:visited { color: #A60000; text-decoration: none; }
-.ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+.wordpress #container a:link, .ext_link:link { color: #A60000; text-decoration: none; }
+.wordpress #container a:visited, .ext_link:visited { color: #A60000; text-decoration: none; }
+.wordpress #container a:hover, .ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {

@@ -506,8 +506,6 @@ var AddBadgeDlg = Class.create({
 			dlg = new GeneralDialog(params);
 			//dlg.changePage('layout', null);
 			dlg.center();
-
-			return;
 		};
 
 		show();
@@ -557,8 +555,6 @@ var AddPublicationImageDlg = Class.create({
 			dlg = new GeneralDialog(params);
 			//dlg.changePage('layout', null);
 			dlg.center();
-
-			return;
 		};
 
 		show();

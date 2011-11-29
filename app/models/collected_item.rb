@@ -116,13 +116,13 @@ class CollectedItem < ActiveRecord::Base
 #			recs[rec[0]]['title'] = rec[2] if rec[2]
 #			recs[rec[0]]['author'] = rec[3] if rec[3]
 #			recs[rec[0]]['thumbnail'] = rec[4] if rec[4]
-			if recs[rec[0]] == nil
-				recs[rec[0]] = { 'uri' => rec[1] }
+			if recs[rec[1]] == nil
+				recs[rec[1]] = { 'uri' => rec[1] }
 			end
-			if recs[rec[0]][rec[2]]
-				recs[rec[0]][rec[2]] += ", #{rec[3]}" if !recs[rec[0]][rec[2]].include?(rec[3])
+			if recs[rec[1]][rec[2]]
+				recs[rec[1]][rec[2]] += ", #{rec[3]}" if !recs[rec[1]][rec[2]].include?(rec[3])
 			else
-				recs[rec[0]][rec[2]] = rec[3]
+				recs[rec[1]][rec[2]] = rec[3]
 			end
 		}
 		return recs
@@ -172,7 +172,7 @@ class CollectedItem < ActiveRecord::Base
     if (cached_resource == nil)
       cached_resource = CachedResource.new(:uri => uri)
 			if hit == nil
-				hit = CollexEngine.factory_create(false).get_object(uri)
+				hit = Catalog.factory_create(false).get_object(uri)
 			end
 			cached_resource.set_hit(hit)
     end

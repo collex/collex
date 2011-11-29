@@ -81,8 +81,12 @@ class ObjectActivity < ActiveRecord::Base
 		stats = { }
 		recs.each { |rec|
 			cr = CachedResource.find_by_uri(rec.uri)
-			cp = CachedProperty.find_by_cached_resource_id_and_name(cr.id, 'archive')
-			archive = cp['value']
+			if cr
+				cp = CachedProperty.find_by_cached_resource_id_and_name(cr.id, 'archive')
+				archive = cp['value']
+			else
+				archive = "RESOURCE NOT FOUND"
+			end
 			stats[archive] = { :collect => 0, :tag => 0 } if stats[archive] == nil
 			stats[archive][:collect] += 1 if rec['action'] == 'collect'
 			stats[archive][:tag] += 1 if rec['action'] == 'tag'

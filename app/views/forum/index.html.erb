@@ -18,10 +18,10 @@
 <% current_page "Community" -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topics = DiscussionTopic.get_all_with_date() -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], "#{SITE_NAME}  Forum") %>
+<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], "#{Setup.site_name()}  Forum") %>
 <div class="content_container2">
 	<div class="page_header">Forum</div>
-    <div class="page_subheader">We've set aside this portion of <%= SITE_NAME %> for commentary, discussion and collaboration among the <%= SITE_NAME %> community.
+    <div class="page_subheader">We've set aside this portion of <%= Setup.site_name() %> for commentary, discussion and collaboration among the <%= Setup.site_name() %> community.
 	Log in to your free account to join in the conversations below and to discuss the objects of your research.</div>
 
 <% for topic_arr in topics -%>

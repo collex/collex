@@ -34,13 +34,18 @@ class GroupsController < ApplicationController
 			obj[:img] = self.class.helpers.get_group_image_url(group)
 			obj[:title] = group.id
 			obj[:strFirstLine] = group.name
-			editors = group.get_all_editors()
-			editor_label = "Administrator#{'s' if editors.length > 1}: "
-			for editor in editors
-				editor_label += User.find(editor).fullname + ' '
+			if group.show_admins == 'all'
+				editors = group.get_all_editors()
+				editor_label = "Administrator#{'s' if editors.length > 1}: "
+				for editor in editors
+					editor_label += User.find(editor).fullname + ' '
+				end
+				editor_label += "<br />"
+			else
+				editor_label = ""
 			end
 
-			obj[:strSecondLine] = "#{editor_label}<br />Established: #{group.created_at.strftime("%b %d, %Y")}<br/>#{Group.type_to_friendly(group.group_type)} -- #{self.class.helpers.pluralize(group.get_number_of_members(), 'member')}"
+			obj[:strSecondLine] = "#{editor_label}Established: #{group.created_at.strftime("%b %d, %Y")}<br/>#{Group.type_to_friendly(group.group_type)} -- #{self.class.helpers.pluralize(group.get_number_of_members(), 'member')}"
 			ret.push(obj)
 		}
 	ret = ret.sort { |a,b|
@@ -222,7 +227,7 @@ class GroupsController < ApplicationController
 			return
 		end
 
-		session[:user] = COLLEX_MANAGER.create_user(user_name, password.strip, email)
+		session[:user] = User.create_user(user_name, password.strip, email)
 		params[:id] = Group.id_obfuscator(gu_id)
 		params[:from_create] = true
 		accept_invitation()
@@ -252,7 +257,7 @@ class GroupsController < ApplicationController
 		 params[:exhibit][:cluster_id] = nil if params[:exhibit][:cluster_id] == '0'
 		 exhibit.update_attributes(params[:exhibit])
 		 if exhibit.is_published == 1
-			 exhibit.adjust_indexing(:publishing)
+			 exhibit.adjust_indexing(:publishing, true)
 		 end
 		 #cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => nil, :user_id => get_curr_user_id() }
@@ -262,7 +267,7 @@ class GroupsController < ApplicationController
 		comment = params[:comment]
 		exhibit_id = params[:exhibit_id]
 		exhibit = Exhibit.find(exhibit_id)
-		exhibit.adjust_indexing(:unpublishing)
+		exhibit.adjust_indexing(:unpublishing, true)
 		exhibit.is_published = 0
 		exhibit.save!
 	
@@ -281,7 +286,7 @@ class GroupsController < ApplicationController
 	def limit_exhibit
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
-		exhibit.adjust_indexing(:limit_to_group)
+		exhibit.adjust_indexing(:limit_to_group, true)
 		 exhibit.editor_limit_visibility = 'group'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
@@ -293,7 +298,7 @@ class GroupsController < ApplicationController
 	def unlimit_exhibit
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
-		exhibit.adjust_indexing(:limit_to_everyone)
+		exhibit.adjust_indexing(:limit_to_everyone, true)
 		 exhibit.editor_limit_visibility = 'www'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
@@ -306,7 +311,7 @@ class GroupsController < ApplicationController
 		 comment = params[:comment]
 		 exhibit_id = params[:exhibit_id]
 		 exhibit = Exhibit.find(exhibit_id)
-		 exhibit.is_published = 0
+		 exhibit.is_published = 4
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
 		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} #{exhibit.title} in #{group.name} rejected", "#{get_curr_user().fullname} rejected the #{group.get_exhibits_label()} #{exhibit.title} from being peer-reviewed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
@@ -669,7 +674,7 @@ class GroupsController < ApplicationController
 		# Also remove the exhibits and discussions from being in the group.
 		exhibits = Exhibit.find_all_by_group_id(params[:id])
 		exhibits.each { |exhibit|
-			exhibit.adjust_indexing(:leave_group)
+			exhibit.adjust_indexing(:leave_group, true)
 			exhibit.group_id = nil
 			exhibit.save!
 		}
@@ -705,7 +710,7 @@ class GroupsController < ApplicationController
 			curr_user = get_curr_user()
 			admins.each { |ad|
 				body = "#{curr_user.fullname} mailto:#{curr_user.email} #{ "from #{curr_user.institution}" if curr_user.institution && curr_user.institution.length > 0 } has requested to make the group #{ @group.name } into a peer-reviewed group.\n\n"
-				body += "Please log in as administrator to #{SITE_NAME} to change the group.\n\n"
+				body += "Please log in as administrator to #{Setup.site_name()} to change the group.\n\n"
 				EmailWaiting.cue_email(curr_user.fullname, curr_user.email, ad[:name], ad[:email], "Request to create peer-reviewed group", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 			}
 		rescue Exception => msg

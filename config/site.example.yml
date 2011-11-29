@@ -9,44 +9,16 @@
 ### EMAIL
 ##########################
 
-# For getting automatic emails when an error occurs
-# exception_recipients: List of all emails that should receive the notification
-# sender_address: Who the notification email will be from
-# email_prefix: What each email should be prefixed with
-exception_notifier:
-  exception_recipients: [ "first@example.com", "second@example.com" ]
-  sender_address: '"Application Error" <admin@example.com>'
-  email_prefix: "[Project] "
-
-# For setting up email - this example uses gmail
+# The url that appears in emails. This should be whatever url the site is located at.
 smtp_settings:
-  address: "smtp.gmail.com"
-  port: 587
-  user_name: 'admin@example.com'
-  password: 'super-secret'
-  authentication: :plain
   return_path: http://example.com
-
-project_manager_email: 'manager example com'
 
 ##########################
 ### SKIN
 ##########################
 
-site_name: 'COLLEX'
-site_name_title: 'C O L L E X'
-my_collex: 'My Collex'
 my_collex_url: 'my_collex'
-default_federation: 'COLLEX'
-other_federations: [ 'Other' ]
-skin: 'collex'
-user_content_core: 'UserContent'
-
-about:
-  link: '/about/what_is.html'
-  label: 'What is NINES?'
-  link2: '/about/scholarship/peerReview.html'
-  label2: 'Peer Review'
+skin: 'nines'
 
 disallow_rss: false
 
@@ -59,7 +31,6 @@ plugins:
 
 typewright:
   web_service_url: 'http://typewright.performantsoftware.com/'
-  xml_path: '/home/nines/typewright_xml'
   image_url: 'http://typewright.performantsoftware.com/uploaded'
 
 ##########################
@@ -69,10 +40,6 @@ typewright:
 # this is the path where the "identify" program is located.
 paperclip:
   image_magic_path: '/opt/local/bin'
-
-# Should google analytics be used for this site?
-google_analytics: false
-analytics_id: 'UA-5450014-1'
 
 # The update string matches one of the options in "rake deploy:update"
 update: 'development'
@@ -85,69 +52,5 @@ daemons:
   user_content_interval_secs: 600
   session_cleaner_interval_secs: 432000 #5*24 hours
 
-##########################
-### ZOTERO
-##########################
-
-zotero_genre:
-  'Photograph': 'artwork'
-  'Visual Art': 'artwork'
-  'Periodical': 'article'
-  'Letters': 'letter'
-  'Manuscript': 'manuscript'
-  'Fiction': 'book'
-  'Nonfiction': 'book'
-  'Criticism': 'book'
-  'Philosophy': 'book'
-  'Paratext': 'book_section'
-  'Bibliography': 'book_section'
-  'Architecture': 'document'
-  'Artifacts': 'document'
-  'Collection': 'document'
-  'Drama': 'document'
-  'Education': 'document'
-  'Politics': 'document'
-  'Ephemera': 'document'
-  'History': 'document'
-  'Leisure': 'document'
-  'Life Writing': 'document'
-  'Reference': 'document'
-  'Humor': 'document'
-  'Music': 'document'
-  'Citation': 'document'
-  'Family Life': 'document'
-  'Poetry': 'document'
-  'Religion': 'document'
-  'Translation': 'document'
-  'Travel': 'document'
-  'Book History': 'document'
-  'Folklore': 'document'
-  'Review': 'document'
-
-##########################
-### SOLR
-##########################
-
-# java path is normally blank, which allows the OS to search for java in it's normal path, but if there is a different version of java needed, then it can be set.
-#java_path: '/usr/local/jdk/bin/'
-java_path: ''
-
-# There is no need to set up indexing on all installations, and setting this to false causes less gems to be required.
-can_index: false
-federation_url:
-  NINES: 'http://www.nines.org'
-  18thConnect: 'http://www.18thConnect.org'
-
-# Where the solr index has been set up
-solr_url: "http://localhost:8983/solr"
-
 svn:
-  url_rdf: svn://nines.performantsoftware.com/nines
   url_collex: svn://nines.performantsoftware.com/collex
-
-folders:
-  rdf: /path/rdf
-  marc: /path/marc
-  ecco: /path/ecco
-  rdf_indexer: /path/to/rdf-indexer
-  solr: /path/to/solr/installation

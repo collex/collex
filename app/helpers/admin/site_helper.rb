@@ -15,15 +15,15 @@
 ##########################################################################
 
 module Admin::SiteHelper
-  def get_missing_sites(sites_forest)
-    missing_sites = []
-    for site in sites_forest
-      if site['type'] == nil # is category
-        missing_sites.concat(get_missing_sites(site.sorted_children))
-      else
-        missing_sites.push(site) if site['found'] != true
-      end
-    end
-    return missing_sites
-  end
+#  def get_missing_sites(sites_forest)
+#    missing_sites = []
+#    for site in sites_forest
+#      if site['type'] == nil # is category
+#        missing_sites.concat(get_missing_sites(site.sorted_children))
+#      else
+#        missing_sites.push(site) if site['found'] != true
+#      end
+#    end
+#    return missing_sites
+#  end
 end

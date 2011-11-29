@@ -25,12 +25,14 @@
 	<table>
 		<tr>
 			<td class="tw_left_row">
-				<img id="tw_img_thumb" src="<%= @params[:img_thumb] %>" alt="original image" /></td>
+				<img id="tw_img_thumb" src="<%= @params[:img_thumb] %>" alt="original image" />
+                <%= link_to_function "report this page", "", { :class => 'nav_link tw_report_page', :id => 'tw_report_page', 'data-url' => "/typewright/documents/#{@params[:doc_id]}/report?page=#{@params[:page]}" } %>
+            </td>
 			<td class="tw_middle_row">
 				<div id="tw_img_full">
-					<div style="background-image: url(<%= @params[:img_full].gsub('*', '001') %>);"></div>
-					<div style="background-image: url(<%= @params[:img_full].gsub('*', '002') %>);"></div>
-					<div style="background-image: url(<%= @params[:img_full].gsub('*', '003') %>);"></div>
+					<div style="background-image: url(<%= @params[:img_full].gsub('*', '0') %>);"></div>
+					<div style="background-image: url(<%= @params[:img_full].gsub('*', '1') %>);"></div>
+					<div style="background-image: url(<%= @params[:img_full].gsub('*', '2') %>);"></div>
 				</div>
 			</td>
 			<td class="tw_right_row">

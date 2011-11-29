@@ -19,7 +19,7 @@
 <%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], 'Tags') %>
 
 <div id="tag_explanation">
-	<span>WHAT ARE TAGS?</span> A tag is simply a word you use to descibe an object you find in <%= SITE_NAME %>. Tags make it easy to organize and browse large collections. To join two words together use a hyphen <i>(oil-painting)</i> or an underscore <i>(oil_painting)</i>.
+	<span>WHAT ARE TAGS?</span> A tag is simply a word you use to descibe an object you find in <%= Setup.site_name() %>. Tags make it easy to organize and browse large collections. To join two words together use a hyphen <i>(oil-painting)</i> or an underscore <i>(oil_painting)</i>.
 </div>
 <div id="tag_cloud_div" class="inner_content_container">
 	<%= render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => '', :controller_for_tags => 'tag', :hide_some => false  } %>

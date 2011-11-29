@@ -18,7 +18,7 @@ class Image < ActiveRecord::Base
 
   has_one :user
   has_one :featured_object
-  has_one :facet_category
+  #has_one :facet_category
   
 #  has_attachment :content_type => :image,
 #                 :storage => :file_system,

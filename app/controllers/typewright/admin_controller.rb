@@ -43,16 +43,16 @@ class Typewright::AdminController <  Admin::BaseController
       # ensure that the resources is valid and cached
       uri = features['uri']
       if CachedResource.exists(uri) == false
-        solr = CollexEngine.factory_create(false)
+        solr = Catalog.factory_create(false)
         hit = solr.get_object(uri)
         raise "Can't find URI" if hit == nil    
         CachedResource.add(uri)
       end
         
       # if primary is set to true, set all other features
-      # primay to false. There can be only one primary
+      # except primary to false. There can be only one primary
       if features['primary'] == true
-        sql = 'update tw_featured_objects set `primary` = 0';
+        sql = 'update tw_featured_objects set `primary` = 0'
         ActiveRecord::Base.connection.execute(sql)  
       end
       

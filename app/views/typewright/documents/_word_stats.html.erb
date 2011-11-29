@@ -24,6 +24,7 @@
 				</td>
 			<% } %>
 		</tr>
+      <% unless doc_word_stats.nil? %>
 		<tr>
 			<td>First 100 pages:</td>
 			<% 5.times { |x| %>
@@ -40,5 +41,6 @@
 				</td>
 			<% } %>
 		</tr>
+      <% end %>
 	</table>
 <% end %>

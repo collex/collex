@@ -42,7 +42,7 @@ class LoginController < ApplicationController
 		name = params[:signin_username] ? params[:signin_username] : ""
 		pass = params[:signin_password] ? params[:signin_password] : ""
 
-		logged_in_user = COLLEX_MANAGER.login(name, pass)
+		logged_in_user = User.login(name, pass)
 		if logged_in_user
 			session[:user] = logged_in_user
 			LoginInfo.record_login(logged_in_user)
@@ -62,15 +62,15 @@ class LoginController < ApplicationController
 
   def reset_password
 		if request.post? and params[:help_username] and params[:help_username].size > 0
-			@user = COLLEX_MANAGER.reset_password(params[:help_username])
+			@user = User.reset_password(params[:help_username])
 			if @user
 				begin
-					body = "Your #{SITE_NAME} password has been reset.\n\n"
+					body = "Your #{Setup.site_name()} password has been reset.\n\n"
 					body += "To log in, visit this link:\n\n"
 					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
 					body += "Click \"sign in\" at the top right corner of the page and enter your username and new password.\n\n"
 					body += "Your password is:\n\n#{@user[:new_password]}\n\nAfter logging in, we strongly recommend you change this generated password.\n\n"
-					EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Password Reset", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
+					EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Password Reset", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					render :text => "A new password has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg.message)
@@ -86,15 +86,15 @@ class LoginController < ApplicationController
 
   def recover_username
 		if request.post? and params[:help_email] and params[:help_email].size > 0
-			@user = COLLEX_MANAGER.find_by_email(params[:help_email])
+			@user = User.find_by_email(params[:help_email])
 			if @user != nil
 				begin
-					body = "Here is your #{SITE_NAME} user name:\n\n"
+					body = "Here is your #{Setup.site_name()} user name:\n\n"
 					body += "	#{@user[:username]}\n\n"
 					body += "To log in, visit this link:\n\n"
 					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
 					body += "Click \"sign in\" at the top right corner of the page and enter your username and password.\n\n"
-					EmailWaiting.cue_email(SITE_NAME, ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Recover User Name", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
+					EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Recover User Name", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					render :text => "Your user name has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg.message)
@@ -136,7 +136,7 @@ class LoginController < ApplicationController
           return "Password must not be blank"
         end
         if params[:create_password] == params[:create_password2]
-							session[:user] = COLLEX_MANAGER.create_user(params[:create_username], params[:create_password].strip, params[:create_email])
+							session[:user] = User.create_user(params[:create_username], params[:create_password].strip, params[:create_email])
           return nil
         else
           return "Passwords do not match"

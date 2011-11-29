@@ -73,16 +73,16 @@ class Admin::FeaturesController < Admin::BaseController
 			uri = p_obj[:object_uri]
 			hit = CachedResource.get_hit_from_uri(uri)
 			if hit == nil
-				solr = CollexEngine.factory_create(false)
+				solr = Catalog.factory_create(false)
 				hit = solr.get_object(uri)
 			end
 			raise "Can't find URI" if hit == nil
 			p_obj[:title] = get_hit_item(hit, 'title')
 			p_obj[:object_url] = get_hit_item(hit, 'url')
 			p_obj[:date] = get_hit_item(hit, 'date_label')
-			site = Site.find_by_code(get_hit_item(hit, 'archive'))
-			p_obj[:site] = site.description
-			p_obj[:site_url] = site.url
+			site = Catalog.factory_create(false).get_archive(get_hit_item(hit, 'archive')) #Site.find_by_code(get_hit_item(hit, 'archive'))
+			p_obj[:site] = site['name']
+			p_obj[:site_url] = site['site_url']
 			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(session[:user][:username], p_obj[:saved_search_name])
 
 			if type == 'modifying'

@@ -17,8 +17,8 @@
 	
 <%#  result_row_for_popup parameters: hit hit; hash extra_button_data{partial, index, target_el}  -%>
 <% index = -1
-	has_exhibits = false
-	add_border = false -%>
+	#has_exhibits = false
+	#add_border = false -%>
 <div>
 	<% row_id = "search_result_#{index}" -%>
     <%# The left side that contains the checkbox, graphic and the collect button -%>
@@ -36,9 +36,9 @@
 	    <%# The middle with the actual search results -%>
     	<div class="search_result_header">
             <% if hit["url"] %>
-            	<a class="nines_link" target="_blank" href="<%= hit["url"][0] %>"><%= hit["title"][0] if hit["title"] %></a>
+            	<a class="nines_link" target="_blank" href="<%= hit["url"] %>"><%= hit["title"] %></a>
 			<% else %>
-            	<%= hit["title"][0] if hit["title"] %>
+            	<%= hit["title"] %>
             <% end %>
 		</div>
     	<div class="search_result_data_container">

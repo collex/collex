@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page MY_COLLEX -%>
+<% current_page Setup.my_collex() -%>
 <script type="text/javascript">
 	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
 
@@ -37,7 +37,7 @@
 		<%= render :partial => 'login_instructions' %>
 	<% else -%>
 		<div class="subpage_nav"> 
-			<%= link_to MY_COLLEX, "/#{MY_COLLEX_URL}", :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
+			<%= link_to Setup.my_collex(), "/#{MY_COLLEX_URL}", :class => 'nav_link' %><%= link_separator() %>&nbsp;<%= link_to "My objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %><%= link_separator() %>&nbsp;Editing Exhibit&nbsp;<br />
 		</div>
 		
 		<table class="edit_exhibit_heading"><tr>

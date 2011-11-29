@@ -145,8 +145,8 @@ module DiscussionThreadsHelper
     elsif comment.get_type() == "nines_object"
       hit = CachedResource.get_hit_from_resource_id(comment.cached_resource_id)
       thumbnail = get_image_url(CachedResource.get_thumbnail_from_hit_no_site(hit))
-      link = hit["url"] ? hit["url"][0] : nil
-      caption = hit['title'] ? hit['title'][0] : ""
+      link = hit["url"] ? hit["url"] : nil
+      caption = hit['title'] ? hit['title'] : ""
     elsif comment.get_type() == "nines_exhibit"
       exhibit = Exhibit.find(comment.exhibit_id)
       thumbnail = exhibit.thumbnail == "You have not added a thumbnail to this exhibit." ? nil : exhibit.thumbnail
@@ -171,7 +171,7 @@ module DiscussionThreadsHelper
 			group_comment = case group.forum_permissions
 				when 'hidden' then "A private discussion for members of #{group_link}. Only members can read and comment."
 				when 'readonly' then "A public discussion featuring members of #{group_link}. Only members may comment."
-				when 'full' then "An open discussion sponsored by #{group_link}. All #{SITE_NAME} users can read and comment."
+				when 'full' then "An open discussion sponsored by #{group_link}. All #{Setup.site_name()} users can read and comment."
 				else ''
 			end
 			if get_curr_user()

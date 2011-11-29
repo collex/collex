@@ -19,9 +19,15 @@ class Typewright::User < ActiveResource::Base
 		self.site = COLLEX_PLUGINS['typewright']['web_service_url']
 	end
 
+  def self.get_author_fullname(federation, orig_id)
+    return orig_id if federation.nil?
+    return ::User.find_by_id(orig_id).fullname if federation == Setup.default_federation()
+		return "#{federation} User"
+  end
+
 	def self.get_user(federation, orig_id)
-		user = self.find(:first, :params => { :federation => federation, :orig_id => orig_id })
-		return user
+  	user = self.find(:first, :params => { :federation => federation, :orig_id => orig_id })
+    return user
 	end
 
 	def self.get_or_create_user(federation, orig_id)

@@ -113,7 +113,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 			<%= raw(@exhibit.get_sharing_icon_with_link()) %>
 		</div>
 		<div class="exhibit_sharing_text"><div class="exhibit_sharing_text2">
-			<%= group.get_truncated_name() %> content in <%= SITE_NAME %> is protected by a Creative Commons License.
+			<%= group.get_truncated_name() %> content in <%= Setup.site_name() %> is protected by a Creative Commons License.
 		</div></div>
 		<% badge_pos = 'left' -%>
 		<% badge_path = badge_pos != 'none' ? @exhibit.get_badge() : "" -%>

@@ -45,11 +45,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	function getSectorLabels(sector, numImages) {
 		var labels = [];
 		for (var i = 0; i < numImages; i++) {
-			sector++;	// Increment first because the image numbers are 1-based
 			var label = '' + sector;
-			while (label.length < 3)
-				label = "0" + label;
-			labels.push(label);
+            labels.push(label);
+            sector++;	// Increment after because the image numbers are 0-based
 		}
 		return labels;
 	}
@@ -58,10 +56,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		// All urls here have the following format: ..name_###.png..
 		var url = imgs.item(0).getStyle('backgroundImage');
 		
-		// find the last underscore and skip the 3 digits following it
-		var pos = url.lastIndexOf("_");
+		// find the last - and the .png extension
+		var pos = url.lastIndexOf("-");
+        var pos2 = url.lastIndexOf(".png");
 		var urlLeft = url.substring(0, pos+1);
-		var urlRight = url.substring(pos+4);
+		var urlRight = url.substring(pos2);
 		
 		// replace with selector labels
 		var labels = getSectorLabels(sector, imgs.size());

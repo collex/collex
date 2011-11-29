@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%#parameters: Exhibit exhibit; bool show_immediately -%>
 <script type="text/javascript">
-	var gGenres = <%= raw(Branding.valid_genre_list().sort.to_json()) %>;
+	var gGenres = <%= raw(Catalog.factory_create(false).get_genres().sort.to_json()) %>;
 </script>
 <div id="global_form" class="inside_edit_exhibit_box">
 	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list', '/forum/get_nines_obj_list_with_image?exhibit_id=#{exhibit.id}', '#{PROGRESS_SPINNER_PATH}', gGenres); return false;", { :class => 'modify_link' }) %></div>

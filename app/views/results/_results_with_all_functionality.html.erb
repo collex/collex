@@ -25,14 +25,15 @@
 	<%= title %></div>
 <hr class="search_results_hr" />
 
-<div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => mode} ) %></div>
+<div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => mode, :page => page} ) %></div>
 <div class="search_results_pages"><%= render( :partial => 'results/pagination', :locals => { :page => page, :num_pages => num_pages, :destination_hash => { :controller => controller, :action => action } } ) %></div>
 
 <form name="bulk_collect_form" id="bulk_collect_form">
+	<input type="hidden" id="page" name="page" value="<%= page %>" />
    <input type="hidden" id="bulk_tag_text" name="bulk_tag_text" value="" />
 	<%= render( :partial => 'results/results', :locals => { :user_id => curr_user == nil ? -1 : curr_user.id, :hits => results } ) %>
 </form>
 <div class="clear_both"></div>
 <hr class="search_results_hr" />
-<div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => mode}  ) %></div>
+<div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => mode, :page => page}  ) %></div>
 <div class="search_results_pages"><%= render( :partial => 'results/pagination', :locals => { :page => page, :num_pages => num_pages, :destination_hash => { :controller => controller, :action => action } }  ) %></div>

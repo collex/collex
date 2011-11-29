@@ -23,7 +23,16 @@
 	</div>
 	<div class="tw_spelling_choice">In this document the original spelling should be retained.</div>
 	<div class="tw_header">Instructions:</div>
-	If a word or portion of a word is illegible, type "@" in its place.<br />
-	Click on the thumbnail to jump around the page.<br /><br />
-	<%= link_to_function "More information about how to edit", "", { :class => 'nav_link', :id => 'tw_detailed_instructions', 'data-url' => '/typewright/documents/instructions' } %>
+	Use arrow buttons above-right or click on the thumbnail to jump around the page.</br>
+    You can add and delete lines; even if some lines are incompletely outlined in red, type every
+    word on the line in which the red box appears.</br></br>
+    <ul class="tw_instruction_list"><li>If a word or portion of a word is illegible, type "@" in its place; please do not make any guesses
+    about what a word might be.</li>
+    <li>Copy original spelling and punctuation, typing what you see on the page, except in the case of the
+    long 's': use 's' and not 'f' when 's' is called for.</li>
+    <li>Include end-of-line hyphens, preserving the syllables as they occur on each line.</li>
+    </ul>
+  <a class="nav_link" id="tw_walkthrough" target="_blank" href="/video/TypeWright_walkthrough.mov">Walkthrough video</a>
+  <a class="nav_link" id="tw_survey" target="_blank" href="http://tinyurl.com/3br2lrk">Survey</a>
+  <%= link_to_function "More about how to edit", "", { :class => 'nav_link tw_align_right', :id => 'tw_detailed_instructions', 'data-url' => '/typewright/documents/instructions' } %>
 </div>

@@ -18,7 +18,7 @@
 <div class="inner_content_container">
 	<div id="shared_objects" class="shared_left_column">
 		<div class="shared_header">Groups and Exhibits</div>
-		<div class="shared_explanation">Groups and exhibits created by <%= SITE_NAME %> users for scholarship and research.</div>
+		<div class="shared_explanation">Groups and exhibits created by <%= Setup.site_name() %> users for scholarship and research.</div>
 		<%= render :partial => '/communities/shared_objects', :locals => { :results => @results } %>
 	</div>
 	<div class="right_column">

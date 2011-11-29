@@ -39,6 +39,25 @@
 			</tr>
 		<% end -%>
 	</table>
+	<% emails = EmailWaiting.all() %>
+	<div class="page_header">Emails that haven't been sent:</div>
+	<table class="exhibit_category">
+		<tr>
+			<th>To</th>
+			<th>From</th>
+			<th>Subject</th>
+			<th>Created</th>
+		</tr>
+		<% for email in emails %>
+		<tr>
+			<td><%= email.to_email %></td>
+			<td><%= email.from_email %></td>
+			<td><%= email.subject %></td>
+			<td><%= comment_time_format(email.created_at) %></td>
+		</tr>
+		<% end %>
+	</table>
+
 	<div class="page_header">User Content Reindexing Log</div>
 	<table class="exhibit_category">
 		<tr>

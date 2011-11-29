@@ -36,7 +36,7 @@ class HomeController < ApplicationController
 
     @discussions = DiscussionTopic.get_most_popular(5)
 
-	if SITE_NAME == '18thConnect'
+	if Setup.site_name() == '18thConnect'
 		@featured_news = true
 	end
 	  features = FeaturedObject.find_all_by_disabled('0')
@@ -49,23 +49,26 @@ class HomeController < ApplicationController
 	@tags = CachedResource.get_most_recent_tags(40)
     
     # carousel
-    facets = FacetCategory.find_all_by_carousel_include(1)
-		facets = facets.sort_by {rand}
-    @carousel = []
-    for facet in facets
-      title = facet[:value]
-      url = facet[:carousel_url]
-      if facet[:type] == 'FacetValue'
-        site = Site.find_by_code(title)
-		if site
-			title = site.description
-			url = site.url
-		else
-			title = "ERR: site not found:#{title}"
-		end
-      end
-      @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image_id ? "/#{facet.image.photo.url}" : '' })
-	end
+	@carousel = Catalog.factory_create(false).get_carousel()
+	@carousel = @carousel.sort_by {rand}
+	
+#    facets = FacetCategory.find_all_by_carousel_include(1)
+#		facets = facets.sort_by {rand}
+#    @carousel = []
+#    for facet in facets
+#      title = facet[:value]
+#      url = facet[:carousel_url]
+#      if facet[:type] == 'FacetValue'
+#        site = Site.find_by_code(title)
+#		if site
+#			title = site.description
+#			url = site.url
+#		else
+#			title = "ERR: site not found:#{title}"
+#		end
+#      end
+#      @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image_id ? "/#{facet.image.photo.url}" : '' })
+#	end
 	respond_to do |format|
 		format.html # index.html.erb
 	end
@@ -101,4 +104,15 @@ class HomeController < ApplicationController
 </feed>
      CLOSE
   end
+  
+	def wrapper
+		if params[:style] == 'post'
+			@current_page = "News"
+			@site_section = :news
+		else
+			@current_page = "About"
+			@site_section = :about
+		end
+		render :partial => "/layouts/wrapper"
+	end
 end

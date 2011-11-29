@@ -152,8 +152,6 @@ var SignInDlg = Class.create({
 			var dlg = new GeneralDialog(params);
 			this.changeView(null, { curr_page: '', arg0: view, dlg: dlg });
 			dlg.center();
-			
-			return;
 		};
 	}
 });

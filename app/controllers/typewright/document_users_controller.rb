@@ -25,13 +25,13 @@ class Typewright::DocumentUsersController < ApplicationController
 			# render :text => "You must be signed in to use TypeWright"
 		else
 			doc = Typewright::Document.find_by_id(params[:id])
-			tw_user = Typewright::User.get_user(DEFAULT_FEDERATION, user.id)
+			tw_user = Typewright::User.get_user(Setup.default_federation(), user.id)
 			if (doc && tw_user)
 				user_doc = Typewright::DocumentUser.find_by_user_id_and_document_id(tw_user.id, doc.id)
 				user_doc.destroy if user_doc
 			end
 		end
-		document_list = Typewright::DocumentUser.document_list(DEFAULT_FEDERATION, user.id)
+		document_list = Typewright::DocumentUser.document_list(Setup.default_federation(), user.id)
 		render :partial => '/typewright/widgets/my_documents', :locals => { :document_list => document_list }
 	end
 

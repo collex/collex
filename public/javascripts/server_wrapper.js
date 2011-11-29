@@ -102,6 +102,7 @@ function submitForm(id, action, method) {
 function reloadPage() {
 	//window.location.reload(true);
 	// This seems to defeat caching when the page is html.
+	//noinspection SillyAssignmentJS
 	window.location.href = window.location.href;
 }
 
@@ -358,11 +359,20 @@ var serverAction = function(params) {
 			finalSuccess(resp);
 	};
 
+	var onFailure = function(o) {
+		if (progressParams)
+			dlg.cancel();
+		if (actionParams.onFailure)
+			actionParams.onFailure(o);
+		else
+			genericAjaxFail(actionParams.dlg, o, actionParams.actions);
+	};
+
 	var action = function() {
 		if (progressParams)
 			dlg = new ProgressSpinnerDlg(progressParams.waitMessage);
 		if (actionParams.actions)
-			recurseUpdateWithAjax({ actions: actionParams.actions, els: actionParams.els, target: actionParams.target, onSuccess: onSuccess, dlg: actionParams.dlg, onFailure: actionParams.onFailure, params: actionParams.params });
+			recurseUpdateWithAjax({ actions: actionParams.actions, els: actionParams.els, target: actionParams.target, onSuccess: onSuccess, dlg: actionParams.dlg, onFailure: onFailure, params: actionParams.params });
 		else
 			onSuccess();
 	};

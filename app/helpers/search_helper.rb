@@ -257,16 +257,16 @@ module SearchHelper
   
   def site_subtotal(site_count, facet_category)
     count = 0
-    if facet_category['type'] == nil
-      facet_category.sorted_children.each { |child| 
-        if child.children.size > 0 
+    if facet_category['children'] != nil
+      facet_category['children'].each { |child|
+        if child['children'] != nil
           count = count + site_subtotal(site_count, child)
         else
-          count = count + site_object_count(site_count, child.value)
+          count = count + site_object_count(site_count, child['handle'])
         end    
       }
     else
-      count = site_object_count(site_count, facet_category.value)
+      count = site_object_count(site_count, facet_category['handle'])
     end
     return count
   end
@@ -309,22 +309,22 @@ module SearchHelper
     return get_collected_item(hit) != nil
   end
   
-  def add_tag_if_present(hit)
-    item = get_collected_item(hit)
-    return "" if item == nil
-
-    str = ""
-    tags = item.tags
-    if tags != nil
-      str = "<ul style='list-style-type: none;'><li>Collected On: #{item.updated_at}</li>\n"
-      tags.each {|t|
-        str += "<li>x&nbsp;#{h tags.name}</li>\n"
-      }
-      str += "<a class='modify_link' href='#'>Add a tag</a>\n"
-      str += "</ul>\n"
-    end
-    return raw(str)
-  end
+  #def add_tag_if_present(hit)
+  #  item = get_collected_item(hit)
+  #  return "" if item == nil
+  #
+  #  str = ""
+  #  tags = item.tags
+  #  if tags != nil
+  #    str = "<ul style='list-style-type: none;'><li>Collected On: #{item.updated_at}</li>\n"
+  #    tags.each {|t|
+  #      str += "<li>x&nbsp;#{h tags.name}</li>\n"
+  #    }
+  #    str += "<a class='modify_link' href='#'>Add a tag</a>\n"
+  #    str += "</ul>\n"
+  #  end
+  #  return raw(str)
+  #end
 
   def has_annotation(hit)
     item = get_collected_item(hit)
@@ -342,21 +342,21 @@ module SearchHelper
     return note
   end
 
-  def get_result_date(hit)
-    
-  end
-  
-  def get_result_annotation(hit)
-    
-  end
-  
-  def result_has_annotation(hit)
-    
-  end
-  
-  def get_result_tags(hit)
-    
-  end
+  #def get_result_date(hit)
+  #
+  #end
+  #
+  #def get_result_annotation(hit)
+  #
+  #end
+  #
+  #def result_has_annotation(hit)
+  #
+  #end
+  #
+  #def get_result_tags(hit)
+  #
+  #end
   
   def get_saved_searches(username)
     user = User.find_by_username(username)
@@ -418,7 +418,7 @@ module SearchHelper
     value_display = constraint.value
     if constraint.fieldx =="archive"
       if site(constraint.value)
-        value_display = site(constraint.value)['description']
+        value_display = site(constraint.value)['name']
       end
     end
     
@@ -477,7 +477,7 @@ module SearchHelper
     if type == :separate_lines
       # multiple items on separate lines
       str = ""
-      hit[key].each_with_index do |item, i|
+      hit[key].each do |item|
         str += forum_result_row_item_format(label, h(item))
       return str
       end
@@ -512,34 +512,33 @@ module SearchHelper
 	end
 
 	def result_row_tags_links(rows, index, row_id, hit, label, tags, item, signed_in, is_collected)
-		my_tags = []
 		tag_str = ""
-		return false if session[:user].nil?
-    user = nil
-    user = User.find_by_username(session[:user][:username]) if session[:user]
-		
-		tags.each {|tag|
+		user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+
+		tags.each { |tag|
 			tag_str += " | " if tag != tags[0]
-			tag_str += link_to format_tag_for_output(tag[0]), { :controller => 'tag', :action => 'results', :tag => tag[0], :view => 'tag' }, { :class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\"" }
-			if user && user.id == tag[1]	
+			tag_str += link_to format_tag_for_output(tag[0]), {:controller => 'tag', :action => 'results', :tag => tag[0], :view => 'tag'}, {:class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\""}
+			if user && user.id == tag[1]
 				tag_str += ' ' + link_to_function("X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag[0])}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag[0]}\"")
 			end #if this tag was created by the current user
 		} #the tag loop
-		
+
 		if !signed_in
 			tag_str += "<span class='tags_instructions'>#{" [#{sign_in_link({:class => 'nav_link'})} to add tags]"}</span>"
 		else
-			tag_str += ' ' + link_to_function(raw("[add&nbsp;tag]"), "doAddTag('/tag/tag_name_autocomplete', 'add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);",  :id => "add_tag_#{index}", :class => 'modify_link')
+			tag_str += ' ' + link_to_function(raw("[add&nbsp;tag]"), "doAddTag('/tag/tag_name_autocomplete', 'add_tag_#{index}', '#{hit['uri']}', #{index}, '#{row_id}', event);", :id => "add_tag_#{index}", :class => 'modify_link')
 		end #if the user is logged in.
 		rows.push({:hidden => false, :label => label, :value => tag_str})
 	end
 
 	def result_row_site(rows, label, hit, key)
-		return if !hit['archive']
-		if site(hit[key])
-			str = "<a class='nines_link' target='_blank' href='#{site(hit[key])['url']}'>#{site(hit[key])['description']}</a>"
+		return if !hit[key]
+		archive = hit[key].kind_of?(Array) ? hit[key][0] : hit[key]
+		this_site = site(archive)
+		if this_site
+			str = "<a class='nines_link' target='_blank' href='#{this_site['site_url']}'>#{this_site['name']}</a>"
 		else
-			str = hit[key]
+			str = archive
 		end
 		rows.push({:hidden => false, :label => label, :value => str})
 	end
@@ -585,6 +584,19 @@ module SearchHelper
 		return raw(html)
 	end
 
+	def result_row_title(title, url, index)
+		if title.length < 200
+			return content_tag(:a, title, { class: 'nines_link', title: ' ', target: '_blank', href: url })
+		else
+			title1 = title[0..199]
+			title2 = title[200..-1]
+			id = "title_more_#{index}"
+			initial_title = title1 + content_tag(:span, title2, { id: id, class: 'hidden' })
+			return content_tag(:a, raw(initial_title), { class: 'nines_link', title: ' ', target: '_blank', href: url }) +
+				content_tag(:a, '...[show full title]', { href: '#', onclick: 'return false;', class: 'nav_link more_link', 'data-div' => id, 'data-less' => '[show less]' })
+		end
+	end
+
   def result_row_item(rows, type, hit, key, label, is_hidden)
     return if !hit[key]
     
@@ -614,14 +626,14 @@ module SearchHelper
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
   def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found, is_open, site_count )
-    display_name = h(site.display_name)
-    id = site.id
-    value = site['value']
+    display_name = h(site['name'])
+    id = site['id']
+    value = site['handle']
     
     # This is one line in the resources.
     # If edit mode: don't show # objects, show value instead.
     # if category, put in arrow for expand/collapse
-    html = "<tr id='resource_#{site.id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
+    html = "<tr id='resource_#{id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
     if is_category
       html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
       html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
@@ -660,9 +672,12 @@ module SearchHelper
   end
 
 	def federation_selector(federation, num_objects)
+		return "" if session[:federations][federation].blank?
+		
 		html = "<tr><td>"
 		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
-		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection}><img src='/images/#{SKIN}/federation_#{federation}_thumb.jpg' alt='#{federation}' /></input>"
+		thumb = session[:federations][federation]['thumbnail']
+		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection}><img src='#{thumb}' alt='#{federation}' /></input>"
 		html += "</td><td class='num_objects'>#{number_with_delimiter(num_objects)}</td></tr>"
 		return raw(html)
 	end

@@ -242,6 +242,20 @@ a.tw_note {
   font-weight: bold;
 }
 
+.tw_source_link {
+    color: #AC2E20;
+    text-decoration: none;
+ }
+.tw_source_link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.tw_selected_source {
+    font-weight: bolder;
+    font-size: 1.2em;
+    cursor: default;
+}
+
 .tw_edit_icon {
   vertical-align: middle;
   display:block; margin: 0 auto;

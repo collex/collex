@@ -154,12 +154,12 @@ module MyCollexHelper
       #is_first = true
     end
     
-    return { :border_active => border_active, :html => raw(html) };
+    return { :border_active => border_active, :html => raw(html) }
   end
 
 	def exhibit_builder_style_name(exhibit)
 		if exhibit.fonts_match_defaults()
-			return "#{SITE_NAME} default"
+			return "#{Setup.site_name()} default"
 		else
 			return "Custom style"
 		end
