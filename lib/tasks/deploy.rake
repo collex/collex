@@ -38,7 +38,6 @@ namespace :deploy do
 		puts `lib/daemons/index_user_content_ctl stop`
 		puts `lib/daemons/mailer_ctl stop`
 		puts `lib/daemons/session_cleaner_ctl stop`
-		#`script/daemons stop`
 		sleep(8)
 	end
 
@@ -47,22 +46,57 @@ namespace :deploy do
 		puts `lib/daemons/index_user_content_ctl start`
 		puts `lib/daemons/mailer_ctl start`
 		puts `lib/daemons/session_cleaner_ctl start`
-		#`script/daemons start`
+	end
+
+	def tag_current_version
+		# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
+		# version = Branding.version() -- may report one version behind if we just updated.
+		# Read the version directly because we might have just done an "svn up" and so we are actually running one version behind.
+		version = ""
+		File.open("#{Rails.root}/app/models/branding.rb", "r") do |file|
+			wants_this = false
+			while line = file.gets
+				if wants_this && version.length == 0
+					arr = line.split("\"")
+					version = arr[1]
+				elsif line.index("self.version") != nil
+					wants_this = true
+				end
+			end
+		end
+
+		if version.length == 0
+			puts "Can't tag version because the format of branding.rb"
+		else
+			output = `svn info #{SVN_COLLEX}/tags/#{version}`
+			if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
+				finished = false
+				letter = 'a'
+				while !finished
+					output = `svn info #{SVN_COLLEX}/tags/#{version}#{letter}`
+					finished = output.index("Path: #{version}#{letter}") != 0
+					letter[0] = letter[0]+1 if !finished
+				end
+				version += letter
+			end
+			puts "Tagging version #{version}..."
+			system("svn copy -rHEAD -m tag #{SVN_COLLEX}/trunk/web #{SVN_COLLEX}/tags/#{version}")
+		end
 	end
 
 	desc "Tag the current collex version; make a backup of the production site"
-	task :archive => :environment do
+	task :tag => :environment do
 		version = Branding.version()
 		puts "You will be asked for your NINES mysql password."
 		`mysqldump nines_production -u nines -p > ~/backups/backup_nines_#{version}.sql`
 		puts "You will be asked for your 18thConnect mysql password."
 		`mysqldump 18th_production -u nines -p > ~/backups/backup_18th_#{version}.sql`
-		Rake::Task['deploy:tag_current_version'].invoke
+		tag_current_version()
 	end
 
 	def deploy_on_production
 		puts "Deploy latest version on production..."
-		update_ninesperf()
+		update_edge()
 	end
 
 	def basic_update
@@ -70,14 +104,13 @@ namespace :deploy do
 		puts `svn up`
 		run_bundler()
 		copy_dir( "#{Rails.root}/public/static/#{SKIN}", "#{Rails.root}/public" )
-		Rake::Task['deploy:update_nines_theme'].invoke
 		Rake::Task['db:migrate'].invoke
 	end
 
 	def update_edge
 		puts "Update site from repository..."
 		basic_update()
-		Rake::Task['deploy:compress_css_js'].invoke
+		compress_css_js()
 		puts "You will be asked for your sudo password."
 		`sudo /sbin/service httpd restart`
 		#puts "\e[0;31mRun this to restart passenger:"
@@ -85,60 +118,10 @@ namespace :deploy do
 		start_daemons()
 	end
 
-	#def update_ninesperf
-	#	puts "Update site from repository..."
-	#	basic_update()
-	#	Rake::Task['deploy:compress_css_js'].invoke
-	#	puts "You will be asked for your sudo password."
-	#	`sudo /sbin/service httpd restart`
-	#	start_daemons()
-	#end
-
-	def update_18th
-		puts "Update site from repository..."
-		basic_update()
-		Rake::Task['deploy:compress_css_js'].invoke
-		puts "You will be asked for your sudo password."
-		`sudo /sbin/service httpd restart`
-		start_daemons()
-	end
-
-	def update_18th_production
-		puts "Update site from repository..."
-		basic_update()
-		Rake::Task['deploy:compress_css_js'].invoke
-		puts "You will be asked for your sudo password."
-		`sudo /sbin/service httpd restart`
-		start_daemons()
-	end
-
-	def update_experimental
-		# TODO-PER: Can we force this to run in development mode?
-		puts "Update site from repository..."
-		basic_update()
-		Rake::Task['deploy:compress_css_js'].invoke
-		`mongrel_rails restart`
-		start_daemons()
-	end
-
-	def update_indexing
-		puts "Update site from repository..."
-		basic_update()
-		Rake::Task['deploy:compress_css_js'].invoke
-		# staging has two mongrels in a cluster. They were started like this: (old info: now using Passenger)
-		# mongrel_rails start -e production -p 8000 -d
-		# mongrel_rails start -e production -p 8001 -P log/mongrel8001.pid -d
-		#`mongrel_rails restart`
-		#`mongrel_rails restart -P log/mongrel8001.pid`
-		puts "You will be asked for your sudo password."
-		puts `sudo /sbin/service httpd restart`
-		start_daemons()
-	end
-
 	def update_development
 		puts "Update site from repository..."
 		basic_update()
-		Rake::Task['deploy:compress_about_css'].invoke
+		compress_css_js()
 		`mongrel_rails restart`
 		start_daemons()
 	end
@@ -148,20 +131,10 @@ namespace :deploy do
 		puts "Update type: #{UPDATE_TASK}"
 		if UPDATE_TASK == 'production'
 			deploy_on_production()
-		elsif UPDATE_TASK == 'indexing'
-			update_indexing()
-		#elsif UPDATE_TASK == 'nines.perf'
-		#	update_ninesperf()
 		elsif UPDATE_TASK == 'development'
 			update_development()
-		elsif UPDATE_TASK == 'experimental'
-			update_experimental()
 		elsif UPDATE_TASK == 'edge'
 			update_edge()
-		elsif UPDATE_TASK == '18th'
-			update_18th()
-		elsif UPDATE_TASK == '18thConnect.org'
-			update_18th_production()
 		else
 			puts "Unknown updating type. Compare the value in config/site.yml and the list in the deploy:update rake task (file: deploy.rake)."
 		end
@@ -201,18 +174,6 @@ namespace :deploy do
 		end
 	end
 	
-  desc "Update the installed Collex Wordpress theme"
-  task :update_nines_theme do
-		puts "Updating wordpress files..."
-		safe_mkdir("#{Rails.root}/public/wp")
-		safe_mkdir("#{Rails.root}/public/wp/wp-content")
-		safe_mkdir("#{Rails.root}/public/wp/wp-content/themes")
-		safe_mkdir("#{Rails.root}/public/wp/wp-content/themes/nines")
-		safe_mkdir("#{Rails.root}/public/wp/wp-content/themes/18th")
-		copy_dir( "#{Rails.root}/wordpress_theme/nines", "#{Rails.root}/public/wp/wp-content/themes/nines" )
-		copy_dir( "#{Rails.root}/wordpress_theme/18th", "#{Rails.root}/public/wp/wp-content/themes/18th" )
-  end
-
   def copy_dir( start_dir, dest_dir )
      puts "Copying the contents of #{start_dir} to #{dest_dir}..."
      Dir.new(start_dir).each { |file|
@@ -224,43 +185,6 @@ namespace :deploy do
      }
   end
 
-	desc "Tag this version in SVN"
-	task :tag_current_version => :environment do
-		# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
-		# version = Branding.version() -- may report one version behind if we just updated.
-		# Read the version directly because we might have just done an "svn up" and so we are actually running one version behind.
-		version = ""
-		File.open("#{Rails.root}/app/models/branding.rb", "r") do |file|
-			wants_this = false
-			while line = file.gets
-				if wants_this && version.length == 0
-					arr = line.split("\"")
-					version = arr[1]
-				elsif line.index("self.version") != nil
-					wants_this = true
-				end
-			end
-		end
-
-		if version.length == 0
-			puts "Can't tag version because the format of branding.rb"
-		else
-			output = `svn info #{SVN_COLLEX}/tags/#{version}`
-			if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
-				finished = false
-				letter = 'a'
-				while !finished
-					output = `svn info #{SVN_COLLEX}/tags/#{version}#{letter}`
-					finished = output.index("Path: #{version}#{letter}") != 0
-					letter[0] = letter[0]+1 if !finished
-				end
-				version += letter
-			end
-			puts "Tagging version #{version}..."
-			system("svn copy -rHEAD -m tag #{SVN_COLLEX}/trunk/web #{SVN_COLLEX}/tags/#{version}")
-		end
-	end
-
 	desc "Compress the css for the about pages"
 	task :compress_about_css => :environment do
 		compress_file('stylesheets', '.css', "")
@@ -268,8 +192,7 @@ namespace :deploy do
 		concatenate_css(:about)
 	end
 
-  desc "Compress all css and js files"
-  task :compress_css_js => :environment do
+  def compress_css_js()
 		# The purpose of this is to roll all our css and js files into one minimized file so that load time on the server is as short as
 		# possible. Using this method allows different pages to have different sets of includes, and allows the developer to create
 		# as many small css and js files as they want. See get_include_file_list.rb for details.
@@ -308,6 +231,11 @@ namespace :deploy do
 		concatenate_js(:print_exhibit)
 		concatenate_css(:print_exhibit)
 	end
+
+	desc "Compress all css and js files"
+	task :compress_css_js => :environment do
+		compress_css_js()
+	  end
 
 	def time_format(tim)
 		return tim.getlocal().strftime("%b %d, %Y %I:%M%p")

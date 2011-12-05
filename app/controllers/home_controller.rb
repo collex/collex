@@ -80,7 +80,7 @@ class HomeController < ApplicationController
   
   def news
     @site_section = :news
-		render :template => '/about/news'
+#		render :template => '/about/news'
   end
 
   def atom

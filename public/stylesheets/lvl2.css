@@ -85,3 +85,17 @@
 .page_subheader {
 	padding: 0px 0px 0px 0px;
 }
+
+#installation-instructions {
+	padding-left: 32px;
+	padding-right: 32px;
+}
+
+.instructions-note {
+	font-style: italic;
+}
+
+#installation-instructions pre {
+	background-color: #eeeeee;
+	padding: 6px;
+}
