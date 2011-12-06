@@ -20,7 +20,9 @@
 	<h2><%= Setup.site_name() %> News Installation</h2>
 		
 	<p><%= Setup.site_name() %> News is powered by WordPress which is integrated with the Ruby on Rails application. There are a number of ways to do this; the following discussion assumes the server is running Apache with Passenger.</p>
-
+	<p>There are two WordPress installations needed: There is one for the blog that will appear under News, and there is one for the static pages that will appear under About. These
+		instructions will set up both installations.
+	</p>
 <h3>System Dependencies</h3>
 
 <p>ssh access to the server, Apache 2, Phusion Passenger, PHP, mysql.</p>
@@ -33,45 +35,74 @@
 cd ~/www
 wget http://wordpress.org/latest.tar.gz
 tar xvfz latest.tar.gz
-mv wordpress wp_<%= Setup.site_name() %>
-cd wp_<%= Setup.site_name() %>/
+mv wordpress wp_<%= Setup.site_name() %>_news
+cd wp_<%= Setup.site_name() %>_news
 cp wp-config-sample.php wp-config.php
 vi wp-config.php
-# set the credentials for the database access.
+	# set the credentials for the database access.
+
+cd ..
+tar xvfz latest.tar.gz
+mv wordpress wp_<%= Setup.site_name() %>_about
+cd wp_<%= Setup.site_name() %>_about
+cp wp-config-sample.php wp-config.php
+vi wp-config.php
+	# set the credentials for the database access.
 
 mysql -u username -p
-CREATE DATABASE wp_<%= Setup.site_name() %>;
-CREATE USER 'username'@'localhost' IDENTIFIED BY 'super-secret';
-GRANT ALL ON wp_<%= Setup.site_name() %>.* TO 'username'@'localhost';
+	CREATE DATABASE wp_<%= Setup.site_name() %>_news;
+	CREATE USER '<%= Setup.site_name() %>_news'@'localhost' IDENTIFIED BY 'super-secret';
+	GRANT ALL ON wp_<%= Setup.site_name() %>_news.* TO '<%= Setup.site_name() %>_news'@'localhost';
+	GRANT FILE ON *.* TO '<%= Setup.site_name() %>_news'@'localhost';
+
+	CREATE DATABASE wp_<%= Setup.site_name() %>_about;
+	CREATE USER '<%= Setup.site_name() %>_about'@'localhost' IDENTIFIED BY 'super-secret';
+	GRANT ALL ON wp_<%= Setup.site_name() %>_about.* TO '<%= Setup.site_name() %>_about'@'localhost';
+	GRANT FILE ON *.* TO '<%= Setup.site_name() %>_about'@'localhost';
 </pre>
 </p>
 <h3>Step Two: Modify Apache Config</h3>
 <p>Put this in your apache configuration file to get Passenger to ignore requests from the /news folder:</p>
 <pre>
-&lt;Directory "/path/to/rails/app/public/news"&gt;
+&lt;Directory "<%= Rails.root %>/public/news"&gt;
     PassengerEnabled off
     AllowOverride all
 &lt;/Directory&gt;
+
+&lt;Directory "<%= Rails.root %>/public/about"&gt;
+	PassengerEnabled off
+	AllowOverride all
+&lt;/Directory&gt;
 </pre>
+	<p> The restart Apache so the changes take effect:</p>
+	<pre>
+sudo /sbin/service httpd restart
+	</pre>
 
 <h3>Step Three: Link the blog to <%= Setup.site_name() %></h3>
 	<p>Put in a symbolic link in your Rails app so that requests for /news get redirected to WordPress:</p>
 	<pre>
-cd path/to/rails/app/public
-ln -s /path/to/wordpress/installation news
+cd <%= Rails.root %>/public
+ln -s ~/www/wp_<%= Setup.site_name() %>_news news
+ln -s ~/www/wp_<%= Setup.site_name() %>_about about
 	</pre>
 
 	<div class="instructions-note"><p>NOTE: Once these rules are in place, this page of instructions will be replaced with WordPress. You can still access this page of instructions <a href="/home/news/">here</a>.</p></div>
 
 <h3>Step Four: Activate Wordpress</h3>
 
-<p>Point your browser to http://your-domain.com/news. You should get instructions from WordPress about setting up the blog. Note that you should NOT do this step before you get the
-symbolic link set up. WordPress needs to have the correct URL to function properly.</p>
+<p>Point your browser to <%= link_to "News",  "#{ActionMailer::Base.default_url_options[:host]}/news" %>. You should get instructions from WordPress about setting up the blog. Note that you should NOT do this step before you get the
+symbolic link set up. WordPress needs to have the correct URL to function properly. Repeat the above with <%= link_to "About",  "#{ActionMailer::Base.default_url_options[:host]}/about" %>
+</p>
 
 <h3>Step Five: Install the Collex Theme and Plugin</h3>
+	<p>From the WordPress administration panel, search for and install the Hybrid theme.</p>
 	<p>Install the generic Collex theme from <a href="https://github.com/collex/collex_wordpress_theme">here</a> by downloading the code to the wp-content/themes folder.
 		Select the theme from the WordPress administration panel.
 	</p>
-	<p>Install the Rails Theme plugin by going to the plugin page and searching for "Rails Theme". After activating the plugin, go to the Settings/Rails Theme page and enter the URL for <%= Setup.site_name() %>.</p>
+<pre>
+git clone git://github.com/collex/collex_wordpress_theme.git
+</pre>
+	<p>Install the Rails Theme plugin by going to the plugin page and searching for "Rails Theme". After activating the plugin, go to the Settings/Rails Theme page and enter the URL for <%= ActionMailer::Base.default_url_options[:host] %>.</p>
 
 </div>

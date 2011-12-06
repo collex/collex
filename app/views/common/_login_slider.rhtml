@@ -28,8 +28,8 @@
 		<% else -%>
 			<%= link_to 'admin', { :controller => 'admin/default', :action => 'index' }, { :class => 'nav_link' } %>
 		<% end -%>
-		<%= link_separator %>
-		<%= link_to 'WordPress', "/news/wp-admin/", { :class => 'nav_link' } %>
+		<%= link_separator %><%= link_to 'about', "/about/wp-admin/", { :class => 'nav_link' } %>
+		<%= link_separator %><%= link_to 'news', "/news/wp-admin/", { :class => 'nav_link' } %>
 	<% end -%>
 <% else -%>
     <%= sign_in_link({ :class => 'nav_link' }) %> | 
