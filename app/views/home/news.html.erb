@@ -15,6 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% current_page "News" -%>
+<% name = Setup.site_name().downcase() %>
 
 <div id="installation-instructions">
 	<h2><%= Setup.site_name() %> News Installation</h2>
@@ -35,30 +36,30 @@
 cd ~/www
 wget http://wordpress.org/latest.tar.gz
 tar xvfz latest.tar.gz
-mv wordpress wp_<%= Setup.site_name() %>_news
-cd wp_<%= Setup.site_name() %>_news
+mv wordpress wp_<%= name %>_news
+cd wp_<%= name %>_news
 cp wp-config-sample.php wp-config.php
 vi wp-config.php
 	# set the credentials for the database access.
 
 cd ..
 tar xvfz latest.tar.gz
-mv wordpress wp_<%= Setup.site_name() %>_about
-cd wp_<%= Setup.site_name() %>_about
+mv wordpress wp_<%= name %>_about
+cd wp_<%= name %>_about
 cp wp-config-sample.php wp-config.php
 vi wp-config.php
 	# set the credentials for the database access.
 
-mysql -u username -p
-	CREATE DATABASE wp_<%= Setup.site_name() %>_news;
-	CREATE USER '<%= Setup.site_name() %>_news'@'localhost' IDENTIFIED BY 'super-secret';
-	GRANT ALL ON wp_<%= Setup.site_name() %>_news.* TO '<%= Setup.site_name() %>_news'@'localhost';
-	GRANT FILE ON *.* TO '<%= Setup.site_name() %>_news'@'localhost';
+mysql -u root -p
+	CREATE DATABASE wp_<%= name %>_news;
+	CREATE USER '<%= name %>_news'@'localhost' IDENTIFIED BY 'super-secret';
+	GRANT ALL ON wp_<%= name %>_news.* TO '<%= name %>_news'@'localhost';
+	GRANT FILE ON *.* TO '<%= name %>_news'@'localhost';
 
-	CREATE DATABASE wp_<%= Setup.site_name() %>_about;
-	CREATE USER '<%= Setup.site_name() %>_about'@'localhost' IDENTIFIED BY 'super-secret';
-	GRANT ALL ON wp_<%= Setup.site_name() %>_about.* TO '<%= Setup.site_name() %>_about'@'localhost';
-	GRANT FILE ON *.* TO '<%= Setup.site_name() %>_about'@'localhost';
+	CREATE DATABASE wp_<%= name %>_about;
+	CREATE USER '<%= name %>_about'@'localhost' IDENTIFIED BY 'super-secret';
+	GRANT ALL ON wp_<%= name %>_about.* TO '<%= name %>_about'@'localhost';
+	GRANT FILE ON *.* TO '<%= name %>_about'@'localhost';
 </pre>
 </p>
 <h3>Step Two: Modify Apache Config</h3>
@@ -83,8 +84,8 @@ sudo /sbin/service httpd restart
 	<p>Put in a symbolic link in your Rails app so that requests for /news get redirected to WordPress:</p>
 	<pre>
 cd <%= Rails.root %>/public
-ln -s ~/www/wp_<%= Setup.site_name() %>_news news
-ln -s ~/www/wp_<%= Setup.site_name() %>_about about
+ln -s ~/www/wp_<%= name %>_news news
+ln -s ~/www/wp_<%= name %>_about about
 	</pre>
 
 	<div class="instructions-note"><p>NOTE: Once these rules are in place, this page of instructions will be replaced with WordPress. You can still access this page of instructions <a href="/home/news/">here</a>.</p></div>
@@ -101,6 +102,9 @@ symbolic link set up. WordPress needs to have the correct URL to function proper
 		Select the theme from the WordPress administration panel.
 	</p>
 <pre>
+cd ~/www/wp_<%= name %>_about/wp-content/themes
+git clone git://github.com/collex/collex_wordpress_theme.git
+cd ~/www/wp_<%= name %>_news/wp-content/themes
 git clone git://github.com/collex/collex_wordpress_theme.git
 </pre>
 	<p>Install the Rails Theme plugin by going to the plugin page and searching for "Rails Theme". After activating the plugin, go to the Settings/Rails Theme page and enter the URL for <%= ActionMailer::Base.default_url_options[:host] %>.</p>
