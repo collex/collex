@@ -14,29 +14,11 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
-.about_nav_container {
-	background:#eae5d6;
+#primary .widget_nav_menu {
+	background-color:#F9FFE5;
 	border:1px solid #EDDA74;
 }
 
-.a_nav_1 {
-	color:#000000;
-}
-
-.a_nav_2 {
-	color:#000000;
-}
-
-.a_nav_1_dn {
-	color:#000000;
-	background:#EDDA74;
-}
-
-.a_nav_2_dn {
-	color:#000000;
-	background:#eae5d6;
-}
-
-p.highlight {
-	background-color:#eae5d6;
+.wordpress #main_container #container .widget-nav-menu li.current_page_item a, .singular-page #main_container #container #primary .widget-nav-menu ul li ul.children li.current_page_item a {
+	background-color: #5470B1;
 }

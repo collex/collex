@@ -143,9 +143,9 @@ class GetIncludeFileList
 			when :admin
 				local = [ "#{SKIN}/lvl2_skin", "lvl2", "admin", "#{SKIN}/admin_skin", "search", "right_column" ]
 			when :about
-				local = [ "#{SKIN}/lvl2_skin", "lvl2", "about", "#{SKIN}/about_skin" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "#{SKIN}/about_skin" ]
 			when :news
-				local = [ "#{SKIN}/lvl2_skin", "lvl2", "about", "#{SKIN}/about_skin" ]
+				local = [ "#{SKIN}/lvl2_skin", "lvl2", "#{SKIN}/about_skin" ]
 			when :view_exhibit
 				local = [ "#{SKIN}/lvl3_skin", "lvl3", "exhibit" ]
 			when :print_exhibit
