@@ -180,7 +180,12 @@ class TagController < ApplicationController
    
 
     def object
-      @hit = CachedResource.get_hit_from_uri(params[:uri])
+		begin
+	      @hit = CachedResource.get_hit_from_uri(params[:uri])
+		rescue Catalog::Error => e
+			# This can happen if the URI changed on an object after it had been included in an RSS stream.
+			logger.error("*** RSS Feed Retrieval Error: #{e.to_s}")
+		end
       render :layout => 'simple'
     end
    
