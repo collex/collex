@@ -19,6 +19,10 @@
 }
 
 #admin_menu li a {
-border-left:0.8em solid #566fb1;
-text-decoration:none;
+	border-left:0.8em solid #566fb1;
+	text-decoration:none;
+}
+
+.user_roles th, .exhibit_category th {
+	background-color: #A9BAE7;
 }

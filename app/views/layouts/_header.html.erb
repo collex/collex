@@ -24,4 +24,4 @@
 			<%= render :partial => '/admin/default/menu', :locals => { :current_page => yield(:current_sub_page) } %>
 		<% end -%>
 	</div>
-	<div id="content_container">
+	<div id="content_container"<%= raw(' class="admin"') if @current_page == "admin" %>>

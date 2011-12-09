@@ -14,6 +14,15 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
+#content_container.admin .page_header {
+	color:#1D253C;
+	padding:6px 0 20px;
+}
+
+#content_container.admin .inner_content_container {
+	padding: 20px 30px 50px;
+}
+
 .admin_active {
 	font-weight: bold;
 	color: black;
@@ -80,11 +89,21 @@
 }
 
 .user_roles th {
-	border: none;
+	border: 1px solid #FFFFFF;
+	color: #FFFFFF;
 }
 
 .user_roles td {
 	text-align: left;
+	border-left: 1px solid black;
+}
+
+.user_roles td:first-child {
+	border-left: none;
+}
+
+.user_roles td:last-child {
+	border-left: none;
 }
 
 .pagination a:link, .pagination a:visited {
@@ -109,6 +128,11 @@
 	font-style: italic;
 }
 
+.exhibit_category {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
 .exhibit_category td {
 	padding: 3px;
 	border: 1px solid #dddddd;
@@ -117,6 +141,7 @@
 
 .exhibit_category th {
 	border: 1px solid #dddddd;
+    color: #FFFFFF;
 }
 
 .setup_container {

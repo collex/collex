@@ -18,3 +18,11 @@
 	background-color: #B99A86;
 }
 
+#admin_menu li a {
+	border-left:0.8em solid #B99A86;
+	text-decoration:none;
+}
+
+.user_roles th, .exhibit_category th {
+	background-color: #B99A86;
+}
