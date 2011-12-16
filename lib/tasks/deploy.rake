@@ -48,51 +48,51 @@ namespace :deploy do
 		puts `lib/daemons/session_cleaner_ctl start`
 	end
 
-	def tag_current_version
-		# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
-		# version = Branding.version() -- may report one version behind if we just updated.
-		# Read the version directly because we might have just done an "svn up" and so we are actually running one version behind.
-		version = ""
-		File.open("#{Rails.root}/app/models/branding.rb", "r") do |file|
-			wants_this = false
-			while line = file.gets
-				if wants_this && version.length == 0
-					arr = line.split("\"")
-					version = arr[1]
-				elsif line.index("self.version") != nil
-					wants_this = true
-				end
-			end
-		end
+	#def tag_current_version
+	#	# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
+	#	# version = Branding.version() -- may report one version behind if we just updated.
+	#	# Read the version directly because we might have just done an "svn up" and so we are actually running one version behind.
+	#	version = ""
+	#	File.open("#{Rails.root}/app/models/branding.rb", "r") do |file|
+	#		wants_this = false
+	#		while line = file.gets
+	#			if wants_this && version.length == 0
+	#				arr = line.split("\"")
+	#				version = arr[1]
+	#			elsif line.index("self.version") != nil
+	#				wants_this = true
+	#			end
+	#		end
+	#	end
+	#
+	#	if version.length == 0
+	#		puts "Can't tag version because the format of branding.rb"
+	#	else
+	#		output = `svn info #{SVN_COLLEX}/tags/#{version}`
+	#		if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
+	#			finished = false
+	#			letter = 'a'
+	#			while !finished
+	#				output = `svn info #{SVN_COLLEX}/tags/#{version}#{letter}`
+	#				finished = output.index("Path: #{version}#{letter}") != 0
+	#				letter[0] = letter[0]+1 if !finished
+	#			end
+	#			version += letter
+	#		end
+	#		puts "Tagging version #{version}..."
+	#		system("svn copy -rHEAD -m tag #{SVN_COLLEX}/trunk/web #{SVN_COLLEX}/tags/#{version}")
+	#	end
+	#end
 
-		if version.length == 0
-			puts "Can't tag version because the format of branding.rb"
-		else
-			output = `svn info #{SVN_COLLEX}/tags/#{version}`
-			if output.index("Path: #{version}") == 0	# the tag already exists, so bump up the tag version
-				finished = false
-				letter = 'a'
-				while !finished
-					output = `svn info #{SVN_COLLEX}/tags/#{version}#{letter}`
-					finished = output.index("Path: #{version}#{letter}") != 0
-					letter[0] = letter[0]+1 if !finished
-				end
-				version += letter
-			end
-			puts "Tagging version #{version}..."
-			system("svn copy -rHEAD -m tag #{SVN_COLLEX}/trunk/web #{SVN_COLLEX}/tags/#{version}")
-		end
-	end
-
-	desc "Tag the current collex version; make a backup of the production site"
-	task :tag => :environment do
-		version = Branding.version()
-		puts "You will be asked for your NINES mysql password."
-		`mysqldump nines_production -u nines -p > ~/backups/backup_nines_#{version}.sql`
-		puts "You will be asked for your 18thConnect mysql password."
-		`mysqldump 18th_production -u nines -p > ~/backups/backup_18th_#{version}.sql`
-		tag_current_version()
-	end
+	#desc "Tag the current collex version; make a backup of the production site"
+	#task :tag => :environment do
+	#	version = Branding.version()
+	#	puts "You will be asked for your NINES mysql password."
+	#	`mysqldump nines_production -u nines -p > ~/backups/backup_nines_#{version}.sql`
+	#	puts "You will be asked for your 18thConnect mysql password."
+	#	`mysqldump 18th_production -u nines -p > ~/backups/backup_18th_#{version}.sql`
+	#	tag_current_version()
+	#end
 
 	def deploy_on_production
 		puts "Deploy latest version on production..."
@@ -101,7 +101,7 @@ namespace :deploy do
 
 	def basic_update
 		stop_daemons()
-		puts `svn up`
+		puts `git pull`
 		run_bundler()
 		copy_dir( "#{Rails.root}/public/static/#{SKIN}", "#{Rails.root}/public" )
 		Rake::Task['db:migrate'].invoke
