@@ -1,0 +1,9 @@
+/.bundle
+/log/*
+/tmp/*
+/public/system/*
+/coverage/
+/.idea/
+/config/database.yml
+/config/site.yml
+/Gemfile.lock
