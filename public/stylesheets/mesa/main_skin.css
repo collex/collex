@@ -15,7 +15,14 @@
 // ---------------------------------------------------------------------------- */
 
 body {
-	background:#81b4ac;
+	background:#03002F;
+	font-family: 'Sorts Mill Goudy', serif;
+}
+
+div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_caption1, .drop_cap:first-letter,
+	.drop_cap p:first-letter, .exhibit_header, .exhibit_illustration_text, div.content_container2, div#search_box,
+	#footer_container, .inner_content_container, #subnav_container, .breadcrumbs {
+	font-family: 'Sorts Mill Goudy', serif;
 }
 
 #header_container {
@@ -23,9 +30,9 @@ body {
 }
 
 #main_container {
-	border-left:10px #34645c solid;
-	border-right:10px #34645c solid;
-	border-bottom:10px #34645c solid;
+	border-left:10px #505050 solid;
+	border-right:10px #505050 solid;
+	border-bottom:10px #505050 solid;
 }
 
 #footer_container {
@@ -38,48 +45,53 @@ body {
 
 .tab_link {
 	background:url(/images/mesa/index_tab.gif) top left no-repeat;
-	color:#ffffff;
+	color:#CCAC63;
+	font-family: 'IM Fell French Canon SC', serif;
+	font-weight: normal;
 	top: 96px;
-	padding-top: 4px;
 }
 
 .tab_link_current {
 	background:url(/images/mesa/index_tab_dn.gif) top left no-repeat;
+	font-family: 'IM Fell French Canon SC', serif;
 	top: 96px;
-	padding-top: 4px;
 }
 
 .tab_link_long {
 	background:url(/images/mesa/index_tab_long.gif) top left no-repeat;
-	color:#ffffff;
+	color:#CCAC63;
+	font-family: 'IM Fell French Canon SC', serif;
+	font-weight: normal;
 	top: 96px;
-	padding-top: 4px;
 }
 
 .tab_link_long_current {
 	background:url(/images/mesa/index_tab_long_dn.gif) top left no-repeat;
+	font-family: 'IM Fell French Canon SC', serif;
+	font-weight: normal;
 	top: 96px;
-	padding-top: 4px;
 }
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
-	color:#ffffff;
+	color:#CCAC63;
 }
 
 a.my_collex_link {
-	color:#55220F;
+	color:#CCAC63;
+	font-family: 'IM Fell French Canon SC', serif;
+	font-weight: normal;
 	background:url(/images/mesa/index_tab_my_collex.gif) top left no-repeat;
-	top: 96px;
-	padding-top: 4px;
 }
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
-	color:#55220F;
+	color:#CCAC63;
 }
 
 .tab_link_logo{
 	background:url(/images/mesa/index_tab.gif) top left no-repeat;
-	color:#ffffff;
+	color:#CCAC63;
+	font-family: 'IM Fell French Canon SC', serif;
+	font-weight: normal;
 }
 
 #footer_container {
@@ -91,37 +103,37 @@ a.my_collex_link {
 }
 
 .nav_link:link, .nav_link:visited {
-	color:#AC2E20;
+	color:#120F56;
 }
 
-.tag_link:link { color: #A60000; }
-.tag_link:visited { color: #A60000; }
-.tag_link:hover { color: #fff; background: #A60000; }
+.tag_link:link { color: #120F56; }
+.tag_link:visited { color: #120F56; }
+.tag_link:hover { color: #fff; background: #120F56; }
 
 /* This is used for all links that change, or potentially change, the database */
-.modify_link:link { color: #A60000; text-decoration: none; }
-.modify_link:visited { color: #A60000; text-decoration: none; }
-.modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+.modify_link:link { color: #120F56; text-decoration: none; }
+.modify_link:visited { color: #120F56; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #120F56; text-decoration: none; }
 
 /* This is used for all links that go to the NINES sites. */
 .nines_link { background: url(/images/mesa/collex_link.jpg) center right no-repeat; }
-.nines_link:link { color: #A60000; }
-.nines_link:visited { color: #A60000; }
-.nines_link:hover { color: #fff; background: #A60000; }
+.nines_link:link { color: #120F56; }
+.nines_link:visited { color: #120F56; }
+.nines_link:hover { color: #fff; background: #120F56; }
 
 /* This is used for all links that go to external websites */
-.wordpress #container .ext_link:link { color: #A60000; text-decoration: none; }
-.wordpress #container .ext_link:visited { color: #A60000; text-decoration: none; }
-.wordpress #container .ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+.wordpress #container .ext_link:link { color: #120F56; text-decoration: none; }
+.wordpress #container .ext_link:visited { color: #120F56; text-decoration: none; }
+.wordpress #container .ext_link:hover { color: #fff; background: #120F56; text-decoration: none; }
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
 	background: url(/images/mesa/collex_link.jpg) center right no-repeat;
-	color: #A60000;
+	color: #120F56;
 } /* should match nines_link:link */
 
 .ext_linklike {
-	color: #A60000;
+	color: #120F56;
 } /* should match ext_link:link */
 
 .carousel_title {
@@ -163,7 +175,7 @@ a.my_collex_link {
 .yui-skin-sam .yui-panel .hd {
 	background: transparent url(/images/mesa/popup_box_header.jpg) repeat-y scroll 0 0;
 	color: white;
-	font-family: Verdana, sans-serif;
+/*	font-family: Verdana, sans-serif; */
 	font-weight: bold;
 }
 
