@@ -85,19 +85,19 @@
 }
 
 .FP_original_post .FC_report_link {
-	background:url(/images/collex/abuse_brown.gif) top left no-repeat;
+	background:url(/images/mesa/abuse_brown.gif) top left no-repeat;
 }
 
 .FP_original_post .FC_report_link:hover {
-	background:url(/images/collex/abuse_brown_rl.gif) top left no-repeat;
+	background:url(/images/mesa/abuse_brown_rl.gif) top left no-repeat;
 }
 
 .FP_reply_container .FC_report_link {
-	background:url(/images/collex/abuse_white.gif) top left no-repeat;
+	background:url(/images/mesa/abuse_white.gif) top left no-repeat;
 }
 
 .FP_reply_container .FC_report_link:hover {
-	background:url(/images/collex/abuse_white_rl.gif) top left no-repeat;
+	background:url(/images/mesa/abuse_white_rl.gif) top left no-repeat;
 }
 
 .reported_comment {
