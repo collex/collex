@@ -38,7 +38,7 @@ class SearchUserContent < ActiveRecord::Base
 	#- groups are explicitly given peer-reviewed/community/classroom type.
 	#- clusters have the same type as the group they are in.
 	#- Exhibits that are in groups have the same type as the group they are in.
-	#- Exhibits that are not in a group are given the Community type unless the NINES administrator overrides that.
+	#- Exhibits that are not in a group are given the Community type unless the Collex administrator overrides that.
 
 	def find_objects(options)
 		# returns: { total_hits => int, num_pages => int, hits => [ ActiveRecord: Exhibit,Cluster,Group ] }

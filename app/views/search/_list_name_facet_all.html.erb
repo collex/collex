@@ -46,7 +46,7 @@
 	<%= link_to_function "[What is this?]", "$('name_search_what_is_this_min').addClassName('hidden'); $('name_search_what_is_this_max').removeClassName('hidden');", :class => 'nav_link', :id => 'name_search_what_is_this_min' %>
 	<div id="name_search_what_is_this_max" class="hidden">
 		<%= link_to_function "[hide this]", "$('name_search_what_is_this_max').addClassName('hidden'); $('name_search_what_is_this_min').removeClassName('hidden');", :class => 'nav_link'  %>
-		This feature allows you to browse names in NINES as they were submitted by our contributors. Please note that this search covers metadata only, and does not include authors, editors or publishers mentioned in full text snippets.
+		This feature allows you to browse names in <%= Setup.site_name() %> as they were submitted by our contributors. Please note that this search covers metadata only, and does not include authors, editors or publishers mentioned in full text snippets.
 	</div>
 	<div id="full_name_facet_list" class="hidden">
 		Choose a name to add it to the constraints.

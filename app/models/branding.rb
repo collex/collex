@@ -15,8 +15,7 @@
 ##########################################################################
 
 class Branding
-	# This contains the functional differences between Collex and the specific implementation of it.
-	# In this case, this is the NINES specific stuff
+	# Here are some version numbers that we'd like to keep together.
   def self.version	# Don't change the format of this call because collex.rake depends on it!
     return "1.6.6"
   end

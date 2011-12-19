@@ -1,4 +1,4 @@
-The Collex/NINES project
+The Collex project
 
 -----------------------------------------------------------------------
 ** Prerequisite
@@ -6,14 +6,12 @@ The Collex/NINES project
 Most of the pain of getting collex running is in getting Ruby on Rails running on your machine. Before attempting the
 instructions below, be sure that you can create a simple Rails application.
 
-Collex currently runs under Rails 3.0.3 and Ruby 1.9.2, so it is best to create a Rails application with that version.
-
 -----------------------------------------------------------------------
 ** Steps for creating a collex installation from scratch.
 
 The following steps are explained in detail below:
 
-1) From the Collex repository, download Collex, solr_1.4, and (for the development computer only:) rdf-indexer
+1) From the Collex repository, download Collex, solr, and (for the development computer only:) rdf-indexer
 2) Install the required gems
 3) create site.yml and database.yml
 4) Start solr
@@ -44,81 +42,22 @@ of the site, and the administrator has a few more privileges, like the ability t
 forum and the ability to edit anyone's exhibits.
 
 -----------------------------------------------------------------------
-** Requires the following Gems:
-
-See Gemfile for current list.
-
-For indexing MARC records, the following are needed:
-
-Linguistics (1.0.5)
-marc (0.3.0)
-
-As of this writing, Linguistics fails to load in Ruby 1.9.2 because of character encoding problems, if that is still the
-case, just delete the line that fails in the gem.
-
-It is in PATH/.rvm/gems/ruby-1.9.2-p136/gems/Linguistics-1.0.5/lib/linguistics/iso639.rb
-
------------------------------------------------------------------------
 ** Requires Wordpress for the News tab
 
 There are instructions for integrating Wordpress that you can read by navigating to "/news".
 
-When changing any files in the Wordpress theme, then a rake task must be called to copy them over to the correct production folder.
+-----------------------------------------------------------------------
+** Requires ARC Catalog
 
-For NINES, that task is:
-	rake deploy:update_nines_theme
+A connection to the ARC Catalog is needed. You can create that yourself or connect to a current instance. To use
+a current instance, contact someone to get set up. To create your own version, download and set up the Catalog
+project in Collex.
 
 -----------------------------------------------------------------------
-** Requires Solr
 
-A connection to solr is needed. Typically this will be on the same computer as the deployment. There are a
-number of ways to start solr; the following is a suggestion.
-
-If you download the solr_1.4 folder from svn in the same relative place as it appears in svn, you can run the following rake task to
-start solr:
-
-	rake solr:start
-
-Typically on the server, though, you would create a service so that solr starts up when the machine is started. A sample file to start
-the service follows. It needs to be placed in /etc/init.d:
-
------------------------------------------------------------------------
-#!/bin/sh
-
-# Starts, stops, and restarts Apache Solr.
-#
-# chkconfig: 35 92 08
-# description: Starts and stops Apache Solr
-
-SOLR_DIR="PATH/solr_1.4"
-JAVA_OPTIONS="-Xmx6144m -Xms6144m -DSTOP.PORT=8079 -DSTOP.KEY=mustard -jar start.jar"
-LOG_FILE="PATH/logs/solr.log"
-JAVA="/usr/bin/java"
-
-case $1 in
-    start)
-        echo "Starting Solr"
-        cd $SOLR_DIR
-        $JAVA $JAVA_OPTIONS 2> $LOG_FILE &
-        ;;
-    stop)
-        echo "Stopping Solr"
-        cd $SOLR_DIR
-        $JAVA $JAVA_OPTIONS --stop
-        ;;
-    restart)
-        $0 stop
-        sleep 1
-        $0 start
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|restart}" >&2
-        exit 1
-        ;;
-esac
------------------------------------------------------------------------
-
-Note that you will need to index your documents first and put those indexes in the above folder.
+Note that you will need to index your documents first and put those indexes in the above folder. If you are using
+the existing Catalog connection, you will probably submit your RDF to ARC for indexing. If you are setting up your
+own catalog, you will have to index the documents yourself.
 
 That process is explained here:
 
@@ -165,9 +104,6 @@ In production, there are three js files on a page:
 In /lib/tasks/*.rake, there are a number of rake tasks defined. Here are the most important ones:
 
 --- Development side ---
-	rake deploy:tag_current_version
-	(uses the version number in the model Branding to tag the trunk.)
-
 	rake deploy:compress_about_css
 	Compress the css for the about pages - this is done when deploying, but needs to be done manually on your development machine.
 
@@ -178,28 +114,12 @@ In /lib/tasks/*.rake, there are a number of rake tasks defined. Here are the mos
 	(Runs jslint on one file.)
 
 --- Server side ---
-	rake deploy:archive
-	Tag the current collex version; make a backup of the production site
-
 	rake deploy
 	This does various things depending on what is defined in site.yml. See the file collex.rake for details about what is
 	updated for each type. The various things that are done are:
 	- download latest code
-	- tag current version
-	- backup database
 	- run migrations
-	- load the wordpress styles
 	- compress js and css files
-
-In /lib/tasks/solr.rake, there are routines to manipulate solr.
-	To run solr:
-	rake solr:start
-	To stop solr:
-	rake solr:stop
-	To zip up the index so that it can be transferred to another computer:
-	rake index=resources solr:zip
-
-There are also a number of rake tasks that are useful for indexing. See the file "indexing.txt" for details.
 
 -----------------------------------------------------------------------
 ** Site specific info
@@ -208,9 +128,6 @@ There are two files missing from this installation that you must supply:
 
 config/database.yml (there is a sample version of this file called config/database.example.yml)
 config/site.yml (there is a sample version of this file called config/site.example.yml)
-
-Note that if you use Google Analytics, then you will have to change the code to match your site and credentials. Search
-this project for "google-analytics.com" and change all of the references.
 
 Add a robots.txt file to the /public folder. This should contain
 
@@ -227,9 +144,7 @@ if you don't.
 -----------------------------------------------------------------------
 ** About files
 
-The "about" files are all plain .html files so that they can be maintained by a web designer. They do not require knowledge of
-ruby, rails, or javascript. There are a couple of pieces of javascript embedded in them that should be kept. One contains the
-code to handle the login area and the other handles the popup dialogs in the footer.
+The "about" files are all created in WordPress and attached using the same method as the News blog.
 
 -----------------------------------------------------------------------
 ** Daemons
