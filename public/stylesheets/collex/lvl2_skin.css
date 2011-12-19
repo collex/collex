@@ -21,8 +21,9 @@
 	background:url(/images/collex/lvl2_header.jpg) top left no-repeat;
 }
 
-#header_container {
+div#header_container {
 	background:url(/images/collex/index_header_stretch.jpg) bottom left repeat-x;
+	height: 114px;
 }
 
 .my_collex_link {
