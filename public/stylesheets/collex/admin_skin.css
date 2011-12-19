@@ -15,11 +15,11 @@
 // ---------------------------------------------------------------------------- */
 
 #admin_menu {
-	background-color: #B99A86;
+	background-color: #81B4AC;
 }
 
 #admin_menu li a {
-	border-left:0.8em solid #B99A86;
+	border-left:0.8em solid #81B4AC;
 	text-decoration:none;
 }
 

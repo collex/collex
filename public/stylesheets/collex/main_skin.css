@@ -39,19 +39,27 @@ body {
 .tab_link {
 	background:url(/images/collex/index_tab.gif) top left no-repeat;
 	color:#ffffff;
+	top: 96px;
+	padding-top: 4px;
 }
 
 .tab_link_current {
 	background:url(/images/collex/index_tab_dn.gif) top left no-repeat;
+	top: 96px;
+	padding-top: 4px;
 }
 
 .tab_link_long {
 	background:url(/images/collex/index_tab_long.gif) top left no-repeat;
 	color:#ffffff;
+	top: 96px;
+	padding-top: 4px;
 }
 
 .tab_link_long_current {
 	background:url(/images/collex/index_tab_long_dn.gif) top left no-repeat;
+	top: 96px;
+	padding-top: 4px;
 }
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
@@ -61,6 +69,8 @@ body {
 .my_collex_link {
 	color:#55220F;
 	background:url(/images/collex/index_tab_my_collex.gif) top left no-repeat;
+	top: 96px;
+	padding-top: 4px;
 }
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
