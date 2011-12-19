@@ -11,7 +11,7 @@
   	BLEEDING_EDGE = site_specific['bleeding_edge']
   	DISALLOW_RSS  = site_specific['disallow_rss'] == nil ? false : site_specific['disallow_rss']
 
-	SVN_COLLEX = site_specific['svn']['url_collex']
+	#SVN_COLLEX = site_specific['svn']['url_collex']
 
 	CACHE_DIR = "#{Rails.root}/cache"
   else
