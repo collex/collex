@@ -207,7 +207,7 @@ Collex::Application.routes.draw do
 	get "/admin/default/stats" => "admin/default#stats"
 	get "/admin/default/groups" => "admin/default#groups"
 	get "/admin/default/user_content" => "admin/default#user_content"
-	get "/admin/default/vic_conference" => "admin/default#vic_conference"
+#	get "/admin/default/vic_conference" => "admin/default#vic_conference"
 	get "/admin/default/use_test_index" => "admin/default#use_test_index"
 	get "/admin/default/reload_facet_tree" => "admin/default#reload_facet_tree"
 	get "/admin/default/stats_show_all" => "admin/default#stats_show_all"
