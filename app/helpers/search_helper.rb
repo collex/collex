@@ -405,13 +405,21 @@ module SearchHelper
   end
 
   def has_federation_constraint?(value)
-	  # we have a federation constraint as long as a different federation constraint hasn't been defined.
-	  # That is, if no federation constraint has been defined, we return true. If this one specifically has been defined, we return true.
+	  # If no federation constraint has been defined, we return true. Otherwise, we have to match it.
+	  found_fed = false
     session[:constraints].each { |constraint|
-		return false if constraint.is_a?(FederationConstraint) && constraint.value != value
+		return true if constraint.is_a?(FederationConstraint) && constraint.value == value
+		found_fed = true if constraint.is_a?(FederationConstraint)
 	}
-	return true
+	return !found_fed
   end
+
+	def has_all_federation_constraints?(feds)
+		feds.each { |fed|
+			return false if !has_federation_constraint?(fed)
+		}
+		return true
+	end
   
   def format_constraint(constraint)
     ret = {}
@@ -677,7 +685,7 @@ module SearchHelper
 		html = "<tr><td>"
 		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
 		thumb = session[:federations][federation]['thumbnail']
-		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection}><img src='#{thumb}' alt='#{federation}' /></input>"
+		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection} /><img src='#{thumb}' alt='#{federation}' />"
 		html += "</td><td class='num_objects'>#{number_with_delimiter(num_objects)}</td></tr>"
 		return raw(html)
 	end

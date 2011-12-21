@@ -22,38 +22,40 @@ function changeFederation(checkbox) {
 	// there are three checkboxes on the search page.
 	// The one that says "search (OtherFed) too!" is always synced up with the second checkbox on the federation list.
 	// The two items in the federation list cannot both be unchecked at the same time, but they can both be checked at the same time.
-	var too = $('search_federation');
-	var federationChecks = $$('.limit_to_federation input[type="checkbox"]');
-	if (federationChecks.length >= 2) {
-		if (checkbox.name === federationChecks[1].name) {
-			if (too !== null)
-				too.checked = checkbox.checked;
-			if (checkbox.checked === false && federationChecks[0].checked === false)
-				federationChecks[0].checked = true;
-		}
-		if (checkbox.name === federationChecks[0].name) {
-			if (checkbox.checked === false && federationChecks[1].checked === false) {
-				federationChecks[1].checked = true;
-				if (too !== null)
-					too.checked = true;
-			}
-		}
-
-		if (too !== null && checkbox.name === too.name) {
-			federationChecks[1].checked = checkbox.checked;
-			if (checkbox.checked === false && federationChecks[0].checked === false)
-				federationChecks[0].checked = true;
-		}
-	}
+//	var too = $('search_federation');
+//	var federationChecks = $$('.limit_to_federation input[type="checkbox"]');
+//	if (federationChecks.length >= 2) {
+//		if (checkbox.name === federationChecks[1].name) {
+//			if (too !== null)
+//				too.checked = checkbox.checked;
+//			if (checkbox.checked === false && federationChecks[0].checked === false)
+//				federationChecks[0].checked = true;
+//		}
+//		if (checkbox.name === federationChecks[0].name) {
+//			if (checkbox.checked === false && federationChecks[1].checked === false) {
+//				federationChecks[1].checked = true;
+//				if (too !== null)
+//					too.checked = true;
+//			}
+//		}
+//
+//		if (too !== null && checkbox.name === too.name) {
+//			federationChecks[1].checked = checkbox.checked;
+//			if (checkbox.checked === false && federationChecks[0].checked === false)
+//				federationChecks[0].checked = true;
+//		}
+//	}
 
 	// Now that the checkboxes are set, tell the server. If both are set, then we don't want to send a federation parameter
 	var param = {};
-	if (federationChecks[0].checked === true && federationChecks[1].checked === false)
-		param.federation = federationChecks[0].name;
-//		param = "?federation=" + federationChecks[0].name;
-	else if (federationChecks[0].checked === false && federationChecks[1].checked === true)
-		param.federation = federationChecks[1].name;
-//		param = "?federation=" + federationChecks[1].name;
+	param.federation = checkbox.name;
+	param.checked = checkbox.checked ? 'true' : 'false';
+//	if (federationChecks[0].checked === true && federationChecks[1].checked === false)
+//		param.federation = federationChecks[0].name;
+////		param = "?federation=" + federationChecks[0].name;
+//	else if (federationChecks[0].checked === false && federationChecks[1].checked === true)
+//		param.federation = federationChecks[1].name;
+////		param = "?federation=" + federationChecks[1].name;
 	param.phrs = $('search_phrase') ? $('search_phrase').getRealValue() : null;
 	param.kphrs = $('search_keyword') ? $('search_keyword').getRealValue() : null;
 	param.tphrs = $('search_title') ? $('search_title').getRealValue() : null;

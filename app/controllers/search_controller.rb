@@ -81,19 +81,58 @@ class SearchController < ApplicationController
    
 	def add_federation_constraint
 		constraints = params[:federation]
+		is_checked = params[:checked]
 		session[:constraints] = [] if session[:constraints] == nil
 		# first get rid of any current federation constraint so there will never be more than one
+		#idx = -1
+		#session[:constraints].each_with_index { |constraint, i|
+		#	idx = i if constraint.is_a?(FederationConstraint)
+		#}
+		#if idx >= 0
+		#	session[:constraints].delete_at(idx)
+		#end
 		idx = -1
+		has_fed = false
 		session[:constraints].each_with_index { |constraint, i|
-			idx = i if constraint.is_a?(FederationConstraint)
+			idx = i if constraint.is_a?(FederationConstraint) && constraint.value == constraints
+			has_fed = true if constraint.is_a?(FederationConstraint)
 		}
-		if idx >= 0
-			session[:constraints].delete_at(idx)
+		if is_checked == 'true'
+			if constraints == 'search_federation'
+				session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+			elsif idx < 0	# If it is already set, then ignore it.
+				session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
+			end
+		else
+			if constraints == 'search_federation'
+				session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+				session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false)
+			elsif idx >= 0	# If it already doesn't exist, then ignore it,
+				session[:constraints].delete_at(idx)
+			elsif !has_fed # unless there are no federation constraints
+				if !session['federations'].blank?
+					session['federations'].each { |key,val|
+						if key != constraints
+							session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => key, :inverted => false)
+						end
+					}
+				end
+			end
 		end
 
-		if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
-			session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
+		# Now, normalize the constraints: if all of them have been specified, delete them all.
+		count = 0
+		session[:constraints].each_with_index { |constraint, i|
+			idx = i if constraint.is_a?(FederationConstraint) && constraint.value == constraints
+			count += 1 if constraint.is_a?(FederationConstraint)
+		}
+		if !session['federations'].blank? && count == session['federations'].length
+			session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
 		end
+
+		#if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
+		#	session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
+		#end
 		red_hash = { :action => 'browse' }
 		red_hash[:phrs] = params[:phrs] if params[:phrs]
 		red_hash[:kphrs] = params[:kphrs] if params[:kphrs]
@@ -316,7 +355,8 @@ class SearchController < ApplicationController
 			@typewright_count = 0
 			@typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
 			@all_federations = 'Search all federations'
-			session[:federations].each { |key,val| @other_federation = key if key != Setup.default_federation() }
+			@other_federations = []
+			session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() }
 			@listed_constraints = marshall_listed_constraints()
 
 		      render :layout => 'nines'	#TODO-PER: Why is the layout not working unless it is defined explicitly here?

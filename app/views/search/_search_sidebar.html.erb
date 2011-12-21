@@ -18,9 +18,11 @@
 	<div class="right_column_header">Currently Searching...</div>
 	<table class="limit_to limit_to_federation">
 		<% fed_count = @results['facets']['federation'] ? @results['facets']['federation'][Setup.default_federation()] : 0 -%>
-		<% other_count = @results['facets']['federation'] ? @results['facets']['federation'][@other_federation] : 0 -%>
 		<%= federation_selector(Setup.default_federation(), fed_count) %>
-		<%= federation_selector(@other_federation, other_count) %>
+		<% for fed in @other_federations %>
+			<% other_count = @results['facets']['federation'] ? @results['facets']['federation'][fed] : 0 -%>
+			<%= federation_selector(fed, other_count) %>
+		<% end %>
 	</table>
 
 	<div class="right_column_header">Limit Results to...</div>
