@@ -1,6 +1,11 @@
 .shared_header {
-	color:white;
-	background:#371911;
+	background: none repeat scroll 0 0 #3B0306;
+	border-radius: 5px 5px 5px 5px;
+	color: #C9AC63;
+	font-size: 1.3em;
+	padding-bottom: 4px;
+	padding-left: 14px;
+	padding-top: 7px;
 }
 
 .publications_image {

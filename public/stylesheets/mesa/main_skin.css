@@ -16,13 +16,22 @@
 
 body {
 	background:#03002F;
-	font-family: 'Sorts Mill Goudy', serif;
+	font-family: 'Poly',serif;
+	font-size: 13px;
+	line-height: 20px;
 }
 
 div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_caption1, .drop_cap:first-letter,
 	.drop_cap p:first-letter, .exhibit_header, .exhibit_illustration_text, div.content_container2, div#search_box,
 	#footer_container, .inner_content_container, #subnav_container, .breadcrumbs {
-	font-family: 'Sorts Mill Goudy', serif;
+	font-family: 'Poly',serif;
+	font-size: 13px;
+	padding-top: 15px;
+}
+
+h1, h2, h3, h4, h5, h6, strong, dt {
+    font-family: 'Stoke',serif;
+    font-weight: bold;
 }
 
 #header_container {
@@ -46,28 +55,31 @@ div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_ca
 .tab_link {
 	background:url(/images/mesa/index_tab.gif) top left no-repeat;
 	color:#CCAC63;
-	font-family: 'IM Fell French Canon SC', serif;
+	font-family: 'Stoke',serif;
 	font-weight: normal;
 	top: 96px;
+	font-size: 11px;
+	line-height: 21px;
 }
 
 .tab_link_current {
 	background:url(/images/mesa/index_tab_dn.gif) top left no-repeat;
-	font-family: 'IM Fell French Canon SC', serif;
+	font-family: 'Stoke',serif;
 	top: 96px;
 }
 
 .tab_link_long {
 	background:url(/images/mesa/index_tab_long.gif) top left no-repeat;
 	color:#CCAC63;
-	font-family: 'IM Fell French Canon SC', serif;
+	font-family: 'Stoke',serif;
 	font-weight: normal;
 	top: 96px;
+	font-size: 11px;
+	line-height: 21px;
 }
 
 .tab_link_long_current {
-	background:url(/images/mesa/index_tab_long_dn.gif) top left no-repeat;
-	font-family: 'IM Fell French Canon SC', serif;
+	font-family: 'Stoke',serif;
 	font-weight: normal;
 	top: 96px;
 }
@@ -78,7 +90,9 @@ div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_ca
 
 a.my_collex_link {
 	color:#CCAC63;
-	font-family: 'IM Fell French Canon SC', serif;
+	font-family: 'Stoke',serif;
+	font-size: 11px;
+	line-height: 21px;
 	font-weight: normal;
 	background:url(/images/mesa/index_tab_my_collex.gif) top left no-repeat;
 }
@@ -88,9 +102,16 @@ a.my_collex_link {
 }
 
 .tab_link_logo{
+	font-size: 11px;
+	line-height: 21px;
+	float: right;
+	height: 29px;
+	padding-top: 9px;
+	text-decoration: none;
+	width: 71px;
 	background:url(/images/mesa/index_tab.gif) top left no-repeat;
 	color:#CCAC63;
-	font-family: 'IM Fell French Canon SC', serif;
+	font-family: 'Stoke',serif;
 	font-weight: normal;
 }
 
@@ -137,7 +158,16 @@ a.my_collex_link {
 } /* should match ext_link:link */
 
 .carousel_title {
-	color: #ffe6b7;
+	font-family: 'Stoke',serif;
+	font-size: 17px;
+	font-style: italic;
+	left: 10px;
+	padding-top: 4px;
+	position: relative;
+	text-align: left;
+	top: -469px;
+	width: 200px;
+	color: #C9AC63;
 }
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
@@ -158,6 +188,16 @@ a.my_collex_link {
 
 .search_result_buttons a:hover {
 	background:url(/images/mesa/lvl2_result_row_button_rl.jpg) no-repeat scroll left top;
+}
+
+div#search_note_container {
+    font-family: 'Poly',serif;
+    font-size: 11px;
+    line-height: 1.4em;
+}
+
+#search_phrase {
+    font-size: 15px;
 }
 
 /*********************************/
