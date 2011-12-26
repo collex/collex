@@ -519,14 +519,10 @@ class SearchController < ApplicationController
 	def clear_constraints
 		session[:name_of_search] = nil
 		#session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-		fed_constraint = nil	# don't clear the current setting of the federation constraint, so first search for it.
+		# don't clear the current setting of the federation constraints.
 		if session[:constraints]
-			session[:constraints].each { |constraint|
-				fed_constraint = constraint if constraint.is_a?(FederationConstraint)
-			}
+			session[:constraints].delete_if { |constraint| !constraint.is_a?(FederationConstraint) }
 		end
-		session[:constraints] = []
-		session[:constraints] << fed_constraint if fed_constraint
 		session[:search_sort_by] = nil
 		session[:search_sort_by_direction] = nil
 	end
