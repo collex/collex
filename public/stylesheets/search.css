@@ -197,7 +197,8 @@ tr.limit_to_selected {
 }
 
 .limit_to_federation img {
-	height: 36px;
+	max-height: 36px;
+	max-width: 165px;
 	vertical-align: middle;
 }
 
