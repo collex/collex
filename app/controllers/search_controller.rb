@@ -185,8 +185,9 @@ class SearchController < ApplicationController
        # strip punctuation and other troublesome chars
        # NOTE: for some reason, the escaped brackets only work in ruby regex if
        # they are in the middle of the expression. 
-       word.gsub!(/[.\^\|,\[\]!}{+-]/, "")
-       
+      # word.gsub!(/[.\^\|,\[\]!}{+-]/, "")
+       word.gsub!(/[^\p{Word}_]/, "")
+
        if word.upcase == "NOT"
          # set a flag so the next word found will be inverted
          invert_next = true  
