@@ -24,43 +24,16 @@
 	width:426px;
 	height:152px;
 	float:right;
-	background:url(/images/mesa/index_header_right.jpg) top left no-repeat;
 	text-align:right;
+	z-index: 100;
 }
 
-#header_left1 {
-	width:373px;
+#header_left1, #header_left2, #header_left3, #header_left4, #header_left5 {
+	position: absolute;
+	width:970px;
 	height:152px;
 	float:left;
 	background:url(/images/mesa/index_header_left1.jpg) top left no-repeat;
-}
-
-#header_left2 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:url(/images/mesa/index_header_left2.jpg) top left no-repeat;
-}
-
-#header_left3 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:url(/images/mesa/index_header_left3.jpg) top left no-repeat;
-}
-
-#header_left4 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:url(/images/mesa/index_header_left4.jpg) top left no-repeat;
-}
-
-#header_left5 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:url(/images/mesa/index_header_left5.jpg) top left no-repeat;
 }
 
 #content_container {

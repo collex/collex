@@ -39,6 +39,10 @@ div#header_container {
 	background:#1e312d;
 }
 
+div#nav_container {
+	right: 40px;
+}
+
 .limit_to th {
 	background:#88b72d;
 	color:#4d7f74;
