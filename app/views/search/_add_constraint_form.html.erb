@@ -18,10 +18,9 @@
 <center>
 <div class="add_constraint_form">
     	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input></div>
-	<form accept-charset='UTF-8' id="add-search-constraint" method="post" action="/collex/add_constraint" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" >
+	<%= form_tag({controller: "search", action: "add_constraint"}, { id: "add-search-constraint", onsubmit: "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" }) do %>
 		<div class="page_header">Search <%= Setup.site_name() %>:</div>
-    	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-	<table>
+ 	<table>
         <tr>
           <td colspan='2'>
             <%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword", :value=>@kphrs ? @kphrs : '' }, {:min_chars => 2}-%>
@@ -40,8 +39,8 @@
         <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
         <tr><td colspan="3" style="text-align: right;"><input id="search_submit2" type="submit" value="Search" /></td></tr>
     </table>
-	</form>
-		
+	<% end %>
+
 	<% if is_logged_in? -%>
 		<div id="saved-searches">
 			<%= render :partial => 'save_search_list', :locals => { :header_class => 'page_header', :max_to_show => -1 } %>

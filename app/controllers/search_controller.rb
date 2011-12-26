@@ -171,6 +171,11 @@ class SearchController < ApplicationController
        end
      end
      
+       # strip punctuation and other troublesome chars
+       # NOTE: for some reason, the escaped brackets only work in ruby regex if
+       # they are in the middle of the expression.
+      phrase_str.gsub!(/[.\^&=@#\$%\*<>\/\?\|,\[\]!}{+-]/, " ")
+
      # now, split the string on spaces
      words_arr = phrase_str.split(/[\s\-]+/)
   
@@ -182,32 +187,26 @@ class SearchController < ApplicationController
      invert_next = false
      words_arr.each_with_index do |word, index|
        
-       # strip punctuation and other troublesome chars
-       # NOTE: for some reason, the escaped brackets only work in ruby regex if
-       # they are in the middle of the expression. 
-      # word.gsub!(/[.\^\|,\[\]!}{+-]/, "")
-       word.gsub!(/[^\p{Word}_]/, "")
-
        if word.upcase == "NOT"
          # set a flag so the next word found will be inverted
          invert_next = true  
          words_arr[index] = ""
-       elsif word.upcase == "OR"
-         # when OR is found at non-terminal position stitch words
-         if index > 0 && index < words_arr.length - 1
-           # find the invert state of the current start of the OR
-           prior_invert = inverted[ words_arr[index-1] ]
-           
-           # stitch and clear words 
-           words_arr[index] = words_arr[index-1] + " OR " + words_arr[index+1]
-           words_arr[index-1] = ""
-           words_arr[index+1] = ""
-           
-           # carry prior invert state on to the stitched result
-           inverted[ words_arr[index] ] = prior_invert
-         else
-           words_arr[index] = ""
-         end  
+       #elsif word.upcase == "OR"
+       #  # when OR is found at non-terminal position stitch words
+       #  if index > 0 && index < words_arr.length - 1
+       #    # find the invert state of the current start of the OR
+       #    prior_invert = inverted[ words_arr[index-1] ]
+       #
+       #    # stitch and clear words
+       #    words_arr[index] = words_arr[index-1] + " OR " + words_arr[index+1]
+       #    words_arr[index-1] = ""
+       #    words_arr[index+1] = ""
+       #
+       #    # carry prior invert state on to the stitched result
+       #    inverted[ words_arr[index] ] = prior_invert
+       #  else
+       #    words_arr[index] = ""
+       #  end
        else
          # a preceding OR may have blanked this word out. skip it if so
          if word != ""

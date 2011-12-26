@@ -16,8 +16,8 @@
     # ---------------------------------------------------------------------------- -%>
 
 <div class="page_subheader">Add new search criteria or select limiters to refine your search.</div>
-<form accept-charset='UTF-8' id="add-search-constraint" onsubmit="return searchValidation('search_phrase', 'search_phrase', 'search_type', 'search_submit', null);" action="/collex/add_constraint" method="post">
 <% default_search_phrase = 'click here to add new search term' -%>
+<%= form_tag({:controller => "search", :action => "add_constraint"}, :onsubmit => "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');") do %>
 <table class="query">
 	<% @listed_constraints.each do |constraint_data| -%>
 		<% constraint = constraint_data[:constraint] -%>
@@ -41,7 +41,6 @@
 
 	<tr>
 		<td class="query_type">
-    		<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
 		<td class="query_term">
 		  <%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%>
@@ -51,7 +50,7 @@
 		<td class="query_remove"><input id="search_submit" type="submit" value="Add" /></td>
 	</tr>
 </table>
-</form>
+<% end %>
 <script type="text/javascript" charset="utf-8">
     $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
 //    $('search_notphrase').defaultValueActsAsHint('<%= default_search_phrase %>');
