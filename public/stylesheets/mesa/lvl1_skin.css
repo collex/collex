@@ -36,17 +36,26 @@
 	background:url(/images/mesa/index_header_left1.jpg) top left no-repeat;
 }
 
+div#nav_container {
+	right: 40px;
+	top: 124px;
+}
+
+a.my_collex_link {
+	top: 124px;
+}
+
 #content_container {
 	background:url(/images/mesa/watermark.jpg) top center no-repeat;
 }
 
-#carousel_container {
+/*#carousel_container {
 	background:url(/images/mesa/index_flash_background.jpg) top center repeat-x;
 }
 
 .carousel_background {
 	background:transparent url(/images/mesa/index_flash_background.jpg) repeat-x scroll center top;
-}
+}*/
 
 .yui-skin-sam .yui-carousel-nav ul li {
 	background:transparent url(/images/mesa/carousel_dot_unselected.jpg) no-repeat scroll 0 50%;
