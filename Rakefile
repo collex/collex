@@ -1,3 +1,4 @@
+#!/usr/bin/env rake
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
 # 
@@ -18,6 +19,5 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require File.expand_path('../config/application', __FILE__)
-require 'rake'
 
 Collex::Application.load_tasks
