@@ -80,6 +80,7 @@ class SearchController < ApplicationController
    end
    
 	def add_federation_constraint
+		session[:name_of_search] = nil
 		constraints = params[:federation]
 		is_checked = params[:checked]
 		session[:constraints] = [] if session[:constraints] == nil
