@@ -586,10 +586,20 @@ class Catalog
 		return params
 	end
 
+	def esc_arg(item)
+		# This takes a string in the form key=value and just escapes the value portion
+		arr = item.split('=', 2)
+		if arr.length == 2
+			return "#{arr[0]}=#{CGI.escape(arr[1])}"
+		else
+			return CGI.escape(item)
+		end
+	end
+
 	require 'net/http'
 	def call_solr(url, verb, params = [])
 		params.push("test_index=true") if @use_test_index
-		args = params.length > 0 ? "#{params.collect { |item| CGI.escape(item) }.join('&')}" : ""
+		args = params.length > 0 ? "#{params.collect { |item| esc_arg(item) }.join('&')}" : ""
 		request = "/#{url}.xml"
 		url = URI.parse(Setup.solr_url())
 		Catalog.log_catalog(verb.to_s().upcase(), "#{url}#{request} ARGS: #{args}")
