@@ -71,8 +71,7 @@ class ExhibitObject < ActiveRecord::Base
   
   def self.escape_quote(arr)
     return '' if arr == nil
-    return '' if arr[0] == nil
-    str = arr[0].gsub("\n", " ").gsub("\r", " ")
+    str = arr.gsub("\n", " ").gsub("\r", " ")
     return str.gsub("'", "`") #TODO-PER: get the real syntax for this. We want to replace "single quote" with "backslash single quote"
   end
 end
