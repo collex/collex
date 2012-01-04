@@ -27,7 +27,7 @@ class Image < ActiveRecord::Base
 #                 :thumbnails => { :feature => '125x125', :thumb => '60x60', :smaller => '35x35', :micro => '25x25' }
 #
 #  validates_as_attachment
-  include Paperclip
+#  include Paperclip
   path = "photos_small/:id/:style/:basename.:extension"
   # to create a cropped image, use :thumb=> "100x100#".
   has_attached_file :photo, :styles => { :normal => '300x300', :feature => '125x125', :thumb => '60x60', :smaller => '35x35', :micro => '25x25' },
@@ -41,7 +41,7 @@ class Image < ActiveRecord::Base
 				img = Image.new
 				img.photo = uploaded_file
 				img.save
-				if img.errors.length > 0
+				if !img.errors.blank? && img.errors.size > 0
 					log_error = ""
 					img.errors.keys.each { |field|
 						img.errors[field].each { |msg|

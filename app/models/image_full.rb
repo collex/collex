@@ -4,7 +4,7 @@ class ImageFull < ActiveRecord::Base
 #                 :path_prefix=>'public/uploads_full'
 #
 #  validates_as_attachment
-  include Paperclip
+#  include Paperclip
   path = "photos_full/:id/:style/:basename.:extension"
   # to create a cropped image, use :thumb=> "100x100#".
   has_attached_file :photo,
@@ -18,7 +18,7 @@ class ImageFull < ActiveRecord::Base
 			  img = ImageFull.new
 			  img.photo = uploaded_file
 			  img.save
-			  if img.errors.length > 0
+			  if !img.errors.blank? && img.errors.size > 0
 				  log_error = ""
 				  img.errors.keys.each { |field|
 					  img.errors[field].each { |msg|
