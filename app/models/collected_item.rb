@@ -70,7 +70,8 @@ class CollectedItem < ActiveRecord::Base
 		return recs if is_chosen == 'true'
 		chosen = recs
 
-		sql = "select exhibit_objects.exhibit_id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id inner join exhibit_objects on exhibit_objects.uri = cached_resources.uri where collected_items.user_id = #{user_id} and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'thumbnail' || cached_properties.name = 'role_ART')"
+		#sql = "select exhibit_objects.exhibit_id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id inner join exhibit_objects on exhibit_objects.uri = cached_resources.uri where collected_items.user_id = #{user_id} and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'thumbnail' || cached_properties.name = 'role_ART')"
+		sql = "select cached_resources.id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id where collected_items.user_id = #{user_id}"
 		recs = {}
 		match = ActiveRecord::Base.connection.execute(sql)
 		match.each { |rec|
