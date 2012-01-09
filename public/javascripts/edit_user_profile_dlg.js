@@ -28,12 +28,11 @@ function stopUpload(errMessage){
 }
 
 var EditProfileDialog = Class.create({
-	initialize: function (parent_div, ok_action, user_shell, curr_image_src) {
+	initialize: function (parent_div, ok_action, user, curr_image_src) {
 		this.class_type = 'EditProfileDialog';	// for debugging
 
 		// private variables
 		var This = this;
-		var user = user_shell.user;
 		var dlg = null;
 
 		// private functions
