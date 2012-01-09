@@ -65,7 +65,7 @@
 			<th>Duration (secs)</th>
 			<th>Number of Objects</th>
 		</tr>
-		<% recs = SearchUserContent.all.reverse -%>
+		<% recs = SearchUserContent.order('id DESC').limit(20) -%>
 		<% for rec in recs -%>
 			<tr>
 				<td><%= comment_time_format(rec.last_indexed) %></td>
@@ -73,5 +73,6 @@
 				<td><%= rec.objects_indexed %></td>
 			</tr>
 		<% end -%>
+		<tr><td>etc...</td></tr>
 	</table>
 </div>
