@@ -18,6 +18,7 @@ class Typewright::Line < ActiveResource::Base
 	if COLLEX_PLUGINS['typewright']
 		self.site = COLLEX_PLUGINS['typewright']['web_service_url']
 	end
+	self.format = :xml
 
 	#def self.find_all_by_document_id_and_page_and_src(document_id, page, src)
 	#	self.find(:all, :params => { :document_id => document_id, :page => page, :src => src })

@@ -18,6 +18,7 @@ class Typewright::DocumentUser < ActiveResource::Base
 	if COLLEX_PLUGINS['typewright']
 		self.site = COLLEX_PLUGINS['typewright']['web_service_url']
 	end
+	self.format = :xml
 
 	def self.find_all_by_user_id(user_id)
 		self.find(:all, :params => { :user_id => user_id })

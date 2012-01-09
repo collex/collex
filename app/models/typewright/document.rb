@@ -18,6 +18,7 @@ class Typewright::Document < ActiveResource::Base
 	if COLLEX_PLUGINS['typewright']
 		self.site = COLLEX_PLUGINS['typewright']['web_service_url']
 	end
+	self.format = :xml
 
 	def self.find_by_uri(uri)
 		self.find(:first, :params => { :uri => uri })

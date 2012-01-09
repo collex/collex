@@ -18,6 +18,7 @@ class Typewright::User < ActiveResource::Base
 	if COLLEX_PLUGINS['typewright']
 		self.site = COLLEX_PLUGINS['typewright']['web_service_url']
 	end
+	self.format = :xml
 
   def self.get_author_fullname(federation, orig_id)
     return orig_id if federation.nil?
