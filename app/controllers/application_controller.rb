@@ -14,7 +14,7 @@
 # limitations under the License.
 ##########################################################################
 class ApplicationController < ActionController::Base
-  session_times_out_in 4.hours
+  #session_times_out_in 4.hours
   #before_filter :set_charset
   before_filter :session_create
   

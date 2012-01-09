@@ -1,0 +1,1 @@
+Rails.application.config.idle_session_timeout = 4*60 #minutes

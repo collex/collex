@@ -26,6 +26,10 @@ gem 'nokogiri'
 
 gem 'exception_notification'
 
+gem 'acts_as_tree'
+gem 'acts_as_list'
+gem 'ixtlan-session-timeout'
+
 # Deploy with Capistrano
 # gem 'capistrano'
 
