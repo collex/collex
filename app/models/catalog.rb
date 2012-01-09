@@ -417,7 +417,7 @@ class Catalog
 		return if title == nil || title.length == 0
 
 		doc = ["object_type=#{object_type}", "object_id=#{id}", "federation=#{federation}",
-			"section=#{section}", "title=#{title}", "text=#{text}", "last_modified=#{format_date(last_modified)}"
+			"section=#{section}", "title=#{title.gsub("’", "'")}", "text=#{text.gsub("’", "'")}", "last_modified=#{format_date(last_modified)}"
 		]
 		if group_id != nil && group_id.to_i > 0
 			doc.push("group_id=#{group_id}")

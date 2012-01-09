@@ -31,7 +31,7 @@ class CommunitiesController < ApplicationController
 		term = params[:term]
 		term = nil if term && term.length == 0
 		if term
-			term = term.gsub(/[^ \p{Word}]/,' ').gsub(/\s+/, ' ').strip()
+			term = term.gsub("’", "'").gsub(/[^ \p{Word}']/,' ').gsub(/\s+/, ' ').strip()
 			#term = "\"#{term}\"" if term.include?(' ')
 		end
 		session[:community_page_num] = 0
