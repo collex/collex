@@ -75,7 +75,7 @@ class Tag < ActiveRecord::Base
     assignments.each do | assignment |
       tag = Tag.find(assignment.tag_id)
       if tags.has_key?(tag) == false
-        tags[tag.name] = assignment.user_id 
+        tags[tag.name] = { user: assignment.user_id, tag: tag.id }
       end
     end
     
@@ -86,7 +86,7 @@ class Tag < ActiveRecord::Base
   
   # Delete specified tag
   #
-  def self.remove(user, uri, tag_str)
+  def self.remove(user, uri, tag_id)
 
     # Grab the resource associated with the URI
     cached_resource = CachedResource.find_by_uri(uri)
@@ -95,7 +95,7 @@ class Tag < ActiveRecord::Base
     end
 
     # find the tag record.
-    tag_rec = Tag.find_by_name(tag_str)
+    tag_rec = Tag.find_by_id(tag_id)
     if tag_rec.nil?
       # For some reason the tag was already deleted. Don't worry about it, 
       # it was probably a race condition or stale session.

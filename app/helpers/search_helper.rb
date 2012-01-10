@@ -37,7 +37,7 @@ module SearchHelper
   public
 	def format_tag_for_output(tag)
 		# we want this escaped, so the user can't inject anything, and lower case, and we want invisible breaks so that a long tag won't break the spacing
-		tag = h(tag).downcase()
+
 		# any dashes and underscores can be split
 		words = tag.split('_')
 		arr_outer = []
@@ -56,7 +56,10 @@ module SearchHelper
 			}
 			arr_outer.push(arr_inner.join('-&#x200B;'))
 		}
-		return raw(arr_outer.join('_&#x200B;'))
+		tag = arr_outer.join('_&#x200B;')
+		tag = h(tag).downcase()
+		tag = tag.gsub("&amp;#x200b;", "&#x200b;")	# but don't escape the hidden character we inserted.
+		return raw(tag)
 	end
 
   def draw_pagination(curr_page, num_pages, destination_hash)
@@ -526,8 +529,8 @@ module SearchHelper
 		tags.each { |tag|
 			tag_str += " | " if tag != tags[0]
 			tag_str += link_to format_tag_for_output(tag[0]), {:controller => 'tag', :action => 'results', :tag => tag[0], :view => 'tag'}, {:class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\""}
-			if user && user.id == tag[1]
-				tag_str += ' ' + link_to_function("X", "doRemoveTag('#{hit['uri']}', '#{row_id}', '#{create_javascript_friendly_tag_name(tag[0])}');", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag[0]}\"")
+			if user && user.id == tag[1][:user]
+				tag_str += ' ' + link_to_function("X", "doRemoveTag('#{hit['uri']}', '#{row_id}', #{tag[1][:tag]});", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag[0]}\"")
 			end #if this tag was created by the current user
 		} #the tag loop
 

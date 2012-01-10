@@ -38,9 +38,9 @@ module TagHelper
       size = bucket_size[item.last]
       size = 0 if size.nil?
       if selection == item.first
-        str += "<span #{tag_zoom_attribute} class='cloud#{size} sidebar_tag_link_selected'>#{h(item.first.downcase)}</span>\n"
+        str += "<span #{tag_zoom_attribute} class='cloud#{size} sidebar_tag_link_selected'>#{raw(item.first)}</span>\n"
       else
-        str += "<span #{tag_zoom_attribute} class='cloud#{size}'>#{link_to_tag(item.first, item.last, false, controller, html)}</span>\n"
+        str += "<span #{tag_zoom_attribute} class='cloud#{size}'>#{link_to_tag(raw(item.first), item.last, false, controller, html)}</span>\n"
       end
       
       if hide_some && i == 25
