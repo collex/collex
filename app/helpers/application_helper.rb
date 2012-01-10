@@ -255,13 +255,18 @@ private
 #
 #    label
 #  end
-  
+
+	def make_id(str)
+		str = sanitize_to_id(str)
+		return str.gsub(/[:\.]/, '-')
+	end
+
   def thumbnail_image_tag(hit, options = {})
     thumb = CachedResource.get_thumbnail_from_hit(hit)
     image = CachedResource.get_image_from_hit(hit)
-    progress_id = "progress_#{hit['uri']}"
+    progress_id = "progress_#{make_id(hit['uri'])}"
 	  title = hit['title'] ? hit['title'] : "Image"
-    str = tag "img", options.merge({:alt => title, :src => get_image_url(thumb), :id => "thumbnail_#{hit['uri']}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
+    str = tag "img", options.merge({:alt => title, :src => get_image_url(thumb), :id => "thumbnail_#{make_id(hit['uri'])}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
     if image != thumb
 		title = title[0,60]+'...' if title.length > 62
 		title = title.gsub("'", "&apos;")
