@@ -94,8 +94,9 @@ class Tag < ActiveRecord::Base
       logger.info("Can't delete the tag because uri #{uri} is not cached")
     end
 
-    # find the tag record.
+    # find the tag record. We might have been passed either an id or the tag name.
     tag_rec = Tag.find_by_id(tag_id)
+	tag_rec = Tag.find_by_name(tag_id) if tag_rec.nil?
     if tag_rec.nil?
       # For some reason the tag was already deleted. Don't worry about it, 
       # it was probably a race condition or stale session.

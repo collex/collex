@@ -379,11 +379,16 @@ class CachedResource < ActiveRecord::Base
   end
   
   def self.get_page_of_all_untagged(user, page_num, items_per_page, sort_field, direction)
+	  # Find all collected items that don't have any tags for the particular user.
+	  # User contains id
+	  # CollectedItem contains user_id, cached_resource_id
+	  # Tagassigns contains user_id, cached_resource_id
+	  # We want to return all the CollectedItems that that don't have a corresponding Tagassigns
     return { :results => [], :total => 0 } if user == nil
-    all_items = CollectedItem.all(:conditions => ["user_id = ?", user.id], :order => 'updated_at DESC'  )
+    all_items = CollectedItem.find_all_by_user_id(user.id)
     items = []
     all_items.each { |item|
-      first_tag = Tagassign.find_by_collected_item_id(item.id)
+      first_tag = Tagassign.find_by_cached_resource_id_and_user_id(item.cached_resource_id, item.user_id)
       if !first_tag
 				if sort_field
 					item = add_sort_field(item, sort_field)
@@ -426,7 +431,7 @@ class CachedResource < ActiveRecord::Base
     
     results = []
     first.upto(last) { |i|
-      hit = get_hit_from_resource_id(items[i].cached_resource_id)
+      hit = get_hit_from_resource_id(items[i][:cached_resource_id])
       results.insert(-1, hit) if hit != nil
     }
     return { :results => results, :total => items.length }
@@ -452,22 +457,23 @@ class CachedResource < ActiveRecord::Base
     end
 
 		def self.add_sort_field(item, sort_field)
+			out_item = { id: item['id'], user_id: item['user_id'], cached_resource_id: item['cached_resource_id'], annotation: item['annotation'], created_at: item['created_at'], updated_at: item['updated_at'] }
 			if sort_field == 'date_collected'
-				item[sort_field] = item['updated_at']
-				return item
+				out_item[sort_field] = item['updated_at']
+				return out_item
 			end
 
 			cp = CachedProperty.first({:conditions => ["cached_resource_id = ? AND name = ?", item.cached_resource_id, sort_field]})
 
-			item[sort_field] = cp ? cp.value : ''
+			out_item[sort_field] = cp ? cp.value : ''
 			if sort_field == 'archive'
-				site = Catalog.factory_create(false).get_archive(item[sort_field]) #Site.find_by_code(item[sort_field])
+				site = Catalog.factory_create(false).get_archive(out_item[sort_field]) #Site.find_by_code(item[sort_field])
 				if site
-					item[sort_field] = site['name']
+					out_item[sort_field] = site['name']
 				end
 			end
-			item[sort_field] = item[sort_field].downcase().gsub(/\W/, '')
-			return item
+			out_item[sort_field] = out_item[sort_field].downcase().gsub(/\W/, '')
+			return out_item
 		end
 
 	def self.field_has_value(field)
