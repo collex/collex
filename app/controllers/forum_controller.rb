@@ -189,12 +189,21 @@ class ForumController < ApplicationController
     if disc_type == ''
       DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
     elsif disc_type == 'mycollection'
-      cr = CachedResource.find_by_id(nines_object)
+      cr = CachedResource.find_by_uri(nines_object)
+	  # If the object for some reason isn't in the cache (and there's no reason why not), then we will skip it. This would only happen if there were an inconsistency in the database somewhere.
+	  if cr.blank?
+		cr_id = nil
+		  comment_type = 'comment'
+		else
+			cr_id = cr.id
+		    comment_type = 'nines_object'
+	  end
+	  
 #      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
 #        cr = CollectedItem.collect_item(user, nines_object, nil)
 #      end
       DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
-        :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
+        :comment_type => comment_type, :cached_resource_id => cr_id, :comment => description)
     elsif disc_type == 'exhibit'
       a = nines_exhibit.split('_')
       exhibit = Exhibit.find(a[1])
