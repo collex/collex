@@ -109,7 +109,7 @@
       <!-- More -->
       <div class="shared_header">More TypeWright Enabled Texts</div>
       <% if @features.length == 0 %>
-        <div class="tw_no_features">There are currently no TypeWright texts available.</div>
+        <div class="tw_no_features">There are currently no featured TypeWright texts.</div>
         <% if is_admin? %>
           <div class="tw_no_features">Click <%= link_to("here", '/typewright/admin') %> to administer TypeWright texts.</div>
         <% end %>
