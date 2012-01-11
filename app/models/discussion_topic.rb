@@ -32,10 +32,12 @@ class DiscussionTopic < ActiveRecord::Base
     newest_date = nil
     for thread in threads
       comments = thread.discussion_comments
-      last_comment_time = comments[comments.length-1].updated_at
-      if newest_date == nil || newest_date < last_comment_time
-        newest_date = last_comment_time
-      end
+	  if !comments.blank?
+		  last_comment_time = comments[comments.length-1].updated_at
+		  if newest_date == nil || newest_date < last_comment_time
+			newest_date = last_comment_time
+		  end
+	end
     end
     return newest_date
   end
