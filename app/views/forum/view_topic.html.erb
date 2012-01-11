@@ -76,7 +76,7 @@
 	<% for thread in @threads -%>
 	<tr>
 		<% if thread.discussion_comments.length < 1 -%>
-			<td class="FH_post">ERROR: ill-formed thread. (Main comment is missing)</td>
+			<td class="FH_post">ERROR: ill-formed thread. (Main comment is missing in thread <%= thread.id %>)</td>
 		<% else -%>
 			<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
 			<td class="FC_post_title">
