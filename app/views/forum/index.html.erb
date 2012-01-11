@@ -69,7 +69,7 @@
 
 				<td class="FH_post">
 					<% if threads[i].discussion_comments.length < 1 -%>
-						ERROR: ill-formed thread. (Main comment is missing)<br/>
+						ERROR: ill-formed thread. (Main comment is missing in thread <%= threads[i].id %>)<br/>
 					<% else -%>
 						<% main_comment = threads[i].discussion_comments[0] -%>
 						<%= render :partial => 'summary', :locals => { :comment=> main_comment, :thread_id => threads[i].id, :can_delete => is_logged_in? && (is_admin? || (main_comment.user_id == user_id)) } %>
