@@ -27,11 +27,7 @@
 <% for topic_arr in topics -%>
 	<% topic = topic_arr[:topic_rec] -%>
 	<% threads = topic.discussion_threads -%>
-    <% threads = threads.sort {|a,b|
-		a1 = a.discussion_comments.blank? ? Time.at(0) : a.discussion_comments[a.discussion_comments.length-1].updated_at
-		b1 = b.discussion_comments.blank? ? Time.at(0) : b.discussion_comments[b.discussion_comments.length-1].updated_at
-		b1 <=> a1
-	    } %>
+    <% threads = DiscussionThread.sort_by_time(threads) %>
 	<% threads = threads.delete_if { |thread| !Group.can_read(thread, user_id) } -%>
 	<table class="FH_cat_table" border="0" cellpadding="0" cellspacing="0">
     	<tr><td colspan="5" class="FH_cat_header"><%= link_to topic.topic, { :action => 'view_topic', :topic => topic.id }, :class => 'forum_header_link' %></td></tr>

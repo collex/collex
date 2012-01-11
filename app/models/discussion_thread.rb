@@ -49,4 +49,13 @@ class DiscussionThread < ActiveRecord::Base
 		return 0 if discussion_comments.length == 0
 		return discussion_comments[discussion_comments.length-1].updated_at
 	end
+
+	def self.sort_by_time(threads)
+		threads = threads.sort {|a,b|
+			a1 = a.discussion_comments.blank? ? Time.at(0) : a.discussion_comments[a.discussion_comments.length-1].updated_at
+			b1 = b.discussion_comments.blank? ? Time.at(0) : b.discussion_comments[b.discussion_comments.length-1].updated_at
+			b1 <=> a1
+		}
+		return threads
+	end
 end

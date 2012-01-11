@@ -53,11 +53,7 @@ class DiscussionTopic < ActiveRecord::Base
 			vis = Group.get_discussion_visibility(thread)
 			vis == 'members' || vis == ''
 		}
-		threads = threads.sort {|a,b|
-			a1 = a.discussion_comments.blank? ? Time.at(0) : a.discussion_comments[a.discussion_comments.length-1].updated_at
-			b1 = b.discussion_comments.blank? ? Time.at(0) : b.discussion_comments[b.discussion_comments.length-1].updated_at
-			b1 <=> a1
-		}
+		threads = DiscussionThread.sort_by_time(threads)
 		threads = threads.slice(0..(num-1))
 
 		discussions = []
