@@ -43,7 +43,9 @@ class Typewright::DocumentsController < ApplicationController
     features.each do | feature |
       if feature.primary && @primary.nil?
         @primary = CachedResource.get_hit_from_uri( feature.uri )
-        stats = Typewright::Document.get_stats( feature.uri )
+		src = params[:src].to_sym unless params[:src].nil?
+		src = :gale if src.nil?
+        stats = Typewright::Document.get_stats( feature.uri, src )
         doc = Typewright::Document.find_by_uri( feature.uri )
         num_pages = doc.get_num_pages()
         pages_with_changes = stats.pages_with_changes
