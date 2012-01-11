@@ -314,7 +314,9 @@ class GroupsController < ApplicationController
 		 exhibit.is_published = 4
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} #{exhibit.title} in #{group.name} rejected", "#{get_curr_user().fullname} rejected the #{group.get_exhibits_label()} #{exhibit.title} from being peer-reviewed.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} \"#{exhibit.title}\" in \"#{group.name}\" needs revision.",
+			"#{get_curr_user().fullname} returned the #{group.get_exhibits_label()} \"#{exhibit.title}\" for further revisions before being accepted as peer-reviewed.\n\nThe Editors included this message in their review:\n\n#{comment}",
+			url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 user = exhibit.get_apparent_author()
 		 editor = get_curr_user()
