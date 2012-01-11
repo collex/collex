@@ -28,7 +28,7 @@
     <td><%= rec.primary %></td>
     <td><%= rec.disabled %></td>
     <td>
-      <%= link_to_function 'Edit', "tw_featureDlg( { method: 'PUT', url: '/typewright/admin/#{rec.id}' }, #{rec.to_json()}.tw_featured_object )", { :class => 'nav_link' } %>
+      <%= link_to_function 'Edit', "tw_featureDlg( { method: 'PUT', url: '/typewright/admin/#{rec.id}' }, #{rec.to_json()} )", { :class => 'nav_link' } %>
     </td>
     <td>
       <%= link_to_confirm 'Delete', "/typewright/admin/#{rec.id}", 
