@@ -54,7 +54,9 @@ class DiscussionTopic < ActiveRecord::Base
 			vis == 'members' || vis == ''
 		}
 		threads = threads.sort {|a,b|
-			b.discussion_comments[b.discussion_comments.length-1].updated_at <=> a.discussion_comments[a.discussion_comments.length-1].updated_at
+			a1 = a.discussion_comments.blank? ? 0 : a.discussion_comments[a.discussion_comments.length-1].updated_at
+			b1 = b.discussion_comments.blank? ? 0 : b.discussion_comments[b.discussion_comments.length-1].updated_at
+			b1 <=> a1
 		}
 		threads = threads.slice(0..(num-1))
 
