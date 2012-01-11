@@ -50,11 +50,12 @@ class Typewright::DocumentsController < ApplicationController
         num_pages = doc.num_pages()
         pages_with_changes = stats.pages_with_changes
         @stats = { :num_pages => num_pages.to_i, :pages_with_changes => pages_with_changes.to_i }
-        p = doc.setup_doc()
-        @id = p[:doc_id]
-        @title = p[:title]
-        @thumb = p[:img_thumb]
-      else  
+		@id = doc.doc_id
+		@title = doc.title
+#		@title_abbrev = doc.title_abbrev
+		site = COLLEX_PLUGINS['typewright']['web_service_url']
+		@thumb = URI::join(site, doc.img_thumb)
+      else
         @features.push( CachedResource.get_hit_from_uri( feature.uri ) )
       end
     end
