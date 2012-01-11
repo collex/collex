@@ -47,7 +47,7 @@ class Typewright::DocumentsController < ApplicationController
 		src = :gale if src.nil?
         stats = Typewright::Document.get_stats( feature.uri, src )
         doc = Typewright::Document.find_by_uri( feature.uri )
-        num_pages = doc.get_num_pages()
+        num_pages = doc.num_pages()
         pages_with_changes = stats.pages_with_changes
         @stats = { :num_pages => num_pages.to_i, :pages_with_changes => pages_with_changes.to_i }
         p = doc.setup_doc()
