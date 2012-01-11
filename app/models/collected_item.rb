@@ -105,7 +105,14 @@ class CollectedItem < ActiveRecord::Base
 #		sql11 = "where collected_items.user_id = #{user_id} and (cp1.name = 'archive' || cp1.name = 'title' || cp1.name = 'role_AUT' || cp1.name = 'role_ART' || cp1.name = 'thumbnail') ) as tbl1"
 #		sql = "#{sql1}#{sql2}#{sql3}#{sql4}#{sql5}#{sql6}#{sql7}#{sql8}#{sql9}#{sql10}#{sql11}"
 
-		sql = "select cached_resources.id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items inner join cached_resources on cached_resources.id = collected_items.cached_resource_id inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id inner join exhibit_objects on exhibit_objects.uri = cached_resources.uri where collected_items.user_id = #{user_id} and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'role_ART' || cached_properties.name = 'thumbnail' || cached_properties.name = 'archive')"
+	  statement = [ "select cached_resources.id,cached_resources.uri,cached_properties.name,cached_properties.value from collected_items",
+		"inner join cached_resources on cached_resources.id = collected_items.cached_resource_id",
+		"inner join cached_properties on cached_properties.cached_resource_id = collected_items.cached_resource_id",
+#TODO-PER: don't know why this was ever here:		"inner join exhibit_objects on exhibit_objects.uri = cached_resources.uri",
+		"where collected_items.user_id = #{user_id}",
+		"and (cached_properties.name = 'archive' || cached_properties.name = 'title' || cached_properties.name = 'role_AUT' || cached_properties.name = 'role_ART' || cached_properties.name = 'thumbnail' || cached_properties.name = 'archive')"
+		]
+		sql = statement.join(' ')
 
 		recs = {}
 		match = ActiveRecord::Base.connection.execute(sql)

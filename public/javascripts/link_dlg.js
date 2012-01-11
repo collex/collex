@@ -54,7 +54,8 @@ var CreateListOfObjects = Class.create({
 		// Handles the user's selection
 		this.getSelection = function(){
 			var el = parent.down("." + selClass);
-			var sel = el ? el.id.substring(el.id.indexOf('_')+1) : "";
+			if (!el) return { field: null, value: null };
+			var sel = el.id.substring(el.id.indexOf('_')+1);
 			return { field: parent_id, value: sel };
 		};
 
@@ -196,7 +197,8 @@ var CreateListOfObjects = Class.create({
 			noObjMsg = new Element('div', { id: 'noObjMsg' }).update('There are no objects matching your criteria.');
 			noObjMsg.addClassName('empty_list_text');
 			parent.appendChild(noObjMsg);
-			noObjMsg.hide();
+			if (objs.length !== 0)
+				noObjMsg.hide();
 			
 			if (initial_selection) {
 				var sel = $(id_prefix + "_" + initial_selection);
@@ -214,11 +216,12 @@ var CreateListOfObjects = Class.create({
 					});
 				} else {
 					var first_item = parent.down();
-					first_item.addClassName(selClass);
+					if (first_item && first_item.id !== 'noObjMsg')	// this can be null if there are no objects in the list.
+						first_item.addClassName(selClass);
 				}
 			} else if (selectFirst) {
 				var first_item2 = parent.down();
-				if (first_item2)	// this can be null if there are no objects in the list.
+				if (first_item2 && first_item2.id !== 'noObjMsg')	// this can be null if there are no objects in the list.
 					first_item2.addClassName(selClass);
 			}
 		};
@@ -325,7 +328,7 @@ var CreateListOfObjects = Class.create({
 					row.hide();
 				}
 			});
-			if (!matchedOne && rows.length > 0)	// If we've filtered out all the objects, tell the user that.
+			if (!matchedOne)	// If we've filtered out all the objects, tell the user that.
 				noObjMsg.show();
 			else
 				noObjMsg.hide();
@@ -487,11 +490,12 @@ var LinkDlgHandler = Class.create({
 				
 				if (data.ld_type === "NINES Object")
 				{
-					//<span title="NINES Object: uri" real_link="uri" class="nines_linklike">target</span>
-					html.selection = '<span title="' + linkTypes[0] + ': ' + data.ld_nines_object + '" real_link="' + 
-						data.ld_nines_object + '" class="nines_linklike">' + html.selection + "</span>";
-					objRTE.updateContents(html.prologue + html.selection + html.ending);
-//					objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
+					if (data.ld_nines_object) {
+						//<span title="NINES Object: uri" real_link="uri" class="nines_linklike">target</span>
+						html.selection = '<span title="' + linkTypes[0] + ': ' + data.ld_nines_object + '" real_link="' +
+							data.ld_nines_object + '" class="nines_linklike">' + html.selection + "</span>";
+						objRTE.updateContents(html.prologue + html.selection + html.ending);
+					}
 				}
 				else
 				{
@@ -514,7 +518,7 @@ var LinkDlgHandler = Class.create({
 						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', callback: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
 						[ { text: 'Sort objects by:', klass: 'link_dlg_label ld_nines_only hidden' }, { select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select ld_nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 							{ text: 'and', klass: 'link_dlg_label_and ld_nines_only hidden' }, { inputFilter: 'filterObjectsLnk', prompt: 'type to filter objects', callback: objlist.filter, klass: 'ld_nines_only hidden' } ],
-						[ { link: '[Remove Link]', callback: removeLink, klass: 'remove hidden' }],
+						[ { link: '[Remove Link]', callback: removeLink, klass: 'remove nav_link hidden' }],
 						[ { custom: objlist, klass: 'link_dlg_label ld_nines_only hidden' },
 						  { text: 'Link URL', klass: 'link_dlg_label ld_link_only hidden' }, { input: 'ld_link_url', value: (starting_type === 1) ? starting_selection : "", klass: 'link_dlg_input_long ld_link_only hidden' } ],
 						[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: saveLink, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
