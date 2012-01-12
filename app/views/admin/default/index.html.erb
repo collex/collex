@@ -30,4 +30,6 @@
 	<% else -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=true">Temporarily use the testing index for searches</a></p>
 	<% end -%>
+	<p><%= link_to_function 'Impersonate different user', "impersonateUser('/admin/get_user_list', '/admin/impersonate_user');",  :class => 'nav_link' %></p>
+
 </div>

@@ -60,6 +60,12 @@ class User < ActiveRecord::Base
     return user ? {:username => user.username, :fullname => user.fullname, :email => user.email, :role_names => user.role_names} : nil
   end
 
+  def self.get_user(user_id)
+	  user = User.find_by_id(user_id)
+
+	  return user ? {:username => user.username, :fullname => user.fullname, :email => user.email, :role_names => user.role_names} : nil
+  end
+
   def self.create_user(username, password, email)
     # first check if user exists, then raise an exception if so
     user = User.find_by_username(username)

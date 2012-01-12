@@ -198,4 +198,34 @@ class Admin::DefaultController < Admin::BaseController
 #		end
 		render :text => respond_to_file_upload("stopAddPublicationImageUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
 	end
+
+	def get_user_list
+		ret = []
+
+		users = User.all()
+		# On IE, there are lots of characters that cause
+		# the json to be illegal. We'll just replace most weird characters just in case.
+		users.each do |user|
+			ret.push({:value => user.id, :text => user.fullname.gsub(/[^-'a-zA-Z0-9_. ]/, "*")})
+		end
+
+		render :text => ret.to_json()
+
+	end
+
+	def impersonate_user
+		user_id = params[:user_id]
+
+		puts "*** ADMIN IS IMPERSONATING: #{user_id}"
+
+		if user_id.to_i > 0
+			logged_in_user = User.get_user(user_id)
+			if logged_in_user
+				session[:user] = logged_in_user
+				LoginInfo.record_login(logged_in_user)
+			end
+		end
+
+		redirect_to "/"
+	end
 end

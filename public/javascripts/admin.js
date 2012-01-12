@@ -17,7 +17,7 @@
 /*global Class, $, $$, Element, $A */
 /*global MessageBoxDlg, GeneralDialog, serverRequest, serverAction, genericAjaxFail, submitForm, reloadPage */
 /*extern AddCategoryDlg, AddSiteDlg, RemoveSiteDlg, DeleteFacetDialog, EditFacetDialog, AjaxUpdate, addBadgeDlg, stopAddBadgeUpload */
-/*extern AddBadgeDlg, AddPublicationImageDlg, EditGroupType, addPublicationImageDlg, stopAddPublicationImageUpload */
+/*extern AddBadgeDlg, AddPublicationImageDlg, EditGroupType, addPublicationImageDlg, stopAddPublicationImageUpload, impersonateUser */
 
 var AjaxUpdate = Class.create({
 	initialize: function (parent_div, progressMsg, validationCallback) {
@@ -560,3 +560,18 @@ var AddPublicationImageDlg = Class.create({
 		show();
 	}
 });
+
+function impersonateUser(url_get_users, url_change_user) {
+	new SelectInputDlg({
+		title: "Choose User to Impersonate",
+		prompt: 'Select the user that you wish to impersonate',
+		id: 'user_id',
+		actions: url_change_user,
+		target_els: null,
+		pleaseWaitMsg: 'Changing apparent logged in user...',
+		body_style: "edit_palette_dlg",
+		options: [ { value: -1, text: 'Loading user names. Please Wait...' } ],
+		populateUrl: url_get_users
+	});
+}
+
