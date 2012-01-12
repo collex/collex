@@ -129,8 +129,8 @@ class Typewright::DocumentsController < ApplicationController
 		else
 			page = params[:page]
       page = '1' if page.nil?
-      @src = params[:src].to_sym unless params[:src].nil?
-      @src = :gale if @src.nil?
+      @src = params[:src].to_sym unless params[:src].blank?
+      @src ||= :gale
       @sources = doc.ocr_sources
       @sources = %w(gale) if @sources.nil?
       @uri = doc.uri
