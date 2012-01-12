@@ -20,6 +20,7 @@ module Typewright::TypewrightHelper
     html = "OCR Source: "
     base_url = request.url.split('?')[0]
     params = request.url.split('?')[1]
+	params ||= "gale"
     param_str = ''
     params.split('&').each { |param|
       pname = param.split('=')[0]
