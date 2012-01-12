@@ -54,7 +54,7 @@ class GetIncludeFileList
 			when :typewright_edit
 				local = [ "typewright/diff_match_patch_uncompressed", "typewright/reparse_words", "typewright/line",
 					"typewright/img_cursor", "typewright/change_line", "typewright/find_dlg", "typewright/select_page",
-					"typewright/detailed_instructions", "typewright/report_this_page"]
+					"typewright/detailed_instructions", "typewright/report_this_page", "typewright/yui_dialog"]
 			when :search
 				local = [ 'search_validation', 'resource_tree', 'saved_search', 'result_row_popup', 'more', 'cc_license', 'search_name_facet', 'change_federation' ]
 				if COLLEX_PLUGINS['typewright']

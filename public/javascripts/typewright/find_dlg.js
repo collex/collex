@@ -1,27 +1,31 @@
 /*global YUI */
 /*global dialogMaker */
-/*global lines */
+/*global line */
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
 
 	function find(dlg) {
 		var data = dlg.getAllData();
-		dlg.setFlash("Finding " + data.find, false);
+		var matchString = data.find.toLowerCase();
+		dlg.setFlash("Finding " + matchString, false);
 
 		var found = false;
-		for (var i = 0; i < lines.length; i++) {
-			var text = lines[i].word;
-			if (text.indexOf(data.find) >= 0) {
+		var i = 0;
+		while (!line.isLast(i)) {
+			var text = line.getCurrentText(i);
+			if (text && text.toLowerCase().indexOf(matchString) >= 0) {
 				Y.Global.fire('changeLine:highlight', i, data.find);
 				found = true;
 				break;
 			}
+			i++;
 		}
 		if (found) {
 			dlg.cancel();
 		} else {
 			dlg.setFlash("Text not found on page", true);
 		}
+		return false;
 	}
 
 	function find_dlg() {

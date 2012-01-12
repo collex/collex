@@ -48,9 +48,13 @@ var line = {
 	getRect: function(num) { return { l: lines[num].l, r: lines[num].r, t: lines[num].t, b: lines[num].b }; },
 
 	getCurrentText: function(num) {
+		var ret;
 		if (lines[num].change && lines[num].change.type === 'change')
-			return lines[num].change.text;
-		return lines[num].text[lines[num].text.length-1];
+			ret = lines[num].change.text;
+		else
+			ret = lines[num].text[lines[num].text.length-1];
+		if (ret === null || ret === undefined) ret = "";
+		return ret;
 	},
 
 	getCurrentWords: function(num) {

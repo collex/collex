@@ -245,8 +245,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	var ctrl_I = '73+ctrl';
 	var shift_ctrl_I = '73+shift+ctrl';
 	var ctrl_Y = '89+ctrl';
-	var all_keys = ctrl_enter+',' + ctrl_backspace+',' + ctrl_delete+',' + ctrl_I+',' + ctrl_Y+',' + // shift_ctrl_I+',' +
-		enter+',' + page_up+',' + page_down+',' + end+',' + home+',' + up_arrow+',' + down_arrow;
+	var all_controlled_keys = ctrl_enter+',' + ctrl_backspace+',' + ctrl_delete+',' + ctrl_I+',' + ctrl_Y+',';
+	var all_non_shifted_keys = enter+',' + page_up+',' + page_down+',' + end+',' + home+',' + up_arrow+',' + down_arrow;
 
 	//
 	// key handling
@@ -265,13 +265,24 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 				case down_arrow: change_line_rel(1); break;
 				case enter: change_line_rel(1); break;
 
+				case end: var foc = Y.one("#tw_input_focus"); setCaretPosition(foc._node, foc._node.value.length, 0); break;
+				case home: var foc2 = Y.one("#tw_input_focus"); setCaretPosition(foc2._node, 0, 0); break;
+			}
+		}
+	}, 'body', 'down:'+all_non_shifted_keys, Y);
+
+	Y.on('key', function(e) {
+		if (e.target.get('id') === 'tw_input_focus') {
+			e.halt();
+			var key = e.keyCode;
+			if (e.shiftKey) key += "+shift";
+			if (e.ctrlKey) key += "+ctrl";
+
+			switch (key) {
 				case ctrl_enter: line.doConfirm(currLine); lineModified(); break;
 				case ctrl_backspace: line.doDelete(currLine); lineModified(); break;
 				case ctrl_delete: line.doDelete(currLine); lineModified(); break;
 				case ctrl_I: insert_below(); break;
-				case shift_ctrl_I: insert_above(); break;
-				case end: var foc = Y.one("#tw_input_focus"); setCaretPosition(foc._node, foc._node.value.length, 0); break;
-				case home: var foc2 = Y.one("#tw_input_focus"); setCaretPosition(foc2._node, 0, 0); break;
 				case ctrl_Y:
 					if (line.canRedo(currLine)) {
 						line.doRedo(currLine);
@@ -283,7 +294,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 					break;
 			}
 		}
-	}, 'body', 'down:'+all_keys, Y);
+	}, 'body', 'down:'+all_controlled_keys, Y);
 
 	// Have to do the multiple modifier keys separately because they interfere with the single modifier keys.
 	Y.on('key', function(e) {

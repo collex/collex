@@ -468,8 +468,35 @@ table.tw_editing td {
 	color: red;
 }
 
-.tw_dlg_find_line {
+#tw_find_dlg .tw_dlg_find_line {
 	height:30px;
+	text-align: left;
+	margin-top: 20px;
+}
+
+#tw_find_dlg {
+	width: 300px;
+}
+
+#tw_find_dlg .yui3-dlg-footer {
+	margin-top: 24px;
+}
+
+#tw_find_dlg .yui3-dlg-footer input {
+	margin-left: 8px;
+}
+
+#tw_find_dlg #dlgFlash {
+	padding-bottom: 8px;
+}
+
+#tw_find_dlg .tw_dlg_find_label {
+	float: left;
+}
+
+#tw_find_dlg .tw_dlg_find {
+	margin-left: 8px;
+	width: 252px;
 }
 
 /* instructions */
