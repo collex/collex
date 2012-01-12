@@ -25,7 +25,7 @@
 	<div class="exhibit_profile_preview">
 		<div><span class="exhibit_profile_label">Style: </span>
 			<% if Group.can_change_styles(exhibit) -%>
-			<%= exhibit_builder_style_name(exhibit) %> <%= link_to_function("[select style]", "new EditFontsDlg('/builder/update_fonts', #{exhibit.id}, #{exhibit.to_json()}.exhibit, 'exhibit', false, null, false)", { :class => 'modify_link' }) %>
+			<%= exhibit_builder_style_name(exhibit) %> <%= link_to_function("[select style]", "new EditFontsDlg('/builder/update_fonts', #{exhibit.id}, #{exhibit.to_json()}, 'exhibit', false, null, false)", { :class => 'modify_link' }) %>
 			<% else -%>
 			Styles are set by the group.
 			<% end -%>

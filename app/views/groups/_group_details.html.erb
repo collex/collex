@@ -20,7 +20,7 @@
 	<% membership = group.get_membership_list() -%>
 	<% membership_truncated = group.get_membership_list_truncated(44) -%>
 	gMembership = <%= raw(membership.to_json()) %>;
-	gGroupData = <%= raw(group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')) %>.group;
+	gGroupData = <%= raw(group.to_json().gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')) %>;
 </script>
 <div class="group_details_left">
 	<%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_group_image_url(group), :show_immediately => true, :height => 120, :border => true } %>
