@@ -307,7 +307,7 @@ class Catalog
 		page = options[:page]	# int
 		page_size = options[:page_size]	#int
 		facet_group_id = options[:facet][:group_id]	# int
-		object_type = options[:facet][:object_type].singularize()
+		object_type = options[:facet][:object_type].blank? ? "All" : options[:facet][:object_type].singularize()
 		object_type = "DiscussionThread" if object_type == "Discussion"
 
 		if !member.blank?
