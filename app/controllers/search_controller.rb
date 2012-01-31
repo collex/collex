@@ -26,6 +26,7 @@ class SearchController < ApplicationController
    def init_view_options
      @site_section = :search
 	 @solr = Catalog.factory_create(session[:use_test_index] == "true")
+	 session[:constraints] ||= new_constraints_obj()
      return true
    end
    public
