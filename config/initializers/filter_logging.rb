@@ -10,6 +10,9 @@ module ActiveSupport
       end
 
 	  @log.add(severity, message, progname, &block)
+		if message =~ /^Completed.*/
+			flush()
+		end
 	end
   end
 end
