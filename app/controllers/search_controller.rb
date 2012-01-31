@@ -25,6 +25,7 @@ class SearchController < ApplicationController
    private
    def init_view_options
      @site_section = :search
+	 @solr = Catalog.factory_create(session[:use_test_index] == "true")
      return true
    end
    public
@@ -282,7 +283,11 @@ class SearchController < ApplicationController
      end
      return {"facets" => {"archive" => {}, "freeculture" => {}, "genre" => {}}, "total_hits" => 0, "hits" => [], "total_documents" => 0}
   end
-  
+
+   def get_resource_tree
+		return session[:resource_tree].blank? ? @solr.get_resource_tree() : session[:resource_tree]
+   end
+
     public
   
    # generate search results based on constraints
@@ -343,7 +348,7 @@ class SearchController < ApplicationController
 
 			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil
 			@total_documents = session[:num_docs] #@results["total_documents"]
-			@sites_forest = session[:resource_tree] #@solr.get_resource_tree() #FacetCategory.sorted_facet_tree().sorted_children
+			@sites_forest = get_resource_tree()
 			# We are sorting by reverse order so that "Peer-Reviewed" comes out on top. This will probably need to get more sophisticated.
 			@sites_forest = @sites_forest.sort { |a,b| b['name'] <=> a['name'] }
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
@@ -357,7 +362,7 @@ class SearchController < ApplicationController
 			@typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
 			@all_federations = 'Search all federations'
 			@other_federations = []
-			session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() }
+			session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() } if session[:federations]
 			@listed_constraints = marshall_listed_constraints()
 
 		      render :layout => 'nines'	#TODO-PER: Why is the layout not working unless it is defined explicitly here?

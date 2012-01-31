@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
 				Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives])
 			end
 		rescue Catalog::Error => e
-			puts "Catalog Error: #{e.to_s}"
+			logger.error "****\n**** Catalog Error: #{e.to_s} ApplicationController:session_create\n****"
 			session[:num_docs] ||= 0
 			session[:num_sites] ||= 0
 			session[:federations] ||= {}
