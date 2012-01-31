@@ -18,6 +18,9 @@ class CommunitiesController < ApplicationController
 		@discussions = DiscussionTopic.get_most_popular(5)
 		#@tags = CachedResource.get_most_popular_tags(40)
 		@tags = CachedResource.get_most_recent_tags(40)
+		session[:community_page_num] ||= 0
+		session[:community_sort_by] ||= 'Most Recent'
+		session[:community_view_by] ||= "All"
 		begin
 			@results = get_results()
 		rescue Catalog::Error => e
