@@ -22,8 +22,11 @@ class Typewright::User < ActiveResource::Base
 
   def self.get_author_fullname(federation, orig_id)
     return orig_id if federation.nil?
-    return ::User.find_by_id(orig_id).fullname if federation == Setup.default_federation()
-		return "#{federation} User"
+	if federation == Setup.default_federation()
+		user = ::User.find_by_id(orig_id)
+		return user.fullname if user
+	end
+	return "#{federation} User"
   end
 
 	def self.get_user(federation, orig_id)
