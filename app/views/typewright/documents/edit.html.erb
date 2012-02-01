@@ -67,11 +67,11 @@
 	</table>
 	<%= render :partial => 'edit_instructions' %>
 	<div class="clear_both"></div>
-	
+	<%= render :partial => 'word_stats', :locals => { :word_stats => @params[:word_stats], :doc_word_stats => @params[:doc_word_stats]} %>
+
 </div>
 <div id="tw_pointer_thumb" style="position:absolute;border:1px solid red;"></div>
 <div id="tw_pointer_doc" style="position:absolute;border:2px solid red;"></div>
 <% 20.times {|x|  %>
 <div id="tw_pointer_word_1_<%= x %>" style="position:absolute;display:none;border:2px dotted #3333ff;"></div>
 <% } %>
-<%= render :partial => 'word_stats', :locals => { :word_stats => @params[:word_stats], :doc_word_stats => @params[:doc_word_stats]} %>

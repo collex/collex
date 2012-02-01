@@ -28,14 +28,14 @@ class Typewright::Document < ActiveResource::Base
 		self.find(:first, :params => { :id => id })
 	end
 
-	def self.get_stats(uri, src)
-#		self.find(:first, :params => { :id => uri, :stats => true, :wordstats=> true, :src => src })
-    self.find(:first, :params => { :id => uri, :stats => true, :src => src })
+	def self.get_stats(uri, src, word_stats)
+		self.find(:first, :params => { :id => uri, :stats => true, :wordstats=> word_stats, :src => src })
+#    self.find(:first, :params => { :id => uri, :stats => true, :src => src })
 	end
 
-  def self.get_page(uri, page, src)
-#    doc = self.find(:first, :params => { :id => uri, :page => page, :wordstats=> true, :src => src })
-    doc = self.find(:first, :params => { :id => uri, :page => page, :src => src })
+  def self.get_page(uri, page, src, word_stats)
+    doc = self.find(:first, :params => { :id => uri, :page => page, :wordstats=> word_stats, :src => src })
+#    doc = self.find(:first, :params => { :id => uri, :page => page, :src => src })
     # convert object into hash since that is what page is expecting
     result = doc.attributes.to_options!
     result[:img_size] = result[:img_size].attributes.to_options!

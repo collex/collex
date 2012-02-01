@@ -45,7 +45,8 @@ class Typewright::DocumentsController < ApplicationController
         @primary = CachedResource.get_hit_from_uri( feature.uri )
 		src = params[:src].to_sym unless params[:src].nil?
 		src = :gale if src.nil?
-        stats = Typewright::Document.get_stats( feature.uri, src )
+		word_stats = is_admin?
+        stats = Typewright::Document.get_stats( feature.uri, src, word_stats )
         doc = Typewright::Document.find_by_uri( feature.uri )
         num_pages = doc.num_pages()
         pages_with_changes = stats.pages_with_changes
@@ -91,7 +92,8 @@ class Typewright::DocumentsController < ApplicationController
       @sources = doc.ocr_sources
       @sources = %w(gale) if @sources.nil?
 
-      stats = Typewright::Document.get_stats( @uri, @src )
+		word_stats = is_admin?
+      stats = Typewright::Document.get_stats( @uri, @src, word_stats )
       pages_with_changes = stats.pages_with_changes
       total_revisions = stats.total_revisions
       @stats = { :num_pages => doc.num_pages.to_i, :pages_with_changes => pages_with_changes.to_i }
@@ -135,7 +137,8 @@ class Typewright::DocumentsController < ApplicationController
       @sources = %w(gale) if @sources.nil?
       @uri = doc.uri
       @site = COLLEX_PLUGINS['typewright']['web_service_url']
-			@params = Typewright::Document.get_page(@uri, page, @src)
+			word_stats = is_admin?
+			@params = Typewright::Document.get_page(@uri, page, @src, word_stats)
       @thumb = URI::join(@site, @params['img_thumb'])
       @image_full = URI::join(@site, @params['img_full'])
       @params['img_thumb'] = @thumb.to_s

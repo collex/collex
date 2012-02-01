@@ -1,6 +1,7 @@
 <%# partial word_stats -- params: array word_stats, array doc_word_stats %>
 <% if word_stats != nil %>
-	<table class="tw_word_stats">
+	<div class="tw_word_stats">
+	<table>
 		<caption>DEBUGGING INFO: Word statistics by occurrence</caption>
 		<tr>
 			<th></th>
@@ -43,4 +44,5 @@
 		</tr>
       <% end %>
 	</table>
+</div>
 <% end %>

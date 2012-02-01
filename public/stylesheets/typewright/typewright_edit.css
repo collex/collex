@@ -395,7 +395,12 @@ table.tw_editing td {
 .tw_word_stats {
 	font-family: 'Verdana', sans-serif;
 	font-size: 12px;
-/*	display: none; */
+	border-radius: 4px;
+	padding: 8px;
+	margin-left: 4px;
+	margin-right: 4px;
+	border: 1px solid #B8B8B8;
+	background-color: #F1F1F1;
 }
 
 .tw_report_page {
@@ -412,11 +417,15 @@ table.tw_editing td {
 	text-align: center;
 }
 
-.tw_word_stats td {
+.tw_word_stats td, .tw_word_stats th {
 	padding-left: 4px;
 	padding-right: 4px;
-	border:1px solid gray;
+	border:1px dotted #B8B8B8;
 }
+
+ .tw_word_stats th {
+	 color: gray;
+ }
 
 .tw_instruction_list li {
     list-style-position: inside;
