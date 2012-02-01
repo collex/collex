@@ -26,7 +26,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	// The second submit button might be null.
 	var submit_buttons = [];
 	submit_buttons.push($(submit_id));
-	if (submit_id2 !== null)
+	if (submit_id2 !== null && $(submit_id2) !== null)
 		submit_buttons.push($(submit_id2));
 
 	var submit_text = submit_buttons[0].value;
@@ -52,19 +52,21 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	var input_year = $(year_input_id);
 
 	// Be sure the user has typed something into at least one field.
-	var form = input_year.up('form');
-	var allInputs = form.select('input[type=text]');
-	var bFound = false;
-	allInputs.each(function(el) {
-		if (el.value.length > 0)
-			bFound = true;
-	});
-	
-	if (!bFound) {
-		errorDlg("Please enter some text before searching.");
-	    return false;
+	if (input_year) {
+		var form = input_year.up('form');
+		var allInputs = form.select('input[type=text]');
+		var bFound = false;
+		allInputs.each(function(el) {
+			if (el.value.length > 0)
+				bFound = true;
+		});
+
+		if (!bFound) {
+			errorDlg("Please enter some text before searching.");
+			return false;
+		}
 	}
-	
+
 	// Be sure the hint text isn't still displayed
 	var hint_text_id = null;
 	if (!input_type)
@@ -73,7 +75,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		hint_text_id = phrase_input_id;
 	else hint_text_id = year_input_id;
 	
-	if ($(hint_text_id).hasClassName('gd_input_hint_style'))
+	if ($(hint_text_id) && $(hint_text_id).hasClassName('gd_input_hint_style'))
 	{
 		errorDlg("Please enter some text before searching.");
 	    return false;
@@ -84,24 +86,26 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	if ((input_type !== null) && ($(input_type).value !== "Year (YYYY)"))	// See if the input_year element really contains a year.
 		return true;
 
-	var year_val = input_year.value;
-	if (year_val === "")
-		return true;
+	if (input_year) {
+		var year_val = input_year.value;
+		if (year_val === "")
+			return true;
 
-	// At this point, year_val contains the user's input for the year. Make sure it is exactly 4 digits
-	
-	// test if the year is an integer
-	if (year_val !== "" + parseInt(year_val))
-	{
-		errorDlg("The year must contain only numerals.");
-		return false;
-	}
-	
-	// test if the year is 4 digits in length
-	if (year_val.length !== 4)
-	{
-		errorDlg("The year must be 4 digits long.");
-		return false;
+		// At this point, year_val contains the user's input for the year. Make sure it is exactly 4 digits
+
+		// test if the year is an integer
+		if (year_val !== "" + parseInt(year_val))
+		{
+			errorDlg("The year must contain only numerals.");
+			return false;
+		}
+
+		// test if the year is 4 digits in length
+		if (year_val.length !== 4)
+		{
+			errorDlg("The year must be 4 digits long.");
+			return false;
+		}
 	}
 	
 	// if the two validation steps above pass, submit the form
