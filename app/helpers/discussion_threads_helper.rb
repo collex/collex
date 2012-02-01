@@ -34,14 +34,18 @@ module DiscussionThreadsHelper
 
   def get_user_link(user)
     if user.class == Fixnum
-      user = User.find(user)
-    end
-    link_to_function(user.fullname, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
+      user = User.find_by_id(user)
+	end
+	if user
+	    link_to_function(user.fullname, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
+	else
+		"Unknown"
+	end
   end
 
   def get_user_link_with_thumbnail(user, height)
     if user.class == Fixnum
-      user = User.find(user)
+      user = User.find_by_id(user)
     end
 		img = "<img height=\"#{height}\" title=\"#{user.fullname}\" alt=\"#{user.fullname}\" src=\"#{get_user_picture(user.id, :micro)}\"/>"
 		link_to_function(raw(img), "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
