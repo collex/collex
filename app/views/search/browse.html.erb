@@ -70,7 +70,8 @@
 	<div class="clear_both"></div>
 </div>
 <script type="text/javascript">
-	setTimeout(function() {	
-		new Effect.Highlight('search_result_count');
+	setTimeout(function() {
+		if ($('search_result_count'))
+			new Effect.Highlight('search_result_count');
 	}, 2000);
 </script>
