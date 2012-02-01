@@ -24,6 +24,10 @@ class Typewright::DocumentUser < ActiveResource::Base
 		self.find(:all, :params => { :user_id => user_id })
 	end
 
+	def self.find_by_id(id)
+		self.find(id)
+	end
+
 	def self.find_by_user_id_and_document_id(user_id, document_id)
 		self.find(:first, :params => { :user_id => user_id, :document_id => document_id })
 	end
