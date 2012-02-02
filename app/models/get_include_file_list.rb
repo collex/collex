@@ -66,6 +66,9 @@ class GetIncludeFileList
 				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'more', 'thumbnail_resize', 'saved_search', 'cc_license',
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
 					'create_new_group_dlg', 'edit_fonts_dlg', 'exhibit_builder_outline', 'my_collex', 'exhibit_builder_profile', 'browse_groups' ]
+				if COLLEX_PLUGINS['typewright']
+				  local.push("typewright/features")
+				end
 			when :discuss
 				local = [ 'discussions', 'result_row_popup', 'more', 'cc_license', 'flag_comment' ]
 			when :admin
