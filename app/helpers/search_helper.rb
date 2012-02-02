@@ -528,7 +528,7 @@ module SearchHelper
 
 		tags.each { |tag|
 			tag_str += " | " if tag != tags[0]
-			tag_str += link_to format_tag_for_output(tag[0]), {:controller => 'tag', :action => 'results', :tag => tag[0], :view => 'tag'}, {:class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\""}
+			tag_str += link_to format_tag_for_output(tag[0]), {:controller => '/tag', :action => 'results', :tag => tag[0], :view => 'tag'}, {:class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\""}
 			if user && user.id == tag[1][:user]
 				tag_str += ' ' + link_to_function("X", "doRemoveTag('#{hit['uri']}', '#{row_id}', #{tag[1][:tag]});", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag[0]}\"")
 			end #if this tag was created by the current user

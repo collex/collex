@@ -62,6 +62,9 @@ class GetIncludeFileList
 				end
 			when :tag
 				local = [ 'sidebar_tag_cloud', 'tag_zoom', 'result_row_popup', 'more', 'cc_license' ]
+				if COLLEX_PLUGINS['typewright']
+				  local.push("typewright/features")
+				end
 			when :my_collex
 				local = [ 'initialize_inplacericheditor', 'sidebar_tag_cloud', 'edit_exhibit', 'result_row_popup', 'more', 'thumbnail_resize', 'saved_search', 'cc_license',
 					'border_dialog', 'edit_exhibit_object_list_dlg', 'set_author_alias_dlg', 'create_new_exhibit_dlg', 'edit_user_profile_dlg', 'footnotes', 'renumber_footnotes',
