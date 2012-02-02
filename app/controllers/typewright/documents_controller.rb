@@ -96,6 +96,7 @@ class Typewright::DocumentsController < ApplicationController
       stats = Typewright::Document.get_stats( @uri, @src, word_stats )
       pages_with_changes = stats.pages_with_changes
       total_revisions = stats.total_revisions
+		lines_with_changes = stats.lines_with_changes
       @stats = { :num_pages => doc.num_pages.to_i, :pages_with_changes => pages_with_changes.to_i }
         
 			ud = Typewright::DocumentUser.find_by_user_id_and_document_id(@user.id, @id)
@@ -110,7 +111,9 @@ class Typewright::DocumentsController < ApplicationController
 			# get a collection of all of the edits to this text
 			@edits = []
       @revision_page = params[:revision_page] ? params[:revision_page].to_i : 1
-      @num_revision_pages = total_revisions.quo( EDITS_PER_PAGE ).ceil 
+      @num_revision_pages = total_revisions.quo( EDITS_PER_PAGE ).ceil
+		@revision_page = 1 if @revision_page < 1
+		@revision_page = @num_revision_pages if @revision_page > @num_revision_pages
       start_revision = EDITS_PER_PAGE * (@revision_page-1)
       @edits = Typewright::Line.revisions(@uri, start_revision, EDITS_PER_PAGE, @src)
 	
