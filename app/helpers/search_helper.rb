@@ -683,7 +683,7 @@ module SearchHelper
   end
 
 	def federation_selector(federation, num_objects)
-		return "" if session[:federations][federation].blank?
+		return "" if session.blank? || session[:federations].blank? || session[:federations][federation].blank?
 		
 		html = "<tr><td>"
 		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
