@@ -79,13 +79,13 @@ class Catalog
 		params = parse_constraints(constraints)
 		results = call_solr("search/names", :get, params)
 		results = results['names']
-		authors = results['authors']['author']
+		authors = results.blank? || results['authors'].blank? ? nil : results['authors']['author']
 		authors = [] if authors == nil
 		authors = [ authors ] if authors.kind_of?(Hash)
-		editors = results['editors']['editor']
+		editors = results.blank? || results['editors'].blank? ? nil : results['editors']['editor']
 		editors = [] if editors == nil
 		editors = [ editors ] if editors.kind_of?(Hash)
-		publishers = results['publishers']['publisher']
+		publishers = results.blank? || results['publishers'].blank? ? nil : results['publishers']['publisher']
 		publishers = [] if publishers == nil
 		publishers = [ publishers ] if publishers.kind_of?(Hash)
 		return { 'role_AUT' => authors.collect { |item| [ item['name'], item['occurrences'] ] },
