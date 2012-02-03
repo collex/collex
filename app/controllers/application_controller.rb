@@ -46,6 +46,7 @@ class ApplicationController < ActionController::Base
 	end
 
 	def session_create
+		logger.warn("Session: #{ session && !session['user'].blank? ? session['user'][:username] : "ANONYMOUS" } #{session ? session.keys : "ERROR"}")
 		begin
 			ActionMailer::Base.default_url_options[:host] = request.host_with_port
 			if !self.kind_of?(TestJsController)
