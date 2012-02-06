@@ -227,7 +227,8 @@ div#search_note_container {
 }
 
 .yui-skin-sam .yui-button.default button {
-	background: transparent url(/images/mesa/button_default.jpg) repeat-y scroll 0 0;
+	background: inherit;
+	background-color: #5F3119;
 	color: white;
 }
 
@@ -235,7 +236,7 @@ div#search_note_container {
 	background: transparent url(/images/mesa/attachment_button_down.jpg) repeat-y scroll 0 0;
 }
 
-.yui-skin-sam .yui-button.yui-button-hover a {
+.yui-skin-sam .yui-button.yui-button-hover button, .yui-skin-sam .yui-button.yui-button-hover a {
 	background: inherit;
 	background-color: #505050;
 	color: white;

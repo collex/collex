@@ -31,7 +31,9 @@ div#header_container {
 }
 
 .my_collex_link_current {
-	background:url(/images/mesa/lvl2_tab_my_collex_dn.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab_dn.gif) top left no-repeat;
+	font-family: 'Stoke',serif;
+	top: 96px;
 }
 
 .right_column_header {
@@ -104,4 +106,20 @@ div#nav_container {
 
 #group_license {
 	background: #371911;
+}
+
+.my_collex_instructions h2 {
+    font-size: 1.5em;
+    padding-top: 32px;
+}
+
+.my_collex_instructions img {
+    float: left;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+
+.my_collex_instructions {
+    margin: 40px 200px 150px;
+    padding-right: 20px;
 }
