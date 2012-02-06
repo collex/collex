@@ -30,7 +30,7 @@ div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_ca
 }
 
 #subnav_container {
-	padding-top: 2px;
+	padding-top: 8px;
 }
 
 h1, h2, h3, h4, h5, h6, strong, dt {
@@ -173,7 +173,7 @@ div.carousel_title {
 }
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
-	color:#9D1E16;
+	color:#c9ac63;
 }
 
 .login_div {
@@ -222,7 +222,8 @@ div#search_note_container {
 }
 
 .yui-skin-sam .yui-button {
-	background: transparent url(/images/mesa/button.jpg) repeat-y scroll 0 0;
+	background: inherit;
+	background-color: #c9ac63;
 }
 
 .yui-skin-sam .yui-button.default button {
@@ -234,7 +235,9 @@ div#search_note_container {
 	background: transparent url(/images/mesa/attachment_button_down.jpg) repeat-y scroll 0 0;
 }
 
-.yui-button-hover a {
-	background: transparent url(/images/mesa/attachment_button_down.jpg) repeat-y scroll 0 0;
+.yui-skin-sam .yui-button.yui-button-hover a {
+	background: inherit;
+	background-color: #505050;
+	color: white;
 }
 
