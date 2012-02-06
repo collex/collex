@@ -14,6 +14,10 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
+body {
+	min-width: 1050px;
+}
+
 #header_container {
 	width:100%;
 	height:155px;
@@ -38,11 +42,11 @@
 
 div#nav_container {
 	right: 40px;
-	top: 124px;
+	top: 123px;
 }
 
 a.my_collex_link {
-	top: 124px;
+	top: 123px;
 }
 
 #content_container {
