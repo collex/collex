@@ -55,7 +55,7 @@
 				<%= render( :partial => 'constraints' ) %>
 				<div class="no_results_msg">
 					<p>No <%= Setup.site_name() %> objects fit your constraints. <%= create_facet_link('Remove Last Constraint.', '/search/remove_constraint', { :index => "#{session[:constraints].size-1}" }) %></p>
-					<img src="/images/<%=SKIN %>/lg_site_image.gif" alt="" />
+					<img src="<%=LARGE_THUMBNAIL_IMAGE_PATH %>" alt="" />
 				</div>
 			</div>
 			<%= render( :partial => 'search_sidebar' ) %>

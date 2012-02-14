@@ -57,7 +57,7 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 }
 
 .tab_link {
-	background:url(/images/mesa/index_tab.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab.jpg) top left no-repeat;
 	color:#CCAC63;
 	font-family: 'Stoke',serif;
 	font-weight: normal;
@@ -67,13 +67,15 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 }
 
 .tab_link_current {
-	background:url(/images/mesa/index_tab_dn.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab_dn.jpg) top left no-repeat;
 	font-family: 'Stoke',serif;
 	top: 96px;
+	color: #0d1d4e;
+	font-weight: normal;
 }
 
 .tab_link_long {
-	background:url(/images/mesa/index_tab_long.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab_long.jpg) top left no-repeat;
 	color:#CCAC63;
 	font-family: 'Stoke',serif;
 	font-weight: normal;
@@ -83,9 +85,11 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 }
 
 .tab_link_long_current {
-	background:url(/images/mesa/index_tab_long_dn.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab_long_dn.jpg) top left no-repeat;
 	font-family: 'Stoke',serif;
 	top: 96px;
+	color: #0d1d4e;
+	font-weight: normal;
 }
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
@@ -98,7 +102,7 @@ a.my_collex_link {
 	font-size: 11px;
 	line-height: 21px;
 	font-weight: normal;
-	background:url(/images/mesa/index_tab_my_collex.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab_my_collex.jpg) top left no-repeat;
 }
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
@@ -113,7 +117,7 @@ a.my_collex_link {
 	padding-top: 9px;
 	text-decoration: none;
 	width: 71px;
-	background:url(/images/mesa/index_tab.gif) top left no-repeat;
+	background:url(/images/mesa/index_tab.jpg) top left no-repeat;
 	color:#CCAC63;
 	font-family: 'Stoke',serif;
 	font-weight: normal;
@@ -165,7 +169,7 @@ div.carousel_title {
 	font-family: 'Stoke',serif;
 	padding-top: 4px;
 	color: #C9AC63;
-	background-color: #162213;
+	background-color: #0d1d4e;
 	width: inherit;
 	left: inherit;
 	padding-left: 10px;
@@ -215,7 +219,7 @@ div#search_note_container {
 }
 
 .yui-skin-sam .yui-panel .hd {
-    background: none repeat scroll 0 0 #162213;
+    background: none repeat scroll 0 0 #0d1d4e;
     color: #C9AC63;
     font-weight: bold;
     height: 29px;

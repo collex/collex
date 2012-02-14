@@ -26,28 +26,32 @@ div#header_container {
 	height: 121px;
 }
 
-.my_collex_link {
-	background:url(/images/mesa/lvl2_tab_my_collex.gif) top left no-repeat;
+a.my_collex_link {
+	background:url(/images/mesa/index_tab.jpg) top left no-repeat;
+	top: 92px;
 }
 
-.my_collex_link_current {
-	background:url(/images/mesa/index_tab_dn.gif) top left no-repeat;
+a.my_collex_link_current {
+	background:url(/images/mesa/index_tab_dn.jpg) top left no-repeat;
 	font-family: 'Stoke',serif;
-	top: 96px;
+	top: 92px;
+	color: #0d1d4e;
+	font-weight: normal;
 }
 
 .right_column_header {
 	color:#CCAC63;
-	background:#162213;
+	background:#0d1d4e;
 }
 
 div#nav_container {
 	right: 40px;
+	top: 92px;	
 }
 
 .limit_to th {
 	color:#CCAC63;
-	background:#162213;
+	background:#0d1d4e;
 }
 
 .new_search {

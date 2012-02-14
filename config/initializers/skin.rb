@@ -5,7 +5,8 @@ if File.exists?(config_file)
 	MY_COLLEX_URL = site_specific['my_collex_url']
 	SKIN = site_specific['skin']
 
-	DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/#{SKIN}/sm_site_image.gif"
+	DEFAULT_THUMBNAIL_IMAGE_PATH = "/images/#{SKIN}/sm_site_image.#{SKIN=='mesa' ? 'jpg' : 'gif'}"
+	LARGE_THUMBNAIL_IMAGE_PATH = "/images/#{SKIN}/lg_site_image.#{SKIN=='mesa' ? 'jpg' : 'gif'}"
 	EXHIBIT_BUILDER_TODO_PATH = "/images/clicktoadd.jpg"
 	PROGRESS_SPINNER_PATH = "/images/ajax_loader.gif"
 	SPINNER_TIMEOUT_PATH = "/images/#{SKIN}/no_image.jpg"
