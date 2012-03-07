@@ -9,14 +9,14 @@ module CommunitiesHelper
 
 	def make_exhibit_home_link(exhibit)
 		if exhibit.group_id == nil || exhibit.group_id.to_i <= 0
-			return link_to("[Return to Community]", '/communities', { :class => 'nav_link' })
+			return link_to("[Return to #{Setup.community_tab()}]", '/communities', { :class => 'nav_link' })
 		end
 
 		group = Group.find_by_id(exhibit.group_id)
 		if group
 			return link_to("[Return to Group]", "#{group.get_visible_url()}", { :class => 'nav_link' })
 		else
-			return link_to("[Return to Community]", '/communities', { :class => 'nav_link' })
+			return link_to("[Return to #{Setup.community_tab()}]", '/communities', { :class => 'nav_link' })
 		end
 	end
 

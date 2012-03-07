@@ -7,7 +7,7 @@ class CommunitiesController < ApplicationController
 	def init_view_options
 		@site_section = :shared
 		session[:community_sort_by] ||= 'Title'
-		session[:community_view_by] ||= 'Groups'
+		session[:community_view_by] ||= Setup.community_default_search()
 		session[:community_page_num] ||= 0
 		session[:community_search_term] ||= nil
 		return true

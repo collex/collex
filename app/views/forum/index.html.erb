@@ -15,10 +15,10 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page "Community" -%>
+<% current_page Setup.community_tab() -%>
 <% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topics = DiscussionTopic.get_all_with_date() -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], "#{Setup.site_name()}  Forum") %>
+<%= create_breadcrumbs([{ :text => Setup.community_tab(), :url => '/communities' }], "#{Setup.site_name()}  Forum") %>
 <div class="content_container2">
 	<div class="page_header">Forum</div>
     <div class="page_subheader">We've set aside this portion of <%= Setup.site_name() %> for commentary, discussion and collaboration among the <%= Setup.site_name() %> community.

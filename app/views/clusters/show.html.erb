@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%
 	case @group.group_type
-	when 'community' then tab_name = "Community"
+	when 'community' then tab_name = Setup.community_tab()
 	when 'classroom' then tab_name = "Classroom"
 	when 'peer-reviewed' then tab_name = "Publications"
 	end

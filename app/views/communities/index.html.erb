@@ -14,11 +14,13 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<% current_page "Community" -%>
+<% current_page Setup.community_tab() -%>
 <div class="inner_content_container">
 	<div id="shared_objects" class="shared_left_column">
 		<div class="shared_header">Groups and Exhibits</div>
-		<div class="shared_explanation">Groups and exhibits created by <%= Setup.site_name() %> users for scholarship and research.</div>
+		<div class="shared_explanation">Groups and exhibits created by <%= Setup.site_name() %> users for scholarship and research.<br />
+			NOTE: Groups and exhibits that were created in a classroom group are not shown here. They are <%= link_to "here", classroom_index_path, { :class => 'nav_link' } %>.
+		</div>
 		<%= render :partial => '/communities/shared_objects', :locals => { :results => @results } %>
 	</div>
 	<div class="right_column">
@@ -26,14 +28,14 @@
 		<div id="shared_discussions" class="shared_right_body">
 			<%= render :partial => "/home/popular_discussions", :locals => { :discussions => @discussions, :show_more => false } %>
 		</div>
-		<div id="shared_view_all_tags" class="shared_right_body">
+		<div class="shared_right_body">
 			<%= link_to "[view all discussions]", "/forum", { :class => 'nav_link' } %>
 		</div>
 		<div class="shared_header">Popular Tags</div>
 		<div id="shared_tags" class="shared_right_body">
 			<%= render :partial => "/home/popular_tags", :locals => { :tags => @tags } %>
 		</div>
-		<div id="shared_view_all_tags" class="shared_right_body">
+		<div class="shared_right_body">
 			<%= link_to "[view all tags]", "/tags", { :class => 'nav_link' } %>
 		</div>
 	</div>

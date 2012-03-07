@@ -73,6 +73,18 @@ class Setup < ActiveRecord::Base
 		return globals()['site_my_collex']
 	end
 
+	def self.community_tab()
+		val = globals()['site_community_tab']
+		val = "Community" if val.blank?
+		return val
+	end
+
+	def self.community_default_search()
+		val = globals()['site_community_default_search']
+		val = "Groups" if val.blank?
+		return val
+	end
+
 	def self.default_federation()
 		return globals()['site_default_federation']
 	end

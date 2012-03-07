@@ -177,7 +177,7 @@ private
     tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true },
       { :name => 'News', :link => news_path + '/', :use_logo_style => true },
 		{ :name => 'Classroom', :link => '/classroom', :use_long => true },
-		{ :name => 'Community', :link => '/communities', :use_long => true },
+		{ :name => Setup.community_tab(), :link => '/communities', :use_long => true },
 		{ :name => 'Publications', :link => '/publications', :use_long => true },
       { :name => 'Search', :link => search_path }
     ]

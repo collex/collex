@@ -15,11 +15,11 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
-<% current_page "Community" -%>
+<% current_page Setup.community_tab() -%>
 <% # user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topic = @topic -%>
 <% last_updated_date = topic.get_last_updated_date -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }, { :text => "#{Setup.site_name()}  Forum", :url => '/forum' }], topic.topic) %>
+<%= create_breadcrumbs([{ :text => Setup.community_tab(), :url => '/communities' }, { :text => "#{Setup.site_name()}  Forum", :url => '/forum' }], topic.topic) %>
 
 <div class="content_container2">
 <div class="page_header"><%= topic.topic %></div>

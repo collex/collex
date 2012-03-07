@@ -15,8 +15,8 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 	
-<% current_page "Community" -%>
-<%= create_breadcrumbs([{ :text => 'Community', :url => '/communities' }], 'Tags') %>
+<% current_page Setup.community_tab() -%>
+<%= create_breadcrumbs([{ :text => Setup.community_tab(), :url => '/communities' }], 'Tags') %>
 
 <div id="tag_explanation">
 	<span>WHAT ARE TAGS?</span> A tag is simply a word you use to descibe an object you find in <%= Setup.site_name() %>. Tags make it easy to organize and browse large collections. To join two words together use a hyphen <i>(oil-painting)</i> or an underscore <i>(oil_painting)</i>.

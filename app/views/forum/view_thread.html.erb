@@ -14,7 +14,7 @@
     # See the License for the specific language governing permissions and
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
-<%	tab_name = "Community"
+<%	tab_name = Setup.community_tab()
 	return_url = "/communities"
 	if @thread.group_id
 		group = Group.find_by_id(@thread.group_id)
