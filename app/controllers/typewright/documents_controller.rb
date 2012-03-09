@@ -39,7 +39,7 @@ class Typewright::DocumentsController < ApplicationController
 	  
 	  # pick the top 5 by date. Be sure primary is always
 	  # included and disabled are skipped
-    features = Typewright::TwFeaturedObject.find(:all, :conditions => ["disabled=?", 0], :order => "`primary` desc, created_at desc limit 5")
+    features = Typewright::TwFeaturedObject.all(:conditions => ["disabled=?", 0], :order => "`primary` desc, created_at desc limit 5")
     features.each do | feature |
       if feature.primary && @primary.nil?
         @primary = CachedResource.get_hit_from_uri( feature.uri )

@@ -74,9 +74,6 @@ Collex::Application.routes.draw do
 	# for transmitting the theme to wordpress
 	get "/wrapper" => "home#wrapper"
 
-	get "typewright/edit"
-	post "typewright/remove_doc"
-
 	get "test_js/general_dialog"
 
     get '/search/add_tw_constraint' => 'search#add_tw_constraint'
@@ -177,11 +174,14 @@ Collex::Application.routes.draw do
 	post '/my_collex/update_profile' => 'my_collex#update_profile'
 
 	if plugins['typewright']
+		get "typewright/edit"
+		post "typewright/remove_doc"
+
 		namespace :typewright do
 			get 'documents/not_available'
 			get 'documents/not_signed_in'
 			post 'documents/instructions'
-      post 'documents/:id/report' => 'documents#report'
+			post 'documents/:id/report' => 'documents#report'
 			resources :admin
 			resources :documents
 			resources :lines

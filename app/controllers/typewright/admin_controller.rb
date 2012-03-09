@@ -18,7 +18,19 @@ class Typewright::AdminController <  Admin::BaseController
   def index
     @features = Typewright::TwFeaturedObject.all
   end
-  
+
+  # GET /features/1
+  # GET /features/1.xml
+  def show
+	  @uri = params[:uri]
+	  #text = "#{COLLEX_PLUGINS['typewright']['web_service_url']}/documents/export_corrected_text?uri=#{@uri}"
+	  xml_url = "#{COLLEX_PLUGINS['typewright']['web_service_url']}/documents/export_corrected_gale_xml.xml?uri=#{@uri}"
+	  path = "#{Rails.root}/tmp/#{@uri.gsub(/[^\d]/, '')}.xml"
+	  #TODO-PER: There needs to be some mechanism for deleting these objects after they've been downloaded
+	  `curl #{xml_url} > #{path}`
+	  send_file path, :type=>"application/xml", :x_sendfile=>true
+  end
+
   # POST /features
   # POST /features.xml
   def create

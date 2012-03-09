@@ -17,11 +17,27 @@
 %>
 
 <% current_page "admin" -%>
-<% current_sub_page "TypeWright Features" -%>
+<% current_sub_page "TypeWright" -%>
 
 <div class="inner_content_container">
-  <div class="page_header">TypeWright Features</div>
+  <div class="page_header">TypeWright Text Retrieval</div>
   
+	<div class="tw_retrieve_text">
+		<%= form_tag("/typewright/admin/id", { method: :get }) do %>
+		<table class='user_roles'>
+		<tr>
+		    <th>Retrieve Typewright XML</th>
+		  </tr>
+		  <tr>
+		    <td><label for="uri">URI:</label>
+		    <input type='text' id='uri' name="uri" />
+		    <button type="submit">Get File</button></td>
+		  </tr>
+		</table>
+		<% end %>
+	</div>
+	
+	<div class="page_header">Featured Documents</div>
   <div id="tw_features">
      <%= render( :partial => 'features', :locals => { :features => @features } ) %>  
   </div>

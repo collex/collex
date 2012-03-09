@@ -141,7 +141,7 @@
 
 .exhibit_category th {
 	border: 1px solid #dddddd;
-    color: #FFFFFF;
+	color: #FFFFFF;
 }
 
 .setup_container {
@@ -192,4 +192,23 @@
 
 .contracter {
 	background-image: url('../images/arrow_dn.gif');
+}
+
+/* typewright admin pages */
+.tw_retrieve_text {
+	border: 1px solid #A9BAE7;
+	width: 300px;
+	margin-bottom: 16px;
+	padding-left: 28px;
+	border-radius: 4px;
+	box-shadow: 1px 1px 4px #A9BAE7;
+}
+
+.tw_retrieve_text th {
+	border-radius: 4px;
+	box-shadow: 1px 1px 4px #A9BAE7;
+}
+
+.tw_retrieve_text button {
+	padding: 3px 5px;
 }
