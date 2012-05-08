@@ -1,13 +1,13 @@
 <%#
 # ------------------------------------------------------------------------
 #     Copyright 2011 Applied Research in Patacriticism and the University of Virginia
-# 
+#
 #     Licensed under the Apache License, Version 2.0 (the "License");
 #     you may not use this file except in compliance with the License.
 #     You may obtain a copy of the License at
-# 
+#
 #         http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #     Unless required by applicable law or agreed to in writing, software
 #     distributed under the License is distributed on an "AS IS" BASIS,
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,28 +20,22 @@
 <% current_sub_page "TypeWright" -%>
 
 <div class="inner_content_container">
-  <div class="page_header">TypeWright Text Retrieval</div>
-  
+  <div class="page_header">TypeWright Statistics</div>
+
 	<div class="tw_retrieve_text">
-		<%= form_tag("/typewright/admin/id", { method: :get }) do %>
 		<table class='user_roles'>
 		<tr>
-		    <th>Retrieve Typewright XML</th>
+			<th>Key</th>
+			<th>Value</th>
 		  </tr>
-		  <tr>
-		    <td><label for="uri">URI:</label>
-		    <input type='text' id='uri' name="uri" />
-		    <button type="submit">Get File</button></td>
-		  </tr>
+			<tr>
+		  <td>Number of Users:</td>
+		  <td><%= @stats[:users] %></td>
+	  </tr>
+			<tr>
+		  <td>Number of Documents:</td>
+		  <td><%= @stats[:documents] %></td>
+	  </tr>
 		</table>
-		<% end %>
 	</div>
-	
-	<div class="page_header">Featured Documents</div>
-  <div id="tw_features">
-     <%= render( :partial => 'features', :locals => { :features => @features } ) %>  
-  </div>
-
-  <%= link_to_function "New Feature", "tw_featureDlg( { method: 'POST', url: '/typewright/admin' }, {} )", { :class => 'nav_link' } %>
-	<br /><%= link_to "Typewright Statistics", "/typewright/admin/stats", { :class => 'nav_link' } %>
 </div>

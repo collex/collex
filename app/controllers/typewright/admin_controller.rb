@@ -98,4 +98,10 @@ class Typewright::AdminController <  Admin::BaseController
     feature.destroy
     redirect_to :action => "index" 
   end
+
+	def stats
+		users = ::User.all
+		@stats = Typewright::DocumentUser.get_stats(users)
+
+	end
 end

@@ -20,6 +20,23 @@ class Typewright::DocumentUser < ActiveResource::Base
 	end
 	self.format = :xml
 
+	# There isn't a direct way to get all of the users, so we'll just poll for each of them.
+	def self.get_stats(users)
+		docs = {}
+		count = 0
+		users.each { |user|
+			t_user = Typewright::User.get_user(Setup.default_federation(), user.id)
+			if t_user
+				all = self.find_all_by_user_id(t_user.id)
+				all.each { |rec|
+					docs[rec.document_id] = true
+				}
+				count += 1
+			end
+		}
+		return { users: count, documents: docs.length }
+	end
+
 	def self.find_all_by_user_id(user_id)
 		self.find(:all, :params => { :user_id => user_id })
 	end

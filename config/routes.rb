@@ -182,7 +182,11 @@ Collex::Application.routes.draw do
 			get 'documents/not_signed_in'
 			post 'documents/instructions'
 			post 'documents/:id/report' => 'documents#report'
-			resources :admin
+			resources :admin do
+				collection do
+					get 'stats'
+				end
+			end
 			resources :documents
 			resources :lines
 			resources :document_users
