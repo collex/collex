@@ -19,7 +19,8 @@ class ExhibitIllustration < ActiveRecord::Base
   acts_as_list :scope => :exhibit_element
   before_save :b4_save
   after_find :aft_find
-  
+  has_attached_file :upload, :styles => { :display => "350x350>", :thumb => "50x50>" }
+
   def b4_save
     if illustration_type == 'Internet Image'
       illustration_type = 0
@@ -45,7 +46,7 @@ class ExhibitIllustration < ActiveRecord::Base
   end
   
   def self.get_illustration_type_array
-    return "['NINES Object', 'Internet Image', 'Textual Illustration' ]"
+    return "['NINES Object', 'Internet Image', 'Textual Illustration', 'Upload Image' ]"
   end
   
   def self.get_illustration_type_array_with_exhibit
@@ -64,6 +65,10 @@ class ExhibitIllustration < ActiveRecord::Base
     return 'Textual Illustration'
   end
   
+  def self.get_illustration_type_upload
+    return 'Upload Image'
+  end
+
   def self.get_exhibit_type_text
     return 'NINES Exhibit'
   end

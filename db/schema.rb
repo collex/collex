@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111026171152) do
+ActiveRecord::Schema.define(:version => 20120516151552) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -172,6 +172,10 @@ ActiveRecord::Schema.define(:version => 20111026171152) do
     t.decimal  "caption2_bold",        :precision => 10, :scale => 0
     t.decimal  "caption2_italic",      :precision => 10, :scale => 0
     t.decimal  "caption2_underline",   :precision => 10, :scale => 0
+    t.string   "upload_file_name"
+    t.string   "upload_content_type"
+    t.integer  "upload_file_size"
+    t.datetime "upload_updated_at"
   end
 
   create_table "exhibit_objects", :force => true do |t|

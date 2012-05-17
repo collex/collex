@@ -323,6 +323,8 @@ function initializeInplaceIllustrationEditor(element_id, action)
 				values.caption2_underline = hidden.innerHTML;
 			else if (hidden.hasClassName('ill_nines_object_uri'))
 				values.nines_object = hidden.innerHTML;
+			else if (hidden.hasClassName('ill_upload_filename'))
+				values.upload_filename = hidden.innerHTML;
 		});
 
 		var footnoteHandler = new FootnotesInRte();
@@ -335,16 +337,25 @@ function initializeInplaceIllustrationEditor(element_id, action)
 				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
 				$$('.nines_only').each(function(el) { el.removeClassName('hidden'); });
+				$$('.file_only').each(function(el) { el.addClassName('hidden'); });
 			} else if (currSelection === gIllustrationTypes[1]) {	// External Link
 				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.image_only').each(function(el) { el.removeClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
+				$$('.file_only').each(function(el) { el.addClassName('hidden'); });
 			} else if (currSelection === gIllustrationTypes[2]) {	// Textual Illustration
 				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
 				$$('.text_only').each(function(el) { el.removeClassName('hidden'); });
+				$$('.file_only').each(function(el) { el.addClassName('hidden'); });
+			} else if (currSelection === gIllustrationTypes[3]) {	// Upload
+				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
+				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
+				$$('.file_only').each(function(el) { el.removeClassName('hidden'); });
 			}
 		};
 
@@ -377,7 +388,11 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 			params.dlg.setFlash('Updating Illustration...', false);
 			objlist.resetCacheIfNecessary();
-			inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
+			if (data.type === gIllustrationTypes[3]) {
+				var arr = action.split(',');
+				submitForm('layout', arr[0])
+			} else
+				inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};
 
 		var footnoteAbbrev1 = new FootnoteAbbrev({ startingValue: values.caption1_footnote, field: 'caption1_footnote', populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img });
@@ -386,7 +401,8 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', callback: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }] } ],
+					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', callback: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }, { text:  gIllustrationTypes[3], value: gIllustrationTypes[3] }] },
+						{ hidden: 'ill_illustration_id', value: element_id }, { hidden: 'element_id', value: element_id }],
 					[ { text: 'First Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption1', value: { text: values.caption1, isBold: values.caption1_bold === '1', isItalic: values.caption1_italic === '1', isUnderline: values.caption1_underline === '1' }, klass: 'header_input' },
 						{ custom: footnoteAbbrev1 }, footnoteAbbrev1.createEditButton('footnoteEditStar') ],
 					[ { text: 'Second Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption2', value: { text: values.caption2, isBold: values.caption2_bold === '1', isItalic: values.caption2_italic === '1', isUnderline: values.caption2_underline === '1' }, klass: 'header_input' },
@@ -396,7 +412,8 @@ function initializeInplaceIllustrationEditor(element_id, action)
 						{ select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and nines_only hidden' }, { inputFilter: 'filterObjects', klass: 'nines_only hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
 					[ { text: 'Image URL:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'image_url', value: values.image_url, klass: 'new_exhibit_input_long image_only hidden' },
-					  { link: "Exhibit Palette", klass: 'dlg_tab_link_current nines_only hidden', callback: objlist.ninesObjView, arg0: 'exhibit' }, { link: "All My Objects", klass: 'dlg_tab_link nines_only hidden', callback: objlist.ninesObjView, arg0: 'all' } ],
+					  { link: "Exhibit Palette", klass: 'dlg_tab_link_current nines_only hidden', callback: objlist.ninesObjView, arg0: 'exhibit' }, { link: "All My Objects", klass: 'dlg_tab_link nines_only hidden', callback: objlist.ninesObjView, arg0: 'all' },
+						{ text: "Upload Image:", klass: 'edit_illustration_label_lined_up file_only hidden'}, { image: 'uploaded_image', size: 60, klass: 'edit_illustration_upload file_only hidden', value: values.upload_filename, no_iframe: true }],
 					[ { text: 'Link URL:', klass: 'edit_illustration_label_lined_up not_nines hidden' }, { input: 'link_url', value: values.link_url, klass: 'new_exhibit_input_long not_nines hidden' }, { custom: objlist, klass: 'dlg_tab_contents nines_only hidden' } ],
 					[ { textarea: 'ill_text', klass: 'edit_facet_textarea text_only', value: values.ill_text } ],
 					[ { text: 'Alt Text:', klass: 'edit_illustration_label_lined_up image_only hidden' }, { input: 'alt_text', value: values.alt_text, klass: 'new_exhibit_input_long image_only hidden' } ],

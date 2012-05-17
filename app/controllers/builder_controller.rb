@@ -569,6 +569,7 @@ class BuilderController < ApplicationController
     caption2_bold = params['caption2_bold']
     caption2_italic = params['caption2_italic']
     caption2_underline = params['caption2_underline']
+	file = params['uploaded_image']
     text = params['ill_text']
     alt_text = params['alt_text']
     nines_object = params['nines_object']
@@ -604,6 +605,11 @@ class BuilderController < ApplicationController
         illustration.caption2_bold = caption2_bold
         illustration.caption2_italic = caption2_italic
         illustration.caption2_underline = caption2_underline
+		if file.present?
+		illustration.upload = file
+		else
+			illustration.upload = nil
+		end
         illustration.save
 
 				if (type == 'NINES Object' && nines_object)
@@ -616,7 +622,9 @@ class BuilderController < ApplicationController
     end
     if illustration == nil
       render :text =>'Error in editing section. Please refresh your browser page.'
-    else
+	elsif illustration.illustration_type == ExhibitIllustration.get_illustration_type_upload()
+		redirect_to :back
+	else
       render :partial => '/exhibits/exhibit_section', :locals => { :element => element, :is_edit_mode => true, :element_count => element.position }
     end
   end

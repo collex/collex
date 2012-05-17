@@ -42,6 +42,10 @@
 end -%>
 <% alt = illustration.alt_text if illustration.alt_text && illustration.alt_text.length > 0 -%>
 <% alt = "Picture" if alt.length == 0 -%>
+<% if illustration.illustration_type == ExhibitIllustration.get_illustration_type_upload() && illustration.upload.present? %>
+<% url = illustration.upload.url(:display) %>
+<% link = "" %>
+<% end %>
 <% url = EXHIBIT_BUILDER_TODO_PATH if url == nil || url == "" -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
@@ -112,12 +116,13 @@ end -%>
 				<div class="saved_data ill_illustration_caption2_italic" style="display:none;"><%= illustration.caption2_italic %></div>
 				<div class="saved_data ill_illustration_caption2_underline" style="display:none;"><%= illustration.caption2_underline %></div>
 				<div class="saved_data ill_nines_object_uri" style="display:none;"><%= illustration.nines_object_uri %></div>
+				<div class="saved_data ill_upload_filename" style="display:none;"><%= illustration.upload.url(:thumb) if illustration.upload.present? %></div>
 			<% end -%>
 		
 			<%# Create the actual content -%>	
 			<% if illustration_type == ExhibitIllustration.get_illustration_type_text() -%>
 				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='font-family:<%= exhibit.get_font_name('illustration') %>; font-size:<%= exhibit.get_font_size('illustration') %>px;width:<%= width %>px;<%= height %>'><%= illustration_text %></div>
-				<%= create_resizable -%>
+				<%= raw create_resizable -%>
 			<% else # nines object or internet image -%>
 				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
 				<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= raw(onload_text) %> />

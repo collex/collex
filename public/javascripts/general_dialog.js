@@ -791,8 +791,12 @@ var GeneralDialog = Class.create({
 						
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.
-						form.writeAttribute({ enctype: "multipart/form-data", target: "gd_upload_target", method: 'post' });
-						$(parent_id).appendChild(new Element('iframe', { id: "gd_upload_target", name: "gd_upload_target", src: "", style: "display:none;width:0;height:0;border:0px solid #fff;" }));
+						if (subel.no_iframe)
+							form.writeAttribute({ enctype: "multipart/form-data", method: 'post' });
+						else {
+							form.writeAttribute({ enctype: "multipart/form-data", target: "gd_upload_target", method: 'post' });
+							$(parent_id).appendChild(new Element('iframe', { id: "gd_upload_target", name: "gd_upload_target", src: "", style: "display:none;width:0;height:0;border:0px solid #fff;" }));
+						}
 						// FILE INPUT
 					} else if (subel.file !== undefined) {
 						var file_input2 = new Element('input', { id: GeneralDialog.makeId(subel.file), type: 'file', name: subel.file });
