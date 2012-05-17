@@ -162,6 +162,7 @@ var FootnotesInRte = Class.create({
 		var footnotePrefixIE = '<A class=superscript onclick=\'return false; var footnote = $(this).next(); new MessageBoxDlg("Footnote", footnote.innerHTML); return false;\' href="#">';
 		var footnoteMid = '</a><span class="hidden">';
 		var footnoteMidIE = '</A><SPAN class=hidden>';
+		var footnotePrefixAlt = '<a href="#" onclick="return false; var footnote = $(this).next(); new MessageBoxDlg(&quot;Footnote&quot;, footnote.innerHTML); return false;" class="superscript">';
 		var footnoteClose = '</span>';
 
 		var rteFootnotePrefix1 = '<a class="rte_footnote">';
@@ -221,6 +222,8 @@ var FootnotesInRte = Class.create({
 				arr = text.split(footnotePrefixSafari);
 			if (arr.length === 1)	// Hack for IE: It returns tags with capital letters
 				arr = text.split(footnotePrefixIE);
+			if (arr.length === 1)	// Hack: Try single quotes, too. Not sure why the format changed upstream.
+				arr = text.split(footnotePrefixAlt);
 			text = arr[0];
 			for (var i = 1; i < arr.length; i++) {
 				// each element starts with a number, which we don't need, and then has footnoteMid, then the footnote, then footnoteClose, then random text that we want to keep.
