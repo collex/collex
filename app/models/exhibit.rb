@@ -1189,7 +1189,8 @@ class Exhibit < ActiveRecord::Base
 				has_bold = false
 				r.xpath('w:rPr/w:b').each { |x| has_bold = true if x.attribute('val').to_s != 'none' && x.attribute('val').to_s != 'off' }
 				footnote_id = nil
-				r.xpath('w:footnoteReference').each { |x| footnote_id = x.attribute('id').to_s }
+				r.xpath('w:footnoteReference').each { |x| footnote_id = 'F'+x.attribute('id').to_s }
+				r.xpath('w:endnoteReference').each { |x| footnote_id = 'E'+x.attribute('id').to_s }
 				r.xpath('w:t').each { |t|
 					str << "<span title=\"External Link: #{t.text}\" real_link=\"#{t.text}\" class=\"ext_linklike\">" if hyperlink
 					str << "<span style=\"text-decoration: underline;\">" if has_underline
@@ -1227,7 +1228,22 @@ class Exhibit < ActiveRecord::Base
 			footnotes_doc.xpath('//w:p').each { |para|
 			#REXML::XPath.each( footnotes_doc, "//w:p" ){ |para|
 				par = para.parent
-				index = par.attribute('id').to_s
+				index = 'F'+par.attribute('id').to_s
+				str = footnotes[index] ? footnotes[index] : ''
+				str += self.process_word_paragraph(para, nil)[:text]
+				footnotes[index] = str if str.length > 0
+			}
+		rescue
+			# It's ok for the footnotes file doesn't exist.
+		end
+
+		# add the endnotes to the footnotes -- they are the same to us
+		# For each <w:endnote w:id="9999"><w:p> element, concatenate all of its <w:t> text. Note that the <w:t> elements might not be direct descendants.
+		begin
+			endnotes_doc = Nokogiri::XML(File.new("#{this_folder}/word/endnotes.xml"))
+			endnotes_doc.xpath('//w:p').each { |para|
+				par = para.parent
+				index = 'E'+par.attribute('id').to_s
 				str = footnotes[index] ? footnotes[index] : ''
 				str += self.process_word_paragraph(para, nil)[:text]
 				footnotes[index] = str if str.length > 0
