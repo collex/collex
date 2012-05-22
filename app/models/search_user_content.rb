@@ -115,6 +115,7 @@ class SearchUserContent < ActiveRecord::Base
 			else
 				group = Group.find(exhibit.group_id)
 				section = group.group_type
+				section = 'community' if section == 'peer-reviewed' && exhibit.is_published == 5
 				visibility_type = Group.get_exhibit_visibility(exhibit)
 				visibility_id = group.id
 			end
@@ -186,7 +187,7 @@ class SearchUserContent < ActiveRecord::Base
 		start_time = Time.now
 		@solr = Catalog.factory_create_user()
 
-		exhibits = Exhibit.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		exhibits = Exhibit.all(:conditions => [ 'updated_at > ?', tim ] )
 		exhibits.each {|exhibit|
 			begin
 				reindex_exhibit(exhibit)
@@ -195,7 +196,7 @@ class SearchUserContent < ActiveRecord::Base
 			end
 		}
 
-		groups = Group.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		groups = Group.all(:conditions => [ 'updated_at > ?', tim ] )
 		groups.each {|group|
 			begin
 				reindex_group(group)
@@ -204,7 +205,7 @@ class SearchUserContent < ActiveRecord::Base
 			end
 		}
 
-		clusters = Cluster.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		clusters = Cluster.all(:conditions => [ 'updated_at > ?', tim ] )
 		clusters.each {|cluster|
 			begin
 				reindex_cluster(cluster)
@@ -213,7 +214,7 @@ class SearchUserContent < ActiveRecord::Base
 			end
 		}
 
-		threads = DiscussionThread.find(:all, :conditions => [ 'updated_at > ?', tim ] )
+		threads = DiscussionThread.all(:conditions => [ 'updated_at > ?', tim ] )
 		threads.each {|thread|
 			begin
 				reindex_thread(thread)
@@ -231,25 +232,25 @@ class SearchUserContent < ActiveRecord::Base
 		last_update = nil
 
 		# now see if any tables were updated since then
-		recs = Group.find(:all, :limit => 1, :order => "updated_at DESC")
+		recs = Group.all(:limit => 1, :order => "updated_at DESC")
 		if recs.length != 0
 			t = recs[0].updated_at
 			last_update = t if last_update == nil || last_update < t
 		end
 
-		recs = Cluster.find(:all, :limit => 1, :order => "updated_at DESC")
+		recs = Cluster.all(:limit => 1, :order => "updated_at DESC")
 		if recs.length != 0
 			t = recs[0].updated_at
 			last_update = t if last_update < t
 		end
 
-		recs = Exhibit.find(:all, :limit => 1, :order => "updated_at DESC")
+		recs = Exhibit.all(:limit => 1, :order => "updated_at DESC")
 		if recs.length != 0
 			t = recs[0].updated_at
 			last_update = t if last_update < t
 		end
 
-		recs = DiscussionComment.find(:all, :limit => 1, :order => "updated_at DESC")
+		recs = DiscussionComment.all(:limit => 1, :order => "updated_at DESC")
 		if recs.length != 0
 			t = recs[0].updated_at
 			last_update = t if last_update < t
@@ -258,7 +259,7 @@ class SearchUserContent < ActiveRecord::Base
 	end
 
 	def self.periodic_update
-		recs = SearchUserContent.find(:all, :limit => 1, :order => "last_indexed DESC")
+		recs = SearchUserContent.all(:limit => 1, :order => "last_indexed DESC")
 		last_change = SearchUserContent.last_update()
 		if recs.blank? || recs.length == 0 || last_change.blank?
 			is_dirty = true

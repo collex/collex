@@ -338,7 +338,7 @@ class Exhibit < ActiveRecord::Base
   end
   
   def self.get_all_published
-    return Exhibit.find(:all, :conditions => [ 'is_published <> 0'])
+    return Exhibit.all(:conditions => [ 'is_published <> 0'])
   end
 
 	def self.is_license_specified(license_type)
@@ -999,6 +999,7 @@ class Exhibit < ActiveRecord::Base
 			return "This exhibit is visible to everyone." if self.is_published == 1
 			return "Submitted for peer-review" if self.is_published == 2
 			return "This exhibit is visible to the group's administrators." if self.is_published == 4
+			return "Submitted for peer-review/visible to everyone." if self.is_published == 5
 			return "This exhibit is visible to everyone."	# This case probably won't happen, but it could if the user changes the group when in a funny state.
 		else
 			return "This exhibit is visible to everyone." if self.is_published == 1
@@ -1014,17 +1015,25 @@ class Exhibit < ActiveRecord::Base
 			case self.is_published
 			when 0 then
 				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
+				ret.push( { :text=> "[Submit for peer review/share with everyone]", :param => 5 })
 				ret.push( { :text=> "[Share with administrators]", :param => 4 })
 			when 2 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Share with administrators]", :param => 4 })
+				ret.push( { :text=> "[Submit for peer review/share with everyone]", :param => 5 })
 			when 3 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
 				ret.push( { :text=> "[Share with administrators]", :param => 4 })
+				ret.push( { :text=> "[Submit for peer review/share with everyone]", :param => 5 })
 			when 4 then
 				ret.push( { :text=> "[Unpublish]", :param => 0 })
 				ret.push( { :text=> "[Submit for peer review]", :param => 2 })
+				ret.push( { :text=> "[Submit for peer review/share with everyone]", :param => 5 })
+			when 5 then
+				ret.push( { :text=> "[Unpublish]", :param => 0 })
+				ret.push( { :text=> "[Share with administrators]", :param => 4 })
+				ret.push( { :text=> "[Submit for peer review/don't share]", :param => 2 })
 			end
 			return ret
 		elsif self.group_id != nil
@@ -1110,7 +1119,7 @@ class Exhibit < ActiveRecord::Base
 					end
 				end
 			else
-				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND is_published = 1 AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
+				exhibits = Exhibit.all(:conditions => [ "group_id = ? AND (is_published = 1 OR is_published = 5) AND (editor_limit_visibility IS NULL OR editor_limit_visibility <> 'group') AND cluster_id = ?", group.id, cluster.id])
 				exhibits.each { |ex|
 					ex.author = ex.get_apparent_author_name()
 				}

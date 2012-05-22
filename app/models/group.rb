@@ -94,7 +94,7 @@ class Group < ActiveRecord::Base
 		return 'admin' if exhibit.is_published == 2
 		return 'members' if exhibit.editor_limit_visibility == 'group'
 		return 'members' if exhibit.is_published == 3
-		return 'everyone'
+		return 'everyone' # is_published must be either 1 (everyone) or 5 (submit for peer-review and everyone)
 	end
 
 	def can_view_exhibit(exhibit, user_id)
@@ -111,7 +111,7 @@ class Group < ActiveRecord::Base
 
 		# see if only a member can see it
 		return true if is_member(user_id)
-		return true if exhibit.is_published == 1 && (exhibit.editor_limit_visibility == nil || exhibit.editor_limit_visibility != 'group')
+		return true if (exhibit.is_published == 1 || exhibit.is_published == 5) && (exhibit.editor_limit_visibility == nil || exhibit.editor_limit_visibility != 'group')
 		return false
 	end
 
