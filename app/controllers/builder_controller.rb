@@ -607,8 +607,6 @@ class BuilderController < ApplicationController
         illustration.caption2_underline = caption2_underline
 		if file.present?
 		illustration.upload = file
-		else
-			illustration.upload = nil
 		end
         illustration.save
 
