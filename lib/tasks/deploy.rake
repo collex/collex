@@ -33,8 +33,8 @@ namespace :deploy do
 
 	def stop_daemons
 		puts "Stopping all daemons..."
-#		puts `script/delayed_job stop`
-		puts `lib/daemons/index_user_content_ctl stop`
+		puts `script/delayed_job stop`
+#		puts `lib/daemons/index_user_content_ctl stop`
 		puts `lib/daemons/mailer_ctl stop`
 		puts `lib/daemons/session_cleaner_ctl stop`
 		sleep(8)
