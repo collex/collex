@@ -19,6 +19,11 @@ class Cluster < ActiveRecord::Base
 	has_many :discussion_threads
 	belongs_to :group
   belongs_to :image#, :dependent=>:destroy
+	after_save :handle_solr
+
+	def handle_solr
+		SearchUserContent.delay.index('cluster', self.id)
+	end
 
 	def get_visibility()
 		return self.visibility

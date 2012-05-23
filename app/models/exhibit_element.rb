@@ -19,7 +19,13 @@ class ExhibitElement < ActiveRecord::Base
   acts_as_list :scope => :exhibit_page
   
   has_many :exhibit_illustrations, :order => :position, :dependent=>:destroy
-  
+
+  after_save :handle_solr
+
+  def handle_solr
+	  SearchUserContent.delay.index('exhibit', self.exhibit_page.exhibit.id)
+  end
+
   def self.factory(page)
     return ExhibitElement.create(:exhibit_page_id => page, :border_type_enum => 0, :exhibit_element_layout_type => 'text', :element_text2 => "Enter your text here.", :element_text => "Enter your text here.")
   end

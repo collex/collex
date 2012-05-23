@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120516151552) do
+ActiveRecord::Schema.define(:version => 20120523140721) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -72,6 +72,22 @@ ActiveRecord::Schema.define(:version => 20120516151552) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "discussion_comments", :force => true do |t|
     t.integer  "discussion_thread_id"
@@ -396,10 +412,11 @@ ActiveRecord::Schema.define(:version => 20120516151552) do
 
   create_table "search_user_contents", :force => true do |t|
     t.datetime "last_indexed"
-    t.decimal  "seconds_spent_indexing", :precision => 10, :scale => 0
+    t.decimal  "seconds_spent_indexing", :precision => 10, :scale => 3
     t.decimal  "objects_indexed",        :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "obj_type"
   end
 
   create_table "searches", :force => true do |t|

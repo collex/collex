@@ -20,6 +20,12 @@ class ExhibitPage < ActiveRecord::Base
   
   has_many :exhibit_elements, :order => :position, :dependent=>:destroy
 
+  after_save :handle_solr
+
+  def handle_solr
+	  SearchUserContent.delay.index('exhibit', self.exhibit.id)
+  end
+
   def insert_border(element)
       element.set_border_type('start_border')
   end

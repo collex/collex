@@ -21,7 +21,13 @@ class DiscussionComment < ActiveRecord::Base
   acts_as_list :scope => :discussion_thread
   before_save :b4_save
   has_many :comment_reports, :dependent => :destroy
-  
+
+  after_save :handle_solr
+
+ 	def handle_solr
+ 		SearchUserContent.delay.index('thread', self.discussion_thread.id)
+ 	end
+
   # Return true if this comment has been reported as abusive by anyone
   #
   def reported

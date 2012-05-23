@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.2'
+gem 'rails', '3.2.3'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -20,6 +20,7 @@ gem 'paperclip'
 gem 'memcache-client'
 
 gem 'daemons'
+gem 'delayed_job_active_record'
 
 # for importing word documents
 gem 'nokogiri'

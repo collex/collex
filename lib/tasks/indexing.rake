@@ -22,10 +22,10 @@ namespace :indexing do
 		solr.reindex_all()
 	end
 
-	desc "Run the user content task that is done in the daemon"
-	task :periodic_user_content => :environment do
-		result = SearchUserContent.periodic_update()
-		puts result.to_s
-	end
+	#desc "Run the user content task that is done in the daemon"
+	#task :periodic_user_content => :environment do
+	#	result = SearchUserContent.periodic_update()
+	#	puts result.to_s
+	#end
 
 end

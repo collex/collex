@@ -14,8 +14,6 @@
 # limitations under the License.
 ##########################################################################
 
-#require 'ftools'
-
 desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"
 task :deploy => [ 'deploy:update' ] do
 end
@@ -35,6 +33,7 @@ namespace :deploy do
 
 	def stop_daemons
 		puts "Stopping all daemons..."
+#		puts `script/delayed_job stop`
 		puts `lib/daemons/index_user_content_ctl stop`
 		puts `lib/daemons/mailer_ctl stop`
 		puts `lib/daemons/session_cleaner_ctl stop`
@@ -43,7 +42,7 @@ namespace :deploy do
 
 	def start_daemons
 		puts "Starting all daemons..."
-		puts `lib/daemons/index_user_content_ctl start`
+		puts `script/delayed_job start`
 		puts `lib/daemons/mailer_ctl start`
 		puts `lib/daemons/session_cleaner_ctl start`
 	end

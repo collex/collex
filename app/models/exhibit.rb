@@ -26,6 +26,12 @@ class Exhibit < ActiveRecord::Base
 	attr_accessor :editors_only
 	attr_accessor :group_only
 	attr_accessor :author
+
+  after_save :handle_solr
+
+  def handle_solr
+	  SearchUserContent.delay.index('exhibit', self.id)
+  end
 	
 	def self.can_edit(user, exhibit_id)
 		return false if user == nil

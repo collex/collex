@@ -20,6 +20,11 @@ class Group < ActiveRecord::Base
 	has_many :discussion_threads
 	#TODO-PER: commented for Rails 3: has_and_belongs_to_many :users
   belongs_to :image#, :dependent=>:destroy
+	after_save :handle_solr
+
+	def handle_solr
+		SearchUserContent.delay.index('group', self.id)
+	end
 
 	#
 	# id translation
