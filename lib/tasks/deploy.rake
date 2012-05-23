@@ -100,6 +100,7 @@ namespace :deploy do
 
 	def basic_update
 		stop_daemons()
+		puts `git checkout db/schema.rb`
 		puts `git pull`
 		run_bundler()
 		copy_dir( "#{Rails.root}/public/static/#{SKIN}", "#{Rails.root}/public" )
