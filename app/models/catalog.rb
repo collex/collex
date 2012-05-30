@@ -444,6 +444,11 @@ class Catalog
 		call_solr("locals", :post, doc)
 	end
 
+	def remove_local_object(object_type, id, federation)
+		doc = ["object_type=#{object_type}", "object_id=#{id}", "federation=#{federation}"]
+		call_solr("locals", :post, doc)
+	end
+
 	def local_commit()
 		call_solr("locals/#{Setup.default_federation()}", :put)
 	end
@@ -454,7 +459,6 @@ class Catalog
 	end
 
 	def add_object(fields, should_commit) # called by Exhibit to index exhibits
-		#raise Catalog::Error.new("Unhandled function: add_object")
 		# TODO: Set parameters.
 		params = fields
 		params["commit"] = "immediate" if should_commit

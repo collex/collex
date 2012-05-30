@@ -164,6 +164,9 @@ class SearchUserContent < ActiveRecord::Base
 			end
 			@solr = Catalog.factory_create_user() if @solr == nil
 			@solr.add_local_object("Exhibit", exhibit.id, Setup.site_name(), section, exhibit.title, exhibit.get_all_text(), exhibit.last_change, visibility_type, visibility_id)
+		else
+			@solr = Catalog.factory_create_user() if @solr == nil
+			@solr.remove_local_object("Exhibit", exhibit.id, Setup.site_name())
 		end
 	end
 
