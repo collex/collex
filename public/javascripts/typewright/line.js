@@ -76,6 +76,7 @@ var line = {
 					case 'correct': text = '-- Declared Correct --'; break;
 					case 'change': text = line.text[i]; break;
 					case 'insert': text = line.text[i]; break;
+					case 'original': text = line.text[i]; break;
 					case '': text = line.text[i]; break;
 					default: text = line.actions[i]; break;
 				}

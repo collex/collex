@@ -142,6 +142,13 @@ class Typewright::DocumentsController < ApplicationController
       @site = COLLEX_PLUGINS['typewright']['web_service_url']
 			word_stats = is_admin?
 			@params = Typewright::Document.get_page(@uri, page, @src, word_stats)
+			# correct the format of the original line
+			@params['lines'].each { |line|
+				if line['actions'][0] == nil
+					line['actions'][0] = 'original'
+					line['dates'][0] = ''
+				end
+			}
       @thumb = URI::join(@site, @params['img_thumb'])
       @image_full = URI::join(@site, @params['img_full'])
       @params['img_thumb'] = @thumb.to_s
