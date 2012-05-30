@@ -231,6 +231,12 @@ class Catalog
 		# we now have a list of archives and nodes. We keep the archives as a list,
 		# and we keep a separate copy that is turned into a tree.
 		@@carousel = []
+		if response['html'].present?
+			msg = response['html']['body'].to_s
+			Catalog.log_catalog("ERROR", msg)
+			return
+		end
+
 		nodes = response['resource_tree']['nodes']['node']
 		id = 1
 		nodes.each { |node|
@@ -390,19 +396,21 @@ class Catalog
 #			}
 #		end
 		# the time is a string formatted as: 1995-12-31T23:59:59Z or 1995-12-31T23:59:59.999Z
-		results[:hits].each  {|hit|
-			dt = hit['last_modified'].split('T')
-			hit['last_modified'] = nil	# in case it wasn't a valid time below.
-			if dt.length == 2
-				dat = dt[0].split('-')
-				tim = dt[1].split(':')
-				if dat.length == 3 && tim.length > 2
-					t = Time.gm(dat[0], dat[1], dat[2], tim[0], tim[1])
-					hit['last_modified'] = t
+		if results[:hits].present?
+			results[:hits].each  {|hit|
+				dt = hit['last_modified'].split('T')
+				hit['last_modified'] = nil	# in case it wasn't a valid time below.
+				if dt.length == 2
+					dat = dt[0].split('-')
+					tim = dt[1].split(':')
+					if dat.length == 3 && tim.length > 2
+						t = Time.gm(dat[0], dat[1], dat[2], tim[0], tim[1])
+						hit['last_modified'] = t
+					end
 				end
-			end
-		}
-		return results
+			}
+			return results
+		end
 	end
 
 	def format_date(d)
