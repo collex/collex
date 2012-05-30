@@ -144,7 +144,7 @@ class Typewright::DocumentsController < ApplicationController
 			@params = Typewright::Document.get_page(@uri, page, @src, word_stats)
 			# correct the format of the original line
 			@params['lines'].each { |line|
-				if line['actions'][0] == nil
+				if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
 					line['actions'][0] = 'original'
 					line['dates'][0] = ''
 				end
