@@ -147,6 +147,7 @@ class Typewright::DocumentsController < ApplicationController
 				if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
 					line['actions'][0] = 'original'
 					line['dates'][0] = ''
+					line['text'][0] = '' if line['text'][0].blank?
 				end
 			}
       @thumb = URI::join(@site, @params['img_thumb'])
