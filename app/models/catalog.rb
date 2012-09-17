@@ -409,8 +409,8 @@ class Catalog
 					end
 				end
 			}
-			return results
-		end
+    end
+    return results
 	end
 
 	def format_date(d)
