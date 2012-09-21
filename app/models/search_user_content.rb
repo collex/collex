@@ -21,7 +21,8 @@ class SearchUserContent < ActiveRecord::Base
 	#
 	#Exhibits:
 	#- if it is not in a group, it is visible if it is shared.
-	#- if it is in a community or classroom group, it is visible if it is shared with the web, or the user is a member of the group and it is shared to the group, or the user is an admin of the group and it is shared with the admins.
+	#- if it is in a community or classroom group, it is visible if it is shared with the web, or the user is a member of the group and it is
+  #     shared to the group, or the user is an admin of the group and it is shared with the admins.
 	#- if it is in a peer-reviewed group, it has the same rules as the community groups, but it is NOT visible if it is pending peer-review.
 	#
 	#(Note that if the exhibit is owned by the user, it isn't automatically visible. It still has to meet the criteria above.)

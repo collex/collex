@@ -117,6 +117,6 @@ class HomeController < ApplicationController
   end
 
   def login_slider
-    render :partial => '/common/login_slider'
+    render :partial => '/common/login_slider', :locals => { :current_page => @current_page }
   end
 end
