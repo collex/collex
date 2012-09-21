@@ -11,7 +11,7 @@
 
 	<div id="subnav_container">
 		<div id="login_container">
-			<%= render :partial => '/common/login_slider', :locals => { :current_page => @current_page } %>
+			<%= render :partial => '/common/login_slider' %>
 		</div>
 		<div id="subnav_links_container">
 			<%= link_to(Setup.about()[:left][:label], Setup.about()[:left][:link], { :class => 'nav_link' } ) %>

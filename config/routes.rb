@@ -73,6 +73,7 @@ Collex::Application.routes.draw do
   # match ':controller(/:action(/:id(.:format)))'
 	# for transmitting the theme to wordpress
 	get "/wrapper" => "home#wrapper"
+  get "/login_slider" => "home#login_slider"
 
 	get "test_js/general_dialog"
 

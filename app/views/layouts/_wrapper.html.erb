@@ -1,4 +1,37 @@
 <%= render :partial => "/layouts/dependencies" %>
+<script type="text/javascript">
+
+    get_login_slider = function () {
+        old_login_container = '';
+        if ($('login_container')) {
+            old_login_container = $('login_container').innerHTML;
+            $('login_container').innerHTML = '';
+        }
+        if ($('header_right')) {
+            $('header_right').hide();
+        }
+
+        new Ajax.Request('/login_slider',
+                {
+                    method:'get',
+                    onSuccess: function(transport) {
+                        $('login_container').innerHTML = transport.responseText;
+                    },
+                    onFailure: function() {
+                        if ($('header_right')) {
+                            $('header_right').show();
+                        }
+                        if ($('login_container')) {
+                            $('login_container').innerHTML = old_login_container;
+                        }
+                    }
+                });
+
+    }
+
+    Event.observe(window, 'load', get_login_slider);
+
+</script>
 ~~~~~~~~~~
 <%= render :partial => "/layouts/header" %>
 ~~~~~~~~~~

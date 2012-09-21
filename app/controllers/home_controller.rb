@@ -36,21 +36,21 @@ class HomeController < ApplicationController
 
     @discussions = DiscussionTopic.get_most_popular(5)
 
-	if Setup.site_name() == '18thConnect'
-		@featured_news = true
-	end
-	  features = FeaturedObject.find_all_by_disabled('0')
-	  if features.length > 0
-		  features = features.sort_by {rand}
-		  @feature = features[0]
-	  end
-    
-	#@tags = CachedResource.get_most_popular_tags(40)
-	@tags = CachedResource.get_most_recent_tags(40)
-    
-    # carousel
-	@carousel = Catalog.factory_create(false).get_carousel()
-	@carousel = @carousel.sort_by {rand}
+    if Setup.site_name() == '18thConnect'
+      @featured_news = true
+    end
+      features = FeaturedObject.find_all_by_disabled('0')
+      if features.length > 0
+        features = features.sort_by {rand}
+        @feature = features[0]
+      end
+
+    #@tags = CachedResource.get_most_popular_tags(40)
+    @tags = CachedResource.get_most_recent_tags(40)
+
+      # carousel
+    @carousel = Catalog.factory_create(false).get_carousel()
+    @carousel = @carousel.sort_by {rand}
 	
 #    facets = FacetCategory.find_all_by_carousel_include(1)
 #		facets = facets.sort_by {rand}
@@ -69,10 +69,10 @@ class HomeController < ApplicationController
 #      end
 #      @carousel.push({ :title => title, :description => facet[:carousel_description], :url => url, :image => facet.image_id ? "/#{facet.image.photo.url}" : '' })
 #	end
-	respond_to do |format|
-		format.html # index.html.erb
-	end
+    respond_to do |format|
+      format.html # index.html.erb
     end
+  end
   
   def get_footer_data
     render :partial => 'footer_data'
@@ -114,5 +114,9 @@ class HomeController < ApplicationController
 			@site_section = :about
 		end
 		render :partial => "/layouts/wrapper"
-	end
+  end
+
+  def login_slider
+    render :partial => '/common/login_slider'
+  end
 end
