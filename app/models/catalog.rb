@@ -245,13 +245,21 @@ class Catalog
 			id += 1
 			if node['carousel']
         if node['carousel']['federations'] and node['carousel']['federations']['federation']
-          node['carousel']['federations']['federation'].each { |federation|
-            if federation.downcase == Setup.site_name().downcase
+          if node['carousel']['federations']['federation'].kind_of?(Array)
+            node['carousel']['federations']['federation'].each { |federation|
+              if federation.downcase == Setup.site_name().downcase
+                img = node['carousel']['image']
+                img = Setup.solr_url() + img if img
+                @@carousel.push({ :title => node['name'], :description => node['carousel']['description'], :url => node['site_url'], :image => img })
+              end
+            }
+          else
+            if node['carousel']['federations']['federation'].downcase == Setup.site_name().downcase
               img = node['carousel']['image']
               img = Setup.solr_url() + img if img
               @@carousel.push({ :title => node['name'], :description => node['carousel']['description'], :url => node['site_url'], :image => img })
             end
-          }
+          end
         end
 			end
 		}
@@ -261,13 +269,21 @@ class Catalog
 			id += 1
 			if archive['carousel']
         if archive['carousel']['federations'] and archive['carousel']['federations']['federation']
-          archive['carousel']['federations']['federation'].each { |federation|
-            if federation.downcase == Setup.site_name().downcase
+          if archive['carousel']['federations']['federation'].kind_of?(Array)
+            archive['carousel']['federations']['federation'].each { |federation|
+              if federation.downcase == Setup.site_name().downcase
+                img = archive['carousel']['image']
+                img = Setup.solr_url() + img if img
+                @@carousel.push({ :title => archive['name'], :description => archive['carousel']['description'], :url => archive['site_url'], :image => img })
+              end
+            }
+          else
+            if archive['carousel']['federations']['federation'].downcase == Setup.site_name().downcase
               img = archive['carousel']['image']
               img = Setup.solr_url() + img if img
               @@carousel.push({ :title => archive['name'], :description => archive['carousel']['description'], :url => archive['site_url'], :image => img })
             end
-          }
+          end
         end
 			end
 		}
