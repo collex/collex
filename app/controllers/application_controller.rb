@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
 			end
 			if session[:archives] == nil || session[:carousel] == nil || session[:resource_tree] == nil
 				solr ||= Catalog.factory_create(session[:use_test_index] == "true")
-        Catalog.reset_cached_data()
+        #Catalog.reset_cached_data()
 				session[:archives] = solr.get_archives()
 				session[:carousel] = solr.get_carousel()
 				session[:resource_tree] = solr.get_resource_tree()
