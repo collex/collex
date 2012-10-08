@@ -95,7 +95,8 @@ class Setup < ActiveRecord::Base
 	end
 
 	def self.solr_url()
-		return globals()['site_solr_url']
+		val = globals()['site_solr_url']
+    return val.present? ? val : "http://arc-staging.performantsoftware.com"
 	end
 
 	#
@@ -124,7 +125,32 @@ class Setup < ActiveRecord::Base
 		else
 			puts "$$ Exception handler not set in development mode."
 		end
-	end
+  end
+
+  def self.display_community_tab?()
+    return true if globals()['enable_community_tab'] != 'false'
+    return false
+  end
+
+  def self.display_search_tab?()
+    return true if globals()['enable_search_tab'] != 'false'
+    return false
+  end
+
+  def self.display_publications_tab?()
+    return true if globals()['enable_publications_tab'] != 'false'
+    return false
+  end
+
+  def self.display_classroom_tab?()
+    return true if globals()['enable_classroom_tab'] != 'false'
+    return false
+  end
+
+  def self.display_news_tab?()
+    return true if globals()['enable_news_tab'] != 'false'
+    return false
+  end
 
 	def self.analytics_id()
 		return nil if globals()['google_analytics'] != 'true'

@@ -28,11 +28,26 @@ class Admin::SetupsController < Admin::BaseController
 		msg = ""
 		act = params['commit']
 		default_federation = nil
+
+    checkbox_keys = ['enable_community_tab', 'enable_publications_tab', 'enable_classroom_tab', 'enable_news_tab']
+    checkbox_keys.each { |key,value|
+      rec = Setup.find_by_key(key)
+      if rec
+        rec.value = 'false'
+        rec.save!
+      end
+    }
+
+
 		params['setups'].each { |key,value|
 			rec = Setup.find_by_key(key)
 			if rec
 				default_federation = value if key == 'site_default_federation'
-				rec.value = value
+        if checkbox_keys.include? rec.key
+          rec.value = 'true'
+        else
+          rec.value = value
+        end
 				rec.save!
 			else
 				Setup.create({ key: key, value: value })

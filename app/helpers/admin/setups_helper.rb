@@ -32,7 +32,28 @@ module Admin::SetupsHelper
 			content_tag(:td, example)
 		end
 		return html
-	end
+  end
+
+  def setup_checkbox(label, field, rec, explanation, example)
+    typ = 'checkbox'
+    value = 0
+    value = 1 if rec[field] == 'true'
+    html = content_tag(:tr, class: 'row hoverable') do
+      content_tag(:td, label) +
+          content_tag(:td) do
+            if value == 1
+              content_tag(:input, "", id: "setups_#{field}", name: "setups[#{field}]", checked: 1, type: typ )
+            else
+              content_tag(:input, "", id: "setups_#{field}", name: "setups[#{field}]", type: typ )
+            end
+
+          end
+    end + content_tag(:tr, { class: 'instructions' }) do
+      content_tag(:td, explanation) +
+          content_tag(:td, example)
+    end
+    return html
+  end
 
 	def setup_table_button(label)
 		html = content_tag(:tr, class: 'center') do

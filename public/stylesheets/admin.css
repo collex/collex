@@ -166,6 +166,10 @@
 	font: 15px arial,helvetica,clean,sans-serif;
 }
 
+.setup_container tr.hoverable:hover {
+    background: #F5F5DC;
+}
+
 .setup_container tr.row td {
 	padding-bottom: 0;
 }

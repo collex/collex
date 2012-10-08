@@ -607,6 +607,16 @@ namespace :deploy do
 	desc "After converting and testing Paperclip, run this to remove the traces of attachment_fu"
 	task :migrate_attachment_fu_to_paperclip => :environment do
 		# remove all Image nad ImageFull recs where parent_id is not nil
-	end
+  end
+
+  desc "add setup values for enabling tabs"
+  task :add_setup_values_for_tab_enabling => :environment do
+    Setup.create({ key: "enable_community_tab", value: "true" })
+    Setup.create({ key: "enable_search_tab", value: "true" })
+    Setup.create({ key: "enable_publications_tab", value: "true" })
+    Setup.create({ key: "enable_classroom_tab", value: "true" })
+    Setup.create({ key: "enable_news_tab", value: "true" })
+  end
+
 end
 

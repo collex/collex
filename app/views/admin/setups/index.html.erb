@@ -81,6 +81,20 @@
 		<%= setup_line("Right About Link:", "site_about_url_2", @setups,
 			"The link that will appear on each page for the main about page.",
 			"/about/peer_review.html") %>
+
+        <%= setup_table_header("Tab Display") %>
+        <%= setup_checkbox("Show community tab:", "enable_community_tab", @setups,
+                       "",
+                       "") %>
+        <%= setup_checkbox("Show news tab:", "enable_news_tab", @setups,
+                       "",
+                       "") %>
+        <%= setup_checkbox("Show publications tab:", "enable_publications_tab", @setups,
+                       "",
+                       "") %>
+        <%= setup_checkbox("Show classroom tab:", "enable_classroom_tab", @setups,
+                       "",
+                       "") %>
 	</table>
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>
@@ -103,7 +117,8 @@
 			"The ID that was given to you by Google when you signed up for Analytics.",
 			"AA-99999999-9") %>
 	</table>
-		<%= submit_tag("Apply Changes") %>
+
+    <%= submit_tag("Apply Changes") %>
 
 	<% end %>
 </div>
