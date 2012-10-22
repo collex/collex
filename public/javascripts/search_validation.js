@@ -87,25 +87,21 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		return true;
 
 	if (input_year) {
-		var year_val = input_year.value;
+		var year_val = input_year.value.trim().replace(/to/i, 'TO').replace(/\s+/, ' ');
 		if (year_val === "")
 			return true;
 
-		// At this point, year_val contains the user's input for the year. Make sure it is exactly 4 digits
+		// At this point, year_val contains the user's input for the year.
+        // Make sure it is 4 digits or a valid solr span (e.g. 1700 TO 1900)
 
-		// test if the year is an integer
-		if (year_val !== "" + parseInt(year_val))
-		{
-			errorDlg("The year must contain only numerals.");
-			return false;
-		}
+        var re = /^\d{4}(\s+TO\s+\d{4})?$/
 
-		// test if the year is 4 digits in length
-		if (year_val.length !== 4)
-		{
-			errorDlg("The year must be 4 digits long.");
-			return false;
-		}
+        if (!re.match(year_val))
+        {
+            errorDlg("The year must be 4 digits or a valid year span (e.g. 1700 TO 1900).");
+            return false;
+        }
+
 	}
 	
 	// if the two validation steps above pass, submit the form
