@@ -41,7 +41,15 @@
 
 	<tr>
 		<td class="query_type">
-			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
+			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'>
+              <option>Search Term</option>
+              <option>Title</option>
+              <option>Author</option>
+              <option>Editor</option>
+              <option>Publisher</option>
+              <option>Artist</option>
+              <option>Owner</option>
+              <option>Year (YYYY)</option></select></td>
 		<td class="query_term">
 		  <%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%>
 		</td>

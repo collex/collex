@@ -33,9 +33,26 @@
 					<a href="/help.html" class="tooltip"><img height="18" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" /><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
-        <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>
-        <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> /></td></tr>
-        <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
+        <% if SKIN.upcase == 'MESA' %>
+            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['search_author','Author'],
+                                                                                                      ['search_editor','Editor'],
+                                                                                                      ['search_artist','Artist'],
+                                                                                                      ['search_owner','Owner'],
+                                                                                                      ['search_publisher','Publisher']], :first, :last), :class => 'search_role_type' ) %>
+           <input name="search_author" id="search_author" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@aphrs}'" if @aphrs %> />
+           <input name="search_editor" id="search_editor" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ephrs}'" if @ephrs %> />
+           <input name="search_artist" id="search_artist" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@arphrs}'" if @arphrs %> />
+           <input name="search_owner" id="search_owner" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ophrs}'" if @ophrs %> />
+           <input name="search_publisher" id="search_publisher" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
+         <% else %>
+           <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>
+           <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> /></td></tr>
+           <!--
+           <tr><td>Artist:</td><td><input name="search_artist" id="search_artist" type="text" class="search_entry_box" <%= "value='#{@arphrs}'" if @arphrs %> /></td></tr>
+           <tr><td>Owner:</td><td><input name="search_owner" id="search_owner" type="text" class="search_entry_box" <%= "value='#{@ophrs}'" if @ophrs %> /></td></tr>
+           -->
+           <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
+         <%end%>
         <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
         <tr><td colspan="3" style="text-align: right;"><input id="search_submit2" type="submit" value="Search" /></td></tr>
     </table>
@@ -48,3 +65,45 @@
 	<% end -%>
 </div>
 </center>
+<script type="text/javascript">
+  function on_role_type_change(event, el)
+  {
+      if (el && el.options)
+      {
+          var old_input_value = '';
+
+          // hide old option
+          var visible_inputs = $$('.search_entry_visible');
+          if (visible_inputs.length > 0)
+          {
+              visible_inputs.each( function(i) {
+                  YAHOO.util.Dom.replaceClass(i, 'search_entry_visible', 'search_entry_hidden');
+                  old_input_value = i.value;
+                  i.value = '';
+              });
+          }
+
+          var si = el.options.selectedIndex;
+          var input_id = el.options[si].value;
+          var selected_inputs = $$('#' + input_id)
+          if (selected_inputs.length > 0)
+          {
+              selected_inputs.each( function(i) {
+                  YAHOO.util.Dom.replaceClass(i, 'search_entry_hidden', 'search_entry_visible');
+                  i.value = old_input_value;
+              });
+          }
+      }
+  }
+
+  function add_search_field_events()
+  {
+    var sr = $$('#search_roles');
+    if (sr.length > 0)
+    {
+        sr[0].on('change', on_role_type_change);
+        on_role_type_change(null, sr[0]);
+    }
+  }
+  YAHOO.util.Event.onDOMReady(add_search_field_events);
+</script>

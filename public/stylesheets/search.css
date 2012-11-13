@@ -15,11 +15,26 @@
 // ---------------------------------------------------------------------------- */
 
 .search_entry_box {
-	width:355px;
+	width:365px;
+}
+.search_entry_box_short {
+    width:261px;
 }
 
 .search_entry_box_keyword {
 	width:455px;
+}
+
+.search_entry_visible {
+}
+
+.search_entry_hidden {
+    visibility: hidden;
+    display: none;
+}
+
+.search_role_type {
+    width: 100px;
 }
 
 .search_entry_instructions {
