@@ -63,6 +63,8 @@ class SearchController < ApplicationController
         add_title_constraint(params[:search_title], false) if params[:search_title] != ""
         add_author_constraint(params[:search_author], false) if params[:search_author] != ""
         add_editor_constraint(params[:search_editor], false) if params[:search_editor] != ""
+        add_owner_constraint(params[:search_owner], false) if params[:search_owner] != ""
+        add_artist_constraint(params[:search_artist], false) if params[:search_artist] != ""
         add_publisher_constraint(params[:search_publisher], false) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year], false) if params[:search_year] != ""
 
@@ -73,6 +75,8 @@ class SearchController < ApplicationController
         add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
         add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
         add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
+        add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
+        add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
         add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
         add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
       end
@@ -254,6 +258,18 @@ class SearchController < ApplicationController
   def add_author_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
        session[:constraints] << FacetConstraint.new(:fieldx => 'author', :value => phrase_str, :inverted => invert)
+    end
+  end
+
+  def add_artist_constraint(phrase_str, invert)
+    if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+      session[:constraints] << FacetConstraint.new(:fieldx => 'r_art', :value => phrase_str, :inverted => invert)
+    end
+  end
+
+  def add_owner_constraint(phrase_str, invert)
+    if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+      session[:constraints] << FacetConstraint.new(:fieldx => 'r_own', :value => phrase_str, :inverted => invert)
     end
   end
 

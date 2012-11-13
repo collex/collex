@@ -602,6 +602,10 @@ class Catalog
 					ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
 				elsif constraint['fieldx'] == 'publisher'
 					pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
+        elsif constraint['fieldx'] == 'r_art'
+          pub = format_constraint(pub, strip_non_alpha(constraint), 'r_art')
+        elsif constraint['fieldx'] == 'r_own'
+          pub = format_constraint(pub, strip_non_alpha(constraint), 'r_own')
 				elsif constraint['fieldx'] == 'year'
 					y = format_constraint(y, constraint, 'y')
 				else
