@@ -595,7 +595,7 @@ module SearchHelper
 			if row[:one_col]
 				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' colspan='2'>#{row[:value]}</td></tr>\n"
 			else
-				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' class='search_result_data_label'>#{row[:label]}</td><td valign='top' width='100%'>#{row[:value]}</td></tr>\n"
+				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' class='search_result_data_label'>#{row[:label]}</td><td valign='top' class='search_result_data_value'>#{row[:value]}</td></tr>\n"
 			end
 		}
 		return raw(html)
