@@ -568,7 +568,9 @@ class Catalog
 
 	def parse_constraints(constraints)
 		q = ""
+    fuz_q = ""
 		t = ""
+    fuz_t = ""
 		aut = ""
 		ed = ""
 		pub = ""
@@ -577,6 +579,8 @@ class Catalog
 		g = ""
 		f = ""
 		o = ""
+    r_art = ""
+    r_own = ""
 
 		constraints.each { |constraint|
 			if constraint['type'] == 'FederationConstraint'
@@ -603,11 +607,15 @@ class Catalog
 				elsif constraint['fieldx'] == 'publisher'
 					pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
         elsif constraint['fieldx'] == 'r_art'
-          pub = format_constraint(pub, strip_non_alpha(constraint), 'r_art')
+          r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
         elsif constraint['fieldx'] == 'r_own'
-          pub = format_constraint(pub, strip_non_alpha(constraint), 'r_own')
-				elsif constraint['fieldx'] == 'year'
-					y = format_constraint(y, constraint, 'y')
+          r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
+				elsif constraint['fieldx'] == 'fuz_q'
+          fuz_q = format_constraint(fuz_q, constraint, 'fuz_q')   # TODO: Strip non-digits
+        elsif constraint['fieldx'] == 'fuz_t'
+          fuz_q = format_constraint(fuz_t, constraint, 'fuz_t')   # TODO: Strip non-digits
+        elsif constraint['fieldx'] == 'year'
+          y = format_constraint(y, constraint, 'y')
 				else
 					raise Catalog::Error.new("Unhandled constraint")
 				end
@@ -626,6 +634,10 @@ class Catalog
 		params.push(g) if g.length > 0
 		params.push(f) if f.length > 0
 		params.push(o) if o.length > 0
+    params.push(r_art) if r_art.length > 0
+    params.push(r_own) if r_own.length > 0
+    params.push(fuz_q) if fuz_q.length > 0
+    params.push(fuz_t) if fuz_q.length > 0
 
 		return params
 	end

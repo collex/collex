@@ -15,6 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <%# add_constraint_form : no parameters -%>
+
 <center>
 <div class="add_constraint_form">
     	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input></div>
@@ -29,10 +30,48 @@
             <input id="search_submit" type="submit" value="Search" />
           </td>
         </tr>
+       <% if SKIN.upcase == 'MESA' %>
+       <tr>
+         <td colspan='2' class="yui3-skin-sam" style="padding:0">
+
+            <div id="fuz_control_keyword" class="fuz_control_keyword " >
+
+            </div>
+           <div id="labels_fuz_control_keyword" style="width:455px;vertical-align:top;position:relative;top:-11px">
+           <span style="float:left;vertical-align:top;padding-left:90px;color: gray;">Fuzzy</span>
+           <span style="float:right;vertical-align:top;padding-right:90px;color: gray;">Exact</span>
+           </div>
+           <% if @kfval %>
+               <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" <%=  "value='#{@kfval}'" %> />
+           <% else %>
+               <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value='1'  />
+           <%end%>
+         </td>
+       </tr>
+       <% end %>
 		<tr><td colspan='3'><div class="search_help_icon">
 					<a href="/help.html" class="tooltip"><img height="18" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" /><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
+        <% if SKIN.upcase == 'MESA' %>
+           <tr>
+             <td></td>
+             <td class="yui3-skin-sam" style="padding:0">
+               <div id="fuz_control_title" class="fuz_control_title" >
+                <%# slider gets put in here %>
+               </div>
+               <div id="labels_fuz_control_title" style="width:355px;vertical-align:top;position:relative;top:-13px">
+                 <span style="float:left;vertical-align:top;padding-left:45px;color: gray;">Fuzzy</span>
+                 <span style="float:right;vertical-align:top;padding-right:35px;color: gray;">Exact</span>
+               </div>
+               <% if @kfval %>
+                   <input id="search_title_fuz" name="search_title_fuz" type="hidden" <%=  "value='#{@tfval}'" %> />
+               <% else %>
+                   <input id="search_title_fuz" name="search_title_fuz" type="hidden" value='1'  />
+               <%end%>
+             </td>
+           </tr>
+        <% end %>
         <% if SKIN.upcase == 'MESA' %>
             <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['search_author','Author'],
                                                                                                       ['search_editor','Editor'],
@@ -105,5 +144,87 @@
         on_role_type_change(null, sr[0]);
     }
   }
-  YAHOO.util.Event.onDOMReady(add_search_field_events);
+
+  function updateInputValue(e)
+  {
+      if (e && e.newVal) {
+          this.set('value', e.newVal / 1000);
+      }
+  }
+
+  function snapToValue(e)
+  {
+      var value = this.get('value');
+      value = Math.round(value / 100) * 100;
+      this.set('value', value);
+      this.syncUI();
+      //console.log('debug')
+  }
+
+  function delaySnapToValue(e)
+  {
+      var me = this;
+      setTimeout( function() {snapToValue.call(me, e)}, 100);
+  }
+
+  function add_fuz_sliders()
+  {
+      YUI().use('slider', function(Y) {
+          var slider = new Y.Slider({
+              length : 255,
+              thumbUrl : '/images/collex/thumb-x.png',
+              min : 200,
+              max : 1000,
+              value : 1000,
+              majorStep: 100,
+              minorStep: 100
+          });
+          slider.render("#fuz_control_keyword");
+          var input = Y.one('#search_keyword_fuz');
+          var input_value = parseFloat(input.get('value'));
+          if (!isNaN(input_value))
+          {
+              slider.set('value', input_value * 1000);
+          }
+          slider.on('valueChange', updateInputValue, input);
+          slider.syncUI();
+
+          slider.on('slideEnd', snapToValue, slider);
+          slider.on('railMouseDown', delaySnapToValue, slider);
+
+          slider = new Y.Slider({
+              length : 255,
+              thumbUrl : '/images/collex/thumb-x.png',
+              min : 200,
+              max : 1000,
+              value : 1000,
+              majorStep: 100,
+              minorStep: 100
+          });
+          slider.render("#fuz_control_title");
+          var input = Y.one('#search_title_fuz');
+          var input_value = parseFloat(input.get('value'));
+          if (!isNaN(input_value))
+          {
+              slider.set('value', input_value * 1000);
+          }
+          slider.on('valueChange', updateInputValue, input);
+          slider.syncUI();
+
+          slider.on('slideEnd', snapToValue, slider);
+          slider.on('railMouseDown', delaySnapToValue, slider);
+
+          //slider._dd.con.set('tickX', 28);
+
+      });
+  }
+
+  function init_search_page()
+  {
+      add_search_field_events();
+      add_fuz_sliders();
+  }
+
+  YAHOO.util.Event.onDOMReady(init_search_page);
+
 </script>

@@ -56,11 +56,14 @@ class SearchController < ApplicationController
         # We were called from the home page, so make sure there aren't any constraints laying around
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
+        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
 
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
         parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
+        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
         add_title_constraint(params[:search_title], false) if params[:search_title] != ""
+        add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
         add_author_constraint(params[:search_author], false) if params[:search_author] != ""
         add_editor_constraint(params[:search_editor], false) if params[:search_editor] != ""
         add_owner_constraint(params[:search_owner], false) if params[:search_owner] != ""
@@ -72,7 +75,9 @@ class SearchController < ApplicationController
         # single input box
         invert = (params[:search_not] == "NOT")
         parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
+        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
         add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
+        add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
         add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
         add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
         add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
@@ -241,12 +246,26 @@ class SearchController < ApplicationController
          session[:constraints] << ExpressionConstraint.new(:value => expression, :inverted => invert)
        end
    end
+
+   def add_keyword_fuz_constraint(phrase_str, invert)
+     expression = phrase_str
+     if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
+       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_q', :value => phrase_str, :inverted => invert)
+     end
+   end
  
    def add_title_constraint(phrase_str, invert)
        expression = phrase_str
        if expression and expression.strip.size > 0 && session[:constraints]
          session[:constraints] << FacetConstraint.new(:fieldx => 'title', :value => phrase_str, :inverted => invert)
        end
+   end
+
+   def add_title_fuz_constraint(phrase_str, invert)
+     expression = phrase_str
+     if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
+       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_t', :value => phrase_str, :inverted => invert)
+     end
    end
  
   def add_date_constraint(phrase_str, invert)
