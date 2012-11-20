@@ -88,7 +88,8 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		return true;
 
 	if (input_year) {
-		var year_val = input_year.value.trim().replace(/to/i, 'TO').replace(/\s+/, ' ');
+        input_year.value = input_year.value.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
+		var year_val = input_year.value.trim();
 		if (year_val === "")
 			return true;
 
