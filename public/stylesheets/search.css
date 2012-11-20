@@ -74,6 +74,26 @@
     top:-5px
 }
 
+.query_keyword_fuzziness {
+    display:inline-block;
+    position: relative;
+    top: 0px;
+}
+
+.query_title_fuzziness {
+    display:inline-block;
+    position: relative;
+    top: 0px;
+}
+
+.browse_slider_label {
+    font-size: .9em;
+    position: relative;
+    top: -3px;
+    padding: 5px;
+    color: gray;
+}
+
 .new_search {
 	width:97px;
 	height:39px;
@@ -335,6 +355,16 @@ a.tooltip:hover span.search_help_tooltip {
 	left:-11em;
 }
 
+span.tooltip:hover span.search_help_tooltip {
+    width:22em;
+    left:-11em;
+}
+
+span.slider_tooltip {
+    position: relative;
+    top: -14px;
+}
+
 .search_error_message {
 	color: red;
 	width: 800px;
@@ -348,15 +378,30 @@ a.tooltip:hover span.search_help_tooltip {
 
 /* The rail and end cap images are shared in a sprite.
  * Include the id of the slider container to increase css specificity */
-.yui3-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail,
-.yui3-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail-cap-left,
-.yui3-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail-cap-right {
-    background-image: url("/images/collex/rail-x-25-lines.png") !important;
+.yui3-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail {
+    background-image: url("/images/collex/rail-x-270-lines-numbered.png") !important;
+    height: 40px;
 }
 /* The rail and end cap images are shared in a sprite.
  * Include the id of the slider container to increase css specificity */
-.yui3-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail,
-.yui3-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail-cap-left,
-.yui3-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail-cap-right {
-    background-image: url("/images/collex/rail-x-25-lines.png") !important;
+.yui3-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail {
+    background-image: url("/images/collex/rail-x-270-lines-numbered.png") !important;
+    height: 40px;
 }
+
+/* The rail and end cap images are shared in a sprite.
+ * Include the id of the slider container to increase css specificity */
+.yui3-skin-sam .query_title_fuzziness .yui3-slider-x .yui3-slider-rail {
+    background-image: url("/images/collex/rail-x-270-lines-numbered.png") !important;
+    height: 45px;
+}
+
+/* The rail and end cap images are shared in a sprite.
+ * Include the id of the slider container to increase css specificity */
+.yui3-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail {
+    background-image: url("/images/collex/rail-x-270-lines-numbered.png") !important;
+    height: 45px;
+}
+
+/* .yui3-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail-cap-left,
+ * .yui3-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail-cap-right */

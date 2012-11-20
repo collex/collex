@@ -473,6 +473,12 @@ module SearchHelper
     elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'r_own'
       ret[:title] ="Owner"
       ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'fuz_q'
+      ret[:title] ="Keyword Fuzziness"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'fuz_t'
+      ret[:title] ="Title Fuzziness"
+      ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint)
       ret[:title] ="Resource"
       ret[:value] = value_display
