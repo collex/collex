@@ -613,7 +613,7 @@ class Catalog
 				elsif constraint['fieldx'] == 'fuz_q'
           fuz_q = format_constraint(fuz_q, constraint, 'fuz_q')   # TODO: Strip non-digits
         elsif constraint['fieldx'] == 'fuz_t'
-          fuz_q = format_constraint(fuz_t, constraint, 'fuz_t')   # TODO: Strip non-digits
+          fuz_t = format_constraint(fuz_t, constraint, 'fuz_t')   # TODO: Strip non-digits
         elsif constraint['fieldx'] == 'year'
           y = format_constraint(y, constraint, 'y')
 				else
