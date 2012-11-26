@@ -24,17 +24,20 @@ class Catalog
 	@@carousel = nil
 	@@resource_tree = nil
 	@@archives = nil
+  @@languages = nil
 
-	def self.set_cached_data(carousel, resource_tree, archives)
+	def self.set_cached_data(carousel, resource_tree, archives, languages)
 		@@carousel = carousel
 		@@resource_tree = resource_tree
 		@@archives = archives
+    @@languages = languages
 	end
 
 	def self.reset_cached_data()
 		@@carousel = nil
 		@@resource_tree = nil
 		@@archives = nil
+    @@languages = nil
 	end
 
 	def self.log_catalog(verb, str)
@@ -185,7 +188,14 @@ class Catalog
 			get_resource_list()
 		end
 		return @@carousel
-	end
+  end
+
+  def get_languages()
+    if @@languages == nil
+      get_language_list()
+    end
+    return @@languages
+  end
 
 	def get_archives()
 		if @@archives == nil
@@ -224,7 +234,42 @@ class Catalog
 			get_resource_list()
 		end
 		return @@resource_tree
-	end
+  end
+
+  def get_language_list()
+    # Right now we're ignoring any languages that aren't ISO 639.2
+    response = call_solr("search/languages", :get)
+    @@languages = []
+    if response['languages'] and response['languages']['language']
+      response['languages']['language'].each { |language|
+        iso_lang = nil
+        if language['name'] && language['name'].length > 3
+          iso_lang = @@languages.find { |l| l.english_name == language['name']}
+          if iso_lang.nil?
+            iso_lang = IsoLanguage.find_by_english_name(language['name'])
+            @@languages.push(iso_lang) if not iso_lang.nil?
+          end
+        elsif language['name'] && language['name'].length == 3
+          iso_lang = @@languages.find { |l| l.alpha3 == language['name']}
+          if iso_lang.nil?
+            iso_lang = IsoLanguage.find_by_alpha3(language['name'])
+            @@languages.push(iso_lang) if not iso_lang.nil?
+          end
+        elsif language['name']
+          iso_lang = @@languages.find { |l| l.alpha2 == language['name']}
+          if iso_lang.nil?
+            iso_lang = IsoLanguage.find_by_alpha2(language['name'])
+            @@languages.push(iso_lang) if not iso_lang.nil?
+          end
+        end
+
+        if language['occurrences'] and iso_lang
+          iso_lang['occurrences'] = iso_lang['occurrences'].to_i + language['occurrences'].to_i
+        end
+      }
+    end
+    @@languages.sort! { |r,l| r['english_name'] <=> l['english_name']}
+  end
 
 	def get_resource_list()
 		response = call_solr("archives", :get)
@@ -581,6 +626,7 @@ class Catalog
 		o = ""
     r_art = ""
     r_own = ""
+    lang = ""
 
 		constraints.each { |constraint|
 			if constraint['type'] == 'FederationConstraint'
@@ -616,6 +662,8 @@ class Catalog
           fuz_t = format_constraint(fuz_t, constraint, 'fuz_t')   # TODO: Strip non-digits
         elsif constraint['fieldx'] == 'year'
           y = format_constraint(y, constraint, 'y')
+        elsif constraint['fieldx'] == 'language'
+          lang = format_constraint(lang, constraint, 'lang')
 				else
 					raise Catalog::Error.new("Unhandled constraint")
 				end
@@ -638,6 +686,7 @@ class Catalog
     params.push(r_own) if r_own.length > 0
     params.push(fuz_q) if fuz_q.length > 0
     params.push(fuz_t) if fuz_q.length > 0
+    params.push(lang) if lang.length > 0
 
 		return params
 	end

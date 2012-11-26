@@ -49,13 +49,15 @@
     <% if SKIN.downcase == "mesa" -%>
       <% if has_keyword_search -%>
           <tr class="yui3-skin-sam">
-            <td class="query_type">Term Fuzziness</td>
+            <td class="query_type">Search Term Fuzziness &nbsp;</td>
             <td>
-              <span class="browse_slider_label">Fuzzy</span>
-              <% fuzzy_keyword_value = fuzzy_keyword_constraint.nil? ? '1' : fuzzy_keyword_constraint[:constraint][:value] %>
-              <div id='query_keyword_fuzziness' class='query_keyword_fuzziness' value='<%= fuzzy_keyword_value %>'></div>
-              <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value="<%= fuzzy_keyword_value %>" />
-              <span class="browse_slider_label">Exact</span>
+              <div style="width:340px">
+                  <span class="browse_slider_label">Fuzzy</span>
+                  <% fuzzy_keyword_value = fuzzy_keyword_constraint.nil? ? '1' : fuzzy_keyword_constraint[:constraint][:value] %>
+                  <div id='query_keyword_fuzziness' class='query_keyword_fuzziness' value='<%= fuzzy_keyword_value %>'></div>
+                  <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value="<%= fuzzy_keyword_value %>" />
+                  <span class="browse_slider_label">Exact</span>
+              </div>
             </td>
             <td></td>
             <td class="query_remove"><input id="term_fuzziness_submit" type="submit" value="Change" /></td>
@@ -65,11 +67,13 @@
           <tr class="yui3-skin-sam">
             <td class="query_type">Title Fuzziness</td>
             <td>
-              <span class="browse_slider_label">Fuzzy</span>
-              <% fuzzy_title_value = fuzzy_title_constraint.nil? ? '1' : fuzzy_title_constraint[:constraint][:value] %>
-              <div id='query_title_fuzziness' class='query_title_fuzziness' value='<%= fuzzy_title_value %>'></div>
-              <input id="search_title_fuz" name="search_title_fuz" type="hidden" value="<%= fuzzy_title_value %>" />
-              <span class="browse_slider_label">Exact</span>
+              <div style="width:340px">
+                  <span class="browse_slider_label">Fuzzy</span>
+                  <% fuzzy_title_value = fuzzy_title_constraint.nil? ? '1' : fuzzy_title_constraint[:constraint][:value] %>
+                  <div id='query_title_fuzziness' class='query_title_fuzziness' value='<%= fuzzy_title_value %>'></div>
+                  <input id="search_title_fuz" name="search_title_fuz" type="hidden" value="<%= fuzzy_title_value %>" />
+                  <span class="browse_slider_label">Exact</span>
+              </div>
             </td>
             <td></td>
             <td class="query_remove"><input id="title_fuzziness_submit" type="submit"  value="Change" /></td>
@@ -86,9 +90,14 @@
               <option>Publisher</option>
               <option>Artist</option>
               <option>Owner</option>
-              <option>Year (YYYY)</option></select></td>
+              <option>Year (YYYY)</option>
+              <% if SKIN.downcase == "mesa" -%>
+                  <option>Language</option>
+              <% end -%>
+            </select></td>
 		<td class="query_term">
 		  <%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%>
+          <%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new()] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language', :style => "display:none;") %>
 		</td>
 		<td class="query_and-not"><select id='search_not' name='search_not' class="query_and-not_select"><option>AND</option><option>NOT</option></select>
 		</td>
@@ -116,11 +125,34 @@
   </script>
 
 <script type="text/javascript" charset="utf-8">
-
-    function validateAddConstraintForm(a, b, c)
+    function on_search_type_change(event, el)
     {
-        console.log(a)
+        var si = el.options.selectedIndex;
+        var type = el.options[si].value;
+        if (type == 'Language')
+        {
+            $('search_phrase').hide();
+            $('search_language').show();
+        } else {
+            $('search_phrase').show();
+            $('search_language').hide();
+        }
     }
+
+    function add_search_type_events()
+    {
+        var st = $$('#search_type');
+        if (st.length > 0)
+        {
+            st[0].on('change', on_search_type_change);
+            on_search_type_change(null, st[0]);
+        }
+    }
+
+    YAHOO.util.Event.onDOMReady(add_search_type_events);
+</script>
+
+<script type="text/javascript" charset="utf-8">
 
     function updateInputValue(e)
     {

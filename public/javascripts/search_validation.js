@@ -54,7 +54,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	// Be sure the user has typed something into at least one field.
 	if (input_year) {
 		var form = input_year.up('form');
-		var allInputs = form.select('input[type=text]');
+		var allInputs = form.select('input[type=text]').concat(form.select('select[class=search_language]'));
 		var bFound = false;
 		allInputs.each(function(el) {
 			if (el.value.length > 0)

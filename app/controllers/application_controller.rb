@@ -41,7 +41,8 @@ class ApplicationController < ActionController::Base
 		session[:archives] = nil
 		session[:carousel] = nil
 		session[:resource_tree] = nil
-		Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives])
+    session[:languages] = nil
+		Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives], session[:languages])
 		session_create()
 	end
 
@@ -67,8 +68,9 @@ class ApplicationController < ActionController::Base
 				session[:archives] = solr.get_archives()
 				session[:carousel] = solr.get_carousel()
 				session[:resource_tree] = solr.get_resource_tree()
+        session[:languages] = solr.get_languages()
 			else
-				Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives])
+				Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives], session[:languages])
 			end
 		rescue Catalog::Error => e
 			logger.error "****\n**** Catalog Error: #{e.to_s} ApplicationController:session_create\n****"

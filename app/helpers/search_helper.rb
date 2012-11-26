@@ -467,6 +467,9 @@ module SearchHelper
 #    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'federation'
 #      ret[:title] = "Federation"
 #      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'language'
+      ret[:title] = "Language"
+      ret[:value] = value_display.split(/\|\|/)[0]
     elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'r_art'
       ret[:title] ="Artist"
       ret[:value] = value_display

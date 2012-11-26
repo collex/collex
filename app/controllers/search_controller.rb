@@ -70,6 +70,7 @@ class SearchController < ApplicationController
         add_artist_constraint(params[:search_artist], false) if params[:search_artist] != ""
         add_publisher_constraint(params[:search_publisher], false) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year], false) if params[:search_year] != ""
+        add_language_constraint(params[:search_language], false) if params[:search_language] != ""
 
         add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
         add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
@@ -86,6 +87,7 @@ class SearchController < ApplicationController
           add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
           add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
           add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
+          add_language_constraint(params[:search_language], invert) if params[:search_type] == "Language"
         end
 
         keyword_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_q'};
@@ -341,6 +343,34 @@ class SearchController < ApplicationController
        session[:constraints] << FacetConstraint.new(:fieldx => 'publisher', :value => phrase_str, :inverted => invert)
     end
   end
+
+   def add_language_constraint(phrase_str, invert)
+     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+       iso_lang = IsoLanguage.find_by_alpha3(phrase_str)
+       iso_lang = IsoLanguage.find_by_english_name(phrase_str) if iso_lang.nil?
+       iso_lang = IsoLanguage.find_by_alpha2(phrase_str) if iso_lang.nil?
+       iso_lang = IsoLanguage.all().find{ |lang| lang.alpha3 == phrase_str.downcase } if iso_lang.nil? and phrase_str.length == 3
+       iso_lang = IsoLanguage.all().find{ |lang| lang.alpha2 == phrase_str.downcase } if iso_lang.nil? and phrase_str.length == 2
+       iso_lang = IsoLanguage.all().find{ |lang| lang.english_name.downcase.match(Regexp.new(phrase_str.downcase + ';')) } if iso_lang.nil?
+       iso_lang = IsoLanguage.all().find{ |lang| lang.english_name.downcase.match(Regexp.new(phrase_str.downcase + '\s*$')) } if iso_lang.nil?
+       iso_lang = IsoLanguage.all().find{ |lang| lang.english_name.downcase.match(Regexp.new(phrase_str.downcase)) } if iso_lang.nil?
+       if not iso_lang.nil?
+         if !iso_lang.english_name.nil?
+          phrase_str = iso_lang.english_name.split(/;/).join(' || ')
+         end
+         if !iso_lang.alpha3.nil?
+           phrase_str += " || " if !phrase_str.nil? and phrase_str.strip.length > 0
+           phrase_str += iso_lang.alpha3
+         end
+         if !iso_lang.alpha2.nil?
+           phrase_str += " || " if !phrase_str.nil? and phrase_str.strip.length > 0
+           phrase_str += iso_lang.alpha2
+         end
+
+       end
+       session[:constraints] << FacetConstraint.new(:fieldx => 'language', :value => phrase_str, :inverted => invert)
+     end
+   end
 
   def rescue_search_error(e)
      error_message = e.message
