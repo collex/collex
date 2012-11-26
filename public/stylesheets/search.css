@@ -254,6 +254,7 @@ div.auto_complete {
     width: 300px !important;
     font-size:.9em;
 	text-align: left;
+    z-index: 1000 !important;
 }
 
 div.auto_complete ul {
