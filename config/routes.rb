@@ -191,7 +191,10 @@ Collex::Application.routes.draw do
 			resources :documents
 			resources :lines
 			resources :document_users
-		end
+    end
+
+    get "typewright" => 'typewright/documents#index'
+
 	end
 
 	get "/login/logout" => "login#logout"
