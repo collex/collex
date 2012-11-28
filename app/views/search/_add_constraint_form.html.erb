@@ -110,14 +110,6 @@
              <td>Language:</td>
              <td><%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new()] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language' ) %></td>
            </tr>
-        <% else %>
-           <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>
-           <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> /></td></tr>
-           <!--
-           <tr><td>Artist:</td><td><input name="search_artist" id="search_artist" type="text" class="search_entry_box" <%= "value='#{@arphrs}'" if @arphrs %> /></td></tr>
-           <tr><td>Owner:</td><td><input name="search_owner" id="search_owner" type="text" class="search_entry_box" <%= "value='#{@ophrs}'" if @ophrs %> /></td></tr>
-           -->
-           <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
         <% end %>
         <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
         <tr><td colspan="3" style="text-align: right;"><input id="search_submit2" type="submit" value="Search" /></td></tr>
