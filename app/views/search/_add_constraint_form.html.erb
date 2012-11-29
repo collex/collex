@@ -177,7 +177,6 @@
       value = Math.round(value / 100) * 100;
       this.set('value', value);
       this.syncUI();
-      //console.log('debug')
   }
 
   function delaySnapToValue(e)
@@ -189,53 +188,56 @@
   function add_fuz_sliders()
   {
       YUI().use('slider', function(Y) {
-          var slider = new Y.Slider({
-              length : 256,
-              height : 40,
-              thumbUrl : '/images/collex/thumb-x.png',
-              min : 200,
-              max : 1000,
-              value : 1000,
-              majorStep: 100,
-              minorStep: 100
-          });
-          slider.render("#fuz_control_keyword");
-          var input = Y.one('#search_keyword_fuz');
-          var input_value = parseFloat(input.get('value'));
-          if (!isNaN(input_value))
-          {
-              slider.set('value', input_value * 1000);
+          if (Y.one("#fuz_control_keyword")) {
+              var slider = new Y.Slider({
+                  length : 256,
+                  height : 40,
+                  thumbUrl : '/images/collex/thumb-x.png',
+                  min : 200,
+                  max : 1000,
+                  value : 1000,
+                  majorStep: 100,
+                  minorStep: 100
+              });
+              slider.render("#fuz_control_keyword");
+              var input = Y.one('#search_keyword_fuz');
+              var input_value = parseFloat(input.get('value'));
+              if (!isNaN(input_value))
+              {
+                  slider.set('value', input_value * 1000);
+              }
+              slider.on('valueChange', updateInputValue, input);
+              slider.syncUI();
+
+              slider.on('slideEnd', snapToValue, slider);
+              slider.on('railMouseDown', delaySnapToValue, slider);
           }
-          slider.on('valueChange', updateInputValue, input);
-          slider.syncUI();
+          if (Y.one("#fuz_control_title")) {
+              slider = new Y.Slider({
+                  length : 256,
+                  height : 40,
+                  thumbUrl : '/images/collex/thumb-x.png',
+                  min : 200,
+                  max : 1000,
+                  value : 1000,
+                  majorStep: 100,
+                  minorStep: 100
+              });
+              slider.render("#fuz_control_title");
+              var input = Y.one('#search_title_fuz');
+              var input_value = parseFloat(input.get('value'));
+              if (!isNaN(input_value))
+              {
+                  slider.set('value', input_value * 1000);
+              }
+              slider.on('valueChange', updateInputValue, input);
+              slider.syncUI();
 
-          slider.on('slideEnd', snapToValue, slider);
-          slider.on('railMouseDown', delaySnapToValue, slider);
+              slider.on('slideEnd', snapToValue, slider);
+              slider.on('railMouseDown', delaySnapToValue, slider);
 
-          slider = new Y.Slider({
-              length : 256,
-              height : 40,
-              thumbUrl : '/images/collex/thumb-x.png',
-              min : 200,
-              max : 1000,
-              value : 1000,
-              majorStep: 100,
-              minorStep: 100
-          });
-          slider.render("#fuz_control_title");
-          var input = Y.one('#search_title_fuz');
-          var input_value = parseFloat(input.get('value'));
-          if (!isNaN(input_value))
-          {
-              slider.set('value', input_value * 1000);
+              //slider._dd.con.set('tickX', 28);
           }
-          slider.on('valueChange', updateInputValue, input);
-          slider.syncUI();
-
-          slider.on('slideEnd', snapToValue, slider);
-          slider.on('railMouseDown', delaySnapToValue, slider);
-
-          //slider._dd.con.set('tickX', 28);
 
       });
   }
