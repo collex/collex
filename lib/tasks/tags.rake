@@ -18,6 +18,8 @@ namespace :tags do
 
     tag_info = {'name' => tag_name}
 
+    start_time = Time.now()
+
     # find all objects with genre:genre
     solr = Catalog.factory_create(false)
     constraints = []
@@ -46,6 +48,8 @@ namespace :tags do
       end
     end
     puts "Total objects tagged with '#{tag_name}': #{total_tagged}"
+
+    finish_line(start_time)
   end
 
   desc "Covert orphaned genres to a tags"
@@ -66,11 +70,15 @@ namespace :tags do
         #'Science'
     ]
 
+    start_time = Time.now()
+
     genres.each do |genre|
       Rake::Task["tags:create_tag_from_genre"].reenable
       ENV['genre'] = "#{genre}"
       Rake::Task["tags:create_tag_from_genre"].invoke
     end
+
+    finish_line(start_time)
 
   end
 
