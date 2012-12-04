@@ -123,8 +123,8 @@ class Catalog
 	def search(constraints, start, max, sort_by, sort_ascending)
 		sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
 		hl = "hl=on"
-		start = "start=#{start}"
-		max = "max=#{max}"
+		start = start ? "start=#{start}" : ""
+		max = max ? "max=#{max}" : ""
 
 		params = parse_constraints(constraints)
 		params.push(sort) if sort.length > 0
