@@ -355,9 +355,11 @@ class CachedResource < ActiveRecord::Base
     return { :results => [], :total => 0 } if tag == nil
     
     # walk through all assignments that match this tag ID
-	retrieved_list = {}
+	  retrieved_list = {}
     items = []
     assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
+    total = assigns.count
+    assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
     assigns.each do | assign |
 		if retrieved_list[assign.cached_resource_id].blank?
 			hit = get_hit_from_resource_id( assign.cached_resource_id )
@@ -368,7 +370,8 @@ class CachedResource < ActiveRecord::Base
 		
 		page_results = {}
 		page_results[:results] = items
-    page_results[:total] = items.length 
+    #page_results[:total] = items.length
+    page_results[:total] = total
     
     if sort_field
       page_results[:results] = sort_algorithm(page_results[:results], sort_field)
