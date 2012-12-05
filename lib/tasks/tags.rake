@@ -24,6 +24,7 @@ namespace :tags do
     solr = Catalog.factory_create(false)
     constraints = []
     constraints << FacetConstraint.new( :fieldx => 'genre', :value => genre, :inverted => false)
+    constraints << FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false)
     start = 0
     max = 1000
     results = solr.search(constraints, start, max, nil, nil)
