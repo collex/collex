@@ -74,6 +74,7 @@ namespace :tags do
     username=ENV['username']
     if username.nil?
       $stderr.puts "Usage rake tags:convert_orphaned_genres_to_tags username=user"
+      return
     end
 
     start_time = Time.now()
