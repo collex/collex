@@ -1,17 +1,17 @@
 namespace :tags do
 
-  desc "Covert a genre to a tag (genre=genre_name)"
+  desc "Covert a genre to a tag (genre=genre_name username=name)"
   task :create_tag_from_genre => :environment do
     genre = ENV['genre']
     tag_name = ENV['genre']
     if tag_name.nil? || genre.nil?
-      $stderr.puts "Usage:  rake tags:create_tag_from_genre genre=genre_name"
+      $stderr.puts "Usage:  rake tags:create_tag_from_genre genre=genre_name username=name"
       return
     end
 
-    username = 'admin'
-    user = User.find_by_username('admin')
-    if user.nil?
+    username = ENV['username']
+    user = User.find_by_username(username) if not username.nil?
+    if username.nil? || user.nil?
       $stderr.puts "User '#{username}' not found."
       return
     end
@@ -70,6 +70,11 @@ namespace :tags do
         'Politics',
         #'Science'
     ]
+
+    username=ENV['username']
+    if username.nil?
+      $stderr.puts "Usage rake tags:convert_orphaned_genres_to_tags username=user"
+    end
 
     start_time = Time.now()
 
