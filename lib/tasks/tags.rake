@@ -25,6 +25,7 @@ namespace :tags do
     constraints = []
     constraints << FacetConstraint.new( :fieldx => 'genre', :value => genre, :inverted => false)
     constraints << FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false)
+    #constraints << FederationConstraint.new(:fieldx => 'federation', :value => 'NINES', :inverted => false)
     start = 0
     max = 1000
     results = solr.search(constraints, start, max, nil, nil)
@@ -37,6 +38,7 @@ namespace :tags do
         start += results['hits'].count
         results['hits'].each do |hit|
           if hit['uri']
+            hit['uri'].gsub!(/"/,'')     # Why are there quotes in the URI?!?
             Tag.add(user, hit['uri'], tag_info)
             total_tagged += 1
           end
