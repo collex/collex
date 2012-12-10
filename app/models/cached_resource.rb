@@ -379,6 +379,8 @@ class CachedResource < ActiveRecord::Base
       page_results[:results] = page_results[:results].reverse() if direction == 'Descending'
     end
 
+    # trim the array before passing.
+    page_results[:results] = page_results[:results][(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
     return page_results
   end
   
