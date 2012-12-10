@@ -357,15 +357,16 @@ class CachedResource < ActiveRecord::Base
     # walk through all assignments that match this tag ID
 	  retrieved_list = {}
     items = []
-    assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
+    assigns = tag.tagassigns
+    #assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
     total = assigns.count
-    assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
+    #assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
     assigns.each do | assign |
-		if retrieved_list[assign.cached_resource_id].blank?
-			hit = get_hit_from_resource_id( assign.cached_resource_id )
-			retrieved_list[assign.cached_resource_id] = true
-			items.insert(-1, hit) if hit != nil
-		end
+      if retrieved_list[assign.cached_resource_id].blank?
+        hit = get_hit_from_cached_resource( assign.cached_resource )
+        retrieved_list[assign.cached_resource_id] = true
+        items.insert(-1, hit) if hit != nil
+      end
     end
 		
 		page_results = {}
@@ -526,6 +527,29 @@ class CachedResource < ActiveRecord::Base
 		hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr']
 		hit['typewright'] = hit['typewright'][0] if hit['typewright']
 		return hit
-	end
+  end
+
+  def self.get_hit_from_cached_resource(cr)
+    hit = {}
+    return nil if cr.nil?
+    cr.cached_properties.each { |property|
+      hit[property.name] = [] if !hit[property.name]
+      if property.name != 'text' # make sure that full text never gets shown, even if it is mistakenly collected.
+        hit[property.name].insert(-1, property.value)
+      end
+    }
+    hit['uri'] = cr.uri
+    # some fields are not multivalued, so they shouldn't be arrays
+    hit['archive'] = hit['archive'][0] if hit['archive']
+    hit['freeculture'] = hit['freeculture'][0] if hit['freeculture']
+    hit['image'] = hit['image'][0] if hit['image']
+    hit['thumbnail'] = hit['thumbnail'][0] if hit['thumbnail']
+    hit['title'] = hit['title'][0] if hit['title']
+    hit['url'] = hit['url'][0] if hit['url']
+    hit['has_full_text'] = hit['has_full_text'][0] if hit['has_full_text']
+    hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr']
+    hit['typewright'] = hit['typewright'][0] if hit['typewright']
+    return hit
+  end
 
 end
