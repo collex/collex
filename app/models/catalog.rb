@@ -241,32 +241,34 @@ class Catalog
     response = call_solr("search/languages", :get)
     @@languages = []
     if response['languages'] and response['languages']['language']
-      response['languages']['language'].each { |language|
-        iso_lang = nil
-        if language['name'] && language['name'].length > 3
-          iso_lang = @@languages.find { |l| l.english_name == language['name']}
-          if iso_lang.nil?
-            iso_lang = IsoLanguage.find_by_english_name(language['name'])
-            @@languages.push(iso_lang) if not iso_lang.nil?
+      if response['languages']['language'].class == Array
+        response['languages']['language'].each { |language|
+          iso_lang = nil
+          if language['name'] && language['name'].length > 3
+            iso_lang = @@languages.find { |l| l.english_name == language['name']}
+            if iso_lang.nil?
+              iso_lang = IsoLanguage.find_by_english_name(language['name'])
+              @@languages.push(iso_lang) if not iso_lang.nil?
+            end
+          elsif language['name'] && language['name'].length == 3
+            iso_lang = @@languages.find { |l| l.alpha3 == language['name']}
+            if iso_lang.nil?
+              iso_lang = IsoLanguage.find_by_alpha3(language['name'])
+              @@languages.push(iso_lang) if not iso_lang.nil?
+            end
+          elsif language['name']
+            iso_lang = @@languages.find { |l| l.alpha2 == language['name']}
+            if iso_lang.nil?
+              iso_lang = IsoLanguage.find_by_alpha2(language['name'])
+              @@languages.push(iso_lang) if not iso_lang.nil?
+            end
           end
-        elsif language['name'] && language['name'].length == 3
-          iso_lang = @@languages.find { |l| l.alpha3 == language['name']}
-          if iso_lang.nil?
-            iso_lang = IsoLanguage.find_by_alpha3(language['name'])
-            @@languages.push(iso_lang) if not iso_lang.nil?
-          end
-        elsif language['name']
-          iso_lang = @@languages.find { |l| l.alpha2 == language['name']}
-          if iso_lang.nil?
-            iso_lang = IsoLanguage.find_by_alpha2(language['name'])
-            @@languages.push(iso_lang) if not iso_lang.nil?
-          end
-        end
 
-        if language['occurrences'] and iso_lang
-          iso_lang['occurrences'] = iso_lang['occurrences'].to_i + language['occurrences'].to_i
-        end
-      }
+          if language['occurrences'] and iso_lang
+            iso_lang['occurrences'] = iso_lang['occurrences'].to_i + language['occurrences'].to_i
+          end
+        }
+      end
     end
     @@languages.sort! { |r,l| r['english_name'] <=> l['english_name']}
   end
