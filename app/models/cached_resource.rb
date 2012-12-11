@@ -357,30 +357,29 @@ class CachedResource < ActiveRecord::Base
     # walk through all assignments that match this tag ID
 	  retrieved_list = {}
     items = []
-    assigns = tag.tagassigns
-    #assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
+    assigns = Tagassign.where(:tag_id => tag.id).select(:cached_resource_id).map{|ta| ta.cached_resource_id}
     total = assigns.count
-    #assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
+
+    if sort_field
+      # get sorted list of cached resource ids
+      assigns_sorted = Tagassign.joins(:cached_resource => :cached_properties).where('cached_properties.name' => sort_field, 'tagassigns.tag_id' => tag.id).select('tagassigns.cached_resource_id').order('cached_properties.value').map{|ta| ta.cached_resource_id}
+      assigns = assigns_sorted + (assigns - assigns_sorted)
+      assigns = assigns.reverse() if direction == 'Descending'
+    end
+
+    assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
     assigns.each do | assign |
-      if retrieved_list[assign.cached_resource_id].blank?
-        hit = get_hit_from_cached_resource( assign.cached_resource )
-        retrieved_list[assign.cached_resource_id] = true
+      if retrieved_list[assign].blank?
+        hit = get_hit_from_resource_id( assign )
+        retrieved_list[assign] = true
         items.insert(-1, hit) if hit != nil
       end
     end
 		
 		page_results = {}
 		page_results[:results] = items
-    #page_results[:total] = items.length
     page_results[:total] = total
-    
-    if sort_field
-      page_results[:results] = sort_algorithm(page_results[:results], sort_field)
-      page_results[:results] = page_results[:results].reverse() if direction == 'Descending'
-    end
 
-    # trim the array before passing.
-    page_results[:results] = page_results[:results][(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
     return page_results
   end
   
@@ -501,7 +500,8 @@ class CachedResource < ActiveRecord::Base
 				end
 			}
 			return results
-	end
+  end
+
 	public
 
 	def self.get_hit_from_resource_id(resource_id)
