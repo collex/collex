@@ -86,7 +86,7 @@
            </tr>
         <% end %>
         <% if SKIN.upcase == 'MESA' %>
-            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['disabled_search_input', '(Select role)'],
+            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['disabled_search_input', '(Select a role)'],
                                                                                                       ['search_author','Author'],
                                                                                                       ['search_editor','Editor'],
                                                                                                       ['search_artist','Artist'],
@@ -110,7 +110,7 @@
         <% if SKIN.upcase == 'MESA' %>
            <tr>
              <td>Language:</td>
-             <td><%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new(:english_name => "(Select language)")] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language' ) %></td>
+             <td><%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new(:english_name => "(Select a language)")] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language' ) %></td>
            </tr>
         <% end %>
         <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
