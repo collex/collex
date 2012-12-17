@@ -86,11 +86,13 @@
            </tr>
         <% end %>
         <% if SKIN.upcase == 'MESA' %>
-            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['search_author','Author'],
+            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['disabled_search_input', '(Select role)'],
+                                                                                                      ['search_author','Author'],
                                                                                                       ['search_editor','Editor'],
                                                                                                       ['search_artist','Artist'],
                                                                                                       ['search_owner','Owner'],
                                                                                                       ['search_publisher','Publisher']], :first, :last), :class => 'search_role_type' ) %>
+           <input name="disabled_search_input" id="disabled_search_input" disabled="true" type="text" class="search_entry_box_short search_entry_hidden" value=""/>
            <input name="search_author" id="search_author" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@aphrs}'" if @aphrs %> />
            <input name="search_editor" id="search_editor" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ephrs}'" if @ephrs %> />
            <input name="search_artist" id="search_artist" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@arphrs}'" if @arphrs %> />
@@ -108,7 +110,7 @@
         <% if SKIN.upcase == 'MESA' %>
            <tr>
              <td>Language:</td>
-             <td><%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new()] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language' ) %></td>
+             <td><%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new(:english_name => "(Select language)")] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language' ) %></td>
            </tr>
         <% end %>
         <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
