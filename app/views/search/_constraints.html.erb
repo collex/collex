@@ -118,7 +118,13 @@
 		var type = This.value.toLowerCase();
 		type = type.gsub(" (yyyy)", '');
 		type = type.gsub(' ', '_');
-		search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
+        valid_types = [ 'search_keyword', 'search_phrase', 'search_term', 'title', 'editor', 'publisher', 'year' ]
+        if (valid_types.indexOf(type) > -1)
+        {
+		    search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
+        } else {
+            search_phrase_auto_completer.url = '/collex/auto_complete_for_search_phrase'
+        }
 //		if (This.value === 'Search Term') {
 //			$('search_notphrase').addClassName('hidden');
 //			$('search_phrase').removeClassName('hidden');
