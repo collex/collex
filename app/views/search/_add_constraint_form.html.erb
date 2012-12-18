@@ -92,7 +92,7 @@
                                                                                                       ['search_artist','Artist'],
                                                                                                       ['search_owner','Owner'],
                                                                                                       ['search_publisher','Publisher']], :first, :last), :class => 'search_role_type' ) %>
-           <input name="disabled_search_input" id="disabled_search_input" disabled="true" type="text" class="search_entry_box_short search_entry_hidden" value=""/>
+           <input name="disabled_search_input" id="disabled_search_input" disabled="true" type="text" class="search_entry_box_short search_entry_hidden" value="" placeholder="Please select a role."/>
            <input name="search_author" id="search_author" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@aphrs}'" if @aphrs %> />
            <input name="search_editor" id="search_editor" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ephrs}'" if @ephrs %> />
            <input name="search_artist" id="search_artist" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@arphrs}'" if @arphrs %> />
