@@ -123,6 +123,14 @@
               <input name="search_role_WDE" id="search_role_WDE" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@WDEsavedvalue}'" if @WDEsavedvalue %> />
               <input name="search_role_WDC" id="search_role_WDC" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@WDCsavedvalue}'" if @WDCsavedvalue %> />
 
+            </td>
+            <td>
+              <span class="tooltip advanced_search_field_tooltip">
+                   <img height="13" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" style="padding-left:5px"/>
+                   <span class="search_help_tooltip">
+                     <b>Search by Role</b><br />In addition to searching roles, you should also try your search in the key terms field above.
+                   </span>
+                 </span>
             </td></tr>
          <% else %>
            <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>

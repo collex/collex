@@ -366,6 +366,12 @@ span.slider_tooltip {
     top: -14px;
 }
 
+span.advanced_search_field_tooltip {
+    position: relative;
+    top: 1px;
+    left: -14px;
+}
+
 .search_error_message {
 	color: red;
 	width: 800px;
