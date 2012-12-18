@@ -482,6 +482,12 @@ module SearchHelper
     elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'fuz_t'
       ret[:title] ="Title Fuzziness"
       ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'doc_type'
+      ret[:title] ="Format"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'discipline'
+      ret[:title] ="Discipline"
+      ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint)
       ret[:title] ="Resource"
       ret[:value] = value_display
@@ -733,6 +739,26 @@ module SearchHelper
       html = "<tr><td class='limit_to_lvl1'>" + create_facet_link(label, action, { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+    return raw(html)
+  end
+
+  def format_selector( format_data )
+    if format_data[:exists]
+      html = "<tr class='limit_to_selected'><td>#{h format_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_format', {:value => format_data[:value]})
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h format_data[:value]}", "/search/add_facet", { :fieldx => 'doc_type', :value => format_data[:value]})
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(format_data[:count])}</td></tr>"
+    return raw(html)
+  end
+
+  def discipline_selector( discipline_data )
+    if discipline_data[:exists]
+      html = "<tr class='limit_to_selected'><td>#{h discipline_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_discipline', {:value => discipline_data[:value]})
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h discipline_data[:value]}", "/search/add_facet", { :fieldx => 'discipline', :value => discipline_data[:value]})
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(discipline_data[:count])}</td></tr>"
     return raw(html)
   end
 

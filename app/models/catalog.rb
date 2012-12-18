@@ -655,6 +655,8 @@ class Catalog
     r_art = ""
     r_own = ""
     lang = ""
+    discipline = ""
+    doc_type = ""
 
 		constraints.each { |constraint|
 			if constraint['type'] == 'FederationConstraint'
@@ -692,6 +694,10 @@ class Catalog
           y = format_constraint(y, constraint, 'y')
         elsif constraint['fieldx'] == 'language'
           lang = format_constraint(lang, constraint, 'lang')
+        elsif constraint['fieldx'] == 'doc_type'
+          doc_type = format_constraint(doc_type, constraint, 'doc_type')
+        elsif constraint['fieldx'] == 'discipline'
+          discipline = format_constraint(discipline, constraint, 'discipline')
 				else
 					raise Catalog::Error.new("Unhandled constraint")
 				end
@@ -715,6 +721,9 @@ class Catalog
     params.push(fuz_q) if fuz_q.length > 0
     params.push(fuz_t) if fuz_q.length > 0
     params.push(lang) if lang.length > 0
+    params.push(doc_type) if doc_type.length > 0
+    params.push(discipline) if discipline.length > 0
+
 
 		return params
 	end

@@ -456,6 +456,8 @@ class SearchController < ApplicationController
 			# We are sorting by reverse order so that "Peer-Reviewed" comes out on top. This will probably need to get more sophisticated.
 			@sites_forest = @sites_forest.sort { |a,b| b['name'] <=> a['name'] }
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
+      @format_data = marshall_format_data(@results["facets"]["doc_type"])
+      @discipline_data = marshall_discipline_data(@results["facets"]["discipline"])
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = 0
 			@freeculture_count = @results['facets']['freeculture']['true'] if @results && @results['facets'] && @results['facets']['freeculture'] && @results['facets']['freeculture']['true']
@@ -839,5 +841,33 @@ class SearchController < ApplicationController
       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
     }
   end
+
+   # take the format facet data and organize it for display
+   def marshall_format_data( unsorted_formats )
+     return [] unless unsorted_formats
+
+     # filter out unspecified formats facets
+     unsorted_formats = unsorted_formats.select {|value, count| value != '<unspecified>' }
+
+     sorted_formats = unsorted_formats.sort {|a,b| a[0] <=> b[0]}
+     sorted_formats.map { |pair|
+       existing_constraints = session[:constraints].select { |constraint| constraint[:fieldx] == "doc_type" and constraint[:value] == pair[0] }
+       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
+     }
+   end
+
+   # take the discipline facet data and organize it for display
+   def marshall_discipline_data( unsorted_discipline )
+     return [] unless unsorted_discipline
+
+     # filter out unspecified discipline facets
+     unsorted_discipline = unsorted_discipline.select {|value, count| value != '<unspecified>' }
+
+     sorted_discipline = unsorted_discipline.sort {|a,b| a[0] <=> b[0]}
+     sorted_discipline.map { |pair|
+       existing_constraints = session[:constraints].select { |constraint| constraint[:fieldx] == "discipline" and constraint[:value] == pair[0] }
+       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
+     }
+   end
   
 end
