@@ -55,7 +55,7 @@
        </tr>
        <% end %>
 		<tr><td colspan='3'><div class="search_help_icon">
-					<a href="/help.html" class="tooltip"><img height="18" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" /><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
+					<a href="/about/help/" class="tooltip"><img height="18" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" /><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
         <% if SKIN.upcase == 'MESA' %>
