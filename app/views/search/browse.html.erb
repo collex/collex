@@ -21,7 +21,7 @@
 <% current_page "Search" -%>
 
 <% if session[:use_test_index] == "true" -%>
-<div class="right_column_header">USING TEST INDEX</div>
+    <div class="right_column_header">USING TEST INDEX</div>
 <% end -%>
 <div class="inner_content_container">
 	<% if Rails.env == 'development' && @message != nil -%>

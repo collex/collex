@@ -20,6 +20,7 @@ class SearchController < ApplicationController
    before_filter :init_view_options
    
    def initialize
+
    end
    
    private
@@ -72,27 +73,63 @@ class SearchController < ApplicationController
         add_date_constraint(params[:search_year], false) if params[:search_year] != ""
         add_language_constraint(params[:search_language], false) if params[:search_language] != ""
 
+        # add the role_* constraints
+        params.each { |key, value|
+          if key.match(/search_role_/) and value != ""
+            role = key.sub(/search_/, '')
+            add_role_constraint(role, value, false)
+          end
+        }
+
         add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
         add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
+
 
       elsif params[:search]
         # single input box
         invert = (params[:search_not] == "NOT")
         if not params[:search][:phrase].strip.empty?
-          parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
-          add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
-          add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
-          add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
-          add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
-          add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
-          add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
-          add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
-          add_language_constraint(params[:search_language], invert) if params[:search_type] == "Language"
+          case params[:search_type]
+            when "Search Term"
+              parse_keyword_phrase(params[:search][:phrase], invert)
+            when "Title"
+              add_title_constraint(params[:search][:phrase], invert)
+            when "Author"
+              add_author_constraint(params[:search][:phrase], invert)
+            when "Editor"
+              add_editor_constraint(params[:search][:phrase], invert)
+            when "Owner"
+              add_owner_constraint(params[:search][:phrase], invert)
+            when "Artist"
+              add_artist_constraint(params[:search][:phrase], invert)
+            when "Publisher"
+              add_publisher_constraint(params[:search][:phrase], invert)
+            when "Year (YYYY)"
+              add_date_constraint(params[:search][:phrase], invert)
+            when "Language"
+              add_language_constraint(params[:search_language], invert)
+            else
+              role = Search.role_field_names.find{ |key, value| value[:display] == params[:search_type]}
+              if role
+                add_role_constraint(role[0], params[:search][:phrase], invert)
+              end
+          end
+          #parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
+          #add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
+          #add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
+          #add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
+          #add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
+          #add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
+          #add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
+          #add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
+          #add_language_constraint(params[:search_language], invert) if params[:search_type] == "Language"
         end
 
+        # see if the fuz_constraints are already present
         keyword_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_q'};
         title_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_t'};
 
+        # set or reset the fuz_constraints if needed
         if keyword_fuz_constraint.nil?
           add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
         else
@@ -338,6 +375,12 @@ class SearchController < ApplicationController
     end
   end
 
+   def add_role_constraint(role, phrase_str, invert)
+     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+       session[:constraints] << FacetConstraint.new(:fieldx => role, :value => phrase_str, :inverted => invert)
+     end
+   end
+
   def add_publisher_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
        session[:constraints] << FacetConstraint.new(:fieldx => 'publisher', :value => phrase_str, :inverted => invert)
@@ -458,6 +501,10 @@ class SearchController < ApplicationController
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
       @format_data = marshall_format_data(@results["facets"]["doc_type"])
       @discipline_data = marshall_discipline_data(@results["facets"]["discipline"])
+
+      @searchable_roles = @results['facets'].map { |k,v| (k.match(/role_/) and not v.empty?)  ? k : nil }.compact
+      @searchable_roles = @searchable_roles.map { |field| Search.role_field_names[field] ? [Search.role_field_names[field][:search_field], Search.role_field_names[field][:display]] : nil }.compact
+
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = 0
 			@freeculture_count = @results['facets']['freeculture']['true'] if @results && @results['facets'] && @results['facets']['freeculture'] && @results['facets']['freeculture']['true']

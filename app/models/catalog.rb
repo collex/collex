@@ -657,6 +657,9 @@ class Catalog
     lang = ""
     discipline = ""
     doc_type = ""
+    role = ""
+
+    params = []
 
 		constraints.each { |constraint|
 			if constraint['type'] == 'FederationConstraint'
@@ -698,6 +701,10 @@ class Catalog
           doc_type = format_constraint(doc_type, constraint, 'doc_type')
         elsif constraint['fieldx'] == 'discipline'
           discipline = format_constraint(discipline, constraint, 'discipline')
+        elsif constraint['fieldx'].match(/role_/)
+          role = format_constraint(role, constraint, constraint['fieldx'])    # fieldx is also the url param for role_*
+          params.push(role) if role.length > 0
+          role = ''
 				else
 					raise Catalog::Error.new("Unhandled constraint")
 				end
@@ -705,7 +712,7 @@ class Catalog
 				raise Catalog::Error.new("Unhandled constraint")
 			end
 		}
-		params = []
+
 		params.push(q) if q.length > 0
 		params.push(t) if t.length > 0
 		params.push(aut) if aut.length > 0
@@ -723,7 +730,6 @@ class Catalog
     params.push(lang) if lang.length > 0
     params.push(doc_type) if doc_type.length > 0
     params.push(discipline) if discipline.length > 0
-
 
 		return params
 	end

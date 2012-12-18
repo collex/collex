@@ -85,14 +85,19 @@
 			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'>
               <option>Search Term</option>
               <option>Title</option>
-              <option>Author</option>
-              <option>Editor</option>
-              <option>Publisher</option>
-              <option>Artist</option>
-              <option>Owner</option>
-              <option>Year (YYYY)</option>
               <% if SKIN.downcase == "mesa" -%>
                   <option>Language</option>
+                  <option>Year (YYYY)</option>
+                  <% @searchable_roles.each do |role| %>
+                    <option><%= role[1] %></option>
+                  <% end %>
+              <% else %>
+                  <option>Author</option>
+                  <option>Editor</option>
+                  <option>Publisher</option>
+                  <option>Artist</option>
+                  <option>Owner</option>
+                  <option>Year (YYYY)</option>
               <% end -%>
             </select></td>
 		<td class="query_term">

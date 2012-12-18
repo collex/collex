@@ -86,18 +86,44 @@
            </tr>
         <% end %>
         <% if SKIN.upcase == 'MESA' %>
-            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['disabled_search_input', '(Select a role)'],
-                                                                                                      ['search_author','Author'],
-                                                                                                      ['search_editor','Editor'],
-                                                                                                      ['search_artist','Artist'],
-                                                                                                      ['search_owner','Owner'],
-                                                                                                      ['search_publisher','Publisher']], :first, :last), :class => 'search_role_type' ) %>
+            <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['disabled_search_input', '(Select a role)'] ] + @searchable_roles, :first, :last), :class => 'search_role_type' ) %>
            <input name="disabled_search_input" id="disabled_search_input" disabled="true" type="text" class="search_entry_box_short search_entry_hidden" value="" placeholder="Please select a role."/>
            <input name="search_author" id="search_author" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@aphrs}'" if @aphrs %> />
            <input name="search_editor" id="search_editor" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ephrs}'" if @ephrs %> />
            <input name="search_artist" id="search_artist" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@arphrs}'" if @arphrs %> />
            <input name="search_owner" id="search_owner" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ophrs}'" if @ophrs %> />
-           <input name="search_publisher" id="search_publisher" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
+           <input name="search_publisher" id="search_publisher" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@pphrs}'" if @pphrs %> />
+              <input name="search_role_TRL" id="search_role_TRL" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@TRLsavedvalue}'" if @TRLsavedvalue %> />
+              <input name="search_role_ARC" id="search_role_ARC" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ARCsavedvalue}'" if @ARCsavedvalue %> />
+              <input name="search_role_BND" id="search_role_BND" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@BNDsavedvalue}'" if @BNDsavedvalue %> />
+              <input name="search_role_BKD" id="search_role_BKD" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@BKDsavedvalue}'" if @BKDsavedvalue %> />
+              <input name="search_role_BKP" id="search_role_BKP" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@BKPsavedvalue}'" if @BKPsavedvalue %> />
+              <input name="search_role_CLL" id="search_role_CLL" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@CLLsavedvalue}'" if @CLLsavedvalue %> />
+              <input name="search_role_CTG" id="search_role_CTG" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@CTGsavedvalue}'" if @CTGsavedvalue %> />
+              <input name="search_role_COL" id="search_role_COL" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@COLsavedvalue}'" if @COLsavedvalue %> />
+              <input name="search_role_CLR" id="search_role_CLR" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@CLRsavedvalue}'" if @CLRsavedvalue %> />
+              <input name="search_role_CWT" id="search_role_CWT" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@CWTsavedvalue}'" if @CWTsavedvalue %> />
+              <input name="search_role_COM" id="search_role_COM" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@COMsavedvalue}'" if @COMsavedvalue %> />
+              <input name="search_role_CMT" id="search_role_CMT" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@CMTsavedvalue}'" if @CMTsavedvalue %> />
+              <input name="search_role_CRE" id="search_role_CRE" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@CREsavedvalue}'" if @CREsavedvalue %> />
+              <input name="search_role_DUB" id="search_role_DUB" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@DUBsavedvalue}'" if @DUBsavedvalue %> />
+              <input name="search_role_FAC" id="search_role_FAC" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@FACsavedvalue}'" if @FACsavedvalue %> />
+              <input name="search_role_ILU" id="search_role_ILU" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ILUsavedvalue}'" if @ILUsavedvalue %> />
+              <input name="search_role_ILL" id="search_role_ILL" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ILLsavedvalue}'" if @ILLsavedvalue %> />
+              <input name="search_role_LTG" id="search_role_LTG" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@LTGsavedvalue}'" if @LTGsavedvalue %> />
+              <input name="search_role_PRT" id="search_role_PRT" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@PRTsavedvalue}'" if @PRTsavedvalue %> />
+              <input name="search_role_POP" id="search_role_POP" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@POPsavedvalue}'" if @POPsavedvalue %> />
+              <input name="search_role_PRM" id="search_role_PRM" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@PRMsavedvalue}'" if @PRMsavedvalue %> />
+              <input name="search_role_RPS" id="search_role_RPS" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@RPSsavedvalue}'" if @RPSsavedvalue %> />
+              <input name="search_role_RBR" id="search_role_RBR" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@RBRsavedvalue}'" if @RBRsavedvalue %> />
+              <input name="search_role_SCR" id="search_role_SCR" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@SCRsavedvalue}'" if @SCRsavedvalue %> />
+              <input name="search_role_SCL" id="search_role_SCL" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@SCLsavedvalue}'" if @SCLsavedvalue %> />
+              <input name="search_role_TYD" id="search_role_TYD" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@TYDsavedvalue}'" if @TYDsavedvalue %> />
+              <input name="search_role_TYG" id="search_role_TYG" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@TYGsavedvalue}'" if @TYGsavedvalue %> />
+              <input name="search_role_WDE" id="search_role_WDE" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@WDEsavedvalue}'" if @WDEsavedvalue %> />
+              <input name="search_role_WDC" id="search_role_WDC" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@WDCsavedvalue}'" if @WDCsavedvalue %> />
+
+            </td></tr>
          <% else %>
            <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>
            <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> /></td></tr>

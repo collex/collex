@@ -425,6 +425,7 @@ module SearchHelper
 	end
   
   def format_constraint(constraint)
+
     ret = {}
     value_display = constraint.value
     if constraint.fieldx =="archive"
@@ -487,6 +488,9 @@ module SearchHelper
       ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'discipline'
       ret[:title] ="Discipline"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx].match(/role_/) && Search.role_field_names[constraint[:fieldx]]
+      ret[:title] = Search.role_field_names[constraint[:fieldx]][:display]
       ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint)
       ret[:title] ="Resource"
