@@ -593,6 +593,26 @@ class SearchController < ApplicationController
     end
     redirect_to :action => 'browse', :phrs => params[:phrs]
   end
+
+   def remove_discipline
+     session[:name_of_search] = nil
+     for item in session[:constraints]
+       if item[:fieldx] == 'discipline' && item[:value] == params[:value]
+         session[:constraints].delete(item)
+       end
+     end
+     redirect_to :action => 'browse', :phrs => params[:phrs]
+   end
+
+   def remove_format
+     session[:name_of_search] = nil
+     for item in session[:constraints]
+       if item[:fieldx] == 'doc_type' && item[:value] == params[:value]
+         session[:constraints].delete(item)
+       end
+     end
+     redirect_to :action => 'browse', :phrs => params[:phrs]
+   end
   
    def remove_constraint
      session[:name_of_search] = nil
