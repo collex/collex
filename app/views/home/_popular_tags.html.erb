@@ -17,5 +17,28 @@
 %>
 <%# popular_tags params: array tags -%>
 <% tag_links = [] -%>
-<% tags.each {|tag| tag_links.push(link_to(format_tag_for_output(tag[0]), "/tag/results?tag=#{tag[0]}&view=tag", { :title => pluralize(tag[1], 'object'), :class => tag[2] ? 'nav_link tag_lvl1' : 'nav_link' })) } if tags -%>
+<%
+   if tags
+     tags.each {|tag|
+       tag_links.push(
+               #link_to(
+               #        format_tag_for_output(tag[0]),
+               #        "/tag/results?tag=#{tag[0]}&view=tag",
+               #        {
+               #                :title => pluralize(tag[1], 'object'),
+               #                :class => tag[2] ? 'nav_link tag_lvl1' : 'nav_link'
+               #        }
+               link_to_function(
+                       format_tag_for_output(tag[0]),
+                       "serverAction({action: { actions: '/tag/results?tag=#{tag[0]}&view=tag', params: {}}, progress: { waitMessage: 'Searching...' }})",
+                       {
+                               :title => pluralize(tag[1], 'object'),
+                               :class => tag[2] ? 'nav_link tag_lvl1' : 'nav_link'
+                       }
+
+               )
+       )
+     }
+   end
+     -%>
 <%= raw(tag_links.join(" &bull; ")) %>
