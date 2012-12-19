@@ -98,16 +98,20 @@
 
       <%= setup_table_header("Facet Display Order") %>
       <%= setup_line("Access Facet Order:", "facet_order_access", @setups,
-                     "Use a number [0-3] to determine where access types will appear in the facet list",
+                     "Use a number [0-3] to determine where Access types will appear in the facet list.
+                      Leave blank to hide this facet.",
                      "0") %>
       <%= setup_line("Format Facet Order:", "facet_order_format", @setups,
-                     "Use a number [0-3] to determine where formats will appear in the facet list",
+                     "Use a number [0-3] to determine where Formats will appear in the facet list.
+                      Leave blank to hide this facet.",
                      "1") %>
       <%= setup_line("Discipline Facet Order:", "facet_order_discipline", @setups,
-                     "Use a number [0-3] to determine where disciplines will appear in the facet list",
+                     "Use a number [0-3] to determine where Disciplines will appear in the facet list.
+                      Leave blank to hide this facet.",
                      "2") %>
       <%= setup_line("Genre Facet Order:", "facet_order_genre", @setups,
-                     "Use a number [0-3] to determine where genres will appear in the facet list",
+                     "Use a number [0-3] to determine where Genres will appear in the facet list.
+                      Leave blank to hide this facet.",
                      "3") %>
 
 	</table>

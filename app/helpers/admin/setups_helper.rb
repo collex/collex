@@ -29,7 +29,7 @@ module Admin::SetupsHelper
 				end
 		end + content_tag(:tr, { class: 'instructions' }) do
 			content_tag(:td, explanation) +
-			content_tag(:td, example)
+			content_tag(:td, example, { style: "vertical-align: top;"})
 		end
 		return html
   end
