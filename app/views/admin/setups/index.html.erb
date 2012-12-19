@@ -95,6 +95,21 @@
         <%= setup_checkbox("Show classroom tab:", "enable_classroom_tab", @setups,
                        "",
                        "") %>
+
+      <%= setup_table_header("Facet Display Order") %>
+      <%= setup_line("Access Facet Order:", "facet_order_access", @setups,
+                     "Use a number [0-3] to determine where access types will appear in the facet list",
+                     "0") %>
+      <%= setup_line("Format Facet Order:", "facet_order_format", @setups,
+                     "Use a number [0-3] to determine where formats will appear in the facet list",
+                     "1") %>
+      <%= setup_line("Discipline Facet Order:", "facet_order_discipline", @setups,
+                     "Use a number [0-3] to determine where disciplines will appear in the facet list",
+                     "2") %>
+      <%= setup_line("Genre Facet Order:", "facet_order_genre", @setups,
+                     "Use a number [0-3] to determine where genres will appear in the facet list",
+                     "3") %>
+
 	</table>
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>

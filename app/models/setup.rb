@@ -155,5 +155,22 @@ class Setup < ActiveRecord::Base
 	def self.analytics_id()
 		return nil if globals()['google_analytics'] != 'true'
 		return globals()['analytics_id']
-	end
+  end
+
+  def self.facet_order()
+    order = {}
+    if globals()['facet_order_access'].strip() != ''
+      order[globals()['facet_order_access'].strip] = 'access'
+    end
+    if globals()['facet_order_format'].strip() != ''
+      order[globals()['facet_order_format'].strip] = 'format'
+    end
+    if globals()['facet_order_discipline'].strip() != ''
+      order[globals()['facet_order_discipline'].strip] = 'discipline'
+    end
+    if globals()['facet_order_genre'].strip() != ''
+      order[globals()['facet_order_genre'].strip] = 'genre'
+    end
+    return order
+  end
 end
