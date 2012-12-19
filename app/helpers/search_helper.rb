@@ -739,7 +739,7 @@ module SearchHelper
 
   def create_genre_table( genre_data )
     html = raw('<table class="limit_to">')
-    html += raw('<tr><th>Genre</th><th class="num_objects"># of Objects</th></tr>')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_genre}</th><th class=\"num_objects\"># of Objects</th></tr>")
     for genre in genre_data
       html += genre_selector( genre )
     end
@@ -759,7 +759,7 @@ module SearchHelper
 
   def create_access_table( freeculture_count, fulltext_count, typewright_count )
     html = raw('<table class="limit_to">')
-    html += raw('<tr><th>Access</th><th class="num_objects"># of Objects</th></tr>')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_access}</th><th class=\"num_objects\"># of Objects</th></tr>")
     html += raw(access_selector(freeculture_count, access_is_in_constraints?('FreeCultureConstraint'), "Free Culture Only", '/search/constrain_freeculture'))
     html += raw(access_selector(fulltext_count, access_is_in_constraints?('FullTextConstraint'), "Full Text Only", '/search/constrain_fulltext'))
     if COLLEX_PLUGINS['typewright']
@@ -782,7 +782,7 @@ module SearchHelper
 
   def create_format_table( format_data )
     html = raw('<table class="limit_to">')
-    html += raw('<tr><th>Format</th><th class="num_objects"># of Objects</th></tr>')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_format}</th><th class=\"num_objects\"># of Objects</th></tr>")
     for format in format_data
       html += format_selector( format )
     end
@@ -802,7 +802,7 @@ module SearchHelper
 
   def create_discipline_table( discipline_data )
     html = raw('<table class="limit_to">')
-    html += raw('<tr><th>Discipline</th><th class="num_objects"># of Objects</th></tr>')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_discipline}</th><th class=\"num_objects\"># of Objects</th></tr>")
     for discipline in discipline_data
       html += discipline_selector( discipline )
     end

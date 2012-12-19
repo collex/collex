@@ -173,4 +173,40 @@ class Setup < ActiveRecord::Base
     end
     return order
   end
+
+  def self.display_name_for_facet_genre
+    value = globals()['facet_display_name_genre']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Genre'
+    end
+  end
+
+  def self.display_name_for_facet_format
+    value = globals()['facet_display_name_format']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Format'
+    end
+  end
+
+  def self.display_name_for_facet_discipline
+    value = globals()['facet_display_name_discipline']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Discipline'
+    end
+  end
+
+  def self.display_name_for_facet_access
+    value = globals()['facet_display_name_access']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Access'
+    end
+  end
 end

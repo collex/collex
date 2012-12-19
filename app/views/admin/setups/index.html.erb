@@ -114,6 +114,20 @@
                       Leave blank to hide this facet.",
                      "3") %>
 
+      <%= setup_table_header("Facet Display Names") %>
+      <%= setup_line("Custom name for the Access facet:", "facet_display_name_access", @setups,
+                     "Enter a value to display as the name for the Access facet.",
+                     "Access") %>
+      <%= setup_line("Custom name for the Format facet:", "facet_display_name_format", @setups,
+                     "Enter a value to display as the name for the Format facet.",
+                     "Format") %>
+      <%= setup_line("Custom name for the Discipline facet:", "facet_display_name_discipline", @setups,
+                     "Enter a value to display as the name for the Discipline facet.",
+                     "Discipline") %>
+      <%= setup_line("Custom name for the Genre facet:", "facet_display_name_genre", @setups,
+                     "Enter a value to display as the name for the Genre facet.",
+                     "Genre") %>
+
 	</table>
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>
