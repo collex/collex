@@ -112,7 +112,9 @@ namespace :deploy do
 		basic_update()
 		compress_css_js()
 		puts "You will be asked for your sudo password."
-		`sudo /sbin/service httpd restart`
+    `mkdir -p #{Rails.root}/tmp`
+    `touch #{Rails.root}/tmp/restart.txt`
+		#`sudo /sbin/service httpd restart`
 		#puts "\e[0;31mRun this to restart passenger:"
 		#puts "~/scripts/restart_passenger.sh #{Setup.site_name()} \e[m"
 		start_daemons()
