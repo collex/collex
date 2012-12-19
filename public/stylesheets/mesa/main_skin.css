@@ -183,9 +183,9 @@ div.carousel_title {
 .login_div {
 	background-image:url("/images/mesa/login_header.jpg");
 	background-repeat:no-repeat;
-	border-left: 8px solid #5f3119;
-	border-right: 8px solid #5f3119;
-	border-bottom: 8px solid #5f3119;
+	border-left: 8px solid #03002F;
+	border-right: 8px solid #03002F;
+	border-bottom: 8px solid #03002F;
 }
 
 .search_result_buttons a {
@@ -237,7 +237,7 @@ div#search_note_container {
 
 .yui-skin-sam .yui-button.default button {
 	background: inherit;
-	background-color: #5F3119;
+	background-color: #0D1D4E;
 	color: white;
 }
 
