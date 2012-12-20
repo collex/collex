@@ -173,6 +173,13 @@ function submitFormWithConfirmation( params ) {
 //		completeMessage: string or null
 //		waitMessage: string
 var serverAction = function(params) {
+
+    // Following two lines are a kludge for chrome
+    //  chrome cancels the loading of the spinner image once a page change is detected
+    //  so the spinner image is never loaded.  This 'forces' it to load the image.
+    var preload_spinner = new Image();
+    preload_spinner.src = '/images/progress_transparent.gif'
+
 	var ProgressSpinnerDlg = Class.create({
 		initialize: function (message) {
 			// This puts up a large spinner that can only be canceled through the ajax return status
@@ -414,3 +421,4 @@ function formatFailureMsg(resp, action) {
 	else
 		return resp.responseText;
 }
+
