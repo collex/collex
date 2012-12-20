@@ -188,6 +188,14 @@
 	padding-top: 0;
 }
 
+.apply_changes {
+    font: bold 16px arial,helvetica,clean,sans-serif ;
+    padding: 5px !important;
+    -webkit-appearance: button;
+    cursor: hand;
+    cursor: pointer;
+}
+
 .expander {
 	background: url("../images/arrow.gif") no-repeat scroll 1px 50% transparent;
 	font-family: arial;
