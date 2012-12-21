@@ -181,7 +181,8 @@ var serverAction = function(params) {
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
+                        [ {picture: '/images/progress_transparent.gif', alt: 'please wait'}],
+						//[ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
 						[ {rowClass: 'gd_progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ]
 					]
 				};
