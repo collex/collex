@@ -174,17 +174,18 @@ private
   end
   
   def draw_tabs(curr_page)
-    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true },
-      { :name => 'News', :link => news_path + '/', :use_logo_style => true },
-		{ :name => 'Classroom', :link => '/classroom', :use_long => true },
-		{ :name => Setup.community_tab(), :link => '/communities', :use_long => true },
-		{ :name => 'Publications', :link => '/publications', :use_long => true },
-      { :name => 'Search', :link => search_path }
-    ]
+    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true }]
+
+    tabs.push({ :name => 'News', :link => news_path + '/', :use_logo_style => true }) if Setup.display_news_tab?
+    tabs.push({ :name => 'Classroom', :link => '/classroom', :use_long => true }) if Setup.display_classroom_tab?
+    tabs.push({ :name => Setup.community_tab(), :link => '/communities', :use_long => true }) if Setup.display_community_tab?
+    tabs.push({ :name => 'Publications', :link => '/publications', :use_long => true }) if Setup.display_publications_tab?
+    tabs.push({ :name => 'Search', :link => search_path }) if Setup.display_search_tab?
+
     if COLLEX_PLUGINS['typewright']
-		search = tabs.pop()
+		  search = tabs.pop()
       tabs.push({ :name => 'TypeWright', :link => '/typewright/documents', :use_long => true })
-		tabs.push(search)
+		  tabs.push(search)
     end
 
     # the my_collex tab is separate, and is rendered first

@@ -100,7 +100,8 @@ class Setup < ActiveRecord::Base
 	end
 
 	def self.solr_url()
-		return globals()['site_solr_url']
+		val = globals()['site_solr_url']
+    return val.present? ? val : "http://arc-staging.performantsoftware.com"
 	end
 
 	#
@@ -129,10 +130,88 @@ class Setup < ActiveRecord::Base
 		else
 			puts "$$ Exception handler not set in development mode."
 		end
-	end
+  end
+
+  def self.display_community_tab?()
+    return true if globals()['enable_community_tab'] != 'false'
+    return false
+  end
+
+  def self.display_search_tab?()
+    return true if globals()['enable_search_tab'] != 'false'
+    return false
+  end
+
+  def self.display_publications_tab?()
+    return true if globals()['enable_publications_tab'] != 'false'
+    return false
+  end
+
+  def self.display_classroom_tab?()
+    return true if globals()['enable_classroom_tab'] != 'false'
+    return false
+  end
+
+  def self.display_news_tab?()
+    return true if globals()['enable_news_tab'] != 'false'
+    return false
+  end
 
 	def self.analytics_id()
 		return nil if globals()['google_analytics'] != 'true'
 		return globals()['analytics_id']
-	end
+  end
+
+  def self.facet_order()
+    order = {}
+    if globals()['facet_order_access'].strip() != ''
+      order[globals()['facet_order_access'].strip] = 'access'
+    end
+    if globals()['facet_order_format'].strip() != ''
+      order[globals()['facet_order_format'].strip] = 'format'
+    end
+    if globals()['facet_order_discipline'].strip() != ''
+      order[globals()['facet_order_discipline'].strip] = 'discipline'
+    end
+    if globals()['facet_order_genre'].strip() != ''
+      order[globals()['facet_order_genre'].strip] = 'genre'
+    end
+    return order
+  end
+
+  def self.display_name_for_facet_genre
+    value = globals()['facet_display_name_genre']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Genre'
+    end
+  end
+
+  def self.display_name_for_facet_format
+    value = globals()['facet_display_name_format']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Format'
+    end
+  end
+
+  def self.display_name_for_facet_discipline
+    value = globals()['facet_display_name_discipline']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Discipline'
+    end
+  end
+
+  def self.display_name_for_facet_access
+    value = globals()['facet_display_name_access']
+    if value and value.strip() != ''
+      return value
+    else
+      return 'Access'
+    end
+  end
 end

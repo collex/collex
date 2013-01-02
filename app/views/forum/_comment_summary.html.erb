@@ -17,7 +17,7 @@
 %>
 <%# comment_summary params: ActiveRecord thread, time last_modified, string text (optional) -%>
 <% text ||= '' -%>
-<% comment_info = get_comment_header_info(thread.discussion_comments[0]) -%>
+<% comment_info = thread.discussion_comments.empty? ? {} : get_comment_header_info(thread.discussion_comments[0]) -%>
 <% if comment_info[:thumbnail] == nil -%>
 		<% comment_info[:thumbnail] = '/images/group_forum_default_thumb.jpg' %>
 <% end -%>

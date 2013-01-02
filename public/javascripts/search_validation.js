@@ -54,7 +54,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	// Be sure the user has typed something into at least one field.
 	if (input_year) {
 		var form = input_year.up('form');
-		var allInputs = form.select('input[type=text]');
+		var allInputs = form.select('input[type=text]').concat(form.select('select[class=search_language]'));
 		var bFound = false;
 		allInputs.each(function(el) {
 			if (el.value.length > 0)
@@ -77,8 +77,9 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	
 	if ($(hint_text_id) && $(hint_text_id).hasClassName('gd_input_hint_style'))
 	{
-		errorDlg("Please enter some text before searching.");
-	    return false;
+		//errorDlg("Please enter some text before searching.");
+        $(hint_text_id).value = '';
+	    //return false;
 	} 
 		
 	// Now see if the year item is legal. If input_type is null, then the year_input_id really is
@@ -87,25 +88,22 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		return true;
 
 	if (input_year) {
-		var year_val = input_year.value;
+        input_year.value = input_year.value.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
+		var year_val = input_year.value.trim();
 		if (year_val === "")
 			return true;
 
-		// At this point, year_val contains the user's input for the year. Make sure it is exactly 4 digits
+		// At this point, year_val contains the user's input for the year.
+        // Make sure it is 4 digits or a valid solr span (e.g. 1700 TO 1900)
 
-		// test if the year is an integer
-		if (year_val !== "" + parseInt(year_val))
-		{
-			errorDlg("The year must contain only numerals.");
-			return false;
-		}
+        var re = /^\d{4}(\s+TO\s+\d{4})?$/
 
-		// test if the year is 4 digits in length
-		if (year_val.length !== 4)
-		{
-			errorDlg("The year must be 4 digits long.");
-			return false;
-		}
+        if (!re.match(year_val))
+        {
+            errorDlg("The year must be 4 digits or a valid year span (e.g. 1700 TO 1900).");
+            return false;
+        }
+
 	}
 	
 	// if the two validation steps above pass, submit the form

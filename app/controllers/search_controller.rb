@@ -20,6 +20,7 @@ class SearchController < ApplicationController
    before_filter :init_view_options
    
    def initialize
+
    end
    
    private
@@ -57,24 +58,89 @@ class SearchController < ApplicationController
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
 
+        # in case we put a fuzzy search slider on the home page
+        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
+
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
         parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
         add_title_constraint(params[:search_title], false) if params[:search_title] != ""
         add_author_constraint(params[:search_author], false) if params[:search_author] != ""
         add_editor_constraint(params[:search_editor], false) if params[:search_editor] != ""
+        add_owner_constraint(params[:search_owner], false) if params[:search_owner] != ""
+        add_artist_constraint(params[:search_artist], false) if params[:search_artist] != ""
         add_publisher_constraint(params[:search_publisher], false) if params[:search_publisher] != ""
         add_date_constraint(params[:search_year], false) if params[:search_year] != ""
+        add_language_constraint(params[:search_language], false) if params[:search_language] != ""
+
+        # add the role_* constraints
+        params.each { |key, value|
+          if key.match(/search_role_/) and value != ""
+            role = key.sub(/search_/, '')
+            add_role_constraint(role, value, false)
+          end
+        }
+
+        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
+        add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
+
 
       elsif params[:search]
         # single input box
         invert = (params[:search_not] == "NOT")
-        parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
-        add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
-        add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
-        add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
-        add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
-        add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
+        if not params[:search][:phrase].strip.empty?
+          case params[:search_type]
+            when "Search Term"
+              parse_keyword_phrase(params[:search][:phrase], invert)
+            when "Title"
+              add_title_constraint(params[:search][:phrase], invert)
+            when "Author"
+              add_author_constraint(params[:search][:phrase], invert)
+            when "Editor"
+              add_editor_constraint(params[:search][:phrase], invert)
+            when "Owner"
+              add_owner_constraint(params[:search][:phrase], invert)
+            when "Artist"
+              add_artist_constraint(params[:search][:phrase], invert)
+            when "Publisher"
+              add_publisher_constraint(params[:search][:phrase], invert)
+            when "Year (YYYY)"
+              add_date_constraint(params[:search][:phrase], invert)
+            when "Language"
+              add_language_constraint(params[:search_language], invert)
+            else
+              role = Search.role_field_names.find{ |key, value| value[:display] == params[:search_type]}
+              if role
+                add_role_constraint(role[0], params[:search][:phrase], invert)
+              end
+          end
+          #parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
+          #add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
+          #add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
+          #add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
+          #add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
+          #add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
+          #add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
+          #add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
+          #add_language_constraint(params[:search_language], invert) if params[:search_type] == "Language"
+        end
+
+        # see if the fuz_constraints are already present
+        keyword_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_q'};
+        title_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_t'};
+
+        # set or reset the fuz_constraints if needed
+        if keyword_fuz_constraint.nil?
+          add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
+        else
+          modify_keyword_fuz_constraint(params[:search_keyword_fuz], false, keyword_fuz_constraint) if params[:search_keyword_fuz] != ""
+        end
+        if title_fuz_constraint.nil?
+          add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
+        else
+          modify_title_fuz_constraint(params[:search_title_fuz], false, title_fuz_constraint) if params[:search_title_fuz] != ""
+        end
+
       end
 
 		 session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
@@ -237,12 +303,46 @@ class SearchController < ApplicationController
          session[:constraints] << ExpressionConstraint.new(:value => expression, :inverted => invert)
        end
    end
+
+   def add_keyword_fuz_constraint(phrase_str, invert)
+     expression = phrase_str
+     if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
+       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_q', :value => phrase_str, :inverted => invert)
+     end
+   end
+
+   def modify_keyword_fuz_constraint(phrase_str, invert, constraint)
+     expression = phrase_str
+     if expression and expression.strip.size > 0 and expression != '1' && constraint
+       constraint[:value] = phrase_str
+       constraint[:inverted] = invert
+     elsif session[:constraints]
+       session[:constraints].delete(constraint)
+     end
+   end
  
    def add_title_constraint(phrase_str, invert)
        expression = phrase_str
        if expression and expression.strip.size > 0 && session[:constraints]
          session[:constraints] << FacetConstraint.new(:fieldx => 'title', :value => phrase_str, :inverted => invert)
        end
+   end
+
+   def modify_title_fuz_constraint(phrase_str, invert, constraint)
+     expression = phrase_str
+     if expression and expression.strip.size > 0 and expression != '1' && constraint
+       constraint[:value] = phrase_str
+       constraint[:inverted] = invert
+     elsif session[:constraints]
+       session[:constraints].delete(constraint)
+     end
+   end
+
+   def add_title_fuz_constraint(phrase_str, invert)
+     expression = phrase_str
+     if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
+       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_t', :value => phrase_str, :inverted => invert)
+     end
    end
  
   def add_date_constraint(phrase_str, invert)
@@ -257,17 +357,63 @@ class SearchController < ApplicationController
     end
   end
 
+  def add_artist_constraint(phrase_str, invert)
+    if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+      session[:constraints] << FacetConstraint.new(:fieldx => 'r_art', :value => phrase_str, :inverted => invert)
+    end
+  end
+
+  def add_owner_constraint(phrase_str, invert)
+    if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+      session[:constraints] << FacetConstraint.new(:fieldx => 'r_own', :value => phrase_str, :inverted => invert)
+    end
+  end
+
   def add_editor_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
        session[:constraints] << FacetConstraint.new(:fieldx => 'editor', :value => phrase_str, :inverted => invert)
     end
   end
 
+   def add_role_constraint(role, phrase_str, invert)
+     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+       session[:constraints] << FacetConstraint.new(:fieldx => role, :value => phrase_str, :inverted => invert)
+     end
+   end
+
   def add_publisher_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
        session[:constraints] << FacetConstraint.new(:fieldx => 'publisher', :value => phrase_str, :inverted => invert)
     end
   end
+
+   def add_language_constraint(phrase_str, invert)
+     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
+       iso_lang = IsoLanguage.find_by_alpha3(phrase_str)
+       iso_lang = IsoLanguage.find_by_english_name(phrase_str) if iso_lang.nil?
+       iso_lang = IsoLanguage.find_by_alpha2(phrase_str) if iso_lang.nil?
+       iso_lang = IsoLanguage.all().find{ |lang| lang.alpha3 == phrase_str.downcase } if iso_lang.nil? and phrase_str.length == 3
+       iso_lang = IsoLanguage.all().find{ |lang| lang.alpha2 == phrase_str.downcase } if iso_lang.nil? and phrase_str.length == 2
+       iso_lang = IsoLanguage.all().find{ |lang| lang.english_name.downcase.match(Regexp.new(phrase_str.downcase + ';')) } if iso_lang.nil?
+       iso_lang = IsoLanguage.all().find{ |lang| lang.english_name.downcase.match(Regexp.new(phrase_str.downcase + '\s*$')) } if iso_lang.nil?
+       iso_lang = IsoLanguage.all().find{ |lang| lang.english_name.downcase.match(Regexp.new(phrase_str.downcase)) } if iso_lang.nil?
+       if not iso_lang.nil?
+         if !iso_lang.english_name.nil?
+          phrase_str = iso_lang.english_name.split(/;/).join(' || ')
+         end
+         if !iso_lang.alpha3.nil?
+           phrase_str += " || " if !phrase_str.nil? and phrase_str.strip.length > 0
+           phrase_str += iso_lang.alpha3
+         end
+         if !iso_lang.alpha2.nil?
+           phrase_str += " || " if !phrase_str.nil? and phrase_str.strip.length > 0
+           phrase_str += iso_lang.alpha2
+         end
+
+       end
+       session[:constraints] << FacetConstraint.new(:fieldx => 'language', :value => phrase_str, :inverted => invert)
+     end
+   end
 
   def rescue_search_error(e)
      error_message = e.message
@@ -353,6 +499,12 @@ class SearchController < ApplicationController
 			# We are sorting by reverse order so that "Peer-Reviewed" comes out on top. This will probably need to get more sophisticated.
 			@sites_forest = @sites_forest.sort { |a,b| b['name'] <=> a['name'] }
 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
+      @format_data = marshall_format_data(@results["facets"]["doc_type"])
+      @discipline_data = marshall_discipline_data(@results["facets"]["discipline"])
+
+      @searchable_roles = @results['facets'].map { |k,v| (k.match(/role_/) and not v.empty?)  ? k : nil }.compact
+      @searchable_roles = @searchable_roles.map { |field| Search.role_field_names[field] ? [Search.role_field_names[field][:search_field], Search.role_field_names[field][:display]] : nil }.compact
+
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = 0
 			@freeculture_count = @results['facets']['freeculture']['true'] if @results && @results['facets'] && @results['facets']['freeculture'] && @results['facets']['freeculture']['true']
@@ -488,6 +640,26 @@ class SearchController < ApplicationController
     end
     redirect_to :action => 'browse', :phrs => params[:phrs]
   end
+
+   def remove_discipline
+     session[:name_of_search] = nil
+     for item in session[:constraints]
+       if item[:fieldx] == 'discipline' && item[:value] == params[:value]
+         session[:constraints].delete(item)
+       end
+     end
+     redirect_to :action => 'browse', :phrs => params[:phrs]
+   end
+
+   def remove_format
+     session[:name_of_search] = nil
+     for item in session[:constraints]
+       if item[:fieldx] == 'doc_type' && item[:value] == params[:value]
+         session[:constraints].delete(item)
+       end
+     end
+     redirect_to :action => 'browse', :phrs => params[:phrs]
+   end
   
    def remove_constraint
      session[:name_of_search] = nil
@@ -736,5 +908,33 @@ class SearchController < ApplicationController
       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
     }
   end
+
+   # take the format facet data and organize it for display
+   def marshall_format_data( unsorted_formats )
+     return [] unless unsorted_formats
+
+     # filter out unspecified formats facets
+     unsorted_formats = unsorted_formats.select {|value, count| value != '<unspecified>' }
+
+     sorted_formats = unsorted_formats.sort {|a,b| a[0] <=> b[0]}
+     sorted_formats.map { |pair|
+       existing_constraints = session[:constraints].select { |constraint| constraint[:fieldx] == "doc_type" and constraint[:value] == pair[0] }
+       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
+     }
+   end
+
+   # take the discipline facet data and organize it for display
+   def marshall_discipline_data( unsorted_discipline )
+     return [] unless unsorted_discipline
+
+     # filter out unspecified discipline facets
+     unsorted_discipline = unsorted_discipline.select {|value, count| value != '<unspecified>' }
+
+     sorted_discipline = unsorted_discipline.sort {|a,b| a[0] <=> b[0]}
+     sorted_discipline.map { |pair|
+       existing_constraints = session[:constraints].select { |constraint| constraint[:fieldx] == "discipline" and constraint[:value] == pair[0] }
+       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
+     }
+   end
   
 end

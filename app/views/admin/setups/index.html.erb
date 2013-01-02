@@ -81,6 +81,53 @@
 		<%= setup_line("Right About Link:", "site_about_url_2", @setups,
 			"The link that will appear on each page for the main about page.",
 			"/about/peer_review.html") %>
+
+        <%= setup_table_header("Tab Display") %>
+        <%= setup_checkbox("Show community tab:", "enable_community_tab", @setups,
+                       "",
+                       "") %>
+        <%= setup_checkbox("Show news tab:", "enable_news_tab", @setups,
+                       "",
+                       "") %>
+        <%= setup_checkbox("Show publications tab:", "enable_publications_tab", @setups,
+                       "",
+                       "") %>
+        <%= setup_checkbox("Show classroom tab:", "enable_classroom_tab", @setups,
+                       "",
+                       "") %>
+
+      <%= setup_table_header("Facet Display Order") %>
+      <%= setup_line("Access Facet Order:", "facet_order_access", @setups,
+                     "Use a number [0-3] to determine where Access types will appear in the facet list.
+                      Leave blank to hide this facet.",
+                     "0") %>
+      <%= setup_line("Format Facet Order:", "facet_order_format", @setups,
+                     "Use a number [0-3] to determine where Formats will appear in the facet list.
+                      Leave blank to hide this facet.",
+                     "1") %>
+      <%= setup_line("Discipline Facet Order:", "facet_order_discipline", @setups,
+                     "Use a number [0-3] to determine where Disciplines will appear in the facet list.
+                      Leave blank to hide this facet.",
+                     "2") %>
+      <%= setup_line("Genre Facet Order:", "facet_order_genre", @setups,
+                     "Use a number [0-3] to determine where Genres will appear in the facet list.
+                      Leave blank to hide this facet.",
+                     "3") %>
+
+      <%= setup_table_header("Facet Display Labels") %>
+      <%= setup_line("Custom label for the Access facet:", "facet_display_name_access", @setups,
+                     "Enter a value to display as the label for the Access facet.",
+                     "Access") %>
+      <%= setup_line("Custom label for the Format facet:", "facet_display_name_format", @setups,
+                     "Enter a value to display as the label for the Format facet.",
+                     "Format") %>
+      <%= setup_line("Custom label for the Discipline facet:", "facet_display_name_discipline", @setups,
+                     "Enter a value to display as the label for the Discipline facet.",
+                     "Discipline") %>
+      <%= setup_line("Custom label for the Genre facet:", "facet_display_name_genre", @setups,
+                     "Enter a value to display as the label for the Genre facet.",
+                     "Genre") %>
+
 	</table>
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>
@@ -103,7 +150,8 @@
 			"The ID that was given to you by Google when you signed up for Analytics.",
 			"AA-99999999-9") %>
 	</table>
-		<%= submit_tag("Apply Changes") %>
+
+    <%= submit_tag("Apply Changes", {:class => "apply_changes"}) %>
 
 	<% end %>
 </div>

@@ -89,6 +89,8 @@ Collex::Application.routes.draw do
 	post '/search/invert_constraint' => 'search#invert_constraint'
 	post '/search/sort_by' => 'search#sort_by'
 	post '/search/remove_genre' => 'search#remove_genre'
+  post '/search/remove_discipline' => 'search#remove_discipline'
+  post '/search/remove_format' => 'search#remove_format'
 	match '/search/remember_resource_toggle' => 'search#remember_resource_toggle'
 	match '/search/saved' => 'search#saved'
 	match '/search/save_search' => 'search#save_search'
@@ -191,7 +193,10 @@ Collex::Application.routes.draw do
 			resources :documents
 			resources :lines
 			resources :document_users
-		end
+    end
+
+    get "typewright" => 'typewright/documents#index'
+
 	end
 
 	get "/login/logout" => "login#logout"
@@ -338,6 +343,7 @@ Collex::Application.routes.draw do
 	match '/tags/results' => 'tag#results'
   match '/tag/results' => 'tag#results'
   match '/tag/sort_by' => 'tag#sort_by'
+  match '/tag/testtags' => 'tag#testtags'
   match '/tag/tag_name_autocomplete' => 'tag#tag_name_autocomplete'
 	get '/news' => 'home#news'
 	get '/home/news' => 'home#news'

@@ -96,7 +96,8 @@ module TagHelper
      html_options[:class] = 'nav_link'
 	 #link = { :controller => controller, :action => 'results', :view => 'tag', :tag => escaped_value, :anchor => "top_of_results" }
 	 link = "/#{controller}/results?view=tag&tag=#{escaped_value}#top_of_results"
-     raw(link_to(visible.downcase, link, html_options))
+     #raw(link_to(visible.downcase, link, html_options))
+     raw(link_to_function(visible.downcase, "serverAction({action: { actions: '#{link}', params: {}}, progress: { waitMessage: 'Searching...' }})", html_options))
   end
   
   # given a tag frequency and an zoom_data array containing [frequency][zoom_level]

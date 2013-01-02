@@ -173,6 +173,7 @@ function submitFormWithConfirmation( params ) {
 //		completeMessage: string or null
 //		waitMessage: string
 var serverAction = function(params) {
+
 	var ProgressSpinnerDlg = Class.create({
 		initialize: function (message) {
 			// This puts up a large spinner that can only be canceled through the ajax return status
@@ -180,7 +181,8 @@ var serverAction = function(params) {
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
+                        [ {picture: '/images/progress_transparent.gif', alt: 'please wait'}],
+						//[ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
 						[ {rowClass: 'gd_progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ]
 					]
 				};
@@ -414,3 +416,10 @@ function formatFailureMsg(resp, action) {
 	else
 		return resp.responseText;
 }
+
+// Following two lines are a kludge
+//  chrome cancels the loading of the spinner image once a page change is detected
+//  so the spinner image is never loaded.  This 'forces' it to load the image.
+// IE isn't loading the image either :(
+var preload_spinner = new Image();
+preload_spinner.src = '/images/progress_transparent.gif'

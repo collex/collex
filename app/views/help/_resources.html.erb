@@ -13,12 +13,41 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ---------------------------------------------------------------------------- %>
+<%  time_period = "nineteenth-century"
+    case SKIN.upcase
+    when 'MESA'
+      time_period = "medieval"
+    when '18TH'
+      time_period = "eighteenth-century"
+    end
+    -%>
 <div style="width:400px;">
 	<div class="popup">
-	<div class="pagination" style="margin-bottom:1em"><span class="emph2"><%= Setup.site_name() %> resources</span></div>
-	<p><span class="emph2">In essence,</span> <%= Setup.site_name() %> vets freely-available digital objects in nineteenth-century studies for scholarly integrity and aggregates metadata (or descriptive information) about them in a faceted search-and-browsing interface.  The objects themselves are accessible via links to the <a class="nav_link" href="/about/scholarship/9swhitepaper.pdf" target="_blank">federated</a> websites that have contributed them.</p>
+	<div class="popup_pagination" style="margin-bottom:1em">
+      <span class="emph2">
+        <%= Setup.site_name() %> resources
+      </span>
+    </div>
+	<p>
+      <span class="emph2">
+        In essence,
+      </span>
+      <%= Setup.site_name() %> vets freely-available digital objects in <%= time_period %> studies for scholarly integrity and aggregates metadata (or descriptive information)
+      about them in a faceted search-and-browsing interface.  The objects themselves are accessible via links to the
+      <% if SKIN.upcase === 'NINES' -%>
+        <%# this is fragile, there should probably be an alias/redirect to it -%>
+        <a class="nav_link" href="about/wp-content/uploads/2011/12/9swhitepaper.pdf" target="_blank">federated</a>
+      <% else -%>
+        <a class="nav_link" href="//www.nines.org/about/wp-content/uploads/2011/12/9swhitepaper.pdf" target="_blank">federated</a>
+      <% end -%>
+      websites that have contributed them.
+    </p>
 	
-	<p><span class="emph2">Objects</span> need not have a one-to-one relationship with web pages.  In other words, a single web page can contain many objects (just as a book of poetry contains many poems).  <%= Setup.site_name() %> contributors determine the level of object granularity appropriate to their material.  In this way, <%= Setup.site_name() %> <i>embodies</i> interpretive acts.  The sharing of semantic metadata about these objects makes it possible for <%= Setup.site_name() %> users to explore 19th-century online scholarship along many dimensions, as well as to produce personal annotated collections and exhibits using an integrated tool, <a class="nav_link" href="http://www.collex.org" target="_blank">Collex</a>.  In this way, <%= Setup.site_name() %> <i>enables</i> interpretive acts!
+	<p>
+      <span class="emph2">Objects</span> need not have a one-to-one relationship with web pages.  In other words, a single web page can contain many objects (just as a book of poetry contains many poems).
+      <%= Setup.site_name() %> contributors determine the level of object granularity appropriate to their material.  In this way, <%= Setup.site_name() %> <i>embodies</i> interpretive acts.
+      The sharing of semantic metadata about these objects makes it possible for <%= Setup.site_name() %> users to explore <%= time_period %> online scholarship along many dimensions, as well as to
+      produce personal annotated collections and exhibits using an integrated tool, <a class="nav_link" href="http://www.collex.org" target="_blank">Collex</a>.  In this way, <%= Setup.site_name() %> <i>enables</i> interpretive acts!
 	</div>
 	
 	<p align="center"><a class="ext_pic_link" rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a><br/>This work is licensed under a <a class="ext_link" rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License</a>.</p>

@@ -76,8 +76,12 @@ hr.search_results_hr {
 }
 
 .search_result_data_label {
-	width:85px;
+	width: 95px;
 	color: gray;
+}
+
+.search_result_data_value {
+    width: 75%;
 }
 
 .search_result_full_text_label {

@@ -17,16 +17,24 @@
 
 <div class="page_subheader">Add new search criteria or select limiters to refine your search.</div>
 <% default_search_phrase = 'click here to add new search term' -%>
-<%= form_tag({:controller => "search", :action => "add_constraint"}, :onsubmit => "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');") do %>
+<%= form_tag({:controller => "search", :action => "add_constraint"}, :onsubmit => "return searchValidation('search_year', 'search_phrase', 'search_type', 'search_submit', 'search_submit2');") do %>
 <table class="query">
+    <% fuzzy_keyword_constraint = @listed_constraints.find{ |i| i[:constraint][:fieldx] == "fuz_q"} -%>
+    <% has_keyword_search = false %>
+    <% fuzzy_title_constraint = @listed_constraints.find{ |i| i[:constraint][:fieldx] == "fuz_t"} -%>
+    <% has_title_search = false %>
 	<% @listed_constraints.each do |constraint_data| -%>
 		<% constraint = constraint_data[:constraint] -%>
+        <% has_keyword_search = true if constraint.is_a?(ExpressionConstraint) %>
+        <% has_title_search = true if constraint.is_a?(FacetConstraint) and constraint[:fieldx] == 'title' %>
 		<% index = constraint_data[:id] -%>
 		<% ret = format_constraint(constraint) -%>
-		<% if ret != nil %>
+		<% if ret != nil and ret[:title].downcase.match(/fuzziness/).nil? %>
 		<tr>
 			<td class="query_type"><%= ret[:title] %></td>
-			<td class="query_term"><%= ret[:value] %></td>
+			<td class="query_term yui3-skin-sam">
+              <div><%= ret[:value] %></div>
+            </td>
 			<td class="query_and-not">
 					<%# we want to post back to the server if the user changed the selection by either a mouse click or keypress. We need to make sure that there really was a change, so only post back if the current value doesn't equal the starting value (starting value is ret[:not]) -%>
 					<% is_not = ret[:not]?'true':'false' # make sure that a string value is used for the following script -%>
@@ -36,14 +44,65 @@
 			</td>
 			<td class="query_remove"><%= create_facet_link(raw('<img src="/images/lvl2_trash.gif" alt="Remove Term" />'), '/search/remove_constraint', { :index => "#{index}" }) %></td>
 		</tr>
-	<% end -%>
-	<% end -%>
-
+	    <% end -%>
+    <% end -%>
+    <% if SKIN.downcase == "mesa" -%>
+      <% if has_keyword_search -%>
+          <tr class="yui3-skin-sam">
+            <td class="query_type">Search Term Fuzziness &nbsp;</td>
+            <td>
+              <div style="width:340px">
+                  <span class="browse_slider_label">Fuzzy</span>
+                  <% fuzzy_keyword_value = fuzzy_keyword_constraint.nil? ? '1' : fuzzy_keyword_constraint[:constraint][:value] %>
+                  <div id='query_keyword_fuzziness' class='query_keyword_fuzziness' value='<%= fuzzy_keyword_value %>'></div>
+                  <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value="<%= fuzzy_keyword_value %>" />
+                  <span class="browse_slider_label">Exact</span>
+              </div>
+            </td>
+            <td></td>
+            <td class="query_remove"><input id="term_fuzziness_submit" type="submit" value="Change" /></td>
+          </tr>
+      <% end -%>
+      <% if has_title_search -%>
+          <tr class="yui3-skin-sam">
+            <td class="query_type">Title Fuzziness</td>
+            <td>
+              <div style="width:340px">
+                  <span class="browse_slider_label">Fuzzy</span>
+                  <% fuzzy_title_value = fuzzy_title_constraint.nil? ? '1' : fuzzy_title_constraint[:constraint][:value] %>
+                  <div id='query_title_fuzziness' class='query_title_fuzziness' value='<%= fuzzy_title_value %>'></div>
+                  <input id="search_title_fuz" name="search_title_fuz" type="hidden" value="<%= fuzzy_title_value %>" />
+                  <span class="browse_slider_label">Exact</span>
+              </div>
+            </td>
+            <td></td>
+            <td class="query_remove"><input id="title_fuzziness_submit" type="submit"  value="Change" /></td>
+          </tr>
+      <% end -%>
+    <% end -%>
 	<tr>
 		<td class="query_type">
-			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'><option>Search Term</option><option>Title</option><option>Author</option><option>Editor</option><option>Publisher</option><option>Year (YYYY)</option></select></td>
+			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'>
+              <option>Search Term</option>
+              <option>Title</option>
+              <% if SKIN.downcase == "mesa" -%>
+                  <option>Language</option>
+                  <option>Year (YYYY)</option>
+                  <% @searchable_roles.each do |role| %>
+                    <option><%= role[1] %></option>
+                  <% end %>
+              <% else %>
+                  <option>Author</option>
+                  <option>Editor</option>
+                  <option>Publisher</option>
+                  <option>Artist</option>
+                  <option>Owner</option>
+                  <option>Year (YYYY)</option>
+              <% end -%>
+            </select></td>
 		<td class="query_term">
 		  <%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%>
+          <%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new()] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language', :style => "display:none;") %>
 		</td>
 		<td class="query_and-not"><select id='search_not' name='search_not' class="query_and-not_select"><option>AND</option><option>NOT</option></select>
 		</td>
@@ -59,7 +118,13 @@
 		var type = This.value.toLowerCase();
 		type = type.gsub(" (yyyy)", '');
 		type = type.gsub(' ', '_');
-		search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
+        valid_types = [ 'search_keyword', 'search_phrase', 'search_term', 'title', 'editor', 'publisher', 'year' ]
+        if (valid_types.indexOf(type) > -1)
+        {
+		    search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
+        } else {
+            search_phrase_auto_completer.url = '/collex/auto_complete_for_search_phrase'
+        }
 //		if (This.value === 'Search Term') {
 //			$('search_notphrase').addClassName('hidden');
 //			$('search_phrase').removeClassName('hidden');
@@ -69,3 +134,116 @@
 //		}
 	}
   </script>
+
+<script type="text/javascript" charset="utf-8">
+    function on_search_type_change(event, el)
+    {
+        var si = el.options.selectedIndex;
+        var type = el.options[si].value;
+        if (type == 'Language')
+        {
+            $('search_phrase').hide();
+            $('search_language').show();
+        } else {
+            $('search_phrase').show();
+            $('search_language').hide();
+        }
+    }
+
+    function add_search_type_events()
+    {
+        var st = $$('#search_type');
+        if (st.length > 0)
+        {
+            st[0].on('change', on_search_type_change);
+            on_search_type_change(null, st[0]);
+        }
+    }
+
+    YAHOO.util.Event.onDOMReady(add_search_type_events);
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
+    function updateInputValue(e)
+    {
+        if (e && e.newVal) {
+            this.set('value', e.newVal / 1000);
+        }
+    }
+
+    function snapToValue(e)
+    {
+        var value = this.get('value');
+        value = Math.round(value / 100) * 100;
+        this.set('value', value);
+        this.syncUI();
+        //console.log('debug')
+    }
+
+    function delaySnapToValue(e)
+    {
+        var me = this;
+        setTimeout( function() {snapToValue.call(me, e)}, 100);
+    }
+
+    function add_keyword_sliders()
+    {
+        YUI().use('slider', function(Y)
+        {
+            $$('.query_keyword_fuzziness').each( function(parent) {
+                var slider = new Y.Slider({
+                    length : 256,
+                    height : 40,
+                    thumbUrl : '/images/collex/thumb-x.png',
+                    min : 200,
+                    max : 1000,
+                    value : 1000,
+                    majorStep: 100,
+                    minorStep: 100
+                });
+                slider.render(parent);
+                var fuz = Y.one(parent).getAttribute('value');
+                slider.set('value', parseFloat(fuz) * 1000);
+
+                var input = Y.one('#search_keyword_fuz');
+                slider.on('valueChange', updateInputValue, input);
+                slider.on('slideEnd', snapToValue, slider);
+                slider.on('railMouseDown', delaySnapToValue, slider);
+
+                slider.syncUI();
+            });
+
+            $$('.query_title_fuzziness').each( function(parent) {
+                var slider = new Y.Slider({
+                    length : 256,
+                    height : 40,
+                    thumbUrl : '/images/collex/thumb-x.png',
+                    min : 200,
+                    max : 1000,
+                    value : 1000,
+                    majorStep: 100,
+                    minorStep: 100
+                });
+                slider.render(parent);
+                var fuz = Y.one(parent).getAttribute('value');
+                slider.set('value', parseFloat(fuz) * 1000);
+
+                var input = Y.one('#search_title_fuz');
+                slider.on('valueChange', updateInputValue, input);
+                slider.on('slideEnd', snapToValue, slider);
+                slider.on('railMouseDown', delaySnapToValue, slider);
+
+                slider.syncUI();
+            });
+        });
+    }
+
+    function init_sliders()
+    {
+        add_keyword_sliders();
+    }
+
+    YAHOO.util.Event.onDOMReady(init_sliders);
+
+</script>

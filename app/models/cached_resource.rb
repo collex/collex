@@ -355,25 +355,30 @@ class CachedResource < ActiveRecord::Base
     return { :results => [], :total => 0 } if tag == nil
     
     # walk through all assignments that match this tag ID
-	retrieved_list = {}
+	  retrieved_list = {}
     items = []
-    assigns = Tagassign.all(:conditions => [ "tag_id = ?", tag.id ] )
+    assigns = Tagassign.where(:tag_id => tag.id).select(:cached_resource_id).map{|ta| ta.cached_resource_id}
+    total = assigns.count
+
+    if sort_field
+      # get sorted list of cached resource ids
+      assigns_sorted = Tagassign.joins(:cached_resource => :cached_properties).where('cached_properties.name' => sort_field, 'tagassigns.tag_id' => tag.id).select('tagassigns.cached_resource_id').order('cached_properties.value').map{|ta| ta.cached_resource_id}
+      assigns = assigns_sorted + (assigns - assigns_sorted)
+      assigns = assigns.reverse() if direction == 'Descending'
+    end
+
+    assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
     assigns.each do | assign |
-		if retrieved_list[assign.cached_resource_id].blank?
-			hit = get_hit_from_resource_id( assign.cached_resource_id )
-			retrieved_list[assign.cached_resource_id] = true
-			items.insert(-1, hit) if hit != nil
-		end
+      if retrieved_list[assign].blank?
+        hit = get_hit_from_resource_id( assign )
+        retrieved_list[assign] = true
+        items.insert(-1, hit) if hit != nil
+      end
     end
 		
 		page_results = {}
 		page_results[:results] = items
-    page_results[:total] = items.length 
-    
-    if sort_field
-      page_results[:results] = sort_algorithm(page_results[:results], sort_field)
-      page_results[:results] = page_results[:results].reverse() if direction == 'Descending'
-    end
+    page_results[:total] = total
 
     return page_results
   end
@@ -495,7 +500,8 @@ class CachedResource < ActiveRecord::Base
 				end
 			}
 			return results
-	end
+  end
+
 	public
 
 	def self.get_hit_from_resource_id(resource_id)
@@ -523,6 +529,29 @@ class CachedResource < ActiveRecord::Base
 		hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr']
 		hit['typewright'] = hit['typewright'][0] if hit['typewright']
 		return hit
-	end
+  end
+
+  def self.get_hit_from_cached_resource(cr)
+    hit = {}
+    return nil if cr.nil?
+    cr.cached_properties.each { |property|
+      hit[property.name] = [] if !hit[property.name]
+      if property.name != 'text' # make sure that full text never gets shown, even if it is mistakenly collected.
+        hit[property.name].insert(-1, property.value)
+      end
+    }
+    hit['uri'] = cr.uri
+    # some fields are not multivalued, so they shouldn't be arrays
+    hit['archive'] = hit['archive'][0] if hit['archive']
+    hit['freeculture'] = hit['freeculture'][0] if hit['freeculture']
+    hit['image'] = hit['image'][0] if hit['image']
+    hit['thumbnail'] = hit['thumbnail'][0] if hit['thumbnail']
+    hit['title'] = hit['title'][0] if hit['title']
+    hit['url'] = hit['url'][0] if hit['url']
+    hit['has_full_text'] = hit['has_full_text'][0] if hit['has_full_text']
+    hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr']
+    hit['typewright'] = hit['typewright'][0] if hit['typewright']
+    return hit
+  end
 
 end

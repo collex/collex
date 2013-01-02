@@ -24,17 +24,20 @@ class Catalog
 	@@carousel = nil
 	@@resource_tree = nil
 	@@archives = nil
+  @@languages = nil
 
-	def self.set_cached_data(carousel, resource_tree, archives)
+	def self.set_cached_data(carousel, resource_tree, archives, languages)
 		@@carousel = carousel
 		@@resource_tree = resource_tree
 		@@archives = archives
+    @@languages = languages
 	end
 
 	def self.reset_cached_data()
 		@@carousel = nil
 		@@resource_tree = nil
 		@@archives = nil
+    @@languages = nil
 	end
 
 	def self.log_catalog(verb, str)
@@ -120,8 +123,8 @@ class Catalog
 	def search(constraints, start, max, sort_by, sort_ascending)
 		sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
 		hl = "hl=on"
-		start = "start=#{start}"
-		max = "max=#{max}"
+		start = start ? "start=#{start}" : ""
+		max = max ? "max=#{max}" : ""
 
 		params = parse_constraints(constraints)
 		params.push(sort) if sort.length > 0
@@ -185,7 +188,14 @@ class Catalog
 			get_resource_list()
 		end
 		return @@carousel
-	end
+  end
+
+  def get_languages()
+    if @@languages == nil
+      get_language_list()
+    end
+    return @@languages
+  end
 
 	def get_archives()
 		if @@archives == nil
@@ -224,7 +234,70 @@ class Catalog
 			get_resource_list()
 		end
 		return @@resource_tree
-	end
+  end
+
+  def get_language_list()
+    # Right now we're ignoring any languages that aren't ISO 639.2
+    response = call_solr("search/languages", :get)
+    @@languages = []
+    if response['languages'] and response['languages']['language']
+      if response['languages']['language'].class == Array
+        response['languages']['language'].each { |language|
+          iso_lang = nil
+          if language['name'] && language['name'].length > 3
+            iso_lang = @@languages.find { |l| l.english_name == language['name']}
+            if iso_lang.nil?
+              iso_lang = IsoLanguage.find_by_english_name(language['name'])
+              @@languages.push(iso_lang) if not iso_lang.nil?
+            end
+          elsif language['name'] && language['name'].length == 3
+            iso_lang = @@languages.find { |l| l.alpha3 == language['name']}
+            if iso_lang.nil?
+              iso_lang = IsoLanguage.find_by_alpha3(language['name'])
+              @@languages.push(iso_lang) if not iso_lang.nil?
+            end
+          elsif language['name']
+            iso_lang = @@languages.find { |l| l.alpha2 == language['name']}
+            if iso_lang.nil?
+              iso_lang = IsoLanguage.find_by_alpha2(language['name'])
+              @@languages.push(iso_lang) if not iso_lang.nil?
+            end
+          end
+
+          if language['occurrences'] and iso_lang
+            iso_lang['occurrences'] = iso_lang['occurrences'].to_i + language['occurrences'].to_i
+          end
+        }
+      else
+        language = response['languages']['language']
+        iso_lang = nil
+        if language['name'] && language['name'].length > 3
+          iso_lang = @@languages.find { |l| l.english_name == language['name']}
+          if iso_lang.nil?
+            iso_lang = IsoLanguage.find_by_english_name(language['name'])
+            @@languages.push(iso_lang) if not iso_lang.nil?
+          end
+        elsif language['name'] && language['name'].length == 3
+          iso_lang = @@languages.find { |l| l.alpha3 == language['name']}
+          if iso_lang.nil?
+            iso_lang = IsoLanguage.find_by_alpha3(language['name'])
+            @@languages.push(iso_lang) if not iso_lang.nil?
+          end
+        elsif language['name']
+          iso_lang = @@languages.find { |l| l.alpha2 == language['name']}
+          if iso_lang.nil?
+            iso_lang = IsoLanguage.find_by_alpha2(language['name'])
+            @@languages.push(iso_lang) if not iso_lang.nil?
+          end
+        end
+
+        if language['occurrences'] and iso_lang
+          iso_lang['occurrences'] = iso_lang['occurrences'].to_i + language['occurrences'].to_i
+        end
+      end
+    end
+    @@languages.sort! { |r,l| r['english_name'] <=> l['english_name']}
+  end
 
 	def get_resource_list()
 		response = call_solr("archives", :get)
@@ -568,7 +641,9 @@ class Catalog
 
 	def parse_constraints(constraints)
 		q = ""
+    fuz_q = ""
 		t = ""
+    fuz_t = ""
 		aut = ""
 		ed = ""
 		pub = ""
@@ -577,6 +652,14 @@ class Catalog
 		g = ""
 		f = ""
 		o = ""
+    r_art = ""
+    r_own = ""
+    lang = ""
+    discipline = ""
+    doc_type = ""
+    role = ""
+
+    params = []
 
 		constraints.each { |constraint|
 			if constraint['type'] == 'FederationConstraint'
@@ -602,8 +685,26 @@ class Catalog
 					ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
 				elsif constraint['fieldx'] == 'publisher'
 					pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
-				elsif constraint['fieldx'] == 'year'
-					y = format_constraint(y, constraint, 'y')
+        elsif constraint['fieldx'] == 'r_art'
+          r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
+        elsif constraint['fieldx'] == 'r_own'
+          r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
+				elsif constraint['fieldx'] == 'fuz_q'
+          fuz_q = format_constraint(fuz_q, constraint, 'fuz_q')   # TODO: Strip non-digits
+        elsif constraint['fieldx'] == 'fuz_t'
+          fuz_t = format_constraint(fuz_t, constraint, 'fuz_t')   # TODO: Strip non-digits
+        elsif constraint['fieldx'] == 'year'
+          y = format_constraint(y, constraint, 'y')
+        elsif constraint['fieldx'] == 'language'
+          lang = format_constraint(lang, constraint, 'lang')
+        elsif constraint['fieldx'] == 'doc_type'
+          doc_type = format_constraint(doc_type, constraint, 'doc_type')
+        elsif constraint['fieldx'] == 'discipline'
+          discipline = format_constraint(discipline, constraint, 'discipline')
+        elsif constraint['fieldx'].match(/role_/)
+          role = format_constraint(role, constraint, constraint['fieldx'])    # fieldx is also the url param for role_*
+          params.push(role) if role.length > 0
+          role = ''
 				else
 					raise Catalog::Error.new("Unhandled constraint")
 				end
@@ -611,7 +712,7 @@ class Catalog
 				raise Catalog::Error.new("Unhandled constraint")
 			end
 		}
-		params = []
+
 		params.push(q) if q.length > 0
 		params.push(t) if t.length > 0
 		params.push(aut) if aut.length > 0
@@ -622,6 +723,13 @@ class Catalog
 		params.push(g) if g.length > 0
 		params.push(f) if f.length > 0
 		params.push(o) if o.length > 0
+    params.push(r_art) if r_art.length > 0
+    params.push(r_own) if r_own.length > 0
+    params.push(fuz_q) if fuz_q.length > 0
+    params.push(fuz_t) if fuz_q.length > 0
+    params.push(lang) if lang.length > 0
+    params.push(doc_type) if doc_type.length > 0
+    params.push(discipline) if discipline.length > 0
 
 		return params
 	end

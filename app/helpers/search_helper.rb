@@ -425,6 +425,7 @@ module SearchHelper
 	end
   
   def format_constraint(constraint)
+
     ret = {}
     value_display = constraint.value
     if constraint.fieldx =="archive"
@@ -467,6 +468,30 @@ module SearchHelper
 #    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'federation'
 #      ret[:title] = "Federation"
 #      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'language'
+      ret[:title] = "Language"
+      ret[:value] = value_display.split(/\|\|/)[0]
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'r_art'
+      ret[:title] ="Artist"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'r_own'
+      ret[:title] ="Owner"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'fuz_q'
+      ret[:title] ="Keyword Fuzziness"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'fuz_t'
+      ret[:title] ="Title Fuzziness"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'doc_type'
+      ret[:title] ="Format"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx] == 'discipline'
+      ret[:title] ="Discipline"
+      ret[:value] = value_display
+    elsif constraint.is_a?(FacetConstraint) && constraint[:fieldx].match(/role_/) && Search.role_field_names[constraint[:fieldx]]
+      ret[:title] = Search.role_field_names[constraint[:fieldx]][:display]
+      ret[:value] = value_display
     elsif constraint.is_a?(FacetConstraint)
       ret[:title] ="Resource"
       ret[:value] = value_display
@@ -589,7 +614,7 @@ module SearchHelper
 			if row[:one_col]
 				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' colspan='2'>#{row[:value]}</td></tr>\n"
 			else
-				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' class='search_result_data_label'>#{row[:label]}</td><td valign='top' width='100%'>#{row[:value]}</td></tr>\n"
+				html += "<tr #{ 'class="hidden"' if row[:hidden] && hide_some}><td valign='top' class='search_result_data_label'>#{row[:label]}</td><td valign='top' class='search_result_data_value'>#{row[:value]}</td></tr>\n"
 			end
 		}
 		return raw(html)
@@ -691,7 +716,8 @@ module SearchHelper
 		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection} /><img src='#{thumb}' alt='#{federation}' />"
 		html += "</td><td class='num_objects'>#{number_with_delimiter(num_objects)}</td></tr>"
 		return raw(html)
-	end
+  end
+
   
 	def create_facet_link(label, link, params)
 		# add the dynamic adding of the search phrase to the params first. We have to thwart the json function because we don't want it quoted.
@@ -711,6 +737,16 @@ module SearchHelper
     return raw(html)
   end
 
+  def create_genre_table( genre_data )
+    html = raw('<table class="limit_to">')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_genre}</th><th class=\"num_objects\"># of Objects</th></tr>")
+    for genre in genre_data
+      html += genre_selector( genre )
+    end
+    html += raw('</table>')
+    return raw(html)
+  end
+
   def access_selector(count, in_constraints, label, action)
     if in_constraints
       html = "<tr class='limit_to_selected'><td>#{label}&nbsp;&nbsp;" + create_facet_link("[X]", action, { :remove => 'true' })
@@ -718,6 +754,59 @@ module SearchHelper
       html = "<tr><td class='limit_to_lvl1'>" + create_facet_link(label, action, { })
     end
     html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
+    return raw(html)
+  end
+
+  def create_access_table( freeculture_count, fulltext_count, typewright_count )
+    html = raw('<table class="limit_to">')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_access}</th><th class=\"num_objects\"># of Objects</th></tr>")
+    html += raw(access_selector(freeculture_count, access_is_in_constraints?('FreeCultureConstraint'), "Free Culture Only", '/search/constrain_freeculture'))
+    html += raw(access_selector(fulltext_count, access_is_in_constraints?('FullTextConstraint'), "Full Text Only", '/search/constrain_fulltext'))
+    if COLLEX_PLUGINS['typewright']
+      html += raw(access_selector(typewright_count, access_is_in_constraints?('TypeWrightConstraint'), "TypeWright Enabled Only", '/search/constrain_typewright'))
+    end
+    html += raw('</table>')
+    return raw(html)
+  end
+
+
+  def format_selector( format_data )
+    if format_data[:exists]
+      html = "<tr class='limit_to_selected'><td>#{h format_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_format', {:value => format_data[:value]})
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h format_data[:value]}", "/search/add_facet", { :fieldx => 'doc_type', :value => format_data[:value]})
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(format_data[:count])}</td></tr>"
+    return raw(html)
+  end
+
+  def create_format_table( format_data )
+    html = raw('<table class="limit_to">')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_format}</th><th class=\"num_objects\"># of Objects</th></tr>")
+    for format in format_data
+      html += format_selector( format )
+    end
+    html += raw('</table>')
+    return raw(html)
+  end
+
+  def discipline_selector( discipline_data )
+    if discipline_data[:exists]
+      html = "<tr class='limit_to_selected'><td>#{h discipline_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_discipline', {:value => discipline_data[:value]})
+    else
+      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h discipline_data[:value]}", "/search/add_facet", { :fieldx => 'discipline', :value => discipline_data[:value]})
+    end
+    html += "</td><td class='num_objects'>#{number_with_delimiter(discipline_data[:count])}</td></tr>"
+    return raw(html)
+  end
+
+  def create_discipline_table( discipline_data )
+    html = raw('<table class="limit_to">')
+    html += raw("<tr><th>#{Setup.display_name_for_facet_discipline}</th><th class=\"num_objects\"># of Objects</th></tr>")
+    for discipline in discipline_data
+      html += discipline_selector( discipline )
+    end
+    html += raw('</table>')
     return raw(html)
   end
 

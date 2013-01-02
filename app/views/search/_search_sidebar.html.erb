@@ -26,7 +26,7 @@
 	</table>
 
 	<div class="right_column_header">Limit Results to...</div>
-    <p>Select a resource and genre below to limit your search results</p>
+    <p>Select a resource below to limit your search results</p>
     
 	<table class="limit_to">
 		<tr>
@@ -35,26 +35,30 @@
 		</tr>
 		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false, :site_count => @results['facets']['archive'] } %>
 	</table>
-   
-    <table class="limit_to">
-	    <tr><th>Genre</th><th class="num_objects"># of Objects</th></tr>
-		<% for genre in @genre_data -%>
-			<%= genre_selector( genre ) %>
-		<% end -%>
-    </table>    
-   
-    <table class="limit_to">
-	    <tr><th>Access</th><th class="num_objects"># of Objects</th></tr>
-		<%= access_selector(@freeculture_count, access_is_in_constraints?('FreeCultureConstraint'), "Free Culture Only", '/search/constrain_freeculture') %>
-      <%= access_selector(@fulltext_count, access_is_in_constraints?('FullTextConstraint'), "Full Text Only", '/search/constrain_fulltext') %>
-      <% if COLLEX_PLUGINS['typewright'] %>
-      <%= access_selector(@typewright_count, access_is_in_constraints?('TypeWrightConstraint'), "TypeWright Enabled Only", '/search/constrain_typewright') %>
-      <% end -%>
-    </table>
+  <br/>
 
-<!--    <table class="limit_to">
-      <tr><th>Federation</th><th class="num_objects"># of Objects</th></tr>
-        < %= nines_selector(@nines_count) %>
-        < %= eighteenth_connect_selector(@ec_count) %>
-    </table> -->
+  <div class="right_column_header">Other helpful facets...</div>
+  <p>Select a facet below to limit your search results</p>
+
+  <% facet_order = Setup.facet_order() %>
+  <% facet_keys = facet_order.keys.sort %>
+  <% facet_keys.each do |key| %>
+    <% case facet_order[key] %>
+      <% when 'access' %>
+          <%= create_access_table(@freeculture_count, @fulltext_count, @typewright_count) %>
+      <% when 'format' %>
+          <%=  create_format_table(@format_data) %>
+      <% when 'discipline' %>
+          <%=  create_discipline_table(@discipline_data) %>
+      <% when 'genre' %>
+          <%=  create_genre_table(@genre_data) %>
+      <% end %>
+  <% end %>
+
+
+  <!--    <table class="limit_to">
+   <tr><th>Federation</th><th class="num_objects"># of Objects</th></tr>
+     < %= nines_selector(@nines_count) %>
+     < %= eighteenth_connect_selector(@ec_count) %>
+ </table> -->
 </div>
