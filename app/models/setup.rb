@@ -25,6 +25,11 @@ class Setup < ActiveRecord::Base
 		rescue
 		end
 
+		if setup.length == 0
+			puts "!!!!\n!!!!\n!!!!\n\tYou have not yet initialized the global settings. Run \"rake bootstrap:globals\"\n!!!!\n!!!!\n!!!!\n"
+			logger.error "You have not yet initialized the global settings. Run \"rake bootstrap:globals\""
+		end
+
 		@@globals['project_manager_email'] = self.process_email_addr(@@globals['project_manager_email'])
 		@@globals['webmaster_email'] = self.process_email_addr(@@globals['webmaster_email'])
 
@@ -62,7 +67,7 @@ class Setup < ActiveRecord::Base
 	end
 
 	def self.site_name()
-		return globals()['site_name']
+		return globals()['site_name'] || ''
 	end
 
 	def self.site_title()

@@ -3,7 +3,7 @@
 module ActiveSupport
   class BufferedLogger
     def add(severity, message = nil, progname = nil, &block)
-      return if @level > severity
+      return if @log.level > severity
 
       # Skip "Rendered..." messages
       if message =~ /^\s*Rendered.*/

@@ -1,6 +1,6 @@
 ##########################################################################
-# Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-# 
+# Copyright 2013 Applied Research in Patacriticism and the University of Virginia
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,24 +14,16 @@
 # limitations under the License.
 ##########################################################################
 
-class AddIllustrationsTypeToSectionTypes < ActiveRecord::Migration
-  #class ExhibitSectionType < ActiveRecord::Base
-  #end
-  #
-  #def self.up
-  #  ExhibitSectionType.destroy(5) rescue nil
-  #  @est = ExhibitSectionType.new do |est|
-  #    est.id = 5
-  #    est.name = "Illustrations Only"
-  #    est.description = "Illustrations Only Section"
-  #    est.template = "illustrations"
-  #    est.exhibit_page_type_id = 2
-  #  end
-  #  @est.save!
-  #
-  #end
-  #
-  #def self.down
-  #  ExhibitSectionType.destroy(5) rescue nil
-  #end
+namespace :bootstrap do
+	desc "Set up the database with the minimum required (arg: URL of catalog)"
+	task :globals, [:url] => :environment do |t, args|
+		url = args.url
+		rec = Setup.find_by_key('site_solr_url')
+		if rec.present?
+			rec.value = url
+			save!
+		else
+			Setup.create!({ key: 'site_solr_url', value: url })
+		end
+	end
 end
