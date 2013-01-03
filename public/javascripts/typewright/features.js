@@ -17,7 +17,7 @@
 /*global window */
 /*global $, $$ */
 /*global Effect */
-/*extern doEditDocument, searchKeyPress, doTypeWrightSearch, showFootnoteDiv, closeFootnoteDiv, showFootnotePopup, tw_featureDlg */
+/*extern doEditDocument, showFootnoteDiv, closeFootnoteDiv, showFootnotePopup, tw_featureDlg */
 
 /**
  * Call before editing. This will prompt for login if not
@@ -36,45 +36,6 @@ function doEditDocument(is_logged_in, edit_url)
   {
     gotoPage( edit_url );
   }
-}
-
-/**
- * Call from the input field on the typewright overview search box.
- * IF Enter is pressed, it will to a typewright search.
- * params:
- *   controller: controller for the search
- *   action: action to execute on the controller to do the seatch
- *   input: element ID of the search input control
- */
-function searchKeyPress( params )
-{
-    if (window.event.keyCode === 13) 
-    {
-        doTypeWrightSearch(params);    
-    }
-}
-
-/**
- * Initiate an advanced typewright search with the search phrase
- * contained in the input field with the passed id.
- * params:
- *   controller: controller for the search
- *   action: action to execute on the controller to do the seatch
- *   input: element ID of the search input control
- */
-function doTypeWrightSearch( params )
-{
-    var input_id = params.input;
-    var in_ele = $(input_id);
-    var search_phrase = in_ele.value;
-    if (search_phrase.length === 0) 
-    {
-        new MessageBoxDlg("Error", "Please enter some text before searching.");
-    }
-    else
-    {
-        gotoPage(params.controller +'/' + params.action +'?search_phrase='+encodeURI(search_phrase));
-    }
 }
 
 /**
