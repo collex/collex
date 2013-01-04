@@ -70,7 +70,7 @@ class LoginController < ApplicationController
 					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
 					body += "Click \"sign in\" at the top right corner of the page and enter your username and new password.\n\n"
 					body += "Your password is:\n\n#{@user[:new_password]}\n\nAfter logging in, we strongly recommend you change this generated password.\n\n"
-          body += "To change your password go to <a href=\"#{url_for(:controller => 'home', :action => 'index', :only_path => false) + MY_COLLEX_URL }\">#{Setup.my_collex()}</a> and select the 'Edit Profile' link.\n\n"
+          body += "To change your password go to \"#{Setup.my_collex()}\" (#{url_for(:controller => 'home', :action => 'index', :only_path => false) + MY_COLLEX_URL }) and select the \"Edit Profile\" link.\n\n"
 					EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Password Reset", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					render :text => "A new password has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
