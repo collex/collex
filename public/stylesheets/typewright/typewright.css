@@ -99,11 +99,10 @@ a.tw_note {
     float: right;
     text-decoration: none;
     font-size: 0;
-    padding-bottom: 16px;
-    padding-top: 12px;
     width:90px;
-    margin-left:10px;
-    margin-right: 10px;
+	margin: 0 10px 28px;
+	border: 0;
+	height: 28px;
 }
 
 .tw_advanced_link{

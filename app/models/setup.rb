@@ -25,6 +25,11 @@ class Setup < ActiveRecord::Base
 		rescue
 		end
 
+		if setup.length == 0
+			puts "!!!!\n!!!!\n!!!!\n\tYou have not yet initialized the global settings. Run \"rake bootstrap:globals\"\n!!!!\n!!!!\n!!!!\n"
+			logger.error "You have not yet initialized the global settings. Run \"rake bootstrap:globals\""
+		end
+
 		@@globals['project_manager_email'] = self.process_email_addr(@@globals['project_manager_email'])
 		@@globals['webmaster_email'] = self.process_email_addr(@@globals['webmaster_email'])
 
@@ -62,7 +67,7 @@ class Setup < ActiveRecord::Base
 	end
 
 	def self.site_name()
-		return globals()['site_name']
+		return globals()['site_name'] || ''
 	end
 
 	def self.site_title()
@@ -159,17 +164,21 @@ class Setup < ActiveRecord::Base
 
   def self.facet_order()
     order = {}
-    if globals()['facet_order_access'].strip() != ''
-      order[globals()['facet_order_access'].strip] = 'access'
+    facet_order_access = globals()['facet_order_access'] || ''
+    facet_order_format = globals()['facet_order_format'] || ''
+    facet_order_discipline = globals()['facet_order_discipline'] || ''
+    facet_order_genre = globals()['facet_order_genre'] || ''
+    if facet_order_access.strip() != ''
+      order[facet_order_access] = 'access'
     end
-    if globals()['facet_order_format'].strip() != ''
-      order[globals()['facet_order_format'].strip] = 'format'
+    if facet_order_format.strip() != ''
+      order[facet_order_format] = 'format'
     end
-    if globals()['facet_order_discipline'].strip() != ''
-      order[globals()['facet_order_discipline'].strip] = 'discipline'
+    if facet_order_discipline.strip() != ''
+      order[facet_order_discipline] = 'discipline'
     end
-    if globals()['facet_order_genre'].strip() != ''
-      order[globals()['facet_order_genre'].strip] = 'genre'
+    if facet_order_genre.strip() != ''
+	    order[facet_order_genre.strip] = 'genre'
     end
     return order
   end

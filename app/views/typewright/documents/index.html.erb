@@ -56,8 +56,7 @@
   
       <!-- footnote number 2 -->
       <div id="2" class="footnote" style="display:none">
-        <b>2.</b>&nbsp;Martin Mueller defines &#8220;curation&#8221; as making it possible for all texts &#8220;to be good enough and [to be able to] play nicely with each other&#8221; 
-        (<%= link_to "DATA","http://literaryinformatics.northwestern.edu/node/64"%>).
+        <b>2.</b>&nbsp;Martin Mueller defines &#8220;curation&#8221; as making it possible for all texts &#8220;to be good enough and [to be able to] play nicely with each other&#8221;.
         Professor Mueller also offers a more formal definition, quoting Philip Lord: &#8220;the activity of managing and promoting the use of data from its point of creation,
         to ensure it is fit for contemporary purpose, and available for discovery and re-use&#8221; 
         (Philip Lord, Alison Macdonald, Liz Lyon, David Giaretta, From Data Deluge to Data Curation, 2004). 
@@ -79,19 +78,17 @@
   <div id="typewright_documents">
     
       <div class="tw_search_box">
+	      <form action="/search/add_tw_constraint" method="GET">
           <div class="tw_search_label">Search for TypeWright enabled texts</div>
           <div class="tw_phrase_container">
-              <input id="tw_search_phrase" name="search_phrase" type="text" 
-                     onkeypress="searchKeyPress({controller: '/search', action: 'add_tw_constraint', input: 'tw_search_phrase' })" />
+              <input id="tw_search_phrase" name="search_phrase" type="text" required />
               <div class="tw_advanced_link">
                 <%= link_to("Advanced Search", '/collex/new_search?mode=typewright', :class => 'nav_link') %>
               </div>
            </div>
            
-           <%= link_to_function "", 
-                "doTypeWrightSearch( {controller: '/search', action: 'add_tw_constraint', input: 'tw_search_phrase' })",
-                { :class => "tw_search_button" } %>
-                
+           <button class="tw_search_button"> </button>
+	      </form>
           <div class="clear_both"></div>
       </div>
       
