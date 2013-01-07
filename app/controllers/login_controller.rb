@@ -66,12 +66,16 @@ class LoginController < ApplicationController
 			if @user
 				begin
 					body = "Your #{Setup.site_name()} password has been reset.\n\n"
-					body += "To log in, visit this link:\n\n"
-					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
-					body += "Click \"sign in\" at the top right corner of the page and enter your username and new password.\n\n"
-					body += "Your password is:\n\n#{@user[:new_password]}\n\nAfter logging in, we strongly recommend you change this generated password.\n\n"
+
+          body += "Your new password is:\n"
+          body += "\t#{@user[:new_password]}\n\n"
+
+					body += "Click #{url_for :controller => 'home', :action => 'index', :only_path => false} to return to #{Setup.site_name()}.\n\n"
+
+          body += "We strongly recommend that you change your password by going to the #{Setup.site_name()} site and clicking the #{Setup.my_collex()} tab. Then select EDIT PROFILE."
+
 					EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Password Reset", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
-					render :text => "A new password has been e-mailed to your registered address.", :status => :bad_request
+					render :text => "A new password will be e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg.message)
 					render :text => "There was a problem sending email. If this persists, report the problem to the administrator.", :status => :bad_request

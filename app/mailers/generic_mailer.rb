@@ -20,7 +20,7 @@ class GenericMailer < ActionMailer::Base
 	# Generic email
 	#
 	def generic(from_name, from_email, to_name, to_email, subject, body, return_url, suffix)
-		@the_body       = "#{body}\n\nThis message was sent to you by #{Setup.site_name()}  (#{return_url}). #{suffix}\n"
+		@the_body       = "#{body}\n\n----\nThis message was sent to you by #{Setup.site_name()}  (#{return_url}). #{suffix}\n"
 		#@headers    = { "return-path" =>  "#{from_name} <#{from_email}>" }
 		mail(:from => "#{from_name} <#{from_email}>", :reply_to => "#{from_name} <#{from_email}>", :to => "#{to_name} <#{to_email}>", :subject => "[#{Setup.site_name()}] #{subject}")
 	end
