@@ -50,7 +50,7 @@ class GetIncludeFileList
 		local = []
 		case page
 		  when :typewright
-		    local = [ "search_validation_home", "result_row_popup", 'more', "typewright/features"]
+		    local = [ "search_validation_home", "result_row_popup", 'more', "typewright/features", 'cc_license']
 			when :typewright_edit
 				local = [ "typewright/diff_match_patch_uncompressed", "typewright/reparse_words", "typewright/line",
 					"typewright/img_cursor", "typewright/change_line", "typewright/find_dlg", "typewright/select_page",
