@@ -593,7 +593,7 @@ module SearchHelper
 				is_first = false
 				value = "#{real_exhibit.title} <a class='nav_link' href='/exhibits/#{real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id}' >[view]</a>"
 				if Exhibit.can_edit(curr_user, real_exhibit.id)
-					value += link_to("[edit]", { :controller => 'builder', :action => 'show', :id => real_exhibit.id }, :class => 'nav_link' )
+					value += link_to("[edit]", { :controller => '/builder', :action => 'show', :id => real_exhibit.id }, :class => 'nav_link' )
 				end
 				rows.push({:hidden => true, :id => "in_exhibit_#{exhibit.exhibit.id}_#{hit['uri']}", :label => label, :value => value})
 			end
