@@ -908,7 +908,7 @@ textarea.groups_textarea {
 }
 
 .gd_transparent_progress_spinner {
-	background-image: url(/images/progress_transparent.gif);
+	background-image: url("/images/progress_transparent.gif");
 	background-repeat: no-repeat;
 	display:block;
 	height:32px;

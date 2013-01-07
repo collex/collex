@@ -30,7 +30,7 @@
                #        }
                link_to_function(
                        format_tag_for_output(tag[0]),
-                       "serverAction({action: { actions: '/tag/results?tag=#{tag[0]}&view=tag', params: {}}, progress: { waitMessage: 'Searching...' }})",
+                       "serverAction({action: { actions: '/tag/results?tag=#{tag[0]}&view=tag', params: {}}, progress: { waitMessage: 'Searching...' }, searching: true})",
                        {
                                :title => pluralize(tag[1], 'object'),
                                :class => tag[2] ? 'nav_link tag_lvl1' : 'nav_link'

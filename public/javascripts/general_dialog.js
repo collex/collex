@@ -885,6 +885,14 @@ var GeneralDialog = Class.create({
 		this.cancel = function() {
 			panel.cancel();
 		};
+
+        this.hide = function() {
+            panel.hide();
+        }
+
+        this.show = function() {
+            panel.show();
+        }
 		
 		this.center = function() {
 			var dlg = $(this_id);

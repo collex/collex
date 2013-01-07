@@ -724,7 +724,7 @@ module SearchHelper
 		params[:phrs] = "$(phrase)"
 		json = params.to_json()
 		json = json.gsub("\"$(phrase)\"", "$('search_phrase') ? $('search_phrase').getRealValue() : null")
-		return link_to_function(label, "serverAction({action: { actions: '#{link}', params: #{json}}, progress: { waitMessage: 'Searching...' }})", { :class => 'nav_link' })
+		return link_to_function(label, "serverAction({action: { actions: '#{link}', params: #{json}}, progress: { waitMessage: 'Searching...' }, searching: true})", { :class => 'nav_link' })
 	end
 	
   def genre_selector( genre_data )
