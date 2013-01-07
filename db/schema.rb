@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120523140721) do
+ActiveRecord::Schema.define(:version => 20121211191342) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20120523140721) do
     t.integer "cached_resource_id"
   end
 
+  add_index "cached_properties", ["cached_resource_id"], :name => "index_cached_properties_on_cached_resource_id"
   add_index "cached_properties", ["name"], :name => "index_cached_properties_on_name"
   add_index "cached_properties", ["value"], :name => "index_cached_properties_on_value"
 
@@ -350,6 +351,14 @@ ActiveRecord::Schema.define(:version => 20120523140721) do
     t.string   "photo_content_type"
     t.string   "photo_file_size"
     t.string   "photo_updated_at"
+  end
+
+  create_table "iso_languages", :force => true do |t|
+    t.string   "alpha3"
+    t.string   "alpha2"
+    t.string   "english_name"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "login_infos", :force => true do |t|
