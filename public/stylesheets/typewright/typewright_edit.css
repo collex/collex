@@ -253,6 +253,7 @@ input.tw_deleted_line {
 
 table.tw_editing td {
 	padding: 0;
+	font-family: 'Times New Roman', serif;
 }
 
 #tw_text_0 {
@@ -294,6 +295,7 @@ table.tw_editing td {
 
 #tw_input_focus {
     width: 670px;
+	font-family: 'Times New Roman', serif;
 }
 
 .tw_legend {
