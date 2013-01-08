@@ -65,6 +65,9 @@
 			<td><div class="tw_button3 tw_change_line tw_down_arrow_bottom" data-amount="1" title="Next line">&nbsp;</div></td>
 		</tr>
 	</table>
+    <div class="tw_toolbar bottom">
+    <%= render :partial => 'pagination', :locals => { :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
+    </div>
 	<%= render :partial => 'edit_instructions' %>
 	<div class="clear_both"></div>
 	<%= render :partial => 'word_stats', :locals => { :word_stats => @params[:word_stats], :doc_word_stats => @params[:doc_word_stats]} %>
