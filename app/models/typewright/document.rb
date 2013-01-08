@@ -56,8 +56,8 @@ class Typewright::Document < ActiveResource::Base
     return result
   end
 
-  def self.get_report_form_url(id, page, src = :gale)
-    form_url = "#{self.site}documents/#{id}/report?page=#{page}&src=#{src}"
+  def self.get_report_form_url(id, user_id, fullname, email, page, src = :gale)
+	  form_url = "#{self.site}documents/#{id}/report?page=#{page}&src=#{src}&user_id=#{user_id}&fullname=#{fullname}&email=#{email}"
     return form_url
   end
 
