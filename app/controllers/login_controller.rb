@@ -97,7 +97,7 @@ class LoginController < ApplicationController
 					body += "	#{@user[:username]}\n\n"
 					body += "To log in, visit this link:\n\n"
 					body += "    #{url_for :controller => 'home', :action => 'index', :only_path => false}\n\n"
-					body += "Click \"sign in\" at the top right corner of the page and enter your username and password.\n\n"
+					body += "Click \"Log In\" at the top right corner of the page and enter your username and password.\n\n"
 					EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], @user[:fullname], @user[:email], "Recover User Name", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
 					render :text => "Your user name has been e-mailed to your registered address.", :status => :bad_request
 				rescue Exception => msg
