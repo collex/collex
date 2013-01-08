@@ -118,4 +118,11 @@ module Typewright::TypewrightHelper
     return raw(html)
   
 	end
+
+	def tw_percent_edited_display(stats)
+		return 0 if stats[:pages_with_changes] == 0 || stats[:num_pages] == 0
+		percent = stats[:pages_with_changes] * 100 / stats[:num_pages]
+		return "<1" if percent < 1
+		return percent.to_s
+	end
 end
