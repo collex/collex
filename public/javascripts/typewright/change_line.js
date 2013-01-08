@@ -347,8 +347,12 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
 	Y.on('mousewheel', function(e) {
 		// The mouse wheel should work any time the input has the focus even if the wheel isn't over it.
+		var isInEditingArea = e.target.ancestor('.tw_editing') !== null;
+		var isScrollTarget = (e.target._node.parentElement.id === 'tw_img_full' || isInEditingArea
+			|| e.target._node.id === 'tw_pointer_doc');
 		// For now, we just exclude when the target is a select control
-		if (e.target._node.tagName !== 'OPTION') {
+//		if (e.target._node.tagName !== 'OPTION') {
+		if (isScrollTarget) {
 			var delta = e.wheelDelta;
 			change_line_rel(-delta);
 			e.halt();

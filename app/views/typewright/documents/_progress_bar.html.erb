@@ -23,6 +23,6 @@
 	<div class='tw_progress_background'>
 		<div class='tw_progress_bar' style='width: <%= stats[:pages_with_changes] * 100 / stats[:num_pages] %>%'></div>
 	</div>
-	<div class='tw_progress_number'><%= stats[:pages_with_changes] * 100 / stats[:num_pages] %>%</div>
+	<div class='tw_progress_number'><%= tw_percent_edited_display(stats) %>%</div>
 </div>
 <% end %>

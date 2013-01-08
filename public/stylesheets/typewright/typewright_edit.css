@@ -253,6 +253,7 @@ input.tw_deleted_line {
 
 table.tw_editing td {
 	padding: 0;
+	font-family: 'Times New Roman', serif;
 }
 
 #tw_text_0 {
@@ -279,6 +280,7 @@ table.tw_editing td {
 
 #tw_text_2 td {
 	padding-top:4px;
+	padding-bottom: 4px;
 }
 
 .tw_edit_instructions {
@@ -294,6 +296,7 @@ table.tw_editing td {
 
 #tw_input_focus {
     width: 670px;
+	font-family: 'Times New Roman', serif;
 }
 
 .tw_legend {
@@ -554,6 +557,13 @@ table.tw_editing td {
     margin-left: 20px;
     vertical-align: text-top;
 }
+.tw_toolbar.bottom {
+	height: 22px;
+}
+.bottom .tw_pagination_source {
+	display: none;
+}
+
 .tw_source_link {
     color: #AC2E20;
     text-decoration: none;
