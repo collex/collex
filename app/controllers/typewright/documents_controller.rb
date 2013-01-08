@@ -170,8 +170,15 @@ class Typewright::DocumentsController < ApplicationController
     doc_id = params[:id]
     page_num = params[:page]
     src = params[:src]
-    @report_form_url = Typewright::Document.get_report_form_url(doc_id, page_num, src)
-    render :partial => '/typewright/documents/report'
+    collex_user = get_curr_user()
+    if collex_user.blank?
+	    render :text => 'You must be signed in to report pages. Did your session expire?', :status => :bad_request
+    else
+	    user = Typewright::User.get_or_create_user(Setup.default_federation(), collex_user.id)
+	    user_id = user.present? ? user.id : nil
+	    @report_form_url = Typewright::Document.get_report_form_url(doc_id, user_id, collex_user.fullname, collex_user.email, page_num, src)
+	    render :partial => '/typewright/documents/report'
+    end
   end
 
 	def instructions
