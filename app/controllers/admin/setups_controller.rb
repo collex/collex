@@ -184,10 +184,18 @@ class Admin::SetupsController < Admin::BaseController
       warnings.push("Large value detected. \"Format Facet Order: #{order['facet_order_format']}\" Facets may not display correctly.")
     end
 
-
-
-
-
+    if !access_order.nil? and access_order < 0
+      warnings.push("Negative value detected. \"Access Facet Order: #{order['facet_order_access']}\"  Facets may not display correctly.")
+    end
+    if !genre_order.nil? and genre_order < 0
+      warnings.push("Negative value detected. \"Genre Facet Order: #{order['facet_order_genre']}\" Facets may not display correctly.")
+    end
+    if !discipline_order.nil? and discipline_order < 0
+      warnings.push("Negative value detected. \"Discipline Facet Order: #{order['facet_order_discipline']}\" Facets may not display correctly.")
+    end
+    if !format_order.nil? and format_order < 0
+      warnings.push("Negative value detected. \"Format Facet Order: #{order['facet_order_format']}\" Facets may not display correctly.")
+    end
 
 
 
