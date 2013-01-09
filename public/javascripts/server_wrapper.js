@@ -162,7 +162,7 @@ var ProgressSpinnerDlg = Class.create({
         // This puts up a large spinner that can only be canceled through the ajax return status
 
         var dlgLayout = {
-            page: 'layout',
+            page: 'spinner_layout',
             rows: [
                 //[ {picture: '/images/progress_transparent.gif', alt: 'please wait'}],
                 [ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
