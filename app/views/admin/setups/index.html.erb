@@ -2,7 +2,16 @@
 <% current_sub_page "Setup" -%>
 
 <div class="setup_container">
-	<p id="notice"class="notice"><%= notice %></p>
+	<p id="notice" class="notice"><%= flash[:notice] %></p>
+
+    <% if flash[:warnings] %>
+        <p id="notice" class="notice" style="padding-left:10px">
+          <% flash[:warnings].each do |warning| %>
+            <%= warning %> <br/>
+          <% end %>
+        </p>
+    <% end %>
+
 	<p>
 		The following settings control how this version of Collex will run and what it looks like. You will most likely
 		only need to modify these settings once when you first install Collex.

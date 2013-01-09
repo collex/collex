@@ -168,17 +168,38 @@ class Setup < ActiveRecord::Base
     facet_order_format = globals()['facet_order_format'] || ''
     facet_order_discipline = globals()['facet_order_discipline'] || ''
     facet_order_genre = globals()['facet_order_genre'] || ''
+    dont_dupe = 0 # value to append to a key in case the key already exists
     if facet_order_access.strip() != ''
-      order[facet_order_access] = 'access'
+      if order[facet_order_access]
+        order[facet_order_access + dont_dupe.to_s] = 'access'
+        dont_dupe += 1
+      else
+        order[facet_order_access] = 'access'
+      end
     end
     if facet_order_format.strip() != ''
-      order[facet_order_format] = 'format'
+      if order[facet_order_format]
+        order[facet_order_format + dont_dupe.to_s] = 'format'
+        dont_dupe += 1
+      else
+        order[facet_order_format] = 'format'
+      end
     end
     if facet_order_discipline.strip() != ''
-      order[facet_order_discipline] = 'discipline'
+      if order[facet_order_discipline]
+        order[facet_order_discipline + dont_dupe.to_s] = 'discipline'
+        dont_dupe += 1
+      else
+        order[facet_order_discipline] = 'discipline'
+      end
     end
     if facet_order_genre.strip() != ''
-	    order[facet_order_genre.strip] = 'genre'
+      if order[facet_order_genre.strip]
+        order[facet_order_genre.strip + dont_dupe.to_s] = 'genre'
+        dont_dupe += 1
+      else
+        order[facet_order_genre.strip] = 'genre'
+      end
     end
     return order
   end
