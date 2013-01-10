@@ -157,6 +157,30 @@ function submitFormWithConfirmation( params ) {
    new ConfirmDlg(title, message, okStr, cancelStr, submitAction);    
 }
 
+var ProgressSpinnerDlg = Class.create({
+    initialize: function (message) {
+        // This puts up a large spinner that can only be canceled through the ajax return status
+
+        var dlgLayout = {
+            page: 'spinner_layout',
+            rows: [
+                //[ {picture: '/images/progress_transparent.gif', alt: 'please wait'}],
+                [ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
+                [ {rowClass: 'gd_progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ]
+            ]
+        };
+
+        var pgsParams = {this_id: "gd_progress_spinner_dlg", pages: [ dlgLayout ], body_style: "gd_progress_spinner_div", row_style: "gd_progress_spinner_row"};
+        var dlg = new GeneralDialog(pgsParams);
+        //dlg.changePage('layout', null);
+        dlg.center();
+
+        this.cancel = function() {dlg.cancel();};
+        this.hide = function() {dlg.hide();};
+        this.show = function() {dlg.show();};
+    }
+});
+
 // confirm: (if present)
 //		title: string
 //		message: string
@@ -174,31 +198,10 @@ function submitFormWithConfirmation( params ) {
 //		waitMessage: string
 var serverAction = function(params) {
 
-	var ProgressSpinnerDlg = Class.create({
-		initialize: function (message) {
-			// This puts up a large spinner that can only be canceled through the ajax return status
-
-			var dlgLayout = {
-					page: 'layout',
-					rows: [
-                        [ {picture: '/images/progress_transparent.gif', alt: 'please wait'}],
-						//[ {text: ' ', klass: 'gd_transparent_progress_spinner'} ],
-						[ {rowClass: 'gd_progress_label_row'}, {text: message, klass: 'transparent_progress_label'} ]
-					]
-				};
-
-			var pgsParams = {this_id: "gd_progress_spinner_dlg", pages: [ dlgLayout ], body_style: "gd_progress_spinner_div", row_style: "gd_progress_spinner_row"};
-			var dlg = new GeneralDialog(pgsParams);
-			//dlg.changePage('layout', null);
-			dlg.center();
-
-			this.cancel = function() {dlg.cancel();};
-		}
-	});
-
 	var confirmParams = params.confirm;
 	var actionParams = params.action;
 	var progressParams = params.progress;
+    var searchingParams = params.searching;
 
 	var recurseUpdateWithAjax = function(rParams, resp)
 	{
@@ -372,9 +375,12 @@ var serverAction = function(params) {
 
 	var action = function() {
 		if (progressParams)
-			dlg = new ProgressSpinnerDlg(progressParams.waitMessage);
+			if (searchingParams)
+                progressSpinnerSearchingDialog.show()
+            else
+                dlg = new ProgressSpinnerDlg(progressParams.waitMessage);
 		if (actionParams.actions)
-			recurseUpdateWithAjax({ actions: actionParams.actions, els: actionParams.els, target: actionParams.target, onSuccess: onSuccess, dlg: actionParams.dlg, onFailure: onFailure, params: actionParams.params });
+            recurseUpdateWithAjax({ actions: actionParams.actions, els: actionParams.els, target: actionParams.target, onSuccess: onSuccess, dlg: actionParams.dlg, onFailure: onFailure, params: actionParams.params });
 		else
 			onSuccess();
 	};
@@ -421,5 +427,13 @@ function formatFailureMsg(resp, action) {
 //  chrome cancels the loading of the spinner image once a page change is detected
 //  so the spinner image is never loaded.  This 'forces' it to load the image.
 // IE isn't loading the image either :(
-var preload_spinner = new Image();
-preload_spinner.src = '/images/progress_transparent.gif'
+
+var progressSpinnerSearchingDialog = null;
+function preload_image() {
+    var preload_spinner = new Image();
+    preload_spinner.src = '/images/progress_transparent.gif'
+    progressSpinnerSearchingDialog = new ProgressSpinnerDlg("Searching...");
+    progressSpinnerSearchingDialog.hide();
+
+}
+Event.observe(window, 'load', preload_image);

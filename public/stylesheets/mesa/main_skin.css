@@ -17,7 +17,7 @@
 body {
 	background:#03002F;
 	font-family: 'Poly',serif;
-	font-size: 13px;
+	font-size: 16px;
 	line-height: 20px;
 }
 
@@ -25,7 +25,7 @@ div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_ca
 	.drop_cap p:first-letter, .exhibit_header, .exhibit_illustration_text, div.content_container2, div#search_box,
 	#footer_container, .inner_content_container, #subnav_container, .breadcrumbs {
 	font-family: 'Poly',serif;
-	font-size: 13px;
+	font-size: .95em;
 	padding-top: 15px;
 }
 
@@ -62,7 +62,7 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 	font-family: 'Stoke',serif;
 	font-weight: normal;
 	top: 96px;
-	font-size: 11px;
+	/*font-size: 11px;*/
 	line-height: 21px;
 }
 
@@ -72,6 +72,7 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 	top: 96px;
 	color: #0d1d4e;
 	font-weight: normal;
+    padding-top: 8px;
 }
 
 .tab_link_long {
@@ -80,8 +81,9 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 	font-family: 'Stoke',serif;
 	font-weight: normal;
 	top: 96px;
-	font-size: 11px;
+	/*font-size: 11px;*/
 	line-height: 21px;
+    padding-top: 8px;
 }
 
 .tab_link_long_current {
@@ -90,6 +92,7 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 	top: 96px;
 	color: #0d1d4e;
 	font-weight: normal;
+    padding-top: 8px;
 }
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
@@ -99,10 +102,13 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 a.my_collex_link {
 	color:#CCAC63;
 	font-family: 'Stoke',serif;
-	font-size: 11px;
-	line-height: 21px;
+	/*font-size: 11px;*/
+	/*line-height: 21px;*/
 	font-weight: normal;
-	background:url(/images/mesa/index_tab_my_collex.jpg) top left no-repeat;
+    width: 100px;
+	/*background:url(/images/mesa/index_tab_my_collex.jpg) top left no-repeat;*/
+    background:url(/images/mesa/index_tab_long.jpg) top left no-repeat;
+    padding-top: 8px !important;
 }
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
@@ -110,17 +116,17 @@ a.my_collex_link {
 }
 
 .tab_link_logo{
-	font-size: 11px;
+	/*font-size: 11px;*/
 	line-height: 21px;
 	float: right;
 	height: 29px;
-	padding-top: 9px;
+	padding-top: 8px;
 	text-decoration: none;
 	width: 71px;
 	background:url(/images/mesa/index_tab.jpg) top left no-repeat;
 	color:#CCAC63;
 	font-family: 'Stoke',serif;
-	font-weight: normal;
+	font-weight: normal !important;
 }
 
 #footer_container {
@@ -198,7 +204,7 @@ div.carousel_title {
 
 div#search_note_container {
     font-family: 'Poly',serif;
-    font-size: 11px;
+    font-size: 100%;
     line-height: 1.4em;
 }
 

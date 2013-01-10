@@ -46,7 +46,11 @@ class Admin::SetupsController < Admin::BaseController
         if checkbox_keys.include? rec.key
           rec.value = 'true'
         else
-          rec.value = value
+          if value.strip == ''
+            rec.value = get_default_value(key)
+          else
+            rec.value = value
+          end
         end
 				rec.save!
 			else
@@ -55,6 +59,7 @@ class Admin::SetupsController < Admin::BaseController
 		}
 		Setup.reload()
 		refill_session_cache()
+
 
 		if act == 'Send Me A Test Email'
 			user = get_curr_user()
@@ -82,10 +87,121 @@ class Admin::SetupsController < Admin::BaseController
 			rescue Catalog::Error => e
 				msg = "There is a problem with the connection to the Catalog. Is the URL you've specified correct?"
 			end
-		else
-			msg = "Parameters successfully updated."
-		end
-		redirect_to :back, :notice => msg
-	end
+    else
+      warnings = verify_setup_values()
+      if warnings.length == 0
+        msg = "Parameters successfully updated."
+      else
+        msg = "Warning:"
+      end
+    end
+    flash[:notice] = msg
+    flash[:warnings] = warnings
+		redirect_to :back
+  end
+
+  private
+  def get_default_value(key)
+    value = ''
+    case key
+      when 'facet_display_name_discipline'
+        value = "Discipline"
+      when 'facet_display_name_format'
+        value = "Format"
+      when 'facet_display_name_genre'
+        value = "Genre"
+      when 'facet_display_name_access'
+        value = "Access"
+      else
+        value = value
+    end
+    return value
+  end
+
+  def verify_setup_values()
+    warnings = []
+
+    order = {}
+    rec = Setup.find_by_key('facet_order_format')
+    order['facet_order_format'] = rec.value
+    rec = Setup.find_by_key('facet_order_access')
+    order['facet_order_access'] = rec.value
+    rec = Setup.find_by_key('facet_order_discipline')
+    order['facet_order_discipline'] = rec.value
+    rec = Setup.find_by_key('facet_order_genre')
+    order['facet_order_genre'] = rec.value
+
+    # Check for duplicate values
+    if order.values.count != order.values.uniq.count
+      warnings.push 'Facet Display Order contains duplicate numbers. Facets may not display correctly.'
+      if order.values.count(order['facet_order_genre']) > 1
+        warnings.push " Genre Facet Order: #{order['facet_order_genre']}"
+      end
+      if order.values.count(order['facet_order_discipline']) > 1
+        warnings.push " Discipline Facet Order: #{order['facet_order_discipline']}"
+      end
+      if order.values.count(order['facet_order_access']) > 1
+        warnings.push " Access Facet Order: #{order['facet_order_access']}"
+      end
+      if order.values.count(order['facet_order_format']) > 1
+        warnings.push " Format Facet Order: #{order['facet_order_format']}"
+      end
+    end
+
+    # Check for non-numeric values
+    access_order, genre_order, discipline_order, format_order = nil, nil, nil, nil
+    begin
+      access_order = Integer(order['facet_order_access']) if order['facet_order_access'].length > 0
+    rescue
+      warnings.push( "NonNumeric Display Order detected. \"Access Facet Order: #{order['facet_order_access']}\" Facets may not display correctly.")
+    end
+    begin
+      genre_order = Integer(order['facet_order_genre']) if order['facet_order_genre'].length > 0
+    rescue
+      warnings.push( "NonNumeric Display Order detected. \"Genre Facet Order: #{order['facet_order_genre']}\" Facets may not display correctly.")
+    end
+    begin
+      discipline_order = Integer(order['facet_order_discipline']) if order['facet_order_discipline'].length > 0
+    rescue
+      warnings.push( "NonNumeric Display Order detected. \"Discipline Facet Order: #{order['facet_order_discipline']}\" Facets may not display correctly.")
+    end
+    begin
+      format_order = Integer(order['facet_order_format']) if order['facet_order_format'].length > 0
+    rescue
+      warnings.push( "Non Numeric Display Order detected. \"Format Facet Order: #{order['facet_order_format']}\" Facets may not display correctly.")
+    end
+
+    if !access_order.nil? and access_order > 4
+      warnings.push("Large value detected. \"Access Facet Order: #{order['facet_order_access']}\"  Facets may not display correctly.")
+    end
+    if !genre_order.nil? and genre_order > 4
+      warnings.push("Large value detected. \"Genre Facet Order: #{order['facet_order_genre']}\" Facets may not display correctly.")
+    end
+    if !discipline_order.nil? and discipline_order > 4
+      warnings.push("Large value detected. \"Discipline Facet Order: #{order['facet_order_discipline']}\" Facets may not display correctly.")
+    end
+    if !format_order.nil? and format_order > 4
+      warnings.push("Large value detected. \"Format Facet Order: #{order['facet_order_format']}\" Facets may not display correctly.")
+    end
+
+    if !access_order.nil? and access_order < 0
+      warnings.push("Negative value detected. \"Access Facet Order: #{order['facet_order_access']}\"  Facets may not display correctly.")
+    end
+    if !genre_order.nil? and genre_order < 0
+      warnings.push("Negative value detected. \"Genre Facet Order: #{order['facet_order_genre']}\" Facets may not display correctly.")
+    end
+    if !discipline_order.nil? and discipline_order < 0
+      warnings.push("Negative value detected. \"Discipline Facet Order: #{order['facet_order_discipline']}\" Facets may not display correctly.")
+    end
+    if !format_order.nil? and format_order < 0
+      warnings.push("Negative value detected. \"Format Facet Order: #{order['facet_order_format']}\" Facets may not display correctly.")
+    end
+
+
+
+
+    return warnings
+
+  end
 
 end

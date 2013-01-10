@@ -27,7 +27,8 @@ div#header_container {
 }
 
 a.my_collex_link {
-	background:url(/images/mesa/index_tab.jpg) top left no-repeat;
+    background:url(/images/mesa/index_tab_long.jpg) top left no-repeat;
+	/*background:url(/images/mesa/index_tab.jpg) top left no-repeat;*/
 	top: 92px;
 }
 
@@ -52,6 +53,7 @@ div#nav_container {
 .limit_to th {
 	color:#CCAC63;
 	background:#0d1d4e;
+    font-size: .85em !important;
 }
 
 .new_search {

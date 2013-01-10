@@ -18,7 +18,7 @@
 	width:365px;
 }
 .search_entry_box_short {
-    width:246px;
+    width:236px;
 }
 
 .search_entry_box_keyword {
@@ -34,7 +34,7 @@
 }
 
 .search_role_type {
-    width: 115px;
+    width: 125px;
 }
 
 .search_entry_instructions {
@@ -319,7 +319,7 @@ table.name_facet tr {
 table.name_facet td {
 	padding: 0px;
 	padding-right: 1em;
-	font-size: .8em;
+	font-size: .9em;
 }
 
 .name_facet_close {
