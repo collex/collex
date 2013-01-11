@@ -403,6 +403,7 @@ table.tw_editing td {
 	margin-right: 4px;
 	border: 1px solid #B8B8B8;
 	background-color: #F1F1F1;
+	overflow: auto;
 }
 
 .tw_report_page {
