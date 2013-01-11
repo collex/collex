@@ -297,8 +297,12 @@ class Group < ActiveRecord::Base
 
 		arr = split_by_all_delimiters(emails)
 		arr.each { |email|
+			# The user may have put in lots of different email formats, or may have put in uninteligible data. We will only
+			# keep emails that appear to be well-formed.
 			email = email.strip()
-			if email.length > 0
+			is_legal = /^\<?.+@.+\..+\>?$/.match(email) # emails must be in the form: aaa@aaa.aaa, possibly bracketed by <...>
+			if email.length > 0 && is_legal != nil
+				email = email.gsub("<", '').gsub(">", '')   # don't want the bracketing
 				list.push(email)
 			end
 		}
