@@ -502,8 +502,15 @@ class SearchController < ApplicationController
       @format_data = marshall_format_data(@results["facets"]["doc_type"])
       @discipline_data = marshall_discipline_data(@results["facets"]["discipline"])
 
-      @searchable_roles = @results['facets'].map { |k,v| (k.match(/role_/) and not v.empty?)  ? k : nil }.compact
-      @searchable_roles = @searchable_roles.map { |field| Search.role_field_names[field] ? [Search.role_field_names[field][:search_field], Search.role_field_names[field][:display]] : nil }.compact
+      if @results['facets']['role']
+        @searchable_roles = @results['facets']['role'].keys.map { |field|
+          # map role field names to display names
+          # example ['role_AUT', 'Author']
+          [Search.role_field_names[field][:search_field], Search.role_field_names[field][:display]]
+        }
+      else
+        @searchable_roles = [];
+      end
 
 			@citation_count = @results['facets']['genre']['Citation'] || 0
 			@freeculture_count = 0
