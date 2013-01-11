@@ -26,7 +26,7 @@ var line = {
 
 	doInsert: function(num) {
 		var before = num > 0 ? lines[num-1].num : 0;
-		var after = lines[num].num;
+		var after = (num < lines.length) ? lines[num].num : before + 1;
 		var newLine = before + (after-before)/2;
 		lines.splice(num, 0, { l:0, t:0, r:0, b:0, words: [[ ]], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] } });
 	},
@@ -93,7 +93,9 @@ var line = {
 	//
 	doRegisterLineChange: function(num, newText) {
 		// sets the line if there is something to set, and returns true if a change was made.
-		if (lines[num].text[lines[num].text.length-1] === newText) {
+		var lastTextLocation = lines[num].text.length-1;
+		var lastText = lines[num].text[lastTextLocation];
+		if (lastText === newText || (lastText === null && newText === '')) {
 			if (lines[num].change && lines[num].change.type === 'change') {
 				delete lines[num].change;
 				return true;
