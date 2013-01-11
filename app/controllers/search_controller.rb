@@ -506,8 +506,10 @@ class SearchController < ApplicationController
         @searchable_roles = @results['facets']['role'].keys.map { |field|
           # map role field names to display names
           # example ['role_AUT', 'Author']
-          [Search.role_field_names[field][:search_field], Search.role_field_names[field][:display]]
+	        hash = Search.role_field_names[field]
+          [hash[:search_field], hash[:display]] if hash.present?
         }
+        @searchable_roles.compact!
       else
         @searchable_roles = [];
       end
