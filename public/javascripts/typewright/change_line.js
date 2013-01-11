@@ -55,14 +55,14 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	};
 
 	function updateServer() {
-		
-    var params = line.serialize(currLine);
+
+		var params = line.serialize(currLine);
 		params.page = page;
 		params._method = 'PUT';
 
     // TODO-PER: This is probably safe to put in the general serverNotify function, but testing is needed.
     YUI().use('querystring-stringify', function(Y) {
-      
+
 			// The default call of stringify-simple doesn't create the nested array parameters
 			// in the right format for ruby, so we call it explicitly here.
 			params = Y.QueryString.stringify( params, { arrayKey: true } );
@@ -70,6 +70,14 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
 		});
 	}
+
+	var updateServerSync = function () {
+		var params = line.serialize(currLine);
+		params.page = page;
+		params._method = 'PUT';
+
+		serverNotifySync(updateUrl, params);
+	};
 
 	function tooltipIcon(iconStyle, tooltipText) {
 		return "<span class='tw_icon " + iconStyle + " tw_history_tooltip_wrapper'>&nbsp;<span class='tw_tooltip hidden'>" + tooltipText + "</span></span>";
@@ -365,6 +373,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		change_line_abs(lineNum);
 	 }, 'body', "#tw_img_thumb");
 
+	Y.on("beforeunload", function(e) {
+		if (lineDirty)
+			updateServerSync();
+	}, window);
+
 	//
 	// delete line
 	//
@@ -412,7 +425,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		if (lineDirty)
 			updateServer();
 	}, "body");
-	
+
 	Y.on("resize", function(e) {
 	  redraw();
 	}, window);
