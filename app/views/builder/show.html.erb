@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <% current_page Setup.my_collex() -%>
 <script type="text/javascript">
-	var gIllustrationTypes = <%= ExhibitIllustration.get_illustration_type_array() %>;
+	var gIllustrationTypes = <%= raw(ExhibitIllustration.get_illustration_type_array()) %>;
 
 	document.observe('dom:loaded', function() {
 		if (window.initOutline) 

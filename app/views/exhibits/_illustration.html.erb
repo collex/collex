@@ -176,6 +176,6 @@ end -%>
 <% if edit_mode -%>
 	<script type="text/javascript">
 		if(window.initializeInplaceIllustrationEditor)
-			initializeInplaceIllustrationEditor(<%= "'illustration_inner_#{illustration_id},exhibit_builder_outline_content'"%>, "<%= "/builder/edit_illustration,/builder/refresh_outline"%>");
+			initializeInplaceIllustrationEditor(<%= raw("'illustration_inner_#{illustration_id},exhibit_builder_outline_content'")%>, "<%= "/builder/edit_illustration,/builder/refresh_outline"%>");
 	</script>
 <% end -%>
