@@ -22,3 +22,8 @@
 	width:90%;
 	padding:4px 5% 4px 5%;
 }
+
+.side-container {
+	max-height: 300px;
+	overflow: auto;
+}

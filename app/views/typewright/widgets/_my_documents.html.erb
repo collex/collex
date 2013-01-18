@@ -20,6 +20,7 @@
 <% if document_list.length == 0 %>
 <div class="empty_list_text" >You have not started editing any documents</div>
 <% else %>
+	<div class="side-container">
 	<% for document in document_list -%>
 		<div class="side_bar_exhibit_thumbnail"><img height="50" src="<%= document[:thumbnail] %>" alt="document thumbnail" /></div>
 		<div class="side_bar_exhibit_text exhibit_link"><%= link_to tw_abbrev(document[:title]), tw_create_show_url(document[:uri]), { :class => 'nav_link', :title => document[:title] } %>&nbsp;
@@ -30,4 +31,5 @@
 		</div>
 		<div class="side_bar_exhibit_spacer clear_both"></div>
 	<% end -%>
+	</div>
 <% end %>

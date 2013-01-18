@@ -25,7 +25,11 @@ class Typewright::Document < ActiveResource::Base
 	end
 
 	def self.find_by_id(id)
+		begin
 		self.find(:first, :params => { :id => id })
+		rescue
+			return nil
+		end
 	end
 
 	def self.get_stats(uri, src, word_stats)
