@@ -1,0 +1,198 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-result_row {
+hr.search_results_hr {
+	height:2px;
+	background:#C7C8CB;
+	border:none;
+	margin:15px 0px 15px 0px;
+}
+
+.search_result_left_logged_in {
+	width:125px;
+	margin:0px 15px 0px 0px;
+	float:left;
+	text-align:center;
+}
+
+.search_result_left_logged_in table td {
+	padding:10px 10px 10px 0px;
+}
+
+.search_result_left {
+	width:100px;
+	margin:0px 15px 0px 0px;
+	float:left;
+	text-align:center;
+	padding-bottom:19px;
+}
+
+.search_result_left_for_popup {
+	height:100px;
+	width:500px;
+	margin:0px 15px 0px 0px;
+	float:left;
+	text-align:center;
+}
+
+.search_result_image {
+	width:100px;
+	height:100px;
+	text-align:center;
+	vertical-align:middle;
+	margin:0px 0px 10px 0px;
+}
+
+.search_result_image a img {
+	border:solid 2px #966C54;
+}
+
+.search_result_right{
+	float:left;
+	width:71%;
+}
+
+.search_result_data td {
+	text-align:left;
+	padding:1px 25px 0px 0px;
+	vertical-align:top;
+}
+
+.result_row_details .search_result_data td {
+	padding:1px 25px .2em 0px;
+}
+
+.search_result_data_label {
+	width: 95px;
+	color: gray;
+}
+
+.search_result_data_value {
+    width: 75%;
+}
+
+.search_result_full_text_label {
+	color: gray;
+}
+
+.result_row_collected {
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+.search_result_header {
+	font-size:1.3em;
+	font-weight:bold;
+	text-align: left;
+}
+
+.search_result_header a.more_link {
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.results_per_page {
+	float:right;
+	font-size:0.6em;
+}
+
+.results_per_page select {
+	font-size:0.9em;
+}
+
+.result_row_img {
+	text-align: center;
+}
+
+.result_row_img_progress {
+	padding-top: 17px;
+}
+
+/*----------------------------*/
+
+.expand_all_link {
+	float:left;
+}
+
+.search_results_pages {
+	float:right;
+	word-spacing:0.2em;
+}
+
+.current_serp {
+	font-weight:bold;
+}
+
+.snippet em {
+	font-style: normal;
+	font-weight: bold;
+	background: #dcdcdc;
+}
+
+.annotation {
+	background-color: #FFFF99;
+}
+
+.my_tag {
+	font-weight: bold;
+}
+
+.tags_instructions {
+	font-style: italic;
+}
+
+.result_row_icons {
+	padding-top: 6px;
+	clear: both;
+	font-size: 19px;
+}
+
+.result_row_tooltip {
+	font-size: 14px;
+	text-decoration: none;
+}
+
+span.tooltip:hover span.result_row_tooltip {
+	width:12em;
+}
+
+.free_culture {
+	background-repeat:no-repeat;
+}
+
+.full_text {
+	background-repeat:no-repeat;
+}
+
+.has_xml_source {
+	background-repeat:no-repeat;
+}
+
+.can_typewright {
+	background-repeat:no-repeat;
+}
+
+.uri_link {
+	font-size: .6em;
+	text-decoration: none;
+	color: #cccccc;
+}
+
+.uri_link:hover {
+	color: black;
+}
+}

@@ -1,0 +1,272 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-forum {
+
+.content_container2 {
+	padding-left: 20px;
+	padding-right: 20px;
+	height:auto;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:0.9em;
+}
+
+.FH_cat_table {
+	width:100%;
+	margin:10px 0px 20px 0px;
+}
+
+.FH_cat_header {
+	width:100%;
+	text-align:left;
+	font-weight:bold;
+	padding:4px 12px 4px 12px;	
+}
+
+.FH_cat_info {
+	width:100%;
+	text-align:left;
+	padding:12px 12px 12px 12px;	
+
+}
+
+.FH_post {
+	width:32%;
+	text-align:left;
+	padding:12px 12px 8px 12px;
+	vertical-align:top;
+}
+
+.FH_spacer {
+	width:2%
+}	
+
+.FH_post_title {
+	font-weight:bold;
+}
+
+.FH_post_image {
+	float:right;
+	margin-left:5px;
+/*	height:80px;*/
+}
+
+.FH_view_all {
+	text-align:left;
+}
+
+.FP_original_post {
+	margin:10px 0px 10px 0px;
+	padding:20px 15px 20px 15px;
+}
+
+.FP_post_header {
+	font-size:1.5em;
+	font-weight:bold;
+	padding:0px 0px 10px 0px;
+}
+
+.FP_user_image {
+	width:100px;
+	float:left;
+	font-size:0.9em;
+	text-align:center;
+}
+
+.FP_user_img {
+	margin:0px 0px 5px 0px;
+}
+
+.FP_post_body {
+	width:60%;
+	float:left;
+	padding:0px 20px 0px 20px;
+}
+
+.FP_attachment {
+	width:150px;
+	float:right;
+	text-align:center;
+	overflow: hidden;
+}
+
+.FP_attachment_img {
+	margin:0px 0px 10px 0px;
+}
+
+.FP_attachment_title {
+	font-weight:bold;
+}
+
+.FP_attachment_details {
+	font-size:0.9em;
+	text-align:left;
+	margin:5px 0px 8px 0px;
+}
+
+.FP_attachment_collected {
+	padding-left:10px;
+	padding-top:5px;
+}
+
+.FP_replies {
+	margin:10px 0px 10px 0px;
+	padding:20px 15px 0px 15px;
+}
+
+.FP_reply_header {
+	padding:10px 0px 10px 0px;
+	margin:10px 0px 10px 0px;
+}
+
+.FP_reply_footer {
+	padding:5px 0px 10px 0px;
+	margin:10px 0px 10px 0px;
+}
+
+
+.FP_reply_number {
+	font-size:1.2em;
+	font-weight:bold;
+	float:left;
+}
+
+.FP_reply_pages {
+	float:right;
+	padding-top:0.3em;
+}
+
+.FP_replies_per_page {
+	float:left;
+}
+
+.FP_replies_per_page .results_per_page {
+	float:left;
+	font-size:inherit;
+}
+
+.FP_reply_container {
+	margin-bottom:10px;
+}
+
+.FP_breadcrumb {
+	margin:10px 0px 10px 0px;
+}
+
+
+.FC_pages {
+	padding:10px;
+}
+
+.FC_pages_bottom {
+	padding:10px;
+}
+
+.FC_post_title{
+	text-align:left;
+	vertical-align:top;
+	width:50%;
+	padding:10px;
+}
+
+.FC_last_comment{
+	text-align:left;
+	vertical-align:top;
+	width:300px;
+	padding:10px;
+}
+
+.FC_replies{
+	text-align:center;
+	vertical-align:top;
+	width:100px;
+	padding:10px;
+}
+
+.FC_views{
+	text-align:center;
+	vertical-align:top;
+	width:100px;
+	padding:10px;
+}
+
+.FC_object {
+	text-align:center;
+	vertical-align:middle;
+	width:80px;
+	padding:5px;
+}
+
+.FC_post_image {
+/*	height:80px;*/
+}
+
+.FC_header {
+	font-weight: bold;
+}
+
+.FP_original_post .FC_report_link {
+	text-decoration: none;
+}
+
+.FP_reply_container .FC_report_link {
+	text-decoration: none;
+}
+
+.reported_comment {
+	font-weight: bold;
+	padding: 5px;
+}
+
+.forum_header_link {
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.forum_header_link:hover {
+	text-decoration:underline;
+}
+	
+.FP_user_name {
+	padding-bottom: 2px;
+}
+
+.discussion_action_bar {
+	margin-left:-4px;
+}
+
+.discussion_title_tooltip {
+	text-decoration: none;
+}
+
+.discussion_title_tooltip_title {
+	font-weight: bold;
+	margin-bottom: .5em;
+	/*border-bottom: 1px solid gray;*/
+}
+
+.forum_modified_time {
+	font-style: italic;
+}
+
+.forum_license {
+	padding-top: 7px;
+}
+
+.group_comment {
+	font-weight: bold;
+}
+}

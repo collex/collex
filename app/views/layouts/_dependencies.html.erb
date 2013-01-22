@@ -1,25 +1,15 @@
-<%# Figure out how we're running so we know what files to load -%>
-<%# We only run Google Analytics if we are on the real deployment. -%>
-<%# We want to load the non-minimized versions of YUI if we are running development -%>
-<% quick_load = (Rails.env == 'development') && (request.host().index('performantsoftware') == nil) -%>
-
 <% if SKIN == 'MESA' %>
 <link href='http://fonts.googleapis.com/css?family=Poly' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Stoke' rel='stylesheet' type='text/css'>
 <% end %>
 
-<%# Wrap ALL css and js calls in a model so there is control over them. In development mode, the files are included normally, in production, the files are bundled - %>
-<%= get_stylesheets(@site_section, quick_load) %>
-<!--[if lt IE 7]>
-<%= stylesheet_link_tag "iehacks", :media => "all" %>
-<![endif]-->
-<!--[if IE 7]>
-<%= stylesheet_link_tag "ie7hacks", :media => "all" %>
-<![endif]-->
+<link href="http://yui.yahooapis.com/combo?2.8.2/build/reset-fonts-grids/reset-fonts-grids.css&2.8.2/build/base/base.css&2.8.2/build/menu/assets/skins/sam/menu.css&2.8.2/build/button/assets/skins/sam/button.css&2.8.2/build/container/assets/skins/sam/container.css&2.8.2/build/editor/assets/skins/sam/editor.css&2.8.2/build/resize/assets/skins/sam/resize.css&2.8.2/build/assets/skins/sam/skin.css&2.8.2/build/paginator/assets/skins/sam/paginator.css&2.8.2/build/datatable/assets/skins/sam/datatable.css" media="all" rel="stylesheet" type="text/css">
+<%= stylesheet_link_tag "application", :media => "all" %>
 
 <script type="text/javascript" src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
-<%= raw(get_javascripts(@site_section, quick_load)) %>
-<%= csrf_meta_tag %>
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.8.2/build/yahoo-dom-event/yahoo-dom-event.js&2.8.2/build/json/json.js&2.8.2/build/element/element.js&2.8.2/build/button/button.js&2.8.2/build/container/container.js&2.8.2/build/dragdrop/dragdrop.js&2.8.2/build/connection/connection.js&2.8.2/build/menu/menu.js&2.8.2/build/editor/editor.js&2.8.2/build/resize/resize.js&2.8.2/build/paginator/paginator.js&2.8.2/build/datasource/datasource.js&2.8.2/build/datatable/datatable.js&2.8.2/build/animation/animation.js&2.8.2/build/carousel/carousel.js"></script>
+<%= javascript_include_tag "application" %>
+<%= csrf_meta_tags %>
 
 <script type="text/javascript">
 	var supportsFixedPositioning = true;

@@ -1,0 +1,176 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.federation-18th {
+	background:#1d253c;
+
+#header_container {
+	background-color: #1D253C;
+}
+
+#main_container {
+	border-left:10px #34436c solid;
+	border-right:10px #34436c solid;
+	border-bottom:10px #34436c solid;
+}
+
+#footer_container {
+	background:#1d253c;
+}
+
+.exhibit_footer {
+	background-color: #34436c;
+}
+
+.tab_link {
+	background:image-url('18th/index_tab.jpg') top left no-repeat;
+	color:#ffffff;
+}
+
+.tab_link_current {
+	background:image-url('18th/index_tab_dn.jpg') top left no-repeat;
+}
+
+.tab_link_long {
+	background:image-url('18th/index_tab_long.jpg') top left no-repeat;
+	color:#ffffff;
+}
+
+.tab_link_long_current {
+	background:image-url('18th/index_tab_long_dn.jpg') top left no-repeat;
+}
+
+.tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
+	color:#ffffff;
+}
+
+.my_collex_link {
+	color:#ffffff;
+	background:image-url('18th/index_tab.jpg') top left no-repeat;
+}
+
+.my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
+	color:#ffffff;
+}
+
+.tab_link_logo{
+	background:image-url('18th/index_tab.jpg') top left no-repeat;
+	color:#ffffff;
+}
+
+#footer_container {
+	color: #d2d9ea;
+}
+
+.right_column {
+	background:#edf4f2;
+}
+
+.nav_link:link, .nav_link:visited {
+	color:#445a93;
+}
+
+.tag_link:link { color: #445a93; }
+.tag_link:visited { color: #445a93; }
+.tag_link:hover { color: #fff; background: #445a93; }
+
+/* This is used for all links that change, or potentially change, the database */
+.modify_link:link { color: #445a93; text-decoration: none; }
+.modify_link:visited { color: #445a93; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #445a93; text-decoration: none; }
+
+/* This is used for all links that go to the NINES sites. */
+.nines_link { background: image-url('18th/18th_link.jpg') center right no-repeat; }
+.nines_link:link { color: #445a93; }
+.nines_link:visited { color: #445a93; }
+.nines_link:hover { color: #fff; background: #445a93; }
+
+/* This is used for all links that go to external websites */
+.wordpress #container .ext_link:link { color: #445a93; text-decoration: none; }
+.wordpress #container .ext_link:visited { color: #445a93; text-decoration: none; }
+.wordpress #container .ext_link:hover { color: #fff; background: #445a93; text-decoration: none; }
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike {
+	background: image-url('18th/18th_link.jpg') center right no-repeat;
+	color: #445a93;
+} /* should match nines_link:link */
+
+.ext_linklike {
+	color: #445a93;
+} /* should match ext_link:link */
+
+.carousel_title {
+	color: #ffffff;
+}
+
+#footer_container a, #footer_container a.link, #footer_container a.visited{
+	color:#445a93;
+}
+
+.login_div {
+	background-image:image-url('18th/login_header.jpg');
+	background-repeat:no-repeat;
+	border-left: 8px solid #34436C;
+	border-right: 8px solid #34436C;
+	border-bottom: 8px solid #34436C;
+}
+
+.search_result_buttons a {
+	background:transparent image-url('18th/lvl2_result_row_button.jpg') no-repeat scroll left top;
+}
+
+.search_result_buttons a:hover {
+	background:image-url('18th/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
+}
+
+/*********************************/
+/* styles for all javascript-created dialogs */
+/*********************************/
+
+&.yui-skin-sam .container-close {
+	background:transparent image-url('18th/popup_box_x.gif') no-repeat scroll 0 0;
+}
+
+&.yui-skin-sam .container-close:hover {
+	background:transparent image-url('18th/popup_box_x_rl.gif') no-repeat scroll 0 0;
+}
+
+&.yui-skin-sam .yui-panel .hd {
+	background: transparent image-url('18th/popup_box_header.jpg') repeat-y scroll 0 0;
+	color: white;
+	font-family: Verdana, sans-serif;
+	font-weight: bold;
+}
+
+&.yui-skin-sam .yui-button {
+	background: transparent image-url('18th/button.jpg') repeat-y scroll 0 0;
+}
+
+&.yui-skin-sam .yui-button.default button {
+	background: transparent image-url('18th/button_default.jpg') repeat-y scroll 0 0;
+	color: white;
+}
+
+&.yui-skin-sam .button_tab_selected {
+	background: transparent image-url('18th/attachment_button_down.jpg') repeat-y scroll 0 0;
+}
+
+.yui-button-hover a {
+	background: transparent image-url('18th/attachment_button_down.jpg') repeat-y scroll 0 0;
+}
+
+}

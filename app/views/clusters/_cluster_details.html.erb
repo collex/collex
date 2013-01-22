@@ -51,7 +51,7 @@
 </div>
 <div class="cluster_details_center">
 	<h1><%=link_to( group.name, { :controller => 'groups', :action => 'show', :id => group.get_visible_id() }, { :class => 'nav_link' }) %> > <%= cluster.name %><%= link_to_function('[edit title]', "editTitle(#{cluster.id}, '#{cluster.name}', 'cluster');", :class => 'group_edit_title_link nav_link') if group.can_edit(user_id) %></h1>
-	<div class="group_description_label"><span class="group_details_label"><%= group.get_clusters_label() %> Description</span> <%= link_to_function('[edit]', "editDescription(#{cluster.id}, '#{cluster.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'cluster', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
+	<div class="group_description_label"><span class="group_details_label"><%= group.get_clusters_label() %> Description</span> <%= link_to_function('[edit]', "editDescription(#{cluster.id}, '#{cluster.description.gsub("\n", "").gsub('\'') { |apos| '\\\'' }}', 'cluster', '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}');", :class => 'nav_link') if group.can_edit(user_id) %></div>
 	<div class="group_description"><%= decode_exhibit_links(cluster.description.gsub("\n", "<br />")) %></div>
 <% if group.can_edit(user_id) -%>
 	<div class="group_editors">URL is <%= cluster.get_visible_url %> <%= link_to_function('[Change URL]', "editURL(#{cluster.id}, '#{cluster.visible_url}', 'cluster', '/groups/#{group.get_visible_id()}/');", :class => 'nav_link') %></div>

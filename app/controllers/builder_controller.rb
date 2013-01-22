@@ -130,7 +130,7 @@ class BuilderController < ApplicationController
 				obj = {}
 				obj[:id] = hit['uri']
 				image = CachedResource.get_thumbnail_from_hit(hit)
-				image = DEFAULT_THUMBNAIL_IMAGE_PATH if image == "" || image == nil
+				image = image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
 				obj[:img] = image
 				obj[:title] = hit['title']
 				obj[:strFirstLine] = hit['title']

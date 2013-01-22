@@ -1,0 +1,52 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-featured_exhibit {
+
+#exhibit_container{
+	background:image-url('index_exhibit_stretch.gif') top left repeat-x #FFEFCF;
+	margin:0px 20px 20px 20px;
+	padding:0px 0px 20px 0px;
+	border:4px solid #C7AA97;
+}
+
+#exhibit_left {
+	background:image-url('index_exhibit_left.jpg') top left no-repeat;
+	float:left;
+	width:196px;
+	height:200px;
+	margin-right:20px;
+}
+
+#exhibit_right {
+	background:image-url('index_exhibit_right.jpg') top left no-repeat;
+	float:right;
+	width:197px;
+	height:200px;
+	margin-left:20px;
+}
+
+#exhibit_text{
+	padding:28px 217px 0px 216px;
+	text-align:left;
+}
+
+.exhibit_title {
+	font-size:1.15em;
+	font-weight:bold;
+}
+}
+

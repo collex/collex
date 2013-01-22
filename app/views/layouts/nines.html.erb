@@ -22,7 +22,40 @@
 	<%= render :partial => '/layouts/dependencies' %>
 	<title><%= Setup.site_title() %><%= " - #{@current_page}" if @site_section != :home %><%= @subtitle %></title>
 </head>
-<body class="yui-skin-sam">
+<%
+   styles = ''
+	case @site_section
+		when :typewright
+		    styles = "pg-lvl2 pg-typewright pg-community pg-result_row"
+		when :typewright_edit
+		    styles =  "pg-lvl3 pg-typewright_edit"
+		when :search
+		    styles = "pg-lvl2 pg-search pg-right_column pg-result_row"
+		when :tag
+		    styles = "pg-lvl2 pg-tag pg-result_row"
+		when :my_collex
+		    styles = "pg-lvl2 pg-right_column pg-tag pg-search pg-my_collex pg-exhibit_list pg-result_row pg-exhibit pg-edit_exhibit_outline pg-user_profile"
+		when :discuss
+		    styles = "pg-lvl2 pg-search pg-result_row pg-forum pg-user_profile"
+		when :home
+		    styles = "pg-lvl1 pg-featured_exhibit"
+		when :exhibits
+		    styles = "pg-lvl2 pg-featured_exhibit pg-exhibit_list pg-user_profile pg-right_column"
+		when :shared
+		    styles = "pg-lvl2 pg-search pg-featured_exhibit pg-community pg-tag pg-result_row pg-user_profile pg-right_column pg-groups"
+		when :admin
+		    styles = "pg-lvl2 pg-admin pg-search pg-right_column"
+		when :about
+		    styles = "pg-lvl2 pg-about"
+		when :news
+		    styles = "pg-lvl2 pg-about"
+		when :view_exhibit
+		    styles = "pg-lvl3 pg-exhibit"
+		when :print_exhibit
+		    styles = "pg-lvl4 pg-exhibit"
+	end
+   %>
+<body class="yui-skin-sam federation-<%=SKIN%> <%= styles %>">
 <%= render :partial => '/layouts/header' %>
 			<%= yield %>
 <%= render :partial => '/layouts/footer' %>

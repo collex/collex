@@ -1,0 +1,262 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-lvl1 {
+
+#header_right a {
+	color:#b06e41;
+	font-size: .8em;
+	margin-right: 2px;
+}
+
+#header_right a:visited {
+	color:#b06e41;
+}
+
+#nav_container {
+	position:absolute;
+	right:112px;
+	top:123px;
+}
+
+.my_collex_link {
+	position:absolute;
+	left:40px;
+	top:123px;
+	height:23px;
+	width:71px;
+	float:left;
+	font-weight:bold;
+	text-decoration:none;
+	padding-top:9px;
+}
+
+.my_collex_link:hover {
+	text-decoration:underline;
+}
+
+.tab_link_logo{
+	height:29px;
+	width:71px;
+	float:right;
+	font-weight:bold;
+	text-decoration:none;
+	padding-top:9px;
+}
+
+.tab_link_logo:hover {
+	text-decoration:underline;
+}
+
+#search_container {
+	padding:20px 40px 20px 40px;
+}
+
+#search_box{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:0.95em;
+	position:relative;
+	left:50%;
+	margin-left:-250px;
+	width:500px;
+	text-align:left;
+	line-height:2.8em;
+}
+
+#search_by{
+	width:150px;
+}
+
+#search_phrase{
+	width:400px;
+}
+
+#search_button{
+	width:70px;
+	margin-left:20px;
+}
+
+#search_note_container{
+	font-size:0.8em;
+	line-height:1.3em;
+	width:400px;
+	padding-top:8px;
+}
+
+#search_note{
+	float:left;
+	width:250px;
+	padding:0px;
+	margin:0px;
+}
+
+#advanced_link{
+	float:right;
+	text-align:right;
+	width:140px;
+	padding:0px;
+	margin:0px;
+}
+
+#popular_container table {
+	border-top:#ADAFB2 solid 1px;
+	border-bottom:#F3ECE7 solid 1px;
+}
+
+.popular_title{
+	text-align:center;
+	font-weight:bold;
+	margin-bottom:1em;
+}
+
+.spacer_cell{
+	border:none;
+	height:0px;
+	width:0px;
+	margin:0px;
+	padding:0px;
+}
+#discussions{
+	width:30%;
+	border-top:#F3ECE7 solid 1px;
+	border-bottom:#ADAFB2 solid 1px;
+	border-right:#F3ECE7 solid 1px;
+	border-left:none;
+	
+	text-align:left;
+}
+
+#tags{
+	width:40%;
+	border-top:#F3ECE7 solid 1px;
+	border-bottom:#ADAFB2 solid 1px;
+	border-right:#F3ECE7 solid 1px;
+	border-left:#ADAFB2 solid 1px;
+	
+	padding-left:20px;
+	padding-right:20px;
+	text-align:center;
+}
+
+.tag_lvl1 {
+	font-weight:bold;
+	font-size:1.05em;
+}
+
+#news {
+	width:30%;
+	border-top:#F3ECE7 solid 1px;
+	border-bottom:#ADAFB2 solid 1px;
+	border-right:none;
+	border-left:#ADAFB2 solid 1px;
+
+	text-align:left;
+}
+
+/******************************/
+
+#carousel_container {
+	height:445px;
+}
+
+&.yui-skin-sam .yui-carousel-nav {
+	background: transparent;
+}
+
+&.yui-skin-sam .yui-carousel-nav ul li.yui-carousel-nav-page-selected {
+	background-position: 0;
+}
+
+&.yui-skin-sam .yui-carousel-nav ul {
+	margin-top:-3px;
+}
+
+.carousel_title {
+	font-style: italic;
+	font-size: 1.3em;
+	left: 10px;
+	position: relative;
+	top: -469px;
+	text-align: left;
+	width: 200px;
+}
+
+.yui-carousel-element li {
+    height: 384px;
+	border: 0px;
+}
+
+.yui-carousel .yui-carousel-item-selected {
+	border: 0px;
+}
+
+.yui-carousel-content {
+	margin-top: 10px;
+}
+
+#carousel_container .item {
+    display: inline;
+    float: left;
+    margin: 0 12px 0 12px;
+/*    padding-right: 40px;*/
+    overflow: hidden;
+    width: 212px;
+	background:white none repeat scroll 0 0;
+}
+
+.carousel_image {
+	width: 210px;
+}
+
+.carousel_item_title {
+	font-weight: bold;
+}
+
+#carousel_left {
+	width:40px;
+	height:384px;
+}
+#carousel_right {
+	width:40px;
+	height:384px;
+}
+
+&.yui-skin-sam .yui-carousel, &.yui-skin-sam .yui-carousel-vertical {
+	border: 0px;
+}
+
+.carousel_background {
+	height:445px;
+}
+
+.carousel_column {
+	padding-top: 0px;
+	padding-right:0px;
+	padding-left:0px;
+}
+
+.carousel_button_column {
+	padding-top: 20px;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+.voyeur_icon {
+	height: 30px;
+	float: left;
+	padding: 3px;
+}
+}

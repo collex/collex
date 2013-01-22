@@ -1,0 +1,120 @@
+body.pg-community {
+	.shared_left_column {
+	float: left;
+	width: 70.8%;
+}
+
+.shared_header {
+	padding:4px 14px 4px 14px;
+	font-size:1.3em;
+}
+
+.shared_explanation {
+	color: gray;
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+.shared_right_body {
+	padding: 1em;
+}
+
+#shared_tags {
+	text-align:center;
+}
+
+#shared_discussions ul {
+	margin: 0 0 0 1em;
+}
+
+.shared_search_results {
+	font-size: 1.5em;
+	padding-top: .5em;
+	margin-bottom: -4px;
+}
+
+.thumbnail_item {
+	clear: left;
+	padding-top: 10px;
+}
+
+.left_thumbnail {
+	float: left;
+}
+
+.right_of_thumbnail {
+	margin-left: 90px;
+	margin-right:20px;
+}
+
+.tag_lvl1 {
+	font-weight:bold;
+	font-size:1.05em;
+}
+
+.pagination {
+	float: right;
+}
+
+.publications_images {
+	text-align:center;
+	padding-bottom:60px;
+	padding-top:60px;
+}
+
+.publications_image {
+	margin-left:20px;
+	margin-right:20px;
+	max-height: 400px;
+}
+
+.publications_explanation {
+	padding-left: 2em;
+	padding-bottom: 2em;
+	padding-right: 2em;
+	padding-top: 20px;
+	font-family: sans-serif;
+}
+
+.publication_emphasis {
+	font-style: italic;
+}
+
+.publication_footing {
+	font-style: italic;
+	color: gray;
+	text-align: center;
+	padding-top:16px;
+}
+
+#classroom_welcome {
+	padding-bottom: 3em;
+	margin-left:180px;
+}
+
+#classroom_welcome div {
+	padding-bottom: 8px;
+}
+
+#classroom_welcome .title {
+	font-size: 1.4em;
+	padding-bottom:12px;
+}
+
+#classroom_welcome .label {
+	font-weight: bold;
+}
+
+#classroom_welcome .instructions {
+
+}
+
+.classroom_welcome_spacer {
+	clear: both;
+	padding-bottom: 20px;
+}
+
+.obj_summary_label {
+	font-style: italic;
+}
+}

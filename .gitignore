@@ -15,5 +15,4 @@
 /.idea/
 /config/database.yml
 /config/site.yml
-/Gemfile.lock
 /public/favicon.ico

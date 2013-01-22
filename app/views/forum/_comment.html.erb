@@ -17,7 +17,7 @@
 <%# params: ActiveRecord comment, bool can_delete, bool can_edit, bool is_main -%>
 <%# the difference between the main comment and the others is that the main 
 	# comment has a title and a background color. -%>
-<%= raw("<div class='FP_post_header'>#{DiscussionThread.find(comment.discussion_thread_id).get_title()}&nbsp;<a href='/forum/rss/#{comment.discussion_thread_id}.xml'><img src='/images/RSS_icon.gif' height='16px' alt='RSS'/></a></div>") if is_main %>
+<%= raw("<div class='FP_post_header'>#{DiscussionThread.find(comment.discussion_thread_id).get_title()}&nbsp;<a href='/forum/rss/#{comment.discussion_thread_id}.xml'>#{image_tag('RSS_icon.gif', { height: '16px', alt: 'RSS' })}</a></div>") if is_main %>
 <div class="FP_user_image">
 	<% picture_src = get_user_picture(comment.user_id, :full) -%>
 	<%= render :partial => 'img_with_progress_spinner', :locals => { :src => picture_src, :alt => 'user', :klass => 'FP_user_img', :width => 100, :height => 125 } if picture_src && picture_src.length > 0 %>

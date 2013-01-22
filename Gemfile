@@ -13,6 +13,8 @@ group :assets do
   gem 'sass-rails'
   gem 'coffee-rails'
 
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'therubyracer', '~> 0.10.0'
   gem 'uglifier'
 end
 gem 'paperclip'

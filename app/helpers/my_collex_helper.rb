@@ -70,7 +70,7 @@ module MyCollexHelper
   
   def get_image_url(url)
     if url == nil || url.length == 0
-      return DEFAULT_THUMBNAIL_IMAGE_PATH
+      return image_path(DEFAULT_THUMBNAIL_IMAGE_PATH)
     end
     return url
   end

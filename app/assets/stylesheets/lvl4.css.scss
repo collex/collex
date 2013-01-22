@@ -1,0 +1,102 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-lvl4 {
+#header_container {
+	display: none;
+}
+
+#header_left {
+	display: none;
+}
+
+div.exhibit_nav {
+	display: none;
+}
+
+div#main_container {
+	border: none;
+	margin: 0px;
+}
+
+.exhibit_nextlink {
+	display: none;
+}
+
+.exhibit_prevlink {
+	display: none;
+}
+
+div#footer_container {
+	display: none;
+}
+
+h2.exhibit_title {
+	text-align: left;
+}
+
+h4.exhibit_author {
+	text-align: left;
+}
+
+h4.exhibit_institution {
+	text-align: left;
+}
+
+.exhibit_heading {
+	display: none;
+}
+
+div#page1.exhibit_heading {
+	display: block;
+}
+
+a.nines_link {
+	padding-right: 0px;
+	background: none;
+}
+
+.my_collex_link {
+	display: none;
+}
+
+#nav_container {
+	display:none;
+}
+
+#login_container {
+	display: none;
+}
+
+#subnav_links_container {
+	display: none;
+}
+
+#content_container {
+	text-align:left;
+}
+
+.page_header {
+	font-size:1.5em;
+	padding:10px 0px 0px 0px;
+	margin:0px;
+	font-weight:bold;
+}
+
+.page_subheader {
+	padding: 0px 0px 0px 0px;
+}
+}

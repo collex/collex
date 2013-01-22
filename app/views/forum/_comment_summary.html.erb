@@ -19,7 +19,7 @@
 <% text ||= '' -%>
 <% comment_info = thread.discussion_comments.empty? ? {} : get_comment_header_info(thread.discussion_comments[0]) -%>
 <% if comment_info[:thumbnail] == nil -%>
-		<% comment_info[:thumbnail] = '/images/group_forum_default_thumb.jpg' %>
+		<% comment_info[:thumbnail] = image_path('group_forum_default_thumb.jpg') %>
 <% end -%>
 <div class="thumbnail_item<%= get_summary_header_class(thread) %>">
 <%= get_summary_header_div(nil, thread) %>

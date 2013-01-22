@@ -30,10 +30,10 @@
 	<area shape="rect" href="#" alt="zoom out" coords="0,103,26,132" onclick="tagZoom.doZoom('-'); return false;"  title="zoom out" />
 </map>
 <div id="tag_zoom_scale" >
-	<img src="/images/zoom_scale.png" usemap="#zoom_map" border="0" alt="zoom" />
+    <%= image_tag("zoom_scale.png", { usemap:"#zoom_map", border:"0", alt:"zoom"}) %>
 </div>
 <div id="tag_zoom_thumb" >
-	<img src="/images/zoom_thumb.png" alt="zoom thumb" />
+    <%= image_tag("zoom_thumb.png", { alt:"zoom thumb"}) %>
 </div>
 
 <script type="text/javascript">

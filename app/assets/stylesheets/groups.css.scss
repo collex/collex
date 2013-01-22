@@ -1,0 +1,224 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-groups {
+
+.group_details_controls {
+	padding-bottom: 20px;
+}
+
+.group_description {
+	padding-left: 1em;
+	padding-bottom: 1em;
+}
+
+.group_editors {
+	padding-bottom: .6em;
+}
+
+#group_details {
+	margin-left:-20px;
+	margin-right:-10px;
+}
+
+.group_details_left {
+	float: left;
+	padding-right:1em;
+	width:160px;
+	min-height: 200px;
+	text-align: center;
+}
+
+.group_details_left .profile_remove_picture {
+	padding-top: 8px;
+}
+
+.group_details_left .exhibit_thumbnail {
+	margin-left: 16px;
+}
+
+.group_details_center {
+	padding-left:174px;
+	padding-right:370px;
+}
+
+.group_details_center h1 {
+	font-size: 1.6em;
+	margin-top: 0px;
+	margin-bottom: .2em;
+}
+
+.cluster_details_center {
+	padding-left:174px;
+	padding-right:16px;
+}
+
+.cluster_details_center h1 {
+	font-size: 1.6em;
+	margin-top: 0px;
+	margin-bottom: .2em;
+}
+
+.group_details_right {
+	float: right;
+	padding-left:1em;
+	min-height: 200px;
+	width:380px;
+}
+
+.group_link_list {
+	margin-left: 7px;
+	margin-top: .5em;
+}
+
+.group_link_list li {
+	list-style: none;
+	padding-bottom: .4em;
+}
+
+.group_back_to_exhibits_link {
+	padding-bottom: 1em;
+}
+
+#group_discussions {
+	float: right;
+	width:350px;
+}
+
+.group_left_col {
+	margin-right: 350px;
+	padding-top:0.5em;
+}
+
+#group_exhibits {
+	margin-right: 350px;
+	padding-top:0.5em;
+}
+
+#group_license {
+	text-align: center;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	margin-bottom:-10px;
+	margin-left:-20px;
+	margin-right:-10px;
+}
+
+.group_edit_title {
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+.group_header {
+	padding:4px 14px 4px 14px;
+	font-weight: bold;
+	margin-left:-20px;
+}
+
+.change_forum_permissions {
+	padding-bottom:  1em;
+}
+
+.group_link_list li.group_new_post {
+	padding-top:  1em;
+}
+
+.set_exhibit_style {
+	margin-left:-6px;
+}
+
+.group_edit_title_link {
+	font-size: 14px;
+	font-weight: normal;
+	padding-left: 2em;
+}
+
+.group_details_label {
+	font-weight: bold;
+	padding-top: 10px;
+	clear: left;
+}
+
+.group_description_label {
+	padding-bottom: .6em;
+}
+
+.group_member_palette_items {
+	/*overflow:auto;
+	height:120px;
+	width:338px;*/
+}
+
+.group_member_palette_items td {
+	padding: 0.3em;
+	max-width:28px;
+}
+
+.group_member_explanation {
+	font-style: italic;
+}
+
+.group_acknowledge {
+	text-align: center;
+	font-size: 1.5em;
+	padding-top: 100px;
+	padding-bottom:100px;
+}
+
+.small_license img { height: 20px;}
+
+.what_is_this {
+	font-style: italic;
+}
+
+.group_only {
+	min-height: 85px;
+	margin-left:-20px;
+	padding-left:20px;
+	margin-top:5px;
+	padding-top:5px;
+	padding-bottom:7px;
+}
+
+.group_only_text {
+	font-size: .8em;
+	padding-bottom:4px;
+}
+
+.group_thread_title {
+	font-size: 1.3em;
+}
+
+.header_right {
+	float: right;
+	margin-right:-10px;
+	width:330px;
+}
+
+.group_new_post {
+	padding-left: 16px;
+}
+
+.group_help_tooltip {
+	font-size: 14px;
+	text-decoration: none;
+}
+
+span.tooltip:hover span.group_help_tooltip {
+	width:35em;
+	left:-30em;
+}
+}

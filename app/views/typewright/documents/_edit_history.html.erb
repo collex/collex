@@ -55,13 +55,13 @@
         
         <%# Edit STATUS icon %>
         <% img_src = nil %>
-        <% img_src = '/images/type_wright/icon_checkmark.png' if edit.status == 'correct' %>
-        <% img_src = '/images/type_wright/icon_x.png' if edit.status == 'delete' %>
-        <% img_src = '/images/type_wright/icon_edit.png' if edit.status == 'change' %>
+        <% img_src = 'type_wright/icon_checkmark.png' if edit.status == 'correct' %>
+        <% img_src = 'type_wright/icon_x.png' if edit.status == 'delete' %>
+        <% img_src = 'type_wright/icon_edit.png' if edit.status == 'change' %>
         <% if img_src.nil? %>
           <td>&nbsp;</td>
         <% else %>
-          <td width=><img class="tw_edit_icon" src="<%= img_src %>"></td>
+          <td width=><%= image_tag(img_src, { class: 'tw_edit_icon'}) %></td>
         <% end %>
       </tr>
       

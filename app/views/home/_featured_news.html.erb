@@ -17,7 +17,7 @@
 %>
 <%# featured_news -%>
 <div class="feature_news">
-<img src="/images/18th/voyeur.png" class="voyeur_icon" alt="Voyeur Icon" />
+    <%= image_tag "18th/voyeur.png", { class: "voyeur_icon", alt: "Voyeur Icon" } %>
 The roughly 2,000 texts released by Gale Cengage Learning and the Text Creation Partnership (<%= link_to "see the News tab", '/news/', { :class => 'nav_link' } %>)
 	are <%= link_to "available for full-text searching here", '/search/saved?user=paul&name=ecco_full_text', { :class => 'nav_link' } %>.
 18thConnect will soon offer access here to Voyeur: <%= link_to "Reveal Your Texts", 'http://hermeneuti.ca/voyeur', { :class => 'ext_link', :target => '_blank' } %>, a window

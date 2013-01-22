@@ -1,0 +1,330 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-my_collex {
+
+.my_collex_instructions {
+	margin: 80px 200px 150px 200px;
+	padding-right: 20px;
+}
+
+.my_collex_instructions h2 {
+	font-size: 1.5em;
+}
+
+.my_collex_instructions p{
+    font-size: 1.2em;
+	width: 700px;
+}
+
+.my_collex_instructions img {
+	float: left;
+	padding-right:20px;
+}
+
+.narrow_tag_cloud .tagcloud {
+	margin-left: 0em;
+	margin-right: 0em;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	overflow: auto;
+}
+
+.narrow_tag_cloud .tag_filter {
+	margin-top: 1em;
+}
+
+.edit_tag_link {
+	font-size: .7em;
+	font-weight: normal;
+}
+
+/* Exhibit builder */
+
+.exhibit_illustration .close_link {
+	margin-right: -20px;	
+}
+
+.edit_exhibit_heading {
+	padding-top:10px;
+}
+
+.exhibit_palette {
+	border:1px solid gray;
+	margin: 0px 4px 4px 0px;
+	padding: 1em;
+}
+
+.exhibit_palette_items {
+	overflow:auto;
+	height:120px;
+	/*width:338px;*/
+}
+
+.exhibit_palette_items td {
+	padding: 0.3em;
+}
+
+.exhibit_profile {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.exhibit_profile_preview {
+	padding-top:0.5em;
+}
+
+.exhibit_profile_label {
+	color: #777777;
+}
+
+.exhibit_preview_thumbnail {
+	float: left;
+	padding-right: 10px;
+	padding-bottom: 6px;
+}
+
+.edit_bar {
+	background: #dddddd;
+	color: white;
+}
+
+.edit_bar a {
+/*	vertical-align:super;*/
+}
+
+.edit_bar_right {
+	float: right;
+	padding-right:4px;
+}
+
+.exhibit_sharing {
+	clear: both;
+	padding-top: 5px;
+}
+
+.edit_exhibit_box h1 {
+	background: #707070;
+	color: white;
+	font-size: .8em;
+	padding: 3px;
+	font-weight: normal;
+}
+
+.inside_edit_exhibit_box {
+	margin-left: .2em;
+	margin-right: .2em;
+	margin-bottom: .5em;
+}
+
+.edit_exhibit_links {
+	float:right;
+	margin-bottom:1em;
+}
+
+.edit_exhibit_element_number {
+	background-color: #eeeeee;
+	color: black;
+	padding-left: 5px;
+	padding-right: 5px;
+/*	padding-bottom: 2px;
+	padding-top: 2px;*/
+}
+
+.select_element_type {
+	margin-right: 1em;
+}
+
+.edit_illustration_column {
+	padding: 0px;
+	margin: 0px;
+}
+
+.resizer {
+	color: white;
+}
+
+img.resizer:link {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+img.resizer:visited {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+img.resizer:hover {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+img.resizer:active {
+	border: 0px;
+	color: white;
+	padding: 0px;
+}
+
+#overview_data {
+	margin-bottom: 1em;
+}
+
+#overview_data h1 {
+	margin-top: 0px;
+}
+
+#global_form{
+	border:1px solid gray;
+	margin: 0px 4px 4px 0px;
+	padding: 1em;
+}
+
+.exhibit_profile_comment {
+	font-style: italic;
+	color: #777777;
+}
+
+/* For border dialog */
+#border_container {
+	background-color:white;
+	border-top:1px solid black;
+	margin-top:10px;
+	padding:0.7em;
+}
+
+.border_dlg_element {
+	padding: 8px;
+}
+
+#border_container .count {
+	background-color: gray;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+#border_outer_container .instructions {
+	font-style: italic;
+	padding-bottom: .8em;
+}
+
+#border_outer_container .toolbar {
+	text-align: center;
+}
+
+#border_container .border_top {
+	border-top: 3px solid gray;
+	margin-top: 1px;
+}
+
+#border_container .border_sides {
+	border-left: 3px solid gray;
+	border-right: 3px solid gray;
+}
+
+#border_container .border_bottom {
+	border-bottom: 3px solid gray;
+	margin-bottom: 1px;
+}
+
+.rubberband_dlg_element {
+	padding-left: 2px;
+	padding-right: 2px;
+	border-left: 2px solid white;
+	border-right: 2px solid white;
+}
+
+#border_container .selection_border_top {
+	border-top: 2px dotted black;
+}
+
+#border_container .selection_border_sides {
+	border-left: 2px dotted black;
+	border-right: 2px dotted black;
+}
+
+#border_container .selection_border_bottom {
+	border-bottom: 2px dotted black;
+}
+
+.side_bar_exhibit_thumbnail {
+	float: left;
+	margin-left:4px;
+	margin-top:2px;
+}
+
+.side_bar_exhibit_text {
+	margin-left:50px;
+}
+
+.group_admin_img {
+	vertical-align: text-top;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	margin-left: 1px;
+	margin-right: 1px;
+	border: none;
+}
+
+.side_bar_exhibit_spacer {
+	border-bottom:1px solid #966C54;
+}
+
+table.query td {
+	max-width:82px;
+	overflow:hidden;
+}
+
+#exhibited_objects_container table td {
+	text-align: left;
+}
+
+.user_profile td {
+	padding-top: .1em;
+	padding-bottom: .1em;
+}
+
+.my_discussions {
+	margin-left: 7px;
+	margin-top: .2em;
+}
+
+.my_discussions li {
+	list-style: none;
+	padding-top: .4em;
+	border-bottom:1px solid #966C54;
+}
+
+.my_groups {
+	margin-left: 7px;
+	margin-top: .2em;
+}
+
+.my_groups li {
+	list-style: none;
+	padding-top: .4em;
+	border-bottom:1px solid #966C54;
+}
+
+.new_exhibit_link {
+    border-bottom: 1px solid #966C54;
+    margin-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 7px;
+}
+}

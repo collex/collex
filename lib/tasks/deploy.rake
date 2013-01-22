@@ -110,8 +110,6 @@ namespace :deploy do
 	def update_edge
 		puts "Update site from repository..."
 		basic_update()
-		compress_css_js()
-		puts "You will be asked for your sudo password."
     `mkdir -p #{Rails.root}/tmp`
     `touch #{Rails.root}/tmp/restart.txt`
 		#`sudo /sbin/service httpd restart`
@@ -123,7 +121,6 @@ namespace :deploy do
 	def update_development
 		puts "Update site from repository..."
 		basic_update()
-		compress_css_js()
 		`mongrel_rails restart`
 		start_daemons()
 	end

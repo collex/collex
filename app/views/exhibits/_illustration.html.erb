@@ -46,7 +46,7 @@ end -%>
 <% url = illustration.upload.url(:display) %>
 <% link = "" %>
 <% end %>
-<% url = EXHIBIT_BUILDER_TODO_PATH if url == nil || url == "" -%>
+<% url = image_path("clicktoadd.jpg") if url == nil || url == "" -%>
 <% url = get_image_url(url) -%>
 <% width = illustration.image_width -%>
 <% height = illustration.height != nil ? "min-height:#{illustration.height}px;" : "" -%>
@@ -85,7 +85,7 @@ end -%>
 			<%# We are creating a table with one row and 3 cols: the two outer cols are for the move left and move right controls. -%>
 				<table><tr>
 				<% if part_of_row && illustration_position > 1 -%>
-					<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"><img src="/images/<%= SKIN %>/left-image-arrow.gif" alt="" /></a></td>
+					<td class="edit_illustration_column"><a title="Move Illustration Left" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'left'); return false;" href="#"><%= image_tag("#{SKIN}/left-image-arrow.gif") %></a></td>
 				<% end -%>
 				
 				<td class="edit_illustration_column"><div class="illustration_control_border">
@@ -124,7 +124,7 @@ end -%>
 				<div class="exhibit_illustration_text widenable" id='illustration_img_<%= illustration_id %>' style='font-family:<%= exhibit.get_font_name('illustration') %>; font-size:<%= exhibit.get_font_size('illustration') %>px;width:<%= width %>px;<%= height %>'><%= illustration_text %></div>
 				<%= raw create_resizable -%>
 			<% else # nines object or internet image -%>
-				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= PROGRESS_SPINNER_PATH %>" alt="<%= alt %>" />
+				<img class="exhibit_illustration_img" id='spinner_illustration_img_<%= illustration_id %>' src="<%= image_path(PROGRESS_SPINNER_PATH) %>" alt="<%= alt %>" />
 				<img class="exhibit_illustration_img widenable hidden" id='illustration_img_<%= illustration_id %>' src="<%= url %>" width="<%= width %>px" alt="<%= alt %>" <%= raw(onload_text) %> />
 			<% end -%>
 		</div>
@@ -138,7 +138,7 @@ end -%>
 			</td>	<%# The middle column containing the content and the image control stuff -%>
 			
 			<% if part_of_row && illustration_position < ExhibitElement.find(element_id).exhibit_illustrations.length %>
-				<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" ><img src="/images/<%= SKIN %>/right-image-arrow.gif" alt="" /></a></td>
+				<td class="edit_illustration_column"><a title="Move Illustration Right" onclick="doAjaxLink(<%= ajax_div_id %>, <%= ajax_action %>, <%= ajax_params %> + 'right'); return false;" href="#" ><%= image_tag("#{SKIN}/right-image-arrow.gif") %></a></td>
 			<% end -%>
 			</tr></table>
 		<% end -%>

@@ -42,7 +42,7 @@
 					<select class="query_and-not_select" onkeyup="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT')) <%=  and_not %>;" onchange="if (<%= is_not %> != (this.options[this.selectedIndex].value == 'NOT'))  <%=  and_not %>;">
 					<option value="AND">AND</option><option value="NOT" <%= "selected='selected'" if ret[:not] %>>NOT</option></select>
 			</td>
-			<td class="query_remove"><%= create_facet_link(raw('<img src="/images/lvl2_trash.gif" alt="Remove Term" />'), '/search/remove_constraint', { :index => "#{index}" }) %></td>
+			<td class="query_remove"><%= create_facet_link(image_tag('lvl2_trash.gif', { alt: "Remove Term" }), '/search/remove_constraint', { :index => "#{index}" }) %></td>
 		</tr>
 	    <% end -%>
     <% end -%>
@@ -195,7 +195,7 @@
                 var slider = new Y.Slider({
                     length : 256,
                     height : 40,
-                    thumbUrl : '/images/collex/thumb-x.png',
+                    thumbUrl : image_path('collex/thumb-x.png'),
                     min : 200,
                     max : 1000,
                     value : 1000,
@@ -218,7 +218,7 @@
                 var slider = new Y.Slider({
                     length : 256,
                     height : 40,
-                    thumbUrl : '/images/collex/thumb-x.png',
+                    thumbUrl : image_path('collex/thumb-x.png'),
                     min : 200,
                     max : 1000,
                     value : 1000,

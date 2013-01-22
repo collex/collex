@@ -1,0 +1,314 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.pg-exhibit {
+
+.not_peer_reviewed {
+	color: red;
+	font-style: italic;
+}
+
+.publication_header {
+	height: 85px;
+}
+
+.publication_header .exhibit_sharing_notice {
+	padding-top:15px;
+}
+
+.exhibit_sharing_text {
+	float:right;
+	padding-right:10px;
+	width:150px;
+}
+
+.exhibit_sharing_text2 {
+	font-size:0.7em;
+	text-align:right;
+	display: table-cell;
+	vertical-align: middle;
+	height: 85px;
+}
+
+.publication_header table {
+	margin-left: 0px;
+	font-size: 1.3em;
+	margin-bottom: 0px;
+}
+
+.publication_header_links {
+	display: table-cell;
+	vertical-align: middle;
+	height: 85px;
+}
+
+.publication_header_left {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.publication_header_right {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-left: 1px solid black;
+}
+
+.exhibit_badge {
+	float: left;
+}
+
+.publication_title {
+	padding-top: 2em;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.publication_author {
+	font-size: 1.2em;
+}
+
+.publication_nav {
+	font-size:1.2em;
+	padding-bottom:0.5em;
+	text-align:center;
+}
+
+.exhibit_title {
+	text-align:right;
+	clear:both;
+	font-size: 1.5em;
+	color: #666666;
+	margin-left:180px;
+}
+
+.exhibit_author {
+	text-align:right;
+	font-size: 1.2em;
+	color: #666666;
+}
+
+.exhibit_institution {
+	text-align:right;
+	font-size: 1.0em;
+	color: #666666;
+}
+
+.exhibit_nav {
+	clear:left;
+	float:right;
+	font-family:Verdana,sans;
+	font-size:2.4em;
+	text-align:right;
+	padding-bottom: .5em;
+}
+
+.exhibit_nav a:visited {
+	color:#DCDCDC;
+	text-decoration:none;
+}
+.exhibit_nav a:link {
+	color:#DCDCDC;
+	text-decoration:none;
+}
+
+.here a {
+	color:#999999;
+}
+.exhibit_nav .here a:hover {
+	color:#C0C0C0;
+}
+.arrowhere {
+	color:#C0C0C0;
+}
+
+.exhibit_nav a:hover {
+	color:#333333;
+}
+
+.exhibit_nav a {
+	color:#666666;
+}
+
+.exhibit_section_with_border {
+	border: 1px solid #DCDCDC;
+	clear:both;
+}
+
+.exhibit_text {
+	padding:1em;
+	border: 1px solid white;
+}
+
+.blockquote {
+	/*border:1px solid gray;*/
+	margin-left:5em;
+	margin-right:5em;
+}
+
+.exhibit_caption1 {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	color:#666666;
+	font-family:"Trebuchet MS",Arial,sans-serif;
+	font-size:smaller;
+	margin-left:2em;
+	margin-right:2em;
+	padding:0.5em;
+	text-align:center;
+	line-height:1.4em;
+}
+
+.exhibit_caption2 {
+	background:#999999 none repeat scroll 0 0;
+	color:#FFFFFF;
+	margin:0.2em -0.5em -0.5em;
+	padding:0.1em;
+	line-height:1.4em;
+}
+
+.drop_cap:first-letter {
+	color:#999999;
+	float:left;
+	font-family:"Bell MT","Old English",Georgia,Times,serif;
+	font-size:420%;
+	line-height:0.85em;
+	margin-bottom:-0.13em;
+	margin-right:0.08em;
+	padding: 2px;
+}
+
+.drop_cap p:first-letter {
+	color:#999999;
+	float:left;
+	font-family:"Bell MT","Old English",Georgia,Times,serif;
+	font-size:420%;
+	line-height:0.85em;
+	margin-bottom:-0.15em;
+	margin-right:0.08em;
+}
+
+.element_block {
+	border: 4px solid white;
+	padding-top: 19px; /* standards-compliant browser */
+}
+
+.dummyend[id]{clear:both;}
+
+.element_block_hover {
+	border: 4px solid #aaaaaa;
+}
+
+.edit_bar .close_link {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+.exhibit_nextlink {
+	float:right;
+}
+
+.exhibit_nextlink a {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	clear:both;
+	font-size:1.1em;
+	margin:1em 0;
+	padding:0.2em;
+	text-decoration:none;
+}
+
+.exhibit_prevlink a {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	clear:both;
+	font-size:1.1em;
+	margin:1em 0;
+	padding:0.2em;
+	text-decoration:none;
+}
+
+.exhibit_header {
+	color:#999999;
+	font-family:"Trebuchet MS","Bell MT","Old English",Georgia,Times,serif;
+}
+
+.exhibit_illustration_text {
+	background:#DCDCDC none repeat scroll 0 0;
+	border:1px solid #999999;
+	color:#666666;
+	font-family:"Trebuchet MS",Arial,sans-serif;
+	font-size:smaller;
+	padding:0.5em;
+	text-align:center;
+	line-height:1.4em;
+	margin-bottom: 8px;
+}
+
+.row_of_illustration_msg {
+	font-size: 1.5em;
+	color: gray;
+	font-style: italic;
+}
+
+.illustration_inner {
+	border: 1px solid white;
+}
+
+.exhibit_sharing_notice {
+	float: right;
+	padding-right: 10px;
+}
+
+.exhibit_footer {
+	color: white;
+	text-align: center;
+	margin-top: 20px;
+	padding-top: 1em;
+	padding-bottom: .2em;
+	clear: both;
+}
+
+.exhibit_footer a {
+	color: white;
+}
+
+.header_outer {
+	border: 1px solid white;
+}
+
+.page_tooltip {
+	font-size: 12px;
+}
+
+a.tooltip:hover span{ /*the span will display just on :hover state*/
+    top:3em;
+	left:-3em;
+	width:inherit;
+}
+
+.endnotes {
+	text-align: center;
+	clear: both;
+}
+
+.endnote_superscript {
+	position: relative;
+	bottom: 0.5em;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+}
+

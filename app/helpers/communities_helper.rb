@@ -25,7 +25,7 @@ module CommunitiesHelper
 	end
 
 	def link_to_trashcan(alt, action, el, params, wait_message)
-		raw(link_to_function raw("<img src='/images/lvl2_trash.gif' alt='#{alt}' />"),
+		raw(link_to_function image_tag('lvl2_trash.gif', { alt: alt }),
 			"serverAction({action: { actions: '#{action}', els: '#{el}', params: '#{params}'}, progress: { waitMessage: '#{wait_message}' + '...' }})")
 	end
 end

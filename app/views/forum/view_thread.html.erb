@@ -62,7 +62,7 @@
 					submit_url: '/forum/post_comment_to_existing_thread',
 					populate_exhibit_url: '/forum/get_exhibit_list',
 					populate_collex_obj_url: '/forum/get_nines_obj_list',
-					progress_img: '<%= PROGRESS_SPINNER_PATH %>',
+					progress_img: '<%= image_path(PROGRESS_SPINNER_PATH) %>',
 					logged_in: <%= is_logged_in? %>
 				});
 				return false;

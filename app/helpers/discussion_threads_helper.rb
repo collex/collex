@@ -37,7 +37,7 @@ module DiscussionThreadsHelper
       user = User.find_by_id(user)
 	end
 	if user
-	    link_to_function(user.fullname, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
+	    link_to_function(user.fullname, "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{image_path(PROGRESS_SPINNER_PATH)}')", :class => 'nav_link')
 	else
 		"Unknown"
 	end
@@ -48,7 +48,7 @@ module DiscussionThreadsHelper
       user = User.find_by_id(user)
     end
 		img = "<img height=\"#{height}\" title=\"#{user.fullname}\" alt=\"#{user.fullname}\" src=\"#{get_user_picture(user.id, :micro)}\"/>"
-		link_to_function(raw(img), "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{PROGRESS_SPINNER_PATH}')", :class => 'nav_link')
+		link_to_function(raw(img), "showPartialInLightBox('#{get_user_info_url(user)}', 'Profile for #{user.fullname}', '#{image_path(PROGRESS_SPINNER_PATH)}')", :class => 'nav_link')
   end
 
   def make_ext_link(url)
@@ -79,13 +79,13 @@ module DiscussionThreadsHelper
       "submit_url: '/forum/edit_existing_comment'," +
       "populate_exhibit_url: '/forum/get_exhibit_list'," +
       "populate_collex_obj_url: '/forum/get_nines_obj_list'," +
-      "progress_img: '#{PROGRESS_SPINNER_PATH}'," +
+      "progress_img: '#{image_path(PROGRESS_SPINNER_PATH)}'," +
       "logged_in: true }); return false;\">[edit]</a>"
     return raw(html)
   end
   
   def get_user_picture(user_id, type)
-    placeholder = "/images/#{SKIN}/forum_generic_user.gif"
+    placeholder = image_path("#{SKIN}/forum_generic_user.gif")
     user = User.find_by_id(user_id)
     return placeholder if user == nil
     return placeholder if user.image_id == nil

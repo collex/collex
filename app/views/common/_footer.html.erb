@@ -15,7 +15,7 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <% info = capture do %>
-  <%= number_with_delimiter(session[:num_docs]) %>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_function("digital objects", "showPartialInLightBox('/help/resources', 'Digital Objects', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link' ) %>&nbsp;from&nbsp;<%=number_with_delimiter(session[:num_sites])%>&nbsp;federated&nbsp;<%= link_to_function("sites", "showPartialInLightBox('/help/sites', 'Federated Sites', '#{PROGRESS_SPINNER_PATH}');", :class => 'nav_link' ) %>.
+  <%= number_with_delimiter(session[:num_docs]) %>&nbsp;peer&#8209;reviewed&nbsp;<%= link_to_function("digital objects", "showPartialInLightBox('/help/resources', 'Digital Objects', '#{image_path(PROGRESS_SPINNER_PATH)}');", :class => 'nav_link' ) %>&nbsp;from&nbsp;<%=number_with_delimiter(session[:num_sites])%>&nbsp;federated&nbsp;<%= link_to_function("sites", "showPartialInLightBox('/help/sites', 'Federated Sites', '#{image_path(PROGRESS_SPINNER_PATH)}');", :class => 'nav_link' ) %>.
 <% end %>
 
 <div id="footer_container">

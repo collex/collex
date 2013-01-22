@@ -332,7 +332,7 @@ class Exhibit < ActiveRecord::Base
     if license_type != nil && license_type != 0
       return "<img alt='Creative Commons License' style='border-width:0' src='http://i.creativecommons.org/l/#{get_sharing_license_type(license_type)}/3.0/us/88x31.png' />"
     else
-      return "<img alt='Creative Commons License' height='31' style='border-width:0' src='/images/not_shared.jpg' />"
+      return image_tag('not_shared.jpg', alt: 'Creative Commons License', height: '31', style: 'border-width:0')
     end
   end
   

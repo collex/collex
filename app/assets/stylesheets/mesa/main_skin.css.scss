@@ -1,0 +1,259 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.federation-mesa {
+	background:#03002F;
+	font-family: 'Poly',serif;
+	font-size: 16px;
+	line-height: 20px;
+
+div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_caption1, .drop_cap:first-letter,
+	.drop_cap p:first-letter, .exhibit_header, .exhibit_illustration_text, div.content_container2, div#search_box,
+	#footer_container, .inner_content_container, #subnav_container, .breadcrumbs {
+	font-family: 'Poly',serif;
+	font-size: .95em;
+	padding-top: 15px;
+}
+
+#subnav_container {
+	padding-top: 8px;
+}
+
+h1, h2, h3, h4, h5, h6, strong, dt {
+    font-family: 'Stoke',serif;
+    font-weight: bold;
+}
+
+#header_container {
+	background-color: #34645C;
+}
+
+#main_container {
+	border-left:10px #505050 solid;
+	border-right:10px #505050 solid;
+	border-bottom:10px #505050 solid;
+}
+
+#footer_container {
+	background:#03002f;
+}
+
+.exhibit_footer {
+	background-color: #34645c;
+}
+
+.tab_link {
+	background:image-url('mesa/index_tab.jpg') top left no-repeat;
+	color:#CCAC63;
+	font-family: 'Stoke',serif;
+	font-weight: normal;
+	top: 96px;
+	/*font-size: 11px;*/
+	line-height: 21px;
+}
+
+.tab_link_current {
+	background:image-url('mesa/index_tab_dn.jpg') top left no-repeat;
+	font-family: 'Stoke',serif;
+	top: 96px;
+	color: #0d1d4e;
+	font-weight: normal;
+    padding-top: 8px;
+}
+
+.tab_link_long {
+	background:image-url('mesa/index_tab_long.jpg') top left no-repeat;
+	color:#CCAC63;
+	font-family: 'Stoke',serif;
+	font-weight: normal;
+	top: 96px;
+	/*font-size: 11px;*/
+	line-height: 21px;
+    padding-top: 8px;
+}
+
+.tab_link_long_current {
+	background:image-url('mesa/index_tab_long_dn.jpg') top left no-repeat;
+	font-family: 'Stoke',serif;
+	top: 96px;
+	color: #0d1d4e;
+	font-weight: normal;
+    padding-top: 8px;
+}
+
+.tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
+	color:#CCAC63;
+}
+
+a.my_collex_link {
+	color:#CCAC63;
+	font-family: 'Stoke',serif;
+	/*font-size: 11px;*/
+	/*line-height: 21px;*/
+	font-weight: normal;
+    width: 100px;
+	/*background:image-url(mesa/index_tab_my_collex.jpg) top left no-repeat;*/
+    background:image-url('mesa/index_tab_long.jpg') top left no-repeat;
+    padding-top: 8px !important;
+}
+
+.my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
+	color:#CCAC63;
+}
+
+.tab_link_logo{
+	/*font-size: 11px;*/
+	line-height: 21px;
+	float: right;
+	height: 29px;
+	padding-top: 8px;
+	text-decoration: none;
+	width: 71px;
+	background:image-url('mesa/index_tab.jpg') top left no-repeat;
+	color:#CCAC63;
+	font-family: 'Stoke',serif;
+	font-weight: normal !important;
+}
+
+#footer_container {
+	color:#ffffff;
+}
+
+.right_column {
+	background:#edf4f2;
+}
+
+.nav_link:link, .nav_link:visited {
+	color:#120F56;
+}
+
+.tag_link:link { color: #120F56; }
+.tag_link:visited { color: #120F56; }
+.tag_link:hover { color: #fff; background: #120F56; }
+
+/* This is used for all links that change, or potentially change, the database */
+.modify_link:link { color: #120F56; text-decoration: none; }
+.modify_link:visited { color: #120F56; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #120F56; text-decoration: none; }
+
+/* This is used for all links that go to the NINES sites. */
+.nines_link { background: image-url('mesa/collex_link.jpg') center right no-repeat; }
+.nines_link:link { color: #120F56; }
+.nines_link:visited { color: #120F56; }
+.nines_link:hover { color: #fff; background: #120F56; }
+
+/* This is used for all links that go to external websites */
+.wordpress #container .ext_link:link { color: #120F56; text-decoration: none; }
+.wordpress #container .ext_link:visited { color: #120F56; text-decoration: none; }
+.wordpress #container .ext_link:hover { color: #fff; background: #120F56; text-decoration: none; }
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike {
+	background: image-url('mesa/collex_link.jpg') center right no-repeat;
+	color: #120F56;
+} /* should match nines_link:link */
+
+.ext_linklike {
+	color: #120F56;
+} /* should match ext_link:link */
+
+div.carousel_title {
+	font-family: 'Stoke',serif;
+	padding-top: 4px;
+	color: #C9AC63;
+	background-color: #0d1d4e;
+	width: inherit;
+	left: inherit;
+	padding-left: 10px;
+	padding-bottom: 4px;
+}
+
+#footer_container a, #footer_container a.link, #footer_container a.visited{
+	color:#c9ac63;
+}
+
+.login_div {
+	background-image:image-url('mesa/login_header.jpg');
+	background-repeat:no-repeat;
+	border-left: 8px solid #03002F;
+	border-right: 8px solid #03002F;
+	border-bottom: 8px solid #03002F;
+}
+
+.search_result_buttons a {
+	background:transparent image-url('mesa/lvl2_result_row_button.jpg') no-repeat scroll left top;
+}
+
+.search_result_buttons a:hover {
+	background:image-url('mesa/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
+}
+
+div#search_note_container {
+    font-family: 'Poly',serif;
+    font-size: 100%;
+    line-height: 1.4em;
+}
+
+#search_phrase {
+    font-size: 15px;
+}
+
+/*********************************/
+/* styles for all javascript-created dialogs */
+/*********************************/
+
+&.yui-skin-sam .container-close {
+	background:transparent image-url('mesa/popup_box_x.jpg') no-repeat scroll 0 0;
+}
+
+&.yui-skin-sam .container-close:hover {
+	background:transparent image-url('mesa/popup_box_x_rl.gif') no-repeat scroll 0 0;
+}
+
+&.yui-skin-sam .yui-panel .hd {
+    background: none repeat scroll 0 0 #0d1d4e;
+    color: #C9AC63;
+    font-weight: bold;
+    height: 29px;
+    line-height: 29px;
+}
+
+&.yui-skin-sam .yui-panel .bd {
+    padding: 15px;
+}
+
+&.yui-skin-sam .yui-button {
+	background: inherit;
+	background-color: #c9ac63;
+}
+
+&.yui-skin-sam .yui-button.default button {
+	background: inherit;
+	background-color: #0D1D4E;
+	color: white;
+}
+
+&.yui-skin-sam .button_tab_selected {
+	background: transparent image-url('mesa/attachment_button_down.jpg') repeat-y scroll 0 0;
+}
+
+&.yui-skin-sam .yui-button.yui-button-hover button, &.yui-skin-sam .yui-button.yui-button-hover a {
+	background: inherit;
+	background-color: #505050;
+	color: white;
+}
+
+}

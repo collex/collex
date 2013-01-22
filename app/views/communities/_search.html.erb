@@ -24,14 +24,14 @@ or search <%= link_to "federated sites", "/search", { :class => 'nav_link' } %>
 <div class="shared_search_results">
 <% if session[:community_search_term] && session[:community_view_by] == 'All' -%>
 	Found <%= pluralize(results[:total_hits], 'item') %> matching "<%= session[:community_search_term] %>".
-	<%= link_to_function raw('<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />'), 
+	<%= link_to_function image_tag("lvl2_trash.gif", { title: "Clear Search", alt: "Clear Search"}),
 	  "serverAction({action: { actions: '/communities/search', els: 'shared_objects', params: {term: ''}}, progress: { waitMessage: 'Removing Search...' }})" %>
 <% elsif session[:community_search_term] -%>
 	Found <%= pluralize(results[:total_hits], singularize_and_downcase(session[:community_view_by])) %> with <%= results[:total] %>
 	<%= link_to_function("total items",
 		"serverAction({action: { actions: '/communities/view_by', els: 'shared_objects', params: {view: \"All\"}}, progress: { waitMessage: 'Changing view...' }})", { :class => 'nav_link' }) %>
 	matching "<%= session[:community_search_term] %>".
-	<%= link_to_function raw('<img src="/images/lvl2_trash.gif" title="Clear Search" alt="Clear Search" />'),
+	<%= link_to_function  image_tag("lvl2_trash.gif", { title: "Clear Search", alt: "Clear Search"}),
 	  "serverAction({action: { actions: '/communities/search', els: 'shared_objects', params: {term: ''}}, progress: { waitMessage: 'Removing Search...' }})" %>
 <% elsif session[:community_view_by] == 'All' -%>
 	There are <%= pluralize(results[:total_hits], 'total item') %>.

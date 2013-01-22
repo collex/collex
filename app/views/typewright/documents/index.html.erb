@@ -26,8 +26,8 @@
   <!-- Typewright overview content -->
   <div class="typewright_overview">
     <div class="typewright_welcome">
-      <img class="typewright_logo" alt="TypeWright" src="/images/type_wright/typewright_logo.png"/>
-      <span class="typewright_welcome_txt">Welcome to TypeWright</span>
+        <%= image_tag("type_wright/typewright_logo.png", { alt: 'TypeWright', class: "typewright_logo"}) %>
+       <span class="typewright_welcome_txt">Welcome to TypeWright</span>
     </div>
     
     <!-- main overview text -->
@@ -68,7 +68,7 @@
       <div id="3" class="footnote" style="display:none">
         <b>3.</b>&nbsp;OCR, optical character recognition programs, have difficulty reading pre-modern type because of line unevenness, ligatures, and long 's.'
         Type-founding and setting practices are modernized from 1820-1850.  One can see the process very clearly in&nbsp;
-        <%= link_to_function "Google searches", "showFootnotePopup('Google NGRAM Viewer', '/images/type_wright/google_ngram.png')" %>.
+        <%= link_to_function "Google searches", "showFootnotePopup('Google NGRAM Viewer', #{image_path('type_wright/google_ngram.png')})" %>.
         <%= link_to_function "close", "closeFootnoteDiv('3')", :class  => "footnote_close" %>
       </div>
     </div>

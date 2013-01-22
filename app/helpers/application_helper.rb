@@ -36,49 +36,49 @@ module ApplicationHelper
 		return User.find_by_username(user[:username]).id
 	end
 
-	def get_stylesheets(page, debug)
-		# We can't roll up the YUI css because all the images are specified on relative paths.
-		fnames = GetIncludeFileList.get_css(page)
-		yui_path = Branding.yui_path()
-		yui_list = ""
-		fnames[:yui].each { |f|
-			yui_list += '&amp;' if fnames[:yui][0] != f
-			yui_list += "#{yui_path}#{f}.css"
-		}
-		html = "<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?#{yui_list}' />\n"
-		if debug
-			html += stylesheet_link_tag(fnames[:local], :media => "all")
-			return raw(html)
-		else
-			html += stylesheet_link_tag("#{page.to_s()}-min", :media => "all")
-			return raw(html)
-		end
-	end
+	#def get_stylesheets(page, debug)
+	#	# We can't roll up the YUI css because all the images are specified on relative paths.
+	#	fnames = GetIncludeFileList.get_css(page)
+	#	yui_path = Branding.yui_path()
+	#	yui_list = ""
+	#	fnames[:yui].each { |f|
+	#		yui_list += '&amp;' if fnames[:yui][0] != f
+	#		yui_list += "#{yui_path}#{f}.css"
+	#	}
+	#	html = "<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?#{yui_list}' />\n"
+	#	if debug
+	#		html += stylesheet_link_tag(fnames[:local], :media => "all")
+	#		return raw(html)
+	#	else
+	#		html += stylesheet_link_tag("#{page.to_s()}-min", :media => "all")
+	#		return raw(html)
+	#	end
+	#end
 
-	def get_javascripts(page, debug)
-		fnames = GetIncludeFileList.get_js(page)
-		yui_path = Branding.yui_path()
-		yui_list = ""
-		fnames[:yui].each { |f|
-			yui_list += '&' if fnames[:yui][0] != f
-			yui_list += "#{yui_path}#{f}.js"
-		}
-		if debug
-			html = javascript_include_tag(fnames[:prototype]) + "\n"
-			if yui_list.length > 0
-				html += javascript_include_tag("http://yui.yahooapis.com/combo?#{raw(yui_list)}") + "\n"
-			end
-			html += javascript_include_tag(fnames[:local]) + "\n"
-			return raw(html)
-		else
-			html = javascript_include_tag("prototype-min") + "\n"
-			if yui_list.length > 0
-				html += javascript_include_tag("http://yui.yahooapis.com/combo?#{raw(yui_list)}") + "\n"
-			end
-			html += javascript_include_tag("#{page.to_s()}-min") + "\n"
-			return raw(html)
-		end
-	end
+	#def get_javascripts(page, debug)
+	#	fnames = GetIncludeFileList.get_js(page)
+	#	yui_path = Branding.yui_path()
+	#	yui_list = ""
+	#	fnames[:yui].each { |f|
+	#		yui_list += '&' if fnames[:yui][0] != f
+	#		yui_list += "#{yui_path}#{f}.js"
+	#	}
+	#	if debug
+	#		html = javascript_include_tag(fnames[:prototype]) + "\n"
+	#		if yui_list.length > 0
+	#			html += javascript_include_tag("http://yui.yahooapis.com/combo?#{raw(yui_list)}") + "\n"
+	#		end
+	#		html += javascript_include_tag(fnames[:local]) + "\n"
+	#		return raw(html)
+	#	else
+	#		html = javascript_include_tag("prototype-min") + "\n"
+	#		if yui_list.length > 0
+	#			html += javascript_include_tag("http://yui.yahooapis.com/combo?#{raw(yui_list)}") + "\n"
+	#		end
+	#		html += javascript_include_tag("#{page.to_s()}-min") + "\n"
+	#		return raw(html)
+	#	end
+	#end
 
 #  def yahoo_button(text, id, action)
 #    "<a id='#{id}'>#{text}</a>\n" +
@@ -272,9 +272,9 @@ private
 		title = title[0,60]+'...' if title.length > 62
 		title = title.gsub("'", "&apos;")
 		title = title.gsub('"', "\\\"")
-      str = "<a class='nines_pic_link' onclick='showInLightbox({ title: \"#{title}\", img: \"#{image}\", spinner: \"#{PROGRESS_SPINNER_PATH}\", size: 500 }); return false;' href='#'>#{str}</a>"
+      str = "<a class='nines_pic_link' onclick='showInLightbox({ title: \"#{title}\", img: \"#{image}\", spinner: \"#{image_path(PROGRESS_SPINNER_PATH)}\", size: 500 }); return false;' href='#'>#{str}</a>"
     end
-    str = "<img id='#{progress_id}' class='progress_timeout result_row_img_progress' src='#{PROGRESS_SPINNER_PATH}' alt='loading...' data-noimage='#{SPINNER_TIMEOUT_PATH}' />\n" + str
+    str = "<img id='#{progress_id}' class='progress_timeout result_row_img_progress' src='#{image_path(PROGRESS_SPINNER_PATH)}' alt='loading...' data-noimage='#{image_path(SPINNER_TIMEOUT_PATH)}' />\n" + str
     return raw(str)
   end
 

@@ -36,7 +36,7 @@
            <div>
             <span id="fuz_control_keyword" class="fuz_control_keyword "></span>
             <span class="tooltip slider_tooltip">
-               <img height="13" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" style="padding-left:5px"/>
+	            <%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 13, style: "padding-left:5px" }) %>
                <span class="search_help_tooltip">
                  <b>Fuzzy Search Slider</b><br />A lower value will allow the search to match more varied spellings.
                </span>
@@ -55,7 +55,7 @@
        </tr>
        <% end %>
 		<tr><td colspan='3'><div class="search_help_icon">
-					<a href="/about/help/" class="tooltip"><img height="18" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" /><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
+					<a href="/about/help/" class="tooltip"><%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 18, style: "padding-left:5px" }) %><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
         <% if SKIN.upcase == 'MESA' %>
@@ -67,7 +67,7 @@
                     <%# slider gets put in here %>
                    </span>
                  <span class="tooltip slider_tooltip">
-                   <img height="13" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" style="padding-left:5px"/>
+                   <%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 13, style: "padding-left:5px" }) %>
                    <span class="search_help_tooltip">
                      <b>Fuzzy Search Slider</b><br />A lower value will allow the search to match more varied spellings.
                    </span>
@@ -126,7 +126,7 @@
             </td>
             <td>
               <span class="tooltip advanced_search_field_tooltip">
-                   <img height="13" src="/images/<%= SKIN %>/help_thumb.gif" alt="help" style="padding-left:5px"/>
+                   <%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 13, style: "padding-left:5px" }) %>
                    <span class="search_help_tooltip">
                      <b>Search by Role</b><br />In addition to searching roles, you should also try your search in the key terms field above.
                    </span>
@@ -228,7 +228,7 @@
               var slider = new Y.Slider({
                   length : 256,
                   height : 40,
-                  thumbUrl : '/images/collex/thumb-x.png',
+                  thumbUrl : image_path('collex/thumb-x.png'),
                   min : 200,
                   max : 1000,
                   value : 1000,
@@ -252,7 +252,7 @@
               slider = new Y.Slider({
                   length : 256,
                   height : 40,
-                  thumbUrl : '/images/collex/thumb-x.png',
+                  thumbUrl : image_path('collex/thumb-x.png'),
                   min : 200,
                   max : 1000,
                   value : 1000,

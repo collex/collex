@@ -387,7 +387,7 @@ module SearchHelper
   def create_saved_search_permalink(s)
     base_url = 'http://' + request.host_with_port()
     permalink_id = "permalink_#{encode_for_uri(h(s))}"
-    return raw("<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'><img src='/images/link.jpg' title=\"Click here to get a permanent link for this saved search.\" alt=\"\"/></a>")
+    return raw("<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'>#{image_tag('link.jpg', { title: "Click here to get a permanent link for this saved search.", alt: '' })}</a>")
   end
 
   def create_saved_search_link(s)
@@ -671,8 +671,8 @@ module SearchHelper
     # if category, put in arrow for expand/collapse
     html = "<tr id='resource_#{id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
     if is_category
-      html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
-      html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>\n"
+      html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'>#{image_tag('arrow.gif')}</a>"
+      html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'>#{image_tag('arrow_dn.gif')}</a>\n"
     end
     
     if is_edit_mode
@@ -846,8 +846,8 @@ module SearchHelper
 	# TODO-PER: The biggest difference is that this sends an ajax call, and the search page does a POST.
 	def facet_tree_node_row(id, parent_id, indent_level, start_shown, label, num_objects, start_open)
 		html = "<tr id='resource_#{id}' class='resource_node#{" child_of_#{parent_id}" if parent_id != 0}#{' hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
-		html += "<a id='site_opened_#{id}' #{'class="hidden" ' if start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'><img src='/images/arrow.gif' /></a>"
-		html += "<a id='site_closed_#{id}' #{'class="hidden" ' if !start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"close\"); return false;'><img src='/images/arrow_dn.gif' /></a>"
+		html += "<a id='site_opened_#{id}' #{'class="hidden" ' if start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'>#{image_tag('arrow.gif')}</a>"
+		html += "<a id='site_closed_#{id}' #{'class="hidden" ' if !start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"close\"); return false;'>#{image_tag('arrow_dn.gif')}</a>"
 		html += "<a href='#' onclick='new ResourceTree(\"#{id}\", \"toggle\"); return false;' class='nav_link  limit_to_category' >#{h(label)}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
 		return raw(html)
 	end

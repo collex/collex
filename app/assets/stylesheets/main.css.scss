@@ -1,0 +1,295 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body {
+	position:absolute;
+	width:100%;
+	min-width:880px;
+	margin:0px;
+	padding:0px;
+	
+	font-family:"Times New Roman", Times, serif;
+	font-size:16px;
+}
+
+table, table td, table tr {
+	border:none;
+}
+
+.nav_link:link, .nav_link:visited {
+	text-decoration:none;
+}
+
+.nav_link:hover {
+	text-decoration:underline;
+}
+
+.remove_tag {
+	color: gray !important;
+}
+
+.remove_tag:hover {
+	background-color:#e0e0e0;
+	color: black !important;
+}
+
+.nines_link {
+	padding-right: 13px;
+}
+
+.ext_link {
+	background: image-url('external_link.jpg') center right no-repeat;
+	padding-right: 13px;
+}
+
+/* This is used for all picture links that go to the NINES sites. */
+.nines_pic_link:link img { border: 4px solid gray; text-decoration: none; }
+.nines_pic_link:visited img { border: 4px solid gray; text-decoration: none; }
+.nines_pic_link:hover img { border: 4px solid white; text-decoration: none; }
+
+/* This is used for all picture links that go to external websites. */
+.ext_pic_link:link img { border: 4px solid gray; text-decoration: none; }
+.ext_pic_link:visited img { border: 4px solid gray; text-decoration: none; }
+.ext_pic_link:hover img { border: 4px solid white; text-decoration: none; }
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike {
+	padding-right: 13px;
+} /* should match nines_link:link */
+
+.ext_linklike {
+	background: image-url('external_link.jpg') center right no-repeat;
+	padding-right: 13px;
+} /* should match ext_link:link */
+
+.float_right {
+	float:right;
+	margin:0px 0px 10px 10px;
+}
+
+.clear_both{
+	clear:both;
+}
+
+.clear_right{
+	clear:right;
+}
+
+.noshow, .hidden {
+	display: none;
+}
+
+#main_container {
+	margin:0px 30px 10px 30px;
+	background:#FFFFFF;
+}
+
+#footer_container {
+	font-family:Arial, Helvetica, sans-serif;
+	padding:10px 0px 10px 0px;
+	text-align:center;
+	background:#000000;
+}
+
+#footer_container a, #footer_container a.link, #footer_container a.visited{
+	font-weight:bold;
+}
+
+.inner_content_container {
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:0.9em;
+	height:auto;
+	min-height: 350px;
+	padding:20px 10px 10px 20px;
+}
+
+.left_column {
+	float:left;
+	width:66%;
+}
+
+.right_column {
+	width:29%;
+	float:right;
+	background:#F7F4EA;
+	padding:0px 0px 10px 0px;
+}
+
+.right_column p {
+	color:#000000;
+}
+
+.emph2 {
+	font: 1.4em  'Trebuchet MS', verdana, sans-serif;
+	line-height: 1.4em;
+}
+
+.small_list {
+	font-size: .8em;
+}
+
+.small_list td {
+	padding: 0px;
+	padding-right: 10px;
+	text-align: left;
+}
+
+.post > h2 {
+	margin-bottom: 5px;
+}
+
+.size-medium {
+	padding: 10px;
+}
+
+.navigation {
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 60px;
+	padding-bottom: 1px;
+}
+
+.navigation > div {
+	width: 200px;
+}
+
+/* Captions */
+.aligncenter {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.alignright {
+	float: right;
+	}
+
+.alignleft {
+	float: left;
+	}
+
+.superscript {
+	position: relative;
+	bottom: 0.5em;
+	color: #AC2E20;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.superscript:hover {
+	text-decoration: underline;
+}
+
+a.tooltip{
+    position:relative; /*this is the key*/
+	text-decoration: none;
+}
+
+a.tooltip:hover {
+	z-index:25;
+}
+
+a.tooltip span {
+	display: none;
+}
+
+a.tooltip:hover span{ /*the span will display just on :hover state*/
+	display: block;
+    position:absolute;
+    top:2em;
+	left:2em;
+	width:20em;
+    border:1px solid #914C29;
+    background-color: #F7ECDB;
+	color:#000;
+    text-align: left;
+	font-weight: normal;
+	padding: .3em;
+}
+
+span.tooltip{
+    position:relative; /*this is the key*/
+}
+
+span.tooltip:hover {
+	z-index:25;
+}
+
+span.tooltip span {
+	display: none;
+}
+
+span.tooltip:hover span{ /*the span will display just on :hover state*/
+	display: block;
+    position:absolute;
+    top:2em;
+	left:2em;
+	width:20em;
+    border:1px solid #914C29;
+    background-color: #F7ECDB;
+	color:#000;
+    text-align: left;
+	font-weight: normal;
+	padding: .3em;
+}
+
+#popular_container table .feature_resource {
+	border: 0px;
+}
+
+.feature_image {
+	padding-left: 12px;
+}
+
+.feature_text {
+}
+
+.feature_text_header {
+	font-weight:bold;
+	text-align:left;
+}
+
+.feature_text_data_label {
+	color:gray;
+	float:left;
+}
+
+.feature_text_data_value {
+	margin-left:40px;
+}
+
+.feature_text_saved_search {
+	padding-top: 1em;
+}
+
+.feature_news {
+	padding-left: 12px;
+}
+
+.feature_news ul {
+	margin-left: 12px;
+	margin-right: 0px;
+}
+
+#recent_news li {
+	list-style: disc;
+}
+
+#shared_discussions li {
+	list-style: disc;
+}

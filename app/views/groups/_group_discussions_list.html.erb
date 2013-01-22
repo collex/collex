@@ -24,7 +24,7 @@
 <% else -%>
 	<ul class="group_link_list">
 		<li class='change_forum_permissions'>Forum Permissions: <%= Group.permission_to_friendly(group.forum_permissions) %>
-			<span class="tooltip"><img src="/images/help_thumb.sm.gif" alt="help" /><span class="group_help_tooltip">Open: Anyone can read and any <%= Setup.site_name() %> user can respond. <br />
+			<span class="tooltip"><%= image_tag("help_thumb.sm.gif", { alt: "help" }) %><span class="group_help_tooltip">Open: Anyone can read and any <%= Setup.site_name() %> user can respond. <br />
 Public: Anyone can read, but only group members may respond. <br />
 Private: Only group members may read and respond to private discussions.</span></span>
 			<%= link_to_function('[change]', "editPermissions(#{group.id}, '#{group.forum_permissions}', #{Group.permissions_to_json()}, #{Group.permission_explanations_to_json()});", :class => 'nav_link') if group.can_edit(user_id) %>
@@ -35,9 +35,9 @@ Private: Only group members may read and respond to private discussions.</span><
 	<% if group.can_post(user_id) -%>
 		<li class='group_new_post'>
 		<% if cluster == nil -%>
-			<%= link_to_function("[ New Post ]", "new GroupNewPost('#{PROGRESS_SPINNER_PATH}',#{group.id}, gGroupData.name,  #{is_logged_in?}, #{(group.license_type==nil)?4:group.license_type});", :class => "nav_link" ) %>
+			<%= link_to_function("[ New Post ]", "new GroupNewPost('#{image_path(PROGRESS_SPINNER_PATH)}',#{group.id}, gGroupData.name,  #{is_logged_in?}, #{(group.license_type==nil)?4:group.license_type});", :class => "nav_link" ) %>
 		<% else -%>
-			<%= link_to_function("[ New Post ]", "new ClusterNewPost('#{PROGRESS_SPINNER_PATH}',#{group.id}, gGroupData.name,  #{cluster.id}, '#{escape_apos(cluster.name)}',  '#{group.get_clusters_label()}', #{is_logged_in?}, #{(group.license_type==nil)?4:group.license_type}); return false;", :class => "nav_link" ) %>
+			<%= link_to_function("[ New Post ]", "new ClusterNewPost('#{image_path(PROGRESS_SPINNER_PATH)}',#{group.id}, gGroupData.name,  #{cluster.id}, '#{escape_apos(cluster.name)}',  '#{group.get_clusters_label()}', #{is_logged_in?}, #{(group.license_type==nil)?4:group.license_type}); return false;", :class => "nav_link" ) %>
 		<% end -%>
 		</li>
 	<% end #if can post -%>
@@ -47,7 +47,7 @@ Private: Only group members may read and respond to private discussions.</span><
 		<div class="thumbnail_item">
 			<div class="left_thumbnail">
 		<% if comment_info[:thumbnail] == nil -%>
-				<% comment_info[:thumbnail] = '/images/group_forum_default_thumb.jpg' %>
+				<% comment_info[:thumbnail] = image_path('group_forum_default_thumb.jpg') %>
 		<% end -%>
 			<%= render :partial => '/forum/img_with_progress_spinner', :locals => { :src => comment_info[:thumbnail], :alt => 'thumbnail', :klass => "FH_post_image", :width => 50, :height => 125 } %>
 			</div>

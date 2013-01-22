@@ -49,9 +49,9 @@
 	<%= link_to_function("Click here to set a new style.", "new EditFontsDlg({ method: 'PUT', url: '/groups/#{group.id}' }, #{group.id}, gGroupData, 'group', true, 'group_details', #{group.group_type === 'peer-reviewed'})", { :class => 'modify_link' }) %>
 	<ul>
 <% if group.can_create_exhibit(user_id) -%>
-		<li><%= link_to_function "Create an #{group.get_exhibits_label()}", "var dlg = new CreateNewExhibitWizard({ exhibit_label: '#{group.get_exhibits_label()}', group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
+		<li><%= link_to_function "Create an #{group.get_exhibits_label()}", "var dlg = new CreateNewExhibitWizard({ exhibit_label: '#{group.get_exhibits_label()}', group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{image_path(PROGRESS_SPINNER_PATH)}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
 <% end # group.can_create_exhibit(user_id) -%>
-		<li><%= link_to_function("Create a #{group.get_clusters_label()} of #{group.get_exhibits_label()}s", "new CreateNewClusterDlg('/clusters', #{group.id}, '#{group.name.gsub("'", "&apos;")}', #{group.group_type != 'classroom'}, 'group_exhibits_list', 'group_exhibits', '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', '#{group.get_clusters_label()}')", { :class => 'modify_link' }) %>&nbsp;
+		<li><%= link_to_function("Create a #{group.get_clusters_label()} of #{group.get_exhibits_label()}s", "new CreateNewClusterDlg('/clusters', #{group.id}, '#{group.name.gsub("'", "&apos;")}', #{group.group_type != 'classroom'}, 'group_exhibits_list', 'group_exhibits', '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', '#{group.get_clusters_label()}')", { :class => 'modify_link' }) %>&nbsp;
 			<%= link_to_function("( what is this? )", "$('cluster_explanation').removeClassName('hidden'); $('cluster_what_is_this').addClassName('hidden');", { :class => 'modify_link what_is_this', :id => 'cluster_what_is_this' }) %>
 			<span id="cluster_explanation" class="group_member_explanation hidden" ><%= group.get_clusters_label()%>s are a way to manage multiple <%= group.get_exhibits_label().pluralize().downcase() %> on similar topics. For example, the administrators of a Byron group might want to create <%= group.get_clusters_label()%>s for Poetry and Prose, or those using their accounts for teaching purposes might want to create separate <%= group.get_clusters_label()%>s for each class.
 				<%= link_to_function("[hide this]", "$('cluster_explanation').addClassName('hidden'); $('cluster_what_is_this').removeClassName('hidden');", { :class => 'modify_link' }) %>
@@ -67,7 +67,7 @@
 <% if group.can_create_exhibit(user_id) -%>
 <div class="set_exhibit_style">
 	<ul>
-		<li><%= link_to_function "Create an #{group.get_exhibits_label()}", "var dlg = new CreateNewExhibitWizard({ exhibit_label: '#{group.get_exhibits_label()}', group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{PROGRESS_SPINNER_PATH}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
+		<li><%= link_to_function "Create an #{group.get_exhibits_label()}", "var dlg = new CreateNewExhibitWizard({ exhibit_label: '#{group.get_exhibits_label()}', group_id: #{group.id}, #{cluster != nil ? 'cluster_id: ' + cluster.id.to_s + ', ' : ''}progress_img: '#{image_path(PROGRESS_SPINNER_PATH)}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %></li>
 	</ul>
 </div>
 <% end # if group.can_create_exhibit(user_id) -%>
@@ -110,7 +110,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 		<div class="right_of_thumbnail exhibit_link">
 			<% if Group.get_exhibit_visibility(exhibit) == 'everyone' -%>
 			<div class="search_result_buttons">
-				<%= result_button("Discuss", "discuss_#{exhibit.id}", "new StartDiscussionWithExhibit('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{exhibit.id}', '#{escape_apos(exhibit.title)}', 'discuss_#{exhibit.id}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '#{PROGRESS_SPINNER_PATH}', #{group.id}, #{cluster ? cluster.id : 'null'});", true) %>
+				<%= result_button("Discuss", "discuss_#{exhibit.id}", "new StartDiscussionWithExhibit('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{exhibit.id}', '#{escape_apos(exhibit.title)}', 'discuss_#{exhibit.id}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', #{group.id}, #{cluster ? cluster.id : 'null'});", true) %>
 			</div>
 			<% end -%>
 			<%= get_exhibit_link(exhibit) %>&nbsp;by
@@ -125,7 +125,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 			<%= link_to_function("[limit to group only]", "limitExhibit(#{exhibit.id}, 'group', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility != 'group' && exhibit.is_published != 3 -%>
 			<%= link_to_function("[allow publishing]", "unlimitExhibit(#{exhibit.id}, 'www', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if exhibit.editor_limit_visibility == 'group' -%>
 <% if exhibit.is_published == 5 -%>
-			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.get_exhibits_label}', '#{group.get_clusters_label}', '#{exhibit.title.gsub("'", '&apos;')}', '#{get_exhibits_username(exhibit)}', '#{Setup.site_name()}', #{cluster ? cluster.id : 0}, '#{group.name}', '#{Group.visibility_to_friendly(group.exhibit_visibility)}', '#{get_exhibit_url(exhibit)}', '#{get_user_info_url(exhibit.get_apparent_author())}', '#{PROGRESS_SPINNER_PATH}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.get_exhibits_label}', '#{group.get_clusters_label}', '#{exhibit.title.gsub("'", '&apos;')}', '#{get_exhibits_username(exhibit)}', '#{Setup.site_name()}', #{cluster ? cluster.id : 0}, '#{group.name}', '#{Group.visibility_to_friendly(group.exhibit_visibility)}', '#{get_exhibit_url(exhibit)}', '#{get_user_info_url(exhibit.get_apparent_author())}', '#{image_path(PROGRESS_SPINNER_PATH)}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 <% end # if is awaiting peer review -%>
 <% end # if group.can_edit(user_id) -%>
@@ -146,7 +146,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 				| <%= link_to("[Edit this #{group.get_exhibits_label()}]", { :controller => 'builder', :action => 'show', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 			<%= link_to_function("[move #{group.get_exhibits_label}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
-			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.get_exhibits_label}', '#{group.get_clusters_label}', '#{exhibit.title.gsub("'", '&apos;')}', '#{get_exhibits_username(exhibit)}', '#{Setup.site_name()}', #{cluster ? cluster.id : 0}, '#{group.name}', '#{Group.visibility_to_friendly(group.exhibit_visibility)}', '#{get_exhibit_url(exhibit)}', '#{get_user_info_url(exhibit.get_apparent_author())}', '#{PROGRESS_SPINNER_PATH}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
+			<%= link_to_function("[accept]", "acceptAsPeerReviewed(#{exhibit.id}, gClusterOptions, '#{group.get_exhibits_label}', '#{group.get_clusters_label}', '#{exhibit.title.gsub("'", '&apos;')}', '#{get_exhibits_username(exhibit)}', '#{Setup.site_name()}', #{cluster ? cluster.id : 0}, '#{group.name}', '#{Group.visibility_to_friendly(group.exhibit_visibility)}', '#{get_exhibit_url(exhibit)}', '#{get_user_info_url(exhibit.get_apparent_author())}', '#{image_path(PROGRESS_SPINNER_PATH)}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 			<%= link_to_function("[revisions needed]", "rejectAsPeerReviewed(#{exhibit.id}, '#{exhibit.get_apparent_author_name()}', '#{exhibit.get_apparent_author_email()}', '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>
 		</div>
 	</div>

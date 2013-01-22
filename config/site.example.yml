@@ -41,9 +41,6 @@ typewright:
 paperclip:
   image_magic_path: '/opt/local/bin'
 
-# The update string matches one of the options in "rake deploy:update"
-update: 'production'
-
 # Should experimental features be activated?
 bleeding_edge: false
 

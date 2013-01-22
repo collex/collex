@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
+require "#{Rails.root}/lib/auto_complete/init.rb"
 
 class SearchController < ApplicationController
    layout 'nines'
