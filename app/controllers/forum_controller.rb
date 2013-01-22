@@ -279,7 +279,7 @@ class ForumController < ApplicationController
       obj = {}
       obj[:id] = "id_#{exhibit.id}"
       obj[:img] = exhibit.thumbnail
-      obj[:img] = image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if obj[:img] == "" || obj[:img] == nil
+      obj[:img] = view_context.image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if obj[:img] == "" || obj[:img] == nil
       obj[:title] = exhibit.title
       obj[:strFirstLine] = exhibit.title
       obj[:strSecondLine] = ""
@@ -343,7 +343,7 @@ class ForumController < ApplicationController
 						if hit != nil
 							image = CachedResource.get_thumbnail_from_hit(hit)
 							if only_images != true
-								image = image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
+								image = view_context.image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
 							end
 							if image && image.length > 0
 								obj = {}
@@ -362,7 +362,7 @@ class ForumController < ApplicationController
 				all_collected.each  { |uri,col|
 					if !only_images || col['thumbnail']
 						image = CachedResource.get_thumbnail_from_hit(col)
-						image = image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
+						image = view_context.image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
 						ret.push({ :id => uri, :img => image, :title => col['title'], :strFirstLine => col['title'], :strSecondLine => col['author'] })
 					end
 				}

@@ -30,7 +30,7 @@ class CollectedItem < ActiveRecord::Base
       hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
       if hit != nil
         image = CachedResource.get_thumbnail_from_hit(hit)
-        image = image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
+        image = ActionController::Base.new.view_context.image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
         if str != ""
           str += ",\n"
         end
@@ -145,7 +145,7 @@ class CollectedItem < ActiveRecord::Base
       hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
       if hit != nil
         image = CachedResource.get_thumbnail_from_hit(hit)
-        image = image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
+        image = ActionController::Base.new.view_context.image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) if image == "" || image == nil
         arr.insert(-1, { :uri => hit['uri'], :thumbnail => image, :title => self.escape_quote(hit['title']) })
       end
     }
