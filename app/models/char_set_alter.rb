@@ -52,6 +52,8 @@ class CharSetAlter
 #}
 #CP1252 = CP_MAP.keys.join
 #UTF = CP_MAP.values.join
+=begin
+# TODO-PER: iconv is deprecated, so if we ever need this again, rewrite it.
 require 'iconv'
 
 	def self.translate(text)
@@ -258,4 +260,5 @@ require 'iconv'
 		}
 		puts "Changed: #{num_changed}"
 	end
+=end
 end
