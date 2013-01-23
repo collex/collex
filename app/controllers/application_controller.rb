@@ -21,7 +21,9 @@ class ApplicationController < ActionController::Base
   helper_method :is_logged_in?, :username, :user,
                 :is_admin?, :get_curr_user_id, :respond_to_file_upload
 
-	def test_exception_notifier
+  require "#{Rails.root}/lib/auto_complete/init.rb"
+
+  def test_exception_notifier
 		raise "This is only a test of the automatic notification system."
 	end
 

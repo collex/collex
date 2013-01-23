@@ -13,13 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-require "#{Rails.root}/lib/auto_complete/init.rb"
 
 class SearchController < ApplicationController
    layout 'nines'
    #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
-   
    def initialize
 
    end
