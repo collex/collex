@@ -16,3 +16,8 @@
 /config/database.yml
 /config/site.yml
 /public/favicon.ico
+/public/404.html
+/public/500.html
+/public/422.html
+/public/help.html
+/public/index_underconstruction.html
