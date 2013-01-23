@@ -31,21 +31,21 @@ end
 
 namespace :deploy do
 
-	def stop_daemons
-		puts "Stopping all daemons..."
-		puts `script/delayed_job stop`
-#		puts `lib/daemons/index_user_content_ctl stop`
-		puts `lib/daemons/mailer_ctl stop`
-		puts `lib/daemons/session_cleaner_ctl stop`
-		sleep(8)
-	end
-
-	def start_daemons
-		puts "Starting all daemons..."
-		puts `script/delayed_job start`
-		puts `lib/daemons/mailer_ctl start`
-		puts `lib/daemons/session_cleaner_ctl start`
-	end
+#	def stop_daemons
+#		puts "Stopping all daemons..."
+#		puts `script/delayed_job stop`
+##		puts `lib/daemons/index_user_content_ctl stop`
+#		puts `lib/daemons/mailer_ctl stop`
+#		puts `lib/daemons/session_cleaner_ctl stop`
+#		sleep(8)
+#	end
+#
+#	def start_daemons
+#		puts "Starting all daemons..."
+#		puts `script/delayed_job start`
+#		puts `lib/daemons/mailer_ctl start`
+#		puts `lib/daemons/session_cleaner_ctl start`
+#	end
 
 	#def tag_current_version
 	#	# This uses the current version number as the name of the tag. If that tag already exists, a letter is appended to it so that it is unique.
@@ -93,208 +93,208 @@ namespace :deploy do
 	#	tag_current_version()
 	#end
 
-	def deploy_on_production
-		puts "Deploy latest version on production..."
-		update_edge()
-	end
-
-	def basic_update
-		stop_daemons()
-		puts `git checkout db/schema.rb`
-		puts `git pull`
-		run_bundler()
-		copy_dir( "#{Rails.root}/public/static/#{SKIN}", "#{Rails.root}/public" )
-		Rake::Task['db:migrate'].invoke
-	end
-
-	def update_edge
-		puts "Update site from repository..."
-		basic_update()
-    `mkdir -p #{Rails.root}/tmp`
-    `touch #{Rails.root}/tmp/restart.txt`
-		#`sudo /sbin/service httpd restart`
-		#puts "\e[0;31mRun this to restart passenger:"
-		#puts "~/scripts/restart_passenger.sh #{Setup.site_name()} \e[m"
-		start_daemons()
-	end
-
-	def update_development
-		puts "Update site from repository..."
-		basic_update()
-		`mongrel_rails restart`
-		start_daemons()
-	end
-
-	desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"
-	task :update => :environment do
-		puts "Update type: #{UPDATE_TASK}"
-		if UPDATE_TASK == 'production'
-			deploy_on_production()
-		elsif UPDATE_TASK == 'development'
-			update_development()
-		elsif UPDATE_TASK == 'edge'
-			update_edge()
-		else
-			puts "Unknown updating type. Compare the value in config/site.yml and the list in the deploy:update rake task (file: deploy.rake)."
-		end
-	end
-
-	def run_bundler()
-		gemfile = "#{Rails.root}/Gemfile"
-		lock = "#{Rails.root}/Gemfile.lock"
-		if is_out_of_date(gemfile, lock)
-			puts "Updating gems..."
-			puts `bundle update`
-			`touch #{lock}`	# If there were no changes, the file isn't changed, so it will appear out of date every time this is run.
-		end
-	end
-
-	def is_out_of_date(src, dst)
-		src_time = File.stat(src).mtime
-		begin
-			dst_time = File.stat(dst).mtime
-		rescue
-			# It's ok if the file doesn't exist; that means that we should definitely recreate it.
-			return true
-		end
-		return src_time > dst_time
-	end
-
+	#def deploy_on_production
+	#	puts "Deploy latest version on production..."
+	#	update_edge()
+	#end
 	#
-	# All tasks below here are not normally called separately, but can be if needed. They are called as part of the
-	# tasks defined above.
+	#def basic_update
+	#	stop_daemons()
+	#	puts `git checkout db/schema.rb`
+	#	puts `git pull`
+	#	run_bundler()
+	#	copy_dir( "#{Rails.root}/public/static/#{SKIN}", "#{Rails.root}/public" )
+	#	Rake::Task['db:migrate'].invoke
+	#end
 	#
-
-	def safe_mkdir(folder)
-		begin
-	    Dir.mkdir(folder)
-		rescue
-			# It's ok to fail: it probably means the folder already exists.
-		end
-	end
+	#def update_edge
+	#	puts "Update site from repository..."
+	#	basic_update()
+	#`mkdir -p #{Rails.root}/tmp`
+	#`touch #{Rails.root}/tmp/restart.txt`
+	#	#`sudo /sbin/service httpd restart`
+	#	#puts "\e[0;31mRun this to restart passenger:"
+	#	#puts "~/scripts/restart_passenger.sh #{Setup.site_name()} \e[m"
+	#	start_daemons()
+	#end
+	#
+	#def update_development
+	#	puts "Update site from repository..."
+	#	basic_update()
+	#	`mongrel_rails restart`
+	#	start_daemons()
+	#end
+	#
+	#desc "Do all tasks that routinely need to be done when anything changes in the source repository -- the style of update is in site.yml"
+	#task :update => :environment do
+	#	puts "Update type: #{UPDATE_TASK}"
+	#	if UPDATE_TASK == 'production'
+	#		deploy_on_production()
+	#	elsif UPDATE_TASK == 'development'
+	#		update_development()
+	#	elsif UPDATE_TASK == 'edge'
+	#		update_edge()
+	#	else
+	#		puts "Unknown updating type. Compare the value in config/site.yml and the list in the deploy:update rake task (file: deploy.rake)."
+	#	end
+	#end
+	#
+	#def run_bundler()
+	#	gemfile = "#{Rails.root}/Gemfile"
+	#	lock = "#{Rails.root}/Gemfile.lock"
+	#	if is_out_of_date(gemfile, lock)
+	#		puts "Updating gems..."
+	#		puts `bundle update`
+	#		`touch #{lock}`	# If there were no changes, the file isn't changed, so it will appear out of date every time this is run.
+	#	end
+	#end
+	#
+	#def is_out_of_date(src, dst)
+	#	src_time = File.stat(src).mtime
+	#	begin
+	#		dst_time = File.stat(dst).mtime
+	#	rescue
+	#		# It's ok if the file doesn't exist; that means that we should definitely recreate it.
+	#		return true
+	#	end
+	#	return src_time > dst_time
+	#end
+	#
+	##
+	## All tasks below here are not normally called separately, but can be if needed. They are called as part of the
+	## tasks defined above.
+	##
+	#
+	#def safe_mkdir(folder)
+	#	begin
+	#    Dir.mkdir(folder)
+	#	rescue
+	#		# It's ok to fail: it probably means the folder already exists.
+	#	end
+	#end
 	
-  def copy_dir( start_dir, dest_dir )
-     puts "Copying the contents of #{start_dir} to #{dest_dir}..."
-     Dir.new(start_dir).each { |file|
-       unless file =~ /\A\./
-#         start_file = "#{start_dir}/#{file}"
-#         dest_file = "#{dest_dir}/#{file}"
-         `cp "#{start_dir}/#{file}" "#{dest_dir}/#{file}"`
-       end
-     }
-  end
+#  def copy_dir( start_dir, dest_dir )
+#     puts "Copying the contents of #{start_dir} to #{dest_dir}..."
+#     Dir.new(start_dir).each { |file|
+#       unless file =~ /\A\./
+##         start_file = "#{start_dir}/#{file}"
+##         dest_file = "#{dest_dir}/#{file}"
+#         `cp "#{start_dir}/#{file}" "#{dest_dir}/#{file}"`
+#       end
+#     }
+#  end
+#
+#	desc "Compress the css for the about pages"
+#	task :compress_about_css => :environment do
+#		compress_file('stylesheets', '.css', "")
+#		compress_file("stylesheets/#{SKIN}", '.css', "#{SKIN}__")
+#		concatenate_css(:about)
+#	end
 
-	desc "Compress the css for the about pages"
-	task :compress_about_css => :environment do
-		compress_file('stylesheets', '.css', "")
-		compress_file("stylesheets/#{SKIN}", '.css', "#{SKIN}__")
-		concatenate_css(:about)
-	end
+  #def compress_css_js()
+	#	# The purpose of this is to roll all our css and js files into one minimized file so that load time on the server is as short as
+	#	# possible. Using this method allows different pages to have different sets of includes, and allows the developer to create
+	#	# as many small css and js files as they want. See get_include_file_list.rb for details.
+	#	compress_file('javascripts', '.js', "")
+	#	compress_file("javascripts/typewright", '.js', "typewright__")
+	#	compress_file('stylesheets', '.css', "")
+	#	compress_file("stylesheets/#{SKIN}", '.css', "#{SKIN}__")
+	#	compress_file("stylesheets/typewright", '.css', "typewright__")
+  #
+	#	concatenate_js(:typewright_edit)
+	#	concatenate_css(:typewright_edit)
+	#	concatenate_js(:typewright)
+	#	concatenate_css(:typewright)
+	#	concatenate_js(:my_collex)
+	#	concatenate_css(:my_collex)
+	#	concatenate_js(:search)
+	#	concatenate_css(:search)
+	#	concatenate_js(:tag)
+	#	concatenate_css(:tag)
+	#	concatenate_js(:discuss)
+	#	concatenate_css(:discuss)
+	#	concatenate_js(:home)
+	#	concatenate_css(:home)
+	#	concatenate_js(:exhibits)
+	#	concatenate_css(:exhibits)
+	#	concatenate_js(:shared)
+	#	concatenate_css(:shared)
+	#	concatenate_js(:admin)
+	#	concatenate_css(:admin)
+	#	concatenate_js(:about)
+	#	concatenate_css(:about)
+	#	concatenate_js(:news)
+	#	concatenate_css(:news)
+	#	concatenate_js(:view_exhibit)
+	#	concatenate_css(:view_exhibit)
+	#	concatenate_js(:print_exhibit)
+	#	concatenate_css(:print_exhibit)
+	#end
 
-  def compress_css_js()
-		# The purpose of this is to roll all our css and js files into one minimized file so that load time on the server is as short as
-		# possible. Using this method allows different pages to have different sets of includes, and allows the developer to create
-		# as many small css and js files as they want. See get_include_file_list.rb for details.
-		compress_file('javascripts', '.js', "")
-		compress_file("javascripts/typewright", '.js', "typewright__")
-		compress_file('stylesheets', '.css', "")
-		compress_file("stylesheets/#{SKIN}", '.css', "#{SKIN}__")
-		compress_file("stylesheets/typewright", '.css', "typewright__")
+	#desc "Compress all css and js files"
+	#task :compress_css_js => :environment do
+	#	compress_css_js()
+	#  end
+	#
+	#def time_format(tim)
+	#	return tim.getlocal().strftime("%b %d, %Y %I:%M%p")
+	#end
+	#
+	#def compress_file(folder, ext, prefix)
+	#	Dir.foreach("#{Rails.root}/public/#{folder}") { |f|
+	#		if f.index(ext) == f.length - ext.length
+	#			fname = f.slice(0, f.length - ext.length)
+	#			if fname.index('-min') != fname.length - 4
+	#				src_path = "#{Rails.root}/public/#{folder}/#{f}"
+	#				dst_path = "#{Rails.root}/tmp/#{prefix}#{fname}-min#{ext}"
+	#				src_time = File.stat(src_path).mtime
+	#				begin
+	#					dst_time = File.stat(dst_path).mtime
+	#				rescue
+	#					# It's ok if the file doesn't exist; that means that we should definitely recreate it.
+	#					dst_time = 10.years.ago
+	#				end
+	#				if src_time > dst_time
+	#					puts "Compressing #{f}..."
+	#					system("java -jar #{Rails.root}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{dst_path} #{src_path}")
+	#				#else
+	#					#puts "Skipping #{f}. Source time=#{time_format(src_time)}; Dest time=#{time_format(dst_time)}"
+	#				end
+	#			end
+	#		end
+	#	}
+	#end
 
-		concatenate_js(:typewright_edit)
-		concatenate_css(:typewright_edit)
-		concatenate_js(:typewright)
-		concatenate_css(:typewright)
-		concatenate_js(:my_collex)
-		concatenate_css(:my_collex)
-		concatenate_js(:search)
-		concatenate_css(:search)
-		concatenate_js(:tag)
-		concatenate_css(:tag)
-		concatenate_js(:discuss)
-		concatenate_css(:discuss)
-		concatenate_js(:home)
-		concatenate_css(:home)
-		concatenate_js(:exhibits)
-		concatenate_css(:exhibits)
-		concatenate_js(:shared)
-		concatenate_css(:shared)
-		concatenate_js(:admin)
-		concatenate_css(:admin)
-		concatenate_js(:about)
-		concatenate_css(:about)
-		concatenate_js(:news)
-		concatenate_css(:news)
-		concatenate_js(:view_exhibit)
-		concatenate_css(:view_exhibit)
-		concatenate_js(:print_exhibit)
-		concatenate_css(:print_exhibit)
-	end
-
-	desc "Compress all css and js files"
-	task :compress_css_js => :environment do
-		compress_css_js()
-	  end
-
-	def time_format(tim)
-		return tim.getlocal().strftime("%b %d, %Y %I:%M%p")
-	end
-
-	def compress_file(folder, ext, prefix)
-		Dir.foreach("#{Rails.root}/public/#{folder}") { |f|
-			if f.index(ext) == f.length - ext.length
-				fname = f.slice(0, f.length - ext.length)
-				if fname.index('-min') != fname.length - 4
-					src_path = "#{Rails.root}/public/#{folder}/#{f}"
-					dst_path = "#{Rails.root}/tmp/#{prefix}#{fname}-min#{ext}"
-					src_time = File.stat(src_path).mtime
-					begin
-						dst_time = File.stat(dst_path).mtime
-					rescue
-						# It's ok if the file doesn't exist; that means that we should definitely recreate it.
-						dst_time = 10.years.ago
-					end
-					if src_time > dst_time
-						puts "Compressing #{f}..."
-						system("java -jar #{Rails.root}/lib/tasks/yuicompressor-2.4.2.jar --line-break 7000 -o #{dst_path} #{src_path}")
-					#else
-						#puts "Skipping #{f}. Source time=#{time_format(src_time)}; Dest time=#{time_format(dst_time)}"
-					end
-				end
-			end
-		}
-	end
-
-	def concatenate_js(page)
-		list_proto = []
-		fnames = GetIncludeFileList.get_js(page)
-		fnames[:prototype].each { |f|
-			list_proto.push("#{Rails.root}/tmp/#{f}-min.js")
-		}
-
-		list = []
-		fnames[:local].each { |f|
-			f =
-			list.push("#{Rails.root}/tmp/#{f.gsub('/','__')}-min.js")
-		}
-
-		dest ="javascripts/#{page.to_s()}-min.js"
-		puts "Creating #{dest}..." # [\n\t#{list.join("\n\t")}]"
-		system("cat #{list_proto.join(' ')} > #{Rails.root}/public/javascripts/prototype-min.js")
-		system("cat #{list.join(' ')} > #{Rails.root}/public/#{dest}")
-	end
-
-	def concatenate_css(page)
-		list = []
-		fnames = GetIncludeFileList.get_css(page)
-		fnames[:local].each { |f|
-			list.push("#{Rails.root}/tmp/#{f.gsub('/','__')}-min.css")
-		}
-		dest ="stylesheets/#{page.to_s()}-min.css"
-		puts "Creating #{dest}..." # [\n\t#{list.join("\n\t")}]"
-		list = list.join(' ')
-		system("cat #{list} > #{Rails.root}/public/#{dest}")
-	end
+	#def concatenate_js(page)
+	#	list_proto = []
+	#	fnames = GetIncludeFileList.get_js(page)
+	#	fnames[:prototype].each { |f|
+	#		list_proto.push("#{Rails.root}/tmp/#{f}-min.js")
+	#	}
+	#
+	#	list = []
+	#	fnames[:local].each { |f|
+	#		f =
+	#		list.push("#{Rails.root}/tmp/#{f.gsub('/','__')}-min.js")
+	#	}
+	#
+	#	dest ="javascripts/#{page.to_s()}-min.js"
+	#	puts "Creating #{dest}..." # [\n\t#{list.join("\n\t")}]"
+	#	system("cat #{list_proto.join(' ')} > #{Rails.root}/public/javascripts/prototype-min.js")
+	#	system("cat #{list.join(' ')} > #{Rails.root}/public/#{dest}")
+	#end
+	#
+	#def concatenate_css(page)
+	#	list = []
+	#	fnames = GetIncludeFileList.get_css(page)
+	#	fnames[:local].each { |f|
+	#		list.push("#{Rails.root}/tmp/#{f.gsub('/','__')}-min.css")
+	#	}
+	#	dest ="stylesheets/#{page.to_s()}-min.css"
+	#	puts "Creating #{dest}..." # [\n\t#{list.join("\n\t")}]"
+	#	list = list.join(' ')
+	#	system("cat #{list} > #{Rails.root}/public/#{dest}")
+	#end
 
 #	desc "Automatically put users in a group"
 #	task :join_users_to_group => :environment do
@@ -454,42 +454,42 @@ namespace :deploy do
 #	end
 
 
-	desc "Fix character set from CP1252 to utf-8"
-	task :fix_char_set => :environment do
-		debug = false
-		CharSetAlter.fix_cp1252(CachedProperty, :value, debug)
-		CharSetAlter.fix_cp1252(Cluster, :name, debug)
-		CharSetAlter.fix_cp1252(Cluster, :description, debug)
-		CharSetAlter.fix_cp1252(CollectedItem, :annotation, debug)
-		CharSetAlter.fix_cp1252(Constraint, :value, debug)
-		CharSetAlter.fix_cp1252(DiscussionComment, :comment, debug)
-		CharSetAlter.fix_cp1252(DiscussionThread, :title, debug)
-		CharSetAlter.fix_cp1252(DiscussionTopic, :description, debug)
-		CharSetAlter.fix_cp1252(ExhibitElement, :element_text, debug)
-		CharSetAlter.fix_cp1252(ExhibitElement, :element_text2, debug)
-		CharSetAlter.fix_cp1252(ExhibitFootnote, :footnote, debug)
-		CharSetAlter.fix_cp1252(ExhibitIllustration, :alt_text, debug)
-		CharSetAlter.fix_cp1252(ExhibitIllustration, :illustration_text, debug)
-		CharSetAlter.fix_cp1252(ExhibitIllustration, :caption1, debug)
-		CharSetAlter.fix_cp1252(ExhibitIllustration, :caption2, debug)
-		CharSetAlter.fix_cp1252(Exhibit, :title, debug)
-		#CharSetAlter.fix_cp1252(FacetCategory, :carousel_description, debug)
-		CharSetAlter.fix_cp1252(FeaturedObject, :title, debug)
-		CharSetAlter.fix_cp1252(FeaturedObject, :saved_search_name, debug)
-		CharSetAlter.fix_cp1252(Group, :name, debug)
-		CharSetAlter.fix_cp1252(Group, :description, debug)
-		CharSetAlter.fix_cp1252(Group, :university, debug)
-		CharSetAlter.fix_cp1252(Group, :course_name, debug)
-		CharSetAlter.fix_cp1252(Group, :course_mnemonic, debug)
-		CharSetAlter.fix_cp1252(ObjectActivity, :tagname, debug)
-		CharSetAlter.fix_cp1252(Search, :name, debug)
-		#CharSetAlter.fix_cp1252(Site, :description, debug)
-		CharSetAlter.fix_cp1252(Tag, :name, debug)
-		CharSetAlter.fix_cp1252(User, :username, debug)
-		CharSetAlter.fix_cp1252(User, :fullname, debug)
-		CharSetAlter.fix_cp1252(User, :institution, debug)
-		CharSetAlter.fix_cp1252(User, :about_me, debug)
-	end
+	#desc "Fix character set from CP1252 to utf-8"
+	#task :fix_char_set => :environment do
+	#	debug = false
+	#	CharSetAlter.fix_cp1252(CachedProperty, :value, debug)
+	#	CharSetAlter.fix_cp1252(Cluster, :name, debug)
+	#	CharSetAlter.fix_cp1252(Cluster, :description, debug)
+	#	CharSetAlter.fix_cp1252(CollectedItem, :annotation, debug)
+	#	CharSetAlter.fix_cp1252(Constraint, :value, debug)
+	#	CharSetAlter.fix_cp1252(DiscussionComment, :comment, debug)
+	#	CharSetAlter.fix_cp1252(DiscussionThread, :title, debug)
+	#	CharSetAlter.fix_cp1252(DiscussionTopic, :description, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitElement, :element_text, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitElement, :element_text2, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitFootnote, :footnote, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitIllustration, :alt_text, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitIllustration, :illustration_text, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitIllustration, :caption1, debug)
+	#	CharSetAlter.fix_cp1252(ExhibitIllustration, :caption2, debug)
+	#	CharSetAlter.fix_cp1252(Exhibit, :title, debug)
+	#	#CharSetAlter.fix_cp1252(FacetCategory, :carousel_description, debug)
+	#	CharSetAlter.fix_cp1252(FeaturedObject, :title, debug)
+	#	CharSetAlter.fix_cp1252(FeaturedObject, :saved_search_name, debug)
+	#	CharSetAlter.fix_cp1252(Group, :name, debug)
+	#	CharSetAlter.fix_cp1252(Group, :description, debug)
+	#	CharSetAlter.fix_cp1252(Group, :university, debug)
+	#	CharSetAlter.fix_cp1252(Group, :course_name, debug)
+	#	CharSetAlter.fix_cp1252(Group, :course_mnemonic, debug)
+	#	CharSetAlter.fix_cp1252(ObjectActivity, :tagname, debug)
+	#	CharSetAlter.fix_cp1252(Search, :name, debug)
+	#	#CharSetAlter.fix_cp1252(Site, :description, debug)
+	#	CharSetAlter.fix_cp1252(Tag, :name, debug)
+	#	CharSetAlter.fix_cp1252(User, :username, debug)
+	#	CharSetAlter.fix_cp1252(User, :fullname, debug)
+	#	CharSetAlter.fix_cp1252(User, :institution, debug)
+	#	CharSetAlter.fix_cp1252(User, :about_me, debug)
+	#end
 #	desc "Fix character set from CP1252 to utf-8"
 #	task :fix_char_set => :environment do
 #		# This was for a one time fix of the database when the character set was set to latin1 instead of utf8.
