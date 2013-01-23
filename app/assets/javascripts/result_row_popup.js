@@ -570,7 +570,7 @@ function doAddToExhibit(partial, uri, index, row_id, my_collex_url)
 {
 	if (exhibit_names.length === 0) {
 		new MessageBoxDlg('Exhibits',
-			'You have not yet created any exhibits. <a href="' + my_collex_url + '" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
+			'You have not yet created any exhibits. <a href="/' + my_collex_url + '" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
 	} else {
 		//var arr = row_id.split('-');
 		//var row_num = arr[arr.length-1];
