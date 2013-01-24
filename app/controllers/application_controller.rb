@@ -22,8 +22,18 @@ class ApplicationController < ActionController::Base
                 :is_admin?, :get_curr_user_id, :respond_to_file_upload
 
   # TODO-PER: This is for the old auto complete plugin. It should be replaced with the jquery one.
-  ActionController::Base.send :include, AutoComplete
-  ActionController::Base.helper AutoCompleteMacrosHelper
+  def self.auto_complete_for(object, method, options = {})
+	  define_method("auto_complete_for_#{object}_#{method}") do
+		  find_options = {
+			  :conditions => [ "LOWER(#{method}) LIKE ?", '%' + params[object][method].downcase + '%' ],
+			  :order => "#{method} ASC",
+			  :limit => 10 }.merge!(options)
+
+		  @items = object.to_s.camelize.constantize.find(:all, find_options)
+
+		  render :inline => "<%= auto_complete_result @items, '#{method}' %>"
+	  end
+  end
 
   def test_exception_notifier
 		raise "This is only a test of the automatic notification system."
