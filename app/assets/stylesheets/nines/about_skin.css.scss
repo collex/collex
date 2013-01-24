@@ -21,7 +21,7 @@ body.federation-nines.pg-about {
 	border:1px solid #BEBDBB;
 }
 
-.wordpress #main_container #container .widget-nav-menu li.current_page_item a, .singular-page #main_container #container #primary .widget-nav-menu ul li ul.children li.current_page_item a {
+&.wordpress #main_container #container .widget-nav-menu li.current_page_item a, .singular-page #main_container #container #primary .widget-nav-menu ul li ul.children li.current_page_item a {
 	background-color: #A98064;
 }
 }

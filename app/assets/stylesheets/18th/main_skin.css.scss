@@ -99,9 +99,9 @@ body.federation-18th {
 .nines_link:hover { color: #fff; background: #445a93; }
 
 /* This is used for all links that go to external websites */
-.wordpress #container .ext_link:link { color: #445a93; text-decoration: none; }
-.wordpress #container .ext_link:visited { color: #445a93; text-decoration: none; }
-.wordpress #container .ext_link:hover { color: #fff; background: #445a93; text-decoration: none; }
+&.wordpress #container .ext_link:link { color: #445a93; text-decoration: none; }
+&.wordpress #container .ext_link:visited { color: #445a93; text-decoration: none; }
+&.wordpress #container .ext_link:hover { color: #fff; background: #445a93; text-decoration: none; }
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {

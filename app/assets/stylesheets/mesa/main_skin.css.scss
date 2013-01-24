@@ -156,9 +156,9 @@ a.my_collex_link {
 .nines_link:hover { color: #fff; background: #120F56; }
 
 /* This is used for all links that go to external websites */
-.wordpress #container .ext_link:link { color: #120F56; text-decoration: none; }
-.wordpress #container .ext_link:visited { color: #120F56; text-decoration: none; }
-.wordpress #container .ext_link:hover { color: #fff; background: #120F56; text-decoration: none; }
+&.wordpress #container .ext_link:link { color: #120F56; text-decoration: none; }
+&.wordpress #container .ext_link:visited { color: #120F56; text-decoration: none; }
+&.wordpress #container .ext_link:hover { color: #fff; background: #120F56; text-decoration: none; }
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
