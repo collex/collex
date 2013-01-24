@@ -315,12 +315,16 @@ class ResultsController < ApplicationController
       ret[:hit] = get_from_cache(params[:uri])
 #      ret[:hit]['title'][0] = '[cache]' + ret[:hit]['title'][0]
     else
+	    begin
       ret[:hit] = get_from_solr(params[:uri])
+	    rescue Catalog::Error => e
+		    ret[:hit] = nil
+		end
       if ret[:hit] == nil
         ret[:is_error] = true
         ret[:hit] = get_from_cache(params[:uri])
         ret[:hit] = {} if ret[:hit] == nil
-        ret[:hit]['title'] = [ 'Note: This object no longer exists in the index']
+        ret[:hit]['title'] = 'Note: This object no longer exists in the index'
       end
 #      bytes = ''
 #      ret[:hit]['title'][0].each_byte { |c|
