@@ -2,6 +2,7 @@
 # cap edge_nines
 # cap edge_18th
 # cap edge_mesa
+#cap tamu_edge_nines
 
 require 'rvm/capistrano'
 set :rvm_ruby_string, 'ruby-1.9.3-p0'
@@ -29,6 +30,17 @@ def set_application()
 	role :app, "#{application}"                          # This may be the same as your `Web` server
 	role :db,  "#{application}", :primary => true 		# This is where Rails migrations will run
 
+end
+
+desc "Run tasks to update edge NINES environment."
+task :tamu_edge_nines do
+	set :rvm_ruby_string, 'ruby-1.9.3-p327'
+	set :application, "edge-collex"
+	set :user, "paulrosen"
+	set :rvm_type, :system
+	set :deploy_to, "/home/network/paulrosen/www_arc/nines"
+	set :skin, 'nines'
+	set_application()
 end
 
 desc "Run tasks to update edge NINES environment."
@@ -67,7 +79,9 @@ namespace :config do
 	task :symlinks do
 		run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 		run "ln -nfs #{shared_path}/config/site.yml #{release_path}/config/site.yml"
-		run "ln -nfs #{shared_path}/config/daemons.yml #{release_path}/config/daemons.yml"
+#		run "ln -nfs #{shared_path}/config/daemons.yml #{release_path}/config/daemons.yml"
+		run "ln -nfs #{shared_path}/photos_small #{release_path}/public/photos_small"
+		run "ln -nfs #{shared_path}/photos_full #{release_path}/public/photos_full"
 	end
 
 	desc "Wordpress Symlinks"
@@ -103,6 +117,7 @@ end
 after :edge_nines, 'deploy'
 after :edge_18th, 'deploy'
 after :edge_mesa, 'deploy'
+after :tamu_edge_nines, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
