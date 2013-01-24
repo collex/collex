@@ -21,7 +21,9 @@ class ApplicationController < ActionController::Base
   helper_method :is_logged_in?, :username, :user,
                 :is_admin?, :get_curr_user_id, :respond_to_file_upload
 
-  require "#{Rails.root}/lib/auto_complete/init.rb"
+  # TODO-PER: This is for the old auto complete plugin. It should be replaced with the jquery one.
+  ActionController::Base.send :include, AutoComplete
+  ActionController::Base.helper AutoCompleteMacrosHelper
 
   def test_exception_notifier
 		raise "This is only a test of the automatic notification system."
