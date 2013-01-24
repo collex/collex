@@ -11,7 +11,7 @@ class PublicationImage < ActiveRecord::Base
 	end
 
 	def self.get_image(id)
-		return "" if id == nil || id == 0
+		return ActionController::Base.new.view_context.image_path(LARGE_THUMBNAIL_IMAGE_PATH) if id == nil || id == 0
 		image = PublicationImage.find(id)
 		return "" if !image.image_full
 		return "/#{image.image_full.photo.url}"
