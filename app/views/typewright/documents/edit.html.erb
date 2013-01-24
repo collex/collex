@@ -1,7 +1,7 @@
 <% current_page "TypeWright" -%>
 <script type="text/javascript">
 	var lines = <%= raw(@params[:lines].to_json()) %>;
-	var currLine = 0;
+	var currLine = <%= @params['starting_line'] %>;
 	var doc_id = <%= @params[:doc_id] %>;
 	var page = <%= @params[:page] %>;
 	var showDebugItems = <%= @debugging ? 'true' : 'false' %>;

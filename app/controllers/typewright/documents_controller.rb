@@ -122,7 +122,8 @@ class Typewright::DocumentsController < ApplicationController
 		@revision_page = @num_revision_pages if @revision_page > @num_revision_pages
       start_revision = EDITS_PER_PAGE * (@revision_page-1)
       @edits = Typewright::Line.revisions(@uri, start_revision, EDITS_PER_PAGE, @src)
-	
+			last_revision = stats.last_revision.kind_of?(Typewright::Document::LastRevision) ? stats.last_revision.send("user_#{@user.id}") : nil
+			@starting_place = last_revision.present? ? { page: last_revision.page, line: last_revision.line } : { }
 		end
 	end
 	
@@ -145,15 +146,20 @@ class Typewright::DocumentsController < ApplicationController
       @sources = doc.ocr_sources
       @sources = %w(gale) if @sources.nil?
       @uri = doc.uri
+			starting_line_number = params[:line]
       @site = COLLEX_PLUGINS['typewright']['web_service_url']
 			word_stats = is_admin?
 			@params = Typewright::Document.get_page(@uri, page, @src, word_stats)
+			@params['starting_line'] = 0
 			# correct the format of the original line
-			@params['lines'].each { |line|
+			@params['lines'].each_with_index { |line, index|
 				if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
 					line['actions'][0] = 'original'
 					line['dates'][0] = ''
 					line['text'][0] = '' if line['text'][0].blank?
+				end
+				if line['num'].to_f == starting_line_number.to_f
+					@params['starting_line'] = index
 				end
 			}
       @thumb = URI::join(@site, @params['img_thumb'])

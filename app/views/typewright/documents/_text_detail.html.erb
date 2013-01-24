@@ -58,8 +58,10 @@
     <table class="search_result_data">
       <%= format_result_rows(rows, false) %>
     </table>
-        
-    <% edit_url = "/typewright/documents/#{id}/edit?src=#{@src}" %>
+
+	  <% query = @starting_place.map { |key,val| "#{key}=#{val}"} %>
+	  <% query.push("src=#{@src}") %>
+    <% edit_url = "/typewright/documents/#{id}/edit?#{query.join("&")}" %>
     <% logged_in = get_curr_user() != nil %>
     <%= link_to_function raw("&nbsp;"), "doEditDocument( #{logged_in}, '#{edit_url}' ); ", 
                 { :class => "tw_button4 tw_start_editing_button" } %>

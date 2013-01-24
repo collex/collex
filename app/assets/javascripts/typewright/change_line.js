@@ -148,6 +148,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	}
 
 	function redraw() {
+		if (window.currLine === undefined) return;  // Must not be on a typewright page.
 		var elHist = Y.one('#tw_text_0 .tw_history_icon');
 		var elChg = Y.one('#tw_text_0 .tw_change_icon');
 		var elNum = Y.one('#tw_text_0 .tw_line_num');
@@ -350,8 +351,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
     }, 'body', ".tw_change_line");
 
     Y.on("load", function(e) {
-	    if (window.currLine)
-	        change_line_rel(0);
+	    if (window.currLine !== undefined)
+		    change_line_abs(window.currLine);
     }, window);
 
 	Y.on('mousewheel', function(e) {
