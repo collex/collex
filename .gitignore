@@ -15,6 +15,7 @@
 /.idea/
 /config/database.yml
 /config/site.yml
+/config/capistrano.yml
 /public/favicon.ico
 /public/404.html
 /public/500.html

@@ -1,0 +1,23 @@
+# This contains the specific information for your computer and connection to the server to be
+# able to deploy this app using capistrano.
+
+edge_tamu:
+  user: 'user-name-to-login-to-server'
+  ssh_name: 'ssh-name-to-login-to-server'
+  ruby: 'ruby-1.9.3-p374'
+  system_rvm: true
+  deploy_base: '/full/path/to/folder/that/all/web/apps/are/deployed/to'
+
+prod_tamu:
+  user: 'user-name-to-login-to-server'
+  ssh_name: 'ssh-name-to-login-to-server'
+  ruby: 'ruby-1.9.3-p374'
+  system_rvm: true
+  deploy_base: '/full/path/to/folder/that/all/web/apps/are/deployed/to'
+
+edge_rack:
+  user: 'user-name-to-login-to-server'
+  ssh_name: 'ssh-name-to-login-to-server'
+  ruby: 'ruby-1.9.3-p0'
+  system_rvm: false
+  deploy_base: '/full/path/to/folder/that/all/web/apps/are/deployed/to'

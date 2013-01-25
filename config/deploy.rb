@@ -2,22 +2,33 @@
 # cap edge_nines
 # cap edge_18th
 # cap edge_mesa
-#cap tamu_edge_nines
+# cap prod_nines
+# cap prod_18th
+# cap prod_mesa
+# cap rack_edge_nines
+# cap rack_edge_18th
+# cap rack_edge_mesa
 
 require 'rvm/capistrano'
-set :rvm_ruby_string, 'ruby-1.9.3-p0'
-#set :rvm_type, :system
-
 require 'bundler/capistrano'
 require "delayed/recipes"
 #require "whenever/capistrano"
+
+# Read in the site-specific information so that the initializers can take advantage of it.
+config_file = "config/capistrano.yml"
+if File.exists?(config_file)
+	set :site_specific, YAML.load_file(config_file)
+else
+	puts "***"
+	puts "*** Failed to load capistrano configuration. Did you create #{config_file}?"
+	puts "***"
+end
 
 set :repository, "git://github.com/collex/collex.git"
 set :scm, "git"
 set :branch, "master"
 set :deploy_via, :remote_cache
 
-set :user, "arc"
 set :use_sudo, false
 
 set :normalize_asset_timestamps, false
@@ -25,46 +36,65 @@ set :normalize_asset_timestamps, false
 set :rails_env, "production"
 
 #set :whenever_command, "bundle exec whenever"
-def set_application()
+
+def set_application(section, skin)
+	set :deploy_to, "#{site_specific[section]['deploy_base']}/#{skin}"
+	set :application, site_specific[section]['ssh_name']
+	set :user, site_specific[section]['user']
+	set :rvm_ruby_string, site_specific[section]['ruby']
+	if site_specific[section]['system_rvm']
+		set :rvm_type, :system
+	end
+
 	role :web, "#{application}"                          # Your HTTP server, Apache/etc
 	role :app, "#{application}"                          # This may be the same as your `Web` server
 	role :db,  "#{application}", :primary => true 		# This is where Rails migrations will run
-
-end
-
-desc "Run tasks to update edge NINES environment."
-task :tamu_edge_nines do
-	set :rvm_ruby_string, 'ruby-1.9.3-p327'
-	set :application, "edge-collex"
-	set :user, "paulrosen"
-	set :rvm_type, :system
-	set :deploy_to, "/home/network/paulrosen/www_arc/nines"
-	set :skin, 'nines'
-	set_application()
+	set :skin, skin
 end
 
 desc "Run tasks to update edge NINES environment."
 task :edge_nines do
-	set :application, "edge.nines.org"
-	set :deploy_to, "/home/arc/www/nines"
-	set :skin, 'nines'
-	set_application()
+	set_application('edge_tamu', 'nines')
 end
 
 desc "Run tasks to update edge 18thConnect environment."
 task :edge_18th do
-	set :application, "edge.18thconnect.org"
-	set :deploy_to, "/home/arc/www/18th"
-	set :skin, 'nines'
-	set_application()
+	set_application('edge_tamu', '18th')
 end
 
 desc "Run tasks to update edge Mesa environment."
 task :edge_mesa do
-	set :application, "mesa.performantsoftware.com"
-	set :deploy_to, "/home/arc/www/mesa"
-	set :skin, 'nines'
-	set_application()
+	set_application('edge_tamu', 'mesa')
+end
+
+desc "Run tasks to update production NINES environment."
+task :edge_nines do
+	set_application('prod_tamu', 'nines')
+end
+
+desc "Run tasks to update production 18thConnect environment."
+task :edge_18th do
+	set_application('prod_tamu', '18th')
+end
+
+desc "Run tasks to update production Mesa environment."
+task :edge_mesa do
+	set_application('prod_tamu', 'mesa')
+end
+
+desc "Run tasks to update edge NINES environment."
+task :rack_edge_nines do
+	set_application('edge_rack', 'nines')
+end
+
+desc "Run tasks to update edge 18thConnect environment."
+task :rack_edge_18th do
+	set_application('edge_rack', '18th')
+end
+
+desc "Run tasks to update edge Mesa environment."
+task :rack_edge_mesa do
+	set_application('edge_rack', 'mesa')
 end
 
 namespace :passenger do
@@ -79,7 +109,7 @@ namespace :config do
 	task :symlinks do
 		run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 		run "ln -nfs #{shared_path}/config/site.yml #{release_path}/config/site.yml"
-#		run "ln -nfs #{shared_path}/config/daemons.yml #{release_path}/config/daemons.yml"
+		run "ln -nfs #{shared_path}/config/daemons.yml #{release_path}/config/daemons.yml"
 		run "ln -nfs #{shared_path}/photos_small #{release_path}/public/photos_small"
 		run "ln -nfs #{shared_path}/photos_full #{release_path}/public/photos_full"
 	end
@@ -117,7 +147,7 @@ end
 after :edge_nines, 'deploy'
 after :edge_18th, 'deploy'
 after :edge_mesa, 'deploy'
-after :tamu_edge_nines, 'deploy'
+after :rack_edge_nines, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
@@ -125,6 +155,6 @@ after "deploy:start",   "delayed_job:start"
 after "deploy:restart", "delayed_job:restart"
 after "deploy:finalize_update", "config:symlinks"
 after "deploy:finalize_update", "config:wordpress"
-after "deploy:finalize_update", "daemons:restart"
+#after "deploy:finalize_update", "daemons:restart"
 after "deploy:finalize_update", "skinning:static"
 after :deploy, "passenger:restart"
