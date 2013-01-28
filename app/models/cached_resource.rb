@@ -338,8 +338,8 @@ class CachedResource < ActiveRecord::Base
   def self.get_page_of_hits_by_user(user, page_num, items_per_page, sort_field, direction)
     items = CollectedItem.all(:conditions => ["user_id = ?", user.id], :order => 'updated_at DESC' )
 		if sort_field
-			items.each { |item|
-				item = add_sort_field(item, sort_field)
+			items = items.map { |item|
+				add_sort_field(item, sort_field)
 			}
 			items = sort_algorithm(items, sort_field)
 			items = items.reverse() if direction == 'Descending'
