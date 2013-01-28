@@ -59,7 +59,7 @@
       <%= format_result_rows(rows, false) %>
     </table>
 
-	  <% query = @starting_place.present? ? @starting_place.map { |key,val| "#{key}=#{val}"} : '' %>
+	  <% query = @starting_place.present? ? @starting_place.map { |key,val| "#{key}=#{val}"} : [] %>
 	  <% query.push("src=#{@src}") %>
     <% edit_url = "/typewright/documents/#{id}/edit?#{query.join("&")}" %>
     <% logged_in = get_curr_user() != nil %>
