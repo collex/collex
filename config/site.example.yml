@@ -49,5 +49,21 @@ daemons:
   user_content_interval_secs: 600
   session_cleaner_interval_secs: 432000 #5*24 hours
 
-#svn:
-#  url_collex: svn://nines.performantsoftware.com/collex
+##########################
+### CAPISTRANO
+##########################
+
+capistrano:
+  edge_tamu:
+    user: 'user-name-to-login-to-server'
+    ssh_name: 'ssh-name-to-login-to-server'
+    ruby: 'ruby-1.9.3-p374'
+    system_rvm: true
+    deploy_base: '/full/path/to/folder/that/all/web/apps/are/deployed/to'
+
+  edge_rack:
+    user: 'user-name-to-login-to-server'
+    ssh_name: 'ssh-name-to-login-to-server'
+    ruby: 'ruby-1.9.3-p0'
+    system_rvm: false
+    deploy_base: '/full/path/to/folder/that/all/web/apps/are/deployed/to'

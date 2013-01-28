@@ -15,12 +15,12 @@ require "delayed/recipes"
 #require "whenever/capistrano"
 
 # Read in the site-specific information so that the initializers can take advantage of it.
-config_file = "config/capistrano.yml"
+config_file = "config/site.yml"
 if File.exists?(config_file)
-	set :site_specific, YAML.load_file(config_file)
+	set :site_specific, YAML.load_file(config_file)['capistrano']
 else
 	puts "***"
-	puts "*** Failed to load capistrano configuration. Did you create #{config_file}?"
+	puts "*** Failed to load capistrano configuration. Did you create #{config_file} with a capistrano section?"
 	puts "***"
 end
 
@@ -68,17 +68,17 @@ task :edge_mesa do
 end
 
 desc "Run tasks to update production NINES environment."
-task :edge_nines do
+task :prod_nines do
 	set_application('prod_tamu', 'nines')
 end
 
 desc "Run tasks to update production 18thConnect environment."
-task :edge_18th do
+task :prod_18th do
 	set_application('prod_tamu', '18th')
 end
 
 desc "Run tasks to update production Mesa environment."
-task :edge_mesa do
+task :prod_mesa do
 	set_application('prod_tamu', 'mesa')
 end
 
@@ -109,7 +109,6 @@ namespace :config do
 	task :symlinks do
 		run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 		run "ln -nfs #{shared_path}/config/site.yml #{release_path}/config/site.yml"
-		run "ln -nfs #{shared_path}/config/daemons.yml #{release_path}/config/daemons.yml"
 		run "ln -nfs #{shared_path}/photos_small #{release_path}/public/photos_small"
 		run "ln -nfs #{shared_path}/photos_full #{release_path}/public/photos_full"
 	end
@@ -124,8 +123,8 @@ end
 namespace :daemons do
 	task :restart, :roles => :app do
 		run "echo Restarting all daemons..."
-		run "#{release_path}/lib/daemons/mailer_ctl restart"
-		run "#{release_path}/lib/daemons/session_cleaner_ctl restart"
+		run "cd #{release_path} && bundle exec #{release_path}/lib/daemons/mailer_ctl restart"
+		run "cd #{release_path} && bundle exec #{release_path}/lib/daemons/session_cleaner_ctl restart"
 	end
 end
 
@@ -147,7 +146,12 @@ end
 after :edge_nines, 'deploy'
 after :edge_18th, 'deploy'
 after :edge_mesa, 'deploy'
+after :prod_nines, 'deploy'
+after :prod_18th, 'deploy'
+after :prod_mesa, 'deploy'
 after :rack_edge_nines, 'deploy'
+after :rack_edge_18th, 'deploy'
+after :rack_edge_18th, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
@@ -155,6 +159,42 @@ after "deploy:start",   "delayed_job:start"
 after "deploy:restart", "delayed_job:restart"
 after "deploy:finalize_update", "config:symlinks"
 after "deploy:finalize_update", "config:wordpress"
-#after "deploy:finalize_update", "daemons:restart"
+after "deploy:migrate", "daemons:restart"
 after "deploy:finalize_update", "skinning:static"
 after :deploy, "passenger:restart"
+
+reset = "\033[0m"
+green = "\033[32m" # Green
+red = "\033[31m" # Bright Red
+
+desc "Set up the edge nines server."
+task :edge_nines_setup do
+	set_application('edge_tamu', 'nines')
+end
+after :edge_nines_setup, 'deploy:setup'
+
+desc "Set up the edge 18th server."
+task :edge_18th_setup do
+	set_application('edge_tamu', '18th')
+end
+after :edge_18th_setup, 'deploy:setup'
+
+desc "Set up the edge mesa server."
+task :edge_mesa_setup do
+	set_application('edge_tamu', 'mesa')
+end
+after :edge_mesa_setup, 'deploy:setup'
+
+desc "Set up the edge server's config."
+task :edge_setup_config do
+	run "mkdir #{shared_path}/config"
+	run "touch #{shared_path}/config/database.yml"
+	run "touch #{shared_path}/config/site.yml"
+	puts ""
+	puts "#{red}!!!"
+	puts "!!! Now create the database.yml and site.yml files in the shared folder on the server."
+	puts "!!! Also create the database in mysql."
+	puts "!!!#{reset}"
+end
+
+after 'deploy:setup', :edge_setup_config
