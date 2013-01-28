@@ -12,7 +12,7 @@ class EmailWaiting < ActiveRecord::Base
 
 	def self.cue_email(from_name, from_email, to_name, to_email, subject, body, return_url, suffix)
 		EmailWaiting.create({ :from_name => from_name, :from_email => from_email, :to_name => to_name,
-			:to_email => to_email, :subject => subject, :body => body, :return_url => return_url, :suffix => suffix })
+			:to_email => to_email, :subject => subject, :body => body.gsub("&nbsp;", ' '), :return_url => return_url, :suffix => suffix })
 		puts "---------------------"
 		puts "cue_email:"
 		puts "from: #{from_name} #{from_email}"
