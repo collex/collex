@@ -622,6 +622,11 @@ class Catalog
 		return words.join(joiner)
 	end
 
+	def format_federation_constraint(federations)
+		value = federations.join(" OR ")
+		return "f=+federation:(#{value})"
+	end
+
 	def format_constraint(str, constraint, prefix, override = "")
 		if str.length == 0
 			str = "#{prefix}="
@@ -658,12 +663,13 @@ class Catalog
     discipline = ""
     doc_type = ""
     role = ""
+		federations = []
 
     params = []
 
 		constraints.each { |constraint|
 			if constraint['type'] == 'FederationConstraint'
-				f = format_constraint(f, constraint, 'f')
+				federations.push(constraint['value'])
 			elsif constraint['type'] == 'ExpressionConstraint'
 				q = format_constraint(q, strip_non_alpha(constraint), 'q')
 			elsif constraint['type'] == 'FreeCultureConstraint'
@@ -712,6 +718,8 @@ class Catalog
 				raise Catalog::Error.new("Unhandled constraint")
 			end
 		}
+
+		f = format_federation_constraint(federations)
 
 		params.push(q) if q.length > 0
 		params.push(t) if t.length > 0
