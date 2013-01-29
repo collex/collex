@@ -233,7 +233,7 @@ class Group < ActiveRecord::Base
 		return gu.pending_request == true
 	end
 
-	def get_membership_list()
+	def get_membership_list(with_owner = false)
 		gus = GroupsUser.find_all_by_group_id(self.id)
 		ret = []
 		gus.each { |gu|
@@ -242,6 +242,9 @@ class Group < ActiveRecord::Base
 				ret.push({ :name => user.fullname, :user_id => user.id, :id => gu.id, :role => gu.role })
 			end
 		}
+		if with_owner
+			ret.push({ :name => self.user.fullname, :user_id => self.user.id, :id => nil, :role => 'owner' })
+		end
 		return ret
 	end
 

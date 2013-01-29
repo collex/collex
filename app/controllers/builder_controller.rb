@@ -849,7 +849,7 @@ class BuilderController < ApplicationController
         end
       end  
     else
-      members = exhibit.group.get_membership_list
+      members = exhibit.group.get_membership_list(true)
       members.each do | member |  
         if member[:user_id] != curr_user.id
           ret.push({ :value => member[:user_id], :text => member[:name].gsub(/[^-'a-zA-Z0-9_. ]/, "*") })
