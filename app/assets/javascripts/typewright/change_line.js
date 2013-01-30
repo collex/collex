@@ -227,6 +227,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
 	function insert_below() {
 		line.doInsert(currLine+1);
+		currLine++;
 		redraw();
 		updateServer();
 	}

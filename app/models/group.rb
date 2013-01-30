@@ -300,7 +300,7 @@ class Group < ActiveRecord::Base
 
 		arr = split_by_all_delimiters(emails)
 		arr.each { |email|
-			# The user may have put in lots of different email formats, or may have put in uninteligible data. We will only
+			# The user may have put in lots of different email formats, or may have put in unintelligible data. We will only
 			# keep emails that appear to be well-formed.
 			email = email.strip()
 			is_legal = /^\<?.+@.+\..+\>?$/.match(email) # emails must be in the form: aaa@aaa.aaa, possibly bracketed by <...>
