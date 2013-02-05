@@ -37,6 +37,43 @@ set :rails_env, "production"
 
 #set :whenever_command, "bundle exec whenever"
 
+desc "Print out a menu of all the options that a user probably wants."
+task :menu do
+	tasks = {
+		'1' => { name: "cap edge_nines", computer: 'edge_tamu', skin: 'nines' },
+		'2' => { name: "cap edge_18th", computer: 'edge_tamu', skin: '18th' },
+		'3' => { name: "cap edge_mesa", computer: 'edge_tamu', skin: 'mesa' },
+		'4' => { name: "cap prod_nines", computer: 'prod_tamu', skin: 'nines' },
+		'5' => { name: "cap prod_18th", computer: 'prod_tamu', skin: '18th' },
+		'6' => { name: "cap prod_mesa", computer: 'prod_tamu', skin: 'mesa' },
+		'7' => { name: "cap rack_edge_nines", computer: 'edge_rack', skin: 'nines' },
+		'8' => { name: "cap rack_edge_18th", computer: 'edge_rack', skin: '18th' },
+		'9' => { name: "cap rack_edge_mesa", computer: 'edge_rack', skin: 'mesa' }
+	}
+
+	tasks.each { |key, value|
+		puts "#{key}. #{value[:name]}"
+	}
+
+	print "Choose deployment type: "
+	begin
+		system("stty raw -echo")
+		option = STDIN.getc
+	ensure
+		system("stty -raw echo")
+	end
+	puts ""
+
+	value = tasks[option]
+	if !value.nil?
+		set_application(value[:computer], value[:skin])
+		puts "Deploying..."
+		after :menu, 'deploy'
+	else
+		puts "Not deploying. Please enter a value from 1 - 9."
+	end
+end
+
 def set_application(section, skin)
 	set :deploy_to, "#{site_specific[section]['deploy_base']}/#{skin}"
 	set :application, site_specific[section]['ssh_name']
@@ -151,7 +188,7 @@ after :prod_18th, 'deploy'
 after :prod_mesa, 'deploy'
 after :rack_edge_nines, 'deploy'
 after :rack_edge_18th, 'deploy'
-after :rack_edge_18th, 'deploy'
+after :rack_edge_mesa, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
@@ -166,6 +203,12 @@ after :deploy, "passenger:restart"
 reset = "\033[0m"
 green = "\033[32m" # Green
 red = "\033[31m" # Bright Red
+
+desc "temp."
+task :temp_setup do
+	set_application('edge_rack', 'mesa')
+end
+after :temp_setup, 'deploy:setup'
 
 desc "Set up the edge nines server."
 task :edge_nines_setup do
