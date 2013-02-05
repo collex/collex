@@ -193,7 +193,8 @@ Collex::Application.routes.draw do
 			resources :documents
 			resources :lines
 			resources :document_users
-    end
+			resources :overviews, only: [ :index, :show ]
+		end
 
     get "typewright" => 'typewright/documents#index'
 

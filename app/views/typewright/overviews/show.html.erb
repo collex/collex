@@ -1,0 +1,20 @@
+<% current_page "admin" -%>
+<% current_sub_page "TypeWright" -%>
+<p id="notice"><%= notice %></p>
+
+<div class="tw_profile">
+    <%= render :partial => "/my_collex/profile", :locals => { :user => @typewright_overview[:user], :can_edit => false } %>
+    <div class="tw_extra_profile">
+        <div class="profile_div"><span class="profile_label">Last correction:</span>
+            <span><%= tw_date_format(@typewright_overview['most_recent_correction']) %></span></div>
+        <div class="profile_div"><span class="profile_label">Total documents corrected:</span>
+            <span><%= @typewright_overview['documents'].length %></span></div>
+    </div>
+</div>
+
+<div class="tw_doc_list">
+	<h2>Documents edited (Lines edited)</h2>
+    <%= tw_format_documents(@typewright_overview['documents']) %>
+</div>
+
+

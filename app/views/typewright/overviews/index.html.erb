@@ -1,0 +1,64 @@
+<% #
+   # ------------------------------------------------------------------------
+   # Copyright 2013 Applied Research in Patacriticism and the University of Virginia
+   #
+   # Licensed under the Apache License, Version 2.0 (the "License");
+   # you may not use this file except in compliance with the License.
+   # You may obtain a copy of the License at
+   #
+   #    http://www.apache.org/licenses/LICENSE-2.0
+
+   # Unless required by applicable law or agreed to in writing, software
+   # distributed under the License is distributed on an "AS IS" BASIS,
+   # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   # See the License for the specific language governing permissions and
+   # limitations under the License.
+   # ---------------------------------------------------------------------------- -%>
+<% current_page "admin" -%>
+<% current_sub_page "TypeWright" -%>
+<div class="inner_content_container">
+    <div class="page_header">Corrected Typewright Documents</div>
+    <div class="digg_pagination">
+        <div class="page_info">
+            <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
+        </div>
+        <form class='filter' action="/typewright/overviews"><input name="filter" type="text" placeholder="filter" value="<%= @filter %>" /><button type="submit">Filter</button> </form>
+        <%= will_paginate @typewright_overviews, :container => false %>
+    </div>
+    <table class="tw_overview">
+        <tr>
+            <% if @view == 'docs' %>
+                <th>URI</th>
+                <th>Title</th>
+                <th>Correctors (Lines Corrected)</th>
+                <th><%= link_to("Most Recent Correction", "/typewright/overviews?sort=recent", { class: 'nav_link' }) %></th>
+                <th><%= link_to("Percent Corrected", "/typewright/overviews?sort=percent", { class: 'nav_link' }) %></th>
+                <th>Complete?</th>
+            <% else %>
+                <th>User</th>
+		        <th>Documents Edited</th>
+                <th>Documents</th>
+                <th>Most Recent Correction</th>
+            <% end %>
+        </tr>
+        <% @typewright_overviews.each do |typewright_overview| %>
+            <tr>
+                <% if @view == 'docs' %>
+                    <td><%= typewright_overview['uri'] %></td>
+                    <td><%= tw_document_link(typewright_overview) %></td>
+                    <td><%= tw_format_correctors(typewright_overview['users']) %></td>
+                    <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
+                    <td><%= number_with_precision(typewright_overview['percent_corrected']*100, :precision => 2) %>%</td>
+                    <td><%= typewright_overview['completion_status'] %></td>
+                <% else %>
+                    <td><%= tw_format_corrector(typewright_overview) %></td>
+                    <td><%= typewright_overview['documents'].length %></td>
+                    <td class="tw_long_document_list"><div><%= tw_format_documents(typewright_overview['documents']) %></div></td>
+                    <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
+                <% end %>
+            </tr>
+    <% end %>
+    </table>
+</div>
+
+<div id="example"></div>

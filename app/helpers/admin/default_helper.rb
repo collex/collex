@@ -56,4 +56,18 @@ module Admin::DefaultHelper
       link_to name, { :controller => controller, :action => action}
     end
   end
+
+	def make_sub_menu(name, items, current_page)
+		klass = "admin_sub_menu"
+		klass += " admin_menu_current" if name == current_page
+		sub_menu = []
+		items.each { |item|
+			sub_menu.push(link_to(item[:name], item[:url]))
+		}
+		html = content_tag(:div, { class: klass }) do
+			raw(name + content_tag(:ul, raw(sub_menu.map { |mi| content_tag(:li, mi) }.join(''))))
+		end
+
+		return html
+	end
 end

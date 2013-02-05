@@ -29,6 +29,14 @@ class Typewright::User < ActiveResource::Base
 	return "#{federation} User"
   end
 
+	def self.get_author_native_rec(federation, orig_id)
+		return nil if federation.nil?
+		if federation == Setup.default_federation()
+			return ::User.find_by_id(orig_id)
+		end
+		return nil
+	end
+
 	def self.get_user(federation, orig_id)
   	user = self.find(:first, :params => { :federation => federation, :orig_id => orig_id })
     return user

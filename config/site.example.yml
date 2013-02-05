@@ -32,6 +32,7 @@ plugins:
 typewright:
   web_service_url: 'http://typewright.performantsoftware.com/'
   image_url: 'http://typewright.performantsoftware.com/uploaded'
+  private_token: 'super-secret'
 
 ##########################
 ### SYSTEM

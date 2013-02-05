@@ -13,7 +13,7 @@ module Typewright::TypewrightHelper
 	end
 
 	def tw_date_format(date)
-		return date.getlocal.strftime("%m/%d/%Y %I:%M%P")
+		return date.getlocal.strftime("%b %d, %Y %I:%M%P")
 	end
 
   def tw_source_popup(possible_sources, curr_src = :gale)

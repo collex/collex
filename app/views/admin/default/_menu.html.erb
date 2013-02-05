@@ -20,7 +20,11 @@
 	  <li><%= make_sub_menu_link("Home", "admin/default", "index", current_page) %></li>
 	  <li><%= make_sub_menu_link("Features", "admin/features", "index", current_page) %></li>
 	  <% if COLLEX_PLUGINS['typewright'] %>
-	   <li><%= make_sub_menu_link("TypeWright", "typewright/admin", "index", current_page) %></li>
+			<li><%= make_sub_menu("TypeWright", [
+				{ name: "Main", url: "/typewright/admin" },
+				{ name: "Documents", url: "/typewright/overviews" },
+				{ name: "Users", url: "/typewright/overviews?view=users" },
+			], current_page) %></li>
 	  <% end %>
 	  <li><%= make_sub_menu_link("User Roles", "admin/user_roles", "index", current_page) %></li>
 	  <li><%= make_sub_menu_link("Forum Topics", "admin/discussion_topics", "index", current_page) %></li>
