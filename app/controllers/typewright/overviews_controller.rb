@@ -4,7 +4,7 @@ class Typewright::OverviewsController < Admin::BaseController
 	def index
 		@view = params[:view] || 'docs'
 		@filter = params[:filter]
-		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 10, params[:sort], params[:filter])
+		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:filter])
 		if @view == 'docs'
 			@typewright_overviews.each { |document|
 				resource = CachedResource.get_hit_from_uri(document['uri'])
@@ -38,6 +38,14 @@ class Typewright::OverviewsController < Admin::BaseController
 		respond_to do |format|
 			format.html # show.html.erb
 			format.json { render json: @typewright_overview }
+		end
+	end
+
+	def retrieve_doc
+		doc = Typewright::Overview.retrieve_doc(params[:uri], params[:type])
+		respond_to do |format|
+			format.txt { render :text => doc }
+			format.xml  { render :text => doc }
 		end
 	end
 

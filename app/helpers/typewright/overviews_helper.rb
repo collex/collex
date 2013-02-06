@@ -21,6 +21,22 @@ module Typewright::OverviewsHelper
 		link_to(truncate(document['title'], :length => 50), "/typewright/documents/0?uri=#{uri}", { class: 'nav_link', title: document['title'] })
 	end
 
+	def tw_document_retrieval_link(label, uri, type, mime)
+		output_name = "#{uri.split("/").last}-#{type}"
+		return link_to(label, "/typewright/overviews/retrieve_doc.#{mime}?uri=#{uri}&type=#{type}", { download: output_name } )
+	end
+
+	def tw_document_retrieval_links(document)
+		uri = document['uri'].present? ? document['uri'] : document['id']
+		html = content_tag(:div, { class: 'tw-document-retrieval'}) do
+			tw_document_retrieval_link('Corrected Gale XML', uri, 'gale', 'xml') +
+				tw_document_retrieval_link('Corrected Text', uri, 'text', 'txt') +
+				tw_document_retrieval_link('Corrected TEI-A', uri, 'tei-a', 'xml') +
+				tw_document_retrieval_link('Original Gale XML', uri, 'original-gale', 'xml') +
+				tw_document_retrieval_link('Original Text', uri, 'original-text', 'txt')
+		end
+	end
+
 	def tw_format_documents(documents)
 		html = raw("")
 		documents.each { |document|

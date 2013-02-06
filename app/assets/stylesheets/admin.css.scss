@@ -251,6 +251,21 @@ body.pg-admin {
 	box-shadow: 1px 1px 4px #A9BAE7;
 }
 
+	.tw-document-retrieval a, .tw-document-retrieval a:visited {
+		border: 1px solid #000033;
+		border-radius: 4px;
+		padding: 0px 2px;
+		text-decoration: none;
+		margin: 1px;
+		font-size: 12px;
+		font-family: sans-serif;
+		display: inline-block;
+		color: black;
+	}
+	.tw-document-retrieval a:hover {
+		background-color: white;
+	}
+
 	.tw_overview {
 		margin-top: 4px;
 

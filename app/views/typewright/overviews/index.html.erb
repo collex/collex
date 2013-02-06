@@ -45,7 +45,7 @@
             <tr>
                 <% if @view == 'docs' %>
                     <td><%= typewright_overview['uri'] %></td>
-                    <td><%= tw_document_link(typewright_overview) %></td>
+                    <td><%= tw_document_link(typewright_overview) %><%= tw_document_retrieval_links(typewright_overview) %></td>
                     <td><%= tw_format_correctors(typewright_overview['users']) %></td>
                     <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
                     <td><%= number_with_precision(typewright_overview['percent_corrected']*100, :precision => 2) %>%</td>
