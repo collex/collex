@@ -387,28 +387,28 @@ span.advanced_search_field_tooltip {
 
 /* The rail and end cap images are shared in a sprite.
  * Include the id of the slider container to increase css specificity */
-.yui3-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('collex/rail-x-270-lines-numbered.png') !important;
+&.yui-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail {
+    background-image: image-url('rail-x-270-lines-numbered.png') !important;
     height: 40px;
 }
 /* The rail and end cap images are shared in a sprite.
  * Include the id of the slider container to increase css specificity */
-.yui3-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('collex/rail-x-270-lines-numbered.png') !important;
+&.yui-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail {
+    background-image: image-url('rail-x-270-lines-numbered.png') !important;
     height: 40px;
 }
 
 /* The rail and end cap images are shared in a sprite.
  * Include the id of the slider container to increase css specificity */
-.yui3-skin-sam .query_title_fuzziness .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('collex/rail-x-270-lines-numbered.png') !important;
+&.yui-skin-sam .query_title_fuzziness .yui3-slider-x .yui3-slider-rail {
+    background-image: image-url('rail-x-270-lines-numbered.png') !important;
     height: 45px;
 }
 
 /* The rail and end cap images are shared in a sprite.
  * Include the id of the slider container to increase css specificity */
-.yui3-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('collex/rail-x-270-lines-numbered.png') !important;
+&.yui-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail {
+    background-image: image-url('rail-x-270-lines-numbered.png') !important;
     height: 45px;
 }
 
