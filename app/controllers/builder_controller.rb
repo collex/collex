@@ -216,6 +216,14 @@ class BuilderController < ApplicationController
 					end
 				}
 				exhibit.genres = genres.join(', ')
+				disciplines = []
+				discipline_list = params[:discipline]
+				discipline_list.each { |key,val|
+					if val == 'true'
+						disciplines.push(key)
+					end
+				}
+				exhibit.disciplines = disciplines.join(', ')
 				exhibit.save
 		    render :partial => 'overview_data', :locals => { :exhibit => exhibit, :show_immediately => true }
 			end

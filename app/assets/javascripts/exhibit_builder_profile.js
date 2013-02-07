@@ -49,7 +49,7 @@ function doPublish(exhibit_id, publish_state) {
 	serverAction({action:{actions: ["/builder/publish_exhibit"], els: ["overview_data"], params: { id: exhibit_id, publish_state: publish_state }}, progress: { waitMessage: 'Updating...' }});
 }
 
-function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, populate_exhibit_only, progress_img, genreList)
+function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, populate_exhibit_only, progress_img, genreList, disciplineList)
 {
 //	$(update_id).setAttribute('action', "/builder/edit_exhibit_overview,/builder/update_title");
 //	$(update_id).setAttribute('ajax_action_element_id', "overview_data,overview_title");
@@ -82,6 +82,21 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 		for (var el in retData) {
 			if (el.startsWith('genre[')) {
 				var gen = el.substring(6, el.indexOf(']'));
+				if (retData[el] === true) {
+					if (str.length > 0)
+						str += ', ';
+					str += gen;
+				}
+			}
+		}
+		list.update(str);
+
+		list = $('discipline_list');
+		retData = param.dlg.getAllData();
+		str = "";
+		for (var el in retData) {
+			if (el.startsWith('discipline[')) {
+				var gen = el.substring(11, el.indexOf(']'));
 				if (retData[el] === true) {
 					if (str.length > 0)
 						str += ', ';
@@ -129,6 +144,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 				[ { text: 'Thumbnail:', klass: 'new_exhibit_title' }, { input: 'overview_thumbnail_dlg', value: values.overview_thumbnail_dlg, klass: 'new_exhibit_input_long' } ],
 				[ { link: '[Choose Thumbnail from Collected Objects]', klass: 'nav_link', callback: changeView, arg0: 'choose_thumbnail' }],
 				[ { text: 'Genres:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_genres_dlg + '&nbsp;', id: 'genre_list' }, { link: '[Select Genres]', klass: 'nav_link', callback: changeView, arg0: 'genres' } ],
+				[ { text: 'Disciplines:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_disciplines_dlg + '&nbsp;', id: 'discipline_list' }, { link: '[Select Disciplines]', klass: 'nav_link', callback: changeView, arg0: 'disciplines' } ],
 				[ { text: "(NINES contributors are required to assign at least one genre to their objects. Please choose one or more from this list.)", klass: "link_dlg_label_and" }],
 				[ { link: '[Completely Delete Exhibit]', klass: 'nav_link', callback: this.deleteExhibit }],
 				[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
@@ -158,15 +174,24 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 		};
 
 	var genres = {
-			page: 'genres',
-			rows: [
-				[ { text: 'Select all the genres that apply:', klass: 'new_exhibit_title' } ],
-				[ { checkboxList: 'genre', klass: 'checkbox_label', columns: 3, items: genreList, selections: values.overview_genres_dlg.split(', ') }  ],
-				[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: 'profile', callback: updateGenres }, { button: 'Cancel', arg0: 'profile', callback: updateGenres } ]	// TODO-PER: Cancel should undo any user's changes
-			]
-		};
+		page: 'genres',
+		rows: [
+			[ { text: 'Select all the genres that apply:', klass: 'new_exhibit_title' } ],
+			[ { checkboxList: 'genre', klass: 'checkbox_label', columns: 3, items: genreList, selections: values.overview_genres_dlg.split(', ') }  ],
+			[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: 'profile', callback: updateGenres }, { button: 'Cancel', arg0: 'profile', callback: updateGenres } ]	// TODO-PER: Cancel should undo any user's changes
+		]
+	};
 
-	var pages = [ profile, choose_thumbnail, genres ];
+	var disciplines = {
+		page: 'disciplines',
+		rows: [
+			[ { text: 'Select all the disciplines that apply:', klass: 'new_exhibit_title' } ],
+			[ { checkboxList: 'discipline', klass: 'checkbox_label', columns: 3, items: disciplineList, selections: values.overview_disciplines_dlg.split(', ') }  ],
+			[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: 'profile', callback: updateGenres }, { button: 'Cancel', arg0: 'profile', callback: updateGenres } ]	// TODO-PER: Cancel should undo any user's changes
+		]
+	};
+
+	var pages = [ profile, choose_thumbnail, genres, disciplines ];
 
 	var params = { this_id: "new_exhibit_wizard", pages: pages, body_style: "new_exhibit_div", row_style: "new_exhibit_row", title: "Edit Exhibit Profile" };
 	var dlg = new GeneralDialog(params);

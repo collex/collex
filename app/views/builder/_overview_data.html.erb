@@ -17,9 +17,10 @@
 <%#parameters: Exhibit exhibit; bool show_immediately -%>
 <script type="text/javascript">
 	var gGenres = <%= raw(Catalog.factory_create(false).get_genres().sort.to_json()) %>;
+	var gDisciplines = <%= raw(Catalog.factory_create(false).get_disciplines().sort.to_json()) %>;
 </script>
 <div id="global_form" class="inside_edit_exhibit_box">
-	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list', '/forum/get_nines_obj_list_with_image?exhibit_id=#{exhibit.id}', '#{image_path(PROGRESS_SPINNER_PATH)}', gGenres); return false;", { :class => 'modify_link' }) %></div>
+	<div class="exhibit_profile">Exhibit Profile <%= link_to_function("[Edit Profile]", "editExhibitProfile('overview_data', #{exhibit.id}, 'overview_field', '/forum/get_nines_obj_list', '/forum/get_nines_obj_list_with_image?exhibit_id=#{exhibit.id}', '#{image_path(PROGRESS_SPINNER_PATH)}', gGenres, gDisciplines); return false;", { :class => 'modify_link' }) %></div>
 	<span class='exhibit_profile_comment'>Use the fields below to change the font styles, thumbnails or Creative Commons License for your exhibit</span>
 	<div class="exhibit_preview_thumbnail"><%= render :partial => 'exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => show_immediately } %></div>
 	<div class="exhibit_profile_preview">
@@ -40,7 +41,11 @@
 		</div>
 		<div>
 			<span class="exhibit_profile_label">Genres:</span>
-			<span id="overview_genres" class="overview_field"><%= exhibit.genres %></span>
+		    <span id="overview_genres" class="overview_field"><%= exhibit.genres %></span>
+		</div>
+	    <div>
+		    <span class="exhibit_profile_label">Disciplines:</span>
+		    <span id="overview_disciplines" class="overview_field"><%= exhibit.disciplines %></span>
 		</div>
 		<% has_groups = Group.user_is_in_group(get_curr_user_id()) -%>
 		<% none_text = has_groups ? 'No Group Selected' : 'You are not in any groups' -%>

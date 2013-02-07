@@ -594,8 +594,17 @@ class Catalog
 	def get_genres()
 		genres = call_solr("genres", :get)
 		ret = []
-		genres['genres']['genre'].each { |fed|
-			ret.push(fed['name'])
+		genres['genres']['genre'].each { |gen|
+			ret.push(gen['name'])
+		}
+		return ret
+	end
+
+	def get_disciplines()
+		disciplines = call_solr("disciplines", :get)
+		ret = []
+		disciplines['disciplines']['discipline'].each { |disc|
+			ret.push(disc['name'])
 		}
 		return ret
 	end
