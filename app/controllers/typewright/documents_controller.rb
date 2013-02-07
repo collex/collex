@@ -122,7 +122,12 @@ class Typewright::DocumentsController < ApplicationController
 		@revision_page = @num_revision_pages if @revision_page > @num_revision_pages
       start_revision = EDITS_PER_PAGE * (@revision_page-1)
       @edits = Typewright::Line.revisions(@uri, start_revision, EDITS_PER_PAGE, @src)
-			last_revision = stats.last_revision.kind_of?(Typewright::Document::LastRevision) ? stats.last_revision.send("user_#{@user.id}") : nil
+			begin
+				last_revision = stats.last_revision.kind_of?(Typewright::Document::LastRevision) ? stats.last_revision.send("user_#{@user.id}") : nil
+			rescue
+				# the send() call will fail if the user hasn't made any revisions. That is ok.
+				last_revision = nil
+			end
 			@starting_place = last_revision.present? ? { page: last_revision.page, line: last_revision.line } : { }
 		end
 	end
