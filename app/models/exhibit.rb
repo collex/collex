@@ -803,6 +803,8 @@ class Exhibit < ActiveRecord::Base
 		}
 		genres = self.genres == nil ? [] : self.genres.split(', ')
 		doc[:genre] = genres if genres.length > 0
+		disciplines = self.disciplines == nil ? [] : self.disciplines.split(', ')
+		doc[:discipline] = disciplines if disciplines.length > 0
 		doc[:thumbnail] = self.thumbnail if !self.thumbnail.blank?
 		@@solr = Catalog.factory_create(false) if @@solr == nil
 		@@solr.add_object(doc, should_commit)

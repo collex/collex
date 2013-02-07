@@ -8,6 +8,18 @@ namespace :indexing do
 		finish_line(start_time)
 	end
 
+	desc "Index an exhibit in this federation into main index [exhibit_id]."
+	task :one_exhibit, [:id] => :environment do |t, args|
+		puts "This task is intended only for debugging."
+		return
+		id = args[:id]
+		puts "~~~~~~~~~~~ Indexing exhibit #{id} into solr..."
+		start_time = Time.now()
+		exhibit = Exhibit.find(id)
+		exhibit.index_exhibit(true)
+		finish_line(start_time)
+	end
+
 	desc "Unindex all exhibits in this federation from the main index."
 	task :unindex_all_exhibits => :environment do
 		puts "~~~~~~~~~~~ Removing all peer-reviewed exhibits from the solr index..."
