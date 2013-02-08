@@ -308,7 +308,11 @@ body.pg-admin {
 		box-shadow: 2px 2px 2px #bbbbbb;
 		margin-right: 22px;
 		border-radius: 3px;
+		width: 40%;
+		min-width: 382px;
+		margin-left: 8px;
 	}
+
 	.tw_extra_profile {
 		border-top: 2px groove #c3c3c3;
 		padding-top: 4px;
@@ -320,6 +324,7 @@ body.pg-admin {
 			width: 150px;
 		}
 	}
+
 	.tw_doc_list {
 		min-height: 500px;
 		margin-left: 20px;

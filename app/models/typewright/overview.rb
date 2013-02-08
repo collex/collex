@@ -55,6 +55,9 @@ class Typewright::Overview
 	def self.find(user_id)
 		resp = self.call_web_service("users/#{user_id}/corrections?federation=#{Setup.default_federation()}", :json)
 		return {} if resp.blank?
+		resp['documents'].each { |doc|
+			doc['most_recent_correction'] = Time.parse(doc['most_recent_correction']) if doc['most_recent_correction'].present?
+		} if resp['documents'].present?
 		resp['most_recent_correction'] = Time.parse(resp['most_recent_correction'])
 		return resp
 	end

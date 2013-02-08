@@ -37,6 +37,18 @@ module Typewright::OverviewsHelper
 		end
 	end
 
+	def tw_format_documents_table(documents)
+		rows = content_tag(:tr) do
+			content_tag(:th, "Title") + content_tag(:th, "Num Corrections") + content_tag(:th, "Last Correction")
+		end
+		documents.each { |document|
+			rows += content_tag(:tr) do
+				content_tag(:td, tw_document_link(document)) + content_tag(:td, document['count']) + content_tag(:td, tw_date_format(document['most_recent_correction']))
+			end
+		}
+		return content_tag(:table, rows, { class: 'tw_overview' })
+	end
+
 	def tw_format_documents(documents)
 		html = raw("")
 		documents.each { |document|
