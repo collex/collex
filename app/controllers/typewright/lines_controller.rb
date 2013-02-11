@@ -30,6 +30,7 @@ class Typewright::LinesController < ApplicationController
 			user_id = user_id.id if user_id
 			status = params[:status]
 			words = params[:words]
+			box = params[:box]
 			if doc_id == nil || page == nil || line == nil || user_id == nil || status == nil || src == nil
 				render :text => 'Illegal parameters.', :status => :bad_request
 			else
@@ -38,7 +39,7 @@ class Typewright::LinesController < ApplicationController
 					rec.destroy()
 				end
 				if status != 'undo'
-					Typewright::Line.create({ :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src })
+					Typewright::Line.create({ :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src, box: box })
 				end
 
 				render :text => ""

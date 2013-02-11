@@ -398,6 +398,10 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		line_changed();
 	}, 'body', '#tw_input_focus');
 
+	Y.Global.on('changeLine:box_size', function() {
+		lineDirty = true;
+	});
+
 	//
 	// undo
 	//

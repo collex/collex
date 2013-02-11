@@ -26,7 +26,8 @@
 		<tr>
 			<td class="tw_left_row">
 				<img id="tw_img_thumb" src="<%= @params[:img_thumb] %>" alt="original image" />
-                <%= link_to_function "report this page", "", { :class => 'nav_link tw_report_page', :id => 'tw_report_page', 'data-url' => "/typewright/documents/#{@params[:doc_id]}/report?page=#{@params[:page]}" } %>
+			    <%= link_to_function "report this page", "", { :class => 'nav_link tw_report_page tw_cmd', :id => 'tw_report_page', 'data-url' => "/typewright/documents/#{@params[:doc_id]}/report?page=#{@params[:page]}" } %>
+			    <%= link_to "resize red box", "#", { :class => 'nav_link tw_resize_box tw_cmd' } %>
             </td>
 			<td class="tw_middle_row">
 				<div id="tw_img_full">
@@ -34,6 +35,27 @@
 					<div style="background-image: url(<%= @params[:img_full].gsub('*', '1') %>);"></div>
 					<div style="background-image: url(<%= @params[:img_full].gsub('*', '2') %>);"></div>
 				</div>
+			    <table class="tw_editing">
+			        <tr id="tw_text_0">
+			            <td class="tw_history_icon"></td>
+			            <td class="tw_change_icon"></td>
+			            <td class="tw_line_num">&nbsp;</td>
+			            <td class="tw_text">&nbsp;</td>
+			        </tr>
+			        <tr id="tw_text_1">
+			            <td class="tw_history_icon"></td>
+			            <td class="tw_change_icon"></td>
+			            <td class="tw_line_num">&nbsp;</td>
+			            <td><span id="tw_editing_line"></span>
+			                <span class="tw_button tw_correct" title="Correct">&nbsp;</span><span class="tw_button tw_delete_line" title="Delete line">&nbsp;</span><span class="tw_button tw_undo_button hidden" title="Undo">&nbsp;</span><span class="tw_button tw_redo_button hidden" title="Redo">&nbsp;</span></td>
+			        </tr>
+			        <tr id="tw_text_2">
+			            <td class="tw_history_icon"></td>
+			            <td class="tw_change_icon"></td>
+			            <td class="tw_line_num">&nbsp;</td>
+			            <td class="tw_text">&nbsp;</td>
+			        </tr>
+			    </table>
 			</td>
 			<td class="tw_right_row">
 				<div class="tw_button3 tw_change_line tw_up_arrow_top" data-amount="-1" title="Previous line">&nbsp;</div>
@@ -41,30 +63,7 @@
 			</td>
 		</tr>
 	</table>
-	<table class="tw_editing">
-		<tr id="tw_text_0">
-			<td class="tw_history_icon"></td>
-			<td class="tw_change_icon"></td>
-			<td class="tw_line_num">&nbsp;</td>
-			<td class="tw_text">&nbsp;</td>
-			<td><div class="tw_button3 tw_change_line tw_up_arrow_bottom" data-amount="-1" title="Previous line">&nbsp;</div></td>
-		</tr>
-		<tr id="tw_text_1">
-			<td class="tw_history_icon"></td>
-			<td class="tw_change_icon"></td>
-			<td class="tw_line_num">&nbsp;</td>
-			<td><span id="tw_editing_line"></span>
-			<span class="tw_button tw_correct" title="Correct">&nbsp;</span><span class="tw_button tw_delete_line" title="Delete line">&nbsp;</span><span class="tw_button tw_undo_button hidden" title="Undo">&nbsp;</span><span class="tw_button tw_redo_button hidden" title="Redo">&nbsp;</span></td>
-		<td></td>
-		</tr>
-		<tr id="tw_text_2">
-			<td class="tw_history_icon"></td>
-			<td class="tw_change_icon"></td>
-			<td class="tw_line_num">&nbsp;</td>
-			<td class="tw_text">&nbsp;</td>
-			<td><div class="tw_button3 tw_change_line tw_down_arrow_bottom" data-amount="1" title="Next line">&nbsp;</div></td>
-		</tr>
-	</table>
+
     <div class="tw_toolbar bottom">
     <%= render :partial => 'pagination', :locals => { :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
     </div>
@@ -73,8 +72,8 @@
 	<%= render :partial => 'word_stats', :locals => { :word_stats => @params[:word_stats], :doc_word_stats => @params[:doc_word_stats]} %>
 
 </div>
-<div id="tw_pointer_thumb" style="position:absolute;border:1px solid red;"></div>
-<div id="tw_pointer_doc" style="position:absolute;border:2px solid red;"></div>
+<div id="tw_pointer_thumb"></div>
+<div id="tw_pointer_doc"></div>
 <% 20.times {|x|  %>
 <div id="tw_pointer_word_1_<%= x %>" style="position:absolute;display:none;border:2px dotted #3333ff;"></div>
 <% } %>

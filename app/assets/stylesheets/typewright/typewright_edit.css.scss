@@ -53,7 +53,7 @@ body.pg-typewright_edit {
 	font-family: 'Verdana', sans-serif;
 	font-size: .7em;
 	text-align: right;
-	margin-top: 3px;
+	margin-top: 0;
 	float:right;
 }
 
@@ -250,6 +250,9 @@ input.tw_deleted_line {
 	background-position: 0 -44px;
 }
 
+	table.tw_editing {
+		margin-top: 4px;
+	}
 table.tw_editing td {
 	padding: 0;
 	font-family: 'Times New Roman', serif;
@@ -294,7 +297,7 @@ table.tw_editing td {
 }
 
 #tw_input_focus {
-    width: 670px;
+    width: 558px;
 	font-family: 'Times New Roman', serif;
 }
 
@@ -354,11 +357,12 @@ table.tw_editing td {
 	width: 110px;
     padding-left: 5px;
     padding-top: 10px;
+	padding-bottom: 0;
 }
 
 .tw_middle_row {
 	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-bottom: 0;
 	padding-left: 0;
 	padding-right: 0;
 	vertical-align: top;
@@ -405,12 +409,12 @@ table.tw_editing td {
 	overflow: auto;
 }
 
-.tw_report_page {
+.tw_cmd {
     font-family: 'Verdana', sans-serif;
     font-size: 11px;
 }
 
-.tw_report_page:link, .tw_report_page:visited {
+.tw_cmd:link, .tw_cmd:visited {
   color: #AC2E20;
 }
 
@@ -577,4 +581,17 @@ table.tw_editing td {
     font-size: 1.2em;
     cursor: default;
 }
+	#tw_pointer_thumb {
+		position:absolute;
+		border:1px solid red;
+	}
+
+	#tw_pointer_doc {
+		position:absolute;
+		border:2px solid red;
+
+		.yui3-resize {
+			border:1px dashed red;
+		}
+	}
 }
