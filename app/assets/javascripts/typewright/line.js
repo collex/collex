@@ -27,8 +27,19 @@ var line = {
 	doInsert: function(num) {
 		var before = num > 0 ? lines[num-1].num : 0;
 		var after = (num < lines.length) ? lines[num].num : before + 1;
+		// Figure out an approximate place to put the box. It should be horizontally all the way across, and start just
+		// after the last item and end just before the next item.
+		var t = (num > 0) ? parseInt(lines[num-1].b) + 1 : 1;
+		var r = 1000;
+		var b = (num < lines.length) ? parseInt(lines[num].t) : t + 30;
+		var l = 1;
+		if (b - t > 30) { // don't allow the box to get too tall, so limit it to the center of a large region.
+			var mid = t + (b - t) / 2;
+			t = mid - 15;
+			b = mid + 15;
+		}
 		var newLine = before + (after-before)/2;
-		lines.splice(num, 0, { l:0, t:0, r:0, b:0, words: [[ ]], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] } });
+		lines.splice(num, 0, { l:l, t:t, r:r, b:b, words: [[ ]], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed' });
 	},
 
 	isLast: function(num) { return num === lines.length - 1; },
