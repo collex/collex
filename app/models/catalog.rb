@@ -728,7 +728,7 @@ class Catalog
 			end
 		}
 
-		f = format_federation_constraint(federations)
+		f = format_federation_constraint(federations) if federations.present?
 
 		params.push(q) if q.length > 0
 		params.push(t) if t.length > 0
