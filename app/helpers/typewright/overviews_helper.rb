@@ -32,6 +32,7 @@ module Typewright::OverviewsHelper
 			tw_document_retrieval_link('Corrected Gale XML', uri, 'gale', 'xml') +
 				tw_document_retrieval_link('Corrected Text', uri, 'text', 'txt') +
 				tw_document_retrieval_link('Corrected TEI-A', uri, 'tei-a', 'xml') +
+				tw_document_retrieval_link('Corrected TEI-A (words)', uri, 'tei-a-words', 'xml') +
 				tw_document_retrieval_link('Original Gale XML', uri, 'original-gale', 'xml') +
 				tw_document_retrieval_link('Original Text', uri, 'original-text', 'txt')
 		end
