@@ -5,9 +5,6 @@
 # cap prod_nines
 # cap prod_18th
 # cap prod_mesa
-# cap rack_edge_nines
-# cap rack_edge_18th
-# cap rack_edge_mesa
 
 require 'rvm/capistrano'
 require 'bundler/capistrano'
@@ -40,15 +37,12 @@ set :rails_env, "production"
 desc "Print out a menu of all the options that a user probably wants."
 task :menu do
 	tasks = {
-		'1' => { name: "cap edge_nines", computer: 'edge_tamu', skin: 'nines' },
-		'2' => { name: "cap edge_18th", computer: 'edge_tamu', skin: '18th' },
-		'3' => { name: "cap edge_mesa", computer: 'edge_tamu', skin: 'mesa' },
-		'4' => { name: "cap prod_nines", computer: 'prod_tamu', skin: 'nines' },
-		'5' => { name: "cap prod_18th", computer: 'prod_tamu', skin: '18th' },
-		'6' => { name: "cap prod_mesa", computer: 'prod_tamu', skin: 'mesa' },
-		'7' => { name: "cap rack_edge_nines", computer: 'edge_rack', skin: 'nines' },
-		'8' => { name: "cap rack_edge_18th", computer: 'edge_rack', skin: '18th' },
-		'9' => { name: "cap rack_edge_mesa", computer: 'edge_rack', skin: 'mesa' }
+		'1' => { name: "cap edge_nines", computer: 'edge', skin: 'nines' },
+		'2' => { name: "cap edge_18th", computer: 'edge', skin: '18th' },
+		'3' => { name: "cap edge_mesa", computer: 'edge', skin: 'mesa' },
+		'4' => { name: "cap prod_nines", computer: 'prod', skin: 'nines' },
+		'5' => { name: "cap prod_18th", computer: 'prod', skin: '18th' },
+		'6' => { name: "cap prod_mesa", computer: 'prod', skin: 'mesa' }
 	}
 
 	tasks.each { |key, value|
@@ -91,47 +85,32 @@ end
 
 desc "Run tasks to update edge NINES environment."
 task :edge_nines do
-	set_application('edge_tamu', 'nines')
+	set_application('edge', 'nines')
 end
 
 desc "Run tasks to update edge 18thConnect environment."
 task :edge_18th do
-	set_application('edge_tamu', '18th')
+	set_application('edge', '18th')
 end
 
 desc "Run tasks to update edge Mesa environment."
 task :edge_mesa do
-	set_application('edge_tamu', 'mesa')
+	set_application('edge', 'mesa')
 end
 
 desc "Run tasks to update production NINES environment."
 task :prod_nines do
-	set_application('prod_tamu', 'nines')
+	set_application('prod', 'nines')
 end
 
 desc "Run tasks to update production 18thConnect environment."
 task :prod_18th do
-	set_application('prod_tamu', '18th')
+	set_application('prod', '18th')
 end
 
 desc "Run tasks to update production Mesa environment."
 task :prod_mesa do
-	set_application('prod_tamu', 'mesa')
-end
-
-desc "Run tasks to update edge NINES environment."
-task :rack_edge_nines do
-	set_application('edge_rack', 'nines')
-end
-
-desc "Run tasks to update edge 18thConnect environment."
-task :rack_edge_18th do
-	set_application('edge_rack', '18th')
-end
-
-desc "Run tasks to update edge Mesa environment."
-task :rack_edge_mesa do
-	set_application('edge_rack', 'mesa')
+	set_application('prod', 'mesa')
 end
 
 namespace :passenger do
@@ -186,9 +165,6 @@ after :edge_mesa, 'deploy'
 after :prod_nines, 'deploy'
 after :prod_18th, 'deploy'
 after :prod_mesa, 'deploy'
-after :rack_edge_nines, 'deploy'
-after :rack_edge_18th, 'deploy'
-after :rack_edge_mesa, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
@@ -204,27 +180,21 @@ reset = "\033[0m"
 green = "\033[32m" # Green
 red = "\033[31m" # Bright Red
 
-desc "temp."
-task :temp_setup do
-	set_application('edge_rack', 'mesa')
-end
-after :temp_setup, 'deploy:setup'
-
 desc "Set up the edge nines server."
 task :edge_nines_setup do
-	set_application('edge_tamu', 'nines')
+	set_application('edge', 'nines')
 end
 after :edge_nines_setup, 'deploy:setup'
 
 desc "Set up the edge 18th server."
 task :edge_18th_setup do
-	set_application('edge_tamu', '18th')
+	set_application('edge', '18th')
 end
 after :edge_18th_setup, 'deploy:setup'
 
 desc "Set up the edge mesa server."
 task :edge_mesa_setup do
-	set_application('edge_tamu', 'mesa')
+	set_application('edge', 'mesa')
 end
 after :edge_mesa_setup, 'deploy:setup'
 

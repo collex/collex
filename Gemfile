@@ -35,7 +35,8 @@ gem 'ixtlan-session-timeout'
 gem 'will_paginate'
 
 # Deploy with Capistrano
-# gem 'capistrano'
+gem 'capistrano'
+gem 'rvm-capistrano'
 
 # Bundle the extra gems:
 # gem 'bj'
