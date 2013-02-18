@@ -28,11 +28,11 @@
     <table class="tw_overview">
         <tr>
             <% if @view == 'docs' %>
-                <th>URI</th>
-                <th>Title</th>
+                <th><%= link_to("URI", "/typewright/overviews?sort=uri&filter=#{@filter}", { class: 'nav_link' }) %></th>
+                <th><%= link_to("Title", "/typewright/overviews?sort=title&filter=#{@filter}", { class: 'nav_link' }) %></th>
                 <th>Correctors (Lines Corrected)</th>
-                <th><%= link_to("Most Recent Correction", "/typewright/overviews?sort=recent", { class: 'nav_link' }) %></th>
-                <th><%= link_to("Percent Corrected", "/typewright/overviews?sort=percent", { class: 'nav_link' }) %></th>
+                <th>Most Recent Correction</th>
+                <th>Percent Corrected</th>
                 <th>Complete?</th>
             <% else %>
                 <th>User</th>
