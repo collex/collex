@@ -26,9 +26,12 @@
 		<%= setup_line("Port:", "smtp_port", @setups,
 			"The port on the SMTP server.",
 			"587") %>
-		<%= setup_line("User Name or Email:", "smtp_user_name", @setups,
-			"The account on the SMTP server.",
-			"institution") %>
+	    <%= setup_line("Domain:", "smtp_domain", @setups,
+		    "sendgrid.net or [blank]",
+		    "sendgrid.net") %>
+	    <%= setup_line("User Name or Email:", "smtp_user_name", @setups,
+		    "The account on the SMTP server.",
+		    "institution") %>
 		<%= setup_line("Password:", "smtp_password", @setups,
 			"The password to access the SMTP server.",
 			"super-secret") %>

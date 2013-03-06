@@ -111,7 +111,7 @@ class Setup < ActiveRecord::Base
 		ActionMailer::Base.smtp_settings = {
 			:address => globals()['smtp_address'],
 			:port => globals()['smtp_port'],
-			:domain => '',
+			:domain => globals()['smtp_domain'],
 			:user_name => globals()['smtp_user_name'],
 			:password => globals()['smtp_password'],
 			:authentication => globals()['smtp_authentication'],
