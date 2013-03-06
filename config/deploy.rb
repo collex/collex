@@ -198,8 +198,26 @@ task :edge_mesa_setup do
 end
 after :edge_mesa_setup, 'deploy:setup'
 
+desc "Set up the edge nines server."
+task :prod_nines_setup do
+	set_application('prod', 'nines')
+end
+after :prod_nines_setup, 'deploy:setup'
+
+desc "Set up the edge 18th server."
+task :prod_18th_setup do
+	set_application('prod', '18th')
+end
+after :prod_18th_setup, 'deploy:setup'
+
+desc "Set up the edge mesa server."
+task :prod_mesa_setup do
+	set_application('prod', 'mesa')
+end
+after :prod_mesa_setup, 'deploy:setup'
+
 desc "Set up the edge server's config."
-task :edge_setup_config do
+task :setup_config do
 	run "mkdir #{shared_path}/config"
 	run "touch #{shared_path}/config/database.yml"
 	run "touch #{shared_path}/config/site.yml"
@@ -210,4 +228,4 @@ task :edge_setup_config do
 	puts "!!!#{reset}"
 end
 
-after 'deploy:setup', :edge_setup_config
+after 'deploy:setup', :setup_config
