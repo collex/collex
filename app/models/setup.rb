@@ -115,8 +115,12 @@ class Setup < ActiveRecord::Base
 			:user_name => globals()['smtp_user_name'],
 			:password => globals()['smtp_password'],
 			:authentication => globals()['smtp_authentication'],
-			:enable_starttls_auto => true
+			:enable_starttls_auto => globals()['smtp_enable_starttls_auto'] == 'true'
 		}
+		if globals()['smtp_xsmtpapi'].present?
+			ActionMailer::Base.default "X-SMTPAPI" => "{\"category\": \"#{globals()['smtp_xsmtpapi']}\"}"
+		end
+
 	end
 
 	def self.init_exception_handler()

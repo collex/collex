@@ -22,19 +22,25 @@
 		<%= setup_table_header("Email settings (SMTP)") %>
 		<%= setup_line("Address:", "smtp_address", @setups,
 			"The address of the SMTP server.",
-			"smtp.gmail.com") %>
+			"smtp.sendgrid.net") %>
 		<%= setup_line("Port:", "smtp_port", @setups,
 			"The port on the SMTP server.",
 			"587") %>
-		<%= setup_line("Email:", "smtp_user_name", @setups,
-			"The email account on the SMTP server.",
-			"notifications@institution.edu") %>
+		<%= setup_line("User Name or Email:", "smtp_user_name", @setups,
+			"The account on the SMTP server.",
+			"institution") %>
 		<%= setup_line("Password:", "smtp_password", @setups,
 			"The password to access the SMTP server.",
 			"super-secret") %>
-		<%= setup_line("Authentication method:", "smtp_authentication", @setups,
-			"The authentication method for the SMTP server.",
-			"plain") %>
+	    <%= setup_line("Authentication method:", "smtp_authentication", @setups,
+		    "The authentication method for the SMTP server.",
+		    "plain") %>
+	    <%= setup_line("enable_starttls_auto:", "smtp_enable_starttls_auto", @setups,
+		    "Set to true for gmail, false for sendgrid.",
+		    "false") %>
+	    <%= setup_line("Category:", "smtp_xsmtpapi", @setups,
+		    "The sendgrid category.",
+		    "ARC-skin") %>
 		<%= setup_table_button("Send Me A Test Email") %>
 
 		<%= setup_table_header("Project Settings") %>
