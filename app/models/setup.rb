@@ -31,6 +31,7 @@ class Setup < ActiveRecord::Base
 		end
 
 		@@globals['project_manager_email'] = self.process_email_addr(@@globals['project_manager_email'])
+		@@globals['return_email'] = @@globals['webmaster_email']
 		@@globals['webmaster_email'] = self.process_email_addr(@@globals['webmaster_email'])
 
 		self.init_smtp()
@@ -61,9 +62,13 @@ class Setup < ActiveRecord::Base
 		return globals()['webmaster_email']
 	end
 
+	def self.return_email()
+		return globals()['return_email']
+	end
+
 	def self.exception_notifier()
 		recipients = globals()['exception_recipients'] ? globals()['exception_recipients'].split(',') : []
-		return { prefix: globals()['subject_prefix'], recipients: recipients, sender: "#{globals()['sender_name']} <#{globals()['webmaster_email']}>" }
+		return { prefix: globals()['subject_prefix'], recipients: recipients, sender: "#{globals()['sender_name']} <#{globals()['return_email']}>" }
 	end
 
 	def self.site_name()

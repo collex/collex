@@ -153,7 +153,7 @@ class GroupsUser < ActiveRecord::Base
 		user_ids = self.get_list_of_users_to_notify(group_id, notification_type)
 		user_ids.each {|user_id|
 			user = User.find(user_id)
-			EmailWaiting.cue_email(Setup.site_name(), Setup.webmaster_email(), user.fullname, user.email, subject, body, return_url,
+			EmailWaiting.cue_email(Setup.site_name(), Setup.return_email(), user.fullname, user.email, subject, body, return_url,
 				"You can manage the amount of notifications you receive from #{group.name} by logging into your #{Setup.site_name()} account from the group page and changing your Notification Level.")
 		}
 	end
