@@ -63,7 +63,7 @@ class Setup < ActiveRecord::Base
 
 	def self.exception_notifier()
 		recipients = globals()['exception_recipients'] ? globals()['exception_recipients'].split(',') : []
-		return { prefix: globals()['subject_prefix'], recipients: recipients, sender: "#{globals()['sender_name']} <#{globals()['smtp_user_name']}>" }
+		return { prefix: globals()['subject_prefix'], recipients: recipients, sender: "#{globals()['sender_name']} <#{globals()['webmaster_email']}>" }
 	end
 
 	def self.site_name()

@@ -149,7 +149,7 @@ class DiscussionComment < ActiveRecord::Base
   				user = User.find(report.reporter_id)
   				body = "The administrator rejected your report of the comment by #{User.find(discussion_comment.user_id).fullname} with the text:\n\n"
   				body += "#{self.strip_tags(discussion_comment.comment)}\n\n"
-  				EmailWaiting.cue_email(Setup.site_name(), ActionMailer::Base.smtp_settings[:user_name], user.fullname, user.email, "Abusive Comment Report Canceled", body, url, "")
+  				EmailWaiting.cue_email(Setup.site_name(), Setup.webmaster_email(), user.fullname, user.email, "Abusive Comment Report Canceled", body, url, "")
     		rescue Exception => msg
     			logger.error("**** ERROR: Can't send email: " + msg.message)
     		end
