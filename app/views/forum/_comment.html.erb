@@ -42,7 +42,7 @@
 	<% this_user = session[:user] ? User.find_by_username(session[:user][:username]).id : -1 %>
 	<% allow_user_to_report = (this_user > 0) && comment.has_been_reported_by(this_user) == false && (this_user != comment.user_id) %>
 	<% if allow_user_to_report -%>
-		<a class="FC_report_link" href="#" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+		<a class="FC_report_link" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
  	<% end -%>
 	
 	<% if can_edit -%>
