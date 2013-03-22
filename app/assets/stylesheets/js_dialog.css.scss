@@ -735,11 +735,19 @@ span.footnote_edit_hover {
 
 /*****************************************/
 
+@mixin js_dlg_button {
+   background-repeat: no-repeat;
+   margin-left:4px;
+   padding-left:20px;
+   display: inline-block;
+   height: 19px;
+   position: relative;
+   top: 4px;
+}
+
 .gd_bold_button {
 	background-image:image-url('caption_bold.jpg');
-	margin-left:4px;
-	padding-left:20px;
-	font-size:18px;
+	@include js_dlg_button;
 }
 
 .gd_bold_button:hover {
@@ -752,9 +760,7 @@ span.footnote_edit_hover {
 
 .gd_italic_button {
 	background-image:image-url('caption_italic.jpg');
-	margin-left:4px;
-	padding-left:20px;
-	font-size:18px;
+	@include js_dlg_button;
 }
 
 .gd_italic_button:hover {
@@ -767,9 +773,7 @@ span.footnote_edit_hover {
 
 .gd_underline_button {
 	background-image:image-url('caption_underline.jpg');
-	margin-left:4px;
-	padding-left:20px;
-	font-size:18px;
+	@include js_dlg_button;
 }
 
 .gd_underline_button:hover {
@@ -785,20 +789,26 @@ span.footnote_edit_hover {
   font-style: italic;
 }
 
+.footnote_button.hidden {
+   display: none;
+}
+
 .footnote_button {
 	background-image:image-url('caption_footnote.jpg');
-	margin-left:4px;
-	padding-left:20px;
+	@include js_dlg_button;
 }
 
 .footnote_button:hover {
 	background-image:image-url('caption_footnote_hover.jpg');
 }
 
+.footnote_delete_button.hidden {
+   display: none;
+}
+
 .footnote_delete_button {
 	background-image:image-url('caption_footnote_delete.jpg');
-	margin-left:4px;
-	padding-left:20px;
+	@include js_dlg_button;
 }
 
 .footnote_delete_button:hover {
