@@ -17,3 +17,5 @@
 //= require ./vendor/rails
 //= require_tree ./lib
 //= require_tree .
+
+jQuery.noConflict();
