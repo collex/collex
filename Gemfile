@@ -31,7 +31,6 @@ gem 'exception_notification'
 
 gem 'acts_as_tree'
 gem 'acts_as_list'
-gem 'ixtlan-session-timeout'
 gem 'will_paginate'
 
 # Deploy with Capistrano
