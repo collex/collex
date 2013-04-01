@@ -828,6 +828,8 @@ var GeneralDialog = Class.create({
 		});
 
 		panel.setBody(body);
+		var awfulHack = YAHOO.util.Dom.getViewportHeight() / 2 + YAHOO.util.Dom.getDocumentScrollTop();
+      jQuery(panel.element).css("top", awfulHack+"px");
 		panel.render(parent_id);
 
 		panel.cancelEvent.subscribe(function(e, a, o){
