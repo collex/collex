@@ -111,10 +111,9 @@
 </table>
 <% end %>
 <script type="text/javascript" charset="utf-8">
-setTimeout( function() {
-    $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
-      }, 500);
-//    $('search_notphrase').defaultValueActsAsHint('<%= default_search_phrase %>');
+   setTimeout( function() {
+      $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
+   }, 500);
 	
 	function searchTypeChanged(This) {
 		var type = This.value.toLowerCase();
@@ -127,13 +126,6 @@ setTimeout( function() {
         } else {
             search_phrase_auto_completer.url = '/collex/auto_complete_for_search_phrase'
         }
-//		if (This.value === 'Search Term') {
-//			$('search_notphrase').addClassName('hidden');
-//			$('search_phrase').removeClassName('hidden');
-//		} else {
-//			$('search_phrase').addClassName('hidden');
-//			$('search_notphrase').removeClassName('hidden');
-//		}
 	}
   </script>
 
