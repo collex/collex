@@ -25,6 +25,10 @@ class Group < ActiveRecord::Base
 	def handle_solr
 		SearchUserContent.delay.index('group', self.id)
 	end
+	
+	def is_peer_reviewed
+	  return self.group_type == "peer-reviewed"
+	end
 
 	#
 	# id translation
