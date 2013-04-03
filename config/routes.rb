@@ -298,6 +298,7 @@ Collex::Application.routes.draw do
 	post "/admin/facet_tree/add_site" => "admin/facet_tree#add_site"
 	post "/admin/discussion_topics/move_down" => "admin/discussion_topics#move_down"
 	post "/admin/discussion_topics/move_up" => "admin/discussion_topics#move_up"
+	post "/admin/discussion_topics/:id" => "admin/discussion_topics#update"
 	post "/admin/impersonate_user" => "admin/default#impersonate_user"
 	post "/admin/get_user_list" => "admin/default#get_user_list"
 
