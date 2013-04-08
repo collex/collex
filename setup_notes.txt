@@ -1,0 +1,37 @@
+===============
+ARC SETUP NOTES
+===============
+
+Host prerequesites:
+httpd / passenger
+java > 1.6
+ruby 1.9.3
+an arc user with read/write access to the www directores for each compenent
+httpd virtual host configurations for each of the projects
+ssh keypair for development machine (used for deploy)
+mysql
+
+
+Checkout the projects for the inbox (https://github.com/collex/arc_inbox),
+catalog (https://github.com/collex/catalog) and 
+solr (https://github.com/collex/solr)
+
+Follow the installation instructions found in the README of each project.
+
+If you need to create a new admin user for the catalog, move to the catalog
+directory and run 'rake users:create'
+
+Once running, access the catalog website as an admin user. Navigate to the Meta
+section and be sure all of the content for the archives, genres, disciplines
+and federations is up to date.
+
+Pay particular attention to the IP addresses present in the federations data as
+this is used to allow access to non-free culture resources.
+
+Checkout the main collex (https://github.com/collex/collex) project
+a and follow the installation instructions found in the README. Be sure
+to deploy all of the federations; 18th, nines and mesa.
+
+Install 6 copies of worpress, named wp_[federation]_about, wp_[federation]_news.
+In each of these installations, add the collex plugin.
+
