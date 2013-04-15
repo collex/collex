@@ -64,7 +64,7 @@ documents. The actual web presence of typewright is in the "collex" project
 under subfolders named typewright.
 
 --------------------------------------
-Deployment
+Local Install
 
 1) Download this project to your local development area.
 2) Copy config/database.example.yml to config/database.yml.
@@ -72,15 +72,21 @@ Deployment
 4) Modify those two files to suit your server and your needs. There are comments in them. 
    ** DO NOT CHECK THEM IN! **
 5) The first time you run, you will have to run "bundle install".
-6) Collex is deployed using capistrano, and can be deployed to either
-   a staging server (edge) or a production server. The configuration for each
-   host is found in config/site.yml at the bottom of the file. Fill
-   in the necessary data for each site. To complete this section, you
-   must have a user created on the target host which will run the catalog.
-   That user must have full read/write permissions on the install directory.
-   Additionally you must generate an ssh key-pair on your development machine and
-   install it on the target host. Add an entry in your ~/.ssh/config file for
-   each host. Example:
+6) Create and migrate the database with the standard rake commands.
+	"rake solr:start" and "rake solr:stop"
+
+--------------------------------------
+Deployment
+
+Collex is deployed using capistrano, and can be deployed to either
+a staging server (edge) or a production server. The configuration for each
+host is found in config/site.yml at the bottom of the file. Fill
+in the necessary data for each site. To complete this section, you
+must have a user created on the target host which will run the catalog.
+That user must have full read/write permissions on the install directory.
+Additionally you must generate an ssh key-pair on your development machine and
+install it on the target host. Add an entry in your ~/.ssh/config file for
+each host. Example:
    
    Host edge-collex
        Hostname 128.128,128,128
@@ -88,4 +94,17 @@ Deployment
        Port 22
        IdentityFile ~/.ssh/edge-collex
        
-   To begin the deplyment, run "cap menu"
+1) First time deployment has a few extra setup steps
+     a) Setup common structures on the host, run the capistrano setup comman for the
+	     desired host and federation. Example: "cap edge_nines_setup" or "cap prod_18th_setup"
+	  b) Login to the host and navigate to the install directory.
+	  c) From there, cd into shared/config.
+	  d) Fill in the template database.yml and site.yml
+	  e) Startup mysql and create the database for the federation. For example:
+	    'nines_production'
+2) After this setup, each subsequent deployment is accomplished by running:
+   "cap menu"
+	It will present you with a menu to pick a destination of edge or production
+	for each of the availble federations. After you make the selection, deployment will begin.
+
+
