@@ -72,8 +72,10 @@ Local Install
 4) Modify those two files to suit your server and your needs. There are comments in them. 
    ** DO NOT CHECK THEM IN! **
 5) The first time you run, you will have to run "bundle install".
-6) Create and migrate the database with the standard rake commands.
-	"rake solr:start" and "rake solr:stop"
+7) Next, you must configure the database, and bootstrap some necessary
+   data into the system. This is done with the by running the following:
+	"rake db:setup"
+	"rake global:bootstrap url={catalog url}"
 
 --------------------------------------
 Deployment

@@ -31,6 +31,9 @@ WordPress
 Install 2 copies of WordPress per collex federation. The general naming scheme for
 these installations is: wp_[federation]_news and wp_[federation]_about. 
 
+Create symlinks to the WordPress news and about installations for each installation
+in that installations public folder. The links are named 'news' and 'about'.
+
 The databases for each follow a similar convention: [federation]_wp.
 
 The virtual host config for each federation must be updated to disable passenger
