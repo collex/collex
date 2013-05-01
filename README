@@ -75,7 +75,7 @@ Local Install
 7) Next, you must configure the database, and bootstrap some necessary
    data into the system. This is done with the by running the following:
 	"rake db:setup"
-	"rake global:bootstrap url={catalog url}"
+	"rake bootstrap:globals url={catalog url}"
 
 --------------------------------------
 Deployment
