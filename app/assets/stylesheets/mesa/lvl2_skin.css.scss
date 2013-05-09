@@ -34,9 +34,10 @@ a.my_collex_link {
 }
 
 a.my_collex_link_current {
-	background:image-url('mesa/index_tab_dn.jpg') top left no-repeat;
+	background:image-url('mesa/index_tab_long_dn.jpg') top left no-repeat;
 	font-family: 'Stoke',serif;
 	top: 92px;
+	width: 100px !important;
 	color: #0d1d4e;
 	font-weight: normal;
 }
@@ -112,7 +113,7 @@ div#nav_container {
 }
 
 #group_license {
-	background: #371911;
+	background: #0d1d4e;
 }
 
 .my_collex_instructions h2 {

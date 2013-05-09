@@ -28,6 +28,16 @@ div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_ca
 	padding-top: 15px;
 }
 
+.licensedisplay {
+   background-color: #0d1d4e !important;
+   color: white;
+   text-align: center;
+   padding: 5px;
+   margin-top:-10px;
+   margin-bottom:10px;
+   font-size:0.8em;
+}
+
 #subnav_container {
 	padding-top: 8px;
 }
@@ -38,7 +48,7 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 }
 
 #header_container {
-	background-color: #34645C;
+	background-color: #0d1d4e;
 }
 
 #main_container {
@@ -52,7 +62,7 @@ h1, h2, h3, h4, h5, h6, strong, dt {
 }
 
 .exhibit_footer {
-	background-color: #34645c;
+	background-color: #0d1d4e;
 }
 
 .tab_link {
