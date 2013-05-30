@@ -1,0 +1,59 @@
+ARC SETUP NOTES
+===============
+
+General Requirements
+====================
+httpd / passenger
+java > 1.6
+ruby 1.9.3
+an arc user with read/write access to the www directores for each compenent
+httpd virtual host configurations for each of the projects
+ssh keypair for development machine (used for deploy)
+mysql
+WordPress >= 3.5.1
+
+Collex Setup
+============
+Collex is a combination of a rails app and two WordPress sites. The WorddPress 
+isites are embedded into Collex and are used for displaying the news and about pages. 
+
+Collex
+------
+After checking out a copy of Collex, follow the installation instructions found 
+in the README file.
+
+Collex has 3 (so far) federations. Each is a separate deploy of collex that is 
+skinned to look a certain way. The deply script has commands to deploy each of
+the federations; nines, 18th connect and mesa. Be sure to deploy them all.
+
+WordPress
+---------
+Install 2 copies of WordPress per collex federation. The general naming scheme for
+these installations is: wp_[federation]_news and wp_[federation]_about. 
+
+Create symlinks to the WordPress news and about installations for each installation
+in that installations public folder. The links are named 'news' and 'about'.
+
+The databases for each follow a similar convention: [federation]_wp.
+
+The virtual host config for each federation must be updated to disable passenger
+on these WordPress instalations. Add the following to that file:
+
+    <Directory "/full/path/to/about/wp_install">
+        PassengerEnabled off
+        AllowOverride all
+    </Directory>
+    <Directory "/full/path/to/news/wp_install">
+        PassengerEnabled off
+        AllowOverride all
+    </Directory>
+
+The theme used for WordPress is extracted from the css found in each Collex
+installation. To make this happen, two WordPress themes must be installed
+for each WordPress site.
+
+Navigate to the WordPress administration panel. Choose Appearance and Install Themes.
+Install the Hybrid theme (http://wordpress.org/extend/themes/hybrid) and 
+the Rails Theme (http://wordpress.org/extend/plugins/rails-theme/)
+
+

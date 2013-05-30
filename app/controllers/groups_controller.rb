@@ -543,78 +543,72 @@ class GroupsController < ApplicationController
   # POST /groups
   # POST /groups.xml
   def create
-	  # TODO-PER: it looks like the user can't specify an image when creating a group, so this error processing can probably be simplified.
-		begin
-#			err = Image.save_image(params['image'], nil)
-#			img_id = nil
-#			case err[:status]
-#				when :error then
-#					logger.error(err[:log_error])
-#					render :text => "<script type='text/javascript'>window.top.window.stopNewGroupUpload('#{err[:user_error]}');</script>"  # This is loaded in the iframe and tells the dialog that the upload is complete.
-#					return
-#				when :saved
-#					img_id = err[:id]
-#			end
-#			if params['image'] && params['image'].length > 0
-#				image = Image.new({ :uploaded_data => params['image'] })
-#			end
-			params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
-			params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
-			params[:group][:exhibit_visibility] = 'www'
-			params[:group][:forum_permissions] = 'full'
-			send_email = false
-			if params[:group][:group_type] == 'peer-reviewed'
-				params[:group][:group_type] = 'community'
-				send_email = true
-			end
-			@group = Group.new(params[:group])
-			@group.header_font_name = 'Arial'
-			@group.header_font_size = '24'
-			@group.text_font_name = 'Times New Roman'
-			@group.text_font_size = '18'
-			@group.illustration_font_name = 'Trebuchet MS'
-			@group.illustration_font_size = '14'
-			@group.caption1_font_name = 'Trebuchet MS'
-			@group.caption1_font_size = '14'
-			@group.caption2_font_name = 'Trebuchet MS'
-			@group.caption2_font_size = '14'
-			@group.endnotes_font_name = 'Times New Roman'
-			@group.endnotes_font_size = '16'
-			@group.footnote_font_name = 'Times New Roman'
-			@group.footnote_font_size = '16'
-			@group.use_styles = 0
-			@group.image_id = nil
-			@group.exhibits_label = "Exhibit"
-			@group.clusters_label = "Cluster"
-			@group.show_admins = 'all'
-			@group.notifications = "exhibit;membership"
-			err = false
-			if @group.save
-				begin
-					@group.image.save! if @group.image
-				rescue
-					err = true
-					@group.delete
-					flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
-				end
-				if err == false
-					flash = "OK:#{@group.id}"
-					invitor = get_curr_user()
-					url_accept = url_for(:controller => 'groups', :action => 'accept_invitation', :id => "PUT_ID_HERE", :only_path => false)
-					url_decline = url_for(:controller => 'groups', :action => 'decline_invitation', :id => "PUT_ID_HERE", :only_path => false)
-					url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
-					@group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames], url_accept, url_decline, url_home)
-				end
-			else
-				flash = "Error creating group"
-			end
-		rescue Exception => msg
-			logger.error("**** ERROR: Can't create group: " + msg.message)
-			flash = "Server error when creating group."
-		end
-		if send_email
-			peer_review_request()
-		end
+    begin
+      if params[:emails]
+        err_msg = validate_email_list(params[:emails])
+        if !err_msg.nil?
+          render :text => respond_to_file_upload("stopNewGroupUpload", err_msg)  # This is loaded in the iframe and tells the dialog that the upload is complete.
+          return
+        end
+      end
+
+      params[:group][:show_membership] = true if params[:group][:show_membership] == 'Yes'
+      params[:group][:show_membership] = false if params[:group][:show_membership] == 'No'
+      params[:group][:exhibit_visibility] = 'www'
+      params[:group][:forum_permissions] = 'full'
+      send_email = false
+      if params[:group][:group_type] == 'peer-reviewed'
+        params[:group][:group_type] = 'community'
+        send_email = true
+      end
+      @group = Group.new(params[:group])
+      @group.header_font_name = 'Arial'
+      @group.header_font_size = '24'
+      @group.text_font_name = 'Times New Roman'
+      @group.text_font_size = '18'
+      @group.illustration_font_name = 'Trebuchet MS'
+      @group.illustration_font_size = '14'
+      @group.caption1_font_name = 'Trebuchet MS'
+      @group.caption1_font_size = '14'
+      @group.caption2_font_name = 'Trebuchet MS'
+      @group.caption2_font_size = '14'
+      @group.endnotes_font_name = 'Times New Roman'
+      @group.endnotes_font_size = '16'
+      @group.footnote_font_name = 'Times New Roman'
+      @group.footnote_font_size = '16'
+      @group.use_styles = 0
+      @group.image_id = nil
+      @group.exhibits_label = "Exhibit"
+      @group.clusters_label = "Cluster"
+      @group.show_admins = 'all'
+      @group.notifications = "exhibit;membership"
+      err = false
+      if @group.save
+        begin
+          @group.image.save! if @group.image
+        rescue
+          err = true
+          @group.delete
+          flash = "ERROR: The image you have uploaded is too large or of the wrong type.<br />The file name must end in .jpg, .png or .gif, and cannot exceed 1MB in size."
+        end
+        if err == false
+          flash = "OK:#{@group.id}"
+          invitor = get_curr_user()
+          url_accept = url_for(:controller => 'groups', :action => 'accept_invitation', :id => "PUT_ID_HERE", :only_path => false)
+          url_decline = url_for(:controller => 'groups', :action => 'decline_invitation', :id => "PUT_ID_HERE", :only_path => false)
+          url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
+          @group.invite_members(invitor.fullname, invitor.email, params[:emails], params[:usernames], url_accept, url_decline, url_home)
+        end
+      else
+        flash = "Error creating group"
+      end
+    rescue Exception => msg
+      logger.error("**** ERROR: Can't create group: " + msg.message)
+      flash = "Server error when creating group."
+    end
+    if send_email
+      peer_review_request()
+    end
     render :text => respond_to_file_upload("stopNewGroupUpload", flash)  # This is loaded in the iframe and tells the dialog that the upload is complete.
   end
 
@@ -636,10 +630,20 @@ class GroupsController < ApplicationController
 			@group.update_attributes(params[:group])
 		end
 
-		err_msg = nil
+    err_msg = nil
+    if params[:emails] 
+      err_msg = validate_email_list(params[:emails])
+      if !err_msg.nil?
+        render :text => err_msg, :status => :bad_request
+        return
+      end
+    end
+		
 		if params[:emails] || params[:usernames]
 			invitor = get_curr_user()
-			if invitor != nil
+			if invitor.nil?
+			  err_msg = "You must be logged in to invite users"
+			else
 				url_accept = url_for(:controller => 'groups', :action => 'accept_invitation', :id => "PUT_ID_HERE", :only_path => false)
 				url_decline = url_for(:controller => 'groups', :action => 'decline_invitation', :id => "PUT_ID_HERE", :only_path => false)
 				url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
@@ -648,9 +652,9 @@ class GroupsController < ApplicationController
 		end
 
 	  if params[:group] # this may be nil if we are just inviting people.
-		which = params[:group].keys.join(" and ")
-		values = self.class.helpers.strip_tags(params[:group].values.to_a().join("\n\n"))
-		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{get_curr_user().fullname} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+  		which = params[:group].keys.join(" and ")
+  		values = self.class.helpers.strip_tags(params[:group].values.to_a().join("\n\n"))
+  		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{get_curr_user().fullname} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 	  end
 
 	  curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
@@ -664,9 +668,32 @@ class GroupsController < ApplicationController
 			render :text => err_msg, :status => :bad_request
 		end
   end
+  
+  # take a newline separated list of emails and make sure each is well formed
+  # if any errors are found this will return an error string. if all is well,
+  # nil will be retuned
+  #
+  private
+  def validate_email_list(emails)
+    err_msg = nil
+    email_regexp = /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/i
+    bad_emails = []
+    emails.split(/\n/).each do |email|
+      bad_emails << email unless !(email =~ email_regexp).nil?
+    end
+
+    if bad_emails.size > 0
+      err_msg = "<br/>The following email addresses are invalid:<br/>"
+      bad_emails.each do |bad|
+        err_msg << "&nbsp;&nbsp;&nbsp;&nbsp;" << bad << "<br/>"
+      end
+    end
+    return err_msg
+  end
 
   # DELETE /groups/1
   # DELETE /groups/1.xml
+  public
   def destroy
 		@group = Group.find(params[:id])
 		GroupsUser.email_hook("group", @group.id, "Group deleted: #{@group.name}", "The group was deleted.", url_for(:controller => 'home', :action => 'index', :only_path => false))

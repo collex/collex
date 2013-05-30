@@ -20,11 +20,17 @@ module BuilderHelper
   # active exhibit as a different member
   #
   def can_publish_as_different_user?
+    
+    # only peer-reviewed groups can be published as a different user
+    return false if @exhibit.group.nil?
+    return false if  @exhibit.group.is_peer_reviewed() == false
+    
+    # general admins can do it
     user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
     return false if user.nil?
+    return true if is_admin?
     
-    return false if @exhibit.group.nil?
-    
+    # so can group editors
     return true if @exhibit.group.is_editor(user.id)
     
     return false

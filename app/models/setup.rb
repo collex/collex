@@ -25,7 +25,7 @@ class Setup < ActiveRecord::Base
 		rescue
 		end
 
-		if setup.length == 0
+		if setup.nil? || setup.length == 0
 			puts "!!!!\n!!!!\n!!!!\n\tYou have not yet initialized the global settings. Run \"rake bootstrap:globals\"\n!!!!\n!!!!\n!!!!\n"
 			logger.error "You have not yet initialized the global settings. Run \"rake bootstrap:globals\""
 		end

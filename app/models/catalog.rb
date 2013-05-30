@@ -603,9 +603,11 @@ class Catalog
 	def get_disciplines()
 		disciplines = call_solr("disciplines", :get)
 		ret = []
-		disciplines['disciplines']['discipline'].each { |disc|
-			ret.push(disc['name'])
-		}
+		if !disciplines.nil? && !disciplines['disciplines'].nil? && !disciplines['disciplines']['discipline'].nil?
+    		disciplines['disciplines']['discipline'].each { |disc|
+    			ret.push(disc['name'])
+    		}
+    end
 		return ret
 	end
 

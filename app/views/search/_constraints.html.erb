@@ -101,7 +101,7 @@
               <% end -%>
             </select></td>
 		<td class="query_term">
-		  <%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%>
+		    <%= text_field_with_suggest :search, :phrase,  {:size=>40, :value=>@phrs ? @phrs : default_search_phrase }, {:min_chars => 2} -%>
           <%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new()] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language', :style => "display:none;") %>
 		</td>
 		<td class="query_and-not"><select id='search_not' name='search_not' class="query_and-not_select"><option>AND</option><option>NOT</option></select>
@@ -111,8 +111,9 @@
 </table>
 <% end %>
 <script type="text/javascript" charset="utf-8">
-    $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
-//    $('search_notphrase').defaultValueActsAsHint('<%= default_search_phrase %>');
+   setTimeout( function() {
+      $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
+   }, 500);
 	
 	function searchTypeChanged(This) {
 		var type = This.value.toLowerCase();
@@ -125,13 +126,6 @@
         } else {
             search_phrase_auto_completer.url = '/collex/auto_complete_for_search_phrase'
         }
-//		if (This.value === 'Search Term') {
-//			$('search_notphrase').addClassName('hidden');
-//			$('search_phrase').removeClassName('hidden');
-//		} else {
-//			$('search_phrase').addClassName('hidden');
-//			$('search_notphrase').removeClassName('hidden');
-//		}
 	}
   </script>
 
