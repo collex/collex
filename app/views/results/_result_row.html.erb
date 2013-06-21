@@ -16,7 +16,11 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <%#  result_row parameters: int index; hit hit; -%>
-<div <%= "class='result_row_collected'" if result_is_collected(hit) %>>
+<% if result_is_collected(hit) %>
+<div class="result_row_collected">
+<% else %>
+<div>
+<% end %>
 	<% row_id = "search_result_#{index}" -%>
     <%# The left side that contains the checkbox, graphic and the collect button -%>
    	<% if is_logged_in? -%>
