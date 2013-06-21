@@ -14,6 +14,16 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
+ol li {
+   /* Giving OL's LIs generated numbers. */
+   list-style: decimal outside;
+}
+
+ul li {
+   /* Giving UL's LIs generated disc markers. */
+   list-style: disc outside;
+}
+
 body.federation-18th {
 	background:#1d253c;
 
