@@ -23,6 +23,23 @@ body.federation-18th.pg-lvl2 {
 	background:image-url('18th/lvl2_header.png') top left no-repeat;
 }
 
+.group_header {
+  color:black;
+  background:#b38f3b;
+}
+
+#group_exhibits {
+  border-right:2px solid gray;
+}
+
+.set_exhibit_style {
+  border-bottom: 2px solid gray;
+}
+
+#group_license {
+  color: white;
+}
+
 #header_container {
 	background:image-url('18th/index_header_stretch.png') bottom left repeat-x;
 }

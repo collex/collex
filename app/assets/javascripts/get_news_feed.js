@@ -20,7 +20,8 @@
 
 // asynchronously load the rss feed and pull out the news items
 function loadLatestNews( targetList, rssFeedURL, maxItems, retry ) {
-	var onSuccess = function(resp) {
+	YUI().use("io", function(Y) {
+	var onSuccess = function(x, resp) {
 		var rss = resp.responseXML;
 		if (rss === null) {
 			$(targetList).update("<ul><li>Error in retrieving News Feed.</li></ul>\n");
@@ -50,12 +51,14 @@ function loadLatestNews( targetList, rssFeedURL, maxItems, retry ) {
 
 		$(targetList).update(str);
 	};
-	var onFailure = function(resp) {
+	var onFailure = function() {
 		// This can be a transient error, so we'll retry once, then just leave the area blank.
 		if (retry === true)
 			loadLatestNews( targetList, rssFeedURL, maxItems, false );
 		else
 			$(targetList).update("<ul><li>News feed currently unavailable.</li></ul>\n");
 	};
-	serverRequest({ url: rssFeedURL, onSuccess: onSuccess, onFailure: onFailure });
+		Y.io(rssFeedURL, { method: 'GET', on: { success: onSuccess, failure: onFailure } });
+		//	serverRequest({ url: rssFeedURL, onSuccess: onSuccess, onFailure: onFailure, params: { method: 'GET' } });
+	});
 }
