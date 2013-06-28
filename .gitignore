@@ -27,8 +27,8 @@
 # Ignore deployment specific Capistrano files
 /Capfile
 /config/deploy.rb
-/config/deploy
-/lib/deploy
+/config/deploy/
+/lib/deploy/
 
 # Ignore files from Ruby environment management applications
 .rvmrc
