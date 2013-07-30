@@ -21,12 +21,13 @@ class Typewright::Overview
 		return resp
 	end
 
-	def self.all(view, page, page_size, sort_by, filter)
+	def self.all(view, page, page_size, sort_by, sort_order, filter)
 		page ||= 1
 		p = [ "view=#{view}",
 			"page=#{page}",
 			"page_size=#{page_size}",
 			"sort=#{sort_by}",
+			"order=#{sort_order}",
 			"filter=#{filter}"
 		]
 

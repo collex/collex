@@ -16,16 +16,30 @@
 
 body.federation-18th.pg-admin {
 
-#admin_menu {
-	background-color: #566fb1;
-}
+   #admin_menu {
+   	background-color: #566fb1;
+   }
+   
+   #admin_menu li a {
+   	border-left:0.8em solid #566fb1;
+   	text-decoration:none;
+   }
+   
+   .user_roles th, .exhibit_category th, .tw_overview th {
+   	background-color: #A9BAE7;
+   }
 
-#admin_menu li a {
-	border-left:0.8em solid #566fb1;
-	text-decoration:none;
-}
-
-.user_roles th, .exhibit_category th, .tw_overview th {
-	background-color: #A9BAE7;
-}
+   .nav_link.tw_asc {
+      background:image-url('sort_asc.png') top left no-repeat;
+   }
+   
+   div.nav_link {
+      color: #445a93;
+      cursor: pointer;
+      background:image-url('sort_both.png') top left no-repeat;
+   }
+   
+    div.nav_link.tw_desc {
+      background:image-url('sort_desc.png') top left no-repeat;
+   }
 }

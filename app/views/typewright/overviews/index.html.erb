@@ -22,14 +22,14 @@
         <div class="page_info">
             <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
         </div>
-        <form class='filter' action="/typewright/overviews"><input name="filter" type="text" placeholder="filter" value="<%= @filter %>" /><button type="submit">Filter</button> </form>
+        <form class='filter' action="/typewright/overviews"><input name="filter" id="tw_filter" type="text" placeholder="filter" value="<%= @filter %>" /><button type="submit">Filter</button> </form>
         <%= will_paginate @typewright_overviews, :container => false %>
     </div>
     <table class="tw_overview">
         <tr>
             <% if @view == 'docs' %>
-                <th><%= link_to("URI", "/typewright/overviews?sort=uri&filter=#{@filter}", { class: 'nav_link' }) %></th>
-                <th><%= link_to("Title", "/typewright/overviews?sort=title&filter=#{@filter}", { class: 'nav_link' }) %></th>
+                <th><div id="tw-doc-uri-sort" class="nav_link <%= @sort_order_class[:uri] %>">URI</a></th>
+                <th><div id="tw-doc-title-sort" class="nav_link <%= @sort_order_class[:title] %>">Title</a></th>
                 <th>Correctors (Lines Corrected)</th>
                 <th>Most Recent Correction</th>
                 <th>Percent Corrected</th>
