@@ -5,19 +5,6 @@ class Typewright::OverviewsController < Admin::BaseController
 		@view = params[:view] || 'docs'
 		@filter = params[:filter]
 		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:filter])
-		if @view == 'docs'
-			@typewright_overviews.each { |document|
-				resource = CachedResource.get_hit_from_uri(document['uri'])
-				document['title'] = resource['title']
-			}
-		else
-			@typewright_overviews.each { |user|
-				user['documents'].each { |document|
-					resource = CachedResource.get_hit_from_uri(document['id'])
-					document['title'] = resource['title'] if resource.present?
-				}
-			}
-		end
 		respond_to do |format|
 			format.html # index.html.erb
 			format.json { render json: @typewright_overviews }
