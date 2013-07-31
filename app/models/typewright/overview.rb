@@ -21,37 +21,33 @@ class Typewright::Overview
 		return resp
 	end
 
-	def self.all(view, page, page_size, sort_by, sort_order, filter)
-		page ||= 1
-		p = [ "view=#{view}",
-			"page=#{page}",
-			"page_size=#{page_size}",
-			"sort=#{sort_by}",
-			"order=#{sort_order}",
-			"filter=#{filter}"
-		]
+  def self.all(view, page, page_size, sort_by, sort_order, filter)
+    page ||= 1
+    p = [ "view=#{view}",
+      "page=#{page}",
+      "page_size=#{page_size}",
+      "sort=#{sort_by}",
+      "order=#{sort_order}",
+      "filter=#{filter}"
+    ]
 
-		resp = self.call_web_service("documents/corrections?#{p.join('&')}", :json)
-		if resp.blank?
-			resp = []
-			total = 0
-		else
-			total = resp['total']
-			resp = resp['results']
-			resp.each { |rec|
-				if view == 'users'
-				else
-					rec['percent_corrected'] = (1.0 * rec['pages_with_changes']) / rec['total_pages']
-				end
-				rec['most_recent_correction'] = Time.parse(rec['most_recent_correction'])
-			}
-		end
-		resp = WillPaginate::Collection.create(page, page_size) do |pager|
-			pager.replace(resp)
-			pager.total_entries = total
-		end
-		return resp
-	end
+    resp = self.call_web_service("documents/corrections?#{p.join('&')}", :json)
+    if resp.blank?
+      resp = []
+      total = 0
+    else
+      total = resp['total']
+      resp = resp['results']
+      resp.each { |rec|
+        rec['most_recent_correction'] = Time.parse(rec['most_recent_correction'])
+      }
+    end
+    resp = WillPaginate::Collection.create(page, page_size) do |pager|
+      pager.replace(resp)
+      pager.total_entries = total
+    end
+    return resp
+  end
 
 	def self.find(user_id)
 		resp = self.call_web_service("users/#{user_id}/corrections?federation=#{Setup.default_federation()}", :json)

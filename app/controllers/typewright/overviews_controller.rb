@@ -4,10 +4,9 @@ class Typewright::OverviewsController < Admin::BaseController
 	def index
 		@view = params[:view] || 'docs'
 		@filter = params[:filter]
-		@sort_order_class = { :uri=>'tw_asc', :title=>nil, :percent=>nil, :modified=>nil}
-		if  params[:sort] == 'title' 
-		  @sort_order_class[:uri] = nil  
-		  @sort_order_class[:title] = "tw_#{params[:order]}"  
+		@sort_order_class = { 'uri'=>nil, 'title'=>nil, 'percent'=>nil, 'modified'=>nil}
+		if  !params[:sort].nil?
+		  @sort_order_class[ params[:sort] ] = "tw_#{params[:order]}"  
 		end
 		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:order], params[:filter])
 		respond_to do |format|

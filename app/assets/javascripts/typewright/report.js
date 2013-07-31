@@ -16,6 +16,10 @@ jQuery(document).ready(function() {
       var sortBy = "uri";
       if (  jQuery(this).attr("id") == "tw-doc-title-sort" ) {
          sortBy = "title";
+      } else if (  jQuery(this).attr("id") == "tw-doc-modified-sort" ) {
+         sortBy = "modified";
+      } else if (  jQuery(this).attr("id") == "tw-doc-percent-sort" ) {
+         sortBy = "percent";
       }
       
       var url = "/typewright/overviews?sort="+sortBy+"&order="+order+"&filter="+filter;
