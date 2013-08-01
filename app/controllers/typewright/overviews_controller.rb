@@ -11,7 +11,7 @@ class Typewright::OverviewsController < Admin::BaseController
 		@filter = params[:filter]
 		local_filter = @filter  
 		if @view == 'users'
-      if !@filter.nil?	     	
+      if !@filter.nil?	&& !@filter.blank?     	
 		    resp =  ::User.find_by_sql( ["select id from users where username like ?", "%#{@filter}%"] )
 		    local_filter = ""
 		    resp.each do |usr|

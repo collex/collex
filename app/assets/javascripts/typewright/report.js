@@ -2,6 +2,9 @@ jQuery(document).ready(function() {
    jQuery(".tw_overview .nav_link").on("click", function() {
       var order = "";
       var filter = jQuery("#tw_filter").val();
+      if ( filter.length > 0 ) {
+         filter = "&filter="+filter;
+      }
       if (jQuery(this).hasClass("tw_asc")) {
          order = "desc";
       } else if (jQuery(this).hasClass("tw_desc")) {
@@ -29,9 +32,9 @@ jQuery(document).ready(function() {
          sortBy = "modified";
       }
       
-      var url = "/typewright/overviews?sort="+sortBy+"&order="+order+"&filter="+filter;
+      var url = "/typewright/overviews?sort="+sortBy+"&order="+order+filter;
       if ( jQuery("#curr_view").text() == "users") {
-         url = "/typewright/overviews?view=users&sort="+sortBy+"&order="+order+"&filter="+filter;
+         url = "/typewright/overviews?view=users&sort="+sortBy+"&order="+order+filter;
       }
       window.location = url;
    });
