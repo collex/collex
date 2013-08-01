@@ -22,7 +22,13 @@
         <div class="page_info">
             <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
         </div>
-        <form class='filter' action="/typewright/overviews"><input name="filter" id="tw_filter" type="text" placeholder="filter" value="<%= @filter %>" /><button type="submit">Filter</button> </form>
+        <form class='filter' action="/typewright/overviews">
+           <% if @view != 'docs' %>
+             <input type="hidden" name="view" value="users" /> 
+           <% end %>
+           <input name="filter" id="tw_filter" type="text" placeholder="filter" value="<%= @filter %>" />
+           <button type="submit">Filter</button>
+        </form>
         <%= will_paginate @typewright_overviews, :container => false %>
     </div>
     <table class="tw_overview">
