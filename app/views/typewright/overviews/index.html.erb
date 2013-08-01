@@ -17,6 +17,7 @@
 <% current_page "admin" -%>
 <% current_sub_page "TypeWright" -%>
 <div class="inner_content_container">
+   <span id="curr_view" style="display:none;"><%= @view %></span>
     <div class="page_header">Corrected Typewright Documents</div>
     <div class="digg_pagination">
         <div class="page_info">
@@ -41,10 +42,10 @@
                 <th><div id="tw-doc-percent-sort" class="nav_link <%= @sort_order_class['percent'] %>">Percent Corrected</div></th>
                 <th>Complete?</th>
             <% else %>
-                <th>User</th>
-		        <th>Documents Edited</th>
+                <th><div id="tw-user-name-sort" class="nav_link <%= @sort_order_class['user'] %>">User</div></th>
+		          <th><div id="tw-user-edited-sort" class="nav_link <%= @sort_order_class['edited'] %>">Documents Edited</div></th>
                 <th>Documents</th>
-                <th>Most Recent Correction</th>
+                <th><div id="tw-user-modified-sort" class="nav_link <%= @sort_order_class['modified'] %>">Most Recent Correction</div></th>
             <% end %>
         </tr>
         <% @typewright_overviews.each do |typewright_overview| %>

@@ -21,12 +21,15 @@ class Typewright::OverviewsController < Admin::BaseController
 		      local_filter << usr.id.to_s
 		    end
 		  end
+		  @sort_order_class = { 'user'=>nil, 'edited'=>nil, 'modified'=>nil}
+      @sort_order_class[ params[:sort] ] = "tw_#{params[:order]}"  
+		else
+		  @sort_order_class = { 'uri'=>nil, 'title'=>nil, 'percent'=>nil, 'modified'=>nil}
+      if  !params[:sort].nil?
+        @sort_order_class[ params[:sort] ] = "tw_#{params[:order]}"  
+      end  
 		end
-		
-		@sort_order_class = { 'uri'=>nil, 'title'=>nil, 'percent'=>nil, 'modified'=>nil}
-		if  !params[:sort].nil?
-		  @sort_order_class[ params[:sort] ] = "tw_#{params[:order]}"  
-		end
+
 		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:order], local_filter)
 		respond_to do |format|
 			format.html # index.html.erb
