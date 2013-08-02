@@ -27,10 +27,6 @@ class Typewright::OverviewsController < Admin::BaseController
 		# this gets the info for a particular user
 		@typewright_overview = Typewright::Overview.find(params[:id])
 		@typewright_overview[:user] = Typewright::User.get_author_native_rec(@typewright_overview['federation'], @typewright_overview['id'])
-		@typewright_overview['documents'].each { |document|
-			resource = CachedResource.get_hit_from_uri(document['id'])
-			document['title'] = resource['title'] if resource.present?
-		}
 
 		respond_to do |format|
 			format.html # show.html.erb
