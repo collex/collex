@@ -3,24 +3,8 @@ class Typewright::OverviewsController < Admin::BaseController
 	# GET /typewright/overviews.json
 	def index
 		@view = params[:view] || 'docs'
-		
-		# need local filter because @filter is used to display the filter string
-		# in the input box on the admin page. The users view changes the text
-		# into a comma separated list of matching user ids and it would be bad
-		# id this is the info that shows up in the box after filtering.
 		@filter = params[:filter]
-		local_filter = @filter  
 		if @view == 'users'
-      if !@filter.nil?	&& !@filter.blank?     	
-		    resp =  ::User.find_by_sql( ["select id from users where username like ?", "%#{@filter}%"] )
-		    local_filter = ""
-		    resp.each do |usr|
-		      if local_filter.length > 0
-		        local_filter << ","
-		      end  
-		      local_filter << usr.id.to_s
-		    end
-		  end
 		  @sort_order_class = { 'user'=>nil, 'edited'=>nil, 'modified'=>nil}
       @sort_order_class[ params[:sort] ] = "tw_#{params[:order]}"  
 		else
@@ -30,7 +14,7 @@ class Typewright::OverviewsController < Admin::BaseController
       end  
 		end
 
-		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:order], local_filter)
+		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:order], @filter)
 		respond_to do |format|
 			format.html # index.html.erb
 			format.json { render json: @typewright_overviews }

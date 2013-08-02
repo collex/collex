@@ -1,9 +1,10 @@
 module Typewright::OverviewsHelper
 	def tw_format_corrector(corrector)
-		full_name = Typewright::User.get_author_fullname(corrector['federation'], corrector['id'])
-		#user = Typewright::User.get_author_native_rec(corrector['federation'], corrector['id'])
-		link = link_to(full_name, "/typewright/overviews/#{corrector['id']}", { class: 'nav_link' })
-
+	  username = corrector['username']
+	  if username.nil? || username.blank?
+	     username = Typewright::User.get_author_fullname(corrector['federation'], corrector['id'])
+	  end
+		link = link_to(username, "/typewright/overviews/#{corrector['id']}", { class: 'nav_link' })
 		count = corrector['count'].present? ? " (#{corrector['count']})" : ""
 		return content_tag(:div, raw("#{link}#{count}"), {})
 	end
