@@ -79,7 +79,7 @@ class Typewright::DocumentsController < ApplicationController
 		if user == nil
 			redirect_to :action => "not_signed_in"
 		else
-			@user = Typewright::User.get_or_create_user(Setup.default_federation(), user.id)
+			@user = Typewright::User.get_or_create_user(Setup.default_federation(), user.id, user.username)
 
 			@uri = params[:uri]
 			@hit = CachedResource.get_hit_from_uri( @uri )
@@ -185,7 +185,7 @@ class Typewright::DocumentsController < ApplicationController
     if collex_user.blank?
 	    render :text => 'You must be signed in to report pages. Did your session expire?', :status => :bad_request
     else
-	    user = Typewright::User.get_or_create_user(Setup.default_federation(), collex_user.id)
+	    user = Typewright::User.get_or_create_user(Setup.default_federation(), collex_user.id, user.username)
 	    user_id = user.present? ? user.id : nil
 	    @report_form_url = Typewright::Document.get_report_form_url(doc_id, user_id, collex_user.fullname, collex_user.email, page_num, src)
 	    render :partial => '/typewright/documents/report'

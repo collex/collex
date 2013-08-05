@@ -26,7 +26,7 @@ class Typewright::LinesController < ApplicationController
       src = params[:src]
 			page = params[:page]
 			line = params[:line] ? params[:line].to_f : nil
-			user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id)
+			user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
 			user_id = user_id.id if user_id
 			status = params[:status]
 			words = params[:words]
