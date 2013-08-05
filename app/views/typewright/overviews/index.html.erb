@@ -54,14 +54,22 @@
                     <td><%= typewright_overview['uri'] %></td>
                     <td><%= tw_document_link(typewright_overview) %><%= tw_document_retrieval_links(typewright_overview) %></td>
                     <td><%= tw_format_correctors(typewright_overview['users']) %></td>
-                    <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
+                    <td>
+                       <span data-localtime-format="MMM dd, yyyy hh:mm a">
+                          <%= tw_date_format(typewright_overview['most_recent_correction']) %>
+                       </span>
+                    </td>
                     <td><%= number_with_precision(typewright_overview['percent'], :precision => 2) %>%</td>
                     <td><%= typewright_overview['completion_status'] %></td>
                 <% else %>
                     <td><%= tw_format_corrector(typewright_overview) %></td>
                     <td><%= typewright_overview['documents'].length %></td>
                     <td class="tw_long_document_list"><div><%= tw_format_documents(typewright_overview['documents']) %></div></td>
-                    <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
+                    <td>
+                       <span data-localtime-format="MMM dd, yyyy hh:mm a">
+                          <%= tw_date_format(typewright_overview['most_recent_correction']) %>
+                       </span>
+                    </td>
                 <% end %>
             </tr>
     <% end %>

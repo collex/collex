@@ -40,7 +40,11 @@
     <% row_style = 'odd_row' %>
     <% edits.each do | edit | %>
       <tr class="<%= row_style %>" >
-        <td><%= tw_date_format(edit.updated_at) %></td>
+        <td>
+           <span data-localtime-format="MMM dd, yyyy hh:mm a">
+              <%= tw_date_format(edit.updated_at) %>
+           </span>
+        </td>
         
         <%# Edit USER with link user profile if from this federation %>
         <%# For external users, no link, just default name %>
