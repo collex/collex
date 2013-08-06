@@ -8,6 +8,12 @@ module Typewright::OverviewsHelper
 		count = corrector['count'].present? ? " (#{corrector['count']})" : ""
 		return content_tag(:div, raw("#{link}#{count}"), {})
 	end
+	
+	def tw_format_doc_status( status ) 
+	   return 'No' if status == 'not_complete'
+	   return 'Pending Review' if status == 'user_complete'
+	   return 'Yes' if status == 'complete'
+	end
 
 	def tw_format_correctors(correctors)
 		html = raw("")

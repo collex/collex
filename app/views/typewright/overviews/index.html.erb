@@ -60,7 +60,7 @@
                        </span>
                     </td>
                     <td><%= number_with_precision(typewright_overview['percent'], :precision => 2) %>%</td>
-                    <td><%= typewright_overview['completion_status'] %></td>
+                    <td><%= tw_format_doc_status(typewright_overview['status']) %></td>
                 <% else %>
                     <td><%= tw_format_corrector(typewright_overview) %></td>
                     <td><%= typewright_overview['documents'].length %></td>
