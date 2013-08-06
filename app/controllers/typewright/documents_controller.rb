@@ -13,6 +13,8 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 # ----------------------------------------------------------------------------
+require "erb"
+include ERB::Util
 
 class Typewright::DocumentsController < ApplicationController
 	layout 'nines'
@@ -177,12 +179,33 @@ class Typewright::DocumentsController < ApplicationController
 		end
 	end
 	
+	# Called by a user to mark a document as fully corrected
 	# POST /typewrite/documents/d/complete=n
+	#
 	def page_complete	  
 	  doc_id = params[:id]
     doc = Typewright::Document.find_by_id(doc_id)
     doc.status = 'user_complete'
-    doc.save!
+    if !doc.save
+      render :text => doc.errors, :status => :error
+      return
+    end
+    
+    # get admin users
+    admins = ::User.get_administrators()
+    to = ""
+    admins.each do | admin |
+      if to.length > 0
+        to << ","
+      end
+      to << admin.email
+    end
+    
+    # send an email to them so they know a document has been marked as complete
+    doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit"
+    status_url = "#{get_base_uri()}/typewright/overviews?filter=#{url_encode(doc.uri)}"
+    DocumentCompleteMailer.document_complete_email(get_curr_user, doc, doc_url, status_url, to).deliver
+    
     render :text => "OK", :status => :ok
 	end
 
@@ -205,5 +228,17 @@ class Typewright::DocumentsController < ApplicationController
 	def instructions
 		render :partial => '/typewright/documents/instructions'
 	end
+	
+	private
+   def get_base_uri()
+    uri = URI.parse( request.url )
+    base_uri = "#{uri.scheme}://#{uri.host}"
+    if !uri.port.nil?
+      if uri.port != 80
+        base_uri = "#{uri.scheme}://#{uri.host}:#{uri.port}"
+      end 
+    end 
+    return base_uri
+  end 
 end
 
