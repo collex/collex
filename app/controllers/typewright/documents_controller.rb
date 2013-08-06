@@ -146,6 +146,7 @@ class Typewright::DocumentsController < ApplicationController
 		else
 			page = params[:page]
       page = '1' if page.nil?
+      @is_complete = (doc.status == 'user_complete')
       @src = params[:src].to_sym unless params[:src].blank?
       @src ||= :gale
       @sources = doc.ocr_sources
@@ -174,6 +175,15 @@ class Typewright::DocumentsController < ApplicationController
 #			@user = session[:user]
 			@debugging = session[:debugging] ? session[:debugging] : false
 		end
+	end
+	
+	# POST /typewrite/documents/d/complete=n
+	def page_complete	  
+	  doc_id = params[:id]
+    doc = Typewright::Document.find_by_id(doc_id)
+    doc.status = 'user_complete'
+    doc.save!
+    render :text => "OK", :status => :ok
 	end
 
   # POST /typewrite/documents/1/report?page=n
