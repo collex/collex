@@ -179,6 +179,16 @@ class Typewright::DocumentsController < ApplicationController
 		end
 	end
 	
+	# Called by an admin to update document status
+  # POST /typewrite/documents/d/complete=n
+  #
+  def update_status
+    doc_id = params[:id]
+    new_status = params[:new_status]
+    
+    render :text => "NO!", :status => :ok   
+  end   
+	
 	# Called by a user to mark a document as fully corrected
 	# POST /typewrite/documents/d/complete=n
 	#
