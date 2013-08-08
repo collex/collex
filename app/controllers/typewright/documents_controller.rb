@@ -91,6 +91,7 @@ class Typewright::DocumentsController < ApplicationController
 			end
 			
 			@id = doc.doc_id
+			@doc_is_complete = doc.status == 'complete'
 			@title = doc.title
 			@title_abbrev = doc.title_abbrev
 			@thumb = URI::join(@site, doc.img_thumb)
@@ -146,6 +147,10 @@ class Typewright::DocumentsController < ApplicationController
 		if doc == nil
 			redirect_to :back
 		else
+		  if doc.status == 'complete'
+		    data = { :uri => doc.uri}
+		    redirect_to data.merge!(:action => :show)
+		  end
 			page = params[:page]
       page = '1' if page.nil?
       @is_complete = (doc.status == 'user_complete')
@@ -185,8 +190,21 @@ class Typewright::DocumentsController < ApplicationController
   def update_status
     doc_id = params[:id]
     new_status = params[:new_status]
+    doc = Typewright::Document.find_by_id(doc_id)
+    doc.status = new_status
+    if !doc.save
+      render :text => doc.errors, :status => :error
+      return
+    end
     
-    render :text => "NO!", :status => :ok   
+    # need special behavior to handle documents that are complete
+    #  kick off new logic to grab corrected text, and send it to catalog for
+    # re-indexing
+    if new_status == 'complete'
+      # TODO   
+    end
+    
+    render :text => "OK", :status => :ok   
   end   
 	
 	# Called by a user to mark a document as fully corrected

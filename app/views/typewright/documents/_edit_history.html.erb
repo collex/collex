@@ -55,7 +55,14 @@
         <% end %>
         
         <%# Edit TEXT with link to edit the specific line %>
-        <td><%= "#{@src}" == "#{edit.src}" ? '' : "#{edit.src}: "%><%= link_to( Typewright::Line.words_to_text(Typewright::Line.db_to_words(edit.words)), "#{id}/edit?page=#{edit.page}&line=#{edit.line.to_i}" )%></td>
+        <td>
+            <% if is_complete %>
+               <%= Typewright::Line.words_to_text(Typewright::Line.db_to_words(edit.words)) %>
+            <% else %>
+               <%= "#{@src}" == "#{edit.src}" ? '' : "#{edit.src}: "%>
+               <%= link_to( Typewright::Line.words_to_text(Typewright::Line.db_to_words(edit.words)), "#{id}/edit?page=#{edit.page}&line=#{edit.line.to_i}" )%>
+            <% end %>
+        </td>
         
         <%# Edit STATUS icon %>
         <% img_src = nil %>

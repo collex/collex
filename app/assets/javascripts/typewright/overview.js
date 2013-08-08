@@ -80,7 +80,7 @@ jQuery(document).ready(function() {
          },
          success : function(resp, textStatus, jqXHR) {
             closeStatusChange(evtSrc);
-            jQuery(evtSrc).parent().parent.find('.tw_status_txt').text(statusTxt);
+            jQuery(evtSrc).parent().parent().find('.tw_status_txt').text(statusTxt);
          },
          error : function(jqXHR, textStatus, errorThrown) {
             alert("Unable to change document status");
