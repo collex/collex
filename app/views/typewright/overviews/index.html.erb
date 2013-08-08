@@ -60,7 +60,21 @@
                        </span>
                     </td>
                     <td><%= number_with_precision(typewright_overview['percent'], :precision => 2) %>%</td>
-                    <td><%= tw_format_doc_status(typewright_overview['status']) %></td>
+                    <td>
+                       <div class="tw_status_display">
+                          <%= tw_format_doc_status(typewright_overview['status']) %><br/>
+                          <input type="button" class="tw_change_doc_status" id="tw_change_status_<%= typewright_overview['id'] %>" value="Change"/>
+                       </div>
+                      <div class="tw_status_change" style="display:none">
+                          <select>
+                             <option value="not_complete">Not Complete</option>
+                             <option value="complete">Confirmed Complete</option>
+                          </select>
+                          <input type="button" class="tw_cancel_status" value="Cancel"/>
+                          <input type="button" id="tw_save_status_<%= typewright_overview['id'] %>" value="Save"/>
+                          <div style="clear: both"></div>
+                       </div>
+                    </td>
                 <% else %>
                     <td><%= tw_format_corrector(typewright_overview) %></td>
                     <td><%= typewright_overview['documents'].length %></td>

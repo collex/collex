@@ -50,4 +50,19 @@ body.federation-18th.pg-admin {
    .tw_overview th {
       color: #445a93;
    }
+   
+   .tw_status_change {
+      border: 1px solid black;
+      padding: 5px;
+      background-color: white;
+      box-shadow: 1px 1px 4px #666;
+      select {
+         margin-bottom: 2px;
+      }
+      input[type="button"] {
+         float: right;
+         margin-left: 2px;
+      }
+    }
+   
 }

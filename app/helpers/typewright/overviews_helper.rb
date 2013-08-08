@@ -11,8 +11,8 @@ module Typewright::OverviewsHelper
 	
 	def tw_format_doc_status( status ) 
 	   return 'No' if status == 'not_complete'
-	   return 'Pending Review' if status == 'user_complete'
-	   return 'Yes' if status == 'complete'
+	   return 'User marked complete' if status == 'user_complete'
+	   return 'Confirmed complete' if status == 'complete'
 	end
 
 	def tw_format_correctors(correctors)

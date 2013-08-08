@@ -25,6 +25,7 @@ gem 'memcache-client'
 
 gem 'daemons'
 gem 'delayed_job_active_record'
+gem 'whenever', :require => false
 
 # for importing word documents
 gem 'nokogiri'

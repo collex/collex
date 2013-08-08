@@ -38,4 +38,16 @@ jQuery(document).ready(function() {
       }
       window.location = url;
    });
+   
+   jQuery(".tw_change_doc_status").on("click", function() {
+      jQuery(this).parent(".tw_status_display").hide();
+       jQuery(this).parent().parent().find(".tw_status_change").show();
+       jQuery(".tw_change_doc_status").attr("disabled", "disabled");
+   });
+   
+   jQuery(".tw_cancel_status").on("click", function() {
+       jQuery(this).parent().hide();
+       jQuery(this).parent().parent().find(".tw_status_display").show();
+        jQuery(".tw_change_doc_status").removeAttr("disabled");
+   });
 }); 

@@ -9,7 +9,7 @@
 require 'rvm/capistrano'
 require 'bundler/capistrano'
 require "delayed/recipes"
-#require "whenever/capistrano"
+require "whenever/capistrano"
 
 # Read in the site-specific information so that the initializers can take advantage of it.
 config_file = "config/site.yml"
@@ -31,6 +31,8 @@ set :use_sudo, false
 set :normalize_asset_timestamps, false
 
 set :rails_env, "production"
+
+set :whenever_command, "bundle exec whenever"
 
 #set :whenever_command, "bundle exec whenever"
 
@@ -140,7 +142,6 @@ namespace :daemons do
 	task :restart, :roles => :app do
 		run "echo Restarting all daemons..."
 		run "cd #{release_path} && bundle exec #{release_path}/lib/daemons/mailer_ctl restart"
-		run "cd #{release_path} && bundle exec #{release_path}/lib/daemons/session_cleaner_ctl restart"
 	end
 end
 
