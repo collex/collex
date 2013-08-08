@@ -4,6 +4,7 @@ class DocumentCompleteMailer < ActionMailer::Base
   def document_complete_email( user, document, doc_url, status_url, admins)
     @user = user.username
     @title = document.title
+    @uri = document.uri
     @doc_url = doc_url
     @status_url = status_url
     email_list = ""
