@@ -21,14 +21,16 @@ class Typewright::Overview
 		return resp
 	end
 
-  def self.all(view, page, page_size, sort_by, sort_order, filter)
+  def self.all(view, page, page_size, sort_by, sort_order, filter, status_filter)
     page ||= 1
-    p = [ "view=#{view}",
+    p = [ 
+      "view=#{view}",
       "page=#{page}",
       "page_size=#{page_size}",
       "sort=#{sort_by}",
       "order=#{sort_order}",
-      "filter=#{filter}"
+      "filter=#{filter}",
+      "status_filter=#{status_filter}"
     ]
 
     resp = self.call_web_service("documents/corrections?#{p.join('&')}", :json)

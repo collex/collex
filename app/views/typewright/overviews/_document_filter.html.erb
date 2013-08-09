@@ -5,11 +5,11 @@
          <tr>
             <td class="tw_overview_label">Status:</td>
             <td>
-               <select id="tw_doc_status_filter">
+               <select name="status_filter" id="tw_status_filter">
                   <option value="all">All</option>
-                  <option value="not_complete">Not Complete</option>
-                  <option value="user_complete">User Complete</option>
-                  <option value="complete">Confirmed Complete</option>
+                  <option value="not_complete" <%if @status_filter == "not_complete"%>selected<%end%> >Not Complete</option>
+                  <option value="user_complete" <%if @status_filter == "user_complete"%>selected<%end%> >User Complete</option>
+                  <option value="complete" <%if @status_filter == "complete"%>selected<%end%> >Confirmed Complete</option>
                </select>
             </td>
          </tr>

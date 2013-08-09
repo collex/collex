@@ -3,6 +3,7 @@ class Typewright::OverviewsController < Admin::BaseController
 	# GET /typewright/overviews.json
 	def index
 		@view = params[:view] || 'docs'
+		@status_filter = params[:status_filter]
 		@filter = params[:filter]
 		if @view == 'users'
 		  @sort_order_class = { 'user'=>nil, 'edited'=>nil, 'modified'=>nil}
@@ -14,7 +15,7 @@ class Typewright::OverviewsController < Admin::BaseController
       end  
 		end
 
-		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:order], @filter)
+		@typewright_overviews = Typewright::Overview.all(@view, params[:page], 20, params[:sort], params[:order], @filter, @status_filter)
 		respond_to do |format|
 			format.html # index.html.erb
 			format.json { render json: @typewright_overviews }
