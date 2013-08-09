@@ -18,20 +18,27 @@
 <% current_sub_page "TypeWright" -%>
 <div class="inner_content_container">
    <span id="curr_view" style="display:none;"><%= @view %></span>
-    <div class="page_header">Corrected Typewright Documents</div>
-    <div class="digg_pagination">
-        <div class="page_info">
-            <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
-        </div>
-        <form class='filter' action="/typewright/overviews">
-           <% if @view != 'docs' %>
-             <input type="hidden" name="view" value="users" /> 
-           <% end %>
-           <input name="filter" id="tw_filter" type="text" placeholder="filter" value="<%= @filter %>" />
-           <button type="submit">Filter</button>
-        </form>
-        <%= will_paginate @typewright_overviews, :container => false %>
+   
+    <div id="tw_overview_left_controls">
+       <div class="page_header">Corrected Typewright Documents</div>
+       <div class="digg_pagination">
+           <div class="page_info">
+               <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
+           </div>
+           <%= will_paginate @typewright_overviews, :container => false %>
+       </div>
     </div>
+    
+    <div id="tw_overview_right_controls">
+       <% if @view != 'docs' %>
+         <%= render( :partial => 'user_filter') %>
+       <% else %>
+         <%= render( :partial => 'document_filter') %>
+       <% end %>
+    </div>
+    <div style="clear: both"></div>
+       
+        
     <table class="tw_overview">
         <tr>
             <% if @view == 'docs' %>
@@ -42,7 +49,7 @@
                 <th><div id="tw-doc-percent-sort" class="nav_link <%= @sort_order_class['percent'] %>">Percent Corrected</div></th>
                 <th>Complete?</th>
             <% else %>
-                <th><div id="tw-user-name-sort" class="nav_link <%= @sort_order_class['user'] %>">User</div></th>
+                <th><div id="tw-user-user-sort" class="nav_link <%= @sort_order_class['user'] %>">User</div></th>
 		          <th><div id="tw-user-edited-sort" class="nav_link <%= @sort_order_class['edited'] %>">Documents Edited</div></th>
                 <th>Documents</th>
                 <th><div id="tw-user-modified-sort" class="nav_link <%= @sort_order_class['modified'] %>">Most Recent Correction</div></th>

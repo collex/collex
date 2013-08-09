@@ -18,20 +18,14 @@ jQuery(document).ready(function() {
 
       // document / user sorting. first set of conditionals are for doc, second for user
       var sortBy = "uri";
-      if (  jQuery(this).attr("id") == "tw-doc-title-sort" ) {
-         sortBy = "title";
-      } else if (  jQuery(this).attr("id") == "tw-doc-modified-sort" ) {
-         sortBy = "modified";
-      } else if (  jQuery(this).attr("id") == "tw-doc-percent-sort" ) {
-         sortBy = "percent";
-      } else if (  jQuery(this).attr("id") == "tw-user-name-sort" ) {
-         sortBy = "user";
-      } else if (  jQuery(this).attr("id") == "tw-user-edited-sort" ) {
-         sortBy = "edited";
-      } else if (  jQuery(this).attr("id") == "tw-user-modified-sort" ) {
-         sortBy = "modified";
-      }
-      
+      var sortId = jQuery(this).attr("id");
+      sortId = sortId.substring(0, sortId.length - "-sort".length);
+      if ( sortId.indexOf("tw-doc") > -1 ) {
+         sortBy = sortId.substring("tw-doc-".length);   
+      } else {
+         sortBy = sortId.substring("tw-user-".length);
+      } 
+
       var url = "/typewright/overviews?sort="+sortBy+"&order="+order+filter;
       if ( jQuery("#curr_view").text() == "users") {
          url = "/typewright/overviews?view=users&sort="+sortBy+"&order="+order+filter;

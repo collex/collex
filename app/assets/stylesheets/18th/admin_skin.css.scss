@@ -20,6 +20,10 @@ body.federation-18th.pg-admin {
    	background-color: #566fb1;
    }
    
+   #content_container.admin .inner_content_container {
+   padding: 0px 30px 50px;
+   }
+      
    #admin_menu li a {
    	border-left:0.8em solid #566fb1;
    	text-decoration:none;
@@ -45,6 +49,65 @@ body.federation-18th.pg-admin {
    
    .tw_overview {
       width: 100%;
+   }
+   
+   #tw_overview_left_controls {
+      float:left;
+   }
+   
+   #tw_overview_right_controls {
+      float: right;
+      
+      #tw_doc_filter_controls {
+         border: 1px solid #999;
+         padding: 7px 4px;
+         background-color: #EEE;
+         border-radius: 4px;
+      }
+      
+      h4 {
+         text-align: center;
+         position: relative;
+         top: -3px;
+      }
+      
+      label {
+         margin-right: 4px;
+      }
+      select {
+         width: 100%;
+      }
+      
+      table, table td, table tr {
+         border: none;
+         padding: 3px;
+         margin-bottom: 3px;
+      }
+      
+      td.tw_overview_label {
+         text-align: right;
+      }
+      
+      button {
+         height: 24px;
+         border-radius: 6px;
+         background-color: white;
+         padding: 0 4px;
+         border: 1px solid #999;
+         margin-right: 4px;
+         color: #000033;
+         font-size: 0.9em;
+      }
+      
+      .tw_filter_buttons {
+         text-align: right;
+         position: relative;
+         top: 2px;
+      }
+
+      input {
+         padding: 2px;
+      }
    }
    
    .tw_overview th {
