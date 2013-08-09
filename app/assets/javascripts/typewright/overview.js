@@ -33,6 +33,14 @@ jQuery(document).ready(function() {
       window.location = url;
    });
    
+   // Reset filter
+   jQuery("#tw_clear_filter").on("click", function() {
+      jQuery("#tw_doc_status_filter").val("all");
+      jQuery("#tw_filter").val("");
+      jQuery("#tw_doc_filter_controls form").submit();
+      
+   });
+   
    // change document status
    jQuery(".tw_change_doc_status").on("click", function() {
        jQuery(this).parent(".tw_status_display").hide();
