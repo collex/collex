@@ -138,13 +138,6 @@ namespace :config do
 	end
 end
 
-namespace :daemons do
-	task :restart, :roles => :app do
-		run "echo Restarting all daemons..."
-		run "cd #{release_path} && bundle exec #{release_path}/lib/daemons/mailer_ctl restart"
-	end
-end
-
 namespace :skinning do
 	desc "Copy all static files to the public path"
 	task :static do
@@ -173,7 +166,6 @@ after "deploy:start",   "delayed_job:start"
 after "deploy:restart", "delayed_job:restart"
 after "deploy:finalize_update", "config:symlinks"
 after "deploy:finalize_update", "config:wordpress"
-after "deploy:migrate", "daemons:restart"
 after "deploy:finalize_update", "skinning:static"
 after :deploy, "passenger:restart"
 
