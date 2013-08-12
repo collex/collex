@@ -114,14 +114,12 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		elHist._node.innerHTML = createHistory(currLine);
 		elNum._node.innerHTML = create_display_line(line.getLineNum(currLine));
 		var displayLine = line.getCurrentText(currLine);
-        if (displayLine) {
-		    displayLine = displayLine.replace(/\'/g, '&apos;');
-        }
+    
 		var editingLine = Y.one("#tw_editing_line");
 		if (line.isDeleted(currLine))
-			editingLine._node.innerHTML = "<input id='tw_input_focus' class='tw_deleted_line' readonly='readonly' type='text' value='" + displayLine + "' />";
+			editingLine._node.innerHTML = "<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />";
 		else
-			editingLine._node.innerHTML = "<input id='tw_input_focus' type='text' value='" + displayLine + "' />";
+			editingLine._node.innerHTML = "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />";
 
 		var foc = Y.one("#tw_input_focus");
 		foc.focus();
