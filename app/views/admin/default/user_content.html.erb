@@ -17,47 +17,6 @@
 <% current_page "admin" -%>
 <% current_sub_page "User Content" -%>
 <div class="inner_content_container">
-	<div class="page_header">Daemon Activity</div>
-	<table class="exhibit_category">
-		<tr>
-			<th>Name</th>
-			<th>Last Start</th>
-			<th>Last End</th>
-			<th>Last Wake Up</th>
-			<th>Last Activity</th>
-			<th>Last Message</th>
-		</tr>
-		<% recs = DaemonActivity.all -%>
-		<% for rec in recs -%>
-			<tr>
-				<td><%= rec.name%></td>
-				<td><%= comment_time_format(rec.started_at) if rec.started_at %></td>
-				<td><%= comment_time_format(rec.ended_at) if rec.ended_at %></td>
-				<td><%= comment_time_format(rec.last_wake_up) if rec.last_wake_up %></td>
-				<td><%= comment_time_format(rec.last_activity) if rec.last_activity %></td>
-				<td><%= rec.last_message %></td>
-			</tr>
-		<% end -%>
-	</table>
-	<% emails = EmailWaiting.all() %>
-	<div class="page_header">Emails that haven't been sent:</div>
-	<table class="exhibit_category">
-		<tr>
-			<th>To</th>
-			<th>From</th>
-			<th>Subject</th>
-			<th>Created</th>
-		</tr>
-		<% for email in emails %>
-		<tr>
-			<td><%= email.to_email %></td>
-			<td><%= email.from_email %></td>
-			<td><%= email.subject %></td>
-			<td><%= comment_time_format(email.created_at) %></td>
-		</tr>
-		<% end %>
-	</table>
-
 	<div class="page_header">User Content Reindexing Log</div>
 	<table class="exhibit_category">
 		<tr>

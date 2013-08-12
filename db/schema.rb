@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207200244) do
+ActiveRecord::Schema.define(:version => 20130812173759) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -61,17 +61,6 @@ ActiveRecord::Schema.define(:version => 20130207200244) do
     t.string  "type"
     t.string  "fieldx"
     t.string  "value"
-  end
-
-  create_table "daemon_activities", :force => true do |t|
-    t.string   "name"
-    t.datetime "last_wake_up"
-    t.datetime "last_activity"
-    t.datetime "started_at"
-    t.datetime "ended_at"
-    t.text     "last_message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -131,19 +120,6 @@ ActiveRecord::Schema.define(:version => 20130207200244) do
     t.datetime "last_visit"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "email_waitings", :force => true do |t|
-    t.string   "to_email"
-    t.string   "subject"
-    t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "from_name"
-    t.string   "from_email"
-    t.string   "to_name"
-    t.string   "return_url"
-    t.string   "suffix"
   end
 
   create_table "exhibit_elements", :force => true do |t|
