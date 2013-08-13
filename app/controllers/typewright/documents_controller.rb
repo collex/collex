@@ -13,6 +13,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 # ----------------------------------------------------------------------------
+require 'rest_client'
 require "erb"
 include ERB::Util
 
@@ -191,6 +192,7 @@ class Typewright::DocumentsController < ApplicationController
     doc_id = params[:id]
     new_status = params[:new_status]
     doc = Typewright::Document.find_by_id(doc_id)
+    old_status =  doc.status
     doc.status = new_status
     if !doc.save
       render :text => doc.errors, :status => :error
@@ -198,13 +200,33 @@ class Typewright::DocumentsController < ApplicationController
     end
     
     # need special behavior to handle documents that are complete
-    #  kick off new logic to grab corrected text, and send it to catalog for
+    # kick off new logic to grab corrected text, and send it to catalog for
     # re-indexing
     if new_status == 'complete'
-      # TODO   
+      # grab corrected text and POST it to the catalog
+      fulltext = Typewright::Overview.retrieve_doc(doc.uri, "text")
+      catalog_url = "#{URI.parse(Setup.solr_url())}/documents/#{doc_id}/fulltext"
+      data = {}
+      data['uri'] = doc.uri
+      data['fulltext'] = fulltext
+      json_data = ActiveSupport::JSON.encode( data )
+      begin
+        RestClient.post catalog_url, json_data, :content_type => "application/json"
+        render :text => "OK", :status => :ok   
+      rescue RestClient::Exception => rest_error
+         puts rest_error.response
+         doc.status = old_status
+         doc.save
+         render :text => rest_error.response, :status => rest_error.http_code
+      rescue Exception => e
+         puts rest_error.response
+         doc.status = old_status
+         doc.save
+         render :text => e, :status => :internal_server_error
+      end
+    else
+      render :text => "OK", :status => :ok     
     end
-    
-    render :text => "OK", :status => :ok   
   end   
 	
 	# Called by a user to mark a document as fully corrected
