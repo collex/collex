@@ -207,6 +207,8 @@ class Typewright::DocumentsController < ApplicationController
       fulltext = Typewright::Overview.retrieve_doc(doc.uri, "text")
       catalog_url = "#{URI.parse(Setup.solr_url())}/documents/#{doc_id}/fulltext"
       data = {}
+      data['archive'] = "ECCO"
+      data['federation'] = Setup.default_federation()
       data['uri'] = doc.uri
       data['fulltext'] = fulltext
       json_data = ActiveSupport::JSON.encode( data )
