@@ -37,10 +37,12 @@ class Typewright::OverviewsController < Admin::BaseController
 
 	def retrieve_doc
 		doc = Typewright::Overview.retrieve_doc(params[:uri], params[:type])
+	  token = params[:token]
 		respond_to do |format|
 			format.txt { render :text => doc }
 			format.xml  { render :text => doc }
 		end
+		cookies[:fileDownloadToken] = { :value => "#{token}", :expires => Time.now + 5}
 	end
 
   # GET /typewright/overviews/new

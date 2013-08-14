@@ -12,11 +12,25 @@ jQuery(document).ready(function() {
    };
    
    jQuery(".tw-document-retrieval").on("click", function() {
-      showWaitPopup();   
+      showWaitPopup();  
+      var token = new Date().getTime();
+      var oldHref = jQuery(this).attr("href");
+      jQuery(this).attr("href", oldHref+"&token=" + token); 
+      var limit = 120;
+      var intId = setInterval(function() {
+         var cookieValue = $.cookie('fileDownloadToken');
+         limit -= 1;
+         if (cookieValue == token || limit <= 0) {
+            hideWaitPopup();
+            clearInterval(intId);
+         }
+      }, 500);
    });
+   
    jQuery("#content_container.admin .nav_link").on("click", function() {
       showWaitPopup();   
    });
+   
    jQuery("form.filter").on("submit", function() {
       showWaitPopup();   
    });
