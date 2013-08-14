@@ -203,9 +203,24 @@ class Typewright::DocumentsController < ApplicationController
     # kick off new logic to grab corrected text, and send it to catalog for
     # re-indexing
     if new_status == 'complete'
-      # grab corrected text and POST it to the catalog
+      # grab corrected text
       fulltext = Typewright::Overview.retrieve_doc(doc.uri, "text")
-      catalog_url = "#{URI.parse(Setup.solr_url())}/fulltext" # TODO changed URL
+      
+      # get the solr object for this document
+      solr_document = Catalog.factory_create(false).get_object(doc.uri)
+      
+      # update the important bits
+      solr_document['text'] = fulltext
+      solr_document['has_full_text'] = "true"
+      
+      # TODO send this updated object to catalog for indexing into the main archive
+      # Following the exhibits model, this is two steps:
+      # 1 delete the original
+      # 2 Catalog.add_object with a commit flag set to true
+      
+      # POST the corrected full text to the catalog so it will be 
+      # stored there and the results reproducable on the next reindex
+      catalog_url = "#{URI.parse(Setup.solr_url())}/corrected" 
       data = {}
       data['archive'] = "ECCO"
       data['federation'] = Setup.default_federation()
@@ -213,7 +228,6 @@ class Typewright::DocumentsController < ApplicationController
       data['fulltext'] = fulltext
       #
       # TODO authorization of some kind!
-      # TODO talk it over with paul?
       #
       json_data = ActiveSupport::JSON.encode( data )
       begin
