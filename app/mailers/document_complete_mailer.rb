@@ -1,5 +1,5 @@
 class DocumentCompleteMailer < ActionMailer::Base
-  #default from: globals()['sender_email']
+  default from: Setup.return_email()
   
   def document_complete_email( user, document, doc_url, status_url, admins)
     @user = user.username
@@ -8,7 +8,7 @@ class DocumentCompleteMailer < ActionMailer::Base
     @doc_url = doc_url
     @status_url = status_url
     email_list = ""
-    
-    mail(:to => admins, :subject => "TypeWright Document Complete", :from=>@user) 
+   
+    mail(:to => admins, :subject => "TypeWright Document Complete") 
   end
 end
