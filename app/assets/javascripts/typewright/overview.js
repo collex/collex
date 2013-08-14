@@ -1,4 +1,26 @@
 jQuery(document).ready(function() {
+   
+   var showWaitPopup = function( ) {
+      jQuery('#dim-overlay').show();
+      jQuery("#wait-spinner").show();
+      jQuery('#wait-popup').show();
+   };
+   
+   var hideWaitPopup = function() {
+      jQuery('#dim-overlay').hide();
+      jQuery("#wait-popup").hide();
+   };
+   
+   jQuery(".tw-document-retrieval").on("click", function() {
+      showWaitPopup();   
+   });
+   jQuery("#content_container.admin .nav_link").on("click", function() {
+      showWaitPopup();   
+   });
+   jQuery("form.filter").on("submit", function() {
+      showWaitPopup();   
+   });
+   
    jQuery(".tw_overview .nav_link").on("click", function() {
       var order = "";
       var filter = jQuery("#tw_filter").val();
@@ -35,10 +57,10 @@ jQuery(document).ready(function() {
    
    // Reset filter
    jQuery("#tw_clear_filter").on("click", function() {
+      showWaitPopup();
       jQuery("#tw_doc_status_filter").val("all");
       jQuery("#tw_filter").val("");
       jQuery("#tw_doc_filter_controls form").submit();
-      
    });
    
    // change document status
@@ -71,6 +93,7 @@ jQuery(document).ready(function() {
          statusTxt = "Confirmed complete";
       }
       
+      showWaitPopup();
       jQuery.ajax({
          url : "/typewright/documents/" + docId + "/status",
          type : 'POST',
@@ -83,8 +106,10 @@ jQuery(document).ready(function() {
          success : function(resp, textStatus, jqXHR) {
             closeStatusChange(evtSrc);
             jQuery(evtSrc).parent().parent().find('.tw_status_txt').text(statusTxt);
+            hideWaitPopup();
          },
          error : function(jqXHR, textStatus, errorThrown) {
+            hideWaitPopup();
             alert("Unable to change document status");
          }
       });

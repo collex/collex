@@ -123,5 +123,46 @@ body.federation-18th.pg-admin {
          margin-left: 2px;
       }
     }
+    
+    #dim-overlay {
+   z-index: 1000;
+   cursor: wait;
+   display: none;
+   width: 100%;
+   height: 100%;
+   position: fixed;
+   background-color: rgba(128, 128, 128, 0.5);
+   top: 0%;
+   left: 0%;
+}
+
+#wait-popup {
+   display: none;
+   text-align: center;
+   width: 200px;
+   height: auto;
+   background-color: white;
+   position: fixed;
+   top: 40%;
+   left: 50%;
+   margin-left: -100px;
+   z-index: 1001;
+   box-shadow: 0 0 40px 10px #666;
+   -webkit-box-shadow: 0 0 40px 10px #666;
+   -moz-box-shadow: 0 0 40px 10px #666;
+   border: 3px solid #555;
+   border-radius: 10px;
+   -moz-border-radius: 10px;
+   -webkit-border-radius:  10px;
+   font-size: 0.85em;
+   font-weight: 200;
+   #wait-msg {
+      margin-left: 10px;
+      margin-right: 10px;
+   }
+   #wait-spinner {
+      margin-top: 15px;
+   }
+}
    
 }
