@@ -11,14 +11,14 @@ jQuery(document).ready(function() {
       jQuery("#wait-popup").hide();
    };
    
-   jQuery(".tw-document-retrieval").on("click", function() {
+   jQuery(".tw-retrieve-link").on("click", function() {
       showWaitPopup();  
       var token = new Date().getTime();
       var oldHref = jQuery(this).attr("href");
       jQuery(this).attr("href", oldHref+"&token=" + token); 
-      var limit = 120;
+      var limit = 300;
       var intId = setInterval(function() {
-         var cookieValue = $.cookie('fileDownloadToken');
+         var cookieValue = jQuery.cookie('fileDownloadToken');
          limit -= 1;
          if (cookieValue == token || limit <= 0) {
             hideWaitPopup();

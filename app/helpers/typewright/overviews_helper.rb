@@ -30,7 +30,7 @@ module Typewright::OverviewsHelper
 
 	def tw_document_retrieval_link(label, uri, type, mime)
 		output_name = "#{uri.split("/").last}-#{type}"
-		return link_to(label, "/typewright/overviews/retrieve_doc.#{mime}?uri=#{uri}&type=#{type}", { download: output_name } )
+		return link_to(label, "/typewright/overviews/retrieve_doc.#{mime}?uri=#{uri}&type=#{type}", { download: output_name, class:'tw-retrieve-link' } )
 	end
 
 	def tw_document_retrieval_links(document)

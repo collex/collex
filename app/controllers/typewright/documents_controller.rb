@@ -205,12 +205,16 @@ class Typewright::DocumentsController < ApplicationController
     if new_status == 'complete'
       # grab corrected text and POST it to the catalog
       fulltext = Typewright::Overview.retrieve_doc(doc.uri, "text")
-      catalog_url = "#{URI.parse(Setup.solr_url())}/documents/#{doc_id}/fulltext"
+      catalog_url = "#{URI.parse(Setup.solr_url())}/fulltext" # TODO changed URL
       data = {}
       data['archive'] = "ECCO"
       data['federation'] = Setup.default_federation()
       data['uri'] = doc.uri
       data['fulltext'] = fulltext
+      #
+      # TODO authorization of some kind!
+      # TODO talk it over with paul?
+      #
       json_data = ActiveSupport::JSON.encode( data )
       begin
         RestClient.post catalog_url, json_data, :content_type => "application/json"
