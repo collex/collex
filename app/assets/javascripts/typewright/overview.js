@@ -124,7 +124,7 @@ jQuery(document).ready(function() {
          },
          error : function(jqXHR, textStatus, errorThrown) {
             hideWaitPopup();
-            alert("Unable to change document status");
+            alert("Unable to change document status:\n\t"+jqXHR.responseText);
          }
       });
    }); 
