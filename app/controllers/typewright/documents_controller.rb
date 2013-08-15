@@ -198,52 +198,55 @@ class Typewright::DocumentsController < ApplicationController
       render :text => doc.errors, :status => :error
       return
     end
+    #FIXME HACK
+    render :text => "OK", :status => :ok  
+    return
     
-    # need special behavior to handle documents that are complete
-    # kick off new logic to grab corrected text, and send it to catalog for
-    # re-indexing
-    if new_status == 'complete'
-      # grab corrected text
-      fulltext = Typewright::Overview.retrieve_doc(doc.uri, "text")
-      
-      # get the solr object for this document
-      solr = Catalog.factory_create(false)
-      solr_document = solr.get_object(doc.uri)
-      
-      # update the important bits
-      solr_document['text'] = fulltext
-      solr_document['has_full_text'] = "true"
-      
-      # Following the exhibits model, this is two steps:
-      # 1 delete the original
-      # 2 Catalog.add_object with a commit flag set to true: solr.add_object(doc, true)
-      
-      # POST the corrected full text to the catalog so it will be 
-      # stored there and the results reproducable on the next reindex
-      catalog_url = "#{URI.parse(Setup.solr_url())}/corrections" 
-      
-      #
-      # TODO authorization of some kind: should be in catalog. IP of federation. Check
-      #
-      json_data = ActiveSupport::JSON.encode( solr_document )
-      begin
-        resp = RestClient.post catalog_url, json_data, :content_type => "application/json"
-        Catalog.reset_cached_data()
-        render :text => "OK", :status => :ok   
-      rescue RestClient::Exception => rest_error
-         puts rest_error.response
-         doc.status = old_status
-         doc.save
-         render :text => rest_error.response, :status => rest_error.http_code
-      rescue Exception => e
-         puts rest_error.response
-         doc.status = old_status
-         doc.save
-         render :text => e, :status => :internal_server_error
-      end
-    else
-      render :text => "OK", :status => :ok     
-    end
+    # # need special behavior to handle documents that are complete
+    # # kick off new logic to grab corrected text, and send it to catalog for
+    # # re-indexing
+    # if new_status == 'complete'
+      # # grab corrected text
+      # fulltext = Typewright::Overview.retrieve_doc(doc.uri, "text")
+#       
+      # # get the solr object for this document
+      # solr = Catalog.factory_create(false)
+      # solr_document = solr.get_object(doc.uri)
+#       
+      # # update the important bits
+      # solr_document['text'] = fulltext
+      # solr_document['has_full_text'] = "true"
+#       
+      # # Following the exhibits model, this is two steps:
+      # # 1 delete the original
+      # # 2 Catalog.add_object with a commit flag set to true: solr.add_object(doc, true)
+#       
+      # # POST the corrected full text to the catalog so it will be 
+      # # stored there and the results reproducable on the next reindex
+      # catalog_url = "#{URI.parse(Setup.solr_url())}/corrections" 
+#       
+      # #
+      # # TODO authorization of some kind: should be in catalog. IP of federation. Check
+      # #
+      # json_data = ActiveSupport::JSON.encode( solr_document )
+      # begin
+        # resp = RestClient.post catalog_url, json_data, :content_type => "application/json"
+        # Catalog.reset_cached_data()
+        # render :text => "OK", :status => :ok   
+      # rescue RestClient::Exception => rest_error
+         # puts rest_error.response
+         # doc.status = old_status
+         # doc.save
+         # render :text => rest_error.response, :status => rest_error.http_code
+      # rescue Exception => e
+         # puts rest_error.response
+         # doc.status = old_status
+         # doc.save
+         # render :text => e, :status => :internal_server_error
+      # end
+    # else
+      # render :text => "OK", :status => :ok     
+    # end
   end   
 	
 	# Called by a user to mark a document as fully corrected
