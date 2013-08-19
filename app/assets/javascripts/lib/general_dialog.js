@@ -442,7 +442,7 @@ var GeneralDialog = Class.create({
 		// Add a colorpicker button to the dialog
 		var addColorPick = function(parent_el, id, klass, callback, value) {
 		   // TODO
-      }
+      };
    
 		var addHidden = function(parent_el, id, klass, value) {
 			var el0 = new Element('input', { id: GeneralDialog.makeId(id), name: id, 'type': 'hidden' });
@@ -888,13 +888,13 @@ var GeneralDialog = Class.create({
 			panel.cancel();
 		};
 
-        this.hide = function() {
-            panel.hide();
-        }
+      this.hide = function() {
+         panel.hide();
+      };
 
-        this.show = function() {
-            panel.show();
-        }
+      this.show = function() {
+         panel.show();
+      };
 		
 		this.center = function() {
 			var dlg = $(this_id);

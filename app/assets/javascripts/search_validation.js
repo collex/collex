@@ -96,7 +96,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		// At this point, year_val contains the user's input for the year.
         // Make sure it is 4 digits or a valid solr span (e.g. 1700 TO 1900)
 
-        var re = /^\d{4}(\s+TO\s+\d{4})?$/
+        var re = /^\d{4}(\s+TO\s+\d{4})?$/;
 
         if (!re.match(year_val))
         {

@@ -159,7 +159,7 @@ var line = {
 		else
 			params.status = 'undo';
 		params.line = this.getLineNum(num);
-        params.src = lines[num].src
+        params.src = lines[num].src;
 		return params;
 	}
 };

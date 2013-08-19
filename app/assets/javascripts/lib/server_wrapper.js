@@ -475,7 +475,7 @@ var serverAction = function(params) {
    var action = function() {
       if (progressParams)
          if (searchingParams)
-            progressSpinnerSearchingDialog.show()
+            progressSpinnerSearchingDialog.show();
          else
             dlg = new ProgressSpinnerDlg(progressParams.waitMessage);
       if (actionParams.actions)
@@ -537,7 +537,7 @@ YUI().use('io', 'querystring-stringify', function(Y) {
          data : params,
          sync : true
       });
-   }
+   };
 });
 
 // This centralizes all the Ajax requests

@@ -115,7 +115,7 @@ jQuery(document).ready(function() {
             new_status : newStat
          },
          beforeSend : function(xhr) {
-            xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'))
+            xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));
          },
          success : function(resp, textStatus, jqXHR) {
             closeStatusChange(evtSrc);

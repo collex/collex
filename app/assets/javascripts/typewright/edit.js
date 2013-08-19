@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
       jQuery.ajax({
          url : "/typewright/documents/"+doc_id+"/complete",
          type : 'POST',
-         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'))},
+         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));},
          success : function(resp, textStatus, jqXHR) {
             jQuery(".tw-complete-msg").show();
             jQuery(".tw-complete-btn").hide();

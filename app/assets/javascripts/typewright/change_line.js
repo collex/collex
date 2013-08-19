@@ -113,7 +113,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		var elNum = Y.one('#tw_text_1 .tw_line_num');
 		elHist._node.innerHTML = createHistory(currLine);
 		elNum._node.innerHTML = create_display_line(line.getLineNum(currLine));
-		var displayLine = line.getCurrentText(currLine);
+		var displayLine = line.getCurrentText(currLine).replace(/\"/g, "&quot;");
     
 		var editingLine = Y.one("#tw_editing_line");
 		if (line.isDeleted(currLine))
