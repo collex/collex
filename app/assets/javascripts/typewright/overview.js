@@ -13,8 +13,13 @@ jQuery(document).ready(function() {
    
    jQuery(".tw-retrieve-link").on("click", function() {
       showWaitPopup();  
-      var token = new Date().getTime();
+      var d = new Date();
+      var token = Math.round(d.getTime() / 1000);
       var oldHref = jQuery(this).attr("href");
+      var pos = oldHref.indexOf("&token");
+      if ( pos > -1 ) {
+         oldHref = oldHref.substring(0,pos);
+      }
       jQuery(this).attr("href", oldHref+"&token=" + token); 
       var limit = 300;
       var intId = setInterval(function() {

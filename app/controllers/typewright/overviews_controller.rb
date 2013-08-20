@@ -1,3 +1,5 @@
+require 'rest-client'
+
 class Typewright::OverviewsController < Admin::BaseController
 	# GET /typewright/overviews
 	# GET /typewright/overviews.json
@@ -36,12 +38,38 @@ class Typewright::OverviewsController < Admin::BaseController
 	end
 
 	def retrieve_doc
-		doc = Typewright::Overview.retrieve_doc(params[:uri], params[:type])
+	  if !is_logged_in? || !is_admin?
+	     render :text => "401 Unauthorized", :status => :unauthorized
+	     return   
+	  end 
 	  token = params[:token]
-		respond_to do |format|
-			format.txt { render :text => doc }
-			format.xml  { render :text => doc }
-		end
+	  if token.nil? || token.blank?
+	     render :text => "401 Unauthorized", :status => :unauthorized
+       return   
+	  end
+	  ts = token.to_i
+	  tn = Time.now.to_i
+	  if ts+30 < tn
+	     render :text => "401 Unauthorized", :status => :unauthorized
+       return      
+	  end
+	  
+		tw_url = COLLEX_PLUGINS['typewright']['web_service_url']
+		private_token = COLLEX_PLUGINS['typewright']['private_token']
+		url = "#{tw_url}/documents/retrieve?uri=#{params[:uri]}&type=#{params[:type]}"
+		begin
+		   doc = RestClient.get url, :'x-auth-key' => private_token
+		   final_fmt = "text/plain"
+		   final_fmt = "text/xml" if params[:format] != "txt"
+		   send_data doc, :type => final_fmt, :disposition => "inline"  
+		rescue RestClient::Exception => rest_error
+       puts rest_error.response
+       render :text => rest_error.response, :status => rest_error.http_code
+    rescue Exception => e
+       puts e.to_s
+       render :text => e, :status => :internal_server_error
+    end
+    
 		cookies[:fileDownloadToken] = { :value => "#{token}", :expires => Time.now + 5}
 	end
 end
