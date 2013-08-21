@@ -42,7 +42,7 @@ var line = {
 		lines.splice(num, 0, { l:l, t:t, r:r, b:b, words: [[ ]], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed' });
 	},
 
-	isLast: function(num) { return num === lines.length - 1; },
+   isLast: function(num) { return num === lines.length - 1; },
 	isInRange: function(num) { return num >= 0 && num < lines.length; },
 
 	//
@@ -50,7 +50,7 @@ var line = {
 	//
 	canUndo: function(num) { return lines[num].change !== undefined; },
 	canRedo: function(num) { return lines[num].undo !== undefined;	},
-	hasChanged: function(num) { return lines[num].change && lines[num].change.type === 'change'; },
+	hasChanged: function(num) { return (lines[num].change && lines[num].change.type === 'change') || (lines[num].box_size == 'changed'); },
 	getChangeType: function(num) { return lines[num].change ? lines[num].change.type : null; },
 	isDeleted: function(num) { return lines[num].change && lines[num].change.type === 'delete'; },
 	getLineNum: function(num) { return lines[num].num; },

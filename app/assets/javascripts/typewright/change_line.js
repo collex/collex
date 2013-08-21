@@ -130,16 +130,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		updateServer();
 	}
 
-	var lineDirty = false;
-	var mostRecentLine = "";
-
 	function line_changed() {
 		var input = Y.one("#tw_input_focus");
 		if (input) {
-			if (input._node.value !== mostRecentLine) {
-				lineDirty = true;
-				mostRecentLine = input._node.value;
-			}
 			if (line.doRegisterLineChange(currLine, input._node.value))
 				redrawCurrIcons();
 		}
@@ -185,16 +178,13 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		imgCursor.update();
 	}
 
-	function change_line_abs(lineNum) {
-		if (line.isInRange(lineNum)) {
-			if (lineDirty) {
-				lineDirty = false;
+	function change_line_abs(newLineNum) {
+		if (line.isInRange(newLineNum)) {
+			if ( line.hasChanged(currLine) ) {
 				updateServer();
 			}
-			currLine = lineNum;
+			currLine = newLineNum;
 			redraw();
-			var input = Y.one("#tw_input_focus");
-			mostRecentLine = input._node.value;
 		}
 	}
 
@@ -244,79 +234,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	var home = 36;
 	var up_arrow = 38;
 	var down_arrow = 40;
-	var kdelete = 46;
+	var kDelete = 46;
 	var kI = 73;
 	var kY = 89;
-	var ctrl_enter = '13+ctrl';
-	var ctrl_delete = '46+ctrl';
-	var ctrl_backspace = '8+ctrl';
-	var ctrl_I = '73+ctrl';
-	var shift_ctrl_I = '73+shift+ctrl';
-	var ctrl_Y = '89+ctrl';
-	var all_controlled_keys = ctrl_enter+',' + ctrl_backspace+',' + ctrl_delete+',' + ctrl_I+',' + ctrl_Y+',';
-	var all_non_shifted_keys = enter+',' + page_up+',' + page_down+',' + end+',' + home+',' + up_arrow+',' + down_arrow;
-
-	//
-	// key handling
-	//
-	Y.on('key', function(e) {
-		if (e.target.get('id') === 'tw_input_focus') {
-			e.halt();
-			var key = e.keyCode;
-			if (e.shiftKey) key += "+shift";
-			if (e.ctrlKey) key += "+ctrl";
-
-			switch (key) {
-				case page_up: change_line_rel(-3); break;
-				case page_down: change_line_rel(3); break;
-				case up_arrow: change_line_rel(-1); break;
-				case down_arrow: change_line_rel(1); break;
-				case enter: change_line_rel(1); break;
-
-				case end: var foc = Y.one("#tw_input_focus"); setCaretPosition(foc._node, foc._node.value.length, 0); break;
-				case home: var foc2 = Y.one("#tw_input_focus"); setCaretPosition(foc2._node, 0, 0); break;
-			}
-		}
-	}, 'body', 'down:'+all_non_shifted_keys, Y);
-
-	Y.on('key', function(e) {
-		if (e.target.get('id') === 'tw_input_focus') {
-			e.halt();
-			var key = e.keyCode;
-			if (e.shiftKey) key += "+shift";
-			if (e.ctrlKey) key += "+ctrl";
-
-			switch (key) {
-				case ctrl_enter: line.doConfirm(currLine); lineModified(); break;
-				case ctrl_backspace: line.doDelete(currLine); lineModified(); break;
-				case ctrl_delete: line.doDelete(currLine); lineModified(); break;
-				case ctrl_I: insert_below(); break;
-				case ctrl_Y:
-					if (line.canRedo(currLine)) {
-						line.doRedo(currLine);
-						lineModified();
-					} else if (line.canUndo(currLine)) {
-						line.doUndo(currLine);
-						lineModified();
-					}
-					break;
-			}
-		}
-	}, 'body', 'down:'+all_controlled_keys, Y);
-
-	// Have to do the multiple modifier keys separately because they interfere with the single modifier keys.
-	Y.on('key', function(e) {
-		if (e.target.get('id') === 'tw_input_focus') {
-			e.halt();
-			var key = e.keyCode;
-			if (e.shiftKey) key += "+shift";
-			if (e.ctrlKey) key += "+ctrl";
-
-			switch (key) {
-				case shift_ctrl_I: insert_above(); break;
-			}
-		}
-	}, 'body', 'down:'+shift_ctrl_I, Y);
 
 	//
 	// confirm line
@@ -375,8 +295,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	 }, 'body', "#tw_img_thumb");
 
 	Y.on("beforeunload", function(e) {
-		if (lineDirty)
+		if (line.hasChanged(currLine) ) {
 			updateServerSync();
+	   }
 	}, window);
 
 	//
@@ -393,12 +314,78 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	//
 
 	Y.delegate('keyup', function(e) {
-		line_changed();
+	   var key = e.charCode;	   
+	   switch (key) {
+	      case backspace:
+           if (e.ctrlKey ) {
+              line.doDelete(currLine); 
+              lineModified(); 
+           } else {
+              line_changed(); 
+           }
+           break;  
+	      case kDelete:
+	        if (e.ctrlKey ) {
+	           line.doDelete(currLine); 
+	           lineModified(); 
+	        } else {
+	           line_changed(); 
+	        }
+	        break;  
+	      case enter:
+	        if (e.ctrlKey ) {
+	           line.doConfirm(currLine); 
+	           lineModified();
+	        } else {
+	           change_line_rel(1); 
+	        }
+	        break;
+	      case page_up: 
+	        change_line_rel(-3); 
+	        break;
+         case page_down: 
+            change_line_rel(3); 
+            break;
+         case up_arrow: 
+            change_line_rel(-1); 
+            break;
+         case down_arrow: 
+            change_line_rel(1); 
+            break;
+         case end: 
+            var foc = Y.one("#tw_input_focus"); 
+            setCaretPosition(foc._node, foc._node.value.length, 0); 
+            break;
+         case home: 
+            var foc2 = Y.one("#tw_input_focus"); 
+            setCaretPosition(foc2._node, 0, 0); 
+            break;
+         default:  
+            var handled = false;
+            if ( key ==  kI  ) {
+               if ( e.ctrlKey && e.shiftKey == false ) {
+                  insert_below();
+                  handled = true;
+               } else if ( e.ctrlKey && e.shiftKey ) {
+                  insert_above();
+                  handled = true;
+               } 
+            } else  if ( key ==  kY &&  e.ctrlKey ) {
+               if (line.canRedo(currLine)) {
+                  line.doRedo(currLine);
+                  lineModified();
+               } else if (line.canUndo(currLine)) {
+                  line.doUndo(currLine);
+                  lineModified();
+               }
+               handled = true;
+            } 
+            
+            if ( handled === false) {
+               line_changed(); 
+            }
+	   }
 	}, 'body', '#tw_input_focus');
-
-	Y.Global.on('changeLine:box_size', function() {
-		lineDirty = true;
-	});
 
 	//
 	// undo
@@ -427,8 +414,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 	 }, ".tw_insert_below_button");
 
 	Y.on("unload", function(e) {
-		if (lineDirty)
+		if (line.hasChanged(currLine) ) {
 			updateServer();
+		}
 	}, "body");
 
 	Y.on("resize", function(e) {
