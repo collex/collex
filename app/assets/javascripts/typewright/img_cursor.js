@@ -10,7 +10,8 @@
 
 var imgCursor = { };
 
-YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', 'resize', function(Y) {
+YUI().use('node', 'event-delegate', 'event-custom', 'resize', function(Y) {
+   console.log("IMAGE_CURSOR LOADED "+ new Date());
 	function get_scaling() {
 		// Get the scaling and offset of the thumbnail image.
 		var imgThumb = Y.one("#tw_img_thumb");
@@ -188,5 +189,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 			r: (parseInt(width)+parseInt(left)-imageVars.ofsX)/imageVars.ratio,
 			b: (parseInt(height)+parseInt(top)-imageVars.ofsY + imageVars.scrollY)/imageVars.ratio };
 	};
+	
+	Y.Global.fire('imageCursor:loaded');
 
 });

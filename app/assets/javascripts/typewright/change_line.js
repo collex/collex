@@ -15,8 +15,9 @@
 /*global imgCursor */
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', function(Y) {
+	console.log("CHANGE_LINE LOADED "+ new Date());
 	function create_display_line(str) {
-	   str = ""+str;
+	   str = ''+str;
 		return str.replace(/\"/g, "&quot;");
 	}
 
@@ -265,9 +266,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
         change_line_rel(parseInt(amount));
     }, 'body', ".tw_change_line");
 
-    Y.on("load", function(e) {
-	    if (window.currLine !== undefined)
+    Y.Global.on("imageCursor:loaded", function(e) {
+       console.log("CHANGE_LINE ON_LOAD "+new Date());
+	    if (window.currLine !== undefined) {
 		    change_line_abs(window.currLine);
+		 };
     }, window);
 
 	Y.on('mousewheel', function(e) {
