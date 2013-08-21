@@ -279,9 +279,13 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
    Y.Global.on("imageCursor:loaded", function(e) {
       console.log("CHANGE_LINE ON_LOAD " + new Date());
-      if (window.currLine !== undefined) {
-         change_line_abs(window.currLine);
-      }
+      setTimeout( function() {
+         if (window.currLine !== undefined) {
+            change_line_abs(window.currLine);
+         } else {
+            console.log("UNDEFINED CURRLINE");
+         }
+      }, 100);
    }, window);
 
    Y.on('mousewheel', function(e) {
@@ -304,6 +308,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }, 'body', "#tw_img_thumb");
 
    Y.on("beforeunload", function(e) {
+      if (window.currLine === undefined) {
+         return;
+      }
       if (line.hasChanged(currLine)) {
          updateServerSync();
       }
@@ -423,6 +430,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }, ".tw_insert_below_button");
 
    Y.on("unload", function(e) {
+      if (window.currLine === undefined) {
+         return;
+      }
       if (line.hasChanged(currLine)) {
          updateServer();
       }
