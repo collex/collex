@@ -16,15 +16,15 @@
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', function(Y) {
 	function create_display_line(str) {
-		str= '' + str;
-		return str.replace(/\'/g, '&apos;');
+	   str = ""+str;
+		return str.replace(/\"/g, "&quot;");
 	}
 
 	function create_jump_link(str, amount, isDeleted) {
 		var classes = 'nav_link tw_change_line';
 		if (isDeleted)
 			classes += " tw_deleted_line";
-		return "<a href='#' class='"+classes + "' data-amount='" + amount + "'>" + create_display_line(str) + "</a>";
+		return "<a href=\"#\" class=\""+classes + "\" data-amount=\"" + amount + "\">" + create_display_line(str) + "</a>";
 	}
 
 	function setUndoButtons() {
@@ -43,12 +43,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
 		var correct = Y.one('.tw_correct');
 		if (correct) {
-//			if (line.hasChanged(currLine))
-//				correct.addClass('disabled');
-//			else
 				correct.removeClass('disabled');
 		}
-
 	}
 
 	var serverNotifyArrayParams = function(url, params) {
