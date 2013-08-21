@@ -51,7 +51,8 @@ YUI().use('node', 'event-delegate', 'event-custom', 'resize', function(Y) {
 
 	function getSectorLabels(sector, numImages) {
 		var labels = [];
-		for (var i = 0; i < numImages; i++) {
+		var i;
+		for ( i = 0; i < numImages; i++) {
 			var label = '' + sector;
             labels.push(label);
             sector++;	// Increment after because the image numbers are 0-based
@@ -71,7 +72,8 @@ YUI().use('node', 'event-delegate', 'event-custom', 'resize', function(Y) {
 		
 		// replace with selector labels
 		var labels = getSectorLabels(sector, imgs.size());
-		for (var i = 0; i < imgs.size(); i++) {
+		var i;
+		for (i = 0; i < imgs.size(); i++) {
 			imgs.item(i).setStyle('backgroundImage', urlLeft + labels[i] + urlRight);
 		}
 	}
@@ -105,8 +107,9 @@ YUI().use('node', 'event-delegate', 'event-custom', 'resize', function(Y) {
 		imageVars.sector = midCursor / imageVars.sectorSize;
 		imageVars.sector = Math.floor(imageVars.sector);	// sector is the image number that should be in the middle.
 		imageVars.sector = imageVars.sector - imageVars.middleImage;	// now sector is the image number that should be on the top.
-		if (imageVars.sector < 0)
+		if (imageVars.sector < 0) {
 			imageVars.sector = 0;
+		}
 		imageVars.scrollY = imageVars.sector * imageVars.sectorSize;
 
 		return imageVars;
@@ -181,8 +184,9 @@ YUI().use('node', 'event-delegate', 'event-custom', 'resize', function(Y) {
 		var origTop = box.getAttribute('data-orig-top');
 		var origWidth = box.getAttribute('data-orig-width');
 		var origHeight = box.getAttribute('data-orig-height');
-		if (left === origLeft && top === origTop && width === origWidth && height === origHeight)
+		if (left === origLeft && top === origTop && width === origWidth && height === origHeight) {
 			return null;    // There was no change, so don't report box data
+		}
 		var imageVars = getImageVars(get_scaling());
 		return { l: (parseInt(left)-imageVars.ofsX)/imageVars.ratio,
 			t: (parseInt(top)-imageVars.ofsY + imageVars.scrollY)/imageVars.ratio,
