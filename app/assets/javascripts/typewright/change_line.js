@@ -135,6 +135,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }
 
    function line_changed() {
+      console.log("line_changed");
       var input = Y.one("#tw_input_focus");
       if (input) {
          if (line.doRegisterLineChange(currLine, input._node.value)) {
@@ -251,9 +252,12 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    //
 
    Y.on("click", function(e) {
+      console.log("correct clicked");
       if (line.hasChanged(currLine)) {
+         console.log("...was changed.");
          change_line_rel(1);
       } else {
+         console.log("...doConfirm");
          line.doConfirm(currLine);
          lineModified();
       }
@@ -283,9 +287,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
          if (window.currLine !== undefined) {
             change_line_abs(window.currLine);
          } else {
-            console.log("UNDEFINED CURRLINE");
+         console.log("currLine undefined");
          }
-      }, 100);
+      }, 500);
    }, window);
 
    Y.on('mousewheel', function(e) {
@@ -353,6 +357,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
                line.doConfirm(currLine);
                lineModified();
             } else {
+               console.log("enter pressed; change_line_rel(1)");
                change_line_rel(1);
             }
             break;
