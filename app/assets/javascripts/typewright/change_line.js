@@ -15,6 +15,7 @@
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', 'resize', function(Y) {
    var imgCursor;
+   var updateInProcess = false;
 
    function create_display_line(str) {
       var newStr = String(str);
@@ -250,12 +251,14 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    //
 
    Y.on("click", function(e) {
-      if (line.hasChanged(currLine)) {
-         change_line_rel(1);
-      } else {
-         line.doConfirm(currLine);
-         lineModified();
-      }
+      if ( updateInProcess == false ) {
+         if (line.hasChanged(currLine)) {
+            change_line_rel(1);
+         } else {
+            line.doConfirm(currLine);
+            lineModified();
+         }
+       }
    }, ".tw_correct");
 
    //
@@ -276,7 +279,6 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       change_line_rel(parseInt(amount,10));
    }, 'body', ".tw_change_line");
 
-   //Y.Global.on("imageCursor:loaded", function(e) {
    Y.on("load", function(e) {
       imgCursor = createImageCursor(Y);
       if (window.currLine !== undefined) {
@@ -322,7 +324,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    //
    // Change line
    //
-
+   Y.delegate('keydown', function(e) {
+      updateInProcess = true;
+   }, 'body', '#tw_input_focus');
    Y.delegate('keyup', function(e) {
       var key = e.charCode;
       switch (key) {
@@ -395,6 +399,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
                line_changed();
             }
       }
+      updateInProcess = false;
    }, 'body', '#tw_input_focus');
 
    //
