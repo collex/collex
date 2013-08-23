@@ -8,7 +8,7 @@
 /*global line */
 /*global imgWidth, imgHeight*/
 
-var createImageCursor = function(Y, imgBoxResize) {
+var createImageCursor = function(Y) {
 
    function get_scaling() {
       // Get the scaling and offset of the thumbnail image.
@@ -148,6 +148,28 @@ var createImageCursor = function(Y, imgBoxResize) {
 
       setPointer('#tw_pointer_doc', imageVars.left, imageVars.top, imageVars.width, imageVars.height, imageVars.ofsX, imageVars.ofsY, imageVars.scrollY);
    }
+   
+      
+   var imgBoxResize;
+   Y.on("click", function(e) {
+      if (imgBoxResize) {
+         imgBoxResize.destroy();
+         imgBoxResize = undefined;
+      } else {
+         imgBoxResize = new Y.Resize({
+            //Selector of the node to resize
+            node : '#tw_pointer_doc'
+         });
+         imgBoxResize.on('resize:end', function() {
+            var box = imgCursor.getBox();
+            if (box) {
+               line.setRect(currLine, box);
+               Y.Global.fire('changeLine:box_size');
+            }
+         });
+      }
+      e.halt();
+   }, ".tw_resize_box");
 
    var imgCursor = {
       convertThumbToOrig : function(x, y) {

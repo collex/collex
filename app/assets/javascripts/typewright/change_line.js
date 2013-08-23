@@ -15,7 +15,6 @@
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', 'resize', function(Y) {
    var imgCursor;
-   var imgBoxResize;
 
    function create_display_line(str) {
       var newStr = String(str);
@@ -279,7 +278,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
    //Y.Global.on("imageCursor:loaded", function(e) {
    Y.on("load", function(e) {
-      imgCursor = createImageCursor(Y, imgBoxResize);
+      imgCursor = createImageCursor(Y);
       if (window.currLine !== undefined) {
          change_line_abs(window.currLine);
       }
@@ -431,25 +430,5 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    Y.on("resize", function(e) {
       redraw();
    }, window);
-   
-   
-   Y.on("click", function(e) {
-      if (imgBoxResize) {
-         imgBoxResize.destroy();
-         imgBoxResize = undefined;
-      } else {
-         imgBoxResize = new Y.Resize({
-            //Selector of the node to resize
-            node : '#tw_pointer_doc'
-         });
-         imgBoxResize.on('resize:end', function() {
-            var box = imgCursor.getBox();
-            if (box) {
-               line.setRect(currLine, box);
-               Y.Global.fire('changeLine:box_size');
-            }
-         });
-      }
-      e.halt();
-   }, ".tw_resize_box");
+
 });
