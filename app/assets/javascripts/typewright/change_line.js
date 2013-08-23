@@ -285,9 +285,14 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }, window);
 
    Y.on('mousewheel', function(e) {
-      var delta = e.wheelDelta;
-      change_line_rel(-delta);
-      e.halt();
+      // The mouse wheel should work any time the input has the focus even if the wheel isn't over it.
+      var isInEditingArea = e.target.ancestor('.tw_editing') !== null;
+      var isScrollTarget = (e.target.ancestor().getAttribute('id') === 'tw_img_full' || isInEditingArea || e.target.getAttribute('id') === 'tw_pointer_doc');
+      if (isScrollTarget) {
+         var delta = e.wheelDelta;
+         change_line_rel(-delta);
+         e.halt();
+      }
    }, '#tw_input_focus');
 
    Y.delegate("click", function(e) {
