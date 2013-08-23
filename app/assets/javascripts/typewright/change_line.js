@@ -8,16 +8,17 @@
 /*global currLine:true, currUser */
 /*global YUI */
 /*global window */
-/*global showDebugItems */
+/*global showDebugItems, serverNotify, serverNotifySync */
 /*global alert, Image */
 /*global line */
-/*global doc_id, page, updateUrl, imgWidth, imgHeight */
-/*global imgCursor */
+/*global doc_id, page, updateUrl, imgWidth, imgHeight, createImageCursor */
 
-YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', function(Y) {
-   console.log("CHANGE_LINE LOADED " + new Date());
+YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', 'resize', function(Y) {
+   var imgCursor;
+   var imgBoxResize;
+
    function create_display_line(str) {
-      var newStr = '' + str;
+      var newStr = String(str);
       return newStr.replace(/\"/g, "&quot;");
    }
 
@@ -106,7 +107,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
    function redrawCurrIcons() {
       var el = Y.one('#tw_text_1 .tw_change_icon');
-      el._node.innerHTML = createIcon(currLine);
+      el.setHTML( createIcon(currLine) );
       setUndoButtons();
    }
 
@@ -114,19 +115,18 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       redrawCurrIcons();
       var elHist = Y.one('#tw_text_1 .tw_history_icon');
       var elNum = Y.one('#tw_text_1 .tw_line_num');
-      elHist._node.innerHTML = createHistory(currLine);
-      elNum._node.innerHTML = create_display_line(line.getLineNum(currLine));
+      elHist.setHTML( createHistory(currLine) );
+      elNum.setHTML(create_display_line(line.getLineNum(currLine)) );
       var displayLine = line.getCurrentText(currLine).replace(/\"/g, "&quot;");
 
       var editingLine = Y.one("#tw_editing_line");
       if (line.isDeleted(currLine)) {
-         editingLine._node.innerHTML = "<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />";
+         editingLine.setHTML("<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />");
       } else {
-         editingLine._node.innerHTML = "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />";
+         editingLine.setHTML( "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />");
       }
 
-      var foc = Y.one("#tw_input_focus");
-      foc.focus();
+      Y.one("#tw_input_focus").focus();
    }
 
    function lineModified() {
@@ -135,10 +135,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }
 
    function line_changed() {
-      console.log("line_changed");
       var input = Y.one("#tw_input_focus");
       if (input) {
-         if (line.doRegisterLineChange(currLine, input._node.value)) {
+         if (line.doRegisterLineChange(currLine, input.get('value'))) {
             redrawCurrIcons();
          }
       }
@@ -154,15 +153,15 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       var elNum = Y.one('#tw_text_0 .tw_line_num');
       var elText = Y.one('#tw_text_0 .tw_text');
       if (currLine > 0) {
-         elHist._node.innerHTML = createHistory(currLine - 1);
-         elChg._node.innerHTML = createIcon(currLine - 1);
-         elNum._node.innerHTML = create_display_line(line.getLineNum(currLine - 1));
-         elText._node.innerHTML = create_jump_link(line.getCurrentText(currLine - 1), -1, line.isDeleted(currLine - 1));
+         elHist.setHTML(createHistory(currLine - 1));
+         elChg.setHTML(createIcon(currLine - 1));
+         elNum.setHTML(create_display_line(line.getLineNum(currLine - 1)));
+         elText.setHTML(create_jump_link(line.getCurrentText(currLine - 1), -1, line.isDeleted(currLine - 1)));
       } else {
-         elHist._node.innerHTML = '';
-         elChg._node.innerHTML = '';
-         elNum._node.innerHTML = '';
-         elText._node.innerHTML = '-- top of page --';
+         elHist.setHTML('');
+         elChg.setHTML('');
+         elNum.setHTML('');
+         elText.setHTML('-- top of page --');
       }
 
       redrawCurrLine();
@@ -172,15 +171,15 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       elNum = Y.one('#tw_text_2 .tw_line_num');
       elText = Y.one('#tw_text_2 .tw_text');
       if (!line.isLast(currLine)) {
-         elHist._node.innerHTML = createHistory(currLine + 1);
-         elChg._node.innerHTML = createIcon(currLine + 1);
-         elNum._node.innerHTML = create_display_line(line.getLineNum(currLine + 1));
-         elText._node.innerHTML = create_jump_link(line.getCurrentText(currLine + 1), 1, line.isDeleted(currLine + 1));
+         elHist.setHTML(createHistory(currLine + 1));
+         elChg.setHTML(createIcon(currLine + 1));
+         elNum.setHTML(create_display_line(line.getLineNum(currLine + 1)));
+         elText.setHTML(create_jump_link(line.getCurrentText(currLine + 1), 1, line.isDeleted(currLine + 1)));
       } else {
-         elHist._node.innerHTML = '';
-         elChg._node.innerHTML = '';
-         elNum._node.innerHTML = '';
-         elText._node.innerHTML = '-- bottom of page --';
+         elHist.setHTML('');
+         elChg.setHTML('');
+         elNum.setHTML('');
+         elText.setHTML('-- bottom of page --');
       }
 
       // Get the original/full size of the image so we know how to much to scale.
@@ -224,7 +223,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 
    function insert_below() {
       line.doInsert(currLine + 1);
-      currLine++;
+      currLine+=1;
       redraw();
       updateServer();
    }
@@ -252,12 +251,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    //
 
    Y.on("click", function(e) {
-      console.log("correct clicked");
       if (line.hasChanged(currLine)) {
-         console.log("...was changed.");
          change_line_rel(1);
       } else {
-         console.log("...doConfirm");
          line.doConfirm(currLine);
          lineModified();
       }
@@ -272,37 +268,27 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       var pos = line.getStartingText(lineNum).indexOf(text);
       if (pos >= 0) {
          var foc = Y.one("#tw_input_focus");
-         setCaretPosition(foc._node, pos, text.length);
+         setCaretPosition(foc, pos, text.length);
       }
    });
 
    Y.delegate("click", function(e) {
-      var amount = e.target._node.getAttribute('data-amount');
-      change_line_rel(parseInt(amount));
+      var amount = e.target.getAttribute('data-amount');
+      change_line_rel(parseInt(amount,10));
    }, 'body', ".tw_change_line");
 
-   Y.Global.on("imageCursor:loaded", function(e) {
-      console.log("CHANGE_LINE ON_LOAD " + new Date());
-      setTimeout( function() {
-         if (window.currLine !== undefined) {
-            change_line_abs(window.currLine);
-         } else {
-         console.log("currLine undefined");
-         }
-      }, 500);
+   //Y.Global.on("imageCursor:loaded", function(e) {
+   Y.on("load", function(e) {
+      imgCursor = createImageCursor(Y, imgBoxResize);
+      if (window.currLine !== undefined) {
+         change_line_abs(window.currLine);
+      }
    }, window);
 
    Y.on('mousewheel', function(e) {
-      // The mouse wheel should work any time the input has the focus even if the wheel isn't over it.
-      var isInEditingArea = e.target.ancestor('.tw_editing') !== null;
-      var isScrollTarget = (e.target._node.parentElement.id === 'tw_img_full' || isInEditingArea || e.target._node.id === 'tw_pointer_doc');
-      // For now, we just exclude when the target is a select control
-      //		if (e.target._node.tagName !== 'OPTION') {
-      if (isScrollTarget) {
-         var delta = e.wheelDelta;
-         change_line_rel(-delta);
-         e.halt();
-      }
+      var delta = e.wheelDelta;
+      change_line_rel(-delta);
+      e.halt();
    }, '#tw_input_focus');
 
    Y.delegate("click", function(e) {
@@ -357,7 +343,6 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
                line.doConfirm(currLine);
                lineModified();
             } else {
-               console.log("enter pressed; change_line_rel(1)");
                change_line_rel(1);
             }
             break;
@@ -375,11 +360,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
             break;
          case end:
             var foc = Y.one("#tw_input_focus");
-            setCaretPosition(foc._node, foc._node.value.length, 0);
+            setCaretPosition(foc, foc.value.length, 0);
             break;
          case home:
             var foc2 = Y.one("#tw_input_focus");
-            setCaretPosition(foc2._node, 0, 0);
+            setCaretPosition(foc2, 0, 0);
             break;
          default:
             var handled = false;
@@ -446,4 +431,25 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    Y.on("resize", function(e) {
       redraw();
    }, window);
+   
+   
+   Y.on("click", function(e) {
+      if (imgBoxResize) {
+         imgBoxResize.destroy();
+         imgBoxResize = undefined;
+      } else {
+         imgBoxResize = new Y.Resize({
+            //Selector of the node to resize
+            node : '#tw_pointer_doc'
+         });
+         imgBoxResize.on('resize:end', function() {
+            var box = imgCursor.getBox();
+            if (box) {
+               line.setRect(currLine, box);
+               Y.Global.fire('changeLine:box_size');
+            }
+         });
+      }
+      e.halt();
+   }, ".tw_resize_box");
 });
