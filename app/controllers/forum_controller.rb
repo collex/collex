@@ -553,8 +553,8 @@ class ForumController < ApplicationController
 						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{user.fullname}. The text of the message is:\n\n"
 						body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
 						body += "The reason for this report is:\n\n#{reason}"
-						EmailWaiting.cue_email(Setup.site_name(), Setup.return_email(), admin.fullname, admin.email,
-						  "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "")
+						GenericMailer.generic(Setup.site_name(), Setup.return_email(), admin.fullname, admin.email,
+						  "Comment Abuse Reported", body, url_for(:controller => 'home', :action => 'index', :only_path => false), "").deliver
 					end
 				rescue Exception => msg
 					logger.error("**** ERROR: Can't send email: " + msg.message)

@@ -1,11 +1,18 @@
 module Typewright::OverviewsHelper
 	def tw_format_corrector(corrector)
-		full_name = Typewright::User.get_author_fullname(corrector['federation'], corrector['id'])
-		#user = Typewright::User.get_author_native_rec(corrector['federation'], corrector['id'])
-		link = link_to(full_name, "/typewright/overviews/#{corrector['id']}", { class: 'nav_link' })
-
+	  username = corrector['username']
+	  if username.nil? || username.blank?
+	     username = Typewright::User.get_author_fullname(corrector['federation'], corrector['id'])
+	  end
+		link = link_to(username, "/typewright/overviews/#{corrector['id']}", { class: 'nav_link' })
 		count = corrector['count'].present? ? " (#{corrector['count']})" : ""
 		return content_tag(:div, raw("#{link}#{count}"), {})
+	end
+	
+	def tw_format_doc_status( status ) 
+	   return 'No' if status == 'not_complete'
+	   return 'User marked complete' if status == 'user_complete'
+	   return 'Confirmed complete' if status == 'complete'
 	end
 
 	def tw_format_correctors(correctors)
@@ -23,7 +30,7 @@ module Typewright::OverviewsHelper
 
 	def tw_document_retrieval_link(label, uri, type, mime)
 		output_name = "#{uri.split("/").last}-#{type}"
-		return link_to(label, "/typewright/overviews/retrieve_doc.#{mime}?uri=#{uri}&type=#{type}", { download: output_name } )
+		return link_to(label, "/typewright/overviews/retrieve_doc.#{mime}?uri=#{uri}&type=#{type}", { download: output_name, class:'tw-retrieve-link' } )
 	end
 
 	def tw_document_retrieval_links(document)
@@ -36,18 +43,6 @@ module Typewright::OverviewsHelper
 				tw_document_retrieval_link('Original Gale XML', uri, 'original-gale', 'xml') +
 				tw_document_retrieval_link('Original Text', uri, 'original-text', 'txt')
 		end
-	end
-
-	def tw_format_documents_table(documents)
-		rows = content_tag(:tr) do
-			content_tag(:th, "Title") + content_tag(:th, "Num Corrections") + content_tag(:th, "Last Correction")
-		end
-		documents.each { |document|
-			rows += content_tag(:tr) do
-				content_tag(:td, tw_document_link(document)) + content_tag(:td, document['count']) + content_tag(:td, tw_date_format(document['most_recent_correction']))
-			end
-		}
-		return content_tag(:table, rows, { class: 'tw_overview' })
 	end
 
 	def tw_format_documents(documents)

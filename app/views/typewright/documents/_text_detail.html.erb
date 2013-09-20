@@ -42,40 +42,49 @@
 <% rows.push({:hidden => false, :label => 'Pages:', :value => stats[:num_pages]}) %>
 
 <div id="tw_main_container">
-    
+
   <!-- optional abbreviated title banner -->
   <% if show_title %>
-    <div class="tw_editing_title">"<%= @title_abbrev %>"</div>
+     <div class="tw_editing_title">
+       "<%= @title_abbrev %>"
+     </div>
   <% end %>
-     
+
   <div class="tw_overview_top">
-        
+
     <img id="tw_img_thumb" src="<%= thumb %>" alt="cover page" />
-    <p><%= title %></p>
-    
+    <p>
+      <%= title %>
+    </p>
+
     <%= render( :partial => 'progress_bar', :locals => { :stats => stats} ) %>
 
     <table class="search_result_data">
       <%= format_result_rows(rows, false) %>
     </table>
 
-	  <% query = @starting_place.present? ? @starting_place.map { |key,val| "#{key}=#{val}"} : [] %>
-	  <% query.push("src=#{@src}") %>
-    <% edit_url = "/typewright/documents/#{id}/edit?#{query.join("&")}" %>
-    <% logged_in = get_curr_user() != nil %>
-    <%= link_to_function raw("&nbsp;"), "doEditDocument( #{logged_in}, '#{edit_url}' ); ", 
-                { :class => "tw_button4 tw_start_editing_button" } %>
-    <div class="clear_both">&nbsp;</div>
-    
+    <% if is_complete %>
+      <div class="tw_no_edit">This text has been marked as complete and is no longer available for editing.</div>
+    <% else %>
+       <% query = @starting_place.present? ? @starting_place.map { |key,val| "#{key}=#{val}"} : [] %>
+       <% query.push("src=#{@src}") %>
+       <% edit_url = "/typewright/documents/#{id}/edit?#{query.join("&")}" %>
+       <% logged_in = get_curr_user() != nil %>
+       <%= link_to_function raw("&nbsp;"), "doEditDocument( #{logged_in}, '#{edit_url}' ); ", { :class => "tw_button4 tw_start_editing_button" } %>
+    <% end %>
+    <div class="clear_both">
+      &nbsp;
+    </div>
+
   </div>
-  
+
   <!-- optional edit history -->
   <% if show_history %>
-    <div class="tw_overview_bottom">
-      <%= render( :partial => 'edit_history', 
-          :locals => { :id => id, :uri => hit['uri'], :num_revision_pages => num_revision_pages, 
-                       :revision_page => revision_page, :edits => edits} ) %>
-    </div>
+     <div class="tw_overview_bottom">
+       <%= render( :partial => 'edit_history',
+          :locals => { :id => id, :is_complete => is_complete, :uri => hit['uri'], :num_revision_pages => num_revision_pages,
+          :revision_page => revision_page, :edits => edits} ) %>
+     </div>
   <% end %>
 
 </div>

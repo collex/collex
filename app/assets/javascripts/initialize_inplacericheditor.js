@@ -390,7 +390,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 			objlist.resetCacheIfNecessary();
 			if (data.type === gIllustrationTypes[3]) {
 				var arr = action.split(',');
-				submitForm('layout', arr[0])
+				submitForm('layout', arr[0]);
 			} else
 				inplaceObjectManager.ajaxUpdateFromElement($(element_id), data, initializeElementEditing);
 		};

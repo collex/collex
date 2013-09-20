@@ -48,7 +48,6 @@ bleeding_edge: false
 daemons:
   mailer_interval_secs: 20
   user_content_interval_secs: 600
-  session_cleaner_interval_secs: 432000 #5*24 hours
 
 ##########################
 ### CAPISTRANO

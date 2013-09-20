@@ -10,11 +10,13 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require ./vendor/prototype
-//= require ./vendor/effects
-//= require ./vendor/controls
-//= require ./vendor/dragdrop
-//= require ./vendor/rails
+//= require prototype
+//= require effects
+//= require controls
+//= require dragdrop
+//= require rails
+//= require jquery.localtime
+//= require jquery.cookie
 //= require_tree ./lib
 //= require_tree .
 

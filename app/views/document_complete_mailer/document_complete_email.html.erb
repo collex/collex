@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    </head>
+    <body>
+        <h2>Document Complete Notification</h2>
+        <p>
+            TypeWright user "<%= @user %>" has marked document <%= @uri %> "<%= @title %>" complete. 
+        </p>
+        <p>
+           Review the document <a href="<%= @doc_url %>">here</a> to confirm the status change.<br/>
+           Go <a href="<%= @status_url %>">here</a> to approve or reject the status. 
+        </p>
+    </body>
+</html>

@@ -100,7 +100,7 @@
           <div class="tw_no_features">Click <%= link_to("here", '/typewright/admin') %> to set one up.</div>
         <% end %>
       <% else %>
-        <%= render( :partial => 'text_detail', :locals => { :hit => @primary, :id => @id, :stats => @stats, :thumb => @thumb, :title => @title } ) %>
+        <%= render( :partial => 'text_detail', :locals => { :hit => @primary, :id => @id, :stats => @stats, :thumb => @thumb, :title => @title, :is_complete => false } ) %>
       <% end %>
       
       <!-- More -->

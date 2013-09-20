@@ -1,0 +1,25 @@
+<div id="tw_doc_filter_controls">
+   <h4>Documents Filter</h4>
+   <form class='filter' action="/typewright/overviews">
+      <table>
+         <tr>
+            <td class="tw_overview_label">Status:</td>
+            <td>
+               <select name="status_filter" id="tw_status_filter">
+                  <option value="all">All</option>
+                  <option value="not_complete" <%if @status_filter == "not_complete"%>selected<%end%> >Not Complete</option>
+                  <option value="user_complete" <%if @status_filter == "user_complete"%>selected<%end%> >User Complete</option>
+                  <option value="complete" <%if @status_filter == "complete"%>selected<%end%> >Confirmed Complete</option>
+               </select>
+            </td>
+         </tr>
+         <tr>    
+            <td class="tw_overview_label">URI / Title:</td>
+            <td><input name="filter" id="tw_filter" type="text" placeholder="filter" value="<%= @filter %>" /></td>
+         </tr>
+      </table>
+      <div class="tw_filter_buttons">
+         <button id="tw_clear_filter" type="button">Clear</button><button type="submit">Filter</button>
+      </div>
+   </form>
+</div>

@@ -16,16 +16,153 @@
 
 body.federation-18th.pg-admin {
 
-#admin_menu {
-	background-color: #566fb1;
+   #admin_menu {
+   	background-color: #566fb1;
+   }
+   
+   #content_container.admin .inner_content_container {
+   padding: 0px 30px 50px;
+   }
+      
+   #admin_menu li a {
+   	border-left:0.8em solid #566fb1;
+   	text-decoration:none;
+   }
+   
+   .user_roles th, .exhibit_category th, .tw_overview th {
+   	background-color: #A9BAE7;
+   }
+
+   .nav_link.tw_asc {
+      background:image-url('sort_asc.png') top left no-repeat;
+   }
+   
+   div.nav_link {
+      color: #445a93;
+      cursor: pointer;
+      background:image-url('sort_both.png') top left no-repeat;
+   }
+   
+    div.nav_link.tw_desc {
+      background:image-url('sort_desc.png') top left no-repeat;
+   }
+   
+   .tw_overview {
+      width: 100%;
+   }
+   
+   #tw_overview_left_controls {
+      float:left;
+   }
+   
+   #tw_overview_right_controls {
+      float: right;
+      
+      #tw_doc_filter_controls {
+         border: 1px solid #999;
+         padding: 7px 4px;
+         background-color: #EEE;
+         border-radius: 4px;
+      }
+      
+      h4 {
+         text-align: center;
+         position: relative;
+         top: -3px;
+      }
+      
+      label {
+         margin-right: 4px;
+      }
+      select {
+         width: 100%;
+      }
+      
+      table, table td, table tr {
+         border: none;
+         padding: 3px;
+         margin-bottom: 3px;
+      }
+      
+      td.tw_overview_label {
+         text-align: right;
+         position: relative;
+         top: 2px;
+      }
+      
+      button {
+         font-size: 0.85em;
+         font-weight: lighter;
+         padding: 2px 6px;
+         margin-right: 4px;
+      }
+      
+      .tw_filter_buttons {
+         text-align: right;
+      }
+
+      input {
+         padding: 2px;
+      }
+   }
+   
+   .tw_overview th {
+      color: #445a93;
+   }
+   
+   .tw_status_change {
+      border: 1px solid black;
+      padding: 5px;
+      background-color: white;
+      box-shadow: 1px 1px 4px #666;
+      select {
+         margin-bottom: 2px;
+      }
+      input[type="button"] {
+         float: right;
+         margin-left: 2px;
+      }
+    }
+    
+    #dim-overlay {
+   z-index: 1000;
+   cursor: wait;
+   display: none;
+   width: 100%;
+   height: 100%;
+   position: fixed;
+   background-color: rgba(128, 128, 128, 0.5);
+   top: 0%;
+   left: 0%;
 }
 
-#admin_menu li a {
-	border-left:0.8em solid #566fb1;
-	text-decoration:none;
+#wait-popup {
+   display: none;
+   text-align: center;
+   width: 200px;
+   height: auto;
+   background-color: white;
+   position: fixed;
+   top: 40%;
+   left: 50%;
+   margin-left: -100px;
+   z-index: 1001;
+   box-shadow: 0 0 40px 10px #666;
+   -webkit-box-shadow: 0 0 40px 10px #666;
+   -moz-box-shadow: 0 0 40px 10px #666;
+   border: 3px solid #555;
+   border-radius: 10px;
+   -moz-border-radius: 10px;
+   -webkit-border-radius:  10px;
+   font-size: 0.85em;
+   font-weight: 200;
+   #wait-msg {
+      margin-left: 10px;
+      margin-right: 10px;
+   }
+   #wait-spinner {
+      margin-top: 15px;
+   }
 }
-
-.user_roles th, .exhibit_category th, .tw_overview th {
-	background-color: #A9BAE7;
-}
+   
 }

@@ -331,7 +331,8 @@ class Group < ActiveRecord::Base
 					decline = url_decline.gsub("PUT_ID_HERE", "#{Group.id_obfuscator(gu.id)}")
 					body += "If you wish to join this group, click here: #{accept}\n\n"
 					body += "If you do not wish to join this group, click here: #{decline}\n\n"
-					EmailWaiting.cue_email(editor_name, editor_email, user_name, email, "Invitation to join a group", body, url_home, "")
+					GenericMailer.generic(editor_name, editor_email, user_name, email, 
+					   "Invitation to join a group", body, url_home, "").deliver
 				rescue Net::SMTPFatalError
 					msgs += "Error sending email to address \"#{email}\".<br />"
 					gu.delete

@@ -6,6 +6,7 @@ gem 'rails', '3.2.12'
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2'
+gem 'rest-client'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -23,6 +24,7 @@ gem 'memcache-client'
 
 gem 'daemons'
 gem 'delayed_job_active_record'
+gem 'whenever', :require => false
 
 # for importing word documents
 gem 'nokogiri'

@@ -64,12 +64,10 @@ class Admin::SetupsController < Admin::BaseController
 		if act == 'Send Me A Test Email'
 			user = get_curr_user()
 			GenericMailer.generic(Setup.site_name(), Setup.return_email(), user[:fullname], user[:email], "Test Email From Collex",
-				"If you are reading this, then the email settings are correct in Collex. You should also receive another email soon. If you do not, then there is a problem with the background emailing task.",
-				url_for(:controller => '/home', :action => 'index', :only_path => false), "\n--------------\nAutomatic Email from Collex").deliver
-			EmailWaiting.cue_email(Setup.site_name(), Setup.return_email(), user[:fullname], user[:email], "Test Email From Collex - Background delivery",
-				"If you are reading this, then the background daemons are setup correctly in Collex and are running.",
-				url_for(:controller => '/home', :action => 'index', :only_path => false), "\n--------------\nAutomatic Email from Collex")
-			msg = "Two emails should have been sent to the email address on your account. One was sent immediately and the other was sent through the background task."
+				"If you are reading this, then the email settings are correct in Collex. ",
+				url_for(:controller => '/home', :action => 'index', :only_path => false), 
+				"\n--------------\nAutomatic Email from Collex").deliver
+			msg = "An email should have been sent to the email address on your account."
 		elsif act == 'Simulate Error Email'
 			raise("This is a test of the error notification system. An administrator pushed the Simulate Error button. If you are reading this, then the error notification system is working correctly.")
 		elsif act == 'Test Catalog Connection'

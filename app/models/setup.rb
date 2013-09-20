@@ -130,11 +130,11 @@ class Setup < ActiveRecord::Base
 
 	def self.init_exception_handler()
 		if Rails.env.to_s != 'development'
-			n = ExceptionNotifier::Notifier
+			n = ExceptionNotifier::EmailNotifier
 			except = self.exception_notifier()
-			n.default_email_prefix = except[:prefix]
-			n.default_exception_recipients = except[:recipients]
-			n.default_sender_address = except[:sender]
+			n.default_options[:email_prefix] = except[:prefix]
+			n.default_options[:exception_recipients] = except[:recipients]
+			n.default_options[:sender_address] = except[:sender]
 			puts "$$ Exceptions are mailed to #{except[:recipients].to_s}."
 		else
 			puts "$$ Exception handler not set in development mode."

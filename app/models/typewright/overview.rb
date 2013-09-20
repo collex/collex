@@ -21,44 +21,54 @@ class Typewright::Overview
 		return resp
 	end
 
-	def self.all(view, page, page_size, sort_by, filter)
-		page ||= 1
-		p = [ "view=#{view}",
-			"page=#{page}",
-			"page_size=#{page_size}",
-			"sort=#{sort_by}",
-			"filter=#{filter}"
-		]
+  def self.all(view, page, page_size, sort_by, sort_order, filter, status_filter)
+    page ||= 1
+    p = [ 
+      "view=#{view}",
+      "page=#{page}",
+      "page_size=#{page_size}",
+      "sort=#{sort_by}",
+      "order=#{sort_order}",
+      "filter=#{filter}",
+      "status_filter=#{status_filter}"
+    ]
 
-		resp = self.call_web_service("documents/corrections?#{p.join('&')}", :json)
-		if resp.blank?
-			resp = []
-			total = 0
-		else
-			total = resp['total']
-			resp = resp['results']
-			resp.each { |rec|
-				if view == 'users'
-				else
-					rec['percent_corrected'] = (1.0 * rec['pages_with_changes']) / rec['total_pages']
-				end
-				rec['most_recent_correction'] = Time.parse(rec['most_recent_correction'])
-			}
-		end
-		resp = WillPaginate::Collection.create(page, page_size) do |pager|
-			pager.replace(resp)
-			pager.total_entries = total
-		end
-		return resp
-	end
+    resp = self.call_web_service("documents/corrections?#{p.join('&')}", :json)
+    if resp.blank?
+      resp = []
+      total = 0
+    else
+      total = resp['total']
+      resp = resp['results']
+      resp.each { |rec|
+        rec['most_recent_correction'] = Time.parse(rec['most_recent_correction'])
+      }
+    end
+    resp = WillPaginate::Collection.create(page, page_size) do |pager|
+      pager.replace(resp)
+      pager.total_entries = total
+    end
+    return resp
+  end
 
 	def self.find(user_id)
 		resp = self.call_web_service("users/#{user_id}/corrections?federation=#{Setup.default_federation()}", :json)
 		return {} if resp.blank?
-		resp['documents'].each { |doc|
-			doc['most_recent_correction'] = Time.parse(doc['most_recent_correction']) if doc['most_recent_correction'].present?
-		} if resp['documents'].present?
-		resp['most_recent_correction'] = Time.parse(resp['most_recent_correction'])
+
+    latest_corr = nil
+    if resp['documents'].present?
+  		resp['documents'].each do |doc|
+  		  if doc['most_recent_correction'].present?
+  		     doc['most_recent_correction'] = Time.parse( doc['most_recent_correction']  )
+  			   if latest_corr.nil?
+  			     latest_corr = doc['most_recent_correction'] 
+  			   else
+  			     latest_corr = doc['most_recent_correction'] if doc['most_recent_correction'] > latest_corr
+  			   end
+  			end
+  		end
+    end
+		resp['most_recent_correction'] = latest_corr if !latest_corr.nil?
 		return resp
 	end
 

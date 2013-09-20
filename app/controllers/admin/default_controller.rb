@@ -85,11 +85,14 @@ class Admin::DefaultController < Admin::BaseController
 		begin
 			reporters.each do | reporter |
 				body = "Thanks for reporting the comment by #{commenter.fullname}. It has been removed.\n\n"
-				EmailWaiting.cue_email(Setup.site_name(), Setup.return_email(), reporter.fullname, reporter.email, "Abusive Comment Report Accepted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
+				GenericMailer.generic(Setup.site_name(), Setup.return_email(), reporter.fullname, reporter.email, 
+				  "Abusive Comment Report Accepted", body, url_for(:controller => '/home', :action => 'index', 
+				  :only_path => false), "").deliver
 			end
 			body = "Your comment on #{comment.created_at } was considered inappropriate and has been removed by the administrator. The text of your comment was:\n\n"
 			body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
-			EmailWaiting.cue_email(Setup.site_name(), Setup.return_email(), commenter.fullname, commenter.email, "Abusive Comment Deleted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "")
+			GenericMailer.generic(Setup.site_name(), Setup.return_email(), commenter.fullname, commenter.email, 
+			   "Abusive Comment Deleted", body, url_for(:controller => '/home', :action => 'index', :only_path => false), "").deliver
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't send email: " + msg.message)
 		end

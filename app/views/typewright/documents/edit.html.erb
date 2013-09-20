@@ -19,7 +19,7 @@
 	<span class="tw_button2 tw_insert_below_button">&nbsp;</span>
 	 
 	<!-- <span class="tw_button2 tw_review_history_button">&nbsp;</span> -->
-	<%= render :partial => 'pagination', :locals => { :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
+	<%= render :partial => 'pagination', :locals => { :show_complete=>false, :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
 </div>
 <div class="tw_edit_text">
 	<table>
@@ -65,7 +65,7 @@
 	</table>
 
     <div class="tw_toolbar bottom">
-    <%= render :partial => 'pagination', :locals => { :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
+    <%= render :partial => 'pagination', :locals => { :is_complete=>@is_complete, :show_complete=>true, :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
     </div>
 	<%= render :partial => 'edit_instructions' %>
 	<div class="clear_both"></div>

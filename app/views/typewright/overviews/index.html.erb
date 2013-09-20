@@ -17,28 +17,42 @@
 <% current_page "admin" -%>
 <% current_sub_page "TypeWright" -%>
 <div class="inner_content_container">
-    <div class="page_header">Corrected Typewright Documents</div>
-    <div class="digg_pagination">
-        <div class="page_info">
-            <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
-        </div>
-        <form class='filter' action="/typewright/overviews"><input name="filter" type="text" placeholder="filter" value="<%= @filter %>" /><button type="submit">Filter</button> </form>
-        <%= will_paginate @typewright_overviews, :container => false %>
+   <span id="curr_view" style="display:none;"><%= @view %></span>
+   
+    <div id="tw_overview_left_controls">
+       <div class="page_header">Corrected Typewright Documents</div>
+       <div class="digg_pagination">
+           <div class="page_info">
+               <%= page_entries_info @typewright_overviews, { model: @view == 'docs' ? 'Documents' : 'Users' } %>
+           </div>
+           <%= will_paginate @typewright_overviews, :container => false %>
+       </div>
     </div>
+    
+    <div id="tw_overview_right_controls">
+       <% if @view != 'docs' %>
+         <%= render( :partial => 'user_filter') %>
+       <% else %>
+         <%= render( :partial => 'document_filter') %>
+       <% end %>
+    </div>
+    <div style="clear: both"></div>
+       
+        
     <table class="tw_overview">
         <tr>
             <% if @view == 'docs' %>
-                <th><%= link_to("URI", "/typewright/overviews?sort=uri&filter=#{@filter}", { class: 'nav_link' }) %></th>
-                <th><%= link_to("Title", "/typewright/overviews?sort=title&filter=#{@filter}", { class: 'nav_link' }) %></th>
+                <th><div id="tw-doc-uri-sort" class="nav_link <%= @sort_order_class['uri'] %>">URI</div></th>
+                <th><div id="tw-doc-title-sort" class="nav_link <%= @sort_order_class['title'] %>">Title</div></th>
                 <th>Correctors (Lines Corrected)</th>
-                <th>Most Recent Correction</th>
-                <th>Percent Corrected</th>
+                <th><div id="tw-doc-modified-sort" class="nav_link <%= @sort_order_class['modified'] %>">Most Recent Correction</div></th>
+                <th><div id="tw-doc-percent-sort" class="nav_link <%= @sort_order_class['percent'] %>">Percent Corrected</div></th>
                 <th>Complete?</th>
             <% else %>
-                <th>User</th>
-		        <th>Documents Edited</th>
+                <th><div id="tw-user-user-sort" class="nav_link <%= @sort_order_class['user'] %>">User</div></th>
+		          <th><div id="tw-user-edited-sort" class="nav_link <%= @sort_order_class['edited'] %>">Documents Edited</div></th>
                 <th>Documents</th>
-                <th>Most Recent Correction</th>
+                <th><div id="tw-user-modified-sort" class="nav_link <%= @sort_order_class['modified'] %>">Most Recent Correction</div></th>
             <% end %>
         </tr>
         <% @typewright_overviews.each do |typewright_overview| %>
@@ -47,14 +61,36 @@
                     <td><%= typewright_overview['uri'] %></td>
                     <td><%= tw_document_link(typewright_overview) %><%= tw_document_retrieval_links(typewright_overview) %></td>
                     <td><%= tw_format_correctors(typewright_overview['users']) %></td>
-                    <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
-                    <td><%= number_with_precision(typewright_overview['percent_corrected']*100, :precision => 2) %>%</td>
-                    <td><%= typewright_overview['completion_status'] %></td>
+                    <td>
+                       <span data-localtime-format="MMM dd, yyyy hh:mm a">
+                          <%= tw_date_format(typewright_overview['most_recent_correction']) %>
+                       </span>
+                    </td>
+                    <td><%= number_with_precision(typewright_overview['percent'], :precision => 2) %>%</td>
+                    <td>
+                       <div class="tw_status_display">
+                          <span class="tw_status_txt"><%= tw_format_doc_status(typewright_overview['status']) %></span><br/>
+                          <input type="button" class="tw_change_doc_status" id="tw_change_status_<%= typewright_overview['id'] %>" value="Change"/>
+                       </div>
+                      <div class="tw_status_change" style="display:none">
+                          <select>
+                             <option value="not_complete">Not Complete</option>
+                             <option value="complete">Confirmed Complete</option>
+                          </select>
+                          <input type="button" class="tw_cancel_status" value="Cancel"/>
+                          <input type="button" class="tw_save_status" id="tw_save_status_<%= typewright_overview['id'] %>" value="Save"/>
+                          <div style="clear: both"></div>
+                       </div>
+                    </td>
                 <% else %>
                     <td><%= tw_format_corrector(typewright_overview) %></td>
                     <td><%= typewright_overview['documents'].length %></td>
                     <td class="tw_long_document_list"><div><%= tw_format_documents(typewright_overview['documents']) %></div></td>
-                    <td><%= tw_date_format(typewright_overview['most_recent_correction']) %></td>
+                    <td>
+                       <span data-localtime-format="MMM dd, yyyy hh:mm a">
+                          <%= tw_date_format(typewright_overview['most_recent_correction']) %>
+                       </span>
+                    </td>
                 <% end %>
             </tr>
     <% end %>
@@ -62,3 +98,4 @@
 </div>
 
 <div id="example"></div>
+<%= render :partial => 'wait_popup' %>
