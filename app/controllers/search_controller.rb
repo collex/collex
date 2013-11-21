@@ -140,8 +140,8 @@ class SearchController < ApplicationController
 
       end
 
-		 session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
-     redirect_to :action => 'browse'
+      session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
+      redirect_to :action => 'browse'
    end
 
 	def add_federation_constraint
