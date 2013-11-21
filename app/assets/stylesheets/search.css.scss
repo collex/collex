@@ -365,7 +365,7 @@ span.tooltip:hover span.search_help_tooltip {
 
 span.slider_tooltip {
     position: relative;
-    top: -14px;
+    top: -6px;
 }
 
 span.advanced_search_field_tooltip {
@@ -384,34 +384,4 @@ span.advanced_search_field_tooltip {
 	padding: 4px;
 	overflow: auto;
 }
-
-/* The rail and end cap images are shared in a sprite.
- * Include the id of the slider container to increase css specificity */
-&.yui-skin-sam .fuz_control_keyword .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('rail-x-270-lines-numbered.png') !important;
-    height: 40px;
-}
-/* The rail and end cap images are shared in a sprite.
- * Include the id of the slider container to increase css specificity */
-&.yui-skin-sam .fuz_control_title .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('rail-x-270-lines-numbered.png') !important;
-    height: 40px;
-}
-
-/* The rail and end cap images are shared in a sprite.
- * Include the id of the slider container to increase css specificity */
-&.yui-skin-sam .query_title_fuzziness .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('rail-x-270-lines-numbered.png') !important;
-    height: 45px;
-}
-
-/* The rail and end cap images are shared in a sprite.
- * Include the id of the slider container to increase css specificity */
-&.yui-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail {
-    background-image: image-url('rail-x-270-lines-numbered.png') !important;
-    height: 45px;
-}
-
-/* .yui3-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail-cap-left,
- * .yui3-skin-sam .query_keyword_fuzziness .yui3-slider-x .yui3-slider-rail-cap-right */
 }

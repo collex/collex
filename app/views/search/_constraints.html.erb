@@ -52,11 +52,11 @@
             <td class="query_type">Search Term Fuzziness &nbsp;</td>
             <td>
               <div style="width:360px">
-                  <span class="browse_slider_label">Fuzzy</span>
-                  <% fuzzy_keyword_value = fuzzy_keyword_constraint.nil? ? '1' : fuzzy_keyword_constraint[:constraint][:value] %>
+                  <span class="browse_slider_label">Exact</span>
+                  <% fuzzy_keyword_value = fuzzy_keyword_constraint.nil? ? '0' : fuzzy_keyword_constraint[:constraint][:value] %>
                   <div id='query_keyword_fuzziness' class='query_keyword_fuzziness' value='<%= fuzzy_keyword_value %>'></div>
                   <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value="<%= fuzzy_keyword_value %>" />
-                  <span class="browse_slider_label">Exact</span>
+                  <span class="browse_slider_label">Fuzzy</span>
               </div>
             </td>
             <td></td>
@@ -67,12 +67,12 @@
           <tr class="yui3-skin-sam">
             <td class="query_type">Title Fuzziness</td>
             <td>
-              <div style="width:340px">
-                  <span class="browse_slider_label">Fuzzy</span>
-                  <% fuzzy_title_value = fuzzy_title_constraint.nil? ? '1' : fuzzy_title_constraint[:constraint][:value] %>
+              <div style="width:360px">
+                  <span class="browse_slider_label">Exact</span>
+                  <% fuzzy_title_value = fuzzy_title_constraint.nil? ? '0' : fuzzy_title_constraint[:constraint][:value] %>
                   <div id='query_title_fuzziness' class='query_title_fuzziness' value='<%= fuzzy_title_value %>'></div>
                   <input id="search_title_fuz" name="search_title_fuz" type="hidden" value="<%= fuzzy_title_value %>" />
-                  <span class="browse_slider_label">Exact</span>
+                  <span class="browse_slider_label">Fuzzy</span>
               </div>
             </td>
             <td></td>
@@ -110,134 +110,83 @@
 	</tr>
 </table>
 <% end %>
-<script type="text/javascript" charset="utf-8">
+
+<script type="text/javascript">
+
    setTimeout( function() {
       $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
    }, 500);
-	
-	function searchTypeChanged(This) {
-		var type = This.value.toLowerCase();
-		type = type.gsub(" (yyyy)", '');
-		type = type.gsub(' ', '_');
-        valid_types = [ 'search_keyword', 'search_phrase', 'search_term', 'title', 'editor', 'publisher', 'year' ]
-        if (valid_types.indexOf(type) > -1)
-        {
-		    search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
-        } else {
-            search_phrase_auto_completer.url = '/collex/auto_complete_for_search_phrase'
-        }
-	}
-  </script>
+   
+   function searchTypeChanged(This) {
+      var type = This.value.toLowerCase();
+      type = type.gsub(" (yyyy)", '');
+      type = type.gsub(' ', '_');
+      valid_types = [ 'search_keyword', 'search_phrase', 'search_term', 'title', 'editor', 'publisher', 'year' ]
+      if (valid_types.indexOf(type) > -1) {
+         search_phrase_auto_completer.url = '/collex/auto_complete_for_' + type;
+      } else {
+         search_phrase_auto_completer.url = '/collex/auto_complete_for_search_phrase'
+      }
+   }
 
-<script type="text/javascript" charset="utf-8">
-    function on_search_type_change(event, el)
-    {
-        var si = el.options.selectedIndex;
-        var type = el.options[si].value;
-        if (type == 'Language')
-        {
-            $('search_phrase').hide();
-            $('search_language').show();
-        } else {
-            $('search_phrase').show();
-            $('search_language').hide();
-        }
-    }
+   function on_search_type_change(event, el) {
+      var si = el.options.selectedIndex;
+      var type = el.options[si].value;
+      if (type == 'Language') {
+         $('search_phrase').hide();
+         $('search_language').show();
+      } else {
+         $('search_phrase').show();
+         $('search_language').hide();
+      }
+   }
 
-    function add_search_type_events()
-    {
-        var st = $$('#search_type');
-        if (st.length > 0)
-        {
-            st[0].on('change', on_search_type_change);
-            on_search_type_change(null, st[0]);
-        }
-    }
+   function add_search_type_events() {
+      var st = $$('#search_type');
+      if (st.length > 0) {
+      st[0].on('change', on_search_type_change);
+      on_search_type_change(null, st[0]);
+      }
+   }
+   
+   function updateInputValue(e) {
+      this.set('value', e.newVal);
+   }
 
-    YAHOO.util.Event.onDOMReady(add_search_type_events);
-</script>
-
-<script type="text/javascript" charset="utf-8">
-
-    function updateInputValue(e)
-    {
-        if (e && e.newVal) {
-            this.set('value', e.newVal / 1000);
-        }
-    }
-
-    function snapToValue(e)
-    {
-        var value = this.get('value');
-        value = Math.round(value / 100) * 100;
-        this.set('value', value);
-        this.syncUI();
-        //console.log('debug')
-    }
-
-    function delaySnapToValue(e)
-    {
-        var me = this;
-        setTimeout( function() {snapToValue.call(me, e)}, 100);
-    }
-
-    function add_keyword_sliders()
-    {
-        YUI().use('slider', function(Y)
-        {
-            $$('.query_keyword_fuzziness').each( function(parent) {
-                var slider = new Y.Slider({
-                    length : 256,
-                    height : 40,
-                    thumbUrl : '/assets/thumb-x.png',
-                    min : 200,
-                    max : 1000,
-                    value : 1000,
-                    majorStep: 100,
-                    minorStep: 100
-                });
-                slider.render(parent);
-                var fuz = Y.one(parent).getAttribute('value');
-                slider.set('value', parseFloat(fuz) * 1000);
-
-                var input = Y.one('#search_keyword_fuz');
-                slider.on('valueChange', updateInputValue, input);
-                slider.on('slideEnd', snapToValue, slider);
-                slider.on('railMouseDown', delaySnapToValue, slider);
-
-                slider.syncUI();
+   function snapToValue(e) {
+      this.syncUI();
+   }
+   
+   var createSlider = function( controlClass, valueId ) {
+      YUI().use('slider', function(Y) {
+         $$('.'+controlClass).each(function(parent) {
+            var slider = new Y.Slider({
+               length : 256,
+               min : 1,
+               max : 3,
+               majorStep : 1,
+               minorStep : 0,
+               thumbUrl : '/assets/thumb-x.png'
             });
+            var input = Y.one('#'+valueId);
+            var input_value = parseInt(input.get('value'), 10);
+            if (!isNaN(input_value)) {
+               slider.set('value', input_value+1);
+            }
+            slider.render(parent);
+            slider.on('valueChange', updateInputValue, input);
+            slider.on('slideEnd', snapToValue, slider);
+            slider.syncUI();
+         });
+      });
+   }
 
-            $$('.query_title_fuzziness').each( function(parent) {
-                var slider = new Y.Slider({
-                    length : 256,
-                    height : 40,
-                    thumbUrl : '/assets/thumb-x.png',
-                    min : 200,
-                    max : 1000,
-                    value : 1000,
-                    majorStep: 100,
-                    minorStep: 100
-                });
-                slider.render(parent);
-                var fuz = Y.one(parent).getAttribute('value');
-                slider.set('value', parseFloat(fuz) * 1000);
+   function init_page() {
+      add_search_type_events();
+      createSlider("query_keyword_fuzziness", "search_keyword_fuz");
+      createSlider("query_title_fuzziness", "search_title_fuz");
+   }
 
-                var input = Y.one('#search_title_fuz');
-                slider.on('valueChange', updateInputValue, input);
-                slider.on('slideEnd', snapToValue, slider);
-                slider.on('railMouseDown', delaySnapToValue, slider);
-
-                slider.syncUI();
-            });
-        });
-    }
-
-    function init_sliders()
-    {
-        add_keyword_sliders();
-    }
-
-    YAHOO.util.Event.onDOMReady(init_sliders);
+   YAHOO.util.Event.onDOMReady(init_page);
 
 </script>

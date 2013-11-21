@@ -1,6 +1,6 @@
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -21,7 +21,7 @@ class SearchController < ApplicationController
    def initialize
 
    end
-   
+
    private
    def init_view_options
      @site_section = :search
@@ -57,9 +57,6 @@ class SearchController < ApplicationController
         clear_constraints()
         parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
 
-        # in case we put a fuzzy search slider on the home page
-        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
-
       elsif params[:search] && params[:search][:phrase] == nil
         # expanded input boxes
         parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
@@ -80,6 +77,7 @@ class SearchController < ApplicationController
           end
         }
 
+        # Add fuzzyness parameters to keyword and title searches
         add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
         add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
 
@@ -145,20 +143,13 @@ class SearchController < ApplicationController
 		 session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
      redirect_to :action => 'browse'
    end
-   
+
 	def add_federation_constraint
 		session[:name_of_search] = nil
 		constraints = params[:federation]
 		is_checked = params[:checked]
 		session[:constraints] = [] if session[:constraints] == nil
-		# first get rid of any current federation constraint so there will never be more than one
-		#idx = -1
-		#session[:constraints].each_with_index { |constraint, i|
-		#	idx = i if constraint.is_a?(FederationConstraint)
-		#}
-		#if idx >= 0
-		#	session[:constraints].delete_at(idx)
-		#end
+
 		idx = -1
 		has_fed = false
 		session[:constraints].each_with_index { |constraint, i|
@@ -230,7 +221,7 @@ class SearchController < ApplicationController
          else
            str = phrase_str[p1..p2]
            str.gsub!(/[\s\-]+/, "_")
-           phrase_str = phrase_str[0...p1] + str + phrase_str[p2+1..-1] 
+           phrase_str = phrase_str[0...p1] + str + phrase_str[p2+1..-1]
            start_pos = p2+1
            if start_pos >= phrase_str.length
              break
@@ -238,7 +229,7 @@ class SearchController < ApplicationController
          end
        end
      end
-     
+
        # strip punctuation and other troublesome chars
        # NOTE: for some reason, the escaped brackets only work in ruby regex if
        # they are in the middle of the expression.
@@ -246,18 +237,18 @@ class SearchController < ApplicationController
 
      # now, split the string on spaces
      words_arr = phrase_str.split(/[\s\-]+/)
-  
+
      # find AND and get rid of it
      words_arr.delete_if { |word| word.upcase == "AND" }
-     
+
      # NOT/OR cleanup pass through words:
      inverted = {}
      invert_next = false
      words_arr.each_with_index do |word, index|
-       
+
        if word.upcase == "NOT"
          # set a flag so the next word found will be inverted
-         invert_next = true  
+         invert_next = true
          words_arr[index] = ""
        #elsif word.upcase == "OR"
        #  # when OR is found at non-terminal position stitch words
@@ -280,7 +271,7 @@ class SearchController < ApplicationController
          if word != ""
            inverted[word] = !invert if invert_next == true
            inverted[word] = invert if invert_next == false
-           invert_next = false  
+           invert_next = false
          end
        end
      end
@@ -295,7 +286,7 @@ class SearchController < ApplicationController
      end
 
    end
-   
+
    def add_keyword_constraint(phrase_str, invert)
        expression = phrase_str
        if expression and expression.strip.size > 0 && session[:constraints]
@@ -306,20 +297,21 @@ class SearchController < ApplicationController
    def add_keyword_fuz_constraint(phrase_str, invert)
      expression = phrase_str
      if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
-       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_q', :value => phrase_str, :inverted => invert)
+       adujsted_val = "#{(expression.to_i-1)}"
+       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_q', :value => adujsted_val, :inverted => invert)
      end
    end
 
    def modify_keyword_fuz_constraint(phrase_str, invert, constraint)
      expression = phrase_str
      if expression and expression.strip.size > 0 and expression != '1' && constraint
-       constraint[:value] = phrase_str
+       constraint[:value] = "#{(expression.to_i-1)}"
        constraint[:inverted] = invert
      elsif session[:constraints]
        session[:constraints].delete(constraint)
      end
    end
- 
+
    def add_title_constraint(phrase_str, invert)
        expression = phrase_str
        if expression and expression.strip.size > 0 && session[:constraints]
@@ -330,7 +322,7 @@ class SearchController < ApplicationController
    def modify_title_fuz_constraint(phrase_str, invert, constraint)
      expression = phrase_str
      if expression and expression.strip.size > 0 and expression != '1' && constraint
-       constraint[:value] = phrase_str
+       constraint[:value] = "#{(expression.to_i-1)}"
        constraint[:inverted] = invert
      elsif session[:constraints]
        session[:constraints].delete(constraint)
@@ -340,16 +332,16 @@ class SearchController < ApplicationController
    def add_title_fuz_constraint(phrase_str, invert)
      expression = phrase_str
      if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
-       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_t', :value => phrase_str, :inverted => invert)
+       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_t', :value =>  "#{(expression.to_i-1)}", :inverted => invert)
      end
    end
- 
+
   def add_date_constraint(phrase_str, invert)
      if (phrase_str and not phrase_str.strip.empty?) && session[:constraints]
        session[:constraints] << FacetConstraint.new(:fieldx => 'year', :value => phrase_str, :inverted => invert)
      end
   end
-  
+
   def add_author_constraint(phrase_str, invert)
     if phrase_str and phrase_str.strip.size > 0 && session[:constraints]
        session[:constraints] << FacetConstraint.new(:fieldx => 'author', :value => phrase_str, :inverted => invert)
@@ -435,7 +427,7 @@ class SearchController < ApplicationController
    end
 
     public
-  
+
    # generate search results based on constraints
 	def browse
 		if params[:script]
@@ -530,7 +522,7 @@ class SearchController < ApplicationController
 			#render :action => 'results'
 		end
 	end
-   
+
 	 #adjust the sort order
   def sort_by
     session[:name_of_search] = nil
@@ -544,7 +536,7 @@ class SearchController < ApplicationController
 		end
       redirect_to :action => 'browse', :phrs => params[:phrs]
 	end
-   
+
    # constrain search to only return free culture objects
    def constrain_freeculture
      session[:name_of_search] = nil
@@ -558,10 +550,10 @@ class SearchController < ApplicationController
      else
        session[:constraints] << FreeCultureConstraint.new(:inverted => false )
      end
-   
+
      redirect_to :action => 'browse', :phrs => params[:phrs]
    end
-   
+
    # constrain search to only return free culture objects
    def constrain_fulltext
      session[:name_of_search] = nil
@@ -617,10 +609,10 @@ class SearchController < ApplicationController
        }
        session[:constraints] << FacetConstraint.new( :fieldx => 'archive', :value => resource, :inverted => false )
      end
-     
+
      redirect_to :action => 'browse', :phrs => params[:phrs]
    end
-   
+
    def add_facet
      session[:name_of_search] = nil
      if params[:fieldx] and params[:value]
@@ -668,7 +660,7 @@ class SearchController < ApplicationController
      end
      redirect_to :action => 'browse', :phrs => params[:phrs]
    end
-  
+
    def remove_constraint
      session[:name_of_search] = nil
       idx = params[:index].to_i
@@ -677,7 +669,7 @@ class SearchController < ApplicationController
       end
       redirect_to :action => 'browse', :phrs => params[:phrs]
    end
-   
+
    def invert_constraint
      session[:name_of_search] = nil
       idx = params[:index].to_i
@@ -691,9 +683,9 @@ class SearchController < ApplicationController
     def new_search
       clear_constraints()
       if params[:mode] == 'typewright'
-        session[:constraints] << TypeWrightConstraint.new(:inverted => false )  
+        session[:constraints] << TypeWrightConstraint.new(:inverted => false )
       end
-      redirect_to :action => 'browse'      
+      redirect_to :action => 'browse'
     end
 
 		def list_name_facet_all
@@ -701,7 +693,7 @@ class SearchController < ApplicationController
  		 @name_facets = @solr.name_facet(session[:constraints])
 			render :partial => 'list_name_facet_all'
 		end
-   
+
    private
 	def clear_constraints
 		session[:name_of_search] = nil
@@ -713,7 +705,7 @@ class SearchController < ApplicationController
 		session[:search_sort_by] = nil
 		session[:search_sort_by_direction] = nil
 	end
-   
+
    def auto_complete(keyword, field = 'content')
      @solr = Catalog.factory_create(session[:use_test_index] == "true")
      @field = field
@@ -731,10 +723,10 @@ class SearchController < ApplicationController
 
      render :partial => 'suggest'
    end
-   
-   public   
+
+   public
    def auto_complete_for_search_university
-      
+
       str = params['group']['university']+'%'
       matches = Group.find_by_sql ["select distinct university from groups where university like ?", str]
       @values = []
@@ -743,7 +735,7 @@ class SearchController < ApplicationController
       }
       render :partial => 'autocomplete'
    end
-   
+
    def auto_complete_for_search_keyword
     auto_complete(params['search']['keyword']) if params['search']  # google bot will hit this without parameters, so check for that
     if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
@@ -801,33 +793,33 @@ class SearchController < ApplicationController
    end
 
    def save_search
+     # see if the session has timed out since the last browser action, and the user actually inputted sometime.
      name = params[:saved_search_name]
-     if (session[:user] && name != nil && name.length > 0)  # see if the session has timed out since the last browser action, and the user actually inputted sometime.
-       user = User.find_by_username(session[:user][:username])
-       session[:name_of_search] = name
-       saved_search = user.searches.find_or_create_by_name(name)
+     if (session[:user] && name != nil && name.length > 0)
+        user = User.find_by_username(session[:user][:username])
+        session[:name_of_search] = name
+        saved_search = user.searches.find_or_create_by_name(name)
 
-			 saved_search.sort_by = session[:search_sort_by]
-			 saved_search.sort_dir = session[:search_sort_by_direction]
-       # [{:value=>"rossetti", :invert=>false, :fieldx=>"archive"}, {:invert=>true, :expression=>"damsel"}]
-       
-       saved_search.constraints.clear
-       session[:constraints].each do |c|
-         saved_search.constraints << c.clone
-       end
-       saved_search.save!
+			  saved_search.sort_by = session[:search_sort_by]
+			  saved_search.sort_dir = session[:search_sort_by_direction]
+
+        saved_search.constraints.clear
+        session[:constraints].each do |c|
+           c[:id] = nil # always reset the id so saved searches do not cause sql unique id validation errors
+           saved_search.constraints << c.clone
+        end
+        saved_search.save!
      end
-     
+
      render :partial => 'show_saved_search'
-     #redirect_to :action => 'browse'
    end
-   
+
    def saved
      user = User.find_by_username(params[:user])
      if user != nil # If the session didn't time out
        session[:constraints] = []
        session[:name_of_search] = params[:name]
-  
+
        saved_search = user.searches.find_by_name(params[:name])
        if (saved_search)  # If we found the search that the user requested (normally, will always succeed)
 				session[:search_sort_by] = saved_search.sort_by
@@ -852,16 +844,16 @@ class SearchController < ApplicationController
      end  # if the session didn't timeout
      redirect_to :action => 'browse'
    end
-   
+
    def remove_saved_search
      if (session[:user])
        user = User.find_by_username(session[:user][:username])
        searches = user.searches
        saved_search = searches.find(params[:id])
-  
+
        saved_search.destroy
      end
-     
+
      redirect_to :back
    end
 
@@ -889,29 +881,29 @@ class SearchController < ApplicationController
 		 sort_ascending = direction != 'Descending'
      return @solr.search(constraints, (page - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
    end
-   
+
   # This chooses which constraints are listed on the results page above the results.
-  def marshall_listed_constraints()  
+  def marshall_listed_constraints()
     idx = 0
     constraints_with_ids = []
     for constraint in session[:constraints]
       # record the original index in the constraints array, use this as an id
-      constraints_with_ids << { :id => idx, :constraint => constraint } 
+      constraints_with_ids << { :id => idx, :constraint => constraint }
       idx = idx + 1
     end
 
     return constraints_with_ids # at the moment, we are showing all constraints.
   end
-  
+
    # take the genre facet data and organize it for display
   def marshall_genre_data( unsorted_genres )
     return [] unless unsorted_genres
-  
+
     # filter out unspecified genre facets
-    unsorted_genres = unsorted_genres.select {|value, count| value != '<unspecified>' } 
-    
-    sorted_genres = unsorted_genres.sort {|a,b| a[0] <=> b[0]}  
-    sorted_genres.map { |pair|  
+    unsorted_genres = unsorted_genres.select {|value, count| value != '<unspecified>' }
+
+    sorted_genres = unsorted_genres.sort {|a,b| a[0] <=> b[0]}
+    sorted_genres.map { |pair|
       existing_constraints = session[:constraints].select { |constraint| constraint[:fieldx] == "genre" and constraint[:value] == pair[0] }
       { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
     }
@@ -944,5 +936,5 @@ class SearchController < ApplicationController
        { :value => pair[0], :count => pair[1], :exists => (existing_constraints.size>0) }
      }
    end
-  
+
 end
