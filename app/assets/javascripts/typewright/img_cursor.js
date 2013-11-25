@@ -123,15 +123,17 @@ var createImageCursor = function(Y) {
       imageVars.top = rect.t * imageVars.ratio;
       imageVars.width = (rect.r - rect.l) * imageVars.ratio;
       imageVars.height = (rect.b - rect.t) * imageVars.ratio;
+
       // Now we have the coordinates for the window, if the entire image were shown.
       // Figure out how much to scroll to get the cursor in the visible part.
-
       var midCursor = imageVars.top + imageVars.height / 2;
       var midWindow = imageVars.displaySize.height / 2;
       imageVars.sector = midCursor / imageVars.sectorSize;
-      imageVars.sector = Math.floor(imageVars.sector);
+      imageVars.sector = Math.round(imageVars.sector);
+
       // sector is the image number that should be in the middle.
       imageVars.sector = imageVars.sector - imageVars.middleImage;
+
       // now sector is the image number that should be on the top.
       if (imageVars.sector < 0) {
          imageVars.sector = 0;
@@ -148,8 +150,8 @@ var createImageCursor = function(Y) {
 
       setPointer('#tw_pointer_doc', imageVars.left, imageVars.top, imageVars.width, imageVars.height, imageVars.ofsX, imageVars.ofsY, imageVars.scrollY);
    }
-   
-      
+
+
    var imgBoxResize;
    Y.on("click", function(e) {
       if (imgBoxResize) {
@@ -164,7 +166,6 @@ var createImageCursor = function(Y) {
             var box = imgCursor.getBox();
             if (box) {
                line.setRect(currLine, box);
-               Y.Global.fire('changeLine:box_size');
             }
          });
       }

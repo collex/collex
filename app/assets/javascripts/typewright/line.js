@@ -137,7 +137,13 @@ var line = {
 		lines[num].change = { type: 'delete' };
 	},
 
-	setRect: function(num, rect) { lines[num].l = Math.round(rect.l); lines[num].r = Math.round(rect.r); lines[num].t = Math.round(rect.t); lines[num].b = Math.round(rect.b); lines[num].box_size = 'changed'; },
+	setRect: function(num, rect) {
+	   lines[num].l = Math.round(rect.l);
+	   lines[num].r = Math.round(rect.r);
+	   lines[num].t = Math.round(rect.t);
+	   lines[num].b = Math.round(rect.b);
+	   lines[num].box_size = 'changed';
+	},
 
 	// Call this to get the form of the data that can be sent back to the server.
 	serialize: function(num) {
