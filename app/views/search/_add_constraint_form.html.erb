@@ -32,26 +32,15 @@
         </tr>
        <% if SKIN.upcase == 'MESA' %>
           <tr>
-            <td colspan='2' class="yui3-skin-sam" style="padding:0">
-              <div>
-               <span id="fuz_control_keyword" class="fuz_control_keyword "></span>
-               <span class="tooltip slider_tooltip">
-   	            <%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 13, style: "padding-left:5px" }) %>
-                  <span class="search_help_tooltip">
-                    <b>Fuzzy Search Slider</b><br />This slider has 3 stops. The further to the right, the more varied spellings will be matched.
-                  </span>
-               </span>
-              </div>
-              <div id="labels_fuz_control_keyword" style="width:455px;vertical-align:top;position:relative;top:-11px">
-                  <span style="padding-left:90px;color: gray;">Exact</span>
-                  <span style="padding-left:99px;color: gray;">|</span>
-                  <span style="float:right;padding-right:90px;color: gray;">Fuzzy</span>
-              </div>
-              <% if @kfval %>
-                  <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" <%=  "value='#{@kfval}'" %> />
-              <% else %>
-                  <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value='0'  />
-              <% end %>
+            <td colspan='2' style="padding:0">
+               <% fuzz = @kfval %>
+               <% fuzz = 1 if @kfval.nil? %>
+               <input class="fuzzy" type="radio" name="search_keyword_fuz" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
+               <span class="fuzzy">Exact Match</span>
+               <input class="fuzzy" type="radio" name="search_keyword_fuz" value="2" <% if fuzz==2 %>checked="checked"<% end %>/>
+               <span class="fuzzy">Some Variance</span>
+               <input class="fuzzy" type="radio" name="search_keyword_fuz" value="3" <% if fuzz==3 %>checked="checked"<% end %> />
+               <span class="fuzzy">More Variance</span>
             </td>
           </tr>
        <% end %>

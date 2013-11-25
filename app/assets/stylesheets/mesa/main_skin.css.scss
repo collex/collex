@@ -28,6 +28,14 @@ div.publications_explanation, .exhibit_outline_header, .exhibit_nav, .exhibit_ca
 	padding-top: 15px;
 }
 
+input[type="radio"].fuzzy {
+  margin-left: 15px;
+}
+span.fuzzy {
+  margin-left: 5px;
+  font-size: 0.85em;
+}
+
 .licensedisplay {
    background-color: #0d1d4e !important;
    color: white;
