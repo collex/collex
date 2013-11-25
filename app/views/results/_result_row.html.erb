@@ -40,8 +40,9 @@
 	    </div>
 	<% end -%>
 
-	<% title = hit["title"] ? hit["title"] : '' -%>
-	<% title = title.gsub("\n", " ") -%>
+	<% title = hit["title"] %>
+	<% title = "" if hit["title"].nil? %>
+	<% title = title.gsub(/\n/, " ") %>
 	<div class="search_result_right">
 	    <div class="search_result_buttons">
 			<%= result_button("Collect", "collect_#{index}", "doCollect('/results/result_row', '#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});", true) if !result_is_collected(hit) %>
