@@ -428,15 +428,6 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       insert_below();
    }, ".tw_insert_below_button");
 
-   Y.on("unload", function(e) {
-      if (window.currLine === undefined) {
-         return;
-      }
-      if (line.hasChanged(currLine)) {
-         updateServer();
-      }
-   }, "body");
-
    Y.on("resize", function(e) {
       redraw();
    }, window);
