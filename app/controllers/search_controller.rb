@@ -792,26 +792,28 @@ class SearchController < ApplicationController
     end
    end
 
-   def save_search
-     # see if the session has timed out since the last browser action, and the user actually inputted sometime.
-     name = params[:saved_search_name]
-     if (session[:user] && name != nil && name.length > 0)
-        user = User.find_by_username(session[:user][:username])
-        session[:name_of_search] = name
-        saved_search = user.searches.find_or_create_by_name(name)
+    def save_search
+      # see if the session has timed out since the last browser action, and the
+      # user actually inputted sometime.
+      name = params[:saved_search_name]
+      if (session[:user] && name != nil && name.length > 0)
+         user = User.find_by_username(session[:user][:username])
+         session[:name_of_search] = name
+         saved_search = user.searches.find_or_create_by_name(name)
 
-			  saved_search.sort_by = session[:search_sort_by]
-			  saved_search.sort_dir = session[:search_sort_by_direction]
+         saved_search.sort_by = session[:search_sort_by]
+         saved_search.sort_dir = session[:search_sort_by_direction]
 
-        saved_search.constraints.clear
-        session[:constraints].each do |c|
-           c[:id] = nil # always reset the id so saved searches do not cause sql unique id validation errors
-           saved_search.constraints << c.clone
-        end
-        saved_search.save!
-     end
+         saved_search.constraints.clear
+         session[:constraints].each do |c|
+            c[:id] = nil # always reset the id so saved searches do not cause sql
+            # unique id validation errors
+            saved_search.constraints << c.clone
+         end
+      saved_search.save!
+      end
 
-     render :partial => 'show_saved_search'
+      render :partial => 'show_saved_search'
    end
 
    def saved
@@ -850,8 +852,13 @@ class SearchController < ApplicationController
        user = User.find_by_username(session[:user][:username])
        searches = user.searches
        saved_search = searches.find(params[:id])
-
+       name = saved_search.name
        saved_search.destroy
+
+       # clear out current search if it matches the one just deleted
+       if session[:name_of_search] == name
+         clear_constraints()
+       end
      end
 
      redirect_to :back
