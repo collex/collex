@@ -51,26 +51,15 @@
         <% if SKIN.upcase == 'MESA' %>
            <tr>
              <td></td>
-             <td class="yui3-skin-sam" style="padding:0">
-               <div>
-                   <span id="fuz_control_title" class="fuz_control_title" ></span>
-                 <span class="tooltip slider_tooltip">
-                   <%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 13, style: "padding-left:5px" }) %>
-                   <span class="search_help_tooltip">
-                     <b>Fuzzy Search Slider</b><br />This slider has 3 stops. The further to the right, the more varied spellings will be matched.
-                   </span>
-                 </span>
-               </div>
-               <div id="labels_fuz_control_title" style="width:355px;vertical-align:top;position:relative;top:-13px">
-                 <span style="padding-left:45px;color: gray;">Exact</span>
-                  <span style="padding-left:99px;color: gray;">|</span>
-                 <span style="float:right;padding-right:35px;color: gray;">Fuzzy</span>
-               </div>
-               <% if @kfval %>
-                   <input id="search_title_fuz" name="search_title_fuz"  type="hidden" <%=  "value='#{@tfval}'" %> />
-               <% else %>
-                   <input id="search_title_fuz" name="search_title_fuz"  type="hidden" value='0'  />
-               <%end%>
+             <td colspan='2' style="padding:0">
+               <% fuzz = @tfval %>
+               <% fuzz = 1 if @tfval.nil? %>
+               <input class="fuzzy" type="radio" name="search_title_fuz" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
+               <span class="fuzzy">Exact Match</span>
+               <input class="fuzzy" type="radio" name="search_title_fuz" value="2" <% if fuzz==2 %>checked="checked"<% end %>/>
+               <span class="fuzzy">Some Variance</span>
+               <input class="fuzzy" type="radio" name="search_title_fuz" value="3" <% if fuzz==3 %>checked="checked"<% end %> />
+               <span class="fuzzy">More Variance</span>
              </td>
            </tr>
         <% end %>
@@ -179,45 +168,6 @@
       }
    }
 
-   function updateInputValue(e) {
-      this.set('value', e.newVal);
-   }
-
-   function snapToValue(e) {
-      this.syncUI();
-   }
-
-   var createSlider = function( controlId, valueId ) {
-      YUI().use('slider', function(Y) {
-         if (Y.one("#"+controlId)) {
-            var slider = new Y.Slider({
-               length : 256,
-               min : 1,
-               max : 3,
-               majorStep : 1,
-               minorStep : 0,
-               thumbUrl : '/assets/thumb-x.png'
-            });
-            var input = Y.one('#'+valueId);
-            var input_value = parseInt(input.get('value'), 10);
-            if (!isNaN(input_value)) {
-               slider.set('value', input_value+1);
-            }
-            slider.on('valueChange', updateInputValue, input);
-            slider.on('slideEnd', snapToValue, slider);
-            slider.render("#"+controlId);
-            slider.syncUI();
-         }
-      });
-   }
-
-   function init_search_page() {
-      add_search_field_events();
-      createSlider("fuz_control_keyword", "search_keyword_fuz");
-      createSlider("fuz_control_title", "search_title_fuz");
-   }
-
-
-   YAHOO.util.Event.onDOMReady(init_search_page);
+   YAHOO.util.Event.onDOMReady(add_search_field_events);
 
 </script>

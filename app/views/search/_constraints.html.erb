@@ -1,4 +1,4 @@
-<% # 
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -7,7 +7,7 @@
     # You may obtain a copy of the License at
     #
     #    http://www.apache.org/licenses/LICENSE-2.0
-  
+
     # Unless required by applicable law or agreed to in writing, software
     # distributed under the License is distributed on an "AS IS" BASIS,
     # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,15 +48,17 @@
     <% end -%>
     <% if SKIN.downcase == "mesa" -%>
       <% if has_keyword_search -%>
-          <tr class="yui3-skin-sam">
+          <tr>
             <td class="query_type">Search Term Fuzziness &nbsp;</td>
             <td>
               <div style="width:360px">
-                  <span class="browse_slider_label">Exact</span>
-                  <% fuzzy_keyword_value = fuzzy_keyword_constraint.nil? ? '0' : fuzzy_keyword_constraint[:constraint][:value] %>
-                  <div id='query_keyword_fuzziness' class='query_keyword_fuzziness' value='<%= fuzzy_keyword_value %>'></div>
-                  <input id="search_keyword_fuz" name="search_keyword_fuz" type="hidden" value="<%= fuzzy_keyword_value %>" />
-                  <span class="browse_slider_label">Fuzzy</span>
+                <% fuzz = fuzzy_keyword_constraint.nil? ? 0 : fuzzy_keyword_constraint[:constraint][:value].to_i %>
+                <input class="fuzzy" type="radio" name="search_keyword_fuz" value="1" <% if fuzz==0 %>checked="checked"<% end %> />
+                <span class="fuzzy">Exact Match</span>
+                <input class="fuzzy" type="radio" name="search_keyword_fuz" value="2" <% if fuzz==1 %>checked="checked"<% end %>/>
+                <span class="fuzzy">Some Variance</span>
+                <input class="fuzzy" type="radio" name="search_keyword_fuz" value="3" <% if fuzz==2 %>checked="checked"<% end %> />
+                <span class="fuzzy">More Variance</span>
               </div>
             </td>
             <td></td>
@@ -68,11 +70,13 @@
             <td class="query_type">Title Fuzziness</td>
             <td>
               <div style="width:360px">
-                  <span class="browse_slider_label">Exact</span>
-                  <% fuzzy_title_value = fuzzy_title_constraint.nil? ? '0' : fuzzy_title_constraint[:constraint][:value] %>
-                  <div id='query_title_fuzziness' class='query_title_fuzziness' value='<%= fuzzy_title_value %>'></div>
-                  <input id="search_title_fuz" name="search_title_fuz" type="hidden" value="<%= fuzzy_title_value %>" />
-                  <span class="browse_slider_label">Fuzzy</span>
+                <% fuzz = fuzzy_title_constraint.nil? ? 1 : fuzzy_title_constraint[:constraint][:value].to_i  %>
+                <input class="fuzzy" type="radio" name="search_title_fuz" value="1" <% if fuzz==0 %>checked="checked"<% end %> />
+                <span class="fuzzy">Exact Match</span>
+                <input class="fuzzy" type="radio" name="search_title_fuz" value="2" <% if fuzz==1 %>checked="checked"<% end %>/>
+                <span class="fuzzy">Some Variance</span>
+                <input class="fuzzy" type="radio" name="search_title_fuz" value="3" <% if fuzz==2 %>checked="checked"<% end %> />
+                <span class="fuzzy">More Variance</span>
               </div>
             </td>
             <td></td>
@@ -116,7 +120,7 @@
    setTimeout( function() {
       $('search_phrase').defaultValueActsAsHint('<%= default_search_phrase %>');
    }, 500);
-   
+
    function searchTypeChanged(This) {
       var type = This.value.toLowerCase();
       type = type.gsub(" (yyyy)", '');
@@ -148,45 +152,7 @@
       on_search_type_change(null, st[0]);
       }
    }
-   
-   function updateInputValue(e) {
-      this.set('value', e.newVal);
-   }
 
-   function snapToValue(e) {
-      this.syncUI();
-   }
-   
-   var createSlider = function( controlClass, valueId ) {
-      YUI().use('slider', function(Y) {
-         $$('.'+controlClass).each(function(parent) {
-            var slider = new Y.Slider({
-               length : 256,
-               min : 1,
-               max : 3,
-               majorStep : 1,
-               minorStep : 0,
-               thumbUrl : '/assets/thumb-x.png'
-            });
-            var input = Y.one('#'+valueId);
-            var input_value = parseInt(input.get('value'), 10);
-            if (!isNaN(input_value)) {
-               slider.set('value', input_value+1);
-            }
-            slider.render(parent);
-            slider.on('valueChange', updateInputValue, input);
-            slider.on('slideEnd', snapToValue, slider);
-            slider.syncUI();
-         });
-      });
-   }
-
-   function init_page() {
-      add_search_type_events();
-      createSlider("query_keyword_fuzziness", "search_keyword_fuz");
-      createSlider("query_title_fuzziness", "search_title_fuz");
-   }
-
-   YAHOO.util.Event.onDOMReady(init_page);
+   YAHOO.util.Event.onDOMReady(add_search_type_events);
 
 </script>
