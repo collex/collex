@@ -131,13 +131,15 @@ var createImageCursor = function(Y) {
       imageVars.sector = midCursor / imageVars.sectorSize;
       imageVars.sector = Math.round(imageVars.sector);
 
-      // sector is the image number that should be in the middle.
-      imageVars.sector = imageVars.sector - imageVars.middleImage;
+      var maxSector = imgHeight*imageVars.ratio / imageVars.sectorSize;
+      maxSector = Math.round(maxSector);
 
-      // now sector is the image number that should be on the top.
-      if (imageVars.sector < 0) {
-         imageVars.sector = 0;
+      // sector is the image number that should be in the middle.
+      if ( imageVars.sector > 1 ) {
+         imageVars.sector = imageVars.sector - imageVars.middleImage;
       }
+      imageVars.sector = Math.min( imageVars.sector, maxSector);
+
       imageVars.scrollY = imageVars.sector * imageVars.sectorSize;
 
       return imageVars;
@@ -162,10 +164,17 @@ var createImageCursor = function(Y) {
             //Selector of the node to resize
             node : '#tw_pointer_doc'
          });
-         imgBoxResize.on('resize:end', function() {
+         imgBoxResize.plug(Y.Plugin.ResizeConstrained, {
+            constrain: '#tw_img_full',
+            minHeight: 16,
+            minWidth: 50
+         });
+         imgBoxResize.on('resize:end', function(e) {
             var box = imgCursor.getBox();
             if (box) {
                line.setRect(currLine, box);
+               e.preventDefault();
+               e.stopPropagation();
             }
          });
       }
@@ -210,12 +219,19 @@ var createImageCursor = function(Y) {
             // There was no change, so don't report box data
          }
          var imageVars = getImageVars(get_scaling());
-         return {
+         out=  {
             l : (parseInt(left,10) - imageVars.ofsX) / imageVars.ratio,
             t : (parseInt(top,10) - imageVars.ofsY + imageVars.scrollY) / imageVars.ratio,
             r : (parseInt(width,10) + parseInt(left,10) - imageVars.ofsX) / imageVars.ratio,
             b : (parseInt(height,10) + parseInt(top,10) - imageVars.ofsY + imageVars.scrollY) / imageVars.ratio
          };
+         var del = imgHeight - out.b;
+         if ( del < 0 ) {
+            out.b = Math.min(out.b, imgHeight);
+            box.setStyle("height",((out.b-out.t)*imageVars.ratio)+"px");
+         }
+         out.t = Math.max(out.t, 0);
+         return out;
       }
    };
    return imgCursor;
