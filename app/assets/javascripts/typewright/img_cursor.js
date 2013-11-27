@@ -135,7 +135,7 @@ var createImageCursor = function(Y) {
       maxSector = Math.round(maxSector);
 
       // sector is the image number that should be in the middle.
-      if ( imageVars.sector > 1 ) {
+      if ( imageVars.sector > 0 ) {
          imageVars.sector = imageVars.sector - imageVars.middleImage;
       }
       imageVars.sector = Math.min( imageVars.sector, maxSector);
