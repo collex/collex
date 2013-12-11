@@ -39,7 +39,7 @@ var line = {
 			b = mid + 15;
 		}
 		var newLine = before + (after-before)/2;
-		lines.splice(num, 0, { l:l, t:t, r:r, b:b, words: [[ ]], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed' });
+		lines.splice(num, 0, { src:"gale", l:l, t:t, r:r, b:b, words: [[ ]], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed' });
 	},
 
    isLast: function(num) { return num === lines.length - 1; },
@@ -151,21 +151,26 @@ var line = {
 
 		if (lines[num].change) {
 			params.status = lines[num].change.type;
-			if (params.status === 'change' || params.status === 'insert') {
-				params.words = lines[num].change.words;
-			}
-			if (lines[num].box_size === 'changed')
+			if (params.status === 'change' ) {
+            params.words = lines[num].words;
+            params.words.push( lines[num].change.words );
+         } else if ( params.status === 'insert' ) {
+            params.words = [];
+            params.words.push( lines[num].change.words );
+         }
+			if (lines[num].box_size === 'changed') {
 				params.box = { l:lines[num].l, r:lines[num].r, t:lines[num].t, b:lines[num].b };
-		}
-		else if (lines[num].box_size === 'changed') {
+		   }
+		} else if (lines[num].box_size === 'changed') {
 			params.status = 'change';
 			params.words = lines[num].words;
 			params.box = { l:lines[num].l, r:lines[num].r, t:lines[num].t, b:lines[num].b };
 		}
-		else
+		else {
 			params.status = 'undo';
+	   }
 		params.line = this.getLineNum(num);
-        params.src = lines[num].src;
+      params.src = lines[num].src;
 		return params;
 	}
 };

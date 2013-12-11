@@ -515,31 +515,6 @@ var serverNotify = function(url, params) {
    });
 };
 
-// This is a way to make an ajax call during beforeunload. Async calls don't work because the
-// browser will cancel the call because of the page change. Callbacks don't work either, so the
-// standard way of setting up the YUI callbacks can't be used. Since this can't receive a response,
-// it is assumed that all that is needed are the request parameters.
-// sync:true is the crucial piece that makes this work.
-var serverNotifySync = null;
-YUI().use('io', 'querystring-stringify', function(Y) {
-   serverNotifySync = function(url, params) {
-      var csrf_param = $$('meta[name=csrf-param]')[0].content;
-      var csrf_token = $$('meta[name=csrf-token]')[0].content;
-      params[csrf_param] = csrf_token;
-
-      // The default call of stringify-simple doesn't create the nested array parameters
-      // in the right format for ruby, so we call it explicitly here.
-      params = Y.QueryString.stringify(params, {
-         arrayKey : true
-      });
-      Y.io(url, {
-         method : 'POST',
-         data : params,
-         sync : true
-      });
-   };
-});
-
 // This centralizes all the Ajax requests
 // params:
 //		url: string (required)
@@ -584,4 +559,4 @@ function preload_image() {
 
 }
 
-Event.observe(window, 'load', preload_image); 
+Event.observe(window, 'load', preload_image);

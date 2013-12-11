@@ -34,6 +34,12 @@ var createImageCursor = function(Y) {
       var pointer = Y.one(id);
       var pLeft = left + ofsX;
       var pTop = top + ofsY - scrollY;
+      if ( width < 0) {
+         width = 100;
+      }
+      if ( height < 0) {
+         height: 20;
+      }
       pointer.setStyles({
          left : pLeft + 'px',
          top : pTop + 'px',
@@ -59,8 +65,17 @@ var createImageCursor = function(Y) {
       var rect = line.getRect(currLine);
       var left = rect.l * scaling.xFactorThumb + scaling.ofsXThumb;
       var top = rect.t * scaling.yFactorThumb + scaling.ofsYThumb;
-      var width = (rect.r - rect.l) * scaling.xFactorThumb;
-      var height = (rect.b - rect.t) * scaling.yFactorThumb;
+      var width = (rect.r - rect.l);
+      if ( width < 0) {
+         width = 100;
+      }
+      width = width * scaling.xFactorThumb;
+
+      var height = (rect.b - rect.t);
+      if ( height < 0) {
+         height: 20;
+      }
+      height = height  * scaling.yFactorThumb;
       pointer.setStyles({
          left : left + 'px',
          top : top + 'px',

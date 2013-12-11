@@ -8,7 +8,7 @@
 /*global currLine:true, currUser */
 /*global YUI */
 /*global window */
-/*global showDebugItems, serverNotify, serverNotifySync */
+/*global showDebugItems, serverNotify */
 /*global alert, Image */
 /*global line */
 /*global doc_id, page, updateUrl, imgWidth, imgHeight, createImageCursor */
@@ -54,30 +54,20 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    };
 
    function updateServer() {
-
       var params = line.serialize(currLine);
       params.page = page;
-      params._method = 'PUT';
 
-      // TODO-PER: This is probably safe to put in the general serverNotify function, but testing is needed.
-      YUI().use('querystring-stringify', function(Y) {
-
-         // The default call of stringify-simple doesn't create the nested array parameters
-         // in the right format for ruby, so we call it explicitly here.
-         params = Y.QueryString.stringify(params, {
-            arrayKey : true
-         });
-         serverNotify(updateUrl, params);
-
+      jQuery.ajax({
+         url : updateUrl,
+         type : 'PUT',
+         data: {params: JSON.stringify(params)},
+         async: false,
+         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));}
       });
    }
 
    var updateServerSync = function() {
-      var params = line.serialize(currLine);
-      params.page = page;
-      params._method = 'PUT';
-
-      serverNotifySync(updateUrl, params);
+      updateServer();
    };
 
    function tooltipIcon(iconStyle, tooltipText) {
