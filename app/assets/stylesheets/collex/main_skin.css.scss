@@ -44,20 +44,18 @@ body.federation-collex {
 
 .tab_link_current {
 	background:image-url('collex/index_tab_dn.gif') top left no-repeat;
-	top: 96px;
 	padding-top: 4px;
 }
 
-.tab_link_long {
+.tab_link_long,.tab_link_logo {
 	background:image-url('collex/index_tab_long.gif') top left no-repeat;
 	color:#ffffff;
 	top: 96px;
-	padding-top: 4px;
+	padding-top: 4px !important;
 }
 
-.tab_link_long_current {
+.tab_link_long_current,.tab_link_logo_current {
 	background:image-url('collex/index_tab_long_dn.gif') top left no-repeat;
-	top: 96px;
 	padding-top: 4px;
 }
 
@@ -65,10 +63,17 @@ body.federation-collex {
 	color:#ffffff;
 }
 
+	&.pg-lvl1 #nav_container {
+		top: 127px;
+	}
+
+	&.pg-lvl1 a.my_collex_link {
+		top: 127px;
+	}
 a.my_collex_link {
 	color:#55220F;
 	background:image-url('collex/index_tab_my_collex.gif') top left no-repeat;
-	top: 96px;
+	top: 89px;
 	padding-top: 4px;
 }
 
