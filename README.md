@@ -70,7 +70,7 @@ install it on the target host. Add an entry in your ~/.ssh/config file for
 each host. Example:
 
     Host edge-collex
-       Hostname 128.128,128,128
+       Hostname 128.128.128.128
        User collex
        Port 22
        IdentityFile ~/.ssh/edge-collex
