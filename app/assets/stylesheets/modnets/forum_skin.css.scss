@@ -1,0 +1,111 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.federation-modnets.pg-forum {
+.FH_cat_header {
+	background:#914C29;
+	color:#FFFFFF;
+}
+
+.FH_cat_header a {
+	color:#FFFFFF;
+}
+
+.FH_cat_info {
+	background:#F7ECDB;
+}
+
+.FH_post {
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FP_original_post {
+	background: #F7ECDB;
+}
+
+.FP_user_img {
+	border: 2px solid #7F5C52;
+}
+
+.FP_reply_header {
+	border-top: 2px solid #966C54;
+	border-bottom: 2px solid #966C54;
+}
+
+.FP_reply_footer {
+	border-bottom: 2px solid #966C54;
+}
+
+.FP_reply_container {
+	border-bottom: 2px solid #966C54;
+}
+
+.FC_pages {
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_pages_bottom {
+	border-top: 2px solid #C7C8CB;
+}
+
+.FC_post_title{
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_last_comment{
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_replies{
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_views{
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_object {
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FC_header {
+	border-bottom: 2px solid #C7C8CB;
+}
+
+.FP_original_post .FC_report_link {
+	background:image-url('modnets/abuse_brown.gif') top left no-repeat;
+}
+
+.FP_original_post .FC_report_link:hover {
+	background:image-url('modnets/abuse_brown_rl.gif') top left no-repeat;
+}
+
+.FP_reply_container .FC_report_link {
+	background:image-url('modnets/abuse_white.gif') top left no-repeat;
+}
+
+.FP_reply_container .FC_report_link:hover {
+	background:image-url('modnets/abuse_white_rl.gif') top left no-repeat;
+}
+
+.reported_comment {
+	color: red;
+}
+
+.forum_modified_time {
+	color: #777777;
+}
+}
