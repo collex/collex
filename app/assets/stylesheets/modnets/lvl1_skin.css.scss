@@ -18,14 +18,14 @@ body.federation-modnets.pg-lvl1 {
 #header_container {
 	width:100%;
 	height:155px;
-	background:image-url('modnets/index_header_stretch.jpg') top left repeat-x;
+	background: #CECCBA image-url('modnets/lvl1_header.png') top left no-repeat;
 }
 
 #header_right {
 	width:426px;
 	height:152px;
 	float:right;
-	background:image-url('modnets/index_header_right.jpg') top left no-repeat;
+//	background:image-url('modnets/index_header_right.jpg') top left no-repeat;
 	text-align:right;
 }
 
@@ -33,47 +33,47 @@ body.federation-modnets.pg-lvl1 {
 	width:373px;
 	height:152px;
 	float:left;
-	background:image-url('modnets/index_header_left1.jpg') top left no-repeat;
+//	background:image-url('modnets/index_header_left1.jpg') top left no-repeat;
 }
 
 #header_left2 {
 	width:373px;
 	height:152px;
 	float:left;
-	background:image-url('modnets/index_header_left2.jpg') top left no-repeat;
+//	background:image-url('modnets/index_header_left2.jpg') top left no-repeat;
 }
 
 #header_left3 {
 	width:373px;
 	height:152px;
 	float:left;
-	background:image-url('modnets/index_header_left3.jpg') top left no-repeat;
+//	background:image-url('modnets/index_header_left3.jpg') top left no-repeat;
 }
 
 #header_left4 {
 	width:373px;
 	height:152px;
 	float:left;
-	background:image-url('modnets/index_header_left4.jpg') top left no-repeat;
+//	background:image-url('modnets/index_header_left4.jpg') top left no-repeat;
 }
 
 #header_left5 {
 	width:373px;
 	height:152px;
 	float:left;
-	background:image-url('modnets/index_header_left5.jpg') top left no-repeat;
+//	background:image-url('modnets/index_header_left5.jpg') top left no-repeat;
 }
 
 #content_container {
-	background:image-url('modnets/index_scroll.gif') top center no-repeat;
+	background:image-url('modnets/bg_middle.gif') top left no-repeat;
 }
 
 #carousel_container {
-	background:image-url('modnets/index_flash_background.jpg') top center repeat-x;
+//	background:image-url('modnets/index_flash_background.jpg') top center repeat-x;
 }
 
 .carousel_background {
-	background:transparent image-url('modnets/index_flash_background.jpg') repeat-x scroll center top;
+//	background:transparent image-url('modnets/index_flash_background.jpg') repeat-x scroll center top;
 }
 
  .yui-carousel-nav ul li {

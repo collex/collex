@@ -17,7 +17,7 @@
 class Branding
 	# Here are some version numbers that we'd like to keep together.
   def self.version	# Don't change the format of this call because collex.rake depends on it!
-    return "1.7.0"
+    return "1.7.1"
   end
 
 	def self.yui_path()

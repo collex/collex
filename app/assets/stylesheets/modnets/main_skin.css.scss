@@ -13,22 +13,28 @@
 //     See the License for the specific language governing permissions and
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
+@import "colors.css.scss";
 
 body.federation-modnets {
-	background:#81b4ac;
+	background:$background;
+	color:$regular-text;
+	font-size: 14px;
 
-#header_container {
+	#header_container {
 	background-color: #34645C;
 }
 
 #main_container {
-	border-left:10px #34645c solid;
-	border-right:10px #34645c solid;
-	border-bottom:10px #34645c solid;
+//	border-left:10px #34645c solid;
+//	border-right:10px #34645c solid;
+//	border-bottom:10px #34645c solid;
 }
 
 #footer_container {
-	background:#81b4ac;
+	text-align: left;
+	margin: 0px 30px 10px 30px;
+	background:$background;
+	border-top: 4px solid $border;
 }
 
 .exhibit_footer {
@@ -36,26 +42,28 @@ body.federation-modnets {
 }
 
 .tab_link {
-	background:image-url('modnets/index_tab.gif') top left no-repeat;
-	color:#ffffff;
+	color:$tab-color;
+	background: $tab-background;
 	top: 96px;
 	padding-top: 4px;
 }
 
 .tab_link_current {
-	background:image-url('modnets/index_tab_dn.gif') top left no-repeat;
+	color:$tab-color;
+	background: $tab-background;
 	padding-top: 4px;
 }
 
 .tab_link_long,.tab_link_logo {
-	background:image-url('modnets/index_tab_long.gif') top left no-repeat;
-	color:#ffffff;
+	color:$tab-color;
+	background: $tab-background;
 	top: 96px;
 	padding-top: 4px !important;
 }
 
 .tab_link_long_current,.tab_link_logo_current {
-	background:image-url('modnets/index_tab_long_dn.gif') top left no-repeat;
+	color:$tab-color;
+	background: $tab-background;
 	padding-top: 4px;
 }
 
@@ -71,24 +79,24 @@ body.federation-modnets {
 		top: 127px;
 	}
 a.my_collex_link {
-	color:#55220F;
-	background:image-url('modnets/index_tab_my_collex.gif') top left no-repeat;
+	color:$tab-color;
+	background: $tab-background;
 	top: 89px;
 	padding-top: 4px;
 }
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
-	color:#55220F;
+	color:$tab-color;
 }
 
 .tab_link_logo{
-	background:image-url('modnets/index_tab.gif') top left no-repeat;
-	color:#ffffff;
+	color:$tab-color;
+	background: $tab-background;
 }
 
-#footer_container {
-	color:#ffffff;
-}
+//#footer_container {
+//	color:#ffffff;
+//}
 
 .right_column {
 	background:#edf4f2;
@@ -132,9 +140,9 @@ a.my_collex_link {
 	color: #ffe6b7;
 }
 
-#footer_container a, #footer_container a.link, #footer_container a.visited{
-	color:#9D1E16;
-}
+//#footer_container a, #footer_container a.link, #footer_container a.visited{
+//	color:#9D1E16;
+//}
 
 .login_div {
 	background-image:image-url('modnets/login_header.jpg');
