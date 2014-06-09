@@ -31,6 +31,9 @@ body.federation-modnets {
 //	border-bottom:10px #34645c solid;
 }
 
+	.inner_content_container {
+		font-size: inherit;
+	}
 #footer_container {
 	text-align: left;
 	margin: 0px 30px 10px 30px;
@@ -65,7 +68,7 @@ body.federation-modnets {
 	padding-top: 6px;
 }
 
-	.tab_link_long, .tab_link_long_current, .tab_link, .tab_link_logo, .my_collex_link {
+	.tab_link_long, .tab_link_long_current, .tab_link_current, .tab_link, .tab_link_logo, .my_collex_link, .my_collex_current {
 		height: 27px;
 		margin-left: 4px;
 		padding-top: 6px !important;
@@ -79,12 +82,12 @@ body.federation-modnets {
 }
 
 	&.pg-lvl1 #nav_container {
-		top: 164px;
+		top: 155px;
 		right: 30px;
 	}
 
 	&.pg-lvl1 a.my_collex_link {
-		top: 164px;
+		top: 155px;
 	}
 
 a.my_collex_link {
@@ -105,16 +108,17 @@ a.my_collex_link {
 
 	#subnav_container {
 		margin-left: 70px;
+		padding-right: 0;
 	}
 	#subnav_links_container {
-		margin-top: -30px;
+		margin-top: 42px;
 	}
 //#footer_container {
 //	color:#ffffff;
 //}
 
 .right_column {
-	background:#edf4f2;
+	background:#ffffff;
 }
 
 .nav_link:link, .nav_link:visited {

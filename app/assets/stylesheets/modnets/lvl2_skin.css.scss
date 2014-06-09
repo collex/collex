@@ -13,6 +13,7 @@
 //     See the License for the specific language governing permissions and
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
+@import "colors.css.scss";
 
 body.federation-modnets.pg-lvl2 {
 
@@ -21,43 +22,102 @@ body.federation-modnets.pg-lvl2 {
 	}
 
 	#header_left {
-	width:755px;
-	height:89px;
+		width:373px;
+		height:152px;
 	float:left;
-	background:image-url('modnets/lvl2_header.jpg') top left no-repeat;
 }
 
 div#header_container {
-	background:image-url('modnets/index_header_stretch.jpg') bottom left repeat-x;
-	height: 114px;
+	width:100%;
+	height: 146px;
+	background: #CECCBA image-url('modnets/lvl1_header.png') top left no-repeat;
 }
 
-.my_collex_link {
-	background:image-url('modnets/lvl2_tab_my_collex.gif') top left no-repeat;
-}
-
-.my_collex_link_current {
-	background:image-url('modnets/lvl2_tab_my_collex_dn.gif') top left no-repeat;
-}
+	#login_container {
+		position: absolute;
+		margin-top: 12px;
+	}
 
 .right_column_header {
-	color:#1e312d;
-	background:#1e312d;
+	color: $header-color;
+	background: inherit;
+	border-top: 4px solid #222;
+	font-weight: bold;
 }
+	#nav_container {
+		position: absolute;
+		top: 155px;
+		right: 30px;
+	}
+	a.my_collex_link {
+		top: 155px;
+	}
+	.tab_link_long_current, .tab_link_current, .my_collex_current {
+		background-color: $selected-background;
+	}
 
-.limit_to th {
-	background:#88b72d;
-	color:#4d7f74;
+	.page_header {
+		font-size: 1em;
+		color: $header-color;
+	}
+
+.limit_to {
+	th {
+		font-size: inherit;
+		text-align: left;
+		&.num_objects {
+			text-align: inherit;
+			width: 74px;
+		}
+	}
+	td {
+		border-bottom: none;
+	}
 }
+	hr.search_results_hr {
+		background-color: $border;
+	}
+	.search_result_data_label {
+		color: $regular-text;
+	}
+	.search_result_right {
+		width: 73%;
+	}
+	.search_result_buttons a, .new_search {
+		color: $tab-color;
+		background: $button-background;
+		padding-top: 6px;
+		&:hover {
+			background: $button-hover;
+		}
+	}
+	.new_search {
+		text-align: center;
+		height: 25px;
+		&:hover {
+			height: 25px;
+		}
+	}
 
-.new_search {
-	background:image-url('modnets/lvl2_new_search.jpg') top left no-repeat;
-}
-
-.new_search:hover {
-	background:image-url('modnets/lvl2_new_search_rl.jpg') top left no-repeat;
-}
-
+	.search_federation_checkbox {
+		position: absolute;
+		padding: none;
+		top: 50px;
+	}
+	.search_help_icon {
+		position: inherit;
+		top: inherit;
+	}
+	.search_entry_instructions {
+		color: $header-color;
+		border-bottom: none;
+		border-top: 4px solid $border;
+		margin-top: 20px;
+	}
+	.add_constraint_form {
+		position: relative;
+		width: inherit;
+	}
 .result_row_collected {
 	background:transparent image-url('modnets/search_collected_gradient.jpg') repeat-y;
 }
@@ -107,4 +167,25 @@ div#header_container {
 #group_license {
 	background: #371911;
 }
+	table.query {
+		border: none;
+		width: 100%;
+		margin-top: 10px;
+
+		td {
+			border: none;
+			border-top: 2px solid $border;
+		}
+		tr:first-child {
+			td {
+				border-top: none;
+			}
+		}
+	}
+	#saved_search_name_span {
+		display: block;
+	}
+	#savesearch_link {
+		font-size: inherit;
+	}
 }
