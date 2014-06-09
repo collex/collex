@@ -18,6 +18,7 @@
 body.federation-modnets {
 	background:$background;
 	color:$regular-text;
+	font-family: Arial, Helvetica, san-serif;
 	font-size: 14px;
 
 	#header_container {
@@ -45,39 +46,47 @@ body.federation-modnets {
 	color:$tab-color;
 	background: $tab-background;
 	top: 96px;
-	padding-top: 4px;
 }
 
 .tab_link_current {
 	color:$tab-color;
 	background: $tab-background;
-	padding-top: 4px;
 }
 
 .tab_link_long,.tab_link_logo {
 	color:$tab-color;
 	background: $tab-background;
 	top: 96px;
-	padding-top: 4px !important;
 }
 
 .tab_link_long_current,.tab_link_logo_current {
 	color:$tab-color;
 	background: $tab-background;
-	padding-top: 4px;
+	padding-top: 6px;
 }
+
+	.tab_link_long, .tab_link_long_current, .tab_link, .tab_link_logo, .my_collex_link {
+		height: 27px;
+		margin-left: 4px;
+		padding-top: 6px !important;
+	}
+	.my_collex_link {
+		left: 26px;
+	}
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
 	color:#ffffff;
 }
 
 	&.pg-lvl1 #nav_container {
-		top: 127px;
+		top: 164px;
+		right: 30px;
 	}
 
 	&.pg-lvl1 a.my_collex_link {
-		top: 127px;
+		top: 164px;
 	}
+
 a.my_collex_link {
 	color:$tab-color;
 	background: $tab-background;
@@ -94,6 +103,12 @@ a.my_collex_link {
 	background: $tab-background;
 }
 
+	#subnav_container {
+		margin-left: 70px;
+	}
+	#subnav_links_container {
+		margin-top: -30px;
+	}
 //#footer_container {
 //	color:#ffffff;
 //}
@@ -136,8 +151,10 @@ a.my_collex_link {
 	color: #A60000;
 } /* should match ext_link:link */
 
-.carousel_title {
-	color: #ffe6b7;
+.carousel_title, .popular_title {
+	color: $header-color;
+	font-style: inherit;
+	font-size: inherit;
 }
 
 //#footer_container a, #footer_container a.link, #footer_container a.visited{
@@ -176,7 +193,7 @@ a.my_collex_link {
  .yui-panel .hd {
 	background: transparent image-url('modnets/popup_box_header.jpg') repeat-y scroll 0 0;
 	color: white;
-	font-family: Verdana, sans-serif;
+	font-family: Arial, sans-serif;
 	font-weight: bold;
 }
 

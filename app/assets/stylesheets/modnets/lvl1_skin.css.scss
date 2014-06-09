@@ -13,6 +13,7 @@
 //     See the License for the specific language governing permissions and
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
+@import "colors.css.scss";
 
 body.federation-modnets.pg-lvl1 {
 #header_container {
@@ -67,6 +68,79 @@ body.federation-modnets.pg-lvl1 {
 #content_container {
 	background:image-url('modnets/bg_middle.gif') top left no-repeat;
 }
+
+	#search_container {
+		padding-left: 0;
+		padding-top: 34px;
+	}
+	#search_box {
+		font-family: inherit;
+		font-size: inherit;
+		position: inherit;
+		left: inherit;
+		margin-left: inherit;
+		width: 700px;
+		line-height: inherit;
+
+		#search_phrase {
+			width: 600px;
+			font-size: 2.5em;
+			padding: 8px;
+		}
+		#search_button {
+			background:image-url('modnets/main-search.png') top left no-repeat;
+			height: 60px;
+			width: 60px;
+			border: none;
+			float: right;
+
+			&:hover {
+				background:image-url('modnets/main-search-hover.png') top left no-repeat;
+			}
+		}
+		#search_note_container {
+			font-size: inherit;
+			line-height: inherit;
+			width: inherit;
+			padding-top: inherit;
+
+			position: absolute;
+			left: 748px;
+			top: 210px;
+		}
+		#search_note {
+			float: inherit;
+		}
+		#advanced_link {
+			float: inherit;
+			text-align: inherit;
+			width: inherit;
+			padding: inherit;
+			margin: inherit;
+		}
+	}
+
+	#popular_container {
+		border-bottom: 4px solid $regular-text;
+		height: 250px;
+		margin-bottom: 16px;
+
+		#discussions, #tags, #news {
+			float: left;
+			border: none;
+			width: 31%;
+			border-top: 4px solid $regular-text;
+			margin-left: 12px;
+			padding-top: 16px;
+			padding-left: 0px;
+			&:first-child {
+				margin-left: 0;
+			}
+			.popular_title {
+				text-align: left;
+			}
+		}
+	}
 
 #carousel_container {
 //	background:image-url('modnets/index_flash_background.jpg') top center repeat-x;

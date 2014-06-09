@@ -18,8 +18,12 @@
     	<div id="search_container">
         	<div id="search_box">
 				<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search', :onsubmit => "return searchValidationHome('search_phrase', 'search_button');"  } ) %>
+			  		<% if SKIN == 'modnets' %>
+				  <input id="search_phrase" name="search_phrase" type="text" placeholder="Search <%= Setup.site_name() %>" /><input value="" id="search_button" type="submit" />
+			<% else %>
 	            	<strong>Search <%= Setup.site_name() %>:</strong><br />
-	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" /> 
+	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" />
+				  <% end %>
 	                <div id="search_note_container">
 	               	  <div id="search_note">Searching <%= number_with_delimiter(session[:num_docs]) %> peer-reviewed digital objects from <%=number_with_delimiter(session[:num_sites])%> federated sites  </div>
 	                    <div id="advanced_link"><%= link_to("Advanced Search", '/collex/new_search', { :class => 'nav_link' } ) %></div>
@@ -29,6 +33,28 @@
             </div>
         </div>
 		<div id="popular_container">
+		  <% if SKIN == 'modnets' %>
+			  <div id="discussions">
+				<% if @featured_news -%>
+					<div class="popular_title">News Flash</div>
+					<%= render :partial => "/home/featured_news" %>
+				<% elsif @feature -%>
+					<div class="popular_title">Featured Object</div>
+					<%= render :partial => "/home/featured_resource", :locals => { :feature => @feature } %>
+				<% else -%>
+					<div class="popular_title">Popular Discussions</div>
+					<%= render :partial => "/home/popular_discussions", :locals => { :discussions => @discussions, :show_more => true } %>
+				<% end -%>
+			  </div>
+			  <div id="tags">
+				<div class="popular_title">Browse Recent Tags</div>
+				<%= render :partial => "/home/popular_tags", :locals => { :tags => @tags } %>
+			  </div>
+			  <div id="news">
+				<div class="popular_title">Recent News</div>
+				<div id="recent_news"></div>
+			  </div>
+		  <% else %>
 			<table>
             	<tbody><tr><td colspan="5" class="spacer_cell"></td></tr>
             	<tr>
@@ -57,6 +83,7 @@
               </tr>
             	<tr><td colspan="5" class="spacer_cell"></td></tr>
             </tbody></table>
+		  <% end %>
 		</div>
 <%# if SKIN == 'nines' -%>
 	<%# = render :partial => 'featured_exhibit' %>
