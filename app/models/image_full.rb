@@ -10,6 +10,8 @@ class ImageFull < ActiveRecord::Base
   has_attached_file :photo,
 	  :url  => path,
 	  :path => ":rails_root/public/#{path}"
+  validates_attachment_size :photo, :less_than => 1.megabytes,  :unless => Proc.new {|m| m[:photo].nil?}
+  validates_attachment_content_type :photo, :content_type => ['image/jpeg', 'image/png', 'image/gif'], :unless => Proc.new {|m| m[:photo].nil?}
 
   def self.save_image(uploaded_file, target_active_record)
 	  if uploaded_file && uploaded_file.original_filename.length > 0
