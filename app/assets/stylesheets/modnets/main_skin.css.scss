@@ -26,11 +26,18 @@ body.federation-modnets {
 }
 
 #main_container {
+	background: #F7F7F6 url(/assets/modnets/bg_middle.gif) top left no-repeat;
 //	border-left:10px #34645c solid;
 //	border-right:10px #34645c solid;
 //	border-bottom:10px #34645c solid;
 }
-
+#content_container {
+	padding-top: 58px;
+}
+	#login_container {
+		position: absolute;
+		top: 162px;
+	}
 	.inner_content_container {
 		font-size: inherit;
 	}
@@ -112,6 +119,8 @@ a.my_collex_link {
 		padding-right: 0;
 	}
 	#subnav_links_container {
+		position: absolute;
+		right: 32px;
 		margin-top: 42px;
 	}
 //#footer_container {
@@ -119,7 +128,7 @@ a.my_collex_link {
 //}
 
 .right_column {
-	background:#ffffff;
+	background:transparent;
 }
 
 .nav_link:link, .nav_link:visited {
