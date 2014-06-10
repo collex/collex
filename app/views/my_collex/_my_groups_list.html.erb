@@ -30,5 +30,7 @@
 	<div class="side_bar_exhibit_spacer clear_both"></div>
 <% end -%>
 <% end -%>
+<div class="create-group-links">
 	<%= link_to_function("Create Group", "new CreateGroupWizardDlg('/search/auto_complete_for_search_university', '#{user_id}', '/groups/verify_group_title', '/groups', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[0]}', '#{Setup.site_name()}', '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', '#{User.find(user_id).institution}', '#{User.find(user_id).fullname}', '#{image_path("#{SKIN}/new_group_show_membership_example.jpg")}'); return false;", :class => 'nav_link' ) %>
 	<%= link_to_function("[Browse Groups]", "new BrowseGroupsDlg('#{image_path(PROGRESS_SPINNER_PATH)}', '/groups/get_all_groups', 'browse_groups'); return false;", { :class => 'nav_link' }) %>
+</div>
