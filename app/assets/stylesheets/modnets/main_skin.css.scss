@@ -141,8 +141,9 @@ a.my_collex_link {
 	background:transparent;
 }
 
-.nav_link:link, .nav_link:visited {
+	.nav_link:link, .nav_link:visited,.ext_link:link, .ext_link:visited {
 	color:#AC2E20;
+	text-decoration: underline;
 }
 
 .tag_link:link { color: $link-color; }
@@ -150,9 +151,9 @@ a.my_collex_link {
 .tag_link:hover { color: #fff; background: $link-hover; }
 
 /* This is used for all links that change, or potentially change, the database */
-.modify_link:link { color: $link-color; text-decoration: none; }
-.modify_link:visited { color: $link-color; text-decoration: none; }
-.modify_link:hover { color: #fff; background: $link-hover; text-decoration: none; }
+.modify_link:link { color: $link-color }
+.modify_link:visited { color: $link-color }
+.modify_link:hover { color: #fff; background: $link-hover }
 
 /* This is used for all links that go to the NINES sites. */
 .nines_link { background: image-url('modnets/collex_link.jpg') center right no-repeat; }
@@ -161,9 +162,9 @@ a.my_collex_link {
 .nines_link:hover { color: #fff; background: $link-hover; }
 
 /* This is used for all links that go to external websites */
-&.wordpress #container .ext_link:link { color: $link-color; text-decoration: none; }
-&.wordpress #container .ext_link:visited { color: $link-color; text-decoration: none; }
-&.wordpress #container .ext_link:hover { color: #fff; background: $link-hover; text-decoration: none; }
+&.wordpress #container .ext_link:link { color: $link-color }
+&.wordpress #container .ext_link:visited { color: $link-color }
+&.wordpress #container .ext_link:hover { color: #fff; background: $link-hover }
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
