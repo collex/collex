@@ -56,37 +56,44 @@ body.federation-modnets {
 	color:$tab-color;
 	background: $tab-background;
 	top: 96px;
+	font-weight: normal;
 }
 
 .tab_link_current {
 	color:$tab-color;
 	background: $tab-background;
+	font-weight: normal;
 }
 
 .tab_link_long,.tab_link_logo {
 	color:$tab-color;
 	background: $tab-background;
 	top: 96px;
+	font-weight: normal;
 }
 
 .tab_link_long_current,.tab_link_logo_current, .my_collex_link_current {
 	color:$tab-color;
 	background: $tab-background;
 	padding-top: 6px;
+	font-weight: normal;
 }
 
 	.tab_link_long, .tab_link_long_current, .tab_link_current, .tab_link, .tab_link_logo, .my_collex_link, .my_collex_link_current {
 		height: 27px;
 		margin-left: 4px;
 		padding-top: 6px !important;
+		font-weight: normal;
 	}
 	.my_collex_link, .my_collex_link_current {
 		left: 26px;
 		top: 154px;
+		font-weight: normal;
 	}
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
 	color:#ffffff;
+	font-weight: normal;
 }
 
 	&.pg-lvl1 #nav_container {
@@ -103,6 +110,9 @@ a.my_collex_link {
 	background: $tab-background;
 	top: 89px;
 	padding-top: 4px;
+	width: inherit;
+	padding-left: 8px;
+	padding-right: 8px;
 }
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
@@ -115,7 +125,7 @@ a.my_collex_link {
 }
 
 	#subnav_container {
-		margin-left: 70px;
+		margin-left: 86px;
 		padding-right: 0;
 	}
 	#subnav_links_container {
@@ -178,9 +188,9 @@ a.my_collex_link {
 .login_div {
 	background-image:image-url('modnets/login_header.jpg');
 	background-repeat:no-repeat;
-	border-left: 8px solid #5f3119;
-	border-right: 8px solid #5f3119;
-	border-bottom: 8px solid #5f3119;
+	border-left: 8px solid $login-dlg-border;
+	border-right: 8px solid $login-dlg-border;
+	border-bottom: 8px solid $login-dlg-border;
 }
 
 .search_result_buttons a {
