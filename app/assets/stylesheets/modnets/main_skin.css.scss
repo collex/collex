@@ -195,6 +195,9 @@ a.my_collex_link {
 /* styles for all javascript-created dialogs */
 /*********************************/
 
+	.licensedisplay {
+		background-color: #413b3d;
+	}
  .container-close {
 	background:transparent image-url('modnets/popup_box_x.gif') no-repeat scroll 0 0;
 	height: 19px;
@@ -205,7 +208,7 @@ a.my_collex_link {
 }
 
  .yui-panel .hd {
-	background: transparent image-url('modnets/popup_box_header.jpg') repeat-y scroll 0 0;
+	background: #413b3d;
 	color: white;
 	font-family: Arial, sans-serif;
 	font-weight: bold;
@@ -244,13 +247,13 @@ div.edit_bar .yui-button.yui-menu-button {
    background: transparent url('http://yui.yahooapis.com/2.9.0/build/assets/skins/sam/sprite.png') repeat-x scroll 0 0;
 }
 
- .button_tab_selected {
-	background: transparent image-url('modnets/attachment_button_down.jpg') repeat-y scroll 0 0;
+ .button_tab_selected.yui-button button {
+	background: $selected-background;
 }
 
 .yui-link-button-hover,  .yui-push-button-hover{
    color: white;
-   background-image: image-url('modnets/attachment_button_down.jpg');
+   background: $button-hover;
    border: 0;
 }
 .yui-button-hover a {
