@@ -121,7 +121,6 @@ body.federation-modnets.pg-lvl1 {
 	}
 
 	#popular_container {
-		border-bottom: 4px solid $regular-text;
 		height: 250px;
 		margin-bottom: 16px;
 
@@ -147,8 +146,13 @@ body.federation-modnets.pg-lvl1 {
 }
 
 .carousel_background {
-//	background:transparent image-url('modnets/index_flash_background.jpg') repeat-x scroll center top;
+	background:transparent image-url('modnets/index_flash_background.jpg') repeat-x scroll center top;
 }
+
+	.carousel_title {
+		color: $tab-color;
+		top: -464px;
+	}
 
  .yui-carousel-nav ul li {
 	background:transparent image-url('modnets/carousel_dot_unselected.jpg') no-repeat scroll 0 50%;
