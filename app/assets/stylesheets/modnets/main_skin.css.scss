@@ -89,6 +89,9 @@ body.federation-modnets {
 		left: 26px;
 		top: 154px;
 		font-weight: normal;
+		width: inherit;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 
 .tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
