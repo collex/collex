@@ -102,10 +102,27 @@ body.federation-modnets {
 	&.pg-lvl1 #nav_container {
 		top: 155px;
 		right: 30px;
+
+		a:nth-child(1) {
+			background-color: $news-tab;
+		}
+
+		a:nth-child(2) {
+			background-color: $classroom-tab;
+		}
+
+		a:nth-child(3) {
+			background-color: $community-tab;
+		}
+
+		a:nth-child(4) {
+			background-color: $search-tab;
+		}
 	}
 
 	&.pg-lvl1 a.my_collex_link {
 		top: 155px;
+		background-color: $my-tab;
 	}
 
 a.my_collex_link {

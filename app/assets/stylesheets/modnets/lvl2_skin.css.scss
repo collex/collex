@@ -48,6 +48,21 @@ div#header_container {
 		position: absolute;
 		top: 155px;
 		right: 30px;
+		.tab_link_current[href="/news/"] {
+			background-color: $news-tab;
+		}
+
+		.tab_link_long_current[href="/classroom"] {
+			background-color: $classroom-tab;
+		}
+
+		.tab_link_long_current[href="/communities"] {
+			background-color: $community-tab;
+		}
+
+		.tab_link_current[href="/search"] {
+			background-color: $search-tab;
+		}
 	}
 	a.my_collex_link {
 		top: 155px;
@@ -137,12 +152,17 @@ div#header_container {
 			}
 		}
 	}
-.result_row_collected {
-	background:transparent image-url('modnets/search_collected_gradient.jpg') repeat-y;
-}
 
-.FP_attachment_collected {
-	background:transparent image-url('modnets/forum_collected_gradient.jpg') repeat-x scroll 0 0;
+	$gradient-left: #E6E1C7;
+	$gradient-right: #CECCBA;
+.result_row_collected, .FP_attachment_collected {
+	/* fallback */ background-color: $gradient-right;
+	background-repeat: repeat-y; /* Safari 4-5, Chrome 1-9 */
+	background: -webkit-gradient(linear, left top, right top, from($gradient-right), to($gradient-left)); /* Safari 5.1, Chrome 10+ */
+	background: -webkit-linear-gradient(left, $gradient-left, $gradient-right); /* Firefox 3.6+ */
+	background: -moz-linear-gradient(left, $gradient-left, $gradient-right); /* IE 10 */
+	background: -ms-linear-gradient(left, $gradient-left, $gradient-right); /* Opera 11.10+ */
+	background: -o-linear-gradient(left, $gradient-left, $gradient-right);
 }
 
 .free_culture {
