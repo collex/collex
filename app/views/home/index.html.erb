@@ -19,7 +19,7 @@
         	<div id="search_box">
 				<%= form_tag( { :controller => 'search', :action => 'add_constraint' }, { :id => 'do-basic-search', :onsubmit => "return searchValidationHome('search_phrase', 'search_button');"  } ) %>
 			  		<% if SKIN == 'modnets' %>
-				  <input id="search_phrase" name="search_phrase" type="text" placeholder="Search <%= Setup.site_name() %>" /><input value="" id="search_button" type="submit" />
+				  <input id="search_phrase" name="search_phrase" type="text" placeholder="Search <%= Setup.site_name() %>..." /><input value="" id="search_button" type="submit" />
 			<% else %>
 	            	<strong>Search <%= Setup.site_name() %>:</strong><br />
 	                <input id="search_phrase" name="search_phrase" type="text" /><input value="Search" id="search_button" type="submit" />

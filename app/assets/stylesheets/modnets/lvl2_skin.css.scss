@@ -164,7 +164,9 @@ div#header_container {
 	background: -ms-linear-gradient(left, $gradient-left, $gradient-right); /* Opera 11.10+ */
 	background: -o-linear-gradient(left, $gradient-left, $gradient-right);
 }
-
+	&.pg-search .search_entry_box {
+		width: 517px;
+	}
 .free_culture {
 	background-image: image-url('modnets/free_culture.gif');
 }
