@@ -85,7 +85,7 @@ module DiscussionThreadsHelper
   end
   
   def get_user_picture(user_id, type)
-    placeholder = image_path("#{SKIN}/forum_generic_user.gif")
+    placeholder = image_path(GENERIC_USER_IMAGE_PATH)
     user = User.find_by_id(user_id)
     return placeholder if user == nil
     return placeholder if user.image_id == nil

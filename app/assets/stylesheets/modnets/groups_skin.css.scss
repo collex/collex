@@ -13,6 +13,7 @@
 //     See the License for the specific language governing permissions and
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
+@import "colors.css.scss";
 
 body.federation-modnets.pg-groups {
 #group_discussions {
@@ -28,8 +29,8 @@ body.federation-modnets.pg-groups {
 }
 
 .group_header {
-	color:black;
-	background:#B99A86;
+	color:$tab-color;
+	background:$tab-background;
 }
 
 .set_exhibit_style {

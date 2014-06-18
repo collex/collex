@@ -67,7 +67,7 @@ div#header_container {
 		text-align: left;
 		&.num_objects {
 			text-align: inherit;
-			width: 74px;
+			width: 84px;
 		}
 	}
 	td {
@@ -101,8 +101,8 @@ div#header_container {
 
 	.search_federation_checkbox {
 		position: absolute;
-		padding: none;
-		top: 50px;
+		padding-left: 7px;
+		top: 64px;
 	}
 	.search_help_icon {
 		position: inherit;
@@ -117,6 +117,25 @@ div#header_container {
 	.add_constraint_form {
 		position: relative;
 		width: inherit;
+		.page_header {
+			display: none;
+		}
+		#search_submit {
+			background:image-url('modnets/main-search.png') top left no-repeat;
+			height: 60px;
+			width: 60px;
+			border: none;
+			float: right;
+			font-size: 0;
+
+			&:hover {
+				background:image-url('modnets/main-search-hover.png') top left no-repeat;
+			}
+			&.submitting, &.submitting:hover {
+				background: none;
+				font-size: 1em;
+			}
+		}
 	}
 .result_row_collected {
 	background:transparent image-url('modnets/search_collected_gradient.jpg') repeat-y;
@@ -124,10 +143,6 @@ div#header_container {
 
 .FP_attachment_collected {
 	background:transparent image-url('modnets/forum_collected_gradient.jpg') repeat-x scroll 0 0;
-}
-
-#group_details {
-	background: image-url('modnets/groups_header_background.jpg') repeat-x bottom;
 }
 
 .free_culture {
@@ -191,5 +206,17 @@ div#header_container {
 	.create-group-links {
 		margin-left: 8px;
 		margin-top: 8px;
+	}
+
+	.no_results_msg img {
+		width: 100px;
+	}
+	.search_entry_box_keyword {
+		width: 600px;
+		font-size: 2.5em;
+		padding: 8px;
+	}
+	.save_search_instruction {
+		display: none;
 	}
 }

@@ -34,6 +34,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 	submit_buttons.each(function(submit_button) {
 		submit_button.disabled = true;
 		submit_button.value = "......";
+		submit_button.addClassName('submitting');
 	});
 
 	// Some local functions
@@ -41,6 +42,7 @@ function searchValidation(year_input_id, phrase_input_id, input_type, submit_id,
 		submit_buttons.each(function(submit_button) {
 		submit_button.disabled = false;
 		submit_button.value = submit_text;
+		submit_button.removeClassName('submitting');
 		});
 	};
 

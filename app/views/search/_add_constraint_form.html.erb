@@ -24,7 +24,7 @@
  	<table>
         <tr>
           <td colspan='2'>
-            <%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword", :value=>@kphrs ? @kphrs : '' }, {:min_chars => 2}-%>
+            <%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword", :value=>@kphrs ? @kphrs : '', :placeholder => (SKIN == 'modnets' ? "Search #{Setup.site_name()}" : '') }, {:min_chars => 2}-%>
           </td>
           <td>
             <input id="search_submit" type="submit" value="Search" />
