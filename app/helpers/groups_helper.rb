@@ -16,7 +16,8 @@
 
 module GroupsHelper
 	def get_group_default_url(url)
-    return image_path("#{SKIN}/glossy_swirly.jpg") if url == nil || url.length == 0
+		path = SKIN == 'modnets' ? "#{SKIN}/lg_site_image.gif" : "#{SKIN}/glossy_swirly.jpg"
+    return image_path(path) if url == nil || url.length == 0
     return url
 	end
 	def get_group_image_url(group)
