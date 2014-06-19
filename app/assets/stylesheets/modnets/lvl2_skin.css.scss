@@ -117,7 +117,7 @@ div#header_container {
 	.search_federation_checkbox {
 		position: absolute;
 		padding-left: 7px;
-		top: 64px;
+		top: 81px;
 	}
 	.search_help_icon {
 		position: inherit;
@@ -151,6 +151,10 @@ div#header_container {
 				font-size: 1em;
 			}
 		}
+	}
+	.fuzzy-spacer {
+		display: inline-block;
+		width: 4px;
 	}
 
 	$gradient-left: #E6E1C7;

@@ -30,9 +30,10 @@
             <input id="search_submit" type="submit" value="Search" />
           </td>
         </tr>
-       <% if SKIN.upcase == 'MESA' %>
+       <% if HAS_FUZZY %>
           <tr>
             <td colspan='2' style="padding:0">
+			  <span class="fuzzy-spacer"></span>
                <% fuzz = @kfval %>
                <% fuzz = 1 if @kfval.nil? %>
                <input class="fuzzy" type="radio" name="search_keyword_fuz" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
@@ -48,10 +49,11 @@
 					<a href="/about/help/" class="tooltip"><%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 18, style: "padding-left:5px" }) %><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>
         <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
-        <% if SKIN.upcase == 'MESA' %>
+        <% if HAS_FUZZY %>
            <tr>
              <td></td>
              <td colspan='2' style="padding:0">
+			   <span class="fuzzy-spacer"></span>
                <% fuzz = @tfval %>
                <% fuzz = 1 if @tfval.nil? %>
                <input class="fuzzy" type="radio" name="search_title_fuz" value="1" <% if fuzz==1 %>checked="checked"<% end %> />

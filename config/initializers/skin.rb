@@ -9,3 +9,5 @@ SPINNER_TIMEOUT_PATH = "#{SKIN}/no_image.jpg"
 
 DISALLOW_RSS = SITE_SPECIFIC['disallow_rss'].blank? ? false : SITE_SPECIFIC['disallow_rss']
 BLEEDING_EDGE = SITE_SPECIFIC['bleeding_edge']
+
+HAS_FUZZY = (SKIN == 'mesa' || SKIN == 'modnets')

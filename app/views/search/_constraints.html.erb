@@ -46,7 +46,7 @@
 		</tr>
 	    <% end -%>
     <% end -%>
-    <% if SKIN.downcase == "mesa" -%>
+    <% if HAS_FUZZY -%>
       <% if has_keyword_search -%>
           <tr>
             <td class="query_type">Search Term Fuzziness &nbsp;</td>
@@ -89,7 +89,7 @@
 			<select id="search_type" name="search_type" class="query_type_select" onchange='searchTypeChanged(this);'>
               <option>Search Term</option>
               <option>Title</option>
-              <% if SKIN.downcase == "mesa" -%>
+              <% if HAS_FUZZY -%>
                   <option>Language</option>
                   <option>Year (YYYY)</option>
                   <% @searchable_roles.each do |role| %>
