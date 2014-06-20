@@ -1,8 +1,10 @@
+@import "colors.css.scss";
+
 body.federation-modnets.pg-community {
 
 .shared_header {
 	color:white;
-	background:#371911;
+	background:$button-background;
 }
 
 .publications_image {
