@@ -168,6 +168,7 @@ div#header_container {
 	background: -moz-linear-gradient(left, $gradient-left, $gradient-right); /* IE 10 */
 	background: -ms-linear-gradient(left, $gradient-left, $gradient-right); /* Opera 11.10+ */
 	background: -o-linear-gradient(left, $gradient-left, $gradient-right);
+	opacity: .9;
 }
 	&.pg-search .search_entry_box {
 		width: 517px;
