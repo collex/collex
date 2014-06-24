@@ -159,8 +159,8 @@ div#header_container {
 	}
 
 	// These gradients were found by rote. They should match the colors in the header, but because this has some transparency, the colors were found by adding in the slight background.
-	$gradient-left: #e6dfc3;
-	$gradient-right: #c9c7b4;
+	$gradient-left: #ded7b5;
+	$gradient-right: #bcb9a1;
 .result_row_collected, .FP_attachment_collected {
 	/* fallback */ background-color: $gradient-right;
 	background-repeat: repeat-y; /* Safari 4-5, Chrome 1-9 */
@@ -169,7 +169,7 @@ div#header_container {
 	background: -moz-linear-gradient(left, $gradient-left, $gradient-right); /* IE 10 */
 	background: -ms-linear-gradient(left, $gradient-left, $gradient-right); /* Opera 11.10+ */
 	background: -o-linear-gradient(left, $gradient-left, $gradient-right);
-	opacity: .9;
+	opacity: .7;
 }
 	&.pg-search .search_entry_box {
 		width: 517px;
