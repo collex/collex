@@ -158,8 +158,9 @@ div#header_container {
 		width: 4px;
 	}
 
-	$gradient-left: #E6E1C7;
-	$gradient-right: #CECCBA;
+	// These gradients were found by rote. They should match the colors in the header, but because this has some transparency, the colors were found by adding in the slight background.
+	$gradient-left: #e6dfc3;
+	$gradient-right: #c9c7b4;
 .result_row_collected, .FP_attachment_collected {
 	/* fallback */ background-color: $gradient-right;
 	background-repeat: repeat-y; /* Safari 4-5, Chrome 1-9 */
