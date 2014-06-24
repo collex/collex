@@ -15,7 +15,91 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 <%# add_constraint_form : no parameters -%>
+<% if SKIN == 'modnets' %>
+	<div class="add_constraint_form">
+	  <div class="search_federation_checkbox">
+		<input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input>
+	  </div>
+	  <%= form_tag({controller: "search", action: "add_constraint"}, {id: "add-search-constraint", onsubmit: "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');"}) do %>
+		  <input id="search_submit" type="submit" value="Search"/>
+		  <%= text_field_with_suggest :search, :keyword, {:class => "search_entry_box_keyword", :value => @kphrs ? @kphrs : '', :placeholder => (SKIN == 'modnets' ? "Search #{Setup.site_name()}..." : '')}, {:min_chars => 2} -%>
+		  <% if HAS_FUZZY %>
+			  <div class="fuzzy-container">
+			  <% fuzz = @kfval %>
+			  <% fuzz = 1 if @kfval.nil? %>
+			  <input class="fuzzy" type="radio" name="search_keyword_fuz" value="1"
+					 <% if fuzz==1 %>checked="checked"
+					 <% end %> />
+			  <span class="fuzzy">Exact Match</span>
+			  <input class="fuzzy" type="radio" name="search_keyword_fuz" value="2"
+					 <% if fuzz==2 %>checked="checked"
+					 <% end %>/>
+			  <span class="fuzzy">Some Variance</span>
+			  <input class="fuzzy" type="radio" name="search_keyword_fuz" value="3"
+					 <% if fuzz==3 %>checked="checked"
+					 <% end %> />
+			  <span class="fuzzy">More Variance</span>
+			  </div>
+		  <% end %>
+		  <div class="search_help_icon">
+			<a href="/about/help/" class="tooltip"><%= image_tag("#{SKIN}/help_thumb.gif", {alt: 'help', height: 18, style: "padding-left:5px"}) %>
+			  <span class="search_help_tooltip"><b>Need help?</b><br/>Click to learn more about searching
+			in <%= Setup.site_name() %>.</span></a>
+		  </div>
+		  <div class="search_entry_instructions">Other search options:</div>
+		  <div class="row">
+			<div>Title:</div>
+			<input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> />
+		  </div>
+		  <% if HAS_FUZZY %>
+			  <div class="row"><div></div>
+				<% fuzz = @tfval %>
+				<% fuzz = 1 if @tfval.nil? %>
+				<input class="fuzzy" type="radio" name="search_title_fuz" value="1"
+					   <% if fuzz==1 %>checked="checked"
+					   <% end %> />
+				<span class="fuzzy">Exact Match</span>
+				<input class="fuzzy" type="radio" name="search_title_fuz" value="2"
+					   <% if fuzz==2 %>checked="checked"
+					   <% end %>/>
+				<span class="fuzzy">Some Variance</span>
+				<input class="fuzzy" type="radio" name="search_title_fuz" value="3"
+					   <% if fuzz==3 %>checked="checked"
+					   <% end %> />
+				<span class="fuzzy">More Variance</span>
+			  </div>
+		  <% end %>
+		  <div class="row">
+			<div>Author:</div>
+			<td>
+			  <input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> />
+		  </div>
+		  <div class="row">
+			<div>Editor:</div>
+			<td>
+			  <input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> />
+		  </div>
+		  <div class="row">
+			<div>Publisher:</div>
+			<td>
+			  <input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> />
+		  </div>
+		  <div class="row">
+			<div>Year (YYYY):</div>
+			<td>
+			  <input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> />
+		  </div>
+		  <input id="search_submit2" type="submit" value="Search"/>
+	  <% end %>
 
+	  <% if is_logged_in? -%>
+		  <div id="saved-searches">
+			<%= render :partial => 'save_search_list', :locals => {:header_class => 'page_header', :max_to_show => -1} %>
+		  </div>
+	  <% end -%>
+	</div>
+
+<% else %>
 <center>
 <div class="add_constraint_form">
     	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input></div>
@@ -135,6 +219,7 @@
 	<% end -%>
 </div>
 </center>
+<% end %>
 <script type="text/javascript">
    function on_role_type_change(event, el) {
       if (el && el.options) {

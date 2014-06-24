@@ -16,6 +16,7 @@
 @import "colors.css.scss";
 
 body.federation-modnets {
+	min-width: 960px;
 	background:$background;
 	color:$regular-text;
 	font-family: Arial, Helvetica, san-serif;

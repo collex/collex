@@ -117,8 +117,9 @@ div#header_container {
 
 	.search_federation_checkbox {
 		position: absolute;
-		padding-left: 7px;
-		top: 81px;
+		padding-left: 2px;
+		top: 88px;
+		padding-top: 0;
 	}
 	.search_help_icon {
 		position: inherit;
@@ -128,13 +129,24 @@ div#header_container {
 		color: $header-color;
 		border-bottom: none;
 		border-top: 4px solid $border;
-		margin-top: 20px;
+		margin-top: 30px;
+		padding-top: 4px;
+		margin-bottom: 16px;
 	}
 	.add_constraint_form {
 		position: relative;
-		width: inherit;
+		width: 610px;
+
+		form {
+			margin-bottom: 44px;
+		}
 		.page_header {
 			display: none;
+		}
+		.search_entry_box_keyword {
+			width: 520px;
+			font-size: 2.5em;
+			padding: 8px;
 		}
 		#search_submit {
 			background:image-url('modnets/main-search.png') top left no-repeat;
@@ -151,6 +163,23 @@ div#header_container {
 				background: none;
 				font-size: 1em;
 			}
+		}
+		#search_submit2 {
+			float: right;
+		}
+		.fuzzy-container {
+			margin-top: 6px;
+			margin-left: 2px;
+		}
+		span.fuzzy {
+			padding-right: 8px;
+		}
+		.row {
+			margin-bottom: 10px;
+		}
+		.row > div {
+			width: 85px;
+			display: inline-block;
 		}
 	}
 	.fuzzy-spacer {
@@ -240,11 +269,7 @@ div#header_container {
 	.no_results_msg img {
 		width: 100px;
 	}
-	.search_entry_box_keyword {
-		width: 600px;
-		font-size: 2.5em;
-		padding: 8px;
-	}
+
 	.save_search_instruction {
 		display: none;
 	}
