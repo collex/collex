@@ -2,9 +2,11 @@
 # cap edge_nines
 # cap edge_18th
 # cap edge_mesa
+# cap edge_modnets
 # cap prod_nines
 # cap prod_18th
 # cap prod_mesa
+# cap prod_modnets
 
 require 'rvm/capistrano'
 require 'bundler/capistrano'
@@ -42,9 +44,11 @@ task :menu do
 		'1' => { name: "cap edge_nines", computer: 'edge', skin: 'nines' },
 		'2' => { name: "cap edge_18th", computer: 'edge', skin: '18th' },
 		'3' => { name: "cap edge_mesa", computer: 'edge', skin: 'mesa' },
-		'4' => { name: "cap prod_nines", computer: 'prod', skin: 'nines' },
-		'5' => { name: "cap prod_18th", computer: 'prod', skin: '18th' },
-		'6' => { name: "cap prod_mesa", computer: 'prod', skin: 'mesa' }
+		'4' => { name: "cap edge_modnets", computer: 'edge', skin: 'modnets' },
+		'5' => { name: "cap prod_nines", computer: 'prod', skin: 'nines' },
+		'6' => { name: "cap prod_18th", computer: 'prod', skin: '18th' },
+		'7' => { name: "cap prod_mesa", computer: 'prod', skin: 'mesa' },
+		'8' => { name: "cap prod_modnets", computer: 'prod', skin: 'modnets' }
 	}
 
 	tasks.each { |key, value|
@@ -100,6 +104,11 @@ task :edge_mesa do
 	set_application('edge', 'mesa')
 end
 
+desc "Run tasks to update edge Modnets environment."
+task :edge_modnets do
+	set_application('edge', 'modnets')
+end
+
 desc "Run tasks to update production NINES environment."
 task :prod_nines do
 	set_application('prod', 'nines')
@@ -113,6 +122,11 @@ end
 desc "Run tasks to update production Mesa environment."
 task :prod_mesa do
 	set_application('prod', 'mesa')
+end
+
+desc "Run tasks to update production Modnets environment."
+task :prod_mesa do
+	set_application('prod', 'modnets')
 end
 
 namespace :passenger do
@@ -156,9 +170,11 @@ end
 after :edge_nines, 'deploy'
 after :edge_18th, 'deploy'
 after :edge_mesa, 'deploy'
+after :edge_modnets, 'deploy'
 after :prod_nines, 'deploy'
 after :prod_18th, 'deploy'
 after :prod_mesa, 'deploy'
+after :prod_modnets, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
@@ -190,6 +206,12 @@ task :edge_mesa_setup do
 	set_application('edge', 'mesa')
 end
 after :edge_mesa_setup, 'deploy:setup'
+
+desc "Set up the edge modnets server."
+task :edge_modnets_setup do
+	set_application('edge', 'modnets')
+end
+after :edge_modnets_setup, 'deploy:setup'
 
 desc "Set up the edge nines server."
 task :prod_nines_setup do
