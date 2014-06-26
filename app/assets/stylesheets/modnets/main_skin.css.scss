@@ -299,6 +299,13 @@ div.edit_bar .yui-button.yui-menu-button {
 	background: $selected-background;
 }
 
+	.dlg_tab_link {
+		background: $tab-background;
+	}
+	.dlg_tab_link_current {
+		background: $tab-color;
+	}
+
 .yui-link-button-hover,  .yui-push-button-hover{
    color: white;
    background: $button-hover;
