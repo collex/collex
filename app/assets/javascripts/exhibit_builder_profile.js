@@ -145,7 +145,7 @@ function editExhibitProfile(update_id, exhibit_id, data_class, populate_all, pop
 				[ { link: '[Choose Thumbnail from Collected Objects]', klass: 'nav_link', callback: changeView, arg0: 'choose_thumbnail' }],
 				[ { text: 'Genres:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_genres_dlg + '&nbsp;', id: 'genre_list' }, { link: '[Select Genres]', klass: 'nav_link', callback: changeView, arg0: 'genres' } ],
 				[ { text: 'Disciplines:', klass: 'new_exhibit_title' }, { text: '&nbsp;' + values.overview_disciplines_dlg + '&nbsp;', id: 'discipline_list' }, { link: '[Select Disciplines]', klass: 'nav_link', callback: changeView, arg0: 'disciplines' } ],
-				[ { text: "(NINES contributors are required to assign at least one genre to their objects. Please choose one or more from this list.)", klass: "link_dlg_label_and" }],
+				[ { text: "(" + window.gFederationName + " contributors are required to assign at least one genre to their objects. Please choose one or more from this list.)", klass: "link_dlg_label_and" }],
 				[ { link: '[Completely Delete Exhibit]', klass: 'nav_link', callback: this.deleteExhibit }],
 				[ { rowClass: 'gd_last_row' }, { button: 'Save', callback: this.sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
 			]

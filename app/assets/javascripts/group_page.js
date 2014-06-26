@@ -366,7 +366,7 @@ var editType = function(id, value, groupTypeOptions) {
 		options: groupTypeOptions,
 		explanation: [ 'This group is being used for scholarly collaboration. File this group under the "Community" section.',
 			'This group is being used to teach. File this group under the "Classroom" section.',
-			'Publication groups work closely with the NINES staff to vet their content. If you select this option a notification will be sent to the NINES staff, and someone will be in contact with you soon.' ],
+			'Publication groups work closely with the ' + window.gFederationName + ' staff to vet their content. If you select this option a notification will be sent to the ' + window.gFederationName + ' staff, and someone will be in contact with you soon.' ],
 		okStr: 'Save',
 		value: value,
 		actions: { method: 'PUT', url: '/groups/'+id },

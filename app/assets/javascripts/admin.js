@@ -377,7 +377,7 @@ var EditFacetDialog = Class.create({
 					[ { text: 'Parent Category:', klass: 'edit_facet_label' }, { select: 'parent_category_id', klass: 'categories_select', options: [ { value: -1, text: 'Loading categories. Please Wait...' } ] } ],
 					[ { text: 'Name in Resource Tree:', klass: 'edit_facet_label' }, { input: 'display_name', klass: 'edit_facet_input' } ],
 					[ { text: 'Site URL:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_url', klass: 'hide_if_category edit_facet_input' } ],
-					[ { text: 'NINES Thumbnail:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_thumbnail', klass: 'hide_if_category edit_facet_input' } ],
+					[ { text: window.gFederationName + ' Thumbnail:', klass: 'hide_if_category edit_facet_label' }, { input: 'site_thumbnail', klass: 'hide_if_category edit_facet_input' } ],
 					[ { text: 'Include in Carousel:', klass: 'edit_facet_label' }, { checkbox: 'carousel_include', klass: '' } ],
 					[ { text: 'Carousel Description:', klass: 'edit_facet_label' }, { textarea: 'carousel_description', klass: 'edit_facet_textarea' } ],
 					[ { text: 'Carousel URL:', klass: 'hide_if_site edit_facet_label' }, { input: 'carousel_url', klass: 'hide_if_site edit_facet_input' } ],
