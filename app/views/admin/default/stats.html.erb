@@ -18,7 +18,9 @@
 <% current_sub_page "Statistics" -%>
 <div class="inner_content_container">
 	<div class="page_header"><%= Setup.site_name() %> Statistics</div>
+  <% if SKIN == 'nines' %>
 	[NOTE: These statistics only count activity since June 30, 2009]
+  <% end %>
 	<% login_stats = LoginInfo.get_stats() -%>
 	<% object_stats = ObjectActivity.get_stats() -%>
 	<% lines = get_user_login_info() -%>
