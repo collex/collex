@@ -332,25 +332,25 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		values.ill_text = footnoteHandler.preprocessFootnotes(values.ill_text);
 
 		var selChanged = function(id, currSelection) {
-			if (currSelection === gIllustrationTypes[0]) {
+			if (currSelection === gIllustrationTypes[0][0]) {
 				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
 				$$('.nines_only').each(function(el) { el.removeClassName('hidden'); });
 				$$('.file_only').each(function(el) { el.addClassName('hidden'); });
-			} else if (currSelection === gIllustrationTypes[1]) {	// External Link
+			} else if (currSelection === gIllustrationTypes[1][0]) {	// External Link
 				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.text_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.image_only').each(function(el) { el.removeClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
 				$$('.file_only').each(function(el) { el.addClassName('hidden'); });
-			} else if (currSelection === gIllustrationTypes[2]) {	// Textual Illustration
+			} else if (currSelection === gIllustrationTypes[2][0]) {	// Textual Illustration
 				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.removeClassName('hidden'); });
 				$$('.text_only').each(function(el) { el.removeClassName('hidden'); });
 				$$('.file_only').each(function(el) { el.addClassName('hidden'); });
-			} else if (currSelection === gIllustrationTypes[3]) {	// Upload
+			} else if (currSelection === gIllustrationTypes[3][0]) {	// Upload
 				$$('.nines_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.image_only').each(function(el) { el.addClassName('hidden'); });
 				$$('.not_nines').each(function(el) { el.addClassName('hidden'); });
@@ -388,7 +388,7 @@ function initializeInplaceIllustrationEditor(element_id, action)
 
 			params.dlg.setFlash('Updating Illustration...', false);
 			objlist.resetCacheIfNecessary();
-			if (data.type === gIllustrationTypes[3]) {
+			if (data.type === gIllustrationTypes[3][0]) {
 				var arr = action.split(',');
 				submitForm('layout', arr[0]);
 			} else
@@ -398,10 +398,15 @@ function initializeInplaceIllustrationEditor(element_id, action)
 		var footnoteAbbrev1 = new FootnoteAbbrev({ startingValue: values.caption1_footnote, field: 'caption1_footnote', populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img });
 		var footnoteAbbrev2 = new FootnoteAbbrev({ startingValue: values.caption2_footnote, field: 'caption2_footnote', populate_exhibit_only: populate_exhibit_only, populate_all: populate_all, progress_img: progress_img });
 
+		function getOption(index) {
+			// gIllustrationTypes is an array of arrays. The inner array has either one or two items: if it has two items then the second is the text, the first is the value.
+			return { text:  gIllustrationTypes[index][gIllustrationTypes[index].length-1], value: gIllustrationTypes[index][0] };
+		}
+
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
-					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', callback: selChanged, value: values.type, options: [{ text:  gIllustrationTypes[0], value: gIllustrationTypes[0] }, { text:  gIllustrationTypes[1], value: gIllustrationTypes[1] }, { text:  gIllustrationTypes[2], value: gIllustrationTypes[2] }, { text:  gIllustrationTypes[3], value: gIllustrationTypes[3] }] },
+					[ { text: 'Type of Illustration:', klass: 'edit_illustration_caption_label' }, { select: 'type', callback: selChanged, value: values.type, options: [getOption(0), getOption(1), getOption(2), getOption(3)] },
 						{ hidden: 'ill_illustration_id', value: element_id }, { hidden: 'element_id', value: element_id }],
 					[ { text: 'First Caption:', klass: 'edit_illustration_caption_label' }, { inputWithStyle: 'caption1', value: { text: values.caption1, isBold: values.caption1_bold === '1', isItalic: values.caption1_italic === '1', isUnderline: values.caption1_underline === '1' }, klass: 'header_input' },
 						{ custom: footnoteAbbrev1 }, footnoteAbbrev1.createEditButton('footnoteEditStar') ],

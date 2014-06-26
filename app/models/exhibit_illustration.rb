@@ -46,10 +46,11 @@ class ExhibitIllustration < ActiveRecord::Base
   end
   
   def self.get_illustration_type_array
-    return "['NINES Object', 'Internet Image', 'Textual Illustration', 'Upload Image' ]"
+    return "[['NINES Object', '#{Setup.site_name()} Object'], ['Internet Image'], ['Textual Illustration'], ['Upload Image'] ]"
   end
   
   def self.get_illustration_type_array_with_exhibit
+	  # this appears to not be used.
     return "['NINES Object', 'NINES Exhibit', 'Internet Image' ]"
   end
   
