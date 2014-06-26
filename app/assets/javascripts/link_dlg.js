@@ -38,6 +38,10 @@ var CacheObjects = Class.create({
 		this.set = function(populate_url, c) {
 			cache.set(populate_url, c);
 		};
+
+		this.resetAll = function() {
+			cache = new Hash();
+		};
 	}
 });
 
@@ -194,7 +198,7 @@ var CreateListOfObjects = Class.create({
 				linkItem(id_prefix + '_' + obj.id, obj.img, obj.title, obj.strFirstLine, obj.strSecondLine);
 			});
 
-			noObjMsg = new Element('div', { id: 'noObjMsg' }).update('There are no objects matching your criteria.');
+			noObjMsg = new Element('div', { id: 'noObjMsg' }).update('<< No objects >>');
 			noObjMsg.addClassName('empty_list_text');
 			parent.appendChild(noObjMsg);
 			if (objs.length !== 0)
@@ -244,7 +248,8 @@ var CreateListOfObjects = Class.create({
 			// See if the item's in the cache first, and if not, call the server for it.
 			var objs = ninesObjCache.get(populate_url);
 			id_prefix = id_prefix_;
-			
+
+			dlg.setFlash('', false);
 			if (objs)
 				createRows(objs, selectFirst, id_prefix);
 			else {
@@ -272,6 +277,7 @@ var CreateListOfObjects = Class.create({
 		this.add = function(object)
 		{
 			parent.appendChild(object);
+			parent.down("#noObjMsg").hide();
 		};
 		
 		this.popSelection = function()
@@ -281,6 +287,10 @@ var CreateListOfObjects = Class.create({
 				sel.removeClassName(selClass);
 				sel.remove();
 			}
+			if (parent.childNodes.length === 1)
+				parent.down("#noObjMsg").show();
+			ninesObjCache.resetAll();
+
 			return sel;
 		};
 
