@@ -16,11 +16,15 @@
 
 body.federation-modnets.pg-lvl3 {
 
+	#header_container {
+		background-color: #CECCBA;
+	}
+
 #header_left {
 	width:735px;
 	height:33px;
 	float:left;
-	background:image-url('modnets/lvl3_header.jpg') top left no-repeat;
+	background:image-url('modnets/lvl3_header.png') top left no-repeat;
 }
 }
 
