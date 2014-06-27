@@ -3,7 +3,7 @@ SKIN = SITE_SPECIFIC['skin']
 
 DEFAULT_THUMBNAIL_IMAGE_PATH = "#{SKIN}/sm_site_image.#{SKIN=='mesa' ? 'jpg' : 'gif'}"
 LARGE_THUMBNAIL_IMAGE_PATH = "#{SKIN}/lg_site_image.#{SKIN=='mesa' ? 'jpg' : 'gif'}"
-GENERIC_USER_IMAGE_PATH = "#{SKIN}/#{SKIN=='modnets' ? 'restroom-hi.png' : 'forum_generic_user.gif'}"
+GENERIC_USER_IMAGE_PATH = "#{SKIN}/#{SKIN=='modnets' ? 'matisse90x90.jpg' : 'forum_generic_user.gif'}"
 PROGRESS_SPINNER_PATH = "ajax_loader.gif"
 SPINNER_TIMEOUT_PATH = "#{SKIN}/no_image.jpg"
 
