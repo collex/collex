@@ -7,6 +7,8 @@ class Utf8Update < ActiveRecord::Migration
     db_name = db_config[:database]
     db_user = db_config[:username]
     db_pass = db_config[:password]
+    db_host = db_config[:host].blank? ? "localhost" : db_config[:host]
+
     if db_pass.nil? || db_pass.empty?
        pass_str = nil
     else
@@ -20,7 +22,7 @@ class Utf8Update < ActiveRecord::Migration
     fixed_dump = 'final_dump.sql'
     
     puts "Dumping database to #{orig_dump}... "
-    system "mysqldump -u#{db_user} #{pass_str} #{db_name} > #{orig_dump}"
+    system "mysqldump -u#{db_user} #{pass_str} -h #{db_host} #{db_name} > #{orig_dump}"
     
     puts "Convert to UTF8... "
     system "cat #{orig_dump} | sed -e 's/DEFAULT CHARSET=latin1/DEFAULT CHARSET=utf8/g' | sed -e 's/CHARACTER SET latin1//g' >  #{utf8_dump}"
@@ -78,9 +80,9 @@ class Utf8Update < ActiveRecord::Migration
     file.close
     
     puts "Recreate database... "
-    system "mysql -u#{db_user} #{pass_str} -e \"drop database #{db_name}\""  
-    system "mysql -u#{db_user} #{pass_str} -e \"create database #{db_name} default character set utf8\""   
-    system "mysql -u#{db_user} #{pass_str} #{db_name} < #{fixed_dump}"
+    system "mysql -u#{db_user} #{pass_str} -h #{db_host} -e \"drop database #{db_name}\""  
+    system "mysql -u#{db_user} #{pass_str} -h #{db_host} -e \"create database #{db_name} default character set utf8\""   
+    system "mysql -u#{db_user} #{pass_str} -h #{db_host} #{db_name} < #{fixed_dump}"
     
     puts "Clean up..."
     system "rm #{orig_dump}"
