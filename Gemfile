@@ -37,7 +37,7 @@ gem 'acts_as_list'
 gem 'will_paginate'
 
 # Deploy with Capistrano
-gem 'capistrano'
+gem 'capistrano', '2.15.5'
 gem 'rvm-capistrano'
 
 # Bundle the extra gems:
