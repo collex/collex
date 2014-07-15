@@ -124,6 +124,10 @@ class Admin::DefaultController < Admin::BaseController
 
 	def stats
 		@show_all = session[:show_all_stats]
+		@login_stats = LoginInfo.get_stats()
+		@object_stats = ObjectActivity.get_stats()
+		@archive_stats = ObjectActivity.get_archive_stats()
+		@objects = ObjectActivity.all().sort { |a,b| b.updated_at <=> a.updated_at }
 	end
 
 	def stats_show_all

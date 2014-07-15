@@ -21,11 +21,11 @@
   <% if SKIN == 'nines' %>
 	[NOTE: These statistics only count activity since June 30, 2009]
   <% end %>
-	<% login_stats = LoginInfo.get_stats() -%>
-	<% object_stats = ObjectActivity.get_stats() -%>
-	<% lines = get_user_login_info() -%>
-	<% str = "" -%>
-	<% lines.each {|line| str += line + "<br />" } -%>
+	<%# login_stats = LoginInfo.get_stats() -%>
+	<%# object_stats = ObjectActivity.get_stats() -%>
+	<%# lines = get_user_login_info() -%>
+	<%# str = "" -%>
+	<%# lines.each {|line| str += line + "<br />" } -%>
 	<table>
 		<tr>
 			<td>Total Users:</td>
@@ -37,102 +37,102 @@
 		</tr>
 		<tr>
 			<td>Unique Logins Past 24 hours:</td>
-			<td><%= login_stats[:unique_logins_today] %></td>
+			<td><%= @login_stats[:unique_logins_today] %></td>
 		</tr>
 		<tr>
 			<td>Unique Logins Past 7 days:</td>
-			<td><%= login_stats[:unique_logins_this_week] %></td>
+			<td><%= @login_stats[:unique_logins_this_week] %></td>
 		</tr>
 		<tr>
 			<td>Unique Logins Past 30 days:</td>
-			<td><%= login_stats[:unique_logins_this_month] %></td>
+			<td><%= @login_stats[:unique_logins_this_month] %></td>
 		</tr>
 		<tr>
 			<td>Unique Logins Past year:</td>
-			<td><%= login_stats[:unique_logins_this_year] %></td>
+			<td><%= @login_stats[:unique_logins_this_year] %></td>
 		</tr>
 		<tr>
 			<td>Signups Past 24 hours:</td>
-			<td><%= login_stats[:signups_today] %></td>
+			<td><%= @login_stats[:signups_today] %></td>
 		</tr>
 		<tr>
 			<td>Signups Past 7 days:</td>
-			<td><%= login_stats[:signups_this_week] %></td>
+			<td><%= @login_stats[:signups_this_week] %></td>
 		</tr>
 		<tr>
 			<td>Signups Past 30 days:</td>
-			<td><%= login_stats[:signups_this_month] %></td>
+			<td><%= @login_stats[:signups_this_month] %></td>
 		</tr>
 		<tr>
 			<td>Signups Past year:</td>
-			<td><%= login_stats[:signups_this_year] %></td>
+			<td><%= @login_stats[:signups_this_year] %></td>
 		</tr>
 
 		<tr>
 			<td>Objects collected Past 24 hours:</td>
-			<td><%= object_stats[:objects_collected_today] %></td>
+			<td><%= @object_stats[:objects_collected_today] %></td>
 		</tr>
 		<tr>
 			<td>Objects collected Past 7 days:</td>
-			<td><%= object_stats[:objects_collected_this_week] %></td>
+			<td><%= @object_stats[:objects_collected_this_week] %></td>
 		</tr>
 		<tr>
 			<td>Objects collected Past 30 days:</td>
-			<td><%= object_stats[:objects_collected_this_month] %></td>
+			<td><%= @object_stats[:objects_collected_this_month] %></td>
 		</tr>
 		<tr>
 			<td>Objects collected Past year:</td>
-			<td><%= object_stats[:objects_collected_this_year] %></td>
+			<td><%= @object_stats[:objects_collected_this_year] %></td>
 		</tr>
 
 		<tr>
 			<td>Objects tagged Past 24 hours:</td>
-			<td><%= object_stats[:objects_tagged_today] %></td>
+			<td><%= @object_stats[:objects_tagged_today] %></td>
 		</tr>
 		<tr>
 			<td>Objects tagged Past 7 days:</td>
-			<td><%= object_stats[:objects_tagged_this_week] %></td>
+			<td><%= @object_stats[:objects_tagged_this_week] %></td>
 		</tr>
 		<tr>
 			<td>Objects tagged Past 30 days:</td>
-			<td><%= object_stats[:objects_tagged_this_month] %></td>
+			<td><%= @object_stats[:objects_tagged_this_month] %></td>
 		</tr>
 		<tr>
 			<td>Objects tagged Past year:</td>
-			<td><%= object_stats[:objects_tagged_this_year] %></td>
+			<td><%= @object_stats[:objects_tagged_this_year] %></td>
 		</tr>
 
 		<tr>
 			<td>Number of users who have tagged an object:</td>
-			<td><%= object_stats[:num_users_with_tags] %></td>
+			<td><%= @object_stats[:num_users_with_tags] %></td>
 		</tr>
 		<tr>
 			<td>Average number of tags per user who has tagged objects:</td>
-			<td><%= object_stats[:ave_num_tags_per_user] %></td>
+			<td><%= @object_stats[:ave_num_tags_per_user] %></td>
 		</tr>
 		<tr>
 			<td>Number of users who have collected an object:</td>
-			<td><%= object_stats[:num_users_with_collect] %></td>
+			<td><%= @object_stats[:num_users_with_collect] %></td>
 		</tr>
 		<tr>
 			<td>Average number of collections per user who has collected objects:</td>
-			<td><%= object_stats[:ave_num_collect_per_user] %></td>
+			<td><%= @object_stats[:ave_num_collect_per_user] %></td>
 		</tr>
 
 	<!--	<tr>
 			<td valign='top'>All available login info:</td>
-			<td><%= str %></td>
+			<td><%#= str %></td>
 		</tr> -->
 	</table>
 		<div class="page_header"><%= Setup.site_name() %> Statistics by Resource (last 365 days)</div>
-		<% archive_stats = ObjectActivity.get_archive_stats() -%>
+		<%# archive_stats = ObjectActivity.get_archive_stats() -%>
 		<table>
 			<tr>
 				<th>Resource</th>
 				<th># objects collected</th>
 				<th># objects tagged</th>
 			</tr>
-			<% for site in archive_stats -%>
+			<% for site in @archive_stats -%>
 			<% s = Catalog.factory_create(false).get_archive(site[0]) #Site.find_by_code(site[0]) -%>
 			<tr>
 				<td><%= s == nil ? raw("<b>#{site[0]} (not in DB!)</b>") : s['name'] %></td>
@@ -152,7 +152,7 @@
 			<th>action</th>
 			<th>time</th>
 		</tr>
-		<% logins = login_stats[:all_recs].sort { |a,b| b.updated_at <=> a.updated_at } -%>
+		<% logins = @login_stats[:all_recs].sort { |a,b| b.updated_at <=> a.updated_at } -%>
 		<% for login in logins -%>
 		<% if @show_all == 'true' || login.updated_at > 30.days.ago -%>
 		<tr>
@@ -174,8 +174,8 @@
 			<th>tag</th>
 			<th>time</th>
 		</tr>
-		<% objects = ObjectActivity.all().sort { |a,b| b.updated_at <=> a.updated_at } -%>
-		<% for object in objects -%>
+		<%# objects = ObjectActivity.all().sort { |a,b| b.updated_at <=> a.updated_at } -%>
+		<% for object in @objects -%>
 		<% if @show_all == 'true' || object.updated_at > 30.days.ago -%>
 		<tr>
 			<td><%= object.username %></td>

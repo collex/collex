@@ -83,7 +83,11 @@ class ObjectActivity < ActiveRecord::Base
 			cr = CachedResource.find_by_uri(rec.uri)
 			if cr
 				cp = CachedProperty.find_by_cached_resource_id_and_name(cr.id, 'archive')
-				archive = cp['value']
+				if cp
+					archive = cp['value']
+				else
+					archive = "RESOURCE NOT FOUND"
+				end
 			else
 				archive = "RESOURCE NOT FOUND"
 			end
