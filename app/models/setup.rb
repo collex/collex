@@ -248,4 +248,13 @@ class Setup < ActiveRecord::Base
       return 'Access'
     end
   end
+	def self.footer_signature_text
+		value = globals()['footer_signature_text']
+		if value and value.strip() != ''
+			return value
+		else
+			return ''
+		end
+	end
+
 end

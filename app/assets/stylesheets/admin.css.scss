@@ -191,10 +191,14 @@ body.pg-admin {
 	font-weight: bold;
 }
 
-.setup_container table input[type="text"], .setup_container table input[type="password"] {
+.setup_container table input[type="text"], .setup_container table input[type="password"], .setup_container table textarea {
 	width: 300px;
 	font: 15px arial,helvetica,clean,sans-serif;
 }
+
+	.setup_container table textarea {
+		height: 170px;
+	}
 
 .setup_container tr.hoverable:hover {
     background: #F5F5DC;

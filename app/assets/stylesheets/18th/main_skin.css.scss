@@ -132,8 +132,23 @@ body.federation-18th {
 }
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
-	color:#445a93;
+	//color:#445a93;
+	color: #ffffff;
+	text-decoration: none;
+	&:hover {
+		text-decoration: underline;
+	}
 }
+
+	#footer_container .sponsor-logo {
+		width: 90px;
+		height: 18px;
+		background-position: 0 -14px;
+		margin-top: 8px;
+		display: inline-block;
+		background-image: image-url("18th/TAMU-logo-white.png");
+		background-size: 90px 48px;
+	}
 
 .login_div {
 	background-image:image-url('18th/login_header.jpg');

@@ -146,6 +146,10 @@
                      "Enter a value to display as the label for the Genre facet.",
                      "Genre") %>
 
+	  <%= setup_table_header("Footer Signature") %>
+	  <%= setup_line("HTML for footer signature:", "footer_signature_text", @setups,
+					 "Enter the HTML that you would like to appear in the footer signature. Typically this would be credits or a copyright notice.",
+					 "none", :textarea) %>
 	</table>
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>

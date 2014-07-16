@@ -20,12 +20,16 @@ module Admin::SetupsHelper
 		end
 	end
 
-	def setup_line(label, field, rec, explanation, example)
+	def setup_line(label, field, rec, explanation, example, control = :input)
 		typ = field.include?('password') ? 'password' : 'text'
 		html = content_tag(:tr, class: 'row') do
 			content_tag(:td, label) +
 				content_tag(:td) do
-					content_tag(:input, "", { id: "setups_#{field}", name: "setups[#{field}]", value: rec[field], type: typ })
+					if control == :textarea
+						content_tag(control, rec[field], { id: "setups_#{field}", name: "setups[#{field}]" })
+					else
+						content_tag(control, "", { id: "setups_#{field}", name: "setups[#{field}]", value: rec[field], type: typ })
+					end
 				end
 		end + content_tag(:tr, { class: 'instructions' }) do
 			content_tag(:td, explanation) +

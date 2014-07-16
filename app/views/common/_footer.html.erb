@@ -19,6 +19,11 @@
 <% end %>
 
 <div id="footer_container">
+  <% if Setup.footer_signature_text().length > 0 %>
+  <div class="signature"><%= raw(Setup.footer_signature_text()) %>
+	<br/><span class="sponsor-logo"></span>
+  </div>
+  <% end %>
      <%= Setup.site_name() %>: aggregating
      <%= info %>
 	 <br/>Questions? Find a bug? <a class="nav_link nospam" href="<%= Setup.webmaster_email() %>">Contact us</a>.

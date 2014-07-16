@@ -100,8 +100,17 @@ table, table td, table tr {
 #footer_container {
 	font-family:Arial, Helvetica, sans-serif;
 	padding:10px 0px 10px 0px;
-	text-align:center;
+	text-align:left;
+	margin-left: 34px;
 	background:#000000;
+
+	.signature {
+		float: right;
+		text-align: left;
+		margin-left: 24px;
+		margin-right: 34px;
+		font-size: 11px;
+	}
 }
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
