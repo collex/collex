@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130812173759) do
+ActiveRecord::Schema.define(:version => 20140715210742) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -413,7 +413,7 @@ ActiveRecord::Schema.define(:version => 20130812173759) do
 
   create_table "setups", :force => true do |t|
     t.string   "key"
-    t.string   "value"
+    t.text     "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
