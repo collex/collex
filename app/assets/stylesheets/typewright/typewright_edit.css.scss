@@ -544,14 +544,18 @@ table.tw_editing td {
 #tw_walkthrough {
 }
 
-#tw_survey {
-    margin-left: 100px;
-}
+	.tw_link_list {
+		list-style: none;
+		text-align: center;
+		li {
+			display: inline-block;
+			margin-right: 60px;
+		}
+	}
 
-#tw_detailed_instructions {
-  position: relative;
-  left: 100px;
-}
+	.tw_tutorial_link {
+		text-align: center;
+	}
 
 .tw_edit_instructions_popup {
 	width: 800px;
