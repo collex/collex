@@ -174,7 +174,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       }
 
       // Get the original/full size of the image so we know how to much to scale.
-      imgCursor.update();
+      imgCursor.update(currLine);
+		if (imgBoxResize) {
+			imgBoxResize.destroy();
+			imgBoxResize = undefined;
+		}
    }
 
    function change_line_abs(newLineNum) {
@@ -242,7 +246,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    //
 
    Y.on("click", function(e) {
-      if ( updateInProcess == false ) {
+      if ( updateInProcess === false ) {
          if (line.hasChanged(currLine)) {
             change_line_rel(1);
          } else {
@@ -423,4 +427,33 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       redraw();
    }, window);
 
+	//
+	// Thumbnail cursor resize
+	//
+	var imgBoxResize;
+	Y.on("click", function(e) {
+		if (imgBoxResize) {
+			imgBoxResize.destroy();
+			imgBoxResize = undefined;
+		} else {
+			imgBoxResize = new Y.Resize({
+				//Selector of the node to resize
+				node : '#tw_pointer_doc'
+			});
+			imgBoxResize.plug(Y.Plugin.ResizeConstrained, {
+				constrain: '#tw_img_full',
+				minHeight: 16,
+				minWidth: 50
+			});
+			imgBoxResize.on('resize:end', function(e) {
+				var box = imgCursor.getBox(currLine);
+				if (box) {
+					line.setRect(currLine, box);
+					e.preventDefault();
+					e.stopPropagation();
+				}
+			});
+		}
+		e.halt();
+	}, ".tw_resize_box");
 });

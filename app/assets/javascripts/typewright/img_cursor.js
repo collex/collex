@@ -1,10 +1,17 @@
-// cursor.js
+// img_cursor.js
 //
-// Requires the global variable currLine to contain the current line number.
+// This is called on page load to create the imgCursor object.
+// The imgCursor object handles drawing the two red boxes.
+// One red box is over the thumbnail of the entire image and is called the "thumbnail cursor".
+// The other red box is over the magnified image and is called the "image cursor".
+//
+// It also has a click handler to start and stop the resizing of the red box in the small document overview image.
+// imgCursor.convertThumbToOrig() is called when a user clicks in the thumbnail: this figures out which line was clicked.
+// imgCursor.update() is called when the line changes to move the cursor.
+// imgCursor.getBox() is called when the user finishes moving the thumbnail.
+//
 // Requires the object 'line' to handle all getting and setting values for the set of data.
 
-/*global currLine */
-/*global YUI */
 /*global line */
 /*global imgWidth, imgHeight*/
 
@@ -61,9 +68,9 @@ var createImageCursor = function(Y) {
 //      });
 //   }
 
-   function setThumbnailCursor(scaling) {
+   function setThumbnailCursor(scaling, currentLine) {
       var pointer = Y.one('#tw_pointer_thumb');
-      var rect = line.getRect(currLine);
+      var rect = line.getRect(currentLine);
       var left = rect.l * scaling.xFactorThumb + scaling.ofsXThumb;
       var top = rect.t * scaling.yFactorThumb + scaling.ofsYThumb;
       var width = (rect.r - rect.l);
@@ -115,7 +122,7 @@ var createImageCursor = function(Y) {
       }
    }
 
-   function getImageVars(scaling) {
+   function getImageVars(scaling, currentLine) {
       // Get the scaling and offset of the larger image.
       // Also get the height of the window so we know how to scroll.
 
@@ -134,7 +141,7 @@ var createImageCursor = function(Y) {
       imageVars.ratio = imageVars.displaySize.width / scaling.origWidth;
 
       // Get the absolute coordinates of the current line, then scale them to the size of the visible window.
-      var rect = line.getRect(currLine);
+      var rect = line.getRect(currentLine);
       imageVars.left = rect.l * imageVars.ratio;
       imageVars.top = rect.t * imageVars.ratio;
       imageVars.width = (rect.r - rect.l) * imageVars.ratio;
@@ -161,41 +168,13 @@ var createImageCursor = function(Y) {
       return imageVars;
    }
 
-   function setImageCursor(scaling) {
-      var imageVars = getImageVars(scaling);
+   function setImageCursor(scaling, currentLine) {
+      var imageVars = getImageVars(scaling, currentLine);
 
       setImages(imageVars.imgs, imageVars.sector);
 
       setPointer('#tw_pointer_doc', imageVars.left, imageVars.top, imageVars.width, imageVars.height, imageVars.ofsX, imageVars.ofsY, imageVars.scrollY);
    }
-
-
-   var imgBoxResize;
-   Y.on("click", function(e) {
-      if (imgBoxResize) {
-         imgBoxResize.destroy();
-         imgBoxResize = undefined;
-      } else {
-         imgBoxResize = new Y.Resize({
-            //Selector of the node to resize
-            node : '#tw_pointer_doc'
-         });
-         imgBoxResize.plug(Y.Plugin.ResizeConstrained, {
-            constrain: '#tw_img_full',
-            minHeight: 16,
-            minWidth: 50
-         });
-         imgBoxResize.on('resize:end', function(e) {
-            var box = imgCursor.getBox();
-            if (box) {
-               line.setRect(currLine, box);
-               e.preventDefault();
-               e.stopPropagation();
-            }
-         });
-      }
-      e.halt();
-   }, ".tw_resize_box");
 
    var imgCursor = {
       convertThumbToOrig : function(x, y) {
@@ -206,21 +185,17 @@ var createImageCursor = function(Y) {
          };
       },
 
-      update : function() {
+      update : function(currentLine) {
          var scaling = get_scaling();
 
          // Move the cursor for the thumbnail image.
-         setThumbnailCursor(scaling);
+         setThumbnailCursor(scaling, currentLine);
 
-         setImageCursor(scaling);
+         setImageCursor(scaling, currentLine);
 
-         if (imgBoxResize) {
-            imgBoxResize.destroy();
-            imgBoxResize = undefined;
-         }
       },
 
-      getBox : function() {
+      getBox : function(currentLine) {
          var box = Y.one("#tw_pointer_doc");
          var left = box.getStyle('left').replace("px", "");
          var top = box.getStyle('top').replace("px", "");
@@ -234,7 +209,7 @@ var createImageCursor = function(Y) {
             return null;
             // There was no change, so don't report box data
          }
-         var imageVars = getImageVars(get_scaling());
+         var imageVars = getImageVars(get_scaling(), currentLine);
          var out=  {
             l : (parseInt(left,10) - imageVars.ofsX) / imageVars.ratio,
             t : (parseInt(top,10) - imageVars.ofsY + imageVars.scrollY) / imageVars.ratio,
