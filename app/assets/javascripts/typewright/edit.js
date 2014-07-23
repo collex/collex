@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	"use strict";
-   jQuery(".tw_edit_page_nav_buttom .tw-complete-btn").on("click", function() {
+   jQuery(".tw_edit_page_nav_button .tw-complete-btn").on("click", function() {
       jQuery.ajax({
          url : "/typewright/documents/"+doc_id+"/complete",
          type : 'POST',
