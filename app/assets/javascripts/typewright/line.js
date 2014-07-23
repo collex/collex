@@ -138,11 +138,11 @@ var line = {
 	},
 
 	setRect: function(num, rect) {
-	   lines[num].l = Math.round(rect.l);
-	   lines[num].r = Math.round(rect.r);
-	   lines[num].t = Math.round(rect.t);
-	   lines[num].b = Math.round(rect.b);
-	   lines[num].box_size = 'changed';
+		lines[num].l = Math.round(rect.l);
+		lines[num].r = Math.round(rect.r);
+		lines[num].t = Math.round(rect.t);
+		lines[num].b = Math.round(rect.b);
+		lines[num].box_size = 'changed';
 	},
 
 	// Call this to get the form of the data that can be sent back to the server.
@@ -160,7 +160,7 @@ var line = {
          }
 			if (lines[num].box_size === 'changed') {
 				params.box = { l:lines[num].l, r:lines[num].r, t:lines[num].t, b:lines[num].b };
-		   }
+			}
 		} else if (lines[num].box_size === 'changed') {
 			params.status = 'change';
 			params.words = lines[num].words;
@@ -168,7 +168,7 @@ var line = {
 		}
 		else {
 			params.status = 'undo';
-	   }
+		}
 		params.line = this.getLineNum(num);
       params.src = lines[num].src;
 		return params;

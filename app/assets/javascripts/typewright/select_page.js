@@ -7,6 +7,7 @@
 /*global window */
 
 YUI().use('node', function(Y) {
+	"use strict";
 	function select_page(node) {
 		var url = node._node.getAttribute('data-url');
 		var sel = node._node.value;

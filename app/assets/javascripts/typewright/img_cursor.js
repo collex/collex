@@ -9,6 +9,7 @@
 /*global imgWidth, imgHeight*/
 
 var createImageCursor = function(Y) {
+	"use strict";
 
    function get_scaling() {
       // Get the scaling and offset of the thumbnail image.
@@ -38,7 +39,7 @@ var createImageCursor = function(Y) {
          width = 100;
       }
       if ( height < 0) {
-         height: 20;
+         height = 20;
       }
       pointer.setStyles({
          left : pLeft + 'px',
@@ -53,12 +54,12 @@ var createImageCursor = function(Y) {
       pointer.setAttribute('data-orig-height', height);
    }
 
-   function hidePointer(id) {
-      var pointer = Y.one(id);
-      pointer.setStyles({
-         display : 'none'
-      });
-   }
+//   function hidePointer(id) {
+//      var pointer = Y.one(id);
+//      pointer.setStyles({
+//         display : 'none'
+//      });
+//   }
 
    function setThumbnailCursor(scaling) {
       var pointer = Y.one('#tw_pointer_thumb');
@@ -73,7 +74,7 @@ var createImageCursor = function(Y) {
 
       var height = (rect.b - rect.t);
       if ( height < 0) {
-         height: 20;
+         height = 20;
       }
       height = height  * scaling.yFactorThumb;
       pointer.setStyles({
@@ -142,7 +143,7 @@ var createImageCursor = function(Y) {
       // Now we have the coordinates for the window, if the entire image were shown.
       // Figure out how much to scroll to get the cursor in the visible part.
       var midCursor = imageVars.top + imageVars.height / 2;
-      var midWindow = imageVars.displaySize.height / 2;
+      //var midWindow = imageVars.displaySize.height / 2;
       imageVars.sector = midCursor / imageVars.sectorSize;
       imageVars.sector = Math.round(imageVars.sector);
 
@@ -234,7 +235,7 @@ var createImageCursor = function(Y) {
             // There was no change, so don't report box data
          }
          var imageVars = getImageVars(get_scaling());
-         out=  {
+         var out=  {
             l : (parseInt(left,10) - imageVars.ofsX) / imageVars.ratio,
             t : (parseInt(top,10) - imageVars.ofsY + imageVars.scrollY) / imageVars.ratio,
             r : (parseInt(width,10) + parseInt(left,10) - imageVars.ofsX) / imageVars.ratio,

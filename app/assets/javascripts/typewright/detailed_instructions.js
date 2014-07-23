@@ -7,6 +7,7 @@
 /*global showPartialInLightBox */
 
 YUI().use('node', function(Y) {
+	"use strict";
 	function display_lightbox(node) {
 		var url = node._node.getAttribute('data-url');
 		showPartialInLightBox(url, 'Basic Tool Overview', '/assets/ajax_loader.gif');

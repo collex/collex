@@ -3,6 +3,7 @@
 /*global line */
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
+	"use strict";
 
 	function find(dlg) {
 		var data = dlg.getAllData();
@@ -50,7 +51,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
 
 	var kH = 72;
 
-    Y.on("click", function(e) {
+    Y.on("click", function() {
 		find_dlg();
     }, ".tw_find_button");
 

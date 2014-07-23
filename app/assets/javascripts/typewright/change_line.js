@@ -14,6 +14,7 @@
 /*global doc_id, page, updateUrl, imgWidth, imgHeight, createImageCursor */
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', 'resize', function(Y) {
+	"use strict";
    var imgCursor;
    var updateInProcess = false;
 

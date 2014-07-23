@@ -1,6 +1,7 @@
 jQuery(document).ready(function() {
-   
-   var showWaitPopup = function( ) {
+	"use strict";
+
+	var showWaitPopup = function( ) {
       jQuery('#dim-overlay').show();
       jQuery("#wait-spinner").show();
       jQuery('#wait-popup').show();
@@ -68,7 +69,7 @@ jQuery(document).ready(function() {
       } 
 
       var url = "/typewright/overviews?sort="+sortBy+"&order="+order+filter;
-      if ( jQuery("#curr_view").text() == "users") {
+      if ( jQuery("#curr_view").text() === "users") {
          url = "/typewright/overviews?view=users&sort="+sortBy+"&order="+order+filter;
       }
       window.location = url;
@@ -108,7 +109,7 @@ jQuery(document).ready(function() {
       var docId = jQuery(this).attr("id").substring("tw_save_status_".length);
       var newStat = jQuery(this).parent().find('select').val();
       var statusTxt = "No";
-      if ( newStat == "complete" ) {
+      if ( newStat === "complete" ) {
          statusTxt = "Confirmed complete";
       }
       

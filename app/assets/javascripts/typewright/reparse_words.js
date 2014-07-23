@@ -24,6 +24,7 @@
 /*global document */
 
 function reparseWords(newText, origWords) {
+	"use strict";
 	function google_diff(text1, text2) {
 		// This returns an array that contains all the 'events'. The events are: no_change, change, deleted, inserted, split, combined.
 		// The other item in the array depends on the event:
