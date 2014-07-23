@@ -1,13 +1,13 @@
 <% current_page "TypeWright" -%>
 <script type="text/javascript">
-	var lines = <%= raw(@params[:lines].to_json()) %>;
-	var currLine = <%= @params['starting_line'] %>;
-	var doc_id = <%= @params[:doc_id] %>;
-	var page = <%= @params[:page] %>;
-	var showDebugItems = <%= @debugging ? 'true' : 'false' %>;
-	var updateUrl = "/typewright/lines/"+doc_id;
-	var imgWidth = <%= @params[:img_size][:width] %>;
-	var imgHeight = <%= @params[:img_size][:height] %>;
+	TW.lines = <%= raw(@params[:lines].to_json()) %>;
+	TW.currLine = <%= @params['starting_line'] %>;
+	TW.doc_id = <%= @params[:doc_id] %>;
+	TW.page = <%= @params[:page] %>;
+	TW.showDebugItems = <%= @debugging ? 'true' : 'false' %>;
+	TW.updateUrl = "/typewright/lines/" + TW.doc_id;
+	TW.imgWidth = <%= @params[:img_size][:width] %>;
+	TW.imgHeight = <%= @params[:img_size][:height] %>;
 </script>
 
 

@@ -1,8 +1,10 @@
+/*globals TW, alert */
+
 jQuery(document).ready(function() {
 	"use strict";
    jQuery(".tw_edit_page_nav_button .tw-complete-btn").on("click", function() {
       jQuery.ajax({
-         url : "/typewright/documents/"+doc_id+"/complete",
+         url : "/typewright/documents/"+TW.doc_id+"/complete",
          type : 'POST',
          beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));},
          success : function(resp, textStatus, jqXHR) {

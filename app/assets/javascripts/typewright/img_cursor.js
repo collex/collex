@@ -10,12 +10,11 @@
 // imgCursor.update() is called when the line changes to move the cursor.
 // imgCursor.getBox() is called when the user finishes moving the thumbnail.
 //
-// Requires the object 'line' to handle all getting and setting values for the set of data.
+// Requires the object 'TW.line' to handle all getting and setting values for the set of data.
 
-/*global line */
-/*global imgWidth, imgHeight*/
+/*global TW */
 
-var createImageCursor = function(Y) {
+TW.createImageCursor = function(Y) {
 	"use strict";
 
    function get_scaling() {
@@ -27,10 +26,10 @@ var createImageCursor = function(Y) {
          width : imgThumb._node.width,
          height : imgThumb._node.height
       };
-      var xFactorThumb = displaySizeThumb.width / imgWidth;
-      var yFactorThumb = displaySizeThumb.height / imgHeight;
+      var xFactorThumb = displaySizeThumb.width / TW.imgWidth;
+      var yFactorThumb = displaySizeThumb.height / TW.imgHeight;
       return {
-         origWidth : imgWidth,
+         origWidth : TW.imgWidth,
          ofsXThumb : ofsXThumb,
          ofsYThumb : ofsYThumb,
          xFactorThumb : xFactorThumb,
@@ -70,7 +69,7 @@ var createImageCursor = function(Y) {
 
    function setThumbnailCursor(scaling, currentLine) {
       var pointer = Y.one('#tw_pointer_thumb');
-      var rect = line.getRect(currentLine);
+      var rect = TW.line.getRect(currentLine);
       var left = rect.l * scaling.xFactorThumb + scaling.ofsXThumb;
       var top = rect.t * scaling.yFactorThumb + scaling.ofsYThumb;
       var width = (rect.r - rect.l);
@@ -141,7 +140,7 @@ var createImageCursor = function(Y) {
       imageVars.ratio = imageVars.displaySize.width / scaling.origWidth;
 
       // Get the absolute coordinates of the current line, then scale them to the size of the visible window.
-      var rect = line.getRect(currentLine);
+      var rect = TW.line.getRect(currentLine);
       imageVars.left = rect.l * imageVars.ratio;
       imageVars.top = rect.t * imageVars.ratio;
       imageVars.width = (rect.r - rect.l) * imageVars.ratio;
@@ -154,7 +153,7 @@ var createImageCursor = function(Y) {
       imageVars.sector = midCursor / imageVars.sectorSize;
       imageVars.sector = Math.round(imageVars.sector);
 
-      var maxSector = imgHeight*imageVars.ratio / imageVars.sectorSize;
+      var maxSector = TW.imgHeight*imageVars.ratio / imageVars.sectorSize;
       maxSector = Math.round(maxSector);
 
       // sector is the image number that should be in the middle.
@@ -216,9 +215,9 @@ var createImageCursor = function(Y) {
             r : (parseInt(width,10) + parseInt(left,10) - imageVars.ofsX) / imageVars.ratio,
             b : (parseInt(height,10) + parseInt(top,10) - imageVars.ofsY + imageVars.scrollY) / imageVars.ratio
          };
-         var del = imgHeight - out.b;
+         var del = TW.imgHeight - out.b;
          if ( del < 0 ) {
-            out.b = Math.min(out.b, imgHeight);
+            out.b = Math.min(out.b, TW.imgHeight);
             box.setStyle("height",((out.b-out.t)*imageVars.ratio)+"px");
          }
          out.t = Math.max(out.t, 0);

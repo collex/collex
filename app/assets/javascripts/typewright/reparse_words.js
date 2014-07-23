@@ -20,8 +20,7 @@
 
 /*extern reparseWords */
 /*global Diff_match_patch */
-/*global showDebugItems */
-/*global document */
+/*global TW */
 
 function reparseWords(newText, origWords) {
 	"use strict";
@@ -305,7 +304,7 @@ function reparseWords(newText, origWords) {
 	var words = wordify(newText);
 
 	var changes = google_diff(origString(origWords), words.join(' '));
-	if (showDebugItems)
+	if (TW.showDebugItems)
 		debug(changes);
 
 	return convertChangesToOutput(changes, origWords);
