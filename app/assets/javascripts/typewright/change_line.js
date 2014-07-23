@@ -63,6 +63,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }
 
    var updateServerSync = function() {
+		// TODO-PER: Originally this was needed to do something extra when the page was about to unload. Originally this caused the "sync: true" to be set.
       updateServer();
    };
 

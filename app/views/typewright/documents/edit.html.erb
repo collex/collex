@@ -1,5 +1,34 @@
 <% current_page "TypeWright" -%>
 <script type="text/javascript">
+  // All of the TypeWright data for a page is in the TW.lines variable.
+  // This is an array, one item for each identified rectangle on the page. Mostly, the rectangle should define a line,
+  // but there are exceptions, when the document is particularly noisy, or when there are two columns on the page, for instance.
+  //
+  // Each item represents one line and is a hash, containing the following:
+  // "l", "t", "r", "b": the bounding rectangle of this line.
+  // "num": the line number, starting at one, and generally an integer, but may be a decimal if a line has been inserted by an end user.
+  // "line","paragraph": not used by the TW javascript
+  // "src": Where the OCR came from. This isn't processed by the javascript, but it is passed back to the server with any user change.
+  // "authors", "text", "dates", "actions", "word": Arrays describing the modifications to this line. These arrays are always the same length.
+  // The first item in these arrays describe the original text from the OCR. The data for this item is:
+  // authors[0] = "Original"
+  // text[0] = the OCRs text
+  // dates[0] = ""
+  // actions[0] = "original"
+  // words[0] = the original word data (see below for format)
+  //
+  // For the rest of the items in those arrays:
+  // authors: the user name of the person making the change.
+  // dates: the date of the change expressed as "Jan 1, 2000 12:00pm"
+  // text: the text of the entire line, as typed by the user
+  // actions: one of "change", "delete", "insert", "correct"
+  // words: array of each word inferred from the user's input. This is a hash with the elements:
+  //
+  // "l", "t", "r", "b": the bounding rectangle of this word.
+  // "word": the text of the word
+  // "line", "paragraph", "src": not used by the TW javascript
+  //
+  // NOTE: As the user manipulates the page, the TW.lines array will be modified. See line.js for details about the modifications.
 	TW.lines = <%= raw(@params[:lines].to_json()) %>;
 	TW.currLine = <%= @params['starting_line'] %>;
 	TW.doc_id = <%= @params[:doc_id] %>;

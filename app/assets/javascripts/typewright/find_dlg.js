@@ -1,6 +1,6 @@
 /*global YUI */
 /*global dialogMaker */
-/*global line */
+/*global TW */
 
 YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
 	"use strict";
@@ -12,8 +12,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
 
 		var found = false;
 		var i = 0;
-		while (!line.isLast(i)) {
-			var text = line.getCurrentText(i);
+		while (!TW.line.isLast(i)) {
+			var text = TW.line.getCurrentText(i);
 			if (text && text.toLowerCase().indexOf(matchString) >= 0) {
 				Y.Global.fire('changeLine:highlight', i, data.find);
 				found = true;

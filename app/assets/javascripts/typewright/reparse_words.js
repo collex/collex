@@ -18,11 +18,10 @@
 //		A word is split into two: the new words split the coordinates of the original word.
 //		Two words are combined:  the new word gets the union of the old two words.
 
-/*extern reparseWords */
 /*global Diff_match_patch */
 /*global TW */
 
-function reparseWords(newText, origWords) {
+TW.reparseWords = function(newText, origWords) {
 	"use strict";
 	function google_diff(text1, text2) {
 		// This returns an array that contains all the 'events'. The events are: no_change, change, deleted, inserted, split, combined.
@@ -308,5 +307,5 @@ function reparseWords(newText, origWords) {
 		debug(changes);
 
 	return convertChangesToOutput(changes, origWords);
-}
+};
 

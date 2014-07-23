@@ -3,10 +3,17 @@
 // This class contains no state itself, but serves to manipulate the array of TW.lines, both accessing it and modifying it.
 // There should be no other access to the "TW.lines" variable outside this file.
 //
-// Requires a global variable 'TW.lines' to contain an array of all the line data, with each element containing { x:, y:, h:, w:, word: }
+// Requires a global variable 'TW.lines' to contain an array of all the line data. See typewright/documents/edit.html.erb for details on the structure.
+// There are functions in this file that modify the TW.lines array. These are the modifications:
+// 1) A new line can be inserted anywhere in the array.
+// 2) A new element can be attached to a line. This is named "change" and is a hash of:
+// { type: 'change' / 'correct' / 'delete'
+//   text: new text,
+//   words: word array;
+// 3) A new element can be attached to a line. This is named "undo" and is a copy of the "change" element.
+// 4) l, r, t, b can be modified, and the element .box_size = 'changed'
 
 /*global TW */
-/*global reparseWords */
 
 jQuery(document).ready(function() {
 	"use strict";
@@ -42,6 +49,7 @@ jQuery(document).ready(function() {
 				b = mid + 15;
 			}
 			var newLine = before + (after - before) / 2;
+			// TODO-PER: src should be set to the same thing as the lines around it, shouldn't it? Also, couldn't src be global -- it shouldn't change for each line?
 			TW.lines.splice(num, 0, { src: "gale", l: l, t: t, r: r, b: b, words: [
 				[ ]
 			], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed' });
@@ -132,7 +140,7 @@ jQuery(document).ready(function() {
 				}
 			} else {
 				var origWords = TW.lines[num].words[TW.lines[num].words.length - 1];
-				TW.lines[num].change = { type: 'change', text: newText, words: reparseWords(newText, origWords) };
+				TW.lines[num].change = { type: 'change', text: newText, words: TW.reparseWords(newText, origWords) };
 				return true;
 			}
 			return false;
