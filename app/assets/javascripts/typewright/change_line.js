@@ -107,9 +107,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
       var displayLine = TW.line.getCurrentText(TW.currLine).replace(/\"/g, "&quot;");
 
       var editingLine = Y.one("#tw_editing_line");
-      if (TW.line.isDeleted(TW.currLine)) {
+      if (TW.line.isJustDeleted(TW.currLine)) {
          editingLine.setHTML("<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />");
-      } else {
+      } else if (TW.line.isDeleted(TW.currLine)) {
+			editingLine.setHTML("<input id=\"tw_input_focus\" class=\"tw_deleted_line_text\" type=\"text\" value=\"\" placeholder='" + displayLine + "' />");
+		} else {
          editingLine.setHTML( "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />");
       }
 

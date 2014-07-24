@@ -64,8 +64,24 @@ jQuery(document).ready(function() {
 		canUndo: function(num) { return TW.lines[num].change !== undefined; },
 		canRedo: function(num) { return TW.lines[num].undo !== undefined; },
 		hasChanged: function(num) { return (TW.lines[num].change && TW.lines[num].change.type === 'change') || (TW.lines[num].box_size === 'changed'); },
-		getChangeType: function(num) { return TW.lines[num].change ? TW.lines[num].change.type : null; },
-		isDeleted: function(num) { return TW.lines[num].change && TW.lines[num].change.type === 'delete'; },
+		getLastAction: function(num) {
+			if (!TW.lines[num].actions)
+				return null;
+			return TW.lines[num].actions[TW.lines[num].actions.length-1];
+		},
+		getChangeType: function(num) {
+			if (TW.lines[num].change)
+				return TW.lines[num].change.type;
+			if (TW.line.getLastAction(num) === 'delete')
+				return 'delete';
+			return null;
+		},
+		isJustDeleted: function(num) { return TW.lines[num].change && TW.lines[num].change.type === 'delete'; },
+		isDeleted: function(num) {
+			if (TW.line.isJustDeleted(num))
+				return true;
+			return TW.line.getLastAction(num) === 'delete';
+		},
 		getLineNum: function(num) { return TW.lines[num].num; },
 //		getTextHistory: function(num) { return TW.lines[num].text.join("<br />"); },
 		getStartingText: function(num) { return TW.lines[num].text[TW.lines[num].text.length - 1]; },
@@ -75,6 +91,8 @@ jQuery(document).ready(function() {
 			var ret;
 			if (TW.lines[num].change && TW.lines[num].change.type === 'change')
 				ret = TW.lines[num].change.text;
+			else if (TW.line.isDeleted(num))
+				ret = TW.lines[num].text[0];	// When an item is deleted, we want to show the original text crossed out.
 			else
 				ret = TW.lines[num].text[TW.lines[num].text.length - 1];
 			if (ret === null || ret === undefined) ret = "";

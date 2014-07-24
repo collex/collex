@@ -151,6 +151,22 @@ input.tw_deleted_line {
 	background-color: #cccccc;
 }
 
+	.tw_deleted_line_text::-webkit-input-placeholder {
+		text-decoration: line-through;
+	}
+
+	.tw_deleted_line_text:-moz-placeholder { /* Firefox 18- */
+		text-decoration: line-through;
+	}
+
+	.tw_deleted_line_text::-moz-placeholder {  /* Firefox 19+ */
+		text-decoration: line-through;
+	}
+
+	.tw_deleted_line_text:-ms-input-placeholder {
+		text-decoration: line-through;
+	}
+
 .tw_icon {
 	font-family: 'Verdana', sans-serif;
 	font-size: .7em;
