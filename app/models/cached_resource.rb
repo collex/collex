@@ -502,32 +502,41 @@ class CachedResource < ActiveRecord::Base
 			return results
   end
 
+  def self.fill_hit(resource_id)
+	  hit = {}
+	  properties = CachedProperty.find_all_by_cached_resource_id(resource_id)
+	  properties.each { |property|
+
+		  hit[property.name] = [] if !hit[property.name]
+
+		  if property.name != 'text' # make sure that full text never gets shown, even if it is mistakenly collected.
+			  hit[property.name].insert(-1, property.value)
+		  end
+	  }
+	return hit
+  end
 	public
 
 	def self.get_hit_from_resource_id(resource_id)
-		hit = {}
 		uri = CachedResource.find_by_id(resource_id)
 		return nil if uri == nil
-		properties = CachedProperty.find_all_by_cached_resource_id(resource_id)
-		properties.each { |property|
-
-			hit[property.name] = [] if !hit[property.name]
-
-			if property.name != 'text' # make sure that full text never gets shown, even if it is mistakenly collected.
-				hit[property.name].insert(-1, property.value)
-			end
-		}
+		hit = CachedResource.fill_hit(resource_id)
+		if hit['title'].blank?
+			# The object must have been improperly cached, so attempt to cache it again.
+			uri.recache_properties()
+			hit = CachedResource.fill_hit(resource_id)
+		end
 		hit['uri'] = uri.uri
 		# some fields are not multivalued, so they shouldn't be arrays
-		hit['archive'] = hit['archive'][0] if hit['archive']
-		hit['freeculture'] = hit['freeculture'][0] if hit['freeculture']
-		hit['image'] = hit['image'][0] if hit['image']
-		hit['thumbnail'] = hit['thumbnail'][0] if hit['thumbnail']
-		hit['title'] = hit['title'][0] if hit['title']
-		hit['url'] = hit['url'][0] if hit['url']
-		hit['has_full_text'] = hit['has_full_text'][0] if hit['has_full_text']
-		hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr']
-		hit['typewright'] = hit['typewright'][0] if hit['typewright']
+		hit['archive'] = hit['archive'][0] if hit['archive'].present? && hit['archive'].kind_of?(Array)
+		hit['freeculture'] = hit['freeculture'][0] if hit['freeculture'].present? && hit['freeculture'].kind_of?(Array)
+		hit['image'] = hit['image'][0] if hit['image'].present? && hit['image'].kind_of?(Array)
+		hit['thumbnail'] = hit['thumbnail'][0] if hit['thumbnail'].present? && hit['thumbnail'].kind_of?(Array)
+		hit['title'] = hit['title'][0] if hit['title'].present? && hit['title'].kind_of?(Array)
+		hit['url'] = hit['url'][0] if hit['url'].present? && hit['url'].kind_of?(Array)
+		hit['has_full_text'] = hit['has_full_text'][0] if hit['has_full_text'].present? && hit['has_full_text'].kind_of?(Array)
+		hit['is_ocr'] = hit['is_ocr'][0] if hit['is_ocr'].present? && hit['is_ocr'].kind_of?(Array)
+		hit['typewright'] = hit['typewright'][0] if hit['typewright'].present? && hit['typewright'].kind_of?(Array)
 		return hit
   end
 
