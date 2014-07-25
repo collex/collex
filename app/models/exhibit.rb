@@ -813,10 +813,10 @@ class Exhibit < ActiveRecord::Base
 	public
 
 	def self.index_all_peer_reviewed
-		groups = Group.find_all_by_group_type('peer-reviewed')
+		groups = Group.where({group_type: 'peer-reviewed'})
 		exhibits = []
 		groups.each {|group|
-			exhibits += Exhibit.find_all_by_group_id_and_is_published(group.id, 1)
+			exhibits += Exhibit.where({group_id: group.id, is_published: 1})
 		}
 		exhibits.each{ |exhibit|
 			should_commit = exhibit.id == exhibits.last.id
@@ -970,7 +970,7 @@ class Exhibit < ActiveRecord::Base
 	end
 
 	def self.adjust_indexing_all(group_id, typ)
-		exhibits = self.find_all_by_group_id(group_id)
+		exhibits = self.where({group_id: group_id})
 		exhibits.each { |exhibit|
 			exhibit.adjust_indexing(typ, exhibit == exhibits.last)
 		}

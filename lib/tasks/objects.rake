@@ -31,18 +31,18 @@ namespace :objects do
 
 		cr_southey.each { |cr|
 			puts "Item: #{cr.uri}"
-			recs = CollectedItem.find_all_by_cached_resource_id(cr.id)
+			recs = CollectedItem.where({cached_resource_id: cr.id})
 			recs.each {|rec|
 				user = User.find(rec.user_id)
 				puts "    User: #{user.id}.#{user.username} collected"
 			}
 
-			recs = DiscussionComment.find_all_by_cached_resource_id(cr.id)
+			recs = DiscussionComment.where({cached_resource_id: cr.id})
 			recs.each {|rec|
 				puts "    Discussion comment #{rec.id}"
 			}
 
-			recs = Tagassign.find_all_by_cached_resource_id(cr.id)
+			recs = Tagassign.where({cached_resource_id: cr.id})
 			recs.each {|rec|
 				tag = Tag.find(rec.tag_id)
 				puts "    Tag #{tag.name}"
@@ -69,7 +69,7 @@ namespace :objects do
 		cr_southey.each { |cr|
 			puts "Item: #{cr.uri}"
 			found_one = false
-			recs = CollectedItem.find_all_by_cached_resource_id(cr.id)
+			recs = CollectedItem.where({cached_resource_id: cr.id})
 			recs.each {|rec|
 				#if rec.user_id == target_user_id
 					rec.destroy()
@@ -81,13 +81,13 @@ namespace :objects do
 #				end
 			}
 
-			recs = DiscussionComment.find_all_by_cached_resource_id(cr.id)
+			recs = DiscussionComment.where({cached_resource_id: cr.id})
 			recs.each {|rec|
 				puts "    Discussion comment #{rec.id}"
 				found_one = true
 			}
 
-			recs = Tagassign.find_all_by_cached_resource_id(cr.id)
+			recs = Tagassign.where({cached_resource_id: cr.id})
 			recs.each {|rec|
 #				if rec.user_id == target_user_id
 					rec.destroy()

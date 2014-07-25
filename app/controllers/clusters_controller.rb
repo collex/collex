@@ -237,12 +237,12 @@ end
     @cluster.destroy
 
 		# Also remove the exhibits and discussions from being in the cluster.
-		exhibits = Exhibit.find_all_by_cluster_id(params[:id])
+		exhibits = Exhibit.where({cluster_id: params[:id]})
 		exhibits.each { |exhibit|
 			exhibit.cluster_id = nil
 			exhibit.save!
 		}
-		threads = DiscussionThread.find_all_by_cluster_id(params[:id])
+		threads = DiscussionThread.where({cluster_id: params[:id]})
 		threads.each { |thread|
 			thread.cluster_id = nil
 			thread.save!

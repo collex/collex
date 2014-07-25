@@ -701,22 +701,22 @@ class GroupsController < ApplicationController
 		@group.destroy
 
 		# Also remove the exhibits and discussions from being in the group.
-		exhibits = Exhibit.find_all_by_group_id(params[:id])
+		exhibits = Exhibit.where({group_id: params[:id]})
 		exhibits.each { |exhibit|
 			exhibit.adjust_indexing(:leave_group, true)
 			exhibit.group_id = nil
 			exhibit.save!
 		}
-		threads = DiscussionThread.find_all_by_group_id(params[:id])
+		threads = DiscussionThread.where({group_id: params[:id]})
 		threads.each { |thread|
 			thread.group_id = nil
 			thread.save!
 		}
-		groupsusers = GroupsUser.find_all_by_group_id(params[:id])
+		groupsusers = GroupsUser.where({group_id: params[:id]})
 		groupsusers.each { |gu|
 			gu.destroy
 		}
-		clusters = Cluster.find_all_by_group_id(params[:id])
+		clusters = Cluster.where({group_id: params[:id]})
 		clusters.each { |cluster|
 			cluster.destroy
 		}
@@ -729,7 +729,7 @@ class GroupsController < ApplicationController
 
 	private
 	def peer_review_request
-		roles = RolesUser.find_all_by_role_id(1)
+		roles = RolesUser.where({role_id: 1})
 		admins = []
 		roles.each { |role|
 			user = User.find(role.user_id)

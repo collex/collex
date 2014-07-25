@@ -112,7 +112,7 @@ class GroupsUser < ActiveRecord::Base
 	end
 
 	def self.get_all_pending_requests(group_id)
-		return self.find_all_by_group_id_and_pending_request(group_id, true)
+		return self.where({group_id: group_id, pending_request: true})
 	end
 
 	def self.get_group_from_obfuscated_id(obf)
@@ -135,7 +135,7 @@ class GroupsUser < ActiveRecord::Base
 		user_ids = []
 		notes = group.notifications == nil ? [] : group.notifications.split(';')
 		user_ids.push(group.owner) if notes.include?(notification_type)
-		members = self.find_all_by_group_id(group_id)
+		members = self.where({group_id: group_id})
 		members.each {|member|
 			if member.notifications != nil
 				notes = member.notifications == nil ? [] : member.notifications.split(';')

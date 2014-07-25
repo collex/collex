@@ -18,7 +18,7 @@
 <%# if cluster is nil, then this is the group page, otherwise it is the cluster page -%>
 <% cluster ||= nil -%>
 <% threads = DiscussionThread.all(:conditions => ["group_id = ? AND cluster_id IS NULL", group.id]) if cluster == nil -%>
-<% threads = DiscussionThread.find_all_by_cluster_id(cluster.id) if cluster != nil -%>
+<% threads = DiscussionThread.where({cluster_id: cluster.id}) if cluster != nil -%>
 <% if !group.can_read_forum(user_id) -%>
 	<div class="empty_list_text" >You must be a member of this group to see its discussions.</div>
 <% else -%>

@@ -22,9 +22,9 @@
 	curr_cluster_sort = session[:sort_cluster] ? session[:sort_cluster] : 'name'
 	if group.show_exhibits != 'show_exhibits_only'
 		if group.can_edit(user_id)
-			clusters = Cluster.find_all_by_group_id(group.id)
+			clusters = Cluster.where({group_id: group.id})
 		else
-			clusters = Cluster.find_all_by_group_id_and_visibility(group.id, 'everyone')
+			clusters = Cluster.where({group_id: group.id, visibility: 'everyone'})
 		end
 		if curr_cluster_sort == 'name'
 			clusters = clusters.sort { |a,b| a.name <=> b.name }

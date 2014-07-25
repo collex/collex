@@ -557,7 +557,7 @@ namespace :deploy do
 		# For the full size images:
 		# copy the files: upload_full/0000/#{image_id}/#{filename} => photos_full/#{image_id}/original/#{filename}
 		safe_mkdir("#{Rails.root}/public/photos_small")
-		recs = Image.find_all_by_parent_id(nil)
+		recs = Image.where({parent_id: nil})
 		recs.each {|rec|
 			rec.photo_file_name = rec.filename
 			rec.photo_content_type = rec.content_type
@@ -583,7 +583,7 @@ namespace :deploy do
 		}
 
 		safe_mkdir("#{Rails.root}/public/photos_full")
-		recs = ImageFull.find_all_by_parent_id(nil)
+		recs = ImageFull.where({parent_id: nil})
 		recs.each {|rec|
 			rec.photo_file_name = rec.filename
 			rec.photo_content_type = rec.content_type

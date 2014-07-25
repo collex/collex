@@ -37,7 +37,7 @@ class ExhibitObject < ActiveRecord::Base
   end
   
   def self.get_collected_object_array(exhibit_id)
-    objs = find_all_by_exhibit_id(exhibit_id)
+    objs = where({exhibit_id: exhibit_id})
     str = ""
     objs.each {|obj|
     hit = CachedResource.get_hit_from_uri(obj.uri)
@@ -55,7 +55,7 @@ class ExhibitObject < ActiveRecord::Base
   end
   
   def self.get_collected_object_thumbnail_array(exhibit_id)
-    objs = find_all_by_exhibit_id(exhibit_id)
+    objs = where({exhibit_id: exhibit_id})
     arr = []
     objs.each {|obj|
     hit = CachedResource.get_hit_from_uri(obj.uri)

@@ -390,7 +390,7 @@ class CachedResource < ActiveRecord::Base
 	  # Tagassigns contains user_id, cached_resource_id
 	  # We want to return all the CollectedItems that that don't have a corresponding Tagassigns
     return { :results => [], :total => 0 } if user == nil
-    all_items = CollectedItem.find_all_by_user_id(user.id)
+    all_items = CollectedItem.where({user_id: user.id})
     items = []
     all_items.each { |item|
       first_tag = Tagassign.find_by_cached_resource_id_and_user_id(item.cached_resource_id, item.user_id)
@@ -504,7 +504,7 @@ class CachedResource < ActiveRecord::Base
 
   def self.fill_hit(resource_id)
 	  hit = {}
-	  properties = CachedProperty.find_all_by_cached_resource_id(resource_id)
+	  properties = CachedProperty.where({cached_resource_id: resource_id})
 	  properties.each { |property|
 
 		  hit[property.name] = [] if !hit[property.name]

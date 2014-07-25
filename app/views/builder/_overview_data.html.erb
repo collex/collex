@@ -60,7 +60,7 @@
 		<div>
 			<% cluster_name = exhibit.cluster_id ? link_to(Cluster.find(exhibit.cluster_id).name, { :controller => 'clusters', :action => 'show', :id => exhibit.cluster_id }, { :class => 'nav_link'}) : "No #{Group.get_clusters_label(exhibit.group_id)} Selected" -%>
 		<% groups_clusters = [{ :value => '', :text => "No #{Group.get_clusters_label(exhibit.group_id)} Selected" }] -%>
-		<% clusters = Cluster.find_all_by_group_id(exhibit.group_id) -%>
+		<% clusters = Cluster.where({group_id: exhibit.group_id}) -%>
 		<% for cluster in clusters -%>
 		<% groups_clusters.push({ :value => "#{cluster.id}", :text => cluster.name }) -%>
 		<% end  -%>

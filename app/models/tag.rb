@@ -71,7 +71,7 @@ class Tag < ActiveRecord::Base
     tags = {}
 
     # find any times this was tagged when not collected
-    assignments = Tagassign.find_all_by_cached_resource_id(cached_resource.id)
+    assignments = Tagassign.where({cached_resource_id: cached_resource.id})
     assignments.each do | assignment |
       tag = Tag.find(assignment.tag_id)
       if tags.has_key?(tag) == false

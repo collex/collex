@@ -39,7 +39,7 @@ class HomeController < ApplicationController
     if Setup.site_name() == '18thConnect'
       @featured_news = true
     end
-      features = FeaturedObject.find_all_by_disabled('0')
+      features = FeaturedObject.where({disabled: '0'})
       if features.length > 0
         features = features.sort_by {rand}
         @feature = features[0]

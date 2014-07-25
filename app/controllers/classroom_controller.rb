@@ -87,7 +87,7 @@ class ClassroomController < ApplicationController
 	end
 
 	def make_facet_tree
-		groups = Group.find_all_by_group_type('classroom')
+		groups = Group.where({group_type: 'classroom'})
 		@institutions = [ { :label => 'Universities', :children => {} }]
 		@people = [ { :label => 'Faculty', :children => {} }]
 		@course_title = [ { :label => 'Course Title', :children => {} }]

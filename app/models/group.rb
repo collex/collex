@@ -188,7 +188,7 @@ class Group < ActiveRecord::Base
 	end
 	
 	def get_all_editors()
-		gus = GroupsUser.find_all_by_group_id_and_role(self.id, 'editor')
+		gus = GroupsUser.where({group_id: self.id, role: 'editor'})
 		editors = []
 		editors.push(self.owner)
 		gus.each { |gu|
@@ -198,8 +198,8 @@ class Group < ActiveRecord::Base
 	end
 
 	def self.get_all_users_groups(user_id)
-		groups = Group.find_all_by_owner(user_id)
-		gu = GroupsUser.find_all_by_user_id(user_id)
+		groups = Group.where({owner: user_id})
+		gu = GroupsUser.where({user_id: user_id})
 		gu.each { |rec|
 			if !rec.pending_invite & !rec.pending_request
 				groups.push(Group.find(rec.group_id))
@@ -238,7 +238,7 @@ class Group < ActiveRecord::Base
 	end
 
 	def get_membership_list(with_owner = false)
-		gus = GroupsUser.find_all_by_group_id(self.id)
+		gus = GroupsUser.where({group_id: self.id})
 		ret = []
 		gus.each { |gu|
 			if gu.pending_invite == false && gu.pending_request == false

@@ -330,7 +330,7 @@ class ForumController < ApplicationController
 			end
 			
 			if exhibit_id
-				exhibits_objects = ExhibitObject.find_all_by_exhibit_id(exhibit_id)
+				exhibits_objects = ExhibitObject.where({exhibit_id: exhibit_id})
 				# TODO-PER: There is probably a cleaner way to do this, just convert a list of URI to cached_resource_id
 				#objs = []
 				exhibits_objects.each { |eo|

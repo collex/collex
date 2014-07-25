@@ -19,12 +19,12 @@ class CollectedItem < ActiveRecord::Base
   belongs_to :user
   
   def self.get_all_users_collections(user)
-    return CollectedItem.find_all_by_user_id(user.id)
+    return CollectedItem.where({user_id: user.id})
   end
 
   # This returns the collected objects as a json string
   def self.get_collected_object_array(user_id)
-    objs = CollectedItem.find_all_by_user_id(user_id)
+    objs = CollectedItem.where({user_id: user_id})
     str = ""
     objs.each {|obj|
       hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
@@ -139,7 +139,7 @@ class CollectedItem < ActiveRecord::Base
 
   # this returns the collected objects as a ruby array
   def self.get_collected_object_ruby_array(user_id)
-    objs = CollectedItem.find_all_by_user_id(user_id)
+    objs = CollectedItem.where({user_id: user_id})
     arr = []
     objs.each {|obj|
       hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)

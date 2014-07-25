@@ -32,7 +32,7 @@
 		   	count=count+1 if group.can_view_exhibit(exhibit, curr_user_id) 
 		   end
 		%>
-		<%= pluralize(count, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.find_all_by_cluster_id(cluster.id).length, "Discussion") %><br />
+		<%= pluralize(count, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.where({cluster_id: cluster.id}).length, "Discussion") %><br />
 <% if show_label -%>
 		Last Modified: <%= comment_time_format_relative(last_modified) %>
 <% end -%>

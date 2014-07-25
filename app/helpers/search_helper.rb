@@ -580,7 +580,7 @@ module SearchHelper
 	end
 
 	def result_row_exhibits(rows, hit, curr_user)
-		exhibits = ExhibitObject.find_all_by_uri(hit['uri'])
+		exhibits = ExhibitObject.where({uri: hit['uri']})
 		is_first = true
 		user_name = curr_user ? curr_user.fullname : ''
 		for exhibit in exhibits
