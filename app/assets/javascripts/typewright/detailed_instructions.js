@@ -16,5 +16,5 @@ YUI().use('node', function(Y) {
 
     Y.on("click", function(e) {
         display_lightbox(e.target);
-    }, "#tw_detailed_instructions");
+    }, ".show-in-lightbox");
 });

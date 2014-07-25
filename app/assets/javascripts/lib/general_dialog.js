@@ -1025,8 +1025,8 @@ var ShowDivInLightbox = Class.create({
 
 function showPartialInLightBox(ajax_url, title, progress_img)
 {
+	"use strict";
 	var div = new Element('div', { id: 'gd_lightbox_contents' });
-	//div.setStyle({display: 'none' });
 	var form = div.wrap('div', { id: "gd_lightbox_id"});
 	var progress = new Element('center', { id: 'gd_lightbox_img_spinner'});
 	progress.addClassName('gd_lightbox_img_spinner');
@@ -1035,14 +1035,25 @@ function showPartialInLightBox(ajax_url, title, progress_img)
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
 	var lightbox = new ShowDivInLightbox({ title: title, div: form });
-	var onComplete = function(resp) {
+	if (ajax_url.substr(0, 4) === 'http') {
+		// We need to load this link in an iframe instead because of the same origin policy.
+		var iframe = new Element('iframe', { style: "width:500px;height:700px;border: none;"});
+		div.appendChild(iframe);
+		iframe.src = ajax_url;
+		var img_spinner = $('gd_lightbox_img_spinner');
+		if (img_spinner)
+			img_spinner.remove();
+		lightbox.dlg.center();
+	} else {
+		// Get the content through ajax.
+		var onComplete = function(resp) {
 			var img_spinner = $('gd_lightbox_img_spinner');
 			if (img_spinner)
 				img_spinner.remove();
 			$('gd_lightbox_contents').show();
 			lightbox.dlg.center();
-	};
-	var onFailure = function(resp) {
+		};
+		var onFailure = function(resp) {
 			var img_spinner = $('gd_lightbox_img_spinner');
 			if (img_spinner)
 				img_spinner.remove();
@@ -1050,9 +1061,9 @@ function showPartialInLightBox(ajax_url, title, progress_img)
 			$('gd_lightbox_contents').setStyle({ width: '450px', color: 'red' });
 			$('gd_lightbox_contents').show();
 			lightbox.dlg.center();
-	};
-	serverAction({ action: { actions: ajax_url, els: 'gd_lightbox_contents', params: {}, onSuccess: onComplete, onFailure: onFailure } });
-	//ajaxCall({action: ajax_url, params: {}, el: 'gd_lightbox_contents', onSuccess: onComplete, onFailure: onFailure });
+		};
+		serverAction({ action: { actions: ajax_url, els: 'gd_lightbox_contents', params: {}, onSuccess: onComplete, onFailure: onFailure } });
+	}
 }
 
 function showInLightbox(params)
