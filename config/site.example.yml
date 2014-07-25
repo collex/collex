@@ -57,6 +57,6 @@ capistrano:
   edge:
     user: 'user-name-to-login-to-server'
     ssh_name: 'ssh-name-to-login-to-server'
-    ruby: 'ruby-1.9.3-p374'
+    ruby: 'ruby-2.1.2'
     system_rvm: false
     deploy_base: '/full/path/to/folder/that/all/web/apps/are/deployed/to'
