@@ -42,14 +42,14 @@ class Admin::UserRolesController < Admin::BaseController
 
   def edit
     @user = User.find(params[:id])
-    @roles = Role.find :all
+    @roles = Role.all
     @page = params[:page]
     @page = '1' if !@page || @page.length == 0
   end
 
   def update
     @user = User.find(params[:id])
-    @roles = Role.find :all
+    @roles = Role.all
     roles_hash = {}
     @roles.each { |role| roles_hash["user_role_#{role.name}"] = role }
     user_roles = roles_hash.reject { |k,v| !params.has_key? k }.values

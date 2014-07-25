@@ -2,7 +2,7 @@ class AddPositionToDiscussionTopics < ActiveRecord::Migration
   def self.up
     add_column :discussion_topics, :position, :decimal
     
-    topics = DiscussionTopic.find(:all)
+    topics = DiscussionTopic.all()
     topics.each_with_index do |topic, index|
       topic.position = index + 1
       topic.save

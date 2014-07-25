@@ -610,7 +610,7 @@ class ForumController < ApplicationController
   def get_all_topics
     ret = []
     # this returns a json object of all the topics and their ids
-    topics = DiscussionTopic.find(:all)
+    topics = DiscussionTopic.all
     topics.each {|topic|
       ret.push({ :value => topic.id, :text => topic.topic })
     }

@@ -18,7 +18,7 @@
 <div class="right_column_header">My Exhibits</div>
 <div class="new_exhibit_link"><%= link_to_function "Create New Exhibit", "var dlg = new CreateNewExhibitWizard({ progress_img: '#{image_path(PROGRESS_SPINNER_PATH)}', import_url: '/builder/import_exhibit', url_get_objects: '/builder/get_all_collected_objects', populate_collex_obj_url: '/forum/get_nines_obj_list_with_image'}); dlg.show();", :class => 'modify_link' %>
 </div>
-<% my_exhibits = Exhibit.find(:all, :conditions => ['user_id = ? or alias_id = ?', user_id, user_id] ) -%>
+<% my_exhibits = Exhibit.all({user_id: user_id, alias_id: user_id} ) -%>
 <% if my_exhibits.length == 0 -%>
 	<div class="empty_list_text" >You have not created any exhibits</div>
 <% else -%>

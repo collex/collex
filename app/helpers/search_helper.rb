@@ -363,7 +363,7 @@ module SearchHelper
   
   def get_saved_searches(username)
     user = User.find_by_username(username)
-    return user.searches.find(:all).sort { |a,b| b.id <=> a.id }
+    return user.searches.all.sort { |a,b| b.id <=> a.id }
   end
   
   def encode_for_uri(str)

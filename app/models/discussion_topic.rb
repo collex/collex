@@ -19,7 +19,7 @@ class DiscussionTopic < ActiveRecord::Base
   acts_as_list
   
   def self.get_all_with_date()
-    topics = DiscussionTopic.find(:all)
+    topics = DiscussionTopic.all()
     topics_and_date = []
     for topic in topics
       topics_and_date.insert(-1, { :date => topic.get_last_updated_date(), :topic_rec => topic })

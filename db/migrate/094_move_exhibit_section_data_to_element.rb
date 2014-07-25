@@ -7,7 +7,7 @@ class MoveExhibitSectionDataToElement < ActiveRecord::Migration
     # Find what page the elements are on by looking at their section .
     # Renumber the position .
     page_position = {}
-    elements = ExhibitElement.find(:all)
+    elements = ExhibitElement.all()
     for element in elements
       element.border_type_enum = 0
       if element.exhibit_section_id != nil  # If there were a mix of new and old style objects, then this might not have been used.

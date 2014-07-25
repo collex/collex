@@ -195,7 +195,7 @@ class TagController < ApplicationController
      sorted_results = []
      results.each {|result|
       cr = CachedResource.find_by_uri(result['uri'])
-      collects = CollectedItem.find(:all, :conditions => [ "cached_resource_id = ?", cr.id])
+      collects = CollectedItem.all({cached_resource_id: cr.id})
       if collects.length > 0
         sorted_results.insert(-1, [collects[collects.length-1].updated_at, result])
       end

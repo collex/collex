@@ -99,7 +99,7 @@ end -%>
 </table>
 
 <h1>Exhibits # pages:</h1>
-<% exhibits = Exhibit.find(:all)
+<% exhibits = Exhibit.all()
 	for exhibit in exhibits -%>
 		<%= "#{exhibit.id}: #{exhibit.exhibit_pages.length}" %>
 		<%= link_to 'Destroy', exhibit, :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %>
@@ -107,7 +107,7 @@ end -%>
 <%end -%>
 
 <h1>Pages # elements:</h1>
-<% pages = ExhibitPage.find(:all)
+<% pages = ExhibitPage.all()
 	for page in pages -%>
 		<%= "#{page.id}: #{page.exhibit_elements.length}"  %>
 		<%= link_to 'Destroy', page, :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %>
@@ -115,7 +115,7 @@ end -%>
 <%end -%>
 
 <h1>Illustrations belong to element:</h1>
-<% illustrations = ExhibitIllustration.find(:all)
+<% illustrations = ExhibitIllustration.all()
 	for illustration in illustrations -%>
 		<%= "#{illustration.id} -&gt; #{illustration.exhibit_element_id}"  %>
 		<%= link_to 'Destroy', illustration, :confirm => 'Are you sure?', :method => :delete, :class => 'modify_link' %>
