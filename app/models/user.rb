@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   end
 
   def self.find_by_email(email)
-    return User.find(:first, :conditions => [ "email = ?", email ] )
+    return User.where({email: email} ).first
   end
 
   private
