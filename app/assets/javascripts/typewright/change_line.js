@@ -8,8 +8,11 @@
 /*global YUI */
 /*global TW */
 
-YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-custom', 'resize', function(Y) {
+jQuery(document).ready(function() {
 	"use strict";
+	var body = jQuery("body");
+
+YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', function(Y) {
    var imgCursor;
    var updateInProcess = false;
 
@@ -258,12 +261,14 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    // move to different line
    //
 
-   Y.Global.on('changeLine:highlight', function(lineNum, text) {
+	body.bind("changeLine:highlight", function(e, params) {
+		var lineNum = params.lineNum;
+		var text = params.text;
       change_line_abs(lineNum);
       var pos = TW.line.getStartingText(lineNum).indexOf(text);
       if (pos >= 0) {
          var foc = Y.one("#tw_input_focus");
-         setCaretPosition(foc, pos, text.length);
+         setCaretPosition(foc._node, pos, text.length);
       }
    });
 
@@ -361,11 +366,11 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
             break;
          case end:
             var foc = Y.one("#tw_input_focus");
-            setCaretPosition(foc, foc.value.length, 0);
+            setCaretPosition(foc._node, foc.value.length, 0);
             break;
          case home:
             var foc2 = Y.one("#tw_input_focus");
-            setCaretPosition(foc2, 0, 0);
+            setCaretPosition(foc2._node, 0, 0);
             break;
          default:
             var handled = false;
@@ -454,4 +459,5 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
 		}
 		e.halt();
 	}, ".tw_resize_box");
+});
 });

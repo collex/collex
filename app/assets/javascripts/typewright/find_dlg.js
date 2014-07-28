@@ -1,9 +1,9 @@
-/*global YUI */
 /*global dialogMaker */
 /*global TW */
 
-YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
+jQuery(document).ready(function() {
 	"use strict";
+	var body = jQuery("body");
 
 	function find(dlg) {
 		var data = dlg.getAllData();
@@ -15,7 +15,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
 		while (!TW.line.isLast(i)) {
 			var text = TW.line.getCurrentText(i);
 			if (text && text.toLowerCase().indexOf(matchString) >= 0) {
-				Y.Global.fire('changeLine:highlight', i, data.find);
+				body.trigger('changeLine:highlight', { lineNum: i, text: data.find });
 				found = true;
 				break;
 			}
@@ -49,16 +49,17 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-custom', function(Y) {
 		});
 	}
 
-	var kH = 72;
+	var kH = 72; // 'H'
 
-    Y.on("click", function() {
+	jQuery(".tw_find_button").on("click", function() {
 		find_dlg();
-    }, ".tw_find_button");
+    });
 
-	Y.on('key', function(e) {
-		e.halt();
-		find_dlg();
-	}, 'body', 'down:'+kH+'+shift+ctrl', Y);
+	function keyHandler(ev) {
+		if (ev.keyCode === kH && ev.shiftKey && ev.ctrlKey)
+			find_dlg();
+	}
 
+	body.on("keyup", keyHandler);
 });
 
