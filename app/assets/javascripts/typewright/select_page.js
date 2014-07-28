@@ -6,16 +6,16 @@
 /*global YUI */
 /*global window */
 
-YUI().use('node', function(Y) {
+jQuery(document).ready(function() {
 	"use strict";
 	function select_page(node) {
-		var url = node._node.getAttribute('data-url');
-		var sel = node._node.value;
+		var url = node.attr('data-url');
+		var sel = node.val();
 		window.location = url + sel;
 
 	}
 
-    Y.on("change", function(e) {
-        select_page(e.target);
-    }, "#tw_page");
+	jQuery("body").on("change", "#tw_page", function() {
+		select_page(jQuery(this));
+	});
 });
