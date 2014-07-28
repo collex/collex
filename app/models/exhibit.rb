@@ -208,7 +208,7 @@ class Exhibit < ActiveRecord::Base
   end
 
   def self.js_array_of_all_my_exhibits(user_id)
-    my_exhibits = all({user_id: user_id})
+    my_exhibits = where({user_id: user_id})
     return "" if my_exhibits.length == 0
     
     str = ""
