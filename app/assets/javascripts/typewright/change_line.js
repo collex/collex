@@ -273,7 +273,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'event-cust
    }, 'body', ".tw_change_line");
 
    Y.on("load", function() {
-      imgCursor = TW.createImageCursor(Y);
+      imgCursor = TW.createImageCursor();
       if (window.TW.currLine !== undefined) {
          change_line_abs(window.TW.currLine);
       }

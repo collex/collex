@@ -3,7 +3,6 @@
 // Requires the html element: <select id='page' data-url='URL'>
 // Assumes that the server recognizes the URL: URL PAGENUM
 
-/*global YUI */
 /*global window */
 
 jQuery(document).ready(function() {
