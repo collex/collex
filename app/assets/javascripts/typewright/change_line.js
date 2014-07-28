@@ -8,12 +8,12 @@
 /*global YUI */
 /*global TW */
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function($) {
 	"use strict";
-	var body = jQuery("body");
+	var body = $("body");
+	var imgCursor;
+	var imgBoxResize;
 
-YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', function(Y) {
-   var imgCursor;
    var updateInProcess = false;
 
    function create_display_line(str) {
@@ -30,8 +30,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
    }
 
    function setUndoButtons() {
-      var un = Y.one('.tw_undo_button');
-      var re = Y.one('.tw_redo_button');
+      var un = $('.tw_undo_button');
+      var re = $('.tw_redo_button');
       if (TW.line.canRedo(TW.currLine)) {
          un.addClass('hidden');
          re.removeClass('hidden');
@@ -43,7 +43,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
          re.addClass('hidden');
       }
 
-      var correct = Y.one('.tw_correct');
+      var correct = $('.tw_correct');
       if (correct) {
          correct.removeClass('disabled');
       }
@@ -96,29 +96,29 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
    }
 
    function redrawCurrIcons() {
-      var el = Y.one('#tw_text_1 .tw_change_icon');
-      el.setHTML( createIcon(TW.currLine) );
+      var el = $('#tw_text_1 .tw_change_icon');
+      el.html( createIcon(TW.currLine) );
       setUndoButtons();
    }
 
    function redrawCurrLine() {
       redrawCurrIcons();
-      var elHist = Y.one('#tw_text_1 .tw_history_icon');
-      var elNum = Y.one('#tw_text_1 .tw_line_num');
-      elHist.setHTML( createHistory(TW.currLine) );
-      elNum.setHTML(create_display_line(TW.line.getLineNum(TW.currLine)) );
+      var elHist = $('#tw_text_1 .tw_history_icon');
+      var elNum = $('#tw_text_1 .tw_line_num');
+      elHist.html( createHistory(TW.currLine) );
+      elNum.html(create_display_line(TW.line.getLineNum(TW.currLine)) );
       var displayLine = TW.line.getCurrentText(TW.currLine).replace(/\"/g, "&quot;");
 
-      var editingLine = Y.one("#tw_editing_line");
+      var editingLine = $("#tw_editing_line");
       if (TW.line.isJustDeleted(TW.currLine)) {
-         editingLine.setHTML("<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />");
+         editingLine.html("<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />");
       } else if (TW.line.isDeleted(TW.currLine)) {
-			editingLine.setHTML("<input id=\"tw_input_focus\" class=\"tw_deleted_line_text\" type=\"text\" value=\"\" placeholder='" + displayLine + "' />");
+			editingLine.html("<input id=\"tw_input_focus\" class=\"tw_deleted_line_text\" type=\"text\" value=\"\" placeholder='" + displayLine + "' />");
 		} else {
-         editingLine.setHTML( "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />");
+         editingLine.html( "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />");
       }
 
-      Y.one("#tw_input_focus").focus();
+      $("#tw_input_focus").focus();
    }
 
    function lineModified() {
@@ -127,9 +127,9 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
    }
 
    function line_changed() {
-      var input = Y.one("#tw_input_focus");
+      var input = $("#tw_input_focus");
       if (input) {
-         if (TW.line.doRegisterLineChange(TW.currLine, input.get('value'))) {
+         if (TW.line.doRegisterLineChange(TW.currLine, input.val())) {
             redrawCurrIcons();
          }
       }
@@ -140,38 +140,38 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
          return;
       }
       // Must not be on a typewright page.
-      var elHist = Y.one('#tw_text_0 .tw_history_icon');
-      var elChg = Y.one('#tw_text_0 .tw_change_icon');
-      var elNum = Y.one('#tw_text_0 .tw_line_num');
-      var elText = Y.one('#tw_text_0 .tw_text');
+      var elHist = $('#tw_text_0 .tw_history_icon');
+      var elChg = $('#tw_text_0 .tw_change_icon');
+      var elNum = $('#tw_text_0 .tw_line_num');
+      var elText = $('#tw_text_0 .tw_text');
       if (TW.currLine > 0) {
-         elHist.setHTML(createHistory(TW.currLine - 1));
-         elChg.setHTML(createIcon(TW.currLine - 1));
-         elNum.setHTML(create_display_line(TW.line.getLineNum(TW.currLine - 1)));
-         elText.setHTML(create_jump_link(TW.line.getCurrentText(TW.currLine - 1), -1, TW.line.isDeleted(TW.currLine - 1)));
+         elHist.html(createHistory(TW.currLine - 1));
+         elChg.html(createIcon(TW.currLine - 1));
+         elNum.html(create_display_line(TW.line.getLineNum(TW.currLine - 1)));
+         elText.html(create_jump_link(TW.line.getCurrentText(TW.currLine - 1), -1, TW.line.isDeleted(TW.currLine - 1)));
       } else {
-         elHist.setHTML('');
-         elChg.setHTML('');
-         elNum.setHTML('');
-         elText.setHTML('-- top of page --');
+         elHist.html('');
+         elChg.html('');
+         elNum.html('');
+         elText.html('-- top of page --');
       }
 
       redrawCurrLine();
 
-      elHist = Y.one('#tw_text_2 .tw_history_icon');
-      elChg = Y.one('#tw_text_2 .tw_change_icon');
-      elNum = Y.one('#tw_text_2 .tw_line_num');
-      elText = Y.one('#tw_text_2 .tw_text');
+      elHist = $('#tw_text_2 .tw_history_icon');
+      elChg = $('#tw_text_2 .tw_change_icon');
+      elNum = $('#tw_text_2 .tw_line_num');
+      elText = $('#tw_text_2 .tw_text');
       if (!TW.line.isLast(TW.currLine)) {
-         elHist.setHTML(createHistory(TW.currLine + 1));
-         elChg.setHTML(createIcon(TW.currLine + 1));
-         elNum.setHTML(create_display_line(TW.line.getLineNum(TW.currLine + 1)));
-         elText.setHTML(create_jump_link(TW.line.getCurrentText(TW.currLine + 1), 1, TW.line.isDeleted(TW.currLine + 1)));
+         elHist.html(createHistory(TW.currLine + 1));
+         elChg.html(createIcon(TW.currLine + 1));
+         elNum.html(create_display_line(TW.line.getLineNum(TW.currLine + 1)));
+         elText.html(create_jump_link(TW.line.getCurrentText(TW.currLine + 1), 1, TW.line.isDeleted(TW.currLine + 1)));
       } else {
-         elHist.setHTML('');
-         elChg.setHTML('');
-         elNum.setHTML('');
-         elText.setHTML('-- bottom of page --');
+         elHist.html('');
+         elChg.html('');
+         elNum.html('');
+         elText.html('-- bottom of page --');
       }
 
       // Get the original/full size of the image so we know how to much to scale.
@@ -246,8 +246,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
    // confirm line
    //
 
-   Y.on("click", function() {
-      if ( updateInProcess === false ) {
+	body.on("click", ".tw_correct", function () {
+       if ( updateInProcess === false ) {
          if (TW.line.hasChanged(TW.currLine)) {
             change_line_rel(1);
          } else {
@@ -255,7 +255,7 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
             lineModified();
          }
        }
-   }, ".tw_correct");
+   });
 
    //
    // move to different line
@@ -267,66 +267,54 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
       change_line_abs(lineNum);
       var pos = TW.line.getStartingText(lineNum).indexOf(text);
       if (pos >= 0) {
-         var foc = Y.one("#tw_input_focus");
-         setCaretPosition(foc._node, pos, text.length);
+         var foc = $("#tw_input_focus");
+         setCaretPosition(foc[0], pos, text.length);
       }
    });
 
-   Y.delegate("click", function(e) {
-      var amount = e.target.getAttribute('data-amount');
+	body.on("click", ".tw_change_line", function () {
+      var amount = $(this).attr('data-amount');
       change_line_rel(parseInt(amount,10));
-   }, 'body', ".tw_change_line");
+   });
 
-   Y.on("load", function() {
-      imgCursor = TW.createImageCursor();
-      if (window.TW.currLine !== undefined) {
-         change_line_abs(window.TW.currLine);
-      }
-   }, window);
+	body.on("mousewheel", ".tw_editing, #tw_input_focus, #tw_img_full, #tw_pointer_doc", function(e) {
+		var target = $(e.target);
+		var delta = e.originalEvent.wheelDelta / 120;
+		change_line_rel(-delta);
+		e.preventDefault();
+		e.stopPropagation();
+	});
 
-   Y.on('mousewheel', function(e) {
-      // The mouse wheel should work any time the input has the focus even if the wheel isn't over it.
-      var isInEditingArea = e.target.ancestor('.tw_editing') !== null;
-      var isScrollTarget = (e.target.ancestor().getAttribute('id') === 'tw_img_full' || isInEditingArea || e.target.getAttribute('id') === 'tw_pointer_doc');
-      if (isScrollTarget) {
-         var delta = e.wheelDelta;
-         change_line_rel(-delta);
-         e.halt();
-      }
-   }, '#tw_input_focus');
-
-   Y.delegate("click", function(e) {
-      var coords = imgCursor.convertThumbToOrig(e.clientX, e.clientY);
+	body.on("click", "#tw_img_thumb", function (e) {
+       var coords = imgCursor.convertThumbToOrig(e.clientX, e.clientY);
       var lineNum = TW.line.findLine(coords.x, coords.y);
       change_line_abs(lineNum);
-   }, 'body', "#tw_img_thumb");
+   });
 
-   Y.on("beforeunload", function() {
-      if (window.TW.currLine === undefined) {
-         return;
-      }
-      if (TW.line.hasChanged(TW.currLine)) {
+	$(window).unload(function() {
+      if (TW.currLine !== undefined && TW.line.hasChanged(TW.currLine)) {
          updateServerSync();
       }
-   }, window);
+   });
 
    //
    // delete line
    //
 
-   Y.on("click", function() {
-      TW.line.doDelete(TW.currLine);
+	body.on("click", ".tw_delete_line", function (e) {
+       TW.line.doDelete(TW.currLine);
       lineModified();
-   }, ".tw_delete_line");
+   });
 
    //
    // Change line
    //
-   Y.delegate('keydown', function() {
-      updateInProcess = true;
-   }, 'body', '#tw_input_focus');
-   Y.delegate('keyup', function(e) {
-      var key = e.charCode;
+	body.on("keydown", "#tw_input_focus", function(e) {
+		updateInProcess = true;
+   });
+
+	body.on("keyup", "#tw_input_focus", function(e) {
+      var key = e.which;
       switch (key) {
          case backspace:
             if (e.ctrlKey) {
@@ -349,7 +337,8 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
 				TW.line.doConfirm(TW.currLine);
                lineModified();
             } else {
-               change_line_rel(1);
+				if (updateInProcess) // This can be triggered by some other action, like closing a modal dlg, so that needs to be filtered out.
+					change_line_rel(1);
             }
             break;
          case page_up:
@@ -365,12 +354,12 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
             change_line_rel(1);
             break;
          case end:
-            var foc = Y.one("#tw_input_focus");
-            setCaretPosition(foc._node, foc.value.length, 0);
+            var foc = $("#tw_input_focus");
+            setCaretPosition(foc[0], foc.value.length, 0);
             break;
          case home:
-            var foc2 = Y.one("#tw_input_focus");
-            setCaretPosition(foc2._node, 0, 0);
+            var foc2 = $("#tw_input_focus");
+            setCaretPosition(foc2[0], 0, 0);
             break;
          default:
             var handled = false;
@@ -398,66 +387,73 @@ YUI().use('node', 'event-delegate', 'event-key', 'event-mousewheel', 'resize', f
             }
       }
       updateInProcess = false;
-   }, 'body', '#tw_input_focus');
+   });
 
    //
    // undo
    //
 
-   Y.on("click", function() {
+	body.on("click", ".tw_undo_button", function (e) {
 		TW.line.doUndo(TW.currLine);
       lineModified();
-   }, ".tw_undo_button");
+   });
 
-   Y.on("click", function() {
+	body.on("click", ".tw_redo_button", function (e) {
 		TW.line.doRedo(TW.currLine);
       lineModified();
-   }, ".tw_redo_button");
+   });
 
    //
    // Insert
    //
 
-   Y.on("click", function() {
+	body.on("click", ".tw_insert_above_button", function (e) {
       insert_above();
-   }, ".tw_insert_above_button");
+   });
 
-   Y.on("click", function() {
+	body.on("click", ".tw_insert_below_button", function (e) {
       insert_below();
-   }, ".tw_insert_below_button");
+   });
 
-   Y.on("resize", function() {
-      redraw();
-   }, window);
+	YUI().use('node', 'event-delegate', 'resize', function(Y) {
+		Y.on("resize", function() {
+			redraw();
+		}, window);
 
-	//
-	// Thumbnail cursor resize
-	//
-	var imgBoxResize;
-	Y.on("click", function(e) {
-		if (imgBoxResize) {
-			imgBoxResize.destroy();
-			imgBoxResize = undefined;
-		} else {
-			imgBoxResize = new Y.Resize({
-				//Selector of the node to resize
-				node : '#tw_pointer_doc'
-			});
-			imgBoxResize.plug(Y.Plugin.ResizeConstrained, {
-				constrain: '#tw_img_full',
-				minHeight: 16,
-				minWidth: 50
-			});
-			imgBoxResize.on('resize:end', function(e) {
-				var box = imgCursor.getBox(TW.currLine);
-				if (box) {
-					TW.line.setRect(TW.currLine, box);
-					e.preventDefault();
-					e.stopPropagation();
-				}
-			});
+		//
+		// Thumbnail cursor resize
+		//
+		body.on("click", ".tw_resize_box", function(e) {
+			if (imgBoxResize) {
+				imgBoxResize.destroy();
+				imgBoxResize = undefined;
+			} else {
+				imgBoxResize = new Y.Resize({
+					//Selector of the node to resize
+					node: '#tw_pointer_doc'
+				});
+				imgBoxResize.plug(Y.Plugin.ResizeConstrained, {
+					constrain: '#tw_img_full',
+					minHeight: 16,
+					minWidth: 50
+				});
+				imgBoxResize.on('resize:end', function(e) {
+					var box = imgCursor.getBox(TW.currLine);
+					if (box) {
+						TW.line.setRect(TW.currLine, box);
+						e.preventDefault();
+						e.stopPropagation();
+					}
+				});
+			}
+			return false;
+		});
+	});
+
+	setTimeout(function() {
+		imgCursor = TW.createImageCursor();
+		if (window.TW.currLine !== undefined) {
+			change_line_abs(window.TW.currLine);
 		}
-		e.halt();
-	}, ".tw_resize_box");
-});
+	}, 1);
 });
