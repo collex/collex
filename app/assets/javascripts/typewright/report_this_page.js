@@ -3,18 +3,17 @@
 // Requires the general_dialog file's showPartialInLightBox
 // requires the calling element has data-url defined, which is the partial to display.
 
-/*global YUI */
 /*global showPartialInLightBox */
 
-YUI().use('node', function(Y) {
+jQuery(document).ready(function() {
 	"use strict";
 	function display_lightbox(node) {
-		var url = node._node.getAttribute('data-url');
+		var url = node.attr('data-url');
 		showPartialInLightBox(url, 'Report an Issue on This Page', '/assets/ajax_loader.gif');
 
 	}
 
-    Y.on("click", function(e) {
-        display_lightbox(e.target);
-    }, "#tw_report_page");
+	jQuery("#tw_report_page").on("click", function() {
+        display_lightbox(jQuery(this));
+    });
 });
