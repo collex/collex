@@ -52,18 +52,21 @@ jQuery(document).ready(function($) {
 //   var serverNotifyArrayParams = function(url, params) {
 //   };
 
-   function updateServer() {
-      var params = TW.line.serialize(TW.currLine);
-      params.page = TW.page;
+	function updateServer() {
+		if (TW.line.isDirty(TW.currLine)) {
+			var params = TW.line.serialize(TW.currLine);
+			params.page = TW.page;
 
-      jQuery.ajax({
-         url : TW.updateUrl,
-         type : 'PUT',
-         data: {params: JSON.stringify(params)},
-         async: false,
-         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));}
-      });
-   }
+			jQuery.ajax({
+				url: TW.updateUrl,
+				type: 'PUT',
+				data: {params: JSON.stringify(params)},
+				async: false,
+				beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));}
+			});
+			TW.line.setClean(TW.currLine);
+		}
+	}
 
    var updateServerSync = function() {
 		// TODO-PER: Originally this was needed to do something extra when the page was about to unload. Originally this caused the "sync: true" to be set.

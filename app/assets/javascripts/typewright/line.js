@@ -52,15 +52,15 @@ jQuery(document).ready(function() {
 			// TODO-PER: src should be set to the same thing as the lines around it, shouldn't it? Also, couldn't src be global -- it shouldn't change for each line?
 			TW.lines.splice(num, 0, { src: "gale", l: l, t: t, r: r, b: b, words: [
 				[ ]
-			], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed' });
+			], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed', dirty: true });
 		},
-
-		isLast: function(num) { return num === TW.lines.length - 1; },
-		isInRange: function(num) { return num >= 0 && num < TW.lines.length; },
 
 		//
 		// const routines
 		//
+		isLast: function(num) { return num === TW.lines.length - 1; },
+		isInRange: function(num) { return num >= 0 && num < TW.lines.length; },
+
 		canUndo: function(num) { return TW.lines[num].change !== undefined; },
 		canRedo: function(num) { return TW.lines[num].undo !== undefined; },
 		hasChanged: function(num) { return (TW.lines[num].change && TW.lines[num].change.type === 'change') || (TW.lines[num].box_size === 'changed'); },
@@ -86,6 +86,7 @@ jQuery(document).ready(function() {
 //		getTextHistory: function(num) { return TW.lines[num].text.join("<br />"); },
 		getStartingText: function(num) { return TW.lines[num].text[TW.lines[num].text.length - 1]; },
 		getRect: function(num) { return { l: TW.lines[num].l, r: TW.lines[num].r, t: TW.lines[num].t, b: TW.lines[num].b }; },
+		isDirty: function(num) { return TW.lines[num].dirty === true; },
 
 		getCurrentText: function(num) {
 			var ret;
@@ -147,16 +148,20 @@ jQuery(document).ready(function() {
 		//
 		// modifying routines
 		//
+		setClean: function(num) { TW.lines[num].dirty = false; },
+
 		doRegisterLineChange: function(num, newText) {
 			// sets the line if there is something to set, and returns true if a change was made.
 			var lastTextLocation = TW.lines[num].text.length - 1;
 			var lastText = TW.lines[num].text[lastTextLocation];
 			if (lastText === newText || (lastText === null && newText === '')) {
 				if (TW.lines[num].change && TW.lines[num].change.type === 'change') {
+					TW.lines[num].dirty = true;
 					delete TW.lines[num].change;
 					return true;
 				}
 			} else {
+				TW.lines[num].dirty = true;
 				var origWords = TW.lines[num].words[TW.lines[num].words.length - 1];
 				TW.lines[num].change = { type: 'change', text: newText, words: TW.reparseWords(newText, origWords) };
 				return true;
@@ -165,24 +170,29 @@ jQuery(document).ready(function() {
 		},
 
 		doUndo: function(num) {
+			TW.lines[num].dirty = true;
 			TW.lines[num].undo = TW.lines[num].change;
 			delete TW.lines[num].change;
 		},
 
 		doRedo: function(num) {
+			TW.lines[num].dirty = true;
 			TW.lines[num].change = TW.lines[num].undo;
 			delete TW.lines[num].undo;
 		},
 
 		doConfirm: function(num) {
+			TW.lines[num].dirty = true;
 			TW.lines[num].change = { type: 'correct' };
 		},
 
 		doDelete: function(num) {
+			TW.lines[num].dirty = true;
 			TW.lines[num].change = { type: 'delete' };
 		},
 
 		setRect: function(num, rect) {
+			TW.lines[num].dirty = true;
 			TW.lines[num].l = Math.round(rect.l);
 			TW.lines[num].r = Math.round(rect.r);
 			TW.lines[num].t = Math.round(rect.t);
