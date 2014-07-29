@@ -5,27 +5,27 @@
 // Assumes that the server recognizes the URL in href
 // Requires SignInDlg
 
-/*global YUI */
 /*global SignInDlg */
 /*global gotoPage */
 
-YUI().use('node', function(Y) {
-	function callback(node) {
-		var is_logged_in = node._node.getAttribute('data-logged-in') === 'true';
-		var link = node._node.getAttribute('href');
-
-		if (!is_logged_in) {
-			var dlg = new SignInDlg();
-			dlg.setInitialMessage("Please log in to begin editing");
-			dlg.setRedirectPageToCurrentWithParam('script=doTypewright&uri='+link.replace(/&/g, '%26'));
-			dlg.show('sign_in');
-			return;
-		}
-
-		gotoPage(link);
-	}
-
-    Y.on("click", function(e) {
-        callback(e.target);
-    }, ".typewright_edit");
-});
+//jQuery(document).ready(function($) {
+//	"use strict";
+//	function callback(node) {
+//		var is_logged_in = node.attr('data-logged-in') === 'true';
+//		var link = node.attr('href');
+//
+//		if (!is_logged_in) {
+//			var dlg = new SignInDlg();
+//			dlg.setInitialMessage("Please log in to begin editing");
+//			dlg.setRedirectPageToCurrentWithParam('script=doTypewright&uri='+link.replace(/&/g, '%26'));
+//			dlg.show('sign_in');
+//			return;
+//		}
+//
+//		gotoPage(link);
+//	}
+//
+//	$(".typewright_edit").on("click", function() {
+//        callback($(this));
+//    });
+//});
