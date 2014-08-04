@@ -33,6 +33,38 @@ class Typewright::Line < ActiveResource::Base
       self.find(:all, :params => { :uri => uri, :src => src, :revisions => true, :start => start, :size => size})
    end
 
+   def self.since(token, user_id, document_id, page, load_time)
+	   time = "&load_time=#{URI.escape(load_time)}" if load_time
+	   ret = Typewright::Overview.call_web_service("lines/ping.json?token=#{URI.escape(token)}&document_id=#{document_id}&page=#{page}&user_id=#{user_id}#{time}", :json)
+	   ret['lines'] = ret['lines'].map { |line|
+		   words = self.db_to_words(line['words'])
+		   l = 0
+		   t = 0
+		   r = 1000000
+		   b = 1000000
+		   words.each { |word|
+			   l = word[:l].to_i if l < word[:l].to_i
+			   t = word[:t].to_i if t < word[:t].to_i
+			   r = word[:r].to_i if r > word[:r].to_i
+			   b = word[:b].to_i if b > word[:b].to_i
+		   }
+		   {
+			   'id' => line['id'],
+			   'author' => Typewright::User.get_author_fullname(line['federation'], line['orig_id']),
+			   'line' => line['line'],
+			   'action' => line['action'],
+			   'date' => line['date'],
+			   'words' => words,
+			   'text' => self.words_to_text(words),
+			   'l' => l,
+			   't' => t,
+			   'r' => r,
+			   'b' => b
+		   }
+	   }
+	   return ret
+   end
+
    def self.words_to_db(words)
       return nil if words == nil
       w = ""

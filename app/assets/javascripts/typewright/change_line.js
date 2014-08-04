@@ -49,29 +49,67 @@ jQuery(document).ready(function($) {
       }
    }
 
-//   var serverNotifyArrayParams = function(url, params) {
-//   };
+	function ajaxCall(data, success, error) {
+		data.token = TW.token;
+		$.ajax({
+			url: TW.updateUrl,
+			type: 'PUT',
+			data: data,
+			async: false,
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));},
+			dataType: 'json',
+			success: success,
+			error: error
+		});
+	}
+
+	function serverResponse(data, textStatus, jqXHR) {
+		reportLiveChanges(data);
+	}
+
+	function reportLiveChanges(data) {
+		var changes = "Num changes: "+data.lines.length;
+		data.lines.forEach(function(line) {
+			var str = line.line + ": " + line.author + " " + line.action + " " + line.date + " " + line.text;
+			changes += "<br>" + str;
+		});
+		var editors = "";
+		if (data.editors.length > 0) {
+			editors = "The following people are currently editing this page: ";
+		}
+		for (var i = 0; i < data.editors.length; i++) {
+			editors += data.editors[i].username + " (" + data.editors[i].last_contact_time + ") ";
+		}
+		var status = $('.tw_live_status');
+		var statusBody = status.find(".tw_body");
+		statusBody.html(changes + "<br>" + editors);
+		status.show();
+	}
+
+	function serverError(jqXHR, textStatus, errorThrown) {
+		var status = $('.tw_live_status');
+		var statusBody = status.find(".tw_body");
+		statusBody.html(errorThrown.message);
+		status.show();
+	}
 
 	function updateServer() {
 		if (TW.line.isDirty(TW.currLine)) {
 			var params = TW.line.serialize(TW.currLine);
 			params.page = TW.page;
 
-			jQuery.ajax({
-				url: TW.updateUrl,
-				type: 'PUT',
-				data: {params: JSON.stringify(params)},
-				async: false,
-				beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', jQuery('meta[name="csrf-token"]').attr('content'));}
-			});
+			ajaxCall({params: JSON.stringify(params)}, serverResponse, serverError);
 			TW.line.setClean(TW.currLine);
 		}
 	}
 
-   var updateServerSync = function() {
-		// TODO-PER: Originally this was needed to do something extra when the page was about to unload. Originally this caused the "sync: true" to be set.
-      updateServer();
-   };
+	function pingTypeWright(loadTime) {
+		ajaxCall({ ping: true, document_id: TW.doc_id, page: TW.page, load_time: loadTime }, reportLiveChanges, serverError);
+	}
+
+	function signOutOfTypeWright() {
+		ajaxCall({ unload: true });
+	}
 
    function tooltipIcon(iconStyle, tooltipText) {
       return "<span class='tw_icon " + iconStyle + " tw_history_tooltip_wrapper'>&nbsp;<span class='tw_tooltip hidden'>" + tooltipText + "</span></span>";
@@ -295,10 +333,14 @@ jQuery(document).ready(function($) {
    });
 
 	$(window).unload(function() {
-      if (TW.currLine !== undefined && TW.line.hasChanged(TW.currLine)) {
-         updateServerSync();
-      }
-   });
+		// Careful! This is called when any page unloads, not just the TypeWright edit pages, so first see if TypeWright is active.
+		if (TW.updateUrl === undefined)
+			return;
+		if (TW.currLine !== undefined && TW.line.hasChanged(TW.currLine)) {
+			updateServer();
+		}
+		signOutOfTypeWright();
+	});
 
    //
    // delete line
@@ -453,10 +495,24 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+	//
+	// Idle Timer
+	//
+
+	body.on("click", ".tw_simulate_idle_timer", function (e) {
+		pingTypeWright();
+	});
+
+
+	// This happens on page load just after everything is loaded.
+	// WARNING: This call happens for every page load, not just TypeWright edit pages, so ignore it if we aren't editing.
 	setTimeout(function() {
+		if (TW.updateUrl === undefined)
+			return;
 		imgCursor = TW.createImageCursor();
 		if (window.TW.currLine !== undefined) {
 			change_line_abs(window.TW.currLine);
 		}
+		pingTypeWright(window.TW.loadTime);
 	}, 1);
 });

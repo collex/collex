@@ -76,4 +76,9 @@ class Typewright::Overview
 		resp = self.call_web_service("documents/retrieve?uri=#{uri}&type=#{type}", :xml)
 		return resp
 	end
+
+	def self.unload_doc(token)
+		resp = self.call_web_service("documents/unload?token=#{URI.escape(token)}", :xml)
+		return resp
+	end
 end

@@ -33,12 +33,14 @@
 	TW.currLine = <%= @params['starting_line'] %>;
 	TW.doc_id = <%= @params[:doc_id] %>;
 	TW.page = <%= @params[:page] %>;
+	TW.token = "<%= @params['token'] %>";
+	TW.loadTime = "<%= Time.now() %>";
 	TW.showDebugItems = <%= @debugging ? 'true' : 'false' %>;
-	TW.updateUrl = "/typewright/lines/" + TW.doc_id;
+	TW.updateUrl = "/typewright/lines/" + TW.doc_id + '.json';
 	TW.imgWidth = <%= @params[:img_size][:width] %>;
 	TW.imgHeight = <%= @params[:img_size][:height] %>;
 </script>
-
+<button class="tw_simulate_idle_timer">Simulate Idle</button>
 <div class="tw_editing_title"><a title="<%= @params[:title] %>">"<%= @params[:title_abbrev] %>"</a></div>
 
 <div class="tw_toolbar">

@@ -644,4 +644,41 @@ table.tw_editing td {
 		margin: 0 auto;
 		width: 968px;
 	}
+
+	.tw_right_side {
+		margin-left: 263px;
+	}
+	.tw_simulate_idle_timer {
+		position: absolute;
+		left: 450px;
+		top: 3px;
+		padding: 1px 8px;
+		border: outset;
+		border-radius: 4px;
+
+		&:hover {
+			border: inset;
+		}
+	}
+	.tw_live_status {
+		border: 1px solid #90939A;
+		border-radius: 6px;
+		margin-bottom: 16px;
+		margin-right: 6px;
+		font-size: 10px;
+
+		.tw_header {
+			background: #AFBAD7;
+			text-align: center;
+			font-weight: bold;
+			height: 16px;
+			padding-top: 5px;
+			border-radius: 4px 4px 0 0;
+		}
+		.tw_body {
+			padding: 8px;
+			background: #DAE0F4;
+			border-radius: 0 0 8px 8px;
+		}
+	}
 }

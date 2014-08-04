@@ -165,6 +165,10 @@ class Typewright::DocumentsController < ApplicationController
          @site = COLLEX_PLUGINS['typewright']['web_service_url']
          word_stats = is_admin?
          @params = Typewright::Document.get_page(@uri, page, @src, word_stats)
+		 user_id = get_curr_user_id()
+		 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+		 token = "#{typewright_user_id.id}/#{Time.now()}"
+		 @params['token'] = token
          @params['starting_line'] = 0
          # correct the format of the original line
          @params['lines'].each_with_index { |line, index|

@@ -15,39 +15,79 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 class Typewright::LinesController < ApplicationController
-   # PUT /typewright/lines/1
-   def update
-      # this is called whenever the user corrects a line.
-      user_id = get_curr_user_id()
-      if !user_id
-         render :text => 'You must be signed in to correct lines. Did your session expire?', :status => :bad_request
-      else
-         doc_id = params[:id]
-         passed = JSON.parse(params[:params])
-         src = passed['src']
-         page = passed['page']
-         line = passed['line'] ? passed['line'].to_f : nil
-         user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
-         user_id = user_id.id if user_id
-         status = passed['status']
-         words_changes = passed['words']
-         words = nil
-         words = words_changes[words_changes.length-1] if !words_changes.nil?
-         box = passed['box']
-         if doc_id == nil || page == nil || line == nil || user_id == nil || status == nil || src == nil
-            render :text => 'Illegal parameters.', :status => :bad_request
-         else
-            rec = Typewright::Line.get_undoable_record(doc_id, page, line, user_id, src)
-            if rec
-               rec.destroy()
-            end
-            if status != 'undo'
-               Typewright::Line.create({ :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src, box: box })
-            end
+	# PUT /typewright/lines/1.json
+	def update
+		# this is called whenever the user corrects a line.
+		# it is called when the user leaves the page, too, with the parameter :unload set.
+		respond_to do |format|
+			format.json {
+				user_id = get_curr_user_id()
+				if !user_id
+					render :json => {message: 'You must be signed in to correct lines. Did your session expire?'}, :status => :bad_request
+				else
+					if params[:unload].present?
+						unload(params)
+					elsif params[:ping].present?
+						ping(user_id, params)
+					else
+						update_line(user_id, params)
+					end
+				end
+			}
+		end
+	end
 
-            render :text => ""
-         end
-      end
-   end
+	private
+	def unload(params)
+		token = params[:token]
+		Typewright::Overview.unload_doc(token)
+		render json: {}
+	end
 
+	def ping(user_id, params)
+		token = params[:token]
+		document_id = params[:document_id]
+		page = params[:page]
+		load_time = params[:load_time]
+		typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+		typewright_user_id = typewright_user_id.id if typewright_user_id
+		data = Typewright::Line.since(token, typewright_user_id, document_id, page, load_time)
+		render json: data
+	end
+
+	def update_line(user_id, params)
+		token = params[:token]
+		doc_id = params[:id]
+		passed = JSON.parse(params[:params])
+		src = passed['src']
+		page = passed['page']
+		line = passed['line'] ? passed['line'].to_f : nil
+		user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+		user_id = user_id.id if user_id
+		status = passed['status']
+		words_changes = passed['words']
+		words = nil
+		words = words_changes[words_changes.length-1] if !words_changes.nil?
+		box = passed['box']
+		if doc_id == nil || page == nil || line == nil || user_id == nil || status == nil || src == nil
+			render :json => {message: 'Illegal parameters.'}, :status => :bad_request
+		else
+			rec = Typewright::Line.get_undoable_record(doc_id, page, line, user_id, src)
+			if rec
+				rec.destroy()
+			end
+			ret = nil
+			if status == 'undo'
+				ret = Typewright::Line.since(token, user_id, doc_id, page)
+				more_recent_corrections = ret[:changes]
+				editors = ret[:editors]
+			else
+				ret = Typewright::Line.create({:token => token, :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src, box: box})
+				more_recent_corrections = ret.attributes['changes']
+				editors = ret.attributes[:editors].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id } }
+			end
+
+			render :json => { lines: more_recent_corrections, editors: editors }
+		end
+	end
 end
