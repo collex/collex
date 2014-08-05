@@ -17,6 +17,27 @@
 
 jQuery(document).ready(function($) {
 	"use strict";
+
+	function getIndexFromLineNum(lineNum) {
+		var found = false;
+		for (var num = 0; num < TW.lines.length && !found; num++) {
+			if (TW.lines[num].line === lineNum)
+				return num;
+		}
+		return -1;
+	}
+
+	function getClosestIndexFromLineNum(lineNum) {
+		var found = false;
+		for (var num = 0; num < TW.lines.length && !found; num++) {
+			if (TW.lines[num].line === lineNum)
+				return num;
+			if (TW.lines[num].line > lineNum)
+				return num-1;
+		}
+		return TW.lines.length;
+	}
+
 	TW.line = {
 		//
 		// TW.lines array routines
@@ -58,7 +79,8 @@ jQuery(document).ready(function($) {
 		//
 		// members
 		//
-		staleLines: [],
+		allStaleLines: [],
+		staleLines: {},
 
 		//
 		// const routines
@@ -92,7 +114,7 @@ jQuery(document).ready(function($) {
 		getStartingText: function(num) { return TW.lines[num].text[TW.lines[num].text.length - 1]; },
 		getRect: function(num) { return { l: TW.lines[num].l, r: TW.lines[num].r, t: TW.lines[num].t, b: TW.lines[num].b }; },
 		isDirty: function(num) { return TW.lines[num].dirty === true; },
-		numUndisplayedChanges: function(num) { return TW.line.staleLines.length; },
+		numUndisplayedChanges: function(num) { return TW.line.allStaleLines.length; },
 
 		getCurrentText: function(num) {
 			var ret;
@@ -147,15 +169,18 @@ jQuery(document).ready(function($) {
 				var str = "<table><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td>";
 				for (var i = 0; i < line.text.length; i++)
 					str += formatLine(line.actions[i], line.text[i], line.authors[i], line.dates[i], '');
-//				for (i = 0; i < TW.line.staleLines.length; i++)
-//					str += formatLine(TW.line.staleLines[i].action, TW.line.staleLines[i].text, TW.line.staleLines[i].author, TW.line.staleLines[i].date, 'tw_stale');
+				if (TW.line.staleLines[num])
+				for (i = 0; i < TW.line.staleLines[num].length; i++) {
+					var change = TW.line.staleLines[num][i];
+					str += formatLine(change.action, change.text, change.author, change.date, 'tw_stale');
+				}
 				str += "</table>";
 				return str;
 			}
 			return null;
 		},
 		lineIsStale: function(num) {
-			return TW.line.staleLines.length > 0; // TODO-PER
+			return TW.line.staleLines[num] && TW.line.staleLines[num].length > 0;
 		},
 
 		//
@@ -214,23 +239,53 @@ jQuery(document).ready(function($) {
 		},
 
 		liveUpdate: function(newLines) {
-			$.merge(TW.line.staleLines, newLines);
+			$.merge(TW.line.allStaleLines, newLines);
 			for (var i = 0; i < newLines.length; i++) {
 				var newLine = newLines[i];
-				var found = false;
-				for (var num = 0; num < TW.lines.length && !found; num++) {
-					if (TW.lines[num].line === newLine.line)
-						found = true;
-				}
-				if (found) {
-					console.log("found:"+newLine.text);
+				newLine.line = parseFloat(newLine.line);
+				var num = getIndexFromLineNum(newLine.line);
+				if (num >= 0) {
+					var staleArr = TW.line.staleLines[num];
+					if (staleArr === undefined)
+						staleArr = [];
+					staleArr.push(newLine);
+					TW.line.staleLines[num] = staleArr;
 				}
 			}
 		},
 
 		integrateRemoteChanges: function() {
-			// TODO-PER
-			TW.line.staleLines = [];
+			for (var i = 0; i < TW.line.allStaleLines.length; i++) {
+				var line = TW.line.allStaleLines[i];
+				var num = getIndexFromLineNum(line.line);
+				var destinationLine = num >= 0 ? TW.lines[num] : null;
+				switch (line.action) {
+					case 'change':
+						if (destinationLine) {
+							destinationLine.actions.push(line.action);
+							destinationLine.authors.push(line.author);
+							destinationLine.dates.push(line.date);
+							destinationLine.text.push(line.text);
+							destinationLine.words.push(line.words);
+						}
+						break;
+					case 'insert':
+						num = getClosestIndexFromLineNum(line.line);
+						TW.lines.splice(num, 0, { src: "gale", l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], num: line.line });
+						break;
+					case 'delete':
+						if (destinationLine) {
+							destinationLine.actions.push(line.action);
+							destinationLine.authors.push(line.author);
+							destinationLine.dates.push(line.date);
+							destinationLine.text.push('');
+							destinationLine.words.push([]);
+						}
+						break;
+				}
+			}
+			TW.line.allStaleLines = [];
+			TW.line.staleLines = {};
 		},
 
 		// Call this to get the form of the data that can be sent back to the server.
