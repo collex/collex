@@ -15,7 +15,7 @@
 
 /*global TW */
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function($) {
 	"use strict";
 	TW.line = {
 		//
@@ -56,6 +56,11 @@ jQuery(document).ready(function() {
 		},
 
 		//
+		// members
+		//
+		staleLines: [],
+
+		//
 		// const routines
 		//
 		isLast: function(num) { return num === TW.lines.length - 1; },
@@ -87,6 +92,7 @@ jQuery(document).ready(function() {
 		getStartingText: function(num) { return TW.lines[num].text[TW.lines[num].text.length - 1]; },
 		getRect: function(num) { return { l: TW.lines[num].l, r: TW.lines[num].r, t: TW.lines[num].t, b: TW.lines[num].b }; },
 		isDirty: function(num) { return TW.lines[num].dirty === true; },
+		numUndisplayedChanges: function(num) { return TW.line.staleLines.length; },
 
 		getCurrentText: function(num) {
 			var ret;
@@ -109,40 +115,47 @@ jQuery(document).ready(function() {
 //		},
 
 		getAllHistory: function(num) {
+			function formatLine(action, lineText, author, date, klass) {
+				var text;
+				switch (action) {
+					case 'delete':
+						text = '-- Deleted --';
+						break;
+					case 'correct':
+						text = '-- Declared Correct --';
+						break;
+					case 'change':
+						text = lineText;
+						break;
+					case 'insert':
+						text = lineText;
+						break;
+					case 'original':
+						text = lineText;
+						break;
+					case '':
+						text = lineText;
+						break;
+					default:
+						text = action;
+						break;
+				}
+				return "<tr class='" + klass + "'><td><span></span>" + text + "</td><td>" + author + "</td><td>" + date + "</td></tr>";
+			}
 			var line = TW.lines[num];
 			if (line.text.length > 1) {
 				var str = "<table><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td>";
-				for (var i = 0; i < line.text.length; i++) {
-					var text;
-					switch (line.actions[i]) {
-						case 'delete':
-							text = '-- Deleted --';
-							break;
-						case 'correct':
-							text = '-- Declared Correct --';
-							break;
-						case 'change':
-							text = line.text[i];
-							break;
-						case 'insert':
-							text = line.text[i];
-							break;
-						case 'original':
-							text = line.text[i];
-							break;
-						case '':
-							text = line.text[i];
-							break;
-						default:
-							text = line.actions[i];
-							break;
-					}
-					str += "<tr><td>" + text + "</td><td>" + line.authors[i] + "</td><td>" + line.dates[i] + "</td></tr>";
-				}
+				for (var i = 0; i < line.text.length; i++)
+					str += formatLine(line.actions[i], line.text[i], line.authors[i], line.dates[i], '');
+//				for (i = 0; i < TW.line.staleLines.length; i++)
+//					str += formatLine(TW.line.staleLines[i].action, TW.line.staleLines[i].text, TW.line.staleLines[i].author, TW.line.staleLines[i].date, 'tw_stale');
 				str += "</table>";
 				return str;
 			}
 			return null;
+		},
+		lineIsStale: function(num) {
+			return TW.line.staleLines.length > 0; // TODO-PER
 		},
 
 		//
@@ -198,6 +211,26 @@ jQuery(document).ready(function() {
 			TW.lines[num].t = Math.round(rect.t);
 			TW.lines[num].b = Math.round(rect.b);
 			TW.lines[num].box_size = 'changed';
+		},
+
+		liveUpdate: function(newLines) {
+			$.merge(TW.line.staleLines, newLines);
+			for (var i = 0; i < newLines.length; i++) {
+				var newLine = newLines[i];
+				var found = false;
+				for (var num = 0; num < TW.lines.length && !found; num++) {
+					if (TW.lines[num].line === newLine.line)
+						found = true;
+				}
+				if (found) {
+					console.log("found:"+newLine.text);
+				}
+			}
+		},
+
+		integrateRemoteChanges: function() {
+			// TODO-PER
+			TW.line.staleLines = [];
 		},
 
 		// Call this to get the form of the data that can be sent back to the server.

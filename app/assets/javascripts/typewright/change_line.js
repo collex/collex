@@ -67,23 +67,40 @@ jQuery(document).ready(function($) {
 		reportLiveChanges(data);
 	}
 
-	function reportLiveChanges(data) {
-		var changes = "Num changes: "+data.lines.length;
-		data.lines.forEach(function(line) {
-			var str = line.line + ": " + line.author + " " + line.action + " " + line.date + " " + line.text;
-			changes += "<br>" + str;
-		});
+	var currentEditors = [];
+
+	function redrawLiveChanges() {
+		var changes = "";
+		if (TW.line.numUndisplayedChanges() > 0) {
+			changes = '<div><button class="tw_icon tw_icon_edit_history_new tw_apply_new_data"></button><span class="tw_stale_data_note">There have been ' + TW.line.numUndisplayedChanges() + ' change(s) to this page. Click the button to update.</span></div>';
+		}
+		//		data.lines.forEach(function(line) {
+		//			var str = line.line + ": " + line.author + " " + line.action + " " + line.date + " " + line.text;
+		//			changes += "<br>" + str;
+		//		});
 		var editors = "";
-		if (data.editors.length > 0) {
-			editors = "The following people are currently editing this page: ";
-		}
-		for (var i = 0; i < data.editors.length; i++) {
-			editors += data.editors[i].username + " (" + data.editors[i].last_contact_time + ") ";
-		}
+		if (currentEditors.length > 0) {
+			editors = "<h3>The following people are currently editing this page:</h3>";
+			for (var i = 0; i < currentEditors.length; i++) {
+				editors += currentEditors[i].username + " (" + currentEditors[i].last_contact_time + ")<br>";
+			}
+		} else
+			editors = "No one else is currently editing this page.";
 		var status = $('.tw_live_status');
-		var statusBody = status.find(".tw_body");
-		statusBody.html(changes + "<br>" + editors);
-		status.show();
+		if (TW.line.numUndisplayedChanges() > 0 || currentEditors.length > 0) {
+			var statusBody = status.find(".tw_body");
+			statusBody.html(changes + "<br>" + editors);
+			status.show();
+			redraw();	// This is to update the history icon and tooltip.
+		} else
+			status.hide();
+	}
+
+	function reportLiveChanges(data) {
+		if (data.lines.length > 0)
+			TW.line.liveUpdate(data.lines);
+		currentEditors = data.editors;
+		redrawLiveChanges();
 	}
 
 	function serverError(jqXHR, textStatus, errorThrown) {
@@ -116,13 +133,15 @@ jQuery(document).ready(function($) {
 
    }
 
-   function createHistory(lineNum) {
-      var str = TW.line.getAllHistory(lineNum);
-      if (str) {
-         return tooltipIcon("tw_icon_edit_history", "<h4 class='header'>History:</h4><hr />" + str);
-      }
-      return "";
-   }
+	function createHistory(lineNum) {
+		var str = TW.line.getAllHistory(lineNum);
+		if (str) {
+			var isStale = TW.line.lineIsStale(lineNum);
+			var klass = isStale ? "tw_icon_edit_history_new" :"tw_icon_edit_history";
+			return tooltipIcon(klass, "<h4 class='header'>History:</h4><hr />" + str);
+		}
+		return "";
+	}
 
    function createIcon(lineNum) {
       switch (TW.line.getChangeType(lineNum)) {
@@ -496,13 +515,17 @@ jQuery(document).ready(function($) {
 	});
 
 	//
-	// Idle Timer
+	// Live Update
 	//
 
-	body.on("click", ".tw_simulate_idle_timer", function (e) {
-		pingTypeWright();
+	body.on("click", ".tw_apply_new_data", function () {
+		TW.line.integrateRemoteChanges();
+		redrawLiveChanges();
 	});
 
+	body.on("click", ".tw_simulate_idle_timer", function () {
+		pingTypeWright();
+	});
 
 	// This happens on page load just after everything is loaded.
 	// WARNING: This call happens for every page load, not just TypeWright edit pages, so ignore it if we aren't editing.

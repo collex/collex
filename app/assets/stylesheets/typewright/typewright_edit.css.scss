@@ -181,6 +181,10 @@ input.tw_deleted_line {
 	background:image-url('type_wright/icon_other_edit.png') top right no-repeat;
 }
 
+	.tw_icon_edit_history_new {
+		background:image-url('type_wright/icon_other_edit_new.png') top right no-repeat;
+	}
+
 .tw_icon_edit {
 	background:image-url('type_wright/icon_edit.png') top right no-repeat;
 }
@@ -426,16 +430,28 @@ table.tw_editing td {
 	margin-top: 0px;
 	margin-left: 20px;
 	color: #4a2e1c;
-}
 
-.tw_history_tooltip_wrapper:hover .tw_tooltip .header {
-	font-weight: bold;
-}
+	.header {
+		font-weight: bold;
+	}
 
-.tw_history_tooltip_wrapper:hover .tw_tooltip td {
-	padding-left: 12px;
-	padding-right: 12px;
-	padding-top: 0px !important;
+	td {
+		padding-left: 12px;
+		padding-right: 12px;
+		padding-top: 0px !important;
+	}
+
+	.tw_stale {
+		font-weight: bold;
+
+		span {
+			display: inline-block;
+			width: 7px;
+			height: 7px;
+			background-image: image-url("type_wright/icon_new.png");
+			margin-right: 4px;
+		}
+	}
 }
 
 .tw_word_stats {
@@ -679,6 +695,18 @@ table.tw_editing td {
 			padding: 8px;
 			background: #DAE0F4;
 			border-radius: 0 0 8px 8px;
+		}
+
+		.tw_icon {
+			height: 26px;
+			padding-right: 14px;
+			background-position: center;
+			border-radius: 4px;
+			margin-right: 8px;
+
+			&:hover {
+				border-style: inset;
+			}
 		}
 	}
 }
