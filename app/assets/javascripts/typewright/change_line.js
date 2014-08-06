@@ -168,25 +168,36 @@ jQuery(document).ready(function($) {
       setUndoButtons();
    }
 
-   function redrawCurrLine() {
-      redrawCurrIcons();
-      var elHist = $('#tw_text_1 .tw_history_icon');
-      var elNum = $('#tw_text_1 .tw_line_num');
-      elHist.html( createHistory(TW.currLine) );
-      elNum.html(create_display_line(TW.line.getLineNum(TW.currLine)) );
-      var displayLine = TW.line.getCurrentText(TW.currLine).replace(/\"/g, "&quot;");
+	function redrawCurrLine() {
+		redrawCurrIcons();
+		var elHist = $('#tw_text_1 .tw_history_icon');
+		var elNum = $('#tw_text_1 .tw_line_num');
+		elHist.html(createHistory(TW.currLine));
+		elNum.html(create_display_line(TW.line.getLineNum(TW.currLine)));
+		var displayLine = TW.line.getCurrentText(TW.currLine).replace(/\"/g, "&quot;");
 
-      var editingLine = $("#tw_editing_line");
-      if (TW.line.isJustDeleted(TW.currLine)) {
-         editingLine.html("<input id=\"tw_input_focus\" class=\"tw_deleted_line\" readonly=\"readonly\" type=\"text\" value=\"" + displayLine + "\" />");
-      } else if (TW.line.isDeleted(TW.currLine)) {
-			editingLine.html("<input id=\"tw_input_focus\" class=\"tw_deleted_line_text\" type=\"text\" value=\"\" placeholder='" + displayLine + "' />");
-		} else {
-         editingLine.html( "<input id=\"tw_input_focus\" type=\"text\" value=\"" + displayLine + "\" />");
-      }
+		var justDeleted = TW.line.isJustDeleted(TW.currLine);
+		var isStale = TW.line.lineIsStale(TW.currLine);
+		var isDeleted = TW.line.isDeleted(TW.currLine);
+		var attrs = [];
+		attrs.push("id=\"tw_input_focus\"");
+		attrs.push("type=\"text\"");
+		if (justDeleted || isStale)
+			attrs.push("readonly=\"readonly\"");
+		if (isDeleted || isStale) {
+			attrs.push("value=\"\"");
+			attrs.push("placeholder=\"" + displayLine + "\"");
+			attrs.push("class=\"tw_deleted_line_text\"");
+		} else
+			attrs.push("value=\"" + displayLine + "\"");
+		if (justDeleted)
+			attrs.push("class=\"tw_deleted_line\"");
 
-      $("#tw_input_focus").focus();
-   }
+		var editingLine = $("#tw_editing_line");
+		editingLine.html("<input " + attrs.join(' ') + " />");
+
+		$("#tw_input_focus").focus();
+	}
 
    function lineModified() {
       redrawCurrLine();
