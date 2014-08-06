@@ -709,4 +709,45 @@ table.tw_editing td {
 			}
 		}
 	}
+	.tw_notification {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 105;
+
+		width: 260px;
+		height: 50px;
+		text-align: center;
+		font-size: 16px;
+		color: white;
+		background-color: #585858;
+		padding: 2px;
+		border: 2px solid #eeeeee;
+		border-radius: 8px;
+		box-shadow: 4px 4px 6px #585858;
+		opacity: .9;
+
+		a {
+			color: white;
+			text-decoration: none;
+			font-family: Arial;
+			font-weight: normal;
+			float: left;
+			border: 2px solid #ffffff;
+			border-radius: 15px;
+			background-color: #000000;
+			display: inline-block;
+			width: 13px;
+			line-height: 12px;
+			padding-bottom: 2px;
+
+			&:hover {
+				background-color: #666666;
+			}
+		}
+
+		.tw_notification_text {
+			padding: 5px;
+		}
+	}
 }

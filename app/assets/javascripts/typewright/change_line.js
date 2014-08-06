@@ -97,8 +97,15 @@ jQuery(document).ready(function($) {
 	}
 
 	function reportLiveChanges(data) {
-		if (data.lines.length > 0)
+		if (data.lines.length > 0) {
 			TW.line.liveUpdate(data.lines);
+			var growler = $(".tw_notification");
+			growler.find('.tw_notification_text').html("This page has been edited by someone else.");
+			growler.fadeIn("slow");
+			setTimeout(function() {
+				growler.fadeOut("slow");
+			}, 3000);
+		}
 		currentEditors = data.editors;
 		redrawLiveChanges();
 	}
@@ -525,6 +532,11 @@ jQuery(document).ready(function($) {
 
 	body.on("click", ".tw_simulate_idle_timer", function () {
 		pingTypeWright();
+	});
+
+	body.on("click", ".tw_dismiss", function () {
+		$(".tw_notification").fadeOut("slow");
+		return false;
 	});
 
 	// This happens on page load just after everything is loaded.
