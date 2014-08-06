@@ -164,16 +164,19 @@ jQuery(document).ready(function($) {
 				}
 				return "<tr class='" + klass + "'><td><span></span>" + text + "</td><td>" + author + "</td><td>" + date + "</td></tr>";
 			}
+
 			var line = TW.lines[num];
-			if (line.text.length > 1) {
+			if (line.text.length > 1 || (TW.line.staleLines[num] && TW.line.staleLines[num].length > 0)) {
 				var str = "<table><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td>";
-				for (var i = 0; i < line.text.length; i++)
-					str += formatLine(line.actions[i], line.text[i], line.authors[i], line.dates[i], '');
-				if (TW.line.staleLines[num])
-				for (i = 0; i < TW.line.staleLines[num].length; i++) {
-					var change = TW.line.staleLines[num][i];
-					str += formatLine(change.action, change.text, change.author, change.date, 'tw_stale');
+				if (line.text.length > 1) {
+					for (var i = 0; i < line.text.length; i++)
+						str += formatLine(line.actions[i], line.text[i], line.authors[i], line.dates[i], '');
 				}
+				if (TW.line.staleLines[num])
+					for (var j = 0; j < TW.line.staleLines[num].length; j++) {
+						var change = TW.line.staleLines[num][j];
+						str += formatLine(change.action, change.text, change.author, change.date, 'tw_stale');
+					}
 				str += "</table>";
 				return str;
 			}
@@ -250,6 +253,13 @@ jQuery(document).ready(function($) {
 						staleArr = [];
 					staleArr.push(newLine);
 					TW.line.staleLines[num] = staleArr;
+					// If this is the first modification on a line, then we need to add some infrastructure.
+					var destinationLine = TW.lines[num];
+					if (destinationLine.actions === undefined) {
+						destinationLine.actions = [ 'original' ];
+						destinationLine.authors = [ 'Original' ];
+						destinationLine.dates = [ '' ];
+					}
 				}
 			}
 		},
