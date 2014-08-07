@@ -561,5 +561,10 @@ jQuery(document).ready(function($) {
 		}
 		pingTypeWright(window.TW.loadTime);
 		$("#tw_input_focus").focus();
+		// TODO-PER: Something is stealing the focus away and I can't find it, so I'll just steal it back.
+		setTimeout(function() {
+			$("#tw_input_focus").focus();
+		}, 1000);
+
 	}, 1);
 });
