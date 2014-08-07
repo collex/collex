@@ -2,6 +2,7 @@ namespace :temp do
 
 	desc "Extract the resources so they can be imported by the catalog"
 	task :extract_resources => :environment do
+		raise "This task was designed for one-time use. The FacetCategory and Site tables are no longer a good place to get the resources."
 		out = {}
 		categories = FacetCategory.all()
 		categories.each { |category|
