@@ -129,9 +129,7 @@ class ResultsController < ApplicationController
     tag = params['tag']
     uris = params['uris']
     
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    
-    if uris != nil && user != nil && tag != nil && tag['name'].length > 0
+    if uris != nil && user_signed_in? && tag != nil && tag['name'].length > 0
 	    uris = uris.split("\t")
       uris.each{ |uri|
         params['uri'] = uri
@@ -148,13 +146,12 @@ class ResultsController < ApplicationController
 	  end
 	  
 	 bulk_tag = params[:bulk_tag_text]
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if user != nil && params[:bulk_collect] != nil
+    if user_signed_in? && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
       uris.each do | key,uri |
-        CollectedItem.collect_item(user, uri, nil)
+        CollectedItem.collect_item(current_user, uri, nil)
         if bulk_tag != nil && bulk_tag.length > 0
-            Tag.add(user, uri, {'name' => bulk_tag} ) 
+            Tag.add(current_user, uri, {'name' => bulk_tag} )
         end
       end
     end
@@ -172,11 +169,10 @@ class ResultsController < ApplicationController
       return
     end
     
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if user != nil && params[:bulk_collect] != nil
+    if user_signed_in? && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
       uris.each do |key,uri|
-        CollectedItem.remove_collected_item(user, uri)
+        CollectedItem.remove_collected_item(current_user, uri)
       end
     end
 
@@ -186,7 +182,7 @@ class ResultsController < ApplicationController
 	
   def resend_exhibited_objects
     # This is to update the section after a change elsewhere on the page
-    render :partial => 'exhibited_objects', :locals => { :current_user_id => user.id }
+    render :partial => 'exhibited_objects', :locals => { :current_user_id => current_user.id }
   end
 
   private
@@ -222,12 +218,11 @@ class ResultsController < ApplicationController
 		  return
 	  end
 	  
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if user != nil
+    if user_signed_in?
       old_name = params[:old_name]
       new_name = params[:new_name]
       
-      tagged_items = CachedResource.get_hits_for_tag(old_name, user)
+      tagged_items = CachedResource.get_hits_for_tag(old_name, current_user)
       
       tagged_items.each do |item|
         Tag.rename(user, item['uri'], old_name, new_name)
@@ -244,14 +239,13 @@ class ResultsController < ApplicationController
 		  render_422
 		  return
 	  end
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    if user != nil
+    if user_signed_in?
       tag = params[:tag]
       
-      tagged_items = CachedResource.get_hits_for_tag(tag, user)
+      tagged_items = CachedResource.get_hits_for_tag(tag, current_user)
       
       tagged_items.each { |item|
-        Tag.remove(user, item['uri'], tag)
+        Tag.remove(current_user, item['uri'], tag)
       }
   
     end
@@ -310,7 +304,7 @@ class ResultsController < ApplicationController
     ret = {}
     
     session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-    ret[:user] = session[:user] ? User.find_by_username(session[:user][:username]) : nil
+    ret[:user] = current_user
     if is_in_cache
       ret[:hit] = get_from_cache(params[:uri])
 #      ret[:hit]['title'][0] = '[cache]' + ret[:hit]['title'][0]

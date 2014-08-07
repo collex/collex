@@ -110,8 +110,6 @@ class TagController < ApplicationController
 				params[:tag] = session[:tag_current]
 			end
 
-			#user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-
 			#do the pagination.
 			@page = params[:page] ? params[:page].to_i : 1
 			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
@@ -151,10 +149,8 @@ class TagController < ApplicationController
 	end
 
    def update_tag_cloud
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-
-    if user
-      set_cloud_list(user, user.username)
+    if user_signed_in?
+      set_cloud_list(current_user, current_user.username)
 
       selected_tag = (session[:tag_view] == 'tag') ? session[:tag_current] : ""
       render :partial => '/tag/cloud', :locals => { :cloud_info => @cloud_info, :selected_tag => selected_tag, :controller_for_tags => MY_COLLEX_URL, :hide_some => false }

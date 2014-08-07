@@ -38,7 +38,7 @@ class Typewright::OverviewsController < Admin::BaseController
 	end
 
 	def retrieve_doc
-	  if !is_logged_in? || !is_admin?
+	  if !user_signed_in? || !is_admin?
 	     render :text => "401 Unauthorized", :status => :unauthorized
 	     return   
 	  end 

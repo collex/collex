@@ -123,9 +123,8 @@ class BuilderController < ApplicationController
 		chosen = params[:chosen]
 		exhibit_id = params[:exhibit_id]
 		ret = []
-		user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-		if user
-			objs = CollectedItem.get_collected_objects_for_thumbnails(user.id, exhibit_id, chosen)
+		if user_signed_in?
+			objs = CollectedItem.get_collected_objects_for_thumbnails(current_user.id, exhibit_id, chosen)
 			objs.each {|key,hit|
 				obj = {}
 				obj[:id] = hit['uri']
@@ -166,7 +165,7 @@ class BuilderController < ApplicationController
 
 	def verify_title  # Called by the "new exhibit" wizard
 		title = params[:title]
-		user = get_curr_user
+		user = current_user
 		if user == nil
 			render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
 		else
@@ -191,7 +190,7 @@ class BuilderController < ApplicationController
 
 	def edit_exhibit_overview
 		exhibit_id = params[:exhibit_id]
-		user = get_curr_user
+		user = current_user
 		exhibit = Exhibit.find(exhibit_id)
 		if Exhibit.can_edit(user, exhibit_id)
 			visible_url = Exhibit.transform_url(params[:overview_visible_url_dlg])
@@ -273,7 +272,7 @@ class BuilderController < ApplicationController
 		exhibit.save
 		if exhibit.is_published != 0 && exhibit.group_id && exhibit.group_id > 0
 			group = Group.find_by_id(exhibit.group_id)
-			user = get_curr_user
+			user = current_user
 			if group && user
 				body = "#{user.fullname} has shared an exhibit \"#{exhibit.title}\" to the group #{group.name}.\n\n"
 				exhibit_url = "#{url_for(:controller => 'exhibits')}/"
@@ -290,7 +289,7 @@ class BuilderController < ApplicationController
 	end
 
   def remove_exhibited_object
-    user = get_curr_user
+    user = current_user
     uri = params[:uri]
     exhibit_id = params[:exhibit_id]
     if Exhibit.can_edit(user, exhibit_id)
@@ -303,7 +302,7 @@ class BuilderController < ApplicationController
 
   def change_sharing
     exhibit_id = params[:id]
-    user = get_curr_user
+    user = current_user
     exhibit = Exhibit.find(exhibit_id)
     if Exhibit.can_edit(user, exhibit_id)
       sharing_level = params[:sharing]
@@ -315,7 +314,7 @@ class BuilderController < ApplicationController
 
   def change_page
     exhibit_id = params[:id]
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       redirect_to :action => 'show', :id => params['id'], :page => params['page']
     else
@@ -330,7 +329,7 @@ class BuilderController < ApplicationController
 
     page = ExhibitPage.find_by_id(page_id)
     exhibit_id = page ? page.exhibit_id : nil
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       case verb
         when "up"
@@ -359,7 +358,7 @@ class BuilderController < ApplicationController
     pos = params[:position].to_i
     element = ExhibitElement.find_by_id(element_id)
     verb = params[:verb]
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       case verb
         when "left"
@@ -385,7 +384,7 @@ class BuilderController < ApplicationController
     element_id = params[:element_id]
     pos = params[:position].to_i
     element = ExhibitElement.find_by_id(element_id)
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       if pos == -1
         pos = element.exhibit_illustrations.length+1
@@ -407,7 +406,7 @@ class BuilderController < ApplicationController
     element_id = params[:element_id]
     type = params[:type]
     element = ExhibitElement.find(element_id)
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       element.exhibit_element_layout_type = type
       element.save
@@ -428,7 +427,7 @@ class BuilderController < ApplicationController
     element_id = params[:element_id]
     justify = params[:justify]
     element = ExhibitElement.find_by_id(element_id)
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       element.set_justification(justify)
       element.save
@@ -492,7 +491,7 @@ class BuilderController < ApplicationController
 		#footnotes = JSON.parse(params['footnotes'])
 
     element = ExhibitElement.find_by_id(element_id)
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       value = params['value']
       value = clean_up_links(value)
@@ -522,7 +521,7 @@ class BuilderController < ApplicationController
 
     value = params['value']
     element = ExhibitElement.find_by_id(element_id)
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
       element.element_text = value
 			element.set_header_footnote(footnote)
@@ -545,7 +544,7 @@ class BuilderController < ApplicationController
     if illustration != nil
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
-      user = get_curr_user
+      user = current_user
       if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
         illustration.image_width = width
         illustration.height = height if illustration.illustration_type == ExhibitIllustration.get_illustration_type_text()
@@ -592,7 +591,7 @@ class BuilderController < ApplicationController
     if illustration != nil
       element_id = illustration.exhibit_element_id
       element = ExhibitElement.find(element_id)
-      user = get_curr_user
+      user = current_user
       if Exhibit.can_edit(user, get_exhibit_id_from_element(element))
         illustration.illustration_type = type
         illustration.image_url = image_url
@@ -643,7 +642,7 @@ class BuilderController < ApplicationController
     page = ExhibitPage.find(element.exhibit_page_id)
     exhibit_id = page.exhibit_id
 
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       arr = borders.split(',')
       if arr.length == page.exhibit_elements.length
@@ -667,7 +666,7 @@ class BuilderController < ApplicationController
     is_editing_border = false
 		sel = element_id
 
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       case verb
         when "insert_element"
@@ -697,7 +696,7 @@ class BuilderController < ApplicationController
     exhibit_id = page.exhibit_id
     is_editing_border = false
 
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       new_element = page.insert_element(1)
       element_id = new_element.id
@@ -767,7 +766,7 @@ class BuilderController < ApplicationController
 		group_id = params[:group_id]
 		cluster_id = params[:cluster_id]
 		objects = params[:objects].split("\t")
-		user = get_curr_user
+		user = current_user
 		if user == nil
 			render :text => 'Your session has timed out due to inactivity. Please login again to create an exhibit', :status => :bad_request
 		else
@@ -783,7 +782,7 @@ class BuilderController < ApplicationController
 	end
 
 	def import_exhibit
-		user = get_curr_user
+		user = current_user
 		if user == nil
 			render :text => respond_to_file_upload("stopCreateNewExhibitUpload", 'Your session has timed out due to inactivity. Please login again to create an exhibit'), :status => :bad_request
 		else
@@ -819,7 +818,7 @@ class BuilderController < ApplicationController
 
   def update_objects_in_exhibits
     exhibit_id = params[:exhibit_id]
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       objects = params[:objects].split("\t")
       ExhibitObject.set_objects(exhibit_id, objects)
@@ -838,7 +837,7 @@ class BuilderController < ApplicationController
     # Init data
     exhibit_id = params[:exhibit_id]
     exhibit = Exhibit.find(exhibit_id)
-    curr_user = get_curr_user
+    curr_user = current_user
     ret = []
     
     ret.push( {:value  => -1, :text => '- Select a user -'})
@@ -874,7 +873,7 @@ class BuilderController < ApplicationController
     exhibit_id = params[:exhibit_id]
     user_id = params[:user_id]
     page_num = params[:page_num].to_i
-    #user = get_curr_user
+    #user = current_user
     exhibit = Exhibit.find(exhibit_id)
     
     puts "ALIAS of EXHIBIT #{exhibit.title} is USER_ID: #{user_id}"
@@ -893,7 +892,7 @@ class BuilderController < ApplicationController
 		exhibit_id = params[:exhibit_id]
 		user_id = params[:user_id]
 		page_num = params[:page_num].to_i
-		user = get_curr_user
+		user = current_user
 		exhibit = Exhibit.find(exhibit_id)
 		if user_id.to_i > 0 && Exhibit.can_edit(user, exhibit_id)
 			authors = exhibit.additional_authors == nil ? [] : exhibit.additional_authors.split(',')
@@ -907,7 +906,7 @@ class BuilderController < ApplicationController
 	def remove_additional_author
 		exhibit_id = params[:exhibit_id]
 		user_id = params[:user_id]
-		user = get_curr_user
+		user = current_user
 		exhibit = Exhibit.find(exhibit_id)
 		if user_id.to_i > 0 && Exhibit.can_edit(user, exhibit_id)
 			authors = exhibit.additional_authors == nil ? [] : exhibit.additional_authors.split(',')
@@ -926,7 +925,7 @@ class BuilderController < ApplicationController
 
     exhibit = Exhibit.find(exhibit_id)
 
-    user = get_curr_user
+    user = current_user
     if Exhibit.can_edit(user, exhibit_id)
       case verb
         when "move_page_up"
@@ -946,7 +945,7 @@ class BuilderController < ApplicationController
 	# GET /builder/1.xml
 	def show
 		exhibit_id = params[:id]
-		user = get_curr_user
+		user = current_user
 		if Exhibit.can_edit(user, exhibit_id)
 			@exhibit = Exhibit.find(exhibit_id)
 			@page = params['page'] == nil ? 1 : params['page'].to_i
@@ -969,7 +968,7 @@ class BuilderController < ApplicationController
 	def destroy
 		# for security reasons, make sure that the exhibit belongs to the person who is trying to delete it.
 		exhibit_id = params[:id]
-		user = get_curr_user
+		user = current_user
 		#exhibit = Exhibit.find(exhibit_id)
 		if Exhibit.can_edit(user, exhibit_id)
 			Exhibit.destroy(exhibit_id)

@@ -155,7 +155,7 @@ class GroupsController < ApplicationController
 				group_id = GroupsUser.get_group_from_obfuscated_id(params[:id])
 				user_id = User.find(GroupsUser.find(Group.id_retriever(params[:id])).user_id)
 				user = User.find(user_id)
-				session[:user] = { :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names }
+				set_current_user({ :email => user.email, :fullname => user.fullname, :username => user.username, :role_names => user.role_names })
 				group = Group.find(group_id)
 				GroupsUser.email_hook("membership", group_id, "New member, #{user.fullname}, in #{group.name}", "#{user.fullname} has joined the group #{group.name}. Visit the group at #{ActionMailer::Base.default_url_options[:host]}/groups/#{group.get_visible_id()}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 				if from_web
@@ -227,7 +227,7 @@ class GroupsController < ApplicationController
 			return
 		end
 
-		session[:user] = User.create_user(user_name, password.strip, email)
+		set_current_user(User.create_user(user_name, password.strip, email))
 		params[:id] = Group.id_obfuscator(gu_id)
 		params[:from_create] = true
 		accept_invitation()
@@ -272,7 +272,7 @@ class GroupsController < ApplicationController
 		exhibit.save!
 	
 		user = exhibit.get_apparent_author()
-		editor = get_curr_user()
+		editor = current_user
 		group = Group.find(exhibit.group_id)
 		GenericMailer.generic(editor.fullname, editor.email, user.fullname, user.email, "#{group.get_exhibits_label()} \"#{exhibit.title}\" Unpublished",
 			"The editors of #{group.name} have unpublished your #{group.get_exhibits_label()} with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
@@ -290,7 +290,7 @@ class GroupsController < ApplicationController
 		 exhibit.editor_limit_visibility = 'group'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility limited in #{group.name}", "#{get_curr_user().fullname} limited the exhibit #{exhibit.title} to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility limited in #{group.name}", "#{current_user.fullname} limited the exhibit #{exhibit.title} to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -302,7 +302,7 @@ class GroupsController < ApplicationController
 		 exhibit.editor_limit_visibility = 'www'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility not limited in #{group.name}", "#{get_curr_user().fullname} removed the visibility limitation on the #{group.get_exhibits_label()} #{exhibit.title}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility not limited in #{group.name}", "#{current_user.fullname} removed the visibility limitation on the #{group.get_exhibits_label()} #{exhibit.title}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -315,11 +315,11 @@ class GroupsController < ApplicationController
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
 		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} \"#{exhibit.title}\" in \"#{group.name}\" needs revision.",
-			"#{get_curr_user().fullname} returned the #{group.get_exhibits_label()} \"#{exhibit.title}\" for further revisions before being accepted as peer-reviewed.\n\nThe Editors included this message in their review:\n\n#{comment}",
+			"#{current_user.fullname} returned the #{group.get_exhibits_label()} \"#{exhibit.title}\" for further revisions before being accepted as peer-reviewed.\n\nThe Editors included this message in their review:\n\n#{comment}",
 			url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 user = exhibit.get_apparent_author()
-		 editor = get_curr_user()
+		 editor = current_user
 		 group = Group.find(exhibit.group_id)
 		 GenericMailer.generic(editor.fullname, editor.email, user.fullname, user.email, "Revisions Needed to #{group.get_exhibits_label()} \"#{exhibit.title}\"",
 			 "The editors of #{group.name} have returned your #{group.get_exhibits_label()} with suggested revisions, listed below. Please log into your account and review them at your earliest convenience.\n\n#{comment}",
@@ -397,7 +397,7 @@ class GroupsController < ApplicationController
 		group = Group.find(id)
 		group.image = nil
 		group.save
-		GroupsUser.email_hook("group", group.id, "Thumbnail removed from #{group.name}", "#{get_curr_user().fullname} has removed the thumbnail image from #{group.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("group", group.id, "Thumbnail removed from #{group.name}", "#{current_user.fullname} has removed the thumbnail image from #{group.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		redirect_to :back
 	end
 
@@ -435,7 +435,7 @@ class GroupsController < ApplicationController
 	end
 
 	def verify_group_title
-    creator = get_curr_user()
+    creator = current_user
     if creator.nil?
       render :text => "Your session has expired. Please log in and try again.", :status => :bad_request
     else
@@ -593,7 +593,7 @@ class GroupsController < ApplicationController
         end
         if err == false
           flash = "OK:#{@group.id}"
-          invitor = get_curr_user()
+          invitor = current_user
           url_accept = url_for(:controller => 'groups', :action => 'accept_invitation', :id => "PUT_ID_HERE", :only_path => false)
           url_decline = url_for(:controller => 'groups', :action => 'decline_invitation', :id => "PUT_ID_HERE", :only_path => false)
           url_home = url_for(:controller => 'home', :action => 'index', :only_path => false)
@@ -640,7 +640,7 @@ class GroupsController < ApplicationController
     end
 		
 		if params[:emails] || params[:usernames]
-			invitor = get_curr_user()
+			invitor = current_user()
 			if invitor.nil?
 			  err_msg = "You must be logged in to invite users"
 			else
@@ -654,15 +654,14 @@ class GroupsController < ApplicationController
 	  if params[:group] # this may be nil if we are just inviting people.
   		which = params[:group].keys.join(" and ")
   		values = self.class.helpers.strip_tags(params[:group].values.to_a().join("\n\n"))
-  		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{get_curr_user().fullname} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+  		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{current_user.fullname} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 	  end
 
-	  curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username])
 		if err_msg == nil
 			if params[:group] && params[:group][:forum_permissions] != nil
-				render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => curr_user.id }
+				render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => current_user.id }
 			else
-				render :partial => 'group_details', :locals => { :group => @group, :user_id => curr_user.id }
+				render :partial => 'group_details', :locals => { :group => @group, :user_id => current_user.id }
 			end
 		else
 			render :text => err_msg, :status => :bad_request
@@ -736,7 +735,7 @@ class GroupsController < ApplicationController
 			admins.push({ :name => user.fullname, :email => user.email })
 		}
 		begin
-			curr_user = get_curr_user()
+			curr_user = current_user
 			admins.each { |ad|
 				body = "#{curr_user.fullname} mailto:#{curr_user.email} #{ "from #{curr_user.institution}" if curr_user.institution && curr_user.institution.length > 0 } has requested to make the group #{ @group.name } into a peer-reviewed group.\n\n"
 				body += "Please log in as administrator to #{Setup.site_name()} to change the group.\n\n"

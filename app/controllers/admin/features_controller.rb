@@ -19,7 +19,7 @@ class Admin::FeaturesController < Admin::BaseController
 	# GET /features.xml
 	def index
 		@features = FeaturedObject.all
-		ss = self.class.helpers.get_saved_searches(session[:user][:username])
+		ss = self.class.helpers.get_saved_searches(current_user.username)
 		@saved_searches = []
 		ss.each {|rec|
 			@saved_searches.push({ :value => rec.name, :text => rec.name })
@@ -83,7 +83,7 @@ class Admin::FeaturesController < Admin::BaseController
 			site = Catalog.factory_create(false).get_archive(get_hit_item(hit, 'archive')) #Site.find_by_code(get_hit_item(hit, 'archive'))
 			p_obj[:site] = site['name']
 			p_obj[:site_url] = site['site_url']
-			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(session[:user][:username], p_obj[:saved_search_name])
+			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(current_user.username, p_obj[:saved_search_name])
 
 			if type == 'modifying'
 				feature = FeaturedObject.find(id)

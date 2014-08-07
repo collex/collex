@@ -143,7 +143,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 		<span class="not_peer_reviewed">This exhibit has not been peer reviewed.</span>&nbsp;
 		<%= make_exhibit_home_link(@exhibit) %>&nbsp;
 		<a href="/print_exhibit/<%=@exhibit.id%>" class="nav_link" >[Printer-friendly Page]</a>&nbsp;
-		<%= link_to("[Edit this exhibit]", { :controller => 'builder', :action => 'show', :id => @exhibit.id, :page => @page }, { :class => 'nav_link', :target => '_parent' }) if Exhibit.can_edit(get_curr_user(), @exhibit.id)  %>
+		<%= link_to("[Edit this exhibit]", { :controller => 'builder', :action => 'show', :id => @exhibit.id, :page => @page }, { :class => 'nav_link', :target => '_parent' }) if Exhibit.can_edit(current_user, @exhibit.id)  %>
 	</div>
 <% end -%>
 	<div id="exhibit_page clear_both">

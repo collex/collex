@@ -81,7 +81,7 @@ class Admin::DefaultController < Admin::BaseController
 		comment = DiscussionComment.find(id)
 		commenter = User.find(comment.user_id)
 		reporters = comment.get_reporters
-		DiscussionComment.delete_comment(id, session[:user], is_admin?)
+		DiscussionComment.delete_comment(id, current_user, is_admin?)
 		begin
 			reporters.each do | reporter |
 				body = "Thanks for reporting the comment by #{commenter.fullname}. It has been removed.\n\n"
@@ -228,7 +228,7 @@ class Admin::DefaultController < Admin::BaseController
 		if user_id.to_i > 0
 			logged_in_user = User.get_user(user_id)
 			if logged_in_user
-				session[:user] = logged_in_user
+				set_current_user(logged_in_user)
 				LoginInfo.record_login(logged_in_user)
 			end
 		end

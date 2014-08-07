@@ -44,7 +44,7 @@ class LoginController < ApplicationController
 
 		logged_in_user = User.login(name, pass)
 		if logged_in_user
-			session[:user] = logged_in_user
+			set_current_user(logged_in_user)
 			LoginInfo.record_login(logged_in_user)
 			render :text => "Logging in..." # since this doesn't set the status, the Ajax handler will request the page again
 		else
@@ -55,8 +55,10 @@ class LoginController < ApplicationController
   end
   
   def logout
-		LoginInfo.record_logout(session[:user])
-    session[:user] = nil 
+	  if user_signed_in?
+		LoginInfo.record_logout(current_user.username)
+		set_current_user(nil)
+      end
     redirect_to get_page_to_return_to()
   end
 
@@ -143,7 +145,7 @@ class LoginController < ApplicationController
           return "Password must not be blank"
         end
         if params[:create_password] == params[:create_password2]
-							session[:user] = User.create_user(params[:create_username], params[:create_password].strip, params[:create_email])
+			set_current_user(User.create_user(params[:create_username], params[:create_password].strip, params[:create_email]))
           return nil
         else
           return "Passwords do not match"

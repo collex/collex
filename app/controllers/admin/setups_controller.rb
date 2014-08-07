@@ -62,7 +62,7 @@ class Admin::SetupsController < Admin::BaseController
 
 
 		if act == 'Send Me A Test Email'
-			user = get_curr_user()
+			user = current_user
 			GenericMailer.generic(Setup.site_name(), Setup.return_email(), user[:fullname], user[:email], "Test Email From Collex",
 				"If you are reading this, then the email settings are correct in Collex. ",
 				url_for(:controller => '/home', :action => 'index', :only_path => false), 

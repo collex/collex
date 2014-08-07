@@ -23,7 +23,7 @@
 <% end %>
 	<% row_id = "search_result_#{index}" -%>
     <%# The left side that contains the checkbox, graphic and the collect button -%>
-   	<% if is_logged_in? -%>
+   	<% if user_signed_in? -%>
 		<div class="search_result_left_logged_in">
 			<table><tr>
 				<td><input type="checkbox" id="bulk_collect_<%=index%>" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>" /></td>
@@ -45,13 +45,13 @@
 	<% title = title.gsub(/\n/, " ") %>
 	<div class="search_result_right">
 	    <div class="search_result_buttons">
-			<%= result_button("Collect", "collect_#{index}", "doCollect('/results/result_row', '#{hit['uri']}', #{index}, '#{row_id}', #{is_logged_in? ? true : false});", true) if !result_is_collected(hit) %>
+			<%= result_button("Collect", "collect_#{index}", "doCollect('/results/result_row', '#{hit['uri']}', #{index}, '#{row_id}', #{user_signed_in? ? true : false});", true) if !result_is_collected(hit) %>
 			<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('/results/result_row', '#{hit['uri']}', #{index}, '#{row_id}');", true) if result_is_collected(hit) %>
-			<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{hit['uri']}', '#{escape_apos(title)}', 'discuss_#{index}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}');", true) %>
+			<%= result_button("Discuss", "discuss_#{index}", "new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{hit['uri']}', '#{escape_apos(title)}', 'discuss_#{index}', #{user_signed_in? ? true : false}, '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}');", true) %>
 			<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('result_row', '#{hit['uri']}', #{index}, '#{row_id}', '#{MY_COLLEX_URL}');", true) if result_is_collected(hit) %>
 			<% if COLLEX_PLUGINS['typewright'] && !hit['typewright'].blank? %>
 			   <% tw_url = "/typewright/documents/0?uri=#{hit['uri']}"  %>
-			   <%= result_button("Edit", "edit_#{index}", "doEditDocument( #{is_logged_in?}, '#{tw_url}' );", true) %>
+			   <%= result_button("Edit", "edit_#{index}", "doEditDocument( #{user_signed_in?}, '#{tw_url}' );", true) %>
 			<% end %>
 	    </div>
 	    <%# The middle with the actual search results -%>

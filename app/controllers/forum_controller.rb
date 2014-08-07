@@ -29,13 +29,6 @@ class ForumController < ApplicationController
   end
   public
 
-#  def start_discussion
-#    if !is_logged_in?
-#      flash[:error] = 'You must be signed in to start a discussion.'
-#      redirect_to :action => :index
-#    end
-#  end
-#
 	def object	# called from RSS
 		id = params[:comment]
 		if id != nil
@@ -51,7 +44,7 @@ class ForumController < ApplicationController
 	end
 
   def post_comment_to_new_thread
-    if !is_logged_in?
+    if !user_signed_in?
       render :text => 'You must be signed in to start a discussion.', :status => :bad_request
     else
 			params[:title] = params[:title].strip()
@@ -76,7 +69,7 @@ class ForumController < ApplicationController
   end
   
   def post_comment_to_existing_thread
-    if !is_logged_in?
+    if !user_signed_in?
       render :text => 'You must be signed in to reply to a thread.', :status => :bad_request
     else
 			params[:reply] = params[:reply].strip()
@@ -176,7 +169,6 @@ class ForumController < ApplicationController
     nines_exhibit = params[:exhibit_list]
     description = params[:reply]
     disc_type = params[:obj_type]
-    user = User.find_by_username(session[:user][:username])
     thread = DiscussionThread.find(thread_id)
     
     # If an attachment was not selected, but the type expected an attachment, just change the type to regular comment
@@ -187,7 +179,7 @@ class ForumController < ApplicationController
     end
  
     if disc_type == ''
-      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
+      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => current_user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
     elsif disc_type == 'mycollection'
       cr = CachedResource.find_by_uri(nines_object)
 	  # If the object for some reason isn't in the cache (and there's no reason why not), then we will skip it. This would only happen if there were an inconsistency in the database somewhere.
@@ -199,22 +191,19 @@ class ForumController < ApplicationController
 		    comment_type = 'nines_object'
 	  end
 	  
-#      if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
-#        cr = CollectedItem.collect_item(user, nines_object, nil)
-#      end
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => thread.discussion_comments.length+1,
         :comment_type => comment_type, :cached_resource_id => cr_id, :comment => description)
     elsif disc_type == 'exhibit'
       a = nines_exhibit.split('_')
       exhibit = Exhibit.find(a[1])
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => thread.discussion_comments.length+1,
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif disc_type == 'weblink'
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => thread.discussion_comments.length+1, 
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => thread.discussion_comments.length+1,
         :comment_type => 'inet_object', :link_title => inet_title, :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
-		DiscussionVisit.visited(thread, session[:user])
-		send_notification(thread.id, thread.group_id, thread.get_title(), user.fullname, typ)
+		DiscussionVisit.visited(thread, current_user)
+		send_notification(thread.id, thread.group_id, thread.get_title(), current_user.fullname, typ)
   end
 
 	def send_notification(thread_id, group_id, title, username, typ)
@@ -230,7 +219,7 @@ class ForumController < ApplicationController
   
   public
   def post_object_to_new_thread
-    if !is_logged_in? || params[:topic_id] == nil || request.request_method != 'POST'
+    if !user_signed_in? || params[:topic_id] == nil || request.request_method != 'POST'
       flash[:error] = 'You must be signed in to start a discussion.'
 	  redirect_to :back
     else
@@ -258,18 +247,6 @@ class ForumController < ApplicationController
 		render :text => "/forum/view_topic?page=1&topic=#{topic_id}"
     end
   end
-  
-#  def post_object_to_existing_thread
-#    if !is_logged_in?
-#      flash[:error] = 'You must be signed in to post an object.'
-#    else
-#      thread_id = params[:thread_id]
-#      thread = DiscussionThread.find(thread_id)
-#      post_object(thread, params)
-#    end
-#
-#    redirect_to :action => :view_thread, :thread => thread_id
-#  end
   
   def get_exhibit_list
     # This is called through ajax and wants a json object back.
@@ -307,8 +284,7 @@ class ForumController < ApplicationController
 		# Except, if only_images is passed, then items without a thumbnail are skipped.
 		only_images = params[:only_images]
 		ret = []
-		user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-		if user
+		if user_signed_in?
 			# if an element id is passed, then only the objects that are in that exhibit are returned.
 			illustration_id = params[:illustration_id]
 			if illustration_id
@@ -358,7 +334,7 @@ class ForumController < ApplicationController
 #					}
 				}
 			else
-				all_collected = CollectedItem.get_collected_objects(user.id)
+				all_collected = CollectedItem.get_collected_objects(current_user.id)
 				all_collected.each  { |uri,col|
 					if !only_images || col['thumbnail']
 						image = CachedResource.get_thumbnail_from_hit(col)
@@ -377,29 +353,6 @@ class ForumController < ApplicationController
 	def get_nines_obj_list_with_image
 		params[:only_images] = true
 		get_nines_obj_list()
-#    ret = []
-#    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-#    if user
-#      objs = CollectedItem.all(:conditions => [ "user_id = ?", user.id ])
-#      objs.each {|obj|
-#        hit = CachedResource.get_hit_from_resource_id(obj.cached_resource_id)
-#        if hit != nil
-#          image = CachedResource.get_thumbnail_from_hit(hit)
-#          if image && image.length > 0
-#						obj = {}
-#						obj[:id] = hit['uri']
-#						obj[:img] = image
-#						obj[:title] = hit['title'][0]
-#						obj[:strFirstLine] = hit['title'][0]
-#						obj[:strSecondLine] = hit['role_AUT'] ? hit['role_AUT'].join(', ') : hit['role_ART'] ? hit['role_ART'].join(', ') : ''
-#						ret.push(obj)
-#					end
-#        end
-#      }
-#      render :text => ret.to_json()
-#    else
-#      render :text => "Your session has expired. Please log in again.", :status => :bad_request
-#    end
 	end
 
   private
@@ -411,27 +364,26 @@ class ForumController < ApplicationController
     inet_title = params[:inet_title]
     description = params[:description]
     nines_exhibit = params[:nines_exhibit]
-    user = User.find_by_username(session[:user][:username])
-    
+
     if ExhibitIllustration.get_illustration_type_nines_obj() == disc_type
       cr = CachedResource.find_by_uri(nines_object)
       if cr == nil  # if the object hadn't been collected, let's just go ahead an collect it
-        CollectedItem.collect_item(user, nines_object, nil)
+        CollectedItem.collect_item(current_user, nines_object, nil)
         cr = CachedResource.find_by_uri(nines_object)
       end
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => 1,
         :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif ExhibitIllustration.get_exhibit_type_text() == disc_type
       exhibit = Exhibit.find_by_title(nines_exhibit)
 			exhibit = Exhibit.find_by_id(nines_exhibit) if exhibit == nil
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => 1,
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif ExhibitIllustration.get_illustration_type_image() == disc_type
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => user.id, :position => 1, 
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => 1,
         :comment_type => 'inet_object', :link_url => inet_url, :link_title => inet_title, :image_url => inet_thumbnail, :comment => description)
     end
-		DiscussionVisit.visited(thread, session[:user])
-		send_notification(thread.id, thread.group_id, thread.get_title(), user.fullname, typ)
+		DiscussionVisit.visited(thread, current_user)
+		send_notification(thread.id, thread.group_id, thread.get_title(), current_user.fullname, typ)
   end
   public
   
@@ -491,7 +443,7 @@ class ForumController < ApplicationController
 		  num_views = 0 if num_views == nil
 		  num_views += 1
 		  @thread.update_attribute(:number_of_views, num_views)
-				DiscussionVisit.visited(@thread, session[:user])
+				DiscussionVisit.visited(@thread, current_user)
 				@subtitle = " : #{@thread.get_title()}"
 	  else
 		  # the thread has disappeared
@@ -520,10 +472,10 @@ class ForumController < ApplicationController
   
   def delete_comment
     thread_id = -1
-    if !is_logged_in?
+    if !user_signed_in?
       flash[:error] = 'You must be signed in to delete a comment.'
     else
-			thread_id = DiscussionComment.delete_comment(params[:comment], session[:user], is_admin?)
+			thread_id = DiscussionComment.delete_comment(params[:comment], current_user, is_admin?)
     end
     
     if thread_id == -1
@@ -534,23 +486,22 @@ class ForumController < ApplicationController
   end
   
   def report_comment
-    if !is_logged_in?
+    if !user_signed_in?
       flash[:error] = 'You must be signed in to report a comment.'
     else
-      user = User.find_by_username(session[:user][:username])
       comment_id = params["comment_id"]
       reason = params['reason']
       can_edit = params['can_edit'] == 'true'
       can_delete = params['can_delete'] == 'true'
       is_main = params['is_main'] == 'true'
       comment = DiscussionComment.find(comment_id)
-			if comment.has_been_reported_by(user.id) == false
-				comment.add_reporter(user.id, reason)
+			if comment.has_been_reported_by(current_user.id) == false
+				comment.add_reporter(current_user.id, reason)
 				comment.save
 				begin
 				  admins = User.get_administrators
 				  admins.each do | admin |
-						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{user.fullname}. The text of the message is:\n\n"
+						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{current_user.fullname}. The text of the message is:\n\n"
 						body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
 						body += "The reason for this report is:\n\n#{reason}"
 						GenericMailer.generic(Setup.site_name(), Setup.return_email(), admin.fullname, admin.email,

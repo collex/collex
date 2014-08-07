@@ -19,9 +19,9 @@ class LoginInfo < ActiveRecord::Base
 		LoginInfo.create({ :username => user[:username], :action => 'login', :address => nil })
 	end
 
-	def self.record_logout(session_user)
-		if session_user
-			LoginInfo.create({ :username => session_user[:username], :action => 'logout', :address => nil })
+	def self.record_logout(username)
+		if username
+			LoginInfo.create({ :username => username, :action => 'logout', :address => nil })
 		end
 	end
 

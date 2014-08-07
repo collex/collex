@@ -110,14 +110,14 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 		<div class="right_of_thumbnail exhibit_link">
 			<% if Group.get_exhibit_visibility(exhibit) == 'everyone' -%>
 			<div class="search_result_buttons">
-				<%= result_button("Discuss", "discuss_#{exhibit.id}", "new StartDiscussionWithExhibit('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{exhibit.id}', '#{escape_apos(exhibit.title)}', 'discuss_#{exhibit.id}', #{is_logged_in? ? true : false}, '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', #{group.id}, #{cluster ? cluster.id : 'null'});", true) %>
+				<%= result_button("Discuss", "discuss_#{exhibit.id}", "new StartDiscussionWithExhibit('/forum/get_all_topics', '/forum/post_object_to_new_thread', '#{exhibit.id}', '#{escape_apos(exhibit.title)}', 'discuss_#{exhibit.id}', #{user_signed_in? ? true : false}, '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', #{group.id}, #{cluster ? cluster.id : 'null'});", true) %>
 			</div>
 			<% end -%>
 			<%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
-			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
+			<% if Exhibit.can_edit(current_user, exhibit.id) -%>
 				<br /><%= author_options_label %> <%= link_to("[edit this #{group.get_exhibits_label()}]", { :controller => 'builder', :action => 'show', :id => exhibit.id }, :class => 'nav_link' ) %>
-			<% end # if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
+			<% end %>
 <% if group.can_edit(user_id) -%>
 				<br />Group Administrator options:
 			<%= link_to_function("[move #{group.get_exhibits_label()}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.get_exhibits_label}');", { :class => 'nav_link' }) %>
@@ -142,7 +142,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 		<div class="left_thumbnail"><%= render :partial => '/exhibits/exhibit_thumbnail', :locals => { :exhibit => exhibit, :show_immediately => true } %></div>
 		<div class="right_of_thumbnail exhibit_link"><%= get_exhibit_link(exhibit) %>&nbsp;by
 			<%= get_exhibit_user_link(exhibit) %>
-			<% if Exhibit.can_edit(get_curr_user(), exhibit.id) -%>
+			<% if Exhibit.can_edit(current_user, exhibit.id) -%>
 				| <%= link_to("[Edit this #{group.get_exhibits_label()}]", { :controller => 'builder', :action => 'show', :id => exhibit.id }, :class => 'nav_link' ) %>
 			<% end -%>
 			<%= link_to_function("[move #{group.get_exhibits_label}]", "moveExhibit(#{exhibit.id}, gClusterOptions, #{group.id}, #{cluster ? cluster.id : 0}, '#{group.get_exhibits_label}');", { :class => 'nav_link' }) if group.can_edit(user_id) %>

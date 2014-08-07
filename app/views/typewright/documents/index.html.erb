@@ -20,9 +20,6 @@
 
 <div class="inner_content_container">
   
-  <!-- grab currently logged in user -->
-  <% curr_user = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]) -%>
-  
   <!-- Typewright overview content -->
   <div class="typewright_overview">
     <div class="typewright_welcome">
@@ -115,7 +112,7 @@
         <form name="bulk_collect_form" id="bulk_collect_form">
 			<input type="hidden" id="page" name="page" value="1" />
            <input type="hidden" id="bulk_tag_text" name="bulk_tag_text" value="" />
-           <%= render( :partial => 'results/results', :locals => { :user_id => curr_user == nil ? -1 : curr_user.id, :hits => @features } ) %>
+           <%= render( :partial => 'results/results', :locals => { :user_id => !user_signed_in? ? -1 : current_user.id, :hits => @features } ) %>
         </form>
         <div class="clear_both"></div>
         <hr class="search_results_hr" />

@@ -178,7 +178,7 @@ module DiscussionThreadsHelper
 				when 'full' then "An open discussion sponsored by #{group_link}. All #{Setup.site_name()} users can read and comment."
 				else ''
 			end
-			if get_curr_user()
+			if user_signed_in?
 				readonly = user_can_reply(comment) == false
 				if readonly
 					group_comment += "<br />This thread is read only."
@@ -199,8 +199,7 @@ module DiscussionThreadsHelper
 		thread = DiscussionThread.find(comment.discussion_thread_id)
 		return true if thread.group_id == nil || thread.group_id <= 0
 		group = Group.find(thread.group_id)
-		curr_user = get_curr_user()
-		return curr_user ? group.can_post(curr_user.id) : false
+		return current_user ? group.can_post(current_user.id) : false
 	end
 
   def forum_title_with_tooltip(title, comment)

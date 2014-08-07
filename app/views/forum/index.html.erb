@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 
 <% current_page Setup.community_tab() -%>
-<% user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
+<% user_id = user_signed_in? ? current_user.id : nil -%>
 <% topics = DiscussionTopic.get_all_with_date() -%>
 <%= create_breadcrumbs([{ :text => Setup.community_tab(), :url => '/communities' }], "#{Setup.site_name()}  Forum") %>
 <div class="content_container2">
@@ -44,7 +44,7 @@
 							populate_exhibit_url: '/forum/get_exhibit_list',
 							populate_collex_obj_url: '/forum/get_nines_obj_list',
 							progress_img: '<%=image_path(PROGRESS_SPINNER_PATH) %>',
-							logged_in: <%= is_logged_in? %>,
+							logged_in: <%= user_signed_in? %>,
 							addTopicToLoginRedirect: true,
 							redirect: '/forum/view_topic?topic=<%= topic.id %>&page=1'
 						});
@@ -72,7 +72,7 @@
 						ERROR: ill-formed thread. (Main comment is missing in thread <%= threads[i].id %>)<br/>
 					<% else -%>
 						<% main_comment = threads[i].discussion_comments[0] -%>
-						<%= render :partial => 'summary', :locals => { :comment=> main_comment, :thread_id => threads[i].id, :can_delete => is_logged_in? && (is_admin? || (main_comment.user_id == user_id)) } %>
+						<%= render :partial => 'summary', :locals => { :comment=> main_comment, :thread_id => threads[i].id, :can_delete => user_signed_in? && (is_admin? || (main_comment.user_id == user_id)) } %>
 					<% end # there is a comment -%>
 				</td>
 

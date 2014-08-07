@@ -23,8 +23,8 @@
 <% is_collected = result_is_collected(hit) -%>
 <%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', redrawResultRowForPopupButtons);", is_collected) %>
 <%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', '#{MY_COLLEX_URL}');", is_collected) %>
-<%= result_button("Collect", "collect_#{-1}", "doCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', #{is_logged_in? ? true : false}, redrawResultRowForPopupButtons);", !is_collected) %>
+<%= result_button("Collect", "collect_#{-1}", "doCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', #{user_signed_in? ? true : false}, redrawResultRowForPopupButtons);", !is_collected) %>
 <% if COLLEX_PLUGINS['typewright'] && !hit['typewright'].blank? %>
 	<% tw_url = "/typewright/documents/0?uri=#{hit['uri']}"  %>
-	<%= result_button("Edit", "edit_#{index}", "doEditDocument( #{is_logged_in?}, '#{tw_url}' );", true) %>
+	<%= result_button("Edit", "edit_#{index}", "doEditDocument( #{user_signed_in?}, '#{tw_url}' );", true) %>
 <% end %>

@@ -20,7 +20,7 @@
 <div class="thumbnail_item">
 	<div class="left_thumbnail"><%= render :partial => 'common/thumbnail', :locals => { :element_id => "group_#{group.id}", :url => get_group_image_url(group), :show_immediately => true } %></div>
 	<div class="right_of_thumbnail exhibit_link"><span class="obj_summary_label"><%= "Peer-Reviewed " if group.group_type == 'peer-reviewed' %>Group: </span><%= link_to group.name, group.get_visible_url(), :class => 'nav_link' %><br />
-		<% curr_user_id = session[:user] == nil ? nil : User.find_by_username(session[:user][:username]).id
+		<% curr_user_id = user_signed_in? ? current_user.id : nil
 		   count = 0
 		   exhibits = Exhibit.where("group_id = ? and is_published != ?", group.id, 0)
 		   exhibits.each do | exhibit | 

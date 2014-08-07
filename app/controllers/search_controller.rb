@@ -796,10 +796,9 @@ class SearchController < ApplicationController
       # see if the session has timed out since the last browser action, and the
       # user actually inputted sometime.
       name = params[:saved_search_name]
-      if (session[:user] && name != nil && name.length > 0)
-         user = User.find_by_username(session[:user][:username])
-         session[:name_of_search] = name
-         saved_search = user.searches.find_or_create_by_name(name)
+      if (user_signed_in? && name != nil && name.length > 0)
+          session[:name_of_search] = name
+         saved_search = current_user.searches.find_or_create_by_name(name)
 
          saved_search.sort_by = session[:search_sort_by]
          saved_search.sort_dir = session[:search_sort_by_direction]
@@ -817,8 +816,7 @@ class SearchController < ApplicationController
    end
 
    def saved
-     user = User.find_by_username(params[:user])
-     if user != nil # If the session didn't time out
+     if user_signed_in?
        session[:constraints] = []
        session[:name_of_search] = params[:name]
 
@@ -848,9 +846,8 @@ class SearchController < ApplicationController
    end
 
    def remove_saved_search
-     if (session[:user])
-       user = User.find_by_username(session[:user][:username])
-       searches = user.searches
+     if user_signed_in?
+       searches = current_user.searches
        saved_search = searches.find(params[:id])
        name = saved_search.name
        saved_search.destroy

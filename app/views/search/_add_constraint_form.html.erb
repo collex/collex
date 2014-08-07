@@ -92,7 +92,7 @@
 		  <input id="search_submit2" type="submit" value="Search"/>
 	  <% end %>
 
-	  <% if is_logged_in? -%>
+	  <% if user_signed_in? -%>
 		  <div id="saved-searches">
 			<%= render :partial => 'save_search_list', :locals => {:header_class => 'page_header', :max_to_show => -1} %>
 		  </div>
@@ -212,7 +212,7 @@
     </table>
 	<% end %>
 
-	<% if is_logged_in? -%>
+	<% if user_signed_in? -%>
 		<div id="saved-searches">
 			<%= render :partial => 'save_search_list', :locals => { :header_class => 'page_header', :max_to_show => -1 } %>
 		</div>

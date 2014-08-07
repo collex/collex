@@ -33,7 +33,7 @@
 </div>
 
 <div class="inner_content_container">
-	<% if !is_logged_in? -%>
+	<% if !user_signed_in? -%>
 		<%= render :partial => 'login_instructions' %>
 	<% else -%>
 		<div class="subpage_nav"> 

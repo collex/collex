@@ -39,7 +39,7 @@
 			    <%= image_tag("#{SKIN}/free_culture_hover.gif", { alt: '', style: 'display:none;' }) %>
 			    <%= image_tag("#{SKIN}/full_text_hover.gif", { alt: '', style: 'display:none;' }) %>
 			    <%= image_tag("#{SKIN}/has_xml_source_hover.gif", { alt: '', style: 'display:none;' }) %>
-				<% if !is_logged_in? -%>
+				<% if !user_signed_in? -%>
 				    <div>(<%= sign_in_link({ :class => 'nav_link'}) %> or <%= sign_up_link({ :class => 'nav_link' }) %> to save these results)</div>
 				<% end -%>
 			

@@ -17,15 +17,14 @@
 module SearchHelper
   private
   def get_collected_item(hit)
-    return nil if session[:user] == nil || hit == nil
+    return nil if !user_signed_in? || hit == nil
     if @cached_collected_item
-      if @cached_collected_item[:user] == session[:user][:username] && @cached_collected_item[:uri] == hit['uri']
+      if @cached_collected_item[:user] == current_user.username && @cached_collected_item[:uri] == hit['uri']
         return @cached_collected_item[:item]
       end
     end
-    user = User.find_by_username(session[:user][:username])
-    item = CollectedItem.get(user, hit['uri'])
-    @cached_collected_item = { :user => session[:user][:username], :uri => hit['uri'], :item => item }
+    item = CollectedItem.get(current_user, hit['uri'])
+    @cached_collected_item = { :user => current_user.username, :uri => hit['uri'], :item => item }
     return item
   end
 
@@ -387,16 +386,15 @@ module SearchHelper
   def create_saved_search_permalink(s)
     base_url = 'http://' + request.host_with_port()
     permalink_id = "permalink_#{encode_for_uri(h(s))}"
-    return raw("<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(session[:user][:username], s)}\"); return false;'>#{image_tag('link.jpg', { title: "Click here to get a permanent link for this saved search.", alt: '' })}</a>")
+    return raw("<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(current_user.username, s)}\"); return false;'>#{image_tag('link.jpg', { title: "Click here to get a permanent link for this saved search.", alt: '' })}</a>")
   end
 
   def create_saved_search_link(s)
-    return raw("<a class='nav_link' href='#{create_saved_search_url(session[:user][:username], s.name)}'>#{h(s.name)}</a>")
-    #link_to s.name, {:controller=>"search", :action => 'apply_saved_search', :username => session[:user][:username], :name => s.name }, :class => 'nav_link'
+    return raw("<a class='nav_link' href='#{create_saved_search_url(current_user.username, s.name)}'>#{h(s.name)}</a>")
   end
 
   def create_remove_saved_search_link(s)
-    link_to_confirm("[remove]", { :controller => 'search', :action => 'remove_saved_search', :username => session[:user][:username], :id => s.id}, 'Saved Search', 'Are you sure you want to remove this saved search?')
+    link_to_confirm("[remove]", { :controller => 'search', :action => 'remove_saved_search', :username => current_user.username, :id => s.id}, 'Saved Search', 'Are you sure you want to remove this saved search?')
   end
   
   def has_constraints?
@@ -549,12 +547,10 @@ module SearchHelper
 
 	def result_row_tags_links(rows, index, row_id, hit, label, tags, item, signed_in, is_collected)
 		tag_str = ""
-		user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-
 		tags.each { |tag|
 			tag_str += " | " if tag != tags[0]
 			tag_str += link_to format_tag_for_output(tag[0]), {:controller => '/tag', :action => 'results', :tag => tag[0], :view => 'tag'}, {:class => 'tag_link my_tag', :title => "view all objects tagged \"#{tag[0]}\""}
-			if user && user.id == tag[1][:user]
+			if current_user && current_user.id == tag[1][:user]
 				tag_str += ' ' + link_to_function("X", "doRemoveTag('#{hit['uri']}', '#{row_id}', #{tag[1][:tag]});", :class => 'modify_link my_tag remove_tag', :title => "delete tag \"#{tag[0]}\"")
 			end #if this tag was created by the current user
 		} #the tag loop

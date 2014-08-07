@@ -58,7 +58,7 @@ class ExhibitsController < ApplicationController
     end
 
 		# Be sure the current user is authorized to see this exhibit
-		if !@exhibit.can_view(get_curr_user())
+		if !@exhibit.can_view(current_user)
 			redirect_to '/communities'
 			return
 		end

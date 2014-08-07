@@ -32,7 +32,7 @@
 <% if no_links -%>
 <% result_row_tags_no_links(rows, "Tags:", tags) -%>
 <% else # if we want links on the tags -%>
-<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, session[:user] != nil, is_collected) %>
+<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, user_signed_in?, is_collected) %>
 <% end # if no_links -%>
 <%################### -%>
 <% result_row_site(rows, "Site:", hit, 'archive') %>
@@ -93,7 +93,7 @@
 <% result_row_item(rows, :multiple_item, hit, 'isPartOf', 'Is Part Of', true) %>
 <%################### -%>
 <% if !no_links -%>
-	<% result_row_exhibits(rows, hit, get_curr_user()) %>
+	<% result_row_exhibits(rows, hit, current_user) %>
 <% end %>
 <% should_show_more = should_show_more_link(no_links, rows) %>
 <%= format_result_rows(rows, should_show_more) %>

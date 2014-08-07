@@ -16,7 +16,6 @@
     # ---------------------------------------------------------------------------- -%>
 
 <% current_page Setup.community_tab() -%>
-<% # user_id = session[:user] ? User.find_by_username(session[:user][:username]).id : nil -%>
 <% topic = @topic -%>
 <% last_updated_date = topic.get_last_updated_date -%>
 <%= create_breadcrumbs([{ :text => Setup.community_tab(), :url => '/communities' }, { :text => "#{Setup.site_name()}  Forum", :url => '/forum' }], topic.topic) %>
@@ -40,7 +39,7 @@
 						populate_exhibit_url: '/forum/get_exhibit_list',
 						populate_collex_obj_url: '/forum/get_nines_obj_list',
 						progress_img: '<%=image_path(PROGRESS_SPINNER_PATH) %>',
-						logged_in: <%= is_logged_in? %>,
+						logged_in: <%= user_signed_in? %>,
 						redirect: '/forum/view_topic?topic=<%= topic.id %>&page=1'
 					});
 					return false;

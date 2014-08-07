@@ -28,7 +28,7 @@ class MyCollexController < ApplicationController
   public
 
   def index
-    user = get_curr_user
+    user = current_user
     if user == nil
       return
     end
@@ -50,7 +50,7 @@ class MyCollexController < ApplicationController
     #  :view => 'all_collected', 'untagged', 'tag' (show all collected objects, show all untagged objects, show a single tag)
     #  :tag => 'tag_name' (if :view => 'tag', then this is the particular tag to show)
 
-    user = get_curr_user
+    user = current_user
     if user == nil
       return
     end
@@ -139,7 +139,7 @@ class MyCollexController < ApplicationController
 
   # This is called from AJAX when the user has finished filling out the form.
   def update_profile
-    user = get_curr_user
+    user = current_user
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
       render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?", :status => :bad_request
       return
@@ -165,13 +165,13 @@ class MyCollexController < ApplicationController
     end
     user.save
 
-    session[:user] = User.update_user(session[:user][:username], params[:account_password].strip, params[:account_email])
+    User.update_user(current_user.username, params[:account_password].strip, params[:account_email])
 
     render :partial => 'profile', :locals => { :user => user, :can_edit => true }
   end
 
 	def remove_profile_picture
-    user = get_curr_user
+    user = current_user
     if (user == nil)  # in case the session times out while the page is displayed. This page expects a user to be logged in.
       render :text => "You must be logged in to perform this function. Did your session time out due to inactivity?", :status => :bad_request
       return
@@ -183,7 +183,7 @@ class MyCollexController < ApplicationController
 
   # The file upload is done in a separate call because of ajax limitations.
   def update_profile_upload
-    user = get_curr_user
+    user = current_user
 		flash = ''
 		if user	# If the session expired while the dlg was on the page, don't go further.
 			if  !params['image'].blank?

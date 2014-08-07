@@ -26,12 +26,11 @@ module BuilderHelper
     return false if  @exhibit.group.is_peer_reviewed() == false
     
     # general admins can do it
-    user = session[:user] ? User.find_by_username(session[:user][:username]) : nil
-    return false if user.nil?
+    return false if !user_signed_in?
     return true if is_admin?
     
     # so can group editors
-    return true if @exhibit.group.is_editor(user.id)
+    return true if @exhibit.group.is_editor(current_user.id)
     
     return false
   end

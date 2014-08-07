@@ -17,7 +17,7 @@
 	
 <%# bulkcollect params: string mode, int page -%>
 <div class="bulkcollect">
-<% if is_logged_in? -%>
+<% if user_signed_in? -%>
   <a class="modify_link" href="#" onclick="toggleAllBulkCollectCheckboxes(this); return false;"><span class="bulk_select_all">[Select All]</span><span class="bulk_unselect_all" style="display: none;">[Unselect All]</span></a>
   
   <% if mode == :collect or mode == :both %>

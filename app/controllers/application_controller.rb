@@ -18,8 +18,10 @@ class ApplicationController < ActionController::Base
   #before_filter :set_charset
   before_filter :session_create
   
-  helper_method :is_logged_in?, :username, :user,
+  helper_method :user_signed_in?, :current_user, :username, :user,
                 :is_admin?, :get_curr_user_id, :respond_to_file_upload
+
+  protect_from_forgery
 
   # TODO-PER: This is for the old auto complete plugin. It should be replaced with the jquery one.
   def self.auto_complete_for(object, method, options = {})
@@ -102,10 +104,28 @@ class ApplicationController < ActionController::Base
 #      headers['Pragma'] = 'no-cache'
 #      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
 #    end
-      
-    def is_logged_in?
-      session[:user] ? true : false
-    end
+
+	# HACK-PER: The authentication system in Collex was created way before Devise, but it would be a good
+	# idea to migrate towards Devise. Defining these two helpers is a way to centralize all access to the current user in the meantime.
+
+	def user_signed_in?
+		session[:user] ? true : false
+	end
+
+	def current_user
+		if @current_user_cached.blank?
+			if user_signed_in?
+				@current_user_cached = User.where(username: session[:user][:username]).first
+			else
+				@current_user_cached = nil
+			end
+		end
+		return @current_user_cached
+	end
+
+	def set_current_user(user)
+		session[:user] = user
+	end
 
     def is_admin?
       user = session[:user]
@@ -114,26 +134,10 @@ class ApplicationController < ActionController::Base
       end
       return false
     end
-    def username
-      session[:user] ? session[:user][:username] : nil
-    end
-    
-    def user
-      username ? User.find_by_username(username) : nil
-    end
-    
-		def get_curr_user
-			user = session[:user]
-			return nil if user == nil
-			user = User.find_by_username(user[:username])
-			return user
-		end
-  protect_from_forgery
+
 		def get_curr_user_id
-			user = session[:user]
-			return nil if user == nil
-			user = User.find_by_username(user[:username])
-			return user.id
+			return nil if !user_signed_in?
+			return current_user.id
 		end
 
     def render_404

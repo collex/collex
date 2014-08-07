@@ -16,13 +16,12 @@
     # ---------------------------------------------------------------------------- -%>
 	
 <% current_page Setup.my_collex() -%>
-<% if !is_logged_in? -%>
+<% if !user_signed_in? -%>
 	<div class="inner_content_container">
 		<%= render :partial => 'login_instructions' %>
 	</div>
 <% else -%>
-	<% curr_user = User.find_by_username(session[:user][:username]) -%>
-	<div class="subpage_nav"> 
+	<div class="subpage_nav">
 		<%= Setup.my_collex() %><%= link_separator() %>&nbsp;<%= link_to "My objects", "/#{MY_COLLEX_URL}/results?view=all_collected", :class => 'nav_link' %>&nbsp;<br />
 	</div>
 		
@@ -30,10 +29,10 @@
 		<div class="left_column">
 			<div class="page_header">Profile</div>
 			<div id="profile">
-				<%= render :partial => 'profile', :locals => { :user => curr_user, :can_edit => true } %>
+				<%= render :partial => 'profile', :locals => { :user => current_user, :can_edit => true } %>
 			</div>
 			<div id="recently_collected_items">
-				<%= render :partial => 'recently_collected_items', :locals => { :user_id => curr_user.id, :hits => @results, :has_more => @has_more } %>
+				<%= render :partial => 'recently_collected_items', :locals => { :user_id => current_user.id, :hits => @results, :has_more => @has_more } %>
 			</div>
 		</div>
 		<div class="right_column">
@@ -49,13 +48,13 @@
 				<%= render :partial => 'tag_cloud_sidebar', :locals => { :cloud_info => @cloud_info } %>
 			</div>
 			<div id="discussions">
-				<%= render :partial => 'my_discussions_list', :locals => { :user_id => curr_user.id } %>
+				<%= render :partial => 'my_discussions_list', :locals => { :user_id => current_user.id } %>
 			</div>
 			<div id="my_exhibits">
-				<%= render :partial => 'my_exhibits_list', :locals => { :user_id => curr_user.id } %>
+				<%= render :partial => 'my_exhibits_list', :locals => { :user_id => current_user.id } %>
 			</div>
 			<div id="groups">
-				<%= render :partial => 'my_groups_list', :locals => { :user_id => curr_user.id } %>
+				<%= render :partial => 'my_groups_list', :locals => { :user_id => current_user.id } %>
 			</div>
 		</div>
 		<div class="clear_both"></div>

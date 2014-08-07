@@ -18,7 +18,7 @@ class Typewright::DocumentUsersController < ApplicationController
 	# DELETE /document_users/1
 	def destroy
 		# this doesn't destroy this document, just the user's connection to it.
-		user = get_curr_user()
+		user = current_user
 		if user == nil
 			render :partial => '/typewright/widgets/my_documents', :locals => { :document_list => document_list }
 			# TODO-PER: This should display a message about needing to be logged in.

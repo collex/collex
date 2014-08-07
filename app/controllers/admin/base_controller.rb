@@ -30,8 +30,7 @@ class Admin::BaseController < ApplicationController
 
   private
   def check_admin_privileges
-    user = session[:user]
-    if user and user[:role_names].include? 'admin'
+    if is_admin?
       return
     end
 

@@ -78,7 +78,7 @@ class Typewright::DocumentsController < ApplicationController
 
       # This goes to the main page of a particular document.
       @hit = []
-      user = get_curr_user()
+      user = current_user
       if user == nil
          redirect_to :action => "not_signed_in"
       else
@@ -166,27 +166,30 @@ class Typewright::DocumentsController < ApplicationController
          word_stats = is_admin?
          @params = Typewright::Document.get_page(@uri, page, @src, word_stats)
 		 user_id = get_curr_user_id()
-		 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
-		 token = "#{typewright_user_id.id}/#{Time.now()}"
-		 @params['token'] = token
-         @params['starting_line'] = 0
-         # correct the format of the original line
-         @params['lines'].each_with_index { |line, index|
-            if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
-               line['actions'][0] = 'original'
-               line['dates'][0] = ''
-               line['text'][0] = '' if line['text'][0].blank?
-            end
-            if line['num'].to_f == starting_line_number.to_f
-               @params['starting_line'] = index
-            end
-         }
-         @thumb = URI::join(@site, @params['img_thumb'])
-         @image_full = URI::join(@site, @params['img_full'])
-         @params['img_thumb'] = @thumb.to_s
-         @params['img_full'] = @image_full.to_s
-         #			@user = session[:user]
-         @debugging = session[:debugging] ? session[:debugging] : false
+		 if user_id.nil?
+			 redirect_to :back
+		 else
+			 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+			 token = "#{typewright_user_id.id}/#{Time.now()}"
+			 @params['token'] = token
+			 @params['starting_line'] = 0
+			 # correct the format of the original line
+			 @params['lines'].each_with_index { |line, index|
+				 if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
+					 line['actions'][0] = 'original'
+					 line['dates'][0] = ''
+					 line['text'][0] = '' if line['text'][0].blank?
+				 end
+				 if line['num'].to_f == starting_line_number.to_f
+					 @params['starting_line'] = index
+				 end
+			 }
+			 @thumb = URI::join(@site, @params['img_thumb'])
+			 @image_full = URI::join(@site, @params['img_full'])
+			 @params['img_thumb'] = @thumb.to_s
+			 @params['img_full'] = @image_full.to_s
+			 @debugging = session[:debugging] ? session[:debugging] : false
+		 end
       end
    end
 
@@ -268,7 +271,7 @@ class Typewright::DocumentsController < ApplicationController
       # send an email to them so they know a document has been marked as complete
       doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit"
       status_url = "#{get_base_uri()}/typewright/overviews?filter=#{url_encode(doc.uri)}"
-      DocumentCompleteMailer.document_complete_email(get_curr_user, doc, doc_url, status_url, to).deliver
+      DocumentCompleteMailer.document_complete_email(current_user, doc, doc_url, status_url, to).deliver
 
       render :text => "OK", :status => :ok
    end
@@ -278,7 +281,7 @@ class Typewright::DocumentsController < ApplicationController
       doc_id = params[:id]
       page_num = params[:page]
       src = params[:src]
-      collex_user = get_curr_user()
+      collex_user = current_user
       if collex_user.blank?
          render :text => 'You must be signed in to report pages. Did your session expire?', :status => :bad_request
       else

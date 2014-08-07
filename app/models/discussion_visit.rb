@@ -15,9 +15,7 @@
 ##########################################################################
 
 class DiscussionVisit < ActiveRecord::Base
-	def self.visited(thread_rec, session_user)
-		return if session_user == nil
-		user = User.find_by_username(session_user[:username])
+	def self.visited(thread_rec, user)
 		return if user == nil
 		rec = DiscussionVisit.first(:conditions => [ 'user_id = ? AND discussion_thread_id = ?', user.id, thread_rec.id])
 		if rec
