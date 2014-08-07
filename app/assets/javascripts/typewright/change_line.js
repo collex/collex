@@ -560,5 +560,6 @@ jQuery(document).ready(function($) {
 			change_line_abs(window.TW.currLine);
 		}
 		pingTypeWright(window.TW.loadTime);
+		$("#tw_input_focus").focus();
 	}, 1);
 });
