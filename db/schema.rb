@@ -11,17 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140715210742) do
+ActiveRecord::Schema.define(:version => 20140807131709) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
-    t.string  "value"
+    t.text    "value"
     t.integer "cached_resource_id"
   end
 
   add_index "cached_properties", ["cached_resource_id"], :name => "index_cached_properties_on_cached_resource_id"
   add_index "cached_properties", ["name"], :name => "index_cached_properties_on_name"
-  add_index "cached_properties", ["value"], :name => "index_cached_properties_on_value"
 
   create_table "cached_resources", :force => true do |t|
     t.string "uri"
@@ -222,16 +221,6 @@ ActiveRecord::Schema.define(:version => 20140715210742) do
     t.text     "disciplines"
   end
 
-  create_table "facet_categories", :force => true do |t|
-    t.integer "parent_id"
-    t.string  "value"
-    t.string  "type"
-    t.decimal "carousel_include",     :precision => 10, :scale => 0
-    t.text    "carousel_description"
-    t.string  "carousel_url"
-    t.decimal "image_id",             :precision => 10, :scale => 0
-  end
-
   create_table "featured_objects", :force => true do |t|
     t.string   "object_uri"
     t.string   "title"
@@ -416,13 +405,6 @@ ActiveRecord::Schema.define(:version => 20140715210742) do
     t.text     "value"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "sites", :force => true do |t|
-    t.string "code"
-    t.string "url"
-    t.string "description"
-    t.string "thumbnail"
   end
 
   create_table "tagassigns", :force => true do |t|
