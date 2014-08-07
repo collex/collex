@@ -41,7 +41,11 @@ class CachedResource < ActiveRecord::Base
   def resource
     #@resource ||= SolrResource.find_by_uri(self.uri)
 		return @resource if @resource != nil
+		begin
 		@resource = Catalog.factory_create(false).get_object(self.uri)
+		rescue Catalog::Error => e
+			@resource = nil
+		end
 		return @resource
   end
   #alias_method :solr_resource, :resource
