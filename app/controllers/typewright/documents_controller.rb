@@ -169,7 +169,7 @@ class Typewright::DocumentsController < ApplicationController
 		 if user_id.nil?
 			 redirect_to :back
 		 else
-			 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+			 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
 			 token = "#{typewright_user_id.id}/#{Time.now()}"
 			 @params['token'] = token
 			 @params['starting_line'] = 0
