@@ -47,7 +47,7 @@ class Typewright::LinesController < ApplicationController
 	def adjust_line_numbers(arr)
 		# TODO-PER: I don't know why the line numbers are off-by-one coming from the Typewright server.
 		arr.each { |rec|
-			rec['line'] = rec['line'].to_f - 1 if rec['line'].end_with?('.0')
+			rec['line'] = rec['line'].to_f - 1 if rec['line'].to_s.end_with?('.0')
 		}
 	end
 
