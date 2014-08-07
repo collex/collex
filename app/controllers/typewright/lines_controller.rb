@@ -56,7 +56,7 @@ class Typewright::LinesController < ApplicationController
 		document_id = params[:document_id]
 		page = params[:page]
 		load_time = params[:load_time]
-		typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+		typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
 		typewright_user_id = typewright_user_id.id if typewright_user_id
 		data = Typewright::Line.since(token, typewright_user_id, document_id, page, load_time)
 		adjust_line_numbers(data['lines'])
@@ -70,7 +70,7 @@ class Typewright::LinesController < ApplicationController
 		src = passed['src']
 		page = passed['page']
 		line = passed['line'] ? passed['line'].to_f : nil
-		user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, user.username)
+		user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
 		user_id = user_id.id if user_id
 		status = passed['status']
 		words_changes = passed['words']
