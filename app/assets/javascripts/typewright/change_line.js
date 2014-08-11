@@ -64,6 +64,9 @@ jQuery(document).ready(function($) {
 	}
 
 	function serverResponse(data, textStatus, jqXHR) {
+		if (data.edit_line) {
+			TW.line.setEditTime(data.edit_line, data.edit_time);
+		}
 		reportLiveChanges(data);
 	}
 

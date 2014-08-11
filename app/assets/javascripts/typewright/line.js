@@ -138,6 +138,7 @@ jQuery(document).ready(function($) {
 
 		getAllHistory: function(num) {
 			function formatLine(action, lineText, author, date, klass) {
+				if (!date) date = "";
 				var text;
 				switch (action) {
 					case 'delete':
@@ -166,7 +167,7 @@ jQuery(document).ready(function($) {
 			}
 
 			var line = TW.lines[num];
-			if (line.text.length > 1 || (TW.line.staleLines[num] && TW.line.staleLines[num].length > 0)) {
+			if (line.text.length > 1 || (TW.line.staleLines[num] && TW.line.staleLines[num].length > 0) || line.change) {
 				var str = "<table><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td>";
 				if (line.text.length > 1) {
 					for (var i = 0; i < line.text.length; i++)
@@ -177,6 +178,8 @@ jQuery(document).ready(function($) {
 						var change = TW.line.staleLines[num][j];
 						str += formatLine(change.action, change.text, change.author, change.date, 'tw_stale');
 					}
+				if (line.change)
+					str += formatLine(line.change.type, line.change.text, "You", line.change.date, 'tw_local_change');
 				str += "</table>";
 				return str;
 			}
@@ -208,6 +211,12 @@ jQuery(document).ready(function($) {
 				return true;
 			}
 			return false;
+		},
+
+		setEditTime: function(edit_line, edit_time) {
+			var num = getIndexFromLineNum(edit_line);
+			if (num >= 0 && TW.lines[num].change)
+				TW.lines[num].change.date = edit_time;
 		},
 
 		doUndo: function(num) {
