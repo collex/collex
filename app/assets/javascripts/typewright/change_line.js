@@ -67,7 +67,14 @@ jQuery(document).ready(function($) {
 		reportLiveChanges(data);
 	}
 
-	var currentEditors = [];
+	var currentEditors = { doc: [], page: []};
+
+	function formatUserName(username, id, page) {
+		var html = '<a href="#" class="nav_link" onclick="showPartialInLightBox(\'/my_collex/show_profile?user=' + id + '\', \'Profile for ' + username + '\', \'\'); return false;">' + username + '</a>';
+		if (page)
+			html += " (page: " + page + ")";
+		return html;
+	}
 
 	function redrawLiveChanges() {
 		var changes = "";
@@ -79,15 +86,25 @@ jQuery(document).ready(function($) {
 		//			changes += "<br>" + str;
 		//		});
 		var editors = "";
-		if (currentEditors.length > 0) {
-			editors = "<h3>The following people are currently editing this page:</h3>";
-			for (var i = 0; i < currentEditors.length; i++) {
-				editors += currentEditors[i].username + " (" + currentEditors[i].last_contact_time + ")<br>";
+		if (currentEditors.page.length > 0) {
+			editors += "<h3>The following people are currently editing this page:</h3>";
+			for (var i = 0; i < currentEditors.page.length; i++) {
+				var page_user = currentEditors.page[i];
+				editors += formatUserName(page_user.username, page_user.federation_user_id) + "<br>";
 			}
-		} else
-			editors = "No one else is currently editing this page.";
+		}
+		if (currentEditors.doc.length > 0) {
+			editors += "<h3>The following people are currently editing other pages in this document:</h3>";
+			for (var j = 0; j < currentEditors.doc.length; j++) {
+				var doc_user = currentEditors.doc[j];
+				editors += formatUserName(doc_user.username, doc_user.federation_user_id, doc_user.page) + "<br>";
+			}
+		}
+		if (currentEditors.page.length === 0 && currentEditors.doc.length === 0)
+			editors += "No one else is currently editing this document.";
+
 		var status = $('.tw_live_status');
-		if (TW.line.numUndisplayedChanges() > 0 || currentEditors.length > 0) {
+		if (TW.line.numUndisplayedChanges() > 0 || currentEditors.page.length > 0 || currentEditors.doc.length > 0) {
 			var statusBody = status.find(".tw_body");
 			statusBody.html(changes + "<br>" + editors);
 			status.show();
