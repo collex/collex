@@ -144,6 +144,7 @@ namespace :config do
 		run "ln -nfs #{shared_path}/config/site.yml #{release_path}/config/site.yml"
 		run "ln -nfs #{shared_path}/photos_small #{release_path}/public/photos_small"
 		run "ln -nfs #{shared_path}/photos_full #{release_path}/public/photos_full"
+		run "ln -nfs #{shared_path}/robots.txt #{release_path}/public/robots.txt"
 	end
 
 	desc "Wordpress Symlinks"
