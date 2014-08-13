@@ -273,7 +273,7 @@ TW.reparseWords = function(newText, origWords) {
 					var charSize = totalX / charCount;
 					var currX = orig[changes[i].oldIndex].l;
 					for (j = 0; j < changes[i].newIndexArr.length; j++) {
-						var thisSize = changes[i].newIndexArr[j].text.length * charSize;
+						var thisSize = Math.round(changes[i].newIndexArr[j].text.length * charSize);
 						ret.push({ l: currX, r: currX + thisSize, t: orig[changes[i].oldIndex].t, b: orig[changes[i].oldIndex].b, word: changes[i].newIndexArr[j].text });
 						currX += thisSize + charSize;	// also add one here for the space between words.
 					}
@@ -285,7 +285,7 @@ TW.reparseWords = function(newText, origWords) {
 						var w = cloneWord(orig[changes[i].oldIndex]);
 						if (changes[i].oldIndex > 0) {
 							w.r = w.l;
-							w.l = orig[changes[i].oldIndex-1].l;
+							w.l = orig[changes[i].oldIndex-1].r;
 						}
 						w.word = changes[i].text;
 						ret.push(w);
