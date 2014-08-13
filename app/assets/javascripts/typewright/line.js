@@ -295,7 +295,7 @@ jQuery(document).ready(function($) {
 					destinationLine.actions.push(destinationLine.change.action);
 					destinationLine.authors.push(destinationLine.change.author);
 					destinationLine.dates.push(destinationLine.change.date);
-					destinationLine.exact_time.push(destinationLine.change.exact_time);
+					destinationLine.exact_times.push(destinationLine.change.exact_time);
 					destinationLine.text.push(destinationLine.change.text);
 					destinationLine.words.push(destinationLine.change.words);
 					destinationLine.change = undefined;
@@ -306,7 +306,7 @@ jQuery(document).ready(function($) {
 							destinationLine.actions.push(line.action);
 							destinationLine.authors.push(line.author);
 							destinationLine.dates.push(line.date);
-							destinationLine.exact_time.push(line.exact_time);
+							destinationLine.exact_times.push(line.exact_time);
 							destinationLine.text.push(line.text);
 							destinationLine.words.push(line.words);
 						}
@@ -320,7 +320,7 @@ jQuery(document).ready(function($) {
 							destinationLine.actions.push(line.action);
 							destinationLine.authors.push(line.author);
 							destinationLine.dates.push(line.date);
-							destinationLine.exact_time.push(line.exact_time);
+							destinationLine.exact_times.push(line.exact_time);
 							destinationLine.text.push('');
 							destinationLine.words.push([]);
 						}
