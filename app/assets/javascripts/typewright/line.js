@@ -168,9 +168,10 @@ jQuery(document).ready(function($) {
 
 			var line = TW.lines[num];
 			var rows = [];
+			var i;
 			if (line.actions) {
-				for (var i = 0; i < line.text.length; i++) {
-					var t = line.exact_time[i] ? line.exact_time[i] : 0;
+				for (i = 0; i < line.text.length; i++) {
+					var t = line.exact_time && line.exact_time[i] ? line.exact_time[i] : 0;
 					rows.push({ action: line.actions[i], text: line.text[i], author: line.authors[i], date: line.dates[i], time: t, klass: "" });
 				}
 			}
