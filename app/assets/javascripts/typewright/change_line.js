@@ -64,8 +64,8 @@ jQuery(document).ready(function($) {
 	}
 
 	function serverResponse(data, textStatus, jqXHR) {
-		if (data.edit_line) {
-			TW.line.setEditTime(data.edit_line, data.edit_time);
+		if (data.edit_line !== undefined) {
+			TW.line.setEditTime(data.edit_line, data.edit_time, data.exact_time);
 		}
 		reportLiveChanges(data);
 	}
@@ -413,6 +413,18 @@ jQuery(document).ready(function($) {
    //
 	body.on("keydown", "#tw_input_focus", function(e) {
 		updateInProcess = true;
+		// Cancel the default functioning of the keys that we will be handling below.
+		var key = e.which;
+		switch (key) {
+			case enter:
+			case page_up:
+			case page_down:
+			case up_arrow:
+			case down_arrow:
+			case end:
+			case home:
+				return false;
+		}
    });
 
 	body.on("keyup", "#tw_input_focus", function(e) {
@@ -457,7 +469,7 @@ jQuery(document).ready(function($) {
             break;
          case end:
             var foc = $("#tw_input_focus");
-            setCaretPosition(foc[0], foc.value.length, 0);
+            setCaretPosition(foc[0], foc.val().length, 0);
             break;
          case home:
             var foc2 = $("#tw_input_focus");
