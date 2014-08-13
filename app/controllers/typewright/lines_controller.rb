@@ -96,8 +96,8 @@ class Typewright::LinesController < ApplicationController
 				ret = Typewright::Line.create({:token => token, :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src, box: box})
 				more_recent_corrections = ret.attributes['changes']
 				editors = {
-					page: ret.attributes[:editors].attributes['page'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: page } },
-					doc: ret.attributes[:editors].attributes['doc'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: rec.page } }
+					page: ret.attributes[:editors].attributes['page'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, idle_time: rec.idle_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: page } },
+					doc: ret.attributes[:editors].attributes['doc'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, idle_time: rec.idle_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: rec.page } }
 				}
 				edit_line = line
 				# TODO-PER: I don't know why the line numbers are off-by-one coming from the Typewright server.

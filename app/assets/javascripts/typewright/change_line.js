@@ -72,8 +72,16 @@ jQuery(document).ready(function($) {
 
 	var currentEditors = { doc: [], page: []};
 
-	function formatUserName(username, id, page) {
+	function formatUserName(username, id, idle_time, page) {
 		var html = '<a href="#" class="nav_link" onclick="showPartialInLightBox(\'/my_collex/show_profile?user=' + id + '\', \'Profile for ' + username + '\', \'\'); return false;">' + username + '</a>';
+		var secs = Math.round(idle_time % 60);
+		idle_time /= 60;
+		var min = Math.round(idle_time % 60);
+		idle_time /= 60;
+		var hours = Math.round(idle_time % 24);
+		idle_time /= 24;
+		var days = Math.round(idle_time);
+		html += " (" + days + " " + hours + ":" + min + ":" + secs +")";
 		if (page)
 			html += " (page: " + page + ")";
 		return html;
@@ -93,14 +101,14 @@ jQuery(document).ready(function($) {
 			editors += "<h3>The following people are currently editing this page:</h3>";
 			for (var i = 0; i < currentEditors.page.length; i++) {
 				var page_user = currentEditors.page[i];
-				editors += formatUserName(page_user.username, page_user.federation_user_id) + "<br>";
+				editors += formatUserName(page_user.username, page_user.federation_user_id, page_user.idle_time) + "<br>";
 			}
 		}
 		if (currentEditors.doc.length > 0) {
 			editors += "<h3>The following people are currently editing other pages in this document:</h3>";
 			for (var j = 0; j < currentEditors.doc.length; j++) {
 				var doc_user = currentEditors.doc[j];
-				editors += formatUserName(doc_user.username, doc_user.federation_user_id, doc_user.page) + "<br>";
+				editors += formatUserName(doc_user.username, doc_user.federation_user_id, doc_user.idle_time, doc_user.page) + "<br>";
 			}
 		}
 		if (currentEditors.page.length === 0 && currentEditors.doc.length === 0)
