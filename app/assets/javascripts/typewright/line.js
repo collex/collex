@@ -13,7 +13,7 @@
 // 3) A new element can be attached to a line. This is named "undo" and is a copy of the "change" element.
 // 4) l, r, t, b can be modified, and the element .box_size = 'changed'
 
-/*global TW */
+/*global TW, console */
 
 jQuery(document).ready(function($) {
 	"use strict";
@@ -167,19 +167,27 @@ jQuery(document).ready(function($) {
 			}
 
 			var line = TW.lines[num];
-			if (line.text.length > 1 || (TW.line.staleLines[num] && TW.line.staleLines[num].length > 0) || line.change) {
-				var str = "<table><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td>";
-				if (line.text.length > 1) {
-					for (var i = 0; i < line.text.length; i++)
-						str += formatLine(line.actions[i], line.text[i], line.authors[i], line.dates[i], '');
+			var rows = [];
+			if (line.actions) {
+				for (var i = 0; i < line.text.length; i++) {
+					var t = line.exact_time[i] ? line.exact_time[i] : 0;
+					rows.push({ action: line.actions[i], text: line.text[i], author: line.authors[i], date: line.dates[i], time: t, klass: "" });
 				}
-				if (TW.line.staleLines[num])
-					for (var j = 0; j < TW.line.staleLines[num].length; j++) {
-						var change = TW.line.staleLines[num][j];
-						str += formatLine(change.action, change.text, change.author, change.date, 'tw_stale');
-					}
-				if (line.change)
-					str += formatLine(line.change.type, line.change.text, "You", line.change.date, 'tw_local_change');
+			}
+			if (TW.line.staleLines[num])
+				for (i = 0; i < TW.line.staleLines[num].length; i++) {
+					var change = TW.line.staleLines[num][i];
+					rows.push({ action: change.action, text: change.text, author: change.author, date: change.date, time: change.exact_time, klass: 'tw_stale' });
+				}
+			if (line.change)
+				rows.push({ action: line.change.type, text: line.change.text, author: "You", date: line.change.date, time: line.change.exact_time, klass: 'tw_local_change' });
+
+			if (rows.length > 0) {
+				var str = "<table><tr><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td></tr>";
+				rows.sort(function(a,b) { return a.time - b.time; });
+				for (i = 0; i < rows.length; i++)
+					str += formatLine(rows[i].action, rows[i].text, rows[i].author, rows[i].date + " " + rows[i].time, rows[i].klass);
+
 				str += "</table>";
 				return str;
 			}
@@ -213,10 +221,13 @@ jQuery(document).ready(function($) {
 			return false;
 		},
 
-		setEditTime: function(edit_line, edit_time) {
+		setEditTime: function(edit_line, edit_time, exact_time) {
 			var num = getIndexFromLineNum(edit_line);
-			if (num >= 0 && TW.lines[num].change)
+			if (num >= 0 && TW.lines[num].change) {
 				TW.lines[num].change.date = edit_time;
+				TW.lines[num].change.exact_time = exact_time;
+			} else
+				console.log("Can't set edit time: ",edit_line,num,edit_time);
 		},
 
 		doUndo: function(num) {
@@ -268,6 +279,7 @@ jQuery(document).ready(function($) {
 						destinationLine.actions = [ 'original' ];
 						destinationLine.authors = [ 'Original' ];
 						destinationLine.dates = [ '' ];
+						destinationLine.exact_times = [ '' ];
 					}
 				}
 			}
@@ -286,6 +298,7 @@ jQuery(document).ready(function($) {
 							destinationLine.dates.push(line.date);
 							destinationLine.text.push(line.text);
 							destinationLine.words.push(line.words);
+							destinationLine.change = undefined;
 						}
 						break;
 					case 'insert':
@@ -299,6 +312,7 @@ jQuery(document).ready(function($) {
 							destinationLine.dates.push(line.date);
 							destinationLine.text.push('');
 							destinationLine.words.push([]);
+							destinationLine.change = undefined;
 						}
 						break;
 				}

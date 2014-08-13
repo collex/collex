@@ -59,6 +59,7 @@ class Typewright::Line < ActiveResource::Base
 			   'line' => line['line'],
 			   'action' => line['action'],
 			   'date' => line['date'],
+			   'exact_time' => line['exact_time'],
 			   'words' => words,
 			   'text' => self.words_to_text(words),
 			   'l' => l,
