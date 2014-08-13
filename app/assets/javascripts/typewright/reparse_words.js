@@ -21,7 +21,7 @@
 /*global Diff_match_patch */
 /*global TW */
 
-TW.reparseWords = function(newText, origWords) {
+TW.reparseWords = function(newText, origWords, lineBox) {
 	"use strict";
 	function google_diff(text1, text2) {
 		// This returns an array that contains all the 'events'. The events are: no_change, change, deleted, inserted, split, combined.
@@ -290,7 +290,7 @@ TW.reparseWords = function(newText, origWords) {
 						w.word = changes[i].text;
 						ret.push(w);
 					} else {
-						ret.push({ l:0, r:0, t:0, b:0, word: changes[i].text });
+						ret.push({ l:lineBox.l, r:lineBox.r, t:lineBox.t, b:lineBox.b, word: changes[i].text });
 					}
 					break;
 			}

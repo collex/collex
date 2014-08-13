@@ -44,13 +44,6 @@ class Typewright::LinesController < ApplicationController
 		render json: {}
 	end
 
-	def adjust_line_numbers(arr)
-		# TODO-PER: I don't know why the line numbers are off-by-one coming from the Typewright server.
-		arr.each { |rec|
-			rec['line'] = rec['line'].to_f - 1 if rec['line'].to_s.end_with?('.0')
-		}
-	end
-
 	def ping(user_id, params)
 		token = params[:token]
 		document_id = params[:document_id]
@@ -59,7 +52,6 @@ class Typewright::LinesController < ApplicationController
 		typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
 		typewright_user_id = typewright_user_id.id if typewright_user_id
 		data = Typewright::Line.since(token, typewright_user_id, document_id, page, load_time)
-		adjust_line_numbers(data['lines'])
 		render json: data
 	end
 
@@ -100,15 +92,12 @@ class Typewright::LinesController < ApplicationController
 					doc: ret.attributes[:editors].attributes['doc'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, idle_time: rec.idle_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: rec.page } }
 				}
 				edit_line = line
-				# TODO-PER: I don't know why the line numbers are off-by-one coming from the Typewright server.
-				edit_line = edit_line - 1 if edit_line.to_s.end_with?('.0')
 				edit_time = ret.attributes['updated_at']
 				exact_time = ret.attributes['exact_time']
 			end
 
 			more_recent_corrections = more_recent_corrections.map { |rec| rec.attributes.to_options! }
 			more_recent_corrections = Typewright::Line.convert_from_server_to_usable(more_recent_corrections)
-			adjust_line_numbers(more_recent_corrections)
 			render :json => { lines: more_recent_corrections, editors: editors, edit_line: edit_line, edit_time: edit_time, exact_time: exact_time }
 		end
 	end

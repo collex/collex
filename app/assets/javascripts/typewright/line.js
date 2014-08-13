@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
 	function getIndexFromLineNum(lineNum) {
 		var found = false;
 		for (var num = 0; num < TW.lines.length && !found; num++) {
-			if (TW.lines[num].line === lineNum)
+			if (TW.lines[num].num === lineNum)
 				return num;
 		}
 		return -1;
@@ -151,7 +151,7 @@ jQuery(document).ready(function($) {
 						text = lineText;
 						break;
 					case 'insert':
-						text = lineText;
+						text = 'Inserted';
 						break;
 					case 'original':
 						text = lineText;
@@ -171,7 +171,7 @@ jQuery(document).ready(function($) {
 			var i;
 			if (line.actions) {
 				for (i = 0; i < line.text.length; i++) {
-					var t = line.exact_time && line.exact_time[i] ? line.exact_time[i] : 0;
+					var t = line.exact_times && line.exact_times[i] ? line.exact_times[i] : 0;
 					rows.push({ action: line.actions[i], text: line.text[i], author: line.authors[i], date: line.dates[i], time: t, klass: "" });
 				}
 			}
@@ -204,19 +204,20 @@ jQuery(document).ready(function($) {
 		setClean: function(num) { TW.lines[num].dirty = false; },
 
 		doRegisterLineChange: function(num, newText) {
+			var line = TW.lines[num];
 			// sets the line if there is something to set, and returns true if a change was made.
-			var lastTextLocation = TW.lines[num].text.length - 1;
-			var lastText = TW.lines[num].text[lastTextLocation];
+			var lastTextLocation = line.text.length - 1;
+			var lastText = line.text[lastTextLocation];
 			if (lastText === newText || (lastText === null && newText === '')) {
-				if (TW.lines[num].change && TW.lines[num].change.type === 'change') {
-					TW.lines[num].dirty = true;
-					delete TW.lines[num].change;
+				if (line.change && line.change.type === 'change') {
+					line.dirty = true;
+					delete line.change;
 					return true;
 				}
 			} else {
-				TW.lines[num].dirty = true;
-				var origWords = TW.lines[num].words[TW.lines[num].words.length - 1];
-				TW.lines[num].change = { type: 'change', text: newText, words: TW.reparseWords(newText, origWords) };
+				line.dirty = true;
+				var origWords = line.words[line.words.length - 1];
+				line.change = { type: 'change', text: newText, words: TW.reparseWords(newText, origWords, { l: line.l, r: line.r, t: line.t, b: line.b }) };
 				return true;
 			}
 			return false;
@@ -291,7 +292,7 @@ jQuery(document).ready(function($) {
 				var line = TW.line.allStaleLines[i];
 				var num = getIndexFromLineNum(line.line);
 				var destinationLine = num >= 0 ? TW.lines[num] : null;
-				if (destinationLine.change) {
+				if (destinationLine && destinationLine.change) {
 					destinationLine.actions.push(destinationLine.change.action);
 					destinationLine.authors.push(destinationLine.change.author);
 					destinationLine.dates.push(destinationLine.change.date);
@@ -313,7 +314,7 @@ jQuery(document).ready(function($) {
 						break;
 					case 'insert':
 						num = getClosestIndexFromLineNum(line.line);
-						TW.lines.splice(num, 0, { src: "gale", l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], num: line.line });
+						TW.lines.splice(num, 0, { src: "gale", l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], actions: [''], authors: [''], dates: [''], exact_times: [''], num: line.line });
 						break;
 					case 'delete':
 						if (destinationLine) {
