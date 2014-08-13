@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
 				var str = "<table><tr><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td></tr>";
 				rows.sort(function(a,b) { return a.time - b.time; });
 				for (i = 0; i < rows.length; i++)
-					str += formatLine(rows[i].action, rows[i].text, rows[i].author, rows[i].date, rows[i].klass);
+					str += formatLine(rows[i].action, rows[i].text, rows[i].author, rows[i].date + " " + rows[i].time, rows[i].klass);
 
 				str += "</table>";
 				return str;
@@ -291,15 +291,24 @@ jQuery(document).ready(function($) {
 				var line = TW.line.allStaleLines[i];
 				var num = getIndexFromLineNum(line.line);
 				var destinationLine = num >= 0 ? TW.lines[num] : null;
+				if (destinationLine.change) {
+					destinationLine.actions.push(destinationLine.change.action);
+					destinationLine.authors.push(destinationLine.change.author);
+					destinationLine.dates.push(destinationLine.change.date);
+					destinationLine.exact_time.push(destinationLine.change.exact_time);
+					destinationLine.text.push(destinationLine.change.text);
+					destinationLine.words.push(destinationLine.change.words);
+					destinationLine.change = undefined;
+				}
 				switch (line.action) {
 					case 'change':
 						if (destinationLine) {
 							destinationLine.actions.push(line.action);
 							destinationLine.authors.push(line.author);
 							destinationLine.dates.push(line.date);
+							destinationLine.exact_time.push(line.exact_time);
 							destinationLine.text.push(line.text);
 							destinationLine.words.push(line.words);
-							destinationLine.change = undefined;
 						}
 						break;
 					case 'insert':
@@ -311,9 +320,9 @@ jQuery(document).ready(function($) {
 							destinationLine.actions.push(line.action);
 							destinationLine.authors.push(line.author);
 							destinationLine.dates.push(line.date);
+							destinationLine.exact_time.push(line.exact_time);
 							destinationLine.text.push('');
 							destinationLine.words.push([]);
-							destinationLine.change = undefined;
 						}
 						break;
 				}
