@@ -97,7 +97,7 @@ class Typewright::LinesController < ApplicationController
 				more_recent_corrections = ret.attributes['changes']
 				editors = {
 					page: ret.attributes[:editors].attributes['page'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: page } },
-					doc: ret.attributes[:editors].attributes['doc'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: page } }
+					doc: ret.attributes[:editors].attributes['doc'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: rec.page } }
 				}
 				edit_line = line
 				# TODO-PER: I don't know why the line numbers are off-by-one coming from the Typewright server.
