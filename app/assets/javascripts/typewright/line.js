@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
 				var str = "<table><tr><td class='tw_header'>Correction:</td><td td class='tw_header'>Editor:</td><td td class='tw_header'>Date:</td></tr>";
 				rows.sort(function(a,b) { return a.time - b.time; });
 				for (i = 0; i < rows.length; i++)
-					str += formatLine(rows[i].action, rows[i].text, rows[i].author, rows[i].date + " " + rows[i].time, rows[i].klass);
+					str += formatLine(rows[i].action, rows[i].text, rows[i].author, rows[i].date, rows[i].klass);
 
 				str += "</table>";
 				return str;
