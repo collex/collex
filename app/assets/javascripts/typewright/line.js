@@ -293,8 +293,8 @@ jQuery(document).ready(function($) {
 				var num = getIndexFromLineNum(line.line);
 				var destinationLine = num >= 0 ? TW.lines[num] : null;
 				if (destinationLine && destinationLine.change) {
-					destinationLine.actions.push(destinationLine.change.action);
-					destinationLine.authors.push(destinationLine.change.author);
+					destinationLine.actions.push(destinationLine.change.type);
+					destinationLine.authors.push("You");
 					destinationLine.dates.push(destinationLine.change.date);
 					destinationLine.exact_times.push(destinationLine.change.exact_time);
 					destinationLine.text.push(destinationLine.change.text);
