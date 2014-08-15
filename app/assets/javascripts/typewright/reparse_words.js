@@ -269,9 +269,9 @@ TW.reparseWords = function(newText, origWords, lineBox) {
 					var charCount = changes[i].newIndexArr.length - 1;	// count the spaces between words, too.
 					for (var j = 0; j < changes[i].newIndexArr.length; j++)
 						charCount += changes[i].newIndexArr[j].text.length;
-					var totalX = orig[changes[i].oldIndex].r - orig[changes[i].oldIndex].l;
+					var totalX = parseInt(orig[changes[i].oldIndex].r,10) - parseInt(orig[changes[i].oldIndex].l,10);
 					var charSize = totalX / charCount;
-					var currX = orig[changes[i].oldIndex].l;
+					var currX = parseInt(orig[changes[i].oldIndex].l,10);
 					for (j = 0; j < changes[i].newIndexArr.length; j++) {
 						var thisSize = Math.round(changes[i].newIndexArr[j].text.length * charSize);
 						ret.push({ l: currX, r: currX + thisSize, t: orig[changes[i].oldIndex].t, b: orig[changes[i].oldIndex].b, word: changes[i].newIndexArr[j].text });
