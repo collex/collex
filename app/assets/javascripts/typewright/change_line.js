@@ -90,7 +90,8 @@ jQuery(document).ready(function($) {
 	function redrawLiveChanges() {
 		var changes = "";
 		if (TW.line.numUndisplayedChanges() > 0) {
-			changes = '<div><button class="tw_icon tw_icon_edit_history_new tw_apply_new_data"></button><span class="tw_stale_data_note">There have been ' + TW.line.numUndisplayedChanges() + ' change(s) to this page. Click the button to update.</span></div>';
+			var changeStr = TW.line.numUndisplayedChanges() === 1 ? 'There has been 1 change' : 'There have been ' + TW.line.numUndisplayedChanges() + ' changes';
+			changes = '<div><button class="tw_icon tw_icon_edit_history_new tw_apply_new_data"></button><span class="tw_stale_data_note">' + changeStr + ' to this page. Click the button to update.</span></div>';
 		}
 		//		data.lines.forEach(function(line) {
 		//			var str = line.line + ": " + line.author + " " + line.action + " " + line.date + " " + line.text;
