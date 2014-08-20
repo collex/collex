@@ -164,7 +164,7 @@ a.my_collex_link {
 	background:transparent;
 }
 
-	.nav_link:link, .nav_link:visited,.ext_link:link, .ext_link:visited {
+	.nav_link, .nav_link:link, .nav_link:visited,.ext_link:link, .ext_link:visited {
 	color:#AC2E20;
 	text-decoration: underline;
 }
@@ -217,11 +217,11 @@ a.my_collex_link {
 	border-bottom: 8px solid $login-dlg-border;
 }
 
-.search_result_buttons a {
+.search_result_buttons a, .search_result_buttons button {
 	background:transparent image-url('modnets/lvl2_result_row_button.jpg') no-repeat scroll left top;
 }
 
-.search_result_buttons a:hover {
+.search_result_buttons a:hover, .search_result_buttons button:hover {
 	background:image-url('modnets/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
 }
 	::-webkit-input-placeholder {

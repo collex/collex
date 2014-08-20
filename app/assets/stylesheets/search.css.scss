@@ -16,6 +16,18 @@
 
 body.pg-search {
 
+	.search_result_data_container {
+		.row {
+			.label {
+				position: absolute;
+				color: gray;
+			}
+			.value {
+				margin-left: 95px;
+				display: inline-block;
+			}
+		}
+	}
 .search_entry_box {
 	width:365px;
 }

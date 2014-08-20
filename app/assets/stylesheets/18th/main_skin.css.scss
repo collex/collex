@@ -93,7 +93,7 @@ body.federation-18th {
 	background:#edf4f2;
 }
 
-.nav_link:link, .nav_link:visited {
+.nav_link, .nav_link:link, .nav_link:visited {
 	color:#445a93;
 }
 
@@ -158,11 +158,11 @@ body.federation-18th {
 	border-bottom: 8px solid #34436C;
 }
 
-.search_result_buttons a {
+.search_result_buttons a, .search_result_buttons button {
 	background:transparent image-url('18th/lvl2_result_row_button.jpg') no-repeat scroll left top;
 }
 
-.search_result_buttons a:hover {
+.search_result_buttons a:hover, .search_result_buttons button:hover {
 	background:image-url('18th/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
 }
 

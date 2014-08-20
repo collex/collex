@@ -154,7 +154,7 @@ a.my_collex_link {
 	background:#edf4f2;
 }
 
-.nav_link:link, .nav_link:visited {
+.nav_link, .nav_link:link, .nav_link:visited {
 	color:#120F56;
 }
 
@@ -211,11 +211,11 @@ div.carousel_title {
 	border-bottom: 8px solid #03002F;
 }
 
-.search_result_buttons a {
+.search_result_buttons a, .search_result_buttons button {
 	background:transparent image-url('mesa/lvl2_result_row_button.jpg') no-repeat scroll left top;
 }
 
-.search_result_buttons a:hover {
+.search_result_buttons a:hover, .search_result_buttons button:hover {
 	background:image-url('mesa/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
 }
 

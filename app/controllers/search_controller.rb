@@ -22,11 +22,88 @@ class SearchController < ApplicationController
 
    end
 
+	# /search
+	# /search.json
+	def index
+		items_per_page = 30
+		page = params[:page].present? ? params[:page] : 1
+		sort_param = params[:srt].present? ? params[:srt] : nil
+		sort_ascending = params[:dir].present? ? params[:dir] : 'Ascending'
+		constraints = []
+		legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
+
+		# elsif constraint['type'] == 'ExpressionConstraint'
+		# 	q = format_constraint(q, strip_non_alpha(constraint), 'q')
+		# elsif constraint['type'] == 'FreeCultureConstraint'
+		# 	o = format_constraint(o, constraint, 'o', 'freeculture')
+		# elsif constraint['type'] == 'FullTextConstraint'
+		# 	o = format_constraint(o, constraint, 'o', 'fulltext')
+		# elsif constraint['type'] == 'TypeWrightConstraint'
+		# 	o = format_constraint(o, constraint, 'o', 'typewright')
+		# 	elsif constraint['fieldx'] == 'title'
+		# 		t = format_constraint(t, strip_non_alpha(constraint), 't')
+		# 	elsif constraint['fieldx'] == 'author'
+		# 		aut = format_constraint(aut, strip_non_alpha(constraint), 'aut')
+		# 	elsif constraint['fieldx'] == 'editor'
+		# 		ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
+		# 	elsif constraint['fieldx'] == 'publisher'
+		# 		pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
+		# 	elsif constraint['fieldx'] == 'r_art'
+		# 		r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
+		# 	elsif constraint['fieldx'] == 'r_own'
+		# 		r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
+
+		params.each { |key, val|
+			if legal_constraints.include?(key)
+				constraints.push({ key: key, val: val })
+			end
+		}
+		@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
+		@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+
+		# Add the highlighting to the hit object so that a result is completely contained inside the hit object
+		all_uris = []
+		@results['hits'].each { |hit|
+			all_uris.push("'" + hit['uri'] + "'")
+			if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
+				t = @results["highlighting"][hit["uri"]].to_s.strip()
+				# We want to escape everything except the bolding so that random control chars can't mess up the display
+				t = h(t.gsub('&', 'AmPeRsAnD'))
+				hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
+			end
+		}
+		@results['page_size'] = items_per_page
+
+		sql_left = "select uri from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = #{get_curr_user_id()} AND cached_resources.uri in ("
+		sql_right = ");"
+		collected_items = ActiveRecord::Base.connection.execute(sql_left + all_uris.join(',')+sql_right)
+		@results['collected'] = []
+		collected_items.each { |item|
+			@results['collected'].push(item[0])
+		}
+		#select * from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = 4 AND cached_resources.uri in ('http://pm.nlx.com/xtf/view?docId=britphil/britphil.41.xml;chunk.id=div.britphil.v37.23', 'http://hdl.loc.gov/loc.pnp/ppmsca.02314' );
+
+		# This fixes the format of the access facet.
+		@results['facets']['access'] = {}
+		@results['facets']['access']['freeculture'] = @results['facets']['freeculture']['true'] if @results['facets']['freeculture'].present? && @results['facets']['freeculture']['true'].present?
+		@results['facets']['access']['has_full_text'] = @results['facets']['has_full_text']['true'] if @results['facets']['has_full_text'].present? && @results['facets']['has_full_text']['true'].present?
+		@results['facets']['access']['ocr'] = @results['facets']['ocr']['true'] if @results['facets']['ocr'].present? && @results['facets']['ocr']['true'].present?
+		@results['facets']['access']['typewright'] = @results['facets']['typewright']['true'] if @results['facets']['typewright'].present? && @results['facets']['typewright']['true'].present?
+
+		respond_to do |format|
+			format.html { redirect_to :action => 'browse' } # TODO-PER: eventually just draw it with this: index.html.erb
+			format.json { render :json => @results }
+		end
+	end
+
    private
    def init_view_options
      @site_section = :search
 	 @solr = Catalog.factory_create(session[:use_test_index] == "true")
 	 session[:constraints] ||= new_constraints_obj()
+	 @archives = @solr.get_resource_tree()
+	 #archives = archives.map { |archive|
+	 #}
      return true
    end
    public

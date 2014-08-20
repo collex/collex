@@ -121,6 +121,79 @@ class Catalog
       return { 'total_hits' => 0, 'hits' => [], 'facets' => { 'genre' => {}, 'archive' => {}, 'freeculture' => {}, 'has_full_text' => {}, 'federation' => {}, 'typewright' => {} } }
    end
 
+   def search_direct(constraints, start, max, sort_by, sort_ascending)
+	   sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
+	   hl = "hl=on"
+	   start = start ? "start=#{start}" : ""
+	   max = max ? "max=#{max}" : ""
+
+	   params = []
+	   constraints.each { |constraint|
+		   val = constraint[:val]
+		   if constraint[:key] == 'f'
+			   if constraint[:val].kind_of?(Array)
+				   val = val.join(" OR ")
+			   end
+			   params.push("#{constraint[:key]}=+federation:#{val}")
+		   else
+			   if constraint[:val].kind_of?(Array)
+				   val = val.join("+")
+			   end
+			   params.push("#{constraint[:key]}=+#{val}")
+		   end
+	   }
+	   params.push(sort) if sort.length > 0
+	   params.push(hl) if hl.length > 0
+	   params.push(start) if start.length > 0
+	   params.push(max) if max.length > 0
+
+	   results = call_solr("search", :get, params)
+	   if !results['html'].blank?
+		   page = results['html']
+		   if page.kind_of?(Hash)
+			   body = page['body']
+			   ActiveRecord::Base.logger.info("BODY: " + body.to_s)
+		   else
+			   ActiveRecord::Base.logger.info("PAGE: " + page.to_s)
+		   end
+		   return nil_return()
+	   end
+
+	   results = results['search']
+	   ret = { 'total_hits' => results['total'], 'hits' => normalize_hits(results['results']['result']), 'facets' => {} }
+	   #		if ret['hits'] == nil
+	   #			ret['hits'] = []
+	   #		elsif ret['hits'].kind_of?(Hash)
+	   #			ret['hits'] = [ ret['hits'] ]
+	   #		end
+	   #		ret['hits'].each { |hit|
+	   #			hit.each { |key,val|
+	   #				if val.kind_of?(Hash) && val['value']
+	   #					if val['value'].kind_of?(String)
+	   #						hit[key] = [ val['value'] ]
+	   #					else
+	   #						hit[key] = val['value']
+	   #					end
+	   #				end
+	   #			}
+	   #		}
+
+	   results['facets'].each { |typ,facets|
+		   h = {}
+		   if facets['facet'].kind_of?(Array)
+			   facets['facet'].each { |facet|
+				   h[facet['name']] = facet['count']
+			   }
+		   else
+			   if facets['facet']
+				   h[facets['facet']['name']] = facets['facet']['count']
+			   end
+		   end
+		   ret['facets'][typ] = h
+	   }
+	   return ret
+   end
+
    def search(constraints, start, max, sort_by, sort_ascending)
       sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
       hl = "hl=on"

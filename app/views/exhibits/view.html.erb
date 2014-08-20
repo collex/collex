@@ -29,7 +29,7 @@ title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&a
 <% group = Group.find(@exhibit.group_id) -%>
 <style type="text/css">
 <% if group.link_color.length > 0 -%>
-	.nav_link:link, .nav_link:visited {
+	.nav_link, .nav_link:link, .nav_link:visited {
 		color:#<%= group.link_color %>;
 	}
 	.superscript {

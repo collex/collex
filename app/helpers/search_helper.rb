@@ -87,19 +87,13 @@ module SearchHelper
       end
     end
 
-	link = "/#{destination_hash[:controller]}/#{destination_hash[:action]}"
-	destination_hash.delete(:controller)
-	destination_hash.delete(:action)
-    
     if first > 1
-      destination_hash[:page] = "#{1}"
-      html += create_facet_link('first', link, destination_hash)
+      html += create_facet_button('first', 'page', "1", "replace")
       html += "&nbsp;&nbsp;"
     end
 
     if curr_page > 1
-      destination_hash[:page] = "#{(curr_page - 1)}"
-      html += create_facet_link('<<', link, destination_hash)
+      html += create_facet_button('<<', 'page', "#{curr_page - 1}", "replace")
       html += "&nbsp;&nbsp;"
     end
 
@@ -107,28 +101,24 @@ module SearchHelper
       if pg == curr_page
         html += "<span class='current_serp'>#{pg}</span>"
       else
-        destination_hash[:page] = "#{pg}"
-        html += create_facet_link("#{pg}", link, destination_hash)
+        html += create_facet_button("#{pg}", 'page', "#{pg}", "replace")
       end
       html += "&nbsp;&nbsp;"
     end 
     
     if last < num_pages
       html += "...&nbsp;&nbsp;" if num_pages > 12
-      destination_hash[:page] = "#{num_pages}"
-      html += create_facet_link(num_pages, link, destination_hash)
+      html += create_facet_button("#{num_pages}", 'page', "#{num_pages}", "replace")
       html += "&nbsp;&nbsp;"
     end
     
     if curr_page < num_pages
-      destination_hash[:page] = "#{(curr_page + 1)}"
-      html += create_facet_link(">>", link, destination_hash)
+      html += create_facet_button('>>', 'page', "#{curr_page + 1}", "replace")
       html += "&nbsp;&nbsp;"
     end
     
     if last < num_pages
-      destination_hash[:page] = "#{num_pages}"
-      html += create_facet_link("last", link, destination_hash)
+      html += create_facet_button('last', 'page', "#{num_pages}", "replace")
       html += "&nbsp;&nbsp;"
     end
 
@@ -246,17 +236,6 @@ module SearchHelper
     return false
   end
 
-  def genre_data_link( genre_data )
-    if genre_data[:exists]
-      html = "<span class='resource_list_selected'>&rarr; #{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})</span>&nbsp;"
-      html += create_facet_link("[remove]", "/search/remove_genre", { :value => genre_data[:value]})
-      return html
-    else
-		create_facet_link("#{h genre_data[:value]} (#{pluralize(genre_data[:count], 'object')})", "/search/add_facet", { :fieldx => 'genre', :value => genre_data[:value]})
-    end
-
-  end
-  
   def site_subtotal(site_count, facet_category)
     count = 0
     if facet_category['children'] != nil
@@ -290,14 +269,6 @@ module SearchHelper
     return false
   end
   
-#  def mark_as_checked_freeculture()
-#    session[:selected_freeculture] ? 'checked="checked"' : ''  
-#  end
-#  
-#  def mark_as_checked_resource( facet )
-#    session[:selected_resource_facets].include?(facet) ? 'checked="checked"' : ''
-#  end
-  
   def gray_if_zero( count )
     count==0 ? 'class="grayed-out-resource"' : ''
   end
@@ -311,23 +282,6 @@ module SearchHelper
     return get_collected_item(hit) != nil
   end
   
-  #def add_tag_if_present(hit)
-  #  item = get_collected_item(hit)
-  #  return "" if item == nil
-  #
-  #  str = ""
-  #  tags = item.tags
-  #  if tags != nil
-  #    str = "<ul style='list-style-type: none;'><li>Collected On: #{item.updated_at}</li>\n"
-  #    tags.each {|t|
-  #      str += "<li>x&nbsp;#{h tags.name}</li>\n"
-  #    }
-  #    str += "<a class='modify_link' href='#'>Add a tag</a>\n"
-  #    str += "</ul>\n"
-  #  end
-  #  return raw(str)
-  #end
-
   def has_annotation(hit)
     item = get_collected_item(hit)
     return false if item == nil
@@ -344,22 +298,6 @@ module SearchHelper
     return note
   end
 
-  #def get_result_date(hit)
-  #
-  #end
-  #
-  #def get_result_annotation(hit)
-  #
-  #end
-  #
-  #def result_has_annotation(hit)
-  #
-  #end
-  #
-  #def get_result_tags(hit)
-  #
-  #end
-  
   def get_saved_searches(username)
     user = User.find_by_username(username)
     return user.searches.all.sort { |a,b| b.id <=> a.id }
@@ -657,49 +595,24 @@ module SearchHelper
   # Helpers for the facet tree that shows resources
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
-  def site_selector(site, indent, is_edit_mode, is_category, parent_id, start_hidden, is_found, is_open, site_count )
+  def site_selector(site, indent, is_category, parent_id, start_hidden, is_found, is_open, site_count )
     display_name = h(site['name'])
     id = site['id']
     value = site['handle']
-    
+	total = site_subtotal(site_count, site)
+
     # This is one line in the resources.
-    # If edit mode: don't show # objects, show value instead.
     # if category, put in arrow for expand/collapse
-    html = "<tr id='resource_#{id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
-    if is_category
-      html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'>#{image_tag('arrow.gif')}</a>"
-      html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'>#{image_tag('arrow_dn.gif')}</a>\n"
-    end
-    
-    if is_edit_mode
-       if is_found
-        html += display_name
-      else
-        html += "<b>Not found: " + display_name + "</b>"
-      end
-      html += " [#{value}]" if !is_category
-      html += "</td><td class='num_objects'>#{'Yes' if site.carousel_include == 1}</td><td class='edit_delete_col'>"
-      sanitized_value = value.gsub("'") { |apos| "&apos;" }
-      if is_found
-        html += "<a href='#' class='modify_link' onclick='new EditFacetDialog(\"edit_site_list\", \"/admin/facet_tree/edit_facet\", \"#{sanitized_value}\", \"/admin/facet_tree/get_categories_and_details\"); return false;'>[edit]</a>"
-        html += "<a href='#' class='modify_link' onclick='new DeleteFacetDialog(\"edit_site_list\", \"/admin/facet_tree/delete_facet\", \"#{sanitized_value}\", #{is_category}); return false;'>[delete]</a>"
-      else
-        html += "<a class='modify_link' href='#' onclick='new RemoveSiteDlg(\"edit_site_list\", \"/admin/facet_tree/remove_site\", \"#{sanitized_value}\"); return false;'>[remove]</a>"
-      end
-    else # not edit mode
-      total = site_subtotal(site_count, site)
       if is_category
+		  html = "<tr id='resource_#{id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
+		  html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'>#{image_tag('arrow.gif')}</a>"
+		  html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'>#{image_tag('arrow_dn.gif')}</a>\n"
         html += "<a href='#' onclick='new ResourceTree(\"#{id}\",\"toggle\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
-      else
-        if site_is_in_constraints?(value)
-          html += display_name + raw("&nbsp;&nbsp;") + create_facet_link("[X]", '/search/constrain_resource', { :resource => value, :remove => 'true' }) + raw("</td><td class='num_objects'>#{number_with_delimiter(total)}")
-        else
-          link = create_facet_link(display_name, '/search/constrain_resource', { :resource => value })
-          html += "#{link}</td><td class='num_objects'>#{number_with_delimiter(total)}"
-        end
+		  html += "</td></tr>\n"
+	  else
+		  data = { exists: site_is_in_constraints?(value), label: display_name, value: value, count: number_with_delimiter(total) }
+		  html = facet_selector( data, "a", { tr_class: "#{parent_id}#{ ' hidden' if start_hidden }", td_class: "limit_to_lvl#{indent}", action: 'replace' } )
       end
-    end
-    html += "</td></tr>\n"
     return raw(html)
   end
 
@@ -707,14 +620,13 @@ module SearchHelper
 		return "" if session.blank? || session[:federations].blank? || session[:federations][federation].blank?
 		
 		html = "<tr><td>"
-		selection = has_federation_constraint?(federation) ? "checked='checked'" : ''
 		thumb = session[:federations][federation]['thumbnail']
-		html += "<input type='checkbox' name='#{federation}' onchange='changeFederation(this); return false;' #{selection} /><img src='#{thumb}' alt='#{federation}' />"
-		html += "</td><td class='num_objects'>#{number_with_delimiter(num_objects)}</td></tr>"
+		html += "<input type='checkbox' name='#{federation}' /><img src='#{thumb}' alt='#{federation}' />"
+		html += "</td><td class='num_objects' data-federation='#{federation}'>#{number_with_delimiter(num_objects)}</td></tr>"
 		return raw(html)
   end
 
-  
+
 	def create_facet_link(label, link, params)
 		# add the dynamic adding of the search phrase to the params first. We have to thwart the json function because we don't want it quoted.
 		params[:phrs] = "$(phrase)"
@@ -722,109 +634,75 @@ module SearchHelper
 		json = json.gsub("\"$(phrase)\"", "$('search_phrase') ? $('search_phrase').getRealValue() : null")
 		return link_to_function(label, "serverAction({action: { actions: '#{link}', params: #{json}}, progress: { waitMessage: 'Searching...' }, searching: true})", { :class => 'nav_link' })
 	end
-	
-  def genre_selector( genre_data )
-    if genre_data[:exists]
-      html = "<tr class='limit_to_selected'><td>#{h genre_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_genre', {:value => genre_data[:value]})
+
+	def create_facet_button(label, type, value, action)
+		data = { key: type, value: value, action: action }
+		return content_tag(:button, label, { class: 'select-facet nav_link', data: data})
+	end
+
+  def facet_selector(facet_data, key, options = {})
+	  tr_class = options[:tr_class].present? ? ' ' + options[:tr_class] : ""
+	  td_class = options[:td_class].present? ? options[:td_class] : "limit_to_lvl1"
+	  additive_action = options[:action].present? ? options[:action] : 'add'
+	  label = facet_data[:label].present? ? facet_data[:label] :facet_data[:value]
+
+    if facet_data[:exists]
+      html = "<tr class='limit_to_selected#{tr_class}'><td class='#{td_class}'>#{label}&nbsp;&nbsp;" + create_facet_button('[X]', key, facet_data[:value], 'remove')
     else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h genre_data[:value]}", "/search/add_facet", { :fieldx => 'genre', :value => genre_data[:value]})
+      html = "<tr class='#{tr_class}'><td class='#{td_class}'>" + create_facet_button(label, key, facet_data[:value], additive_action)
     end
-    html += "</td><td class='num_objects'>#{number_with_delimiter(genre_data[:count])}</td></tr>"
+    html += "</td><td class='num_objects'>#{number_with_delimiter(facet_data[:count])}</td></tr>"
     return raw(html)
   end
 
   def create_genre_table( genre_data )
-    html = raw('<table class="limit_to">')
+    html = raw('<table class="limit_to facet-genre">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_genre}</th><th class=\"num_objects\"># of Objects</th></tr>")
     for genre in genre_data
-      html += genre_selector( genre )
+      html += facet_selector( genre, 'g' )
     end
     html += raw('</table>')
-    return raw(html)
-  end
-
-  def access_selector(count, in_constraints, label, action)
-    if in_constraints
-      html = "<tr class='limit_to_selected'><td>#{label}&nbsp;&nbsp;" + create_facet_link("[X]", action, { :remove => 'true' })
-    else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link(label, action, { })
-    end
-    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
     return raw(html)
   end
 
   def create_access_table( freeculture_count, fulltext_count, typewright_count )
-    html = raw('<table class="limit_to">')
+    html = raw('<table class="limit_to facet-access">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_access}</th><th class=\"num_objects\"># of Objects</th></tr>")
-    html += raw(access_selector(freeculture_count, access_is_in_constraints?('FreeCultureConstraint'), "Free Culture Only", '/search/constrain_freeculture'))
-    html += raw(access_selector(fulltext_count, access_is_in_constraints?('FullTextConstraint'), "Full Text Only", '/search/constrain_fulltext'))
+	data = [
+		{ exists: access_is_in_constraints?('FreeCultureConstraint'), label: "Free Culture Only", value: 'freeculture', count: freeculture_count },
+		{ exists: access_is_in_constraints?('FullTextConstraint'), label: "Full Text Only", value: 'fulltext', count: fulltext_count }
+	]
+	# TODO-PER: is there also an "ocr" option?
     if COLLEX_PLUGINS['typewright']
-      html += raw(access_selector(typewright_count, access_is_in_constraints?('TypeWrightConstraint'), "TypeWright Enabled Only", '/search/constrain_typewright'))
+      data.push({ exists: access_is_in_constraints?('TypeWrightConstraint'), label: "TypeWright Enabled Only", value: 'typewright', count: typewright_count })
     end
+	for acc in data
+		html += facet_selector( acc, 'o' )
+	end
     html += raw('</table>')
     return raw(html)
   end
 
-
-  def format_selector( format_data )
-    if format_data[:exists]
-      html = "<tr class='limit_to_selected'><td>#{h format_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_format', {:value => format_data[:value]})
-    else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h format_data[:value]}", "/search/add_facet", { :fieldx => 'doc_type', :value => format_data[:value]})
-    end
-    html += "</td><td class='num_objects'>#{number_with_delimiter(format_data[:count])}</td></tr>"
-    return raw(html)
-  end
 
   def create_format_table( format_data )
-    html = raw('<table class="limit_to">')
+    html = raw('<table class="limit_to facet-format">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_format}</th><th class=\"num_objects\"># of Objects</th></tr>")
     for format in format_data
-      html += format_selector( format )
+      html += facet_selector( format, 'doc_type' )
     end
     html += raw('</table>')
-    return raw(html)
-  end
-
-  def discipline_selector( discipline_data )
-    if discipline_data[:exists]
-      html = "<tr class='limit_to_selected'><td>#{h discipline_data[:value]}&nbsp;&nbsp;" + create_facet_link('[X]', '/search/remove_discipline', {:value => discipline_data[:value]})
-    else
-      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("#{h discipline_data[:value]}", "/search/add_facet", { :fieldx => 'discipline', :value => discipline_data[:value]})
-    end
-    html += "</td><td class='num_objects'>#{number_with_delimiter(discipline_data[:count])}</td></tr>"
     return raw(html)
   end
 
   def create_discipline_table( discipline_data )
-    html = raw('<table class="limit_to">')
+    html = raw('<table class="limit_to facet-discipline">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_discipline}</th><th class=\"num_objects\"># of Objects</th></tr>")
     for discipline in discipline_data
-      html += discipline_selector( discipline )
+      html += facet_selector( discipline, 'discipline' )
     end
     html += raw('</table>')
     return raw(html)
   end
-
-#  def free_culture_selector(count)
-#    if free_culture_is_in_constraints?
-#      html = "<tr class='limit_to_selected'><td>Free Culture Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_freeculture', { :remove => 'true' })
-#    else
-#      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Free Culture Only", '/search/constrain_freeculture', { })
-#    end
-#    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-#    return raw(html)
-#  end
-#
-#  def full_text_selector(count)
-#    if full_text_is_in_constraints?
-#      html = "<tr class='limit_to_selected'><td>Full Text Only&nbsp;&nbsp;" + create_facet_link("[X]", '/search/constrain_fulltext', { :remove => 'true' })
-#    else
-#      html = "<tr><td class='limit_to_lvl1'>" + create_facet_link("Full Text Only", '/search/constrain_fulltext', { })
-#    end
-#    html += "</td><td class='num_objects'>#{number_with_delimiter(count)}</td></tr>"
-#    return raw(html)
-#  end
 
 	def format_name_facet(name, typ)
 		name[0] = name[0].gsub("\"", "")

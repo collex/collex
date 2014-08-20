@@ -284,14 +284,20 @@ function toggleAllBulkCollectCheckboxes(link) {
 
 function expandAllItems()
 {
-	$$('.search_result_data .hidden').each(function (el) { el.removeClassName('hidden'); el.addClassName('was_hidden'); });
-	$$('.more').each(function (el) { el.update(el.innerHTML.gsub("more", "less")); });
+	var hiddenFields = jQuery('.search_result_data_container .hidden');
+	hiddenFields.removeClass('hidden');
+	hiddenFields.addClass('was_hidden');
+	var more = jQuery('.search_result_data_container .more');
+	more.each(function (index, el) { el = jQuery(el); el.html(el.html().replace("more", "less")); });
 }
 
 function collapseAllItems()
 {
-   $$('.search_result_data .was_hidden').each(function (el) { el.removeClassName('was_hidden'); el.addClassName('hidden'); });
-   $$('.more').each(function (el) { el.update(el.innerHTML.gsub("less", "more")); });
+	var hiddenFields = jQuery('.search_result_data_container .was_hidden');
+	hiddenFields.addClass('hidden');
+	hiddenFields.removeClass('was_hidden');
+	var more = jQuery('.search_result_data_container .more');
+	more.each(function (index, el) { el = jQuery(el); el.html(el.html().replace("less", "more")); });
 }
 
 function toggleItemExpand()

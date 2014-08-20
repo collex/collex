@@ -96,7 +96,10 @@ Collex::Application.routes.draw do
 	match '/search/save_search' => 'search#save_search'
 	post '/search/remove_saved_search' => 'search#remove_saved_search'
 	match '/search/browse' => 'search#browse'
-	
+	match 'browse/saved/:username/:name' => 'search#saved_permalink'
+	#match '/search' => 'search#browse'
+	get '/search' => 'search#index'
+
 	post '/search/auto_complete_for_search_university' => 'search#auto_complete_for_search_university'
 
 	post '/results/add_object_to_exhibit' => 'results#add_object_to_exhibit'
@@ -343,7 +346,6 @@ Collex::Application.routes.draw do
   match 'redirect/ravon-nowviskie2.html' => 'tag#results', :view => 'tag', :tag => 'collex'
   match 'permalink/cloud/:type' => 'home#redirect_to_tag_cloud_update', :as => :cloud1
   match 'collex/:action' => 'search#index'
-  match 'browse/saved/:username/:name' => 'search#saved_permalink'
   match 'admin' => 'admin/default#index'
   match '/tags.xml' => 'tag#list', :as => :tag_xml, :format => 'xml'
   match '/tags/rss/:tag.xml' => 'tag#rss'
@@ -355,7 +357,6 @@ Collex::Application.routes.draw do
   match '/tag/tag_name_autocomplete' => 'tag#tag_name_autocomplete'
 	get '/news' => 'home#news'
 	get '/home/news' => 'home#news'
-  match '/search' => 'search#browse'
   match '/tags' => 'tag#list'
 	match '/tag/update_tag_cloud' => 'tag#update_tag_cloud'
   match '/forum' => 'forum#index'

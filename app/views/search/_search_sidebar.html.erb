@@ -28,12 +28,12 @@
 	<div class="right_column_header">Limit Results to...</div>
     <p>Select a resource below to limit your search results</p>
     
-	<table class="limit_to">
+	<table class="limit_to facet-archive">
 		<tr>
 			<th>Resource</th>
 			<th class="num_objects"># of Objects</th>
 		</tr>
-		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :is_edit_mode => false, :parent_id => '', :start_hidden => false, :site_count => @results['facets']['archive'] } %>
+		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :parent_id => '', :start_hidden => false, :site_count => @results['facets']['archive'] } %>
 	</table>
   <br/>
 
