@@ -103,8 +103,6 @@ jQuery(document).ready(function($) {
 
 	function createResultHeader(obj) {
 //		<div class="search_result_header">
-		// TODO-PER:handle admin link
-//			<a class="uri_link" href="#" onclick="$('uri_0').toggleClassName('hidden');; return false;">uri</a><span id="uri_0" class="hidden">&nbsp;http://petrusplaoul.org/text/uri/sorb/lectio75</span>
 		// TODO-PER: handle zotera
 		//		<% aut = hit['role_AUT'] == nil ? '' : hit['role_AUT'][0] -%>
 		//				<% pub = hit['role_PBL'] == nil ? '' : hit['role_PBL'][0] -%>
@@ -119,9 +117,15 @@ jQuery(document).ready(function($) {
 //			</span>
 //		</div>
 
-		var a = window.pss.createHtmlTag("a", { 'class': 'nines_link doc-title', 'href': obj.url, target: '_blank', title: ' ' }, obj.title);
+		var uriLink = '';
+		if (window.collex.isAdmin)
+			uriLink = window.pss.createHtmlTag("a",
+				{ 'class': 'uri_link', 'href': '#' }, 'uri') +
+				window.pss.createHtmlTag("span", { 'style': 'display:none;' }, obj.uri+ "&nbsp;");
 
-		return window.pss.createHtmlTag("div", { 'class': 'search_result_header' }, a);
+			var a = window.pss.createHtmlTag("a", { 'class': 'nines_link doc-title', 'href': obj.url, target: '_blank', title: ' ' }, obj.title);
+
+		return window.pss.createHtmlTag("div", { 'class': 'search_result_header' }, uriLink+a);
 	}
 
 	var needShowMoreLink = false;
