@@ -102,7 +102,7 @@ body.federation-18th {
 .tag_link:hover { color: #fff; background: #445a93; }
 
 /* This is used for all links that change, or potentially change, the database */
-.modify_link:link { color: #445a93; text-decoration: none; }
+.modify_link, .modify_link:link { color: #445a93; text-decoration: none; }
 .modify_link:visited { color: #445a93; text-decoration: none; }
 .modify_link:hover { color: #fff; background: #445a93; text-decoration: none; }
 

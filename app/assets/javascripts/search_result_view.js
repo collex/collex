@@ -294,8 +294,20 @@ jQuery(document).ready(function($) {
 //<% end %>
 
 		if (needShowMoreLink) {
-			// TODO-PER: clean up "more" link so that it is non-obtrusive and uses jQuery, and doesn't need to have an id passed.
 			html += window.pss.createHtmlTag("button", { id: "more-search_result_"+index,  'class': 'nav_link more', onclick: 'removeHidden("more-search_result_' + index + '", "search_result_' + index + '");return false;'}, '[more...]');
+		}
+
+		if (collectedDate) {
+			var doAnnotation = "doAnnotation('" + obj.uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
+				window.collex.images.spinner + "'); return false;";
+			var linkLabel;
+			var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, obj.annotation);
+			if (obj.annotation) {
+				linkLabel = "Edit Private Annotation";
+			} else
+				linkLabel = "Add Private Annotation";
+			html += window.pss.createHtmlTag("div", { 'class': 'row' },
+				window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation);
 		}
 
 		html += createFullTextExcerpt(obj.text);

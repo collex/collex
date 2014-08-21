@@ -130,7 +130,7 @@
 	display: none;
 }
 
-button.nav_link {
+button.nav_link, button.modify_link {
 	border: none;
 	background: transparent;
 	text-align: left;

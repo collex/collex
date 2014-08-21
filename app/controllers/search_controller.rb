@@ -71,6 +71,8 @@ class SearchController < ApplicationController
 				t = h(t.gsub('&', 'AmPeRsAnD'))
 				hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
 			end
+
+			# TODO-PER: add annotations:  hit['annotation'] = decode_exhibit_links(get_annotation(hit)
 		}
 		@results['page_size'] = items_per_page
 

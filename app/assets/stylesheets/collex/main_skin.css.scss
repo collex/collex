@@ -103,7 +103,7 @@ a.my_collex_link {
 .tag_link:hover { color: #fff; background: #A60000; }
 
 /* This is used for all links that change, or potentially change, the database */
-.modify_link:link { color: #A60000; text-decoration: none; }
+.modify_link, .modify_link:link { color: #A60000; text-decoration: none; }
 .modify_link:visited { color: #A60000; text-decoration: none; }
 .modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
 

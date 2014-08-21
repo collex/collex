@@ -174,7 +174,7 @@ a.my_collex_link {
 .tag_link:hover { color: #fff; background: $link-hover; }
 
 /* This is used for all links that change, or potentially change, the database */
-.modify_link:link { color: $link-color }
+.modify_link, .modify_link:link { color: $link-color }
 .modify_link:visited { color: $link-color }
 .modify_link:hover { color: #fff; background: $link-hover }
 

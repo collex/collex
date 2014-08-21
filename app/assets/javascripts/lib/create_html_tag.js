@@ -8,7 +8,11 @@ window.pss.createHtmlTag = function(tagName, attributes, content) {
 	var arrAttr = [ tagName ];
 	for (var key in attributes) {
 		if (attributes.hasOwnProperty(key)) {
-			arrAttr.push(key + "='" + attributes[key] + "'");
+			var val = attributes[key];
+			if (val && typeof val === 'string')
+				val = val.replace(/'/g, "&apos;");
+
+			arrAttr.push(key + "='" + val + "'");
 		}
 	}
 	html += arrAttr.join(' ');
