@@ -74,12 +74,12 @@ class SearchController < ApplicationController
 		}
 		@results['page_size'] = items_per_page
 
-		sql_left = "select uri from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = #{get_curr_user_id()} AND cached_resources.uri in ("
+		sql_left = "select uri,updated_at from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = #{get_curr_user_id()} AND cached_resources.uri in ("
 		sql_right = ");"
 		collected_items = ActiveRecord::Base.connection.execute(sql_left + all_uris.join(',')+sql_right)
-		@results['collected'] = []
+		@results['collected'] = {}
 		collected_items.each { |item|
-			@results['collected'].push(item[0])
+			@results['collected'][item[0]] = item[1]
 		}
 		#select * from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = 4 AND cached_resources.uri in ('http://pm.nlx.com/xtf/view?docId=britphil/britphil.41.xml;chunk.id=div.britphil.v37.23', 'http://hdl.loc.gov/loc.pnp/ppmsca.02314' );
 

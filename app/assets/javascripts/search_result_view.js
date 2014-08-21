@@ -208,18 +208,28 @@ jQuery(document).ready(function($) {
 			window.pss.createHtmlTag("span", { 'class': 'snippet' }, text);
 	}
 
-	function createResultContents(obj, index) {
+	function formatDate(date) {
+		var months = ["January", "February", "March",
+			"April", "May", "June", "July", "August", "September",
+			"October", "November", "December"];
+
+		var arr = date.split('T');
+		arr = arr[0].split('-');
+		var day = parseInt(arr[2], 10);
+		var month = parseInt(arr[1], 10) - 1;
+		var year = arr[0];
+		return months[month] + " " + day + ", " + year;
+	}
+
+	function createResultContents(obj, index, collectedDate) {
 		needShowMoreLink = false;
 		var html = "";
 		html += createResultContentItem('alternative', 'Alternative:', obj.alternative, false);
 		html += createResultContentItem('separate_lines', 'Source:', obj.source, false);
 		html += createResultContentItem('multiple_item', 'By:', obj.role_AUT, false);
 		html += createResultContentItem('multiple_item', 'Artist:', obj.role_ART, false);
-//<%################### -%>
-		// TODO-PER: do collected
-		//<% item = get_collected_item(hit) -%>
-		//<% is_collected = !item.nil?  -%>
-//<%  result_row_collected(rows, is_collected, item) %>
+		if (collectedDate)
+			html += createResultContentItem('single_item', 'Collected&nbsp;on:', formatDate(collectedDate), false);
 //<%################### -%>
 		// TODO-PER: do tags
 		//<% tags = Tag.get_tags_for_uri(hit['uri']) -%>
@@ -299,11 +309,11 @@ jQuery(document).ready(function($) {
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container' }, html);
 	}
 
-	function createMediaBlock(obj, index, isCollected) {
+	function createMediaBlock(obj, index, isCollected, collectedDate) {
 		var imageBlock = createImageBlock();
 		var actionButtons = createActionButtons(obj, isCollected);
 		var resultHeader = createResultHeader(obj);
-		var resultContents = createResultContents(obj, index);
+		var resultContents = createResultContents(obj, index, collectedDate);
 		var results = window.pss.createHtmlTag("div", { 'class': 'search_result_right' }, resultHeader+resultContents);
 		var html = window.pss.createHtmlTag("div", { 'class': 'clear_both' }, "") +
 			window.pss.createHtmlTag("hr", { 'class': 'search_results_hr' });
@@ -448,8 +458,8 @@ jQuery(document).ready(function($) {
 
 		var html = "";
 		for (var i = 0; i < obj.hits.length; i++) {
-			var isCollected = $.inArray(obj.hits[i].uri, obj.collected) !== -1;
-			html += createMediaBlock(obj.hits[i], i, isCollected);
+			var isCollected = obj.collected[obj.hits[i].uri] !== undefined;
+			html += createMediaBlock(obj.hits[i], i, isCollected, obj.collected[obj.hits[i].uri]);
 		}
 		$('.search-results').html(html);
 
