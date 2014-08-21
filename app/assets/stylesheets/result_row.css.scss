@@ -62,8 +62,7 @@ hr.search_results_hr {
 }
 
 .search_result_right{
-	float:left;
-	width:71%;
+	margin-left: 114px;
 }
 
 .search_result_data td {
@@ -90,8 +89,7 @@ hr.search_results_hr {
 }
 
 .result_row_collected {
-	padding-left: 10px;
-	padding-top: 5px;
+	padding: 5px 0;
 }
 
 .search_result_header {

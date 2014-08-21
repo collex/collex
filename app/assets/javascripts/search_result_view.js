@@ -101,22 +101,29 @@ jQuery(document).ready(function($) {
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_buttons' }, collect+uncollect+discuss+exhibit+typewright);
 	}
 
+	function createZoteraTitle(obj) {
+		var eUrl = encodeURIComponent(obj.url);
+		var eTitle = obj.title ? encodeURIComponent(obj.title) : '';
+		var eAut = obj.role_AUT ? encodeURIComponent(obj.role_AUT) : '';
+		var eDat = obj.date_label ? encodeURIComponent(obj.date_label) : '';
+		var ePub = obj.role_PBL ? encodeURIComponent(obj.role_PBL) : '';
+
+		var arr = [ "ctx_ver=Z39.88-2004",
+			"rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook",
+			"rft_id=" + eUrl,
+			"rfr_id=info%3Asid%2Focoins.info%3Agenerator",
+			"rft.genre=book",
+			"rft.btitle=" + eTitle,
+			"rft.title=" + eTitle,
+			"rft.aulast=" + eAut,
+			"rft.aufirst=",
+			"rft.au=" + eAut,
+			"rft.date=" + eDat,
+			"rft.pub=" + ePub ];
+		return arr.join("&amp;");
+	}
+
 	function createResultHeader(obj) {
-//		<div class="search_result_header">
-		// TODO-PER: handle zotera
-		//		<% aut = hit['role_AUT'] == nil ? '' : hit['role_AUT'][0] -%>
-		//				<% pub = hit['role_PBL'] == nil ? '' : hit['role_PBL'][0] -%>
-		//				<% dat = hit['date_label'] == nil ? '' : hit['date_label'][0] -%>
-		//				<% esc_title = CGI::escape(title.gsub('&quot;', '"').gsub('&amp;', '&')) %>
-		//			<span class="Z3988"
-		//			title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft_id=<%= CGI::escape(url) %>&amp;rfr_id=info%3Asid%2Focoins.info%3Agenerator&amp;rft.genre=book&amp;rft.btitle=<%= esc_title %>&amp;rft.title=<%= esc_title %>&amp;rft.aulast=<%= CGI::escape(aut) %>&amp;rft.aufirst=&amp;rft.au=<%= CGI::escape(aut) %>&amp;rft.date=<%= CGI::escape(dat) %>&amp;rft.pub=<%= CGI::escape(pub) %>">
-		//				<%= result_row_title(title, url, index) %>
-
-		// TODO-PER: handle case where the title is longer than 200 chars
-//				<a class="nines_link" href="http://petrusplaoul.org/text/textdisplay.php?fs=lectio75&amp;ms=sorb" target="_blank" title=" ">Lectio 75, de Trinitate [Sorbonne Transcription]</a>
-//			</span>
-//		</div>
-
 		var uriLink = '';
 		if (window.collex.isAdmin)
 			uriLink = window.pss.createHtmlTag("a",
@@ -125,7 +132,8 @@ jQuery(document).ready(function($) {
 
 			var a = window.pss.createHtmlTag("a", { 'class': 'nines_link doc-title', 'href': obj.url, target: '_blank', title: ' ' }, obj.title);
 
-		return window.pss.createHtmlTag("div", { 'class': 'search_result_header' }, uriLink+a);
+		var titleEl = window.pss.createHtmlTag("div", { 'class': 'search_result_header' }, uriLink+a);
+		return window.pss.createHtmlTag("span", { 'class': 'Z3988', title: createZoteraTitle(obj) }, titleEl);
 	}
 
 	var needShowMoreLink = false;
@@ -284,7 +292,10 @@ jQuery(document).ready(function($) {
 		var results = window.pss.createHtmlTag("div", { 'class': 'search_result_right' }, resultHeader+resultContents);
 		var html = window.pss.createHtmlTag("div", { 'class': 'clear_both' }, "") +
 			window.pss.createHtmlTag("hr", { 'class': 'search_results_hr' });
-		html += window.pss.createHtmlTag("div", { 'id': 'search_result_'+ index, 'class': 'search-result', 'data-index': index, 'data-uri': obj.uri }, imageBlock+actionButtons+results);
+		var klass = "search-result";
+		if (isCollected)
+			klass += " result_row_collected";
+		html += window.pss.createHtmlTag("div", { 'id': 'search_result_'+ index, 'class': klass, 'data-index': index, 'data-uri': obj.uri }, imageBlock+actionButtons+results);
 		return html;
 	}
 
