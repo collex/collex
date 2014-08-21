@@ -123,6 +123,21 @@ jQuery(document).ready(function($) {
 		return arr.join("&amp;");
 	}
 
+	var titleLinkCounter = 0; // Just need a unique number, so we'll just keep counting here.
+	function createTitleLink(title, url) {
+		if (title.length < 200)
+			return window.pss.createHtmlTag("a", { 'class': 'nines_link doc-title', 'href': url, target: '_blank', title: ' ' }, title);
+		else {
+			titleLinkCounter++;
+			var title1 = title.substr(0, 199);
+			var title2 = title.substr(199);
+			var id = "title_more_" + titleLinkCounter;
+			var initial_title = title1 + window.pss.createHtmlTag("span", { id: id, style: 'display:none;' }, title2);
+			return window.pss.createHtmlTag("a", { class: 'nines_link doc-title', title: title, target: '_blank', href: url }, initial_title) +
+				window.pss.createHtmlTag("a", { href: '#', onclick: 'return false;', class: 'nav_link more_link', 'data-div': id, 'data-less': '[show less]', title: ' ' }, '...[show full title]');
+		}
+	}
+
 	function createResultHeader(obj) {
 		var uriLink = '';
 		if (window.collex.isAdmin)
@@ -130,7 +145,7 @@ jQuery(document).ready(function($) {
 				{ 'class': 'uri_link', 'href': '#' }, 'uri') +
 				window.pss.createHtmlTag("span", { 'style': 'display:none;' }, obj.uri+ "&nbsp;");
 
-			var a = window.pss.createHtmlTag("a", { 'class': 'nines_link doc-title', 'href': obj.url, target: '_blank', title: ' ' }, obj.title);
+		var a = createTitleLink(obj.title, obj.url);
 
 		var titleEl = window.pss.createHtmlTag("div", { 'class': 'search_result_header' }, uriLink+a);
 		return window.pss.createHtmlTag("span", { 'class': 'Z3988', title: createZoteraTitle(obj) }, titleEl);

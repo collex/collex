@@ -18,44 +18,42 @@
 // This activates a "more" link that will hide and show a div. To use, create an element that looks like this:
 // <a href='#' onclick='return false;' class='more_link' data-div='whatever' data-less='Read Less'>Read More</a>
 // and create another element on the page with the id of 'whatever' that is initially hidden:
-// <div id='whatever' class='hidden'>This text will be show or hidden at will</div>
+// <div id='whatever' style='display:none;'>This text will be show or hidden at will</div>
 //
 // The data-less element is the text that will be used when the link will cause the div to be contracted. If it is not
 // supplied, then the value "Less" will be used.
 //
-// This assumes that prototype is loaded, and that there is a class in the css named 'hidden' which contains "display:none"
-//
 
-/*global $, $$ */
+jQuery(document).ready(function($) {
+	"use strict";
+	var body = $("body");
+	body.on("click", ".more_link", function() {
+		var el = $(this);
+		var target = el.attr("data-div");
 
-document.observe('dom:loaded', function() {
-	$$(".more_link").each(function(el) {
-		var lessText = YAHOO.util.Dom.getAttribute(el, 'data-less');
-		if (!lessText || lessText.length === 0)
-			YAHOO.util.Dom.setAttribute(el, 'data--less', 'Less');
-		YAHOO.util.Dom.setAttribute(el, 'data--more', el.innerHTML);
-		var targ = YAHOO.util.Dom.getAttribute(el, 'data-div');
-		var targEl = $(targ);
-		if (targEl)
-			targEl.addClassName('hidden');
+		// If this is the first time the button was pushed, set up the text.
+		var lessText = el.attr("data-less");
+		if (!lessText || lessText.length === 0) {
+			lessText = "less";
+			el.attr("data-less", lessText);
+		}
+		var moreText = el.attr("data-more");
+		if (!moreText || moreText.length === 0) {
+			moreText = el.text();
+			el.attr("data-more", moreText);
+		}
 
-		var fnCallback = function(e) {
-			var text = this.innerHTML;
-			var targ = YAHOO.util.Dom.getAttribute(this, 'data-div');
-			var targEl = $(targ);
-			if (targEl) {
-				var lessText = YAHOO.util.Dom.getAttribute(this, 'data-less');
-				if (text === lessText) {
-					var moreText = YAHOO.util.Dom.getAttribute(this, 'data-more');
-					this.innerHTML = moreText;
-					targEl.addClassName('hidden');
-				} else {
-					this.innerHTML = lessText;
-					targEl.removeClassName('hidden');
-				}
+		var targetEl = $('#'+target);
+		if (targetEl.length > 0) {
+			if (el.text() === lessText) {
+				targetEl.hide();
+				el.text(moreText);
+			} else {
+				targetEl.show();
+				el.text(lessText);
 			}
-			return false;
-		};
-		YAHOO.util.Event.addListener(el, "click", fnCallback);
+		}
 	});
+
 });
+
