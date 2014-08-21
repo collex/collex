@@ -14,82 +14,75 @@ jQuery(document).ready(function($) {
 		return parts.join(separator);
 	}
 
-	function createImageBlock() {
-/*
-// TODO-PER: do logged in version
- <% if user_signed_in? -%>
- <div class="search_result_left_logged_in">
- <table><tr>
- <td><input type="checkbox" id="bulk_collect_<%=index%>" name="bulk_collect[<%=index%>]" value="<%=hit['uri']%>" /></td>
- <td><div class="search_result_image">
- <%= render :partial => '/results/thumbnail_image', :locals => { :hit => hit } %>
- </div></td>
- </tr>
+	function getArchive(handle) {
+		function getArchiveOneBranch(branch, handle) {
+			for (var i = 0; i < branch.length; i++) {
+				var archive = branch[i];
+				if (archive.handle === handle)
+					return archive;
+				if (archive.children) {
+					var a = getArchiveOneBranch(archive.children, handle);
+					if (a)
+						return a;
+				}
+			}
+			return null;
+		}
+		return getArchiveOneBranch(window.collex.facetNames.archives, handle);
+	}
 
- </table>
- </div>
- <% else -%>
- <div class="search_result_left">
- <%= render :partial => '/results/thumbnail_image', :locals => { :hit => hit } %>
- </div>
- <% end -%>
+	var progressLinkCounter = 0; // Just need a unique number, so we'll just keep counting here.
 
- <%# thumbnail_image params: (hash hit) -%>
- <div class="search_result_image"><%= thumbnail_image_tag(hit) %>
- <% if hit['freeculture'] == 'true' || hit['has_full_text'] == 'true'  || hit['source_xml'] != nil -%>
- <div class="result_row_icons">
- <% if hit['freeculture'] == 'true' -%>
- <span class="tooltip free_culture">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">Free Culture resource</span></span>
- <% end -%>
- <% if hit['has_full_text'] == 'true' -%>
- <span class="tooltip full_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">Full text provided for this document</span></span>
- <% end -%>
- <% if hit['source_xml'] != nil -%>
- <span class="tooltip has_xml_source">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">XML source available for this document</span></span>
- <% end -%>
- <% if COLLEX_PLUGINS['typewright'] && !hit['typewright'].blank? -%>
- <span class="tooltip can_typewright" data-uri="<%= hit['uri'] %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">This document can be corrected using TypeWright</span></span>
- <% end -%>
- </div>
- <% end -%>
- </div>
+	function thumbnailImageTag(hit) {
+		// The image comes from one of these places:
+		// There may be keys for 'image' and 'thumbnail' in the hit.
+		// There may be a thumbnail associated with the archive.
+		// There is definitely a thumbnail associated with the active federation.
+		var thumbnail = hit.thumbnail;
+		var image = thumbnail ? hit.image : undefined; // If we don't have our own thumbnail, we never want to have a lightbox. (That probably doesn't exist in any RDF, anyway.)
+		if (!thumbnail) {
+			var archive = getArchive(hit.archive);
+			if (archive)
+				thumbnail = archive.thumbnail;
+		}
+		if (!thumbnail)
+			thumbnail = window.collex.images.federationThumbnail;
 
- def thumbnail_image_tag(hit, options = {})
- thumb = CachedResource.get_thumbnail_from_hit(hit)
- image = CachedResource.get_image_from_hit(hit)
- progress_id = "progress_#{make_id(hit['uri'])}"
- title = hit['title'] ? hit['title'] : "Image"
- str = tag "img", options.merge({:alt => title, :src => get_image_url(thumb), :id => "thumbnail_#{make_id(hit['uri'])}", :class => 'result_row_img hidden', :onload => "finishedLoadingImage('#{progress_id}', this, 100, 100);" })
- if image != thumb
- title = title[0,60]+'...' if title.length > 62
- title = title.gsub("'", "&apos;")
- title = title.gsub('"', "\\\"")
- str = "<a class='nines_pic_link' onclick='showInLightbox({ title: \"#{title}\", img: \"#{image}\", spinner: \"#{image_path(PROGRESS_SPINNER_PATH)}\", size: 500 }); return false;' href='#'>#{str}</a>"
- end
- str = "<img id='#{progress_id}' class='progress_timeout result_row_img_progress' src='#{image_path(PROGRESS_SPINNER_PATH)}' alt='loading...' data-noimage='#{image_path(SPINNER_TIMEOUT_PATH)}' />\n" + str
- return raw(str)
- end
+		var progressId = "progress_" + progressLinkCounter++;
+		var title = hit.title ? hit.title : "Image";
+		var imageEl = window.pss.createHtmlTag("img", { 'src': thumbnail, alt: title, 'class': 'result_row_img hidden', onload: "finishedLoadingImage(\"" + progressId + "\", this, 100, 100);" });
+		var progressEl = window.pss.createHtmlTag("img",
+			{ id: progressId, 'class': 'progress_timeout result_row_img_progress', src: window.collex.images.spinner, alt: 'loading...',
+				'data-noimage': window.collex.images.spinnerTimeout });
+		if (image) {
+			// Wrap the image in an anchor that will pull up the lightbox.
+			if (title.length > 60)
+				title = title.substr(0,59) + "...";
+			var lightboxCall = 'showInLightbox({ title: "' + title + '", img: "' + image + '", spinner: "' + window.collex.images.spinner + '", size: 500 }); return false;';
+			imageEl = window.pss.createHtmlTag("a", { 'class': 'nines_pic_link', onclick: lightboxCall, href: '#' }, imageEl);
+		}
+		return progressEl + imageEl;
+	}
+	function createImageBlock(index, hit) {
+		var check = "";
+		var isLoggedIn = window.collex.currentUserId && window.collex.currentUserId > 0;
+		if (isLoggedIn)
+			check = window.pss.createHtmlTag("input", { 'type': 'checkbox', 'id': "bulk_collect_"+index, 'name': "bulk_collect_"+index, 'value': hit.uri });
+		var image = thumbnailImageTag(hit);
+		var icons = "";
+		if (hit.freeculture === 'true')
+			icons += window.pss.createHtmlTag("span", { 'class': 'tooltip free_culture' }, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+				window.pss.createHtmlTag("span", { 'class': 'result_row_tooltip' }, "Free Culture resource"));
+		if (hit.has_full_text === 'true')
+			icons += window.pss.createHtmlTag("span", { 'class': 'tooltip full_text' }, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+				window.pss.createHtmlTag("span", { 'class': 'result_row_tooltip' }, "Full text provided for this document"));
+		if (hit.source_xml === 'true')
+			icons += window.pss.createHtmlTag("span", { 'class': 'tooltip has_xml_source' }, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+				window.pss.createHtmlTag("span", { 'class': 'result_row_tooltip' }, "XML source available for this document"));
 
-*/
-//		<div class="search_result_left_logged_in">
-//			<table><tbody><tr>
-//				<td><input type="checkbox" id="bulk_collect_0" name="bulk_collect[0]" value="http://petrusplaoul.org/text/uri/sorb/lectio75"></td>
-//					<td><div class="search_result_image">
-//						<div class="search_result_image"><img id="progress_http-__petrusplaoul-org_text_uri_sorb_lectio75" class="progress_timeout result_row_img_progress" src="/assets/18th/no_image.jpg" alt="loading..." data-noimage="/assets/18th/no_image.jpg">
-//							<img alt="Lectio 75, de Trinitate [Sorbonne Transcription]" class="result_row_img hidden" id="thumbnail_http-__petrusplaoul-org_text_uri_sorb_lectio75" onload="finishedLoadingImage('progress_http-__petrusplaoul-org_text_uri_sorb_lectio75', this, 100, 100);" src="http://petrusplaoul.org/plaoulCover.jpg">
-//								<div class="result_row_icons">
-//									<span class="tooltip free_culture">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">Free Culture resource</span></span>
-//									<span class="tooltip full_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">Full text provided for this document</span></span>
-//									<span class="tooltip has_xml_source">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="result_row_tooltip">XML source available for this document</span></span>
-//								</div>
-//							</div>
-//
-//						</div></td>
-//					</tr>
-//
-//					</tbody></table>
-//			</div>
-		return window.pss.createHtmlTag("div", { 'class': 'search_result_left' }, "");
+		var resultRowIcons = window.pss.createHtmlTag("div", { 'class': 'result_row_icons' }, icons);
+		var thumbnail = window.pss.createHtmlTag("div", { 'class': 'search_result_image' }, image+resultRowIcons);
+		return window.pss.createHtmlTag("div", { 'class': 'search_result_left' }, check+thumbnail);
 	}
 
 	function createActionButtons(hit, isCollected) {
@@ -310,7 +303,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function createMediaBlock(obj, index, isCollected, collectedDate) {
-		var imageBlock = createImageBlock();
+		var imageBlock = createImageBlock(index, obj);
 		var actionButtons = createActionButtons(obj, isCollected);
 		var resultHeader = createResultHeader(obj);
 		var resultContents = createResultContents(obj, index, collectedDate);

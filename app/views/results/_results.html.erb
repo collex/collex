@@ -19,6 +19,8 @@
   window.collex = {
 	  currentUserId: '<%= get_curr_user_id %>',
 	  isAdmin: <%= is_admin? %>,
+	  hasTypewright: <%= COLLEX_PLUGINS['typewright'].present? %>,
+	  myCollexUrl: '<%= MY_COLLEX_URL %>',
 	  facetNames: {
 		  access: {
 			  has_full_text: "Full Text Only",
@@ -26,10 +28,12 @@
 			  freeculture: "Free Culture Only",
 			  typewright: "Typewright Enabled Only"
 		  },
-		  archives: <%= raw(@archives.to_json) %>,
+		  archives: <%= raw(@archives.to_json) %>
+	  },
+	  images: {
 		  spinner: '<%= image_path(PROGRESS_SPINNER_PATH) %>',
-		  hasTypewright: <%= COLLEX_PLUGINS['typewright'].present? %>,
-		  myCollexUrl: '<%= MY_COLLEX_URL %>'
+		  federationThumbnail: '<%= image_path(DEFAULT_THUMBNAIL_IMAGE_PATH) %>',
+		  spinnerTimeout: '<%= image_path(SPINNER_TIMEOUT_PATH) %>'
 	  }
   };
 </script>
