@@ -90,7 +90,7 @@ class SearchController < ApplicationController
 		# This fixes the format of the access facet.
 		@results['facets']['access'] = {}
 		@results['facets']['access']['freeculture'] = @results['facets']['freeculture']['true'] if @results['facets']['freeculture'].present? && @results['facets']['freeculture']['true'].present?
-		@results['facets']['access']['has_full_text'] = @results['facets']['has_full_text']['true'] if @results['facets']['has_full_text'].present? && @results['facets']['has_full_text']['true'].present?
+		@results['facets']['access']['fulltext'] = @results['facets']['has_full_text']['true'] if @results['facets']['has_full_text'].present? && @results['facets']['has_full_text']['true'].present?
 		@results['facets']['access']['ocr'] = @results['facets']['ocr']['true'] if @results['facets']['ocr'].present? && @results['facets']['ocr']['true'].present?
 		@results['facets']['access']['typewright'] = @results['facets']['typewright']['true'] if @results['facets']['typewright'].present? && @results['facets']['typewright']['true'].present?
 
