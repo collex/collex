@@ -31,6 +31,14 @@ jQuery(document).ready(function($) {
 		return getArchiveOneBranch(window.collex.facetNames.archives, handle);
 	}
 
+	function getSite(archive) {
+		var resource = getArchive(archive);
+		if (resource)
+			return window.pss.createHtmlTag("a", { 'class': 'nines_link', target: '_blank', href: resource.site_url  }, resource.name);
+	else
+			return archive;
+	}
+
 	var progressLinkCounter = 0; // Just need a unique number, so we'll just keep counting here.
 
 	function thumbnailImageTag(hit) {
@@ -232,7 +240,8 @@ jQuery(document).ready(function($) {
 //<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, user_signed_in?, is_collected) %>
 //<% end # if no_links -%>
 //<%################### -%>
-		html += createResultContentItem('single_item', 'Site:', obj.archive, false);
+		var site = getSite(obj.archive);
+		html += createResultContentItem('single_item', 'Site:', site, false);
 		html += createResultContentItem('multiple_item', 'Genre:', obj.genre, true);
 		html += createResultContentItem('multiple_item', 'Discipline:', obj.discipline, true);
 		html += createResultContentItem('multiple_item', 'Subject:', obj.subject, true);
