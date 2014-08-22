@@ -149,8 +149,17 @@ jQuery(document).ready(function($) {
 			existingQuery = addToQueryObject(newQueryKey, newQueryValue);
 		else
 			existingQuery = replaceInQueryObject(newQueryKey, newQueryValue);
+		if (newQueryKey !== 'page') // always go back to page 1 when the search changes.
+			delete existingQuery.page;
+
 		return "/search?" + makeQueryString(existingQuery);
 	}
+
+	body.on("click", ".new_search", function () {
+		showProgress();
+		var pageTitle = document.title; // For now, don't change the page title depending on the search.
+		History.pushState(null, pageTitle, "/search");
+	});
 
 	body.on("click", ".select-facet", function () {
 		var el = $(this);
@@ -186,6 +195,7 @@ jQuery(document).ready(function($) {
 		} else {
 			existingQuery.f = checkedFeds;
 		}
+		delete existingQuery.page;
 		showProgress();
 		var pageTitle = document.title; // For now, don't change the page title depending on the search.
 		History.pushState(null, pageTitle, "/search?" + makeQueryString(existingQuery));
