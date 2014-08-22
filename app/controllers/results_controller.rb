@@ -55,7 +55,7 @@ class ResultsController < ApplicationController
 			render :text => 'Bad parameters in call to uncollect', :status => :bad_request
 		else
 			locals = setup_ajax_calls(params, true)
-			CollectedItem.remove_collected_item(user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+			CollectedItem.remove_collected_item(current_user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
 
 			if partial == '/results/result_row'
 				locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
