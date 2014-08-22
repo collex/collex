@@ -80,7 +80,7 @@
           <div class="tw_phrase_container">
               <input id="tw_search_phrase" name="search_phrase" type="text" required />
               <div class="tw_advanced_link">
-                <%= link_to("Advanced Search", '/collex/new_search?mode=typewright', :class => 'nav_link') %>
+                <%= link_to("Advanced Search", '/search?o=typewright', :class => 'nav_link') %>
               </div>
            </div>
            
@@ -120,7 +120,7 @@
 
       
       <div class="subpage_nav"> 
-        <%= link_to "See all TypeWright enabled projects", "/collex/new_search?mode=typewright", :class => 'nav_link' %>
+        <%= link_to "See all TypeWright enabled projects", "/search?o=typewright", :class => 'nav_link' %>
       </div>
       
   </div>               

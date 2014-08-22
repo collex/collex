@@ -15,6 +15,11 @@
 // ---------------------------------------------------------------------------- */
 
 body.pg-result_row {
+	.tag-list {
+		a,button {
+			padding-right: 2px;
+		}
+	}
 hr.search_results_hr {
 	height:2px;
 	background:#C7C8CB;

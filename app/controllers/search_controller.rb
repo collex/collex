@@ -61,10 +61,13 @@ class SearchController < ApplicationController
 		@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
 		@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
 
-		# Add the highlighting to the hit object so that a result is completely contained inside the hit object
+		# process all the returned hits to insert all non-solr info
 		all_uris = []
 		@results['hits'].each { |hit|
+			# make a list of all uris so that we can find the collected ones and any annotations
 			all_uris.push("'" + hit['uri'] + "'")
+
+			# Add the highlighting to the hit object so that a result is completely contained inside the hit object
 			if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
 				t = @results["highlighting"][hit["uri"]].to_s.strip()
 				# We want to escape everything except the bolding so that random control chars can't mess up the display
@@ -72,20 +75,30 @@ class SearchController < ApplicationController
 				hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
 			end
 
-			# TODO-PER: add annotations:  hit['annotation'] = decode_exhibit_links(get_annotation(hit)
 		}
 		@results['page_size'] = items_per_page
 
 		@results['collected'] = {}
 		if user_signed_in? && all_uris.length > 0
-			sql_left = "select uri,updated_at from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = #{get_curr_user_id()} AND cached_resources.uri in ("
-			sql_right = ");"
-			collected_items = ActiveRecord::Base.connection.execute(sql_left + all_uris.join(',')+sql_right)
-			collected_items.each { |item|
-				@results['collected'][item[0]] = item[1]
+			collected_items = CollectedItem.items_in_uri_list(get_curr_user_id(), all_uris)
+			collected_items.each { |uri, item|
+				@results['collected'][uri] = item[:updated_at]
+				if item[:annotation].present?
+					@results['hits'].each { |hit|
+						if hit['uri'] == uri
+							hit['annotation'] = view_context.decode_exhibit_links(item[:annotation])
+						end
+					}
+				end
 			}
-			#select * from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = 4 AND cached_resources.uri in ('http://pm.nlx.com/xtf/view?docId=britphil/britphil.41.xml;chunk.id=div.britphil.v37.23', 'http://hdl.loc.gov/loc.pnp/ppmsca.02314' );
 		end
+
+		tags = Tag.items_in_uri_list(all_uris)
+		tags.each { |uri,name|
+			@results['hits'].each { |hit|
+				hit['tags'] = name if hit['uri'] == uri
+			}
+		}
 
 		# This fixes the format of the access facet.
 		@results['facets']['access'] = {}
@@ -498,7 +511,7 @@ class SearchController < ApplicationController
      if session[:constraints].length == 1 && session[:constraints][0]['type'] == "ExpressionConstraint"
        flash[:error] = render_to_string(:inline => "The search string \"#{session[:constraints][0]['value']}\" contains invalid characters. Try another search.")
      else
-       flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', { :action => 'new_search' }, { :class => 'nav_link' } %> or remove the offending search string below.")
+       flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', { :action => 'search' }, { :class => 'nav_link' } %> or remove the offending search string below.")
      end
      return {"facets" => {"archive" => {}, "freeculture" => {}, "genre" => {}}, "total_hits" => 0, "hits" => [], "total_documents" => 0}
   end
@@ -761,13 +774,13 @@ class SearchController < ApplicationController
       redirect_to :action => 'browse', :phrs => params[:phrs]
    end
 
-    def new_search
-      clear_constraints()
-      if params[:mode] == 'typewright'
-        session[:constraints] << TypeWrightConstraint.new(:inverted => false )
-      end
-      redirect_to :action => 'browse'
-    end
+    # def new_search
+    #   clear_constraints()
+    #   if params[:mode] == 'typewright'
+    #     session[:constraints] << TypeWrightConstraint.new(:inverted => false )
+    #   end
+    #   redirect_to :action => 'browse'
+    # end
 
 		def list_name_facet_all
      @solr = Catalog.factory_create(session[:use_test_index] == "true")

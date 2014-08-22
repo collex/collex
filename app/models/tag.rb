@@ -19,7 +19,23 @@ class Tag < ActiveRecord::Base
   has_many :cached_resources, :through => :tagassigns 
 
   validates_uniqueness_of :name
-  
+
+	def self.items_in_uri_list(uris)
+		sql_left = "select uri,name from tagassigns inner join cached_resources on tagassigns.`cached_resource_id` = cached_resources.id inner join tags on tagassigns.tag_id = tags.id where cached_resources.uri in ("
+		sql_right = ");"
+		tags = ActiveRecord::Base.connection.execute(sql_left + uris.join(',')+sql_right)
+		list = {}
+		tags.each { |item|
+			if list[item[0]].nil?
+				list[item[0]] = [ item[1] ]
+			else
+				list[item[0]].push(item[1])
+			end
+		}
+		return list
+
+	end
+
   # Add a new tag to an item. Collected/Uncollected is irrelevant; tags are associated 
   # directly with the cached resource id. If the item is not yet cached, it will be.
   #

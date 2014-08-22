@@ -30,7 +30,7 @@
 	<% if has_constraints? #(@listed_constraints.size > 0) If the user is in the middle of a search. -%>
 		<% if @num_pages > 0 # if there are results -%>
 			<div class="left_column">
-				<div class="page_header"><a href='/collex/new_search' class="new_search">New Search</a>Search Query
+				<div class="page_header"><button class="new_search">New Search</button>Search Query
 					<span id="saved_search_name_span"><%= render :partial => 'search/show_saved_search' %></span>
 				</div>
 				<%# for preloading the hover images so there is no flashing. -%>
@@ -51,7 +51,7 @@
 			<%= render( :partial => 'search_sidebar' ) %>
 		<% else # there were no results -%>
 			<div class="left_column">
-				<div class="page_header"><a href='/collex/new_search' class="new_search">New Search</a>Search Query</div>
+				<div class="page_header"><button class="new_search">New Search</button>Search Query</div>
 				<%= render( :partial => 'constraints' ) %>
 				<div class="no_results_msg">
 					<p>No <%= Setup.site_name() %> objects fit your constraints. <%= create_facet_link('Remove Last Constraint.', '/search/remove_constraint', { :index => "#{session[:constraints].size-1}" }) %></p>

@@ -154,7 +154,7 @@ jQuery(document).ready(function($) {
 
 	var needShowMoreLink = false;
 
-	function createResultContentItem(type, label, value, startHidden) {
+	function createResultContentItem(type, label, value, startHidden, rowClass) {
 		if (!value)
 			return "";
 
@@ -163,6 +163,8 @@ jQuery(document).ready(function($) {
 			klass += ' hidden';
 			needShowMoreLink = true;
 		}
+		if (rowClass)
+			klass += " " + rowClass;
 
 		switch (type) {
 			case "separate_lines":
@@ -186,7 +188,6 @@ jQuery(document).ready(function($) {
 			case "one_col":
 				return window.pss.createHtmlTag("div", { 'class': klass },
 						window.pss.createHtmlTag("span", { 'class': 'one-col' }, value));
-				return "";
 		}
 	}
 
@@ -194,6 +195,20 @@ jQuery(document).ready(function($) {
 		if (!text || text.length === 0) return "";
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_full_text_label' }, 'Excerpt from Full Text:') +
 			window.pss.createHtmlTag("span", { 'class': 'snippet' }, text);
+	}
+
+	function formatTags(uri, index, tags) {
+		// TODO-PER: Make distinction between "my tag" and not.
+		if (!tags) return "";
+		var html = "";
+		for (var i = 0; i < tags.length; i++) {
+			if (i !== 0)
+				html += " | ";
+			html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag="ajax"&amp;view=tag' }, tags[i]);
+			var remove = "doRemoveTag('" + uri + "', 'search_result_" + index + "', '" + tags[i] + "'); return false;";
+			html += window.pss.createHtmlTag("a", { 'class': 'modify_link my_tag remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove,  href: '#' }, 'X');
+		}
+		return html;
 	}
 
 	function formatDate(date) {
@@ -218,6 +233,11 @@ jQuery(document).ready(function($) {
 		html += createResultContentItem('multiple_item', 'Artist:', obj.role_ART, false);
 		if (collectedDate)
 			html += createResultContentItem('single_item', 'Collected&nbsp;on:', formatDate(collectedDate), false);
+
+		var click = "doAddTag('/tag/tag_name_autocomplete', 'add_tag_" + index + "', '" + obj.uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
+		var tags = formatTags(obj.uri, index, obj.tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+		html += createResultContentItem('single_item', 'Tags:', tags, false, 'tag-list');
+
 //<%################### -%>
 		// TODO-PER: do tags
 		//<% tags = Tag.get_tags_for_uri(hit['uri']) -%>
