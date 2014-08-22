@@ -183,22 +183,9 @@ jQuery(document).ready(function($) {
 				return window.pss.createHtmlTag("div", { 'class': klass },
 						window.pss.createHtmlTag("span", { 'class': 'label' }, label) +
 						window.pss.createHtmlTag("span", { 'class': 'value' }, value.join("; ")));
-			case 'site':
-				// TODO-PER: create site link
-				//					this_site = site(archive)
-				//				if this_site
-				//					str = "<a class='nines_link' target='_blank' href='#{this_site['site_url']}'>#{this_site['name']}</a>"
-				//				else
-				//					str = archive
-				//				end
+			case "one_col":
 				return window.pss.createHtmlTag("div", { 'class': klass },
-						window.pss.createHtmlTag("span", { 'class': 'label' }, label) +
-						window.pss.createHtmlTag("span", { 'class': 'value' }, value));
-	case "alternative":
-				// TODO-PER: implement alternative.
-//hit[key].each do |alt|
-//rows.push({:hidden => is_hidden, :one_col => true, :value => h(alt)})
-//end
+						window.pss.createHtmlTag("span", { 'class': 'one-col' }, value));
 				return "";
 		}
 	}
@@ -225,7 +212,7 @@ jQuery(document).ready(function($) {
 	function createResultContents(obj, index, collectedDate) {
 		needShowMoreLink = false;
 		var html = "";
-		html += createResultContentItem('alternative', 'Alternative:', obj.alternative, false);
+		html += createResultContentItem('one_col', '', obj.alternative, false);
 		html += createResultContentItem('separate_lines', 'Source:', obj.source, false);
 		html += createResultContentItem('multiple_item', 'By:', obj.role_AUT, false);
 		html += createResultContentItem('multiple_item', 'Artist:', obj.role_ART, false);

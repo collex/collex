@@ -77,7 +77,7 @@ class SearchController < ApplicationController
 		@results['page_size'] = items_per_page
 
 		@results['collected'] = {}
-		if user_signed_in?
+		if user_signed_in? && all_uris.length > 0
 			sql_left = "select uri,updated_at from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = #{get_curr_user_id()} AND cached_resources.uri in ("
 			sql_right = ");"
 			collected_items = ActiveRecord::Base.connection.execute(sql_left + all_uris.join(',')+sql_right)
