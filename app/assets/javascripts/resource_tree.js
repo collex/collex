@@ -14,74 +14,34 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $$, Class */
-/*extern ResourceTree */
 /*global serverNotify */
 
-var ResourceTree = Class.create({
-	initialize: function (id, action) {
+jQuery(document).ready(function($) {
+	"use strict";
+	var body = $("body");
+
+	body.on("click", ".resource-tree-node button", function () {
+		var el = $(this);
+		var parent = el.closest(".resource-tree-node");
+		var open = parent.find('button[data-action="open"]');
+		var close = parent.find('button[data-action="close"]');
+		var action = el.attr('data-action');
+		var id = parent.attr('data-id');
 		if (action === 'toggle') {
-			var open = $("site_opened_" + id);
-			if (open.hasClassName('hidden')) action = 'close';
-			else action = 'open';
+			action = open.is(':visible') ? 'open' : 'close';
 		}
-
-		var getId = function(node) {
-			var arr = node.split('_');
-			id = arr[arr.length-1];
-			return id;
-		};
-
-		var closeChildren = function(node) {
-			// this recursively hides all the children of the specified node.
-			var child_class = "child_of_" + node;
-			var children = $$('.' + child_class);
-			children.each(function(child)
-			{
-				child.addClassName('hidden');
-				if (child.hasClassName('resource_node')) {
-					var cid = getId(child.id);
-					closeChildren(cid);
-				}
-			});
-		};
-
-		var openChildren = function(node) {
-			var child_class = "child_of_" + node;
-			var children = $$('.' + child_class);
-			children.each(function(child) {
-				child.removeClassName('hidden');
-				if (child.hasClassName('resource_node')) {
-					var cid = getId(child.id);
-					var childOpened = $("site_opened_" + cid);
-					if (childOpened.hasClassName('hidden') === true)
-						openChildren(cid);
-				}
-			});
-		};
-
-		var closeNode = function(id) {
-			var This = $("site_closed_" + id);
-			var That = $("site_opened_" + id);
-			This.addClassName('hidden');
-			That.removeClassName('hidden');
-			serverNotify("/search/remember_resource_toggle", { dir: 'close', id: id });
-		};
-
-		var openNode = function(id) {
-			var This = $("site_opened_" + id);
-			var That = $("site_closed_" + id);
-			This.addClassName('hidden');
-			That.removeClassName('hidden');
-			serverNotify("/search/remember_resource_toggle", { dir: 'open', id: id });
-		};
-
+		var child_class = ".child_of_" + id;
 		if (action === 'open') {
-			openNode(id);
-			openChildren(id);
-		} else if (action === 'close') {
-			closeNode(id);
-			closeChildren(id);
+			open.hide();
+			close.show();
+			$(child_class).show();
+		} else {
+			open.show();
+			close.hide();
+			$(child_class).hide();
 		}
-	}
+
+		serverNotify("/search/remember_resource_toggle", { dir: action, id: id });
+
+	});
 });

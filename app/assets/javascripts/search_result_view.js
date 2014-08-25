@@ -446,6 +446,57 @@ jQuery(document).ready(function($) {
 		block.html(header + html);
 	}
 
+	function createResourceNode(id, level, label, total, childClass) {
+		// TODO-PER: figure out how to decide whether the item starts open.
+		var open = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_category', 'data-action': "open" },
+			window.pss.createHtmlTag("img", { 'alt': 'Arrow Open', src: window.collex.images.arrow_open }));
+		var close = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_category', 'data-action': "close" },
+			window.pss.createHtmlTag("img", { 'alt': 'Arrow Close', src: window.collex.images.arrow_close }));
+		var name = window.pss.createHtmlTag("button", { 'class': 'nav_link limit_to_category', 'data-action': "toggle" }, label);
+
+		var left = window.pss.createHtmlTag("td", { 'class': 'resource-tree-node limit_to_lvl'+level, 'data-id': id }, open+close+name);
+		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, number_with_delimiter(total));
+		var trClass = "resource_node " + childClass;
+		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': trClass }, left+right);
+	}
+
+	function createResourceLeaf(id, level, label, total, handle, childClass) {
+		var left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'archive'));
+		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, total);
+		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': childClass }, left+right);
+	}
+
+	function createResourceSection(resources, hash, level, childClass) {
+		var html = "";
+		var total = 0;
+		for (var i = 0; i < resources.length; i++) {
+			var archive = resources[i];
+			if (archive.children) {
+				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id);
+				total += section.total;
+				if (total > 0) {
+					var thisNode = createResourceNode(archive.id, level, archive.name, number_with_delimiter(total), childClass);
+					html += thisNode + section.html;
+				}
+			} else {
+				if (hash[archive.handle]) { // If there are no results, then we don't show that archive.
+					html += createResourceLeaf(archive.id, level, archive.name, hash[archive.handle], archive.handle, childClass);
+					total += parseInt(hash[archive.handle], 10);
+				}
+			}
+		}
+		return { html: html, total: total };
+	}
+
+	function createResourceBlock(hash) {
+
+		var html = createResourceSection(window.collex.facetNames.archives, hash, 1, '').html;
+
+		var block = $(".facet-archive");
+		var header = window.pss.createHtmlTag("tr", {}, block.find("tr:first-of-type").html());
+		block.html(header + html);
+	}
+
 	function createTotals(total) {
 		$("#search_result_count").text("Search Results (" + number_with_delimiter(total)+")");
 	}
@@ -488,6 +539,7 @@ jQuery(document).ready(function($) {
 		createFacetBlock('facet-discipline', obj.facets.discipline, 'discipline', obj.query.discipline);
 		createFacetBlock('facet-format', obj.facets.doc_type, 'doc_type', obj.query.doc_type);
 		createFacetBlock('facet-access', obj.facets.access, 'o', obj.query.o, window.collex.facetNames.access);
+		createResourceBlock(obj.facets.archive);
 
 		var page = obj.query.page ? obj.query.page : 1;
 		html = createPagination(page, obj.total_hits, obj.page_size);
