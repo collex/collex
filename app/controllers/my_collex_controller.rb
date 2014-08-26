@@ -16,7 +16,6 @@
 #require 'json'
 
 class MyCollexController < ApplicationController
-  layout 'nines'
   before_filter :init_view_options
 
   private

@@ -1,5 +1,4 @@
 class TestJsController < ApplicationController
-	layout 'nines'
 	before_filter :init_view_options
 
 	private

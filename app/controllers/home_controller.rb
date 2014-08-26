@@ -16,7 +16,6 @@
 
 class HomeController < ApplicationController
 
-  layout 'nines'
   before_filter :init_view_options
   
   def init_view_options

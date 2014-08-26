@@ -1,6 +1,5 @@
 # encoding: UTF-8
 class CommunitiesController < ApplicationController
-	layout 'nines'
 	before_filter :init_view_options
 
 	private
