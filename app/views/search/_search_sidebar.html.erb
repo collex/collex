@@ -17,11 +17,9 @@
 <div class="right_column">
 	<div class="right_column_header">Currently Searching...</div>
 	<table class="limit_to limit_to_federation">
-		<% fed_count = @results['facets']['federation'] ? @results['facets']['federation'][Setup.default_federation()] : 0 -%>
-		<%= federation_selector(Setup.default_federation(), fed_count) %>
+		<%= federation_selector(Setup.default_federation(), 0) %>
 		<% for fed in @other_federations %>
-			<% other_count = @results['facets']['federation'] ? @results['facets']['federation'][fed] : 0 -%>
-			<%= federation_selector(fed, other_count) %>
+			<%= federation_selector(fed, 0) %>
 		<% end %>
 	</table>
 
@@ -33,7 +31,6 @@
 			<th>Resource</th>
 			<th class="num_objects"># of Objects</th>
 		</tr>
-		<%= render :partial => '/common/facet_tree_one_branch', :locals => { :branch => @sites_forest, :indent => 1, :parent_id => '', :start_hidden => false, :site_count => @results['facets']['archive'] } %>
 	</table>
   <br/>
 
@@ -45,20 +42,14 @@
   <% facet_keys.each do |key| %>
     <% case facet_order[key] %>
       <% when 'access' %>
-          <%= create_access_table(@freeculture_count, @fulltext_count, @typewright_count) %>
+          <%= create_access_table(0,0,0) %>
       <% when 'format' %>
-          <%=  create_format_table(@format_data) %>
+          <%=  create_format_table([]) %>
       <% when 'discipline' %>
-          <%=  create_discipline_table(@discipline_data) %>
+          <%=  create_discipline_table([]) %>
       <% when 'genre' %>
-          <%=  create_genre_table(@genre_data) %>
+          <%=  create_genre_table([]) %>
       <% end %>
   <% end %>
 
-
-  <!--    <table class="limit_to">
-   <tr><th>Federation</th><th class="num_objects"># of Objects</th></tr>
-     < %= nines_selector(@nines_count) %>
-     < %= eighteenth_connect_selector(@ec_count) %>
- </table> -->
 </div>

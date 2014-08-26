@@ -1,0 +1,69 @@
+<% #
+   # ------------------------------------------------------------------------
+   # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+   #
+   # Licensed under the Apache License, Version 2.0 (the "License");
+   # you may not use this file except in compliance with the License.
+   # You may obtain a copy of the License at
+   #
+   #    http://www.apache.org/licenses/LICENSE-2.0
+
+   # Unless required by applicable law or agreed to in writing, software
+   # distributed under the License is distributed on an "AS IS" BASIS,
+   # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   # See the License for the specific language governing permissions and
+   # limitations under the License.
+   # ----------------------------------------------------------------------------  -%>
+<%# this shows a number of different views depending on the current constraints: 
+	# If there are no constraints, then the New Search view is shown.
+	# If there are constraints, but no results, then the No Results view is shown.
+	# If there are constraints and results, then the Search Results view is shown. -%>
+<%-%>
+<% current_page "Search" -%>
+<%# for preloading the hover images so there is no flashing. -%>
+<%= image_tag("#{SKIN}/lvl2_new_search_rl.jpg", {alt: '', style: 'display:none;'}) %>
+<%= image_tag("#{SKIN}/lvl2_result_row_button_rl.jpg", {alt: '', style: 'display:none;'}) %>
+<%= image_tag("#{SKIN}/free_culture_hover.gif", {alt: '', style: 'display:none;'}) %>
+<%= image_tag("#{SKIN}/full_text_hover.gif", {alt: '', style: 'display:none;'}) %>
+<%= image_tag("#{SKIN}/has_xml_source_hover.gif", {alt: '', style: 'display:none;'}) %>
+
+<% if session[:use_test_index] == "true" -%>
+	<div class="right_column_header">USING TEST INDEX</div>
+<% end -%>
+<div class="inner_content_container">
+	<% if Rails.env == 'development' && @message != nil -%>
+		<div class="search_error_message"><%= raw(h(@message).gsub("\n", "<br .>")) %></div>
+	<% end # if development   -%>
+	<div class="left_column">
+		<%= render(:partial => 'add_constraint_form') %>
+		<div class="has-results" style="display:none;">
+			<div class="page_header">
+				<button class="new_search">New Search</button>
+				Search Query
+				<span id="saved_search_name_span" class="not-empty"><%= render :partial => 'search/show_saved_search' %></span>
+			</div>
+			<% if !user_signed_in? -%>
+				<div class="not-empty">(<%= sign_in_link({:class => 'nav_link'}) %>
+					or <%= sign_up_link({:class => 'nav_link'}) %> to save these results)
+				</div>
+			<% end -%>
+
+			<table class="query search-form">
+			</table>
+			<div class="not-empty" style="display:none;">
+				<%= render(:partial => 'list_name_facet_min') %>
+			</div>
+			<div class="no_results_msg" style="display:none;">
+				<p>No <%= Setup.site_name() %> objects fit your
+					constraints. <%= create_facet_link('Remove Last Constraint.', '/search/remove_constraint', {:index => "#{session[:constraints].size-1}"}) %></p>
+				<img src="<%= image_path(LARGE_THUMBNAIL_IMAGE_PATH) %>" alt=""/>
+			</div>
+
+			<div class="not-empty" style="display:none;">
+				<%= render :partial => 'results/results_with_all_functionality', :locals => {:mode => :both, :title => raw("<span id='search_result_count'>Search Results ()</span>"), :results => [], :page => 1, :num_pages => 1, :controller => 'collex', :action => 'browse'} %>
+			</div>
+		</div>
+	</div>
+	<%= render(:partial => 'search_sidebar') %>
+	<div class="clear_both"></div>
+</div>

@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
 
 	function changePage(url) {
 		// If the url is the same as the current URL, the history won't actually trigger a page change, so don't do anything.
-		var currentLocation = "/search?" +window.location.search;
+		var currentLocation = "/search" +window.location.search;
 		if (url === currentLocation)
 			return;
 		showProgress();
@@ -231,5 +231,14 @@ jQuery(document).ready(function($) {
 		delete existingQuery.page;
 		changePage("/search?" + makeQueryString(existingQuery));
 	});
+
+	function initializeSearch() {
+		// This is called on initial page load.
+		if (window.collex && window.collex.pageName === 'search') {
+			showProgress();
+			setTimeout(doSearch, 10);	// allow the progress spinner to appear.
+		}
+	}
+	initializeSearch();
 });
 

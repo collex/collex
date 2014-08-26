@@ -17,6 +17,7 @@
 <%# parameter: results hits[]; int user_id; -%>
 <script type="text/javascript">
   window.collex = {
+	  pageName: '<%= @site_section %>',
 	  currentUserId: '<%= get_curr_user_id %>',
 	  isAdmin: <%= is_admin? %>,
 	  hasTypewright: <%= COLLEX_PLUGINS['typewright'].present? %>,
@@ -48,13 +49,6 @@
 <% end # if user_id -%>
 
 <div class="search-results">
-  <% hits.each_with_index do |hit,index| -%>
-	<div class="clear_both"></div>
-	<hr class="search_results_hr" />
-	<div id="search_result_<%= index %>">
-		<%= render :partial => 'results/result_row', :locals => { :index => index, :hit => hit } %>
-	</div>
-<% end -%>
 <% if @script == 'doCollect' %>
 	<script type="text/javascript">
 		doCollect("/results/result_row", '<%= @uri %>' , <%= @row_num %> , '<%= @row_id %>', true);

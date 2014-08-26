@@ -589,7 +589,7 @@ jQuery(document).ready(function($) {
 						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(key)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, value) +
 						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot()) +
-						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, value)));
+						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, values[i])));
 				}
 			}
 		}
@@ -597,11 +597,43 @@ jQuery(document).ready(function($) {
 		return table.html(html);
 	}
 
+	function isEmptyObject(obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function showResultSections(obj) {
+		if (isEmptyObject(obj.query)) {
+			// this is a blank page, with no search.
+			$(".has-results").hide();
+			$(".add_constraint_form").show();
+		} else {
+			$(".add_constraint_form").hide();
+			$(".has-results").show();
+			if (obj.hits.length === 0) {
+				// there was a search, but there were no results.
+				$(".not-empty").hide();
+				$(".no_results_msg").show();
+			} else {
+				// there was a search, and it returned some results.
+				$(".not-empty").show();
+				$(".no_results_msg").hide();
+			}
+		}
+	}
+
+	// has-results add_constraint_form not-empty no_results_msg
 	body.bind('RedrawSearchResults', function(ev, obj) {
 		if (!obj || !obj.hits || !obj.facets || !obj.query) {
 			window.console.log("error redrawing search results", obj);
 			return;
 		}
+
+		showResultSections(obj);
 
 		var html = "";
 		for (var i = 0; i < obj.hits.length; i++) {

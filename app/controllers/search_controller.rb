@@ -15,7 +15,6 @@
 ##########################################################################
 
 class SearchController < ApplicationController
-   layout 'nines'
    #before_filter :authorize, :only => [:collect, :save_search, :remove_saved_search]
    before_filter :init_view_options
    def initialize
@@ -25,93 +24,100 @@ class SearchController < ApplicationController
 	# /search
 	# /search.json
 	def index
-		items_per_page = 30
-		page = params[:page].present? ? params[:page] : 1
-		sort_param = params[:srt].present? ? params[:srt] : nil
-		sort_ascending = params[:dir].present? ? params[:dir] == 'asc' : true
-		constraints = []
-		legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
+		# When this is called as html, it just creates the blank search page and it will send back and ajax call for the search.
+		# When this is called as json, it does the search.
+		respond_to do |format|
+			format.html {
+				render "index", { layout: 'application' } # TODO-PER: Why does the layout have to be expressly defined?
+			}
+			format.json {
+				items_per_page = 30
+				page = params[:page].present? ? params[:page] : 1
+				sort_param = params[:srt].present? ? params[:srt] : nil
+				sort_ascending = params[:dir].present? ? params[:dir] == 'asc' : true
+				constraints = []
+				legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
 
-		# elsif constraint['type'] == 'ExpressionConstraint'
-		# 	q = format_constraint(q, strip_non_alpha(constraint), 'q')
-		# elsif constraint['type'] == 'FreeCultureConstraint'
-		# 	o = format_constraint(o, constraint, 'o', 'freeculture')
-		# elsif constraint['type'] == 'FullTextConstraint'
-		# 	o = format_constraint(o, constraint, 'o', 'fulltext')
-		# elsif constraint['type'] == 'TypeWrightConstraint'
-		# 	o = format_constraint(o, constraint, 'o', 'typewright')
-		# 	elsif constraint['fieldx'] == 'title'
-		# 		t = format_constraint(t, strip_non_alpha(constraint), 't')
-		# 	elsif constraint['fieldx'] == 'author'
-		# 		aut = format_constraint(aut, strip_non_alpha(constraint), 'aut')
-		# 	elsif constraint['fieldx'] == 'editor'
-		# 		ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
-		# 	elsif constraint['fieldx'] == 'publisher'
-		# 		pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
-		# 	elsif constraint['fieldx'] == 'r_art'
-		# 		r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
-		# 	elsif constraint['fieldx'] == 'r_own'
-		# 		r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
+				# TODO-PER: Do we need to do the following preprocessing?
+				# elsif constraint['type'] == 'ExpressionConstraint'
+				# 	q = format_constraint(q, strip_non_alpha(constraint), 'q')
+				# elsif constraint['type'] == 'FreeCultureConstraint'
+				# 	o = format_constraint(o, constraint, 'o', 'freeculture')
+				# elsif constraint['type'] == 'FullTextConstraint'
+				# 	o = format_constraint(o, constraint, 'o', 'fulltext')
+				# elsif constraint['type'] == 'TypeWrightConstraint'
+				# 	o = format_constraint(o, constraint, 'o', 'typewright')
+				# 	elsif constraint['fieldx'] == 'title'
+				# 		t = format_constraint(t, strip_non_alpha(constraint), 't')
+				# 	elsif constraint['fieldx'] == 'author'
+				# 		aut = format_constraint(aut, strip_non_alpha(constraint), 'aut')
+				# 	elsif constraint['fieldx'] == 'editor'
+				# 		ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
+				# 	elsif constraint['fieldx'] == 'publisher'
+				# 		pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
+				# 	elsif constraint['fieldx'] == 'r_art'
+				# 		r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
+				# 	elsif constraint['fieldx'] == 'r_own'
+				# 		r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
 
-		params.each { |key, val|
-			if legal_constraints.include?(key)
-				constraints.push({ key: key, val: val })
-			end
-		}
-		@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
-		@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+				params.each { |key, val|
+					if legal_constraints.include?(key)
+						constraints.push({ key: key, val: val })
+					end
+				}
+				@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
+				@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
 
-		# process all the returned hits to insert all non-solr info
-		all_uris = []
-		@results['hits'].each { |hit|
-			# make a list of all uris so that we can find the collected ones and any annotations
-			all_uris.push("'" + hit['uri'] + "'")
+				# process all the returned hits to insert all non-solr info
+				all_uris = []
+				@results['hits'].each { |hit|
+					# make a list of all uris so that we can find the collected ones and any annotations
+					all_uris.push("'" + hit['uri'] + "'")
 
-			# Add the highlighting to the hit object so that a result is completely contained inside the hit object
-			if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
-				t = @results["highlighting"][hit["uri"]].to_s.strip()
-				# We want to escape everything except the bolding so that random control chars can't mess up the display
-				t = h(t.gsub('&', 'AmPeRsAnD'))
-				hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
-			end
+					# Add the highlighting to the hit object so that a result is completely contained inside the hit object
+					if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
+						t = @results["highlighting"][hit["uri"]].to_s.strip()
+						# We want to escape everything except the bolding so that random control chars can't mess up the display
+						t = h(t.gsub('&', 'AmPeRsAnD'))
+						hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
+					end
 
-		}
-		@results['page_size'] = items_per_page
+				}
+				@results['page_size'] = items_per_page
 
-		@results['collected'] = {}
-		if user_signed_in? && all_uris.length > 0
-			collected_items = CollectedItem.items_in_uri_list(get_curr_user_id(), all_uris)
-			collected_items.each { |uri, item|
-				@results['collected'][uri] = item[:updated_at]
-				if item[:annotation].present?
-					@results['hits'].each { |hit|
-						if hit['uri'] == uri
-							hit['annotation'] = view_context.decode_exhibit_links(item[:annotation])
+				@results['collected'] = {}
+				if user_signed_in? && all_uris.length > 0
+					collected_items = CollectedItem.items_in_uri_list(get_curr_user_id(), all_uris)
+					collected_items.each { |uri, item|
+						@results['collected'][uri] = item[:updated_at]
+						if item[:annotation].present?
+							@results['hits'].each { |hit|
+								if hit['uri'] == uri
+									hit['annotation'] = view_context.decode_exhibit_links(item[:annotation])
+								end
+							}
 						end
 					}
 				end
+
+				if all_uris.length > 0
+					tags = Tag.items_in_uri_list(all_uris)
+					tags.each { |uri, name|
+						@results['hits'].each { |hit|
+							hit['tags'] = name if hit['uri'] == uri
+						}
+					}
+				end
+
+				# This fixes the format of the access facet.
+				@results['facets']['access'] = {}
+				@results['facets']['access']['freeculture'] = @results['facets']['freeculture']['true'] if @results['facets']['freeculture'].present? && @results['facets']['freeculture']['true'].present?
+				@results['facets']['access']['fulltext'] = @results['facets']['has_full_text']['true'] if @results['facets']['has_full_text'].present? && @results['facets']['has_full_text']['true'].present?
+				@results['facets']['access']['ocr'] = @results['facets']['ocr']['true'] if @results['facets']['ocr'].present? && @results['facets']['ocr']['true'].present?
+				@results['facets']['access']['typewright'] = @results['facets']['typewright']['true'] if @results['facets']['typewright'].present? && @results['facets']['typewright']['true'].present?
+
+				render :json => @results
 			}
-		end
-
-		if all_uris.length > 0
-			tags = Tag.items_in_uri_list(all_uris)
-			tags.each { |uri, name|
-				@results['hits'].each { |hit|
-					hit['tags'] = name if hit['uri'] == uri
-				}
-			}
-		end
-
-		# This fixes the format of the access facet.
-		@results['facets']['access'] = {}
-		@results['facets']['access']['freeculture'] = @results['facets']['freeculture']['true'] if @results['facets']['freeculture'].present? && @results['facets']['freeculture']['true'].present?
-		@results['facets']['access']['fulltext'] = @results['facets']['has_full_text']['true'] if @results['facets']['has_full_text'].present? && @results['facets']['has_full_text']['true'].present?
-		@results['facets']['access']['ocr'] = @results['facets']['ocr']['true'] if @results['facets']['ocr'].present? && @results['facets']['ocr']['true'].present?
-		@results['facets']['access']['typewright'] = @results['facets']['typewright']['true'] if @results['facets']['typewright'].present? && @results['facets']['typewright']['true'].present?
-
-		respond_to do |format|
-			format.html { redirect_to :action => 'browse' } # TODO-PER: eventually just draw it with this: index.html.erb
-			format.json { render :json => @results }
 		end
 	end
 
@@ -123,7 +129,9 @@ class SearchController < ApplicationController
 	 @archives = @solr.get_resource_tree()
 	 #archives = archives.map { |archive|
 	 #}
-     return true
+	 @other_federations = []
+	 session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() } if session[:federations]
+	 return true
    end
    public
 
@@ -610,11 +618,8 @@ class SearchController < ApplicationController
 			@typewright_count = 0
 			@typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
 			@all_federations = 'Search all federations'
-			@other_federations = []
-			session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() } if session[:federations]
 			@listed_constraints = marshall_listed_constraints()
 
-		      render :layout => 'nines'	#TODO-PER: Why is the layout not working unless it is defined explicitly here?
 			#render :action => 'results'
 		end
 	end
