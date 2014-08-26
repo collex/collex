@@ -65,8 +65,13 @@ class SearchController < ApplicationController
 						constraints.push({ key: key, val: val })
 					end
 				}
-				@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
-				@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+				begin
+					@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
+					@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+				rescue Catalog::Error => e
+					@results = rescue_search_error(e)
+					@message = e.message
+				end
 
 				# process all the returned hits to insert all non-solr info
 				all_uris = []
@@ -122,13 +127,25 @@ class SearchController < ApplicationController
 	end
 
    private
+   def set_archive_toggle_state(archives)
+	   archives.each { |archive|
+		   if archive['children'].present?
+			   if session[:resource_toggle]["#{archive['id']}"].present? && session[:resource_toggle]["#{archive['id']}"] = :open
+				   archive['toggle'] = 'open'
+			   else
+				   archive['toggle'] = 'close'
+			   end
+			   set_archive_toggle_state(archive['children'])
+		   end
+	   }
+   end
+
    def init_view_options
      @site_section = :search
 	 @solr = Catalog.factory_create(session[:use_test_index] == "true")
 	 session[:constraints] ||= new_constraints_obj()
 	 @archives = @solr.get_resource_tree()
-	 #archives = archives.map { |archive|
-	 #}
+	 set_archive_toggle_state(@archives)
 	 @other_federations = []
 	 session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() } if session[:federations]
 	 return true
@@ -141,14 +158,14 @@ class SearchController < ApplicationController
    # the TypeWright tab. Note that all prior constrains are wiped out to
    # ensure a fresh set of results
    #
-   def add_tw_constraint
-    if params[:search_phrase]
-      clear_constraints()
-      session[:constraints] << TypeWrightConstraint.new(:inverted => false )
-      parse_keyword_phrase( params[:search_phrase], false)
-    end
-    redirect_to :action => 'browse'
-   end
+   # def add_tw_constraint
+   #  if params[:search_phrase]
+   #    clear_constraints()
+   #    session[:constraints] << TypeWrightConstraint.new(:inverted => false )
+   #    parse_keyword_phrase( params[:search_phrase], false)
+   #  end
+   #  redirect_to :action => 'browse'
+   # end
 
    def add_constraint
      session[:name_of_search] = nil
@@ -248,64 +265,64 @@ class SearchController < ApplicationController
       redirect_to :action => 'browse'
    end
 
-	def add_federation_constraint
-		session[:name_of_search] = nil
-		constraints = params[:federation]
-		is_checked = params[:checked]
-		session[:constraints] = [] if session[:constraints] == nil
-
-		idx = -1
-		has_fed = false
-		session[:constraints].each_with_index { |constraint, i|
-			idx = i if constraint.is_a?(FederationConstraint) && constraint.value == constraints
-			has_fed = true if constraint.is_a?(FederationConstraint)
-		}
-		if is_checked == 'true'
-			if constraints == 'search_federation'
-				session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
-			elsif idx < 0	# If it is already set, then ignore it.
-				session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
-			end
-		else
-			if constraints == 'search_federation'
-				session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
-				session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false)
-			elsif idx >= 0	# If it already doesn't exist, then ignore it,
-				session[:constraints].delete_at(idx)
-			elsif !has_fed # unless there are no federation constraints
-				if !session['federations'].blank?
-					session['federations'].each { |key,val|
-						if key != constraints
-							session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => key, :inverted => false)
-						end
-					}
-				end
-			end
-		end
-
-		# Now, normalize the constraints: if all of them have been specified, delete them all.
-		count = 0
-		session[:constraints].each_with_index { |constraint, i|
-			idx = i if constraint.is_a?(FederationConstraint) && constraint.value == constraints
-			count += 1 if constraint.is_a?(FederationConstraint)
-		}
-		if !session['federations'].blank? && count == session['federations'].length
-			session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
-		end
-
-		#if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
-		#	session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
-		#end
-		red_hash = { :action => 'browse' }
-		red_hash[:phrs] = params[:phrs] if params[:phrs]
-		red_hash[:kphrs] = params[:kphrs] if params[:kphrs]
-		red_hash[:tphrs] = params[:tphrs] if params[:tphrs]
-		red_hash[:aphrs] = params[:aphrs] if params[:aphrs]
-		red_hash[:ephrs] = params[:ephrs] if params[:ephrs]
-		red_hash[:pphrs] = params[:pphrs] if params[:pphrs]
-		red_hash[:yphrs] = params[:yphrs] if params[:yphrs]
-		redirect_to red_hash
-	end
+	# def add_federation_constraint
+	# 	session[:name_of_search] = nil
+	# 	constraints = params[:federation]
+	# 	is_checked = params[:checked]
+	# 	session[:constraints] = [] if session[:constraints] == nil
+	#
+	# 	idx = -1
+	# 	has_fed = false
+	# 	session[:constraints].each_with_index { |constraint, i|
+	# 		idx = i if constraint.is_a?(FederationConstraint) && constraint.value == constraints
+	# 		has_fed = true if constraint.is_a?(FederationConstraint)
+	# 	}
+	# 	if is_checked == 'true'
+	# 		if constraints == 'search_federation'
+	# 			session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+	# 		elsif idx < 0	# If it is already set, then ignore it.
+	# 			session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
+	# 		end
+	# 	else
+	# 		if constraints == 'search_federation'
+	# 			session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+	# 			session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false)
+	# 		elsif idx >= 0	# If it already doesn't exist, then ignore it,
+	# 			session[:constraints].delete_at(idx)
+	# 		elsif !has_fed # unless there are no federation constraints
+	# 			if !session['federations'].blank?
+	# 				session['federations'].each { |key,val|
+	# 					if key != constraints
+	# 						session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => key, :inverted => false)
+	# 					end
+	# 				}
+	# 			end
+	# 		end
+	# 	end
+	#
+	# 	# Now, normalize the constraints: if all of them have been specified, delete them all.
+	# 	count = 0
+	# 	session[:constraints].each_with_index { |constraint, i|
+	# 		idx = i if constraint.is_a?(FederationConstraint) && constraint.value == constraints
+	# 		count += 1 if constraint.is_a?(FederationConstraint)
+	# 	}
+	# 	if !session['federations'].blank? && count == session['federations'].length
+	# 		session[:constraints].delete_if { |constraint| constraint.is_a?(FederationConstraint) }
+	# 	end
+	#
+	# 	#if constraints != nil	# if no federation was passed in, that means we want to change it to search all federations, so we have nothing else to do.
+	# 	#	session[:constraints] << FederationConstraint.new(:fieldx => 'federation', :value => constraints, :inverted => false)
+	# 	#end
+	# 	red_hash = { :action => 'browse' }
+	# 	red_hash[:phrs] = params[:phrs] if params[:phrs]
+	# 	red_hash[:kphrs] = params[:kphrs] if params[:kphrs]
+	# 	red_hash[:tphrs] = params[:tphrs] if params[:tphrs]
+	# 	red_hash[:aphrs] = params[:aphrs] if params[:aphrs]
+	# 	red_hash[:ephrs] = params[:ephrs] if params[:ephrs]
+	# 	red_hash[:pphrs] = params[:pphrs] if params[:pphrs]
+	# 	red_hash[:yphrs] = params[:yphrs] if params[:yphrs]
+	# 	redirect_to red_hash
+	# end
 
    private
    def parse_keyword_phrase(phrase_str, invert)
@@ -533,253 +550,253 @@ class SearchController < ApplicationController
     public
 
    # generate search results based on constraints
-	def browse
-		if params[:script]
-			session[:script] = params[:script]
-			session[:uri] = params[:uri]
-			session[:row_num] = params[:row_num]
-			session[:row_id] = params[:row_id]
-			params[:script] = nil
-			params[:uri] = nil
-			params[:row_num] = nil
-			params[:row_id] = nil
-			redirect_to params
-		else
-			if session[:script]
-				@script = session[:script]
-				@uri = session[:uri]
-				@row_num = session[:row_num]
-				@row_id = session[:row_id]
-
-				session[:script] = nil
-				session[:uri] = nil
-				session[:row_num] = nil
-				session[:row_id] = nil
-			end
-			@phrs = params[:phrs]
-			@kphrs = params[:kphrs]
-			@tphrs = params[:tphrs]
-			@aphrs = params[:aphrs]
-			@ephrs = params[:ephrs]
-			@pphrs = params[:pphrs]
-			@yphrs = params[:yphrs]
-			@name_facet_msg = session[:name_facet_msg]
-			session[:name_facet_msg] = nil
-
-			session[:constraints] ||= new_constraints_obj()
-			session[:search_sort_by] ||= 'Relevancy'
-			items_per_page = 30
-			#session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-
-			@page = params[:page] ? params[:page].to_i : 1
-
-			begin
-				@results = search_solr(session[:constraints], @page, items_per_page, session[:search_sort_by], session[:search_sort_by_direction])
-				# Add the highlighting to the hit object so that a result is completely contained inside the hit object
-				@results['hits'].each { |hit|
-					if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
-						hit['text'] = @results["highlighting"][hit["uri"]]
-					end
-				}
-#			rescue  Net::HTTPServerException => e
-#				@results = rescue_search_error(e)
-			rescue Catalog::Error => e
-				@results = rescue_search_error(e)
-				@message = e.message
-			end
-
-			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil
-			@total_documents = session[:num_docs] #@results["total_documents"]
-			@sites_forest = get_resource_tree()
-			# We are sorting by reverse order so that "Peer-Reviewed" comes out on top. This will probably need to get more sophisticated.
-			@sites_forest = @sites_forest.sort { |a,b| b['name'] <=> a['name'] }
-			@genre_data = marshall_genre_data(@results["facets"]["genre"])
-      @format_data = marshall_format_data(@results["facets"]["doc_type"])
-      @discipline_data = marshall_discipline_data(@results["facets"]["discipline"])
-
-      if @results['facets']['role']
-        @searchable_roles = @results['facets']['role'].keys.map { |field|
-          # map role field names to display names
-          # example ['role_AUT', 'Author']
-	        hash = Search.role_field_names[field]
-          [hash[:search_field], hash[:display]] if hash.present?
-        }
-        @searchable_roles.compact!
-      else
-        @searchable_roles = [];
-      end
-
-			@citation_count = @results['facets']['genre']['Citation'] || 0
-			@freeculture_count = 0
-			@freeculture_count = @results['facets']['freeculture']['true'] if @results && @results['facets'] && @results['facets']['freeculture'] && @results['facets']['freeculture']['true']
-#			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
-			@fulltext_count = 0
-			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
-			@typewright_count = 0
-			@typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
-			@all_federations = 'Search all federations'
-			@listed_constraints = marshall_listed_constraints()
-
-			#render :action => 'results'
-		end
-	end
+# 	def browse
+# 		if params[:script]
+# 			session[:script] = params[:script]
+# 			session[:uri] = params[:uri]
+# 			session[:row_num] = params[:row_num]
+# 			session[:row_id] = params[:row_id]
+# 			params[:script] = nil
+# 			params[:uri] = nil
+# 			params[:row_num] = nil
+# 			params[:row_id] = nil
+# 			redirect_to params
+# 		else
+# 			if session[:script]
+# 				@script = session[:script]
+# 				@uri = session[:uri]
+# 				@row_num = session[:row_num]
+# 				@row_id = session[:row_id]
+#
+# 				session[:script] = nil
+# 				session[:uri] = nil
+# 				session[:row_num] = nil
+# 				session[:row_id] = nil
+# 			end
+# 			@phrs = params[:phrs]
+# 			@kphrs = params[:kphrs]
+# 			@tphrs = params[:tphrs]
+# 			@aphrs = params[:aphrs]
+# 			@ephrs = params[:ephrs]
+# 			@pphrs = params[:pphrs]
+# 			@yphrs = params[:yphrs]
+# 			@name_facet_msg = session[:name_facet_msg]
+# 			session[:name_facet_msg] = nil
+#
+# 			session[:constraints] ||= new_constraints_obj()
+# 			session[:search_sort_by] ||= 'Relevancy'
+# 			items_per_page = 30
+# 			#session[:selected_resource_facets] ||= FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
+#
+# 			@page = params[:page] ? params[:page].to_i : 1
+#
+# 			begin
+# 				@results = search_solr(session[:constraints], @page, items_per_page, session[:search_sort_by], session[:search_sort_by_direction])
+# 				# Add the highlighting to the hit object so that a result is completely contained inside the hit object
+# 				@results['hits'].each { |hit|
+# 					if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
+# 						hit['text'] = @results["highlighting"][hit["uri"]]
+# 					end
+# 				}
+# #			rescue  Net::HTTPServerException => e
+# #				@results = rescue_search_error(e)
+# 			rescue Catalog::Error => e
+# 				@results = rescue_search_error(e)
+# 				@message = e.message
+# 			end
+#
+# 			@num_pages = @results["total_hits"].to_i.quo(items_per_page).ceil
+# 			@total_documents = session[:num_docs] #@results["total_documents"]
+# 			@sites_forest = get_resource_tree()
+# 			# We are sorting by reverse order so that "Peer-Reviewed" comes out on top. This will probably need to get more sophisticated.
+# 			@sites_forest = @sites_forest.sort { |a,b| b['name'] <=> a['name'] }
+# 			@genre_data = marshall_genre_data(@results["facets"]["genre"])
+#       @format_data = marshall_format_data(@results["facets"]["doc_type"])
+#       @discipline_data = marshall_discipline_data(@results["facets"]["discipline"])
+#
+#       if @results['facets']['role']
+#         @searchable_roles = @results['facets']['role'].keys.map { |field|
+#           # map role field names to display names
+#           # example ['role_AUT', 'Author']
+# 	        hash = Search.role_field_names[field]
+#           [hash[:search_field], hash[:display]] if hash.present?
+#         }
+#         @searchable_roles.compact!
+#       else
+#         @searchable_roles = [];
+#       end
+#
+# 			@citation_count = @results['facets']['genre']['Citation'] || 0
+# 			@freeculture_count = 0
+# 			@freeculture_count = @results['facets']['freeculture']['true'] if @results && @results['facets'] && @results['facets']['freeculture'] && @results['facets']['freeculture']['true']
+# #			@freeculture_count = @results['facets']['freeculture']['<unspecified>'] || 0
+# 			@fulltext_count = 0
+# 			@fulltext_count = @results['facets']['has_full_text']['true'] if @results && @results['facets'] && @results['facets']['has_full_text'] && @results['facets']['has_full_text']['true']
+# 			@typewright_count = 0
+# 			@typewright_count = @results['facets']['typewright']['true'] if @results && @results['facets'] && @results['facets']['typewright'] && @results['facets']['typewright']['true']
+# 			@all_federations = 'Search all federations'
+# 			@listed_constraints = marshall_listed_constraints()
+#
+# 			#render :action => 'results'
+# 		end
+# 	end
 
 	 #adjust the sort order
-  def sort_by
-    session[:name_of_search] = nil
-		if params['search'] && params['search']['result_sort']
-      sort_param = params['search']['result_sort']
-			session[:search_sort_by] = sort_param
-		end
-		if params['search'] && params['search']['result_sort_direction']
-      sort_param = params['search']['result_sort_direction']
-			session[:search_sort_by_direction] = sort_param
-		end
-      redirect_to :action => 'browse', :phrs => params[:phrs]
-	end
+  # def sort_by
+  #   session[:name_of_search] = nil
+	# 	if params['search'] && params['search']['result_sort']
+  #     sort_param = params['search']['result_sort']
+	# 		session[:search_sort_by] = sort_param
+	# 	end
+	# 	if params['search'] && params['search']['result_sort_direction']
+  #     sort_param = params['search']['result_sort_direction']
+	# 		session[:search_sort_by_direction] = sort_param
+	# 	end
+  #     redirect_to :action => 'browse', :phrs => params[:phrs]
+	# end
 
    # constrain search to only return free culture objects
-   def constrain_freeculture
-     session[:name_of_search] = nil
-     if params[:remove] == 'true'
-       session[:constraints].each {|constraint|
-         if constraint[:type] == 'FreeCultureConstraint'
-           session[:constraints].delete(constraint)
-           break
-         end
-       }
-     else
-       session[:constraints] << FreeCultureConstraint.new(:inverted => false )
-     end
-
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def constrain_freeculture
+   #   session[:name_of_search] = nil
+   #   if params[:remove] == 'true'
+   #     session[:constraints].each {|constraint|
+   #       if constraint[:type] == 'FreeCultureConstraint'
+   #         session[:constraints].delete(constraint)
+   #         break
+   #       end
+   #     }
+   #   else
+   #     session[:constraints] << FreeCultureConstraint.new(:inverted => false )
+   #   end
+   #
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
    # constrain search to only return free culture objects
-   def constrain_fulltext
-     session[:name_of_search] = nil
-     if params[:remove] == 'true'
-       session[:constraints].each {|constraint|
-         if constraint[:type] == 'FullTextConstraint'
-           session[:constraints].delete(constraint)
-           break
-         end
-       }
-     else
-       session[:constraints] << FullTextConstraint.new(:inverted => false )
-     end
-
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def constrain_fulltext
+   #   session[:name_of_search] = nil
+   #   if params[:remove] == 'true'
+   #     session[:constraints].each {|constraint|
+   #       if constraint[:type] == 'FullTextConstraint'
+   #         session[:constraints].delete(constraint)
+   #         break
+   #       end
+   #     }
+   #   else
+   #     session[:constraints] << FullTextConstraint.new(:inverted => false )
+   #   end
+   #
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
    # constrain search to only return typewright objects
-   def constrain_typewright
-     session[:name_of_search] = nil
-     if params[:remove] == 'true'
-       session[:constraints].each {|constraint|
-         if constraint[:type] == 'TypeWrightConstraint'
-           session[:constraints].delete(constraint)
-           break
-         end
-       }
-     else
-       session[:constraints] << TypeWrightConstraint.new(:inverted => false )
-     end
-
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def constrain_typewright
+   #   session[:name_of_search] = nil
+   #   if params[:remove] == 'true'
+   #     session[:constraints].each {|constraint|
+   #       if constraint[:type] == 'TypeWrightConstraint'
+   #         session[:constraints].delete(constraint)
+   #         break
+   #       end
+   #     }
+   #   else
+   #     session[:constraints] << TypeWrightConstraint.new(:inverted => false )
+   #   end
+   #
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
    # constrains the search by the specified resources
-   def constrain_resource
-     session[:name_of_search] = nil
-     resource = params[:resource]
-     if params[:remove] == 'true'
-       session[:constraints].each {|constraint|
-         if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource
-           session[:constraints].delete(constraint)
-           break
-         end
-       }
-     else
-       # Delete any previous resource constraint
-       session[:constraints].each {|constraint|
-         if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint'
-           session[:constraints].delete(constraint)
-           break
-         end
-       }
-       session[:constraints] << FacetConstraint.new( :fieldx => 'archive', :value => resource, :inverted => false )
-     end
+   # def constrain_resource
+   #   session[:name_of_search] = nil
+   #   resource = params[:resource]
+   #   if params[:remove] == 'true'
+   #     session[:constraints].each {|constraint|
+   #       if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource
+   #         session[:constraints].delete(constraint)
+   #         break
+   #       end
+   #     }
+   #   else
+   #     # Delete any previous resource constraint
+   #     session[:constraints].each {|constraint|
+   #       if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint'
+   #         session[:constraints].delete(constraint)
+   #         break
+   #       end
+   #     }
+   #     session[:constraints] << FacetConstraint.new( :fieldx => 'archive', :value => resource, :inverted => false )
+   #   end
+   #
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def add_facet
+   #   session[:name_of_search] = nil
+   #   if params[:fieldx] and params[:value]
+   #     session[:constraints] << FacetConstraint.new(:fieldx => params[:fieldx], :value => params[:value], :inverted => params[:invert] ? true : false)
+   #   end
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
-   def add_facet
-     session[:name_of_search] = nil
-     if params[:fieldx] and params[:value]
-       session[:constraints] << FacetConstraint.new(:fieldx => params[:fieldx], :value => params[:value], :inverted => params[:invert] ? true : false)
-     end
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def remove_facet
+   #   session[:name_of_search] = nil
+   #   for item in session[:constraints]
+   #     if item[:fieldx] == params[:fieldx] && item[:value] == params[:value]
+   #       session[:constraints].delete(item)
+   #     end
+   #    end
+   #  redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
-   def remove_facet
-     session[:name_of_search] = nil
-     for item in session[:constraints]
-       if item[:fieldx] == params[:fieldx] && item[:value] == params[:value]
-         session[:constraints].delete(item)
-       end
-      end
-    redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+  # def remove_genre
+  #    session[:name_of_search] = nil
+  #   for item in session[:constraints]
+  #     if item[:fieldx] == 'genre' && item[:value] == params[:value]
+  #       session[:constraints].delete(item)
+  #     end
+  #   end
+  #   redirect_to :action => 'browse', :phrs => params[:phrs]
+  # end
 
-  def remove_genre
-     session[:name_of_search] = nil
-    for item in session[:constraints]
-      if item[:fieldx] == 'genre' && item[:value] == params[:value]
-        session[:constraints].delete(item)
-      end
-    end
-    redirect_to :action => 'browse', :phrs => params[:phrs]
-  end
+   # def remove_discipline
+   #   session[:name_of_search] = nil
+   #   for item in session[:constraints]
+   #     if item[:fieldx] == 'discipline' && item[:value] == params[:value]
+   #       session[:constraints].delete(item)
+   #     end
+   #   end
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
-   def remove_discipline
-     session[:name_of_search] = nil
-     for item in session[:constraints]
-       if item[:fieldx] == 'discipline' && item[:value] == params[:value]
-         session[:constraints].delete(item)
-       end
-     end
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def remove_format
+   #   session[:name_of_search] = nil
+   #   for item in session[:constraints]
+   #     if item[:fieldx] == 'doc_type' && item[:value] == params[:value]
+   #       session[:constraints].delete(item)
+   #     end
+   #   end
+   #   redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
-   def remove_format
-     session[:name_of_search] = nil
-     for item in session[:constraints]
-       if item[:fieldx] == 'doc_type' && item[:value] == params[:value]
-         session[:constraints].delete(item)
-       end
-     end
-     redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def remove_constraint
+   #   session[:name_of_search] = nil
+   #    idx = params[:index].to_i
+   #    if session[:constraints] && idx < session[:constraints].size
+   #      session[:constraints].delete_at idx
+   #    end
+   #    redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
-   def remove_constraint
-     session[:name_of_search] = nil
-      idx = params[:index].to_i
-      if session[:constraints] && idx < session[:constraints].size
-        session[:constraints].delete_at idx
-      end
-      redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
-
-   def invert_constraint
-     session[:name_of_search] = nil
-      idx = params[:index].to_i
-      if session[:constraints] && idx < session[:constraints].size
-        constraint = session[:constraints][idx]
-        constraint.inverted = !constraint.inverted
-      end
-      redirect_to :action => 'browse', :phrs => params[:phrs]
-   end
+   # def invert_constraint
+   #   session[:name_of_search] = nil
+   #    idx = params[:index].to_i
+   #    if session[:constraints] && idx < session[:constraints].size
+   #      constraint = session[:constraints][idx]
+   #      constraint.inverted = !constraint.inverted
+   #    end
+   #    redirect_to :action => 'browse', :phrs => params[:phrs]
+   # end
 
     # def new_search
     #   clear_constraints()
