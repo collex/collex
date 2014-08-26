@@ -28,7 +28,7 @@ class SearchController < ApplicationController
 		items_per_page = 30
 		page = params[:page].present? ? params[:page] : 1
 		sort_param = params[:srt].present? ? params[:srt] : nil
-		sort_ascending = params[:dir].present? ? params[:dir] : 'Ascending'
+		sort_ascending = params[:dir].present? ? params[:dir] == 'asc' : true
 		constraints = []
 		legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
 
@@ -93,12 +93,14 @@ class SearchController < ApplicationController
 			}
 		end
 
-		tags = Tag.items_in_uri_list(all_uris)
-		tags.each { |uri,name|
-			@results['hits'].each { |hit|
-				hit['tags'] = name if hit['uri'] == uri
+		if all_uris.length > 0
+			tags = Tag.items_in_uri_list(all_uris)
+			tags.each { |uri, name|
+				@results['hits'].each { |hit|
+					hit['tags'] = name if hit['uri'] == uri
+				}
 			}
-		}
+		end
 
 		# This fixes the format of the access facet.
 		@results['facets']['access'] = {}

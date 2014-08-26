@@ -124,6 +124,21 @@ hr.search_results_hr {
 	font-size:0.9em;
 }
 
+	.sort {
+		float:right;
+		font-size:0.9em;
+	}
+
+	button.query_add {
+		font-size: 11px;
+		padding: 4px;
+	}
+
+	button.trash {
+		border: none;
+		background: transparent;
+	}
+
 .result_row_img {
 	text-align: center;
 }

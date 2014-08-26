@@ -155,10 +155,18 @@ jQuery(document).ready(function($) {
 		return "/search?" + makeQueryString(existingQuery);
 	}
 
-	body.on("click", ".new_search", function () {
+	function changePage(url) {
+		// If the url is the same as the current URL, the history won't actually trigger a page change, so don't do anything.
+		var currentLocation = "/search?" +window.location.search;
+		if (url === currentLocation)
+			return;
 		showProgress();
 		var pageTitle = document.title; // For now, don't change the page title depending on the search.
-		History.pushState(null, pageTitle, "/search");
+		History.pushState(null, pageTitle, url);
+	}
+
+	body.on("click", ".new_search", function () {
+		changePage("/search");
 	});
 
 	body.on("click", ".select-facet", function () {
@@ -168,10 +176,35 @@ jQuery(document).ready(function($) {
 		//newQueryValue = encodeURIComponent(newQueryValue);
 		var action = el.attr("data-action");
 		var url = createNewUrl(newQueryKey, newQueryValue, action);
-		showProgress();
-		var pageTitle = document.title; // For now, don't change the page title depending on the search.
-		History.pushState(null, pageTitle, url);
+		changePage(url);
 	});
+
+	body.on("change", ".sort select", function () {
+		var el = $(this);
+		var newQueryKey = el.attr("name");
+		var newQueryValue = el.val();
+		if (newQueryKey === 'srt') {
+			if (newQueryValue === 'rel') {
+				$(".sort select[name='dir']").hide();
+				newQueryValue = '';
+			} else
+				$(".sort select[name='dir']").show();
+		}
+		var url = createNewUrl(newQueryKey, newQueryValue, "replace");
+		changePage(url);
+	});
+
+	body.on("click", ".query_add", function () {
+		var el = $(this);
+		var parent = el.closest('tr');
+		var type = parent.find(".query_type_select").val();
+		var term = parent.find(".query_term input").val();
+		var not = parent.find(".query_and-not_select").val();
+		// TODO-PER: do NOT
+		var url = createNewUrl(type, term, "add");
+		changePage(url);
+	});
+
 
 	body.on("change", ".limit_to_federation input", function() {
 		var feds = $(".limit_to_federation input");
@@ -196,9 +229,7 @@ jQuery(document).ready(function($) {
 			existingQuery.f = checkedFeds;
 		}
 		delete existingQuery.page;
-		showProgress();
-		var pageTitle = document.title; // For now, don't change the page title depending on the search.
-		History.pushState(null, pageTitle, "/search?" + makeQueryString(existingQuery));
+		changePage("/search?" + makeQueryString(existingQuery));
 	});
 });
 

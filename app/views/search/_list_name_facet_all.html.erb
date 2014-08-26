@@ -37,9 +37,9 @@
 		<% max = 5 if max > 5 -%>
 		<% 0.upto(max-1) do |i| -%>
 		<tr>
-			<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %><%= format_no_name_message(i, @name_facets['role_AUT'].length) %></td>
-			<td><%= format_name_facet(@name_facets['role_EDT'][i], 'Editor') if @name_facets['role_EDT'].length > i %><%= format_no_name_message(i, @name_facets['role_EDT'].length) %></td>
-			<td><%= format_name_facet(@name_facets['role_PBL'][i], 'Publisher') if @name_facets['role_PBL'].length > i %><%= format_no_name_message(i, @name_facets['role_PBL'].length) %></td>
+			<td><%= format_name_facet(@name_facets['role_AUT'][i], 'aut') if @name_facets['role_AUT'].length > i %><%= format_no_name_message(i, @name_facets['role_AUT'].length) %></td>
+			<td><%= format_name_facet(@name_facets['role_EDT'][i], 'ed') if @name_facets['role_EDT'].length > i %><%= format_no_name_message(i, @name_facets['role_EDT'].length) %></td>
+			<td><%= format_name_facet(@name_facets['role_PBL'][i], 'pub') if @name_facets['role_PBL'].length > i %><%= format_no_name_message(i, @name_facets['role_PBL'].length) %></td>
 		</tr>
 		<% end -%>
 	</table>
@@ -62,9 +62,9 @@
 			<% max = @name_facets['role_PBL'].length if @name_facets['role_PBL'].length > max -%>
 			<% 0.upto(max-1) do |i| -%>
 			<tr>
-				<td><%= format_name_facet(@name_facets['role_AUT'][i], 'Author') if @name_facets['role_AUT'].length > i %><%= format_no_name_message(i, @name_facets['role_AUT'].length) %></td>
-				<td><%= format_name_facet(@name_facets['role_EDT'][i], 'Editor') if @name_facets['role_EDT'].length > i %><%= format_no_name_message(i, @name_facets['role_EDT'].length) %></td>
-				<td><%= format_name_facet(@name_facets['role_PBL'][i], 'Publisher') if @name_facets['role_PBL'].length > i %><%= format_no_name_message(i, @name_facets['role_PBL'].length) %></td>
+				<td><%= format_name_facet(@name_facets['role_AUT'][i], 'aut') if @name_facets['role_AUT'].length > i %><%= format_no_name_message(i, @name_facets['role_AUT'].length) %></td>
+				<td><%= format_name_facet(@name_facets['role_EDT'][i], 'ed') if @name_facets['role_EDT'].length > i %><%= format_no_name_message(i, @name_facets['role_EDT'].length) %></td>
+				<td><%= format_name_facet(@name_facets['role_PBL'][i], 'pub') if @name_facets['role_PBL'].length > i %><%= format_no_name_message(i, @name_facets['role_PBL'].length) %></td>
 			</tr>
 			<% end -%>
 		</tbody></table>

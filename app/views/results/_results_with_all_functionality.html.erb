@@ -19,7 +19,7 @@
 	<% controller = 'search'  if controller == 'collex' -%>
 	<% curr_selection = (controller == 'search' ? session[:search_sort_by] : (controller == 'tag' ? session[:tag_sort_by] : session[:collected_sort_by])) -%>
 	<% curr_selection_direction = (controller == 'search' ? session[:search_sort_by_direction] : (controller == 'tag' ? session[:tag_sort_by_direction] : session[:collected_sort_by_direction])) -%>
-	<% options = (controller == 'search' ? ["Relevancy", "Title", "Name", "Date"] : (controller == 'tag' ? ["Title", "Author", "Date", "Resource"] : ["Date Collected", "Title", "Author", "Date", "Resource"])) -%>
+	<% options = (controller == 'search' ? [["Relevancy", 'rel'], ["Title", 'title'], ["Name", 'author'], ["Date",'year']] : (controller == 'tag' ? ["Title", "Author", "Date", "Resource"] : ["Date Collected", "Title", "Author", "Date", "Resource"])) -%>
 	<%= render( :partial => 'results/sort_by', :locals => { :options => options, :curr_selection => curr_selection, :curr_selection_direction => curr_selection_direction, :controller => controller }) %>
 	<%= title %></div>
 <hr class="search_results_hr" />
