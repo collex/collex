@@ -36,11 +36,13 @@ module Typewright::OverviewsHelper
 	def tw_document_retrieval_links(document)
 		uri = document['uri'].present? ? document['uri'] : document['id']
 		html = content_tag(:div, { class: 'tw-document-retrieval'}) do
-			tw_document_retrieval_link('Corrected Gale XML', uri, 'gale', 'xml') +
+			  tw_document_retrieval_link('Corrected Gale XML', uri, 'gale', 'xml') +
+        tw_document_retrieval_link('Corrected ALTO XML', uri, 'alto', 'xml') +
 				tw_document_retrieval_link('Corrected Text', uri, 'text', 'txt') +
 				tw_document_retrieval_link('Corrected TEI-A', uri, 'tei-a', 'xml') +
 				tw_document_retrieval_link('Corrected TEI-A (words)', uri, 'tei-a-words', 'xml') +
 				tw_document_retrieval_link('Original Gale XML', uri, 'original-gale', 'xml') +
+        tw_document_retrieval_link('Original ALTO XML', uri, 'original-alto', 'xml') +
 				tw_document_retrieval_link('Original Text', uri, 'original-text', 'txt')
 		end
 	end

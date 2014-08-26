@@ -98,7 +98,7 @@ class Typewright::DocumentsController < ApplicationController
          @num_pages = doc.num_pages
          @src = params[:src].to_sym unless params[:src].nil?
          @src = :gale if @src.nil?
-         @sources = doc.ocr_sources
+         #@sources = doc.ocr_sources
          @sources = %w(gale) if @sources.nil?
 
          word_stats = is_admin?
@@ -157,7 +157,7 @@ class Typewright::DocumentsController < ApplicationController
          @is_complete = (doc.status == 'user_complete')
          @src = params[:src].to_sym unless params[:src].blank?
          @src ||= :gale
-         @sources = doc.ocr_sources
+         #@sources = doc.ocr_sources
          @sources = %w(gale) if @sources.nil?
          @uri = doc.uri
          starting_line_number = params[:line]
