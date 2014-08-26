@@ -448,9 +448,9 @@ jQuery(document).ready(function($) {
 
 	function createResourceNode(id, level, label, total, childClass) {
 		// TODO-PER: figure out how to decide whether the item starts open.
-		var open = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_category', 'data-action': "open" },
+		var open = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_arrow', 'data-action': "open" },
 			window.pss.createHtmlTag("img", { 'alt': 'Arrow Open', src: window.collex.images.arrow_open }));
-		var close = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_category', 'data-action': "close" },
+		var close = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_arrow', 'data-action': "close" },
 			window.pss.createHtmlTag("img", { 'alt': 'Arrow Close', src: window.collex.images.arrow_close }));
 		var name = window.pss.createHtmlTag("button", { 'class': 'nav_link limit_to_category', 'data-action': "toggle" }, label);
 
@@ -462,7 +462,7 @@ jQuery(document).ready(function($) {
 
 	function createResourceLeaf(id, level, label, total, handle, childClass) {
 		var left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'archive'));
-		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, total);
+		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, number_with_delimiter(total));
 		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': childClass }, left+right);
 	}
 
@@ -474,8 +474,8 @@ jQuery(document).ready(function($) {
 			if (archive.children) {
 				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id);
 				total += section.total;
-				if (total > 0) {
-					var thisNode = createResourceNode(archive.id, level, archive.name, number_with_delimiter(total), childClass);
+				if (section.total > 0) {
+					var thisNode = createResourceNode(archive.id, level, archive.name, number_with_delimiter(section.total), childClass);
 					html += thisNode + section.html;
 				}
 			} else {
@@ -488,6 +488,21 @@ jQuery(document).ready(function($) {
 		return { html: html, total: total };
 	}
 
+	function setResourceToggle(block, resources) {
+		for (var i = 0; i < resources.length; i++) {
+			var archive = resources[i];
+			if (archive.children) {
+				if (archive.toggle === 'open') {
+					block.find("#resource_" + archive.id + ' button[data-action="open"]').hide();
+				} else {
+					block.find("#resource_" + archive.id + ' button[data-action="close"]').hide();
+					block.find('.child_of_'+archive.id).hide();
+				}
+				setResourceToggle(block, archive.children);
+			}
+		}
+	}
+
 	function createResourceBlock(hash) {
 
 		var html = createResourceSection(window.collex.facetNames.archives, hash, 1, '').html;
@@ -495,6 +510,8 @@ jQuery(document).ready(function($) {
 		var block = $(".facet-archive");
 		var header = window.pss.createHtmlTag("tr", {}, block.find("tr:first-of-type").html());
 		block.html(header + html);
+		// Now close the items that need to be closed.
+		setResourceToggle(block, window.collex.facetNames.archives);
 	}
 
 	function createTotals(total) {

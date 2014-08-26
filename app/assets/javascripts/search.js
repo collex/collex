@@ -78,12 +78,12 @@ jQuery(document).ready(function($) {
 	}
 
 	function onSuccess(resp) {
+		resp.query = getUrlVars();
+		body.trigger('RedrawSearchResults', resp);
 		if (progressDlg) {
 			progressDlg.cancel();
 			progressDlg = null;
 		}
-		resp.query = getUrlVars();
-		body.trigger('RedrawSearchResults', resp);
 	}
 
 	function onError(resp) {
