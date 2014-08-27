@@ -63,43 +63,49 @@ class ResultsController < ApplicationController
   # Add tags to an item. Multiple tags can be added by using a comma to separate them. The item
   # need not be collected. Several pieces of data must be in the call params: tag_info, user and uri
   #
-  def add_tag( should_render = true)
-	  
-	  # only accept this call from a POST action
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-	  
+  private
+  def do_add_tag(params)
 	  # grab call params
-	  is_cached = CachedResource.exists( params[:uri] ) 
-    locals = setup_ajax_calls(params, is_cached)
-    tag_info = params[:tag]
-    user = locals[:user]
-    uri = locals[:uri]
-    
-    # pass them along to the tag model for addition
-    Tag.add(user, uri, tag_info)
-   
-    if should_render
-  		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-      render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
-    end
+	  is_cached = CachedResource.exists( params[:uri] )
+	  locals = setup_ajax_calls(params, is_cached)
+	  tag_info = params[:tag]
+	  user = locals[:user]
+	  uri = locals[:uri]
+
+	  # pass them along to the tag model for addition
+	  Tag.add(user, uri, tag_info)
+  end
+
+  def get_all_tags_for_object(uri)
+	  # TODO-PER: distinguish between the user's tags and other tags.
+	  tags = Tag.items_in_uri_list(["'" + uri + "'"])
+	  return tags[uri]
+  end
+
+  public
+  def add_tag
+	do_add_tag(params)
+	tags = get_all_tags_for_object(params[:uri])
+	respond_to do |format|
+		format.json {
+			render json: { my_tags: tags, other_tags: [] }
+		}
+	end
   end
   
   # Remove a tag from the uri specified resource
   #
   def remove_tag
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
     Tag.remove(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
-    
-		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
+
+	tags = get_all_tags_for_object(params[:uri])
+	respond_to do |format|
+		format.json {
+			render json: { my_tags: tags, other_tags: [] }
+		}
+	end
   end
   
   def set_annotation
@@ -127,7 +133,7 @@ class ResultsController < ApplicationController
 	    uris = uris.split("\t")
       uris.each{ |uri|
         params['uri'] = uri
-        add_tag false # false so this call will not attempt to render
+        do_add_tag(params)
       }
 	end
 	  redirect_with_page(request, params)

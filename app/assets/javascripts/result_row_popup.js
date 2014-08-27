@@ -357,12 +357,11 @@ function doRemoveTag(uri, row_id, tag_name)
 	var full_text = getFullText(row_id);
 	var row_num = row_id.substring(row_id.lastIndexOf('_')+1);
 
-	var less = $('less-search_result_'+row_num);
 	var onSuccess = function(resp) {
-		tagFinishedUpdating();
-		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		var json = JSON.parse(resp.responseText);
+		window.collex.redrawTags(row_num, json.my_tags, json.other_tags);
 	};
-	serverAction({ action: { actions: "/results/remove_tag", els: row_id, params: { uri: uri, row_num: row_num, tag: tag_name, full_text: full_text }, onSuccess:onSuccess }});
+	serverAction({ action: { actions: "/results/remove_tag.json", els: [], params: { uri: uri, row_num: row_num, tag: tag_name, full_text: full_text }, onSuccess:onSuccess }});
 }
 
 function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
@@ -380,9 +379,8 @@ function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 	serverAction({confirm: { title: "Remove Object from Collection?", message: "Are you sure you wish to remove this object from your collection?"}, action: { actions: "/results/uncollect", els: [], onSuccess: onSuccess, params: params }, progress: { waitMessage: 'Removing collected object...' }});
 }
 
-function doAddTag(autocomplete_url, parent_id, uri, row_num, row_id)
+function doAddTag(autocomplete_url, uri, row_num, row_id)
 {
-	var less = $('less-search_result_'+row_num);
 	var params = {
 		title: "Add Tag",
 		prompt: 'Tag:',
@@ -393,9 +391,12 @@ function doAddTag(autocomplete_url, parent_id, uri, row_num, row_id)
 		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) },
 		autocompleteParams: { url: autocomplete_url, token: ','},
 		inputKlass: 'new_exhibit_autocomplete',
-		actions: [ '/results/add_tag', '/tag/update_tag_cloud' ],
-		target_els: [ row_id, 'tag_cloud_div' ],
-		onSuccess: function(resp) { if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num); }
+		actions: '/results/add_tag.json',
+		target_els: [],
+		onSuccess: function(resp) {
+			var json = JSON.parse(resp.responseText);
+			window.collex.redrawTags(row_num, json.my_tags, json.other_tags);
+		}
 	};
 
 	new TextInputDlg(params);

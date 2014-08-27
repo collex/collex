@@ -155,7 +155,7 @@ jQuery(document).ready(function($) {
 	var needShowMoreLink = false;
 
 	function createBlankResultContentItem(klass) {
-		return window.pss.createHtmlTag("div", { 'class': klass },
+		return window.pss.createHtmlTag("div", { 'class': klass, style: 'display:none;' },
 			window.pss.createHtmlTag("span", { 'class': 'label' }, '') +
 			window.pss.createHtmlTag("span", { 'class': 'value' }, ''));
 	}
@@ -215,11 +215,16 @@ jQuery(document).ready(function($) {
 		for (var i = 0; i < tags.length; i++) {
 			if (i !== 0)
 				html += " | ";
-			html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag="ajax"&amp;view=tag' }, tags[i]);
+			html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag=' + tags[i] + '&amp;view=tag' }, tags[i]);
 			var remove = "doRemoveTag('" + uri + "', 'search_result_" + index + "', '" + tags[i] + "'); return false;";
 			html += window.pss.createHtmlTag("a", { 'class': 'modify_link my_tag remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove,  href: '#' }, 'X');
 		}
 		return html;
+	}
+
+	function createTagLine(uri, index, tags) {
+		var click = "doAddTag('/tag/tag_name_autocomplete', '" + uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
+		return formatTags(uri, index, tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
 	}
 
 	function formatDate(date) {
@@ -247,19 +252,9 @@ jQuery(document).ready(function($) {
 		else
 			html += createBlankResultContentItem('row collected-on');
 
-		var click = "doAddTag('/tag/tag_name_autocomplete', 'add_tag_" + index + "', '" + obj.uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
-		var tags = formatTags(obj.uri, index, obj.tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+		var tags = createTagLine(obj.uri, index, obj.tags);
 		html += createResultContentItem('single_item', 'Tags:', tags, false, 'tag-list');
 
-//<%################### -%>
-		// TODO-PER: do tags
-		//<% tags = Tag.get_tags_for_uri(hit['uri']) -%>
-//<% if no_links -%>
-//<% result_row_tags_no_links(rows, "Tags:", tags) -%>
-//<% else # if we want links on the tags -%>
-//<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, user_signed_in?, is_collected) %>
-//<% end # if no_links -%>
-//<%################### -%>
 		var site = getSite(obj.archive);
 		html += createResultContentItem('single_item', 'Site:', site, false);
 		html += createResultContentItem('multiple_item', 'Genre:', obj.genre, true);
@@ -342,7 +337,7 @@ jQuery(document).ready(function($) {
 			window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation);
 
 		html += createFullTextExcerpt(obj.text);
-		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container' }, html);
+		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container', 'data-uri': obj.uri }, html);
 	}
 
 	function createMediaBlock(obj, index, isCollected, collectedDate) {
@@ -366,7 +361,9 @@ jQuery(document).ready(function($) {
 			el.addClass('result_row_collected');
 			var actionButtons = createActionButtons({}, true); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
 			el.find(".search_result_buttons").html(actionButtons);
-			fillInRow(el.find('.collected-on'), 'Collected&nbsp;on:', formatDate(collectedDate));
+			var collectedOn = el.find('.collected-on');
+			fillInRow(collectedOn, 'Collected&nbsp;on:', formatDate(collectedDate));
+			el.find('.collected-on').show();
 			el.find(".annotation-row").show();
 		}
 	};
@@ -382,6 +379,17 @@ jQuery(document).ready(function($) {
 			annotation.find("button").text("Add Private Annotation");
 			annotation.find(".annotation").text('');
 			annotation.hide();
+		}
+	};
+
+	window.collex.redrawTags = function(index, myTags, otherTags) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			var value = el.find('.tag-list .value');
+			var container = el.closest(".search_result_data_container");
+			var uri = container.attr("data-uri");
+			var tags = createTagLine(uri, index, myTags);
+			value.html(tags);
 		}
 	};
 
