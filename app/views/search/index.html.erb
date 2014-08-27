@@ -31,9 +31,7 @@
 	<div class="right_column_header">USING TEST INDEX</div>
 <% end -%>
 <div class="inner_content_container">
-	<% if Rails.env == 'development' && @message != nil -%>
-		<div class="search_error_message"><%= raw(h(@message).gsub("\n", "<br .>")) %></div>
-	<% end # if development   -%>
+	<div class="search_error_message" style="display:none;"></div>
 	<div class="left_column">
 		<%= render(:partial => 'add_constraint_form') %>
 		<div class="has-results" style="display:none;">

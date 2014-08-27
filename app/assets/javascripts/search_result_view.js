@@ -461,7 +461,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function createResourceLeaf(id, level, label, total, handle, childClass) {
-		var left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'archive'));
+		var left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'a'));
 		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, number_with_delimiter(total));
 		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': childClass }, left+right);
 	}
@@ -545,12 +545,19 @@ jQuery(document).ready(function($) {
 			discipline: 'Discipline',
 			g: 'Genre',
 			q: 'Search Term',
-			doc_type: 'Format'
+			doc_type: 'Format',
+			t: "Title",
+			aut: "Author",
+			ed: 'Editor',
+			pub: "Publisher",
+			art: 'Artist',
+			own: 'Owner',
+			y: 'Year',
+			lang: 'Language'
 		};
 		if (types[key])
 			return types[key];
-		else
-			return key;
+		return key;
 	}
 
 	function searchNot() {
@@ -598,12 +605,19 @@ jQuery(document).ready(function($) {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];
+					var displayedKey = key;
 					if (key === 'archive') {
 						var a = getArchive(value);
 						if (a) value = a.name;
+					} else if (key === 'o') {
+						switch (value) {
+							case 'typewright': displayedKey = 'TypeWright'; value = 'Only resources that can be edited.'; break;
+							case 'freeculture': displayedKey = 'Free Culture'; value = 'Only resources that are freely available in their full form.'; break;
+							case 'fulltext': displayedKey = 'Full Text'; value = 'Only resources that contain full text.'; break;
+						}
 					}
 					html += window.pss.createHtmlTag("tr", {},
-						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(key)) +
+						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, value) +
 						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot()) +
 						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, values[i])));
@@ -643,6 +657,15 @@ jQuery(document).ready(function($) {
 		}
 	}
 
+	function showMessage(message) {
+		var el = $(".search_error_message");
+		el.text(message);
+		if (message && message.length > 0)
+			el.show();
+		else
+			el.hide();
+	}
+
 	// has-results add_constraint_form not-empty no_results_msg
 	body.bind('RedrawSearchResults', function(ev, obj) {
 		if (!obj || !obj.hits || !obj.facets || !obj.query) {
@@ -651,6 +674,7 @@ jQuery(document).ready(function($) {
 		}
 
 		showResultSections(obj);
+		showMessage(obj.message);
 
 		var html = "";
 		for (var i = 0; i < obj.hits.length; i++) {

@@ -68,9 +68,10 @@ class SearchController < ApplicationController
 				begin
 					@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
 					@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+					@results['message'] = ''
 				rescue Catalog::Error => e
 					@results = rescue_search_error(e)
-					@message = e.message
+					@results['message'] = e.message
 				end
 
 				# process all the returned hits to insert all non-solr info
@@ -121,6 +122,13 @@ class SearchController < ApplicationController
 				@results['facets']['access']['ocr'] = @results['facets']['ocr']['true'] if @results['facets']['ocr'].present? && @results['facets']['ocr']['true'].present?
 				@results['facets']['access']['typewright'] = @results['facets']['typewright']['true'] if @results['facets']['typewright'].present? && @results['facets']['typewright']['true'].present?
 
+				# Be sure that all the facets are returned, even if they are empty.
+				@results['facets']['genre'] = {} if @results['facets']['genre'].blank?
+				@results['facets']['archive'] = {} if @results['facets']['archive'].blank?
+				@results['facets']['federation'] = {} if @results['facets']['federation'].blank?
+				@results['facets']['doc_type'] = {} if @results['facets']['doc_type'].blank?
+				@results['facets']['discipline'] = {} if @results['facets']['discipline'].blank?
+				@results['facets']['role'] = {} if @results['facets']['role'].blank?
 				render :json => @results
 			}
 		end
