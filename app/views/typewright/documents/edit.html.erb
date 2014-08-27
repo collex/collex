@@ -45,7 +45,9 @@
   <a href="#" class="tw_dismiss" title="Dismiss this notification">x</a>
   <div class="tw_notification_text"></div>
 </div>
-<div class="tw_editing_title"><a title="<%= @params[:title] %>">"<%= @params[:title_abbrev] %>"</a></div>
+<div class="tw_editing_title"><a title="<%= @params[:title] %>">"<%= @params[:title_abbrev] %>"</a>
+  <%= link_to_function "delete edits", "", { :class => 'nav_link tw_delete_edits tw_cmd', :id => 'tw_delete_edits', 'data-url' => "/typewright/documents/#{@params[:doc_id]}/delete_edits?page=#{@params[:page]}" } %>
+</div>
 
 <div class="tw_toolbar">
 	<!-- <span class="tw_button2 tw_find_button">&nbsp;</span> -->

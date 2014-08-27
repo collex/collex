@@ -292,6 +292,33 @@ class Typewright::DocumentsController < ApplicationController
       end
    end
 
+   # POST /typewrite/documents/1/delete_edits?page=n
+   def delete_edits
+     doc_id = params[:id]
+     page_num = params[:page]
+     src = params[:src]
+     src = :gale if src.nil?
+
+     collex_user = current_user
+     if collex_user.blank?
+       render :text => 'You must be signed in to delete corrections. Did your session expire?', :status => :bad_request
+     else
+
+       url = "#{URI.parse(Setup.solr_url())}/documents/#{doc_id}/delete_corrections?src=#{src}&page=#{page_num}"
+       begin
+         resp = RestClient.post url
+         # back to the edit page
+         doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit?src=#{src}&page=#{page_num}"
+         redirect_to doc_url
+       rescue RestClient::Exception => rest_error
+         render :text => rest_error.response, :status => rest_error.http_code
+       rescue Exception => e
+         render :text => e, :status => :internal_server_error
+       end
+
+     end
+   end
+
    def instructions
       render :partial => '/typewright/documents/instructions'
    end

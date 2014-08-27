@@ -190,6 +190,7 @@ Collex::Application.routes.draw do
 			post 'documents/:id/complete' => 'documents#page_complete'
 			post 'documents/:id/status' => 'documents#update_status'
 			post 'documents/:id/report' => 'documents#report'
+      post 'documents/:id/delete_edits' => 'documents#delete_edits'
 			resources :admin do
 				collection do
 					get 'stats'
