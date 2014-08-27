@@ -18,11 +18,11 @@
 <% if SKIN == 'modnets' %>
 	<div class="add_constraint_form" style="display:none;">
 	  <div class="search_federation_checkbox">
-		<input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input>
+		<input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> />Search all federations
 	  </div>
-	  <%= form_tag({controller: "search", action: "add_constraint"}, {id: "add-search-constraint", onsubmit: "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');"}) do %>
+		<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');">
 		  <input id="search_submit" type="submit" value="Search"/>
-		  <%= text_field_with_suggest :search, :keyword, {:class => "search_entry_box_keyword", :value => @kphrs ? @kphrs : '', :placeholder => (SKIN == 'modnets' ? "Search #{Setup.site_name()}..." : '')}, {:min_chars => 2} -%>
+			<input name="q" type="text" class="search_entry_box_keyword" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
 		  <% if HAS_FUZZY %>
 			  <div class="fuzzy-container">
 			  <% fuzz = @kfval %>
@@ -49,7 +49,7 @@
 		  <div class="search_entry_instructions">Other search options:</div>
 		  <div class="row">
 			<div>Title:</div>
-			<input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> />
+			<input name="t" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> />
 		  </div>
 		  <% if HAS_FUZZY %>
 			  <div class="row"><div></div>
@@ -72,25 +72,25 @@
 		  <div class="row">
 			<div>Author:</div>
 			<td>
-			  <input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> />
+			  <input name="aut" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> />
 		  </div>
 		  <div class="row">
 			<div>Editor:</div>
 			<td>
-			  <input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> />
+			  <input name="ed" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> />
 		  </div>
 		  <div class="row">
 			<div>Publisher:</div>
 			<td>
-			  <input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> />
+			  <input name="pub" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> />
 		  </div>
 		  <div class="row">
 			<div>Year (YYYY):</div>
 			<td>
-			  <input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> />
+			  <input id="search_year" name="y" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> />
 		  </div>
 		  <input id="search_submit2" type="submit" value="Search"/>
-	  <% end %>
+	  </form>
 
 	  <% if user_signed_in? -%>
 		  <div id="saved-searches">
@@ -102,13 +102,13 @@
 <% else %>
 <center>
 <div class="add_constraint_form" style="display:none;">
-    	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" value="search_all_federations"><%= @all_federations %></input></div>
-	<%= form_tag({controller: "search", action: "add_constraint"}, { id: "add-search-constraint", onsubmit: "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" }) do %>
+    	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" value="search_all_federations" />Search all federations</div>
+	<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');">
 		<div class="page_header">Search <%= Setup.site_name() %>:</div>
  	<table>
         <tr>
           <td colspan='2'>
-            <%= text_field_with_suggest :search, :keyword,  {:class=>"search_entry_box_keyword", :value=>@kphrs ? @kphrs : '', :placeholder => (SKIN == 'modnets' ? "Search #{Setup.site_name()}..." : '') }, {:min_chars => 2}-%>
+			  <input name="q" type="text" class="search_entry_box_keyword" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
           </td>
           <td>
             <input id="search_submit" type="submit" value="Search" />
@@ -132,7 +132,7 @@
 		<tr><td colspan='3'><div class="search_help_icon">
 					<a href="/about/help/" class="tooltip"><%= image_tag("#{SKIN}/help_thumb.gif", { alt: 'help', height: 18, style: "padding-left:5px" }) %><span class="search_help_tooltip"><b>Need help?</b><br />Click to learn more about searching in <%= Setup.site_name() %>.</span></a>
 				</div><div class="search_entry_instructions">Other search options:</div></td></tr>
-        <tr><td>Title:</td><td><input name="search_title" id="search_title" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
+        <tr><td>Title:</td><td><input name="t" type="text" class="search_entry_box" <%= "value='#{@tphrs}'" if @tphrs %> /></td></tr>
         <% if HAS_FUZZY %>
            <tr>
              <td></td>
@@ -152,11 +152,11 @@
         <% if SKIN.upcase == 'MESA' %>
             <tr><td>Role:</td><td><%= select_tag( :search_roles, options_from_collection_for_select([ ['disabled_search_input', '(Select a role)'] ] + @searchable_roles, :first, :last), :class => 'search_role_type' ) %>
            <input name="disabled_search_input" id="disabled_search_input" disabled="true" type="text" class="search_entry_box_short search_entry_hidden" value="" placeholder="Please select a role."/>
-           <input name="search_author" id="search_author" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@aphrs}'" if @aphrs %> />
-           <input name="search_editor" id="search_editor" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ephrs}'" if @ephrs %> />
+           <input name="aut" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@aphrs}'" if @aphrs %> />
+           <input name="ed" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ephrs}'" if @ephrs %> />
            <input name="search_artist" id="search_artist" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@arphrs}'" if @arphrs %> />
            <input name="search_owner" id="search_owner" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ophrs}'" if @ophrs %> />
-           <input name="search_publisher" id="search_publisher" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@pphrs}'" if @pphrs %> />
+           <input name="pub" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@pphrs}'" if @pphrs %> />
               <input name="search_role_TRL" id="search_role_TRL" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@TRLsavedvalue}'" if @TRLsavedvalue %> />
               <input name="search_role_ARC" id="search_role_ARC" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@ARCsavedvalue}'" if @ARCsavedvalue %> />
               <input name="search_role_BND" id="search_role_BND" type="text" class="search_entry_box_short search_entry_hidden" <%= "value='#{@BNDsavedvalue}'" if @BNDsavedvalue %> />
@@ -197,9 +197,9 @@
                  </span>
             </td></tr>
          <% else %>
-           <tr><td>Author:</td><td><input name="search_author" id="search_author" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>
-           <tr><td>Editor:</td><td><input name="search_editor" id="search_editor" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> /></td></tr>
-           <tr><td>Publisher:</td><td><input name="search_publisher" id="search_publisher" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
+           <tr><td>Author:</td><td><input name="aut" type="text" class="search_entry_box" <%= "value='#{@aphrs}'" if @aphrs %> /></td></tr>
+           <tr><td>Editor:</td><td><input name="ed" type="text" class="search_entry_box" <%= "value='#{@ephrs}'" if @ephrs %> /></td></tr>
+           <tr><td>Publisher:</td><td><input name="pub" type="text" class="search_entry_box" <%= "value='#{@pphrs}'" if @pphrs %> /></td></tr>
         <% end %>
         <% if SKIN.upcase == 'MESA' %>
            <tr>
@@ -207,10 +207,10 @@
              <td><%= select_tag( :search_language, options_from_collection_for_select([IsoLanguage.new(:english_name => "(Select a language)")] + Catalog.factory_create(false).get_languages(), :alpha3, :first_english_name), :class => 'search_language' ) %></td>
            </tr>
         <% end %>
-        <tr><td>Year (YYYY):</td><td><input name="search_year" id="search_year" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
+        <tr><td>Year (YYYY):</td><td><input id="search_year" name="y" type="text" class="search_entry_box" <%= "value='#{@yphrs}'" if @yphrs %> /></td></tr>
         <tr><td colspan="3" style="text-align: right;"><input id="search_submit2" type="submit" value="Search" /></td></tr>
     </table>
-	<% end %>
+	</form>
 
 	<% if user_signed_in? -%>
 		<div id="saved-searches">
