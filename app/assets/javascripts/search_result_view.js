@@ -227,6 +227,19 @@ jQuery(document).ready(function($) {
 		return formatTags(uri, index, tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
 	}
 
+	function createAnnotationBody(index, uri, text) {
+		var doAnnotation = "doAnnotation('" + uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
+			window.collex.images.spinner + "'); return false;";
+		var linkLabel;
+		var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, text);
+		if (text && text.length > 0) {
+			linkLabel = "Edit Private Annotation";
+		} else
+			linkLabel = "Add Private Annotation";
+
+		return window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation;
+	}
+
 	function formatDate(date) {
 		var months = ["January", "February", "March",
 			"April", "May", "June", "July", "August", "September",
@@ -321,20 +334,12 @@ jQuery(document).ready(function($) {
 			html += window.pss.createHtmlTag("button", { id: "more-search_result_"+index,  'class': 'nav_link more', onclick: 'removeHidden("more-search_result_' + index + '", "search_result_' + index + '");return false;'}, '[more...]');
 		}
 
-		var doAnnotation = "doAnnotation('" + obj.uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
-			window.collex.images.spinner + "'); return false;";
-		var linkLabel;
-		var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, obj.annotation);
-		if (obj.annotation) {
-			linkLabel = "Edit Private Annotation";
-		} else
-			linkLabel = "Add Private Annotation";
+		var annotation = createAnnotationBody(index, obj.uri, obj.annotation);
 		var annotationOptions = { 'class': 'row annotation-row' };
 		if (!collectedDate)
 			annotationOptions.style = "display:none;";
 
-		html += window.pss.createHtmlTag("div", annotationOptions,
-			window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation);
+		html += window.pss.createHtmlTag("div", annotationOptions, annotation);
 
 		html += createFullTextExcerpt(obj.text);
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container', 'data-uri': obj.uri }, html);
@@ -390,6 +395,17 @@ jQuery(document).ready(function($) {
 			var uri = container.attr("data-uri");
 			var tags = createTagLine(uri, index, myTags);
 			value.html(tags);
+		}
+	};
+
+	window.collex.redrawAnnotation = function(index, text) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			var value = el.find('.annotation-row');
+			var container = el.closest(".search_result_data_container");
+			var uri = container.attr("data-uri");
+			var annotation = createAnnotationBody(index, uri, text);
+			value.html(annotation);
 		}
 	};
 

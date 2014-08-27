@@ -109,16 +109,15 @@ class ResultsController < ApplicationController
   end
   
   def set_annotation
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-    locals = setup_ajax_calls(params, true)
-    note = params[:note]
-    CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
-    
-		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
+     note = params[:note]
+	uri = params[:uri]
+    CollectedItem.set_annotation(current_user, uri, note) unless !user_signed_in? || uri == nil
+
+	respond_to do |format|
+		format.json {
+			render json: { ok: true }
+		}
+	end
   end
   
   def bulk_add_tag

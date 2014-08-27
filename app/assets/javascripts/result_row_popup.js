@@ -343,15 +343,6 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 		ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
 }
 
-function tagFinishedUpdating()
-{
-	var el_sidebar = document.getElementById('tag_cloud_div');
-	if (el_sidebar)
-	{
-		serverAction({ action: { actions: "/tag/update_tag_cloud", els: 'tag_cloud_div' }});
-	}
-}
-
 function doRemoveTag(uri, row_id, tag_name)
 {
 	var full_text = getFullText(row_id);
@@ -461,11 +452,16 @@ function doAnnotation(uri, row_num, row_id, curr_annotation_id, populate_collex_
 	existing_note = realLinkToEditorLink(existing_note);
 
 	var okCallback = function(value) {
-		serverAction({action:{actions: "/results/set_annotation", els: row_id, params: { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) }}});
+		var onSuccess = function(resp) {
+			window.collex.redrawAnnotation(row_num, value);
+		};
+
+		serverAction({action:{actions: "/results/set_annotation", els: [], params: { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) }, onSuccess:onSuccess}});
 	};
 
+	var title = existing_note.length > 0 ? "Edit Private Annotation" : "Add Private Annotation";
 	new RteInputDlg({
-		title: "Edit Private Annotation",
+		title: title,
 		value: existing_note,
 		populate_urls: [populate_collex_obj_url],
 		progress_img: progress_img,
