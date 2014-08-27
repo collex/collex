@@ -141,7 +141,7 @@ class SearchController < ApplicationController
    def set_archive_toggle_state(archives)
 	   archives.each { |archive|
 		   if archive['children'].present?
-			   if session[:resource_toggle]["#{archive['id']}"].present? && session[:resource_toggle]["#{archive['id']}"] = :open
+			   if session[:resource_toggle].present? && session[:resource_toggle]["#{archive['id']}"].present? && session[:resource_toggle]["#{archive['id']}"] = :open
 				   archive['toggle'] = 'open'
 			   else
 				   archive['toggle'] = 'close'
