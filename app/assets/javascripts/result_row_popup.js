@@ -329,31 +329,18 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 		return;
 	}
 
-	var ptr = $(row_id);
-	ptr.removeClassName('result_without_tag');
-	ptr.addClassName('result_with_tag');
 	var full_text = getFullText(row_id);
 
-	var less = $('less-search_result_'+row_num);
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 	var onSuccess = function(resp) {
-		if (successCallback) successCallback(resp);
-		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		var json = JSON.parse(resp.responseText);
+		window.collex.setCollected(row_num, json.collected_on);
 	};
-	serverAction({ action: { actions: "/results/collect", els: row_id, params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
+	serverAction({ action: { actions: "/results/collect.json", els: [], params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
 
 	// This operation changes the set of collected objects, so we need to request them again next time.
 	if (ninesObjCache)
 		ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
-}
-
-function tagFinishedUpdating()
-{
-	var el_sidebar = document.getElementById('tag_cloud_div');
-	if (el_sidebar)
-	{
-		serverAction({ action: { actions: "/tag/update_tag_cloud", els: 'tag_cloud_div' }});
-	}
 }
 
 function doRemoveTag(uri, row_id, tag_name)
@@ -361,37 +348,30 @@ function doRemoveTag(uri, row_id, tag_name)
 	var full_text = getFullText(row_id);
 	var row_num = row_id.substring(row_id.lastIndexOf('_')+1);
 
-	var less = $('less-search_result_'+row_num);
 	var onSuccess = function(resp) {
-		tagFinishedUpdating();
-		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		var json = JSON.parse(resp.responseText);
+		window.collex.redrawTags(row_num, json.my_tags, json.other_tags);
 	};
-	serverAction({ action: { actions: "/results/remove_tag", els: row_id, params: { uri: uri, row_num: row_num, tag: tag_name, full_text: full_text }, onSuccess:onSuccess }});
+	serverAction({ action: { actions: "/results/remove_tag.json", els: [], params: { uri: uri, row_num: row_num, tag: tag_name, full_text: full_text }, onSuccess:onSuccess }});
 }
 
 function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 {
-	var tr = document.getElementById(row_id);
-	tr.className = 'result_without_tag';
 	var full_text = getFullText(row_id);
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 
-	var less = $('less-search_result_'+row_num);
-
 	var onSuccess = function(resp) {
-		if (successCallback) successCallback(resp);
-		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		window.collex.setUncollected(row_num);
 		// This operation changes the set of collected objects, so we need to request them again next time.
 		if (ninesObjCache)
 			ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
 	};
 
-	serverAction({confirm: { title: "Remove Object from Collection?", message: "Are you sure you wish to remove this object from your collection?"}, action: { actions: "/results/uncollect", els: row_id, onSuccess: onSuccess, params: params }, progress: { waitMessage: 'Removing collected object...' }});
+	serverAction({confirm: { title: "Remove Object from Collection?", message: "Are you sure you wish to remove this object from your collection?"}, action: { actions: "/results/uncollect", els: [], onSuccess: onSuccess, params: params }, progress: { waitMessage: 'Removing collected object...' }});
 }
 
-function doAddTag(autocomplete_url, parent_id, uri, row_num, row_id)
+function doAddTag(autocomplete_url, uri, row_num, row_id)
 {
-	var less = $('less-search_result_'+row_num);
 	var params = {
 		title: "Add Tag",
 		prompt: 'Tag:',
@@ -402,9 +382,12 @@ function doAddTag(autocomplete_url, parent_id, uri, row_num, row_id)
 		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) },
 		autocompleteParams: { url: autocomplete_url, token: ','},
 		inputKlass: 'new_exhibit_autocomplete',
-		actions: [ '/results/add_tag', '/tag/update_tag_cloud' ],
-		target_els: [ row_id, 'tag_cloud_div' ],
-		onSuccess: function(resp) { if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num); }
+		actions: '/results/add_tag.json',
+		target_els: [],
+		onSuccess: function(resp) {
+			var json = JSON.parse(resp.responseText);
+			window.collex.redrawTags(row_num, json.my_tags, json.other_tags);
+		}
 	};
 
 	new TextInputDlg(params);
@@ -469,11 +452,16 @@ function doAnnotation(uri, row_num, row_id, curr_annotation_id, populate_collex_
 	existing_note = realLinkToEditorLink(existing_note);
 
 	var okCallback = function(value) {
-		serverAction({action:{actions: "/results/set_annotation", els: row_id, params: { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) }}});
+		var onSuccess = function(resp) {
+			window.collex.redrawAnnotation(row_num, value);
+		};
+
+		serverAction({action:{actions: "/results/set_annotation", els: [], params: { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) }, onSuccess:onSuccess}});
 	};
 
+	var title = existing_note.length > 0 ? "Edit Private Annotation" : "Add Private Annotation";
 	new RteInputDlg({
-		title: "Edit Private Annotation",
+		title: title,
 		value: existing_note,
 		populate_urls: [populate_collex_obj_url],
 		progress_img: progress_img,
@@ -588,15 +576,21 @@ function doAddToExhibit(partial, uri, index, row_id, my_collex_url)
 			options.push({ text: trunct_name, value: name });
 		});
 
+		function onSuccess(resp) {
+			var json = JSON.parse(resp.responseText);
+			window.collex.redrawExhibits(index, json.exhibits);
+		}
+
 		new SelectInputDlg({
 			title: "Choose exhibit",
 			prompt: 'Exhibit:',
 			id: 'exhibit',
-			actions: [ "/results/add_object_to_exhibit", "/results/resend_exhibited_objects" ],
-			target_els: [ row_id, "exhibited_objects_container" ],
+			actions: "/results/add_object_to_exhibit",
+			target_els: [ ],
 			okStr: "Save",
 			options: options,
-			extraParams: { partial: partial, uri: uri, row_num: index, full_text: ft }
+			extraParams: { partial: partial, uri: uri, row_num: index, full_text: ft },
+			onSuccess: onSuccess
 		});
 	}
 }

@@ -1310,5 +1310,28 @@ class Exhibit < ActiveRecord::Base
 		return paragraphs
 	end
 
+	def self.get_referencing_exhibits(uri, curr_user)
+		exhibits = ExhibitObject.where({uri: uri})
+		user_name = curr_user ? curr_user.fullname : ''
+		rows = []
+		for exhibit in exhibits
+			# We only want to display the exhibit if it can be viewed, so only if it is owned by the current user, or is public
+			# We only want to have the edit link if it is owned by the current user.
+			real_exhibit = Exhibit.find(exhibit.exhibit.id)
+			owner = User.find(real_exhibit.user_id)
+			if user_name == owner.username || real_exhibit.published?
+				edit_path = ""
+				if Exhibit.can_edit(curr_user, real_exhibit.id)
+					edit_path = "/builder/#{real_exhibit.id}"
+				end
+				rows.push({ title: real_exhibit.title,
+							view_path: "/exhibits/#{real_exhibit.visible_url != nil && real_exhibit.visible_url.length > 0 ? real_exhibit.visible_url : real_exhibit.id}",
+							edit_path: edit_path
+						  })
+			end
+		end # each exhibit
+		return rows
+	end
+
 end
 

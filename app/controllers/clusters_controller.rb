@@ -15,7 +15,6 @@
 ##########################################################################
 
 class ClustersController < ApplicationController
-  layout 'nines'
   before_filter :init_view_options
 
   private

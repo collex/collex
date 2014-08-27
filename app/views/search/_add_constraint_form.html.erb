@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 <%# add_constraint_form : no parameters -%>
 <% if SKIN == 'modnets' %>
-	<div class="add_constraint_form">
+	<div class="add_constraint_form" style="display:none;">
 	  <div class="search_federation_checkbox">
 		<input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input>
 	  </div>
@@ -101,8 +101,8 @@
 
 <% else %>
 <center>
-<div class="add_constraint_form">
-    	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> ><%= @all_federations %></input></div>
+<div class="add_constraint_form" style="display:none;">
+    	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" value="search_all_federations"><%= @all_federations %></input></div>
 	<%= form_tag({controller: "search", action: "add_constraint"}, { id: "add-search-constraint", onsubmit: "return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');" }) do %>
 		<div class="page_header">Search <%= Setup.site_name() %>:</div>
  	<table>

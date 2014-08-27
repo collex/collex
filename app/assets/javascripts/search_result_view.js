@@ -154,6 +154,17 @@ jQuery(document).ready(function($) {
 
 	var needShowMoreLink = false;
 
+	function createBlankResultContentItem(klass) {
+		return window.pss.createHtmlTag("div", { 'class': klass, style: 'display:none;' },
+			window.pss.createHtmlTag("span", { 'class': 'label' }, '') +
+			window.pss.createHtmlTag("span", { 'class': 'value' }, ''));
+	}
+
+	function fillInRow(row, label, value) {
+		row.find('.label').html(label);
+		row.find('.value').html(value);
+	}
+
 	function createResultContentItem(type, label, value, startHidden, rowClass) {
 		if (!value)
 			return "";
@@ -204,11 +215,29 @@ jQuery(document).ready(function($) {
 		for (var i = 0; i < tags.length; i++) {
 			if (i !== 0)
 				html += " | ";
-			html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag="ajax"&amp;view=tag' }, tags[i]);
+			html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag=' + tags[i] + '&amp;view=tag' }, tags[i]);
 			var remove = "doRemoveTag('" + uri + "', 'search_result_" + index + "', '" + tags[i] + "'); return false;";
 			html += window.pss.createHtmlTag("a", { 'class': 'modify_link my_tag remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove,  href: '#' }, 'X');
 		}
 		return html;
+	}
+
+	function createTagLine(uri, index, tags) {
+		var click = "doAddTag('/tag/tag_name_autocomplete', '" + uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
+		return formatTags(uri, index, tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+	}
+
+	function createAnnotationBody(index, uri, text) {
+		var doAnnotation = "doAnnotation('" + uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
+			window.collex.images.spinner + "'); return false;";
+		var linkLabel;
+		var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, text);
+		if (text && text.length > 0) {
+			linkLabel = "Edit Private Annotation";
+		} else
+			linkLabel = "Add Private Annotation";
+
+		return window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation;
 	}
 
 	function formatDate(date) {
@@ -224,6 +253,13 @@ jQuery(document).ready(function($) {
 		return months[month] + " " + day + ", " + year;
 	}
 
+	function formatExhibit(exhibit) {
+		var html = exhibit.title + "&nbsp;" + window.pss.createHtmlTag("a", { 'class': 'nav_link', href: exhibit.view_path }, "[view]");
+		if (exhibit.edit_path && exhibit.edit_path.length > 0)
+			html += "&nbsp;" + window.pss.createHtmlTag("a", { 'class': 'nav_link', href: exhibit.edit_path }, "[edit]");
+		return html;
+	}
+
 	function createResultContents(obj, index, collectedDate) {
 		needShowMoreLink = false;
 		var html = "";
@@ -232,21 +268,13 @@ jQuery(document).ready(function($) {
 		html += createResultContentItem('multiple_item', 'By:', obj.role_AUT, false);
 		html += createResultContentItem('multiple_item', 'Artist:', obj.role_ART, false);
 		if (collectedDate)
-			html += createResultContentItem('single_item', 'Collected&nbsp;on:', formatDate(collectedDate), false);
+			html += createResultContentItem('single_item', 'Collected&nbsp;on:', formatDate(collectedDate), false, 'collected-on');
+		else
+			html += createBlankResultContentItem('row collected-on');
 
-		var click = "doAddTag('/tag/tag_name_autocomplete', 'add_tag_" + index + "', '" + obj.uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
-		var tags = formatTags(obj.uri, index, obj.tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+		var tags = createTagLine(obj.uri, index, obj.tags);
 		html += createResultContentItem('single_item', 'Tags:', tags, false, 'tag-list');
 
-//<%################### -%>
-		// TODO-PER: do tags
-		//<% tags = Tag.get_tags_for_uri(hit['uri']) -%>
-//<% if no_links -%>
-//<% result_row_tags_no_links(rows, "Tags:", tags) -%>
-//<% else # if we want links on the tags -%>
-//<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, user_signed_in?, is_collected) %>
-//<% end # if no_links -%>
-//<%################### -%>
 		var site = getSite(obj.archive);
 		html += createResultContentItem('single_item', 'Site:', site, false);
 		html += createResultContentItem('multiple_item', 'Genre:', obj.genre, true);
@@ -303,31 +331,31 @@ jQuery(document).ready(function($) {
 		html += createResultContentItem('multiple_item', 'Wood Cutter:', obj.role_WDC, true);
 		html += createResultContentItem('multiple_item', 'Has Part:', obj.hasPart, true);
 		html += createResultContentItem('multiple_item', 'Is Part Of:', obj.isPartOf, true);
-		// TODO-PER: do the exhibit links.
-//<%################### -%>
-//<% if !no_links -%>
-//<% result_row_exhibits(rows, hit, current_user) %>
-//<% end %>
+		var exhibits;
+		if (obj.exhibits) {
+			exhibits = [];
+			for (var i = 0; i < obj.exhibits.length; i++) {
+				exhibits.push(formatExhibit(obj.exhibits[i]));
+			}
+		}
+		if (exhibits)
+			html += createResultContentItem('multiple_item', 'Exhibits:', exhibits, true, 'exhibits-row');
+		else
+			html += createBlankResultContentItem('row exhibits-row');
 
 		if (needShowMoreLink) {
 			html += window.pss.createHtmlTag("button", { id: "more-search_result_"+index,  'class': 'nav_link more', onclick: 'removeHidden("more-search_result_' + index + '", "search_result_' + index + '");return false;'}, '[more...]');
 		}
 
-		if (collectedDate) {
-			var doAnnotation = "doAnnotation('" + obj.uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
-				window.collex.images.spinner + "'); return false;";
-			var linkLabel;
-			var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, obj.annotation);
-			if (obj.annotation) {
-				linkLabel = "Edit Private Annotation";
-			} else
-				linkLabel = "Add Private Annotation";
-			html += window.pss.createHtmlTag("div", { 'class': 'row' },
-				window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation);
-		}
+		var annotation = createAnnotationBody(index, obj.uri, obj.annotation);
+		var annotationOptions = { 'class': 'row annotation-row' };
+		if (!collectedDate)
+			annotationOptions.style = "display:none;";
+
+		html += window.pss.createHtmlTag("div", annotationOptions, annotation);
 
 		html += createFullTextExcerpt(obj.text);
-		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container' }, html);
+		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container', 'data-uri': obj.uri }, html);
 	}
 
 	function createMediaBlock(obj, index, isCollected, collectedDate) {
@@ -344,6 +372,74 @@ jQuery(document).ready(function($) {
 		html += window.pss.createHtmlTag("div", { 'id': 'search_result_'+ index, 'class': klass, 'data-index': index, 'data-uri': obj.uri }, imageBlock+actionButtons+results);
 		return html;
 	}
+
+	window.collex.setCollected = function(index, collectedDate) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			el.addClass('result_row_collected');
+			var actionButtons = createActionButtons({}, true); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
+			el.find(".search_result_buttons").html(actionButtons);
+			var collectedOn = el.find('.collected-on');
+			fillInRow(collectedOn, 'Collected&nbsp;on:', formatDate(collectedDate));
+			el.find('.collected-on').show();
+			el.find(".annotation-row").show();
+		}
+	};
+
+	window.collex.setUncollected = function(index) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			el.removeClass('result_row_collected');
+			var actionButtons = createActionButtons({}, false); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
+			el.find(".search_result_buttons").html(actionButtons);
+			el.find('.collected-on').hide();
+			var annotation = el.find(".annotation-row");
+			annotation.find("button").text("Add Private Annotation");
+			annotation.find(".annotation").text('');
+			annotation.hide();
+		}
+	};
+
+	window.collex.redrawTags = function(index, myTags, otherTags) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			var value = el.find('.tag-list .value');
+			var container = el.closest(".search_result_data_container");
+			var uri = container.attr("data-uri");
+			var tags = createTagLine(uri, index, myTags);
+			value.html(tags);
+		}
+	};
+
+	window.collex.redrawAnnotation = function(index, text) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			var value = el.find('.annotation-row');
+			var container = el.closest(".search_result_data_container");
+			var uri = container.attr("data-uri");
+			var annotation = createAnnotationBody(index, uri, text);
+			value.html(annotation);
+		}
+	};
+
+	window.collex.redrawExhibits = function(index, exhibits) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			var row = el.find('.exhibits-row');
+			var container = el.closest(".search_result_data_container");
+			var uri = container.attr("data-uri");
+			var output = [];
+			if (exhibits) {
+				for (var i = 0; i < exhibits.length; i++) {
+					output.push(formatExhibit(exhibits[i]));
+				}
+				row.find(".value").html(output.join("<br>"));
+				row.find(".label").html("Exhibits:");
+				row.show();
+			} else
+				row.hide();
+		}
+	};
 
 	function createPagination(curr_page, total, page_size) {
 		var html = "";
@@ -447,10 +543,9 @@ jQuery(document).ready(function($) {
 	}
 
 	function createResourceNode(id, level, label, total, childClass) {
-		// TODO-PER: figure out how to decide whether the item starts open.
-		var open = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_category', 'data-action': "open" },
+		var open = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_arrow', 'data-action': "open" },
 			window.pss.createHtmlTag("img", { 'alt': 'Arrow Open', src: window.collex.images.arrow_open }));
-		var close = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_category', 'data-action': "close" },
+		var close = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_arrow', 'data-action': "close" },
 			window.pss.createHtmlTag("img", { 'alt': 'Arrow Close', src: window.collex.images.arrow_close }));
 		var name = window.pss.createHtmlTag("button", { 'class': 'nav_link limit_to_category', 'data-action': "toggle" }, label);
 
@@ -460,27 +555,34 @@ jQuery(document).ready(function($) {
 		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': trClass }, left+right);
 	}
 
-	function createResourceLeaf(id, level, label, total, handle, childClass) {
-		var left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'archive'));
-		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, total);
-		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': childClass }, left+right);
+	function createResourceLeaf(id, level, label, total, handle, childClass, isSelected) {
+		var trClass = childClass;
+		var left;
+		if (isSelected) {
+			trClass += ' limit_to_selected';
+			left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, label + '&nbsp;&nbsp;' + create_facet_button('[X]', handle, 'remove', 'a'));
+		} else {
+			left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'a'));
+		}
+		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, number_with_delimiter(total));
+		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': trClass }, left+right);
 	}
 
-	function createResourceSection(resources, hash, level, childClass) {
+	function createResourceSection(resources, hash, level, childClass, handleOfSelected) {
 		var html = "";
 		var total = 0;
 		for (var i = 0; i < resources.length; i++) {
 			var archive = resources[i];
 			if (archive.children) {
-				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id);
+				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id, handleOfSelected);
 				total += section.total;
-				if (total > 0) {
-					var thisNode = createResourceNode(archive.id, level, archive.name, number_with_delimiter(total), childClass);
+				if (section.total > 0) {
+					var thisNode = createResourceNode(archive.id, level, archive.name, number_with_delimiter(section.total), childClass);
 					html += thisNode + section.html;
 				}
 			} else {
 				if (hash[archive.handle]) { // If there are no results, then we don't show that archive.
-					html += createResourceLeaf(archive.id, level, archive.name, hash[archive.handle], archive.handle, childClass);
+					html += createResourceLeaf(archive.id, level, archive.name, hash[archive.handle], archive.handle, childClass, archive.handle === handleOfSelected);
 					total += parseInt(hash[archive.handle], 10);
 				}
 			}
@@ -488,13 +590,30 @@ jQuery(document).ready(function($) {
 		return { html: html, total: total };
 	}
 
-	function createResourceBlock(hash) {
+	function setResourceToggle(block, resources) {
+		for (var i = 0; i < resources.length; i++) {
+			var archive = resources[i];
+			if (archive.children) {
+				if (archive.toggle === 'open') {
+					block.find("#resource_" + archive.id + ' button[data-action="open"]').hide();
+				} else {
+					block.find("#resource_" + archive.id + ' button[data-action="close"]').hide();
+					block.find('.child_of_'+archive.id).hide();
+				}
+				setResourceToggle(block, archive.children);
+			}
+		}
+	}
 
-		var html = createResourceSection(window.collex.facetNames.archives, hash, 1, '').html;
+	function createResourceBlock(hash, handleOfSelected) {
+
+		var html = createResourceSection(window.collex.facetNames.archives, hash, 1, '', handleOfSelected).html;
 
 		var block = $(".facet-archive");
 		var header = window.pss.createHtmlTag("tr", {}, block.find("tr:first-of-type").html());
 		block.html(header + html);
+		// Now close the items that need to be closed.
+		setResourceToggle(block, window.collex.facetNames.archives);
 	}
 
 	function createTotals(total) {
@@ -524,16 +643,23 @@ jQuery(document).ready(function($) {
 
 	function searchFormType(key) {
 		var types = {
-			archive: 'Archive',
+			a: 'Archive',
 			discipline: 'Discipline',
 			g: 'Genre',
 			q: 'Search Term',
-			doc_type: 'Format'
+			doc_type: 'Format',
+			t: "Title",
+			aut: "Author",
+			ed: 'Editor',
+			pub: "Publisher",
+			art: 'Artist',
+			own: 'Owner',
+			y: 'Year',
+			lang: 'Language'
 		};
 		if (types[key])
 			return types[key];
-		else
-			return key;
+		return key;
 	}
 
 	function searchNot() {
@@ -581,15 +707,22 @@ jQuery(document).ready(function($) {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];
-					if (key === 'archive') {
+					var displayedKey = key;
+					if (key === 'a') {
 						var a = getArchive(value);
 						if (a) value = a.name;
+					} else if (key === 'o') {
+						switch (value) {
+							case 'typewright': displayedKey = 'TypeWright'; value = 'Only resources that can be edited.'; break;
+							case 'freeculture': displayedKey = 'Free Culture'; value = 'Only resources that are freely available in their full form.'; break;
+							case 'fulltext': displayedKey = 'Full Text'; value = 'Only resources that contain full text.'; break;
+						}
 					}
 					html += window.pss.createHtmlTag("tr", {},
-						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(key)) +
+						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, value) +
 						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot()) +
-						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, value)));
+						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, values[i])));
 				}
 			}
 		}
@@ -597,11 +730,58 @@ jQuery(document).ready(function($) {
 		return table.html(html);
 	}
 
+	function isEmptyObject(obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function showResultSections(obj) {
+		if (isEmptyObject(obj.query)) {
+			// this is a blank page, with no search.
+			$(".has-results").hide();
+			$(".add_constraint_form").show();
+		} else {
+			$(".add_constraint_form").hide();
+			$(".has-results").show();
+			if (obj.hits.length === 0) {
+				// there was a search, but there were no results.
+				$(".not-empty").hide();
+				$(".no_results_msg").show();
+			} else {
+				// there was a search, and it returned some results.
+				$(".not-empty").show();
+				$(".no_results_msg").hide();
+			}
+		}
+	}
+
+	function showMessage(message) {
+		var el = $(".search_error_message");
+		el.text(message);
+		if (message && message.length > 0)
+			el.show();
+		else
+			el.hide();
+	}
+
+	function fixExpandAllLink() {
+		$("#expand_all").show();
+		$("#collapse_all").hide();
+	}
+
+	// has-results add_constraint_form not-empty no_results_msg
 	body.bind('RedrawSearchResults', function(ev, obj) {
 		if (!obj || !obj.hits || !obj.facets || !obj.query) {
 			window.console.log("error redrawing search results", obj);
 			return;
 		}
+
+		showResultSections(obj);
+		showMessage(obj.message);
 
 		var html = "";
 		for (var i = 0; i < obj.hits.length; i++) {
@@ -615,7 +795,7 @@ jQuery(document).ready(function($) {
 		createFacetBlock('facet-discipline', obj.facets.discipline, 'discipline', obj.query.discipline);
 		createFacetBlock('facet-format', obj.facets.doc_type, 'doc_type', obj.query.doc_type);
 		createFacetBlock('facet-access', obj.facets.access, 'o', obj.query.o, window.collex.facetNames.access);
-		createResourceBlock(obj.facets.archive);
+		createResourceBlock(obj.facets.archive, obj.query.a);
 
 		var page = obj.query.page ? obj.query.page : 1;
 		html = createPagination(page, obj.total_hits, obj.page_size);
@@ -623,5 +803,6 @@ jQuery(document).ready(function($) {
 
 		createTotals(obj.total_hits);
 		setFederations(obj.facets.federation, obj.query.f);
+		fixExpandAllLink();
 	});
 });

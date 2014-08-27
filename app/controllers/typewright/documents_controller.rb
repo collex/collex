@@ -19,7 +19,6 @@ require "erb"
 
 include ERB::Util
 class Typewright::DocumentsController < ApplicationController
-   layout 'nines'
    before_filter :init_view_options
 
    private

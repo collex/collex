@@ -75,10 +75,11 @@
   <div id="typewright_documents">
     
       <div class="tw_search_box">
-	      <form action="/search/add_tw_constraint" method="GET">
+	      <form action="/search" method="GET">
           <div class="tw_search_label">Search for TypeWright enabled texts</div>
           <div class="tw_phrase_container">
-              <input id="tw_search_phrase" name="search_phrase" type="text" required />
+			  <input type="hidden" name="o" value="typewright" />
+              <input id="tw_search_phrase" name="q" type="text" required />
               <div class="tw_advanced_link">
                 <%= link_to("Advanced Search", '/search?o=typewright', :class => 'nav_link') %>
               </div>

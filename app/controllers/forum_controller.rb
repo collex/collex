@@ -15,7 +15,6 @@
 ##########################################################################
 
 class ForumController < ApplicationController
-  layout 'nines'
   before_filter :init_view_options
 
    # Number of search results to display by default

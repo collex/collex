@@ -25,100 +25,99 @@ class ResultsController < ApplicationController
   #  end
   
   def collect
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
     # Only collect if the item isn't already collected and if there is a user logged in.
     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
     locals = setup_ajax_calls(params, false)
+	date = 0
     if locals[:is_error] == nil
-      CollectedItem.collect_item(locals[:user], locals[:uri], locals[:hit]) unless locals[:user] == nil || locals[:uri] == nil
+      item = CollectedItem.collect_item(locals[:user], locals[:uri], locals[:hit]) unless locals[:user] == nil || locals[:uri] == nil
+		date = item.updated_at
     end
-    
-    partial = params[:partial]
-    if partial == '/results/result_row'
-			locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-    elsif partial == '/forum/attachment'
-      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-    end
+
+	respond_to do |format|
+		format.json {
+			render json: { collected_on: date }
+		}
+	end
+
+	# partial = params[:partial]
+    # if partial == '/results/result_row'
+		# 	locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+    #   render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    # elsif partial == '/forum/attachment'
+    #   render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
+    # end
   end
   
   def uncollect
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-    partial = params[:partial]
-		if partial != '/results/result_row' && partial != '/forum/attachment'
-			render :text => 'Bad parameters in call to uncollect', :status => :bad_request
-		else
-			locals = setup_ajax_calls(params, true)
-			CollectedItem.remove_collected_item(current_user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+	  locals = setup_ajax_calls(params, true)
+	  CollectedItem.remove_collected_item(current_user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
 
-			if partial == '/results/result_row'
-				locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-				render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-			elsif partial == '/forum/attachment'
-				render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-			end
-		end
+	  respond_to do |format|
+		  format.json {
+			  render json: {ok: true}
+		  }
+	  end
   end
   
   # Add tags to an item. Multiple tags can be added by using a comma to separate them. The item
   # need not be collected. Several pieces of data must be in the call params: tag_info, user and uri
   #
-  def add_tag( should_render = true)
-	  
-	  # only accept this call from a POST action
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-	  
+  private
+  def do_add_tag(params)
 	  # grab call params
-	  is_cached = CachedResource.exists( params[:uri] ) 
-    locals = setup_ajax_calls(params, is_cached)
-    tag_info = params[:tag]
-    user = locals[:user]
-    uri = locals[:uri]
-    
-    # pass them along to the tag model for addition
-    Tag.add(user, uri, tag_info)
-   
-    if should_render
-  		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-      render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
-    end
+	  is_cached = CachedResource.exists( params[:uri] )
+	  locals = setup_ajax_calls(params, is_cached)
+	  tag_info = params[:tag]
+	  user = locals[:user]
+	  uri = locals[:uri]
+
+	  # pass them along to the tag model for addition
+	  Tag.add(user, uri, tag_info)
+  end
+
+  def get_all_tags_for_object(uri)
+	  # TODO-PER: distinguish between the user's tags and other tags.
+	  tags = Tag.items_in_uri_list(["'" + uri + "'"])
+	  return tags[uri]
+  end
+
+  public
+  def add_tag
+	do_add_tag(params)
+	tags = get_all_tags_for_object(params[:uri])
+	respond_to do |format|
+		format.json {
+			render json: { my_tags: tags, other_tags: [] }
+		}
+	end
   end
   
   # Remove a tag from the uri specified resource
   #
   def remove_tag
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
     locals = setup_ajax_calls(params, true)
     tag = params[:tag]
     Tag.remove(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
-    
-		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
+
+	tags = get_all_tags_for_object(params[:uri])
+	respond_to do |format|
+		format.json {
+			render json: { my_tags: tags, other_tags: [] }
+		}
+	end
   end
   
   def set_annotation
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-    locals = setup_ajax_calls(params, true)
-    note = params[:note]
-    CollectedItem.set_annotation(locals[:user], locals[:uri], note) unless locals[:user] == nil || locals[:uri] == nil
-    
-		locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-    render :partial => 'result_row', :locals => { :index => locals[:index], :hit => locals[:hit] }
+     note = params[:note]
+	uri = params[:uri]
+    CollectedItem.set_annotation(current_user, uri, note) unless !user_signed_in? || uri == nil
+
+	respond_to do |format|
+		format.json {
+			render json: { ok: true }
+		}
+	end
   end
   
   def bulk_add_tag
@@ -133,7 +132,7 @@ class ResultsController < ApplicationController
 	    uris = uris.split("\t")
       uris.each{ |uri|
         params['uri'] = uri
-        add_tag false # false so this call will not attempt to render
+        do_add_tag(params)
       }
 	end
 	  redirect_with_page(request, params)
@@ -255,10 +254,6 @@ class ResultsController < ApplicationController
   end
 
   def add_object_to_exhibit
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
     locals = setup_ajax_calls(params, true)
     exhibit_name = params[:exhibit]
     if locals[:user] != nil
@@ -268,28 +263,18 @@ class ResultsController < ApplicationController
         # with this name, then try unencrypting it and trying again. (It is possible that this was just a cached file in the user's browser.)
         name = exhibit_name.gsub("&quot;", '"')
         exhibit = Exhibit.find_by_title_and_user_id(name, locals[:user].id)
-#        arr = exhibit_name.split("")
-#        str = '/' + h(arr.join('.')) + "/<br />"
-#        arr = name.split("")
-#        str += '/' + h(arr.join('.')) + "/<br />"
-#        exes = Exhibit.find(:all, :conditions => ["user_id = ?", locals[:user].id])
-#        exes.each {|ex|
-#          arr = ex.title.split("")
-#          str += '/' + h(arr.join('.')) + "/<br />"
-#        }
-#        locals[:hit]['warning'] = str
       end
       ExhibitObject.add(exhibit.id, locals[:uri])
 			exhibit.bump_last_change()
     end
 
-    partial = params[:partial]
-    if partial == 'result_row'
-			locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-    elsif partial == '/forum/attachment'
-      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-    end
+	exhibits = Exhibit.get_referencing_exhibits(params["uri"], current_user)
+	respond_to do |format|
+		format.json {
+			render json: { exhibits: exhibits }
+		}
+	end
+
   end
   
   def redraw_result_row_for_popup_buttons

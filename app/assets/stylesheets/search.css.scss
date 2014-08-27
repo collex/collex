@@ -221,6 +221,7 @@ tr.limit_to_selected {
 
 .limit_to_category {
 	font-weight: bold;
+	margin-left: 16px;
 }
 
 .no_results_msg {
@@ -238,6 +239,10 @@ tr.limit_to_selected {
 	width:90%;
 	margin:10px 5% 10px 5%;
 }
+
+	.limit_to_arrow {
+		position: absolute;
+	}
 
 .limit_to td, .limit_to th {
 	padding-top: 2px;
