@@ -460,19 +460,31 @@ jQuery(document).ready(function($) {
 		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': trClass }, left+right);
 	}
 
-	function createResourceLeaf(id, level, label, total, handle, childClass) {
-		var left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'a'));
+	function createResourceLeaf(id, level, label, total, handle, childClass, isSelected) {
+		var trClass = childClass;
+		var left;
+		if (isSelected) {
+			trClass += ' limit_to_selected';
+			left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, label + '&nbsp;&nbsp;' + create_facet_button('[X]', handle, 'remove', 'a'));
+		} else {
+			left = window.pss.createHtmlTag("td", { 'class': 'limit_to_lvl'+level }, create_facet_button(label, handle, 'replace', 'a'));
+		}
 		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, number_with_delimiter(total));
-		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': childClass }, left+right);
+		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': trClass }, left+right);
+//		<tr class="limit_to_selected">
+// <td class="limit_to_lvl1">Periodical&nbsp;&nbsp;
+// <button class="select-facet nav_link" data-action="remove" data-key="doc_type" data-value="Periodical">[X]</button>
+// </td>
+// <td class="num_objects">243</td></tr>
 	}
 
-	function createResourceSection(resources, hash, level, childClass) {
+	function createResourceSection(resources, hash, level, childClass, handleOfSelected) {
 		var html = "";
 		var total = 0;
 		for (var i = 0; i < resources.length; i++) {
 			var archive = resources[i];
 			if (archive.children) {
-				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id);
+				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id, handleOfSelected);
 				total += section.total;
 				if (section.total > 0) {
 					var thisNode = createResourceNode(archive.id, level, archive.name, number_with_delimiter(section.total), childClass);
@@ -480,7 +492,7 @@ jQuery(document).ready(function($) {
 				}
 			} else {
 				if (hash[archive.handle]) { // If there are no results, then we don't show that archive.
-					html += createResourceLeaf(archive.id, level, archive.name, hash[archive.handle], archive.handle, childClass);
+					html += createResourceLeaf(archive.id, level, archive.name, hash[archive.handle], archive.handle, childClass, archive.handle === handleOfSelected);
 					total += parseInt(hash[archive.handle], 10);
 				}
 			}
@@ -503,9 +515,9 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	function createResourceBlock(hash) {
+	function createResourceBlock(hash, handleOfSelected) {
 
-		var html = createResourceSection(window.collex.facetNames.archives, hash, 1, '').html;
+		var html = createResourceSection(window.collex.facetNames.archives, hash, 1, '', handleOfSelected).html;
 
 		var block = $(".facet-archive");
 		var header = window.pss.createHtmlTag("tr", {}, block.find("tr:first-of-type").html());
@@ -541,7 +553,7 @@ jQuery(document).ready(function($) {
 
 	function searchFormType(key) {
 		var types = {
-			archive: 'Archive',
+			a: 'Archive',
 			discipline: 'Discipline',
 			g: 'Genre',
 			q: 'Search Term',
@@ -606,7 +618,7 @@ jQuery(document).ready(function($) {
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];
 					var displayedKey = key;
-					if (key === 'archive') {
+					if (key === 'a') {
 						var a = getArchive(value);
 						if (a) value = a.name;
 					} else if (key === 'o') {
@@ -688,7 +700,7 @@ jQuery(document).ready(function($) {
 		createFacetBlock('facet-discipline', obj.facets.discipline, 'discipline', obj.query.discipline);
 		createFacetBlock('facet-format', obj.facets.doc_type, 'doc_type', obj.query.doc_type);
 		createFacetBlock('facet-access', obj.facets.access, 'o', obj.query.o, window.collex.facetNames.access);
-		createResourceBlock(obj.facets.archive);
+		createResourceBlock(obj.facets.archive, obj.query.a);
 
 		var page = obj.query.page ? obj.query.page : 1;
 		html = createPagination(page, obj.total_hits, obj.page_size);
