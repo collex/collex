@@ -75,7 +75,7 @@ jQuery(document).ready(function($) {
 		var check = "";
 		var isLoggedIn = window.collex.currentUserId && window.collex.currentUserId > 0;
 		if (isLoggedIn)
-			check = window.pss.createHtmlTag("input", { 'type': 'checkbox', 'id': "bulk_collect_"+index, 'name': "bulk_collect_"+index, 'value': hit.uri });
+			check = window.pss.createHtmlTag("input", { 'type': 'checkbox', 'id': "bulk_collect_"+index, 'name': "bulk_collect["+index+"]", 'value': hit.uri });
 		var image = thumbnailImageTag(hit);
 		var icons = "";
 		if (hit.freeculture === 'true')
@@ -703,7 +703,7 @@ jQuery(document).ready(function($) {
 		var table = $('.search-form');
 		var html = "";
 		for (var key in query) {
-			if (query.hasOwnProperty(key)) {
+			if (query.hasOwnProperty(key) && key !== 'page') {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];
