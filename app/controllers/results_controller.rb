@@ -25,45 +25,39 @@ class ResultsController < ApplicationController
   #  end
   
   def collect
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
     # Only collect if the item isn't already collected and if there is a user logged in.
     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
     locals = setup_ajax_calls(params, false)
+	date = 0
     if locals[:is_error] == nil
-      CollectedItem.collect_item(locals[:user], locals[:uri], locals[:hit]) unless locals[:user] == nil || locals[:uri] == nil
+      item = CollectedItem.collect_item(locals[:user], locals[:uri], locals[:hit]) unless locals[:user] == nil || locals[:uri] == nil
+		date = item.updated_at
     end
-    
-    partial = params[:partial]
-    if partial == '/results/result_row'
-			locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-    elsif partial == '/forum/attachment'
-      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-    end
+
+	respond_to do |format|
+		format.json {
+			render json: { collected_on: date }
+		}
+	end
+
+	# partial = params[:partial]
+    # if partial == '/results/result_row'
+		# 	locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
+    #   render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
+    # elsif partial == '/forum/attachment'
+    #   render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
+    # end
   end
   
   def uncollect
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-    partial = params[:partial]
-		if partial != '/results/result_row' && partial != '/forum/attachment'
-			render :text => 'Bad parameters in call to uncollect', :status => :bad_request
-		else
-			locals = setup_ajax_calls(params, true)
-			CollectedItem.remove_collected_item(current_user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
+	  locals = setup_ajax_calls(params, true)
+	  CollectedItem.remove_collected_item(current_user, locals[:uri]) unless locals[:user] == nil || locals[:uri] == nil
 
-			if partial == '/results/result_row'
-				locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-				render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-			elsif partial == '/forum/attachment'
-				render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-			end
-		end
+	  respond_to do |format|
+		  format.json {
+			  render json: {ok: true}
+		  }
+	  end
   end
   
   # Add tags to an item. Multiple tags can be added by using a comma to separate them. The item

@@ -154,6 +154,17 @@ jQuery(document).ready(function($) {
 
 	var needShowMoreLink = false;
 
+	function createBlankResultContentItem(klass) {
+		return window.pss.createHtmlTag("div", { 'class': klass },
+			window.pss.createHtmlTag("span", { 'class': 'label' }, '') +
+			window.pss.createHtmlTag("span", { 'class': 'value' }, ''));
+	}
+
+	function fillInRow(row, label, value) {
+		row.find('.label').html(label);
+		row.find('.value').html(value);
+	}
+
 	function createResultContentItem(type, label, value, startHidden, rowClass) {
 		if (!value)
 			return "";
@@ -232,7 +243,9 @@ jQuery(document).ready(function($) {
 		html += createResultContentItem('multiple_item', 'By:', obj.role_AUT, false);
 		html += createResultContentItem('multiple_item', 'Artist:', obj.role_ART, false);
 		if (collectedDate)
-			html += createResultContentItem('single_item', 'Collected&nbsp;on:', formatDate(collectedDate), false);
+			html += createResultContentItem('single_item', 'Collected&nbsp;on:', formatDate(collectedDate), false, 'collected-on');
+		else
+			html += createBlankResultContentItem('row collected-on');
 
 		var click = "doAddTag('/tag/tag_name_autocomplete', 'add_tag_" + index + "', '" + obj.uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
 		var tags = formatTags(obj.uri, index, obj.tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
@@ -313,18 +326,20 @@ jQuery(document).ready(function($) {
 			html += window.pss.createHtmlTag("button", { id: "more-search_result_"+index,  'class': 'nav_link more', onclick: 'removeHidden("more-search_result_' + index + '", "search_result_' + index + '");return false;'}, '[more...]');
 		}
 
-		if (collectedDate) {
-			var doAnnotation = "doAnnotation('" + obj.uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
-				window.collex.images.spinner + "'); return false;";
-			var linkLabel;
-			var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, obj.annotation);
-			if (obj.annotation) {
-				linkLabel = "Edit Private Annotation";
-			} else
-				linkLabel = "Add Private Annotation";
-			html += window.pss.createHtmlTag("div", { 'class': 'row' },
-				window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation);
-		}
+		var doAnnotation = "doAnnotation('" + obj.uri + "', " + index + ", 'search_result_" + index + "', 'annotation_" + index + "', '/forum/get_nines_obj_list', '" +
+			window.collex.images.spinner + "'); return false;";
+		var linkLabel;
+		var currentAnnotation = "<br>" + window.pss.createHtmlTag("span", { id: 'annotation_' + index, 'class': 'annotation' }, obj.annotation);
+		if (obj.annotation) {
+			linkLabel = "Edit Private Annotation";
+		} else
+			linkLabel = "Add Private Annotation";
+		var annotationOptions = { 'class': 'row annotation-row' };
+		if (!collectedDate)
+			annotationOptions.style = "display:none;";
+
+		html += window.pss.createHtmlTag("div", annotationOptions,
+			window.pss.createHtmlTag("button", { 'class': 'modify_link', onclick: doAnnotation }, linkLabel)+currentAnnotation);
 
 		html += createFullTextExcerpt(obj.text);
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container' }, html);
@@ -344,6 +359,31 @@ jQuery(document).ready(function($) {
 		html += window.pss.createHtmlTag("div", { 'id': 'search_result_'+ index, 'class': klass, 'data-index': index, 'data-uri': obj.uri }, imageBlock+actionButtons+results);
 		return html;
 	}
+
+	window.collex.setCollected = function(index, collectedDate) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			el.addClass('result_row_collected');
+			var actionButtons = createActionButtons({}, true); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
+			el.find(".search_result_buttons").html(actionButtons);
+			fillInRow(el.find('.collected-on'), 'Collected&nbsp;on:', formatDate(collectedDate));
+			el.find(".annotation-row").show();
+		}
+	};
+
+	window.collex.setUncollected = function(index) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			el.removeClass('result_row_collected');
+			var actionButtons = createActionButtons({}, false); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
+			el.find(".search_result_buttons").html(actionButtons);
+			el.find('.collected-on').hide();
+			var annotation = el.find(".annotation-row");
+			annotation.find("button").text("Add Private Annotation");
+			annotation.find(".annotation").text('');
+			annotation.hide();
+		}
+	};
 
 	function createPagination(curr_page, total, page_size) {
 		var html = "";
@@ -447,7 +487,6 @@ jQuery(document).ready(function($) {
 	}
 
 	function createResourceNode(id, level, label, total, childClass) {
-		// TODO-PER: figure out how to decide whether the item starts open.
 		var open = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_arrow', 'data-action': "open" },
 			window.pss.createHtmlTag("img", { 'alt': 'Arrow Open', src: window.collex.images.arrow_open }));
 		var close = window.pss.createHtmlTag("button", { 'class': 'nav_link  limit_to_arrow', 'data-action': "close" },
@@ -471,11 +510,6 @@ jQuery(document).ready(function($) {
 		}
 		var right = window.pss.createHtmlTag("td", { 'class': 'num_objects' }, number_with_delimiter(total));
 		return window.pss.createHtmlTag("tr", { id: 'resource_'+id, 'class': trClass }, left+right);
-//		<tr class="limit_to_selected">
-// <td class="limit_to_lvl1">Periodical&nbsp;&nbsp;
-// <button class="select-facet nav_link" data-action="remove" data-key="doc_type" data-value="Periodical">[X]</button>
-// </td>
-// <td class="num_objects">243</td></tr>
 	}
 
 	function createResourceSection(resources, hash, level, childClass, handleOfSelected) {

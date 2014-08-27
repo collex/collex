@@ -306,7 +306,7 @@ var serverAction = function(params) {
                ajaxParams[csrf_param] = csrf_token;
          }
 
-         if (uParams.el === null || uParams.el.length === 0)// we want to redraw the entire screen
+         if (uParams.el !== undefined && (uParams.el === null || uParams.el.length === 0))// we want to redraw the entire screen
          {
             if (ajaxParams._method === 'GET') {
                var url = action;

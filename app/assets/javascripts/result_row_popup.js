@@ -329,18 +329,14 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 		return;
 	}
 
-	var ptr = $(row_id);
-	ptr.removeClassName('result_without_tag');
-	ptr.addClassName('result_with_tag');
 	var full_text = getFullText(row_id);
 
-	var less = $('less-search_result_'+row_num);
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 	var onSuccess = function(resp) {
-		if (successCallback) successCallback(resp);
-		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		var json = JSON.parse(resp.responseText);
+		window.collex.setCollected(row_num, json.collected_on);
 	};
-	serverAction({ action: { actions: "/results/collect", els: row_id, params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
+	serverAction({ action: { actions: "/results/collect.json", els: [], params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
 
 	// This operation changes the set of collected objects, so we need to request them again next time.
 	if (ninesObjCache)
@@ -371,22 +367,17 @@ function doRemoveTag(uri, row_id, tag_name)
 
 function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 {
-	var tr = document.getElementById(row_id);
-	tr.className = 'result_without_tag';
 	var full_text = getFullText(row_id);
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
 
-	var less = $('less-search_result_'+row_num);
-
 	var onSuccess = function(resp) {
-		if (successCallback) successCallback(resp);
-		if (less) removeHidden.delay(0.1, 'more-search_result_'+row_num, 'search_result_'+row_num);
+		window.collex.setUncollected(row_num);
 		// This operation changes the set of collected objects, so we need to request them again next time.
 		if (ninesObjCache)
 			ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!
 	};
 
-	serverAction({confirm: { title: "Remove Object from Collection?", message: "Are you sure you wish to remove this object from your collection?"}, action: { actions: "/results/uncollect", els: row_id, onSuccess: onSuccess, params: params }, progress: { waitMessage: 'Removing collected object...' }});
+	serverAction({confirm: { title: "Remove Object from Collection?", message: "Are you sure you wish to remove this object from your collection?"}, action: { actions: "/results/uncollect", els: [], onSuccess: onSuccess, params: params }, progress: { waitMessage: 'Removing collected object...' }});
 }
 
 function doAddTag(autocomplete_url, parent_id, uri, row_num, row_id)
