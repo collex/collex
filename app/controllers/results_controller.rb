@@ -254,10 +254,6 @@ class ResultsController < ApplicationController
   end
 
   def add_object_to_exhibit
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
     locals = setup_ajax_calls(params, true)
     exhibit_name = params[:exhibit]
     if locals[:user] != nil
@@ -267,28 +263,18 @@ class ResultsController < ApplicationController
         # with this name, then try unencrypting it and trying again. (It is possible that this was just a cached file in the user's browser.)
         name = exhibit_name.gsub("&quot;", '"')
         exhibit = Exhibit.find_by_title_and_user_id(name, locals[:user].id)
-#        arr = exhibit_name.split("")
-#        str = '/' + h(arr.join('.')) + "/<br />"
-#        arr = name.split("")
-#        str += '/' + h(arr.join('.')) + "/<br />"
-#        exes = Exhibit.find(:all, :conditions => ["user_id = ?", locals[:user].id])
-#        exes.each {|ex|
-#          arr = ex.title.split("")
-#          str += '/' + h(arr.join('.')) + "/<br />"
-#        }
-#        locals[:hit]['warning'] = str
       end
       ExhibitObject.add(exhibit.id, locals[:uri])
 			exhibit.bump_last_change()
     end
 
-    partial = params[:partial]
-    if partial == 'result_row'
-			locals[:hit]['text'] = locals[:full_text] if locals[:full_text] && locals[:full_text].length > 0
-      render :partial => partial, :locals => { :index => locals[:index], :hit => locals[:hit], :has_exhibits => locals[:has_exhibits], :add_border => true }
-    elsif partial == '/forum/attachment'
-      render :partial => partial, :locals => { :comment => DiscussionComment.find(locals[:index]) }
-    end
+	exhibits = Exhibit.get_referencing_exhibits(params["uri"], current_user)
+	respond_to do |format|
+		format.json {
+			render json: { exhibits: exhibits }
+		}
+	end
+
   end
   
   def redraw_result_row_for_popup_buttons

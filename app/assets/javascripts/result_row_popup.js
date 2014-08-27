@@ -576,15 +576,21 @@ function doAddToExhibit(partial, uri, index, row_id, my_collex_url)
 			options.push({ text: trunct_name, value: name });
 		});
 
+		function onSuccess(resp) {
+			var json = JSON.parse(resp.responseText);
+			window.collex.redrawExhibits(index, json.exhibits);
+		}
+
 		new SelectInputDlg({
 			title: "Choose exhibit",
 			prompt: 'Exhibit:',
 			id: 'exhibit',
-			actions: [ "/results/add_object_to_exhibit", "/results/resend_exhibited_objects" ],
-			target_els: [ row_id, "exhibited_objects_container" ],
+			actions: "/results/add_object_to_exhibit",
+			target_els: [ ],
 			okStr: "Save",
 			options: options,
-			extraParams: { partial: partial, uri: uri, row_num: index, full_text: ft }
+			extraParams: { partial: partial, uri: uri, row_num: index, full_text: ft },
+			onSuccess: onSuccess
 		});
 	}
 }

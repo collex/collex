@@ -88,6 +88,9 @@ class SearchController < ApplicationController
 						hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
 					end
 
+					# Add any referencing exhibits
+					exhibits = Exhibit.get_referencing_exhibits(hit["uri"], current_user)
+					hit['exhibits'] = exhibits if exhibits.length > 0
 				}
 				@results['page_size'] = items_per_page
 

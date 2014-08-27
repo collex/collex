@@ -253,6 +253,13 @@ jQuery(document).ready(function($) {
 		return months[month] + " " + day + ", " + year;
 	}
 
+	function formatExhibit(exhibit) {
+		var html = exhibit.title + "&nbsp;" + window.pss.createHtmlTag("a", { 'class': 'nav_link', href: exhibit.view_path }, "[view]");
+		if (exhibit.edit_path && exhibit.edit_path.length > 0)
+			html += "&nbsp;" + window.pss.createHtmlTag("a", { 'class': 'nav_link', href: exhibit.edit_path }, "[edit]");
+		return html;
+	}
+
 	function createResultContents(obj, index, collectedDate) {
 		needShowMoreLink = false;
 		var html = "";
@@ -324,11 +331,17 @@ jQuery(document).ready(function($) {
 		html += createResultContentItem('multiple_item', 'Wood Cutter:', obj.role_WDC, true);
 		html += createResultContentItem('multiple_item', 'Has Part:', obj.hasPart, true);
 		html += createResultContentItem('multiple_item', 'Is Part Of:', obj.isPartOf, true);
-		// TODO-PER: do the exhibit links.
-//<%################### -%>
-//<% if !no_links -%>
-//<% result_row_exhibits(rows, hit, current_user) %>
-//<% end %>
+		var exhibits;
+		if (obj.exhibits) {
+			exhibits = [];
+			for (var i = 0; i < obj.exhibits.length; i++) {
+				exhibits.push(formatExhibit(obj.exhibits[i]));
+			}
+		}
+		if (exhibits)
+			html += createResultContentItem('multiple_item', 'Exhibits:', exhibits, true, 'exhibits-row');
+		else
+			html += createBlankResultContentItem('row exhibits-row');
 
 		if (needShowMoreLink) {
 			html += window.pss.createHtmlTag("button", { id: "more-search_result_"+index,  'class': 'nav_link more', onclick: 'removeHidden("more-search_result_' + index + '", "search_result_' + index + '");return false;'}, '[more...]');
@@ -406,6 +419,25 @@ jQuery(document).ready(function($) {
 			var uri = container.attr("data-uri");
 			var annotation = createAnnotationBody(index, uri, text);
 			value.html(annotation);
+		}
+	};
+
+	window.collex.redrawExhibits = function(index, exhibits) {
+		var el = $("#search_result_"+index);
+		if (el.length) {
+			var row = el.find('.exhibits-row');
+			var container = el.closest(".search_result_data_container");
+			var uri = container.attr("data-uri");
+			var output = [];
+			if (exhibits) {
+				for (var i = 0; i < exhibits.length; i++) {
+					output.push(formatExhibit(exhibits[i]));
+				}
+				row.find(".value").html(output.join("<br>"));
+				row.find(".label").html("Exhibits:");
+				row.show();
+			} else
+				row.hide();
 		}
 	};
 
@@ -736,6 +768,11 @@ jQuery(document).ready(function($) {
 			el.hide();
 	}
 
+	function fixExpandAllLink() {
+		$("#expand_all").show();
+		$("#collapse_all").hide();
+	}
+
 	// has-results add_constraint_form not-empty no_results_msg
 	body.bind('RedrawSearchResults', function(ev, obj) {
 		if (!obj || !obj.hits || !obj.facets || !obj.query) {
@@ -766,5 +803,6 @@ jQuery(document).ready(function($) {
 
 		createTotals(obj.total_hits);
 		setFederations(obj.facets.federation, obj.query.f);
+		fixExpandAllLink();
 	});
 });
