@@ -19,6 +19,9 @@ group :assets do
   # gem 'therubyracer', '~> 0.10.0'
   gem 'uglifier', '>= 1.0.3'
 end
+
+gem 'jquery-ui-rails'
+
 gem 'paperclip'
 
 gem 'memcache-client'
@@ -39,6 +42,8 @@ gem 'will_paginate'
 # Deploy with Capistrano
 gem 'capistrano', '2.15.5'
 gem 'rvm-capistrano'
+
+#gem 'bullet', :group => "development" # this is for debugging. It shows inefficiencies. It should not appear in the production code.
 
 # Bundle the extra gems:
 # gem 'bj'

@@ -67,6 +67,8 @@ GEM
     hike (1.2.3)
     i18n (0.6.11)
     journey (1.0.4)
+    jquery-ui-rails (5.0.0)
+      railties (>= 3.2.16)
     json (1.8.1)
     libv8 (3.16.14.3)
     mail (2.5.4)
@@ -162,6 +164,7 @@ DEPENDENCIES
   daemons
   delayed_job_active_record
   exception_notification
+  jquery-ui-rails
   memcache-client
   mysql2
   nokogiri

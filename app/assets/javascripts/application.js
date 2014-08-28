@@ -17,6 +17,7 @@
 //= require rails
 //= require jquery.localtime
 //= require jquery.cookie
+//= require jquery-ui/autocomplete
 //= require_tree ./lib
 //= require_tree .
 
