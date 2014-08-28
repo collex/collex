@@ -275,7 +275,7 @@ TW.reparseWords = function(newText, origWords, lineBox) {
 					for (j = 0; j < changes[i].newIndexArr.length; j++) {
 						var thisSize = Math.round(changes[i].newIndexArr[j].text.length * charSize);
 						ret.push({ l: currX, r: currX + thisSize, t: orig[changes[i].oldIndex].t, b: orig[changes[i].oldIndex].b, word: changes[i].newIndexArr[j].text });
-						currX += thisSize + charSize;	// also add one here for the space between words.
+						currX += Math.round(thisSize + charSize);	// also add one here for the space between words.
 					}
 					break;
 				case 'DELETED':
