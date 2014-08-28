@@ -58,7 +58,7 @@ class Typewright::OverviewsController < Admin::BaseController
 		private_token = COLLEX_PLUGINS['typewright']['private_token']
 		url = "#{tw_url}/documents/retrieve?uri=#{params[:uri]}&type=#{params[:type]}"
 		begin
-		   doc = RestClient.get url, :'x-auth-key' => private_token
+		   doc = RestClient.get url, :'private_token' => private_token
 		   final_fmt = "text/plain"
 		   final_fmt = "text/xml" if params[:format] != "txt"
 		   send_data doc, :type => final_fmt, :disposition => "inline"  
