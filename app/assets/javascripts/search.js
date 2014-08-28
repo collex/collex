@@ -200,8 +200,7 @@ jQuery(document).ready(function($) {
 		changePage(url);
 	});
 
-	body.on("click", ".query_add", function () {
-		var el = $(this);
+	function query_add(el) {
 		var parent = el.closest('tr');
 		var type = parent.find(".query_type_select").val();
 		var term = parent.find(".query_term input").val();
@@ -209,8 +208,18 @@ jQuery(document).ready(function($) {
 		// TODO-PER: do NOT
 		var url = createNewUrl(type, term, "add");
 		changePage(url);
+	}
+
+	body.on("click", ".query_add", function () {
+		query_add($(this));
 	});
 
+	body.on("keyup", ".query.search-form input", function(e) {
+		var key = e.which;
+		if (key === 13) {
+			query_add($(this));
+		}
+	});
 
 	body.on("change", ".limit_to_federation input", function() {
 		var feds = $(".limit_to_federation input");
