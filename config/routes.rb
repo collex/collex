@@ -91,7 +91,7 @@ Collex::Application.routes.draw do
 	#post '/search/remove_genre' => 'search#remove_genre'
   #post '/search/remove_discipline' => 'search#remove_discipline'
   #post '/search/remove_format' => 'search#remove_format'
-	match '/search/remember_resource_toggle' => 'search#remember_resource_toggle'
+	get '/search/remember_resource_toggle' => 'search#remember_resource_toggle'
 	match '/search/saved' => 'search#saved'
 	match '/search/save_search' => 'search#save_search'
 	post '/search/remove_saved_search' => 'search#remove_saved_search'

@@ -20,7 +20,7 @@
 /*global document */
 /*global submitForm, submitFormWithConfirmation */
 /*global exhibit_names */
-/*extern collapseAllItems, toggleItemExpand, ResultRowDlg, StartDiscussionWithObject, bulkCollect, bulkUncollect, bulkTag, bulk_checked, doAddTag, doAddToExhibit, doAnnotation, doCollect, doRemoveCollect, doRemoveTag, encodeForUri, expandAllItems, getFullText, realLinkToEditorLink, removeHidden, tagFinishedUpdating, toggleAllBulkCollectCheckboxes */
+/*extern collapseAllItems, toggleItemExpand, ResultRowDlg, StartDiscussionWithObject, bulkCollect, bulkUncollect, bulkTag, bulk_checked, doAddTag, doAddToExhibit, doAnnotation, doCollect, doRemoveCollect, doRemoveTag, encodeForUri, expandAllItems, realLinkToEditorLink, removeHidden, tagFinishedUpdating, toggleAllBulkCollectCheckboxes */
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -31,18 +31,6 @@ function encodeForUri(str)
 	value = value.gsub('&', '%26');
 	value = value.gsub(/\?/, '%3f');
 	return value;
-}
-
-// This gets the "full text" field in the search results. That is not saved in the cache,
-// so if we do Ajax operations on a row with full text, then we would lose it. Therefore,
-// we read it, then send it back to the server.
-function getFullText(row_id)
-{
-	var el_full_text = document.getElementById(row_id+ "_full_text");
-	var full_text = "";
-	if (el_full_text)
-		full_text = encodeForUri(el_full_text.innerHTML);
-	return full_text;
 }
 
 function removeHidden(more_id, target_id)
@@ -138,7 +126,7 @@ function bulkTag(autocomplete_url, page)
 			okStr: 'Save',
 			explanation_text: 'Add multiple tags by separating them with a comma (e.g. painting, visual_art)',
          explanation_klass: 'gd_text_input_help',
-			extraParams: { uris: uris, page: page },
+			extraParams: { uris: uris },
 			autocompleteParams: { url: autocomplete_url, token: ','},
       inputKlass: 'new_exhibit_autocomplete',
 			actions: [ '/results/bulk_add_tag' ],
@@ -329,9 +317,7 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 		return;
 	}
 
-	var full_text = getFullText(row_id);
-
-	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
+	var params = { partial: partial, uri: uri, row_num: row_num, full_text: '' };
 	var onSuccess = function(resp) {
 		var json = JSON.parse(resp.responseText);
 		window.collex.setCollected(row_num, json.collected_on);
@@ -345,20 +331,18 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 
 function doRemoveTag(uri, row_id, tag_name)
 {
-	var full_text = getFullText(row_id);
 	var row_num = row_id.substring(row_id.lastIndexOf('_')+1);
 
 	var onSuccess = function(resp) {
 		var json = JSON.parse(resp.responseText);
 		window.collex.redrawTags(row_num, json.my_tags, json.other_tags);
 	};
-	serverAction({ action: { actions: "/results/remove_tag.json", els: [], params: { uri: uri, row_num: row_num, tag: tag_name, full_text: full_text }, onSuccess:onSuccess }});
+	serverAction({ action: { actions: "/results/remove_tag.json", els: [], params: { uri: uri, row_num: row_num, tag: tag_name, full_text: '' }, onSuccess:onSuccess }});
 }
 
 function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
 {
-	var full_text = getFullText(row_id);
-	var params = { partial: partial, uri: uri, row_num: row_num, full_text: full_text };
+	var params = { partial: partial, uri: uri, row_num: row_num, full_text: '' };
 
 	var onSuccess = function(resp) {
 		window.collex.setUncollected(row_num);
@@ -379,7 +363,7 @@ function doAddTag(autocomplete_url, uri, row_num, row_id)
 		explanation_klass: 'gd_text_input_help',
 		id: 'tag[name]',
 		okStr: 'Save',
-		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: getFullText(row_id) },
+		extraParams: { uri: uri, row_num: row_num, row_id: row_id, full_text: '' },
 		autocompleteParams: { url: autocomplete_url, token: ','},
 		inputKlass: 'new_exhibit_autocomplete',
 		actions: '/results/add_tag.json',
@@ -456,7 +440,7 @@ function doAnnotation(uri, row_num, row_id, curr_annotation_id, populate_collex_
 			window.collex.redrawAnnotation(row_num, value);
 		};
 
-		serverAction({action:{actions: "/results/set_annotation", els: [], params: { note: value, uri: uri, row_num: row_num, full_text: getFullText(row_id) }, onSuccess:onSuccess}});
+		serverAction({action:{actions: "/results/set_annotation", els: [], params: { note: value, uri: uri, row_num: row_num, full_text: '' }, onSuccess:onSuccess}});
 	};
 
 	var title = existing_note.length > 0 ? "Edit Private Annotation" : "Add Private Annotation";

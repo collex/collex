@@ -79,6 +79,12 @@ jQuery(document).ready(function($) {
 
 	function onSuccess(resp) {
 		resp.query = getUrlVars();
+		for (var key in resp.query) {
+			if (resp.query.hasOwnProperty(key)) {
+				if (!resp.query[key] || resp.query[key].length === 0)
+					delete resp.query[key];
+			}
+		}
 		body.trigger('RedrawSearchResults', resp);
 		if (progressDlg) {
 			progressDlg.cancel();

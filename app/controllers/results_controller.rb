@@ -135,15 +135,10 @@ class ResultsController < ApplicationController
         do_add_tag(params)
       }
 	end
-	  redirect_with_page(request, params)
+	  redirect_to :back
   end
   
   def bulk_collect
-	  if request.request_method != 'POST'
-		  render_422
-		  return
-	  end
-	  
 	 bulk_tag = params[:bulk_tag_text]
     if user_signed_in? && params[:bulk_collect] != nil
       uris = params[:bulk_collect]
@@ -155,7 +150,7 @@ class ResultsController < ApplicationController
       end
     end
 
-		redirect_with_page(request, params)
+		redirect_to :back
   end
   
   # uncollect a set of items in bulk. The items to be uncollected
@@ -176,7 +171,7 @@ class ResultsController < ApplicationController
     end
 
 	# refresh the posed page with the new collection
-	redirect_with_page(request, params)
+	redirect_to :back
   end
 	
   def resend_exhibited_objects
@@ -185,15 +180,6 @@ class ResultsController < ApplicationController
   end
 
   private
-	def redirect_with_page(request, params)
-		target = request.env["HTTP_REFERER"]
-		if params['page']
-			target += target.include?('?') ? '&' : '?'
-			target += "page=#{params['page']}"
-		end
-		redirect_to(target)
-	end
-
   def encode_for_uri(str) # TODO-PER: this is in a helper, so it can't be called from a controller, so we are just repeating it.
     value = str.gsub('%', '%25')
     value = value.gsub('#', '%23')

@@ -61,7 +61,7 @@ class SearchController < ApplicationController
 				# 		r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
 
 				params.each { |key, val|
-					if legal_constraints.include?(key)
+					if legal_constraints.include?(key) && val.present?
 						constraints.push({ key: key, val: val })
 					end
 				}
@@ -141,7 +141,7 @@ class SearchController < ApplicationController
    def set_archive_toggle_state(archives)
 	   archives.each { |archive|
 		   if archive['children'].present?
-			   if session[:resource_toggle].present? && session[:resource_toggle]["#{archive['id']}"].present? && session[:resource_toggle]["#{archive['id']}"] = :open
+			   if session[:resource_toggle].present? && session[:resource_toggle]["#{archive['id']}"].present? && session[:resource_toggle]["#{archive['id']}"] == :open
 				   archive['toggle'] = 'open'
 			   else
 				   archive['toggle'] = 'close'
@@ -178,103 +178,103 @@ class SearchController < ApplicationController
    #  redirect_to :action => 'browse'
    # end
 
-   def add_constraint
-     session[:name_of_search] = nil
-      # There are two types of input we can receive here, depending on whether the search form was expanded.
-      # There might be a different input box for each type of search, or there might be a single input box with a select field determining the type.
-
-      if params[:search_phrase]
-        # basic search
-        # We were called from the home page, so make sure there aren't any constraints laying around
-        clear_constraints()
-        parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
-
-      elsif params[:search] && params[:search][:phrase] == nil
-        # expanded input boxes
-        parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
-        add_title_constraint(params[:search_title], false) if params[:search_title] != ""
-        add_author_constraint(params[:search_author], false) if params[:search_author] != ""
-        add_editor_constraint(params[:search_editor], false) if params[:search_editor] != ""
-        add_owner_constraint(params[:search_owner], false) if params[:search_owner] != ""
-        add_artist_constraint(params[:search_artist], false) if params[:search_artist] != ""
-        add_publisher_constraint(params[:search_publisher], false) if params[:search_publisher] != ""
-        add_date_constraint(params[:search_year], false) if params[:search_year] != ""
-        add_language_constraint(params[:search_language], false) if params[:search_language] != ""
-
-        # add the role_* constraints
-        params.each { |key, value|
-          if key.match(/search_role_/) and value != ""
-            role = key.sub(/search_/, '')
-            add_role_constraint(role, value, false)
-          end
-        }
-
-        # Add fuzzyness parameters to keyword and title searches
-        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
-        add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
-
-
-      elsif params[:search]
-        # single input box
-        invert = (params[:search_not] == "NOT")
-        if not params[:search][:phrase].strip.empty?
-          case params[:search_type]
-            when "Search Term"
-              parse_keyword_phrase(params[:search][:phrase], invert)
-            when "Title"
-              add_title_constraint(params[:search][:phrase], invert)
-            when "Author"
-              add_author_constraint(params[:search][:phrase], invert)
-            when "Editor"
-              add_editor_constraint(params[:search][:phrase], invert)
-            when "Owner"
-              add_owner_constraint(params[:search][:phrase], invert)
-            when "Artist"
-              add_artist_constraint(params[:search][:phrase], invert)
-            when "Publisher"
-              add_publisher_constraint(params[:search][:phrase], invert)
-            when "Year (YYYY)"
-              add_date_constraint(params[:search][:phrase], invert)
-            when "Language"
-              add_language_constraint(params[:search_language], invert)
-            else
-              role = Search.role_field_names.find{ |key, value| value[:display] == params[:search_type]}
-              if role
-                add_role_constraint(role[0], params[:search][:phrase], invert)
-              end
-          end
-          #parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
-          #add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
-          #add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
-          #add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
-          #add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
-          #add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
-          #add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
-          #add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
-          #add_language_constraint(params[:search_language], invert) if params[:search_type] == "Language"
-        end
-
-        # see if the fuz_constraints are already present
-        keyword_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_q'};
-        title_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_t'};
-
-        # set or reset the fuz_constraints if needed
-        if keyword_fuz_constraint.nil?
-          add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
-        else
-          modify_keyword_fuz_constraint(params[:search_keyword_fuz], false, keyword_fuz_constraint) if params[:search_keyword_fuz] != ""
-        end
-        if title_fuz_constraint.nil?
-          add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
-        else
-          modify_title_fuz_constraint(params[:search_title_fuz], false, title_fuz_constraint) if params[:search_title_fuz] != ""
-        end
-
-      end
-
-      session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
-      redirect_to :action => 'browse'
-   end
+   # def add_constraint
+   #   session[:name_of_search] = nil
+   #    # There are two types of input we can receive here, depending on whether the search form was expanded.
+   #    # There might be a different input box for each type of search, or there might be a single input box with a select field determining the type.
+   #
+   #    if params[:search_phrase]
+   #      # basic search
+   #      # We were called from the home page, so make sure there aren't any constraints laying around
+   #      clear_constraints()
+   #      parse_keyword_phrase(params[:search_phrase], false) #if params[:search_type] == "Search Term"
+   #
+   #    elsif params[:search] && params[:search][:phrase] == nil
+   #      # expanded input boxes
+   #      parse_keyword_phrase(params[:search][:keyword], false) if params[:search] && params[:search][:keyword] != ""
+   #      add_title_constraint(params[:search_title], false) if params[:search_title] != ""
+   #      add_author_constraint(params[:search_author], false) if params[:search_author] != ""
+   #      add_editor_constraint(params[:search_editor], false) if params[:search_editor] != ""
+   #      add_owner_constraint(params[:search_owner], false) if params[:search_owner] != ""
+   #      add_artist_constraint(params[:search_artist], false) if params[:search_artist] != ""
+   #      add_publisher_constraint(params[:search_publisher], false) if params[:search_publisher] != ""
+   #      add_date_constraint(params[:search_year], false) if params[:search_year] != ""
+   #      add_language_constraint(params[:search_language], false) if params[:search_language] != ""
+   #
+   #      # add the role_* constraints
+   #      params.each { |key, value|
+   #        if key.match(/search_role_/) and value != ""
+   #          role = key.sub(/search_/, '')
+   #          add_role_constraint(role, value, false)
+   #        end
+   #      }
+   #
+   #      # Add fuzzyness parameters to keyword and title searches
+   #      add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
+   #      add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
+   #
+   #
+   #    elsif params[:search]
+   #      # single input box
+   #      invert = (params[:search_not] == "NOT")
+   #      if not params[:search][:phrase].strip.empty?
+   #        case params[:search_type]
+   #          when "Search Term"
+   #            parse_keyword_phrase(params[:search][:phrase], invert)
+   #          when "Title"
+   #            add_title_constraint(params[:search][:phrase], invert)
+   #          when "Author"
+   #            add_author_constraint(params[:search][:phrase], invert)
+   #          when "Editor"
+   #            add_editor_constraint(params[:search][:phrase], invert)
+   #          when "Owner"
+   #            add_owner_constraint(params[:search][:phrase], invert)
+   #          when "Artist"
+   #            add_artist_constraint(params[:search][:phrase], invert)
+   #          when "Publisher"
+   #            add_publisher_constraint(params[:search][:phrase], invert)
+   #          when "Year (YYYY)"
+   #            add_date_constraint(params[:search][:phrase], invert)
+   #          when "Language"
+   #            add_language_constraint(params[:search_language], invert)
+   #          else
+   #            role = Search.role_field_names.find{ |key, value| value[:display] == params[:search_type]}
+   #            if role
+   #              add_role_constraint(role[0], params[:search][:phrase], invert)
+   #            end
+   #        end
+   #        #parse_keyword_phrase(params[:search][:phrase], invert) if params[:search_type] == "Search Term"
+   #        #add_title_constraint(params[:search][:phrase], invert) if params[:search_type] == "Title"
+   #        #add_author_constraint(params[:search][:phrase], invert) if params[:search_type] == "Author"
+   #        #add_editor_constraint(params[:search][:phrase], invert) if params[:search_type] == "Editor"
+   #        #add_owner_constraint(params[:search][:phrase], invert) if params[:search_type] == "Owner"
+   #        #add_artist_constraint(params[:search][:phrase], invert) if params[:search_type] == "Artist"
+   #        #add_publisher_constraint(params[:search][:phrase], invert) if params[:search_type] == "Publisher"
+   #        #add_date_constraint(params[:search][:phrase], invert) if params[:search_type] == "Year (YYYY)"
+   #        #add_language_constraint(params[:search_language], invert) if params[:search_type] == "Language"
+   #      end
+   #
+   #      # see if the fuz_constraints are already present
+   #      keyword_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_q'};
+   #      title_fuz_constraint = session[:constraints].find{ |i| i[:fieldx] == 'fuz_t'};
+   #
+   #      # set or reset the fuz_constraints if needed
+   #      if keyword_fuz_constraint.nil?
+   #        add_keyword_fuz_constraint(params[:search_keyword_fuz], false) if params[:search_keyword_fuz] != ""
+   #      else
+   #        modify_keyword_fuz_constraint(params[:search_keyword_fuz], false, keyword_fuz_constraint) if params[:search_keyword_fuz] != ""
+   #      end
+   #      if title_fuz_constraint.nil?
+   #        add_title_fuz_constraint(params[:search_title_fuz], false) if params[:search_title_fuz] != ""
+   #      else
+   #        modify_title_fuz_constraint(params[:search_title_fuz], false, title_fuz_constraint) if params[:search_title_fuz] != ""
+   #      end
+   #
+   #    end
+   #
+   #    session[:name_facet_msg] = "You just added \"#{params[:search][:phrase]}\" as a constraint." if params[:from_name_facet] == "true"
+   #    redirect_to :action => 'browse'
+   # end
 
 	# def add_federation_constraint
 	# 	session[:name_of_search] = nil
