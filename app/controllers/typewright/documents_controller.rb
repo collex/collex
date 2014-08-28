@@ -307,7 +307,7 @@ class Typewright::DocumentsController < ApplicationController
        private_token = COLLEX_PLUGINS['typewright']['private_token']
        url = "#{tw_url}/documents/#{doc_id}/delete_corrections?src=#{src}&page=#{page_num}"
        begin
-         resp = RestClient.put url, :'x-auth-key' => private_token
+         resp = RestClient.put url, :'private_token' => private_token
          # back to the edit page
          doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit?src=#{src}&page=#{page_num}"
          redirect_to doc_url

@@ -27,7 +27,7 @@ class Typewright::DocumentUser < ActiveResource::Base
 		users.each { |user|
 			t_user = Typewright::User.get_user(Setup.default_federation(), user.id)
 			if t_user
-				all = self.where({user_id: user.id})
+				all = self.find(:all, :params => { :user_id => user.id })
 				all.each { |rec|
 					docs[rec.document_id] = true
 				}
