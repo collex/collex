@@ -682,18 +682,6 @@ table.tw_editing td {
 	.tw_right_side {
 		margin-left: 263px;
 	}
-	.tw_simulate_idle_timer {
-		position: absolute;
-		left: 450px;
-		top: 3px;
-		padding: 1px 8px;
-		border: outset;
-		border-radius: 4px;
-
-		&:hover {
-			border: inset;
-		}
-	}
 	.tw_live_status {
 		border: 1px solid #90939A;
 		border-radius: 6px;

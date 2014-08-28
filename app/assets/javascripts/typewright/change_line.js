@@ -582,9 +582,10 @@ jQuery(document).ready(function($) {
 		redrawLiveChanges();
 	});
 
-	body.on("click", ".tw_simulate_idle_timer", function () {
-		pingTypeWright();
-	});
+	if (TW.updateUrl !== undefined) {
+		var idleTimeoutMilliseconds = 30000; // 30 seconds
+		setInterval(pingTypeWright, idleTimeoutMilliseconds);
+	}
 
 	body.on("click", ".tw_dismiss", function () {
 		$(".tw_notification").fadeOut("slow");

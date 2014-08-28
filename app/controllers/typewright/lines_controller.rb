@@ -96,7 +96,7 @@ class Typewright::LinesController < ApplicationController
 				exact_time = ret.attributes['exact_time']
 			end
 
-			more_recent_corrections = more_recent_corrections.map { |rec| rec.attributes.to_options! }
+			more_recent_corrections = more_recent_corrections.present? ? more_recent_corrections.map { |rec| rec.attributes.to_options! } : []
 			more_recent_corrections = Typewright::Line.convert_from_server_to_usable(more_recent_corrections)
 			render :json => { lines: more_recent_corrections, editors: editors, edit_line: edit_line, edit_time: edit_time, exact_time: exact_time }
 		end
