@@ -291,7 +291,7 @@ class Typewright::DocumentsController < ApplicationController
       end
    end
 
-   # POST /typewrite/documents/1/delete_edits?page=n
+   # PUT /typewrite/documents/1/delete_edits?page=n
    def delete_edits
      doc_id = params[:id]
      page_num = params[:page]
@@ -303,9 +303,11 @@ class Typewright::DocumentsController < ApplicationController
        render :text => 'You must be signed in to delete corrections. Did your session expire?', :status => :bad_request
      else
 
-       url = "#{URI.parse(Setup.solr_url())}/documents/#{doc_id}/delete_corrections?src=#{src}&page=#{page_num}"
+       tw_url = COLLEX_PLUGINS['typewright']['web_service_url']
+       private_token = COLLEX_PLUGINS['typewright']['private_token']
+       url = "#{tw_url}/documents/#{doc_id}/delete_corrections?src=#{src}&page=#{page_num}"
        begin
-         resp = RestClient.post url
+         resp = RestClient.put url, :'x-auth-key' => private_token
          # back to the edit page
          doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit?src=#{src}&page=#{page_num}"
          redirect_to doc_url

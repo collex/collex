@@ -1,4 +1,4 @@
-// report_this_page.js
+// delete_all_edits.js
 //
 // Requires the general_dialog file's showPartialInLightBox
 // requires the calling element has data-url defined, which is the partial to display.
@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
 		var url = node.attr('data-url');
 
         var ok_action = function( ) {
-            jQuery.post( url );
+            serverAction({action:{ actions: { method: 'PUT', url: url }}});
         };
 
         new ConfirmDlg('Delete Edits', 'This will delete any edits made on this page. Are you sure?', 'Ok', 'Cancel', ok_action );
