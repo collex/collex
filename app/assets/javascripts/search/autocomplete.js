@@ -5,6 +5,8 @@ jQuery(document).ready(function($) {
 	function callback(request, response) {
 		var self = this.element;
 		var url = self.attr('data-autocomplete-url') + '.json';
+		var csrf_param = $$('meta[name=csrf-param]')[0].content;
+		var csrf_token = $$('meta[name=csrf-token]')[0].content;
 
 		function success(resp) {
 			// The response is an array of suggestions. The suggestions are an array.
@@ -23,6 +25,7 @@ jQuery(document).ready(function($) {
 		}
 
 		request.other = window.location.search;
+		request[csrf_param] = csrf_token;
 		$.post(url, request).done(success).fail(fail);
 	}
 
