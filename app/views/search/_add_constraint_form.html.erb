@@ -22,7 +22,7 @@
 	  </div>
 		<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');">
 		  <input id="search_submit" type="submit" value="Search"/>
-			<input name="q" type="text" class="search_entry_box_keyword" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
+			<input name="q" type="text" class="search_entry_box_keyword jq-autocomplete" data-autocomplete-url="/search/auto_complete_for_q" autocomplete="off" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
 		  <% if HAS_FUZZY %>
 			  <div class="fuzzy-container">
 			  <% fuzz = @kfval %>
@@ -108,7 +108,7 @@
  	<table>
         <tr>
           <td colspan='2'>
-			  <input name="q" type="text" class="search_entry_box_keyword" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
+			  <input name="q" type="text" class="search_entry_box_keyword jq-autocomplete" data-autocomplete-url="/search/auto_complete_for_q" autocomplete="off" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
           </td>
           <td>
             <input id="search_submit" type="submit" value="Search" />

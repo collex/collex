@@ -100,6 +100,7 @@ Collex::Application.routes.draw do
 	#match '/search' => 'search#browse'
 	get '/search' => 'search#index'
 
+	post '/search/auto_complete_for_q' => 'search#auto_complete_for_q'
 	post '/search/auto_complete_for_search_university' => 'search#auto_complete_for_search_university'
 
 	post '/results/add_object_to_exhibit' => 'results#add_object_to_exhibit'

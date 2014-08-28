@@ -835,22 +835,38 @@ class SearchController < ApplicationController
 		session[:search_sort_by_direction] = nil
 	end
 
-   def auto_complete(keyword, field = 'content')
-     @solr = Catalog.factory_create(session[:use_test_index] == "true")
-     @field = field
-     @values = []
-     if params['search'] && session[:constraints]
-       begin
-         results = @solr.auto_complete(@field, session[:constraints], keyword)
-		results.each { |result|
-			@values.push([result['item'], result['occurrences']])
-		}
-	   rescue  #Net::HTTPServerException => e
-		 # don't do anything if this fails.
-	   end
-     end
+   # def auto_complete(keyword, field = 'content')
+   #   @solr = Catalog.factory_create(session[:use_test_index] == "true")
+   #   @field = field
+   #   @values = []
+   #   if params['search'] && session[:constraints]
+   #     begin
+   #       results = @solr.auto_complete(@field, session[:constraints], keyword)
+	# 	results.each { |result|
+	# 		@values.push([result['item'], result['occurrences']])
+	# 	}
+	#    rescue  #Net::HTTPServerException => e
+	# 	 # don't do anything if this fails.
+	#    end
+   #   end
+   #
+   #   render :partial => 'suggest'
+   # end
 
-     render :partial => 'suggest'
+   def auto_complete(keyword, field)
+	   @solr = Catalog.factory_create(session[:use_test_index] == "true")
+	   other_params = []
+	   values = []
+	   begin
+		   results = @solr.auto_complete(field, other_params, keyword)
+		   results.each { |result|
+			   values.push([result['item'], result['occurrences']])
+		   }
+	   rescue Net::HTTPServerException => e
+		   logger.error("Autocomplete error: #{e.message}")
+		   # don't do anything if this fails.
+	   end
+	   return values
    end
 
    public
@@ -865,61 +881,63 @@ class SearchController < ApplicationController
       render :partial => 'autocomplete'
    end
 
-   def auto_complete_for_search_keyword
-    auto_complete(params['search']['keyword']) if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
+   def auto_complete_for_q
+	   respond_to do |format|
+		   format.json {
+			   values = auto_complete(params['term'], 'content') if params['term']  # google bot will hit this without parameters, so check for that
+			   render json: values
+		   }
+	   end
     end
-   end
 
-   def auto_complete_for_search_phrase
-    auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
-
-   def auto_complete_for_search_term
-    auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
-
-   def auto_complete_for_title
-    auto_complete(params['search']['phrase'], 'title') if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
-
-   def auto_complete_for_author
-    auto_complete(params['search']['phrase'], 'author') if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
-
-   def auto_complete_for_editor
-    auto_complete(params['search']['phrase'], 'editor') if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
-
-   def auto_complete_for_publisher
-    auto_complete(params['search']['phrase'], 'publisher') if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
-
-   def auto_complete_for_year
-    auto_complete(params['search']['phrase'], 'year') if params['search']  # google bot will hit this without parameters, so check for that
-    if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
-      render :text => ''
-    end
-   end
+   # def auto_complete_for_search_phrase
+   #  auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
+   #
+   # def auto_complete_for_search_term
+   #  auto_complete(params['search']['phrase']) if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
+   #
+   # def auto_complete_for_title
+   #  auto_complete(params['search']['phrase'], 'title') if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
+   #
+   # def auto_complete_for_author
+   #  auto_complete(params['search']['phrase'], 'author') if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
+   #
+   # def auto_complete_for_editor
+   #  auto_complete(params['search']['phrase'], 'editor') if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
+   #
+   # def auto_complete_for_publisher
+   #  auto_complete(params['search']['phrase'], 'publisher') if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
+   #
+   # def auto_complete_for_year
+   #  auto_complete(params['search']['phrase'], 'year') if params['search']  # google bot will hit this without parameters, so check for that
+   #  if !request.post? # Search bots will call this as a :get; this just keeps them from creating an error message.
+   #    render :text => ''
+   #  end
+   # end
 
     def save_search
       # see if the session has timed out since the last browser action, and the
