@@ -78,7 +78,7 @@ class SearchController < ApplicationController
 				all_uris = []
 				@results['hits'].each { |hit|
 					# make a list of all uris so that we can find the collected ones and any annotations
-					all_uris.push("'" + hit['uri'] + "'")
+					all_uris.push(hit['uri'])
 
 					# Add the highlighting to the hit object so that a result is completely contained inside the hit object
 					if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]

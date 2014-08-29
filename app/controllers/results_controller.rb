@@ -78,7 +78,7 @@ class ResultsController < ApplicationController
 
   def get_all_tags_for_object(uri)
 	  # TODO-PER: distinguish between the user's tags and other tags.
-	  tags = Tag.items_in_uri_list(["'" + uri + "'"])
+	  tags = Tag.items_in_uri_list([ uri])
 	  return tags[uri]
   end
 

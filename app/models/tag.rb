@@ -23,6 +23,7 @@ class Tag < ActiveRecord::Base
 	def self.items_in_uri_list(uris)
 		sql_left = "select uri,name from tagassigns inner join cached_resources on tagassigns.`cached_resource_id` = cached_resources.id inner join tags on tagassigns.tag_id = tags.id where cached_resources.uri in ("
 		sql_right = ");"
+		uris = uris.map { |uri| "'" + uri.gsub("\'") { |apos| "\\\'" } + "'" }
 		tags = ActiveRecord::Base.connection.execute(sql_left + uris.join(',')+sql_right)
 		list = {}
 		tags.each { |item|

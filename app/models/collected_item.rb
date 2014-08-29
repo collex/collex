@@ -21,7 +21,7 @@ class CollectedItem < ActiveRecord::Base
 	def self.items_in_uri_list(user_id, uris)
 		sql_left = "select uri,updated_at,annotation from collected_items inner join cached_resources on collected_items.`cached_resource_id` = cached_resources.id where user_id = #{user_id} AND cached_resources.uri in ("
 		sql_right = ");"
-		uris = uris.map { |uri| uri.gsub("\'") { |apos| "\\\'" }  }
+		uris = uris.map { |uri| "'" + uri.gsub("\'") { |apos| "\\\'" } + "'" }
 		collected_items = ActiveRecord::Base.connection.execute(sql_left + uris.join(',')+sql_right)
 		list = {}
 		collected_items.each { |item|
