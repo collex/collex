@@ -703,7 +703,7 @@ jQuery(document).ready(function($) {
 		var table = $('.search-form');
 		var html = "";
 		for (var key in query) {
-			if (query.hasOwnProperty(key) && key !== 'page' && key !== 'srt' && key !== 'dir') {
+			if (query.hasOwnProperty(key) && key !== 'page' && key !== 'srt' && key !== 'dir' && key !== 'f') {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];
@@ -773,11 +773,28 @@ jQuery(document).ready(function($) {
 		$("#collapse_all").hide();
 	}
 
+	var timeoutHandle;
+	function imageTimeout() {
+		timeoutHandle = setTimeout(function() {
+			var spinners = $('.progress_timeout');
+			spinners.each(function(index, spinner) {
+				var noimage = $(spinner).attr('data-noimage');
+				spinner.src = noimage;
+			});
+			timeoutHandle = null;
+		}, 8000);
+	}
+
 	// has-results add_constraint_form not-empty no_results_msg
 	body.bind('RedrawSearchResults', function(ev, obj) {
 		if (!obj || !obj.hits || !obj.facets || !obj.query) {
 			window.console.log("error redrawing search results", obj);
 			return;
+		}
+
+		if (timeoutHandle) {
+			clearTimeout(timeoutHandle);
+			timeoutHandle = null;
 		}
 
 		showResultSections(obj);
@@ -804,5 +821,7 @@ jQuery(document).ready(function($) {
 		createTotals(obj.total_hits);
 		setFederations(obj.facets.federation, obj.query.f);
 		fixExpandAllLink();
+
+		imageTimeout();
 	});
 });
