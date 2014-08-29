@@ -703,7 +703,7 @@ jQuery(document).ready(function($) {
 		var table = $('.search-form');
 		var html = "";
 		for (var key in query) {
-			if (query.hasOwnProperty(key) && key !== 'page') {
+			if (query.hasOwnProperty(key) && key !== 'page' && key !== 'srt' && key !== 'dir') {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];

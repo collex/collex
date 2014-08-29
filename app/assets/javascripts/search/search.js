@@ -141,6 +141,13 @@ jQuery(document).ready(function($) {
 		return existingQuery;
 	}
 
+	function removeSortFromQueryObject() {
+		var existingQuery = getUrlVars();
+		delete existingQuery.srt;
+		delete existingQuery.dir;
+		return existingQuery;
+	}
+
 	function replaceInQueryObject(newQueryKey, newQueryValue) {
 		var existingQuery = getUrlVars();
 		existingQuery[newQueryKey] = newQueryValue;
@@ -189,14 +196,17 @@ jQuery(document).ready(function($) {
 		var el = $(this);
 		var newQueryKey = el.attr("name");
 		var newQueryValue = el.val();
+		var url;
 		if (newQueryKey === 'srt') {
 			if (newQueryValue === 'rel') {
 				$(".sort select[name='dir']").hide();
-				newQueryValue = '';
+				var newQuery = removeSortFromQueryObject();
+				url = "/search?" + makeQueryString(newQuery);
 			} else
 				$(".sort select[name='dir']").show();
 		}
-		var url = createNewUrl(newQueryKey, newQueryValue, "replace");
+		if (!url) // If it isn't a special case, then create the url normally.
+			url = createNewUrl(newQueryKey, newQueryValue, "replace");
 		changePage(url);
 	});
 
@@ -247,9 +257,22 @@ jQuery(document).ready(function($) {
 		changePage("/search?" + makeQueryString(existingQuery));
 	});
 
+	function initSortControls() {
+		var existingQuery = getUrlVars();
+		if (existingQuery.srt && existingQuery.srt.length > 0) {
+			$(".sort select[name='srt']").val(existingQuery.srt);
+			if (existingQuery.dir && existingQuery.dir.length > 0)
+				$(".sort select[name='dir']").val(existingQuery.dir);
+			$(".sort select[name='dir']").val();
+		} else {
+			$(".sort select[name='dir']").hide();
+		}
+	}
+
 	function initializeSearch() {
 		// This is called on initial page load.
 		if (window.collex && window.collex.pageName === 'search') {
+			initSortControls();
 			showProgress();
 			setTimeout(doSearch, 10);	// allow the progress spinner to appear.
 		}
