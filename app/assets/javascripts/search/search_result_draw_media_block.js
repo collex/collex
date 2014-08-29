@@ -89,6 +89,8 @@ jQuery(document).ready(function($) {
 
 	var titleLinkCounter = 0; // Just need a unique number, so we'll just keep counting here.
 	function createTitleLink(title, url) {
+		if (!title)
+			title = "No title";
 		if (title.length < 200)
 			return window.pss.createHtmlTag("a", { 'class': 'nines_link doc-title', 'href': url, target: '_blank', title: ' ' }, title);
 		else {
@@ -223,6 +225,22 @@ jQuery(document).ready(function($) {
 		return html;
 	}
 
+	function createSubMedia(obj) {
+		if (!obj)
+			return null;
+		try {
+			obj = JSON.parse(obj);
+		} catch (ex) {
+			window.console(ex);
+			return null;
+		}
+		var subMedia = [];
+		for (var i = 0; i < obj.length; i++) {
+			subMedia.push(createSubMediaBlock(obj[i]));
+		}
+		return subMedia;
+	}
+
 	function createResultContents(obj, index, collectedDate) {
 		needShowMoreLink = false;
 		var html = "";
@@ -235,8 +253,10 @@ jQuery(document).ready(function($) {
 		else
 			html += createBlankResultContentItem('row collected-on');
 
-		var tags = createTagLine(obj.uri, index, obj.tags);
-		html += createResultContentItem('single_item', 'Tags:', tags, false, 'tag-list');
+		if (index !== null) {
+			var tags = createTagLine(obj.uri, index, obj.tags);
+			html += createResultContentItem('single_item', 'Tags:', tags, false, 'tag-list');
+		}
 
 		var site = window.collex.getSite(obj.archive);
 		html += createResultContentItem('single_item', 'Site:', site, false);
@@ -292,8 +312,8 @@ jQuery(document).ready(function($) {
 		html += createResultContentItem('multiple_item', 'Typographer:', obj.role_TYG, true);
 		html += createResultContentItem('multiple_item', 'Wood Engraver:', obj.role_WDE, true);
 		html += createResultContentItem('multiple_item', 'Wood Cutter:', obj.role_WDC, true);
-		html += createResultContentItem('multiple_item', 'Has Part:', obj.hasPart, true);
-		html += createResultContentItem('multiple_item', 'Is Part Of:', obj.isPartOf, true);
+		html += createResultContentItem('separate_lines', 'Has Part:', createSubMedia(obj.hasPart), true);
+		html += createResultContentItem('separate_lines', 'Is Part Of:', createSubMedia(obj.isPartOf), true);
 		var exhibits;
 		if (obj.exhibits) {
 			exhibits = [];
@@ -306,7 +326,7 @@ jQuery(document).ready(function($) {
 		else
 			html += createBlankResultContentItem('row exhibits-row');
 
-		if (needShowMoreLink) {
+		if (needShowMoreLink && index !== null) {
 			html += window.pss.createHtmlTag("button", { id: "more-search_result_"+index,  'class': 'nav_link more', onclick: 'removeHidden("more-search_result_' + index + '", "search_result_' + index + '");return false;'}, '[more...]');
 		}
 
@@ -319,6 +339,12 @@ jQuery(document).ready(function($) {
 
 		html += createFullTextExcerpt(obj.text);
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_data_container', 'data-uri': obj.uri }, html);
+	}
+
+	function createSubMediaBlock(obj) {
+		var resultHeader = createResultHeader(obj);
+		var resultContents = createResultContents(obj, null);
+		return window.pss.createHtmlTag("div", { 'class': 'search-result-sub' }, resultHeader+resultContents);
 	}
 
 	window.collex.createMediaBlock = function(obj, index, isCollected, collectedDate) {
