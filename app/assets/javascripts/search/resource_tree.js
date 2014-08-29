@@ -20,24 +20,6 @@ jQuery(document).ready(function($) {
 	"use strict";
 	var body = $("body");
 
-	function getArchiveNode(id) {
-		id = parseInt(id, 10);
-		function getArchiveOneBranch(branch, id) {
-			for (var i = 0; i < branch.length; i++) {
-				var archive = branch[i];
-				if (archive.id === id)
-					return archive;
-				if (archive.children) {
-					var a = getArchiveOneBranch(archive.children, id);
-					if (a)
-						return a;
-				}
-			}
-			return null;
-		}
-		return getArchiveOneBranch(window.collex.facetNames.archives, id);
-	}
-
 	body.on("click", ".resource-tree-node button", function () {
 		var el = $(this);
 		var parent = el.closest(".resource-tree-node");
@@ -58,7 +40,7 @@ jQuery(document).ready(function($) {
 			close.hide();
 			$(child_class).hide();
 		}
-		var archive = getArchiveNode(id);
+		var archive = window.collex.getArchiveNode(id);
 		if (archive)
 			archive.toggle = action;
 
