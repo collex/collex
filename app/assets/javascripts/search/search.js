@@ -257,6 +257,11 @@ jQuery(document).ready(function($) {
 		changePage("/search?" + makeQueryString(existingQuery));
 	});
 
+	// This replaces the current search with the one passed to it.
+	body.bind('SetSearch', function(ev, obj) {
+		changePage("/search?" + makeQueryString(obj));
+	});
+
 	function initSortControls() {
 		var existingQuery = getUrlVars();
 		if (existingQuery.srt && existingQuery.srt.length > 0) {

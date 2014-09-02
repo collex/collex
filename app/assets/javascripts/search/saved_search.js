@@ -49,3 +49,17 @@ function showHiddenSavedSearches(class_of_button, class_of_hidden_items)
 		});
 	}
 }
+
+function doSaveSearch()
+{
+	new TextInputDlg({
+		title: "Save Search",
+		prompt: 'Name:',
+		id: 'saved_search_name',
+		okStr: 'Save',
+		actions: "/search/save_search",
+		target_els: "saved_search_name_span",
+		pleaseWaitMsg: "Storing the current search..."
+	});
+}
+

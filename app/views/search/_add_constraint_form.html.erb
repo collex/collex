@@ -20,7 +20,7 @@
 	  <div class="search_federation_checkbox">
 		<input type="checkbox" name="search_federation" id="search_federation" onchange="changeFederation(this); return false;" value="search_all_federations" <%= "checked='checked'" if has_all_federation_constraints?(@other_federations) %> />Search all federations
 	  </div>
-		<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');">
+		<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get">
 		  <input id="search_submit" type="submit" value="Search"/>
 			<input name="q" type="text" class="search_entry_box_keyword jq-autocomplete" data-autocomplete-url="/search/auto_complete_for_q" autocomplete="off" placeholder="<%= "Search #{Setup.site_name()}..." if SKIN == 'modnets' %>" />
 		  <% if HAS_FUZZY %>
@@ -103,7 +103,7 @@
 <center>
 <div class="add_constraint_form" style="display:none;">
     	<div class="search_federation_checkbox"><input type="checkbox" name="search_federation" id="search_federation" value="search_all_federations" />Search all federations</div>
-	<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get" onsubmit="return searchValidation('search_year', null, null, 'search_submit', 'search_submit2');">
+	<form accept-charset="UTF-8" action="/search" id="add-search-constraint" method="get">
 		<div class="page_header">Search <%= Setup.site_name() %>:</div>
  	<table>
         <tr>

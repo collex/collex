@@ -14,116 +14,87 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------
 
-/*global $, $w, Element */
-/*global MessageBoxDlg, TextInputDlg */
-/*extern doSaveSearch, searchValidation */
+/*global MessageBoxDlg */
 
-// Returns true if the form should be submitted.
-// Puts up a message, then returns false if the form shouldn't be submitted.
-function searchValidation(year_input_id, phrase_input_id, input_type, submit_id, submit_id2)
-{
-	// First disable the submit buttons so we don't get a double click.
-	// The second submit button might be null.
-	var submit_buttons = [];
-	submit_buttons.push($(submit_id));
-	if (submit_id2 !== null && $(submit_id2) !== null)
-		submit_buttons.push($(submit_id2));
+jQuery(document).ready(function($) {
+	"use strict";
+	var body = $("body");
+	var form = $('#add-search-constraint');
 
-	var submit_text = submit_buttons[0].value;
-	
-	submit_buttons.each(function(submit_button) {
-		submit_button.disabled = true;
-		submit_button.value = "......";
-		submit_button.addClassName('submitting');
-	});
+	// Puts up a message, then returns false if the form shouldn't be submitted.
+	form.on("submit", function() {
+		// First disable the submit buttons so we don't get a double click.
+		// The second submit button might be null.
+		var submit_buttons = form.find('input[type="submit"]');
 
-	// Some local functions
-	var restoreSubmitButtons = function() {
-		submit_buttons.each(function(submit_button) {
-		submit_button.disabled = false;
-		submit_button.value = submit_text;
-		submit_button.removeClassName('submitting');
+		var submit_text = submit_buttons.val();
+
+		submit_buttons.each(function(index, submit_button) {
+			submit_button.disabled = true;
+			submit_button.value = "......";
+			submit_button.addClassName('submitting');
 		});
-	};
 
-	var errorDlg = function(message) {
-		new MessageBoxDlg("Error", message);
-		restoreSubmitButtons();
-	};
-	
-	var input_year = $(year_input_id);
+		var restoreSubmitButtons = function() {
+			submit_buttons.each(function(index, submit_button) {
+				submit_button.disabled = false;
+				submit_button.value = submit_text;
+				submit_button.removeClassName('submitting');
+			});
+		};
 
-	// Be sure the user has typed something into at least one field.
-	if (input_year) {
-		var form = input_year.up('form');
-		var allInputs = form.select('input[type=text]').concat(form.select('select[class=search_language]'));
+		var errorDlg = function(message) {
+			new MessageBoxDlg("Error", message);
+			restoreSubmitButtons();
+		};
+
+		// Be sure the user has typed something into at least one field.
+		var allInputs = form.find('input[type="text"],select[class="search_language"]');
+		var searchHash = {};
 		var bFound = false;
-		allInputs.each(function(el) {
-			if (el.value.length > 0)
+		allInputs.each(function(index, el) {
+			if ($(el).val().length > 0) {
 				bFound = true;
+				searchHash[el.name] = $(el).val();
+			}
 		});
 
 		if (!bFound) {
 			errorDlg("Please enter some text before searching.");
 			return false;
 		}
-	}
 
-	// Be sure the hint text isn't still displayed
-	var hint_text_id = null;
-	if (!input_type)
-		hint_text_id = year_input_id;
-	else if ($(input_type).selectedIndex === 0)	// If this is the "Search Term" item
-		hint_text_id = phrase_input_id;
-	else hint_text_id = year_input_id;
-	
-	if ($(hint_text_id) && $(hint_text_id).hasClassName('gd_input_hint_style'))
-	{
-		//errorDlg("Please enter some text before searching.");
-        $(hint_text_id).value = '';
-	    //return false;
-	} 
-		
-	// Now see if the year item is legal. If input_type is null, then the year_input_id really is
-	// just for the year. If input_type is not null, then it is a select control that must have the value "Year".
-	if ((input_type !== null) && ($(input_type).value !== "Year (YYYY)"))	// See if the input_year element really contains a year.
-		return true;
+		var year = searchHash.y;
+		if (year && year.length > 0) {
+			year = year.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
+			year = year.trim();
+			if (year.length > 0) {
+				// At this point, year_val contains the user's input for the year.
+				// Make sure it is 4 digits or a valid solr span (e.g. 1700 TO 1900)
 
-	if (input_year) {
-        input_year.value = input_year.value.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
-		var year_val = input_year.value.trim();
-		if (year_val === "")
-			return true;
+				var re = /^\d{4}(\s+TO\s+\d{4})?$/;
 
-		// At this point, year_val contains the user's input for the year.
-        // Make sure it is 4 digits or a valid solr span (e.g. 1700 TO 1900)
+				if (!re.match(year)) {
+					errorDlg("The year must be 4 digits or a valid year span (e.g. 1700 TO 1900).");
+					return false;
+				}
+				searchHash.y = year;
+			} else
+				delete searchHash.y;
+		}
 
-        var re = /^\d{4}(\s+TO\s+\d{4})?$/;
+		// We've passed all the tests, so send the search to the searcher. We still short-circuit the browser's submit.
 
-        if (!re.match(year_val))
-        {
-            errorDlg("The year must be 4 digits or a valid year span (e.g. 1700 TO 1900).");
-            return false;
-        }
+		body.trigger('SetSearch', searchHash);
 
-	}
-	
-	// if the two validation steps above pass, submit the form
-	return true;
-}
+		setTimeout(function() { // Don't clear the fields right away. That's disconcerting to the user.
+			allInputs.val('');
+			restoreSubmitButtons();
+		}, 2000);
 
-function doSaveSearch()
-{
-	new TextInputDlg({
-		title: "Save Search",
-		prompt: 'Name:',
-		id: 'saved_search_name',
-		okStr: 'Save',
-		actions: "/search/save_search",
-		target_els: "saved_search_name_span",
-		pleaseWaitMsg: "Storing the current search..."
+		return false;
 	});
-}
+});
 
 //function postToUrl(url, hashParams)
 //{
@@ -146,34 +117,34 @@ function doSaveSearch()
 
 // This is an extension to prototype from http://mir.aculo.us/2009/1/7/using-input-values-as-hints-the-easy-way
 // It allows input fields to have hints
-(function(){
-  var methods = {
-    defaultValueActsAsHint: function(element, default_value){
-      element = $(element);
-      element.default_value = default_value;
-
-	  if (element.value === default_value)
-		  element.addClassName('gd_input_hint_style');
-
-      return element.observe('focus', function(){
-        if(element.default_value !== element.value) return;
-        element.removeClassName('gd_input_hint_style').value = '';
-      }).observe('blur', function(){
-        if(element.value.strip() !== '') return;
-        element.addClassName('gd_input_hint_style').value = element.default_value;
-      });
-    },
-
-	getRealValue: function(element) {
-	  if (element.value === element.default_value)
-		  return null;
-	  if (element.value.length === 0)
-		  return null;
-	  return element.value;
-	}
-  };
-
-  $w('input').each(function(tag){ Element.addMethods(tag, methods); });
-})();
+//(function(){
+//  var methods = {
+//    defaultValueActsAsHint: function(element, default_value){
+//      element = $(element);
+//      element.default_value = default_value;
+//
+//    if (element.value === default_value)
+//      element.addClassName('gd_input_hint_style');
+//
+//      return element.observe('focus', function(){
+//        if(element.default_value !== element.value) return;
+//        element.removeClassName('gd_input_hint_style').value = '';
+//      }).observe('blur', function(){
+//        if(element.value.strip() !== '') return;
+//        element.addClassName('gd_input_hint_style').value = element.default_value;
+//      });
+//    },
+//
+//	getRealValue: function(element) {
+//    if (element.value === element.default_value)
+//      return null;
+//    if (element.value.length === 0)
+//      return null;
+//    return element.value;
+//	}
+//  };
+//
+//  $w('input').each(function(tag){ Element.addMethods(tag, methods); });
+//})();
 
 
