@@ -231,7 +231,7 @@ jQuery(document).ready(function($) {
 		try {
 			obj = JSON.parse(obj);
 		} catch (ex) {
-			window.console(ex);
+			window.console.error(ex.message);
 			return null;
 		}
 		var subMedia = [];
