@@ -20,6 +20,8 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+# Use jquery as the JavaScript library
+gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 gem 'paperclip'

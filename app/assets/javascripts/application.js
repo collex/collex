@@ -15,10 +15,10 @@
 //= require controls
 //= require dragdrop
 //= require rails
+//= require jquery
+//= require no_conflict
 //= require jquery.localtime
 //= require jquery.cookie
 //= require jquery-ui/autocomplete
 //= require_tree ./lib
 //= require_tree .
-
-jQuery.noConflict();
