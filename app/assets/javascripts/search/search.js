@@ -50,13 +50,14 @@ jQuery(document).ready(function($) {
 			if (hash.length === 1) // If the form just has "&key&key2" without an equal sign.
 				hash.push("");
 
+			var value = decodeURIComponent(hash[1]);
 			if (params[hash[0]] !== undefined) {
 				if (typeof params[hash[0]] === "string")
-					params[hash[0]] = [ params[hash[0]], hash[1] ]; // If this is the second occurrence, turn it from a string into an array.
+					params[hash[0]] = [ params[hash[0]], value ]; // If this is the second occurrence, turn it from a string into an array.
 				else
-					params[hash[0]].push(hash[1]);// If there are multiple occurrences, just keep adding them.
+					params[hash[0]].push(value);// If there are multiple occurrences, just keep adding them.
 			} else
-				params[hash[0]] = decodeURIComponent(hash[1]);// For the first, or only occurrence, return it as a string.
+				params[hash[0]] = value;// For the first, or only occurrence, return it as a string.
 		}
 		return params;
 	}
@@ -110,7 +111,7 @@ jQuery(document).ready(function($) {
 	}
 
 	History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-		var state = History.getState(); // Note: We are using History.getState() instead of event.state
+		History.getState(); // Note: We are using History.getState() instead of event.state
 		doSearch();
 	});
 
@@ -214,6 +215,9 @@ jQuery(document).ready(function($) {
 		var parent = el.closest('tr');
 		var type = parent.find(".query_type_select").val();
 		var term = parent.find(".query_term input").val();
+		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
+		term = term.replace(/[^0-9A-Za-z\u00C0-\u017F]/g, ' ');
+		term = term.replace(/\s+/g, ' ');
 		var not = parent.find(".query_and-not_select").val();
 		// TODO-PER: do NOT
 		var url = createNewUrl(type, term, "add");

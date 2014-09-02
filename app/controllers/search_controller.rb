@@ -62,6 +62,9 @@ class SearchController < ApplicationController
 
 				params.each { |key, val|
 					if legal_constraints.include?(key) && val.present?
+						if key == 'q'
+							val = process_q_param(val)
+						end
 						constraints.push({ key: key, val: val })
 					end
 				}
@@ -138,6 +141,15 @@ class SearchController < ApplicationController
 	end
 
    private
+   def process_q_param(value)
+	   # This will receive either a string or an array of strings.
+	   # The strings need to be split on white space.
+	   if value.kind_of?(Array)
+		   value = value.join(' ')
+	   end
+	   return value.split(' ')
+   end
+
    def set_archive_toggle_state(archives)
 	   archives.each { |archive|
 		   if archive['children'].present?
