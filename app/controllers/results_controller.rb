@@ -241,17 +241,13 @@ class ResultsController < ApplicationController
 
   def add_object_to_exhibit
     locals = setup_ajax_calls(params, true)
-    exhibit_name = params[:exhibit]
-    if locals[:user] != nil
-      exhibit = Exhibit.find_by_user_id_and_title(locals[:user].id, exhibit_name)
-      if exhibit == nil
-        # TODO-PER: HACK! I don't know why, but sometimes the exhibit name comes back with quotes encrypted. If we can't find the exhibit
-        # with this name, then try unencrypting it and trying again. (It is possible that this was just a cached file in the user's browser.)
-        name = exhibit_name.gsub("&quot;", '"')
-        exhibit = Exhibit.find_by_title_and_user_id(name, locals[:user].id)
+    exhibit_id = params[:exhibit]
+    if user_signed_in?
+      exhibit = Exhibit.find_by_id(exhibit_id)
+	  if exhibit.present?
+        ExhibitObject.add(exhibit.id, locals[:uri])
+        exhibit.bump_last_change()
       end
-      ExhibitObject.add(exhibit.id, locals[:uri])
-			exhibit.bump_last_change()
     end
 
 	exhibits = Exhibit.get_referencing_exhibits(params["uri"], current_user)

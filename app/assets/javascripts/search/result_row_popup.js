@@ -19,7 +19,6 @@
 /*global ForumLicenseDisplay */
 /*global document */
 /*global submitForm, submitFormWithConfirmation */
-/*global exhibit_names */
 /*extern collapseAllItems, toggleItemExpand, ResultRowDlg, StartDiscussionWithObject, bulkCollect, bulkUncollect, bulkTag, bulk_checked, doAddTag, doAddToExhibit, doAnnotation, doCollect, doRemoveCollect, doRemoveTag, encodeForUri, expandAllItems, realLinkToEditorLink, removeHidden, tagFinishedUpdating, toggleAllBulkCollectCheckboxes */
 
 ///////////////////////////////////////////////////////////////////////////
@@ -546,7 +545,7 @@ var StartDiscussionWithObject = Class.create({
 
 function doAddToExhibit(partial, uri, index, row_id, my_collex_url)
 {
-	if (exhibit_names.length === 0) {
+	if (window.collex.exhibit_names.length === 0) {
 		new MessageBoxDlg('Exhibits',
 			'You have not yet created any exhibits. <a href="/' + my_collex_url + '" class="nav_link" >Click here</a> to get started with the Exhibit Wizard.');
 	} else {
@@ -555,10 +554,11 @@ function doAddToExhibit(partial, uri, index, row_id, my_collex_url)
 		var elFullText = $('search_result_' + index + '_full_text');
 		var ft = elFullText ? elFullText.innerHTML : '';
 		var options = [];
-		exhibit_names.each(function(name) {
-			var trunct_name = name.length > 60 ? name.substring(0, 60) + '...' : name;
-			options.push({ text: trunct_name, value: name });
-		});
+		for (var i = 0; i < window.collex.exhibit_names.length; i++) {
+			var exhibit = window.collex.exhibit_names[i];
+			var name = exhibit.text.length > 60 ? exhibit.text.substring(0, 60) + '...' : exhibit.text;
+			options.push({ text: name, value: exhibit.value });
+		}
 
 		function onSuccess(resp) {
 			var json = JSON.parse(resp.responseText);

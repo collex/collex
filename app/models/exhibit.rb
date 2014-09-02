@@ -207,19 +207,10 @@ class Exhibit < ActiveRecord::Base
     return Exhibit.find(page.exhibit_id)
   end
 
-  def self.js_array_of_all_my_exhibits(user_id)
+  def self.all_my_exhibits(user_id)
     my_exhibits = where({user_id: user_id})
-    return "" if my_exhibits.length == 0
-    
-    str = ""
-    for exhibit in my_exhibits
-      if str != ""
-        str += ","
-      end
-      str += '"' + CGI.escapeHTML(exhibit.title) + '"'
-      #str += '"' + exhibit.title.gsub('"', "\\\"") + '"'
-    end
-    return str
+    return [] if my_exhibits.nil? || my_exhibits.length == 0
+    return my_exhibits.map { |exhibit| { value: exhibit.id, text: exhibit.title }  }
   end
   
   def self.js_array_of_all_public_exhibits()
