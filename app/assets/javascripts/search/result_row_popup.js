@@ -512,7 +512,7 @@ var StartDiscussionWithObject = Class.create({
 			data.disc_type = "NINES Object";
 
 			var onSuccess = function(resp) {
-				$(discussion_button).hide();
+				jQuery(discussion_button).hide();
 				dlg.cancel();
 				gotoPage(resp.responseText);
 			};

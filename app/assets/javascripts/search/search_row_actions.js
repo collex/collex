@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 
 	body.on("click", ".search_result_buttons .discuss", function (e) {
 		var params = setup(e, this);
-		new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', params.uri, params.title, 'discuss_'+params.index, params.isLoggedIn, '/forum/get_nines_obj_list', window.collex.spinner);
+		new StartDiscussionWithObject('/forum/get_all_topics', '/forum/post_object_to_new_thread', params.uri, params.title, '#search_result_'+params.index+' .discuss', params.isLoggedIn, '/forum/get_nines_obj_list', window.collex.spinner);
 	});
 
 	body.on("click", ".search_result_buttons .exhibit", function (e) {
