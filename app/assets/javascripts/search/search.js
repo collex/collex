@@ -211,13 +211,17 @@ jQuery(document).ready(function($) {
 		changePage(url);
 	});
 
+	function sanitizeString(str) {
+		str = str.replace(/[^0-9A-Za-z'"\u00C0-\u017F]/g, ' ');
+		return str.replace(/\s+/g, ' ');
+	}
+
 	function query_add(el) {
 		var parent = el.closest('tr');
 		var type = parent.find(".query_type_select").val();
 		var term = parent.find(".query_term input").val();
 		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
-		term = term.replace(/[^0-9A-Za-z\u00C0-\u017F]/g, ' ');
-		term = term.replace(/\s+/g, ' ');
+		term = sanitizeString(term);
 		var not = parent.find(".query_and-not_select").val();
 		// TODO-PER: do NOT
 		var url = createNewUrl(type, term, "add");
@@ -232,6 +236,7 @@ jQuery(document).ready(function($) {
 		var key = e.which;
 		if (key === 13) {
 			query_add($(this));
+			return false;
 		}
 	});
 
@@ -263,6 +268,11 @@ jQuery(document).ready(function($) {
 
 	// This replaces the current search with the one passed to it.
 	body.bind('SetSearch', function(ev, obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				obj[key] = sanitizeString(obj[key]);
+			}
+		}
 		changePage("/search?" + makeQueryString(obj));
 	});
 
