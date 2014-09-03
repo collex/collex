@@ -23,6 +23,7 @@ jQuery(document).ready(function($) {
 
 	// Puts up a message, then returns false if the form shouldn't be submitted.
 	form.on("submit", function() {
+		window.console.log("add-search-constraint onSubmit");
 		// First disable the submit buttons so we don't get a double click.
 		// The second submit button might be null.
 		var submit_buttons = form.find('input[type="submit"]');
