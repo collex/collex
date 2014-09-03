@@ -24,6 +24,13 @@ jQuery(document).ready(function($) {
 	// Puts up a message, then returns false if the form shouldn't be submitted.
 	form.on("submit", function() {
 		window.console.log("add-search-constraint onSubmit");
+		// IE will try to submit this when the enter key is pressed. Make sure it is visible to prevent that.
+		var isVisible = $('.add_constraint_form').is(':visible');
+		if (!isVisible) {
+			window.console.log("aborted submit");
+			return false;
+		}
+
 		// First disable the submit buttons so we don't get a double click.
 		// The second submit button might be null.
 		var submit_buttons = form.find('input[type="submit"]');
