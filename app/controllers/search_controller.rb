@@ -147,7 +147,8 @@ class SearchController < ApplicationController
 	   if value.kind_of?(Array)
 		   value = value.join(' ')
 	   end
-	   return value.split(' ')
+	   arr = value.scan(/(?:"(?:\\.|[^"])*"|[^" ])+/) # this splits the string, but respects double quotes.
+	   return arr
    end
 
    def set_archive_toggle_state(archives)
