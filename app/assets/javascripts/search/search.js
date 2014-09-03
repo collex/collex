@@ -234,7 +234,7 @@ jQuery(document).ready(function($) {
 
 	body.on("keyup", ".query.search-form input", function(e) {
 		var key = e.which;
-		if (key === 13) {
+		if (key === 13 || key == 10) {
 			query_add($(this));
 			return false;
 		}
