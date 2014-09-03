@@ -232,9 +232,20 @@ jQuery(document).ready(function($) {
 		query_add($(this));
 	});
 
+	body.on("keydown", ".query.search-form input", function(e) {
+		var key = e.which;
+		window.console.log("keydown");
+		if (key === 13 || key == 10) {
+			window.console.log("keydown aborted");
+			return false;
+		}
+	});
+
 	body.on("keyup", ".query.search-form input", function(e) {
 		var key = e.which;
+		window.console.log("keyup");
 		if (key === 13 || key == 10) {
+			window.console.log("keyup aborted");
 			query_add($(this));
 			return false;
 		}
