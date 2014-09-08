@@ -149,6 +149,16 @@ jQuery(document).ready(function($) {
 		return existingQuery;
 	}
 
+	function getSortFromQueryObject() {
+		var existingQuery = getUrlVars();
+		var ret = {};
+		if (existingQuery.srt)
+			ret.srt = existingQuery.srt;
+		if (existingQuery.dir)
+			ret.dir = existingQuery.dir;
+		return ret;
+	}
+
 	function replaceInQueryObject(newQueryKey, newQueryValue) {
 		var existingQuery = getUrlVars();
 		existingQuery[newQueryKey] = newQueryValue;
@@ -180,7 +190,8 @@ jQuery(document).ready(function($) {
 	}
 
 	body.on("click", ".new_search", function () {
-		changePage("/search");
+		var existingQuery = getSortFromQueryObject();
+		changePage("/search?" + makeQueryString(existingQuery));
 	});
 
 	body.on("click", ".select-facet", function () {
@@ -280,6 +291,8 @@ jQuery(document).ready(function($) {
 				obj[key] = sanitizeString(obj[key]);
 			}
 		}
+		var existingSort = getSortFromQueryObject();
+		jQuery.extend(obj, existingSort);
 		changePage("/search?" + makeQueryString(obj));
 	});
 

@@ -28,9 +28,9 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	function isEmptyObject(obj) {
+	function hasSearch(obj) {
 		for (var key in obj) {
-			if (obj.hasOwnProperty(key)) {
+			if (obj.hasOwnProperty(key) && key !== 'srt' && key !== 'dir') {
 				return false;
 			}
 		}
@@ -38,7 +38,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function showResultSections(obj) {
-		if (isEmptyObject(obj.query)) {
+		if (hasSearch(obj.query)) {
 			// this is a blank page, with no search.
 			$(".has-results").hide();
 			$(".add_constraint_form").show();
