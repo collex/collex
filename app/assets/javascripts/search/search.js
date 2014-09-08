@@ -142,12 +142,12 @@ jQuery(document).ready(function($) {
 		return existingQuery;
 	}
 
-	function removeSortFromQueryObject() {
+	window.collex.removeSortFromQueryObject = function() {
 		var existingQuery = getUrlVars();
 		delete existingQuery.srt;
 		delete existingQuery.dir;
 		return existingQuery;
-	}
+	};
 
 	function getSortFromQueryObject() {
 		var existingQuery = getUrlVars();
@@ -212,7 +212,7 @@ jQuery(document).ready(function($) {
 		if (newQueryKey === 'srt') {
 			if (newQueryValue === 'rel') {
 				$(".sort select[name='dir']").hide();
-				var newQuery = removeSortFromQueryObject();
+				var newQuery = window.collex.removeSortFromQueryObject();
 				url = "/search?" + makeQueryString(newQuery);
 			} else
 				$(".sort select[name='dir']").show();

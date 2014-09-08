@@ -69,13 +69,17 @@ class Catalog
    end
 
    def auto_complete(facet, constraints, prefix)	# called for autocomplete
-      params = parse_constraints(constraints)
+      #params = parse_constraints(constraints)
+	   params = constraints.to_a
+	   params = params.map { |c| "#{c[0]}=+#{c[1]}"  } # TODO-PER: the "+" needs to be passed in.
       params.push("frag=#{prefix}")
       params.push("field=#{facet}") if facet != 'content'
       params.push("max=15")
 
       results = call_solr("search/autocomplete", :get, params)
-      return results['autocomplete']['result']
+	   terms = results['autocomplete']['result']
+	   terms = [ terms ] if terms.kind_of?(Hash) # This happens if only one result is returned.
+      return terms
    end
 
    def name_facet(constraints)	# called when the "Click here to see the top

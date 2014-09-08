@@ -5,8 +5,9 @@ jQuery(document).ready(function($) {
 	function callback(request, response) {
 		var self = this.element;
 		var url = self.attr('data-autocomplete-url') + '.json';
-		var csrf_param = $$('meta[name=csrf-param]')[0].content;
-		var csrf_token = $$('meta[name=csrf-token]')[0].content;
+		var fieldSelector = self.attr('data-autocomplete-field');
+		var csrf_param = $('meta[name=csrf-param]')[0].content;
+		var csrf_token = $('meta[name=csrf-token]')[0].content;
 
 		function success(resp) {
 			// The response is an array of suggestions. The suggestions are an array.
@@ -24,17 +25,22 @@ jQuery(document).ready(function($) {
 			response([]);
 		}
 
-		request.other = window.location.search;
+		request.other = window.collex.removeSortFromQueryObject();
+		request.field = $(fieldSelector).val();
 		request[csrf_param] = csrf_token;
 		$.post(url, request).done(success).fail(fail);
 	}
 
-	$(".jq-autocomplete").each(function(index, el) {
+	window.collex.initAutoComplete = function(el) {
 		var self = $(el);
 		self.autocomplete({
 			source: callback,
 			minLength: 2,
 			delay: 500
 		});
+	};
+
+	$(".jq-autocomplete").each(function(index, el) {
+		window.collex.initAutoComplete(el);
 	});
 });

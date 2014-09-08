@@ -866,12 +866,11 @@ class SearchController < ApplicationController
    #   render :partial => 'suggest'
    # end
 
-   def auto_complete(keyword, field)
+   def auto_complete(keyword, field, existing_search)
 	   @solr = Catalog.factory_create(session[:use_test_index] == "true")
-	   other_params = []
 	   values = []
 	   begin
-		   results = @solr.auto_complete(field, other_params, keyword)
+		   results = @solr.auto_complete(field, existing_search, keyword)
 		   results.each { |result|
 			   values.push([result['item'], result['occurrences']])
 		   }
@@ -895,9 +894,22 @@ class SearchController < ApplicationController
    end
 
    def auto_complete_for_q
+	   other = params[:other]
+	   field = params[:field]
+	   if field.nil? || field == 'q'
+	   	field = 'content'
+	   elsif field == 'aut'
+		   field = 'author'
+	   elsif field == 't'
+		   field = 'title'
+	   elsif field == 'ed'
+		   field = 'editor'
+	   elsif field == 'pub'
+		   field = 'publisher'
+		end
 	   respond_to do |format|
 		   format.json {
-			   values = auto_complete(params['term'], 'content') if params['term']  # google bot will hit this without parameters, so check for that
+			   values = auto_complete(params['term'], field, other) if params['term']  # google bot will hit this without parameters, so check for that
 			   render json: values
 		   }
 	   end

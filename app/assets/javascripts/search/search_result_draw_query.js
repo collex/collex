@@ -49,7 +49,8 @@ jQuery(document).ready(function($) {
 		for (var i = 0; i < searchTypes.length; i++)
 			selectTypeOptions += window.pss.createHtmlTag("option", {value: searchTypes[i][1] }, searchTypes[i][0]);
 		var selectType = window.pss.createHtmlTag("select", {'class': "query_type_select" }, selectTypeOptions); // TODO-PER: onchange='searchTypeChanged(this);'
-		var searchBox = window.pss.createHtmlTag("input", { type: 'text', placeholder: "click here to add new search term", autocomplete: 'off' }) +
+		var searchBox = window.pss.createHtmlTag("input",
+			{ 'class': "add-autocomplete", type: 'text', placeholder: "click here to add new search term", 'data-autocomplete-url': "/search/auto_complete_for_q", 'data-autocomplete-field': ".query_type_select", autocomplete: 'off' }) +
 			window.pss.createHtmlTag("div", {'class': "auto_complete", id: "search_phrase_auto_complete", style: "display: none;" }, '');
 		var submitButton = window.pss.createHtmlTag("button", { 'class': "query_add" }, 'Add');
 		return window.pss.createHtmlTag("tr", { },
@@ -87,7 +88,8 @@ jQuery(document).ready(function($) {
 			}
 		}
 		html += newSearchTerm();
-		return table.html(html);
+		table.html(html);
+		table.find('.add-autocomplete').each(function(index, el) { window.collex.initAutoComplete(el); });
 	};
 
 });
