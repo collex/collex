@@ -224,6 +224,8 @@ jQuery(document).ready(function($) {
 
 	function sanitizeString(str) {
 		str = str.replace(/[^0-9A-Za-z'"\u00C0-\u017F]/g, ' ');
+		while (str.substr(0,1) === "'")
+			str = str.substr(1);
 		return str.replace(/\s+/g, ' ');
 	}
 
