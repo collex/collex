@@ -132,9 +132,10 @@ class Catalog
 		   val = constraint[:val]
 		   if constraint[:key] == 'f'
 			   if constraint[:val].kind_of?(Array)
-				   val = val.join(" OR ")
+				   params.push(format_federation_constraint(constraint[:val]))
+			   else
+				   params.push("#{constraint[:key]}=+federation:#{val}")
 			   end
-			   params.push("#{constraint[:key]}=+federation:#{val}")
 		   else
 			   if constraint[:val].kind_of?(Array)
 				   val = val.join("+")
