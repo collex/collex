@@ -321,18 +321,6 @@ module SearchHelper
     "http://#{request.host_with_port()}/search?#{s.url}"
   end
   
-  def create_saved_search_permalink(s)
-    return raw("<a class='nav_link' href='#' onclick='showString(\"#{create_saved_search_url(s)}\"); return false;'>#{image_tag('link.jpg', { title: "Click here to get a permanent link for this saved search.", alt: '' })}</a>")
-  end
-
-  def create_saved_search_link(s)
-    return raw("<a class='nav_link' href='#{create_saved_search_url(s)}'>#{h(s.name)}</a>")
-  end
-
-  def create_remove_saved_search_link(s)
-    link_to_confirm("[remove]", { :controller => 'search', :action => 'remove_saved_search', :username => current_user.username, :id => s.id}, 'Saved Search', 'Are you sure you want to remove this saved search?')
-  end
-  
   def has_constraints?
 	  # don't count the federation constraint
     session[:constraints].each { |constraint|

@@ -15,59 +15,53 @@
 // ----------------------------------------------------------------------------
 
 /*global TextInputDlg */
-/*extern showString, showHiddenSavedSearches */
+jQuery(document).ready(function($) {
+	"use strict";
 
-function showString(str)
-{
-	new TextInputDlg({
-		title: "Copy and Paste link into E-mail or IM",
-		prompt: 'Link:',
-		id: 'show_save_name',
-		value: str,
-		inputKlass: "saved_search_copy_el",
-		body_style: "saved_search_copy_body",
-		noOk: true
-	});
-	jQuery('#show_save_name').select();
-}
-
-function showHiddenSavedSearches(class_of_button, class_of_hidden_items)
-{
-	var cntl = jQuery('.' + class_of_button)[0];
-	var hidden_items = jQuery('.' + class_of_hidden_items);
-	var expand = (cntl.innerHTML === '[show all]');
-	if (expand) {
-		cntl.innerHTML = '[hide some]';
-		hidden_items.each(function(item) {
-			item.removeClassName('hidden');
+	window.collex.showString = function(str) {
+		new TextInputDlg({
+			title: "Copy and Paste link into E-mail or IM",
+			prompt: 'Link:',
+			id: 'show_save_name',
+			value: str,
+			inputKlass: "saved_search_copy_el",
+			body_style: "saved_search_copy_body",
+			noOk: true
 		});
-	} else {
-		cntl.innerHTML = '[show all]';
-		hidden_items.each(function(item) {
-			item.addClassName('hidden');
+		$('#show_save_name').select();
+	};
+
+	window.collex.showHiddenSavedSearches = function(class_of_button, class_of_hidden_items) {
+		var button = $('.' + class_of_button);
+		var hidden_items = $('.' + class_of_hidden_items);
+		var expand = (button.text() === '[show all]');
+		if (expand) {
+			button.text('[hide some]');
+			hidden_items.removeClass('hidden');
+		} else {
+			button.text('[show all]');
+			hidden_items.addClass('hidden');
+		}
+	};
+
+	window.collex.doSaveSearch = function() {
+		function onSuccess(resp) {
+			var search = resp.responseJSON;
+			window.collex.savedSearches.push({ name: search.name, url: search.url });
+			window.collex.drawSavedSearch();
+			window.collex.drawSavedSearchList();
+		}
+
+		new TextInputDlg({
+			title: "Save Search",
+			prompt: 'Name:',
+			id: 'saved_search_name',
+			okStr: 'Save',
+			actions: "/search/save_search",
+			target_els: "bit-bucket",
+			pleaseWaitMsg: "Storing the current search...",
+			extraParams: { query: encodeURIComponent(window.location.search.substr(1)) },
+			onSuccess: onSuccess
 		});
-	}
-}
-
-function doSaveSearch()
-{
-	function onSuccess(resp) {
-		var search = resp.responseJSON;
-		window.collex.savedSearches.push({ name: search.name, url: search.url });
-		window.collex.drawSavedSearch();
-		window.collex.drawSavedSearchList();
-	}
-
-	new TextInputDlg({
-		title: "Save Search",
-		prompt: 'Name:',
-		id: 'saved_search_name',
-		okStr: 'Save',
-		actions: "/search/save_search",
-		target_els: "bit-bucket",
-		pleaseWaitMsg: "Storing the current search...",
-		extraParams: { query: encodeURIComponent(window.location.search.substr(1)) },
-		onSuccess: onSuccess
-	});
-}
-
+	};
+});

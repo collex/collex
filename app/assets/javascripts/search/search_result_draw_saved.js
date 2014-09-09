@@ -18,7 +18,7 @@ jQuery(document).ready(function($) {
 	}
 	function createSavedSearchPermalink(link) {
 		var img = window.pss.createHtmlTag("img", { alt: 'Permalink', src: "/assets/link.jpg", title: "Click here to get a permanent link for this saved search." });
-		return window.pss.createHtmlTag("a", { 'class': "nav_link", href: '#', onclick: "showString(&quot;" + createSavedSearchLink(link) + "&quot;); return false;" }, img);
+		return window.pss.createHtmlTag("a", { 'class': "nav_link", href: '#', onclick: "window.collex.showString(&quot;" + createSavedSearchLink(link) + "&quot;); return false;" }, img);
 	}
 
 	window.collex.drawSavedSearch = function() {
@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
 				savedSearchArea.html(" : " + search.name + " " + createSavedSearchPermalink(search.url));
 			}
 			else {
-				savedSearchArea.html(window.pss.createHtmlTag("a", {'class': "modify_link", href: '#', onclick: "doSaveSearch(); return false;" }, "[save search]"));
+				savedSearchArea.html(window.pss.createHtmlTag("a", {'class': "modify_link", href: '#', onclick: "window.collex.doSaveSearch(); return false;" }, "[save search]"));
 			}
 		} else {
 			var login = window.pss.createHtmlTag("a", {'class': "nav_link", href: '#', onclick: "var dlg = new SignInDlg(); dlg.show('sign_in'); return false;" }, "LOG IN");
@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
 		if (numDisplayed !== window.collex.savedSearches.length) {
 			html += window.pss.createHtmlTag("div", {'class': "empty_list_text"}, "Showing the " + numDisplayed + " most recent of your " + window.collex.savedSearches.length +
 				" saved searches. " + window.pss.createHtmlTag("a",
-				{ 'class': 'nav_link saved_search_show_all', onclick: "showHiddenSavedSearches('saved_search_show_all', 'saved_search_hidden_item' );" }, "[show all]"));
+				{ 'class': 'nav_link saved_search_show_all', onclick: "window.collex.showHiddenSavedSearches('saved_search_show_all', 'saved_search_hidden_item' );" }, "[show all]"));
 		}
 		var table = "";
 		if (window.collex.savedSearches.length === 0) {
