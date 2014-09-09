@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
 	"use strict";
-	var body = $("body");
 
 	window.collex.createPagination = function(curr_page, total, page_size) {
 		var html = "";
@@ -8,10 +7,13 @@ jQuery(document).ready(function($) {
 		page_size = parseInt(page_size, 10);
 		curr_page = parseInt(curr_page, 10);
 		var num_pages = Math.ceil(total / page_size);
+		var pagination = $('.pagination');
 
 		// If there's only one page, don't show any pagination
-		if (num_pages === 1)
-			return "";
+		if (num_pages === 1) {
+			pagination.html(html);
+			return;
+		}
 
 		//Show only a maximum of 11 items, with the current item centered if possible.
 		//First figure out the start and end points we want to display.
@@ -68,7 +70,7 @@ jQuery(document).ready(function($) {
 			html += "&nbsp;&nbsp;";
 		}
 
-		$('.pagination').html(html);
+		pagination.html(html);
 	};
 
 });
