@@ -38,7 +38,7 @@
 			<div class="page_header">
 				<button class="new_search">New Search</button>
 				Search Query
-				<span id="saved_search_name_span" class="not-empty"><%= render :partial => 'search/show_saved_search' %></span>
+				<span id="saved_search_name_span"></span>
 			</div>
 			<% if !user_signed_in? -%>
 				<div class="not-empty">(<%= sign_in_link({:class => 'nav_link'}) %>

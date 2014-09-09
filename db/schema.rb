@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140807131709) do
+ActiveRecord::Schema.define(:version => 20140909142741) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
@@ -389,6 +389,7 @@ ActiveRecord::Schema.define(:version => 20140807131709) do
     t.integer "user_id"
     t.string  "sort_by"
     t.string  "sort_dir"
+    t.string  "url"
   end
 
   create_table "sessions", :force => true do |t|

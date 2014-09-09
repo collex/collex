@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
 		progressDlg.center();
 	}
 
-	function getUrlVars() {
+	window.collex.getUrlVars = function() {
 		// This returns the query string as a hash of values.
 		// If a key appears more than once then it is returned as an array, otherwise as a string.
 		// That is, given "?q=tree&gen=2&gen=5", the return object is: { q: "tree", gen: [ "2", "5" ] }
@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
 				params[hash[0]] = value;// For the first, or only occurrence, return it as a string.
 		}
 		return params;
-	}
+	};
 
 	function makeQueryString(existingQuery) {
 		var arr = [];
@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function onSuccess(resp) {
-		resp.query = getUrlVars();
+		resp.query = window.collex.getUrlVars();
 		for (var key in resp.query) {
 			if (resp.query.hasOwnProperty(key)) {
 				if (!resp.query[key] || resp.query[key].length === 0)
@@ -102,7 +102,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function doSearch() {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		$.ajax({ url: "/search.json",
 			data: existingQuery,
 			success: onSuccess,
@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
 	});
 
 	function addToQueryObject(newQueryKey, newQueryValue) {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		if (existingQuery[newQueryKey] === undefined)
 			existingQuery[newQueryKey] = newQueryValue;
 		else if (typeof existingQuery[newQueryKey] === 'string')
@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function removeFromQueryObject(newQueryKey, newQueryValue) {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		if (existingQuery[newQueryKey] === undefined)
 			return existingQuery; // Nothing to do: the parameter wasn't present
 		else if (typeof existingQuery[newQueryKey] === 'string') {
@@ -143,14 +143,14 @@ jQuery(document).ready(function($) {
 	}
 
 	window.collex.removeSortFromQueryObject = function() {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		delete existingQuery.srt;
 		delete existingQuery.dir;
 		return existingQuery;
 	};
 
 	function getSortFromQueryObject() {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		var ret = {};
 		if (existingQuery.srt)
 			ret.srt = existingQuery.srt;
@@ -160,7 +160,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function replaceInQueryObject(newQueryKey, newQueryValue) {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		existingQuery[newQueryKey] = newQueryValue;
 		return existingQuery;
 	}
@@ -247,14 +247,14 @@ jQuery(document).ready(function($) {
 
 	body.on("keydown", ".query.search-form input", function(e) {
 		var key = e.which;
-		if (key === 13 || key == 10) {
+		if (key === 13 || key === 10) {
 			return false;
 		}
 	});
 
 	body.on("keyup", ".query.search-form input", function(e) {
 		var key = e.which;
-		if (key === 13 || key == 10) {
+		if (key === 13 || key === 10) {
 			query_add($(this));
 			return false;
 		}
@@ -276,7 +276,7 @@ jQuery(document).ready(function($) {
 				allChecked = false;
 			}
 		});
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
 		if (allChecked || noneChecked) {
 			delete existingQuery.f;
 		} else {
@@ -299,14 +299,14 @@ jQuery(document).ready(function($) {
 	});
 
 	function initSortControls() {
-		var existingQuery = getUrlVars();
+		var existingQuery = window.collex.getUrlVars();
+		var dir = $(".sort select[name='dir']");
 		if (existingQuery.srt && existingQuery.srt.length > 0) {
 			$(".sort select[name='srt']").val(existingQuery.srt);
 			if (existingQuery.dir && existingQuery.dir.length > 0)
-				$(".sort select[name='dir']").val(existingQuery.dir);
-			$(".sort select[name='dir']").val();
+				dir.val(existingQuery.dir);
 		} else {
-			$(".sort select[name='dir']").hide();
+			dir.hide();
 		}
 	}
 

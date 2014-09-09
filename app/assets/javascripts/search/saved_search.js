@@ -14,7 +14,6 @@
 //     limitations under the License.
 // ----------------------------------------------------------------------------
 
-/*global $, $$ */
 /*global TextInputDlg */
 /*extern showString, showHiddenSavedSearches */
 
@@ -29,13 +28,13 @@ function showString(str)
 		body_style: "saved_search_copy_body",
 		noOk: true
 	});
-	$('show_save_name').select();
+	jQuery('#show_save_name').select();
 }
 
 function showHiddenSavedSearches(class_of_button, class_of_hidden_items)
 {
-	var cntl = $$('.' + class_of_button)[0];
-	var hidden_items = $$('.' + class_of_hidden_items);
+	var cntl = jQuery('.' + class_of_button)[0];
+	var hidden_items = jQuery('.' + class_of_hidden_items);
 	var expand = (cntl.innerHTML === '[show all]');
 	if (expand) {
 		cntl.innerHTML = '[hide some]';
@@ -52,14 +51,23 @@ function showHiddenSavedSearches(class_of_button, class_of_hidden_items)
 
 function doSaveSearch()
 {
+	function onSuccess(resp) {
+		var search = resp.responseJSON;
+		window.collex.savedSearches.push({ name: search.name, url: search.url });
+		window.collex.drawSavedSearch();
+		window.collex.drawSavedSearchList();
+	}
+
 	new TextInputDlg({
 		title: "Save Search",
 		prompt: 'Name:',
 		id: 'saved_search_name',
 		okStr: 'Save',
 		actions: "/search/save_search",
-		target_els: "saved_search_name_span",
-		pleaseWaitMsg: "Storing the current search..."
+		target_els: "bit-bucket",
+		pleaseWaitMsg: "Storing the current search...",
+		extraParams: { query: encodeURIComponent(window.location.search.substr(1)) },
+		onSuccess: onSuccess
 	});
 }
 

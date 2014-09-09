@@ -965,26 +965,15 @@ class SearchController < ApplicationController
    # end
 
     def save_search
-      # see if the session has timed out since the last browser action, and the
-      # user actually inputted sometime.
-      name = params[:saved_search_name]
-      if (user_signed_in? && name != nil && name.length > 0)
-          session[:name_of_search] = name
-         saved_search = current_user.searches.find_or_create_by_name(name)
-
-         saved_search.sort_by = session[:search_sort_by]
-         saved_search.sort_dir = session[:search_sort_by_direction]
-
-         saved_search.constraints.clear
-         session[:constraints].each do |c|
-            c[:id] = nil # always reset the id so saved searches do not cause sql
-            # unique id validation errors
-            saved_search.constraints << c.clone
-         end
-      saved_search.save!
-      end
-
-      render :partial => 'show_saved_search'
+		query = URI.unescape(params[:query])
+		query = query.gsub("%20", ' ')
+		name = params[:saved_search_name]
+		if user_signed_in? && name != nil && name.length > 0
+			saved_search = current_user.searches.find_or_create_by_name(name)
+			saved_search.url = query
+			saved_search.save!
+		end
+		render json: { name: name, url: query }
    end
 
    def saved

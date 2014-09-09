@@ -1165,7 +1165,7 @@ var ConfirmDlg3 = Class.create({
 //	okStr: The text on the button that sends the data to the server. (Default: 'Ok')
 //	actions: An array of the URLs that will AJAXed, or a string containing a URL to be AJAXed, or a comma separated string of the URLs to be AJAXed.
 //	onSuccess: A function to call with one parameter: the response object from Ajax, after the operation was successful and the dlg is dismissed. (optional)
-//	onFailure: A function to call with one parameter: the response object from Ajax, if the operation was unsuccessfull the dlg is not dismissed. (optional)
+//	onFailure: A function to call with one parameter: the response object from Ajax, if the operation was unsuccessful the dlg is not dismissed. (optional)
 //	target_els: null, if this should not be Ajax, but should PUT the form instead, or the same format as the actions parameters. This is a list of ids to <div> that will be updated by the ajax calls.
 //	extraParams: This is a hash that is passed directly through the Ajax call to the server. (optional)
 //	noDefault: if this is true, then there is no default button; that is, the enter key will do nothing. (default: false)

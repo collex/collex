@@ -317,18 +317,16 @@ module SearchHelper
     return value
   end
   
-  def create_saved_search_url(user_name, search_name)
-    "/search/saved?user=#{user_name}&name=#{encode_for_uri(search_name)}"
+  def create_saved_search_url(s)
+    "http://#{request.host_with_port()}/search?#{s.url}"
   end
   
   def create_saved_search_permalink(s)
-    base_url = 'http://' + request.host_with_port()
-    permalink_id = "permalink_#{encode_for_uri(h(s))}"
-    return raw("<a id='#{permalink_id}' class='nav_link' href='#' onclick='showString(\"#{base_url}#{create_saved_search_url(current_user.username, s)}\"); return false;'>#{image_tag('link.jpg', { title: "Click here to get a permanent link for this saved search.", alt: '' })}</a>")
+    return raw("<a class='nav_link' href='#' onclick='showString(\"#{create_saved_search_url(s)}\"); return false;'>#{image_tag('link.jpg', { title: "Click here to get a permanent link for this saved search.", alt: '' })}</a>")
   end
 
   def create_saved_search_link(s)
-    return raw("<a class='nav_link' href='#{create_saved_search_url(current_user.username, s.name)}'>#{h(s.name)}</a>")
+    return raw("<a class='nav_link' href='#{create_saved_search_url(s)}'>#{h(s.name)}</a>")
   end
 
   def create_remove_saved_search_link(s)

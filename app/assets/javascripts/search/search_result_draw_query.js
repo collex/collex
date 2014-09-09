@@ -63,6 +63,7 @@ jQuery(document).ready(function($) {
 	window.collex.createSearchForm = function(query) {
 		var table = $('.search-form');
 		var html = "";
+		var isEmpty = true;
 		for (var key in query) {
 			if (query.hasOwnProperty(key) && key !== 'page' && key !== 'srt' && key !== 'dir' && key !== 'f') {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
@@ -79,6 +80,7 @@ jQuery(document).ready(function($) {
 							case 'fulltext': displayedKey = 'Full Text'; value = 'Only resources that contain full text.'; break;
 						}
 					}
+					isEmpty = false;
 					html += window.pss.createHtmlTag("tr", {},
 						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, value) +
@@ -90,6 +92,12 @@ jQuery(document).ready(function($) {
 		html += newSearchTerm();
 		table.html(html);
 		table.find('.add-autocomplete').each(function(index, el) { window.collex.initAutoComplete(el); });
-	};
 
+		// do saved search notice
+		if (isEmpty)
+			$("#saved_search_name_span").html("");
+		else
+			window.collex.drawSavedSearch(isEmpty);
+		window.collex.drawSavedSearchList();
+	};
 });
