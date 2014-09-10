@@ -3,6 +3,7 @@ jQuery(document).ready(function($) {
 
 	function isSavedSearch() {
 		var query = window.location.search;
+		query = query.replace(/%20/g, ' ');
 		if (query.substr(0,1) === '?')
 			query = query.substr(1);
 		for (var i = 0; i < window.collex.savedSearches.length; i++) {
@@ -60,7 +61,7 @@ jQuery(document).ready(function($) {
 				var remove = window.pss.createHtmlTag("td", {'class': "query_remove"},
 					window.pss.createHtmlTag("a", { 'class': 'modify_link', href: "/search/remove_saved_search?id="+search.id, post: true, onclick: removeAction }, '[remove]'));
 				var options = {};
-				if (i > numDisplayed)
+				if (i >= numDisplayed)
 					options['class'] = "saved_search_hidden_item hidden";
 				var permalink = window.pss.createHtmlTag("td", {'class': "saved_search_link"},createSavedSearchPermalink(search.url));
 				table += window.pss.createHtmlTag("tr", options, name+remove+permalink);
