@@ -181,14 +181,14 @@ jQuery(document).ready(function($) {
 					html += " | ";
 				html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag=' + tags[i] + '&amp;view=tag' }, tags[i]);
 				var remove = "doRemoveTag('" + uri + "', 'search_result_" + index + "', '" + tags[i] + "'); return false;";
-				html += window.pss.createHtmlTag("a", { 'class': 'modify_link my_tag remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove, href: '#' }, 'X');
+				html += window.pss.createHtmlTag("a", { 'class': 'modify_link remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove, href: '#' }, 'X');
 			}
 		}
 		if (otherTags && otherTags.length > 0) {
 			if (tags && tags.length > 0)
 				html += " | ";
 			for (i = 0; i < otherTags.length; i++) {
-				html += window.pss.createHtmlTag("a", { 'class': 'tag_link', title: "view all objects tagged &quot;" + otherTags[i] + "&quot;", href: '/tags/results?tag=' + otherTags[i] + '&amp;view=tag' }, otherTags[i]);
+				html += window.pss.createHtmlTag("a", { 'class': 'tag_link other_tag', title: "view all objects tagged &quot;" + otherTags[i] + "&quot;", href: '/tags/results?tag=' + otherTags[i] + '&amp;view=tag' }, otherTags[i]);
 			}
 		}
 		return html;
@@ -196,7 +196,14 @@ jQuery(document).ready(function($) {
 
 	function createTagLine(uri, index, tags, otherTags) {
 		var click = "doAddTag('/tag/tag_name_autocomplete', '" + uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
-		return formatTags(uri, index, tags, otherTags) + ' ' + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+		var isLoggedIn = window.collex.currentUserId && window.collex.currentUserId > 0;
+		var addLink;
+		if (isLoggedIn)
+			addLink = window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+		else
+			addLink = window.pss.createHtmlTag("span", { 'class': 'tags_instructions' }, "[" +
+				window.pss.createHtmlTag("a", { 'class': 'nav_link', href: '#', onclick: "var dlg = new SignInDlg(); dlg.show('sign_in'); return false;"}, "LOG IN") + " to add tags]" );
+		return formatTags(uri, index, tags, otherTags) + addLink;
 	}
 
 	function createAnnotationBody(index, uri, text) {
