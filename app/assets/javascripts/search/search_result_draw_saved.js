@@ -58,8 +58,9 @@ jQuery(document).ready(function($) {
 				var name = window.pss.createHtmlTag("td", {'class': "query_term"},
 					window.pss.createHtmlTag("a", {'class': "nav_link", href: createSavedSearchLink(search.url) }, search.name));
 				var removeAction = "serverAction({confirm: { title: 'Saved Search', message: 'Are you sure you want to remove this saved search?' }, action: { actions: this.href }, progress: { waitMessage: 'Please Wait...' }}); return false;";
+				var id = search.id ? search.id : search.name;
 				var remove = window.pss.createHtmlTag("td", {'class': "query_remove"},
-					window.pss.createHtmlTag("a", { 'class': 'modify_link', href: "/search/remove_saved_search?id="+search.id, post: true, onclick: removeAction }, '[remove]'));
+					window.pss.createHtmlTag("a", { 'class': 'modify_link', href: "/search/remove_saved_search?id="+id, post: true, onclick: removeAction }, '[remove]'));
 				var options = {};
 				if (i >= numDisplayed)
 					options['class'] = "saved_search_hidden_item hidden";

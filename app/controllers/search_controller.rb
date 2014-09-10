@@ -503,14 +503,10 @@ class SearchController < ApplicationController
    def remove_saved_search
      if user_signed_in?
        searches = current_user.searches
-       saved_search = searches.find(params[:id])
-       name = saved_search.name
+       saved_search = searches.find_by_id(params[:id])
+	   saved_search = searches.find_by_name(params[:id]) if saved_search.blank?
        saved_search.destroy
 
-       # clear out current search if it matches the one just deleted
-       if session[:name_of_search] == name
-         clear_constraints()
-       end
      end
 
      redirect_to :back
