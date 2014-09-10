@@ -306,7 +306,7 @@ function toggleItemExpand()
    
 }
 
-function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
+function doCollect(partial, uri, row_num, row_id, is_logged_in, hasEdit)
 {
 	if (!is_logged_in) {
 		var dlg = new SignInDlg();
@@ -319,7 +319,7 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, successCallback)
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: '' };
 	var onSuccess = function(resp) {
 		var json = JSON.parse(resp.responseText);
-		window.collex.setCollected(row_num, json.collected_on);
+		window.collex.setCollected(row_num, json.collected_on, hasEdit);
 	};
 	serverAction({ action: { actions: "/results/collect.json", els: [], params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
 
@@ -339,12 +339,12 @@ function doRemoveTag(uri, row_id, tag_name)
 	serverAction({ action: { actions: "/results/remove_tag.json", els: [], params: { uri: uri, row_num: row_num, tag: tag_name, full_text: '' }, onSuccess:onSuccess }});
 }
 
-function doRemoveCollect(partial, uri, row_num, row_id, successCallback)
+function doRemoveCollect(partial, uri, row_num, hasEdit)
 {
 	var params = { partial: partial, uri: uri, row_num: row_num, full_text: '' };
 
 	var onSuccess = function(resp) {
-		window.collex.setUncollected(row_num);
+		window.collex.setUncollected(row_num, hasEdit);
 		// This operation changes the set of collected objects, so we need to request them again next time.
 		if (ninesObjCache)
 			ninesObjCache.reset('/forum/get_nines_obj_list');	// TODO-PER: don't hard code this value!

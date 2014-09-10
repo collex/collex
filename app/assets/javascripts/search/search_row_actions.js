@@ -10,17 +10,18 @@ jQuery(document).ready(function($) {
 		var uri = parent.attr("data-uri");
 		var isLoggedIn = window.collex.currentUserId && window.collex.currentUserId > 0;
 		var title = parent.find('.doc-title').text();
-		return { uri: uri, index: index, isLoggedIn: isLoggedIn, title: title };
+		var hasEdit = parent.find('button.edit').length > 0;
+		return { uri: uri, index: index, isLoggedIn: isLoggedIn, title: title, hasEdit: hasEdit };
 	}
 
 	body.on("click", ".search_result_buttons .collect", function (e) {
 		var params = setup(e, this);
-		doCollect('/results/result_row', params.uri, params.index, 'search_result_'+params.index, params.isLoggedIn);
+		doCollect('/results/result_row', params.uri, params.index, 'search_result_'+params.index, params.isLoggedIn, params.hasEdit);
 	});
 
 	body.on("click", ".search_result_buttons .uncollect", function (e) {
 		var params = setup(e, this);
-		doRemoveCollect('/results/result_row', params.uri, params.index, 'search_result_'+params.index);
+		doRemoveCollect('/results/result_row', params.uri, params.index, params.hasEdit);
 	});
 
 	body.on("click", ".search_result_buttons .discuss", function (e) {

@@ -376,11 +376,14 @@ jQuery(document).ready(function($) {
 		return html;
 	};
 
-	window.collex.setCollected = function(index, collectedDate) {
+	window.collex.setCollected = function(index, collectedDate, hasEdit) {
 		var el = $("#search_result_"+index);
 		if (el.length) {
 			el.addClass('result_row_collected');
-			var actionButtons = createActionButtons({}, true); // TODO-PER: the empty hash should actually include { typewright: true } if it is typewrightable.
+			var opt = {};
+			if (hasEdit)
+				opt.typewright = true;
+			var actionButtons = createActionButtons(opt, true);
 			el.find(".search_result_buttons").html(actionButtons);
 			var collectedOn = el.find('.collected-on');
 			fillInRow(collectedOn, 'Collected&nbsp;on:', formatDate(collectedDate));
@@ -389,11 +392,14 @@ jQuery(document).ready(function($) {
 		}
 	};
 
-	window.collex.setUncollected = function(index) {
+	window.collex.setUncollected = function(index, hasEdit) {
 		var el = $("#search_result_"+index);
 		if (el.length) {
 			el.removeClass('result_row_collected');
-			var actionButtons = createActionButtons({}, false); // TODO-PER: the empty hash should actually include { typewright: true } if it is typewrightable.
+			var opt = {};
+			if (hasEdit)
+				opt.typewright = true;
+			var actionButtons = createActionButtons(opt, false);
 			el.find(".search_result_buttons").html(actionButtons);
 			el.find('.collected-on').hide();
 			var annotation = el.find(".annotation-row");
@@ -429,7 +435,7 @@ jQuery(document).ready(function($) {
 		var el = $("#search_result_"+index);
 		if (el.length) {
 			var row = el.find('.exhibits-row');
-			var container = el.closest(".search_result_data_container");
+			//var container = el.closest(".search_result_data_container");
 			//var uri = container.attr("data-uri");
 			var output = [];
 			if (exhibits) {
