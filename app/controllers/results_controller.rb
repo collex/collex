@@ -77,18 +77,17 @@ class ResultsController < ApplicationController
   end
 
   def get_all_tags_for_object(uri)
-	  # TODO-PER: distinguish between the user's tags and other tags.
-	  tags = Tag.items_in_uri_list([ uri])
-	  return tags[uri]
+	  my_tags, tags = Tag.items_in_uri_list([ uri], get_curr_user_id)
+	  return my_tags[uri], tags[uri]
   end
 
   public
   def add_tag
 	do_add_tag(params)
-	tags = get_all_tags_for_object(params[:uri])
+	my_tags, tags = get_all_tags_for_object(params[:uri])
 	respond_to do |format|
 		format.json {
-			render json: { my_tags: tags, other_tags: [] }
+			render json: { my_tags: my_tags, other_tags: tags }
 		}
 	end
   end
@@ -100,10 +99,10 @@ class ResultsController < ApplicationController
     tag = params[:tag]
     Tag.remove(locals[:user], locals[:uri], tag) unless locals[:user] == nil || locals[:uri] == nil
 
-	tags = get_all_tags_for_object(params[:uri])
+	my_tags, tags = get_all_tags_for_object(params[:uri])
 	respond_to do |format|
 		format.json {
-			render json: { my_tags: tags, other_tags: [] }
+			render json: { my_tags: my_tags, other_tags: tags }
 		}
 	end
   end

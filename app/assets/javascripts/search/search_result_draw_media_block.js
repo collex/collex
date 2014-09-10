@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
 	"use strict";
-	var body = $("body");
 
 	var progressLinkCounter = 0; // Just need a unique number, so we'll just keep counting here.
 
@@ -173,23 +172,31 @@ jQuery(document).ready(function($) {
 		window.pss.createHtmlTag("span", { 'class': 'snippet' }, text);
 	}
 
-	function formatTags(uri, index, tags) {
-		// TODO-PER: Make distinction between "my tag" and not.
-		if (!tags) return "";
+	function formatTags(uri, index, tags, otherTags) {
 		var html = "";
-		for (var i = 0; i < tags.length; i++) {
-			if (i !== 0)
+		var i;
+		if (tags) {
+			for (i = 0; i < tags.length; i++) {
+				if (i !== 0)
+					html += " | ";
+				html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag=' + tags[i] + '&amp;view=tag' }, tags[i]);
+				var remove = "doRemoveTag('" + uri + "', 'search_result_" + index + "', '" + tags[i] + "'); return false;";
+				html += window.pss.createHtmlTag("a", { 'class': 'modify_link my_tag remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove, href: '#' }, 'X');
+			}
+		}
+		if (otherTags && otherTags.length > 0) {
+			if (tags && tags.length > 0)
 				html += " | ";
-			html += window.pss.createHtmlTag("a", { 'class': 'tag_link my_tag', title: "view all objects tagged &quot;" + tags[i] + "&quot;", href: '/tags/results?tag=' + tags[i] + '&amp;view=tag' }, tags[i]);
-			var remove = "doRemoveTag('" + uri + "', 'search_result_" + index + "', '" + tags[i] + "'); return false;";
-			html += window.pss.createHtmlTag("a", { 'class': 'modify_link my_tag remove_tag', title: "delete tag &quot;" + tags[i] + "&quot;", onclick: remove,  href: '#' }, 'X');
+			for (i = 0; i < otherTags.length; i++) {
+				html += window.pss.createHtmlTag("a", { 'class': 'tag_link', title: "view all objects tagged &quot;" + otherTags[i] + "&quot;", href: '/tags/results?tag=' + otherTags[i] + '&amp;view=tag' }, otherTags[i]);
+			}
 		}
 		return html;
 	}
 
-	function createTagLine(uri, index, tags) {
+	function createTagLine(uri, index, tags, otherTags) {
 		var click = "doAddTag('/tag/tag_name_autocomplete', '" + uri + "', " + index + ", 'search_result_" + index + "', event); return false;";
-		return formatTags(uri, index, tags) + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
+		return formatTags(uri, index, tags, otherTags) + ' ' + window.pss.createHtmlTag("button", { 'class': 'modify_link', id: "add_tag_"+index, onclick: click }, "[add&nbsp;tag]");
 	}
 
 	function createAnnotationBody(index, uri, text) {
@@ -254,7 +261,7 @@ jQuery(document).ready(function($) {
 			html += createBlankResultContentItem('row collected-on');
 
 		if (index !== null) {
-			var tags = createTagLine(obj.uri, index, obj.tags);
+			var tags = createTagLine(obj.uri, index, obj.my_tags, obj.tags);
 			html += createResultContentItem('single_item', 'Tags:', tags, false, 'tag-list');
 		}
 
@@ -366,7 +373,7 @@ jQuery(document).ready(function($) {
 		var el = $("#search_result_"+index);
 		if (el.length) {
 			el.addClass('result_row_collected');
-			var actionButtons = createActionButtons({}, true); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
+			var actionButtons = createActionButtons({}, true); // TODO-PER: the empty hash should actually include { typewright: true } if it is typewrightable.
 			el.find(".search_result_buttons").html(actionButtons);
 			var collectedOn = el.find('.collected-on');
 			fillInRow(collectedOn, 'Collected&nbsp;on:', formatDate(collectedDate));
@@ -379,7 +386,7 @@ jQuery(document).ready(function($) {
 		var el = $("#search_result_"+index);
 		if (el.length) {
 			el.removeClass('result_row_collected');
-			var actionButtons = createActionButtons({}, false); // TODO-PER: the empty has should actually include { typewright: true } if it is typewrightable.
+			var actionButtons = createActionButtons({}, false); // TODO-PER: the empty hash should actually include { typewright: true } if it is typewrightable.
 			el.find(".search_result_buttons").html(actionButtons);
 			el.find('.collected-on').hide();
 			var annotation = el.find(".annotation-row");
@@ -395,7 +402,7 @@ jQuery(document).ready(function($) {
 			var value = el.find('.tag-list .value');
 			var container = el.closest(".search_result_data_container");
 			var uri = container.attr("data-uri");
-			var tags = createTagLine(uri, index, myTags);
+			var tags = createTagLine(uri, index, myTags, otherTags);
 			value.html(tags);
 		}
 	};
@@ -416,7 +423,7 @@ jQuery(document).ready(function($) {
 		if (el.length) {
 			var row = el.find('.exhibits-row');
 			var container = el.closest(".search_result_data_container");
-			var uri = container.attr("data-uri");
+			//var uri = container.attr("data-uri");
 			var output = [];
 			if (exhibits) {
 				for (var i = 0; i < exhibits.length; i++) {

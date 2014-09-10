@@ -20,20 +20,29 @@ class Tag < ActiveRecord::Base
 
   validates_uniqueness_of :name
 
-	def self.items_in_uri_list(uris)
-		sql_left = "select uri,name from tagassigns inner join cached_resources on tagassigns.`cached_resource_id` = cached_resources.id inner join tags on tagassigns.tag_id = tags.id where cached_resources.uri in ("
+	def self.items_in_uri_list(uris,curr_user_id)
+		sql_left = "select uri,name,user_id from tagassigns inner join cached_resources on tagassigns.`cached_resource_id` = cached_resources.id inner join tags on tagassigns.tag_id = tags.id where cached_resources.uri in ("
 		sql_right = ");"
 		uris = uris.map { |uri| "'" + uri.gsub("\'") { |apos| "\\\'" } + "'" }
 		tags = ActiveRecord::Base.connection.execute(sql_left + uris.join(',')+sql_right)
 		list = {}
+		other_list = {}
 		tags.each { |item|
-			if list[item[0]].nil?
-				list[item[0]] = [ item[1] ]
+			if item[2] == curr_user_id
+				if list[item[0]].nil?
+					list[item[0]] = [ item[1] ]
+				else
+					list[item[0]].push(item[1])
+				end
 			else
-				list[item[0]].push(item[1])
+				if other_list[item[0]].nil?
+					other_list[item[0]] = [ item[1] ]
+				else
+					other_list[item[0]].push(item[1])
+				end
 			end
 		}
-		return list
+		return list,other_list
 
 	end
 

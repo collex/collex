@@ -24,7 +24,7 @@ class SearchController < ApplicationController
 	# /search
 	# /search.json
 	def index
-		# When this is called as html, it just creates the blank search page and it will send back and ajax call for the search.
+		# When this is called as html, it just creates the blank search page and it will send back an ajax call for the search.
 		# When this is called as json, it does the search.
 		respond_to do |format|
 			format.html {
@@ -37,28 +37,6 @@ class SearchController < ApplicationController
 				sort_ascending = params[:dir].present? ? params[:dir] == 'asc' : true
 				constraints = []
 				legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
-
-				# TODO-PER: Do we need to do the following preprocessing?
-				# elsif constraint['type'] == 'ExpressionConstraint'
-				# 	q = format_constraint(q, strip_non_alpha(constraint), 'q')
-				# elsif constraint['type'] == 'FreeCultureConstraint'
-				# 	o = format_constraint(o, constraint, 'o', 'freeculture')
-				# elsif constraint['type'] == 'FullTextConstraint'
-				# 	o = format_constraint(o, constraint, 'o', 'fulltext')
-				# elsif constraint['type'] == 'TypeWrightConstraint'
-				# 	o = format_constraint(o, constraint, 'o', 'typewright')
-				# 	elsif constraint['fieldx'] == 'title'
-				# 		t = format_constraint(t, strip_non_alpha(constraint), 't')
-				# 	elsif constraint['fieldx'] == 'author'
-				# 		aut = format_constraint(aut, strip_non_alpha(constraint), 'aut')
-				# 	elsif constraint['fieldx'] == 'editor'
-				# 		ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
-				# 	elsif constraint['fieldx'] == 'publisher'
-				# 		pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
-				# 	elsif constraint['fieldx'] == 'r_art'
-				# 		r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
-				# 	elsif constraint['fieldx'] == 'r_own'
-				# 		r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
 
 				params.each { |key, val|
 					if legal_constraints.include?(key) && val.present?
@@ -113,7 +91,12 @@ class SearchController < ApplicationController
 				end
 
 				if all_uris.length > 0
-					tags = Tag.items_in_uri_list(all_uris)
+					my_tags, tags = Tag.items_in_uri_list(all_uris, get_curr_user_id)
+					my_tags.each { |uri, name|
+						@results['hits'].each { |hit|
+							hit['my_tags'] = name if hit['uri'] == uri
+						}
+					}
 					tags.each { |uri, name|
 						@results['hits'].each { |hit|
 							hit['tags'] = name if hit['uri'] == uri
