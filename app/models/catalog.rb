@@ -69,9 +69,7 @@ class Catalog
    end
 
    def auto_complete(facet, constraints, prefix)	# called for autocomplete
-      #params = parse_constraints(constraints)
-	   params = constraints.to_a
-	   params = params.map { |c| "#{c[0]}=+#{c[1]}"  } # TODO-PER: the "+" needs to be passed in.
+      params = parse_constraints(constraints)
       params.push("frag=#{prefix}")
       params.push("field=#{facet}") if facet != 'content'
       params.push("max=15")

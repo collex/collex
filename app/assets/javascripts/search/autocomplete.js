@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 			response([]);
 		}
 
-		request.other = window.collex.removeSortFromQueryObject();
+		request.other = window.collex.removeSortAndPageFromQueryObject();
 		request.field = $(fieldSelector).val();
 		request[csrf_param] = csrf_token;
 		$.post(url, request).done(success).fail(fail);

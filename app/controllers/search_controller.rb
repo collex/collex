@@ -437,6 +437,7 @@ class SearchController < ApplicationController
 
    def auto_complete_for_q
 	   other = params[:other]
+	   other = process_constraints(other)
 	   field = params[:field]
 	   if field.nil? || field == 'q'
 	   	field = 'content'
