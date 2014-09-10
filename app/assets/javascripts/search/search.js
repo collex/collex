@@ -207,6 +207,7 @@ jQuery(document).ready(function($) {
 		if (url === currentLocation)
 			return;
 		showProgress();
+		window.collex.resetNameFacet();
 		var pageTitle = document.title; // For now, don't change the page title depending on the search.
 		History.pushState(null, pageTitle, url);
 	}
