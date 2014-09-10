@@ -165,6 +165,12 @@ jQuery(document).ready(function($) {
 		return existingQuery;
 	};
 
+	window.collex.removeSortAndPageFromQueryObject = function() {
+		var existingQuery = window.collex.removeSortFromQueryObject();
+		delete existingQuery.page;
+		return existingQuery;
+	};
+
 	function getSortFromQueryObject() {
 		var existingQuery = window.collex.getUrlVars();
 		var ret = {};

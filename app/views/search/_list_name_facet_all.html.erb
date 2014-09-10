@@ -22,8 +22,8 @@
 	<% total_names += facet.length %>
 	<%  } -%>
 	<div id="name_facet_title">
-		<%= link_to_function("close X", "minimizeSearchNameFacet();return false;", :class => 'nav_link name_facet_close') %>
-		<div class="search_name_title">There are <%= number_with_delimiter(total_names) %> names associated with this search. [Showing the top 5 hits in each category. <%= link_to_function("Click here to show all", "showAllSearchNameFacet();return false;", :class => 'nav_link') %>.]</div>
+		<%= link_to("close X", '#', { class: 'nav_link name_facet_close minimizeSearchNameFacet' }) %>
+		<div class="search_name_title">There are <%= number_with_delimiter(total_names) %> names associated with this search. [Showing the top 5 hits in each category. <%= link_to("Click here to show all", '#', { class: 'nav_link showAllSearchNameFacet' }) %>.]</div>
 	</div>
 	<table class="name_facet">
 		<tr>

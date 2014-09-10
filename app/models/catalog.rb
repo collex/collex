@@ -131,24 +131,7 @@ class Catalog
 	   start = start ? "start=#{start}" : ""
 	   max = max ? "max=#{max}" : ""
 
-	   params = []
-	   constraints.each { |constraint|
-		   val = constraint[:val]
-		   if constraint[:key] == 'f'
-			   if constraint[:val].kind_of?(Array)
-				   params.push(format_federation_constraint(constraint[:val]))
-			   else
-				   params.push("#{constraint[:key]}=+federation:#{val}")
-			   end
-		   else
-			   if constraint[:val].kind_of?(Array)
-				   val = val.map { |v| v[0] == '-' ? v : '+'+v }
-				   val = val.join("")
-			   end
-			   val = val[0] == '-' || val[0] == '+' ? val : '+'+val
-			   params.push("#{constraint[:key]}=#{val}")
-		   end
-	   }
+	   params = parse_constraints(constraints)
 	   params.push(sort) if sort.length > 0
 	   params.push(hl) if hl.length > 0
 	   params.push(start) if start.length > 0
@@ -201,64 +184,64 @@ class Catalog
 	   return ret
    end
 
-   def search(constraints, start, max, sort_by, sort_ascending)
-      sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
-      hl = "hl=on"
-      start = start ? "start=#{start}" : ""
-      max = max ? "max=#{max}" : ""
-
-      params = parse_constraints(constraints)
-      params.push(sort) if sort.length > 0
-      params.push(hl) if hl.length > 0
-      params.push(start) if start.length > 0
-      params.push(max) if max.length > 0
-
-      results = call_solr("search", :get, params)
-      if !results['html'].blank?
-         page = results['html']
-         if page.kind_of?(Hash)
-            body = page['body']
-            ActiveRecord::Base.logger.info("BODY: " + body.to_s)
-         else
-            ActiveRecord::Base.logger.info("PAGE: " + page.to_s)
-         end
-         return nil_return()
-      end
-
-      results = results['search']
-      ret = { 'total_hits' => results['total'], 'hits' => normalize_hits(results['results']['result']), 'facets' => {} }
-      #		if ret['hits'] == nil
-      #			ret['hits'] = []
-      #		elsif ret['hits'].kind_of?(Hash)
-      #			ret['hits'] = [ ret['hits'] ]
-      #		end
-      #		ret['hits'].each { |hit|
-      #			hit.each { |key,val|
-      #				if val.kind_of?(Hash) && val['value']
-      #					if val['value'].kind_of?(String)
-      #						hit[key] = [ val['value'] ]
-      #					else
-      #						hit[key] = val['value']
-      #					end
-      #				end
-      #			}
-      #		}
-
-      results['facets'].each { |typ,facets|
-         h = {}
-         if facets['facet'].kind_of?(Array)
-            facets['facet'].each { |facet|
-               h[facet['name']] = facet['count']
-            }
-         else
-            if facets['facet']
-               h[facets['facet']['name']] = facets['facet']['count']
-            end
-         end
-         ret['facets'][typ] = h
-      }
-      return ret
-   end
+   # def search(constraints, start, max, sort_by, sort_ascending)
+   #    sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
+   #    hl = "hl=on"
+   #    start = start ? "start=#{start}" : ""
+   #    max = max ? "max=#{max}" : ""
+   #
+   #    params = parse_constraints(constraints)
+   #    params.push(sort) if sort.length > 0
+   #    params.push(hl) if hl.length > 0
+   #    params.push(start) if start.length > 0
+   #    params.push(max) if max.length > 0
+   #
+   #    results = call_solr("search", :get, params)
+   #    if !results['html'].blank?
+   #       page = results['html']
+   #       if page.kind_of?(Hash)
+   #          body = page['body']
+   #          ActiveRecord::Base.logger.info("BODY: " + body.to_s)
+   #       else
+   #          ActiveRecord::Base.logger.info("PAGE: " + page.to_s)
+   #       end
+   #       return nil_return()
+   #    end
+   #
+   #    results = results['search']
+   #    ret = { 'total_hits' => results['total'], 'hits' => normalize_hits(results['results']['result']), 'facets' => {} }
+   #    #		if ret['hits'] == nil
+   #    #			ret['hits'] = []
+   #    #		elsif ret['hits'].kind_of?(Hash)
+   #    #			ret['hits'] = [ ret['hits'] ]
+   #    #		end
+   #    #		ret['hits'].each { |hit|
+   #    #			hit.each { |key,val|
+   #    #				if val.kind_of?(Hash) && val['value']
+   #    #					if val['value'].kind_of?(String)
+   #    #						hit[key] = [ val['value'] ]
+   #    #					else
+   #    #						hit[key] = val['value']
+   #    #					end
+   #    #				end
+   #    #			}
+   #    #		}
+   #
+   #    results['facets'].each { |typ,facets|
+   #       h = {}
+   #       if facets['facet'].kind_of?(Array)
+   #          facets['facet'].each { |facet|
+   #             h[facet['name']] = facet['count']
+   #          }
+   #       else
+   #          if facets['facet']
+   #             h[facets['facet']['name']] = facets['facet']['count']
+   #          end
+   #       end
+   #       ret['facets'][typ] = h
+   #    }
+   #    return ret
+   # end
 
    def start_reindex()
       call_solr("locals/#{Setup.default_federation()}", :delete)
@@ -743,100 +726,24 @@ class Catalog
    end
 
    def parse_constraints(constraints)
-      q = ""
-      fuz_q = ""
-      t = ""
-      fuz_t = ""
-      aut = ""
-      ed = ""
-      pub = ""
-      y = ""
-      a = ""
-      g = ""
-      f = ""
-      o = ""
-      r_art = ""
-      r_own = ""
-      lang = ""
-      discipline = ""
-      doc_type = ""
-      role = ""
-      federations = []
-
-      params = []
-
-      constraints.each { |constraint|
-         if constraint['type'] == 'FederationConstraint'
-            federations.push(constraint['value'])
-         elsif constraint['type'] == 'ExpressionConstraint'
-            q = format_constraint(q, strip_non_alpha(constraint), 'q')
-         elsif constraint['type'] == 'FreeCultureConstraint'
-            o = format_constraint(o, constraint, 'o', 'freeculture')
-         elsif constraint['type'] == 'FullTextConstraint'
-            o = format_constraint(o, constraint, 'o', 'fulltext')
-         elsif constraint['type'] == 'TypeWrightConstraint'
-            o = format_constraint(o, constraint, 'o', 'typewright')
-         elsif constraint['type'] == 'FacetConstraint'
-            if constraint['fieldx'] == 'genre'
-               g = format_constraint(g, constraint, 'g')
-            elsif constraint['fieldx'] == 'archive'
-               a = format_constraint(a, constraint, 'a')
-            elsif constraint['fieldx'] == 'title'
-               t = format_constraint(t, strip_non_alpha(constraint), 't')
-            elsif constraint['fieldx'] == 'author'
-               aut = format_constraint(aut, strip_non_alpha(constraint), 'aut')
-            elsif constraint['fieldx'] == 'editor'
-               ed = format_constraint(ed, strip_non_alpha(constraint), 'ed')
-            elsif constraint['fieldx'] == 'publisher'
-               pub = format_constraint(pub, strip_non_alpha(constraint), 'pub')
-            elsif constraint['fieldx'] == 'r_art'
-               r_art = format_constraint(r_art, strip_non_alpha(constraint), 'r_art')
-            elsif constraint['fieldx'] == 'r_own'
-               r_own = format_constraint(r_own, strip_non_alpha(constraint), 'r_own')
-            elsif constraint['fieldx'] == 'fuz_q'
-               fuz_q = format_constraint(fuz_q, constraint, 'fuz_q')
-            elsif constraint['fieldx'] == 'fuz_t'
-               fuz_t = format_constraint(fuz_t, constraint, 'fuz_t')
-            elsif constraint['fieldx'] == 'year'
-               y = format_constraint(y, constraint, 'y')
-            elsif constraint['fieldx'] == 'language'
-               lang = format_constraint(lang, constraint, 'lang')
-            elsif constraint['fieldx'] == 'doc_type'
-               doc_type = format_constraint(doc_type, constraint, 'doc_type')
-            elsif constraint['fieldx'] == 'discipline'
-               discipline = format_constraint(discipline, constraint, 'discipline')
-            elsif constraint['fieldx'].match(/role_/)
-               role = format_constraint(role, constraint, constraint['fieldx'])#
-               # fieldx is also the url param for role_*
-               params.push(role) if role.length > 0
-               role = ''
-            else
-               raise Catalog::Error.new("Unhandled constraint")
-            end
-         else
-            raise Catalog::Error.new("Unhandled constraint")
-         end
-      }
-
-      f = format_federation_constraint(federations) if federations.present?
-
-      params.push(q) if q.length > 0
-      params.push(t) if t.length > 0
-      params.push(aut) if aut.length > 0
-      params.push(ed) if ed.length > 0
-      params.push(pub) if pub.length > 0
-      params.push(y) if y.length > 0
-      params.push(a) if a.length > 0
-      params.push(g) if g.length > 0
-      params.push(f) if f.length > 0
-      params.push(o) if o.length > 0
-      params.push(r_art) if r_art.length > 0
-      params.push(r_own) if r_own.length > 0
-      params.push(fuz_q) if fuz_q.length > 0
-      params.push(fuz_t) if fuz_t.length > 0
-      params.push(lang) if lang.length > 0
-      params.push(doc_type) if doc_type.length > 0
-      params.push(discipline) if discipline.length > 0
+	   params = []
+	   constraints.each { |constraint|
+		   val = constraint[:val]
+		   if constraint[:key] == 'f'
+			   if constraint[:val].kind_of?(Array)
+				   params.push(format_federation_constraint(constraint[:val]))
+			   else
+				   params.push("#{constraint[:key]}=+federation:#{val}")
+			   end
+		   else
+			   if constraint[:val].kind_of?(Array)
+				   val = val.map { |v| v[0] == '-' ? v : '+'+v }
+				   val = val.join("")
+			   end
+			   val = val[0] == '-' || val[0] == '+' ? val : '+'+val
+			   params.push("#{constraint[:key]}=#{val}")
+		   end
+	   }
 
       return params
    end
