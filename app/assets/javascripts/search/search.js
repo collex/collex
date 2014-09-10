@@ -248,6 +248,7 @@ jQuery(document).ready(function($) {
 		str = str.replace(/[^0-9A-Za-z'"\u00C0-\u017F]/g, ' ');
 		while (str.substr(0,1) === "'")
 			str = str.substr(1);
+		str = str.replace(/ '/g,' '); // Allow an apostrophe inside a word, but not at the beginning of a word.
 		return str.replace(/\s+/g, ' ');
 	}
 
