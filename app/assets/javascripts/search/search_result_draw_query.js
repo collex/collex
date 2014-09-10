@@ -22,8 +22,18 @@ jQuery(document).ready(function($) {
 		return key;
 	}
 
-	function searchNot() {
-		return '<select class="query_and-not_select"><option>AND</option><option>NOT</option></select>';
+	function searchNot(key, val) {
+		var a = window.pss.createHtmlTag("option", {}, 'AND');
+		var opt = {};
+		if (val && val.length > 0 && val[0] === '-')
+			opt.selected = 'selected';
+		var n = window.pss.createHtmlTag("option", opt, 'NOT');
+		opt = {};
+		if (key)
+			opt['data-key'] = key;
+		if (val)
+			opt['data-val'] = val;
+		return window.pss.createHtmlTag("select", opt, a+n);
 	}
 
 	function searchRemove(key, value) {
@@ -56,7 +66,7 @@ jQuery(document).ready(function($) {
 		return window.pss.createHtmlTag("tr", { },
 			window.pss.createHtmlTag("td", {'class': "query_type" }, selectType) +
 			window.pss.createHtmlTag("td", {'class': "query_term" }, searchBox) +
-			window.pss.createHtmlTag("td", {'class': "query_and-not" }, searchNot()) +
+			window.pss.createHtmlTag("td", {'class': "new-query_and-not" }, searchNot()) +
 			window.pss.createHtmlTag("td", { 'class': "query_remove" }, submitButton) );
 	}
 
@@ -81,10 +91,13 @@ jQuery(document).ready(function($) {
 						}
 					}
 					isEmpty = false;
+					var displayedValue = value;
+					if (displayedValue && displayedValue[0] === '-')
+						displayedValue = displayedValue.substr(1);
 					html += window.pss.createHtmlTag("tr", {},
 						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
-						window.pss.createHtmlTag("td", {'class': "query_term"}, value) +
-						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot()) +
+						window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
+						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key,query[key])) +
 						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, values[i])));
 				}
 			}

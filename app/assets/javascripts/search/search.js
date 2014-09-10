@@ -142,6 +142,22 @@ jQuery(document).ready(function($) {
 		return existingQuery;
 	}
 
+	function modifyInQueryObject(queryKey, oldQueryValue, newValue) {
+		var existingQuery = window.collex.getUrlVars();
+		if (existingQuery[queryKey] === undefined)
+			return existingQuery; // Nothing to do: the parameter wasn't present
+		else if (typeof existingQuery[queryKey] === 'string') {
+			if (existingQuery[queryKey] === oldQueryValue)
+				existingQuery[queryKey] = newValue;
+			// If the value didn't match, then there's nothing to do, the parameter wasn't present.
+		} else {
+			var index = $.inArray(oldQueryValue, existingQuery[queryKey]);
+			if (index !== -1)
+				existingQuery[queryKey][index] = newValue;
+		}
+		return existingQuery;
+	}
+
 	window.collex.removeSortFromQueryObject = function() {
 		var existingQuery = window.collex.getUrlVars();
 		delete existingQuery.srt;
@@ -235,14 +251,30 @@ jQuery(document).ready(function($) {
 		var term = parent.find(".query_term input").val();
 		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
 		term = sanitizeString(term);
-		var not = parent.find(".query_and-not_select").val();
-		// TODO-PER: do NOT
+		var not = parent.find(".new-query_and-not select").val();
+		if (not === 'NOT' && term && term[0] !== '-')
+			term = '-' + term;
 		var url = createNewUrl(type, term, "add");
 		changePage(url);
 	}
 
 	body.on("click", ".query_add", function () {
 		query_add($(this));
+	});
+
+	body.on("change", ".query_and-not select", function () {
+		var el = $(this);
+		var action = el.val();
+		var key = el.attr('data-key');
+		var val = el.attr('data-val');
+		var newValue = val;
+		if (action === 'AND' && newValue[0] === '-')
+			newValue = newValue.substr(1);
+		if (action === 'NOT' && newValue[0] !== '-')
+			newValue = '-' + newValue;
+
+		var query = modifyInQueryObject(key, val, newValue);
+		changePage("/search?" + makeQueryString(query));
 	});
 
 	body.on("keydown", ".query.search-form input", function(e) {

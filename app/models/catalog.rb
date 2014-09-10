@@ -142,9 +142,11 @@ class Catalog
 			   end
 		   else
 			   if constraint[:val].kind_of?(Array)
-				   val = val.join("+")
+				   val = val.map { |v| v[0] == '-' ? v : '+'+v }
+				   val = val.join("")
 			   end
-			   params.push("#{constraint[:key]}=+#{val}")
+			   val = val[0] == '-' || val[0] == '+' ? val : '+'+val
+			   params.push("#{constraint[:key]}=#{val}")
 		   end
 	   }
 	   params.push(sort) if sort.length > 0
