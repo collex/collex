@@ -369,12 +369,19 @@ jQuery(document).ready(function($) {
 
 	function initializeSearch() {
 		// This is called on initial page load.
-		if (window.collex && window.collex.pageName === 'search') {
-			initSortControls();
-			showProgress();
-			setTimeout(doSearch, 10);	// allow the progress spinner to appear.
+		if (window.collex) {
+			if (window.collex.pageName === 'search') {
+				initSortControls();
+				showProgress();
+				setTimeout(doSearch, 10);	// allow the progress spinner to appear.
+			} else if (window.collex.hits && window.collex.hits.length > 0) {
+				setTimeout(function() { // Let everything get initialized before asking anything to draw.
+					body.trigger('DrawHits', { hits: window.collex.hits });
+				}, 10);
+			}
 		}
 	}
+
 	initializeSearch();
 });
 

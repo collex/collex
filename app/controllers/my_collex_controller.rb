@@ -21,6 +21,8 @@ class MyCollexController < ApplicationController
   private
   def init_view_options
     @site_section = :my_collex
+	@solr = Catalog.factory_create(session[:use_test_index] == "true")
+	@archives = @solr.get_resource_tree()
     return true
   end
 

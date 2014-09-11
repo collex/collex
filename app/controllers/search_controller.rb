@@ -38,22 +38,22 @@ class SearchController < ApplicationController
 				constraints = process_constraints(params)
 				begin
 					@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
-					@results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
-					@results['message'] = ''
+					results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+					results['message'] = ''
 				rescue Catalog::Error => e
-					@results = rescue_search_error(e)
-					@results['message'] = e.message
+					results = rescue_search_error(e)
+					results['message'] = e.message
 				end
 
 				# process all the returned hits to insert all non-solr info
 				all_uris = []
-				@results['hits'].each { |hit|
+				results['hits'].each { |hit|
 					# make a list of all uris so that we can find the collected ones and any annotations
 					all_uris.push(hit['uri'])
 
 					# Add the highlighting to the hit object so that a result is completely contained inside the hit object
-					if @results["highlighting"] && hit['uri'] && @results["highlighting"][hit["uri"]]
-						t = @results["highlighting"][hit["uri"]].to_s.strip()
+					if results["highlighting"] && hit['uri'] && results["highlighting"][hit["uri"]]
+						t = results["highlighting"][hit["uri"]].to_s.strip()
 						# We want to escape everything except the bolding so that random control chars can't mess up the display
 						t = h(t.gsub('&', 'AmPeRsAnD'))
 						hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
@@ -63,15 +63,15 @@ class SearchController < ApplicationController
 					exhibits = Exhibit.get_referencing_exhibits(hit["uri"], current_user)
 					hit['exhibits'] = exhibits if exhibits.length > 0
 				}
-				@results['page_size'] = items_per_page
+				results['page_size'] = items_per_page
 
-				@results['collected'] = {}
+				results['collected'] = {}
 				if user_signed_in? && all_uris.length > 0
 					collected_items = CollectedItem.items_in_uri_list(get_curr_user_id(), all_uris)
 					collected_items.each { |uri, item|
-						@results['collected'][uri] = item[:updated_at]
+						results['collected'][uri] = item[:updated_at]
 						if item[:annotation].present?
-							@results['hits'].each { |hit|
+							results['hits'].each { |hit|
 								if hit['uri'] == uri
 									hit['annotation'] = view_context.decode_exhibit_links(item[:annotation])
 								end
@@ -83,32 +83,32 @@ class SearchController < ApplicationController
 				if all_uris.length > 0
 					my_tags, tags = Tag.items_in_uri_list(all_uris, get_curr_user_id)
 					my_tags.each { |uri, name|
-						@results['hits'].each { |hit|
+						results['hits'].each { |hit|
 							hit['my_tags'] = name if hit['uri'] == uri
 						}
 					}
 					tags.each { |uri, name|
-						@results['hits'].each { |hit|
+						results['hits'].each { |hit|
 							hit['tags'] = name if hit['uri'] == uri
 						}
 					}
 				end
 
 				# This fixes the format of the access facet.
-				@results['facets']['access'] = {}
-				@results['facets']['access']['freeculture'] = @results['facets']['freeculture']['true'] if @results['facets']['freeculture'].present? && @results['facets']['freeculture']['true'].present?
-				@results['facets']['access']['fulltext'] = @results['facets']['has_full_text']['true'] if @results['facets']['has_full_text'].present? && @results['facets']['has_full_text']['true'].present?
-				@results['facets']['access']['ocr'] = @results['facets']['ocr']['true'] if @results['facets']['ocr'].present? && @results['facets']['ocr']['true'].present?
-				@results['facets']['access']['typewright'] = @results['facets']['typewright']['true'] if @results['facets']['typewright'].present? && @results['facets']['typewright']['true'].present?
+				results['facets']['access'] = {}
+				results['facets']['access']['freeculture'] = results['facets']['freeculture']['true'] if results['facets']['freeculture'].present? && results['facets']['freeculture']['true'].present?
+				results['facets']['access']['fulltext'] = results['facets']['has_full_text']['true'] if results['facets']['has_full_text'].present? && results['facets']['has_full_text']['true'].present?
+				results['facets']['access']['ocr'] = results['facets']['ocr']['true'] if results['facets']['ocr'].present? && results['facets']['ocr']['true'].present?
+				results['facets']['access']['typewright'] = results['facets']['typewright']['true'] if results['facets']['typewright'].present? && results['facets']['typewright']['true'].present?
 
 				# Be sure that all the facets are returned, even if they are empty.
-				@results['facets']['genre'] = {} if @results['facets']['genre'].blank?
-				@results['facets']['archive'] = {} if @results['facets']['archive'].blank?
-				@results['facets']['federation'] = {} if @results['facets']['federation'].blank?
-				@results['facets']['doc_type'] = {} if @results['facets']['doc_type'].blank?
-				@results['facets']['discipline'] = {} if @results['facets']['discipline'].blank?
-				@results['facets']['role'] = {} if @results['facets']['role'].blank?
-				render :json => @results
+				results['facets']['genre'] = {} if results['facets']['genre'].blank?
+				results['facets']['archive'] = {} if results['facets']['archive'].blank?
+				results['facets']['federation'] = {} if results['facets']['federation'].blank?
+				results['facets']['doc_type'] = {} if results['facets']['doc_type'].blank?
+				results['facets']['discipline'] = {} if results['facets']['discipline'].blank?
+				results['facets']['role'] = {} if results['facets']['role'].blank?
+				render :json => results
 			}
 		end
 	end

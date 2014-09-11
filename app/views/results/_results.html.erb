@@ -41,6 +41,9 @@
 	window.collex.exhibit_names = <%= raw(Exhibit.all_my_exhibits(get_curr_user_id).to_json) %>;
 	window.collex.savedSearches = <%= user_signed_in? ? raw(get_saved_searches(current_user.username).map { |s| { id: s.id, name: s.name, url: s.url }}.to_json) : [] %>;
 	window.collex.defaultFederation = '<%= Setup.default_federation() %>';
+	<% if hits.length > 0 %>
+	window.collex.hits = <%= raw(hits.to_json()) %>;
+	<% end %>
 </script>
 <div class="search-results">
 <% if @script == 'doCollect' %>

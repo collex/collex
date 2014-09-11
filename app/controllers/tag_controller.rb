@@ -20,6 +20,8 @@ class TagController < ApplicationController
    private
    def init_view_options
      @site_section = :tag
+	 @solr = Catalog.factory_create(session[:use_test_index] == "true")
+	 @archives = @solr.get_resource_tree()
      return true
    end
    public

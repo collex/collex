@@ -86,7 +86,6 @@ jQuery(document).ready(function($) {
 		}, 8000);
 	}
 
-	// has-results add_constraint_form not-empty no_results_msg
 	body.bind('RedrawSearchResults', function(ev, obj) {
 		if (!obj || !obj.hits || !obj.facets || !obj.query) {
 			window.console.log("error redrawing search results", obj);
@@ -112,6 +111,22 @@ jQuery(document).ready(function($) {
 		createTotals(obj.total_hits);
 		setFederations(obj.facets.federation, obj.query.f);
 		fixExpandAllLink();
+
+		imageTimeout();
+	});
+
+	body.bind('DrawHits', function(ev, obj) {
+//		showResultSections(obj);
+//		showMessage(obj.message);
+
+		obj.collected = {};
+		window.collex.createResultRows(obj);
+
+//		var page = obj.query.page ? obj.query.page : 1;
+//		window.collex.createPagination(page, obj.total_hits, obj.page_size);
+//
+//		createTotals(obj.total_hits);
+//		fixExpandAllLink();
 
 		imageTimeout();
 	});
