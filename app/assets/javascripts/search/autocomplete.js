@@ -34,7 +34,8 @@ jQuery(document).ready(function($) {
 		for (var i = 0; !autoCompleteOk && i < autoCompleteFields.length; i++)
 			if (request.field === autoCompleteFields[i])
 				autoCompleteOk = true;
-		if (autoCompleteOk && request.term.length > 2)
+		// Also, don't try autocomplete on more than one word: the solr index doesn't support that.
+		if (autoCompleteOk && request.term.length > 2 && request.term.indexOf(' ') === -1)
 			$.post(url, request).done(success).fail(fail);
 	}
 
