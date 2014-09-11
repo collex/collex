@@ -132,7 +132,7 @@ class SearchController < ApplicationController
 	   query.each { |key, val|
 		   found_federation = true if key == 'f'
 		   if legal_constraints.include?(key) && val.present?
-			   if key == 'q'
+			   if key == 'q' || key == 't' || key == 'aut' || key == 'pub' || key == 'ed' || key == 'own' || key == 'art'
 				   val = process_q_param(val)
 			   end
 			   constraints.push({ key: key, val: val })
@@ -407,9 +407,11 @@ class SearchController < ApplicationController
 	   values = []
 	   begin
 		   results = @solr.auto_complete(field, existing_search, keyword)
-		   results.each { |result|
-			   values.push([result['item'], result['occurrences']])
-		   }
+		   if results.present? # This can be nil in a normal case, when there are no matches.
+			   results.each { |result|
+				   values.push([result['item'], result['occurrences']])
+			   }
+		   end
 	   rescue Net::HTTPServerException => e
 		   logger.error("Autocomplete error: #{e.message}")
 		   # don't do anything if this fails.

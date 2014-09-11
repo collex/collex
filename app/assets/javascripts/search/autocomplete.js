@@ -28,7 +28,13 @@ jQuery(document).ready(function($) {
 		request.other = window.collex.removeSortAndPageFromQueryObject();
 		request.field = $(fieldSelector).val();
 		request[csrf_param] = csrf_token;
-		$.post(url, request).done(success).fail(fail);
+		var autoCompleteFields = [ 'q', 't', 'aut', 'ed', 'pub'];
+		var autoCompleteOk = false;
+		for (var i = 0; !autoCompleteOk && i < autoCompleteFields.length; i++)
+			if (request.field === autoCompleteFields[i])
+				autoCompleteOk = true;
+		if (autoCompleteOk)
+			$.post(url, request).done(success).fail(fail);
 	}
 
 	window.collex.initAutoComplete = function(el) {
