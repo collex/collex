@@ -247,20 +247,21 @@ jQuery(document).ready(function($) {
 		changePage(url);
 	});
 
-	function sanitizeString(str) {
+	window.collex.sanitizeString = function(str) {
 		str = str.replace(/[^0-9A-Za-z'"\u00C0-\u017F]/g, ' ');
 		while (str.substr(0,1) === "'")
 			str = str.substr(1);
 		str = str.replace(/ '/g,' '); // Allow an apostrophe inside a word, but not at the beginning of a word.
-		return str.replace(/\s+/g, ' ');
-	}
+		str = str.replace(/\s+/g, ' ');
+		return $.trim(str);
+	};
 
 	function query_add(el) {
 		var parent = el.closest('tr');
 		var type = parent.find(".query_type_select").val();
 		var term = parent.find(".query_term input").val();
 		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
-		term = sanitizeString(term);
+		term = window.collex.sanitizeString(term);
 		var not = parent.find(".new-query_and-not select").val();
 		if (not === 'NOT' && term && term[0] !== '-')
 			term = '-' + term;
@@ -340,7 +341,7 @@ jQuery(document).ready(function($) {
 	body.bind('SetSearch', function(ev, obj) {
 		for (var key in obj) {
 			if (obj.hasOwnProperty(key)) {
-				obj[key] = sanitizeString(obj[key]);
+				obj[key] = window.collex.sanitizeString(obj[key]);
 			}
 		}
 		var existingSort = getSortAndFederationFromQueryObject();
@@ -350,7 +351,7 @@ jQuery(document).ready(function($) {
 
 	// This modifies the current search.
 	body.bind('ModifySearch', function(ev, obj) {
-		var query = modifyInQueryObject(obj.key, obj.original, sanitizeString(obj.newValue));
+		var query = modifyInQueryObject(obj.key, obj.original, window.collex.sanitizeString(obj.newValue));
 		changePage("/search?" + makeQueryString(query));
 	});
 
