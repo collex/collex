@@ -100,8 +100,8 @@ jQuery(document).ready(function($) {
 					html += window.pss.createHtmlTag("tr", {},
 						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
-						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key,query[key])) +
-						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, values[i])));
+						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key,value)) +
+						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, value)));
 				}
 			}
 		}
