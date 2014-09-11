@@ -285,14 +285,14 @@ jQuery(document).ready(function($) {
 		changePage("/search?" + makeQueryString(query));
 	});
 
-	body.on("keydown", ".query.search-form input", function(e) {
+	body.on("keydown", ".query.search-form .new-search-term input", function(e) {
 		var key = e.which;
 		if (key === 13 || key === 10) {
 			return false;
 		}
 	});
 
-	body.on("keyup", ".query.search-form input", function(e) {
+	body.on("keyup", ".query.search-form .new-search-term input", function(e) {
 		var key = e.which;
 		if (key === 13 || key === 10) {
 			query_add($(this));
@@ -336,6 +336,12 @@ jQuery(document).ready(function($) {
 		var existingSort = getSortFromQueryObject();
 		jQuery.extend(obj, existingSort);
 		changePage("/search?" + makeQueryString(obj));
+	});
+
+	// This modifies the current search.
+	body.bind('ModifySearch', function(ev, obj) {
+		var query = modifyInQueryObject(obj.key, obj.original, sanitizeString(obj.newValue));
+		changePage("/search?" + makeQueryString(query));
 	});
 
 	function initSortControls() {

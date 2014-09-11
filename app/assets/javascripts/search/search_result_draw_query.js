@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
 			{ 'class': "add-autocomplete", type: 'text', placeholder: "click here to add new search term", 'data-autocomplete-url': "/search/auto_complete_for_q", 'data-autocomplete-field': ".query_type_select", autocomplete: 'off' }) +
 			window.pss.createHtmlTag("div", {'class': "auto_complete", id: "search_phrase_auto_complete", style: "display: none;" }, '');
 		var submitButton = window.pss.createHtmlTag("button", { 'class': "query_add" }, 'Add');
-		return window.pss.createHtmlTag("tr", { },
+		return window.pss.createHtmlTag("tr", { 'class': 'new-search-term' },
 			window.pss.createHtmlTag("td", {'class': "query_type" }, selectType) +
 			window.pss.createHtmlTag("td", {'class': "query_term" }, searchBox) +
 			window.pss.createHtmlTag("td", {'class': "new-query_and-not" }, searchNot()) +
@@ -94,6 +94,9 @@ jQuery(document).ready(function($) {
 					var displayedValue = value;
 					if (displayedValue && displayedValue[0] === '-')
 						displayedValue = displayedValue.substr(1);
+					if (key === 'q' || key === 't' || key === 'aut' || key === 'ed' || key === 'pub' || key === 'art' || key === 'own' || key === 'y') {
+						displayedValue = window.pss.createHtmlTag("a", {'class': "modify_link query-editable", href: '#', 'data-type': key}, displayedValue);
+					}
 					html += window.pss.createHtmlTag("tr", {},
 						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
