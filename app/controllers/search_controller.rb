@@ -128,7 +128,9 @@ class SearchController < ApplicationController
 	   constraints = []
 	   legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
 
+	   found_federation = false
 	   query.each { |key, val|
+		   found_federation = true if key == 'f'
 		   if legal_constraints.include?(key) && val.present?
 			   if key == 'q'
 				   val = process_q_param(val)
@@ -136,6 +138,10 @@ class SearchController < ApplicationController
 			   constraints.push({ key: key, val: val })
 		   end
 	   }
+	   # if there is no federation constraint, we use the default federation.
+	   if !found_federation
+		   constraints.push({ key: 'f', val: Setup.default_federation() })
+	   end
 	   return constraints
    end
 
@@ -155,7 +161,6 @@ class SearchController < ApplicationController
    def init_view_options
      @site_section = :search
 	 @solr = Catalog.factory_create(session[:use_test_index] == "true")
-	 session[:constraints] ||= new_constraints_obj()
 	 @archives = @solr.get_resource_tree()
 	 set_archive_toggle_state(@archives)
 	 @other_federations = []
@@ -397,17 +402,6 @@ class SearchController < ApplicationController
 	end
 
    private
-	def clear_constraints
-		session[:name_of_search] = nil
-		#session[:selected_resource_facets] = FacetCategory.find( :all, :conditions => "type = 'FacetValue'").map { |facet| facet.value }
-		# don't clear the current setting of the federation constraints.
-		if session[:constraints]
-			session[:constraints].delete_if { |constraint| !constraint.is_a?(FederationConstraint) }
-		end
-		session[:search_sort_by] = nil
-		session[:search_sort_by_direction] = nil
-	end
-
    def auto_complete(keyword, field, existing_search)
 	   @solr = Catalog.factory_create(session[:use_test_index] == "true")
 	   values = []

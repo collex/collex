@@ -18,14 +18,18 @@ jQuery(document).ready(function($) {
 				el.text("");
 		});
 		var federationChecks = $(".limit_to_federation input");
-		if (!selected)
-			federationChecks.prop('checked', true);
-		else {
-			federationChecks.each(function(index, el) {
-				var name = el.name;
-				$(el).prop('checked', selected[name]);
-			});
+		if (!selected) // The default federation selection is just the current federation.
+			selected = [ window.collex.defaultFederation ];
+
+		// Turn the selected array into a hash for easier access
+		var selectedHash = {};
+		for (var i = 0; i < selected.length; i++) {
+			selectedHash[selected[i]] = true;
 		}
+		federationChecks.each(function(index, el) {
+			var name = el.name;
+			$(el).prop('checked', selectedHash[name]);
+		});
 	}
 
 	function hasSearch(obj) {

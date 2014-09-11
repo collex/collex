@@ -46,10 +46,6 @@ class ApplicationController < ActionController::Base
 	end
 
   private
-	def new_constraints_obj()
-		return [ FederationConstraint.new(:fieldx => 'federation', :value => Setup.default_federation(), :inverted => false) ]
-	end
-
   	def refill_session_cache()
 		session[:num_docs] = nil
 		session[:num_sites] = nil
@@ -67,7 +63,6 @@ class ApplicationController < ActionController::Base
 		begin
 			ActionMailer::Base.default_url_options[:host] = request.host_with_port
 			if !self.kind_of?(TestJsController)
-				session[:constraints] ||= new_constraints_obj()
 				solr = Catalog.factory_create(session[:use_test_index] == "true")
 				session[:num_docs] ||= solr.num_docs()
 				session[:num_sites] ||= solr.num_sites()

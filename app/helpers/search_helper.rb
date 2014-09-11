@@ -185,89 +185,89 @@ module SearchHelper
     return raw(html)
   end
 
-  def resource_is_in_constraints?(resource)
-    constraints = session[:constraints]
-    constraints.each {|constraint|
-      if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
-        return true
-      end
-    }
-    return false
-  end
-  
-  def site_is_in_constraints?(site_value)
-    constraints = session[:constraints]
-	return false if constraints == nil
-    constraints.each {|constraint|
-      if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == site_value
-        return true
-      end
-    }
-    return false
-  end
-  
-  def access_is_in_constraints?(type)
-    constraints = session[:constraints]
-    constraints.each {|constraint|
-      if constraint[:type] == type
-        return true
-      end
-    }
-    return false
-  end
-
-  def free_culture_is_in_constraints?
-    constraints = session[:constraints]
-    constraints.each {|constraint|
-      if constraint[:type] == 'FreeCultureConstraint'
-        return true
-      end
-    }
-    return false
-  end
-
-  def full_text_is_in_constraints?
-    constraints = session[:constraints]
-    constraints.each {|constraint|
-      if constraint[:type] == 'FullTextConstraint'
-        return true
-      end
-    }
-    return false
-  end
-
-  def site_subtotal(site_count, facet_category)
-    count = 0
-    if facet_category['children'] != nil
-      facet_category['children'].each { |child|
-        if child['children'] != nil
-          count = count + site_subtotal(site_count, child)
-        else
-          count = count + site_object_count(site_count, child['handle'])
-        end    
-      }
-    else
-      count = site_object_count(site_count, facet_category['handle'])
-    end
-    return count
-  end
-    
-  def is_constrained_by_child(resource)
-    constraints = session[:constraints]
-    resource_constraint = ""
-    constraints.each {|constraint|
-      if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint'
-        resource_constraint = constraint[:value]
-      end
-    }
-    return false if resource_constraint == ""
-    
-    resource.children.each {|child|
-      return true if child['value'] == resource_constraint
-    }
-    
-    return false
-  end
+  # def resource_is_in_constraints?(resource)
+  #   constraints = session[:constraints]
+  #   constraints.each {|constraint|
+  #     if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
+  #       return true
+  #     end
+  #   }
+  #   return false
+  # end
+  #
+  # def site_is_in_constraints?(site_value)
+  #   constraints = session[:constraints]
+	# return false if constraints == nil
+  #   constraints.each {|constraint|
+  #     if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == site_value
+  #       return true
+  #     end
+  #   }
+  #   return false
+  # end
+  #
+  # def access_is_in_constraints?(type)
+  #   constraints = session[:constraints]
+  #   constraints.each {|constraint|
+  #     if constraint[:type] == type
+  #       return true
+  #     end
+  #   }
+  #   return false
+  # end
+  #
+  # def free_culture_is_in_constraints?
+  #   constraints = session[:constraints]
+  #   constraints.each {|constraint|
+  #     if constraint[:type] == 'FreeCultureConstraint'
+  #       return true
+  #     end
+  #   }
+  #   return false
+  # end
+  #
+  # def full_text_is_in_constraints?
+  #   constraints = session[:constraints]
+  #   constraints.each {|constraint|
+  #     if constraint[:type] == 'FullTextConstraint'
+  #       return true
+  #     end
+  #   }
+  #   return false
+  # end
+  #
+  # def site_subtotal(site_count, facet_category)
+  #   count = 0
+  #   if facet_category['children'] != nil
+  #     facet_category['children'].each { |child|
+  #       if child['children'] != nil
+  #         count = count + site_subtotal(site_count, child)
+  #       else
+  #         count = count + site_object_count(site_count, child['handle'])
+  #       end
+  #     }
+  #   else
+  #     count = site_object_count(site_count, facet_category['handle'])
+  #   end
+  #   return count
+  # end
+  #
+  # def is_constrained_by_child(resource)
+  #   constraints = session[:constraints]
+  #   resource_constraint = ""
+  #   constraints.each {|constraint|
+  #     if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint'
+  #       resource_constraint = constraint[:value]
+  #     end
+  #   }
+  #   return false if resource_constraint == ""
+  #
+  #   resource.children.each {|child|
+  #     return true if child['value'] == resource_constraint
+  #   }
+  #
+  #   return false
+  # end
   
   def gray_if_zero( count )
     count==0 ? 'class="grayed-out-resource"' : ''
@@ -321,30 +321,30 @@ module SearchHelper
     "http://#{request.host_with_port()}/search?#{s.url}"
   end
   
-  def has_constraints?
-	  # don't count the federation constraint
-    session[:constraints].each { |constraint|
-		return true if !constraint.is_a?(FederationConstraint)
-	}
-	return false
-  end
-
-  def has_federation_constraint?(value)
-	  # If no federation constraint has been defined, we return true. Otherwise, we have to match it.
-	  found_fed = false
-    session[:constraints].each { |constraint|
-		return true if constraint.is_a?(FederationConstraint) && constraint.value == value
-		found_fed = true if constraint.is_a?(FederationConstraint)
-	}
-	return !found_fed
-  end
-
-	def has_all_federation_constraints?(feds)
-		feds.each { |fed|
-			return false if !has_federation_constraint?(fed)
-		}
-		return true
-	end
+  # def has_constraints?
+	#   # don't count the federation constraint
+  #   session[:constraints].each { |constraint|
+	# 	return true if !constraint.is_a?(FederationConstraint)
+	# }
+	# return false
+  # end
+  #
+  # def has_federation_constraint?(value)
+	#   # If no federation constraint has been defined, we return true. Otherwise, we have to match it.
+	#   found_fed = false
+  #   session[:constraints].each { |constraint|
+	# 	return true if constraint.is_a?(FederationConstraint) && constraint.value == value
+	# 	found_fed = true if constraint.is_a?(FederationConstraint)
+	# }
+	# return !found_fed
+  # end
+  #
+	# def has_all_federation_constraints?(feds)
+	# 	feds.each { |fed|
+	# 		return false if !has_federation_constraint?(fed)
+	# 	}
+	# 	return true
+	# end
   
   def format_constraint(constraint)
 
@@ -654,17 +654,17 @@ module SearchHelper
   def create_access_table( freeculture_count, fulltext_count, typewright_count )
     html = raw('<table class="limit_to facet-access">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_access}</th><th class=\"num_objects\"># of Objects</th></tr>")
-	data = [
-		{ exists: access_is_in_constraints?('FreeCultureConstraint'), label: "Free Culture Only", value: 'freeculture', count: freeculture_count },
-		{ exists: access_is_in_constraints?('FullTextConstraint'), label: "Full Text Only", value: 'fulltext', count: fulltext_count }
-	]
-	# TODO-PER: is there also an "ocr" option?
-    if COLLEX_PLUGINS['typewright']
-      data.push({ exists: access_is_in_constraints?('TypeWrightConstraint'), label: "TypeWright Enabled Only", value: 'typewright', count: typewright_count })
-    end
-	for acc in data
-		html += facet_selector( acc, 'o' )
-	end
+	# data = [
+	# 	{ exists: access_is_in_constraints?('FreeCultureConstraint'), label: "Free Culture Only", value: 'freeculture', count: freeculture_count },
+	# 	{ exists: access_is_in_constraints?('FullTextConstraint'), label: "Full Text Only", value: 'fulltext', count: fulltext_count }
+	# ]
+	# # TODO-PER: is there also an "ocr" option?
+	# if COLLEX_PLUGINS['typewright']
+     #  data.push({ exists: access_is_in_constraints?('TypeWrightConstraint'), label: "TypeWright Enabled Only", value: 'typewright', count: typewright_count })
+	# end
+	# for acc in data
+	# 	html += facet_selector( acc, 'o' )
+	# end
     html += raw('</table>')
     return raw(html)
   end
@@ -673,9 +673,9 @@ module SearchHelper
   def create_format_table( format_data )
     html = raw('<table class="limit_to facet-format">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_format}</th><th class=\"num_objects\"># of Objects</th></tr>")
-    for format in format_data
-      html += facet_selector( format, 'doc_type' )
-    end
+    # for format in format_data
+    #   html += facet_selector( format, 'doc_type' )
+    # end
     html += raw('</table>')
     return raw(html)
   end
@@ -683,9 +683,9 @@ module SearchHelper
   def create_discipline_table( discipline_data )
     html = raw('<table class="limit_to facet-discipline">')
     html += raw("<tr><th>#{Setup.display_name_for_facet_discipline}</th><th class=\"num_objects\"># of Objects</th></tr>")
-    for discipline in discipline_data
-      html += facet_selector( discipline, 'discipline' )
-    end
+    # for discipline in discipline_data
+    #   html += facet_selector( discipline, 'discipline' )
+    # end
     html += raw('</table>')
     return raw(html)
   end

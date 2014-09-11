@@ -171,13 +171,15 @@ jQuery(document).ready(function($) {
 		return existingQuery;
 	};
 
-	function getSortFromQueryObject() {
+	function getSortAndFederationFromQueryObject() {
 		var existingQuery = window.collex.getUrlVars();
 		var ret = {};
 		if (existingQuery.srt)
 			ret.srt = existingQuery.srt;
 		if (existingQuery.dir)
 			ret.dir = existingQuery.dir;
+		if (existingQuery.f)
+			ret.f = existingQuery.f;
 		return ret;
 	}
 
@@ -213,7 +215,7 @@ jQuery(document).ready(function($) {
 	}
 
 	body.on("click", ".new_search", function () {
-		var existingQuery = getSortFromQueryObject();
+		var existingQuery = getSortAndFederationFromQueryObject();
 		changePage("/search?" + makeQueryString(existingQuery));
 	});
 
@@ -300,24 +302,32 @@ jQuery(document).ready(function($) {
 		}
 	});
 
+	body.on("change", ".search_all_federations", function() {
+		if (this.checked) {
+			var names = [];
+			var federations = $(".limit_to_federation input");
+			for (var i = 0; i < federations.length; i++)
+				names.push(federations[i].name);
+			var url = createNewUrl('f', names, 'replace');
+			changePage(url);
+		}
+	});
+
 	body.on("change", ".limit_to_federation input", function() {
 		var feds = $(".limit_to_federation input");
 		// If all of the federation checkboxes are checked, then we remove the federation parameter.
 		// If none of the federation checkboxes are checked, then we change them to all being checked.
 		// Otherwise add the federations that were checked.
-		var allChecked = true;
 		var noneChecked = true;
 		var checkedFeds = [];
 		feds.each(function(index, el) {
 			if (el.checked) {
 				noneChecked = false;
 				checkedFeds.push(el.name);
-			} else {
-				allChecked = false;
 			}
 		});
 		var existingQuery = window.collex.getUrlVars();
-		if (allChecked || noneChecked) {
+		if (noneChecked) {
 			delete existingQuery.f;
 		} else {
 			existingQuery.f = checkedFeds;
@@ -333,7 +343,7 @@ jQuery(document).ready(function($) {
 				obj[key] = sanitizeString(obj[key]);
 			}
 		}
-		var existingSort = getSortFromQueryObject();
+		var existingSort = getSortAndFederationFromQueryObject();
 		jQuery.extend(obj, existingSort);
 		changePage("/search?" + makeQueryString(obj));
 	});
