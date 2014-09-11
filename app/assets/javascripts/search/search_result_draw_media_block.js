@@ -413,8 +413,7 @@ jQuery(document).ready(function($) {
 		var el = $("#search_result_"+index);
 		if (el.length) {
 			var value = el.find('.tag-list .value');
-			var container = el.closest(".search_result_data_container");
-			var uri = container.attr("data-uri");
+			var uri = el.attr("data-uri");
 			var tags = createTagLine(uri, index, myTags, otherTags);
 			value.html(tags);
 		}
