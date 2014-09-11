@@ -379,11 +379,8 @@ class SearchController < ApplicationController
        error_message = error_message.gsub(/^\d\d\d \"(.*)\"/,'\1')
 	 end
 	 logger.error("SEARCH ERROR: #{error_message}")
-     if session[:constraints].length == 1 && session[:constraints][0]['type'] == "ExpressionConstraint"
-       flash[:error] = render_to_string(:inline => "The search string \"#{session[:constraints][0]['value']}\" contains invalid characters. Try another search.")
-     else
-       flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', { :action => 'search' }, { :class => 'nav_link' } %> or remove the offending search string below.")
-     end
+     flash[:error] = render_to_string(:inline => "You have entered a search string with invalid characters.  You should <%=link_to 'clear all your constraints', { :action => 'search' }, { :class => 'nav_link' } %> or remove the offending search string below.")
+
      return {"facets" => {"archive" => {}, "freeculture" => {}, "genre" => {}}, "total_hits" => 0, "hits" => [], "total_documents" => 0}
   end
 
