@@ -225,8 +225,10 @@ class Typewright::DocumentsController < ApplicationController
          # POST the corrected full text to the catalog so it will be
          # stored there and the results reproducable on the next reindex
          catalog_url = "#{URI.parse(Setup.solr_url())}/corrections"
+         private_token = COLLEX_PLUGINS['catalog']['private_token']
+
          begin
-            resp = RestClient.post catalog_url, json_data, :content_type => "application/json"
+            resp = RestClient.post catalog_url, json_data, :'private_token' => private_token, :content_type => "application/json"
             Catalog.reset_cached_data()
             render :text => "OK", :status => :ok
          rescue RestClient::Exception => rest_error
