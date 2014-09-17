@@ -761,7 +761,7 @@ class Catalog
 
    def call_solr(url, verb, params = [])
       params.push("test_index=true") if @use_test_index
-      private_token = COLLEX_PLUGINS['catalog']['private_token']
+      private_token = SITE_SPECIFIC['catalog']['private_token']
       params.push("private_token=#{private_token}")
 
       args = params.length > 0 ? "#{params.collect { |item| esc_arg(item) }.join('&')}" : ""
