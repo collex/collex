@@ -141,8 +141,7 @@ jQuery(document).ready(function($) {
             if( TW.line.isInRange( num ) === false ) { return false; }
             return TW.lines[num].dirty === true;
         },
-		numUndisplayedChanges: function(num) {
-            if( TW.line.isInRange( num ) === false ) { return 0; }
+		numUndisplayedChanges: function() {
             return TW.line.allStaleLines.length;
         },
 
