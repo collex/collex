@@ -85,39 +85,72 @@ jQuery(document).ready(function($) {
 		//
 		// const routines
 		//
+
+        isEof: function(num) { return num === TW.lines.length; },
 		isLast: function(num) { return num === TW.lines.length - 1; },
 		isInRange: function(num) { return num >= 0 && num < TW.lines.length; },
 
-		canUndo: function(num) { return TW.lines[num].change !== undefined; },
-		canRedo: function(num) { return TW.lines[num].undo !== undefined; },
-		hasChanged: function(num) { return (TW.lines[num].change && TW.lines[num].change.type === 'change') || (TW.lines[num].box_size === 'changed'); },
+		canUndo: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return false; }
+            return TW.lines[num].change !== undefined;
+        },
+		canRedo: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return false; }
+            return TW.lines[num].undo !== undefined;
+        },
+		hasChanged: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return false; }
+            return (TW.lines[num].change && TW.lines[num].change.type === 'change') || (TW.lines[num].box_size === 'changed');
+        },
 		getLastAction: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return null; }
 			if (!TW.lines[num].actions)
 				return null;
 			return TW.lines[num].actions[TW.lines[num].actions.length-1];
 		},
 		getChangeType: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return null; }
 			if (TW.lines[num].change)
 				return TW.lines[num].change.type;
 			if (TW.line.getLastAction(num) === 'delete')
 				return 'delete';
 			return null;
 		},
-		isJustDeleted: function(num) { return TW.lines[num].change && TW.lines[num].change.type === 'delete'; },
+		isJustDeleted: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return false; }
+            return TW.lines[num].change && TW.lines[num].change.type === 'delete';
+        },
 		isDeleted: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return false; }
 			if (TW.line.isJustDeleted(num))
 				return true;
 			return TW.line.getLastAction(num) === 'delete';
 		},
-		getLineNum: function(num) { return TW.lines[num].num; },
-//		getTextHistory: function(num) { return TW.lines[num].text.join("<br />"); },
-		getStartingText: function(num) { return TW.lines[num].text[TW.lines[num].text.length - 1]; },
-		getRect: function(num) { return { l: TW.lines[num].l, r: TW.lines[num].r, t: TW.lines[num].t, b: TW.lines[num].b }; },
-		isDirty: function(num) { return TW.lines[num].dirty === true; },
-		numUndisplayedChanges: function(num) { return TW.line.allStaleLines.length; },
+		getLineNum: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return ''; }
+            return TW.lines[num].num;
+        },
+		getStartingText: function(num) {
+            return TW.lines[num].text[TW.lines[num].text.length - 1];
+        },
+		getRect: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return { l: 0, r: 0, t: 0, b: 0 }; }
+            return { l: TW.lines[num].l, r: TW.lines[num].r, t: TW.lines[num].t, b: TW.lines[num].b };
+        },
+		isDirty: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return false; }
+            return TW.lines[num].dirty === true;
+        },
+		numUndisplayedChanges: function(num) {
+            if( TW.line.isInRange( num ) === false ) { return 0; }
+            return TW.line.allStaleLines.length;
+        },
 
 		getCurrentText: function(num) {
 			var ret;
+            if( TW.line.isEof( num ) === true ) { return '-- bottom of page --'; }
+            if( TW.line.isInRange( num ) === false ) { return ''; }
+
 			if (TW.lines[num].change && TW.lines[num].change.type === 'change')
 				ret = TW.lines[num].change.text;
 			else if (TW.line.isDeleted(num))
@@ -166,6 +199,8 @@ jQuery(document).ready(function($) {
 				return "<tr class='" + klass + "'><td><span></span>" + text + "</td><td>" + author + "</td><td>" + date + "</td></tr>";
 			}
 
+            if( TW.line.isInRange( num ) === false ) { return null; }
+
 			var line = TW.lines[num];
 			var rows = [];
 			var i;
@@ -204,6 +239,8 @@ jQuery(document).ready(function($) {
 		setClean: function(num) { TW.lines[num].dirty = false; },
 
 		doRegisterLineChange: function(num, newText) {
+            if( TW.line.isInRange( num ) == false ) { return false; }
+
 			var line = TW.lines[num];
 			// sets the line if there is something to set, and returns true if a change was made.
 			var lastTextLocation = line.text.length - 1;

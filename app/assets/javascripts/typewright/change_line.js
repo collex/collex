@@ -29,23 +29,30 @@ jQuery(document).ready(function($) {
       return "<a href=\"#\" class=\"" + classes + "\" data-amount=\"" + amount + "\">" + create_display_line(str) + "</a>";
    }
 
-   function setUndoButtons() {
-      var un = $('.tw_undo_button');
-      var re = $('.tw_redo_button');
+   function setButtons() {
+      var undo = $('.tw_undo_button');
+      var redo = $('.tw_redo_button');
+      var cor = $('.tw_correct');
+      var del = $('.tw_delete_line');
+
       if (TW.line.canRedo(TW.currLine)) {
-         un.addClass('hidden');
-         re.removeClass('hidden');
+          undo.addClass('hidden');
+          redo.removeClass('hidden');
       } else if (TW.line.canUndo(TW.currLine)) {
-         un.removeClass('hidden');
-         re.addClass('hidden');
+          undo.removeClass('hidden');
+          redo.addClass('hidden');
       } else {
-         un.addClass('hidden');
-         re.addClass('hidden');
+          undo.addClass('hidden');
+          redo.addClass('hidden');
       }
 
-      var correct = $('.tw_correct');
-      if (correct) {
-         correct.removeClass('disabled');
+      if( TW.line.isInRange(TW.currLine) === false ) {
+          if( cor ) cor.addClass('hidden');
+          if( del ) del.addClass('hidden');
+      } else {
+          if( cor ) cor.removeClass('hidden');
+          if (cor) cor.removeClass('disabled');
+          if( del ) del.removeClass('hidden');
       }
    }
 
@@ -194,11 +201,11 @@ jQuery(document).ready(function($) {
    function redrawCurrIcons() {
       var el = $('#tw_text_1 .tw_change_icon');
       el.html( createIcon(TW.currLine) );
-      setUndoButtons();
+      setButtons();
    }
 
 	function redrawCurrLine() {
-		redrawCurrIcons();
+        redrawCurrIcons();
 		var elHist = $('#tw_text_1 .tw_history_icon');
 		var elNum = $('#tw_text_1 .tw_line_num');
 		elHist.html(createHistory(TW.currLine));
@@ -208,10 +215,12 @@ jQuery(document).ready(function($) {
 		var justDeleted = TW.line.isJustDeleted(TW.currLine);
 		var isStale = TW.line.lineIsStale(TW.currLine);
 		var isDeleted = TW.line.isDeleted(TW.currLine);
+        var isReadOnly = TW.line.isEof(TW.currLine);
+
 		var attrs = [];
 		attrs.push("id=\"tw_input_focus\"");
 		attrs.push("type=\"text\"");
-		if (justDeleted || isStale)
+		if (justDeleted || isStale || isReadOnly )
 			attrs.push("readonly=\"readonly\"");
 		if (isDeleted || isStale) {
 			attrs.push("value=\"\"");
@@ -275,10 +284,14 @@ jQuery(document).ready(function($) {
          elNum.html(create_display_line(TW.line.getLineNum(TW.currLine + 1)));
          elText.html(create_jump_link(TW.line.getCurrentText(TW.currLine + 1), 1, TW.line.isDeleted(TW.currLine + 1)));
       } else {
-         elHist.html('');
-         elChg.html('');
-         elNum.html('');
-         elText.html('-- bottom of page --');
+          elHist.html('');
+          elChg.html('');
+          elNum.html('');
+          if (TW.line.isEof(TW.currLine) === true ) {
+              elText.html('');
+          } else {
+              elText.html('-- bottom of page --');
+          }
       }
 
       // Get the original/full size of the image so we know how to much to scale.
@@ -292,13 +305,25 @@ jQuery(document).ready(function($) {
    function change_line_abs(newLineNum) {
       if (TW.line.isInRange(newLineNum)) {
          if (window.TW.currLine !== undefined) {
-            if (TW.line.hasChanged(TW.currLine)) {
-               updateServer();
-            }
-            TW.currLine = newLineNum;
-            redraw();
+             set_line(newLineNum)
+         }
+      } else {
+         // are we at the bottom of the page?
+         if( newLineNum >= TW.lines.length ) {
+             // and we are not already at the special end of file line
+             if( ( window.TW.currLine !== undefined ) && ( TW.line.isEof( TW.currLine ) === false ) ) {
+                 set_line(TW.lines.length);
+             }
          }
       }
+   }
+
+   function set_line( newLineNum ) {
+       if (TW.line.hasChanged(TW.currLine)) {
+           updateServer();
+       }
+       TW.currLine = newLineNum;
+       redraw();
    }
 
    function change_line_rel(amount) {
@@ -325,6 +350,9 @@ jQuery(document).ready(function($) {
    }
 
    function insert_below() {
+      // ignore inserts when we are on the last (placeholder) line
+      if( TW.line.isEof( TW.currLine ) === true ) return;
+
       TW.line.doInsert(TW.currLine + 1);
       TW.currLine+=1;
       redraw();
@@ -393,7 +421,7 @@ jQuery(document).ready(function($) {
 	});
 
 	body.on("click", "#tw_img_thumb", function (e) {
-       var coords = imgCursor.convertThumbToOrig(e.clientX, e.clientY);
+      var coords = imgCursor.convertThumbToOrig(e.clientX, e.clientY);
       var lineNum = TW.line.findLine(coords.x, coords.y);
       change_line_abs(lineNum);
    });
@@ -413,7 +441,7 @@ jQuery(document).ready(function($) {
    //
 
 	body.on("click", ".tw_delete_line", function (e) {
-       TW.line.doDelete(TW.currLine);
+      TW.line.doDelete(TW.currLine);
       lineModified();
    });
 
