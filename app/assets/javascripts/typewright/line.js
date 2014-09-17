@@ -346,6 +346,10 @@ jQuery(document).ready(function($) {
 							destinationLine.exact_times.push(line.exact_time);
 							destinationLine.text.push(line.text);
 							destinationLine.words.push(line.words);
+                            destinationLine.l = line.l;
+                            destinationLine.r = line.r;
+                            destinationLine.t = line.t;
+                            destinationLine.b = line.b;
 						}
 						break;
 					case 'insert':
