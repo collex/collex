@@ -412,13 +412,21 @@ jQuery(document).ready(function($) {
       change_line_rel(parseInt(amount,10));
    });
 
+    // Chrome, IE, Opera, Safari
 	body.on("mousewheel", ".tw_editing, #tw_input_focus, #tw_img_full, #tw_pointer_doc", function(e) {
-		var target = $(e.target);
 		var delta = e.originalEvent.wheelDelta / 120;
 		change_line_rel(-delta);
 		e.preventDefault();
 		e.stopPropagation();
 	});
+
+    // FF
+    body.on("DOMMouseScroll", ".tw_editing, #tw_input_focus, #tw_img_full, #tw_pointer_doc", function(e) {
+        var delta = e.originalEvent.detail;
+        change_line_rel(delta);
+        e.preventDefault();
+        e.stopPropagation();
+    });
 
 	body.on("click", "#tw_img_thumb", function (e) {
       var coords = imgCursor.convertThumbToOrig(e.clientX, e.clientY);
