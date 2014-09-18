@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function createSavedSearchLink(link) {
-		return window.location.origin + window.location.pathname + "?" + link;
+		return window.location.origin + "/search?" + link;
 	}
 	function createSavedSearchPermalink(link) {
 		var img = window.pss.createHtmlTag("img", { alt: 'Permalink', src: "/assets/link.jpg", title: "Click here to get a permanent link for this saved search." });
