@@ -28,10 +28,11 @@ class ResultsController < ApplicationController
     # Only collect if the item isn't already collected and if there is a user logged in.
     # This would normally be the case, but there are strange effects if the user is logged in two browsers, or if the user's session was idle too long.
     locals = setup_ajax_calls(params, false)
-	date = 0
+	  date = 0
     if locals[:is_error] == nil
+      item = nil
       item = CollectedItem.collect_item(locals[:user], locals[:uri], locals[:hit]) unless locals[:user] == nil || locals[:uri] == nil
-		date = item.updated_at
+		  date = item.updated_at unless item.nil?
     end
 
 	respond_to do |format|
@@ -109,8 +110,8 @@ class ResultsController < ApplicationController
   
   def set_annotation
      note = params[:note]
-	uri = params[:uri]
-    CollectedItem.set_annotation(current_user, uri, note) unless !user_signed_in? || uri == nil
+	   uri = params[:uri]
+     CollectedItem.set_annotation(current_user, uri, note) unless !user_signed_in? || uri == nil
 
 	respond_to do |format|
 		format.json {
