@@ -87,17 +87,21 @@ jQuery(document).ready(function($) {
 			}
 		}
 		body.trigger('RedrawSearchResults', resp);
-		if (progressDlg) {
-			progressDlg.cancel();
-			progressDlg = null;
-		}
+		setTimeout(function() {
+			if (progressDlg) {
+				progressDlg.cancel();
+				progressDlg = null;
+			}
+		}, 200);
 	}
 
 	function onError(resp) {
-		if (progressDlg) {
-			progressDlg.cancel();
-			progressDlg = null;
-		}
+		setTimeout(function() {
+			if (progressDlg) {
+				progressDlg.cancel();
+				progressDlg = null;
+			}
+		}, 200);
 		window.console.error(resp);
 	}
 
@@ -108,6 +112,14 @@ jQuery(document).ready(function($) {
 			success: onSuccess,
 			error: onError
 		});
+		// TODO-PER: Something is canceling the progress, but I can't figure out what. So I'll just put it back up.
+		if (progressDlg) {
+			progressDlg.cancel();
+			progressDlg = null;
+			setTimeout(function() {
+				showProgress();
+			}, 200);
+		}
 	}
 
 	History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
