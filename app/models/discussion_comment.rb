@@ -123,7 +123,7 @@ class DiscussionComment < ActiveRecord::Base
 		discussion_comment = DiscussionComment.find(id)
 		thread_id = discussion_comment.discussion_thread_id
 
-		if !is_admin && current_user.id != discussion_comment.user_id
+		if !is_admin && session_user.id != discussion_comment.user_id
 			# don't delete it unless the user has the authority.
 		else
 			ok_to_delete = true
