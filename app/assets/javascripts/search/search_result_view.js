@@ -119,7 +119,6 @@ jQuery(document).ready(function($) {
 //		showResultSections(obj);
 //		showMessage(obj.message);
 
-		obj.collected = {};
 		window.collex.createResultRows(obj);
 
 //		var page = obj.query.page ? obj.query.page : 1;
