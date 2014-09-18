@@ -16,6 +16,10 @@
 
 body.pg-search {
 
+	.query-editable:after {
+		content:image-url('icon_edit.png');
+		margin-left: 4px;
+	}
 .search_entry_box {
 	width:365px;
 }
