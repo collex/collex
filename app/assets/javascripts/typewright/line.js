@@ -18,6 +18,8 @@
 jQuery(document).ready(function($) {
 	"use strict";
 
+    // get the index of the item that represents this line number
+    // comparing floats for equality is bad news...
 	function getIndexFromLineNum(lineNum) {
 		var found = false;
 		for (var num = 0; num < TW.lines.length && !found; num++) {
@@ -27,13 +29,15 @@ jQuery(document).ready(function($) {
 		return -1;
 	}
 
+    // get the insertion point into the line index of this line number
+    // comparing floats for equality is bad news...
 	function getClosestIndexFromLineNum(lineNum) {
 		var found = false;
 		for (var num = 0; num < TW.lines.length && !found; num++) {
-			if (TW.lines[num].line === lineNum)
+			if (TW.lines[num].num === lineNum)
 				return num;
-			if (TW.lines[num].line > lineNum)
-				return num-1;
+			if (TW.lines[num].num > lineNum)
+				return num;
 		}
 		return TW.lines.length;
 	}
@@ -354,7 +358,7 @@ jQuery(document).ready(function($) {
 						break;
 					case 'insert':
 						num = getClosestIndexFromLineNum(line.line);
-						TW.lines.splice(num, 0, { src: "gale", l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], actions: [''], authors: [''], dates: [''], exact_times: [''], num: line.line });
+						TW.lines.splice(num, 0, { src: "gale", l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], actions: [''], authors: [''], dates: [''], exact_times: [''], num: line.line});
 						break;
 					case 'delete':
 						if (destinationLine) {
