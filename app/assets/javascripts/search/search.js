@@ -376,7 +376,7 @@ jQuery(document).ready(function($) {
 				setTimeout(doSearch, 10);	// allow the progress spinner to appear.
 			} else if (window.collex.hits && window.collex.hits.length > 0) {
 				setTimeout(function() { // Let everything get initialized before asking anything to draw.
-					body.trigger('DrawHits', { hits: window.collex.hits });
+					body.trigger('DrawHits', { hits: window.collex.hits, collected: window.collex.collected });
 				}, 10);
 			}
 		}

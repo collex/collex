@@ -44,55 +44,10 @@ class SearchController < ApplicationController
 					results = rescue_search_error(e)
 					results['message'] = e.message
 				end
-
-				# process all the returned hits to insert all non-solr info
-				all_uris = []
-				results['hits'].each { |hit|
-					# make a list of all uris so that we can find the collected ones and any annotations
-					all_uris.push(hit['uri'])
-
-					# Add the highlighting to the hit object so that a result is completely contained inside the hit object
-					if results["highlighting"] && hit['uri'] && results["highlighting"][hit["uri"]]
-						t = results["highlighting"][hit["uri"]].to_s.strip()
-						# We want to escape everything except the bolding so that random control chars can't mess up the display
-						t = h(t.gsub('&', 'AmPeRsAnD'))
-						hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
-					end
-
-					# Add any referencing exhibits
-					exhibits = Exhibit.get_referencing_exhibits(hit["uri"], current_user)
-					hit['exhibits'] = exhibits if exhibits.length > 0
-				}
 				results['page_size'] = items_per_page
 
-				results['collected'] = {}
-				if user_signed_in? && all_uris.length > 0
-					collected_items = CollectedItem.items_in_uri_list(get_curr_user_id(), all_uris)
-					collected_items.each { |uri, item|
-						results['collected'][uri] = item[:updated_at]
-						if item[:annotation].present?
-							results['hits'].each { |hit|
-								if hit['uri'] == uri
-									hit['annotation'] = view_context.decode_exhibit_links(item[:annotation])
-								end
-							}
-						end
-					}
-				end
-
-				if all_uris.length > 0
-					my_tags, tags = Tag.items_in_uri_list(all_uris, get_curr_user_id)
-					my_tags.each { |uri, name|
-						results['hits'].each { |hit|
-							hit['my_tags'] = name if hit['uri'] == uri
-						}
-					}
-					tags.each { |uri, name|
-						results['hits'].each { |hit|
-							hit['tags'] = name if hit['uri'] == uri
-						}
-					}
-				end
+				# process all the returned hits to insert all non-solr info
+				results['collected'] = view_context.add_non_solr_info_to_results(results['hits'], results["highlighting"])
 
 				# This fixes the format of the access facet.
 				results['facets']['access'] = {}

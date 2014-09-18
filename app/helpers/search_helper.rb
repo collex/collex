@@ -28,11 +28,6 @@ module SearchHelper
     return item
   end
 
-#  # TODO-PER: remove this when upgrading rails.
-#  def raw(str)
-#	  return str
-#  end
-  
   public
 	def format_tag_for_output(tag)
 		# we want this escaped, so the user can't inject anything, and lower case, and we want invisible breaks so that a long tag won't break the spacing
@@ -783,4 +778,55 @@ module SearchHelper
 		}
 		return raw(html)
 	end
+
+	def add_non_solr_info_to_results(hits, highlighting)
+		# process all the returned hits to insert all non-solr info
+		all_uris = []
+		hits.each { |hit|
+			# make a list of all uris so that we can find the collected ones and any annotations
+			all_uris.push(hit['uri'])
+
+			# Add the highlighting to the hit object so that a result is completely contained inside the hit object
+			if highlighting && hit['uri'] && highlighting[hit["uri"]]
+				t = highlighting[hit["uri"]].to_s.strip()
+				# We want to escape everything except the bolding so that random control chars can't mess up the display
+				t = h(t.gsub('&', 'AmPeRsAnD'))
+				hit['text'] = t.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&')
+			end
+
+			# Add any referencing exhibits
+			exhibits = Exhibit.get_referencing_exhibits(hit["uri"], current_user)
+			hit['exhibits'] = exhibits if exhibits.length > 0
+		}
+
+		if all_uris.length > 0
+			my_tags, tags = Tag.items_in_uri_list(all_uris, get_curr_user_id)
+			my_tags.each { |uri, name|
+				hits.each { |hit|
+					hit['my_tags'] = name if hit['uri'] == uri
+				}
+			}
+			tags.each { |uri, name|
+				hits.each { |hit|
+					hit['tags'] = name if hit['uri'] == uri
+				}
+			}
+		end
+
+		collected = {}
+		if user_signed_in? && all_uris.length > 0
+			collected_items = CollectedItem.items_in_uri_list(get_curr_user_id(), all_uris)
+			collected_items.each { |uri, item|
+				collected[uri] = item[:updated_at]
+				if item[:annotation].present?
+					hits.each { |hit|
+						if hit['uri'] == uri
+							hit['annotation'] = decode_exhibit_links(item[:annotation])
+						end
+					}
+				end
+			}
+		end
+		return collected
 	end
+end

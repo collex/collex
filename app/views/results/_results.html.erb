@@ -44,6 +44,11 @@
 	<% if hits.length > 0 %>
 	window.collex.hits = <%= raw(hits.to_json()) %>;
 	<% end %>
+	<% if @collected && @collected.length > 0 %>
+	window.collex.collected = <%= raw(@collected.to_json()) %>;
+	<% else %>
+	window.collex.collected = {};
+	<% end %>
 </script>
 <div class="search-results">
 <% if @script == 'doCollect' %>

@@ -130,6 +130,7 @@ class TagController < ApplicationController
 
 			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, items_per_page, sort_field, session[:tag_sort_by_direction])
 			@results = ret[:results]
+	  @collected = view_context.add_non_solr_info_to_results(@results, nil)
 			@total_hits = ret[:total]
 
 			@num_pages = @total_hits.quo(items_per_page).ceil
