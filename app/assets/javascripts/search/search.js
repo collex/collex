@@ -377,6 +377,8 @@ jQuery(document).ready(function($) {
 			} else if (window.collex.hits && window.collex.hits.length > 0) {
 				setTimeout(function() { // Let everything get initialized before asking anything to draw.
 					body.trigger('DrawHits', { hits: window.collex.hits, collected: window.collex.collected });
+
+					window.collex.drawSavedSearchList();
 				}, 10);
 			}
 		}

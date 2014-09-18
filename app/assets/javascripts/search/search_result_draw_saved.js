@@ -41,6 +41,10 @@ jQuery(document).ready(function($) {
 	};
 
 	window.collex.drawSavedSearchList = function() {
+		var target = $(".saved-search-list");
+		if (target.length === 0)
+			return;
+
 		var maxToShow = 10;
 		var numDisplayed = Math.min(maxToShow, window.collex.savedSearches.length);
 		var html = "";
@@ -69,6 +73,6 @@ jQuery(document).ready(function($) {
 			}
 		}
 		html += window.pss.createHtmlTag("table", {'class': "query"}, table);
-		$(".saved-search-list").html(html);
+		target.html(html);
 	};
 });
