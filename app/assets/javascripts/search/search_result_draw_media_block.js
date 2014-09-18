@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
 		var uncollect = isCollected ? window.pss.createHtmlTag("button", { 'class': 'uncollect' }, "Uncollect") : '';
 		var discuss = window.pss.createHtmlTag("button", { 'class': 'discuss' }, "Discuss");
 		var exhibit = isCollected ? window.pss.createHtmlTag("button", { 'class': 'exhibit' }, "Exhibit") : '';
-		var typewright = window.collex.hasTypewright && hit.typewright ? window.pss.createHtmlTag("button", { 'class': 'edit' }, "Edit") : '';
+		var typewright = window.collex.hasTypewright && hit.typewright ? window.pss.createHtmlTag("button", { 'class': 'edit log-in-first-link', 'data-login-prompt': "Please log in to begin editing" }, "Edit") : '';
 		return window.pss.createHtmlTag("div", { 'class': 'search_result_buttons' }, collect+uncollect+discuss+exhibit+typewright);
 	}
 

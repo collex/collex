@@ -6,26 +6,37 @@
 // Requires SignInDlg
 
 /*global SignInDlg */
-/*global gotoPage */
 
-//jQuery(document).ready(function($) {
-//	"use strict";
-//	function callback(node) {
-//		var is_logged_in = node.attr('data-logged-in') === 'true';
-//		var link = node.attr('href');
-//
-//		if (!is_logged_in) {
-//			var dlg = new SignInDlg();
-//			dlg.setInitialMessage("Please log in to begin editing");
-//			dlg.setRedirectPageToCurrentWithParam('script=doTypewright&uri='+link.replace(/&/g, '%26'));
-//			dlg.show('sign_in');
-//			return;
-//		}
-//
-//		gotoPage(link);
-//	}
-//
-//	$(".typewright_edit").on("click", function() {
-//        callback($(this));
-//    });
-//});
+jQuery(document).ready(function($) {
+	"use strict";
+
+	$(".log-in-first-link").on("click", function() {
+		var isLoggedIn = window.collex && window.collex.currentUserId && window.collex.currentUserId > 0;
+		if (isLoggedIn)
+			return;
+
+		var el = $(this);
+		var prompt = el.attr('data-login-prompt');
+		var dlg = new SignInDlg(prompt);
+		dlg.setInitialMessage("Please log in to begin editing");
+		dlg.setRedirectPage = this.href;
+		//dlg.setRedirectPageToCurrentWithParam('script=doTypewright&uri='+link.replace(/&/g, '%26'));
+		dlg.show('sign_in');
+    });
+
+	function onSuccess(resp) {
+		var el = this;
+		el.html(resp);
+	}
+
+	var lazyLoad = $(".lazy-load");
+
+	for (var i = 0; i < lazyLoad.length; i++) {
+		var el = $(lazyLoad[i]);
+		var action = el.attr("data-action");
+		$.ajax(action, {
+			context: el,
+			success: onSuccess
+		});
+	}
+});

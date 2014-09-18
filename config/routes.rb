@@ -172,6 +172,7 @@ Collex::Application.routes.draw do
 	end
 	get "/#{my_collex}" => 'my_collex#index'
 	get "/#{my_collex}/results" => 'my_collex#results'
+	get "/#{my_collex}/get_typewright_documents" => 'my_collex#get_typewright_documents'
 	post "/#{my_collex}/results" => 'my_collex#results'
 
 	post '/my_collex/remove_profile_picture' => 'my_collex#remove_profile_picture'

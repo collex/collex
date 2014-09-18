@@ -37,8 +37,9 @@
 		</div>
 		<div class="right_column">
           <% if COLLEX_PLUGINS['typewright'] %>
-          <div id="typewright">
-              <%= render :partial => 'typewright/widgets/my_documents', :locals => { :document_list => @my_typewright_documents } %>
+			  <div class="right_column_header">My TypeWright</div>
+          <div id="typewright" class="lazy-load" data-action="/<%= MY_COLLEX_URL %>/get_typewright_documents">
+              <%= image_tag(PROGRESS_SPINNER_PATH, { class: 'image-placeholder' }) %>
           </div>
            <% end %>
 			<div id="saved_searches">

@@ -41,10 +41,19 @@ class MyCollexController < ApplicationController
     @has_more = @results.length < more_results.length
 	@collected = view_context.add_non_solr_info_to_results(@results, nil)
 
-	if COLLEX_PLUGINS['typewright']
-		@my_typewright_documents = Typewright::DocumentUser.document_list(Setup.default_federation(), user.id)
-	end
+	# if COLLEX_PLUGINS['typewright']
+	# 	@my_typewright_documents = Typewright::DocumentUser.document_list(Setup.default_federation(), user.id)
+	# end
 
+  end
+
+  def get_typewright_documents
+	  if COLLEX_PLUGINS['typewright'] && user_signed_in?
+		  my_typewright_documents = Typewright::DocumentUser.document_list(Setup.default_federation(), get_curr_user_id())
+		  render partial: 'typewright/widgets/my_documents', :locals => {:document_list => my_typewright_documents}
+	  else
+		  render text: ""
+	  end
   end
 
   def results
