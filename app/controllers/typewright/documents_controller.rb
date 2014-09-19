@@ -166,7 +166,11 @@ class Typewright::DocumentsController < ApplicationController
          @params = Typewright::Document.get_page(@uri, page, @src, word_stats)
 		 user_id = get_curr_user_id()
 		 if user_id.nil?
-			 redirect_to :back
+			 begin
+				 redirect_to :back
+			 rescue
+				 redirect_to "/"
+			 end
 		 else
 			 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
 			 token = "#{typewright_user_id.id}/#{Time.now()}"
