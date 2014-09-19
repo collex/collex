@@ -49,8 +49,9 @@ jQuery(document).ready(function($) {
 		var numDisplayed = Math.min(maxToShow, window.collex.savedSearches.length);
 		var html = "";
 		if (numDisplayed !== window.collex.savedSearches.length) {
-			html += window.pss.createHtmlTag("div", {'class': "empty_list_text"}, "Showing the " + numDisplayed + " most recent of your " + window.collex.savedSearches.length +
-				" saved searches. " + window.pss.createHtmlTag("a",
+			html += window.pss.createHtmlTag("div", {'class': "empty_list_text"},
+				window.pss.createHtmlTag("span", { 'class': 'hiding-text'}, "Showing the " + numDisplayed + " most recent of your " + window.collex.savedSearches.length + " saved searches. ") +
+				window.pss.createHtmlTag("a",
 				{ 'class': 'nav_link saved_search_show_all', onclick: "window.collex.showHiddenSavedSearches('saved_search_show_all', 'saved_search_hidden_item' );" }, "[show all]"));
 		}
 		var table = "";

@@ -38,9 +38,11 @@ jQuery(document).ready(function($) {
 		if (expand) {
 			button.text('[hide some]');
 			hidden_items.removeClass('hidden');
+			button.closest(".empty_list_text").find(".hiding-text").hide();
 		} else {
 			button.text('[show all]');
 			hidden_items.addClass('hidden');
+			button.closest(".empty_list_text").find(".hiding-text").show();
 		}
 	};
 
