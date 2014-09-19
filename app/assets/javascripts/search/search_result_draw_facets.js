@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
 	"use strict";
-	var body = $("body");
 
 	window.collex.create_facet_button = function(label, value, action, key) {
 		return window.pss.createHtmlTag("button", { 'class': 'select-facet nav_link', 'data-action': action, 'data-key': key, 'data-value': value }, label);
@@ -78,7 +77,7 @@ jQuery(document).ready(function($) {
 		for (var i = 0; i < resources.length; i++) {
 			var archive = resources[i];
 			if (archive.children) {
-				var section = createResourceSection(archive.children, hash, level + 1, childClass + ' child_of_'+archive.id, handleOfSelected);
+				var section = createResourceSection(archive.children, hash, level + 1, 'child_of_'+archive.id, handleOfSelected);
 				total += section.total;
 				if (section.total > 0) {
 					var thisNode = createResourceNode(archive.id, level, archive.name, window.collex.number_with_delimiter(section.total), childClass);
@@ -94,7 +93,17 @@ jQuery(document).ready(function($) {
 		return { html: html, total: total };
 	}
 
-	function setResourceToggle(block, resources) {
+	function cascadeHiding(parent, id) {
+		var hiddenChildNodes = parent.find('.resource_node.child_of_'+id);
+		for (var i = 0; i < hiddenChildNodes.length; i++) {
+			var node = hiddenChildNodes[i];
+			var nodeId = node.id.split("_")[1];
+			parent.find(".child_of_"+nodeId).hide();
+			cascadeHiding(parent, nodeId);
+		}
+	}
+
+	window.collex.setResourceToggle = function(block, resources) {
 		for (var i = 0; i < resources.length; i++) {
 			var archive = resources[i];
 			if (archive.children) {
@@ -103,11 +112,13 @@ jQuery(document).ready(function($) {
 				} else {
 					block.find("#resource_" + archive.id + ' button[data-action="close"]').hide();
 					block.find('.child_of_'+archive.id).hide();
+					// Also hide any grandchildren of nodes that would be open.
+					cascadeHiding(block,archive.id);
 				}
-				setResourceToggle(block, archive.children);
+				window.collex.setResourceToggle(block, archive.children);
 			}
 		}
-	}
+	};
 
 	function createResourceBlock(hash, handleOfSelected) {
 
@@ -117,7 +128,7 @@ jQuery(document).ready(function($) {
 		var header = window.pss.createHtmlTag("tr", {}, block.find("tr:first-of-type").html());
 		block.html(header + html);
 		// Now close the items that need to be closed.
-		setResourceToggle(block, window.collex.facetNames.archives);
+		window.collex.setResourceToggle(block, window.collex.facetNames.archives);
 	}
 
 	window.collex.createFacets = function(obj) {

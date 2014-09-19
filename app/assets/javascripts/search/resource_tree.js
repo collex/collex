@@ -24,25 +24,21 @@ jQuery(document).ready(function($) {
 		var el = $(this);
 		var parent = el.closest(".resource-tree-node");
 		var open = parent.find('button[data-action="open"]');
-		var close = parent.find('button[data-action="close"]');
 		var action = el.attr('data-action');
 		var id = parent.attr('data-id');
 		if (action === 'toggle') {
 			action = open.is(':visible') ? 'open' : 'close';
 		}
-		var child_class = ".child_of_" + id;
-		if (action === 'open') {
-			open.hide();
-			close.show();
-			$(child_class).show();
-		} else {
-			open.show();
-			close.hide();
-			$(child_class).hide();
-		}
+
 		var archive = window.collex.getArchiveNode(id);
 		if (archive)
 			archive.toggle = action;
+
+		// Now close the items that need to be closed -- we'll just redraw using the same function that hid the nodes originally.
+		var block = $(".facet-archive");
+		block.find("tr").show();
+		block.find("button").show();
+		window.collex.setResourceToggle(block, window.collex.facetNames.archives);
 
 		serverNotify("/search/remember_resource_toggle", { dir: action, id: id });
 
