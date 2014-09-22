@@ -687,7 +687,10 @@ module SearchHelper
 
 	def format_name_facet(name, typ)
 		name[0] = name[0].gsub("\"", "")
-		return create_facet_button("#{name[0]} (#{name[1]})", typ, "\"#{name[0].gsub(/[^0-9a-z ]/i, '')}\"", "replace")
+		sanitized_name = name[0].gsub(/[^0-9a-z' ]/i, ' ')
+		sanitized_name = sanitized_name.gsub(/\s+/, ' ')
+		sanitized_name = sanitized_name.strip
+		return create_facet_button("#{name[0]} (#{name[1]})", typ, "\"#{sanitized_name}\"", "replace")
 		#return create_facet_link("#{name[0]} (#{name[1]})", '/collex/add_constraint', { :search_type => typ,  :search_not => 'AND', :search => { :phrase => name[0]}, :from_name_facet => 'true' })
 	end
 
