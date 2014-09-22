@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
 
 	function hasSearch(obj) {
 		for (var key in obj) {
-			if (obj.hasOwnProperty(key) && key !== 'srt' && key !== 'dir') {
+			if (obj.hasOwnProperty(key) && key !== 'srt' && key !== 'dir' && key !== 'f') {
 				return false;
 			}
 		}
