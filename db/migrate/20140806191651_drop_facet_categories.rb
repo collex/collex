@@ -1,6 +1,9 @@
 class DropFacetCategories < ActiveRecord::Migration
   def up
+	  begin
 	  drop_table :facet_categories
+	  rescue
+	 end
   end
 
   def down

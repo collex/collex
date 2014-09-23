@@ -11,11 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140909142741) do
+ActiveRecord::Schema.define(:version => 20140923162237) do
 
   create_table "cached_properties", :force => true do |t|
     t.string  "name"
-    t.text    "value"
+    t.text    "value",              :limit => 16777215
     t.integer "cached_resource_id"
   end
 
