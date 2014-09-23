@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
 		}
 
 		request.other = window.collex.removeSortAndPageFromQueryObject();
-		request.field = $(fieldSelector).val();
+		request.field = fieldSelector ? $(fieldSelector).val() : 'q';
 		request.term = window.collex.sanitizeString(request.term);
 		request[csrf_param] = csrf_token;
 		var autoCompleteFields = [ 'q', 't', 'aut', 'ed', 'pub'];
