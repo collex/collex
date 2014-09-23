@@ -81,6 +81,8 @@ class SearchController < ApplicationController
 
    def process_constraints(query)
 	   constraints = []
+	   return constraints if query.blank?
+
 	   legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
 
 	   found_federation = false
