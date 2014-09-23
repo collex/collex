@@ -481,7 +481,7 @@ class SearchController < ApplicationController
 		 sort_param = nil if sort_by == 'Relevancy'
 		 sort_param = 'title_sort' if sort_by == 'Title'
 		 sort_param = 'year_sort' if sort_by == 'Date'
-		 sort_ascending = direction != 'Descending'
+		 sort_ascending = direction != 'desc'
      return @solr.search(constraints, (page - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
    end
 

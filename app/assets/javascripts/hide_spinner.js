@@ -86,6 +86,7 @@ Event.observe(window, 'load', function() {
 	setTimeout(function() {
 		var spinners = $$('.progress_timeout');
 		spinners.each(function(spinner) {
+			jQuery(spinner).removeClass("result_row_img_progress");
 			var noimage = spinner.readAttribute('data-noimage');
 			spinner.src = noimage;
 		});

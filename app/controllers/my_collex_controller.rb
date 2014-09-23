@@ -69,9 +69,9 @@ class MyCollexController < ApplicationController
     session[:tag_zoom] ||= 1
     #do the pagination.
     @page = params[:page] ? params[:page].to_i : 1
-			session[:collected_sort_by] ||= 'Date Collected'
-			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
-			items_per_page = 30
+	@collected_sort_by = params[:srt] || ''
+	@collected_sort_by_direction = params[:dir] || 'asc'
+	items_per_page = 30
     
     # we save the view type in the session object in case we are called from a place that shouldn't care which type it is.
     # In other words, if we have the param[:view] parameter, we use it and save it. If we don't, then we retrieve it.
@@ -91,33 +91,35 @@ class MyCollexController < ApplicationController
     set_cloud_list(user, user.username)
 
 		sort_field = nil
-		case session[:collected_sort_by]
-		when "Date Collected" then
+		case @collected_sort_by
+		when "" then
 			sort_field = 'date_collected'
-		when "Title" then
+		when "title" then
 			sort_field = 'title'
-		when "Author" then
+		when "author" then
 			sort_field = 'role_AUT'
-		when "Date" then
+		when "year" then
 			sort_field = 'date_label'	# note: the 'year' field isn't cached, so we can't sort on that. Should we cache it and refresh all objects?
-		when "Resource" then
+		when "a" then
 			sort_field = 'archive'
+			else
+				sort_field = 'date_collected'
 		end
 
     # This creates an array of hits. Hits is a hash with these members: uri, text, title[0], archive, date_label[...], url[0], role_*[...], genre[...], source[...], alternative[...], license
     case params[:view]
       when 'all_collected'
-      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page, sort_field, session[:collected_sort_by_direction])
+      ret = CachedResource.get_page_of_hits_by_user(user, @page-1, items_per_page, sort_field, @collected_sort_by_direction)
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'untagged'
-      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page, sort_field, session[:collected_sort_by_direction])
+      ret = CachedResource.get_page_of_all_untagged(user, @page-1, items_per_page, sort_field, @collected_sort_by_direction)
       @results = ret[:results]
       @total_hits = ret[:total]
 
       when 'tag'
-      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page, sort_field, session[:collected_sort_by_direction])
+      ret = CachedResource.get_page_of_hits_for_tag(params[:tag], user, @page-1, items_per_page, sort_field, @collected_sort_by_direction)
       @results = ret[:results]
       @total_hits = ret[:total]
 
@@ -131,17 +133,17 @@ class MyCollexController < ApplicationController
   end
 
 	 #adjust the sort order
-  def sort_by
-		if params['search'] && params['search']['result_sort']
-      sort_param = params['search']['result_sort']
-			session[:collected_sort_by] = sort_param
-		end
-		if params['search'] && params['search']['result_sort_direction']
-      sort_param = params['search']['result_sort_direction']
-			session[:collected_sort_by_direction] = sort_param
-		end
-      redirect_to :action => 'results'
-	end
+  # def sort_by
+	# 	if params['search'] && params['search']['result_sort']
+  #     sort_param = params['search']['result_sort']
+	# 		session[:collected_sort_by] = sort_param
+	# 	end
+	# 	if params['search'] && params['search']['result_sort_direction']
+  #     sort_param = params['search']['result_sort_direction']
+	# 		session[:collected_sort_by_direction] = sort_param
+	# 	end
+  #     redirect_to :action => 'results'
+	# end
 
 	# This is called from AJAX when a user's link has been clicked.
 	def show_profile

@@ -177,7 +177,6 @@ Collex::Application.routes.draw do
 
 	post '/my_collex/remove_profile_picture' => 'my_collex#remove_profile_picture'
 	post '/my_collex/show_profile' => 'my_collex#show_profile'
-	post '/my_collex/sort_by' => 'my_collex#sort_by'
 	post '/my_collex/update_profile_upload' => 'my_collex#update_profile_upload'
 	post '/my_collex/update_profile' => 'my_collex#update_profile'
 

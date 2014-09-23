@@ -15,8 +15,8 @@
 #     limitations under the License.
 # ----------------------------------------------------------------------------
 %>
-<%# partial: sort_by (string curr_selection, string curr_selection_direction, array options, string controller) -%>
-<span class="sort" data-controller="<%= controller %>">
-	<%= select_tag('srt', options_for_select(options)) %>
-  <%= select_tag('dir', options_for_select([['Ascending', 'asc'], ['Descending', 'desc']])) %>
+<%# partial: sort_by (string curr_selection, string curr_selection_direction, array options) -%>
+<span class="sort">
+	<%= select_tag('srt', options_for_select(options, curr_selection)) %>
+  <%= select_tag('dir', options_for_select([['Ascending', 'asc'], ['Descending', 'desc']], curr_selection_direction)) %>
 </span>

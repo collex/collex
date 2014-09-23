@@ -62,7 +62,7 @@ jQuery(document).ready(function($) {
 		return params;
 	};
 
-	function makeQueryString(existingQuery) {
+	window.collex.makeQueryString = function(existingQuery) {
 		var arr = [];
 		for (var key in existingQuery) {
 			if (existingQuery.hasOwnProperty(key)) {
@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
 			}
 		}
 		return arr.join('&');
-	}
+	};
 
 	function onSuccess(resp) {
 		resp.query = window.collex.getUrlVars();
@@ -212,7 +212,7 @@ jQuery(document).ready(function($) {
 		if (newQueryKey !== 'page') // always go back to page 1 when the search changes.
 			delete existingQuery.page;
 
-		return "/search?" + makeQueryString(existingQuery);
+		return "/search?" + window.collex.makeQueryString(existingQuery);
 	}
 
 	function changePage(url) {
@@ -228,10 +228,10 @@ jQuery(document).ready(function($) {
 
 	body.on("click", ".new_search", function () {
 		var existingQuery = getSortAndFederationFromQueryObject();
-		changePage("/search?" + makeQueryString(existingQuery));
+		changePage("/search?" + window.collex.makeQueryString(existingQuery));
 	});
 
-	body.on("click", ".select-facet", function () {
+	body.on("click", ".ajax-style .select-facet", function () {
 		var el = $(this);
 		var newQueryKey = el.attr("data-key");
 		var newQueryValue = el.attr("data-value");
@@ -241,7 +241,7 @@ jQuery(document).ready(function($) {
 		changePage(url);
 	});
 
-	body.on("change", ".sort select", function () {
+	body.on("change", ".ajax-style .sort select", function () {
 		var el = $(this);
 		var newQueryKey = el.attr("name");
 		var newQueryValue = el.val();
@@ -250,7 +250,7 @@ jQuery(document).ready(function($) {
 			if (newQueryValue === 'rel') {
 				$(".sort select[name='dir']").hide();
 				var newQuery = window.collex.removeSortFromQueryObject();
-				url = "/search?" + makeQueryString(newQuery);
+				url = "/search?" + window.collex.makeQueryString(newQuery);
 			} else
 				$(".sort select[name='dir']").show();
 		}
@@ -297,7 +297,7 @@ jQuery(document).ready(function($) {
 			newValue = '-' + newValue;
 
 		var query = modifyInQueryObject(key, val, newValue);
-		changePage("/search?" + makeQueryString(query));
+		changePage("/search?" + window.collex.makeQueryString(query));
 	});
 
 	body.on("keydown", ".query.search-form .new-search-term input", function(e) {
@@ -346,7 +346,7 @@ jQuery(document).ready(function($) {
 			existingQuery.f = checkedFeds;
 		}
 		delete existingQuery.page;
-		changePage("/search?" + makeQueryString(existingQuery));
+		changePage("/search?" + window.collex.makeQueryString(existingQuery));
 	});
 
 	// This replaces the current search with the one passed to it.
@@ -358,13 +358,13 @@ jQuery(document).ready(function($) {
 		}
 		var existingSort = getSortAndFederationFromQueryObject();
 		jQuery.extend(obj, existingSort);
-		changePage("/search?" + makeQueryString(obj));
+		changePage("/search?" + window.collex.makeQueryString(obj));
 	});
 
 	// This modifies the current search.
 	body.bind('ModifySearch', function(ev, obj) {
 		var query = modifyInQueryObject(obj.key, obj.original, window.collex.sanitizeString(obj.newValue));
-		changePage("/search?" + makeQueryString(query));
+		changePage("/search?" + window.collex.makeQueryString(query));
 	});
 
 	function initSortControls() {

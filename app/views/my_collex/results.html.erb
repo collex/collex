@@ -26,7 +26,7 @@
 	</div> 
 	
 	<div class="inner_content_container">
-		<div class="left_column">
+		<div class="left_column post-style" data-controller="<%= MY_COLLEX_URL %>">
 			<div id="tag_cloud">
 				<%= render :partial => 'tag_cloud_top', :locals => { :cloud_info => @cloud_info, :view => params[:view], :tag => params[:tag] } %>
 			</div>

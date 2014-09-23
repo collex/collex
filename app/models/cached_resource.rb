@@ -346,7 +346,7 @@ class CachedResource < ActiveRecord::Base
 				add_sort_field(item, sort_field)
 			}
 			items = sort_algorithm(items, sort_field)
-			items = items.reverse() if direction == 'Descending'
+			items = items.reverse() if direction == 'desc'
 		end
     return self.get_page_of_results(items, page_num, items_per_page)
   end
@@ -368,7 +368,7 @@ class CachedResource < ActiveRecord::Base
       # get sorted list of cached resource ids
       assigns_sorted = Tagassign.joins(:cached_resource => :cached_properties).where('cached_properties.name' => sort_field, 'tagassigns.tag_id' => tag.id).select('tagassigns.cached_resource_id').order('cached_properties.value').map{|ta| ta.cached_resource_id}
       assigns = assigns_sorted + (assigns - assigns_sorted)
-      assigns = assigns.reverse() if direction == 'Descending'
+      assigns = assigns.reverse() if direction == 'desc'
     end
 
     assigns = assigns[(page_num*items_per_page)..(page_num*items_per_page+items_per_page-1)]
@@ -407,7 +407,7 @@ class CachedResource < ActiveRecord::Base
     }
 		if sort_field
 			items = sort_algorithm(items, sort_field)
-			items = items.reverse() if direction == 'Descending'
+			items = items.reverse() if direction == 'desc'
 		end
     return self.get_page_of_results(items, page_num, items_per_page)
   end
