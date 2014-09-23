@@ -77,9 +77,9 @@ function finishedLoadingImage(progress_el, img_el, max_width, max_height)
 				$(img_el).setStyle({ paddingLeft: padding2 + "px" });
 		}
 	}
-	
-	$(progress_el).addClassName('hidden');
-	$(img_el).removeClassName('hidden');
+
+	jQuery('#'+progress_el).addClass('hidden');
+	jQuery(img_el).removeClass('hidden');
 }
 
 Event.observe(window, 'load', function() {
