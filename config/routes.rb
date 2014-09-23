@@ -354,7 +354,6 @@ Collex::Application.routes.draw do
   match '/tags/object' => 'tag#object'
 	match '/tags/results' => 'tag#results'
   match '/tag/results' => 'tag#results'
-  match '/tag/sort_by' => 'tag#sort_by'
   match '/tag/testtags' => 'tag#testtags'
   match '/tag/tag_name_autocomplete' => 'tag#tag_name_autocomplete'
 	get '/news' => 'home#news'

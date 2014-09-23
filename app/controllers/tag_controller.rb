@@ -110,25 +110,28 @@ class TagController < ApplicationController
 			else
 				params[:tag] = session[:tag_current]
 			end
-
+	  @collected_sort_by = params[:srt] || 'title'
+	  @collected_sort_by_direction = params[:dir] || 'asc'
 			#do the pagination.
 			@page = params[:page] ? params[:page].to_i : 1
 			#session[:items_per_page] ||= MIN_ITEMS_PER_PAGE
 			items_per_page = 30
 
 			sort_field = 'title'
-			case session[:tag_sort_by]
-			when "Title" then
+			case @collected_sort_by
+			when "title" then
 				sort_field = 'title'
-			when "Author" then
+			when "author" then
 				sort_field = 'role_AUT'
-			when "Date" then
+			when "date" then
 				sort_field = 'date_label'	# note: the 'year' field isn't cached, so we can't sort on that. Should we cache it and refresh all objects?
-			when "Resource" then
+			when "a" then
 				sort_field = 'archive'
+				else
+					sort_field = 'title'
 			end
 
-			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, items_per_page, sort_field, session[:tag_sort_by_direction])
+			ret = CachedResource.get_page_of_hits_for_tag(params[:tag], nil, @page-1, items_per_page, sort_field, @collected_sort_by_direction)
 			@results = ret[:results]
 	  @collected = view_context.add_non_solr_info_to_results(@results, nil)
 			@total_hits = ret[:total]
@@ -138,17 +141,17 @@ class TagController < ApplicationController
   end
   
 	 #adjust the sort order
-  def sort_by
-		if params['search'] && params['search']['result_sort']
-      sort_param = params['search']['result_sort']
-			session[:tag_sort_by] = sort_param
-		end
-		if params['search'] && params['search']['result_sort_direction']
-      sort_param = params['search']['result_sort_direction']
-			session[:tag_sort_by_direction] = sort_param
-		end
-      redirect_to :action => 'results'
-	end
+  # def sort_by
+	# 	if params['search'] && params['search']['result_sort']
+  #     sort_param = params['search']['result_sort']
+	# 		session[:tag_sort_by] = sort_param
+	# 	end
+	# 	if params['search'] && params['search']['result_sort_direction']
+  #     sort_param = params['search']['result_sort_direction']
+	# 		session[:tag_sort_by_direction] = sort_param
+	# 	end
+  #     redirect_to :action => 'results'
+	# end
 
    def update_tag_cloud
     if user_signed_in?
