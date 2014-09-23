@@ -94,6 +94,9 @@ hr.search_results_hr {
 .search_result_right{
 	margin-left: 138px;
 }
+	.result_row_dlg .search_result_right {
+		margin-left: 0;
+	}
 
 .search_result_data td {
 	text-align:left;
