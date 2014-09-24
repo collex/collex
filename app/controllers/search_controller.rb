@@ -92,7 +92,7 @@ class SearchController < ApplicationController
 	   query.each { |key, val|
 		   found_federation = true if key == 'f'
 		   if legal_constraints.include?(key) && val.present?
-			   if key == 'q' || key == 't' || key == 'aut' || key == 'pub' || key == 'ed' || key == 'own' || key == 'art'
+			   if key == 'q' || key == 't' || key == 'aut' || key == 'pub' || key == 'ed' || key == 'r_own' || key == 'r_art'
 				   val = process_q_param(val)
 			   end
 			   # if we were passed fuzzy constraints, make sure that the corresponding other value is set

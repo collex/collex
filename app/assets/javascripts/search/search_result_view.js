@@ -102,7 +102,7 @@ jQuery(document).ready(function($) {
 
 		window.collex.createResultRows(obj);
 
-		window.collex.createSearchForm(obj.query);
+		window.collex.createSearchForm(obj.query, obj.facets.role);
 		window.collex.createFacets(obj);
 
 		var page = obj.query.page ? obj.query.page : 1;

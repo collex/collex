@@ -13,8 +13,8 @@ jQuery(document).ready(function($) {
 			aut: "Author",
 			ed: 'Editor',
 			pub: "Publisher",
-			art: 'Artist',
-			own: 'Owner',
+			r_art: 'Artist',
+			r_own: 'Owner',
 			y: 'Year',
 			lang: 'Language',
 			fuz_q: 'Search Term Fuzziness',
@@ -41,21 +41,47 @@ jQuery(document).ready(function($) {
 
 	function searchRemove(key, value) {
 		return window.pss.createHtmlTag("button", {'class': "trash select-facet", 'data-key': key, 'data-value': value, 'data-action': 'remove' }, '<img alt="Remove Term" src="/assets/lvl2_trash.gif">' );
-
 	}
 
-	function newSearchTerm() {
+	function getDisplayedKeyFromRole(role) {
+		var roleSelect = $('.search_role_type option');
+		for (var k = 0; k < roleSelect.length; k++) {
+			var option2 = $(roleSelect[k]);
+			if (option2.val() === role)
+				return option2.text();
+		}
+		return role;
+	}
+
+	function newSearchTerm(roles) {
 		var searchTypes = [ ['Search Term', 'q'], ['Title', 't'] ];
 		if (window.collex.hasFuzzySearch) {
 			searchTypes.push(['Language', 'lang']);
 			searchTypes.push(['Year (YYYY)', 'y']);
-			// TODO-PER: get the roles that are in the facets.
+			if (roles) {
+				for (var role in roles) {
+					if (roles.hasOwnProperty(role)) {
+						var roleSubstitution = {
+							role_ART: 'r_art',
+							role_AUT: 'aut',
+							role_EDT: 'ed',
+							role_OWN: 'r_own',
+							role_PBL: 'pub'
+						};
+						if (roleSubstitution[role])
+							role = roleSubstitution[role];
+						var displayedKey = getDisplayedKeyFromRole(role);
+						if (displayedKey.indexOf('role_') !== 0)
+							searchTypes.push([displayedKey,role]);
+					}
+				}
+			}
 		} else {
 			searchTypes.push(['Author', 'aut']);
 			searchTypes.push(['Editor', 'ed']);
 			searchTypes.push(['Publisher', 'pub']);
-			searchTypes.push(['Artist', 'art']);
-			searchTypes.push(['Owner', 'own']);
+			searchTypes.push(['Artist', 'r_art']);
+			searchTypes.push(['Owner', 'r_own']);
 			searchTypes.push(['Year (YYYY)', 'y']);
 		}
 		var selectTypeOptions = "";
@@ -83,7 +109,7 @@ jQuery(document).ready(function($) {
 			window.pss.createHtmlTag("label", { for: key+value }, text);
 	}
 
-	window.collex.createSearchForm = function(query) {
+	window.collex.createSearchForm = function(query, roles) {
 		var table = $('.search-form');
 		var html = "";
 		var htmlBottom = "";
@@ -108,7 +134,7 @@ jQuery(document).ready(function($) {
 					var displayedValue = value;
 					if (displayedValue && displayedValue[0] === '-')
 						displayedValue = displayedValue.substr(1);
-					if (key === 'q' || key === 't' || key === 'aut' || key === 'ed' || key === 'pub' || key === 'art' || key === 'own' || key === 'y') {
+					if (key === 'q' || key === 't' || key === 'aut' || key === 'ed' || key === 'pub' || key === 'r_art' || key === 'r_own' || key === 'y') {
 						displayedValue = window.pss.createHtmlTag("a", {'class': "modify_link query-editable", href: '#', 'data-type': key}, displayedValue);
 					}
 					if (key === 'lang') {
@@ -120,12 +146,7 @@ jQuery(document).ready(function($) {
 						}
 					}
 					if (key.indexOf('role_') === 0) {
-						var roleSelect = $('.search_role_type option');
-						for (var k = 0; k < roleSelect.length; k++) {
-							var option2 = $(roleSelect[k]);
-							if (option2.val() === displayedKey)
-								displayedKey = option2.text();
-						}
+						displayedKey = getDisplayedKeyFromRole(displayedKey);
 					}
 					if (key.indexOf('fuz_') === 0) {
 						var type = key.split('_')[1];
@@ -150,7 +171,7 @@ jQuery(document).ready(function($) {
 			}
 		}
 		html += htmlBottom;
-		html += newSearchTerm();
+		html += newSearchTerm(roles);
 		table.html(html);
 		table.find('.add-autocomplete').each(function(index, el) { window.collex.initAutoComplete(el); });
 
