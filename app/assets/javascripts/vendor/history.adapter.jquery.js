@@ -5,7 +5,7 @@
  * @license New BSD License <http://creativecommons.org/licenses/BSD/>
  */
 
-	// Closure
+// Closure
 (function(window,undefined){
 	"use strict";
 
@@ -74,3 +74,4 @@
 	}
 
 })(window);
+
