@@ -83,7 +83,7 @@ class SearchController < ApplicationController
 	   constraints = []
 	   return constraints if query.blank?
 
-	   legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline' ] # also the role_* ones
+	   legal_constraints = [ 'q', 'f', 'o', 'g', 'a', 't', 'aut', 'ed', 'pub', 'r_art', 'r_own', 'fuz_q', 'fuz_t', 'y', 'lang', 'doc_type', 'discipline', 'fuz_q', 'fuz_t' ] # also the role_* ones
 
 	   found_federation = false
 	   query.each { |key, val|
@@ -92,13 +92,26 @@ class SearchController < ApplicationController
 			   if key == 'q' || key == 't' || key == 'aut' || key == 'pub' || key == 'ed' || key == 'own' || key == 'art'
 				   val = process_q_param(val)
 			   end
-			   constraints.push({ key: key, val: val })
+			   # if we were passed fuzzy constraints, make sure that the corresponding other value is set
+			   if key == 'fuz_q'
+				   constraints.push({key: key, val: val}) if query['q']
+			   elsif key == 'fuz_t'
+				   constraints.push({key: key, val: val}) if query['t']
+			   else
+				   constraints.push({key: key, val: val})
+			   end
 		   end
 	   }
 	   # if there is no federation constraint, we use the default federation.
 	   if !found_federation
 		   constraints.push({ key: 'f', val: Setup.default_federation() })
 	   end
+	   fuz = constraints.index('fuz_q')
+	   if query
+		   other = constraints.index('q')
+		   constraints.delete(fuz) if !other
+	   end
+
 	   return constraints
    end
 
@@ -236,23 +249,23 @@ class SearchController < ApplicationController
    #     end
    # end
 
-   def add_keyword_fuz_constraint(phrase_str, invert)
-     expression = phrase_str
-     if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
-       adjusted_val = "#{(expression.to_i-1)}"
-       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_q', :value => adjusted_val, :inverted => invert)
-     end
-   end
-
-   def modify_keyword_fuz_constraint(phrase_str, invert, constraint)
-     expression = phrase_str
-     if expression and expression.strip.size > 0 and expression != '1' && constraint
-       constraint[:value] = "#{(expression.to_i-1)}"
-       constraint[:inverted] = invert
-     elsif session[:constraints]
-       session[:constraints].delete(constraint)
-     end
-   end
+   # def add_keyword_fuz_constraint(phrase_str, invert)
+   #   expression = phrase_str
+   #   if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
+   #     adjusted_val = "#{(expression.to_i-1)}"
+   #     session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_q', :value => adjusted_val, :inverted => invert)
+   #   end
+   # end
+   #
+   # def modify_keyword_fuz_constraint(phrase_str, invert, constraint)
+   #   expression = phrase_str
+   #   if expression and expression.strip.size > 0 and expression != '1' && constraint
+   #     constraint[:value] = "#{(expression.to_i-1)}"
+   #     constraint[:inverted] = invert
+   #   elsif session[:constraints]
+   #     session[:constraints].delete(constraint)
+   #   end
+   # end
 
    # def add_title_constraint(phrase_str, invert)
    #     expression = phrase_str
@@ -261,22 +274,22 @@ class SearchController < ApplicationController
    #     end
    # end
 
-   def modify_title_fuz_constraint(phrase_str, invert, constraint)
-     expression = phrase_str
-     if expression and expression.strip.size > 0 and expression != '1' && constraint
-       constraint[:value] = "#{(expression.to_i-1)}"
-       constraint[:inverted] = invert
-     elsif session[:constraints]
-       session[:constraints].delete(constraint)
-     end
-   end
-
-   def add_title_fuz_constraint(phrase_str, invert)
-     expression = phrase_str
-     if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
-       session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_t', :value =>  "#{(expression.to_i-1)}", :inverted => invert)
-     end
-   end
+   # def modify_title_fuz_constraint(phrase_str, invert, constraint)
+   #   expression = phrase_str
+   #   if expression and expression.strip.size > 0 and expression != '1' && constraint
+   #     constraint[:value] = "#{(expression.to_i-1)}"
+   #     constraint[:inverted] = invert
+   #   elsif session[:constraints]
+   #     session[:constraints].delete(constraint)
+   #   end
+   # end
+   #
+   # def add_title_fuz_constraint(phrase_str, invert)
+   #   expression = phrase_str
+   #   if expression and expression.strip.size > 0 and expression != '1' && session[:constraints]
+   #     session[:constraints] << FacetConstraint.new(:fieldx => 'fuz_t', :value =>  "#{(expression.to_i-1)}", :inverted => invert)
+   #   end
+   # end
 
   # def add_date_constraint(phrase_str, invert)
   #    if (phrase_str and not phrase_str.strip.empty?) && session[:constraints]

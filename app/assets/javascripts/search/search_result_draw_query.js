@@ -15,7 +15,9 @@ jQuery(document).ready(function($) {
 			art: 'Artist',
 			own: 'Owner',
 			y: 'Year',
-			lang: 'Language'
+			lang: 'Language',
+			fuz_q: 'Search Term Fuzziness',
+			fuz_t: 'Title Fuzziness'
 		};
 		if (types[key])
 			return types[key];

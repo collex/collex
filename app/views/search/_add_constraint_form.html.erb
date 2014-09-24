@@ -27,15 +27,15 @@
 			  <div class="fuzzy-container">
 			  <% fuzz = @kfval %>
 			  <% fuzz = 1 if @kfval.nil? %>
-			  <input class="fuzzy" type="radio" name="search_keyword_fuz" value="1"
+			  <input class="fuzzy" type="radio" name="fuz_q" value="1"
 					 <% if fuzz==1 %>checked="checked"
 					 <% end %> />
 			  <span class="fuzzy">Exact Match</span>
-			  <input class="fuzzy" type="radio" name="search_keyword_fuz" value="2"
+			  <input class="fuzzy" type="radio" name="fuz_q" value="2"
 					 <% if fuzz==2 %>checked="checked"
 					 <% end %>/>
 			  <span class="fuzzy">Some Variance</span>
-			  <input class="fuzzy" type="radio" name="search_keyword_fuz" value="3"
+			  <input class="fuzzy" type="radio" name="fuz_q" value="3"
 					 <% if fuzz==3 %>checked="checked"
 					 <% end %> />
 			  <span class="fuzzy">More Variance</span>
@@ -55,15 +55,15 @@
 			  <div class="row"><div></div>
 				<% fuzz = @tfval %>
 				<% fuzz = 1 if @tfval.nil? %>
-				<input class="fuzzy" type="radio" name="search_title_fuz" value="1"
+				<input class="fuzzy" type="radio" name="fuz_t" value="1"
 					   <% if fuzz==1 %>checked="checked"
 					   <% end %> />
 				<span class="fuzzy">Exact Match</span>
-				<input class="fuzzy" type="radio" name="search_title_fuz" value="2"
+				<input class="fuzzy" type="radio" name="fuz_t" value="2"
 					   <% if fuzz==2 %>checked="checked"
 					   <% end %>/>
 				<span class="fuzzy">Some Variance</span>
-				<input class="fuzzy" type="radio" name="search_title_fuz" value="3"
+				<input class="fuzzy" type="radio" name="fuz_t" value="3"
 					   <% if fuzz==3 %>checked="checked"
 					   <% end %> />
 				<span class="fuzzy">More Variance</span>
@@ -120,11 +120,11 @@
 			  <span class="fuzzy-spacer"></span>
                <% fuzz = @kfval %>
                <% fuzz = 1 if @kfval.nil? %>
-               <input class="fuzzy" type="radio" name="search_keyword_fuz" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
+               <input class="fuzzy" type="radio" name="fuz_q" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
                <span class="fuzzy">Exact Match</span>
-               <input class="fuzzy" type="radio" name="search_keyword_fuz" value="2" <% if fuzz==2 %>checked="checked"<% end %>/>
+               <input class="fuzzy" type="radio" name="fuz_q" value="2" <% if fuzz==2 %>checked="checked"<% end %>/>
                <span class="fuzzy">Some Variance</span>
-               <input class="fuzzy" type="radio" name="search_keyword_fuz" value="3" <% if fuzz==3 %>checked="checked"<% end %> />
+               <input class="fuzzy" type="radio" name="fuz_q" value="3" <% if fuzz==3 %>checked="checked"<% end %> />
                <span class="fuzzy">More Variance</span>
             </td>
           </tr>
@@ -140,11 +140,11 @@
 			   <span class="fuzzy-spacer"></span>
                <% fuzz = @tfval %>
                <% fuzz = 1 if @tfval.nil? %>
-               <input class="fuzzy" type="radio" name="search_title_fuz" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
+               <input class="fuzzy" type="radio" name="fuz_t" value="1" <% if fuzz==1 %>checked="checked"<% end %> />
                <span class="fuzzy">Exact Match</span>
-               <input class="fuzzy" type="radio" name="search_title_fuz" value="2" <% if fuzz==2 %>checked="checked"<% end %>/>
+               <input class="fuzzy" type="radio" name="fuz_t" value="2" <% if fuzz==2 %>checked="checked"<% end %>/>
                <span class="fuzzy">Some Variance</span>
-               <input class="fuzzy" type="radio" name="search_title_fuz" value="3" <% if fuzz==3 %>checked="checked"<% end %> />
+               <input class="fuzzy" type="radio" name="fuz_t" value="3" <% if fuzz==3 %>checked="checked"<% end %> />
                <span class="fuzzy">More Variance</span>
              </td>
            </tr>

@@ -78,14 +78,14 @@ jQuery(document).ready(function($) {
 			delete searchHash.search_role;
 		}
 
-		var keywordFuz = $('input:radio[name=search_keyword_fuz]:checked');
+		var keywordFuz = $('input:radio[name=fuz_q]:checked');
 		if (keywordFuz) {
-			searchHash['search_keyword_fuz'] = keywordFuz.val();
+			searchHash['fuz_q'] = keywordFuz.val();
 		}
 
-		var titleFuz = $('input:radio[name=search_title_fuz]:checked');
+		var titleFuz = $('input:radio[name=fuz_t]:checked');
 		if (titleFuz) {
-			searchHash['search_title_fuz'] = titleFuz.val();
+			searchHash['fuz_t'] = titleFuz.val();
 		}
 
 		if (!bFound) {
