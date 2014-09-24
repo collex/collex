@@ -45,6 +45,8 @@ jQuery(document).ready(function($) {
 
 	function getDisplayedKeyFromRole(role) {
 		var roleSelect = $('.search_role_type option');
+		if (roleSelect.length === 0) // This page doesn't support this.
+			return "";
 		for (var k = 0; k < roleSelect.length; k++) {
 			var option2 = $(roleSelect[k]);
 			if (option2.val() === role)
@@ -55,9 +57,10 @@ jQuery(document).ready(function($) {
 
 	function newSearchTerm(roles) {
 		var searchTypes = [ ['Search Term', 'q'], ['Title', 't'] ];
-		if (window.collex.hasFuzzySearch) {
+		if (window.collex.hasLanguage)
 			searchTypes.push(['Language', 'lang']);
-			searchTypes.push(['Year (YYYY)', 'y']);
+
+		if (window.collex.hasManyRoles) {
 			if (roles) {
 				for (var role in roles) {
 					if (roles.hasOwnProperty(role)) {
@@ -71,7 +74,7 @@ jQuery(document).ready(function($) {
 						if (roleSubstitution[role])
 							role = roleSubstitution[role];
 						var displayedKey = getDisplayedKeyFromRole(role);
-						if (displayedKey.indexOf('role_') !== 0)
+						if (displayedKey.indexOf('role_') !== 0 && displayedKey.length > 0)
 							searchTypes.push([displayedKey,role]);
 					}
 				}
@@ -82,8 +85,8 @@ jQuery(document).ready(function($) {
 			searchTypes.push(['Publisher', 'pub']);
 			searchTypes.push(['Artist', 'r_art']);
 			searchTypes.push(['Owner', 'r_own']);
-			searchTypes.push(['Year (YYYY)', 'y']);
 		}
+		searchTypes.push(['Year (YYYY)', 'y']);
 		var selectTypeOptions = "";
 		for (var i = 0; i < searchTypes.length; i++)
 			selectTypeOptions += window.pss.createHtmlTag("option", {value: searchTypes[i][1] }, searchTypes[i][0]);
