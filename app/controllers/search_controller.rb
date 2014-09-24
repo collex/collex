@@ -97,9 +97,9 @@ class SearchController < ApplicationController
 			   end
 			   # if we were passed fuzzy constraints, make sure that the corresponding other value is set
 			   if key == 'fuz_q'
-				   constraints.push({key: key, val: val}) if query['q']
+				   constraints.push({key: key, val: "#{val.to_i-1}"}) if query['q']
 			   elsif key == 'fuz_t'
-				   constraints.push({key: key, val: val}) if query['t']
+				   constraints.push({key: key, val: "#{val.to_i-1}"}) if query['t']
 			   else
 				   constraints.push({key: key, val: val})
 			   end
