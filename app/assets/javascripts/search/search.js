@@ -215,6 +215,11 @@ jQuery(document).ready(function($) {
 		return "/search?" + window.collex.makeQueryString(existingQuery);
 	}
 
+	// This detects if we are on an old version of IE: if so, then we refresh the page instead.
+	function supports_history_api() {
+		return !!(window.history && history.pushState);
+	}
+
 	function changePage(url) {
 		// If the url is the same as the current URL, the history won't actually trigger a page change, so don't do anything.
 		var currentLocation = "/search" +window.location.search;
@@ -222,8 +227,12 @@ jQuery(document).ready(function($) {
 			return;
 		showProgress();
 		window.collex.resetNameFacet();
-		var pageTitle = document.title; // For now, don't change the page title depending on the search.
-		History.pushState(null, pageTitle, url);
+		if (supports_history_api()) {
+			var pageTitle = document.title; // For now, don't change the page title depending on the search.
+			History.pushState(null, pageTitle, url);
+		} else {
+			window.location = url;
+		}
 	}
 
 	body.on("click", ".new_search", function () {
