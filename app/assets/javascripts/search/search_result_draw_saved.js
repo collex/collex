@@ -14,8 +14,16 @@ jQuery(document).ready(function($) {
 		return null;
 	}
 
+	// This is a hack for IE9
+	function getOrigin() {
+		if (window.location.origin)
+			return window.location.origin;
+		else
+			return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+	}
+
 	function createSavedSearchLink(link) {
-		return window.location.origin + "/search?" + link;
+		return getOrigin() + "/search?" + link;
 	}
 	function createSavedSearchPermalink(link) {
 		var img = window.pss.createHtmlTag("img", { alt: 'Permalink', src: "/assets/link.jpg", title: "Click here to get a permanent link for this saved search." });
