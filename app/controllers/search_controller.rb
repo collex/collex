@@ -123,24 +123,24 @@ class SearchController < ApplicationController
 	 @other_federations = []
 	 session[:federations].each { |key,val| @other_federations.push(key) if key != Setup.default_federation() } if session[:federations]
 	 @searchable_roles = [
-		 ["search_artist", "Artist"],
-		 ["search_author", "Author"],
-		 ["	 search_role_BND", "Binder"],
-		 ["search_role_COL", "Collector"],
-		 ["	 search_role_COM", "Compiler"],
-		 ["search_role_CRE", "Creator"],
-		 ["	 search_role_CTG", "Cartographer"],
-		 ["search_editor", "Editor"],
-		 ["	 search_role_ILU", "Illuminator"],
-		 ["search_role_LTG", "Lithographer"],
-		 ["	 search_owner", "Owner"],
-		 ["search_publisher", "Publisher"],
-		 ["	 search_role_POP", "Printer of plates"],
-		 ["search_role_PRT", "Printer"],
-		 ["	 search_role_RPS", "Repository"],
-		 ["search_role_SCR", "Scribe"],
-		 ["	 search_role_TRL", "Translator"],
-		 ["search_role_WDE", "Wood Engraver"]
+		 ["r_art", "Artist"],
+		 ["aut", "Author"],
+		 ["role_BND", "Binder"],
+		 ["role_COL", "Collector"],
+		 ["role_COM", "Compiler"],
+		 ["role_CRE", "Creator"],
+		 ["role_CTG", "Cartographer"],
+		 ["ed", "Editor"],
+		 ["role_ILU", "Illuminator"],
+		 ["role_LTG", "Lithographer"],
+		 ["r_own", "Owner"],
+		 ["pub", "Publisher"],
+		 ["role_POP", "Printer of plates"],
+		 ["role_PRT", "Printer"],
+		 ["role_RPS", "Repository"],
+		 ["role_SCR", "Scribe"],
+		 ["role_TRL", "Translator"],
+		 ["role_WDE", "Wood Engraver"]
 	 ]
 	 return true
    end

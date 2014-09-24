@@ -65,6 +65,29 @@ jQuery(document).ready(function($) {
 			}
 		});
 
+		// Add the other various inputs
+		var searchRoleType = form.find('select[class="search_role_type"]');
+		if (searchRoleType.length > 0) {
+			// Now straighten out the search role. We might have values for "search_role_type" and "search_role". We want to change that into one
+			// search term.
+			var searchRole = searchHash.search_role;
+			var type = searchRoleType.val();
+			if (searchRole && type && type.length > 0) {
+				searchHash[type] = searchRole;
+			}
+			delete searchHash.search_role;
+		}
+
+		var keywordFuz = $('input:radio[name=search_keyword_fuz]:checked');
+		if (keywordFuz) {
+			searchHash['search_keyword_fuz'] = keywordFuz.val();
+		}
+
+		var titleFuz = $('input:radio[name=search_title_fuz]:checked');
+		if (titleFuz) {
+			searchHash['search_title_fuz'] = titleFuz.val();
+		}
+
 		if (!bFound) {
 			errorDlg("Please enter some text before searching.");
 			return false;

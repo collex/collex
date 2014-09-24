@@ -15,6 +15,8 @@
     # limitations under the License.
     # ---------------------------------------------------------------------------- -%>
 
+<%# TODO-PER: I think this code is not used anymore. %>
+
 <div class="page_subheader">Add new search criteria or select limiters to refine your search.</div>
 <% default_search_phrase = 'click here to add new search term' -%>
 <%= form_tag({:controller => "search", :action => "add_constraint"}, :onsubmit => "return searchValidation('search_year', 'search_phrase', 'search_type', 'search_submit', 'search_submit2');") do %>

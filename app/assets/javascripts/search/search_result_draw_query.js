@@ -97,6 +97,23 @@ jQuery(document).ready(function($) {
 					if (key === 'q' || key === 't' || key === 'aut' || key === 'ed' || key === 'pub' || key === 'art' || key === 'own' || key === 'y') {
 						displayedValue = window.pss.createHtmlTag("a", {'class': "modify_link query-editable", href: '#', 'data-type': key}, displayedValue);
 					}
+					if (key === 'lang') {
+						var langSelect = $('.search_language option');
+						for (var j = 0; j < langSelect.length; j++) {
+							var option = $(langSelect[j]);
+							if (option.val() === displayedValue)
+								displayedValue = option.text();
+						}
+					}
+					if (key.indexOf('role_') === 0) {
+						var roleSelect = $('.search_role_type option');
+						for (var k = 0; k < roleSelect.length; k++) {
+							var option2 = $(roleSelect[k]);
+							if (option2.val() === displayedKey)
+								displayedKey = option2.text();
+						}
+
+					}
 					html += window.pss.createHtmlTag("tr", {},
 						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 						window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
