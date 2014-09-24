@@ -72,9 +72,18 @@ jQuery(document).ready(function($) {
 			window.pss.createHtmlTag("td", { 'class': "query_remove" }, submitButton) );
 	}
 
+	function createFuzzyRadio(key, value, text, isSelected) {
+		var params = { type: 'radio', name: key, value: value, id: key+value };
+		if (isSelected)
+			params.checked = "checked";
+		return window.pss.createHtmlTag("input", params) +
+			window.pss.createHtmlTag("label", { for: key+value }, text);
+	}
+
 	window.collex.createSearchForm = function(query) {
 		var table = $('.search-form');
 		var html = "";
+		var htmlBottom = "";
 		var isEmpty = true;
 		for (var key in query) {
 			if (query.hasOwnProperty(key) && key !== 'page' && key !== 'srt' && key !== 'dir' && key !== 'f') {
@@ -114,16 +123,30 @@ jQuery(document).ready(function($) {
 							if (option2.val() === displayedKey)
 								displayedKey = option2.text();
 						}
-
 					}
-					html += window.pss.createHtmlTag("tr", {},
-						window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
-						window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
-						window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key,value)) +
-						window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, value)));
+					if (key.indexOf('fuz_') === 0) {
+						var type = key.split('_')[1];
+						if (query[type]) { // Only show the tuner if a query of the same type is also being made.
+							var options = createFuzzyRadio(key, '1', "Exact Match", displayedValue === '1') +
+								createFuzzyRadio(key, '2', "Some Variance", displayedValue === '2') +
+								createFuzzyRadio(key, '3', "More Variance", displayedValue === '3');
+
+							displayedValue = window.pss.createHtmlTag("span", { 'class': 'mod-fuzzy' }, options);
+							htmlBottom += window.pss.createHtmlTag("tr", {},
+								window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
+								window.pss.createHtmlTag("td", {'colspan': '3', 'class': "query_term"}, displayedValue));
+						}
+					} else {
+						html += window.pss.createHtmlTag("tr", {},
+							window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
+							window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
+							window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key, value)) +
+							window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, value)));
+					}
 				}
 			}
 		}
+		html += htmlBottom;
 		html += newSearchTerm();
 		table.html(html);
 		table.find('.add-autocomplete').each(function(index, el) { window.collex.initAutoComplete(el); });

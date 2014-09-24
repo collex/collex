@@ -144,8 +144,19 @@ td.query_term {
 	padding:3px 5px 3px 5px;
 }
 
-.query_term input {
-	width:95%;
+.query_term {
+	input {
+		width:95%;
+	}
+	.mod-fuzzy {
+		input {
+			width: 12px;
+			margin-right: 2px;
+		}
+		label {
+			margin-right: 32px;
+		}
+	}
 }
 
 td.new-query_and-not, td.query_and-not {

@@ -294,6 +294,14 @@ jQuery(document).ready(function($) {
 		query_add($(this));
 	});
 
+	body.on("click", ".mod-fuzzy input", function () {
+		var el = $(this);
+		var key = this.name;
+		var val = el.val();
+		var url = createNewUrl(key, val, 'replace');
+		changePage(url);
+	});
+
 	body.on("change", ".query_and-not select", function () {
 		var el = $(this);
 		var action = el.val();
