@@ -283,6 +283,8 @@ jQuery(document).ready(function($) {
 		var term = parent.find(".query_term input").val();
 		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
 		term = window.collex.sanitizeString(term);
+		if (type === 'lang')
+			term = parent.find(".query_term select").val();
 		var not = parent.find(".new-query_and-not select").val();
 		if (not === 'NOT' && term && term[0] !== '-')
 			term = '-' + term;

@@ -1,5 +1,6 @@
 jQuery(document).ready(function($) {
 	"use strict";
+	var body = $("body");
 
 	function searchFormType(key) {
 		var types = {
@@ -60,14 +61,16 @@ jQuery(document).ready(function($) {
 		var selectTypeOptions = "";
 		for (var i = 0; i < searchTypes.length; i++)
 			selectTypeOptions += window.pss.createHtmlTag("option", {value: searchTypes[i][1] }, searchTypes[i][0]);
-		var selectType = window.pss.createHtmlTag("select", {'class': "query_type_select" }, selectTypeOptions); // TODO-PER: onchange='searchTypeChanged(this);'
+		var selectType = window.pss.createHtmlTag("select", {'class': "query_type_select" }, selectTypeOptions);
 		var searchBox = window.pss.createHtmlTag("input",
-			{ 'class': "add-autocomplete", type: 'text', placeholder: "click here to add new search term", 'data-autocomplete-url': "/search/auto_complete_for_q", 'data-autocomplete-field': ".query_type_select", autocomplete: 'off' }) +
+			{ 'class': "add-autocomplete regular-input", type: 'text', placeholder: "click here to add new search term", 'data-autocomplete-url': "/search/auto_complete_for_q", 'data-autocomplete-field': ".query_type_select", autocomplete: 'off' }) +
 			window.pss.createHtmlTag("div", {'class': "auto_complete", id: "search_phrase_auto_complete", style: "display: none;" }, '');
+		var languageOptions = $('.search_language').html();
+		var languageSearchBox = window.pss.createHtmlTag("select", {'class': "language-input", style: "display:none;" }, languageOptions);
 		var submitButton = window.pss.createHtmlTag("button", { 'class': "query_add" }, 'Add');
 		return window.pss.createHtmlTag("tr", { 'class': 'new-search-term' },
 			window.pss.createHtmlTag("td", {'class': "query_type" }, selectType) +
-			window.pss.createHtmlTag("td", {'class': "query_term" }, searchBox) +
+			window.pss.createHtmlTag("td", {'class': "query_term" }, searchBox + languageSearchBox) +
 			window.pss.createHtmlTag("td", {'class': "new-query_and-not" }, searchNot()) +
 			window.pss.createHtmlTag("td", { 'class': "query_remove" }, submitButton) );
 	}
@@ -158,4 +161,16 @@ jQuery(document).ready(function($) {
 			window.collex.drawSavedSearch(isEmpty);
 		window.collex.drawSavedSearchList();
 	};
+
+	body.on("change", ".query_type_select", function () {
+		var el = $(this);
+		var parent = el.closest("tr");
+		if (el.val() === 'lang') {
+			parent.find(".regular-input").hide();
+			parent.find(".language-input").show();
+		} else {
+			parent.find(".regular-input").show();
+			parent.find(".language-input").hide();
+		}
+	});
 });
