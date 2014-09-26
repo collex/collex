@@ -76,52 +76,6 @@ In the solr.xml file, you will need the following:
 Note that the name UserContent comes from the site.yml file. That allows more than one installation on a single computer.
 
 -----------------------------------------------------------------------
-** deploying js and css
-
-The JavaScript in Collex heavily uses prototype and YUI.
-
-When running in production mode, different js and css files are used. The files are compressed and concatenated.
-
-When running in development mode, the js and css files are not touched.
-
-That means that there is no penalty for creating lots of small js and css files and commenting them copiously, because that will
-be stripped out of the deployed site.
-
-Each page has its own compressed js and css file.
-
-In production, there are two css files on a page:
-- the one for the YUI resources (directed to the Yahoo page so our server doesn't need to handle it)
-- the specific one for the page (this is all of our css files compressed and concatinated.)
-
-In production, there are three js files on a page:
-- the one for the prototype files, compressed and contatinated.
-- the one for the YUI resources (directed to the Yahoo page so our server doesn't need to handle it)
-- the specific one for the page (this is all of our js files compressed and concatinated.)
-
------------------------------------------------------------------------
-** Custom rake tasks
-
-In /lib/tasks/*.rake, there are a number of rake tasks defined. Here are the most important ones:
-
---- Development side ---
-	rake deploy:compress_about_css
-	Compress the css for the about pages - this is done when deploying, but needs to be done manually on your development machine.
-
-	rake jslint:all
-	(Runs jslint on all non-minimized js files in /public/javascripts.)
-
-	rake jslint:file
-	(Runs jslint on one file.)
-
---- Server side ---
-	rake deploy
-	This does various things depending on what is defined in site.yml. See the file collex.rake for details about what is
-	updated for each type. The various things that are done are:
-	- download latest code
-	- run migrations
-	- compress js and css files
-
------------------------------------------------------------------------
 ** Site specific info
 
 There are two files missing from this installation that you must supply:
