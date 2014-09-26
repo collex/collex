@@ -32,9 +32,10 @@
 
 <p>You can obtain the latest version of WordPress <a href="http://wordpress.org/download/">here</a>. Install WordPress anywhere on the same server as the <%= Setup.site_name() %> installation.
 	For instance, if all of your websites are located at ~/www do this:
+</p>
 <pre>
 cd ~/www
-wget http://wordpress.org/latest.tar.gz
+wget https://wordpress.org/latest.tar.gz
 tar xvfz latest.tar.gz
 mv wordpress wp_<%= name %>_news
 cd wp_<%= name %>_news
@@ -61,7 +62,12 @@ mysql -u root -p
 	GRANT ALL ON wp_<%= name %>_about.* TO '<%= name %>_about'@'localhost';
 	GRANT FILE ON *.* TO '<%= name %>_about'@'localhost';
 </pre>
-</p>
+  <p>
+	Note: if you get an error trying to download wordpress, you might have an old version of wget on your server. Update it something like this:
+	<pre>
+sudo yum update wget
+</pre>
+  </p>
 <h3>Step Two: Modify Apache Config</h3>
 <p>Put this in your apache configuration file to get Passenger to ignore requests from the /news folder:</p>
 <pre>
@@ -81,6 +87,7 @@ sudo /sbin/service httpd restart
 	</pre>
 
 <h3>Step Three: Link the blog to <%= Setup.site_name() %></h3>
+  <div class="instructions-note"><p>NOTE: The capistrano task takes care of this step automatically. The following is described so there is no "magic" happening that would be hard to figure out.</p></div>
 	<p>Put in a symbolic link in your Rails app so that requests for /news get redirected to WordPress:</p>
 	<pre>
 cd <%= Rails.root %>/public
