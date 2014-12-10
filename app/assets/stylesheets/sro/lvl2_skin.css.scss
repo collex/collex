@@ -16,29 +16,97 @@
 
 body.federation-sro.pg-lvl2 {
 
-  #header_left {
-  	width:755px;
-  	height:89px;
-  	float:left;
-  	background:image-url('sro/lvl2_header.jpg') top left no-repeat;
+  #nav_container {
+    top: 125px;
   }
 
-  div#header_container {
-  	background:image-url('sro/index_header_stretch.jpg') bottom left repeat-x;
-  	height: 114px;
+  #header_left {
+  	width:960px;
+    height:152px;
+    float:left;
+    background:image-url('sro/header.jpg') top left no-repeat;
+  }
+
+  #header_right {
+    display: none;
+  }
+
+  #header_container {
+  	height: 152px;
+  	border-bottom: 1px solid black;
   }
 
   .my_collex_link {
-  	background:image-url('sro/lvl2_tab_my_collex.gif') top left no-repeat;
+  	background-color: #f5ad61;
+    border-radius: 0 8px 0 0 ;
+    color:#7d1317;
+    top: 125px;
+    left: 30px;
+    padding-top: 4px;
+    border: 1px solid black;
+    height: 22px;
+    opacity: 0.4;
+    &:hover {
+      opacity: 0.8;
+    }
   }
 
   .my_collex_link_current {
-  	background:image-url('sro/lvl2_tab_my_collex_dn.gif') top left no-repeat;
+  	background-color: white;
+    border-radius: 0 8px 0 0 ;
+    color:#7d1317;
+    top: 125px;
+    left: 30px;
+    padding-top: 4px;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    height: 23px;
   }
 
   .right_column_header {
-  	color:#1e312d;
-  	background:#1e312d;
+    width: auto;
+    padding: 6px;
+  }
+
+  .inner_content_container {
+    padding: 10px 10px;
+  }
+
+  .new_exhibit_link {
+    margin: 0;
+    padding: 6px;
+  }
+
+  .subpage_nav {
+    text-align: center;
+    background-color: #7d1317;
+    padding: 4px;
+    color: white;
+    margin-top: 4px;
+
+    a {
+      color: white;
+    }
+    #discussions {
+      border-right: 0;
+    }
+  }
+
+  .right_column {
+    outline: 1px solid #966c54;
+    padding: 0px 0px 0px 0px;
+  }
+
+  .create-group-links {
+    padding: 6px;
+    border-top: 1px solid #966c54;
+  }
+
+  .right_column_header {
+  	color: black;
+    background: #ab7247;
+    border-bottom: 1px solid #740;
   }
 
   .limit_to th {

@@ -18,16 +18,15 @@ body.federation-sro {
 	background:#ab7247;
 
 	#tags {
-	 border-right: 0;
-	 border-top: #7d1317 solid 1px;
+	  border-right: 0;
+	  border-top: #7d1317 solid 1px;
     border-bottom: #7d1317 solid 1px;
-    border-left:0;
+    border-left:#7d1317 solid 1px;
 	}
 
 	#discussions {
     border-top: #7d1317 solid 1px;
     border-bottom: #7d1317 solid 1px;
-    border-right: #7d1317 solid 1px;
   }
 
   #popular_container table {
@@ -36,9 +35,9 @@ body.federation-sro {
   }
 
   #main_container {
-  	border-left:10px #7d1317 solid;
-  	border-right:10px #7d1317 solid;
-  	border-bottom:10px #7d1317 solid;
+  	border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
   }
 
   #footer_container {
@@ -61,7 +60,7 @@ body.federation-sro {
     height: 23px;
   }
 
-  .tab_link_long, .tab_link_logo, .tab_link,  a.my_collex_link {
+  .tab_link_long, .tab_link_logo, .tab_link,  .my_collex_link {
     background-color: #f5ad61;
     border-radius: 8px 8px 0 0 ;
     color:#7d1317;
@@ -93,13 +92,15 @@ body.federation-sro {
 
 	&.pg-lvl1 #nav_container {
 		top: 125px;
+		border-radius: 0 8px 0 0 ;
 	}
 
 	&.pg-lvl1 a.my_collex_link {
 		top: 125px;
 	}
   a.my_collex_link {
-    left:39px;
+    left:30px;
+    border-radius: 0 8px 0 0 ;
     opacity: 0.85;
     &:hover {
       opacity: 1;
@@ -122,9 +123,6 @@ body.federation-sro {
   font-family: "Times New Roman", Times, serif;
 }
 
-.right_column, .search-result-sub {
-	background:#edf4f2;
-}
 
 .nav_link, .nav_link:link, .nav_link:visited {
 	color:#7d1317;
