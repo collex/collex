@@ -75,11 +75,13 @@
                     <div class="popular_title">Browse Recent Tags</div>
 					<%= render :partial => "/home/popular_tags", :locals => { :tags => @tags } %>
 					</td>
-                    <td class="spacer_cell"></td>
-                    <td id="news" valign="top">
-                    <div class="popular_title">Recent News</div>
-					<div id="recent_news"></div>
-                    </td>
+					<% if Setup.display_news_tab? %>
+                  <td class="spacer_cell"></td>
+                  <td id="news" valign="top">
+                     <div class="popular_title">Recent News</div>
+   					   <div id="recent_news"></div>
+                  </td>
+              <% end %>
               </tr>
             	<tr><td colspan="5" class="spacer_cell"></td></tr>
             </tbody></table>
@@ -123,7 +125,7 @@
 		// load news items
 		loadLatestNews('recent_news','/news/?feed=rss2',5, true);
 	});
-	
+
 	YAHOO.util.Event.onDOMReady(function (ev) {
 		var carousel = new YAHOO.widget.Carousel(null);
 		carousel.CONFIG.MAX_PAGER_BUTTONS = 20;
