@@ -1,6 +1,6 @@
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -67,18 +67,18 @@ module ApplicationHelper
 #    "var oButton = new YAHOO.widget.Button('#{id}', { type: 'link', onclick: { fn: button#{id} } });\n" +
 #    "</script>\n"
 #  end
-  
+
   def switch_classes_on_element(el_str, class1, class2)
     # This returns the javascript to change a class in an element. It uses double quotes in the returned string.
     return "#{el_str}.addClassName(\"#{class1}\"); #{el_str}.removeClassName(\"#{class2}\");"
   end
-  
+
   def result_button(text, id, action, visible)
     cls = visible ? "" : "class='hidden' "
     return raw("<a id='#{id}' #{cls}onclick=\"#{action.gsub("\"", "&quot;")}; return false;\" >#{text}</a>")
     # "<input id='#{id}' type='button' value='#{text}' onclick='#{action.gsub('\'', '"')}; return false;' />"
   end
-  
+
 	def unobtrusive_result_button(text, id, klass, attributes, visible)
 		klass += " hidden" if !visible
 		attr = ""
@@ -119,9 +119,9 @@ module ApplicationHelper
 	return raw(html)
   end
 # looks like this was added into environments/development.rb
-#   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end   
+#   def nil.id() raise(ArgumentError, "You are calling nil.id!  This will result in '4'!") end
 
-  # enhances truncate() to strip any tags off. 
+  # enhances truncate() to strip any tags off.
   # TODO should probably just override the built-in truncate, but need some alias_method_chain voodoo that doesn't work here.
   def truncate_no_tags(text, length=30, truncate_string="...")
     stripped = text.gsub(/<[^>]+>/, '')
@@ -152,9 +152,9 @@ private
   def link_separator
     return raw("&nbsp;|")
   end
-  
+
   def draw_tabs(curr_page)
-    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => true }]
+    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => (SKIN != 'sro') }]
 
     tabs.push({ :name => 'News', :link => news_path + '/', :use_logo_style => true }) if Setup.display_news_tab?
     tabs.push({ :name => 'Classroom', :link => '/classroom', :use_long => true }) if Setup.display_classroom_tab?
@@ -178,10 +178,13 @@ private
       else
         if tab[:use_logo_style] && curr_page == 'HOME'
           cls = 'tab_link_logo'
-		elsif tab[:use_long]
+		  elsif tab[:use_long]
           cls = (curr_page == tab[:name]) ? 'tab_link_long_current' : 'tab_link_long'
-		else
+		  else
           cls = (curr_page == tab[:name]) ? 'tab_link_current' : 'tab_link'
+        end
+        if SKIN == 'sro' && tab[:name] == "HOME"
+         cls << " home"
         end
         html += "\t\t" + link_to(tab[:name], tab[:link], { :class => cls }) + "\n"
       end
@@ -208,7 +211,7 @@ private
       singular + "s"
     end
   end
-  
+
   # Adds ability to use restful routes custom methods directly without passing in the :url
   # assumes an :update_(method) member of a mapped resource with a :post type, ie:
   # map.resources :exhibits, :member => { :update_title => :post }
@@ -216,12 +219,12 @@ private
   def in_place_editor_field(object, method, tag_options = {}, in_place_editor_options = {})
     tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
     tag_options = {:tag => "span", :id => "#{object}_#{method}_#{tag.object.id}_in_place_editor", :class => "in_place_editor_field"}.merge!(tag_options)
-    in_place_editor_options[:url] = in_place_editor_options[:url] || 
+    in_place_editor_options[:url] = in_place_editor_options[:url] ||
     eval("update_#{method}_#{object}_path(#{tag.object.id})") rescue url_for({ :action => "set_#{object}_#{method}", :id => tag.object.id })
     tag.to_content_tag(tag_options.delete(:tag), tag_options) +
     in_place_editor(tag_options[:id], in_place_editor_options)
   end
-  
+
 #  def facet_label(field)
 #    label = case field
 #      when "archive"        then "sites"
@@ -271,20 +274,20 @@ private
      target = sidebar_list_path(:type => type, :value => amped_value, :user => params[:user])
      link_to_function display, update_sidebar(target), html_options
   end
-  
+
   def update_sidebar( target )
      %Q{sidebarTagCloud.updateSidebar("#{target}")}
   end
-  
+
   def nbpluralize(count, singular, plural = nil)
      pluralize(count, singular, plural).gsub(/ /,'&nbsp;')
   end
-  
+
 #  def link_to_popup(label, options, html_options={})
 #    html_options[:class] = 'nav_link'
 #    link_to_function(label, "popUp('#{url_for(options)}')", html_options)
 #  end
-  
+
   def link_to_confirm(title, params, confirm_title, confirm_question, method = nil)
 	  if method
 		  act_str = "{ method: '#{method}', url: this.href }"
@@ -294,7 +297,7 @@ private
     link_to title, params, { :post => true, :class => 'modify_link',
 		:onclick => "serverAction({confirm: { title: '#{confirm_title}', message: '#{confirm_question}' }, action: { actions: #{act_str} }, progress: { waitMessage: 'Please Wait...' }}); return false;" }
   end
-  
+
   def text_field_with_suggest(object, method, tag_options = {}, completion_options = {})
      result = (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
      text_field(object, method, tag_options) +
@@ -303,7 +306,7 @@ private
      #result = result.gsub('paramName:', 'parameters:')
      return result
   end
-  
+
   def comma_separate(array)
     if array
       array.join(', ')
@@ -311,20 +314,20 @@ private
       ""
     end
   end
-  
+
   def site(code)
     return Catalog.factory_create(false).get_archive(code) #Site.find_by_code(code) || { 'description' => code }
   end
-  
+
   def pie_by_percent(percentage)
     %Q~<img src="/images/pie_#{percentage}.png" title="header=[#{percentage} per cent] body=[of the whole, given your current constraints] cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"/>~
   end
-  
+
   def pie(amount, total)
-    #TODO renable pie.. disabled for performance testing 
+    #TODO renable pie.. disabled for performance testing
     #pie_by_percent((100 * amount).quo(total.to_i).ceil)
   end
-  
+
   def link_to_exhibit()
     if request.path =~ /exhibits/
       link_to "CREATE", intro_exhibits_path, :title => "header=[you are here] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]", :class => "active"
@@ -332,7 +335,7 @@ private
       link_to "CREATE", intro_exhibits_path, :title => "header=[contribute] body=[search &amp; browse user-created content, or create and publish your own online exhibits]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]"
     end
   end
-  
+
   def link_to_collect()
     if request.path =~ /collex/
       link_to "RESEARCH", {:controller => "search"}, :title => "header=[you are here] body=[locate, collect, and annotate digital resources]  cssheader=[boxheader2] cssbody=[boxbody] fade=[on]", :class => "active"
@@ -346,7 +349,7 @@ private
 	  str = str.gsub("\'") { |apos| "\\\'" }
 	  return str.gsub("\"") { |apos| "\\\"" }
   end
-  
+
   def escape_for_xml(obj)
     # This either gets a string passed to it or an array of strings
     if obj.kind_of?(Array)
@@ -357,7 +360,7 @@ private
     else
       str = obj
     end
-    
+
     return "" if str == nil
 
     str = str.gsub('&', '&amp;')
@@ -400,7 +403,7 @@ private
     span_str = '<span'
     arr = text.split(span_str)
     return raw(text) if arr.length == 1
-    
+
     str = arr[0]  # the first element has everything before the first span, so we just start with that.
     is_first = true
     for span in arr
@@ -414,7 +417,7 @@ private
           visible_text = extract_inner_html(span)
           rest_of_it = extract_trailing_html(span)
           str += "<a class='nines_link' href=\"#{url}\" target=\"_blank\" uri='#{uri}'>#{visible_text}</a>#{rest_of_it}"
-          
+
         elsif span.include?('class="ext_linklike') #if it is one of our spans, then translate it into a link
           # external link
           url = extract_link_from_encoded_span(span)
@@ -430,7 +433,7 @@ private
     end
     return raw(str)
   end
-  
+
   # Some private convenience functions to make the above routine clearer
   def extract_link_from_encoded_span(span)
     el= span.split('>', 2)  # find the end of the opening part of the span tag.
@@ -439,21 +442,21 @@ private
     arr2 = arr[1].split('"')
     return arr2[0]
   end
-  
+
   def extract_inner_html(span)
     el = span.split('>', 2)  # find the end of the opening part of the span tag.
     return "" if el.length < 2
-    
+
     el2 = el[1].split('</span>')
     return "" if el2.length == el[1].length
-    
+
     return el2[0]
   end
-  
+
   def extract_trailing_html(span)
     el = span.split('</span>', 2)
     return "" if el.length < 2
-    
+
     return el[1]
   end
 

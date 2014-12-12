@@ -50,7 +50,7 @@ body.federation-sro {
 
   .tab_link_current {
   	background-color: white;
-    border-radius: 8px 8px 0 0;
+    border-radius: 12px 12px 0 0;
     color:#7d1317;
     top: 96px;
     padding-top: 4px;
@@ -62,10 +62,10 @@ body.federation-sro {
 
   .tab_link_long, .tab_link_logo, .tab_link,  .my_collex_link {
     background-color: #f5ad61;
-    border-radius: 8px 8px 0 0 ;
+    border-radius: 12px 12px 0 0 ;
     color:#7d1317;
     top: 96px;
-    padding-top: 4px;
+    padding: 4px 5px 0 4px;
     border: 1px solid black;
     height: 22px;
     opacity: 0.4;
@@ -76,8 +76,8 @@ body.federation-sro {
 
   .tab_link_long_current, .tab_link_logo_current {
   	background-color: white;
-    border-radius: 8px 8px 0 0;
-    color:#f5ad61;
+    border-radius: 12px 12px 0 0;
+    color:#7d1317;
     top: 96px;
     padding-top: 4px;
     border-top: 1px solid black;
@@ -92,7 +92,10 @@ body.federation-sro {
 
 	&.pg-lvl1 #nav_container {
 		top: 125px;
-		border-radius: 0 8px 0 0 ;
+		right: 30px;
+		.home {
+		  border-radius: 12px 0 0 0;
+		}
 	}
 
 	&.pg-lvl1 a.my_collex_link {
@@ -100,7 +103,7 @@ body.federation-sro {
 	}
   a.my_collex_link {
     left:30px;
-    border-radius: 0 8px 0 0 ;
+    border-radius: 0 12px 0 0 ;
     opacity: 0.85;
     &:hover {
       opacity: 1;

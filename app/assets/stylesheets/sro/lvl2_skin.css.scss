@@ -18,6 +18,10 @@ body.federation-sro.pg-lvl2 {
 
   #nav_container {
     top: 125px;
+    right: 30px;
+    .home {
+      border-radius: 12px 0 0 0;
+    }
   }
 
   #header_left {
@@ -38,26 +42,26 @@ body.federation-sro.pg-lvl2 {
 
   .my_collex_link {
   	background-color: #f5ad61;
-    border-radius: 0 8px 0 0 ;
+    border-radius: 0 12px 0 0 ;
     color:#7d1317;
     top: 125px;
     left: 30px;
-    padding-top: 4px;
+    padding: 4px 5px 0 4px;
     border: 1px solid black;
     height: 22px;
-    opacity: 0.4;
+    opacity: 0.8;
     &:hover {
-      opacity: 0.8;
+      opacity: 1;
     }
   }
 
   .my_collex_link_current {
   	background-color: white;
-    border-radius: 0 8px 0 0 ;
+    border-radius: 0 12px 0 0 ;
     color:#7d1317;
     top: 125px;
     left: 30px;
-    padding-top: 4px;
+    padding: 4px 5px 0 4px;
     border-top: 1px solid black;
     border-right: 1px solid black;
     border-left: 1px solid black;
