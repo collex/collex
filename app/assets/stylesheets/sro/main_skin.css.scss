@@ -14,8 +14,72 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
+body.federation-sro.pg-tag {
+  #tag_zoom_scale {
+    top: 220px;
+  }
+
+  #tag_explanation {
+    background-color: rgba(244,171,98,0.3);
+    margin-left: 1em;
+    padding: 10px;
+    border: 1px solid #ab7247;
+    border-radius: 5px;
+  }
+}
+
 body.federation-sro {
 	background:#ab7247;
+
+
+
+  .breadcrumbs {
+    margin: 10px 00px 10px 00px;
+    background-color: #7d1317;
+    font-family: sans-serif;
+    font-size: .9em;
+    padding: 3px 5px;
+    color: white;
+    font-weight: 100;
+    a.nav_link {
+      color: white;
+    }
+  }
+
+	.licensedisplay {
+    background-color: #ab7247;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+  }
+
+	.search_result_buttons button {
+    height: 23px;
+    width: 80px;
+    float: right;
+    margin-bottom: 4px;
+    text-align: center;
+    color: #7d1317;
+    cursor: pointer;
+    padding-top: 2px;
+    display: block;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #f5ad61;
+    border: 1px solid #ab7247;
+  }
+
+  hr.search_results_hr {
+    height: 1px;
+    background: #7d1317;
+    border: none;
+    margin: 7px 0px 7px 0px;
+  }
 
 	#tags {
 	  border-right: 0;
@@ -45,7 +109,7 @@ body.federation-sro {
   }
 
   .exhibit_footer {
-  	background-color: #34645c;
+  	background-color: #7d1317;
   }
 
   .tab_link_current {

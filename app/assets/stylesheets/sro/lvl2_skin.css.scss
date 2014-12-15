@@ -98,8 +98,10 @@ body.federation-sro.pg-lvl2 {
   }
 
   .right_column {
-    outline: 1px solid #966c54;
     padding: 0px 0px 0px 0px;
+    border-left: 1px solid #7d1317;
+    border-right: 1px solid #7d1317;
+    border-bottom: 1px solid #7d1317;
   }
 
   .create-group-links {
@@ -130,10 +132,15 @@ body.federation-sro.pg-lvl2 {
 
   .result_row_collected {
   	background:transparent image-url('sro/search_collected_gradient.jpg') repeat-y;
+  	   border-radius: 20px 0 0 20px;
+
   }
 
   .FP_attachment_collected {
-  	background:transparent image-url('sro/forum_collected_gradient.jpg') repeat-x scroll 0 0;
+    background: rgba(255,255,255,0.5);
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #ab7247;
   }
 
   #group_details {
@@ -174,6 +181,6 @@ body.federation-sro.pg-lvl2 {
   }
 
   #group_license {
-  	background: #371911;
+  	background: #7d1317;
   }
 }
