@@ -23,6 +23,10 @@ body.federation-sro.pg-groups {
   	border-right:2px solid gray;
   }
 
+  #group_details, #group_license, .group_only {
+    margin-left:-10px;
+  }
+
   #group_license {
   	color: white;
   }
@@ -30,6 +34,7 @@ body.federation-sro.pg-groups {
   .group_header {
   	color:black;
   	background:#B99A86;
+  	margin-left: -10px;
   }
 
   .set_exhibit_style {
