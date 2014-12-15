@@ -31,7 +31,35 @@ body.federation-sro.pg-tag {
 body.federation-sro {
 	background:#ab7247;
 
+  #edit_exhibit_outline {
+    padding: 0;
 
+    .selected_page {
+      background-color: #ab7247;
+      padding: 1px;
+    }
+
+    .outline_tree_elements {
+       padding: 2px;
+    }
+
+    .outline_element {
+      border: 1px dotted #f5ad61;
+      padding: 4px 0px 4px 1px;
+      border-radius: 4px;
+
+      .count a {
+        background-color: #ab7247;
+        margin: 2px;
+        border-radius: 10px;
+      }
+    }
+
+    .outline_tree_element_selected {
+      border: 1px dotted #f5ad61;
+      background-color: rgba(244,171,98, 0.4);
+    }
+  }
 
   .breadcrumbs {
     margin: 10px 00px 10px 00px;
@@ -263,16 +291,16 @@ body.federation-sro {
 /*********************************/
 
 .container-close {
-	display:none;
+  top: 6px;
 }
 
-
- .yui-panel .hd {
+.yui-panel .hd {
 	background: none;
   background-color: #7d1317;
 	color: white;
 	font-family: sans-serif;
-	font-weight: normal;
+	font-weight: 200;
+	height: 28px;
 }
 
 .yui-button {
