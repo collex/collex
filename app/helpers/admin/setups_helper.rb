@@ -41,7 +41,7 @@ module Admin::SetupsHelper
   def setup_checkbox(label, field, rec, explanation, example)
     typ = 'checkbox'
     value = 0
-    value = 1 if rec[field] == 'true'
+    value = 1 if rec[field] == 'true' || rec[field] == 'on'
     html = content_tag(:tr, class: 'row hoverable') do
       content_tag(:td, label) +
           content_tag(:td) do

@@ -154,13 +154,19 @@
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>
 	<table id="solr_table" class="hidden">
+	  <input type="hidden" id="setups_federations" name="setups[federations]" value="<%= @federations %>"/>
 		<%= setup_line("ARC Catalog location:", "site_solr_url", @setups,
 			"The URL of the ARC Catalog web service.",
 			"http://catalog.arc.com") %>
 		<%= setup_line("Default federation:", "site_default_federation", @setups,
 			"The main federation of the site that will appear if the user hasn't selected another one.",
 			"NINES") %>
-		<%= setup_table_button("Test Catalog Connection") %>
+      <%= setup_table_button("Test Catalog Connection") %>
+	   <% @setups.each do |key,val| %>
+	     <% if !(key =~ /^federation_/).nil? %>
+	        <%= setup_checkbox("Enable #{key.gsub(/federation_/,'')}?", key, @setups, "","") %>
+	     <% end %>
+	   <% end %>
 	</table>
 
 	<h1 class="expander" data-target="analytics_table">Analytics</h1>

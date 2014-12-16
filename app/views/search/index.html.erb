@@ -14,7 +14,7 @@
    # See the License for the specific language governing permissions and
    # limitations under the License.
    # ----------------------------------------------------------------------------  -%>
-<%# this shows a number of different views depending on the current constraints: 
+<%# this shows a number of different views depending on the current constraints:
 	# If there are no constraints, then the New Search view is shown.
 	# If there are constraints, but no results, then the No Results view is shown.
 	# If there are constraints and results, then the Search Results view is shown. -%>
@@ -36,7 +36,11 @@
 		<%= render(:partial => 'add_constraint_form') %>
 		<div class="has-results" style="display:none;">
 			<div class="page_header">
-				<button class="new_search">New Search</button>
+			   <% if SKIN == "sro" %>
+			      <button class="new_search" value="New Search">New Search</button>
+			   <% else %>
+				   <button class="new_search">New Search</button>
+				<% end %>
 				Search Query
 				<span id="saved_search_name_span"></span>
 			</div>
