@@ -31,6 +31,18 @@ body.federation-sro.pg-tag {
 body.federation-sro {
 	background:#ab7247;
 
+	.search_error_message {
+    color: red;
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 16px;
+    border: 1px solid red;
+    background-color: #f8f8f8;
+    padding: 4px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+
 	#search_name_facet_min {
 	   background-color: rgba(244,171,98,0.3);
      border: 1px solid #f5ad61;
