@@ -81,7 +81,7 @@ class Admin::FeaturesController < Admin::BaseController
 			p_obj[:object_url] = get_hit_item(hit, 'url')
 			p_obj[:date] = get_hit_item(hit, 'date_label')
 			hit_item = get_hit_item(hit, 'archive')
-			site = Catalog.factory_create(hit_item).get_archive(ferret) #Site.find_by_code(get_hit_item(hit, 'archive'))
+			site = Catalog.factory_create(hit_item).get_archive(hit_item) #Site.find_by_code(get_hit_item(hit, 'archive'))
 			logger.error("**** SITE #{site}")
 			p_obj[:site] = site['name']
 			p_obj[:site_url] = site['site_url']
