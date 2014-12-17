@@ -86,9 +86,10 @@ class Admin::FeaturesController < Admin::BaseController
 
 			if type == 'modifying'
 				feature = FeaturedObject.find(id)
-				feature.update_attributes(p_obj)
+				feature.update_attributes!(p_obj)
 			else
 				feature = FeaturedObject.new(p_obj)
+				feature.save!
 			end
 
 			err = Image.save_image(p_image, feature)
