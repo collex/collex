@@ -71,7 +71,7 @@ class Admin::FeaturesController < Admin::BaseController
 			end
 			p_obj[:disabled] = '0' if p_obj[:disabled] == nil
 			uri = p_obj[:object_uri]
-			hit = CachedResource.get_hit_from_uri(uri)
+			hit = nil#CachedResource.get_hit_from_uri(uri)
 			if hit == nil
 				solr = Catalog.factory_create(false)
 				hit = solr.get_object(uri)
@@ -80,10 +80,12 @@ class Admin::FeaturesController < Admin::BaseController
 			p_obj[:title] = get_hit_item(hit, 'title')
 			p_obj[:object_url] = get_hit_item(hit, 'url')
 			p_obj[:date] = get_hit_item(hit, 'date_label')
-			site = Catalog.factory_create(false).get_archive(get_hit_item(hit, 'archive')) #Site.find_by_code(get_hit_item(hit, 'archive'))
+			hit_item = get_hit_item(hit, 'archive')
+			site = Catalog.factory_create(hit_item).get_archive(ferret) #Site.find_by_code(get_hit_item(hit, 'archive'))
+			logger.error("**** SITE #{site}")
 			p_obj[:site] = site['name']
 			p_obj[:site_url] = site['site_url']
-			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(current_user.username, p_obj[:saved_search_name])
+			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(p_obj[:saved_search_name])
 
 			if type == 'modifying'
 				feature = FeaturedObject.find(id)

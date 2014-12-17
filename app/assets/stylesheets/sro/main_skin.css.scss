@@ -31,6 +31,11 @@ body.federation-sro.pg-tag {
 body.federation-sro {
 	background:#ab7247;
 
+	tr.limit_to_selected {
+	 background: rgba(244,171,98,0.2);
+    color: #0d7366;
+  }
+
 	.search_error_message {
     color: red;
     width: 100%;
