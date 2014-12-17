@@ -1,12 +1,12 @@
 // ------------------------------------------------------------------------
 //     Copyright 2010 Applied Research in Patacriticism and the University of Virginia
-// 
+//
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
 //     You may obtain a copy of the License at
-// 
+//
 //         http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 //     Unless required by applicable law or agreed to in writing, software
 //     distributed under the License is distributed on an "AS IS" BASIS,
 //     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,8 +55,8 @@ var featureDlg = function(saved_searches, ok_action, params, img_url) {
 	var dlgLayout = {
 		page: 'layout',
 		rows: [
-			[ { text: 'Object\'s URI:', klass: 'admin_dlg_label' }, { input: 'features[object_uri]', klass: 'new_exhibit_input_long', value: params.object_uri } ],
-			[ { text: 'Saved Search Name:', klass: 'admin_dlg_label' }, { select: 'features[saved_search_name]', value: params.saved_search_name, klass: 'new_exhibit_input_long', options: saved_searches } ],
+			[ { text: 'Object\'s URI:', klass: 'admin_dlg_label' },     { input: 'features[object_uri]', klass: 'new_exhibit_input_long', value: params.object_uri } ],
+			[ { text: 'Saved Search URL:', klass: 'admin_dlg_label' }, { input: 'features[saved_search_url]', value: params.saved_search_url, klass: 'new_exhibit_input_long' } ],
 			[ { text: 'Disabled:', klass: 'admin_dlg_label' }, { checkbox: 'features[disabled]', klass: 'new_exhibit_input_long', value: params.disabled } ],
 			[ { rowClass: 'clear_both' }, { text: 'Thumbnail:', klass: '' },  { image: 'image', size: '37', value: img_url, removeButton: 'Remove Thumbnail', klass: '' } ],
 			[ { rowClass: 'gd_last_row' }, { button: 'Ok', arg0: ok_action, callback: sendWithAjax, isDefault: true }, { button: 'Cancel', callback: GeneralDialog.cancelCallback } ]
