@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------
 //    Copyright 2009 Applied Research in Patacriticism and the University of Virginia
-//    
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-//  
+//
 //        http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,16 +31,16 @@
 		YAHOO.widget.SimpleEditor.prototype.getNumSibs = function (node) {
 			var sibs = 0;
 			var x = node;
-			
+
       while (x.previousSibling) {
         x = x.previousSibling;
-        
+
         // Trim out space txt nodes that some browsers treat differently
         // firefox treats them as nodes, ie skips them
         if  (x.nodeType == 3 && x.wholeText.trim().length == 0) {
           continue;
         }
-        
+
         // Don't count comment nodes as siblings. They are not counted in other places
         if  (x.nodeType == 8 ) {
           continue;
@@ -255,14 +255,14 @@
 			var arrLevels = [-1];
       var charCount = 0;
       var inComment = false;
-      
+
       arr.each(function(i) {
 
         // skip blank entries
         if (i === "" ) {
           return;
-        } 
-        
+        }
+
         // When in comments, check for end and accumulate txt length
         if ( inComment ) {
           if ( i.endsWith('-->')  ) {
@@ -271,14 +271,14 @@
           charCount += i.length;
           return;
         }
-        
+
         // If we find a comment flag it. accumulate len and skip the rest
         if ( i.startsWith('<!--') && i.endsWith('-->') == false ) {
           inComment = true;
           charCount += i.length;
           return;
         }
-        
+
         // process remaining choices for this line
         if (i === "<br>" || i === "<hr>" || i.startsWith('<meta') || (i.startsWith('<!--') && i.endsWith('-->'))) { // the item is self-contained.
           arrLevels[arrLevels.length-1]++;
@@ -294,17 +294,17 @@
             arrLevels[arrLevels.length-1]++;
           }
         }
-  
+
         // See if this one is a match. If so, we can save the accumulated characters used, plus the offset into this element.
         var levelStr = arrLevels.join(',');
         if (apos && apos.join(',') === levelStr) {
           aOffset = charCount + aoff;
         }
-        
+
         if (fpos && fpos.join(',') === levelStr) {
           fOffset = charCount + foff;
         }
-        
+
         // if we found an offset we are done. break out
         if ( aOffset > -1 || fOffset > -1) {
           throw $break;
@@ -441,7 +441,7 @@ var RichTextEditor = Class.create({
 				{ type: 'spin', label: '13', value: 'fontsize', range: [9, 75], disabled: true
 			}]
 		};
-		
+
 		var toolgroupFontStyle = {
 			group: 'textstyle', label: 'Font Style',
 			buttons: [{ type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
@@ -449,7 +449,7 @@ var RichTextEditor = Class.create({
 				{ type: 'push', label: 'Underline CTRL + SHIFT + U', value: 'underline' },
 				{ type: 'push', label: 'Strike Through', value: 'strikethrough' }]
 		};
-		
+
 		var toolgroupFontStyleDropCap = {
 			group: 'textstyle', label: 'Font Style',
 			buttons: [{ type: 'push', label: 'Bold CTRL + SHIFT + B', value: 'bold' },
@@ -460,13 +460,13 @@ var RichTextEditor = Class.create({
 		};
 
 		var toolgroupAlignment = {
-			group: 'alignment', label: 'Alignment', 
-	        buttons: [ 
-	            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' }, 
-	            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' }, 
-	            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' }, 
-	            { type: 'push', label: 'Justify', value: 'justifyfull' } 
-	        ] 
+			group: 'alignment', label: 'Alignment',
+	        buttons: [
+	            { type: 'push', label: 'Align Left CTRL + SHIFT + [', value: 'justifyleft' },
+	            { type: 'push', label: 'Align Center CTRL + SHIFT + |', value: 'justifycenter' },
+	            { type: 'push', label: 'Align Right CTRL + SHIFT + ]', value: 'justifyright' },
+	            { type: 'push', label: 'Justify', value: 'justifyfull' }
+	        ]
 	    };
 
 		var toolgroupList = {
@@ -475,13 +475,13 @@ var RichTextEditor = Class.create({
 			buttons: [{ type: 'push', label: 'Create an Unordered List', value: 'insertunorderedlist' },
 				{ type: 'push', label: 'Create an Ordered List', value: 'insertorderedlist' }]
 		};
-		
+
 		var toolgroupLink = {
 			group: 'insertitem',
 			label: 'Insert Item',
 			buttons: [{ type: 'push', label: 'HTML Link CTRL + SHIFT + L', value: 'createlink', disabled: true }]
 		};
-		
+
 		var toolgroupLinkFootnote = {
 			group: 'insertitem',
 			label: 'Insert Item',
@@ -498,7 +498,7 @@ var RichTextEditor = Class.create({
 		{
 			var editor = This.editor;
 
-		    editor.on('toolbarLoaded', function() { 
+		    editor.on('toolbarLoaded', function() {
 		         this.toolbar.on('firstletterClick', function(ev) {	// 'this' is now the editor
 					var html = this.getEditorHTML();
 					// TODO-PER: how do you get the button to stay selected or unselected? Until then, just look for the class to see which to do.
@@ -550,7 +550,7 @@ var RichTextEditor = Class.create({
 
 		    });
 		};
-		
+
 		var initFootnoteDlg = function()
 		{
 			if (footnote === undefined || footnote === null)
@@ -632,7 +632,7 @@ var RichTextEditor = Class.create({
 					var setFootnote = function(value) {
 						var insertedText = footnoteCallback('add', value);
 						var html = editor.getEditorHTML().gsub('&nbsp;', ' ');
-						
+
 						//footnoteSelPos = correctOffsetForSubstitutedText(html, footnoteSelPos);
 						html = html.substr(0, footnoteSelPos) + insertedText + html.substr(footnoteSelPos);
 						This.updateContents(html);
@@ -763,7 +763,7 @@ var RichTextEditor = Class.create({
 						var parent = $('gd_modal_dlg_parent');
 						var x = getX(target) + getX(ifr.offsetParent) + 20;
 						var y = getY(target) + getY(ifr.offsetParent) + 20;
-						currTooltip =new Element('div', { style: 'z-index:500; position: absolute; top:' + y + 'px; left:' + x + 'px; width:20em; border:1px solid #914C29; background-color: #F7ECDB; color:#000; text-align: left; font-weight: normal; padding: .3em;'}).update(child.innerHTML);
+						currTooltip =new Element('div', { style: 'z-index:500; border-radius: 3px; position: absolute; top:' + y + 'px; left:' + x + 'px; width:20em; border:1px solid #888; background-color: whitesmoke; color:#000; text-align: left; font-weight: normal; padding: .3em;'}).update(child.innerHTML);
 						parent.appendChild(currTooltip);
 					}
 				});
@@ -800,7 +800,7 @@ var RichTextEditor = Class.create({
 		{
 			if (linkDlgHandler === undefined || linkDlgHandler === null)
 				return;
-				
+
 			var editor = This.editor;
 
 //			editor.on('beforeEditorMouseDown', function(ev) {
@@ -894,7 +894,7 @@ var RichTextEditor = Class.create({
 			editor.on('toolbarLoaded', function() {
 			    //When the toolbar is loaded, add a listener to the insertimage button
 			    editor.toolbar.on('createlinkClick', function() {
-					
+
 					// Get the selection object. Unfortunately, what is returned varies widely between browsers.
 					var result = editor.getRawSelectionPosition(true);
 					if (!result) {
@@ -902,14 +902,14 @@ var RichTextEditor = Class.create({
 						//this.formatSelection();
 						return false;
 					}
-	
+
 					if (result.errorMsg) {
 						new MessageBoxDlg("Error", result.errorMsg);
 						return false;
 					}
-					
+
 					linkDlgHandler.show(This, editor.getEditorHTML(), result.startPos, result.endPos);
-					
+
 		            //This is important.. Return false here to not fire the rest of the listeners
 		            return false;
 			    }, this, true);
@@ -944,16 +944,16 @@ var RichTextEditor = Class.create({
 //				}, editor, true);
 //			});
 //		};
-	
+
 		// privileged methods
 		this.attachToDialog = function(dialog) {
-			//RTE needs a little love to work in in a Dialog that can be 
+			//RTE needs a little love to work in in a Dialog that can be
 			//shown and hidden; we let it know that it's being
 			//shown/hidden so that it can recover from these actions:
 			dialog.showEvent.subscribe(this.editor.show, this.editor, true);
 			dialog.hideEvent.subscribe(this.editor.hide, this.editor, true);
 		};
-		
+
 		// This puts the edited content back in the original textArea so it can be send back to the server.
 		this.save = function() {
 			var b = this.editor._getDoc().body;
@@ -962,18 +962,18 @@ var RichTextEditor = Class.create({
 				this.editor.saveHTML();
 			}
 		};
-		
+
 		//
 		// constructor code
 		//
-		
+
 		// TODO-PER: Make this generic. Should be able to mix and match buttons. Right now there are only the following combos that are accepted.
 		var toolbar = {
 			buttonType: 'advanced',
 			draggable: false,
 			buttons: []
 		};
-		
+
 		var hasDropCap = false;
 		var isFirst = true;
 		toolbarGroups.each(function(group) {
@@ -1042,23 +1042,23 @@ var RichTextEditor = Class.create({
 		//render the editor explicitly into a container
 		//within the Dialog's DOM:
 		this.editor.render();
-		
+
 		// Replace the link dialog with our own.
 		initLinkDlg();
 		initFootnoteDlg();
-		
+
 		// Add the resizing widgets
 		//setResize();
 	}
 });
-	
+
 	//	dumpObj : function (obj, indent)
 	//	{
 	//		var str = "";
 	//		var tab = "";
 	//		for (var i = 0; i < indent; i++)
 	//			tab += "&nbsp;&nbsp;&nbsp;&nbsp;";
-	//			
+	//
 	//		for (x in obj) {
 	//			if (obj[x])
 	//				var ty = "x" + obj[x].constructor;
@@ -1078,10 +1078,10 @@ var RichTextEditor = Class.create({
 	//		}
 	//		return str;
 	//	},
-		
+
 	//	formatSelection: function () {
 	//        var selectedText = this.editor._getSelection().createRange().text;
-	//        
+	//
 	//        if (selectedText != "") {
 	//            var newText = "[" + selectedText + "]";
 	//            this.editor._getSelection().createRange().text = newText;
