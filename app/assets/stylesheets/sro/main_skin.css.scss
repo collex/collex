@@ -31,6 +31,46 @@ body.federation-sro.pg-tag {
 body.federation-sro {
 	background:#ab7247;
 
+  hr.linkdlg_hr {
+    background: none;
+  }
+
+  .linkdlg_item.linkdlg_item_selected {
+    background: rgba(244,171,98,0.3);
+    margin: 5px;
+    border: 1px solid #ab7247;
+    border-radius: 5px;
+    padding: 5px;
+    color: #7d1317;
+  }
+
+   .linkdlg_item {
+      margin: 5px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 5px;
+   }
+
+	.dlg_tab_link_current {
+	   background: white;
+	   border: 1px solid;
+     border-radius: 8px 8px 0 0;
+     border-bottom: 0;
+     position: relative;
+     top: 2px;
+	}
+
+	.dlg_tab_link {
+	   background: none;
+	   border: 1px solid;
+	   border-radius: 8px 8px 0 0;
+	   position: relative;
+     top: 1px;
+     background-color: #f5ad61;
+     opacity: 0.4;
+     color: #7d1317 !important;
+	}
+
 	tr.limit_to_selected {
 	 background: rgba(244,171,98,0.2);
     color: #0d7366;
