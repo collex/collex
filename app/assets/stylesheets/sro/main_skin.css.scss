@@ -375,8 +375,9 @@ div.edit_bar .yui-button.yui-menu-button {
    background: transparent url('http://yui.yahooapis.com/2.9.0/build/assets/skins/sam/sprite.png') repeat-x scroll 0 0;
 }
 
- .button_tab_selected {
-	background: transparent image-url('sro/attachment_button_down.jpg') repeat-y scroll 0 0;
+.button_tab_selected {
+	background: #f5ad61;
+  border: 2px solid #7d1317;
 }
 
 /*.yui-link-button-hover,  .yui-push-button-hover{
