@@ -31,6 +31,9 @@ body.federation-sro.pg-tag {
 body.federation-sro {
 	background:#ab7247;
 
+  .search-result {
+    min-height: 130px;
+  }
   hr.linkdlg_hr {
     background: none;
   }

@@ -5,6 +5,26 @@ jQuery(document).ready(function($) {
 	"use strict";
 	var body = $("body");
 
+	$("#search_submit").on("click", function(e) {
+	   e.preventDefault();
+	   var feds = $(".limit_to_federation input");
+      var checkedFeds = [];
+      feds.each(function(index, el) {
+         if (el.checked) {
+            checkedFeds.push(el.name);
+         }
+      });
+      var existingQuery = window.collex.getUrlVars();
+      if (checkedFeds.length == 0) {
+         delete existingQuery.f;
+      } else {
+         existingQuery.f = checkedFeds;
+      }
+      delete existingQuery.page;
+      var url = "/search?" + window.collex.makeQueryString(existingQuery);
+	   $("#add-search-constraint").attr('action', url).submit();
+	});
+
 	var progressDlg = null;
 	function showProgress() {
 		// This puts up a large spinner that can only be canceled through the ajax return status
@@ -67,12 +87,14 @@ jQuery(document).ready(function($) {
 		for (var key in existingQuery) {
 			if (existingQuery.hasOwnProperty(key)) {
 				var val = existingQuery[key];
-				if (typeof val === 'string')
-					arr.push(key+'='+val);
-				else {
-					for (var i = 0; i < val.length; i++)
-						arr.push(key+'='+val[i]);
-				}
+				if (typeof val !== 'undefined') {
+   				if (typeof val === 'string')
+   					arr.push(key+'='+val);
+   				else {
+   					for (var i = 0; i < val.length; i++)
+   						arr.push(key+'='+val[i]);
+   				}
+   		   }
 			}
 		}
 		return arr.join('&');
@@ -269,6 +291,9 @@ jQuery(document).ready(function($) {
 	});
 
 	window.collex.sanitizeString = function(str) {
+	   if (typeof str === "undefined") {
+	     return str;
+	   }
 		str = str.replace(/[^0-9A-Za-z'"\u00C0-\u017F]/g, ' ');
 		while (str.substr(0,1) === "'")
 			str = str.substr(1);
@@ -358,6 +383,10 @@ jQuery(document).ready(function($) {
 				checkedFeds.push(el.name);
 			}
 		});
+		if (checkedFeds.length < feds.length ) {
+		   $(".search_all_federations").prop('checked', false);
+		}
+
 		var existingQuery = window.collex.getUrlVars();
 		if (noneChecked) {
 			delete existingQuery.f;
