@@ -15,6 +15,12 @@
 // ---------------------------------------------------------------------------- */
 
 body.federation-sro.pg-groups {
+
+.group_details_left .exhibit_thumbnail {
+border: 1px solid #7d1317 !important;
+padding: 5px !important;
+border-radius: 4px;
+}
   #group_discussions {
   	border-left:2px solid gray;
   }
@@ -23,13 +29,18 @@ body.federation-sro.pg-groups {
   	border-right:2px solid gray;
   }
 
+  #group_details, #group_license, .group_only {
+    margin-left:-10px;
+  }
+
   #group_license {
   	color: white;
   }
 
   .group_header {
-  	color:black;
-  	background:#B99A86;
+  	color: white;
+    background: #7d1317;
+  	margin-left: -10px;
   }
 
   .set_exhibit_style {

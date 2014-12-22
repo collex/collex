@@ -14,8 +14,165 @@
 //     limitations under the License.
 // ---------------------------------------------------------------------------- */
 
+body.federation-sro.pg-tag {
+  #tag_zoom_scale {
+    top: 220px;
+  }
+
+  #tag_explanation {
+    background-color: rgba(244,171,98,0.3);
+    margin-left: 1em;
+    padding: 10px;
+    border: 1px solid #ab7247;
+    border-radius: 5px;
+  }
+}
+
 body.federation-sro {
 	background:#ab7247;
+
+  .search-result {
+    min-height: 130px;
+  }
+  hr.linkdlg_hr {
+    background: none;
+  }
+
+  .linkdlg_item.linkdlg_item_selected {
+    background: rgba(244,171,98,0.3);
+    margin: 5px;
+    border: 1px solid #ab7247;
+    border-radius: 5px;
+    padding: 5px;
+    color: #7d1317;
+  }
+
+   .linkdlg_item {
+      margin: 5px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 5px;
+   }
+
+	.dlg_tab_link_current {
+	   background: white;
+	   border: 1px solid;
+     border-radius: 8px 8px 0 0;
+     border-bottom: 0;
+     position: relative;
+     top: 2px;
+	}
+
+	.dlg_tab_link {
+	   background: none;
+	   border: 1px solid;
+	   border-radius: 8px 8px 0 0;
+	   position: relative;
+     top: 1px;
+     background-color: #f5ad61;
+     opacity: 0.4;
+     color: #7d1317 !important;
+	}
+
+	tr.limit_to_selected {
+	 background: rgba(244,171,98,0.2);
+    color: #0d7366;
+  }
+
+	.search_error_message {
+    color: red;
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 16px;
+    border: 1px solid red;
+    background-color: #f8f8f8;
+    padding: 4px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+
+	#search_name_facet_min {
+	   background-color: rgba(244,171,98,0.3);
+     border: 1px solid #f5ad61;
+	}
+
+  #edit_exhibit_outline {
+    padding: 0;
+
+    .selected_page {
+      background-color: #ab7247;
+      padding: 1px;
+    }
+
+    .outline_tree_elements {
+       padding: 2px;
+    }
+
+    .outline_element {
+      border: 1px dotted #f5ad61;
+      padding: 4px 0px 4px 1px;
+      border-radius: 4px;
+
+      .count a {
+        background-color: #ab7247;
+        margin: 2px;
+        border-radius: 10px;
+      }
+    }
+
+    .outline_tree_element_selected {
+      border: 1px dotted #f5ad61;
+      background-color: rgba(244,171,98, 0.4);
+    }
+  }
+
+  .breadcrumbs {
+    margin: 10px 00px 10px 00px;
+    background-color: #7d1317;
+    font-family: sans-serif;
+    font-size: .9em;
+    padding: 3px 5px;
+    color: white;
+    font-weight: 100;
+    a.nav_link {
+      color: white;
+    }
+  }
+
+	.licensedisplay {
+    background-color: #ab7247;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+  }
+
+	.search_result_buttons button {
+    height: 23px;
+    width: 80px;
+    float: right;
+    margin-bottom: 4px;
+    text-align: center;
+    color: #7d1317;
+    cursor: pointer;
+    padding-top: 2px;
+    display: block;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #f5ad61;
+    border: 1px solid #ab7247;
+  }
+
+  hr.search_results_hr {
+    height: 1px;
+    background: #7d1317;
+    border: none;
+    margin: 7px 0px 7px 0px;
+  }
 
 	#tags {
 	  border-right: 0;
@@ -45,12 +202,12 @@ body.federation-sro {
   }
 
   .exhibit_footer {
-  	background-color: #34645c;
+  	background-color: #7d1317;
   }
 
   .tab_link_current {
   	background-color: white;
-    border-radius: 8px 8px 0 0;
+    border-radius: 12px 12px 0 0;
     color:#7d1317;
     top: 96px;
     padding-top: 4px;
@@ -62,10 +219,10 @@ body.federation-sro {
 
   .tab_link_long, .tab_link_logo, .tab_link,  .my_collex_link {
     background-color: #f5ad61;
-    border-radius: 8px 8px 0 0 ;
+    border-radius: 12px 12px 0 0 ;
     color:#7d1317;
     top: 96px;
-    padding-top: 4px;
+    padding: 4px 5px 0 4px;
     border: 1px solid black;
     height: 22px;
     opacity: 0.4;
@@ -76,8 +233,8 @@ body.federation-sro {
 
   .tab_link_long_current, .tab_link_logo_current {
   	background-color: white;
-    border-radius: 8px 8px 0 0;
-    color:#f5ad61;
+    border-radius: 12px 12px 0 0;
+    color:#7d1317;
     top: 96px;
     padding-top: 4px;
     border-top: 1px solid black;
@@ -92,7 +249,10 @@ body.federation-sro {
 
 	&.pg-lvl1 #nav_container {
 		top: 125px;
-		border-radius: 0 8px 0 0 ;
+		right: 30px;
+		.home {
+		  border-radius: 12px 0 0 0;
+		}
 	}
 
 	&.pg-lvl1 a.my_collex_link {
@@ -100,7 +260,7 @@ body.federation-sro {
 	}
   a.my_collex_link {
     left:30px;
-    border-radius: 0 8px 0 0 ;
+    border-radius: 0 12px 0 0 ;
     opacity: 0.85;
     &:hover {
       opacity: 1;
@@ -109,11 +269,6 @@ body.federation-sro {
 
 .my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
 	color:#55220F;
-}
-
-.tab_link_logo{
-	background:image-url('sro/index_tab.gif') top left no-repeat;
-	color:#ffffff;
 }
 
 #footer_container {
@@ -169,13 +324,22 @@ body.federation-sro {
 .login_div {
 	background-image:image-url('sro/login_header.jpg');
 	background-repeat:no-repeat;
-	border-left: 8px solid #5f3119;
-	border-right: 8px solid #5f3119;
-	border-bottom: 8px solid #5f3119;
+	border: 3px solid #7d1317;
+
+	margin: -10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 70px;
+  width: 250px;
+  input[type=text], input[type=password] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
 }
 
 .search_result_buttons a, .search_result_buttons button {
-	background:transparent image-url('sro/lvl2_result_row_button.jpg') no-repeat scroll left top;
 }
 
 .search_result_buttons a:hover, .search_result_buttons button:hover {
@@ -186,27 +350,24 @@ body.federation-sro {
 /* styles for all javascript-created dialogs */
 /*********************************/
 
- .container-close {
-	background:transparent image-url('sro/popup_box_x.gif') no-repeat scroll 0 0;
-	height: 19px;
+.container-close {
+  top: 6px;
 }
 
- .container-close:hover {
-	background:transparent image-url('sro/popup_box_x_rl.gif') no-repeat scroll 0 0;
-}
-
- .yui-panel .hd {
-	background: transparent image-url('sro/popup_box_header.jpg') repeat-y scroll 0 0;
+.yui-panel .hd {
+	background: none;
+  background-color: #7d1317;
 	color: white;
-	font-family: Verdana, sans-serif;
-	font-weight: bold;
+	font-family: sans-serif;
+	font-weight: 200;
+	height: 28px;
 }
 
- .yui-button {
-	background: transparent image-url('sro/button.jpg') repeat-y scroll 0 0;
-	border: 0;
-   position: relative;
-   top: 2px;
+.yui-button {
+  border: 1px solid #999;
+  position: relative;
+  top: 2px;
+  border-radius: 4px;
 }
 
 .yui-button .first-child {
@@ -217,14 +378,13 @@ div.edit_bar .yui-button.yui-menu-button {
    background: transparent url('http://yui.yahooapis.com/2.9.0/build/assets/skins/sam/sprite.png') repeat-x scroll 0 0;
 }
 
- .button_tab_selected {
-	background: transparent image-url('sro/attachment_button_down.jpg') repeat-y scroll 0 0;
+.button_tab_selected {
+	background: #f5ad61;
+  border: 2px solid #7d1317;
 }
 
-.yui-link-button-hover,  .yui-push-button-hover{
-   color: white;
-   background-image: image-url('sro/attachment_button_down.jpg');
-   border: 0;
+/*.yui-link-button-hover,  .yui-push-button-hover{
+   background-color: #ccc;
 }
 .yui-button-hover a {
    color: white;
@@ -232,6 +392,7 @@ div.edit_bar .yui-button.yui-menu-button {
 .yui-push-button-hover button {
    color: white;
 }
+*/
 	// TODO-PER: This is needed to correct for a specificity problem in the above css
 	 .yui-toolbar-container .yui-push-button, .yui-toolbar-container .yui-color-button, .yui-toolbar-container .yui-menu-button{background:url(http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/sprite.png) repeat-x 0 0;position:relative;display:block;height:22px;width:30px;_font-size:0;margin:0;border-color:#808080;color:#f2f2f2;border-style:solid;border-width:1px 0;zoom:1;}
 	 .yui-toolbar-container .yui-push-button a, .yui-toolbar-container .yui-color-button a, .yui-toolbar-container .yui-menu-button a{padding-left:35px;height:20px;text-decoration:none;font-size:0;line-height:2;display:block;color:#000;overflow:hidden;white-space:nowrap;}

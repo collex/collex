@@ -1,12 +1,25 @@
 body.federation-sro.pg-community {
 
+  .shared_left_column {
+    width: 70%;
+    .shared_header {
+      border: 1px solid #7d1317;
+    }
+  }
+
   .shared_header {
   	color:white;
-  	background:#371911;
+  	font-weight: bold;
+  	background: #ab7247;
+  	border-bottom: 1px solid #740;
+  	padding: 6px;
+  	font-size: 1em;
   }
 
   .publications_image {
-  	border: 4px solid gray;
+  	border: 1px solid #7d1317;
+  	padding: 5px;
+  	border-radius: 5px;
   }
 
 }

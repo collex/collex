@@ -25,7 +25,6 @@
 	<table class='user_roles'>
 	  <tr>
 	    <th>Object URI</th>
-	    <th>Saved Search Name</th>
 	    <th>Saved Search URL</th>
 	    <th>Image</th>
 	    <th>Disabled</th>
@@ -33,13 +32,14 @@
 	<% @features.each do |rec| %>
 	  <tr>
 	    <td><%= rec.object_uri %></td>
-	    <td><%= rec.saved_search_name %></td>
 	    <td><%= rec.saved_search_url %></td>
 	    <td><% if rec.image %><img height="25" src="/<%=rec.image.photo.url(:feature) %>" alt="Feature image" /><% end %></td>
 	    <td><%= rec.disabled == '1' ? 'Yes' : 'No' %></td>
 
 	    <td><%= link_to_function 'Edit', "featureDlg(saved_searches, { method: 'PUT', url: '/admin/features/#{rec.id}' }, #{rec.to_json()}, '#{rec.image ? "/#{rec.image.photo.url(:feature)}" : 'null'}')", { :class => 'nav_link' } %></td>
-	    <td><%= link_to_confirm 'Delete', { :action => 'destroy', :id => rec.id }, "Delete Feature", "This will delete the feature \"#{rec.object_uri}\". Are you sure you want to continue?" %></td>
+	    <td>
+	    <%= link_to "Delete", "/admin/features/#{rec.id}", :confirm => "Are you sure?", :method=>:delete, :class=>'nav_link' %>
+	    </td>
 	  </tr>
 	<% end %>
 	</table>

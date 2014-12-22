@@ -1,6 +1,6 @@
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   #session_times_out_in 4.hours
   #before_filter :set_charset
   before_filter :session_create
-  
+
   helper_method :user_signed_in?, :current_user, :username, :user,
                 :is_admin?, :get_curr_user_id, :respond_to_file_upload
 
@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
 		session[:archives] = nil
 		session[:carousel] = nil
 		session[:resource_tree] = nil
-    session[:languages] = nil
+      session[:languages] = nil
 		Catalog.set_cached_data(session[:carousel], session[:resource_tree], session[:archives], session[:languages])
 		session_create()
 	end
@@ -71,7 +71,19 @@ class ApplicationController < ActionController::Base
 			end
 			if session[:federations] == nil
 				solr ||= Catalog.factory_create(session[:use_test_index] == "true")
-				session[:federations] = solr.get_federations()
+				session[:federations] = {}
+				all_feds = solr.get_federations()
+				default = Setup.find_by_key("site_default_federation")
+				cfg = Setup.where('`key` like ? and value=?', 'federation_%', "true")
+				cfg.each do |fed_rec|
+				  fed = fed_rec.key.gsub(/federation_/,'')
+				  all_feds.each do |a|
+				     if a[0] == fed || default.value == a[0]
+				        puts "== ADD"
+				        session[:federations][a[0]] = a[1]
+				     end
+				  end
+				end
 			end
 			if session[:archives] == nil || session[:carousel] == nil || session[:resource_tree] == nil
 				solr ||= Catalog.factory_create(session[:use_test_index] == "true")
@@ -93,7 +105,7 @@ class ApplicationController < ActionController::Base
 			session[:resource_tree] ||= []
 		end
     end
-  
+
 #    def set_charset
 #      headers['Content-Type'] = 'text/html; charset=utf-8'
 #      headers['Pragma'] = 'no-cache'

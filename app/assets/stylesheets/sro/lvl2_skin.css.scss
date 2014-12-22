@@ -18,6 +18,10 @@ body.federation-sro.pg-lvl2 {
 
   #nav_container {
     top: 125px;
+    right: 30px;
+    .home {
+      border-radius: 12px 0 0 0;
+    }
   }
 
   #header_left {
@@ -38,26 +42,26 @@ body.federation-sro.pg-lvl2 {
 
   .my_collex_link {
   	background-color: #f5ad61;
-    border-radius: 0 8px 0 0 ;
+    border-radius: 0 12px 0 0 ;
     color:#7d1317;
     top: 125px;
     left: 30px;
-    padding-top: 4px;
+    padding: 4px 5px 0 4px;
     border: 1px solid black;
     height: 22px;
-    opacity: 0.4;
+    opacity: 0.8;
     &:hover {
-      opacity: 0.8;
+      opacity: 1;
     }
   }
 
   .my_collex_link_current {
   	background-color: white;
-    border-radius: 0 8px 0 0 ;
+    border-radius: 0 12px 0 0 ;
     color:#7d1317;
     top: 125px;
     left: 30px;
-    padding-top: 4px;
+    padding: 4px 5px 0 4px;
     border-top: 1px solid black;
     border-right: 1px solid black;
     border-left: 1px solid black;
@@ -94,8 +98,8 @@ body.federation-sro.pg-lvl2 {
   }
 
   .right_column {
-    outline: 1px solid #966c54;
     padding: 0px 0px 0px 0px;
+    border: 1px solid #7d1317;
   }
 
   .create-group-links {
@@ -104,7 +108,8 @@ body.federation-sro.pg-lvl2 {
   }
 
   .right_column_header {
-  	color: black;
+  	color: white;
+  	font-weight: bold;
     background: #ab7247;
     border-bottom: 1px solid #740;
   }
@@ -116,24 +121,33 @@ body.federation-sro.pg-lvl2 {
   }
 
   .new_search {
-  	background:image-url('sro/lvl2_new_search.jpg') top left no-repeat;
-  	font-size: 0;
-  }
-
-  .new_search:hover {
-  	background:image-url('sro/lvl2_new_search_rl.jpg') top left no-repeat;
+    color: #7d1317;
+    font-size: 15px;
+    background-color: #f5ad61;
+    border: 2px solid #ab7247;
+    height: auto;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px 5px;
+    &:hover {
+      background-color: #f5cd81;
+    }
   }
 
   .result_row_collected {
   	background:transparent image-url('sro/search_collected_gradient.jpg') repeat-y;
+  	   border-radius: 20px 0 0 20px;
+
   }
 
   .FP_attachment_collected {
-  	background:transparent image-url('sro/forum_collected_gradient.jpg') repeat-x scroll 0 0;
+    background: rgba(255,255,255,0.5);
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #ab7247;
   }
 
   #group_details {
-  	background: image-url('sro/groups_header_background.jpg') repeat-x bottom;
   }
 
   .free_culture {
@@ -171,6 +185,6 @@ body.federation-sro.pg-lvl2 {
   }
 
   #group_license {
-  	background: #371911;
+  	background: #7d1317;
   }
 }

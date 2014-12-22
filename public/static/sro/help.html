@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="yui3-js-enabled">
+<head>
+<!--------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>S i R O - About</title>
+	<link rel='stylesheet' type='text/css' href='http://yui.yahooapis.com/combo?2.9.0/build/reset-fonts-grids/reset-fonts-grids.css&2.9.0/build/base/base.css&2.9.0/build/button/assets/skins/sam/button.css&2.9.0/build/container/assets/skins/sam/container.css&2.9.0/build/assets/skins/sam/skin.css' />
+	<link href="/assets/application.css" media="all" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
+	<script src='http://yui.yahooapis.com/combo?2.9.0/build/yahoo-dom-event/yahoo-dom-event.js&2.9.0/build/json/json.js&2.9.0/build/element/element.js&2.9.0/build/button/button.js&2.9.0/build/container/container.js&2.9.0/build/dragdrop/dragdrop.js' type='text/javascript' ></script>
+	<script src="/assets/application.js" type="text/javascript"></script>
+</head>
+<body class="yui-skin-sam federation-sro pg-lvl2 pg-about">
+	<div id="main_container">
+		<div id="header_container">
+			<a href="/" id="header_left">&nbsp;</a>
+			<div id="header_right"></div>
+		</div>
+		<a id="my_collex_tab" href="/my_siro" class="my_collex_link">My SiRO</a>
+
+		<div id='nav_container'>
+			<a href="/" class="tab_link">HOME</a>
+			<a href="/classroom" class="tab_link_long">Classroom</a>
+			<a href="/communities" class="tab_link_long">Community</a>
+			<a href="/publications" class="tab_link_long">Publications</a>
+			<a href="/search" class="tab_link">Search</a>
+		</div>
+
+    	<div id="subnav_container">
+        	<div id="login_container">
+				<script type="text/javascript">
+				document.observe('dom:loaded', function() {
+					new Ajax.Updater({ success: 'login_container', failure: 'bit_bucket' }, '/login/login_controls', { method: 'get' });
+					});
+				</script>
+            </div>
+            </div>
+           	<div class="clear_both"></div>
+
+		<div id="content_container">
+			<div class="inner_content_container">
+				<div style="margin-left:80px;margin-top:50px;"></div>
+<div style="margin-left:100px;margin-right:60px;"><strong><h1>Need Help?</h1></strong>
+<p>Read this page for tips, tricks and general information about using the <a class="nav_link" href="about/software/siro">Collex interface</a> in SiRO.</p></div>
+<div style="margin-left:100px;margin-top:20px;margin-right:100px;"><a name="search"/>
+	<h1>Searching SiRO</h1>
+	<p>Because SiRO searches are powered by a faceted browser, short, one-word queries can be more helpful than phrases. Adding new terms, or <i>constraints</i>, allows you to narrow in on the materials most relevant to your research. Initial constraints include title words, author, editor and publisher names, as well as four-digit years. Once you've begun your search, be sure to check the right-hand column for other ways to browse SiRO materials:</p>
+		<ul style="padding:5px;">
+			<li><strong>Collections</strong>: Large archives of primary source materials</li>
+			<li><strong>Journals</strong>: Select periodicals (both Free Culture and Subscription-based) that have been aggregated in SiRO</li>
+			<li><strong>Library Catalogs</strong>: Citations from select libraries with robust collections in nineteenth-century studies. Our goal is to add full-text searching to these items as libraries continue to digitize their collections.</li>
+			<li><strong>Presses</strong>: Beginning with the University of Virginia Press, SiRO aggregates materials from traditional and digital imprints.</li>
+			<li><strong>Scholarly Projects</strong>: These peer-reviewed resources represent the best of digital scholarship on the web.</li>
+			<li><strong>Genre</strong>: To enable better browsing, SiRO contributors are required to assign at least one genre to their digital objects from an <a class="nav_link" href="http://www.performantsoftware.com/SiRO_wiki/index.php/Submitting_RDF#.3Cnines:genre.3E">approved list</a>.</li>
+			<li><strong>Free Culture</strong>: SiRO is committed to encouraging and sustaining open-source, open access projects. Add this constraint to peruse freely available content.</li>
+			</ul>
+
+	<p>Basic free-form searches provide a search-suggest drop-down menu as you type, showing you possible returns in the index, as well as the number of digital objects in which they are referenced. This allows you to discover alternate spellings or similar terms. If you would like to select one, simply move you cursor down the list, click on it, and it will appear in the search blank.</p>
+
+	<p>For best results when searching for proper names, start your search by typing the subject's <b>last name</b> (e.g.: "Darwin").</p></div>
+	<div style="margin-left:100px;margin-top:20px;margin-right:100px;"><a name="collect"/>
+	<h1>Saved Searches</h1>
+	<p>Although the SiRO search interface is available to all users, setting up a free account grants you access to a number of useful options and tools. Saved searches allow you to keep track of your most frequent or relevant searches with one click, or share them with your peers. And, because we save the <i>constraints</i> you used (not the content of the search itself), your saved searches will be updated with new material every time a new resource is added to SiRO. Your saved searches can be found in your personalized My 9s page.</p>
+	<p>Sample saved search: <a class="nav_link" href="/search/saved?user=DWheeles&name=victorianArt">"Victorian Art"</a>.</p>
+	<h1>Collecting Objects</h1>
+	<p>When you are signed in to your account, you will have the option to collect items of interest to you. Once collected, you can <a class="nav_link" href="/tags">tag</a> these items, <a class="nav_link" href="/forum">discuss</a> them with others in the forum, and exhibit them in an essay or annotated bibliography of your own.</p>
+	</div>
+<div style="margin-left:100px;margin-top:20px;margin-right:100px;">
+	<h1>Contact</h1>
+	<p>If you have other questions or need help, please e-mail us at: <script language="javascript" type="text/javascript">var pre = "inquiries";document.write("<a class='nav_link' href='mailto:" + pre + "@studiesinradicalism.org'>" + pre + "@studiesinradicalism.org</a>");</script><noscript>Enable javascript to see our email.</noscript>.</p>
+</div>
+
+	</div>
+</div>
+</div>
+           	<div class="clear_both"></div>
+<div id="footer_container">
+	SiRO: aggregating <span id='num_docs'>###</span> peer&#8209;reviewed <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/resources', 'Digital Objects', '/images/ajax_loader.gif'); return false;">digital objects</a> from <span id='num_sites'>###</span> <a class="nav_link" href="#" onclick="showPartialInLightBox('/help/sites', 'Federated Sites', '/images/ajax_loader.gif'); return false;">federated sites</a>.
+<br/>Questions? Find a bug? <script language="javascript" type="text/javascript">var pre = "inquiries";document.write("<a class='nav_link' href='mailto:" + pre + "@studiesinradicalism.org'>" + pre + "@studiesinradicalism.org</a>");</script><noscript>Enable javascript to see our email.</noscript>.
+<br />(Powered by Collex v<span id='collex_version'>###</span>.)
+<script type="text/javascript">
+	document.observe('dom:loaded', function() {
+				new Ajax.Request('/home/get_footer_data', {
+					method: 'get',
+					evalScripts: true,
+					onSuccess: function(resp){
+						var data = resp.responseText.evalJSON(true);
+						$('num_docs').update(data.num_docs);
+						$('num_sites').update(data.num_sites);
+						$('collex_version').update(data.collex_version);
+					}
+				});
+		});
+</script>
+</div>
+		</body></html>
+

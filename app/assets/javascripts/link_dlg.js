@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------
 //    Copyright 2009 Applied Research in Patacriticism and the University of Virginia
-//    
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-//  
+//
 //        http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,11 +30,11 @@ var CacheObjects = Class.create({
 		this.get = function(populate_url) {
 			return cache.get(populate_url);
 		};
-		
+
 		this.reset = function(populate_url) {
 			cache.set(populate_url, null);
 		};
-		
+
 		this.set = function(populate_url, c) {
 			cache.set(populate_url, c);
 		};
@@ -54,7 +54,7 @@ var CreateListOfObjects = Class.create({
 		var id_prefix = null;
 		var noObjMsg = null;
 		var This = this;
-		
+
 		// Handles the user's selection
 		this.getSelection = function(){
 			var el = parent.down("." + selClass);
@@ -118,7 +118,7 @@ var CreateListOfObjects = Class.create({
 					title: alt
 				});
 				spinner.addClassName('linkdlg_img');
-				
+
 				imgEl = new Element('img', {
 					id: id + "_img",
 					src: img,
@@ -138,7 +138,7 @@ var CreateListOfObjects = Class.create({
 			var spacer = new Element('hr');
 			spacer.addClassName('clear_both');
 			spacer.addClassName('linkdlg_hr');
-			
+
 			// Connect the elements
 			text.appendChild(first);
 			text.appendChild(second);
@@ -150,7 +150,7 @@ var CreateListOfObjects = Class.create({
 			div.appendChild(text);
 			div.appendChild(spacer);
 			parent.appendChild(div);
-			
+
 			// Add the handler for when the picture has finished loading.
 			var finishedLoadingImage = function(ev) {
 				// This replaces the spinny with the real image.
@@ -178,7 +178,7 @@ var CreateListOfObjects = Class.create({
 				}
 				elThis.removeClassName('hidden');
 			};
-			YAHOO.util.Event.addListener(id + "_img", 'load', finishedLoadingImage); 
+			YAHOO.util.Event.addListener(id + "_img", 'load', finishedLoadingImage);
 
 			// Add the selection event
 			var userSelect = function(ev) {
@@ -189,9 +189,9 @@ var CreateListOfObjects = Class.create({
 				if (selectionCallBack)
 					selectionCallBack(this.id);
 			};
-			YAHOO.util.Event.addListener(id, 'click', userSelect); 
+			YAHOO.util.Event.addListener(id, 'click', userSelect);
 		};
-		
+
 		var createRows = function(objs, selectFirst, id_prefix) {
 			parent.innerHTML = "";
 			objs.each(function(obj){
@@ -203,7 +203,7 @@ var CreateListOfObjects = Class.create({
 			parent.appendChild(noObjMsg);
 			if (objs.length !== 0)
 				noObjMsg.hide();
-			
+
 			if (initial_selection) {
 				var sel = $(id_prefix + "_" + initial_selection);
 				if (sel) {
@@ -236,7 +236,7 @@ var CreateListOfObjects = Class.create({
 			if (noObjMsg.parent)
 				noObjMsg.remove();
 		};
-		
+
 		// privileged functions
 		var populate_url = populate_collex_obj_url;
 		this.repopulate = function(dlg, new_url) {
@@ -271,15 +271,15 @@ var CreateListOfObjects = Class.create({
 				};
 				serverRequest({ url: populate_url, onSuccess: onSuccess});
 			}
-			
+
 		};
-		
+
 		this.add = function(object)
 		{
 			parent.appendChild(object);
 			parent.down("#noObjMsg").hide();
 		};
-		
+
 		this.popSelection = function()
 		{
 			var sel = parent.down("." + selClass);
@@ -377,7 +377,7 @@ var CreateListOfObjects = Class.create({
 
 var LinkDlgHandler = Class.create({
 	initialize: function (populate_urls, progress_img) {
-	
+
 		var objRTE = null;
 		var iStartPos = null;
 		var iEndPos = null;
@@ -395,7 +395,7 @@ var LinkDlgHandler = Class.create({
 			// If the start was found, then look forward for "<span" and "</span>".
 			// If "<span" was found, then ignore everything until after the next "</span>".
 			// If "</span>" was found, then that is the end. Return the [start, end] pair.
-			
+
 			var getFirstOf = function (str, start, match1, match2) {
 				var i = str.substring(start).indexOf(match1);
 				var j = str.substring(start).indexOf(match2);
@@ -405,7 +405,7 @@ var LinkDlgHandler = Class.create({
 					return { found: match2, index: start + j };
 				return { found: "" };
 			};
-			
+
 			var getLastOf = function (str, end, match1, match2) {
 				var i = str.substring(0, end).lastIndexOf(match1);
 				var j = str.substring(0, end).lastIndexOf(match2);
@@ -415,7 +415,7 @@ var LinkDlgHandler = Class.create({
 					return { found: match2, index: j };
 				return { found: "" };
 			};
-			
+
 			var done = false;
 			var iStart = iPos;
 			while (!done) {
@@ -428,7 +428,7 @@ var LinkDlgHandler = Class.create({
 				} else
 					return null;
 			}
-			
+
 			done = false;
 			var iEnd = iPos;
 			while (!done) {
@@ -441,14 +441,14 @@ var LinkDlgHandler = Class.create({
 				} else
 					return null;
 			}
-			
+
 			return [ iStart, iEnd ];
 		};
 
 		var createLinkDlg = function(starting_type, starting_selection)
 		{
-			var linkTypes = [ 'NINES Object', 'External Link' ];
-	
+			var linkTypes = [ 'Collected Object', 'External Link' ];
+
 			var selChanged = function(id, currSelection) {
 				var hideClass = (currSelection === linkTypes[0]) ? '.ld_link_only' : '.ld_nines_only';
 				var showClass = (currSelection !== linkTypes[0]) ? '.ld_link_only' : '.ld_nines_only';
@@ -472,7 +472,7 @@ var LinkDlgHandler = Class.create({
 				}
 				return str;
 			};
-			
+
 			var splitRawHtml = function ()
 			{
 				return { prologue: rawHtmlOfEditor.substring(0, iStartPos),
@@ -480,7 +480,7 @@ var LinkDlgHandler = Class.create({
 					ending: rawHtmlOfEditor.substring(iEndPos)
 				};
 			};
-			
+
 			var removeLink = function(event, params)
 			{
 				var html = splitRawHtml();
@@ -489,16 +489,16 @@ var LinkDlgHandler = Class.create({
 //				objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 				params.dlg.cancel();
 			};
-			
+
 			var saveLink = function(event, params) {
 				// Save has been pressed.
 				var dlg = params.dlg;
 				var data = dlg.getAllData();
-	
+
 				var html = splitRawHtml();
 				html.selection = removeLinksFromSelection(html.selection);
-				
-				if (data.ld_type === "NINES Object")
+
+				if (data.ld_type === "Collected Object")
 				{
 					if (data.ld_nines_object) {
 						//<span title="NINES Object: uri" real_link="uri" class="nines_linklike">target</span>
@@ -510,14 +510,14 @@ var LinkDlgHandler = Class.create({
 				else
 				{
 					//<span title="External Link: url" real_link="url" class="ext_linklike">target</span>
-					html.selection = '<span title="' + linkTypes[1] + ': ' + data.ld_link_url + '" real_link="' + 
+					html.selection = '<span title="' + linkTypes[1] + ': ' + data.ld_link_url + '" real_link="' +
 						data.ld_link_url + '" class="ext_linklike">' + html.selection + "</span>";
 					objRTE.updateContents(html.prologue + html.selection + html.ending);
 //					objRTE.editor.setEditorHTML(html.prologue + html.selection + html.ending);
 				}
 				params.dlg.cancel();
 			};
-			
+
 			var objlist = new CreateListOfObjects(populate_urls[0], (starting_type === 0 ? starting_selection : null), 'ld_nines_object', progress_img);
 			if (populate_urls.length === 2)
 				objlist.useTabs(populate_urls[1], populate_urls[0]);
@@ -525,7 +525,7 @@ var LinkDlgHandler = Class.create({
 			var dlgLayout = {
 					page: 'layout',
 					rows: [
-						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', callback: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'NINES Object', value:  'NINES Object' }, { text:  'External Link', value:  'External Link' }] } ],
+						[ { text: 'Type of Link:', klass: 'link_dlg_label' }, { select: 'ld_type', callback: selChanged, klass: 'link_dlg_select', value: linkTypes[starting_type], options: [{ text:  'Collected Object', value:  'Collected Object' }, { text:  'External Link', value:  'External Link' }] } ],
 						[ { text: 'Sort objects by:', klass: 'link_dlg_label ld_nines_only hidden' }, { select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select ld_nines_only hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 							{ text: 'and', klass: 'link_dlg_label_and ld_nines_only hidden' }, { inputFilter: 'filterObjectsLnk', prompt: 'type to filter objects', callback: objlist.filter, klass: 'ld_nines_only hidden' } ],
 						[ { link: '[Remove Link]', callback: removeLink, klass: 'remove nav_link hidden' }],
@@ -538,7 +538,7 @@ var LinkDlgHandler = Class.create({
 				dlgLayout.rows[2].push( { link: "Exhibit Palette", klass: 'dlg_tab_link_current ld_nines_only hidden', callback: objlist.ninesObjView, arg0: 'exhibit' });
 				dlgLayout.rows[2].push( { link: "All My Objects", klass: 'dlg_tab_link ld_nines_only hidden', callback: objlist.ninesObjView, arg0: 'all' });
 			}
-				
+
 			var dlgParams = { this_id: "link_dlg", pages: [ dlgLayout ], body_style: "link_dlg", row_style: "link_dlg_row", title: "Set Link", focus: 'link_dlg_sel0' };
 			var dlg = new GeneralDialog(dlgParams);
 			//dlg.changePage('layout', 'link_dlg_sel0');
@@ -548,7 +548,7 @@ var LinkDlgHandler = Class.create({
 			selChanged(null, linkTypes[starting_type]);
 			dlg.center();
 		};
-		
+
 		this.show = function(objRTE_, rawHtmlOfEditor_, iStartPos_, iEndPos_)
 		{
 			objRTE = objRTE_;
@@ -562,21 +562,21 @@ var LinkDlgHandler = Class.create({
 				var i = str.indexOf('real_link');
 				if (i < 0)
 					return null;
-				
+
 				var j = str.substring(i+11).indexOf('"');
 				return str.substring(i+11, i+11+j);
 			};
-			
+
 			// See if there is already a link. There is a link if there is one of our spans either inside the selection or outside the selection.
 			// The which one it is matters. If there is a link outside the selection, then we want to expand the selection area to the size of the link
 			// and pass the selection value to the dialog as a starting place.
 			// If there is a link inside the selection (and there could potentially be two links!) then we keep the selection size as it is passed to us, start
 			// the dialog with the first link found, and, if the user presses ok, then remove the interior links and replace them with the larger link.
 			// If there are neither of the above is true, then we put up the dialog with the first NINES link selected.
-			
+
 			var starting_selection = "";
 			var starting_type = 0;
-	
+
 			// See if a link encompasses the selection.
 			var ret = getEncompassingLink(rawHtmlOfEditor, iStartPos);
 			if (ret) {
@@ -594,7 +594,7 @@ var LinkDlgHandler = Class.create({
 					starting_selection = ret;
 				}
 			}
-			
+
 			// Put up the selection dialog
 			createLinkDlg(starting_type, starting_selection);
 		};

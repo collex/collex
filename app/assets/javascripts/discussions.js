@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------
 //    Copyright 2009 Applied Research in Patacriticism and the University of Virginia
-//    
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-//  
+//
 //        http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,7 +73,7 @@ var ForumReplyDlg = Class.create({
 		}
 		if (params.license)
 			starting_license = params.license;
-		
+
 		if (!logged_in) {
 			var logdlg = new SignInDlg();
 			logdlg.setInitialMessage("You must be logged in to create a comment.");
@@ -87,7 +87,7 @@ var ForumReplyDlg = Class.create({
 
 		// private variables
 		var This = this;
-		
+
 		// private functions
 		var populate = function(dlg)
 		{
@@ -112,7 +112,7 @@ var ForumReplyDlg = Class.create({
 			};
 			serverRequest({ url: populate_topics_url, onSuccess: onSuccess});
 		};
-		
+
 		// privileged functions
 		var removeAttachItem = function() {
 			var attach_el = $$('.attach_item')[0];
@@ -122,13 +122,13 @@ var ForumReplyDlg = Class.create({
 				sel.each(function(s) { s.removeClassName('hidden'); });
 				}, 50);
 		};
-		
+
 		var currSel = "";
 		var currSelClass = "";
 		this.attachItem = function(event, params)
 		{
 			removeAttachItem();
-			
+
 			// Now select the first tab, which is the My Collection.
 			params.arg0 = "mycollection";
 			currSel = 'forum_reply_dlg_btn0';
@@ -137,7 +137,7 @@ var ForumReplyDlg = Class.create({
 			fn(event, params);
 			//$(currSel).addClassName('button_tab_selected');
 		};
-		
+
 		this.switch_page = function(event, params)
 		{
 			if (currSel !== "") {
@@ -151,13 +151,13 @@ var ForumReplyDlg = Class.create({
 			var sel2 = $$('.' + params.arg0);
 			sel2.each(function(s) { s.removeClassName('hidden'); });
 		};
-		
+
 		this.sendWithAjax = function (event, params)
 		{
 			//var curr_page = params.curr_page;
 			var url = params.arg0;
 			var dlg = params.dlg;
-			
+
 			dlg.setFlash('Adding Comment...', false);
 			var data = dlg.getAllData();
 			data.thread_id = thread_id;
@@ -199,7 +199,7 @@ var ForumReplyDlg = Class.create({
 					[ { text: 'Topic:', klass: 'forum_web_label group hidden' }, { select: 'topic_id', klass: 'discussion_topic_select group hidden', options: [ { value: -1, text: 'Loading discussion topics. Please Wait...' } ] }],
 					[ { textarea: 'reply', klass: 'clear_both', value: starting_comment_el ? $(starting_comment_el).innerHTML : undefined } ],
 					[ { link: 'Attach an Item...', klass: 'attach_item nav_link', arg0: "", callback: this.attachItem }],
-					[ { button: 'My Collection', arg0: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'NINES Exhibit', klass: 'button_tab attach hidden', arg0: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', arg0: 'weblink', callback: this.switch_page } ],
+					[ { button: 'My Collection', arg0: 'mycollection', klass: 'button_tab attach hidden', callback: this.switch_page }, { button: 'Exhibit', klass: 'button_tab attach hidden', arg0: 'exhibit', callback: this.switch_page }, { button: 'Web Item', klass: 'button_tab attach hidden', arg0: 'weblink', callback: this.switch_page } ],
 					[ { text: 'Sort objects by:', klass: 'forum_reply_label mycollection hidden' },
 						{ select: 'sort_by', callback: objlist.sortby, klass: 'link_dlg_select mycollection hidden', value: 'date_collected', options: [{ text:  'Date Collected', value:  'date_collected' }, { text:  'Title', value:  'title' }, { text:  'Author', value:  'author' }] },
 						{ text: 'and', klass: 'link_dlg_label_and mycollection hidden' }, { inputFilter: 'filterObjects', klass: 'mycollection hidden', prompt: 'type to filter objects', callback: objlist.filter } ],
@@ -239,7 +239,7 @@ var ForumReplyDlg = Class.create({
 		if (starting_obj_type && starting_obj_type !== 1) {
 			YAHOO.util.Event.onAvailable('reply_container', function() {	// We want this to happen after creating the RTE because the user sees that first.
 				removeAttachItem();
-				
+
 				var pages = [ 'mycollection', 'exhibit', 'weblink' ];
 				var params = { arg0: pages[starting_obj_type-2] };
 				currSel = 'forum_reply_dlg_btn' + (starting_obj_type-2);

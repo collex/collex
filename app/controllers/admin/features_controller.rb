@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------
 #     Copyright 2010 Applied Research in Patacriticism and the University of Virginia
-# 
+#
 #     Licensed under the Apache License, Version 2.0 (the "License");
 #     you may not use this file except in compliance with the License.
 #     You may obtain a copy of the License at
-# 
+#
 #         http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #     Unless required by applicable law or agreed to in writing, software
 #     distributed under the License is distributed on an "AS IS" BASIS,
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -80,16 +80,16 @@ class Admin::FeaturesController < Admin::BaseController
 			p_obj[:title] = get_hit_item(hit, 'title')
 			p_obj[:object_url] = get_hit_item(hit, 'url')
 			p_obj[:date] = get_hit_item(hit, 'date_label')
-			site = Catalog.factory_create(false).get_archive(get_hit_item(hit, 'archive')) #Site.find_by_code(get_hit_item(hit, 'archive'))
+			site = Catalog.factory_create(false).get_archive(get_hit_item(hit, 'archive'))
 			p_obj[:site] = site['name']
 			p_obj[:site_url] = site['site_url']
-			p_obj[:saved_search_url] = self.class.helpers.create_saved_search_url(current_user.username, p_obj[:saved_search_name])
 
 			if type == 'modifying'
 				feature = FeaturedObject.find(id)
-				feature.update_attributes(p_obj)
+				feature.update_attributes!(p_obj)
 			else
 				feature = FeaturedObject.new(p_obj)
+				feature.save!
 			end
 
 			err = Image.save_image(p_image, feature)
@@ -124,6 +124,7 @@ class Admin::FeaturesController < Admin::BaseController
 #			end
 		rescue Exception => msg
 			logger.error("**** ERROR: Can't #{type} feature: " + msg.message)
+			logger.error msg.backtrace.join("\n")
 			flash = "Server error when #{type} feature: #{msg.message}"
 		end
 		flash = flash.gsub("\n", '<br />')

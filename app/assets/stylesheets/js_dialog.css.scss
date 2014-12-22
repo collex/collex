@@ -149,7 +149,7 @@ body {
 }
 
 .linkdlg_secondline {
-	
+
 }
 
 .linkdlg_list {
@@ -198,7 +198,7 @@ hr.linkdlg_hr {
 /***********************/
 /* styles for the login pages */
 /***********************/
-	
+
 .login_div {
 	margin:-10px;
 	padding-bottom:20px;
@@ -214,7 +214,7 @@ hr.linkdlg_hr {
 }
 
 .login_label {
-	
+
 }
 
 .login_div input[type="text"] {
@@ -280,7 +280,7 @@ hr.linkdlg_hr {
 }
 
 .new_exhibit_label {
-	
+
 }
 
 .edit_illustration_caption_label {
@@ -400,7 +400,7 @@ a.footnote_tip:hover span.tip {
 
 span.footnote_edit_hover {
   display: block;
-  background-color: #a78268;
+  background-color: #999;
   text-align: center;
   padding-top: 2px;
   padding-bottom: 2px;
@@ -409,6 +409,8 @@ span.footnote_edit_hover {
   border-width: 1px;
   color: #F8F8F8;
   font-size: 0.9em;
+  margin-bottom: 5px;
+  border-radius: 3px;
 }
 
 #genre_list {
@@ -574,7 +576,7 @@ span.footnote_edit_hover {
 
 .gd_text_input_help {
    margin-left: 45px;
-   font-size:0.8em;  
+   font-size:0.8em;
 }
 
 .gd_message_box_dlg {
@@ -631,7 +633,7 @@ span.footnote_edit_hover {
 }
 
 .footnote_abbrev {
-	
+
 }
 
 .footnote_abbrev_div {

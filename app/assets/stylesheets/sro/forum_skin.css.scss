@@ -16,8 +16,9 @@
 
 body.federation-sro.pg-forum {
   .FH_cat_header {
-  	background:#914C29;
+  	background:#ab7247;
   	color:#FFFFFF;
+  	border: 1px solid #ab7247;
   }
 
   .FH_cat_header a {
@@ -25,7 +26,8 @@ body.federation-sro.pg-forum {
   }
 
   .FH_cat_info {
-  	background:#F7ECDB;
+  	background: rgba(244,171,98,0.3);
+    border: 1px solid #ab7247;
   }
 
   .FH_post {
@@ -34,6 +36,8 @@ body.federation-sro.pg-forum {
 
   .FP_original_post {
   	background: #F7ECDB;
+    border: 1px solid #ab7247;
+    border-radius: 5px;
   }
 
   .FP_user_img {
@@ -41,16 +45,16 @@ body.federation-sro.pg-forum {
   }
 
   .FP_reply_header {
-  	border-top: 2px solid #966C54;
-  	border-bottom: 2px solid #966C54;
+  	border-top: 1px solid #ab7247;
+  	border-bottom: 1px solid #ab7247;
   }
 
   .FP_reply_footer {
-  	border-bottom: 2px solid #966C54;
+  	border-bottom: 1px solid #ab7247;
   }
 
   .FP_reply_container {
-  	border-bottom: 2px solid #966C54;
+  	border-bottom: 1px solid #ab7247;
   }
 
   .FC_pages {
