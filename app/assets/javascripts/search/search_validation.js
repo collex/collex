@@ -96,6 +96,9 @@ jQuery(document).ready(function($) {
 		var year = searchHash.y;
 		if (year && year.length > 0) {
 			year = year.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
+         year = year.replace(/(\b\d{3})\b/g, '0$1'); // replace 1, 2, or 3 digit numbers with 4 digit versions by adding leading zeros
+         year = year.replace(/(\b\d{2})\b/g, '00$1');
+         year = year.replace(/(\b\d{1})\b/g, '000$1');
 			year = year.trim();
 			if (year.length > 0) {
 				// At this point, year_val contains the user's input for the year.
