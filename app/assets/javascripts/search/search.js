@@ -5,6 +5,9 @@ jQuery(document).ready(function($) {
 	"use strict";
 	var body = $("body");
 
+   // catch the search submit at the last moment and be sure the
+   // actuion URL on the search form mathes the browser URL. Ensures
+   // that the correct federations are searched,
 	$("#search_submit").on("click", function(e) {
 	   e.preventDefault();
 	   var feds = $(".limit_to_federation input");
@@ -367,6 +370,14 @@ jQuery(document).ready(function($) {
 				names.push(federations[i].name);
 			var url = createNewUrl('f', names, 'replace');
 			changePage(url);
+		} else {
+		  var existingQuery = window.collex.getUrlVars();
+		  delete existingQuery.f;
+		  delete existingQuery.page;
+        changePage("/search?" + window.collex.makeQueryString(existingQuery));
+        $(".limit_to_federation input").each( function() {
+            $(this).prop('checked', false);
+        });
 		}
 	});
 
