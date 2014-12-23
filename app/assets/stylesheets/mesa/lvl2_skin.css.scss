@@ -15,6 +15,18 @@
 // ---------------------------------------------------------------------------- */
 
 body.federation-mesa.pg-lvl2 {
+
+.category-btn {
+  font-weight:bold;
+  cursor: pointer;
+  img {
+    margin-right:16px;
+  }
+}
+td.limit_to_lvl3 {
+  padding-left: 50px;
+}
+
 #header_left {
 	width:755px;
 	height:89px;
@@ -49,7 +61,7 @@ a.my_collex_link_current {
 
 div#nav_container {
 	right: 40px;
-	top: 92px;	
+	top: 92px;
 }
 
 .limit_to th {

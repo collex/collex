@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------
 //    Copyright 2009 Applied Research in Patacriticism and the University of Virginia
-//    
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-//  
+//
 //        http://www.apache.org/licenses/LICENSE-2.0
-//  
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -189,7 +189,7 @@ var GeneralDialog = Class.create({
 		var row_style = params.row_style;
 		var title = params.title;
 		var override_width = params.width;
-		
+
 		var flash_id = this_id + '_flash';
 		var editors = [];
 		var customList = [];
@@ -197,10 +197,10 @@ var GeneralDialog = Class.create({
 		var currPage = null;
 		var defaultAction = {};
 		var defaultParam = {};
-		
+
 		// A list of calls that should be made after the dialog is rendered
 		var deferredCalls = [];
-		
+
 		// A wrapper class used to schedule a call with params in
 		// the deferred call list. All objects in the list will
 		/// get the executed() method called after the dialog is rendered
@@ -208,7 +208,7 @@ var GeneralDialog = Class.create({
          initialize: function (params) {
             var fn_call = params.fn_call;
             var call_params = params.call_params;
-            
+
              this.execute = function() {
                 fn_call(call_params);
              };
@@ -220,7 +220,7 @@ var GeneralDialog = Class.create({
 			var csrf_token = $$('meta[name=csrf-token]')[0].content;
 			form.appendChild(new Element('input', { id: csrf_param, type: 'hidden', name: csrf_param, value: csrf_token }));
 		};
-		
+
 		var selectChange = function(event, param)
 		{
 			var This = $(this);
@@ -304,17 +304,17 @@ var GeneralDialog = Class.create({
 					data[el.name] = el.value;
 				}
 			});
-			
+
 			editors.each(function(editor) {
 				editor.save();
 			});
-			
+
 			customList.each(function(ctrl) {
 				var cl = ctrl.getSelection();
 				if (cl.field)
 					data[cl.field] = cl.value;
 			});
-	
+
 			var textareas = $$("#" + this_id + " textarea");
 			textareas.each(function(el) {
 				var id = el.name;
@@ -323,15 +323,15 @@ var GeneralDialog = Class.create({
 			});
 			return data;
 		};
-		
+
 		this.getTitle = function() {
 			return title;
 		};
-		
+
 		var handleCancel = function() {
 		    this.cancel();
 		};
-		
+
 		var panel = new YAHOO.widget.Dialog(this_id, {
 			constraintoviewport: true,
 			width: override_width,
@@ -341,7 +341,7 @@ var GeneralDialog = Class.create({
 			underlay: 'shadow',
 			buttons: null
 		});
-		
+
 		this.setFlash = function(msg, is_error) {
 			var flash = $(flash_id);
 			if (flash) {	// If the user canceled before this message came in, the element may not exist. That's ok, just ignore it.
@@ -411,7 +411,7 @@ var GeneralDialog = Class.create({
 		var initAutoComplete = function( params ) {
            new Ajax.Autocompleter(params.input_id, params.results_id, params.url, {minChars:1});
         };
-		
+
 		var addAutocomplete = function(parent_el, id, klass, url, token, value) {
 
          var ac_id = GeneralDialog.makeId(id);
@@ -419,31 +419,31 @@ var GeneralDialog = Class.create({
          var ac_div = new Element('div', { id: ac_div_id} );
          if (klass !== undefined)
              ac_div.addClassName(klass);
-            
+
          // add the input box
          var ac_input = new Element('input', { id: ac_id, 'type': 'text', name:  id});
          if (value !== undefined)
             ac_input.writeAttribute({value: value });
          ac_div.appendChild(ac_input);
-         
+
          // add the dropdown autocomplete matches list
          var ac_dd_id = ac_id+"_dd";
          var ac_dd_div = new Element('div', { id: ac_dd_id });
          ac_dd_div.addClassName("gd_autocomplete");
          ac_div.appendChild(ac_dd_div);
-         
+
          // add the whole autocomplete div to the parent
          parent_el.appendChild(ac_div);
-         
+
          //add a new call to init the autocomplete ajax after the dialog is rendered
          deferredCalls.push( new DeferredCall( {fn_call: initAutoComplete, call_params: {input_id: ac_id, results_id: ac_dd_id, url: url, token: token} }) );
 		};
-		
+
 		// Add a colorpicker button to the dialog
 		var addColorPick = function(parent_el, id, klass, callback, value) {
 		   // TODO
       };
-   
+
 		var addHidden = function(parent_el, id, klass, value) {
 			var el0 = new Element('input', { id: GeneralDialog.makeId(id), name: id, 'type': 'hidden' });
 			if (klass)
@@ -788,7 +788,7 @@ var GeneralDialog = Class.create({
 							};
 							addLink(row, this_id, null, subel.removeButton,  remove, { });
 						}
-						
+
 						// We have to go through a bunch of hoops to get the file uploaded, since
 						// you can't upload a file through Ajax.
 						if (subel.no_iframe)
@@ -835,11 +835,11 @@ var GeneralDialog = Class.create({
 		panel.cancelEvent.subscribe(function(e, a, o){
 			setTimeout(function() { panel.destroy(); }, 500);
 		});
-		
+
 		listenerArray.each(function (listen) {
-			YAHOO.util.Event.addListener(listen.id, listen.event, listen.callback, listen.param); 
+			YAHOO.util.Event.addListener(listen.id, listen.event, listen.callback, listen.param);
 		});
-		
+
 		buttonArray.each(function(btn){
 			var fn = function(event, id) {
 				var cb = btn.callback.bind($(id));
@@ -857,7 +857,7 @@ var GeneralDialog = Class.create({
 			if (ctrl.delayedSetup)
 				ctrl.delayedSetup();
 		});
-		
+
 		// execute all deferred calls now
 		deferredCalls.each( function(fn_call) {
 		    fn_call.execute();
@@ -879,11 +879,11 @@ var GeneralDialog = Class.create({
 				else
 					el.addClassName('hidden');
 			});
-			
+
 			if (focus_el && $(focus_el))
 				$(focus_el).focus();
 		};
-		
+
 		this.cancel = function() {
 			panel.cancel();
 		};
@@ -895,7 +895,7 @@ var GeneralDialog = Class.create({
       this.show = function() {
          panel.show();
       };
-		
+
 		this.center = function() {
 			var dlg = $(this_id);
 			var w = parseInt(dlg.getStyle('width'), 10);
@@ -911,7 +911,7 @@ var GeneralDialog = Class.create({
 			var el = dlg.up();
 			el.setStyle({ left: x + 'px', top: y + 'px'});
 		};
-		
+
 		this.initTextAreas =  function(params) {
 			var toolbarGroups = params.toolbarGroups;
 			var linkDlgHandler = params.linkDlgHandler;
@@ -925,7 +925,7 @@ var GeneralDialog = Class.create({
 			var padL = parseInt(inner_el.getStyle('padding-left'));
 			var padR = parseInt(inner_el.getStyle('padding-right'));
 			var width = w - padL - padR;
-			
+
 			var textAreas = $$("#" + this_id + " textarea");
 			textAreas.each( function(textArea) {
 				if (onlyClass === undefined || textArea.hasClassName(onlyClass)) {
@@ -935,7 +935,7 @@ var GeneralDialog = Class.create({
 				}
 			}, this);
 		};
-		
+
 	}
 });
 
@@ -959,9 +959,9 @@ var MessageBoxDlg = Class.create({
 
 		// private variables
 		//var This = this;
-		
+
 		// privileged functions
-		
+
 		var dlgLayout = {
 				page: 'layout',
 				rows: [
@@ -969,7 +969,7 @@ var MessageBoxDlg = Class.create({
 					[ { rowClass: 'gd_last_row' }, { button: 'Close', callback: GeneralDialog.cancelCallback, isDefault: true } ]
 				]
 			};
-		
+
 		var params = { this_id: "gd_message_box_dlg", pages: [ dlgLayout ], body_style: "gd_message_box_dlg", row_style: "gd_message_box_row", title: title };
 		var dlg = new GeneralDialog(params);
 		//dlg.changePage('layout', null);
@@ -997,7 +997,7 @@ var ShowDivInLightbox = Class.create({
 			getMarkup: function() {
 				if (this.div)
 					return this.div;
-				
+
 				var str = $(this.id).innerHTML;
 				var div = new Element('div').update(str);
 				//div.addClassName(params.klass);
@@ -1111,10 +1111,21 @@ function showInLightbox(params)
 	};
 
 	var divName = "lightbox";
+	var parts =  imageUrl.split('.');
+	var ext = parts[parts.length - 1];
+	var pdf = false;
 	var img = new Element('img', { id: 'gd_lightbox_img', alt: ""});
+	if ( ext.toLowerCase() === "pdf" ) {
+	  img = new Element('object', { id: 'gd_lightbox_img', alt: ""});
+     img.setAttribute('data', imageUrl);
+     pdf = true;
+	} else {
+	  img.setAttribute('src', imageUrl);
+	}
 	img.setStyle({display: 'none' });
-	var form = img.wrap('div', { id: divName + "_id"});
 
+
+	var form = img.wrap('div', { id: divName + "_id"});
 	var progress = new Element('center', { id: 'gd_lightbox_img_spinner'});
 	progress.addClassName('gd_lightbox_img_spinner');
 	progress.appendChild(new Element('div').update("Image Loading..."));
@@ -1122,8 +1133,20 @@ function showInLightbox(params)
 	progress.appendChild(new Element('div').update("Please wait"));
 	form.appendChild(progress);
 	lightbox = new ShowDivInLightbox({ title: title, div: form });
-	img.observe('load', loaded);
-	img.setAttribute('src', imageUrl);
+	if ( !pdf ) {
+	  img.observe('load', loaded);
+	} else {
+	  var image = jQuery('#gd_lightbox_img');
+	  var spinner = jQuery('#gd_lightbox_img_spinner');
+	  image.attr("onload", function() {
+
+        spinner.hide();
+        image.show();
+        image.width("500px");
+        image.height("650px");
+         lightbox.dlg.center();
+	  });
+	}
 }
 
 var ConfirmDlg3 = Class.create({
@@ -1260,7 +1283,7 @@ var singleInputDlg = function(params, input) {
 		if (noDefault)
 			dlgLayout.rows[1][0].isDefault = null;
 	}
-	
+
 	var dlgparams = {this_id: "gd_text_input_dlg", pages: [ dlgLayout ], body_style: body_style, row_style: "gd_message_box_row", title: title, focus: GeneralDialog.makeId(id)};
 	dlg = new GeneralDialog(dlgparams);
 	//dlg.changePage('layout', dlg.makeId(id));
@@ -1282,16 +1305,16 @@ var TextInputDlg = Class.create({
 		var value = params.value;
 		var klass = params.inputKlass === undefined ? 'gd_text_input_dlg_input' : params.inputKlass;
 		var autocompleteParams = params.autocompleteParams;
-		
+
 		if ( autocompleteParams )
 		{
       var ac_input = {autocomplete: id, klass: klass, url: autocompleteParams.url, token: autocompleteParams.token};
-      singleInputDlg(params, ac_input);   
+      singleInputDlg(params, ac_input);
 		}
 		else
 		{
 		  var input = {input: id, klass: klass, value: value};
-      singleInputDlg(params, input);  
+      singleInputDlg(params, input);
 		}
 	}
 });

@@ -1,11 +1,16 @@
 jQuery(document).ready(function($) {
 	"use strict";
 
+	jQuery(".has-results").on("click", "#save-search-link", function() {
+	     window.collex.doSaveSearch();
+	});
+
 	function isSavedSearch() {
 		var query = window.location.search;
-		query = query.replace(/%20/g, ' ');
-		if (query.substr(0,1) === '?')
+		if (query.substr(0,1) === '?') {
 			query = query.substr(1);
+      }
+
 		for (var i = 0; i < window.collex.savedSearches.length; i++) {
 			var search = window.collex.savedSearches[i];
 			if (search.url === query)
@@ -40,7 +45,7 @@ jQuery(document).ready(function($) {
 				savedSearchArea.html(" : " + search.name + " " + createSavedSearchPermalink(search.url));
 			}
 			else {
-				savedSearchArea.html(window.pss.createHtmlTag("a", {'class': "modify_link", href: '#', onclick: "window.collex.doSaveSearch(); return false;" }, "[save search]"));
+				savedSearchArea.html(window.pss.createHtmlTag("a", {'class': "modify_link", 'id': 'save-search-link' }, "[save search]"));
 			}
 		} else {
 			var login = window.pss.createHtmlTag("a", {'class': "nav_link", href: '#', onclick: "var dlg = new SignInDlg(); dlg.show('sign_in'); return false;" }, "LOG IN");

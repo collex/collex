@@ -78,7 +78,13 @@ function finishedLoadingImage(progress_el, img_el, max_width, max_height)
 		}
 	}
 
-	jQuery('#'+progress_el).addClass('hidden');
+   // Grr. this is called from multiple pages. In some cases profress_el
+   // is actually the element, in some it is the string identifier
+   if ( typeof progress_el === "string" ) {
+	  jQuery('#'+progress_el).addClass('hidden');
+   } else {
+      jQuery(progress_el).addClass('hidden');
+   }
 	jQuery(img_el).removeClass('hidden');
 }
 

@@ -20,6 +20,39 @@ jQuery(document).ready(function($) {
 	"use strict";
 	var body = $("body");
 
+	body.on("click", ".category-btn", function (e) {
+	  var el = $(this);
+	  var myId = el.data("category")+el.data("id");
+     var parent = el.closest("table");
+     parent.find("tr").each(function() {
+       var myParent = $(this).data("parent-id");
+       if ( myParent == myId) {
+         if (el.hasClass("expanded") ) {
+            $(this).hide();
+         } else {
+            $(this).show();
+         }
+       }
+     });
+
+     if (el.hasClass("expanded") ) {
+        // just collapsed
+        el.removeClass("expanded");
+        el.addClass("collapsed");
+        el.find(".exp-arrow").show();
+        el.find(".col-arrow").hide();
+        serverNotify("/search/remember_resource_toggle", { dir: "close", id: myId });
+     } else {
+        // just expanded
+        el.removeClass("collapsed");
+        el.addClass("expanded");
+        el.find(".exp-arrow").hide();
+        el.find(".col-arrow").show();
+        serverNotify("/search/remember_resource_toggle", { dir: "open", id: myId });
+     }
+
+	});
+
 	body.on("click", ".resource-tree-node button", function () {
 		var el = $(this);
 		var parent = el.closest(".resource-tree-node");
