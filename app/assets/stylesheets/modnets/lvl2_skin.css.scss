@@ -17,6 +17,17 @@
 
 body.federation-modnets.pg-lvl2 {
 
+  .category-btn {
+    font-weight:bold;
+    cursor: pointer;
+    img {
+      margin-right:16px;
+    }
+  }
+  td.limit_to_lvl3 {
+    padding-left: 50px;
+  }
+
 	.exhibit_nav {
 		font-family: Arial, Helvetica, san-serif;
 	}

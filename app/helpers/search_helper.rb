@@ -1,6 +1,6 @@
 ##########################################################################
 # Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -63,7 +63,7 @@ module SearchHelper
     if num_pages == 1
       return ""
     end
-    
+
     # Show only a maximum of 11 items, with the current item centered if possible.
     # First figure out the start and end points we want to display.
     if num_pages < 11
@@ -99,19 +99,19 @@ module SearchHelper
         html += create_facet_button("#{pg}", 'page', "#{pg}", "replace")
       end
       html += "&nbsp;&nbsp;"
-    end 
-    
+    end
+
     if last < num_pages
       html += "...&nbsp;&nbsp;" if num_pages > 12
       html += create_facet_button("#{num_pages}", 'page', "#{num_pages}", "replace")
       html += "&nbsp;&nbsp;"
     end
-    
+
     if curr_page < num_pages
       html += create_facet_button('>>', 'page', "#{curr_page + 1}", "replace")
       html += "&nbsp;&nbsp;"
     end
-    
+
     if last < num_pages
       html += create_facet_button('last', 'page', "#{num_pages}", "replace")
       html += "&nbsp;&nbsp;"
@@ -180,110 +180,26 @@ module SearchHelper
     return raw(html)
   end
 
-  # def resource_is_in_constraints?(resource)
-  #   constraints = session[:constraints]
-  #   constraints.each {|constraint|
-  #     if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == resource.value
-  #       return true
-  #     end
-  #   }
-  #   return false
-  # end
-  #
-  # def site_is_in_constraints?(site_value)
-  #   constraints = session[:constraints]
-	# return false if constraints == nil
-  #   constraints.each {|constraint|
-  #     if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint' && constraint[:value] == site_value
-  #       return true
-  #     end
-  #   }
-  #   return false
-  # end
-  #
-  # def access_is_in_constraints?(type)
-  #   constraints = session[:constraints]
-  #   constraints.each {|constraint|
-  #     if constraint[:type] == type
-  #       return true
-  #     end
-  #   }
-  #   return false
-  # end
-  #
-  # def free_culture_is_in_constraints?
-  #   constraints = session[:constraints]
-  #   constraints.each {|constraint|
-  #     if constraint[:type] == 'FreeCultureConstraint'
-  #       return true
-  #     end
-  #   }
-  #   return false
-  # end
-  #
-  # def full_text_is_in_constraints?
-  #   constraints = session[:constraints]
-  #   constraints.each {|constraint|
-  #     if constraint[:type] == 'FullTextConstraint'
-  #       return true
-  #     end
-  #   }
-  #   return false
-  # end
-  #
-  # def site_subtotal(site_count, facet_category)
-  #   count = 0
-  #   if facet_category['children'] != nil
-  #     facet_category['children'].each { |child|
-  #       if child['children'] != nil
-  #         count = count + site_subtotal(site_count, child)
-  #       else
-  #         count = count + site_object_count(site_count, child['handle'])
-  #       end
-  #     }
-  #   else
-  #     count = site_object_count(site_count, facet_category['handle'])
-  #   end
-  #   return count
-  # end
-  #
-  # def is_constrained_by_child(resource)
-  #   constraints = session[:constraints]
-  #   resource_constraint = ""
-  #   constraints.each {|constraint|
-  #     if constraint[:fieldx] == 'archive' && constraint[:type] == 'FacetConstraint'
-  #       resource_constraint = constraint[:value]
-  #     end
-  #   }
-  #   return false if resource_constraint == ""
-  #
-  #   resource.children.each {|child|
-  #     return true if child['value'] == resource_constraint
-  #   }
-  #
-  #   return false
-  # end
-  
   def gray_if_zero( count )
     count==0 ? 'class="grayed-out-resource"' : ''
   end
-    
+
   def site_object_count(site_count, code)
 	  return 0 if site_count[code] == nil
     site_count[code].to_i
   end
-  
+
   def result_is_collected(hit)
     return get_collected_item(hit) != nil
   end
-  
+
   def has_annotation(hit)
     item = get_collected_item(hit)
     return false if item == nil
-    
+
     return  item.annotation != nil && item.annotation != ""
   end
-  
+
   def get_annotation(hit)
     item = get_collected_item(hit)
     return "" if item == nil
@@ -297,7 +213,7 @@ module SearchHelper
     user = User.find_by_username(username)
     return user.searches.all.sort { |a,b| b.id <=> a.id }
   end
-  
+
   def encode_for_uri(str)
     value = str.gsub('%', '%25')
     value = value.gsub('#', '%23')
@@ -311,36 +227,11 @@ module SearchHelper
     value = value.gsub("\\", '%5c')
     return value
   end
-  
+
   def create_saved_search_url(s)
     "http://#{request.host_with_port()}/search?#{s.url}"
   end
-  
-  # def has_constraints?
-	#   # don't count the federation constraint
-  #   session[:constraints].each { |constraint|
-	# 	return true if !constraint.is_a?(FederationConstraint)
-	# }
-	# return false
-  # end
-  #
-  # def has_federation_constraint?(value)
-	#   # If no federation constraint has been defined, we return true. Otherwise, we have to match it.
-	#   found_fed = false
-  #   session[:constraints].each { |constraint|
-	# 	return true if constraint.is_a?(FederationConstraint) && constraint.value == value
-	# 	found_fed = true if constraint.is_a?(FederationConstraint)
-	# }
-	# return !found_fed
-  # end
-  #
-	# def has_all_federation_constraints?(feds)
-	# 	feds.each { |fed|
-	# 		return false if !has_federation_constraint?(fed)
-	# 	}
-	# 	return true
-	# end
-  
+
   def format_constraint(constraint)
 
     ret = {}
@@ -350,7 +241,7 @@ module SearchHelper
         value_display = site(constraint.value)['name']
       end
     end
-    
+
     ret[:not] = constraint.inverted
     if constraint.is_a?(FreeCultureConstraint)
       ret[:title] ="Free Culture"
@@ -417,7 +308,7 @@ module SearchHelper
     end
     return ret
   end
-  
+
   def forum_result_row_item_format(label, item)
     return "<p class='FP_attachment_details'>#{label}:<br />#{item}</p>"
   end
@@ -426,7 +317,7 @@ module SearchHelper
     if !hit[key]
       return ""
     end
-    
+
     if type == :separate_lines
       # multiple items on separate lines
       str = ""
@@ -452,16 +343,16 @@ module SearchHelper
 
 	def result_row_tags_no_links(rows, label, tags)
 		return if tags.length == 0
-		
+
 		# tags is an array returned by the call Tag.get_tags_for_uri.
-		# each item in the array is also and array of size 2. 
+		# each item in the array is also and array of size 2.
 		# first element sis tag name, second is tag ownership flag
 		tag_names = ""
 		tags.each do | tag |
 		  tag_names += "; " if tag_names.length > 0
-		  tag_names += tag[0]  
+		  tag_names += tag[0]
 		end
-		rows.push({:hidden => false, :label => label, :value => tag_names})  
+		rows.push({:hidden => false, :label => label, :value => tag_names})
 	end
 
 	def result_row_tags_links(rows, index, row_id, hit, label, tags, item, signed_in, is_collected)
@@ -514,7 +405,7 @@ module SearchHelper
 			end
 		end # each exhibit
 	end
-	
+
 	def should_show_more_link(no_links, rows)
 		# show more if we aren't in a special mode and if there are more than 1 hidden items
 		return false if no_links
@@ -522,7 +413,7 @@ module SearchHelper
 		rows.each {|row| count += 1 if row[:hidden] }
 		return count > 1
 	end
-	
+
 	def format_result_rows(rows, hide_some)
 		html = ""
 		rows.each { |row|
@@ -550,7 +441,7 @@ module SearchHelper
 
   def result_row_item(rows, type, hit, key, label, is_hidden)
     return if !hit[key]
-    
+
     if type == :separate_lines
       # multiple items on separate lines
       hit[key].each_with_index do |item, i|
@@ -571,35 +462,15 @@ module SearchHelper
 		end
     end
   end
-  
+
   ##############################
   # Helpers for the facet tree that shows resources
   # These are called either in edit mode or normal mode
   # For the administrator page or the search page.
-  def site_selector(site, indent, is_category, parent_id, start_hidden, is_found, is_open, site_count )
-    display_name = h(site['name'])
-    id = site['id']
-    value = site['handle']
-	total = site_subtotal(site_count, site)
-
-    # This is one line in the resources.
-    # if category, put in arrow for expand/collapse
-      if is_category
-		  html = "<tr id='resource_#{id}' class='#{'resource_node ' if is_category}#{parent_id}#{ ' hidden' if start_hidden }#{ ' limit_to_selected' if site_is_in_constraints?(value) }'><td class='limit_to_lvl#{indent}'>\n"
-		  html += "<a id='site_opened_#{id}' #{'class=hidden' if !is_open} href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'>#{image_tag('arrow.gif')}</a>"
-		  html += "<a id='site_closed_#{id}' #{'class=hidden' if is_open} href='#' onclick='new ResourceTree(\"#{id}\",\"close\"); return false;'>#{image_tag('arrow_dn.gif')}</a>\n"
-        html += "<a href='#' onclick='new ResourceTree(\"#{id}\",\"toggle\"); return false;' class='nav_link  limit_to_category' >" + display_name + "</a></td><td class='num_objects'>#{number_with_delimiter(total)}"
-		  html += "</td></tr>\n"
-	  else
-		  data = { exists: site_is_in_constraints?(value), label: display_name, value: value, count: number_with_delimiter(total) }
-		  html = facet_selector( data, "a", { tr_class: "#{parent_id}#{ ' hidden' if start_hidden }", td_class: "limit_to_lvl#{indent}", action: 'replace' } )
-      end
-    return raw(html)
-  end
 
 	def federation_selector(federation, num_objects)
 		return "" if session.blank? || session[:federations].blank? || session[:federations][federation].blank?
-		
+
 		html = "<tr><td>"
 		thumb = session[:federations][federation]['thumbnail']
 		html += "<input type='checkbox' name='#{federation}' /><img src='#{thumb}' alt='#{federation}' />"
@@ -703,16 +574,19 @@ module SearchHelper
 
 	# TODO-PER: These are generic routines for creating facet tree rows. We can probably refactor a lot of the stuff above to use them.
 	# TODO-PER: The biggest difference is that this sends an ajax call, and the search page does a POST.
-	def facet_tree_node_row(id, parent_id, indent_level, start_shown, label, num_objects, start_open)
-		html = "<tr id='resource_#{id}' class='resource_node#{" child_of_#{parent_id}" if parent_id != 0}#{' hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
-		html += "<a id='site_opened_#{id}' #{'class="hidden" ' if start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"open\"); return false;'>#{image_tag('arrow.gif')}</a>"
-		html += "<a id='site_closed_#{id}' #{'class="hidden" ' if !start_open}href='#' onclick='new ResourceTree(\"#{id}\", \"close\"); return false;'>#{image_tag('arrow_dn.gif')}</a>"
-		html += "<a href='#' onclick='new ResourceTree(\"#{id}\", \"toggle\"); return false;' class='nav_link  limit_to_category' >#{h(label)}</a></td><td class='num_objects'>#{num_objects}</td></tr>\n"
+	def facet_tree_node_row(id_base, id, parent_id, indent_level, start_shown, label, num_objects, start_open)
+	   state = "collapsed"
+	   state = "expanded" if start_shown && start_open
+		html = "<tr data-category='#{id_base}' data-id='#{id}' data-parent-id='#{parent_id}' class='category-btn #{state} #{'hidden' if !start_shown}'>"
+		html += "<td class='limit_to_lvl#{indent_level}'>"
+		html += "<span class='exp-arrow #{"hidden" if start_open}'>#{image_tag('arrow.gif')}</span>"
+		html += "<span class='col-arrow #{"hidden" if !start_open}'>#{image_tag('arrow_dn.gif')}</span>"
+		html += "<span class='nav_link' >#{h(label)}</span></td><td class='num_objects'>#{num_objects}</td></tr>\n"
 		return raw(html)
 	end
 
-	def facet_tree_selection_row(id, parent_id, indent_level, start_shown, label, num_objects, url, update_div, selected)
-		html = "<tr id='resource_#{id}' class='child_of_#{parent_id}#{' hidden' if !start_shown}#{' limit_to_selected' if selected}'><td class='limit_to_lvl#{indent_level}'>"
+	def facet_tree_selection_row(id_base, id, parent_id, indent_level, start_shown, label, num_objects, url, update_div, selected)
+		html = "<tr data-id='#{id}' data-parent-id='#{parent_id}' class='#{id_base} #{'hidden' if !start_shown}'><td class='limit_to_lvl#{indent_level}'>"
 		# If you want to post, use postLink(this.href) to POST instead of doing an ajax update.
 		if selected
 			html += "#{h(label)}&nbsp;<a href='#{url}' class='nav_link' onclick=\"serverAction({action: { actions: this.href, els: '#{update_div}'}, progress: { waitMessage: 'Removing Facet...' }}); return false;\">[X]</a>"
@@ -742,43 +616,52 @@ module SearchHelper
 	def create_facet_tree(tree, id_base, url_base, update_div)
 		html = ''
 		parent_open = {}
-		tree.each{|node|
+		tree.each do |node|
 			label = node[:label]
 			children = node[:children]
-			total = 0
-			children.each{|child_label, child_arr|
-				total += count_children(child_arr)
-			}
 
-			start_open = id_base == 'univ' ? true : false
+			# total up all of the sub nodes so that number can be displayed next to the parent name
+			total = 0
+			children.each do |child_label, child_arr|
+				total += count_children(child_arr)
+			end
+
+			start_open = (id_base == 'univ') # university is always expanded
 			if session[:resource_toggle]
+			   # open only of base level is open
 				start_open = true if session[:resource_toggle]["#{id_base}-1"] == 'open'
 				start_open = false if session[:resource_toggle]["#{id_base}-1"] == 'close'
 			end
+
+			# render the base node
+			i = -1
 			parent_open["#{id_base}-1"] = start_open
-			html += facet_tree_node_row("#{id_base}-1", 0, 1, true, label, total, start_open)
-			i = -2
-			children.each{|child_label, child_arr|
+			html += facet_tree_node_row("#{id_base}", i, 0, 1, true, label, total, start_open)
+			i -= 1
+
+         # now all the children
+			children.each do |child_label, child_arr|
 				if child_arr.kind_of?(Array)
-#					start_open = id_base == 'univ' ? true : false
 					start_open = false
 					if session[:resource_toggle]
 						start_open = true if session[:resource_toggle]["#{id_base}#{i}"] == 'open'
 						start_open = false if session[:resource_toggle]["#{id_base}#{i}"] == 'close'
 					end
 					parent_open["#{id_base}#{i}"] = parent_open["#{id_base}-1"] ? start_open : false
-					html += facet_tree_node_row("#{id_base}#{i}", "#{id_base}-1", 2, parent_open["#{id_base}-1"], child_label, count_children(child_arr), start_open)
-					child_arr.each{|item|
+					me_open = parent_open["#{id_base}-1"]
+					html += facet_tree_node_row("#{id_base}",i, "#{id_base}-1", 2, me_open, child_label, count_children(child_arr), start_open)
+					child_arr.each do |item|
 						#start_shown = start_open	# we start shown if the parent starts open
-						html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{i}", 3, parent_open["#{id_base}#{i}"], item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
-					}
+						html += facet_tree_selection_row(id_base, item[:id], "#{id_base}#{i}", 3, parent_open["#{id_base}#{i}"], item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
+					end
 					i -= 1
 				else
+				   # child node with no children of its own
 					item = child_arr
-					html += facet_tree_selection_row("#{id_base}#{item[:id]}", "#{id_base}#{-1}", 2, parent_open["#{id_base}-1"], item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
+					html += facet_tree_selection_row(id_base, item[:id], "#{id_base}#{-1}", 2, parent_open["#{id_base}-1"], item[:name], item[:count], "#{url_base}#{item[:id]}", update_div, item[:selected])
 				end
-			}
-		}
+			end
+		end
 		return raw(html)
 	end
 

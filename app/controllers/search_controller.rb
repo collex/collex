@@ -508,7 +508,7 @@ class SearchController < ApplicationController
 		 if dir == 'open' && id != nil
 			 session[:resource_toggle][id] = 'open'
 		 end
-		 render :text => ''	# this is just to keep from getting an error.
+		 render :nothing=>true
 	 end
 
    private

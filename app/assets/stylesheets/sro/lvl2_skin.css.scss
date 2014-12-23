@@ -16,6 +16,17 @@
 
 body.federation-sro.pg-lvl2 {
 
+  .category-btn {
+    font-weight:bold;
+    cursor: pointer;
+    img {
+      margin-right:16px;
+    }
+  }
+  td.limit_to_lvl3 {
+    padding-left: 50px;
+  }
+
   #nav_container {
     top: 125px;
     right: 30px;
