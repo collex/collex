@@ -7,9 +7,10 @@ jQuery(document).ready(function($) {
 
 	function isSavedSearch() {
 		var query = window.location.search;
-		query = query.replace(/%20/g, ' ');
-		if (query.substr(0,1) === '?')
+		if (query.substr(0,1) === '?') {
 			query = query.substr(1);
+      }
+
 		for (var i = 0; i < window.collex.savedSearches.length; i++) {
 			var search = window.collex.savedSearches[i];
 			if (search.url === query)
