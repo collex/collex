@@ -78,7 +78,7 @@ function finishedLoadingImage(progress_el, img_el, max_width, max_height)
 		}
 	}
 
-	jQuery('#'+progress_el).addClass('hidden');
+	jQuery(progress_el).addClass('hidden');
 	jQuery(img_el).removeClass('hidden');
 }
 
