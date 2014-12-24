@@ -327,19 +327,31 @@ jQuery(document).ready(function($) {
 			}
 		},
 
-		integrateRemoteChanges: function() {
+      integrateLocalChange: function(destinationLine) {
+         destinationLine.actions.push(destinationLine.change.type);
+         destinationLine.authors.push("You");
+         destinationLine.dates.push(destinationLine.change.date);
+         destinationLine.exact_times.push(destinationLine.change.exact_time);
+         destinationLine.text.push(destinationLine.change.text);
+         destinationLine.words.push(destinationLine.change.words);
+         destinationLine.change = undefined;
+      },
+
+		integrateRemoteChanges: function(ignoreConflicts) {
+         var last_line_change_time = 0;
+         var savedStaleLines = [];
 			for (var i = 0; i < TW.line.allStaleLines.length; i++) {
 				var line = TW.line.allStaleLines[i];
 				var num = getIndexFromLineNum(line.line);
 				var destinationLine = num >= 0 ? TW.lines[num] : null;
 				if (destinationLine && destinationLine.change) {
-					destinationLine.actions.push(destinationLine.change.type);
-					destinationLine.authors.push("You");
-					destinationLine.dates.push(destinationLine.change.date);
-					destinationLine.exact_times.push(destinationLine.change.exact_time);
-					destinationLine.text.push(destinationLine.change.text);
-					destinationLine.words.push(destinationLine.change.words);
-					destinationLine.change = undefined;
+               if (!ignoreConflicts) {
+                  savedStaleLines.push(line);
+                  continue; // don't overwrite my changes with external ones, skip to next line
+               }
+               if (destinationLine.change.exact_time < line.exact_time) {  // integrate this if the local change was before the remote one
+                  this.integrateLocalChange(destinationLine);
+               }
 				}
 				switch (line.action) {
 					case 'change':
@@ -350,10 +362,11 @@ jQuery(document).ready(function($) {
 							destinationLine.exact_times.push(line.exact_time);
 							destinationLine.text.push(line.text);
 							destinationLine.words.push(line.words);
-                            destinationLine.l = line.l;
-                            destinationLine.r = line.r;
-                            destinationLine.t = line.t;
-                            destinationLine.b = line.b;
+                     destinationLine.l = line.l;
+                     destinationLine.r = line.r;
+                     destinationLine.t = line.t;
+                     destinationLine.b = line.b;
+                     last_line_change_time = line.exact_time;
 						}
 						break;
 					case 'insert':
@@ -368,11 +381,16 @@ jQuery(document).ready(function($) {
 							destinationLine.exact_times.push(line.exact_time);
 							destinationLine.text.push('');
 							destinationLine.words.push([]);
+                     last_line_change_time = line.exact_time;
 						}
 						break;
 				}
-			}
-			TW.line.allStaleLines = [];
+         }
+         // integrate the local change at the end if it was after the remote last line change
+         if (destinationLine && destinationLine.change && destinationLine.change.exact_time >= last_line_change_time) {
+            this.integrateLocalChange(destinationLine);
+         }
+			TW.line.allStaleLines = savedStaleLines;
 			TW.line.staleLines = {};
 		},
 

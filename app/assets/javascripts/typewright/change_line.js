@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
 	function redrawLiveChanges() {
 		var changes = "";
 		if (TW.line.numUndisplayedChanges() > 0) {
-			var changeStr = TW.line.numUndisplayedChanges() === 1 ? 'There has been 1 change' : 'There have been ' + TW.line.numUndisplayedChanges() + ' changes';
+			var changeStr = TW.line.numUndisplayedChanges() === 1 ? 'There has been 1 conflicting change' : 'There have been ' + TW.line.numUndisplayedChanges() + ' conflicting changes';
 			changes = '<div><button class="tw_icon tw_icon_edit_history_new tw_apply_new_data"></button><span class="tw_stale_data_note">' + changeStr + ' to this page. Click the button to update.</span></div>';
 		}
 		//		data.lines.forEach(function(line) {
@@ -135,6 +135,7 @@ jQuery(document).ready(function($) {
 	function reportLiveChanges(data) {
 		if (data.lines.length > 0) {
 			TW.line.liveUpdate(data.lines);
+         TW.line.integrateRemoteChanges(false);
 			var growler = $(".tw_notification");
 			growler.find('.tw_notification_text').html("This page has been edited by someone else.");
 			growler.fadeIn("slow");
@@ -614,7 +615,7 @@ jQuery(document).ready(function($) {
 	//
 
 	body.on("click", ".tw_apply_new_data", function () {
-		TW.line.integrateRemoteChanges();
+		TW.line.integrateRemoteChanges(true);
 		redrawLiveChanges();
 	});
 
