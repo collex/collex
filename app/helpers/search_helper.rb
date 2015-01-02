@@ -445,7 +445,7 @@ module SearchHelper
     if type == :separate_lines
       # multiple items on separate lines
       hit[key].each_with_index do |item, i|
-		  rows.push({:hidden => is_hidden, :label => (i < 1) ? label+':' : '', :value => h(item)})
+		    rows.push({:hidden => is_hidden, :label => (i < 1) ? label+':' : '', :value => h(item)})
       end
 
     elsif type == :single_item
@@ -456,10 +456,22 @@ module SearchHelper
       # multiple item, one line
 	  rows.push({:hidden => is_hidden, :label => label+':', :value => h(hit[key].join('; '))})
 
-	elsif type == :alternative
-		hit[key].each do |alt|
-			rows.push({:hidden => is_hidden, :one_col => true, :value => h(alt)})
-		end
+	  elsif type == :alternative
+		  hit[key].each do |alt|
+			  rows.push({:hidden => is_hidden, :one_col => true, :value => h(alt)})
+      end
+
+    elsif type == :special_part_of_field
+      part_owners = []
+      hit[key].each do |item|
+        part_owner_sublist = JSON.parse(item)
+        part_owner_sublist = [ part_owner_sublist ] unless part_owner_sublist.kind_of?(Array)
+        part_owner_sublist.each do |part_owner|
+          part_owner_str = '<a href="' + part_owner['url'] + '" class="nines_link" target="_blank">' + h(part_owner['title']) + '</a>'
+          part_owners.push(part_owner_str)
+        end
+      end
+      rows.push({:hidden => is_hidden, :label => label+':', :value => part_owners.join('; ')})
     end
   end
 
