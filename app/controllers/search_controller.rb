@@ -28,7 +28,7 @@ class SearchController < ApplicationController
 		# When this is called as json, it does the search.
 		respond_to do |format|
 			format.html {
-				render "index", { layout: 'application' } # TODO-PER: Why does the layout have to be expressly defined?
+				render "index", { layout: 'application' }
 			}
 			format.json {
 				items_per_page = 30

@@ -17,7 +17,7 @@
 <% current_page "HOME" -%>
     	<div id="search_container">
         	<div id="search_box">
-				<form accept-charset="UTF-8" action="/search" id="do-basic-search" method="get" onsubmit="return searchValidationHome('search_phrase', 'search_button');">
+				<form accept-charset="UTF-8" action="/search" id="do-basic-search" method="get">
 			  		<% if SKIN == 'modnets' %>
 				  <input id="search_phrase" name="q" type="text" placeholder="Search <%= Setup.site_name() %>..." /><input value="" id="search_button" type="submit" />
 			<% else %>
