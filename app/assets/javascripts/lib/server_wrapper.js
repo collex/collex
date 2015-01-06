@@ -204,47 +204,6 @@ function submitFormWithConfirmation(params) {
    new ConfirmDlg(title, message, okStr, cancelStr, submitAction);
 }
 
-var ProgressSpinnerDlg = Class.create({
-   initialize : function(message) {
-      // This puts up a large spinner that can only be canceled through the ajax return status
-
-      var dlgLayout = {
-         page : 'spinner_layout',
-         rows : [
-         //[ {picture: '/images/progress_transparent.gif', alt: 'please wait'}],
-         [{
-            text : ' ',
-            klass : 'gd_transparent_progress_spinner'
-         }], [{
-            rowClass : 'gd_progress_label_row'
-         }, {
-            text : message,
-            klass : 'transparent_progress_label'
-         }]]
-      };
-
-      var pgsParams = {
-         this_id : "gd_progress_spinner_dlg",
-         pages : [dlgLayout],
-         body_style : "gd_progress_spinner_div",
-         row_style : "gd_progress_spinner_row"
-      };
-      var dlg = new GeneralDialog(pgsParams);
-      //dlg.changePage('layout', null);
-      dlg.center();
-
-      this.cancel = function() {
-         dlg.cancel();
-      };
-      this.hide = function() {
-         dlg.hide();
-      };
-      this.show = function() {
-         dlg.show();
-      };
-   }
-});
-
 // confirm: (if present)
 //		title: string
 //		message: string
@@ -421,7 +380,7 @@ var serverAction = function(params) {
 
       action = actions.shift();
       var el = els ? els.shift() : null;
-      var ajaxparams = {
+      var ajaxParams = {
          action : action,
          el : el,
          onSuccess : function(resp) {
@@ -439,7 +398,7 @@ var serverAction = function(params) {
          onFailure : onFailure,
          params : dlgParams
       };
-      updateWithAjax(ajaxparams);
+      updateWithAjax(ajaxParams);
    };
 
    var dlg = null;
@@ -447,16 +406,9 @@ var serverAction = function(params) {
    var finalSuccess = actionParams.onSuccess;
    var onSuccess = function(resp) {
       if (progressParams) {
-         if (progressParams.completeMessage === undefined)
-            dlg.cancel();
-         else {
-            var el = $$(".gd_message_box_label");
-            if (el.length > 0)
-               el[0].update(progressParams.completeMessage);
-            else {
-               dlg.cancel();
-               new MessageBoxDlg("Success", progressParams.completeMessage);
-            }
+         window.cancelProgressDialog();
+         if (progressParams.completeMessage !== undefined) {
+            new MessageBoxDlg("Success", progressParams.completeMessage);
          }
       }
       if (finalSuccess)
@@ -464,8 +416,9 @@ var serverAction = function(params) {
    };
 
    var onFailure = function(o) {
-      if (progressParams)
-         dlg.cancel();
+      if (progressParams) {
+         window.cancelProgressDialog();
+      }
       if (actionParams.onFailure)
          actionParams.onFailure(o);
       else
@@ -473,23 +426,22 @@ var serverAction = function(params) {
    };
 
    var action = function() {
-      if (progressParams)
-         if (searchingParams)
-            progressSpinnerSearchingDialog.show();
-         else
-            dlg = new ProgressSpinnerDlg(progressParams.waitMessage);
-      if (actionParams.actions)
+      if (progressParams) {
+         window.showProgressDialog(progressParams.waitMessage);
+      }
+      if (actionParams.actions) {
          recurseUpdateWithAjax({
-            actions : actionParams.actions,
-            els : actionParams.els,
-            target : actionParams.target,
-            onSuccess : onSuccess,
-            dlg : actionParams.dlg,
-            onFailure : onFailure,
-            params : actionParams.params
+            actions: actionParams.actions,
+            els: actionParams.els,
+            target: actionParams.target,
+            onSuccess: onSuccess,
+            dlg: actionParams.dlg,
+            onFailure: onFailure,
+            params: actionParams.params
          });
-      else
+      } else {
          onSuccess();
+      }
    };
 
    if (confirmParams) {
@@ -545,18 +497,3 @@ function formatFailureMsg(resp, action) {
       return resp.responseText;
 }
 
-// Following two lines are a kludge
-//  chrome cancels the loading of the spinner image once a page change is detected
-//  so the spinner image is never loaded.  This 'forces' it to load the image.
-// IE isn't loading the image either :(
-
-var progressSpinnerSearchingDialog = null;
-function preload_image() {
-   var preload_spinner = new Image();
-   preload_spinner.src = progress_transparent;
-   progressSpinnerSearchingDialog = new ProgressSpinnerDlg("Searching...");
-   progressSpinnerSearchingDialog.hide();
-
-}
-
-Event.observe(window, 'load', preload_image);

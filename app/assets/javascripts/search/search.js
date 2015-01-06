@@ -28,38 +28,11 @@ jQuery(document).ready(function($) {
 	   $("#add-search-constraint").attr('action', url).submit();
 	});
 
-	var progressDlg = null;
-	function showProgress() {
-		// This puts up a large spinner that can only be canceled through the ajax return status
 
-		var dlgLayout = {
-			page : 'spinner_layout',
-			rows : [
-				[{
-					text : ' ',
-					klass : 'gd_transparent_progress_spinner'
-				}], [{
-					rowClass : 'gd_progress_label_row'
-				}, {
-					text : "Searching...",
-					klass : 'transparent_progress_label'
-				}]]
-		};
-
-		var pgsParams = {
-			this_id : "gd_progress_spinner_dlg",
-			pages : [dlgLayout],
-			body_style : "gd_progress_spinner_div",
-			row_style : "gd_progress_spinner_row"
-		};
-		progressDlg = new GeneralDialog(pgsParams);
-		progressDlg.center();
-	}
-
-	window.collex.getUrlVars = function() {
-		// This returns the query string as a hash of values.
-		// If a key appears more than once then it is returned as an array, otherwise as a string.
-		// That is, given "?q=tree&gen=2&gen=5", the return object is: { q: "tree", gen: [ "2", "5" ] }
+	window.collex.getUrlVars = function(getAll) {
+      // This returns the query string as a hash of values.
+      // If a key appears more than once then it is returned as an array, otherwise as a string.
+      // That is, given "?q=tree&gen=2&gen=5", the return object is: { q: "tree", gen: [ "2", "5" ] }
 		var params = {};
 		var query = ""+window.location.search;
 		if (query === "") // If there are no query params at all.
@@ -70,22 +43,60 @@ jQuery(document).ready(function($) {
 		{
 			var hash;
 			hash = hashes[i].split('=');
-			if (hash.length === 1) // If the form just has "&key&key2" without an equal sign.
-				hash.push("");
-
+         var key = hash[0];
+         if (getAll !== true && key === 'script') {
+            break; // special script values we don't want unless we are getting all
+         }
+         if (hash.length === 1) // If the form just has "&key&key2" without an equal sign.
+            hash.push("");
 			var value = decodeURIComponent(hash[1]);
-			if (params[hash[0]] !== undefined) {
-				if (typeof params[hash[0]] === "string")
-					params[hash[0]] = [ params[hash[0]], value ]; // If this is the second occurrence, turn it from a string into an array.
+			if (params[key] !== undefined) {
+				if (typeof params[key] === "string")
+					params[key] = [ params[key], value ]; // If this is the second occurrence, turn it from a string into an array.
 				else
-					params[hash[0]].push(value);// If there are multiple occurrences, just keep adding them.
+					params[key].push(value);// If there are multiple occurrences, just keep adding them.
 			} else
-				params[hash[0]] = value;// For the first, or only occurrence, return it as a string.
+				params[key] = value;// For the first, or only occurrence, return it as a string.
 		}
 		return params;
 	};
 
-	window.collex.makeQueryString = function(existingQuery) {
+   window.collex.getUrlScriptVars = function() {
+      // This returns the script var from the query string as a hash of values.
+      // the script vars must start with script=scriptNameHere, then any additional variables
+      // after that will be considered scrpt vars
+      // If a key appears more than once then it is returned as an array, otherwise as a string.
+      // That is, given "?q=tree&gen=2&gen=5", the return object is: { q: "tree", gen: [ "2", "5" ] }
+      var params = {};
+      var query = ""+window.location.search;
+      if (query === "") // If there are no query params at all.
+         return params;
+      query = query.substr(1);	// get rid of the "?"
+      var hashes = query.split('&');
+      var foundScript = false;
+      for(var i = 0; i < hashes.length; i++)
+      {
+         var hash;
+         hash = hashes[i].split('=');
+         var key = hash[0];
+         if (foundScript == true || key === 'script') {
+            if (hash.length === 1) // If the form just has "&key&key2" without an equal sign.
+               hash.push("");
+            foundScript = true;
+            var value = decodeURIComponent(hash[1]);
+            if (params[key] !== undefined) {
+               if (typeof params[key] === "string")
+                  params[key] = [ params[key], value ]; // If this is the second occurrence, turn it from a string into an array.
+               else
+                  params[key].push(value);// If there are multiple occurrences, just keep adding them.
+            } else
+               params[key] = value;// For the first, or only occurrence, return it as a string.
+         }
+      }
+      return params;
+   };
+
+   window.collex.makeQueryString = function(existingQuery) {
 		var arr = [];
 		for (var key in existingQuery) {
 			if (existingQuery.hasOwnProperty(key)) {
@@ -104,47 +115,46 @@ jQuery(document).ready(function($) {
 	};
 
 	function onSuccess(resp) {
-		resp.query = window.collex.getUrlVars();
-		for (var key in resp.query) {
+      var existingQuery = window.collex.getUrlVars();
+      resp.doScript = window.collex.getUrlScriptVars();
+      if (resp.doScript.hasOwnProperty('script')) {
+         var scriptName = resp.doScript.script;
+         if (scriptName === "doCollect") {
+            doCollect("/results/result_row", resp.doScript.uri, resp.doScript.row_num, resp.doScript.row_id, true);
+         } else if (scriptName === "doTypewright") {
+            gotoPage(resp.doScript.uri);
+         } else {
+            console.error("Unknown doScript action: \"" + scriptName + "\"");
+         }
+         // if we had script vars, we stripped them out of the parameters
+         // Now we need to strip them out of the URL as well
+         var url = "/search?" + window.collex.makeQueryString(existingQuery);
+         changePage(url, true);
+      }
+      resp.query = existingQuery;
+      for (var key in resp.query) {
 			if (resp.query.hasOwnProperty(key)) {
 				if (!resp.query[key] || resp.query[key].length === 0)
 					delete resp.query[key];
 			}
 		}
 		body.trigger('RedrawSearchResults', resp);
-		setTimeout(function() {
-			if (progressDlg) {
-				progressDlg.cancel();
-				progressDlg = null;
-			}
-		}, 200);
+      window.cancelProgressDialog();
 	}
 
 	function onError(resp) {
-		setTimeout(function() {
-			if (progressDlg) {
-				progressDlg.cancel();
-				progressDlg = null;
-			}
-		}, 200);
+      window.cancelProgressDialog();
 		window.console.error(resp);
 	}
 
 	function doSearch() {
+      window.showProgressDialog('Searching...');
 		var existingQuery = window.collex.getUrlVars();
 		$.ajax({ url: "/search.json",
 			data: existingQuery,
 			success: onSuccess,
 			error: onError
 		});
-		// TODO-PER: Something is canceling the progress, but I can't figure out what. So I'll just put it back up.
-		if (progressDlg) {
-			progressDlg.cancel();
-			progressDlg = null;
-			setTimeout(function() {
-				showProgress();
-			}, 200);
-		}
 	}
 
 	History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
@@ -245,16 +255,20 @@ jQuery(document).ready(function($) {
 		return !!(window.history && history.pushState);
 	}
 
-	function changePage(url) {
+	function changePage(url, replace) {
 		// If the url is the same as the current URL, the history won't actually trigger a page change, so don't do anything.
 		var currentLocation = "/search" +window.location.search;
 		if (url === currentLocation)
 			return;
-		showProgress();
+//      window.showProgressDialog('Searching...');
 		window.collex.resetNameFacet();
 		if (supports_history_api()) {
 			var pageTitle = document.title; // For now, don't change the page title depending on the search.
-			History.pushState(null, pageTitle, url);
+         if (replace === true) {
+            History.replaceState(null, pageTitle, url);
+         } else {
+            History.pushState(null, pageTitle, url);
+         }
 		} else {
 			window.location = url;
 		}
@@ -443,8 +457,8 @@ jQuery(document).ready(function($) {
 		if (window.collex) {
 			if (window.collex.pageName === 'search') {
 				initSortControls();
-				showProgress();
-				setTimeout(doSearch, 10);	// allow the progress spinner to appear.
+            console.log("initializeSearch() showing progress");
+            doSearch();
 			} else if (window.collex.hits && window.collex.hits.length > 0) {
 				setTimeout(function() { // Let everything get initialized before asking anything to draw.
 					body.trigger('DrawHits', { hits: window.collex.hits, collected: window.collex.collected });

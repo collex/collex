@@ -321,7 +321,8 @@ function doCollect(partial, uri, row_num, row_id, is_logged_in, hasEdit)
 		var json = JSON.parse(resp.responseText);
 		window.collex.setCollected(row_num, json.collected_on, hasEdit);
 	};
-	serverAction({ action: { actions: "/results/collect.json", els: [], params: params, onSuccess:onSuccess }, progress: { waitMessage: 'Collecting object...' }});
+   var progressParam = { waitMessage: 'Collecting object...' };
+	serverAction({ action: { actions: "/results/collect.json", els: [], params: params, onSuccess:onSuccess }, progress: progressParam});
 
 	// This operation changes the set of collected objects, so we need to request them again next time.
 	if (ninesObjCache)
