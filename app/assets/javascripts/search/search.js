@@ -1,12 +1,13 @@
 /*global History */
 /*global GeneralDialog */
+/*global window.collex */
 
 jQuery(document).ready(function($) {
 	"use strict";
 	var body = $("body");
 
    // catch the search submit at the last moment and be sure the
-   // actuion URL on the search form mathes the browser URL. Ensures
+   // action URL on the search form matches the browser URL. Ensures
    // that the correct federations are searched,
 	$("#search_submit").on("click", function(e) {
 	   e.preventDefault();
@@ -311,7 +312,7 @@ jQuery(document).ready(function($) {
 	   if (typeof str === "undefined") {
 	     return str;
 	   }
-		str = str.replace(/[^0-9A-Za-z'"\u00C0-\u017F]/g, ' ');
+		str = str.replace(/[^0-9A-Za-z\-'"\u00C0-\u017F]/g, ' ');
 		while (str.substr(0,1) === "'")
 			str = str.substr(1);
 		str = str.replace(/ '/g,' '); // Allow an apostrophe inside a word, but not at the beginning of a word.
@@ -323,6 +324,14 @@ jQuery(document).ready(function($) {
 		var parent = el.closest('tr');
 		var type = parent.find(".query_type_select").val();
 		var term = parent.find(".query_term input").val();
+      if (type === "y") {
+         // correctly format year search, replace dash or "to" with "TO" and add leading zeros to years if necessary
+         term = term.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
+         term = term.replace(/(\b\d{3})\b/g, '0$1'); // replace 1, 2, or 3 digit numbers with 4 digit versions by adding leading zeros
+         term = term.replace(/(\b\d{2})\b/g, '00$1');
+         term = term.replace(/(\b\d{1})\b/g, '000$1');
+         term = term.trim();
+      }
 		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
 		term = window.collex.sanitizeString(term);
 		if (type === 'lang')
