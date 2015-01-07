@@ -320,17 +320,22 @@ jQuery(document).ready(function($) {
 		return $.trim(str);
 	};
 
+   window.collex.formatYearString = function(term) {
+      // correctly format year search, replace dash or "to" with "TO" and add leading zeros to years if necessary
+      term = term.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
+      term = term.replace(/(\b\d{3})\b/g, '0$1'); // replace 1, 2, or 3 digit numbers with 4 digit versions by adding leading zeros
+      term = term.replace(/(\b\d{2})\b/g, '00$1');
+      term = term.replace(/(\b\d{1})\b/g, '000$1');
+      term = term.trim();
+      return term;
+   };
+
 	function query_add(el) {
 		var parent = el.closest('tr');
 		var type = parent.find(".query_type_select").val();
 		var term = parent.find(".query_term input").val();
       if (type === "y") {
-         // correctly format year search, replace dash or "to" with "TO" and add leading zeros to years if necessary
-         term = term.trim().replace(/-/, ' TO ').replace(/to/i, 'TO').replace(/\s+/, ' ');
-         term = term.replace(/(\b\d{3})\b/g, '0$1'); // replace 1, 2, or 3 digit numbers with 4 digit versions by adding leading zeros
-         term = term.replace(/(\b\d{2})\b/g, '00$1');
-         term = term.replace(/(\b\d{1})\b/g, '000$1');
-         term = term.trim();
+         term = window.collex.formatYearString(term);
       }
 		// Remove non-word characters. Unfortunately, JavaScript doesn't do this, so approximate it by including some unicode chars directly.
 		term = window.collex.sanitizeString(term);
@@ -445,6 +450,9 @@ jQuery(document).ready(function($) {
 
 	// This modifies the current search.
 	body.bind('ModifySearch', function(ev, obj) {
+      if (obj.key === "y") {
+         obj.newValue = window.collex.formatYearString(obj.newValue);
+      }
 		var query = modifyInQueryObject(obj.key, obj.original, window.collex.sanitizeString(obj.newValue));
 		changePage("/search?" + window.collex.makeQueryString(query));
 	});
