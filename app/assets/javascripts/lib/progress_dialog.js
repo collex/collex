@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
 
    function preload_images() {
       var preload_spinner = new Image();
-      preload_spinner.src = "progress_transparent.gif";
+      preload_spinner.src = progress_transparent; //"progress_transparent.gif";
       //  chrome cancels the loading of the spinner image once a page change is detected
       //  so the spinner image is never loaded.  This 'forces' it to load the image.
       // IE isn't loading the image either :(
