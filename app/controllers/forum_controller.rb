@@ -178,7 +178,7 @@ class ForumController < ApplicationController
     end
  
     if disc_type == ''
-      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => current_user.id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
+      DiscussionComment.create(:discussion_thread_id => thread_id, :user_id => get_curr_user_id, :position => thread.discussion_comments.length+1, :comment_type => 'comment', :comment => description)
     elsif disc_type == 'mycollection'
       cr = CachedResource.find_by_uri(nines_object)
 	  # If the object for some reason isn't in the cache (and there's no reason why not), then we will skip it. This would only happen if there were an inconsistency in the database somewhere.
@@ -190,19 +190,19 @@ class ForumController < ApplicationController
 		    comment_type = 'nines_object'
 	  end
 	  
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => thread.discussion_comments.length+1,
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => get_curr_user_id, :position => thread.discussion_comments.length+1,
         :comment_type => comment_type, :cached_resource_id => cr_id, :comment => description)
     elsif disc_type == 'exhibit'
       a = nines_exhibit.split('_')
       exhibit = Exhibit.find(a[1])
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => thread.discussion_comments.length+1,
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => get_curr_user_id, :position => thread.discussion_comments.length+1,
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif disc_type == 'weblink'
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => thread.discussion_comments.length+1,
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => get_curr_user_id, :position => thread.discussion_comments.length+1,
         :comment_type => 'inet_object', :link_title => inet_title, :link_url => inet_url, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, current_user)
-		send_notification(thread.id, thread.group_id, thread.get_title(), current_user.fullname, typ)
+		send_notification(thread.id, thread.group_id, thread.get_title(), get_curr_user_name, typ)
   end
 
 	def send_notification(thread_id, group_id, title, username, typ)
@@ -333,7 +333,7 @@ class ForumController < ApplicationController
 #					}
 				}
 			else
-				all_collected = CollectedItem.get_collected_objects(current_user.id)
+				all_collected = CollectedItem.get_collected_objects(get_curr_user_id)
 				all_collected.each  { |uri,col|
 					if !only_images || col['thumbnail']
 						image = CachedResource.get_thumbnail_from_hit(col)
@@ -370,19 +370,19 @@ class ForumController < ApplicationController
         CollectedItem.collect_item(current_user, nines_object, nil)
         cr = CachedResource.find_by_uri(nines_object)
       end
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => 1,
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => get_curr_user_id, :position => 1,
         :comment_type => 'nines_object', :cached_resource_id => cr.id, :comment => description)
     elsif ExhibitIllustration.get_exhibit_type_text() == disc_type
       exhibit = Exhibit.find_by_title(nines_exhibit)
 			exhibit = Exhibit.find_by_id(nines_exhibit) if exhibit == nil
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => 1,
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => get_curr_user_id, :position => 1,
         :comment_type => 'nines_exhibit', :exhibit_id => exhibit.id, :comment => description)
     elsif ExhibitIllustration.get_illustration_type_image() == disc_type
-      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => current_user.id, :position => 1,
+      DiscussionComment.create(:discussion_thread_id => thread.id, :user_id => get_curr_user_id, :position => 1,
         :comment_type => 'inet_object', :link_url => inet_url, :link_title => inet_title, :image_url => inet_thumbnail, :comment => description)
     end
 		DiscussionVisit.visited(thread, current_user)
-		send_notification(thread.id, thread.group_id, thread.get_title(), current_user.fullname, typ)
+		send_notification(thread.id, thread.group_id, thread.get_title(), get_curr_user_name, typ)
   end
   public
   
@@ -494,13 +494,13 @@ class ForumController < ApplicationController
       can_delete = params['can_delete'] == 'true'
       is_main = params['is_main'] == 'true'
       comment = DiscussionComment.find(comment_id)
-			if comment.has_been_reported_by(current_user.id) == false
-				comment.add_reporter(current_user.id, reason)
+			if comment.has_been_reported_by(get_curr_user_id) == false
+				comment.add_reporter(get_curr_user_id, reason)
 				comment.save
 				begin
 				  admins = User.get_administrators
 				  admins.each do | admin |
-						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{current_user.fullname}. The text of the message is:\n\n"
+						body = "A comment by #{User.find(comment.user_id).fullname} has been reported by #{get_curr_user_name}. The text of the message is:\n\n"
 						body += "#{self.class.helpers.strip_tags(comment.comment)}\n\n"
 						body += "The reason for this report is:\n\n#{reason}"
 						GenericMailer.generic(Setup.site_name(), Setup.return_email(), admin.fullname, admin.email,

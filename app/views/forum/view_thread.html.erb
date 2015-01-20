@@ -31,7 +31,7 @@
 	end
 -%>
 <% current_page tab_name -%>
-<% user_id = user_signed_in? ? current_user.id : nil -%>
+<% user_id = user_signed_in? ? get_curr_user_id : nil -%>
 <% thread_id = @thread.id -%>
 <% topic = DiscussionTopic.find(@thread.discussion_topic_id) -%>
 <%= create_breadcrumbs([{ :text => tab_name, :url => return_url }, { :text => "#{Setup.site_name()}  Forum", :url => '/forum' }, { :text => topic.topic, :url => "/forum/view_topic?topic=#{topic.id}" }], DiscussionThread.find(thread_id).get_title()) %>

@@ -28,7 +28,7 @@
 	</div>
 <% end -%>
 
-<% user_id = user_signed_in? ? current_user.id : nil %>
+<% user_id = user_signed_in? ? get_curr_user_id : nil %>
 <% replies.each {|reply| -%>
     <div id="<%= "comment_id_#{reply.id}" %>" class="FP_reply_container">
 		<%= render :partial => 'comment', :locals => { :comment=> reply, :can_delete => user_signed_in? && (is_admin? || (reply.user_id == user_id)), :can_edit => (reply.user_id == user_id), :is_main => false  } %>

@@ -24,7 +24,7 @@
 			<span class="label">For Teachers: </span>
 			<span class="instructions">Log into your <%= sign_in_link({ :class => 'nav_link', :text => Setup.my_collex() }) %> account or
 <% if user_signed_in?() -%>
-		<%= link_to_function("click here", "new CreateGroupWizardDlg('/search/auto_complete_for_search_university', '#{get_curr_user_id()}', '/groups/verify_group_title', '/groups', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[1]}', '#{Setup.site_name()}', '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', '#{current_user.institution}', '#{current_user.fullname}', '#{image_path("#{SKIN}/new_group_show_membership_example.jpg")}'); return false;", :class => 'nav_link' ) %>
+		<%= link_to_function("click here", "new CreateGroupWizardDlg('/search/auto_complete_for_search_university', '#{get_curr_user_id()}', '/groups/verify_group_title', '/groups', '/groups/', #{Group.types_to_json(true)}, #{Group.permissions_to_json()}, #{Group.visibility_to_json()}, '#{Group.types()[1]}', '#{Setup.site_name()}', '/forum/get_nines_obj_list', '#{image_path(PROGRESS_SPINNER_PATH)}', '#{current_user.institution}', '#{get_curr_user_name}', '#{image_path("#{SKIN}/new_group_show_membership_example.jpg")}'); return false;", :class => 'nav_link' ) %>
 <% else -%>
 		<%= sign_in_link({ :class => 'nav_link', :text => 'click here' }) %>
 <% end -%>

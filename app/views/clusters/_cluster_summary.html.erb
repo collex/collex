@@ -29,7 +29,7 @@
 		   count = 0
 		   exhibits = Exhibit.where("cluster_id = ? and is_published != ?", cluster.id, 0)
 		   exhibits.each do | exhibit | 
-            count=count+1 if !current_user.nil? && group.can_view_exhibit(exhibit, current_user.id)
+            count=count+1 if !current_user.nil? && group.can_view_exhibit(exhibit, get_curr_user_id)
 		   end
 		%>
 		<%= pluralize(count, group.get_exhibits_label())  %>&nbsp;<%= pluralize(DiscussionThread.where({cluster_id: cluster.id}).length, "Discussion") %><br />

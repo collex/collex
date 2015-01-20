@@ -27,7 +27,7 @@
 	end
 -%>
 <% current_page tab_name -%>
-<% curr_user_id = user_signed_in? ? current_user.id : nil -%>
+<% curr_user_id = user_signed_in? ? get_curr_user_id : nil -%>
 <%= create_breadcrumbs([{ :text => tab_name, :url => return_path }], @group.name) %>
 <div class="inner_content_container">
 	<div id="group_details">

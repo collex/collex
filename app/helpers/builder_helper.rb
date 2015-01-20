@@ -30,7 +30,7 @@ module BuilderHelper
     return true if is_admin?
     
     # so can group editors
-    return true if @exhibit.group.is_editor(current_user.id)
+    return true if @exhibit.group.is_editor(get_curr_user_id)
     
     return false
   end

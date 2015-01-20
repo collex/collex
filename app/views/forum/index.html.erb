@@ -16,7 +16,7 @@
     # ---------------------------------------------------------------------------- -%>
 
 <% current_page Setup.community_tab() -%>
-<% user_id = user_signed_in? ? current_user.id : nil -%>
+<% user_id = user_signed_in? ? get_curr_user_id : nil -%>
 <% topics = DiscussionTopic.get_all_with_date() -%>
 <%= create_breadcrumbs([{ :text => Setup.community_tab(), :url => '/communities' }], "#{Setup.site_name()}  Forum") %>
 <div class="content_container2">

@@ -39,7 +39,7 @@
 
 	<%# We show the "this has been reported" message if the user is an administrator or the user is the one who reported it. %>
 	<%# We put up the "report abuse" button if the item hasn't been reported yet by this user and if the user isn't the one who wrote the comment. %>
-	<% this_user = user_signed_in? ? current_user.id : -1 %>
+	<% this_user = user_signed_in? ? get_curr_user_id : -1 %>
 	<% allow_user_to_report = (this_user > 0) && comment.has_been_reported_by(this_user) == false && (this_user != comment.user_id) %>
 	<% if allow_user_to_report -%>
 		<a class="FC_report_link" onclick="<%= action %>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>

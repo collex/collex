@@ -144,10 +144,19 @@ class ApplicationController < ActionController::Base
 
 		def get_curr_user_id
 			return nil if !user_signed_in?
-			return current_user.id
+      cu = current_user
+      return nil if cu.nil?
+			return cu.id
 		end
 
-    def render_404
+  def get_curr_user_name
+    return nil if !user_signed_in?
+    cu = current_user
+    return nil if cu.nil?
+    return cu.fullname
+  end
+
+  def render_404
       respond_to do |type|
         type.html { render :file => "#{Rails.root}/public/static/#{SKIN}/404.html", :status => "404 Not Found", :layout => false }
         type.all  { render :nothing => true, :status => "404 Not Found" }

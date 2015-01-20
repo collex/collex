@@ -123,7 +123,7 @@ class BuilderController < ApplicationController
 		exhibit_id = params[:exhibit_id]
 		ret = []
 		if user_signed_in?
-			objs = CollectedItem.get_collected_objects_for_thumbnails(current_user.id, exhibit_id, chosen)
+			objs = CollectedItem.get_collected_objects_for_thumbnails(get_curr_user_id, exhibit_id, chosen)
 			objs.each {|key,hit|
 				obj = {}
 				obj[:id] = hit['uri']

@@ -57,7 +57,7 @@
 		</div>
 		<div class="right_column">
 			<div id="exhibited_objects_container">
-				<%= render :partial => '/results/exhibited_objects', :locals => { :current_user_id => current_user.id } %>
+				<%= render :partial => '/results/exhibited_objects', :locals => { :current_user_id => get_curr_user_id } %>
 			</div>
 		</div>
 		<div class="clear_both"></div>

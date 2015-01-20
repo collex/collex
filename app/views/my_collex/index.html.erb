@@ -32,7 +32,7 @@
 				<%= render :partial => 'profile', :locals => { :user => current_user, :can_edit => true } %>
 			</div>
 			<div id="recently_collected_items">
-				<%= render :partial => 'recently_collected_items', :locals => { :user_id => current_user.id, :hits => @results, :has_more => @has_more } %>
+				<%= render :partial => 'recently_collected_items', :locals => { :user_id => get_curr_user_id, :hits => @results, :has_more => @has_more } %>
 			</div>
 		</div>
 		<div class="right_column">
@@ -49,13 +49,13 @@
 				<%= render :partial => 'tag_cloud_sidebar', :locals => { :cloud_info => @cloud_info } %>
 			</div>
 			<div id="discussions">
-				<%= render :partial => 'my_discussions_list', :locals => { :user_id => current_user.id } %>
+				<%= render :partial => 'my_discussions_list', :locals => { :user_id =>get_curr_user_idd } %>
 			</div>
 			<div id="my_exhibits">
-				<%= render :partial => 'my_exhibits_list', :locals => { :user_id => current_user.id } %>
+				<%= render :partial => 'my_exhibits_list', :locals => { :user_id =get_curr_user_idid } %>
 			</div>
 			<div id="groups">
-				<%= render :partial => 'my_groups_list', :locals => { :user_id => current_user.id } %>
+				<%= render :partial => 'my_groups_list', :locals => { :user_id get_curr_user_id.id } %>
 			</div>
 		</div>
 		<div class="clear_both"></div>

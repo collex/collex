@@ -199,7 +199,7 @@ module DiscussionThreadsHelper
 		thread = DiscussionThread.find(comment.discussion_thread_id)
 		return true if thread.group_id == nil || thread.group_id <= 0
 		group = Group.find(thread.group_id)
-		return current_user ? group.can_post(current_user.id) : false
+		return current_user ? group.can_post(get_curr_user_id) : false
 	end
 
   def forum_title_with_tooltip(title, comment)

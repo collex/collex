@@ -176,7 +176,7 @@ class ResultsController < ApplicationController
 	
   def resend_exhibited_objects
     # This is to update the section after a change elsewhere on the page
-    render :partial => 'exhibited_objects', :locals => { :current_user_id => current_user.id }
+    render :partial => 'exhibited_objects', :locals => { :current_user_id => get_curr_user_id }
   end
 
   private

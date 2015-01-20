@@ -289,7 +289,7 @@ class GroupsController < ApplicationController
 		 exhibit.editor_limit_visibility = 'group'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility limited in #{group.name}", "#{current_user.fullname} limited the exhibit #{exhibit.title} to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility limited in #{group.name}", "#{get_curr_user_name} limited the exhibit #{exhibit.title} to group visibility.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -301,7 +301,7 @@ class GroupsController < ApplicationController
 		 exhibit.editor_limit_visibility = 'www'
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
-		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility not limited in #{group.name}", "#{current_user.fullname} removed the visibility limitation on the #{group.get_exhibits_label()} #{exhibit.title}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} visibility not limited in #{group.name}", "#{get_curr_user_name} removed the visibility limitation on the #{group.get_exhibits_label()} #{exhibit.title}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		 cluster = exhibit.cluster_id == nil ? nil : Cluster.find(exhibit.cluster_id)
 		 render :partial => 'group_exhibits_list', :locals => { :group => Group.find(exhibit.group_id), :cluster => cluster, :user_id => get_curr_user_id() }
 	end
@@ -314,7 +314,7 @@ class GroupsController < ApplicationController
 		 exhibit.save!
 		group = Group.find(exhibit.group_id)
 		GroupsUser.email_hook("exhibit", group.id, "#{group.get_exhibits_label()} \"#{exhibit.title}\" in \"#{group.name}\" needs revision.",
-			"#{current_user.fullname} returned the #{group.get_exhibits_label()} \"#{exhibit.title}\" for further revisions before being accepted as peer-reviewed.\n\nThe Editors included this message in their review:\n\n#{comment}",
+			"#{get_curr_user_name} returned the #{group.get_exhibits_label()} \"#{exhibit.title}\" for further revisions before being accepted as peer-reviewed.\n\nThe Editors included this message in their review:\n\n#{comment}",
 			url_for(:controller => 'home', :action => 'index', :only_path => false))
 
 		 user = exhibit.get_apparent_author()
@@ -396,7 +396,7 @@ class GroupsController < ApplicationController
 		group = Group.find(id)
 		group.image = nil
 		group.save
-		GroupsUser.email_hook("group", group.id, "Thumbnail removed from #{group.name}", "#{current_user.fullname} has removed the thumbnail image from #{group.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
+		GroupsUser.email_hook("group", group.id, "Thumbnail removed from #{group.name}", "#{get_curr_user_name} has removed the thumbnail image from #{group.name}.", url_for(:controller => 'home', :action => 'index', :only_path => false))
 		redirect_to :back
 	end
 
@@ -653,14 +653,14 @@ class GroupsController < ApplicationController
 	  if params[:group] # this may be nil if we are just inviting people.
   		which = params[:group].keys.join(" and ")
   		values = self.class.helpers.strip_tags(params[:group].values.to_a().join("\n\n"))
-  		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{current_user.fullname} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
+  		GroupsUser.email_hook("group", @group.id, "Group updated: #{@group.name}", "#{get_curr_user_name} has updated the field \"#{which}\" in \"#{@group.name}\".\n#{values}", url_for(:controller => 'home', :action => 'index', :only_path => false))
 	  end
 
 		if err_msg == nil
 			if params[:group] && params[:group][:forum_permissions] != nil
-				render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => current_user.id }
+				render :partial => 'group_discussions_list', :locals => { :group => @group, :user_id => get_curr_user_id }
 			else
-				render :partial => 'group_details', :locals => { :group => @group, :user_id => current_user.id }
+				render :partial => 'group_details', :locals => { :group => @group, :user_id => get_curr_user_id }
 			end
 		else
 			render :text => err_msg, :status => :bad_request
