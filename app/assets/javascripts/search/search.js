@@ -288,6 +288,7 @@ jQuery(document).ready(function($) {
 		var action = el.attr("data-action");
 		var url = createNewUrl(newQueryKey, newQueryValue, action);
 		changePage(url);
+		return false;
 	});
 
 	body.on("change", ".ajax-style .sort select", function () {
@@ -408,6 +409,12 @@ jQuery(document).ready(function($) {
         });
 		}
 	});
+
+	window.collex.doPageSearch = function( workUri) {
+      var existingQuery = window.collex.getUrlVars();
+      existingQuery.pages=workUri;
+      changePage("/search?" + window.collex.makeQueryString(existingQuery));
+   };
 
 	body.on("change", ".limit_to_federation input", function() {
 		var feds = $(".limit_to_federation input");

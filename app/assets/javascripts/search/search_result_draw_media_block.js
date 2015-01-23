@@ -61,7 +61,13 @@ jQuery(document).ready(function($) {
 		var discuss = window.pss.createHtmlTag("button", { 'class': 'discuss' }, "Discuss");
 		var exhibit = isCollected ? window.pss.createHtmlTag("button", { 'class': 'exhibit' }, "Exhibit") : '';
 		var typewright = window.collex.hasTypewright && hit.typewright ? window.pss.createHtmlTag("button", { 'class': 'edit log-in-first-link', 'data-login-prompt': "Please log in to begin editing" }, "Edit") : '';
-		return window.pss.createHtmlTag("div", { 'class': 'search_result_buttons' }, collect+uncollect+discuss+exhibit+typewright);
+		var pages = "";
+		if ( window.collex.hasPageSearch ) {
+           if ( hit.has_pages ) {
+              pages = window.pss.createHtmlTag("button", { 'class': 'page-search' }, "All Pages");
+           }
+		}
+		return window.pss.createHtmlTag("div", { 'class': 'search_result_buttons' }, collect+uncollect+discuss+exhibit+typewright+pages);
 	}
 
 	function createZoteraTitle(obj) {
@@ -447,6 +453,42 @@ jQuery(document).ready(function($) {
 			} else
 				row.hide();
 		}
+	};
+
+   window.collex.createPageResult = function(obj, index) {
+      var html = "<div class='page-search-result'>";
+      html += "<div class='page-num'>Page " + obj.page_num + "</div>";
+      html += "<div class='search_result_full_text_label'>Excerpt:</div>";
+      html += "<span class='snippet'>";
+      html += obj.text;
+      html += "</span>";
+      html += "</div>";
+      return html;
+   };
+
+	window.collex.createPageResultRows = function(obj) {
+	   var html = "<div class='page_header'>";
+	   html += "<span id='page-count'>Page Search Results (";
+	   html += obj.total_pages;
+	   html += ")</span>";
+	   if ( obj.total_pages > obj.pages.length ) {
+	     html += "<div class='pages pagination'></div>";
+	   }
+	   html += "</div>";
+
+      if ( obj.pages.length === 0) {
+          if (obj.query.q ) {
+            html += "<div class='no-page-matches'>No matches found in the pages of this document</div>";
+          } else {
+            html += "<div class='no-page-matches'>Please enter a search term</div>";
+          }
+      } else {
+         for (var i = 0; i < obj.pages.length; i++) {
+            html += window.collex.createPageResult(obj.pages[i], i);
+         }
+      }
+
+	   $('.page-results').html(html);
 	};
 
 	window.collex.createResultRows = function(obj) {

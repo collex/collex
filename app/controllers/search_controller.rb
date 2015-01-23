@@ -30,20 +30,34 @@ class SearchController < ApplicationController
 			format.html {
 				render "index", { layout: 'application' }
 			}
-			format.json {
-				items_per_page = 30
-				page = params[:page].present? ? params[:page] : 1
-				sort_param = params[:srt].present? ? params[:srt] : nil
-				sort_ascending = params[:dir].present? ? params[:dir] == 'asc' : true
-				constraints = process_constraints(params)
-				begin
-					@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
-					results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
-					results['message'] = ''
-				rescue Catalog::Error => e
-					results = rescue_search_error(e)
-					results['message'] = e.message
-				end
+			format.json do
+            if params.has_key? :pages
+               begin
+                  items_per_page = 30
+                  page = 1
+                  page = params[:pages_page]  if params[:pages_page].present?
+                  @solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
+                  results = @solr.search_pages(params[:q], params[:pages], (page.to_i - 1) * items_per_page, items_per_page)
+                  results['message'] = ''
+               rescue Catalog::Error => e
+                  results = rescue_search_error(e)
+                  results['message'] = e.message
+               end
+            else
+               items_per_page = 30
+   				page = params[:page].present? ? params[:page] : 1
+   				sort_param = params[:srt].present? ? params[:srt] : nil
+   				sort_ascending = params[:dir].present? ? params[:dir] == 'asc' : true
+   				constraints = process_constraints(params)
+   				begin
+   					@solr = Catalog.factory_create(session[:use_test_index] == "true") if @solr == nil
+   					results = @solr.search_direct(constraints, (page.to_i - 1) * items_per_page, items_per_page, sort_param, sort_ascending)
+   					results['message'] = ''
+   				rescue Catalog::Error => e
+   					results = rescue_search_error(e)
+   					results['message'] = e.message
+   				end
+   		   end
 				results['page_size'] = items_per_page
 
 				# process all the returned hits to insert all non-solr info
@@ -64,7 +78,7 @@ class SearchController < ApplicationController
 				results['facets']['discipline'] = {} if results['facets']['discipline'].blank?
 				results['facets']['role'] = {} if results['facets']['role'].blank?
 				render :json => results
-			}
+			end
 		end
 	end
 

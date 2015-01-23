@@ -21,6 +21,7 @@ my_collex_url: 'my_collex'
 skin: 'nines'
 
 disallow_rss: false
+page_search: false
 
 ##########################
 ### PLUGINS

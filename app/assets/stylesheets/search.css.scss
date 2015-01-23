@@ -16,6 +16,46 @@
 
 body.pg-search {
 
+  .page-results {
+    margin-top: 20px;
+    border-top: 2px solid #C7C8CB;
+    margin-left: 140px;
+
+    button.select-facet.nav_link {
+      cursor: pointer;
+    }
+
+    .pages.pagination {
+      word-spacing: 0.2em;
+      font-size: 16px;
+      font-weight: 200;
+      word-spacing: 0.2em;
+      text-align: right;
+    }
+    .page_header {
+       border-bottom: 2px solid #C7C8CB;
+       padding-bottom: 10px;
+    }
+    .search_result_full_text_label {
+      margin-bottom: 5px;
+    }
+    .page-search-result {
+      margin: 15px 10px 10px 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 15px;
+    }
+    .page-num {
+      margin-bottom: 0px;
+      text-align: right;
+      color: gray;
+    }
+    .no-page-matches {
+      font-size: 1.2em;
+      margin: 25px 0;
+      color: #888;
+    }
+  }
+
 	.query-editable:after {
 		content:image-url('icon_edit.png');
 		margin-left: 4px;
@@ -114,8 +154,8 @@ body.pg-search {
 }
 
 table.query {
-	border-top:1px solid #CEB6A6;
-	border-left:1px solid #CEB6A6;
+	border-top:1px solid #C7C8CB;
+	border-left:1px solid #C7C8CB;
 	width:100%;
 	margin-top:10px;
 }
@@ -129,8 +169,8 @@ table.query select {
 }
 
 table.query td {
-	border-right:1px solid #CEB6A6;
-	border-bottom:1px solid #CEB6A6;
+	border-right:1px solid #C7C8CB;
+	border-bottom:1px solid #C7C8CB;
 }
 
 td.query_type {
@@ -288,8 +328,8 @@ div.auto_complete ul li {
 	clear:both;
 }
 
-div.auto_complete ul li.selected { 
-	background-color: #dcdcdc !important; 
+div.auto_complete ul li.selected {
+	background-color: #dcdcdc !important;
 }
 
 div.auto_complete ul li img {

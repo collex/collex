@@ -43,8 +43,12 @@ jQuery(document).ready(function($) {
 	body.on("click", ".search-result .uri_link", function (e) {
 		jQuery(this).next().toggle();
 		return false;
-
 	});
+
+	body.on("click", ".search_result_buttons .page-search", function (e) {
+      var params = setup(e, this);
+      window.collex.doPageSearch(params.uri);
+   });
 
 });
 

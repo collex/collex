@@ -123,6 +123,45 @@ class Catalog
       return { 'total_hits' => 0, 'hits' => [], 'facets' => { 'genre' => {}, 'archive' => {}, 'freeculture' => {}, 'has_full_text' => {}, 'federation' => {}, 'typewright' => {} } }
    end
 
+   def search_pages(q, uri, start, max)
+      start = start ? "start=#{start}" : ""
+      max = max ? "max=#{max}" : ""
+      params = []
+      if !q.nil?
+         constraints = [{:key=>'q', :val=>q}]
+         params = parse_constraints(constraints)
+      end
+      params.push("uri=#{uri}")
+      params.push(start) if start.length > 0
+      params.push(max) if max.length > 0
+      results = call_solr("pages", :get, params)
+
+      results = results['search']
+      pages = []
+      page_hits = 0
+      if !q.nil?
+         pages = normalize_hits(results['pages']['page'])
+         page_hits = results['pages']['total']
+      end
+      ret = { 'page_results'=>true, 'title'=>results['results']['result']['title'], 'total_hits' => 1,
+              'hits' => normalize_hits(results['results']['result']), 'facets' => {},
+              'pages'=>pages, 'total_pages'=>page_hits }
+      results['facets'].each { |typ,facets|
+         h = {}
+         if facets['facet'].kind_of?(Array)
+            facets['facet'].each { |facet|
+               h[facet['name']] = facet['count']
+            }
+         else
+            if facets['facet']
+               h[facets['facet']['name']] = facets['facet']['count']
+            end
+         end
+         ret['facets'][typ] = h
+      }
+      return ret
+   end
+
    def search_direct(constraints, start, max, sort_by, sort_ascending)
 	   sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
 	   hl = "hl=on"
@@ -135,7 +174,7 @@ class Catalog
 	   params.push(start) if start.length > 0
 	   params.push(max) if max.length > 0
 
-	   results = call_solr("search", :get, params)
+ 	   results = call_solr("search", :get, params)
 	   if !results['html'].blank?
 		   page = results['html']
 		   if page.kind_of?(Hash)
@@ -149,23 +188,6 @@ class Catalog
 
 	   results = results['search']
 	   ret = { 'total_hits' => results['total'], 'hits' => normalize_hits(results['results']['result']), 'facets' => {} }
-	   #		if ret['hits'] == nil
-	   #			ret['hits'] = []
-	   #		elsif ret['hits'].kind_of?(Hash)
-	   #			ret['hits'] = [ ret['hits'] ]
-	   #		end
-	   #		ret['hits'].each { |hit|
-	   #			hit.each { |key,val|
-	   #				if val.kind_of?(Hash) && val['value']
-	   #					if val['value'].kind_of?(String)
-	   #						hit[key] = [ val['value'] ]
-	   #					else
-	   #						hit[key] = val['value']
-	   #					end
-	   #				end
-	   #			}
-	   #		}
-
 	   results['facets'].each { |typ,facets|
 		   h = {}
 		   if facets['facet'].kind_of?(Array)
@@ -181,65 +203,6 @@ class Catalog
 	   }
 	   return ret
    end
-
-   # def search(constraints, start, max, sort_by, sort_ascending)
-   #    sort = sort_by == nil ? "" : "sort=#{sort_by.gsub('_sort', '')} #{sort_ascending ? 'asc' : 'desc'}"
-   #    hl = "hl=on"
-   #    start = start ? "start=#{start}" : ""
-   #    max = max ? "max=#{max}" : ""
-   #
-   #    params = parse_constraints(constraints)
-   #    params.push(sort) if sort.length > 0
-   #    params.push(hl) if hl.length > 0
-   #    params.push(start) if start.length > 0
-   #    params.push(max) if max.length > 0
-   #
-   #    results = call_solr("search", :get, params)
-   #    if !results['html'].blank?
-   #       page = results['html']
-   #       if page.kind_of?(Hash)
-   #          body = page['body']
-   #          ActiveRecord::Base.logger.info("BODY: " + body.to_s)
-   #       else
-   #          ActiveRecord::Base.logger.info("PAGE: " + page.to_s)
-   #       end
-   #       return nil_return()
-   #    end
-   #
-   #    results = results['search']
-   #    ret = { 'total_hits' => results['total'], 'hits' => normalize_hits(results['results']['result']), 'facets' => {} }
-   #    #		if ret['hits'] == nil
-   #    #			ret['hits'] = []
-   #    #		elsif ret['hits'].kind_of?(Hash)
-   #    #			ret['hits'] = [ ret['hits'] ]
-   #    #		end
-   #    #		ret['hits'].each { |hit|
-   #    #			hit.each { |key,val|
-   #    #				if val.kind_of?(Hash) && val['value']
-   #    #					if val['value'].kind_of?(String)
-   #    #						hit[key] = [ val['value'] ]
-   #    #					else
-   #    #						hit[key] = val['value']
-   #    #					end
-   #    #				end
-   #    #			}
-   #    #		}
-   #
-   #    results['facets'].each { |typ,facets|
-   #       h = {}
-   #       if facets['facet'].kind_of?(Array)
-   #          facets['facet'].each { |facet|
-   #             h[facet['name']] = facet['count']
-   #          }
-   #       else
-   #          if facets['facet']
-   #             h[facets['facet']['name']] = facets['facet']['count']
-   #          end
-   #       end
-   #       ret['facets'][typ] = h
-   #    }
-   #    return ret
-   # end
 
    def start_reindex()
       call_solr("locals/#{Setup.default_federation()}", :delete)
@@ -762,9 +725,6 @@ class Catalog
    def call_solr(url, verb, params = [])
       params.push("test_index=true") if @use_test_index
 
-      #private_token = SITE_SPECIFIC['catalog']['private_token']
-      #params.push("private_token=#{private_token}")
-
       args = params.length > 0 ? "#{params.collect { |item| esc_arg(item) }.join('&')}" : ""
       request = "/#{url}.xml"
       url = URI.parse(Setup.solr_url())
@@ -775,17 +735,12 @@ class Catalog
                args = '?' + args if args.length > 0
                http.get("#{request}#{args}")
             elsif verb == :post
-            http.post(request, args)
+               http.post(request, args)
             elsif verb == :put
-            #args += args.length > 0 ? '&' : '?'
-            #args += "_method=PUT"
-            http.put(request, args)
+               http.put(request, args)
             elsif verb == :delete
-               #args += args.length > 0 ? '&' : '?'
-               #args += "_method=DELETE"
                del = Net::HTTP::Delete.new(request)
-            http.request(del, args)
-            #http.delete(request, args)
+               http.request(del, args)
             end
          end
       rescue Exception => e
@@ -798,7 +753,6 @@ class Catalog
          Catalog.log_catalog("ERROR", msg)
          raise Catalog::Error.new(msg)
       end
-
       begin
          results = Hash.from_xml(res.body)
       rescue Exception => e
@@ -807,7 +761,6 @@ class Catalog
          raise Catalog::Error.new(msg)
       end
 
-      #ActiveRecord::Base.logger.info("RESULTS: #{results.to_s}")
       errs = results['error']
       if errs != nil
          msg = "Search error: #{url} returns: #{errs['message']}"

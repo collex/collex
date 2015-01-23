@@ -59,6 +59,16 @@ jQuery(document).ready(function($) {
 				$(".no_results_msg").hide();
 			}
 		}
+
+		var isPageResults = (obj.page_results === true);
+      if ( isPageResults ) {
+         $(".bulkcollect").hide();
+         $(".search_name_facet").hide();
+         $("#search_result_count").hide();
+         $(".sort").hide();
+      } else {
+         $(".page-results").hide();
+      }
 	}
 
 	function showMessage(message) {
@@ -86,47 +96,56 @@ jQuery(document).ready(function($) {
 		}, 8000);
 	}
 
-	body.bind('RedrawSearchResults', function(ev, obj) {
-		if (!obj || !obj.hits || !obj.facets || !obj.query) {
-			window.console.log("error redrawing search results", obj);
-			return;
-		}
 
-		if (timeoutHandle) {
-			clearTimeout(timeoutHandle);
-			timeoutHandle = null;
-		}
+   body.bind('RedrawSearchResults', function(ev, obj) {
+      if (!obj || !obj.hits || !obj.facets || !obj.query) {
+         window.console.log("error redrawing search results", obj);
+         return;
+      }
 
-		showResultSections(obj);
-		showMessage(obj.message);
+      if (timeoutHandle) {
+         clearTimeout(timeoutHandle);
+         timeoutHandle = null;
+      }
 
-		window.collex.createResultRows(obj);
+      showResultSections(obj);
+      showMessage(obj.message);
 
-		window.collex.createSearchForm(obj.query, obj.facets.role);
-		window.collex.createFacets(obj);
+      window.collex.createResultRows(obj);
 
-		var page = obj.query.page ? obj.query.page : 1;
-		window.collex.createPagination(page, obj.total_hits, obj.page_size);
+      window.collex.createSearchForm(obj.query, obj.facets.role, obj.title);
+      window.collex.createFacets(obj);
 
-		createTotals(obj.total_hits);
-		setFederations(obj.facets.federation, obj.query.f);
-		fixExpandAllLink();
 
-		imageTimeout();
-	});
+
+      createTotals(obj.total_hits);
+      setFederations(obj.facets.federation, obj.query.f);
+
+      fixExpandAllLink();
+      imageTimeout();
+
+      var isPageResults = (obj.page_results === true);
+      if ( isPageResults ) {
+         $(".search_results_hr").hide();
+         $("#bulk_collect_0").hide();
+         $(".page-search").hide();
+         window.collex.createPageResultRows(obj);
+
+         var page = obj.query.pages_page ? obj.query.pages_page : 1;
+         window.collex.createPagination(page, obj.total_pages, obj.page_size, 'pages');
+         $(".page-results").show();
+
+      } else {
+         var page = obj.query.page ? obj.query.page : 1;
+         window.collex.createPagination(page, obj.total_hits, obj.page_size, 'resources');
+         $(".page-results").empty();
+         $(".page-results").hide();
+      }
+   });
+
 
 	body.bind('DrawHits', function(ev, obj) {
-//		showResultSections(obj);
-//		showMessage(obj.message);
-
 		window.collex.createResultRows(obj);
-
-//		var page = obj.query.page ? obj.query.page : 1;
-//		window.collex.createPagination(page, obj.total_hits, obj.page_size);
-//
-//		createTotals(obj.total_hits);
-//		fixExpandAllLink();
-
 		imageTimeout();
 	});
 });

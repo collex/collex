@@ -7,7 +7,7 @@
     # You may obtain a copy of the License at
     #
     #    http://www.apache.org/licenses/LICENSE-2.0
-  
+
     # Unless required by applicable law or agreed to in writing, software
     # distributed under the License is distributed on an "AS IS" BASIS,
     # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@
 	window.collex.hasFuzzySearch = <%= HAS_FUZZY %>;
 	window.collex.hasLanguage = <%= HAS_LANGUAGE %>;
 	window.collex.hasManyRoles = <%= HAS_MANY_ROLES %>;
+	window.collex.hasPageSearch = "<%= PAGE_LEVEL_SEARCH %>";
 	window.collex.facetNames = {
 		access: {
 			fulltext: "Full Text Only",
@@ -44,22 +45,14 @@
 	window.collex.savedSearches = <%= user_signed_in? ? raw(get_saved_searches(current_user.username).map { |s| { id: s.id, name: s.name, url: s.url }}.to_json) : [] %>;
 	window.collex.defaultFederation = '<%= Setup.default_federation() %>';
 	<% if hits.length > 0 %>
-	window.collex.hits = <%= raw(hits.to_json()) %>;
+	  window.collex.hits = <%= raw(hits.to_json()) %>;
 	<% end %>
 	<% if @collected && @collected.length > 0 %>
-	window.collex.collected = <%= raw(@collected.to_json()) %>;
+	  window.collex.collected = <%= raw(@collected.to_json()) %>;
 	<% else %>
-	window.collex.collected = {};
+	  window.collex.collected = {};
 	<% end %>
 </script>
 <div class="search-results">
-<% if @script == 'doCollect' %>
-	<script type="text/javascript">
-		doCollect("/results/result_row", '<%= @uri %>' , <%= @row_num %> , '<%= @row_id %>', true);
-	</script>
-<% elsif @script == 'doTypewright' %>
-	<script type="text/javascript">
-		gotoPage("<%= @uri %>");
-	</script>
-<% end %>
+
 </div>

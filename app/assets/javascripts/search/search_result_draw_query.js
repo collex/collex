@@ -18,14 +18,15 @@ jQuery(document).ready(function($) {
 			y: 'Year',
 			lang: 'Language',
 			fuz_q: 'Search Term Fuzziness',
-			fuz_t: 'Title Fuzziness'
+			fuz_t: 'Title Fuzziness',
+			pages: 'Pages of'
 		};
 		if (types[key])
 			return types[key];
 		return key;
 	}
 
-	function searchNot(key, val) {
+	function searchNot(key, val, disabled) {
 		var a = window.pss.createHtmlTag("option", {}, 'AND');
 		var opt = {};
 		if (val && val.length > 0 && val[0] === '-')
@@ -36,6 +37,9 @@ jQuery(document).ready(function($) {
 			opt['data-key'] = key;
 		if (val)
 			opt['data-val'] = val;
+	   if ( disabled === true ) {
+         opt.disabled = 'disabled';
+      }
 		return window.pss.createHtmlTag("select", opt, a+n);
 	}
 
@@ -55,7 +59,7 @@ jQuery(document).ready(function($) {
 		return role;
 	}
 
-	function newSearchTerm(roles) {
+	function newSearchTerm(roles, disabled ) {
 		var searchTypes = [ ['Search Term', 'q'], ['Title', 't'] ];
 		if (window.collex.hasLanguage)
 			searchTypes.push(['Language', 'lang']);
@@ -90,10 +94,15 @@ jQuery(document).ready(function($) {
 		var selectTypeOptions = "";
 		for (var i = 0; i < searchTypes.length; i++)
 			selectTypeOptions += window.pss.createHtmlTag("option", {value: searchTypes[i][1] }, searchTypes[i][0]);
-		var selectType = window.pss.createHtmlTag("select", {'class': "query_type_select" }, selectTypeOptions);
+
+	   var selOpt = { 'class': 'query_type_select'};
+	   if (disabled===true ) {
+	     selOpt.disabled = 'disabled';
+	   }
+		var selectType = window.pss.createHtmlTag("select", selOpt, selectTypeOptions);
 		var searchBox = window.pss.createHtmlTag("input",
 			{ 'class': "add-autocomplete regular-input", type: 'text', placeholder: "click here to add new search term", 'data-autocomplete-url': "/search/auto_complete_for_q", 'data-autocomplete-field': ".query_type_select", autocomplete: 'off' }) +
-			window.pss.createHtmlTag("div", {'class': "auto_complete", id: "search_phrase_auto_complete", style: "display: none;" }, '');
+	   window.pss.createHtmlTag("div", {'class': "auto_complete", id: "search_phrase_auto_complete", style: "display: none;" }, '');
 		var languageOptions = $('.search_language').html();
 		var languageSearchBox = window.pss.createHtmlTag("select", {'class': "language-input", style: "display:none;" }, languageOptions);
 		var submitButton = window.pss.createHtmlTag("button", { 'class': "query_add" }, 'Add');
@@ -112,13 +121,13 @@ jQuery(document).ready(function($) {
 			window.pss.createHtmlTag("label", { for: key+value }, text);
 	}
 
-	window.collex.createSearchForm = function(query, roles) {
+	window.collex.createSearchForm = function(query, roles, workTitle) {
 		var table = $('.search-form');
 		var html = "";
 		var htmlBottom = "";
 		var isEmpty = true;
 		for (var key in query) {
-			if (query.hasOwnProperty(key) && key !== 'page' && key !== 'srt' && key !== 'dir' && key !== 'f') {
+			if (query.hasOwnProperty(key) && key !== 'pages_page' && key !== 'page' && key !== 'srt' && key !== 'dir' && key !== 'f') {
 				var values = (typeof query[key] === 'string') ? [ query[key] ] : query[key];
 				for (var i = 0; i < values.length; i++) {
 					var value = values[i];
@@ -151,6 +160,9 @@ jQuery(document).ready(function($) {
 					if (key.indexOf('role_') === 0) {
 						displayedKey = getDisplayedKeyFromRole(displayedKey);
 					}
+					if (key === "pages" ) {
+					   displayedValue = workTitle;
+               }
 					if (key.indexOf('fuz_') === 0) {
 						var type = key.split('_')[1];
 						if (query[type]) { // Only show the tuner if a query of the same type is also being made.
@@ -167,14 +179,14 @@ jQuery(document).ready(function($) {
 						html += window.pss.createHtmlTag("tr", {},
 							window.pss.createHtmlTag("td", {'class': "query_type"}, searchFormType(displayedKey)) +
 							window.pss.createHtmlTag("td", {'class': "query_term"}, displayedValue) +
-							window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key, value)) +
+							window.pss.createHtmlTag("td", {'class': "query_and-not"}, searchNot(key, value, (key==="pages") )) +
 							window.pss.createHtmlTag("td", {'class': "query_remove"}, searchRemove(key, value)));
 					}
 				}
 			}
 		}
 		html += htmlBottom;
-		html += newSearchTerm(roles);
+		html += newSearchTerm(roles,(key==="pages") );
 		table.html(html);
 		table.find('.add-autocomplete').each(function(index, el) { window.collex.initAutoComplete(el); });
 

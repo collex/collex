@@ -13,3 +13,5 @@ BLEEDING_EDGE = SITE_SPECIFIC['bleeding_edge']
 HAS_FUZZY = (SKIN == 'mesa' || SKIN == 'modnets')
 HAS_LANGUAGE = (SKIN == 'mesa')
 HAS_MANY_ROLES = (SKIN == 'mesa')
+
+PAGE_LEVEL_SEARCH = SITE_SPECIFIC['page_search']

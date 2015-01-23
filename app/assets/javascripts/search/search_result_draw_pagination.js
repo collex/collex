@@ -1,13 +1,18 @@
 jQuery(document).ready(function($) {
 	"use strict";
 
-	window.collex.createPagination = function(curr_page, total, page_size) {
+	window.collex.createPagination = function(curr_page, total, page_size, core) {
 		var html = "";
 		total = parseInt(total, 10);
 		page_size = parseInt(page_size, 10);
 		curr_page = parseInt(curr_page, 10);
 		var num_pages = Math.ceil(total / page_size);
-		var pagination = $('.pagination');
+		var pagination;
+		if (core === 'resources' ) {
+		  pagination = $('.pagination');
+		} else {
+		  pagination = $(".pages.pagination");
+		}
 
 		// If there's only one page, don't show any pagination
 		if (num_pages === 1) {
@@ -35,13 +40,16 @@ jQuery(document).ready(function($) {
 			}
 		}
 
+      var val = "page";
+      if (core === 'pages' ) val = "pages_page";
+
 		if (first > 1) {
-			html += window.collex.create_facet_button('first', '1', "replace", 'page');
+			html += window.collex.create_facet_button('first', '1', "replace", val);
 			html += "&nbsp;&nbsp;";
 		}
 
 		if (curr_page > 1) {
-			html += window.collex.create_facet_button('<<', curr_page - 1, "replace", 'page');
+			html += window.collex.create_facet_button('<<', curr_page - 1, "replace", val);
 			html += "&nbsp;&nbsp;";
 		}
 
@@ -49,24 +57,24 @@ jQuery(document).ready(function($) {
 			if (pg === curr_page)
 				html += window.pss.createHtmlTag("span", { 'class': "current_serp" }, pg);
 			else
-				html += window.collex.create_facet_button(pg, pg, "replace", 'page');
+				html += window.collex.create_facet_button(pg, pg, "replace", val);
 			html += "&nbsp;&nbsp;";
 		}
 
 		if (last < num_pages) {
 			html += "...&nbsp;&nbsp;";
 			if (num_pages > 12)
-				html += window.collex.create_facet_button(num_pages, num_pages, "replace", 'page');
+				html += window.collex.create_facet_button(num_pages, num_pages, "replace", val);
 			html += "&nbsp;&nbsp;";
 		}
 
 		if (curr_page < num_pages) {
-			html += window.collex.create_facet_button('>>', curr_page + 1, "replace", 'page');
+			html += window.collex.create_facet_button('>>', curr_page + 1, "replace", val);
 			html += "&nbsp;&nbsp;";
 		}
 
 		if (last < num_pages) {
-			html += window.collex.create_facet_button('last', num_pages, "replace", 'page');
+			html += window.collex.create_facet_button('last', num_pages, "replace", val);
 			html += "&nbsp;&nbsp;";
 		}
 

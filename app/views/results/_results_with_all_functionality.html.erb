@@ -1,4 +1,4 @@
-<% # 
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -7,7 +7,7 @@
     # You may obtain a copy of the License at
     #
     #    http://www.apache.org/licenses/LICENSE-2.0
-  
+
     # Unless required by applicable law or agreed to in writing, software
     # distributed under the License is distributed on an "AS IS" BASIS,
     # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,23 +16,31 @@
     # ---------------------------------------------------------------------------- -%>
 <%# results_with_all_functionality params: string mode, string title, array results, int page, int num_pages, string controller, string action -%>
 <div class="page_header"><%# = render( :partial => 'results/result_count' ) if controller == 'tagXXX' %>
-	<% controller = 'search'  if controller == 'collex' %>
-	<% curr_selection = @collected_sort_by.present? ? @collected_sort_by : '' %>
-	<% curr_selection_direction = @collected_sort_by_direction.present? ? @collected_sort_by_direction : '' %>
-	<% options = (controller == 'search' ? [["Relevancy", 'rel'], ["Title", 'title'], ["Name", 'author'], ["Date",'year']] : (controller == 'tag' ? [["Title", 'title'], ["Author",'author'], ["Date",'year'], ["Resource",'a']] : [["Date Collected", ''], ["Title", 'title'], ["Author",'author'], ["Date",'year'], ["Resource",'a']])) -%>
-	<%= render( :partial => 'results/sort_by', :locals => { :options => options, :curr_selection => curr_selection, :curr_selection_direction => curr_selection_direction }) %>
-	<%= title %></div>
+   <% controller = 'search'  if controller == 'collex' %>
+   <% curr_selection = @collected_sort_by.present? ? @collected_sort_by : '' %>
+   <% curr_selection_direction = @collected_sort_by_direction.present? ? @collected_sort_by_direction : '' %>
+   <% options = (controller == 'search' ? [["Relevancy", 'rel'], ["Title", 'title'], ["Name", 'author'], ["Date",'year']] : (controller == 'tag' ? [["Title", 'title'], ["Author",'author'], ["Date",'year'], ["Resource",'a']] : [["Date Collected", ''], ["Title", 'title'], ["Author",'author'], ["Date",'year'], ["Resource",'a']])) -%>
+   <%= render( :partial => 'results/sort_by', :locals => { :options => options, :curr_selection => curr_selection, :curr_selection_direction => curr_selection_direction }) %>
+   <%= title %></div>
 <hr class="search_results_hr" />
 
 <div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => mode, :page => page} ) %></div>
-<div class="search_results_pages"><%= render( :partial => 'results/pagination', :locals => { :page => page, :num_pages => num_pages, :destination_hash => { :controller => controller, :action => action } } ) %></div>
+<div class="search_results_pages">
+   <div class="pagination"></div>
+</div>
 
 <form name="bulk_collect_form" id="bulk_collect_form">
-	<input type="hidden" id="page" name="page" value="<%= page %>" />
+   <input type="hidden" id="page" name="page" value="<%= page %>" />
    <input type="hidden" id="bulk_tag_text" name="bulk_tag_text" value="" />
-	<%= render( :partial => 'results/results', :locals => { :user_id => !user_signed_in? ? -1 : get_curr_user_id, :hits => results } ) %>
+   <%= render( :partial => 'results/results', :locals => { :user_id => !user_signed_in? ? -1 : get_curr_user_id, :hits => results } ) %>
 </form>
+
+<div class="page-results">
+</div>
+
 <div class="clear_both"></div>
 <hr class="search_results_hr" />
 <div class="expand_all_link"><%= render( :partial => 'results/bulkcollect', :locals => {:mode => mode, :page => page}  ) %></div>
-<div class="search_results_pages"><%= render( :partial => 'results/pagination', :locals => { :page => page, :num_pages => num_pages, :destination_hash => { :controller => controller, :action => action } }  ) %></div>
+<div class="search_results_pages">
+   <div class="pagination"></div>
+</div>
