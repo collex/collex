@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   before_filter :session_create
 
   helper_method :user_signed_in?, :current_user, :username, :user,
-                :is_admin?, :get_curr_user_id, :respond_to_file_upload
+                :is_admin?, :get_curr_user_id, :respond_to_file_upload, :get_curr_user_name
 
   protect_from_forgery
 
