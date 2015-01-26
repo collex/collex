@@ -1,12 +1,12 @@
 <%# ------------------------------------------------------------------------
     Copyright 2007 Applied Research in Patacriticism and the University of Virginia
-    
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-  
+
         http://www.apache.org/licenses/LICENSE-2.0
-  
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,17 +19,20 @@
 <div class="inner_content_container">
 
 	<div class="page_header">Welcome to the 'admin' area of <%= Setup.site_name() %>.</div>
-	
+
 	<p>From here, you can make adjustments to user roles, the hierarchies or 'trees' that control how facets display, and to the appearance (descriptions, default thumbnails, etc.) of contributing projects in Collex.</p>
-	
+
 	<p><a class='nav_link' href="/admin/default/reload_facet_tree">Reload Facet Tree</a></p>
 	<%= link_to_confirm("Refresh cached objects", { :action => 'refresh_cached_objects', :authenticity_token => form_authenticity_token }, "Warning", 'Note: This will take a while! This is only needed if the indexing in Collex changes or a bug is found that has caused the cached objects to be out of date. Do you want to continue?') %>
-	
+
+	<!--
 	<% if @use_test_index == "true" -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=false">Stop using the testing index for searches</a></p>
 	<% else -%>
 	<p><a class='nav_link' href="/admin/default/use_test_index?test=true">Temporarily use the testing index for searches</a></p>
 	<% end -%>
+	-->
+
 	<p><%= link_to_function 'Impersonate different user', "impersonateUser('/admin/get_user_list', '/admin/impersonate_user');",  :class => 'nav_link' %></p>
 
 </div>
