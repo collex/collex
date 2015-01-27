@@ -129,6 +129,7 @@ jQuery(document).ready(function($) {
          $(".search_results_hr").hide();
          $("#bulk_collect_0").hide();
          $(".page-search").hide();
+         $(".search_results_pages").hide();
          window.collex.createPageResultRows(obj);
 
          var page = obj.query.pages_page ? obj.query.pages_page : 1;
@@ -140,6 +141,7 @@ jQuery(document).ready(function($) {
          window.collex.createPagination(page, obj.total_hits, obj.page_size, 'resources');
          $(".page-results").empty();
          $(".page-results").hide();
+         $(".search_results_pages").show();
       }
    });
 
