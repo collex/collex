@@ -3,6 +3,10 @@
    <div class="tw_edit_page_nav">
 <% else %>
    <div class="tw_edit_page_nav_button">
+      <% if COLLEX_PLUGINS['awl'] %>
+         <a href="<%= COLLEX_PLUGINS['awl']['service_url'] %>?doc=<%=doc_id%>" target="_blank"><input type="button" id="awl-btn" value="Mark Marginalia"/></a>
+      <% end %>
+
       <% if is_complete %>
          <span class="tw-complete-msg">This text has been marked complete by a TypeWright user. It is under review by TypeWright administrators.</span>
       <% else %>
@@ -14,7 +18,7 @@
 <% end %>
 
 	<%= link_to raw("Document Home"), "/typewright/documents/0?uri=#{doc_uri}\&src=#{@src}", {:class => "nav_link"} %>
-	
+
 	<%= link_to "first", tw_create_url(doc_id, 1), { :class => 'nav_link tw_button_left tw_first_page' } if page > 1 %>&nbsp;
 	<%= link_to "prev", tw_create_url(doc_id, page-1), { :class => 'nav_link tw_button_left tw_prev_page' } if page > 1 %>&nbsp;&nbsp;&nbsp;
 	Page

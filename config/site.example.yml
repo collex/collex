@@ -29,6 +29,10 @@ page_search: false
 
 plugins:
   typewright: true
+  awl: true
+
+awl:
+  service_url: http://typewright.performantsoftware.com/awl
 
 typewright:
   web_service_url: 'http://typewright.performantsoftware.com/'
