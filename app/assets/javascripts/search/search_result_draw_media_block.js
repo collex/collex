@@ -480,7 +480,7 @@ jQuery(document).ready(function($) {
           if (obj.query.q ) {
             html += "<div class='no-page-matches'>No matches found in the pages of this document</div>";
           } else {
-            html += "<div class='no-page-matches'>Please enter a search term</div>";
+            html += "<div class='no-page-matches'>To get Page Search Results, enter search term(s) above</div>";
           }
       } else {
          for (var i = 0; i < obj.pages.length; i++) {
