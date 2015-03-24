@@ -39,6 +39,11 @@ body.federation-sro.pg-about {
         text-decoration: none;
         background-color: #7d1317;
       }
+      li.menu-item a {
+        background-color: transparent;
+        color: #7d1317;
+        text-decoration: underline;
+      }
     }
   }
 }
