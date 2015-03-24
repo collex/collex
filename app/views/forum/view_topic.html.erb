@@ -1,4 +1,4 @@
-<% # 
+<% #
     # ------------------------------------------------------------------------
     # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
     #
@@ -7,7 +7,7 @@
     # You may obtain a copy of the License at
     #
     #    http://www.apache.org/licenses/LICENSE-2.0
-  
+
     # Unless required by applicable law or agreed to in writing, software
     # distributed under the License is distributed on an "AS IS" BASIS,
     # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,6 @@
 	</tr>
 	<tr>
 		<td class="FC_pages" colspan="9">
-			<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_topic', :topic => topic.id } } ) %>
 		</td>
 	</tr>
 	<tr>
@@ -88,7 +87,7 @@
 					<% 1.upto(num_pages) do |i| -%>
 						<%= "," if i != 1 -%>
 						<%= link_to "#{i}", "/forum/view_thread?thread=#{thread.id}&page=#{i}", :class => 'nav_link' %>
-					<% end -%>	
+					<% end -%>
 					)
 				<% end -%>
 				</p>
@@ -107,7 +106,6 @@
 	<% end # for each thread -%>
 	<tr>
 		<td class="FC_pages_bottom" colspan="9">
-			<%= render( :partial => 'results/pagination', :locals => { :page => @page, :num_pages => @num_pages, :destination_hash => { :controller => 'forum', :action => 'view_topic', :topic => topic.id } } ) %>
 		</td>
 	</tr>
 </table>
