@@ -20,12 +20,17 @@ body.federation-sro.pg-about {
 	background-color: rgba( 244,171,98,0.3);
   border: 1px solid #ab7247;
 
-  ul.sub-menu {
-    margin-left:10px;
-    a {
-        background: none;
+  a {
+          background-color: transparent;
           color: #7d1317;
           text-decoration: underline;
+    }
+
+  ul.sub-menu {
+    margin-left:10px;
+    li.current_page_item  a {
+      color: white;
+      text-decoration: none;
     }
   }
 }
