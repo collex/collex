@@ -19,6 +19,15 @@ body.federation-sro.pg-about {
 #primary .widget-nav-menu {
 	background-color: rgba( 244,171,98,0.3);
   border: 1px solid #ab7247;
+
+  ul.sub-menu {
+    margin-left:10px;
+    a {
+        background: none;
+          color: #7d1317;
+          text-decoration: underline;
+    }
+  }
 }
 
 &.wordpress #main_container #container .widget-nav-menu li.current_page_item a, .singular-page #main_container #container #primary .widget-nav-menu ul li ul.children li.current_page_item a {
