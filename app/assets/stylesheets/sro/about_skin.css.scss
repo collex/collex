@@ -20,13 +20,13 @@ body.federation-sro.pg-about {
   	background-color: rgba( 244,171,98,0.3);
     border: 1px solid #ab7247;
 
-    li.current-menu-item.current_page_item a {
+    li.menu-item.current-menu-item a {
       background-color: #7d1317;
       color: white;
       text-decoration: none;
     }
 
-    a {
+    li.menu-item a {
       background-color: transparent;
       color: #7d1317;
       text-decoration: underline;
@@ -37,6 +37,7 @@ body.federation-sro.pg-about {
       li.current_page_item  a {
         color: white;
         text-decoration: none;
+        background-color: #7d1317;
       }
     }
   }
