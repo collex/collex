@@ -471,6 +471,7 @@ jQuery(document).ready(function($) {
 	   html += "<span id='page-count'>Page Search Results (";
 	   html += obj.total_pages;
 	   html += ")</span>";
+	   html += "<p id='search-hint'>Use search box above to find page-level results</p>";
 	   if ( obj.total_pages > obj.pages.length ) {
 	     html += "<div class='pages pagination'></div>";
 	   }

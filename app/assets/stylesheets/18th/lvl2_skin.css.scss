@@ -15,7 +15,12 @@
 // ---------------------------------------------------------------------------- */
 
 body.federation-18th.pg-lvl2 {
-
+  #search-hint {
+      margin: 6px 0 0 0;
+      font-size: 0.8em;
+      color: #999;
+      font-weight: 100;
+  }
   .category-btn {
     font-weight:bold;
     cursor: pointer;
