@@ -313,6 +313,8 @@ task :setup_config do
    puts "!!! Also create the database in mysql. Use the following in mysql to create the database:"
    puts "\tCREATE DATABASE [NODENAME]_production;"
    puts "\tGRANT ALL ON [NODENAME]_production.* TO '[USERNAME]'@'localhost' IDENTIFIED BY '[PASSWORD]';"
+   puts "\nAlso, after deploying the first time, call this rake task:"
+   puts "\trake bootstrap:globals url=http://edge-catalog.ar-c.org"
    puts "!!!#{reset}"
 end
 
