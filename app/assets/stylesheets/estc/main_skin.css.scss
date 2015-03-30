@@ -1,0 +1,250 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.federation-estc {
+	background:#81b4ac;
+
+#header_container {
+	background-color: #34645C;
+}
+
+#main_container {
+	border-left:10px #34645c solid;
+	border-right:10px #34645c solid;
+	border-bottom:10px #34645c solid;
+}
+
+#footer_container {
+	background:#81b4ac;
+}
+
+.exhibit_footer {
+	background-color: #34645c;
+}
+
+.tab_link {
+	background:image-url('collex/index_tab.gif') top left no-repeat;
+	color:#ffffff;
+	top: 96px;
+	padding-top: 4px;
+}
+
+.tab_link_current {
+	background:image-url('collex/index_tab_dn.gif') top left no-repeat;
+	padding-top: 4px;
+}
+
+.tab_link_long,.tab_link_logo {
+	background:image-url('collex/index_tab_long.gif') top left no-repeat;
+	color:#ffffff;
+	top: 96px;
+	padding-top: 4px !important;
+}
+
+.tab_link_long_current,.tab_link_logo_current {
+	background:image-url('collex/index_tab_long_dn.gif') top left no-repeat;
+	padding-top: 4px;
+}
+
+.tab_link:active, .tab_link_long:active, .tab_link_logo:active, .tab_link:visited, .tab_link_long:visited, .tab_link_logo:visited, .tab_link:hover, .tab_link_long:hover, .tab_link_logo:hover {
+	color:#ffffff;
+}
+
+	&.pg-lvl1 #nav_container {
+		top: 127px;
+	}
+
+	&.pg-lvl1 a.my_collex_link {
+		top: 127px;
+	}
+a.my_collex_link {
+	color:#55220F;
+	background:image-url('collex/index_tab_my_collex.gif') top left no-repeat;
+	top: 89px;
+	padding-top: 4px;
+}
+
+.my_collex_link:active, .my_collex_link:visited, .my_collex_link:hover {
+	color:#55220F;
+}
+
+.tab_link_logo{
+	background:image-url('collex/index_tab.gif') top left no-repeat;
+	color:#ffffff;
+}
+
+#footer_container {
+	color:#ffffff;
+}
+
+.right_column, .search-result-sub {
+	background:#edf4f2;
+}
+
+.nav_link, .nav_link:link, .nav_link:visited {
+	color:#AC2E20;
+}
+
+.tag_link:link { color: #A60000; }
+.tag_link:visited { color: #A60000; }
+.tag_link:hover { color: #fff; background: #A60000; }
+
+/* This is used for all links that change, or potentially change, the database */
+.modify_link, .modify_link:link { color: #A60000; text-decoration: none; }
+.modify_link:visited { color: #A60000; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+/* This is used for all links that go to the NINES sites. */
+.nines_link { background: image-url('collex/collex_link.jpg') center right no-repeat; }
+.nines_link:link { color: #A60000; }
+.nines_link:visited { color: #A60000; }
+.nines_link:hover { color: #fff; background: #A60000; }
+
+/* This is used for all links that go to external websites */
+&.wordpress #container .ext_link:link { color: #A60000; text-decoration: none; }
+&.wordpress #container .ext_link:visited { color: #A60000; text-decoration: none; }
+&.wordpress #container .ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+
+/* These are used to make non-links look like links for the exhibit builder. */
+.nines_linklike {
+	background: image-url('collex/collex_link.jpg') center right no-repeat;
+	color: #A60000;
+} /* should match nines_link:link */
+
+.ext_linklike {
+	color: #A60000;
+} /* should match ext_link:link */
+
+.carousel_title {
+	color: #ffe6b7;
+}
+
+#footer_container a, #footer_container a.link, #footer_container a.visited{
+	color:#9D1E16;
+}
+
+.login_div {
+	background-image:image-url('collex/login_header.jpg');
+	background-repeat:no-repeat;
+	border-left: 8px solid #5f3119;
+	border-right: 8px solid #5f3119;
+	border-bottom: 8px solid #5f3119;
+}
+
+.search_result_buttons a, .search_result_buttons button {
+	background:transparent image-url('collex/lvl2_result_row_button.jpg') no-repeat scroll left top;
+}
+
+.search_result_buttons a:hover, .search_result_buttons button:hover {
+	background:image-url('collex/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
+}
+
+/*********************************/
+/* styles for all javascript-created dialogs */
+/*********************************/
+
+ .container-close {
+	background:transparent image-url('collex/popup_box_x.gif') no-repeat scroll 0 0;
+	height: 19px;
+}
+
+ .container-close:hover {
+	background:transparent image-url('collex/popup_box_x_rl.gif') no-repeat scroll 0 0;
+}
+
+ .yui-panel .hd {
+	background: transparent image-url('collex/popup_box_header.jpg') repeat-y scroll 0 0;
+	color: white;
+	font-family: Verdana, sans-serif;
+	font-weight: bold;
+}
+
+ .yui-button {
+	background: transparent image-url('collex/button.jpg') repeat-y scroll 0 0;
+	border: 0;
+   position: relative;
+   top: 2px;
+}
+
+.yui-button .first-child {
+   border: 0;
+}
+
+div.edit_bar .yui-button.yui-menu-button {
+   background: transparent url('http://yui.yahooapis.com/2.9.0/build/assets/skins/sam/sprite.png') repeat-x scroll 0 0;
+}
+
+ .button_tab_selected {
+	background: transparent image-url('collex/attachment_button_down.jpg') repeat-y scroll 0 0;
+}
+
+.yui-link-button-hover,  .yui-push-button-hover{
+   color: white;
+   background-image: image-url('collex/attachment_button_down.jpg');
+   border: 0;
+}
+.yui-button-hover a {
+   color: white;
+}
+.yui-push-button-hover button {
+   color: white;
+}
+	// TODO-PER: This is needed to correct for a specificity problem in the above css
+	 .yui-toolbar-container .yui-push-button, .yui-toolbar-container .yui-color-button, .yui-toolbar-container .yui-menu-button{background:url(http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/sprite.png) repeat-x 0 0;position:relative;display:block;height:22px;width:30px;_font-size:0;margin:0;border-color:#808080;color:#f2f2f2;border-style:solid;border-width:1px 0;zoom:1;}
+	 .yui-toolbar-container .yui-push-button a, .yui-toolbar-container .yui-color-button a, .yui-toolbar-container .yui-menu-button a{padding-left:35px;height:20px;text-decoration:none;font-size:0;line-height:2;display:block;color:#000;overflow:hidden;white-space:nowrap;}
+	 .yui-toolbar-container .yui-toolbar-spinbutton a, .yui-toolbar-container .yui-toolbar-select a{font-size:12px;}
+	 .yui-toolbar-container .yui-push-button .first-child, .yui-toolbar-container .yui-color-button .first-child, .yui-toolbar-container .yui-menu-button .first-child{border-color:#808080;border-style:solid;border-width:0 1px;margin:0 -1px;display:block;position:relative;}
+	 .yui-toolbar-container .yui-push-button-disabled .first-child, .yui-toolbar-container .yui-color-button-disabled .first-child, .yui-toolbar-container .yui-menu-button-disabled .first-child{border-color:#ccc;}
+	 .yui-toolbar-container .yui-push-button-disabled a, .yui-toolbar-container .yui-color-button-disabled a, .yui-toolbar-container .yui-menu-button-disabled a{color:#A6A6A6;cursor:default;}
+	 .yui-toolbar-container .yui-push-button-disabled, .yui-toolbar-container .yui-color-button-disabled, .yui-toolbar-container .yui-menu-button-disabled{border-color:#ccc;}
+	 .yui-toolbar-container .yui-button .first-child{*left:0;}
+	 .yui-toolbar-container .yui-toolbar-fontname{width:135px;} .yui-toolbar-container .yui-toolbar-heading{width:92px;}
+	 .yui-toolbar-container .yui-button-hover{background:url(http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/sprite.png) repeat-x 0 -1300px;border-color:#808080;}
+	 .yui-toolbar-container .yui-button-selected{background:url(http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/sprite.png) repeat-x 0 -1700px;border-color:#808080;}
+	 .yui-toolbar-container .yui-toolbar-nogrouplabels h3{display:none;}
+	 .yui-toolbar-container .yui-toolbar-nogrouplabels .yui-toolbar-group{margin-top:.75em;}
+	 .yui-toolbar-container .yui-push-button span.yui-toolbar-icon, .yui-toolbar-container .yui-color-button span.yui-toolbar-icon, .yui-toolbar-container .yui-menu-button span.yui-toolbar-icon{display:block;position:absolute;top:2px;height:18px;width:18px;overflow:hidden;background:url(http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/editor-sprite.gif) no-repeat 30px 30px;}
+	 .yui-toolbar-container .yui-button-selected span.yui-toolbar-icon, .yui-toolbar-container .yui-button-hover span.yui-toolbar-icon{background-image:url(http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/editor-sprite-active.gif);}
+	 .yui-toolbar-container .visible .yuimenuitemlabel{cursor:pointer;color:#000;*position:relative;}
+	 .yui-toolbar-container .yui-button-menu{background-color:#fff;}
+	 .yui-toolbar-container .yui-button-menu .yui-menu-body-scrolled{position:relative;}
+	 div.yuimenu li.selected{background-color:#B3D4FF;}
+	 div.yuimenu li.selected a.selected{color:#000;}
+	 .yui-toolbar-container .yui-toolbar-bold span.yui-toolbar-icon{background-position:0 0;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-strikethrough span.yui-toolbar-icon{background-position:0 -108px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-italic span.yui-toolbar-icon{background-position:0 -36px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-undo span.yui-toolbar-icon{background-position:0 -1326px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-redo span.yui-toolbar-icon{background-position:0 -1355px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-underline span.yui-toolbar-icon{background-position:0 -72px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-subscript span.yui-toolbar-icon{background-position:0 -180px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-superscript span.yui-toolbar-icon{background-position:0 -144px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-forecolor span.yui-toolbar-icon{background-position:0 -216px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-backcolor span.yui-toolbar-icon{background-position:0 -288px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-justifyleft span.yui-toolbar-icon{background-position:0 -324px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-justifycenter span.yui-toolbar-icon{background-position:0 -360px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-justifyright span.yui-toolbar-icon{background-position:0 -396px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-justifyfull span.yui-toolbar-icon{background-position:0 -432px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-indent span.yui-toolbar-icon{background-position:0 -720px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-outdent span.yui-toolbar-icon{background-position:0 -684px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-createlink span.yui-toolbar-icon{background-position:0 -792px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-insertimage span.yui-toolbar-icon{background-position:1px -756px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-left span.yui-toolbar-icon{background-position:0 -972px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-right span.yui-toolbar-icon{background-position:0 -936px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-inline span.yui-toolbar-icon{background-position:0 -900px;left:5px;}
+	 .yui-toolbar-container .yui-toolbar-insertunorderedlist span.yui-toolbar-icon {background-position: 0 -468px;left: 5px;}
+	 .yui-toolbar-container .yui-toolbar-insertorderedlist span.yui-toolbar-icon {background-position: 0 -504px;left: 5px;}
+
+}

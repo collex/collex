@@ -4,11 +4,13 @@
 # cap edge_mesa
 # cap edge_modnets
 # cap edge_sro
+# cap edge_estc
 # cap prod_nines
 # cap prod_18th
 # cap prod_mesa
 # cap prod_modnets
 # cap prod_sro
+# cap prod_estc
 
 require 'rvm/capistrano'
 require 'bundler/capistrano'
@@ -43,11 +45,13 @@ task :menu do
       '3' => { name: "cap edge_mesa", computer: 'edge', skin: 'mesa' },
       '4' => { name: "cap edge_modnets", computer: 'edge', skin: 'modnets' },
       '5' => { name: "cap edge_sro", computer: 'edge', skin: 'sro' },
+      'e' => { name: "cap edge_estc", computer: 'edge', skin: 'estc' },
       '6' => { name: "cap prod_nines", computer: 'prod', skin: 'nines' },
       '7' => { name: "cap prod_18th", computer: 'prod', skin: '18th' },
       '8' => { name: "cap prod_mesa", computer: 'prod', skin: 'mesa' },
       '9' => { name: "cap prod_modnets", computer: 'prod', skin: 'modnets' },
-      '10' => { name: "cap prod_sro", computer: 'prod', skin: 'sro' }
+      'S' => { name: "cap prod_sro", computer: 'prod', skin: 'sro' },
+      'E' => { name: "cap prod_estc", computer: 'prod', skin: 'estc' }
    }
 
    tasks.each { |key, value|
@@ -69,7 +73,7 @@ task :menu do
       puts "Deploying..."
       after :menu, 'deploy'
    else
-      puts "Not deploying. Please enter a value from 1 - 9."
+      puts "Not deploying. Please enter a character from the list."
    end
 end
 
@@ -119,6 +123,11 @@ task :edge_sro do
    set_application('edge', 'sro')
 end
 
+desc "Run tasks to update edge estc environment."
+task :edge_estc do
+   set_application('edge', 'estc')
+end
+
 desc "Run tasks to update production NINES environment."
 task :prod_nines do
    set_application('prod', 'nines')
@@ -139,9 +148,14 @@ task :prod_mesa do
    set_application('prod', 'modnets')
 end
 
-desc "Run tasks to update edge SRO environment."
+desc "Run tasks to update production SRO environment."
 task :prod_sro do
    set_application('prod', 'sro')
+end
+
+desc "Run tasks to update production estc environment."
+task :prod_estc do
+   set_application('prod', 'estc')
 end
 
 namespace :passenger do
@@ -195,11 +209,13 @@ after :edge_18th, 'deploy'
 after :edge_mesa, 'deploy'
 after :edge_modnets, 'deploy'
 after :edge_sro, 'deploy'
+after :edge_estc, 'deploy'
 after :prod_nines, 'deploy'
 after :prod_18th, 'deploy'
 after :prod_mesa, 'deploy'
 after :prod_modnets, 'deploy'
 after :prod_sro, 'deploy'
+after :prod_estc, 'deploy'
 after :deploy, "deploy:migrate"
 
 after "deploy:stop",    "delayed_job:stop"
@@ -244,6 +260,12 @@ task :edge_sro_setup do
 end
 after :edge_sro_setup, 'deploy:setup'
 
+desc "Set up the edge estc server."
+task :edge_estc_setup do
+   set_application('edge', 'estc')
+end
+after :edge_estc_setup, 'deploy:setup'
+
 desc "Set up the prod nines server."
 task :prod_nines_setup do
    set_application('prod', 'nines')
@@ -273,6 +295,12 @@ task :prod_sro_setup do
    set_application('prod', 'sro')
 end
 after :prod_sro_setup, 'deploy:setup'
+
+desc "Set up the prod estc server."
+task :prod_estc_setup do
+   set_application('prod', 'estc')
+end
+after :prod_estc_setup, 'deploy:setup'
 
 desc "Set up the edge server's config."
 task :setup_config do
