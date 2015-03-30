@@ -153,6 +153,9 @@
 	</table>
 
 	<h1 class="expander" data-target="solr_table">Solr</h1>
+		<% if @solr_error %>
+		<p class="search_error_message"><%= @solr_error %></p>
+		<% end %>
 	<table id="solr_table" class="hidden">
 	  <input type="hidden" id="setups_federations" name="setups[federations]" value="<%= @federations %>"/>
 		<%= setup_line("ARC Catalog location:", "site_solr_url", @setups,
