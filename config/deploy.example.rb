@@ -310,7 +310,9 @@ task :setup_config do
    puts ""
    puts "#{red}!!!"
    puts "!!! Now create the database.yml and site.yml files in the shared folder on the server."
-   puts "!!! Also create the database in mysql."
+   puts "!!! Also create the database in mysql. Use the following in mysql to create the database:"
+   puts "\tCREATE DATABASE [NODENAME]_production;"
+   puts "\tGRANT ALL ON [NODENAME]_production.* TO '[USERNAME]'@'localhost' IDENTIFIED BY '[PASSWORD]';"
    puts "!!!#{reset}"
 end
 
