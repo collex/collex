@@ -1,0 +1,119 @@
+/* ------------------------------------------------------------------------
+//     Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+//
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
+// ---------------------------------------------------------------------------- */
+
+body.federation-estc.pg-lvl2 {
+
+.category-btn {
+  font-weight:bold;
+  cursor: pointer;
+  img {
+    margin-right:16px;
+  }
+}
+td.limit_to_lvl3 {
+  padding-left: 50px;
+}
+
+
+#header_left {
+	width:755px;
+	height:89px;
+	float:left;
+	background:image-url('collex/lvl2_header.jpg') top left no-repeat;
+}
+
+div#header_container {
+	background:image-url('collex/index_header_stretch.jpg') bottom left repeat-x;
+	height: 114px;
+}
+
+.my_collex_link {
+	background:image-url('collex/lvl2_tab_my_collex.gif') top left no-repeat;
+}
+
+.my_collex_link_current {
+	background:image-url('collex/lvl2_tab_my_collex_dn.gif') top left no-repeat;
+}
+
+.right_column_header {
+	color:#1e312d;
+	background:#1e312d;
+}
+
+.limit_to th {
+	background:#88b72d;
+	color:#4d7f74;
+}
+
+.new_search {
+	background:image-url('collex/lvl2_new_search.jpg') top left no-repeat;
+	font-size: 0;
+}
+
+.new_search:hover {
+	background:image-url('collex/lvl2_new_search_rl.jpg') top left no-repeat;
+}
+
+.result_row_collected {
+	background:transparent image-url('collex/search_collected_gradient.jpg') repeat-y;
+}
+
+.FP_attachment_collected {
+	background:transparent image-url('collex/forum_collected_gradient.jpg') repeat-x scroll 0 0;
+}
+
+#group_details {
+	background: image-url('collex/groups_header_background.jpg') repeat-x bottom;
+}
+
+.free_culture {
+	background-image: image-url('collex/free_culture.gif');
+}
+
+.full_text {
+	background-image: image-url('collex/full_text.gif');
+}
+
+.has_xml_source {
+	background-image: image-url('collex/has_xml_source.gif');
+}
+
+.free_culture:hover {
+	background-image: image-url('collex/free_culture_hover.gif');
+}
+
+.full_text:hover {
+	background-image: image-url('collex/full_text_hover.gif');
+	width:5em;
+}
+
+.has_xml_source:hover {
+	background-image: image-url('collex/has_xml_source.gif');
+	width:5em;
+}
+
+.can_typewright {
+  background-image: image-url('type_wright/collex/typewright_icon.png');
+}
+
+.can_typewright:hover {
+  background-image: image-url('type_wright/collex/typewright_icon_hover.png');
+}
+
+#group_license {
+	background: #371911;
+}
+}

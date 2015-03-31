@@ -17,29 +17,37 @@
 namespace :bootstrap do
 	desc "Set up the database with the minimum required (arg: URL of catalog)"
 	task :globals => :environment do
-		
-		# add roles
-		Role.create :name => "admin", :id => 1
-    Role.create :name => "editor", :id => 2
+		# This can be called with a completely blank database, or it can be called after the initial seeding was done.
+		# We have some tests to be sure that entries aren't created twice.
 
-    # now, create one user as an administrator, so they can bootstrap the system.
-    User.create_user('admin', 'password', '')
-    admin = User.find_by_username('admin')
-    puts admin.roles
-    ar = Role.find_by_name("admin")
-    roles = []
-    roles << ar
-    admin.roles = roles
-    admin.save!
-		
+		# add roles
+		roles = Role.all
+		if roles.length == 0
+			Role.create :name => "admin", :id => 1
+			Role.create :name => "editor", :id => 2
+		end
+
+		# now, create one user as an administrator, so they can bootstrap the system.
+		admin = User.find_by_username('admin')
+		if admin.blank?
+			User.create_user('admin', 'password', '')
+			admin = User.find_by_username('admin')
+			puts admin.roles
+			ar = Role.find_by_name("admin")
+			roles = []
+			roles << ar
+			admin.roles = roles
+			admin.save!
+		end
+
 		# set the catalog url
-		url =  ENV['url']
+		url = ENV['url']
 		rec = Setup.find_by_key('site_solr_url')
 		if rec.present?
 			rec.value = url
 			rec.save!
 		else
-			Setup.create!({ key: 'site_solr_url', value: url })
+			Setup.create!({key: 'site_solr_url', value: url})
 		end
 	end
 end

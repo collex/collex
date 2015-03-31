@@ -23,6 +23,7 @@ class Admin::SetupsController < Admin::BaseController
       feds = []
       setups.each { |setup| @setups[setup.key] = setup.value }
       solr = Catalog.factory_create(session[:use_test_index] == "true")
+	  begin
       solr.get_federations().each do |fed|
          # format: [fed, {data}]
          # see if a setup exists for this fed
@@ -39,7 +40,11 @@ class Admin::SetupsController < Admin::BaseController
          if !found
             @setups[fed_key] = "true"
          end
-      end
+	  end
+	  rescue Catalog::Error => e
+		  puts "*** Error in connecting to catalog: #{e.message}"
+		  @solr_error = e.message
+	  end
       @federations = feds.join(",")
    end
 
