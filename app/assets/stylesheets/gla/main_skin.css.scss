@@ -15,24 +15,26 @@
 // ---------------------------------------------------------------------------- */
 
 body.federation-gla {
-	background:#81b4ac;
+	background:#1a66ad;
 
 #header_container {
 	background-color: #34645C;
 }
 
 #main_container {
-	border-left:10px #34645c solid;
-	border-right:10px #34645c solid;
-	border-bottom:10px #34645c solid;
+	border-left:5px #0d2150 solid;
+	border-right:5px #0d2150 solid;
+	border-bottom:5px #0d2150 solid;
+	border-radius: 0 0 10px 10px;
 }
 
 #footer_container {
-	background:#81b4ac;
+	background:#1a66ad;
+	text-align: center;
 }
 
 .exhibit_footer {
-	background-color: #34645c;
+	background-color: #1a66ad;
 }
 
 .tab_link {
@@ -133,7 +135,7 @@ a.my_collex_link {
 }
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
-	color:#9D1E16;
+	color:#9cb;
 }
 
 .login_div {

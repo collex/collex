@@ -15,88 +15,81 @@
 // ---------------------------------------------------------------------------- */
 
 body.federation-gla.pg-lvl1 {
-#header_container {
-	width:100%;
-	height:155px;
-	background:image-url('gla/index_header_stretch.jpg') top left repeat-x;
-}
 
-#header_right {
-	width:426px;
-	height:152px;
-	float:right;
-	background:image-url('gla/index_header_right.jpg') top left no-repeat;
-	text-align:right;
-}
+  #header_container {
+   width:100%;
+   height:155px;
+   background:image-url('collex/index_header_stretch.jpg') top left repeat-x;
+  }
 
-#header_left1 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:image-url('gla/index_header_left1.jpg') top left no-repeat;
-}
+  #header_right {
+   width:426px;
+   height:152px;
+   float:right;
+   background:image-url('collex/index_header_right.jpg') top left no-repeat;
+   text-align:right;
+  }
 
-#header_left2 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:image-url('gla/index_header_left2.jpg') top left no-repeat;
-}
+  #header_left1 {
+   width:373px;
+   height:152px;
+   float:left;
+   background:image-url('collex/index_header_left1.jpg') top left no-repeat;
+  }
 
-#header_left3 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:image-url('gla/index_header_left3.jpg') top left no-repeat;
-}
+  #header_left2 {
+   width:373px;
+   height:152px;
+   float:left;
+   background:image-url('collex/index_header_left2.jpg') top left no-repeat;
+  }
 
-#header_left4 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:image-url('gla/index_header_left4.jpg') top left no-repeat;
-}
+  #header_left3 {
+   width:373px;
+   height:152px;
+   float:left;
+   background:image-url('collex/index_header_left3.jpg') top left no-repeat;
+  }
 
-#header_left5 {
-	width:373px;
-	height:152px;
-	float:left;
-	background:image-url('gla/index_header_left5.jpg') top left no-repeat;
-}
+  #header_left4 {
+   width:373px;
+   height:152px;
+   float:left;
+   background:image-url('collex/index_header_left4.jpg') top left no-repeat;
+  }
 
-#content_container {
-	background:image-url('gla/index_scroll.gif') top center no-repeat;
-}
+  #header_left5 {
+   width:373px;
+   height:152px;
+   float:left;
+   background:image-url('collex/index_header_left5.jpg') top left no-repeat;
+  }
 
-#carousel_container {
-	background:image-url('gla/index_flash_background.jpg') top center repeat-x;
-}
+  .carousel_background {
+   background:transparent image-url('gla/index_flash_background.jpg') repeat-x scroll center top;
+  }
 
-.carousel_background {
-	background:transparent image-url('gla/index_flash_background.jpg') repeat-x scroll center top;
-}
+   .yui-carousel-nav ul li {
+   background:transparent image-url('gla/carousel_dot_unselected.jpg') no-repeat scroll 0 50%;
+  }
 
- .yui-carousel-nav ul li {
-	background:transparent image-url('gla/carousel_dot_unselected.jpg') no-repeat scroll 0 50%;
-}
+   .yui-carousel-nav ul li.yui-carousel-nav-page-selected {
+   background:transparent image-url('gla/carousel_dot_selected.jpg') no-repeat scroll 0 50%;
+  }
 
- .yui-carousel-nav ul li.yui-carousel-nav-page-selected {
-	background:transparent image-url('gla/carousel_dot_selected.jpg') no-repeat scroll 0 50%;
-}
+  #carousel_left {
+   background:transparent image-url('gla/carousel_left_arrow.jpg') no-repeat scroll 0 0;
+  }
+  #carousel_right {
+   background:transparent image-url('gla/carousel_right_arrow.jpg') no-repeat scroll 0 0;
+  }
 
-#carousel_left {
-	background:transparent image-url('gla/carousel_left_arrow.jpg') no-repeat scroll 0 0;
-}
-#carousel_right {
-	background:transparent image-url('gla/carousel_right_arrow.jpg') no-repeat scroll 0 0;
-}
+  #carousel_left.yui-carousel-first-button-disabled {
+   background:transparent image-url('gla/carousel_left_off.gif') no-repeat scroll 0 0;
+  }
 
-#carousel_left.yui-carousel-first-button-disabled {
-	background:transparent image-url('gla/carousel_left_off.gif') no-repeat scroll 0 0;
-}
-
-#carousel_right.yui-carousel-button-disabled {
-	background:transparent image-url('gla/carousel_right_off.gif') no-repeat scroll 0 0;
-}
+  #carousel_right.yui-carousel-button-disabled {
+   background:transparent image-url('gla/carousel_right_off.gif') no-repeat scroll 0 0;
+  }
 
 }
