@@ -56,4 +56,14 @@ Navigate to the WordPress administration panel. Choose Appearance and Install Th
 Install the Hybrid theme (http://wordpress.org/extend/themes/hybrid) and 
 the Rails Theme (http://wordpress.org/extend/plugins/rails-theme/)
 
+After plugins are installed, navigate to the Rails plugin settings.
+Set the base URL to match the installed site.
+Set Body class to something like this: federation-[FEDERATION] pg-[about or news] pg-lvl2
+
+Other WP settings:
+Reading - set front page to static
+Discussion - turn off all default article settings (no discussions)
+Permalinks - use the 'Post name' setting
+
+
 

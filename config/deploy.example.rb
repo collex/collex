@@ -92,7 +92,7 @@ def set_application(section, skin)
 
    role :web, "#{application}"                          # Your HTTP server, Apache/etc
    role :app, "#{application}"                          # This may be the same as your `Web` server
-   role :db,  "#{application}", :primary => true      # This is where Rails migrations will run
+   role :db,  "#{application}", :primary => true        # This is where Rails migrations will run
    set :skin, skin
 
   # Manage whenever crontab entry specific to each site
