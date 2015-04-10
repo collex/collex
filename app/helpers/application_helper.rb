@@ -154,7 +154,7 @@ private
   end
 
   def draw_tabs(curr_page)
-    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => (SKIN != 'sro') }]
+    tabs = [{ :name => 'HOME', :link => '/', :dont_show_yourself => (SKIN != 'sro' && SKIN != 'gla') }]
 
     tabs.push({ :name => 'News', :link => news_path + '/', :use_logo_style => true }) if Setup.display_news_tab?
     tabs.push({ :name => 'Classroom', :link => '/classroom', :use_long => true }) if Setup.display_classroom_tab?
