@@ -42,11 +42,11 @@ body.federation-gla {
 }
 
 .right_column, .search-result-sub {
-	background:#edf4f2;
+	background:#eff5ff;
 }
 
 .nav_link, .nav_link:link, .nav_link:visited {
-	color:#AC2E20;
+	color:#335;
 }
 
 &.pg-lvl1 #nav_container {
@@ -98,38 +98,38 @@ a.tab_link_long, a.tab_link_logo, a.tab_link,  a.my_collex_link {
 }
 
 
-.tag_link:link { color: #A60000; }
-.tag_link:visited { color: #A60000; }
-.tag_link:hover { color: #fff; background: #A60000; }
+.tag_link:link { color: #335; }
+.tag_link:visited { color: #335; }
+.tag_link:hover { color: #fff; background: #335; }
 
 /* This is used for all links that change, or potentially change, the database */
-.modify_link, .modify_link:link { color: #A60000; text-decoration: none; }
-.modify_link:visited { color: #A60000; text-decoration: none; }
-.modify_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+.modify_link, .modify_link:link { color: #335; text-decoration: none; }
+.modify_link:visited { color: #335; text-decoration: none; }
+.modify_link:hover { color: #fff; background: #335; text-decoration: none; }
 
 /* This is used for all links that go to the NINES sites. */
 .nines_link { background: image-url('gla/collex_link.jpg') center right no-repeat; }
-.nines_link:link { color: #A60000; }
-.nines_link:visited { color: #A60000; }
-.nines_link:hover { color: #fff; background: #A60000; }
+.nines_link:link { color: #335; }
+.nines_link:visited { color: #335; }
+.nines_link:hover { color: #fff; background: #335; }
 
 /* This is used for all links that go to external websites */
-&.wordpress #container .ext_link:link { color: #A60000; text-decoration: none; }
-&.wordpress #container .ext_link:visited { color: #A60000; text-decoration: none; }
-&.wordpress #container .ext_link:hover { color: #fff; background: #A60000; text-decoration: none; }
+&.wordpress #container .ext_link:link { color: #335; text-decoration: none; }
+&.wordpress #container .ext_link:visited { color: #335; text-decoration: none; }
+&.wordpress #container .ext_link:hover { color: #fff; background: #335; text-decoration: none; }
 
 /* These are used to make non-links look like links for the exhibit builder. */
 .nines_linklike {
 	background: image-url('gla/collex_link.jpg') center right no-repeat;
-	color: #A60000;
+	color: #335;
 } /* should match nines_link:link */
 
 .ext_linklike {
-	color: #A60000;
+	color: #335;
 } /* should match ext_link:link */
 
 #footer_container a, #footer_container a.link, #footer_container a.visited{
-	color:#9cb;
+	color:#225;
 }
 
 .login_div {
@@ -141,11 +141,15 @@ a.tab_link_long, a.tab_link_logo, a.tab_link,  a.my_collex_link {
 }
 
 .search_result_buttons a, .search_result_buttons button {
-	background:transparent image-url('gla/lvl2_result_row_button.jpg') no-repeat scroll left top;
-}
-
-.search_result_buttons a:hover, .search_result_buttons button:hover {
-	background:image-url('gla/lvl2_result_row_button_rl.jpg') no-repeat scroll left top;
+	font-size: 0.95em;
+   border-radius: 4px;
+   color: white;
+   background-color: #1a66ad;
+   border: 1px solid #036;
+   cursor: pointer;
+   &:hover {
+      background-color: #49c;
+   }
 }
 
 /*********************************/
@@ -153,8 +157,8 @@ a.tab_link_long, a.tab_link_logo, a.tab_link,  a.my_collex_link {
 /*********************************/
 
  .container-close {
-	background:transparent image-url('gla/popup_box_x.gif') no-repeat scroll 0 0;
 	height: 19px;
+	display: none;
 }
 
  .container-close:hover {
@@ -162,21 +166,26 @@ a.tab_link_long, a.tab_link_logo, a.tab_link,  a.my_collex_link {
 }
 
  .yui-panel .hd {
-	background: transparent image-url('gla/popup_box_header.jpg') repeat-y scroll 0 0;
+	background: #0d2150;
 	color: white;
 	font-family: Verdana, sans-serif;
 	font-weight: bold;
 }
 
  .yui-button {
-	background: transparent image-url('gla/button.jpg') repeat-y scroll 0 0;
+	background: #1a66ad;
 	border: 0;
    position: relative;
    top: 2px;
+   font-weight: 100;
+   border-radius: 5px;
 }
 
 .yui-button .first-child {
    border: 0;
+   button {
+      color: white;
+   }
 }
 
 div.edit_bar .yui-button.yui-menu-button {
@@ -189,7 +198,7 @@ div.edit_bar .yui-button.yui-menu-button {
 
 .yui-link-button-hover,  .yui-push-button-hover{
    color: white;
-   background-image: image-url('gla/attachment_button_down.jpg');
+   background: #49c;
    border: 0;
 }
 .yui-button-hover a {

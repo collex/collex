@@ -16,6 +16,14 @@
 
 body.federation-gla.pg-lvl2 {
 
+.search_help_tooltip {
+   color: #335;
+   border: 1px solid #0d2150;
+   border-radius: 5px;
+   background-color: #eff5ff;
+   box-shadow: 2px 2px 10px #ccc;
+}
+
 .category-btn {
   font-weight:bold;
   cursor: pointer;
@@ -23,6 +31,13 @@ body.federation-gla.pg-lvl2 {
     margin-right:16px;
   }
 }
+
+.search_name_facet {
+   background-color: #eff5ff;
+   border: 1px solid #0d2150;
+   border-radius: 5px;
+}
+
 td.limit_to_lvl3 {
   padding-left: 50px;
 }
@@ -60,27 +75,37 @@ div#header_container {
    left: 37px;
 }
 
+.right_column {
+    padding: 0px 0px 0px 0px;
+    border: 1px solid #0d2150;
+  }
+
 .right_column_header {
-	color:#1e312d;
-	background:#1e312d;
+	color:white;
+	background:#0d2150;
 }
 
 .limit_to th {
-	background:#88b72d;
-	color:#4d7f74;
+	background:#1a66ad;
+	color:white;
+	text-align: left;
 }
 
 .new_search {
-	background:image-url('gla/lvl2_new_search.jpg') top left no-repeat;
-	font-size: 0;
-}
-
-.new_search:hover {
-	background:image-url('gla/lvl2_new_search_rl.jpg') top left no-repeat;
+   font-size: 0.6em;
+   border-radius: 4px;
+   color: white;
+   background-color: #1a66ad;
+   border: 1px solid #036;
+   cursor: pointer;
+   &:hover {
+      background-color: #49c;
+   }
 }
 
 .result_row_collected {
 	background:transparent image-url('gla/search_collected_gradient.jpg') repeat-y;
+	border-radius: 10px 0 0 10px;
 }
 
 .FP_attachment_collected {
