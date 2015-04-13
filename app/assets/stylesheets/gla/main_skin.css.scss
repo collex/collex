@@ -16,6 +16,16 @@
 
 body.federation-gla {
 	background:#1a66ad;
+	
+.subpage_nav {
+  text-align: center;
+  background-color: #1a66ad;
+  color: white;
+  padding: 2px 0;
+  a.nav_link {
+    color: white;
+  }
+}	
 
 #header_container {
 	background-color: #34645C;
@@ -183,7 +193,7 @@ a.tab_link_long, a.tab_link_logo, a.tab_link,  a.my_collex_link {
 
 .yui-button .first-child {
    border: 0;
-   button {
+   button, a {
       color: white;
    }
 }
