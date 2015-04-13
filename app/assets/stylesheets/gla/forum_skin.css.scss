@@ -16,8 +16,9 @@
 
 body.federation-gla.pg-forum {
 .FH_cat_header {
-	background:#914C29;
+	background:#0d2150;
 	color:#FFFFFF;
+	border-radius: 5px 5px 0 0 ;
 }
 
 .FH_cat_header a {
@@ -25,7 +26,8 @@ body.federation-gla.pg-forum {
 }
 
 .FH_cat_info {
-	background:#F7ECDB;
+	background:#C0DAF3;
+	border-radius: 0 0 5px 5px;
 }
 
 .FH_post {
@@ -33,24 +35,26 @@ body.federation-gla.pg-forum {
 }
 
 .FP_original_post {
-	background: #F7ECDB;
+   background: #C0DAF3;
+   border: 1px solid #0d2150;
+   border-radius: 5px;
 }
 
 .FP_user_img {
-	border: 2px solid #7F5C52;
+	border: 2px solid #0d2150;
 }
 
 .FP_reply_header {
-	border-top: 2px solid #966C54;
-	border-bottom: 2px solid #966C54;
+	border-top: 2px solid #0d2150;
+	border-bottom: 2px solid #0d2150;
 }
 
 .FP_reply_footer {
-	border-bottom: 2px solid #966C54;
+	border-bottom: 2px solid #0d2150;
 }
 
 .FP_reply_container {
-	border-bottom: 2px solid #966C54;
+	border-bottom: 2px solid #0d2150;
 }
 
 .FC_pages {
