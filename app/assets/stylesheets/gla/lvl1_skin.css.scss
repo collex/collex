@@ -42,7 +42,12 @@ body.federation-gla.pg-lvl1 {
      font-family: Arial, Helvetica, sans-serif;
      font-weight: 100;
    }
-  
+   
+   
+   #content_container {
+      background:image-url('gla/gl_watermark.png') top center no-repeat;
+   }
+     
   .carousel_background {
    background:transparent image-url('gla/index_flash_background.jpg') repeat-x scroll center top;
   }

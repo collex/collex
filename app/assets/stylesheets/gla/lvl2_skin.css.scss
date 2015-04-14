@@ -16,6 +16,36 @@
 
 body.federation-gla.pg-lvl2 {
 
+#edit_exhibit_outline {
+   padding: 0;
+
+   .selected_page {
+      background-color: #1A66AB;
+      padding: 1px;
+   }
+
+   .outline_tree_elements {
+      padding: 2px;
+   }
+
+   .outline_element {
+      border: 1px dashed #1A66AB;
+      padding: 4px 0px 4px 1px;
+      border-radius: 4px;
+
+      .count a {
+         background-color: #1A66AB;
+         margin: 2px;
+         border-radius: 10px;
+      }
+   }
+
+   .outline_tree_element_selected {
+      border: 1px dashed #1A66AB;
+      background-color: #C0DAF3;
+   }
+}
+
 .search_help_tooltip {
    color: #335;
    border: 1px solid #06224C;
@@ -232,4 +262,24 @@ td.query_term, td.query_remove, td.saved_search_link {
 #group_license {
 	background: #371911;
 }
+
+.superscript {
+   color: #06224C;
+}
+
+.exhibit_nextlink a,  .exhibit_prevlink a{
+  background: #1A66AB none repeat scroll 0 0;
+  border: 1px solid #06224C;
+  clear: both;
+  font-size: 1.1em;
+  margin: 1em 0;
+  padding: 3px 10px;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  &:hover {
+      background-color: #49c;
+   }
+}
+
 }
