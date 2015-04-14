@@ -20,12 +20,14 @@
 	# If there are constraints and results, then the Search Results view is shown. -%>
 <%-%>
 <% current_page "Search" -%>
+<% if SKIN != "gla" %>
 <%# for preloading the hover images so there is no flashing. -%>
 <%= image_tag("#{SKIN}/lvl2_new_search_rl.jpg", {alt: '', style: 'display:none;'}) %>
 <%= image_tag("#{SKIN}/lvl2_result_row_button_rl.jpg", {alt: '', style: 'display:none;'}) %>
 <%= image_tag("#{SKIN}/free_culture_hover.gif", {alt: '', style: 'display:none;'}) %>
 <%= image_tag("#{SKIN}/full_text_hover.gif", {alt: '', style: 'display:none;'}) %>
 <%= image_tag("#{SKIN}/has_xml_source_hover.gif", {alt: '', style: 'display:none;'}) %>
+<% end %>
 
 <% if session[:use_test_index] == "true" -%>
 	<div class="right_column_header">USING TEST INDEX</div>
