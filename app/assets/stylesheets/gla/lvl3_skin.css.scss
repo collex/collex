@@ -16,11 +16,19 @@
 
 body.federation-gla.pg-lvl3 {
 
+#header_container {
+   height: 45px;
+}
 #header_left {
-	width:735px;
-	height:33px;
+	width:131px;
+	height:40px;
 	float:left;
-	background:image-url('gla/lvl3_header.jpg') top left no-repeat;
+	margin: 3px 3px;
+	background:image-url('gla/gla_logo_3.png') top left no-repeat;
+}
+
+#menu-bkg {
+   display:none;
 }
 
 .not_peer_reviewed {
@@ -29,6 +37,21 @@ body.federation-gla.pg-lvl3 {
 
 .superscript {
    color: #06224C;
+}
+
+.exhibit_nextlink a,  .exhibit_prevlink a{
+  background: #1A66AB none repeat scroll 0 0;
+  border: 1px solid #06224C;
+  clear: both;
+  font-size: 1.1em;
+  margin: 1em 0;
+  padding: 3px 10px;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  &:hover {
+      background-color: #49c;
+   }
 }
 
 }

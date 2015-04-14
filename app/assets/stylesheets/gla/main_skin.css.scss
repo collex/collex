@@ -17,6 +17,12 @@
 body.federation-gla {
 	background:#1a66ab;
 	
+#license_list {
+   background-color: #1A66AB;
+   border-radius: 4px;
+   padding: 7px;
+   border: 1px solid #06224C;
+}
 	
 #header_container {
    position: relative;
@@ -53,11 +59,12 @@ body.federation-gla {
 
 #footer_container {
 	background:#1a66ab;
-	text-align: center;
+	font-size: 0.9em;
+   margin: 0 0 10px 30px;
 }
 
 .exhibit_footer {
-	background-color: #1a66ab;
+	background-color: #06224C;
 }
 
 #footer_container {
