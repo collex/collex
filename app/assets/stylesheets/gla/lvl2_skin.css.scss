@@ -83,32 +83,39 @@ td.limit_to_lvl3 {
 }
 
 #nav_container {
- top: 89px;
+ top: 113px;
  right: 35px;
 }
 
 #header_left {
-	width:755px;
-	height:89px;
+	width:328px;
+	height:100px;
 	float:left;
-	background:image-url('gla/lvl2_header.jpg') top left no-repeat;
+	margin: 3px 0 0 3px;
+	background:image-url('gla/gla_logo_sm.png') top left no-repeat;
 }
 
 #header_container {
    position: relative;
    width:100%;
-   height:155px;
+   height:135px;
    background:image-url('gla/website_banner_bkgrnd.png') top left repeat-x;
    border-bottom: 1px solid #06224C;
    background-color: #1A66AB;
    #menu-bkg {
       background-color: #06224C;
       height: 25px;
-  position: relative;
-  top: 130px;
-  opacity: 0.8;
- }
+      position: relative;
+      top: 110px;
+      opacity: 0.8;
+   }
 }
+
+a.my_collex_link {
+   left: 37px;
+   top: 113px;
+}
+
 
 .my_collex_link_current {
 	border-radius: 5px 5px 0 0 ;
@@ -123,6 +130,7 @@ td.limit_to_lvl3 {
    border-bottom: 1px solid white;
    height: 15px;
    left: 37px;
+   top: 113px;
 }
 
 .right_column {
