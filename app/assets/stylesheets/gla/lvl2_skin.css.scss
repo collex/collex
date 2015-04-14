@@ -129,6 +129,17 @@ a.uri_link {
 	background:image-url('gla/gla_logo_sm.png') top left no-repeat;
 }
 
+#header_right {
+  float: right;
+  margin-right: 20px;
+  margin-top: 10px;
+  a {
+   margin-right: 2px;
+   color: white;
+   font-size: 1.0em;
+  }
+}
+
 #header_container {
    position: relative;
    width:100%;
