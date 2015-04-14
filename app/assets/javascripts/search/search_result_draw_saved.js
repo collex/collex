@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
 		return getOrigin() + "/search?" + link;
 	}
 	function createSavedSearchPermalink(link) {
-		var img = window.pss.createHtmlTag("img", { alt: 'Permalink', src: "/assets/link.jpg", title: "Click here to get a permanent link for this saved search." });
+		var img = window.pss.createHtmlTag("img", { alt: 'Permalink', src: "/assets/link.png", title: "Click here to get a permanent link for this saved search." });
 		return window.pss.createHtmlTag("a", { 'class': "nav_link", href: '#', onclick: "window.collex.showString(&quot;" + createSavedSearchLink(link) + "&quot;); return false;" }, img);
 	}
 

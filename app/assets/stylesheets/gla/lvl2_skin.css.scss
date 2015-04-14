@@ -82,6 +82,10 @@ td.limit_to_lvl3 {
   padding-left: 50px;
 }
 
+a.uri_link {
+   color: #55d;   
+}
+
 #nav_container {
  top: 113px;
  right: 35px;
@@ -111,11 +115,26 @@ td.limit_to_lvl3 {
    }
 }
 
+div.new_exhibit_link {
+   border-bottom: 1px solid #06224C;
+   margin-bottom: 3px;
+}
+div.side_bar_exhibit_spacer {
+  border-bottom: 1px solid #06224C; 
+}
 a.my_collex_link {
    left: 37px;
    top: 113px;
 }
 
+table.query {
+  border-top: 1px solid #B0CAE3;
+  border-left: 0; 
+}
+td.query_term, td.query_remove, td.saved_search_link {
+     border-right: 1px solid #B0CAE3;
+  border-bottom: 1px solid #B0CAE3;
+}
 
 .my_collex_link_current {
 	border-radius: 5px 5px 0 0 ;
