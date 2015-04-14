@@ -23,13 +23,24 @@ body.federation-gla.pg-groups {
 	border-right:2px solid gray;
 }
 
+.exhibit_thumbnail {
+  padding: 4px;
+  border-radius: 5px;
+}
+
+li.empty_list_text {
+   color: #777777;
+}
+
 #group_license {
 	color: white;
+	background: #06224C !important;
+   border-radius: 0 0 4px 4px;
 }
 
 .group_header {
-	color:black;
-	background:#B99A86;
+	color: white;
+	background:#1a66ab;
 }
 
 .set_exhibit_style {
@@ -41,12 +52,13 @@ body.federation-gla.pg-groups {
 }
 
 .group_only {
-	border-top: 1px solid #b7bdb3;
-	border-bottom: 1px solid #b7bdb3;
-	background-color: #e4e6e5;
+   border-top: 1px solid #06224C;
+   border-bottom: 1px solid #06224C;
+   background-color: #C0DAF3;
 }
 
 .group_only_text {
-	color: #b5b5b5;
+	color: #57b;
+	margin: 2px 0;
 }
 }
