@@ -1,0 +1,30 @@
+<% #
+    # ------------------------------------------------------------------------
+    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #    http://www.apache.org/licenses/LICENSE-2.0
+  
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    # ---------------------------------------------------------------------------- -%>
+<%#  result_row_for_popup_buttons parameters: hit hit, index, partial, target_el  -%>
+<script type="text/javascript">
+   redrawResultRowForPopupButtons = function() {
+      serverAction({ action: { actions: '/results/redraw_result_row_for_popup_buttons', els: 'search_result_buttons', params: { uri: '<%=hit['uri']%>', index: <%=index%>, partial: '<%=partial%>', target_el: '<%=target_el%>' } }});
+   }
+</script>
+<% is_collected = result_is_collected(hit) -%>
+<%= result_button("Uncollect", "uncollect_#{index}", "doRemoveCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', redrawResultRowForPopupButtons);", is_collected) %>
+<%= result_button("Exhibit", "exhibit_#{index}", "doAddToExhibit('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', '#{MY_COLLEX_URL}');", is_collected) %>
+<%= result_button("Collect", "collect_#{-1}", "doCollect('#{partial}', '#{hit['uri']}', #{index}, '#{target_el}', #{user_signed_in? ? true : false}, redrawResultRowForPopupButtons);", !is_collected) %>
+<% if COLLEX_PLUGINS['typewright'] && !hit['typewright'].blank? %>
+   <% tw_url = "/typewright/documents/0?uri=#{hit['uri']}"  %>
+   <%= result_button("Edit", "edit_#{index}", "doEditDocument( #{user_signed_in?}, '#{tw_url}' );", true) %>
+<% end %>
