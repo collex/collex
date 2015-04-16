@@ -17,11 +17,32 @@
 body.federation-gla.pg-admin {
 
 #admin_menu {
-	background-color: #81B4AC;
+	background-color: #1a66ab;
+}
+
+table.user_roles th, table.exhibit_category th {
+   background-color: #1a66ab;   
+}
+
+.setup_container {
+   border-color: #06224C;
+   border-radius: 5px;
+}
+
+.apply_changes {
+   background: #1a66ab;
+   color: white;
+   border: 1px solid black;
+   font-weight: 100;
+   border-radius: 5px;
+   &:hover {
+      background-color: #49c;  
+      text-decoration: none; 
+   }
 }
 
 #admin_menu li a {
-	border-left:0.8em solid #81B4AC;
+	border-left:0.8em solid #1a66ab;
 	text-decoration:none;
 }
 

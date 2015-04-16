@@ -27,16 +27,16 @@ body.federation-gla {
 #header_container {
    position: relative;
    width:100%;
-   height:155px;
+   height:159px;
    background:image-url('gla/website_banner_bkgrnd.png') top left repeat-x;
    border-bottom: 1px solid #06224C;
    background-color: #1A66AB;
    #menu-bkg {
       background-color: #06224C;
       height: 25px;
-  position: relative;
-  top: 130px;
-  opacity: 0.8;
+      position: relative;
+      top: 135px;
+      opacity: 0.8;
  }
 }
   
@@ -81,12 +81,12 @@ body.federation-gla {
 }
 
 &.pg-lvl1 #nav_container {
-   top: 133px;
+   top: 137px;
    right: 35px;
 }
 
 &.pg-lvl1 a.my_collex_link {
-   top: 133px;
+   top: 137px;
    left: 37px;
 }
 
