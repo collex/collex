@@ -44,7 +44,6 @@
       <div class="search_result_data_container">
            <table class="search_result_data">
             <%= render :partial => '/results/hit_body', :locals => { :hit => hit, :row_id => row_id, :index => index, :no_links => true } %>
-   
             <tr>
             <% if result_is_collected(hit) -%>
                <td colspan='2'>

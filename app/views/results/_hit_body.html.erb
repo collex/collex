@@ -1,38 +1,38 @@
-<% #
-    # ------------------------------------------------------------------------
-    # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
-    #
-    # Licensed under the Apache License, Version 2.0 (the "License");
-    # you may not use this file except in compliance with the License.
-    # You may obtain a copy of the License at
-    #
-    #    http://www.apache.org/licenses/LICENSE-2.0
+<%#
+  # ------------------------------------------------------------------------
+  # Copyright 2009 Applied Research in Patacriticism and the University of Virginia
+  #
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #    http://www.apache.org/licenses/LICENSE-2.0
+  # 
+  # Unless required by applicable law or agreed to in writing, software
+  # distributed under the License is distributed on an "AS IS" BASIS,
+  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  # See the License for the specific language governing permissions and
+  # limitations under the License.
+  # ---------------------------------------------------------------------------- -%>
   
-    # Unless required by applicable law or agreed to in writing, software
-    # distributed under the License is distributed on an "AS IS" BASIS,
-    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    # See the License for the specific language governing permissions and
-    # limitations under the License.
-    # ---------------------------------------------------------------------------- -%>
 <%# hit_body : parameters: hit, row_id, index, bool no_links -%>
 <%# this needs to be called inside a <table> element -%>
 <% item = get_collected_item(hit) -%>
 <% is_collected = !item.nil?  -%>
 <% tags = Tag.get_tags_for_uri(hit['uri']) -%>
 
-<%################### -%>
 <% rows = [] -%>
 <% result_row_item(rows, :alternative, hit, 'alternative', '', false) %>
 <% result_row_item(rows, :separate_lines, hit, 'source', 'Source', false) %>
 <% result_row_item(rows, :multiple_item, hit, 'role_AUT', 'By', false) %>
 <% result_row_item(rows, :multiple_item, hit, 'role_ART', 'Artist', false) %>
-<%################### -%>
-<%  result_row_collected(rows, is_collected, item) %>
+
+<% result_row_collected(rows, is_collected, item) %>
 <%################### -%>
 <% if no_links -%>
-<% result_row_tags_no_links(rows, "Tags:", tags) -%>
+<%    result_row_tags_no_links(rows, "Tags:", tags) -%>
 <% else # if we want links on the tags -%>
-<% result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, user_signed_in?, is_collected) %>
+<%    result_row_tags_links(rows, index, row_id, hit, "Tags:", tags, item, user_signed_in?, is_collected) %>
 <% end # if no_links -%>
 <%################### -%>
 <% result_row_site(rows, "Site:", hit, 'archive') %>
@@ -48,6 +48,7 @@
 <% result_row_item(rows, :multiple_item, hit, 'role_TRL', 'Translator', true) %>
 <% result_row_item(rows, :multiple_item, hit, 'date_label', 'Date', true) %>
 <% result_row_item(rows, :multiple_item, hit, 'provenance', 'Provenance', true) %>
+
 <%# following roles added for sifter item #2827 in NINES project %>
 <% result_row_item(rows, :multiple_item, hit, 'role_ARC', 'Architect', true) %>
 <% result_row_item(rows, :multiple_item, hit, 'role_BND', 'Binder', true) %>
@@ -91,31 +92,7 @@
 <% result_row_item(rows, :multiple_item, hit, 'role_WDC', 'Wood Cutter', true) %>
 <% result_row_item(rows, :multiple_item, hit, 'hasPart', 'Has Part', true) %>
 <% result_row_item(rows, :multiple_item, hit, 'isPartOf', 'Is Part Of', true) %>
-<%################### -%>
-<% if !no_links -%>
-   <% result_row_exhibits(rows, hit, current_user) %>
-<% end %>
-<% should_show_more = should_show_more_link(no_links, rows) %>
-<%= format_result_rows(rows, should_show_more) %>
-<% if should_show_more -%>
-   <tr id='more-<%= row_id %>' class="more">
-      <td><%= link_to_function("[more...]", "removeHidden('more-#{row_id}', '#{row_id}');", { :id => "more-#{row_id}", :class => 'nav_link' }) %></td>
-   </tr>
-<% end %>
-<%################### -%>
-<% if hit["text"] != nil && hit["text"].to_s.strip().length > 0 -%>
-<tr>
-    <td colspan='2'>
-      <div class="search_result_full_text_label">Excerpt from Full Text:</div>
-        <div id="<%=row_id%>_full_text" class="snippet">
-         <%# We want to escape everything except the bolding so that random control chars can't mess up the display -%>
-         <% t1 = hit["text"].to_s %>
-         <% t2 = t1 %>
-         <% t3 = t2.gsub('&', 'AmPeRsAnD') %>
-         <% t4 = h(t3) %>
-         <% t5 = t4.gsub("&lt;em&gt;", "<em>").gsub("&lt;/em&gt;", "</em>").gsub('AmPeRsAnD', '&') %>
-         <%= raw(t5) %>...
-        </div>
-   </td>
-</tr>
-<% end # if there is a full text excerpt -%>
+
+<%= format_result_rows(rows, false) %>
+
+
