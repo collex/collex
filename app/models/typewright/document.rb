@@ -26,42 +26,42 @@ class Typewright::Document < ActiveResource::Base
 
 	def self.find_by_id(id)
 		begin
-		self.find(:first, :params => { :id => id })
+		   self.find(:first, :params => { :id => id })
 		rescue
 			return nil
 		end
 	end
 
-	def self.get_stats(uri, src, word_stats)
+	def self.get_stats(uri, word_stats)
 		if word_stats
-			self.find(:first, :params => { :id => uri, :stats => true, :wordstats=> word_stats, :src => src })
+			self.find(:first, :params => { :id => uri, :stats => true, :wordstats=> word_stats })
 		else
-			self.find(:first, :params => { :id => uri, :stats => true, :src => src })
+			self.find(:first, :params => { :id => uri, :stats => true })
 		end
 	end
 
-  def self.get_page(uri, page, src, word_stats)
-		if word_stats
-			doc = self.find(:first, :params => { :id => uri, :page => page, :wordstats=> word_stats, :src => src })
-		else
-			doc = self.find(:first, :params => { :id => uri, :page => page, :src => src })
-		end
-    # convert object into hash since that is what page is expecting
-    result = doc.attributes.to_options!
-    result[:img_size] = result[:img_size].attributes.to_options!
-    result[:lines].each_with_index do |line, idx|
-      result[:lines][idx] = line.attributes.to_options!
-      unless result[:lines][idx][:authors].nil?
-        result[:lines][idx][:authors].each_with_index do |author, auth_idx|
-           result[:lines][idx][:authors][auth_idx] = Typewright::User.get_author_fullname(author.federation, author.orig_id)
-        end
+   def self.get_page(uri, page, word_stats)
+      if word_stats
+         doc = self.find(:first, :params => { :id => uri, :page => page, :wordstats=> word_stats })
+      else
+         doc = self.find(:first, :params => { :id => uri, :page => page })
       end
-    end
-    return result
-  end
+      # convert object into hash since that is what page is expecting
+      result = doc.attributes.to_options!
+      result[:img_size] = result[:img_size].attributes.to_options!
+      result[:lines].each_with_index do |line, idx|
+         result[:lines][idx] = line.attributes.to_options!
+         unless result[:lines][idx][:authors].nil?
+            result[:lines][idx][:authors].each_with_index do |author, auth_idx|
+               result[:lines][idx][:authors][auth_idx] = Typewright::User.get_author_fullname(author.federation, author.orig_id)
+            end
+         end
+      end
+      return result
+   end
 
-  def self.get_report_form_url(id, user_id, fullname, email, page, src = :gale)
-	  form_url = "#{self.site}documents/#{id}/report?page=#{page}&src=#{src}&user_id=#{user_id}&fullname=#{fullname}&email=#{email}"
+  def self.get_report_form_url(id, user_id, fullname, email, page)
+	  form_url = "#{self.site}documents/#{id}/report?page=#{page}&user_id=#{user_id}&fullname=#{fullname}&email=#{email}"
     return form_url
   end
 

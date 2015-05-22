@@ -52,7 +52,7 @@
 	<!-- <span class="tw_button2 tw_find_button">&nbsp;</span> -->
 	<span class="tw_button2 tw_insert_above_button">&nbsp;</span>
 	<span class="tw_button2 tw_insert_below_button">&nbsp;</span>
-	 
+	<span id="curr-user-name"><%= current_user.username %></span>
 	<!-- <span class="tw_button2 tw_review_history_button">&nbsp;</span> -->
 	<%= render :partial => 'pagination', :locals => { :show_complete=>false, :doc_id => @params[:doc_id], :doc_uri => @uri, :page => @params[:page], :num_pages => @params[:num_pages] } %>
 </div>

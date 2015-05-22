@@ -30,4 +30,4 @@
 	<%= link_to "next", tw_create_url(doc_id, page+1), { :class => 'nav_link tw_button_right tw_next_page' } if page < num_pages %>&nbsp;
 	<%= link_to "last", tw_create_url(doc_id, num_pages), { :class => 'nav_link tw_button_right tw_last_page' } if page < num_pages %>
 </div>
-<div class="tw_pagination_source"><%=raw tw_source_popup(@sources, @src) %></div>
+<div class="tw_pagination_source"><%=raw tw_source(@src) %></div>

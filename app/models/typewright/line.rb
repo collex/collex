@@ -29,8 +29,8 @@ class Typewright::Line < ActiveResource::Base
       self.find(:all, :params => { :document_id => document_id, :page => page, :line => line, :src => src })
    end
 
-   def self.revisions(uri, start, size, src)
-      self.find(:all, :params => { :uri => uri, :src => src, :revisions => true, :start => start, :size => size})
+   def self.revisions(uri, start, size)
+      self.find(:all, :params => { :uri => uri, :revisions => true, :start => start, :size => size})
    end
 
    def self.convert_from_server_to_usable(lines)

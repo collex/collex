@@ -35,7 +35,6 @@ class Typewright::DocumentsController < ApplicationController
 
    # GET /typewright/documents
    def index
-
       @primary = nil
       @features = []
 
@@ -45,10 +44,8 @@ class Typewright::DocumentsController < ApplicationController
       features.each do | feature |
          if feature.primary && @primary.nil?
             @primary = CachedResource.get_hit_from_uri( feature.uri )
-            src = params[:src].to_sym unless params[:src].nil?
-            src = :gale if src.nil?
             word_stats = is_admin?
-            stats = Typewright::Document.get_stats( feature.uri, src, word_stats )
+            stats = Typewright::Document.get_stats( feature.uri, word_stats )
             doc = Typewright::Document.find_by_uri( feature.uri )
             if stats.present? && doc.present?
                num_pages = doc.num_pages()
@@ -72,7 +69,6 @@ class Typewright::DocumentsController < ApplicationController
 
    # GET /typewright/documents/1
    def show
-
       @site = COLLEX_PLUGINS['typewright']['web_service_url']
 
       # This goes to the main page of a particular document.
@@ -96,13 +92,9 @@ class Typewright::DocumentsController < ApplicationController
          @title_abbrev = doc.title_abbrev
          @thumb = URI::join(@site, doc.img_thumb)
          @num_pages = doc.num_pages
-         @src = params[:src].to_sym unless params[:src].nil?
-         @src = :gale if @src.nil?
-         #@sources = doc.ocr_sources
-         @sources = %w(gale) if @sources.nil?
 
          word_stats = is_admin?
-         stats = Typewright::Document.get_stats( @uri, @src, word_stats )
+         stats = Typewright::Document.get_stats( @uri, word_stats )
          pages_with_changes = stats.pages_with_changes
          total_revisions = stats.total_revisions
          lines_with_changes = stats.lines_with_changes
@@ -124,7 +116,7 @@ class Typewright::DocumentsController < ApplicationController
          @revision_page = 1 if @revision_page < 1
          @revision_page = @num_revision_pages if @revision_page > @num_revision_pages
          start_revision = EDITS_PER_PAGE * (@revision_page-1)
-         @edits = Typewright::Line.revisions(@uri, start_revision, EDITS_PER_PAGE, @src)
+         @edits = Typewright::Line.revisions(@uri, start_revision, EDITS_PER_PAGE)
          begin
             last_revision = stats.last_revision.kind_of?(Typewright::Document::LastRevision) ? stats.last_revision.send("user_#{@user.id}") : nil
          rescue
@@ -146,53 +138,53 @@ class Typewright::DocumentsController < ApplicationController
       id = params[:id]
       doc = Typewright::Document.find_by_id(id)
       if doc == nil
-         redirect_to :back
-      else
-         if doc.status == 'complete'
-            data = { :uri => doc.uri}
-            redirect_to data.merge!(:action => :show)
+         redirect_to :back and return
+      end
+      
+      if doc.status == 'complete'
+         data = { :uri => doc.uri}
+         redirect_to data.merge!(:action => :show)
+      end
+      
+      page = params[:page]
+      page = '1' if page.nil?
+      @is_complete = (doc.status == 'user_complete')
+      @uri = doc.uri
+      starting_line_number = params[:line]
+      @site = COLLEX_PLUGINS['typewright']['web_service_url']
+      word_stats = is_admin?
+      @params = Typewright::Document.get_page(@uri, page, word_stats)
+      user_id = get_curr_user_id()
+      if user_id.nil?
+         begin
+            redirect_to :back
+         rescue
+            redirect_to "/"
          end
-         page = params[:page]
-         page = '1' if page.nil?
-         @is_complete = (doc.status == 'user_complete')
-         @src = params[:src].to_sym unless params[:src].blank?
-         @src ||= :gale
-         #@sources = doc.ocr_sources
-         @sources = %w(gale) if @sources.nil?
-         @uri = doc.uri
-         starting_line_number = params[:line]
-         @site = COLLEX_PLUGINS['typewright']['web_service_url']
-         word_stats = is_admin?
-         @params = Typewright::Document.get_page(@uri, page, @src, word_stats)
-		 user_id = get_curr_user_id()
-		 if user_id.nil?
-			 begin
-				 redirect_to :back
-			 rescue
-				 redirect_to "/"
-			 end
-		 else
-			 typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
-			 token = "#{typewright_user_id.id}/#{Time.now()}"
-			 @params['token'] = token
-			 @params['starting_line'] = 0
-			 # correct the format of the original line
-			 @params['lines'].each_with_index { |line, index|
-				 if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
-					 line['actions'][0] = 'original'
-					 line['dates'][0] = ''
-					 line['text'][0] = '' if line['text'][0].blank?
-				 end
-				 if line['num'].to_f == starting_line_number.to_f
-					 @params['starting_line'] = index
-				 end
-			 }
-			 @thumb = URI::join(@site, @params['img_thumb'])
-			 @image_full = URI::join(@site, @params['img_full'])
-			 @params['img_thumb'] = @thumb.to_s
-			 @params['img_full'] = @image_full.to_s
-			 @debugging = session[:debugging] ? session[:debugging] : false
-		 end
+      else
+         @src = @params['src']
+         typewright_user_id = Typewright::User.get_or_create_user(Setup.default_federation(), user_id, current_user.username)
+         token = "#{typewright_user_id.id}/#{Time.now()}"
+         @params['token'] = token
+         @params['starting_line'] = 0
+            
+         # correct the format of the original line
+         @params['lines'].each_with_index do |line, index|
+            if line['actions'].present? && line['actions'].length > 0 && line['actions'][0] == nil
+               line['actions'][0] = 'original'
+               line['dates'][0] = ''
+               line['text'][0] = '' if line['text'][0].blank?
+            end
+            if line['num'].to_f == starting_line_number.to_f
+               @params['starting_line'] = index
+            end
+         end
+         
+         @thumb = URI::join(@site, @params['img_thumb'])
+         @image_full = URI::join(@site, @params['img_full'])
+         @params['img_thumb'] = @thumb.to_s
+         @params['img_full'] = @image_full.to_s
+         @debugging = session[:debugging] ? session[:debugging] : false
       end
    end
 
@@ -285,45 +277,41 @@ class Typewright::DocumentsController < ApplicationController
    def report
       doc_id = params[:id]
       page_num = params[:page]
-      src = params[:src]
       collex_user = current_user
       if collex_user.blank?
          render :text => 'You must be signed in to report pages. Did your session expire?', :status => :bad_request
       else
          user = Typewright::User.get_or_create_user(Setup.default_federation(), collex_user.id, collex_user.username)
          user_id = user.present? ? user.id : nil
-         @report_form_url = Typewright::Document.get_report_form_url(doc_id, user_id, collex_user.fullname, collex_user.email, page_num, src)
+         @report_form_url = Typewright::Document.get_report_form_url(doc_id, user_id, collex_user.fullname, collex_user.email, page_num)
          render :partial => '/typewright/documents/report'
       end
    end
 
    # PUT /typewrite/documents/1/delete_edits?page=n
    def delete_edits
-     doc_id = params[:id]
-     page_num = params[:page]
-     src = params[:src]
-     src = :gale if src.nil?
+      doc_id = params[:id]
+      page_num = params[:page]
 
-     collex_user = current_user
-     if collex_user.blank?
-       render :text => 'You must be signed in to delete corrections. Did your session expire?', :status => :bad_request
-     else
+      collex_user = current_user
+      if collex_user.blank?
+         render :text => 'You must be signed in to delete corrections. Did your session expire?', :status => :bad_request
+      else
 
-       tw_url = COLLEX_PLUGINS['typewright']['web_service_url']
-       private_token = COLLEX_PLUGINS['typewright']['private_token']
-       url = "#{tw_url}/documents/#{doc_id}/delete_corrections?src=#{src}&page=#{page_num}"
-       begin
-         resp = RestClient.put url, :'private_token' => private_token
-         # back to the edit page
-         doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit?src=#{src}&page=#{page_num}"
-         redirect_to doc_url
-       rescue RestClient::Exception => rest_error
-         render :text => rest_error.response, :status => rest_error.http_code
-       rescue Exception => e
-         render :text => e, :status => :internal_server_error
-       end
-
-     end
+         tw_url = COLLEX_PLUGINS['typewright']['web_service_url']
+         private_token = COLLEX_PLUGINS['typewright']['private_token']
+         url = "#{tw_url}/documents/#{doc_id}/delete_corrections?page=#{page_num}"
+         begin
+            resp = RestClient.put url, :'private_token' => private_token
+            # back to the edit page
+            doc_url = "#{get_base_uri()}/typewright/documents/#{doc_id}/edit?page=#{page_num}"
+            redirect_to doc_url
+         rescue RestClient::Exception => rest_error
+            render :text => rest_error.response, :status => rest_error.http_code
+         rescue Exception => e
+            render :text => e, :status => :internal_server_error
+         end
+      end
    end
 
    def instructions

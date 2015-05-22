@@ -88,15 +88,15 @@ class Typewright::LinesController < ApplicationController
 				ret = Typewright::Line.create({:token => token, :user_id => user_id, :document_id => doc_id, :page => page, :line => line, :status => status, :words => Typewright::Line.words_to_db(words), :src => src, box: box})
 				more_recent_corrections = ret.attributes['changes']
 				editors = {
-					page: ret.attributes[:editors].attributes['page'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, idle_time: rec.idle_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: page } },
-					doc: ret.attributes[:editors].attributes['doc'].map { |rec| { user_id: rec.user_id, last_contact_time: rec.last_contact_time, idle_time: rec.idle_time, username: rec.username, federation: rec.federation, federation_user_id: rec.federation_user_id, page: rec.page } }
+					page: ret.attributes[:editors].attributes['page'].map { |r| { user_id: r.user_id, last_contact_time: r.last_contact_time, idle_time: r.idle_time, username: r.username, federation: r.federation, federation_user_id: r.federation_user_id, page: page } },
+					doc: ret.attributes[:editors].attributes['doc'].map { |r| { user_id: r.user_id, last_contact_time: r.last_contact_time, idle_time: r.idle_time, username: r.username, federation: r.federation, federation_user_id: r.federation_user_id, page: r.page } }
 				}
 				edit_line = line
 				edit_time = ret.attributes['updated_at']
 				exact_time = ret.attributes['exact_time']
 			end
 
-			more_recent_corrections = more_recent_corrections.present? ? more_recent_corrections.map { |rec| rec.attributes.to_options! } : []
+			more_recent_corrections = more_recent_corrections.present? ? more_recent_corrections.map { |r| r.attributes.to_options! } : []
 			more_recent_corrections = Typewright::Line.convert_from_server_to_usable(more_recent_corrections)
 			render :json => { lines: more_recent_corrections, editors: editors, edit_line: edit_line, edit_time: edit_time, exact_time: exact_time }
 		end

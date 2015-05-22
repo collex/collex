@@ -133,19 +133,31 @@ jQuery(document).ready(function($) {
 	}
 
 	function reportLiveChanges(data) {
-		if (data.lines.length > 0) {
-			TW.line.liveUpdate(data.lines);
-         TW.line.integrateRemoteChanges(false);
-			var growler = $(".tw_notification");
-			growler.find('.tw_notification_text').html("This page has been edited by someone else.");
-			growler.fadeIn("slow");
-			setTimeout(function() {
-				growler.fadeOut("slow");
-			}, 3000);
-		}
-		currentEditors = data.editors;
-		redrawLiveChanges();
-	}
+      if (data.lines.length > 0) {
+         var myEdit = true;
+         var currUser = $("#curr-user-name").text();
+         $.each(data.lines, function(idx, val) {
+            if (val.author != currUser) {
+               myEdit = false;
+            }
+         });
+
+         if (myEdit == false) {
+            var currUser = $("#curr-user-name").text();
+            TW.line.liveUpdate(data.lines);
+            TW.line.integrateRemoteChanges(false);
+            var growler = $(".tw_notification");
+            growler.find('.tw_notification_text').html(
+                  "This page has been edited by someone else.");
+            growler.fadeIn("slow");
+            setTimeout(function() {
+               growler.fadeOut("slow");
+            }, 3000);
+         }
+      }
+      currentEditors = data.editors;
+      redrawLiveChanges();
+   }
 
 	function serverError(jqXHR, textStatus, errorThrown) {
 		var status = $('.tw_live_status');

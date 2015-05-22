@@ -16,32 +16,12 @@ module Typewright::TypewrightHelper
 		return date.iso8601
 	end
 
-  def tw_source_popup(possible_sources, curr_src = :gale)
-    html = "OCR Source: "
-    base_url = request.url.split('?')[0]
-    params = request.url.split('?')[1]
-	params ||= "gale"
-    param_str = ''
-    params.split('&').each { |param|
-      pname = param.split('=')[0]
-      unless pname == 'src'
-        param_str += '&' + param
-      end
-    }
-    possible_sources.each { |src|
-      new_params = param_str + "&src=#{src}"
-      new_params[0] = '?'
-      target_url = base_url + new_params
-      if (src == "#{curr_src}")
-        # this is the current source, don't need a link, just a highlighted item
-        html += "<span class=\"tw_selected_source\">#{src}</span> "
-      else
-        # not the current source, need a link to make it be the current source
-        html += "<a href=\"#{target_url}\" class = \"tw_source_link\">#{src}</a> "
-      end
-    }
-    return html
-  end
+   def tw_source(curr_src)
+      html = "OCR Source: "
+      curr_src = "eMOP" if curr_src.to_s.downcase == "alto"
+      html += "<span class=\"tw_selected_source\">#{curr_src}</span> "
+      return html
+   end
 
 	def draw_revision_pager( uri, curr_page, total_pages )
 	  html = ""
