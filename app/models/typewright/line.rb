@@ -55,7 +55,7 @@ class Typewright::Line < ActiveResource::Base
 			end
 		   {
 			   'id' => line['id'],
-			   'author' => Typewright::User.get_author_fullname(line['federation'], line['orig_id']),
+			   'author' => Typewright::User.get_author_username(line['federation'], line['orig_id']),
 			   'line' => line['line'],
 			   'action' => line['action'],
 			   'date' => line['date'],
