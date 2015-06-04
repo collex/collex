@@ -60,6 +60,7 @@ jQuery(document).ready(function($) {
 		},
 
 		doInsert: function(num) {
+		   var otherSrc = TW.lines[num - 1].src;
 			var before = num > 0 ? TW.lines[num - 1].num : 0;
 			var after = (num < TW.lines.length) ? TW.lines[num].num : before + 1;
 			// Figure out an approximate place to put the box. It should be horizontally all the way across, and start just
@@ -74,8 +75,7 @@ jQuery(document).ready(function($) {
 				b = mid + 15;
 			}
 			var newLine = before + (after - before) / 2;
-			// TODO-PER: src should be set to the same thing as the lines around it, shouldn't it? Also, couldn't src be global -- it shouldn't change for each line?
-			TW.lines.splice(num, 0, { src: "gale", l: l, t: t, r: r, b: b, words: [
+			TW.lines.splice(num, 0, { src: otherSrc, l: l, t: t, r: r, b: b, words: [
 				[ ]
 			], text: [''], num: newLine, change: { type: 'insert', text: '', words: [] }, box_size: 'changed', dirty: true });
 		},
@@ -371,7 +371,7 @@ jQuery(document).ready(function($) {
 						break;
 					case 'insert':
 						num = getClosestIndexFromLineNum(line.line);
-						TW.lines.splice(num, 0, { src: "gale", l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], actions: [''], authors: [''], dates: [''], exact_times: [''], num: line.line});
+						TW.lines.splice(num, 0, { src: line.src, l: line.l, t: line.t, r: line.r, b: line.b, words: [[ ]], text: [''], actions: [''], authors: [''], dates: [''], exact_times: [''], num: line.line});
 						break;
 					case 'delete':
 						if (destinationLine) {

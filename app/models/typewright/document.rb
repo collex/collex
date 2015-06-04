@@ -53,7 +53,7 @@ class Typewright::Document < ActiveResource::Base
          result[:lines][idx] = line.attributes.to_options!
          unless result[:lines][idx][:authors].nil?
             result[:lines][idx][:authors].each_with_index do |author, auth_idx|
-               result[:lines][idx][:authors][auth_idx] = Typewright::User.get_author_fullname(author.federation, author.orig_id)
+               result[:lines][idx][:authors][auth_idx] = Typewright::User.get_author_username(author.federation, author.orig_id)
             end
          end
       end
