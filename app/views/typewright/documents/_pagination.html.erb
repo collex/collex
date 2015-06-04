@@ -3,10 +3,6 @@
    <div class="tw_edit_page_nav">
 <% else %>
    <div class="tw_edit_page_nav_button">
-      <% if COLLEX_PLUGINS['awl'] %>
-         <a href="<%= COLLEX_PLUGINS['awl']['service_url'] %>?doc=<%=doc_id%>&page=<%= page %>" target="_blank"><input type="button" id="awl-btn" value="Mark Marginalia"/></a>
-      <% end %>
-
       <% if is_complete %>
          <span class="tw-complete-msg">This text has been marked complete by a TypeWright user. It is under review by TypeWright administrators.</span>
       <% else %>
