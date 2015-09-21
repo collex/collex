@@ -325,7 +325,7 @@ class Catalog
    end
 
    def get_resource_list()
-      response = call_solr("archives", :get)
+      response = call_solr("archives", :get, [ "federation=#{Setup.default_federation()}"])
       # we now have a list of archives and nodes. We keep the archives as a list,
       # and we keep a separate copy that is turned into a tree.
       @@carousel = []
@@ -342,23 +342,9 @@ class Catalog
          node['id'] = id
          id += 1
          if node['carousel']
-            if node['carousel']['federations'] and node['carousel']['federations']['federation']
-               if node['carousel']['federations']['federation'].kind_of?(Array)
-                  node['carousel']['federations']['federation'].each { |federation|
-                     if federation.downcase == Setup.site_name().downcase
-                        img = node['carousel']['image']
-                        img = Setup.solr_url() + img if img
-                        @@carousel.push({ :title => node['name'], :description => node['carousel']['description'], :url => node['site_url'], :image => img })
-                     end
-                  }
-               else
-                  if node['carousel']['federations']['federation'].downcase == Setup.site_name().downcase
-                     img = node['carousel']['image']
-                     img = Setup.solr_url() + img if img
-                     @@carousel.push({ :title => node['name'], :description => node['carousel']['description'], :url => node['site_url'], :image => img })
-                  end
-               end
-            end
+            img = node['carousel']['image']
+            img = Setup.solr_url() + img if img
+            @@carousel.push({:title => node['name'], :description => node['carousel']['description'], :url => node['site_url'], :image => img})
          end
       }
       archives = response['resource_tree']['archives']['archive']
@@ -366,23 +352,9 @@ class Catalog
          archive['id'] = id
          id += 1
          if archive['carousel']
-            if archive['carousel']['federations'] and archive['carousel']['federations']['federation']
-               if archive['carousel']['federations']['federation'].kind_of?(Array)
-                  archive['carousel']['federations']['federation'].each { |federation|
-                     if federation.downcase == Setup.site_name().downcase
-                        img = archive['carousel']['image']
-                        img = Setup.solr_url() + img if img
-                        @@carousel.push({ :title => archive['name'], :description => archive['carousel']['description'], :url => archive['site_url'], :image => img })
-                     end
-                  }
-               else
-                  if archive['carousel']['federations']['federation'].downcase == Setup.site_name().downcase
-                     img = archive['carousel']['image']
-                     img = Setup.solr_url() + img if img
-                     @@carousel.push({ :title => archive['name'], :description => archive['carousel']['description'], :url => archive['site_url'], :image => img })
-                  end
-               end
-            end
+            img = archive['carousel']['image']
+            img = Setup.solr_url() + img if img
+            @@carousel.push({:title => archive['name'], :description => archive['carousel']['description'], :url => archive['site_url'], :image => img})
          end
       }
 
