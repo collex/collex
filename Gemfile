@@ -43,7 +43,7 @@ gem 'will_paginate'
 
 # Deploy with Capistrano
 gem 'capistrano', '2.15.5'
-gem 'rvm-capistrano'
+gem 'rvm-capistrano',  require: false
 
 #gem 'bullet', :group => "development" # this is for debugging. It shows inefficiencies. It should not appear in the production code.
 
