@@ -42,8 +42,8 @@ gem 'acts_as_list'
 gem 'will_paginate'
 
 # Deploy with Capistrano
+gem 'rvm-capistrano', '1.5.6'
 gem 'capistrano', '2.15.5'
-gem 'rvm-capistrano',  require: false
 
 #gem 'bullet', :group => "development" # this is for debugging. It shows inefficiencies. It should not appear in the production code.
 
