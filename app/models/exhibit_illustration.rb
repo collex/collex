@@ -20,6 +20,8 @@ class ExhibitIllustration < ActiveRecord::Base
   before_save :b4_save
   after_find :aft_find
   has_attached_file :upload, :styles => { :display => "350x350>", :thumb => "50x50>" }
+    validates_attachment_content_type :upload, :content_type => ['image/jpeg', 'image/png', 'image/gif'], :unless => Proc.new {|m| m[:photo].nil?}
+                            # mjc, 9/22/15; fixing problem with new version of paperclip as used to upload images to the exhibit builder
 
   def b4_save
     if illustration_type == 'Internet Image'
