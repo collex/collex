@@ -153,7 +153,7 @@ task :prod_mesa do
 end
 
 desc "Run tasks to update production Modnets environment."
-task :prod_mesa do
+task :prod_modnets do
    set_application('prod', 'modnets')
 end
 
