@@ -164,24 +164,24 @@ class SearchUserContent < ActiveRecord::Base
 				visibility_id = group.id
 			end
 			@solr = Catalog.factory_create_user() if @solr == nil
-			@solr.add_local_object("Exhibit", exhibit.id, Setup.site_name(), section, exhibit.title, exhibit.get_all_text(), exhibit.last_change, visibility_type, visibility_id)
+			@solr.add_local_object("Exhibit", exhibit.id, Setup.default_federation(), section, exhibit.title, exhibit.get_all_text(), exhibit.last_change, visibility_type, visibility_id)
 		else
 			@solr = Catalog.factory_create_user() if @solr == nil
-			@solr.remove_local_object("Exhibit", exhibit.id, Setup.site_name())
+			@solr.remove_local_object("Exhibit", exhibit.id, Setup.default_federation())
 		end
 	end
 
 	def reindex_group(group)
 		section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
 		@solr = Catalog.factory_create_user() if @solr == nil
-		@solr.add_local_object("Group", group.id, Setup.site_name(), section, group.name, Exhibit.strip_tags(group.description), group.updated_at, 'everyone', group.id)
+		@solr.add_local_object("Group", group.id, Setup.default_federation(), section, group.name, Exhibit.strip_tags(group.description), group.updated_at, 'everyone', group.id)
 	end
 
 	def reindex_cluster(cluster)
 		group = Group.find(cluster.group_id)
 		section = group.group_type == 'peer-reviewed' ? 'community' : group.group_type
 		@solr = Catalog.factory_create_user() if @solr == nil
-		@solr.add_local_object("Cluster", cluster.id, Setup.site_name(), section, cluster.name, Exhibit.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
+		@solr.add_local_object("Cluster", cluster.id, Setup.default_federation(), section, cluster.name, Exhibit.strip_tags(cluster.description), cluster.updated_at, cluster.visibility, group.id)
 	end
 
 	def reindex_thread(thread)
@@ -201,7 +201,7 @@ class SearchUserContent < ActiveRecord::Base
 		}
 		section = section == 'peer-reviewed' ? 'community' : section
 		@solr = Catalog.factory_create_user() if @solr == nil
-		@solr.add_local_object("DiscussionThread", thread.id, Setup.site_name(), section, thread.title, text, thread.updated_at, visibility, group_id)
+		@solr.add_local_object("DiscussionThread", thread.id, Setup.default_federation(), section, thread.title, text, thread.updated_at, visibility, group_id)
 	end
 
 	def reindex_all()
