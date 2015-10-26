@@ -20,7 +20,22 @@
 jQuery(document).ready(function($) {
    "use strict";
    var form = $("#do-basic-search");
-   form.on("submit", function(e) {
+   
+    /*mjc, 10/15/15 - the home page search box needs to be sanitized as well*/
+    /*                copied code from search.js*/
+    window.collex.sanitizeString = function(str) {
+	   if (typeof str === "undefined") {
+	     return str;
+	   }
+		str = str.replace(/[^0-9A-Za-z\-'"\u00C0-\u017F]/g, ' ');
+		while (str.substr(0,1) === "'")
+			str = str.substr(1);
+		str = str.replace(/ '/g,' '); // Allow an apostrophe inside a word, but not at the beginning of a word.
+		str = str.replace(/\s+/g, ' ');
+		return $.trim(str);
+	};
+	
+	form.on("submit", function(e) {
       e.preventDefault();
       var submit_button = $("#search_button");
       var submit_text = submit_button.val();
@@ -35,7 +50,10 @@ jQuery(document).ready(function($) {
          return false;
       }
 
-      window.location = "/search?q="+encodeURIComponent(search_phrase);
+      window.location = "/search?q="+encodeURIComponent(window.collex.sanitizeString(search_phrase));     /*mjc, 10/15/15*/
    });
+
 });
+
+
 
