@@ -146,6 +146,11 @@
                      "Enter a value to display as the label for the Genre facet.",
                      "Genre") %>
 
+	  <%= setup_table_header("Search") %>
+	  <%= setup_line("HTML for search help:", "search_help_text", @setups,
+					 "Enter the HTML that you would like to appear when the user clicks the help button on the search page.",
+					 "none", :textarea) %>
+
 	  <%= setup_table_header("Footer Signature") %>
 	  <%= setup_line("HTML for footer signature:", "footer_signature_text", @setups,
 					 "Enter the HTML that you would like to appear in the footer signature. Typically this would be credits or a copyright notice.",

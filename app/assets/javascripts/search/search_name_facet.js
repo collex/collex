@@ -45,6 +45,11 @@ jQuery(document).ready(function($) {
 		new ShowDivInLightbox({ title: "Name Browser", id: 'full_name_facet_list', klass: 'name_facet_in_lightbox' });
 	});
 
+	body.on("click", ".search_help_text_button", function () {
+		new ShowDivInLightbox({ title: "Search Help", id: 'search_help_text', klass: 'search_help_text' });
+		return false;
+	});
+
 	window.collex.resetNameFacet = function() {
 		var parent = $("#search_name_facet_max");
 		var html = window.pss.createHtmlTag("div", { 'id': "search_name_never_requested" },
