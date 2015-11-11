@@ -726,5 +726,12 @@ module SearchHelper
 			}
 		end
 		return collected
-	end
+    end
+
+    def search_help_link
+      tooltip = "<span class=\"search_help_tooltip\"><b>Need help?</b><br/>Click to learn more about searching in #{Setup.site_name()}.</span>"
+      image = image_tag("#{SKIN}/help_thumb.gif", {alt: 'help', height: 18, style: "padding-left:5px"})
+      link = "<a href=\"#\" class=\"tooltip search_help_text_button nav_link\">#{image}Search Help#{tooltip}</a>"
+      return content_tag(:div, raw(link), {class: "search_help_icon"})
+    end
 end

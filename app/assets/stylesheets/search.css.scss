@@ -16,6 +16,14 @@
 
 body.pg-search {
 
+	.search_help_text_button img {
+		float: left;
+		padding-right: 2px;
+	}
+	.search-help-same-line {
+		display: inline-block;
+	}
+
   .page-results {
     margin-top: 20px;
     border-top: 2px solid #C7C8CB;
